@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">определённая форма</string>
+    <string name="inflection_ro_ul">определённый артикль (procesul от proces, consiliul от consiliu)</string>
+    <string name="inflection_ro_le_label">определённая форма</string>
+    <string name="inflection_ro_le">определённый артикль (fratele от frate, textele от texte)</string>
+    <string name="inflection_ro_a_label">определённая форма</string>
+    <string name="inflection_ro_a">определённый артикль существительных женского рода (dezvoltarea от dezvoltare, comisia от comisie)</string>
+    <string name="inflection_ro_i_label">опред. форма мн. ч.</string>
+    <string name="inflection_ro_i">определённый артикль мужского рода во множественном числе (pomii от pomi)</string>
+    <string name="inflection_ro_ului_label">род. п. с артиклем</string>
+    <string name="inflection_ro_ului">родительный и дательный падежи с определённым артиклем (procesului от proces, fratelui от frate)</string>
+    <string name="inflection_ro_ei_label">род. п. с артиклем</string>
+    <string name="inflection_ro_ei">родительный и дательный падежи существительных женского рода с определённым артиклем (Moldovei от Moldova, comisiei от comisie)</string>
+    <string name="inflection_ro_ii_label">род. п. с артиклем</string>
+    <string name="inflection_ro_ii">родительный и дательный падежи существительных женского рода на -e с определённым артиклем (lumii от lume, dezvoltării от dezvoltare)</string>
+    <string name="inflection_ro_lor_label">род. п. мн. ч. с артиклем</string>
+    <string name="inflection_ro_lor">родительный и дательный падежи множественного числа с определённым артиклем (caselor от case)</string>
+    <string name="inflection_ro_agreement_label">ж. р. или мн. ч.</string>
+    <string name="inflection_ro_agreement">женский род или множественное число причастия или прилагательного (aflată, aflate, aflați от aflat; pusă от pus)</string>
+</resources>

@@ -631,6 +631,269 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun swedishFindsFormRowsFromCapitalsAndKeepsTheMarksOfItsLetters() = runTest {
+        val imported = engine.import(swedishDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val swedish = LookupOptions(language = Language.SWEDISH)
+        suspend fun all(text: String) = engine.lookup(text, swedish).map { it.term.expression }
+
+        val house = engine.lookup("Huset är stort", swedish).first()
+        assertThat(house.term.expression).isEqualTo("hus")
+        assertThat(house.matched).isEqualTo("Huset")
+        assertThat(all("läser")).contains("läsa")
+        // å and ä are letters of their own: a word without the ring or the dots is another word.
+        assertThat(all("år")).containsExactly("år")
+        assertThat(all("ar")).containsExactly("ar")
+        assertThat(all("lasa")).isEmpty()
+    }
+
+    /** Rows as Wiktionary's Swedish exports write them: form rows naming their lemma, two words that differ in å. */
+    private fun swedishDictionary(): File = zip(
+        "sv.zip",
+        "index.json" to """{"title":"Test Swedish","revision":"1","format":3,"sourceLanguage":"sv"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["hus","","","n",0,["house"],1,""],
+              ["huset","","non-lemma","n",0,[["hus",["definite","singular"]]],2,""],
+              ["läsa","","","v",0,["to read"],3,""],
+              ["läser","","non-lemma","v",0,[["läsa",["present"]]],4,""],
+              ["år","","","n",0,["year"],5,""],
+              ["ar","","","n",0,["are (unit of area)"],6,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun norwegianFindsGenitivesOfNounsNamesAndFormsByTheirTags() = runTest {
+        val imported = engine.import(norwegianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val norwegian = LookupOptions(language = Language.NORWEGIAN)
+        suspend fun first(text: String) = engine.lookup(text, norwegian).first()
+        suspend fun all(text: String) = engine.lookup(text, norwegian).map { it.term.expression }
+
+        // dagens: the genitive of dagen, a form of dag.
+        val day = first("dagens")
+        assertThat(day.term.expression).isEqualTo("dag")
+        assertThat(day.matched).isEqualTo("dagens")
+        assertThat(day.trace.first().name).isEqualTo("-s")
+        assertThat(day.trace.first().label).isNotEmpty()
+        assertThat(first("Norges").term.expression).isEqualTo("Norge")
+        // A pronoun is no noun: hos does not reach ho ("she").
+        assertThat(all("hos")).containsExactly("hos")
+        // A word's own entry comes first; the genitive reaches the noun's senses only (men "harm", not "but").
+        assertThat(all("mens").first()).isEqualTo("mens")
+        val harm = engine.lookup("mens", norwegian).filter { it.term.expression == "men" }
+            .flatMap { result -> result.term.glossaries.map { it.content } }.joinToString()
+        assertThat(harm).contains("harm")
+        assertThat(harm).doesNotContain("but")
+        // å and ø are letters of their own.
+        assertThat(all("år")).containsExactly("år")
+        assertThat(all("ar")).isEmpty()
+    }
+
+    /**
+     * Rows as Wiktionary's Bokmål exports write them: the part of speech among the definition tags, no rules, forms
+     * naming their lemma; one headword as a noun and a conjunction.
+     */
+    private fun norwegianDictionary(): File = zip(
+        "nb.zip",
+        "index.json" to """{"title":"Test Norwegian","revision":"1","format":3,"sourceLanguage":"nb"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["dag","","n masc","",0,["day"],1,""],
+              ["dagen","","non-lemma","",0,[["dag",["singular","definite"]]],2,""],
+              ["Norge","","name","",0,["Norway"],3,""],
+              ["hos","","prep","",0,["at, with"],4,""],
+              ["ho","","pron","",0,["she"],5,""],
+              ["mens","","conj","",0,["while"],6,""],
+              ["men","","n neut","",0,["harm"],7,""],
+              ["men","","conj","",0,["but"],8,""],
+              ["år","","n neut","",0,["year"],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun danishFindsFormRowsAndGenitivesFromCapitalsAndKeepsTheMarksOfItsLetters() = runTest {
+        val imported = engine.import(danishDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val danish = LookupOptions(language = Language.DANISH)
+        suspend fun all(text: String) = engine.lookup(text, danish).map { it.term.expression }
+
+        val house = engine.lookup("Huset er stort", danish).first()
+        assertThat(house.term.expression).isEqualTo("hus")
+        assertThat(house.matched).isEqualTo("Huset")
+        // Wiktionary lists Danish genitives as form rows.
+        assertThat(all("Dagens")).contains("dag")
+        assertThat(all("læser")).contains("læse")
+        // æ, ø and å are letters of their own: a word without them is another word.
+        assertThat(all("år")).containsExactly("år")
+        assertThat(all("ar")).containsExactly("ar")
+        assertThat(all("lase")).isEmpty()
+    }
+
+    /** Rows as Wiktionary's Danish exports write them: form rows naming their lemma, two words that differ in å. */
+    private fun danishDictionary(): File = zip(
+        "da.zip",
+        "index.json" to """{"title":"Test Danish","revision":"1","format":3,"sourceLanguage":"da"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["hus","","n neut","",0,["house"],1,""],
+              ["huset","","non-lemma","",0,[["hus",["nominative singular definite"]]],2,""],
+              ["dag","","n","",0,["day"],3,""],
+              ["dagens","","non-lemma","",0,[["dag",["genitive singular definite"]]],4,""],
+              ["læse","","v","",0,["to read"],5,""],
+              ["læser","","non-lemma","",0,[["læse",["present active"]]],6,""],
+              ["år","","n neut","",0,["year"],7,""],
+              ["ar","","n","",0,["are (unit of area)"],8,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun romanianFindsWordsWithAndWithoutMarksAndArticleEndingsOnlyWithoutAnEntry() = runTest {
+        val imported = engine.import(romanianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val romanian = LookupOptions(language = Language.ROMANIAN)
+        suspend fun first(text: String) = engine.lookup(text, romanian).first()
+        suspend fun all(text: String) = engine.lookup(text, romanian).map { it.term.expression }
+
+        // consiliul: no form row, the article ending reaches the noun.
+        val council = first("Consiliul")
+        assertThat(council.term.expression).isEqualTo("consiliu")
+        assertThat(council.trace.first().name).isEqualTo("-ul")
+        assertThat(council.trace.first().label).isNotEmpty()
+        assertThat(all("procesul").first()).isEqualTo("proces")
+        // Forms are stored without marks, lemmas keyed without them as well; cedilla letters read as comma ones.
+        assertThat(all("numărul")).contains("număr")
+        assertThat(all("dupa")).containsExactly("după")
+        assertThat(all("şi")).containsExactly("și")
+        assertThat(all("si")).containsExactly("și")
+        assertThat(all("ŢARĂ")).containsExactly("țară")
+        assertThat(all("tara")).containsExactly("țară")
+        // A word with an entry of its own takes no ending's results; one without takes them.
+        assertThat(all("casă")).containsExactly("casă")
+        assertThat(all("casa")).containsExactly("casă")
+        val found = engine.lookup("aflată", romanian).first { it.term.expression == "afla" }
+        assertThat(found.trace.map { it.name }).contains("agreement")
+    }
+
+    /**
+     * Rows as Wiktionary's Romanian exports write them: forms stored without marks, the spelling in the reading; a
+     * participle as a form of its verb; a word that the agreement ending would reach from casă.
+     */
+    private fun romanianDictionary(): File = zip(
+        "ro.zip",
+        "index.json" to """{"title":"Test Romanian","revision":"1","format":3,"sourceLanguage":"ro"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["consiliu","","n neut","",0,["council"],1,""],
+              ["proces","","n neut","",0,["trial"],2,""],
+              ["procesul","","non-lemma","",0,[["proces",["nominative accusative singular definite"]]],3,""],
+              ["număr","","n neut","",0,["number"],4,""],
+              ["numarul","numărul","non-lemma","",0,[["număr",["nominative accusative singular definite"]]],5,""],
+              ["după","","prep acc","",0,["after"],6,""],
+              ["și","","conj","",0,["and"],7,""],
+              ["țară","","n fem","",0,["country"],8,""],
+              ["casă","","n fem","",0,["house"],9,""],
+              ["cas","","adj","",0,["a word the agreement ending reaches from casă"],10,""],
+              ["afla","","v","",0,["to find out"],11,""],
+              ["aflat","","non-lemma","",0,[["afla",["past participle"]]],12,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun latinFindsLemmasNamedWithMacronsUAsVAndEncliticsOnlyWithoutAnEntry() = runTest {
+        val imported = engine.import(latinDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val latin = LookupOptions(language = Language.LATIN)
+        suspend fun first(text: String) = engine.lookup(text, latin).first()
+        suspend fun all(text: String) = engine.lookup(text, latin).map { it.term.expression }
+
+        // Forms name their lemmas with vowel lengths (amō), which the headwords lack; text with them finds them too.
+        assertThat(all("amat")).contains("amo")
+        assertThat(all("Romae")).contains("Roma")
+        assertThat(all("Rōmae")).contains("Roma")
+        // A u before a vowel is read as v, as scholarly editions write the consonant.
+        assertThat(first("uita").term.expression).isEqualTo("vita")
+        // An enclitic comes off where the text has no entry of its own: atque is not at + que.
+        val more = first("magisque")
+        assertThat(more.term.expression).isEqualTo("magis")
+        assertThat(more.trace.map { it.name }).containsExactly("-que")
+        assertThat(more.trace.first().description).isNotEmpty()
+        assertThat(all("videsque")).contains("video")
+        assertThat(all("atque")).containsExactly("atque")
+    }
+
+    /** Rows as Wiktionary's Latin exports write them: headwords without vowel lengths, lemma names of forms with them. */
+    private fun latinDictionary(): File = zip(
+        "la.zip",
+        "index.json" to """{"title":"Test Latin","revision":"1","format":3,"sourceLanguage":"la"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["amo","amō","v","v",0,["to love"],1,""],
+              ["amat","","non-lemma","v",0,[["amō",["third-person singular present active indicative"]]],2,""],
+              ["magis","","adv not-comp","adv",0,["more"],3,""],
+              ["at","","conj","",0,["but"],4,""],
+              ["atque","","conj","",0,["and also"],5,""],
+              ["vita","vīta","n decl-1 fem","n",0,["life"],6,""],
+              ["Roma","Rōma","name decl-1 fem sg","",0,["Rome"],7,""],
+              ["Romae","Rōmae","non-lemma","",0,[["Rōma",["genitive/dative/locative singular"]]],8,""],
+              ["video","videō","v","v",0,["to see"],9,""],
+              ["vides","vidēs","non-lemma","v",0,[["videō",["second-person singular present active indicative"]]],10,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
+        val imported = engine.import(lithuanianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val lithuanian = LookupOptions(language = Language.LITHUANIAN)
+        suspend fun first(text: String) = engine.lookup(text, lithuanian).first()
+        suspend fun all(text: String) = engine.lookup(text, lithuanian).map { it.term.expression }
+
+        // Forms are stored with their stress (žmogaũs), text has none; the dot over an accented i goes with it.
+        assertThat(first("žmogaus").term.expression).isEqualTo("žmogus")
+        assertThat(first("žmogaũs").term.expression).isEqualTo("žmogus")
+        assertThat(all("bitės")).contains("bitė")
+        // Lemma names of forms lose their stress (vanduõ), the headword has none.
+        assertThat(all("vandens")).contains("vanduo")
+        // Text without the marks of ą č ė š ž finds the words with them; the exact spelling comes first.
+        assertThat(all("zmogaus")).contains("žmogus")
+        assertThat(all("ZMOGUS")).contains("žmogus")
+        assertThat(all("bites")).contains("bitė")
+        assertThat(all("as")).containsExactly("aš")
+        assertThat(all("karta")).containsExactly("karta", "kartą").inOrder()
+        assertThat(all("kartą")).containsExactly("kartą")
+        // The e with a dot is a letter of its own, not a stress mark.
+        assertThat(all("bitė").first()).isEqualTo("bitė")
+    }
+
+    /**
+     * Rows as Wiktionary's Lithuanian exports write them: forms with stress marks and the dot over an accented i, a lemma
+     * name with stress, two words told apart by the ogonek alone.
+     */
+    private fun lithuanianDictionary(): File = zip(
+        "lt.zip",
+        "index.json" to """{"title":"Test Lithuanian","revision":"1","format":3,"sourceLanguage":"lt"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["žmogus","","n","",0,["human"],1,""],
+              ["žmogaũs","","non-lemma","",0,[["žmogus",["genitive singular"]]],2,""],
+              ["vanduo","","n masc","",0,["water"],3,""],
+              ["vandens","","non-lemma","",0,[["vanduõ",["genitive singular"]]],4,""],
+              ["bitė","","n fem","",0,["bee"],5,""],
+              ["bi${"\u0307\u0300"}tės","","non-lemma","",0,[["bitė",["genitive singular"]]],6,""],
+              ["karta","","n fem","",0,["generation"],7,""],
+              ["kartą","","adv","",0,["once"],8,""],
+              ["aš","","pron sg","",0,["I"],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

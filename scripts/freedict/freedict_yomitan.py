@@ -9,6 +9,7 @@ deinflection matches. Chinese headwords get the pinyin of their first pronunciat
 """
 
 import argparse
+import html
 import io
 import json
 import re
@@ -100,8 +101,21 @@ ul[data-sc-content="glossary"] { margin: 0; padding-left: 1.2em; }
 """
 
 
+#: WikDict's links inside definitions, `#{target|shown text}#`; `[[` is left where it cut a Wiktionary link off.
+LINK = re.compile(r"#[{](?:[^|}]*[|])?([^}]*)[}]#")
+#: What is left of a template WikDict could not read (`}#|tellelig|kat`, `Verb|minner]] om`).
+RESIDUE = re.compile(r"[}]#|#[{]|[|]|]]|[{][{]")
+
+
 def text(element):
     return "".join(element.itertext()).strip() if element is not None else ""
+
+
+def plain(definition):
+    """A definition as one line without WikDict's link markup and HTML entities; empty when only a broken template is
+    left."""
+    line = " ".join(html.unescape(LINK.sub(lambda m: m.group(1), definition)).replace("[[", "").split())
+    return "" if RESIDUE.search(line) else line
 
 
 def unique(items):
@@ -143,7 +157,7 @@ def read_entry(entry, source):
         )
         if not translations:
             continue
-        label = "; ".join(unique(" ".join(text(d).split()) for d in sense.iterfind(f".//{TEI}def")))
+        label = "; ".join(unique(plain(text(d)) for d in sense.iterfind(f".//{TEI}def")))
         senses.append((label, translations))
     if not senses:
         return []

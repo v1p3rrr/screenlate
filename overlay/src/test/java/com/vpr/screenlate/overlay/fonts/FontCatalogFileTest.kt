@@ -23,7 +23,12 @@ class FontCatalogFileTest {
         assertThat(fonts.map { it.family }).containsNoDuplicates()
         for (font in fonts) {
             val language = font.language
-            if (language != null) assertThat(Language.of(language)).isNotNull() else assertThat(font.subsets).isNotEmpty()
+            if (language != null) {
+                assertThat(Language.of(language)).isNotNull()
+            } else {
+                assertThat(font.subsets).isNotEmpty()
+                assertThat(font.letters.orEmpty()).matches("[0-9A-F]{4}(-[0-9A-F]{4})?(,[0-9A-F]{4}(-[0-9A-F]{4})?)*")
+            }
             assertThat(font.description.keys).containsExactlyElementsIn(locales)
             assertThat(font.files).isNotEmpty()
             for (file in font.files) {
@@ -41,6 +46,59 @@ class FontCatalogFileTest {
         for (language in listOf(Language.KAZAKH, Language.KYRGYZ)) {
             assertThat(fonts.filter { it.isOfferedFor(language) }.map { it.family })
                 .containsExactly("Literata", "Inter", "PT Serif", "PT Sans")
+        }
+    }
+
+    @Test
+    fun `swedish takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.SWEDISH) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
+    fun `norwegian takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.NORWEGIAN) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
+    fun `danish takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.DANISH) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
+    fun `romanian takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.ROMANIAN) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
+    fun `lithuanian takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.LITHUANIAN) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+        assertThat(fonts.filter { it.language == null && it.subsets.contains("latin-ext") }.all { it.hasLetters("ąčęėįšųūž") })
+            .isTrue()
+    }
+
+    @Test
+    fun `latin takes the latin fonts that have its long vowels`() {
+        // Atkinson Hyperlegible Next declares Latin Extended but has no ō.
+        assertThat(fonts.filter { it.isOfferedFor(Language.LATIN) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
+    fun `a font offered by its subsets is offered for every language whose letters it has`() {
+        val atkinson = fonts.single { it.id == "atkinson-hyperlegible-next" }
+        assertThat(atkinson.hasLetters("āēīūæœ")).isTrue()
+        assertThat(atkinson.hasLetters("ō")).isFalse()
+        assertThat(atkinson.hasLetters("ĉ")).isFalse()
+        assertThat(fonts.single { it.id == "inter" }.hasLetters("ĉĝĥĵŝŭāēīōū")).isTrue()
+        // Each language with subsets keeps every font that has them, but for Latin's Atkinson.
+        for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() && it != Language.LATIN }) {
+            val bySubsets = fonts.filter { it.language == null && it.subsets.containsAll(language.support.fontSubsets) }
+            assertThat(fonts.filter { it.language == null && it.isOfferedFor(language) }).containsExactlyElementsIn(bySubsets)
         }
     }
 

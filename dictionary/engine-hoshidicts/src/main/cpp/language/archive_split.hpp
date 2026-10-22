@@ -32,17 +32,24 @@ struct HeadwordMarks {
   // Whether forms are written in the script of [bases] only: a form-of row without one of their letters is dropped
   // (the romanized forms of Wiktionary's Arabic exports, ḡarafāt).
   bool forms_in_script = false;
+  // Further marks, each with the letters it is dropped after in place of [bases], both as UTF-8 text: Lithuanian drops
+  // the dot above after i (the soft dot of an accented i), not after e (ė).
+  std::map<std::string, std::string> mark_bases;
+  // Marks of the language's letters (ą č ė), dropped after [letter_bases] once [marks] are, for one more spelling a
+  // word is found under: text written without them finds the words with them.
+  std::string letter_marks;
+  std::string letter_bases;
 };
 
 class MarkStripper {
  public:
   explicit MarkStripper(const HeadwordMarks& marks);
 
-  // [text] without the marks that follow one of the bases, composed again (NFC); empty when none is dropped.
+  // [text] without the marks that follow one of their bases, composed again (NFC); empty when none is dropped.
   std::string strip(std::string_view text) const;
 
   // The other spellings [text] is found under: without the marks ([strip]), with the replacements, and with both;
-  // each once, [text] itself left out.
+  // then without the letters' marks as well; each once, [text] itself left out.
   std::vector<std::string> keys(std::string_view text) const;
 
   bool every_headword() const { return every_headword_; }
@@ -55,10 +62,20 @@ class MarkStripper {
  private:
   using Replacements = std::vector<std::pair<std::string, std::string>>;
 
+  // Marks and the letters, lowercase, they are dropped after; both sorted code points.
+  struct MarkSet {
+    std::vector<int32_t> marks;
+    std::vector<int32_t> bases;
+  };
+
   // [text] with [replacements] made; empty when none applies.
   static std::string replaced(std::string_view text, const Replacements& replacements);
 
-  std::vector<int32_t> marks_;
+  // [text] without the marks of [sets] that follow one of their bases, composed again; empty when none is dropped.
+  static std::string strip(std::string_view text, const std::vector<MarkSet>& sets);
+
+  std::vector<MarkSet> marks_;
+  std::vector<MarkSet> letters_;
   std::vector<int32_t> bases_;
   bool every_headword_;
   bool lemmas_as_written_;

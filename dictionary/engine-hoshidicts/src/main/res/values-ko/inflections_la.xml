@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">복수</string>
+    <string name="inflection_la_plural">복수 곡용</string>
+    <string name="inflection_la_feminine_label">여성</string>
+    <string name="inflection_la_feminine">형용사 형태</string>
+    <string name="inflection_la_neuter_label">중성</string>
+    <string name="inflection_la_neuter">형용사 형태</string>
+    <string name="inflection_la_ablative_label">탈격</string>
+    <string name="inflection_la_ablative">탈격</string>
+    <string name="inflection_la_que">‘그리고’의 후접어 (magis → magisque)</string>
+    <string name="inflection_la_ne">의문 후접어 (vides → videsne)</string>
+    <string name="inflection_la_ve">‘또는’의 후접어 (mortuus → mortuusve)</string>
+</resources>

@@ -358,6 +358,8 @@
     <string name="audio_region_switzerland">スイス</string>
     <string name="audio_region_france">フランス</string>
     <string name="audio_region_canada">カナダ</string>
+    <string name="audio_region_classical">古典式の発音</string>
+    <string name="audio_region_ecclesiastical">教会式の発音</string>
     <string name="audio_region_other">その他の地域</string>
     <string name="audio_url_missing">URL なし</string>
     <string name="audio_tts_hint">再生のみ。ノートにはほかのソースの音声が入ります。</string>
@@ -500,6 +502,12 @@
     <string name="popup_font_script_only_he">ヘブライ語の文字だけに使う</string>
     <string name="popup_font_script_only_kk">カザフ語の文字だけに使う</string>
     <string name="popup_font_script_only_ky">キルギス語の文字だけに使う</string>
+    <string name="popup_font_script_only_sv">スウェーデン語の文字だけに使う</string>
+    <string name="popup_font_script_only_no">ノルウェー語の文字だけに使う</string>
+    <string name="popup_font_script_only_da">デンマーク語の文字だけに使う</string>
+    <string name="popup_font_script_only_ro">ルーマニア語の文字だけに使う</string>
+    <string name="popup_font_script_only_la">ラテン語の文字だけに使う</string>
+    <string name="popup_font_script_only_lt">リトアニア語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

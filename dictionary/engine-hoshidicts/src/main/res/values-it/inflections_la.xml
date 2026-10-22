@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">plurale</string>
+    <string name="inflection_la_plural">Declinazione al plurale</string>
+    <string name="inflection_la_feminine_label">femminile</string>
+    <string name="inflection_la_feminine">Forma dell’aggettivo</string>
+    <string name="inflection_la_neuter_label">neutro</string>
+    <string name="inflection_la_neuter">Forma dell’aggettivo</string>
+    <string name="inflection_la_ablative_label">ablativo</string>
+    <string name="inflection_la_ablative">Caso ablativo</string>
+    <string name="inflection_la_que">Enclitica «e» (magisque da magis)</string>
+    <string name="inflection_la_ne">Enclitica interrogativa (videsne da vides)</string>
+    <string name="inflection_la_ve">Enclitica «o» (mortuusve da mortuus)</string>
+</resources>

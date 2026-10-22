@@ -36,6 +36,17 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
+    fun `a pronoun or preposition joined with a hyphen starts a new word only in Romanian`() {
+        assertThat(spaced.where { it.wordStartOffset("s-", "a dus") == 0 }).containsExactly(Language.ROMANIAN)
+        assertThat(spaced.where { it.wordStartOffset("într-", "o zi") == 0 }).containsExactly(Language.ROMANIAN)
+        // A word before a pronoun keeps it in every language, as hyphenated names do.
+        for (support in spaced) {
+            assertThat(support.wordStartOffset("să-", "l")).isEqualTo(3)
+            assertThat(support.wordStartOffset("Baia-", "Mare")).isEqualTo(5)
+        }
+    }
+
+    @Test
     fun `words with an apostrophe of their own stay whole in every language`() {
         for (support in spaced) {
             assertThat(support.wordStartOffset("don'", "t")).isEqualTo(4)
@@ -123,7 +134,7 @@ class LanguageRulesIsolationTest {
         fun endsAfter(support: LanguageSupport, text: String) = support.endsSentence(text, text.indexOf('.'))
         val ordinals = listOf(
             Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
-            Language.CROATIAN, Language.SERBIAN,
+            Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN, Language.DANISH,
         )
         assertThat(periodEnding.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(periodEnding.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
@@ -140,7 +151,7 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
         assertThat(periodEnding.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN)
+            .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN, Language.LITHUANIAN)
         // Czech "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number) holds alone.
         val era = "v roce 300 n. l. vznikl"
         assertThat(periodEnding.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
@@ -184,6 +195,42 @@ class LanguageRulesIsolationTest {
         // Georgian ქ. (city) and წ. (year), single letters without a partner.
         assertThat(periodEnding.where { holds(it, "ქ. თბილისი") }).containsExactly(Language.GEORGIAN)
         assertThat(periodEnding.where { holds(it, "1991 წ. დაიწყო") }).containsExactly(Language.GEORGIAN)
+        // Swedish t.ex., and ung. (ungefär), which holds only before a lowercase word or a number.
+        val forExample = "frukt t.ex. äpplen"
+        assertThat(periodEnding.where { !it.endsSentence(forExample, forExample.lastIndexOf('.')) })
+            .containsExactly(Language.SWEDISH)
+        assertThat(periodEnding.where { holds(it, "ung. tre") }).containsExactly(Language.SWEDISH)
+        assertThat(periodEnding.where { holds(it, "ung. Han") }).isEmpty()
+        // Norwegian and Danish f.eks. (for eksempel) and osv., which holds only before a lowercase word or a number.
+        val eksempel = "byer, f.eks. Oslo"
+        assertThat(periodEnding.where { !it.endsSentence(eksempel, eksempel.lastIndexOf('.')) })
+            .containsExactly(Language.NORWEGIAN, Language.DANISH)
+        assertThat(periodEnding.where { holds(it, "osv. og") })
+            .containsExactly(Language.SWEDISH, Language.NORWEGIAN, Language.DANISH)
+        assertThat(periodEnding.where { holds(it, "osv. Han") }).isEmpty()
+        // Danish hhv. (henholdsvis) and stk. (styk), before a name or a number.
+        assertThat(periodEnding.where { holds(it, "hhv. Aars") }).containsExactly(Language.DANISH)
+        assertThat(periodEnding.where { holds(it, "stk. Tuborg") }).containsExactly(Language.DANISH)
+        // Romanian dl. (domnul), and î.Hr., which holds only before a lowercase word.
+        assertThat(periodEnding.where { holds(it, "Dl. Popescu") }).containsExactly(Language.ROMANIAN)
+        val beforeChrist = "anul 44 î.Hr. a fost"
+        assertThat(periodEnding.where { !it.endsSentence(beforeChrist, beforeChrist.indexOf(". ")) })
+            .containsExactly(Language.ROMANIAN)
+        val beforeCapital = "anul 44 î.Hr. Apoi"
+        assertThat(periodEnding.where { !it.endsSentence(beforeCapital, beforeCapital.indexOf(". ")) }).isEmpty()
+        // Latin praenomina (Sex. for Sextus), which hold only capitalized, and a.C.n., only before a lowercase word.
+        assertThat(periodEnding.where { holds(it, "Sex. Pompeius") }).containsExactly(Language.LATIN)
+        assertThat(periodEnding.where { holds(it, "sex. Deinde") }).isEmpty()
+        val latinEra = "anno 44 a.C.n. natus"
+        assertThat(periodEnding.where { !it.endsSentence(latinEra, latinEra.lastIndexOf('.')) }).containsExactly(Language.LATIN)
+        assertThat(spaced.filter { it.capitalizedAbbreviations.isNotEmpty() }.map { it.language }).containsExactly(Language.LATIN)
+        // Lithuanian pvz. (pavyzdžiui), tūkst. (thousand), which Latvian writes too but Lithuanian holds only before a
+        // lowercase word or a number, and the y of "t. y.", which takes its period from the t beside it.
+        assertThat(periodEnding.where { holds(it, "pvz. obuoliai") }).containsExactly(Language.LITHUANIAN)
+        assertThat(periodEnding.where { holds(it, "5 tūkst. eurų") }).containsExactly(Language.LATVIAN, Language.LITHUANIAN)
+        assertThat(periodEnding.where { holds(it, "5 tūkst. Vėliau") }).containsExactly(Language.LATVIAN)
+        val thatIs = "vaisiai, t. y. obuoliai"
+        assertThat(periodEnding.where { !it.endsSentence(thatIs, thatIs.lastIndexOf(". ")) }).containsExactly(Language.LITHUANIAN)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -263,8 +310,9 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only German and Dutch split compounds, German puts capitalized parts first`() {
-        assertThat(all.where { it.compoundLinks != null }).containsExactly(Language.GERMAN, Language.DUTCH)
+    fun `only German, Dutch, Swedish, Norwegian and Danish split compounds, German puts capitalized parts first`() {
+        assertThat(all.where { it.compoundLinks != null })
+            .containsExactly(Language.GERMAN, Language.DUTCH, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH)
         assertThat(all.where { it.capitalizedNouns }).containsExactly(Language.GERMAN)
     }
 
@@ -276,24 +324,28 @@ class LanguageRulesIsolationTest {
                 Language.THAI, Language.KAZAKH, Language.KYRGYZ,
             )
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
+        // Romanian leaves out the Moldovan Cyrillic spellings Wiktionary links its words to.
+        assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
+        assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
+        assertThat(all.where { it.inflectionRulesOnlyWithoutEntry }).containsExactly(Language.ROMANIAN, Language.LATIN)
     }
 
     @Test
-    fun `only Filipino and Bengali have names of their own, only Filipino another voice tag`() {
+    fun `only Filipino and Bengali have names of their own, only Filipino and Norwegian another voice tag`() {
         val systemName = { support: LanguageSupport ->
             Locale.forLanguageTag(support.language.code).getDisplayLanguage(Locale.ENGLISH)
         }
         // Java says Bangla; Wiktionary and the translators say Bengali.
         assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO, Language.BENGALI)
-        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO)
+        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO, Language.NORWEGIAN)
     }
 
     @Test
-    fun `only Croatian and Serbian share their dictionaries and have other recordings and locale codes`() {
+    fun `only Croatian and Serbian share their dictionaries and have other recordings, Norwegian more recording items, these three other locale codes`() {
         assertThat(all.where { it.language.dictionaryCode != it.language.code }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.recordings("kuća", "") != listOf(RecordingTitle(it.language.dictionaryCode, "kuća")) })
             .containsExactly(Language.CROATIAN, Language.SERBIAN)
-        assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) }).containsExactly(Language.CROATIAN)
+        assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) }).containsExactly(Language.CROATIAN, Language.NORWEGIAN)
         assertThat(all.where { it.linguaLibreTitle("кућа") != "кућа" }).containsExactly(Language.SERBIAN)
         assertThat(all.where { it.translationTag("Kuća je velika.") != null }).containsExactly(Language.SERBIAN)
         assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.CROATIAN, Language.SERBIAN)
@@ -307,20 +359,27 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.frequencySpellings("آن\u200Cها").isNotEmpty() }).containsExactly(Language.PERSIAN)
         assertThat(all.where { it.recordings("کتاب", "").any { recording -> recording.title == "كتاب" } })
             .containsExactly(Language.PERSIAN)
-        assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.CROATIAN, Language.SERBIAN)
+        assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) })
+            .containsExactly(Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN)
     }
 
     @Test
     fun `only Greek, Hindi, Khmer, Arabic, Persian, Kazakh and Kyrgyz key every headword in another spelling, only Arabic two further`() {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
+            Language.ROMANIAN, Language.LITHUANIAN,
         )
-        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() })
-            .containsExactly(Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ)
+        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
+            Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,
+        )
         assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
-        // Arabic lemmas lose their vowel marks although every headword is keyed.
+        // Arabic lemmas lose their vowel marks and Lithuanian ones their stress although every headword is keyed.
         assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })
-            .containsExactly(Language.ARABIC)
+            .containsExactly(Language.ARABIC, Language.LITHUANIAN)
+        // Only Lithuanian drops a mark after other letters than the rest (the dot over i, not over e) and keys its
+        // headwords without the marks of its letters too.
+        assertThat(all.where { it.headwordMarks?.markBases.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN)
+        assertThat(all.where { it.headwordMarks?.letterMarks.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
         // Only Kazakh and Kyrgyz look a word up again with their letters keyed when it keeps some of them and loses
         // others, each with its own letters.
@@ -372,6 +431,18 @@ class LanguageRulesIsolationTest {
         // Kyrgyz writes the barred o as ө.
         assertThat(all.where { it.ocrWord("к\u0275л") != "к\u0275л" }).containsExactly(Language.KYRGYZ)
         assertThat(all.where { it.ocrWord("TOP") != "TOP" }).isEmpty()
+        // Swedish, Norwegian and Danish write the a with a hook or a circumflex that ML Kit reads for å as å;
+        // Norwegian and Danish, which have no ä, its ä too.
+        assertThat(all.where { it.ocrWord("pả") != "pả" })
+            .containsExactly(Language.SWEDISH, Language.NORWEGIAN, Language.DANISH)
+        assertThat(all.where { it.ocrWord("gâ") != "gâ" })
+            .containsExactly(Language.SWEDISH, Language.NORWEGIAN, Language.DANISH)
+        assertThat(all.where { it.ocrWord("pä") != "pä" }).containsExactly(Language.NORWEGIAN, Language.DANISH)
+        // Lithuanian writes the u with a diaeresis, the e with an acute and the i with a dot below that ML Kit reads for
+        // ū, ė and į as those.
+        assertThat(all.where { it.ocrWord("büti") != "büti" }).containsExactly(Language.LITHUANIAN)
+        assertThat(all.where { it.ocrWord("upé") != "upé" }).containsExactly(Language.LITHUANIAN)
+        assertThat(all.where { it.ocrWord("ịvykis") != "ịvykis" }).containsExactly(Language.LITHUANIAN)
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
         // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.
@@ -402,8 +473,9 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.recordingMarks.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
         assertThat(all.where { it.headwordMarks?.formsInScript == true })
             .containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
+        // Norwegian asks Bokmål's item as well.
         assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) && it.language != Language.CROATIAN && it.language != Language.SERBIAN })
-            .isEmpty()
+            .containsExactly(Language.NORWEGIAN)
     }
 
     @Test

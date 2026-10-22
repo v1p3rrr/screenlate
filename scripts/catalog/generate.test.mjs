@@ -183,3 +183,39 @@ test('the format 1 copy has the Japanese main dictionaries with filled texts and
   assert.equal(old.dictionaries[0].sizeMb, 40);
   assert.equal(old.dictionaries[2].sizeMb, 1);
 });
+
+test('norwegian reads the bokmål, norwegian and nynorsk folders, each pair ticked from the first that has it', () => {
+  const files = [
+    { path: 'dict/nb/en/wty-nb-en.zip', size: 3480000 },
+    { path: 'dict/nb/fr/wty-nb-fr.zip', size: 100000 },
+    { path: 'dict/no/ru/wty-no-ru.zip', size: 440000 },
+    { path: 'dict/no/fr/wty-no-fr.zip', size: 170000 },
+    { path: 'dict/nn/en/wty-nn-en.zip', size: 2770000 },
+    { path: 'dict/all/nb/wty-nb-ipa.zip', size: 150000 },
+    { path: 'dict/all/nn/wty-nn-ipa.zip', size: 190000 },
+  ];
+  const counts = new Map(files.map((file) => [file.path, MIN_WORDS]));
+  counts.set('dict/nb/fr/wty-nb-fr.zip', 1100);
+  const templates = {
+    [TEMPLATE_MAIN]: {
+      title: { en: 'Wiktionary ({src}–{tgt})' },
+      description: { en: 'Wiktionary, {source} → {target}.', ru: 'Викисловарь, {source} → {target}.' },
+    },
+    [TEMPLATE_TRANSCRIPTION]: { title: { en: 'Transcription' }, description: { en: 'Wiktionary, {source}.' } },
+  };
+  const entries = wiktionaryEntries(files, [], counts, templates);
+  assert.deepEqual(entries.map((e) => [e.id, e.sourceLanguage, e.recommended]), [
+    ['wiktionary-nb-en', 'no', true], ['wiktionary-no-ru', 'no', true], ['wiktionary-no-fr', 'no', true],
+    ['wiktionary-nn-en', 'no', false], ['wiktionary-nb-transcription', 'no', true],
+  ]);
+  const byId = Object.fromEntries(entries.map((e) => [e.id, e]));
+  assert.match(byId['wiktionary-nb-en'].downloadUrl, /\/dict\/nb\/en\/wty-nb-en\.zip/);
+  assert.deepEqual(byId['wiktionary-nb-en'].oldTitles, ['wty-nb-en', 'kty-nb-en']);
+  assert.equal(byId['wiktionary-nb-en'].titles.en, 'Wiktionary (nb–{tgt})');
+  assert.equal(byId['wiktionary-nn-en'].description.en, 'Wiktionary, Norwegian Nynorsk → {target}.');
+  assert.equal(byId['wiktionary-nb-en'].description.ru, 'Викисловарь, норвежский букмол → {target}.');
+  assert.equal(byId['wiktionary-nb-transcription'].description.en, 'Wiktionary, Norwegian Bokmål.');
+  // The folder that is the language's own code keeps the template's texts.
+  assert.equal(byId['wiktionary-no-ru'].titles, undefined);
+  assert.equal(byId['wiktionary-no-ru'].description, undefined);
+});

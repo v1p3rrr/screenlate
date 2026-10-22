@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">複数</string>
+    <string name="inflection_la_plural">複数の変化</string>
+    <string name="inflection_la_feminine_label">女性</string>
+    <string name="inflection_la_feminine">形容詞の形</string>
+    <string name="inflection_la_neuter_label">中性</string>
+    <string name="inflection_la_neuter">形容詞の形</string>
+    <string name="inflection_la_ablative_label">奪格</string>
+    <string name="inflection_la_ablative">奪格</string>
+    <string name="inflection_la_que">「そして」の前接語（magis → magisque）</string>
+    <string name="inflection_la_ne">疑問の前接語（vides → videsne）</string>
+    <string name="inflection_la_ve">「または」の前接語（mortuus → mortuusve）</string>
+</resources>

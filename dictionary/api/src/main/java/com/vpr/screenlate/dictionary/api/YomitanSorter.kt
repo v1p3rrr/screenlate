@@ -4,8 +4,10 @@ import com.vpr.screenlate.dictionary.api.model.LookupResult
 
 /**
  * Orders lookup results the way Yomitan does:
- * primary reading, longer match, fewer text normalizations, shorter deinflection chain, term equal to the
- * deinflected text, sort frequency, dictionary priority, score, longer term, term text, and more definitions.
+ * primary reading, longer match, fewer text normalizations, spellings found as written before those found only
+ * without their marks ([LookupResult.respelled], the native lookup's own key), shorter deinflection chain, term
+ * equal to the deinflected text, sort frequency, dictionary priority, score, longer term, term text, and more
+ * definitions.
  *
  * Engines may already sort by most of these; this adds dictionary priority and makes the order independent of
  * the engine.
@@ -37,6 +39,7 @@ object YomitanSorter {
         val comparator = compareByDescending<LookupResult> { options.primaryReading != null && it.term.reading == options.primaryReading }
             .thenByDescending { it.matched.codePointCount(0, it.matched.length) }
             .thenBy { it.preprocessorSteps }
+            .thenBy { it.respelled }
             .thenBy { it.trace.size }
             .thenByDescending { it.term.expression == it.deinflected }
             .thenComparator { a, b -> compareFrequency(frequency(a), frequency(b), descending) }

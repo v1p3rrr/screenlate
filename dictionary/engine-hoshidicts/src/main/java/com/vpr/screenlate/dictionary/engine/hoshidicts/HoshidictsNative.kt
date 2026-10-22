@@ -17,7 +17,8 @@ internal object HoshidictsNative {
 
     /**
      * [headwordMarks]: JSON of `{code: {marks, bases, every_headword, replacements, further_replacements,
-     * lemmas_as_written, forms_in_script}}`, the languages' `LanguageSupport.headwordMarks`.
+     * lemmas_as_written, forms_in_script, mark_bases, letter_marks, letter_bases}}`, the languages'
+     * `LanguageSupport.headwordMarks`.
      */
     external fun importDictionary(
         zipPath: ByteArray,

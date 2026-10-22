@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">çoğul</string>
+    <string name="inflection_la_plural">Çoğul çekim</string>
+    <string name="inflection_la_feminine_label">dişil</string>
+    <string name="inflection_la_feminine">Sıfat biçimi</string>
+    <string name="inflection_la_neuter_label">yansız</string>
+    <string name="inflection_la_neuter">Sıfat biçimi</string>
+    <string name="inflection_la_ablative_label">ayrılma hâli</string>
+    <string name="inflection_la_ablative">Ablatif (ayrılma hâli)</string>
+    <string name="inflection_la_que">“ve” anlamındaki ek sözcük (magis → magisque)</string>
+    <string name="inflection_la_ne">Soru ek sözcüğü (vides → videsne)</string>
+    <string name="inflection_la_ve">“veya” anlamındaki ek sözcük (mortuus → mortuusve)</string>
+</resources>

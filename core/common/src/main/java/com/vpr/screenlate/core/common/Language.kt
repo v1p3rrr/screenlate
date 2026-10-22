@@ -47,12 +47,18 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     HEBREW("he"),
     KAZAKH("kk"),
     KYRGYZ("ky"),
+    SWEDISH("sv"),
+    NORWEGIAN("no"),
+    DANISH("da"),
+    ROMANIAN("ro"),
+    LATIN("la"),
+    LITHUANIAN("lt"),
     ;
 
     companion object {
         /**
-         * The language with [code] (ISO 639-1, or another code the systems use for it: Android's fil for tl), or null
-         * when the app does not support it.
+         * The language with [code] (ISO 639-1, or another code the systems use for it: Android's fil for tl, Bokmål's nb
+         * and Nynorsk's nn for Norwegian), or null when the app does not support it.
          */
         fun of(code: String?): Language? = entries.firstOrNull { it.code == code } ?: OTHER_CODES[code]
 
@@ -65,7 +71,7 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
          */
         fun ofDictionaries(code: String?): Language? = withDictionaries(code).firstOrNull()
 
-        private val OTHER_CODES = mapOf("fil" to FILIPINO)
+        private val OTHER_CODES = mapOf("fil" to FILIPINO, "nb" to NORWEGIAN, "nn" to NORWEGIAN)
     }
 }
 

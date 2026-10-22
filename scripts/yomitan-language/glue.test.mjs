@@ -6,7 +6,9 @@ import path from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
-import {hebrewTransforms, kazakhTransforms, kyrgyzTransforms, persianTransforms} from './own-transforms.js';
+import {
+    hebrewTransforms, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, withOwnTransforms,
+} from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const assets = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/assets/yomitan-language');
@@ -56,11 +58,27 @@ test('russian stress marks drop and yo matches ye only in russian', () => {
     assert.ok(queried('ru', stressed).has('кошка'));
     assert.ok(queried('ru', 'ёж').has('еж'));
     assert.ok(queried('ru', 'еж').has('ёж'));
-    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl']) {
-        // Indonesian, Malay and Tagalog drop every combining mark, as Yomitan's processors for them do.
-        if (!['id', 'ms', 'tl'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
+    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv', 'no', 'da', 'ro', 'lt']) {
+        // Indonesian, Malay, Tagalog and Romanian drop every combining mark, as Yomitan's processors for them do.
+        if (!['id', 'ms', 'tl', 'ro'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
         assert.ok(!queried(language, 'еж').has('ёж'), language);
     }
+});
+
+test('swedish lowers capitals and keeps the marks of its letters', () => {
+    assert.ok(queried('sv', 'Läsa').has('läsa'));
+    assert.ok(queried('sv', 'ÅR').has('år'));
+    // ä and å are letters of their own: neither is looked up without its mark.
+    assert.ok(!queried('sv', 'läsa').has('lasa'));
+    assert.ok(!queried('sv', 'år').has('ar'));
+});
+
+test('lithuanian takes the latvian capitalization under its own code and keeps the marks of its letters', () => {
+    assert.ok(queried('lt', 'Žmogus').has('žmogus'));
+    assert.ok(queried('lt', 'ŽMOGUS').has('žmogus'));
+    // Words without the letters' marks are found through keys made at import, not by the bundle.
+    assert.ok(!queried('lt', 'žmogus').has('zmogus'));
+    assert.ok(!queried('lt', 'zmogus').has('žmogus'));
 });
 
 test('malay takes the indonesian text processors under its own code', () => {
@@ -716,4 +734,124 @@ test('kazakh and kyrgyz rules stay out of other languages', () => {
     assert.ok(!queried('kk', 'китептерибизде').has('китеп'));
     assert.ok(!queried('ky', 'жазғы').has('жаз'));
     assert.ok(!queried('kk', 'барасыңбы').has('барасың'));
+});
+
+test('norwegian genitive -s matches nouns, names and forms by their definition tags', () => {
+    const [day] = candidatesTo('no', 'dagens', 'dagen');
+    assert.ok(day.u);
+    assert.deepEqual([...day.g], ['n', 'name', 'non-lemma']);
+    // The lemma a form leads to (dagen, a form of dag) needs the tags too.
+    assert.equal(day.f, undefined);
+    assert.deepEqual([...day.r[0]], ['-s']);
+    assert.ok(queried('no', 'Norges').has('Norge'));
+    assert.ok(queried('no', 'Verdens').has('verden'));
+    // A word in -s takes no further s; a stem keeps two letters.
+    assert.ok(!queried('no', 'glass').has('glas'));
+    assert.ok(!queried('no', 'ås').has('å'));
+    // The word as written stays typed and untagged.
+    const written = candidates('no', 'dagens').find((c) => c.d === 'dagens');
+    assert.ok(!written.u);
+    assert.equal(written.g, undefined);
+});
+
+test('norwegian lowers capitals and keeps the marks of its letters, and its genitive stays out of other languages', () => {
+    assert.ok(queried('no', 'LESE').has('lese'));
+    assert.ok(!queried('no', 'år').has('ar'));
+    assert.ok(!queried('no', 'søster').has('soster'));
+    // English has an -s rule of its own.
+    for (const language of ['sv', 'da', 'de', 'nl', 'pl']) {
+        assert.ok(!queried(language, 'dagens').has('dagen'), language);
+    }
+});
+
+test('danish lowers capitals and keeps the marks of its letters', () => {
+    assert.ok(queried('da', 'Læse').has('læse'));
+    assert.ok(queried('da', 'ÅR').has('år'));
+    // æ, ø and å are letters of their own; Wiktionary lists Danish genitives (dagens) as forms, so no rule adds them.
+    assert.ok(!queried('da', 'år').has('ar'));
+    assert.ok(!queried('da', 'søster').has('soster'));
+    assert.ok(!queried('da', 'læse').has('lase'));
+});
+
+test('romanian reads cedilla letters as comma ones and is looked up without the marks of its letters', () => {
+    assert.ok(queried('ro', 'şi').has('și'));
+    assert.ok(queried('ro', 'ŞTIU').has('știu'));
+    assert.ok(queried('ro', 'ţară').has('țară'));
+    // Wiktionary keys Romanian forms without marks (numarul, a form of număr).
+    assert.ok(queried('ro', 'numărul').has('numarul'));
+    assert.ok(queried('ro', 'dom’le').has("dom'le"));
+    for (const language of ['tr', 'en', 'pl', 'de']) assert.ok(!queried(language, 'şi').has('și'), language);
+});
+
+test('romanian article and agreement endings match nominal words and forms by their definition tags', () => {
+    const [council] = candidatesTo('ro', 'Consiliul', 'consiliu');
+    assert.ok(council.u);
+    assert.deepEqual([...council.g], ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']);
+    // The lemma a form leads to may be any word: aflat is a form of the verb afla.
+    assert.equal(council.f, true);
+    assert.deepEqual([...council.r[0]], ['-ul']);
+    for (const [text, lemma] of [
+        ['procesul', 'proces'], ['fratele', 'frate'], ['dezvoltarea', 'dezvoltare'], ['comisia', 'comisie'],
+        ['pomii', 'pomi'], ['procesului', 'proces'], ['fratelui', 'frate'], ['Moldovei', 'Moldova'],
+        ['comisiei', 'comisie'], ['lumii', 'lume'], ['dezvoltării', 'dezvoltare'], ['dezvoltarii', 'dezvoltare'],
+        ['caselor', 'case'], ['aflați', 'aflat'], ['aflate', 'aflat'], ['pusă', 'pus'],
+    ]) {
+        assert.ok(queried('ro', text).has(lemma), `${text} → ${lemma}`);
+    }
+    assert.deepEqual([...candidatesTo('ro', 'aflată', 'aflat')[0].r[0]], ['agreement']);
+    // A stem keeps two letters.
+    assert.ok(!queried('ro', 'ful').has('f'));
+    assert.ok(!queried('ro', 'tei').has('ta'));
+    // The word as written stays typed and untagged.
+    const written = candidates('ro', 'casă').find((c) => c.d === 'casă');
+    assert.ok(!written.u);
+    assert.equal(written.g, undefined);
+    assert.equal(written.f, undefined);
+});
+
+test('romanian rules and cedilla letters stay out of other languages', () => {
+    for (const language of ['it', 'es', 'fr', 'pt', 'en', 'de', 'no']) {
+        assert.ok(!queried(language, 'consiliul').has('consiliu'), language);
+        assert.ok(!queried(language, 'caselor').has('case'), language);
+        assert.ok(!queried(language, 'aflată').has('aflat'), language);
+    }
+});
+
+test('latin u before a vowel is tried as v, one at a time and not after q or g', () => {
+    assert.ok(queried('la', 'uita').has('vita'));
+    assert.ok(queried('la', 'Uergilius').has('Vergilius'));
+    assert.ok(queried('la', 'seruus').has('servus'));
+    // Both u of uiuere at once would turn uiuo into vivo where the text means uiuo; Wiktionary has the u spellings too.
+    assert.ok(!queried('la', 'uiuere').has('vivere'));
+    for (const text of ['quae', 'lingua', 'sanguis']) {
+        assert.ok([...queried('la', text)].every((d) => !/v/i.test(d)), text);
+    }
+    // æ and œ read as ae and oe, as Yomitan's Latin code has them.
+    assert.ok(queried('la', 'Aquæ').has('aquae'));
+});
+
+test('latin enclitics -que, -ne and -ve come off as the outermost ending', () => {
+    assert.deepEqual([...candidatesTo('la', 'magisque', 'magis')[0].r[0]], ['-que']);
+    assert.deepEqual([...candidatesTo('la', 'videsne', 'vides')[0].r[0]], ['-ne']);
+    assert.deepEqual([...candidatesTo('la', 'mortuusve', 'mortuus')[0].r[0]], ['-ve']);
+    assert.ok(candidatesTo('la', 'rosaeque', 'rosa').some((c) => c.r.some((r) => r.includes('-que') && r.includes('plural'))));
+    // The engine drops these where the text has an entry of its own (atque is not at + que).
+    assert.ok(queried('la', 'atque').has('at'));
+    // Two letters stay before the enclitic.
+    assert.ok(!queried('la', 'ique').has('i'));
+    assert.ok(!queried('la', 'ene').has('e'));
+    assert.ok(queried('la', 'neque').has('ne'));
+});
+
+test('the own enclitics may not take a name yomitan already gives a latin rule', () => {
+    const yomitan = {language: 'la', conditions: {}, transforms: {'-que': {name: '-que', rules: []}}};
+    assert.throws(() => withOwnTransforms(yomitan, latinEnclitics));
+});
+
+test('latin u for v and the enclitics stay out of other languages', () => {
+    for (const language of ['it', 'es', 'pt', 'ro', 'en', 'fr']) {
+        assert.ok(!queried(language, 'uita').has('vita'), language);
+        assert.ok(!queried(language, 'magisque').has('magis'), language);
+        assert.ok(!queried(language, 'videsne').has('vides'), language);
+    }
 });

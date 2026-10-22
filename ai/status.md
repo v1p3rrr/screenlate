@@ -75,6 +75,26 @@ session (request 74, `lintDebug` passes on `languages/main`); questions 67, 68 a
 request 75 (the bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the
 phone: both diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
 
+Group 5a (plan `2026-10-19-group-5a.md`, "Progress" and "Measurements"): built language by language in the plan's
+order, one branch each. Swedish on `languages/sv`: code, catalog, bundle, docs and tests; its rules checked on Leipzig
+text (st. moved to the abbreviations that end nothing, osv., m.m. and etc. end a sentence only before a capital); the
+engine measurements and its emulator cases wait for the emulator lock. Norwegian on `languages/no` (from
+`languages/sv`): the same parts plus the genitive -s matched by definition tags and the catalog read from wty's nb, no
+and nn folders (plan questions 14 and 15, decided provisionally); its emulator cases wait as well. Danish on
+`languages/da` (from `languages/no`): the same parts, »…« and “…” as its quote pairs; its emulator cases wait too.
+Romanian on `languages/ro` (from `languages/da`): the cedilla processor, keys without marks, a new word after a
+pronoun joined with a hyphen, the app's article and agreement endings applied only where the text has no entry
+(an engine filter), Cyrillic headwords left out; plan questions 16 and 17 decided provisionally; its emulator cases
+wait as well.
+Latin on `languages/la` (from `languages/ro`): lemma names without macrons, u read as v, the enclitics as rules
+with the same entry filter, praenomina held only when capitalized, the classical and ecclesiastical pronunciations
+as audio regions, Latin's own flag, and a letter check for catalog fonts across languages; plan questions 18-20
+decided provisionally; its emulator cases wait as well.
+Lithuanian on `languages/lt` (from `languages/la`): forms keyed without stress, every headword also without the
+marks of its letters (one `HeadwordMarks` with per-mark bases and a letters' level, in Kotlin and the native
+import), the OCR letter fix Ü ü é ị → Ū ū ė į, abbreviations and paired letters from the corpus, Tesseract fast as
+the more accurate model; no new plan questions; its emulator cases wait as well.
+
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):

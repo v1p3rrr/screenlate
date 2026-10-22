@@ -44,6 +44,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val abbreviationsBeforeLowercase: Set<String> = emptySet()
 
     /**
+     * Abbreviations that keep the sentence going only when written with a capital, lowercase: the Latin praenomina
+     * (Sex. for Sextus, M. for Marcus), which in lowercase are words or units that end sentences (sex "six", m).
+     */
+    open val capitalizedAbbreviations: Set<String> = emptySet()
+
+    /**
      * Letters as their names write them where they stand for initials or the letters of an acronym (Hindi ए, बी, सी for
      * A, B, C), lowercase: two or more joined by periods keep the sentence going ("ए.पी.जे.", "आई.आई.टी."). A single one
      * counts only when [abbreviations] lists it.
@@ -55,6 +61,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
      * word aimed after the apostrophe is looked up from there ("l'eau" → "eau").
      */
     open val elisions: Set<String> = emptySet()
+
+    /**
+     * Words written joined to the next one with a hyphen without being part of it (the Romanian pronouns and
+     * prepositions of s-a, l-am, într-o), lowercase: a word aimed after the hyphen is looked up from there.
+     */
+    open val hyphenElisions: Set<String> = emptySet()
 
     /**
      * Case rules of the language's letters, for matching [abbreviations] and [elisions] written in capitals. The root
@@ -71,8 +83,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com), it closes an
-     * abbreviation (a paired letter only beside another, see [pairedLetters]) or [initials], or, with [ordinalPeriod],
-     * an ordinal number. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
+     * abbreviation (a paired letter only beside another, see [pairedLetters]; one of [capitalizedAbbreviations] only
+     * when capitalized) or [initials], or, with [ordinalPeriod], an ordinal number. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
      */
     override fun endsSentence(text: String, index: Int): Boolean {
         val character = text[index]
@@ -85,6 +97,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             return !hasPartner(text, index - 1, index)
         }
         if (word.lowercaseIn(abbreviationsBeforeLowercase)) return !lowercaseOrNumberAfter(text, index)
+        if (word.firstOrNull()?.isUpperCase() == true && word.lowercaseIn(capitalizedAbbreviations)) return false
         if ('.' in word && word.split('.').all { it.lowercaseIn(initials) }) return false
         return !word.lowercaseIn(abbreviations)
     }
@@ -108,7 +121,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         while (index > 0) {
             val codePoint = before.codePointBefore(index)
             val size = Character.charCount(codePoint)
-            if (codePoint.toChar() in APOSTROPHES && isElision(before, index - size)) break
+            if (codePoint.toChar() in APOSTROPHES && isElision(before, index - size, elisions)) break
+            if (codePoint.toChar() == '-' && isElision(before, index - size, hyphenElisions)) break
             val inWord = isWordCharacter(codePoint) ||
                 (codePoint.toChar() in wordConnectors && index > size && isWordCharacter(before.codePointBefore(index - size)))
             if (!inWord) break
@@ -261,15 +275,16 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     }
 
     /**
-     * Whether the word ending at [end], just before an apostrophe, is one of [elisions]. A word after another
-     * apostrophe is part of a longer one (the n of rock'n'roll), not an elided word.
+     * Whether the word ending at [end], just before an apostrophe or a hyphen, is one of [words] ([elisions],
+     * [hyphenElisions]). A word after another apostrophe is part of a longer one (the n of rock'n'roll), not an elided
+     * word.
      */
-    private fun isElision(text: String, end: Int): Boolean {
-        if (elisions.isEmpty()) return false
+    private fun isElision(text: String, end: Int, words: Set<String>): Boolean {
+        if (words.isEmpty()) return false
         var start = end
         while (start > 0 && text[start - 1].isLetterOrMark()) start--
         if (start > 0 && text[start - 1] in APOSTROPHES) return false
-        return text.substring(start, end).lowercaseIn(elisions)
+        return text.substring(start, end).lowercaseIn(words)
     }
 
     private fun String.lowercaseIn(words: Set<String>): Boolean =

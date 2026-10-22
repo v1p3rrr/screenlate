@@ -93,8 +93,9 @@ const replacedProcessors = {
 /**
  * Every text the database should be asked for, as Yomitan's translator builds them before its database lookup:
  * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains, whether
- * an entry without a part of speech may match despite the conditions, and the definition tags one of which a glossary
- * then needs (`taggedRules`; absent for any). A rule that strips a whole word (Georgian -მა from მა) leaves an empty
+ * an entry without a part of speech may match despite the conditions, the definition tags one of which a glossary
+ * then needs (`taggedRules`; absent for any), and whether the lemmas its form-of entries lead to are free of them
+ * (`freeFormLemmas`; absent when they need them too). A rule that strips a whole word (Georgian -მა from მა) leaves an empty
  * text, which is not asked for, and neither are the texts between the steps of marked rules (`isMarkedStep`).
  * @param {string} text
  * @param {string} language
@@ -121,6 +122,7 @@ function candidates(text, language, searchResolution) {
                 x.inflectionRules)),
             u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || isUntypedRule(d, language) || tags.length > 0,
             ...(tags.length > 0 ? {g: tags} : {}),
+            ...(tags.length > 0 && freeFormLemmas.has(language) ? {f: true} : {}),
         };
     });
 }
@@ -157,13 +159,26 @@ function isMarkedStep(d, language) {
  * Conditions whose texts match only glossaries that carry one of the given part-of-speech tags among their definition
  * tags, by language; a glossary without definition tags matches as well. Wiktionary's Kazakh and Kyrgyz entries give
  * no part of speech in their rules and tag each definition instead (v, n, adj), so a verb read through its endings
- * (барды → бару) finds the verb's senses only.
+ * (барды → бару) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a genitive reaches nouns,
+ * names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller, mens → men "but").
+ * Romanian article and agreement endings reach nominal words and forms (consiliul → consiliu, aflată → aflat, a form
+ * of afla), not verbs or adverbs.
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
     ['kk', {v: ['v']}],
     ['ky', {v: ['v']}],
+    ['no', {n: ['n', 'name', 'non-lemma']}],
+    ['ro', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']}],
 ]);
+
+/**
+ * Languages whose tagged rules (`taggedRules`) bind only the text a rule gives: the lemma a form-of entry of that text
+ * leads to may be any word. A Romanian ending reaches a participle, which Wiktionary lists as a form of its verb
+ * (aflată → aflat, a form of afla). Elsewhere the lemma needs the tags too: a Norwegian genitive reaches a noun's form
+ * and through it the noun, a Kazakh verb ending a verb.
+ */
+const freeFormLemmas = new Set(['ro']);
 
 /**
  * The definition tags one of which a glossary of [d] needs (`taggedRules`); empty for any glossary.

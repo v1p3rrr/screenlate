@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_no.xml. -->
+<resources>
+    <string name="inflection_no_s_label">속격</string>
+    <string name="inflection_no_s">속격 (dagens, Norges)</string>
+</resources>

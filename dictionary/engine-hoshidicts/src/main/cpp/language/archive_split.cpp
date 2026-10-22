@@ -499,13 +499,18 @@ bool contains(const std::vector<int32_t>& sorted, int32_t point) {
 }  // namespace
 
 MarkStripper::MarkStripper(const HeadwordMarks& marks)
-    : marks_(code_points(marks.marks)),
-      bases_(code_points(marks.bases)),
+    : bases_(code_points(marks.bases)),
       every_headword_(marks.every_headword),
       lemmas_as_written_(marks.lemmas_as_written),
       forms_in_script_(marks.forms_in_script),
       replacements_(marks.replacements.begin(), marks.replacements.end()),
-      further_replacements_(marks.further_replacements.begin(), marks.further_replacements.end()) {}
+      further_replacements_(marks.further_replacements.begin(), marks.further_replacements.end()) {
+  marks_.push_back({code_points(marks.marks), bases_});
+  for (const auto& [mark, bases] : marks.mark_bases) marks_.push_back({code_points(mark), code_points(bases)});
+  if (!marks.letter_marks.empty()) {
+    letters_.push_back({code_points(marks.letter_marks), code_points(marks.letter_bases)});
+  }
+}
 
 std::vector<std::string> MarkStripper::keys(std::string_view text) const {
   std::vector<std::string> out;
@@ -524,6 +529,8 @@ std::vector<std::string> MarkStripper::keys(std::string_view text) const {
   add_replaced(text);
   if (!plain.empty()) add_replaced(plain);
   add(plain);
+  // Without the letters' marks too, once the others are gone: zmogaus for žmogaũs.
+  if (!letters_.empty()) add(strip(plain.empty() ? text : std::string_view(plain), letters_));
   return out;
 }
 
@@ -546,7 +553,9 @@ std::string MarkStripper::replaced(std::string_view text, const Replacements& re
   return changed ? out : std::string();
 }
 
-std::string MarkStripper::strip(std::string_view text) const {
+std::string MarkStripper::strip(std::string_view text) const { return strip(text, marks_); }
+
+std::string MarkStripper::strip(std::string_view text, const std::vector<MarkSet>& sets) {
   // Forms in plain ASCII are the common case and carry no marks.
   if (std::all_of(text.begin(), text.end(), [](char c) { return static_cast<unsigned char>(c) < 0x80; })) return {};
   const auto* bytes = reinterpret_cast<const utf8proc_uint8_t*>(text.data());
@@ -566,7 +575,9 @@ std::string MarkStripper::strip(std::string_view text) const {
   bool dropped = false;
   for (utf8proc_ssize_t i = 0; i < count; i++) {
     const utf8proc_int32_t point = points[static_cast<size_t>(i)];
-    if (contains(marks_, point) && contains(bases_, utf8proc_tolower(base))) {
+    const auto lower = utf8proc_tolower(base);
+    if (std::any_of(sets.begin(), sets.end(),
+                    [&](const MarkSet& set) { return contains(set.marks, point) && contains(set.bases, lower); })) {
       dropped = true;
       continue;
     }

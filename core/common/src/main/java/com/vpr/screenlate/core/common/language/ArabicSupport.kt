@@ -41,6 +41,7 @@ object ArabicSupport : SpacedLanguageSupport() {
 
     /** Downloadable fonts made for the Arabic script, which Persian shares. */
     override val fontSubsets = setOf(ARABIC_FONT_SUBSET)
+    override val fontLetters = "ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىي"
 
     /**
      * The phone's default font falls back to Noto Naskh Arabic by itself, which is also its book face. Android's

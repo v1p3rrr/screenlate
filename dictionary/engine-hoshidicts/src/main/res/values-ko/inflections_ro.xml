@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">한정형</string>
+    <string name="inflection_ro_ul">정관사 (proces → procesul, consiliu → consiliul)</string>
+    <string name="inflection_ro_le_label">한정형</string>
+    <string name="inflection_ro_le">정관사 (frate → fratele, texte → textele)</string>
+    <string name="inflection_ro_a_label">한정형</string>
+    <string name="inflection_ro_a">여성 명사의 정관사 (dezvoltare → dezvoltarea, comisie → comisia)</string>
+    <string name="inflection_ro_i_label">한정 복수형</string>
+    <string name="inflection_ro_i">남성 복수의 정관사 (pomi → pomii)</string>
+    <string name="inflection_ro_ului_label">한정 속격</string>
+    <string name="inflection_ro_ului">정관사가 붙은 속격·여격 (proces → procesului, frate → fratelui)</string>
+    <string name="inflection_ro_ei_label">한정 속격</string>
+    <string name="inflection_ro_ei">정관사가 붙은 여성 명사의 속격·여격 (Moldova → Moldovei, comisie → comisiei)</string>
+    <string name="inflection_ro_ii_label">한정 속격</string>
+    <string name="inflection_ro_ii">정관사가 붙은 -e로 끝나는 여성 명사의 속격·여격 (lume → lumii, dezvoltare → dezvoltării)</string>
+    <string name="inflection_ro_lor_label">한정 복수 속격</string>
+    <string name="inflection_ro_lor">정관사가 붙은 복수 속격·여격 (case → caselor)</string>
+    <string name="inflection_ro_agreement_label">여성형·복수형</string>
+    <string name="inflection_ro_agreement">분사나 형용사의 여성형 또는 복수형 (aflat → aflată, aflate, aflați; pus → pusă)</string>
+</resources>

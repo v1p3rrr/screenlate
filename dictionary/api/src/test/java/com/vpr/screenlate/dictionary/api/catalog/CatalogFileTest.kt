@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.imports.CorpusCountsDictionary
 import com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
@@ -72,14 +73,18 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
             assertThat(entry.recommended).isTrue()
             assertThat(entry.sha256).matches("[0-9a-f]{64}")
-            // wordfreq names Tagalog fil.
-            val code = if (entry.sourceLanguage == "tl") "fil" else entry.sourceLanguage
+            // wordfreq names Tagalog fil and Norwegian by Bokmål's nb.
+            val code = when (entry.sourceLanguage) {
+                "tl" -> "fil"
+                "no" -> "nb"
+                else -> entry.sourceLanguage
+            }
             assertThat(entry.downloadUrl).matches(
                 "https://raw\\.githubusercontent\\.com/rspeer/wordfreq/[0-9a-f]{40}/wordfreq/data/(large|small)_$code\\.msgpack\\.gz",
             )
@@ -187,6 +192,99 @@ class CatalogFileTest {
         )
         assertThat(kyrgyz.filterNot { it.recommended }.map { it.id })
             .containsExactly("tesseract-fast-kir", "tesseract-best-kir", "paddle-detector-v5-ky")
+    }
+
+    @Test
+    fun `swedish offers eleven wiktionaries, its transcription, wordfreq's large list and paddle latin, ticked, and the other models`() {
+        val swedish = catalog!!.entries.filter { it.sourceLanguage == "sv" }
+        assertThat(swedish.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-sv-en", "wiktionary-sv-ru", "wiktionary-sv-de", "wiktionary-sv-es", "wiktionary-sv-fr",
+            "wiktionary-sv-ja", "wiktionary-sv-ko", "wiktionary-sv-pl", "wiktionary-sv-pt", "wiktionary-sv-tr",
+            "wiktionary-sv-zh", "wiktionary-sv-transcription", "wordfreq-sv", "paddle-latin-sv",
+        )
+        assertThat(swedish.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-swe", "tesseract-best-swe", "paddle-v6-sv", "paddle-detector-v5-sv", "paddle-detector-v6-sv",
+        )
+        assertThat(swedish.first { it.id == "wordfreq-sv" }.downloadUrl).endsWith("/large_sv.msgpack.gz")
+    }
+
+    @Test
+    fun `danish offers seven wiktionaries, its transcription, wordfreq's small list and paddle latin, ticked, and the other models`() {
+        val danish = catalog!!.entries.filter { it.isFor(Language.DANISH) }
+        assertThat(danish.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-da-en", "wiktionary-da-ru", "wiktionary-da-fr", "wiktionary-da-ja", "wiktionary-da-pl",
+            "wiktionary-da-tr", "wiktionary-da-zh", "wiktionary-da-transcription", "wordfreq-da", "paddle-latin-da",
+        )
+        assertThat(danish.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-dan", "tesseract-best-dan", "paddle-v6-da", "paddle-detector-v5-da", "paddle-detector-v6-da",
+        )
+        assertThat(danish.first { it.id == "wordfreq-da" }.downloadUrl).endsWith("/small_da.msgpack.gz")
+        assertThat(danish.first { it.id == "wiktionary-da-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (da–en)")
+    }
+
+    @Test
+    fun `romanian offers eight wiktionaries, its transcription, wordfreq's small list and paddle latin, ticked, and the other models`() {
+        val romanian = catalog!!.entries.filter { it.isFor(Language.ROMANIAN) }
+        assertThat(romanian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-ro-en", "wiktionary-ro-ru", "wiktionary-ro-es", "wiktionary-ro-fr", "wiktionary-ro-ja",
+            "wiktionary-ro-pl", "wiktionary-ro-tr", "wiktionary-ro-zh", "wiktionary-ro-transcription", "wordfreq-ro",
+            "paddle-latin-ro",
+        )
+        assertThat(romanian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-ron", "tesseract-best-ron", "paddle-v6-ro", "paddle-detector-v5-ro", "paddle-detector-v6-ro",
+        )
+        assertThat(romanian.first { it.id == "wordfreq-ro" }.downloadUrl).endsWith("/small_ro.msgpack.gz")
+        assertThat(romanian.first { it.id == "wiktionary-ro-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (ro–en)")
+    }
+
+    @Test
+    fun `latin offers eleven wiktionaries, its transcription and paddle v6, ticked, the other models and no frequency list`() {
+        val latin = catalog!!.entries.filter { it.isFor(Language.LATIN) }
+        assertThat(latin.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-la-en", "wiktionary-la-ru", "wiktionary-la-de", "wiktionary-la-es", "wiktionary-la-fr",
+            "wiktionary-la-it", "wiktionary-la-ja", "wiktionary-la-ko", "wiktionary-la-pl", "wiktionary-la-pt",
+            "wiktionary-la-zh", "wiktionary-la-transcription", "paddle-v6-la",
+        )
+        assertThat(latin.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-lat", "tesseract-best-lat", "paddle-latin-la", "paddle-detector-v5-la", "paddle-detector-v6-la",
+        )
+        assertThat(latin.filter { it.category == CatalogCategory.FREQUENCY }).isEmpty()
+        assertThat(latin.first { it.id == "wiktionary-la-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (la–en)")
+    }
+
+    @Test
+    fun `lithuanian offers seven wiktionaries, its transcription, wordfreq's small list and tesseract fast, ticked, and the other models`() {
+        val lithuanian = catalog!!.entries.filter { it.isFor(Language.LITHUANIAN) }
+        assertThat(lithuanian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-lt-en", "wiktionary-lt-ru", "wiktionary-lt-de", "wiktionary-lt-fr", "wiktionary-lt-ko",
+            "wiktionary-lt-pl", "wiktionary-lt-zh", "wiktionary-lt-transcription", "wordfreq-lt", "tesseract-fast-lit",
+        )
+        assertThat(lithuanian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-best-lit", "paddle-v6-lt", "paddle-latin-lt", "paddle-detector-v5-lt", "paddle-detector-v6-lt",
+        )
+        assertThat(lithuanian.first { it.id == "wordfreq-lt" }.downloadUrl).endsWith("/small_lt.msgpack.gz")
+        assertThat(lithuanian.first { it.id == "wiktionary-lt-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (lt–en)")
+    }
+
+    @Test
+    fun `norwegian lists bokmål, norwegian and nynorsk wiktionaries, one ticked per gloss language, and bokmål's transcription`() {
+        val norwegian = catalog!!.entries.filter { it.isFor(Language.NORWEGIAN) }
+        assertThat(norwegian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-nb-en", "wiktionary-nb-ja", "wiktionary-nb-pl", "wiktionary-nb-zh", "wiktionary-no-ru",
+            "wiktionary-no-fr", "wiktionary-no-vi", "wiktionary-nb-transcription", "wordfreq-no", "paddle-v6-no",
+        )
+        assertThat(norwegian.filter { it.id.startsWith("wiktionary-nn-") }.map { it.recommended }).containsExactly(
+            false, false, false, false,
+        )
+        assertThat(norwegian.first { it.id == "wordfreq-no" }.downloadUrl).endsWith("/large_nb.msgpack.gz")
+        val bokmal = norwegian.first { it.id == "wiktionary-nb-en" }
+        assertThat(bokmal.downloadUrl).contains("/dict/nb/en/wty-nb-en.zip")
+        assertThat(bokmal.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (nb–en)")
+        assertThat(bokmal.description(Locale.ENGLISH)).startsWith("Wiktionary, Norwegian Bokmål → English:")
+        assertThat(norwegian.first { it.id == "wiktionary-nn-en" }.description(Locale.forLanguageTag("ru")))
+            .startsWith("Викисловарь, нюнорск → английский:")
+        assertThat(norwegian.first { it.id == "wiktionary-no-ru" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (no–ru)")
+        assertThat(norwegian.first { it.id == "tesseract-fast-nor" }.recommended).isFalse()
     }
 
     @Test

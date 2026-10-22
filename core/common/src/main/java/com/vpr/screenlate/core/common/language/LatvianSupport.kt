@@ -15,6 +15,7 @@ object LatvianSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("lv")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_EXT_FONT_SUBSETS
+    override val fontLetters = "āčēģīķļņšūž"
 
     /** „…“ closes with the character English opens with; «…» for quotes inside quotes. */
     override val quotePairs = mapOf('„' to '“', '«' to '»', '(' to ')', '[' to ']')

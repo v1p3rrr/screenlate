@@ -50,9 +50,15 @@ object Flags {
         "il" to R.drawable.flag_il,
         "kz" to R.drawable.flag_kz,
         "kg" to R.drawable.flag_kg,
+        "se" to R.drawable.flag_se,
+        "no" to R.drawable.flag_no,
+        "dk" to R.drawable.flag_dk,
+        "ro" to R.drawable.flag_ro,
+        "lang_la" to R.drawable.flag_lang_la,
+        "lt" to R.drawable.flag_lt,
     )
 
-    /** The flag of [country]; null for a country without one. */
+    /** The flag of [country] (or of a language, `lang_la`); null for a country without one. */
     @DrawableRes
     fun drawable(country: String): Int? = drawables[country]
 
@@ -63,7 +69,14 @@ object Flags {
     /** The letters shown instead of a flag. */
     fun code(language: Language): String = language.support.codeLabel
 
-    /** The country's name in [locale], for a flag's choice and TalkBack. */
+    /** The country's name in [locale], or the language's for a language's own flag, for a flag's choice and TalkBack. */
     fun countryName(country: String, locale: Locale = Locale.getDefault()): String =
-        Locale.Builder().setRegion(country.uppercase(Locale.ROOT)).build().getDisplayCountry(locale)
+        if (country.startsWith(LANGUAGE_FLAG)) {
+            Locale.forLanguageTag(country.removePrefix(LANGUAGE_FLAG)).getDisplayLanguage(locale)
+        } else {
+            Locale.Builder().setRegion(country.uppercase(Locale.ROOT)).build().getDisplayCountry(locale)
+        }
+
+    /** The prefix of a language's own flag in `LanguageSupport.flagCountries`: Latin's laurel wreath, `lang_la`. */
+    private const val LANGUAGE_FLAG = "lang_"
 }

@@ -185,6 +185,13 @@ interface LanguageSupport {
      */
     val fontSubsets: Set<String> get() = emptySet()
 
+    /**
+     * Letters beyond a-z the language needs of a font offered by [fontSubsets], in lower case (their capitals are needed
+     * too) and capitals without a lower case of their own (Turkish İ). A font whose listed letters lack one of them is
+     * not offered, though its subsets match: Atkinson Hyperlegible Next declares Latin Extended without ō.
+     */
+    val fontLetters: String get() = ""
+
     /** Sample text for font previews, with characters whose forms differ between fonts or regions. */
     val fontSample: String
 
@@ -196,7 +203,8 @@ interface LanguageSupport {
 
     /**
      * Countries whose round flag may stand for the language (ISO 3166-1 alpha-2, lower case), the default first; the
-     * Languages screen offers the others. Each has a `flag_<country>` drawable.
+     * Languages screen offers the others. A language with a flag of its own and no country lists `lang_<code>` (Latin).
+     * Each has a `flag_<country>` drawable.
      */
     val flagCountries: List<String>
 
@@ -356,6 +364,19 @@ interface LanguageSupport {
     val ignoredFormTags: Set<String> get() = emptySet()
 
     /**
+     * Whether results under [expression], a dictionary's headword, are shown: Wiktionary links some Romanian words to
+     * their Moldovan Cyrillic spellings, which Romanian leaves out.
+     */
+    fun showsHeadword(expression: String): Boolean = true
+
+    /**
+     * Whether a word's results reached through the inflection rules are left out when the same text also finds results
+     * without them: the dictionary lists the forms of most words itself, and the rules are there for the words whose
+     * entries list none (Romanian consiliul → consiliu, where casă has its own entry and is not cas).
+     */
+    val inflectionRulesOnlyWithoutEntry: Boolean get() = false
+
+    /**
      * Stress marks that the words of form-of rows in the language's dictionaries carry and running text leaves out: at
      * import a form is also found without them, and the lemmas forms name are stored without them; or, with
      * [HeadwordMarks.everyHeadword], marks headwords carry (the Greek tonos, the Hindi nukta). Null where words carry
@@ -430,6 +451,11 @@ enum class SearchResolution { WORD, LETTER }
  * forms name vowelled lemmas of unvowelled headwords).
  * @property formsInScript forms are written in the script of [bases]: a form without one of its letters is dropped
  * at import (the romanized forms Wiktionary's Arabic exports give).
+ * @property markBases further marks, each with the letters it is dropped after in place of [bases]: Lithuanian drops
+ * the dot above after i (the soft dot of an accented i), not after e (ė).
+ * @property letterMarks marks of the language's letters (ą č ė), dropped after [letterBases] once [marks] are, for one
+ * more key of each form (and, with [everyHeadword], each headword): text written without them finds the words with
+ * them, the exact spelling first.
  */
 data class HeadwordMarks(
     val marks: String,
@@ -439,6 +465,9 @@ data class HeadwordMarks(
     val furtherReplacements: Map<String, String> = emptyMap(),
     val lemmasAsWritten: Boolean = everyHeadword,
     val formsInScript: Boolean = false,
+    val markBases: Map<String, String> = emptyMap(),
+    val letterMarks: String = "",
+    val letterBases: String = "",
 )
 
 /** The markers of [LanguageSupport.rightToLeftMarkers] every right-to-left language has. */
@@ -490,4 +519,10 @@ val Language.support: LanguageSupport
         Language.HEBREW -> HebrewSupport
         Language.KAZAKH -> KazakhSupport
         Language.KYRGYZ -> KyrgyzSupport
+        Language.SWEDISH -> SwedishSupport
+        Language.NORWEGIAN -> NorwegianSupport
+        Language.DANISH -> DanishSupport
+        Language.ROMANIAN -> RomanianSupport
+        Language.LATIN -> LatinSupport
+        Language.LITHUANIAN -> LithuanianSupport
     }

@@ -1,4 +1,5 @@
-// Inflection rules of the app's own, which build.mjs gives to languages Yomitan has none for (addedTransforms).
+// Inflection rules of the app's own, which build.mjs gives to languages Yomitan has none for (addedTransforms) or adds
+// to Yomitan's (extendedTransforms).
 
 /**
  * Bengali noun endings, longest first: classifiers (টি, টা, খানা, গুলো), plurals (রা, দের) and cases (র, কে, তে, এ).
@@ -622,3 +623,172 @@ export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
         {id: 'causative', name: 'causative', example: 'жаздырды', endings: {voice: 'дыр дир дур дүр тыр тир тур түр гыз гиз гуз гүз кыз киз куз күз т'}},
     ],
 });
+
+/**
+ * The Norwegian genitive -s (dagens → dagen, verdens → verden, Norges → Norge), which Wiktionary's Bokmål entries do not
+ * list: 7.1% of the lowercase words of news and Wikipedia text that have no entry. A word in -s takes no further s
+ * (Hans' bil), so -ss is left alone. Wiktionary's entries leave the rules field empty and name the part of speech
+ * among their definition tags, so the result matches nouns, names and forms only (glue.js): ellers does not reach
+ * eller "or", and mens reaches men "harm", not men "but".
+ */
+/** @type {import('language-transformer').LanguageTransformDescriptor<'n'>} */
+export const norwegianTransforms = {
+    language: 'no',
+    conditions: {
+        n: {name: 'Noun', isDictionaryForm: true},
+    },
+    transforms: {
+        '-s': {
+            name: 'genitive',
+            description: 'genitive (dagens, Norges)',
+            rules: [{
+                type: 'suffix',
+                isInflected: /.[^s]s$/,
+                deinflected: '',
+                deinflect: (text) => text.slice(0, -1),
+                conditionsIn: [],
+                conditionsOut: ['n'],
+            }],
+        },
+    },
+};
+
+/**
+ * @param {string} suffix
+ * @param {string} replacement
+ * @returns {import('language-transformer').SuffixRule<'n'>}
+ */
+function romanianSuffix(suffix, replacement) {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp('.{2}' + suffix + '$'),
+        deinflected: replacement,
+        deinflect: (text) => text.slice(0, -suffix.length) + replacement,
+        conditionsIn: [],
+        conditionsOut: ['n'],
+    };
+}
+
+/**
+ * Romanian article and agreement endings, as the app's own rules. Wiktionary's form rows give most forms (stored
+ * without the letters' marks: numarul for numărul, which Yomitan's removeAlphabeticDiacritics also looks up), but none
+ * of words whose entries have no declension table: consiliul, dezvoltarea, comisiei, aflată (1,086 of the 5,230
+ * words of wordfreq's 30,000 most frequent that find nothing). Each ending is undone once and leaves two letters at
+ * least; the result must be a noun, a name, an adjective, a numeral, a pronoun, a determiner or a form (glue.js,
+ * `taggedRules`), and the engine keeps it only for a text without an entry of its own
+ * (`LanguageSupport.inflectionRulesOnlyWithoutEntry`): beside such entries the rules found wrong words for one word in
+ * seven (militarii → militară beside militar). Endings written with ă, ș or ț have twins without the marks for text
+ * typed without them; the import keys headwords without the marks too (`HeadwordMarks`), so araba finds arabă.
+ * Verb forms are Wiktionary's own (există, știu) and get no rules.
+ * @type {import('language-transformer').LanguageTransformDescriptor<'n'>}
+ */
+export const romanianTransforms = {
+    language: 'ro',
+    conditions: {
+        n: {name: 'Noun or adjective', isDictionaryForm: true},
+    },
+    transforms: {
+        '-ul': {
+            name: 'definite',
+            description: 'definite article (procesul from proces, consiliul from consiliu)',
+            rules: [romanianSuffix('ul', ''), romanianSuffix('ul', 'u')],
+        },
+        '-le': {
+            name: 'definite',
+            description: 'definite article (fratele from frate, textele from texte)',
+            rules: [romanianSuffix('le', '')],
+        },
+        '-a': {
+            name: 'definite',
+            description: 'definite article of feminine nouns (dezvoltarea from dezvoltare, comisia from comisie)',
+            rules: [romanianSuffix('ea', 'e'), romanianSuffix('ia', 'ie')],
+        },
+        '-i': {
+            name: 'definite plural',
+            description: 'definite article of masculine plurals (pomii from pomi)',
+            rules: [romanianSuffix('ii', 'i')],
+        },
+        '-ului': {
+            name: 'definite genitive',
+            description: 'genitive and dative with the definite article (procesului from proces, fratelui from frate)',
+            rules: [romanianSuffix('ului', ''), romanianSuffix('lui', '')],
+        },
+        '-ei': {
+            name: 'definite genitive',
+            description: 'genitive and dative of feminine nouns with the definite article (Moldovei from Moldova, comisiei from comisie)',
+            rules: [romanianSuffix('ei', 'a'), romanianSuffix('ei', 'ă'), romanianSuffix('iei', 'ie')],
+        },
+        '-ii': {
+            name: 'definite genitive',
+            description: 'genitive and dative of feminine nouns in -e with the definite article (lumii from lume, dezvoltării from dezvoltare)',
+            rules: [romanianSuffix('ii', 'e'), romanianSuffix('ării', 'are'), romanianSuffix('arii', 'are')],
+        },
+        '-lor': {
+            name: 'definite genitive plural',
+            description: 'genitive and dative plural with the definite article (caselor from case)',
+            rules: [romanianSuffix('lor', '')],
+        },
+        'agreement': {
+            name: 'feminine or plural',
+            description: 'feminine or plural of a participle or adjective (aflată, aflate, aflați from aflat; pusă from pus)',
+            rules: [
+                romanianSuffix('tă', 't'), romanianSuffix('ta', 't'), romanianSuffix('te', 't'),
+                romanianSuffix('ți', 't'), romanianSuffix('ti', 't'),
+                romanianSuffix('să', 's'), romanianSuffix('sa', 's'), romanianSuffix('se', 's'),
+                romanianSuffix('și', 's'), romanianSuffix('si', 's'),
+            ],
+        },
+    },
+};
+
+/**
+ * A Latin enclitic undone: the word before it keeps two letters at least.
+ * @param {string} enclitic
+ * @returns {import('language-transformer').SuffixRule<never>}
+ */
+function latinEnclitic(enclitic) {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp('.{2}' + enclitic + '$'),
+        deinflected: '',
+        deinflect: (text) => text.slice(0, -enclitic.length),
+        conditionsIn: [],
+        conditionsOut: [],
+    };
+}
+
+/**
+ * Latin enclitics joined to a word (magisque, estne, mortuusve), which Wiktionary lists only for a few words (itaque,
+ * nonne), added to Yomitan's Latin rules. They come first, as the outermost ending, and take any word. Many words
+ * end in them without one (atque, sine, regione), so the engine shows these results only where the whole word has no
+ * entry (LatinSupport's inflectionRulesOnlyWithoutEntry): on Latin Wikipedia text the endings reach 0.56% of the words
+ * and on classical prose and verse 2.7%, nearly all of them right.
+ * @type {import('language-transformer').LanguageTransformDescriptor<never>}
+ */
+export const latinEnclitics = {
+    language: 'la',
+    conditions: {},
+    transforms: {
+        '-que': {name: '-que', description: 'Enclitic "and" (magisque from magis)', rules: [latinEnclitic('que')]},
+        '-ne': {name: '-ne', description: 'Enclitic asking a question (videsne from vides)', rules: [latinEnclitic('ne')]},
+        '-ve': {name: '-ve', description: 'Enclitic "or" (mortuusve from mortuus)', rules: [latinEnclitic('ve')]},
+    },
+};
+
+/**
+ * Yomitan's rules of a language with the app's own added: [own]'s rules after [base]'s, and its conditions.
+ * @template {string} T
+ * @param {import('language-transformer').LanguageTransformDescriptor<T>} base
+ * @param {import('language-transformer').LanguageTransformDescriptor<any>} own
+ * @returns {import('language-transformer').LanguageTransformDescriptor<T>}
+ */
+export function withOwnTransforms(base, own) {
+    for (const id of Object.keys(own.transforms)) {
+        if (id in base.transforms) throw new Error(`${base.language}: Yomitan has a rule ${id} now`);
+    }
+    return {
+        ...base,
+        conditions: {...base.conditions, ...own.conditions},
+        transforms: {...base.transforms, ...own.transforms},
+    };
+}

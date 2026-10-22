@@ -28,13 +28,15 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * Languages Yomitan has no descriptor for, built from a related language's descriptor under their own codes: Malay
  * takes Indonesian's text processors (both write the same alphabet), with no inflection rules of either; Bengali takes
  * Hindi's descriptor, which has neither, for the app's own processors and endings; Kazakh and Kyrgyz take Mongolian's
- * (Cyrillic, capitalization only) for the app's own endings.
+ * (Cyrillic, capitalization only) for the app's own endings; Lithuanian takes Latvian's (capitalization only), as
+ * Wiktionary lists its forms.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
     bn: {from: 'hi', iso639_3: 'ben', name: 'Bengali', exampleText: 'পড়ার জন্য'},
     kk: {from: 'mn', iso639_3: 'kaz', name: 'Kazakh', exampleText: 'оқу'},
     ky: {from: 'mn', iso639_3: 'kir', name: 'Kyrgyz', exampleText: 'окуу'},
+    lt: {from: 'lv', iso639_3: 'lit', name: 'Lithuanian', exampleText: 'skaityti'},
 };
 
 /**
@@ -47,8 +49,9 @@ const borrowed = {
  * text carries zero-width spaces between words and writes subscript TA and DA for each other; Arabic text writes a
  * final ة as ه and may give Persian letters for its own; Persian text may give Arabic letters for its own, lose its
  * zero-width non-joiners and write a verb prefix or an ending apart; Hebrew text may carry vowel points and write the
- * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә. Processors join the
- * descriptor's capitalization processors, its own list, or make its list.
+ * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә; Romanian text may
+ * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le); Latin editions write u for
+ * consonantal v (uita). Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -62,11 +65,14 @@ const addedPreprocessors = {
     fa: ['persianLetters', 'removePersianZeroWidthNonJoiner', 'persianJoinedAffixes'],
     he: ['removeHebrewPoints', 'hebrewQuotes'],
     kk: ['kazakhLatinLetters'],
+    ro: ['romanianCommaLetters', 'ukrainianApostropheVariants'],
+    la: ['latinUAsV'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
- * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings.
+ * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
+ * article and agreement endings.
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -74,6 +80,13 @@ const addedTransforms = {
     he: 'hebrewTransforms',
     kk: 'kazakhTransforms',
     ky: 'kyrgyzTransforms',
+    no: 'norwegianTransforms',
+    ro: 'romanianTransforms',
+};
+
+/** Rules of the app's own (own-transforms.js) added to Yomitan's for a language: the Latin enclitics. */
+const extendedTransforms = {
+    la: 'latinEnclitics',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
@@ -101,7 +114,7 @@ function keepLanguage(source, iso) {
     if (added) {
         const plain = 'textPreprocessors: capitalizationPreprocessors,';
         const example = /(\n {8}exampleText: [^\n]*\n)/;
-        const list = /(\n {8}textPreprocessors: \{\n(?: {12}\w+,\n)+)( {8}\},)/;
+        const list = /(\n {8}textPreprocessors: \{\n(?: {12}(?:\.\.\.)?\w+,\n)+)( {8}\},)/;
         if (block.includes(plain)) {
             block = block.replace(plain, `textPreprocessors: {...capitalizationPreprocessors, ${added.join(', ')}},`);
         } else if (!block.includes('textPreprocessors') && example.test(block)) {
@@ -113,6 +126,14 @@ function keepLanguage(source, iso) {
         }
         const own = added.filter((name) => ownProcessors.includes(name));
         if (own.length > 0) imports = `import {${own.join(', ')}} from 'screenlate/own-processors.js';\n`;
+    }
+    const extension = extendedTransforms[iso];
+    if (extension) {
+        const own = /languageTransforms: (\w+),/;
+        const yomitan = own.exec(block)?.[1];
+        if (!yomitan) throw new Error(`${iso}: Yomitan has no inflection rules to add to`);
+        block = block.replace(own, `languageTransforms: withOwnTransforms(${yomitan}, ${extension}),`);
+        imports += `import {withOwnTransforms, ${extension}} from 'screenlate/own-transforms.js';\n`;
     }
     const transforms = addedTransforms[iso];
     if (transforms) {

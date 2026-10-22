@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_no.xml. -->
+<resources>
+    <string name="inflection_no_s_label">dopełniacz</string>
+    <string name="inflection_no_s">dopełniacz (dagens, Norges)</string>
+</resources>

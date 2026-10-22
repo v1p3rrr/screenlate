@@ -116,6 +116,63 @@ class SentenceTest {
     }
 
     @Test
+    fun swedishSentenceKeepsAbbreviationsAndTheQuotesItOpens() {
+        val paragraph = "Det regnade. Hon köpte t.ex. äpplen, bl.a. röda. ”Kom hit nu.” Vi ses kl. 8 i morgon. Hon är ung. Slut."
+        assertThat(extract(paragraph, "äpplen", Language.SWEDISH).text).isEqualTo("Hon köpte t.ex. äpplen, bl.a. röda.")
+        assertThat(extract(paragraph, "hit", Language.SWEDISH).text).isEqualTo("”Kom hit nu.”")
+        assertThat(extract(paragraph, "ses", Language.SWEDISH).text).isEqualTo("Vi ses kl. 8 i morgon.")
+        assertThat(extract(paragraph, "ung", Language.SWEDISH).text).isEqualTo("Hon är ung.")
+    }
+
+    @Test
+    fun norwegianSentenceKeepsAbbreviationsOrdinalsAndTheGuillemetsItOpens() {
+        val paragraph = "Det regnet. Hun kjøpte f.eks. epler, bl.a. røde. «Kom hit nå!» ropte hun. Vi ses den 17. mai kl. 8 i morgen. Slutt."
+        assertThat(extract(paragraph, "epler", Language.NORWEGIAN).text).isEqualTo("Hun kjøpte f.eks. epler, bl.a. røde.")
+        assertThat(extract(paragraph, "ropte", Language.NORWEGIAN).text).isEqualTo("«Kom hit nå!» ropte hun.")
+        assertThat(extract(paragraph, "ses", Language.NORWEGIAN).text).isEqualTo("Vi ses den 17. mai kl. 8 i morgen.")
+    }
+
+    @Test
+    fun danishSentenceKeepsAbbreviationsOrdinalsAndTheGuillemetsItOpensWithTheRightPointingOne() {
+        val paragraph = "Det regnede. Hun købte f.eks. æbler, bl.a. røde. »Kom her!« råbte hun. Vi ses den 5. maj kl. 8 i morgen. Slut."
+        assertThat(extract(paragraph, "æbler", Language.DANISH).text).isEqualTo("Hun købte f.eks. æbler, bl.a. røde.")
+        assertThat(extract(paragraph, "råbte", Language.DANISH).text).isEqualTo("»Kom her!« råbte hun.")
+        assertThat(extract(paragraph, "ses", Language.DANISH).text).isEqualTo("Vi ses den 5. maj kl. 8 i morgen.")
+    }
+
+    @Test
+    fun romanianSentenceKeepsAbbreviationsAndLowQuotesAndEndsAtANumber() {
+        val paragraph = "Ploua. Dl. Popescu a venit la nr. 5, pe str. Lipscani. „Vino aici!” a strigat ea. " +
+            "Cezar a murit în 44 î.Hr. și Roma s-a schimbat. S-a născut în 1999. Apoi a plecat."
+        assertThat(extract(paragraph, "Popescu", Language.ROMANIAN).text).isEqualTo("Dl. Popescu a venit la nr. 5, pe str. Lipscani.")
+        assertThat(extract(paragraph, "strigat", Language.ROMANIAN).text).isEqualTo("„Vino aici!” a strigat ea.")
+        assertThat(extract(paragraph, "Roma", Language.ROMANIAN).text).isEqualTo("Cezar a murit în 44 î.Hr. și Roma s-a schimbat.")
+        assertThat(extract(paragraph, "născut", Language.ROMANIAN).text).isEqualTo("S-a născut în 1999.")
+    }
+
+    @Test
+    fun latinSentenceKeepsPraenominaAndEraBeforeLowercaseAndEndsAtLowercaseSex() {
+        val paragraph = "Pluebat. C. Iulius Caesar et M. Tullius Cicero Romae erant. «Veni, vidi, vici» dixit. " +
+            "Natus est anno 100 a.C.n. et mortuus anno 44 a.C.n. Liberi erant sex. Deinde abierunt."
+        assertThat(extract(paragraph, "Cicero", Language.LATIN).text).isEqualTo("C. Iulius Caesar et M. Tullius Cicero Romae erant.")
+        assertThat(extract(paragraph, "dixit", Language.LATIN).text).isEqualTo("«Veni, vidi, vici» dixit.")
+        assertThat(extract(paragraph, "Natus", Language.LATIN).text).isEqualTo("Natus est anno 100 a.C.n. et mortuus anno 44 a.C.n.")
+        assertThat(extract(paragraph, "Liberi", Language.LATIN).text).isEqualTo("Liberi erant sex.")
+    }
+
+    @Test
+    fun lithuanianSentenceKeepsYearsAndSpacedAbbreviationsBeforeLowercaseAndEndsAtANumber() {
+        val paragraph = "Lijo. Prof. Kazlauskas 1950 m. rugsėjo 5 d. gimė Vilniuje. „Ateik čia!“ – sušuko ji. " +
+            "Vaisiai, t. y. obuoliai ir kriaušės, kainavo 5 tūkst. eurų. Jis gimė 1990. Vėliau išvyko."
+        assertThat(extract(paragraph, "Kazlauskas", Language.LITHUANIAN).text)
+            .isEqualTo("Prof. Kazlauskas 1950 m. rugsėjo 5 d. gimė Vilniuje.")
+        assertThat(extract(paragraph, "sušuko", Language.LITHUANIAN).text).isEqualTo("„Ateik čia!“ – sušuko ji.")
+        assertThat(extract(paragraph, "obuoliai", Language.LITHUANIAN).text)
+            .isEqualTo("Vaisiai, t. y. obuoliai ir kriaušės, kainavo 5 tūkst. eurų.")
+        assertThat(extract(paragraph, "Jis", Language.LITHUANIAN).text).isEqualTo("Jis gimė 1990.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">bestimmt</string>
+    <string name="inflection_ro_ul">bestimmter Artikel (procesul von proces, consiliul von consiliu)</string>
+    <string name="inflection_ro_le_label">bestimmt</string>
+    <string name="inflection_ro_le">bestimmter Artikel (fratele von frate, textele von texte)</string>
+    <string name="inflection_ro_a_label">bestimmt</string>
+    <string name="inflection_ro_a">bestimmter Artikel weiblicher Substantive (dezvoltarea von dezvoltare, comisia von comisie)</string>
+    <string name="inflection_ro_i_label">bestimmt, Plural</string>
+    <string name="inflection_ro_i">bestimmter Artikel im männlichen Plural (pomii von pomi)</string>
+    <string name="inflection_ro_ului_label">Genitiv, bestimmt</string>
+    <string name="inflection_ro_ului">Genitiv und Dativ mit bestimmtem Artikel (procesului von proces, fratelui von frate)</string>
+    <string name="inflection_ro_ei_label">Genitiv, bestimmt</string>
+    <string name="inflection_ro_ei">Genitiv und Dativ weiblicher Substantive mit bestimmtem Artikel (Moldovei von Moldova, comisiei von comisie)</string>
+    <string name="inflection_ro_ii_label">Genitiv, bestimmt</string>
+    <string name="inflection_ro_ii">Genitiv und Dativ weiblicher Substantive auf -e mit bestimmtem Artikel (lumii von lume, dezvoltării von dezvoltare)</string>
+    <string name="inflection_ro_lor_label">Genitiv Plural, bestimmt</string>
+    <string name="inflection_ro_lor">Genitiv und Dativ Plural mit bestimmtem Artikel (caselor von case)</string>
+    <string name="inflection_ro_agreement_label">Femininum oder Plural</string>
+    <string name="inflection_ro_agreement">Femininum oder Plural eines Partizips oder Adjektivs (aflată, aflate, aflați von aflat; pusă von pus)</string>
+</resources>

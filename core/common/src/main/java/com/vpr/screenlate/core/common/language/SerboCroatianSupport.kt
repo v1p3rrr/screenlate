@@ -77,6 +77,7 @@ object CroatianSupport : SerboCroatianSupport() {
     /** The accents of readings (kȕća) are combining marks after the letters. */
     override val systemFonts = LATIN_SYSTEM_FONTS.copy(unicodeRange = "U+0000-024F, U+0300-036F, U+1E00-1EFF, U+2000-206F")
     override val fontSubsets = LATIN_EXT_FONT_SUBSETS
+    override val fontLetters = "čćđšž"
 }
 
 /**
@@ -97,6 +98,7 @@ object SerbianSupport : SerboCroatianSupport() {
 
     /** Grammar lines and Latin text need č, ć, đ. */
     override val fontSubsets = setOf("latin", "latin-ext", "cyrillic")
+    override val fontLetters = "čćđšžабвгдђежзијклљмнњопрстћуфхцчџш"
 
     /** `Sr-кућа.flac`, then the few titled in Latin letters (`Sr-grad.ogg`). */
     override fun recordings(term: String, reading: String): List<RecordingTitle> =

@@ -364,6 +364,8 @@
     <string name="audio_region_switzerland">Svizzera</string>
     <string name="audio_region_france">Francia</string>
     <string name="audio_region_canada">Canada</string>
+    <string name="audio_region_classical">Pronuncia classica</string>
+    <string name="audio_region_ecclesiastical">Pronuncia ecclesiastica</string>
     <string name="audio_region_other">Altre regioni</string>
     <string name="audio_url_missing">Nessun URL</string>
     <string name="audio_tts_hint">Solo riproduzione; le note prendono l’audio dalle altre fonti.</string>
@@ -506,6 +508,12 @@
     <string name="popup_font_script_only_he">Solo per il testo ebraico</string>
     <string name="popup_font_script_only_kk">Solo per il testo kazako</string>
     <string name="popup_font_script_only_ky">Solo per il testo kirghiso</string>
+    <string name="popup_font_script_only_sv">Solo per il testo svedese</string>
+    <string name="popup_font_script_only_no">Solo per il testo norvegese</string>
+    <string name="popup_font_script_only_da">Solo per il testo danese</string>
+    <string name="popup_font_script_only_ro">Solo per il testo rumeno</string>
+    <string name="popup_font_script_only_la">Solo per il testo in latino</string>
+    <string name="popup_font_script_only_lt">Solo per il testo lituano</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

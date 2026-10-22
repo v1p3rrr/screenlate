@@ -24,6 +24,7 @@ struct LanguageCandidate {
   std::vector<std::vector<std::string>> r;  // inflection rule chains
   bool u = false;  // an entry without a part of speech matches despite [c]
   std::vector<std::string> g;  // definition tags one of which a glossary needs; empty for any
+  bool f = false;  // the lemmas form-of entries lead to need none of [g]
 };
 
 std::vector<LanguageCandidate> parse_candidates(const std::string& json);

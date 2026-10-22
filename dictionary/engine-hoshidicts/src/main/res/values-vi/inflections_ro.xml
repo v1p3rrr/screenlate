@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">xác định</string>
+    <string name="inflection_ro_ul">mạo từ xác định (proces → procesul, consiliu → consiliul)</string>
+    <string name="inflection_ro_le_label">xác định</string>
+    <string name="inflection_ro_le">mạo từ xác định (frate → fratele, texte → textele)</string>
+    <string name="inflection_ro_a_label">xác định</string>
+    <string name="inflection_ro_a">mạo từ xác định của danh từ giống cái (dezvoltare → dezvoltarea, comisie → comisia)</string>
+    <string name="inflection_ro_i_label">xác định số nhiều</string>
+    <string name="inflection_ro_i">mạo từ xác định của số nhiều giống đực (pomi → pomii)</string>
+    <string name="inflection_ro_ului_label">sở hữu cách xác định</string>
+    <string name="inflection_ro_ului">sở hữu cách và tặng cách có mạo từ xác định (proces → procesului, frate → fratelui)</string>
+    <string name="inflection_ro_ei_label">sở hữu cách xác định</string>
+    <string name="inflection_ro_ei">sở hữu cách và tặng cách của danh từ giống cái có mạo từ xác định (Moldova → Moldovei, comisie → comisiei)</string>
+    <string name="inflection_ro_ii_label">sở hữu cách xác định</string>
+    <string name="inflection_ro_ii">sở hữu cách và tặng cách của danh từ giống cái tận cùng bằng -e có mạo từ xác định (lume → lumii, dezvoltare → dezvoltării)</string>
+    <string name="inflection_ro_lor_label">sở hữu cách số nhiều xác định</string>
+    <string name="inflection_ro_lor">sở hữu cách và tặng cách số nhiều có mạo từ xác định (case → caselor)</string>
+    <string name="inflection_ro_agreement_label">giống cái hoặc số nhiều</string>
+    <string name="inflection_ro_agreement">giống cái hoặc số nhiều của phân từ hoặc tính từ (aflat → aflată, aflate, aflați; pus → pusă)</string>
+</resources>

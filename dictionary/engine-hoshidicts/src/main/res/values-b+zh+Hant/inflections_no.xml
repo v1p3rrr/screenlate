@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_no.xml. -->
+<resources>
+    <string name="inflection_no_s_label">屬格</string>
+    <string name="inflection_no_s">屬格（dagens、Norges）</string>
+</resources>

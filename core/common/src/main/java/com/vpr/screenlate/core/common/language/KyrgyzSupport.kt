@@ -18,6 +18,7 @@ object KyrgyzSupport : TurkicCyrillicSupport() {
     override val audioTestWord = "китеп"
     override val pronunciationSample = "китеп → [kiˈtep]"
     override val flagCountries = listOf("kg")
+    override val fontLetters = "абвгдеёжзийклмнңоөпрстуүфхцчшщъыьэюя"
 
     /** Kyrgyz letters by the Russian ones that stand for them where a keyboard or OCR lacks them. */
     private val RUSSIAN_TWINS = mapOf("ң" to "н", "ө" to "о", "ү" to "у")

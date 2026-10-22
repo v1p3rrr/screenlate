@@ -1552,6 +1552,108 @@ Welsh, Irish and Scottish Gaelic (Breton researched, not built): research, decis
 Swedish, Norwegian, Danish, Romanian, Latin, Lithuanian, Slovak, Slovenian, Esperanto, Albanian and Swahili (Basque and
 Maltese researched, not built): research, decisions and work in `plans/2026-10-19-group-5a.md`.
 
+### Swedish on `languages/sv` (2026-10-22)
+
+- `Language.SWEDISH` (`sv`), `SwedishSupport`: glyph Å, flag se, Latin fonts (`fontSubsets` latin: every catalog Latin
+  font has å ä ö), Wiktionary first for audio (Sv-, 20 of 20 common words; Lingua Libre Q9027 2 of 20), compound links
+  s e u o a, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters` (shared with Danish and Norwegian, which also turn ä into å): ả â Ả Â → å Å,
+  one for one, run only from `OcrPage.inLanguage` (cloud recognition included), never on app text.
+- Bundle: Yomitan's descriptor, capitalization only (`sv.js`, 47 KB); forms come from wty's form rows (331k in sv-en).
+- Catalog: wty sv into en ru de es fr ja ko pl pt tr zh and the transcription, all ticked (sv-it 1,459 words and
+  sv-vi 283 stay under the line); wordfreq `large_sv`; Tesseract `swe` fast and best and Paddle v6 unticked, Paddle v5
+  Latin recommended ("more accurate", ML Kit stays the main model). `paddle_models.py` regenerates the existing
+  archives byte for byte (no SHA change).
+- Quotes: ”…” and »…» open and close with the same character; Swedish keeps the default pairs (“” ( ) [ ]), so a
+  sentence ending inside one loses its opening quote, as straight quotes do (plan row "Sentence text").
+- WikDict swe-rus: converted with `scripts/freedict` and listed once hosting exists (decision "ESPDIC and WikDict").
+
+### Norwegian on `languages/no` (2026-10-22)
+
+- `Language.NORWEGIAN` (`no`, written Bokmål; the codes nb and nn read as no), `NorwegianSupport`: glyph Ø, flag no,
+  Latin fonts, Bokmål's nb for translation and the voice, the locales no, nb and nn, Lingua Libre first for audio
+  (Q9043, 19 of 20 common words; Bokmål's item Q25167 asked as well), Wiktionary (No-) second, compound links s and
+  e, ordinals with a period (17. mai), «…» paired, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters.danishNorwegian`: ả â ä Ả Â Ä → å Å, one for one, OCR results only.
+- Bundle: Yomitan's descriptor (capitalization) and our genitive -s (`own-transforms.js` `norwegianTransforms`,
+  `no.js`, 56 KB). wty's Norwegian entries leave the rules field empty, so the genitive's result is matched by the
+  entry's definition tags (noun, name or form; glue `taggedRules`), measured in `notes/language-rules.md`, "Group 5a
+  rules checked on data". Forms otherwise come from wty's form rows.
+- Catalog: wty's nb, no and nn folders under Norwegian (`generate.mjs` `FOLDERS`): nb-en, nb-ja, nb-pl, nb-zh, no-ru,
+  no-fr and no-vi ticked (the first folder that has a pair ticks it), no-zh and every nn pair unticked, Bokmål's
+  transcription; titles and descriptions name the folder (nb–en, "Norwegian Bokmål → English"). wordfreq `large_nb`;
+  Tesseract `nor` fast and best and Paddle v5 Latin unticked, Paddle v6 recommended ("more accurate", ML Kit stays
+  the main model).
+- A dictionary whose index names nb or nn is filed under Norwegian (`DictionaryRepository.indexSourceLanguage`).
+- WikDict nor-rus: converted with `scripts/freedict` (7,708 terms, 7,420 headwords, 404 KB; its index says no) and
+  listed once hosting exists (decision "ESPDIC and WikDict").
+
+### Danish on `languages/da` (2026-10-22)
+
+- `Language.DANISH` (`da`), `DanishSupport`: glyph Æ, flag dk, Latin fonts, Lingua Libre first for audio (Q9035, 10
+  of 20 common words; Wiktionary Da- 3 of 20), compound links s and e, ordinals with a period (5. maj), »…« (opened
+  with ») and “…” paired, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters.danishNorwegian`: ả â ä Ả Â Ä → å Å, one for one, OCR results only.
+- Bundle: Yomitan's descriptor, capitalization only (`da.js`, 47 KB); forms and genitives come from wty's form rows
+  (116k in da-en).
+- Catalog: wty da into en ru fr ja pl tr zh and the transcription, all ticked (da-pt 1,404 words and the others stay
+  under the line); wordfreq `small_da`; Tesseract `dan` fast and best and Paddle v6 unticked, Paddle v5 Latin
+  recommended ("more accurate", ML Kit stays the main model).
+- da-en is small (24k lemmas): common words such as finale, serie, situation and indeholde are missing, and their
+  forms fall to the compound split. WikDict dan-rus is converted (5,878 terms, 5,774 headwords, 135 KB) and listed
+  once hosting exists (decision "ESPDIC and WikDict").
+
+### Romanian on `languages/ro` (2026-10-22)
+
+- `Language.ROMANIAN` (`ro`), `RomanianSupport`: glyph Ș, flag ro, Latin fonts with latin-ext, Lingua Libre first for
+  audio (Q7913, 20 of 20 common words; Wiktionary Ro- 2 of 20), no ordinal period, „…”, “…” and «…» paired, the
+  abbreviation lists of `notes/language-rules.md`, a new word after a pronoun or preposition joined with a hyphen
+  (`hyphenElisions`: s-a, într-o).
+- Bundle (`ro.js`, 58 KB): Yomitan's descriptor (capitalization, marks removed), our cedilla processor (ş ţ → ș ț),
+  Ukrainian's apostrophe variants, our article and agreement endings matched by definition tag. The engine drops
+  results reached only through those endings when the text finds results without them
+  (`inflectionRulesOnlyWithoutEntry`).
+- Import: every headword also keyed without ă â î ș ț, and with ş ţ as ș ț (`HeadwordMarks`, `everyHeadword`).
+- Lookup: results under a Cyrillic headword (Moldovan spellings Wiktionary links words to) are left out
+  (`showsHeadword`).
+- Catalog: wty ro into en ru es fr ja pl tr zh and the transcription, all ticked (ro-ko 1,380, ro-pt 1,296, ro-de 463,
+  ro-it 330, ro-vi 247 words stay under the line); wordfreq `small_ro`; Tesseract `ron` fast and best and Paddle v6
+  unticked, Paddle v5 Latin recommended ("more accurate", ML Kit stays the main model).
+- No OCR letter fix: ML Kit drops marks (ț, ș, ă, î), which the keys without marks cover.
+
+### Latin on `languages/la` (2026-10-22)
+
+- `Language.LATIN` (`la`), `LatinSupport`: glyph LA, Latin's own flag (`lang_la`), the Latin fonts with latin-ext
+  that have ā ē ī ō ū æ œ, Wiktionary first for audio, the classical and ecclesiastical pronunciations as audio
+  regions, no ordinal period, “…” and «…» paired, the praenomina held only when capitalized
+  (`capitalizedAbbreviations`), the abbreviation lists of `notes/language-rules.md`.
+- Bundle (`la.js`, 61 KB): Yomitan's descriptor (diacritics removed, æ œ, plural, feminine, neuter and ablative
+  rules), our u-as-v processor, and the enclitics -que, -ne, -ve added to Yomitan's rules (`extendedTransforms`); the
+  engine's entry filter (`inflectionRulesOnlyWithoutEntry`) drops results reached only through rules where the text
+  has an entry (atque).
+- Import: the lemma names of forms lose macrons and breves (`HeadwordMarks` without `everyHeadword`).
+- Catalog: wty la into en ru de es fr it ja ko pl pt zh and the transcription, all ticked (la-tr 1,091 and la-vi 166
+  words stay under the line); no wordfreq list; Paddle v6 recommended, Paddle v5 Latin and Tesseract `lat` fast and
+  best unticked.
+- Fonts across languages: each language with font subsets lists its letters (`fontLetters`) and the catalog lists
+  each subset font's letters (`scripts/fonts/font_letters.py`); a font missing one is not offered. Only Latin
+  (Atkinson, ō) loses a font now; Esperanto will lose Atkinson as well.
+
+### Lithuanian on `languages/lt` (2026-10-22)
+
+- `Language.LITHUANIAN` (`lt`), `LithuanianSupport`: glyph Ė, Lithuania's flag, every Latin font with latin-ext (they
+  have ą č ę ė į š ų ū ž), Lingua Libre first for audio, no ordinal period, „…“ paired, the abbreviation lists and
+  paired letters of `notes/language-rules.md`, the OCR letter fix Ü ü é ị → Ū ū ė į (`OcrLetters.kt`
+  `replaceLetters`, now shared with the Scandinavian fix).
+- Bundle (`lt.js`, 47 KB): Latvian's descriptor (capitalization only) under Lithuanian's code.
+- Import: `HeadwordMarks` gained two fields. `markBases` gives a mark its own base letters (the dot above dropped
+  after i only, in place of the planned replacement i + U+0307 → i), and `letterMarks` with `letterBases` adds a
+  further key without the letters' marks after the stress marks are gone. Lithuanian keys every headword both ways
+  and names the lemmas of forms without stress. The native `MarkStripper` holds a list of mark sets.
+- Catalog: wty lt into en ru de fr ko pl zh and the transcription, all ticked (es 295, it 522, ja 1,329, pt 909, tr
+  652, vi 490 words stay under the line); wordfreq's small list; Tesseract `lit` fast recommended, best and Paddle v5
+  latin and v6 unticked.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

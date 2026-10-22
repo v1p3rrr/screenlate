@@ -26,6 +26,7 @@ object GreekSupport : SpacedLanguageSupport() {
         unicodeRange = "U+0000-024F, U+0300-036F, U+0370-03FF, U+1E00-1FFF, U+2000-206F",
     )
     override val fontSubsets = setOf("latin", "greek")
+    override val fontLetters = "αβγδεζηθικλμνξοπρστυφχψωάέήίόύώϊϋς"
 
     /** The Greek question mark is ; (U+037E, which NFC writes as ;); the ano teleia · is a pause and ends nothing. */
     override val sentenceTerminators = setOf('.', '!', '?', '…', '\n', ';', '\u037E')

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">pluriel</string>
+    <string name="inflection_la_plural">Déclinaison au pluriel</string>
+    <string name="inflection_la_feminine_label">féminin</string>
+    <string name="inflection_la_feminine">Forme de l’adjectif</string>
+    <string name="inflection_la_neuter_label">neutre</string>
+    <string name="inflection_la_neuter">Forme de l’adjectif</string>
+    <string name="inflection_la_ablative_label">ablatif</string>
+    <string name="inflection_la_ablative">Cas ablatif</string>
+    <string name="inflection_la_que">Enclitique « et » (magisque de magis)</string>
+    <string name="inflection_la_ne">Enclitique interrogatif (videsne de vides)</string>
+    <string name="inflection_la_ve">Enclitique « ou » (mortuusve de mortuus)</string>
+</resources>

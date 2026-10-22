@@ -20,6 +20,7 @@ object VietnameseSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("vn")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = setOf("latin", "vietnamese")
+    override val fontLetters = "àáảãạăằắẳẵặâầấẩẫậđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ"
 
     /** Words of up to three syllables are found from any of them. */
     override val earlierWords = 2

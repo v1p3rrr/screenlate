@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">determinato</string>
+    <string name="inflection_ro_ul">articolo determinativo (procesul da proces, consiliul da consiliu)</string>
+    <string name="inflection_ro_le_label">determinato</string>
+    <string name="inflection_ro_le">articolo determinativo (fratele da frate, textele da texte)</string>
+    <string name="inflection_ro_a_label">determinato</string>
+    <string name="inflection_ro_a">articolo determinativo dei nomi femminili (dezvoltarea da dezvoltare, comisia da comisie)</string>
+    <string name="inflection_ro_i_label">determinato plurale</string>
+    <string name="inflection_ro_i">articolo determinativo del plurale maschile (pomii da pomi)</string>
+    <string name="inflection_ro_ului_label">genitivo determinato</string>
+    <string name="inflection_ro_ului">genitivo e dativo con l’articolo determinativo (procesului da proces, fratelui da frate)</string>
+    <string name="inflection_ro_ei_label">genitivo determinato</string>
+    <string name="inflection_ro_ei">genitivo e dativo dei nomi femminili con l’articolo determinativo (Moldovei da Moldova, comisiei da comisie)</string>
+    <string name="inflection_ro_ii_label">genitivo determinato</string>
+    <string name="inflection_ro_ii">genitivo e dativo dei nomi femminili in -e con l’articolo determinativo (lumii da lume, dezvoltării da dezvoltare)</string>
+    <string name="inflection_ro_lor_label">genitivo plurale determinato</string>
+    <string name="inflection_ro_lor">genitivo e dativo plurale con l’articolo determinativo (caselor da case)</string>
+    <string name="inflection_ro_agreement_label">femminile o plurale</string>
+    <string name="inflection_ro_agreement">femminile o plurale di un participio o aggettivo (aflată, aflate, aflați da aflat; pusă da pus)</string>
+</resources>

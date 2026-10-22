@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">plural</string>
+    <string name="inflection_la_plural">Declinación en plural</string>
+    <string name="inflection_la_feminine_label">femenino</string>
+    <string name="inflection_la_feminine">Forma del adjetivo</string>
+    <string name="inflection_la_neuter_label">neutro</string>
+    <string name="inflection_la_neuter">Forma del adjetivo</string>
+    <string name="inflection_la_ablative_label">ablativo</string>
+    <string name="inflection_la_ablative">Caso ablativo</string>
+    <string name="inflection_la_que">Enclítico «y» (magisque de magis)</string>
+    <string name="inflection_la_ne">Enclítico interrogativo (videsne de vides)</string>
+    <string name="inflection_la_ve">Enclítico «o» (mortuusve de mortuus)</string>
+</resources>

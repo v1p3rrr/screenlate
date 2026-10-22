@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">forma określona</string>
+    <string name="inflection_ro_ul">rodzajnik określony (procesul od proces, consiliul od consiliu)</string>
+    <string name="inflection_ro_le_label">forma określona</string>
+    <string name="inflection_ro_le">rodzajnik określony (fratele od frate, textele od texte)</string>
+    <string name="inflection_ro_a_label">forma określona</string>
+    <string name="inflection_ro_a">rodzajnik określony rzeczowników żeńskich (dezvoltarea od dezvoltare, comisia od comisie)</string>
+    <string name="inflection_ro_i_label">forma określona, l.mn.</string>
+    <string name="inflection_ro_i">rodzajnik określony w liczbie mnogiej rodzaju męskiego (pomii od pomi)</string>
+    <string name="inflection_ro_ului_label">dopełniacz z rodzajnikiem</string>
+    <string name="inflection_ro_ului">dopełniacz i celownik z rodzajnikiem określonym (procesului od proces, fratelui od frate)</string>
+    <string name="inflection_ro_ei_label">dopełniacz z rodzajnikiem</string>
+    <string name="inflection_ro_ei">dopełniacz i celownik rzeczowników żeńskich z rodzajnikiem określonym (Moldovei od Moldova, comisiei od comisie)</string>
+    <string name="inflection_ro_ii_label">dopełniacz z rodzajnikiem</string>
+    <string name="inflection_ro_ii">dopełniacz i celownik rzeczowników żeńskich na -e z rodzajnikiem określonym (lumii od lume, dezvoltării od dezvoltare)</string>
+    <string name="inflection_ro_lor_label">dopełniacz l.mn. z rodzajnikiem</string>
+    <string name="inflection_ro_lor">dopełniacz i celownik liczby mnogiej z rodzajnikiem określonym (caselor od case)</string>
+    <string name="inflection_ro_agreement_label">rodzaj żeński lub l.mn.</string>
+    <string name="inflection_ro_agreement">rodzaj żeński lub liczba mnoga imiesłowu albo przymiotnika (aflată, aflate, aflați od aflat; pusă od pus)</string>
+</resources>

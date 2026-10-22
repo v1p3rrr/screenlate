@@ -358,6 +358,8 @@
     <string name="audio_region_switzerland">瑞士</string>
     <string name="audio_region_france">法國</string>
     <string name="audio_region_canada">加拿大</string>
+    <string name="audio_region_classical">古典發音</string>
+    <string name="audio_region_ecclesiastical">教會發音</string>
     <string name="audio_region_other">其他地區</string>
     <string name="audio_url_missing">無 URL</string>
     <string name="audio_tts_hint">僅播放；筆記使用其他來源的音訊。</string>
@@ -500,6 +502,12 @@
     <string name="popup_font_script_only_he">僅用於希伯來文文字</string>
     <string name="popup_font_script_only_kk">僅用於哈薩克文文字</string>
     <string name="popup_font_script_only_ky">僅用於吉爾吉斯文文字</string>
+    <string name="popup_font_script_only_sv">僅用於瑞典文文字</string>
+    <string name="popup_font_script_only_no">僅用於挪威文文字</string>
+    <string name="popup_font_script_only_da">僅用於丹麥文文字</string>
+    <string name="popup_font_script_only_ro">僅用於羅馬尼亞文文字</string>
+    <string name="popup_font_script_only_la">僅用於拉丁文文字</string>
+    <string name="popup_font_script_only_lt">僅用於立陶宛文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

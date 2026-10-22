@@ -21,6 +21,9 @@ object TurkishSupport : SpacedLanguageSupport() {
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_EXT_FONT_SUBSETS
 
+    /** İ is the capital of i. */
+    override val fontLetters = "çğıİöşü"
+
     override val quotePairs = super.quotePairs + ('«' to '»')
 
     /** Ordinals in digits take a period: "15. yüzyıl", "3. sınıf". */

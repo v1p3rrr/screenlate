@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.ArabicSupport
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.FrenchSupport
+import com.vpr.screenlate.core.common.language.LatinSupport
 import com.vpr.screenlate.core.common.language.SpanishSupport
 import java.util.Locale
 import kotlinx.serialization.json.Json
@@ -274,6 +275,18 @@ class AudioPagesTest {
             .containsExactly(
                 "File:Es-am-lat-agua.ogg", "File:Es-mx-agua.ogg", "File:Es-es-agua.ogg", "File:Es-agua.ogg",
             )
+            .inOrder()
+    }
+
+    @Test
+    fun `latin recordings of the classical pronunciation come first, then the ecclesiastical, then the others`() {
+        val regions = LatinSupport.audioRegions
+        assertThat(AudioPages.wiktionaryRegion("File:La-cls-magnus.ogg", "magnus", "la", regions)).isEqualTo("cls")
+        assertThat(AudioPages.wiktionaryRegion("File:La-ecc-magnus.ogg", "magnus", "la", regions)).isEqualTo("ecc")
+        assertThat(AudioPages.wiktionarySearch("magnus", "la", regions)).contains("(-(cls|ecc|[a-zA-Z]{2}))?-[mM]agnus[0-9]*")
+        val files = listOf("File:La-magnus.ogg", "File:La-ecc-magnus.ogg", "File:La-cls-magnus.ogg").map { it to it }
+        assertThat(AudioPages.byRegion(files, "magnus", "la", regions).map { it.first })
+            .containsExactly("File:La-cls-magnus.ogg", "File:La-ecc-magnus.ogg", "File:La-magnus.ogg")
             .inOrder()
     }
 

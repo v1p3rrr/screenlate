@@ -1,7 +1,10 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.DanishSupport
 import com.vpr.screenlate.core.common.language.DutchSupport
+import com.vpr.screenlate.core.common.language.NorwegianSupport
+import com.vpr.screenlate.core.common.language.SwedishSupport
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import kotlinx.coroutines.runBlocking
@@ -43,6 +46,45 @@ class CompoundsTest {
         assertThat(dutch("stadsdeel", "stad", "deel")).containsExactly("stad", "deel").inOrder()
         assertThat(dutch("boekenkast", "boek", "kast")).containsExactly("boek", "kast").inOrder()
         assertThat(dutch("pannekoek", "pan", "panne", "koek")).containsExactly("panne", "koek").inOrder()
+    }
+
+    @Test
+    fun `swedish links are skipped the same way, a part cut short before its link is not tried`() {
+        fun swedish(word: String, vararg words: String) = runBlocking {
+            Compounds.split(word, SwedishSupport.compoundLinks!!) { prefixes(words.toSet(), it) }
+                ?.map { word.substring(it.first, it.last + 1) }
+        }
+        assertThat(swedish("statsminister", "stat", "minister")).containsExactly("stat", "minister").inOrder()
+        assertThat(swedish("skattepengar", "skatt", "pengar")).containsExactly("skatt", "pengar").inOrder()
+        assertThat(swedish("barnabarn", "barn")).containsExactly("barn", "barn").inOrder()
+        // Kyrko- is kyrka's.
+        assertThat(swedish("kyrkogård", "kyrka", "gård")).isNull()
+    }
+
+    @Test
+    fun `norwegian links are s and e`() {
+        fun norwegian(word: String, vararg words: String) = runBlocking {
+            Compounds.split(word, NorwegianSupport.compoundLinks!!) { prefixes(words.toSet(), it) }
+                ?.map { word.substring(it.first, it.last + 1) }
+        }
+        assertThat(norwegian("arbeidsplass", "arbeid", "plass")).containsExactly("arbeid", "plass").inOrder()
+        assertThat(norwegian("fylkesmann", "fylke", "mann")).containsExactly("fylke", "mann").inOrder()
+        assertThat(norwegian("barnehage", "barn", "hage")).containsExactly("barn", "hage").inOrder()
+        // u is no Norwegian link.
+        assertThat(norwegian("gatukjøkken", "gate", "gat", "kjøkken")).isNull()
+    }
+
+    @Test
+    fun `danish links are s and e`() {
+        fun danish(word: String, vararg words: String) = runBlocking {
+            Compounds.split(word, DanishSupport.compoundLinks!!) { prefixes(words.toSet(), it) }
+                ?.map { word.substring(it.first, it.last + 1) }
+        }
+        assertThat(danish("statsminister", "stat", "minister")).containsExactly("stat", "minister").inOrder()
+        assertThat(danish("skolebørn", "skol", "skole", "børn")).containsExactly("skole", "børn").inOrder()
+        assertThat(danish("sportschef", "sport", "chef")).containsExactly("sport", "chef").inOrder()
+        // o is no Danish link.
+        assertThat(danish("kirkogård", "kirke", "kirk", "gård")).isNull()
     }
 
     @Test
