@@ -9,8 +9,12 @@ in `ai/notes/oem-background-limits.md`. The user's first log (Android 16) covers
 record and, if saved right after a disappearance, no force-stop either, so ColorOS turning the service off without a
 force-stop is now a candidate too. The 2026-10-22 logs settle the scan-time case: the system unbinds the service
 ~1.2 s after the finger leaves the floating bubble, the process lives on (no crash, no kill); one later stop was a
-force-stop. Which ColorOS component does it is not in the app's log; experiments and in-app stop diagnostics are
-proposed in the note. No app change yet.
+force-stop. Which ColorOS component does it is not in the app's log; experiments for the user are in the note. An
+r/Oppo thread (seen by the owner) reports ColorOS 16 builds turning off every downloaded app's service and an update
+resetting app permissions; the user is asked to test with a second app's service on. Built on this branch (owner's
+choices, regular builds, for main and languages/main): the app's own log file (request 71 of the languages plan:
+8 MB, `noBackupFilesDir/logs`, exported before the logcat part, exit reasons at each start), a stop report in the log
+and a "Screenlate service is off" notification at every stop. Test model UPD4-UPD7.
 
 ## Work in progress (2026-10-22, night): the build chain
 

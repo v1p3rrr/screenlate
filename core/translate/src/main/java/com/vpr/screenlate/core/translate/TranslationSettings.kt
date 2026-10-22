@@ -1,6 +1,5 @@
 package com.vpr.screenlate.core.translate
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
@@ -8,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.cached
 import javax.inject.Inject

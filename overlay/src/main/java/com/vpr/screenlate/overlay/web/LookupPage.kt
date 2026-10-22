@@ -6,7 +6,6 @@ import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.MimeTypeMap
@@ -17,6 +16,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.webkit.WebViewAssetLoader
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.overlay.fonts.FontFiles
 import com.vpr.screenlate.overlay.fonts.PageFonts
 import java.io.File

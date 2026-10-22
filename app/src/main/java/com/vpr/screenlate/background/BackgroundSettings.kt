@@ -7,8 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import androidx.core.net.toUri
+import com.vpr.screenlate.core.common.log.Log
 
 /** The system settings that decide whether the bubble keeps running in the background. */
 internal object BackgroundSettings {

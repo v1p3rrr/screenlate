@@ -1,6 +1,6 @@
 package com.vpr.screenlate.core.translate
 
-import android.util.Log
+import com.vpr.screenlate.core.common.log.Log
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope

@@ -384,6 +384,10 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | UPD1 | About: libraries, notices, installed dictionaries with licenses, "What the service reads and sends", "Report a problem" opens the form (not submitted) | O | M | |
 | UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-18 |
 | UPD3 | Update check and install (release builds only) | O | D | |
+| UPD4 | The export starts with the own log (oldest first: "Process started", the exit reasons of earlier processes, scans, the service's stop report), then the logcat part; lines from before an app restart are still there | N | U LogFileTest, ExitReasonsTest, M | |
+| UPD5 | The own log keeps at most two files of 4 MB in `noBackupFilesDir/logs` (`run-as` on a debug build); uninstalling the app removes them, a log saved to `Download/Screenlate/` stays | N | U LogFileTest, M | |
+| UPD6 | Turn the service off in the accessibility settings → a banner "Screenlate service is off" without sound; a tap opens the service's settings (or the list); turning the service on removes the notification; with notifications off, no banner and a log line saying so | N | M | |
+| UPD7 | The stop report in the log: "on the enabled list: no" after the switch, the time since the last bubble touch and scan, recent windows with system package names only, and a line 3 s later | N | U ServiceStopDiagnosticsTest, M | |
 
 ### NF: non-functional
 

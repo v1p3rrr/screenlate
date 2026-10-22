@@ -44,6 +44,12 @@ a ColorOS phone. Human docs stay generic (`docs/usage.md`, "Background work"); v
   report below the switch went off the moment the process died and came back on with the service.
 - Screenlate's Background work screen opens `com.coloros.safecenter` startup screens (`background/StartupScreens.kt`);
   whether they exist on ColorOS 15/16 is not checked.
+- A Reddit thread in r/Oppo (about July 2026, "New bug on update: system auto turns off all…", seen by the owner as
+  screenshots; reddit.com is closed to the session's tools) reports ColorOS 16.0.9.403 on a Find X9 Ultra turning off
+  the accessibility services of all downloaded apps at once, in the poster's test the moment the screen was locked,
+  with background activity allowed for those apps. A Find X9 Pro on build 400 and another user did not see it. Another
+  user found all app permissions reset by the same update (an alarm app stopped working) and some recents locks
+  undone. So ColorOS 16 builds can turn off downloaded apps' services, and an update can reset per-app settings.
 
 ## Report: OPPO Reno 15, ColorOS, v0.2.3 arm64-v8a (2026-10-20)
 
@@ -167,7 +173,8 @@ Reading:
 - Only the user, a force-stop, the app's own `disableSelf()` or a privileged component can take a service off; v0.2.3
   never calls `disableSelf()`. So a ColorOS component turns it off. Which one, and on what signal, is not in the app's
   log: it needs system lines from that second.
-- Known candidates, none confirmed: a ColorOS security feature that turns off accessibility for a "non-official" app
+- Known candidates, none confirmed: a ColorOS 16 defect that turns off every downloaded app's service (the Reddit
+  thread in the ColorOS section; there on screen lock, here on another trigger), a ColorOS security feature that turns off accessibility for a "non-official" app
   behaving suspiciously (an OPPO community post describes a prompt with "Turn off accessibility"; the post now returns
   404), Play Protect's live threat detection (shows a notification), the accessibility shortcut (the user has it on;
   a tap on it turns the service off). Android 17's Advanced Protection rule against non-tool services does not apply
@@ -248,8 +255,21 @@ Questions (the Russian text for the owner to forward is in the session's report 
    (stop with Ctrl+C a few seconds after the bubble disappears; `grep -i -E "accessib|screenlate"` elsewhere), and
    `adb shell settings get secure enabled_accessibility_services` right after, which shows whether the service is
    still on the list.
+8. After the Reddit thread (ColorOS section): turn on the accessibility service of another downloaded app (any app with
+   one) and reproduce. If both go off together, ColorOS turns off downloaded apps' services as such, and the app can do
+   little beyond telling the user. Also: the exact ColorOS build (Settings → About device → Version), and whether the
+   problem began after a system update, which may also have reset the battery and startup settings.
 
 ### Possible fixes in the app
+
+Built on 2026-10-22 (`claude/competent-rhodes-6bde05`, regular builds, owner's choice): the app's own log file with
+exit reasons at each start (request 71 of the languages plan), the stop report and the notification below. The stop
+report reads, e.g.: `Service stopped; on the enabled list: no; bubble touch ended: 1180 ms ago; scan started: 3400 ms
+ago; window events in the last 10 s:` followed by one line per window that came to the front, opened or closed, system
+packages by name and other apps as "an app"; 3 s later a line checks the list again. The notification shows at every
+stop (the app cannot tell a user's switch from the system's), as a banner without sound, and is cancelled when the
+service connects again; without the notification permission it is only a log line. Whether ColorOS's windows show up
+by name depends on the app seeing those packages (Android 11 package visibility); unseen ones read "an app".
 
 | Fix | What it does | Cost |
 | --- | --- | --- |

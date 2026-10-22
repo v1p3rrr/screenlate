@@ -10,8 +10,8 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.vpr.screenlate.core.common.log.Log
 
 /**
  * Holds a quiet foreground notification for as long as the "keep the service running" setting is on.

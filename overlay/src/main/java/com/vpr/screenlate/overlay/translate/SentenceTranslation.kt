@@ -1,8 +1,8 @@
 package com.vpr.screenlate.overlay.translate
 
 import android.content.Context
-import android.util.Log
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.translate.SentenceTranslator
 import com.vpr.screenlate.core.translate.TranslationError

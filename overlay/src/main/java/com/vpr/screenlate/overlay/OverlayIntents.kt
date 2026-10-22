@@ -2,7 +2,7 @@ package com.vpr.screenlate.overlay
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import com.vpr.screenlate.core.common.log.Log
 
 /** How the overlay opens the app, and the extras it puts on those intents. */
 object OverlayIntents {

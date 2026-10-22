@@ -1,11 +1,11 @@
 package com.vpr.screenlate.dictionary.api.languages
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import javax.inject.Inject

@@ -2,13 +2,13 @@ package com.vpr.screenlate.core.ocr
 
 import android.graphics.Bitmap
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.ocr.lens.LensOcrEngine
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import android.util.Log
 import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.cancellation.CancellationException

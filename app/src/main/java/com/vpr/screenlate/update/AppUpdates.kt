@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import com.vpr.screenlate.BuildConfig
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
