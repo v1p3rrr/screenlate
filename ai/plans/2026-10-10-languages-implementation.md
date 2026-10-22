@@ -244,11 +244,15 @@ Requests 1–19 are in the previous plan. New ones:
     app crashed with `BadTokenException` in `OverlayController.attachWindows`, called from `applySettings`, after the
     service was turned off and on through `settings put`. A plain bug, fixed without questions in a session of its own;
     check whether it plays a part in the ColorOS report (`notes/oem-background-limits.md`), where the system turns the
-    service off and on. The same session changes the "service is off" notification (owner, 2026-10-22): it is posted
+    service off and on. Fixed on `claude/jolly-cray-bc8ce9` (2026-10-22): the system takes the window token at unbind
+    before the service hears of it; windows the system no longer takes are skipped and logged
+    (`OverlayWindows.add`), the overlay is added whole or not at all. Reproduced and checked with jdb (UPD8). No part
+    in the ColorOS logs (no crash there).
+    The same session changes the "service is off" notification (owner, 2026-10-22): it is posted
     3 s after a stop and only if the service has not connected again by then, instead of at once at every stop. Every
     `uiautomator dump` pauses accessibility services for about 1.5 s, so each dump gave a banner that vanished a moment
     later; a short rebind on a phone does the same. A switch turned off and a system unbind without a rebind still
-    get the notification. Merged into main and languages/main after the emulator check.
+    get the notification. Both checked on the emulator (UPD8, UPD9) and merged into main and languages/main on 2026-10-22.
 
 ## Decisions
 

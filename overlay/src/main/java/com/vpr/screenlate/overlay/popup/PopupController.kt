@@ -42,13 +42,13 @@ class PopupController(
 
     val isShowing: Boolean get() = visible
 
-    /** Adds the hidden window. */
-    fun attach() {
-        if (attached) return
+    /** Adds the hidden window; false when the system no longer takes the service's windows ([OverlayWindows.add]). */
+    fun attach(): Boolean {
+        if (attached) return true
         setHiddenParams()
         page.container.visibility = View.GONE
-        windowManager.addView(page.container, params)
-        attached = true
+        attached = OverlayWindows.add(windowManager, page.container, params)
+        return attached
     }
 
     fun detach() {
@@ -61,7 +61,7 @@ class PopupController(
 
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
     fun show(state: String, word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
-        if (!attached) attach()
+        if (!attach()) return
         val area = Box(screen.left + edgeMargin, screen.top + edgeMargin, screen.right - edgeMargin, screen.bottom - edgeMargin)
         val size = PopupPlacement.size(screen, maxWidth)
         val placed = PopupPlacement.place(word, bubble, size, area, margin = edgeMargin * 2)

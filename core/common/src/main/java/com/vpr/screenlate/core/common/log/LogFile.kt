@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit
 /**
  * The app's own log in [directory], kept across process deaths: [CURRENT] takes new lines and becomes [PREVIOUS] once
  * it reaches [maxFileBytes], so at most about twice that is kept. Lines are written in call order on one background
- * thread, each straight to the file, so a process that is killed loses only lines still queued.
+ * thread, each straight to the file, so a process that is killed loses only lines still queued. [flushMs] and
+ * [crashFlushMs] limit how long [copyTo] and [writeNow] wait for the queued lines.
  */
 class LogFile(
     private val directory: File,
@@ -23,6 +24,8 @@ class LogFile(
     private val clock: () -> Long = System::currentTimeMillis,
     private val zone: ZoneId = ZoneId.systemDefault(),
     private val processId: Int = android.os.Process.myPid(),
+    private val flushMs: Long = FLUSH_MS,
+    private val crashFlushMs: Long = CRASH_FLUSH_MS,
 ) {
     private val lock = Any()
 
@@ -52,12 +55,12 @@ class LogFile(
     /** Writes a line on the calling thread after the queued ones, for a process that is about to end. */
     fun writeNow(level: Char, tag: String, message: String, error: Throwable? = null) {
         val text = format(level, tag, message, error)
-        if (Thread.currentThread() !== writerThread) flush(CRASH_FLUSH_MS)
+        if (Thread.currentThread() !== writerThread) flush(crashFlushMs)
         write(text)
     }
 
     /** Waits up to [timeoutMs] for the queued lines to reach the file. */
-    fun flush(timeoutMs: Long = FLUSH_MS) {
+    fun flush(timeoutMs: Long = flushMs) {
         runCatching { executor.submit {}.get(timeoutMs, TimeUnit.MILLISECONDS) }
     }
 
