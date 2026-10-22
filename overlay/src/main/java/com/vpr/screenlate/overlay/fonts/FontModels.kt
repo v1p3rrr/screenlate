@@ -38,7 +38,9 @@ data class CatalogFontFile(val url: String, val weight: String = "400")
  * @param language the code of the language whose page alone offers it (`Language.code`); null for a font offered by
  *   the letters it has.
  * @param subsets the Google Fonts subsets the font covers; a font without [language] is offered for every language
- *   whose [LanguageSupport.fontSubsets] are among them.
+ *   whose [LanguageSupport.fontSubsets] are among them and whose [LanguageSupport.fontLetters] it has.
+ * @param letters the letters and marks below U+2000 the font has, as hex ranges (`0041-005A,00AA`), written by
+ *   `scripts/fonts/font_letters.py`; null for a font made for one language.
  * @param description by the key of an interface locale (`localeKey`: the language, `zh-Hant` for Traditional Chinese).
  */
 @Serializable
@@ -47,6 +49,7 @@ data class CatalogFont(
     val family: String,
     val language: String? = null,
     val subsets: List<String> = emptyList(),
+    val letters: String? = null,
     val description: Map<String, String> = emptyMap(),
     val files: List<CatalogFontFile>,
     val sizeMb: Double,
@@ -58,7 +61,20 @@ data class CatalogFont(
     fun isOfferedFor(language: Language): Boolean {
         this.language?.let { return it == language.code }
         val needed = language.support.fontSubsets
-        return needed.isNotEmpty() && subsets.containsAll(needed)
+        return needed.isNotEmpty() && subsets.containsAll(needed) && hasLetters(language.support.fontLetters)
+    }
+
+    /** Whether the font has each of [text]'s characters and their capitals; true when its letters are not listed. */
+    fun hasLetters(text: String): Boolean {
+        val ranges = letterRanges ?: return true
+        return (text + text.uppercase(Locale.ROOT)).codePoints().allMatch { point -> ranges.any { point in it } }
+    }
+
+    private val letterRanges: List<IntRange>? by lazy {
+        letters?.split(',')?.map { range ->
+            val (first, last) = range.split('-').let { it.first() to it.last() }
+            first.toInt(16)..last.toInt(16)
+        }
     }
 }
 

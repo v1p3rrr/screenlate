@@ -23,6 +23,7 @@ object UkrainianSupport : SpacedLanguageSupport() {
     /** The apostrophe ʼ (U+02BC) is a modifier letter, outside the Latin and Cyrillic blocks. */
     override val systemFonts = CYRILLIC_SYSTEM_FONTS.copy(unicodeRange = CYRILLIC_SYSTEM_FONTS.unicodeRange + ", U+02BC")
     override val fontSubsets = setOf("latin", "cyrillic")
+    override val fontLetters = "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя"
 
     /** Wiktionary has recordings of common words; Lingua Libre's are mostly rarer words and phrases. */
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")

@@ -16,6 +16,7 @@ object SwedishSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("se")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_FONT_SUBSETS
+    override val fontLetters = "åäö"
 
     /** Wiktionary has recordings of more Swedish words than Lingua Libre. */
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")

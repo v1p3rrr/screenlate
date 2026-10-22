@@ -6,7 +6,9 @@ import path from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
-import {hebrewTransforms, kazakhTransforms, kyrgyzTransforms, persianTransforms} from './own-transforms.js';
+import {
+    hebrewTransforms, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, withOwnTransforms,
+} from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const assets = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/assets/yomitan-language');
@@ -784,5 +786,44 @@ test('romanian rules and cedilla letters stay out of other languages', () => {
         assert.ok(!queried(language, 'consiliul').has('consiliu'), language);
         assert.ok(!queried(language, 'caselor').has('case'), language);
         assert.ok(!queried(language, 'aflată').has('aflat'), language);
+    }
+});
+
+test('latin u before a vowel is tried as v, one at a time and not after q or g', () => {
+    assert.ok(queried('la', 'uita').has('vita'));
+    assert.ok(queried('la', 'Uergilius').has('Vergilius'));
+    assert.ok(queried('la', 'seruus').has('servus'));
+    // Both u of uiuere at once would turn uiuo into vivo where the text means uiuo; Wiktionary has the u spellings too.
+    assert.ok(!queried('la', 'uiuere').has('vivere'));
+    for (const text of ['quae', 'lingua', 'sanguis']) {
+        assert.ok([...queried('la', text)].every((d) => !/v/i.test(d)), text);
+    }
+    // æ and œ read as ae and oe, as Yomitan's Latin code has them.
+    assert.ok(queried('la', 'Aquæ').has('aquae'));
+});
+
+test('latin enclitics -que, -ne and -ve come off as the outermost ending', () => {
+    assert.deepEqual([...candidatesTo('la', 'magisque', 'magis')[0].r[0]], ['-que']);
+    assert.deepEqual([...candidatesTo('la', 'videsne', 'vides')[0].r[0]], ['-ne']);
+    assert.deepEqual([...candidatesTo('la', 'mortuusve', 'mortuus')[0].r[0]], ['-ve']);
+    assert.ok(candidatesTo('la', 'rosaeque', 'rosa').some((c) => c.r.some((r) => r.includes('-que') && r.includes('plural'))));
+    // The engine drops these where the text has an entry of its own (atque is not at + que).
+    assert.ok(queried('la', 'atque').has('at'));
+    // Two letters stay before the enclitic.
+    assert.ok(!queried('la', 'ique').has('i'));
+    assert.ok(!queried('la', 'ene').has('e'));
+    assert.ok(queried('la', 'neque').has('ne'));
+});
+
+test('the own enclitics may not take a name yomitan already gives a latin rule', () => {
+    const yomitan = {language: 'la', conditions: {}, transforms: {'-que': {name: '-que', rules: []}}};
+    assert.throws(() => withOwnTransforms(yomitan, latinEnclitics));
+});
+
+test('latin u for v and the enclitics stay out of other languages', () => {
+    for (const language of ['it', 'es', 'pt', 'ro', 'en', 'fr']) {
+        assert.ok(!queried(language, 'uita').has('vita'), language);
+        assert.ok(!queried(language, 'magisque').has('magis'), language);
+        assert.ok(!queried(language, 'videsne').has('vides'), language);
     }
 });

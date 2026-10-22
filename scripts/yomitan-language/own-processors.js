@@ -219,3 +219,27 @@ export const romanianCommaLetters = {
     description: 'şi → și, ţară → țară',
     process: (str) => [str, str.replace(/[şţŞŢ]/g, (letter) => ROMANIAN_COMMA_LETTERS[letter])],
 };
+
+/**
+ * Latin text with u for consonantal v, as scholarly editions print it (uita, uenit, Uergilius): v is also tried for
+ * each u before a vowel in the text's first word, one at a time (uita → vita, nouus → novus), and never after q or g
+ * (quae, lingua). A word needing two (uiuere for vivere) is not reached; the text as written comes first.
+ * @type {import('language').TextProcessor}
+ */
+export const latinUAsV = {
+    name: 'u as v',
+    description: 'uita → vita, Uergilius → Vergilius',
+    process: (str) => {
+        const word = /^[\p{L}\p{M}]*/u.exec(str)[0];
+        const out = [str];
+        for (let i = 0; i < word.length - 1; i++) {
+            if ((word[i] === 'u' || word[i] === 'U') && LATIN_VOWEL.test(word[i + 1]) && !(i > 0 && /[qgQG]/.test(word[i - 1]))) {
+                out.push(str.slice(0, i) + (word[i] === 'u' ? 'v' : 'V') + str.slice(i + 1));
+            }
+        }
+        return out;
+    },
+};
+
+/** A Latin vowel, with or without its length mark. */
+const LATIN_VOWEL = /[aeiouyāēīōūȳăĕĭŏŭAEIOUYĀĒĪŌŪȲ]/;

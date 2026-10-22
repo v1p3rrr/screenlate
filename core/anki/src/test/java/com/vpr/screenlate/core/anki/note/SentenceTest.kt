@@ -151,6 +151,16 @@ class SentenceTest {
     }
 
     @Test
+    fun latinSentenceKeepsPraenominaAndEraBeforeLowercaseAndEndsAtLowercaseSex() {
+        val paragraph = "Pluebat. C. Iulius Caesar et M. Tullius Cicero Romae erant. «Veni, vidi, vici» dixit. " +
+            "Natus est anno 100 a.C.n. et mortuus anno 44 a.C.n. Liberi erant sex. Deinde abierunt."
+        assertThat(extract(paragraph, "Cicero", Language.LATIN).text).isEqualTo("C. Iulius Caesar et M. Tullius Cicero Romae erant.")
+        assertThat(extract(paragraph, "dixit", Language.LATIN).text).isEqualTo("«Veni, vidi, vici» dixit.")
+        assertThat(extract(paragraph, "Natus", Language.LATIN).text).isEqualTo("Natus est anno 100 a.C.n. et mortuus anno 44 a.C.n.")
+        assertThat(extract(paragraph, "Liberi", Language.LATIN).text).isEqualTo("Liberi erant sex.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

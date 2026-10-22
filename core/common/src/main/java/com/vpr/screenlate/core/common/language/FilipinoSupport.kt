@@ -21,6 +21,7 @@ object FilipinoSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("ph")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_FONT_SUBSETS
+    override val fontLetters = "ñ"
 
     /** Both names, as the systems differ: "Filipino (Tagalog)". */
     override fun nameIn(locale: Locale): String {

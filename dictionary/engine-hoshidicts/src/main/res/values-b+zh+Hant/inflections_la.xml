@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">複數</string>
+    <string name="inflection_la_plural">複數變格</string>
+    <string name="inflection_la_feminine_label">陰性</string>
+    <string name="inflection_la_feminine">形容詞形式</string>
+    <string name="inflection_la_neuter_label">中性</string>
+    <string name="inflection_la_neuter">形容詞形式</string>
+    <string name="inflection_la_ablative_label">奪格</string>
+    <string name="inflection_la_ablative">奪格</string>
+    <string name="inflection_la_que">附著詞「和」（magis → magisque）</string>
+    <string name="inflection_la_ne">表示疑問的附著詞（vides → videsne）</string>
+    <string name="inflection_la_ve">附著詞「或」（mortuus → mortuusve）</string>
+</resources>

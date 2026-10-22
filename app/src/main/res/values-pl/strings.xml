@@ -367,6 +367,8 @@
     <string name="audio_region_switzerland">Szwajcaria</string>
     <string name="audio_region_france">Francja</string>
     <string name="audio_region_canada">Kanada</string>
+    <string name="audio_region_classical">Wymowa klasyczna</string>
+    <string name="audio_region_ecclesiastical">Wymowa kościelna</string>
     <string name="audio_region_other">Inne regiony</string>
     <string name="audio_url_missing">Brak URL</string>
     <string name="audio_tts_hint">Tylko odtwarzanie; notatki otrzymują dźwięk z innych źródeł.</string>
@@ -513,6 +515,7 @@
     <string name="popup_font_script_only_no">Tylko dla tekstu norweskiego</string>
     <string name="popup_font_script_only_da">Tylko dla tekstu duńskiego</string>
     <string name="popup_font_script_only_ro">Tylko dla tekstu rumuńskiego</string>
+    <string name="popup_font_script_only_la">Tylko dla tekstu po łacinie</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

@@ -20,6 +20,7 @@ object RussianSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("ru")
     override val systemFonts = CYRILLIC_SYSTEM_FONTS
     override val fontSubsets = setOf("latin", "cyrillic")
+    override val fontLetters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 
     /** Wiktionary has recordings of more Russian words than Lingua Libre. */
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")

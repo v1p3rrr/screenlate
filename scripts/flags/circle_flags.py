@@ -3,7 +3,7 @@
     python scripts/flags/circle_flags.py overlay/src/main/res/drawable [--source <directory of SVG files>]
 
 Without --source the SVG files are downloaded from the circle-flags repository at COMMIT. Each flag becomes
-`flag_<country>.xml`. The flags are drawn on a 512 x 512 square and masked by a circle; the drawable clips them to the
+`flag_<country>.xml`; a language's own flag (`lang_la`, circle-flags' `language/la.svg`) becomes `flag_lang_la.xml`. The flags are drawn on a 512 x 512 square and masked by a circle; the drawable clips them to the
 same circle. Only the elements the flags use are converted (path, circle, rect); anything else stops the script, so a
 new flag that needs more is noticed. circle-flags is MIT licensed (see NOTICE).
 """
@@ -21,7 +21,9 @@ URL = "https://raw.githubusercontent.com/HatScripts/circle-flags/{commit}/flags/
 COUNTRIES = [
     "jp", "us", "gb", "cn", "kr", "es", "fr", "de", "it", "br", "pt", "pl", "tr", "lv", "nl", "cz", "id", "my", "ph", "vn", "ru",
     "hr", "rs", "ua", "by", "gr", "in", "bd", "ge", "am", "th", "kh", "sa", "ir", "il", "kz", "kg", "se", "no", "dk", "ro",
+    "lang_la",
 ]
+LANGUAGE_FLAG = "lang_"
 
 SVG = "{http://www.w3.org/2000/svg}"
 SIZE = 512
@@ -125,11 +127,17 @@ def vector_drawable(svg_text, country, commit=COMMIT):
     return "\n".join(lines) + "\n"
 
 
-def read_svg(country, source):
+def svg_name(flag):
+    """The file's path in circle-flags' flags folder without .svg: `language/la` for a language's own flag."""
+    return "language/" + flag[len(LANGUAGE_FLAG):] if flag.startswith(LANGUAGE_FLAG) else flag
+
+
+def read_svg(flag, source):
+    name = svg_name(flag)
     if source:
-        with open(os.path.join(source, f"{country}.svg"), encoding="utf-8") as file:
+        with open(os.path.join(source, *f"{name}.svg".split("/")), encoding="utf-8") as file:
             return file.read()
-    with urllib.request.urlopen(URL.format(commit=COMMIT, country=country), timeout=30) as response:
+    with urllib.request.urlopen(URL.format(commit=COMMIT, country=name), timeout=30) as response:
         return response.read().decode("utf-8")
 
 
@@ -140,7 +148,7 @@ def main(argv):
     args = parser.parse_args(argv)
     os.makedirs(args.out, exist_ok=True)
     for country in COUNTRIES:
-        drawable = vector_drawable(read_svg(country, args.source), country)
+        drawable = vector_drawable(read_svg(country, args.source), svg_name(country))
         with open(os.path.join(args.out, f"flag_{country}.xml"), "w", encoding="utf-8", newline="\n") as file:
             file.write(drawable)
         print(f"flag_{country}.xml: {len(drawable)} bytes")

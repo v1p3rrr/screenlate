@@ -44,6 +44,10 @@ Romanian on `languages/ro` (from `languages/da`): the cedilla processor, keys wi
 pronoun joined with a hyphen, the app's article and agreement endings applied only where the text has no entry
 (an engine filter), Cyrillic headwords left out; plan questions 16 and 17 decided provisionally; its emulator cases
 wait as well.
+Latin on `languages/la` (from `languages/ro`): lemma names without macrons, u read as v, the enclitics as rules
+with the same entry filter, praenomina held only when capitalized, the classical and ecclesiastical pronunciations
+as audio regions, Latin's own flag, and a letter check for catalog fonts across languages; plan questions 18-20
+decided provisionally; its emulator cases wait as well.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

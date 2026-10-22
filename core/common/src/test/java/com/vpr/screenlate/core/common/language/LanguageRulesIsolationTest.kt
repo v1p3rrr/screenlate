@@ -218,6 +218,12 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.ROMANIAN)
         val beforeCapital = "anul 44 î.Hr. Apoi"
         assertThat(periodEnding.where { !it.endsSentence(beforeCapital, beforeCapital.indexOf(". ")) }).isEmpty()
+        // Latin praenomina (Sex. for Sextus), which hold only capitalized, and a.C.n., only before a lowercase word.
+        assertThat(periodEnding.where { holds(it, "Sex. Pompeius") }).containsExactly(Language.LATIN)
+        assertThat(periodEnding.where { holds(it, "sex. Deinde") }).isEmpty()
+        val latinEra = "anno 44 a.C.n. natus"
+        assertThat(periodEnding.where { !it.endsSentence(latinEra, latinEra.lastIndexOf('.')) }).containsExactly(Language.LATIN)
+        assertThat(spaced.filter { it.capitalizedAbbreviations.isNotEmpty() }.map { it.language }).containsExactly(Language.LATIN)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -309,7 +315,7 @@ class LanguageRulesIsolationTest {
         // Romanian leaves out the Moldovan Cyrillic spellings Wiktionary links its words to.
         assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
         assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
-        assertThat(all.where { it.inflectionRulesOnlyWithoutEntry }).containsExactly(Language.ROMANIAN)
+        assertThat(all.where { it.inflectionRulesOnlyWithoutEntry }).containsExactly(Language.ROMANIAN, Language.LATIN)
     }
 
     @Test

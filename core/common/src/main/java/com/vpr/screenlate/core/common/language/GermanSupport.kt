@@ -15,6 +15,7 @@ object GermanSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("de")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_FONT_SUBSETS
+    override val fontLetters = "äöüß"
 
     /** Haustürschlüssel → Haus, Tür, Schlüssel; Arbeitszimmer → Arbeit, Zimmer. */
     override val compoundLinks = listOf("s", "es", "n")

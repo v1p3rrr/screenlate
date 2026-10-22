@@ -20,6 +20,7 @@ object BelarusianSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("by")
     override val systemFonts = CYRILLIC_SYSTEM_FONTS
     override val fontSubsets = setOf("latin", "cyrillic")
+    override val fontLetters = "абвгдеёжзійклмнопрстуўфхцчшыьэюя"
 
     /** Wiktionary has recordings of more Belarusian words than Lingua Libre. */
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")

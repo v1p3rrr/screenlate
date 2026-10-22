@@ -185,6 +185,13 @@ interface LanguageSupport {
      */
     val fontSubsets: Set<String> get() = emptySet()
 
+    /**
+     * Letters beyond a-z the language needs of a font offered by [fontSubsets], in lower case (their capitals are needed
+     * too) and capitals without a lower case of their own (Turkish İ). A font whose listed letters lack one of them is
+     * not offered, though its subsets match: Atkinson Hyperlegible Next declares Latin Extended without ō.
+     */
+    val fontLetters: String get() = ""
+
     /** Sample text for font previews, with characters whose forms differ between fonts or regions. */
     val fontSample: String
 
@@ -196,7 +203,8 @@ interface LanguageSupport {
 
     /**
      * Countries whose round flag may stand for the language (ISO 3166-1 alpha-2, lower case), the default first; the
-     * Languages screen offers the others. Each has a `flag_<country>` drawable.
+     * Languages screen offers the others. A language with a flag of its own and no country lists `lang_<code>` (Latin).
+     * Each has a `flag_<country>` drawable.
      */
     val flagCountries: List<String>
 
@@ -506,4 +514,5 @@ val Language.support: LanguageSupport
         Language.NORWEGIAN -> NorwegianSupport
         Language.DANISH -> DanishSupport
         Language.ROMANIAN -> RomanianSupport
+        Language.LATIN -> LatinSupport
     }

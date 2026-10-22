@@ -78,7 +78,13 @@ detector is downloaded with it and not listed on its own. The recommended marks 
 The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.xml`) are generated from circle-flags
 (MIT) at a pinned commit: `python scripts/flags/circle_flags.py overlay/src/main/res/drawable`. A language support
 class lists its flag countries (`flagCountries`); add a new country to `COUNTRIES` in the script and to `Flags` in
-`overlay`, whose unit test checks that every listed country has a drawable.
+`overlay`, whose unit test checks that every listed country has a drawable. A language with a flag of its own (Latin)
+lists it as `lang_<code>`, taken from circle-flags' `language/<code>.svg`.
+
+Downloadable fonts offered by their Google Fonts subsets (catalog entries without `language` in
+`overlay/src/main/assets/fonts/catalog.json`) list the letters they have: `python scripts/fonts/font_letters.py
+overlay/src/main/assets/fonts/catalog.json --write` (fontTools) writes them as hex ranges. Such a font is offered for a
+language only when it has the letters of the language's `fontLetters`; run the script after adding or updating one.
 
 The table of Simplified and Traditional Chinese characters (`ChineseScriptTable.kt` in `core:common`) is generated
 from the Unihan database (Unicode License V3) and CC-CEDICT (CC BY-SA 4.0):

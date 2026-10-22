@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">множественное число</string>
+    <string name="inflection_la_plural">Склонение во множественном числе</string>
+    <string name="inflection_la_feminine_label">женский род</string>
+    <string name="inflection_la_feminine">Форма прилагательного</string>
+    <string name="inflection_la_neuter_label">средний род</string>
+    <string name="inflection_la_neuter">Форма прилагательного</string>
+    <string name="inflection_la_ablative_label">аблатив</string>
+    <string name="inflection_la_ablative">Аблатив</string>
+    <string name="inflection_la_que">Энклитика «и» (magisque от magis)</string>
+    <string name="inflection_la_ne">Вопросительная энклитика (videsne от vides)</string>
+    <string name="inflection_la_ve">Энклитика «или» (mortuusve от mortuus)</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">liczba mnoga</string>
+    <string name="inflection_la_plural">Odmiana w liczbie mnogiej</string>
+    <string name="inflection_la_feminine_label">rodzaj żeński</string>
+    <string name="inflection_la_feminine">Forma przymiotnika</string>
+    <string name="inflection_la_neuter_label">rodzaj nijaki</string>
+    <string name="inflection_la_neuter">Forma przymiotnika</string>
+    <string name="inflection_la_ablative_label">ablatyw</string>
+    <string name="inflection_la_ablative">Ablatyw</string>
+    <string name="inflection_la_que">Enklityka „i” (magisque od magis)</string>
+    <string name="inflection_la_ne">Enklityka pytająca (videsne od vides)</string>
+    <string name="inflection_la_ve">Enklityka „lub” (mortuusve od mortuus)</string>
+</resources>

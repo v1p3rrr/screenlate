@@ -361,6 +361,8 @@
     <string name="audio_region_switzerland">Schweiz</string>
     <string name="audio_region_france">Frankreich</string>
     <string name="audio_region_canada">Kanada</string>
+    <string name="audio_region_classical">Klassische Aussprache</string>
+    <string name="audio_region_ecclesiastical">Kirchliche Aussprache</string>
     <string name="audio_region_other">Andere Regionen</string>
     <string name="audio_url_missing">Keine URL</string>
     <string name="audio_tts_hint">Nur Wiedergabe; Notizen erhalten Audio aus den anderen Quellen.</string>
@@ -507,6 +509,7 @@
     <string name="popup_font_script_only_no">Nur für norwegischen Text</string>
     <string name="popup_font_script_only_da">Nur für dänischen Text</string>
     <string name="popup_font_script_only_ro">Nur für rumänischen Text</string>
+    <string name="popup_font_script_only_la">Nur für Text auf Latein</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

@@ -1614,6 +1614,24 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   unticked, Paddle v5 Latin recommended ("more accurate", ML Kit stays the main model).
 - No OCR letter fix: ML Kit drops marks (ț, ș, ă, î), which the keys without marks cover.
 
+### Latin on `languages/la` (2026-10-22)
+
+- `Language.LATIN` (`la`), `LatinSupport`: glyph LA, Latin's own flag (`lang_la`), the Latin fonts with latin-ext
+  that have ā ē ī ō ū æ œ, Wiktionary first for audio, the classical and ecclesiastical pronunciations as audio
+  regions, no ordinal period, “…” and «…» paired, the praenomina held only when capitalized
+  (`capitalizedAbbreviations`), the abbreviation lists of `notes/language-rules.md`.
+- Bundle (`la.js`, 61 KB): Yomitan's descriptor (diacritics removed, æ œ, plural, feminine, neuter and ablative
+  rules), our u-as-v processor, and the enclitics -que, -ne, -ve added to Yomitan's rules (`extendedTransforms`); the
+  engine's entry filter (`inflectionRulesOnlyWithoutEntry`) drops results reached only through rules where the text
+  has an entry (atque).
+- Import: the lemma names of forms lose macrons and breves (`HeadwordMarks` without `everyHeadword`).
+- Catalog: wty la into en ru de es fr it ja ko pl pt zh and the transcription, all ticked (la-tr 1,091 and la-vi 166
+  words stay under the line); no wordfreq list; Paddle v6 recommended, Paddle v5 Latin and Tesseract `lat` fast and
+  best unticked.
+- Fonts across languages: each language with font subsets lists its letters (`fontLetters`) and the catalog lists
+  each subset font's letters (`scripts/fonts/font_letters.py`); a font missing one is not offered. Only Latin
+  (Atkinson, ō) loses a font now; Esperanto will lose Atkinson as well.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

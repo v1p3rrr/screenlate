@@ -44,6 +44,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val abbreviationsBeforeLowercase: Set<String> = emptySet()
 
     /**
+     * Abbreviations that keep the sentence going only when written with a capital, lowercase: the Latin praenomina
+     * (Sex. for Sextus, M. for Marcus), which in lowercase are words or units that end sentences (sex "six", m).
+     */
+    open val capitalizedAbbreviations: Set<String> = emptySet()
+
+    /**
      * Letters as their names write them where they stand for initials or the letters of an acronym (Hindi ए, बी, सी for
      * A, B, C), lowercase: two or more joined by periods keep the sentence going ("ए.पी.जे.", "आई.आई.टी."). A single one
      * counts only when [abbreviations] lists it.
@@ -77,8 +83,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com), it closes an
-     * abbreviation (a paired letter only beside another, see [pairedLetters]) or [initials], or, with [ordinalPeriod],
-     * an ordinal number. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
+     * abbreviation (a paired letter only beside another, see [pairedLetters]; one of [capitalizedAbbreviations] only
+     * when capitalized) or [initials], or, with [ordinalPeriod], an ordinal number. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
      */
     override fun endsSentence(text: String, index: Int): Boolean {
         val character = text[index]
@@ -91,6 +97,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             return !hasPartner(text, index - 1, index)
         }
         if (word.lowercaseIn(abbreviationsBeforeLowercase)) return !lowercaseOrNumberAfter(text, index)
+        if (word.firstOrNull()?.isUpperCase() == true && word.lowercaseIn(capitalizedAbbreviations)) return false
         if ('.' in word && word.split('.').all { it.lowercaseIn(initials) }) return false
         return !word.lowercaseIn(abbreviations)
     }

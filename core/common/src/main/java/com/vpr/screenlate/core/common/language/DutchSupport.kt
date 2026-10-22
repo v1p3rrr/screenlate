@@ -19,6 +19,7 @@ object DutchSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("nl")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_EXT_FONT_SUBSETS
+    override val fontLetters = "éëïóöü"
 
     /** Stadsdeel → stad, deel; boekenkast → boeken, kast; the old spelling pannekoek → panne, koek. */
     override val compoundLinks = listOf("s", "en", "e")

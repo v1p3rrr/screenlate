@@ -238,6 +238,21 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `latin offers eleven wiktionaries, its transcription and paddle v6, ticked, the other models and no frequency list`() {
+        val latin = catalog!!.entries.filter { it.isFor(Language.LATIN) }
+        assertThat(latin.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-la-en", "wiktionary-la-ru", "wiktionary-la-de", "wiktionary-la-es", "wiktionary-la-fr",
+            "wiktionary-la-it", "wiktionary-la-ja", "wiktionary-la-ko", "wiktionary-la-pl", "wiktionary-la-pt",
+            "wiktionary-la-zh", "wiktionary-la-transcription", "paddle-v6-la",
+        )
+        assertThat(latin.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-lat", "tesseract-best-lat", "paddle-latin-la", "paddle-detector-v5-la", "paddle-detector-v6-la",
+        )
+        assertThat(latin.filter { it.category == CatalogCategory.FREQUENCY }).isEmpty()
+        assertThat(latin.first { it.id == "wiktionary-la-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (la–en)")
+    }
+
+    @Test
     fun `norwegian lists bokmål, norwegian and nynorsk wiktionaries, one ticked per gloss language, and bokmål's transcription`() {
         val norwegian = catalog!!.entries.filter { it.isFor(Language.NORWEGIAN) }
         assertThat(norwegian.filter { it.recommended }.map { it.id }).containsExactly(

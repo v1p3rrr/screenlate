@@ -38,6 +38,7 @@ object PersianSupport : SpacedLanguageSupport() {
 
     /** Downloadable fonts made for the Arabic script, Persian ones among them. */
     override val fontSubsets = setOf(ARABIC_FONT_SUBSET)
+    override val fontLetters = "ءآأؤئابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی"
 
     /** The phone's fonts for the Arabic script, which Persian shares. */
     override val systemFonts = ArabicSupport.systemFonts

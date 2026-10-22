@@ -368,6 +368,8 @@
     <string name="audio_region_switzerland">Швейцария</string>
     <string name="audio_region_france">Франция</string>
     <string name="audio_region_canada">Канада</string>
+    <string name="audio_region_classical">Классическое произношение</string>
+    <string name="audio_region_ecclesiastical">Церковное произношение</string>
     <string name="audio_region_other">Другие регионы</string>
     <string name="audio_url_missing">Нет URL</string>
     <string name="audio_tts_hint">Только воспроизведение; в карточки добавляется аудио из других источников.</string>
@@ -514,6 +516,7 @@
     <string name="popup_font_script_only_no">Только для норвежского текста</string>
     <string name="popup_font_script_only_da">Только для датского текста</string>
     <string name="popup_font_script_only_ro">Только для румынского текста</string>
+    <string name="popup_font_script_only_la">Только для текста на латыни</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

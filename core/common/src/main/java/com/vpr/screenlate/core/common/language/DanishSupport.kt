@@ -16,6 +16,7 @@ object DanishSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("dk")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_FONT_SUBSETS
+    override val fontLetters = "æøå"
 
     /**
      * »…« opens with » and closes with «, the reverse of «…»; English quotes are common too. „…“ is rare and its “

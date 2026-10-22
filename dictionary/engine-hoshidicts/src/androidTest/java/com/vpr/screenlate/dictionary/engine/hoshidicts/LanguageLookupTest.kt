@@ -804,6 +804,49 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun latinFindsLemmasNamedWithMacronsUAsVAndEncliticsOnlyWithoutAnEntry() = runTest {
+        val imported = engine.import(latinDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val latin = LookupOptions(language = Language.LATIN)
+        suspend fun first(text: String) = engine.lookup(text, latin).first()
+        suspend fun all(text: String) = engine.lookup(text, latin).map { it.term.expression }
+
+        // Forms name their lemmas with vowel lengths (amō), which the headwords lack; text with them finds them too.
+        assertThat(all("amat")).contains("amo")
+        assertThat(all("Romae")).contains("Roma")
+        assertThat(all("Rōmae")).contains("Roma")
+        // A u before a vowel is read as v, as scholarly editions write the consonant.
+        assertThat(first("uita").term.expression).isEqualTo("vita")
+        // An enclitic comes off where the text has no entry of its own: atque is not at + que.
+        val more = first("magisque")
+        assertThat(more.term.expression).isEqualTo("magis")
+        assertThat(more.trace.map { it.name }).containsExactly("-que")
+        assertThat(more.trace.first().description).isNotEmpty()
+        assertThat(all("videsque")).contains("video")
+        assertThat(all("atque")).containsExactly("atque")
+    }
+
+    /** Rows as Wiktionary's Latin exports write them: headwords without vowel lengths, lemma names of forms with them. */
+    private fun latinDictionary(): File = zip(
+        "la.zip",
+        "index.json" to """{"title":"Test Latin","revision":"1","format":3,"sourceLanguage":"la"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["amo","amō","v","v",0,["to love"],1,""],
+              ["amat","","non-lemma","v",0,[["amō",["third-person singular present active indicative"]]],2,""],
+              ["magis","","adv not-comp","adv",0,["more"],3,""],
+              ["at","","conj","",0,["but"],4,""],
+              ["atque","","conj","",0,["and also"],5,""],
+              ["vita","vīta","n decl-1 fem","n",0,["life"],6,""],
+              ["Roma","Rōma","name decl-1 fem sg","",0,["Rome"],7,""],
+              ["Romae","Rōmae","non-lemma","",0,[["Rōma",["genitive/dative/locative singular"]]],8,""],
+              ["video","videō","v","v",0,["to see"],9,""],
+              ["vides","vidēs","non-lemma","v",0,[["videō",["second-person singular present active indicative"]]],10,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

@@ -826,6 +826,15 @@ internal object YomitanInflections {
             "-lor" to Strings(R.string.inflection_ro_lor_label, R.string.inflection_ro_lor),
             "agreement" to Strings(R.string.inflection_ro_agreement_label, R.string.inflection_ro_agreement),
         ),
+        "la" to mapOf(
+            "plural" to Strings(R.string.inflection_la_plural_label, R.string.inflection_la_plural),
+            "feminine" to Strings(R.string.inflection_la_feminine_label, R.string.inflection_la_feminine),
+            "neuter" to Strings(R.string.inflection_la_neuter_label, R.string.inflection_la_neuter),
+            "ablative" to Strings(R.string.inflection_la_ablative_label, R.string.inflection_la_ablative),
+            "-que" to Strings(null, R.string.inflection_la_que),
+            "-ne" to Strings(null, R.string.inflection_la_ne),
+            "-ve" to Strings(null, R.string.inflection_la_ve),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

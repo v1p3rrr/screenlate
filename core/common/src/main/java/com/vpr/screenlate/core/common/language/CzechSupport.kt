@@ -16,6 +16,7 @@ object CzechSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("cz")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_EXT_FONT_SUBSETS
+    override val fontLetters = "áčďéěíňóřšťúůýž"
 
     /** Wiktionary has recordings of more Czech words than Lingua Libre. */
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")

@@ -23,7 +23,12 @@ class FontCatalogFileTest {
         assertThat(fonts.map { it.family }).containsNoDuplicates()
         for (font in fonts) {
             val language = font.language
-            if (language != null) assertThat(Language.of(language)).isNotNull() else assertThat(font.subsets).isNotEmpty()
+            if (language != null) {
+                assertThat(Language.of(language)).isNotNull()
+            } else {
+                assertThat(font.subsets).isNotEmpty()
+                assertThat(font.letters.orEmpty()).matches("[0-9A-F]{4}(-[0-9A-F]{4})?(,[0-9A-F]{4}(-[0-9A-F]{4})?)*")
+            }
             assertThat(font.description.keys).containsExactlyElementsIn(locales)
             assertThat(font.files).isNotEmpty()
             for (file in font.files) {
@@ -66,6 +71,27 @@ class FontCatalogFileTest {
     fun `romanian takes every latin font`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.ROMANIAN) }.map { it.family })
             .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
+    fun `latin takes the latin fonts that have its long vowels`() {
+        // Atkinson Hyperlegible Next declares Latin Extended but has no ō.
+        assertThat(fonts.filter { it.isOfferedFor(Language.LATIN) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
+    fun `a font offered by its subsets is offered for every language whose letters it has`() {
+        val atkinson = fonts.single { it.id == "atkinson-hyperlegible-next" }
+        assertThat(atkinson.hasLetters("āēīūæœ")).isTrue()
+        assertThat(atkinson.hasLetters("ō")).isFalse()
+        assertThat(atkinson.hasLetters("ĉ")).isFalse()
+        assertThat(fonts.single { it.id == "inter" }.hasLetters("ĉĝĥĵŝŭāēīōū")).isTrue()
+        // Each language with subsets keeps every font that has them, but for Latin's Atkinson.
+        for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() && it != Language.LATIN }) {
+            val bySubsets = fonts.filter { it.language == null && it.subsets.containsAll(language.support.fontSubsets) }
+            assertThat(fonts.filter { it.language == null && it.isOfferedFor(language) }).containsExactlyElementsIn(bySubsets)
+        }
     }
 
     @Test

@@ -364,6 +364,8 @@
     <string name="audio_region_switzerland">Suisse</string>
     <string name="audio_region_france">France</string>
     <string name="audio_region_canada">Canada</string>
+    <string name="audio_region_classical">Prononciation classique</string>
+    <string name="audio_region_ecclesiastical">Prononciation ecclésiastique</string>
     <string name="audio_region_other">Autres régions</string>
     <string name="audio_url_missing">Pas d’URL</string>
     <string name="audio_tts_hint">Lecture seule ; les notes reçoivent l’audio des autres sources.</string>
@@ -510,6 +512,7 @@
     <string name="popup_font_script_only_no">Seulement pour le texte norvégien</string>
     <string name="popup_font_script_only_da">Seulement pour le texte danois</string>
     <string name="popup_font_script_only_ro">Seulement pour le texte roumain</string>
+    <string name="popup_font_script_only_la">Seulement pour le texte en latin</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>

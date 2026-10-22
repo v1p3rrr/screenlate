@@ -365,6 +365,8 @@
     <string name="audio_region_switzerland">Switzerland</string>
     <string name="audio_region_france">France</string>
     <string name="audio_region_canada">Canada</string>
+    <string name="audio_region_classical">Classical pronunciation</string>
+    <string name="audio_region_ecclesiastical">Ecclesiastical pronunciation</string>
     <string name="audio_region_other">Other regions</string>
     <string name="audio_url_missing">No URL</string>
     <string name="audio_tts_hint">Playback only; notes take audio from the other sources.</string>
@@ -511,6 +513,7 @@
     <string name="popup_font_script_only_no">Only for Norwegian text</string>
     <string name="popup_font_script_only_da">Only for Danish text</string>
     <string name="popup_font_script_only_ro">Only for Romanian text</string>
+    <string name="popup_font_script_only_la">Only for text in Latin</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

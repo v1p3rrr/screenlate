@@ -1,4 +1,5 @@
-// Inflection rules of the app's own, which build.mjs gives to languages Yomitan has none for (addedTransforms).
+// Inflection rules of the app's own, which build.mjs gives to languages Yomitan has none for (addedTransforms) or adds
+// to Yomitan's (extendedTransforms).
 
 /**
  * Bengali noun endings, longest first: classifiers (টি, টা, খানা, গুলো), plurals (রা, দের) and cases (র, কে, তে, এ).
@@ -721,3 +722,55 @@ export const romanianTransforms = {
         },
     },
 };
+
+/**
+ * A Latin enclitic undone: the word before it keeps two letters at least.
+ * @param {string} enclitic
+ * @returns {import('language-transformer').SuffixRule<never>}
+ */
+function latinEnclitic(enclitic) {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp('.{2}' + enclitic + '$'),
+        deinflected: '',
+        deinflect: (text) => text.slice(0, -enclitic.length),
+        conditionsIn: [],
+        conditionsOut: [],
+    };
+}
+
+/**
+ * Latin enclitics joined to a word (magisque, estne, mortuusve), which Wiktionary lists only for a few words (itaque,
+ * nonne), added to Yomitan's Latin rules. They come first, as the outermost ending, and take any word. Many words
+ * end in them without one (atque, sine, regione), so the engine shows these results only where the whole word has no
+ * entry (LatinSupport's inflectionRulesOnlyWithoutEntry): on Latin Wikipedia text the endings reach 0.56% of the words
+ * and on classical prose and verse 2.7%, nearly all of them right.
+ * @type {import('language-transformer').LanguageTransformDescriptor<never>}
+ */
+export const latinEnclitics = {
+    language: 'la',
+    conditions: {},
+    transforms: {
+        '-que': {name: '-que', description: 'Enclitic "and" (magisque from magis)', rules: [latinEnclitic('que')]},
+        '-ne': {name: '-ne', description: 'Enclitic asking a question (videsne from vides)', rules: [latinEnclitic('ne')]},
+        '-ve': {name: '-ve', description: 'Enclitic "or" (mortuusve from mortuus)', rules: [latinEnclitic('ve')]},
+    },
+};
+
+/**
+ * Yomitan's rules of a language with the app's own added: [own]'s rules after [base]'s, and its conditions.
+ * @template {string} T
+ * @param {import('language-transformer').LanguageTransformDescriptor<T>} base
+ * @param {import('language-transformer').LanguageTransformDescriptor<any>} own
+ * @returns {import('language-transformer').LanguageTransformDescriptor<T>}
+ */
+export function withOwnTransforms(base, own) {
+    for (const id of Object.keys(own.transforms)) {
+        if (id in base.transforms) throw new Error(`${base.language}: Yomitan has a rule ${id} now`);
+    }
+    return {
+        ...base,
+        conditions: {...base.conditions, ...own.conditions},
+        transforms: {...base.transforms, ...own.transforms},
+    };
+}

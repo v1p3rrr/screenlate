@@ -15,6 +15,7 @@ object FrenchSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("fr")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_FONT_SUBSETS
+    override val fontLetters = "àâæçéèêëîïôœùûüÿ"
 
     /** Guillemets as well, with or without the spaces French puts inside them. */
     override val quotePairs = super.quotePairs + ('«' to '»') + ('‹' to '›')

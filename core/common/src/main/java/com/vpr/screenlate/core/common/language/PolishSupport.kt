@@ -16,6 +16,7 @@ object PolishSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("pl")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_EXT_FONT_SUBSETS
+    override val fontLetters = "ąćęłńóśźż"
 
     /** Wiktionary has recordings of more Polish words than Lingua Libre. */
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")

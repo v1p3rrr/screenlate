@@ -22,6 +22,7 @@ object NorwegianSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("no")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_FONT_SUBSETS
+    override val fontLetters = "æøå"
     override val quotePairs = mapOf('«' to '»', '‘' to '’', '“' to '”', '(' to ')', '[' to ']')
 
     /** Lingua Libre files its Norwegian recordings under Norwegian; Bokmål's item is asked as well. */

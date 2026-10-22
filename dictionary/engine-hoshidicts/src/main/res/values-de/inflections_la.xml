@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">Plural</string>
+    <string name="inflection_la_plural">Deklination im Plural</string>
+    <string name="inflection_la_feminine_label">Femininum</string>
+    <string name="inflection_la_feminine">Adjektivform</string>
+    <string name="inflection_la_neuter_label">Neutrum</string>
+    <string name="inflection_la_neuter">Adjektivform</string>
+    <string name="inflection_la_ablative_label">Ablativ</string>
+    <string name="inflection_la_ablative">Ablativ</string>
+    <string name="inflection_la_que">Enklitikon „und“ (magisque von magis)</string>
+    <string name="inflection_la_ne">fragendes Enklitikon (videsne von vides)</string>
+    <string name="inflection_la_ve">Enklitikon „oder“ (mortuusve von mortuus)</string>
+</resources>

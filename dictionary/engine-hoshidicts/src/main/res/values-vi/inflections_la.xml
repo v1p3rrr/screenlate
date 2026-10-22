@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_la_plural_label">số nhiều</string>
+    <string name="inflection_la_plural">Biến cách số nhiều</string>
+    <string name="inflection_la_feminine_label">giống cái</string>
+    <string name="inflection_la_feminine">Dạng tính từ</string>
+    <string name="inflection_la_neuter_label">giống trung</string>
+    <string name="inflection_la_neuter">Dạng tính từ</string>
+    <string name="inflection_la_ablative_label">ly cách</string>
+    <string name="inflection_la_ablative">Ly cách (cách xuất phát)</string>
+    <string name="inflection_la_que">Tiểu từ gắn sau “và” (magis → magisque)</string>
+    <string name="inflection_la_ne">Tiểu từ gắn sau để hỏi (vides → videsne)</string>
+    <string name="inflection_la_ve">Tiểu từ gắn sau “hoặc” (mortuus → mortuusve)</string>
+</resources>

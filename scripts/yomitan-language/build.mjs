@@ -48,8 +48,8 @@ const borrowed = {
  * final ة as ه and may give Persian letters for its own; Persian text may give Arabic letters for its own, lose its
  * zero-width non-joiners and write a verb prefix or an ending apart; Hebrew text may carry vowel points and write the
  * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә; Romanian text may
- * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le). Processors join the
- * descriptor's capitalization processors, its own list, or make its list.
+ * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le); Latin editions write u for
+ * consonantal v (uita). Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -64,6 +64,7 @@ const addedPreprocessors = {
     he: ['removeHebrewPoints', 'hebrewQuotes'],
     kk: ['kazakhLatinLetters'],
     ro: ['romanianCommaLetters', 'ukrainianApostropheVariants'],
+    la: ['latinUAsV'],
 };
 
 /**
@@ -79,6 +80,11 @@ const addedTransforms = {
     ky: 'kyrgyzTransforms',
     no: 'norwegianTransforms',
     ro: 'romanianTransforms',
+};
+
+/** Rules of the app's own (own-transforms.js) added to Yomitan's for a language: the Latin enclitics. */
+const extendedTransforms = {
+    la: 'latinEnclitics',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
@@ -118,6 +124,14 @@ function keepLanguage(source, iso) {
         }
         const own = added.filter((name) => ownProcessors.includes(name));
         if (own.length > 0) imports = `import {${own.join(', ')}} from 'screenlate/own-processors.js';\n`;
+    }
+    const extension = extendedTransforms[iso];
+    if (extension) {
+        const own = /languageTransforms: (\w+),/;
+        const yomitan = own.exec(block)?.[1];
+        if (!yomitan) throw new Error(`${iso}: Yomitan has no inflection rules to add to`);
+        block = block.replace(own, `languageTransforms: withOwnTransforms(${yomitan}, ${extension}),`);
+        imports += `import {withOwnTransforms, ${extension}} from 'screenlate/own-transforms.js';\n`;
     }
     const transforms = addedTransforms[iso];
     if (transforms) {

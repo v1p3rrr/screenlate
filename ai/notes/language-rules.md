@@ -141,6 +141,11 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | ro | No OCR letter fix (decision "OCR letter fixes"): the marks ML Kit drops (23 of 132 marked letters on the test screens) are found through the keys without marks, the cedilla letters Tesseract and the cloud write through the cedilla processor | — | — | Isolation (`ocrWord` lists leave Romanian out) | ok |
 | ro | Fonts: Latin with the extended subset (`fontSubsets` latin, latin-ext): ă â î ș ț are in every catalog Latin font and the system fonts; the popup switch "Only for Romanian text" | `lang/RomanianSupport.kt` `fontSubsets`, `systemFonts`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `romanian takes every latin font` | — | ok |
 | ro | Audio: Lingua Libre first (Q7913, 20 of 20 common words), Wiktionary (Ro-, 2 of 20), the voice last | `lang/RomanianSupport.kt` `wikidataId`, `defaultAudioSources` | RomanianSupportTest `latin letters with the extended subset, lingua libre first` | — | ok |
+| la | Sentences: the period of cf., e.g., i.e., sc., scil., h.e., s.v., v.gr., e.gr., i.a., q.e., c., ca., p., pp., saec., ed., vol., cap., op., a.d. ends nothing; that of the praenomina (A., Ap., Cn., D., K., L., M., N., Q., Ser., Sex., Sp., T., Ti.) and S. (sanctus) only when capitalized, as in lowercase sex is the numeral and m. metres, both at sentence ends; that of a.C.n., p.C.n., a.C., p.C., a.u.c., etc., al., cit., sqq. only before a lowercase word or a number; no ordinal period; “…” and «…» paired, »…« (mostly around titles) and „…“ not | `lang/LatinSupport.kt` `abbreviations`, `capitalizedAbbreviations`, `abbreviationsBeforeLowercase`, `quotePairs`; `lang/SpacedLanguageSupport.kt` `capitalizedAbbreviations`, `endsSentence` | LatinSupportTest `praenomina before a name keep the sentence going…`, `abbreviations do not end a sentence…`, `a number with a period ends the sentence before a capital`, `english quotes and guillemets pair…`; SentenceTest `latinSentenceKeepsPraenominaAndEraBeforeLowercaseAndEndsAtLowercaseSex` | Isolation (`Sex. Pompeius` and `a.C.n. natus` hold only in Latin, `sex. Deinde` ends everywhere; `capitalizedAbbreviations` only in Latin) | ok |
+| la | Fonts: Latin with the extended subset and the letters ā ē ī ō ū æ œ (`fontLetters`): Literata, Inter, Lexend, PT Serif and PT Sans have them; Atkinson Hyperlegible Next lacks ō Ō and is not offered (breves and ȳ, which PT lacks too, are left out of the list); the popup switch "Only for text in Latin" | `lang/LatinSupport.kt` `fontSubsets`, `fontLetters`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `latin takes the latin fonts that have its long vowels` | — | ok |
+| all | Fonts: a catalog font offered by its subsets is offered only for a language whose letters it has: each language with font subsets lists its letters beyond a-z (`fontLetters`, lower case, capitals checked as well; Turkish İ listed), and the catalog lists each such font's letters and marks below U+2000 as hex ranges (`letters`, written by `scripts/fonts/font_letters.py` with fontTools); no language but Latin loses a font now | `lang/LanguageSupport.kt` `fontLetters`; every support class with `fontSubsets`; `overlay/.../fonts/FontModels.kt` `isOfferedFor`, `hasLetters`; `overlay/src/main/assets/fonts/catalog.json` | FontCatalogFileTest `a font offered by its subsets is offered for every language whose letters it has`, `every font is complete and unique` (letters listed) | the same test (every language but Latin keeps the fonts its subsets give) | ok |
+| la | Audio: Wiktionary first (745 Latin recordings on Commons; 15 of 20 common words), Lingua Libre (Q397, 213 files, none of the 20), the voice last; the Regions list holds the classical (`cls`) and the ecclesiastical (`ecc`) pronunciation, which order Wiktionary's recordings (La-cls-, La-ecc-) and the transcriptions (tags Classical-Latin, Ecclesiastical and ⛪); recordings with neither tag come after them, as Latin lists no other region | `lang/LatinSupport.kt` `defaultAudioSources`, `audioRegions`, `transcriptionRegionNames`; `app/.../audio/AudioSettingsSection.kt` `regionName` | LatinSupportTest `recordings and transcriptions name the classical or the ecclesiastical pronunciation`; AudioPagesTest `latin recordings of the classical pronunciation come first…` | — | ok |
+| la | Flag: Latin's own (red, gold laurel wreath; circle-flags `language/la.svg`), named by the language where a flag's name is shown | `lang/LatinSupport.kt` `flagCountries` (`lang_la`); `overlay/.../ui/Flags.kt` `countryName`; `scripts/flags/circle_flags.py` | FlagsTest `a language's own flag is named by the language` | FlagsTest (countries keep their names) | ok |
 
 ## Lookup pipeline (`dictionary:api`)
 
@@ -210,6 +215,9 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | ro | Yomitan's Romanian descriptor (capitalization; every combining mark removed, so the text is also looked up without marks, which is how wty stores Romanian forms: numarul, its reading numărul) with our text processor (ş ţ Ş Ţ → ș ț Ș Ț, the text kept as well) and Ukrainian's apostrophe variants (dom'le, dom’le); our article and agreement endings (`romanianTransforms`: -ul, -le, -a, -i, -ului, -ei, -ii, -lor, and the feminine and plural of participles and adjectives), each leaving a stem of two letters or more, matched by definition tag to nominal entries and forms (n, name, adj, num, pron, det, non-lemma) | `ro.js` bundle; `own-processors.js` `romanianCommaLetters`; `own-transforms.js` `romanianTransforms`; `glue.js` `taggedRules`; `build.mjs` | glue `romanian reads cedilla letters as comma ones…`, `romanian article and agreement endings match nominal words and forms by their definition tags`; I: LanguageLookupTest `romanianFindsWordsWithAndWithoutMarksAndArticleEndingsOnlyWithoutAnEntry` | glue `romanian rules and cedilla letters stay out of other languages` | ok; the device test waits for the emulator |
 | ro | A result reached only through the language's rules is dropped where a result of the same matched text needs none (casă finds casă, not cas through the agreement ending; consiliul, which wty does not list, finds consiliu): without it the endings add another lemma to 3,371 of wordfreq's 30,000 most frequent words | `HoshidictsEngine.kt` `lookupThroughYomitan`; `RuleOnlyResults.kt` `withoutRuleOnlyResults`; `lang/RomanianSupport.kt` `inflectionRulesOnlyWithoutEntry` | RuleOnlyResultsTest; I: LanguageLookupTest (casă, casa, aflată) | RuleOnlyResultsTest (form-of chains count as entries, nothing is dropped without rules); Isolation (`inflectionRulesOnlyWithoutEntry` only in Romanian) | ok |
 | ro | Import keys: every headword with definitions is also keyed without the breve, circumflex, comma and cedilla (U+0306 U+0302 U+0326 U+0327 on a, i, s, t) and with ş ţ as ș ț; lemmas keep their marks; text without marks finds the words with them, the exact spelling first (dupa → după; si → si, then și) | `lang/RomanianSupport.kt` `headwordMarks` (`everyHeadword`, `replacements`); `cpp/language/archive_split.cpp` `MarkStripper` (no change) | RomanianSupportTest `every headword is also keyed without its marks…`; I: LanguageLookupTest (dupa, si, tara, ŢARĂ) | Isolation (`everyHeadword` and `replacements` lists) | ok |
+| la | Yomitan's Latin descriptor (capitalization, diacritics removed, æ œ read as ae oe; plural, feminine, neuter and ablative rules) with our u-as-v processor (one u before a vowel at a time, not after q or g, in the first word: uita → vita, Uergilius → Vergilius) and our enclitics -que, -ne, -ve added to Yomitan's rules, each leaving two letters and only as the outermost ending; the rule strings come from Yomitan's file and ours | `la.js` bundle; `own-processors.js` `latinUAsV`; `own-transforms.js` `latinEnclitics`, `withOwnTransforms`; `build.mjs` `addedPreprocessors`, `extendedTransforms`; `generate-inflections.mjs`; `res/values*/inflections_la.xml` | glue `latin u before a vowel is tried as v…`, `latin enclitics -que, -ne and -ve come off as the outermost ending`, `the own enclitics may not take a name yomitan already gives a latin rule`; I: LanguageLookupTest `latinFindsLemmasNamedWithMacronsUAsVAndEncliticsOnlyWithoutAnEntry` | glue `latin u for v and the enclitics stay out of other languages` | ok; the device test waits for the emulator |
+| la | Results reached only through rules (Yomitan's and the enclitics) are dropped where the text finds results without them: atque is not at + que (2,038 Wikipedia tokens), nor sive si + ve, quoque quo + que, regione regio + ne; Yomitan's rules give another lemma for 5,662 of 107,680 rule results on found words (die → di, si → sus, re → R) | `lang/LatinSupport.kt` `inflectionRulesOnlyWithoutEntry`; `RuleOnlyResults.kt` (no change) | I: LanguageLookupTest (atque, magisque) | Isolation (`inflectionRulesOnlyWithoutEntry` in Romanian and Latin) | ok |
+| la | Import: the lemma names of forms lose macrons and breves (U+0304 U+0306 on aeiouy: amat names amō, the headword is amo), form headwords are keyed without them as well (6 rows carry them); 63.7% of lemma names resolve as written, 99.7% without the marks | `lang/LatinSupport.kt` `headwordMarks` (no `everyHeadword`, so `lemmasAsWritten` false) | LatinSupportTest `lemma names lose their macrons and breves…`; I: LanguageLookupTest (amat, Romae, Rōmae) | Isolation (Latin in none of the `everyHeadword` and `replacements` lists) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
 | th | Sara am given as ํ + า, also with the tone mark between them (น + ํ + ้ + า), tried as ำ; a tone mark or thanthakhat given before the vowel above its letter tried after it (thaiCharacterOrder); ๆ tried with and without the spaces around it (thaiMaiYamokSpace: wty th-en writes 43 of its 44 headwords with ๆ as จริง ๆ, one as นานๆ): the app's own text processors, added to Thai's descriptor, which has none | `th.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `thai sara am…`, `thai mai yamok…`, I: LanguageLookupTest `thaiText…` | glue `thai processors stay out of other languages` | ok |
 | km | Zero-width spaces between words dropped from the looked-up text, one that ends the text kept out of the match (khmerZeroWidthSpace); subscript TA ្ត tried as subscript DA ្ដ, which print alike (khmerSubscriptDa): the app's own text processors, added to Khmer's descriptor, which has none | `km.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `khmer zero-width spaces between words are dropped…`, `khmer subscript TA is tried as subscript DA`, I: LanguageLookupTest `khmerSubscriptTaAndDaFindEachOtherAndZeroWidthSpacesAreDropped` | glue `khmer processors stay out of other languages` | ok |
@@ -307,6 +315,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | no | ML Kit's Latin model main; Paddle v6 marked "more accurate" (0% wrong over clean and hard screens against ML Kit's 0.6%, Tesseract fast 0.7%, Paddle v5 latin 0.2%); Paddle v5 latin and Tesseract `nor` fast and best offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `norwegian lists bokmål, norwegian and nynorsk wiktionaries…` | — | ok |
 | da | ML Kit's Latin model main; `paddle-latin` marked "more accurate" (0% wrong over clean and hard screens against ML Kit's 1.6%, Tesseract fast 2.2%, v6 0%: the smaller download wins a tie); Paddle v6 and Tesseract `dan` fast and best offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `danish offers seven wiktionaries…` | — | ok |
 | ro | ML Kit's Latin model main; `paddle-latin` marked "more accurate" (0.9% wrong over clean and hard screens, as v6, against ML Kit's 4.1% and Tesseract fast's 1.1%: the smaller download wins the tie); Paddle v6 and Tesseract `ron` fast and best offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `romanian offers eight wiktionaries…` | — | ok |
+| la | ML Kit's Latin model main (3.2% of characters wrong on the clean and hard test screens: ō ū ē read as õ ö ũ ü ễ, which the lookup drops with every mark); Paddle v6 marked "more accurate" (0%; Paddle v5 Latin 0.3%, œ as æ; Tesseract fast 6.9%, which drops the macrons; cloud recognition 0.2%); Paddle v5 Latin and Tesseract `lat` fast and best offered unticked; no OCR letter fix | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `latin offers eleven wiktionaries…` | — | ok |
 
 ## Bugs fixed in this review
 
@@ -567,6 +576,11 @@ Found in the device checks of 2026-10-22:
   the text "cașa" finds casă as well. Showing the forms whose reading matches the written text first would need the
   engine to return the form row's reading.
 
+- Latin: M'. (Manius) is not held, as the apostrophe ends the word before the period. A word needing two u read as v
+  at once (uiuere for vivere) is found only where the dictionary lists the u spelling. In v-spelled text a u before
+  a vowel also finds the v word (voluit also shows volvo, after volo). A word with an enclitic that is listed itself
+  (videsne, a form of viden) takes no enclitic result.
+
 ## Owner decisions in this review
 
 Words hyphenated at a line end (owner: "try to join, since it may not be one word"): the lookup tries the joined
@@ -804,6 +818,46 @@ small Romanian list for coverage.
 - Forms without marks join words that differ by their marks: the form row casa names casă (definite), the verb casa
   (perfect, reading casă) and cașă (reading cașa), so casa finds all three; the form row's reading is not compared
   with the text (a limit, below).
+
+### Latin (2026-10-22)
+
+Leipzig's Latin Wikipedia (2021, 100,000 sentences); classical texts from the Latin Library (Caesar, Gallic War 1-3;
+Cicero, Against Catiline 1-2; Livy 1; Ovid, Metamorphoses 1; Tacitus, Annals 1; Vergil, Aeneid 1-2: 65,242 words);
+la-en (wty 2026.10.11) as the dictionary.
+
+- wty la-en: 1,977,692 rows, 1,098,991 headwords (57,370 lemma, 1,087,724 form headwords); 6 rows have a macron or
+  breve in the headword. Form rows name their lemma with marks (amat → amō): of 2,164,872 lemma names, 63.7% resolve
+  as written, 99.7% without macrons and breves. The rules field carries parts of speech (v 1.52M rows, adj 207k, n
+  183k, none 61k, adv 4k); form readings carry macrons.
+- Coverage of lowercase words: Wikipedia 842,700 words, 94.8% found as written, 95.0% with Yomitan's processors; the
+  enclitics reach 0.56% more, Yomitan's rules 0.04%; 4.4% stay missing (English and German words, abbreviations: of,
+  and, the, cf, al, km). Classical texts 58,985 words (v spelling): 96.8% and 97.0%; the enclitics 2.71% more, the
+  rules 0.01%; 0.3% missing.
+- Enclitics where the word has no entry: Wikipedia 4,757 tokens (que 4,053, ve 630, ne 74), classical 1,601; of a
+  random 40 each, 39 and 40 right (assertive → asserti + ve the wrong one). Where the word has an entry they would
+  add another: Wikipedia 11,674 tokens (atque → at 2,038, sive → si 1,127, quoque → quo 1,055, sine → si 669,
+  quinque → quin 399, neque → ne 363), classical 1,123. They apply only where the text has no entry.
+- Yomitan's rules on words with an entry of their own: another lemma in 5,662 of 107,680 result tokens on Wikipedia
+  (die → di 867, si → sus 747, re → R 541, gratia → gratius 407), 611 of 7,790 on the classical texts; the same
+  filter removes them.
+- u for v, on the classical texts converted to u spelling (5,036 words with v): one u at a time finds 4,643; 83 need
+  two at once (vivere, vivo, conviviis); 183 u forms are headwords of their own (uero, ui) and found as written; 304
+  v words are not found anyway. Turning every u at once would be wrong 339 times. In v-spelled Wikipedia text the
+  processor adds a second entry after the exact one for 350 of 1.1M tokens (voluit → volvit 140, voluerunt →
+  volverunt 37, deseruit → deservit 19).
+- Abbreviations (Leipzig's splitter cuts at many of them, so the ends include its cuts): a.C.n. 383 before a
+  lowercase word, 37 before a capital; p.C.n. 48 and 6; cf. 102 lowercase, 10 capital; e.g. 156 and 94 (names
+  follow); i.e. 90 and 25; before a capital C. 95, M. 93, L. 53, T. 38 (praenomina and initials) and S. 140
+  (sanctus); sex. ends 18 sentences (the numeral); m. lowercase is metres (19); p. before a digit 251; etc. 20
+  lowercase, none before a capital. M'. (Manius) does not occur.
+- Numbers with a period: before a lowercase word 82, before a capital 201, ending a sentence 276: no ordinal period.
+- Quotes: " 13,965; « 780 and » 787; “ 348, ” 268, „ 92. Spans: »…« 665 (mostly titles, German style), «…» 350, “…”
+  236, „…“ 76; a sentence end inside a span 4-5 times. Paired: “…” and «…».
+- Letters in Wikipedia: ā 555, ă 191, æ 198, j 1,452, J 1,547; the Latin Library writes no j.
+- Audio: 745 Latin Wiktionary recordings on Commons: La-cls- 624, La-ecc- 81, La-rom- 16, La-pl- 4, 20 untagged;
+  Lingua Libre Q397 has 213. Transcription tags in the IPA file: Classical-Latin 84,146, ⛪ 79,636, Ecclesiastical 5,411.
+- Fonts: Atkinson Hyperlegible Next lacks ō Ō (and ȳ and the breves); PT Sans and PT Serif lack ȳ Ȳ and the breves;
+  Literata, Inter and Lexend have all.
 
 ## Device checks
 

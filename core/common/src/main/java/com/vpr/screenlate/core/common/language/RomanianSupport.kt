@@ -22,6 +22,7 @@ object RomanianSupport : SpacedLanguageSupport() {
     override val flagCountries = listOf("ro")
     override val systemFonts = LATIN_SYSTEM_FONTS
     override val fontSubsets = LATIN_EXT_FONT_SUBSETS
+    override val fontLetters = "ăâîșț"
 
     /** „…” outside, «…» inside; English quotes are common too. „…“ is rare and not paired. */
     override val quotePairs = mapOf('„' to '”', '“' to '”', '«' to '»', '(' to ')', '[' to ']')

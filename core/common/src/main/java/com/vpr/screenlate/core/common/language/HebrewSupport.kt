@@ -39,6 +39,7 @@ object HebrewSupport : SpacedLanguageSupport() {
 
     /** Downloadable fonts made for the Hebrew script. */
     override val fontSubsets = setOf("hebrew")
+    override val fontLetters = "אבגדהוזחטיךכלםמןנסעףפץצקרשת"
 
     /**
      * The phone's default font falls back to Noto Sans Hebrew by itself; Noto Serif Hebrew is reached by its PostScript
