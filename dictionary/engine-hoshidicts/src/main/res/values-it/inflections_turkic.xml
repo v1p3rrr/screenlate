@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">causativo</string>
     <string name="inflection_turkic_question_label">domanda</string>
     <string name="inflection_turkic_possessive_2pl_label">vostro</string>
+    <string name="inflection_turkic_verbal_noun_label">nome verbale</string>
 </resources>

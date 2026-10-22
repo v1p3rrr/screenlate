@@ -27,8 +27,10 @@ class GermanSupportTest {
 
     @Test
     fun `a single letter abbreviates only beside another one`() {
-        assertThat(ends("Plan B. Dann")).isTrue()
-        assertThat(ends("Vitamin A. Er")).isTrue()
+        assertThat(ends("Plan B. dann")).isTrue()
+        assertThat(ends("Vitamin A.")).isTrue()
+        // Before a capital a single capital letter is an initial.
+        assertThat(ends("Plan B. Dann")).isFalse()
         val list = "Äpfel, Birnen o. Ä. kaufen"
         assertThat(ends(list)).isFalse()
         assertThat(ends(list, list.indexOf("Ä.") + 1)).isFalse()

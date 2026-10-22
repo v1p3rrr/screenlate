@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">使役</string>
     <string name="inflection_turkic_question_label">疑問</string>
     <string name="inflection_turkic_possessive_2pl_label">あなたたちの</string>
+    <string name="inflection_turkic_verbal_noun_label">動名詞</string>
 </resources>

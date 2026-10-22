@@ -33,7 +33,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     /**
      * Single letters, lowercase, that abbreviate only together with another one written apart (German "z. B.",
      * "d. h."): a period after one keeps the sentence going only when a letter with its period stands right before or
-     * after it, so "Plan B." still ends a sentence.
+     * after it, so "Plan B." still ends a sentence at the end of a text or before a lowercase word (before a capital
+     * it is taken as an initial).
      */
     open val pairedLetters: Set<String> = emptySet()
 
@@ -83,8 +84,10 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com), it closes an
-     * abbreviation (a paired letter only beside another, see [pairedLetters]; one of [capitalizedAbbreviations] only
-     * when capitalized) or [initials], or, with [ordinalPeriod], an ordinal number. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
+     * initial (one capital letter before a capitalized word: J. Smith, К. Бакиев), an abbreviation (a paired letter
+     * only beside another, see [pairedLetters]; one of [capitalizedAbbreviations] only when capitalized) or
+     * [initials], or, with [ordinalPeriod], an ordinal number. An abbreviation or a capital letter at the real end of a
+     * sentence (vitamin C. It…) keeps it running on, which is the smaller error.
      */
     override fun endsSentence(text: String, index: Int): Boolean {
         val character = text[index]
@@ -93,6 +96,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
         if (ordinalPeriod && isOrdinal(text, index)) return false
         val word = wordBefore(text, index)
+        if (word.length == 1 && word[0].isUpperCase() && capitalWordAfter(text, index)) return false
         if (word.length == 1 && word.lowercaseIn(pairedLetters)) {
             return !hasPartner(text, index - 1, index)
         }
@@ -264,6 +268,13 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         var next = index + 1
         while (next < text.length && text[next] != '\n' && text[next].isWhitespace()) next++
         return next < text.length && text[next].isLowerCase()
+    }
+
+    /** Whether a capital letter follows [index] after spaces on the same line. */
+    private fun capitalWordAfter(text: String, index: Int): Boolean {
+        var next = index + 1
+        while (next < text.length && text[next] != '\n' && text[next].isWhitespace()) next++
+        return next < text.length && text[next].isUpperCase()
     }
 
     /** The number of digits right before [index]; 0 when they follow a letter (A4). */

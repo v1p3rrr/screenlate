@@ -44,4 +44,5 @@
     <string name="inflection_turkic_causative_label">causative</string>
     <string name="inflection_turkic_question_label">question</string>
     <string name="inflection_turkic_possessive_2pl_label">your (pl.)</string>
+    <string name="inflection_turkic_verbal_noun_label">verbal noun</string>
 </resources>

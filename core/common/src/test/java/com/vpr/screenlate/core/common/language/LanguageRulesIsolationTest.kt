@@ -147,9 +147,11 @@ class LanguageRulesIsolationTest {
     @Test
     fun `abbreviations of one language do not hold the sentences of another`() {
         fun holds(support: LanguageSupport, text: String) = !support.endsSentence(text, text.indexOf('.'))
-        // German "z. B." holds its single letters only beside each other; "Plan B." ends everywhere.
+        // German "z. B." holds its single letters only beside each other; "Plan B." before a lowercase word ends
+        // everywhere, and before a capital it is an initial everywhere.
         assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
-        assertThat(periodEnding.where { holds(it, "Plan B. Dann") }).isEmpty()
+        assertThat(periodEnding.where { holds(it, "Plan B. dann") }).isEmpty()
+        assertThat(periodEnding.where { !holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
             .containsExactly(
                 Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN, Language.LITHUANIAN, Language.SLOVAK,
@@ -167,9 +169,9 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.CZECH)
         val joined = "v roce 300 n.l. vznikl"
         assertThat(periodEnding.where { !it.endsSentence(joined, joined.indexOf("l.") + 1) }).containsExactly(Language.CZECH, Language.SLOVAK)
-        // Slovenian's i of "t. i." takes its period from any single letter beside it, a capital too.
+        // Before a capital the I is an initial in every language.
         val capital = "v roce 300 n. I. Potom"
-        assertThat(periodEnding.where { !it.endsSentence(capital, capital.indexOf("I.") + 1) }).containsExactly(Language.SLOVENIAN)
+        assertThat(periodEnding.where { it.endsSentence(capital, capital.indexOf("I.") + 1) }).isEmpty()
         // Croatian and Serbian mr. is magistar.
         assertThat(periodEnding.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN)
         // Slovak kr. of "pred Kr." holds before a lowercase word too.

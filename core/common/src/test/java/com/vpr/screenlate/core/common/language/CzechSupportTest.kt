@@ -17,7 +17,7 @@ class CzechSupportTest {
         assertThat(ends("v roce 300 př. n. l. vznikl", at = 19)).isFalse()
         assertThat(ends("Řekl to nám. Pak")).isTrue()
         assertThat(ends("Stalo se to v roce 1990. Pak")).isTrue()
-        assertThat(ends("Plán N. Potom")).isTrue()
+        assertThat(ends("Plán N. potom")).isTrue()
         // A Roman ordinal before a lowercase word; before a capital it may end the sentence.
         assertThat(ends("Karel IV. byl král")).isFalse()
         assertThat(ends("Vládl Karel IV. Potom")).isTrue()
@@ -66,12 +66,12 @@ class CzechSupportTest {
 
     @Test
     fun `a capital I written after n in app text is taken as written`() {
-        // A Roman ordinal before a lowercase word, a letter of its own before a capital.
+        // A Roman ordinal before a lowercase word, an initial before a capital.
         val ordinal = "300 př. n. I. a rostlo"
         assertThat(ends(ordinal, at = ordinal.indexOf("I.") + 1)).isFalse()
         val capital = "300 př. n. I. Potom"
-        assertThat(ends(capital, at = capital.indexOf("I.") + 1)).isTrue()
-        assertThat(ends("Plán I. Potom")).isTrue()
+        assertThat(ends(capital, at = capital.indexOf("I.") + 1)).isFalse()
+        assertThat(ends("Plán I.")).isTrue()
     }
 
     @Test
