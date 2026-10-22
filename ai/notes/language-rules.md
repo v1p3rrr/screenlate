@@ -1029,7 +1029,7 @@ has the table), they moved by under one point and every rule holds:
 - Danish compounds: 87,641 kinds, 63.5%, 499.
 - Romanian: 5,141 of the top 30,000 not found, the endings reach 1,086; 35 words found only through the keys without
   marks, 833 sharing a key. The joined forms of the hyphen rule have entries again (s-a "contraction of se and a",
-  l-a, într-o): aimed at s the lookup reaches s-a, aimed at a it still looks up a (not checked on the emulator). No
+  l-a, într-o): aimed at s the lookup reaches s-a, aimed at a it still looks up a (checked on the emulator). No
   Latin word links to a Cyrillic spelling any more; 1,615 `alternative` and 79 `Cyrillic` rows link the Cyrillic
   spelling to the Latin one (кат → cat), which Latin text does not reach. `showsHeadword` stays for dictionaries
   installed from older releases.

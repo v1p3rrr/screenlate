@@ -473,6 +473,26 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-10-22, `languages/sk` (`7136899d`), Pixel_10_Pro (API 37)
+
+Scope: the checks left from Romanian's run and group 5a's measurements. ANK26's strigat sentence and question 16's
+hyphen aim through app text in AnkiDroid's note editor, Romanian active; Paddle v5 latin, PP-OCRv6 small and Tesseract
+fast and best over the clean and hard 5a screens through the ocr-compare test APK (x86_64), installed with the
+storage line lowered and restored after.
+
+Results: passed.
+
+- ANK26: app text "„Vino aici!” a strigat ea.": the strigat note has the whole sentence, quotes included, and the
+  aici note "„Vino aici!”". strigat was in the deck from the cloud run, so its note was added with "Add anyway".
+- Question 16 (Romanian hyphen words): app text "El s-a dus acasă.": aimed at s, the popup lists s-a first, then s;
+  aimed at a, it lists a.
+- OCR over the 5a screens: the group 5a plan's "Engines on the emulator", results in
+  `testdata/ocr/compare/new/5a/device`; no recommendation changes. Tesseract best's first run stopped at Basque,
+  whose model had not been pushed, and was run again with it.
+
+Left on the emulator: Slovak on and active again; two more Romanian notes in "Screenlate Test" (aici, strigat); the
+test APK uninstalled and the storage settings deleted; the emulator powered off.
+
 ### 2026-10-22, `languages/sk` (on `7f14c5d5` with the Slovak changes before their commit), Pixel_10_Pro (API 37)
 
 Scope: the first checks of Slovak (LNG24, OCR40, LK64, LK65, POP37, AUD25, ANK29, DIC34) through the download
