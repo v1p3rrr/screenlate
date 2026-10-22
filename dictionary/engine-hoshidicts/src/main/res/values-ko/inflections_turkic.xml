@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">사동</string>
     <string name="inflection_turkic_question_label">의문</string>
     <string name="inflection_turkic_possessive_2pl_label">너희의</string>
+    <string name="inflection_turkic_verbal_noun_label">동명사</string>
 </resources>

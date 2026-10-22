@@ -26,10 +26,14 @@ KYRGYZ = [
     ("кол", 3, "kir-000"),
     ("kol", 1, "kir-002"),
     ("кол", 9, "kir-001"),
-    # Kazakh letters, a capital, Latin letters and punctuation are no Kyrgyz headwords.
+    # Kazakh letters, a capital after a lowercase letter, Latin letters and punctuation are no Kyrgyz headwords.
     ("қол", 1, "kir-000"),
     ("Бишкек", 4, "kir-000"),
     ("сЛ", 4, "kir-000"),
+    ("АвтоТекст", 4, "kir-000"),
+    # A time zone, translated as the place alone.
+    ("Иркутск жайкы убактысы", 10, "kir-000"),
+    ("убакыт", 11, "kir-000"),
     ("TJS", 4, "kir-000"),
     (",", 4, "kir-000"),
     ("баскычы", 5, "kir-000"),
@@ -56,6 +60,8 @@ RUSSIAN = [
     ("клавиша PAGE DOWN", 5, "rus-000"),
     ("брат", 6, "rus-000"),
     ("старший брат", 7, "rus-000"),
+    ("Иркутск", 10, "rus-000"),
+    ("время", 11, "rus-000"),
 ] + [(f"город{number}", 8, "rus-000") for number in range(21)]
 
 ENGLISH = [
@@ -83,11 +89,14 @@ class PanLexTest(unittest.TestCase):
         # рука in meanings 1, 2 and 3, shown with its stress mark; ладонь and подпись once each, in file order.
         self.assertEqual(entries["кол"], "рука" + STRESS + ", ладонь, подпись")
 
-    def test_only_lowercase_headwords_in_the_languages_own_letters_and_only_standard_varieties(self):
+    def test_headwords_in_the_languages_own_letters_without_time_zones_and_only_standard_varieties(self):
         entries, _ = self.entries("rus")
-        for word in ("қол", "Бишкек", "сЛ", "TJS", ",", "kol"):
+        for word in ("қол", "сЛ", "АвтоТекст", "TJS", ",", "kol", "Иркутск жайкы убактысы"):
             self.assertNotIn(word, entries)
         self.assertNotIn("лапа", entries["кол"])
+        # Capitalized headwords stay, and the word "time" is a headword when it is no time zone's name.
+        self.assertEqual(entries["Бишкек"], "Бишкек")
+        self.assertEqual(entries["убакыт"], "время")
 
     def test_loose_groups_and_lists_are_left_out(self):
         entries, _ = self.entries("rus")
@@ -140,6 +149,11 @@ class PanLexTest(unittest.TestCase):
         self.assertTrue(converter.is_headword("білім беру", "kk"))
         self.assertFalse(converter.is_headword("бірегей", "ky"))
         self.assertTrue(converter.is_headword("көл", "ky"))
+        self.assertTrue(converter.is_headword("Оңтүстік-шығыс Азия", "kk"))
+        self.assertTrue(converter.is_headword("АҚШ доллары", "kk"))
+        self.assertFalse(converter.is_headword("Малайзия уақыты", "kk"))
+        self.assertTrue(converter.is_headword("жазғы уақыт", "kk"))
+        self.assertFalse(converter.is_headword("Қытай", "ky"))
 
 
 if __name__ == "__main__":

@@ -2122,14 +2122,17 @@ brackets where they matter.
 - `scripts/panlex/panlex_yomitan.py` reads two mirror files at revision `0422f0e60f39` (columns `id`, `langvar`,
   `txt`, `txt_degr`, `meaning`, `langvar_uid`; the `-000` varieties are the standard ones; `eng.tsv` has tens of
   millions of rows, so only the meanings of the kept headwords are read from the target file).
-- Filters, chosen on samples: headwords only in the language's lowercase letters (Kazakh words filed as Kyrgyz,
-  codes, names, time zones and interface strings go); meanings with more than 4 headwords (loose groups: one Russian
-  word for sixteen Kyrgyz ones) or more than 20 translations (the cities of Russia under Оруссия); translations in
-  another script. Capitalized Russian translations stay (currencies, Луна, Библия). Russian stress marks are kept in
-  the shown spelling and ignored when translations are compared.
+- Filters, chosen on samples: headwords only in the language's letters (Kazakh words filed as Kyrgyz and codes go);
+  capitalized headwords stay (places, names, terms) except time zones (a word уақыт, уақыты, убакыт, убакыты,
+  убактысы) and words with a capital after a lowercase letter (interface strings; group 4e question 18, 2026-10-22);
+  meanings with more than 4 headwords (loose groups: one Russian word for sixteen Kyrgyz ones) or more than 20
+  translations (the cities of Russia under Оруссия); translations in another script. Capitalized Russian translations
+  stay (currencies, Луна, Библия). Russian stress marks are kept in the shown spelling and ignored when translations
+  are compared.
 - One definition per headword, the translations comma-separated in the order of the number of meanings that give
   them, at most 10; no tags, so the verb chains reach these entries (алды → алуу "держать, брать").
-- Headwords: kk-ru 16,374 (256 KB), kk-en 13,835 (230 KB), ky-ru 5,729 (107 KB), ky-en 6,357 (108 KB). Of the 2,000
+- Headwords: kk-ru 18,519 (295 KB), kk-en 17,645 (291 KB), ky-ru 7,123 (130 KB), ky-en 7,431 (128 KB) since the
+  capitalized ones stay (before: 16,374, 13,835, 5,729, 6,357). Of the 2,000
   most frequent Kyrgyz word forms of the Leipzig news sample, 371 (ru) and 406 (en) are headwords as written.
 - Quality: Kazakh is cleaner than Kyrgyz. Kyrgyz keeps strays (элүүнчү → fortieth, кыргыз → Uzbekistan, ушул →
   присутствовать) and many software-localization terms; алды as written gives "лицевой". боюнча, чейин, кабыл and

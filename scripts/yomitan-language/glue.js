@@ -120,7 +120,9 @@ function candidates(text, language, searchResolution) {
             r: d.inflectionRuleChainCandidates.map((x) => (hidden ?
                 x.inflectionRules.filter((rule) => !hidden.has(rule)) :
                 x.inflectionRules)),
-            u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || isUntypedRule(d, language) || tags.length > 0,
+            u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) ||
+                (isUntypedRule(d, language) && !skippedByNominalRules.get(language)?.has(d.deinflectedText.toLowerCase())) ||
+                tags.length > 0,
             ...(tags.length > 0 ? {g: tags} : {}),
             ...(tags.length > 0 && freeFormLemmas.has(language) ? {f: true} : {}),
         };
@@ -204,7 +206,8 @@ function tagsOf(d, language) {
  * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed. Wiktionary's Persian and Hebrew entries give
  * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least. Wiktionary's Kazakh and
  * Kyrgyz entries give none either: the app's nominal endings (cases, possessives, plurals, the person endings of
- * predicates) fit any entry, and verbs match by their definition tags (`taggedRules`).
+ * predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their definition tags
+ * (`taggedRules`).
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
 const untypedRules = new Map([
@@ -215,6 +218,19 @@ const untypedRules = new Map([
     ['he', {shortest: 2}],
     ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
+]);
+
+/**
+ * Words the untyped rules of a language (`untypedRules`) do not reach, lowercase. The Kazakh and Kyrgyz pronouns whose
+ * case forms change their stem (Kyrgyz ал → аны, анын, ага; Kazakh ол → оны, оған): a regular ending on them never
+ * makes their own form, and the word is mostly a verb's (алды "took" is алуу's past, not ал with the accusative).
+ * Kazakh бул is бұл as OCR and keyboards write it, under which the import keys бұл too. Their other senses go with
+ * them (Kazakh сол "left": солға shows сол over its own letters, without the dative).
+ * @type {Map<string, Set<string>>}
+ */
+const skippedByNominalRules = new Map([
+    ['kk', new Set(['ол', 'бұл', 'бул', 'сол'])],
+    ['ky', new Set(['ал', 'бул', 'ошол'])],
 ]);
 
 /**

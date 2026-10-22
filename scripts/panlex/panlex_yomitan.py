@@ -9,17 +9,19 @@ The inputs are two per-language files of the `cointegrated/panlex-meanings` mirr
 order of the meanings that support them, most first.
 
 Left out, as a sample of the Kazakh and Kyrgyz files showed them to be mostly noise: headwords with letters outside
-the language's alphabet (Kazakh words filed as Kyrgyz), with Latin letters (codes, software names) or with a capital
-(names, time zones, interface strings, whose translations are often only the name); meanings shared by many
-headwords (loose thesaurus groups: one Russian word for sixteen Kyrgyz ones) or by many translations (lists: the
-cities of Russia under Russia); translations in another script. Russian stress marks are kept in the shown spelling
-and ignored when translations are compared.
+the language's alphabet (Kazakh words filed as Kyrgyz) or with Latin letters (codes, software names); time zones
+(Малайзия уақыты, Иркутск жайкы убактысы, translated as the place alone) and words with a capital after a lowercase
+letter (interface strings such as ЖыйынтыкДиаграм); meanings shared by many headwords (loose thesaurus groups: one
+Russian word for sixteen Kyrgyz ones) or by many translations (lists: the cities of Russia under Russia);
+translations in another script. Other capitalized headwords stay: places, names and terms (Оңтүстік-шығыс Азия,
+Ысыккөл областы). Russian stress marks are kept in the shown spelling and ignored when translations are compared.
 """
 
 import argparse
 import collections
 import csv
 import json
+import re
 import sys
 import zipfile
 from pathlib import Path
@@ -33,10 +35,16 @@ LANGUAGES = {"kaz": "kk", "kir": "ky", "eng": "en", "rus": "ru"}
 
 RUSSIAN_LETTERS = set("абвгдеёжзийклмнопрстуфхцчшщъыьэюя")
 
-#: The lowercase letters of each source language; a headword with any other letter is left out.
+#: The lowercase letters of each source language; a headword with any other letter, in either case, is left out.
 ALPHABETS = {
     "kk": RUSSIAN_LETTERS | set("әғқңөұүһі"),
     "ky": RUSSIAN_LETTERS | set("ңөү"),
+}
+
+#: The word "time" of a time zone's name in each source language; a capitalized headword with it is left out.
+TIME_ZONE_WORDS = {
+    "kk": {"уақыт", "уақыты"},
+    "ky": {"убакыт", "убакыты", "убактысы"},
 }
 
 STRESS_MARKS = "\u0301\u0300"
@@ -70,10 +78,16 @@ def plain(text):
 
 
 def is_headword(text, language):
-    """Whether [text] is a word or phrase written in [language]'s own lowercase letters."""
+    """Whether [text] is a word or phrase written in [language]'s own letters, other than a time zone or a word with a
+    capital after a lowercase letter."""
     letters = [c for c in text if c.isalpha()]
     alphabet = ALPHABETS[language]
-    return bool(letters) and all(c in alphabet for c in letters)
+    if not letters or not all(c.lower() in alphabet for c in letters):
+        return False
+    if any(a.islower() and b.isupper() for a, b in zip(text, text[1:])):
+        return False
+    words = set(re.findall(r"\w+", text.lower()))
+    return not (any(c.isupper() for c in letters) and words & TIME_ZONE_WORDS[language])
 
 
 def is_translation(text, language):

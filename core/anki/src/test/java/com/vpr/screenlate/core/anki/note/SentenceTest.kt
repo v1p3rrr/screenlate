@@ -341,6 +341,16 @@ class SentenceTest {
     }
 
     @Test
+    fun anInitialBeforeASurnameKeepsTheSentenceInEverySpacedLanguage() {
+        val kyrgyz = "Жаан жаады. Президент К. Бакиев келди. Кийин кетти."
+        assertThat(extract(kyrgyz, "Бакиев", Language.KYRGYZ).text).isEqualTo("Президент К. Бакиев келди.")
+        val lithuanian = "Lijo. Prezidentas A. Smetona kalbėjo. Vėliau išvyko."
+        assertThat(extract(lithuanian, "Smetona", Language.LITHUANIAN).text).isEqualTo("Prezidentas A. Smetona kalbėjo.")
+        val english = "It rained. The book by J. R. R. Tolkien sold well. Then it stopped."
+        assertThat(extract(english, "sold", Language.ENGLISH).text).isEqualTo("The book by J. R. R. Tolkien sold well.")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

@@ -715,6 +715,36 @@ test('kyrgyz endings in four-way harmony, the question particle and verb stems t
     }
 });
 
+test('kyrgyz verbal nouns in -ыш take noun endings and reach the verb, in kyrgyz only', () => {
+    const forms = {
+        'болушу': ['болуу', ['verbal noun', 'possessive 3rd']],
+        'калышы': ['калуу', ['verbal noun', 'possessive 3rd']],
+        'кетиши': ['кетүү', ['verbal noun', 'possessive 3rd']],
+        // -ш after a vowel.
+        'окушу': ['окуу', ['verbal noun', 'possessive 3rd']],
+        'билдиришинче': ['билдирүү', ['verbal noun', 'possessive 3rd', 'manner']],
+    };
+    for (const [text, [lemma, chain]] of Object.entries(forms)) {
+        assert.ok(isVerbThrough(candidatesTo('ky', text, lemma), chain), text);
+    }
+    assert.ok(candidates('kk', 'болушу').every((c) => c.r.every((r) => !r.includes('verbal noun'))));
+});
+
+test('kazakh and kyrgyz noun endings skip the pronouns whose case forms change their stem', () => {
+    // алды is алуу's past, not ал with the accusative (аны). Kazakh бул is бұл typed with у.
+    for (const [language, text, pronoun] of [
+        ['ky', 'алды', 'ал'], ['ky', 'Алды', 'ал'], ['ky', 'булда', 'бул'], ['ky', 'ошолду', 'ошол'],
+        ['kk', 'олды', 'ол'], ['kk', 'бұлды', 'бұл'], ['kk', 'булды', 'бул'], ['kk', 'солға', 'сол'],
+    ]) {
+        const found = candidates(language, text).filter((c) => c.d.toLowerCase() === pronoun);
+        assert.ok(found.length > 0 && found.every((c) => !c.u), text);
+    }
+    assert.ok(isVerbThrough(candidatesTo('ky', 'алды', 'алуу'), ['past']));
+    // Pronouns with regular forms keep them: бизге, өзі.
+    assert.ok(candidatesTo('ky', 'бизге', 'биз').some((c) => c.u));
+    assert.ok(candidatesTo('kk', 'өзі', 'өз').some((c) => c.u));
+});
+
 test('every turkic rule has a shared name and a description of its endings, which the app strings are generated from', () => {
     const res = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values');
     const labels = fs.readFileSync(path.join(res, 'inflections_turkic.xml'), 'utf8');

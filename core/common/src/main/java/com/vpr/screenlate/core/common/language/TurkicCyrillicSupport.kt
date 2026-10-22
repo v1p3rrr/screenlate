@@ -19,8 +19,9 @@ abstract class TurkicCyrillicSupport : SpacedLanguageSupport() {
     /**
      * Form rows between scripts. Spellings in the Arabic script, in a romanization and in the Latin alphabet of the
      * 1930s lead to the Cyrillic headword (ىله → Іле, Almaty → Алматы); wty's releases before 2026.10.22 led from the
-     * Cyrillic headword to them, and dictionaries built from those still do. Cyrillic letters lead to the entries of
-     * their Arabic equivalents (а → ا, tagged `Cyrillic`), which a one-letter word (Kyrgyz а, в) would show.
+     * Cyrillic headword to them, and dictionaries built from those still do. Both directions are dropped, so a word in
+     * those spellings does not show the Cyrillic one. Cyrillic letters lead to the entries of their Arabic equivalents
+     * (а → ا, tagged `Cyrillic`), which a one-letter word (Kyrgyz а, в) would show.
      */
     override val ignoredFormTags = setOf("Arabic", "romanization", "Yañalif", "Cyrillic", "Cyrillic sometimes")
 
