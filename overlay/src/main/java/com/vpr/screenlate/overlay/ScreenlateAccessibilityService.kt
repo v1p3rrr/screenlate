@@ -158,13 +158,24 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     override fun onDestroy() {
         // Still on the list: the system unbound the service; off it: someone turned the switch off.
         Log.i(TAG, stopDiagnostics.report(SystemClock.elapsedRealtime(), OverlayServiceStatus.isEnabled(this)))
-        if (!ServiceOffNotification.show(this)) Log.i(TAG, "No notification about the stop: notifications are off")
-        val app = applicationContext
+        val connectionsAtStop = OverlayServiceStatus.connections
+        // The service itself, not the application context: its resources keep the app's language for the text.
+        val service = this
         Handler(Looper.getMainLooper()).postDelayed(
             {
-                val enabled = if (OverlayServiceStatus.isEnabled(app)) "yes" else "no"
+                val enabled = if (OverlayServiceStatus.isEnabled(service)) "yes" else "no"
                 val running = if (OverlayServiceStatus.running.value) "yes" else "no"
                 Log.i(TAG, "${RECHECK_MS / 1000} s after the stop: on the enabled list: $enabled, running: $running")
+                val followUp = StopFollowUp.after(
+                    connectionsAtStop,
+                    OverlayServiceStatus.connections,
+                    ServiceOffNotification.allowed(service),
+                )
+                when (followUp) {
+                    StopFollowUp.NOTIFY -> if (!ServiceOffNotification.show(service)) logNoNotification()
+                    StopFollowUp.LOG_ONLY -> logNoNotification()
+                    StopFollowUp.BACK -> Unit
+                }
             },
             RECHECK_MS,
         )
@@ -176,6 +187,8 @@ class ScreenlateAccessibilityService : AccessibilityService() {
         scope.cancel()
         super.onDestroy()
     }
+
+    private fun logNoNotification() = Log.i(TAG, "No notification about the stop: notifications are off")
 
     private companion object {
         const val TAG = "ScreenlateService"
