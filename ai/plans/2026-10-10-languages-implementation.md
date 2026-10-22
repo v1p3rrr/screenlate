@@ -186,7 +186,10 @@ Requests 1–19 are in the previous plan. New ones:
     della, nel, un; `dict/tt` with 13 gloss languages), so the 2026-11-05 check and the supplement are dropped. The
     catalog's wty entries follow `latest` with no pinned hash, so the app gets the fix with no change; their sizes and
     word counts are refreshed against that release once group 5a's catalog edits are merged (group 5a found he-tr now
-    passes the catalog threshold), and the owner's archive takes the new files.
+    passes the catalog threshold), and the owner's archive takes the new files. The release also reverses every
+    sense-level alt-of row in every language (from the page to the target now) and adds rows for alt-of senses tagged
+    misspelling, nonstandard, obsolete, pronunciation-spelling and misconstruction (question 87; follow-ups in request
+    77).
 74. (2026-10-22) Completeness check of every session that built or researched something (owner). All their commits are
     in languages/main (5c59894f); no numbered owner question blocks them apart from group 6's 10 and 21 and group 4e's
     14-18 (follow-ups after Thai and Khmer). `lintDebug` had never been run on the group branches; it passes on
@@ -213,10 +216,18 @@ Requests 1–19 are in the previous plan. New ones:
     branch; follow its block plan and the decision tables; questions go into the block's plan as Open, marked deferred
     (the part waits) or decided provisionally (with what was built), and are asked in the morning (5c's 17 technical
     choices among them); the emulator only while holding `.worktrees/emulator.lock` in the root checkout; strings in all
-    14 locales, NOTICE, docs, `notes/language-rules.md` and `notes/languages.md`, test-model cases with the run log;
-    never `am force-stop` or `am start -S` (uninstall directly), no sign-in on the emulator, no `connectedAndroidTest`
-    of the app module, nothing on the owner's phone, no browsing outside the work folders; a report to this session with
-    the branch, commits, results, what is not verified and the open questions.
+    14 locales, NOTICE, docs, `notes/language-rules.md` and `notes/languages.md`, test-model cases with the run log; wty
+    data measured on release 2026.10.22 or later (request 77); never `am force-stop` or `am start -S` (uninstall
+    directly), no sign-in on the emulator, no `connectedAndroidTest` of the app module, nothing on the owner's phone, no
+    browsing outside the work folders; a report to this session with the branch, commits, results, what is not verified
+    and the open questions.
+77. (2026-10-22) Follow-ups of wty's release 2026.10.22 in a session of their own (owner): the KDoc and notes of the
+    other-script filters (`ignoredFormTags` of Malay, Indonesian, Turkic Cyrillic and Serbo-Croatian) describe the new
+    direction; counts in `notes/languages.md`, `notes/language-rules.md`, the test model and the merged block plans that
+    came from older releases are recounted or dated; popups of a few words checked on the emulator with the new files
+    (it a and del, de im, ca del, ms baca, a Japanese kyūjitai spelling, kk Алматы); the catalog's wty sizes and word
+    counts refreshed once group 5a's branch is merged; the archive's wty files refreshed. Group 5a (sv, no, da, ro, la)
+    and group 4e (kk, ky) recheck their own wty data; blocks not started yet measure on the new release.
 
 ## Decisions
 
@@ -771,6 +782,12 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     before and installed without tags): about 15 pairs of transcriptions share a hash and show each other's tags, and
     about 8 in a million untagged ones show another's tags. (a, recommended) Accept it. (b) Keep more bits (a larger
     file than its 36 MB).
+87. Answered (owner, 2026-10-22): (b). wty's release 2026.10.22 adds form rows for alt-of senses tagged misspelling,
+    nonstandard, obsolete, pronunciation-spelling and misconstruction, so a word with its own entry can show a second
+    entry below it (it a → ha, anno → hanno; de ein → einen, wa → wir; ms la → lah; on words with an entry about 100 in
+    de-en, 50 in it-en, 30 in ja-en), while real misspellings and old spellings on screen now lead to the word. (a) Hide
+    such redirects when the matched text has an entry of its own. (b, chosen) Show them as wty and Yomitan do: below the
+    word itself (the engine sorts shorter chains first), with the tag's label. (c) Hide them always.
 
 ## Branches and workflow
 
@@ -1661,3 +1678,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   session waits on a browser prompt.
 - 2026-10-22: wty fixed both reports of request 73 in its release 2026.10.22 (the contractions are back, Tatar added);
   the 2026-11-05 check and the own supplement are dropped.
+- 2026-10-22: wty's release 2026.10.22 reverses every alt-of row and adds misspelling and obsolete redirects; question
+  87 answered (b), shown as they are; request 77 (the follow-ups, a session of their own); request 76's blocks measure
+  on the new release.
