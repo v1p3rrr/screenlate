@@ -171,7 +171,8 @@ Requests 1–19 are in the previous plan. New ones:
     process start; a stop report when the service stops (on the enabled list or not, time since the last bubble touch
     and scan, recent windows with system package names only); a notification "Screenlate service is off" at every stop,
     a banner without sound, opening the accessibility settings, cancelled when the service runs again, no extra
-    permission request; all of it in regular builds (owner, 2026-10-22).
+    permission request; all of it in regular builds (owner, 2026-10-22). Merged into main and languages/main on
+    2026-10-22 (owner).
 72. (2026-10-21) Build order of the researched blocks: Thai and Khmer (group 4c), then group 4e's follow-ups (Kazakh and
     Kyrgyz, questions 14-18), then group 5's blocks 5a-5e, then group 6's blocks 6a-6d, one session at a time; each
     block is merged into languages/main before the next starts (owner; placing group 4e's follow-ups right after Thai
@@ -433,6 +434,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
   hold timer (`OverlayController.BubbleTouchListener`). Built later with the other deferred features, after the
   languages, or separately when the owner says.
+- Initials in sentence ends (group 5a, 2026-10-22): a single capital letter with a period ends a sentence in every
+  language, so names split (Lithuanian "A. Smetona": in its Leipzig corpus 9,048 such initials stand before a capital
+  and 105 at a sentence end). A shared rule of `Sentence.kt` for all Latin and Cyrillic languages, not built yet;
+  questions when it is planned.
 
 ## Questions for the owner
 
@@ -1690,4 +1695,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   on the new release.
 - 2026-10-22: request 71 built with the owner's answers (8 MB, one export file, no clear button) together with the
   service stop report and the "service is off" notification (regular builds, a banner without sound, at every stop, no
-  extra permission request).
+  extra permission request); merged into main and languages/main (owner).
+- 2026-10-22: Backlog item on initials in sentence ends (group 5a's Lithuanian finding).
