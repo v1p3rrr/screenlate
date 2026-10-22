@@ -73,7 +73,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -250,6 +250,20 @@ class CatalogFileTest {
         )
         assertThat(latin.filter { it.category == CatalogCategory.FREQUENCY }).isEmpty()
         assertThat(latin.first { it.id == "wiktionary-la-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (la–en)")
+    }
+
+    @Test
+    fun `lithuanian offers seven wiktionaries, its transcription, wordfreq's small list and tesseract fast, ticked, and the other models`() {
+        val lithuanian = catalog!!.entries.filter { it.isFor(Language.LITHUANIAN) }
+        assertThat(lithuanian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-lt-en", "wiktionary-lt-ru", "wiktionary-lt-de", "wiktionary-lt-fr", "wiktionary-lt-ko",
+            "wiktionary-lt-pl", "wiktionary-lt-zh", "wiktionary-lt-transcription", "wordfreq-lt", "tesseract-fast-lit",
+        )
+        assertThat(lithuanian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-best-lit", "paddle-v6-lt", "paddle-latin-lt", "paddle-detector-v5-lt", "paddle-detector-v6-lt",
+        )
+        assertThat(lithuanian.first { it.id == "wordfreq-lt" }.downloadUrl).endsWith("/small_lt.msgpack.gz")
+        assertThat(lithuanian.first { it.id == "wiktionary-lt-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (lt–en)")
     }
 
     @Test

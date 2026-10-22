@@ -126,7 +126,7 @@ object PageState {
      */
     private fun readingLabels(context: Context, language: Language): Map<String, String> = when (language) {
         Language.JAPANESE, Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.CZECH, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.VIETNAMESE, Language.RUSSIAN,
-        Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.ROMANIAN, Language.LATIN -> mapOf(
+        Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN -> mapOf(
             "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
             "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
         )

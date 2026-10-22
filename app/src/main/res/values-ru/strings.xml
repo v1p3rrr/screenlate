@@ -517,6 +517,7 @@
     <string name="popup_font_script_only_da">Только для датского текста</string>
     <string name="popup_font_script_only_ro">Только для румынского текста</string>
     <string name="popup_font_script_only_la">Только для текста на латыни</string>
+    <string name="popup_font_script_only_lt">Только для литовского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

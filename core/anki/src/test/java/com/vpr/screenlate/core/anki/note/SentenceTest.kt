@@ -161,6 +161,18 @@ class SentenceTest {
     }
 
     @Test
+    fun lithuanianSentenceKeepsYearsAndSpacedAbbreviationsBeforeLowercaseAndEndsAtANumber() {
+        val paragraph = "Lijo. Prof. Kazlauskas 1950 m. rugsėjo 5 d. gimė Vilniuje. „Ateik čia!“ – sušuko ji. " +
+            "Vaisiai, t. y. obuoliai ir kriaušės, kainavo 5 tūkst. eurų. Jis gimė 1990. Vėliau išvyko."
+        assertThat(extract(paragraph, "Kazlauskas", Language.LITHUANIAN).text)
+            .isEqualTo("Prof. Kazlauskas 1950 m. rugsėjo 5 d. gimė Vilniuje.")
+        assertThat(extract(paragraph, "sušuko", Language.LITHUANIAN).text).isEqualTo("„Ateik čia!“ – sušuko ji.")
+        assertThat(extract(paragraph, "obuoliai", Language.LITHUANIAN).text)
+            .isEqualTo("Vaisiai, t. y. obuoliai ir kriaušės, kainavo 5 tūkst. eurų.")
+        assertThat(extract(paragraph, "Jis", Language.LITHUANIAN).text).isEqualTo("Jis gimė 1990.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

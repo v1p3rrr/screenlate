@@ -48,6 +48,10 @@ Latin on `languages/la` (from `languages/ro`): lemma names without macrons, u re
 with the same entry filter, praenomina held only when capitalized, the classical and ecclesiastical pronunciations
 as audio regions, Latin's own flag, and a letter check for catalog fonts across languages; plan questions 18-20
 decided provisionally; its emulator cases wait as well.
+Lithuanian on `languages/lt` (from `languages/la`): forms keyed without stress, every headword also without the
+marks of its letters (one `HeadwordMarks` with per-mark bases and a letters' level, in Kotlin and the native
+import), the OCR letter fix Ü ü é ị → Ū ū ė į, abbreviations and paired letters from the corpus, Tesseract fast as
+the more accurate model; no new plan questions; its emulator cases wait as well.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

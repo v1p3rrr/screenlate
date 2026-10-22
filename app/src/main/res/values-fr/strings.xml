@@ -513,6 +513,7 @@
     <string name="popup_font_script_only_da">Seulement pour le texte danois</string>
     <string name="popup_font_script_only_ro">Seulement pour le texte roumain</string>
     <string name="popup_font_script_only_la">Seulement pour le texte en latin</string>
+    <string name="popup_font_script_only_lt">Seulement pour le texte lituanien</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>

@@ -847,6 +847,53 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
+        val imported = engine.import(lithuanianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val lithuanian = LookupOptions(language = Language.LITHUANIAN)
+        suspend fun first(text: String) = engine.lookup(text, lithuanian).first()
+        suspend fun all(text: String) = engine.lookup(text, lithuanian).map { it.term.expression }
+
+        // Forms are stored with their stress (žmogaũs), text has none; the dot over an accented i goes with it.
+        assertThat(first("žmogaus").term.expression).isEqualTo("žmogus")
+        assertThat(first("žmogaũs").term.expression).isEqualTo("žmogus")
+        assertThat(all("bitės")).contains("bitė")
+        // Lemma names of forms lose their stress (vanduõ), the headword has none.
+        assertThat(all("vandens")).contains("vanduo")
+        // Text without the marks of ą č ė š ž finds the words with them; the exact spelling comes first.
+        assertThat(all("zmogaus")).contains("žmogus")
+        assertThat(all("ZMOGUS")).contains("žmogus")
+        assertThat(all("bites")).contains("bitė")
+        assertThat(all("as")).containsExactly("aš")
+        assertThat(all("karta")).containsExactly("karta", "kartą").inOrder()
+        assertThat(all("kartą")).containsExactly("kartą")
+        // The e with a dot is a letter of its own, not a stress mark.
+        assertThat(all("bitė").first()).isEqualTo("bitė")
+    }
+
+    /**
+     * Rows as Wiktionary's Lithuanian exports write them: forms with stress marks and the dot over an accented i, a lemma
+     * name with stress, two words told apart by the ogonek alone.
+     */
+    private fun lithuanianDictionary(): File = zip(
+        "lt.zip",
+        "index.json" to """{"title":"Test Lithuanian","revision":"1","format":3,"sourceLanguage":"lt"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["žmogus","","n","",0,["human"],1,""],
+              ["žmogaũs","","non-lemma","",0,[["žmogus",["genitive singular"]]],2,""],
+              ["vanduo","","n masc","",0,["water"],3,""],
+              ["vandens","","non-lemma","",0,[["vanduõ",["genitive singular"]]],4,""],
+              ["bitė","","n fem","",0,["bee"],5,""],
+              ["bi${"\u0307\u0300"}tės","","non-lemma","",0,[["bitė",["genitive singular"]]],6,""],
+              ["karta","","n fem","",0,["generation"],7,""],
+              ["kartą","","adv","",0,["once"],8,""],
+              ["aš","","pron sg","",0,["I"],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

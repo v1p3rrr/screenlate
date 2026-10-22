@@ -450,6 +450,11 @@ enum class SearchResolution { WORD, LETTER }
  * forms name vowelled lemmas of unvowelled headwords).
  * @property formsInScript forms are written in the script of [bases]: a form without one of its letters is dropped
  * at import (the romanized forms Wiktionary's Arabic exports give).
+ * @property markBases further marks, each with the letters it is dropped after in place of [bases]: Lithuanian drops
+ * the dot above after i (the soft dot of an accented i), not after e (ė).
+ * @property letterMarks marks of the language's letters (ą č ė), dropped after [letterBases] once [marks] are, for one
+ * more key of each form (and, with [everyHeadword], each headword): text written without them finds the words with
+ * them, the exact spelling first.
  */
 data class HeadwordMarks(
     val marks: String,
@@ -459,6 +464,9 @@ data class HeadwordMarks(
     val furtherReplacements: Map<String, String> = emptyMap(),
     val lemmasAsWritten: Boolean = everyHeadword,
     val formsInScript: Boolean = false,
+    val markBases: Map<String, String> = emptyMap(),
+    val letterMarks: String = "",
+    val letterBases: String = "",
 )
 
 /** The markers of [LanguageSupport.rightToLeftMarkers] every right-to-left language has. */
@@ -515,4 +523,5 @@ val Language.support: LanguageSupport
         Language.DANISH -> DanishSupport
         Language.ROMANIAN -> RomanianSupport
         Language.LATIN -> LatinSupport
+        Language.LITHUANIAN -> LithuanianSupport
     }

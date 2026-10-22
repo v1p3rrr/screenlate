@@ -28,13 +28,15 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * Languages Yomitan has no descriptor for, built from a related language's descriptor under their own codes: Malay
  * takes Indonesian's text processors (both write the same alphabet), with no inflection rules of either; Bengali takes
  * Hindi's descriptor, which has neither, for the app's own processors and endings; Kazakh and Kyrgyz take Mongolian's
- * (Cyrillic, capitalization only) for the app's own endings.
+ * (Cyrillic, capitalization only) for the app's own endings; Lithuanian takes Latvian's (capitalization only), as
+ * Wiktionary lists its forms.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
     bn: {from: 'hi', iso639_3: 'ben', name: 'Bengali', exampleText: 'পড়ার জন্য'},
     kk: {from: 'mn', iso639_3: 'kaz', name: 'Kazakh', exampleText: 'оқу'},
     ky: {from: 'mn', iso639_3: 'kir', name: 'Kyrgyz', exampleText: 'окуу'},
+    lt: {from: 'lv', iso639_3: 'lit', name: 'Lithuanian', exampleText: 'skaityti'},
 };
 
 /**

@@ -74,6 +74,14 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `lithuanian takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.LITHUANIAN) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+        assertThat(fonts.filter { it.language == null && it.subsets.contains("latin-ext") }.all { it.hasLetters("ąčęėįšųūž") })
+            .isTrue()
+    }
+
+    @Test
     fun `latin takes the latin fonts that have its long vowels`() {
         // Atkinson Hyperlegible Next declares Latin Extended but has no ō.
         assertThat(fonts.filter { it.isOfferedFor(Language.LATIN) }.map { it.family })

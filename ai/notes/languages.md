@@ -1632,6 +1632,21 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   each subset font's letters (`scripts/fonts/font_letters.py`); a font missing one is not offered. Only Latin
   (Atkinson, ō) loses a font now; Esperanto will lose Atkinson as well.
 
+### Lithuanian on `languages/lt` (2026-10-22)
+
+- `Language.LITHUANIAN` (`lt`), `LithuanianSupport`: glyph Ė, Lithuania's flag, every Latin font with latin-ext (they
+  have ą č ę ė į š ų ū ž), Lingua Libre first for audio, no ordinal period, „…“ paired, the abbreviation lists and
+  paired letters of `notes/language-rules.md`, the OCR letter fix Ü ü é ị → Ū ū ė į (`OcrLetters.kt`
+  `replaceLetters`, now shared with the Scandinavian fix).
+- Bundle (`lt.js`, 47 KB): Latvian's descriptor (capitalization only) under Lithuanian's code.
+- Import: `HeadwordMarks` gained two fields. `markBases` gives a mark its own base letters (the dot above dropped
+  after i only, in place of the planned replacement i + U+0307 → i), and `letterMarks` with `letterBases` adds a
+  further key without the letters' marks after the stress marks are gone. Lithuanian keys every headword both ways
+  and names the lemmas of forms without stress. The native `MarkStripper` holds a list of mark sets.
+- Catalog: wty lt into en ru de fr ko pl zh and the transcription, all ticked (es 295, it 522, ja 1,329, pt 909, tr
+  652, vi 490 words stay under the line); wordfreq's small list; Tesseract `lit` fast recommended, best and Paddle v5
+  latin and v6 unticked.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

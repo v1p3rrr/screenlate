@@ -11,10 +11,7 @@ internal object ScandinavianLetters {
     /** Danish and Norwegian write no ä either; Swedish does. */
     private val DANISH_NORWEGIAN = SWEDISH + mapOf('ä' to 'å', 'Ä' to 'Å')
 
-    fun swedish(word: String): String = replace(word, SWEDISH)
+    fun swedish(word: String): String = replaceLetters(word, SWEDISH)
 
-    fun danishNorwegian(word: String): String = replace(word, DANISH_NORWEGIAN)
-
-    private fun replace(word: String, letters: Map<Char, Char>): String =
-        if (word.none { it in letters }) word else String(CharArray(word.length) { letters[word[it]] ?: word[it] })
+    fun danishNorwegian(word: String): String = replaceLetters(word, DANISH_NORWEGIAN)
 }

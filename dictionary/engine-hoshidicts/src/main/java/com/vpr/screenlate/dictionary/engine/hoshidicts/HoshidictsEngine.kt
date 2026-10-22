@@ -208,6 +208,9 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                     )
                     put("lemmas_as_written", marks.lemmasAsWritten)
                     put("forms_in_script", marks.formsInScript)
+                    put("mark_bases", buildJsonObject { marks.markBases.forEach { (mark, bases) -> put(mark, bases) } })
+                    put("letter_marks", marks.letterMarks)
+                    put("letter_bases", marks.letterBases)
                 })
             }
         }.toString().encodeToByteArray()

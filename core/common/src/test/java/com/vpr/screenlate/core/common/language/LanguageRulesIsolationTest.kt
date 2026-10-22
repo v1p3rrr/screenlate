@@ -151,7 +151,7 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
         assertThat(periodEnding.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN)
+            .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN, Language.LITHUANIAN)
         // Czech "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number) holds alone.
         val era = "v roce 300 n. l. vznikl"
         assertThat(periodEnding.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
@@ -224,6 +224,13 @@ class LanguageRulesIsolationTest {
         val latinEra = "anno 44 a.C.n. natus"
         assertThat(periodEnding.where { !it.endsSentence(latinEra, latinEra.lastIndexOf('.')) }).containsExactly(Language.LATIN)
         assertThat(spaced.filter { it.capitalizedAbbreviations.isNotEmpty() }.map { it.language }).containsExactly(Language.LATIN)
+        // Lithuanian pvz. (pavyzdžiui), tūkst. (thousand), which Latvian writes too but Lithuanian holds only before a
+        // lowercase word or a number, and the y of "t. y.", which takes its period from the t beside it.
+        assertThat(periodEnding.where { holds(it, "pvz. obuoliai") }).containsExactly(Language.LITHUANIAN)
+        assertThat(periodEnding.where { holds(it, "5 tūkst. eurų") }).containsExactly(Language.LATVIAN, Language.LITHUANIAN)
+        assertThat(periodEnding.where { holds(it, "5 tūkst. Vėliau") }).containsExactly(Language.LATVIAN)
+        val thatIs = "vaisiai, t. y. obuoliai"
+        assertThat(periodEnding.where { !it.endsSentence(thatIs, thatIs.lastIndexOf(". ")) }).containsExactly(Language.LITHUANIAN)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -355,15 +362,19 @@ class LanguageRulesIsolationTest {
     fun `only Greek, Hindi, Khmer, Arabic, Persian, Kazakh and Kyrgyz key every headword in another spelling, only Arabic two further`() {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
-            Language.ROMANIAN,
+            Language.ROMANIAN, Language.LITHUANIAN,
         )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
             Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,
         )
         assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
-        // Arabic lemmas lose their vowel marks although every headword is keyed.
+        // Arabic lemmas lose their vowel marks and Lithuanian ones their stress although every headword is keyed.
         assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })
-            .containsExactly(Language.ARABIC)
+            .containsExactly(Language.ARABIC, Language.LITHUANIAN)
+        // Only Lithuanian drops a mark after other letters than the rest (the dot over i, not over e) and keys its
+        // headwords without the marks of its letters too.
+        assertThat(all.where { it.headwordMarks?.markBases.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN)
+        assertThat(all.where { it.headwordMarks?.letterMarks.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
         // Only Kazakh and Kyrgyz look a word up again with their letters keyed when it keeps some of them and loses
         // others, each with its own letters.
@@ -422,6 +433,11 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.ocrWord("gâ") != "gâ" })
             .containsExactly(Language.SWEDISH, Language.NORWEGIAN, Language.DANISH)
         assertThat(all.where { it.ocrWord("pä") != "pä" }).containsExactly(Language.NORWEGIAN, Language.DANISH)
+        // Lithuanian writes the u with a diaeresis, the e with an acute and the i with a dot below that ML Kit reads for
+        // ū, ė and į as those.
+        assertThat(all.where { it.ocrWord("büti") != "büti" }).containsExactly(Language.LITHUANIAN)
+        assertThat(all.where { it.ocrWord("upé") != "upé" }).containsExactly(Language.LITHUANIAN)
+        assertThat(all.where { it.ocrWord("ịvykis") != "ịvykis" }).containsExactly(Language.LITHUANIAN)
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
         // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.
