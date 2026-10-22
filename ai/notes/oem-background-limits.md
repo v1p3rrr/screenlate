@@ -50,6 +50,28 @@ a ColorOS phone. Human docs stay generic (`docs/usage.md`, "Background work"); v
   with background activity allowed for those apps. A Find X9 Pro on build 400 and another user did not see it. Another
   user found all app permissions reset by the same update (an alarm app stopped working) and some recents locks
   undone. So ColorOS 16 builds can turn off downloaded apps' services, and an update can reset per-app settings.
+- Web research of 2026-10-22 (sources checked by hand are marked so):
+  - OPPO's reply relayed on a Chinese screen-reader forum (bbs.tatans.cn/topic/123754, 2026-05-19; checked): ColorOS 16
+    "gold" builds 16.0.7.200-205 (Find X9 Ultra, Find X8 Ultra, OnePlus Ace 6T, OnePlus 13) shut a sideloaded screen
+    reader off at the first unlock after boot. OPPO: its security team now restricts accessibility because of abuse;
+    apps from OPPO's store are not affected, only sideloaded ones (APK or third-party sources); a sideload whitelist
+    for screen readers was requested. Workaround given: reinstall from OPPO's store.
+  - ownvoice, an app distributed on GitHub (PR #252 and its install guide, 2026-10-19; checked): "ColorOS security
+    apps" (OPPO, OnePlus, realme) turn off a sideloaded app's service about 2 s after its panel shows over another app;
+    its guide adds the app to the allowlist first (Phone Manager, or Security > Viruses & risks > Allowlist). Not
+    reproduced by its author, no device or version named. The closest match to our 1.2 s after the bubble is released.
+  - OPPO's own post (community.oppo.com thread 2149746442149822464, 2026-07-02) and a June 2026 ColorOS 16 update in
+    India describe a prompt with "Turn off Accessibility" for non-official apps behaving suspiciously; a README of
+    ShakeGuard (ColorOS 16.0.10.500) shows the dialog "关闭无障碍 / 保持开启" after a service connects. These are
+    prompts the user answers, not a silent switch-off.
+  - OPPO's ColorOS 14 security white paper: Phone Manager → app security control → "风险行为拦截" (risky behaviour
+    interception) watches running apps and can "disable sensitive permissions" or allowlist the app. Probably the
+    engine behind the ownvoice allowlist (inference).
+  - A different symptom on OnePlus (GitSync PR #1347, Android 16): `o-kill` in exit-info, the service listed as crashed
+    with its switch on, not bound again until switched off and on; their fix was a separate process for the service.
+    Our case (process alive, switch off) does not fit a kill.
+  - Not applicable: restricted settings and in-call blocks act when the service is turned on; Play Protect's enhanced
+    fraud protection acts at install; Android 17 Advanced Protection is Android 17 only.
 
 ## Report: OPPO Reno 15, ColorOS, v0.2.3 arm64-v8a (2026-10-20)
 
@@ -255,6 +277,10 @@ Questions (the Russian text for the owner to forward is in the session's report 
    (stop with Ctrl+C a few seconds after the bubble disappears; `grep -i -E "accessib|screenlate"` elsewhere), and
    `adb shell settings get secure enabled_accessibility_services` right after, which shows whether the service is
    still on the list.
+9. After the web research (ColorOS section): how Screenlate was installed (browser, file manager, another store), the
+   ColorOS build and region; in Phone Manager or Security, the virus scan and the interception records, then add
+   Screenlate to the allowlist (Security > Viruses & risks > Allowlist, or Phone Manager) and turn the service on again;
+   whether a prompt "Turn off accessibility / Keep on" or a security notification ever appeared (notification history).
 8. After the Reddit thread (ColorOS section): turn on the accessibility service of another downloaded app (any app with
    one) and reproduce. If both go off together, ColorOS turns off downloaded apps' services as such, and the app can do
    little beyond telling the user. Also: the exact ColorOS build (Settings → About device → Version), and whether the
@@ -280,4 +306,5 @@ by name depends on the app seeing those packages (Android 11 package visibility)
 | Fix the crash | Once a trace shows it | Unknown until the log |
 | Keep-alive on by default on phones with a maker's startup screen | The notification that makes background killers leave the app alone more often | Small (hours), only if the notification test helps |
 | Lighter scans by default there | "Reduce load on the device", or skipping the on-device whole-screen pass once the cloud answered | Small to medium, only if the engine tests point there |
+| ColorOS allowlist step | Background work on ColorOS points to the security app's allowlist (and a hint that sideloaded apps are restricted), if the user's test shows the allowlist helps | Small to medium; strings in 14 languages; only after the user's result |
 | Request the accessibility button | The system shortcut would do something in Screenlate (open or scan) instead of turning the service off | Small to medium; a behavior choice for the owner; no help against a force-stop |
