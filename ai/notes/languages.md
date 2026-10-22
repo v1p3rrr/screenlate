@@ -1673,6 +1673,25 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   616, sk-es 284, sk-it 163, sk-vi 155 words stay under the line); wordfreq's small list; Tesseract `slk` fast
   recommended (0.6% errors on the test screens against ML Kit's 2.4%), best and Paddle v5 Latin and v6 unticked.
 
+### Slovenian on `languages/sl` (2026-10-22)
+
+- `Language.SLOVENIAN` (`sl`), `SlovenianSupport`: glyph SL, Slovenia's flag, every Latin font with latin-ext (they have
+  č š ž), Lingua Libre first for audio (Q9063, 6 of 20 common words; Google's voices have no Slovenian), ordinals with
+  a period (5. maja), »…« and „…“ paired, the abbreviation lists and paired letters (t. i.) of
+  `notes/language-rules.md`. No OCR letter fix.
+- Bundle (`sl.js`, 47 KB): Czech's descriptor (capitalization only) under Slovenian's code; it reads text as cs.js does.
+- Import: Wiktionary writes Slovenian forms in the tonemic notation (vôde, dẹ́lał, pə̏s); they are keyed without its
+  marks (the acute, grave, circumflex, double grave, inverted breve, dot below and macron after a vowel, r or ə), with
+  ł and ə as l and e (`HeadwordMarks.replacements`), and every headword also without the caron of č š ž
+  (`letterMarks`), the exact spelling first. The native letters' key is now made after the replacements (žȓł →
+  zrl); Lithuanian, the other language with a letters' level, has no replacements.
+- Catalog: wty sl into en ru fr pl tr zh and the transcription, all ticked (sl-ko 1,048, sl-pt 900, sl-ja 556, sl-de
+  494, sl-es 318, sl-it 287, sl-vi 124 words stay under the line); wordfreq's small list; PaddleOCR v5 Latin
+  recommended (0% errors on the test screens against ML Kit's 0.9%), v6 and Tesseract `slv` fast and best unticked.
+- Coverage: sl-en and sl-ru find half the words of running text as written and 15% more through the stress keys;
+  34.9% stay missing (ob, naj, sicer, saj, ter). FreeDict's slv-eng (GPL-3.0+) would add 3.4%; question 27 of the
+  group 5a plan (deferred until hosting exists).
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

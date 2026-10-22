@@ -155,6 +155,10 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | sk | No OCR letter fix: ML Kit reads ť ď ľ as t d l and Paddle as t' d' l' (group 5a plan, "Measurements"); the keys without marks find the words ML Kit gives, Paddle's apostrophes stay (decision "OCR letter fixes" names no Slovak fix; Paddle is not Slovak's recommended model) | — | — | Isolation (`ocrWord` lists leave Slovak out) | limit |
 | sk | Fonts: Latin with the extended subset and the letters á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž (`fontLetters`), which every catalog Latin font has; the popup switch "Only for Slovak text" | `lang/SlovakSupport.kt` `fontSubsets`, `fontLetters`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `slovak takes every latin font` | — | ok |
 | sk | Audio: Lingua Libre first (Q9058, 19 of 20 common words), Wiktionary (1 of the 20), the voice last | `lang/SlovakSupport.kt` `wikidataId`, `defaultAudioSources` | SlovakSupportTest `slovak's own code, name, flag and letters` | — | ok |
+| sl | Sentences: the period of npr., t.i., tj., oz., mdr., the titles (dr., prof., doc., mag., dipl., inž., univ., izr., akad., msgr., g., gdč., sv.), ul., tel., str., prim., gl., the language labels before a foreign word (angl., ang., nem., lat., fr., rus., hrv., srb.), v.d. and vs. ends nothing; that of pr., n., št., pr.n.št., n.št., st., stol., l., mio., mrd., tis., ok., ur., min., red., d.o.o., d.d. and s.p. only before a lowercase word or a number; the letters t and i of t. i. take their period from the one beside them; ordinals take a period (one or two digits always, more digits and Roman numerals before a lowercase word); »…« (opened with », closed with «) and „…“ paired; ga. (gospa) is left out, as the pronoun ga often ends a sentence | `lang/SlovenianSupport.kt` `abbreviations`, `abbreviationsBeforeLowercase`, `pairedLetters`, `ordinalPeriod`, `quotePairs` | SlovenianSupportTest `abbreviations do not end a sentence…`, `letters of a spaced abbreviation hold only beside each other…`, `ordinals take a period…`, `quotes open with a right-pointing guillemet…`; SentenceTest `slovenianSentenceKeepsOrdinalsAndAbbreviationsAndEndsAtAnEraBeforeACapital` | Isolation (`npr. jabolka` holds in Slovenian, Croatian and Serbian, `št. 5` and the era `pr. n. št.` only in Slovenian, `št. Potem` ends everywhere; Slovenian l. holds `n. l. vznikl` with Czech and Slovak, its i holds `n. I. Potom`; the ordinal and `pairedLetters` lists) | ok |
+| sl | No OCR letter fix: ML Kit dropped 2 of 40 marks on the test screens (č š ž read plain), which the keys without the caron find; no engine read a letter Slovenian never writes for one of its own (decision "OCR letter fixes" names no Slovenian fix) | — | SlovenianSupportTest `forms are keyed without the tonemic marks…` (`ocrWord` keeps čevlji and Dončić) | Isolation (`ocrWord` lists leave Slovenian out) | ok |
+| sl | Fonts: Latin with the extended subset and the letters č š ž (`fontLetters`), which every catalog Latin font has; the popup switch "Only for Slovenian text" | `lang/SlovenianSupport.kt` `fontSubsets`, `fontLetters`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `slovenian takes every latin font` | — | ok |
+| sl | Audio: Lingua Libre first (Q9063, 6 of 20 common words, voda among them), Wiktionary (2 of the 20), the voice last (Google's voices have no Slovenian) | `lang/SlovenianSupport.kt` `wikidataId`, `defaultAudioSources` | SlovenianSupportTest `slovenian's own code, name, flag and letters` | — | ok |
 
 ## Lookup pipeline (`dictionary:api`)
 
@@ -233,6 +237,8 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | lt | Import: forms are keyed without the acute, grave and tilde of their stress (U+0301 U+0300 U+0303 on aeiouylmnr: žmogaũs, dienų̃) and without the dot over an accented i (U+0307 after i only: bi̇̀tės; the dot of ė stays); lemma names of forms lose the same marks (vanduõ → vanduo); then every headword is also keyed without the ogonek of ą ę į ų, the dot of ė, the macron of ū and the caron of č š ž (U+0328 U+0307 U+0304 U+030C on aeiucsz), after the stress marks are gone, so text without them finds the words with them, the exact spelling first (ruda, then rūda; kasti, then kąsti); 71.2% of 190,360 lemma names resolve as written, 71.9% without the marks | `lang/LithuanianSupport.kt` `headwordMarks` (`everyHeadword`, `lemmasAsWritten` false, `markBases`, `letterMarks`, `letterBases`); `lang/LanguageSupport.kt` `HeadwordMarks`; `HoshidictsEngine.kt` (JSON); `cpp/language/archive_split.cpp` `MarkStripper` (mark sets with their own bases, the letters' level in `keys`) | LithuanianSupportTest `forms are keyed without stress…`; I: LanguageLookupTest `lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst` | Isolation (`markBases` and `letterMarks` only in Lithuanian; Lithuanian and Arabic store lemma names without marks while keying every headword); every other LanguageLookupTest (one mark set, no letters' level) | ok; LanguageLookupTest passed on the emulator (2026-10-22) |
 | sk | Czech's descriptor (capitalization only) under Slovak's own code (`slk`): Czech's bundle reads text the same way, as Yomitan's Czech descriptor has no rules either; wty sk-en lists 95,424 form headwords | `sk.js` bundle; `build.mjs` `borrowed` | glue `slovak takes the czech capitalization under its own code and keeps the marks of its letters` | glue (other borrowed descriptors) | ok |
 | sk | Import: every headword is also keyed without the acute (U+0301 on aeiouylr), the caron (U+030C on cdlnstz), the circumflex of ô and the diaeresis of ä, so text without them finds the words with them, the exact spelling first (byt, then byť; ma, then má), and a
+| sl | Czech's descriptor (capitalization only) under Slovenian's own code (`slv`): no rules, as wty sl-en lists 48,678 form headwords; the tonemic marks and the caron are kept by the text side (vôde and vode, žena and zena are two spellings each; the keys below join them) | `sl.js` bundle; `build.mjs` `borrowed` | glue `slovenian takes the czech capitalization under its own code and keeps the marks of its letters`, `russian stress marks…` (sl keeps them) | glue (other borrowed descriptors) | ok |
+| sl | Import: forms are keyed without the tonemic marks (U+0301 U+0300 U+0302 U+030F U+0311 U+0323 U+0304 after a vowel, r or ə: vôde, dẹ́lał, ravȃn, delajọ̄č, pə̏s; 39,804 of 48,678 sl-en form headwords carry them), with ł and ə written l and e (`replacements`; ł in 766 forms, ə in 405) and with both; lemma names of forms lose the marks (bíti → biti); then every headword is also keyed without the caron of č š ž (U+030C on csz) after the marks are gone and the replacements made (žȓł → zrl), so text without it finds the words with it, the exact spelling first (se, then še); ć keeps its acute (c is no base of the stress marks); 92.2% of sl-en's lemma names resolve as written, 93.2% without the marks | `lang/SlovenianSupport.kt` `headwordMarks` (`everyHeadword`, `lemmasAsWritten` false, `replacements`, `letterMarks`, `letterBases`); `cpp/language/archive_split.cpp` `MarkStripper::keys` (the letters' key made after the replacements) | SlovenianSupportTest `forms are keyed without the tonemic marks…`; I: LanguageLookupTest `slovenianFindsTonemicFormsAndWordsWrittenWithoutTheCaronTheExactSpellingFirst` | Isolation (`letterMarks` in Lithuanian and Slovenian; the `replacements` and `everyHeadword` lists; lemma names without marks while every headword is keyed in Arabic, Lithuanian and Slovenian); LanguageLookupTest of Lithuanian (letters' key without replacements as before) | ok |
 form-of item of a keyed word after the word (robit: robiť, then urobiť, its perfective); 459,930 of 484,507 marked words in running text are found through these keys, 24,577 have a bare spelling that is a word | `lang/SlovakSupport.kt` `headwordMarks` (`everyHeadword`, `markBases`) | SlovakSupportTest `every headword is keyed without the marks of its letters`; I: LanguageLookupTest `slovakFindsWordsWrittenWithoutTheirMarksTheExactSpellingFirst` | Isolation (`markBases` in Lithuanian and Slovak, `letterMarks` only in Lithuanian) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
 | th | Sara am given as ํ + า, also with the tone mark between them (น + ํ + ้ + า), tried as ำ; a tone mark or thanthakhat given before the vowel above its letter tried after it (thaiCharacterOrder); ๆ tried with and without the spaces around it (thaiMaiYamokSpace: wty th-en writes 43 of its 44 headwords with ๆ as จริง ๆ, one as นานๆ): the app's own text processors, added to Thai's descriptor, which has none | `th.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `thai sara am…`, `thai mai yamok…`, I: LanguageLookupTest `thaiText…` | glue `thai processors stay out of other languages` | ok |
@@ -335,6 +341,8 @@ form-of item of a keyed word after the word (robit: robiť, then urobiť, its pe
 | ro | ML Kit's Latin model main; `paddle-latin` marked "more accurate" (0.9% wrong over clean and hard screens, as v6, against ML Kit's 4.1% and Tesseract fast's 1.1%: the smaller download wins the tie); Paddle v6 and Tesseract `ron` fast and best offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `romanian offers eight wiktionaries…` | — | ok |
 | la | ML Kit's Latin model main (3.2% of characters wrong on the clean and hard test screens: ō ū ē read as õ ö ũ ü ễ, which the lookup drops with every mark); Paddle v6 marked "more accurate" (0%; Paddle v5 Latin 0.3%, œ as æ; Tesseract fast 6.9%, which drops the macrons; cloud recognition 0.2%); Paddle v5 Latin and Tesseract `lat` fast and best offered unticked; no OCR letter fix | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `latin offers eleven wiktionaries…` | — | ok |
 | lt | ML Kit's Latin model main (2.6% of characters wrong over the clean and hard test screens: 6 of 92 marks dropped, į ą Ž Ū; Ū read as Ü, į as j or i, ė as é); Tesseract fast marked "more accurate" (0.0% clean, 1.4% hard, 0.7% overall; Paddle v5 latin 1.2%, v6 1.2%; cloud recognition 0.0%), the first Tesseract model recommended for a language ML Kit reads; Tesseract `lit` best and the Paddle models offered unticked | `scripts/ocr-models/tessdata_catalog.py` `RECOMMENDED`; `scripts/ocr-models/paddle_models.py` `LATIN` | CatalogFileTest `lithuanian offers seven wiktionaries…`; test_tessdata_catalog | — | ok |
+| sk | ML Kit's Latin model main (2.4% of characters wrong over the clean and hard test screens: ť ď ľ read as t d l); Tesseract fast marked "more accurate" (0.6%; best 0.4% on the emulator, not clearly better; Paddle v5 latin 2.5%, v6 4.2%, both reading ď ť ľ as d' t' l' or plain; cloud recognition 0.0%); Tesseract `slk` best and the Paddle models offered unticked | `scripts/ocr-models/tessdata_catalog.py` `RECOMMENDED`; `scripts/ocr-models/paddle_models.py` `LATIN` | CatalogFileTest `slovak offers six wiktionaries…` | — | ok |
+| sl | ML Kit's Latin model main (0.9% of characters wrong over the clean and hard test screens, 2 of 40 marks dropped); `paddle-latin` marked "more accurate" (0% on both sets, as v6: the smaller download wins the tie; Tesseract fast 0.5%, best 1.5% on the emulator; cloud recognition 1.6%, » « read as << >>); Paddle v6 and Tesseract `slv` fast and best offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `slovenian offers six wiktionaries…` | — | ok |
 
 ## Bugs fixed in this review
 
@@ -666,6 +674,16 @@ Found while building Slovak (2026-10-22):
   scanning says no dictionary is installed. A backup of Slovak takes Czech's frequency list and models as well
   (`lookupDictionaryCodes` names the whole code). A spaced "s. r. o." and initials (P. J. Šafárik) end the sentence
   before a capital, as in Czech. The "n. I." OCR fix stays Czech's.
+- Slovenian: Wiktionary's Slovenian dictionaries lack many common words (ob, naj, sicer, saj, ter, zato, proti,
+  glede, namreč, treba): 34.9% of the lowercase words of Leipzig's news are in neither sl-en nor sl-ru; FreeDict's
+  slv-eng would find 3.4% more (question 27 of the group 5a plan). Text without the caron whose bare spelling is in
+  neither dictionary finds a word with it (zdi → ždí 386 times in 200,000 sentences, krize → kríže, zame → žáme),
+  0.07% of the words, besides the right ones (roza → roža, ze → že); the keys are the owner's decision "Words
+  without their marks". 97 form-of items in sl-en name a lemma with ə or ł (várən, ọ̑gəł), which loses its marks but
+  not those letters, so no headword matches it. Leipzig's news has è for č in 7,272 sentences (pages decoded with
+  the wrong code page); such words find nothing. The i of "t. i." takes its period from any single letter beside it;
+  before a capital, a single letter with a period is an initial and holds the sentence (n. I. Potem, Matej T.
+  Vatovec), as in every spaced language.
 
 ## Owner decisions in this review
 
@@ -1095,6 +1113,45 @@ Leipzig's Slovak news (2020, 100,000 sentences) and Wikipedia (2021, 100,000 sen
 - Fonts: every catalog Latin font has á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž.
 - The bundle: Yomitan's Czech descriptor has capitalization only, so sk.js (Czech's under Slovak's code) and cs.js
   read text the same; Slovak needs no rules of its own (sk-en lists 95,424 forms).
+
+### Slovenian (2026-10-22)
+
+Leipzig's Slovenian news (2020, 100,000 sentences) and Wikipedia (2021, 100,000 sentences); sl-en and sl-ru (wty
+2026.10.22) as the dictionaries.
+
+- wty sl-en: 56,814 rows; 5,808 headwords with definitions, 48,678 form headwords, 39,804 of them with tonemic marks.
+  Marks in form headwords: acute 28,136, caron 15,626 (č š ž, letters), inverted breve 7,155, dot below 3,695,
+  circumflex 3,129, grave 1,672, macron 1,597 (ọ̄ ẹ̄ ā, not in the planned list; added), double grave 1,202. ł in 766
+  forms and ə in 405 (dẹ́lał, pə̏s), which running text writes l and e. Headwords with definitions carry almost no
+  stress (21); sl-ru has 73 headwords with an acute (Argentína, ponedéljek) and 6 forms with a Cyrillic е (srcе).
+- Lemma names: 92.2% of sl-en's resolve as written, 93.2% without the marks; 97 form-of items name a lemma with ə or ł
+  (várən), which only the replacements would resolve.
+- Coverage of lowercase words (sl-en and sl-ru): news 1,570,855 words, 50.4% as written, the stress keys 14.6% more,
+  the caron keys 0.08% more, 34.9% missing; Wikipedia 1,370,738 words: 49.1%, 16.1%, 0.06%, 34.7%. Missing most
+  often: ob, naj, sicer, saj, ter, zato, proti, glede, namreč, treba. FreeDict slv-eng (5,511 headwords, GPL-3.0+)
+  would add 3.4% (ob, ter, saj, zato, proti).
+- Words with č š ž: 182,770 of 2,941,593 lowercase words (6%). Written without the caron, 164,217 are found through
+  the keys and 18,552 have a bare spelling that is a word itself, which the exact-first order puts first (se/še
+  13,807, sest/šest 606, zeli/želi 527, soli/šoli 399). Text without the caron that only the keys find: zdi → ždí
+  386, krize → kríže 243, zanje → žánje 174, zame → žáme 104, stal → štál 102 (false), roza → roža 19, ze → že 7
+  (right).
+- ć 2,051 and Ć 22 times, đ 57 and Đ 125, all in names (Dončić, Đoković); ć keeps its acute.
+- Abbreviations (lowercase / capital / end): npr. 246 / 28 / 258; t. i. 182 / 33 / 17, t.i. 33 / 5 / 2; tj. 56 / 3 /
+  34; oz. 400 / 2 / 367; prof. 43 / 0 / 36; g. 5 / 57 / 5; št. 165 / 0 / 368 (3 before a digit); pr. 460 / 0 / 24;
+  n. 518 / 15 / 2 (n. št.); pr. n. št. 151 / 0 / 212; n. št. 162 / 0 / 241; stol. 23 / 0 / 17; ur. 4 / 0 / 85 (ur,
+  hours); itd. 9 / 0 / 107, ipd. 3 / 0 / 63, idr. 2 / 0 / 27 (left to end the sentence); ga. none but 9 ends (the
+  pronoun); sv. 6 / 5 / 479 (the splitter's cuts after cerkev sv.); d.o.o. 5 / 4 / 2. Leipzig's splitter cuts after
+  many abbreviations, so the ends include its cuts.
+- Numbers with a period: one or two digits before a lowercase word 10,328, before a capital 425 (1. SNL, the league),
+  ending a sentence 1,175; four digits 106 before a lowercase word, none before a capital. Roman numerals: 683
+  lowercase, 154 capital, 318 at an end.
+- A single capital letter with a period (initials): 764 before a capital, 340 lowercase, 93 at an end.
+- Quotes: » 9,426 and « 9,172 (»…« 6,317 pairs), " 11,063, “ 374, ” 245, „ 130; „…“ 114 pairs, «…» 662. Paired: »…«
+  and „…“.
+- Audio: Lingua Libre Q9063 has 6 of 20 common words (voda, mati, knjiga among them), Wiktionary 2.
+- Fonts: every catalog Latin font has č š ž.
+- The bundle: Yomitan's Czech descriptor has capitalization only, so sl.js (Czech's under Slovenian's code) reads text
+  as cs.js does; Slovenian needs no rules of its own (sl-en lists 48,678 forms).
 
 ## Device checks
 

@@ -153,6 +153,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR38 | Latin recognition (`testdata/ocr/la-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with macrons and æ): cloud recognition reads the screen; offline, ML Kit's Latin model reads it (ō ū ē may come as õ ö ũ ü ễ, which the lookup drops with every mark); PaddleOCR v6, marked "more accurate" and chosen in the Bubble settings, reads the screen (both read the capital I of Iulius as l) | F | U LatinSupportTest, CatalogFileTest, I LanguageLookupTest, M | 2026-10-22 |
 | OCR39 | Lithuanian recognition (`testdata/ocr/lt-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ą č ę ė į š ų ū ž and Ū): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, an Ū, ė or į it reads as Ü, é or ị is found as the Lithuanian letter, and a word whose marks it drops is found too (Ukis finds ūkis); Tesseract lit fast, marked "more accurate" and chosen in the Bubble settings, reads the screen; app text of a Lithuanian sentence with a foreign é (José, AnkiDroid's note editor) keeps the é | F | U LithuanianSupportTest, CatalogFileTest, M | 2026-10-22 |
 | OCR40 | Slovak recognition (`testdata/ocr/sk-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with á ä č ď é í ľ ň ó ô š ť ú ý ž): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, and a word whose marks it drops (ť ď ľ read as t d l) is found through the keys without marks (tazke finds ťažké); Tesseract slk fast, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovakSupportTest, CatalogFileTest, M | 2026-10-22 |
+| OCR41 | Slovenian recognition (`testdata/ocr/sl-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with č š ž and »…«): cloud recognition reads the screen (» « may come as >> <<); offline, ML Kit's Latin model reads it, and a word whose caron it drops is found through the keys (zena finds žena); PaddleOCR v5 Latin, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovenianSupportTest, CatalogFileTest, M | 2026-10-22 |
 
 ### LK: lookup
 
@@ -225,6 +226,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK65 | Czech as Slovak's fallback (Slovak active with wty sk-en, wty cs-en installed): v and však, which sk-en lacks, show cs-en's entries with "Czech" after the word; voda shows sk-en's entry only, without cs-en's definitions; tu shows Slovak tú (question 26); with Czech active the same words show no tag; without a Czech dictionary v finds nothing | F | U FallbackDictionariesTest, P popup.test.mjs, M | 2026-10-22 |
 | LK66 | Kazakh and Kyrgyz noun endings skip the pronouns whose case forms change their stem: on the search screen Kyrgyz алды shows алуу ("past") and no ал with the accusative; бизге still finds биз ("dative") | F | U glue `kazakh and kyrgyz noun endings skip the pronouns…`, M | 2026-10-22 |
 | LK67 | The Kyrgyz verbal noun in -ыш: болушу finds болуу ("verbal noun « his, her, their"); иш finds only иш, no verb | F | U glue `kyrgyz verbal nouns in -ыш…`, M | 2026-10-22 |
+| LK70 | Slovenian lookups (overlay over `testdata/ocr/sl-sample.png`, and the Search screen): vode finds voda through its form row vôde; delal finds delati through dẹ́lał; je finds biti through its form row's lemma bíti; zena and ZENA find žena; se shows se first, then še | F | U SlovenianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-22 |
 
 ### POP: the popup
 
@@ -267,6 +269,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP35 | A Latin entry: the Popup settings' font card lists Literata, Inter, Lexend, PT Serif and PT Sans, not Atkinson Hyperlegible Next, with "Only for text in Latin"; one chosen sets ā ē ī ō ū; the bubble shows LA and the Languages screen Latin's laurel flag; the rule chip of magisque reads "-que" with its description in English and Russian | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP36 | A Lithuanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Lithuanian text"; one chosen sets ą č ę ė į š ų ū ž; the bubble shows Ė and the Languages screen Lithuania's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP37 | A Slovak entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovak text"; one chosen sets á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž; the bubble shows Ô and the Languages screen Slovakia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
+| POP38 | A Slovenian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovenian text"; one chosen sets č š ž; the bubble shows SL and the Languages screen Slovenia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 
 ### AUD: audio
 
@@ -297,6 +300,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD23 | Latin audio: Audio settings show Regions with "Classical pronunciation" and "Ecclesiastical pronunciation" while Wiktionary is a source; holding 🔊 on magnus lists Wiktionary's La-cls- recording first; moving the ecclesiastical one up puts La-ecc- recordings first; the phone's voice speaks Latin where it has one | F | U LatinSupportTest, AudioPagesTest, M | 2026-10-22 |
 | AUD24 | Lithuanian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on vanduo lists Lingua Libre's recording; the phone's voice speaks Lithuanian where it has one | F | U LithuanianSupportTest, M | 2026-10-22 |
 | AUD25 | Slovak audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on mäso lists Lingua Libre's recording (Lingua Libre has no voda); the phone's voice speaks Slovak where it has one | F | U SlovakSupportTest, M | 2026-10-22 |
+| AUD26 | Slovenian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on voda lists Lingua Libre's recording; the phone's voice speaks Slovenian where it has one | F | U SlovenianSupportTest, M | 2026-10-22 |
 
 ### ANK: Anki
 
@@ -332,6 +336,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK28 | A Lithuanian Anki note: for Kazlauskas in "Prof. Kazlauskas 1950 m. rugsėjo 5 d. gimė Vilniuje." the sentence is whole; for obuoliai in "Vaisiai, t. y. obuoliai ir kriaušės, kainavo 5 tūkst. eurų." it is whole; "Jis gimė 1990. Vėliau išvyko." ends at 1990. | F | U SentenceTest, LithuanianSupportTest, M | 2026-10-22 |
 | ANK29 | A Slovak Anki note: for Novák in "Prof. Novák sa narodil 5. mája 1950 v Bratislave." the sentence is whole; for jablká in "Ovocie, t. j. jablká a hrušky, stálo napr. 5 tis. eur." it is whole; "Vznikol v 3. stor. pred Kr. Potom zanikol." ends at Kr. | F | U SentenceTest, SlovakSupportTest, M | 2026-10-22 |
 | ANK30 | An initial before a surname holds the sentence: a Kyrgyz note added from the popup for келди in "Президент К. Бакиев Ошко келди." (`scripts/text-image.py`, Segoe UI) has the whole sentence as Sentence | F | U SentenceTest `anInitialBeforeASurnameKeepsTheSentenceInEverySpacedLanguage`, KyrgyzSupportTest, M | 2026-10-22 |
+| ANK32 | A Slovenian Anki note: for Novak in "Prof. dr. Novak se je rodil 5. maja 1950 v Ljubljani." the sentence is whole; for jabolka in "Sadje, t. i. jabolka in hruške, je stalo npr. 5 tis. evrov." it is whole; for je after the quote in "»Pridi sem!« je zaklicala." it is whole, for sem inside it "»Pridi sem!«"; "Mesto je nastalo v 3. stol. pr. n. št. Potem je propadlo." ends at št. | F | U SentenceTest, SlovenianSupportTest, M | 2026-10-22 |
 
 ### TR: sentence translation
 
@@ -410,6 +415,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG22 | Latin setup: the download screen offers Wiktionary into English, Russian, German, Spanish, French, Italian, Japanese, Korean, Polish, Portuguese and Chinese and the transcription, ticked, and no frequency dictionary; ML Kit is the main model, PaddleOCR v6 unticked and marked "more accurate", PaddleOCR v5 Latin and Tesseract lat fast and accurate unticked; the flag is Latin's laurel wreath | F | U CatalogFileTest, FlagsTest, M | 2026-10-22 |
 | LNG23 | Lithuanian setup: the download screen offers Wiktionary into English, Russian, German, French, Korean, Polish and Chinese and the transcription, ticked, and wordfreq; ML Kit is the main model, Tesseract lit fast unticked and marked "more accurate" (ticked, it becomes the chosen model), Tesseract accurate and PaddleOCR v5 Latin and v6 unticked; the flag is Lithuania's | F | U CatalogFileTest, FlagsTest, M | 2026-10-22 |
 | LNG24 | Slovak setup: the download screen offers Wiktionary into English, Russian, French, Polish, Turkish and Chinese and the transcription, ticked, and wordfreq; after Slovak's own main dictionaries the Czech ones in the chosen languages of definitions, unticked, each with "Fallback dictionary (Czech)"; with only a Czech one ticked the button stays disabled; ticking cs-en downloads it with Slovak's; ML Kit is the main model, Tesseract slk fast unticked and marked "more accurate", Tesseract accurate and PaddleOCR v5 Latin and v6 unticked; the flag is Slovakia's | F | U LanguageSetupTest, CatalogFileTest, FlagsTest, M | 2026-10-22 |
+| LNG25 | Slovenian setup: the download screen offers Wiktionary into English, Russian, French, Polish, Turkish and Chinese, the transcription and wordfreq ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract slv fast and accurate unticked; the flag is Slovenia's and the bubble shows SL | F | U CatalogFileTest, M | 2026-10-22 |
 
 ### SET: settings, backup, appearance
 
@@ -477,6 +483,56 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-10-22, `languages/sl` (on `9736102b` with the Slovenian changes before their commit), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Slovenian (LNG25, OCR41, LK70, POP38, AUD26, ANK32) through the download screen, the
+overlay over `testdata/ocr/sl-sample.png` and an image of the ANK32 sentences (Segoe UI, both in the debug viewer)
+with cloud recognition, ML Kit and PaddleOCR v5, app text in AnkiDroid's note editor, the Search screen, the popup
+page (`popup-eval.mjs`), the Popup and Anki settings and Anki notes into the local "Screenlate Test" deck
+({sentence} as Meaning); the engine's instrumented tests. An x86_64-only APK, installed with the storage line lowered
+and restored after.
+
+Results: passed, with the deviations below; the ANK32 case names je instead of zaklicala, which no installed
+dictionary has. First checks: all 6 cases (moved from N to F). Automated: unit tests, page tests (146), glue tests
+(65, 1 skipped), the catalog and converter tests and lint passed; I `LanguageLookupTest` 30 of 30 and the engine's 56
+instrumented tests on the emulator.
+
+- LNG25: Slovenia's flag; English definitions by default, the other languages Russian, French, Chinese, Polish and
+  Turkish; wordfreq and the transcription ticked; ML Kit the main model, PaddleOCR v5 marked "More accurate",
+  Tesseract fast (3.0 MB) and accurate (5.9 MB) unticked. Both PaddleOCR models showed ticked and "Installed", as
+  Swedish, Danish and Norwegian had downloaded them. sl-en, sl-ru, sl-ipa and wordfreq sl (53,998 words, built on the
+  device) came to 1.6 MB and imported in 1.7-6.2 s; the bubble shows SL.
+- OCR41: cloud recognition, ML Kit and PaddleOCR v5 (chosen in the Bubble settings, engines Device) read every word
+  and mark of `sl-sample.png`; cloud recognition read » as >> (« kept), the on-device models kept both.
+- LK70 (Search screen): vode shows voda ("genitive singular"); delal delati ("singular masculine l-participle"); je
+  shows je, then biti ("third person singular present"), ona and jesti; zena and ZENA show žena; se shows se, then the
+  dual pronoun forms mi, me, vi and ve, then še. Overlay (cloud recognition): vode, Zena, Delal, Se, Pridi (priti) and
+  Šest (the surname, then šest) as there.
+- POP38: the font card lists the phone's font, Lexend and PT Serif (downloaded), Literata, Inter, Atkinson
+  Hyperlegible Next and PT Sans, with "Only for Slovenian text" and a Slovenian sample sentence; with PT Serif chosen,
+  the page's chosen face is PT Serif over U+0-24F, which holds č š ž.
+- AUD26: Lingua Libre, Wiktionary, then the phone's voice; the Test button on voda finds Lingua Libre's recording
+  (Zupanurska) and none on Wiktionary; holding 🔊 on voda in the popup lists the recording first. Whether the
+  emulator's voice speaks Slovenian was not checked.
+- ANK32, cloud recognition: the Novak, jabolko and potem notes have "Prof. dr. Novak se je rodil 5. maja 1950 v
+  Ljubljani.", "Sadje, t. i. jabolka in hruške, je stalo npr. 5 tis. evrov." and "Potem je propadlo.". Cloud
+  recognition made "Mesto je nastalo" a paragraph of its own (the mesto note has only that line) and read »Pridi sem!«
+  as >>Pridi sem!<<, so the priti note has ">>Pridi sem!" (plan question 22).
+- ANK32, ML Kit (four paragraphs, the guillemets kept): the je note after the quote (added anyway, as je was in the
+  deck) has "»Pridi sem!« je zaklicala.", the sem note inside it "»Pridi sem!«", as a word inside a quote gets the
+  quote. ML Kit wrote "v 3." as "v3.", so the je note of the Mesto sentence ends at "Mesto je nastalo v3.". App text
+  "Mesto je nastalo v 3. stol. pr. n. št. Potem je propadlo." in AnkiDroid's note editor: the nastati note has
+  "Mesto je nastalo v 3. stol. pr. n. št.". PaddleOCR v5 gives each line a paragraph of its own and was not used for
+  the notes.
+- The emulator restarted three times during the run: once with "dm-verity device corrupted", once when its process
+  died, and once on an ext4 error of /data (kernel panic; e2fsck then fixed the quota counts). The host was heavily
+  loaded and adb's server restarted. After the restarts Google's "Sign in with ease" screen came up over the share
+  sheet; it was closed with Back, nothing tapped.
+
+Left on the emulator: Slovenian on and active with wty sl-en, sl-ru, sl-ipa and wordfreq sl; Slovenian's model ML Kit,
+engines Both; PT Serif chosen for Slovenian; Slovenian's Anki settings with deck and note type "Screenlate Test",
+{sentence} as Meaning, and nine Slovenian notes in that deck; `sl-sample.png` and `sl-anki.png` in the app's
+`files/testdata`. The engine's test APK uninstalled, the storage settings deleted, the emulator powered off.
 ### 2026-10-22, `languages/kk-answers` (`8d4a08bb`), Pixel_10_Pro (API 37)
 
 Scope: LK66 and LK67 on the search screen (`PROCESS_TEXT` sent with `am start`, Kyrgyz active), ANK30 through the

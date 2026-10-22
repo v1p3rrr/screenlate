@@ -147,6 +147,11 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - Injected touches: every `input motionevent DOWN` needs an `UP`. A DOWN left without UP makes later injected gestures do nothing until an UP is sent.
 - Enabling Google's Accessibility Menu once left a floating accessibility button (`settings put secure accessibility_button_mode 0` hides the mode, the button may remain until reboot); keep only Screenlate's service enabled.
 - `android.hardware.uwb-service` crash-loops on this image (native SIGABRT in logcat); it is unrelated noise. App crashes show up as `FATAL EXCEPTION` in `adb logcat -d`.
+- With /data at 95% and the host heavily loaded (2026-10-22, Slovenian run) the emulator restarted with "dm-verity
+  device corrupted", its process then died, and the next boot panicked on an ext4 error of /data; the boot after
+  that ran e2fsck (quota counts fixed) and stayed up, app and AnkiDroid data intact. The reason of the last restart
+  is in `adb shell dumpsys dropbox --print SYSTEM_LAST_KMSG` ("Last boot reason"). After such restarts Google's
+  "Sign in with ease" screen can come up over other apps: close it with Back, never tap through it.
 - `scripts/popup-eval.mjs` can hang when the page is not attached; wrap it in `timeout 40`.
 - Lens can be probed from the desktop without the app: a small Python client that builds the same protobuf request is handy for comparing full-screen and cropped recognition (the owner's phone screenshots are 1153×2560).
 - A first launch (bundled dictionary install) can be checked without wiping the main user's data: `pm create-user t`, `pm install-existing --user N <pkg>`, `am switch-user N`, `am start --user N -n <pkg>/com.vpr.screenlate.MainActivity`; read its registry with `run-as <pkg> --user N cat databases/dictionaries.db*`. A background user cannot start the app (activities need the foreground user, the startup provider is not exported), and `screencap` shows black while user N is in front. Then `am switch-user 0` and `pm remove-user N`; the main user's accessibility service stays on.

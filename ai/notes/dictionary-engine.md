@@ -189,6 +189,12 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   headword is keyed, and `candidate_lookup` treats it as a tag-less item. An entry added both as written and as a key
   keeps the written one. Version 1 tables are read without the flag (`FormOfTableFile` and `FormOfTable::open` accept
   both), so dictionaries imported before keep the old order until they are imported again.
+- The letters' key after the replacements (2026-10-22, Slovenian): `MarkStripper::keys` made the key without the
+  letters' marks from the text without the stress marks only, so a Slovenian form with ł or ə kept them there (žȓł
+  gave žrł, not zrl, and zrl found nothing). The letters' key is now made from that text with the replacements
+  applied (ł → l, ə → e). Lithuanian, the only other language with `letter_marks`, has no replacements, so its keys
+  are unchanged. Lemma names still lose only the marks: a lemma with ə or ł (várən, 97 form-of items in sl-en) names
+  no headword.
 - Form rows with template leftovers (2026-10-19, Bengali): wty writes some form headwords with what its templates
   left, and `split_bank` keyed them under the whole text, which no lookup ever gives. `form_headwords` cleans them:
   a romanization or note after whitespace and `(` or `,` is cut off ("মাসটি (maśṭa (colloquial), maśṭi (formal))",
