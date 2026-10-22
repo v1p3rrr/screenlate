@@ -437,7 +437,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | UPD6 | Turn the service off in the accessibility settings (or `settings put secure enabled_accessibility_services` without Screenlate) → about 3 s later, with the line "3 s after the stop", a banner "Screenlate service is off" without sound, in the app's language; a tap opens the service's settings (or the list); turning the service on removes the notification; with notifications off, no banner and a log line saying so | F | U StopFollowUpTest, M | 2026-10-22 |
 | UPD7 | The stop report in the log: "on the enabled list: no" after the switch, the time since the last bubble touch and scan, recent windows with package names of system and phone-maker apps only (hidden ones by name prefix), and a line 3 s later | F | U ServiceStopDiagnosticsTest, M | 2026-10-22 |
 | UPD8 | The service turned off before the overlay has added its windows: jdb holds the main thread at the first `OverlayController.applySettings` after the service connects (`stop thread at`), the service is turned off with `settings delete secure enabled_accessibility_services`, the thread goes on (steps in the run log of 2026-10-22, `claude/jolly-cray-bc8ce9`) → no crash; the log has "Window not added, the system is unbinding the service" and then the stop report, the process lives on; turned on again, the bubble shows docked and scans. Also: on and off again with gaps of 0.1-3 s, no crash | F | U OverlayWindowsTest, M | 2026-10-22 |
-| UPD9 | The service stops and comes back within 3 s: `uiautomator dump` (UiAutomation pauses the service for about 1.5 s), two dumps in a row, turned off and on again within 3 s → no banner at any point (`dumpsys notification` has no Screenlate notification 3 and 5 s later); the log has the stop report and "3 s after the stop: … running: yes" | F | U StopFollowUpTest, M | |
+| UPD9 | The service stops and comes back within 3 s: `uiautomator dump` (UiAutomation pauses the service for about 1.5 s), two dumps in a row, turned off and on again within 3 s → no banner at any point (`dumpsys notification` has no Screenlate notification 3 and 5 s later); the log has the stop report and "3 s after the stop: … running: yes" | F | U StopFollowUpTest, M || 2026-10-22 |
 
 ### NF: non-functional
 
@@ -474,6 +474,31 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `claude/jolly-cray-bc8ce9` (`languages/main` 9736102b with both overlay commits cherry-picked, 0.2.3-4cca2cc0), Pixel_10_Pro (API 37)
+
+Scope: the "service is off" notification posted 3 s after a stop and only when the service has not connected again
+(owner's decision); UPD6 again, UPD9 (first check, moved to F). Before: group 5a's build 0.2.3-9736102b.
+
+Results: all passed. A scratch script polled `dumpsys notification` (id 3) every 0.5 s while it stopped the service;
+times are seconds since the stopping command.
+
+- One `uiautomator dump`: stop, "Service connected" 1.2 s later, "3 s after the stop: … running: yes"; no
+  notification at any poll up to 6.1 s.
+- Two dumps in a row: stop, connected, stopped again 1.0 s later; the first stop's check found "running: no" but a new
+  connection since the stop, so no notification (a check of `running` alone would have posted one); connected again,
+  the second check "running: yes"; none at any poll up to 7.1 s.
+- Off and on again 1.5 s later (`settings`): none up to 6.1 s.
+- Off, not back: none up to 2.8 s, the notification from 3.3-3.4 s on, with the "3 s after the stop: on the enabled
+  list: no, running: no" line; turned on, gone by the next poll (0.6-0.7 s).
+- With the app's language set to Russian (`cmd locale set-app-locales … ru-RU`, the system in English) the
+  notification's title and text were Russian; the setting was cleared after.
+- The same process throughout, no crash; turned on again, three overlay windows.
+- Not checked on the emulator: the log line with notifications off (unit test only; revoking the permission kills the
+  process).
+
+Left on the emulator: 0.2.3-4cca2cc0 instead of group 5a's 9736102b, data kept; the service on, the bubble docked;
+the emulator running.
 
 ### 2026-10-22, `claude/jolly-cray-bc8ce9` (`languages/main` 26b3d602 with the fix cherry-picked, 0.2.3-f02f6e38), Pixel_10_Pro (API 37)
 

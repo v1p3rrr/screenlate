@@ -329,7 +329,9 @@ Emulator check, 2026-10-22: `settings put secure enabled_accessibility_services`
 enabled list: no", the banner, and "3 s after the stop: … running: no"; turning it back on cancels the notification.
 `uiautomator dump` also stops the service: UiAutomation pauses accessibility services, the report says "on the enabled
 list: yes", and the service connects again 1.5 s later. That is the same shape a ColorOS unbind would have, and a
-reason not to run `uiautomator` while checking stops.
+reason not to run `uiautomator` while checking stops. Since the delayed notification (checked the same day,
+test model UPD6 and UPD9): one dump or two in a row post nothing; `settings put` without Screenlate posts it 3.3 s
+after the stop; turning the service on removes it within 0.6 s.
 
 | Fix | What it does | Cost |
 | --- | --- | --- |

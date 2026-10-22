@@ -30,7 +30,8 @@ It plays no part in the user's ColorOS logs (no crash there; `notes/oem-backgrou
 The "Screenlate service is off" notification (owner, 2026-10-22; same branch): posted with the check 3 s after a
 stop, and only when the service has not connected again since (`StopFollowUp`, a count of connections in
 `OverlayServiceStatus`), so `uiautomator dump`, which pauses the service for about 1.5 s, no longer flashes a banner.
-The stop report and the 3 s line stay; with notifications off, a log line. UPD6 changed, UPD9 new.
+The stop report and the 3 s line stay; with notifications off, a log line. UPD6 changed, UPD9 new; both passed
+on the emulator on 2026-10-22 (run log), as did 615 unit tests, lint and 107 page tests.
 
 ## Work in progress (2026-10-22, night): the build chain
 
