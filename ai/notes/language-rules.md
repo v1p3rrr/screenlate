@@ -52,7 +52,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | de, pl, tr, lv, cs, hr, sr | A period after a short number, or after a longer one or a Roman numeral in capitals before a lowercase word ("1918. gada", "Karel IV. byl"), is an ordinal, not a sentence end | `lang/SpacedLanguageSupport.kt:208` | GermanTest, PolishTest, TurkishTest, LatvianTest, CzechTest, SerboCroatianTest, SentenceTest | Isolation (others end at "3.", "1918." and "IV."; "1918. Dann" and "IV. Potom" end everywhere), GermanTest (IIII., iv.) | fixed |
 | each spaced language | Its abbreviations ("Mr.", "z.B.", "т. е.", "TP.", "π.χ.") do not end a sentence | `lang/SpacedLanguageSupport.kt:70`, each `<Lang>Support.abbreviations` | each `<Lang>Test`, SentenceTest | Isolation (each list holds only its own language's sentences) | ok |
 | de, cs, hr, sr | Single letters abbreviate only beside another one written apart (z. B., d. h., o. Ä., u. v. m.; Czech př. n. l.; Croatian and Serbian p. n. e., п. н. е.), so "Plan B." ends a sentence; "S." stands alone | `lang/SpacedLanguageSupport.kt:38`, `:177`, `GermanSupport.kt:59`, `CzechSupport.kt:41`, `SerboCroatianSupport.kt` `pairedLetters` | GermanTest `a single letter abbreviates only beside another one`, CzechTest, SerboCroatianTest `before the common era…`, SentenceTest | Isolation ("Plan B. Dann" ends everywhere; only German, Czech and Serbo-Croatian have paired letters, "n. l." holds only in Czech) | fixed |
-| cs | OCR words "I." right after "n." are written "l." (OCR reads the sans-serif l of "n. l." as a capital I), across a line break too; app text keeps a capital I as written, a Roman ordinal before a lowercase word, a letter of its own before a capital | `CzechSupport.kt` `ocrLines` | CzechSupportTest `the l of the era that ocr reads as a capital I is written l`, `a capital I written after n in app text is taken as written` | Isolation `abbreviations of one language…` (only Czech OCR lines change "n. I."; "n. I. Potom" ends the sentence everywhere) | ok |
+| cs | In OCR text an I between "n." and a period is written l (OCR reads the sans-serif l of "n. l." as a capital I), however the engine splits the words ("n" "." "I" ".", "n.I.") and across a line break; "n.l." and "př.n.l." written without spaces are abbreviations; app text keeps a capital I as written, a Roman ordinal before a lowercase word, a letter of its own before a capital | `CzechSupport.kt` `ocrLines`, `abbreviations` | CzechSupportTest `the l of the era that ocr reads as a capital I is written l`, `the l of the era is written l however the engine splits the words`, `the era written without spaces does not end a sentence`, `a capital I written after n in app text is taken as written` | Isolation `abbreviations of one language…` (only Czech OCR lines change "n. I."; "n. I. Potom" ends the sentence everywhere) | ok |
 | pl, hr, sr | A word that holds the sentence only before a number or a lowercase word: Polish "ok.", Croatian and Serbian "Kr." and "Хр." after "pr." ("pr. Kr. godine" holds, "pr. Kr. Onda" ends) | `lang/SpacedLanguageSupport.kt:44`, `SerboCroatianSupport.kt` `abbreviationsBeforeLowercase` | SerboCroatianTest `before the common era, kr holds only before a lowercase word` | Isolation ("Kr. godine" ends in the other languages) | ok |
 | pl | "ok." (około) holds the sentence only before a number or a lowercase word ("Jest ok. Idziemy." ends) | `lang/SpacedLanguageSupport.kt:44`, `PolishSupport.kt:34` | PolishTest `ok holds the sentence only…` | other languages have no such words | fixed |
 | tr | Abbreviations in capitals match under Turkish case rules (ŞTİ.), and under the root rules for capitals read without their dots | `lang/SpacedLanguageSupport.kt:56`, `TurkishSupport.kt:31` | TurkishTest `abbreviations in capitals…` | the other languages keep `Locale.ROOT` | fixed |
@@ -418,6 +418,13 @@ Found while adding Hebrew:
     a noun with two endings (оқыды: оқ "arrow" with -ы and -ды; Kyrgyz окуду: ок); they now follow a consonant
     only (`/C`, the grammar's `consonants`; Kazakh у counts, as in суды) (glue tests; found on the emulator, LK51).
 
+Found in the device checks of 2026-10-22:
+
+41. The Czech "n. I." fix matched word by word, but cloud recognition gives "n", ".", "I", "." as four words and ML
+    Kit "n.I." as one, so neither engine's reading was fixed on the device. `ocrLines` now matches over the line's
+    words joined with spaces, and "n.l." and "př.n.l." are abbreviations (CzechSupportTest, LanguageRulesIsolationTest;
+    ANK22).
+
 ## Limits left as they are
 
 - Bengali endings are undone once: ছেলেদেরকে finds ছেলেদের, not ছেলে. Verb forms come only from Wiktionary's form
@@ -643,4 +650,4 @@ ANK12 (`{sentence}` edge cases: ３．１４, LTD. ŞTİ., German text with Engl
 language looked up by words), ANK14 (furigana markers by language, their hints, Russian stress in the text), LK30
 (a word hyphenated at a line end), ANK12 extended (Plan B., ok., English quotes in German), POP24 (the Turkish chip
 initial), LK37 (Ukrainian), LK38 (Belarusian), LK39 (Greek), LK42 (Hindi), LK43 (Bengali), LK44 (Georgian), LK45 (Armenian), LK46 (Thai), LK47 (Khmer), LNG17 (the busy-screen line of Thai and Khmer), LK48 (Arabic), LK49 (Persian, with its spoken endings), LK50 (Hebrew), LK51 (Kazakh), LK52 (the parts of a hyphenated word), LK36 and LK50 (no
-form tags beside a plain word), POP27 (Persian transcription order).
+form tags beside a plain word), POP27 (Persian transcription order), LK54 (Arabic written with the Persian ک ی), ANK22 (Czech "n. l." from OCR).

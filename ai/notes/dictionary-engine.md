@@ -138,6 +138,14 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - Tag banks are only counted at import; tag names reach lookups, their descriptions (`notes`) do not. `TagBanks`
   reads them from the archive at import into `tag_notes.json` next to the engine's files (the engine ignores other
   files in its directory); bundled dictionaries get theirs from the APK once (`fillBundledTagNotes`).
+- The tags of phonetic transcriptions (`ipa` term meta) are dropped too; `TranscriptionTagBanks` reads them into
+  `transcription_tags.bin`. The Chinese Wiktionary transcriptions (wty-zh-ipa, 38 MB zip, 2026-10-22) have 363,021
+  rows with 4,403,032 tagged transcriptions (4.1 million distinct, 27,385 distinct tag lists, 4.3 tags each); the
+  first builder kept a hash map entry with a set of tags per transcription and ran out of the 192 MB heap at
+  import, so the tags were not written. Format 2 (`STT2`) packs 39 bits of the hash with the tag set
+  index into one long, sorts chunks of 2 MB during the import and merges them into the file, which lookups map
+  instead of reading (36 MB for wty-zh-ipa; the heap stayed under 80 MB). The import took 62 s on the emulator, most
+  of it parsing the banks. Files of format 1 are still read.
 - Index strings come back as their raw JSON (`glz::raw_string`): a line break is a backslash and `n`. Revision, author, URLs,
   description and attribution are decoded (`decodeIndexText`); the title stays raw because lookups name
   dictionaries by the engine's title.
