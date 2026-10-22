@@ -129,9 +129,57 @@ without a force-stop, and the process is killed later as an ordinary background 
 cover the moment itself: a larger log buffer before reproducing, the export at once, or exit reasons recorded by the
 app.
 
+### Logs of 2026-10-22: the service is turned off while the process lives
+
+The user reproduced it and saved the log at once (07:59:40), then once more after trying other settings (08:08:25).
+Phone language Japanese by then (`Locale: ja-RU`). The main buffer kept under a minute of history on this phone.
+
+07:59 log, one process (pid 3594) throughout:
+
+| Time | Event |
+| --- | --- |
+| 07:58:53 | The user opens Screenlate (process start). |
+| 07:59:13.521 | `Service connected` (the user turned the service on). |
+| 07:59:14.306 | Pull-out scan: window captured in 55 ms, ML Kit draft 408 ms, cloud final 891 ms; popup window (918x772) and the full-screen layer shown, lookups found entries. |
+| 07:59:15.792 | Finger up; the bubble stays floating (`OplusViewDragTouchViewHelper: dispatchTouchView action = 1`, a ColorOS helper in the app process, at every release). |
+| 07:59:16.978 | `InputEventReceiver: … Publisher closed input channel` for the bubble, popup and layer windows, then `ScreenlateService: Service stopped` (`onDestroy`). No app line in between, no crash, the same pid goes on. |
+| 07:59:17.844 | `Service connected` again in the same process (0.87 s later; probably the user, who had the page or the shortcut at hand). |
+| 07:59:18.539 | Second pull-out scan, final at 19.417. |
+| 07:59:19.723 | Finger up, bubble floating. |
+| 07:59:20.881 | Windows closed and `Service stopped` again, 1.16 s after the finger up. |
+| 07:59:23 | The app's own screen comes back (same pid); log saved at 07:59:40. |
+
+08:08 log: the system buffer still had pid 3594 at 08:07 (three overlay windows created at 08:07:25, :34 and :41, so the
+service was on again and scanning; the app's own screen hidden at 08:07:50). The main buffer had lost it. A new process
+started at 08:08:19, and its WorkManager check logged `Application was force-stopped, rescheduling.`: pid 3594 ended
+with a force-stop between 08:07:50 and 08:08:19, with Screenlate in the background (a swipe in recents, or ColorOS).
+
+Reading:
+
+- The bubble disappears because the system unbinds the accessibility service: the window manager removes the
+  service's windows, then `onDestroy` runs, and the process lives on. Not a crash and not a kill. This is what the
+  recording showed as the switch turning off by itself. The first log (service off, no force-stop exit) fits it too.
+- Both stops came 1.16–1.19 s after the finger left the bubble at the end of a pull-out scan, with the bubble left
+  floating. The app does nothing at that moment (no line between the finger up and the stop; nothing in v0.2.3 is
+  timed ~1.2 s after a release: the layer hides 1 s after it empties, but here the aim kept it full, and auto-play
+  logs only failures). In the recording, the one scan that ended in the dock (19.2–25.9) did not lose the service;
+  the AnkiDroid stop at 47.03 came ~1.2 s after a tap scan's cloud result.
+- Only the user, a force-stop, the app's own `disableSelf()` or a privileged component can take a service off; v0.2.3
+  never calls `disableSelf()`. So a ColorOS component turns it off. Which one, and on what signal, is not in the app's
+  log: it needs system lines from that second.
+- Known candidates, none confirmed: a ColorOS security feature that turns off accessibility for a "non-official" app
+  behaving suspiciously (an OPPO community post describes a prompt with "Turn off accessibility"; the post now returns
+  404), Play Protect's live threat detection (shows a notification), the accessibility shortcut (the user has it on;
+  a tap on it turns the service off). Android 17's Advanced Protection rule against non-tool services does not apply
+  (Android 16, and it blocks turning the service on at all).
+- Force-stops happen as well (08:08), at another moment; they are the separate background-limit problem described in
+  the ColorOS section.
+
 ### Likely causes, ranked
 
 Ranked from the recording alone; the first log (above) argues against 1 and, with a condition, against 2, and adds 2a.
+The 2026-10-22 logs settle it for the scan-time stops: 2a, the service turned off with the process alive. 1 is ruled
+out for them; 2 remains for the stops at other times.
 
 1. **The process crashes during or right after recognition on this phone** (Java or native: ML Kit, WebView, the
    engine's JNI, or the scan code). For: the deaths follow scans at a steady interval; the one automatic return at
@@ -187,12 +235,27 @@ Questions (the Russian text for the owner to forward is in the session's report 
    Does ColorOS show anything at that moment (a notification, a toast, an entry in the phone manager or security app)?
    For the next try: Developer options → Logger buffer size at the largest value, reproduce, then save the log at once
    without turning the service on first.
+7. After the 2026-10-22 logs, to find the trigger (a few scans each, one change at a time): after the scan, drop the
+   bubble at the edge instead of leaving it in the middle; engines "Device" only, then "Cloud" only; the accessibility
+   shortcut off for Screenlate; does a notification or prompt appear (Play Protect, the phone manager, security). With
+   a computer, a live system log while reproducing catches the component that turns it off:
+
+   ```bash
+   adb logcat -c
+   adb logcat -v threadtime -b all | findstr /i "accessib screenlate" > live.txt
+   ```
+
+   (stop with Ctrl+C a few seconds after the bubble disappears; `grep -i -E "accessib|screenlate"` elsewhere), and
+   `adb shell settings get secure enabled_accessibility_services` right after, which shows whether the service is
+   still on the list.
 
 ### Possible fixes in the app
 
 | Fix | What it does | Cost |
 | --- | --- | --- |
 | Exit reasons in the log | At each process start, log the earlier processes' `ApplicationExitInfo` (reason, description, status or signal, importance, PSS/RSS, time; no text) so the About → Logs export answers crash vs stop on any phone. The first log shows the export alone cannot: on ColorOS the buffer loses the dying process before the user gets to the button, while exit records stay for days. Keeping the service's connect and stop events in a small file of their own (a stop with the process alive means the service was turned off, not killed) would separate 2 from 2a | Small: about half a day with tests; reaches users with the next release. The diagnostics branch has a version to borrow from |
+| Stop diagnostics | When the service is destroyed while the process lives, log whether it is still on the enabled list (`Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES` is readable) and the package names of system windows that appeared in the last seconds (`getWindows()` / window-state events; system packages only, no text, no user apps), so a ColorOS prompt or component shows in the app's own log | Small: about half a day with tests and an emulator check |
+| "Turned off" notification | On such a stop, a notification that the system turned Screenlate off, with a button to the accessibility settings (the app cannot turn itself back on) | Small to medium: half a day, strings in 14 languages; needs the notification permission |
 | "Stopped by the system" card | Remember that the service ran; on the next app start, if it is off without a clean stop (onDestroy with the process alive) and the exit reason was a stop or crash, show a Home card with the steps (Background work, the accessibility page) | Medium: 1–1.5 days, strings in 14 languages, emulator check |
 | Fix the crash | Once a trace shows it | Unknown until the log |
 | Keep-alive on by default on phones with a maker's startup screen | The notification that makes background killers leave the app alone more often | Small (hours), only if the notification test helps |

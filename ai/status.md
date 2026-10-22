@@ -7,8 +7,10 @@ switch goes off by itself; once it came back by itself. Analysis, ranked causes 
 force-stop by the phone's background manager), the questions and log steps for the user and the app-side options are
 in `ai/notes/oem-background-limits.md`. The user's first log (Android 16) covers only a fresh process: no crash on
 record and, if saved right after a disappearance, no force-stop either, so ColorOS turning the service off without a
-force-stop is now a candidate too. Waiting for the user's answers and a log taken with a large buffer; no app change
-yet.
+force-stop is now a candidate too. The 2026-10-22 logs settle the scan-time case: the system unbinds the service
+~1.2 s after the finger leaves the floating bubble, the process lives on (no crash, no kill); one later stop was a
+force-stop. Which ColorOS component does it is not in the app's log; experiments and in-app stop diagnostics are
+proposed in the note. No app change yet.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
