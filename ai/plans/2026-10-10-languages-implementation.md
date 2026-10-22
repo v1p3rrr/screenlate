@@ -170,7 +170,10 @@ Requests 1–19 are in the previous plan. New ones:
     block is merged into languages/main before the next starts (owner; placing group 4e's follow-ups right after Thai
     and Khmer is the agent's reading of "4c, then 5, then 6"). Each block's session first measures every engine and
     model of its languages on the emulator and checks its rules' hypotheses on data (the owner's instruction for group 6
-    on 2026-10-21, applied to every block by the agent).
+    on 2026-10-21, applied to every block by the agent). A session that hangs, fails or waits for the owner never holds
+    the chain: the next block starts at once and the stuck one is finished later; sessions working on their own do not
+    use the built-in browser, whose site prompts wait for the owner (owner, 2026-10-22, after group 4e's session waited
+    six hours on one).
 73. (2026-10-22) Upstream reports filed at wty from the owner's account. #399
     (https://github.com/yomidevs/wiktionary-to-yomitan/issues/399): `handle_alt_of_sense` drops alt-of senses tagged
     abbreviation, so contractions and apocopic forms have no entry (German im, zum, zur, vom, beim; Italian un, del,
@@ -1649,3 +1652,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   fetched the stopped one's file) was a plain bug.
 - 2026-10-22: the night's emulator checks merged (`languages/checks-2`); questions 79-86 from them (84 a plain bug,
   decided provisionally).
+- 2026-10-22: request 72 says a hung or waiting session never holds the chain (owner); group 5a started while group 4e's
+  session waits on a browser prompt.
