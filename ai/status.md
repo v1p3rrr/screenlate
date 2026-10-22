@@ -33,8 +33,10 @@ rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue
 5a's wty recheck is merged as well (no behavior change). Slovak (`languages/sk`, with the Czech dictionaries as its
 fallback) is merged too: build, unit tests, lint, 146 page tests and 64 glue tests pass on the merge, its eight cases
 passed on the emulator, the owner answered its questions 24-26 as built; its run found an overlay crash when the
-service comes back (languages plan, request 78). 5a's device checks are done (no recommendation changes). Slovenian is
-built on `languages/sl` (below), and then the chain pauses (owner, to keep the week's usage limit): Esperanto, Albanian,
+service comes back (languages plan, request 78). 5a's device checks are done (no recommendation changes). Slovenian
+(`languages/sl`, below) is merged: build, unit tests, lint, 146 page tests and 67 glue tests pass on the merge, its
+six cases passed on the emulator; the owner answered 5a's questions 21-23 and 27 (all built in the later run). The
+chain pauses here (owner, to keep the week's usage limit): Esperanto, Albanian,
 Swahili, groups 5b-5e and group 6 run later. Group 4e's answers to its questions 16 and 18-22 (`languages/kk-answers`)
 are merged; their four cases passed on the emulator. The ColorOS branch is merged into main and languages/main (owner).
 
