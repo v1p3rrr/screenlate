@@ -762,7 +762,7 @@
     <string name="dictionaries_import_interrupted">%1$s: the app closed twice during this import, so the import was stopped. Try again; if it fails again, the file may be damaged or too large for this device.</string>
     <string name="dictionaries_bundled_paused">Installing the bundled dictionaries was stopped: the app closed twice during it. It will be tried again after the next app update; to try now, tap Try again.</string>
     <string name="reset_dictionaries_gave_up_title">Dictionary reset did not finish</string>
-    <string name="reset_dictionaries_gave_up_text">The app closed twice during the dictionary reset, so the reset was stopped. Some dictionaries may remain or be missing. Run the reset again with the button at the top of the Dictionaries page.</string>
+    <string name="reset_dictionaries_gave_up_text">The app closed twice during the dictionary reset, so the reset was stopped. Some dictionaries may remain or be missing. On the Dictionaries page, delete the ones you no longer need and download the missing ones.</string>
     <string name="reset_dictionaries_gave_up_open">Open dictionaries</string>
     <string name="accessibility_disclosure_title">What the accessibility service does</string>
     <string name="accessibility_disclosure_intro">Screenlate uses its accessibility service to show the bubble over other apps and to read the text under it.</string>

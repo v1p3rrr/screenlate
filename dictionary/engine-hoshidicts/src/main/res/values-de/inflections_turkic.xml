@@ -39,7 +39,7 @@
     <string name="inflection_turkic_negative_label">Verneinung</string>
     <string name="inflection_turkic_passive_label">Passiv</string>
     <string name="inflection_turkic_reflexive_label">Reflexiv</string>
-    <string name="inflection_turkic_reciprocal_label">Reziprok</string>
+    <string name="inflection_turkic_reciprocal_label">Reziprokum</string>
     <string name="inflection_turkic_causative_label">Kausativ</string>
     <string name="inflection_turkic_question_label">Frage</string>
     <string name="inflection_turkic_possessive_2pl_label">euer</string>

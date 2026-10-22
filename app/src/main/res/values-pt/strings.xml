@@ -765,7 +765,7 @@
     <string name="dictionaries_import_interrupted">%1$s: o app fechou duas vezes durante esta importação, por isso ela foi interrompida. Tente de novo; se acontecer outra vez, o arquivo pode estar danificado ou ser grande demais para este dispositivo.</string>
     <string name="dictionaries_bundled_paused">A instalação dos dicionários incluídos foi interrompida: o app fechou duas vezes durante ela. Ela será tentada de novo após a próxima atualização do app; para tentar agora, toque em “Tentar de novo”.</string>
     <string name="reset_dictionaries_gave_up_title">A redefinição dos dicionários não terminou</string>
-    <string name="reset_dictionaries_gave_up_text">O app fechou duas vezes enquanto redefinia os dicionários, por isso a redefinição foi interrompida. Alguns dicionários podem ter ficado ou sumido. Redefina de novo com o botão no topo da página Dicionários.</string>
+    <string name="reset_dictionaries_gave_up_text">O app fechou duas vezes enquanto redefinia os dicionários, por isso a redefinição foi interrompida. Alguns dicionários podem ter ficado ou sumido. Na página Dicionários, exclua os que não forem mais necessários e baixe os que faltarem.</string>
     <string name="reset_dictionaries_gave_up_open">Abrir dicionários</string>
     <string name="accessibility_disclosure_title">O que o serviço de acessibilidade faz</string>
     <string name="accessibility_disclosure_intro">O Screenlate usa seu serviço de acessibilidade para mostrar a bolha sobre outros apps e ler o texto embaixo dela.</string>

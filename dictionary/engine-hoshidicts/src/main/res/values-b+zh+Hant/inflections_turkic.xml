@@ -29,7 +29,7 @@
     <string name="inflection_turkic_conditional_label">條件式</string>
     <string name="inflection_turkic_past_participle_label">過去分詞</string>
     <string name="inflection_turkic_habitual_participle_label">慣常分詞</string>
-    <string name="inflection_turkic_aorist_label">不定過去時</string>
+    <string name="inflection_turkic_aorist_label">不定將來時</string>
     <string name="inflection_turkic_intention_label">意圖</string>
     <string name="inflection_turkic_converb_label">副動詞</string>
     <string name="inflection_turkic_purpose_label">目的</string>

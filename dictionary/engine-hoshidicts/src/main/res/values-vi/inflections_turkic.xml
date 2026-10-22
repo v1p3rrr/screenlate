@@ -29,7 +29,7 @@
     <string name="inflection_turkic_conditional_label">điều kiện</string>
     <string name="inflection_turkic_past_participle_label">phân từ quá khứ</string>
     <string name="inflection_turkic_habitual_participle_label">phân từ thói quen</string>
-    <string name="inflection_turkic_aorist_label">bất định quá khứ</string>
+    <string name="inflection_turkic_aorist_label">tương lai bất định</string>
     <string name="inflection_turkic_intention_label">ý định</string>
     <string name="inflection_turkic_converb_label">trạng động từ</string>
     <string name="inflection_turkic_purpose_label">mục đích</string>
