@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Handler
@@ -143,10 +144,13 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     }
 
     private fun isSystemPackage(name: String): Boolean = systemPackages.getOrPut(name) {
-        name == "android" || runCatching {
+        try {
             val flags = packageManager.getApplicationInfo(name, 0).flags
             flags and (ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
-        }.getOrDefault(false)
+        } catch (_: PackageManager.NameNotFoundException) {
+            // Apps with a launcher icon are visible through the app's <queries>; most hidden ones are the system's own.
+            hasSystemPackagePrefix(name)
+        }
     }
 
     override fun onInterrupt() = Unit

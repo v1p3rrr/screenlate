@@ -49,12 +49,12 @@ object OverlayServiceStatus {
             .putExtra(Intent.EXTRA_COMPONENT_NAME, key)
         try {
             context.startActivity(details)
-        } catch (e: ActivityNotFoundException) {
-            Log.i(TAG, "No accessibility details page", e)
+        } catch (_: ActivityNotFoundException) {
+            Log.i(TAG, "No accessibility details page")
             context.startActivity(accessibilitySettingsIntent().highlighting(key))
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             // The page needs OPEN_ACCESSIBILITY_DETAILS_SETTINGS, which only system apps and installers hold.
-            Log.i(TAG, "Accessibility details page refused", e)
+            Log.i(TAG, "Accessibility details page refused")
             context.startActivity(accessibilitySettingsIntent().highlighting(key))
         }
     }

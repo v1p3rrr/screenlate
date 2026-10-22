@@ -294,8 +294,20 @@ report reads, e.g.: `Service stopped; on the enabled list: no; bubble touch ende
 ago; window events in the last 10 s:` followed by one line per window that came to the front, opened or closed, system
 packages by name and other apps as "an app"; 3 s later a line checks the list again. The notification shows at every
 stop (the app cannot tell a user's switch from the system's), as a banner without sound, and is cancelled when the
-service connects again; without the notification permission it is only a log line. Whether ColorOS's windows show up
-by name depends on the app seeing those packages (Android 11 package visibility); unseen ones read "an app".
+service connects again; without the notification permission it is only a log line.
+
+Package visibility (Android 11): the app's `<queries>` makes every app with a launcher icon visible, plus the makers'
+security apps listed there; the system's own packages without one (the home screen, system panels, and on ColorOS most
+`com.oplus.*` components) are hidden unless force-queryable. The emulator's first report named its launcher "an app".
+So a visible package is named when it has `FLAG_SYSTEM`, and a hidden one when its name starts with a system or phone
+maker prefix (`hasSystemPackagePrefix`: `com.android.`, `com.google.android.`, `com.coloros.`, `com.oplus.`,
+`com.heytap.` and others); other hidden packages stay "an app".
+
+Emulator check, 2026-10-22: `settings put secure enabled_accessibility_services` without Screenlate gives "on the
+enabled list: no", the banner, and "3 s after the stop: … running: no"; turning it back on cancels the notification.
+`uiautomator dump` also stops the service: UiAutomation pauses accessibility services, the report says "on the enabled
+list: yes", and the service connects again 1.5 s later. That is the same shape a ColorOS unbind would have, and a
+reason not to run `uiautomator` while checking stops.
 
 | Fix | What it does | Cost |
 | --- | --- | --- |

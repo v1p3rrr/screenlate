@@ -55,4 +55,15 @@ class ServiceStopDiagnosticsTest {
     fun `says so when no window changed`() {
         assertThat(diagnostics.report(now = 5_000, stillEnabled = true)).endsWith("; no window events in the last 10 s")
     }
+
+    @Test
+    fun `takes hidden packages of the system and phone makers for system ones`() {
+        assertThat(hasSystemPackagePrefix("android")).isTrue()
+        assertThat(hasSystemPackagePrefix("com.google.android.apps.nexuslauncher")).isTrue()
+        assertThat(hasSystemPackagePrefix("com.oplus.safecenter")).isTrue()
+        assertThat(hasSystemPackagePrefix("com.coloros.securitypermission")).isTrue()
+        assertThat(hasSystemPackagePrefix("org.example.reader")).isFalse()
+        assertThat(hasSystemPackagePrefix("com.androidx.example")).isFalse()
+        assertThat(hasSystemPackagePrefix("android.example")).isFalse()
+    }
 }

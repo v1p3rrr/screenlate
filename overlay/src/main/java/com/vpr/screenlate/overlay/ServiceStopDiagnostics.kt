@@ -86,3 +86,18 @@ class ServiceStopDiagnostics(
         const val MAX_WINDOWS = 64
     }
 }
+
+private val systemPackagePrefixes = listOf(
+    "com.android.", "com.google.android.",
+    "com.coloros.", "com.oplus.", "com.oppo.", "com.heytap.", "com.nearme.", "com.oneplus.", "com.realme.",
+    "com.miui.", "com.xiaomi.", "com.huawei.", "com.hihonor.", "com.honor.", "com.samsung.", "com.sec.",
+    "com.vivo.", "com.iqoo.", "com.bbk.", "com.transsion.", "com.motorola.", "com.sonymobile.", "com.asus.",
+    "com.nothing.", "com.meizu.",
+)
+
+/**
+ * Whether a package the app cannot see looks like part of the system or the phone maker's software. Since Android 11
+ * the system's own packages without a launcher icon (the home screen, system panels and dialogs) are hidden from apps.
+ */
+internal fun hasSystemPackagePrefix(name: String): Boolean =
+    name == "android" || systemPackagePrefixes.any { name.startsWith(it) }
