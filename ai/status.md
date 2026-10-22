@@ -33,7 +33,8 @@ rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue
 5a's wty recheck is merged as well (no behavior change). Slovak (`languages/sk`, with the Czech dictionaries as its
 fallback) is merged too: build, unit tests, lint, 146 page tests and 64 glue tests pass on the merge, its eight cases
 passed on the emulator, the owner answered its questions 24-26 as built; its run found an overlay crash when the
-service comes back (languages plan, request 78). 5a's device checks, then Slovenian, run next; group 4e builds the
+service comes back (languages plan, request 78). 5a's device checks are done (no recommendation
+changes); Slovenian runs next; group 4e builds the
 owner's answers to its questions 16 and 18-22. The ColorOS branch is merged into
 main and languages/main (owner).
 
