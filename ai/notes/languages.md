@@ -1607,8 +1607,8 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   results reached only through those endings when the text finds results without them
   (`inflectionRulesOnlyWithoutEntry`).
 - Import: every headword also keyed without ă â î ș ț, and with ş ţ as ș ț (`HeadwordMarks`, `everyHeadword`).
-- Lookup: results under a Cyrillic headword (Moldovan spellings Wiktionary links words to) are left out
-  (`showsHeadword`).
+- Lookup: results under a Cyrillic headword (Moldovan spellings that wty releases before 2026.10.22 link words to)
+  are left out (`showsHeadword`).
 - Catalog: wty ro into en ru es fr ja pl tr zh and the transcription, all ticked (ro-ko 1,380, ro-pt 1,296, ro-de 463,
   ro-it 330, ro-vi 247 words stay under the line); wordfreq `small_ro`; Tesseract `ron` fast and best and Paddle v6
   unticked, Paddle v5 Latin recommended ("more accurate", ML Kit stays the main model).

@@ -177,7 +177,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | kk | Frequency from the Leipzig Corpora Collection (`kaz_newscrawl_2016_100K.tar.gz`, 18.7 MB, SHA-256 pinned, CC BY): the archive read as a stream (ustar prefix, GNU long names), `-words.txt` wherever it is, tokens of letters with single hyphens or apostrophes only, lowercased with the kk locale, counts of tokens that become one word added up, top 100,000 | `api/imports/CorpusCountsDictionary.kt` (`Format.LEIPZIG`); catalog `corpus-kk` (template `leipzig`); `scripts/frequency/corpus_catalog.py` | CorpusCountsDictionaryTest (`leipzig words…`, `the kazakh dictionary is built…`, the real archive); CatalogFileTest `thai, kazakh and kyrgyz have frequency dictionaries built from corpus counts…`; `test_corpus_catalog.py` `LeipzigCheckTest` | CorpusCountsDictionaryTest (no word list, no counts: refused) | ok |
 | ky | Frequency from the Leipzig Corpora Collection (`kir_newscrawl_2016_100K.tar.gz`, 19.9 MB, SHA-256 145fd1c7…, CC BY), built as Kazakh's, lowercased with the ky locale | catalog `corpus-ky`; `api/imports/CorpusCountsDictionary.kt` | CorpusCountsDictionaryTest `the kyrgyz dictionary credits the kyrgyz corpus`, `the kyrgyz archive builds the top 100 000 words`; `test_corpus_catalog.py` `test_the_kyrgyz_entry_is_the_leipzig_archive` | — | ok |
 | kk, ky | Form rows to another script are dropped: tags `Arabic`, `romanization`, `Yañalif` (wty links Cyrillic headwords to their Arabic-script and Latin spellings) | `lang/TurkicCyrillicSupport.kt` `ignoredFormTags`; `api/ShownResults.kt` | KazakhSupportTest and KyrgyzSupportTest (`ignoredFormTags`) | Isolation (the languages with `ignoredFormTags`) | ok |
-| ro | Results under a Cyrillic headword are left out: wty ro-en links Romanian words to their Moldovan Cyrillic spellings (o → о, este → есте, si → ши) by 217 form-of items tagged `Cyrillic` and `alt-of`, and the `alt-of` chain would survive `ignoredFormTags` | `lang/RomanianSupport.kt` `showsHeadword`; `api/ShownResults.kt` `shownBy`; `api/DictionaryLookup.kt` | ShownResultsTest `romanian leaves out moldovan cyrillic headwords and keeps the rest`; RomanianSupportTest `rules only where the text has no entry, cyrillic headwords left out` | ShownResultsTest (Russian keeps есте), Isolation (`showsHeadword` false only in Romanian) | ok |
+| ro | Results under a Cyrillic headword are left out: wty ro-en releases before 2026.10.22 link Romanian words to their Moldovan Cyrillic spellings (o → о, este → есте, si → ши) by 217 form-of items tagged `Cyrillic` and `alt-of`, and the `alt-of` chain would survive `ignoredFormTags`; 2026.10.22 links the Cyrillic spelling to the Latin one (кат → cat), so the rule keeps dictionaries installed from older releases clean | `lang/RomanianSupport.kt` `showsHeadword`; `api/ShownResults.kt` `shownBy`; `api/DictionaryLookup.kt` | ShownResultsTest `romanian leaves out moldovan cyrillic headwords and keeps the rest`; RomanianSupportTest `rules only where the text has no entry, cyrillic headwords left out` | ShownResultsTest (Russian keeps есте), Isolation (`showsHeadword` false only in Romanian) | ok |
 
 ## Engine (`dictionary:engine-hoshidicts`)
 
@@ -710,7 +710,8 @@ corpora stayed in the session's scratch folder.
 
 Each rule's premise counted on typed text and on the engines' output, per language as it is built (group 5a plan,
 "Measurements", has the tables). Typed text: Leipzig sentence lists (news 2022 and Wikipedia 2021, 100,000 sentences
-each, one sentence per line, CC BY); dictionaries: wty <lang>-en headwords; recognized text: the 5a OCR screens
+each, one sentence per line, CC BY); dictionaries: wty <lang>-en headwords of release 2026.10.11 (counts on
+2026.10.22 under "Recheck on wty 2026.10.22"); recognized text: the 5a OCR screens
 (`testdata/ocr/compare/new/5a`). The corpora stayed in the session's scratch folder.
 
 ### Swedish (2026-10-22)
@@ -828,7 +829,8 @@ small Romanian list for coverage.
   frequent words share a key with another word (si → și, sa → să) and show the exact spelling first.
 - Cyrillic: 217 form-of items link Latin words to Moldovan Cyrillic spellings (о, есте, ши, космонаут; tags
   `Cyrillic` and `alt-of`); 82 lemma rows are Cyrillic, mostly letters. Results under a Cyrillic headword are left
-  out.
+  out. wty 2026.10.22 turned the links around (Cyrillic → Latin), so the filter only matters for older installed
+  dictionaries.
 - Forms without marks join words that differ by their marks: the form row casa names casă (definite), the verb casa
   (perfect, reading casă) and cașă (reading cașa), so casa finds all three; the form row's reading is not compared
   with the text (a limit, below).
@@ -908,6 +910,33 @@ the dictionary.
 - Words with an apostrophe: 756 (foreign names with a Lithuanian ending: Mike'as, Bowie'o); hyphenated words 3,148.
 - Audio: Lingua Libre Q9083 has 3 of 20 common words, Wiktionary none.
 - Fonts: every catalog Latin font has ą č ę ė į š ų ū ž.
+
+### Recheck on wty 2026.10.22
+
+wty 2026.10.22 reverses sense-level alt-of rows, gives misspelling, nonstandard, obsolete and pronunciation-spelling
+senses form rows, keeps the glosses of abbreviation senses and flips other-script rows. The counts above came from
+2026.10.11; run again on 2026.10.22 with the same scripts and corpora (group 5a plan, "Recheck on wty 2026.10.22",
+has the table), they moved by under one point and every rule holds:
+
+- Swedish compounds: 59,840 kinds without a headword, 76.4% split, 716 of the 1,000 most frequent.
+- Norwegian: the genitive by noun, name and form tags finds 13,492 lowercase words (11,850 extra) and 6,754
+  capitalized ones (USAs and NRKs are new); with verbs 13,972 and 20,533; compounds 86,480 kinds, 67.2%, 601.
+- Danish compounds: 87,641 kinds, 63.5%, 499.
+- Romanian: 5,141 of the top 30,000 not found, the endings reach 1,086; 35 words found only through the keys without
+  marks, 833 sharing a key. The joined forms of the hyphen rule have entries again (s-a "contraction of se and a",
+  l-a, într-o): aimed at s the lookup reaches s-a, aimed at a it still looks up a (not checked on the emulator). No
+  Latin word links to a Cyrillic spelling any more; 1,615 `alternative` and 79 `Cyrillic` rows link the Cyrillic
+  spelling to the Latin one (кат → cat), which Latin text does not reach. `showsHeadword` stays for dictionaries
+  installed from older releases.
+- Latin: 63.2% of 2,164,636 lemma names resolve as written, 99.9% without marks; the enclitics reach 4,758 tokens, u
+  for v finds 4,646 of 5,036.
+- Lithuanian: lemma names 71.2% as written, 71.9% without stress (71.8% keeping the dot); 245,024 words with the
+  letters' marks, 47,631 with a bare spelling that is a word.
+
+Abbreviations and contractions have entries again (da f.eks., kl.; ro nr., str.; la C., M.; lt pvz., tūkst.); the
+sentence rules read text only, so they do not change. Rows the reversal removed were extra results under common words
+(sv gå, t.ex.; nb men → mein; la atque → ac; lt į → i̷); new obsolete rows (la amo → hama) are left as the data gives
+them.
 
 ## Device checks
 
