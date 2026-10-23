@@ -1,5 +1,27 @@
 # Status
 
+## Release from `main`: open items (2026-10-23, owner: come back to it later)
+
+No release is planned yet (`plans/2026-10-15-main-fixes-and-backups.md`, decision "Release"). Before one, from the
+check of `main` at `fee4c9fb` against v0.2.3:
+
+- Bug on `main`: a catalog download queued after one that stopped (connection lost after the retries, an HTTP error)
+  fetches the stopped dictionary. `DictionaryImports` chains the queue with `APPEND_OR_REPLACE`, a stopped download
+  returns `success` with its `RESUME_KEYS`, and the default input merger lays them over the next task's input. Fixed
+  only on `languages/main` (`e16394c6`, `OwnInputMerger`); to port together with `fd5e8dd0` (wait for the network
+  instead of stopping), `16225ee0` (partial downloads outside the cache) and the "Waiting for a network" label of
+  `fa1b0863`. Proposed as a session card ("Port the download fixes from languages/main to main").
+- Not checked yet: the E cases on `main`'s final build (each change was checked alone when built), the upgrade from
+  the v0.2.3 release (last run 2026-10-14, on the language branch), a release build with R8 (CI builds debug only),
+  the own log, the service-off notification and the overlay crash fix on a real phone (the owner's diagnostics build
+  predates them; the ColorOS user gets the CI debug build `fee4c9f`). The crash fix and the delayed notification were
+  checked on the emulator on `languages/main` with the commits cherry-picked, not on a `main` build.
+- To weigh: the "Screenlate service is off" notification also comes when the user turns the service off, as the app
+  cannot tell the two apart; the code review of the new code (`plans/2026-10-15-full-code-review.md`, which covers
+  `main`'s changes) has not started and says no releases; the ColorOS user's logs may call for an allowlist hint.
+- Release notes draft: drop the romaji item (`94f5ed9e` was reverted by `ce6e7c81`, owner's choice of 2026-10-15).
+  The version number is asked at release time.
+
 ## User report (2026-10-20): the bubble disappears on a ColorOS phone
 
 A user of v0.2.3 sent a screen recording: the bubble and popup vanish 2–3 s after most scans and the accessibility
