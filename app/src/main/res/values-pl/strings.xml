@@ -167,8 +167,6 @@
     <string name="audio_add_source">Dodaj źródło dźwięku</string>
     <string name="search_title">Wyszukaj słowa</string>
     <string name="search_hint">Słowo lub tekst</string>
-    <string name="home_search_title">Wyszukaj słowa</string>
-    <string name="home_search_open">Wyszukaj słowo</string>
     <string name="process_text_label">Wyszukaj w Screenlate</string>
     <string name="dictionaries_check_updates">Sprawdź aktualizacje</string>
     <string name="dictionaries_checking_updates">Sprawdzanie aktualizacji…</string>
@@ -813,4 +811,10 @@
     <string name="ocr_models_delete_shared">Zostanie usunięty także dla tych języków: %1$s.</string>
     <string name="language_setup_main_model">Model główny</string>
     <string name="language_setup_models_info">Model główny rozpoznaje język na urządzeniu. Pozostałe zaznaczone modele też zostaną pobrane; można je wybrać później w ustawieniach rozpoznawania ekranu. ML Kit jest wbudowany w aplikację i rozpoznaje tekst chiński, japoński, koreański, w dewanagari, w piśmie bengalskim i w alfabecie łacińskim; dla tych języków jest używany, dopóki żaden model nie jest główny.</string>
+    <string name="nav_home">Start</string>
+    <string name="nav_search">Szukaj</string>
+    <string name="camera_title">Aparat</string>
+    <string name="camera_flash_off">Flesz wyłączony</string>
+    <string name="camera_flash_auto">Flesz automatyczny</string>
+    <string name="camera_flash_on">Flesz włączony</string>
 </resources>

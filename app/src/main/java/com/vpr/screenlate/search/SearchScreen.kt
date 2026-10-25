@@ -74,12 +74,13 @@ import kotlinx.serialization.json.Json
 /**
  * Dictionary search: the same result page as the overlay popup, embedded in a screen with a text field.
  *
+ * @param onBack the back arrow's action; null for none, as on the Search tab.
  * @param initialQuery text to search right away, e.g. from the text selection menu.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    onBack: () -> Unit,
+    onBack: (() -> Unit)?,
     onOpenAnkiSettings: () -> Unit,
     onOpenDictionaries: () -> Unit,
     initialQuery: String = "",
@@ -218,7 +219,7 @@ fun SearchScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.search_title)) },
                 navigationIcon = {
-                    BackButton(onBack)
+                    if (onBack != null) BackButton(onBack)
                 },
             )
         },

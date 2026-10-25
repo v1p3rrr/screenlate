@@ -1,6 +1,5 @@
 package com.vpr.screenlate.settings
 
-import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -37,12 +36,11 @@ enum class SettingsPage {
 }
 
 /**
- * One list of every settings section; each opens its own screen. Leaving the list while Background work is badged
- * counts as having seen the tip.
+ * One list of every settings section; each opens its own screen. Leaving the list for another tab while Background
+ * work is badged counts as having seen the tip (the navigation host marks it).
  */
 @Composable
 fun SettingsScreen(
-    onBack: () -> Unit,
     onOpen: (SettingsPage) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
     tip: BackgroundTipViewModel = hiltViewModel(),
@@ -50,12 +48,7 @@ fun SettingsScreen(
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     val anki by viewModel.anki.collectAsStateWithLifecycle()
     val backgroundBadge = rememberBackgroundTipBadge(tip)
-    val leave = {
-        if (backgroundBadge) tip.markSeen()
-        onBack()
-    }
-    BackHandler(enabled = backgroundBadge, onBack = leave)
-    SettingsScaffold(stringResource(R.string.settings_title), leave, actions = { ResetAllButton() }) { padding ->
+    SettingsScaffold(stringResource(R.string.settings_title), onBack = null, actions = { ResetAllButton() }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -42,7 +40,6 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.audio.LocalNetworkAllowButton
 import com.vpr.screenlate.audio.audioErrorText
 import com.vpr.screenlate.audio.localNetworkMissing
-import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.common.Language
@@ -60,17 +57,14 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.settings.EInkHint
 import com.vpr.screenlate.ui.components.SectionCard
-import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import com.vpr.screenlate.update.UpdateAnnouncementCard
 import com.vpr.screenlate.update.UpdateViewModel
 
-/** Search, the accessibility service, and whatever broke; everything else is under Settings. */
+/** The languages, the accessibility service, and whatever broke; search and settings have their own tabs. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onOpenSearch: () -> Unit,
-    onOpenSettings: () -> Unit,
     onOpenDictionaries: () -> Unit,
     onOpenAnki: (Language?) -> Unit,
     onOpenAudio: (Language?) -> Unit,
@@ -89,7 +83,6 @@ fun HomeScreen(
     val languages by viewModel.languages.collectAsStateWithLifecycle()
     val installation by viewModel.installation.collectAsStateWithLifecycle()
     val catalogEntries by viewModel.catalogEntries.collectAsStateWithLifecycle()
-    val settingsBadge = rememberBackgroundTipBadge()
     val openAccessibilitySettings = rememberOpenAccessibilitySettings()
     LaunchedEffect(Unit) { updates.checkIfDue() }
     LifecycleResumeEffect(Unit) {
@@ -100,20 +93,7 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.app_title)) },
-                actions = {
-                    TooltipIconButton(stringResource(R.string.settings_title), onClick = onOpenSettings) {
-                        BadgedBox(badge = { if (settingsBadge) Badge() }) {
-                            Icon(
-                                painterResource(R.drawable.ic_settings),
-                                stringResource(R.string.settings_title) +
-                                    if (settingsBadge) ", " + stringResource(R.string.settings_badge) else "",
-                            )
-                        }
-                    }
-                },
-            )
+            TopAppBar(title = { Text(stringResource(R.string.app_title)) })
         },
     ) { padding ->
         Column(
@@ -146,12 +126,6 @@ fun HomeScreen(
                 onOpenLanguages = onOpenLanguages,
             )
 
-            SectionCard(title = stringResource(R.string.home_search_title)) {
-                Button(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
-                    Text(stringResource(R.string.home_search_open), textAlign = TextAlign.Center)
-                }
-            }
-
             SectionCard(title = stringResource(R.string.onboarding_service_title)) {
                 Text(
                     text = stringResource(
@@ -180,13 +154,6 @@ fun HomeScreen(
                     stringResource(R.string.onboarding_device_title),
                     stringResource(R.string.onboarding_device_restricted_settings),
                 )
-            }
-
-            OutlinedButton(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth()) {
-                BadgedBox(badge = { if (settingsBadge) Badge() }) {
-                    Icon(painterResource(R.drawable.ic_settings), contentDescription = null)
-                }
-                Text(stringResource(R.string.settings_title), modifier = Modifier.padding(start = 8.dp))
             }
         }
     }

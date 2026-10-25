@@ -9,7 +9,7 @@ This note records existing-code facts and traps, not additional product decision
 - Branch: `features/camera-lookup`, from `origin/languages/main` at `d1977c62`.
 - Worktree: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`, attached to the originating Codex chat.
 - Planning commit `7cf29809` is pushed. Phase 1.1 (storage and source selection) is built; the plan's handoff names
-  its commit and the next phase. No CameraX dependency or new UI exists yet.
+  its commit and the next phase. Phase 1.2 added CameraX and the navigation bar; the Camera page is still empty.
 - This checkout has `local.properties` copied from the main checkout and all native submodules initialized (MNN from
   GitHub with `--depth 1`, hoshidicts recursively); see `build-environment.md`. Do not copy signing secrets or
   private dictionaries.
@@ -40,6 +40,44 @@ This note records existing-code facts and traps, not additional product decision
 - Deferred: the spatial index for `TextLayout.hitTest` (still a linear scan) comes with the photo tiles in 1.3,
   when dense pages make it matter. Controller-level behavior (dock on leave, attach, re-aim on move) has no JVM test:
   `OverlayController` needs a device; check it with the Camera page in 1.2.
+
+## Camera page design (phase 1.2, worked out 2026-10-25)
+
+The navigation bar is built (see the plan's handoff). The Camera page is designed as follows; decisions are in the
+plan's table, the rest are implementation choices.
+
+- Live camera: `LifecycleCameraController` from `camera-view` in a `PreviewView` (`AndroidView`), back camera,
+  `setEnabledUseCases(IMAGE_CAPTURE)`, `CAPTURE_MODE_MAXIMIZE_QUALITY`, capture `ResolutionSelector` with
+  `RATIO_4_3_FALLBACK_AUTO_STRATEGY` + `HIGHEST_AVAILABLE_STRATEGY`, preview with the same aspect, `FIT_CENTER`. The
+  controller brings pinch zoom, tap focus and the capture's target rotation (EXIF). `bindToLifecycle(LocalLifecycleOwner)`
+  in a `DisposableEffect`, `unbind()` on dispose: leaving the tab or opening the viewer releases the camera.
+  After `initializationFuture`: no back camera → "no rear camera" message; `CameraInfo.hasFlashUnit()` decides whether
+  the flash icon shows (check that `ProcessCameraProvider.getCameraInfo(selector)` exists in 1.6.2, else use the
+  controller's `cameraInfo` after binding).
+- Zoom label: observe `controller.zoomState` (plain `Observer`, no livedata-compose dependency); show "2.0×"
+  (`NumberFormat`, one decimal) above the shutter when the ratio is not 1, tap → `setZoomRatio(1f)`.
+- Focus ring: a parent `pointerInput` watching single-finger taps in `PointerEventPass.Initial` without consuming
+  (the `PreviewView` still gets them); draw a ring at the tap when `tapToFocusState` becomes STARTED, fade after
+  FOCUSED/NOT_FOCUSED/FAILED.
+- Capture: the VM's `capture(write: suspend (File) -> Unit)` takes `newCaptureFile()`, the page writes it with
+  `takePicture(OutputFileOptions(file))` in `suspendCancellableCoroutine`, then `replaceCurrent`; any failure or
+  cancellation calls `discard` (under `NonCancellable`), keeps the current photo and shows a snackbar. Log only the
+  exception class and `imageCaptureError`, never paths.
+- Page state from `PhotoDocuments.current` + a "new photo" flag in `SavedStateHandle`: Loading → nothing; no photo →
+  live camera; photo → viewer; flag set → live camera with a close icon (and `BackHandler`) back to the photo. A
+  capture clears the flag; delete (`ConfirmDelete`) calls `clearCurrent()`.
+- Permission: asked automatically once per process (`CameraSession.permissionAsked`) when the live camera is needed.
+  Refused: explanation and a button that requests again; after a refusal with
+  `shouldShowRequestPermissionRationale == false` (`CameraSession.permissionBlocked`) the text says access is off and
+  the button opens `ACTION_APPLICATION_DETAILS_SETTINGS`. Re-check on resume. The photo viewer needs no permission.
+- Viewer (1.2: fit only; pan/zoom is 1.3): `onGloballyPositioned` + `positionOnScreen()` give the viewer's screen
+  box; `PhotoViewport.fit(document.width, document.height, box)`; decode with `displaySampleSize(scale)` on IO; draw
+  in a `Canvas` with `withTransform({ transform(imageToViewer(...)) }) { drawImage(dstSize = raw size) }`, so the
+  bitmap is never rotated or copied. Report (document id, viewport) to the VM; the VM combines it with the page state
+  into a `CameraView` for `CameraLookup`, ignoring a viewport of another document. `LifecycleResumeEffect` calls
+  `onForeground`/`onBackground`; `onCleared` closes the presentation.
+- Strings still to add (14 locales): take photo, new photo, back to the photo, return to 1×, delete photo + dialog
+  title/text, permission text/allow/blocked/open settings, no rear camera, capture failed, photo cannot be opened.
 
 ## Existing code to follow
 

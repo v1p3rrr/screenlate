@@ -161,8 +161,6 @@
     <string name="audio_add_source">音声ソースを追加</string>
     <string name="search_title">単語を調べる</string>
     <string name="search_hint">単語または文章</string>
-    <string name="home_search_title">単語を調べる</string>
-    <string name="home_search_open">単語を調べる</string>
     <string name="process_text_label">Screenlate で調べる</string>
     <string name="dictionaries_check_updates">更新を確認</string>
     <string name="dictionaries_checking_updates">更新を確認中…</string>
@@ -792,4 +790,10 @@
     <string name="ocr_models_delete_shared">次の言語からも削除されます：%1$s。</string>
     <string name="language_setup_main_model">メインのモデル</string>
     <string name="language_setup_models_info">メインのモデルが端末上でこの言語を認識します。チェックしたほかのモデルもダウンロードされ、あとで画面の認識の設定で選べます。ML Kit はアプリに内蔵され、中国語、日本語、韓国語、デーヴァナーガリー文字、ベンガル文字とラテン文字のテキストを認識します。これらの言語では、メインのモデルがない間は ML Kit が使われます。</string>
+    <string name="nav_home">ホーム</string>
+    <string name="nav_search">検索</string>
+    <string name="camera_title">カメラ</string>
+    <string name="camera_flash_off">フラッシュ オフ</string>
+    <string name="camera_flash_auto">フラッシュ 自動</string>
+    <string name="camera_flash_on">フラッシュ オン</string>
 </resources>

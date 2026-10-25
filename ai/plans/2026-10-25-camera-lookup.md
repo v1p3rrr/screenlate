@@ -10,15 +10,41 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
-- State: phases 0 and 1.1 are complete (2026-10-25). Phase 1.2 has not started.
-- Last commit: "Store camera photos with their recognized text and look up a shown photo instead of the screen"
-  (phase 1.1: `core:photos`, the overlay's source gate `overlay/source/{ScreenReads,TextFrame}`, docs), pushed to
-  `origin/features/camera-lookup`. The commit before it is `870ad2c5`.
+- State: phases 0 and 1.1 are complete; phase 1.2 is half done (2026-10-25, paused by the owner at the session's
+  usage limit). All phase 1.2 questions are answered (decision table rows Navigation bar to Deleting the photo); ask
+  nothing again.
+- Last commit: "Add the navigation bar with Home, Search, Camera and Settings tabs", pushed to
+  `origin/features/camera-lookup`. Before it: `db0bd048` (phase 1.1).
 - Uncommitted work: none.
-- Next: phase 1.2 (navigation and camera). The Camera page must call `LookupSources.present()` when it comes to the
-  foreground, `showNothing()` / `showPhoto()` / `moveViewport()` while showing and `close()` when it leaves, with the
-  viewport in the overlay's screen pixels; then run CAM1-CAM8 in `ai/test-model.md`. Confirm with the owner that
-  opening the live camera from a shown photo docks the bubble (applied here as "leaving the photo").
+- Phase 1.2 done (built, not yet checked on the emulator):
+  - `navigation/ScreenlateNavHost.kt`: one Scaffold with a `NavigationBar` (Home, Search, Camera, Settings) on every
+    page except the first run and the debug image viewer. Sub-pages stay root-level routes; a tab switch pops
+    everything above the root graph with `saveState` and navigates to the tab's root with `restoreState`, so each tab
+    keeps its pages. The selected tab is a `rememberSaveable` (the NavController's full back stack is restricted
+    API). Back on a tab's root goes Home (`BackHandler`); tapping the open tab pops to its root; overlay requests
+    (Anki settings, Dictionaries, OCR models) open in the Settings tab; leaving the Settings list for another tab with
+    the background badge marks the tip seen (moved from `SettingsScreen`). Search and Settings lost their back arrows
+    (`onBack` nullable in `SearchScreen` and `SettingsScaffold`; `ProcessTextActivity` keeps it).
+  - Home lost the settings icon, the Search card and the Settings button; `home_search_title`/`home_search_open`
+    removed from all locales. New strings in 14 locales: `nav_home`, `nav_search`, `camera_title`,
+    `camera_flash_off/auto/on`.
+  - CameraX 1.6.2 (`camera-camera2`, `camera-lifecycle`, `camera-view`) in the catalog and `app`; CAMERA permission
+    and optional `android.hardware.camera.any` in the manifest; NOTICE names CameraX. Icons `ic_home`,
+    `ic_photo_camera`, `ic_flash_off/auto/on` (Material Icons paths).
+  - `app/.../camera/`: `CameraScreen` is an empty page with the title only; `CameraSession` (flash mode per process,
+    permission asked/blocked flags), `CameraLookup` (drives `LookupSources` from what the page shows) and
+    `PhotoDrawing` (`displaySampleSize`, `decodeForDisplay`, `imageToViewer` matrix raw → upright → viewer) are
+    written but not used or tested yet.
+- Next for phase 1.2, in order (design worked out in `ai/notes/camera-lookup.md`, "Camera page design"):
+  1. Unit tests: `CameraLookupTest` (real `LookupSources`), `PhotoDrawingTest` (matrix vs `toOriented`+viewport for
+     all 8 orientations, sample sizes), `FlashMode.next`, and `CameraViewModelTest` with a fake `PhotoDocuments`.
+  2. `CameraViewModel`, the live camera, the permission prompt, the photo viewer, delete with confirmation, the
+     capture flow; remaining strings in 14 locales.
+  3. Emulator: tabs (state kept per tab, back to Home, reselect, deep links from the overlay, first run without the
+     bar, badge), camera (permission allow/deny/blocked → settings, capture, flash icon, zoom label, new photo over a
+     photo and back, delete), CAM4, CAM5 (live camera docks), CAM7 partly; CAM1-CAM3, CAM6, CAM8 need recognition
+     (phase 1.3). Add the navigation and camera cases to `ai/test-model.md`.
+  4. Docs (`docs/usage.md`, `docs/architecture.md`, `docs/development.md`, module map), status, commit, push.
 - First read: `ai/notes/camera-lookup.md` preserves the architecture investigation, what phase 1.1 built and the
   integration pitfalls.
 - Checks for phase 1.1: `assembleDebug testDebugUnitTest lintDebug` pass (`--max-workers=1`; with 2 workers the first
@@ -42,7 +68,15 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Topic | Decision |
 |---|---|
 | Main navigation | Bottom navigation: Home, Search, Camera, Settings. Settings is rightmost. |
+| Navigation bar | Visible on every page, nested ones included; hidden only in the first run and the debug image viewer. Each tab keeps its own pages and scroll. Back on a tab's first page goes to Home; back on Home leaves the app; Search and Settings lose their back arrows. Tapping the open tab returns to its first page. |
+| Home after the tabs | The settings icon, the Search card and the Settings button leave Home; the background-work badge moves to the Settings tab. |
 | Camera page | Show the current photograph when present; otherwise open the live camera. |
+| Camera layout | The frame sits under the ordinary top bar (title, icons on the right); a round shutter button at the bottom of the frame. The photo viewer uses the same top bar. |
+| New photo over a photo | A camera icon in the viewer's top bar opens the live camera; its close icon and system back return to the photo unchanged. A capture replaces the photo and shows the new one. |
+| Flash | Off/Auto/On as one top-bar icon that cycles. Off at every app start; the choice lasts while the app process lives. |
+| Camera permission | Asked when the Camera page first opens the live camera. Denied: an explanation in place of the frame with a button that asks again in the app while the system allows it, otherwise opens the app's system settings. The current photo is shown without the permission. |
+| Zoom | Pinch zoom; while the ratio is not 1×, a label such as "2.0×" above the shutter, tapping it returns to 1×. |
+| Deleting the photo | A delete icon in the viewer's top bar (overflow when it does not fit) with a confirmation; afterwards the live camera opens. |
 | Current photograph | Survives navigation, backgrounding, process death and device restart. |
 | Replacement | A successfully captured new photograph replaces the current one without confirmation. Cancelled or failed capture preserves it. |
 | Viewing | One finger pans; two fingers zoom. Dragging the bubble moves its aim. Reopening fits the photo to the available area. |
@@ -50,7 +84,7 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Bubble without text to read | On the Camera page with the live camera, a photo still loading, a photo not recognized yet or unreadable stored text: pull-out and tap show nothing (no popup, no message). |
 | Bubble glyph over a photo | While a recognized photo is the lookup source, the bubble shows the photo's recognition language; the active language again once the photo is left. |
 | Bubble menu over a photo | The language chips are hidden; copying and Open app stay. The photo's language is changed on the Camera page. |
-| Leaving the photo | The bubble docks when the photo it was out over stops being the lookup source (another page, another app, the live camera). |
+| Leaving the photo | The bubble docks when the photo it was out over stops being the lookup source (another page, another app, the live camera). Pulled out over the live camera it shows nothing; the preview is never scanned (owner, 2026-10-25). |
 | Language | Separate selection on Camera, restricted to enabled languages. Initially use the active app language, then remember independently. |
 | Language or OCR settings change | Requires explicit recognition. Until then keep the actual recognition language and visibly indicate a pending change. |
 | OCR engines | Share Cloud, Device and Both and the selected language's local model with ordinary scanning. |
@@ -223,3 +257,13 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   decisions: over a photo only the dictionaries must be installed (stored text needs no OCR model); a note over a
   photo has no picture until the photo crop of 1.4; moving the photo re-aims like moving the bubble but does not reopen
   a popup the user closed; the spatial index waits for 1.3 (the hit test stays a linear scan).
+- 2026-10-25: owner confirmed that opening the live camera from a shown photo docks the bubble, and that a bubble
+  pulled out over the live camera shows nothing: the preview is never scanned, as its text would not stay under the
+  aim. Owner asked to continue with phase 1.2.
+- 2026-10-25: owner answered the phase 1.2 questions (rows Navigation bar, Home after the tabs, Camera layout, New
+  photo over a photo, Flash, Camera permission, Zoom, Deleting the photo). Owner added: a denied camera permission
+  must be explained in place of the camera, with a button that asks again in the app when possible and otherwise
+  opens the app's settings.
+- 2026-10-25: navigation bar built (phase 1.2, first half); the Camera page is still empty. Implementation choices:
+  overlay requests open their pages in the Settings tab, pages opened from a tab stay in that tab, the live preview
+  will use FIT_CENTER so the whole captured frame is visible. Paused by the owner at the usage limit with a handoff.

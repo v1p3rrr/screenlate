@@ -10,6 +10,10 @@
     <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <!-- Lets the app show the system dialog that leaves it out of battery optimization; the user decides. -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Photos of text on the Camera page; asked when the page first opens the live camera. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- The app installs and works without a camera; the Camera page then says there is none. -->
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 
     <!-- Lists launcher apps for "hide the bubble in these apps". -->
     <queries>

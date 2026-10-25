@@ -87,9 +87,9 @@ from source (git submodule core/ocr-mnn/src/main/cpp/MNN) with its CPU backend o
   separately and are not part of the APK; they are converted from the published ONNX files to MNN's format, each
   archive with the license and a note on the conversion.
 
-Libraries from Maven repositories (AndroidX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed with their
-licenses in the app under About → Open-source libraries; the list is generated at build time by AboutLibraries
-(https://github.com/mikepenz/AboutLibraries), Apache License 2.0.
+Libraries from Maven repositories (AndroidX with CameraX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed
+with their licenses in the app under About → Open-source libraries; the list is generated at build time by
+AboutLibraries (https://github.com/mikepenz/AboutLibraries), Apache License 2.0.
 
 Third-party data
 ----------------

@@ -26,12 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
-/** A settings screen with a title, a back button and the top bar's [actions]. */
+/** A settings screen with a title, a back button (none when [onBack] is null) and the top bar's [actions]. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScaffold(
     title: String,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)?,
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
@@ -39,7 +39,7 @@ fun SettingsScaffold(
         topBar = {
             TopAppBar(
                 title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                navigationIcon = { BackButton(onBack) },
+                navigationIcon = { if (onBack != null) BackButton(onBack) },
                 actions = actions,
             )
         },

@@ -11,8 +11,12 @@ tidy-up after interruptions, a versioned snapshot of the text that reads as "unr
 through `ScreenReads` and aims at a photo through `TextFrame`; over a photo the glyph shows its recognition language,
 the menu has no flags, and leaving the photo docks the bubble (owner's answers of 2026-10-25). Build, 1518 unit tests,
 lint, `PhotoDatabaseTest` and an emulator regression of the screen path pass. Next: phase 1.2, navigation and the
-camera; the Camera page has to drive `LookupSources`. To confirm with the owner: opening the live camera from a shown
-photo counts as leaving it (docks the bubble). Architecture notes: [camera integration handoff](notes/camera-lookup.md).
+camera; the Camera page has to drive `LookupSources`. Owner confirmed: opening the live camera from a shown photo docks
+the bubble, and a bubble pulled out over the live camera shows nothing (the preview is never scanned).
+Phase 1.2 half done and pushed (paused at the usage limit): the navigation bar with Home, Search, Camera and Settings
+tabs is built (app builds, app unit tests pass, not checked on the emulator); the Camera page is still empty, its
+design and the remaining steps are in the plan's handoff and the note. All phase 1.2 questions are answered.
+Architecture notes: [camera integration handoff](notes/camera-lookup.md).
 Update the plan's handoff at every checkpoint so a fresh session can continue without this conversation.
 All implementation stays on the feature branch; no merge to `languages/main` or `main` yet.
 

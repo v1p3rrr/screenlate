@@ -168,8 +168,6 @@
     <string name="audio_add_source">Добавить источник аудио</string>
     <string name="search_title">Поиск слов</string>
     <string name="search_hint">Слово или текст</string>
-    <string name="home_search_title">Поиск слов</string>
-    <string name="home_search_open">Найти слово</string>
     <string name="process_text_label">Найти в Screenlate</string>
     <string name="dictionaries_check_updates">Проверить обновления</string>
     <string name="dictionaries_checking_updates">Проверяю обновления…</string>
@@ -814,4 +812,10 @@
     <string name="ocr_models_delete_shared">Она удалится и для этих языков: %1$s.</string>
     <string name="language_setup_main_model">Основная модель</string>
     <string name="language_setup_models_info">Основная модель распознаёт язык на устройстве. Остальные отмеченные модели тоже скачиваются, их можно выбрать позже в настройках распознавания экрана. ML Kit встроен в приложение и читает китайский, японский, корейский, текст на деванагари, на бенгальском письме и на латинице; для этих языков он используется, пока ни одна модель не основная.</string>
+    <string name="nav_home">Главная</string>
+    <string name="nav_search">Поиск</string>
+    <string name="camera_title">Камера</string>
+    <string name="camera_flash_off">Вспышка выключена</string>
+    <string name="camera_flash_auto">Вспышка: авто</string>
+    <string name="camera_flash_on">Вспышка включена</string>
 </resources>

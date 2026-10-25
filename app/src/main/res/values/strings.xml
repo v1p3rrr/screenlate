@@ -167,8 +167,6 @@
     <string name="audio_add_source">Add audio source</string>
     <string name="search_title">Look up words</string>
     <string name="search_hint">Word or text</string>
-    <string name="home_search_title">Look up words</string>
-    <string name="home_search_open">Look up a word</string>
     <string name="process_text_label">Look up in Screenlate</string>
     <string name="dictionaries_check_updates">Check for updates</string>
     <string name="dictionaries_checking_updates">Checking for updates…</string>
@@ -803,4 +801,10 @@
     <string name="ocr_models_delete_shared">It is deleted for these languages too: %1$s.</string>
     <string name="language_setup_main_model">Main model</string>
     <string name="language_setup_models_info">The main model reads the language on the device. The other ticked models are downloaded too; they can be chosen later in the screen recognition settings. ML Kit, built into the app, reads Chinese, Japanese, Korean, Devanagari, Bengali and Latin-script text; for those languages it is used while no model is main.</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="camera_title">Camera</string>
+    <string name="camera_flash_off">Flash off</string>
+    <string name="camera_flash_auto">Flash auto</string>
+    <string name="camera_flash_on">Flash on</string>
 </resources>

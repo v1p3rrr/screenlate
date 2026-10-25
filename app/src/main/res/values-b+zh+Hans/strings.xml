@@ -161,8 +161,6 @@
     <string name="audio_add_source">添加音频来源</string>
     <string name="search_title">查词</string>
     <string name="search_hint">单词或文本</string>
-    <string name="home_search_title">查词</string>
-    <string name="home_search_open">查一个词</string>
     <string name="process_text_label">在 Screenlate 中查词</string>
     <string name="dictionaries_check_updates">检查更新</string>
     <string name="dictionaries_checking_updates">正在检查更新…</string>
@@ -792,4 +790,10 @@
     <string name="ocr_models_delete_shared">以下语言也会失去该模型：%1$s。</string>
     <string name="language_setup_main_model">主模型</string>
     <string name="language_setup_models_info">主模型在设备上识别该语言。其他勾选的模型也会下载，之后可在屏幕识别设置中选择。ML Kit 内置于应用中，可识别中文、日文、韩文、天城文、孟加拉文和拉丁字母文本；对于这些语言，没有主模型时使用 ML Kit。</string>
+    <string name="nav_home">首页</string>
+    <string name="nav_search">搜索</string>
+    <string name="camera_title">相机</string>
+    <string name="camera_flash_off">闪光灯关闭</string>
+    <string name="camera_flash_auto">闪光灯自动</string>
+    <string name="camera_flash_on">闪光灯开启</string>
 </resources>

@@ -163,8 +163,6 @@
     <string name="audio_add_source">Ses kaynağı ekle</string>
     <string name="search_title">Kelime ara</string>
     <string name="search_hint">Kelime veya metin</string>
-    <string name="home_search_title">Kelime ara</string>
-    <string name="home_search_open">Bir kelime ara</string>
     <string name="process_text_label">Screenlate’te ara</string>
     <string name="dictionaries_check_updates">Güncellemeleri denetle</string>
     <string name="dictionaries_checking_updates">Güncellemeler denetleniyor…</string>
@@ -799,4 +797,10 @@
     <string name="ocr_models_delete_shared">Bu diller için de silinir: %1$s.</string>
     <string name="language_setup_main_model">Ana model</string>
     <string name="language_setup_models_info">Ana model dili cihazda tanır. İşaretlenen diğer modeller de indirilir; bunlar daha sonra ekran tanıma ayarlarından seçilebilir. Uygulamaya yerleşik ML Kit Çince, Japonca, Korece, Devanagari, Bengal ve Latin alfabesiyle yazılmış metni tanır; bu dillerde hiçbir model ana model değilken ML Kit kullanılır.</string>
+    <string name="nav_home">Ana sayfa</string>
+    <string name="nav_search">Ara</string>
+    <string name="camera_title">Kamera</string>
+    <string name="camera_flash_off">Flaş kapalı</string>
+    <string name="camera_flash_auto">Flaş otomatik</string>
+    <string name="camera_flash_on">Flaş açık</string>
 </resources>
