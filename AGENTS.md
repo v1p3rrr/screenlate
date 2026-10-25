@@ -4,6 +4,10 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
 
 ## Start of every session
 
+Read the owner's local memory index at
+`C:/Users/vpr/.claude/projects/D--Documents-ClaudeProjects-Screenlate/memory/MEMORY.md` if it exists.
+Read linked notes only when relevant to the current task. If the index is absent, continue using the project instructions.
+
 1. Read `ai/status.md` (progress, open items) and the current plan in `ai/plans/` (latest dated file).
 2. Read the notes in `ai/notes/` that touch the area you work on:
    - `build-environment.md` — JDK/SDK paths, AGP 9 specifics, tooling gotchas;

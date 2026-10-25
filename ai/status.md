@@ -1,5 +1,14 @@
 # Status
 
+## Camera photo lookup (2026-10-25)
+
+Owner approved implementation on `features/camera-lookup`, based on `languages/main` at `d1977c62`.
+Plan and mandatory resume handoff: [Camera Photo Lookup](plans/2026-10-25-camera-lookup.md).
+Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Phase 0 records and pushes the plan;
+application implementation has not started. Next: phase 1.1, persistent photo documents and exclusive lookup source.
+Update the plan's handoff at every checkpoint so a fresh session can continue without this conversation.
+All implementation stays on the feature branch; no merge to `languages/main` or `main` yet.
+
 ## Release from `main`: open items (2026-10-23, owner: come back to it later)
 
 No release is planned yet (`plans/2026-10-15-main-fixes-and-backups.md`, decision "Release"). Before one, from the
