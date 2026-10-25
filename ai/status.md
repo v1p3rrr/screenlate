@@ -14,7 +14,7 @@ lint, `PhotoDatabaseTest` and an emulator regression of the screen path pass. Ne
 camera; the Camera page has to drive `LookupSources`. Owner confirmed: opening the live camera from a shown photo docks
 the bubble, and a bubble pulled out over the live camera shows nothing (the preview is never scanned).
 Phase 1.2 half done and pushed (paused at the usage limit): the navigation bar with Home, Search, Camera and Settings
-tabs is built (app builds, app unit tests pass, not checked on the emulator); the Camera page is still empty, its
+tabs is built (app builds, its unit tests and lint pass, not checked on the emulator); the Camera page is still empty, its
 design and the remaining steps are in the plan's handoff and the note. All phase 1.2 questions are answered.
 Architecture notes: [camera integration handoff](notes/camera-lookup.md).
 Update the plan's handoff at every checkpoint so a fresh session can continue without this conversation.

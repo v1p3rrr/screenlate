@@ -16,7 +16,8 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 - Last commit: "Add the navigation bar with Home, Search, Camera and Settings tabs", pushed to
   `origin/features/camera-lookup`. Before it: `db0bd048` (phase 1.1).
 - Uncommitted work: none.
-- Phase 1.2 done (built, not yet checked on the emulator):
+- Phase 1.2 done (`:app:assembleDebug :app:testDebugUnitTest :app:lintDebug` pass with `--max-workers=1`; not yet
+  checked on the emulator; other modules unchanged):
   - `navigation/ScreenlateNavHost.kt`: one Scaffold with a `NavigationBar` (Home, Search, Camera, Settings) on every
     page except the first run and the debug image viewer. Sub-pages stay root-level routes; a tab switch pops
     everything above the root graph with `saveState` and navigates to the tab's root with `restoreState`, so each tab
