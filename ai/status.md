@@ -1,5 +1,11 @@
 # Status
 
+## Session instructions (2026-10-25)
+
+The owner approved reading the local Claude memory index at session start from `AGENTS.md`.
+Linked notes are read only when relevant to the task; a missing index leaves the project instructions in effect.
+The memory files stay local.
+
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):
