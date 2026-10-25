@@ -9,6 +9,7 @@ Read the owner's local memory index at
 Read linked notes only when relevant to the current task. If the index is absent, continue using the project instructions.
 
 1. Read `ai/status.md` (progress, open items) and the current plan in `ai/plans/` (latest dated file).
+   For `features/camera-lookup`, also read `ai/notes/camera-lookup.md` and the camera plan's Resume / handoff section.
 2. Read the notes in `ai/notes/` that touch the area you work on:
    - `build-environment.md` — JDK/SDK paths, AGP 9 specifics, tooling gotchas;
    - `lens-protocol.md` — Lens request/response field map;

@@ -9,10 +9,17 @@ Implementation stays on the feature branch. Merging into `languages/main` or `ma
 Read this section, `ai/status.md`, the decision table below, and the notes named under Architecture before editing.
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
-- Branch: `features/camera-lookup`. The first commit contains only this plan, the startup memory pointer and status.
-- Current milestone: phase 0, recording and pushing the approved plan. Application implementation has not started.
-- Next: implement phase 1.1 (persistent document storage and the exclusive lookup-source contract), with tests.
-- Tests: none run yet; documentation-only changes first need `git diff --check`.
+- Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
+- State: paused at the owner's explicit request on 2026-10-25. Phase 0 is complete. Application implementation has
+  not started; do not infer that any camera code or `core:photos` module exists.
+- Completed commit: `7cf29809` (`Document the camera photo lookup implementation plan`), pushed to origin.
+  This handoff is updated by the following documentation checkpoint, `Record the paused camera implementation handoff`.
+- Uncommitted implementation: none. The checkpoint changes only plan/status/technical notes and their startup pointer.
+- Next after the owner resumes: implement phase 1.1 (persistent document storage and the exclusive lookup-source
+  contract), with tests, then update this handoff and commit/push the coherent milestone.
+- First read: `ai/notes/camera-lookup.md` preserves the architecture investigation and concrete integration pitfalls.
+- Checks: `git diff --check` passed for the planning commit. No build, unit tests, page tests, emulator or phone checks
+  have been run for this feature; no device state was changed. Check the checkpoint's diff before committing it.
 - Environment: read `ai/notes/build-environment.md`; JDK 21 at `C:/Program Files/Java/jdk-21`, SDK at `D:/Android/Sdk`.
   New worktrees need a local SDK configuration and initialized native submodules before a full build.
 - Existing checkouts and their modified/untracked submodule contents belong to other work. Do not reset or clean them.
@@ -122,8 +129,8 @@ screen-source behavior, reference ownership and cancellation guarantees. ML Kit 
 
 ### Phase 0: repository plan
 
-- [ ] Create isolated branch from current `origin/languages/main`.
-- [ ] Save approved English plan, startup memory pointer and status; commit and push.
+- [x] Create isolated branch from current `origin/languages/main` (`d1977c62`).
+- [x] Save approved English plan, startup memory pointer and status; commit and push (`7cf29809`).
 
 ### Phase 1: complete single-photo workflow
 
@@ -191,4 +198,7 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
 ## Progress and changelog
 
 - 2026-10-25: owner approved the complete plan and requested implementation in an independently resumable branch.
-  No application implementation yet. A fresh session resumes at phase 1.1 after the planning commit is pushed.
+  Phase 0 committed and pushed as `7cf29809`.
+- 2026-10-25: owner asked to finish the current milestone and pause, preserving everything required for a fresh
+  session. Phase 0 was the current milestone; no application code had been started. Added the architecture handoff
+  note, marked the pause and recorded the exact next step. Implementation resumes at phase 1.1 only on request.
