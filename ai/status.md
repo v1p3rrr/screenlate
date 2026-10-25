@@ -1,5 +1,11 @@
 # Status
 
+## Session instructions (2026-10-25)
+
+The owner approved reading the local Claude memory index at session start from `AGENTS.md`.
+Linked notes are read only when relevant to the task; a missing index leaves the project instructions in effect.
+The memory files stay local.
+
 ## Release from `main`: open items (2026-10-23, owner: come back to it later)
 
 No release is planned yet (`plans/2026-10-15-main-fixes-and-backups.md`, decision "Release"). Before one, from the
