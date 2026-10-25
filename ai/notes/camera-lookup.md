@@ -8,12 +8,38 @@ This note records existing-code facts and traps, not additional product decision
 
 - Branch: `features/camera-lookup`, from `origin/languages/main` at `d1977c62`.
 - Worktree: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`, attached to the originating Codex chat.
-- Planning commit `7cf29809` is pushed. The owner paused work before phase 1.1 started.
-- Only documentation was changed. No `core:photos`, CameraX dependency, new UI or feature tests exist yet.
-- No build or device setup has been performed in this checkout. Read `build-environment.md` before building;
-  native submodules and `local.properties` may need setup. Do not copy signing secrets or private dictionaries.
+- Planning commit `7cf29809` is pushed. Phase 1.1 (storage and source selection) is built; the plan's handoff names
+  its commit and the next phase. No CameraX dependency or new UI exists yet.
+- This checkout has `local.properties` copied from the main checkout and all native submodules initialized (MNN from
+  GitHub with `--depth 1`, hoshidicts recursively); see `build-environment.md`. Do not copy signing secrets or
+  private dictionaries.
 - Other existing worktrees contain modified/untracked native submodule contents. Preserve them; do not clean/reset.
-- A fresh session needs no chat history: read AGENTS, status, the camera plan and this note. Resume at phase 1.1.
+- A fresh session needs no chat history: read AGENTS, status, the camera plan and this note.
+
+## Built in phase 1.1
+
+- `core:photos`: `PhotoStore` keeps one current photo in `noBackupFilesDir/photos/<uuid>/image` with its recognized
+  text in `recognition-<revision>` (`RecognitionCodec`: magic `SLPR`, version 1, CRC32; a damaged or unknown file
+  reads as `PhotoText.Unreadable` and the image stays). Room (`photos.db`) holds the rows and the current one. Every
+  change runs under one mutex; files are written to a temporary name, synced and renamed before the row commits, and
+  the first change after a start tidies staging files, rows without an image and directories without a row.
+  `commitRecognition` takes the revision it started from and returns null when the photo changed meanwhile. The
+  `saved` column is reserved for history (phase 2): unsaved photos are deleted when replaced.
+- Coordinates are oriented pixels (EXIF applied, `PhotoOrientation`); `PhotoDocument.width/height` are oriented.
+  `PhotoViewport` maps photo → screen as `point × scale + offset`; `visible` is the drawn photo cut to the viewer's
+  area. The Camera page must publish the viewport in the overlay's screen pixels (`maximumWindowMetrics` space).
+- `LookupSources` (singleton, no Android): the Camera page calls `present()` when it comes to the foreground,
+  `showNothing()` / `showPhoto()` / `moveViewport()` while showing, and `close()` when it leaves. A stale
+  presentation's calls are ignored. `showPhoto` with the same document and revision keeps the generation.
+- Overlay: `ScreenReads` is the only path to `capture`, app text and `prepareLens`; `TextFrame` maps aim, tolerance,
+  highlights and anchors; `sourceChange` decides NONE/MOVED/DOCK/CLOSE/ATTACH against the source the open scan uses,
+  so a collector that runs after a pull-out already saw the new source changes nothing. Over a photo: only
+  `dictionaryReady` is required (no OCR model), the layout is cached per (document, revision), small-text bands are
+  never scheduled, the engine chip uses the photo's recorded engines, and a note gets no picture (the photo crop is
+  phase 1.4).
+- Deferred: the spatial index for `TextLayout.hitTest` (still a linear scan) comes with the photo tiles in 1.3,
+  when dense pages make it matter. Controller-level behavior (dock on leave, attach, re-aim on move) has no JVM test:
+  `OverlayController` needs a device; check it with the Camera page in 1.2.
 
 ## Existing code to follow
 

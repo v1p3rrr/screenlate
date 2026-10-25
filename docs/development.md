@@ -152,6 +152,7 @@ them.
 | `overlay` | Accessibility service, bubble, popup window |
 | `core:common` | Shared models and settings, per-language behavior |
 | `core:ocr` | Cloud and on-device OCR, hit testing |
+| `core:photos` | Stored photos with their recognized text, the bubble's lookup source |
 | `core:anki` | AnkiDroid integration, note templates, audio sources |
 | `core:translate` | Sentence translation through free online services |
 | `dictionary:api` | Dictionary engine interface, dictionary registry |

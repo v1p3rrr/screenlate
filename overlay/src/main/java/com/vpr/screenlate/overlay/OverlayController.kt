@@ -52,6 +52,8 @@ import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import com.vpr.screenlate.core.ocr.withMissingFrom
+import com.vpr.screenlate.core.photos.LookupSource
+import com.vpr.screenlate.core.photos.LookupSources
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.covers
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
@@ -75,6 +77,14 @@ import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.settings.SmallTextMode
 import com.vpr.screenlate.overlay.settings.TextSource
+import com.vpr.screenlate.overlay.source.ScreenReader
+import com.vpr.screenlate.overlay.source.ScreenReads
+import com.vpr.screenlate.overlay.source.SourceChange
+import com.vpr.screenlate.overlay.source.SourceChangedException
+import com.vpr.screenlate.overlay.source.TextFrame
+import com.vpr.screenlate.overlay.source.glyphLanguage
+import com.vpr.screenlate.overlay.source.hitTest
+import com.vpr.screenlate.overlay.source.sourceChange
 import com.vpr.screenlate.overlay.ui.BubbleFrame
 import com.vpr.screenlate.overlay.ui.BubbleMenu
 import com.vpr.screenlate.overlay.ui.BubbleView
@@ -120,7 +130,9 @@ import kotlinx.serialization.json.Json
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
  *
- * OCR runs only when the bubble is pulled out of the dock or tapped; aiming afterwards reuses that result.
+ * OCR runs only when the bubble is pulled out of the dock or tapped; aiming afterwards reuses that result. Each
+ * pull-out or tap reads the lookup source of that moment ([LookupSources]): the screen, or a photo shown by the
+ * Camera page, whose stored text is aimed at without a screenshot or recognition.
  */
 class OverlayController(
     private val service: AccessibilityService,
@@ -133,6 +145,7 @@ class OverlayController(
     private val translation: SentenceTranslation,
     private val profiles: LanguageProfiles,
     private val installation: LanguageInstallation,
+    private val lookupSources: LookupSources,
     private val stopDiagnostics: ServiceStopDiagnostics,
     private val scope: CoroutineScope,
 ) {
@@ -192,6 +205,7 @@ class OverlayController(
     // The screenshot callback copies the image into a bitmap, which should not hold up the main thread.
     private val capturer = ScreenCapturer(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
+    private val screenReads = ScreenReads({ lookupSources.source.value }, ControllerScreenReader())
     /** The language switched to last; the next scan takes it, by a tap or when the bubble leaves the dock. */
     private var activeLanguage = profiles.cachedState?.active ?: Language.JAPANESE
     private var languages = profiles.cachedState ?: LanguageProfilesState.DEFAULT
@@ -251,6 +265,19 @@ class OverlayController(
     private var hit: TextPosition? = null
     private var aim: Pair<Float, Float>? = null
 
+    /** The source the bubble is out over, taken when it left the dock or was tapped; null while docked. */
+    private var scanSource: LookupSource? = null
+        set(value) {
+            field = value
+            frame = (value as? LookupSource.Photo)?.let { TextFrame.Photo(it.viewport) } ?: TextFrame.Screen
+        }
+
+    /** Where [layout] lies on the screen. */
+    private var frame: TextFrame = TextFrame.Screen
+
+    /** The layout of the photo text attached last, by photo and revision, kept for the next pull-out over it. */
+    private var photoLayout: Pair<Pair<Long, Int>, TextLayout>? = null
+
     /** The user closed the popup and the bubble has not moved since: more text under the aim does not reopen it. */
     private var popupDismissed = false
     private var pendingSingleTap: Runnable? = null
@@ -276,8 +303,9 @@ class OverlayController(
     fun start() {
         lastScreen = screenBounds()
         bubbleView.setOnTouchListener(BubbleTouchListener())
-        showGlyph(activeLanguage)
+        showGlyph()
         scope.launch { overlaySettings.settings.collect(::applySettings) }
+        scope.launch { lookupSources.source.collect(::onLookupSource) }
         scope.launch { profiles.active.collect(::onActiveLanguage) }
         scope.launch { profiles.state.collect { languages = it } }
         scope.launch { scanLanguage.flatMapLatest { lookup.settingsUpdates(it) }.collect { scanLength = it.scanLength } }
@@ -337,14 +365,19 @@ class OverlayController(
 
     private fun shouldShowBubble(): Boolean = settings.bubbleVisible && foregroundPackage !in settings.hiddenPackages
 
-    /** The dock glyph follows the switch at once; the scan's language changes with the next scan or the dock. */
+    /**
+     * The dock glyph follows the switch at once, unless a photo is the source; the scan's language changes with the
+     * next scan or the dock.
+     */
     private fun onActiveLanguage(new: Language) {
         activeLanguage = new
-        showGlyph(new)
+        showGlyph()
         if (state == State.DOCKED) takeActiveLanguage()
     }
 
-    private fun showGlyph(language: Language) {
+    /** The active language, or a shown photo's: its text is looked up in the language it was recognized in. */
+    private fun showGlyph() {
+        val language = glyphLanguage(lookupSources.source.value, activeLanguage)
         bubbleView.glyphLanguage = language.support.languageTag
         bubbleView.glyph = language.support.glyph
     }
@@ -691,13 +724,13 @@ class OverlayController(
     /**
      * Holding the floating bubble: copy the paragraph under the aim or everything recognized, as whole text, or open
      * the app; with several quick languages ([LanguageProfilesState.quick]), flags switch the active one, which the
-     * next scan takes.
+     * next scan takes. Over a photo there are no flags: its text keeps the language it was recognized in.
      */
     private fun showBubbleMenu() {
         val layout = layout
         val paragraph = if (layout == null) "" else {
             val (x, y) = aim ?: aimPoint()
-            val aimed = layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
+            val aimed = layout.hitTest(frame, x, y, HIT_TOLERANCE_DP * density)
             val shown = shownLookup?.takeIf { popup.isShowing }?.let { view ->
                 val start = view.start ?: return@let null
                 (view.layout ?: return@let null) to start
@@ -712,7 +745,7 @@ class OverlayController(
             add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
         }
         val locale = service.resources.configuration.locales[0]
-        val chips = languages.quick.takeIf { it.size > 1 }.orEmpty().map { language ->
+        val chips = languages.quick.takeIf { it.size > 1 && scanSource !is LookupSource.Photo }.orEmpty().map { language ->
             BubbleMenu.Chip(
                 name = language.displayName(locale),
                 code = Flags.code(language),
@@ -902,20 +935,35 @@ class OverlayController(
         bubbleView.loading = false
         pendingSingleTap?.let(mainHandler::removeCallbacks)
         pendingSingleTap = null
+        scanSource = null
     }
 
-    /** A touch on the bubble may start a scan: Lens opens its connection meanwhile when the scan would ask it. */
+    /**
+     * A touch on the bubble may start a scan: Lens opens its connection meanwhile when the scan would ask it. Only
+     * for the screen: a photo's text is stored.
+     */
     private fun prepareScan() {
-        if (settings.textSource != TextSource.APP_TEXT_ONLY && settings.ocrEngines != OcrEngines.DEVICE) ocr.prepareLens()
+        if (settings.textSource != TextSource.APP_TEXT_ONLY && settings.ocrEngines != OcrEngines.DEVICE) screenReads.prepareCloud()
     }
 
+    /** Reads the lookup source of this moment: the screen, a photo's stored text, or nothing on the Camera page. */
     private fun startScan(flashLines: Boolean) {
         stopDiagnostics.scanStarted(SystemClock.elapsedRealtime())
-        Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         // The old popup's word belongs to the old screen; ➕ there would take its sentence from the new scan.
         closePopup()
         resetScan()
         takeActiveLanguage(warmUp = false)
+        val source = lookupSources.source.value
+        scanSource = source
+        when (source) {
+            is LookupSource.Screen -> scanScreen(source.generation, flashLines)
+            is LookupSource.Photo -> attachPhoto(source, flashLines)
+            is LookupSource.NoText -> Log.d(TAG, "Nothing to read on the Camera page")
+        }
+    }
+
+    private fun scanScreen(generation: Long, flashLines: Boolean) {
+        Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
@@ -928,20 +976,23 @@ class OverlayController(
             }
             if (settings.textSource == TextSource.APP_TEXT_ONLY) {
                 popup.page.prepare()
-                readAppTextOnly(flashLines)
+                readAppTextOnly(generation, flashLines)
                 return@launch
             }
             val started = SystemClock.elapsedRealtime()
             // App text is exact and works in windows that forbid screenshots. It needs no screenshot, so it is read
             // while the screen is captured and shown as soon as it is there. OCR still runs to add the text the app
             // does not expose, such as text in images.
-            val appTextRead = async { if (settings.textSource != TextSource.SCREEN) readAppText() else null }
+            val appTextRead = async { if (settings.textSource != TextSource.SCREEN) screenReads.readAppText(generation) else null }
             var captureError: CaptureException? = null
             val captured = try {
-                capture()
+                screenReads.capture(generation)
             } catch (e: CaptureException) {
                 captureError = e
                 null
+            } catch (_: SourceChangedException) {
+                // The scan closes with the source change.
+                return@launch
             }
             // Neither source waits for the other: whichever arrives is shown, merged with what the other has so far.
             var appText: OcrPage? = null
@@ -1031,8 +1082,9 @@ class OverlayController(
     }
 
     /** No screenshot and no recognition: only the app's own text, for weak devices and e-ink readers. */
-    private suspend fun readAppTextOnly(flashLines: Boolean) {
-        val page = readAppText()
+    private suspend fun readAppTextOnly(generation: Long, flashLines: Boolean) {
+        val page = screenReads.readAppText(generation)
+        if (!screenReads.isOpen(generation)) return
         bubbleView.loading = false
         if (page == null || page.paragraphs.isEmpty()) {
             showScanError(R.string.overlay_no_app_text)
@@ -1060,7 +1112,7 @@ class OverlayController(
 
     /** On-demand small text: the aim rests where nothing was recognized, so its band goes to Lens once. */
     private fun scheduleBandAt(y: Float) {
-        if (smallText() != SmallTextMode.ON_DEMAND || !ocrFinal) return
+        if (scanSource !is LookupSource.Screen || smallText() != SmallTextMode.ON_DEMAND || !ocrFinal) return
         val shot = screenshot ?: return
         bandTimer?.cancel()
         // Cancelled with the scan (resetScan), so the screenshot is still the scan's.
@@ -1073,7 +1125,8 @@ class OverlayController(
 
     /** Recognizes one band of [shot] again and adds the lines found where the page had no text. */
     private fun refineBand(shot: SharedScreenshot, index: Int) {
-        if (!requestedBands.add(index) || !shot.retain()) return
+        val source = scanSource as? LookupSource.Screen ?: return
+        if (!screenReads.isOpen(source.generation) || !requestedBands.add(index) || !shot.retain()) return
         val screen = shot.screen
         val band = ScreenBands.of(screen.bitmap.width, screen.bitmap.height)[index]
         // Started at once, so the band gives the screenshot back even when it is cancelled before it runs.
@@ -1109,28 +1162,110 @@ class OverlayController(
         }
     }
 
-    private suspend fun readAppText(): OcrPage? {
-        val screen = screenBounds()
-        val separator = language.support.wordSeparator
-        return withContext(Dispatchers.Default) {
-            runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt(), separator) }
-                .onFailure { Log.w(TAG, "Reading app text failed", it.redacted()) }
-                .getOrNull()
-        }
-    }
+    /** The reads of the screen; scans reach them only through [screenReads]. */
+    private inner class ControllerScreenReader : ScreenReader<CapturedScreen> {
+        override fun prepareCloud() = ocr.prepareLens()
 
-    private suspend fun capture(): CapturedScreen {
-        val (cx, cy) = bubbleCenter()
-        return capturer.capture(cx.roundToInt(), cy.roundToInt()) { displayCapture ->
-            setOverlaysAlpha(0f)
-            delay(HIDE_FRAME_MS)
-            try {
-                displayCapture()
-            } finally {
-                setOverlaysAlpha(1f)
+        override suspend fun capture(): CapturedScreen {
+            val (cx, cy) = bubbleCenter()
+            return capturer.capture(cx.roundToInt(), cy.roundToInt()) { displayCapture ->
+                setOverlaysAlpha(0f)
+                delay(HIDE_FRAME_MS)
+                try {
+                    displayCapture()
+                } finally {
+                    setOverlaysAlpha(1f)
+                }
+            }
+        }
+
+        override fun discard(shot: CapturedScreen) = shot.bitmap.recycle()
+
+        override suspend fun readAppText(): OcrPage? {
+            val screen = screenBounds()
+            val separator = language.support.wordSeparator
+            return withContext(Dispatchers.Default) {
+                runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt(), separator) }
+                    .onFailure { Log.w(TAG, "Reading app text failed", it.redacted()) }
+                    .getOrNull()
             }
         }
     }
+
+    // region Photo source
+
+    /**
+     * The source changed while the bubble is out: the photo under it moved, the bubble docks because the photo is no
+     * longer shown, or the old scan closes and a photo's text takes its place. Docked, only the glyph follows.
+     */
+    private fun onLookupSource(source: LookupSource) {
+        showGlyph()
+        // Null while docked.
+        val open = scanSource ?: return
+        when (sourceChange(open, source)) {
+            SourceChange.NONE -> Unit
+            SourceChange.MOVED -> onPhotoMoved(source as LookupSource.Photo)
+            SourceChange.DOCK -> {
+                Log.d(TAG, "Photo left: bubble docked")
+                dock()
+            }
+            SourceChange.CLOSE -> {
+                closeScan()
+                scanSource = source
+                updateAimVisuals()
+            }
+            SourceChange.ATTACH -> {
+                closeScan()
+                scanSource = source
+                updateAimVisuals()
+                attachPhoto(source as LookupSource.Photo, flashLines = false)
+            }
+        }
+    }
+
+    /** Aims at the photo's stored text: no screenshot, app text or recognition, and in the photo's language. */
+    private fun attachPhoto(source: LookupSource.Photo, flashLines: Boolean) {
+        Log.d(TAG, "Photo text attached (${if (flashLines) "tap" else "pull-out"}, ${source.recognition.page.paragraphs.size} paragraphs)")
+        scanLanguage.value = source.recognition.language
+        loadDictionaryStyles()
+        scanJob = scope.launch {
+            val ready = installation.current(language)
+            // The stored text needs no recognition model, only the dictionaries.
+            if (!ready.dictionaryReady) {
+                ocrFinal = true
+                showMessage(ready.message(service), installation = true)
+                return@launch
+            }
+            popup.page.prepare()
+            val key = source.documentId to source.revision
+            val layout = photoLayout?.takeIf { it.first == key }?.second
+                ?: withContext(Dispatchers.Default) { TextLayout(source.recognition.page) }.also { photoLayout = key to it }
+            onLayout(layout, final = true, lensError = null, flashLines = flashLines)
+        }
+    }
+
+    /**
+     * The photo moved under the bubble: the highlights follow it, and the aim, which stayed where it was on the
+     * screen, now points at another part of the photo, as if the bubble had moved. A popup the user closed stays closed
+     * until the bubble itself moves.
+     */
+    private fun onPhotoMoved(source: LookupSource.Photo) {
+        scanSource = source
+        val layout = layout ?: return
+        layerView.moveLines(layout.lineBoxes().mapNotNull(frame::toScreen))
+        val view = shownLookup
+        val start = view?.start
+        if (view != null && start != null && view.layout === layout) {
+            val boxes = layout.boxesFor(start, view.matched.coerceAtLeast(1)).mapNotNull(frame::toScreen)
+            layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
+            shownLookup = view.copy(anchor = Box.unionOf(boxes) ?: view.anchor)
+        }
+        if (popupDismissed) return
+        val (x, y) = aim ?: aimPoint()
+        onAim(x, y, moving = true)
+    }
+
+    // endregion
 
     /** The popup too: a note's screenshot in app-text-only mode is taken while it is shown. */
     private fun setOverlaysAlpha(alpha: Float) {
@@ -1139,21 +1274,28 @@ class OverlayController(
         popup.alpha = alpha
     }
 
-    /** A new text layout in screen coordinates: the OCR draft or the final result. */
+    /** A new screen text layout: the OCR draft or the final result. */
     private fun onPage(
         page: OcrPage,
         final: Boolean,
         lensError: Throwable?,
         flashLines: Boolean,
+    ) = onLayout(TextLayout(page), final, lensError, flashLines)
+
+    /** A new text layout, which lies on the screen as [frame] places it. */
+    private fun onLayout(
+        newLayout: TextLayout,
+        final: Boolean,
+        lensError: Throwable?,
+        flashLines: Boolean,
     ) {
-        val newLayout = TextLayout(page)
         layout = newLayout
-        ocrEngine = page.engine
+        ocrEngine = newLayout.page.engine
         ocrFinal = final
         ocrOffline = lensError is OfflineException
         if (final) this.lensError = lensError
         if (ocrFinal) bubbleView.loading = false
-        if (flashLines) layerView.flashLines(newLayout.lineBoxes(), FLASH_HOLD_MS)
+        if (flashLines) layerView.flashLines(newLayout.lineBoxes().mapNotNull(frame::toScreen), FLASH_HOLD_MS)
         hit = null
         if (state == State.DOCKED || popupDismissed) return
         val (x, y) = aim ?: aimPoint()
@@ -1161,7 +1303,7 @@ class OverlayController(
         // The final text has no word under the aim: the word shown from the draft stays, without the spinner and with ➕.
         // Its note takes the word and the sentence from the draft, as the note always holds the word the popup shows.
         if (hit == null && ocrFinal) refreshPopup()
-        if (hit == null && ocrFinal && page.paragraphs.isEmpty()) {
+        if (hit == null && ocrFinal && newLayout.page.paragraphs.isEmpty()) {
             showMessage(service.getString(R.string.overlay_no_text))
         }
     }
@@ -1171,7 +1313,7 @@ class OverlayController(
         aim = x to y
         if (moving) popupDismissed = false
         val layout = layout ?: return
-        val position = layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
+        val position = layout.hitTest(frame, x, y, HIT_TOLERANCE_DP * density)
         if (position == null) {
             if (moving) hideWhenOffWord(layout, x, y)
             scheduleBandAt(y)
@@ -1190,7 +1332,7 @@ class OverlayController(
     private fun hideWhenOffWord(layout: TextLayout, x: Float, y: Float) {
         if (!settings.hideOffWord) return
         val word = shownLookup?.takeIf { popup.isShowing }?.anchor
-            ?: hit?.let { Box.unionOf(layout.boxesFor(it, 1)) }
+            ?: hit?.let { Box.unionOf(layout.boxesFor(it, 1).mapNotNull(frame::toScreen)) }
             ?: return
         if (word.distanceTo(x, y) <= OFF_WORD_DP * density) return
         Log.d(TAG, "Popup closed: the aim left the word")
@@ -1233,7 +1375,8 @@ class OverlayController(
                 return@launch
             }
             val matched = PageState.matchedLength(results, kanji)
-            val boxes = layout.boxesFor(position, matched.coerceAtLeast(1))
+            // On the screen, cut to the part of a photo that shows.
+            val boxes = layout.boxesFor(position, matched.coerceAtLeast(1)).mapNotNull(frame::toScreen)
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
             val anchor = Box.unionOf(boxes) ?: return@launch
             val message = if (results.isEmpty() && kanji == null) noResultsMessage() else null
@@ -1395,16 +1538,20 @@ class OverlayController(
 
     /**
      * The scan's screenshot, retained for a note that releases it; in app-text-only mode it is taken now. Null once the
-     * scan [scan] was closed, as the crop editor must not open after it.
+     * scan [scan] was closed, as the crop editor must not open after it, and for a photo's text: the screen shows the
+     * photo viewer, not the text's source.
      */
     private suspend fun notePicture(scan: Int): SharedScreenshot? {
         if (scan != scanId) return null
+        val source = scanSource as? LookupSource.Screen ?: return null
         // Without recognition no screenshot is taken during the scan.
         if (screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
             val captured = try {
-                capture()
+                screenReads.capture(source.generation)
             } catch (e: CaptureException) {
                 Log.w(TAG, "No screenshot for the note", e)
+                null
+            } catch (_: SourceChangedException) {
                 null
             }
             // The scan may have closed meanwhile, or another note taken a screenshot.
@@ -1472,10 +1619,12 @@ class OverlayController(
         }
     }
 
+    /** A photo's label follows the engines its text was recognized with, not the screen's setting. */
     private fun engineLabel(): String {
         val engine = aimedEngine()
         val keptBesideCloud = keptWord() != null && ocrEngine == OcrEngineType.LENS
-        return when (engineLabelOf(engine, ocrFinal, settings.ocrEngines, ocrOffline, keptBesideCloud)) {
+        val engines = (scanSource as? LookupSource.Photo)?.recognition?.settings?.engines ?: settings.ocrEngines
+        return when (engineLabelOf(engine, ocrFinal, engines, ocrOffline, keptBesideCloud)) {
             EngineLabel.NONE -> ""
             EngineLabel.LENS -> service.getString(R.string.overlay_engine_lens)
             EngineLabel.APP_TEXT -> service.getString(R.string.overlay_engine_app_text)

@@ -98,6 +98,13 @@ class LayerView(context: Context) : View(context) {
         contentChanged()
     }
 
+    /** Moves the lines of a flash still showing, as when the photo under them moved; no new flash starts. */
+    fun moveLines(boxes: List<Box>) {
+        if (allLineBoxes.isEmpty() || allLinesAlpha <= 0f) return
+        allLineBoxes = boxes
+        contentChanged()
+    }
+
     fun clearAll() {
         fade?.cancel()
         removeCallbacks(endFlash)

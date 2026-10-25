@@ -4,11 +4,15 @@
 
 Owner approved implementation on `features/camera-lookup`, based on `languages/main` at `d1977c62`.
 Plan and mandatory resume handoff: [Camera Photo Lookup](plans/2026-10-25-camera-lookup.md).
-Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Paused at the owner's request on 2026-10-25.
-Phase 0 is complete and pushed (`7cf29809`); application implementation has not started. Architecture investigation:
-[camera integration handoff](notes/camera-lookup.md). After an explicit resume, start phase 1.1: persistent photo
-documents and the exclusive lookup source, with tests. No builds, automated tests or device checks run yet;
-the planning diff passed `git diff --check`. There is no unfinished application code.
+Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Resumed by the owner on 2026-10-25.
+Phase 1.1 is complete and pushed: `core:photos` keeps the current photo and its recognized text (atomic writes,
+tidy-up after interruptions, a versioned snapshot of the text that reads as "unreadable" when damaged), and
+`LookupSources` makes the screen, a shown photo or nothing the bubble's one source. The overlay reads the screen only
+through `ScreenReads` and aims at a photo through `TextFrame`; over a photo the glyph shows its recognition language,
+the menu has no flags, and leaving the photo docks the bubble (owner's answers of 2026-10-25). Build, 1518 unit tests,
+lint, `PhotoDatabaseTest` and an emulator regression of the screen path pass. Next: phase 1.2, navigation and the
+camera; the Camera page has to drive `LookupSources`. To confirm with the owner: opening the live camera from a shown
+photo counts as leaving it (docks the bubble). Architecture notes: [camera integration handoff](notes/camera-lookup.md).
 Update the plan's handoff at every checkpoint so a fresh session can continue without this conversation.
 All implementation stays on the feature branch; no merge to `languages/main` or `main` yet.
 

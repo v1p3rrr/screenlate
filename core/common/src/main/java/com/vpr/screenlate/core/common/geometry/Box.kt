@@ -38,6 +38,13 @@ data class Box(
     fun intersects(other: Box): Boolean =
         left < other.right && other.left < right && top < other.bottom && other.top < bottom
 
+    /** The part of this box inside [other]; null when they do not overlap ([intersects]). */
+    fun intersection(other: Box): Box? = if (!intersects(other)) {
+        null
+    } else {
+        Box(maxOf(left, other.left), maxOf(top, other.top), minOf(right, other.right), minOf(bottom, other.bottom))
+    }
+
     companion object {
         fun fromCenter(centerX: Float, centerY: Float, width: Float, height: Float): Box =
             Box(centerX - width / 2f, centerY - height / 2f, centerX + width / 2f, centerY + height / 2f)

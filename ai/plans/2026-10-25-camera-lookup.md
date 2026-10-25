@@ -10,16 +10,23 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
-- State: paused at the owner's explicit request on 2026-10-25. Phase 0 is complete. Application implementation has
-  not started; do not infer that any camera code or `core:photos` module exists.
-- Completed commit: `7cf29809` (`Document the camera photo lookup implementation plan`), pushed to origin.
-  This handoff is updated by the following documentation checkpoint, `Record the paused camera implementation handoff`.
-- Uncommitted implementation: none. The checkpoint changes only plan/status/technical notes and their startup pointer.
-- Next after the owner resumes: implement phase 1.1 (persistent document storage and the exclusive lookup-source
-  contract), with tests, then update this handoff and commit/push the coherent milestone.
-- First read: `ai/notes/camera-lookup.md` preserves the architecture investigation and concrete integration pitfalls.
-- Checks: `git diff --check` passed for the planning commit. No build, unit tests, page tests, emulator or phone checks
-  have been run for this feature; no device state was changed. Check the checkpoint's diff before committing it.
+- State: phases 0 and 1.1 are complete (2026-10-25). Phase 1.2 has not started.
+- Last commit: "Store camera photos with their recognized text and look up a shown photo instead of the screen"
+  (phase 1.1: `core:photos`, the overlay's source gate `overlay/source/{ScreenReads,TextFrame}`, docs), pushed to
+  `origin/features/camera-lookup`. The commit before it is `870ad2c5`.
+- Uncommitted work: none.
+- Next: phase 1.2 (navigation and camera). The Camera page must call `LookupSources.present()` when it comes to the
+  foreground, `showNothing()` / `showPhoto()` / `moveViewport()` while showing and `close()` when it leaves, with the
+  viewport in the overlay's screen pixels; then run CAM1-CAM8 in `ai/test-model.md`. Confirm with the owner that
+  opening the live camera from a shown photo docks the bubble (applied here as "leaving the photo").
+- First read: `ai/notes/camera-lookup.md` preserves the architecture investigation, what phase 1.1 built and the
+  integration pitfalls.
+- Checks for phase 1.1: `assembleDebug testDebugUnitTest lintDebug` pass (`--max-workers=1`; with 2 workers the first
+  native build in this checkout ran out of machine memory, and `:dictionary:engine-hoshidicts:assembleDebug` alone
+  finished it). Unit tests: 1518 in 9 modules, none failing, among them `core:photos` 38 and `overlay.source` 19. Lint:
+  no new findings (platform `ExifInterface` suppressed in `PhotoStore.kt`, minSdk 30). Instrumented
+  `PhotoDatabaseTest` 4/4 on Pixel_10_Pro. Emulator regression of the screen path (BUB1-BUB3, hold menu, dock) passed;
+  see the test model's run log. No page tests (no shared popup or note change); no phone checks.
 - Environment: read `ai/notes/build-environment.md`; JDK 21 at `C:/Program Files/Java/jdk-21`, SDK at `D:/Android/Sdk`.
   New worktrees need a local SDK configuration and initialized native submodules before a full build.
 - Existing checkouts and their modified/untracked submodule contents belong to other work. Do not reset or clean them.
@@ -40,6 +47,10 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Replacement | A successfully captured new photograph replaces the current one without confirmation. Cancelled or failed capture preserves it. |
 | Viewing | One finger pans; two fingers zoom. Dragging the bubble moves its aim. Reopening fits the photo to the available area. |
 | Bubble actions | A tap briefly highlights text. Pull-out, tap, movement and docking never start photo OCR. |
+| Bubble without text to read | On the Camera page with the live camera, a photo still loading, a photo not recognized yet or unreadable stored text: pull-out and tap show nothing (no popup, no message). |
+| Bubble glyph over a photo | While a recognized photo is the lookup source, the bubble shows the photo's recognition language; the active language again once the photo is left. |
+| Bubble menu over a photo | The language chips are hidden; copying and Open app stay. The photo's language is changed on the Camera page. |
+| Leaving the photo | The bubble docks when the photo it was out over stops being the lookup source (another page, another app, the live camera). |
 | Language | Separate selection on Camera, restricted to enabled languages. Initially use the active app language, then remember independently. |
 | Language or OCR settings change | Requires explicit recognition. Until then keep the actual recognition language and visibly indicate a pending change. |
 | OCR engines | Share Cloud, Device and Both and the selected language's local model with ordinary scanning. |
@@ -134,7 +145,7 @@ screen-source behavior, reference ownership and cancellation guarantees. ML Kit 
 
 ### Phase 1: complete single-photo workflow
 
-- [ ] 1.1 Document storage and source selection: persistence, snapshots, viewport and exclusive targeting; tests for zero screen-scan calls.
+- [x] 1.1 Document storage and source selection: persistence, snapshots, viewport and exclusive targeting; tests for zero screen-scan calls.
 - [ ] 1.2 Navigation and camera: bottom tabs with retained state; rear CameraX, quality capture, auto exposure/focus, tap focus, pinch zoom and Off/Auto/On flash; release camera on exit.
 - [ ] 1.3 Recognition and viewer: tiles, assembly, progress, terminal partial-result warnings, retry, pan/zoom, language indication and restoration.
 - [ ] 1.4 Popup and Anki: definitions, audio, translation and notes use recognition language; original-photo crop and explicit gallery export.
@@ -202,3 +213,13 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
 - 2026-10-25: owner asked to finish the current milestone and pause, preserving everything required for a fresh
   session. Phase 0 was the current milestone; no application code had been started. Added the architecture handoff
   note, marked the pause and recorded the exact next step. Implementation resumes at phase 1.1 only on request.
+- 2026-10-25: owner resumed the work at phase 1.1 and answered four bubble questions: nothing is shown when the
+  Camera page has no text to read; the glyph shows the photo's recognition language; the menu hides the language
+  chips over a photo; the bubble docks when the user leaves the photo. Leaving the photo also covers opening the live
+  camera from a shown photo (same rule, applied by the implementing session; confirm with the owner).
+- 2026-10-25: phase 1.1 built. `core:photos` stores one current photo and its recognized text with atomic writes and
+  a tidy-up after interruptions; `LookupSources` is the exclusive source with generations; the overlay reads the
+  screen only through `ScreenReads` and aims at a photo through `TextFrame`. Implementation choices within the
+  decisions: over a photo only the dictionaries must be installed (stored text needs no OCR model); a note over a
+  photo has no picture until the photo crop of 1.4; moving the photo re-aims like moving the bubble but does not reopen
+  a popup the user closed; the spatial index waits for 1.3 (the hit test stays a linear scan).

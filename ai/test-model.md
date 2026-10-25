@@ -93,14 +93,14 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-18 |
-| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-18 |
-| BUB3 | Tap the floating bubble → a new scan, recognized lines flash | F | M | 2026-10-18 |
+| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-25 |
+| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-25 |
+| BUB3 | Tap the floating bubble → a new scan, recognized lines flash | F | M | 2026-10-25 |
 | BUB4 | Hold the floating bubble → the menu (copy paragraph, copy all, open Screenlate) above the bubble, below when there is no room; Back or a tap outside closes it without other effect | F | U MenuPlacementTest, CopyMenuTextTest, M | 2026-10-14 |
 | BUB5 | With two or three quick languages the hold menu shows their flags, the active one ringed; a tap switches the language, the docked glyph changes at once, the next scan uses the new language; one quick language → no flag row | E | M | 2026-10-18 |
 | BUB6 | Double tap → the aim switches between above the finger and the bubble center | O | M | |
 | BUB7 | ✕ → the entry closes, the bubble stays and keeps the text; it stays closed until the bubble moves or scans | F | M | 2026-10-14 |
-| BUB8 | Drag to the left or right edge → docks once the center passes the edge or on release at the edge; top and bottom only with "Top and bottom edges" | F | U DockPlacementTest, M | 2026-10-14 |
+| BUB8 | Drag to the left or right edge → docks once the center passes the edge or on release at the edge; top and bottom only with "Top and bottom edges" | F | U DockPlacementTest, M | 2026-10-25 |
 | BUB9 | Drag the docked bubble along the edge → the dock moves | O | M | |
 | BUB10 | The dock stays clear of the bars and the system gesture strips; an open keyboard lifts a bottom dock; in a fullscreen app (`show <file> swipe`) the top and bottom docks go to the edge with a third past the strip | F | U DockSettingsTest, M | 2026-10-14 |
 | BUB11 | Rotating the screen → the entry closes, the bubble docks on the same side | F | M | 2026-10-14 |
@@ -450,6 +450,22 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | UPD8 | The service turned off before the overlay has added its windows: jdb holds the main thread at the first `OverlayController.applySettings` after the service connects (`stop thread at`), the service is turned off with `settings delete secure enabled_accessibility_services`, the thread goes on (steps in the run log of 2026-10-22, `claude/jolly-cray-bc8ce9`) → no crash; the log has "Window not added, the system is unbinding the service" and then the stop report, the process lives on; turned on again, the bubble shows docked and scans. Also: on and off again with gaps of 0.1-3 s, no crash | F | U OverlayWindowsTest, M | 2026-10-22 |
 | UPD9 | The service stops and comes back within 3 s: `uiautomator dump` (UiAutomation pauses the service for about 1.5 s), two dumps in a row, turned off and on again within 3 s → no banner at any point (`dumpsys notification` has no Screenlate notification 3 and 5 s later); the log has the stop report and "3 s after the stop: … running: yes" | F | U StopFollowUpTest, M || 2026-10-22 |
 
+### CAM: camera photos
+
+The cases with M need the Camera page (from phase 1.2 of the camera plan); until then only their U and I parts run.
+
+| ID | Check | Cat | Cov | Checked |
+|---|---|---|---|---|
+| CAM1 | A recognized photo on the Camera page, pull the bubble out → the entry of the word under the aim opens from the stored text: the log has no capture, app text or cloud connection; the glyph shows the photo's recognition language | N | U ScreenReadsTest, M | |
+| CAM2 | Pan and zoom the photo under the resting bubble → the highlight and the popup follow the word; another word under the aim opens its entry | N | U TextFrameTest, M | |
+| CAM3 | Aim at the toolbar, the letterbox or the part of a zoomed photo outside the viewer → no entry; a highlight is cut at the viewer's edge | N | U TextFrameTest, M | |
+| CAM4 | The live camera, a photo still loading or not recognized yet → pull-out and tap show nothing and do not scan the screen | N | U ScreenReadsTest, M | |
+| CAM5 | Bubble out over a photo, then another page, another app or the live camera → the bubble docks; back on the photo, the next pull-out takes its text without recognition | N | U SourceChangeTest, M | |
+| CAM6 | Bubble out over the screen of another page, then a recognized photo is shown → the old entry closes and the photo's text is under the aim | N | U SourceChangeTest, M | |
+| CAM7 | Hold the bubble over a photo → copy and Open Screenlate, no language flags; the docked glyph returns to the active language once the photo is left | N | M | |
+| CAM8 | A note added over a photo has no screen picture | N | M | |
+| CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | N | U PhotoStoreTest, I PhotoDatabaseTest | |
+
 ### NF: non-functional
 
 Baselines are measured on `Pixel_10_Pro` (API 37) with the host idle; a value more than 1.5 times the last run's on
@@ -506,6 +522,23 @@ menu's search had started. BUB16 (new, first check, moved to F).
 
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-25, `features/camera-lookup` (on `870ad2c5` with the photo store and lookup source before their commit, 0.2.3-870ad2c5, x86_64-only copy), Pixel_10_Pro (API 37)
+
+Scope: the screen path of the bubble after its reads moved behind the lookup source gate; the photo database's
+instrumented test. Before: 0.2.3-4cca2cc0. Slovenian active (one quick language), `sl-sample.png`.
+
+Results: all passed, no crash.
+
+- BUB1: pull-out → "Scan started", window captured, app text read (0 nodes), ML Kit draft and cloud final, the entry
+  of "je" with its highlight on the word.
+- BUB2: moved over "dan" → lookups only, no new scan. BUB3: tap → a new scan, every line flashed, aligned.
+- Hold menu: copy paragraph, copy all, Open Screenlate; no flags (one quick language); Back closed it. Dropped at the
+  right edge → "Bubble docked".
+- CAM9's I part: `:core:photos:connectedDebugAndroidTest`, `PhotoDatabaseTest` 4 of 4. /data had about 0.5 GB free:
+  the 105 MB test APK and the 84 MB app copy installed only with `sys_storage_threshold_percentage 1` and
+  `sys_storage_threshold_max_bytes 104857600`, both deleted right after. The test package was uninstalled by Gradle.
+  The emulator keeps this build with the service enabled.
 
 ### 2026-10-22, `claude/jolly-cray-bc8ce9` (`languages/main` 9736102b with both overlay commits cherry-picked, 0.2.3-4cca2cc0), Pixel_10_Pro (API 37)
 

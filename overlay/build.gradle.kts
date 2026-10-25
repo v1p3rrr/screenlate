@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ocr"))
+    implementation(project(":core:photos"))
     implementation(project(":dictionary:api"))
     implementation(project(":core:anki"))
     implementation(project(":core:translate"))
