@@ -19,6 +19,7 @@ import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.CompositeOcr
+import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.LookupSources
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.fonts.PageAppearance
@@ -68,7 +69,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     @Inject lateinit var languageInstallation: LanguageInstallation
 
     @Inject lateinit var lookupSources: LookupSources
-    @Inject lateinit var photos: com.vpr.screenlate.core.photos.PhotoDocuments
+    @Inject lateinit var photos: PhotoDocuments
 
     private val scope = MainScope()
     private var controller: OverlayController? = null

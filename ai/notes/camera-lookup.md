@@ -17,6 +17,47 @@ This note records existing-code facts and traps, not additional product decision
 - Other existing worktrees contain modified/untracked native submodule contents. Preserve them; do not clean/reset.
 - A fresh session needs no chat history: read AGENTS, status, the camera plan and this note.
 
+## Built in phase 1.4: original photo notes and gallery export (2026-10-26)
+
+Implementation checkpoint `e8951271`; final checks/docs follow it. `PhotoDocuments.pinImage(id)` takes a lease under
+PhotoStore's mutex: a hard link in private `.pins` (copy fallback) keeps original bytes alive after replacement or
+clear. Close deletes the lease; startup tidy removes abandoned leases before the first mutation. No Room schema
+change, service dependency or backup integration. PhotoImage owns no long-lived full-size bitmap: preview reads a
+sampled oriented region; crop rounds outward and decodes just the selected original region. Reads retain unpublished
+bitmap ownership across cancellation, using PhotoRegions, now with an optional sampling factor. Gallery uses the
+lease to copy original bytes; it does not recompress, rotate or attach OCR data.
+
+`NoteContext.image` uses NoteImage: ScreenNoteImage owns the existing retained SharedScreenshot with natural screen
+coordinates; PhotoNoteImage owns a PhotoImage lease and sampled preview with original oriented coordinates.
+OverlayController captures source generation/document/recognition, layout/position and sentence when Add is pressed;
+PopupNotes pins language then too. Late photo contexts reject a changed source and close their lease. A note already
+past the crop keeps its pinned data; leaving/docking while the editor is open preserves the existing cancel behavior.
+
+`CropPlacement` is a pure inverse mapping for source pixels to editor screen pixels. CropEditor fits a photo above
+its bottom controls, starts at the paragraph, and toggles Frame/Whole photo; screen crops retain their previous natural
+placement and Whole screen label. CropView draws a sampled bitmap into measured bounds; the returned selection,
+not the preview bitmap, is passed to NoteImage.crop. CropEditor.cancel also advances a generation while the preview
+is loading, so a closed scan cannot open a late editor. Crop output ownership remains with PopupNotes.
+
+`PhotoGallery` publishes through MediaStore with IS_PENDING=1 until the full copy and close succeed, then publishes;
+write/open/close/publish errors and cancellation remove the pending row. See the official Android guidance:
+[shared media and pending writes](https://developer.android.com/training/data-storage/shared/media).
+The explicit Camera action reports success/failure, rejects repeated taps while exporting, and never runs OCR.
+An exported file in Pictures/Screenlate remains independent of current-photo deletion.
+
+Verified: native PhotoImage/Gallery tests 3/3 and CropEditor/CropView tests 8/8 on API 30 and API 37. All eight EXIF
+transforms, fractional crops, crops larger than the preview, byte-identical JPEG/PNG export, pending visibility,
+selection coordinates, screen regression and cancel/late-preview behavior pass. Actual API 37 popup-to-Anki check:
+long press, cancel/reopen, whole/frame toggle, corner resize, Add; a 1541×1257 original-pixel crop and generated Japanese
+sentence were stored in the emulator's local Screenlate Photo Test note. App active language stayed Slovenian, photo
+Japanese. Original Japanese Anki settings were backed up/restored by the opt-in fixture; no AnkiWeb/sync used.
+Gallery button success, byte identity and exported-copy survival after private deletion checked manually.
+
+PhotoAnkiFixtureTest: opt-in `photoAnki=prepare|verify|restore`, emulator-only; backup file is
+`noBackupFilesDir/photo-anki-fixture.json`, present only between prepare/restore. Always restore before finishing a
+manual test; fixture-owned local note type/deck may stay. No fixture data/settings are shipped in release builds.
+Phase 1.5 still owns the remaining CAM/NAV/manual regressions and physical-device acceptance; history is phase 2.
+
 ## Built in phase 1.3: OCR foundation (2026-10-26)
 
 Phase 1.3 foundation (2026-10-26): `PhotoTiles` covers both axes with 1500px tiles and 200px minimum overlaps;
@@ -125,8 +166,7 @@ The emulated cameras have no flash; actual flash behavior and real-page quality 
   highlights and anchors; `sourceChange` decides NONE/MOVED/DOCK/CLOSE/ATTACH against the source the open scan uses,
   so a collector that runs after a pull-out already saw the new source changes nothing. Over a photo: only
   `dictionaryReady` is required (no OCR model), the layout is cached per (document, revision), small-text bands are
-  never scheduled, the engine chip uses the photo's recorded engines, and a note gets no picture (the photo crop is
-  phase 1.4).
+  never scheduled, the engine chip uses the photo's recorded engines. Phase 1.4 now supplies retained original-photo note images.
 - The spatial index was added with phase 1.3. Controller-level behavior (dock on leave, attach, re-aim on move)
   needs device checks in addition to the pure source-transition tests; actual photo gestures now have API 37 evidence.
 

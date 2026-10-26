@@ -36,7 +36,16 @@ The bubble reads only the photograph while this viewer is open; bars and empty m
 the live preview, dialogs or an unrecognized photograph. Leaving the viewer docks the bubble and other pages retain
 ordinary screen lookup. The accessibility service is needed for the bubble, independently of capture and viewing.
 
-Original-photo note attachments and phone-gallery export are still being implemented on this development branch.
+To attach part of a photograph to Anki, hold the popup's add button. The crop editor fits the original photo above
+its controls and starts around the word's paragraph. Move the frame or its corners, switch between Frame and Whole
+photo, then tap Add. The attachment uses the original pixels, independently of the viewer's zoom. Cancel, or leaving
+the photo while the editor is open, closes it without adding the note. Notes, sentence context, audio and translations use the language
+of the recognized text.
+
+Save to gallery in the upper controls exports an ordinary original photograph to Pictures/Screenlate, preserving
+its quality and orientation. It requires no broad storage permission. The copy contains no saved OCR coordinates;
+replacing or deleting the private photograph does not delete the exported copy. Nothing is exported automatically.
+Internal history and opening existing phone images are later additions.
 
 ## Languages
 

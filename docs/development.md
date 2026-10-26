@@ -33,6 +33,16 @@ is not supported). `PhotoWorkflowTest` replaces the current photo with a synthet
 real local recognition; its opt-in `-e photoFixture partialCloud` uses cloud recognition and leaves one missing region
 for manual warning/retry checks. It sends only that generated page. Neither workflow touches Anki.
 
+`PhotoStoreTest` covers image pins through replacement/deletion and cleanup after restart. `PhotoImageTest` checks
+fractional original-pixel crops for all eight EXIF orientations and crops larger than the sampled preview.
+`PhotoGalleryTest` exercises publication/rollback; `PhotoGalleryDeviceTest` verifies ordinary JPEG/PNG bytes, orientation
+and MediaStore visibility. `CropPlacementTest`, `CropEditorTest` and `CropViewTest` cover source coordinates, screen
+regressions and cancellation, including a scan closed while the preview loads. Run the native crop/gallery classes
+on API 30 and API 37. `PhotoAnkiFixtureTest` is opt-in and emulator-only: `-e photoAnki prepare` backs up Japanese Anki
+settings and selects a dedicated local test deck/model; `verify` checks the generated sentence and image (`photoWord`
+selects the fixture word), and `restore` reinstates the original settings. Use only an unsynced test collection and
+always restore the settings after a manual popup-to-Anki check.
+
 ## Dictionary catalog
 
 The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches

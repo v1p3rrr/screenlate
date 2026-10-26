@@ -3,7 +3,6 @@ package com.vpr.screenlate.overlay.ui
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import com.vpr.screenlate.core.common.geometry.Box
 import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
@@ -14,6 +13,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.overlay.anki.NoteImage
 import com.vpr.screenlate.overlay.R
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -31,7 +32,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
     private var generation = 0L
 
     /** Fits photo previews above the controls; selection maps back to the owned image's original coordinates. */
-    suspend fun edit(image: com.vpr.screenlate.overlay.anki.NoteImage, focus: RectF?): Bitmap? {
+    suspend fun edit(image: NoteImage, focus: RectF?): Bitmap? {
         cancel()
         val request = generation
         val bounds = windowManager.maximumWindowMetrics.bounds
@@ -42,7 +43,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
         return image.crop(selection)
     }
 
-    private suspend fun select(image: com.vpr.screenlate.overlay.anki.NoteImage, preview: Bitmap, focus: RectF?): Box? =
+    private suspend fun select(image: NoteImage, preview: Bitmap, focus: RectF?): Box? =
         suspendCancellableCoroutine { continuation ->
             val cropView = CropView(context, preview, 0f, 0f)
             val initial = focus?.toBox()?.intersection(image.bounds) ?: image.bounds

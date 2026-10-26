@@ -2,32 +2,30 @@
 
 ## Camera photo lookup (2026-10-25)
 
-Phase 1.3 is complete (2026-10-26), on `features/camera-lookup`.
+Phases 1.1 through 1.4 are implemented (2026-10-26), on `features/camera-lookup`.
 Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`.
-Implementation pushed as `9484c556` ("Recognize persistent photos and add bounded viewer pan and zoom"), after foundation `01d24c0e`.
-Includes recoverable recognition attempts, original-resolution tiles, max-two workers, terminal snapshots/failed-tile
-retry, independent camera language, automatic recognition after successful capture, explicit rescan/readiness/status/
-warnings and fit..8× bounded pan/zoom with sharp visible-region decoding. Text retains its actual recognition language
-until a complete attempt publishes; navigation/backgrounding keep work alive, process restart never auto-restarts OCR.
+Last pushed implementation: `e8951271` ("Add original-photo note images and explicit gallery export"); the final
+verification/docs commit follows it. Phase 1.3 implementation is `9484c556`, its handoff `66b66d85`.
 
-All required checks pass: root debug assembly/JVM tests/lint (1576 tests, zero failures), final app checks and 146 page
-tests. API 37 region/migration checks 7/7 and real Device/Cloud synthetic-page workflows pass; API 30 viewer gesture,
-all-EXIF drawing and live-camera focus/zoom checks 3/3. Real bubble lookup and photo gestures made no screen reads or
-extra OCR calls; a failed-tile retry made exactly one cloud request, auto-capture OCR worked, and a cold device reboot
-restored the recognized photo without network requests. Test evidence is in `ai/test-model.md`.
+Phase 1.4 adds retained original-image leases, source-specific NoteImage adapters, fitted photo crop coordinates,
+original-pixel/EXIF crop decoding and explicit gallery export with pending-write rollback. Notes pin source text and
+language; a closed scan cannot open a late editor after preview decoding. Screen placement/ownership stays covered.
+Gallery copies original bytes without OCR data and remains independent of private-photo deletion. All new strings
+are translated in 14 locales; no new backup integration or broad storage permission.
 
-Phase 1.4 resumed by the owner on 2026-10-26 from clean pushed `66b66d85`.
-In progress: retained original-image leases, generalized note image source, fit-to-editor original-pixel crop mapping,
-then explicit ordinary-image MediaStore export. No new product decisions; preserve screen crop behavior and pin
-source/language/recognition identity when the note is requested. Current uncommitted first step adds PhotoImage and
-PhotoDocuments.pinImage. Next: lease tests, crop placement tests, note adapters and UI integration. Keep this handoff
-current and commit/push coherent verified milestones to the feature branch only.
+Required checks pass: root debug assembly/JVM tests/lint, 1585 tests with no failures, and 146 page tests. On both
+API 30 and API 37: original-photo/MediaStore tests 3/3, crop editor/screen regression tests 8/8. Actual API 37 popup→
+photo crop→local Anki succeeded with a generated Japanese sentence and a 1541×1257 original-pixel attachment while
+app active language was Slovenian. The temporary Japanese Anki settings were restored. Gallery success, byte identity
+and survival after private deletion were verified. No owner's collection, account, sync or AnkiWeb operation.
 
-Next: phase 1.4, original-photo Anki image ownership/cropping and explicit gallery export. It has not started. Read
-[the plan handoff and decision table](plans/2026-10-25-camera-lookup.md) and [integration notes](notes/camera-lookup.md).
-The handoff gives exact next files/contracts, checks and remaining acceptance. Full Camera-to-Anki is not complete;
-physical camera quality/flash/focus/performance and remaining manual CAM/NAV variants still need evidence.
-No merge into `languages/main` or `main`. The emulator OCR mode was restored to Both; no Anki collection was changed.
+Next is phase 1.5's remaining manual acceptance/regressions, not history implementation. Read the exact checklist in
+[the plan handoff](plans/2026-10-25-camera-lookup.md) and [integration notes](notes/camera-lookup.md), then
+`ai/test-model.md`. Remaining CAM3/CAM4/CAM6/CAM7 and NAV3 variants, ordinary screen-Anki/audio/translation regressions
+and physical sharpness/focus/flash/performance must be recorded before claiming phase 1 fully accepted.
+Phase 2 (internal history/settings/limits) and phase 3 (picker) are not started. No merge into either main branch.
+Emulators/test APKs/owned lock are cleaned up at the final checkpoint; main app/data stay installed. API 37 has no
+current photo after the deletion-independence test; its generated gallery copy and local test Anki note may remain.
 
 ## Release from `main`: open items (2026-10-23, owner: come back to it later)
 
@@ -1569,21 +1567,3 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
   `CLAUDE.md`); committed on both branches.
 - The AVD `Screenlate_API30` is locked by a qemu process that cannot be killed (PID 70992 this session); a fresh AVD
   `Screenlate_API30_glide` (pixel_4, google_apis x86) replaced it for this check. A reboot of the PC frees the lock.
-
-Live 1.4 checkpoint: PhotoImage leases (hard link/copy) and original-pixel crop/preview; NoteImage screen/photo adapters;
-CropPlacement and fitted CropEditor with preview-generation cancellation; OverlayController photo NoteSource and
-process-safe image identity; MediaStore pending/copy/publish/rollback plus Camera export action and 14-locale strings
-are uncommitted. App assembly and the first unit suites passed (`build/photo-crop-checks.log`). Added lease,
-publication, placement and export VM tests; native PhotoImage/Gallery tests and updated CropEditor tests are next to
-compile/run. No device checks or Anki writes yet. Next: compile test APKs, run class-specific API 37 tests, verify
-actual popup photo crop/export on the emulator, page tests and root assemble/test/lint; update docs before commit.
-
-1.4 implementation checkpoint: app assembly and targeted JVM suites pass; all test APKs compile. API 37 native
-PhotoImageTest/PhotoGalleryDeviceTest 3/3 PASS (all 8 EXIF orientations, original-pixel crops after sampled preview,
-byte-identical JPEG/PNG export with IS_PENDING cleared). CropEditorTest/CropViewTest 8/8 PASS (screen regression,
-original coordinate mapping, cancellation and no late editor after preview decode). Opt-in PhotoAnkiFixtureTest is
-compiled for the next real popup→crop→Anki check; it backs up Japanese app settings, uses only the emulator's local
-Screenlate Photo Test deck/model, and has explicit verify/restore stages. It has not run yet. Emulator API 37 and
-lock `camera-lookup crop/export 2026-10-26 Codex` are owned by this session. Main + core/overlay test APKs installed;
-remove helpers and release the lock at cleanup. Next: actual popup/photo Anki+gallery checks, page tests, full root
-assembly/unit/lint and final documentation. No merge and no AnkiWeb/account operations.

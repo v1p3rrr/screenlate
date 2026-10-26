@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.photos.LookupSources
+import com.vpr.screenlate.core.photos.PhotoExports
 import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoViewport
@@ -42,13 +43,13 @@ class CameraViewModel @Inject constructor(
     private val savedState: SavedStateHandle,
     val session: CameraSession,
     val recognition: CameraRecognition,
-    private val exports: com.vpr.screenlate.core.photos.PhotoExports,
+    private val exports: PhotoExports,
 ) : ViewModel() {
     private val lookup = CameraLookup(sources)
     private val mutableState = MutableStateFlow(CameraState(takingNew = savedState[NEW_PHOTO] ?: false))
     val state = mutableState.asStateFlow()
-    private val errors = Channel<CameraEvent>(Channel.BUFFERED)
-    val events = errors.receiveAsFlow()
+    private val messages = Channel<CameraEvent>(Channel.BUFFERED)
+    val events = messages.receiveAsFlow()
     private var viewport: Pair<Long, PhotoViewport>? = null
     private var obscured = false
 
@@ -79,7 +80,7 @@ class CameraViewModel @Inject constructor(
                 Log.w(TAG, "Loading photo failed: " + e.javaClass.simpleName)
                 mutableState.value = state.value.copy(loaded = false, loadFailed = true)
                 publish()
-                errors.send(CameraEvent.LOAD)
+                messages.send(CameraEvent.LOAD)
                 // Do not treat a failed load as an empty store and replace its contents implicitly.
             }
         }
@@ -132,7 +133,7 @@ class CameraViewModel @Inject constructor(
                 throw e
             } catch (e: Exception) {
                 Log.w(TAG, "Capture failed: " + e.javaClass.simpleName)
-                errors.send(CameraEvent.CAPTURE)
+                messages.send(CameraEvent.CAPTURE)
             } finally {
                 withContext(NonCancellable) {
                     capture?.let { file ->
@@ -163,7 +164,7 @@ class CameraViewModel @Inject constructor(
                 throw e
             } catch (e: Exception) {
                 Log.w(TAG, "Deleting photo failed: " + e.javaClass.simpleName)
-                errors.send(CameraEvent.DELETE)
+                messages.send(CameraEvent.DELETE)
             } finally {
                 mutableState.value = state.value.copy(busy = false)
                 publish()
@@ -178,11 +179,11 @@ class CameraViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 exports.save(photo.id)
-                errors.send(CameraEvent.EXPORTED)
+                messages.send(CameraEvent.EXPORTED)
             } catch (e: CancellationException) { throw e }
             catch (e: Exception) {
                 Log.w(TAG, "Photo export failed: " + e.javaClass.simpleName)
-                errors.send(CameraEvent.EXPORT_FAILED)
+                messages.send(CameraEvent.EXPORT_FAILED)
             } finally { mutableState.value = state.value.copy(exporting = false) }
         }
     }

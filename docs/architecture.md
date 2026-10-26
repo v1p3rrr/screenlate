@@ -41,7 +41,7 @@ Aiming again only repeats steps 3–6; the screen is not scanned again until the
 
 ### Lookup source
 
-`LookupSources` (core:photos) says what the bubble reads, one source at a time: the screen (the steps above), a recognized photo, or nothing (a page that shows photos while it has no recognized one). A page that shows photos opens a presentation while it is in the foreground and closes it when it leaves; the screen is the source otherwise. Every change of source, photo or recognition takes a new generation; moving or zooming the photo keeps it. The overlay reads the screen only through `ScreenReads`, which lets a capture, an app text read or the cloud connection through only while the screen is the source of the scan's generation, and drops a screenshot or app text that finishes after the source changed. Over a photo the bubble takes its stored text with no screenshot, recognition or app text: the layout stays in the photo's pixels and `TextFrame` maps the aim into it and the highlights and the popup's anchor back, cut to the part of the photo that shows. The photo's text is looked up in the language it was recognized in, which the bubble's glyph shows, and the bubble menu offers no languages. When the photo moves under a resting bubble, the highlights follow it and the aim is tested again. Leaving the photo docks the bubble; a photo shown while the bubble is out over the screen replaces the scan with its text. A note's picture is taken only from the screen.
+`LookupSources` (core:photos) says what the bubble reads, one source at a time: the screen (the steps above), a recognized photo, or nothing (a page that shows photos while it has no recognized one). A page that shows photos opens a presentation while it is in the foreground and closes it when it leaves; the screen is the source otherwise. Every change of source, photo or recognition takes a new generation; moving or zooming the photo keeps it. The overlay reads the screen only through `ScreenReads`, which lets a capture, an app text read or the cloud connection through only while the screen is the source of the scan's generation, and drops a screenshot or app text that finishes after the source changed. Over a photo the bubble takes its stored text with no screenshot, recognition or app text: the layout stays in the photo's pixels and `TextFrame` maps the aim into it and the highlights and the popup's anchor back, cut to the part of the photo that shows. The photo's text is looked up in the language it was recognized in, which the bubble's glyph shows, and the bubble menu offers no languages. When the photo moves under a resting bubble, the highlights follow it and the aim is tested again. Leaving the photo docks the bubble; a photo shown while the bubble is out over the screen replaces the scan with its text. A note's picture comes from that source: a retained screenshot or the original photograph.
 
 ### Camera page and image ownership
 
@@ -82,6 +82,22 @@ It publishes the photo's measured screen bounds only
 after decoding. `CameraLookup` presents a source while the page is resumed: a committed recognition snapshot and
 viewport, or no text for preview, loading, failed decoding, dialogs and an unrecognized photo. Backgrounding closes the source.
 Old-document viewport callbacks are ignored. The display bitmap's sample does not alter stored OCR coordinates.
+
+`PhotoDocuments.pinImage` retains original pixels with a private hard link (copy fallback), so a note or export can
+finish after the current photo is replaced or deleted. The owner closes the `PhotoImage` after its reads; abandoned
+pins are removed on the next store change after process restart. Preview and crop reads decode regions off the main
+thread, apply EXIF orientation, and retain unpublished bitmap ownership through cancellation.
+
+`NoteContext.image` accepts a screen or photo `NoteImage`. The screen adapter retains the existing shared screenshot
+and its natural screen placement; the photo adapter owns a sampled upright preview and crops original pixels.
+`CropPlacement` maps an editor selection back to source coordinates. Photos fit above the controls; screenshots keep
+their existing placement. Closing a scan also invalidates a preview still being decoded, preventing a late editor.
+Photo note requests capture their recognition snapshot, sentence and language and reject stale source generations.
+
+`PhotoGallery` pins the original and writes its ordinary bytes to a pending MediaStore image in Pictures/Screenlate.
+Only a complete write and stream close publish the image. Failure/cancellation deletes the pending row. The explicit
+Camera action reports success/failure, does not recognize again, and leaves the exported copy independent of private
+document deletion. No OCR sidecar, backup integration or broad storage permission is added.
 
 ## Anki export
 

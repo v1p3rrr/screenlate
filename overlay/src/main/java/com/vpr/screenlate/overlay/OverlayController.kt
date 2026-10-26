@@ -62,6 +62,9 @@ import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.overlay.anki.NoteContext
+import com.vpr.screenlate.overlay.anki.PhotoNoteImage
+import com.vpr.screenlate.overlay.anki.ScreenNoteImage
+import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.overlay.anki.NoteSource
 import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.capture.AccessibilityText
@@ -146,7 +149,7 @@ class OverlayController(
     private val profiles: LanguageProfiles,
     private val installation: LanguageInstallation,
     private val lookupSources: LookupSources,
-    private val photos: com.vpr.screenlate.core.photos.PhotoDocuments,
+    private val photos: PhotoDocuments,
     private val stopDiagnostics: ServiceStopDiagnostics,
     private val scope: CoroutineScope,
 ) {
@@ -1493,7 +1496,7 @@ class OverlayController(
 
     /**
      * What a note takes from the scan, fixed when its ➕ is pressed: the sentence around the word shown then, and the
-     * screenshot on request. ➕ waits for the scan's final text ([noteWaitsForText]).
+     * source image on request. ➕ waits for the scan's final text ([noteWaitsForText]).
      */
     private fun noteSource(): NoteSource {
         val (layout, position) = shownPosition()
@@ -1506,17 +1509,17 @@ class OverlayController(
                 fun valid() = scan == scanId && lookupSources.source.value.generation == photo.generation
                 if (!valid()) throw CancellationException("Photo source changed")
                 val image = if (withScreenshot) photos.pinImage(photo.documentId)
-                    ?: throw java.io.IOException("Photo image unavailable") else null
+                    ?: throw IOException("Photo image unavailable") else null
                 if (!valid()) { image?.close(); throw CancellationException("Photo source changed") }
                 val focus = if (layout != null && position != null && image != null) {
                     CropFocus.of(layout.readingParagraphs[position.paragraphIndex].lines.map { it.box },
                         FOCUS_PADDING_DP * density / photo.viewport.scale, image.bounds)?.let { RectF(it.left, it.top, it.right, it.bottom) }
                 } else null
-                NoteContext(sentence, image?.let { com.vpr.screenlate.overlay.anki.PhotoNoteImage(it) }, focus, documentTitle)
+                NoteContext(sentence, image?.let(::PhotoNoteImage), focus, documentTitle)
             } else {
-            val shot = if (withScreenshot) notePicture(scan) else null
-            val focus = if (layout != null && position != null && shot != null) cropFocus(layout, position, shot.screen) else null
-            NoteContext(sentence, shot?.let { com.vpr.screenlate.overlay.anki.ScreenNoteImage(it) }, focus, documentTitle)
+                val shot = if (withScreenshot) notePicture(scan) else null
+                val focus = if (layout != null && position != null && shot != null) cropFocus(layout, position, shot.screen) else null
+                NoteContext(sentence, shot?.let(::ScreenNoteImage), focus, documentTitle)
             }
         }
     }

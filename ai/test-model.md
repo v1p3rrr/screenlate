@@ -463,7 +463,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM5 | Bubble out over a photo, then another page, another app or the live camera → the bubble docks; back on the photo, the next pull-out takes its text without recognition | F | U SourceChangeTest, M | 2026-10-26 (API 37) |
 | CAM6 | Bubble out over the screen of another page, then a recognized photo is shown → the old entry closes and the photo's text is under the aim | N | U SourceChangeTest, M | |
 | CAM7 | Hold the bubble over a photo → copy and Open Screenlate, no language flags; the docked glyph returns to the active language once the photo is left | N | M | |
-| CAM8 | A note added over a photo has no screen picture | N | M | |
+| CAM8 | Holding Add over a recognized photo opens a fitted original-photo crop; paragraph/frame/whole-photo and cancel work; Anki gets the original-pixel crop and sentence in the recognition language, with no screenshot read | F | U CropPlacementTest; I PhotoImageTest, CropEditorTest, CropViewTest; M | 2026-10-26 (API 30/37; manual API 37) |
 | CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | F | U PhotoStoreTest, I PhotoDatabaseTest | 2026-10-26 (API 37) |
 | CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
 | CAM11 | Capture → fitted current photo; New photo + Close or Back preserves it; a completed new capture replaces it; Delete + Cancel keeps it, Delete + confirm opens the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
@@ -480,6 +480,9 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM22 | Camera language is independently remembered, limited to enabled languages; changes/settings show pending state and never rewrite actual OCR language or auto-recognize | F | U CameraPreferencesTest, CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
 | CAM23 | Successful capture starts recognition once; failed/cancelled capture preserves previous photo; work continues off Camera/backgrounded; cached lookup needs no OCR model and APP_TEXT_ONLY cannot bypass new image OCR readiness | F | U CameraViewModelTest, PhotoRecognitionJobsTest, LanguageInstallationTest; M | 2026-10-26 (API 37) |
 | CAM24 | Viewer pinch clamps fit..8×, pan clamps edges, reopening fits; only viewport changes and the source/layout generation stays; visible-region details remain sharp | F | U PhotoViewportTest, I PhotoViewerGestureTest (API 30); M (API 37) | 2026-10-26 (API 30/37) |
+| CAM25 | Explicit Save to gallery publishes ordinary original JPEG/PNG bytes with orientation and no OCR data; replacing/deleting the current document leaves the exported copy; failure/cancellation removes partial output and permits retry | F | U PhotoGalleryTest, CameraViewModelTest; I PhotoGalleryDeviceTest; M | 2026-10-26 (API 30/37) |
+| CAM26 | A retained image survives current-photo replacement/deletion until its owner closes it; a restart removes abandoned pins; late source/preview results cannot open an editor after the scan closes | F | U PhotoStoreTest; I CropEditorTest, PhotoImageTest | 2026-10-26 (API 30/37) |
+
 
 
 ### NAV: bottom navigation
@@ -546,6 +549,30 @@ menu's search had started. BUB16 (new, first check, moved to F).
 
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-26, `features/camera-lookup`, original-photo Anki and gallery after `66b66d85`
+
+- Implementation pushed as `e8951271`, followed by import/name cleanup and final documentation. Added CAM25/CAM26,
+  replaced the temporary no-photo-image CAM8 expectation with original-photo crop behavior and promoted all three to F.
+- Root `assembleDebug testDebugUnitTest lintDebug` and both library test APKs: PASS (3m32s); 1585 JVM tests,
+  zero failures/errors, page tests 146/146. One duplicate import introduced during cleanup was removed before this run.
+  Targeted suites/app build and all test APKs passed before device checks.
+- API 37 and API 30: PhotoImageTest/PhotoGalleryDeviceTest 3/3 and CropEditorTest/CropViewTest 8/8 each. Checks include
+  eight orientations, outward fractional selection, larger-than-preview original crop, identical JPEG/PNG byte export,
+  orientation metadata, IS_PENDING cleared only after completion, screen coordinates/ownership and editor cancellation.
+- Real API 37 popup over a generated Japanese page while app active language was Slovenian: long-press Add opened the
+  original-photo editor; Cancel added no note; reopen, Whole photo/Frame toggle and bottom-right resize worked. Add
+  exported a 1541×1257 original crop (its drawn frame was about 650×530). Local Anki fixture verified the Japanese
+  sentence and image in the dedicated Screenlate Photo Test note. Only this new synthetic attachment was read back.
+- Anki fixture prepare/verify/restore passed; the Japanese app settings were restored. Only the emulator's unsynced
+  collection was used. No account, sync or AnkiWeb operation. No owner's collection changes.
+- Save to gallery showed success. The exported PNG's SHA-256 matched the private original. After deleting the private
+  current fixture through Camera, the gallery copy remained. No automatic export and no OCR call from gallery action.
+- API 30 is 32-bit x86: x86_64-only shrunk test APKs failed ABI matching, so universal class-specific test APKs were
+  installed and passed. Main app/data was not removed. API 37 used x86_64 APKs and temporarily lowered storage
+  thresholds; prior settings were restored in finally. No app force-stop or app-wide connected run.
+- Pending: physical sharpness/focus/flash/performance and phase 1.5's remaining manual CAM/NAV/audio/translation/
+  ordinary screen-Anki regression variants. These runs establish image ownership/cropping/export, not full release acceptance.
 
 ### 2026-10-26, `features/camera-lookup`, recognition/viewer continuation after `01d24c0e`
 
