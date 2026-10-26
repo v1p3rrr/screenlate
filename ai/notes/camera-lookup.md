@@ -17,6 +17,52 @@ This note records existing-code facts and traps, not additional product decision
 - Other existing worktrees contain modified/untracked native submodule contents. Preserve them; do not clean/reset.
 - A fresh session needs no chat history: read AGENTS, status, the camera plan and this note.
 
+## Paused phase 1.5: acceptance fixtures (2026-10-26)
+
+Owner paused after the first small regression milestone following `6c3956a8`. Read the plan's Resume / handoff
+before continuing: CAM3/4/6/7, NAV3, ordinary screen/Anki/audio/translation and physical checks remain pending.
+No new manual camera scenario ran in this checkpoint. Native search/language/popup regressions pass 7/7 on API 37.
+InstallationPopupTest must click `.message-link`, the button made by popup.js; `.installation-status` is obsolete.
+LanguageTestFixture now owns a UUID directory under noBackupFilesDir and deletes it on close. The first batch lost
+a cache file on a nearly full emulator; cache eviction is a plausible cause, not proven by logs or reproduced alone.
+
+`PhotoRegressionFixtureTest` is explicitly opted-in and emulator-only. Install the current **main debug APK too**:
+its debug-only PhotoTestAccess has the commonPreferences accessor required by the helper. Invocation:
+
+```powershell
+$adb = 'D:/Android/Sdk/platform-tools/adb.exe'
+& $adb shell am instrument -w -r -e class com.vpr.screenlate.camera.PhotoRegressionFixtureTest -e photoRegression prepare com.vpr.screenlate.debug.test/androidx.test.runner.AndroidJUnitRunner
+# Run acceptance checks, then always restore, including after a failure:
+& $adb shell am instrument -w -r -e class com.vpr.screenlate.camera.PhotoRegressionFixtureTest -e photoRegression restore com.vpr.screenlate.debug.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+- `prepare`: backs up the entire common DataStore preference map once, switches app lookup to enabled Japanese,
+  sets Screen/Both/above-finger aim and hide-off-word. Does not write Anki, start OCR or create a photo.
+- `restore`: restores all saved key types/values, verifies exact map equality and removes its device-private backup
+  `noBackupFilesDir/photo-regression-preferences.json`. Prepare/restore smoke pass on API 37; no backup remains.
+- `configure`: optional args `active` (language code), `engines`, `textSource`, `aim`, `model`, `hideOffWord`,
+  `translationButton`, `tipSeen`. `firstRun` sets first-run and unseen background-tip flags for NAV3.
+- `unrecognized`: replaces only the generated 2800×2400 current fixture with a copy without OCR. `unreadable` corrupts
+  only that generated fixture's committed recognition file. These stages require prepare and the fixture dimensions.
+  Configure/firstRun/unrecognized/unreadable are **compiled, not exercised** at this checkpoint. Generate the page
+  using PhotoWorkflowTest before photo stages. Never use these helpers on a phone or real photographs.
+
+An `@Test` implemented with an expression-bodied runBlocking needs an explicit Unit return when its branches
+return different types; otherwise JUnit rejects it as non-void before executing. Fixed and verified here.
+Actual acceptance must account for the existing global hide-off-word setting: false intentionally keeps the old
+popup on an empty aim. Check no-new-hit separately; true permits strict closure assertions. Do not change the default.
+UI dumps can rebind accessibility and dock the bubble, so use screenshots for actual source/aim gestures.
+
+API 37 had about 367 MB free in /data. Use x86_64 APKs, temporarily lower install thresholds only with finally-based
+restoration, preserve dictionaries and app data. API 30 is 32-bit x86 and needs universal APKs. The emulator's
+Espresso input injection is unreliable on API 37; actual adb/UiAutomation gestures work. The existing separate
+PhotoGestureDriver preserves accessibility services. No additional navigation test was written in this checkpoint.
+
+Local evidence (ignored build/, not required for a fresh clone): photo-15-api37-app-fixed.log (7/7),
+photo-15-final-checks.log (root checks), photo-15-fixture-final-build.log (final native test assembly),
+photo-15-fixture-prepare.log and photo-15-fixture-restore.log (1/1 each). Earlier failure/reproduction logs use the
+same photo-15 prefix. No Anki operation or phone run occurred in this checkpoint.
+
 ## Built in phase 1.4: original photo notes and gallery export (2026-10-26)
 
 Implementation checkpoint `e8951271`; final checks/docs follow it. `PhotoDocuments.pinImage(id)` takes a lease under

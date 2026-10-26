@@ -17,4 +17,5 @@ interface PhotoTestAccess {
     fun preferences(): CameraPreferences
     fun profiles(): LanguageProfiles
     fun ankiSettings(): com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
+    fun commonPreferences(): androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences>
 }

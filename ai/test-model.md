@@ -550,6 +550,28 @@ menu's search had started. BUB16 (new, first check, moved to F).
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
 
+### 2026-10-26, `features/camera-lookup`, paused acceptance checkpoint after `6c3956a8`
+
+- Owner requested pause after the current coherent milestone. Phase 1.5 is incomplete; no new CAM/NAV manual case
+  was run or promoted. Next session must continue CAM3/4/6/7, NAV3 and relevant screen/Anki/audio/translation cases.
+- API 37 class-specific instrumentation: SearchLanguageTest (2), ProcessTextTest (2), InstallationPopupTest (1),
+  LanguageReactivationTest (1), LanguageSwitchTest (1): final 7/7 PASS. Initial batch had two failures. Installation
+  link failure reproduced alone; fixed obsolete native-test DOM selector to match popup.js `.message-link` button.
+  A missing isolated cache archive did not reproduce alone; moved fixture-owned files to noBackupFilesDir. Low-space
+  cache eviction is plausible, not conclusively diagnosed. No production camera change was needed for these checks.
+- Added explicit emulator-only PhotoRegressionFixtureTest. First smoke was rejected before execution because JUnit
+  required a void return; explicit Unit fixed it. Final prepare and restore: 1/1 each, exact common preference-map
+  equality checked and private backup removed. Other stages are compiled but not exercised. See camera notes for usage.
+- Root `assembleDebug testDebugUnitTest lintDebug :app:assembleDebugAndroidTest --max-workers=1 --console=plain`:
+  PASS (2m10s); 1585 JVM tests, 0 failures/errors, 5 skipped. Final helper return/import change reassembled native
+  test APK successfully (16s), then prepare/restore passed. Page scripts unchanged; prior 146/146 result retained.
+- Logs under ignored build/: photo-15-api37-app-fixed.log, photo-15-final-checks.log, photo-15-fixture-final-build.log,
+  photo-15-fixture-prepare.log, photo-15-fixture-restore.log. Test thresholds restored after installations. No Anki
+  writes/sync, photo replacement, force-stop, app-wide connected test or phone test in this checkpoint.
+- All temporary fixture preferences restored; auxiliary test APK removed and owned emulator shut down at pause.
+  Main debug app/data preserved; API 37 still has no current private photo from the previous deletion test.
+  Physical sharpness/focus/flash/delay and repeated-capture memory/responsiveness remain pending.
+
 ### 2026-10-26, `features/camera-lookup`, original-photo Anki and gallery after `66b66d85`
 
 - Implementation pushed as `e8951271`, followed by import/name cleanup and final documentation. Added CAM25/CAM26,

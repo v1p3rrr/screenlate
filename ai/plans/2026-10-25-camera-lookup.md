@@ -10,8 +10,19 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
-- Phases 0, 1.1, 1.2, 1.3 and 1.4 are implemented. Last pushed implementation: `e8951271`
-  ("Add original-photo note images and explicit gallery export"); final verification/docs commit follows it.
+- PAUSED by the owner on 2026-10-26, mid-phase 1.5. Finish no additional acceptance scenarios until asked to resume.
+  Phase 1.4's final checkpoint is `6c3956a8`; the following checkpoint is titled
+  "Stabilize acceptance fixtures and installation-link regression" (use `git log` for the exact hash).
+  It contains test maintenance, the opt-in PhotoRegressionFixtureTest and this handoff, with no camera product changes.
+  API 37 final SearchLanguageTest/ProcessTextTest/InstallationPopupTest/LanguageReactivationTest/LanguageSwitchTest:
+  7/7 pass. Initial failures: obsolete popup DOM selector and a missing isolated cache file. Selector reproduced alone;
+  missing file did not. Fixtures now use their own no-backup directory. Cache eviction is plausible, not established.
+  No new CAM/NAV manual cases passed in this session; do not promote their N categories from these seven checks.
+  Root assembly/JVM/lint pass again: 1585 tests, no failures/errors, 5 skipped. App test APK assembly passes.
+  The new helper's prepare/restore both pass and verify exact preference-map restoration; no backup remains.
+  Its other stages are compiled but unexercised. Page scripts unchanged (prior result 146/146).
+- Phases 0, 1.1, 1.2, 1.3 and 1.4 are implemented. Last camera implementation: `e8951271`
+  ("Add original-photo note images and explicit gallery export"); verification/docs checkpoint `6c3956a8` follows it.
   Earlier OCR implementation `9484c556`, handoff `66b66d85`, foundation `01d24c0e`. Feature branch only; no merges.
 - Phase 1.4: PhotoDocuments.pinImage/PhotoImage retain original bytes through replacement/clear; NoteImage has screen
   and original-photo adapters; CropPlacement fits photos above controls and maps the selected frame to original pixels;
@@ -35,6 +46,11 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   CAM6 screen→photo transition; CAM7 hold-menu; NAV3 setup/badge/nested/deep-link variations. Re-run relevant E cases
   for ordinary screen lookup/Anki, note audio/translation and settings/languages after the image-source refactor.
   Log exact evidence, promote only checked N cases, and keep physical-device acceptance explicitly pending.
+  First acquire the shared emulator lock and boot API 37. Install current debug main/test APKs, then use
+  PhotoRegressionFixtureTest with `photoRegression=prepare` to back up settings. Generate a recognized page with
+  the existing PhotoWorkflowTest, then start CAM3/CAM4 source/edge checks. Restore settings before finishing.
+  Do not rerun the completed seven-test regression batch unless a new change justifies it. API 30 NAV/loading and
+  relevant ordinary screen BUB/OCR/Anki/audio/translation regressions remain after these cases.
 - Physical sharpness, focus, flash, capture delay and repeated-capture/memory/drag baselines still need a phone;
   emulator evidence does not establish them. Do not claim full phase 1 acceptance or merge before recording the
   outstanding checks. Phase 2 history/settings/limits and phase 3 picker have not started; ask only genuinely new
@@ -310,3 +326,8 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   actual local Anki/gallery scenario and required build/unit/lint/page checks pass (see handoff/test model). Original
   Japanese Anki settings restored. No product decision changed. Remaining phase 1.5 acceptance is the next step;
   no history, picker or merge started.
+
+- 2026-10-26: owner resumed phase 1.5, then requested a pause at the current milestone because of usage limits.
+  Finished language/search/popup native regression maintenance (7/7 on API 37), added the opt-in settings-preserving
+  acceptance helper and recorded a resumable handoff. No product decisions changed. Remaining manual CAM/NAV,
+  ordinary screen/Anki/audio/translation and physical-device checks stay pending; phase 1.5 is not complete.

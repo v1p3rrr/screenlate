@@ -45,7 +45,7 @@ class InstallationPopupTest {
             val deadline = SystemClock.elapsedRealtime() + 15_000
             while (opened.get() == null && SystemClock.elapsedRealtime() < deadline) {
                 activity.onActivity { screen ->
-                    webView(screen.window.decorView)?.evaluateJavascript("document.querySelector('.installation-status')?.click()", null)
+                    webView(screen.window.decorView)?.evaluateJavascript("document.querySelector('.message-link')?.click()", null)
                 }
                 SystemClock.sleep(50)
             }

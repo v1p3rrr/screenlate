@@ -62,7 +62,8 @@ import okhttp3.OkHttpClient
 /** Isolated settings and registry; every network request and Anki collection write fails the test. */
 internal class LanguageTestFixture : AutoCloseable {
     private val target = InstrumentationRegistry.getInstrumentation().targetContext
-    val root = File(target.cacheDir, "language-regression-${UUID.randomUUID()}").apply { mkdirs() }
+    // The system can evict cache during a low-storage run, including live DataStore/registry test files.
+    val root = File(target.noBackupFilesDir, "language-regression-${UUID.randomUUID()}").apply { mkdirs() }
     val context = object : ContextWrapper(target) {
         override fun getFilesDir(): File = root
         override fun getCacheDir(): File = root

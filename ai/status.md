@@ -2,10 +2,24 @@
 
 ## Camera photo lookup (2026-10-25)
 
-Phases 1.1 through 1.4 are implemented (2026-10-26), on `features/camera-lookup`.
+Paused at the owner's request on 2026-10-26 during phase 1.5 (acceptance/regressions). Phases 1.1 through 1.4
+are implemented on `features/camera-lookup`; phase 1.5 is not complete.
 Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`.
-Last pushed implementation: `e8951271` ("Add original-photo note images and explicit gallery export"); the final
-verification/docs commit follows it. Phase 1.3 implementation is `9484c556`, its handoff `66b66d85`.
+Phase 1.4 checkpoints: implementation `e8951271`, final verification/docs `6c3956a8`.
+The subsequent checkpoint is titled "Stabilize acceptance fixtures and installation-link regression";
+it contains the phase 1.5 work and handoff below. Find its exact hash with `git log -1` on this feature branch.
+Phase 1.3 implementation is `9484c556`, its handoff `66b66d85`.
+
+This session finished seven API 37 language/search/text-selection/popup regressions. Fixed an outdated native test
+selector (`.installation-status` → `.message-link`) and moved the isolated language fixture from evictable cache to
+its own no-backup directory. Initial run: 2 failures; the popup failure reproduced alone, the missing cache file did
+not. Final combined run: 7/7 pass. Low-storage cache eviction is plausible, not proven. No camera product change.
+Added an explicitly opted-in, emulator-only PhotoRegressionFixtureTest for preserving/restoring common preferences
+and preparing remaining manual cases. Read its protocol in `ai/notes/camera-lookup.md` before using it.
+Its prepare/restore smoke checks both pass, including exact preference-map equality; no backup file remains.
+Other helper stages are compiled but not yet exercised. Root `assembleDebug testDebugUnitTest lintDebug` and app
+test APK assembly pass again (1585 JVM tests, 0 failures/errors, 5 skipped). Page scripts are unchanged; their
+previous 146/146 result stands. This checkpoint leaves no incomplete production-code edit.
 
 Phase 1.4 adds retained original-image leases, source-specific NoteImage adapters, fitted photo crop coordinates,
 original-pixel/EXIF crop decoding and explicit gallery export with pending-write rollback. Notes pin source text and
