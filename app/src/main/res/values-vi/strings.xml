@@ -857,7 +857,7 @@
     <string name="history_change_failed">Không thay đổi được lịch sử.</string>
     <string name="settings_camera_summary">Lịch sử ảnh, tự động lưu, giới hạn</string>
     <string name="history_auto_save">Tự động lưu</string>
-    <string name="history_auto_save_hint">Mỗi ảnh mới được thêm vào lịch sử ngay sau khi chụp.</string>
+    <string name="history_auto_save_hint">Mỗi ảnh mới, dù chụp hay nhập, đều được thêm vào lịch sử ngay.</string>
     <string name="history_count_limit">Giới hạn số ảnh</string>
     <string name="history_size_limit">Giới hạn dung lượng, MB</string>
     <string name="history_no_limit">0 nghĩa là không giới hạn. Ảnh cũ nhất bị xóa trước.</string>

@@ -885,7 +885,7 @@
     <string name="history_change_failed">Не удалось изменить историю.</string>
     <string name="settings_camera_summary">История фото, автосохранение, лимиты</string>
     <string name="history_auto_save">Сохранять автоматически</string>
-    <string name="history_auto_save_hint">Каждое новое фото попадает в историю сразу после снимка.</string>
+    <string name="history_auto_save_hint">Каждое новое фото, снятое или импортированное, сразу попадает в историю.</string>
     <string name="history_count_limit">Лимит фото</string>
     <string name="history_size_limit">Лимит размера, МБ</string>
     <string name="history_no_limit">0 — без лимита. Первыми удаляются самые старые фото.</string>

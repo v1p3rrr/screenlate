@@ -857,7 +857,7 @@
     <string name="history_change_failed">無法變更歷史記錄。</string>
     <string name="settings_camera_summary">照片歷史記錄、自動儲存、上限</string>
     <string name="history_auto_save">自動儲存</string>
-    <string name="history_auto_save_hint">每張新照片拍攝後會立即加入歷史記錄。</string>
+    <string name="history_auto_save_hint">每張新照片，無論是拍攝的還是匯入的，都會立即加入歷史記錄。</string>
     <string name="history_count_limit">照片數量上限</string>
     <string name="history_size_limit">大小上限（MB）</string>
     <string name="history_no_limit">0 代表不限制。最舊的照片會先刪除。</string>

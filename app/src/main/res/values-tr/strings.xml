@@ -866,7 +866,7 @@
     <string name="history_change_failed">Geçmiş değiştirilemedi.</string>
     <string name="settings_camera_summary">Fotoğraf geçmişi, otomatik kaydetme, sınırlar</string>
     <string name="history_auto_save">Otomatik kaydet</string>
-    <string name="history_auto_save_hint">Her yeni fotoğraf çekildikten hemen sonra geçmişe eklenir.</string>
+    <string name="history_auto_save_hint">Çekilen veya içe aktarılan her yeni fotoğraf hemen geçmişe eklenir.</string>
     <string name="history_count_limit">Fotoğraf sınırı</string>
     <string name="history_size_limit">Boyut sınırı, MB</string>
     <string name="history_no_limit">0 sınır yok demektir. Önce en eski fotoğraflar silinir.</string>

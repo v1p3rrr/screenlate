@@ -866,7 +866,7 @@
     <string name="history_change_failed">Der Verlauf konnte nicht geändert werden.</string>
     <string name="settings_camera_summary">Fotoverlauf, automatisches Speichern, Limits</string>
     <string name="history_auto_save">Automatisch speichern</string>
-    <string name="history_auto_save_hint">Jedes neue Foto kommt direkt nach der Aufnahme in den Verlauf.</string>
+    <string name="history_auto_save_hint">Jedes neue Foto, ob aufgenommen oder importiert, kommt sofort in den Verlauf.</string>
     <string name="history_count_limit">Maximale Fotoanzahl</string>
     <string name="history_size_limit">Maximale Größe, MB</string>
     <string name="history_no_limit">0 bedeutet kein Limit. Die ältesten Fotos werden zuerst gelöscht.</string>

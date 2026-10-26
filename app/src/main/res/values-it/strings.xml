@@ -875,7 +875,7 @@
     <string name="history_change_failed">Impossibile modificare la cronologia.</string>
     <string name="settings_camera_summary">Cronologia foto, salvataggio automatico, limiti</string>
     <string name="history_auto_save">Salva automaticamente</string>
-    <string name="history_auto_save_hint">Ogni nuova foto entra nella cronologia subito dopo lo scatto.</string>
+    <string name="history_auto_save_hint">Ogni nuova foto, scattata o importata, entra subito nella cronologia.</string>
     <string name="history_count_limit">Numero massimo di foto</string>
     <string name="history_size_limit">Dimensione massima, MB</string>
     <string name="history_no_limit">0 significa nessun limite. Le foto più vecchie vengono eliminate per prime.</string>

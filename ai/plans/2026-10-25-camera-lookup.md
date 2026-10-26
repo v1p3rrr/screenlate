@@ -409,3 +409,5 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   could not be opened."; a share of a link to the app's own providers or a `file:` path is ignored (found by lint);
   the API 30 emulator has no system photo picker and gets the Files app's picker instead.
   Every phase is complete; the physical-device checks remain.
+- 2026-10-26: owner reworded the Save automatically hint for imports: "Each new photo, taken or imported, goes to
+  history right away." in all 14 locales.

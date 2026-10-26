@@ -875,7 +875,7 @@
     <string name="history_change_failed">No se pudo cambiar el historial.</string>
     <string name="settings_camera_summary">Historial de fotos, guardado automático, límites</string>
     <string name="history_auto_save">Guardar automáticamente</string>
-    <string name="history_auto_save_hint">Cada foto nueva pasa al historial nada más tomarla.</string>
+    <string name="history_auto_save_hint">Cada foto nueva, tomada o importada, pasa al historial al momento.</string>
     <string name="history_count_limit">Límite de fotos</string>
     <string name="history_size_limit">Límite de tamaño, MB</string>
     <string name="history_no_limit">0 significa sin límite. Las fotos más antiguas se eliminan primero.</string>

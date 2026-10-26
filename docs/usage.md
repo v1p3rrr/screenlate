@@ -69,9 +69,9 @@ image was made.
 ### Photo history
 
 The history keeps photographs privately in Screenlate with their recognized text, apart from the gallery. Save to
-history in the ⋮ menu adds the open photograph; with Save automatically on, every new photograph is added right after
-it is taken, and turning the switch on adds the open one. A photograph replaced by a new capture stays in the history;
-one that is not in it is deleted. Imported images are treated as captures (see Images from the phone).
+history in the ⋮ menu adds the open photograph; with Save automatically on, every new photograph, taken or imported,
+is added right away, and turning the switch on adds the open one. A photograph replaced by a new capture or an import
+stays in the history; one that is not in it is deleted.
 
 The round button right of the shutter shows the latest photograph in the history and opens the history page (the ⋮
 menu has History as well). The page lists the photographs newest first, each with its date and the flag of its

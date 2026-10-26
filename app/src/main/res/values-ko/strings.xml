@@ -857,7 +857,7 @@
     <string name="history_change_failed">기록을 변경하지 못했습니다.</string>
     <string name="settings_camera_summary">사진 기록, 자동 저장, 한도</string>
     <string name="history_auto_save">자동 저장</string>
-    <string name="history_auto_save_hint">새 사진은 촬영 직후 기록에 추가됩니다.</string>
+    <string name="history_auto_save_hint">새 사진은 촬영하거나 가져오는 즉시 기록에 추가됩니다.</string>
     <string name="history_count_limit">사진 수 한도</string>
     <string name="history_size_limit">용량 한도(MB)</string>
     <string name="history_no_limit">0은 제한 없음입니다. 오래된 사진부터 삭제됩니다.</string>

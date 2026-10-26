@@ -857,7 +857,7 @@
     <string name="history_change_failed">履歴を変更できませんでした。</string>
     <string name="settings_camera_summary">写真の履歴、自動保存、上限</string>
     <string name="history_auto_save">自動で保存</string>
-    <string name="history_auto_save_hint">撮影した写真をすぐに履歴に追加します。</string>
+    <string name="history_auto_save_hint">撮影または読み込んだ写真をすぐに履歴に追加します。</string>
     <string name="history_count_limit">保存枚数の上限</string>
     <string name="history_size_limit">容量の上限（MB）</string>
     <string name="history_no_limit">0 は無制限です。古い写真から削除されます。</string>

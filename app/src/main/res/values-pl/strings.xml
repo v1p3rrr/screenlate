@@ -884,7 +884,7 @@
     <string name="history_change_failed">Nie udało się zmienić historii.</string>
     <string name="settings_camera_summary">Historia zdjęć, automatyczne zapisywanie, limity</string>
     <string name="history_auto_save">Zapisuj automatycznie</string>
-    <string name="history_auto_save_hint">Każde nowe zdjęcie trafia do historii zaraz po zrobieniu.</string>
+    <string name="history_auto_save_hint">Każde nowe zdjęcie, zrobione lub zaimportowane, od razu trafia do historii.</string>
     <string name="history_count_limit">Limit zdjęć</string>
     <string name="history_size_limit">Limit rozmiaru, MB</string>
     <string name="history_no_limit">0 oznacza brak limitu. Najstarsze zdjęcia są usuwane jako pierwsze.</string>
