@@ -17,6 +17,20 @@ This note records existing-code facts and traps, not additional product decision
 - Other existing worktrees contain modified/untracked native submodule contents. Preserve them; do not clean/reset.
 - A fresh session needs no chat history: read AGENTS, status, the camera plan and this note.
 
+## Built in phase 1.3: OCR foundation (2026-10-26)
+
+Phase 1.3 foundation (2026-10-26): `PhotoTiles` covers both axes with 1500px tiles and 200px minimum overlaps;
+`PhotoAssembly` maps to original coordinates, connects collinear observations across overlaps, suppresses physical
+duplicates, prefers complete words, reconstructs long doubly-clipped tokens, keeps paragraph membership and logical
+word order (including RTL). Its word provenance needs `OcrWord.engine` / `OcrCharacter.engine`; the popup prefers the
+aimed character's source. RecognitionCodec v2 persists this and still reads v1. `BoxIndex` is a BVH used by both
+assembly and TextLayout; sorted candidate indices preserve the old hit-test tie breaking and tolerance.
+`DeviceOcr.pin` freezes model/file identities and holds them until the attempt closes; cache release is deferred while
+pinned. `CompositeOcr.recognizePhotoTile` has no draft/aim/refinement and waits for every image reader before return,
+choosing cloud or local fallback with the existing offline/timeout/cooldown behavior. No camera wiring yet.
+Tests: OCR 165, photos 40, overlay 237 pass; app compilation and lint pass. Next is durable attempt storage and the
+region decoder/job coordinator, then camera controls/language/readiness and pan/zoom. Preserve this ordering at resume.
+
 ## Built in phase 1.2 (2026-10-26)
 
 `CameraViewModel` receives `PhotoDocuments`, `LookupSources`, `SavedStateHandle` and process-wide `CameraSession`.

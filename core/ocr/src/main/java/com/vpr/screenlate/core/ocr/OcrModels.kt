@@ -120,4 +120,6 @@ data class OcrWord(
     val separator: String,
     val box: Box,
     val characterBoxes: List<Box>? = null,
+    /** The source of this word when a photo's overlapping tiles came from different engines. */
+    val engine: OcrEngineType? = null,
 )

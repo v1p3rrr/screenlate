@@ -42,6 +42,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.coroutineScope
 
 sealed interface OcrUpdate {
     val page: OcrPage
@@ -181,6 +182,35 @@ class CompositeOcr internal constructor(
             noteLensFailure(e)
             throw e
         }
+    }
+
+    /**
+     * A photo tile has no aim, draft, deferred bands or model changes. Both readers terminate before this returns,
+     * retaining the tile until neither engine reads it. Cloud wins when usable; its failure falls back to [pinnedDevice].
+     */
+    suspend fun recognizePhotoTile(
+        image: Bitmap,
+        language: Language,
+        engines: OcrEngines,
+        pinnedDevice: OcrEngine?,
+    ): OcrPage = coroutineScope {
+        if (engines == OcrEngines.CLOUD || (engines == OcrEngines.BOTH && pinnedDevice == null)) {
+            return@coroutineScope recognizeWithLens(image, language).inLanguage(language)
+        }
+        val local = pinnedDevice ?: throw NoDeviceOcrException()
+        if (engines == OcrEngines.DEVICE) return@coroutineScope local.recognize(image, language).inLanguage(language)
+        val deviceResult = async { photoResult { local.recognize(image, language) } }
+        val cloudResult = photoResult { recognizeWithLens(image, language) }
+        val fallback = deviceResult.await()
+        (cloudResult.getOrNull() ?: fallback.getOrElse { throw cloudResult.exceptionOrNull()!! }).inLanguage(language)
+    }
+
+    private suspend fun photoResult(read: suspend () -> OcrPage): Result<OcrPage> = try {
+        Result.success(read())
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 
     /**

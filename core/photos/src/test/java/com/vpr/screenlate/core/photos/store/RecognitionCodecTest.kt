@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.TextLayout
+import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.photos.FailedRegion
 import com.vpr.screenlate.core.photos.FailureCause
 import com.vpr.screenlate.core.photos.PhotoOcrSettings
@@ -15,6 +16,51 @@ import java.util.zip.CRC32
 import org.junit.Test
 
 class RecognitionCodecTest {
+
+    @Test
+    fun wordProvenanceSurvivesStorageAndLayoutReconstruction() {
+        val original = TestPhotos.recognition()
+        val recognition = original.copy(page = original.page.copy(paragraphs = original.page.paragraphs.map { paragraph ->
+            paragraph.copy(lines = paragraph.lines.map { line ->
+                line.copy(words = line.words.map { it.copy(engine = OcrEngineType.ML_KIT) })
+            })
+        }))
+        val restored = RecognitionCodec.decode(RecognitionCodec.encode(recognition))!!
+        assertThat(restored).isEqualTo(recognition)
+        assertThat(TextLayout(restored.page).paragraphs.flatten().all { it.engine == OcrEngineType.ML_KIT }).isTrue()
+    }
+
+    @Test
+    fun versionOneWithoutWordProvenanceStillReads() {
+        val bytes = ByteArrayOutputStream()
+        DataOutputStream(bytes).use { out ->
+            out.writeInt(0x534C5052)
+            out.writeInt(1)
+            out.writeString("en")
+            out.writeString("CLOUD")
+            out.writeBoolean(false)
+            out.writeLong(12L)
+            out.writeInt(100)
+            out.writeInt(200)
+            out.writeString("LENS")
+            out.writeInt(1) // paragraph
+            out.writeBoolean(false)
+            out.writeInt(1) // line
+            out.writeBoolean(false)
+            out.writeBoolean(false)
+            repeat(4) { out.writeFloat(it.toFloat()) }
+            out.writeInt(1) // word
+            out.writeString("word")
+            out.writeString(" ")
+            repeat(4) { out.writeFloat(it.toFloat()) }
+            out.writeInt(-1) // no character boxes; v1 has no engine after this
+            out.writeInt(0) // failures
+        }
+        val restored = RecognitionCodec.decode(withChecksum(bytes.toByteArray()))!!
+        assertThat(restored.language).isEqualTo(Language.ENGLISH)
+        assertThat(restored.page.paragraphs.single().lines.single().words.single().engine).isNull()
+        assertThat(restored.page.text).isEqualTo("word")
+    }
 
     @Test
     fun `a recognition reads back as it was written`() {

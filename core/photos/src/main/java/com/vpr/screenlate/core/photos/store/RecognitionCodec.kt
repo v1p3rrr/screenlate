@@ -26,7 +26,7 @@ import java.util.zip.CRC32
  */
 internal object RecognitionCodec {
     private const val MAGIC = 0x534C5052 // "SLPR"
-    const val VERSION = 1
+    const val VERSION = 2
 
     fun encode(recognition: PhotoRecognition): ByteArray {
         val bytes = ByteArrayOutputStream()
@@ -48,8 +48,10 @@ internal object RecognitionCodec {
         if (checksum != stored) return null
         return try {
             val input = DataInputStream(ByteArrayInputStream(bytes, 0, body))
-            if (input.readInt() != MAGIC || input.readInt() != VERSION) return null
-            input.readRecognition().takeIf { input.available() == 0 }
+            if (input.readInt() != MAGIC) return null
+            val version = input.readInt()
+            if (version !in 1..VERSION) return null
+            input.readRecognition(version).takeIf { input.available() == 0 }
         } catch (_: IOException) {
             null
         } catch (_: IllegalArgumentException) {
@@ -82,6 +84,7 @@ internal object RecognitionCodec {
                     val characters = word.characterBoxes
                     writeInt(characters?.size ?: -1)
                     characters?.forEach { writeBox(it) }
+                    writeOptionalString(word.engine?.name)
                 }
             }
         }
@@ -92,7 +95,7 @@ internal object RecognitionCodec {
         }
     }
 
-    private fun DataInputStream.readRecognition(): PhotoRecognition {
+    private fun DataInputStream.readRecognition(version: Int): PhotoRecognition {
         val language = requireNotNull(Language.of(readString())) { "Unknown language" }
         val engines = OcrEngines.valueOf(readString())
         val deviceModel = readOptionalString()
@@ -111,7 +114,8 @@ internal object RecognitionCodec {
                     val separator = readString()
                     val box = readBox()
                     val characters = readInt().takeIf { it >= 0 }?.let { count -> List(checkCount(count)) { readBox() } }
-                    OcrWord(text, separator, box, characters)
+                    val wordEngine = if (version >= 2) readOptionalString()?.let(OcrEngineType::valueOf) else null
+                    OcrWord(text, separator, box, characters, wordEngine)
                 }
                 OcrLine(words, box, vertical, rightToLeft)
             }

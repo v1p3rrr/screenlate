@@ -15,6 +15,7 @@ data class OcrCharacter(
     val offset: Int,
     val vertical: Boolean,
     val rightToLeft: Boolean = false,
+    val engine: OcrEngineType? = null,
 )
 
 /** Position of a character inside a [TextLayout]. */
@@ -40,7 +41,7 @@ class TextLayout(val page: OcrPage) {
             paragraph.lines.forEachIndexed { lineIndex, line ->
                 line.words.forEach { word ->
                     splitWord(word, line).forEach { (text, box) ->
-                        add(OcrCharacter(text, box, paragraphIndex, lineIndex, size, line.vertical, line.rightToLeft))
+                        add(OcrCharacter(text, box, paragraphIndex, lineIndex, size, line.vertical, line.rightToLeft, word.engine))
                     }
                 }
             }
@@ -48,6 +49,7 @@ class TextLayout(val page: OcrPage) {
     }
 
     private val characters: List<OcrCharacter> = paragraphs.flatten()
+    private val spatialIndex = BoxIndex(characters.map { it.box })
 
     /**
      * Finds the character at ([x], [y]). If no character contains the point, returns the nearest one within
@@ -56,7 +58,9 @@ class TextLayout(val page: OcrPage) {
     fun hitTest(x: Float, y: Float, tolerance: Float): TextPosition? {
         var best: OcrCharacter? = null
         var bestDistance = Float.MAX_VALUE
-        for (character in characters) {
+        val reach = maxOf(0f, tolerance)
+        for (index in spatialIndex.query(Box(x - reach, y - reach, x + reach, y + reach))) {
+            val character = characters[index]
             val distance = if (character.box.contains(x, y)) {
                 // Prefer the character whose center is closest when boxes overlap.
                 -1f / (1f + distanceToCenter(character.box, x, y))

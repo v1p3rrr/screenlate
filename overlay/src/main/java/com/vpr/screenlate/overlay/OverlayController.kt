@@ -1644,7 +1644,8 @@ class OverlayController(
         val source = kept?.layout ?: layout
         val position = if (kept != null) kept.start else hit
         val paragraphEngine = position?.let { source?.readingParagraphs?.getOrNull(it.paragraphIndex)?.engine }
-        return paragraphEngine ?: kept?.layout?.page?.engine ?: ocrEngine
+        val wordEngine = position?.let { source?.characterAt(it)?.engine }
+        return wordEngine ?: paragraphEngine ?: kept?.layout?.page?.engine ?: ocrEngine
     }
 
     /** The word shown from an earlier layout, kept because the newer text has no word under the aim. */

@@ -70,6 +70,10 @@ Each entry lists the code of the unit, then the integration path the review must
 
 19. **Camera photos** *(camera)* [new] — `core/photos` in full: `LookupSource`/`LookupSources`, `PhotoDocument`, `PhotoDocuments`, `PhotoOrientation`, `PhotoViewport`, `store/{PhotoStore,PhotoDatabase,RecognitionCodec,PhotosModule}`, schemas; app `camera/{CameraScreen,CameraViewModel,CameraSession,CameraLookup,LiveCamera,PhotoViewer,PhotoDrawing}`. Integration: the overlay's source gate and photo frame (module 14: every screen read through `ScreenReads`, the source change rule, glyph language, hidden language chips, notes without a screen picture over a photo), `TextLayout` and `OcrPage` (module 4), Hilt and Room setup (module 1), the app's bottom navigation and saved tab stacks (module 16), CameraX lifecycle, permission and uncancellable capture callback, private storage and EXIF-to-screen coordinates. Tests: `CameraLookupTest`, `CameraViewModelTest`, `PhotoDrawingTest`, instrumented `PhotoViewerTest`. Note: `camera-lookup.md`.
 
+Photo OCR adds `PhotoTiles`, `PhotoAssembly`, `BoxIndex`, `DeviceOcr.pin` and `CompositeOcr.recognizePhotoTile` to
+module 4. Per-word provenance crosses module 4's OcrWord/TextLayout, module 19's recognition codec and module 14's
+aimed-engine selection. Its tests live beside those modules; `ai/notes/camera-lookup.md` records the integration.
+
 Every tracked file outside `testdata/`, `ai/` and `docs/` belongs to one module above; `docs/` and `ai/notes/` are checked by the module whose behavior they describe.
 
 ## Progress

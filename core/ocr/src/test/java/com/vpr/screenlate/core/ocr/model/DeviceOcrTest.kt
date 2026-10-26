@@ -65,6 +65,37 @@ class DeviceOcrTest {
     }
 
     @Test
+    fun pinnedAttemptKeepsTheChosenModelAndInstalledFilesThroughChanges() = runTest {
+        install("tesseract-fast-eng", "paddle-latin", "paddle-detector")
+        chosen = "paddle-latin"
+        var holds = 0
+        var released = 0
+        val pinnedDevice = DeviceOcr(FakeMlKit(setOf(Language.ENGLISH)), setOf(paddle, tesseract),
+            { installed }, { listed[it].orEmpty() }, { chosen }, hold = { ids ->
+                assertThat(ids).containsExactly("paddle-latin", "paddle-detector").inOrder()
+                holds++
+                AutoCloseable { released++ }
+            })
+        val pin = pinnedDevice.pin(Language.ENGLISH)!!
+        chosen = "tesseract-fast-eng"
+        installed = emptyList()
+        pin.engine.recognize(image, Language.ENGLISH)
+        assertThat(pin.modelId).isEqualTo("paddle-latin")
+        assertThat(paddle.seen).containsExactly("paddle-latin", "paddle-detector").inOrder()
+        assertThat(holds).isEqualTo(1)
+        assertThat(released).isEqualTo(0)
+        pin.close()
+        pin.close()
+        assertThat(released).isEqualTo(1)
+    }
+
+    @Test
+    fun retryPinDoesNotSilentlySwitchToAnotherModel() = runTest {
+        assertThat(device.pin(Language.ENGLISH, "tesseract-fast-eng")).isNull()
+        assertThat(device.pin(Language.ENGLISH, "mlkit")!!.modelId).isEqualTo("mlkit")
+    }
+
+    @Test
     fun `ml kit reads its scripts unless a downloaded model is chosen`() = runTest {
         install("tesseract-fast-eng")
         assertThat(device.reads(Language.JAPANESE)).isTrue()

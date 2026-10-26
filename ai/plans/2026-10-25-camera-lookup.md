@@ -11,11 +11,20 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
 - State: phases 0, 1.1 and 1.2 are complete (2026-10-26). The owner resumed implementation, so the earlier pause no longer applies.
+  Phase 1.3 resumed explicitly on 2026-10-26 from clean pushed commit `76a4f679`; OCR implementation is in progress.
+  Current foundation: PhotoTiles (1500/200 grid), PhotoAssembly (seams/paragraph membership/directions), BoxIndex
+  used by TextLayout, word-level engine provenance and recognition codec v2 (reads v1), pinned DeviceOcr sessions,
+  CompositeOcr's terminal photo-tile path. Unit tests (OCR 165, photos 40, overlay 237), app compilation and lint pass.
+  This work is not yet wired into capture or the viewer; no claim that photo recognition is usable yet.
   All phase 1.2 questions are answered (decision table rows Navigation bar to Deleting the photo); ask nothing again.
 - Resumed 2026-10-26 by the owner to inspect the intervening changes and continue from phase 1.2. Starting commit
   f5a3ca43 was clean and matched origin. The continuation's milestone commit is
   "Add camera capture and the persistent photo viewer" on `origin/features/camera-lookup`.
-- Uncommitted implementation work after that milestone: none. Do not merge into either main branch.
+- Foundation milestone commit subject: "Add tiled photo OCR assembly and indexed hit testing". After this milestone,
+  no uncommitted implementation is carried over. The earlier last commit `76a4f679` remains the complete camera UI.
+  Page tests also pass (146); no page script changed. No device behavior is claimed from this foundation checkpoint.
+  Next: persist attempts and successful tile pages, region decode with retained ownership, bounded recognition jobs;
+  then camera language/readiness/actions and viewer pan/zoom. Do not merge into either main branch.
 - Checks: `:app:assembleDebug :app:testDebugUnitTest :app:lintDebug` and root `testDebugUnitTest` with
   `--max-workers=1` pass (1533 tests total, including 183 app tests, zero failures/errors). `:app:assembleDebugAndroidTest`
   passes. API 37 class-specific instrumentation: `PhotoViewerTest` and `ProcessTextTest`, 3/3; API 30:
@@ -90,6 +99,9 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Current photograph | Survives navigation, backgrounding, process death and device restart. |
 | Replacement | A successfully captured new photograph replaces the current one without confirmation. Cancelled or failed capture preserves it. |
 | Viewing | One finger pans; two fingers zoom. Dragging the bubble moves its aim. Reopening fits the photo to the available area. |
+| Photo zoom limits | From fit to 8× fit, with pan constrained to the photograph's edges. |
+| First recognition | Start automatically after a successful capture. Language/settings changes still require explicit recognition. |
+| Recognition lifetime | Continue an already started attempt through tab changes and backgrounding, saving the result to the same document. Process restart never automatically restarts recognition. |
 | Bubble actions | A tap briefly highlights text. Pull-out, tap, movement and docking never start photo OCR. |
 | Bubble without text to read | On the Camera page with the live camera, a photo still loading, a photo not recognized yet or unreadable stored text: pull-out and tap show nothing (no popup, no message). |
 | Bubble glyph over a photo | While a recognized photo is the lookup source, the bubble shows the photo's recognition language; the active language again once the photo is left. |
@@ -280,3 +292,8 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
 - 2026-10-26: owner resumed after the navigation checkpoint. Phase 1.2 completed with capture, persistence-backed
   viewer, source lifecycle, permission failures/retry and deletion; tests and device evidence are in the handoff and
   test-model run log. No product decisions changed. Next is photo recognition (1.3), then original-photo Anki/export (1.4).
+- 2026-10-26: owner started phase 1.3 and confirmed automatic recognition after capture, continuation through tab
+  changes/backgrounding without automatic process-restart retries, and photo zoom from fit through 8× fit with bounded pan.
+- 2026-10-26: photo OCR foundation implemented and verified independently: 2D tile coverage, overlap assembly,
+  immutable hit-test index, pinned local models, terminal tile processing and persisted word provenance (v2 reads v1).
+  Capture and viewer still await the attempt coordinator and UI integration; phase 1.3 is not complete.

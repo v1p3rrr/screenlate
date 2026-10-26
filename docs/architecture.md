@@ -45,6 +45,13 @@ Aiming again only repeats steps 3–6; the screen is not scanned again until the
 
 ### Camera page and image ownership
 
+The photo OCR foundation is separate from screen drafts and refinement. `PhotoTiles` covers the original pixel space
+with overlapping regions; `PhotoAssembly` joins duplicate observations and line/paragraph fragments, retaining
+character boxes, logical word order and per-word engine provenance. `TextLayout` uses an immutable spatial index with
+the same selection and tolerance as the previous linear hit test. A pinned device session fixes a photo attempt's
+local model; the tile path waits for both readers to terminate before releasing the image and uses cloud with local
+fallback. Recognition storage version 2 reads older version 1 snapshots and preserves per-word provenance.
+
 The app shell has one NavHost inside a Scaffold with Home, Search, Camera and Settings tabs. Tab switches save and
 restore each tab's navigation stack; screens consume the bar's insets. First-launch setup and the debug viewer hide
 the bar without replacing the NavHost. External lookup and installation requests retain their existing routes.

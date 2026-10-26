@@ -471,6 +471,9 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM13 | All 8 EXIF orientations display upright and report matching original-pixel-to-screen coordinates; loading/disposal never publishes another document's viewport | F | U PhotoDrawingTest, U CameraViewModelTest, I PhotoViewerTest | 2026-10-26 (API 37) |
 | CAM14 | Capture with the service unavailable; navigate and background; restart the device → the same private current photograph opens without camera permission being requested again; leaving capture releases the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
 | CAM15 | Flash-capable camera → Off/Auto/On cycle affects capture; Off again in a new process; absent flash → action hidden | N | U PhotoDrawingTest (cycle), D | |
+| CAM16 | Tile grid covers both axes/edges; overlap assembly keeps full boundary words, repeats, character boxes, paragraphs, vertical/RTL order and combining marks | F | U PhotoTilesTest, PhotoAssemblyTest | 2026-10-26 |
+| CAM17 | Indexed hit testing preserves the former linear algorithm's tolerance, center selection, ties and zero-area separator boxes | F | U BoxIndexTest, TextLayoutTest | 2026-10-26 |
+| CAM18 | Photo tile engine: Device makes no cloud call; Both waits for all readers, uses cloud or local fallback; pinned model/files ignore later changes; stored per-word provenance reads back and v1 still loads | F | U CompositeOcrTest, DeviceOcrTest, RecognitionCodecTest | 2026-10-26 |
 
 ### NAV: bottom navigation
 
@@ -536,6 +539,14 @@ menu's search had started. BUB16 (new, first check, moved to F).
 
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-26, `features/camera-lookup`, photo OCR foundation after `76a4f679`
+
+Unit verification only; recognition is not wired into the Camera UI at this checkpoint. CAM16-CAM18 added as F after
+passing. OCR 165, photos 40, overlay 237 tests passed; app compilation and lint passed (`--max-workers=1`). Page tests
+146/146 passed after `npm --prefix scripts/page-tests ci`; no JavaScript changed. Device checks wait for complete UI.
+The combining-mark deduplication test initially expected a particular Unicode normalization from the less central
+tile; corrected it to assert canonical equality, preserving the engine's actual chosen text and boxes.
 
 ### 2026-10-26, `features/camera-lookup` (on `f5a3ca43` with the camera implementation before its commit), Pixel_10_Pro (API 37)
 

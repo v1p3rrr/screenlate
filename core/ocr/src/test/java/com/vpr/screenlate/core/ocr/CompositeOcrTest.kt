@@ -68,6 +68,35 @@ class CompositeOcrTest {
 
     private suspend fun updates() = ocr.recognize(image, Language.JAPANESE).toList()
 
+    @Test
+    fun photoDeviceModeMakesNoCloudCalls() = runTest {
+        val result = ocr.recognizePhotoTile(image, Language.JAPANESE, OcrEngines.DEVICE, mlKit)
+        assertThat(result.engine).isEqualTo(OcrEngineType.ML_KIT)
+        assertThat(lens.calls).isEqualTo(0)
+        assertThat(mlKit.calls).isEqualTo(1)
+    }
+
+    @Test
+    fun photoBothWaitsForEveryReaderAndUsesCloudWithDeviceFallback() = runTest {
+        mlKit.latency = 2.seconds
+        val result = ocr.recognizePhotoTile(image, Language.JAPANESE, OcrEngines.BOTH, mlKit)
+        assertThat(result.engine).isEqualTo(OcrEngineType.LENS)
+        assertThat(testScheduler.currentTime).isEqualTo(2000)
+        lens.error = IOException("test")
+        assertThat(ocr.recognizePhotoTile(image, Language.JAPANESE, OcrEngines.BOTH, mlKit).engine).isEqualTo(OcrEngineType.ML_KIT)
+    }
+
+    @Test
+    fun photoCloudFailureHasNoImplicitDevicePass() = runTest {
+        online = false
+        try {
+            ocr.recognizePhotoTile(image, Language.JAPANESE, OcrEngines.CLOUD, mlKit)
+            error("Expected an offline failure")
+        } catch (_: OfflineException) {
+            assertThat(mlKit.calls).isEqualTo(0)
+        }
+    }
+
     private val List<OcrUpdate>.engines get() = map { (it is OcrUpdate.Final) to it.page.engine }
 
     @Test

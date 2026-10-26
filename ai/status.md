@@ -2,6 +2,16 @@
 
 ## Camera photo lookup (2026-10-25)
 
+Phase 1.3 started on 2026-10-26 from clean pushed `76a4f679`. Tile geometry, overlap assembly and fixed-attempt OCR
+ownership are being implemented first. Owner confirmed: automatic recognition after capture, continue through
+navigation/backgrounding, no automatic retry after process restart; fit through 8× fit, pan bounded to photo edges.
+Keep the camera plan's handoff current at every checkpoint. No merges into either main branch.
+The foundation milestone ("Add tiled photo OCR assembly and indexed hit testing") includes PhotoTiles/PhotoAssembly,
+indexed TextLayout hit testing, per-word provenance
+with codec v2/v1 compatibility, pinned local models and a terminal photo-tile OCR path. OCR 165/photos 40/overlay 237
+tests, app compilation, lint and 146 page tests pass. Next is durable attempt/tile storage and bounded region processing,
+before UI wiring. Phase 1.3 is not complete and the Camera page still does not start recognition at this checkpoint.
+
 Resumed on 2026-10-26 by the owner after inspecting the clean, pushed `f5a3ca43` checkpoint.
 Phase 1.2 is now implemented: real rear camera, permission denial/retry/settings flow, capture/replacement, persistent
 fit viewer, confirmed deletion and exclusive Camera-page source activation. Navigation state, capture, replacement,

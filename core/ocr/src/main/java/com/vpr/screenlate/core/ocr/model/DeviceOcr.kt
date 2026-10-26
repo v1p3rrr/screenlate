@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.Multibinds
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
@@ -78,6 +79,9 @@ class DeviceOcr internal constructor(
     )
 
     private val engines = engines.associateBy { it.id }
+    private val pinLock = Any()
+    private var pins = 0
+    private var releasePending = false
 
     override val type = OcrEngineType.ML_KIT
 
@@ -119,10 +123,62 @@ class DeviceOcr internal constructor(
     /** What reads [language] now; null when nothing on the device can. */
     suspend fun active(language: Language): DeviceModel? = select(language, installed().associateBy { it.id })
 
+    /**
+     * Holds one model for a multi-image attempt. Selection and installed-file identities stay fixed until close,
+     * even if settings change or the model is deleted meanwhile. A specified [modelId] never falls back to another.
+     */
+    suspend fun pin(language: Language, modelId: String? = null): PinnedDeviceOcr? {
+        repeat(MAX_SELECTIONS) {
+            val models = installed().associateBy { it.id }
+            val selected = if (modelId == null) select(language, models) else when {
+                modelId == OcrModelChoices.ML_KIT && mlKit.reads(language) -> DeviceModel.MlKit
+                else -> listed.of(language).firstOrNull { it.id == modelId && usable(it, models) }?.let(DeviceModel::Listed)
+            }
+            if (selected == null) return null
+            val held = when (selected) {
+                DeviceModel.MlKit -> AutoCloseable {}
+                is DeviceModel.Listed -> hold(listOf(selected.model.id) + selected.model.requires) ?: return@repeat
+            }
+            val closed = AtomicBoolean(false)
+            val boundLanguage = language
+            synchronized(pinLock) { pins++ }
+            val boundEngine = object : OcrEngine {
+                override val type = if (selected == DeviceModel.MlKit) OcrEngineType.ML_KIT else OcrEngineType.DEVICE_MODEL
+                override fun reads(language: Language) = language == boundLanguage
+                override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
+                    check(!closed.get()) { "Recognition model already released" }
+                    require(language == boundLanguage)
+                    return when (selected) {
+                        DeviceModel.MlKit -> mlKit.recognize(image, language)
+                        is DeviceModel.Listed -> read(image, language, selected.model, models)
+                    }
+                }
+            }
+            return PinnedDeviceOcr(selected.id, boundEngine) {
+                if (closed.compareAndSet(false, true)) {
+                    try { held.close() } finally {
+                        synchronized(pinLock) {
+                            pins--
+                            if (pins == 0 && releasePending) {
+                                releasePending = false
+                                releaseEngines()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
     /** What reads [language], now and whenever another model takes over: chosen, installed or deleted. */
     fun activeUpdates(language: Language): Flow<DeviceModel?> = changes(language).map { active(language) }.distinctUntilChanged()
 
-    override fun release() {
+    override fun release() = synchronized(pinLock) {
+        if (pins > 0) releasePending = true else releaseEngines()
+    }
+
+    private fun releaseEngines() {
         mlKit.release()
         engines.values.forEach { it.release() }
     }
@@ -138,6 +194,11 @@ class DeviceOcr internal constructor(
         /** Selections tried while models are deleted under the scan; each failed one has one model fewer. */
         const val MAX_SELECTIONS = 3
     }
+}
+
+/** An attempt's model hold. Close only after all readers have terminated. */
+class PinnedDeviceOcr internal constructor(val modelId: String, val engine: OcrEngine, private val release: () -> Unit) : AutoCloseable {
+    override fun close() = release()
 }
 
 @Module
