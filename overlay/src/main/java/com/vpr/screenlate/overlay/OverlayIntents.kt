@@ -20,25 +20,33 @@ object OverlayIntents {
     const val INSTALLATION_URL = "screenlate://installation"
     const val OCR_MODELS_URL = "screenlate://ocr-models"
 
-    fun openInstallation(context: Context) {
-        context.packageManager.getLaunchIntentForPackage(context.packageName)
-            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            ?.putExtra(EXTRA_OPEN, OPEN_DICTIONARIES)
-            ?.let { context.startActivity(it) }
+    fun openInstallation(context: Context) = openScreen(context, OPEN_DICTIONARIES)
+
+    fun openOcrModels(context: Context, language: Language) =
+        openScreen(context, OPEN_OCR_MODELS) { putExtra(EXTRA_LANGUAGE, language.code) }
+
+    /**
+     * Opens [screen] (one of the `OPEN_*` values) in the app's task, or in a new one. A task started here has the
+     * launcher's intent at its root, so the launcher and [openApp] bring it back instead of starting a second main
+     * screen on top. The running main screen gets the request in `onNewIntent` and keeps its pages.
+     */
+    fun openScreen(context: Context, screen: String, configure: Intent.() -> Unit = {}) {
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName) ?: return
+        intent.putExtra(EXTRA_OPEN, screen).apply(configure)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        runCatching { context.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open the app", it) }
     }
 
-    fun openOcrModels(context: Context, language: Language) {
-        context.packageManager.getLaunchIntentForPackage(context.packageName)
-            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            ?.putExtra(EXTRA_OPEN, OPEN_OCR_MODELS)
-            ?.putExtra(EXTRA_LANGUAGE, language.code)
-            ?.let { context.startActivity(it) }
-    }
-
-    /** Brings the app to the front as the launcher does: its task as it was left, or a new one. */
+    /**
+     * Brings the app to the front as the launcher does: its task as it was left, or a new one. `SINGLE_TOP` covers a
+     * task started by another intent (one kept from an older version): the main screen on top is reused rather than
+     * a second one started over it.
+     */
     fun openApp(context: Context) {
         context.packageManager.getLaunchIntentForPackage(context.packageName)
-            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+            ?.addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_SINGLE_TOP,
+            )
             ?.let { intent -> runCatching { context.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open the app", it) } }
     }
 
