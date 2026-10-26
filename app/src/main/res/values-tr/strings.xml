@@ -832,4 +832,7 @@
     <string name="camera_recognition_failed">Fotoğraf tanınamadı. Kayıtlı metin korunur.</string>
     <string name="camera_more_actions">Diğer işlemler</string>
     <string name="camera_photo_description">Fotoğraf</string>
+    <string name="camera_export">Galeriye kaydet</string>
+    <string name="camera_exported">Fotoğraf galeriye kaydedildi.</string>
+    <string name="camera_export_failed">Fotoğraf galeriye kaydedilemedi.</string>
 </resources>

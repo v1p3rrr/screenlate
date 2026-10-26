@@ -825,4 +825,7 @@
     <string name="camera_recognition_failed">写真を認識できませんでした。保存済みのテキストは保持されます。</string>
     <string name="camera_more_actions">その他の操作</string>
     <string name="camera_photo_description">写真</string>
+    <string name="camera_export">ギャラリーに保存</string>
+    <string name="camera_exported">写真をギャラリーに保存しました。</string>
+    <string name="camera_export_failed">写真をギャラリーに保存できませんでした。</string>
 </resources>

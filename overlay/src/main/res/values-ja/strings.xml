@@ -95,4 +95,5 @@
     <string name="translation_error_too_long">テキストが長すぎます。</string>
     <string name="translation_error_bad_answer">応答を読み取れませんでした。</string>
     <string name="translation_error_other">不明なエラーです。</string>
+    <string name="crop_whole_photo">写真全体</string>
 </resources>

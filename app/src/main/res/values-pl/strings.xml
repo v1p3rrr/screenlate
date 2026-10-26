@@ -846,4 +846,7 @@
     <string name="camera_recognition_failed">Nie udało się rozpoznać zdjęcia. Zapisany tekst jest zachowany.</string>
     <string name="camera_more_actions">Więcej działań</string>
     <string name="camera_photo_description">Zdjęcie</string>
+    <string name="camera_export">Zapisz w galerii</string>
+    <string name="camera_exported">Zdjęcie zapisano w galerii.</string>
+    <string name="camera_export_failed">Nie udało się zapisać zdjęcia w galerii.</string>
 </resources>

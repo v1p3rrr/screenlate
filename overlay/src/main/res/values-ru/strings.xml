@@ -96,4 +96,5 @@
     <string name="translation_error_too_long">Текст слишком длинный.</string>
     <string name="translation_error_bad_answer">Не удалось прочитать ответ.</string>
     <string name="translation_error_other">Неизвестная ошибка.</string>
+    <string name="crop_whole_photo">Весь снимок</string>
 </resources>

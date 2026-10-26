@@ -27,7 +27,6 @@ import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.R
-import com.vpr.screenlate.overlay.capture.SharedScreenshot
 import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.web.LookupPage
@@ -52,15 +51,15 @@ import java.io.File
 import com.vpr.screenlate.core.common.redacted
 
 /**
- * Where the looked-up word came from: its sentence and a clean screenshot.
+ * Where the looked-up word came from: its sentence and an owned source image.
  *
- * @property screenshot taken for the note, which releases it when done.
- * @property focus the word's paragraph in screen coordinates, the initial crop frame.
+ * @property image pinned for the note, which closes it when done.
+ * @property focus the word's paragraph in source-image coordinates, the initial crop frame.
  * @property documentTitle name of the app the word was found in, for `{document-title}`.
  */
 data class NoteContext(
     val sentence: Sentence?,
-    val screenshot: SharedScreenshot?,
+    val image: NoteImage?,
     val focus: RectF? = null,
     val documentTitle: String = "",
 )
@@ -81,7 +80,7 @@ internal fun mediaExtension(path: String): String =
 
 /** Where a word came from, taken when its ➕ is pressed, so a view shown later does not change the note. */
 fun interface NoteSource {
-    /** Called once per note; [screenshot] asks for the screen picture. */
+    /** Called once per note; [screenshot] asks for its source picture. */
     suspend fun context(screenshot: Boolean): NoteContext
 }
 
@@ -286,7 +285,7 @@ class PopupNotes(
         // The note keeps the language it was asked for, even if the scan closes before it is added.
         val noteLanguage = language()
         scope.launch {
-            var shared: SharedScreenshot? = null
+            var image: NoteImage? = null
             var picture: Bitmap? = null
             var term: Pair<String, String>? = null
             var opens: List<Long>? = null
@@ -298,25 +297,25 @@ class PopupNotes(
                 term = noteTerm
                 val used = notes.usedMarkers(noteLanguage)
                 val context = source.context(withScreenshot && "screenshot" in used)
-                shared = context.screenshot
+                image = context.image
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
                     translated = async { translation.forNote(sentence, noteLanguage) }
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
-                val shot = context.screenshot
+                val shot = context.image
                 if (shot != null && cropEditor != null) {
                     // Cancelling the editor cancels the note.
-                    picture = cropEditor.edit(shot.bitmap, shot.screen.left.toFloat(), shot.screen.top.toFloat(), context.focus)
+                    picture = cropEditor.edit(shot, context.focus)
                         ?: run {
                             showState(scan, index, noteTerm, "", null)
                             return@launch
                         }
                 }
                 // The crop is a bitmap of its own.
-                shared?.release()
-                shared = null
+                image?.close()
+                image = null
                 val values = data.values.toMutableMap()
                 context.sentence?.let { sentence ->
                     values["sentence"] = escapeHtml(sentence.text)
@@ -359,7 +358,7 @@ class PopupNotes(
             } finally {
                 // A cancelled note does not wait for its translation.
                 translated?.cancel()
-                shared?.release()
+                image?.close()
                 picture?.recycle()
                 screenshot?.delete()
             }

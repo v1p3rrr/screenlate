@@ -95,4 +95,5 @@
     <string name="translation_error_too_long">Der Text ist zu lang.</string>
     <string name="translation_error_bad_answer">Die Antwort konnte nicht gelesen werden.</string>
     <string name="translation_error_other">Unbekannter Fehler.</string>
+    <string name="crop_whole_photo">Ganzes Foto</string>
 </resources>

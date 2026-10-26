@@ -3,6 +3,7 @@ package com.vpr.screenlate.overlay.ui
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import com.vpr.screenlate.core.common.geometry.Box
 import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
@@ -19,82 +20,92 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 /**
- * Full-screen editor for the picture attached to an Anki note: a clean screenshot with a crop frame that starts
- * around the paragraph of the looked-up word, and buttons for switching between the frame and the whole screen, cancel
+ * Full-screen editor for the picture attached to an Anki note: an owned image with a crop frame that starts
+ * around the paragraph of the looked-up word, and buttons for switching between the frame and the whole image, cancel
  * and add.
  */
 class CropEditor(private val context: Context, private val windowManager: WindowManager) {
     private var open: Session? = null
     private val mainHandler = Handler(Looper.getMainLooper())
 
-    /**
-     * Shows the editor and returns the cropped picture, a new bitmap, or null if the user cancelled. [image] must
-     * stay usable until then. An editor still open for another note closes as if cancelled.
-     *
-     * @param focus initial frame in screen coordinates; the whole screenshot when null.
-     */
-    suspend fun edit(image: Bitmap, left: Float, top: Float, focus: RectF?): Bitmap? =
-        suspendCancellableCoroutine { continuation ->
-            cancel()
-            val cropView = CropView(context, image, left, top)
-            // The frame to return to from the whole screen: the paragraph, or the middle of the screenshot.
-            val frame = RectF(focus ?: middleOf(image, left, top))
-            var wholeScreen = focus == null
-            if (wholeScreen) cropView.selectAll() else cropView.setFrame(frame)
-            lateinit var session: Session
+    private var generation = 0L
 
+    /** Fits photo previews above the controls; selection maps back to the owned image's original coordinates. */
+    suspend fun edit(image: com.vpr.screenlate.overlay.anki.NoteImage, focus: RectF?): Bitmap? {
+        cancel()
+        val request = generation
+        val bounds = windowManager.maximumWindowMetrics.bounds
+        val preview = image.preview(bounds.width(), bounds.height())
+        // A scan can close while the preview is decoded. It must not open an editor afterwards.
+        if (request != generation) return null
+        val selection = select(image, preview, focus) ?: return null
+        return image.crop(selection)
+    }
+
+    private suspend fun select(image: com.vpr.screenlate.overlay.anki.NoteImage, preview: Bitmap, focus: RectF?): Box? =
+        suspendCancellableCoroutine { continuation ->
+            val cropView = CropView(context, preview, 0f, 0f)
+            val initial = focus?.toBox()?.intersection(image.bounds) ?: image.bounds
+            var frame = if (focus == null) image.bounds.insetQuarter() else initial
+            var whole = focus == null
+            var placement: CropPlacement? = null
+            lateinit var session: Session
             val density = context.resources.displayMetrics.density
             val bar = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
                 val padding = (12 * density).toInt()
                 setPadding(padding, padding, padding, padding + navigationBarHeight())
-                addView(
-                    button(if (wholeScreen) R.string.crop_frame else R.string.crop_whole_screen, primary = false) {
-                        if (wholeScreen) {
-                            cropView.setFrame(frame)
-                        } else {
-                            frame.set(cropView.frame)
-                            cropView.selectAll()
-                        }
-                        wholeScreen = !wholeScreen
-                        setText(if (wholeScreen) R.string.crop_frame else R.string.crop_whole_screen)
-                    },
-                )
+                val wholeLabel = if (image.fit) R.string.crop_whole_photo else R.string.crop_whole_screen
+                addView(button(if (whole) R.string.crop_frame else wholeLabel, primary = false) {
+                    val shown = placement ?: return@button
+                    if (whole) cropView.setFrame(shown.toScreen(frame).toRect())
+                    else { frame = shown.toSource(cropView.frame.toBox()); cropView.selectAll() }
+                    whole = !whole
+                    setText(if (whole) R.string.crop_frame else wholeLabel)
+                })
                 addView(button(R.string.crop_cancel, primary = false) { session.finish(null) })
-                addView(button(R.string.crop_add, primary = true) { if (session.isOpen) session.finish(cropView.cropped()) })
+                addView(button(R.string.crop_add, primary = true) {
+                    if (session.isOpen) placement?.let { session.finish(it.toSource(cropView.frame.toBox())) }
+                })
             }
             val root = FrameLayout(context).apply {
                 addView(cropView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-                addView(
-                    bar,
-                    FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.WRAP_CONTENT,
-                        Gravity.BOTTOM,
-                    ),
-                )
+                addView(bar, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
+                addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+                    if (width <= 0 || height <= 0 || bar.top <= 0) return@addOnLayoutChangeListener
+                    val padding = 16 * density
+                    val top = windowManager.maximumWindowMetrics.windowInsets
+                        .getInsetsIgnoringVisibility(android.view.WindowInsets.Type.statusBars()).top + padding
+                    val area = Box(padding, top, (width - padding).coerceAtLeast(padding + 1),
+                        (bar.top - padding).coerceAtLeast(top + 1))
+                    val next = CropPlacement.of(image.bounds, area, image.fit)
+                    if (next != placement) {
+                        val selected = placement?.toSource(cropView.frame.toBox()) ?: if (whole) image.bounds else initial
+                        placement = next
+                        cropView.place(next.shown.toRect())
+                        cropView.setFrame(next.toScreen(selected).toRect())
+                    }
+                }
             }
             session = Session(root, continuation)
             if (!OverlayWindows.add(windowManager, root, OverlayWindows.editorParams())) {
-                // The service is being unbound: as if the user cancelled.
                 continuation.resume(null)
                 return@suspendCancellableCoroutine
             }
             open = session
-            // Cancellation may come from any thread; the window is removed on the main one.
             continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }
         }
 
-    /** Closes the open editor as if the user cancelled. */
+    /** Also invalidates a preview being decoded before its editor opens. */
     fun cancel() {
+        generation++
         open?.finish(null)
     }
 
-    private inner class Session(private val root: View, private val continuation: CancellableContinuation<Bitmap?>) {
+    private inner class Session(private val root: View, private val continuation: CancellableContinuation<Box?>) {
         val isOpen: Boolean get() = open === this
-
-        fun finish(result: Bitmap?) {
+        fun finish(result: Box?) {
             if (!isOpen) return
             open = null
             windowManager.removeView(root)
@@ -102,11 +113,9 @@ class CropEditor(private val context: Context, private val windowManager: Window
         }
     }
 
-    private fun middleOf(image: Bitmap, left: Float, top: Float): RectF {
-        val insetX = image.width / 4f
-        val insetY = image.height / 4f
-        return RectF(left + insetX, top + insetY, left + image.width - insetX, top + image.height - insetY)
-    }
+    private fun RectF.toBox() = Box(left, top, right, bottom)
+    private fun Box.toRect() = RectF(left, top, right, bottom)
+    private fun Box.insetQuarter() = Box(left + width / 4, top + height / 4, right - width / 4, bottom - height / 4)
 
     private fun button(text: Int, primary: Boolean, onClick: TextView.() -> Unit): TextView {
         val density = context.resources.displayMetrics.density

@@ -16,4 +16,5 @@ interface PhotoTestAccess {
     fun jobs(): PhotoRecognitionJobs
     fun preferences(): CameraPreferences
     fun profiles(): LanguageProfiles
+    fun ankiSettings(): com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 }

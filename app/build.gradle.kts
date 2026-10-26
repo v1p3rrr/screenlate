@@ -112,6 +112,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.room.runtime)
+    androidTestImplementation(libs.ankidroid.api)
 }
 
 disableAnkiDroidLintChecks()

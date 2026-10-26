@@ -15,6 +15,8 @@ import com.vpr.screenlate.core.photos.PhotoOrientation
 import com.vpr.screenlate.core.photos.PhotoRecognition
 import com.vpr.screenlate.core.photos.PhotoText
 import com.vpr.screenlate.core.photos.PhotoAttempt
+import com.vpr.screenlate.core.photos.PhotoImage
+import java.nio.file.Files
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -60,6 +62,26 @@ class PhotoStore internal constructor(
     private val mutex = Mutex()
     private val staging = File(root, STAGING)
     private var tidied = false
+
+    override suspend fun pinImage(documentId: Long): PhotoImage? {
+        var pinned: PhotoImage? = null
+        try {
+            locked {
+                val row = index.get(documentId) ?: return@locked
+                val image = imageOf(row)
+                if (!image.isFile) return@locked
+                val directory = File(root, ".pins").apply { mkdirs() }
+                val file = File(directory, UUID.randomUUID().toString())
+                try {
+                    try { Files.createLink(file.toPath(), image.toPath()) }
+                    catch (_: IOException) { image.copyTo(file) }
+                    catch (_: UnsupportedOperationException) { image.copyTo(file) }
+                    pinned = PhotoImage(documentOf(row, PhotoText.None).copy(image = file))
+                } catch (e: Exception) { file.delete(); throw e }
+            }
+            return pinned
+        } catch (e: Exception) { pinned?.close(); throw e }
+    }
 
     override val current: Flow<PhotoDocument?> = index.observeCurrent()
         .distinctUntilChanged()

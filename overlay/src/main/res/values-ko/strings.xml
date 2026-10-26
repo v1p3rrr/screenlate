@@ -95,4 +95,5 @@
     <string name="translation_error_too_long">텍스트가 너무 깁니다.</string>
     <string name="translation_error_bad_answer">응답을 읽을 수 없습니다.</string>
     <string name="translation_error_other">알 수 없는 오류입니다.</string>
+    <string name="crop_whole_photo">사진 전체</string>
 </resources>

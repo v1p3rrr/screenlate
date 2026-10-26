@@ -847,4 +847,7 @@
     <string name="camera_recognition_failed">Не удалось распознать снимок. Сохранённый текст остаётся.</string>
     <string name="camera_more_actions">Другие действия</string>
     <string name="camera_photo_description">Фотография</string>
+    <string name="camera_export">Сохранить в галерею</string>
+    <string name="camera_exported">Снимок сохранён в галерею.</string>
+    <string name="camera_export_failed">Не удалось сохранить снимок в галерею.</string>
 </resources>

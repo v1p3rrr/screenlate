@@ -79,14 +79,14 @@ internal class PhotoRegions(private val document: PhotoDocument) : AutoCloseable
         }
     }
 
-    suspend fun read(tile: PhotoTile): Bitmap = mutex.withLock {
+    suspend fun read(tile: PhotoTile, sample: Int = 1): Bitmap = mutex.withLock {
         require(tile.right <= document.width && tile.bottom <= document.height)
         var result: Bitmap? = null
         try {
             withContext(Dispatchers.IO + NonCancellable) {
                 val box = document.orientation.toRaw(tile.box, document.rawWidth, document.rawHeight)
                 val raw = decoder.decodeRegion(Rect(box.left.toInt(), box.top.toInt(), box.right.toInt(), box.bottom.toInt()),
-                    BitmapFactory.Options().apply { inSampleSize = 1 }) ?: throw PhotoReadException()
+                    BitmapFactory.Options().apply { inSampleSize = sample }) ?: throw PhotoReadException()
                 try {
                     val orientation = document.orientation
                     val (x0, y0) = orientation.toOriented(0f, 0f, document.rawWidth, document.rawHeight)

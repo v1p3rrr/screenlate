@@ -95,4 +95,5 @@
     <string name="translation_error_too_long">Metin çok uzun.</string>
     <string name="translation_error_bad_answer">Yanıt okunamadı.</string>
     <string name="translation_error_other">Bilinmeyen hata.</string>
+    <string name="crop_whole_photo">Fotoğrafın tamamı</string>
 </resources>

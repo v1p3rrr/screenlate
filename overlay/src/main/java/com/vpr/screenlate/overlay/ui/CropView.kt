@@ -34,6 +34,13 @@ class CropView(
     /** The crop frame in screen coordinates. */
     val frame = RectF(imageBounds)
 
+    /** Places a sampled preview in its measured editor bounds. Frame coordinates remain screen coordinates. */
+    fun place(bounds: RectF) {
+        imageBounds.set(bounds)
+        frame.set(bounds)
+        invalidate()
+    }
+
     private val dimPaint = Paint().apply { color = Color.argb(150, 0, 0, 0) }
     private val framePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
@@ -60,10 +67,12 @@ class CropView(
 
     /** The part of the screenshot inside the frame, as a new bitmap that the caller may free. */
     fun cropped(): Bitmap {
-        val left = (frame.left - imageLeft).toInt().coerceIn(0, image.width - 1)
-        val top = (frame.top - imageTop).toInt().coerceIn(0, image.height - 1)
-        val width = frame.width().toInt().coerceIn(1, image.width - left)
-        val height = frame.height().toInt().coerceIn(1, image.height - top)
+        val scaleX = image.width / imageBounds.width()
+        val scaleY = image.height / imageBounds.height()
+        val left = ((frame.left - imageBounds.left) * scaleX).toInt().coerceIn(0, image.width - 1)
+        val top = ((frame.top - imageBounds.top) * scaleY).toInt().coerceIn(0, image.height - 1)
+        val width = (frame.width() * scaleX).toInt().coerceIn(1, image.width - left)
+        val height = (frame.height() * scaleY).toInt().coerceIn(1, image.height - top)
         val crop = Bitmap.createBitmap(image, left, top, width, height)
         // For the whole of an immutable bitmap createBitmap returns the screenshot itself.
         return if (crop === image) image.copy(image.config ?: Bitmap.Config.ARGB_8888, false) else crop
@@ -71,7 +80,7 @@ class CropView(
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawColor(Color.BLACK)
-        canvas.drawBitmap(image, imageLeft, imageTop, null)
+        canvas.drawBitmap(image, null, imageBounds, null)
         dimPath.reset()
         dimPath.fillType = Path.FillType.EVEN_ODD
         dimPath.addRect(0f, 0f, width.toFloat(), height.toFloat(), Path.Direction.CW)
@@ -131,20 +140,20 @@ class CropView(
                 frame.offset(moveX, moveY)
             }
             Drag.TOP_LEFT -> {
-                frame.left = (frame.left + dx).coerceIn(imageBounds.left, frame.right - minSize)
-                frame.top = (frame.top + dy).coerceIn(imageBounds.top, frame.bottom - minSize)
+                frame.left = (frame.left + dx).coerceIn(imageBounds.left, frame.right - minOf(minSize, frame.width()))
+                frame.top = (frame.top + dy).coerceIn(imageBounds.top, frame.bottom - minOf(minSize, frame.height()))
             }
             Drag.TOP_RIGHT -> {
-                frame.right = (frame.right + dx).coerceIn(frame.left + minSize, imageBounds.right)
-                frame.top = (frame.top + dy).coerceIn(imageBounds.top, frame.bottom - minSize)
+                frame.right = (frame.right + dx).coerceIn(frame.left + minOf(minSize, frame.width()), imageBounds.right)
+                frame.top = (frame.top + dy).coerceIn(imageBounds.top, frame.bottom - minOf(minSize, frame.height()))
             }
             Drag.BOTTOM_LEFT -> {
-                frame.left = (frame.left + dx).coerceIn(imageBounds.left, frame.right - minSize)
-                frame.bottom = (frame.bottom + dy).coerceIn(frame.top + minSize, imageBounds.bottom)
+                frame.left = (frame.left + dx).coerceIn(imageBounds.left, frame.right - minOf(minSize, frame.width()))
+                frame.bottom = (frame.bottom + dy).coerceIn(frame.top + minOf(minSize, frame.height()), imageBounds.bottom)
             }
             Drag.BOTTOM_RIGHT -> {
-                frame.right = (frame.right + dx).coerceIn(frame.left + minSize, imageBounds.right)
-                frame.bottom = (frame.bottom + dy).coerceIn(frame.top + minSize, imageBounds.bottom)
+                frame.right = (frame.right + dx).coerceIn(frame.left + minOf(minSize, frame.width()), imageBounds.right)
+                frame.bottom = (frame.bottom + dy).coerceIn(frame.top + minOf(minSize, frame.height()), imageBounds.bottom)
             }
         }
         if (abs(frame.width()) < minSize || abs(frame.height()) < minSize) frame.sort()

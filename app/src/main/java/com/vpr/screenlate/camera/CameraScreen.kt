@@ -82,9 +82,11 @@ fun CameraScreen(
             snackbar.showSnackbar(
                 resources.getString(
                     when (event) {
-                        CameraError.CAPTURE -> R.string.camera_capture_failed
-                        CameraError.DELETE -> R.string.camera_delete_failed
-                        CameraError.LOAD -> R.string.camera_photo_unreadable
+                        CameraEvent.CAPTURE -> R.string.camera_capture_failed
+                        CameraEvent.DELETE -> R.string.camera_delete_failed
+                        CameraEvent.LOAD -> R.string.camera_photo_unreadable
+                        CameraEvent.EXPORT_FAILED -> R.string.camera_export_failed
+                        CameraEvent.EXPORTED -> R.string.camera_exported
                     },
                 ),
             )
@@ -131,6 +133,7 @@ fun CameraScreen(
                 viewModel.recognition.recognize(photo)
             })
             add(CameraAction(R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo), !state.busy, viewModel::newPhoto))
+            add(CameraAction(R.drawable.ic_download, stringResource(R.string.camera_export), !state.busy && !state.exporting, viewModel::exportPhoto))
             add(CameraAction(R.drawable.ic_delete, stringResource(R.string.camera_delete), !state.busy) { confirmingDelete = true })
         }
     }

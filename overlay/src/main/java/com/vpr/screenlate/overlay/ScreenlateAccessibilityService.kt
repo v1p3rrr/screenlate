@@ -68,6 +68,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     @Inject lateinit var languageInstallation: LanguageInstallation
 
     @Inject lateinit var lookupSources: LookupSources
+    @Inject lateinit var photos: com.vpr.screenlate.core.photos.PhotoDocuments
 
     private val scope = MainScope()
     private var controller: OverlayController? = null
@@ -104,6 +105,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
             profiles = languageProfiles,
             installation = languageInstallation,
             lookupSources = lookupSources,
+            photos = photos,
             stopDiagnostics = stopDiagnostics,
             scope = scope,
         ).also { it.start() }

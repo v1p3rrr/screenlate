@@ -181,6 +181,7 @@ class PhotoRecognitionJobsTest {
             commits++
             return photo.copy(revision = basedOn + 1, text = PhotoText.Recognized(recognition), attempt = null).also { current.value = it }
         }
+        override suspend fun pinImage(documentId: Long): com.vpr.screenlate.core.photos.PhotoImage? = null
         override suspend fun newCaptureFile(): File = error("Not used")
         override suspend fun replaceCurrent(capture: File): PhotoDocument = error("Not used")
         override suspend fun discard(capture: File): Unit = error("Not used")

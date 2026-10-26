@@ -11,6 +11,9 @@ interface PhotoDocuments {
     /** The current photo; null when there is none. Its stored text is read off the main thread. */
     val current: Flow<PhotoDocument?>
 
+    /** Pins the original pixels of [documentId] until closed, even after replacement or deletion; null if gone. */
+    suspend fun pinImage(documentId: Long): PhotoImage?
+
     /** A new file for the camera, or an import, to write a photo into; then [replaceCurrent] or [discard] it. */
     suspend fun newCaptureFile(): File
 

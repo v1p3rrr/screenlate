@@ -95,4 +95,5 @@
     <string name="translation_error_too_long">Văn bản quá dài.</string>
     <string name="translation_error_bad_answer">Không đọc được câu trả lời.</string>
     <string name="translation_error_other">Lỗi không xác định.</string>
+    <string name="crop_whole_photo">Toàn bộ ảnh</string>
 </resources>

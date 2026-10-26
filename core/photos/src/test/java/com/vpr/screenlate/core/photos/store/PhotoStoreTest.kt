@@ -37,6 +37,37 @@ class PhotoStoreTest {
 
     private suspend fun PhotoStore.currentNow(): PhotoDocument? = current.first()
 
+    @Test
+    fun pinnedPixelsSurviveReplacementAndClearUntilTheOwnerClosesThem() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        val pinned = store.pinImage(first.id)!!
+        store.replaceCurrent(store.capture("1200x900:1"))
+        store.clearCurrent()
+        assertThat(first.image.exists()).isFalse()
+        val output = java.io.ByteArrayOutputStream()
+        pinned.copyTo(output)
+        assertThat(output.toString("UTF-8")).isEqualTo("4000x3000:6")
+        assertThat(pinned.width to pinned.height).isEqualTo(3000 to 4000)
+        pinned.close()
+        pinned.close()
+        assertThat(File(root, ".pins").listFiles()).isEmpty()
+        assertThat(store.pinImage(first.id)).isNull()
+    }
+
+    @Test
+    fun restartRemovesAbandonedImagePinsWithoutChangingTheCurrentPhoto() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        store.pinImage(first.id)
+        assertThat(File(root, ".pins").listFiles()).hasLength(1)
+        val reopened = store()
+        reopened.newCaptureFile()
+        assertThat(File(root, ".pins").exists()).isFalse()
+        assertThat(reopened.currentNow()!!.id).isEqualTo(first.id)
+        assertThat(first.image.exists()).isTrue()
+    }
+
     private fun attempt(document: PhotoDocument, id: String = "one") = PhotoAttempt(id, document.revision,
         com.vpr.screenlate.core.common.Language.JAPANESE, PhotoOcrSettings(OcrEngines.CLOUD),
         listOf(PhotoTile(0, 0, 1500, 1500)), startedAt = 45)

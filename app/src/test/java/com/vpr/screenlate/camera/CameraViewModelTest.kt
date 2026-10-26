@@ -48,12 +48,60 @@ class CameraViewModelTest {
         override fun dismissBlock() {}
     }
 
+    private val exportIds = mutableListOf<Long>()
+    private var exportWait: CompletableDeferred<Unit>? = null
+    private var exportFailure: Exception? = null
+    private val exports = com.vpr.screenlate.core.photos.PhotoExports { id ->
+        exportIds += id
+        exportWait?.await()
+        exportFailure?.let { throw it }
+    }
+
+    @Test
+    fun exportKeepsTheRequestedPhotoAndDoesNotDisableLookupOrRecognizeAgain() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.onForeground()
+        model.showPhoto(1, viewport())
+        val gate = CompletableDeferred<Unit>()
+        exportWait = gate
+        model.exportPhoto()
+        model.exportPhoto()
+        runCurrent()
+        assertThat(sources.source.value).isInstanceOf(LookupSource.Photo::class.java)
+        assertThat(model.state.value.exporting).isTrue()
+        documents.current.value = photo(2)
+        runCurrent()
+        gate.complete(Unit)
+        advanceUntilIdle()
+        assertThat(exportIds).containsExactly(1L)
+        assertThat(model.state.value.exporting).isFalse()
+        assertThat(model.events.first()).isEqualTo(CameraEvent.EXPORTED)
+        assertThat(recognitionCalls).isEqualTo(0)
+    }
+
+    @Test
+    fun exportFailurePreservesThePhotoAndAllowsAnExplicitRetry() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        exportFailure = IOException("test")
+        model.exportPhoto()
+        advanceUntilIdle()
+        assertThat(model.state.value.photo!!.id).isEqualTo(1)
+        assertThat(model.state.value.exporting).isFalse()
+        assertThat(model.events.first()).isEqualTo(CameraEvent.EXPORT_FAILED)
+        exportFailure = null
+        model.exportPhoto()
+        advanceUntilIdle()
+        assertThat(model.events.first()).isEqualTo(CameraEvent.EXPORTED)
+    }
+
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
         documents = Documents()
         sources = LookupSources()
-        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession(), recognition)
+        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession(), recognition, exports)
         store.put("camera", model)
     }
 
@@ -72,7 +120,7 @@ class CameraViewModelTest {
                 emitAll(documents.current)
             }
         }
-        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession(), recognition)
+        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession(), recognition, exports)
         store.put("camera", model)
         model.onForeground()
         advanceUntilIdle()
@@ -146,7 +194,7 @@ class CameraViewModelTest {
         assertThat(documents.replaced).isEqualTo(0)
         assertThat(documents.discarded).hasSize(1)
         assertThat(recognitionCalls).isEqualTo(0)
-        assertThat(model.events.first()).isEqualTo(CameraError.CAPTURE)
+        assertThat(model.events.first()).isEqualTo(CameraEvent.CAPTURE)
     }
 
     @Test
@@ -184,7 +232,7 @@ class CameraViewModelTest {
         model.deletePhoto()
         advanceUntilIdle()
         assertThat(model.state.value.photo?.id).isEqualTo(1)
-        assertThat(model.events.first()).isEqualTo(CameraError.DELETE)
+        assertThat(model.events.first()).isEqualTo(CameraEvent.DELETE)
     }
 
     @Test
@@ -205,6 +253,7 @@ class CameraViewModelTest {
         var replaced = 0
         var deleteFails = false
         val discarded = mutableListOf<File>()
+        override suspend fun pinImage(documentId: Long): com.vpr.screenlate.core.photos.PhotoImage? = null
         override suspend fun newCaptureFile(): File = files.newFile().also { allocated++ }
         override suspend fun replaceCurrent(capture: File): PhotoDocument {
             replaced++
