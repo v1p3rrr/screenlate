@@ -10,17 +10,24 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
-- PAUSED by the owner on 2026-10-26, mid-phase 1.5. Finish no additional acceptance scenarios until asked to resume.
-  Phase 1.4's final checkpoint is `6c3956a8`; the following checkpoint is titled
-  "Stabilize acceptance fixtures and installation-link regression" (use `git log` for the exact hash).
-  It contains test maintenance, the opt-in PhotoRegressionFixtureTest and this handoff, with no camera product changes.
-  API 37 final SearchLanguageTest/ProcessTextTest/InstallationPopupTest/LanguageReactivationTest/LanguageSwitchTest:
-  7/7 pass. Initial failures: obsolete popup DOM selector and a missing isolated cache file. Selector reproduced alone;
-  missing file did not. Fixtures now use their own no-backup directory. Cache eviction is plausible, not established.
-  No new CAM/NAV manual cases passed in this session; do not promote their N categories from these seven checks.
-  Root assembly/JVM/lint pass again: 1585 tests, no failures/errors, 5 skipped. App test APK assembly passes.
-  The new helper's prepare/restore both pass and verify exact preference-map restoration; no backup remains.
-  Its other stages are compiled but unexercised. Page scripts unchanged (prior result 146/146).
+- Phase 1.5 emulator acceptance is COMPLETE (2026-10-26, resumed by the owner after the pause). Commit
+  "Clip photo highlights to the viewer and attach the Camera source from page start" (use `git log` for the hash)
+  follows the fixture checkpoint "Stabilize acceptance fixtures and installation-link regression". It fixes two
+  findings: highlight margins bled over the toolbar above a zoomed photo (the overlay now clips highlights to the
+  photo's visible part, `TextFrame.clip` → `LayerView.clip`); a pull-out right after tapping the Camera tab scanned
+  the previous page because the page attached only when resumed (`CameraScreen` now presents from ON_START until
+  ON_PAUSE). CAM3, CAM4, CAM6, CAM7 and NAV3 moved to F; E regressions BUB1/BUB2/OCR1/ANK2/AUD1/TR1/UPD2/LNG1 pass.
+  Evidence: `ai/test-model.md` run log 2026-10-26 "phase 1.5 acceptance". Root checks: 1586 JVM tests, 0 failures,
+  5 skipped; lint without new findings; page scripts unchanged (146/146 earlier).
+- Owner request 2026-10-26: a from-scratch visual design of the Camera page by a separate designer agent that does
+  not look at the current implementation, several variants for the owner to choose from or correct; then restyle the
+  page after the chosen design. The mockups are local (Claude's scratchpad, `camera-design/camera-screen-designs.html`),
+  not in the repository. Waiting for the owner's choice; the restyle is the next implementation step once chosen
+  (ask whether it goes before phase 2).
+- Open questions for the owner: should the Search tab still focus its field and open the keyboard on a blank query
+  (it covers the bottom bar)? Recommendation: only on tapping the field. Proposed follow-up outside this feature:
+  "Open Screenlate" from the bubble menu stacks a second MainActivity when the task was started by another intent
+  (ProcessTextActivity's `openApp`); bring the existing task to the front instead.
 - Phases 0, 1.1, 1.2, 1.3 and 1.4 are implemented. Last camera implementation: `e8951271`
   ("Add original-photo note images and explicit gallery export"); verification/docs checkpoint `6c3956a8` follows it.
   Earlier OCR implementation `9484c556`, handoff `66b66d85`, foundation `01d24c0e`. Feature branch only; no merges.
@@ -41,25 +48,18 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 - Earlier 1.3 checks remain valid: 7/7 region/migration checks, four 1500×1500 cloud tiles, terminal publication while
   off Camera, stationary-bubble pan/zoom, independent pending language/settings, exactly-one-tile retry backgrounded,
   capture auto-recognition and cold restart without automatic OCR. API 30 viewer/live camera tests 3/3.
-- Next concrete action is phase 1.5 verification. Open `ai/test-model.md` CAM/NAV/ANK/BUB/OCR/LANG cases and run the
-  remaining manual variations: CAM3 toolbar/letterbox/clipped highlights; all CAM4 inactive/loading variants;
-  CAM6 screen→photo transition; CAM7 hold-menu; NAV3 setup/badge/nested/deep-link variations. Re-run relevant E cases
-  for ordinary screen lookup/Anki, note audio/translation and settings/languages after the image-source refactor.
-  Log exact evidence, promote only checked N cases, and keep physical-device acceptance explicitly pending.
-  First acquire the shared emulator lock and boot API 37. Install current debug main/test APKs, then use
-  PhotoRegressionFixtureTest with `photoRegression=prepare` to back up settings. Generate a recognized page with
-  the existing PhotoWorkflowTest, then start CAM3/CAM4 source/edge checks. Restore settings before finishing.
-  Do not rerun the completed seven-test regression batch unless a new change justifies it. API 30 NAV/loading and
-  relevant ordinary screen BUB/OCR/Anki/audio/translation regressions remain after these cases.
+- Next concrete action: show the owner the Camera page designs and ask which variant (or which corrections);
+  ask the Search keyboard question above. Then restyle the Camera page after the chosen design (new strings in all
+  14 locales, tests, emulator checks) unless the owner orders phase 2 first.
 - Physical sharpness, focus, flash, capture delay and repeated-capture/memory/drag baselines still need a phone;
-  emulator evidence does not establish them. Do not claim full phase 1 acceptance or merge before recording the
-  outstanding checks. Phase 2 history/settings/limits and phase 3 picker have not started; ask only genuinely new
+  emulator evidence does not establish them. Phase 1 is accepted on emulators only; record these phone checks
+  before any merge. Phase 2 history/settings/limits and phase 3 picker have not started; ask only genuinely new
   product choices that their decision table does not settle.
-- Cleanup: temporary Japanese Anki app settings restored, shared OCR remains Both, Camera language Japanese.
-  Only the emulator's local unsynced Screenlate Photo Test deck/model/note was used; no account/sync/AnkiWeb operations.
-  API 37's generated private photo was deleted for the independence test; its ordinary gallery copy remains. Main app
-  and other data stay installed. Auxiliary APKs removed, both owned emulators shut down and shared lock released
-  at the final checkpoint. No new worktree or submodule changes. Read the notes before editing image ownership.
+- Cleanup after phase 1.5: both fixtures restored (API 37: Slovenian active, Japanese Anki settings back, no current
+  photo, camera language Japanese; API 30: its unanswered first run). The emulator's local unsynced Screenlate Photo
+  Test deck holds four more notes; no account/sync/AnkiWeb operations. API 30 now has the universal debug APK (an
+  x86-only copy has no native libraries and crashes ML Kit). Test APKs removed, both emulators shut down, shared lock
+  released. No new worktree or submodule changes. Read the notes before editing image ownership.
 - Phase 1.2 implementation:
   - `navigation/ScreenlateNavHost.kt`: one Scaffold with a `NavigationBar` (Home, Search, Camera, Settings) on every
     page except the first run and the debug image viewer. Sub-pages stay root-level routes; a tab switch pops
@@ -78,8 +78,9 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   - `CameraViewModel` owns capture and temporary retake state; `CameraScreen` handles permission explanations,
     upper actions, delete confirmation and lifecycle. `LiveCamera` binds a quality-prioritized CameraX controller,
     handles focus/zoom and waits for a terminal capture callback before file disposal. `PhotoViewer` fits a sampled
-    bitmap through the EXIF matrix and publishes its viewport only after decoding. `CameraLookup` attaches only
-    while resumed; live/loading/unrecognized/failed views remain NoText, with no screen fallback.
+    bitmap through the EXIF matrix and publishes its viewport only after decoding. `CameraLookup` attaches from
+    the page's start until it pauses (phase 1.5 fix); live/loading/unrecognized/failed views remain NoText, with no
+    screen fallback.
   - 16 new strings in all 14 locales. 15 JVM tests, `PhotoViewerTest` and `LiveCameraTest`. Human docs, module map,
     this handoff and `ai/test-model.md` updated. At the 1.2 checkpoint capture did not start OCR; phase 1.3 above supersedes that state.
 - After 1.4: finish the remaining phase 1.5 verification above, then internal history is phase 2. Original-photo
@@ -225,7 +226,7 @@ screen-source behavior, reference ownership and cancellation guarantees. ML Kit 
 - [x] 1.2 Navigation and camera: bottom tabs with retained state; rear CameraX, quality capture, auto exposure/focus, tap focus, pinch zoom and Off/Auto/On flash; release camera on exit. Hardware flash and real-page quality remain physical-device acceptance checks.
 - [x] 1.3 Recognition and viewer: tiles, assembly, progress, terminal partial-result warnings, retry, pan/zoom, language indication and restoration.
 - [x] 1.4 Popup and Anki: definitions, audio, translation and notes use recognition language; original-photo crop and explicit gallery export.
-- [ ] 1.5 Documentation, translations, required automated checks and emulator checks; record physical-device checks separately.
+- [x] 1.5 Documentation, translations, required automated checks and emulator checks; physical-device checks recorded as pending.
 
 Phase 1 delivers camera-to-dictionary-to-Anki. Permission denial, capture failures and missing dictionaries/models
 must be actionable without losing the current photo. Reuse readiness with explicit image-source requirements:
@@ -331,3 +332,7 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   Finished language/search/popup native regression maintenance (7/7 on API 37), added the opt-in settings-preserving
   acceptance helper and recorded a resumable handoff. No product decisions changed. Remaining manual CAM/NAV,
   ordinary screen/Anki/audio/translation and physical-device checks stay pending; phase 1.5 is not complete.
+- 2026-10-26: owner resumed phase 1.5 and asked to finish it. Emulator acceptance done on API 37 and API 30;
+  two findings fixed (highlight clip to the photo viewer, Camera source from the page's start). No product decision
+  changed. Owner asked for a from-scratch Camera page design by a separate agent, variants to choose from, then a
+  restyle after the chosen one (pending). Open: Search keyboard on a blank query; the second MainActivity follow-up.

@@ -44,8 +44,9 @@ $adb = 'D:/Android/Sdk/platform-tools/adb.exe'
   `translationButton`, `tipSeen`. `firstRun` sets first-run and unseen background-tip flags for NAV3.
 - `unrecognized`: replaces only the generated 2800×2400 current fixture with a copy without OCR. `unreadable` corrupts
   only that generated fixture's committed recognition file. These stages require prepare and the fixture dimensions.
-  Configure/firstRun/unrecognized/unreadable are **compiled, not exercised** at this checkpoint. Generate the page
-  using PhotoWorkflowTest before photo stages. Never use these helpers on a phone or real photographs.
+  Phase 1.5 exercised firstRun (API 30 and 37) and unrecognized (API 37); configure and unreadable are compiled, not
+  exercised. Generate the page using PhotoWorkflowTest before photo stages; it is `@SdkSuppress(minSdkVersion = 37)`,
+  so API 30 has no recognized-photo fixture. Never use these helpers on a phone or real photographs.
 
 An `@Test` implemented with an expression-bodied runBlocking needs an explicit Unit return when its branches
 return different types; otherwise JUnit rejects it as non-void before executing. Fixed and verified here.
@@ -54,7 +55,12 @@ popup on an empty aim. Check no-new-hit separately; true permits strict closure 
 UI dumps can rebind accessibility and dock the bubble, so use screenshots for actual source/aim gestures.
 
 API 37 had about 367 MB free in /data. Use x86_64 APKs, temporarily lower install thresholds only with finally-based
-restoration, preserve dictionaries and app data. API 30 is 32-bit x86 and needs universal APKs. The emulator's
+restoration, preserve dictionaries and app data. API 30 (`Screenlate_API30_glide`) is 32-bit x86 and needs the
+universal APK: the debug APK has no x86 libraries (arm64-v8a, armeabi-v7a, x86_64), the emulator runs armeabi-v7a
+through translation, and an "x86-only" copy has no native libraries, so ML Kit crashes with UnsatisfiedLinkError
+at service start. Its saved state before phase 1.5 was an unanswered first run; restore returns to that. Each adb
+`input` command takes about 0.5 s to start there: drag the bubble with one `input swipe`, since separate
+`motionevent` commands reach the hold timeout and open the bubble menu, which then swallows the next taps. The emulator's
 Espresso input injection is unreliable on API 37; actual adb/UiAutomation gestures work. The existing separate
 PhotoGestureDriver preserves accessibility services. No additional navigation test was written in this checkpoint.
 
@@ -177,7 +183,9 @@ shutter taps, allocate staging, await a supplied CameraX writer, check cancellat
 Cleanup runs under NonCancellable; failed/cancelled captures retain the old photo. Loading failures stay distinct
 from an empty store and offer retry. A viewport is accepted only for the current document id.
 
-`CameraScreen` uses `LifecycleResumeEffect` for the source presentation, a standard scrollable `ConfirmDelete`, and
+`CameraScreen` presents the source from ON_START (also ON_RESUME) until ON_PAUSE, not with `LifecycleResumeEffect`:
+Navigation resumes an entering page only after its first frames (about 200-300 ms on API 37), and a pull-out in that
+window used to start a screen scan of the Camera page (phase 1.5 finding). It also has a standard scrollable `ConfirmDelete`, and
 permission state checked on every resume. `LiveCamera` owns the controller; disposal detaches PreviewView and unbinds
 it. Flash is hidden when the bound camera has no flash. Capture waits for CameraX's terminal callback even after
 coroutine cancellation, because deleting a staging file before the camera stops writing it is unsafe.

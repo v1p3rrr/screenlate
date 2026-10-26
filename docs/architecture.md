@@ -79,8 +79,10 @@ terminal partial warnings and retry; actions enter overflow only when their meas
 viewport matrix, without rotating or copying the original image. One-finger pan and two-finger zoom update a bounded
 viewport from fit through 8× fit; zoom also decodes only the visible region for sharp display. Reopening fits again.
 It publishes the photo's measured screen bounds only
-after decoding. `CameraLookup` presents a source while the page is resumed: a committed recognition snapshot and
-viewport, or no text for preview, loading, failed decoding, dialogs and an unrecognized photo. Backgrounding closes the source.
+after decoding. `CameraLookup` presents a source from the start of the page's entry (before it resumes) until it
+pauses: a committed recognition snapshot and viewport, or no text for preview, loading, failed decoding, dialogs and an
+unrecognized photo. Leaving the page or backgrounding closes the source. The overlay cuts highlights, margins included,
+to the photo's visible part.
 Old-document viewport callbacks are ignored. The display bitmap's sample does not alter stored OCR coordinates.
 
 `PhotoDocuments.pinImage` retains original pixels with a private hard link (copy fallback), so a note or export can

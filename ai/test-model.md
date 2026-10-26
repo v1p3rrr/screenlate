@@ -93,8 +93,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-25 |
-| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-25 |
+| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-26 |
+| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-26 |
 | BUB3 | Tap the floating bubble → a new scan, recognized lines flash | F | M | 2026-10-25 |
 | BUB4 | Hold the floating bubble → the menu (copy paragraph, copy all, open Screenlate) above the bubble, below when there is no room; Back or a tap outside closes it without other effect | F | U MenuPlacementTest, CopyMenuTextTest, M | 2026-10-14 |
 | BUB5 | With two or three quick languages the hold menu shows their flags, the active one ringed; a tap switches the language, the docked glyph changes at once, the next scan uses the new language; one quick language → no flag row | E | M | 2026-10-18 |
@@ -114,7 +114,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| OCR1 | Screen recognition, both engines → the on-device draft of the band around the aim, then the cloud result; the source chip says Lens | E | U CompositeOcrTest, FocusBandTest, M | 2026-10-18 |
+| OCR1 | Screen recognition, both engines → the on-device draft of the band around the aim, then the cloud result; the source chip says Lens | E | U CompositeOcrTest, FocusBandTest, M | 2026-10-26 |
 | OCR2 | Cloud unreachable (proxy that never answers) → the on-device result stays, ⚠ next to the source, a tap gives the reason; without any network → the offline message | F | U OcrStatusTest, M | 2026-10-14 |
 | OCR3 | Engines: cloud only (nothing without network) and device only (chip "On-device", OCR boost unavailable) | F | M | 2026-10-14 |
 | OCR4 | Reduce load → the whole screen is read on the device only after 3 s without a cloud answer (scan log) | O | M | |
@@ -276,7 +276,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| AUD1 | 🔊 plays the clip of the highest source that has one; holding it lists all recordings | F | U AudioFinderTest, M | 2026-10-14 |
+| AUD1 | 🔊 plays the clip of the highest source that has one; holding it lists all recordings | F | U AudioFinderTest, M | 2026-10-26 |
 | AUD2 | A failing source → its Test shows the error; home lists it in the audio card | O | U AudioErrorTest, M | 2026-10-22 |
 | AUD3 | English Wiktionary clips follow the Regions order; a changed order applies to the next selection | O | U AudioFinderTest, M | |
 | AUD4 | A custom URL source on `http://10.0.2.2:<port>` asks for the local network permission (API 37) and plays | O | U LocalNetworkTest, M | |
@@ -308,7 +308,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | ANK1 | AnkiDroid access, deck and note type; templates pre-filled for known note types and by field names | F | I AnkiDroidRoundTripTest, U FieldTemplateTest, M | 2026-10-14 |
-| ANK2 | ➕ adds a note with the sentence and audio, holding ➕ adds it with a picture from the crop editor; a duplicate shows 📖, which opens it in AnkiDroid's browser; holding 📖 offers "Add anyway" and "Add anyway, with a picture" | E | M | 2026-10-18 |
+| ANK2 | ➕ adds a note with the sentence and audio, holding ➕ adds it with a picture from the crop editor; a duplicate shows 📖, which opens it in AnkiDroid's browser; holding 📖 offers "Add anyway" and "Add anyway, with a picture" | E | M | 2026-10-26 |
 | ANK3 | Holding ➕ opens the crop editor around the paragraph; "Whole screen" ↔ "Frame"; two notes in a row | F | I CropEditorTest, CropViewTest, U CropFocusTest, M | 2026-10-14 |
 | ANK4 | While the scan refines its text ➕ is grey and a tap says to wait | O | M | |
 | ANK5 | AnkiDroid permission revoked or deck deleted → a home card and a grey ➕ with the reason | O | U AnkiStatusCacheTest, M | |
@@ -343,7 +343,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| TR1 | The translation button in the popup: a tap shows the translation, the service name and a copy button; a second tap hides it; a new word starts without it | F | M | 2026-10-14 |
+| TR1 | The translation button in the popup: a tap shows the translation, the service name and a copy button; a second tap hides it; a new word starts without it | F | M | 2026-10-26 |
 | TR2 | Services in order with the 3 s fallback; all failing → each one's reason | O | U SentenceTranslatorTest, TranslationErrorTest, M | |
 | TR3 | "Translate into": search by any name, stars on top | O | U TranslationLanguagesTest, M | |
 | TR4 | Test asks every enabled service and shows answers and times | O | M | |
@@ -392,7 +392,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| LNG1 | Home's languages card: the quick flags, the active one ringed, its name and status, "All languages" | E | M | 2026-10-18 |
+| LNG1 | Home's languages card: the quick flags, the active one ringed, its name and status, "All languages" | E | M | 2026-10-26 |
 | LNG2 | The Languages screen: turned on (radio, star, Flag, Turn off), turned off with files (list with sizes, delete one, change its languages, Delete all, Turn on), not turned on | F | M | 2026-10-18 |
 | LNG3 | Star rules: at most three quick languages; making a starred one active swaps; making an unstarred one active moves the star | F | U LanguageProfilesTest, M | 2026-10-14 |
 | LNG4 | Flag country: English US by default, the UK from "Flag"; a language with one flag (all but English and Portuguese) has no "Flag" button | O | U FlagsTest, LanguageProfilesTest, M | 2026-10-16 |
@@ -441,7 +441,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | UPD1 | About: libraries, notices, installed dictionaries with licenses, "What the service reads and sends", "Report a problem" opens the form (not submitted) | O | M | |
-| UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-18 |
+| UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-26 |
 | UPD3 | Update check and install (release builds only) | O | D | |
 | UPD4 | The export starts with the own log (oldest first: "Process started", the exit reasons of earlier processes, scans, the service's stop report), then the logcat part; lines from before an app restart are still there | F | U LogFileTest, ExitReasonsTest, M | 2026-10-22 |
 | UPD5 | The own log keeps at most two files of 4 MB in `noBackupFilesDir/logs` (`run-as` on a debug build); uninstalling the app removes them, a log saved to `Download/Screenlate/` stays | O | U LogFileTest, M | 2026-10-22 (API 30) |
@@ -458,11 +458,11 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 |---|---|---|---|---|
 | CAM1 | A recognized photo on the Camera page, pull the bubble out → the entry of the word under the aim opens from the stored text: the log has no capture, app text or cloud connection; the glyph shows the photo's recognition language | F | U ScreenReadsTest, M | 2026-10-26 (API 37) |
 | CAM2 | Pan and zoom the photo under the resting bubble → the highlight and the popup follow the word; another word under the aim opens its entry | F | U TextFrameTest, M | 2026-10-26 (API 30/37) |
-| CAM3 | Aim at the toolbar, the letterbox or the part of a zoomed photo outside the viewer → no entry; a highlight is cut at the viewer's edge | N | U TextFrameTest, M | |
-| CAM4 | The live camera, a photo still loading or not recognized yet → pull-out and tap show nothing and do not scan the screen | N | U ScreenReadsTest, M | |
+| CAM3 | Aim at the toolbar, the letterbox or the part of a zoomed photo outside the viewer → no entry; a highlight is cut at the viewer's edge | F | U TextFrameTest, M | 2026-10-26 (API 37) |
+| CAM4 | The live camera, a photo still loading or not recognized yet → pull-out and tap show nothing and do not scan the screen | F | U ScreenReadsTest, M | 2026-10-26 (API 30/37) |
 | CAM5 | Bubble out over a photo, then another page, another app or the live camera → the bubble docks; back on the photo, the next pull-out takes its text without recognition | F | U SourceChangeTest, M | 2026-10-26 (API 37) |
-| CAM6 | Bubble out over the screen of another page, then a recognized photo is shown → the old entry closes and the photo's text is under the aim | N | U SourceChangeTest, M | |
-| CAM7 | Hold the bubble over a photo → copy and Open Screenlate, no language flags; the docked glyph returns to the active language once the photo is left | N | M | |
+| CAM6 | Bubble out over the screen of another page, then a recognized photo is shown → the old entry closes and the photo's text is under the aim | F | U SourceChangeTest, M | 2026-10-26 (API 37) |
+| CAM7 | Hold the bubble over a photo → copy and Open Screenlate, no language flags; the docked glyph returns to the active language once the photo is left | F | M | 2026-10-26 (API 37) |
 | CAM8 | Holding Add over a recognized photo opens a fitted original-photo crop; paragraph/frame/whole-photo and cancel work; Anki gets the original-pixel crop and sentence in the recognition language, with no screenshot read | F | U CropPlacementTest; I PhotoImageTest, CropEditorTest, CropViewTest; M | 2026-10-26 (API 30/37; manual API 37) |
 | CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | F | U PhotoStoreTest, I PhotoDatabaseTest | 2026-10-26 (API 37) |
 | CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
@@ -491,7 +491,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 |---|---|---|---|---|
 | NAV1 | Home, Search, Camera, Settings left to right; query and Settings subpage survive tab changes; reselect returns to tab root; Back from root returns Home | F | M | 2026-10-26 (API 37) |
 | NAV2 | Overlay's Anki/settings request opens its page in the Settings tab; text-selection menu still resolves and opens standalone Search | F | I ProcessTextTest, M | 2026-10-26 (API 37; Anki request) |
-| NAV3 | First-launch language/setup and debug image viewer hide the bar; finishing setup reaches Home; background-tip badge behaves across tab changes | N | M | |
+| NAV3 | First-launch language/setup and debug image viewer hide the bar; finishing setup reaches Home; background-tip badge behaves across tab changes | F | M | 2026-10-26 (API 30/37) |
 
 ### NF: non-functional
 
@@ -549,6 +549,55 @@ menu's search had started. BUB16 (new, first check, moved to F).
 
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-26, `features/camera-lookup`, phase 1.5 acceptance on `a2027390` with the two fixes below
+
+- Builds: Pixel_10_Pro (API 37) an x86_64-only copy of the debug APK; Screenlate_API30_glide (API 30, 32-bit x86)
+  the universal debug APK. An "x86-only" copy has no native libraries (the debug APK carries none for x86), and
+  ML Kit crashed at service start with UnsatisfiedLinkError; the universal APK runs armeabi-v7a through translation.
+- Fixtures: PhotoRegressionFixtureTest prepare/restore and firstRun on both, unrecognized on API 37;
+  PhotoWorkflowTest on API 37 only (`@SdkSuppress(minSdkVersion = 37)`); PhotoAnkiFixtureTest prepare/restore.
+- Before the fixes, API 37, generated recognized page: CAM1 again. CAM3: aim on the toolbar, both letterboxes and
+  the toolbar over a zoomed photo → no entry. CAM4: live camera, unrecognized photo and running recognition → pull-out
+  and tap log "Nothing to read on the Camera page", no capture or app text. CAM6: entry over the Search page, then the
+  photo shown → the entry closes, the photo's text attaches. CAM7: hold menu over the photo → Copy (12 characters),
+  Open Screenlate (a launcher-started task stays on Camera), no language chips; glyph SL → あ over the photo → SL
+  after leaving it. BUB5: flags still offered over the screen. NAV3: the debug image viewer and the first-run
+  language list have no bar; finishing the first run reaches Home; the background-tip badge stays across tab changes
+  and clears after leaving the Settings list.
+- Finding 1 (fixed): a highlight's 2 dp margin drew over the toolbar above a zoomed photo. The overlay now clips
+  highlights, margins included, to the photo's visible part (TextFrameTest). After: the toolbar's pixels at y 588-599
+  keep their colour, the highlight starts at 600.
+- Finding 2 (fixed): a pull-out right after tapping the Camera tab scanned the previous page, because the page became
+  the source only when resumed, about 200-300 ms after its entry on API 37. The Camera page now presents its source
+  from ON_START until ON_PAUSE. After: API 37 4/4 runs of tab tap + immediate pull-out log "Nothing to read on the
+  Camera page", then "Photo text attached (pull-out, 32 paragraphs)" about 230 ms later (one run opened a cloud
+  connection on touch-down before the page started; no image was sent). API 30, live camera: 3/3 "Nothing to read".
+- E regressions on the fixed build, API 37, Japanese active, screen source over Search results for "shashin":
+  BUB1/OCR1 ML Kit draft 7 paragraphs in 1102 ms, cloud final 42 paragraphs in 1900 ms, 何 with its highlight.
+  BUB2 moved → lookups only (37 and 128 ms), no scan. ANK2 ➕ → Added; 📖; holding 📖 → "Add anyway" and "Add anyway,
+  with a picture" → crop editor → Added with a picture (forced); holding ➕ → crop editor → Added with a picture;
+  📖 opened AnkiDroid's browser empty, as before (its deck filter). With `{audio}` in Meaning and
+  `{sentence-translation}` in Sentence of the test note type: Added, audio and translation. AUD1 holding 🔊 lists two
+  recordings; both play. TR1 translation shown with the service chip and copy (Bing failed after 3 s, Google
+  answered in 2.1 s); a second tap hides it; the next word starts without it. UPD2 logcat and the 1.7 MB app log:
+  no CJK characters, none of the words, the sentence or its translation. LNG1 home card.
+- NAV3 on API 30: first-run list → Arabic → its download page without the bar; Back returns to the list; no download
+  started.
+- Moved to F: CAM3, CAM4, CAM6, CAM7, NAV3.
+- Noticed, not changed: the Search tab focuses its field and opens the keyboard on a blank query, covering the bar
+  (asked the owner); "Open Screenlate" from the bubble menu stacks a second MainActivity when the task was started by
+  another intent, such as ProcessTextActivity's (before this branch); a screen scan's popup stays after an in-app tab
+  change (a scan is a snapshot; before this branch).
+- Checks: root `assembleDebug testDebugUnitTest lintDebug --max-workers=1`: 1586 JVM tests, 0 failures/errors,
+  5 skipped. Lint flagged one new UseKtx warning in the clip code; fixed with `withSave`, then `assembleDebug
+  :overlay:testDebugUnitTest :overlay:lintDebug` passed: overlay 241 tests, its lint back to the 5 earlier warnings.
+  Page scripts unchanged. Logs under ignored build/: photo-15b-*.log.
+- Cleanup: API 37 generated photo deleted (no current photo, as before), both fixtures restored (Slovenian active,
+  Japanese Anki settings back), camera language Japanese, test packages removed, install thresholds unset. The local
+  unsynced "Screenlate Photo Test" deck holds four more notes. API 30 preferences restored to its unanswered first run,
+  the universal debug APK stays installed, its test package removed. Both emulators shut down; lock released.
+- Still pending on a phone: sharpness, focus, flash, capture delay, repeated-capture memory and drag baselines.
 
 ### 2026-10-26, `features/camera-lookup`, paused acceptance checkpoint after `6c3956a8`
 

@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.view.View
+import androidx.core.graphics.withSave
 import com.vpr.screenlate.core.common.geometry.Box
 
 /**
@@ -46,6 +47,14 @@ class LayerView(context: Context) : View(context) {
             aimPaint.color = if (value) Color.BLACK else AIM_COLOR
             wordPaint.set(if (value) frame(E_INK_WORD_STROKE_DP) else fill(WORD_COLOR))
             allLinesPaint.set(if (value) frame(E_INK_LINES_STROKE_DP) else fill(ALL_LINES_COLOR))
+            invalidate()
+        }
+
+    /** The highlights, with their margins, are cut to this part of the screen, such as a photo's viewer; null: none. */
+    var clip: Box? = null
+        set(value) {
+            if (field == value) return
+            field = value
             invalidate()
         }
 
@@ -123,11 +132,15 @@ class LayerView(context: Context) : View(context) {
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (allLinesAlpha > 0f) {
-            allLinesPaint.alpha = if (eInk) 255 else (ALL_LINES_ALPHA * allLinesAlpha).toInt()
-            allLineBoxes.forEach { drawBox(canvas, it, allLinesPaint) }
+        canvas.withSave {
+            clip?.let { clipRect(it.left, it.top, it.right, it.bottom) }
+            if (allLinesAlpha > 0f) {
+                allLinesPaint.alpha = if (eInk) 255 else (ALL_LINES_ALPHA * allLinesAlpha).toInt()
+                allLineBoxes.forEach { drawBox(this, it, allLinesPaint) }
+            }
+            wordBoxes.forEach { drawBox(this, it, wordPaint) }
         }
-        wordBoxes.forEach { drawBox(canvas, it, wordPaint) }
+        // The aim may rest anywhere, the toolbar above a photo included.
         aim?.let { (x, y) ->
             canvas.drawCircle(x, y, AIM_RADIUS_DP * density, aimPaint)
             canvas.drawCircle(x, y, AIM_RADIUS_DP * density, aimOutline)

@@ -19,12 +19,17 @@ internal sealed interface TextFrame {
     /** The layout's [box] on the screen, cut to the part that shows; null when none of it does. */
     fun toScreen(box: Box): Box?
 
+    /** The part of the screen highlights stay in, margins included; null for the whole screen. */
+    val clip: Box?
+
     data object Screen : TextFrame {
         override fun toLayout(x: Float, y: Float) = x to y
 
         override fun toLayoutDistance(screen: Float) = screen
 
         override fun toScreen(box: Box) = box
+
+        override val clip: Box? = null
     }
 
     /** Toolbars, navigation and the letterbox around the photo are no part of it. */
@@ -34,6 +39,8 @@ internal sealed interface TextFrame {
         override fun toLayoutDistance(screen: Float) = viewport.toPhotoDistance(screen)
 
         override fun toScreen(box: Box) = viewport.toVisibleScreen(box)
+
+        override val clip: Box? get() = viewport.visible
     }
 }
 

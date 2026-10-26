@@ -44,7 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.ui.components.ConfirmDelete
@@ -73,9 +76,22 @@ fun CameraScreen(
     val blocked = block?.takeIf { it.documentId == state.photo?.id && !state.live }
     SideEffect { viewModel.setObscured(confirmingDelete || languagePicker || warning || blocked != null) }
     DisposableEffect(viewModel) { onDispose { viewModel.setObscured(false) } }
-    LifecycleResumeEffect(viewModel) {
-        viewModel.onForeground()
-        onPauseOrDispose { viewModel.onBackground() }
+    // The page is the bubble's source from the start of its entry, frames before it resumes, so that a pull-out
+    // meanwhile does not scan the screen; it stops being one as soon as it pauses.
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(viewModel, lifecycle) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START, Lifecycle.Event.ON_RESUME -> viewModel.onForeground()
+                Lifecycle.Event.ON_PAUSE -> viewModel.onBackground()
+                else -> Unit
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+            viewModel.onBackground()
+        }
     }
     LaunchedEffect(viewModel, resources) {
         viewModel.events.collect { event ->

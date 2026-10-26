@@ -274,6 +274,7 @@ class OverlayController(
         set(value) {
             field = value
             frame = (value as? LookupSource.Photo)?.let { TextFrame.Photo(it.viewport) } ?: TextFrame.Screen
+            layerView.clip = frame.clip
         }
 
     /** Where [layout] lies on the screen. */

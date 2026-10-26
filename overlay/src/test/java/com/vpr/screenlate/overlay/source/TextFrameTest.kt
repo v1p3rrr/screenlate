@@ -67,4 +67,11 @@ class TextFrameTest {
         assertThat(zoomed.toScreen(Box(0f, 100f, 40f, 140f))).isEqualTo(Box(0f, 360f, 30f, 440f))
         assertThat(zoomed.toScreen(Box(0f, 100f, 20f, 140f))).isNull()
     }
+
+    @Test
+    fun highlightMarginsStayInsideTheViewer() {
+        // The photo shows from the screen's left edge to 750 px, below the toolbar, down to its bottom at 760 px.
+        assertThat(zoomed.clip).isEqualTo(Box(0f, 160f, 750f, 760f))
+        assertThat(TextFrame.Screen.clip).isNull()
+    }
 }
