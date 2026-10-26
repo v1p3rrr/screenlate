@@ -815,9 +815,9 @@
     <string name="camera_back_to_photo">Volver a la foto</string>
     <string name="camera_delete">Eliminar foto</string>
     <string name="camera_delete_title">¿Eliminar la foto?</string>
-    <string name="camera_delete_text">Se eliminará la foto actual.</string>
-    <string name="camera_permission_text">Se necesita acceso a la cámara para hacer fotos.</string>
-    <string name="camera_permission_blocked">El acceso a la cámara está desactivado. Permítelo en los ajustes de la aplicación.</string>
+    <string name="camera_delete_text">Se eliminarán la foto y su texto reconocido. Una copia guardada en la galería no se ve afectada.</string>
+    <string name="camera_permission_text">Permite el acceso a la cámara para fotografiar texto y leerlo con la burbuja.</string>
+    <string name="camera_permission_blocked">Se denegó el acceso a la cámara. Permítelo en los ajustes del sistema de la aplicación.</string>
     <string name="camera_open_settings">Abrir ajustes</string>
     <string name="camera_allow">Permitir cámara</string>
     <string name="camera_no_rear">No hay cámara trasera disponible.</string>
@@ -828,7 +828,6 @@
     <string name="camera_zoom_reset">Volver a 1×</string>
     <string name="camera_language">Idioma de la foto</string>
     <string name="camera_recognize">Reconocer foto</string>
-    <string name="camera_recognizing">Reconociendo (%1$s): %2$d/%3$d</string>
     <string name="camera_unrecognized">Sin reconocer</string>
     <string name="camera_recognized">Reconocido: %1$s</string>
     <string name="camera_pending">Ajustes modificados</string>
@@ -842,4 +841,22 @@
     <string name="camera_export">Guardar en la galería</string>
     <string name="camera_exported">Foto guardada en la galería.</string>
     <string name="camera_export_failed">No se pudo guardar la foto en la galería.</string>
+    <string name="camera_status_recognized">Reconocido</string>
+    <string name="camera_status_recognizing">Reconociendo</string>
+    <string name="camera_recognize_short">Reconocer</string>
+    <string name="camera_pending_language">Idioma modificado</string>
+    <string name="camera_language_no_model">Falta el modelo de reconocimiento</string>
+    <string name="camera_language_no_dictionary">Falta el diccionario</string>
+    <string name="camera_manage_languages">Gestionar idiomas</string>
+    <string name="camera_deleted">Foto eliminada</string>
+    <string name="camera_permission_title">Sin acceso a la cámara</string>
+    <string name="camera_permission_blocked_title">Acceso a la cámara bloqueado</string>
+    <string name="camera_cannot_recognize">No se puede reconocer: %1$s</string>
+    <string name="camera_opening">Abriendo la foto…</string>
+    <string name="camera_partial_words">Las palabras de estas regiones no se pueden buscar.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="one">%1$d de %2$d región</item>
+        <item quantity="many">%1$d de %2$d regiones</item>
+        <item quantity="other">%1$d de %2$d regiones</item>
+    </plurals>
 </resources>

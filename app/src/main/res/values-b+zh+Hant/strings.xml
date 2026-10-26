@@ -801,9 +801,9 @@
     <string name="camera_back_to_photo">返回照片</string>
     <string name="camera_delete">刪除照片</string>
     <string name="camera_delete_title">刪除照片？</string>
-    <string name="camera_delete_text">將刪除目前的照片。</string>
-    <string name="camera_permission_text">拍照需要相機存取權限。</string>
-    <string name="camera_permission_blocked">相機存取權限已關閉。請在應用程式設定中允許。</string>
+    <string name="camera_delete_text">將刪除照片及其辨識出的文字。已儲存至相簿的副本不受影響。</string>
+    <string name="camera_permission_text">允許存取相機，即可拍攝文字並用懸浮球閱讀。</string>
+    <string name="camera_permission_blocked">相機存取權限遭拒絕。請在系統的應用程式設定中允許。</string>
     <string name="camera_open_settings">開啟設定</string>
     <string name="camera_allow">允許相機存取</string>
     <string name="camera_no_rear">後置相機無法使用。</string>
@@ -814,7 +814,6 @@
     <string name="camera_zoom_reset">恢復至 1 倍</string>
     <string name="camera_language">照片語言</string>
     <string name="camera_recognize">辨識照片</string>
-    <string name="camera_recognizing">正在辨識（%1$s）：%2$d/%3$d</string>
     <string name="camera_unrecognized">尚未辨識</string>
     <string name="camera_recognized">已辨識：%1$s</string>
     <string name="camera_pending">設定已變更</string>
@@ -828,4 +827,20 @@
     <string name="camera_export">儲存至相簿</string>
     <string name="camera_exported">照片已儲存至相簿。</string>
     <string name="camera_export_failed">無法將照片儲存至相簿。</string>
+    <string name="camera_status_recognized">已辨識</string>
+    <string name="camera_status_recognizing">正在辨識</string>
+    <string name="camera_recognize_short">辨識</string>
+    <string name="camera_pending_language">語言已變更</string>
+    <string name="camera_language_no_model">缺少辨識模型</string>
+    <string name="camera_language_no_dictionary">缺少詞典</string>
+    <string name="camera_manage_languages">管理語言</string>
+    <string name="camera_deleted">照片已刪除</string>
+    <string name="camera_permission_title">沒有相機存取權限</string>
+    <string name="camera_permission_blocked_title">相機存取權限已遭拒絕</string>
+    <string name="camera_cannot_recognize">無法辨識%1$s</string>
+    <string name="camera_opening">正在開啟照片…</string>
+    <string name="camera_partial_words">這些區域中的字詞無法查詢。</string>
+    <plurals name="camera_status_regions">
+        <item quantity="other">%1$d/%2$d個區域</item>
+    </plurals>
 </resources>

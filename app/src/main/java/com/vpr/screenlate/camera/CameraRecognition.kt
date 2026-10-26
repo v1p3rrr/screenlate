@@ -2,6 +2,7 @@ package com.vpr.screenlate.camera
 
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
 import com.vpr.screenlate.core.photos.CameraPreferences
@@ -33,27 +34,53 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/** What keeps a language from recognizing a photo: its dictionary comes first, then the on-device model. */
+enum class LanguageGap { DICTIONARY, MODEL }
+
+internal fun InstallationStatus.gap(): LanguageGap? = when {
+    !dictionaryReady -> LanguageGap.DICTIONARY
+    !scanReady -> LanguageGap.MODEL
+    else -> null
+}
+
+/** [active] is the app's active language; [flags] and [gaps] cover the selectable [languages]. */
 data class CameraRecognitionState(
     val language: Language,
     val languages: List<Language>,
     val settings: PhotoOcrSettings,
     val installation: InstallationStatus,
     val work: PhotoWork?,
+    val active: Language = language,
+    val flags: Map<Language, String> = emptyMap(),
+    val gaps: Map<Language, LanguageGap> = emptyMap(),
 ) {
-    fun pending(document: PhotoDocument): Boolean {
+    fun flagCountry(language: Language): String = flags[language] ?: language.support.flagCountries.first()
+
+    /** Why the current result no longer matches the selection, or null when it does or there is none. */
+    fun pendingReason(document: PhotoDocument): CameraPending? {
         val previous = (document.text as? PhotoText.Recognized)?.recognition
         val attempt = document.attempt
+        val (language, settings) = when {
+            previous != null -> previous.language to previous.settings
+            attempt != null -> attempt.language to attempt.settings
+            else -> return null
+        }
         return when {
-            previous != null -> previous.language != language || previous.settings != settings
-            attempt != null -> attempt.language != language || attempt.settings != settings
-            else -> false
+            language != this.language -> CameraPending.LANGUAGE
+            settings != this.settings -> CameraPending.SETTINGS
+            else -> null
         }
     }
+
+    fun pending(document: PhotoDocument): Boolean = pendingReason(document) != null
 }
+
+enum class CameraPending { LANGUAGE, SETTINGS }
 
 data class CameraReadinessBlock(val documentId: Long, val status: InstallationStatus)
 
@@ -82,10 +109,16 @@ class CameraRecognitionController @Inject constructor(
     private var action: Job? = null
 
     override val state: StateFlow<CameraRecognitionState?> = preferences.languages.flatMapLatest { language ->
-        combine(settings.settings, device.activeUpdates(language.selected), installation.observe(language.selected, imageSource = true), jobs.work) {
-                currentSettings, model, status, work ->
+        val gaps = if (language.enabled.isEmpty()) flowOf(emptyMap()) else {
+            combine(language.enabled.map { installation.observe(it, imageSource = true) }) { statuses ->
+                statuses.mapNotNull { status -> status.gap()?.let { status.language to it } }.toMap()
+            }
+        }
+        combine(settings.settings, device.activeUpdates(language.selected), installation.observe(language.selected, imageSource = true),
+            jobs.work, gaps) { currentSettings, model, status, work, gapsByLanguage ->
             CameraRecognitionState(language.selected, language.enabled,
-                PhotoOcrSettings(currentSettings.ocrEngines, if (currentSettings.ocrEngines == OcrEngines.CLOUD) null else model?.id), status, work)
+                PhotoOcrSettings(currentSettings.ocrEngines, if (currentSettings.ocrEngines == OcrEngines.CLOUD) null else model?.id), status, work,
+                language.active, language.flags, gapsByLanguage)
         }
     }.retryWhen { error, attempt ->
         if (attempt == 0L) Log.w("Camera", "Recognition settings unavailable: " + error.javaClass.simpleName)

@@ -815,9 +815,9 @@
     <string name="camera_back_to_photo">Voltar à foto</string>
     <string name="camera_delete">Excluir foto</string>
     <string name="camera_delete_title">Excluir a foto?</string>
-    <string name="camera_delete_text">A foto atual será excluída.</string>
-    <string name="camera_permission_text">É necessário acesso à câmera para tirar fotos.</string>
-    <string name="camera_permission_blocked">O acesso à câmera está desativado. Permita-o nas configurações do app.</string>
+    <string name="camera_delete_text">A foto e o texto reconhecido serão excluídos. Uma cópia salva na galeria não é afetada.</string>
+    <string name="camera_permission_text">Permita o acesso à câmera para fotografar textos e lê-los com a bolha.</string>
+    <string name="camera_permission_blocked">O acesso à câmera foi negado. Permita-o nas configurações do sistema para o app.</string>
     <string name="camera_open_settings">Abrir configurações</string>
     <string name="camera_allow">Permitir câmera</string>
     <string name="camera_no_rear">Nenhuma câmera traseira disponível.</string>
@@ -828,7 +828,6 @@
     <string name="camera_zoom_reset">Voltar a 1×</string>
     <string name="camera_language">Idioma da foto</string>
     <string name="camera_recognize">Reconhecer foto</string>
-    <string name="camera_recognizing">Reconhecendo (%1$s): %2$d/%3$d</string>
     <string name="camera_unrecognized">Não reconhecido</string>
     <string name="camera_recognized">Reconhecido: %1$s</string>
     <string name="camera_pending">Configurações alteradas</string>
@@ -842,4 +841,22 @@
     <string name="camera_export">Salvar na galeria</string>
     <string name="camera_exported">Foto salva na galeria.</string>
     <string name="camera_export_failed">Não foi possível salvar a foto na galeria.</string>
+    <string name="camera_status_recognized">Reconhecido</string>
+    <string name="camera_status_recognizing">Reconhecendo</string>
+    <string name="camera_recognize_short">Reconhecer</string>
+    <string name="camera_pending_language">Idioma alterado</string>
+    <string name="camera_language_no_model">Falta o modelo de reconhecimento</string>
+    <string name="camera_language_no_dictionary">Falta o dicionário</string>
+    <string name="camera_manage_languages">Gerenciar idiomas</string>
+    <string name="camera_deleted">Foto excluída</string>
+    <string name="camera_permission_title">Sem acesso à câmera</string>
+    <string name="camera_permission_blocked_title">Acesso à câmera bloqueado</string>
+    <string name="camera_cannot_recognize">Não é possível reconhecer: %1$s</string>
+    <string name="camera_opening">Abrindo a foto…</string>
+    <string name="camera_partial_words">As palavras dessas regiões não podem ser pesquisadas.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="one">%1$d de %2$d região</item>
+        <item quantity="many">%1$d de %2$d regiões</item>
+        <item quantity="other">%1$d de %2$d regiões</item>
+    </plurals>
 </resources>

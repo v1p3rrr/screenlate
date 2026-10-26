@@ -801,9 +801,9 @@
     <string name="camera_back_to_photo">사진으로 돌아가기</string>
     <string name="camera_delete">사진 삭제</string>
     <string name="camera_delete_title">사진을 삭제할까요?</string>
-    <string name="camera_delete_text">현재 사진이 삭제됩니다.</string>
-    <string name="camera_permission_text">사진을 촬영하려면 카메라 접근 권한이 필요합니다.</string>
-    <string name="camera_permission_blocked">카메라 접근이 꺼져 있습니다. 앱 설정에서 허용하세요.</string>
+    <string name="camera_delete_text">사진과 인식된 텍스트가 삭제됩니다. 갤러리에 저장한 사본은 그대로 남습니다.</string>
+    <string name="camera_permission_text">텍스트를 촬영하고 버블로 읽으려면 카메라 접근을 허용하세요.</string>
+    <string name="camera_permission_blocked">카메라 접근이 거부되었습니다. 시스템의 앱 설정에서 허용하세요.</string>
     <string name="camera_open_settings">설정 열기</string>
     <string name="camera_allow">카메라 허용</string>
     <string name="camera_no_rear">후면 카메라를 사용할 수 없습니다.</string>
@@ -814,7 +814,6 @@
     <string name="camera_zoom_reset">1배로 돌아가기</string>
     <string name="camera_language">사진 언어</string>
     <string name="camera_recognize">사진 인식</string>
-    <string name="camera_recognizing">인식 중(%1$s): %2$d/%3$d</string>
     <string name="camera_unrecognized">인식되지 않음</string>
     <string name="camera_recognized">인식 완료: %1$s</string>
     <string name="camera_pending">설정 변경됨</string>
@@ -828,4 +827,20 @@
     <string name="camera_export">갤러리에 저장</string>
     <string name="camera_exported">사진을 갤러리에 저장했습니다.</string>
     <string name="camera_export_failed">사진을 갤러리에 저장하지 못했습니다.</string>
+    <string name="camera_status_recognized">인식 완료</string>
+    <string name="camera_status_recognizing">인식 중</string>
+    <string name="camera_recognize_short">인식</string>
+    <string name="camera_pending_language">언어 변경됨</string>
+    <string name="camera_language_no_model">인식 모델 없음</string>
+    <string name="camera_language_no_dictionary">사전 없음</string>
+    <string name="camera_manage_languages">언어 관리</string>
+    <string name="camera_deleted">사진을 삭제했습니다</string>
+    <string name="camera_permission_title">카메라 접근 권한 없음</string>
+    <string name="camera_permission_blocked_title">카메라 접근이 차단됨</string>
+    <string name="camera_cannot_recognize">%1$s 인식 불가</string>
+    <string name="camera_opening">사진 여는 중…</string>
+    <string name="camera_partial_words">이 영역의 단어는 찾을 수 없습니다.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="other">%1$d/%2$d개 영역</item>
+    </plurals>
 </resources>

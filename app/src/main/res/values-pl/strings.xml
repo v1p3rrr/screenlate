@@ -822,9 +822,9 @@
     <string name="camera_back_to_photo">Wróć do zdjęcia</string>
     <string name="camera_delete">Usuń zdjęcie</string>
     <string name="camera_delete_title">Usunąć zdjęcie?</string>
-    <string name="camera_delete_text">Bieżące zdjęcie zostanie usunięte.</string>
-    <string name="camera_permission_text">Do robienia zdjęć potrzebny jest dostęp do aparatu.</string>
-    <string name="camera_permission_blocked">Dostęp do aparatu jest wyłączony. Zezwól na niego w ustawieniach aplikacji.</string>
+    <string name="camera_delete_text">Zdjęcie i rozpoznany tekst zostaną usunięte. Kopia zapisana w galerii pozostanie.</string>
+    <string name="camera_permission_text">Zezwól na dostęp do aparatu, aby fotografować tekst i czytać go za pomocą dymka.</string>
+    <string name="camera_permission_blocked">Odmówiono dostępu do aparatu. Zezwól na niego w ustawieniach systemowych aplikacji.</string>
     <string name="camera_open_settings">Otwórz ustawienia</string>
     <string name="camera_allow">Zezwól na aparat</string>
     <string name="camera_no_rear">Tylny aparat jest niedostępny.</string>
@@ -835,7 +835,6 @@
     <string name="camera_zoom_reset">Wróć do 1×</string>
     <string name="camera_language">Język zdjęcia</string>
     <string name="camera_recognize">Rozpoznaj zdjęcie</string>
-    <string name="camera_recognizing">Rozpoznawanie (%1$s): %2$d/%3$d</string>
     <string name="camera_unrecognized">Nierozpoznane</string>
     <string name="camera_recognized">Rozpoznano: %1$s</string>
     <string name="camera_pending">Zmieniono ustawienia</string>
@@ -849,4 +848,23 @@
     <string name="camera_export">Zapisz w galerii</string>
     <string name="camera_exported">Zdjęcie zapisano w galerii.</string>
     <string name="camera_export_failed">Nie udało się zapisać zdjęcia w galerii.</string>
+    <string name="camera_status_recognized">Rozpoznano</string>
+    <string name="camera_status_recognizing">Rozpoznawanie</string>
+    <string name="camera_recognize_short">Rozpoznaj</string>
+    <string name="camera_pending_language">Zmieniono język</string>
+    <string name="camera_language_no_model">Brak modelu rozpoznawania</string>
+    <string name="camera_language_no_dictionary">Brak słownika</string>
+    <string name="camera_manage_languages">Zarządzaj językami</string>
+    <string name="camera_deleted">Usunięto zdjęcie</string>
+    <string name="camera_permission_title">Brak dostępu do aparatu</string>
+    <string name="camera_permission_blocked_title">Dostęp do aparatu jest zablokowany</string>
+    <string name="camera_cannot_recognize">Nie można rozpoznać: %1$s</string>
+    <string name="camera_opening">Otwieranie zdjęcia…</string>
+    <string name="camera_partial_words">Słów z tych obszarów nie można wyszukać.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="one">%1$d z %2$d obszaru</item>
+        <item quantity="few">%1$d z %2$d obszarów</item>
+        <item quantity="many">%1$d z %2$d obszarów</item>
+        <item quantity="other">%1$d z %2$d obszaru</item>
+    </plurals>
 </resources>

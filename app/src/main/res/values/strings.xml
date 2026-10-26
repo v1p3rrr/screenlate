@@ -812,9 +812,9 @@
     <string name="camera_back_to_photo">Back to photo</string>
     <string name="camera_delete">Delete photo</string>
     <string name="camera_delete_title">Delete the photo?</string>
-    <string name="camera_delete_text">The current photo will be deleted.</string>
-    <string name="camera_permission_text">Camera access is required to take photos.</string>
-    <string name="camera_permission_blocked">Camera access is off. Allow it in the app settings.</string>
+    <string name="camera_delete_text">The photo and its recognized text will be deleted. A copy saved to the gallery is not affected.</string>
+    <string name="camera_permission_text">Allow camera access to photograph text and read it with the bubble.</string>
+    <string name="camera_permission_blocked">Camera access was denied. Allow it in the app’s system settings.</string>
     <string name="camera_open_settings">Open settings</string>
     <string name="camera_allow">Allow camera</string>
     <string name="camera_no_rear">No rear camera is available.</string>
@@ -825,7 +825,6 @@
     <string name="camera_zoom_reset">Return to 1×</string>
     <string name="camera_language">Photo language</string>
     <string name="camera_recognize">Recognize photo</string>
-    <string name="camera_recognizing">Recognizing %1$s: %2$d/%3$d</string>
     <string name="camera_unrecognized">Not recognized</string>
     <string name="camera_recognized">Recognized: %1$s</string>
     <string name="camera_pending">Settings changed</string>
@@ -839,4 +838,21 @@
     <string name="camera_export">Save to gallery</string>
     <string name="camera_exported">Photo saved to gallery.</string>
     <string name="camera_export_failed">Could not save the photo to the gallery.</string>
+    <string name="camera_status_recognized">Recognized</string>
+    <string name="camera_status_recognizing">Recognizing</string>
+    <string name="camera_recognize_short">Recognize</string>
+    <string name="camera_pending_language">Language changed</string>
+    <string name="camera_language_no_model">Recognition model missing</string>
+    <string name="camera_language_no_dictionary">Dictionary missing</string>
+    <string name="camera_manage_languages">Manage languages</string>
+    <string name="camera_deleted">Photo deleted</string>
+    <string name="camera_permission_title">Camera access is off</string>
+    <string name="camera_permission_blocked_title">Camera access is blocked</string>
+    <string name="camera_cannot_recognize">Can’t recognize %1$s</string>
+    <string name="camera_opening">Opening photo…</string>
+    <string name="camera_partial_words">Words in these regions can’t be looked up.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="one">%1$d of %2$d region</item>
+        <item quantity="other">%1$d of %2$d regions</item>
+    </plurals>
 </resources>

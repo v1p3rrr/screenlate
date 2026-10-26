@@ -17,7 +17,13 @@ import kotlinx.coroutines.flow.onEach
 @Retention(AnnotationRetention.BINARY)
 annotation class CameraPreferenceStore
 
-data class CameraLanguages(val selected: Language, val enabled: List<Language>)
+/** [active] is the app's active language; [flags] holds the flag country of each of the [enabled] languages. */
+data class CameraLanguages(
+    val selected: Language,
+    val enabled: List<Language>,
+    val active: Language = selected,
+    val flags: Map<Language, String> = emptyMap(),
+)
 
 /** Camera-only preferences, outside general settings resets and backup. The first use remembers the active language. */
 @Singleton
@@ -27,7 +33,7 @@ class CameraPreferences @Inject constructor(
 ) {
     val languages = combine(store.data, profiles.state) { preferences, profile ->
         val selected = preferences[LANGUAGE]?.let(Language::of)?.takeIf { it in profile.turnedOn } ?: profile.active
-        CameraLanguages(selected, profile.turnedOn)
+        CameraLanguages(selected, profile.turnedOn, profile.active, profile.turnedOn.associateWith(profile::flagCountry))
     }.onEach { selection ->
         store.edit { preferences ->
             if (preferences[LANGUAGE]?.let(Language::of) !in selection.enabled) preferences[LANGUAGE] = selection.selected.code

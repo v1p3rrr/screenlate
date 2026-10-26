@@ -2,10 +2,17 @@
 
 ## Camera photo lookup (2026-10-25)
 
-Phase 1.5 (emulator acceptance) is complete; phases 1.1 through 1.5 are on `features/camera-lookup`.
-Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Latest commit: "Clip photo highlights to the
-viewer and attach the Camera source from page start" (find the hash with `git log -1`); before it the fixture
-checkpoint "Stabilize acceptance fixtures and installation-link regression", phase 1.4 `e8951271`/`6c3956a8`.
+Phase 1.5 (emulator acceptance) is complete and the Camera page is restyled after the owner's chosen design; all on
+`features/camera-lookup`, rebased onto `languages/main` at `073c50a4`. Checkout:
+`C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Latest commit: "Restyle the Camera page after the chosen
+design" (find the hash with `git log -1`).
+
+Restyle (design A with the owner's changes): a status strip above the photo with the language chip, the warning,
+Recognize, the status line and progress; the chip's dropdown with flags, "Active", missing dictionary or model and
+Manage languages, also floating over the live camera; Save to gallery always in ⋮; the 4:3 live preview at its viewer
+size with a blurred live fill around it (black on e-ink); the ring shutter and the zoom pill; the permission view with
+an icon and title. Checked on API 37 by hand and on API 30 by instrumented tests; CAM27–CAM32 moved to F, CAM33 (zoom
+kept when the strip changes height) has only its unit test so far.
 
 Phase 1.5 ran the remaining CAM/NAV cases on API 37 and API 30 and found two bugs, both fixed: highlight margins
 bled over the toolbar above a zoomed photo (highlights are now clipped to the photo's visible part), and a pull-out
@@ -15,10 +22,8 @@ cloud final, moving without rescans, Anki add/duplicate/picture/audio/translatio
 button, logs without terms, the home languages card. Root checks: 1586 JVM tests, 0 failures, 5 skipped; no new lint
 findings. Evidence in the `ai/test-model.md` run log. Physical sharpness/focus/flash/delay/memory checks remain.
 
-Waiting on the owner: (1) the Camera page designs, made by a separate agent from the requirements only, without the
-current implementation (local mockups in Claude's scratchpad); the restyle after the chosen variant is the next
-implementation step; (2) a proposed follow-up: "Open Screenlate" from the bubble menu can stack a second
-MainActivity. Decided: the Search tab no longer opens the keyboard by itself (it covered the bottom bar).
+The "Open Screenlate" second-screen fix is in `languages/main` (`073c50a4`); `main`'s `ai/` copy is not updated.
+Decided: the Search tab no longer opens the keyboard by itself (it covered the bottom bar).
 
 Phase 1.4 adds retained original-image leases, source-specific NoteImage adapters, fitted photo crop coordinates,
 original-pixel/EXIF crop decoding and explicit gallery export with pending-write rollback. Notes pin source text and
@@ -32,10 +37,9 @@ photo crop→local Anki succeeded with a generated Japanese sentence and a 1541�
 app active language was Slovenian. The temporary Japanese Anki settings were restored. Gallery success, byte identity
 and survival after private deletion were verified. No owner's collection, account, sync or AnkiWeb operation.
 
-Next: the owner picks a Camera page design; then restyle the page (ask whether before phase 2). Phase 2 (internal
-history/settings/limits) and phase 3 (picker) are not started. No merge into either main branch. Emulators, test
-APKs and the shared lock are cleaned up; API 37 has no current photo, API 30 has the universal debug APK and its
-original unanswered first run.
+Next: phase 2 (internal history, limits, the Camera settings page), then phase 3 (picker); neither is started. No
+merge of the camera branch into either main branch. Emulators, test APKs and the shared lock are cleaned up; API 37
+has no current photo, API 30 has the universal debug APK and its original unanswered first run.
 
 ## Release from `main`: open items (2026-10-23, owner: come back to it later)
 

@@ -67,13 +67,17 @@ the bar without replacing the NavHost. External lookup and installation requests
 
 `CameraViewModel` observes `PhotoDocuments.current` and owns the capture/replacement operation and the temporary
 retake state. CameraX's `LifecycleCameraController` and `PreviewView` live in `app`, bind only while capture is shown,
-and release on disposal. A capture uses the store's staging file and replaces the document only after CameraX's
+and release on disposal. Besides preview and capture, the controller runs a small (about 320×240) analysis stream:
+about ten frames a second are reduced to a few dozen pixels and drawn, blurred, around the fitted 4:3 preview. The
+e-ink theme turns this stream off. A capture uses the store's staging file and replaces the document only after CameraX's
 terminal callback and validation; cancellation waits for that callback before discarding the staging file.
 The document's lifetime is independent of the page, camera permission and accessibility service. After successful
 replacement, `CameraRecognition` checks readiness with an explicit image source and starts recognition. Accessibility
 text settings cannot bypass image OCR requirements; cached photo lookups require dictionaries rather than a model.
-Language/settings changes show pending state and require explicit recognition. Upper controls expose progress,
-terminal partial warnings and retry; actions enter overflow only when their measured touch targets do not fit.
+Language/settings changes show pending state and require explicit recognition. A status strip above the viewer holds
+the language chip, the partial-result warning, Recognize, the status line and progress (`cameraStatus` is its pure
+model). Top-bar actions enter overflow when their measured touch targets do not fit; Save to gallery always stays
+there. When the strip changes height, `PhotoViewport.resized` keeps the zoom and the photo point at the center.
 
 `PhotoViewer` decodes a sampled display bitmap off the main thread and draws the stored pixels through an EXIF and
 viewport matrix, without rotating or copying the original image. One-finger pan and two-finger zoom update a bounded

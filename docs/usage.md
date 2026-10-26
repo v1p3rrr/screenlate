@@ -15,18 +15,24 @@ The bar is hidden during the first-launch setup and in the development image vie
 
 Camera opens the current photograph, or the rear camera when no photograph is stored. Allow camera access to take a
 photo; a saved photograph can be viewed without this permission or the accessibility service. Tap the preview to focus,
-pinch to zoom and tap the zoom label to return to 1×. If the camera has a flash, the upper flash button cycles through
-Off, Auto and On; it starts at Off when the app starts. Tap the shutter to save the photograph privately in Screenlate.
+pinch to zoom and tap the zoom label to return to 1×. The preview shows the whole frame the photograph gets, at its
+size in the viewer; a blurred copy of the camera image fills the rest of the page (black with the e-ink theme). If the
+camera has a flash, the upper flash button cycles through Off, Auto and On; it starts at Off when the app starts. Tap
+the shutter to save the photograph privately in Screenlate.
 
 The photograph fits the available area and survives tab changes, backgrounding and restarting the device. New photo
 opens the camera; Close or Back returns to the previous photograph. A successful capture replaces it; a failed capture
 keeps it. Delete asks for confirmation. Leaving capture releases the camera. Camera errors offer an explanation or retry.
 
 Recognition starts after a successful capture and continues when you switch tabs or put the app in the background.
-Camera remembers its own language, initially the active language, and offers only enabled languages. The shared
-Cloud, Device and Both settings and that language's local model apply. Changing the language or recognition settings
-shows a pending change: tap Recognize photo to apply it. Existing text keeps its actual recognition language until
-the new attempt finishes. A warning in the top bar explains incomplete recognition and retries only missing regions.
+Camera remembers its own language, initially the active language, and offers only enabled languages. The language
+chip above the photograph, and over the preview, lists them with their flags, marks the active language and the
+languages that lack a dictionary or a recognition model, and links to the language settings. The shared Cloud, Device
+and Both settings and that language's local model apply. The strip under the top bar shows the recognition status:
+the recognized regions and the time, or the progress of a running recognition. Changing the language or recognition
+settings highlights the strip and names the change: tap Recognize to apply it. Existing text keeps its actual
+recognition language until the new attempt finishes. A warning next to Recognize explains incomplete recognition,
+marks the missing regions on a small picture of the photograph and retries only those regions.
 After an app restart, interrupted work waits for this explicit retry; it never resumes network requests on its own.
 
 Pan with one finger and pinch to zoom up to 8× the fitted size. Returning to the photograph fits it again. Pull the
@@ -42,7 +48,7 @@ photo, then tap Add. The attachment uses the original pixels, independently of t
 the photo while the editor is open, closes it without adding the note. Notes, sentence context, audio and translations use the language
 of the recognized text.
 
-Save to gallery in the upper controls exports an ordinary original photograph to Pictures/Screenlate, preserving
+Save to gallery in the ⋮ menu exports an ordinary original photograph to Pictures/Screenlate, preserving
 its quality and orientation. It requires no broad storage permission. The copy contains no saved OCR coordinates;
 replacing or deleting the private photograph does not delete the exported copy. Nothing is exported automatically.
 Internal history and opening existing phone images are later additions.

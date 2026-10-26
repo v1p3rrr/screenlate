@@ -1,7 +1,7 @@
 # Camera Photo Lookup
 
 Approved by the owner on 2026-10-25. Branch: `features/camera-lookup`, based on
-`origin/languages/main` at `d1977c62`. This plan and all repository documents are English; talk to the owner in Russian.
+`origin/languages/main` at `d1977c62`, rebased on 2026-10-26 onto `languages/main` at `073c50a4`. This plan and all repository documents are English; talk to the owner in Russian.
 Implementation stays on the feature branch. Merging into `languages/main` or `main` is a separate step.
 
 ## Resume / handoff
@@ -24,11 +24,20 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   page after the chosen design. The mockups are local (Claude's scratchpad, `camera-design/camera-screen-designs.html`),
   not in the repository. Owner chose variant A with one change (decision table, "Camera page design"); the restyle
   goes first, then phase 2 and phase 3.
+- Restyle after design A is DONE (2026-10-26, commit "Restyle the Camera page after the chosen design"): the status
+  strip above the photo (`CameraStatusStrip`, pure model `cameraStatus`), the language chip with a dropdown over the
+  photo and over the live camera (`CameraLanguageChip`), the warning next to Recognize with a picture of the missing
+  regions, Save to gallery always in ⋮, the close icon at the left of the live camera, the ring shutter and the zoom
+  pill, the 4:3 preview at its viewer size with a blurred fill from a 320×240 analysis stream (none on e-ink), the
+  permission view with an icon and title, "Photo deleted", "Opening photo…", and `PhotoViewport.resized` keeping the
+  zoom when the strip changes height. Checks: root `assembleDebug testDebugUnitTest lintDebug --max-workers=1` pass
+  (1593 JVM tests, 0 failures, 5 skipped; lint 44 warnings, none new); API 37 by hand and API 30 LiveCameraTest/PhotoViewerTest/PhotoViewerGestureTest (run log
+  2026-10-26 "the Camera page restyle"). CAM27–CAM32 moved to F; CAM33 (zoom kept on strip resize) stays N, as adb
+  cannot pinch on API 37. Status texts say "regions" like the existing warning, not the mockup's "parts".
 - Owner decided 2026-10-26: the Search tab no longer focuses its field on opening (keyboard only on tapping it);
   done and checked on API 37.
-  Proposed follow-up outside this feature:
-  "Open Screenlate" from the bubble menu stacks a second MainActivity when the task was started by another intent
-  (ProcessTextActivity's `openApp`); bring the existing task to the front instead.
+  The follow-up outside this feature ("Open Screenlate" from the bubble menu stacked a second MainActivity) is fixed
+  in `languages/main` (`073c50a4`, owner's order); this branch was rebased onto it. `main`'s `ai/` copy is unchanged.
 - Phases 0, 1.1, 1.2, 1.3 and 1.4 are implemented. Last camera implementation: `e8951271`
   ("Add original-photo note images and explicit gallery export"); verification/docs checkpoint `6c3956a8` follows it.
   Earlier OCR implementation `9484c556`, handoff `66b66d85`, foundation `01d24c0e`. Feature branch only; no merges.
@@ -49,9 +58,9 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 - Earlier 1.3 checks remain valid: 7/7 region/migration checks, four 1500×1500 cloud tiles, terminal publication while
   off Camera, stationary-bubble pan/zoom, independent pending language/settings, exactly-one-tile retry backgrounded,
   capture auto-recognition and cold restart without automatic OCR. API 30 viewer/live camera tests 3/3.
-- Next concrete action: show the owner the Camera page designs and ask which variant (or which corrections);
-  then restyle the Camera page after the chosen design (new strings in all
-  14 locales, tests, emulator checks) unless the owner orders phase 2 first.
+- Next concrete action: phase 2, internal history (thumbnails, manual and automatic save, limits, the Camera settings
+  page). Check the decision table first; ask the owner only choices it does not settle (in Russian, AskUserQuestion).
+  Then phase 3 (system photo picker).
 - Physical sharpness, focus, flash, capture delay and repeated-capture/memory/drag baselines still need a phone;
   emulator evidence does not establish them. Phase 1 is accepted on emulators only; record these phone checks
   before any merge. Phase 2 history/settings/limits and phase 3 picker have not started; ask only genuinely new
@@ -343,3 +352,6 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   focuses only when tapped. Added to the decision table.
 - 2026-10-26: owner chose design variant A for the Camera page; in the live camera only the language chip over a full-height preview, no strip and no black band; shutter as drawn. Restyle before phase 2.
 - 2026-10-26: owner answers on design A: live preview shows the captured 4:3 frame at its viewer size with a blurred fill around it (no black band, no hidden margins); Save to gallery moves into the overflow menu (changes the Controls decision); no progress mark on the Camera tab. Owner had the "Open Screenlate" second-screen fix fast-forwarded into `languages/main` and this branch rebased onto it.
+- 2026-10-26: Camera page restyled after design A with the owner's changes; checked on API 37 and API 30. Status texts
+  use "regions" (as the existing partial-result warning) instead of the mockup's "parts", and a recognition in another
+  language reads "Recognized: <language>". No product decision changed. Next: phase 2.

@@ -823,9 +823,9 @@
     <string name="camera_back_to_photo">Вернуться к фото</string>
     <string name="camera_delete">Удалить фото</string>
     <string name="camera_delete_title">Удалить фотографию?</string>
-    <string name="camera_delete_text">Текущая фотография будет удалена.</string>
-    <string name="camera_permission_text">Для съёмки нужен доступ к камере.</string>
-    <string name="camera_permission_blocked">Доступ к камере отключён. Разрешите его в настройках приложения.</string>
+    <string name="camera_delete_text">Фотография и распознанный текст будут удалены. Копия, сохранённая в галерею, останется.</string>
+    <string name="camera_permission_text">Разрешите доступ к камере, чтобы фотографировать текст и читать его с помощью плавающей кнопки.</string>
+    <string name="camera_permission_blocked">Доступ к камере запрещён. Разрешите его в системных настройках приложения.</string>
     <string name="camera_open_settings">Открыть настройки</string>
     <string name="camera_allow">Разрешить доступ</string>
     <string name="camera_no_rear">Задняя камера недоступна.</string>
@@ -836,7 +836,6 @@
     <string name="camera_zoom_reset">Вернуться к 1×</string>
     <string name="camera_language">Язык снимка</string>
     <string name="camera_recognize">Распознать снимок</string>
-    <string name="camera_recognizing">Распознавание (%1$s): %2$d/%3$d</string>
     <string name="camera_unrecognized">Не распознано</string>
     <string name="camera_recognized">Распознано: %1$s</string>
     <string name="camera_pending">Настройки изменены</string>
@@ -850,4 +849,23 @@
     <string name="camera_export">Сохранить в галерею</string>
     <string name="camera_exported">Снимок сохранён в галерею.</string>
     <string name="camera_export_failed">Не удалось сохранить снимок в галерею.</string>
+    <string name="camera_status_recognized">Распознано</string>
+    <string name="camera_status_recognizing">Распознавание</string>
+    <string name="camera_recognize_short">Распознать</string>
+    <string name="camera_pending_language">Язык изменён</string>
+    <string name="camera_language_no_model">Нет модели распознавания</string>
+    <string name="camera_language_no_dictionary">Нет словаря</string>
+    <string name="camera_manage_languages">Управление языками</string>
+    <string name="camera_deleted">Фотография удалена</string>
+    <string name="camera_permission_title">Нет доступа к камере</string>
+    <string name="camera_permission_blocked_title">Доступ к камере заблокирован</string>
+    <string name="camera_cannot_recognize">Распознавание недоступно: %1$s</string>
+    <string name="camera_opening">Открытие фотографии…</string>
+    <string name="camera_partial_words">Слова в этих областях недоступны для поиска.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="one">%1$d из %2$d области</item>
+        <item quantity="few">%1$d из %2$d областей</item>
+        <item quantity="many">%1$d из %2$d областей</item>
+        <item quantity="other">%1$d из %2$d области</item>
+    </plurals>
 </resources>

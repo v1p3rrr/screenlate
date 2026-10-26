@@ -15,12 +15,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -39,7 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -52,6 +58,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.ui.components.ConfirmDelete
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.photos.PhotoWork
 
 /** Camera capture and the persistent current photograph. */
@@ -60,6 +67,7 @@ import com.vpr.screenlate.core.photos.PhotoWork
 fun CameraScreen(
     onOpenDictionaries: () -> Unit = {},
     onOpenModels: (Language) -> Unit = {},
+    onOpenLanguages: () -> Unit = {},
     viewModel: CameraViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -71,10 +79,10 @@ fun CameraScreen(
     val snackbar = remember { SnackbarHostState() }
     var confirmingDelete by remember { mutableStateOf(false) }
     var flashAvailable by remember { mutableStateOf(false) }
-    var languagePicker by remember { mutableStateOf(false) }
+    var languageMenu by remember { mutableStateOf(false) }
     var warning by remember(state.photo?.id) { mutableStateOf(false) }
     val blocked = block?.takeIf { it.documentId == state.photo?.id && !state.live }
-    SideEffect { viewModel.setObscured(confirmingDelete || languagePicker || warning || blocked != null) }
+    SideEffect { viewModel.setObscured(confirmingDelete || languageMenu || warning || blocked != null) }
     DisposableEffect(viewModel) { onDispose { viewModel.setObscured(false) } }
     // The page is the bubble's source from the start of its entry, frames before it resumes, so that a pull-out
     // meanwhile does not scan the screen; it stops being one as soon as it pauses.
@@ -103,6 +111,7 @@ fun CameraScreen(
                         CameraEvent.LOAD -> R.string.camera_photo_unreadable
                         CameraEvent.EXPORT_FAILED -> R.string.camera_export_failed
                         CameraEvent.EXPORTED -> R.string.camera_exported
+                        CameraEvent.DELETED -> R.string.camera_deleted
                     },
                 ),
             )
@@ -117,7 +126,6 @@ fun CameraScreen(
             onDismiss = { confirmingDelete = false },
         )
     }
-    if (languagePicker) recognition?.let { CameraLanguageDialog(it, viewModel.recognition::select, { languagePicker = false }) }
     if (warning) state.photo?.let { photo ->
         CameraRecognitionWarning(photo, recognition, { viewModel.recognition.retry(photo) },
             { viewModel.recognition.recognize(photo) }, { warning = false })
@@ -125,7 +133,7 @@ fun CameraScreen(
     if (blocked != null) {
         AlertDialog(
             onDismissRequest = viewModel.recognition::dismissBlock,
-            title = { Text(stringResource(R.string.camera_recognize)) },
+            title = { Text(stringResource(R.string.camera_cannot_recognize, blocked.status.language.displayName())) },
             text = { Text(blocked.status.message(context, scanning = true), Modifier.verticalScroll(rememberScrollState())) },
             confirmButton = {
                 TextButton(onClick = {
@@ -142,24 +150,20 @@ fun CameraScreen(
     val actions = buildList {
         if (state.live) {
             if (flashAvailable) add(CameraAction(flash.icon, stringResource(flash.label), !state.busy) { viewModel.session.flash.value = flash.next })
-            if (state.photo != null) add(CameraAction(R.drawable.ic_close, stringResource(R.string.camera_back_to_photo), !state.busy, viewModel::backToPhoto))
-        } else state.photo?.let { photo ->
-            if (hasWarning) add(CameraAction(R.drawable.ic_warning, stringResource(R.string.camera_incomplete)) { warning = true })
-            add(CameraAction(R.drawable.ic_reset, stringResource(R.string.camera_recognize), !state.busy && !working && recognition != null) {
-                viewModel.recognition.recognize(photo)
-            })
-            add(CameraAction(R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo), !state.busy, viewModel::newPhoto))
-            add(CameraAction(R.drawable.ic_download, stringResource(R.string.camera_export), !state.busy && !state.exporting, viewModel::exportPhoto))
+        } else if (state.photo != null) {
+            add(CameraAction(R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo), !state.busy, run = viewModel::newPhoto))
             add(CameraAction(R.drawable.ic_delete, stringResource(R.string.camera_delete), !state.busy) { confirmingDelete = true })
+            add(CameraAction(R.drawable.ic_download, stringResource(R.string.camera_export), !state.busy && !state.exporting, inMenu = true,
+                run = viewModel::exportPhoto))
         }
     }
+    val navigation = if (state.live && state.photo != null) {
+        CameraAction(R.drawable.ic_close, stringResource(R.string.camera_back_to_photo), !state.busy, run = viewModel::backToPhoto)
+    } else {
+        null
+    }
     Scaffold(
-        topBar = {
-            Column {
-                CameraToolbar(actions, hasWarning && !state.live)
-                if (state.loaded) CameraRecognitionBar(state.photo.takeIf { !state.live }, recognition, { languagePicker = true })
-            }
-        },
+        topBar = { CameraToolbar(actions, navigation) },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
@@ -174,15 +178,40 @@ fun CameraScreen(
                         Button(onClick = viewModel::retryLoading) { Text(stringResource(R.string.update_retry)) }
                     }
                 } else {
-                    CircularProgressIndicator()
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        CircularProgressIndicator()
+                        Text(stringResource(R.string.camera_opening), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
             } else if (state.live) {
                 CameraPermission(viewModel.session) {
-                    LiveCamera(flash, state.busy, { flashAvailable = it }, viewModel::capture)
+                    LiveCamera(flash, state.busy, { flashAvailable = it }, viewModel::capture) {
+                        recognition?.let {
+                            Box(Modifier.align(Alignment.TopStart).padding(12.dp)) {
+                                CameraLanguageChip(it, viewModel.recognition::select, onOpenLanguages, { open -> languageMenu = open }, overlay = true)
+                            }
+                        }
+                    }
                 }
             } else {
-                state.photo?.let { PhotoViewer(it, viewModel::showPhoto) }
-                if (state.busy) CircularProgressIndicator()
+                state.photo?.let { photo ->
+                    Column(Modifier.fillMaxSize()) {
+                        recognition?.let {
+                            CameraStatusStrip(
+                                photo, it, hasWarning, enabled = !state.busy && !working,
+                                onSelect = viewModel.recognition::select,
+                                onManageLanguages = onOpenLanguages,
+                                onMenu = { open -> languageMenu = open },
+                                onRecognize = { viewModel.recognition.recognize(photo) },
+                                onWarning = { warning = true },
+                            )
+                        }
+                        Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            PhotoViewer(photo, viewModel::showPhoto)
+                            if (state.busy) CircularProgressIndicator()
+                        }
+                    }
+                }
             }
         }
     }
@@ -219,12 +248,20 @@ private fun CameraPermission(session: CameraSession, content: @Composable () -> 
     } else {
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(stringResource(if (blocked) R.string.camera_permission_blocked else R.string.camera_permission_text))
+            Icon(painterResource(R.drawable.ic_no_photography), null, Modifier.size(48.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                stringResource(if (blocked) R.string.camera_permission_blocked_title else R.string.camera_permission_title),
+                style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center,
+            )
+            Text(
+                stringResource(if (blocked) R.string.camera_permission_blocked else R.string.camera_permission_text),
+                color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center,
+            )
             Button(
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = 4.dp),
                 onClick = {
                     if (blocked) {
                         context.startActivity(

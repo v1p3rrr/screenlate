@@ -801,9 +801,9 @@
     <string name="camera_back_to_photo">Quay lại ảnh</string>
     <string name="camera_delete">Xóa ảnh</string>
     <string name="camera_delete_title">Xóa ảnh?</string>
-    <string name="camera_delete_text">Ảnh hiện tại sẽ bị xóa.</string>
-    <string name="camera_permission_text">Cần quyền truy cập máy ảnh để chụp ảnh.</string>
-    <string name="camera_permission_blocked">Quyền truy cập máy ảnh đã bị tắt. Hãy cho phép trong phần cài đặt ứng dụng.</string>
+    <string name="camera_delete_text">Ảnh và văn bản đã nhận dạng sẽ bị xóa. Bản sao đã lưu vào thư viện không bị ảnh hưởng.</string>
+    <string name="camera_permission_text">Hãy cho phép truy cập máy ảnh để chụp văn bản và đọc bằng bong bóng.</string>
+    <string name="camera_permission_blocked">Quyền truy cập máy ảnh đã bị từ chối. Hãy cho phép trong cài đặt hệ thống của ứng dụng.</string>
     <string name="camera_open_settings">Mở cài đặt</string>
     <string name="camera_allow">Cho phép máy ảnh</string>
     <string name="camera_no_rear">Không có máy ảnh sau.</string>
@@ -814,7 +814,6 @@
     <string name="camera_zoom_reset">Trở về 1×</string>
     <string name="camera_language">Ngôn ngữ ảnh</string>
     <string name="camera_recognize">Nhận dạng ảnh</string>
-    <string name="camera_recognizing">Đang nhận dạng (%1$s): %2$d/%3$d</string>
     <string name="camera_unrecognized">Chưa nhận dạng</string>
     <string name="camera_recognized">Đã nhận dạng: %1$s</string>
     <string name="camera_pending">Đã đổi cài đặt</string>
@@ -828,4 +827,20 @@
     <string name="camera_export">Lưu vào thư viện</string>
     <string name="camera_exported">Đã lưu ảnh vào thư viện.</string>
     <string name="camera_export_failed">Không thể lưu ảnh vào thư viện.</string>
+    <string name="camera_status_recognized">Đã nhận dạng</string>
+    <string name="camera_status_recognizing">Đang nhận dạng</string>
+    <string name="camera_recognize_short">Nhận dạng</string>
+    <string name="camera_pending_language">Đã đổi ngôn ngữ</string>
+    <string name="camera_language_no_model">Thiếu mô hình nhận dạng</string>
+    <string name="camera_language_no_dictionary">Thiếu từ điển</string>
+    <string name="camera_manage_languages">Quản lý ngôn ngữ</string>
+    <string name="camera_deleted">Đã xóa ảnh</string>
+    <string name="camera_permission_title">Chưa có quyền truy cập máy ảnh</string>
+    <string name="camera_permission_blocked_title">Quyền truy cập máy ảnh bị chặn</string>
+    <string name="camera_cannot_recognize">Không thể nhận dạng: %1$s</string>
+    <string name="camera_opening">Đang mở ảnh…</string>
+    <string name="camera_partial_words">Không thể tra các từ trong những vùng này.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="other">%1$d/%2$d vùng</item>
+    </plurals>
 </resources>

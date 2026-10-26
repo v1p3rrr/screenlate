@@ -808,9 +808,9 @@
     <string name="camera_back_to_photo">Fotoğrafa dön</string>
     <string name="camera_delete">Fotoğrafı sil</string>
     <string name="camera_delete_title">Fotoğraf silinsin mi?</string>
-    <string name="camera_delete_text">Geçerli fotoğraf silinecek.</string>
-    <string name="camera_permission_text">Fotoğraf çekmek için kamera erişimi gereklidir.</string>
-    <string name="camera_permission_blocked">Kamera erişimi kapalı. Uygulama ayarlarından izin verin.</string>
+    <string name="camera_delete_text">Fotoğraf ve tanınan metni silinecek. Galeriye kaydedilen kopya etkilenmez.</string>
+    <string name="camera_permission_text">Metni fotoğraflayıp baloncukla okumak için kamera erişimine izin verin.</string>
+    <string name="camera_permission_blocked">Kamera erişimi reddedildi. Uygulamanın sistem ayarlarından izin verin.</string>
     <string name="camera_open_settings">Ayarları aç</string>
     <string name="camera_allow">Kameraya izin ver</string>
     <string name="camera_no_rear">Arka kamera kullanılamıyor.</string>
@@ -821,7 +821,6 @@
     <string name="camera_zoom_reset">1× yakınlaştırmaya dön</string>
     <string name="camera_language">Fotoğraf dili</string>
     <string name="camera_recognize">Fotoğrafı tanı</string>
-    <string name="camera_recognizing">Tanınıyor (%1$s): %2$d/%3$d</string>
     <string name="camera_unrecognized">Tanınmadı</string>
     <string name="camera_recognized">Tanındı: %1$s</string>
     <string name="camera_pending">Ayarlar değişti</string>
@@ -835,4 +834,21 @@
     <string name="camera_export">Galeriye kaydet</string>
     <string name="camera_exported">Fotoğraf galeriye kaydedildi.</string>
     <string name="camera_export_failed">Fotoğraf galeriye kaydedilemedi.</string>
+    <string name="camera_status_recognized">Tanındı</string>
+    <string name="camera_status_recognizing">Tanınıyor</string>
+    <string name="camera_recognize_short">Tanı</string>
+    <string name="camera_pending_language">Dil değişti</string>
+    <string name="camera_language_no_model">Tanıma modeli yok</string>
+    <string name="camera_language_no_dictionary">Sözlük yok</string>
+    <string name="camera_manage_languages">Dilleri yönet</string>
+    <string name="camera_deleted">Fotoğraf silindi</string>
+    <string name="camera_permission_title">Kamera erişimi yok</string>
+    <string name="camera_permission_blocked_title">Kamera erişimi engellendi</string>
+    <string name="camera_cannot_recognize">Tanıma yapılamıyor: %1$s</string>
+    <string name="camera_opening">Fotoğraf açılıyor…</string>
+    <string name="camera_partial_words">Bu bölgelerdeki kelimeler aranamaz.</string>
+    <plurals name="camera_status_regions">
+        <item quantity="one">%1$d/%2$d bölge</item>
+        <item quantity="other">%1$d/%2$d bölge</item>
+    </plurals>
 </resources>

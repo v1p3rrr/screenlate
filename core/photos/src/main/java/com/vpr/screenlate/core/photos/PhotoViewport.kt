@@ -62,6 +62,21 @@ data class PhotoViewport(
         )
     }
 
+    /**
+     * The same view in a resized [area], as when the controls above the viewer change height: the zoom relative to the
+     * fitted view is kept and the photo point at the old area's center moves to the new center, within the edges.
+     */
+    fun resized(area: Box): PhotoViewport {
+        if (area == this.area) return this
+        val zoom = scale / fit(photoWidth, photoHeight, this.area).scale
+        val centerX = (this.area.centerX - offsetX) / scale
+        val centerY = (this.area.centerY - offsetY) / scale
+        val fitted = fit(photoWidth, photoHeight, area)
+        val next = fitted.scale * zoom
+        return fitted.copy(scale = next, offsetX = area.centerX - centerX * next, offsetY = area.centerY - centerY * next)
+            .transformed(area.centerX, area.centerY, 0f, 0f, 1f)
+    }
+
     companion object {
         /** The whole photo as large as it fits in [area], centered: the view a photo opens with. */
         fun fit(photoWidth: Int, photoHeight: Int, area: Box): PhotoViewport {

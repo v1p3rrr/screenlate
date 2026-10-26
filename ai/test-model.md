@@ -467,7 +467,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | F | U PhotoStoreTest, I PhotoDatabaseTest | 2026-10-26 (API 37) |
 | CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
 | CAM11 | Capture → fitted current photo; New photo + Close or Back preserves it; a completed new capture replaces it; Delete + Cancel keeps it, Delete + confirm opens the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
-| CAM12 | Tap preview → focus indicator; pinch → camera zoom and ratio label; tap ratio → 1× | F | I LiveCameraTest (API 30), D (focus quality) | 2026-10-26 (API 30) |
+| CAM12 | Tap preview → focus indicator; pinch → camera zoom and the zoom pill; tap the pill → 1× | F | I LiveCameraTest (API 30), D (focus quality) | 2026-10-26 (API 30) |
 | CAM13 | All 8 EXIF orientations display upright and report matching original-pixel-to-screen coordinates; loading/disposal never publishes another document's viewport | F | U PhotoDrawingTest, U CameraViewModelTest, I PhotoViewerTest | 2026-10-26 (API 37) |
 | CAM14 | Capture with the service unavailable; navigate and background; restart the device → the same private current photograph opens without camera permission being requested again; leaving capture releases the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
 | CAM15 | Flash-capable camera → Off/Auto/On cycle affects capture; Off again in a new process; absent flash → action hidden | N | U PhotoDrawingTest (cycle), D | |
@@ -482,6 +482,13 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM24 | Viewer pinch clamps fit..8×, pan clamps edges, reopening fits; only viewport changes and the source/layout generation stays; visible-region details remain sharp | F | U PhotoViewportTest, I PhotoViewerGestureTest (API 30); M (API 37) | 2026-10-26 (API 30/37) |
 | CAM25 | Explicit Save to gallery publishes ordinary original JPEG/PNG bytes with orientation and no OCR data; replacing/deleting the current document leaves the exported copy; failure/cancellation removes partial output and permits retry | F | U PhotoGalleryTest, CameraViewModelTest; I PhotoGalleryDeviceTest; M | 2026-10-26 (API 30/37) |
 | CAM26 | A retained image survives current-photo replacement/deletion until its owner closes it; a restart removes abandoned pins; late source/preview results cannot open an editor after the scan closes | F | U PhotoStoreTest; I CropEditorTest, PhotoImageTest | 2026-10-26 (API 30/37) |
+| CAM27 | The status strip over a photo: the language chip (flag, name, ▾), Recognize filled while there is no result or a change is pending and as a text button otherwise, hidden while recognizing; the status line "Recognized · N of M regions · time" (regions only with more than one), "Recognizing · k of M regions" with progress along the strip's bottom; a language change tints the strip and adds "Language changed" (a frame and bold text with the e-ink theme) | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
+| CAM28 | The language menu from the chip, over a photo and over the live camera: the header, every turned-on language with its flag, "Active" under the app's active language, "Dictionary missing" or "Recognition model missing" under unready ones, a check on the selected one; Manage languages opens Settings → Languages; with the menu open the bubble reads nothing | F | M | 2026-10-26 (API 37) |
+| CAM29 | The live camera: the 4:3 frame at the photo's viewer size with a blurred live copy around it and no black band at the bottom (plain black with the e-ink theme); the chip floats over the preview; the white ring shutter shrinks when pressed, a spinner replaces its disc during capture; the zoom pill above it resets to 1×; the captured photo keeps the resolution it had before the blur stream | F | U CameraPhotoControlsTest (fill steps); I LiveCameraTest; M | 2026-10-26 (API 30/37) |
+| CAM30 | Top bar: over a photo New photo and Delete as icons, Save to gallery always in ⋮; over the live camera with a photo the close icon at the left returns to it, the flash icon at the right | F | M | 2026-10-26 (API 37) |
+| CAM31 | The partial-result dialog: the warning icon, the count of missing regions with "Words in these regions can't be looked up.", a small picture of the photo with the missing regions marked, the causes; Retry keeps the recognized regions | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
+| CAM32 | Camera access off or blocked → an icon, a title, the text and a filled button; deleting the photo shows "Photo deleted"; loading shows "Opening photo…"; recognition blocked by a missing dictionary or model → the dialog is titled "Can't recognize <language>" | F | U CameraViewModelTest; M | 2026-10-26 (API 37) |
+| CAM33 | A zoomed photo keeps its zoom and center when the strip changes height (pending tint, a wrapped status line) | N | U PhotoViewportTest; M | |
 
 
 
@@ -529,6 +536,41 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-26, `features/camera-lookup`, the Camera page restyle (uncommitted build on `54b310df`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Builds: API 37 an x86_64-only copy of the debug APK; API 30 the universal debug APK.
+- Unit: CameraPhotoControlsTest (8), CameraViewModelTest (11), CameraLookupTest (3), PhotoDrawingTest (4) and
+  PhotoViewportTest passed; lint shows no new warnings in the camera code.
+- API 37, camera access off: the crossed-out camera icon, the title, the text and Allow camera; after the access was
+  denied in the system dialog, "Camera access is blocked" with Open settings (CAM32).
+- Live camera: the 4:3 frame at its viewer size with the blurred room around it and no black band above the tabs;
+  the chip at the top left; the ring shutter with a spinner in the ring during capture (CAM29). Photos stay 1280×960
+  (the virtual camera's largest JPEG) with the analysis stream at 320×240 (`dumpsys media.camera`).
+- Over a photo: New photo and Delete as icons, ⋮ → Save to gallery; the strip "Recognized · 2:05 PM" with Recognize as
+  a text button (CAM27, CAM30).
+- The chip's menu over the photo and over the live camera: "Photo language", the turned-on languages with flags, a
+  check on Japanese, "Active" under the app's active language, Manage languages → Settings → Languages (CAM28).
+  Choosing Khmer tinted the strip: "Recognized: Japanese · 2:05 PM · Language changed", Recognize filled; after
+  Recognize, "Recognized · 2:07 PM".
+- Partial fixture (`PhotoWorkflowTest -e photoFixture partialCloud`): "Recognized · 3 of 4 regions · 2:09 PM ·
+  Settings changed" with ⚠; the dialog with the warning icon, "1 of 4 regions could not be recognized. Words in these
+  regions can't be looked up.", the picture with the missing region marked and the cause; Retry missing regions →
+  "Recognizing · 3 of 4 regions" with the bar at 75 %, then "Recognized · 4 of 4 regions" (CAM27, CAM31).
+- With a photo, the live camera has ✕ at the left, which returned to the photo (CAM30). Delete → the dialog →
+  "Photo deleted" over the live camera (CAM32).
+- E-ink theme: black around the live frame, the chip with "JA"; a language change frames the strip and makes its
+  text bold (CAM27, CAM29).
+- API 30: LiveCameraTest (1), PhotoViewerTest and PhotoViewerGestureTest (2) passed. Below API 31 the fill is only
+  scaled, without blur; not looked at by hand, as the app there was at the first-run language choice.
+- Not checked by hand: the pressed shutter shrinking; "Dictionary missing" and "Recognition model missing" in the
+  menu (no turned-on language lacked either); the bubble with the menu open; "Opening photo…"; the blocked-recognition
+  dialog title (CameraViewModelTest only); CAM33, as adb cannot pinch on API 37 (PhotoViewportTest only).
+- Moved to F: CAM27–CAM32. CAM33 stays N.
+
+Left on the emulators: API 37 the Japanese camera language, no photo, e-ink off, camera access revoked with its user
+flags cleared, the storage threshold settings deleted, the service bound; API 30 the test APK removed, the service
+bound. Both shut down.
 
 ### 2026-10-26, `claude/nifty-faraday-59a7fb` (`languages/main` d1977c62 with the fix, 0.2.3-5f4a75d6, x86_64-only copy), Pixel_10_Pro (API 37)
 

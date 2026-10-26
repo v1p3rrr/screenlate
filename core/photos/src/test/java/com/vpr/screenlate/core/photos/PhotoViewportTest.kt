@@ -97,6 +97,28 @@ class PhotoViewportTest {
         }
     }
 
+    @Test
+    fun `a resized area keeps the zoom and the photo point at its center`() {
+        val zoomed = PhotoViewport.fit(4000, 3000, area).transformed(540f, 1200f, 0f, 0f, 3f)
+        val point = zoomed.toPhoto(540f, 1200f)!!
+        // A taller strip above the viewer moves its top edge down.
+        val resized = zoomed.resized(Box(0f, 400f, 1080f, 2200f))
+        assertThat(resized.scale).isWithin(0.0001f).of(zoomed.scale)
+        val (x, y) = resized.toPhoto(540f, 1300f)!!
+        assertThat(x).isWithin(0.01f).of(point.first)
+        assertThat(y).isWithin(0.01f).of(point.second)
+        assertThat(zoomed.resized(area)).isSameInstanceAs(zoomed)
+    }
+
+    @Test
+    fun `a fitted photo stays fitted in a resized area`() {
+        val smaller = Box(0f, 200f, 1080f, 900f)
+        val resized = PhotoViewport.fit(4000, 3000, area).resized(smaller)
+        val fitted = PhotoViewport.fit(4000, 3000, smaller)
+        assertThat(resized.scale).isWithin(0.0001f).of(fitted.scale)
+        assertNear(resized.visible!!, fitted.visible!!)
+    }
+
     private fun assertNear(actual: Box, expected: Box) {
         assertThat(actual.left).isWithin(0.01f).of(expected.left)
         assertThat(actual.top).isWithin(0.01f).of(expected.top)

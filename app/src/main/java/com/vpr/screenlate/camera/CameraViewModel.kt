@@ -33,7 +33,7 @@ data class CameraState(
     val live: Boolean get() = loaded && (photo == null || takingNew)
 }
 
-enum class CameraEvent { CAPTURE, DELETE, LOAD, EXPORT_FAILED, EXPORTED }
+enum class CameraEvent { CAPTURE, DELETE, DELETED, LOAD, EXPORT_FAILED, EXPORTED }
 
 /** Owns a camera page's operations; the document itself belongs to PhotoDocuments, not the page. */
 @HiltViewModel
@@ -160,6 +160,7 @@ class CameraViewModel @Inject constructor(
                 viewport = null
                 savedState[NEW_PHOTO] = false
                 mutableState.value = state.value.copy(photo = null, takingNew = false)
+                messages.send(CameraEvent.DELETED)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

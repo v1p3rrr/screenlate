@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -20,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.draw.clipToBounds
@@ -54,7 +54,8 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
         PhotoViewport.fit(document.width, document.height, it)
     }
     var moved by remember(document.id) { mutableStateOf<PhotoViewport?>(null) }
-    val viewport = moved?.takeIf { it.area == area } ?: fit
+    // The status strip above may change height; the photo keeps its zoom and center instead of fitting again.
+    val viewport = fit?.let { moved?.resized(it.area) } ?: fit
     val sample = fit?.let { displaySampleSize(it.scale) }
     var bitmap by remember(document.id, sample) { mutableStateOf<Bitmap?>(null) }
     var failed by remember(document.id, sample) { mutableStateOf(false) }
@@ -99,12 +100,12 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
         onDispose { onViewport(document.id, null) }
     }
     Box(
-        Modifier.fillMaxSize().clipToBounds().background(Color.Black).semantics {
+        Modifier.fillMaxSize().clipToBounds().background(MaterialTheme.colorScheme.surfaceContainerHigh).semantics {
             contentDescription = photoLabel
             if (viewport != null && fit != null) stateDescription = java.text.NumberFormat.getPercentInstance().format(viewport.scale / fit.scale)
         }.pointerInput(document.id, fit) {
             detectTransformGestures { centroid, pan, zoom, _ ->
-                val initial = moved?.takeIf { it.area == fit?.area } ?: fit
+                val initial = fit?.let { moved?.resized(it.area) } ?: fit
                 val bounds = area
                 if (initial != null && bounds != null) {
                     moved = initial.transformed(centroid.x + bounds.left, centroid.y + bounds.top, pan.x, pan.y, zoom)
@@ -133,7 +134,7 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
             }
         } else if (failed) {
             Text(
-                stringResource(R.string.camera_photo_unreadable), color = Color.White,
+                stringResource(R.string.camera_photo_unreadable), color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.verticalScroll(rememberScrollState()).padding(24.dp),
             )
         } else {

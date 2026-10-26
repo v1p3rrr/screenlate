@@ -801,9 +801,9 @@
     <string name="camera_back_to_photo">返回照片</string>
     <string name="camera_delete">删除照片</string>
     <string name="camera_delete_title">删除照片？</string>
-    <string name="camera_delete_text">将删除当前照片。</string>
-    <string name="camera_permission_text">拍照需要相机访问权限。</string>
-    <string name="camera_permission_blocked">相机访问权限已关闭。请在应用设置中允许。</string>
+    <string name="camera_delete_text">将删除照片及其识别出的文字。已保存到相册的副本不受影响。</string>
+    <string name="camera_permission_text">允许访问相机，即可拍摄文字并用悬浮球阅读。</string>
+    <string name="camera_permission_blocked">相机访问权限被拒绝。请在系统的应用设置中允许。</string>
     <string name="camera_open_settings">打开设置</string>
     <string name="camera_allow">允许相机访问</string>
     <string name="camera_no_rear">后置相机不可用。</string>
@@ -814,7 +814,6 @@
     <string name="camera_zoom_reset">恢复至 1 倍</string>
     <string name="camera_language">照片语言</string>
     <string name="camera_recognize">识别照片</string>
-    <string name="camera_recognizing">正在识别（%1$s）：%2$d/%3$d</string>
     <string name="camera_unrecognized">尚未识别</string>
     <string name="camera_recognized">已识别：%1$s</string>
     <string name="camera_pending">设置已更改</string>
@@ -828,4 +827,20 @@
     <string name="camera_export">保存到相册</string>
     <string name="camera_exported">照片已保存到相册。</string>
     <string name="camera_export_failed">无法将照片保存到相册。</string>
+    <string name="camera_status_recognized">已识别</string>
+    <string name="camera_status_recognizing">正在识别</string>
+    <string name="camera_recognize_short">识别</string>
+    <string name="camera_pending_language">语言已更改</string>
+    <string name="camera_language_no_model">缺少识别模型</string>
+    <string name="camera_language_no_dictionary">缺少词典</string>
+    <string name="camera_manage_languages">管理语言</string>
+    <string name="camera_deleted">照片已删除</string>
+    <string name="camera_permission_title">无相机访问权限</string>
+    <string name="camera_permission_blocked_title">相机访问权限已被拒绝</string>
+    <string name="camera_cannot_recognize">无法识别%1$s</string>
+    <string name="camera_opening">正在打开照片…</string>
+    <string name="camera_partial_words">这些区域中的词无法查询。</string>
+    <plurals name="camera_status_regions">
+        <item quantity="other">%1$d/%2$d个区域</item>
+    </plurals>
 </resources>

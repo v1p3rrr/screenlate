@@ -244,6 +244,7 @@ class CameraViewModelTest {
         model.deletePhoto()
         advanceUntilIdle()
         assertThat(model.state.value.live).isTrue()
+        assertThat(model.events.first()).isEqualTo(CameraEvent.DELETED)
         assertThat(sources.source.value).isInstanceOf(LookupSource.NoText::class.java)
     }
 
