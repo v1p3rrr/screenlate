@@ -22,8 +22,8 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 - Owner request 2026-10-26: a from-scratch visual design of the Camera page by a separate designer agent that does
   not look at the current implementation, several variants for the owner to choose from or correct; then restyle the
   page after the chosen design. The mockups are local (Claude's scratchpad, `camera-design/camera-screen-designs.html`),
-  not in the repository. Waiting for the owner's choice; the restyle is the next implementation step once chosen
-  (ask whether it goes before phase 2).
+  not in the repository. Owner chose variant A with one change (decision table, "Camera page design"); the restyle
+  goes first, then phase 2 and phase 3.
 - Owner decided 2026-10-26: the Search tab no longer focuses its field on opening (keyboard only on tapping it);
   done and checked on API 37.
   Proposed follow-up outside this feature:
@@ -114,6 +114,7 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Home after the tabs | The settings icon, the Search card and the Settings button leave Home; the background-work badge moves to the Settings tab. |
 | Camera page | Show the current photograph when present; otherwise open the live camera. |
 | Camera layout | The frame sits under the ordinary top bar (title, icons on the right); a round shutter button at the bottom of the frame. The photo viewer uses the same top bar. |
+| Camera page design | Variant A of the designer's mockups (owner, 2026-10-26). Viewer: under the top bar a status strip; first row the photo-language chip (flag, name, dropdown), the warning icon and Recognize (text button; filled while a change is pending, hidden while recognizing); second row the status as text ("Recognized · 8 of 8 parts · 12:41", "Recognizing · 3 of 8 parts", "Recognized as Slovenian, 6 of 8 parts · language changed"); a linear progress along the strip's bottom edge; a pending change tints the strip. Language picker: a dropdown from the chip. Live camera (owner's change to A): no strip, only the language chip floating over the preview; the preview shows exactly the 4:3 frame that is captured, at the size the photo has in the viewer, and the rest of the area down to the navigation bar shows a blurred copy of the live image instead of black; the round shutter as drawn (white ring) over it; later import and history buttons left and right of it. No progress mark on the Camera tab while recognition runs on another tab. Mockups: Claude's scratchpad `camera-design/`, not in the repository. |
 | New photo over a photo | A camera icon in the viewer's top bar opens the live camera; its close icon and system back return to the photo unchanged. A capture replaces the photo and shows the new one. |
 | Flash | Off/Auto/On as one top-bar icon that cycles. Off at every app start; the choice lasts while the app process lives. |
 | Camera permission | Asked when the Camera page first opens the live camera. Denied: an explanation in place of the frame with a button that asks again in the app while the system allows it, otherwise opens the app's system settings. The current photo is shown without the permission. |
@@ -140,7 +141,7 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Phone gallery | Explicit export of an ordinary photo; no automatic export. OCR stays in Screenlate's private data. |
 | Internal history | Later phase: manual saving by default, with an automatic-saving switch. |
 | History limits | Independent count and size limits, both default 0 (unlimited). Evict oldest history entries to satisfy nonzero limits. |
-| Controls | Upper action icons; move actions into overflow only when they do not fit. Language and recognition status stay visible. |
+| Controls | Upper action icons; move actions into overflow only when they do not fit, except Save to gallery, which is always in the overflow menu as in design A (owner, 2026-10-26). Language and recognition status stay visible. |
 | Camera settings | One page reachable from Camera and general Settings. |
 | Backup | No backup integration for this feature. |
 | Deferred | Import existing phone images in phase 3; photo rotation/cropping/perspective editing stays in the backlog. Anki attachment cropping is included earlier. |
@@ -340,3 +341,5 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   restyle after the chosen one (pending). Open: Search keyboard on a blank query; the second MainActivity follow-up.
 - 2026-10-26: owner decided that the Search tab opens without the keyboard (it covered the bottom bar); the field
   focuses only when tapped. Added to the decision table.
+- 2026-10-26: owner chose design variant A for the Camera page; in the live camera only the language chip over a full-height preview, no strip and no black band; shutter as drawn. Restyle before phase 2.
+- 2026-10-26: owner answers on design A: live preview shows the captured 4:3 frame at its viewer size with a blurred fill around it (no black band, no hidden margins); Save to gallery moves into the overflow menu (changes the Controls decision); no progress mark on the Camera tab. Owner had the "Open Screenlate" second-screen fix fast-forwarded into `languages/main` and this branch rebased onto it.
