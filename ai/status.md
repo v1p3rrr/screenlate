@@ -4,7 +4,7 @@
 
 Phase 1.3 is complete (2026-10-26), on `features/camera-lookup`.
 Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`.
-Foundation pushed as `01d24c0e`; continuation commit subject: "Recognize persistent photos and add bounded viewer pan and zoom".
+Implementation pushed as `9484c556` ("Recognize persistent photos and add bounded viewer pan and zoom"), after foundation `01d24c0e`.
 Includes recoverable recognition attempts, original-resolution tiles, max-two workers, terminal snapshots/failed-tile
 retry, independent camera language, automatic recognition after successful capture, explicit rescan/readiness/status/
 warnings and fit..8× bounded pan/zoom with sharp visible-region decoding. Text retains its actual recognition language

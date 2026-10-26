@@ -10,8 +10,8 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
-- Phases 0, 1.1, 1.2 and 1.3 are complete. Last pushed foundation `01d24c0e`; completed continuation commit subject:
-  "Recognize persistent photos and add bounded viewer pan and zoom". All changes stay on `features/camera-lookup`.
+- Phases 0, 1.1, 1.2 and 1.3 are complete. Pushed implementation: `9484c556`
+  ("Recognize persistent photos and add bounded viewer pan and zoom"), after foundation `01d24c0e`. All changes stay on `features/camera-lookup`.
 - Implemented continuation: PhotoAttempt/AttemptCodec; recognition codec v3 raw tiles (reads v1/v2); Room v2 migration;
   atomic attempt-file progress; retained EXIF-aware region decoder; process-owned PhotoRecognitionJobs (max 2);
   explicit failed-tile retry and terminal-only publication; separate no-backup CameraPreferences; image-source
@@ -34,8 +34,8 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 - Before claiming phase 1 complete: remaining CAM3/CAM4/CAM6/CAM7 and NAV3 variations, relevant existing popup/Anki/
   language/navigation/settings regressions, instrumented crop checks and all phase 1.4 acceptance. Physical quality,
   flash, focus, capture delay and repeated-capture/memory baselines remain pending; emulator evidence is not hardware acceptance.
-- Temporary shared OCR mode was restored to Both, camera language Japanese. Test APKs are removed during cleanup;
-  emulators are shut down and the owned lock released before this session ends. Main debug app/data stay installed.
+- Cleanup complete: shared OCR restored to Both, camera language Japanese; auxiliary test APKs removed,
+  both owned emulators shut down, shared lock released. Main debug app/data stay installed.
   Synthetic photo fixtures deliberately replace only emulator current photos. No owner's Anki data was touched.
 - Phase 1.2 implementation:
   - `navigation/ScreenlateNavHost.kt`: one Scaffold with a `NavigationBar` (Home, Search, Camera, Settings) on every
