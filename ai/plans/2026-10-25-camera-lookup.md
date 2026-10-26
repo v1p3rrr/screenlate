@@ -24,8 +24,9 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   page after the chosen design. The mockups are local (Claude's scratchpad, `camera-design/camera-screen-designs.html`),
   not in the repository. Waiting for the owner's choice; the restyle is the next implementation step once chosen
   (ask whether it goes before phase 2).
-- Open questions for the owner: should the Search tab still focus its field and open the keyboard on a blank query
-  (it covers the bottom bar)? Recommendation: only on tapping the field. Proposed follow-up outside this feature:
+- Owner decided 2026-10-26: the Search tab no longer focuses its field on opening (keyboard only on tapping it);
+  done and checked on API 37.
+  Proposed follow-up outside this feature:
   "Open Screenlate" from the bubble menu stacks a second MainActivity when the task was started by another intent
   (ProcessTextActivity's `openApp`); bring the existing task to the front instead.
 - Phases 0, 1.1, 1.2, 1.3 and 1.4 are implemented. Last camera implementation: `e8951271`
@@ -49,7 +50,7 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   off Camera, stationary-bubble pan/zoom, independent pending language/settings, exactly-one-tile retry backgrounded,
   capture auto-recognition and cold restart without automatic OCR. API 30 viewer/live camera tests 3/3.
 - Next concrete action: show the owner the Camera page designs and ask which variant (or which corrections);
-  ask the Search keyboard question above. Then restyle the Camera page after the chosen design (new strings in all
+  then restyle the Camera page after the chosen design (new strings in all
   14 locales, tests, emulator checks) unless the owner orders phase 2 first.
 - Physical sharpness, focus, flash, capture delay and repeated-capture/memory/drag baselines still need a phone;
   emulator evidence does not establish them. Phase 1 is accepted on emulators only; record these phone checks
@@ -109,6 +110,7 @@ The feature provides a persistent photograph that the existing floating bubble i
 |---|---|
 | Main navigation | Bottom navigation: Home, Search, Camera, Settings. Settings is rightmost. |
 | Navigation bar | Visible on every page, nested ones included; hidden only in the first run and the debug image viewer. Each tab keeps its own pages and scroll. Back on a tab's first page goes to Home; back on Home leaves the app; Search and Settings lose their back arrows. Tapping the open tab returns to its first page. |
+| Search keyboard | The Search tab opens without focusing its field; the keyboard opens on tapping the field, so the bar stays reachable (owner, 2026-10-26). |
 | Home after the tabs | The settings icon, the Search card and the Settings button leave Home; the background-work badge moves to the Settings tab. |
 | Camera page | Show the current photograph when present; otherwise open the live camera. |
 | Camera layout | The frame sits under the ordinary top bar (title, icons on the right); a round shutter button at the bottom of the frame. The photo viewer uses the same top bar. |
@@ -336,3 +338,5 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   two findings fixed (highlight clip to the photo viewer, Camera source from the page's start). No product decision
   changed. Owner asked for a from-scratch Camera page design by a separate agent, variants to choose from, then a
   restyle after the chosen one (pending). Open: Search keyboard on a blank query; the second MainActivity follow-up.
+- 2026-10-26: owner decided that the Search tab opens without the keyboard (it covered the bottom bar); the field
+  focuses only when tapped. Added to the decision table.

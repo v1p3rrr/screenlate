@@ -17,8 +17,8 @@ findings. Evidence in the `ai/test-model.md` run log. Physical sharpness/focus/f
 
 Waiting on the owner: (1) the Camera page designs, made by a separate agent from the requirements only, without the
 current implementation (local mockups in Claude's scratchpad); the restyle after the chosen variant is the next
-implementation step; (2) whether the Search tab should open the keyboard on a blank query (it covers the bar);
-(3) a proposed follow-up: "Open Screenlate" from the bubble menu can stack a second MainActivity.
+implementation step; (2) a proposed follow-up: "Open Screenlate" from the bubble menu can stack a second
+MainActivity. Decided: the Search tab no longer opens the keyboard by itself (it covered the bottom bar).
 
 Phase 1.4 adds retained original-image leases, source-specific NoteImage adapters, fitted photo crop coordinates,
 original-pixel/EXIF crop decoding and explicit gallery export with pending-write rollback. Notes pin source text and

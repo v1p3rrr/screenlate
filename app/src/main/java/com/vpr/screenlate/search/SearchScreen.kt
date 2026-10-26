@@ -34,8 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -99,7 +97,6 @@ fun SearchScreen(
         dark -> PageTheme.DARK
         else -> PageTheme.LIGHT
     }
-    val focus = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val currentTheme by rememberUpdatedState(theme)
     val noKanji by rememberUpdatedState(stringResource(OverlayR.string.overlay_no_kanji))
@@ -187,8 +184,6 @@ fun SearchScreen(
     LaunchedEffect(Unit) {
         if (initialQuery.isNotBlank() && viewModel.query.value.isBlank()) viewModel.query.value = initialQuery
         page.setTagNotes(Json.encodeToJsonElement(ListSerializer(DictionaryTagNotes.serializer()), viewModel.tagNotes()))
-        // Text from the selection menu is already searched: the keyboard would only cover the results.
-        if (viewModel.query.value.isBlank()) focus.requestFocus()
     }
     LaunchedEffect(language) {
         page.setStyles(Json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), viewModel.styles(language)))
@@ -239,10 +234,10 @@ fun SearchScreen(
                         TooltipIconButton(R.drawable.ic_close, stringResource(R.string.action_clear), onClick = { viewModel.query.value = "" })
                     }
                 },
+                // No focus of its own on opening: the keyboard would cover the navigation bar until Back.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .focusRequester(focus),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
             )
             // Nothing can be found until a dictionary with definitions is on; the page says why.
             if (query.isNotBlank() && (results?.noTermDictionary != null || results?.installation != null)) {

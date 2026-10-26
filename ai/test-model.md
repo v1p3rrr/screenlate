@@ -492,6 +492,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | NAV1 | Home, Search, Camera, Settings left to right; query and Settings subpage survive tab changes; reselect returns to tab root; Back from root returns Home | F | M | 2026-10-26 (API 37) |
 | NAV2 | Overlay's Anki/settings request opens its page in the Settings tab; text-selection menu still resolves and opens standalone Search | F | I ProcessTextTest, M | 2026-10-26 (API 37; Anki request) |
 | NAV3 | First-launch language/setup and debug image viewer hide the bar; finishing setup reaches Home; background-tip badge behaves across tab changes | F | M | 2026-10-26 (API 30/37) |
+| NAV4 | The Search tab with a blank query opens without the keyboard, the bar stays usable; tapping the field opens it | F | M | 2026-10-26 (API 37) |
 
 ### NF: non-functional
 
@@ -549,6 +550,12 @@ menu's search had started. BUB16 (new, first check, moved to F).
 
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-26, `features/camera-lookup`, the Search tab without auto-focus (uncommitted build after `a2235350`), Pixel_10_Pro (API 37)
+
+- NAV4: the Search tab with a blank query opened with the field unfocused and no keyboard (`mInputShown=false`), the
+  bar visible; tapping the field opened the keyboard; Back, Home, Search again → no keyboard.
+- Moved to F: NAV4.
 
 ### 2026-10-26, `features/camera-lookup`, phase 1.5 acceptance on `a2027390` with the two fixes below
 
