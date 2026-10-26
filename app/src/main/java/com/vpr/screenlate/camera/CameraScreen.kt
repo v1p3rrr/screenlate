@@ -10,6 +10,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -85,7 +87,11 @@ fun CameraScreen(
     var languageMenu by remember { mutableStateOf(false) }
     var warning by remember(state.photo?.id) { mutableStateOf(false) }
     val blocked = block?.takeIf { it.documentId == state.photo?.id && !state.live }
-    SideEffect { viewModel.setObscured(confirmingClose || languageMenu || warning || blocked != null) }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        uri?.let { viewModel.importImage(it.toString()) }
+    }
+    val importImage = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
+    SideEffect { viewModel.setObscured(confirmingClose || state.askingImport || languageMenu || warning || blocked != null) }
     DisposableEffect(viewModel) { onDispose { viewModel.setObscured(false) } }
     // The page is the bubble's source from the start of its entry, frames before it resumes, so that a pull-out
     // meanwhile does not scan the screen; it stops being one as soon as it pauses.
@@ -110,6 +116,7 @@ fun CameraScreen(
                 resources.getString(
                     when (event) {
                         CameraEvent.CAPTURE -> R.string.camera_capture_failed
+                        CameraEvent.IMPORT -> R.string.camera_import_failed
                         CameraEvent.DELETE -> R.string.camera_close_failed
                         CameraEvent.LOAD -> R.string.camera_photo_unreadable
                         CameraEvent.EXPORT_FAILED -> R.string.camera_export_failed
@@ -128,6 +135,13 @@ fun CameraScreen(
             onSave = { viewModel.closePhoto(save = true) },
             onDelete = { viewModel.closePhoto() },
             onDismiss = { confirmingClose = false },
+        )
+    }
+    if (state.askingImport) {
+        UnsavedPhotoDialog(
+            onSave = { viewModel.answerImport(true) },
+            onDelete = { viewModel.answerImport(false) },
+            onDismiss = { viewModel.answerImport(null) },
         )
     }
     if (warning) state.photo?.let { photo ->
@@ -165,6 +179,7 @@ fun CameraScreen(
             }
         }
         add(CameraAction(R.drawable.ic_history, stringResource(R.string.camera_history), inMenu = true, run = onOpenHistory))
+        add(CameraAction(R.drawable.ic_image, stringResource(R.string.camera_import), !state.busy, inMenu = true, run = importImage))
         add(CameraAction(R.drawable.ic_settings, stringResource(R.string.camera_settings), inMenu = true, run = onOpenSettings))
     }
     val navigation = state.photo?.let { photo ->
@@ -198,10 +213,11 @@ fun CameraScreen(
                     }
                 }
             } else if (state.live) {
-                CameraPermission(viewModel.session) {
+                CameraPermission(viewModel.session, onImport = importImage, importEnabled = !state.busy) {
                     LiveCamera(
                         flash, state.busy, { flashAvailable = it }, viewModel::capture,
-                        side = { HistoryButton(latest?.thumbnail, enabled = !state.busy, onClick = onOpenHistory) },
+                        start = { ImportButton(enabled = !state.busy, onClick = importImage) },
+                        end = { HistoryButton(latest?.thumbnail, enabled = !state.busy, onClick = onOpenHistory) },
                     ) {
                         recognition?.let {
                             Box(Modifier.align(Alignment.TopStart).padding(12.dp)) {
@@ -235,7 +251,12 @@ fun CameraScreen(
 }
 
 @Composable
-private fun CameraPermission(session: CameraSession, content: @Composable () -> Unit) {
+private fun CameraPermission(
+    session: CameraSession,
+    onImport: () -> Unit,
+    importEnabled: Boolean,
+    content: @Composable () -> Unit,
+) {
     val context = LocalContext.current
     var granted by remember { mutableStateOf(hasCameraPermission(context)) }
     var blocked by remember { mutableStateOf(session.permissionBlocked) }
@@ -292,6 +313,7 @@ private fun CameraPermission(session: CameraSession, content: @Composable () -> 
             ) {
                 Text(stringResource(if (blocked) R.string.camera_open_settings else R.string.camera_allow))
             }
+            OutlinedButton(onClick = onImport, enabled = importEnabled) { Text(stringResource(R.string.camera_import)) }
         }
     }
 }

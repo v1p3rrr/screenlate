@@ -835,6 +835,8 @@
     <string name="camera_more_actions">Autres actions</string>
     <string name="camera_photo_description">Photo</string>
     <string name="camera_export">Enregistrer dans la galerie</string>
+    <string name="camera_import">Importer depuis la galerie</string>
+    <string name="camera_import_failed">Impossible d’ouvrir l’image.</string>
     <string name="camera_exported">Photo enregistrée dans la galerie.</string>
     <string name="camera_export_failed">Impossible d’enregistrer la photo dans la galerie.</string>
     <string name="camera_status_recognized">Reconnu</string>

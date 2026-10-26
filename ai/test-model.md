@@ -71,6 +71,11 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   (`assembleDebugAndroidTest`, `adb install -r -t`) on `Pixel_10_Pro` and run them with `am instrument -w -e class …
   com.vpr.screenlate.debug.test/androidx.test.runner.AndroidJUnitRunner`, which keeps the installed app and its data
   (their fixture is isolated); uninstall the test APK and run `debug-device.sh install` to bind the service again.
+- Images from other apps: the Files app shares a file to the app with a read grant (select it, then Share). `am start
+  -a android.intent.action.SEND --eu android.intent.extra.STREAM …` from the shell carries no grant, so it only checks
+  the "could not be opened" path. On API 30 the Files app and its picker ignore `input tap` and long presses on file
+  items (only buttons react): select through ⋮ → Select all, or move to the item with `KEYCODE_TAB` and the arrow keys
+  and press `KEYCODE_ENTER`.
 
 ## Cases
 
@@ -485,9 +490,9 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM27 | The status strip over a photo: the language chip (flag, name, ▾), Recognize filled while there is no result or a change is pending and as a text button otherwise, hidden while recognizing; the status line "Recognized · N of M regions · time" (regions only with more than one), "Recognizing · k of M regions" with progress along the strip's bottom; a language change tints the strip and adds "Language changed" (a frame and bold text with the e-ink theme) | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
 | CAM28 | The language menu from the chip, over a photo and over the live camera: the header, every turned-on language with its flag, "Active" under the app's active language, "Dictionary missing" or "Recognition model missing" under unready ones, a check on the selected one; Manage languages opens Settings → Languages; with the menu open the bubble reads nothing | F | M | 2026-10-26 (API 37) |
 | CAM29 | The live camera: the 4:3 frame at the photo's viewer size with a blurred live copy around it and no black band at the bottom (plain black with the e-ink theme); the chip floats over the preview; the white ring shutter shrinks when pressed, a spinner replaces its disc during capture; the zoom pill above it resets to 1×; the captured photo keeps the resolution it had before the blur stream | F | U CameraPhotoControlsTest (fill steps); I LiveCameraTest; M | 2026-10-26 (API 30/37) |
-| CAM30 | Top bar: over a photo ✕ at the left and New photo as an icon; ⋮ holds Save to gallery, Save to history (only while the photo is outside the history and saving is manual), History and Camera settings; over the live camera with a photo the close icon at the left returns to it, the flash icon at the right | F | M | 2026-10-26 (API 37) |
+| CAM30 | Top bar: over a photo ✕ at the left and New photo as an icon; ⋮ holds Save to gallery, Save to history (only while the photo is outside the history and saving is manual), History, Import from gallery and Camera settings; over the live camera ⋮ holds History, Import from gallery and Camera settings; over the live camera with a photo the close icon at the left returns to it, the flash icon at the right | F | M | 2026-10-26 (API 37) |
 | CAM31 | The partial-result dialog: the warning icon, the count of missing regions with "Words in these regions can't be looked up.", a small picture of the photo with the missing regions marked, the causes; Retry keeps the recognized regions | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
-| CAM32 | Camera access off or blocked → an icon, a title, the text and a filled button; deleting an unsaved photo on closing shows "Photo deleted"; loading shows "Opening photo…"; recognition blocked by a missing dictionary or model → the dialog is titled "Can't recognize <language>" | F | U CameraViewModelTest; M | 2026-10-26 (API 37) |
+| CAM32 | Camera access off or blocked → an icon, a title, the text, a filled button and Import from gallery under it; deleting an unsaved photo on closing shows "Photo deleted"; loading shows "Opening photo…"; recognition blocked by a missing dictionary or model → the dialog is titled "Can't recognize <language>" | F | U CameraViewModelTest; M | 2026-10-26 (API 37) |
 | CAM33 | A zoomed photo keeps its zoom and center when the strip changes height (pending tint, a wrapped status line) | N | U PhotoViewportTest; M | |
 | CAM34 | ✕ over a photo: a photo in the history closes without a question and stays in the history; one outside it with manual saving asks "The current photo isn't saved to history and will be deleted" — Save to history keeps it there and opens the camera, Delete shows "Photo deleted", Cancel keeps it open; with automatic saving no question | F | U CameraViewModelTest; I UnsavedPhotoDialogTest (API 30); M | 2026-10-26 (API 30/37) |
 | CAM35 | ⋮ Save to history → "Saved to history" and the item leaves the menu; with Save automatically on, a capture is in the history at once (thumbnail written) and the item is hidden; turning the switch on saves the open photo | F | U CameraViewModelTest, CameraSettingsViewModelTest, PhotoStoreTest; M | 2026-10-26 (API 37) |
@@ -497,6 +502,11 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM39 | Camera settings from ⋮ and from Settings (the row before Appearance): Save automatically, Photo limit and Size limit, MB (digits only, 0 = none), the usage "N photos · size" or "No photos in history"; lowering a limit below the history asks "The N oldest photos…" — Cancel restores the field, Delete trims, the open photo too when it is among them | F | U CameraSettingsViewModelTest, HistoryLimitsTest, PhotoStoreTest; M | 2026-10-26 (API 37) |
 | CAM40 | Clear history → "All photos in history will be deleted." → the history and its folders are empty; the photo open on the Camera tab, being in the history, is deleted and the tab shows the live camera; an open photo never saved (manual saving) stays | F | U PhotoStoreTest, CameraViewModelTest, CameraSettingsViewModelTest; M | 2026-10-26 (API 37; the unsaved case by unit test only) |
 | CAM41 | Room v2 → v3 keeps the photos (earlier history ordered by id, the current photo outside it); thumbnails are upright 320 px JPEGs | F | I PhotoDatabaseTest | 2026-10-26 (API 37) |
+| CAM42 | The round import button left of the shutter, ⋮ Import from gallery over a photo and over the live camera, and the button on the camera-access page open the system photo picker for one image; closing the picker changes nothing and leaves no staged file; the buttons are off while the page is busy | F | M | 2026-10-26 (API 30/37) |
+| CAM43 | A picked image opens as the current photo and is recognized at once in the chip's language; with Save automatically it is in the history at once; its history tile shows the import time; an EXIF-rotated JPEG shows upright | F | U CameraViewModelTest; M | 2026-10-26 (API 30/37) |
+| CAM44 | An unsaved current photo with manual saving → the question comes after the pick: Cancel keeps the photo and drops the copy, Delete opens the import, Save to history keeps both; a failed save keeps the photo | F | U CameraViewModelTest; M | 2026-10-26 (API 30/37) |
+| CAM45 | Share → Screenlate for one image from another app: the app comes to the front on the Camera tab from any tab and imports it as in CAM43–CAM44; during the first run the tab stays and the image opens when the Camera tab is first opened; without a read grant → "The image could not be opened." and the photo stays; a link to the app's own provider or a `file:` path → nothing opens, no crash | F | U CameraViewModelTest (the queue), ShareImageActivityTest; M | 2026-10-26 (API 30/37) |
+| CAM46 | Formats: JPEG, PNG, WebP and HEIF are stored as they came (same bytes); GIF, BMP and others become a PNG of the upright pixels, scaled down past 24 MP; a file the phone cannot decode → "The image could not be opened." with no file left | F | U PhotoImportsTest; I PhotoImportDeviceTest; M | 2026-10-26 (API 30/37) |
 
 
 
@@ -544,6 +554,48 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-26, `features/camera-lookup`, importing images and sharing them to the app (uncommitted build on `ea48441d`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Builds: API 37 an x86_64-only copy of the debug APK (storage thresholds lowered for the install, deleted after);
+  API 30 the universal debug APK.
+- Root `assembleDebug testDebugUnitTest`: 1652 JVM tests, 0 failures, 5 skipped; `:app:lintDebug` and
+  `:core:photos:lintDebug` with no findings in the new code or strings.
+- API 37 instrumented `PhotoImportDeviceTest` 3/3 (JPEG bytes and orientation kept, a BMP becomes a PNG the viewer
+  reads, text rejected); the test APK uninstalled after.
+- API 37 by hand: the import button left of the shutter; closing the picker → no change, `.staging` empty (CAM42);
+  a JPEG with EXIF orientation 6 → upright, the stored bytes identical, recognized at once (CAM43); ⋮ over a photo:
+  Save to gallery, Save to history, History, Import from gallery, Camera settings; over the live camera: History,
+  Import from gallery, Camera settings (CAM30); a GIF over an unsaved photo → the question after the pick, Cancel →
+  the photo kept and the copy deleted; again → Delete → stored as PNG, the old folder gone; a BMP → Save to history →
+  the old photo in the history with a thumbnail (CAM44, CAM46); a share from the shell without a grant → "The image
+  could not be opened." (CAM45); a share from the Files app while on the Settings tab → the Camera tab and the
+  question, Delete → the image current; Save automatically on, a shared JPEG → no question, "Photo 28 saved to the
+  history"; the history tiles at the import times with the Japanese flag (CAM43); camera access blocked → "Open
+  settings" and "Import from gallery" → imported and saved (CAM32, CAM42).
+- API 30 by hand: a share from the Files app during the first run → the app in front, still on the first-run question;
+  after the first run (Japanese, JMdict and the recommended extras) the Camera tab opened the shared GIF as a PNG of
+  1,145,923 bytes, as on API 37, and recognized it (CAM45); ⋮ Import from gallery opened the Files app's picker (no
+  system photo picker on this image); a PNG picked over the unsaved photo → the question → Save to history → the GIF
+  in the history with a thumbnail, the PNG current with its 602,500 original bytes (CAM44, CAM46).
+- Findings, fixed: a share that reached the app without a read grant (the shell's `am start`) did nothing, as passing
+  the grant on threw a SecurityException that the start helper swallowed; the share activity now passes the image on
+  without the grant flag when it holds none, and the Camera page says it cannot open it. Lint then flagged the
+  exported share activity (UnsafeIntentLaunch): any app could hand it a link to the app's own providers or a `file:`
+  path into its data. It now takes only another app's `content:` link through `IntentSanitizer`. The first build of
+  that crashed on every share (the sanitizer requires a component rule) and the second dropped every link (it keeps
+  EXTRA_STREAM only with the read-grant flag allowed); both were found on API 37 before the commit. The final build on
+  API 37: the app's own log link and a `file:` path to its preferences → nothing opens, no crash; a media link from
+  the shell → "The image could not be opened."; a share from the Files app → imported and recognized. Lint reports
+  the Uri read from the share as an intent and ignores `@SuppressLint` and `tools:ignore` there, so `app/lint.xml`
+  ignores UnsafeIntentLaunch for that file alone.
+- Not checked by hand: a restart from the recent apps does not import the shared image again (it needs the process
+  stopped, which these checks never do).
+- New: CAM42–CAM46, all F. CAM30 and CAM32 reworded for the import items.
+
+Left on the emulators: API 37 Save automatically off, no photos, camera access granted, the test images and their
+media rows deleted, the storage threshold settings deleted, the service bound; API 30 the debug APK reinstalled to
+bring back the first run it had before, the test image deleted, the service bound. Both shut down.
 
 ### 2026-10-26, `features/camera-lookup`, the photo history and Camera settings (uncommitted build on `9d3b8c24`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
 

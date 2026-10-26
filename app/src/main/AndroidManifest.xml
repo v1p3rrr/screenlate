@@ -78,6 +78,20 @@
             </intent-filter>
         </activity>
 
+        <!-- "Share -> Screenlate" for an image: passes it to the Camera page in the app's task and closes. -->
+        <activity
+            android:name=".camera.ShareImageActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".update.UpdateReceiver"
             android:exported="false" />

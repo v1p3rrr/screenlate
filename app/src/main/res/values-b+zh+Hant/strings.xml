@@ -821,6 +821,8 @@
     <string name="camera_more_actions">更多操作</string>
     <string name="camera_photo_description">照片</string>
     <string name="camera_export">儲存至相簿</string>
+    <string name="camera_import">從相簿匯入</string>
+    <string name="camera_import_failed">無法開啟圖片。</string>
     <string name="camera_exported">照片已儲存至相簿。</string>
     <string name="camera_export_failed">無法將照片儲存至相簿。</string>
     <string name="camera_status_recognized">已辨識</string>

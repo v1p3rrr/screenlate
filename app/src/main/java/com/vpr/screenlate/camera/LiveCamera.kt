@@ -89,7 +89,8 @@ import kotlinx.coroutines.delay
 
 /**
  * The live back camera. The preview shows the whole 4:3 frame a photo gets; around it a blurred copy of the live image
- * fills the rest of the area (plain black on e-ink). [overlay] draws over the preview, such as the language chip.
+ * fills the rest of the area (plain black on e-ink). [start] and [end] are the round buttons left and right of the
+ * shutter; [overlay] draws over the preview, such as the language chip.
  */
 @Composable
 internal fun LiveCamera(
@@ -97,7 +98,8 @@ internal fun LiveCamera(
     busy: Boolean,
     onFlashAvailable: (Boolean) -> Unit,
     onCapture: (suspend (File) -> Unit) -> Unit,
-    side: @Composable () -> Unit = {},
+    start: @Composable () -> Unit = {},
+    end: @Composable () -> Unit = {},
     overlay: @Composable BoxScope.() -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -264,7 +266,7 @@ internal fun LiveCamera(
                 }
                 Spacer(Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(Modifier.size(HISTORY_BUTTON))
+                    Box(Modifier.size(HISTORY_BUTTON), contentAlignment = Alignment.Center) { start() }
                     Spacer(Modifier.width(SHUTTER_GAP))
                     Shutter(enabled = ready && !busy, busy = busy) {
                         onCapture { file ->
@@ -293,7 +295,7 @@ internal fun LiveCamera(
                         }
                     }
                     Spacer(Modifier.width(SHUTTER_GAP))
-                    Box(Modifier.size(HISTORY_BUTTON), contentAlignment = Alignment.Center) { side() }
+                    Box(Modifier.size(HISTORY_BUTTON), contentAlignment = Alignment.Center) { end() }
                 }
             }
         }

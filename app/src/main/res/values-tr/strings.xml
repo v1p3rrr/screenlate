@@ -828,6 +828,8 @@
     <string name="camera_more_actions">Diğer işlemler</string>
     <string name="camera_photo_description">Fotoğraf</string>
     <string name="camera_export">Galeriye kaydet</string>
+    <string name="camera_import">Galeriden içe aktar</string>
+    <string name="camera_import_failed">Görüntü açılamadı.</string>
     <string name="camera_exported">Fotoğraf galeriye kaydedildi.</string>
     <string name="camera_export_failed">Fotoğraf galeriye kaydedilemedi.</string>
     <string name="camera_status_recognized">Tanındı</string>

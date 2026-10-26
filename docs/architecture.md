@@ -105,6 +105,18 @@ Only a complete write and stream close publish the image. Failure/cancellation d
 Camera action reports success/failure, does not recognize again, and leaves the exported copy independent of private
 document deletion. No OCR sidecar, backup integration or broad storage permission is added.
 
+`PhotoImports` (`PhotoImporter`) copies an image from the system photo picker or the share sheet into a capture file
+of the store. A file `BitmapRegionDecoder` reads (JPEG, PNG, WebP, HEIF), as the viewer and recognition need, keeps its
+bytes and EXIF orientation; anything else is decoded with `ImageDecoder` (orientation applied, sRGB, scaled to at most
+24 megapixels) and stored as PNG, and a file it cannot decode is rejected. `CameraViewModel` then takes it the way of a
+capture (`replaceCurrent`, recognition, automatic saving); with manual saving and an unsaved current photo it first
+holds the copy and asks (`CameraState.askingImport`). Picker results and shared images queue until the photo is
+loaded and the page is free. "Share → Screenlate" reaches `ShareImageActivity`, which runs in the sending app's task
+and passes the image, with a read grant in the clip data, to the main screen in the app's task; `MainActivity` hands
+it to `SharedImages` and selects the Camera tab, except during the first run. Being exported, the activity reads the
+share through `IntentSanitizer` and takes only another app's `content:` link, so a sender cannot make the app read its
+own providers or files.
+
 `PhotoHistory` (implemented by `PhotoStore`) keeps photos apart from the current one without copying them: a photo
 row has `saved`, `savedAt` and the language of its last recognition (Room v3; the migration orders earlier rows by id
 and leaves the language empty until the next save reads it from the snapshot). Replacing or closing the current photo

@@ -67,9 +67,19 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   open one included (owner's change). Checks: 1636 JVM tests, 0 failures, 5 skipped; lint without findings in the
   camera code; API 37 `PhotoDatabaseTest` 9/9 and the manual flows, API 30 `UnsavedPhotoDialogTest` 3/3 (run log
   2026-10-26 "the photo history and Camera settings"; CAM34–CAM41).
-- Next concrete action: phase 3, the system photo picker (an import button left of the shutter, ⋮ Import from
-  gallery, a button under the camera-permission explanation, as in design A). Check the decision table first; ask the
-  owner only choices it does not settle (in Russian, AskUserQuestion).
+- Phase 3 (existing-image input) is DONE (2026-10-26, commit "Import images from the photo picker and the share
+  sheet"): `PhotoImports`/`PhotoImporter` in core:photos (original bytes for JPEG, PNG, WebP and HEIF, else a PNG of
+  the upright pixels, at most 24 MP; undecodable files rejected), `CameraViewModel.importImage`/`answerImport` with a
+  queue that waits for a loaded, idle page, `CameraState.askingImport` for the question after the pick, the import
+  button left of the shutter (`LiveCamera`'s `start` slot), ⋮ Import from gallery over a photo and over the live
+  camera, the button on the camera-access page; `ShareImageActivity` (no UI) passes a shared image with its read
+  grant to `MainActivity`, which hands it to `SharedImages` and selects the Camera tab (not during the first run).
+  The share activity takes only another app's `content:` link (`IntentSanitizer`).
+  Checks: 1652 JVM tests, 0 failures, 5 skipped; lint without findings in the new code; API 37
+  `PhotoImportDeviceTest` 3/3 and the manual flows on API 37 and API 30 (run log 2026-10-26 "importing images and
+  sharing them to the app"; CAM42–CAM46).
+- Next concrete action: every phase is done. Left before any merge: the physical-device checks below on the owner's
+  phone (with the picker and a share from the phone's gallery added to them); merging is the owner's decision.
 - Physical sharpness, focus, flash, capture delay and repeated-capture/memory/drag baselines still need a phone;
   emulator evidence does not establish them. Phase 1 is accepted on emulators only; record these phone checks
   before any merge.
@@ -163,6 +173,8 @@ The feature provides a persistent photograph that the existing floating bubble i
 | History limits | Independent count and size limits, both default 0 (unlimited), as number fields (photos; MB) on Camera settings (owner, 2026-10-26). Evict oldest history entries to satisfy nonzero limits. Lowering a limit below the current history asks "N oldest photos will be deleted from history" with Delete / Cancel; Cancel keeps the old limit. The open photo is deleted too when it is among the oldest. |
 | Controls | Upper action icons; move actions into overflow only when they do not fit, except Save to gallery, which is always in the overflow menu as in design A (owner, 2026-10-26). Language and recognition status stay visible. |
 | Camera settings | One page reachable from Camera's ⋮ menu and general Settings, where its row stands before Appearance (owner, 2026-10-26). It holds automatic saving, the two limits, the history's usage ("37 photos · 182 MB") and Clear history with a confirmation ("All photos in history will be deleted."). Clear history deletes every photo in the history, the one open on the Camera tab included; an open photo never saved to the history (manual saving) stays (owner, 2026-10-26, replacing "the current photo stays on the Camera tab"). |
+| Importing images | Phase 3: the system photo picker, one image at a time (owner, 2026-10-26). Entry points as in design A: a round button left of the shutter, Import from gallery in ⋮ over a photo (before Camera settings) and over the live camera (after History, owner), and a button under the camera-permission explanation. The image becomes the current photo; with manual saving an unsaved current photo first gets the same three-button question as opening from the history, after the pick (closing the picker changes nothing; Cancel drops the picked image). Recognition starts at once in the camera language and automatic saving applies, as for a capture; a history tile shows the import time, not the date the image was taken (owner, 2026-10-26). |
+| Sharing images to the app | "Share → Screenlate" with one image opens it on the Camera tab and continues exactly as an import: the question, recognition, automatic saving (owner, 2026-10-26). |
 | Backup | No backup integration for this feature. |
 | Deferred | Import existing phone images in phase 3; photo rotation/cropping/perspective editing stays in the backlog. Anki attachment cropping is included earlier. |
 
@@ -266,8 +278,9 @@ app-text-only cannot bypass photo OCR requirements; stored OCR remains searchabl
 
 ### Phase 3: existing-image input
 
-- [ ] System photo picker imports into the same private document workflow, preserving orientation and replacement rules.
-- [ ] Recognize as a new document; tests, docs, translations, emulator checks, commit and push.
+- [x] System photo picker imports into the same private document workflow, preserving orientation and replacement rules.
+- [x] "Share → Screenlate" for one image takes the same path.
+- [x] Recognize as a new document; tests, docs, translations, emulator checks, commit and push.
 
 Backlog: manual photo rotation, cropping and perspective correction. They do not expand the phases above.
 
@@ -385,3 +398,14 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   the Camera tab included; the tab then shows the live camera. An open photo never saved to the history stays.
   Replaces "the current photo stays on the Camera tab" in the "Camera settings" row and updates "Closing the photo"
   and "History limits". Phase 2 is complete; next is phase 3 (system photo picker).
+- 2026-10-26: owner started phase 3 and answered its questions: one image per import; with manual saving the
+  three-button question about an unsaved current photo comes after the pick; recognition at once and automatic saving
+  as for a capture; the tile shows the import time; Import from gallery also in ⋮ over the live camera. Owner added
+  "Share → Screenlate" for an image to this phase (rows "Importing images" and "Sharing images to the app").
+- 2026-10-26: phase 3 implemented and checked on API 37 and API 30; no decision changed. Details the table left open,
+  chosen in implementation: formats the photo viewer reads are kept as they came, others become a PNG scaled down past
+  24 MP; a picked image waits until the Camera page has loaded its photo and is idle; a share during the first run
+  does not switch tabs and opens when the Camera tab is first opened; a share without a read grant says "The image
+  could not be opened."; a share of a link to the app's own providers or a `file:` path is ignored (found by lint);
+  the API 30 emulator has no system photo picker and gets the Files app's picker instead.
+  Every phase is complete; the physical-device checks remain.

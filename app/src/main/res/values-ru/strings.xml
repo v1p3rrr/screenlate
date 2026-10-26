@@ -843,6 +843,8 @@
     <string name="camera_more_actions">Другие действия</string>
     <string name="camera_photo_description">Фотография</string>
     <string name="camera_export">Сохранить в галерею</string>
+    <string name="camera_import">Импорт из галереи</string>
+    <string name="camera_import_failed">Не удалось открыть изображение.</string>
     <string name="camera_exported">Снимок сохранён в галерею.</string>
     <string name="camera_export_failed">Не удалось сохранить снимок в галерею.</string>
     <string name="camera_status_recognized">Распознано</string>

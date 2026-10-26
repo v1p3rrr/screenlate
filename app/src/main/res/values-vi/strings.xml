@@ -821,6 +821,8 @@
     <string name="camera_more_actions">Thao tác khác</string>
     <string name="camera_photo_description">Ảnh</string>
     <string name="camera_export">Lưu vào thư viện</string>
+    <string name="camera_import">Nhập từ thư viện</string>
+    <string name="camera_import_failed">Không mở được hình ảnh.</string>
     <string name="camera_exported">Đã lưu ảnh vào thư viện.</string>
     <string name="camera_export_failed">Không thể lưu ảnh vào thư viện.</string>
     <string name="camera_status_recognized">Đã nhận dạng</string>

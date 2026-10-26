@@ -35,7 +35,7 @@ class PhotoGallery @Inject constructor(
     internal suspend fun saveImage(image: PhotoImage): Uri = withContext(Dispatchers.IO) {
         val resolver = context.contentResolver
         val mime = image.mimeType()
-        val extension = when (mime) { "image/png" -> "png"; "image/webp" -> "webp"; else -> "jpg" }
+        val extension = when (mime) { "image/png" -> "png"; "image/webp" -> "webp"; "image/heif" -> "heic"; else -> "jpg" }
         val name = "Screenlate_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS")) + ".$extension"
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, name)

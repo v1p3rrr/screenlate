@@ -11,6 +11,7 @@ import com.vpr.screenlate.core.photos.PhotoExports
 import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoHistory
+import com.vpr.screenlate.core.photos.PhotoImports
 import com.vpr.screenlate.core.photos.PhotoViewport
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
@@ -26,11 +27,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * @property askingImport an imported image waits until the user decides about the current photo, which is not in the
+ * history ([closingAsks]).
+ */
 data class CameraState(
     val loaded: Boolean = false,
     val photo: PhotoDocument? = null,
@@ -38,11 +44,12 @@ data class CameraState(
     val busy: Boolean = false,
     val loadFailed: Boolean = false,
     val exporting: Boolean = false,
+    val askingImport: Boolean = false,
 ) {
     val live: Boolean get() = loaded && (photo == null || takingNew)
 }
 
-enum class CameraEvent { CAPTURE, DELETE, DELETED, LOAD, EXPORT_FAILED, EXPORTED, SAVED, SAVE_FAILED }
+enum class CameraEvent { CAPTURE, IMPORT, DELETE, DELETED, LOAD, EXPORT_FAILED, EXPORTED, SAVED, SAVE_FAILED }
 
 /**
  * Whether closing [photo], or opening another one in its place, asks first: it would be deleted, and the user saves
@@ -61,6 +68,8 @@ class CameraViewModel @Inject constructor(
     private val exports: PhotoExports,
     private val history: PhotoHistory,
     private val preferences: CameraPreferences,
+    private val imports: PhotoImports,
+    shared: SharedImages,
 ) : ViewModel() {
     private val lookup = CameraLookup(sources)
     private val mutableState = MutableStateFlow(CameraState(takingNew = savedState[NEW_PHOTO] ?: false))
@@ -69,6 +78,10 @@ class CameraViewModel @Inject constructor(
     val events = messages.receiveAsFlow()
     private var viewport: Pair<Long, PhotoViewport>? = null
     private var obscured = false
+
+    /** The copy of an imported image while [CameraState.askingImport]; if it is lost, the store deletes it at the next start. */
+    private var pendingImport: File? = null
+    private val picked = Channel<String>(Channel.CONFLATED)
 
     /** The latest photo of the history, shown on the button next to the shutter. */
     val latest: StateFlow<HistoryEntry?> = history.entries
@@ -88,7 +101,16 @@ class CameraViewModel @Inject constructor(
         publish()
     }
 
-    init { observePhoto() }
+    init {
+        observePhoto()
+        viewModelScope.launch {
+            // A picker result can arrive before the photo is loaded, in a page recreated after the process died.
+            merge(picked.receiveAsFlow(), shared.requests).collect { uri ->
+                state.first { it.loaded && !it.busy && !it.askingImport }
+                startImport(uri)
+            }
+        }
+    }
 
     fun retryLoading() {
         if (!state.value.loadFailed) return
@@ -163,29 +185,100 @@ class CameraViewModel @Inject constructor(
                 capture = documents.newCaptureFile()
                 write(capture)
                 coroutineContext.ensureActive()
-                val photo = documents.replaceCurrent(capture)
-                viewport = null
-                savedState[NEW_PHOTO] = false
-                mutableState.value = state.value.copy(photo = photo, takingNew = false)
-                recognition.recognize(photo)
-                if (preferences.history.first().autoSave) save(photo.id)
+                adopt(capture)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 Log.w(TAG, "Capture failed: " + e.javaClass.simpleName)
                 messages.send(CameraEvent.CAPTURE)
             } finally {
-                withContext(NonCancellable) {
-                    capture?.let { file ->
-                        try {
-                            documents.discard(file)
-                        } catch (e: Exception) {
-                            Log.w(TAG, "Discarding capture failed: " + e.javaClass.simpleName)
-                        }
-                    }
-                }
+                discard(capture)
                 mutableState.value = state.value.copy(busy = false)
                 publish()
+            }
+        }
+    }
+
+    /**
+     * Copies the image at [uri], a photo picker result, and opens it as a new photo, as a capture would, once the page
+     * is free. An unsaved current photo that would be deleted is asked about first ([CameraState.askingImport]).
+     * Images shared to the app ([SharedImages]) take the same way.
+     */
+    fun importImage(uri: String) {
+        picked.trySend(uri)
+    }
+
+    private fun startImport(uri: String) {
+        mutableState.value = state.value.copy(busy = true)
+        publish()
+        viewModelScope.launch {
+            var copy: File? = null
+            try {
+                copy = documents.newCaptureFile()
+                imports.copy(uri, copy)
+                coroutineContext.ensureActive()
+                if (closingAsks(state.value.photo, preferences.history.first().autoSave)) {
+                    pendingImport = copy
+                    copy = null
+                    mutableState.value = state.value.copy(askingImport = true)
+                } else {
+                    adopt(copy)
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Import failed: " + e.javaClass.simpleName)
+                messages.send(CameraEvent.IMPORT)
+            } finally {
+                discard(copy)
+                mutableState.value = state.value.copy(busy = false)
+                publish()
+            }
+        }
+    }
+
+    /** The answer about the current photo before an import: save it, delete it ([save] false), or cancel ([save] null). */
+    fun answerImport(save: Boolean?) {
+        val copy = pendingImport ?: return
+        pendingImport = null
+        mutableState.value = state.value.copy(askingImport = false, busy = true)
+        publish()
+        viewModelScope.launch {
+            try {
+                val photo = state.value.photo
+                if (save == null || save && photo != null && !save(photo.id)) return@launch
+                adopt(copy)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Import failed: " + e.javaClass.simpleName)
+                messages.send(CameraEvent.IMPORT)
+            } finally {
+                discard(copy)
+                mutableState.value = state.value.copy(busy = false)
+                publish()
+            }
+        }
+    }
+
+    /** Makes [file] the current photo, recognizes it and, with automatic saving, adds it to the history. */
+    private suspend fun adopt(file: File) {
+        val photo = documents.replaceCurrent(file)
+        viewport = null
+        savedState[NEW_PHOTO] = false
+        mutableState.value = state.value.copy(photo = photo, takingNew = false)
+        recognition.recognize(photo)
+        if (preferences.history.first().autoSave) save(photo.id)
+    }
+
+    /** Deletes a capture or an imported copy left by a failure or a cancel; one that became the photo is moved already. */
+    private suspend fun discard(file: File?) {
+        if (file == null) return
+        withContext(NonCancellable) {
+            try {
+                documents.discard(file)
+            } catch (e: Exception) {
+                Log.w(TAG, "Discarding capture failed: " + e.javaClass.simpleName)
             }
         }
     }

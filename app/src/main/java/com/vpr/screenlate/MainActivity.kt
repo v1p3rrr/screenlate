@@ -18,20 +18,28 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.audio.LocalNetworkAskEffect
+import com.vpr.screenlate.camera.ShareImageActivity
+import com.vpr.screenlate.camera.SharedImages
 import com.vpr.screenlate.navigation.OcrModelsRequest
 import com.vpr.screenlate.navigation.ScreenlateNavHost
 import com.vpr.screenlate.overlay.OverlayIntents
 import com.vpr.screenlate.ui.theme.ScreenlateTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
+    @Inject lateinit var sharedImages: SharedImages
+
     /** Counts requests to open the Anki settings, from the launch intent and later ones. */
     private var ankiSettingsRequests by mutableIntStateOf(0)
     private var dictionariesRequests by mutableIntStateOf(0)
+
+    /** Counts images shared to the app; each opens the Camera page, which imports it from [sharedImages]. */
+    private var cameraRequests by mutableIntStateOf(0)
 
     /** The last request to open a language's on-device models, from the overlay's message. */
     private var ocrModelsRequest by mutableStateOf<OcrModelsRequest?>(null)
@@ -89,6 +97,7 @@ class MainActivity : ComponentActivity() {
                     debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),
                     ankiSettingsRequests = ankiSettingsRequests,
                     dictionariesRequests = dictionariesRequests,
+                    cameraRequests = cameraRequests,
                     ocrModelsRequest = ocrModelsRequest,
                 )
             }
@@ -106,6 +115,13 @@ class MainActivity : ComponentActivity() {
             OverlayIntents.OPEN_DICTIONARIES -> dictionariesRequests++
             OverlayIntents.OPEN_OCR_MODELS -> intent.getStringExtra(OverlayIntents.EXTRA_LANGUAGE)?.let { code ->
                 ocrModelsRequest = OcrModelsRequest(code, (ocrModelsRequest?.number ?: 0) + 1)
+            }
+            // A task restarted from the recent apps gets its first intent again, without the access to the image.
+            ShareImageActivity.OPEN_SHARED_IMAGE -> if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0) {
+                intent.clipData?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.uri?.let { uri ->
+                    sharedImages.offer(uri.toString())
+                    cameraRequests++
+                }
             }
         }
     }

@@ -2,10 +2,20 @@
 
 ## Camera photo lookup (2026-10-25)
 
-Phase 2 (internal photo history) is complete, after phase 1.5 (emulator acceptance) and the restyle after the
-owner's chosen design; all on `features/camera-lookup`, rebased onto `languages/main` at `073c50a4`. Checkout:
-`C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Latest commit: "Add the photo history and Camera settings"
-(find the hash with `git log -1`).
+Every phase is complete: phase 3 (images from the phone) after phase 2 (internal photo history), phase 1.5 (emulator
+acceptance) and the restyle after the owner's chosen design; all on `features/camera-lookup`, rebased onto
+`languages/main` at `073c50a4`. Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Latest commit:
+"Import images from the photo picker and the share sheet" (find the hash with `git log -1`).
+
+Images from the phone: the round button left of the shutter, ⋮ Import from gallery over a photo and over the live
+camera, and a button on the camera-access page open the system photo picker for one image; "Share → Screenlate" for
+an image opens the Camera tab with it (during the first run it waits until the Camera tab is opened). The image
+becomes the current photo and is recognized at once; automatic saving applies; an unsaved current photo gets the
+three-button question after the pick. JPEG, PNG, WebP and HEIF are kept as they came, other formats become a PNG.
+1652 JVM tests pass; `PhotoImportDeviceTest` 3/3 on API 37; the flows checked by hand on API 37 and API 30
+(CAM42–CAM46). Found and fixed: a share without a read grant did nothing (now "The image could not be opened."); any
+app could share a link to the app's own files (lint), now only another app's `content:` link is taken.
+Not checked by hand: no second import after a restart from the recent apps.
 
 History: manual Save to history in ⋮ or Save automatically after each capture; a grid page newest first with date and
 language flag, tap to open with the stored text, long press to select and delete; ✕ closes a photo, asking about one
@@ -46,9 +56,10 @@ photo crop→local Anki succeeded with a generated Japanese sentence and a 1541�
 app active language was Slovenian. The temporary Japanese Anki settings were restored. Gallery success, byte identity
 and survival after private deletion were verified. No owner's collection, account, sync or AnkiWeb operation.
 
-Next: phase 3 (system photo picker), not started. No merge of the camera branch into either main branch. Emulators,
-test APKs and the shared lock are cleaned up; API 37 has no current photo, automatic saving off and no limits; API 30
-has the universal debug APK at its original unanswered first run.
+Next: the physical-device checks on the phone (sharpness, focus, flash, capture delay, memory, and now the picker and
+a share from the phone's gallery); merging is the owner's decision. No merge of the camera branch into either main
+branch. Emulators, test APKs and the shared lock are cleaned up; API 37 has no current photo, automatic saving off and
+no limits; API 30 has the universal debug APK at its original unanswered first run.
 
 ## Release from `main`: open items (2026-10-23, owner: come back to it later)
 

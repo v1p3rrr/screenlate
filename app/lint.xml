@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- ShareImageActivity reads only a sanitized link to another app's image (a Uri) and starts nothing the sender
+         sent; lint takes the Uri for an intent. Annotations and tools:ignore do not reach this check. -->
+    <issue id="UnsafeIntentLaunch">
+        <ignore path="src/main/java/com/vpr/screenlate/camera/ShareImageActivity.kt" />
+    </issue>
+</lint>

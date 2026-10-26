@@ -828,6 +828,8 @@
     <string name="camera_more_actions">Weitere Aktionen</string>
     <string name="camera_photo_description">Foto</string>
     <string name="camera_export">In Galerie speichern</string>
+    <string name="camera_import">Aus Galerie importieren</string>
+    <string name="camera_import_failed">Das Bild konnte nicht geöffnet werden.</string>
     <string name="camera_exported">Foto in der Galerie gespeichert.</string>
     <string name="camera_export_failed">Das Foto konnte nicht in der Galerie gespeichert werden.</string>
     <string name="camera_status_recognized">Erkannt</string>

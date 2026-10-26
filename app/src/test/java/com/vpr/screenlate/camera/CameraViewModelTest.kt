@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelStore
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.photos.CameraPreferences
+import com.vpr.screenlate.core.photos.InvalidPhotoException
 import com.vpr.screenlate.core.photos.LookupSource
 import com.vpr.screenlate.core.photos.LookupSources
 import com.vpr.screenlate.core.photos.PhotoDocument
@@ -101,14 +102,24 @@ class CameraViewModelTest {
         assertThat(model.events.first()).isEqualTo(CameraEvent.EXPORTED)
     }
 
+    private val imported = mutableListOf<Pair<String, File>>()
+    private var importFailure: Exception? = null
+    private val imports = com.vpr.screenlate.core.photos.PhotoImports { uri, target ->
+        imported += uri to target
+        importFailure?.let { throw it }
+    }
+    private lateinit var shared: SharedImages
+
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
+        shared = SharedImages()
         documents = Documents()
         sources = LookupSources()
         history = FakeHistory(documents.current)
         preferences = cameraPreferences()
-        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession(), recognition, exports, history, preferences)
+        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession(), recognition, exports, history,
+            preferences, imports, shared)
         store.put("camera", model)
     }
 
@@ -127,7 +138,8 @@ class CameraViewModelTest {
                 emitAll(documents.current)
             }
         }
-        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession(), recognition, exports, history, preferences)
+        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession(), recognition, exports,
+            history, preferences, imports, shared)
         store.put("camera", model)
         model.onForeground()
         advanceUntilIdle()
@@ -229,6 +241,136 @@ class CameraViewModelTest {
         assertThat(documents.replaced).isEqualTo(0)
         assertThat(documents.discarded).hasSize(1)
         assertThat(model.state.value.busy).isFalse()
+    }
+
+    @Test
+    fun anImportOpensAsANewPhotoAndIsRecognized() = runTest {
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        assertThat(imported.single().first).isEqualTo("content://picked")
+        assertThat(documents.replaced).isEqualTo(1)
+        assertThat(model.state.value.photo?.id).isEqualTo(2)
+        assertThat(model.state.value.live).isFalse()
+        assertThat(model.state.value.busy).isFalse()
+        assertThat(recognitionCalls).isEqualTo(1)
+        assertThat(history.saved).isEmpty()
+    }
+
+    @Test
+    fun anImportOverTheLiveCameraOfAPhotoReplacesIt() = runTest {
+        documents.current.value = photo().copy(saved = true)
+        advanceUntilIdle()
+        model.newPhoto()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        assertThat(model.state.value.askingImport).isFalse()
+        assertThat(model.state.value.photo?.id).isEqualTo(2)
+        assertThat(model.state.value.takingNew).isFalse()
+    }
+
+    @Test
+    fun anUnsavedPhotoIsAskedAboutAfterThePickAndCancelKeepsIt() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        assertThat(model.state.value.askingImport).isTrue()
+        assertThat(model.state.value.busy).isFalse()
+        assertThat(documents.replaced).isEqualTo(0)
+        model.answerImport(null)
+        advanceUntilIdle()
+        assertThat(model.state.value.askingImport).isFalse()
+        assertThat(model.state.value.photo?.id).isEqualTo(1)
+        assertThat(documents.discarded).containsExactly(imported.single().second)
+        assertThat(recognitionCalls).isEqualTo(0)
+    }
+
+    @Test
+    fun deletingTheUnsavedPhotoOpensTheImport() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        model.answerImport(false)
+        advanceUntilIdle()
+        assertThat(model.state.value.photo?.id).isEqualTo(2)
+        assertThat(history.saved).isEmpty()
+        assertThat(recognitionCalls).isEqualTo(1)
+    }
+
+    @Test
+    fun savingTheUnsavedPhotoKeepsItInTheHistoryAndOpensTheImport() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        model.answerImport(true)
+        advanceUntilIdle()
+        assertThat(history.saved).containsExactly(1L)
+        assertThat(model.state.value.photo?.id).isEqualTo(2)
+    }
+
+    @Test
+    fun aFailedSaveKeepsThePhotoAndDropsTheImport() = runTest {
+        documents.current.value = photo()
+        history.saveFails = true
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        model.answerImport(true)
+        advanceUntilIdle()
+        assertThat(model.state.value.photo?.id).isEqualTo(1)
+        assertThat(documents.replaced).isEqualTo(0)
+        assertThat(documents.discarded).containsExactly(imported.single().second)
+        assertThat(model.events.first()).isEqualTo(CameraEvent.SAVE_FAILED)
+    }
+
+    @Test
+    fun automaticSavingImportsWithoutAQuestionIntoTheHistory() = runTest {
+        preferences.setAutoSave(true)
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        assertThat(model.state.value.askingImport).isFalse()
+        assertThat(history.saved).containsExactly(2L)
+        assertThat(model.state.value.photo?.saved).isTrue()
+    }
+
+    @Test
+    fun anImageThatCannotBeReadKeepsThePhotoWithAMessage() = runTest {
+        documents.current.value = photo()
+        importFailure = InvalidPhotoException()
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        assertThat(model.state.value.askingImport).isFalse()
+        assertThat(model.state.value.photo?.id).isEqualTo(1)
+        assertThat(model.state.value.busy).isFalse()
+        assertThat(documents.discarded).containsExactly(imported.single().second)
+        assertThat(model.events.first()).isEqualTo(CameraEvent.IMPORT)
+    }
+
+    @Test
+    fun aSharedImageWaitsUntilThePhotoIsLoaded() = runTest {
+        val load = CompletableDeferred<Unit>()
+        val slowStore = object : PhotoDocuments by documents {
+            override val current = flow {
+                load.await()
+                emitAll(documents.current)
+            }
+        }
+        model = CameraViewModel(slowStore, sources, SavedStateHandle(), CameraSession(), recognition, exports, history,
+            preferences, imports, shared)
+        store.put("camera", model)
+        shared.offer("content://shared")
+        advanceUntilIdle()
+        assertThat(imported).isEmpty()
+        load.complete(Unit)
+        advanceUntilIdle()
+        assertThat(imported.single().first).isEqualTo("content://shared")
+        assertThat(model.state.value.photo?.id).isEqualTo(2)
     }
 
     @Test

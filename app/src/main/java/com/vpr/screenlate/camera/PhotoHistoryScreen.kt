@@ -384,8 +384,28 @@ internal fun UnsavedPhotoDialog(onSave: () -> Unit, onDelete: () -> Unit, onDism
 @Composable
 internal fun HistoryButton(thumbnail: File?, enabled: Boolean, onClick: () -> Unit) {
     val eInk = LocalEInk.current
-    val label = stringResource(R.string.camera_history)
     val image = rememberThumbnail(thumbnail.takeUnless { eInk })
+    ShutterSideButton(stringResource(R.string.camera_history), enabled, onClick) {
+        if (image != null) {
+            Image(image, null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+        } else {
+            Icon(painterResource(R.drawable.ic_history), null, tint = if (eInk) Color.Black else Color.White)
+        }
+    }
+}
+
+/** The round button left of the shutter: opens the system photo picker. */
+@Composable
+internal fun ImportButton(enabled: Boolean, onClick: () -> Unit) {
+    val eInk = LocalEInk.current
+    ShutterSideButton(stringResource(R.string.camera_import), enabled, onClick) {
+        Icon(painterResource(R.drawable.ic_image), null, tint = if (eInk) Color.Black else Color.White)
+    }
+}
+
+@Composable
+private fun ShutterSideButton(label: String, enabled: Boolean, onClick: () -> Unit, content: @Composable () -> Unit) {
+    val eInk = LocalEInk.current
     Box(
         Modifier.size(HISTORY_BUTTON).clip(CircleShape)
             .background(if (eInk) Color.White else Color.Black.copy(alpha = 0.55f))
@@ -393,13 +413,7 @@ internal fun HistoryButton(thumbnail: File?, enabled: Boolean, onClick: () -> Un
             .semantics { contentDescription = label }
             .border(2.dp, if (eInk) Color.Black else Color.White, CircleShape),
         contentAlignment = Alignment.Center,
-    ) {
-        if (image != null) {
-            Image(image, null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-        } else {
-            Icon(painterResource(R.drawable.ic_history), null, tint = if (eInk) Color.Black else Color.White)
-        }
-    }
+    ) { content() }
 }
 
 /** A history thumbnail decoded off the main thread; null while it loads or when there is none. */

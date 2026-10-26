@@ -164,6 +164,7 @@ private enum class Tab(@param:StringRes val label: Int, @param:DrawableRes val i
  * @param ankiSettingsRequests each increment opens the Anki settings (from the overlay's grey ➕).
  * @param dictionariesRequests each increment opens the Dictionaries screen (from search without a dictionary).
  * @param ocrModelsRequest opens a language's on-device models (from the overlay's message that the device cannot read).
+ * @param cameraRequests each increment opens the Camera page (an image shared to the app), except during the first run.
  * @param firstRun starts on the question which language the user learns.
  */
 @Composable
@@ -176,6 +177,7 @@ fun ScreenlateNavHost(
     ankiSettingsRequests: Int = 0,
     dictionariesRequests: Int = 0,
     ocrModelsRequest: OcrModelsRequest? = null,
+    cameraRequests: Int = 0,
     tip: BackgroundTipViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
@@ -221,6 +223,10 @@ fun ScreenlateNavHost(
     val onTabRoot = entry?.destination?.hasRoute(tab.root::class) == true
     BackHandler(enabled = tab != Tab.HOME && onTabRoot) { select(Tab.HOME) }
     val barShown = entry?.let(::showsBar) ?: (start == HomeRoute)
+    // The Camera page imports the image when it opens; during the first run it waits until the user goes there.
+    LaunchedEffect(cameraRequests) {
+        if (cameraRequests > 0 && barShown) select(Tab.CAMERA)
+    }
     // One Scaffold for every page: the NavHost is not recreated when the bar shows or hides.
     Scaffold(
         bottomBar = { if (barShown) TabBar(tab, settingsBadge, select) },
