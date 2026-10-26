@@ -11,11 +11,19 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
-@Database(entities = [PhotoEntity::class, CurrentPhotoEntity::class], version = 1, exportSchema = true)
+@Database(entities = [PhotoEntity::class, CurrentPhotoEntity::class], version = 2, exportSchema = true)
 abstract class PhotoDatabase : RoomDatabase() {
     abstract fun photoDao(): PhotoDao
+
+    companion object {
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) { db.execSQL("ALTER TABLE photos ADD COLUMN attemptFile TEXT") }
+        }
+    }
 }
 
 /**
@@ -38,6 +46,7 @@ data class PhotoEntity(
     val recognitionFile: String? = null,
     val recognitionRevision: Int = 0,
     val saved: Boolean = false,
+    val attemptFile: String? = null,
 )
 
 /** The one row that names the current photo. */
@@ -78,10 +87,14 @@ abstract class PhotoDao {
 
     /** Names the photo's new recognition, unless another was committed since [expected]; the count of rows changed. */
     @Query(
-        "UPDATE photos SET recognitionFile = :file, recognitionRevision = :revision " +
+        "UPDATE photos SET recognitionFile = :file, recognitionRevision = :revision, attemptFile = NULL " +
             "WHERE id = :id AND recognitionRevision = :expected",
     )
     abstract suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int): Int
+
+    @Query("UPDATE photos SET attemptFile = :file WHERE id = :id AND recognitionRevision = :expected " +
+        "AND id IN (SELECT photoId FROM current_photo)")
+    abstract suspend fun setAttempt(id: Long, expected: Int, file: String): Int
 
     @Query("DELETE FROM current_photo")
     abstract suspend fun clearCurrent()
@@ -104,6 +117,7 @@ internal interface PhotoIndex {
 
     /** False when the photo is gone or has another recognition than [expected] by now. */
     suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int): Boolean
+    suspend fun setAttempt(id: Long, expected: Int, file: String): Boolean
     suspend fun clearCurrent()
     suspend fun delete(id: Long)
 }
@@ -116,6 +130,7 @@ internal class RoomPhotoIndex(private val dao: PhotoDao) : PhotoIndex {
     override suspend fun insertCurrent(photo: PhotoEntity) = dao.insertCurrent(photo)
     override suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int) =
         dao.setRecognition(id, expected, file, revision) == 1
+    override suspend fun setAttempt(id: Long, expected: Int, file: String) = dao.setAttempt(id, expected, file) == 1
     override suspend fun clearCurrent() = dao.clearCurrent()
     override suspend fun delete(id: Long) = dao.delete(id)
 }

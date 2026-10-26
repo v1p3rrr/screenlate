@@ -4,6 +4,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.OcrPage
+import com.vpr.screenlate.core.ocr.PhotoTilePage
 import java.io.File
 
 /**
@@ -22,6 +23,8 @@ data class PhotoDocument(
     val createdAt: Long,
     val revision: Int,
     val text: PhotoText,
+    val attempt: PhotoAttempt? = null,
+    val attemptUnreadable: Boolean = false,
 ) {
     val width: Int get() = if (orientation.swapsAxes) rawHeight else rawWidth
     val height: Int get() = if (orientation.swapsAxes) rawWidth else rawHeight
@@ -52,6 +55,8 @@ data class PhotoRecognition(
     val page: OcrPage,
     val failed: List<FailedRegion> = emptyList(),
     val recognizedAt: Long,
+    /** Original tile observations for retry; empty for snapshots written before tile processing was introduced. */
+    val tiles: List<PhotoTilePage> = emptyList(),
 )
 
 /**

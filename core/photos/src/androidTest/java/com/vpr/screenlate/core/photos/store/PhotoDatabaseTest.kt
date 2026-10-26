@@ -3,6 +3,7 @@ package com.vpr.screenlate.core.photos.store
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.ExifInterface
+import android.database.sqlite.SQLiteDatabase
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +20,9 @@ import com.vpr.screenlate.core.photos.PhotoOcrSettings
 import com.vpr.screenlate.core.photos.PhotoOrientation
 import com.vpr.screenlate.core.photos.PhotoRecognition
 import com.vpr.screenlate.core.photos.PhotoText
+import com.vpr.screenlate.core.photos.PhotoAttempt
+import com.vpr.screenlate.core.photos.PhotoTileResult
+import com.vpr.screenlate.core.ocr.PhotoTile
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -50,7 +54,51 @@ class PhotoDatabaseTest {
         folder.deleteRecursively()
     }
 
-    private fun open() = Room.databaseBuilder(context, PhotoDatabase::class.java, databaseName).build()
+    private fun open() = Room.databaseBuilder(context, PhotoDatabase::class.java, databaseName)
+        .addMigrations(PhotoDatabase.MIGRATION_1_2).build()
+
+    @Test
+    fun versionOneMetadataMigratesWithoutDroppingTheCurrentPhotoOrRecognition() = runTest {
+        database.close()
+        context.deleteDatabase(databaseName)
+        val path = context.getDatabasePath(databaseName)
+        path.parentFile!!.mkdirs()
+        SQLiteDatabase.openOrCreateDatabase(path, null).use { legacy ->
+            legacy.execSQL("CREATE TABLE photos (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, directory TEXT NOT NULL, " +
+                "rawWidth INTEGER NOT NULL, rawHeight INTEGER NOT NULL, orientation INTEGER NOT NULL, imageBytes INTEGER NOT NULL, " +
+                "createdAt INTEGER NOT NULL, recognitionFile TEXT, recognitionRevision INTEGER NOT NULL, saved INTEGER NOT NULL)")
+            legacy.execSQL("CREATE TABLE current_photo (slot INTEGER NOT NULL, photoId INTEGER NOT NULL, PRIMARY KEY(slot), " +
+                "FOREIGN KEY(photoId) REFERENCES photos(id) ON UPDATE NO ACTION ON DELETE CASCADE)")
+            legacy.execSQL("CREATE INDEX index_current_photo_photoId ON current_photo(photoId)")
+            legacy.execSQL("INSERT INTO photos VALUES (1, 'kept', 4000, 3000, 6, 42, 7, 'recognition-1', 1, 0)")
+            legacy.execSQL("INSERT INTO current_photo VALUES (0, 1)")
+            legacy.version = 1
+        }
+        database = open()
+        val current = database.photoDao().current()!!
+        assertThat(current.id).isEqualTo(1)
+        assertThat(current.recognitionFile).isEqualTo("recognition-1")
+        assertThat(current.recognitionRevision).isEqualTo(1)
+        assertThat(current.attemptFile).isNull()
+    }
+
+    @Test
+    fun tileProgressSurvivesReopeningWithoutBecomingCommittedText() = runTest {
+        val store = store(database)
+        val capture = store.newCaptureFile()
+        writeJpeg(capture, 64, 48, ExifInterface.ORIENTATION_NORMAL)
+        val photo = store.replaceCurrent(capture)
+        val tile = PhotoTile(0, 0, 64, 48)
+        val attempt = PhotoAttempt("progress", 0, Language.JAPANESE, PhotoOcrSettings(OcrEngines.CLOUD), listOf(tile),
+            listOf(PhotoTileResult(tile, page = OcrPage(64, 48, emptyList(), OcrEngineType.LENS))), 42)
+        store.saveAttempt(photo.id, attempt, true)
+        database.close()
+        database = open()
+        val restored = store(database).current.first()!!
+        assertThat(restored.attempt).isEqualTo(attempt)
+        assertThat(restored.text).isEqualTo(PhotoText.None)
+        assertThat(restored.image.isFile).isTrue()
+    }
 
     private fun store(database: PhotoDatabase) =
         PhotoStore(File(folder, "photos"), RoomPhotoIndex(database.photoDao()), BitmapImageProbe, { 7L }, Dispatchers.IO)

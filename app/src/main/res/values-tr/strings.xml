@@ -819,4 +819,17 @@
     <string name="camera_delete_failed">Fotoğraf silinemedi.</string>
     <string name="camera_photo_unreadable">Fotoğraf açılamadı.</string>
     <string name="camera_zoom_reset">1× yakınlaştırmaya dön</string>
+    <string name="camera_language">Fotoğraf dili</string>
+    <string name="camera_recognize">Fotoğrafı tanı</string>
+    <string name="camera_recognizing">Tanınıyor (%1$s): %2$d/%3$d</string>
+    <string name="camera_unrecognized">Tanınmadı</string>
+    <string name="camera_recognized">Tanındı: %1$s</string>
+    <string name="camera_pending">Ayarlar değişti</string>
+    <string name="camera_incomplete">Tanıma tamamlanmadı</string>
+    <string name="camera_partial">%2$d bölgenin %1$d tanesi tanınamadı.</string>
+    <string name="camera_interrupted">Tanıma kesildi. Tamamlanan bölgeler saklanır.</string>
+    <string name="camera_retry_failed">Eksik bölgeleri yeniden dene</string>
+    <string name="camera_recognition_failed">Fotoğraf tanınamadı. Kayıtlı metin korunur.</string>
+    <string name="camera_more_actions">Diğer işlemler</string>
+    <string name="camera_photo_description">Fotoğraf</string>
 </resources>

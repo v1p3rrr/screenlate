@@ -10,7 +10,7 @@ This note records existing-code facts and traps, not additional product decision
 - Worktree: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`, attached to the originating Codex chat.
 - Planning commit `7cf29809` is pushed. Phase 1.1 (storage and source selection) is built; the plan's handoff names
   its commit and the next phase. The owner resumed on 2026-10-26. Phase 1.2's real camera and viewer are complete;
-  the plan's handoff records checks, pending device acceptance and the next implementation steps for phase 1.3.
+  phase 1.3 now provides recognition and pan/zoom; final acceptance is recorded in the plan handoff.
 - This checkout has `local.properties` copied from the main checkout and all native submodules initialized (MNN from
   GitHub with `--depth 1`, hoshidicts recursively); see `build-environment.md`. Do not copy signing secrets or
   private dictionaries.
@@ -27,9 +27,60 @@ aimed character's source. RecognitionCodec v2 persists this and still reads v1. 
 assembly and TextLayout; sorted candidate indices preserve the old hit-test tie breaking and tolerance.
 `DeviceOcr.pin` freezes model/file identities and holds them until the attempt closes; cache release is deferred while
 pinned. `CompositeOcr.recognizePhotoTile` has no draft/aim/refinement and waits for every image reader before return,
-choosing cloud or local fallback with the existing offline/timeout/cooldown behavior. No camera wiring yet.
-Tests: OCR 165, photos 40, overlay 237 pass; app compilation and lint pass. Next is durable attempt storage and the
-region decoder/job coordinator, then camera controls/language/readiness and pan/zoom. Preserve this ordering at resume.
+choosing cloud or local fallback with the existing offline/timeout/cooldown behavior. Foundation commit `01d24c0e`
+was verified before wiring capture; the continuation below completes the feature path.
+
+### Durable attempts and process-owned work
+
+`PhotoDocuments.saveAttempt` writes a uniquely named, synced progress file before updating Room's pointer; it never
+changes committed text. Room v2 adds nullable `attemptFile` with a 1→2 migration. `AttemptCodec` (SLPA v1) checksums
+all attempt metadata. `RecognitionCodec` v3 keeps raw successful tiles, reads v1/v2, and forbids nested tile snapshots.
+Unreadable progress leaves old text and the original photo usable. Current-document reads share the store mutex and
+reload the current index pointer, avoiding a stale pointer after an old file has been removed.
+
+`PhotoRecognitionJobs` owns a process scope. It does not observe progress to launch work; only explicit recognition
+or retry starts it. Capture calls recognition once after successful replacement. Leaving Camera/backgrounding keeps
+work alive; replacement/deletion cancels obsolete work. A global semaphore limits tile workers to two, including
+readers still terminating from cancellation. Each outcome is persisted; assembly and publication happen only after
+all outcomes terminate. All-failed attempts retain previous text. Retry uses the original language/settings, preserves
+successful tile observations, and schedules only failed/unattempted tiles. Full recognition starts a fresh attempt.
+
+`PhotoRegions` opens the source before processing, keeps the decoder alive even after the file is unlinked, maps
+oriented tile bounds back to raw pixels, serializes decoding, and rotates only that tile. No full-resolution whole
+bitmap is allocated for OCR. Decoded/unpublished results are assigned inside the noncancellable IO block so prompt
+coroutine cancellation cannot leak them. Engine calls retain tile images until every reader terminates.
+
+### Camera adapter and viewer
+
+`CameraRecognitionController` combines a separate CameraPreferences DataStore, shared OCR settings, model identity,
+image-source readiness and jobs. The preferences file is in noBackupFilesDir, independent of resets/backups and the
+active app language. New attempts capture settings at the request; later language/model changes show pending state.
+`LanguageInstallation.observe(imageSource=true)` prevents APP_TEXT_ONLY bypass; retry readiness uses its saved engine
+mode. A recognized-photo lookup still checks dictionaries only, so a removed OCR model cannot disable saved text.
+
+The toolbar measures available width and reserves touch targets before moving actions to overflow. Language/status
+stay below it, with bounded scrolling for large text. Only terminal or restored incomplete work shows the warning;
+its dialog explains missing/total regions and offers retry. Modal dialogs present NoText to the overlay.
+
+`PhotoViewport.transformed` keeps the zoom focal point, bounds pan, centers short axes and clamps fit..8×fit. Viewport
+movement keeps source generation/layout/index identity. `PhotoViewer` draws a sampled fit base plus a debounced sharp
+visible-region patch when zoomed; every patch is positioned in original raw coordinates through the same EXIF matrix.
+Reopening fits again. Published display bitmaps are collected rather than recycled while Compose can still draw them.
+
+### Device verification tools
+
+API 37 Espresso input injection is broken on this emulator; API 30 runs Compose gesture assertions. The opt-in
+`PhotoGestureDriver` is in the library test APK, preserving the main process/service and using UiAutomation's
+DONT_SUPPRESS_ACCESSIBILITY_SERVICES flag. Invoke its class with `photoGesture=pinch|pan`, centerX/centerY and spans or
+pan deltas; it is skipped without explicit arguments and off emulators. It injects only public MotionEvents.
+`PhotoWorkflowTest` uses debug-only PhotoTestAccess, generates a 2800×2400 Japanese two-column page, and runs real
+Device OCR. Opt-in `photoFixture=partialCloud` runs real Cloud OCR then saves a synthetic one-tile-missing result for
+manual retry checks. These fixtures intentionally replace only the emulator's current photo and never touch Anki.
+
+Verified on API 37: real cloud tiles (four 1500×1500 regions), actual dictionary lookup, zoom/pan under a stationary
+bubble without OCR/screen reads, pending language changes, one-tile retry (one HTTP request) while backgrounded,
+and automatic OCR after real CameraX capture. Region/migration instrumentation passed 7/7. See the test-model run log
+for final totals, API 30 checks, restart checks and pending physical-device acceptance.
 
 ## Built in phase 1.2 (2026-10-26)
 
@@ -44,10 +95,10 @@ permission state checked on every resume. `LiveCamera` owns the controller; disp
 it. Flash is hidden when the bound camera has no flash. Capture waits for CameraX's terminal callback even after
 coroutine cancellation, because deleting a staging file before the camera stops writing it is unsafe.
 
-`PhotoViewer` currently fits only. It measures actual screen pixels, decodes a sampled bitmap on IO and draws raw
+`PhotoViewer` initially fitted only (extended by phase 1.3 above). It measures actual screen pixels, decodes a sampled bitmap on IO and draws raw
 pixels through the EXIF-to-view matrix. Decoding is not cancellable, so it retains ownership to completion, then
 recycles an unpublished cancelled result. A published bitmap is left for collection after disposal so Compose cannot
-draw a recycled bitmap. Pan/zoom, language controls and recognition are phase 1.3; new captures remain unrecognized.
+draw a recycled bitmap. The initial 1.2 milestone left new captures unrecognized; phase 1.3 now starts OCR.
 
 Checks: 1533 JVM tests, assembly and app lint; PhotoViewerTest painted pixels for all 8 orientations on API 30 and 37;
 LiveCameraTest real focus/pinch/reset on API 30 (SdkSuppress excludes API 37's broken Espresso injector); ProcessTextTest
@@ -76,9 +127,8 @@ The emulated cameras have no flash; actual flash behavior and real-page quality 
   `dictionaryReady` is required (no OCR model), the layout is cached per (document, revision), small-text bands are
   never scheduled, the engine chip uses the photo's recorded engines, and a note gets no picture (the photo crop is
   phase 1.4).
-- Deferred: the spatial index for `TextLayout.hitTest` (still a linear scan) comes with the photo tiles in 1.3,
-  when dense pages make it matter. Controller-level behavior (dock on leave, attach, re-aim on move) has no JVM test:
-  `OverlayController` needs a device; check it with the Camera page in 1.2.
+- The spatial index was added with phase 1.3. Controller-level behavior (dock on leave, attach, re-aim on move)
+  needs device checks in addition to the pure source-transition tests; actual photo gestures now have API 37 evidence.
 
 ## Camera page design (phase 1.2, worked out 2026-10-25)
 

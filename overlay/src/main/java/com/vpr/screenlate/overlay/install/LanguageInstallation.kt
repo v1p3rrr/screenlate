@@ -69,7 +69,7 @@ class LanguageInstallation @Inject constructor(
     private val device: DeviceOcr,
     private val settings: OverlaySettingsRepository,
 ) {
-    fun observe(language: Language): Flow<InstallationStatus> = combine(
+    fun observe(language: Language, imageSource: Boolean = false, engines: OcrEngines? = null): Flow<InstallationStatus> = combine(
         repository.dictionaries.map { all ->
             val missing = repository.missingFiles().mapTo(hashSetOf()) { it.id }
             all.filterNot { it.id in missing }
@@ -79,7 +79,8 @@ class LanguageInstallation @Inject constructor(
         models.models,
         settings.settings,
     ) { dictionaries, tasks, catalog, models, settings ->
-        installationStatus(language, dictionaries, tasks, catalog, models, bundled.language, device.reads(language), settings)
+        installationStatus(language, dictionaries, tasks, catalog, models, bundled.language, device.reads(language),
+            settings.copy(ocrEngines = engines ?: settings.ocrEngines), imageSource)
     }.distinctUntilChanged()
 
     suspend fun current(language: Language): InstallationStatus = observe(language).first()
@@ -94,7 +95,9 @@ internal fun installationStatus(
     bundledLanguage: Language,
     deviceReady: Boolean,
     settings: OverlaySettings,
+    imageSource: Boolean = false,
 ): InstallationStatus {
+    val requiresImage = imageSource || settings.textSource != TextSource.APP_TEXT_ONLY
     val own = dictionaries.filter { it.isFor(language) }
     val enabled = own.filter { it.enabled }
     val entries = catalog.entries.filter { it.isFor(language) }
@@ -106,7 +109,7 @@ internal fun installationStatus(
             CatalogCategory.OCR_MODEL -> {
                 val required = entries.flatMapTo(hashSetOf()) { it.requires }
                 entries.filter { it.isModel && it.model !in required }.none { entry -> models.any { it.id == entry.model } } &&
-                    settings.textSource != TextSource.APP_TEXT_ONLY
+                    requiresImage
             }
             else -> entries.filter { it.category == category }.none { entry -> enabled.any(entry::matches) }
         }
@@ -120,7 +123,7 @@ internal fun installationStatus(
     val latest = relevant.groupBy { it.catalogEntry ?: it.name }.values.map { it.last() }
     return InstallationStatus(
         language, missing, deviceReady,
-        settings.textSource != TextSource.APP_TEXT_ONLY && settings.ocrEngines == OcrEngines.DEVICE,
+        requiresImage && settings.ocrEngines == OcrEngines.DEVICE,
         relevant.filterNot { it.finished }, latest.count { it.state == ImportTask.State.FAILED },
     )
 }

@@ -195,14 +195,14 @@ class CompositeOcr internal constructor(
         pinnedDevice: OcrEngine?,
     ): OcrPage = coroutineScope {
         if (engines == OcrEngines.CLOUD || (engines == OcrEngines.BOTH && pinnedDevice == null)) {
-            return@coroutineScope recognizeWithLens(image, language).inLanguage(language)
+            return@coroutineScope recognizeWithLens(image, language)
         }
         val local = pinnedDevice ?: throw NoDeviceOcrException()
-        if (engines == OcrEngines.DEVICE) return@coroutineScope local.recognize(image, language).inLanguage(language)
+        if (engines == OcrEngines.DEVICE) return@coroutineScope local.recognize(image, language)
         val deviceResult = async { photoResult { local.recognize(image, language) } }
         val cloudResult = photoResult { recognizeWithLens(image, language) }
         val fallback = deviceResult.await()
-        (cloudResult.getOrNull() ?: fallback.getOrElse { throw cloudResult.exceptionOrNull()!! }).inLanguage(language)
+        cloudResult.getOrNull() ?: fallback.getOrElse { throw cloudResult.exceptionOrNull()!! }
     }
 
     private suspend fun photoResult(read: suspend () -> OcrPage): Result<OcrPage> = try {

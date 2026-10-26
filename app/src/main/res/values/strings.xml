@@ -823,4 +823,17 @@
     <string name="camera_delete_failed">The photo could not be deleted.</string>
     <string name="camera_photo_unreadable">The photo could not be opened.</string>
     <string name="camera_zoom_reset">Return to 1×</string>
+    <string name="camera_language">Photo language</string>
+    <string name="camera_recognize">Recognize photo</string>
+    <string name="camera_recognizing">Recognizing %1$s: %2$d/%3$d</string>
+    <string name="camera_unrecognized">Not recognized</string>
+    <string name="camera_recognized">Recognized: %1$s</string>
+    <string name="camera_pending">Settings changed</string>
+    <string name="camera_incomplete">Recognition incomplete</string>
+    <string name="camera_partial">%1$d of %2$d regions could not be recognized.</string>
+    <string name="camera_interrupted">Recognition was interrupted. Completed regions are kept.</string>
+    <string name="camera_retry_failed">Retry missing regions</string>
+    <string name="camera_recognition_failed">The photo could not be recognized. The stored text is kept.</string>
+    <string name="camera_more_actions">More actions</string>
+    <string name="camera_photo_description">Photo</string>
 </resources>

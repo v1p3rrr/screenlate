@@ -47,6 +47,21 @@ data class PhotoViewport(
     /** A distance on the screen, such as a touch tolerance, in photo pixels. */
     fun toPhotoDistance(screen: Float): Float = screen / scale
 
+    /** Keeps the focal photo point under [focusX]/[focusY], then pans and constrains the image to its visible edges. */
+    fun transformed(focusX: Float, focusY: Float, panX: Float, panY: Float, zoom: Float): PhotoViewport {
+        require(zoom.isFinite() && zoom > 0f && listOf(focusX, focusY, panX, panY).all { it.isFinite() })
+        val fit = fit(photoWidth, photoHeight, area).scale
+        val next = (scale * zoom).coerceIn(fit, fit * 8f)
+        val ratio = next / scale
+        fun constrain(offset: Float, start: Float, end: Float, size: Float): Float =
+            if (size <= end - start) start + (end - start - size) / 2 else offset.coerceIn(end - size, start)
+        return copy(
+            scale = next,
+            offsetX = constrain(focusX + (offsetX - focusX) * ratio + panX, area.left, area.right, photoWidth * next),
+            offsetY = constrain(focusY + (offsetY - focusY) * ratio + panY, area.top, area.bottom, photoHeight * next),
+        )
+    }
+
     companion object {
         /** The whole photo as large as it fits in [area], centered: the view a photo opens with. */
         fun fit(photoWidth: Int, photoHeight: Int, area: Box): PhotoViewport {

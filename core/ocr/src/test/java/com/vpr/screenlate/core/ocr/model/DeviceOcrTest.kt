@@ -90,6 +90,25 @@ class DeviceOcrTest {
     }
 
     @Test
+    fun cacheReleaseWaitsForTheLastPinnedAttempt() = runTest {
+        var releases = 0
+        val local = object : OcrEngine {
+            override val type = OcrEngineType.ML_KIT
+            override suspend fun recognize(image: Bitmap, language: Language) = OcrPage(1, 1, emptyList(), type)
+            override fun release() { releases++ }
+        }
+        val device = DeviceOcr(local, emptySet(), { emptyList() }, { emptyList() }, { null })
+        val first = device.pin(Language.ENGLISH)!!
+        val second = device.pin(Language.ENGLISH)!!
+        device.release()
+        assertThat(releases).isEqualTo(0)
+        first.close()
+        assertThat(releases).isEqualTo(0)
+        second.close()
+        assertThat(releases).isEqualTo(1)
+    }
+
+    @Test
     fun retryPinDoesNotSilentlySwitchToAnotherModel() = runTest {
         assertThat(device.pin(Language.ENGLISH, "tesseract-fast-eng")).isNull()
         assertThat(device.pin(Language.ENGLISH, "mlkit")!!.modelId).isEqualTo("mlkit")

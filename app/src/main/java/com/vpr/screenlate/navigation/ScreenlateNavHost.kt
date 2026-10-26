@@ -303,7 +303,10 @@ fun ScreenlateNavHost(
                     initialQuery = entry.toRoute<SearchRoute>().query,
                 )
             }
-            composable<CameraRoute> { CameraScreen() }
+            composable<CameraRoute> {
+                CameraScreen(onOpenDictionaries = { inSettings(DictionariesRoute) },
+                    onOpenModels = { language -> inSettings(BubbleRoute(ocrModels = language.code)) })
+            }
             composable<AnkiRoute> { entry -> AnkiSettingsScreen(onBack = back, showAudio = entry.toRoute<AnkiRoute>().audio) }
             composable<DictionariesRoute> {
                 DictionariesScreen(

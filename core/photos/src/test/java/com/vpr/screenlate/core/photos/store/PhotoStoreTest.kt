@@ -6,6 +6,11 @@ import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoOrientation
 import com.vpr.screenlate.core.photos.PhotoText
 import com.vpr.screenlate.core.photos.TestPhotos
+import com.vpr.screenlate.core.photos.PhotoAttempt
+import com.vpr.screenlate.core.photos.PhotoOcrSettings
+import com.vpr.screenlate.core.photos.PhotoTileResult
+import com.vpr.screenlate.core.ocr.PhotoTile
+import com.vpr.screenlate.core.ocr.OcrEngines
 import java.io.File
 import java.io.IOException
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +36,60 @@ class PhotoStoreTest {
         newCaptureFile().apply { writeText(content) }
 
     private suspend fun PhotoStore.currentNow(): PhotoDocument? = current.first()
+
+    private fun attempt(document: PhotoDocument, id: String = "one") = PhotoAttempt(id, document.revision,
+        com.vpr.screenlate.core.common.Language.JAPANESE, PhotoOcrSettings(OcrEngines.CLOUD),
+        listOf(PhotoTile(0, 0, 1500, 1500)), startedAt = 45)
+
+    @Test
+    fun progressSurvivesReopeningAndTidyingWithoutPublishingPartialText() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        val text = TestPhotos.recognition()
+        val recognized = store.commitRecognition(photo.id, photo.revision, text)!!
+        val empty = attempt(recognized)
+        assertThat(store.saveAttempt(photo.id, empty, replace = true)).isTrue()
+        val progress = empty.copy(results = listOf(PhotoTileResult(empty.tiles.single(), page = text.page)))
+        assertThat(store.saveAttempt(photo.id, progress)).isTrue()
+        val reopened = store()
+        reopened.newCaptureFile() // Tidying must preserve the file named by Room.
+        val restored = reopened.currentNow()!!
+        assertThat(restored.text).isEqualTo(PhotoText.Recognized(text))
+        assertThat(restored.attempt).isEqualTo(progress)
+        assertThat(restored.attemptUnreadable).isFalse()
+    }
+
+    @Test
+    fun supersededAttemptAndRevisionCannotWriteLateProgress() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        val old = attempt(photo)
+        val replacement = attempt(photo, "two")
+        store.saveAttempt(photo.id, old, true)
+        store.saveAttempt(photo.id, replacement, true)
+        assertThat(store.saveAttempt(photo.id, old)).isFalse()
+        val committed = store.commitRecognition(photo.id, photo.revision, TestPhotos.recognition())!!
+        assertThat(committed.attempt).isNull()
+        assertThat(store.saveAttempt(photo.id, replacement)).isFalse()
+        assertThat(store.currentNow()!!.attempt).isNull()
+        assertThat(photo.image.parentFile.listFiles()!!.map { it.name }).containsExactly("image", "recognition-1")
+    }
+
+    @Test
+    fun damagedProgressKeepsThePhotoAndItsCommittedText() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        val recognized = store.commitRecognition(photo.id, 0, TestPhotos.recognition())!!
+        store.saveAttempt(photo.id, attempt(recognized), true)
+        val row = index.current()!!
+        File(photo.image.parentFile, row.attemptFile!!).writeText("damaged")
+        val restored = store().currentNow()!!
+        assertThat(restored.attemptUnreadable).isTrue()
+        assertThat(restored.text).isEqualTo(recognized.text)
+        assertThat(restored.image.isFile).isTrue()
+        assertThat(store.saveAttempt(photo.id, attempt(recognized, "new"), true)).isTrue()
+        assertThat(store.currentNow()!!.attemptUnreadable).isFalse()
+    }
 
     @Test
     fun `a capture becomes the current photo and replaces the previous one`() = runTest {
@@ -269,7 +328,13 @@ internal class FakePhotoIndex : PhotoIndex {
 
     override suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int): Boolean {
         val row = rows.value[id]?.takeIf { it.recognitionRevision == expected } ?: return false
-        rows.value += id to row.copy(recognitionFile = file, recognitionRevision = revision)
+        rows.value += id to row.copy(recognitionFile = file, recognitionRevision = revision, attemptFile = null)
+        return true
+    }
+
+    override suspend fun setAttempt(id: Long, expected: Int, file: String): Boolean {
+        val row = rows.value[id]?.takeIf { it.recognitionRevision == expected && currentId.value == id } ?: return false
+        rows.value += id to row.copy(attemptFile = file)
         return true
     }
 

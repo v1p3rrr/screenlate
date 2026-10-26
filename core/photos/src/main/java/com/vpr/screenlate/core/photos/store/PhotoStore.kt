@@ -14,6 +14,7 @@ import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoOrientation
 import com.vpr.screenlate.core.photos.PhotoRecognition
 import com.vpr.screenlate.core.photos.PhotoText
+import com.vpr.screenlate.core.photos.PhotoAttempt
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -62,7 +63,8 @@ class PhotoStore internal constructor(
 
     override val current: Flow<PhotoDocument?> = index.observeCurrent()
         .distinctUntilChanged()
-        .map { row -> row?.let(::load) }
+        .map { mutex.withLock { index.current()?.let(::load) } }
+        .distinctUntilChanged()
         .flowOn(io)
 
     override suspend fun newCaptureFile(): File = locked {
@@ -118,6 +120,32 @@ class PhotoStore internal constructor(
         }
     }
 
+    override suspend fun saveAttempt(documentId: Long, attempt: PhotoAttempt, replace: Boolean): Boolean = locked {
+        val row = index.get(documentId)?.takeIf {
+            it.recognitionRevision == attempt.basedOn && index.current()?.id == documentId
+        } ?: return@locked false
+        if (!replace && attemptOf(row)?.id != attempt.id) return@locked false
+        val orientation = PhotoOrientation.fromExif(row.orientation)
+        val width = if (orientation.swapsAxes) row.rawHeight else row.rawWidth
+        val height = if (orientation.swapsAxes) row.rawWidth else row.rawHeight
+        require(attempt.tiles.all { it.right <= width && it.bottom <= height })
+        val directory = File(root, row.directory)
+        val name = "attempt-${UUID.randomUUID()}"
+        val file = File(directory, name)
+        writeAtomically(file, AttemptCodec.encode(attempt))
+        try {
+            if (!index.setAttempt(documentId, attempt.basedOn, name)) {
+                file.delete()
+                return@locked false
+            }
+        } catch (e: Exception) {
+            file.delete()
+            throw e
+        }
+        row.attemptFile?.let { File(directory, it).delete() }
+        true
+    }
+
     override suspend fun commitRecognition(documentId: Long, basedOn: Int, recognition: PhotoRecognition): PhotoDocument? = locked {
         val row = index.get(documentId)?.takeIf { it.recognitionRevision == basedOn } ?: return@locked null
         val directory = File(root, row.directory)
@@ -130,7 +158,8 @@ class PhotoStore internal constructor(
             return@locked null
         }
         row.recognitionFile?.let { File(directory, it).delete() }
-        documentOf(row.copy(recognitionFile = name, recognitionRevision = revision), PhotoText.Recognized(recognition))
+        row.attemptFile?.let { File(directory, it).delete() }
+        documentOf(row.copy(recognitionFile = name, recognitionRevision = revision, attemptFile = null), PhotoText.Recognized(recognition))
     }
 
     /** Runs [block] alone, after the leftovers of an interrupted change were deleted once. */
@@ -163,7 +192,7 @@ class PhotoStore internal constructor(
                 else -> {
                     kept += row.directory
                     File(root, row.directory).listFiles()
-                        ?.filter { it.name != IMAGE && it.name != row.recognitionFile }
+                        ?.filter { it.name != IMAGE && it.name != row.recognitionFile && it.name != row.attemptFile }
                         ?.forEach { it.deleteRecursively() }
                 }
             }
@@ -190,7 +219,7 @@ class PhotoStore internal constructor(
         val bytes = try {
             File(File(root, row.directory), name).readBytes()
         } catch (e: IOException) {
-            Log.w(TAG, "Cannot read the text of photo ${row.id}", e)
+            Log.w(TAG, "Cannot read the text of photo ${row.id}: " + e.javaClass.simpleName)
             null
         }
         val recognition = bytes?.let(RecognitionCodec::decode)
@@ -201,16 +230,31 @@ class PhotoStore internal constructor(
         return PhotoText.Recognized(recognition)
     }
 
-    private fun documentOf(row: PhotoEntity, text: PhotoText) = PhotoDocument(
-        id = row.id,
-        image = imageOf(row),
-        rawWidth = row.rawWidth,
-        rawHeight = row.rawHeight,
-        orientation = PhotoOrientation.fromExif(row.orientation),
-        createdAt = row.createdAt,
-        revision = row.recognitionRevision,
-        text = text,
-    )
+    private fun attemptOf(row: PhotoEntity): PhotoAttempt? {
+        val name = row.attemptFile ?: return null
+        return try {
+            AttemptCodec.decode(File(File(root, row.directory), name).readBytes())?.takeIf { it.basedOn == row.recognitionRevision }
+        } catch (e: IOException) {
+            Log.w(TAG, "Cannot read attempt of photo ${row.id}: " + e.javaClass.simpleName)
+            null
+        }
+    }
+
+    private fun documentOf(row: PhotoEntity, text: PhotoText): PhotoDocument {
+        val attempt = attemptOf(row)
+        return PhotoDocument(
+            id = row.id,
+            image = imageOf(row),
+            rawWidth = row.rawWidth,
+            rawHeight = row.rawHeight,
+            orientation = PhotoOrientation.fromExif(row.orientation),
+            createdAt = row.createdAt,
+            revision = row.recognitionRevision,
+            text = text,
+            attempt = attempt,
+            attemptUnreadable = row.attemptFile != null && attempt == null,
+        )
+    }
 
     private fun imageOf(row: PhotoEntity) = File(File(root, row.directory), IMAGE)
 

@@ -8,6 +8,8 @@ import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrParagraph
 import com.vpr.screenlate.core.ocr.OcrWord
+import com.vpr.screenlate.core.ocr.PhotoTile
+import com.vpr.screenlate.core.ocr.PhotoTilePage
 import com.vpr.screenlate.core.photos.FailedRegion
 import com.vpr.screenlate.core.photos.FailureCause
 import com.vpr.screenlate.core.photos.PhotoOcrSettings
@@ -26,7 +28,7 @@ import java.util.zip.CRC32
  */
 internal object RecognitionCodec {
     private const val MAGIC = 0x534C5052 // "SLPR"
-    const val VERSION = 2
+    const val VERSION = 3
 
     fun encode(recognition: PhotoRecognition): ByteArray {
         val bytes = ByteArrayOutputStream()
@@ -40,7 +42,9 @@ internal object RecognitionCodec {
         return bytes.toByteArray()
     }
 
-    fun decode(bytes: ByteArray): PhotoRecognition? {
+    fun decode(bytes: ByteArray): PhotoRecognition? = decode(bytes, allowTiles = true)
+
+    private fun decode(bytes: ByteArray, allowTiles: Boolean): PhotoRecognition? {
         if (bytes.size < HEADER_BYTES + CHECKSUM_BYTES) return null
         val body = bytes.size - CHECKSUM_BYTES
         val checksum = CRC32().apply { update(bytes, 0, body) }.value
@@ -51,7 +55,7 @@ internal object RecognitionCodec {
             if (input.readInt() != MAGIC) return null
             val version = input.readInt()
             if (version !in 1..VERSION) return null
-            input.readRecognition(version).takeIf { input.available() == 0 }
+            input.readRecognition(version, allowTiles).takeIf { input.available() == 0 }
         } catch (_: IOException) {
             null
         } catch (_: IllegalArgumentException) {
@@ -93,9 +97,19 @@ internal object RecognitionCodec {
             writeBox(region.box)
             writeString(region.cause.name)
         }
+        writeInt(recognition.tiles.size)
+        recognition.tiles.forEach { result ->
+            writeInt(result.tile.left)
+            writeInt(result.tile.top)
+            writeInt(result.tile.right)
+            writeInt(result.tile.bottom)
+            val bytes = encode(recognition.copy(page = result.page, failed = emptyList(), tiles = emptyList()))
+            writeInt(bytes.size)
+            write(bytes)
+        }
     }
 
-    private fun DataInputStream.readRecognition(version: Int): PhotoRecognition {
+    private fun DataInputStream.readRecognition(version: Int, allowTiles: Boolean): PhotoRecognition {
         val language = requireNotNull(Language.of(readString())) { "Unknown language" }
         val engines = OcrEngines.valueOf(readString())
         val deviceModel = readOptionalString()
@@ -126,12 +140,23 @@ internal object RecognitionCodec {
             val cause = readString().let { name -> FailureCause.entries.firstOrNull { it.name == name } ?: FailureCause.OTHER }
             FailedRegion(box, cause)
         }
+        val tiles = if (version < 3) emptyList() else {
+            val count = readCount()
+            require(allowTiles || count == 0) { "Nested tiles" }
+            List(count) {
+                val tile = PhotoTile(readInt(), readInt(), readInt(), readInt())
+                val bytes = ByteArray(readCount()).also { readFully(it) }
+                val result = requireNotNull(decode(bytes, allowTiles = false))
+                PhotoTilePage(tile, result.page)
+            }
+        }
         return PhotoRecognition(
             language = language,
             settings = PhotoOcrSettings(engines, deviceModel),
             page = OcrPage(width, height, paragraphs, engine),
             failed = failed,
             recognizedAt = recognizedAt,
+            tiles = tiles,
         )
     }
 

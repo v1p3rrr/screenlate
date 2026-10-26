@@ -456,15 +456,15 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| CAM1 | A recognized photo on the Camera page, pull the bubble out → the entry of the word under the aim opens from the stored text: the log has no capture, app text or cloud connection; the glyph shows the photo's recognition language | N | U ScreenReadsTest, M | |
-| CAM2 | Pan and zoom the photo under the resting bubble → the highlight and the popup follow the word; another word under the aim opens its entry | N | U TextFrameTest, M | |
+| CAM1 | A recognized photo on the Camera page, pull the bubble out → the entry of the word under the aim opens from the stored text: the log has no capture, app text or cloud connection; the glyph shows the photo's recognition language | F | U ScreenReadsTest, M | 2026-10-26 (API 37) |
+| CAM2 | Pan and zoom the photo under the resting bubble → the highlight and the popup follow the word; another word under the aim opens its entry | F | U TextFrameTest, M | 2026-10-26 (API 30/37) |
 | CAM3 | Aim at the toolbar, the letterbox or the part of a zoomed photo outside the viewer → no entry; a highlight is cut at the viewer's edge | N | U TextFrameTest, M | |
 | CAM4 | The live camera, a photo still loading or not recognized yet → pull-out and tap show nothing and do not scan the screen | N | U ScreenReadsTest, M | |
-| CAM5 | Bubble out over a photo, then another page, another app or the live camera → the bubble docks; back on the photo, the next pull-out takes its text without recognition | N | U SourceChangeTest, M | |
+| CAM5 | Bubble out over a photo, then another page, another app or the live camera → the bubble docks; back on the photo, the next pull-out takes its text without recognition | F | U SourceChangeTest, M | 2026-10-26 (API 37) |
 | CAM6 | Bubble out over the screen of another page, then a recognized photo is shown → the old entry closes and the photo's text is under the aim | N | U SourceChangeTest, M | |
 | CAM7 | Hold the bubble over a photo → copy and Open Screenlate, no language flags; the docked glyph returns to the active language once the photo is left | N | M | |
 | CAM8 | A note added over a photo has no screen picture | N | M | |
-| CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | N | U PhotoStoreTest, I PhotoDatabaseTest | |
+| CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | F | U PhotoStoreTest, I PhotoDatabaseTest | 2026-10-26 (API 37) |
 | CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
 | CAM11 | Capture → fitted current photo; New photo + Close or Back preserves it; a completed new capture replaces it; Delete + Cancel keeps it, Delete + confirm opens the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
 | CAM12 | Tap preview → focus indicator; pinch → camera zoom and ratio label; tap ratio → 1× | F | I LiveCameraTest (API 30), D (focus quality) | 2026-10-26 (API 30) |
@@ -474,6 +474,13 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM16 | Tile grid covers both axes/edges; overlap assembly keeps full boundary words, repeats, character boxes, paragraphs, vertical/RTL order and combining marks | F | U PhotoTilesTest, PhotoAssemblyTest | 2026-10-26 |
 | CAM17 | Indexed hit testing preserves the former linear algorithm's tolerance, center selection, ties and zero-area separator boxes | F | U BoxIndexTest, TextLayoutTest | 2026-10-26 |
 | CAM18 | Photo tile engine: Device makes no cloud call; Both waits for all readers, uses cloud or local fallback; pinned model/files ignore later changes; stored per-word provenance reads back and v1 still loads | F | U CompositeOcrTest, DeviceOcrTest, RecognitionCodecTest | 2026-10-26 |
+| CAM19 | Recognition publishes once after all tiles terminate; usable partial text stays searchable; warning explains failures and retry keeps successful tiles and original settings | F | U PhotoRecognitionJobsTest, CameraPhotoControlsTest; M | 2026-10-26 (API 37: real Cloud, one missing tile) |
+| CAM20 | Interrupted attempts and successful tiles survive process restart, remain separate from committed text and require explicit retry; Room v1 upgrades to v2; damaged progress preserves image/text | F | U PhotoStoreTest, AttemptCodecTest; I PhotoDatabaseTest | 2026-10-26 (API 37) |
+| CAM21 | Original-resolution region decoding handles all EXIF transforms and the far right/bottom edges without decoding a full-size whole image | F | I PhotoRegionsTest | 2026-10-26 (API 37) |
+| CAM22 | Camera language is independently remembered, limited to enabled languages; changes/settings show pending state and never rewrite actual OCR language or auto-recognize | F | U CameraPreferencesTest, CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
+| CAM23 | Successful capture starts recognition once; failed/cancelled capture preserves previous photo; work continues off Camera/backgrounded; cached lookup needs no OCR model and APP_TEXT_ONLY cannot bypass new image OCR readiness | F | U CameraViewModelTest, PhotoRecognitionJobsTest, LanguageInstallationTest; M | 2026-10-26 (API 37) |
+| CAM24 | Viewer pinch clamps fit..8×, pan clamps edges, reopening fits; only viewport changes and the source/layout generation stays; visible-region details remain sharp | F | U PhotoViewportTest, I PhotoViewerGestureTest (API 30); M (API 37) | 2026-10-26 (API 30/37) |
+
 
 ### NAV: bottom navigation
 
@@ -539,6 +546,43 @@ menu's search had started. BUB16 (new, first check, moved to F).
 
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-26, `features/camera-lookup`, recognition/viewer continuation after `01d24c0e`
+
+- App assembly/lint and targeted unit suites passed before final root checks: app 187, photos 56, overlay 238,
+  OCR 166. Coordinator tests cover terminal publication, two simultaneous workers, retained successful tiles,
+  all-failed preservation, explicit-only restart and cancellation while an image reader terminates.
+- API 37 `PhotoRegionsTest` + `PhotoDatabaseTest`: 7/7, all 8 EXIF transforms in original pixels, far edges,
+  Room migration 1→2 and progress restoration. Separate library test APK removed after checks.
+- Emulator-only `PhotoWorkflowTest`: real local ML Kit recognition of generated 2800×2400 Japanese two-column text,
+  four tiles and original coordinates; no cloud requests in Device mode. Opt-in partialCloud fixture: four real
+  cloud tiles at 1500×1500, then deliberately omit one saved tile for the UI retry scenario.
+- Actual bubble: pull-out attached stored Japanese text despite app active language Slovenian; dictionary popup and
+  highlights worked. Pinch and one-finger pan moved text beneath a stationary bubble and re-aimed from Japanese 語
+  to 写真. No screenshot/app-text read/cloud preparation/refinement occurred and no new OCR requests were sent.
+  Native public MotionEvent injection used a separate library test process with accessibility suppression disabled;
+  Espresso injection on API 37 is broken. Screenshots, counts and booleans used for evidence; no user text logged.
+- Camera language Japanese→Korean displayed Recognized: Japanese plus Settings changed, without OCR; restored Japanese.
+  Shared OCR Both→Cloud required explicit recognition; it completed while on Settings, published once, cleared pending.
+- Terminal warning: accessible top icon, 1 of 4 missing, network cause, Retry missing regions. Retry sent exactly one
+  real cloud request while the app was backgrounded; all four tiles were retained and the warning disappeared.
+- CameraX actual capture replaced the fixture with a 1280×960 EXIF-6 emulator frame; automatic OCR sent one 960×1280
+  cloud tile without a separate tap. Shared mode restored to Both. No Anki collection changes.
+- Emulator PSS observations (not physical-device baselines): fit + loaded dictionaries ~248 MB, zoom/lookup ~316 MB;
+  after replacement/refit ~190 MB, after leaving ~198 MB in a newly started process. Physical repeated-capture,
+  latency/sharpness/focus/flash remain pending.
+- Final root `assembleDebug testDebugUnitTest lintDebug --max-workers=1`: PASS, 1576 JVM tests, zero failures/errors.
+  After a final warning-message adjustment, app assembly/unit/lint and the test APK were rebuilt successfully.
+- API 30 `PhotoViewerGestureTest`, `PhotoViewerTest`, `LiveCameraTest`: 3/3 PASS. Actual pinch/pan updates only the
+  viewport, preserves source generation and recognition identity, and reopening fits again; all 8 painted EXIF
+  transforms and preview focus/pinch/reset remain correct. CAM24 promoted to F.
+- API 37 full shutdown/reboot restored the captured image, Japanese OCR and independent camera language. Both had
+  been restored while the saved result used Cloud: pending indication was correct. No new PhotoOCR/Lens request on
+  restoration. The emulator does not reconnect this accessibility service reliably after boot; manual toggle/rebind
+  was tested earlier. No app force-stop, app data reset or collection sync was used.
+- CAM1, CAM2, CAM5 and CAM9 promoted to F with their real-photo/restart evidence. CAM3/CAM7 remain N for their full
+  dedicated manual variations; CAM4 retains N until every inactive/loading variant is checked on-device. Physical
+  flash/sharpness/focus and repeated-capture performance are still pending, as are phase 1.4 photo attachments/export.
 
 ### 2026-10-26, `features/camera-lookup`, photo OCR foundation after `76a4f679`
 

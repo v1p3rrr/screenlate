@@ -24,6 +24,15 @@ and zoom reset on API 30, with CAMERA granted to the debug app. Run a class by i
 then `adb shell am instrument -w -e class com.vpr.screenlate.camera.PhotoViewerTest com.vpr.screenlate.debug.test/androidx.test.runner.AndroidJUnitRunner`. Keep camera quality, flash and
 real-page focus checks separate from the emulator's synthetic camera. Photographs stay outside cache and backup storage.
 
+Photo recognition tests are independent of screen scans: `PhotoTilesTest`/`PhotoAssemblyTest` cover the grid and seams;
+`PhotoRecognitionJobsTest` exercises terminal publication, two-worker bounds, retry and cancellation with fake engines.
+`PhotoStoreTest`/`AttemptCodecTest` cover recoverable progress. Instrumented `PhotoRegionsTest` checks original pixels
+for all EXIF transforms, and `PhotoDatabaseTest` verifies Room migration and progress restoration. `PhotoViewerGestureTest`
+checks real Compose pan/zoom, unchanged source identity and fit on reopen on API 30 (API 37's Espresso input injector
+is not supported). `PhotoWorkflowTest` replaces the current photo with a synthetic page only on emulators and runs
+real local recognition; its opt-in `-e photoFixture partialCloud` uses cloud recognition and leaves one missing region
+for manual warning/retry checks. It sends only that generated page. Neither workflow touches Anki.
+
 ## Dictionary catalog
 
 The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches

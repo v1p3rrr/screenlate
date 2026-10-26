@@ -3,6 +3,7 @@ package com.vpr.screenlate.camera
 import android.graphics.Bitmap
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,10 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.geometry.Box as PhotoBox
@@ -35,23 +42,31 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.CancellationException
 
-/** A fit-to-area view; recognition coordinates remain in the original, oriented image. */
+/** Pan/zoom changes only the viewport. A small fitted bitmap and a visible-region detail keep display memory bounded. */
 @Composable
 internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewport?) -> Unit) {
     var area by remember(document.id) { mutableStateOf<PhotoBox?>(null) }
-    val viewport = area?.takeIf { it.width > 0f && it.height > 0f }?.let {
+    val photoLabel = stringResource(R.string.camera_photo_description)
+    val fit = area?.takeIf { it.width > 0f && it.height > 0f }?.let {
         PhotoViewport.fit(document.width, document.height, it)
     }
-    val sample = viewport?.let { displaySampleSize(it.scale) }
+    var moved by remember(document.id) { mutableStateOf<PhotoViewport?>(null) }
+    val viewport = moved?.takeIf { it.area == area } ?: fit
+    val sample = fit?.let { displaySampleSize(it.scale) }
     var bitmap by remember(document.id, sample) { mutableStateOf<Bitmap?>(null) }
     var failed by remember(document.id, sample) { mutableStateOf(false) }
+    var detail by remember(document.id) { mutableStateOf<PhotoDetail?>(null) }
+    val detailSample = viewport?.let { displaySampleSize(it.scale) }
+    val detailRegion = if (detailSample != null && sample != null && detailSample < sample) visibleRawRegion(document, viewport) else null
     LaunchedEffect(document.id, sample) {
         if (sample == null) return@LaunchedEffect
         var decoded: Bitmap? = null
         var published = false
         try {
-            decoded = withContext(Dispatchers.IO + NonCancellable) { decodeForDisplay(document, sample) }
+            withContext(Dispatchers.IO + NonCancellable) { decoded = decodeForDisplay(document, sample) }
             coroutineContext.ensureActive()
             bitmap = decoded
             failed = decoded == null
@@ -63,6 +78,20 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
             if (!published) decoded?.recycle()
         }
     }
+    LaunchedEffect(document.id, detailRegion, detailSample) {
+        if (detailRegion == null || detailSample == null) { detail = null; return@LaunchedEffect }
+        delay(150)
+        var decoded: PhotoDetail? = null
+        var published = false
+        try {
+            withContext(Dispatchers.IO + NonCancellable) { decoded = decodeDetail(document, detailRegion, detailSample) }
+            coroutineContext.ensureActive()
+            detail = decoded
+            published = true
+        } catch (e: CancellationException) { throw e }
+        catch (_: java.io.IOException) { /* The fitted image remains usable while a detail patch fails. */ }
+        finally { if (!published) decoded?.bitmap?.recycle() }
+    }
     LaunchedEffect(document.id, viewport, bitmap) {
         onViewport(document.id, viewport.takeIf { bitmap != null })
     }
@@ -70,7 +99,18 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
         onDispose { onViewport(document.id, null) }
     }
     Box(
-        Modifier.fillMaxSize().background(Color.Black).onGloballyPositioned { coordinates ->
+        Modifier.fillMaxSize().clipToBounds().background(Color.Black).semantics {
+            contentDescription = photoLabel
+            if (viewport != null && fit != null) stateDescription = java.text.NumberFormat.getPercentInstance().format(viewport.scale / fit.scale)
+        }.pointerInput(document.id, fit) {
+            detectTransformGestures { centroid, pan, zoom, _ ->
+                val initial = moved?.takeIf { it.area == fit?.area } ?: fit
+                val bounds = area
+                if (initial != null && bounds != null) {
+                    moved = initial.transformed(centroid.x + bounds.left, centroid.y + bounds.top, pan.x, pan.y, zoom)
+                }
+            }
+        }.onGloballyPositioned { coordinates ->
             val origin = coordinates.positionOnScreen()
             area = PhotoBox(origin.x, origin.y, origin.x + coordinates.size.width, origin.y + coordinates.size.height)
         },
@@ -85,6 +125,10 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
             Canvas(Modifier.fillMaxSize()) {
                 withTransform({ transform(transform) }) {
                     drawImage(composed, dstSize = IntSize(document.rawWidth, document.rawHeight))
+                    detail?.let { patch ->
+                        drawImage(patch.bitmap.asImageBitmap(), dstOffset = IntOffset(patch.raw.left, patch.raw.top),
+                            dstSize = IntSize(patch.raw.width(), patch.raw.height()))
+                    }
                 }
             }
         } else if (failed) {

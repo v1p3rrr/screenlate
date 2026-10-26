@@ -33,8 +33,20 @@ class LanguageInstallationTest {
     private fun status(
         dictionaries: List<DictionaryEntity> = emptyList(), tasks: List<ImportTask> = emptyList(),
         catalog: Catalog = Catalog(listOf(entry("English"))), models: List<InstalledOcrModel> = emptyList(),
-        device: Boolean = true, settings: OverlaySettings = OverlaySettings(),
-    ) = installationStatus(Language.ENGLISH, dictionaries, tasks, catalog, models, Language.JAPANESE, device, settings)
+        device: Boolean = true, settings: OverlaySettings = OverlaySettings(), imageSource: Boolean = false,
+    ) = installationStatus(Language.ENGLISH, dictionaries, tasks, catalog, models, Language.JAPANESE, device, settings, imageSource)
+
+    @Test
+    fun photoCannotUseAppTextOnlyToBypassItsRecognitionModelButCachedLookupStillWorks() {
+        val settings = OverlaySettings(textSource = TextSource.APP_TEXT_ONLY, ocrEngines = OcrEngines.DEVICE)
+        assertThat(status(listOf(dictionary()), device = false, settings = settings).scanReady).isTrue()
+        val image = status(listOf(dictionary()), device = false, settings = settings, imageSource = true)
+        assertThat(image.scanReady).isFalse()
+        assertThat(image.needsDeviceModel).isTrue()
+        assertThat(image.dictionaryReady).isTrue()
+        assertThat(status(listOf(dictionary()), device = false,
+            settings = settings.copy(ocrEngines = OcrEngines.CLOUD), imageSource = true).scanReady).isTrue()
+    }
 
     @Test
     fun `a new language remains blocked while other languages are installed`() {

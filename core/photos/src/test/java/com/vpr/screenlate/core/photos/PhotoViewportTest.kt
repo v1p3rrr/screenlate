@@ -5,6 +5,29 @@ import com.vpr.screenlate.core.common.geometry.Box
 import org.junit.Test
 
 class PhotoViewportTest {
+
+    @org.junit.Test
+    fun zoomPreservesTheFocalPointAndIsBoundedAtFitAndEightTimesFit() {
+        val fit = PhotoViewport.fit(4000, 3000, com.vpr.screenlate.core.common.geometry.Box(20f, 100f, 1020f, 1900f))
+        val center = fit.toPhoto(520f, 1000f)!!
+        val zoomed = fit.transformed(520f, 1000f, 0f, 0f, 3f)
+        assertThat(zoomed.toPhoto(520f, 1000f)).isEqualTo(center)
+        val maximum = zoomed.transformed(520f, 1000f, 0f, 0f, 100f)
+        assertThat(maximum.scale).isEqualTo(fit.scale * 8)
+        val minimum = maximum.transformed(520f, 1000f, 0f, 0f, 0.001f)
+        assertThat(minimum).isEqualTo(fit)
+    }
+
+    @org.junit.Test
+    fun panCannotExposeBeyondThePhotoAndSmallAxesStayCentered() {
+        val fit = PhotoViewport.fit(4000, 1000, com.vpr.screenlate.core.common.geometry.Box(20f, 100f, 1020f, 1900f))
+        val moved = fit.transformed(520f, 1000f, 100000f, -100000f, 2f)
+        assertThat(moved.offsetX).isEqualTo(20f)
+        assertThat(moved.offsetY).isEqualTo(750f)
+        val other = moved.transformed(520f, 1000f, -100000f, 100000f, 1f)
+        assertThat(other.offsetX).isEqualTo(-980f)
+        assertThat(other.offsetY).isEqualTo(750f)
+    }
     /** A 4000 × 3000 photo in the part of a 1080 × 2400 screen between a top bar and the navigation. */
     private val area = Box(0f, 200f, 1080f, 2200f)
 

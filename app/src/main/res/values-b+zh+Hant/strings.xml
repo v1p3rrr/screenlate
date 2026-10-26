@@ -812,4 +812,17 @@
     <string name="camera_delete_failed">無法刪除照片。</string>
     <string name="camera_photo_unreadable">無法開啟照片。</string>
     <string name="camera_zoom_reset">恢復至 1 倍</string>
+    <string name="camera_language">照片語言</string>
+    <string name="camera_recognize">辨識照片</string>
+    <string name="camera_recognizing">正在辨識（%1$s）：%2$d/%3$d</string>
+    <string name="camera_unrecognized">尚未辨識</string>
+    <string name="camera_recognized">已辨識：%1$s</string>
+    <string name="camera_pending">設定已變更</string>
+    <string name="camera_incomplete">辨識不完整</string>
+    <string name="camera_partial">%2$d個區域中有%1$d個未能辨識。</string>
+    <string name="camera_interrupted">辨識已中斷。已完成的區域會保留。</string>
+    <string name="camera_retry_failed">重試未完成的區域</string>
+    <string name="camera_recognition_failed">無法辨識照片。已儲存的文字會保留。</string>
+    <string name="camera_more_actions">更多操作</string>
+    <string name="camera_photo_description">照片</string>
 </resources>

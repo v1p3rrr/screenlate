@@ -25,6 +25,9 @@ interface PhotoDocuments {
 
     suspend fun clearCurrent()
 
+    /** Stores progress without replacing committed text. [replace] starts a new attempt; updates must match its id. */
+    suspend fun saveAttempt(documentId: Long, attempt: PhotoAttempt, replace: Boolean = false): Boolean
+
     /**
      * Stores [recognition] as the text of photo [documentId] if its text is still at [basedOn], the revision the
      * recognition started from. Returns the photo with its new text; null, storing nothing, when the photo is gone or

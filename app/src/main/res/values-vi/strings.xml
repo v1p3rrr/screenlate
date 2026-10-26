@@ -812,4 +812,17 @@
     <string name="camera_delete_failed">Không xóa được ảnh.</string>
     <string name="camera_photo_unreadable">Không mở được ảnh.</string>
     <string name="camera_zoom_reset">Trở về 1×</string>
+    <string name="camera_language">Ngôn ngữ ảnh</string>
+    <string name="camera_recognize">Nhận dạng ảnh</string>
+    <string name="camera_recognizing">Đang nhận dạng (%1$s): %2$d/%3$d</string>
+    <string name="camera_unrecognized">Chưa nhận dạng</string>
+    <string name="camera_recognized">Đã nhận dạng: %1$s</string>
+    <string name="camera_pending">Đã đổi cài đặt</string>
+    <string name="camera_incomplete">Nhận dạng chưa hoàn tất</string>
+    <string name="camera_partial">Không thể nhận dạng %1$d trên tổng số %2$d vùng.</string>
+    <string name="camera_interrupted">Quá trình nhận dạng bị gián đoạn. Các vùng đã xử lý vẫn được lưu.</string>
+    <string name="camera_retry_failed">Thử lại các vùng còn thiếu</string>
+    <string name="camera_recognition_failed">Không thể nhận dạng ảnh. Văn bản đã lưu vẫn được giữ lại.</string>
+    <string name="camera_more_actions">Thao tác khác</string>
+    <string name="camera_photo_description">Ảnh</string>
 </resources>

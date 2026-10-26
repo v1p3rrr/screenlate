@@ -45,12 +45,21 @@ Aiming again only repeats steps 3–6; the screen is not scanned again until the
 
 ### Camera page and image ownership
 
-The photo OCR foundation is separate from screen drafts and refinement. `PhotoTiles` covers the original pixel space
+Photo OCR is separate from screen drafts and refinement. `PhotoTiles` covers the original pixel space
 with overlapping regions; `PhotoAssembly` joins duplicate observations and line/paragraph fragments, retaining
 character boxes, logical word order and per-word engine provenance. `TextLayout` uses an immutable spatial index with
 the same selection and tolerance as the previous linear hit test. A pinned device session fixes a photo attempt's
 local model; the tile path waits for both readers to terminate before releasing the image and uses cloud with local
-fallback. Recognition storage version 2 reads older version 1 snapshots and preserves per-word provenance.
+fallback. `PhotoRegions` retains the source file and serializes EXIF-aware original-resolution region decoding;
+`PhotoRecognitionJobs` limits processing to two tiles at once, independently of screen small-text settings.
+
+Each attempt fixes its document, language and settings. Successful tile pages and failures are written atomically to
+a separate progress file, without changing committed lookup text. Room v2 stores its pointer (migration from v1).
+After all work terminates, the assembled snapshot replaces committed text once, including usable partial results.
+Version 3 snapshots retain raw tile observations and read versions 1 and 2. Retry keeps successful tiles and processes
+only missing regions. A process-owned job survives page disposal/backgrounding and cancels on replacement; stored
+progress never restarts itself after process death. Camera preferences have their own no-backup DataStore and survive
+settings reset, independently of photograph storage.
 
 The app shell has one NavHost inside a Scaffold with Home, Search, Camera and Settings tabs. Tab switches save and
 restore each tab's navigation stack; screens consume the bar's insets. First-launch setup and the debug viewer hide
@@ -60,12 +69,18 @@ the bar without replacing the NavHost. External lookup and installation requests
 retake state. CameraX's `LifecycleCameraController` and `PreviewView` live in `app`, bind only while capture is shown,
 and release on disposal. A capture uses the store's staging file and replaces the document only after CameraX's
 terminal callback and validation; cancellation waits for that callback before discarding the staging file.
-The document's lifetime is independent of the page, camera permission and accessibility service.
+The document's lifetime is independent of the page, camera permission and accessibility service. After successful
+replacement, `CameraRecognition` checks readiness with an explicit image source and starts recognition. Accessibility
+text settings cannot bypass image OCR requirements; cached photo lookups require dictionaries rather than a model.
+Language/settings changes show pending state and require explicit recognition. Upper controls expose progress,
+terminal partial warnings and retry; actions enter overflow only when their measured touch targets do not fit.
 
 `PhotoViewer` decodes a sampled display bitmap off the main thread and draws the stored pixels through an EXIF and
-viewport matrix, without rotating or copying the original image. It publishes the photo's measured screen bounds only
+viewport matrix, without rotating or copying the original image. One-finger pan and two-finger zoom update a bounded
+viewport from fit through 8× fit; zoom also decodes only the visible region for sharp display. Reopening fits again.
+It publishes the photo's measured screen bounds only
 after decoding. `CameraLookup` presents a source while the page is resumed: a committed recognition snapshot and
-viewport, or no text for preview, loading, failed decoding and an unrecognized photo. Backgrounding closes the source.
+viewport, or no text for preview, loading, failed decoding, dialogs and an unrecognized photo. Backgrounding closes the source.
 Old-document viewport callbacks are ignored. The display bitmap's sample does not alter stored OCR coordinates.
 
 ## Anki export

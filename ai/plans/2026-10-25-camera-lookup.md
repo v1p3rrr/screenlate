@@ -10,29 +10,33 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
-- State: phases 0, 1.1 and 1.2 are complete (2026-10-26). The owner resumed implementation, so the earlier pause no longer applies.
-  Phase 1.3 resumed explicitly on 2026-10-26 from clean pushed commit `76a4f679`; OCR implementation is in progress.
-  Current foundation: PhotoTiles (1500/200 grid), PhotoAssembly (seams/paragraph membership/directions), BoxIndex
-  used by TextLayout, word-level engine provenance and recognition codec v2 (reads v1), pinned DeviceOcr sessions,
-  CompositeOcr's terminal photo-tile path. Unit tests (OCR 165, photos 40, overlay 237), app compilation and lint pass.
-  This work is not yet wired into capture or the viewer; no claim that photo recognition is usable yet.
-  All phase 1.2 questions are answered (decision table rows Navigation bar to Deleting the photo); ask nothing again.
-- Resumed 2026-10-26 by the owner to inspect the intervening changes and continue from phase 1.2. Starting commit
-  f5a3ca43 was clean and matched origin. The continuation's milestone commit is
-  "Add camera capture and the persistent photo viewer" on `origin/features/camera-lookup`.
-- Foundation milestone commit subject: "Add tiled photo OCR assembly and indexed hit testing". After this milestone,
-  no uncommitted implementation is carried over. The earlier last commit `76a4f679` remains the complete camera UI.
-  Page tests also pass (146); no page script changed. No device behavior is claimed from this foundation checkpoint.
-  Next: persist attempts and successful tile pages, region decode with retained ownership, bounded recognition jobs;
-  then camera language/readiness/actions and viewer pan/zoom. Do not merge into either main branch.
-- Checks: `:app:assembleDebug :app:testDebugUnitTest :app:lintDebug` and root `testDebugUnitTest` with
-  `--max-workers=1` pass (1533 tests total, including 183 app tests, zero failures/errors). `:app:assembleDebugAndroidTest`
-  passes. API 37 class-specific instrumentation: `PhotoViewerTest` and `ProcessTextTest`, 3/3; API 30:
-  `PhotoViewerTest` and `LiveCameraTest`, 2/2. Both viewer runs check actual painted colors for all 8 EXIF transforms.
-  API 37 manual checks: permission denial/block/settings/grant, capture, fit viewer, retake/back, deletion/cancel,
-  replacement, full emulator shutdown/reboot, camera release, tab state/reselect/Back, external Anki route and
-  no-screen-scan preview gestures passed. API 30 tested real preview focus/pinch zoom/reset and first-run bar hiding.
-  No page scripts changed. Physical sharpness/flash/focus/timing and remaining NAV3/CAM cases are pending.
+- Phases 0, 1.1, 1.2 and 1.3 are complete. Last pushed foundation `01d24c0e`; completed continuation commit subject:
+  "Recognize persistent photos and add bounded viewer pan and zoom". All changes stay on `features/camera-lookup`.
+- Implemented continuation: PhotoAttempt/AttemptCodec; recognition codec v3 raw tiles (reads v1/v2); Room v2 migration;
+  atomic attempt-file progress; retained EXIF-aware region decoder; process-owned PhotoRecognitionJobs (max 2);
+  explicit failed-tile retry and terminal-only publication; separate no-backup CameraPreferences; image-source
+  readiness; CameraRecognition/auto-capture; visible status/language/partial-warning/overflow controls; fit..8×
+  bounded pan/zoom, with a sampled base plus sharp visible-region detail patches. 13 new strings in all 14 locales.
+- Required checks PASS: root `assembleDebug testDebugUnitTest lintDebug --max-workers=1`, 1576 JVM tests, 0 failures;
+  final app assembly/unit/lint/test APK rebuild after the warning UI adjustment; page scripts 146/146.
+  API 37 region/migration instrumentation 7/7, real Device OCR workflow 1/1 and opt-in Cloud fixture 1/1;
+  API 30 PhotoViewerGestureTest/PhotoViewerTest/LiveCameraTest 3/3. All 8 EXIF orientations checked.
+- Actual API 37 behavior: four 1500×1500 overlapping cloud tiles of a synthetic 2800×2400 page; final publication
+  while away from Camera; dictionary lookup, stationary-bubble pinch/pan and correct highlight without screen reads
+  or more OCR; pending-language/settings state; one missing tile retried with exactly one cloud request while
+  backgrounded; CameraX capture auto-recognized; cold device reboot restored the photo and text with no network OCR.
+  Detailed coverage and remaining manual variants are in `ai/test-model.md`.
+- Next concrete action is phase 1.4: inspect NoteSource/NoteContext, PopupNotes and CropView ownership. Add an image
+  source abstraction with screen and original-photo adapters, pin document/revision/language/image when adding a note,
+  fit a large source in the crop editor and inverse-map selection to original pixels. Preserve screen cancellation and
+  bitmap ownership. Then add explicit gallery export (ordinary photo, not OCR metadata). Read the Notes contract below
+  before editing. Do not expand to history/picker, and do not merge into either main branch.
+- Before claiming phase 1 complete: remaining CAM3/CAM4/CAM6/CAM7 and NAV3 variations, relevant existing popup/Anki/
+  language/navigation/settings regressions, instrumented crop checks and all phase 1.4 acceptance. Physical quality,
+  flash, focus, capture delay and repeated-capture/memory baselines remain pending; emulator evidence is not hardware acceptance.
+- Temporary shared OCR mode was restored to Both, camera language Japanese. Test APKs are removed during cleanup;
+  emulators are shut down and the owned lock released before this session ends. Main debug app/data stay installed.
+  Synthetic photo fixtures deliberately replace only emulator current photos. No owner's Anki data was touched.
 - Phase 1.2 implementation:
   - `navigation/ScreenlateNavHost.kt`: one Scaffold with a `NavigationBar` (Home, Search, Camera, Settings) on every
     page except the first run and the debug image viewer. Sub-pages stay root-level routes; a tab switch pops
@@ -54,16 +58,9 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
     bitmap through the EXIF matrix and publishes its viewport only after decoding. `CameraLookup` attaches only
     while resumed; live/loading/unrecognized/failed views remain NoText, with no screen fallback.
   - 16 new strings in all 14 locales. 15 JVM tests, `PhotoViewerTest` and `LiveCameraTest`. Human docs, module map,
-    this handoff and `ai/test-model.md` updated. No OCR is started by capture yet (phase 1.3).
-- Next for phase 1.3, in order:
-  1. Original-resolution 2D overlapping tile geometry in `core:ocr`, then a dedicated word/line/paragraph assembler.
-     Test edge coverage, seams/corners, legitimate repeated text, vertical/RTL text, separators and character boxes.
-  2. Recognition attempt ownership, bounded cloud concurrency (2), Device/Both semantics, atomic publication and
-     persistence of successful tiles plus failed metadata for retry. Existing `PhotoDocuments.commitRecognition`
-     stores only the final snapshot; extend storage for attempt data without discarding committed text or images.
-  3. Camera language preferences and explicit recognition/readiness, progress/partial-result warning/retry, viewer
-     pan/zoom and spatial index. Keep existing result language until an explicit new attempt commits.
-  4. Run recognition-dependent CAM cases and remaining navigation checks. Update documentation/checkpoints and push.
+    this handoff and `ai/test-model.md` updated. At the 1.2 checkpoint capture did not start OCR; phase 1.3 above supersedes that state.
+- After 1.3: phase 1.4 generalizes NoteSource image ownership and maps attachment crops to original photo pixels,
+  then adds explicit phone-gallery export. Existing photo definitions work; original-photo Anki attachments are absent.
 - First read: `ai/notes/camera-lookup.md` preserves the architecture investigation, what phase 1.1 built and the
   integration pitfalls.
 - Checks for phase 1.1: `assembleDebug testDebugUnitTest lintDebug` pass (`--max-workers=1`; with 2 workers the first
@@ -203,7 +200,7 @@ screen-source behavior, reference ownership and cancellation guarantees. ML Kit 
 
 - [x] 1.1 Document storage and source selection: persistence, snapshots, viewport and exclusive targeting; tests for zero screen-scan calls.
 - [x] 1.2 Navigation and camera: bottom tabs with retained state; rear CameraX, quality capture, auto exposure/focus, tap focus, pinch zoom and Off/Auto/On flash; release camera on exit. Hardware flash and real-page quality remain physical-device acceptance checks.
-- [ ] 1.3 Recognition and viewer: tiles, assembly, progress, terminal partial-result warnings, retry, pan/zoom, language indication and restoration.
+- [x] 1.3 Recognition and viewer: tiles, assembly, progress, terminal partial-result warnings, retry, pan/zoom, language indication and restoration.
 - [ ] 1.4 Popup and Anki: definitions, audio, translation and notes use recognition language; original-photo crop and explicit gallery export.
 - [ ] 1.5 Documentation, translations, required automated checks and emulator checks; record physical-device checks separately.
 
@@ -297,3 +294,7 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
 - 2026-10-26: photo OCR foundation implemented and verified independently: 2D tile coverage, overlap assembly,
   immutable hit-test index, pinned local models, terminal tile processing and persisted word provenance (v2 reads v1).
   Capture and viewer still await the attempt coordinator and UI integration; phase 1.3 is not complete.
+- 2026-10-26: phase 1.3 completed: recoverable attempts, original-resolution region decoding, bounded recognition,
+  terminal snapshots/retry, capture auto-recognition, independent language/readiness/status/warnings and bounded
+  sharp pan/zoom. Required build/test/lint and API 30/API 37 evidence recorded in the handoff/test model. No product
+  decision changed. Phase 1.4 remains the next implementation milestone; no merge and no Anki data changes.

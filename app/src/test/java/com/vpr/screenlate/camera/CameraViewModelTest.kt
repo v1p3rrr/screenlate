@@ -38,13 +38,22 @@ class CameraViewModelTest {
     private lateinit var documents: Documents
     private lateinit var sources: LookupSources
     private lateinit var model: CameraViewModel
+    private var recognitionCalls = 0
+    private val recognition = object : CameraRecognition {
+        override val state = MutableStateFlow<CameraRecognitionState?>(null)
+        override val blocked = MutableStateFlow<CameraReadinessBlock?>(null)
+        override fun select(language: com.vpr.screenlate.core.common.Language) {}
+        override fun recognize(document: PhotoDocument) { recognitionCalls++ }
+        override fun retry(document: PhotoDocument) {}
+        override fun dismissBlock() {}
+    }
 
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
         documents = Documents()
         sources = LookupSources()
-        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession())
+        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession(), recognition)
         store.put("camera", model)
     }
 
@@ -63,7 +72,7 @@ class CameraViewModelTest {
                 emitAll(documents.current)
             }
         }
-        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession())
+        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession(), recognition)
         store.put("camera", model)
         model.onForeground()
         advanceUntilIdle()
@@ -79,6 +88,20 @@ class CameraViewModelTest {
         assertThat(model.state.value.loaded).isTrue()
         assertThat(model.state.value.loadFailed).isFalse()
         assertThat(model.state.value.photo?.id).isEqualTo(1)
+    }
+
+    @Test
+    fun dialogsTemporarilyDisablePhotoTargetingWithoutScreenFallback() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.onForeground()
+        model.showPhoto(1, viewport())
+        assertThat(sources.source.value).isInstanceOf(LookupSource.Photo::class.java)
+        model.setObscured(true)
+        assertThat(sources.source.value).isInstanceOf(LookupSource.NoText::class.java)
+        model.setObscured(false)
+        assertThat(sources.source.value).isInstanceOf(LookupSource.Photo::class.java)
+        assertThat(recognitionCalls).isEqualTo(0)
     }
 
     @Test
@@ -122,6 +145,7 @@ class CameraViewModelTest {
         assertThat(model.state.value.busy).isFalse()
         assertThat(documents.replaced).isEqualTo(0)
         assertThat(documents.discarded).hasSize(1)
+        assertThat(recognitionCalls).isEqualTo(0)
         assertThat(model.events.first()).isEqualTo(CameraError.CAPTURE)
     }
 
@@ -139,6 +163,7 @@ class CameraViewModelTest {
         assertThat(documents.replaced).isEqualTo(1)
         assertThat(model.state.value.live).isFalse()
         assertThat(model.state.value.photo?.id).isEqualTo(2)
+        assertThat(recognitionCalls).isEqualTo(1)
     }
 
     @Test
@@ -194,6 +219,8 @@ class CameraViewModelTest {
             current.value = null
         }
         override suspend fun commitRecognition(documentId: Long, basedOn: Int, recognition: PhotoRecognition): PhotoDocument? =
+            error("Not used by capture")
+        override suspend fun saveAttempt(documentId: Long, attempt: com.vpr.screenlate.core.photos.PhotoAttempt, replace: Boolean): Boolean =
             error("Not used by capture")
     }
 }

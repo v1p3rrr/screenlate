@@ -2,42 +2,25 @@
 
 ## Camera photo lookup (2026-10-25)
 
-Phase 1.3 started on 2026-10-26 from clean pushed `76a4f679`. Tile geometry, overlap assembly and fixed-attempt OCR
-ownership are being implemented first. Owner confirmed: automatic recognition after capture, continue through
-navigation/backgrounding, no automatic retry after process restart; fit through 8× fit, pan bounded to photo edges.
-Keep the camera plan's handoff current at every checkpoint. No merges into either main branch.
-The foundation milestone ("Add tiled photo OCR assembly and indexed hit testing") includes PhotoTiles/PhotoAssembly,
-indexed TextLayout hit testing, per-word provenance
-with codec v2/v1 compatibility, pinned local models and a terminal photo-tile OCR path. OCR 165/photos 40/overlay 237
-tests, app compilation, lint and 146 page tests pass. Next is durable attempt/tile storage and bounded region processing,
-before UI wiring. Phase 1.3 is not complete and the Camera page still does not start recognition at this checkpoint.
-
-Resumed on 2026-10-26 by the owner after inspecting the clean, pushed `f5a3ca43` checkpoint.
-Phase 1.2 is now implemented: real rear camera, permission denial/retry/settings flow, capture/replacement, persistent
-fit viewer, confirmed deletion and exclusive Camera-page source activation. Navigation state, capture, replacement,
-deletion and a full device restart were checked on API 37. On API 30, `LiveCameraTest` verified focus, pinch zoom and
-reset; `PhotoViewerTest` checked painted pixels for all 8 EXIF orientations on both API 30 and API 37.
-All 1533 JVM tests pass, as do debug assembly and app lint. The milestone commit subject is
-"Add camera capture and the persistent photo viewer". See the plan's handoff for exact checks and remaining work.
-
-Owner approved implementation on `features/camera-lookup`, based on `languages/main` at `d1977c62`.
-Plan and mandatory resume handoff: [Camera Photo Lookup](plans/2026-10-25-camera-lookup.md).
+Phase 1.3 is complete (2026-10-26), on `features/camera-lookup`.
 Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`.
-Phase 1.1 is complete and pushed: `core:photos` keeps the current photo and its recognized text (atomic writes,
-tidy-up after interruptions, a versioned snapshot of the text that reads as "unreadable" when damaged), and
-`LookupSources` makes the screen, a shown photo or nothing the bubble's one source. The overlay reads the screen only
-through `ScreenReads` and aims at a photo through `TextFrame`; over a photo the glyph shows its recognition language,
-the menu has no flags, and leaving the photo docks the bubble (owner's answers of 2026-10-25). Build, 1518 unit tests,
-lint, `PhotoDatabaseTest` and an emulator regression of the screen path passed. Owner confirmed: opening the live camera from a shown photo docks
-the bubble, and a bubble pulled out over the live camera shows nothing (the preview is never scanned).
-The earlier pause is superseded by the owner's continuation request. All phase 1.2 questions are answered.
-Next: phase 1.3, photo recognition and viewer gestures. Start with original-resolution tile geometry and a dedicated
-overlap assembler in `core:ocr`, with seam/direction tests, then attempt persistence/retry and the Camera UI.
-Photo OCR, photo pan/zoom, camera-language selection, photo Anki cropping/export and history are not implemented yet.
-Pending checks: remaining NAV3/badge/setup routes, recognition-dependent CAM cases and physical camera quality/flash.
-Architecture notes: [camera integration handoff](notes/camera-lookup.md).
-Update the plan's handoff at every checkpoint so a fresh session can continue without this conversation.
-All implementation stays on the feature branch; no merge to `languages/main` or `main` yet.
+Foundation pushed as `01d24c0e`; continuation commit subject: "Recognize persistent photos and add bounded viewer pan and zoom".
+Includes recoverable recognition attempts, original-resolution tiles, max-two workers, terminal snapshots/failed-tile
+retry, independent camera language, automatic recognition after successful capture, explicit rescan/readiness/status/
+warnings and fit..8× bounded pan/zoom with sharp visible-region decoding. Text retains its actual recognition language
+until a complete attempt publishes; navigation/backgrounding keep work alive, process restart never auto-restarts OCR.
+
+All required checks pass: root debug assembly/JVM tests/lint (1576 tests, zero failures), final app checks and 146 page
+tests. API 37 region/migration checks 7/7 and real Device/Cloud synthetic-page workflows pass; API 30 viewer gesture,
+all-EXIF drawing and live-camera focus/zoom checks 3/3. Real bubble lookup and photo gestures made no screen reads or
+extra OCR calls; a failed-tile retry made exactly one cloud request, auto-capture OCR worked, and a cold device reboot
+restored the recognized photo without network requests. Test evidence is in `ai/test-model.md`.
+
+Next: phase 1.4, original-photo Anki image ownership/cropping and explicit gallery export. It has not started. Read
+[the plan handoff and decision table](plans/2026-10-25-camera-lookup.md) and [integration notes](notes/camera-lookup.md).
+The handoff gives exact next files/contracts, checks and remaining acceptance. Full Camera-to-Anki is not complete;
+physical camera quality/flash/focus/performance and remaining manual CAM/NAV variants still need evidence.
+No merge into `languages/main` or `main`. The emulator OCR mode was restored to Both; no Anki collection was changed.
 
 ## Release from `main`: open items (2026-10-23, owner: come back to it later)
 

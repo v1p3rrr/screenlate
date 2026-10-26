@@ -812,4 +812,17 @@
     <string name="camera_delete_failed">사진을 삭제하지 못했습니다.</string>
     <string name="camera_photo_unreadable">사진을 열지 못했습니다.</string>
     <string name="camera_zoom_reset">1배로 돌아가기</string>
+    <string name="camera_language">사진 언어</string>
+    <string name="camera_recognize">사진 인식</string>
+    <string name="camera_recognizing">인식 중(%1$s): %2$d/%3$d</string>
+    <string name="camera_unrecognized">인식되지 않음</string>
+    <string name="camera_recognized">인식 완료: %1$s</string>
+    <string name="camera_pending">설정 변경됨</string>
+    <string name="camera_incomplete">인식이 불완전함</string>
+    <string name="camera_partial">전체 %2$d개 영역 중 %1$d개를 인식하지 못했습니다.</string>
+    <string name="camera_interrupted">인식이 중단되었습니다. 완료된 영역은 저장됩니다.</string>
+    <string name="camera_retry_failed">누락된 영역 재시도</string>
+    <string name="camera_recognition_failed">사진을 인식하지 못했습니다. 저장된 텍스트는 유지됩니다.</string>
+    <string name="camera_more_actions">기타 작업</string>
+    <string name="camera_photo_description">사진</string>
 </resources>

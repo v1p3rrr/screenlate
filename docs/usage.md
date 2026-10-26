@@ -22,9 +22,21 @@ The photograph fits the available area and survives tab changes, backgrounding a
 opens the camera; Close or Back returns to the previous photograph. A successful capture replaces it; a failed capture
 keeps it. Delete asks for confirmation. Leaving capture releases the camera. Camera errors offer an explanation or retry.
 
-On this development branch the camera and persistent viewer are available; photo recognition, viewer pan/zoom, photo
-note attachments and gallery export are still being implemented. The bubble never scans the live preview or an
-unrecognized photograph. Other pages retain ordinary screen lookup.
+Recognition starts after a successful capture and continues when you switch tabs or put the app in the background.
+Camera remembers its own language, initially the active language, and offers only enabled languages. The shared
+Cloud, Device and Both settings and that language's local model apply. Changing the language or recognition settings
+shows a pending change: tap Recognize photo to apply it. Existing text keeps its actual recognition language until
+the new attempt finishes. A warning in the top bar explains incomplete recognition and retries only missing regions.
+After an app restart, interrupted work waits for this explicit retry; it never resumes network requests on its own.
+
+Pan with one finger and pinch to zoom up to 8× the fitted size. Returning to the photograph fits it again. Pull the
+bubble over it to look up stored text; the glyph and dictionary follow the photo's recognition language. A tap briefly
+highlights recognized text. Moving, zooming and bubble gestures reuse saved coordinates without recognizing again.
+The bubble reads only the photograph while this viewer is open; bars and empty margins are outside it. It never scans
+the live preview, dialogs or an unrecognized photograph. Leaving the viewer docks the bubble and other pages retain
+ordinary screen lookup. The accessibility service is needed for the bubble, independently of capture and viewing.
+
+Original-photo note attachments and phone-gallery export are still being implemented on this development branch.
 
 ## Languages
 

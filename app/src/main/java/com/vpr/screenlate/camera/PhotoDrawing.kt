@@ -2,9 +2,36 @@ package com.vpr.screenlate.camera
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.BitmapRegionDecoder
+import android.graphics.Rect
 import androidx.compose.ui.graphics.Matrix
 import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoViewport
+import kotlin.math.ceil
+import kotlin.math.floor
+
+internal data class PhotoDetail(val bitmap: Bitmap, val raw: Rect)
+
+/** The raw region visible through the current viewport; display quality never requires a full-resolution whole image. */
+internal fun visibleRawRegion(document: PhotoDocument, viewport: PhotoViewport): Rect? {
+    val shown = viewport.visible ?: return null
+    val photo = com.vpr.screenlate.core.common.geometry.Box(
+        (shown.left - viewport.offsetX) / viewport.scale, (shown.top - viewport.offsetY) / viewport.scale,
+        (shown.right - viewport.offsetX) / viewport.scale, (shown.bottom - viewport.offsetY) / viewport.scale,
+    )
+    val raw = document.orientation.toRaw(photo, document.rawWidth, document.rawHeight)
+    return Rect(floor(raw.left).toInt().coerceIn(0, document.rawWidth), floor(raw.top).toInt().coerceIn(0, document.rawHeight),
+        ceil(raw.right).toInt().coerceIn(0, document.rawWidth), ceil(raw.bottom).toInt().coerceIn(0, document.rawHeight))
+}
+
+/** A sharper display patch only for the visible region, decoded independently of OCR. */
+@Suppress("DEPRECATION") // minSdk 30 supports this overload.
+internal fun decodeDetail(document: PhotoDocument, raw: Rect, sample: Int): PhotoDetail? {
+    val decoder = BitmapRegionDecoder.newInstance(document.image.path, false)
+    return try {
+        decoder.decodeRegion(raw, BitmapFactory.Options().apply { inSampleSize = sample })?.let { PhotoDetail(it, raw) }
+    } finally { decoder.recycle() }
+}
 
 /**
  * The power of two to divide the stored image by for drawing it [scale] times its size: the largest that still leaves

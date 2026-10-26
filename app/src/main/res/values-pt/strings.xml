@@ -826,4 +826,17 @@
     <string name="camera_delete_failed">Não foi possível excluir a foto.</string>
     <string name="camera_photo_unreadable">Não foi possível abrir a foto.</string>
     <string name="camera_zoom_reset">Voltar a 1×</string>
+    <string name="camera_language">Idioma da foto</string>
+    <string name="camera_recognize">Reconhecer foto</string>
+    <string name="camera_recognizing">Reconhecendo (%1$s): %2$d/%3$d</string>
+    <string name="camera_unrecognized">Não reconhecido</string>
+    <string name="camera_recognized">Reconhecido: %1$s</string>
+    <string name="camera_pending">Configurações alteradas</string>
+    <string name="camera_incomplete">Reconhecimento incompleto</string>
+    <string name="camera_partial">Não foi possível reconhecer %1$d de %2$d regiões.</string>
+    <string name="camera_interrupted">O reconhecimento foi interrompido. As regiões concluídas foram mantidas.</string>
+    <string name="camera_retry_failed">Tentar regiões pendentes</string>
+    <string name="camera_recognition_failed">Não foi possível reconhecer a foto. O texto salvo foi mantido.</string>
+    <string name="camera_more_actions">Mais ações</string>
+    <string name="camera_photo_description">Foto</string>
 </resources>

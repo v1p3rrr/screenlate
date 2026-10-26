@@ -40,6 +40,7 @@ class CameraViewModel @Inject constructor(
     sources: LookupSources,
     private val savedState: SavedStateHandle,
     val session: CameraSession,
+    val recognition: CameraRecognition,
 ) : ViewModel() {
     private val lookup = CameraLookup(sources)
     private val mutableState = MutableStateFlow(CameraState(takingNew = savedState[NEW_PHOTO] ?: false))
@@ -47,6 +48,13 @@ class CameraViewModel @Inject constructor(
     private val errors = Channel<CameraError>(Channel.BUFFERED)
     val events = errors.receiveAsFlow()
     private var viewport: Pair<Long, PhotoViewport>? = null
+    private var obscured = false
+
+    fun setObscured(value: Boolean) {
+        if (obscured == value) return
+        obscured = value
+        publish()
+    }
 
     init { observePhoto() }
 
@@ -117,6 +125,7 @@ class CameraViewModel @Inject constructor(
                 viewport = null
                 savedState[NEW_PHOTO] = false
                 mutableState.value = state.value.copy(photo = photo, takingNew = false)
+                recognition.recognize(photo)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -165,7 +174,7 @@ class CameraViewModel @Inject constructor(
         val photo = current.photo
         val view = viewport?.takeIf { it.first == photo?.id }?.second
         lookup.show(
-            if (current.loaded && !current.live && !current.busy && photo != null && view != null) {
+            if (current.loaded && !current.live && !current.busy && !obscured && photo != null && view != null) {
                 CameraView.Photo(photo, view)
             } else {
                 CameraView.Nothing

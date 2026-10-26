@@ -25,13 +25,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
@@ -45,18 +48,31 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.ui.components.ConfirmDelete
-import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.photos.PhotoWork
 
 /** Camera capture and the persistent current photograph. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CameraScreen(viewModel: CameraViewModel = hiltViewModel()) {
+fun CameraScreen(
+    onOpenDictionaries: () -> Unit = {},
+    onOpenModels: (Language) -> Unit = {},
+    viewModel: CameraViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val flash by viewModel.session.flash.collectAsStateWithLifecycle()
+    val recognition by viewModel.recognition.state.collectAsStateWithLifecycle()
+    val block by viewModel.recognition.blocked.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     val resources = LocalResources.current
     val snackbar = remember { SnackbarHostState() }
     var confirmingDelete by remember { mutableStateOf(false) }
     var flashAvailable by remember { mutableStateOf(false) }
+    var languagePicker by remember { mutableStateOf(false) }
+    var warning by remember(state.photo?.id) { mutableStateOf(false) }
+    val blocked = block?.takeIf { it.documentId == state.photo?.id && !state.live }
+    SideEffect { viewModel.setObscured(confirmingDelete || languagePicker || warning || blocked != null) }
+    DisposableEffect(viewModel) { onDispose { viewModel.setObscured(false) } }
     LifecycleResumeEffect(viewModel) {
         viewModel.onForeground()
         onPauseOrDispose { viewModel.onBackground() }
@@ -83,37 +99,47 @@ fun CameraScreen(viewModel: CameraViewModel = hiltViewModel()) {
             onDismiss = { confirmingDelete = false },
         )
     }
+    if (languagePicker) recognition?.let { CameraLanguageDialog(it, viewModel.recognition::select, { languagePicker = false }) }
+    if (warning) state.photo?.let { photo ->
+        CameraRecognitionWarning(photo, recognition, { viewModel.recognition.retry(photo) },
+            { viewModel.recognition.recognize(photo) }, { warning = false })
+    }
+    if (blocked != null) {
+        AlertDialog(
+            onDismissRequest = viewModel.recognition::dismissBlock,
+            title = { Text(stringResource(R.string.camera_recognize)) },
+            text = { Text(blocked.status.message(context, scanning = true), Modifier.verticalScroll(rememberScrollState())) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.recognition.dismissBlock()
+                    if (blocked.status.requiresDevice && !blocked.status.deviceReady) onOpenModels(blocked.status.language)
+                    else onOpenDictionaries()
+                }) { Text(stringResource(com.vpr.screenlate.overlay.R.string.installation_open)) }
+            },
+            dismissButton = { TextButton(onClick = viewModel.recognition::dismissBlock) { Text(stringResource(R.string.action_close)) } },
+        )
+    }
+    val hasWarning = cameraHasWarning(state.photo, recognition?.work)
+    val working = (recognition?.work as? PhotoWork.Running)?.documentId == state.photo?.id && state.photo != null
+    val actions = buildList {
+        if (state.live) {
+            if (flashAvailable) add(CameraAction(flash.icon, stringResource(flash.label), !state.busy) { viewModel.session.flash.value = flash.next })
+            if (state.photo != null) add(CameraAction(R.drawable.ic_close, stringResource(R.string.camera_back_to_photo), !state.busy, viewModel::backToPhoto))
+        } else state.photo?.let { photo ->
+            if (hasWarning) add(CameraAction(R.drawable.ic_warning, stringResource(R.string.camera_incomplete)) { warning = true })
+            add(CameraAction(R.drawable.ic_reset, stringResource(R.string.camera_recognize), !state.busy && !working && recognition != null) {
+                viewModel.recognition.recognize(photo)
+            })
+            add(CameraAction(R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo), !state.busy, viewModel::newPhoto))
+            add(CameraAction(R.drawable.ic_delete, stringResource(R.string.camera_delete), !state.busy) { confirmingDelete = true })
+        }
+    }
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.camera_title)) },
-                actions = {
-                    if (state.live) {
-                        if (flashAvailable) {
-                            TooltipIconButton(
-                                flash.icon, stringResource(flash.label),
-                                onClick = { viewModel.session.flash.value = flash.next },
-                                enabled = !state.busy,
-                            )
-                        }
-                        if (state.photo != null) {
-                            TooltipIconButton(
-                                R.drawable.ic_close, stringResource(R.string.camera_back_to_photo),
-                                viewModel::backToPhoto, enabled = !state.busy,
-                            )
-                        }
-                    } else if (state.photo != null) {
-                        TooltipIconButton(
-                            R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo),
-                            viewModel::newPhoto, enabled = !state.busy,
-                        )
-                        TooltipIconButton(
-                            R.drawable.ic_delete, stringResource(R.string.camera_delete),
-                            onClick = { confirmingDelete = true }, enabled = !state.busy,
-                        )
-                    }
-                },
-            )
+            Column {
+                CameraToolbar(actions, hasWarning && !state.live)
+                if (state.loaded) CameraRecognitionBar(state.photo.takeIf { !state.live }, recognition, { languagePicker = true })
+            }
         },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->

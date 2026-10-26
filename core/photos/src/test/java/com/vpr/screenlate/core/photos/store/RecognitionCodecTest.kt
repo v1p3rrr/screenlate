@@ -18,6 +18,14 @@ import org.junit.Test
 class RecognitionCodecTest {
 
     @Test
+    fun originalTileObservationsSurviveForFailedTileRetry() {
+        val original = TestPhotos.recognition()
+        val recognition = original.copy(tiles = listOf(com.vpr.screenlate.core.ocr.PhotoTilePage(
+            com.vpr.screenlate.core.ocr.PhotoTile(0, 0, 1500, 1500), original.page)))
+        assertThat(RecognitionCodec.decode(RecognitionCodec.encode(recognition))).isEqualTo(recognition)
+    }
+
+    @Test
     fun wordProvenanceSurvivesStorageAndLayoutReconstruction() {
         val original = TestPhotos.recognition()
         val recognition = original.copy(page = original.page.copy(paragraphs = original.page.paragraphs.map { paragraph ->
