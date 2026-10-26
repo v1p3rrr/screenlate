@@ -1,5 +1,12 @@
 # Status
 
+## Session (2026-10-26): local dictionary research
+
+Completed a static comparison of dictionary import, lookup and Japanese rules without running builds, engines,
+tests or benchmarks. The owner requested that external-project research reports stay local rather than be
+committed. The detailed report is kept under ignored `testdata/local-research/`; findings were delivered in chat.
+Application code and device state were not changed.
+
 ## Session instructions (2026-10-25)
 
 The owner approved reading the local Claude memory index at session start from `AGENTS.md`.
