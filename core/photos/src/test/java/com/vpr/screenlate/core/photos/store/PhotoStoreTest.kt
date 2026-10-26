@@ -1,6 +1,8 @@
 package com.vpr.screenlate.core.photos.store
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.photos.HistoryLimits
 import com.vpr.screenlate.core.photos.InvalidPhotoException
 import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoOrientation
@@ -9,6 +11,7 @@ import com.vpr.screenlate.core.photos.TestPhotos
 import com.vpr.screenlate.core.photos.PhotoAttempt
 import com.vpr.screenlate.core.photos.PhotoOcrSettings
 import com.vpr.screenlate.core.photos.PhotoTileResult
+import com.vpr.screenlate.core.photos.ThumbnailMaker
 import com.vpr.screenlate.core.ocr.PhotoTile
 import com.vpr.screenlate.core.ocr.OcrEngines
 import java.io.File
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +34,10 @@ class PhotoStoreTest {
     private val index = FakePhotoIndex()
     private val root by lazy { File(folder.root, "photos") }
 
-    private fun store() = PhotoStore(root, index, FakeProbe, clock = { 42L }, io = Dispatchers.Unconfined)
+    private var now = 42L
+    private var thumbnails = ThumbnailMaker { "thumb".toByteArray() }
+
+    private fun store() = PhotoStore(root, index, FakeProbe, { thumbnails.thumbnail(it) }, clock = { now++ }, io = Dispatchers.Unconfined)
 
     private suspend fun PhotoStore.capture(content: String = "4000x3000:6"): File =
         newCaptureFile().apply { writeText(content) }
@@ -309,6 +316,147 @@ class PhotoStoreTest {
         assertThat(index.current()).isNull()
     }
 
+    @Test
+    fun `a saved photo stays after replacement, with its thumbnail, language and size`() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        store.commitRecognition(photo.id, photo.revision, TestPhotos.recognition(Language.KOREAN))
+        assertThat(store.save(photo.id, HistoryLimits())).isTrue()
+        assertThat(store.currentNow()!!.saved).isTrue()
+        store.replaceCurrent(store.capture())
+        val entry = store.entries.first().single()
+        assertThat(entry.id).isEqualTo(photo.id)
+        assertThat(entry.language).isEqualTo(Language.KOREAN)
+        assertThat(entry.thumbnail!!.readText()).isEqualTo("thumb")
+        assertThat(entry.bytes).isEqualTo(photo.image.parentFile!!.listFiles()!!.sumOf { it.length() })
+        assertThat(photo.image.exists()).isTrue()
+    }
+
+    @Test
+    fun `the history lists the latest saved first and a second save keeps the first place`() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        store.save(first.id, HistoryLimits())
+        val second = store.replaceCurrent(store.capture())
+        store.save(second.id, HistoryLimits())
+        store.save(first.id, HistoryLimits())
+        assertThat(store.entries.first().map { it.id }).containsExactly(second.id, first.id).inOrder()
+    }
+
+    @Test
+    fun `a photo is saved without a thumbnail when none can be made`() = runTest {
+        thumbnails = ThumbnailMaker { throw IOException("Unreadable") }
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        assertThat(store.save(photo.id, HistoryLimits())).isTrue()
+        assertThat(store.entries.first().single().thumbnail).isNull()
+    }
+
+    @Test
+    fun `saving deletes the oldest photos beyond the count limit`() = runTest {
+        val store = store()
+        val ids = (1..3).map { store.replaceCurrent(store.capture()).also { store.save(it.id, HistoryLimits(count = 2)) } }
+        assertThat(store.entries.first().map { it.id }).containsExactly(ids[2].id, ids[1].id).inOrder()
+        assertThat(ids[0].image.parentFile!!.exists()).isFalse()
+    }
+
+    @Test
+    fun `a limit deletes the current photo too when it is among the oldest`() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        store.save(first.id, HistoryLimits())
+        val second = store.replaceCurrent(store.capture())
+        store.save(second.id, HistoryLimits())
+        store.open(first.id)
+        store.trim(HistoryLimits(count = 1))
+        assertThat(store.entries.first().map { it.id }).containsExactly(second.id)
+        assertThat(store.currentNow()).isNull()
+        assertThat(first.image.parentFile!!.exists()).isFalse()
+    }
+
+    @Test
+    fun `excess counts what lower limits would delete and deletes nothing`() = runTest {
+        val store = store()
+        repeat(3) { store.save(store.replaceCurrent(store.capture()).id, HistoryLimits()) }
+        assertThat(store.excess(HistoryLimits(count = 1))).isEqualTo(2)
+        assertThat(store.excess(HistoryLimits())).isEqualTo(0)
+        assertThat(store.entries.first()).hasSize(3)
+    }
+
+    @Test
+    fun `opening a history photo makes it current and deletes an unsaved current photo`() = runTest {
+        val store = store()
+        val saved = store.replaceCurrent(store.capture())
+        store.save(saved.id, HistoryLimits())
+        val unsaved = store.replaceCurrent(store.capture("1200x900:1"))
+        val opened = store.open(saved.id)!!
+        assertThat(opened.id).isEqualTo(saved.id)
+        assertThat(opened.saved).isTrue()
+        assertThat(store.currentNow()!!.id).isEqualTo(saved.id)
+        assertThat(unsaved.image.parentFile!!.exists()).isFalse()
+    }
+
+    @Test
+    fun `a photo outside the history does not open`() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        assertThat(store.open(photo.id)).isNull()
+        assertThat(store.open(photo.id + 1)).isNull()
+        assertThat(store.currentNow()!!.id).isEqualTo(photo.id)
+    }
+
+    @Test
+    fun `removing a history photo that is current closes and deletes it`() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        store.save(first.id, HistoryLimits())
+        val second = store.replaceCurrent(store.capture())
+        store.save(second.id, HistoryLimits())
+        store.remove(setOf(first.id))
+        assertThat(first.image.parentFile!!.exists()).isFalse()
+        assertThat(store.currentNow()!!.id).isEqualTo(second.id)
+        store.remove(setOf(second.id))
+        assertThat(store.currentNow()).isNull()
+        assertThat(photoDirectories()).isEmpty()
+    }
+
+    @Test
+    fun `clearing deletes the current photo in the history and keeps an unsaved one`() = runTest {
+        val store = store()
+        val saved = store.replaceCurrent(store.capture())
+        store.save(saved.id, HistoryLimits())
+        store.clear()
+        assertThat(store.entries.first()).isEmpty()
+        assertThat(store.currentNow()).isNull()
+        assertThat(saved.image.parentFile!!.exists()).isFalse()
+        val older = store.replaceCurrent(store.capture())
+        store.save(older.id, HistoryLimits())
+        val unsaved = store.replaceCurrent(store.capture())
+        store.clear()
+        assertThat(older.image.parentFile!!.exists()).isFalse()
+        assertThat(store.currentNow()!!.id).isEqualTo(unsaved.id)
+        assertThat(unsaved.image.exists()).isTrue()
+    }
+
+    @Test
+    fun `a restart keeps the thumbnail of a saved photo`() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        store.save(photo.id, HistoryLimits())
+        store().newCaptureFile()
+        assertThat(File(photo.image.parentFile, "thumbnail").isFile).isTrue()
+    }
+
+    @Test
+    fun `a recognition committed before the language column names it when saved`() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        store.commitRecognition(photo.id, photo.revision, TestPhotos.recognition(Language.KOREAN))
+        index.forgetLanguage(photo.id)
+        store.save(photo.id, HistoryLimits())
+        assertThat(store.entries.first().single().language).isEqualTo(Language.KOREAN)
+    }
+
     private fun photoDirectories(): List<String> = root.list()!!.filter { it != ".staging" }
 
     private suspend fun failure(block: suspend () -> Unit): Throwable? = try {
@@ -344,6 +492,10 @@ internal class FakePhotoIndex : PhotoIndex {
         rows.value += id to rows.value.getValue(id).copy(saved = true)
     }
 
+    fun forgetLanguage(id: Long) {
+        rows.value += id to rows.value.getValue(id).copy(language = null)
+    }
+
     override fun observeCurrent(): Flow<PhotoEntity?> = combine(rows, currentId) { rows, id -> id?.let(rows::get) }
 
     override suspend fun current(): PhotoEntity? = currentId.value?.let(rows.value::get)
@@ -352,14 +504,32 @@ internal class FakePhotoIndex : PhotoIndex {
 
     override suspend fun all(): List<PhotoEntity> = rows.value.values.sortedBy { it.id }
 
+    override fun observeHistory(): Flow<List<PhotoEntity>> = rows.map { it.historyOf() }
+
+    override suspend fun history(): List<PhotoEntity> = rows.value.historyOf()
+
+    private fun Map<Long, PhotoEntity>.historyOf() =
+        values.filter { it.saved }.sortedWith(compareByDescending<PhotoEntity> { it.savedAt }.thenByDescending { it.id })
+
     override suspend fun insertCurrent(photo: PhotoEntity): Long {
         if (failInsert) throw IOException("Disk full")
         return add(photo).also { currentId.value = it }
     }
 
-    override suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int): Boolean {
+    override suspend fun setCurrent(id: Long) {
+        require(id in rows.value)
+        currentId.value = id
+    }
+
+    override suspend fun save(id: Long, at: Long, language: String?): Boolean {
+        val row = rows.value[id]?.takeIf { !it.saved } ?: return false
+        rows.value += id to row.copy(saved = true, savedAt = at, language = row.language ?: language)
+        return true
+    }
+
+    override suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int, language: String): Boolean {
         val row = rows.value[id]?.takeIf { it.recognitionRevision == expected } ?: return false
-        rows.value += id to row.copy(recognitionFile = file, recognitionRevision = revision, attemptFile = null)
+        rows.value += id to row.copy(recognitionFile = file, recognitionRevision = revision, attemptFile = null, language = language)
         return true
     }
 

@@ -821,9 +821,6 @@
     <string name="camera_take_photo">Снять фото</string>
     <string name="camera_new_photo">Новое фото</string>
     <string name="camera_back_to_photo">Вернуться к фото</string>
-    <string name="camera_delete">Удалить фото</string>
-    <string name="camera_delete_title">Удалить фотографию?</string>
-    <string name="camera_delete_text">Фотография и распознанный текст будут удалены. Копия, сохранённая в галерею, останется.</string>
     <string name="camera_permission_text">Разрешите доступ к камере, чтобы фотографировать текст и читать его с помощью плавающей кнопки.</string>
     <string name="camera_permission_blocked">Доступ к камере запрещён. Разрешите его в системных настройках приложения.</string>
     <string name="camera_open_settings">Открыть настройки</string>
@@ -831,7 +828,6 @@
     <string name="camera_no_rear">Задняя камера недоступна.</string>
     <string name="camera_unavailable">Не удалось открыть камеру.</string>
     <string name="camera_capture_failed">Не удалось сделать фото. Повторите попытку.</string>
-    <string name="camera_delete_failed">Не удалось удалить фото.</string>
     <string name="camera_photo_unreadable">Не удалось открыть фото.</string>
     <string name="camera_zoom_reset">Вернуться к 1×</string>
     <string name="camera_language">Язык снимка</string>
@@ -860,6 +856,53 @@
     <string name="camera_permission_title">Нет доступа к камере</string>
     <string name="camera_permission_blocked_title">Доступ к камере заблокирован</string>
     <string name="camera_cannot_recognize">Распознавание недоступно: %1$s</string>
+    <string name="camera_close">Закрыть фото</string>
+    <string name="camera_close_failed">Не удалось закрыть фото.</string>
+    <string name="camera_unsaved">Текущее фото не сохранено в историю и будет удалено.</string>
+    <string name="camera_save_history">Сохранить в историю</string>
+    <string name="camera_saved_history">Сохранено в историю</string>
+    <string name="camera_save_history_failed">Не удалось сохранить фото в историю.</string>
+    <string name="camera_history">История</string>
+    <string name="camera_settings">Настройки камеры</string>
+    <string name="history_empty">В истории нет фото</string>
+    <string name="history_empty_hint">Сохраните фото пунктом «Сохранить в историю» в его меню или включите автосохранение в настройках камеры.</string>
+    <plurals name="history_selected">
+        <item quantity="one">Выбрано: %1$d</item>
+        <item quantity="few">Выбрано: %1$d</item>
+        <item quantity="many">Выбрано: %1$d</item>
+        <item quantity="other">Выбрано: %1$d</item>
+    </plurals>
+    <string name="history_delete_title">Удалить из истории?</string>
+    <plurals name="history_delete_text">
+        <item quantity="one">%1$d фото будет удалено из истории.</item>
+        <item quantity="few">%1$d фото будут удалены из истории.</item>
+        <item quantity="many">%1$d фото будут удалены из истории.</item>
+        <item quantity="other">%1$d фото будут удалены из истории.</item>
+    </plurals>
+    <string name="history_clear_selection">Снять выбор</string>
+    <string name="history_change_failed">Не удалось изменить историю.</string>
+    <string name="settings_camera_summary">История фото, автосохранение, лимиты</string>
+    <string name="history_auto_save">Сохранять автоматически</string>
+    <string name="history_auto_save_hint">Каждое новое фото попадает в историю сразу после снимка.</string>
+    <string name="history_count_limit">Лимит фото</string>
+    <string name="history_size_limit">Лимит размера, МБ</string>
+    <string name="history_no_limit">0 — без лимита. Первыми удаляются самые старые фото.</string>
+    <plurals name="history_photos">
+        <item quantity="one">%1$d фото</item>
+        <item quantity="few">%1$d фото</item>
+        <item quantity="many">%1$d фото</item>
+        <item quantity="other">%1$d фото</item>
+    </plurals>
+    <string name="history_clear">Очистить историю</string>
+    <string name="history_clear_title">Очистить историю?</string>
+    <string name="history_clear_text">Все фото в истории будут удалены.</string>
+    <string name="history_trim_title">Уменьшить лимит?</string>
+    <plurals name="history_trim_text">
+        <item quantity="one">%1$d самое старое фото будет удалено из истории.</item>
+        <item quantity="few">%1$d самых старых фото будут удалены из истории.</item>
+        <item quantity="many">%1$d самых старых фото будут удалены из истории.</item>
+        <item quantity="other">%1$d самых старых фото будут удалены из истории.</item>
+    </plurals>
     <string name="camera_opening">Открытие фотографии…</string>
     <string name="camera_partial_words">Слова в этих областях недоступны для поиска.</string>
     <plurals name="camera_status_regions">

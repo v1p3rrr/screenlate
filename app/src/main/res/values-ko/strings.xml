@@ -799,9 +799,6 @@
     <string name="camera_take_photo">사진 촬영</string>
     <string name="camera_new_photo">새 사진</string>
     <string name="camera_back_to_photo">사진으로 돌아가기</string>
-    <string name="camera_delete">사진 삭제</string>
-    <string name="camera_delete_title">사진을 삭제할까요?</string>
-    <string name="camera_delete_text">사진과 인식된 텍스트가 삭제됩니다. 갤러리에 저장한 사본은 그대로 남습니다.</string>
     <string name="camera_permission_text">텍스트를 촬영하고 버블로 읽으려면 카메라 접근을 허용하세요.</string>
     <string name="camera_permission_blocked">카메라 접근이 거부되었습니다. 시스템의 앱 설정에서 허용하세요.</string>
     <string name="camera_open_settings">설정 열기</string>
@@ -809,7 +806,6 @@
     <string name="camera_no_rear">후면 카메라를 사용할 수 없습니다.</string>
     <string name="camera_unavailable">카메라를 열지 못했습니다.</string>
     <string name="camera_capture_failed">사진을 촬영하지 못했습니다. 다시 시도하세요.</string>
-    <string name="camera_delete_failed">사진을 삭제하지 못했습니다.</string>
     <string name="camera_photo_unreadable">사진을 열지 못했습니다.</string>
     <string name="camera_zoom_reset">1배로 돌아가기</string>
     <string name="camera_language">사진 언어</string>
@@ -838,6 +834,41 @@
     <string name="camera_permission_title">카메라 접근 권한 없음</string>
     <string name="camera_permission_blocked_title">카메라 접근이 차단됨</string>
     <string name="camera_cannot_recognize">%1$s 인식 불가</string>
+    <string name="camera_close">사진 닫기</string>
+    <string name="camera_close_failed">사진을 닫지 못했습니다.</string>
+    <string name="camera_unsaved">현재 사진은 기록에 저장되지 않아 삭제됩니다.</string>
+    <string name="camera_save_history">기록에 저장</string>
+    <string name="camera_saved_history">기록에 저장했습니다</string>
+    <string name="camera_save_history_failed">사진을 기록에 저장하지 못했습니다.</string>
+    <string name="camera_history">기록</string>
+    <string name="camera_settings">카메라 설정</string>
+    <string name="history_empty">기록에 사진이 없습니다</string>
+    <string name="history_empty_hint">사진 메뉴의 “기록에 저장”으로 저장하거나 카메라 설정에서 자동 저장을 켜세요.</string>
+    <plurals name="history_selected">
+        <item quantity="other">%1$d개 선택됨</item>
+    </plurals>
+    <string name="history_delete_title">기록에서 삭제할까요?</string>
+    <plurals name="history_delete_text">
+        <item quantity="other">사진 %1$d장이 기록에서 삭제됩니다.</item>
+    </plurals>
+    <string name="history_clear_selection">선택 해제</string>
+    <string name="history_change_failed">기록을 변경하지 못했습니다.</string>
+    <string name="settings_camera_summary">사진 기록, 자동 저장, 한도</string>
+    <string name="history_auto_save">자동 저장</string>
+    <string name="history_auto_save_hint">새 사진은 촬영 직후 기록에 추가됩니다.</string>
+    <string name="history_count_limit">사진 수 한도</string>
+    <string name="history_size_limit">용량 한도(MB)</string>
+    <string name="history_no_limit">0은 제한 없음입니다. 오래된 사진부터 삭제됩니다.</string>
+    <plurals name="history_photos">
+        <item quantity="other">사진 %1$d장</item>
+    </plurals>
+    <string name="history_clear">기록 지우기</string>
+    <string name="history_clear_title">기록을 지울까요?</string>
+    <string name="history_clear_text">기록의 모든 사진이 삭제됩니다.</string>
+    <string name="history_trim_title">한도를 낮출까요?</string>
+    <plurals name="history_trim_text">
+        <item quantity="other">가장 오래된 사진 %1$d장이 기록에서 삭제됩니다.</item>
+    </plurals>
     <string name="camera_opening">사진 여는 중…</string>
     <string name="camera_partial_words">이 영역의 단어는 찾을 수 없습니다.</string>
     <plurals name="camera_status_regions">

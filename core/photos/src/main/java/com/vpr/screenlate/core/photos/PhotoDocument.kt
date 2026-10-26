@@ -13,6 +13,7 @@ import java.io.File
  *
  * @property image the stored image, as the camera wrote it.
  * @property revision changes with every recognition committed for the photo; 0 before the first.
+ * @property saved the photo is in the history ([PhotoHistory]).
  */
 data class PhotoDocument(
     val id: Long,
@@ -25,6 +26,7 @@ data class PhotoDocument(
     val text: PhotoText,
     val attempt: PhotoAttempt? = null,
     val attemptUnreadable: Boolean = false,
+    val saved: Boolean = false,
 ) {
     val width: Int get() = if (orientation.swapsAxes) rawHeight else rawWidth
     val height: Int get() = if (orientation.swapsAxes) rawWidth else rawHeight

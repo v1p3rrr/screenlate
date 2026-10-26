@@ -799,9 +799,6 @@
     <string name="camera_take_photo">Chụp ảnh</string>
     <string name="camera_new_photo">Ảnh mới</string>
     <string name="camera_back_to_photo">Quay lại ảnh</string>
-    <string name="camera_delete">Xóa ảnh</string>
-    <string name="camera_delete_title">Xóa ảnh?</string>
-    <string name="camera_delete_text">Ảnh và văn bản đã nhận dạng sẽ bị xóa. Bản sao đã lưu vào thư viện không bị ảnh hưởng.</string>
     <string name="camera_permission_text">Hãy cho phép truy cập máy ảnh để chụp văn bản và đọc bằng bong bóng.</string>
     <string name="camera_permission_blocked">Quyền truy cập máy ảnh đã bị từ chối. Hãy cho phép trong cài đặt hệ thống của ứng dụng.</string>
     <string name="camera_open_settings">Mở cài đặt</string>
@@ -809,7 +806,6 @@
     <string name="camera_no_rear">Không có máy ảnh sau.</string>
     <string name="camera_unavailable">Không mở được máy ảnh.</string>
     <string name="camera_capture_failed">Không chụp được ảnh. Hãy thử lại.</string>
-    <string name="camera_delete_failed">Không xóa được ảnh.</string>
     <string name="camera_photo_unreadable">Không mở được ảnh.</string>
     <string name="camera_zoom_reset">Trở về 1×</string>
     <string name="camera_language">Ngôn ngữ ảnh</string>
@@ -838,6 +834,41 @@
     <string name="camera_permission_title">Chưa có quyền truy cập máy ảnh</string>
     <string name="camera_permission_blocked_title">Quyền truy cập máy ảnh bị chặn</string>
     <string name="camera_cannot_recognize">Không thể nhận dạng: %1$s</string>
+    <string name="camera_close">Đóng ảnh</string>
+    <string name="camera_close_failed">Không đóng được ảnh.</string>
+    <string name="camera_unsaved">Ảnh hiện tại chưa được lưu vào lịch sử và sẽ bị xóa.</string>
+    <string name="camera_save_history">Lưu vào lịch sử</string>
+    <string name="camera_saved_history">Đã lưu vào lịch sử</string>
+    <string name="camera_save_history_failed">Không lưu được ảnh vào lịch sử.</string>
+    <string name="camera_history">Lịch sử</string>
+    <string name="camera_settings">Cài đặt máy ảnh</string>
+    <string name="history_empty">Không có ảnh trong lịch sử</string>
+    <string name="history_empty_hint">Lưu ảnh bằng mục “Lưu vào lịch sử” trong menu của ảnh, hoặc bật tự động lưu trong cài đặt máy ảnh.</string>
+    <plurals name="history_selected">
+        <item quantity="other">Đã chọn %1$d</item>
+    </plurals>
+    <string name="history_delete_title">Xóa khỏi lịch sử?</string>
+    <plurals name="history_delete_text">
+        <item quantity="other">%1$d ảnh sẽ bị xóa khỏi lịch sử.</item>
+    </plurals>
+    <string name="history_clear_selection">Bỏ chọn</string>
+    <string name="history_change_failed">Không thay đổi được lịch sử.</string>
+    <string name="settings_camera_summary">Lịch sử ảnh, tự động lưu, giới hạn</string>
+    <string name="history_auto_save">Tự động lưu</string>
+    <string name="history_auto_save_hint">Mỗi ảnh mới được thêm vào lịch sử ngay sau khi chụp.</string>
+    <string name="history_count_limit">Giới hạn số ảnh</string>
+    <string name="history_size_limit">Giới hạn dung lượng, MB</string>
+    <string name="history_no_limit">0 nghĩa là không giới hạn. Ảnh cũ nhất bị xóa trước.</string>
+    <plurals name="history_photos">
+        <item quantity="other">%1$d ảnh</item>
+    </plurals>
+    <string name="history_clear">Xóa lịch sử</string>
+    <string name="history_clear_title">Xóa lịch sử?</string>
+    <string name="history_clear_text">Tất cả ảnh trong lịch sử sẽ bị xóa.</string>
+    <string name="history_trim_title">Giảm giới hạn?</string>
+    <plurals name="history_trim_text">
+        <item quantity="other">%1$d ảnh cũ nhất sẽ bị xóa khỏi lịch sử.</item>
+    </plurals>
     <string name="camera_opening">Đang mở ảnh…</string>
     <string name="camera_partial_words">Không thể tra các từ trong những vùng này.</string>
     <plurals name="camera_status_regions">

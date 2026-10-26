@@ -11,5 +11,6 @@ android {
 dependencies {
     api(project(":core:common"))
     api(project(":core:ocr"))
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
 }

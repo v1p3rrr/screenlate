@@ -43,6 +43,12 @@ settings and selects a dedicated local test deck/model; `verify` checks the gene
 selects the fixture word), and `restore` reinstates the original settings. Use only an unsynced test collection and
 always restore the settings after a manual popup-to-Anki check.
 
+The photo history is tested in `PhotoStoreTest` (saving, order, limits, opening, deletion of the current photo),
+`HistoryLimitsTest`, `CameraPreferencesTest` and the app's `CameraViewModelTest`, `PhotoHistoryViewModelTest` and
+`CameraSettingsViewModelTest`, which share fakes in `HistoryFakes.kt`. Instrumented `PhotoDatabaseTest` covers the
+v2→v3 migration and the upright thumbnail; `UnsavedPhotoDialogTest` (API 30) checks that the dialog's answer reaches
+the caller before it is dismissed.
+
 ## Dictionary catalog
 
 The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches

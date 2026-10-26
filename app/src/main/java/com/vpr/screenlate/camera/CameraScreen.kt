@@ -56,7 +56,6 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
-import com.vpr.screenlate.ui.components.ConfirmDelete
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.photos.PhotoWork
@@ -68,21 +67,25 @@ fun CameraScreen(
     onOpenDictionaries: () -> Unit = {},
     onOpenModels: (Language) -> Unit = {},
     onOpenLanguages: () -> Unit = {},
+    onOpenHistory: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
     viewModel: CameraViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val latest by viewModel.latest.collectAsStateWithLifecycle()
+    val autoSave by viewModel.autoSave.collectAsStateWithLifecycle()
     val flash by viewModel.session.flash.collectAsStateWithLifecycle()
     val recognition by viewModel.recognition.state.collectAsStateWithLifecycle()
     val block by viewModel.recognition.blocked.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val resources = LocalResources.current
     val snackbar = remember { SnackbarHostState() }
-    var confirmingDelete by remember { mutableStateOf(false) }
+    var confirmingClose by remember { mutableStateOf(false) }
     var flashAvailable by remember { mutableStateOf(false) }
     var languageMenu by remember { mutableStateOf(false) }
     var warning by remember(state.photo?.id) { mutableStateOf(false) }
     val blocked = block?.takeIf { it.documentId == state.photo?.id && !state.live }
-    SideEffect { viewModel.setObscured(confirmingDelete || languageMenu || warning || blocked != null) }
+    SideEffect { viewModel.setObscured(confirmingClose || languageMenu || warning || blocked != null) }
     DisposableEffect(viewModel) { onDispose { viewModel.setObscured(false) } }
     // The page is the bubble's source from the start of its entry, frames before it resumes, so that a pull-out
     // meanwhile does not scan the screen; it stops being one as soon as it pauses.
@@ -107,23 +110,24 @@ fun CameraScreen(
                 resources.getString(
                     when (event) {
                         CameraEvent.CAPTURE -> R.string.camera_capture_failed
-                        CameraEvent.DELETE -> R.string.camera_delete_failed
+                        CameraEvent.DELETE -> R.string.camera_close_failed
                         CameraEvent.LOAD -> R.string.camera_photo_unreadable
                         CameraEvent.EXPORT_FAILED -> R.string.camera_export_failed
                         CameraEvent.EXPORTED -> R.string.camera_exported
                         CameraEvent.DELETED -> R.string.camera_deleted
+                        CameraEvent.SAVED -> R.string.camera_saved_history
+                        CameraEvent.SAVE_FAILED -> R.string.camera_save_history_failed
                     },
                 ),
             )
         }
     }
     BackHandler(state.takingNew && state.photo != null) { viewModel.backToPhoto() }
-    if (confirmingDelete) {
-        ConfirmDelete(
-            stringResource(R.string.camera_delete_title),
-            stringResource(R.string.camera_delete_text),
-            onDelete = viewModel::deletePhoto,
-            onDismiss = { confirmingDelete = false },
+    if (confirmingClose) {
+        UnsavedPhotoDialog(
+            onSave = { viewModel.closePhoto(save = true) },
+            onDelete = { viewModel.closePhoto() },
+            onDismiss = { confirmingClose = false },
         )
     }
     if (warning) state.photo?.let { photo ->
@@ -148,19 +152,29 @@ fun CameraScreen(
     val hasWarning = cameraHasWarning(state.photo, recognition?.work)
     val working = (recognition?.work as? PhotoWork.Running)?.documentId == state.photo?.id && state.photo != null
     val actions = buildList {
+        val photo = state.photo
         if (state.live) {
             if (flashAvailable) add(CameraAction(flash.icon, stringResource(flash.label), !state.busy) { viewModel.session.flash.value = flash.next })
-        } else if (state.photo != null) {
+        } else if (photo != null) {
             add(CameraAction(R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo), !state.busy, run = viewModel::newPhoto))
-            add(CameraAction(R.drawable.ic_delete, stringResource(R.string.camera_delete), !state.busy) { confirmingDelete = true })
             add(CameraAction(R.drawable.ic_download, stringResource(R.string.camera_export), !state.busy && !state.exporting, inMenu = true,
                 run = viewModel::exportPhoto))
+            if (!photo.saved && !autoSave) {
+                add(CameraAction(R.drawable.ic_library_add, stringResource(R.string.camera_save_history), !state.busy, inMenu = true,
+                    run = viewModel::saveToHistory))
+            }
         }
+        add(CameraAction(R.drawable.ic_history, stringResource(R.string.camera_history), inMenu = true, run = onOpenHistory))
+        add(CameraAction(R.drawable.ic_settings, stringResource(R.string.camera_settings), inMenu = true, run = onOpenSettings))
     }
-    val navigation = if (state.live && state.photo != null) {
-        CameraAction(R.drawable.ic_close, stringResource(R.string.camera_back_to_photo), !state.busy, run = viewModel::backToPhoto)
-    } else {
-        null
+    val navigation = state.photo?.let { photo ->
+        if (state.live) {
+            CameraAction(R.drawable.ic_close, stringResource(R.string.camera_back_to_photo), !state.busy, run = viewModel::backToPhoto)
+        } else {
+            CameraAction(R.drawable.ic_close, stringResource(R.string.camera_close), !state.busy) {
+                if (closingAsks(photo, autoSave)) confirmingClose = true else viewModel.closePhoto()
+            }
+        }
     }
     Scaffold(
         topBar = { CameraToolbar(actions, navigation) },
@@ -185,7 +199,10 @@ fun CameraScreen(
                 }
             } else if (state.live) {
                 CameraPermission(viewModel.session) {
-                    LiveCamera(flash, state.busy, { flashAvailable = it }, viewModel::capture) {
+                    LiveCamera(
+                        flash, state.busy, { flashAvailable = it }, viewModel::capture,
+                        side = { HistoryButton(latest?.thumbnail, enabled = !state.busy, onClick = onOpenHistory) },
+                    ) {
                         recognition?.let {
                             Box(Modifier.align(Alignment.TopStart).padding(12.dp)) {
                                 CameraLanguageChip(it, viewModel.recognition::select, onOpenLanguages, { open -> languageMenu = open }, overlay = true)

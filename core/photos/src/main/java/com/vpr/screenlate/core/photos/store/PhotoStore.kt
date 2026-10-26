@@ -7,15 +7,21 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.photos.HistoryEntry
+import com.vpr.screenlate.core.photos.HistoryLimits
 import com.vpr.screenlate.core.photos.InvalidPhotoException
 import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoDocuments
+import com.vpr.screenlate.core.photos.PhotoHistory
+import com.vpr.screenlate.core.photos.PhotoThumbnails
 import com.vpr.screenlate.core.photos.PhotoOrientation
 import com.vpr.screenlate.core.photos.PhotoRecognition
 import com.vpr.screenlate.core.photos.PhotoText
 import com.vpr.screenlate.core.photos.PhotoAttempt
 import com.vpr.screenlate.core.photos.PhotoImage
+import com.vpr.screenlate.core.photos.ThumbnailMaker
 import java.nio.file.Files
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -25,6 +31,7 @@ import java.io.RandomAccessFile
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -39,22 +46,25 @@ import kotlinx.coroutines.withContext
  * Photos in `noBackupFilesDir/photos/<uuid>/`: the image as the camera wrote it and the committed recognition, with
  * their metadata in Room. A capture is written in `.staging/` and moved into place with a rename, and a recognition is
  * written next to its photo before the database names it, so an interrupted write leaves the committed photo and text
- * as they were. What an interruption leaves behind is deleted before the first change after a start.
+ * as they were. What an interruption leaves behind is deleted before the first change after a start. A photo in the
+ * history also has a thumbnail there.
  */
 @Singleton
 class PhotoStore internal constructor(
     private val root: File,
     private val index: PhotoIndex,
     private val probe: ImageProbe,
+    private val thumbnails: ThumbnailMaker,
     private val clock: () -> Long,
     private val io: CoroutineDispatcher,
-) : PhotoDocuments {
+) : PhotoDocuments, PhotoHistory {
 
     @Inject
     constructor(@ApplicationContext context: Context, database: PhotoDatabase) : this(
         root = File(context.noBackupFilesDir, ROOT),
         index = RoomPhotoIndex(database.photoDao()),
         probe = BitmapImageProbe,
+        thumbnails = PhotoThumbnails,
         clock = System::currentTimeMillis,
         io = Dispatchers.IO,
     )
@@ -175,7 +185,7 @@ class PhotoStore internal constructor(
         val name = "$RECOGNITION$revision"
         val file = File(directory, name)
         writeAtomically(file, RecognitionCodec.encode(recognition))
-        if (!index.setRecognition(documentId, basedOn, name, revision)) {
+        if (!index.setRecognition(documentId, basedOn, name, revision, recognition.language.code)) {
             file.delete()
             return@locked null
         }
@@ -183,6 +193,90 @@ class PhotoStore internal constructor(
         row.attemptFile?.let { File(directory, it).delete() }
         documentOf(row.copy(recognitionFile = name, recognitionRevision = revision, attemptFile = null), PhotoText.Recognized(recognition))
     }
+
+    override val entries: Flow<List<HistoryEntry>> = index.observeHistory()
+        .distinctUntilChanged()
+        .map { rows -> rows.map(::entryOf) }
+        .distinctUntilChanged()
+        .flowOn(io)
+
+    override suspend fun save(documentId: Long, limits: HistoryLimits): Boolean = locked {
+        val row = index.get(documentId) ?: return@locked false
+        if (!row.saved) {
+            val thumbnail = File(File(root, row.directory), THUMBNAIL)
+            try {
+                writeAtomically(thumbnail, thumbnails.thumbnail(documentOf(row, PhotoText.None)))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // The history shows a placeholder instead.
+                Log.w(TAG, "No thumbnail for photo ${row.id}: " + e.javaClass.simpleName)
+            }
+            // A recognition committed before the language was stored names it only in its file.
+            val language = row.language
+                ?: row.recognitionFile?.let { (textOf(row) as? PhotoText.Recognized)?.recognition?.language?.code }
+            if (!index.save(documentId, clock(), language)) return@locked false
+            Log.i(TAG, "Photo ${row.id} saved to the history")
+        }
+        trimHistory(limits)
+        true
+    }
+
+    override suspend fun open(documentId: Long): PhotoDocument? = locked {
+        val row = index.get(documentId)?.takeIf { it.saved } ?: return@locked null
+        if (!imageOf(row).isFile) {
+            Log.w(TAG, "Photo ${row.id} lost its image")
+            remove(row)
+            return@locked null
+        }
+        val previous = index.current()
+        if (previous?.id != documentId) {
+            index.setCurrent(documentId)
+            if (previous != null && !previous.saved) remove(previous)
+        }
+        load(row)
+    }
+
+    override suspend fun remove(ids: Set<Long>) {
+        locked { ids.forEach { id -> index.get(id)?.takeIf { it.saved }?.let { leaveHistory(it) } } }
+    }
+
+    override suspend fun clear() {
+        locked { index.history().forEach { leaveHistory(it) } }
+    }
+
+    override suspend fun excess(limits: HistoryLimits): Int = locked {
+        val rows = index.history()
+        rows.size - limits.kept(rows.map(::bytesOf))
+    }
+
+    override suspend fun trim(limits: HistoryLimits) {
+        locked { trimHistory(limits) }
+    }
+
+    private suspend fun trimHistory(limits: HistoryLimits) {
+        val rows = index.history()
+        val beyond = rows.drop(limits.kept(rows.map(::bytesOf)))
+        if (beyond.isEmpty()) return
+        beyond.forEach { leaveHistory(it) }
+        Log.i(TAG, "${beyond.size} oldest photos left the history")
+    }
+
+    /** Deletes the photo; the current one is closed first. */
+    private suspend fun leaveHistory(row: PhotoEntity) {
+        if (row.id == index.current()?.id) index.clearCurrent()
+        remove(row)
+    }
+
+    private fun entryOf(row: PhotoEntity) = HistoryEntry(
+        id = row.id,
+        createdAt = row.createdAt,
+        language = Language.of(row.language),
+        thumbnail = File(File(root, row.directory), THUMBNAIL).takeIf { it.isFile },
+        bytes = bytesOf(row),
+    )
+
+    private fun bytesOf(row: PhotoEntity): Long = File(root, row.directory).listFiles()?.sumOf { it.length() } ?: 0L
 
     /** Runs [block] alone, after the leftovers of an interrupted change were deleted once. */
     private suspend fun <T> locked(block: suspend () -> T): T = withContext(io) {
@@ -214,7 +308,9 @@ class PhotoStore internal constructor(
                 else -> {
                     kept += row.directory
                     File(root, row.directory).listFiles()
-                        ?.filter { it.name != IMAGE && it.name != row.recognitionFile && it.name != row.attemptFile }
+                        ?.filter {
+                            it.name != IMAGE && it.name != THUMBNAIL && it.name != row.recognitionFile && it.name != row.attemptFile
+                        }
                         ?.forEach { it.deleteRecursively() }
                 }
             }
@@ -275,6 +371,7 @@ class PhotoStore internal constructor(
             text = text,
             attempt = attempt,
             attemptUnreadable = row.attemptFile != null && attempt == null,
+            saved = row.saved,
         )
     }
 
@@ -288,6 +385,7 @@ class PhotoStore internal constructor(
         const val STAGING = ".staging"
         const val CAPTURE_SUFFIX = ".capture"
         const val IMAGE = "image"
+        const val THUMBNAIL = "thumbnail"
         const val RECOGNITION = "recognition-"
         const val TEMP_SUFFIX = ".tmp"
 
@@ -300,7 +398,7 @@ class PhotoStore internal constructor(
             }
             if (!temp.renameTo(file)) {
                 temp.delete()
-                throw IOException("Cannot store the recognition")
+                throw IOException("Cannot store " + file.name)
             }
         }
 

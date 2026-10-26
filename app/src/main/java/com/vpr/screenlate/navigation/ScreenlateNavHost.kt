@@ -45,6 +45,8 @@ import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.backup.BackupScreen
 import com.vpr.screenlate.bubble.BubbleSettingsScreen
 import com.vpr.screenlate.camera.CameraScreen
+import com.vpr.screenlate.camera.CameraSettingsScreen
+import com.vpr.screenlate.camera.PhotoHistoryScreen
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.debug.ImageViewerScreen
 import com.vpr.screenlate.debug.OcrTestScreen
@@ -125,6 +127,12 @@ private data class SearchRoute(val query: String = "")
 
 @Serializable
 private object CameraRoute
+
+@Serializable
+private object CameraHistoryRoute
+
+@Serializable
+private object CameraSettingsRoute
 
 @Serializable
 private object FirstRunRoute
@@ -259,6 +267,7 @@ fun ScreenlateNavHost(
                                 SettingsPage.LOOKUP -> LookupRoute
                                 SettingsPage.POPUP -> PopupRoute
                                 SettingsPage.TRANSLATION -> TranslationRoute
+                                SettingsPage.CAMERA -> CameraSettingsRoute
                                 SettingsPage.DICTIONARIES -> DictionariesRoute
                                 SettingsPage.ANKI -> AnkiRoute()
                                 SettingsPage.APPEARANCE -> AppearanceRoute
@@ -306,8 +315,12 @@ fun ScreenlateNavHost(
             composable<CameraRoute> {
                 CameraScreen(onOpenDictionaries = { inSettings(DictionariesRoute) },
                     onOpenModels = { language -> inSettings(BubbleRoute(ocrModels = language.code)) },
-                    onOpenLanguages = { inSettings(LanguagesRoute) })
+                    onOpenLanguages = { inSettings(LanguagesRoute) },
+                    onOpenHistory = { go(CameraHistoryRoute) },
+                    onOpenSettings = { go(CameraSettingsRoute) })
             }
+            composable<CameraHistoryRoute> { PhotoHistoryScreen(onBack = back) }
+            composable<CameraSettingsRoute> { CameraSettingsScreen(onBack = back) }
             composable<AnkiRoute> { entry -> AnkiSettingsScreen(onBack = back, showAudio = entry.toRoute<AnkiRoute>().audio) }
             composable<DictionariesRoute> {
                 DictionariesScreen(

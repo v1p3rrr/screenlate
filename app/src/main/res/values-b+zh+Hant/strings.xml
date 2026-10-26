@@ -799,9 +799,6 @@
     <string name="camera_take_photo">拍照</string>
     <string name="camera_new_photo">新照片</string>
     <string name="camera_back_to_photo">返回照片</string>
-    <string name="camera_delete">刪除照片</string>
-    <string name="camera_delete_title">刪除照片？</string>
-    <string name="camera_delete_text">將刪除照片及其辨識出的文字。已儲存至相簿的副本不受影響。</string>
     <string name="camera_permission_text">允許存取相機，即可拍攝文字並用懸浮球閱讀。</string>
     <string name="camera_permission_blocked">相機存取權限遭拒絕。請在系統的應用程式設定中允許。</string>
     <string name="camera_open_settings">開啟設定</string>
@@ -809,7 +806,6 @@
     <string name="camera_no_rear">後置相機無法使用。</string>
     <string name="camera_unavailable">無法開啟相機。</string>
     <string name="camera_capture_failed">無法拍照。請重試。</string>
-    <string name="camera_delete_failed">無法刪除照片。</string>
     <string name="camera_photo_unreadable">無法開啟照片。</string>
     <string name="camera_zoom_reset">恢復至 1 倍</string>
     <string name="camera_language">照片語言</string>
@@ -838,6 +834,41 @@
     <string name="camera_permission_title">沒有相機存取權限</string>
     <string name="camera_permission_blocked_title">相機存取權限已遭拒絕</string>
     <string name="camera_cannot_recognize">無法辨識%1$s</string>
+    <string name="camera_close">關閉照片</string>
+    <string name="camera_close_failed">無法關閉照片。</string>
+    <string name="camera_unsaved">目前的照片未儲存至歷史記錄，將會刪除。</string>
+    <string name="camera_save_history">儲存至歷史記錄</string>
+    <string name="camera_saved_history">已儲存至歷史記錄</string>
+    <string name="camera_save_history_failed">無法將照片儲存至歷史記錄。</string>
+    <string name="camera_history">歷史記錄</string>
+    <string name="camera_settings">相機設定</string>
+    <string name="history_empty">歷史記錄中沒有照片</string>
+    <string name="history_empty_hint">在照片選單中選擇「儲存至歷史記錄」，或在相機設定中開啟自動儲存。</string>
+    <plurals name="history_selected">
+        <item quantity="other">已選取 %1$d 項</item>
+    </plurals>
+    <string name="history_delete_title">要從歷史記錄中刪除嗎？</string>
+    <plurals name="history_delete_text">
+        <item quantity="other">將從歷史記錄中刪除 %1$d 張照片。</item>
+    </plurals>
+    <string name="history_clear_selection">取消選取</string>
+    <string name="history_change_failed">無法變更歷史記錄。</string>
+    <string name="settings_camera_summary">照片歷史記錄、自動儲存、上限</string>
+    <string name="history_auto_save">自動儲存</string>
+    <string name="history_auto_save_hint">每張新照片拍攝後會立即加入歷史記錄。</string>
+    <string name="history_count_limit">照片數量上限</string>
+    <string name="history_size_limit">大小上限（MB）</string>
+    <string name="history_no_limit">0 代表不限制。最舊的照片會先刪除。</string>
+    <plurals name="history_photos">
+        <item quantity="other">%1$d 張照片</item>
+    </plurals>
+    <string name="history_clear">清除歷史記錄</string>
+    <string name="history_clear_title">要清除歷史記錄嗎？</string>
+    <string name="history_clear_text">歷史記錄中的所有照片都會刪除。</string>
+    <string name="history_trim_title">要降低上限嗎？</string>
+    <plurals name="history_trim_text">
+        <item quantity="other">將從歷史記錄中刪除最舊的 %1$d 張照片。</item>
+    </plurals>
     <string name="camera_opening">正在開啟照片…</string>
     <string name="camera_partial_words">這些區域中的字詞無法查詢。</string>
     <plurals name="camera_status_regions">

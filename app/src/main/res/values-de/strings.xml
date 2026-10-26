@@ -806,9 +806,6 @@
     <string name="camera_take_photo">Foto aufnehmen</string>
     <string name="camera_new_photo">Neues Foto</string>
     <string name="camera_back_to_photo">Zurück zum Foto</string>
-    <string name="camera_delete">Foto löschen</string>
-    <string name="camera_delete_title">Foto löschen?</string>
-    <string name="camera_delete_text">Das Foto und sein erkannter Text werden gelöscht. Eine in der Galerie gespeicherte Kopie bleibt erhalten.</string>
     <string name="camera_permission_text">Erlaube den Kamerazugriff, um Text zu fotografieren und mit der Blase zu lesen.</string>
     <string name="camera_permission_blocked">Der Kamerazugriff wurde verweigert. Erlaube ihn in den Systemeinstellungen der App.</string>
     <string name="camera_open_settings">Einstellungen öffnen</string>
@@ -816,7 +813,6 @@
     <string name="camera_no_rear">Keine Rückkamera verfügbar.</string>
     <string name="camera_unavailable">Die Kamera konnte nicht geöffnet werden.</string>
     <string name="camera_capture_failed">Das Foto konnte nicht aufgenommen werden. Versuche es erneut.</string>
-    <string name="camera_delete_failed">Das Foto konnte nicht gelöscht werden.</string>
     <string name="camera_photo_unreadable">Das Foto konnte nicht geöffnet werden.</string>
     <string name="camera_zoom_reset">Zurück zu 1×</string>
     <string name="camera_language">Fotosprache</string>
@@ -845,6 +841,45 @@
     <string name="camera_permission_title">Kein Kamerazugriff</string>
     <string name="camera_permission_blocked_title">Kamerazugriff blockiert</string>
     <string name="camera_cannot_recognize">Erkennung nicht möglich: %1$s</string>
+    <string name="camera_close">Foto schließen</string>
+    <string name="camera_close_failed">Das Foto konnte nicht geschlossen werden.</string>
+    <string name="camera_unsaved">Das aktuelle Foto ist nicht im Verlauf gespeichert und wird gelöscht.</string>
+    <string name="camera_save_history">Im Verlauf speichern</string>
+    <string name="camera_saved_history">Im Verlauf gespeichert</string>
+    <string name="camera_save_history_failed">Das Foto konnte nicht im Verlauf gespeichert werden.</string>
+    <string name="camera_history">Verlauf</string>
+    <string name="camera_settings">Kameraeinstellungen</string>
+    <string name="history_empty">Keine Fotos im Verlauf</string>
+    <string name="history_empty_hint">Speichere ein Foto über „Im Verlauf speichern“ in seinem Menü oder aktiviere das automatische Speichern in den Kameraeinstellungen.</string>
+    <plurals name="history_selected">
+        <item quantity="one">%1$d ausgewählt</item>
+        <item quantity="other">%1$d ausgewählt</item>
+    </plurals>
+    <string name="history_delete_title">Aus dem Verlauf löschen?</string>
+    <plurals name="history_delete_text">
+        <item quantity="one">%1$d Foto wird aus dem Verlauf gelöscht.</item>
+        <item quantity="other">%1$d Fotos werden aus dem Verlauf gelöscht.</item>
+    </plurals>
+    <string name="history_clear_selection">Auswahl aufheben</string>
+    <string name="history_change_failed">Der Verlauf konnte nicht geändert werden.</string>
+    <string name="settings_camera_summary">Fotoverlauf, automatisches Speichern, Limits</string>
+    <string name="history_auto_save">Automatisch speichern</string>
+    <string name="history_auto_save_hint">Jedes neue Foto kommt direkt nach der Aufnahme in den Verlauf.</string>
+    <string name="history_count_limit">Maximale Fotoanzahl</string>
+    <string name="history_size_limit">Maximale Größe, MB</string>
+    <string name="history_no_limit">0 bedeutet kein Limit. Die ältesten Fotos werden zuerst gelöscht.</string>
+    <plurals name="history_photos">
+        <item quantity="one">%1$d Foto</item>
+        <item quantity="other">%1$d Fotos</item>
+    </plurals>
+    <string name="history_clear">Verlauf leeren</string>
+    <string name="history_clear_title">Verlauf leeren?</string>
+    <string name="history_clear_text">Alle Fotos im Verlauf werden gelöscht.</string>
+    <string name="history_trim_title">Limit senken?</string>
+    <plurals name="history_trim_text">
+        <item quantity="one">%1$d ältestes Foto wird aus dem Verlauf gelöscht.</item>
+        <item quantity="other">Die %1$d ältesten Fotos werden aus dem Verlauf gelöscht.</item>
+    </plurals>
     <string name="camera_opening">Foto wird geöffnet…</string>
     <string name="camera_partial_words">Wörter in diesen Bereichen können nicht nachgeschlagen werden.</string>
     <plurals name="camera_status_regions">

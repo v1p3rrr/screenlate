@@ -3,6 +3,7 @@ package com.vpr.screenlate.core.photos.store
 import android.content.Context
 import androidx.room.Room
 import com.vpr.screenlate.core.photos.PhotoDocuments
+import com.vpr.screenlate.core.photos.PhotoHistory
 import com.vpr.screenlate.core.photos.PhotoRecognitionEngine
 import com.vpr.screenlate.core.photos.PhotoOcrEngine
 import com.vpr.screenlate.core.photos.CameraPreferenceStore
@@ -26,13 +27,15 @@ abstract class PhotosModule {
     @Binds
     abstract fun bindDocuments(store: PhotoStore): PhotoDocuments
     @Binds
+    abstract fun bindHistory(store: PhotoStore): PhotoHistory
+    @Binds
     abstract fun bindRecognition(engine: PhotoOcrEngine): PhotoRecognitionEngine
 
     companion object {
         @Provides
         @Singleton
         fun provideDatabase(@ApplicationContext context: Context): PhotoDatabase =
-            Room.databaseBuilder(context, PhotoDatabase::class.java, "photos.db").addMigrations(PhotoDatabase.MIGRATION_1_2).build()
+            Room.databaseBuilder(context, PhotoDatabase::class.java, "photos.db").addMigrations(PhotoDatabase.MIGRATION_1_2, PhotoDatabase.MIGRATION_2_3).build()
 
         @Provides
         @Singleton

@@ -799,9 +799,6 @@
     <string name="camera_take_photo">写真を撮影</string>
     <string name="camera_new_photo">新しい写真</string>
     <string name="camera_back_to_photo">写真に戻る</string>
-    <string name="camera_delete">写真を削除</string>
-    <string name="camera_delete_title">写真を削除しますか？</string>
-    <string name="camera_delete_text">写真と認識済みのテキストが削除されます。ギャラリーに保存したコピーは残ります。</string>
     <string name="camera_permission_text">テキストを撮影してバブルで読むには、カメラへのアクセスを許可してください。</string>
     <string name="camera_permission_blocked">カメラへのアクセスが拒否されました。システムのアプリ設定で許可してください。</string>
     <string name="camera_open_settings">設定を開く</string>
@@ -809,7 +806,6 @@
     <string name="camera_no_rear">背面カメラを利用できません。</string>
     <string name="camera_unavailable">カメラを開けませんでした。</string>
     <string name="camera_capture_failed">写真を撮影できませんでした。もう一度お試しください。</string>
-    <string name="camera_delete_failed">写真を削除できませんでした。</string>
     <string name="camera_photo_unreadable">写真を開けませんでした。</string>
     <string name="camera_zoom_reset">1 倍に戻す</string>
     <string name="camera_language">写真の言語</string>
@@ -838,6 +834,41 @@
     <string name="camera_permission_title">カメラへのアクセスがありません</string>
     <string name="camera_permission_blocked_title">カメラへのアクセスがブロックされています</string>
     <string name="camera_cannot_recognize">%1$sを認識できません</string>
+    <string name="camera_close">写真を閉じる</string>
+    <string name="camera_close_failed">写真を閉じられませんでした。</string>
+    <string name="camera_unsaved">現在の写真は履歴に保存されていないため、削除されます。</string>
+    <string name="camera_save_history">履歴に保存</string>
+    <string name="camera_saved_history">履歴に保存しました</string>
+    <string name="camera_save_history_failed">写真を履歴に保存できませんでした。</string>
+    <string name="camera_history">履歴</string>
+    <string name="camera_settings">カメラの設定</string>
+    <string name="history_empty">履歴に写真はありません</string>
+    <string name="history_empty_hint">写真のメニューの「履歴に保存」で保存するか、カメラの設定で自動保存をオンにしてください。</string>
+    <plurals name="history_selected">
+        <item quantity="other">%1$d 件選択中</item>
+    </plurals>
+    <string name="history_delete_title">履歴から削除しますか？</string>
+    <plurals name="history_delete_text">
+        <item quantity="other">%1$d 枚の写真を履歴から削除します。</item>
+    </plurals>
+    <string name="history_clear_selection">選択を解除</string>
+    <string name="history_change_failed">履歴を変更できませんでした。</string>
+    <string name="settings_camera_summary">写真の履歴、自動保存、上限</string>
+    <string name="history_auto_save">自動で保存</string>
+    <string name="history_auto_save_hint">撮影した写真をすぐに履歴に追加します。</string>
+    <string name="history_count_limit">保存枚数の上限</string>
+    <string name="history_size_limit">容量の上限（MB）</string>
+    <string name="history_no_limit">0 は無制限です。古い写真から削除されます。</string>
+    <plurals name="history_photos">
+        <item quantity="other">%1$d 枚</item>
+    </plurals>
+    <string name="history_clear">履歴を消去</string>
+    <string name="history_clear_title">履歴を消去しますか？</string>
+    <string name="history_clear_text">履歴の写真はすべて削除されます。</string>
+    <string name="history_trim_title">上限を下げますか？</string>
+    <plurals name="history_trim_text">
+        <item quantity="other">古い順に %1$d 枚の写真が履歴から削除されます。</item>
+    </plurals>
     <string name="camera_opening">写真を開いています…</string>
     <string name="camera_partial_words">これらの領域の単語は調べられません。</string>
     <plurals name="camera_status_regions">

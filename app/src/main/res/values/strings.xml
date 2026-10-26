@@ -810,9 +810,6 @@
     <string name="camera_take_photo">Take photo</string>
     <string name="camera_new_photo">New photo</string>
     <string name="camera_back_to_photo">Back to photo</string>
-    <string name="camera_delete">Delete photo</string>
-    <string name="camera_delete_title">Delete the photo?</string>
-    <string name="camera_delete_text">The photo and its recognized text will be deleted. A copy saved to the gallery is not affected.</string>
     <string name="camera_permission_text">Allow camera access to photograph text and read it with the bubble.</string>
     <string name="camera_permission_blocked">Camera access was denied. Allow it in the app’s system settings.</string>
     <string name="camera_open_settings">Open settings</string>
@@ -820,7 +817,6 @@
     <string name="camera_no_rear">No rear camera is available.</string>
     <string name="camera_unavailable">The camera could not be opened.</string>
     <string name="camera_capture_failed">The photo could not be taken. Try again.</string>
-    <string name="camera_delete_failed">The photo could not be deleted.</string>
     <string name="camera_photo_unreadable">The photo could not be opened.</string>
     <string name="camera_zoom_reset">Return to 1×</string>
     <string name="camera_language">Photo language</string>
@@ -849,6 +845,45 @@
     <string name="camera_permission_title">Camera access is off</string>
     <string name="camera_permission_blocked_title">Camera access is blocked</string>
     <string name="camera_cannot_recognize">Can’t recognize %1$s</string>
+    <string name="camera_close">Close photo</string>
+    <string name="camera_close_failed">The photo could not be closed.</string>
+    <string name="camera_unsaved">The current photo isn’t saved to history and will be deleted.</string>
+    <string name="camera_save_history">Save to history</string>
+    <string name="camera_saved_history">Saved to history</string>
+    <string name="camera_save_history_failed">The photo could not be saved to history.</string>
+    <string name="camera_history">History</string>
+    <string name="camera_settings">Camera settings</string>
+    <string name="history_empty">No photos in history</string>
+    <string name="history_empty_hint">Save a photo with Save to history in its menu, or turn on automatic saving in Camera settings.</string>
+    <plurals name="history_selected">
+        <item quantity="one">%1$d selected</item>
+        <item quantity="other">%1$d selected</item>
+    </plurals>
+    <string name="history_delete_title">Delete from history?</string>
+    <plurals name="history_delete_text">
+        <item quantity="one">%1$d photo will be deleted from history.</item>
+        <item quantity="other">%1$d photos will be deleted from history.</item>
+    </plurals>
+    <string name="history_clear_selection">Clear selection</string>
+    <string name="history_change_failed">The history could not be changed.</string>
+    <string name="settings_camera_summary">Photo history, automatic saving, limits</string>
+    <string name="history_auto_save">Save automatically</string>
+    <string name="history_auto_save_hint">Each new photo goes to history right after it is taken.</string>
+    <string name="history_count_limit">Photo limit</string>
+    <string name="history_size_limit">Size limit, MB</string>
+    <string name="history_no_limit">0 means no limit. The oldest photos are deleted first.</string>
+    <plurals name="history_photos">
+        <item quantity="one">%1$d photo</item>
+        <item quantity="other">%1$d photos</item>
+    </plurals>
+    <string name="history_clear">Clear history</string>
+    <string name="history_clear_title">Clear history?</string>
+    <string name="history_clear_text">All photos in history will be deleted.</string>
+    <string name="history_trim_title">Lower the limit?</string>
+    <plurals name="history_trim_text">
+        <item quantity="one">%1$d oldest photo will be deleted from history.</item>
+        <item quantity="other">The %1$d oldest photos will be deleted from history.</item>
+    </plurals>
     <string name="camera_opening">Opening photo…</string>
     <string name="camera_partial_words">Words in these regions can’t be looked up.</string>
     <plurals name="camera_status_regions">

@@ -813,9 +813,6 @@
     <string name="camera_take_photo">Scatta foto</string>
     <string name="camera_new_photo">Nuova foto</string>
     <string name="camera_back_to_photo">Torna alla foto</string>
-    <string name="camera_delete">Elimina foto</string>
-    <string name="camera_delete_title">Eliminare la foto?</string>
-    <string name="camera_delete_text">La foto e il testo riconosciuto verranno eliminati. Una copia salvata nella galleria non viene toccata.</string>
     <string name="camera_permission_text">Consenti l’accesso alla fotocamera per fotografare il testo e leggerlo con la bolla.</string>
     <string name="camera_permission_blocked">L’accesso alla fotocamera è stato negato. Consentilo nelle impostazioni di sistema dell’app.</string>
     <string name="camera_open_settings">Apri impostazioni</string>
@@ -823,7 +820,6 @@
     <string name="camera_no_rear">Nessuna fotocamera posteriore disponibile.</string>
     <string name="camera_unavailable">Impossibile aprire la fotocamera.</string>
     <string name="camera_capture_failed">Impossibile scattare la foto. Riprova.</string>
-    <string name="camera_delete_failed">Impossibile eliminare la foto.</string>
     <string name="camera_photo_unreadable">Impossibile aprire la foto.</string>
     <string name="camera_zoom_reset">Torna a 1×</string>
     <string name="camera_language">Lingua della foto</string>
@@ -852,6 +848,49 @@
     <string name="camera_permission_title">Nessun accesso alla fotocamera</string>
     <string name="camera_permission_blocked_title">Accesso alla fotocamera bloccato</string>
     <string name="camera_cannot_recognize">Riconoscimento non disponibile: %1$s</string>
+    <string name="camera_close">Chiudi foto</string>
+    <string name="camera_close_failed">Impossibile chiudere la foto.</string>
+    <string name="camera_unsaved">La foto attuale non è salvata nella cronologia e verrà eliminata.</string>
+    <string name="camera_save_history">Salva nella cronologia</string>
+    <string name="camera_saved_history">Salvata nella cronologia</string>
+    <string name="camera_save_history_failed">Impossibile salvare la foto nella cronologia.</string>
+    <string name="camera_history">Cronologia</string>
+    <string name="camera_settings">Impostazioni fotocamera</string>
+    <string name="history_empty">Nessuna foto nella cronologia</string>
+    <string name="history_empty_hint">Salva una foto con «Salva nella cronologia» nel suo menu o attiva il salvataggio automatico nelle impostazioni della fotocamera.</string>
+    <plurals name="history_selected">
+        <item quantity="one">%1$d selezionata</item>
+        <item quantity="many">%1$d selezionate</item>
+        <item quantity="other">%1$d selezionate</item>
+    </plurals>
+    <string name="history_delete_title">Eliminare dalla cronologia?</string>
+    <plurals name="history_delete_text">
+        <item quantity="one">%1$d foto verrà eliminata dalla cronologia.</item>
+        <item quantity="many">%1$d foto verranno eliminate dalla cronologia.</item>
+        <item quantity="other">%1$d foto verranno eliminate dalla cronologia.</item>
+    </plurals>
+    <string name="history_clear_selection">Annulla selezione</string>
+    <string name="history_change_failed">Impossibile modificare la cronologia.</string>
+    <string name="settings_camera_summary">Cronologia foto, salvataggio automatico, limiti</string>
+    <string name="history_auto_save">Salva automaticamente</string>
+    <string name="history_auto_save_hint">Ogni nuova foto entra nella cronologia subito dopo lo scatto.</string>
+    <string name="history_count_limit">Numero massimo di foto</string>
+    <string name="history_size_limit">Dimensione massima, MB</string>
+    <string name="history_no_limit">0 significa nessun limite. Le foto più vecchie vengono eliminate per prime.</string>
+    <plurals name="history_photos">
+        <item quantity="one">%1$d foto</item>
+        <item quantity="many">%1$d foto</item>
+        <item quantity="other">%1$d foto</item>
+    </plurals>
+    <string name="history_clear">Cancella cronologia</string>
+    <string name="history_clear_title">Cancellare la cronologia?</string>
+    <string name="history_clear_text">Tutte le foto nella cronologia verranno eliminate.</string>
+    <string name="history_trim_title">Ridurre il limite?</string>
+    <plurals name="history_trim_text">
+        <item quantity="one">%1$d foto, la più vecchia, verrà eliminata dalla cronologia.</item>
+        <item quantity="many">Le %1$d foto più vecchie verranno eliminate dalla cronologia.</item>
+        <item quantity="other">Le %1$d foto più vecchie verranno eliminate dalla cronologia.</item>
+    </plurals>
     <string name="camera_opening">Apertura della foto…</string>
     <string name="camera_partial_words">Le parole in queste aree non possono essere cercate.</string>
     <plurals name="camera_status_regions">

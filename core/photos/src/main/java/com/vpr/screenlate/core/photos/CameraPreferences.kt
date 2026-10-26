@@ -2,7 +2,9 @@ package com.vpr.screenlate.core.photos
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
@@ -11,6 +13,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @Qualifier
@@ -24,6 +27,9 @@ data class CameraLanguages(
     val active: Language = selected,
     val flags: Map<Language, String> = emptyMap(),
 )
+
+/** @property autoSave every new photo joins the history right after capture. */
+data class HistorySettings(val autoSave: Boolean = false, val limits: HistoryLimits = HistoryLimits())
 
 /** Camera-only preferences, outside general settings resets and backup. The first use remembers the active language. */
 @Singleton
@@ -44,5 +50,31 @@ class CameraPreferences @Inject constructor(
         if (language in profiles.current().turnedOn) store.edit { it[LANGUAGE] = language.code }
     }
 
-    private companion object { val LANGUAGE = stringPreferencesKey("language") }
+    val history = store.data.map { preferences ->
+        HistorySettings(
+            autoSave = preferences[AUTO_SAVE] ?: false,
+            limits = HistoryLimits(
+                count = preferences[COUNT_LIMIT]?.coerceAtLeast(0) ?: 0,
+                megabytes = preferences[SIZE_LIMIT]?.coerceAtLeast(0) ?: 0,
+            ),
+        )
+    }.distinctUntilChanged()
+
+    suspend fun setAutoSave(on: Boolean) {
+        store.edit { it[AUTO_SAVE] = on }
+    }
+
+    suspend fun setLimits(limits: HistoryLimits) {
+        store.edit {
+            it[COUNT_LIMIT] = limits.count
+            it[SIZE_LIMIT] = limits.megabytes
+        }
+    }
+
+    private companion object {
+        val LANGUAGE = stringPreferencesKey("language")
+        val AUTO_SAVE = booleanPreferencesKey("history_auto_save")
+        val COUNT_LIMIT = intPreferencesKey("history_count_limit")
+        val SIZE_LIMIT = intPreferencesKey("history_size_limit_mb")
+    }
 }

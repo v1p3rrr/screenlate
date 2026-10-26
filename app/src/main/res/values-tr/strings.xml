@@ -806,9 +806,6 @@
     <string name="camera_take_photo">Fotoğraf çek</string>
     <string name="camera_new_photo">Yeni fotoğraf</string>
     <string name="camera_back_to_photo">Fotoğrafa dön</string>
-    <string name="camera_delete">Fotoğrafı sil</string>
-    <string name="camera_delete_title">Fotoğraf silinsin mi?</string>
-    <string name="camera_delete_text">Fotoğraf ve tanınan metni silinecek. Galeriye kaydedilen kopya etkilenmez.</string>
     <string name="camera_permission_text">Metni fotoğraflayıp baloncukla okumak için kamera erişimine izin verin.</string>
     <string name="camera_permission_blocked">Kamera erişimi reddedildi. Uygulamanın sistem ayarlarından izin verin.</string>
     <string name="camera_open_settings">Ayarları aç</string>
@@ -816,7 +813,6 @@
     <string name="camera_no_rear">Arka kamera kullanılamıyor.</string>
     <string name="camera_unavailable">Kamera açılamadı.</string>
     <string name="camera_capture_failed">Fotoğraf çekilemedi. Tekrar deneyin.</string>
-    <string name="camera_delete_failed">Fotoğraf silinemedi.</string>
     <string name="camera_photo_unreadable">Fotoğraf açılamadı.</string>
     <string name="camera_zoom_reset">1× yakınlaştırmaya dön</string>
     <string name="camera_language">Fotoğraf dili</string>
@@ -845,6 +841,45 @@
     <string name="camera_permission_title">Kamera erişimi yok</string>
     <string name="camera_permission_blocked_title">Kamera erişimi engellendi</string>
     <string name="camera_cannot_recognize">Tanıma yapılamıyor: %1$s</string>
+    <string name="camera_close">Fotoğrafı kapat</string>
+    <string name="camera_close_failed">Fotoğraf kapatılamadı.</string>
+    <string name="camera_unsaved">Geçerli fotoğraf geçmişe kaydedilmedi ve silinecek.</string>
+    <string name="camera_save_history">Geçmişe kaydet</string>
+    <string name="camera_saved_history">Geçmişe kaydedildi</string>
+    <string name="camera_save_history_failed">Fotoğraf geçmişe kaydedilemedi.</string>
+    <string name="camera_history">Geçmiş</string>
+    <string name="camera_settings">Kamera ayarları</string>
+    <string name="history_empty">Geçmişte fotoğraf yok</string>
+    <string name="history_empty_hint">Bir fotoğrafı menüsündeki “Geçmişe kaydet” ile kaydedin veya kamera ayarlarında otomatik kaydetmeyi açın.</string>
+    <plurals name="history_selected">
+        <item quantity="one">%1$d seçildi</item>
+        <item quantity="other">%1$d seçildi</item>
+    </plurals>
+    <string name="history_delete_title">Geçmişten silinsin mi?</string>
+    <plurals name="history_delete_text">
+        <item quantity="one">%1$d fotoğraf geçmişten silinecek.</item>
+        <item quantity="other">%1$d fotoğraf geçmişten silinecek.</item>
+    </plurals>
+    <string name="history_clear_selection">Seçimi kaldır</string>
+    <string name="history_change_failed">Geçmiş değiştirilemedi.</string>
+    <string name="settings_camera_summary">Fotoğraf geçmişi, otomatik kaydetme, sınırlar</string>
+    <string name="history_auto_save">Otomatik kaydet</string>
+    <string name="history_auto_save_hint">Her yeni fotoğraf çekildikten hemen sonra geçmişe eklenir.</string>
+    <string name="history_count_limit">Fotoğraf sınırı</string>
+    <string name="history_size_limit">Boyut sınırı, MB</string>
+    <string name="history_no_limit">0 sınır yok demektir. Önce en eski fotoğraflar silinir.</string>
+    <plurals name="history_photos">
+        <item quantity="one">%1$d fotoğraf</item>
+        <item quantity="other">%1$d fotoğraf</item>
+    </plurals>
+    <string name="history_clear">Geçmişi temizle</string>
+    <string name="history_clear_title">Geçmiş temizlensin mi?</string>
+    <string name="history_clear_text">Geçmişteki tüm fotoğraflar silinecek.</string>
+    <string name="history_trim_title">Sınır düşürülsün mü?</string>
+    <plurals name="history_trim_text">
+        <item quantity="one">En eski %1$d fotoğraf geçmişten silinecek.</item>
+        <item quantity="other">En eski %1$d fotoğraf geçmişten silinecek.</item>
+    </plurals>
     <string name="camera_opening">Fotoğraf açılıyor…</string>
     <string name="camera_partial_words">Bu bölgelerdeki kelimeler aranamaz.</string>
     <plurals name="camera_status_regions">

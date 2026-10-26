@@ -466,7 +466,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM8 | Holding Add over a recognized photo opens a fitted original-photo crop; paragraph/frame/whole-photo and cancel work; Anki gets the original-pixel crop and sentence in the recognition language, with no screenshot read | F | U CropPlacementTest; I PhotoImageTest, CropEditorTest, CropViewTest; M | 2026-10-26 (API 30/37; manual API 37) |
 | CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | F | U PhotoStoreTest, I PhotoDatabaseTest | 2026-10-26 (API 37) |
 | CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
-| CAM11 | Capture → fitted current photo; New photo + Close or Back preserves it; a completed new capture replaces it; Delete + Cancel keeps it, Delete + confirm opens the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
+| CAM11 | Capture → fitted current photo; New photo + Close or Back preserves it; a completed new capture replaces it; ✕ closes it (CAM34) | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
 | CAM12 | Tap preview → focus indicator; pinch → camera zoom and the zoom pill; tap the pill → 1× | F | I LiveCameraTest (API 30), D (focus quality) | 2026-10-26 (API 30) |
 | CAM13 | All 8 EXIF orientations display upright and report matching original-pixel-to-screen coordinates; loading/disposal never publishes another document's viewport | F | U PhotoDrawingTest, U CameraViewModelTest, I PhotoViewerTest | 2026-10-26 (API 37) |
 | CAM14 | Capture with the service unavailable; navigate and background; restart the device → the same private current photograph opens without camera permission being requested again; leaving capture releases the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
@@ -485,10 +485,18 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM27 | The status strip over a photo: the language chip (flag, name, ▾), Recognize filled while there is no result or a change is pending and as a text button otherwise, hidden while recognizing; the status line "Recognized · N of M regions · time" (regions only with more than one), "Recognizing · k of M regions" with progress along the strip's bottom; a language change tints the strip and adds "Language changed" (a frame and bold text with the e-ink theme) | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
 | CAM28 | The language menu from the chip, over a photo and over the live camera: the header, every turned-on language with its flag, "Active" under the app's active language, "Dictionary missing" or "Recognition model missing" under unready ones, a check on the selected one; Manage languages opens Settings → Languages; with the menu open the bubble reads nothing | F | M | 2026-10-26 (API 37) |
 | CAM29 | The live camera: the 4:3 frame at the photo's viewer size with a blurred live copy around it and no black band at the bottom (plain black with the e-ink theme); the chip floats over the preview; the white ring shutter shrinks when pressed, a spinner replaces its disc during capture; the zoom pill above it resets to 1×; the captured photo keeps the resolution it had before the blur stream | F | U CameraPhotoControlsTest (fill steps); I LiveCameraTest; M | 2026-10-26 (API 30/37) |
-| CAM30 | Top bar: over a photo New photo and Delete as icons, Save to gallery always in ⋮; over the live camera with a photo the close icon at the left returns to it, the flash icon at the right | F | M | 2026-10-26 (API 37) |
+| CAM30 | Top bar: over a photo ✕ at the left and New photo as an icon; ⋮ holds Save to gallery, Save to history (only while the photo is outside the history and saving is manual), History and Camera settings; over the live camera with a photo the close icon at the left returns to it, the flash icon at the right | F | M | 2026-10-26 (API 37) |
 | CAM31 | The partial-result dialog: the warning icon, the count of missing regions with "Words in these regions can't be looked up.", a small picture of the photo with the missing regions marked, the causes; Retry keeps the recognized regions | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
-| CAM32 | Camera access off or blocked → an icon, a title, the text and a filled button; deleting the photo shows "Photo deleted"; loading shows "Opening photo…"; recognition blocked by a missing dictionary or model → the dialog is titled "Can't recognize <language>" | F | U CameraViewModelTest; M | 2026-10-26 (API 37) |
+| CAM32 | Camera access off or blocked → an icon, a title, the text and a filled button; deleting an unsaved photo on closing shows "Photo deleted"; loading shows "Opening photo…"; recognition blocked by a missing dictionary or model → the dialog is titled "Can't recognize <language>" | F | U CameraViewModelTest; M | 2026-10-26 (API 37) |
 | CAM33 | A zoomed photo keeps its zoom and center when the strip changes height (pending tint, a wrapped status line) | N | U PhotoViewportTest; M | |
+| CAM34 | ✕ over a photo: a photo in the history closes without a question and stays in the history; one outside it with manual saving asks "The current photo isn't saved to history and will be deleted" — Save to history keeps it there and opens the camera, Delete shows "Photo deleted", Cancel keeps it open; with automatic saving no question | F | U CameraViewModelTest; I UnsavedPhotoDialogTest (API 30); M | 2026-10-26 (API 30/37) |
+| CAM35 | ⋮ Save to history → "Saved to history" and the item leaves the menu; with Save automatically on, a capture is in the history at once (thumbnail written) and the item is hidden; turning the switch on saves the open photo | F | U CameraViewModelTest, CameraSettingsViewModelTest, PhotoStoreTest; M | 2026-10-26 (API 37) |
+| CAM36 | The round button right of the shutter shows the latest history photo, the history icon while the history is empty and with the e-ink theme; it opens the history page | F | U CameraViewModelTest; M | 2026-10-26 (API 37; e-ink not checked) |
+| CAM37 | History page: a grid newest saved first, each tile with its date (time for today) and the flag of its recognition language; a tap opens the photo on the Camera tab with its stored text and no recognition; with manual saving and an unsaved open photo the same three-button question comes first, and Save keeps both photos | F | U PhotoHistoryViewModelTest, PhotoStoreTest; M | 2026-10-26 (API 37) |
+| CAM38 | Long press selects, "N selected", taps add or remove, ✕ or Back clears; the trash asks "N photos will be deleted from history" → their folders are gone; the photo open on the Camera tab among them is deleted and the tab shows the live camera | F | U PhotoHistoryViewModelTest, PhotoStoreTest, CameraViewModelTest; M | 2026-10-26 (API 37) |
+| CAM39 | Camera settings from ⋮ and from Settings (the row before Appearance): Save automatically, Photo limit and Size limit, MB (digits only, 0 = none), the usage "N photos · size" or "No photos in history"; lowering a limit below the history asks "The N oldest photos…" — Cancel restores the field, Delete trims, the open photo too when it is among them | F | U CameraSettingsViewModelTest, HistoryLimitsTest, PhotoStoreTest; M | 2026-10-26 (API 37) |
+| CAM40 | Clear history → "All photos in history will be deleted." → the history and its folders are empty; the photo open on the Camera tab, being in the history, is deleted and the tab shows the live camera; an open photo never saved (manual saving) stays | F | U PhotoStoreTest, CameraViewModelTest, CameraSettingsViewModelTest; M | 2026-10-26 (API 37; the unsaved case by unit test only) |
+| CAM41 | Room v2 → v3 keeps the photos (earlier history ordered by id, the current photo outside it); thumbnails are upright 320 px JPEGs | F | I PhotoDatabaseTest | 2026-10-26 (API 37) |
 
 
 
@@ -536,6 +544,36 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-26, `features/camera-lookup`, the photo history and Camera settings (uncommitted build on `9d3b8c24`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Builds: API 37 an x86_64-only copy of the debug APK (storage thresholds lowered for the install, deleted after);
+  API 30 an x86-only copy and the app's test APK.
+- Root `assembleDebug testDebugUnitTest`: 1636 JVM tests, 0 failures, 5 skipped; `:app:lintDebug` and
+  `:core:photos:lintDebug` with no findings in the camera code or the new strings.
+- API 37 instrumented `PhotoDatabaseTest` 9/9 (v2 → v3, history order, upright thumbnail). Its history-order test then
+  changed one line (`unsave` → `delete`) and was only compiled again.
+- API 37 by hand: the history icon right of the shutter, the latest thumbnail after saving (CAM36); ✕ at the left and
+  the ⋮ order (CAM30); Save to history → "Saved to history" and the item gone (CAM35); a saved photo closed silently;
+  the unsaved question, Delete → "Photo deleted", Save → in the history (CAM34); the grid with time and flag; opening
+  with the question → Save → the old photo with its stored text and no recognition in the log (CAM37); long press,
+  "2 selected", the plural question, folders deleted (CAM38); Camera settings from ⋮ and Settings, automatic saving
+  hiding the item, "The 2 oldest photos…" with Cancel restoring the field and Delete trimming (CAM39).
+- Owner's change during the check: a photo that leaves the history is deleted, the open one included. After it:
+  automatic saving put a capture in the history (thumbnail present, no Save to history in ⋮); Clear history →
+  "All photos in history will be deleted." → no photo folders, the Camera tab on the live camera (CAM40); deleting the
+  open photo on the history page → the live camera (CAM38).
+- API 30: `UnsavedPhotoDialogTest` 3/3.
+- Findings, fixed: Save to history in the question on the history page did nothing, as the dialog dismissed itself
+  (clearing the question) before answering; the answer now comes first (`UnsavedPhotoDialogTest`). Back on the Camera
+  tab after a deletion, the history button decoded the deleted photo's thumbnail from the last list it saw
+  (BitmapFactory error in the log, the icon shown); a missing file is now skipped.
+- Not checked by hand: the e-ink history button; Clear history keeping an unsaved open photo (unit test only).
+- New: CAM34–CAM41, all F. CAM11, CAM30 and CAM32 reworded for ✕ instead of Delete.
+
+Left on the emulators: API 37 Save automatically off, both limits 0, no photo, the storage threshold settings
+deleted, the service bound; API 30 the test APK removed, the universal debug APK reinstalled (an x86-only copy
+lacks ML Kit's libraries), the service bound. Both shut down.
 
 ### 2026-10-26, `features/camera-lookup`, the Camera page restyle (uncommitted build on `54b310df`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
 

@@ -2,10 +2,19 @@
 
 ## Camera photo lookup (2026-10-25)
 
-Phase 1.5 (emulator acceptance) is complete and the Camera page is restyled after the owner's chosen design; all on
-`features/camera-lookup`, rebased onto `languages/main` at `073c50a4`. Checkout:
-`C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Latest commit: "Restyle the Camera page after the chosen
-design" (find the hash with `git log -1`).
+Phase 2 (internal photo history) is complete, after phase 1.5 (emulator acceptance) and the restyle after the
+owner's chosen design; all on `features/camera-lookup`, rebased onto `languages/main` at `073c50a4`. Checkout:
+`C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Latest commit: "Add the photo history and Camera settings"
+(find the hash with `git log -1`).
+
+History: manual Save to history in ⋮ or Save automatically after each capture; a grid page newest first with date and
+language flag, tap to open with the stored text, long press to select and delete; ✕ closes a photo, asking about one
+outside the history with manual saving; the latest thumbnail right of the shutter; Camera settings (from ⋮ and
+Settings, before Appearance) with the switch, photo and MB limits (0 = none, a question before lowering below the
+history), usage and Clear history. Owner's change at the end: a photo that leaves the history is deleted, the one open
+on the Camera tab included. 1636 JVM tests pass; checked on API 37 by hand and API 30 by `UnsavedPhotoDialogTest`
+(CAM34–CAM41). Two bugs found and fixed on the emulator (the question's Save on the history page did nothing; a
+deleted photo's thumbnail decode). Not checked by hand: the e-ink history button.
 
 Restyle (design A with the owner's changes): a status strip above the photo with the language chip, the warning,
 Recognize, the status line and progress; the chip's dropdown with flags, "Active", missing dictionary or model and
@@ -37,9 +46,9 @@ photo crop→local Anki succeeded with a generated Japanese sentence and a 1541�
 app active language was Slovenian. The temporary Japanese Anki settings were restored. Gallery success, byte identity
 and survival after private deletion were verified. No owner's collection, account, sync or AnkiWeb operation.
 
-Next: phase 2 (internal history, limits, the Camera settings page), then phase 3 (picker); neither is started. No
-merge of the camera branch into either main branch. Emulators, test APKs and the shared lock are cleaned up; API 37
-has no current photo, API 30 has the universal debug APK and its original unanswered first run.
+Next: phase 3 (system photo picker), not started. No merge of the camera branch into either main branch. Emulators,
+test APKs and the shared lock are cleaned up; API 37 has no current photo, automatic saving off and no limits; API 30
+has the universal debug APK at its original unanswered first run.
 
 ## Release from `main`: open items (2026-10-23, owner: come back to it later)
 

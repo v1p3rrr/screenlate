@@ -3,6 +3,7 @@ package com.vpr.screenlate.camera
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelStore
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.photos.CameraPreferences
 import com.vpr.screenlate.core.photos.LookupSource
 import com.vpr.screenlate.core.photos.LookupSources
 import com.vpr.screenlate.core.photos.PhotoDocument
@@ -18,12 +19,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -38,6 +41,8 @@ class CameraViewModelTest {
     private lateinit var documents: Documents
     private lateinit var sources: LookupSources
     private lateinit var model: CameraViewModel
+    private lateinit var history: FakeHistory
+    private lateinit var preferences: CameraPreferences
     private var recognitionCalls = 0
     private val recognition = object : CameraRecognition {
         override val state = MutableStateFlow<CameraRecognitionState?>(null)
@@ -101,7 +106,9 @@ class CameraViewModelTest {
         Dispatchers.setMain(dispatcher)
         documents = Documents()
         sources = LookupSources()
-        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession(), recognition, exports)
+        history = FakeHistory(documents.current)
+        preferences = cameraPreferences()
+        model = CameraViewModel(documents, sources, SavedStateHandle(), CameraSession(), recognition, exports, history, preferences)
         store.put("camera", model)
     }
 
@@ -120,7 +127,7 @@ class CameraViewModelTest {
                 emitAll(documents.current)
             }
         }
-        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession(), recognition, exports)
+        model = CameraViewModel(storeWithFailure, sources, SavedStateHandle(), CameraSession(), recognition, exports, history, preferences)
         store.put("camera", model)
         model.onForeground()
         advanceUntilIdle()
@@ -225,11 +232,121 @@ class CameraViewModelTest {
     }
 
     @Test
+    fun manualSavingLeavesACaptureOutOfTheHistory() = runTest {
+        advanceUntilIdle()
+        model.capture {}
+        advanceUntilIdle()
+        assertThat(model.state.value.photo?.id).isEqualTo(2)
+        assertThat(history.saved).isEmpty()
+    }
+
+    @Test
+    fun automaticSavingAddsACaptureToTheHistoryAfterRecognitionStarts() = runTest {
+        preferences.setAutoSave(true)
+        advanceUntilIdle()
+        model.capture {}
+        advanceUntilIdle()
+        assertThat(recognitionCalls).isEqualTo(1)
+        assertThat(history.saved).containsExactly(2L)
+        assertThat(model.state.value.photo?.saved).isTrue()
+    }
+
+    @Test
+    fun closingAPhotoInTheHistoryKeepsItThereWithoutAMessage() = runTest {
+        documents.current.value = photo().copy(saved = true)
+        advanceUntilIdle()
+        model.closePhoto()
+        advanceUntilIdle()
+        assertThat(model.state.value.live).isTrue()
+        assertThat(history.removed).isEmpty()
+        assertThat(withTimeoutOrNull(1_000) { model.events.first() }).isNull()
+    }
+
+    @Test
+    fun closingWithSaveKeepsThePhotoInTheHistory() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.closePhoto(save = true)
+        advanceUntilIdle()
+        assertThat(history.saved).containsExactly(1L)
+        assertThat(model.state.value.live).isTrue()
+        assertThat(withTimeoutOrNull(1_000) { model.events.first() }).isNull()
+    }
+
+    @Test
+    fun aFailedSaveKeepsThePhotoOpen() = runTest {
+        documents.current.value = photo()
+        history.saveFails = true
+        advanceUntilIdle()
+        model.closePhoto(save = true)
+        advanceUntilIdle()
+        assertThat(model.state.value.photo?.id).isEqualTo(1)
+        assertThat(model.state.value.busy).isFalse()
+        assertThat(model.events.first()).isEqualTo(CameraEvent.SAVE_FAILED)
+    }
+
+    @Test
+    fun savingToTheHistoryMarksThePhotoAndSaysSo() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.saveToHistory()
+        advanceUntilIdle()
+        assertThat(model.state.value.photo?.saved).isTrue()
+        assertThat(model.events.first()).isEqualTo(CameraEvent.SAVED)
+        model.saveToHistory()
+        advanceUntilIdle()
+        assertThat(history.saved).containsExactly(1L)
+    }
+
+    @Test
+    fun aPhotoOpenedFromTheHistoryReplacesTheLiveCamera() = runTest {
+        documents.current.value = photo()
+        advanceUntilIdle()
+        model.newPhoto()
+        assertThat(model.state.value.live).isTrue()
+        history.open(3)
+        advanceUntilIdle()
+        assertThat(model.state.value.live).isFalse()
+        assertThat(model.state.value.photo?.id).isEqualTo(3)
+    }
+
+    @Test
+    fun aPhotoDeletedWithTheHistoryLeavesTheLiveCamera() = runTest {
+        documents.current.value = photo().copy(saved = true)
+        advanceUntilIdle()
+        model.newPhoto()
+        history.clear()
+        advanceUntilIdle()
+        assertThat(model.state.value.photo).isNull()
+        assertThat(model.state.value.takingNew).isFalse()
+        assertThat(model.state.value.live).isTrue()
+        assertThat(withTimeoutOrNull(1_000) { model.events.first() }).isNull()
+    }
+
+    @Test
+    fun theButtonNextToTheShutterShowsTheLatestHistoryPhoto() = runTest {
+        backgroundScope.launch { model.latest.collect {} }
+        advanceUntilIdle()
+        assertThat(model.latest.value).isNull()
+        history.entries.value = listOf(entry(5), entry(4))
+        advanceUntilIdle()
+        assertThat(model.latest.value?.id).isEqualTo(5)
+    }
+
+    @Test
+    fun onlyAnUnsavedPhotoWithManualSavingAsksBeforeClosing() {
+        assertThat(closingAsks(null, autoSave = false)).isFalse()
+        assertThat(closingAsks(photo(), autoSave = false)).isTrue()
+        assertThat(closingAsks(photo(), autoSave = true)).isFalse()
+        assertThat(closingAsks(photo().copy(saved = true), autoSave = false)).isFalse()
+    }
+
+    @Test
     fun failedDeletionPreservesThePhoto() = runTest {
         documents.current.value = photo()
         documents.deleteFails = true
         advanceUntilIdle()
-        model.deletePhoto()
+        model.closePhoto()
         advanceUntilIdle()
         assertThat(model.state.value.photo?.id).isEqualTo(1)
         assertThat(model.events.first()).isEqualTo(CameraEvent.DELETE)
@@ -241,7 +358,7 @@ class CameraViewModelTest {
         advanceUntilIdle()
         model.onForeground()
         model.showPhoto(1, viewport())
-        model.deletePhoto()
+        model.closePhoto()
         advanceUntilIdle()
         assertThat(model.state.value.live).isTrue()
         assertThat(model.events.first()).isEqualTo(CameraEvent.DELETED)

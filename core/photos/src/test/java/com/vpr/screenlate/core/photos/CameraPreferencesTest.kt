@@ -45,6 +45,15 @@ class CameraPreferencesTest {
         assertThat(camera.languages.first().selected).isEqualTo(Language.JAPANESE)
     }
 
+    @Test
+    fun theHistoryStartsManualAndUnlimitedAndKeepsItsSettings() = runTest {
+        val camera = CameraPreferences(MemoryStore(), LanguageProfiles(MemoryStore()))
+        assertThat(camera.history.first()).isEqualTo(HistorySettings(autoSave = false, limits = HistoryLimits(0, 0)))
+        camera.setAutoSave(true)
+        camera.setLimits(HistoryLimits(count = 50, megabytes = 500))
+        assertThat(camera.history.first()).isEqualTo(HistorySettings(autoSave = true, limits = HistoryLimits(50, 500)))
+    }
+
     private class MemoryStore : DataStore<Preferences> {
         override val data = MutableStateFlow(emptyPreferences())
         private val mutex = Mutex()

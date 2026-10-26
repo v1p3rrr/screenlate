@@ -58,13 +58,21 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 - Earlier 1.3 checks remain valid: 7/7 region/migration checks, four 1500×1500 cloud tiles, terminal publication while
   off Camera, stationary-bubble pan/zoom, independent pending language/settings, exactly-one-tile retry backgrounded,
   capture auto-recognition and cold restart without automatic OCR. API 30 viewer/live camera tests 3/3.
-- Next concrete action: phase 2, internal history (thumbnails, manual and automatic save, limits, the Camera settings
-  page). Check the decision table first; ask the owner only choices it does not settle (in Russian, AskUserQuestion).
-  Then phase 3 (system photo picker).
+- Phase 2 (internal history) is DONE (2026-10-26, commit "Add the photo history and Camera settings"):
+  `PhotoHistory`/`HistoryLimits`/`PhotoThumbnails` in core:photos, Room v3 (`saved`, `savedAt`, `language`),
+  `CameraPreferences` with automatic saving and limits; app `PhotoHistoryScreen` (grid, selection, the unsaved-photo
+  question shared with closing), `CameraSettingsScreen` (switch, limit fields, usage, Clear history), the history
+  button right of the shutter (`LiveCamera`'s `side` slot; the left slot is kept for the phase 3 import button), ✕
+  instead of Delete, Save to history in ⋮, the Camera row in Settings. A photo that leaves the history is deleted, the
+  open one included (owner's change). Checks: 1636 JVM tests, 0 failures, 5 skipped; lint without findings in the
+  camera code; API 37 `PhotoDatabaseTest` 9/9 and the manual flows, API 30 `UnsavedPhotoDialogTest` 3/3 (run log
+  2026-10-26 "the photo history and Camera settings"; CAM34–CAM41).
+- Next concrete action: phase 3, the system photo picker (an import button left of the shutter, ⋮ Import from
+  gallery, a button under the camera-permission explanation, as in design A). Check the decision table first; ask the
+  owner only choices it does not settle (in Russian, AskUserQuestion).
 - Physical sharpness, focus, flash, capture delay and repeated-capture/memory/drag baselines still need a phone;
   emulator evidence does not establish them. Phase 1 is accepted on emulators only; record these phone checks
-  before any merge. Phase 2 history/settings/limits and phase 3 picker have not started; ask only genuinely new
-  product choices that their decision table does not settle.
+  before any merge.
 - Cleanup after phase 1.5: both fixtures restored (API 37: Slovenian active, Japanese Anki settings back, no current
   photo, camera language Japanese; API 30: its unanswered first run). The emulator's local unsynced Screenlate Photo
   Test deck holds four more notes; no account/sync/AnkiWeb operations. API 30 now has the universal debug APK (an
@@ -128,7 +136,7 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Flash | Off/Auto/On as one top-bar icon that cycles. Off at every app start; the choice lasts while the app process lives. |
 | Camera permission | Asked when the Camera page first opens the live camera. Denied: an explanation in place of the frame with a button that asks again in the app while the system allows it, otherwise opens the app's system settings. The current photo is shown without the permission. |
 | Zoom | Pinch zoom; while the ratio is not 1×, a label such as "2.0×" above the shutter, tapping it returns to 1×. |
-| Deleting the photo | A delete icon in the viewer's top bar (overflow when it does not fit) with a confirmation; afterwards the live camera opens. |
+| Closing the photo | A close icon (✕) at the left of the viewer's top bar replaces the delete icon (owner, 2026-10-26). A photo in the history closes without a question and stays there; one not in the history (manual saving) asks "The current photo isn't saved to history and will be deleted" with Save to history / Delete / Cancel. Afterwards the live camera opens; "Photo deleted" after Delete. Photos leave the history only on the history page, by a limit or with Clear history; a photo that leaves it is deleted, the one open on the Camera tab included, and the tab then shows the live camera (owner, 2026-10-26). |
 | Current photograph | Survives navigation, backgrounding, process death and device restart. |
 | Replacement | A successfully captured new photograph replaces the current one without confirmation. Cancelled or failed capture preserves it. |
 | Viewing | One finger pans; two fingers zoom. Dragging the bubble moves its aim. Reopening fits the photo to the available area. |
@@ -148,10 +156,13 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Failure indication | Accessible warning icon in upper controls; details and retry of failed tiles. |
 | Anki | First working version includes sentence context and cropping from the original photo. |
 | Phone gallery | Explicit export of an ordinary photo; no automatic export. OCR stays in Screenlate's private data. |
-| Internal history | Later phase: manual saving by default, with an automatic-saving switch. |
-| History limits | Independent count and size limits, both default 0 (unlimited). Evict oldest history entries to satisfy nonzero limits. |
+| Internal history | Phase 2: manual saving by default, with an automatic-saving switch. Automatic saving stores each photo right after capture, its text joins it when recognized; turning the switch on also saves the current photo (owner, 2026-10-26). |
+| History page | A page in the Camera tab: a grid of thumbnails, newest first, each with its date and the flag of its recognition language. A tap opens the photo as the current one; a long press selects several to delete from the history (owner, 2026-10-26). |
+| History entry points | As in design A: a round button right of the shutter showing the latest history photo (the history icon while the history is empty and with the e-ink theme); over a photo the ⋮ menu has Save to gallery, Save to history, History and Camera settings last. Save to history shows "Saved to history" and leaves the menu once the photo is saved; with automatic saving it is not shown (owner, 2026-10-26). |
+| Opening from the history | With manual saving, if the current photo is not in the history, the same three-button question as closing comes first; with automatic saving no question (owner, 2026-10-26). |
+| History limits | Independent count and size limits, both default 0 (unlimited), as number fields (photos; MB) on Camera settings (owner, 2026-10-26). Evict oldest history entries to satisfy nonzero limits. Lowering a limit below the current history asks "N oldest photos will be deleted from history" with Delete / Cancel; Cancel keeps the old limit. The open photo is deleted too when it is among the oldest. |
 | Controls | Upper action icons; move actions into overflow only when they do not fit, except Save to gallery, which is always in the overflow menu as in design A (owner, 2026-10-26). Language and recognition status stay visible. |
-| Camera settings | One page reachable from Camera and general Settings. |
+| Camera settings | One page reachable from Camera's ⋮ menu and general Settings, where its row stands before Appearance (owner, 2026-10-26). It holds automatic saving, the two limits, the history's usage ("37 photos · 182 MB") and Clear history with a confirmation ("All photos in history will be deleted."). Clear history deletes every photo in the history, the one open on the Camera tab included; an open photo never saved to the history (manual saving) stays (owner, 2026-10-26, replacing "the current photo stays on the Camera tab"). |
 | Backup | No backup integration for this feature. |
 | Deferred | Import existing phone images in phase 3; photo rotation/cropping/perspective editing stays in the backlog. Anki attachment cropping is included earlier. |
 
@@ -246,12 +257,12 @@ app-text-only cannot bypass photo OCR requirements; stored OCR remains searchabl
 
 ### Phase 2: internal history
 
-- [ ] Thumbnails, manual save, automatic save, open, selection and deletion; restore saved OCR without recognition.
-- [ ] Opening makes a document current and fits it to the viewport; repeated save does not duplicate membership.
-- [ ] Removing history membership preserves a separately retained current document.
-- [ ] Enforce count/byte limits oldest first; count image, thumbnail and OCR bytes; display usage.
-- [ ] Shared Camera settings page and both entry points; phone-gallery files remain independent.
-- [ ] Tests, documentation, translations, emulator checks, commit and push.
+- [x] Thumbnails, manual save, automatic save, open, selection and deletion; restore saved OCR without recognition.
+- [x] Opening makes a document current and fits it to the viewport; repeated save does not duplicate membership.
+- [x] Removing a photo from the history deletes it; the current one is closed first (owner's change, 2026-10-26).
+- [x] Enforce count/byte limits oldest first; count image, thumbnail and OCR bytes; display usage.
+- [x] Shared Camera settings page and both entry points; phone-gallery files remain independent.
+- [x] Tests, documentation, translations, emulator checks, commit and push.
 
 ### Phase 3: existing-image input
 
@@ -355,3 +366,22 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
 - 2026-10-26: Camera page restyled after design A with the owner's changes; checked on API 37 and API 30. Status texts
   use "regions" (as the existing partial-result warning) instead of the mockup's "parts", and a recognition in another
   language reads "Recognized: <language>". No product decision changed. Next: phase 2.
+- 2026-10-26: owner answered the phase 2 questions: the history is a grid page; ✕ replaces the delete icon and closes a
+  history photo without removing it, while a photo not in the history asks Save to history / Delete / Cancel, also
+  before opening another photo from the history with manual saving; limits as number fields with a question before
+  lowering below the current history; automatic saving at capture; the history button shows the latest photo;
+  Save to history leaves the menu once done; Camera settings has Clear history and stands before Appearance in
+  Settings. Changes the "Deleting the photo" decision (now "Closing the photo").
+- 2026-10-26: phase 2 built. Implementation choices within the decisions: the latest history photo always stays
+  under a limit; the history is ordered by save time (`savedAt`), earlier rows by id; the language shown on a tile is
+  the last recognition's, read from the snapshot on saving when an older row lacks it; thumbnails are 320 px upright
+  JPEGs; a megabyte is 10^6 bytes, as Android shows sizes; History and Camera settings are also in ⋮ over the live
+  camera; Camera settings opened from Camera stay in the Camera tab, from Settings in the Settings tab; the page title
+  is "Camera"; a failed close says "The photo could not be closed."; settings errors show a toast; a history photo
+  whose image is gone says the photo can't be read and leaves the history. Found on the emulator and fixed: Save to
+  history in the question on the history page did nothing, because the dialog dismissed itself before answering.
+- 2026-10-26: owner changed a decision after the emulator check: with automatic saving a photo is in the history at
+  once, and a photo that leaves the history (the history page, a limit or Clear history) is deleted, the one open on
+  the Camera tab included; the tab then shows the live camera. An open photo never saved to the history stays.
+  Replaces "the current photo stays on the Camera tab" in the "Camera settings" row and updates "Closing the photo"
+  and "History limits". Phase 2 is complete; next is phase 3 (system photo picker).

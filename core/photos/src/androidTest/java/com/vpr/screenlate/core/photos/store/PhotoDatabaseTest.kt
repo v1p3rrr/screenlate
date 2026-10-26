@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.photos.store
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.ExifInterface
 import android.database.sqlite.SQLiteDatabase
 import androidx.room.Room
@@ -16,7 +17,9 @@ import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrParagraph
 import com.vpr.screenlate.core.ocr.OcrWord
+import com.vpr.screenlate.core.photos.HistoryLimits
 import com.vpr.screenlate.core.photos.PhotoOcrSettings
+import com.vpr.screenlate.core.photos.PhotoThumbnails
 import com.vpr.screenlate.core.photos.PhotoOrientation
 import com.vpr.screenlate.core.photos.PhotoRecognition
 import com.vpr.screenlate.core.photos.PhotoText
@@ -55,7 +58,7 @@ class PhotoDatabaseTest {
     }
 
     private fun open() = Room.databaseBuilder(context, PhotoDatabase::class.java, databaseName)
-        .addMigrations(PhotoDatabase.MIGRATION_1_2).build()
+        .addMigrations(PhotoDatabase.MIGRATION_1_2, PhotoDatabase.MIGRATION_2_3).build()
 
     @Test
     fun versionOneMetadataMigratesWithoutDroppingTheCurrentPhotoOrRecognition() = runTest {
@@ -101,7 +104,63 @@ class PhotoDatabaseTest {
     }
 
     private fun store(database: PhotoDatabase) =
-        PhotoStore(File(folder, "photos"), RoomPhotoIndex(database.photoDao()), BitmapImageProbe, { 7L }, Dispatchers.IO)
+        PhotoStore(File(folder, "photos"), RoomPhotoIndex(database.photoDao()), BitmapImageProbe, PhotoThumbnails, { 7L }, Dispatchers.IO)
+
+    @Test
+    fun versionTwoHistoryMigratesInTheOrderItWasTaken() = runTest {
+        database.close()
+        context.deleteDatabase(databaseName)
+        val path = context.getDatabasePath(databaseName)
+        path.parentFile!!.mkdirs()
+        SQLiteDatabase.openOrCreateDatabase(path, null).use { legacy ->
+            legacy.execSQL("CREATE TABLE photos (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, directory TEXT NOT NULL, " +
+                "rawWidth INTEGER NOT NULL, rawHeight INTEGER NOT NULL, orientation INTEGER NOT NULL, imageBytes INTEGER NOT NULL, " +
+                "createdAt INTEGER NOT NULL, recognitionFile TEXT, recognitionRevision INTEGER NOT NULL, saved INTEGER NOT NULL, " +
+                "attemptFile TEXT)")
+            legacy.execSQL("CREATE TABLE current_photo (slot INTEGER NOT NULL, photoId INTEGER NOT NULL, PRIMARY KEY(slot), " +
+                "FOREIGN KEY(photoId) REFERENCES photos(id) ON UPDATE NO ACTION ON DELETE CASCADE)")
+            legacy.execSQL("CREATE INDEX index_current_photo_photoId ON current_photo(photoId)")
+            legacy.execSQL("INSERT INTO photos VALUES (1, 'older', 4000, 3000, 6, 42, 7, NULL, 0, 1, NULL)")
+            legacy.execSQL("INSERT INTO photos VALUES (2, 'newer', 4000, 3000, 6, 42, 9, NULL, 0, 1, NULL)")
+            legacy.execSQL("INSERT INTO photos VALUES (3, 'current', 4000, 3000, 6, 42, 11, 'recognition-1', 1, 0, NULL)")
+            legacy.execSQL("INSERT INTO current_photo VALUES (0, 3)")
+            legacy.version = 2
+        }
+        database = open()
+        val dao = database.photoDao()
+        assertThat(dao.history().map { it.directory to it.savedAt }).containsExactly("newer" to 9L, "older" to 7L).inOrder()
+        assertThat(dao.current()!!.savedAt).isEqualTo(0)
+        assertThat(dao.current()!!.language).isNull()
+    }
+
+    @Test
+    fun theHistoryListsTheLatestSavedFirst() = runTest {
+        val dao = database.photoDao()
+        val first = dao.insertCurrent(row("a"))
+        val second = dao.insertCurrent(row("b"))
+        assertThat(dao.save(second, at = 5, language = null)).isEqualTo(1)
+        assertThat(dao.save(first, at = 6, language = "ja")).isEqualTo(1)
+        assertThat(dao.save(first, at = 8, language = "ko")).isEqualTo(0)
+        assertThat(dao.history().map { it.id }).containsExactly(first, second).inOrder()
+        assertThat(dao.get(first)!!.language).isEqualTo("ja")
+        dao.delete(first)
+        assertThat(dao.observeHistory().first().map { it.id }).containsExactly(second)
+    }
+
+    @Test
+    fun savingWritesAnUprightThumbnail() = runTest {
+        val store = store(database)
+        val capture = store.newCaptureFile()
+        writeJpeg(capture, width = 1280, height = 960, orientation = ExifInterface.ORIENTATION_ROTATE_90)
+        val photo = store.replaceCurrent(capture)
+        assertThat(store.save(photo.id, HistoryLimits())).isTrue()
+        val thumbnail = store.entries.first().single().thumbnail!!
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(thumbnail.path, bounds)
+        assertThat(bounds.outWidth).isEqualTo(PhotoThumbnails.SIDE)
+        assertThat(bounds.outHeight).isIn(426..427)
+        assertThat(bounds.outMimeType).isEqualTo("image/jpeg")
+    }
 
     @Test
     fun theCurrentRowFollowsEachInsert() = runTest {
@@ -125,8 +184,9 @@ class PhotoDatabaseTest {
     fun aRecognitionIsNamedOnlyFromTheRevisionItStartedFrom() = runTest {
         val dao = database.photoDao()
         val id = dao.insertCurrent(row("a"))
-        assertThat(dao.setRecognition(id, expected = 0, file = "recognition-1", revision = 1)).isEqualTo(1)
-        assertThat(dao.setRecognition(id, expected = 0, file = "recognition-1", revision = 1)).isEqualTo(0)
+        assertThat(dao.setRecognition(id, expected = 0, file = "recognition-1", revision = 1, language = "ja")).isEqualTo(1)
+        assertThat(dao.setRecognition(id, expected = 0, file = "recognition-1", revision = 1, language = "ja")).isEqualTo(0)
+        assertThat(dao.get(id)!!.language).isEqualTo("ja")
         assertThat(dao.get(id)!!.recognitionRevision).isEqualTo(1)
     }
 

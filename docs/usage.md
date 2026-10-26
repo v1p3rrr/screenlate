@@ -22,7 +22,9 @@ the shutter to save the photograph privately in Screenlate.
 
 The photograph fits the available area and survives tab changes, backgrounding and restarting the device. New photo
 opens the camera; Close or Back returns to the previous photograph. A successful capture replaces it; a failed capture
-keeps it. Delete asks for confirmation. Leaving capture releases the camera. Camera errors offer an explanation or retry.
+keeps it. Leaving capture releases the camera. Camera errors offer an explanation or retry. The ✕ at the left of the
+top bar closes the photograph and opens the camera. A photograph in the history stays there; one that is not asks
+first whether to save it to the history or delete it.
 
 Recognition starts after a successful capture and continues when you switch tabs or put the app in the background.
 Camera remembers its own language, initially the active language, and offers only enabled languages. The language
@@ -51,7 +53,27 @@ of the recognized text.
 Save to gallery in the ⋮ menu exports an ordinary original photograph to Pictures/Screenlate, preserving
 its quality and orientation. It requires no broad storage permission. The copy contains no saved OCR coordinates;
 replacing or deleting the private photograph does not delete the exported copy. Nothing is exported automatically.
-Internal history and opening existing phone images are later additions.
+Opening existing phone images is a later addition.
+
+### Photo history
+
+The history keeps photographs privately in Screenlate with their recognized text, apart from the gallery. Save to
+history in the ⋮ menu adds the open photograph; with Save automatically on, every new photograph is added right after
+it is taken, and turning the switch on adds the open one. A photograph replaced by a new capture stays in the history;
+one that is not in it is deleted.
+
+The round button right of the shutter shows the latest photograph in the history and opens the history page (the ⋮
+menu has History as well). The page lists the photographs newest first, each with its date and the flag of its
+recognition language. Tap one to open it on the Camera tab with its saved text; it is not recognized again. When the
+open photograph is not in the history and saving is manual, the app first asks whether to save it or delete it.
+Long-press to select photographs, tap to add or remove more, and delete them with the trash icon.
+
+Camera settings (in the ⋮ menu, and in Settings before Appearance) hold Save automatically, the photo limit and the
+size limit in MB, the history's photo count and size, and Clear history. A limit of 0 means none; beyond a limit the
+oldest photographs are deleted, while the latest one always stays. Lowering a limit below the current history asks
+first and names how many photographs will be deleted. A photograph deleted from the history, by the page, a limit or
+Clear history, is deleted completely: when it is open on the Camera tab, the camera opens instead. An open photograph
+that was never saved to the history stays.
 
 ## Languages
 

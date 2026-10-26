@@ -813,9 +813,6 @@
     <string name="camera_take_photo">Hacer foto</string>
     <string name="camera_new_photo">Nueva foto</string>
     <string name="camera_back_to_photo">Volver a la foto</string>
-    <string name="camera_delete">Eliminar foto</string>
-    <string name="camera_delete_title">¿Eliminar la foto?</string>
-    <string name="camera_delete_text">Se eliminarán la foto y su texto reconocido. Una copia guardada en la galería no se ve afectada.</string>
     <string name="camera_permission_text">Permite el acceso a la cámara para fotografiar texto y leerlo con la burbuja.</string>
     <string name="camera_permission_blocked">Se denegó el acceso a la cámara. Permítelo en los ajustes del sistema de la aplicación.</string>
     <string name="camera_open_settings">Abrir ajustes</string>
@@ -823,7 +820,6 @@
     <string name="camera_no_rear">No hay cámara trasera disponible.</string>
     <string name="camera_unavailable">No se pudo abrir la cámara.</string>
     <string name="camera_capture_failed">No se pudo hacer la foto. Inténtalo de nuevo.</string>
-    <string name="camera_delete_failed">No se pudo eliminar la foto.</string>
     <string name="camera_photo_unreadable">No se pudo abrir la foto.</string>
     <string name="camera_zoom_reset">Volver a 1×</string>
     <string name="camera_language">Idioma de la foto</string>
@@ -852,6 +848,49 @@
     <string name="camera_permission_title">Sin acceso a la cámara</string>
     <string name="camera_permission_blocked_title">Acceso a la cámara bloqueado</string>
     <string name="camera_cannot_recognize">No se puede reconocer: %1$s</string>
+    <string name="camera_close">Cerrar foto</string>
+    <string name="camera_close_failed">No se pudo cerrar la foto.</string>
+    <string name="camera_unsaved">La foto actual no está guardada en el historial y se eliminará.</string>
+    <string name="camera_save_history">Guardar en el historial</string>
+    <string name="camera_saved_history">Guardada en el historial</string>
+    <string name="camera_save_history_failed">No se pudo guardar la foto en el historial.</string>
+    <string name="camera_history">Historial</string>
+    <string name="camera_settings">Ajustes de la cámara</string>
+    <string name="history_empty">No hay fotos en el historial</string>
+    <string name="history_empty_hint">Guarda una foto con «Guardar en el historial» en su menú o activa el guardado automático en los ajustes de la cámara.</string>
+    <plurals name="history_selected">
+        <item quantity="one">%1$d seleccionada</item>
+        <item quantity="many">%1$d seleccionadas</item>
+        <item quantity="other">%1$d seleccionadas</item>
+    </plurals>
+    <string name="history_delete_title">¿Eliminar del historial?</string>
+    <plurals name="history_delete_text">
+        <item quantity="one">Se eliminará %1$d foto del historial.</item>
+        <item quantity="many">Se eliminarán %1$d fotos del historial.</item>
+        <item quantity="other">Se eliminarán %1$d fotos del historial.</item>
+    </plurals>
+    <string name="history_clear_selection">Anular selección</string>
+    <string name="history_change_failed">No se pudo cambiar el historial.</string>
+    <string name="settings_camera_summary">Historial de fotos, guardado automático, límites</string>
+    <string name="history_auto_save">Guardar automáticamente</string>
+    <string name="history_auto_save_hint">Cada foto nueva pasa al historial nada más tomarla.</string>
+    <string name="history_count_limit">Límite de fotos</string>
+    <string name="history_size_limit">Límite de tamaño, MB</string>
+    <string name="history_no_limit">0 significa sin límite. Las fotos más antiguas se eliminan primero.</string>
+    <plurals name="history_photos">
+        <item quantity="one">%1$d foto</item>
+        <item quantity="many">%1$d fotos</item>
+        <item quantity="other">%1$d fotos</item>
+    </plurals>
+    <string name="history_clear">Borrar historial</string>
+    <string name="history_clear_title">¿Borrar el historial?</string>
+    <string name="history_clear_text">Se eliminarán todas las fotos del historial.</string>
+    <string name="history_trim_title">¿Reducir el límite?</string>
+    <plurals name="history_trim_text">
+        <item quantity="one">Se eliminará del historial %1$d foto, la más antigua.</item>
+        <item quantity="many">Se eliminarán del historial las %1$d fotos más antiguas.</item>
+        <item quantity="other">Se eliminarán del historial las %1$d fotos más antiguas.</item>
+    </plurals>
     <string name="camera_opening">Abriendo la foto…</string>
     <string name="camera_partial_words">Las palabras de estas regiones no se pueden buscar.</string>
     <plurals name="camera_status_regions">

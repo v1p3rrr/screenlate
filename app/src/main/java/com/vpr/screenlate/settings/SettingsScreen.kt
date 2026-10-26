@@ -32,7 +32,7 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 
 /** Destinations of the settings list. */
 enum class SettingsPage {
-    BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, TRANSLATION, APPEARANCE, BACKGROUND, BACKUP, ABOUT,
+    BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, TRANSLATION, CAMERA, APPEARANCE, BACKGROUND, BACKUP, ABOUT,
 }
 
 /**
@@ -82,6 +82,9 @@ fun SettingsScreen(
             }
             SettingsEntry(R.drawable.ic_translate, stringResource(R.string.translation_title), stringResource(R.string.settings_translation_summary)) {
                 onOpen(SettingsPage.TRANSLATION)
+            }
+            SettingsEntry(R.drawable.ic_photo_camera, stringResource(R.string.camera_title), stringResource(R.string.settings_camera_summary)) {
+                onOpen(SettingsPage.CAMERA)
             }
             SettingsEntry(R.drawable.ic_palette, stringResource(R.string.appearance_title), stringResource(R.string.settings_appearance_summary)) {
                 onOpen(SettingsPage.APPEARANCE)

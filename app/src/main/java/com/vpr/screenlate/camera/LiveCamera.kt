@@ -28,12 +28,14 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -95,6 +97,7 @@ internal fun LiveCamera(
     busy: Boolean,
     onFlashAvailable: (Boolean) -> Unit,
     onCapture: (suspend (File) -> Unit) -> Unit,
+    side: @Composable () -> Unit = {},
     overlay: @Composable BoxScope.() -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -260,31 +263,37 @@ internal fun LiveCamera(
                     }
                 }
                 Spacer(Modifier.height(16.dp))
-                Shutter(enabled = ready && !busy, busy = busy) {
-                    onCapture { file ->
-                        // ImageCapture has no cancellation handle. Wait for its terminal callback before the
-                        // ViewModel may discard the file; never unlink a file still being written.
-                        suspendCoroutine { continuation ->
-                            try {
-                                controller.takePicture(
-                                    ImageCapture.OutputFileOptions.Builder(file).build(),
-                                    executor,
-                                    object : ImageCapture.OnImageSavedCallback {
-                                        override fun onImageSaved(result: ImageCapture.OutputFileResults) {
-                                            continuation.resume(Unit)
-                                        }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(Modifier.size(HISTORY_BUTTON))
+                    Spacer(Modifier.width(SHUTTER_GAP))
+                    Shutter(enabled = ready && !busy, busy = busy) {
+                        onCapture { file ->
+                            // ImageCapture has no cancellation handle. Wait for its terminal callback before the
+                            // ViewModel may discard the file; never unlink a file still being written.
+                            suspendCoroutine { continuation ->
+                                try {
+                                    controller.takePicture(
+                                        ImageCapture.OutputFileOptions.Builder(file).build(),
+                                        executor,
+                                        object : ImageCapture.OnImageSavedCallback {
+                                            override fun onImageSaved(result: ImageCapture.OutputFileResults) {
+                                                continuation.resume(Unit)
+                                            }
 
-                                        override fun onError(exception: ImageCaptureException) {
-                                            Log.w("Camera", "Capture error " + exception.imageCaptureError)
-                                            continuation.resumeWithException(exception)
-                                        }
-                                    },
-                                )
-                            } catch (e: Exception) {
-                                continuation.resumeWithException(e)
+                                            override fun onError(exception: ImageCaptureException) {
+                                                Log.w("Camera", "Capture error " + exception.imageCaptureError)
+                                                continuation.resumeWithException(exception)
+                                            }
+                                        },
+                                    )
+                                } catch (e: Exception) {
+                                    continuation.resumeWithException(e)
+                                }
                             }
                         }
                     }
+                    Spacer(Modifier.width(SHUTTER_GAP))
+                    Box(Modifier.size(HISTORY_BUTTON), contentAlignment = Alignment.Center) { side() }
                 }
             }
         }
@@ -350,3 +359,5 @@ private fun fillFrame(image: ImageProxy): Bitmap {
     val matrix = android.graphics.Matrix().apply { postRotate(rotation.toFloat()) }
     return Bitmap.createBitmap(frame, 0, 0, frame.width, frame.height, matrix, true).also { if (it !== frame) frame.recycle() }
 }
+
+private val SHUTTER_GAP = 32.dp

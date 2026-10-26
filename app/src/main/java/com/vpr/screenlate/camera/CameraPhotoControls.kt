@@ -342,7 +342,7 @@ internal fun CameraLanguageChip(
 
 /** A language's round flag, or its code on e-ink or without a flag. */
 @Composable
-private fun ChipFlag(language: Language, country: String, sizeDp: Int = 18) {
+internal fun ChipFlag(language: Language, country: String, sizeDp: Int = 18) {
     val flag = Flags.drawable(country)
     if (LocalEInk.current || flag == null) {
         Text(Flags.code(language), style = MaterialTheme.typography.labelSmall)
