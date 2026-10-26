@@ -810,4 +810,20 @@
     <string name="camera_flash_off">Flash desligado</string>
     <string name="camera_flash_auto">Flash automático</string>
     <string name="camera_flash_on">Flash ligado</string>
+    <string name="camera_take_photo">Tirar foto</string>
+    <string name="camera_new_photo">Nova foto</string>
+    <string name="camera_back_to_photo">Voltar à foto</string>
+    <string name="camera_delete">Excluir foto</string>
+    <string name="camera_delete_title">Excluir a foto?</string>
+    <string name="camera_delete_text">A foto atual será excluída.</string>
+    <string name="camera_permission_text">É necessário acesso à câmera para tirar fotos.</string>
+    <string name="camera_permission_blocked">O acesso à câmera está desativado. Permita-o nas configurações do app.</string>
+    <string name="camera_open_settings">Abrir configurações</string>
+    <string name="camera_allow">Permitir câmera</string>
+    <string name="camera_no_rear">Nenhuma câmera traseira disponível.</string>
+    <string name="camera_unavailable">Não foi possível abrir a câmera.</string>
+    <string name="camera_capture_failed">Não foi possível tirar a foto. Tente novamente.</string>
+    <string name="camera_delete_failed">Não foi possível excluir a foto.</string>
+    <string name="camera_photo_unreadable">Não foi possível abrir a foto.</string>
+    <string name="camera_zoom_reset">Voltar a 1×</string>
 </resources>

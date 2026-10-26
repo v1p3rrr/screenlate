@@ -16,6 +16,14 @@ git submodule update --init --recursive
 
 Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
 
+Camera capture and Compose navigation are in `app`; persistent photos and the exclusive lookup-source contract are in
+`core:photos`. `CameraViewModelTest` covers replacement, cancellation, failures and source lifetime with a fake store.
+`PhotoDrawingTest` checks all EXIF transforms and display sampling; `PhotoViewerTest` checks the actual painted pixels
+and reported viewport on a device, without Espresso's input injector. `LiveCameraTest` drives preview focus, pinch zoom
+and zoom reset on API 30, with CAMERA granted to the debug app. Run a class by installing the app and its test APK,
+then `adb shell am instrument -w -e class com.vpr.screenlate.camera.PhotoViewerTest com.vpr.screenlate.debug.test/androidx.test.runner.AndroidJUnitRunner`. Keep camera quality, flash and
+real-page focus checks separate from the emulator's synthetic camera. Photographs stay outside cache and backup storage.
+
 ## Dictionary catalog
 
 The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches

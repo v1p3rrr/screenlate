@@ -817,4 +817,20 @@
     <string name="camera_flash_off">Flesz wyłączony</string>
     <string name="camera_flash_auto">Flesz automatyczny</string>
     <string name="camera_flash_on">Flesz włączony</string>
+    <string name="camera_take_photo">Zrób zdjęcie</string>
+    <string name="camera_new_photo">Nowe zdjęcie</string>
+    <string name="camera_back_to_photo">Wróć do zdjęcia</string>
+    <string name="camera_delete">Usuń zdjęcie</string>
+    <string name="camera_delete_title">Usunąć zdjęcie?</string>
+    <string name="camera_delete_text">Bieżące zdjęcie zostanie usunięte.</string>
+    <string name="camera_permission_text">Do robienia zdjęć potrzebny jest dostęp do aparatu.</string>
+    <string name="camera_permission_blocked">Dostęp do aparatu jest wyłączony. Zezwól na niego w ustawieniach aplikacji.</string>
+    <string name="camera_open_settings">Otwórz ustawienia</string>
+    <string name="camera_allow">Zezwól na aparat</string>
+    <string name="camera_no_rear">Tylny aparat jest niedostępny.</string>
+    <string name="camera_unavailable">Nie udało się otworzyć aparatu.</string>
+    <string name="camera_capture_failed">Nie udało się zrobić zdjęcia. Spróbuj ponownie.</string>
+    <string name="camera_delete_failed">Nie udało się usunąć zdjęcia.</string>
+    <string name="camera_photo_unreadable">Nie udało się otworzyć zdjęcia.</string>
+    <string name="camera_zoom_reset">Wróć do 1×</string>
 </resources>

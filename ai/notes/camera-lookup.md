@@ -9,12 +9,37 @@ This note records existing-code facts and traps, not additional product decision
 - Branch: `features/camera-lookup`, from `origin/languages/main` at `d1977c62`.
 - Worktree: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`, attached to the originating Codex chat.
 - Planning commit `7cf29809` is pushed. Phase 1.1 (storage and source selection) is built; the plan's handoff names
-  its commit and the next phase. Phase 1.2 added CameraX and the navigation bar; the Camera page is still empty.
+  its commit and the next phase. The owner resumed on 2026-10-26. Phase 1.2's real camera and viewer are complete;
+  the plan's handoff records checks, pending device acceptance and the next implementation steps for phase 1.3.
 - This checkout has `local.properties` copied from the main checkout and all native submodules initialized (MNN from
   GitHub with `--depth 1`, hoshidicts recursively); see `build-environment.md`. Do not copy signing secrets or
   private dictionaries.
 - Other existing worktrees contain modified/untracked native submodule contents. Preserve them; do not clean/reset.
 - A fresh session needs no chat history: read AGENTS, status, the camera plan and this note.
+
+## Built in phase 1.2 (2026-10-26)
+
+`CameraViewModel` receives `PhotoDocuments`, `LookupSources`, `SavedStateHandle` and process-wide `CameraSession`.
+It owns only page operations and the retake flag, not the document. Captures set busy synchronously to reject repeated
+shutter taps, allocate staging, await a supplied CameraX writer, check cancellation and replace the current document.
+Cleanup runs under NonCancellable; failed/cancelled captures retain the old photo. Loading failures stay distinct
+from an empty store and offer retry. A viewport is accepted only for the current document id.
+
+`CameraScreen` uses `LifecycleResumeEffect` for the source presentation, a standard scrollable `ConfirmDelete`, and
+permission state checked on every resume. `LiveCamera` owns the controller; disposal detaches PreviewView and unbinds
+it. Flash is hidden when the bound camera has no flash. Capture waits for CameraX's terminal callback even after
+coroutine cancellation, because deleting a staging file before the camera stops writing it is unsafe.
+
+`PhotoViewer` currently fits only. It measures actual screen pixels, decodes a sampled bitmap on IO and draws raw
+pixels through the EXIF-to-view matrix. Decoding is not cancellable, so it retains ownership to completion, then
+recycles an unpublished cancelled result. A published bitmap is left for collection after disposal so Compose cannot
+draw a recycled bitmap. Pan/zoom, language controls and recognition are phase 1.3; new captures remain unrecognized.
+
+Checks: 1533 JVM tests, assembly and app lint; PhotoViewerTest painted pixels for all 8 orientations on API 30 and 37;
+LiveCameraTest real focus/pinch/reset on API 30 (SdkSuppress excludes API 37's broken Espresso injector); ProcessTextTest
+on API 37. The test needs CAMERA granted to the debug app. Manual API 37 capture took about 6 s in the emulator;
+do not treat this as a physical-camera baseline. See the test model for navigation, permission, storage and reboot runs.
+The emulated cameras have no flash; actual flash behavior and real-page quality remain physical checks.
 
 ## Built in phase 1.1
 
@@ -56,13 +81,13 @@ plan's table, the rest are implementation choices.
   controller's `cameraInfo` after binding).
 - Zoom label: observe `controller.zoomState` (plain `Observer`, no livedata-compose dependency); show "2.0×"
   (`NumberFormat`, one decimal) above the shutter when the ratio is not 1, tap → `setZoomRatio(1f)`.
-- Focus ring: a parent `pointerInput` watching single-finger taps in `PointerEventPass.Initial` without consuming
-  (the `PreviewView` still gets them); draw a ring at the tap when `tapToFocusState` becomes STARTED, fade after
-  FOCUSED/NOT_FOCUSED/FAILED.
+- Focus ring: observe `tapToFocusInfoState` (CameraX 1.6.2), which supplies the preview-relative tap point and
+  state; draw the ring at that point and hide it 800 ms after completion. PreviewView owns the gestures.
 - Capture: the VM's `capture(write: suspend (File) -> Unit)` takes `newCaptureFile()`, the page writes it with
-  `takePicture(OutputFileOptions(file))` in `suspendCancellableCoroutine`, then `replaceCurrent`; any failure or
+  `takePicture(OutputFileOptions(file))` in `suspendCoroutine`, then `ensureActive` and `replaceCurrent`; any failure or
   cancellation calls `discard` (under `NonCancellable`), keeps the current photo and shows a snackbar. Log only the
-  exception class and `imageCaptureError`, never paths.
+  exception class and `imageCaptureError`, never paths. CameraX has no capture cancellation handle: wait for its
+  terminal callback even after cancellation before discarding a file that the camera might still be writing.
 - Page state from `PhotoDocuments.current` + a "new photo" flag in `SavedStateHandle`: Loading → nothing; no photo →
   live camera; photo → viewer; flag set → live camera with a close icon (and `BackHandler`) back to the photo. A
   capture clears the flag; delete (`ConfirmDelete`) calls `clearCurrent()`.
@@ -76,8 +101,12 @@ plan's table, the rest are implementation choices.
   bitmap is never rotated or copied. Report (document id, viewport) to the VM; the VM combines it with the page state
   into a `CameraView` for `CameraLookup`, ignoring a viewport of another document. `LifecycleResumeEffect` calls
   `onForeground`/`onBackground`; `onCleared` closes the presentation.
-- Strings still to add (14 locales): take photo, new photo, back to the photo, return to 1×, delete photo + dialog
-  title/text, permission text/allow/blocked/open settings, no rear camera, capture failed, photo cannot be opened.
+- Strings added in 14 locales: take photo, new photo, back to the photo, return to 1×, delete photo + dialog
+  title/text, permission text/allow/blocked/open settings, no rear camera, capture/delete errors, photo cannot be opened.
+- Camera initialization and document-load failures offer a retry. A load failure never becomes an empty store that
+  can silently be replaced. A viewer publishes its viewport only after decoding succeeds; stale-document callbacks
+  cannot reattach an old image. Decoded, published bitmaps are released by collection after disposal rather than
+  recycled while Compose might still draw them; an unpublished cancelled decode is recycled explicitly.
 
 ## Existing code to follow
 

@@ -796,4 +796,20 @@
     <string name="camera_flash_off">플래시 끔</string>
     <string name="camera_flash_auto">플래시 자동</string>
     <string name="camera_flash_on">플래시 켬</string>
+    <string name="camera_take_photo">사진 촬영</string>
+    <string name="camera_new_photo">새 사진</string>
+    <string name="camera_back_to_photo">사진으로 돌아가기</string>
+    <string name="camera_delete">사진 삭제</string>
+    <string name="camera_delete_title">사진을 삭제할까요?</string>
+    <string name="camera_delete_text">현재 사진이 삭제됩니다.</string>
+    <string name="camera_permission_text">사진을 촬영하려면 카메라 접근 권한이 필요합니다.</string>
+    <string name="camera_permission_blocked">카메라 접근이 꺼져 있습니다. 앱 설정에서 허용하세요.</string>
+    <string name="camera_open_settings">설정 열기</string>
+    <string name="camera_allow">카메라 허용</string>
+    <string name="camera_no_rear">후면 카메라를 사용할 수 없습니다.</string>
+    <string name="camera_unavailable">카메라를 열지 못했습니다.</string>
+    <string name="camera_capture_failed">사진을 촬영하지 못했습니다. 다시 시도하세요.</string>
+    <string name="camera_delete_failed">사진을 삭제하지 못했습니다.</string>
+    <string name="camera_photo_unreadable">사진을 열지 못했습니다.</string>
+    <string name="camera_zoom_reset">1배로 돌아가기</string>
 </resources>

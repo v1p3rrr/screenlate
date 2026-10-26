@@ -803,4 +803,20 @@
     <string name="camera_flash_off">Blitz aus</string>
     <string name="camera_flash_auto">Blitz automatisch</string>
     <string name="camera_flash_on">Blitz an</string>
+    <string name="camera_take_photo">Foto aufnehmen</string>
+    <string name="camera_new_photo">Neues Foto</string>
+    <string name="camera_back_to_photo">Zurück zum Foto</string>
+    <string name="camera_delete">Foto löschen</string>
+    <string name="camera_delete_title">Foto löschen?</string>
+    <string name="camera_delete_text">Das aktuelle Foto wird gelöscht.</string>
+    <string name="camera_permission_text">Zum Fotografieren ist Kamerazugriff erforderlich.</string>
+    <string name="camera_permission_blocked">Der Kamerazugriff ist deaktiviert. Erlaube ihn in den App-Einstellungen.</string>
+    <string name="camera_open_settings">Einstellungen öffnen</string>
+    <string name="camera_allow">Kamera erlauben</string>
+    <string name="camera_no_rear">Keine Rückkamera verfügbar.</string>
+    <string name="camera_unavailable">Die Kamera konnte nicht geöffnet werden.</string>
+    <string name="camera_capture_failed">Das Foto konnte nicht aufgenommen werden. Versuche es erneut.</string>
+    <string name="camera_delete_failed">Das Foto konnte nicht gelöscht werden.</string>
+    <string name="camera_photo_unreadable">Das Foto konnte nicht geöffnet werden.</string>
+    <string name="camera_zoom_reset">Zurück zu 1×</string>
 </resources>

@@ -796,4 +796,20 @@
     <string name="camera_flash_off">フラッシュ オフ</string>
     <string name="camera_flash_auto">フラッシュ 自動</string>
     <string name="camera_flash_on">フラッシュ オン</string>
+    <string name="camera_take_photo">写真を撮影</string>
+    <string name="camera_new_photo">新しい写真</string>
+    <string name="camera_back_to_photo">写真に戻る</string>
+    <string name="camera_delete">写真を削除</string>
+    <string name="camera_delete_title">写真を削除しますか？</string>
+    <string name="camera_delete_text">現在の写真が削除されます。</string>
+    <string name="camera_permission_text">写真を撮影するにはカメラへのアクセスが必要です。</string>
+    <string name="camera_permission_blocked">カメラへのアクセスが無効です。アプリの設定で許可してください。</string>
+    <string name="camera_open_settings">設定を開く</string>
+    <string name="camera_allow">カメラを許可</string>
+    <string name="camera_no_rear">背面カメラを利用できません。</string>
+    <string name="camera_unavailable">カメラを開けませんでした。</string>
+    <string name="camera_capture_failed">写真を撮影できませんでした。もう一度お試しください。</string>
+    <string name="camera_delete_failed">写真を削除できませんでした。</string>
+    <string name="camera_photo_unreadable">写真を開けませんでした。</string>
+    <string name="camera_zoom_reset">1 倍に戻す</string>
 </resources>

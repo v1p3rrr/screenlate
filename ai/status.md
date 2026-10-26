@@ -2,20 +2,29 @@
 
 ## Camera photo lookup (2026-10-25)
 
+Resumed on 2026-10-26 by the owner after inspecting the clean, pushed `f5a3ca43` checkpoint.
+Phase 1.2 is now implemented: real rear camera, permission denial/retry/settings flow, capture/replacement, persistent
+fit viewer, confirmed deletion and exclusive Camera-page source activation. Navigation state, capture, replacement,
+deletion and a full device restart were checked on API 37. On API 30, `LiveCameraTest` verified focus, pinch zoom and
+reset; `PhotoViewerTest` checked painted pixels for all 8 EXIF orientations on both API 30 and API 37.
+All 1533 JVM tests pass, as do debug assembly and app lint. The milestone commit subject is
+"Add camera capture and the persistent photo viewer". See the plan's handoff for exact checks and remaining work.
+
 Owner approved implementation on `features/camera-lookup`, based on `languages/main` at `d1977c62`.
 Plan and mandatory resume handoff: [Camera Photo Lookup](plans/2026-10-25-camera-lookup.md).
-Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Resumed by the owner on 2026-10-25.
+Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`.
 Phase 1.1 is complete and pushed: `core:photos` keeps the current photo and its recognized text (atomic writes,
 tidy-up after interruptions, a versioned snapshot of the text that reads as "unreadable" when damaged), and
 `LookupSources` makes the screen, a shown photo or nothing the bubble's one source. The overlay reads the screen only
 through `ScreenReads` and aims at a photo through `TextFrame`; over a photo the glyph shows its recognition language,
 the menu has no flags, and leaving the photo docks the bubble (owner's answers of 2026-10-25). Build, 1518 unit tests,
-lint, `PhotoDatabaseTest` and an emulator regression of the screen path pass. Next: phase 1.2, navigation and the
-camera; the Camera page has to drive `LookupSources`. Owner confirmed: opening the live camera from a shown photo docks
+lint, `PhotoDatabaseTest` and an emulator regression of the screen path passed. Owner confirmed: opening the live camera from a shown photo docks
 the bubble, and a bubble pulled out over the live camera shows nothing (the preview is never scanned).
-Phase 1.2 half done and pushed (paused at the usage limit): the navigation bar with Home, Search, Camera and Settings
-tabs is built (app builds, its unit tests and lint pass, not checked on the emulator); the Camera page is still empty, its
-design and the remaining steps are in the plan's handoff and the note. All phase 1.2 questions are answered.
+The earlier pause is superseded by the owner's continuation request. All phase 1.2 questions are answered.
+Next: phase 1.3, photo recognition and viewer gestures. Start with original-resolution tile geometry and a dedicated
+overlap assembler in `core:ocr`, with seam/direction tests, then attempt persistence/retry and the Camera UI.
+Photo OCR, photo pan/zoom, camera-language selection, photo Anki cropping/export and history are not implemented yet.
+Pending checks: remaining NAV3/badge/setup routes, recognition-dependent CAM cases and physical camera quality/flash.
 Architecture notes: [camera integration handoff](notes/camera-lookup.md).
 Update the plan's handoff at every checkpoint so a fresh session can continue without this conversation.
 All implementation stays on the feature branch; no merge to `languages/main` or `main` yet.

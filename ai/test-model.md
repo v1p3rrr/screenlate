@@ -452,7 +452,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 ### CAM: camera photos
 
-The cases with M need the Camera page (from phase 1.2 of the camera plan); until then only their U and I parts run.
+Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit viewer and source activation.
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
@@ -465,6 +465,20 @@ The cases with M need the Camera page (from phase 1.2 of the camera plan); until
 | CAM7 | Hold the bubble over a photo → copy and Open Screenlate, no language flags; the docked glyph returns to the active language once the photo is left | N | M | |
 | CAM8 | A note added over a photo has no screen picture | N | M | |
 | CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | N | U PhotoStoreTest, I PhotoDatabaseTest | |
+| CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
+| CAM11 | Capture → fitted current photo; New photo + Close or Back preserves it; a completed new capture replaces it; Delete + Cancel keeps it, Delete + confirm opens the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
+| CAM12 | Tap preview → focus indicator; pinch → camera zoom and ratio label; tap ratio → 1× | F | I LiveCameraTest (API 30), D (focus quality) | 2026-10-26 (API 30) |
+| CAM13 | All 8 EXIF orientations display upright and report matching original-pixel-to-screen coordinates; loading/disposal never publishes another document's viewport | F | U PhotoDrawingTest, U CameraViewModelTest, I PhotoViewerTest | 2026-10-26 (API 37) |
+| CAM14 | Capture with the service unavailable; navigate and background; restart the device → the same private current photograph opens without camera permission being requested again; leaving capture releases the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
+| CAM15 | Flash-capable camera → Off/Auto/On cycle affects capture; Off again in a new process; absent flash → action hidden | N | U PhotoDrawingTest (cycle), D | |
+
+### NAV: bottom navigation
+
+| ID | Check | Cat | Cov | Checked |
+|---|---|---|---|---|
+| NAV1 | Home, Search, Camera, Settings left to right; query and Settings subpage survive tab changes; reselect returns to tab root; Back from root returns Home | F | M | 2026-10-26 (API 37) |
+| NAV2 | Overlay's Anki/settings request opens its page in the Settings tab; text-selection menu still resolves and opens standalone Search | F | I ProcessTextTest, M | 2026-10-26 (API 37; Anki request) |
+| NAV3 | First-launch language/setup and debug image viewer hide the bar; finishing setup reaches Home; background-tip badge behaves across tab changes | N | M | |
 
 ### NF: non-functional
 
@@ -522,6 +536,36 @@ menu's search had started. BUB16 (new, first check, moved to F).
 
 Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
 the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-26, `features/camera-lookup` (on `f5a3ca43` with the camera implementation before its commit), Pixel_10_Pro (API 37)
+
+Scope: continuation of phase 1.2, camera and the previously unverified navigation bar. Installed an x86_64-only copy
+of the assembled debug APK over the existing app; preserved its data and local Anki collection. Temporarily lowered
+the emulator's storage threshold for installs and deleted both overrides afterwards. No force-stop, no Anki writes.
+
+- CAM10, CAM11, CAM13, CAM14, NAV1 and NAV2 added as F after passing. Camera permission: denied twice, opened app
+  settings from the blocked state, granted while-in-use there and returned to the working camera. Capture and fitted
+  image, retake/back, deletion/cancel/confirmation, replacement and single stored photo passed. Full emulator shutdown
+  and cold reboot kept the original photo directory and reopened the stored image. Camera had no active clients in
+  the viewer. No flash unit on this emulated camera: flash is correctly hidden, hardware behavior remains D.
+- CAM4 partly checked: pull-out/tap/drag over live preview gave no entry, capture, accessibility text or cloud scan;
+  log: "Nothing to read on the Camera page". Keep N until the loading/unrecognized-photo variants are checked.
+  CAM5-CAM8 await recognized photos in 1.3; do not count these as passed by the preview check.
+- Settings > Bubble restored after Camera and back; reselect returned to Settings root, Back returned Home. Typed
+  Search text survived Camera and back. An external Anki settings request selected Settings and opened that page.
+- `PhotoViewerTest`: all 8 EXIF transforms checked against actual painted colors and reported viewport, 1/1 passed;
+  `ProcessTextTest` 2/2 passed in the same class-specific instrumentation run. The first viewer test's disposal
+  assertion raced Compose; changed it to wait for disposal, then passed. Test APK uninstalled; main app retained.
+- `assembleDebug`, `testDebugUnitTest` (1533 tests, 0 failures/errors in 9 modules) and app `lintDebug` passed with
+  `--max-workers=1`. The 15 new JVM tests cover page/source lifetime, stale callbacks, capture concurrency/cancellation,
+  failure preservation, load retry, all EXIF matrices and sampling. New strings in all 14 locales pass translation tests.
+- No page-script change. Physical book-page sharpness, flash, focus quality, timing and memory under repeated full-size
+  captures remain pending. NAV3, CAM15 and recognition-dependent cases remain pending.
+- API 30 follow-up on `Screenlate_API30_glide`: `PhotoViewerTest` and `LiveCameraTest` 2/2 passed. The latter drives
+  real PreviewView tap focus, two-finger pinch and the accessible zoom-reset button; CAM12 added as F. Fresh-install
+  first-run page showed no bottom bar (NAV3 partly checked; finishing setup and the badge are still pending).
+  Installed the assembled APK without clearing data; granted CAMERA for the hardware test, removed only the test APK.
+  Both emulators were shut down with `reboot -p`, and the shared emulator lock released.
 
 ### 2026-10-25, `features/camera-lookup` (on `870ad2c5` with the photo store and lookup source before their commit, 0.2.3-870ad2c5, x86_64-only copy), Pixel_10_Pro (API 37)
 

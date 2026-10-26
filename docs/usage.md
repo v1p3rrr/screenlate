@@ -7,6 +7,25 @@
 3. If the switch in the accessibility settings is greyed out after installing from an APK file: App info → ⋮ → Allow restricted settings.
 4. On devices with aggressive battery management, allow Screenlate to run in the background, or the system may stop the service. Settings → Background work shows whether battery optimization is on for Screenlate, asks the system to turn it off, and opens the manufacturer's startup settings on phones that have them.
 
+## Navigation and camera
+
+The bottom bar opens Home, Search, Camera and Settings. Switching tabs keeps each tab's open page and search text.
+Tap the selected tab to return to its first page. Back from that page returns to Home; Back from Home leaves the app.
+The bar is hidden during the first-launch setup and in the development image viewer.
+
+Camera opens the current photograph, or the rear camera when no photograph is stored. Allow camera access to take a
+photo; a saved photograph can be viewed without this permission or the accessibility service. Tap the preview to focus,
+pinch to zoom and tap the zoom label to return to 1×. If the camera has a flash, the upper flash button cycles through
+Off, Auto and On; it starts at Off when the app starts. Tap the shutter to save the photograph privately in Screenlate.
+
+The photograph fits the available area and survives tab changes, backgrounding and restarting the device. New photo
+opens the camera; Close or Back returns to the previous photograph. A successful capture replaces it; a failed capture
+keeps it. Delete asks for confirmation. Leaving capture releases the camera. Camera errors offer an explanation or retry.
+
+On this development branch the camera and persistent viewer are available; photo recognition, viewer pan/zoom, photo
+note attachments and gallery export are still being implemented. The bubble never scans the live preview or an
+unrecognized photograph. Other pages retain ordinary screen lookup.
+
 ## Languages
 
 - The active language is the one scans, search and the popup use. Each language keeps its own dictionaries and its own lookup, popup, Anki and audio settings; the other settings are shared.

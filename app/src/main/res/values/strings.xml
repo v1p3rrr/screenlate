@@ -807,4 +807,20 @@
     <string name="camera_flash_off">Flash off</string>
     <string name="camera_flash_auto">Flash auto</string>
     <string name="camera_flash_on">Flash on</string>
+    <string name="camera_take_photo">Take photo</string>
+    <string name="camera_new_photo">New photo</string>
+    <string name="camera_back_to_photo">Back to photo</string>
+    <string name="camera_delete">Delete photo</string>
+    <string name="camera_delete_title">Delete the photo?</string>
+    <string name="camera_delete_text">The current photo will be deleted.</string>
+    <string name="camera_permission_text">Camera access is required to take photos.</string>
+    <string name="camera_permission_blocked">Camera access is off. Allow it in the app settings.</string>
+    <string name="camera_open_settings">Open settings</string>
+    <string name="camera_allow">Allow camera</string>
+    <string name="camera_no_rear">No rear camera is available.</string>
+    <string name="camera_unavailable">The camera could not be opened.</string>
+    <string name="camera_capture_failed">The photo could not be taken. Try again.</string>
+    <string name="camera_delete_failed">The photo could not be deleted.</string>
+    <string name="camera_photo_unreadable">The photo could not be opened.</string>
+    <string name="camera_zoom_reset">Return to 1×</string>
 </resources>

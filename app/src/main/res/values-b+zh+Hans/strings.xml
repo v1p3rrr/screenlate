@@ -796,4 +796,20 @@
     <string name="camera_flash_off">闪光灯关闭</string>
     <string name="camera_flash_auto">闪光灯自动</string>
     <string name="camera_flash_on">闪光灯开启</string>
+    <string name="camera_take_photo">拍照</string>
+    <string name="camera_new_photo">新照片</string>
+    <string name="camera_back_to_photo">返回照片</string>
+    <string name="camera_delete">删除照片</string>
+    <string name="camera_delete_title">删除照片？</string>
+    <string name="camera_delete_text">将删除当前照片。</string>
+    <string name="camera_permission_text">拍照需要相机访问权限。</string>
+    <string name="camera_permission_blocked">相机访问权限已关闭。请在应用设置中允许。</string>
+    <string name="camera_open_settings">打开设置</string>
+    <string name="camera_allow">允许相机访问</string>
+    <string name="camera_no_rear">后置相机不可用。</string>
+    <string name="camera_unavailable">无法打开相机。</string>
+    <string name="camera_capture_failed">无法拍照。请重试。</string>
+    <string name="camera_delete_failed">无法删除照片。</string>
+    <string name="camera_photo_unreadable">无法打开照片。</string>
+    <string name="camera_zoom_reset">恢复至 1 倍</string>
 </resources>

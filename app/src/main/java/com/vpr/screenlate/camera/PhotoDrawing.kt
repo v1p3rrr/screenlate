@@ -11,8 +11,9 @@ import com.vpr.screenlate.core.photos.PhotoViewport
  * at least the drawn number of pixels, so the photo stays as sharp as the screen allows.
  */
 internal fun displaySampleSize(scale: Float): Int {
+    require(scale.isFinite() && scale > 0f) { "Invalid display scale" }
     var size = 1
-    while (size * 2 * scale <= 1f) size *= 2
+    while (size <= Int.MAX_VALUE / 2 && size * 2L * scale <= 1f) size *= 2
     return size
 }
 

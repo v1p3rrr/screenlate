@@ -10,14 +10,21 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
 
 - Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate` (managed worktree attached to the Codex chat).
 - Branch: `features/camera-lookup`, tracking `origin/features/camera-lookup`.
-- State: phases 0 and 1.1 are complete; phase 1.2 is half done (2026-10-25, paused by the owner at the session's
-  usage limit). All phase 1.2 questions are answered (decision table rows Navigation bar to Deleting the photo); ask
-  nothing again.
-- Last commit: "Add the navigation bar with Home, Search, Camera and Settings tabs", pushed to
-  `origin/features/camera-lookup`. Before it: `db0bd048` (phase 1.1).
-- Uncommitted work: none.
-- Phase 1.2 done (`:app:assembleDebug :app:testDebugUnitTest :app:lintDebug` pass with `--max-workers=1`; not yet
-  checked on the emulator; other modules unchanged):
+- State: phases 0, 1.1 and 1.2 are complete (2026-10-26). The owner resumed implementation, so the earlier pause no longer applies.
+  All phase 1.2 questions are answered (decision table rows Navigation bar to Deleting the photo); ask nothing again.
+- Resumed 2026-10-26 by the owner to inspect the intervening changes and continue from phase 1.2. Starting commit
+  f5a3ca43 was clean and matched origin. The continuation's milestone commit is
+  "Add camera capture and the persistent photo viewer" on `origin/features/camera-lookup`.
+- Uncommitted implementation work after that milestone: none. Do not merge into either main branch.
+- Checks: `:app:assembleDebug :app:testDebugUnitTest :app:lintDebug` and root `testDebugUnitTest` with
+  `--max-workers=1` pass (1533 tests total, including 183 app tests, zero failures/errors). `:app:assembleDebugAndroidTest`
+  passes. API 37 class-specific instrumentation: `PhotoViewerTest` and `ProcessTextTest`, 3/3; API 30:
+  `PhotoViewerTest` and `LiveCameraTest`, 2/2. Both viewer runs check actual painted colors for all 8 EXIF transforms.
+  API 37 manual checks: permission denial/block/settings/grant, capture, fit viewer, retake/back, deletion/cancel,
+  replacement, full emulator shutdown/reboot, camera release, tab state/reselect/Back, external Anki route and
+  no-screen-scan preview gestures passed. API 30 tested real preview focus/pinch zoom/reset and first-run bar hiding.
+  No page scripts changed. Physical sharpness/flash/focus/timing and remaining NAV3/CAM cases are pending.
+- Phase 1.2 implementation:
   - `navigation/ScreenlateNavHost.kt`: one Scaffold with a `NavigationBar` (Home, Search, Camera, Settings) on every
     page except the first run and the debug image viewer. Sub-pages stay root-level routes; a tab switch pops
     everything above the root graph with `saveState` and navigates to the tab's root with `restoreState`, so each tab
@@ -32,20 +39,22 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   - CameraX 1.6.2 (`camera-camera2`, `camera-lifecycle`, `camera-view`) in the catalog and `app`; CAMERA permission
     and optional `android.hardware.camera.any` in the manifest; NOTICE names CameraX. Icons `ic_home`,
     `ic_photo_camera`, `ic_flash_off/auto/on` (Material Icons paths).
-  - `app/.../camera/`: `CameraScreen` is an empty page with the title only; `CameraSession` (flash mode per process,
-    permission asked/blocked flags), `CameraLookup` (drives `LookupSources` from what the page shows) and
-    `PhotoDrawing` (`displaySampleSize`, `decodeForDisplay`, `imageToViewer` matrix raw → upright → viewer) are
-    written but not used or tested yet.
-- Next for phase 1.2, in order (design worked out in `ai/notes/camera-lookup.md`, "Camera page design"):
-  1. Unit tests: `CameraLookupTest` (real `LookupSources`), `PhotoDrawingTest` (matrix vs `toOriented`+viewport for
-     all 8 orientations, sample sizes), `FlashMode.next`, and `CameraViewModelTest` with a fake `PhotoDocuments`.
-  2. `CameraViewModel`, the live camera, the permission prompt, the photo viewer, delete with confirmation, the
-     capture flow; remaining strings in 14 locales.
-  3. Emulator: tabs (state kept per tab, back to Home, reselect, deep links from the overlay, first run without the
-     bar, badge), camera (permission allow/deny/blocked → settings, capture, flash icon, zoom label, new photo over a
-     photo and back, delete), CAM4, CAM5 (live camera docks), CAM7 partly; CAM1-CAM3, CAM6, CAM8 need recognition
-     (phase 1.3). Add the navigation and camera cases to `ai/test-model.md`.
-  4. Docs (`docs/usage.md`, `docs/architecture.md`, `docs/development.md`, module map), status, commit, push.
+  - `CameraViewModel` owns capture and temporary retake state; `CameraScreen` handles permission explanations,
+    upper actions, delete confirmation and lifecycle. `LiveCamera` binds a quality-prioritized CameraX controller,
+    handles focus/zoom and waits for a terminal capture callback before file disposal. `PhotoViewer` fits a sampled
+    bitmap through the EXIF matrix and publishes its viewport only after decoding. `CameraLookup` attaches only
+    while resumed; live/loading/unrecognized/failed views remain NoText, with no screen fallback.
+  - 16 new strings in all 14 locales. 15 JVM tests, `PhotoViewerTest` and `LiveCameraTest`. Human docs, module map,
+    this handoff and `ai/test-model.md` updated. No OCR is started by capture yet (phase 1.3).
+- Next for phase 1.3, in order:
+  1. Original-resolution 2D overlapping tile geometry in `core:ocr`, then a dedicated word/line/paragraph assembler.
+     Test edge coverage, seams/corners, legitimate repeated text, vertical/RTL text, separators and character boxes.
+  2. Recognition attempt ownership, bounded cloud concurrency (2), Device/Both semantics, atomic publication and
+     persistence of successful tiles plus failed metadata for retry. Existing `PhotoDocuments.commitRecognition`
+     stores only the final snapshot; extend storage for attempt data without discarding committed text or images.
+  3. Camera language preferences and explicit recognition/readiness, progress/partial-result warning/retry, viewer
+     pan/zoom and spatial index. Keep existing result language until an explicit new attempt commits.
+  4. Run recognition-dependent CAM cases and remaining navigation checks. Update documentation/checkpoints and push.
 - First read: `ai/notes/camera-lookup.md` preserves the architecture investigation, what phase 1.1 built and the
   integration pitfalls.
 - Checks for phase 1.1: `assembleDebug testDebugUnitTest lintDebug` pass (`--max-workers=1`; with 2 workers the first
@@ -181,7 +190,7 @@ screen-source behavior, reference ownership and cancellation guarantees. ML Kit 
 ### Phase 1: complete single-photo workflow
 
 - [x] 1.1 Document storage and source selection: persistence, snapshots, viewport and exclusive targeting; tests for zero screen-scan calls.
-- [ ] 1.2 Navigation and camera: bottom tabs with retained state; rear CameraX, quality capture, auto exposure/focus, tap focus, pinch zoom and Off/Auto/On flash; release camera on exit.
+- [x] 1.2 Navigation and camera: bottom tabs with retained state; rear CameraX, quality capture, auto exposure/focus, tap focus, pinch zoom and Off/Auto/On flash; release camera on exit. Hardware flash and real-page quality remain physical-device acceptance checks.
 - [ ] 1.3 Recognition and viewer: tiles, assembly, progress, terminal partial-result warnings, retry, pan/zoom, language indication and restoration.
 - [ ] 1.4 Popup and Anki: definitions, audio, translation and notes use recognition language; original-photo crop and explicit gallery export.
 - [ ] 1.5 Documentation, translations, required automated checks and emulator checks; record physical-device checks separately.
@@ -268,3 +277,6 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
 - 2026-10-25: navigation bar built (phase 1.2, first half); the Camera page is still empty. Implementation choices:
   overlay requests open their pages in the Settings tab, pages opened from a tab stay in that tab, the live preview
   will use FIT_CENTER so the whole captured frame is visible. Paused by the owner at the usage limit with a handoff.
+- 2026-10-26: owner resumed after the navigation checkpoint. Phase 1.2 completed with capture, persistence-backed
+  viewer, source lifecycle, permission failures/retry and deletion; tests and device evidence are in the handoff and
+  test-model run log. No product decisions changed. Next is photo recognition (1.3), then original-photo Anki/export (1.4).
