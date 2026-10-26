@@ -108,6 +108,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB13 | Home's switch and Bubble → "Show the bubble" hide and show it | F | M | 2026-10-14 |
 | BUB14 | An app in the hidden apps list → the bubble hides there and comes back outside it | O | M | |
 | BUB15 | E-ink: the hold menu is white with a black frame, black text and a black ring around the active code, no shadow or ripple | F | M | 2026-10-14 |
+| BUB16 | No app task; "Look up in Screenlate" in a selection menu, then a button there that opens the app (the grey ➕ → "Open Anki settings", or "Manage dictionaries"); Home → the hold menu's "Open Screenlate", then the launcher icon → the same screen comes back, `dumpsys activity activities` lists one MainActivity, the task's root intent is the launcher's (`dumpsys activity recents`); Back leaves the app | F | I OpenAppTest, M | 2026-10-26 |
 
 ### OCR: text sources and recognition
 
@@ -484,6 +485,27 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-26, `claude/nifty-faraday-59a7fb` (`languages/main` d1977c62 with the fix, 0.2.3-5f4a75d6, x86_64-only copy), Pixel_10_Pro (API 37)
+
+Scope: "Open Screenlate" in the bubble's hold menu started a second MainActivity over a task that the selection
+menu's search had started. BUB16 (new, first check, moved to F).
+
+- Before, on 0.2.3-a2235350: `am start -n …/com.vpr.screenlate.MainActivity` (the intent the search used), Home, the
+  hold menu's "Open Screenlate" → task #289 with two MainActivity records.
+- `OpenAppTest` (4 cases, `am instrument -e class`): passed. With `SINGLE_TOP` removed from `OverlayIntents` for a
+  check, "a task started by another intent" and "search opens a screen in the running app" failed (a second instance,
+  a recreated one); the two search cases still passed, as the task's root intent is now the launcher's.
+- BUB16 by hand: "voda" selected in AnkiDroid's note editor → "Look up in Screenlate" (the second of two such items:
+  the release build is installed too) → the grey ➕ after `pm revoke … com.ichi2.anki.permission.READ_WRITE_DATABASE`
+  → "Open Anki settings" → task #295 with one MainActivity, root intent `MAIN`/`LAUNCHER`; Home → "Open Screenlate"
+  → Anki settings again, the same ActivityRecord, one in the task; Home → the launcher icon → the same; Back → the
+  home screen of the app, Back → the launcher. The permission was granted again afterwards.
+- The Contacts editor's selection menu on API 37 lists no "Look up in Screenlate" (only Cut, Copy, Share, Translate);
+  AnkiDroid's note editor does, behind ⋮.
+
+Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
+the storage threshold settings deleted again; the emulator shut down.
 
 ### 2026-10-22, `claude/jolly-cray-bc8ce9` (`languages/main` 9736102b with both overlay commits cherry-picked, 0.2.3-4cca2cc0), Pixel_10_Pro (API 37)
 

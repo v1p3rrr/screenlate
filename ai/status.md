@@ -636,6 +636,19 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
 
 ## Log
 
+### 2026-10-26 ("Open Screenlate" started a second main screen; `claude/nifty-faraday-59a7fb` from languages/main)
+
+- Bug seen during the camera-lookup acceptance, older than it: after the selection menu's search opened the app
+  (`ProcessTextActivity.openApp`), the bubble's "Open Screenlate" and the launcher icon started a second MainActivity
+  on top; Back showed the first copy. Cause: the search started MainActivity with an explicit intent, which became the
+  task's root intent; a launcher-style start into that task with a different intent filter adds a new instance
+  (`ActivityStarter.complyActivityFlags`). Also, `CLEAR_TOP` without `SINGLE_TOP` recreated MainActivity, so its
+  `onNewIntent` handling never ran.
+- `OverlayIntents.openScreen`: the launch intent with `NEW_TASK | CLEAR_TOP | SINGLE_TOP`; the search, the overlay's
+  Anki-settings button, the installation link and the OCR models link use it. `openApp` adds `SINGLE_TOP` for a task
+  started by another intent. Manifest unchanged.
+- `OpenAppTest` (app, instrumented, 4 cases) and test-model case BUB16; run log 2026-10-26. Checked on Pixel_10_Pro.
+
 ### 2026-10-13 to 2026-10-15 (group 1: Languages screen, Chinese, Korean; languages/main, languages/zh, languages/ko)
 
 - Requests 30 to 44 of the languages plan, with the owner's answers as decision rows; details in its changelog.
