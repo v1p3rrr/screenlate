@@ -23,9 +23,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
@@ -59,7 +61,12 @@ class PhotoRecognitionJobs internal constructor(
 
     init {
         scope.launch {
-            documents.current.catch { Log.w("PhotoOCR", "Document observation failed: " + it.javaClass.simpleName) }.collect { photo ->
+            documents.current.retryWhen { error, attempt ->
+                // Without this observation a replaced photo's attempt would run on until its next store write.
+                if (attempt == 0L) Log.w("PhotoOCR", "Document observation failed: " + error.javaClass.simpleName)
+                delay(OBSERVATION_RETRY_MS)
+                true
+            }.collect { photo ->
                 synchronized(this@PhotoRecognitionJobs) {
                     if (target != null && target != photo?.id) {
                         job?.cancel()
@@ -71,12 +78,9 @@ class PhotoRecognitionJobs internal constructor(
         }
     }
 
+    /** Recognizes the whole photo with [settings], replacing the text it has by the time the attempt starts. */
     @Synchronized
-    fun recognize(document: PhotoDocument, language: Language, engines: OcrEngines) = start(document, language, engines, null)
-
-    @Synchronized
-    fun recognize(document: PhotoDocument, language: Language, settings: PhotoOcrSettings) =
-        start(document, language, settings.engines, null, settings)
+    fun recognize(document: PhotoDocument, language: Language, settings: PhotoOcrSettings) = start(document, language, settings, null)
 
     /** Keeps successful tiles and the original attempt's settings/language; only failures and unattempted tiles run. */
     @Synchronized
@@ -87,10 +91,10 @@ class PhotoRecognitionJobs internal constructor(
                 (recognition.tiles.map { it.tile } + recognition.failed.map { it.box.toTile() }).distinct(),
                 recognition.tiles.map { PhotoTileResult(it.tile, page = it.page) }, recognition.recognizedAt)
         } ?: return
-        if (attempt.remaining.isNotEmpty()) start(document, attempt.language, attempt.settings.engines, attempt)
+        if (attempt.remaining.isNotEmpty()) start(document, attempt.language, attempt.settings, attempt)
     }
 
-    private fun start(document: PhotoDocument, language: Language, engines: OcrEngines, retry: PhotoAttempt?, requested: PhotoOcrSettings? = null) {
+    private fun start(document: PhotoDocument, language: Language, settings: PhotoOcrSettings, retry: PhotoAttempt?) {
         val previous = job
         previous?.cancel()
         target = document.id
@@ -99,8 +103,11 @@ class PhotoRecognitionJobs internal constructor(
             val id = newId()
             mutableWork.value = PhotoWork.Running(document.id, id, 0, 0)
             try {
-                engine.open(document, language, engines, retry?.settings ?: requested).use { session ->
-                    var attempt = PhotoAttempt(id, document.revision, language, session.settings,
+                // A recognition that finished meanwhile, such as the one just replaced, may have committed newer text.
+                val basedOn = if (retry != null) document.revision
+                    else documents.current.first()?.takeIf { it.id == document.id }?.revision ?: return@launch
+                engine.open(document, language, settings).use { session ->
+                    var attempt = PhotoAttempt(id, basedOn, language, session.settings,
                         retry?.tiles ?: PhotoTiles.grid(document.width, document.height),
                         retry?.results?.filter { it.page != null } ?: emptyList(), clock())
                     if (!documents.saveAttempt(document.id, attempt, replace = true)) return@launch
@@ -129,7 +136,7 @@ class PhotoRecognitionJobs internal constructor(
                     val successful = attempt.results.mapNotNull { result -> result.page?.let { PhotoTilePage(result.tile, it) } }
                     if (successful.isNotEmpty()) {
                         val page = PhotoAssembly.assemble(document.width, document.height, language, successful)
-                        documents.commitRecognition(document.id, document.revision, PhotoRecognition(language, session.settings, page,
+                        documents.commitRecognition(document.id, basedOn, PhotoRecognition(language, session.settings, page,
                             attempt.results.mapNotNull { result -> result.failure?.let { FailedRegion(result.tile.box, it) } }, clock(), successful))
                     }
                 }
@@ -156,5 +163,9 @@ class PhotoRecognitionJobs internal constructor(
         error is LensHttpException -> if (error.refused) FailureCause.REFUSED else FailureCause.SERVER
         error is IOException -> FailureCause.NETWORK
         else -> FailureCause.OTHER
+    }
+
+    private companion object {
+        const val OBSERVATION_RETRY_MS = 1_000L
     }
 }

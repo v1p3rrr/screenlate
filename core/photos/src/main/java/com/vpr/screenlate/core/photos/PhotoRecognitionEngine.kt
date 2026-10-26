@@ -22,9 +22,12 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-/** Opens fixed settings and image ownership for one multi-tile attempt. [fixed] is used for a failed-tile retry. */
+/**
+ * Opens fixed settings and image ownership for one multi-tile attempt. The device model of [settings] is used as
+ * named, never another; a retry passes the settings of the attempt it continues.
+ */
 interface PhotoRecognitionEngine {
-    suspend fun open(document: PhotoDocument, language: Language, engines: OcrEngines, fixed: PhotoOcrSettings? = null): PhotoOcrSession
+    suspend fun open(document: PhotoDocument, language: Language, settings: PhotoOcrSettings): PhotoOcrSession
 }
 
 interface PhotoOcrSession : AutoCloseable {
@@ -34,12 +37,10 @@ interface PhotoOcrSession : AutoCloseable {
 
 /** Original-resolution regions only: no full-size bitmap of the photograph and no screen OCR options. */
 class PhotoOcrEngine @Inject constructor(private val ocr: CompositeOcr, private val device: DeviceOcr) : PhotoRecognitionEngine {
-    override suspend fun open(document: PhotoDocument, language: Language, engines: OcrEngines, fixed: PhotoOcrSettings?): PhotoOcrSession {
-        val pinned = when {
-            engines == OcrEngines.CLOUD -> null
-            fixed == null -> device.pin(language)
-            fixed.deviceModel == null -> null
-            else -> device.pin(language, fixed.deviceModel) ?: throw NoDeviceOcrException()
+    override suspend fun open(document: PhotoDocument, language: Language, settings: PhotoOcrSettings): PhotoOcrSession {
+        val engines = settings.engines
+        val pinned = settings.deviceModel?.takeIf { engines != OcrEngines.CLOUD }?.let { model ->
+            device.pin(language, model) ?: throw NoDeviceOcrException()
         }
         if (engines == OcrEngines.DEVICE && pinned == null) throw NoDeviceOcrException()
         var regions: PhotoRegions? = null

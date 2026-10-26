@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.PhotoTile
 import java.io.OutputStream
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.currentCoroutineContext
@@ -15,9 +16,11 @@ import kotlin.math.floor
 
 /**
  * Owned original pixels, independent of the current document. Close after all reads finish. Returned bitmaps belong
- * to the caller; preview sampling never changes crop coordinates. A private hard link (or copy) keeps the image alive.
+ * to the caller; preview sampling never changes crop coordinates. The store keeps the image file, even of a photo
+ * deleted meanwhile, until the first close runs [release].
  */
-class PhotoImage internal constructor(private val document: PhotoDocument) : AutoCloseable {
+class PhotoImage internal constructor(private val document: PhotoDocument, private val release: () -> Unit) : AutoCloseable {
+    private val closed = AtomicBoolean(false)
     val width: Int get() = document.width
     val height: Int get() = document.height
     val bounds: Box get() = Box(0f, 0f, width.toFloat(), height.toFloat())
@@ -66,5 +69,5 @@ class PhotoImage internal constructor(private val document: PhotoDocument) : Aut
         BitmapFactory.decodeFile(document.image.path, this)
     }.outMimeType ?: "image/jpeg"
 
-    override fun close() { document.image.delete() }
+    override fun close() { if (closed.compareAndSet(false, true)) release() }
 }

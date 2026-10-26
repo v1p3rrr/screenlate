@@ -3,7 +3,11 @@ package com.vpr.screenlate.core.photos
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.ocr.LensPausedException
+import com.vpr.screenlate.core.ocr.NoDeviceOcrException
 import com.vpr.screenlate.core.ocr.OcrEngineType
+import com.vpr.screenlate.core.ocr.OfflineException
+import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage
@@ -16,7 +20,11 @@ import java.io.IOException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -36,7 +44,7 @@ class PhotoRecognitionJobsTest {
         val gate = CompletableDeferred<Unit>()
         engine.before = { if (it.left > 0) gate.await() }
         val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
-        jobs.recognize(documents.photo, Language.ENGLISH, OcrEngines.CLOUD)
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
         runCurrent()
         assertThat(documents.commits).isEqualTo(0)
         assertThat(documents.photo.text).isEqualTo(PhotoText.None)
@@ -58,7 +66,7 @@ class PhotoRecognitionJobsTest {
         val gate = CompletableDeferred<Unit>()
         engine.before = { gate.await() }
         val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
-        jobs.recognize(documents.photo, Language.ENGLISH, OcrEngines.CLOUD)
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
         runCurrent()
         assertThat(engine.active).isEqualTo(2)
         assertThat(engine.calls).hasSize(2)
@@ -77,7 +85,7 @@ class PhotoRecognitionJobsTest {
         engine.before = { if (failing && it.left > 0) throw IOException("test") }
         var id = 0
         val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "attempt" + id++ })
-        jobs.recognize(documents.photo, Language.ARABIC, OcrEngines.BOTH)
+        jobs.recognize(documents.photo, Language.ARABIC, PhotoOcrSettings(OcrEngines.BOTH, "mlkit"))
         runCurrent()
         val partial = (documents.photo.text as PhotoText.Recognized).recognition
         assertThat(partial.failed).hasSize(1)
@@ -99,7 +107,7 @@ class PhotoRecognitionJobsTest {
         val documents = Documents(photo().copy(revision = 4, text = PhotoText.Recognized(old)))
         val engine = Engine().apply { before = { throw IOException("test") } }
         val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
-        jobs.recognize(documents.photo, Language.JAPANESE, OcrEngines.CLOUD)
+        jobs.recognize(documents.photo, Language.JAPANESE, PhotoOcrSettings(OcrEngines.CLOUD))
         runCurrent()
         assertThat(documents.commits).isEqualTo(0)
         assertThat(documents.photo.text).isEqualTo(PhotoText.Recognized(old))
@@ -132,9 +140,9 @@ class PhotoRecognitionJobsTest {
         val gate = CompletableDeferred<Unit>()
         val engine = Engine().apply { before = { withContext(NonCancellable) { gate.await() } } }
         val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
-        jobs.recognize(documents.photo, Language.ENGLISH, OcrEngines.CLOUD)
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
         runCurrent()
-        documents.current.value = photo().copy(id = 2)
+        documents.state.value = photo().copy(id = 2)
         runCurrent()
         assertThat(engine.closed).isEqualTo(0)
         gate.complete(Unit)
@@ -145,17 +153,81 @@ class PhotoRecognitionJobsTest {
         assertThat(documents.photo.text).isEqualTo(PhotoText.None)
     }
 
+    @Test
+    fun theRequestedSettingsReachTheEngineAndTheText() = runTest {
+        val documents = Documents(photo(1500, 1500))
+        val engine = Engine()
+        val settings = PhotoOcrSettings(OcrEngines.BOTH, "model")
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(documents.photo, Language.ENGLISH, settings)
+        runCurrent()
+        assertThat(engine.fixed).containsExactly(settings)
+        assertThat((documents.photo.text as PhotoText.Recognized).recognition.settings).isEqualTo(settings)
+    }
+
+    @Test
+    fun aNewRecognitionReplacesTextCommittedAfterItWasRequested() = runTest {
+        val documents = Documents(photo())
+        val requested = documents.photo
+        documents.state.value = requested.copy(revision = 1, text = PhotoText.Recognized(TestPhotos.recognition()))
+        val jobs = PhotoRecognitionJobs(documents, Engine(), backgroundScope, { 0 }, { "one" })
+        jobs.recognize(requested, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        assertThat(documents.commits).isEqualTo(1)
+        assertThat(documents.photo.revision).isEqualTo(2)
+        assertThat((documents.photo.text as PhotoText.Recognized).recognition.language).isEqualTo(Language.ENGLISH)
+    }
+
+    @Test
+    fun aFailedObservationIsRestartedSoAReplacedPhotoStillStopsItsWork() = runTest {
+        val documents = Documents(photo(), failFirstObservation = true)
+        val engine = Engine().apply { before = { CompletableDeferred<Unit>().await() } }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        advanceTimeBy(2_000)
+        runCurrent()
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        assertThat(jobs.work.value).isInstanceOf(PhotoWork.Running::class.java)
+        documents.state.value = photo().copy(id = 2)
+        runCurrent()
+        assertThat(jobs.work.value).isNull()
+        assertThat(engine.closed).isEqualTo(1)
+    }
+
+    @Test
+    fun aFailedTileKeepsTheCauseItsWarningNames() = runTest {
+        val cases = listOf(
+            Triple(OfflineException(), OcrEngines.CLOUD, FailureCause.OFFLINE),
+            Triple(LensPausedException(), OcrEngines.CLOUD, FailureCause.REFUSED),
+            Triple(LensHttpException(429), OcrEngines.BOTH, FailureCause.REFUSED),
+            Triple(LensHttpException(500), OcrEngines.CLOUD, FailureCause.SERVER),
+            Triple(IOException("reset"), OcrEngines.CLOUD, FailureCause.NETWORK),
+            Triple(NoDeviceOcrException(), OcrEngines.BOTH, FailureCause.DEVICE),
+            Triple(IOException("model"), OcrEngines.DEVICE, FailureCause.DEVICE),
+            Triple(PhotoReadException(), OcrEngines.DEVICE, FailureCause.OTHER),
+            Triple(IllegalStateException(), OcrEngines.CLOUD, FailureCause.OTHER),
+        )
+        for ((error, engines, cause) in cases) {
+            val documents = Documents(photo(1500, 1500))
+            val engine = Engine().apply { before = { throw error } }
+            val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+            jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(engines))
+            runCurrent()
+            assertThat(documents.photo.attempt!!.results.single().failure).isEqualTo(cause)
+        }
+    }
+
     private inner class Engine : PhotoRecognitionEngine {
         val calls = mutableListOf<PhotoTile>()
-        val fixed = mutableListOf<PhotoOcrSettings?>()
+        val fixed = mutableListOf<PhotoOcrSettings>()
         var before: suspend (PhotoTile) -> Unit = {}
         var active = 0
         var maximum = 0
         var closed = 0
-        override suspend fun open(document: PhotoDocument, language: Language, engines: OcrEngines, fixed: PhotoOcrSettings?): PhotoOcrSession {
-            this.fixed += fixed
+        override suspend fun open(document: PhotoDocument, language: Language, settings: PhotoOcrSettings): PhotoOcrSession {
+            fixed += settings
             return object : PhotoOcrSession {
-                override val settings = fixed ?: PhotoOcrSettings(engines, if (engines == OcrEngines.CLOUD) null else "mlkit")
+                override val settings = settings
                 override suspend fun recognize(tile: PhotoTile): OcrPage {
                     calls += tile
                     active++
@@ -167,19 +239,28 @@ class PhotoRecognitionJobsTest {
         }
     }
 
-    private class Documents(initial: PhotoDocument) : PhotoDocuments {
-        override val current = MutableStateFlow<PhotoDocument?>(initial)
-        val photo get() = current.value!!
+    /** [failFirstObservation]: the first collection of [current] fails, as a database error would. */
+    private class Documents(initial: PhotoDocument, failFirstObservation: Boolean = false) : PhotoDocuments {
+        val state = MutableStateFlow<PhotoDocument?>(initial)
+        private var failing = failFirstObservation
+        override val current: Flow<PhotoDocument?> = flow {
+            if (failing) {
+                failing = false
+                throw IOException("test")
+            }
+            emitAll(state)
+        }
+        val photo get() = state.value!!
         var commits = 0
         override suspend fun saveAttempt(documentId: Long, attempt: PhotoAttempt, replace: Boolean): Boolean {
             if (photo.id != documentId || photo.revision != attempt.basedOn || (!replace && photo.attempt?.id != attempt.id)) return false
-            current.value = photo.copy(attempt = attempt)
+            state.value = photo.copy(attempt = attempt)
             return true
         }
         override suspend fun commitRecognition(documentId: Long, basedOn: Int, recognition: PhotoRecognition): PhotoDocument? {
             if (photo.id != documentId || photo.revision != basedOn) return null
             commits++
-            return photo.copy(revision = basedOn + 1, text = PhotoText.Recognized(recognition), attempt = null).also { current.value = it }
+            return photo.copy(revision = basedOn + 1, text = PhotoText.Recognized(recognition), attempt = null).also { state.value = it }
         }
         override suspend fun pinImage(documentId: Long): com.vpr.screenlate.core.photos.PhotoImage? = null
         override suspend fun newCaptureFile(): File = error("Not used")

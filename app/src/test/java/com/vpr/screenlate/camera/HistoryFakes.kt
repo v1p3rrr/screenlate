@@ -14,18 +14,22 @@ import com.vpr.screenlate.core.photos.PhotoHistory
 import com.vpr.screenlate.core.photos.PhotoImage
 import com.vpr.screenlate.core.photos.PhotoRecognition
 import java.io.File
+import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class MemoryStore : DataStore<Preferences> {
     private val state = MutableStateFlow(emptyPreferences())
     override val data: Flow<Preferences> = state
+    var failWrites = false
 
-    override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences =
-        transform(state.value).also { state.value = it }
+    override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences {
+        if (failWrites) throw IOException("Disk error")
+        return transform(state.value).also { state.value = it }
+    }
 }
 
-internal fun cameraPreferences() = CameraPreferences(MemoryStore(), LanguageProfiles(MemoryStore()))
+internal fun cameraPreferences(store: MemoryStore = MemoryStore()) = CameraPreferences(store, LanguageProfiles(MemoryStore()))
 
 internal fun entry(id: Long, bytes: Long = 1_000) = HistoryEntry(id, createdAt = id, language = null, thumbnail = null, bytes = bytes)
 

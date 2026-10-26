@@ -28,7 +28,7 @@ class PhotoGalleryDeviceTest {
             }
             val expected = file.readBytes()
             PhotoImage(PhotoDocument(1, file, 80, 60, if (png) PhotoOrientation.NORMAL else PhotoOrientation.ROTATE_90,
-                0, 0, PhotoText.None)).use { image ->
+                0, 0, PhotoText.None)) { file.delete() }.use { image ->
                 val gallery = PhotoGallery(context, object : PhotoDocuments {
                     override val current = kotlinx.coroutines.flow.flowOf<PhotoDocument?>(null)
                     override suspend fun pinImage(documentId: Long): PhotoImage? = error("Uses owned fixture")

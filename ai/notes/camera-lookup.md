@@ -72,8 +72,11 @@ same photo-15 prefix. No Anki operation or phone run occurred in this checkpoint
 ## Built in phase 1.4: original photo notes and gallery export (2026-10-26)
 
 Implementation checkpoint `e8951271`; final checks/docs follow it. `PhotoDocuments.pinImage(id)` takes a lease under
-PhotoStore's mutex: a hard link in private `.pins` (copy fallback) keeps original bytes alive after replacement or
-clear. Close deletes the lease; startup tidy removes abandoned leases before the first mutation. No Room schema
+PhotoStore's mutex. The first version kept a hard link in private `.pins` with a copy fallback, but SELinux denies
+apps hard links (checked on API 37: `ln` gives "Permission denied"), so every pin copied the whole image under the
+mutex. Now the store counts open images per photo directory; deleting a pinned photo drops its row at once and
+defers deleting the directory until the last image closes. Startup tidy deletes such directories after a process
+death, since no row names them. No Room schema
 change, service dependency or backup integration. PhotoImage owns no long-lived full-size bitmap: preview reads a
 sampled oriented region; crop rounds outward and decodes just the selected original region. Reads retain unpublished
 bitmap ownership across cancellation, using PhotoRegions, now with an optional sampling factor. Gallery uses the

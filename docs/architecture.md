@@ -89,9 +89,10 @@ unrecognized photo. Leaving the page or backgrounding closes the source. The ove
 to the photo's visible part.
 Old-document viewport callbacks are ignored. The display bitmap's sample does not alter stored OCR coordinates.
 
-`PhotoDocuments.pinImage` retains original pixels with a private hard link (copy fallback), so a note or export can
-finish after the current photo is replaced or deleted. The owner closes the `PhotoImage` after its reads; abandoned
-pins are removed on the next store change after process restart. Preview and crop reads decode regions off the main
+`PhotoDocuments.pinImage` keeps the original pixels readable, so a note or export can finish after the current photo
+is replaced or deleted: the store counts open images per photo and defers deleting a pinned photo's files until the
+last one closes. The owner closes the `PhotoImage` after its reads; files an abandoned image kept are deleted before
+the first store change after a restart. Preview and crop reads decode regions off the main
 thread, apply EXIF orientation, and retain unpublished bitmap ownership through cancellation.
 
 `NoteContext.image` accepts a screen or photo `NoteImage`. The screen adapter retains the existing shared screenshot

@@ -18,23 +18,24 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CameraSettingsViewModelTest {
-    private val store = ViewModelStore()
+    private val models = ViewModelStore()
     private val documents = CurrentPhoto()
     private val history = FakeHistory(documents.current)
+    private val store = MemoryStore()
     private lateinit var preferences: CameraPreferences
     private lateinit var model: CameraSettingsViewModel
 
     @Before
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
-        preferences = cameraPreferences()
+        preferences = cameraPreferences(store)
         model = CameraSettingsViewModel(history, documents, preferences)
-        store.put("settings", model)
+        models.put("settings", model)
     }
 
     @After
     fun cleanup() {
-        store.clear()
+        models.clear()
         Dispatchers.resetMain()
     }
 
@@ -56,6 +57,18 @@ class CameraSettingsViewModelTest {
         documents.current.value = photo(1)
         model.setAutoSave(false)
         advanceUntilIdle()
+        assertThat(history.saved).isEmpty()
+    }
+
+    @Test
+    fun aFailedWriteOfAutomaticSavingReportsItAndSavesNothing() = runTest {
+        documents.current.value = photo(1)
+        store.failWrites = true
+        model.setAutoSave(true)
+        advanceUntilIdle()
+        assertThat(model.events.first()).isEqualTo(CameraSettingsEvent.CHANGE_FAILED)
+        assertThat(model.settings.value?.autoSave).isFalse()
+        assertThat(model.resets.value).isEqualTo(1)
         assertThat(history.saved).isEmpty()
     }
 

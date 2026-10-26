@@ -22,7 +22,6 @@ import com.vpr.screenlate.core.photos.PhotoText
 import com.vpr.screenlate.core.photos.PhotoAttempt
 import com.vpr.screenlate.core.photos.PhotoImage
 import com.vpr.screenlate.core.photos.ThumbnailMaker
-import java.nio.file.Files
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -33,11 +32,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -73,24 +78,49 @@ class PhotoStore internal constructor(
     private val staging = File(root, STAGING)
     private var tidied = false
 
+    /** Open [PhotoImage]s per photo directory. Guarded by itself, as images close on any thread. */
+    private val pins = HashMap<String, Int>()
+
+    /** Pinned directories of deleted photos, deleted when their last image closes; guarded by [pins]. */
+    private val deferred = HashSet<String>()
+
+    /** Deletes what a closed image kept, off the thread that closed it, often the main one. */
+    private val cleanup = CoroutineScope(SupervisorJob() + io)
+
+    /** No copy: apps may not create hard links, so a deleted photo's directory waits for the image instead. */
     override suspend fun pinImage(documentId: Long): PhotoImage? {
-        var pinned: PhotoImage? = null
-        try {
+        // A cancelled withContext drops a result its block produced, and an image lost that way never closes.
+        val image = withContext(NonCancellable) {
             locked {
-                val row = index.get(documentId) ?: return@locked
-                val image = imageOf(row)
-                if (!image.isFile) return@locked
-                val directory = File(root, ".pins").apply { mkdirs() }
-                val file = File(directory, UUID.randomUUID().toString())
-                try {
-                    try { Files.createLink(file.toPath(), image.toPath()) }
-                    catch (_: IOException) { image.copyTo(file) }
-                    catch (_: UnsupportedOperationException) { image.copyTo(file) }
-                    pinned = PhotoImage(documentOf(row, PhotoText.None).copy(image = file))
-                } catch (e: Exception) { file.delete(); throw e }
+                val row = index.get(documentId) ?: return@locked null
+                if (!imageOf(row).isFile) return@locked null
+                val document = documentOf(row, PhotoText.None)
+                synchronized(pins) { pins[row.directory] = (pins[row.directory] ?: 0) + 1 }
+                PhotoImage(document) { unpin(row.directory) }
             }
-            return pinned
-        } catch (e: Exception) { pinned?.close(); throw e }
+        }
+        try {
+            currentCoroutineContext().ensureActive()
+        } catch (e: CancellationException) {
+            image?.close()
+            throw e
+        }
+        return image
+    }
+
+    private fun unpin(directory: String) {
+        val delete = synchronized(pins) {
+            val count = pins[directory] ?: return
+            if (count > 1) {
+                pins[directory] = count - 1
+                false
+            } else {
+                pins -= directory
+                deferred.remove(directory)
+            }
+        }
+        // No row names the directory any more, so nothing else touches it.
+        if (delete) cleanup.launch { File(root, directory).deleteRecursively() }
     }
 
     override val current: Flow<PhotoDocument?> = index.observeCurrent()
@@ -135,7 +165,7 @@ class PhotoStore internal constructor(
             directory.deleteRecursively()
             throw e
         }
-        if (previous != null && !previous.saved) remove(previous)
+        if (previous != null && !previous.saved) removeClosed(previous)
         Log.i(TAG, "Photo $id is current (${info.width}x${info.height}, orientation ${info.orientation.exif})")
         documentOf(row.copy(id = id), PhotoText.None)
     }
@@ -148,7 +178,7 @@ class PhotoStore internal constructor(
         locked {
             val current = index.current() ?: return@locked
             index.clearCurrent()
-            if (!current.saved) remove(current)
+            if (!current.saved) removeClosed(current)
         }
     }
 
@@ -166,7 +196,7 @@ class PhotoStore internal constructor(
         val file = File(directory, name)
         writeAtomically(file, AttemptCodec.encode(attempt))
         try {
-            if (!index.setAttempt(documentId, attempt.basedOn, name)) {
+            if (!stored { index.setAttempt(documentId, attempt.basedOn, name) }) {
                 file.delete()
                 return@locked false
             }
@@ -185,9 +215,14 @@ class PhotoStore internal constructor(
         val name = "$RECOGNITION$revision"
         val file = File(directory, name)
         writeAtomically(file, RecognitionCodec.encode(recognition))
-        if (!index.setRecognition(documentId, basedOn, name, revision, recognition.language.code)) {
+        try {
+            if (!stored { index.setRecognition(documentId, basedOn, name, revision, recognition.language.code) }) {
+                file.delete()
+                return@locked null
+            }
+        } catch (e: Exception) {
             file.delete()
-            return@locked null
+            throw e
         }
         row.recognitionFile?.let { File(directory, it).delete() }
         row.attemptFile?.let { File(directory, it).delete() }
@@ -215,7 +250,10 @@ class PhotoStore internal constructor(
             // A recognition committed before the language was stored names it only in its file.
             val language = row.language
                 ?: row.recognitionFile?.let { (textOf(row) as? PhotoText.Recognized)?.recognition?.language?.code }
-            if (!index.save(documentId, clock(), language)) return@locked false
+            // The history lists the latest saved first: with the clock set back, this photo would sort behind older
+            // ones, and the limits below could delete it at once.
+            val at = maxOf(clock(), (index.history().firstOrNull()?.savedAt ?: 0L) + 1)
+            if (!index.save(documentId, at, language)) return@locked false
             Log.i(TAG, "Photo ${row.id} saved to the history")
         }
         trimHistory(limits)
@@ -232,7 +270,7 @@ class PhotoStore internal constructor(
         val previous = index.current()
         if (previous?.id != documentId) {
             index.setCurrent(documentId)
-            if (previous != null && !previous.saved) remove(previous)
+            if (previous != null && !previous.saved) removeClosed(previous)
         }
         load(row)
     }
@@ -278,6 +316,12 @@ class PhotoStore internal constructor(
 
     private fun bytesOf(row: PhotoEntity): Long = File(root, row.directory).listFiles()?.sumOf { it.length() } ?: 0L
 
+    /**
+     * Runs an index write that names a new file. A cancelled caller would get no answer from a suspending write that
+     * changed the row already, and could neither keep nor delete the file safely.
+     */
+    private suspend fun stored(write: suspend () -> Boolean): Boolean = withContext(NonCancellable) { write() }
+
     /** Runs [block] alone, after the leftovers of an interrupted change were deleted once. */
     private suspend fun <T> locked(block: suspend () -> T): T = withContext(io) {
         mutex.withLock {
@@ -318,10 +362,33 @@ class PhotoStore internal constructor(
         root.listFiles()?.filter { it.name !in kept }?.forEach { it.deleteRecursively() }
     }
 
-    /** The row first: files without a row are leftovers that [tidy] deletes, a row without files would be a lost photo. */
+    /**
+     * The row first: files without a row are leftovers that [tidy] deletes, a row without files would be a lost photo.
+     * The files of a photo an open [PhotoImage] reads stay until it closes.
+     */
     private suspend fun remove(row: PhotoEntity) {
         index.delete(row.id)
+        synchronized(pins) {
+            if (row.directory in pins) {
+                deferred += row.directory
+                return
+            }
+        }
         File(root, row.directory).deleteRecursively()
+    }
+
+    /**
+     * Deletes a photo that was closed or replaced as the current one. That change has happened already, so a failure
+     * only leaves the photo to [tidy] at the next start.
+     */
+    private suspend fun removeClosed(row: PhotoEntity) {
+        try {
+            remove(row)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "Cannot delete closed photo ${row.id}: " + e.javaClass.simpleName)
+        }
     }
 
     private fun load(row: PhotoEntity): PhotoDocument? {
@@ -392,13 +459,15 @@ class PhotoStore internal constructor(
         /** Written and flushed to the disk under a temporary name, then renamed: readers see the old file or the new. */
         fun writeAtomically(file: File, bytes: ByteArray) {
             val temp = File(file.parentFile, file.name + TEMP_SUFFIX)
-            FileOutputStream(temp).use { out ->
-                out.write(bytes)
-                out.fd.sync()
-            }
-            if (!temp.renameTo(file)) {
+            try {
+                FileOutputStream(temp).use { out ->
+                    out.write(bytes)
+                    out.fd.sync()
+                }
+                if (!temp.renameTo(file)) throw IOException("Cannot store " + file.name)
+            } catch (e: Exception) {
                 temp.delete()
-                throw IOException("Cannot store " + file.name)
+                throw e
             }
         }
 

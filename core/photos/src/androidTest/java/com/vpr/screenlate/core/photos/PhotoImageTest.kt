@@ -20,7 +20,7 @@ class PhotoImageTest {
     fun fractionalCropsUseOriginalUprightPixelsForEveryOrientation() = runBlocking {
         for (orientation in PhotoOrientation.entries) {
             val file = pattern(320, 240)
-            PhotoImage(PhotoDocument(1, file, 320, 240, orientation, 0, 0, PhotoText.None)).use { image ->
+            PhotoImage(PhotoDocument(1, file, 320, 240, orientation, 0, 0, PhotoText.None)) { file.delete() }.use { image ->
                 val preview = image.preview(40, 40)
                 assertThat(preview.width).isAtMost(40)
                 assertThat(preview.height).isAtMost(40)
@@ -41,7 +41,7 @@ class PhotoImageTest {
     @Test
     fun aLargePhotoCropIsNotLimitedByItsSampledPreview() = runBlocking {
         val file = pattern(3200, 2400)
-        PhotoImage(PhotoDocument(1, file, 3200, 2400, PhotoOrientation.NORMAL, 0, 0, PhotoText.None)).use { image ->
+        PhotoImage(PhotoDocument(1, file, 3200, 2400, PhotoOrientation.NORMAL, 0, 0, PhotoText.None)) { file.delete() }.use { image ->
             val preview = image.preview(400, 300)
             assertThat(preview.width to preview.height).isEqualTo(400 to 300)
             val crop = image.crop(Box(1800f, 1200f, 2400f, 1600f))

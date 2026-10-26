@@ -430,6 +430,8 @@ private fun RegionMap(document: PhotoDocument, regions: List<PhotoBox>, modifier
     val error = MaterialTheme.colorScheme.error
     val outline = MaterialTheme.colorScheme.outline
     Canvas(modifier.aspectRatio(document.width.toFloat() / document.height)) {
+        // A very wide image can round to no height at all, and an empty area has no viewport.
+        if (size.width <= 0f || size.height <= 0f) return@Canvas
         val viewport = PhotoViewport.fit(document.width, document.height, PhotoBox(0f, 0f, size.width, size.height))
         bitmap?.let { image ->
             val composed = image.asImageBitmap()

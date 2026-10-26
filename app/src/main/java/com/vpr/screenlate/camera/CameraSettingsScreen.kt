@@ -94,8 +94,7 @@ class CameraSettingsViewModel @Inject constructor(
     /** Turning automatic saving on also saves the current photo. */
     fun setAutoSave(on: Boolean) {
         viewModelScope.launch {
-            preferences.setAutoSave(on)
-            if (!on) return@launch
+            if (!change { preferences.setAutoSave(on) } || !on) return@launch
             try {
                 val photo = documents.current.first()
                 if (photo != null && !photo.saved && !history.save(photo.id, preferences.history.first().limits)) {
@@ -143,15 +142,18 @@ class CameraSettingsViewModel @Inject constructor(
         viewModelScope.launch { change { history.clear() } }
     }
 
-    private suspend fun change(block: suspend () -> Unit) {
+    /** Returns false after reporting a failure. */
+    private suspend fun change(block: suspend () -> Unit): Boolean {
         try {
             block()
+            return true
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.w(TAG, "Changing the history failed: " + e.javaClass.simpleName)
             mutableResets.update()
             messages.send(CameraSettingsEvent.CHANGE_FAILED)
+            return false
         }
     }
 

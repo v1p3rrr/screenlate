@@ -17,11 +17,15 @@ import com.vpr.screenlate.core.ocr.OcrEngines
 import java.io.File
 import java.io.IOException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -49,30 +53,103 @@ class PhotoStoreTest {
         val store = store()
         val first = store.replaceCurrent(store.capture())
         val pinned = store.pinImage(first.id)!!
-        store.replaceCurrent(store.capture("1200x900:1"))
+        val second = store.replaceCurrent(store.capture("1200x900:1"))
         store.clearCurrent()
-        assertThat(first.image.exists()).isFalse()
+        assertThat(index.get(first.id)).isNull()
+        assertThat(second.image.parentFile!!.exists()).isFalse()
         val output = java.io.ByteArrayOutputStream()
         pinned.copyTo(output)
         assertThat(output.toString("UTF-8")).isEqualTo("4000x3000:6")
         assertThat(pinned.width to pinned.height).isEqualTo(3000 to 4000)
         pinned.close()
+        assertThat(first.image.parentFile!!.exists()).isFalse()
         pinned.close()
-        assertThat(File(root, ".pins").listFiles()).isEmpty()
         assertThat(store.pinImage(first.id)).isNull()
     }
 
     @Test
-    fun restartRemovesAbandonedImagePinsWithoutChangingTheCurrentPhoto() = runTest {
+    fun aDeletedPhotoWaitsForItsLastPinAndAKeptOneStays() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        val one = store.pinImage(first.id)!!
+        val two = store.pinImage(first.id)!!
+        one.close()
+        assertThat(first.image.isFile).isTrue()
+        store.clearCurrent()
+        one.close()
+        assertThat(first.image.isFile).isTrue()
+        two.close()
+        assertThat(first.image.parentFile!!.exists()).isFalse()
+        val kept = store.replaceCurrent(store.capture())
+        store.pinImage(kept.id)!!.close()
+        assertThat(kept.image.isFile).isTrue()
+    }
+
+    @Test
+    fun aPinWhoseCallerIsCancelledMeanwhileKeepsNoDeletedPhoto() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        val caller = launch { store.pinImage(first.id) }
+        index.onGet = { caller.cancel() }
+        caller.join()
+        index.onGet = {}
+        store.clearCurrent()
+        assertThat(first.image.parentFile!!.exists()).isFalse()
+    }
+
+    @Test
+    fun aClosedPhotoThatCannotBeDeletedGoesAtTheNextStart() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        index.failDelete = true
+        store.clearCurrent()
+        assertThat(store.currentNow()).isNull()
+        index.failDelete = false
+        store().newCaptureFile()
+        assertThat(photo.image.parentFile!!.exists()).isFalse()
+    }
+
+    @Test
+    fun aRecognitionWhoseCommitFailsLeavesNoFile() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        index.failRecognition = true
+        assertThat(runCatching { store.commitRecognition(photo.id, 0, TestPhotos.recognition()) }.isFailure).isTrue()
+        assertThat(photo.image.parentFile!!.list()!!.toList()).containsExactly("image")
+    }
+
+    @Test
+    fun writesWhoseCallerIsCancelledMeanwhileStillReplaceTheOldFiles() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        val first = store.commitRecognition(photo.id, 0, TestPhotos.recognition())!!
+        store.saveAttempt(photo.id, attempt(first), replace = true)
+        val directory = photo.image.parentFile!!
+        lateinit var caller: Job
+        index.onWrite = { caller.cancel() }
+        caller = launch { store.saveAttempt(photo.id, attempt(first, "two"), replace = true) }
+        caller.join()
+        assertThat(directory.list()!!.count { it.startsWith("attempt-") }).isEqualTo(1)
+        assertThat(store.currentNow()!!.attempt?.id).isEqualTo("two")
+        caller = launch { store.commitRecognition(photo.id, first.revision, TestPhotos.recognition()) }
+        caller.join()
+        assertThat(directory.list()!!.toList()).containsExactly("image", "recognition-2")
+        assertThat(store.currentNow()!!.text).isEqualTo(PhotoText.Recognized(TestPhotos.recognition()))
+    }
+
+    @Test
+    fun restartDeletesWhatAbandonedPinsHeldWithoutChangingTheCurrentPhoto() = runTest {
         val store = store()
         val first = store.replaceCurrent(store.capture())
         store.pinImage(first.id)
-        assertThat(File(root, ".pins").listFiles()).hasLength(1)
+        val second = store.replaceCurrent(store.capture("1200x900:1"))
+        store.pinImage(second.id)
+        assertThat(first.image.isFile).isTrue()
         val reopened = store()
         reopened.newCaptureFile()
-        assertThat(File(root, ".pins").exists()).isFalse()
-        assertThat(reopened.currentNow()!!.id).isEqualTo(first.id)
-        assertThat(first.image.exists()).isTrue()
+        assertThat(first.image.parentFile!!.exists()).isFalse()
+        assertThat(reopened.currentNow()!!.id).isEqualTo(second.id)
+        assertThat(second.image.isFile).isTrue()
     }
 
     private fun attempt(document: PhotoDocument, id: String = "one") = PhotoAttempt(id, document.revision,
@@ -457,6 +534,40 @@ class PhotoStoreTest {
         assertThat(store.entries.first().single().language).isEqualTo(Language.KOREAN)
     }
 
+    @Test
+    fun `a clock set back keeps a newly saved photo first and within the limits`() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        store.save(first.id, HistoryLimits())
+        now = 0
+        val second = store.replaceCurrent(store.capture())
+        assertThat(store.save(second.id, HistoryLimits(count = 1))).isTrue()
+        assertThat(store.entries.first().map { it.id }).containsExactly(second.id)
+        assertThat(store.currentNow()!!.id).isEqualTo(second.id)
+    }
+
+    @Test
+    fun `a replaced photo that cannot be deleted leaves the new one current and goes at the next start`() = runTest {
+        val store = store()
+        val first = store.replaceCurrent(store.capture())
+        index.failDelete = true
+        val second = store.replaceCurrent(store.capture("1200x900:1"))
+        assertThat(store.currentNow()!!.id).isEqualTo(second.id)
+        index.failDelete = false
+        store().newCaptureFile()
+        assertThat(index.all().map { it.id }).containsExactly(second.id)
+        assertThat(first.image.parentFile!!.exists()).isFalse()
+    }
+
+    @Test
+    fun `a thumbnail that cannot be stored leaves no temporary file`() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture())
+        File(photo.image.parentFile, "thumbnail/taken").apply { parentFile!!.mkdirs() }.writeText("in the way")
+        assertThat(store.save(photo.id, HistoryLimits())).isTrue()
+        assertThat(photo.image.parentFile!!.list()!!.filter { it.endsWith(".tmp") }).isEmpty()
+    }
+
     private fun photoDirectories(): List<String> = root.list()!!.filter { it != ".staging" }
 
     private suspend fun failure(block: suspend () -> Unit): Throwable? = try {
@@ -481,6 +592,14 @@ internal class FakePhotoIndex : PhotoIndex {
     private val currentId = MutableStateFlow<Long?>(null)
     private var nextId = 1L
     var failInsert = false
+    var failDelete = false
+    var failRecognition = false
+
+    /** Runs in [setRecognition] and [setAttempt] after the row changed. */
+    var onWrite: () -> Unit = {}
+
+    /** Runs in every [get], inside the store's lock. */
+    var onGet: () -> Unit = {}
 
     fun add(photo: PhotoEntity): Long {
         val id = nextId++
@@ -500,7 +619,10 @@ internal class FakePhotoIndex : PhotoIndex {
 
     override suspend fun current(): PhotoEntity? = currentId.value?.let(rows.value::get)
 
-    override suspend fun get(id: Long): PhotoEntity? = rows.value[id]
+    override suspend fun get(id: Long): PhotoEntity? {
+        onGet()
+        return rows.value[id]
+    }
 
     override suspend fun all(): List<PhotoEntity> = rows.value.values.sortedBy { it.id }
 
@@ -528,14 +650,21 @@ internal class FakePhotoIndex : PhotoIndex {
     }
 
     override suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int, language: String): Boolean {
+        if (failRecognition) throw IOException("Disk error")
         val row = rows.value[id]?.takeIf { it.recognitionRevision == expected } ?: return false
         rows.value += id to row.copy(recognitionFile = file, recognitionRevision = revision, attemptFile = null, language = language)
+        onWrite()
+        // A suspending Room call that changed the row still throws when its caller was cancelled meanwhile.
+        currentCoroutineContext().ensureActive()
         return true
     }
 
     override suspend fun setAttempt(id: Long, expected: Int, file: String): Boolean {
         val row = rows.value[id]?.takeIf { it.recognitionRevision == expected && currentId.value == id } ?: return false
         rows.value += id to row.copy(attemptFile = file)
+        onWrite()
+        // A suspending Room call that changed the row still throws when its caller was cancelled meanwhile.
+        currentCoroutineContext().ensureActive()
         return true
     }
 
@@ -544,6 +673,7 @@ internal class FakePhotoIndex : PhotoIndex {
     }
 
     override suspend fun delete(id: Long) {
+        if (failDelete) throw IOException("Disk error")
         rows.value -= id
         if (currentId.value == id) currentId.value = null
     }
