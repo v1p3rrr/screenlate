@@ -645,7 +645,7 @@ class OverlayController(
 
     /**
      * Holding the floating bubble: copy the paragraph under the aim or everything recognized, as whole text, or open
-     * the app.
+     * the app, unless the app is in front already. A menu without items does not open.
      */
     private fun showBubbleMenu() {
         val layout = layout
@@ -659,12 +659,14 @@ class OverlayController(
             CopyMenuText.paragraph(layout, aimed, shown)
         }
         val all = layout?.let { CopyMenuText.all(it, System.lineSeparator()) }.orEmpty()
-        haptic()
+        val inApp = foregroundPackage == service.packageName
         val items = buildList {
             if (paragraph.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_paragraph)) { copyText(paragraph) })
             if (all.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_all)) { copyText(all) })
-            add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
+            if (!inApp) add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
         }
+        if (items.isEmpty()) return
+        haptic()
         bubbleMenu.show(items, bubbleBox(), usableBounds(), dark = isDarkTheme(), eInk = eInk)
     }
 
