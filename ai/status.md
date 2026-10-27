@@ -86,9 +86,9 @@ the details.
 
 ### Outside the camera feature
 
-- Release from `main` ("Release from `main`" below): port the download-queue fix and the three related commits from
-  `languages/main`, run the checks listed there, write the release notes; the version number is asked at release
-  time.
+- Release from `main` ("Release from `main`" below): the fixes from `languages/main` are ported on
+  `claude/port-fixes-to-main-3e7385` (2026-10-28), waiting for the merge into `main`; then the checks listed there and
+  the release notes; the version number is asked at release time.
 - The ColorOS report ("User report (2026-10-20)", `notes/oem-background-limits.md`): waiting for the user's answers
   and logs.
 - The temporary diagnostics build: waiting for the owner's export after a few days of use; then the branch is removed.
@@ -199,18 +199,31 @@ a share from the phone's gallery); merging is the owner's decision. No merge of 
 branch. Emulators, test APKs and the shared lock are cleaned up; API 37 has no current photo, automatic saving off and
 no limits; API 30 has the universal debug APK at its original unanswered first run.
 
-## Release from `main`: open items (2026-10-23, owner: come back to it later)
+## Release from `main`: open items (2026-10-23, updated 2026-10-28; owner: come back to it later)
 
 No release is planned yet (`plans/2026-10-15-main-fixes-and-backups.md`, decision "Release"). Before one, from the
 check of `main` at `fee4c9fb` against v0.2.3:
 
-- Bug on `main`: a catalog download queued after one that stopped (connection lost after the retries, an HTTP error)
-  fetches the stopped dictionary. `DictionaryImports` chains the queue with `APPEND_OR_REPLACE`, a stopped download
-  returns `success` with its `RESUME_KEYS`, and the default input merger lays them over the next task's input. Fixed
-  only on `languages/main` (`e16394c6`, `OwnInputMerger`); to port together with `fd5e8dd0` (wait for the network
-  instead of stopping), `16225ee0` (partial downloads outside the cache) and the "Waiting for a network" label of
-  `fa1b0863`. Proposed as a session card ("Port the download fixes from languages/main to main").
-- Not checked yet: the E cases on `main`'s final build (each change was checked alone when built), the upgrade from
+- Ported to `main` on `claude/port-fixes-to-main-3e7385` (from `main` 2df1e55c; not merged yet), one commit each:
+  the own input merger (`e16394c6`: a download queued after a stopped one fetched the stopped dictionary), partial
+  downloads in `no_backup` (`16225ee0`), the wait for a network instead of stopping, with the "Waiting for a network"
+  labels of `fa1b0863` (`fd5e8dd0`, adapted to `main`'s single chain and its retry count: a lost network counts no
+  retry, ends are recorded so a dropped result is not run again), the app opened with the launcher's intent
+  (`5f4a75d6`), the audio clip directory made again after a cache clear (`ca52b3da`), the popup hidden until its new
+  view is drawn (`bc6d36de`, without the camera's `move`), no Open Screenlate in the hold menu over the app
+  (`a597e88f`, without the photo part), the downloadable popup fonts named in NOTICE (from `c08f5f64`), and ignore
+  rules for JVM replay logs, Python bytecode and `testdata/apk/`. Checked: unit tests 622, page tests 107, lint; on
+  the emulator DIC23, DIC24, DIC29, DIC31, BUB16 (the hold menu path), BUB17 and POP39 (`test-model.md`, run of
+  2026-10-28).
+- Left on `languages/main`: every language-specific fix (they fix code `main` does not have), the camera's fixes
+  (its review found nothing outside the camera code that `main` has: the WebP side limit only matters for photos, the
+  first-run page requests and the language of the pages the app opens have no counterpart), the two import chains
+  and the shared waiting card (`4c1df97e`, `c38082a8`: a feature; `main`'s catalog card already keeps a download from
+  being queued twice), the localized catalog titles (`9aec26d9`: `main` has none), the reset button's removal and
+  the interrupted reset message (`17a01c5a`, `5c0e041c`), the Search tab without the keyboard (`290217bb`: `main` has
+  no tabs). The neutral "characters of the word" wording (`c08f5f64`) stays out: `main` is Japanese only.
+- Not checked yet: `OpenAppTest` on `main` (it was run on `languages/main`), the E cases on `main`'s final build
+  (each change was checked alone when built), the upgrade from
   the v0.2.3 release (last run 2026-10-14, on the language branch), a release build with R8 (CI builds debug only),
   the own log, the service-off notification and the overlay crash fix on a real phone (the owner's diagnostics build
   predates them; the ColorOS user gets the CI debug build `fee4c9f`). The crash fix and the delayed notification were
@@ -218,7 +231,8 @@ check of `main` at `fee4c9fb` against v0.2.3:
 - To weigh: the "Screenlate service is off" notification also comes when the user turns the service off, as the app
   cannot tell the two apart; the code review of the new code (`plans/2026-10-15-full-code-review.md`, which covers
   `main`'s changes) has not started and says no releases; the ColorOS user's logs may call for an allowlist hint.
-- Release notes draft: drop the romaji item (`94f5ed9e` was reverted by `ce6e7c81`, owner's choice of 2026-10-15).
+- Release notes draft: drop the romaji item (`94f5ed9e` was reverted by `ce6e7c81`, owner's choice of 2026-10-15);
+  add the ported fixes above.
   The version number is asked at release time.
 
 ## User report (2026-10-20): the bubble disappears on a ColorOS phone
