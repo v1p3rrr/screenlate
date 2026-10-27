@@ -75,7 +75,6 @@ fun CameraScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val latest by viewModel.latest.collectAsStateWithLifecycle()
-    val autoSave by viewModel.autoSave.collectAsStateWithLifecycle()
     val flash by viewModel.session.flash.collectAsStateWithLifecycle()
     val recognition by viewModel.recognition.state.collectAsStateWithLifecycle()
     val block by viewModel.recognition.blocked.collectAsStateWithLifecycle()
@@ -85,13 +84,16 @@ fun CameraScreen(
     var confirmingClose by remember { mutableStateOf(false) }
     var flashAvailable by remember { mutableStateOf(false) }
     var languageMenu by remember { mutableStateOf(false) }
+    var toolbarMenu by remember { mutableStateOf(false) }
     var warning by remember(state.photo?.id) { mutableStateOf(false) }
     val blocked = block?.takeIf { it.documentId == state.photo?.id && !state.live }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let { viewModel.importImage(it.toString()) }
     }
     val importImage = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
-    SideEffect { viewModel.setObscured(confirmingClose || state.askingImport || languageMenu || warning || blocked != null) }
+    // Read here, not inside SideEffect: reads there do not recompose the page when a menu opens.
+    val obscured = confirmingClose || state.askingImport || languageMenu || toolbarMenu || warning || blocked != null
+    SideEffect { viewModel.setObscured(obscured) }
     DisposableEffect(viewModel) { onDispose { viewModel.setObscured(false) } }
     // The page is the bubble's source from the start of its entry, frames before it resumes, so that a pull-out
     // meanwhile does not scan the screen; it stops being one as soon as it pauses.
@@ -173,12 +175,14 @@ fun CameraScreen(
             add(CameraAction(R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo), !state.busy, run = viewModel::newPhoto))
             add(CameraAction(R.drawable.ic_download, stringResource(R.string.camera_export), !state.busy && !state.exporting, inMenu = true,
                 run = viewModel::exportPhoto))
-            if (!photo.saved && !autoSave) {
+            // Also with automatic saving, after it failed for this photo.
+            if (!photo.saved) {
                 add(CameraAction(R.drawable.ic_library_add, stringResource(R.string.camera_save_history), !state.busy, inMenu = true,
                     run = viewModel::saveToHistory))
             }
         }
-        add(CameraAction(R.drawable.ic_history, stringResource(R.string.camera_history), inMenu = true, run = onOpenHistory))
+        // As the round button: a photo opened from the history meanwhile would be replaced by the one being taken.
+        add(CameraAction(R.drawable.ic_history, stringResource(R.string.camera_history), !state.busy, inMenu = true, run = onOpenHistory))
         add(CameraAction(R.drawable.ic_image, stringResource(R.string.camera_import), !state.busy, inMenu = true, run = importImage))
         add(CameraAction(R.drawable.ic_settings, stringResource(R.string.camera_settings), inMenu = true, run = onOpenSettings))
     }
@@ -187,12 +191,12 @@ fun CameraScreen(
             CameraAction(R.drawable.ic_close, stringResource(R.string.camera_back_to_photo), !state.busy, run = viewModel::backToPhoto)
         } else {
             CameraAction(R.drawable.ic_close, stringResource(R.string.camera_close), !state.busy) {
-                if (closingAsks(photo, autoSave)) confirmingClose = true else viewModel.closePhoto()
+                if (closingAsks(photo)) confirmingClose = true else viewModel.closePhoto()
             }
         }
     }
     Scaffold(
-        topBar = { CameraToolbar(actions, navigation) },
+        topBar = { CameraToolbar(actions, navigation, onMenu = { open -> toolbarMenu = open }) },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {

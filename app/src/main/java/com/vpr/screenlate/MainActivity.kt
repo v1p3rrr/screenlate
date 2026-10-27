@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.audio.LocalNetworkAskEffect
 import com.vpr.screenlate.camera.ShareImageActivity
 import com.vpr.screenlate.camera.SharedImages
+import com.vpr.screenlate.camera.isAnotherAppsContent
 import com.vpr.screenlate.navigation.OcrModelsRequest
 import com.vpr.screenlate.navigation.ScreenlateNavHost
 import com.vpr.screenlate.overlay.OverlayIntents
@@ -116,12 +117,15 @@ class MainActivity : ComponentActivity() {
             OverlayIntents.OPEN_OCR_MODELS -> intent.getStringExtra(OverlayIntents.EXTRA_LANGUAGE)?.let { code ->
                 ocrModelsRequest = OcrModelsRequest(code, (ocrModelsRequest?.number ?: 0) + 1)
             }
-            // A task restarted from the recent apps gets its first intent again, without the access to the image.
+            // A task restarted from the recent apps gets its first intent again, without the access to the image. Any
+            // app can start this screen, so the link is checked again as the share screen does.
             ShareImageActivity.OPEN_SHARED_IMAGE -> if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0) {
-                intent.clipData?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.uri?.let { uri ->
-                    sharedImages.offer(uri.toString())
-                    cameraRequests++
-                }
+                intent.clipData?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.uri
+                    ?.takeIf { it.isAnotherAppsContent(packageName) }
+                    ?.let { uri ->
+                        sharedImages.offer(uri.toString())
+                        cameraRequests++
+                    }
             }
         }
     }

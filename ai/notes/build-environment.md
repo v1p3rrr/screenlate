@@ -38,6 +38,13 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   capturing it; give classes passed as parameters an `equals` (data class); declare models of non-Compose modules and
   collections in `compose-stability.conf`. Measure with a `SideEffect` counter and `dumpsys gfxinfo` ("Slow UI
   thread"), or the compiler reports (`reportsDestination` in the Compose convention plugin, not kept).
+- Compose `SideEffect` (2026-10-27, the camera review): state read inside its lambda is not observed, so the page
+  does not recompose when only that state changes and the effect never sees the new value (the Camera page's menus
+  never hid the photo). Read the state in composition and pass the value in. And `SideEffect` runs after every
+  recomposition: an assignment with a cost, such as CameraX's `imageCaptureFlashMode` (a new camera request each
+  time), goes into a keyed `LaunchedEffect`.
+- kotlinx-coroutines-test: `advanceUntilIdle()` returns once only `backgroundScope` tasks are left, so a collector
+  started there may not have seen the last events yet; call `runCurrent()` after it.
 - `resValues` build feature is off by default in AGP 9; the app label per build type uses a manifest placeholder (`appLabel`).
 - Language bundles (`yomitan-language/<iso>.js`, 2026-10-22): the build needs a Yomitan clone at the commit in
   `scripts/yomitan-language/yomitan-commit.txt` (a `git clone --filter=blob:none` into the session's scratch folder is
@@ -63,6 +70,8 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   running the UI checks: `NoSuchMethodException: android.hardware.input.InputManager.getInstance`. Run them on
   API 30 (or the CI API 34 emulator) until the test dependency supports that platform. The non-UI registry and
   WorkManager tests run on API 37. This is a test framework failure, not an app exception.
+- Compose answers no `findAccessibilityNodeInfosByText`; a test that reads the window through `UiAutomation` walks
+  `rootInActiveWindow` and compares text and content descriptions (`FirstRunRequestTest`).
 - API 30's bundled WebView is too old for the existing popup page's `replaceChildren`. Tests of the real page use
   API 37 with `ActivityScenario<ComponentActivity>` and main-thread WebView callbacks, without Espresso's input
   injector. Wait for a painted frame before taking a screenshot: the JS bridge can answer before the GPU paints.

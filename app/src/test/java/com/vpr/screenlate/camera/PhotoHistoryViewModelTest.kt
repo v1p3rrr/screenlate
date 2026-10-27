@@ -4,9 +4,15 @@ import androidx.lifecycle.ViewModelStore
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.photos.CameraPreferences
+import com.vpr.screenlate.core.photos.PhotoDocument
+import com.vpr.screenlate.core.photos.PhotoDocuments
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -102,14 +108,56 @@ class PhotoHistoryViewModelTest {
     }
 
     @Test
-    fun automaticSavingNeverAsks() = runTest {
+    fun aTapBeforeTheCurrentPhotoIsReadStillAsksAboutIt() = runTest {
+        documents.current.value = photo(1)
+        val slow = object : PhotoDocuments by documents {
+            override val current = flow {
+                delay(100)
+                emitAll(documents.current)
+            }
+        }
+        model = PhotoHistoryViewModel(history, slow, preferences, LanguageProfiles(MemoryStore()))
+        store.put("history", model)
+        model.tap(2)
+        advanceUntilIdle()
+        assertThat(model.state.value.asking).isEqualTo(2)
+        assertThat(history.opened).isEmpty()
+    }
+
+    @Test
+    fun aCurrentPhotoThatCannotBeReadOpensNothing() = runTest {
+        val failing = object : PhotoDocuments by documents {
+            override val current = flow<PhotoDocument?> { throw IOException("Disk error") }
+        }
+        model = PhotoHistoryViewModel(history, failing, preferences, LanguageProfiles(MemoryStore()))
+        store.put("history", model)
+        advanceUntilIdle()
+        model.tap(2)
+        advanceUntilIdle()
+        assertThat(history.opened).isEmpty()
+        assertThat(model.events.first()).isEqualTo(PhotoHistoryEvent.OPEN_FAILED)
+        assertThat(model.state.value.busy).isFalse()
+    }
+
+    @Test
+    fun aSecondTapWhileAPhotoOpensIsIgnored() = runTest {
+        documents.current.value = photo(1).copy(saved = true)
+        advanceUntilIdle()
+        model.tap(2)
+        model.tap(3)
+        advanceUntilIdle()
+        assertThat(history.opened).containsExactly(2L)
+    }
+
+    @Test
+    fun aPhotoThatAutomaticSavingFailedToSaveStillAsks() = runTest {
         preferences.setAutoSave(true)
         documents.current.value = photo(1)
         advanceUntilIdle()
         model.tap(2)
         advanceUntilIdle()
-        assertThat(model.state.value.asking).isNull()
-        assertThat(history.opened).containsExactly(2L)
+        assertThat(model.state.value.asking).isEqualTo(2)
+        assertThat(history.opened).isEmpty()
     }
 
     @Test

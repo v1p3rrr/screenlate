@@ -74,7 +74,6 @@ import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.photos.CameraPreferences
 import com.vpr.screenlate.core.photos.HistoryEntry
-import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoHistory
 import com.vpr.screenlate.ui.components.BackButton
@@ -117,7 +116,7 @@ enum class PhotoHistoryEvent { OPENED, OPEN_FAILED, SAVE_FAILED, DELETE_FAILED }
 @HiltViewModel
 class PhotoHistoryViewModel @Inject constructor(
     private val history: PhotoHistory,
-    documents: PhotoDocuments,
+    private val documents: PhotoDocuments,
     private val preferences: CameraPreferences,
     profiles: LanguageProfiles,
 ) : ViewModel() {
@@ -125,9 +124,6 @@ class PhotoHistoryViewModel @Inject constructor(
     val state = mutableState.asStateFlow()
     private val messages = Channel<PhotoHistoryEvent>(Channel.BUFFERED)
     val events = messages.receiveAsFlow()
-    private val current: StateFlow<PhotoDocument?> = documents.current
-        .catch { emit(null) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
     val languages: StateFlow<LanguageProfilesState?> = profiles.state.map<LanguageProfilesState, LanguageProfilesState?> { it }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -145,17 +141,31 @@ class PhotoHistoryViewModel @Inject constructor(
         }
     }
 
-    /** A tap: toggles the photo while selecting, otherwise opens it, asking first about an unsaved current photo. */
+    /**
+     * A tap: toggles the photo while selecting, otherwise opens it, asking first about an unsaved current photo. The
+     * page is busy from the tap on, so a second tap opens nothing.
+     */
     fun tap(id: Long) {
         val value = state.value
         if (value.busy) return
         if (value.selected.isNotEmpty()) return toggle(id)
+        mutableState.value = value.copy(busy = true)
         viewModelScope.launch {
-            val photo = current.value
-            if (photo?.id != id && closingAsks(photo, preferences.history.first().autoSave)) {
-                mutableState.value = state.value.copy(asking = id)
-            } else {
-                open(id, saveCurrent = false)
+            try {
+                // The store's answer: a photo it has not reported yet, or cannot read, must not count as none.
+                val photo = documents.current.first()
+                if (photo?.id != id && closingAsks(photo)) {
+                    mutableState.value = state.value.copy(asking = id)
+                } else {
+                    open(id, saveCurrent = false)
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Opening a history photo failed: " + e.javaClass.simpleName)
+                messages.send(PhotoHistoryEvent.OPEN_FAILED)
+            } finally {
+                mutableState.value = state.value.copy(busy = false)
             }
         }
     }
@@ -198,8 +208,8 @@ class PhotoHistoryViewModel @Inject constructor(
     private suspend fun open(id: Long, saveCurrent: Boolean) {
         mutableState.value = state.value.copy(busy = true)
         try {
-            val photo = current.value
-            if (saveCurrent && photo != null && !history.save(photo.id, preferences.history.first().limits)) {
+            val photo = if (saveCurrent) documents.current.first() else null
+            if (photo != null && !history.save(photo.id, preferences.history.first().limits)) {
                 messages.send(PhotoHistoryEvent.SAVE_FAILED)
                 return
             }

@@ -7,9 +7,11 @@ import com.vpr.screenlate.core.photos.HistoryLimits
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -68,7 +70,8 @@ class CameraSettingsViewModelTest {
         advanceUntilIdle()
         assertThat(model.events.first()).isEqualTo(CameraSettingsEvent.CHANGE_FAILED)
         assertThat(model.settings.value?.autoSave).isFalse()
-        assertThat(model.resets.value).isEqualTo(1)
+        // A limit being typed meanwhile stays.
+        assertThat(model.resets.value).isEqualTo(0)
         assertThat(history.saved).isEmpty()
     }
 
@@ -109,6 +112,75 @@ class CameraSettingsViewModelTest {
         assertThat(model.resets.value).isEqualTo(1)
         assertThat(preferences.history.first().limits).isEqualTo(HistoryLimits())
         assertThat(history.trimmed).isEmpty()
+    }
+
+    @Test
+    fun closingStoresATypedLimitBeforeThePageCloses() = runTest {
+        model.close(HistoryLimits(count = 20))
+        advanceUntilIdle()
+        assertThat(preferences.history.first().limits).isEqualTo(HistoryLimits(count = 20))
+        assertThat(model.events.first()).isEqualTo(CameraSettingsEvent.CLOSE)
+    }
+
+    @Test
+    fun closingWithAStoredLimitClosesAtOnce() = runTest {
+        model.close(HistoryLimits())
+        advanceUntilIdle()
+        assertThat(model.events.first()).isEqualTo(CameraSettingsEvent.CLOSE)
+    }
+
+    @Test
+    fun closingWithALimitThatDeletesPhotosAsksAndClosesAfterDelete() = runTest {
+        history.excess = 3
+        val events = mutableListOf<CameraSettingsEvent>()
+        backgroundScope.launch { model.events.collect { events += it } }
+        model.close(HistoryLimits(count = 1))
+        advanceUntilIdle()
+        runCurrent()
+        assertThat(model.pending.value).isEqualTo(PendingLimits(HistoryLimits(count = 1), 3, close = true))
+        assertThat(events).isEmpty()
+        model.confirmLimits()
+        advanceUntilIdle()
+        runCurrent()
+        assertThat(preferences.history.first().limits).isEqualTo(HistoryLimits(count = 1))
+        assertThat(history.trimmed).containsExactly(HistoryLimits(count = 1))
+        assertThat(events).containsExactly(CameraSettingsEvent.CLOSE)
+    }
+
+    @Test
+    fun closingWithALimitThatDeletesPhotosStaysAfterCancel() = runTest {
+        history.excess = 3
+        val events = mutableListOf<CameraSettingsEvent>()
+        backgroundScope.launch { model.events.collect { events += it } }
+        model.close(HistoryLimits(count = 1))
+        advanceUntilIdle()
+        model.cancelLimits()
+        advanceUntilIdle()
+        runCurrent()
+        assertThat(model.resets.value).isEqualTo(1)
+        assertThat(preferences.history.first().limits).isEqualTo(HistoryLimits())
+        assertThat(events).isEmpty()
+    }
+
+    /** A field stores its limit when it loses focus, also when the page closes and its model is cleared at once. */
+    @Test
+    fun aLimitStoredAsThePageClosesOutlivesTheModel() = runTest {
+        model.setLimits(HistoryLimits(count = 10))
+        models.clear()
+        advanceUntilIdle()
+        assertThat(preferences.history.first().limits).isEqualTo(HistoryLimits(count = 10))
+    }
+
+    @Test
+    fun aLimitThatCannotBeStoredKeepsThePageOpen() = runTest {
+        store.failWrites = true
+        val events = mutableListOf<CameraSettingsEvent>()
+        backgroundScope.launch { model.events.collect { events += it } }
+        model.close(HistoryLimits(count = 20))
+        advanceUntilIdle()
+        runCurrent()
+        assertThat(events).containsExactly(CameraSettingsEvent.CHANGE_FAILED)
+        assertThat(model.resets.value).isEqualTo(1)
     }
 
     @Test

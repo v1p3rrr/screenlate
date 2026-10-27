@@ -329,13 +329,27 @@ class CameraViewModelTest {
     @Test
     fun automaticSavingImportsWithoutAQuestionIntoTheHistory() = runTest {
         preferences.setAutoSave(true)
-        documents.current.value = photo()
+        documents.current.value = photo().copy(saved = true)
         advanceUntilIdle()
         model.importImage("content://picked")
         advanceUntilIdle()
         assertThat(model.state.value.askingImport).isFalse()
         assertThat(history.saved).containsExactly(2L)
         assertThat(model.state.value.photo?.saved).isTrue()
+    }
+
+    @Test
+    fun aPhotoThatAutomaticSavingFailedToSaveAsksBeforeAnImport() = runTest {
+        preferences.setAutoSave(true)
+        history.saveFails = true
+        advanceUntilIdle()
+        model.capture {}
+        advanceUntilIdle()
+        assertThat(model.state.value.photo?.saved).isFalse()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        assertThat(model.state.value.askingImport).isTrue()
+        assertThat(model.state.value.photo?.id).isEqualTo(2)
     }
 
     @Test
@@ -476,11 +490,10 @@ class CameraViewModelTest {
     }
 
     @Test
-    fun onlyAnUnsavedPhotoWithManualSavingAsksBeforeClosing() {
-        assertThat(closingAsks(null, autoSave = false)).isFalse()
-        assertThat(closingAsks(photo(), autoSave = false)).isTrue()
-        assertThat(closingAsks(photo(), autoSave = true)).isFalse()
-        assertThat(closingAsks(photo().copy(saved = true), autoSave = false)).isFalse()
+    fun onlyAPhotoOutOfTheHistoryAsksBeforeClosing() {
+        assertThat(closingAsks(null)).isFalse()
+        assertThat(closingAsks(photo())).isTrue()
+        assertThat(closingAsks(photo().copy(saved = true))).isFalse()
     }
 
     @Test

@@ -183,6 +183,8 @@ fun ScreenlateNavHost(
     val navController = rememberNavController()
     val start: Any = debugImagePath?.let { ImageViewerRoute(it, debugImageCaption) } ?: if (firstRun) FirstRunRoute else HomeRoute
     var tab by rememberSaveable { mutableStateOf(Tab.HOME) }
+    // Until the first run ends at the home screen it stays under every page it opens, and no bar can leave it.
+    var inFirstRun by rememberSaveable { mutableStateOf(start == FirstRunRoute) }
     val entry by navController.currentBackStackEntryAsState()
     val settingsBadge = rememberBackgroundTipBadge(tip)
     val back: () -> Unit = { navController.fromResumed { popBackStack() } }
@@ -205,10 +207,11 @@ fun ScreenlateNavHost(
     val home: () -> Unit = {
         navController.navigate(HomeRoute) { popUpTo(navController.graph.id) { inclusive = true } }
         tab = Tab.HOME
+        inFirstRun = false
     }
-    // Requests from the overlay open their page in the Settings tab.
+    // Requests from the overlay open their page in the Settings tab; during the first run, over it.
     val inSettings: (Any) -> Unit = { route ->
-        if (tab != Tab.SETTINGS) select(Tab.SETTINGS)
+        if (!inFirstRun && tab != Tab.SETTINGS) select(Tab.SETTINGS)
         navController.navigate(route) { launchSingleTop = true }
     }
     LaunchedEffect(ankiSettingsRequests) {
@@ -222,7 +225,7 @@ fun ScreenlateNavHost(
     }
     val onTabRoot = entry?.destination?.hasRoute(tab.root::class) == true
     BackHandler(enabled = tab != Tab.HOME && onTabRoot) { select(Tab.HOME) }
-    val barShown = entry?.let(::showsBar) ?: (start == HomeRoute)
+    val barShown = !inFirstRun && (entry?.let(::showsBar) ?: (start == HomeRoute))
     // The Camera page imports the image when it opens; during the first run it waits until the user goes there.
     LaunchedEffect(cameraRequests) {
         if (cameraRequests > 0 && barShown) select(Tab.CAMERA)
@@ -343,15 +346,8 @@ fun ScreenlateNavHost(
     }
 }
 
-/** The first run and the debug image viewer fill the window; every other page has the navigation bar. */
-private fun showsBar(entry: NavBackStackEntry): Boolean {
-    val destination = entry.destination
-    return when {
-        destination.hasRoute<FirstRunRoute>() || destination.hasRoute<ImageViewerRoute>() -> false
-        destination.hasRoute<LanguageSetupRoute>() -> !entry.toRoute<LanguageSetupRoute>().firstRun
-        else -> true
-    }
-}
+/** The debug image viewer fills the window; every other page after the first run has the navigation bar. */
+private fun showsBar(entry: NavBackStackEntry): Boolean = !entry.destination.hasRoute<ImageViewerRoute>()
 
 @Composable
 private fun TabBar(selected: Tab, settingsBadge: Boolean, onSelect: (Tab) -> Unit) {

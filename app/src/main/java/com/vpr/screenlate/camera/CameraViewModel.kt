@@ -52,10 +52,10 @@ data class CameraState(
 enum class CameraEvent { CAPTURE, IMPORT, DELETE, DELETED, LOAD, EXPORT_FAILED, EXPORTED, SAVED, SAVE_FAILED }
 
 /**
- * Whether closing [photo], or opening another one in its place, asks first: it would be deleted, and the user saves
- * photos by hand. With automatic saving every new photo is in the history.
+ * Whether closing [photo], or opening another one in its place, asks first: it is not in the history and would be
+ * deleted. With automatic saving that happens only when saving it failed.
  */
-internal fun closingAsks(photo: PhotoDocument?, autoSave: Boolean): Boolean = photo != null && !photo.saved && !autoSave
+internal fun closingAsks(photo: PhotoDocument?): Boolean = photo != null && !photo.saved
 
 /** Owns a camera page's operations; the document itself belongs to PhotoDocuments, not the page. */
 @HiltViewModel
@@ -91,9 +91,6 @@ class CameraViewModel @Inject constructor(
             emit(null)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), null)
-
-    val autoSave: StateFlow<Boolean> = preferences.history.map { it.autoSave }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun setObscured(value: Boolean) {
         if (obscured == value) return
@@ -217,7 +214,7 @@ class CameraViewModel @Inject constructor(
                 copy = documents.newCaptureFile()
                 imports.copy(uri, copy)
                 coroutineContext.ensureActive()
-                if (closingAsks(state.value.photo, preferences.history.first().autoSave)) {
+                if (closingAsks(state.value.photo)) {
                     pendingImport = copy
                     copy = null
                     mutableState.value = state.value.copy(askingImport = true)

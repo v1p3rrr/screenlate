@@ -96,11 +96,12 @@ internal fun cameraActionSlots(width: Float, title: Float, density: Float): Int 
 
 /**
  * Uses measured title/available width; actions enter overflow only when their touch targets no longer fit, besides
- * those kept in the menu. [navigation] is the icon before the title, such as the way back to the photo.
+ * those kept in the menu. [navigation] is the icon before the title, such as the way back to the photo. [onMenu] reports
+ * the menu opening and closing, since an open menu covers the photo.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CameraToolbar(actions: List<CameraAction>, navigation: CameraAction? = null) {
+internal fun CameraToolbar(actions: List<CameraAction>, navigation: CameraAction? = null, onMenu: (Boolean) -> Unit = {}) {
     val title = stringResource(R.string.camera_title)
     val density = LocalDensity.current
     val textWidth = rememberTextMeasurer().measure(AnnotatedString(title), style = MaterialTheme.typography.titleLarge, maxLines = 1).size.width
@@ -113,6 +114,8 @@ internal fun CameraToolbar(actions: List<CameraAction>, navigation: CameraAction
         val shown = if (overflow) icons.take(slots - 1) else icons
         val menuActions = icons.drop(shown.size) + kept
         var menu by remember { mutableStateOf(false) }
+        LaunchedEffect(menu) { onMenu(menu) }
+        DisposableEffect(Unit) { onDispose { onMenu(false) } }
         TopAppBar(
             title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
             navigationIcon = {

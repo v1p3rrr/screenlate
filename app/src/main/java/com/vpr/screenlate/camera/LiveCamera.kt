@@ -46,7 +46,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -144,7 +143,9 @@ internal fun LiveCamera(
     var focus by remember(controller) { mutableStateOf<TapToFocusInfo?>(null) }
     var focusVisible by remember(controller) { mutableStateOf(false) }
     var fill by remember(controller) { mutableStateOf<ImageBitmap?>(null) }
-    SideEffect { controller.imageCaptureFlashMode = flash.cameraX }
+    // Only on a change: the blurred fill recomposes the page ten times a second, and each assignment makes CameraX
+    // send the camera a new request.
+    LaunchedEffect(controller, flash) { controller.imageCaptureFlashMode = flash.cameraX }
 
     DisposableEffect(controller, owner) {
         var active = true

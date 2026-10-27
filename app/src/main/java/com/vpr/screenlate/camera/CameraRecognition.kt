@@ -20,6 +20,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -103,7 +104,10 @@ class CameraRecognitionController @Inject constructor(
     device: DeviceOcr,
     private val jobs: PhotoRecognitionJobs,
 ) : CameraRecognition {
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    // Reading readiness or a setting can fail; Recognize then does nothing instead of ending the app.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default + CoroutineExceptionHandler { _, e ->
+        Log.w("Camera", "Recognition request failed: " + e.javaClass.simpleName)
+    })
     private val mutableBlock = MutableStateFlow<CameraReadinessBlock?>(null)
     override val blocked = mutableBlock.asStateFlow()
     private var action: Job? = null

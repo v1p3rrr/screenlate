@@ -88,15 +88,15 @@ sentence rules (`notes/language-rules.md`).
 
 ## Current position
 
-Updated after every step so the work survives a context reset: area 1 is reviewed (runs 1–4) and committed; area 2,
-run 1 is next. The API 37 emulator runs under the shared lock.
+Updated after every step so the work survives a context reset: areas 1 and 2 are reviewed (runs 1–4) and committed;
+area 3, run 1 is next. The API 37 emulator runs under the shared lock.
 
 ## Progress
 
 | # | Area | Run 1 | Run 2 | Run 3 | Run 4 | Emulator | Commit |
 |---|---|---|---|---|---|---|---|
 | 1 | Photo store | 19 findings: 9 fixed, 1 false alarm, 7 skipped, 2 questions | 9 findings: 5 fixed, 2 false alarms, 1 skipped, 1 question | 11 findings: 3 fixed, 2 false alarms, 6 skipped | 4 findings: 4 fixed (one change) | `core:photos` instrumented tests pass on API 37 | done |
-| 2 | Camera screen | 1 fixed ahead of the runs (below) | | | | | |
+| 2 | Camera screen | 1 fixed ahead of the runs; 8 findings: 6 fixed, 1 false alarm, 1 skipped | 13 findings (2 found on the emulator): 7 fixed, 5 skipped, 1 question | 3 findings: 3 fixed | 10 findings: 4 fixed, 6 skipped | API 37 by hand: each fix of runs 1–4 | done |
 | 3 | Overlay and Anki integration | | | | | | |
 | 4 | Photo recognition | | | | | | |
 | — | Final E regression | | | | | | |
@@ -219,6 +219,126 @@ Per area: each finding, its verdict (fixed with the commit, question, false alar
    history changes ("The history could not be changed.", the switch keeps the stored value) and nothing is saved.
    Test `aFailedWriteOfAutomaticSavingReportsItAndSavesNothing` (hung without the fix, since the event never came).
 
+### Area 2, run 1
+
+1. `MainActivity` (the exported launcher) took an `open=shared-image` request from any app and imported its clip-data
+   link without the share screen's check, so a sender could make the app copy its own private files (a `file:` link
+   needs no grant) and recognize them. Reproduced on the API 37 emulator with an in-app probe (an instrumented test
+   that starts `MainActivity`, since `am start` cannot set clip data): the private file was imported. **Fixed:** the
+   link is checked again as the share screen does; the same probe then imports nothing.
+2. The share screen's own-provider check compared `Uri.getAuthority()`, which keeps a user prefix: `content://0@<app>.anki.media/…`
+   passed as another app's link and reached the app's own FileProvider. Reproduced with `am start` of the share screen
+   (the app's cached note image opened and was recognized). **Fixed:** the provider is compared without the prefix, as
+   the system resolves it. Test `aUserBeforeTheProviderDoesNotHideTheApp` (failed before the fix); the emulator then
+   showed nothing imported.
+3. A history tap decided whether to ask about the unsaved current photo from a snapshot that is empty before the
+   store's first value and after a read error, so the unsaved photo could be replaced without the question.
+   **Fixed:** the tap reads the store's current photo; a read error reports "could not open" and opens nothing. Tests
+   `aTapBeforeTheCurrentPhotoIsReadStillAsksAboutIt`, `aCurrentPhotoThatCannotBeReadOpensNothing` (failed before).
+4. Two quick taps on history photos opened both. **Fixed:** the page is busy from the tap on. Test
+   `aSecondTapWhileAPhotoOpensIsIgnored` (failed before).
+5. Recognize and Retry read the language's readiness in a scope without an exception handler, so a settings or
+   database read error ended the app. **Fixed:** the scope logs the error and the button does nothing.
+6. The viewer's detail patch catches only `IOException`, while `decodeRegion` throws `IllegalArgumentException` for a
+   region outside the image. **False alarm:** the viewport keeps the visible region inside the image, and the import
+   rejects files whose region decoder reports another size.
+7. A camera error after binding (disabled by policy, a fatal device error) leaves a black preview instead of "Camera
+   unavailable". **Skipped:** rare; CameraX reopens after recoverable errors, and leaving and returning to the tab
+   recreates the camera.
+8. The History item of the ⋮ menu stayed enabled during a capture, while the round History button is disabled; a
+   history photo opened meanwhile was replaced by the finishing capture. **Fixed:** the item is disabled as the button.
+
+### Area 2, run 2
+
+1. A page request during the first run (the selection-menu search's link to Dictionaries, Anki settings, OCR models)
+   switched to the Settings tab, and the tab switch pops the whole stack, so the first run was abandoned and the bar
+   shown. Reproduced on the API 37 emulator. **Fixed:** until the first run ends at Home, requests open their page over
+   it and the bar stays hidden. Instrumented test `FirstRunRequestTest` (failed before the fix, passes on API 37).
+2. With automatic saving on, a photo whose automatic save failed is not in the history, yet closing it, importing
+   another image or opening a history photo deleted it without the question. **Fixed:** the question depends only on
+   the photo being saved. Tests `aPhotoThatAutomaticSavingFailedToSaveAsksBeforeAnImport`,
+   `aPhotoThatAutomaticSavingFailedToSaveStillAsks` (failed before).
+3. The top bar's ⋮ menu covers the photo but did not hide it from the bubble. **Fixed:** the menu reports opening and
+   closing, and the page is obscured while it is open. Emulator: before, a word of the photo was found under the open
+   menu; after, the bubble finds nothing there.
+4. The Camera page's links (Manage languages, the readiness dialog's Open) open their page in the Settings tab, so
+   Back leads to the Settings list. **Question** (below).
+5. A typed photo or size limit was stored only when the field lost focus, which does not happen when the page closes
+   with Back. Reproduced on the emulator (the limit stayed 0). **Fixed:** leaving the page stores the typed limit first;
+   a limit that would delete photos asks and the page stays. Tests in `CameraSettingsViewModelTest`; on the emulator
+   Back and the arrow both store the typed value.
+6. A dismissed first permission request counts as a blocked permission, so the page offers the system settings
+   instead of asking again. **Skipped:** Android reports both the same way (denied, no rationale); the settings button
+   still works.
+7. A history photo whose opening ends while the app is paused is opened, but the history page stays. **Skipped:** rare,
+   and the opened photo is shown when the user goes back.
+8. A failed history read looks like an empty history. **Skipped:** a database read error; a separate message needs a
+   new string in 14 locales for a case not seen.
+9. Usage did not say that an image shared during the first-launch setup waits until the Camera tab is opened.
+   **Fixed** in `docs/usage.md` and `docs/architecture.md`.
+10. The recognition controller keeps its readiness observations for the process once the Camera page has opened.
+    **Skipped:** a few flows that react only to dictionary and model changes.
+11. The tab logic has no automated test. **Skipped** beyond `FirstRunRequestTest`; the test model's navigation cases
+    cover the rest.
+12. Found on the emulator while checking 3: the page's obscured flag was read inside `SideEffect`, which composition
+    does not observe, so neither the language menu nor the ⋮ menu ever hid the photo (a word of the photo was found
+    under the language menu). **Fixed:** the flag is computed in composition and passed in. Emulator: no lookup under
+    either menu.
+13. Found in the emulator log: the live camera set the flash mode on every composition, and the blurred fill
+    recomposes it as often as every 100 ms; each assignment makes CameraX send the camera a new request (1274
+    `setFlashAsync` lines in 18 minutes of testing). **Fixed:** the mode is set only when it or the controller
+    changes; no such line in 10 s of live camera after.
+
+### Area 2, run 3
+
+Over the fixes of runs 1 and 2 (`git diff HEAD`, uncommitted) and their callers. Checked on the API 37 emulator and
+found fine: a quick double Back with a typed limit closes one page (`fromResumed` drops the second), and stores it.
+
+1. Leaving Camera settings with a typed limit that would delete photos asks; Cancel left the typed value in the field,
+   which keeps the focus, so every Back asked again and the page could be left without deleting only by retyping the
+   old limit. Reproduced on the emulator. **Fixed:** a reset (Cancel or a failed change) shows the stored limit again
+   also in the focused field and drops the typed one; on the emulator Cancel shows 0 and the next Back leaves.
+   Instrumented `LimitFieldTest` (API 30, as the other Compose tests).
+2. The ⋮ menu still hid Save to history whenever automatic saving was on, also for a photo whose automatic save
+   failed (the rest of run 2's finding 2). **Fixed:** the item depends only on the photo being outside the history; on
+   the emulator it shows for a manual capture and stays hidden for an automatically saved one. The view model's
+   `autoSave` flow, now unread, is removed.
+3. Usage said the unsaved-photo question comes only with manual saving. **Fixed** in `docs/usage.md` and
+   `docs/architecture.md`.
+
+### Area 2, run 4
+
+Over the fixes of run 3 and the code around them (Camera settings' limit fields and leaving the page, the ⋮ Save to
+history item, the docs).
+
+1. A typed limit was lost when the page closed other than by Back or the arrow, such as by tapping the current tab:
+   the field stores its limit when it loses focus, but the store ran in the page's view model, which is cleared at
+   once. Reproduced on the emulator (10 typed, 0 stored). **Fixed:** the store goes on after the model is cleared; a
+   limit that would delete photos is dropped then, since no page can ask. Test
+   `aLimitStoredAsThePageClosesOutlivesTheModel` (failed before); on the emulator 10 is stored. Switching to another
+   tab was fine before: the page's model stays, and the question shows on return.
+2. Delete in the question asked on leaving the page stored the limit, but the page stayed and needed another Back.
+   **Fixed:** the page closes after Delete and stays after Cancel. Tests
+   `closingWithALimitThatDeletesPhotosAsksAndClosesAfterDelete` (failed before) and
+   `closingWithALimitThatDeletesPhotosStaysAfterCancel`; checked on the emulator.
+3. Since run 3 a reset clears the focused field too, and every failed change counted as one, so a failed auto-save
+   switch or Clear history dropped the limit being typed. **Fixed:** only a limit that is not taken resets the
+   fields. Test assertion in `aFailedWriteOfAutomaticSavingReportsItAndSavesNothing` (failed before).
+4. The page and the fields build the whole pair of limits from the page's copy of the stored ones, so a store of the
+   other field still running could be overwritten. **Skipped:** the store takes milliseconds, less than typing a
+   digit in the other field, and leaving does nothing while a question is open.
+5. With automatic saving, Save to history is enabled for a moment after a capture, until the store reports the photo
+   saved. **Skipped:** saving twice is harmless (the store skips a saved photo), and the item is gone a moment later.
+6. A close that arrives while the app is paused is dropped, and the page stays with the limit stored. **Skipped:**
+   needs Home within the milliseconds of the store; as run 2's finding 7.
+7. The field kept a counter to tell a reset from a new stored value. **Fixed:** two effects, one per key.
+8. The typed limit is kept in the field, in the page and, while asking, in the view model; a draft held by the view
+   model would cover every way out. **Skipped:** with finding 1 fixed, every way out works; the rewrite brings
+   nothing more.
+9. The page's wiring of Back and the arrow has no automated test. **Skipped:** the view model and the field have
+   tests, and CAM39 checks the page by hand.
+10. Each keystroke recomposes the page. **Skipped:** a small page; no visible cost.
+
 ## Seen outside the scope
 
 Defects in code the feature did not change, noted for a later full review; not fixed now.
@@ -243,6 +363,11 @@ Collected during the runs and asked together at the end.
 4. Builds of feature branches (optional). The CI workflow builds a debug APK only for pushes to `main`, pull requests
    and manual starts, so a feature branch has no build unless one is started by hand (done for `features/camera-lookup`).
    Options: also build pushes to `features/**`; or keep starting them by hand.
+5. Camera links and the tabs (area 2, run 2, finding 4). On the Camera tab, Manage languages in the language menu
+   and the Open button of the "not ready" dialog open the language, dictionary or model page in the Settings tab, so
+   Back from it leads to the Settings list and the camera needs another tap on its tab. Camera settings, by contrast,
+   opens inside the Camera tab. Options: open these pages inside the Camera tab too, so Back returns to the camera; or
+   keep them in the Settings tab, where these pages live.
 
 ## Changelog
 
@@ -251,3 +376,9 @@ Collected during the runs and asked together at the end.
 - 2026-10-27: area 1, run 2 findings and verdicts recorded, with the emulator measurement of a whole-photo crop; the
   auto-save setting crash fixed ahead of area 2; questions 3 (note image size) and 4 (feature branch builds) added.
 - 2026-10-27: area 1, runs 3 and 4 recorded; area 1 committed.
+- 2026-10-27: area 2, run 1 recorded, with the emulator reproduction of the two shared-link findings.
+- 2026-10-27: area 2, run 2 recorded, with two more defects found on the emulator (menus never hid the photo, a flash
+  request on every fill frame); question 5 (Camera links and the tabs) added.
+- 2026-10-27: area 2, run 3 recorded.
+- 2026-10-27: area 2, run 4 recorded, with the emulator reproduction of a typed limit lost on tapping the current tab;
+  area 2 committed.

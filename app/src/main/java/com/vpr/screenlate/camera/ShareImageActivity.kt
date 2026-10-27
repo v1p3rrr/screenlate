@@ -26,8 +26,8 @@ class ShareImageActivity : Activity() {
             .allowAction(Intent.ACTION_SEND)
             .allowType { it.startsWith("image/") }
             .allowFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // The sanitizer keeps a stream only with this flag.
-            .allowExtraStream { sharedFromAnotherApp(it.scheme, it.authority, packageName) }
-            .allowClipDataUri { sharedFromAnotherApp(it.scheme, it.authority, packageName) }
+            .allowExtraStream { it.isAnotherAppsContent(packageName) }
+            .allowClipDataUri { it.isAnotherAppsContent(packageName) }
             .build()
             .sanitizeByFiltering(intent)
         val uri = IntentCompat.getParcelableExtra(shared, Intent.EXTRA_STREAM, Uri::class.java)
@@ -51,7 +51,15 @@ class ShareImageActivity : Activity() {
     }
 }
 
-/** A shared link is a `content:` link of a provider outside the app [packageName]. */
-internal fun sharedFromAnotherApp(scheme: String?, authority: String?, packageName: String): Boolean =
-    scheme == ContentResolver.SCHEME_CONTENT && authority != null &&
-        authority != packageName && !authority.startsWith("$packageName.")
+/**
+ * A shared link is a `content:` link of a provider outside the app [packageName]. An authority may start with a user
+ * (`0@`); the system finds the provider by the rest, so only the rest is compared.
+ */
+internal fun sharedFromAnotherApp(scheme: String?, authority: String?, packageName: String): Boolean {
+    val provider = authority?.substringAfterLast('@')
+    return scheme == ContentResolver.SCHEME_CONTENT && !provider.isNullOrEmpty() &&
+        provider != packageName && !provider.startsWith("$packageName.")
+}
+
+/** See [sharedFromAnotherApp]. */
+internal fun Uri.isAnotherAppsContent(packageName: String): Boolean = sharedFromAnotherApp(scheme, authority, packageName)

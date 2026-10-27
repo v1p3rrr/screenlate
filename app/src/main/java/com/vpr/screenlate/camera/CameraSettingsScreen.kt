@@ -2,6 +2,7 @@ package com.vpr.screenlate.camera
 
 import android.text.format.Formatter
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -48,6 +50,8 @@ import com.vpr.screenlate.ui.components.formContent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -59,13 +63,18 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class HistoryUsage(val count: Int, val bytes: Long)
 
-/** New limits that wait for the user's answer, since they delete the [excess] oldest photos of the history. */
-data class PendingLimits(val limits: HistoryLimits, val excess: Int)
+/**
+ * New limits that wait for the user's answer, since they delete the [excess] oldest photos of the history; [close]:
+ * they were typed before leaving the page, which closes once they are stored.
+ */
+data class PendingLimits(val limits: HistoryLimits, val excess: Int, val close: Boolean = false)
 
-enum class CameraSettingsEvent { SAVE_FAILED, CHANGE_FAILED }
+/** [CLOSE]: the limits typed before leaving are stored, and the page may close. */
+enum class CameraSettingsEvent { SAVE_FAILED, CHANGE_FAILED, CLOSE }
 
 @HiltViewModel
 class CameraSettingsViewModel @Inject constructor(
@@ -110,13 +119,33 @@ class CameraSettingsViewModel @Inject constructor(
     }
 
     /** Stores [limits] at once, or asks first when they would delete photos from the history. */
-    fun setLimits(limits: HistoryLimits) {
+    fun setLimits(limits: HistoryLimits) = submit(limits, close = false)
+
+    /**
+     * Stores [limits], typed but not stored yet, before the page closes ([CameraSettingsEvent.CLOSE]). Limits that
+     * would delete photos ask first; the page closes after Delete and stays after Cancel.
+     */
+    fun close(limits: HistoryLimits) = submit(limits, close = true)
+
+    private fun submit(limits: HistoryLimits, close: Boolean) {
         if (mutablePending.value != null) return
-        viewModelScope.launch {
-            if (limits == preferences.history.first().limits) return@launch
-            change {
-                val excess = history.excess(limits)
-                if (excess > 0) mutablePending.value = PendingLimits(limits, excess) else preferences.setLimits(limits)
+        // A field stores its limit when it loses focus, also when the page closes and this model is cleared right
+        // after, so the store goes on without it. A limit that would delete photos is dropped then: no page asks.
+        viewModelScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            withContext(NonCancellable) {
+                var asking = false
+                val stored = change {
+                    if (limits != preferences.history.first().limits) {
+                        val excess = history.excess(limits)
+                        asking = excess > 0
+                        if (asking) {
+                            mutablePending.value = PendingLimits(limits, excess, close)
+                        } else {
+                            preferences.setLimits(limits)
+                        }
+                    }
+                }
+                if (!stored) mutableResets.update() else if (close && !asking) messages.send(CameraSettingsEvent.CLOSE)
             }
         }
     }
@@ -125,10 +154,11 @@ class CameraSettingsViewModel @Inject constructor(
         val pending = mutablePending.value ?: return
         mutablePending.value = null
         viewModelScope.launch {
-            change {
+            val stored = change {
                 preferences.setLimits(pending.limits)
                 history.trim(pending.limits)
             }
+            if (!stored) mutableResets.update() else if (pending.close) messages.send(CameraSettingsEvent.CLOSE)
         }
     }
 
@@ -151,7 +181,6 @@ class CameraSettingsViewModel @Inject constructor(
             throw e
         } catch (e: Exception) {
             Log.w(TAG, "Changing the history failed: " + e.javaClass.simpleName)
-            mutableResets.update()
             messages.send(CameraSettingsEvent.CHANGE_FAILED)
             return false
         }
@@ -174,11 +203,29 @@ fun CameraSettingsScreen(onBack: () -> Unit, viewModel: CameraSettingsViewModel 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     var confirmingClear by remember { mutableStateOf(false) }
+    // A limit being typed is stored when its field loses focus, or by leaving the page.
+    var typedCount by remember { mutableStateOf<Int?>(null) }
+    var typedSize by remember { mutableStateOf<Int?>(null) }
+    val typing = typedCount != null || typedSize != null
+    val leave = {
+        val limits = settings?.limits
+        if (limits == null || !typing) {
+            onBack()
+        } else {
+            viewModel.close(limits.copy(count = typedCount ?: limits.count, megabytes = typedSize ?: limits.megabytes))
+        }
+    }
+    BackHandler(enabled = typing, onBack = leave)
+    val closePage by rememberUpdatedState(onBack)
     LaunchedEffect(viewModel, context) {
         viewModel.events.collect { event ->
             val text = when (event) {
                 CameraSettingsEvent.SAVE_FAILED -> R.string.camera_save_history_failed
                 CameraSettingsEvent.CHANGE_FAILED -> R.string.history_change_failed
+                CameraSettingsEvent.CLOSE -> {
+                    closePage()
+                    return@collect
+                }
             }
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }
@@ -199,7 +246,7 @@ fun CameraSettingsScreen(onBack: () -> Unit, viewModel: CameraSettingsViewModel 
             onDismiss = { confirmingClear = false },
         )
     }
-    SettingsScaffold(stringResource(R.string.camera_title), onBack) { padding ->
+    SettingsScaffold(stringResource(R.string.camera_title), leave) { padding ->
         val current = settings ?: return@SettingsScaffold
         Column(
             Modifier.fillMaxSize().formContent(padding, focusManager).verticalScroll(rememberScrollState()).padding(16.dp),
@@ -210,10 +257,10 @@ fun CameraSettingsScreen(onBack: () -> Unit, viewModel: CameraSettingsViewModel 
                     stringResource(R.string.history_auto_save), current.autoSave, viewModel::setAutoSave,
                     hint = stringResource(R.string.history_auto_save_hint),
                 )
-                LimitField(current.limits.count, resets, stringResource(R.string.history_count_limit)) {
+                LimitField(current.limits.count, resets, stringResource(R.string.history_count_limit), { typedCount = it }) {
                     viewModel.setLimits(current.limits.copy(count = it))
                 }
-                LimitField(current.limits.megabytes, resets, stringResource(R.string.history_size_limit)) {
+                LimitField(current.limits.megabytes, resets, stringResource(R.string.history_size_limit), { typedSize = it }) {
                     viewModel.setLimits(current.limits.copy(megabytes = it))
                 }
                 usage?.let { used ->
@@ -235,17 +282,28 @@ fun CameraSettingsScreen(onBack: () -> Unit, viewModel: CameraSettingsViewModel 
     }
 }
 
-/** A limit typed as a number; it is stored when the field loses focus, an empty field meaning 0 (no limit). */
+/**
+ * A limit typed as a number; it is stored when the field loses focus, an empty field meaning 0 (no limit). [onTyped]
+ * gets the typed limit until then, and null once it is stored or dropped. A new [resets] drops the typed limit, also
+ * while the field keeps the focus, as after a question asked on leaving the page.
+ */
 @Composable
-private fun LimitField(value: Int, resets: Int, label: String, onCommit: (Int) -> Unit) {
+internal fun LimitField(value: Int, resets: Int, label: String, onTyped: (Int?) -> Unit, onCommit: (Int) -> Unit) {
     var text by remember { mutableStateOf(value.toString()) }
     var focused by remember { mutableStateOf(false) }
-    LaunchedEffect(value, resets) {
+    LaunchedEffect(value) {
         if (!focused) text = value.toString()
+    }
+    LaunchedEffect(resets) {
+        text = value.toString()
+        if (focused) onTyped(null)
     }
     OutlinedTextField(
         value = text,
-        onValueChange = { typed -> text = typed.filter { it in '0'..'9' }.take(LIMIT_DIGITS) },
+        onValueChange = { typed ->
+            text = typed.filter { it in '0'..'9' }.take(LIMIT_DIGITS)
+            if (focused) onTyped(text.toIntOrNull() ?: 0)
+        },
         label = { Text(label) },
         supportingText = { Text(stringResource(R.string.history_no_limit)) },
         singleLine = true,
@@ -256,6 +314,7 @@ private fun LimitField(value: Int, resets: Int, label: String, onCommit: (Int) -
                 val limit = text.toIntOrNull() ?: 0
                 text = limit.toString()
                 onCommit(limit)
+                onTyped(null)
             }
             focused = it.isFocused
         },

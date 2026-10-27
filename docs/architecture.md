@@ -63,7 +63,9 @@ settings reset, independently of photograph storage.
 
 The app shell has one NavHost inside a Scaffold with Home, Search, Camera and Settings tabs. Tab switches save and
 restore each tab's navigation stack; screens consume the bar's insets. First-launch setup and the debug viewer hide
-the bar without replacing the NavHost. External lookup and installation requests retain their existing routes.
+the bar without replacing the NavHost. Requests from outside the app (Anki settings, Dictionaries, a language's models)
+open their page in the Settings tab; during the first-launch setup they open over it instead, and the bar stays hidden
+until the setup ends at Home, since a tab switch clears the back stack under it.
 
 `CameraViewModel` observes `PhotoDocuments.current` and owns the capture/replacement operation and the temporary
 retake state. CameraX's `LifecycleCameraController` and `PreviewView` live in `app`, bind only while capture is shown,
@@ -110,13 +112,14 @@ document deletion. No OCR sidecar, backup integration or broad storage permissio
 of the store. A file `BitmapRegionDecoder` reads (JPEG, PNG, WebP, HEIF), as the viewer and recognition need, keeps its
 bytes and EXIF orientation; anything else is decoded with `ImageDecoder` (orientation applied, sRGB, scaled to at most
 24 megapixels) and stored as PNG, and a file it cannot decode is rejected. `CameraViewModel` then takes it the way of a
-capture (`replaceCurrent`, recognition, automatic saving); with manual saving and an unsaved current photo it first
+capture (`replaceCurrent`, recognition, automatic saving); when the current photo is not in the history it first
 holds the copy and asks (`CameraState.askingImport`). Picker results and shared images queue until the photo is
 loaded and the page is free. "Share → Screenlate" reaches `ShareImageActivity`, which runs in the sending app's task
 and passes the image, with a read grant in the clip data, to the main screen in the app's task; `MainActivity` hands
 it to `SharedImages` and selects the Camera tab, except during the first run. Being exported, the activity reads the
 share through `IntentSanitizer` and takes only another app's `content:` link, so a sender cannot make the app read its
-own providers or files.
+own providers or files; the provider is compared without a user prefix (`0@`), as the system finds it. Any app can
+start `MainActivity` as well, so it checks the link again.
 
 `PhotoHistory` (implemented by `PhotoStore`) keeps photos apart from the current one without copying them: a photo
 row has `saved`, `savedAt` and the language of its last recognition (Room v3; the migration orders earlier rows by id

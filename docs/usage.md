@@ -11,7 +11,8 @@
 
 The bottom bar opens Home, Search, Camera and Settings. Switching tabs keeps each tab's open page and search text.
 Tap the selected tab to return to its first page. Back from that page returns to Home; Back from Home leaves the app.
-The bar is hidden during the first-launch setup and in the development image viewer.
+The bar is hidden during the first-launch setup and in the development image viewer. A page opened from outside the app
+during the setup, such as Dictionaries from the selection-menu search, opens over it, and Back returns to the setup.
 
 Camera opens the current photograph, or the rear camera when no photograph is stored. Allow camera access to take a
 photo; a saved photograph can be viewed without this permission or the accessibility service. Tap the preview to focus,
@@ -58,10 +59,12 @@ replacing or deleting the private photograph does not delete the exported copy. 
 
 The round button left of the shutter, Import from gallery in the ⋮ menu, and the button under the camera permission
 request open the system photo picker (the file picker on phones without one); it gives the app access to the chosen
-image alone. "Share → Screenlate" in another app does the same with one image and opens the Camera tab. The image is
+image alone. "Share → Screenlate" in another app does the same with one image and opens the Camera tab (during the
+first-launch setup, the image waits until the Camera tab is opened). The image is
 copied into the app and becomes the open photograph, as a new capture does: it is recognized right away in the Camera
 tab's language, and with Save automatically on it is added to the history. When the open photograph is not in the
-history and saving is manual, the app first asks whether to save it or delete it; Cancel keeps it and drops the image.
+history (saving is manual, or saving it automatically failed), the app first asks whether to save it or delete it;
+Cancel keeps it and drops the image.
 Closing the picker changes nothing. JPEG, PNG, WebP and HEIF images are kept as they are; other formats (GIF, BMP and
 the like) are stored as PNG, scaled down beyond 24 megapixels. The history shows the time of the import, not when the
 image was made.
@@ -69,14 +72,14 @@ image was made.
 ### Photo history
 
 The history keeps photographs privately in Screenlate with their recognized text, apart from the gallery. Save to
-history in the ⋮ menu adds the open photograph; with Save automatically on, every new photograph, taken or imported,
-is added right away, and turning the switch on adds the open one. A photograph replaced by a new capture or an import
-stays in the history; one that is not in it is deleted.
+history in the ⋮ menu adds the open photograph while it is not in the history; with Save automatically on, every new
+photograph, taken or imported, is added right away, and turning the switch on adds the open one. A photograph replaced
+by a new capture or an import stays in the history; one that is not in it is deleted.
 
 The round button right of the shutter shows the latest photograph in the history and opens the history page (the ⋮
 menu has History as well). The page lists the photographs newest first, each with its date and the flag of its
 recognition language. Tap one to open it on the Camera tab with its saved text; it is not recognized again. When the
-open photograph is not in the history and saving is manual, the app first asks whether to save it or delete it.
+open photograph is not in the history, the app first asks whether to save it or delete it.
 Long-press to select photographs, tap to add or remove more, and delete them with the trash icon.
 
 Camera settings (in the ⋮ menu, and in Settings before Appearance) hold Save automatically, the photo limit and the
