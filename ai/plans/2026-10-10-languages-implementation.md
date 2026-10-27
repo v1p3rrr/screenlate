@@ -471,6 +471,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   and it does not look like the debounce but like slowness. Measure the path from the aim's stop to the drawn popup
   (hit test, lookup, page render, window show) on the phone and the emulator from the app's log timings, compare with
   earlier releases, and remove what is slow.
+- More interface languages (owner, 2026-10-28): choose, among the languages the app reads, the most widely used ones
+  that would be worth translating the interface into later (the interface has 14 locales now). Not worked out yet.
+- Interface translation check (owner, 2026-10-28): a separate pass over every interface locale for correct and
+  natural translations (terms, grammar, consistency between screens). Not worked out yet.
 
 ## Questions for the owner
 
