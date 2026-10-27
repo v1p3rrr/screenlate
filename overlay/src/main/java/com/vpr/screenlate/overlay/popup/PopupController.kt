@@ -13,6 +13,9 @@ import kotlin.math.roundToInt
  *
  * The window stays attached while the overlay is shown and is hidden instead of removed, so it keeps its place in the
  * window stack: [attach] it before the bubble and the bubble always stays on top.
+ *
+ * The page keeps the last frame of the view it showed until a new one is drawn, so a new view must not appear before
+ * that: a popup opened again stays transparent and untouchable until then, and an open one moves to the new word then.
  */
 class PopupController(
     context: Context,
@@ -24,6 +27,15 @@ class PopupController(
     private val params = OverlayWindows.popupParams()
     private var attached = false
     private var visible = false
+
+    /** Counts [show] and [hide] calls, so a view drawn late does not change a newer one. */
+    private var generation = 0
+
+    /** The popup was opened again and waits, transparent, for its new view to be drawn. */
+    private var concealed = false
+
+    /** The open popup waits for its new view to be drawn before moving to [bounds]. */
+    private var placing = false
 
     val page = LookupPage(context, object : LookupPage.Callbacks by callbacks {
         override fun onClose() {
@@ -57,6 +69,10 @@ class PopupController(
         attached = false
         visible = false
         bounds = null
+        generation++
+        concealed = false
+        placing = false
+        applyAlpha()
     }
 
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
@@ -64,13 +80,33 @@ class PopupController(
         if (!attach()) return
         val placed = place(word, bubble, screen, maxWidth)
         bounds = placed
-        params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
-        setBounds(placed)
-        windowManager.updateViewLayout(page.container, params)
-        page.container.visibility = View.VISIBLE
         val continued = visible
         visible = true
+        val shown = ++generation
+        if (continued) {
+            placing = true
+        } else {
+            concealed = true
+            applyAlpha()
+            setBounds(placed)
+            windowManager.updateViewLayout(page.container, params)
+            page.container.visibility = View.VISIBLE
+        }
         page.render(state, continued)
+        page.whenDrawn { if (shown == generation) onDrawn() }
+    }
+
+    private fun onDrawn() {
+        val placed = bounds ?: return
+        concealed = false
+        placing = false
+        applyAlpha()
+        val old = listOf(params.flags, params.x, params.y, params.width, params.height)
+        params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
+        setBounds(placed)
+        if (listOf(params.flags, params.x, params.y, params.width, params.height) != old) {
+            windowManager.updateViewLayout(page.container, params)
+        }
     }
 
     /**
@@ -81,6 +117,7 @@ class PopupController(
         if (!visible) return
         val placed = place(word, bubble, screen, maxWidth)
         bounds = placed
+        if (placing) return
         val old = listOf(params.x, params.y, params.width, params.height)
         setBounds(placed)
         if (listOf(params.x, params.y, params.width, params.height) != old) windowManager.updateViewLayout(page.container, params)
@@ -110,16 +147,24 @@ class PopupController(
     }
 
     /** See-through for a screenshot that must not show the popup; it keeps its place and state. */
-    var alpha: Float
-        get() = page.container.alpha
+    var alpha: Float = 1f
         set(value) {
-            page.container.alpha = value
+            field = value
+            applyAlpha()
         }
+
+    private fun applyAlpha() {
+        page.container.alpha = if (concealed) 0f else alpha
+    }
 
     fun hide() {
         if (!visible) return
         visible = false
         bounds = null
+        generation++
+        concealed = false
+        placing = false
+        applyAlpha()
         page.container.visibility = View.GONE
         if (attached) {
             setHiddenParams()
