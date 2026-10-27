@@ -156,12 +156,13 @@ The feature provides a persistent photograph that the existing floating bubble i
 | Bubble actions | A tap briefly highlights text. Pull-out, tap, movement and docking never start photo OCR. |
 | Bubble without text to read | On the Camera page with the live camera, a photo still loading, a photo not recognized yet or unreadable stored text: pull-out and tap show nothing (no popup, no message). |
 | Bubble glyph over a photo | While a recognized photo is the lookup source, the bubble shows the photo's recognition language; the active language again once the photo is left. |
-| Bubble menu over a photo | The language chips are hidden; copying and Open app stay. The photo's language is changed on the Camera page. |
+| Bubble menu over a photo | The language chips are hidden; copying stays. Open app is not shown while any Screenlate window is in front (owner, 2026-10-27; was: Open app stays); a menu left without items does not open. The photo's language is changed on the Camera page. |
 | Leaving the photo | The bubble docks when the photo it was out over stops being the lookup source (another page, another app, the live camera). Pulled out over the live camera it shows nothing; the preview is never scanned (owner, 2026-10-25). |
 | Language | Separate selection on Camera, restricted to enabled languages. Initially use the active app language, then remember independently. |
 | Language or OCR settings change | Requires explicit recognition. Until then keep the actual recognition language and visibly indicate a pending change. |
 | OCR engines | Share Cloud, Device and Both and the selected language's local model with ordinary scanning. |
-| Cloud photo OCR | Process original-resolution overlapping tiles, each at most 1500 pixels per side. No whole-photo downscaling to that limit. |
+| Photo reading | By default the whole photo is read once, scaled down to 1500 pixels on its longer side, for every engine. "High accuracy" on Camera settings reads by original-resolution overlapping tiles of at most 1500 pixels plus the whole-photo pass for large text, as before (owner, 2026-10-27; was: tiles always). "Recognize more accurately" first in the photo's ⋮ menu reads the current photo by tiles once; shown only for a photo read whole, not while it is recognized. The switch's hint names the time and, with the cloud, the traffic. |
+| Camera settings: recognition | A "Recognition" group first: the High accuracy switch and an Engines row showing the current choice that opens Bubble → Screen recognition (owner, 2026-10-27). |
 | Result publication | Wait for the entire attempt to terminate. Then publish the assembled result, including usable partial results if some tiles failed. |
 | Failure indication | Accessible warning icon in upper controls; details and retry of failed tiles. |
 | Anki | First working version includes sentence context and cropping from the original photo. |
@@ -411,3 +412,4 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   Every phase is complete; the physical-device checks remain.
 - 2026-10-26: owner reworded the Save automatically hint for imports: "Each new photo, taken or imported, goes to
   history right away." in all 14 locales.
+- 2026-10-27: owner's feedback on the phone build: photos read by tiles are slow (a 12 MP photo is 9 tiles and the overview, 10 requests two at a time). Decided: rows "Photo reading" (was "Cloud photo OCR") and "Camera settings: recognition"; "Bubble menu over a photo" changed (Open app hidden in the app). Found the same day, fixed without a decision: the popup shows the previous word for a moment when it opens on a new one (the window became visible before the page drew the new state; screen scans too); with Both, a photo tile waited for the device result after the cloud answered.

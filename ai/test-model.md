@@ -117,6 +117,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB14 | An app in the hidden apps list → the bubble hides there and comes back outside it | O | M | |
 | BUB15 | E-ink: the hold menu is white with a black frame, black text and a black ring around the active code, no shadow or ripple | F | M | 2026-10-14 |
 | BUB16 | No app task; "Look up in Screenlate" in a selection menu, then a button there that opens the app (the grey ➕ → "Open Anki settings", or "Manage dictionaries"); Home → the hold menu's "Open Screenlate", then the launcher icon → the same screen comes back, `dumpsys activity activities` lists one MainActivity, the task's root intent is the launcher's (`dumpsys activity recents`); Back leaves the app | F | I OpenAppTest, M | 2026-10-26 |
+| BUB17 | Hold the bubble over any Screenlate page (Home, settings, a photo) → no Open Screenlate in the menu; over another app it is there; with nothing to copy, no language row and Screenlate in front, holding opens no menu and gives no vibration | N | M | 2026-10-28 (API 37; the vibration not seen, the emulator records none) |
 
 ### OCR: text sources and recognition
 
@@ -279,6 +280,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP36 | A Lithuanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Lithuanian text"; one chosen sets ą č ę ė į š ų ū ž; the bubble shows Ė and the Languages screen Lithuania's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP37 | A Slovak entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovak text"; one chosen sets á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž; the bubble shows Ô and the Languages screen Slovakia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP38 | A Slovenian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovenian text"; one chosen sets č š ž; the bubble shows SL and the Languages screen Slovenia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
+| POP39 | Aim at a word, then off text so the popup closes, then at another word → the popup opens with the new word only, the previous one never shows; from one word straight to the next, the popup moves to the new word together with its content | N | M | 2026-10-28 (API 37, frame by frame) |
 
 ### AUD: audio
 
@@ -470,7 +472,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM4 | The live camera, a photo still loading or not recognized yet → pull-out and tap show nothing and do not scan the screen | F | U ScreenReadsTest, M | 2026-10-26 (API 30/37) |
 | CAM5 | Bubble out over a photo, then another page, another app or the live camera → the bubble docks; while a finger drags it, it docks when the finger lifts, and back over the photo before that it stays out with the photo's text; back on the photo, the next pull-out takes its text without recognition | F | U SourceChangeTest, M | 2026-10-27 (API 37; leaving during a drag), 2026-10-26 (API 37) |
 | CAM6 | Bubble out over the screen of another page, then a recognized photo is shown → the old entry closes and the photo's text is under the aim | F | U SourceChangeTest, M | 2026-10-26 (API 37) |
-| CAM7 | Hold the bubble over a photo → copy and Open Screenlate, no language flags; the docked glyph returns to the active language once the photo is left | F | M | 2026-10-26 (API 37) |
+| CAM7 | Hold the bubble over a photo → copy only: no Open Screenlate (also over any other Screenlate page, BUB17) and no language flags; the docked glyph returns to the active language once the photo is left | F | M | 2026-10-28 (API 37), 2026-10-26 (API 37; Open Screenlate was still shown) |
 | CAM8 | Holding Add over a recognized photo opens a fitted original-photo crop; paragraph/frame/whole-photo and cancel work; the frame's margin around the paragraph is the same at any zoom of the viewer; Anki gets the original-pixel crop and sentence in the recognition language, with no screenshot read | F | U CropPlacementTest, PhotoViewportTest; I PhotoImageTest, CropEditorTest; M | 2026-10-27 (manual API 37), 2026-10-26 (API 30/37; manual API 37) |
 | CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | F | U PhotoStoreTest, I PhotoDatabaseTest | 2026-10-26 (API 37) |
 | CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
@@ -518,7 +520,10 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM52 | Add to Anki with Whole photo of a photo over 4 MP → the note's picture is about 4 MP and upright; a frame under 4 MP keeps the original pixels | N | U FittedSizeTest; I PhotoImageTest; M | 2026-10-27 (API 37, Whole photo) |
 | CAM53 | The bubble resting on a word of a photo, the photo panned or zoomed → the popup follows the word; the word out of the visible part → the popup stays where it was | N | M | 2026-10-27 (API 37, pans injected) |
 | CAM54 | A note made over a photo fills `{document-title}` with "Camera" in the app's language | N | M | 2026-10-27 (API 37, English) |
-| CAM55 | A photo over 1500 px with lettering taller than 200 px across a tile seam → the lettering reads whole, small text comes from the tiles; the region count and the missing-region map leave the extra pass out; its failure alone gives no warning | N | U PhotoAssemblyTest, PhotoTilesTest, PhotoRecognitionJobsTest, CameraPhotoControlsTest; I PhotoRegionsTest; M | 2026-10-27 (API 37; the failure by unit test only) |
+| CAM55 | High accuracy on: a photo over 1500 px with lettering taller than 200 px across a tile seam → the lettering reads whole, small text comes from the tiles; the region count and the missing-region map leave the extra pass out; its failure alone gives no warning | N | U PhotoAssemblyTest, PhotoTilesTest, PhotoRecognitionJobsTest, CameraPhotoControlsTest; I PhotoRegionsTest; M | 2026-10-27 (API 37; the failure by unit test only) |
+| CAM56 | High accuracy off (the default): a photo over 1500 px is read in one request (the log names one tile), the status has no region count and the bar runs without a share; with Both and a network the device does not read it, with the cloud failing the device's text comes | N | U PhotoTilesTest, PhotoRecognitionJobsTest, CompositeOcrTest, CameraPhotoControlsTest; M | 2026-10-28 (API 37) |
+| CAM57 | Camera settings start with Recognition: High accuracy with its hint, Engines with the current choice and a chevron, opening the bubble settings at Screen recognition; Back returns to Camera settings; Settings → Camera reads "Accuracy, photo history, automatic saving, limits"; turning High accuracy on tints the strip of a large photo read whole ("Settings changed"), off leaves a photo read by tiles as it is | N | U CameraPhotoControlsTest; M | 2026-10-28 (API 37) |
+| CAM58 | ⋮ over a photo over 1500 px read whole: Recognize more accurately comes first; it reads the photo by tiles once (region count in the status) and then leaves the menu; it is not shown for a photo read by tiles, a photo up to 1500 px or while the photo is recognized | N | U CameraPhotoControlsTest; M | 2026-10-28 (API 37; a photo up to 1500 px by unit test only) |
 
 
 
@@ -567,6 +572,39 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `features/camera-followups` (uncommitted build on `be79b43c`), Pixel_10_Pro (API 37)
+
+- Build: the debug APK built with native code for x86_64 only (an init script clearing `ndk.abiFilters` to
+  `x86_64`; 93 MB), so no APK copy was needed; unit tests and lint passed. Slovenian active, screen source over
+  `sl-sample.png` in the debug viewer.
+- POP39: `screenrecord` at 640 × 1424 and every frame extracted (ffmpeg). Popup on "žlica", the bubble docked, pulled
+  out and aimed at "Žena" → the highlight first, then after about 150 ms the popup with "žena" only; no frame showed
+  "žlica". A popup closed by a lookup without results, then opened on another word: the same. From one word straight
+  to the next (the popup open), the old content stayed for one frame after the highlight moved, then the new one
+  (about 70 ms). The first popup after the install took about 0.4 s to appear. An aim far off the text keeps the
+  popup: "When the aim leaves the word" is off on this AVD.
+- BUB17: over the debug viewer (Screenlate in front) the hold menu has Copy this paragraph and Copy all recognized
+  text only; over the launcher Open Screenlate too, and it brought the open window back. Over the live camera
+  (nothing to copy, one quick language) holding opens no menu. `dumpsys vibrator_manager` lists no vibrations on
+  this AVD, not even a pull-out's, so the vibration part is not seen.
+- CAM7: over a recognized photo, the copy items only, no flags.
+- CAM56: `market-4000.jpg` (4000 × 3000) imported with High accuracy off → one cloud request (1500 × 1125, 164 KB,
+  1.9 s), "Recognizing" with a bar without a share, then "Recognized · <time>" without a region count. Wi-Fi and
+  data off, Recognize → read on the device (ML Kit's pipeline in the log), recognized whole.
+- CAM57: Settings → Camera reads "Accuracy, photo history, automatic saving, limits"; Camera settings start with
+  Recognition (High accuracy with its hint, Engines "Both" with a chevron); Engines opens Bubble at Screen
+  recognition, Back returns. High accuracy on → the photo read whole shows "Settings changed" with the tinted strip;
+  Recognize then reads the overview and 9 tiles (10 requests, "9 of 9 regions"); High accuracy off → that photo stays
+  as it is.
+- CAM58: ⋮ over the photo read whole → Recognize more accurately first; it read the overview and 9 tiles ("3 of 9
+  regions" while reading, "9 of 9 regions" after); then ⋮ has no such item; while a recognition runs it is not shown
+  either. A photo up to 1500 px: unit test only.
+- Host: the first build attempts failed on the host, not in the code: D: had about 8 GB free, then the Windows commit
+  limit ran out (a build left running before a session restart compiled MNN for three ABIs with 20 clang processes,
+  while BlueStacks started). `--max-workers=3` and the x86_64-only init script kept this run within memory.
+- Cleanup: the test photo deleted (no history), the photo language back to Japanese, the recordings on `/sdcard`
+  deleted; `market-4000.jpg` stays in `/sdcard/Pictures`. The AVD powered off, adb stopped.
 
 ### 2026-10-27, `features/camera-lookup` at `a16ceda7` (the camera review's last commit), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
 

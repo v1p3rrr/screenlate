@@ -128,6 +128,18 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   test executors fail to start ("Could not write standard input to Gradle Test Executor", "The pipe is being closed",
   "finished with non-zero exit value 1"), which looks like failed tests. Rerun with `--max-workers=2`; do not
   `gradlew --stop`, as other sessions share the daemons.
+- A Gradle build outlives the session that started it (2026-10-27): after a session restart a build kept compiling
+  MNN for three ABIs (ninja with about 20 `clang++` under the Gradle daemon) for over an hour, and with BlueStacks
+  starting the Windows commit limit ran out ("insufficient memory for the Java Runtime Environment", an
+  `hs_err_pid*.log` in the worktree). Before a new build, list `java`, `ninja` and `clang++` processes and check
+  their worktree in the command line. The page file on E: is system-managed: it grew to 30 GB under that load and
+  shrank to about 6.5 GB after it.
+- A check build for the x86_64 emulator only (2026-10-28): an init script with
+  `allprojects { afterEvaluate { p -> def a = p.extensions.findByName("android"); if (a != null) { a.defaultConfig.ndk.abiFilters.clear(); a.defaultConfig.ndk.abiFilters.add("x86_64") } } }`
+  (`--init-script <file>`) builds native code for x86_64 alone and gives a 93 MB debug APK that installs without the
+  `zipfile` copy. It runs before the plugins' own `afterEvaluate`, so the DSL is still open. CI still builds every
+  ABI. A new worktree also needs `git submodule update --init --recursive` (hoshidicts' `external/` submodules),
+  or CMake stops at "does not contain a CMakeLists.txt file".
 - A small build to send to the phone (2026-10-27; a chat attachment takes at most 30 MiB): the release type with the
   Dev package and label, debug-signed, one ABI, compressed native code and dex. An init script
   (`--init-script dev-release.gradle`) sets on `:app` in `afterEvaluate`, for the release build type:

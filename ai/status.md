@@ -1,29 +1,29 @@
 # Status
 
-## Start here: open items of all work (2026-10-27)
+## Start here: open items of all work (2026-10-28)
 
-A session that opens this file in another checkout may read an older copy. Until `features/camera-lookup` is merged,
-the full status is on it: `git show origin/features/camera-lookup:ai/status.md`. The sections below this one hold
+A session that opens this file in another checkout may read an older copy: the current one is on `languages/main`
+(`git show origin/languages/main:ai/status.md`), and `main`'s `ai/` is a copy of it. The sections below this one hold
 the details.
 
 ### Branches and checkouts
 
-- `origin/languages/main` (`073c50a4`) is the integration line. `features/camera-lookup` (`b718d550` and this entry)
-  is `languages/main` plus the camera feature and its review, so it fast-forwards `languages/main` while that has
-  not moved. Merging it is the owner's or the coordinating session's decision, not the camera session's.
+- `origin/languages/main` is the integration line. Since 2026-10-28 it holds the camera feature, its review and the
+  follow-ups from the phone build (a fast-forward to `features/camera-followups`, which started from
+  `features/camera-lookup` `be79b43c`). Both feature branches are merged; deleting them is the owner's decision.
 - The main checkout `D:/Documents/ClaudeProjects/Screenlate` is on `languages/ocr-engines`, 340 commits behind
   `languages/main`, with the local commit `db08588a` not pushed; its `ai/status.md` is old. The `.worktrees/lang`
   checkout of `languages/main` is 2 commits behind `origin`.
-- `languages/main` lacks two small commits that `main` and `languages/ocr-engines` have: the `AGENTS.md` step that
-  reads the local memory index (`9bf66117`) and the `/testdata/local-research/` ignore rule (`db08588a`, on `main` as
-  `6dd947ca`). `features/camera-lookup` has both now. The status entry of the second: a static comparison of
+- `languages/main` has, through the camera branch, the two small commits of `main` and `languages/ocr-engines`: the
+  `AGENTS.md` step that reads the local memory index (`9bf66117`) and the `/testdata/local-research/` ignore rule
+  (`db08588a`, on `main` as `6dd947ca`). The status entry of the second: a static comparison of
   dictionary import, lookup and Japanese rules (2026-10-26), kept only in the main checkout's
   `testdata/local-research/`.
 - `git worktree list` shows about fifteen old worktrees (detached ones in `.claude/worktrees/` and in Claude's temp
   folders); cleaning them up is the owner's decision.
 - `main` CI passes again (every run since 2026-10-22).
 
-### Camera feature (`features/camera-lookup`)
+### Camera feature (on `languages/main`)
 
 - Phone checks the emulator cannot do: sharpness, focus, flash, capture delay, memory over repeated captures, the
   photo picker and a share from the phone's gallery, a second import after a restart from the recent apps. The e-ink
@@ -69,11 +69,12 @@ the details.
     language, not of the searched one (`SearchScreen`, `ProcessTextActivity`);
   - a screen scan's popup stays after a tab change inside the app (a scan is a snapshot).
 
-### Emulators (2026-10-27: both shut down, the lock released)
+### Emulators (2026-10-28: both shut down)
 
-- API 37 (`Pixel_10_Pro`): the debug app of `a16ceda7` (x86_64 copy), Slovenian active, Korean unstarred, no current
-  photo and an empty photo history. The updates of YouTube, YouTube Music, Maps, Gmail, Photos and the Google app were
-  uninstalled to free about 1 GB (`/data` 1.6 GB free); the Play Store brings them back, and installs fail again when
+- API 37 (`Pixel_10_Pro`): the debug app of the camera follow-ups (`0.2.3-be79b43c`, built with the changes before
+  their commit, x86_64 only), Slovenian active, Korean unstarred, the photo language Japanese, no current photo and
+  an empty photo history; `/sdcard/Pictures/market-4000.jpg` (4000 × 3000, English) for photo cases. The updates of
+  YouTube, YouTube Music, Maps, Gmail, Photos and the Google app were uninstalled to free about 1 GB (`/data` 1.6 GB free); the Play Store brings them back, and installs fail again when
   space runs out. The local AnkiDroid deck "Default" holds test notes. `/sdcard/AnkiDroid-owner-backup` (1.1 GB,
   the same as `testdata/anki-backup/`) stays until the owner decides.
 - API 30 (`Screenlate_API30_glide`): the debug app of `a16ceda7` at its first run.
@@ -100,6 +101,28 @@ the details.
   far), the bubble menu on the docked bubble (request 75). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
 - Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
+
+## Camera follow-ups from the phone build (2026-10-27 to 2026-10-28, merged into `languages/main`)
+
+The owner's feedback on the phone build, worked in the coordinating session's worktree `.worktrees/camera` on
+`features/camera-followups` (from `features/camera-lookup` `be79b43c`). Decisions in the camera plan (rows "Photo
+reading", "Camera settings: recognition", "Bubble menu over a photo"; changelog 2026-10-27):
+
+- A photo is read whole once by default, scaled to 1500 px; High accuracy (Camera settings, a "Recognition" group
+  first, with an Engines row that opens Bubble → Screen recognition) reads by tiles plus the overview as before;
+  Recognize more accurately, first in ⋮, reads a large photo read whole by tiles once. Stored recognitions carry the
+  mode (`RecognitionCodec` version 4; older ones read as tiled). A photo read whole is pending while High accuracy is
+  on; a tiled one is not while it is off.
+- With Both, a photo tile is read by the cloud alone and by the device only when the cloud fails (it waited for the
+  device before).
+- The popup no longer shows the previous word for a moment: a popup opened again stays transparent until the new view
+  is drawn (`LookupPage.whenDrawn`), and an open one moves to the new word only then. Screen scans too.
+- The bubble's hold menu has no Open Screenlate while Screenlate is in front; a menu without items does not open.
+- New cases: BUB17, POP39, CAM56–CAM58; CAM7 and CAM55 reworded.
+
+Checked on API 37 on 2026-10-28 (run log in `ai/test-model.md`): POP39 frame by frame, BUB17, CAM7 and CAM56–CAM58
+pass. Not seen on the emulator: BUB17's vibration (the AVD records none) and CAM58 for a photo up to 1500 px (unit
+test only). The phone keeps its own checks (above, "Camera feature").
 
 ## Camera code review (2026-10-26 to 2026-10-27, done)
 
