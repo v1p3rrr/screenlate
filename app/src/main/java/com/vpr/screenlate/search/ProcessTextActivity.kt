@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.vpr.screenlate.MainActivity
 import com.vpr.screenlate.MainViewModel
 import com.vpr.screenlate.overlay.OverlayIntents
 import com.vpr.screenlate.ui.theme.ScreenlateTheme
@@ -39,11 +38,7 @@ class ProcessTextActivity : ComponentActivity() {
 
     /** [screen] is one of the `OverlayIntents.OPEN_*` values. */
     private fun openApp(screen: String) {
-        startActivity(
-            Intent(this, MainActivity::class.java)
-                .putExtra(OverlayIntents.EXTRA_OPEN, screen)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
-        )
+        OverlayIntents.openScreen(this, screen)
         finish()
     }
 }

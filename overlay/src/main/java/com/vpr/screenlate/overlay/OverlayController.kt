@@ -202,10 +202,7 @@ class OverlayController(
             }
         },
         onOpenAnkiSettings = {
-            service.packageManager.getLaunchIntentForPackage(service.packageName)
-                ?.putExtra(OverlayIntents.EXTRA_OPEN, OverlayIntents.OPEN_ANKI_SETTINGS)
-                ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                ?.let { runCatching { service.startActivity(it) } }
+            OverlayIntents.openScreen(service, OverlayIntents.OPEN_ANKI_SETTINGS)
             dock()
         },
     )
