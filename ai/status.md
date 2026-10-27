@@ -1,5 +1,106 @@
 # Status
 
+## Start here: open items of all work (2026-10-27)
+
+A session that opens this file in another checkout may read an older copy. Until `features/camera-lookup` is merged,
+the full status is on it: `git show origin/features/camera-lookup:ai/status.md`. The sections below this one hold
+the details.
+
+### Branches and checkouts
+
+- `origin/languages/main` (`073c50a4`) is the integration line. `features/camera-lookup` (`b718d550` and this entry)
+  is `languages/main` plus the camera feature and its review, so it fast-forwards `languages/main` while that has
+  not moved. Merging it is the owner's or the coordinating session's decision, not the camera session's.
+- The main checkout `D:/Documents/ClaudeProjects/Screenlate` is on `languages/ocr-engines`, 340 commits behind
+  `languages/main`, with the local commit `db08588a` not pushed; its `ai/status.md` is old. The `.worktrees/lang`
+  checkout of `languages/main` is 2 commits behind `origin`.
+- `languages/main` lacks two small commits that `main` and `languages/ocr-engines` have: the `AGENTS.md` step that
+  reads the local memory index (`9bf66117`) and the `/testdata/local-research/` ignore rule (`db08588a`, on `main` as
+  `6dd947ca`). `features/camera-lookup` has both now. The status entry of the second: a static comparison of
+  dictionary import, lookup and Japanese rules (2026-10-26), kept only in the main checkout's
+  `testdata/local-research/`.
+- `git worktree list` shows about fifteen old worktrees (detached ones in `.claude/worktrees/` and in Claude's temp
+  folders); cleaning them up is the owner's decision.
+- `main` CI passes again (every run since 2026-10-22).
+
+### Camera feature (`features/camera-lookup`)
+
+- Phone checks the emulator cannot do: sharpness, focus, flash, capture delay, memory over repeated captures, the
+  photo picker and a share from the phone's gallery, a second import after a restart from the recent apps. The e-ink
+  history button has not been checked by hand.
+- Speed to recheck: on 2026-10-27 the emulator ran about three times slower than the day before (ML Kit's band 3-4 s
+  instead of 1.1 s, so the device draft never came before the cloud result; bubble drag frames 113 ms median instead
+  of 30-34 ms). The screen OCR path had not changed. Recheck NF1 and NF3 on the phone or after a host restart.
+- Not run on a device: a tap on a Latin word or a number inside an Arabic line read by cloud recognition (no
+  character boxes); only `TextLayoutTest` covers it, and the change applies to screen scans in right-to-left
+  languages too. CAM33 (zoom kept when the status strip changes height) has only its unit test.
+- The owner's phone runs the diagnostics build `0.2.3-2a65358f` (2026-10-19; the latest diagnostics build is
+  `9937cc41`). The owner got `screenlate-dev-a16ceda7-arm64-min.apk` (same package and debug key, so it installs over
+  it and keeps the data); whether it is installed is not known. Installing it ends the diagnostics recording, so the
+  diagnostics export comes first if those days are wanted. It is a release-type build: no bug badge on the icon (CI
+  debug builds keep it), not debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras), Check
+  for updates active. Recipe and R8 mapping: `notes/build-environment.md`, the main checkout's
+  `testdata/local-research/builds/`.
+- Possible defects the review left, each judged rare or harmless (reasons under "Findings" in
+  `plans/2026-10-26-camera-review.md`):
+  - process death between a recognition's last tile and its commit: Retry is not offered; a new recognition
+    recovers;
+  - a camera error after binding (disabled by a policy, a fatal device error) leaves a black preview instead of
+    "Camera unavailable"; leaving and returning to the tab recreates the camera;
+  - a dismissed first permission request counts as blocked: the page offers the system settings instead of asking
+    again;
+  - a history photo whose opening ends while the app is paused opens, but the history page stays on top;
+  - a failed history read looks like an empty history;
+  - with automatic saving, Save to history is enabled for a moment after a capture;
+  - Camera settings: a close that arrives while the app is paused is dropped (the limit is stored, the page stays);
+  - the crop editor's 48 dp margin around a photo frame is approximate (more for a tall photo);
+  - photo recognition: a device fallback tile next to a cloud tile can keep both readings of a line (only when the
+    cloud fails for some tiles); a word of one repeated glyph across a seam can lose one or two repeats; an engine
+    line holding two rows would join every line of the other tile it shares a word with (no engine is known to do
+    it); NFD text with a box per code point loses its boxes (not seen); a joined line whose tile parts disagree takes
+    the language's direction (a Hebrew sign in a photo set to English whose part in one tile holds only a number);
+  - efficiency: each tile re-encodes the attempt so far, collectors of the current photo re-read it on each row
+    change, `PhotoEntity.imageBytes` is written and never read, renames have no directory fsync.
+- Seen in older code outside the feature, left for the full review:
+  - a double tap on the bubble switches the aim mode but keeps the old mode's aim point until the bubble moves
+    (`OverlayController.toggleAimMode`); the photo's moves keep it too;
+  - a screen size change during a touch docks the bubble under the finger (`onConfigurationChanged` calls `dock()`);
+  - the Search page and the selection menu's search open the Anki settings and the dictionaries of the active
+    language, not of the searched one (`SearchScreen`, `ProcessTextActivity`);
+  - a screen scan's popup stays after a tab change inside the app (a scan is a snapshot).
+
+### Emulators (2026-10-27: both shut down, the lock released)
+
+- API 37 (`Pixel_10_Pro`): the debug app of `a16ceda7` (x86_64 copy), Slovenian active, Korean unstarred, no current
+  photo and an empty photo history. The updates of YouTube, YouTube Music, Maps, Gmail, Photos and the Google app were
+  uninstalled to free about 1 GB (`/data` 1.6 GB free); the Play Store brings them back, and installs fail again when
+  space runs out. The local AnkiDroid deck "Default" holds test notes. `/sdcard/AnkiDroid-owner-backup` (1.1 GB,
+  the same as `testdata/anki-backup/`) stays until the owner decides.
+- API 30 (`Screenlate_API30_glide`): the debug app of `a16ceda7` at its first run.
+
+### Host
+
+- `D:/tmp_apk` is an empty folder the camera review made for a short APK path; Claude's safety check refused to
+  remove it, so the owner deletes it.
+
+### Outside the camera feature
+
+- Release from `main` ("Release from `main`" below): port the download-queue fix and the three related commits from
+  `languages/main`, run the checks listed there, write the release notes; the version number is asked at release
+  time.
+- The ColorOS report ("User report (2026-10-20)", `notes/oem-background-limits.md`): waiting for the user's answers
+  and logs.
+- The temporary diagnostics build: waiting for the owner's export after a few days of use; then the branch is removed.
+- Languages ("Work in progress (2026-10-22, night)" and "(2026-10-19)" below): open questions 69 (pre-connect) and
+  72-76 and those the block sessions added to their plans; not checked on a device: the Kazakh pronoun skip, the
+  Russian label of the -ыш rule, the other three PanLex archives; from the checks: the timing run's row "Default OCR
+  engines", the speed marks in words and the Both-mode hint; DIC24 (resume after Clear cache) and DIC25 not run; the
+  owner re-imports the Russian dictionaries (the stress-mark rule changes them at import).
+- Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
+  far), the bubble menu on the docked bubble (request 75). The full code review per module (`notes/module-map.md`)
+  and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
+- Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
+
 ## Camera code review (2026-10-26 to 2026-10-27, done)
 
 Plan: `ai/plans/2026-10-26-camera-review.md` (its "Current position" is the place to continue from). Checkout:
@@ -278,9 +379,8 @@ fixes, the scan changes and the language rules audit) was reviewed and merged in
   Clear cache not run), DIC25 not run yet.
 
 Still to do from the checks: the timing run's row "Default OCR engines", the speed marks in words and the Both-mode
-hint; fast-forward `languages/main` through the stack. `main` CI has failed since 2026-10-15 on lint `RestrictedApi`
-(`Data.Builder.put`, `Result.Retry` in the import worker); the language branch no longer has that code, so it ends
-with the next release from it.
+hint; fast-forward `languages/main` through the stack. `main` CI failed from 2026-10-15 on lint `RestrictedApi`
+(`Data.Builder.put`, `Result.Retry` in the import worker); it passes again (every run since 2026-10-22).
 
 TEMPORARY diagnostics build (open item, remove after the analysis): branch `claude/diagnostics-build-9fbbc9`
 (session "Temporary diagnostics build: logs and metrics", `notes/diagnostics.md` on that branch) records timings,

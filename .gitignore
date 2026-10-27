@@ -14,6 +14,9 @@ local.properties
 /*.zip
 /dicts/
 
+# Local research reports and source comparisons.
+/testdata/local-research/
+
 # Release signing secrets.
 keystore.properties
 *.jks
