@@ -39,11 +39,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.vpr.screenlate.R
 import com.vpr.screenlate.anki.AnkiSettingsScreen
+import com.vpr.screenlate.audio.AudioSettingsScreen
 import com.vpr.screenlate.background.BackgroundTipViewModel
 import com.vpr.screenlate.background.BackgroundWorkScreen
 import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.backup.BackupScreen
 import com.vpr.screenlate.bubble.BubbleSettingsScreen
+import com.vpr.screenlate.bubble.HiddenAppsScreen
 import com.vpr.screenlate.camera.CameraScreen
 import com.vpr.screenlate.camera.CameraSettingsScreen
 import com.vpr.screenlate.camera.PhotoHistoryScreen
@@ -56,6 +58,7 @@ import com.vpr.screenlate.languages.FirstRunScreen
 import com.vpr.screenlate.languages.LanguageSetupScreen
 import com.vpr.screenlate.languages.LanguagesScreen
 import com.vpr.screenlate.lookup.LookupSettingsScreen
+import com.vpr.screenlate.recognition.RecognitionSettingsScreen
 import com.vpr.screenlate.search.SearchScreen
 import com.vpr.screenlate.settings.AboutScreen
 import com.vpr.screenlate.settings.AppearanceScreen
@@ -83,14 +86,26 @@ private data class DictionariesRoute(val language: String? = null)
 /**
  * @property language the code of the language the page opens on, as `AnkiSettingsViewModel` reads it; null for the
  *   active one.
- * @property audio scrolls to the audio sources.
  */
 @Serializable
-private data class AnkiRoute(val language: String? = null, val audio: Boolean = false)
+private data class AnkiRoute(val language: String? = null)
 
-/** @property showAppText scrolls to the app text switches; [showRecognition], to screen recognition. */
+/** @property language the code of the language the page opens on, as `AudioSettingsViewModel` reads it. */
 @Serializable
-private data class BubbleRoute(val showAppText: Boolean = false, val showRecognition: Boolean = false, val ocrModels: String? = null)
+private data class AudioRoute(val language: String? = null)
+
+@Serializable
+private object BubbleRoute
+
+@Serializable
+private object HiddenAppsRoute
+
+/**
+ * @property showAppText scrolls to the app text switches.
+ * @property ocrModels opens the on-device models of the language with this code.
+ */
+@Serializable
+private data class RecognitionRoute(val showAppText: Boolean = false, val ocrModels: String? = null)
 
 /**
  * Opens a page on the language with [language] (its code), or on the active one when null; [number] tells repeated
@@ -228,7 +243,7 @@ fun ScreenlateNavHost(
         dictionariesRequest?.let { inSettings(DictionariesRoute(it.language)) }
     }
     LaunchedEffect(ocrModelsRequest) {
-        ocrModelsRequest?.language?.let { inSettings(BubbleRoute(ocrModels = it)) }
+        ocrModelsRequest?.language?.let { inSettings(RecognitionRoute(ocrModels = it)) }
     }
     val onTabRoot = entry?.destination?.hasRoute(tab.root::class) == true
     BackHandler(enabled = tab != Tab.HOME && onTabRoot) { select(Tab.HOME) }
@@ -258,8 +273,8 @@ fun ScreenlateNavHost(
                 HomeScreen(
                     onOpenDictionaries = { go(DictionariesRoute()) },
                     onOpenAnki = { language -> go(AnkiRoute(language?.code)) },
-                    onOpenAudio = { language -> go(AnkiRoute(language?.code, audio = true)) },
-                    onOpenAppText = { go(BubbleRoute(showAppText = true)) },
+                    onOpenAudio = { language -> go(AudioRoute(language?.code)) },
+                    onOpenAppText = { go(RecognitionRoute(showAppText = true)) },
                     onOpenLanguages = { go(LanguagesRoute) },
                 )
             }
@@ -278,7 +293,8 @@ fun ScreenlateNavHost(
                     onOpen = { page ->
                         go(
                             when (page) {
-                                SettingsPage.BUBBLE -> BubbleRoute()
+                                SettingsPage.BUBBLE -> BubbleRoute
+                                SettingsPage.RECOGNITION -> RecognitionRoute()
                                 SettingsPage.BACKGROUND -> BackgroundRoute
                                 SettingsPage.LOOKUP -> LookupRoute
                                 SettingsPage.POPUP -> PopupRoute
@@ -286,6 +302,7 @@ fun ScreenlateNavHost(
                                 SettingsPage.CAMERA -> CameraSettingsRoute
                                 SettingsPage.DICTIONARIES -> DictionariesRoute()
                                 SettingsPage.ANKI -> AnkiRoute()
+                                SettingsPage.AUDIO -> AudioRoute()
                                 SettingsPage.APPEARANCE -> AppearanceRoute
                                 SettingsPage.BACKUP -> BackupRoute()
                                 SettingsPage.ABOUT -> AboutRoute
@@ -294,12 +311,14 @@ fun ScreenlateNavHost(
                     },
                 )
             }
-            composable<BubbleRoute> { entry ->
-                val route = entry.toRoute<BubbleRoute>()
-                BubbleSettingsScreen(
+            composable<BubbleRoute> { BubbleSettingsScreen(onBack = back, onOpenHiddenApps = { go(HiddenAppsRoute) }) }
+            composable<HiddenAppsRoute> { HiddenAppsScreen(onBack = back) }
+            composable<RecognitionRoute> { entry ->
+                val route = entry.toRoute<RecognitionRoute>()
+                RecognitionSettingsScreen(
                     onBack = back,
+                    onOpenOcrTest = { go(OcrTestRoute) },
                     showAppText = route.showAppText,
-                    showRecognition = route.showRecognition,
                     ocrModels = route.ocrModels,
                 )
             }
@@ -318,7 +337,6 @@ fun ScreenlateNavHost(
             composable<AboutRoute> {
                 AboutScreen(
                     onBack = back,
-                    onOpenOcrTest = { go(OcrTestRoute) },
                     onOpenLibraries = { go(LibrariesRoute) },
                     onOpenNotices = { go(NoticesRoute) },
                 )
@@ -335,16 +353,17 @@ fun ScreenlateNavHost(
             }
             composable<CameraRoute> {
                 CameraScreen(onOpenDictionaries = { language -> inSettings(DictionariesRoute(language.code)) },
-                    onOpenModels = { language -> inSettings(BubbleRoute(ocrModels = language.code)) },
+                    onOpenModels = { language -> inSettings(RecognitionRoute(ocrModels = language.code)) },
                     onOpenLanguages = { inSettings(LanguagesRoute) },
                     onOpenHistory = { go(CameraHistoryRoute) },
                     onOpenSettings = { go(CameraSettingsRoute) })
             }
             composable<CameraHistoryRoute> { PhotoHistoryScreen(onBack = back) }
             composable<CameraSettingsRoute> {
-                CameraSettingsScreen(onBack = back, onOpenEngines = { go(BubbleRoute(showRecognition = true)) })
+                CameraSettingsScreen(onBack = back, onOpenEngines = { go(RecognitionRoute()) })
             }
-            composable<AnkiRoute> { entry -> AnkiSettingsScreen(onBack = back, showAudio = entry.toRoute<AnkiRoute>().audio) }
+            composable<AnkiRoute> { AnkiSettingsScreen(onBack = back) }
+            composable<AudioRoute> { AudioSettingsScreen(onBack = back) }
             composable<DictionariesRoute> {
                 DictionariesScreen(
                     onBack = back,

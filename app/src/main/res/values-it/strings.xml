@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate: la palette viola dell’app. Sistema: colori scelti dal telefono, di solito in base allo sfondo.</string>
 
     <string name="action_back">Indietro</string>
-    <string name="home_tools_title">Strumenti</string>
     <string name="ocr_test_title">Test OCR</string>
     <string name="ocr_test_pick_image">Scegli un’immagine</string>
     <string name="ocr_test_running">Riconoscimento…</string>
@@ -125,7 +124,7 @@
     <string name="home_anki_ready">Le note vanno in %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Scegli un mazzo, un tipo di nota e i modelli dei campi.</string>
 
-    <string name="anki_title">Anki e audio</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">AnkiDroid non è installato. Installalo per aggiungere note dal popup.</string>
     <string name="anki_permission_explanation">Screenlate ha bisogno di accedere al database di AnkiDroid per elencare i mazzi e aggiungere note.</string>
     <string name="anki_grant_permission">Consenti l’accesso ad AnkiDroid</string>
@@ -159,6 +158,7 @@
     <string name="anki_behavior_new">Aggiungi comunque</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_playback">Riproduzione</string>
     <string name="audio_auto_play">Riproduzione automatica dell’audio</string>
     <string name="audio_sources_hint">Le fonti vengono provate dall’alto in basso; la prima con un audio viene riprodotta e finisce nelle note. Tocca una fonte per modificarla.</string>
     <string name="audio_url_template">Modello di URL</string>
@@ -239,13 +239,29 @@
     <string name="anki_overwrite_prepend">aggiungi all’inizio</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Impostazioni</string>
-    <string name="settings_bubble_summary">Mira, lato, fonte del testo, app nascoste</string>
+    <string name="settings_bubble_summary">Mira, lato, dimensione, app nascoste</string>
     <string name="lookup_title">Ricerca</string>
     <string name="settings_lookup_summary">Lunghezza di scansione, risultati, romaji, caratteri della parola</string>
     <string name="appearance_title">Aspetto</string>
     <string name="settings_appearance_summary">Tema, colori, e-ink, lingua</string>
     <string name="settings_popup_summary">Testo riconosciuto, chiusura automatica, carattere, dimensione e peso del testo, CSS, copia delle definizioni</string>
     <string name="settings_translation_summary">Pulsante di traduzione, note, servizi, lingua</string>
+    <string name="recognition_title">Riconoscimento del testo</string>
+    <string name="settings_recognition_summary">Motori, potenziamento OCR, modelli sul dispositivo, testo delle app</string>
+    <string name="settings_audio_summary">Riproduzione automatica, fonti, volume</string>
+    <string name="reset_audio_text">La riproduzione automatica, il volume, le fonti audio e l’ordine delle regioni vengono ripristinati ai valori predefiniti.</string>
+    <string name="reset_recognition_text">I motori, il potenziamento OCR, la riduzione del carico, il modello sul dispositivo di ogni lingua e le impostazioni del testo delle app vengono ripristinati ai valori predefiniti. I modelli scaricati restano.</string>
+        <string name="recognition_app_text_title">Testo delle app</string>
+<string name="recognition_test_title">Prova</string>
+    <string name="recognition_test_hint">Riconoscere un’immagine come in una scansione, con il testo e il tempo di ogni motore.</string>
+    <string name="bubble_hidden_apps_none">Visibile in tutte le app</string>
+    <string name="background_allowlist_title">Se il servizio si disattiva</string>
+    <string name="background_allowlist_text">Se il sistema disattiva di continuo il servizio di accessibilità di Screenlate e la bolla scompare dallo schermo, l’app di sicurezza del telefono potrebbe limitare le app installate fuori da uno store. Apri l’app di sicurezza (su alcuni telefoni Sicurezza o Gestione telefono), trova l’elenco delle app consentite o attendibili, aggiungi Screenlate e riattiva il servizio.</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="one">Nascosta in %1$d app</item>
+        <item quantity="many">Nascosta in %1$d app</item>
+        <item quantity="other">Nascosta in %1$d app</item>
+    </plurals>
     <string name="yomitan_import_title">Importa da Yomitan</string>
     <string name="about_title">Informazioni</string>
     <string name="settings_about_summary">Versione, aggiornamenti, licenze, log</string>
@@ -522,7 +538,8 @@
     <string name="popup_font_script_only_hint_any">Le altre scritture usano il carattere del telefono. Vale per i caratteri scaricati e aggiunti.</string>
     <string name="popup_text_weight_info_languages">Rende più leggibile il testo sottile. Con “Solo per il testo …” attivo per una lingua, o con il carattere del telefono, diventano più spessi solo i caratteri di quella lingua; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
     <string name="languages_settings_hint">Le impostazioni qui sotto valgono per la lingua scelta; il resto della pagina vale per tutte le lingue.</string>
-    <string name="anki_languages_hint">Il mazzo, il tipo di nota, i modelli dei campi, le etichette, la gestione dei duplicati e le fonti audio si impostano per ogni lingua. La traduzione nelle note, la riproduzione automatica e il volume sono comuni.</string>
+    <string name="anki_languages_hint">Il mazzo, il tipo di nota, i modelli dei campi, le etichette e la gestione dei duplicati si impostano per ogni lingua. La traduzione nelle note è comune.</string>
+    <string name="audio_languages_hint">Le fonti audio e l’ordine delle regioni si impostano per ogni lingua. La riproduzione automatica e il volume sono comuni.</string>
     <string name="yomitan_summary_language">Lingua: %1$s</string>
     <string name="reset_section_language">Vengono ripristinate le impostazioni comuni a tutte le lingue e quelle della lingua mostrata nella pagina; le altre lingue mantengono le proprie.</string>
     <string name="popup_settings_title">Popup</string>
@@ -762,7 +779,7 @@
     <string name="reset_section_title">Ripristinare questa sezione?</string>
     <string name="reset_bubble_text">Tutte le impostazioni della bolla vengono ripristinate ai valori predefiniti, comprese le app nascoste, la dimensione della bolla e la sua posizione sullo schermo. Una bolla nascosta viene mostrata di nuovo.</string>
     <string name="reset_lookup_text">La lunghezza di scansione, le voci per ricerca e le altre impostazioni di ricerca vengono ripristinate ai valori predefiniti.</string>
-    <string name="reset_anki_text">Il mazzo, il tipo di nota, i modelli dei campi, le etichette, la gestione dei duplicati e le fonti audio vengono ripristinati ai valori predefiniti. In AnkiDroid non cambia nulla.</string>
+    <string name="reset_anki_text">Il mazzo, il tipo di nota, i modelli dei campi, le etichette e la gestione dei duplicati vengono ripristinati ai valori predefiniti. In AnkiDroid non cambia nulla.</string>
     <string name="reset_popup_text">Il testo riconosciuto in alto, la copia delle definizioni, la chiusura automatica, la scelta del carattere, la dimensione e il peso del testo e il CSS personalizzato vengono ripristinati ai valori predefiniti. I caratteri scaricati e aggiunti restano installati.</string>
     <string name="reset_translation_text">Il pulsante di traduzione, la traduzione nelle note, l’ordine e gli interruttori dei servizi, la lingua e le lingue preferite vengono ripristinati ai valori predefiniti.</string>
     <string name="reset_appearance_text">Il tema torna a seguire il sistema, i colori vengono ripristinati a quelli predefiniti di Screenlate e la modalità e-ink viene disattivata, ripristinando le dimensioni che aveva ingrandito. La lingua dell’app viene mantenuta.</string>

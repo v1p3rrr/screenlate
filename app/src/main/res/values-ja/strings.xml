@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate：アプリ独自の紫の配色。システム：スマートフォンが選ぶ色（通常は壁紙に合わせた色）。</string>
 
     <string name="action_back">戻る</string>
-    <string name="home_tools_title">ツール</string>
     <string name="ocr_test_title">OCR テスト</string>
     <string name="ocr_test_pick_image">画像を選ぶ</string>
     <string name="ocr_test_running">認識中…</string>
@@ -121,7 +120,7 @@
     <string name="home_anki_ready">ノートの追加先：%1$s（%2$s）</string>
     <string name="home_anki_not_configured">デッキ、ノートタイプ、フィールドテンプレートを選んでください。</string>
 
-    <string name="anki_title">Anki と音声</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">AnkiDroid がインストールされていません。ポップアップからノートを追加するにはインストールしてください。</string>
     <string name="anki_permission_explanation">デッキの一覧表示とノートの追加のために、Screenlate は AnkiDroid のデータベースへのアクセスが必要です。</string>
     <string name="anki_grant_permission">AnkiDroid へのアクセスを許可</string>
@@ -155,6 +154,7 @@
     <string name="anki_behavior_new">新しく追加</string>
 
     <string name="audio_title">音声</string>
+    <string name="audio_playback">再生</string>
     <string name="audio_auto_play">音声の自動再生</string>
     <string name="audio_sources_hint">上から順に試し、最初に音声が見つかったものを再生してノートに入れます。ソースをタップすると編集できます。</string>
     <string name="audio_url_template">URL テンプレート</string>
@@ -235,13 +235,27 @@
     <string name="anki_overwrite_prepend">先頭に追加</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">設定</string>
-    <string name="settings_bubble_summary">照準、寄せる側、テキストの取得元、非表示のアプリ</string>
+    <string name="settings_bubble_summary">照準、寄せる側、サイズ、非表示のアプリ</string>
     <string name="lookup_title">検索</string>
     <string name="settings_lookup_summary">スキャン長、結果、ローマ字、語の漢字</string>
     <string name="appearance_title">外観</string>
     <string name="settings_appearance_summary">テーマ、カラー、E Ink、言語</string>
     <string name="settings_popup_summary">認識したテキスト、自動で閉じる、フォント、文字サイズと太さ、CSS、定義のコピー</string>
     <string name="settings_translation_summary">翻訳ボタン、ノート、サービス、言語</string>
+    <string name="recognition_title">文字認識</string>
+    <string name="settings_recognition_summary">エンジン、OCR ブースト、端末上のモデル、アプリのテキスト</string>
+    <string name="settings_audio_summary">自動再生、ソース、音量</string>
+    <string name="reset_audio_text">自動再生、音量、音声のソース、地域の順番が初期値にリセットされます。</string>
+    <string name="reset_recognition_text">エンジン、OCR ブースト、負荷の軽減、各言語の端末上のモデル、アプリのテキストの設定が初期値にリセットされます。ダウンロードしたモデルは残ります。</string>
+        <string name="recognition_app_text_title">アプリのテキスト</string>
+<string name="recognition_test_title">テスト</string>
+    <string name="recognition_test_hint">スキャンと同じように画像を認識し、各エンジンのテキストと時間を表示します。</string>
+    <string name="bubble_hidden_apps_none">すべてのアプリで表示</string>
+    <string name="background_allowlist_title">サービスがオフになる場合</string>
+    <string name="background_allowlist_text">システムが Screenlate のユーザー補助サービスを何度もオフにし、バブルが画面から消える場合は、端末のセキュリティアプリがストア以外からインストールしたアプリを制限している可能性があります。セキュリティアプリ（端末によっては「セキュリティ」や「スマホマネージャー」）を開き、許可または信頼するアプリの一覧に Screenlate を追加して、サービスをもう一度オンにしてください。</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="other">%1$d 個のアプリで非表示</item>
+    </plurals>
     <string name="yomitan_import_title">Yomitan からインポート</string>
     <string name="about_title">アプリについて</string>
     <string name="settings_about_summary">バージョン、アップデート、ライセンス、ログ</string>
@@ -516,7 +530,8 @@
     <string name="popup_font_script_only_hint_any">ほかの文字体系には端末のフォントを使います。ダウンロードまたは追加したフォントに適用されます。</string>
     <string name="popup_text_weight_info_languages">細い文字を読みやすくします。言語の「…の文字だけに使う」がオンのとき、または端末のフォントのときはその言語の文字だけが太くなり、オフのときはすべての文字が太くなります。\n\n太さはフォント自身のウェイトを使います。ウェイトが一つだけのフォントは標準から太字に切り替わるだけなので、「中」は標準と同じに見えます。\n\n縁取りは各文字の周りに細い輪郭を描きます。どのフォントでも使え、太さに加わります。</string>
     <string name="languages_settings_hint">以下の設定は選んだ言語に適用されます。ページのほかの設定はすべての言語で共通です。</string>
-    <string name="anki_languages_hint">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱い、音声のソースは言語ごとに設定します。ノートの翻訳、音声の自動再生と音量は共通です。</string>
+    <string name="anki_languages_hint">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱いは言語ごとに設定します。ノートの翻訳は共通です。</string>
+    <string name="audio_languages_hint">音声のソースと地域の順番は言語ごとに設定します。自動再生と音量は共通です。</string>
     <string name="yomitan_summary_language">言語：%1$s</string>
     <string name="reset_section_language">すべての言語で共通の設定と、ページに表示中の言語の設定がリセットされます。ほかの言語の設定はそのままです。</string>
     <string name="popup_settings_title">ポップアップ</string>
@@ -748,7 +763,7 @@
     <string name="reset_section_title">このセクションをリセットしますか？</string>
     <string name="reset_bubble_text">バブルの設定がすべて初期値にリセットされます。非表示にしたアプリ、バブルのサイズ、画面上の位置も含みます。非表示のバブルは再び表示されます。</string>
     <string name="reset_lookup_text">スキャン長、1 回の検索の項目数、その他の検索設定が初期値にリセットされます。</string>
-    <string name="reset_anki_text">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱い、音声のソースが初期値にリセットされます。AnkiDroid 側は何も変わりません。</string>
+    <string name="reset_anki_text">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱いが初期値にリセットされます。AnkiDroid 側は何も変わりません。</string>
     <string name="reset_popup_text">上部の認識したテキスト、定義のコピー、自動で閉じる設定、フォントの選択、文字のサイズと太さ、カスタム CSS が初期値にリセットされます。ダウンロード・追加したフォントは残ります。</string>
     <string name="reset_translation_text">翻訳ボタン、ノートの翻訳、サービスの順序とスイッチ、言語、お気に入りの言語が初期値にリセットされます。</string>
     <string name="reset_appearance_text">テーマはシステムに従う設定に戻り、カラーは Screenlate の初期配色にリセットされます。E Ink モードはオフになり、このモードで拡大したサイズも元に戻ります。アプリの言語は保持されます。</string>

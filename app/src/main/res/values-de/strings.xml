@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate: die eigene violette Farbpalette der App. System: vom Telefon gewählte Farben, meist passend zum Hintergrundbild.</string>
 
     <string name="action_back">Zurück</string>
-    <string name="home_tools_title">Werkzeuge</string>
     <string name="ocr_test_title">OCR-Test</string>
     <string name="ocr_test_pick_image">Bild auswählen</string>
     <string name="ocr_test_running">Wird erkannt…</string>
@@ -123,7 +122,7 @@
     <string name="home_anki_ready">Notizen landen in %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Wähle einen Stapel, einen Notiztyp und Feldvorlagen.</string>
 
-    <string name="anki_title">Anki und Audio</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">AnkiDroid ist nicht installiert. Installiere es, um Notizen aus dem Popup hinzuzufügen.</string>
     <string name="anki_permission_explanation">Screenlate braucht Zugriff auf die AnkiDroid-Datenbank, um Stapel aufzulisten und Notizen hinzuzufügen.</string>
     <string name="anki_grant_permission">Zugriff auf AnkiDroid erlauben</string>
@@ -157,6 +156,7 @@
     <string name="anki_behavior_new">Trotzdem hinzufügen</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_playback">Wiedergabe</string>
     <string name="audio_auto_play">Audio automatisch abspielen</string>
     <string name="audio_sources_hint">Quellen werden von oben nach unten probiert; die erste mit Audio wird abgespielt und kommt in die Notizen. Tippe auf eine Quelle, um sie zu bearbeiten.</string>
     <string name="audio_url_template">URL-Vorlage</string>
@@ -237,13 +237,28 @@
     <string name="anki_overwrite_prepend">voranstellen</string>
     <string name="audio_volume">Lautstärke: %1$d %%</string>
     <string name="settings_title">Einstellungen</string>
-    <string name="settings_bubble_summary">Zielpunkt, Seite, Textquelle, ausgeblendete Apps</string>
+    <string name="settings_bubble_summary">Zielpunkt, Seite, Größe, ausgeblendete Apps</string>
     <string name="lookup_title">Nachschlagen</string>
     <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Schriftzeichen des Wortes</string>
     <string name="appearance_title">Darstellung</string>
     <string name="settings_appearance_summary">Design, Farben, E-Ink, Sprache</string>
     <string name="settings_popup_summary">Erkannter Text, automatisches Ausblenden, Schrift, Textgröße und -stärke, CSS, Definitionen kopieren</string>
     <string name="settings_translation_summary">Übersetzungsschaltfläche, Notizen, Dienste, Sprache</string>
+    <string name="recognition_title">Texterkennung</string>
+    <string name="settings_recognition_summary">Engines, OCR-Boost, Modelle auf dem Gerät, App-Text</string>
+    <string name="settings_audio_summary">Automatische Wiedergabe, Quellen, Lautstärke</string>
+    <string name="reset_audio_text">Automatische Wiedergabe, Lautstärke, die Audioquellen und die Reihenfolge der Regionen werden auf die Standardwerte zurückgesetzt.</string>
+    <string name="reset_recognition_text">Engines, OCR-Boost, die Lastsenkung, das Modell jeder Sprache auf dem Gerät und die Einstellungen zum App-Text werden auf die Standardwerte zurückgesetzt. Heruntergeladene Modelle bleiben.</string>
+        <string name="recognition_app_text_title">App-Text</string>
+<string name="recognition_test_title">Test</string>
+    <string name="recognition_test_hint">Ein Bild wie bei einem Scan erkennen, mit Text und Zeit jeder Engine.</string>
+    <string name="bubble_hidden_apps_none">In allen Apps sichtbar</string>
+    <string name="background_allowlist_title">Wenn sich der Dienst ausschaltet</string>
+    <string name="background_allowlist_text">Wenn das System den Bedienungshilfen-Dienst von Screenlate immer wieder ausschaltet und die Blase vom Bildschirm verschwindet, schränkt die Sicherheits-App des Telefons womöglich Apps ein, die nicht aus einem App-Store stammen. Öffne die Sicherheits-App (auf manchen Telefonen „Sicherheit“ oder „Telefon-Manager“), suche dort die Liste erlaubter oder vertrauenswürdiger Apps, füge Screenlate hinzu und schalte den Dienst wieder ein.</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="one">In %1$d App ausgeblendet</item>
+        <item quantity="other">In %1$d Apps ausgeblendet</item>
+    </plurals>
     <string name="yomitan_import_title">Aus Yomitan importieren</string>
     <string name="about_title">Über</string>
     <string name="settings_about_summary">Version, Updates, Lizenzen, Protokolle</string>
@@ -519,7 +534,8 @@
     <string name="popup_font_script_only_hint_any">Andere Schriften verwenden die Schrift des Telefons. Gilt für heruntergeladene und hinzugefügte Schriften.</string>
     <string name="popup_text_weight_info_languages">Macht dünne Schrift besser lesbar. Ist bei einer Sprache „Nur für … Text“ an oder die Schrift des Telefons gewählt, werden nur die Zeichen dieser Sprache kräftiger; ist es aus, der ganze Text.\n\nDie Schriftstärke nutzt die Schnitte der Schrift selbst. Eine Schrift mit nur einem Schnitt springt von normal direkt zu fett, daher sieht mittel wie normal aus.\n\nDie Buchstabendicke zieht eine feine Kontur um jeden Buchstaben: Sie wirkt mit jeder Schrift und kommt zur Schriftstärke hinzu.</string>
     <string name="languages_settings_hint">Die Einstellungen unten gelten für die gewählte Sprache; der Rest der Seite gilt für alle Sprachen.</string>
-    <string name="anki_languages_hint">Stapel, Notiztyp, Feldvorlagen, Schlagwörter, der Umgang mit Duplikaten und die Audioquellen werden für jede Sprache festgelegt. Übersetzung in Notizen, automatische Audiowiedergabe und Lautstärke gelten für alle.</string>
+    <string name="anki_languages_hint">Stapel, Notiztyp, Feldvorlagen, Schlagwörter und der Umgang mit Duplikaten werden für jede Sprache festgelegt. Die Übersetzung in Notizen gilt für alle.</string>
+    <string name="audio_languages_hint">Die Audioquellen und die Reihenfolge der Regionen werden für jede Sprache festgelegt. Automatische Wiedergabe und Lautstärke gelten für alle.</string>
     <string name="yomitan_summary_language">Sprache: %1$s</string>
     <string name="reset_section_language">Zurückgesetzt werden die Einstellungen, die alle Sprachen teilen, und die der auf der Seite gezeigten Sprache; andere Sprachen behalten ihre.</string>
     <string name="popup_settings_title">Popup</string>
@@ -755,7 +771,7 @@
     <string name="reset_section_title">Diesen Bereich zurücksetzen?</string>
     <string name="reset_bubble_text">Alle Einstellungen der Blase werden auf die Standardwerte zurückgesetzt, auch die ausgeblendeten Apps, die Größe der Blase und ihre Position auf dem Bildschirm. Eine ausgeblendete Blase wird wieder angezeigt.</string>
     <string name="reset_lookup_text">Scanlänge, Einträge pro Suche und die übrigen Einstellungen zum Nachschlagen werden auf die Standardwerte zurückgesetzt.</string>
-    <string name="reset_anki_text">Stapel, Notiztyp, Feldvorlagen, Schlagwörter, der Umgang mit Duplikaten und die Audioquellen werden auf die Standardwerte zurückgesetzt. In AnkiDroid ändert sich nichts.</string>
+    <string name="reset_anki_text">Stapel, Notiztyp, Feldvorlagen, Schlagwörter und der Umgang mit Duplikaten werden auf die Standardwerte zurückgesetzt. In AnkiDroid ändert sich nichts.</string>
     <string name="reset_popup_text">Der erkannte Text oben, das Kopieren von Definitionen, das automatische Ausblenden, Schriftwahl, Textgröße und -stärke und eigenes CSS werden auf die Standardwerte zurückgesetzt. Heruntergeladene und hinzugefügte Schriften bleiben installiert.</string>
     <string name="reset_translation_text">Die Übersetzungsschaltfläche, die Übersetzung in Notizen, Reihenfolge und Schalter der Dienste, die Sprache und die Lieblingssprachen werden auf die Standardwerte zurückgesetzt.</string>
     <string name="reset_appearance_text">Das Design folgt wieder dem System, die Farben werden auf die Standardfarben von Screenlate zurückgesetzt, und der E-Ink-Modus wird ausgeschaltet, wodurch die von ihm vergrößerten Größen wiederhergestellt werden. Die App-Sprache bleibt erhalten.</string>

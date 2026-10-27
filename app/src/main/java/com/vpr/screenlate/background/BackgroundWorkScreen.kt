@@ -38,7 +38,10 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
-/** Battery optimization, the phone's own startup settings and the keep-alive notification, which all keep the bubble alive. */
+/**
+ * Battery optimization, the phone's own startup settings and the keep-alive notification, which all keep the bubble
+ * alive, and what to do when a security app keeps turning the service off.
+ */
 @Composable
 fun BackgroundWorkScreen(
     onBack: () -> Unit,
@@ -145,6 +148,9 @@ fun BackgroundWorkScreen(
                         Text(stringResource(R.string.background_keep_alive_notifications_allow), textAlign = TextAlign.Center)
                     }
                 }
+            }
+            SectionCard(title = stringResource(R.string.background_allowlist_title)) {
+                Text(stringResource(R.string.background_allowlist_text))
             }
         }
     }

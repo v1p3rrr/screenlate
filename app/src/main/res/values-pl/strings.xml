@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate: własna fioletowa paleta aplikacji. Systemowe: kolory dobierane przez telefon, zwykle do tapety.</string>
 
     <string name="action_back">Wstecz</string>
-    <string name="home_tools_title">Narzędzia</string>
     <string name="ocr_test_title">Test OCR</string>
     <string name="ocr_test_pick_image">Wybierz obraz</string>
     <string name="ocr_test_running">Rozpoznawanie…</string>
@@ -127,7 +126,7 @@
     <string name="home_anki_ready">Notatki trafiają do %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Wybierz talię, typ notatki i szablony pól.</string>
 
-    <string name="anki_title">Anki i dźwięk</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">AnkiDroid nie jest zainstalowany. Zainstaluj go, aby dodawać notatki z okienka.</string>
     <string name="anki_permission_explanation">Screenlate potrzebuje dostępu do bazy danych AnkiDroid, aby wyświetlać talie i dodawać notatki.</string>
     <string name="anki_grant_permission">Zezwól na dostęp do AnkiDroid</string>
@@ -161,6 +160,7 @@
     <string name="anki_behavior_new">Dodaj mimo to</string>
 
     <string name="audio_title">Dźwięk</string>
+    <string name="audio_playback">Odtwarzanie</string>
     <string name="audio_auto_play">Automatyczne odtwarzanie dźwięku</string>
     <string name="audio_sources_hint">Źródła są sprawdzane od góry do dołu; pierwsze z nagraniem jest odtwarzane i trafia do notatek. Dotknij źródła, aby je edytować.</string>
     <string name="audio_url_template">Szablon URL</string>
@@ -241,13 +241,30 @@
     <string name="anki_overwrite_prepend">dopisz na początku</string>
     <string name="audio_volume">Głośność: %1$d%%</string>
     <string name="settings_title">Ustawienia</string>
-    <string name="settings_bubble_summary">Celownik, strona, źródło tekstu, ukryte aplikacje</string>
+    <string name="settings_bubble_summary">Celownik, strona, rozmiar, ukryte aplikacje</string>
     <string name="lookup_title">Wyszukiwanie</string>
     <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, znaki słowa</string>
     <string name="appearance_title">Wygląd</string>
     <string name="settings_appearance_summary">Motyw, kolory, e-ink, język</string>
     <string name="settings_popup_summary">Rozpoznany tekst, automatyczne ukrywanie, czcionka, rozmiar i grubość tekstu, CSS, kopiowanie definicji</string>
     <string name="settings_translation_summary">Przycisk tłumaczenia, notatki, usługi, język</string>
+    <string name="recognition_title">Rozpoznawanie tekstu</string>
+    <string name="settings_recognition_summary">Silniki, wzmocnienie OCR, modele na urządzeniu, tekst aplikacji</string>
+    <string name="settings_audio_summary">Autoodtwarzanie, źródła, głośność</string>
+    <string name="reset_audio_text">Autoodtwarzanie, głośność, źródła dźwięku i kolejność regionów zostaną przywrócone do wartości domyślnych.</string>
+    <string name="reset_recognition_text">Silniki, wzmocnienie OCR, zmniejszanie obciążenia, model na urządzeniu dla każdego języka i ustawienia tekstu aplikacji zostaną przywrócone do wartości domyślnych. Pobrane modele pozostaną.</string>
+        <string name="recognition_app_text_title">Tekst aplikacji</string>
+<string name="recognition_test_title">Test</string>
+    <string name="recognition_test_hint">Rozpoznaj obraz tak jak przy skanowaniu, z tekstem i czasem każdego silnika.</string>
+    <string name="bubble_hidden_apps_none">Widoczny we wszystkich aplikacjach</string>
+    <string name="background_allowlist_title">Gdy usługa się wyłącza</string>
+    <string name="background_allowlist_text">Jeśli system raz po raz wyłącza usługę ułatwień dostępu Screenlate i dymek znika z ekranu, aplikacja zabezpieczeń telefonu może ograniczać aplikacje zainstalowane spoza sklepu. Otwórz aplikację zabezpieczeń (na niektórych telefonach „Bezpieczeństwo” lub „Menedżer telefonu”), znajdź listę dozwolonych lub zaufanych aplikacji, dodaj do niej Screenlate i ponownie włącz usługę.</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="one">Ukryty w %1$d aplikacji</item>
+        <item quantity="few">Ukryty w %1$d aplikacjach</item>
+        <item quantity="many">Ukryty w %1$d aplikacjach</item>
+        <item quantity="other">Ukryty w %1$d aplikacji</item>
+    </plurals>
     <string name="yomitan_import_title">Import z Yomitan</string>
     <string name="about_title">O aplikacji</string>
     <string name="settings_about_summary">Wersja, aktualizacje, licencje, logi</string>
@@ -525,7 +542,8 @@
     <string name="popup_font_script_only_hint_any">Inne pisma używają czcionki telefonu. Dotyczy pobranych i dodanych czcionek.</string>
     <string name="popup_text_weight_info_languages">Ułatwia czytanie cienkiego tekstu. Gdy przy języku włączone jest „Tylko dla tekstu …” albo używasz czcionki telefonu, grubsze stają się tylko znaki tego języka; gdy jest wyłączone — cały tekst.\n\nGrubość korzysta z odmian samej czcionki. Czcionka z jedną odmianą przechodzi od razu z normalnej na grubą, więc średnia wygląda jak normalna.\n\nObrys liter rysuje cienki kontur wokół każdej litery: działa z każdą czcionką i dodaje się do grubości.</string>
     <string name="languages_settings_hint">Ustawienia poniżej dotyczą wybranego języka; reszta strony dotyczy wszystkich języków.</string>
-    <string name="anki_languages_hint">Talię, typ notatki, szablony pól, tagi, obsługę duplikatów i źródła dźwięku ustawia się dla każdego języka. Tłumaczenie w notatkach, automatyczne odtwarzanie i głośność są wspólne.</string>
+    <string name="anki_languages_hint">Talię, typ notatki, szablony pól, tagi i obsługę duplikatów ustawia się dla każdego języka. Tłumaczenie w notatkach jest wspólne.</string>
+    <string name="audio_languages_hint">Źródła dźwięku i kolejność regionów ustawia się dla każdego języka. Automatyczne odtwarzanie i głośność są wspólne.</string>
     <string name="yomitan_summary_language">Język: %1$s</string>
     <string name="reset_section_language">Resetowane są ustawienia wspólne dla wszystkich języków i ustawienia języka pokazanego na stronie; inne języki zachowują swoje.</string>
     <string name="popup_settings_title">Okienko</string>
@@ -769,7 +787,7 @@
     <string name="reset_section_title">Zresetować tę sekcję?</string>
     <string name="reset_bubble_text">Wszystkie ustawienia dymka zostaną przywrócone do wartości domyślnych, w tym ukryte aplikacje, rozmiar dymka i jego położenie na ekranie. Ukryty dymek zostanie ponownie wyświetlony.</string>
     <string name="reset_lookup_text">Zasięg skanowania, hasła na wyszukiwanie i pozostałe ustawienia wyszukiwania zostaną przywrócone do wartości domyślnych.</string>
-    <string name="reset_anki_text">Talia, typ notatki, szablony pól, tagi, obsługa duplikatów i źródła dźwięku zostaną przywrócone do wartości domyślnych. W AnkiDroid nic się nie zmieni.</string>
+    <string name="reset_anki_text">Talia, typ notatki, szablony pól, tagi i obsługa duplikatów zostaną przywrócone do wartości domyślnych. W AnkiDroid nic się nie zmieni.</string>
     <string name="reset_popup_text">Rozpoznany tekst na górze, kopiowanie definicji, automatyczne ukrywanie, wybór czcionki, rozmiar i grubość tekstu oraz własny CSS zostaną przywrócone do wartości domyślnych. Pobrane i dodane czcionki pozostaną zainstalowane.</string>
     <string name="reset_translation_text">Przycisk tłumaczenia, tłumaczenie w notatkach, kolejność i przełączniki usług, język i ulubione języki zostaną przywrócone do wartości domyślnych.</string>
     <string name="reset_appearance_text">Motyw znowu podąża za systemem, kolory wracają do domyślnych kolorów Screenlate, a tryb e-ink zostaje wyłączony, co przywraca powiększone przez niego rozmiary. Język aplikacji zostanie zachowany.</string>

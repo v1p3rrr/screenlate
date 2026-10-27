@@ -63,8 +63,10 @@ fun SectionResetButton(
 private val SettingsSection.text: Int
     @StringRes get() = when (this) {
         SettingsSection.BUBBLE -> R.string.reset_bubble_text
+        SettingsSection.RECOGNITION -> R.string.reset_recognition_text
         SettingsSection.LOOKUP -> R.string.reset_lookup_text
         SettingsSection.ANKI -> R.string.reset_anki_text
+        SettingsSection.AUDIO -> R.string.reset_audio_text
         SettingsSection.POPUP -> R.string.reset_popup_text
         SettingsSection.TRANSLATION -> R.string.reset_translation_text
         SettingsSection.APPEARANCE -> R.string.reset_appearance_text

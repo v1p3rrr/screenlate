@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Settings pages with their own reset. */
-enum class SettingsSection { BUBBLE, LOOKUP, ANKI, POPUP, TRANSLATION, APPEARANCE, BACKGROUND }
+enum class SettingsSection { BUBBLE, RECOGNITION, LOOKUP, ANKI, AUDIO, POPUP, TRANSLATION, APPEARANCE, BACKGROUND }
 
 /**
  * Returns settings to their defaults by removing the stored values. The dictionaries, the bundled dictionary
@@ -44,7 +44,7 @@ class SettingsReset @Inject constructor(
             prefs.asMap().keys.filter { SettingsKeys.resets(it.name, sections, everything, language) }.forEach { prefs.remove(it) }
         }
         // The shared audio settings are stored with Japanese's sources, which stay when another language is reset.
-        if (SettingsSection.ANKI in sections && language != null && language != Language.JAPANESE) audioSettings.resetShared()
+        if (SettingsSection.AUDIO in sections && language != null && language != Language.JAPANESE) audioSettings.resetShared()
         // As the switch does: the running service stops it too, but the system may have restarted the notification
         // without the service.
         if (SettingsSection.BACKGROUND in sections) BubbleKeepAliveService.keepAlive(context, false)
@@ -86,6 +86,9 @@ object SettingsKeys {
         OcrModelChoices.KEY,
     )
 
+    /** The bubble's stored keys that the Text recognition page sets. */
+    private val recognitionKeys = setOf("overlay_text_source", "overlay_small_text", "overlay_ocr_engines", "overlay_ocr_saving")
+
     /** Per-language keys set on the Languages screen, which has no reset of its own: only the full reset clears them. */
     private val languagesScreen = setOf("language_script", "language_fixed_script")
 
@@ -101,9 +104,11 @@ object SettingsKeys {
     fun sectionOf(key: String): SettingsSection? = when {
         key == "overlay_keep_alive" -> SettingsSection.BACKGROUND
         key == SHOW_SOURCE_TEXT_KEY -> SettingsSection.POPUP
-        key.startsWith("overlay_") || key.startsWith(OcrModelChoices.KEY) -> SettingsSection.BUBBLE
+        key in recognitionKeys || key.startsWith(OcrModelChoices.KEY) -> SettingsSection.RECOGNITION
+        key.startsWith("overlay_") -> SettingsSection.BUBBLE
         key.startsWith("lookup_") -> SettingsSection.LOOKUP
-        languageOf(key) != null && key.startsWith("anki_settings") || key.startsWith("audio_") -> SettingsSection.ANKI
+        languageOf(key) != null && key.startsWith("anki_settings") -> SettingsSection.ANKI
+        key.startsWith("audio_") -> SettingsSection.AUDIO
         key.startsWith("popup_") -> SettingsSection.POPUP
         key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> SettingsSection.TRANSLATION
         key == "theme_mode" || key == "theme_colors" || key == "e_ink" -> SettingsSection.APPEARANCE

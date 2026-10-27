@@ -13,7 +13,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -36,7 +35,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.audio.AudioCandidate
@@ -56,22 +54,22 @@ import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /**
- * Auto-play, volume, the audio sources of [language] in priority order, the order of its regions where it has them and
- * Wiktionary recordings or transcriptions use it, and a test of every source with a sample word.
+ * Auto-play and volume, the audio sources of [language] in priority order, the order of its regions where it has them
+ * and Wiktionary recordings or transcriptions use it, and a test of every source with a sample word, as cards of a page.
  */
 @Composable
-fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel = hiltViewModel()) {
+fun AudioSettingsCards(language: Language, viewModel: AudioSettingsViewModel) {
     LaunchedEffect(language) { viewModel.show(language) }
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val transcriptions by viewModel.hasTranscriptions.collectAsStateWithLifecycle()
     val audio = settings ?: return
     var editing by remember { mutableStateOf<Pair<Int?, AudioSource>?>(null) }
 
-    SectionCard(title = stringResource(R.string.audio_title)) {
+    SectionCard(title = stringResource(R.string.audio_playback)) {
         SwitchRow(stringResource(R.string.audio_auto_play), audio.autoPlay, viewModel::setAutoPlay)
         VolumeRow(audio.volume, viewModel::setVolume)
-        HorizontalDivider()
-        Text(stringResource(R.string.audio_sources), style = MaterialTheme.typography.labelLarge)
+    }
+    SectionCard(title = stringResource(R.string.audio_sources)) {
         Hint(stringResource(R.string.audio_sources_hint))
         audio.sources.forEachIndexed { index, source ->
             SourceRow(
@@ -89,18 +87,17 @@ fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel =
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.audio_add_source), textAlign = TextAlign.Center) }
         TextButton(onClick = viewModel::resetSources) { Text(stringResource(R.string.audio_reset_sources)) }
-        val regions = AudioRegion.ordered(audio.regions, language.support.audioRegions)
-        if (regions.isNotEmpty() && regionsUsed(audio.sources, transcriptions)) {
-            HorizontalDivider()
-            Text(stringResource(R.string.audio_regions), style = MaterialTheme.typography.labelLarge)
+    }
+    val regions = AudioRegion.ordered(audio.regions, language.support.audioRegions)
+    if (regions.isNotEmpty() && regionsUsed(audio.sources, transcriptions)) {
+        SectionCard(title = stringResource(R.string.audio_regions)) {
             Hint(stringResource(R.string.audio_regions_hint))
             regions.forEachIndexed { index, region ->
                 RegionRow(index, region, isLast = index == regions.lastIndex, onMove = { viewModel.moveRegion(index, it) })
             }
         }
-        HorizontalDivider()
-        TestPanel(viewModel)
     }
+    SectionCard(title = stringResource(R.string.audio_test_title)) { TestPanel(viewModel) }
 
     editing?.let { (index, source) ->
         SourceDialog(
@@ -195,7 +192,6 @@ private fun TestPanel(viewModel: AudioSettingsViewModel) {
     val word by viewModel.testWord.collectAsStateWithLifecycle()
     val tests by viewModel.tests.collectAsStateWithLifecycle()
     val played by viewModel.played.collectAsStateWithLifecycle()
-    Text(stringResource(R.string.audio_test_title), style = MaterialTheme.typography.labelLarge)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedTextField(
             value = word,

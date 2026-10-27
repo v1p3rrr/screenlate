@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate — собственная фиолетовая палитра приложения. Системные — цвета, которые выбирает телефон, обычно под обои.</string>
 
     <string name="action_back">Назад</string>
-    <string name="home_tools_title">Инструменты</string>
     <string name="ocr_test_title">Проверка OCR</string>
     <string name="ocr_test_pick_image">Выбрать картинку</string>
     <string name="ocr_test_running">Распознавание…</string>
@@ -128,7 +127,7 @@
     <string name="home_anki_ready">Карточки добавляются в %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Выберите колоду, тип записи и шаблоны полей.</string>
 
-    <string name="anki_title">Anki и аудио</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">AnkiDroid не установлен. Установите его, чтобы добавлять карточки из попапа.</string>
     <string name="anki_permission_explanation">Screenlate нужен доступ к базе AnkiDroid, чтобы видеть колоды и добавлять карточки.</string>
     <string name="anki_grant_permission">Разрешить доступ к AnkiDroid</string>
@@ -162,6 +161,7 @@
     <string name="anki_behavior_new">Добавить новую</string>
 
     <string name="audio_title">Аудио</string>
+    <string name="audio_playback">Воспроизведение</string>
     <string name="audio_auto_play">Автовоспроизведение аудио</string>
     <string name="audio_sources_hint">Источники перебираются сверху вниз; играет и попадает в карточки первое найденное аудио. Нажмите на источник, чтобы изменить его.</string>
     <string name="audio_url_template">Шаблон URL</string>
@@ -242,13 +242,30 @@
     <string name="anki_overwrite_prepend">дописать в начало</string>
     <string name="audio_volume">Громкость: %1$d%%</string>
     <string name="settings_title">Настройки</string>
-    <string name="settings_bubble_summary">Прицел, сторона, источник текста, скрытие в приложениях</string>
+    <string name="settings_bubble_summary">Прицел, сторона, размер, скрытие в приложениях</string>
     <string name="lookup_title">Поиск</string>
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, иероглифы слова</string>
     <string name="appearance_title">Оформление</string>
     <string name="settings_appearance_summary">Тема, цвета, e-ink, язык</string>
     <string name="settings_popup_summary">Распознанный текст, автоскрытие, шрифт, размер и жирность текста, CSS, копирование определений</string>
     <string name="settings_translation_summary">Кнопка перевода, карточки, сервисы, язык</string>
+    <string name="recognition_title">Распознавание текста</string>
+    <string name="settings_recognition_summary">Движки, усиление OCR, модели на устройстве, текст приложения</string>
+    <string name="settings_audio_summary">Автовоспроизведение, источники, громкость</string>
+    <string name="reset_audio_text">Автовоспроизведение, громкость, источники аудио и порядок регионов будут сброшены к значениям по умолчанию.</string>
+    <string name="reset_recognition_text">Движки, усиление OCR, снижение нагрузки, выбранная модель каждого языка и настройки текста приложения будут сброшены к значениям по умолчанию. Скачанные модели останутся.</string>
+        <string name="recognition_app_text_title">Текст приложения</string>
+<string name="recognition_test_title">Проверка</string>
+    <string name="recognition_test_hint">Распознать картинку так же, как при скане: текст и время каждого движка.</string>
+    <string name="bubble_hidden_apps_none">Показывается во всех приложениях</string>
+    <string name="background_allowlist_title">Если служба выключается</string>
+    <string name="background_allowlist_text">Если система раз за разом выключает службу специальных возможностей Screenlate и кнопка пропадает с экрана, приложение безопасности телефона может ограничивать приложения, установленные не из магазина. Откройте приложение безопасности (на некоторых телефонах «Безопасность» или «Диспетчер телефона»), найдите в нём список разрешённых или доверенных приложений, добавьте туда Screenlate и снова включите службу.</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="one">Скрыта в %1$d приложении</item>
+        <item quantity="few">Скрыта в %1$d приложениях</item>
+        <item quantity="many">Скрыта в %1$d приложениях</item>
+        <item quantity="other">Скрыта в %1$d приложения</item>
+    </plurals>
     <string name="yomitan_import_title">Импорт из Yomitan</string>
     <string name="about_title">О приложении</string>
     <string name="settings_about_summary">Версия, обновления, лицензии, логи</string>
@@ -526,7 +543,8 @@
     <string name="popup_font_script_only_hint_any">Для других письменностей используется шрифт телефона. Относится к скачанным и добавленным шрифтам.</string>
     <string name="popup_text_weight_info_languages">Делает тонкий текст разборчивее. Когда у языка включено «Только для … текста» или выбран шрифт телефона, толще становятся только символы этого языка; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. У шрифта с одним начертанием есть только обычная и жирная, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
     <string name="languages_settings_hint">Настройки ниже относятся к выбранному языку; остальное на странице — общее для всех языков.</string>
-    <string name="anki_languages_hint">Колода, тип записи, шаблоны полей, метки, обработка дублей и источники аудио задаются для каждого языка. Перевод в карточках, автовоспроизведение аудио и громкость — общие.</string>
+    <string name="anki_languages_hint">Колода, тип записи, шаблоны полей, метки и обработка дублей задаются для каждого языка. Перевод в карточках — общий.</string>
+    <string name="audio_languages_hint">Источники аудио и порядок регионов задаются для каждого языка. Автовоспроизведение и громкость — общие.</string>
     <string name="yomitan_summary_language">Язык: %1$s</string>
     <string name="reset_section_language">Сбрасываются общие для всех языков настройки и настройки языка, показанного на странице; у других языков они остаются.</string>
     <string name="popup_settings_title">Попап</string>
@@ -770,7 +788,7 @@
     <string name="reset_section_title">Сбросить настройки раздела?</string>
     <string name="reset_bubble_text">Все настройки плавающей кнопки будут сброшены к значениям по умолчанию, включая скрытые приложения, размер кнопки и её положение на экране. Скрытая кнопка снова появится.</string>
     <string name="reset_lookup_text">Длина скана, число статей и остальные настройки поиска будут сброшены к значениям по умолчанию.</string>
-    <string name="reset_anki_text">Колода, тип записи, шаблоны полей, метки, обработка дублей и источники аудио будут сброшены к значениям по умолчанию. В AnkiDroid ничего не изменится.</string>
+    <string name="reset_anki_text">Колода, тип записи, шаблоны полей, метки и обработка дублей будут сброшены к значениям по умолчанию. В AnkiDroid ничего не изменится.</string>
     <string name="reset_popup_text">Распознанный текст вверху, копирование определений, автоскрытие, выбор шрифта, размер и жирность текста и свой CSS будут сброшены к значениям по умолчанию. Скачанные и добавленные шрифты сохранятся.</string>
     <string name="reset_translation_text">Кнопка перевода, перевод в карточках, порядок и переключатели сервисов, язык и избранные языки будут сброшены к значениям по умолчанию.</string>
     <string name="reset_appearance_text">Тема снова будет следовать системе, цвета вернутся к цветам Screenlate по умолчанию, режим e-ink выключится, а увеличенные им размеры вернутся к прежним. Язык приложения сохранится.</string>

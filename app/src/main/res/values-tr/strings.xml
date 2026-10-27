@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate: uygulamanın kendi mor renk paleti. Sistem: telefonun seçtiği renkler, genellikle duvar kâğıdına göre.</string>
 
     <string name="action_back">Geri</string>
-    <string name="home_tools_title">Araçlar</string>
     <string name="ocr_test_title">OCR testi</string>
     <string name="ocr_test_pick_image">Bir görsel seç</string>
     <string name="ocr_test_running">Tanınıyor…</string>
@@ -123,7 +122,7 @@
     <string name="home_anki_ready">Notlar %1$s destesine eklenir (%2$s).</string>
     <string name="home_anki_not_configured">Bir deste, not türü ve alan şablonları seçin.</string>
 
-    <string name="anki_title">Anki ve ses</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">AnkiDroid yüklü değil. Açılır pencereden not eklemek için yükleyin.</string>
     <string name="anki_permission_explanation">Screenlate’in desteleri listelemek ve not eklemek için AnkiDroid veritabanına erişmesi gerekir.</string>
     <string name="anki_grant_permission">AnkiDroid erişimine izin ver</string>
@@ -157,6 +156,7 @@
     <string name="anki_behavior_new">Yine de ekle</string>
 
     <string name="audio_title">Ses</string>
+    <string name="audio_playback">Oynatma</string>
     <string name="audio_auto_play">Sesi otomatik çal</string>
     <string name="audio_sources_hint">Kaynaklar yukarıdan aşağıya denenir; sesi olan ilk kaynak çalınır ve notlara girer. Düzenlemek için bir kaynağa dokunun.</string>
     <string name="audio_url_template">URL şablonu</string>
@@ -237,13 +237,28 @@
     <string name="anki_overwrite_prepend">başa ekle</string>
     <string name="audio_volume">Ses düzeyi: %%%1$d</string>
     <string name="settings_title">Ayarlar</string>
-    <string name="settings_bubble_summary">Nişan, taraf, metin kaynağı, gizli uygulamalar</string>
+    <string name="settings_bubble_summary">Nişan, taraf, boyut, gizli uygulamalar</string>
     <string name="lookup_title">Arama</string>
     <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin karakterleri</string>
     <string name="appearance_title">Görünüm</string>
     <string name="settings_appearance_summary">Tema, renkler, e-ink, dil</string>
     <string name="settings_popup_summary">Tanınan metin, otomatik gizleme, yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
     <string name="settings_translation_summary">Çeviri düğmesi, notlar, hizmetler, dil</string>
+    <string name="recognition_title">Metin tanıma</string>
+    <string name="settings_recognition_summary">Motorlar, OCR güçlendirme, cihazdaki modeller, uygulama metni</string>
+    <string name="settings_audio_summary">Otomatik oynatma, kaynaklar, ses düzeyi</string>
+    <string name="reset_audio_text">Otomatik oynatma, ses düzeyi, ses kaynakları ve bölgelerin sırası varsayılan değerlerine sıfırlanır.</string>
+    <string name="reset_recognition_text">Motorlar, OCR güçlendirme, yük azaltma, her dilin cihazdaki modeli ve uygulama metni ayarları varsayılan değerlerine sıfırlanır. İndirilen modeller kalır.</string>
+        <string name="recognition_app_text_title">Uygulama metni</string>
+<string name="recognition_test_title">Test</string>
+    <string name="recognition_test_hint">Bir görseli tarama sırasındaki gibi tanıyın; her motorun metni ve süresi gösterilir.</string>
+    <string name="bubble_hidden_apps_none">Tüm uygulamalarda görünür</string>
+    <string name="background_allowlist_title">Hizmet kapanıyorsa</string>
+    <string name="background_allowlist_text">Sistem Screenlate’in erişilebilirlik hizmetini sürekli kapatıyor ve baloncuk ekrandan kayboluyorsa, telefonun güvenlik uygulaması mağaza dışından yüklenen uygulamaları kısıtlıyor olabilir. Güvenlik uygulamasını açın (bazı telefonlarda Güvenlik veya Telefon Yöneticisi), izin verilen ya da güvenilen uygulamalar listesini bulun, Screenlate’i ekleyin ve hizmeti yeniden açın.</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="one">%1$d uygulamada gizli</item>
+        <item quantity="other">%1$d uygulamada gizli</item>
+    </plurals>
     <string name="yomitan_import_title">Yomitan’dan içe aktar</string>
     <string name="about_title">Hakkında</string>
     <string name="settings_about_summary">Sürüm, güncellemeler, lisanslar, günlükler</string>
@@ -519,7 +534,8 @@
     <string name="popup_font_script_only_hint_any">Diğer yazı sistemleri telefonun yazı tipini kullanır. İndirilen ve eklenen yazı tiplerine uygulanır.</string>
     <string name="popup_text_weight_info_languages">İnce metni daha okunur yapar. Bir dilde “Yalnızca … metin için” açıkken ya da telefonun yazı tipiyle yalnızca o dilin karakterleri kalınlaşır; kapalıyken tüm metin.\n\nKalınlık, yazı tipinin kendi ağırlıklarını kullanır. Tek ağırlığı olan bir yazı tipi normalden doğrudan kalına geçer, bu yüzden orta normal gibi görünür.\n\nHarf dış çizgisi her harfin çevresine ince bir kontur çizer: her yazı tipiyle çalışır ve kalınlığa eklenir.</string>
     <string name="languages_settings_hint">Aşağıdaki ayarlar seçilen dile uygulanır; sayfanın geri kalanı tüm diller için geçerlidir.</string>
-    <string name="anki_languages_hint">Deste, not türü, alan şablonları, etiketler, yinelenenlerin işlenmesi ve ses kaynakları her dil için ayrı ayarlanır. Notlardaki çeviri, sesin otomatik çalınması ve ses düzeyi ortaktır.</string>
+    <string name="anki_languages_hint">Deste, not türü, alan şablonları, etiketler ve yinelenenlerin işlenmesi her dil için ayrı ayarlanır. Notlardaki çeviri ortaktır.</string>
+    <string name="audio_languages_hint">Ses kaynakları ve bölgelerin sırası her dil için ayrı ayarlanır. Otomatik oynatma ve ses düzeyi ortaktır.</string>
     <string name="yomitan_summary_language">Dil: %1$s</string>
     <string name="reset_section_language">Tüm dillerin ortak ayarları ve sayfada gösterilen dilin ayarları sıfırlanır; diğer diller kendi ayarlarını korur.</string>
     <string name="popup_settings_title">Açılır pencere</string>
@@ -755,7 +771,7 @@
     <string name="reset_section_title">Bu bölüm sıfırlansın mı?</string>
     <string name="reset_bubble_text">Baloncuğun tüm ayarları varsayılan değerlerine sıfırlanır; gizlenen uygulamalar, baloncuğun boyutu ve ekrandaki konumu da dâhil. Gizli baloncuk yeniden gösterilir.</string>
     <string name="reset_lookup_text">Tarama uzunluğu, arama başına madde ve diğer arama ayarları varsayılan değerlerine sıfırlanır.</string>
-    <string name="reset_anki_text">Deste, not türü, alan şablonları, etiketler, yinelenenlerin işlenmesi ve ses kaynakları varsayılan değerlerine sıfırlanır. AnkiDroid’de hiçbir şey değişmez.</string>
+    <string name="reset_anki_text">Deste, not türü, alan şablonları, etiketler ve yinelenenlerin işlenmesi varsayılan değerlerine sıfırlanır. AnkiDroid’de hiçbir şey değişmez.</string>
     <string name="reset_popup_text">Üstteki tanınan metin, tanım kopyalama, otomatik gizleme, yazı tipi seçimi, metin boyutu ve kalınlığı ve özel CSS varsayılan değerlerine sıfırlanır. İndirilen ve eklenen yazı tipleri yüklü kalır.</string>
     <string name="reset_translation_text">Çeviri düğmesi, notlardaki çeviri, hizmetlerin sırası ve anahtarları, dil ve favori diller varsayılan değerlerine sıfırlanır.</string>
     <string name="reset_appearance_text">Tema yeniden sistemi izler, renkler Screenlate’in varsayılan renklerine sıfırlanır ve e-ink modu kapatılır; bu, modun büyüttüğü boyutları geri yükler. Uygulama dili korunur.</string>

@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate：應用程式內建的紫色配色。系統：由手機選擇的色彩，通常與桌布相配。</string>
 
     <string name="action_back">返回</string>
-    <string name="home_tools_title">工具</string>
     <string name="ocr_test_title">OCR 測試</string>
     <string name="ocr_test_pick_image">選擇圖片</string>
     <string name="ocr_test_running">正在辨識…</string>
@@ -121,7 +120,7 @@
     <string name="home_anki_ready">筆記將新增到 %1$s（%2$s）。</string>
     <string name="home_anki_not_configured">請選擇牌組、筆記類型和欄位範本。</string>
 
-    <string name="anki_title">Anki 與音訊</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">未安裝 AnkiDroid。安裝後即可從彈出視窗新增筆記。</string>
     <string name="anki_permission_explanation">Screenlate 需要存取 AnkiDroid 資料庫，才能列出牌組並新增筆記。</string>
     <string name="anki_grant_permission">允許存取 AnkiDroid</string>
@@ -155,6 +154,7 @@
     <string name="anki_behavior_new">仍然新增</string>
 
     <string name="audio_title">音訊</string>
+    <string name="audio_playback">播放</string>
     <string name="audio_auto_play">自動播放音訊</string>
     <string name="audio_sources_hint">從上到下依次嘗試；第一個有音訊的來源會被播放並寫入筆記。點按來源可進行編輯。</string>
     <string name="audio_url_template">URL 範本</string>
@@ -235,13 +235,27 @@
     <string name="anki_overwrite_prepend">新增到開頭</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">設定</string>
-    <string name="settings_bubble_summary">瞄準、停靠邊、文字來源、隱藏的應用程式</string>
+    <string name="settings_bubble_summary">瞄準、停靠邊、大小、隱藏的應用程式</string>
     <string name="lookup_title">查詞</string>
     <string name="settings_lookup_summary">掃描長度、結果、羅馬字、詞中的漢字</string>
     <string name="appearance_title">外觀</string>
     <string name="settings_appearance_summary">主題、色彩、電子紙、語言</string>
     <string name="settings_popup_summary">辨識文字、自動隱藏、字型、文字大小與粗細、CSS、釋義複製</string>
     <string name="settings_translation_summary">翻譯按鈕、筆記、服務、語言</string>
+    <string name="recognition_title">文字辨識</string>
+    <string name="settings_recognition_summary">引擎、OCR 增強、裝置端模型、應用程式文字</string>
+    <string name="settings_audio_summary">自動播放、來源、音量</string>
+    <string name="reset_audio_text">自動播放、音量、音訊來源和地區順序將重設為預設值。</string>
+    <string name="reset_recognition_text">引擎、OCR 增強、降低負載、各語言的裝置端模型和應用程式文字設定將重設為預設值。已下載的模型會保留。</string>
+        <string name="recognition_app_text_title">應用程式文字</string>
+<string name="recognition_test_title">測試</string>
+    <string name="recognition_test_hint">像掃描時一樣辨識一張圖片，顯示每個引擎的文字和用時。</string>
+    <string name="bubble_hidden_apps_none">在所有應用程式中顯示</string>
+    <string name="background_allowlist_title">如果服務被關閉</string>
+    <string name="background_allowlist_text">如果系統反覆關閉 Screenlate 的無障礙服務，懸浮球從螢幕上消失，可能是手機的安全應用程式限制了非應用程式商店安裝的應用程式。請開啟安全應用程式（有些手機上叫「安全」或「手機管家」），找到允許或信任的應用程式清單，把 Screenlate 加進去，然後重新開啟服務。</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="other">在 %1$d 個應用程式中隱藏</item>
+    </plurals>
     <string name="yomitan_import_title">從 Yomitan 匯入</string>
     <string name="about_title">關於</string>
     <string name="settings_about_summary">版本、更新、授權條款、日誌</string>
@@ -516,7 +530,8 @@
     <string name="popup_font_script_only_hint_any">其他書寫系統使用手機字型。適用於下載或新增的字型。</string>
     <string name="popup_text_weight_info_languages">讓纖細的文字更易讀。某種語言開啟「僅用於…文字」或使用手機字型時，只有該語言的字元變粗；關閉時，所有文字都會變粗。\n\n粗細使用字型本身的字重。只有一種字重的字型會從標準直接變為粗體，因此「中等」看起來與標準相同。\n\n文字描邊會在每個字周圍畫一圈細輪廓：適用於任何字型，並疊加在粗細之上。</string>
     <string name="languages_settings_hint">下面的設定適用於所選語言；頁面上的其他設定適用於所有語言。</string>
-    <string name="anki_languages_hint">牌組、筆記類型、欄位範本、標籤、重複處理方式和音訊來源按語言分別設定。筆記中的譯文、自動播放音訊和音量為所有語言共用。</string>
+    <string name="anki_languages_hint">牌組、筆記類型、欄位範本、標籤和重複處理方式按語言分別設定。筆記中的譯文為所有語言共用。</string>
+    <string name="audio_languages_hint">音訊來源和地區順序按語言分別設定。自動播放和音量為所有語言共用。</string>
     <string name="yomitan_summary_language">語言：%1$s</string>
     <string name="reset_section_language">所有語言共用的設定和頁面上顯示的語言的設定將被重設；其他語言的設定保持不變。</string>
     <string name="popup_settings_title">彈出視窗</string>
@@ -748,7 +763,7 @@
     <string name="reset_section_title">要重設此部分嗎？</string>
     <string name="reset_bubble_text">懸浮球的所有設定都將重設為預設值，包括隱藏的應用程式、懸浮球的大小及其在螢幕上的位置。已隱藏的懸浮球會重新顯示。</string>
     <string name="reset_lookup_text">掃描長度、每次查詞的詞條數和其他查詞設定將重設為預設值。</string>
-    <string name="reset_anki_text">牌組、筆記類型、欄位範本、標籤、重複處理方式和音訊來源將重設為預設值。AnkiDroid 中的內容不會改變。</string>
+    <string name="reset_anki_text">牌組、筆記類型、欄位範本、標籤和重複處理方式將重設為預設值。AnkiDroid 中的內容不會改變。</string>
     <string name="reset_popup_text">頂部的辨識文字、釋義複製、自動隱藏、字型選擇、文字大小和粗細以及自訂 CSS 將重設為預設值。已下載和已新增的字型仍保留安裝。</string>
     <string name="reset_translation_text">翻譯按鈕、筆記中的譯文、服務的順序和開關、語言以及收藏的語言將重設為預設值。</string>
     <string name="reset_appearance_text">主題重新跟隨系統，色彩重設為 Screenlate 的預設配色，電子紙模式關閉，並恢復該模式放大過的尺寸。應用程式語言保持不變。</string>

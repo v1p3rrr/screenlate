@@ -20,7 +20,6 @@
     <string name="settings_colors_hint">Screenlate: the app’s own violet palette. System: colors chosen by the phone, usually to match the wallpaper.</string>
 
     <string name="action_back">Back</string>
-    <string name="home_tools_title">Tools</string>
     <string name="ocr_test_title">OCR test</string>
     <string name="ocr_test_pick_image">Pick an image</string>
     <string name="ocr_test_running">Recognizing…</string>
@@ -126,7 +125,7 @@
     <string name="home_anki_ready">Notes go to %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Choose a deck, a note type and field templates.</string>
 
-    <string name="anki_title">Anki and audio</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_connection" translatable="false">AnkiDroid</string>
     <string name="anki_not_installed">AnkiDroid is not installed. Install it to add notes from the popup.</string>
     <string name="anki_permission_explanation">Screenlate needs access to the AnkiDroid database to list decks and add notes.</string>
@@ -161,6 +160,7 @@
     <string name="anki_behavior_new">Add new</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_playback">Playback</string>
     <string name="audio_auto_play">Autoplay audio</string>
     <string name="audio_sources_hint">Tried from top to bottom; the first one with audio plays and goes into notes. Tap a source to edit it.</string>
     <string name="audio_url_template">URL template</string>
@@ -241,13 +241,28 @@
     <string name="anki_overwrite_prepend">prepend</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Settings</string>
-    <string name="settings_bubble_summary">Aim, dock, text source, hidden apps</string>
+    <string name="settings_bubble_summary">Aim, dock, size, hidden apps</string>
     <string name="lookup_title">Lookup</string>
     <string name="settings_lookup_summary">Scan length, results, romaji, characters of the word</string>
     <string name="appearance_title">Appearance</string>
     <string name="settings_appearance_summary">Theme, colors, e-ink, language</string>
     <string name="settings_popup_summary">Recognized text, auto-hide, font, text size and weight, CSS, definition copying</string>
     <string name="settings_translation_summary">Translation button, notes, services, language</string>
+    <string name="recognition_title">Text recognition</string>
+    <string name="settings_recognition_summary">Engines, OCR boost, on-device models, app text</string>
+    <string name="settings_audio_summary">Autoplay, sources, volume</string>
+    <string name="reset_audio_text">Autoplay, volume, the audio sources and the order of regions are reset to their defaults.</string>
+    <string name="reset_recognition_text">The engines, OCR boost, load reduction, each language’s on-device model and the app text settings are reset to their defaults. Downloaded models stay.</string>
+        <string name="recognition_app_text_title">App text</string>
+<string name="recognition_test_title">Test</string>
+    <string name="recognition_test_hint">Recognize an image as a scan does, with each engine’s text and time.</string>
+    <string name="bubble_hidden_apps_none">Shown in all apps</string>
+    <string name="background_allowlist_title">If the service turns off</string>
+    <string name="background_allowlist_text">If the system keeps turning off Screenlate’s accessibility service and the bubble disappears from the screen, the phone’s security app may be restricting apps installed outside an app store. Open the security app (on some phones Security or Phone Manager), find its list of allowed or trusted apps, add Screenlate to it and turn the service on again.</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="one">Hidden in %1$d app</item>
+        <item quantity="other">Hidden in %1$d apps</item>
+    </plurals>
     <string name="yomitan_import_title">Import from Yomitan</string>
     <string name="about_title">About</string>
     <string name="settings_about_summary">Version, updates, licenses, logs</string>
@@ -523,7 +538,8 @@
     <string name="popup_font_script_only_hint_any">Other scripts use the phone’s font. Applies to downloaded and added fonts.</string>
     <string name="popup_text_weight_info_languages">Makes thin text easier to read. With a language\'s “Only for … text” switch on, or with the phone\'s font, only that language\'s letters get heavier; with it off, all text does.\n\nThe weight uses the font\'s own weights. A font with only one weight goes from normal straight to bold, so medium looks like normal.\n\nLetter thickness draws a thin outline around each letter: it works with any font and adds to the weight.</string>
     <string name="languages_settings_hint">The settings below apply to the chosen language; the rest of the page applies to all languages.</string>
-    <string name="anki_languages_hint">The deck, note type, field templates, tags, duplicate handling and audio sources are set for each language. Translation in notes, audio auto play and volume are shared.</string>
+    <string name="anki_languages_hint">The deck, note type, field templates, tags and duplicate handling are set for each language. Translation in notes is shared.</string>
+    <string name="audio_languages_hint">The audio sources and the order of regions are set for each language. Auto play and volume are shared.</string>
     <string name="yomitan_summary_language">Language: %1$s</string>
     <string name="reset_section_language">Settings shared by all languages and those of the language shown on the page are reset; other languages keep theirs.</string>
     <string name="popup_settings_title">Popup</string>
@@ -759,7 +775,7 @@
     <string name="reset_section_title">Reset this section?</string>
     <string name="reset_bubble_text">All bubble settings are reset to their defaults, including the hidden apps, the bubble size and its position on the screen. A hidden bubble is shown again.</string>
     <string name="reset_lookup_text">Scan length, entries per lookup and the other lookup settings are reset to their defaults.</string>
-    <string name="reset_anki_text">The deck, note type, field templates, tags, duplicate handling and audio sources are reset to their defaults. Nothing changes in AnkiDroid.</string>
+    <string name="reset_anki_text">The deck, note type, field templates, tags and duplicate handling are reset to their defaults. Nothing changes in AnkiDroid.</string>
     <string name="reset_popup_text">The recognized text at the top, definition copying, auto-hide, the font choice, text size and weight and custom CSS are reset to their defaults. Downloaded and added fonts stay installed.</string>
     <string name="reset_translation_text">The translation button, translation in notes, the order and switches of the services, the language and the favorite languages are reset to their defaults.</string>
     <string name="reset_appearance_text">The theme follows the system again, the colors are reset to the Screenlate defaults, and e-ink mode is turned off, which restores the sizes it enlarged. The app language is kept.</string>

@@ -1,5 +1,6 @@
 package com.vpr.screenlate.audio
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.audio.AudioCandidate
@@ -50,7 +51,7 @@ internal fun regionsUsed(sources: List<AudioSource>, hasTranscriptions: Boolean)
 /** A played test clip: which candidate, and whether it turned out to have no audio. */
 data class PlayState(val candidateId: String? = null, val sourceIndex: Int = -1, val missing: Boolean = false)
 
-/** Audio settings of the language the Anki page shows: its sources, and the auto play and volume all languages share. */
+/** Audio settings of the language the Audio page shows: its sources, and the auto play and volume all languages share. */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AudioSettingsViewModel @Inject constructor(
@@ -60,8 +61,9 @@ class AudioSettingsViewModel @Inject constructor(
     private val lookup: DictionaryLookup,
     dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
+    savedState: SavedStateHandle,
 ) : ViewModel() {
-    private val shown = ShownLanguage(profiles, viewModelScope)
+    val shown = ShownLanguage(profiles, viewModelScope)
 
     val settings: StateFlow<AudioSettings?> = shown.language
         .flatMapLatest { repository.settings(it) }
@@ -82,6 +84,11 @@ class AudioSettingsViewModel @Inject constructor(
     private var testJob: Job? = null
     private var dialogJob: Job? = null
     private var playJob: Job? = null
+
+    init {
+        // Opens on the route's `language` (from the home screen), otherwise on the active one.
+        Language.of(savedState.get<String>(ARG_LANGUAGE))?.let(::show)
+    }
 
     /**
      * Shows [language]'s sources. A test word left as the previous language's sample becomes the new language's, and
@@ -220,5 +227,10 @@ class AudioSettingsViewModel @Inject constructor(
     private fun update(transform: (AudioSettings) -> AudioSettings) {
         val language = shown.language.value
         viewModelScope.launch { repository.update(language, transform) }
+    }
+
+    companion object {
+        /** The route argument with the code of the language the page opens on. */
+        const val ARG_LANGUAGE = "language"
     }
 }

@@ -3,18 +3,14 @@ package com.vpr.screenlate.camera
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,12 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -50,7 +44,7 @@ import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoHistory
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.ui.components.ConfirmDelete
-import com.vpr.screenlate.ui.components.Hint
+import com.vpr.screenlate.ui.components.NavigationRow
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
@@ -225,7 +219,7 @@ class CameraSettingsViewModel @Inject constructor(
 
 /**
  * Camera settings: how photos are read, then the photo history's saving mode, its limits and its size. [onOpenEngines]
- * opens screen recognition, whose engines photos share.
+ * opens Text recognition, whose engines photos share.
  */
 @Composable
 fun CameraSettingsScreen(onBack: () -> Unit, onOpenEngines: () -> Unit, viewModel: CameraSettingsViewModel = hiltViewModel()) {
@@ -317,7 +311,7 @@ fun CameraSettingsScreen(onBack: () -> Unit, onOpenEngines: () -> Unit, viewMode
     }
 }
 
-/** High accuracy and the engines, which are changed on the page of screen recognition. */
+/** High accuracy and the engines, which are changed on the Text recognition page. */
 @Composable
 private fun ReadingCard(reading: CameraReading, onHighAccuracy: (Boolean) -> Unit, onOpenEngines: () -> Unit) {
     SectionCard(stringResource(R.string.camera_recognition)) {
@@ -325,24 +319,17 @@ private fun ReadingCard(reading: CameraReading, onHighAccuracy: (Boolean) -> Uni
             stringResource(R.string.camera_high_accuracy), reading.highAccuracy, onHighAccuracy,
             hint = stringResource(R.string.camera_high_accuracy_hint),
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().clickable(onClick = onOpenEngines).padding(vertical = 8.dp),
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text(stringResource(R.string.bubble_ocr_engines))
-                Hint(
-                    stringResource(
-                        when (reading.engines) {
-                            OcrEngines.BOTH -> R.string.bubble_ocr_engines_both
-                            OcrEngines.CLOUD -> R.string.bubble_ocr_engines_cloud
-                            OcrEngines.DEVICE -> R.string.bubble_ocr_engines_device
-                        },
-                    ),
-                )
-            }
-            Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
+        NavigationRow(
+            stringResource(R.string.bubble_ocr_engines),
+            stringResource(
+                when (reading.engines) {
+                    OcrEngines.BOTH -> R.string.bubble_ocr_engines_both
+                    OcrEngines.CLOUD -> R.string.bubble_ocr_engines_cloud
+                    OcrEngines.DEVICE -> R.string.bubble_ocr_engines_device
+                },
+            ),
+            onOpenEngines,
+        )
     }
 }
 

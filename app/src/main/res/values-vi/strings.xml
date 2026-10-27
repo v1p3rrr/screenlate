@@ -17,7 +17,6 @@
     <string name="settings_colors_hint">Screenlate: bảng màu tím riêng của ứng dụng. Hệ thống: màu do điện thoại chọn, thường theo hình nền.</string>
 
     <string name="action_back">Quay lại</string>
-    <string name="home_tools_title">Công cụ</string>
     <string name="ocr_test_title">Thử OCR</string>
     <string name="ocr_test_pick_image">Chọn ảnh</string>
     <string name="ocr_test_running">Đang nhận dạng…</string>
@@ -121,7 +120,7 @@
     <string name="home_anki_ready">Ghi chú được thêm vào %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Chọn bộ thẻ, loại ghi chú và mẫu trường.</string>
 
-    <string name="anki_title">Anki và âm thanh</string>
+    <string name="anki_title">Anki</string>
     <string name="anki_not_installed">AnkiDroid chưa được cài. Hãy cài nó để thêm ghi chú từ cửa sổ bật lên.</string>
     <string name="anki_permission_explanation">Screenlate cần quyền truy cập cơ sở dữ liệu của AnkiDroid để liệt kê bộ thẻ và thêm ghi chú.</string>
     <string name="anki_grant_permission">Cho phép truy cập AnkiDroid</string>
@@ -155,6 +154,7 @@
     <string name="anki_behavior_new">Vẫn thêm mới</string>
 
     <string name="audio_title">Âm thanh</string>
+    <string name="audio_playback">Phát</string>
     <string name="audio_auto_play">Tự động phát âm thanh</string>
     <string name="audio_sources_hint">Các nguồn được thử lần lượt từ trên xuống; nguồn đầu tiên có âm thanh sẽ được phát và đưa vào ghi chú. Chạm vào một nguồn để sửa.</string>
     <string name="audio_url_template">Mẫu URL</string>
@@ -235,13 +235,27 @@
     <string name="anki_overwrite_prepend">thêm vào đầu</string>
     <string name="audio_volume">Âm lượng: %1$d%%</string>
     <string name="settings_title">Cài đặt</string>
-    <string name="settings_bubble_summary">Điểm ngắm, cạnh màn hình, nguồn văn bản, ứng dụng ẩn</string>
+    <string name="settings_bubble_summary">Điểm ngắm, cạnh màn hình, kích thước, ứng dụng ẩn</string>
     <string name="lookup_title">Tra cứu</string>
     <string name="settings_lookup_summary">Độ dài quét, kết quả, romaji, chữ Hán của từ</string>
     <string name="appearance_title">Hiển thị</string>
     <string name="settings_appearance_summary">Giao diện, màu sắc, e-ink, ngôn ngữ</string>
     <string name="settings_popup_summary">Văn bản nhận dạng, tự động ẩn, phông chữ, cỡ và độ đậm chữ, CSS, sao chép định nghĩa</string>
     <string name="settings_translation_summary">Nút dịch, ghi chú, dịch vụ, ngôn ngữ</string>
+    <string name="recognition_title">Nhận dạng văn bản</string>
+    <string name="settings_recognition_summary">Công cụ nhận dạng, tăng cường OCR, mô hình trên thiết bị, văn bản ứng dụng</string>
+    <string name="settings_audio_summary">Tự động phát, nguồn, âm lượng</string>
+    <string name="reset_audio_text">Tự động phát, âm lượng, nguồn âm thanh và thứ tự khu vực được đặt lại về mặc định.</string>
+    <string name="reset_recognition_text">Công cụ nhận dạng, tăng cường OCR, giảm tải, mô hình trên thiết bị của từng ngôn ngữ và cài đặt văn bản ứng dụng được đặt lại về mặc định. Các mô hình đã tải vẫn được giữ.</string>
+        <string name="recognition_app_text_title">Văn bản ứng dụng</string>
+<string name="recognition_test_title">Kiểm tra</string>
+    <string name="recognition_test_hint">Nhận dạng một hình ảnh như khi quét, kèm văn bản và thời gian của từng công cụ.</string>
+    <string name="bubble_hidden_apps_none">Hiện trong mọi ứng dụng</string>
+    <string name="background_allowlist_title">Nếu dịch vụ bị tắt</string>
+    <string name="background_allowlist_text">Nếu hệ thống liên tục tắt dịch vụ hỗ trợ tiếp cận của Screenlate và bong bóng biến mất khỏi màn hình, ứng dụng bảo mật của điện thoại có thể đang hạn chế các ứng dụng cài đặt ngoài cửa hàng. Mở ứng dụng bảo mật (trên một số điện thoại là Bảo mật hoặc Trình quản lý điện thoại), tìm danh sách ứng dụng được phép hoặc tin cậy, thêm Screenlate vào đó rồi bật lại dịch vụ.</string>
+    <plurals name="bubble_hidden_apps_count">
+        <item quantity="other">Ẩn trong %1$d ứng dụng</item>
+    </plurals>
     <string name="yomitan_import_title">Nhập từ Yomitan</string>
     <string name="about_title">Giới thiệu</string>
     <string name="settings_about_summary">Phiên bản, cập nhật, giấy phép, nhật ký</string>
@@ -516,7 +530,8 @@
     <string name="popup_font_script_only_hint_any">Các hệ chữ khác dùng phông của điện thoại. Áp dụng cho phông đã tải về hoặc đã thêm.</string>
     <string name="popup_text_weight_info_languages">Giúp chữ mảnh dễ đọc hơn. Khi một ngôn ngữ bật “Chỉ cho chữ tiếng …”, hoặc khi dùng phông của điện thoại, chỉ các ký tự của ngôn ngữ đó đậm hơn; khi tắt, toàn bộ văn bản.\n\nĐộ đậm dùng các độ đậm có sẵn của phông. Phông chỉ có một độ đậm sẽ chuyển thẳng từ thường sang đậm, nên mức vừa trông giống thường.\n\nViền chữ vẽ một đường viền mảnh quanh mỗi chữ: dùng được với mọi phông và cộng thêm vào độ đậm.</string>
     <string name="languages_settings_hint">Các cài đặt bên dưới áp dụng cho ngôn ngữ đã chọn; phần còn lại của trang áp dụng cho mọi ngôn ngữ.</string>
-    <string name="anki_languages_hint">Bộ thẻ, loại ghi chú, mẫu trường, nhãn, cách xử lý trùng lặp và nguồn âm thanh được đặt riêng cho từng ngôn ngữ. Bản dịch trong ghi chú, tự động phát âm thanh và âm lượng dùng chung.</string>
+    <string name="anki_languages_hint">Bộ thẻ, loại ghi chú, mẫu trường, nhãn và cách xử lý trùng lặp được đặt riêng cho từng ngôn ngữ. Bản dịch trong ghi chú dùng chung.</string>
+    <string name="audio_languages_hint">Nguồn âm thanh và thứ tự khu vực được đặt riêng cho từng ngôn ngữ. Tự động phát và âm lượng dùng chung.</string>
     <string name="yomitan_summary_language">Ngôn ngữ: %1$s</string>
     <string name="reset_section_language">Các cài đặt dùng chung cho mọi ngôn ngữ và cài đặt của ngôn ngữ đang hiển thị trên trang sẽ được đặt lại; các ngôn ngữ khác giữ nguyên cài đặt của mình.</string>
     <string name="popup_settings_title">Cửa sổ bật lên</string>
@@ -748,7 +763,7 @@
     <string name="reset_section_title">Đặt lại mục này?</string>
     <string name="reset_bubble_text">Mọi cài đặt của bong bóng được đặt lại về mặc định, kể cả các ứng dụng đã ẩn, kích thước bong bóng và vị trí của nó trên màn hình. Bong bóng đã ẩn sẽ hiện lại.</string>
     <string name="reset_lookup_text">Độ dài quét, số mục mỗi lần tra và các cài đặt tra cứu khác được đặt lại về mặc định.</string>
-    <string name="reset_anki_text">Bộ thẻ, loại ghi chú, mẫu trường, nhãn, cách xử lý trùng lặp và nguồn âm thanh được đặt lại về mặc định. Trong AnkiDroid không có gì thay đổi.</string>
+    <string name="reset_anki_text">Bộ thẻ, loại ghi chú, mẫu trường, nhãn và cách xử lý trùng lặp được đặt lại về mặc định. Trong AnkiDroid không có gì thay đổi.</string>
     <string name="reset_popup_text">Văn bản nhận dạng ở trên cùng, việc sao chép định nghĩa, tự động ẩn, lựa chọn phông chữ, cỡ và độ đậm của chữ và CSS tùy chỉnh được đặt lại về mặc định. Phông chữ đã tải và đã thêm vẫn được cài.</string>
     <string name="reset_translation_text">Nút dịch, bản dịch trong ghi chú, thứ tự và công tắc của các dịch vụ, ngôn ngữ và các ngôn ngữ yêu thích được đặt lại về mặc định.</string>
     <string name="reset_appearance_text">Giao diện lại theo hệ thống, màu sắc được đặt lại về màu mặc định của Screenlate và chế độ e-ink bị tắt, khôi phục các kích thước mà chế độ này đã phóng to. Ngôn ngữ ứng dụng được giữ nguyên.</string>

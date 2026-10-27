@@ -41,14 +41,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -276,15 +279,16 @@ fun DictionariesScreen(
                 val outdated = item.outdated
                 if (outdated != null) viewModel.replace(item.entry, outdated) else viewModel.download(item.entry)
             }
+            val interfaceLanguage = LocalConfiguration.current.locales[0].language
             state.catalog.forEach { group ->
                 SubsectionTitle(languageName(group.sourceLanguage))
                 group.sections.forEach { section ->
-                    Text(
-                        catalogSectionLabel(section, group.sourceLanguage),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    section.items.forEach { item ->
+                    val key = section.key(group.sourceLanguage)
+                    val open = catalogOpen[key] ?: section.openByDefault(interfaceLanguage)
+                    CatalogSectionHeader(catalogSectionLabel(section, group.sourceLanguage), section.items.size, open) {
+                        catalogOpen[key] = !open
+                    }
+                    if (open) section.items.forEach { item ->
                         key(item.entry.title) {
                             CatalogCard(
                                 item,
@@ -348,6 +352,37 @@ private class ScrollAnchors(private val scroll: ScrollState) {
         if (top == previous || previous >= scroll.value) return@onGloballyPositioned
         if (tops.any { (other, otherTop) -> other > index && otherTop < scroll.value }) return@onGloballyPositioned
         scroll.dispatchRawDelta((top - previous).toFloat())
+    }
+}
+
+/**
+ * Catalog sections the user opened or closed, by [CatalogSection.key], while the app's process lives; the others
+ * follow [CatalogSection.openByDefault].
+ */
+private val catalogOpen = mutableStateMapOf<String, Boolean>()
+
+/** A catalog section's [label] with its [count]; a tap opens or closes it. */
+@Composable
+private fun CatalogSectionHeader(label: String, count: Int, open: Boolean, onToggle: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClickLabel = stringResource(if (open) R.string.dictionaries_tasks_hide else R.string.dictionaries_tasks_show), onClick = onToggle)
+            .padding(vertical = 4.dp),
+    ) {
+        Text(
+            "$label · $count",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.weight(1f),
+        )
+        Icon(
+            painterResource(R.drawable.ic_chevron_right),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.rotate(if (open) -90f else 90f),
+        )
     }
 }
 

@@ -32,7 +32,7 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 
 /** Destinations of the settings list. */
 enum class SettingsPage {
-    BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, TRANSLATION, CAMERA, APPEARANCE, BACKGROUND, BACKUP, ABOUT,
+    BUBBLE, RECOGNITION, LOOKUP, DICTIONARIES, ANKI, AUDIO, POPUP, TRANSLATION, CAMERA, APPEARANCE, BACKGROUND, BACKUP, ABOUT,
 }
 
 /**
@@ -59,6 +59,9 @@ fun SettingsScreen(
             SettingsEntry(R.drawable.ic_touch_app, stringResource(R.string.bubble_title), stringResource(R.string.settings_bubble_summary)) {
                 onOpen(SettingsPage.BUBBLE)
             }
+            SettingsEntry(R.drawable.ic_document_scanner, stringResource(R.string.recognition_title), stringResource(R.string.settings_recognition_summary)) {
+                onOpen(SettingsPage.RECOGNITION)
+            }
             SettingsEntry(R.drawable.ic_manage_search, stringResource(R.string.lookup_title), stringResource(R.string.settings_lookup_summary)) {
                 onOpen(SettingsPage.LOOKUP)
             }
@@ -77,6 +80,9 @@ fun SettingsScreen(
                 anki?.let { stringResource(R.string.home_anki_ready, it.deck, it.model) }
                     ?: stringResource(R.string.home_anki_not_configured),
             ) { onOpen(SettingsPage.ANKI) }
+            SettingsEntry(R.drawable.ic_volume_up, stringResource(R.string.audio_title), stringResource(R.string.settings_audio_summary)) {
+                onOpen(SettingsPage.AUDIO)
+            }
             SettingsEntry(R.drawable.ic_web_asset, stringResource(R.string.popup_settings_title), stringResource(R.string.settings_popup_summary)) {
                 onOpen(SettingsPage.POPUP)
             }

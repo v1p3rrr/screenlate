@@ -48,13 +48,12 @@ import kotlinx.coroutines.launch
 const val SOURCE_URL = "https://github.com/v1p3rrr/screenlate"
 
 /**
- * Version and updates, source code, what the accessibility service reads and sends, licenses, dictionary attributions,
- * logs and developer tools.
+ * Version and updates, source code, what the accessibility service reads and sends, licenses, dictionary attributions
+ * and logs.
  */
 @Composable
 fun AboutScreen(
     onBack: () -> Unit,
-    onOpenOcrTest: () -> Unit,
     onOpenLibraries: () -> Unit,
     onOpenNotices: () -> Unit,
     viewModel: AboutViewModel = hiltViewModel(),
@@ -161,11 +160,6 @@ fun AboutScreen(
                     }
                 }
                 if (saveFailed) Hint(stringResource(R.string.about_logs_save_failed))
-            }
-            SectionCard(title = stringResource(R.string.home_tools_title)) {
-                OutlinedButton(onClick = onOpenOcrTest, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.ocr_test_title), textAlign = TextAlign.Center)
-                }
             }
         }
     }

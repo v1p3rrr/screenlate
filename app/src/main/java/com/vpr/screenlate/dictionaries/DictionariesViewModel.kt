@@ -125,6 +125,16 @@ data class CatalogSection(val kind: DictionaryKind, val targetLanguage: String?,
 
 data class CatalogGroup(val sourceLanguage: String, val sections: List<CatalogSection>)
 
+/** Names a catalog section of [sourceLanguage] for its open or closed state. */
+internal fun CatalogSection.key(sourceLanguage: String): String = "$sourceLanguage/$kind/${targetLanguage.orEmpty()}"
+
+/**
+ * Whether a catalog section is open before the user opens or closes it: the translations into the interface language
+ * ([interfaceLanguage], its code), and a section with a download under way or an update waiting.
+ */
+internal fun CatalogSection.openByDefault(interfaceLanguage: String): Boolean =
+    (kind == DictionaryKind.TERM && targetLanguage == interfaceLanguage) || items.any { it.task != null || it.outdated != null }
+
 /** Installed dictionaries of one kind, in priority order. */
 data class InstalledSection(val kind: DictionaryKind, val dictionaries: List<DictionaryEntity>)
 
