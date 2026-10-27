@@ -101,11 +101,11 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-26 |
-| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-26 |
+| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-27 |
+| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-27 |
 | BUB3 | Tap the floating bubble → a new scan, recognized lines flash | F | M | 2026-10-25 |
 | BUB4 | Hold the floating bubble → the menu (copy paragraph, copy all, open Screenlate) above the bubble, below when there is no room; Back or a tap outside closes it without other effect | F | U MenuPlacementTest, CopyMenuTextTest, M | 2026-10-14 |
-| BUB5 | With two or three quick languages the hold menu shows their flags, the active one ringed; a tap switches the language, the docked glyph changes at once, the next scan uses the new language; one quick language → no flag row | E | M | 2026-10-18 |
+| BUB5 | With two or three quick languages the hold menu shows their flags, the active one ringed; a tap switches the language, the docked glyph changes at once, the next scan uses the new language; one quick language → no flag row | E | M | 2026-10-27 |
 | BUB6 | Double tap → the aim switches between above the finger and the bubble center | O | M | |
 | BUB7 | ✕ → the entry closes, the bubble stays and keeps the text; it stays closed until the bubble moves or scans | F | M | 2026-10-14 |
 | BUB8 | Drag to the left or right edge → docks once the center passes the edge or on release at the edge; top and bottom only with "Top and bottom edges" | F | U DockPlacementTest, M | 2026-10-25 |
@@ -122,7 +122,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| OCR1 | Screen recognition, both engines → the on-device draft of the band around the aim, then the cloud result; the source chip says Lens | E | U CompositeOcrTest, FocusBandTest, M | 2026-10-26 |
+| OCR1 | Screen recognition, both engines → the on-device draft of the band around the aim, then the cloud result; the source chip says Lens | E | U CompositeOcrTest, FocusBandTest, M | 2026-10-27 |
 | OCR2 | Cloud unreachable (proxy that never answers) → the on-device result stays, ⚠ next to the source, a tap gives the reason; without any network → the offline message | F | U OcrStatusTest, M | 2026-10-14 |
 | OCR3 | Engines: cloud only (nothing without network) and device only (chip "On-device", OCR boost unavailable) | F | M | 2026-10-14 |
 | OCR4 | Reduce load → the whole screen is read on the device only after 3 s without a cloud answer (scan log) | O | M | |
@@ -316,7 +316,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | ANK1 | AnkiDroid access, deck and note type; templates pre-filled for known note types and by field names | F | I AnkiDroidRoundTripTest, U FieldTemplateTest, M | 2026-10-14 |
-| ANK2 | ➕ adds a note with the sentence and audio, holding ➕ adds it with a picture from the crop editor; a duplicate shows 📖, which opens it in AnkiDroid's browser; holding 📖 offers "Add anyway" and "Add anyway, with a picture" | E | M | 2026-10-26 |
+| ANK2 | ➕ adds a note with the sentence and audio, holding ➕ adds it with a picture from the crop editor; a duplicate shows 📖, which opens it in AnkiDroid's browser; holding 📖 offers "Add anyway" and "Add anyway, with a picture" | E | M | 2026-10-27 |
 | ANK3 | Holding ➕ opens the crop editor around the paragraph; "Whole screen" ↔ "Frame"; two notes in a row | F | I CropEditorTest, ScreenNoteImageTest, U CropFocusTest, M | 2026-10-14 |
 | ANK4 | While the scan refines its text ➕ is grey and a tap says to wait | O | M | |
 | ANK5 | AnkiDroid permission revoked or deck deleted → a home card and a grey ➕ with the reason | O | U AnkiStatusCacheTest, M | |
@@ -400,7 +400,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| LNG1 | Home's languages card: the quick flags, the active one ringed, its name and status, "All languages" | E | M | 2026-10-26 |
+| LNG1 | Home's languages card: the quick flags, the active one ringed, its name and status, "All languages" | E | M | 2026-10-27 |
 | LNG2 | The Languages screen: turned on (radio, star, Flag, Turn off), turned off with files (list with sizes, delete one, change its languages, Delete all, Turn on), not turned on | F | M | 2026-10-18 |
 | LNG3 | Star rules: at most three quick languages; making a starred one active swaps; making an unstarred one active moves the star | F | U LanguageProfilesTest, M | 2026-10-14 |
 | LNG4 | Flag country: English US by default, the UK from "Flag"; a language with one flag (all but English and Portuguese) has no "Flag" button | O | U FlagsTest, LanguageProfilesTest, M | 2026-10-16 |
@@ -449,7 +449,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | UPD1 | About: libraries, notices, installed dictionaries with licenses, "What the service reads and sends", "Report a problem" opens the form (not submitted) | O | M | |
-| UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-26 |
+| UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-27 |
 | UPD3 | Update check and install (release builds only) | O | D | |
 | UPD4 | The export starts with the own log (oldest first: "Process started", the exit reasons of earlier processes, scans, the service's stop report), then the logcat part; lines from before an app restart are still there | F | U LogFileTest, ExitReasonsTest, M | 2026-10-22 |
 | UPD5 | The own log keeps at most two files of 4 MB in `noBackupFilesDir/logs` (`run-as` on a debug build); uninstalling the app removes them, a log saved to `Download/Screenlate/` stays | O | U LogFileTest, M | 2026-10-22 (API 30) |
@@ -539,9 +539,9 @@ the same AVD is a finding. The first run of this model records them in the run l
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| NF1 | Scan timings from the log: capture, band draft, full draft, cloud, final (earlier: band 1.6–2.4 s, full 5 s on the emulator) | E | M | 2026-10-18 |
+| NF1 | Scan timings from the log: capture, band draft, full draft, cloud, final (earlier: band 1.6–2.4 s, full 5 s on the emulator) | E | M | 2026-10-27 |
 | NF2 | Lookup to rendered entry (`popup-eval.mjs`; earlier 30–45 ms, する 100–180 ms) | F | M | 2026-10-14 |
-| NF3 | Dragging the bubble: janky frames and the median frame time against the last run's (`dumpsys gfxinfo` after `reset`, over text and over an empty area), the entry keeps up with the aim | E | M | 2026-10-18 |
+| NF3 | Dragging the bubble: janky frames and the median frame time against the last run's (`dumpsys gfxinfo` after `reset`, over text and over an empty area), the entry keeps up with the aim | E | M | 2026-10-27 |
 | NF4 | Pulling the bubble out has no move animation (`android.anim.lf` trace) on API 30 and API 37 | E | U BubbleWindowMoverTest, M | 2026-10-18 (API 37), 2026-10-22 (API 30) |
 | NF5 | Screen transitions without a white flash or a visible previous screen (screen recording, dark theme) | F | M | 2026-10-14 |
 | NF6 | Cold start: the splash until the settings are read, then content, no empty frame; `am start -W` TotalTime | F | M | 2026-10-14 |
@@ -567,6 +567,45 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-27, `features/camera-lookup` at `a16ceda7` (the camera review's last commit), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Build: an x86_64-only copy of the debug APK on API 37; Japanese active, screen source over Search results for
+  "shashin".
+- BUB1/OCR1: pull-out → cloud final 42 paragraphs in 1.7–1.8 s, 何 with its highlight. The ML Kit band never came
+  before the cloud: offline, the band took 3.0–3.9 s and the whole page 7.6–7.9 s (8 and 39 paragraphs), about three
+  times the run of 2026-10-26 (draft in 1.1 s), before and after a reboot. The screen OCR path has no change since that
+  run and the emulator was idle between scans: the emulator ran slower today (see NF1, NF3). Offline the band draft
+  shows first, then the device's final.
+- BUB2: moved → lookups only (51–252 ms), no scan.
+- ANK2: ➕ → Added; 📖; holding 📖 → "Add anyway" and "Add anyway, with a picture" → crop editor → Added with a picture
+  (forced); 📖 opened AnkiDroid's card browser.
+- BUB5: Korean starred: the floating bubble's hold menu shows the Japanese and Korean flags, Japanese ringed; Korean →
+  glyph 한, log "Active language ko from the bubble menu"; back to Japanese the same way. The hold menu opens only on
+  a floating bubble; adb needs separate `motionevent` DOWN and UP for it.
+- LNG1: the home card with both flags, the active one ringed; with one quick language no flag row.
+- UPD2: the app's own log (2.3 MB) and logcat after the scans, lookups and notes: no CJK characters, none of the words.
+- NF1: tap rescans: cloud final 1.1–1.4 s, about 0.1–0.2 s after the scan starts; the device draft as above.
+- NF3: dragging the floating bubble over text: 99 % janky frames, median 113 ms, 90th percentile 200 ms (last run
+  82 %, 30–34 ms, 65–73 ms). The whole emulator ran about three times slower today, ML Kit's native time included;
+  to recheck on the phone or after a host restart.
+- Not run: OCR9 (U ReadingOrderTest), OCR18/OCR19 (no Paddle change), the lookup cases (no lookup change), and a hit
+  test of a Latin word or a number in an Arabic line on the emulator (TextLayoutTest covers the split; the change
+  also applies to screen scans in right-to-left languages).
+- Instrumented on API 37: PhotoImageTest 3/3, PhotoRegionsTest 2/2, CropEditorTest 7/7, ScreenNoteImageTest 4/4,
+  WebpLimitTest 1/1. On API 30: LimitFieldTest 1/1, FirstRunRequestTest 1/1. A comma list in
+  `-Pandroid.testInstrumentationRunnerArguments.class` ran only its first class: run one class per call.
+- A minified build of the same commit for the owner's phone (release type with the Dev id and label, debug-signed,
+  arm64 only, compressed native code): 20.6 MB. Its x86_64 copy scanned, looked up and opened Camera on API 37. The
+  R8 mapping is in `testdata/local-research/builds/`.
+- CI (`ci.yml` by hand on `a16ceda7`): passed.
+- Cleanup: API 37: the photo history (four test photos) and the current photo deleted; `/sdcard/Pictures/review-*.jpg`,
+  an old saved PNG and UI dumps on `/sdcard` deleted; Slovenian active again, Korean unstarred; test packages removed;
+  `sys_storage_threshold_max_bytes` set for one install and deleted. Updates of YouTube, YouTube Music, Maps, Gmail,
+  Photos and the Google app uninstalled (about 1 GB; the Play Store brings them back): data free 1.6 GB, it had
+  590 MB and refused installs. The local "Default" deck holds two more 枚 notes. API 30: the debug app reinstalled at
+  its first run (the connected run uninstalls it), the stale `dictionary.api.test` package removed. Both emulators
+  shut down; lock released. `/sdcard/AnkiDroid-owner-backup` (1.1 GB) stays.
 
 ### 2026-10-27, `features/camera-lookup`, the work from the camera review's answers (uncommitted build on `325fe030`), Pixel_10_Pro (API 37)
 

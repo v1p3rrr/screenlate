@@ -1,14 +1,18 @@
 # Status
 
-## Camera code review (2026-10-26, in progress)
+## Camera code review (2026-10-26 to 2026-10-27, done)
 
 Plan: `ai/plans/2026-10-26-camera-review.md` (its "Current position" is the place to continue from). Checkout:
 `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`, branch `features/camera-lookup`. Areas 1–3 are reviewed
-(runs 1–4) and pushed. Area 4 (photo recognition in `core:ocr`): runs 1–4 are recorded and fixed, not
-committed yet. The owner answered questions 1–8 on 2026-10-27; the work from the answers (the plan's "Work from the
+(runs 1–4) and pushed. Area 4 (photo recognition in `core:ocr`): runs 1–4 are recorded and fixed, committed in
+`a16ceda7` and pushed. The owner answered questions 1–8 on 2026-10-27; the work from the answers (the plan's "Work from the
 owner's answers") is done with unit tests and checked on the API 37 emulator: the overview pass, the 4 MP picture,
 `{document-title}`, the popup's follow (cheap: no redraw of its own), the 100 MB message and the camera language's
-return. Run 2 covered that work too. Next: the commit, the E cases on API 37, the instrumented tests and a manual CI run. The API 37 emulator is held under `.worktrees/emulator.lock` in the main checkout.
+return. Run 2 covered that work too. The final E regression on API 37, the instrumented tests on API 37 and API 30
+and a manual CI run passed (run log in `ai/test-model.md`, 2026-10-27). That day the emulator ran about three times
+slower (ML Kit's band 3–4 s, so the device draft never came before the cloud; drag frames 113 ms median): recheck NF1
+and NF3. The owner got a minified arm64 Dev build of `a16ceda7` (20.6 MB, debug-signed; R8 mapping in
+`testdata/local-research/builds/`). The emulator lock is released.
 
 ## Camera photo lookup (2026-10-25)
 

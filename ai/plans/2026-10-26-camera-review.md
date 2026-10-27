@@ -92,8 +92,10 @@ sentence rules (`notes/language-rules.md`).
 
 Updated after every step so the work survives a context reset: areas 1–3 are reviewed (runs 1–4) and committed;
 area 4, runs 1–4 are recorded, with the work from the owner's answers ("Work from the owner's answers" below:
-all six done with unit tests and checked on the emulator); none of it is committed yet. Next: the commit and push,
-the E cases on API 37, the instrumented tests and a manual CI run. The API 37 emulator runs under the shared lock.
+all six done with unit tests and checked on the emulator), committed in `a16ceda7` and pushed. The final E regression
+on API 37, the instrumented tests on API 37 and API 30 and a manual CI run passed (run log in `ai/test-model.md`,
+2026-10-27). The review is done. Left: the emulator's slow ML Kit and drag frames that day (NF1, NF3) to recheck, and
+the phone checks.
 
 ## Progress
 
@@ -102,8 +104,8 @@ the E cases on API 37, the instrumented tests and a manual CI run. The API 37 em
 | 1 | Photo store | 19 findings: 9 fixed, 1 false alarm, 7 skipped, 2 questions | 9 findings: 5 fixed, 2 false alarms, 1 skipped, 1 question | 11 findings: 3 fixed, 2 false alarms, 6 skipped | 4 findings: 4 fixed (one change) | `core:photos` instrumented tests pass on API 37 | done |
 | 2 | Camera screen | 1 fixed ahead of the runs; 8 findings: 6 fixed, 1 false alarm, 1 skipped | 13 findings (2 found on the emulator): 7 fixed, 5 skipped, 1 question | 3 findings: 3 fixed | 10 findings: 4 fixed, 6 skipped | API 37 by hand: each fix of runs 1–4 | done |
 | 3 | Overlay and Anki integration | 14 findings: 10 fixed, 2 skipped, 2 questions | 8 findings (2 found on the emulator): 7 fixed, 1 false alarm; 1 more defect found while fixing, fixed | 7 findings: 5 fixed, 2 skipped | 3 findings: 3 fixed | API 37 by hand: runs 1–4 | done |
-| 4 | Photo recognition | 12 findings: 10 fixed, 1 false alarm, 1 question; 1 more defect found on real tiles, fixed | 10 findings: 8 fixed, 2 skipped | 9 findings: 7 fixed, 2 skipped | 5 findings: 4 fixed, 1 skipped | real tiles from API 37 replayed: run 1 | |
-| — | Final E regression | | | | | | |
+| 4 | Photo recognition | 12 findings: 10 fixed, 1 false alarm, 1 question; 1 more defect found on real tiles, fixed | 10 findings: 8 fixed, 2 skipped | 9 findings: 7 fixed, 2 skipped | 5 findings: 4 fixed, 1 skipped | real tiles from API 37 replayed: run 1 | `a16ceda7` |
+| — | Final E regression | | | | | API 37: BUB1, BUB2, BUB5, OCR1, ANK2, LNG1, UPD2, NF1, NF3; instrumented on API 37 and API 30 pass | CI passed on `a16ceda7` |
 
 ## Findings
 
@@ -697,3 +699,4 @@ Collected during the runs and asked together at the end.
 - 2026-10-27: area 4, run 2 recorded (over the work from the answers too).
 - 2026-10-27: area 4, run 3 recorded.
 - 2026-10-27: area 4, run 4 recorded.
+- 2026-10-27: area 4 committed (`a16ceda7`); the final E regression, the instrumented tests and CI recorded.
