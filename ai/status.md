@@ -222,6 +222,11 @@ check of `main` at `fee4c9fb` against v0.2.3:
   being queued twice), the localized catalog titles (`9aec26d9`: `main` has none), the reset button's removal and
   the interrupted reset message (`17a01c5a`, `5c0e041c`), the Search tab without the keyboard (`290217bb`: `main` has
   no tabs). The neutral "characters of the word" wording (`c08f5f64`) stays out: `main` is Japanese only.
+- Question for the owner: may instrumented tests run with `am instrument` on the shared emulator? The system
+  force-stops the target package when instrumentation starts, which the no force-stop rule may cover, so
+  `OpenAppTest` was not run on `main` and its case was checked by hand. Recommendation: allow it for a build installed
+  under its own package (as `com.vpr.screenlate.debugmain` was), never for the `languages/main` app whose service is
+  on.
 - Not checked yet: `OpenAppTest` on `main` (it was run on `languages/main`), the E cases on `main`'s final build
   (each change was checked alone when built), the upgrade from
   the v0.2.3 release (last run 2026-10-14, on the language branch), a release build with R8 (CI builds debug only),
