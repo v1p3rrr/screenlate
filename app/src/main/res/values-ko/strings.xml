@@ -115,7 +115,8 @@
     <string name="dictionaries_installed_mark">설치됨</string>
     <string name="dictionaries_download">다운로드</string>
     <string name="dictionaries_section_terms">사전</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">기타 언어</string>
+    <string name="dictionaries_catalog_supplementary">보조 사전</string>
     <string name="dictionaries_version">버전</string>
     <string name="home_anki_ready">노트 저장 위치: %1$s (%2$s)</string>
     <string name="home_anki_not_configured">덱, 노트 유형, 필드 템플릿을 선택하세요.</string>

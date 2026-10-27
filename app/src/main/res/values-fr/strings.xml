@@ -119,7 +119,8 @@
     <string name="dictionaries_installed_mark">Installé</string>
     <string name="dictionaries_download">Télécharger</string>
     <string name="dictionaries_section_terms">Dictionnaires</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">Autres langues</string>
+    <string name="dictionaries_catalog_supplementary">Dictionnaires complémentaires</string>
     <string name="dictionaries_version">Version</string>
     <string name="home_anki_ready">Les notes vont dans %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Choisissez un paquet, un type de note et des modèles de champs.</string>

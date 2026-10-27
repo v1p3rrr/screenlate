@@ -159,7 +159,7 @@ private fun GlossCard(state: LanguageSetupState, onChoose: (String?) -> Unit) {
             if (index == state.choosable) {
                 GlossPicker(code, state.glossChoices, onChoose)
             } else if (code != null) {
-                Text(languageName(code), style = MaterialTheme.typography.bodyLarge)
+                Text(titledLanguageName(code), style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
@@ -173,7 +173,7 @@ private fun GlossPicker(chosen: String?, choices: List<String>, onChoose: (Strin
     Box {
         OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth().onSizeChanged { width = it.width }) {
             Text(
-                chosen?.let { languageName(it) } ?: stringResource(R.string.language_setup_gloss_add),
+                chosen?.let { titledLanguageName(it) } ?: stringResource(R.string.language_setup_gloss_add),
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Start,
             )
@@ -193,7 +193,7 @@ private fun GlossPicker(chosen: String?, choices: List<String>, onChoose: (Strin
             )
             choices.forEach { code ->
                 DropdownMenuItem(
-                    text = { Text(languageName(code)) },
+                    text = { Text(titledLanguageName(code)) },
                     onClick = {
                         open = false
                         onChoose(code)
@@ -375,5 +375,5 @@ private fun ConfirmBar(state: LanguageSetupState, enabled: Boolean, onConfirm: (
 }
 
 /** A gloss language's name in the interface language, capitalized as a list item. */
-private fun languageName(code: String): String =
+private fun titledLanguageName(code: String): String =
     languageName(code).replaceFirstChar { it.titlecase(Locale.getDefault()) }

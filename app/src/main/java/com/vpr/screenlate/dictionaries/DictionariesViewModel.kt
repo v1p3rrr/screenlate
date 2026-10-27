@@ -135,6 +135,30 @@ internal fun CatalogSection.key(sourceLanguage: String): String = "$sourceLangua
 internal fun CatalogSection.openByDefault(interfaceLanguage: String): Boolean =
     (kind == DictionaryKind.TERM && targetLanguage == interfaceLanguage) || items.any { it.task != null || it.outdated != null }
 
+/**
+ * A source language's catalog as the page shows it: [main] are the translations into English, into the language
+ * itself and into the interface language (and those without a target language), in the catalog's order; [otherTargets]
+ * are the other translation languages, under one heading; [kinds] are the frequency, pitch and kanji sections.
+ */
+internal data class CatalogLayout(
+    val main: List<CatalogSection>,
+    val otherTargets: List<CatalogSection>,
+    val kinds: List<CatalogSection>,
+) {
+    /** Opens by itself when one of its languages would. */
+    fun otherTargetsOpenByDefault(interfaceLanguage: String): Boolean = otherTargets.any { it.openByDefault(interfaceLanguage) }
+}
+
+internal fun CatalogGroup.layout(interfaceLanguage: String): CatalogLayout {
+    val mainTargets = setOf("en", sourceLanguage, interfaceLanguage)
+    val (terms, kinds) = sections.partition { it.kind == DictionaryKind.TERM }
+    val (main, others) = terms.partition { it.targetLanguage == null || it.targetLanguage in mainTargets }
+    return CatalogLayout(main, others, kinds)
+}
+
+/** Names the heading over a source language's [CatalogLayout.otherTargets] for its open or closed state. */
+internal fun CatalogGroup.otherTargetsKey(): String = "$sourceLanguage/other-targets"
+
 /** Installed dictionaries of one kind, in priority order. */
 data class InstalledSection(val kind: DictionaryKind, val dictionaries: List<DictionaryEntity>)
 

@@ -398,7 +398,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC34 | Czech dictionaries under Slovak: with Slovak on and Czech off, the Dictionaries screen lists the installed cs-en in Slovak's list (cs → en) and "Turned off" does not list it; turning Czech off with "Delete its dictionaries and models" keeps cs-en while Slovak is on; with both off, cs-en is listed under "Turned off" as Czech's | F | U DictionaryLanguagesTest, OcrModelsTest, M | 2026-10-22 |
 | DIC35 | PanLex keeps capitalized headwords without time zones and interface strings: a PanLex ky-ru built by the converter after 2026-10-22 imports from a file, and "Иран риалы" shows its PanLex line "Иранский риал" | O | U test_panlex_yomitan.py, M | 2026-10-22 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
-| DIC36 | Catalog parts: each translation language and each other kind is a heading with its count ("→ Russian · 3"); with the interface in English only "→ English" is open, in Russian only "→ Russian"; a part with a download under way or an update waiting opens by itself; a part closed by hand stays closed (also with a download in it) after leaving the page and coming back, and starts from the defaults again after the process restarts; TalkBack reads "Show the list" or "Hide the list" on a heading | N | U CatalogSectionsTest, M | |
+| DIC36 | Catalog parts: each translation language and each other kind is a heading with its count ("Russian · 3", no arrow); English, the language's own (Japanese for Japanese) and the interface language's come first, the other translation languages sit inside "Other languages · N" (N languages, closed at first, each inner part indented and closed), then a divider and "Supplementary dictionaries" over frequency, pitch and kanji; with the interface in English only English is open, in Russian only Russian; a download or an update waiting in an inner part opens it and "Other languages"; a part with a download under way or an update waiting opens by itself; a part closed by hand stays closed (also with a download in it) after leaving the page and coming back, and starts from the defaults again after the process restarts; TalkBack reads "Show the list" or "Hide the list" on a heading | N | U CatalogSectionsTest, M | |
 
 ### LNG: languages
 
@@ -578,6 +578,30 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28 night, `features/settings-rework` (`fe1afd9a` and the catalog layout on top), Pixel_10_Pro (API 37)
+
+- Build: debug APK for x86_64 only; unit tests and lint passed. Slovenian active; the app switched to Russian with
+  `cmd locale set-app-locales` for the plural and heading checks.
+- SET14: the list in the new order with both new icons; Text recognition holds Screen recognition, App text (its
+  question before App text only) and Test (OCR test opens; back keeps the scroll); About has no Tools card; Camera →
+  Engines opens Text recognition. The e-ink hint's link and the overlay's models link were not reached (the hint shows
+  only on e-ink models).
+- SET15: "Shown in all apps", "Hidden in 2 apps"; Russian «Скрыта в 1 приложении», «в 2 приложениях», «в 5
+  приложениях», «Показывается во всех приложениях». An uninstalled hidden app not tried. App labels follow the app's
+  language, so Cyrillic names sort after Latin ones in the list.
+- SET16: Anki and Audio are separate pages with the language card; Audio on Spanish shows Regions and the test word
+  "agua"; Audio's reset dialog names autoplay, volume, sources and regions. Bubble's reset kept Engines on Cloud; Text
+  recognition's returned Both, OCR boost Off and app text off (the defaults). Home's failed-audio link not reached.
+  Found: the Audio hint said "Auto play" while the switch says "Autoplay"; fixed.
+- SET17: the "If the service turns off" card ends Background work, in English and Russian.
+- DIC36: English UI: "English" open, "Russian" open by itself (JMdict waits for an update), the others closed; a group
+  closed by hand stayed closed after leaving the page. The new layout (Russian UI, Japanese): Russian, English and
+  Japanese on top, "Other languages · 14" closed with each language indented and closed inside, then a divider,
+  "Supplementary dictionaries" and Frequency, Pitch accent, Kanji. Found: Russian headings showed language names in
+  lowercase ("японский", "→ русский"); fixed, and the arrows were dropped at the owner's request.
+- BUB18: holding the docked bubble over the launcher opens the menu with Open Screenlate only, also after a scan (no
+  copy items); a quick move pulls the bubble out as before. Flags not tried (one quick language), nor other dock sides.
 
 ### 2026-10-28, `features/camera-followups` (uncommitted build on `be79b43c`), Pixel_10_Pro (API 37)
 

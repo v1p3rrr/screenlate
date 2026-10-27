@@ -115,7 +115,8 @@
     <string name="dictionaries_installed_mark">Đã cài</string>
     <string name="dictionaries_download">Tải xuống</string>
     <string name="dictionaries_section_terms">Từ điển</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">Ngôn ngữ khác</string>
+    <string name="dictionaries_catalog_supplementary">Từ điển bổ trợ</string>
     <string name="dictionaries_version">Phiên bản</string>
     <string name="home_anki_ready">Ghi chú được thêm vào %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Chọn bộ thẻ, loại ghi chú và mẫu trường.</string>

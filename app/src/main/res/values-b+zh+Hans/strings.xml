@@ -115,7 +115,8 @@
     <string name="dictionaries_installed_mark">已安装</string>
     <string name="dictionaries_download">下载</string>
     <string name="dictionaries_section_terms">词典</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">其他语言</string>
+    <string name="dictionaries_catalog_supplementary">辅助词典</string>
     <string name="dictionaries_version">版本</string>
     <string name="home_anki_ready">笔记将添加到 %1$s（%2$s）。</string>
     <string name="home_anki_not_configured">请选择牌组、笔记类型和字段模板。</string>

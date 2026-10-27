@@ -19,7 +19,8 @@ docked bubble's hold menu).
 | --- | --- |
 | Recognition entry | A "Text recognition" entry ("Распознавание текста") in the settings list, summary "How text is read: cloud, device, app text". It holds, in this order: Engines, OCR boost, Reduce load on the device, the on-device models, the app text switches (read app text, app text only, with its confirmation), and a Test section whose row opens the OCR test (moved from About → Tools, which goes away). Camera keeps High accuracy; its Engines row opens the new screen. The e-ink hint's app text link and the links to a language's on-device models open it too (owner, 2026-10-28) |
 | Bubble screen | Keeps: show the bubble, aim point, dock side, docking at the top and bottom, size, highlight, vibration, and a row "Hide the bubble in apps" with "Hidden in N apps" or "Shown in all apps"; the row opens the app list with its search on its own screen, hidden apps first as now (owner, 2026-10-28) |
-| Catalog groups | Each group of the catalog (each translation language and each other kind) is a header with its count ("→ Russian · 3"); a tap opens or closes it. By default only the translations into the interface language are open; a group with a download running or an update waiting opens by itself unless the user closed it. The state lasts while the app's process lives. Installed dictionaries are not grouped this way (owner, 2026-10-28) |
+| Catalog groups | Each group of the catalog (each translation language and each other kind) is a header with its count ("Russian · 3"); a tap opens or closes it. By default only the translations into the interface language are open; a group with a download running or an update waiting opens by itself unless the user closed it. The state lasts while the app's process lives. Installed dictionaries are not grouped this way (owner, 2026-10-28) |
+| Catalog layout | The translations into English, into the language itself and into the interface language stay on top (fewer when they coincide); all other translation languages go under one closed heading "Other languages" ("Другие языки"), inside it each language is its own closed group in the same order as before; the frequency, pitch and kanji groups are set apart below by a divider and their own heading, named for what they are rather than "other kinds". Language headings have no arrow ("Russian · 4", not "→ Russian · 4") (owner, 2026-10-28 night) |
 | Anki and Audio | Two entries: "Anki" (connection, setup check, note, fields, duplicates) and "Audio" (auto-play, sources, regions, test, volume), each with the language card at the top as now. Home's audio link opens Audio. Each page has its own reset: Anki's no longer resets the audio sources (owner, 2026-10-28) |
 | Settings order | Function, then look, then system, no group headings (decision "Settings order" of `2026-09-29-feedback-after-0.1.4.md`): Bubble, Text recognition, Lookup, Dictionaries, Anki, Audio, Popup, Translation, Camera, Appearance, Background work, Backup and restore, About (owner, 2026-10-28) |
 | Section resets | Bubble's reset covers the bubble's own keys and the hidden apps; Text recognition's covers the text source, OCR boost, engines, reduce load and the on-device model choices; Audio's covers the audio keys (with the shared ones as Anki's did). The backup format and its sections stay as they are ("Floating bubble and recognition" covers both pages) (technical, follows the split) |
@@ -59,6 +60,15 @@ docked bubble's hold menu).
 - The Audio page splits the former Audio card into Playback (auto play, volume), Sources, Regions and Test cards; a
   "Playback" heading is new.
 - The bubble page keeps its flat layout; the hidden apps count leaves out apps uninstalled since they were hidden.
+- Catalog layout (owner's message of 2026-10-28 night, questions to ask afterwards):
+  - The heading over frequency, pitch and kanji is "Supplementary dictionaries" ("Дополнительные словари"), after a
+    divider. Alternatives: list the kinds ("Frequency, pitch accent, kanji"), or a divider without a heading.
+  - The three top groups keep the catalog's existing order: interface language, English, the language itself (the
+    message named English, the language itself, the interface language).
+  - "Other languages · N" counts languages, not dictionaries; its inner groups are indented.
+  - Open at first, as decided before: only the interface language's group and any group with a download or an update
+    waiting (then "Other languages" around it opens too); English and the language's own group start closed.
+  - Term dictionaries without a target language (none in the catalog now) stay on top.
 
 ## Changelog
 
@@ -66,3 +76,7 @@ docked bubble's hold menu).
   order, the order inside Text recognition, the hidden apps screen, the allowlist note on every phone).
 - 2026-10-28 night: built the rework and the docked menu; three layout choices made without the owner are listed under
   Deferred questions.
+- 2026-10-28 night: owner's message: catalog layout with three top languages, "Other languages" and a heading over the
+  other kinds; a second message: no arrows before the language names (decision "Catalog layout"); choices made without asking listed under Deferred questions. Emulator check
+  of the rework: no faults; the Audio hint now says "Autoplay" as the switch does; catalog and language setup headings capitalize language
+  names again (the capitalizing helper was shadowed by an import).

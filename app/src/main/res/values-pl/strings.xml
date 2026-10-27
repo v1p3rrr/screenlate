@@ -121,7 +121,8 @@
     <string name="dictionaries_installed_mark">Zainstalowany</string>
     <string name="dictionaries_download">Pobierz</string>
     <string name="dictionaries_section_terms">Słowniki</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">Inne języki</string>
+    <string name="dictionaries_catalog_supplementary">Słowniki uzupełniające</string>
     <string name="dictionaries_version">Wersja</string>
     <string name="home_anki_ready">Notatki trafiają do %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Wybierz talię, typ notatki i szablony pól.</string>

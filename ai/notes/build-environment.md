@@ -45,6 +45,9 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   time), goes into a keyed `LaunchedEffect`.
 - kotlinx-coroutines-test: `advanceUntilIdle()` returns once only `backgroundScope` tasks are left, so a collector
   started there may not have seen the last events yet; call `runCurrent()` after it.
+- Kotlin name resolution (2026-10-28): an explicit import wins over a top-level function of the same file. A private
+  `languageName(code)` that capitalized `core.common.languageName(code)` was never called (calls with one argument
+  went to the import), so headings showed "японский" in Russian; give such a wrapper its own name (`titledLanguageName`).
 - `resValues` build feature is off by default in AGP 9; the app label per build type uses a manifest placeholder (`appLabel`).
 - Language bundles (`yomitan-language/<iso>.js`, 2026-10-22): the build needs a Yomitan clone at the commit in
   `scripts/yomitan-language/yomitan-commit.txt` (a `git clone --filter=blob:none` into the session's scratch folder is

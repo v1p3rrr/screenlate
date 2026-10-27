@@ -117,7 +117,8 @@
     <string name="dictionaries_installed_mark">Yüklü</string>
     <string name="dictionaries_download">İndir</string>
     <string name="dictionaries_section_terms">Sözlükler</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">Diğer diller</string>
+    <string name="dictionaries_catalog_supplementary">Tamamlayıcı sözlükler</string>
     <string name="dictionaries_version">Sürüm</string>
     <string name="home_anki_ready">Notlar %1$s destesine eklenir (%2$s).</string>
     <string name="home_anki_not_configured">Bir deste, not türü ve alan şablonları seçin.</string>

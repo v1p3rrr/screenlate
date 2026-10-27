@@ -120,7 +120,8 @@
     <string name="dictionaries_installed_mark">Installed</string>
     <string name="dictionaries_download">Download</string>
     <string name="dictionaries_section_terms">Dictionaries</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">Other languages</string>
+    <string name="dictionaries_catalog_supplementary">Supplementary dictionaries</string>
     <string name="dictionaries_version">Version</string>
     <string name="home_anki_ready">Notes go to %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Choose a deck, a note type and field templates.</string>
@@ -539,7 +540,7 @@
     <string name="popup_text_weight_info_languages">Makes thin text easier to read. With a language\'s “Only for … text” switch on, or with the phone\'s font, only that language\'s letters get heavier; with it off, all text does.\n\nThe weight uses the font\'s own weights. A font with only one weight goes from normal straight to bold, so medium looks like normal.\n\nLetter thickness draws a thin outline around each letter: it works with any font and adds to the weight.</string>
     <string name="languages_settings_hint">The settings below apply to the chosen language; the rest of the page applies to all languages.</string>
     <string name="anki_languages_hint">The deck, note type, field templates, tags and duplicate handling are set for each language. Translation in notes is shared.</string>
-    <string name="audio_languages_hint">The audio sources and the order of regions are set for each language. Auto play and volume are shared.</string>
+    <string name="audio_languages_hint">The audio sources and the order of regions are set for each language. Autoplay and volume are shared.</string>
     <string name="yomitan_summary_language">Language: %1$s</string>
     <string name="reset_section_language">Settings shared by all languages and those of the language shown on the page are reset; other languages keep theirs.</string>
     <string name="popup_settings_title">Popup</string>

@@ -27,6 +27,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -58,6 +59,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -280,24 +282,38 @@ fun DictionariesScreen(
                 if (outdated != null) viewModel.replace(item.entry, outdated) else viewModel.download(item.entry)
             }
             val interfaceLanguage = LocalConfiguration.current.locales[0].language
+            val card = @Composable { item: CatalogItem ->
+                CatalogCard(
+                    item,
+                    noNetwork = item.task?.let { it.id in state.waitingForNetwork } == true,
+                    onDownload = download,
+                    onCancel = viewModel::cancel,
+                )
+            }
             state.catalog.forEach { group ->
-                SubsectionTitle(languageName(group.sourceLanguage))
-                group.sections.forEach { section ->
-                    val key = section.key(group.sourceLanguage)
-                    val open = catalogOpen[key] ?: section.openByDefault(interfaceLanguage)
-                    CatalogSectionHeader(catalogSectionLabel(section, group.sourceLanguage), section.items.size, open) {
-                        catalogOpen[key] = !open
+                SubsectionTitle(titledLanguageName(group.sourceLanguage))
+                val layout = group.layout(interfaceLanguage)
+                CatalogSections(layout.main, group.sourceLanguage, interfaceLanguage, card = card)
+                if (layout.otherTargets.isNotEmpty()) {
+                    val key = group.otherTargetsKey()
+                    val open = catalogOpen[key] ?: layout.otherTargetsOpenByDefault(interfaceLanguage)
+                    CatalogSectionHeader(
+                        stringResource(R.string.dictionaries_catalog_other_targets),
+                        layout.otherTargets.size,
+                        open,
+                    ) { catalogOpen[key] = !open }
+                    if (open) {
+                        CatalogSections(layout.otherTargets, group.sourceLanguage, interfaceLanguage, indent = 16.dp, card = card)
                     }
-                    if (open) section.items.forEach { item ->
-                        key(item.entry.title) {
-                            CatalogCard(
-                                item,
-                                noNetwork = item.task?.let { it.id in state.waitingForNetwork } == true,
-                                onDownload = download,
-                                onCancel = viewModel::cancel,
-                            )
-                        }
-                    }
+                }
+                if (layout.kinds.isNotEmpty()) {
+                    if (layout.main.isNotEmpty() || layout.otherTargets.isNotEmpty()) HorizontalDivider(Modifier.padding(top = 4.dp))
+                    Text(
+                        stringResource(R.string.dictionaries_catalog_supplementary),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    CatalogSections(layout.kinds, group.sourceLanguage, interfaceLanguage, card = card)
                 }
             }
         }
@@ -361,12 +377,38 @@ private class ScrollAnchors(private val scroll: ScrollState) {
  */
 private val catalogOpen = mutableStateMapOf<String, Boolean>()
 
+/** Each section as a header, with its cards while it is open; [indent] shifts both, under an enclosing header. */
+@Composable
+private fun CatalogSections(
+    sections: List<CatalogSection>,
+    sourceLanguage: String,
+    interfaceLanguage: String,
+    indent: Dp = 0.dp,
+    card: @Composable (CatalogItem) -> Unit,
+) {
+    sections.forEach { section ->
+        val key = section.key(sourceLanguage)
+        val open = catalogOpen[key] ?: section.openByDefault(interfaceLanguage)
+        CatalogSectionHeader(
+            catalogSectionLabel(section, sourceLanguage),
+            section.items.size,
+            open,
+            Modifier.padding(start = indent),
+        ) { catalogOpen[key] = !open }
+        if (open) section.items.forEach { item ->
+            key(item.entry.title) {
+                Box(Modifier.padding(start = indent)) { card(item) }
+            }
+        }
+    }
+}
+
 /** A catalog section's [label] with its [count]; a tap opens or closes it. */
 @Composable
-private fun CatalogSectionHeader(label: String, count: Int, open: Boolean, onToggle: () -> Unit) {
+private fun CatalogSectionHeader(label: String, count: Int, open: Boolean, modifier: Modifier = Modifier, onToggle: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(onClickLabel = stringResource(if (open) R.string.dictionaries_tasks_hide else R.string.dictionaries_tasks_show), onClick = onToggle)
             .padding(vertical = 4.dp),
@@ -391,13 +433,14 @@ private fun SubsectionTitle(text: String) {
     Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp))
 }
 
-private fun languageName(code: String): String =
+/** A language's name in the interface language, capitalized for a heading. */
+private fun titledLanguageName(code: String): String =
     languageName(code).replaceFirstChar { it.titlecase(Locale.getDefault()) }
 
 @Composable
 private fun catalogSectionLabel(section: CatalogSection, sourceLanguage: String): String = when (section.kind) {
     DictionaryKind.TERM -> section.targetLanguage
-        ?.let { stringResource(R.string.dictionaries_catalog_translations, languageName(it)) }
+        ?.let(::titledLanguageName)
         ?: stringResource(R.string.dictionaries_kind_term)
     else -> stringResource(kindLabel(section.kind, sourceLanguage))
 }

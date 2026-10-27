@@ -121,7 +121,8 @@
     <string name="dictionaries_installed_mark">Установлен</string>
     <string name="dictionaries_download">Скачать</string>
     <string name="dictionaries_section_terms">Словари</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">Другие языки</string>
+    <string name="dictionaries_catalog_supplementary">Дополнительные словари</string>
     <string name="dictionaries_version">Версия</string>
 
     <string name="home_anki_ready">Карточки добавляются в %1$s (%2$s).</string>

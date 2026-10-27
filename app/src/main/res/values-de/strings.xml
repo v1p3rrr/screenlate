@@ -117,7 +117,8 @@
     <string name="dictionaries_installed_mark">Installiert</string>
     <string name="dictionaries_download">Herunterladen</string>
     <string name="dictionaries_section_terms">Wörterbücher</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">Weitere Sprachen</string>
+    <string name="dictionaries_catalog_supplementary">Ergänzende Wörterbücher</string>
     <string name="dictionaries_version">Version</string>
     <string name="home_anki_ready">Notizen landen in %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Wähle einen Stapel, einen Notiztyp und Feldvorlagen.</string>

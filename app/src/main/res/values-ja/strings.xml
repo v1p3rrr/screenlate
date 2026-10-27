@@ -115,7 +115,8 @@
     <string name="dictionaries_installed_mark">インストール済み</string>
     <string name="dictionaries_download">ダウンロード</string>
     <string name="dictionaries_section_terms">辞書</string>
-    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_catalog_other_targets">その他の言語</string>
+    <string name="dictionaries_catalog_supplementary">補助辞書</string>
     <string name="dictionaries_version">バージョン</string>
     <string name="home_anki_ready">ノートの追加先：%1$s（%2$s）</string>
     <string name="home_anki_not_configured">デッキ、ノートタイプ、フィールドテンプレートを選んでください。</string>

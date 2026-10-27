@@ -5,6 +5,7 @@ import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import java.util.UUID
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -44,6 +45,39 @@ class CatalogSectionsTest {
 
         assertTrue(CatalogSection(DictionaryKind.TERM, "en", listOf(item("A"), item("B", task = downloading))).openByDefault("ru"))
         assertTrue(CatalogSection(DictionaryKind.PITCH, null, listOf(item("C", outdated = old))).openByDefault("ru"))
+    }
+
+    @Test
+    fun `English, the language itself and the interface language stay on top, the others go under one heading`() {
+        val sections = listOf("ru", "en", "ja", "es", "de", null).map { CatalogSection(DictionaryKind.TERM, it, listOf(item("$it"))) } +
+            listOf(DictionaryKind.FREQUENCY, DictionaryKind.KANJI).map { CatalogSection(it, null, listOf(item("$it"))) }
+
+        val layout = CatalogGroup("ja", sections).layout("ru")
+
+        assertEquals(listOf("ru", "en", "ja", null), layout.main.map { it.targetLanguage })
+        assertEquals(listOf("es", "de"), layout.otherTargets.map { it.targetLanguage })
+        assertEquals(listOf(DictionaryKind.FREQUENCY, DictionaryKind.KANJI), layout.kinds.map { it.kind })
+    }
+
+    @Test
+    fun `with an English interface the top has two languages`() {
+        val sections = listOf("en", "zh", "ru").map { CatalogSection(DictionaryKind.TERM, it, listOf(item("$it"))) }
+
+        val layout = CatalogGroup("zh", sections).layout("en")
+
+        assertEquals(listOf("en", "zh"), layout.main.map { it.targetLanguage })
+        assertEquals(listOf("ru"), layout.otherTargets.map { it.targetLanguage })
+    }
+
+    @Test
+    fun `the other languages open by themselves only for a download or an update in one of them`() {
+        val downloading = ImportTask(UUID.randomUUID(), "B", ImportTask.State.DOWNLOADING, 10, titles = emptyList(), error = null)
+        val quiet = CatalogGroup("ja", listOf(CatalogSection(DictionaryKind.TERM, "es", listOf(item("A")))))
+        val busy = CatalogGroup("ja", listOf(CatalogSection(DictionaryKind.TERM, "es", listOf(item("A"), item("B", task = downloading)))))
+
+        assertFalse(quiet.layout("ru").otherTargetsOpenByDefault("ru"))
+        assertTrue(busy.layout("ru").otherTargetsOpenByDefault("ru"))
+        assertNotEquals(quiet.otherTargetsKey(), CatalogGroup("zh", emptyList()).otherTargetsKey())
     }
 
     @Test
