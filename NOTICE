@@ -77,3 +77,7 @@ Jiten frequency list (https://jiten.moe), CC BY-SA 4.0.
 Kanjium pitch accents (https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary),
   data from Kanjium (https://github.com/mifunetoshiro/kanjium), CC BY-SA 4.0;
   conversion by toasted-nutbread, MIT License.
+
+Fonts offered for download in the Popup settings (Japanese, from the Google Fonts repository,
+https://github.com/google/fonts) are not part of the APK; each is under the SIL Open Font License 1.1,
+shown in the app with its source.
