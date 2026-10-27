@@ -38,6 +38,14 @@ class PhotoTilesTest {
     }
 
     @Test
+    fun aPlanReadsTheOverviewFirstByTilesOrTheWholePhotoOnce() {
+        assertThat(PhotoTiles.plan(4000, 3000, tiled = true))
+            .containsExactlyElementsIn(listOf(PhotoTiles.overview(4000, 3000)!!) + PhotoTiles.grid(4000, 3000)).inOrder()
+        assertThat(PhotoTiles.plan(4000, 3000, tiled = false)).containsExactly(PhotoTile(0, 0, 4000, 3000))
+        assertThat(PhotoTiles.plan(1200, 900, tiled = true)).containsExactly(PhotoTile(0, 0, 1200, 900))
+    }
+
+    @Test
     fun aScaledPageKeepsEveryBoxInPlace() {
         val word = OcrWord("word", " ", Box(10f, 20f, 50f, 40f), characterBoxes = listOf(Box(10f, 20f, 30f, 40f), Box(30f, 20f, 50f, 40f)))
         val page = OcrPage(100, 50, listOf(OcrParagraph(listOf(OcrLine(listOf(word), word.box, false)))), OcrEngineType.LENS)

@@ -859,6 +859,10 @@
     <string name="camera_save_history_failed">No se pudo guardar la foto en el historial.</string>
     <string name="camera_history">Historial</string>
     <string name="camera_settings">Ajustes de la cámara</string>
+    <string name="camera_recognition">Reconocimiento</string>
+    <string name="camera_high_accuracy">Alta precisión</string>
+    <string name="camera_high_accuracy_hint">La foto se lee por partes: el texto pequeño se reconoce mejor, pero tarda varias veces más, y el reconocimiento en la nube usa más datos móviles.</string>
+    <string name="camera_recognize_accurately">Reconocer con más precisión</string>
     <string name="history_empty">No hay fotos en el historial</string>
     <string name="history_empty_hint">Guarda una foto con «Guardar en el historial» en su menú o activa el guardado automático en los ajustes de la cámara.</string>
     <plurals name="history_selected">
@@ -874,7 +878,7 @@
     </plurals>
     <string name="history_clear_selection">Anular selección</string>
     <string name="history_change_failed">No se pudo cambiar el historial.</string>
-    <string name="settings_camera_summary">Historial de fotos, guardado automático, límites</string>
+    <string name="settings_camera_summary">Precisión, historial de fotos, guardado automático, límites</string>
     <string name="history_auto_save">Guardar automáticamente</string>
     <string name="history_auto_save_hint">Cada foto nueva, tomada o importada, pasa al historial al momento.</string>
     <string name="history_count_limit">Límite de fotos</string>

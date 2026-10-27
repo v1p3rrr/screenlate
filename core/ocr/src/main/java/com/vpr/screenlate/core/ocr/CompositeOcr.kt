@@ -27,7 +27,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -185,24 +184,23 @@ class CompositeOcr internal constructor(
     }
 
     /**
-     * A photo tile has no aim, draft, deferred bands or model changes. Both readers terminate before this returns,
-     * retaining the tile until neither engine reads it. Cloud wins when usable; its failure falls back to [pinnedDevice].
+     * A photo tile has no aim, draft, deferred bands or model changes; the tile is not read after this returns. With
+     * both engines the cloud reads it alone, and only its failure hands it to [pinnedDevice]: waiting for the device
+     * as well would make every photo as slow as the device. When the device fails too, the cloud's error is thrown.
      */
     suspend fun recognizePhotoTile(
         image: Bitmap,
         language: Language,
         engines: OcrEngines,
         pinnedDevice: OcrEngine?,
-    ): OcrPage = coroutineScope {
+    ): OcrPage {
         if (engines == OcrEngines.CLOUD || (engines == OcrEngines.BOTH && pinnedDevice == null)) {
-            return@coroutineScope recognizeWithLens(image, language)
+            return recognizeWithLens(image, language)
         }
         val local = pinnedDevice ?: throw NoDeviceOcrException()
-        if (engines == OcrEngines.DEVICE) return@coroutineScope local.recognize(image, language)
-        val deviceResult = async { photoResult { local.recognize(image, language) } }
-        val cloudResult = photoResult { recognizeWithLens(image, language) }
-        val fallback = deviceResult.await()
-        cloudResult.getOrNull() ?: fallback.getOrElse { throw cloudResult.exceptionOrNull()!! }
+        if (engines == OcrEngines.DEVICE) return local.recognize(image, language)
+        val cloud = photoResult { recognizeWithLens(image, language) }
+        return cloud.getOrElse { error -> photoResult { local.recognize(image, language) }.getOrElse { throw error } }
     }
 
     private suspend fun photoResult(read: suspend () -> OcrPage): Result<OcrPage> = try {

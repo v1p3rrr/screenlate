@@ -61,6 +61,34 @@ class PhotoRecognitionJobsTest {
     }
 
     @Test
+    fun aPhotoReadWholeIsOneRegionThatReplacesTheTextItHad() = runTest {
+        val old = TestPhotos.recognition(language = Language.ENGLISH)
+        val documents = Documents(photo(4000, 3000).copy(revision = 4, text = PhotoText.Recognized(old)))
+        val engine = Engine()
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        val whole = PhotoOcrSettings(OcrEngines.CLOUD, tiled = false)
+        jobs.recognize(documents.photo, Language.ENGLISH, whole)
+        runCurrent()
+        assertThat(engine.calls).containsExactly(PhotoTile(0, 0, 4000, 3000))
+        val recognition = (documents.photo.text as PhotoText.Recognized).recognition
+        assertThat(recognition.settings).isEqualTo(whole)
+        assertThat(recognition.tiles.single().tile).isEqualTo(PhotoTile(0, 0, 4000, 3000))
+        assertThat(recognition.page.paragraphs.flatMap { it.lines }.flatMap { it.words }.map { it.text }).containsExactly("word")
+    }
+
+    @Test
+    fun aPhotoReadWholeThatFailsIsOneMissingRegion() = runTest {
+        val documents = Documents(photo(4000, 3000))
+        val engine = Engine().apply { before = { throw IOException("test") } }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD, tiled = false))
+        runCurrent()
+        assertThat(documents.commits).isEqualTo(0)
+        val attempt = documents.photo.attempt!!
+        assertThat(attempt.remaining.filterNot { documents.photo.isOverview(it, attempt.settings) }).hasSize(1)
+    }
+
+    @Test
     fun atMostTwoTileReadersRunAtOnce() = runTest {
         val documents = Documents(photo(4000, 3000))
         val engine = Engine()

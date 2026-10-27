@@ -67,6 +67,13 @@ class CameraPreferences @Inject constructor(
         store.edit { it[AUTO_SAVE] = on }
     }
 
+    /** High accuracy: photos are read by tiles ([PhotoOcrSettings.tiled]) instead of whole. */
+    val highAccuracy = store.data.map { it[HIGH_ACCURACY] ?: false }.distinctUntilChanged()
+
+    suspend fun setHighAccuracy(on: Boolean) {
+        store.edit { it[HIGH_ACCURACY] = on }
+    }
+
     suspend fun setLimits(limits: HistoryLimits) {
         store.edit {
             it[COUNT_LIMIT] = limits.count
@@ -79,5 +86,6 @@ class CameraPreferences @Inject constructor(
         val AUTO_SAVE = booleanPreferencesKey("history_auto_save")
         val COUNT_LIMIT = intPreferencesKey("history_count_limit")
         val SIZE_LIMIT = intPreferencesKey("history_size_limit_mb")
+        val HIGH_ACCURACY = booleanPreferencesKey("high_accuracy")
     }
 }

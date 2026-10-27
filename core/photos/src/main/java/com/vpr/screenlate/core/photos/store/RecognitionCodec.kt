@@ -28,7 +28,7 @@ import java.util.zip.CRC32
  */
 internal object RecognitionCodec {
     private const val MAGIC = 0x534C5052 // "SLPR"
-    const val VERSION = 3
+    const val VERSION = 4
 
     fun encode(recognition: PhotoRecognition): ByteArray {
         val bytes = ByteArrayOutputStream()
@@ -67,6 +67,7 @@ internal object RecognitionCodec {
         writeString(recognition.language.code)
         writeString(recognition.settings.engines.name)
         writeOptionalString(recognition.settings.deviceModel)
+        writeBoolean(recognition.settings.tiled)
         writeLong(recognition.recognizedAt)
         val page = recognition.page
         writeInt(page.width)
@@ -113,6 +114,8 @@ internal object RecognitionCodec {
         val language = requireNotNull(Language.of(readString())) { "Unknown language" }
         val engines = OcrEngines.valueOf(readString())
         val deviceModel = readOptionalString()
+        // Photos were read only by tiles before version 4.
+        val tiled = version < 4 || readBoolean()
         val recognizedAt = readLong()
         val width = readInt()
         val height = readInt()
@@ -152,7 +155,7 @@ internal object RecognitionCodec {
         }
         return PhotoRecognition(
             language = language,
-            settings = PhotoOcrSettings(engines, deviceModel),
+            settings = PhotoOcrSettings(engines, deviceModel, tiled),
             page = OcrPage(width, height, paragraphs, engine),
             failed = failed,
             recognizedAt = recognizedAt,

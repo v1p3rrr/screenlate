@@ -111,13 +111,13 @@ class PhotoRecognitionJobs internal constructor(
                 val basedOn = base.revision
                 engine.open(document, language, settings).use { session ->
                     // The overview goes first, so the regions' progress does not wait for it at the end.
-                    var attempt = PhotoAttempt(id, basedOn, language, session.settings,
-                        retry?.tiles ?: (listOfNotNull(PhotoTiles.overview(document.width, document.height)) +
-                            PhotoTiles.grid(document.width, document.height)),
+                    val read = session.settings
+                    var attempt = PhotoAttempt(id, basedOn, language, read,
+                        retry?.tiles ?: PhotoTiles.plan(document.width, document.height, read.tiled),
                         retry?.results?.filter { it.page != null } ?: emptyList(), clock())
                     if (!documents.saveAttempt(document.id, attempt, replace = true)) return@launch
                     fun progress(attempt: PhotoAttempt) = PhotoWork.Running(document.id, id,
-                        attempt.results.count { !document.isOverview(it.tile) }, attempt.tiles.count { !document.isOverview(it) })
+                        attempt.results.count { !document.isOverview(it.tile, read) }, attempt.tiles.count { !document.isOverview(it, read) })
                     mutableWork.value = progress(attempt)
                     val saving = Mutex()
                     coroutineScope {
@@ -128,7 +128,7 @@ class PhotoRecognitionJobs internal constructor(
                                 } catch (e: CancellationException) { throw e }
                                 catch (e: Exception) {
                                     Log.w("PhotoOCR", "Tile failed: " + e.javaClass.simpleName)
-                                    PhotoTileResult(tile, failure = cause(e, session.settings.engines))
+                                    PhotoTileResult(tile, failure = cause(e, read.engines))
                                 }
                                 saving.withLock {
                                     attempt = attempt.copy(results = attempt.results + result)
@@ -141,16 +141,16 @@ class PhotoRecognitionJobs internal constructor(
                     attempt = attempt.copy(finished = true)
                     if (!documents.saveAttempt(document.id, attempt)) return@launch
                     val successful = attempt.results.mapNotNull { result -> result.page?.let { PhotoTilePage(result.tile, it) } }
-                    val (overview, regions) = successful.partition { document.isOverview(it.tile) }
+                    val (overview, regions) = successful.partition { document.isOverview(it.tile, read) }
                     // The overview alone holds only large text: it replaces no text the photo has, and without large
                     // text it does not make the photo one without text while its regions failed.
                     val page = if (regions.isEmpty() && (overview.isEmpty() || base.text is PhotoText.Recognized)) null
                         else PhotoAssembly.assemble(document.width, document.height, language, regions, overview.singleOrNull())
                     if (page != null && (regions.isNotEmpty() || page.paragraphs.isNotEmpty())) {
                         // A failed overview only leaves out large text across tile seams: not a missing region.
-                        val failed = attempt.results.filterNot { document.isOverview(it.tile) }
+                        val failed = attempt.results.filterNot { document.isOverview(it.tile, read) }
                             .mapNotNull { result -> result.failure?.let { FailedRegion(result.tile.box, it) } }
-                        documents.commitRecognition(document.id, basedOn, PhotoRecognition(language, session.settings, page,
+                        documents.commitRecognition(document.id, basedOn, PhotoRecognition(language, read, page,
                             failed, clock(), successful))
                     }
                 }

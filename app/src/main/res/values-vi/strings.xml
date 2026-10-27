@@ -845,6 +845,10 @@
     <string name="camera_save_history_failed">Không lưu được ảnh vào lịch sử.</string>
     <string name="camera_history">Lịch sử</string>
     <string name="camera_settings">Cài đặt máy ảnh</string>
+    <string name="camera_recognition">Nhận dạng</string>
+    <string name="camera_high_accuracy">Độ chính xác cao</string>
+    <string name="camera_high_accuracy_hint">Ảnh được đọc theo từng phần: chữ nhỏ được nhận dạng tốt hơn nhưng lâu hơn vài lần, và nhận dạng đám mây dùng nhiều dữ liệu di động hơn.</string>
+    <string name="camera_recognize_accurately">Nhận dạng chính xác hơn</string>
     <string name="history_empty">Không có ảnh trong lịch sử</string>
     <string name="history_empty_hint">Lưu ảnh bằng mục “Lưu vào lịch sử” trong menu của ảnh, hoặc bật tự động lưu trong cài đặt máy ảnh.</string>
     <plurals name="history_selected">
@@ -856,7 +860,7 @@
     </plurals>
     <string name="history_clear_selection">Bỏ chọn</string>
     <string name="history_change_failed">Không thay đổi được lịch sử.</string>
-    <string name="settings_camera_summary">Lịch sử ảnh, tự động lưu, giới hạn</string>
+    <string name="settings_camera_summary">Độ chính xác, lịch sử ảnh, tự động lưu, giới hạn</string>
     <string name="history_auto_save">Tự động lưu</string>
     <string name="history_auto_save_hint">Mỗi ảnh mới, dù chụp hay nhập, đều được thêm vào lịch sử ngay.</string>
     <string name="history_count_limit">Giới hạn số ảnh</string>

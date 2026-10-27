@@ -4,6 +4,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.ocr.OcrEngines
+import com.vpr.screenlate.core.ocr.PhotoTiles
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
 import com.vpr.screenlate.core.photos.CameraPreferences
 import com.vpr.screenlate.core.photos.PhotoDocument
@@ -62,7 +63,11 @@ data class CameraRecognitionState(
 ) {
     fun flagCountry(language: Language): String = flags[language] ?: language.support.flagCountries.first()
 
-    /** Why the current result no longer matches the selection, or null when it does or there is none. */
+    /**
+     * Why the current result no longer matches the selection, or null when it does or there is none. A photo read by
+     * tiles stays as it is when High accuracy is off; one read whole is pending when it is on, unless the photo is a
+     * single tile anyway.
+     */
     fun pendingReason(document: PhotoDocument): CameraPending? {
         val previous = (document.text as? PhotoText.Recognized)?.recognition
         val attempt = document.attempt
@@ -71,11 +76,19 @@ data class CameraRecognitionState(
             attempt != null -> attempt.language to attempt.settings
             else -> return null
         }
+        val single = PhotoTiles.overview(document.width, document.height) == null
         return when {
             language != this.language -> CameraPending.LANGUAGE
-            settings != this.settings -> CameraPending.SETTINGS
+            settings.copy(tiled = this.settings.tiled) != this.settings -> CameraPending.SETTINGS
+            this.settings.tiled && !settings.tiled && !single -> CameraPending.SETTINGS
             else -> null
         }
+    }
+
+    /** Recognize more accurately: the photo was read whole and is larger than one tile. */
+    fun canReadByTiles(document: PhotoDocument): Boolean {
+        val recognition = (document.text as? PhotoText.Recognized)?.recognition ?: return false
+        return !recognition.settings.tiled && PhotoTiles.overview(document.width, document.height) != null
     }
 
     fun pending(document: PhotoDocument): Boolean = pendingReason(document) != null
@@ -89,7 +102,9 @@ interface CameraRecognition {
     val state: StateFlow<CameraRecognitionState?>
     val blocked: StateFlow<CameraReadinessBlock?>
     fun select(language: Language)
-    fun recognize(document: PhotoDocument)
+
+    /** Recognizes [document] with the selection; [byTiles] reads it by tiles whatever High accuracy says. */
+    fun recognize(document: PhotoDocument, byTiles: Boolean = false)
     fun retry(document: PhotoDocument)
     fun dismissBlock()
 }
@@ -118,10 +133,11 @@ class CameraRecognitionController @Inject constructor(
                 statuses.mapNotNull { status -> status.gap()?.let { status.language to it } }.toMap()
             }
         }
-        combine(settings.settings, device.activeUpdates(language.selected), installation.observe(language.selected, imageSource = true),
-            jobs.work, gaps) { currentSettings, model, status, work, gapsByLanguage ->
+        val engines = combine(settings.settings, preferences.highAccuracy) { current, tiled -> current.ocrEngines to tiled }
+        combine(engines, device.activeUpdates(language.selected), installation.observe(language.selected, imageSource = true),
+            jobs.work, gaps) { (ocrEngines, tiled), model, status, work, gapsByLanguage ->
             CameraRecognitionState(language.selected, language.enabled,
-                PhotoOcrSettings(currentSettings.ocrEngines, if (currentSettings.ocrEngines == OcrEngines.CLOUD) null else model?.id), status, work,
+                PhotoOcrSettings(ocrEngines, if (ocrEngines == OcrEngines.CLOUD) null else model?.id, tiled), status, work,
                 language.active, language.flags, gapsByLanguage)
         }
     }.retryWhen { error, attempt ->
@@ -138,13 +154,14 @@ class CameraRecognitionController @Inject constructor(
     }
 
     @Synchronized
-    override fun recognize(document: PhotoDocument) {
+    override fun recognize(document: PhotoDocument, byTiles: Boolean) {
         action?.cancel()
         action = scope.launch {
             val current = state.filterNotNull().first()
             val ready = installation.observe(current.language, imageSource = true, engines = current.settings.engines).first()
+            val settings = if (byTiles) current.settings.copy(tiled = true) else current.settings
             if (!ready.scanReady) mutableBlock.value = CameraReadinessBlock(document.id, ready)
-            else { mutableBlock.value = null; jobs.recognize(document, current.language, current.settings) }
+            else { mutableBlock.value = null; jobs.recognize(document, current.language, settings) }
         }
     }
 

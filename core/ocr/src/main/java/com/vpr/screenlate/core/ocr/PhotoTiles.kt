@@ -24,6 +24,13 @@ object PhotoTiles {
 
     fun isOverview(tile: PhotoTile, width: Int, height: Int): Boolean = tile == overview(width, height)
 
+    /**
+     * What a recognition reads: with [tiled], the [overview] first and then the [grid]; otherwise the whole photo once,
+     * scaled down to [MAX_SIDE], as its only region.
+     */
+    fun plan(width: Int, height: Int, tiled: Boolean): List<PhotoTile> =
+        if (tiled) listOfNotNull(overview(width, height)) + grid(width, height) else listOf(PhotoTile(0, 0, width, height))
+
     fun grid(width: Int, height: Int): List<PhotoTile> {
         require(width > 0 && height > 0)
         return starts(height).flatMap { y ->

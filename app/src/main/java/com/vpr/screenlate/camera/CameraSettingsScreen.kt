@@ -3,14 +3,18 @@ package com.vpr.screenlate.camera
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,10 +25,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -36,12 +42,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.photos.CameraPreferences
 import com.vpr.screenlate.core.photos.HistoryLimits
 import com.vpr.screenlate.core.photos.HistorySettings
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoHistory
+import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.ui.components.ConfirmDelete
+import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
@@ -58,6 +67,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -66,6 +76,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 data class HistoryUsage(val count: Int, val bytes: Long)
+
+/** How photos are read: [highAccuracy] reads them by tiles; the [engines] are those of screen recognition. */
+data class CameraReading(val highAccuracy: Boolean, val engines: OcrEngines)
 
 /**
  * New limits that wait for the user's answer, since they delete the [excess] oldest photos of the history; [close]:
@@ -81,9 +94,13 @@ class CameraSettingsViewModel @Inject constructor(
     private val history: PhotoHistory,
     private val documents: PhotoDocuments,
     private val preferences: CameraPreferences,
+    overlaySettings: OverlaySettingsRepository,
 ) : ViewModel() {
     val settings: StateFlow<HistorySettings?> = preferences.history
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val reading: StateFlow<CameraReading?> = combine(preferences.highAccuracy, overlaySettings.settings) { highAccuracy, overlay ->
+        CameraReading(highAccuracy, overlay.ocrEngines)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
     val usage: StateFlow<HistoryUsage?> = history.entries
         .map { entries -> HistoryUsage(entries.size, entries.sumOf { it.bytes }) }
         .catch { e ->
@@ -99,6 +116,19 @@ class CameraSettingsViewModel @Inject constructor(
     val resets = mutableResets.asStateFlow()
     private val messages = Channel<CameraSettingsEvent>(Channel.BUFFERED)
     val events = messages.receiveAsFlow()
+
+    fun setHighAccuracy(on: Boolean) {
+        viewModelScope.launch {
+            try {
+                preferences.setHighAccuracy(on)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // As with other settings, the switch then shows the stored value.
+                Log.w(TAG, "Changing the accuracy failed: " + e.javaClass.simpleName)
+            }
+        }
+    }
 
     /** Turning automatic saving on also saves the current photo. */
     fun setAutoSave(on: Boolean) {
@@ -193,10 +223,14 @@ class CameraSettingsViewModel @Inject constructor(
     private companion object { const val TAG = "CameraSettings" }
 }
 
-/** Camera settings: the photo history's saving mode, its limits and its size. */
+/**
+ * Camera settings: how photos are read, then the photo history's saving mode, its limits and its size. [onOpenEngines]
+ * opens screen recognition, whose engines photos share.
+ */
 @Composable
-fun CameraSettingsScreen(onBack: () -> Unit, viewModel: CameraSettingsViewModel = hiltViewModel()) {
+fun CameraSettingsScreen(onBack: () -> Unit, onOpenEngines: () -> Unit, viewModel: CameraSettingsViewModel = hiltViewModel()) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val reading by viewModel.reading.collectAsStateWithLifecycle()
     val usage by viewModel.usage.collectAsStateWithLifecycle()
     val pending by viewModel.pending.collectAsStateWithLifecycle()
     val resets by viewModel.resets.collectAsStateWithLifecycle()
@@ -252,6 +286,7 @@ fun CameraSettingsScreen(onBack: () -> Unit, viewModel: CameraSettingsViewModel 
             Modifier.fillMaxSize().formContent(padding, focusManager).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            reading?.let { ReadingCard(it, viewModel::setHighAccuracy, onOpenEngines) }
             SectionCard(stringResource(R.string.camera_history)) {
                 SwitchRow(
                     stringResource(R.string.history_auto_save), current.autoSave, viewModel::setAutoSave,
@@ -278,6 +313,35 @@ fun CameraSettingsScreen(onBack: () -> Unit, viewModel: CameraSettingsViewModel 
                     }
                 }
             }
+        }
+    }
+}
+
+/** High accuracy and the engines, which are changed on the page of screen recognition. */
+@Composable
+private fun ReadingCard(reading: CameraReading, onHighAccuracy: (Boolean) -> Unit, onOpenEngines: () -> Unit) {
+    SectionCard(stringResource(R.string.camera_recognition)) {
+        SwitchRow(
+            stringResource(R.string.camera_high_accuracy), reading.highAccuracy, onHighAccuracy,
+            hint = stringResource(R.string.camera_high_accuracy_hint),
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onOpenEngines).padding(vertical = 8.dp),
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.bubble_ocr_engines))
+                Hint(
+                    stringResource(
+                        when (reading.engines) {
+                            OcrEngines.BOTH -> R.string.bubble_ocr_engines_both
+                            OcrEngines.CLOUD -> R.string.bubble_ocr_engines_cloud
+                            OcrEngines.DEVICE -> R.string.bubble_ocr_engines_device
+                        },
+                    ),
+                )
+            }
+            Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

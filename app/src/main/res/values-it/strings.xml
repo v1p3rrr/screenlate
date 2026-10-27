@@ -859,6 +859,10 @@
     <string name="camera_save_history_failed">Impossibile salvare la foto nella cronologia.</string>
     <string name="camera_history">Cronologia</string>
     <string name="camera_settings">Impostazioni fotocamera</string>
+    <string name="camera_recognition">Riconoscimento</string>
+    <string name="camera_high_accuracy">Alta precisione</string>
+    <string name="camera_high_accuracy_hint">La foto viene letta a sezioni: il testo piccolo viene riconosciuto meglio, ma i tempi sono parecchie volte più lunghi e il riconoscimento nel cloud consuma più dati mobili.</string>
+    <string name="camera_recognize_accurately">Riconosci con più precisione</string>
     <string name="history_empty">Nessuna foto nella cronologia</string>
     <string name="history_empty_hint">Salva una foto con «Salva nella cronologia» nel suo menu o attiva il salvataggio automatico nelle impostazioni della fotocamera.</string>
     <plurals name="history_selected">
@@ -874,7 +878,7 @@
     </plurals>
     <string name="history_clear_selection">Annulla selezione</string>
     <string name="history_change_failed">Impossibile modificare la cronologia.</string>
-    <string name="settings_camera_summary">Cronologia foto, salvataggio automatico, limiti</string>
+    <string name="settings_camera_summary">Precisione, cronologia foto, salvataggio automatico, limiti</string>
     <string name="history_auto_save">Salva automaticamente</string>
     <string name="history_auto_save_hint">Ogni nuova foto, scattata o importata, entra subito nella cronologia.</string>
     <string name="history_count_limit">Numero massimo di foto</string>

@@ -66,6 +66,7 @@ class RecognitionCodecTest {
         }
         val restored = RecognitionCodec.decode(withChecksum(bytes.toByteArray()))!!
         assertThat(restored.language).isEqualTo(Language.ENGLISH)
+        assertThat(restored.settings.tiled).isTrue()
         assertThat(restored.page.paragraphs.single().lines.single().words.single().engine).isNull()
         assertThat(restored.page.text).isEqualTo("word")
     }
@@ -79,6 +80,8 @@ class RecognitionCodecTest {
         assertThat(RecognitionCodec.decode(RecognitionCodec.encode(recognition))).isEqualTo(recognition)
         val withoutModel = recognition.copy(settings = PhotoOcrSettings(OcrEngines.CLOUD))
         assertThat(RecognitionCodec.decode(RecognitionCodec.encode(withoutModel))).isEqualTo(withoutModel)
+        val whole = recognition.copy(settings = PhotoOcrSettings(OcrEngines.BOTH, "mlkit", tiled = false))
+        assertThat(RecognitionCodec.decode(RecognitionCodec.encode(whole))).isEqualTo(whole)
     }
 
     @Test

@@ -856,6 +856,10 @@
     <string name="camera_save_history_failed">The photo could not be saved to history.</string>
     <string name="camera_history">History</string>
     <string name="camera_settings">Camera settings</string>
+    <string name="camera_recognition">Recognition</string>
+    <string name="camera_high_accuracy">High accuracy</string>
+    <string name="camera_high_accuracy_hint">The photo is read in parts: small text is recognized better, but several times slower, and cloud recognition uses more mobile data.</string>
+    <string name="camera_recognize_accurately">Recognize more accurately</string>
     <string name="history_empty">No photos in history</string>
     <string name="history_empty_hint">Save a photo with Save to history in its menu, or turn on automatic saving in Camera settings.</string>
     <plurals name="history_selected">
@@ -869,7 +873,7 @@
     </plurals>
     <string name="history_clear_selection">Clear selection</string>
     <string name="history_change_failed">The history could not be changed.</string>
-    <string name="settings_camera_summary">Photo history, automatic saving, limits</string>
+    <string name="settings_camera_summary">Accuracy, photo history, automatic saving, limits</string>
     <string name="history_auto_save">Save automatically</string>
     <string name="history_auto_save_hint">Each new photo, taken or imported, goes to history right away.</string>
     <string name="history_count_limit">Photo limit</string>

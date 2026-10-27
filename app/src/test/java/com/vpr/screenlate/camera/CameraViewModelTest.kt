@@ -50,7 +50,7 @@ class CameraViewModelTest {
         override val state = MutableStateFlow<CameraRecognitionState?>(null)
         override val blocked = MutableStateFlow<CameraReadinessBlock?>(null)
         override fun select(language: com.vpr.screenlate.core.common.Language) {}
-        override fun recognize(document: PhotoDocument) { recognitionCalls++ }
+        override fun recognize(document: PhotoDocument, byTiles: Boolean) { recognitionCalls++ }
         override fun retry(document: PhotoDocument) {}
         override fun dismissBlock() {}
     }

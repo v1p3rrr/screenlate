@@ -154,7 +154,7 @@ internal fun cameraStatus(document: PhotoDocument, state: CameraRecognitionState
     if (work != null) return CameraStatus.Recognizing(work.completed, work.total)
     val pending = state.pendingReason(document)
     val recognition = (document.text as? PhotoText.Recognized)?.recognition ?: return CameraStatus.Unrecognized(pending)
-    val done = recognition.tiles.count { !document.isOverview(it.tile) }
+    val done = recognition.tiles.count { !document.isOverview(it.tile, recognition.settings) }
     return CameraStatus.Recognized(recognition.language.takeIf { it != state.language }, done, done + recognition.failed.size,
         recognition.recognizedAt, pending)
 }
@@ -248,7 +248,8 @@ internal fun CameraStatusStrip(
             )
             Box(Modifier.fillMaxWidth().height(3.dp)) {
                 if (status is CameraStatus.Recognizing) {
-                    if (status.total == 0) LinearProgressIndicator(Modifier.fillMaxWidth())
+                    // A photo read as one piece has no progress to show.
+                    if (status.total <= 1) LinearProgressIndicator(Modifier.fillMaxWidth())
                     else LinearProgressIndicator(progress = { status.done.toFloat() / status.total }, modifier = Modifier.fillMaxWidth())
                 }
             }
@@ -358,7 +359,7 @@ internal fun cameraHasWarning(document: PhotoDocument?, work: PhotoWork?): Boole
     if (document == null) return false
     val running = (work as? PhotoWork.Running)?.takeIf { it.documentId == document.id }
     val incomplete = document.attempt?.let { attempt ->
-        attempt.id != running?.attemptId && (!attempt.finished || attempt.remaining.any { !document.isOverview(it) })
+        attempt.id != running?.attemptId && (!attempt.finished || attempt.remaining.any { !document.isOverview(it, attempt.settings) })
     } == true
     return incomplete || document.attemptUnreadable || document.text == PhotoText.Unreadable ||
         (document.text as? PhotoText.Recognized)?.recognition?.failed?.isNotEmpty() == true ||
@@ -370,7 +371,7 @@ internal fun cameraHasWarning(document: PhotoDocument?, work: PhotoWork?): Boole
  * overview pass is not a region.
  */
 internal fun cameraMissingRegions(document: PhotoDocument): List<PhotoBox> =
-    document.attempt?.remaining?.filterNot(document::isOverview)?.map { it.box }
+    document.attempt?.let { attempt -> attempt.remaining.filterNot { document.isOverview(it, attempt.settings) }.map { it.box } }
         ?: (document.text as? PhotoText.Recognized)?.recognition?.failed?.map { it.box }
         ?: emptyList()
 
@@ -381,9 +382,9 @@ internal fun CameraRecognitionWarning(document: PhotoDocument, state: CameraReco
     val previous = (document.text as? PhotoText.Recognized)?.recognition
     val work = (state?.work as? PhotoWork.Running)?.takeIf { it.documentId == document.id }
     val failure = (state?.work as? PhotoWork.Failed)?.takeIf { it.documentId == document.id }
-    val missing = attempt?.remaining?.count { !document.isOverview(it) } ?: previous?.failed?.size ?: 0
-    val total = attempt?.tiles?.count { !document.isOverview(it) }
-        ?: ((previous?.tiles?.count { !document.isOverview(it.tile) } ?: 0) + (previous?.failed?.size ?: 0))
+    val missing = attempt?.let { it.remaining.count { tile -> !document.isOverview(tile, it.settings) } } ?: previous?.failed?.size ?: 0
+    val total = attempt?.let { it.tiles.count { tile -> !document.isOverview(tile, it.settings) } }
+        ?: ((previous?.let { it.tiles.count { page -> !document.isOverview(page.tile, it.settings) } } ?: 0) + (previous?.failed?.size ?: 0))
     // An interrupted attempt may have only the overview pass left to run.
     val canRetry = (attempt?.remaining?.isNotEmpty() ?: (missing > 0)) && (attempt != null || previous?.tiles?.isNotEmpty() == true)
     val causes = (attempt?.results?.mapNotNull { it.failure } ?: previous?.failed?.map { it.cause } ?: emptyList()) +

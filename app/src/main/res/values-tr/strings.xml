@@ -852,6 +852,10 @@
     <string name="camera_save_history_failed">Fotoğraf geçmişe kaydedilemedi.</string>
     <string name="camera_history">Geçmiş</string>
     <string name="camera_settings">Kamera ayarları</string>
+    <string name="camera_recognition">Tanıma</string>
+    <string name="camera_high_accuracy">Yüksek doğruluk</string>
+    <string name="camera_high_accuracy_hint">Fotoğraf parça parça okunur: küçük yazılar daha iyi tanınır ancak birkaç kat daha uzun sürer ve bulut tanıma daha fazla mobil veri kullanır.</string>
+    <string name="camera_recognize_accurately">Daha doğru tanı</string>
     <string name="history_empty">Geçmişte fotoğraf yok</string>
     <string name="history_empty_hint">Bir fotoğrafı menüsündeki “Geçmişe kaydet” ile kaydedin veya kamera ayarlarında otomatik kaydetmeyi açın.</string>
     <plurals name="history_selected">
@@ -865,7 +869,7 @@
     </plurals>
     <string name="history_clear_selection">Seçimi kaldır</string>
     <string name="history_change_failed">Geçmiş değiştirilemedi.</string>
-    <string name="settings_camera_summary">Fotoğraf geçmişi, otomatik kaydetme, sınırlar</string>
+    <string name="settings_camera_summary">Doğruluk, fotoğraf geçmişi, otomatik kaydetme, sınırlar</string>
     <string name="history_auto_save">Otomatik kaydet</string>
     <string name="history_auto_save_hint">Çekilen veya içe aktarılan her yeni fotoğraf hemen geçmişe eklenir.</string>
     <string name="history_count_limit">Fotoğraf sınırı</string>

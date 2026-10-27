@@ -88,9 +88,9 @@ private data class DictionariesRoute(val language: String? = null)
 @Serializable
 private data class AnkiRoute(val language: String? = null, val audio: Boolean = false)
 
-/** @property showAppText scrolls to the app text switches. */
+/** @property showAppText scrolls to the app text switches; [showRecognition], to screen recognition. */
 @Serializable
-private data class BubbleRoute(val showAppText: Boolean = false, val ocrModels: String? = null)
+private data class BubbleRoute(val showAppText: Boolean = false, val showRecognition: Boolean = false, val ocrModels: String? = null)
 
 /**
  * Opens a page on the language with [language] (its code), or on the active one when null; [number] tells repeated
@@ -296,7 +296,12 @@ fun ScreenlateNavHost(
             }
             composable<BubbleRoute> { entry ->
                 val route = entry.toRoute<BubbleRoute>()
-                BubbleSettingsScreen(onBack = back, showAppText = route.showAppText, ocrModels = route.ocrModels)
+                BubbleSettingsScreen(
+                    onBack = back,
+                    showAppText = route.showAppText,
+                    showRecognition = route.showRecognition,
+                    ocrModels = route.ocrModels,
+                )
             }
             composable<LookupRoute> { LookupSettingsScreen(onBack = back) }
             composable<PopupRoute> { PopupSettingsScreen(onBack = back) }
@@ -336,7 +341,9 @@ fun ScreenlateNavHost(
                     onOpenSettings = { go(CameraSettingsRoute) })
             }
             composable<CameraHistoryRoute> { PhotoHistoryScreen(onBack = back) }
-            composable<CameraSettingsRoute> { CameraSettingsScreen(onBack = back) }
+            composable<CameraSettingsRoute> {
+                CameraSettingsScreen(onBack = back, onOpenEngines = { go(BubbleRoute(showRecognition = true)) })
+            }
             composable<AnkiRoute> { entry -> AnkiSettingsScreen(onBack = back, showAudio = entry.toRoute<AnkiRoute>().audio) }
             composable<DictionariesRoute> {
                 DictionariesScreen(

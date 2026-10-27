@@ -64,6 +64,41 @@ class CameraPhotoControlsTest {
     }
 
     @Test
+    fun aPhotoReadWholeIsPendingOnlyWhenTilesWouldReadMore() {
+        val whole = PhotoOcrSettings(OcrEngines.CLOUD, tiled = false)
+        val wholeText = photo().text as PhotoText.Recognized
+        val readWhole = photo(text = PhotoText.Recognized(wholeText.recognition.copy(settings = whole)))
+        val accurate = state(Language.JAPANESE)
+        val quick = accurate.copy(settings = whole)
+        assertThat(accurate.pendingReason(readWhole)).isEqualTo(CameraPending.SETTINGS)
+        assertThat(quick.pendingReason(readWhole)).isNull()
+        // A photo read by tiles stays as it is when High accuracy is off.
+        assertThat(quick.pendingReason(photo())).isNull()
+        // A photo of one tile reads the same either way.
+        val small = readWhole.copy(rawWidth = 1500, rawHeight = 1000)
+        assertThat(accurate.pendingReason(small)).isNull()
+        assertThat(accurate.canReadByTiles(readWhole)).isTrue()
+        assertThat(quick.canReadByTiles(readWhole)).isTrue()
+        assertThat(accurate.canReadByTiles(photo())).isFalse()
+        assertThat(accurate.canReadByTiles(small)).isFalse()
+        assertThat(accurate.canReadByTiles(photo(text = PhotoText.None))).isFalse()
+    }
+
+    @Test
+    fun aPhotoReadWholeIsOneRegion() {
+        val whole = PhotoOcrSettings(OcrEngines.CLOUD, tiled = false)
+        val tile = PhotoTile(0, 0, 4000, 3000)
+        val recognition = (photo().text as PhotoText.Recognized).recognition.copy(settings = whole, tiles = listOf(PhotoTilePage(tile, page())))
+        val status = cameraStatus(photo(text = PhotoText.Recognized(recognition)), state(Language.JAPANESE)) as CameraStatus.Recognized
+        assertThat(status.done to status.total).isEqualTo(1 to 1)
+        val failed = PhotoAttempt("one", 1, Language.JAPANESE, whole, listOf(tile),
+            results = listOf(PhotoTileResult(tile, failure = FailureCause.NETWORK)), startedAt = 0, finished = true)
+        val document = photo(text = PhotoText.None).copy(attempt = failed)
+        assertThat(cameraHasWarning(document, null)).isTrue()
+        assertThat(cameraMissingRegions(document)).containsExactly(tile.box)
+    }
+
+    @Test
     fun theStatusCountsRegionsAndNamesOnlyAnotherLanguage() {
         val tiles = PhotoTiles.grid(4000, 3000)
         val document = photo(text = recognized(tiles.drop(1), failed = listOf(tiles.first())))

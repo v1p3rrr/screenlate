@@ -2,8 +2,10 @@ package com.vpr.screenlate.camera
 
 import androidx.lifecycle.ViewModelStore
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.photos.CameraPreferences
 import com.vpr.screenlate.core.photos.HistoryLimits
+import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -24,6 +26,7 @@ class CameraSettingsViewModelTest {
     private val documents = CurrentPhoto()
     private val history = FakeHistory(documents.current)
     private val store = MemoryStore()
+    private val overlaySettings = OverlaySettingsRepository(MemoryStore())
     private lateinit var preferences: CameraPreferences
     private lateinit var model: CameraSettingsViewModel
 
@@ -31,8 +34,27 @@ class CameraSettingsViewModelTest {
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
         preferences = cameraPreferences(store)
-        model = CameraSettingsViewModel(history, documents, preferences)
+        model = CameraSettingsViewModel(history, documents, preferences, overlaySettings)
         models.put("settings", model)
+    }
+
+    @Test
+    fun theRecognitionGroupShowsTheAccuracyAndTheScreenEngines() = runTest {
+        advanceUntilIdle()
+        assertThat(model.reading.value).isEqualTo(CameraReading(highAccuracy = false, engines = OcrEngines.BOTH))
+        model.setHighAccuracy(true)
+        overlaySettings.setOcrEngines(OcrEngines.DEVICE)
+        advanceUntilIdle()
+        assertThat(model.reading.value).isEqualTo(CameraReading(highAccuracy = true, engines = OcrEngines.DEVICE))
+        assertThat(preferences.highAccuracy.first()).isTrue()
+    }
+
+    @Test
+    fun aFailedWriteOfTheAccuracyKeepsTheStoredValue() = runTest {
+        store.failWrites = true
+        model.setHighAccuracy(true)
+        advanceUntilIdle()
+        assertThat(model.reading.value?.highAccuracy).isFalse()
     }
 
     @After

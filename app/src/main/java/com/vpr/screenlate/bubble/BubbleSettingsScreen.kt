@@ -122,6 +122,7 @@ private data class LaunchableApp(val packageName: String, val label: String, val
  * Aim point, dock side, screen recognition and app text, highlight, haptics, and the apps where the bubble stays hidden.
  *
  * @param showAppText scrolls to the app text switches, for the e-ink hint.
+ * @param showRecognition scrolls to screen recognition, for the engines row of the camera settings.
  * @param ocrModels opens the on-device models of the language with this code.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,6 +130,7 @@ private data class LaunchableApp(val packageName: String, val label: String, val
 fun BubbleSettingsScreen(
     onBack: () -> Unit,
     showAppText: Boolean = false,
+    showRecognition: Boolean = false,
     ocrModels: String? = null,
     viewModel: BubbleSettingsViewModel = hiltViewModel(),
 ) {
@@ -143,8 +145,9 @@ fun BubbleSettingsScreen(
     var confirmAppTextOnly by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     // The list is composed once the settings are read; scrolling waits for it.
-    LaunchedEffect(showAppText, stored != null) {
-        if (showAppText && stored != null) listState.animateScrollToItem(APP_TEXT_INDEX)
+    LaunchedEffect(showAppText, showRecognition, stored != null) {
+        if (stored == null) return@LaunchedEffect
+        if (showAppText) listState.animateScrollToItem(APP_TEXT_INDEX) else if (showRecognition) listState.animateScrollToItem(RECOGNITION_INDEX)
     }
 
     Scaffold(
@@ -214,7 +217,11 @@ fun BubbleSettingsScreen(
                         onChange = viewModel::setDockTopBottom,
                         hint = stringResource(R.string.bubble_dock_top_bottom_hint),
                     )
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                }
+            }
+            item(key = RECOGNITION_KEY) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
                     Text(
                         stringResource(R.string.bubble_recognition),
                         style = MaterialTheme.typography.titleSmall,
@@ -363,10 +370,14 @@ fun BubbleSettingsScreen(
     }
 }
 
+private const val RECOGNITION_KEY = "recognition"
 private const val APP_TEXT_KEY = "app_text"
 
-/** Index of the app text item: the first item holds aim, dock and screen recognition. */
-private const val APP_TEXT_INDEX = 1
+/** Index of the screen recognition item: the first item holds the bubble's visibility, aim and dock. */
+private const val RECOGNITION_INDEX = 1
+
+/** Index of the app text item, after screen recognition. */
+private const val APP_TEXT_INDEX = 2
 
 /** The launcher apps as read last while the app runs; reading them with their icons takes a moment. */
 @Volatile

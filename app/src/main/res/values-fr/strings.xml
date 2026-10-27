@@ -859,6 +859,10 @@
     <string name="camera_save_history_failed">Impossible d’enregistrer la photo dans l’historique.</string>
     <string name="camera_history">Historique</string>
     <string name="camera_settings">Paramètres de la caméra</string>
+    <string name="camera_recognition">Reconnaissance</string>
+    <string name="camera_high_accuracy">Haute précision</string>
+    <string name="camera_high_accuracy_hint">La photo est lue par parties : le petit texte est mieux reconnu, mais cela prend plusieurs fois plus de temps, et la reconnaissance dans le cloud utilise plus de données mobiles.</string>
+    <string name="camera_recognize_accurately">Reconnaître plus précisément</string>
     <string name="history_empty">Aucune photo dans l’historique</string>
     <string name="history_empty_hint">Enregistrez une photo avec « Enregistrer dans l’historique » dans son menu, ou activez l’enregistrement automatique dans les paramètres de la caméra.</string>
     <plurals name="history_selected">
@@ -874,7 +878,7 @@
     </plurals>
     <string name="history_clear_selection">Annuler la sélection</string>
     <string name="history_change_failed">Impossible de modifier l’historique.</string>
-    <string name="settings_camera_summary">Historique des photos, enregistrement automatique, limites</string>
+    <string name="settings_camera_summary">Précision, historique des photos, enregistrement automatique, limites</string>
     <string name="history_auto_save">Enregistrer automatiquement</string>
     <string name="history_auto_save_hint">Chaque nouvelle photo, prise ou importée, rejoint aussitôt l’historique.</string>
     <string name="history_count_limit">Nombre maximal de photos</string>

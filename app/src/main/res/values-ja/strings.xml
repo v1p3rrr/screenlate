@@ -845,6 +845,10 @@
     <string name="camera_save_history_failed">写真を履歴に保存できませんでした。</string>
     <string name="camera_history">履歴</string>
     <string name="camera_settings">カメラの設定</string>
+    <string name="camera_recognition">認識</string>
+    <string name="camera_high_accuracy">高精度</string>
+    <string name="camera_high_accuracy_hint">写真を分割して読み取ります。小さな文字をよりよく認識できますが、数倍の時間がかかり、クラウド認識ではモバイルデータの使用量も増えます。</string>
+    <string name="camera_recognize_accurately">より正確に認識</string>
     <string name="history_empty">履歴に写真はありません</string>
     <string name="history_empty_hint">写真のメニューの「履歴に保存」で保存するか、カメラの設定で自動保存をオンにしてください。</string>
     <plurals name="history_selected">
@@ -856,7 +860,7 @@
     </plurals>
     <string name="history_clear_selection">選択を解除</string>
     <string name="history_change_failed">履歴を変更できませんでした。</string>
-    <string name="settings_camera_summary">写真の履歴、自動保存、上限</string>
+    <string name="settings_camera_summary">精度、写真の履歴、自動保存、上限</string>
     <string name="history_auto_save">自動で保存</string>
     <string name="history_auto_save_hint">撮影または読み込んだ写真をすぐに履歴に追加します。</string>
     <string name="history_count_limit">保存枚数の上限</string>

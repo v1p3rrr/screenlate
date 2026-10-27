@@ -33,8 +33,12 @@ data class PhotoDocument(
     val width: Int get() = if (orientation.swapsAxes) rawHeight else rawWidth
     val height: Int get() = if (orientation.swapsAxes) rawWidth else rawHeight
 
-    /** Whether [tile] is the pass over the whole photo ([PhotoTiles.overview]), which is not one of its regions. */
-    fun isOverview(tile: PhotoTile): Boolean = PhotoTiles.isOverview(tile, width, height)
+    /**
+     * Whether [tile] is the pass over the whole photo ([PhotoTiles.overview]) of a recognition with [settings], which is
+     * not one of its regions; a photo read whole has no such pass.
+     */
+    fun isOverview(tile: PhotoTile, settings: PhotoOcrSettings): Boolean =
+        settings.tiled && PhotoTiles.isOverview(tile, width, height)
 }
 
 /** The recognized text kept with a photo. */
@@ -71,8 +75,11 @@ data class PhotoRecognition(
  * The OCR settings a photo is recognized with, shared with screen scans and passed in by the caller.
  *
  * @property deviceModel the id of the language's on-device model (`OcrModelChoices`); null when none is used.
+ * @property tiled the photo is read by regions at original resolution with a pass over the whole photo
+ *   ([PhotoTiles.plan]); otherwise it is read whole once, scaled down. Recognitions stored before photos could be read
+ *   whole read as tiled.
  */
-data class PhotoOcrSettings(val engines: OcrEngines, val deviceModel: String? = null)
+data class PhotoOcrSettings(val engines: OcrEngines, val deviceModel: String? = null, val tiled: Boolean = true)
 
 /** A part of the photo that was not recognized, in its oriented pixels. */
 data class FailedRegion(val box: Box, val cause: FailureCause)

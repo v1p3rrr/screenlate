@@ -866,6 +866,10 @@
     <string name="camera_save_history_failed">Nie udało się zapisać zdjęcia w historii.</string>
     <string name="camera_history">Historia</string>
     <string name="camera_settings">Ustawienia aparatu</string>
+    <string name="camera_recognition">Rozpoznawanie</string>
+    <string name="camera_high_accuracy">Wysoka dokładność</string>
+    <string name="camera_high_accuracy_hint">Zdjęcie jest odczytywane po częściach: drobny tekst jest rozpoznawany lepiej, ale trwa to kilka razy dłużej, a rozpoznawanie w chmurze zużywa więcej danych komórkowych.</string>
+    <string name="camera_recognize_accurately">Rozpoznaj dokładniej</string>
     <string name="history_empty">Brak zdjęć w historii</string>
     <string name="history_empty_hint">Zapisz zdjęcie poleceniem „Zapisz w historii” w jego menu albo włącz automatyczne zapisywanie w ustawieniach aparatu.</string>
     <plurals name="history_selected">
@@ -883,7 +887,7 @@
     </plurals>
     <string name="history_clear_selection">Anuluj zaznaczenie</string>
     <string name="history_change_failed">Nie udało się zmienić historii.</string>
-    <string name="settings_camera_summary">Historia zdjęć, automatyczne zapisywanie, limity</string>
+    <string name="settings_camera_summary">Dokładność, historia zdjęć, automatyczne zapisywanie, limity</string>
     <string name="history_auto_save">Zapisuj automatycznie</string>
     <string name="history_auto_save_hint">Każde nowe zdjęcie, zrobione lub zaimportowane, od razu trafia do historii.</string>
     <string name="history_count_limit">Limit zdjęć</string>

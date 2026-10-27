@@ -859,6 +859,10 @@
     <string name="camera_save_history_failed">Não foi possível salvar a foto no histórico.</string>
     <string name="camera_history">Histórico</string>
     <string name="camera_settings">Configurações da câmera</string>
+    <string name="camera_recognition">Reconhecimento</string>
+    <string name="camera_high_accuracy">Alta precisão</string>
+    <string name="camera_high_accuracy_hint">A foto é lida por partes: textos pequenos são reconhecidos melhor, mas leva várias vezes mais tempo, e o reconhecimento na nuvem usa mais dados móveis.</string>
+    <string name="camera_recognize_accurately">Reconhecer com mais precisão</string>
     <string name="history_empty">Nenhuma foto no histórico</string>
     <string name="history_empty_hint">Salve uma foto com “Salvar no histórico” no menu dela ou ative o salvamento automático nas configurações da câmera.</string>
     <plurals name="history_selected">
@@ -874,7 +878,7 @@
     </plurals>
     <string name="history_clear_selection">Limpar seleção</string>
     <string name="history_change_failed">Não foi possível alterar o histórico.</string>
-    <string name="settings_camera_summary">Histórico de fotos, salvamento automático, limites</string>
+    <string name="settings_camera_summary">Precisão, histórico de fotos, salvamento automático, limites</string>
     <string name="history_auto_save">Salvar automaticamente</string>
     <string name="history_auto_save_hint">Cada foto nova, tirada ou importada, entra logo no histórico.</string>
     <string name="history_count_limit">Limite de fotos</string>

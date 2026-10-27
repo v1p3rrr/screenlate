@@ -867,6 +867,10 @@
     <string name="camera_save_history_failed">Не удалось сохранить фото в историю.</string>
     <string name="camera_history">История</string>
     <string name="camera_settings">Настройки камеры</string>
+    <string name="camera_recognition">Распознавание</string>
+    <string name="camera_high_accuracy">Повышенная точность</string>
+    <string name="camera_high_accuracy_hint">Фото читается по частям: мелкий текст распознаётся лучше, но в несколько раз дольше, а с облачным движком расходуется больше трафика.</string>
+    <string name="camera_recognize_accurately">Распознать точнее</string>
     <string name="history_empty">В истории нет фото</string>
     <string name="history_empty_hint">Сохраните фото пунктом «Сохранить в историю» в его меню или включите автосохранение в настройках камеры.</string>
     <plurals name="history_selected">
@@ -884,7 +888,7 @@
     </plurals>
     <string name="history_clear_selection">Снять выбор</string>
     <string name="history_change_failed">Не удалось изменить историю.</string>
-    <string name="settings_camera_summary">История фото, автосохранение, лимиты</string>
+    <string name="settings_camera_summary">Точность, история фото, автосохранение, лимиты</string>
     <string name="history_auto_save">Сохранять автоматически</string>
     <string name="history_auto_save_hint">Каждое новое фото, снятое или импортированное, сразу попадает в историю.</string>
     <string name="history_count_limit">Лимит фото</string>

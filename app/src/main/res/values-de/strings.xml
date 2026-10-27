@@ -852,6 +852,10 @@
     <string name="camera_save_history_failed">Das Foto konnte nicht im Verlauf gespeichert werden.</string>
     <string name="camera_history">Verlauf</string>
     <string name="camera_settings">Kameraeinstellungen</string>
+    <string name="camera_recognition">Erkennung</string>
+    <string name="camera_high_accuracy">Hohe Genauigkeit</string>
+    <string name="camera_high_accuracy_hint">Das Foto wird in Teilen gelesen: Kleine Schrift wird besser erkannt, aber das dauert ein Vielfaches, und die Cloud-Erkennung verbraucht mehr mobile Daten.</string>
+    <string name="camera_recognize_accurately">Genauer erkennen</string>
     <string name="history_empty">Keine Fotos im Verlauf</string>
     <string name="history_empty_hint">Speichere ein Foto über „Im Verlauf speichern“ in seinem Menü oder aktiviere das automatische Speichern in den Kameraeinstellungen.</string>
     <plurals name="history_selected">
@@ -865,7 +869,7 @@
     </plurals>
     <string name="history_clear_selection">Auswahl aufheben</string>
     <string name="history_change_failed">Der Verlauf konnte nicht geändert werden.</string>
-    <string name="settings_camera_summary">Fotoverlauf, automatisches Speichern, Limits</string>
+    <string name="settings_camera_summary">Genauigkeit, Fotoverlauf, automatisches Speichern, Limits</string>
     <string name="history_auto_save">Automatisch speichern</string>
     <string name="history_auto_save_hint">Jedes neue Foto, ob aufgenommen oder importiert, kommt sofort in den Verlauf.</string>
     <string name="history_count_limit">Maximale Fotoanzahl</string>

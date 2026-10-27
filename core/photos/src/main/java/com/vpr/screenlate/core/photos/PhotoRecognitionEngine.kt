@@ -57,7 +57,7 @@ class PhotoOcrEngine @Inject constructor(private val ocr: CompositeOcr, private 
             currentCoroutineContext().ensureActive()
             val owned = regions!!
             return object : PhotoOcrSession {
-                override val settings = PhotoOcrSettings(engines, pinned?.modelId)
+                override val settings = settings.copy(deviceModel = pinned?.modelId)
                 override suspend fun recognize(tile: PhotoTile): OcrPage {
                     val size = fittedSize(tile.width, tile.height, maxSide = PhotoTiles.MAX_SIDE)
                     val scaled = size != tile.width to tile.height

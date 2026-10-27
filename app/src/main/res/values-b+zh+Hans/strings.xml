@@ -845,6 +845,10 @@
     <string name="camera_save_history_failed">无法将照片保存到历史记录。</string>
     <string name="camera_history">历史记录</string>
     <string name="camera_settings">相机设置</string>
+    <string name="camera_recognition">识别</string>
+    <string name="camera_high_accuracy">高精度</string>
+    <string name="camera_high_accuracy_hint">照片会分块读取：小字识别得更好，但耗时会多出数倍，云端识别还会使用更多移动数据。</string>
+    <string name="camera_recognize_accurately">更精确地识别</string>
     <string name="history_empty">历史记录中没有照片</string>
     <string name="history_empty_hint">在照片菜单中选择“保存到历史记录”，或在相机设置中开启自动保存。</string>
     <plurals name="history_selected">
@@ -856,7 +860,7 @@
     </plurals>
     <string name="history_clear_selection">取消选择</string>
     <string name="history_change_failed">无法更改历史记录。</string>
-    <string name="settings_camera_summary">照片历史记录、自动保存、上限</string>
+    <string name="settings_camera_summary">精度、照片历史记录、自动保存、上限</string>
     <string name="history_auto_save">自动保存</string>
     <string name="history_auto_save_hint">每张新照片，无论是拍摄的还是导入的，都会立即加入历史记录。</string>
     <string name="history_count_limit">照片数量上限</string>

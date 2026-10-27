@@ -77,13 +77,31 @@ class CompositeOcrTest {
     }
 
     @Test
-    fun photoBothWaitsForEveryReaderAndUsesCloudWithDeviceFallback() = runTest {
+    fun photoBothReadsWithTheCloudAloneWhenItWorks() = runTest {
         mlKit.latency = 2.seconds
         val result = ocr.recognizePhotoTile(image, Language.JAPANESE, OcrEngines.BOTH, mlKit)
         assertThat(result.engine).isEqualTo(OcrEngineType.LENS)
-        assertThat(testScheduler.currentTime).isEqualTo(2000)
+        assertThat(mlKit.calls).isEqualTo(0)
+        assertThat(testScheduler.currentTime).isLessThan(2000)
+    }
+
+    @Test
+    fun photoBothFallsBackToTheDeviceAfterACloudFailure() = runTest {
         lens.error = IOException("test")
         assertThat(ocr.recognizePhotoTile(image, Language.JAPANESE, OcrEngines.BOTH, mlKit).engine).isEqualTo(OcrEngineType.ML_KIT)
+        assertThat(mlKit.calls).isEqualTo(1)
+    }
+
+    @Test
+    fun photoBothThrowsTheCloudErrorWhenTheDeviceFailsToo() = runTest {
+        lens.error = IOException("cloud")
+        mlKit.error = IllegalStateException("device")
+        try {
+            ocr.recognizePhotoTile(image, Language.JAPANESE, OcrEngines.BOTH, mlKit)
+            error("Expected the cloud's failure")
+        } catch (e: IOException) {
+            assertThat(e).hasMessageThat().isEqualTo("cloud")
+        }
     }
 
     @Test

@@ -845,6 +845,10 @@
     <string name="camera_save_history_failed">사진을 기록에 저장하지 못했습니다.</string>
     <string name="camera_history">기록</string>
     <string name="camera_settings">카메라 설정</string>
+    <string name="camera_recognition">인식</string>
+    <string name="camera_high_accuracy">높은 정확도</string>
+    <string name="camera_high_accuracy_hint">사진을 여러 부분으로 나누어 읽습니다. 작은 글자를 더 잘 인식하지만 몇 배 더 오래 걸리고, 클라우드 인식에서는 모바일 데이터를 더 많이 사용합니다.</string>
+    <string name="camera_recognize_accurately">더 정확하게 인식</string>
     <string name="history_empty">기록에 사진이 없습니다</string>
     <string name="history_empty_hint">사진 메뉴의 “기록에 저장”으로 저장하거나 카메라 설정에서 자동 저장을 켜세요.</string>
     <plurals name="history_selected">
@@ -856,7 +860,7 @@
     </plurals>
     <string name="history_clear_selection">선택 해제</string>
     <string name="history_change_failed">기록을 변경하지 못했습니다.</string>
-    <string name="settings_camera_summary">사진 기록, 자동 저장, 한도</string>
+    <string name="settings_camera_summary">정확도, 사진 기록, 자동 저장, 한도</string>
     <string name="history_auto_save">자동 저장</string>
     <string name="history_auto_save_hint">새 사진은 촬영하거나 가져오는 즉시 기록에 추가됩니다.</string>
     <string name="history_count_limit">사진 수 한도</string>

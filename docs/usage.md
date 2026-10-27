@@ -28,15 +28,20 @@ top bar closes the photograph and opens the camera. A photograph in the history 
 first whether to save it to the history or delete it.
 
 Recognition starts after a successful capture and continues when you switch tabs or put the app in the background.
-A large photograph is read in overlapping parts at full resolution, and once more as a whole, scaled down, for lettering
-too large to fit in one part.
+The photograph is read as a whole, scaled down to 1500 pixels on its longer side. With High accuracy on in the Camera
+settings, a large photograph is read in overlapping parts at full resolution instead, and once more as a whole for
+lettering too large to fit in one part: small text is recognized better, but several times slower, and cloud
+recognition uses more mobile data. Recognize more accurately, first in the ⋮ menu, reads the open photograph in parts
+once; it is shown for a photograph larger than one part that was read as a whole. With both engines, a photograph is
+read by cloud recognition, and on the device only when cloud recognition fails.
 Camera remembers its own language, initially the active language, and offers only enabled languages. While its
 language is turned off, Camera uses the active language and returns to its own when it is turned on again. The language
 chip above the photograph, and over the preview, lists them with their flags, marks the active language and the
 languages that lack a dictionary or a recognition model, and links to the language settings. The shared Cloud, Device
 and Both settings and that language's local model apply. The strip under the top bar shows the recognition status:
 the recognized regions and the time, or the progress of a running recognition. Changing the language or recognition
-settings highlights the strip and names the change: tap Recognize to apply it. Existing text keeps its actual
+settings highlights the strip and names the change: tap Recognize to apply it. Turning High accuracy on counts as such
+a change for a photograph read as a whole; turning it off leaves photographs read in parts as they are. Existing text keeps its actual
 recognition language until the new attempt finishes. A warning next to Recognize explains incomplete recognition,
 marks the missing regions on a small picture of the photograph and retries only those regions.
 After an app restart, interrupted work waits for this explicit retry; it never resumes network requests on its own.
@@ -88,8 +93,9 @@ recognition language. Tap one to open it on the Camera tab with its saved text; 
 open photograph is not in the history, the app first asks whether to save it or delete it.
 Long-press to select photographs, tap to add or remove more, and delete them with the trash icon.
 
-Camera settings (in the ⋮ menu, and in Settings before Appearance) hold Save automatically, the photo limit and the
-size limit in MB, the history's photo count and size, and Clear history. A limit of 0 means none; beyond a limit the
+Camera settings (in the ⋮ menu, and in Settings before Appearance) start with Recognition: the High accuracy switch,
+and Engines, which shows the engines photographs share with screen recognition and opens them in the bubble settings.
+Below, they hold Save automatically, the photo limit and the size limit in MB, the history's photo count and size, and Clear history. A limit of 0 means none; beyond a limit the
 oldest photographs are deleted, while the latest one always stays. Lowering a limit below the current history asks
 first and names how many photographs will be deleted. A photograph deleted from the history, by the page, a limit or
 Clear history, is deleted completely: when it is open on the Camera tab, the camera opens instead. An open photograph
@@ -117,7 +123,7 @@ that was never saved to the history stays.
 | Pull the bubble away from the screen edge | The screen is scanned; aim at a word to see its entry. |
 | Move the floating bubble | The entry follows the aim point. The screen is not scanned again. |
 | Tap the floating bubble | Scan again, e.g. after scrolling. Recognized lines flash briefly. |
-| Hold the floating bubble | A menu: copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text, or open Screenlate (the bubble docks). With more than one quick language, a row of their flags above (codes in e-ink mode; TalkBack reads the language names) switches the active language: the docked bubble's glyph changes at once, and the next scan (a tap on the bubble or pulling it out) uses the new language; the open scan keeps its language. With the aim off text, the paragraph of the word shown in the popup is copied. The menu opens above the bubble, or below it when there is no room above. Back, a tap anywhere outside or turning the screen off closes it; that tap does nothing else. |
+| Hold the floating bubble | A menu: copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text, or open Screenlate (the bubble docks; not shown while Screenlate is in front, as over a photograph). With nothing to copy, no language row and Screenlate in front, holding the bubble opens no menu. With more than one quick language, a row of their flags above (codes in e-ink mode; TalkBack reads the language names) switches the active language: the docked bubble's glyph changes at once, and the next scan (a tap on the bubble or pulling it out) uses the new language; the open scan keeps its language. With the aim off text, the paragraph of the word shown in the popup is copied. The menu opens above the bubble, or below it when there is no room above. Back, a tap anywhere outside or turning the screen off closes it; that tap does nothing else. |
 | Double tap the floating bubble | Switch the aim point between "above the finger" and "bubble center". |
 | Press ✕ | Close the entry; the bubble stays where it is and keeps the recognized text. The entry stays closed until the bubble moves or scans again. |
 | Drag the bubble to the left or right edge | Close the entry and dock the bubble: once the bubble's center is past the edge, or when the finger is lifted at the edge. With "Top and bottom edges" on, the top and bottom edges dock it too. |
