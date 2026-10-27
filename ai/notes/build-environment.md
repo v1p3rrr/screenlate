@@ -152,8 +152,10 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `./gradlew --init-script <file> -Pscreenlate.debugSignedRelease :app:assembleRelease -x lintVitalRelease`, then
   keep only `lib/arm64-v8a/` with the `zipfile` copy above. Sizes: 87 MB debug, 38.6 MB minified with stored
   libraries, 20.6 MB compressed. It installs over local debug builds and keeps their data (same package and key).
-  Unlike a debug build it has no bug badge on the icon (the debug icon is in `app/src/debug/res/drawable`), is not
-  debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras) and has Check for updates. Keep
+  Since 2026-10-28 the same script also sets `ndk.abiFilters` to `arm64-v8a` on every project with an `android`
+  extension (no `zipfile` step; 21.6 MB) and adds the debug icon with the bug badge:
+  `p.android.sourceSets.getByName('release').res.srcDir('src/debug/res')` (`app/src/debug/res` holds only the two
+  launcher drawables). Unlike a debug build it is not debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras) and has Check for updates. Keep
   `app/build/outputs/mapping/release/mapping.txt` in `testdata/local-research/builds/` for stack traces.
 - CI debug APKs are signed with the runner's own debug key: they do not install over a local debug build, nor a
   local one over them, without an uninstall, which deletes the app's data.

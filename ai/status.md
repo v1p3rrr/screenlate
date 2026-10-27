@@ -11,9 +11,11 @@ the details.
 - `origin/languages/main` is the integration line. Since 2026-10-28 it holds the camera feature, its review and the
   follow-ups from the phone build (a fast-forward to `features/camera-followups`, which started from
   `features/camera-lookup` `be79b43c`). Both feature branches are merged; deleting them is the owner's decision.
+  Since the night of 2026-10-28 it also holds the settings rework and the docked bubble's hold menu (a fast-forward to
+  `features/settings-rework` `9c26bae8`, worktree `.worktrees/camera`).
 - The main checkout `D:/Documents/ClaudeProjects/Screenlate` is on `languages/ocr-engines`, 340 commits behind
   `languages/main`, with the local commit `db08588a` not pushed; its `ai/status.md` is old. The `.worktrees/lang`
-  checkout of `languages/main` is 2 commits behind `origin`.
+  checkout of `languages/main` is up to date (`9c26bae8`).
 - `languages/main` has, through the camera branch, the two small commits of `main` and `languages/ocr-engines`: the
   `AGENTS.md` step that reads the local memory index (`9bf66117`) and the `/testdata/local-research/` ignore rule
   (`db08588a`, on `main` as `6dd947ca`). The status entry of the second: a static comparison of
@@ -37,8 +39,10 @@ the details.
 - The owner's phone runs the diagnostics build `0.2.3-2a65358f` (2026-10-19; the latest diagnostics build is
   `9937cc41`). The owner got `screenlate-dev-a16ceda7-arm64-min.apk` (same package and debug key, so it installs over
   it and keeps the data); whether it is installed is not known. Installing it ends the diagnostics recording, so the
-  diagnostics export comes first if those days are wanted. It is a release-type build: no bug badge on the icon (CI
-  debug builds keep it), not debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras), Check
+  diagnostics export comes first if those days are wanted. On the night of 2026-10-28 the owner also got
+  `screenlate-dev-fe1afd9a-min.apk` and then `screenlate-dev-9c26bae8-min.apk` (settings rework, the docked hold menu,
+  the catalog layout), which bring the bug badge back (the init script adds `src/debug/res` to the release source set).
+  They are release-type builds: not debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras), Check
   for updates active. Recipe and R8 mapping: `notes/build-environment.md`, the main checkout's
   `testdata/local-research/builds/`.
 - Possible defects the review left, each judged rare or harmless (reasons under "Findings" in
@@ -71,8 +75,8 @@ the details.
 
 ### Emulators (2026-10-28: both shut down)
 
-- API 37 (`Pixel_10_Pro`): the debug app of the camera follow-ups (`0.2.3-be79b43c`, built with the changes before
-  their commit, x86_64 only), Slovenian active, Korean unstarred, the photo language Japanese, no current photo and
+- API 37 (`Pixel_10_Pro`): the debug app of the settings rework (`0.2.3-9c26bae8` built before its commit, x86_64
+  only; the app's language back to the system's), Slovenian active, Korean unstarred, the photo language Japanese, no current photo and
   an empty photo history; `/sdcard/Pictures/market-4000.jpg` (4000 × 3000, English) for photo cases. The updates of
   YouTube, YouTube Music, Maps, Gmail, Photos and the Google app were uninstalled to free about 1 GB (`/data` 1.6 GB free); the Play Store brings them back, and installs fail again when
   space runs out. The local AnkiDroid deck "Default" holds test notes. `/sdcard/AnkiDroid-owner-backup` (1.1 GB,
@@ -90,8 +94,8 @@ the details.
   `languages/main`, run the checks listed there, write the release notes; the version number is asked at release
   time.
 - The ColorOS report ("User report (2026-10-20)", `notes/oem-background-limits.md`): settled on 2026-10-28, adding
-  Screenlate to the security app's allowlist stopped the switch-offs; whether Background work should point there on
-  ColorOS is asked with the settings rework.
+  Screenlate to the security app's allowlist stopped the switch-offs; Background work now says so on every phone
+  (settings rework).
 - The temporary diagnostics build: waiting for the owner's export after a few days of use; then the branch is removed.
 - Languages ("Work in progress (2026-10-22, night)" and "(2026-10-19)" below): open questions 69 (pre-connect) and
   72-76 and those the block sessions added to their plans; not checked on a device: the Kazakh pronoun skip, the
@@ -99,9 +103,27 @@ the details.
   engines", the speed marks in words and the Both-mode hint; DIC24 (resume after Clear cache) and DIC25 not run; the
   owner re-imports the Russian dictionaries (the stress-mark rule changes them at import).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
-  far), the bubble menu on the docked bubble (request 75). The full code review per module (`notes/module-map.md`)
+  far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
 - Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
+
+## Settings rework and the docked bubble's menu (2026-10-28 night, merged into `languages/main`)
+
+Plan `plans/2026-10-28-settings-rework.md` (decisions, the owner's later catalog messages, deferred questions).
+
+- Done: Text recognition page (engines, OCR boost, reduce load, on-device models, app text, OCR test; About lost its
+  Tools card); Bubble keeps its own settings and a row to the hidden apps page with their count; Anki and Audio are
+  two pages with their own resets; Background work ends with the allowlist note; the dictionary catalog is collapsed
+  by groups with English, the language itself and the interface language on top, the other translation languages in
+  "Other languages" and the frequency, pitch and kanji groups under "Supplementary dictionaries", headings without
+  arrows; holding the docked bubble opens the hold menu (flags and Open Screenlate, no copy items).
+- Fixed on the way: catalog and language setup headings showed lowercase language names in Russian (a capitalizing
+  helper shadowed by an import, `notes/build-environment.md`); the Audio hint's "Auto play".
+- Checked on Pixel_10_Pro (run log of 2026-10-28 night). Not reached there: the e-ink hint's link to App text (shows
+  only on e-ink models), the overlay's models link, Home's failed-audio link, an uninstalled hidden app in the count,
+  the hold menu's flags (one quick language) and other dock sides.
+- Deferred questions for the owner are listed in the plan (layout of Text recognition and Audio, the catalog's
+  heading name, the order and default state of its top groups).
 
 ## Camera follow-ups from the phone build (2026-10-27 to 2026-10-28, merged into `languages/main`)
 
