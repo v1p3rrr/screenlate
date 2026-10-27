@@ -30,6 +30,9 @@ object DanishSupport : SpacedLanguageSupport() {
     /** Statsminister → stat, minister; skolebørn → skole, børn. */
     override val compoundLinks = listOf("s", "e")
 
+    /** Long compounds: 0.76% of the words of news and Wikipedia text are longer than 16 letters. */
+    override val defaultScanLength = 24
+
     /** Ordinals in digits take a period: "5. maj", "20. århundrede". */
     override val ordinalPeriod = true
 

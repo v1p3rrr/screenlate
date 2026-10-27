@@ -27,6 +27,9 @@ object SwedishSupport : SpacedLanguageSupport() {
      */
     override val compoundLinks = listOf("s", "e", "u", "o", "a")
 
+    /** Long compounds: 0.93% of the words of news and Wikipedia text are longer than 16 letters. */
+    override val defaultScanLength = 24
+
     /**
      * Abbreviations that keep the sentence going; st. mostly comes before a name (St. Louis). The forms written with
      * spaces and no periods ("t ex", "bl a") end nothing anyway.

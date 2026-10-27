@@ -373,6 +373,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.frequencyWord("اين") != "اين" }).containsExactly(Language.PERSIAN)
         assertThat(all.where { it.frequencyWord("צה\"ל") != "צה\"ל" }).containsExactly(Language.HEBREW)
         assertThat(all.where { it.frequencyWord("кiтап") != "кiтап" }).containsExactly(Language.KAZAKH)
+        assertThat(all.where { it.frequencyWord("vīta") != "vīta" }).containsExactly(Language.LATIN)
         assertThat(all.where { it.firstTranscription(listOf("Modern-Israeli")) }).containsExactly(Language.HEBREW)
         assertThat(all.where { it.firstTranscription(listOf("🇮🇷", "formal")) }).containsExactly(Language.PERSIAN)
         assertThat(all.where { it.frequencySpellings("آن\u200Cها").isNotEmpty() }).containsExactly(Language.PERSIAN)
@@ -473,9 +474,25 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Georgian, Armenian, Arabic, Persian and Hebrew consider more characters from the aim than Yomitan's 16 by default`() {
-        assertThat(all.where { it.defaultScanLength != 16 })
-            .containsExactly(Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC, Language.PERSIAN, Language.HEBREW)
+    fun `only Georgian, Armenian, Arabic, Persian, Hebrew, Swedish, Danish and Norwegian consider more characters from the aim than Yomitan's 16 by default`() {
+        assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(
+            Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.SWEDISH,
+            Language.DANISH, Language.NORWEGIAN,
+        )
+    }
+
+    @Test
+    fun `ocr quotes take the guillemets only where the language pairs them, a straight quote only after a quote it opened`() {
+        val guillemets = all.where { support -> support.quotePairs.let { '»' in it.keys + it.values } }
+        assertThat(guillemets).containsAtLeast(Language.DANISH, Language.SLOVENIAN, Language.NORWEGIAN, Language.RUSSIAN)
+        assertThat(guillemets).containsNoneOf(Language.ENGLISH, Language.SWEDISH, Language.LITHUANIAN, Language.SLOVAK)
+        assertThat(all.where { it.ocrQuotes(listOf(listOf(">>a!<<"))).single().single() != ">>a!<<" })
+            .containsExactlyElementsIn(guillemets)
+        // A straight quote after ! with no quote open stays in every language.
+        assertThat(all.where { it.ocrQuotes(listOf(listOf("a!\""))).single().single() != "a!\"" }).isEmpty()
+        // After an English quote it closes it wherever “ opens a quote.
+        assertThat(all.where { it.ocrQuotes(listOf(listOf("“a!\""))).single().single() == "“a!”" })
+            .containsExactlyElementsIn(all.where { it.quotePairs['“'] == '”' })
     }
 
     @Test

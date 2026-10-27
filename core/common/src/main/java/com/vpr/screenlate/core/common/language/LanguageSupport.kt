@@ -50,6 +50,13 @@ interface LanguageSupport {
     fun ocrLines(lines: List<List<String>>): List<List<String>> = lines.map { line -> line.map(::ocrWord) }
 
     /**
+     * A page's words as [ocrLines] gives them, with quotes that engines write in ASCII written as the language's: >>
+     * and << at a word's start or end as » and « where [quotePairs] has them, and a " right after ! or ? as the
+     * closing quote of the latest quote still open on the page. Not one for one: two characters become one.
+     */
+    fun ocrQuotes(lines: List<List<String>>): List<List<String>> = OcrQuotes.fix(lines, quotePairs)
+
+    /**
      * How the lookup shortens the text after the aim when a longer match fails: by words for languages written with
      * spaces ("look up to" → "look up" → "look"), by characters otherwise (Yomitan's search resolution).
      */

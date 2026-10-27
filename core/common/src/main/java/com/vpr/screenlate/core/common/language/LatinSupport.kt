@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.common.language
 
 import com.vpr.screenlate.core.common.Language
+import java.text.Normalizer
 
 /**
  * Wiktionary writes Latin headwords without vowel lengths and names the lemmas of their forms with them (amat, a form
@@ -55,6 +56,12 @@ object LatinSupport : SpacedLanguageSupport() {
     override val headwordMarks = HeadwordMarks(marks = "\u0304\u0306", bases = "aeiouy")
 
     override val inflectionRulesOnlyWithoutEntry = true
+
+    /** A word of a frequency list as the headwords spell it, without macrons and breves (vīta as vita). */
+    override fun frequencyWord(word: String): String = Normalizer.normalize(
+        Normalizer.normalize(word, Normalizer.Form.NFD).filterNot { it in headwordMarks.marks },
+        Normalizer.Form.NFC,
+    )
 
     /**
      * "cf.", "e.g.", "i.e.", "sc." (scilicet), "h.e." (hoc est), "s.v." (sub voce), "c." (circa), "p." (pagina),

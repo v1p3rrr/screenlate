@@ -206,6 +206,40 @@
         "zh-Hant": "Leipzig Corpora Collection，{source}：單詞在新聞文本中的使用頻率，搜尋結果按此排序。在裝置上由該語料庫集的詞頻統計產生。"
       }
     },
+    "leipzig-wikipedia": {
+      "title": {
+        "en": "Word frequency (Leipzig Corpora Collection)",
+        "ru": "Частотность слов (Leipzig Corpora Collection)",
+        "de": "Worthäufigkeit (Leipzig Corpora Collection)",
+        "es": "Frecuencia de palabras (Leipzig Corpora Collection)",
+        "fr": "Fréquence des mots (Leipzig Corpora Collection)",
+        "it": "Frequenza delle parole (Leipzig Corpora Collection)",
+        "ja": "単語の頻度（Leipzig Corpora Collection）",
+        "ko": "단어 빈도 (Leipzig Corpora Collection)",
+        "pl": "Częstość wyrazów (Leipzig Corpora Collection)",
+        "pt": "Frequência de palavras (Leipzig Corpora Collection)",
+        "tr": "Sözcük sıklığı (Leipzig Corpora Collection)",
+        "vi": "Tần suất từ (Leipzig Corpora Collection)",
+        "zh": "词频（Leipzig Corpora Collection）",
+        "zh-Hant": "詞頻（Leipzig Corpora Collection）"
+      },
+      "description": {
+        "en": "Leipzig Corpora Collection, {source}: how common words are in Wikipedia articles; results are sorted by it. Built on the device from the collection's word counts.",
+        "ru": "Leipzig Corpora Collection, {source}: частотность слов в статьях Википедии, по ней сортируются результаты. Собирается на устройстве из подсчётов слов коллекции.",
+        "de": "Leipzig Corpora Collection, {source}: wie häufig Wörter in Wikipedia-Artikeln sind; die Ergebnisse werden danach sortiert. Wird auf dem Gerät aus den Wortzählungen der Sammlung erstellt.",
+        "es": "Leipzig Corpora Collection, {source}: la frecuencia de las palabras en artículos de Wikipedia; los resultados se ordenan por ella. Se crea en el dispositivo a partir de los recuentos de palabras de la colección.",
+        "fr": "Leipzig Corpora Collection, {source} : la fréquence des mots dans des articles de Wikipédia ; les résultats sont triés selon elle. Créé sur l'appareil à partir des comptages de mots de la collection.",
+        "it": "Leipzig Corpora Collection, {source}: la frequenza delle parole negli articoli di Wikipedia; i risultati sono ordinati in base a essa. Creato sul dispositivo dai conteggi delle parole della raccolta.",
+        "ja": "Leipzig Corpora Collection（{source}）：ウィキペディアの記事における単語の使用頻度。検索結果の並べ替えに使います。コレクションの単語の出現数から端末上で作成します。",
+        "ko": "Leipzig Corpora Collection, {source}: 위키백과 문서에서 단어의 사용 빈도로, 검색 결과를 이 순서로 정렬합니다. 컬렉션의 단어 출현 횟수로 기기에서 만듭니다.",
+        "pl": "Leipzig Corpora Collection, {source}: częstość występowania wyrazów w artykułach Wikipedii; według niej sortowane są wyniki. Tworzony na urządzeniu z liczby wystąpień wyrazów w kolekcji.",
+        "pt": "Leipzig Corpora Collection, {source}: a frequência das palavras em artigos da Wikipédia; os resultados são ordenados por ela. Criado no dispositivo a partir das contagens de palavras da coleção.",
+        "tr": "Leipzig Corpora Collection, {source}: Vikipedi maddelerinde sözcüklerin kullanım sıklığı; sonuçlar buna göre sıralanır. Cihazda koleksiyonun sözcük sayımlarından oluşturulur.",
+        "vi": "Leipzig Corpora Collection, {source}: tần suất sử dụng của từ trong các bài viết Wikipedia; kết quả được sắp xếp theo đó. Được tạo trên thiết bị từ số lần xuất hiện của từ trong bộ sưu tập.",
+        "zh": "Leipzig Corpora Collection，{source}：单词在维基百科条目中的使用频率，搜索结果按此排序。在设备上由该语料库集的词频统计生成。",
+        "zh-Hant": "Leipzig Corpora Collection，{source}：單詞在維基百科條目中的使用頻率，搜尋結果按此排序。在裝置上由該語料庫集的詞頻統計產生。"
+      }
+    },
     "krdict": {
       "title": {
         "en": "KRDICT ({src}–{tgt})",
@@ -2002,6 +2036,25 @@
       "sha256": "145fd1c78a6d22291a5356aea1dbe6d71cc9061704eed018b1272c608303d9bb",
       "build": "corpus-counts",
       "version": "2016",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "id": "corpus-la",
+      "title": "Leipzig Corpora Collection (la)",
+      "template": "leipzig-wikipedia",
+      "oldTitles": [
+        "Leipzig Corpora Collection (la)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "la",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/lat_wikipedia_2021_100K.tar.gz",
+      "downloadSize": 15503847,
+      "sha256": "a642cdd34384bea05c003664a30a54d4032978bcc73893a44d2d67ba9cc98844",
+      "build": "corpus-counts",
+      "version": "2021",
       "license": "CC BY",
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },

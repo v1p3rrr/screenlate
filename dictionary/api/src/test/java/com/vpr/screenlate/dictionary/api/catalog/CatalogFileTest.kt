@@ -99,9 +99,17 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh and kyrgyz have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz and latin have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la").inOrder()
+        val latin = built.single { it.sourceLanguage == "la" }
+        assertThat(latin.recommended).isTrue()
+        assertThat(latin.sha256).matches("[0-9a-f]{64}")
+        assertThat(latin.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/lat_wikipedia_2021_100K.tar.gz")
+        assertThat(latin.oldTitles).containsExactly(CorpusCountsDictionary.title("la"))
+        assertThat(latin.displayTitle(Locale.ENGLISH)).isEqualTo("Word frequency (Leipzig Corpora Collection)")
+        assertThat(latin.description(Locale.ENGLISH)).startsWith("Leipzig Corpora Collection, Latin: how common words are in Wikipedia")
         val kyrgyz = built.single { it.sourceLanguage == "ky" }
         assertThat(kyrgyz.recommended).isTrue()
         assertThat(kyrgyz.sha256).isEqualTo("145fd1c78a6d22291a5356aea1dbe6d71cc9061704eed018b1272c608303d9bb")
@@ -238,17 +246,17 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `latin offers eleven wiktionaries, its transcription and paddle v6, ticked, the other models and no frequency list`() {
+    fun `latin offers eleven wiktionaries, its transcription, the leipzig counts and paddle v6, ticked, and the other models`() {
         val latin = catalog!!.entries.filter { it.isFor(Language.LATIN) }
         assertThat(latin.filter { it.recommended }.map { it.id }).containsExactly(
             "wiktionary-la-en", "wiktionary-la-ru", "wiktionary-la-de", "wiktionary-la-es", "wiktionary-la-fr",
             "wiktionary-la-it", "wiktionary-la-ja", "wiktionary-la-ko", "wiktionary-la-pl", "wiktionary-la-pt",
-            "wiktionary-la-zh", "wiktionary-la-transcription", "paddle-v6-la",
+            "wiktionary-la-zh", "wiktionary-la-transcription", "corpus-la", "paddle-v6-la",
         )
         assertThat(latin.filterNot { it.recommended }.map { it.id }).containsExactly(
             "tesseract-fast-lat", "tesseract-best-lat", "paddle-latin-la", "paddle-detector-v5-la", "paddle-detector-v6-la",
         )
-        assertThat(latin.filter { it.category == CatalogCategory.FREQUENCY }).isEmpty()
+        assertThat(latin.filter { it.category == CatalogCategory.FREQUENCY }.map { it.id }).containsExactly("corpus-la")
         assertThat(latin.first { it.id == "wiktionary-la-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (la–en)")
     }
 

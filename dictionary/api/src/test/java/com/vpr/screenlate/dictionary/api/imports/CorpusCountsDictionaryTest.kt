@@ -130,6 +130,24 @@ class CorpusCountsDictionaryTest {
         }
     }
 
+    @Test
+    fun `the latin dictionary credits the wikipedia texts and merges words written with vowel lengths`() {
+        val list = listOf("1\tvita\t5", "2\tvīta\t2", "3\tVita\t1", "4\test\t7").joinToString("\n")
+        val source = folder.newFile().apply { writeBytes(tarGz("lat/lat-words.txt" to list)) }
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "la", "2021", output)).isEqualTo(2)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("Leipzig Corpora Collection (la)")
+            assertThat(index["attribution"]!!.jsonPrimitive.content)
+                .startsWith("Word counts of the Latin Wikipedia of 2021 (lat_wikipedia_2021_100K)")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
+                .containsExactly("vita" to 1, "Vita" to 1, "est" to 2, "Est" to 2).inOrder()
+        }
+    }
+
     /** The Leipzig archive itself, when it was copied into testdata (`scripts/frequency/corpus_catalog.py`). */
     @Test
     fun `the kazakh archive builds the top 100 000 words`() {

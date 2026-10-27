@@ -43,7 +43,8 @@ class SwedishSupportTest {
     }
 
     @Test
-    fun `compounds split at s, e, u, o and a, latin letters, wiktionary first`() {
+    fun `compounds of up to 24 letters split at s, e, u, o and a, latin letters, wiktionary first`() {
+        assertThat(SwedishSupport.defaultScanLength).isEqualTo(24)
         assertThat(SwedishSupport.compoundLinks).containsExactly("s", "e", "u", "o", "a").inOrder()
         assertThat(SwedishSupport.capitalizedNouns).isFalse()
         assertThat(SwedishSupport.fontSubsets).containsExactly("latin")

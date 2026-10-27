@@ -63,7 +63,8 @@ class DanishSupportTest {
     }
 
     @Test
-    fun `compounds split at s and e, latin letters, lingua libre first`() {
+    fun `compounds of up to 24 letters split at s and e, latin letters, lingua libre first`() {
+        assertThat(DanishSupport.defaultScanLength).isEqualTo(24)
         assertThat(DanishSupport.compoundLinks).containsExactly("s", "e").inOrder()
         assertThat(DanishSupport.capitalizedNouns).isFalse()
         assertThat(DanishSupport.fontSubsets).containsExactly("latin")

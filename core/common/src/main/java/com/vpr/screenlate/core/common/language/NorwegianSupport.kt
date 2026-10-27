@@ -34,6 +34,9 @@ object NorwegianSupport : SpacedLanguageSupport() {
     /** Fylkesmann → fylke, mann; arbeidsplass → arbeid, plass. */
     override val compoundLinks = listOf("s", "e")
 
+    /** Long compounds: 0.83% of the words of news and Wikipedia text are longer than 16 letters. */
+    override val defaultScanLength = 24
+
     /** Ordinals in digits take a period: "5. mai", "20. århundre". */
     override val ordinalPeriod = true
 

@@ -63,7 +63,8 @@ class NorwegianSupportTest {
     }
 
     @Test
-    fun `compounds split at s and e, latin letters, lingua libre first`() {
+    fun `compounds of up to 24 letters split at s and e, latin letters, lingua libre first`() {
+        assertThat(NorwegianSupport.defaultScanLength).isEqualTo(24)
         assertThat(NorwegianSupport.compoundLinks).containsExactly("s", "e").inOrder()
         assertThat(NorwegianSupport.capitalizedNouns).isFalse()
         assertThat(NorwegianSupport.fontSubsets).containsExactly("latin")

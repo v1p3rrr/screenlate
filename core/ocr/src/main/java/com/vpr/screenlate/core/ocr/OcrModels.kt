@@ -51,9 +51,13 @@ data class OcrPage(
     )
 }
 
-/** The page with every word as [language] writes it ([LanguageSupport.ocrLines]); the same page when nothing changes. */
+/**
+ * The page with every word as [language] writes it ([LanguageSupport.ocrLines], [LanguageSupport.ocrQuotes]); the same
+ * page when nothing changes.
+ */
 fun OcrPage.inLanguage(language: Language): OcrPage {
-    val texts = language.support.ocrLines(paragraphs.flatMap { it.lines }.map { line -> line.words.map { it.text } })
+    val support = language.support
+    val texts = support.ocrQuotes(support.ocrLines(paragraphs.flatMap { it.lines }.map { line -> line.words.map { it.text } }))
     var changed = false
     var lineIndex = 0
     val fixed = paragraphs.map { paragraph ->
@@ -63,13 +67,42 @@ fun OcrPage.inLanguage(language: Language): OcrPage {
                 line.copy(
                     words = line.words.mapIndexed { index, word ->
                         val text = lineTexts[index]
-                        if (text == word.text) word else word.copy(text = text).also { changed = true }
+                        if (text == word.text) {
+                            word
+                        } else {
+                            changed = true
+                            word.copy(text = text, characterBoxes = word.characterBoxes?.let { joinedBoxes(word.text, text, it) })
+                        }
                     },
                 )
             },
         )
     }
     return if (changed) copy(paragraphs = fixed) else this
+}
+
+/**
+ * The character boxes of [old] for [new], which writes each character of [old] as one, or two of them as one (>> as
+ * »): their boxes joined. Null when they do not line up.
+ */
+private fun joinedBoxes(old: String, new: String, boxes: List<Box>): List<Box>? {
+    val from = old.codePoints().toArray()
+    val to = new.codePoints().toArray()
+    if (boxes.size != from.size) return null
+    if (from.size == to.size) return boxes
+    val result = ArrayList<Box>(to.size)
+    var index = 0
+    for (position in to.indices) {
+        if (index >= from.size) return null
+        val extra = (from.size - index) - (to.size - position)
+        if (extra > 0 && from[index] != to[position]) {
+            result += boxes[index].union(boxes[index + 1])
+            index += 2
+        } else {
+            result += boxes[index++]
+        }
+    }
+    return result.takeIf { index == from.size }
 }
 
 /**

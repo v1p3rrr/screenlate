@@ -54,13 +54,15 @@ object CorpusCountsDictionary {
         ),
         "kk" to leipzig("Kazakh", "kaz_newscrawl_2016_100K"),
         "ky" to leipzig("Kyrgyz", "kir_newscrawl_2016_100K"),
+        "la" to leipzig("Latin", "lat_wikipedia_2021_100K", texts = "Wikipedia of 2021"),
     )
 
-    private fun leipzig(language: String, corpus: String) = Corpus(
+    /** The Leipzig archive [corpus] of [language]'s [texts]. */
+    private fun leipzig(language: String, corpus: String, texts: String = "news crawl of 2016") = Corpus(
         name = "Leipzig Corpora Collection",
         author = "Leipzig University",
         url = "https://wortschatz.uni-leipzig.de/en/download/$language",
-        attribution = "Word counts of the $language news crawl of 2016 ($corpus) of the Leipzig Corpora Collection " +
+        attribution = "Word counts of the $language $texts ($corpus) of the Leipzig Corpora Collection " +
             "(https://wortschatz.uni-leipzig.de/), released under CC BY. D. Goldhahn, T. Eckart, U. Quasthoff: Building " +
             "Large Monolingual Dictionaries at the Leipzig Corpora Collection: From 100 to 200 Languages. LREC 2012.",
         format = Format.LEIPZIG,

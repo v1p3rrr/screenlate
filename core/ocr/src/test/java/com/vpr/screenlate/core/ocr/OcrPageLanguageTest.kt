@@ -48,6 +48,18 @@ class OcrPageLanguageTest {
     }
 
     @Test
+    fun `guillemets read as doubled angle brackets take one character box of the two`() {
+        val boxes = List(7) { Box(10f * it, 0f, 10f * it + 10f, 10f) }
+        val word = OcrWord(">>Pridi", " ", Box(0f, 0f, 70f, 10f), boxes)
+        val page = OcrPage(100, 20, listOf(OcrParagraph(listOf(OcrLine(listOf(word), word.box, vertical = false)))), OcrEngineType.LENS)
+
+        val fixed = page.inLanguage(Language.SLOVENIAN).paragraphs.single().lines.single().words.single()
+
+        assertThat(fixed.text).isEqualTo("»Pridi")
+        assertThat(fixed.characterBoxes).containsExactly(Box(0f, 0f, 20f, 10f), *boxes.drop(2).toTypedArray()).inOrder()
+    }
+
+    @Test
     fun `a page with nothing to change is the same page`() {
         val page = page("\u043co\u0440\u0435", "TOP")
 

@@ -19,6 +19,9 @@ SAMPLE = """<?xml version="1.0" encoding="UTF-8"?>
           Commons Attribution-ShareAlike 3.0 Unported</ref> license</p>
         </availability>
       </publicationStmt>
+      <sourceDesc>
+        <p>Automatic creation of this bilingual dictionary by <ref target="http://www.wikdict.com/">WikDict</ref>.</p>
+      </sourceDesc>
     </fileDesc>
   </teiHeader>
   <text>
@@ -64,8 +67,58 @@ CHINESE = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
-def convert(tei):
-    header, source, target, rows = converter.read_tei(io.BytesIO(tei.encode("utf-8")))
+OLD_HEADER = """<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Slovenian-English FreeDict Dictionary</title>
+        <respStmt><resp>Created by</resp><name>Gorazd Gorup</name></respStmt>
+      </titleStmt>
+      <editionStmt><edition>0.1</edition></editionStmt>
+      <publicationStmt>
+        <availability status="free">
+          <p>Copyright (C) by various authors listed in revisionDesc below.</p>
+          <p>Available under the terms of the
+            <ref target="http://www.gnu.org/licenses/gpl.html">GNU General Public License</ref>
+            ver. 3.0 or any later version.</p>
+          <p>This program is free software; you can redistribute it and/or modify it.</p>
+        </availability>
+      </publicationStmt>
+      <sourceDesc><p>Written by a native Slovenian speaker for FreeDict project.</p></sourceDesc>
+    </fileDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <entry>
+        <form><orth>abeceda</orth></form>
+        <gramGrp><pos>n</pos><gen>f</gen><num>sg</num></gramGrp>
+        <sense>
+          <cit type="trans"><quote>alphabet</quote></cit>
+          <cit type="example">
+            <quote>Slovenska abeceda ima 25 črk.</quote>
+            <cit type="trans"><quote>The Slovenian alphabet has 25 letters.</quote></cit>
+          </cit>
+        </sense>
+      </entry>
+      <entry>
+        <form><orth>abeceden</orth></form>
+        <gramGrp><pos>adj</pos><gen>m</gen><num>sg</num></gramGrp>
+        <sense><cit type="trans"><quote>alphabetical</quote></cit></sense>
+      </entry>
+      <entry>
+        <form><orth>aha</orth></form>
+        <gramGrp><pos>int</pos></gramGrp>
+        <sense><cit type="trans"><quote>aha</quote></cit></sense>
+      </entry>
+    </body>
+  </text>
+</TEI>
+"""
+
+
+def convert(tei, name=""):
+    header, source, target, rows = converter.read_tei(io.BytesIO(tei.encode("utf-8")), name)
     return converter.build(header, source, target, rows)
 
 
@@ -77,6 +130,35 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual((index["sourceLanguage"], index["targetLanguage"]), ("de", "ru"))
         self.assertIn("Creative Commons Attribution-ShareAlike 3.0 Unported", index["attribution"])
         self.assertIn("https://creativecommons.org/licenses/by-sa/3.0/legalcode", index["attribution"])
+
+    def test_wikdict_files_credit_wikdict(self):
+        index = convert(SAMPLE)["index.json"]
+        self.assertEqual(index["author"], "Karl Bartel (WikDict), FreeDict")
+        self.assertIn("translations from Wiktionary by WikDict", index["description"])
+
+    def test_an_old_header_takes_the_languages_of_the_file_name_and_its_own_authors(self):
+        index = convert(OLD_HEADER, "slv-eng.tei")["index.json"]
+        self.assertEqual(index["title"], "FreeDict sl-en")
+        self.assertEqual((index["sourceLanguage"], index["targetLanguage"]), ("sl", "en"))
+        self.assertEqual(index["author"], "Gorazd Gorup, FreeDict")
+        self.assertEqual(index["description"],
+                         "Slovenian-English FreeDict Dictionary: distributed by FreeDict. Converted for Yomitan by Screenlate.")
+        # The license ends with the paragraph that links it.
+        self.assertEqual(index["attribution"], "Copyright (C) by various authors listed in revisionDesc below. Available "
+                         "under the terms of the GNU General Public License ver. 3.0 or any later version. "
+                         "http://www.gnu.org/licenses/gpl.html")
+
+    def test_old_genders_and_parts_of_speech_become_tags_and_examples_are_left_out(self):
+        terms = {t[0]: t for t in convert(OLD_HEADER, "slv-eng.tei")["term_bank_1.json"]}
+        self.assertEqual(terms["abeceda"][2:4], ["n fem", "n"])
+        self.assertEqual([li["content"] for li in terms["abeceda"][5][0]["content"]["content"][0]["content"]], ["alphabet"])
+        # An adjective's gender is that of the form written.
+        self.assertEqual(terms["abeceden"][2:4], ["adj", "adj"])
+        self.assertEqual(terms["aha"][2], "intj")
+
+    def test_a_file_without_languages_needs_a_name_that_gives_them(self):
+        with self.assertRaises(ValueError):
+            convert(OLD_HEADER, "dictionary.tei")
 
     def test_each_sense_lists_its_translations_once_under_its_definition(self):
         terms = convert(SAMPLE)["term_bank_1.json"]

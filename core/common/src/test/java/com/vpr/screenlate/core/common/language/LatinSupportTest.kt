@@ -56,6 +56,15 @@ class LatinSupportTest {
     }
 
     @Test
+    fun `frequency words lose their macrons and breves, other marks stay`() {
+        assertThat(LatinSupport.frequencyWord("vīta")).isEqualTo("vita")
+        assertThat(LatinSupport.frequencyWord("amīcīs")).isEqualTo("amicis")
+        assertThat(LatinSupport.frequencyWord("hŭius")).isEqualTo("huius")
+        assertThat(LatinSupport.frequencyWord("poëta")).isEqualTo("poëta")
+        assertThat(LatinSupport.frequencyWord("cælum")).isEqualTo("cælum")
+    }
+
+    @Test
     fun `recordings and transcriptions name the classical or the ecclesiastical pronunciation`() {
         assertThat(LatinSupport.defaultAudioSources).containsExactly("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH").inOrder()
         assertThat(LatinSupport.audioRegions.map { it.id }).containsExactly("cls", "ecc").inOrder()

@@ -36,15 +36,16 @@ CORPORA = {
 LEIPZIG = "https://downloads.wortschatz-leipzig.de/corpora"
 
 
-def leipzig(corpus, language):
-    """The entry of the Leipzig archive [corpus], whose texts the template "leipzig" gives with the language's name."""
+def leipzig(corpus, language, template="leipzig", version="2016"):
+    """The entry of the Leipzig archive [corpus], whose texts [template] names: "leipzig" news, "leipzig-wikipedia"
+    Wikipedia articles."""
     return {
-        "template": "leipzig",
+        "template": template,
         "title": f"Leipzig Corpora Collection ({language})",
         "url": f"{LEIPZIG}/{corpus}.tar.gz",
         "file": f"{corpus}.tar.gz",
         "format": "leipzig",
-        "version": "2016",
+        "version": version,
         "license": "CC BY",
         "homepage": "https://wortschatz.uni-leipzig.de/en/download",
     }
@@ -52,6 +53,7 @@ def leipzig(corpus, language):
 
 CORPORA["kk"] = leipzig("kaz_newscrawl_2016_100K", "kk")
 CORPORA["ky"] = leipzig("kir_newscrawl_2016_100K", "ky")
+CORPORA["la"] = leipzig("lat_wikipedia_2021_100K", "la", template="leipzig-wikipedia", version="2021")
 
 BUILD = "corpus-counts"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
