@@ -36,6 +36,7 @@
     <string name="anki_error">노트를 추가하지 못했습니다: %1$s</string>
     <string name="anki_rejected">AnkiDroid가 노트를 저장하지 않았습니다.</string>
     <string name="anki_photo_unavailable">사진을 더 이상 사용할 수 없습니다.</string>
+    <string name="anki_photo_document_title">카메라</string>
     <string name="anki_picture_failed">이미지 저장에 실패했습니다.</string>
     <string name="anki_not_configured">먼저 Screenlate에서 Anki 내보내기를 설정하세요.</string>
     <string name="anki_not_installed">AnkiDroid가 설치되어 있지 않습니다.</string>

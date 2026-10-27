@@ -844,6 +844,7 @@
     <string name="camera_export">Zapisz w galerii</string>
     <string name="camera_import">Importuj z galerii</string>
     <string name="camera_import_failed">Nie udało się otworzyć obrazu.</string>
+    <string name="camera_import_too_large">Obraz jest większy niż 100 MB.</string>
     <string name="camera_exported">Zdjęcie zapisano w galerii.</string>
     <string name="camera_export_failed">Nie udało się zapisać zdjęcia w galerii.</string>
     <string name="camera_status_recognized">Rozpoznano</string>

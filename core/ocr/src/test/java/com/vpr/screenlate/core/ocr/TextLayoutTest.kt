@@ -60,6 +60,27 @@ class TextLayoutTest {
     }
 
     @Test
+    fun `a latin word and a number in a right-to-left line are split from their left edge`() {
+        // "سلام", "abc" and "12" in reading order from the right; the Latin word and the number run left to right.
+        val line = OcrLine(
+            words = listOf(
+                OcrWord("سلام", " ", Box(600f, 0f, 1000f, 100f)),
+                OcrWord("abc", " ", Box(200f, 0f, 500f, 100f)),
+                word("12", Box(0f, 0f, 100f, 100f)),
+            ),
+            box = Box(0f, 0f, 1000f, 100f),
+            vertical = false,
+            rightToLeft = true,
+        )
+        val characters = TextLayout(page(OcrParagraph(listOf(line)))).paragraphs.single()
+        assertThat(characters.map { it.text }).containsExactly("س", "ل", "ا", "م", " ", "a", "b", "c", " ", "1", "2").inOrder()
+        assertThat(characters[0].box.right).isEqualTo(1000f)
+        assertThat(characters[5].box).isEqualTo(Box(200f, 0f, 300f, 100f))
+        assertThat(characters[7].box.right).isEqualTo(500f)
+        assertThat(characters[9].box).isEqualTo(Box(0f, 0f, 50f, 100f))
+    }
+
+    @Test
     fun `splits words evenly along the reading direction`() {
         val layout = TextLayout(page(horizontal, vertical))
 

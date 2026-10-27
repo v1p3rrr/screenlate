@@ -36,6 +36,7 @@
     <string name="anki_error">Nie udało się dodać notatki: %1$s</string>
     <string name="anki_rejected">AnkiDroid nie zapisał notatki.</string>
     <string name="anki_photo_unavailable">Zdjęcie nie jest już dostępne.</string>
+    <string name="anki_photo_document_title">Aparat</string>
     <string name="anki_picture_failed">Błąd zapisu obrazu.</string>
     <string name="anki_not_configured">Najpierw skonfiguruj eksport do Anki w Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid nie jest zainstalowany.</string>

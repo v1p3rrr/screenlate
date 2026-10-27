@@ -92,6 +92,8 @@ class DeviceOcr internal constructor(
     }
 
     override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
+        // A scan needs the engines again: a release asked for while an attempt was pinned no longer applies.
+        synchronized(pinLock) { releasePending = false }
         // A model deleted between its selection and its hold is no longer installed: the next selection skips it.
         repeat(MAX_SELECTIONS) {
             val models = installed().associateBy { it.id }
@@ -109,14 +111,20 @@ class DeviceOcr internal constructor(
         throw NoDeviceOcrException()
     }
 
-    private suspend fun read(image: Bitmap, language: Language, model: LanguageModel, models: Map<String, InstalledOcrModel>): OcrPage =
+    private suspend fun read(
+        image: Bitmap,
+        language: Language,
+        model: LanguageModel,
+        models: Map<String, InstalledOcrModel>,
+        shouldVerify: () -> Boolean = { true },
+    ): OcrPage =
         try {
             engines.getValue(model.engine).recognize(image, language, models.getValue(model.id), model.requires.map(models::getValue))
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             // Damaged files take the model out of the installed ones; the next scan reads with another.
-            withContext(NonCancellable) { verify(listOf(model.id) + model.requires) }
+            if (shouldVerify()) withContext(NonCancellable) { verify(listOf(model.id) + model.requires) }
             throw e
         }
 
@@ -124,13 +132,14 @@ class DeviceOcr internal constructor(
     suspend fun active(language: Language): DeviceModel? = select(language, installed().associateBy { it.id })
 
     /**
-     * Holds one model for a multi-image attempt. Selection and installed-file identities stay fixed until close,
-     * even if settings change or the model is deleted meanwhile. A specified [modelId] never falls back to another.
+     * Holds [modelId] for a multi-image attempt, never another model; null when it cannot read [language]. The model
+     * and its installed files stay fixed until close, even if settings change or the model is deleted meanwhile.
+     * Its files are verified once, on the attempt's first failure.
      */
-    suspend fun pin(language: Language, modelId: String? = null): PinnedDeviceOcr? {
+    suspend fun pin(language: Language, modelId: String): PinnedDeviceOcr? {
         repeat(MAX_SELECTIONS) {
             val models = installed().associateBy { it.id }
-            val selected = if (modelId == null) select(language, models) else when {
+            val selected = when {
                 modelId == OcrModelChoices.ML_KIT && mlKit.reads(language) -> DeviceModel.MlKit
                 else -> listed.of(language).firstOrNull { it.id == modelId && usable(it, models) }?.let(DeviceModel::Listed)
             }
@@ -140,6 +149,7 @@ class DeviceOcr internal constructor(
                 is DeviceModel.Listed -> hold(listOf(selected.model.id) + selected.model.requires) ?: return@repeat
             }
             val closed = AtomicBoolean(false)
+            val verified = AtomicBoolean(false)
             val boundLanguage = language
             synchronized(pinLock) { pins++ }
             val boundEngine = object : OcrEngine {
@@ -150,7 +160,7 @@ class DeviceOcr internal constructor(
                     require(language == boundLanguage)
                     return when (selected) {
                         DeviceModel.MlKit -> mlKit.recognize(image, language)
-                        is DeviceModel.Listed -> read(image, language, selected.model, models)
+                        is DeviceModel.Listed -> read(image, language, selected.model, models) { verified.compareAndSet(false, true) }
                     }
                 }
             }

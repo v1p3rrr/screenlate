@@ -26,17 +26,23 @@ data class OcrPage(
     val text: String get() = paragraphs.joinToString("\n\n") { it.text }
 
     /** Returns a copy with every box shifted, e.g. from window to screen coordinates. */
-    fun offset(dx: Float, dy: Float): OcrPage = copy(
+    fun offset(dx: Float, dy: Float): OcrPage = mapBoxes { it.offset(dx, dy) }
+
+    /** Returns the page of the same image scaled to [width] × [height] pixels, every box scaled with it. */
+    fun scaled(width: Int, height: Int): OcrPage {
+        val x = width.toFloat() / this.width
+        val y = height.toFloat() / this.height
+        return mapBoxes { Box(it.left * x, it.top * y, it.right * x, it.bottom * y) }.copy(width = width, height = height)
+    }
+
+    private fun mapBoxes(transform: (Box) -> Box): OcrPage = copy(
         paragraphs = paragraphs.map { paragraph ->
             paragraph.copy(
                 lines = paragraph.lines.map { line ->
                     line.copy(
-                        box = line.box.offset(dx, dy),
+                        box = transform(line.box),
                         words = line.words.map { word ->
-                            word.copy(
-                                box = word.box.offset(dx, dy),
-                                characterBoxes = word.characterBoxes?.map { it.offset(dx, dy) },
-                            )
+                            word.copy(box = transform(word.box), characterBoxes = word.characterBoxes?.map(transform))
                         },
                     )
                 },
@@ -114,12 +120,13 @@ data class OcrLine(
 /**
  * @property separator text between this word and the next one; empty for Japanese.
  * @property characterBoxes per-character boxes when the engine provides them, otherwise null.
+ * @property engine the engine that read this word, set on every word of an assembled photo; null elsewhere, where
+ *   the paragraph's or the page's engine applies.
  */
 data class OcrWord(
     val text: String,
     val separator: String,
     val box: Box,
     val characterBoxes: List<Box>? = null,
-    /** The source of this word when a photo's overlapping tiles came from different engines. */
     val engine: OcrEngineType? = null,
 )

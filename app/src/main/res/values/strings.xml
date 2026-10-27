@@ -834,6 +834,7 @@
     <string name="camera_export">Save to gallery</string>
     <string name="camera_import">Import from gallery</string>
     <string name="camera_import_failed">The image could not be opened.</string>
+    <string name="camera_import_too_large">The image is larger than 100 MB.</string>
     <string name="camera_exported">Photo saved to gallery.</string>
     <string name="camera_export_failed">Could not save the photo to the gallery.</string>
     <string name="camera_status_recognized">Recognized</string>

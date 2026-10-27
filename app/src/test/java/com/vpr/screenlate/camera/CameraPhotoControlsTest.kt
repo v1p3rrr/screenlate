@@ -96,6 +96,22 @@ class CameraPhotoControlsTest {
     }
 
     @Test
+    fun theOverviewPassIsNotARegion() {
+        val tiles = PhotoTiles.grid(4000, 3000)
+        val overview = PhotoTiles.overview(4000, 3000)!!
+        val document = photo(text = recognized(listOf(overview) + tiles.drop(1), failed = listOf(tiles.first())))
+        val status = cameraStatus(document, state(Language.JAPANESE)) as CameraStatus.Recognized
+        assertThat(status.done to status.total).isEqualTo(tiles.size - 1 to tiles.size)
+        // A finished attempt that misses only the overview pass misses no region.
+        val attempt = PhotoAttempt("one", 1, Language.JAPANESE, PhotoOcrSettings(OcrEngines.CLOUD), listOf(overview) + tiles,
+            results = tiles.map { PhotoTileResult(it, page = page()) } + PhotoTileResult(overview, failure = FailureCause.NETWORK),
+            startedAt = 0, finished = true)
+        val finished = photo(text = PhotoText.None).copy(attempt = attempt)
+        assertThat(cameraHasWarning(finished, null)).isFalse()
+        assertThat(cameraMissingRegions(finished)).isEmpty()
+    }
+
+    @Test
     fun aMissingDictionaryIsNamedBeforeAMissingModel() {
         fun status(missing: Set<CatalogCategory>, requiresDevice: Boolean = false, deviceReady: Boolean = false) =
             InstallationStatus(Language.JAPANESE, missing, deviceReady, requiresDevice, emptyList(), 0)

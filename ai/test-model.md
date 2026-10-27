@@ -479,9 +479,9 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM13 | All 8 EXIF orientations display upright and report matching original-pixel-to-screen coordinates; loading/disposal never publishes another document's viewport | F | U PhotoDrawingTest, U CameraViewModelTest, I PhotoViewerTest | 2026-10-26 (API 37) |
 | CAM14 | Capture with the service unavailable; navigate and background; restart the device → the same private current photograph opens without camera permission being requested again; leaving capture releases the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
 | CAM15 | Flash-capable camera → Off/Auto/On cycle affects capture; Off again in a new process; absent flash → action hidden | N | U PhotoDrawingTest (cycle), D | |
-| CAM16 | Tile grid covers both axes/edges; overlap assembly keeps full boundary words, repeats, character boxes, paragraphs, vertical/RTL order and combining marks | F | U PhotoTilesTest, PhotoAssemblyTest | 2026-10-26 |
+| CAM16 | Tile grid covers both axes/edges; overlap assembly keeps full boundary words, repeats, character boxes, paragraphs, vertical/RTL order and combining marks; each word once across lines and orientations, the longer of two segmentations, no misread cut word, long words cut by both tiles joined also when the cut glyphs are dropped | F | U PhotoTilesTest, PhotoAssemblyTest | 2026-10-27 |
 | CAM17 | Indexed hit testing preserves the former linear algorithm's tolerance, center selection, ties and zero-area separator boxes | F | U BoxIndexTest, TextLayoutTest | 2026-10-26 |
-| CAM18 | Photo tile engine: Device makes no cloud call; Both waits for all readers, uses cloud or local fallback; pinned model/files ignore later changes; stored per-word provenance reads back and v1 still loads | F | U CompositeOcrTest, DeviceOcrTest, RecognitionCodecTest | 2026-10-26 |
+| CAM18 | Photo tile engine: Device makes no cloud call; Both waits for all readers, uses cloud or local fallback; pinned model/files ignore later changes, verified once on failure; a scan after a release request keeps the engines past the attempt; stored per-word provenance reads back and v1 still loads | F | U CompositeOcrTest, DeviceOcrTest, RecognitionCodecTest | 2026-10-27 |
 | CAM19 | Recognition publishes once after all tiles terminate; usable partial text stays searchable; warning explains failures and retry keeps successful tiles and original settings | F | U PhotoRecognitionJobsTest, CameraPhotoControlsTest; M | 2026-10-26 (API 37: real Cloud, one missing tile) |
 | CAM20 | Interrupted attempts and successful tiles survive process restart, remain separate from committed text and require explicit retry; Room v1 upgrades to v2; damaged progress preserves image/text | F | U PhotoStoreTest, AttemptCodecTest; I PhotoDatabaseTest | 2026-10-26 (API 37) |
 | CAM21 | Original-resolution region decoding handles all EXIF transforms and the far right/bottom edges without decoding a full-size whole image | F | I PhotoRegionsTest | 2026-10-26 (API 37) |
@@ -513,6 +513,12 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM47 | A recognized photo with no text → the bubble over it says "No text found in the photo." | F | M | 2026-10-27 (API 37) |
 | CAM48 | A photo in a language other than the active one: the grey ➕ → "Open Anki settings" opens the Anki settings of the photo's language, the installation link of a photo whose dictionaries are missing opens its dictionaries; on the Camera page, the "Can't recognize <language>" dialog opens the dictionaries of that language; another such request while that page is open replaces it with the new language | F | M | 2026-10-27 (API 37; the popup's dictionaries link through the app intent; the Camera dialog with a dictionary folder moved aside) |
 | CAM49 | Whole photo of an imported long image (a side over 16383 px) → the note's picture is scaled to 16383 px, not an empty file | N | U WebpSizeTest; I WebpLimitTest | 2026-10-27 (API 37, instrumented only) |
+| CAM50 | An image over 100 MB from the picker or the share sheet → "The image is larger than 100 MB."; the current photo stays, no copy is left | N | U PhotoImportsTest, CameraViewModelTest; M | 2026-10-27 (API 37, the picker) |
+| CAM51 | The Camera tab's language turned off in the language settings → the chip shows the active language; turned on again → the Camera tab's own language returns; a language chosen on the chip meanwhile stays | N | U CameraPreferencesTest; M | 2026-10-27 (API 37) |
+| CAM52 | Add to Anki with Whole photo of a photo over 4 MP → the note's picture is about 4 MP and upright; a frame under 4 MP keeps the original pixels | N | U FittedSizeTest; I PhotoImageTest; M | 2026-10-27 (API 37, Whole photo) |
+| CAM53 | The bubble resting on a word of a photo, the photo panned or zoomed → the popup follows the word; the word out of the visible part → the popup stays where it was | N | M | 2026-10-27 (API 37, pans injected) |
+| CAM54 | A note made over a photo fills `{document-title}` with "Camera" in the app's language | N | M | 2026-10-27 (API 37, English) |
+| CAM55 | A photo over 1500 px with lettering taller than 200 px across a tile seam → the lettering reads whole, small text comes from the tiles; the region count and the missing-region map leave the extra pass out; its failure alone gives no warning | N | U PhotoAssemblyTest, PhotoTilesTest, PhotoRecognitionJobsTest, CameraPhotoControlsTest; I PhotoRegionsTest; M | 2026-10-27 (API 37; the failure by unit test only) |
 
 
 
@@ -561,6 +567,25 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-27, `features/camera-lookup`, the work from the camera review's answers (uncommitted build on `325fe030`), Pixel_10_Pro (API 37)
+
+- Builds: an x86_64-only copy of the debug APK (storage thresholds lowered for the install, deleted after).
+- CAM50: a 101 MB JPEG (a small image padded after its end) picked in the photo picker → "The image is larger than
+  100 MB.", the current photo stays, no partial copy in the app's storage. A 104 MB PNG of 5900 × 5900 px filled the
+  emulator's memory while the media provider indexed it, and the picker no longer opened until a reboot; the padded
+  JPEG avoids that.
+- CAM51: Slovenian active, Dutch chosen on the chip → Dutch turned off (dictionaries kept) → the chip shows Slovenian;
+  Dutch turned on (it becomes active) and Slovenian made active again → the chip shows Dutch. The chip's choice also
+  stays while the active language changes. A language turned on again moves to the end of the chip's list.
+- CAM52: Whole photo of a 2400 × 3000 import → a 1789 × 2236 WebP (4.0 MP), upright.
+- CAM53: pans injected with `PhotoGestureDriver` (the `core:photos` test APK) → the popup follows its word; over 120
+  frames the popup's window drew no frame of its own; UI-thread time per frame 2.62 ms median with the popup, 2.49 ms
+  without.
+- CAM54: the Sentence field template `{sentence} | {document-title}` → "<sentence> | Camera" (template restored).
+- CAM55: a 2400 × 3000 import with a 600 px headline across the seam of the tile rows → "6 of 6 regions" while
+  recognizing and when done; the stored recognition holds the headline whole from the overview pass, its tile pieces
+  dropped, the small text from the tiles.
 
 ### 2026-10-27, `features/camera-lookup`, the Camera screen review's fixes (uncommitted build on `205f3ddb`), Pixel_10_Pro (API 37)
 

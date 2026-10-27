@@ -12,6 +12,7 @@ import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoHistory
 import com.vpr.screenlate.core.photos.PhotoImports
+import com.vpr.screenlate.core.photos.PhotoTooLargeException
 import com.vpr.screenlate.core.photos.PhotoViewport
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
@@ -49,7 +50,7 @@ data class CameraState(
     val live: Boolean get() = loaded && (photo == null || takingNew)
 }
 
-enum class CameraEvent { CAPTURE, IMPORT, DELETE, DELETED, LOAD, EXPORT_FAILED, EXPORTED, SAVED, SAVE_FAILED }
+enum class CameraEvent { CAPTURE, IMPORT, IMPORT_TOO_LARGE, DELETE, DELETED, LOAD, EXPORT_FAILED, EXPORTED, SAVED, SAVE_FAILED }
 
 /**
  * Whether closing [photo], or opening another one in its place, asks first: it is not in the history and would be
@@ -223,6 +224,8 @@ class CameraViewModel @Inject constructor(
                 }
             } catch (e: CancellationException) {
                 throw e
+            } catch (_: PhotoTooLargeException) {
+                messages.send(CameraEvent.IMPORT_TOO_LARGE)
             } catch (e: Exception) {
                 Log.w(TAG, "Import failed: " + e.javaClass.simpleName)
                 messages.send(CameraEvent.IMPORT)

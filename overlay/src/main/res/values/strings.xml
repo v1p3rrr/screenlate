@@ -38,6 +38,8 @@
     <string name="anki_error">Could not add the note: %1$s</string>
     <string name="anki_rejected">AnkiDroid did not save the note.</string>
     <string name="anki_photo_unavailable">The photo is no longer available.</string>
+    <!-- The {document-title} of a note made over a photo. -->
+    <string name="anki_photo_document_title">Camera</string>
     <string name="anki_picture_failed">Saving the picture failed.</string>
     <string name="anki_not_configured">Set up Anki export in Screenlate first.</string>
     <string name="anki_not_installed">AnkiDroid is not installed.</string>

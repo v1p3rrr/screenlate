@@ -1,5 +1,15 @@
 # Status
 
+## Camera code review (2026-10-26, in progress)
+
+Plan: `ai/plans/2026-10-26-camera-review.md` (its "Current position" is the place to continue from). Checkout:
+`C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`, branch `features/camera-lookup`. Areas 1–3 are reviewed
+(runs 1–4) and pushed. Area 4 (photo recognition in `core:ocr`): runs 1–4 are recorded and fixed, not
+committed yet. The owner answered questions 1–8 on 2026-10-27; the work from the answers (the plan's "Work from the
+owner's answers") is done with unit tests and checked on the API 37 emulator: the overview pass, the 4 MP picture,
+`{document-title}`, the popup's follow (cheap: no redraw of its own), the 100 MB message and the camera language's
+return. Run 2 covered that work too. Next: the commit, the E cases on API 37, the instrumented tests and a manual CI run. The API 37 emulator is held under `.worktrees/emulator.lock` in the main checkout.
+
 ## Camera photo lookup (2026-10-25)
 
 Every phase is complete: phase 3 (images from the phone) after phase 2 (internal photo history), phase 1.5 (emulator

@@ -5,13 +5,13 @@ import android.os.SystemClock
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import com.vpr.screenlate.core.ocr.lens.LensOcrEngine
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
@@ -27,6 +27,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -39,10 +40,9 @@ import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlinx.coroutines.coroutineScope
 
 sealed interface OcrUpdate {
     val page: OcrPage

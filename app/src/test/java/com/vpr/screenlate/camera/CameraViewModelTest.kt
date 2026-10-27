@@ -10,6 +10,7 @@ import com.vpr.screenlate.core.photos.LookupSources
 import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoRecognition
+import com.vpr.screenlate.core.photos.PhotoTooLargeException
 import java.io.File
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
@@ -364,6 +365,18 @@ class CameraViewModelTest {
         assertThat(model.state.value.busy).isFalse()
         assertThat(documents.discarded).containsExactly(imported.single().second)
         assertThat(model.events.first()).isEqualTo(CameraEvent.IMPORT)
+    }
+
+    @Test
+    fun anImageOverTheLimitKeepsThePhotoWithItsOwnMessage() = runTest {
+        documents.current.value = photo()
+        importFailure = PhotoTooLargeException()
+        advanceUntilIdle()
+        model.importImage("content://picked")
+        advanceUntilIdle()
+        assertThat(model.state.value.photo?.id).isEqualTo(1)
+        assertThat(documents.discarded).containsExactly(imported.single().second)
+        assertThat(model.events.first()).isEqualTo(CameraEvent.IMPORT_TOO_LARGE)
     }
 
     @Test

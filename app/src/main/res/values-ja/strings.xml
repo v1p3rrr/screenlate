@@ -823,6 +823,7 @@
     <string name="camera_export">ギャラリーに保存</string>
     <string name="camera_import">ギャラリーから読み込む</string>
     <string name="camera_import_failed">画像を開けませんでした。</string>
+    <string name="camera_import_too_large">画像が 100 MB を超えています。</string>
     <string name="camera_exported">写真をギャラリーに保存しました。</string>
     <string name="camera_export_failed">写真をギャラリーに保存できませんでした。</string>
     <string name="camera_status_recognized">認識済み</string>

@@ -4,7 +4,9 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.OcrPage
+import com.vpr.screenlate.core.ocr.PhotoTile
 import com.vpr.screenlate.core.ocr.PhotoTilePage
+import com.vpr.screenlate.core.ocr.PhotoTiles
 import java.io.File
 
 /**
@@ -30,6 +32,9 @@ data class PhotoDocument(
 ) {
     val width: Int get() = if (orientation.swapsAxes) rawHeight else rawWidth
     val height: Int get() = if (orientation.swapsAxes) rawWidth else rawHeight
+
+    /** Whether [tile] is the pass over the whole photo ([PhotoTiles.overview]), which is not one of its regions. */
+    fun isOverview(tile: PhotoTile): Boolean = PhotoTiles.isOverview(tile, width, height)
 }
 
 /** The recognized text kept with a photo. */
@@ -48,7 +53,8 @@ sealed interface PhotoText {
  *
  * @property language the language the photo was recognized in; lookups use it, not a language chosen since.
  * @property settings what the recognition ran with, to tell when the current settings differ.
- * @property failed regions whose recognition failed, shown and retried apart from the rest.
+ * @property failed regions whose recognition failed, shown and retried apart from the rest; a failed overview pass
+ *   ([PhotoTiles.overview]) is not one.
  * @property recognizedAt milliseconds since the epoch.
  */
 data class PhotoRecognition(
@@ -76,3 +82,6 @@ enum class FailureCause { OFFLINE, NETWORK, REFUSED, SERVER, DEVICE, OTHER }
 
 /** The file given to [PhotoDocuments.replaceCurrent] is not an image; the current photo stays. */
 class InvalidPhotoException : Exception("Not a readable image")
+
+/** An image given to [PhotoImports.copy] is larger than [MAX_IMPORT_BYTES]; nothing is kept. */
+class PhotoTooLargeException : Exception("Larger than the import limit")

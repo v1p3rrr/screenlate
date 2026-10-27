@@ -36,6 +36,7 @@
     <string name="anki_error">No se pudo añadir la nota: %1$s</string>
     <string name="anki_rejected">AnkiDroid no guardó la nota.</string>
     <string name="anki_photo_unavailable">La foto ya no está disponible.</string>
+    <string name="anki_photo_document_title">Cámara</string>
     <string name="anki_picture_failed">Error al guardar la imagen.</string>
     <string name="anki_not_configured">Primero configura la exportación a Anki en Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid no está instalado.</string>

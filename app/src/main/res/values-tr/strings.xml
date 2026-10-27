@@ -830,6 +830,7 @@
     <string name="camera_export">Galeriye kaydet</string>
     <string name="camera_import">Galeriden içe aktar</string>
     <string name="camera_import_failed">Görüntü açılamadı.</string>
+    <string name="camera_import_too_large">Görüntü 100 MB’tan büyük.</string>
     <string name="camera_exported">Fotoğraf galeriye kaydedildi.</string>
     <string name="camera_export_failed">Fotoğraf galeriye kaydedilemedi.</string>
     <string name="camera_status_recognized">Tanındı</string>

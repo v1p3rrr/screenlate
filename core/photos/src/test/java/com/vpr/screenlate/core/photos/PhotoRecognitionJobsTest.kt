@@ -48,13 +48,14 @@ class PhotoRecognitionJobsTest {
         runCurrent()
         assertThat(documents.commits).isEqualTo(0)
         assertThat(documents.photo.text).isEqualTo(PhotoText.None)
-        assertThat(documents.photo.attempt!!.results).hasSize(1)
+        // The overview and the left tile.
+        assertThat(documents.photo.attempt!!.results).hasSize(2)
         gate.complete(Unit)
         runCurrent()
         assertThat(documents.commits).isEqualTo(1)
         assertThat(documents.photo.attempt).isNull()
         val recognition = (documents.photo.text as PhotoText.Recognized).recognition
-        assertThat(recognition.tiles).hasSize(2)
+        assertThat(recognition.tiles).hasSize(3)
         assertThat(recognition.page.width).isEqualTo(2800)
         assertThat(engine.closed).isEqualTo(1)
     }
@@ -73,7 +74,7 @@ class PhotoRecognitionJobsTest {
         gate.complete(Unit)
         runCurrent()
         assertThat(engine.maximum).isEqualTo(2)
-        assertThat(engine.calls).hasSize(PhotoTiles.grid(4000, 3000).size)
+        assertThat(engine.calls).hasSize(PhotoTiles.grid(4000, 3000).size + 1)
         assertThat(documents.commits).isEqualTo(1)
     }
 
@@ -89,14 +90,15 @@ class PhotoRecognitionJobsTest {
         runCurrent()
         val partial = (documents.photo.text as PhotoText.Recognized).recognition
         assertThat(partial.failed).hasSize(1)
-        assertThat(partial.tiles).hasSize(1)
+        assertThat(partial.tiles).hasSize(2)
         failing = false
         jobs.retry(documents.photo)
         runCurrent()
         val retried = (documents.photo.text as PhotoText.Recognized).recognition
-        assertThat(engine.calls.map { it.left }).containsExactly(0, 1300, 1300).inOrder()
+        // The overview, the left and the right tile, then the right one again.
+        assertThat(engine.calls.map { it.left }).containsExactly(0, 0, 1300, 1300).inOrder()
         assertThat(retried.failed).isEmpty()
-        assertThat(retried.tiles).hasSize(2)
+        assertThat(retried.tiles).hasSize(3)
         assertThat(retried.language).isEqualTo(Language.ARABIC)
         assertThat(engine.fixed.last()).isEqualTo(partial.settings)
     }
@@ -112,7 +114,7 @@ class PhotoRecognitionJobsTest {
         assertThat(documents.commits).isEqualTo(0)
         assertThat(documents.photo.text).isEqualTo(PhotoText.Recognized(old))
         assertThat(documents.photo.attempt!!.finished).isTrue()
-        assertThat(documents.photo.attempt!!.remaining).hasSize(2)
+        assertThat(documents.photo.attempt!!.remaining).hasSize(3)
         assertThat(documents.photo.attempt!!.language).isEqualTo(Language.JAPANESE)
     }
 
@@ -195,6 +197,118 @@ class PhotoRecognitionJobsTest {
     }
 
     @Test
+    fun theOverviewRunsFirstOutsideTheProgressAndItsFailureIsNoMissingRegion() = runTest {
+        val documents = Documents(photo())
+        val overview = PhotoTiles.overview(2800, 1500)!!
+        val engine = Engine()
+        val gate = CompletableDeferred<Unit>()
+        engine.before = {
+            if (it == overview) throw IOException("test")
+            if (it.left > 0) gate.await()
+        }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        assertThat(engine.calls.first()).isEqualTo(overview)
+        assertThat(jobs.work.value).isEqualTo(PhotoWork.Running(1, "one", 1, 2))
+        gate.complete(Unit)
+        runCurrent()
+        val recognition = (documents.photo.text as PhotoText.Recognized).recognition
+        assertThat(recognition.failed).isEmpty()
+        assertThat(recognition.tiles.map { it.tile }).containsExactlyElementsIn(PhotoTiles.grid(2800, 1500))
+    }
+
+    @Test
+    fun anOverviewWithoutAnyRegionKeepsThePreviousRecognition() = runTest {
+        val old = TestPhotos.recognition(language = Language.ENGLISH)
+        val documents = Documents(photo().copy(revision = 4, text = PhotoText.Recognized(old)))
+        val overview = PhotoTiles.overview(2800, 1500)!!
+        val engine = Engine().apply {
+            before = { if (it != overview) throw IOException("test") }
+            pageOf = ::largeText
+        }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        assertThat(documents.commits).isEqualTo(0)
+        assertThat(documents.photo.text).isEqualTo(PhotoText.Recognized(old))
+        assertThat(documents.photo.attempt!!.remaining).containsExactlyElementsIn(PhotoTiles.grid(2800, 1500))
+    }
+
+    @Test
+    fun anOverviewWithoutAnyRegionGivesItsLargeTextToAPhotoWithoutText() = runTest {
+        val documents = Documents(photo())
+        val overview = PhotoTiles.overview(2800, 1500)!!
+        val engine = Engine().apply {
+            before = { if (it != overview) throw IOException("test") }
+            pageOf = ::largeText
+        }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        val recognition = (documents.photo.text as PhotoText.Recognized).recognition
+        assertThat(recognition.page.paragraphs.flatMap { it.lines }.flatMap { it.words }.map { it.text }).containsExactly("BIG")
+        assertThat(recognition.failed.map { it.box }).containsExactlyElementsIn(PhotoTiles.grid(2800, 1500).map { it.box })
+    }
+
+    @Test
+    fun anOverviewWithoutAnyRegionKeepsTextCommittedAfterTheCallersSnapshot() = runTest {
+        // The caller's photo has no text yet; the store already holds the text an earlier attempt committed.
+        val old = TestPhotos.recognition(language = Language.ENGLISH)
+        val documents = Documents(photo().copy(revision = 4, text = PhotoText.Recognized(old)))
+        val overview = PhotoTiles.overview(2800, 1500)!!
+        val engine = Engine().apply {
+            before = { if (it != overview) throw IOException("test") }
+            pageOf = ::largeText
+        }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(photo(), Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        assertThat(documents.commits).isEqualTo(0)
+        assertThat(documents.photo.text).isEqualTo(PhotoText.Recognized(old))
+    }
+
+    @Test
+    fun anOverviewWithoutAnyRegionOrLargeTextCommitsNothing() = runTest {
+        val documents = Documents(photo())
+        val overview = PhotoTiles.overview(2800, 1500)!!
+        val engine = Engine().apply { before = { if (it != overview) throw IOException("test") } }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        // Small text only: the photo is not shown as one without text while its regions failed.
+        assertThat(documents.commits).isEqualTo(0)
+        assertThat(documents.photo.text).isEqualTo(PhotoText.None)
+        assertThat(documents.photo.attempt!!.remaining).containsExactlyElementsIn(PhotoTiles.grid(2800, 1500))
+    }
+
+    /** Small text the tiles read better, and a word taller than the overlap across the seam. */
+    private fun largeText(tile: PhotoTile) = OcrPage(tile.width, tile.height, listOf(OcrParagraph(listOf(
+        OcrLine(listOf(OcrWord("tiny", " ", Box(100f, 100f, 200f, 140f))), Box(100f, 100f, 200f, 140f), false),
+        OcrLine(listOf(OcrWord("BIG", "", Box(1200f, 80f, 1600f, 400f))), Box(1200f, 80f, 1600f, 400f), false),
+    ))), OcrEngineType.LENS)
+
+    @Test
+    fun theOverviewAddsOnlyLargeTextInPlaceOfTheTilesWordsUnderIt() = runTest {
+        val documents = Documents(photo())
+        val overview = PhotoTiles.overview(2800, 1500)!!
+        val engine = Engine()
+        engine.pageOf = { tile ->
+            if (tile != overview) page(tile) else OcrPage(tile.width, tile.height, listOf(OcrParagraph(listOf(
+                // Small text the tiles read better, and a word taller than the overlap across the seam.
+                OcrLine(listOf(OcrWord("tiny", " ", Box(100f, 100f, 200f, 140f))), Box(100f, 100f, 200f, 140f), false),
+                OcrLine(listOf(OcrWord("BIG", "", Box(1200f, 80f, 1600f, 400f))), Box(1200f, 80f, 1600f, 400f), false),
+            ))), OcrEngineType.LENS)
+        }
+        val jobs = PhotoRecognitionJobs(documents, engine, backgroundScope, { 0 }, { "one" })
+        jobs.recognize(documents.photo, Language.ENGLISH, PhotoOcrSettings(OcrEngines.CLOUD))
+        runCurrent()
+        val page = (documents.photo.text as PhotoText.Recognized).recognition.page
+        // The right tile's word lies inside the large word.
+        assertThat(page.paragraphs.flatMap { it.lines }.flatMap { it.words }.map { it.text }).containsExactly("word", "BIG")
+    }
+
+    @Test
     fun aFailedTileKeepsTheCauseItsWarningNames() = runTest {
         val cases = listOf(
             Triple(OfflineException(), OcrEngines.CLOUD, FailureCause.OFFLINE),
@@ -221,6 +335,7 @@ class PhotoRecognitionJobsTest {
         val calls = mutableListOf<PhotoTile>()
         val fixed = mutableListOf<PhotoOcrSettings>()
         var before: suspend (PhotoTile) -> Unit = {}
+        var pageOf: (PhotoTile) -> OcrPage = { page(it) }
         var active = 0
         var maximum = 0
         var closed = 0
@@ -232,7 +347,7 @@ class PhotoRecognitionJobsTest {
                     calls += tile
                     active++
                     maximum = maxOf(maximum, active)
-                    try { before(tile); return page(tile) } finally { active-- }
+                    try { before(tile); return pageOf(tile) } finally { active-- }
                 }
                 override fun close() { check(active == 0); closed++ }
             }

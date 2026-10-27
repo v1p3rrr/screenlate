@@ -5,6 +5,7 @@ import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.ocr.PhotoTile
 import com.vpr.screenlate.core.ocr.PhotoTiles
 import java.io.File
 import kotlinx.coroutines.test.runTest
@@ -38,6 +39,36 @@ class PhotoRegionsTest {
                             }
                         } finally { decoded.recycle() }
                     }
+                }
+            }
+        } finally { file.delete() }
+    }
+
+    @Test
+    fun aScaledReadHasTheAskedSizeAndKeepsTheUprightLayout() = runTest {
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val file = File.createTempFile("region-scaled-", ".png", context.cacheDir)
+        val bitmap = Bitmap.createBitmap(2200, 1800, Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(Color.WHITE)
+        bitmap.setPixels(IntArray(1100 * 900) { Color.RED }, 0, 1100, 0, 0, 1100, 900)
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        bitmap.recycle()
+        try {
+            for (orientation in PhotoOrientation.entries) {
+                val document = PhotoDocument(1, file, 2200, 1800, orientation, 0, 0, PhotoText.None)
+                PhotoRegions(document).use { source ->
+                    val whole = PhotoTile(0, 0, document.width, document.height)
+                    val size = fittedSize(whole.width, whole.height, maxSide = PhotoTiles.MAX_SIDE)
+                    val decoded = source.read(whole, size = size)
+                    try {
+                        assertThat(decoded.width to decoded.height).isEqualTo(size)
+                        for ((x, y) in listOf(0.1f to 0.1f, 0.9f to 0.1f, 0.1f to 0.9f, 0.9f to 0.9f)) {
+                            val raw = orientation.toRaw(x * document.width, y * document.height, 2200, 1800)
+                            val red = raw.first < 1100 && raw.second < 900
+                            assertThat(decoded.getPixel((x * size.first).toInt(), (y * size.second).toInt()))
+                                .isEqualTo(if (red) Color.RED else Color.WHITE)
+                        }
+                    } finally { decoded.recycle() }
                 }
             }
         } finally { file.delete() }

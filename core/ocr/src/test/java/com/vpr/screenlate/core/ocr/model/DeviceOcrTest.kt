@@ -65,7 +65,7 @@ class DeviceOcrTest {
     }
 
     @Test
-    fun pinnedAttemptKeepsTheChosenModelAndInstalledFilesThroughChanges() = runTest {
+    fun pinnedAttemptKeepsItsModelAndInstalledFilesThroughChanges() = runTest {
         install("tesseract-fast-eng", "paddle-latin", "paddle-detector")
         chosen = "paddle-latin"
         var holds = 0
@@ -76,7 +76,7 @@ class DeviceOcrTest {
                 holds++
                 AutoCloseable { released++ }
             })
-        val pin = pinnedDevice.pin(Language.ENGLISH)!!
+        val pin = pinnedDevice.pin(Language.ENGLISH, "paddle-latin")!!
         chosen = "tesseract-fast-eng"
         installed = emptyList()
         pin.engine.recognize(image, Language.ENGLISH)
@@ -98,14 +98,54 @@ class DeviceOcrTest {
             override fun release() { releases++ }
         }
         val device = DeviceOcr(local, emptySet(), { emptyList() }, { emptyList() }, { null })
-        val first = device.pin(Language.ENGLISH)!!
-        val second = device.pin(Language.ENGLISH)!!
+        val first = device.pin(Language.ENGLISH, OcrModelChoices.ML_KIT)!!
+        val second = device.pin(Language.ENGLISH, OcrModelChoices.ML_KIT)!!
         device.release()
         assertThat(releases).isEqualTo(0)
         first.close()
         assertThat(releases).isEqualTo(0)
         second.close()
         assertThat(releases).isEqualTo(1)
+    }
+
+    @Test
+    fun aScanAfterTheReleaseRequestKeepsTheEnginesLoadedPastThePinnedAttempt() = runTest {
+        var releases = 0
+        val local = object : OcrEngine {
+            override val type = OcrEngineType.ML_KIT
+            override suspend fun recognize(image: Bitmap, language: Language) = OcrPage(1, 1, emptyList(), type)
+            override fun release() { releases++ }
+        }
+        val device = DeviceOcr(local, emptySet(), { emptyList() }, { emptyList() }, { null })
+        val pin = device.pin(Language.ENGLISH, OcrModelChoices.ML_KIT)!!
+        device.release()
+        device.recognize(image, Language.ENGLISH)
+        pin.close()
+        assertThat(releases).isEqualTo(0)
+        device.release()
+        assertThat(releases).isEqualTo(1)
+    }
+
+    @Test
+    fun aPinnedAttemptVerifiesItsFailingModelOnce() = runTest {
+        val failing = object : ModelOcrEngine {
+            override val id = "paddle"
+
+            override suspend fun recognize(image: Bitmap, language: Language, model: InstalledOcrModel, required: List<InstalledOcrModel>): OcrPage =
+                throw IllegalStateException("unreadable model")
+        }
+        val verified = mutableListOf<List<String>>()
+        install("paddle-cyrillic", "paddle-detector")
+        val device = DeviceOcr(
+            FakeMlKit(emptySet()), setOf(failing), { installed }, { listed[it].orEmpty() }, { chosen },
+            verify = { verified += it },
+        )
+        val pin = device.pin(Language.RUSSIAN, "paddle-cyrillic")!!
+        repeat(3) {
+            assertThrows(IllegalStateException::class.java) { kotlinx.coroutines.runBlocking { pin.engine.recognize(image, Language.RUSSIAN) } }
+        }
+        pin.close()
+        assertThat(verified).containsExactly(listOf("paddle-cyrillic", "paddle-detector"))
     }
 
     @Test

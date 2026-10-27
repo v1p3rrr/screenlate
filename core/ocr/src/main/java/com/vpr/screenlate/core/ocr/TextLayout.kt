@@ -49,7 +49,12 @@ class TextLayout(val page: OcrPage) {
     }
 
     private val characters: List<OcrCharacter> = paragraphs.flatten()
-    private val spatialIndex = BoxIndex(characters.map { it.box })
+    private val spatialIndex by lazy { BoxIndex(characters.map { it.box }) }
+
+    /** Builds the hit-test index now, on the calling thread, instead of at the first [hitTest]. */
+    fun prepare() {
+        spatialIndex
+    }
 
     /**
      * Finds the character at ([x], [y]). If no character contains the point, returns the nearest one within
@@ -116,7 +121,9 @@ class TextLayout(val page: OcrPage) {
 
     private fun splitWord(word: OcrWord, line: OcrLine): List<Pair<String, Box>> {
         val glyphs = codePoints(word.text)
-        val boxes = word.characterBoxes?.takeIf { it.size == glyphs.size } ?: splitBox(word.box, glyphs, line)
+        // A Latin word or a number inside a right-to-left line runs left to right.
+        val rightToLeft = !line.vertical && isRightToLeftWord(word.text, line.rightToLeft)
+        val boxes = word.characterBoxes?.takeIf { it.size == glyphs.size } ?: splitBox(word.box, glyphs, line.vertical, rightToLeft)
         val result = glyphs.zip(boxes).toMutableList()
         codePoints(word.separator).forEach { separator ->
             val edge = when {
@@ -129,23 +136,23 @@ class TextLayout(val page: OcrPage) {
         return result
     }
 
-    private fun splitBox(box: Box, glyphs: List<String>, line: OcrLine): List<Box> {
+    private fun splitBox(box: Box, glyphs: List<String>, vertical: Boolean, rightToLeft: Boolean): List<Box> {
         if (glyphs.size <= 1) return List(glyphs.size) { box }
         // Marks after the word's first glyph share the slot of the glyph before them, and so do subscript consonants.
         val slots = IntArray(glyphs.size)
         var count = 0
         glyphs.forEachIndexed { index, glyph ->
-            if (index == 0 || !(isNonSpacingMark(glyph) || glyphs[index - 1].codePointAt(0) == KHMER_COENG)) count++
+            if (takesPlace(glyph.codePointAt(0), glyphs.getOrNull(index - 1)?.codePointAt(0))) count++
             slots[index] = count - 1
         }
         return List(glyphs.size) { index ->
             val slot = slots[index]
             when {
-                line.vertical -> {
+                vertical -> {
                     val step = box.height / count
                     Box(box.left, box.top + step * slot, box.right, box.top + step * (slot + 1))
                 }
-                line.rightToLeft -> {
+                rightToLeft -> {
                     val step = box.width / count
                     Box(box.right - step * (slot + 1), box.top, box.right - step * slot, box.bottom)
                 }
@@ -157,11 +164,6 @@ class TextLayout(val page: OcrPage) {
         }
     }
 
-    private fun isNonSpacingMark(glyph: String): Boolean = when (Character.getType(glyph.codePointAt(0))) {
-        Character.NON_SPACING_MARK.toInt(), Character.ENCLOSING_MARK.toInt() -> true
-        else -> false
-    }
-
     private fun codePoints(text: String): List<String> {
         val result = ArrayList<String>(text.length)
         var index = 0
@@ -171,10 +173,5 @@ class TextLayout(val page: OcrPage) {
             index = next
         }
         return result
-    }
-
-    private companion object {
-        /** The Khmer sign that writes the next consonant below the one before it. */
-        const val KHMER_COENG = 0x17D2
     }
 }

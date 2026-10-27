@@ -43,6 +43,21 @@ class PhotoImportsTest {
     }
 
     @Test
+    fun aFileOverTheLimitIsRejectedAndDeletedWhileOneAtTheLimitIsKept() = runTest {
+        val kept = folder.newFile()
+        importImage(ByteArrayInputStream(ByteArray(10)), kept, Formats(readable = true), maxBytes = 10)
+        assertThat(kept.length()).isEqualTo(10)
+        val target = folder.newFile()
+        val formats = Formats(readable = true)
+        try {
+            importImage(ByteArrayInputStream(ByteArray(11)), target, formats, maxBytes = 10)
+            error("Expected failure")
+        } catch (_: PhotoTooLargeException) { }
+        assertThat(target.exists()).isFalse()
+        assertThat(formats.checked).isFalse()
+    }
+
+    @Test
     fun aFailedOrCancelledCopyLeavesNoPartialFile() = runTest {
         for (failure in listOf(IOException("test"), CancellationException("test"))) {
             val target = folder.newFile()
@@ -64,7 +79,11 @@ class PhotoImportsTest {
 
     private class Formats(private val readable: Boolean, private val converts: Boolean = false) : ImageFormats {
         var converted = false
-        override fun readable(file: File) = readable
+        var checked = false
+        override fun readable(file: File): Boolean {
+            checked = true
+            return readable
+        }
         override fun convert(file: File): Boolean {
             if (!converts) return false
             converted = true

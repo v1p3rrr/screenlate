@@ -5,6 +5,9 @@ import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.photos.PhotoImage
 import com.vpr.screenlate.overlay.capture.SharedScreenshot
 
+/** A photo's note picture is scaled down to about the pixels of a phone screenshot. */
+internal const val NOTE_MAX_PIXELS = 4_000_000L
+
 /** One note's owned image. Coordinates are source pixels; previews are borrowed until close, crops are caller-owned. */
 interface NoteImage : AutoCloseable {
     /** The whole image in its own coordinates: screen pixels for a screenshot, oriented photo pixels for a photo. */
@@ -16,7 +19,7 @@ interface NoteImage : AutoCloseable {
     /** The image to draw in the editor, at most [maxWidth] × [maxHeight] when [fit]. */
     suspend fun preview(maxWidth: Int, maxHeight: Int): Bitmap
 
-    /** The part of the image in [selection], from its own pixels. */
+    /** The part of the image in [selection], from its own pixels; a photo's is scaled down to [NOTE_MAX_PIXELS]. */
     suspend fun crop(selection: Box): Bitmap
 }
 
@@ -52,7 +55,7 @@ class ScreenNoteImage(private val shot: SharedScreenshot) : NoteImage {
     }
 }
 
-/** A sampled upright preview and an original-pixel crop of the pinned photograph. */
+/** A sampled upright preview and an original-pixel crop of the pinned photograph, of at most [NOTE_MAX_PIXELS]. */
 class PhotoNoteImage(private val image: PhotoImage) : NoteImage {
     override val bounds = image.bounds
     override val fit = true
@@ -61,7 +64,7 @@ class PhotoNoteImage(private val image: PhotoImage) : NoteImage {
     override suspend fun preview(maxWidth: Int, maxHeight: Int): Bitmap =
         preview ?: image.preview(maxWidth, maxHeight).also { preview = it }
 
-    override suspend fun crop(selection: Box) = image.crop(selection)
+    override suspend fun crop(selection: Box) = image.crop(selection, NOTE_MAX_PIXELS)
 
     override fun close() {
         preview?.recycle()

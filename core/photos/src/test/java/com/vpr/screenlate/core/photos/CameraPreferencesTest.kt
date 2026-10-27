@@ -31,7 +31,7 @@ class CameraPreferencesTest {
     }
 
     @Test
-    fun onlyEnabledLanguagesCanBeSelectedAndInvalidSelectionIsPersistentlyReplaced() = runTest {
+    fun onlyEnabledLanguagesCanBeSelectedAndATurnedOffChoiceReturnsWhenTurnedOnAgain() = runTest {
         val profiles = LanguageProfiles(MemoryStore())
         profiles.turnOn(Language.ENGLISH)
         val cameraStore = MemoryStore()
@@ -41,8 +41,22 @@ class CameraPreferencesTest {
         assertThat(camera.languages.first().selected).isEqualTo(Language.ENGLISH)
         profiles.turnOff(Language.ENGLISH)
         assertThat(camera.languages.first().selected).isEqualTo(Language.JAPANESE)
+        profiles.turnOn(Language.ENGLISH, activate = false)
+        assertThat(camera.languages.first().selected).isEqualTo(Language.ENGLISH)
+    }
+
+    @Test
+    fun aChoiceMadeWhileTheRememberedLanguageIsOffReplacesIt() = runTest {
+        val profiles = LanguageProfiles(MemoryStore())
         profiles.turnOn(Language.ENGLISH)
-        assertThat(camera.languages.first().selected).isEqualTo(Language.JAPANESE)
+        profiles.turnOn(Language.KOREAN)
+        val camera = CameraPreferences(MemoryStore(), profiles)
+        camera.select(Language.ENGLISH)
+        profiles.turnOff(Language.ENGLISH)
+        assertThat(camera.languages.first().selected).isEqualTo(profiles.current().active)
+        camera.select(Language.KOREAN)
+        profiles.turnOn(Language.ENGLISH, activate = false)
+        assertThat(camera.languages.first().selected).isEqualTo(Language.KOREAN)
     }
 
     @Test

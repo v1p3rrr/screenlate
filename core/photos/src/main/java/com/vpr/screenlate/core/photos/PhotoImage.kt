@@ -32,19 +32,23 @@ class PhotoImage internal constructor(private val document: PhotoDocument, priva
         return read(PhotoTile(0, 0, width, height), sample)
     }
 
-    /** Rounds outwards in oriented original pixels so a fractional selection never cuts off a boundary pixel. */
-    suspend fun crop(selection: Box): Bitmap {
+    /**
+     * Rounds outwards in oriented original pixels so a fractional selection never cuts off a boundary pixel. A crop of
+     * more than [maxPixels] pixels is scaled down in proportion to that many.
+     */
+    suspend fun crop(selection: Box, maxPixels: Long = Long.MAX_VALUE): Bitmap {
         require(listOf(selection.left, selection.top, selection.right, selection.bottom).all { it.isFinite() })
         val box = requireNotNull(selection.intersection(bounds)) { "Empty photo crop" }
-        return read(PhotoTile(floor(box.left).toInt(), floor(box.top).toInt(),
-            ceil(box.right).toInt(), ceil(box.bottom).toInt()), 1)
+        val tile = PhotoTile(floor(box.left).toInt(), floor(box.top).toInt(), ceil(box.right).toInt(), ceil(box.bottom).toInt())
+        val size = fittedSize(tile.width, tile.height, maxPixels)
+        return read(tile, 1, size.takeIf { it != tile.width to tile.height })
     }
 
-    private suspend fun read(tile: PhotoTile, sample: Int): Bitmap {
+    private suspend fun read(tile: PhotoTile, sample: Int, size: Pair<Int, Int>? = null): Bitmap {
         var result: Bitmap? = null
         try {
             withContext(Dispatchers.IO + NonCancellable) {
-                PhotoRegions(document).use { result = it.read(tile, sample) }
+                PhotoRegions(document).use { result = it.read(tile, sample, size) }
             }
             currentCoroutineContext().ensureActive()
             return result!!

@@ -36,6 +36,7 @@
     <string name="anki_error">Not eklenemedi: %1$s</string>
     <string name="anki_rejected">AnkiDroid notu kaydetmedi.</string>
     <string name="anki_photo_unavailable">Fotoğraf artık kullanılamıyor.</string>
+    <string name="anki_photo_document_title">Kamera</string>
     <string name="anki_picture_failed">Resim kaydedilirken hata oluştu.</string>
     <string name="anki_not_configured">Önce Screenlate’te Anki dışa aktarımını ayarlayın.</string>
     <string name="anki_not_installed">AnkiDroid yüklü değil.</string>

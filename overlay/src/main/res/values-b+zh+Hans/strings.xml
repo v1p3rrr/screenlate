@@ -36,6 +36,7 @@
     <string name="anki_error">无法添加笔记：%1$s</string>
     <string name="anki_rejected">AnkiDroid 未保存该笔记。</string>
     <string name="anki_photo_unavailable">该照片已不可用。</string>
+    <string name="anki_photo_document_title">相机</string>
     <string name="anki_picture_failed">图片保存失败。</string>
     <string name="anki_not_configured">请先在 Screenlate 中设置 Anki 导出。</string>
     <string name="anki_not_installed">未安装 AnkiDroid。</string>

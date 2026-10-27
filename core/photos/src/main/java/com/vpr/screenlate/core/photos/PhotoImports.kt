@@ -22,12 +22,16 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 
+/** The largest image file an import takes, 100 MB. */
+const val MAX_IMPORT_BYTES = 100_000_000L
+
 /** Brings an image from the system photo picker or the share sheet into the photo store. */
 fun interface PhotoImports {
     /**
      * Writes the image at [uri], a content link, into [target], a file from [PhotoDocuments.newCaptureFile]: its
      * original bytes when the photo viewer reads the format (JPEG, PNG, WebP, HEIF), else a PNG of its upright pixels.
-     * Throws [InvalidPhotoException] when the phone cannot decode it.
+     * Throws [InvalidPhotoException] when the phone cannot decode it and [PhotoTooLargeException] for a file over
+     * [MAX_IMPORT_BYTES].
      */
     suspend fun copy(uri: String, target: File)
 }
@@ -50,16 +54,22 @@ internal interface ImageFormats {
     fun convert(file: File): Boolean
 }
 
-/** Copies [input] into [target] and converts it when needed; [target] is deleted on any failure. */
-internal suspend fun importImage(input: InputStream, target: File, formats: ImageFormats) {
+/**
+ * Copies [input] into [target] and converts it when needed; [target] is deleted on any failure. The copy stops at the
+ * first byte over [maxBytes].
+ */
+internal suspend fun importImage(input: InputStream, target: File, formats: ImageFormats, maxBytes: Long = MAX_IMPORT_BYTES) {
     try {
         input.use { source ->
             target.outputStream().use { output ->
                 val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                var total = 0L
                 while (true) {
                     currentCoroutineContext().ensureActive()
                     val count = source.read(buffer)
                     if (count < 0) break
+                    total += count
+                    if (total > maxBytes) throw PhotoTooLargeException()
                     output.write(buffer, 0, count)
                 }
             }

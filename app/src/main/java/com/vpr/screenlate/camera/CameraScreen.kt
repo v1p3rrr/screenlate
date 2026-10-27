@@ -119,6 +119,7 @@ fun CameraScreen(
                     when (event) {
                         CameraEvent.CAPTURE -> R.string.camera_capture_failed
                         CameraEvent.IMPORT -> R.string.camera_import_failed
+                        CameraEvent.IMPORT_TOO_LARGE -> R.string.camera_import_too_large
                         CameraEvent.DELETE -> R.string.camera_close_failed
                         CameraEvent.LOAD -> R.string.camera_photo_unreadable
                         CameraEvent.EXPORT_FAILED -> R.string.camera_export_failed

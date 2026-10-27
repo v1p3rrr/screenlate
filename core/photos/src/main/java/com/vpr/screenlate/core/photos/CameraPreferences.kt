@@ -31,7 +31,10 @@ data class CameraLanguages(
 /** @property autoSave every new photo joins the history right after capture. */
 data class HistorySettings(val autoSave: Boolean = false, val limits: HistoryLimits = HistoryLimits())
 
-/** Camera-only preferences, outside general settings resets and backup. The first use remembers the active language. */
+/**
+ * Camera-only preferences, outside general settings resets and backup. The first use remembers the active language. A
+ * remembered language that is turned off gives way to the active one and returns when it is turned on again.
+ */
 @Singleton
 class CameraPreferences @Inject constructor(
     @param:CameraPreferenceStore private val store: DataStore<Preferences>,
@@ -42,7 +45,7 @@ class CameraPreferences @Inject constructor(
         CameraLanguages(selected, profile.turnedOn, profile.active, profile.turnedOn.associateWith(profile::flagCountry))
     }.onEach { selection ->
         store.edit { preferences ->
-            if (preferences[LANGUAGE]?.let(Language::of) !in selection.enabled) preferences[LANGUAGE] = selection.selected.code
+            if (preferences[LANGUAGE]?.let(Language::of) == null) preferences[LANGUAGE] = selection.selected.code
         }
     }.distinctUntilChanged()
 

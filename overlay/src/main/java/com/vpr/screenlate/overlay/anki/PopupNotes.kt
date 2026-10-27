@@ -57,7 +57,7 @@ import com.vpr.screenlate.core.common.redacted
  *
  * @property image pinned for the note, which closes it when done.
  * @property focus the word's paragraph in source-image coordinates, the initial crop frame.
- * @property documentTitle name of the app the word was found in, for `{document-title}`.
+ * @property documentTitle name of the app the word was found in, or the word "Camera" for a photo, for `{document-title}`.
  */
 data class NoteContext(
     val sentence: Sentence?,

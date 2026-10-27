@@ -15,6 +15,15 @@ object PhotoTiles {
     const val MAX_SIDE = 1500
     const val OVERLAP = 200
 
+    /**
+     * The whole photo, read once more scaled down to [MAX_SIDE], for text too large to lie whole in any tile of the
+     * [grid]; null when the grid has a single tile. It is not one of the photo's regions.
+     */
+    fun overview(width: Int, height: Int): PhotoTile? =
+        PhotoTile(0, 0, width, height).takeIf { width > MAX_SIDE || height > MAX_SIDE }
+
+    fun isOverview(tile: PhotoTile, width: Int, height: Int): Boolean = tile == overview(width, height)
+
     fun grid(width: Int, height: Int): List<PhotoTile> {
         require(width > 0 && height > 0)
         return starts(height).flatMap { y ->

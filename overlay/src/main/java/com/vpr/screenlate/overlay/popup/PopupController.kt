@@ -62,20 +62,41 @@ class PopupController(
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
     fun show(state: String, word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
         if (!attach()) return
-        val area = Box(screen.left + edgeMargin, screen.top + edgeMargin, screen.right - edgeMargin, screen.bottom - edgeMargin)
-        val size = PopupPlacement.size(screen, maxWidth)
-        val placed = PopupPlacement.place(word, bubble, size, area, margin = edgeMargin * 2)
+        val placed = place(word, bubble, screen, maxWidth)
         bounds = placed
         params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
-        params.x = placed.left.roundToInt()
-        params.y = placed.top.roundToInt()
-        params.width = placed.width.roundToInt()
-        params.height = placed.height.roundToInt()
+        setBounds(placed)
         windowManager.updateViewLayout(page.container, params)
         page.container.visibility = View.VISIBLE
         val continued = visible
         visible = true
         page.render(state, continued)
+    }
+
+    /**
+     * Places the shown popup next to [word] again, as [show] would, keeping what it shows: the word moved on the screen.
+     * Only the window moves; nothing is laid out again unless its size changes.
+     */
+    fun move(word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
+        if (!visible) return
+        val placed = place(word, bubble, screen, maxWidth)
+        bounds = placed
+        val old = listOf(params.x, params.y, params.width, params.height)
+        setBounds(placed)
+        if (listOf(params.x, params.y, params.width, params.height) != old) windowManager.updateViewLayout(page.container, params)
+    }
+
+    private fun place(word: Box, bubble: Box?, screen: Box, maxWidth: Float): Box {
+        val area = Box(screen.left + edgeMargin, screen.top + edgeMargin, screen.right - edgeMargin, screen.bottom - edgeMargin)
+        val size = PopupPlacement.size(screen, maxWidth)
+        return PopupPlacement.place(word, bubble, size, area, margin = edgeMargin * 2)
+    }
+
+    private fun setBounds(placed: Box) {
+        params.x = placed.left.roundToInt()
+        params.y = placed.top.roundToInt()
+        params.width = placed.width.roundToInt()
+        params.height = placed.height.roundToInt()
     }
 
     /** Re-renders the current view in place, if the popup is showing. */

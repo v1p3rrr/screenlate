@@ -52,6 +52,42 @@ class PhotoImageTest {
         }
     }
 
+    @Test
+    fun aCropOverThePixelLimitIsScaledDownUprightForEveryOrientation() = runBlocking {
+        for (orientation in PhotoOrientation.entries) {
+            val file = quadrants(640, 480)
+            PhotoImage(PhotoDocument(1, file, 640, 480, orientation, 0, 0, PhotoText.None)) { file.delete() }.use { image ->
+                val crop = image.crop(image.bounds, maxPixels = 40_000)
+                try {
+                    assertThat(crop.width to crop.height).isEqualTo(fittedSize(image.width, image.height, 40_000))
+                    // The upright corner shows the quadrant of the raw pixel it came from.
+                    for ((x, y) in listOf(0.1f to 0.1f, 0.9f to 0.1f, 0.1f to 0.9f, 0.9f to 0.9f)) {
+                        val raw = orientation.toRaw(x * image.width, y * image.height, 640, 480)
+                        val pixel = crop.getPixel((x * crop.width).toInt(), (y * crop.height).toInt())
+                        assertThat(pixel).isEqualTo(quadrant(raw.first < 320, raw.second < 240))
+                    }
+                } finally { crop.recycle() }
+            }
+        }
+    }
+
+    private fun quadrants(width: Int, height: Int): File {
+        val file = File.createTempFile("photo-scaled-", ".png", context.cacheDir)
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val pixels = IntArray(width * height) { quadrant(it % width < width / 2, it / width < height / 2) }
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        bitmap.recycle()
+        return file
+    }
+
+    private fun quadrant(left: Boolean, top: Boolean) = when {
+        left && top -> Color.RED
+        top -> Color.GREEN
+        left -> Color.BLUE
+        else -> Color.WHITE
+    }
+
     private fun pattern(width: Int, height: Int): File {
         val file = File.createTempFile("photo-crop-", ".png", context.cacheDir)
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)

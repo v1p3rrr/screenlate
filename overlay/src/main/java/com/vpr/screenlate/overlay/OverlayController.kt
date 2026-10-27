@@ -1267,15 +1267,15 @@ class OverlayController(
             popup.page.prepare()
             val key = source.documentId to source.revision
             val layout = photoLayout?.takeIf { it.first == key }?.second
-                ?: withContext(Dispatchers.Default) { TextLayout(source.recognition.page) }.also { photoLayout = key to it }
+                ?: withContext(Dispatchers.Default) { TextLayout(source.recognition.page).also(TextLayout::prepare) }.also { photoLayout = key to it }
             onLayout(layout, final = true, lensError = null, flashLines = flashLines)
         }
     }
 
     /**
-     * The photo moved under the bubble: the highlights follow it, and the aim, which stayed where it was on the
-     * screen, now points at another part of the photo, as if the bubble had moved. A popup the user closed stays closed
-     * until the bubble itself moves.
+     * The photo moved under the bubble: the highlights and the popup follow it, and the aim, which stayed where it was
+     * on the screen, now points at another part of the photo, as if the bubble had moved. A popup the user closed stays
+     * closed until the bubble itself moves.
      */
     private fun onPhotoMoved(source: LookupSource.Photo) {
         scanSource = source
@@ -1286,7 +1286,10 @@ class OverlayController(
         if (view != null && start != null && view.layout === layout) {
             val boxes = layout.boxesFor(start, view.matched.coerceAtLeast(1)).mapNotNull(frame::toScreen)
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
-            shownLookup = view.copy(anchor = Box.unionOf(boxes) ?: view.anchor)
+            val anchor = Box.unionOf(boxes)
+            shownLookup = view.copy(anchor = anchor ?: view.anchor)
+            // A word moved out of the photo's visible part keeps the popup where it was.
+            if (anchor != null) popup.move(anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
         }
         if (popupDismissed) return
         val (x, y) = aim ?: aimPoint()
@@ -1528,7 +1531,12 @@ class OverlayController(
         val sentence = shownSentence()
         val scan = scanId
         val photo = scanSource as? LookupSource.Photo
-        val documentTitle = foregroundPackage?.let(::appLabel).orEmpty()
+        // A photo's text comes from the camera, not from the app in front.
+        val documentTitle = if (photo != null) {
+            service.getString(R.string.anki_photo_document_title)
+        } else {
+            foregroundPackage?.let(::appLabel).orEmpty()
+        }
         // The word's paragraph with the padding around it, in the coordinates of the note's image.
         fun focusIn(image: Box, padding: Float): Box? {
             if (layout == null || position == null) return null

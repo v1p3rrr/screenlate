@@ -19,6 +19,8 @@ writing this plan; the answers are the decision table.
 | Bugs in another area | Fixed when found, recorded under the area whose code it is, so that area's later runs see the fix. |
 | Checks | Unit tests and lint after every run. After an area whose fixes change screens or the overlay: the test-model cases of those places on the emulator. At the end: the E cases of the bubble, OCR, popup and Anki on API 37 and the camera instrumented tests on API 30 (owner). |
 | Commits | After each area's last run, pushed to `origin features/camera-lookup`; messages describe the change. No merges. |
+| Owner's answers | Asked on 2026-10-27, answers under each question below. Implemented at once, before area 4's run 2, so that run 2 reviews them too, each with tests and the emulator (owner, 2026-10-27). |
+| Status | `ai/status.md` and "Current position" are updated after every step of the review and of the work from the answers, so a new session continues from the same place (owner, 2026-10-27). |
 
 ## Areas
 
@@ -89,7 +91,9 @@ sentence rules (`notes/language-rules.md`).
 ## Current position
 
 Updated after every step so the work survives a context reset: areas 1–3 are reviewed (runs 1–4) and committed;
-area 4, run 1 is next. The API 37 emulator runs under the shared lock.
+area 4, runs 1–4 are recorded, with the work from the owner's answers ("Work from the owner's answers" below:
+all six done with unit tests and checked on the emulator); none of it is committed yet. Next: the commit and push,
+the E cases on API 37, the instrumented tests and a manual CI run. The API 37 emulator runs under the shared lock.
 
 ## Progress
 
@@ -98,7 +102,7 @@ area 4, run 1 is next. The API 37 emulator runs under the shared lock.
 | 1 | Photo store | 19 findings: 9 fixed, 1 false alarm, 7 skipped, 2 questions | 9 findings: 5 fixed, 2 false alarms, 1 skipped, 1 question | 11 findings: 3 fixed, 2 false alarms, 6 skipped | 4 findings: 4 fixed (one change) | `core:photos` instrumented tests pass on API 37 | done |
 | 2 | Camera screen | 1 fixed ahead of the runs; 8 findings: 6 fixed, 1 false alarm, 1 skipped | 13 findings (2 found on the emulator): 7 fixed, 5 skipped, 1 question | 3 findings: 3 fixed | 10 findings: 4 fixed, 6 skipped | API 37 by hand: each fix of runs 1–4 | done |
 | 3 | Overlay and Anki integration | 14 findings: 10 fixed, 2 skipped, 2 questions | 8 findings (2 found on the emulator): 7 fixed, 1 false alarm; 1 more defect found while fixing, fixed | 7 findings: 5 fixed, 2 skipped | 3 findings: 3 fixed | API 37 by hand: runs 1–4 | done |
-| 4 | Photo recognition | | | | | | |
+| 4 | Photo recognition | 12 findings: 10 fixed, 1 false alarm, 1 question; 1 more defect found on real tiles, fixed | 10 findings: 8 fixed, 2 skipped | 9 findings: 7 fixed, 2 skipped | 5 findings: 4 fixed, 1 skipped | real tiles from API 37 replayed: run 1 | |
 | — | Final E regression | | | | | | |
 
 ## Findings
@@ -448,6 +452,167 @@ On the emulator (API 37): with the Dutch dictionary's folder moved aside, Recogn
 showed Japanese, and Back leaves it (the folder was put back, Dutch recognizes again). With the new build, a models
 request without a language leaves the app where it is, one with Korean opens the Korean models.
 
+### Area 4, run 1
+
+1. Two complete readings of one word inside the overlap, segmented differently (one tile read only the first part of
+   a furigana word, as two words), both stayed: the containment rule held only for a word at a tile edge.
+   **Fixed:** words are kept once across the whole photo; a kept word drops the shorter readings it contains, and
+   among complete words the longer reading is kept first.
+2. A long word cut by both tiles joined only when its boxes ended within 3 px of the tile edges and the shared part
+   matched the common glyphs within 0.8 glyph; an engine that drops the glyph cut by the edge breaks either
+   condition, and the word stayed in two parts that repeat the middle. **Fixed:** the edge band is one glyph, the
+   shared part may be up to two glyphs longer than the common ones (the cut glyphs at both ends), and the longest
+   common part that fits is taken.
+3. A word cut by a tile edge and misread stayed next to the other tile's complete reading of the same place, inside
+   the line. **Fixed:** a cut word covered at least by half by complete words of another tile is dropped in favor of
+   the word that covers most of it.
+4. Text larger than the 200 px overlap lies cut in every tile that holds it on a seam. **Question 8.**
+5. A release of the on-device engines asked for during a photo attempt stayed pending after a later scan or warm-up
+   loaded them again, so the attempt's end unloaded the model the overlay had just loaded. **Fixed:** a scan clears
+   the pending release.
+6. Each failing image of a photo attempt verified the model's files again. **Fixed:** once per attempt.
+7. `lensPausedUntil` written without `@Volatile`. **False alarm:** it is `@Volatile`.
+8. `TextLayout` built its hit-test index for every layout. **Fixed:** built on the first hit test.
+9. `DeviceOcr.pin` kept an optional model and a selection no caller used. **Fixed:** the model is required.
+10. The KDoc of `OcrWord.engine` said it is set only when the tiles came from different engines; assembly sets it on
+    every photo word. **Fixed.**
+11. An import of `CompositeOcr` out of order. **Fixed.**
+12. Two statements joined by a semicolon in `BoxIndex`. **Fixed.**
+
+Found on real tiles while checking finding 1: a glyph the second tile read as a horizontal line of its own, at the
+place of the same glyph in the first tile's vertical line, stayed as a separate line (lines of different orientation
+never join). **Fixed** by the same photo-wide rule; among equal readings, the one whose line holds more words is kept.
+
+The new tests (four in `PhotoAssemblyTest`, two in `DeviceOcrTest`) fail on the old code. The emulator's two-tile
+photo (a manga page, read by the cloud) was replayed from its stored tiles through the new assembly: the duplicated
+furigana, both misread cut words and the separate glyph line are gone; one stray glyph that only one tile read, at its
+edge, stays.
+
+### Area 4, run 2
+
+Started before the owner's answers, finished after their work was done, so it covers that work too (the overview
+pass, the photo size, the camera language, the popup that follows its word).
+
+1. `sameLine` checked the line boxes' offset before the shared-word anchor, so a slanted line (its axis-aligned boxes
+   in two tiles are offset across the line by the slant) never joined across tiles: the line split in the overlap and
+   its paragraph split too, so a paragraph read the left parts of all its lines, then the right parts. **Fixed:** a
+   shared word (boxes mostly overlapping, of a similar height and centered alike) joins the lines first.
+2. The lazy hit-test index of run 1 (finding 8) moved the build of a photo's index from the background, where the
+   photo's layout is built, to the main thread at the first aim. **Fixed:** the photo's layout builds its index in
+   the background (`TextLayout.prepare`); screen scans still build it at the first hit test.
+3. Priority and the coverage rule called a word cut only within 3 px of the edge, while stitching accepts a box a
+   glyph short of it: a misread word whose engine dropped the cut glyph counted as complete and stayed. **Fixed:**
+   along its line a word within a glyph of the edge counts as cut; across the line, 3 px as before.
+4. With a device fallback tile next to a cloud tile, a line-long device word (PaddleOCR reads one word per Japanese
+   line) wins over the cloud's words by length; one misread character keeps both readings. **Skipped:** only when the
+   cloud fails for some tiles of an attempt; a fix needs an alignment of the readings glyph by glyph.
+5. A long Latin word in a right-to-left line across a seam was not stitched: its parts came in the line's order (and
+   a Hebrew or Arabic word in a left-to-right line, the same). **Fixed:** the pieces follow the word's own direction,
+   by its first letter of a strong direction; numbers run left to right.
+6. No test of the coverage threshold (a cut word covered by less than half stays). **Fixed:** test added.
+7. `stitch` compared raw code points, `duplicates` NFC: parts in different normalization forms never joined.
+   **Fixed:** both parts are compared and joined in NFC.
+8. `stitch` takes the largest common part that fits the geometry; in a run of one repeated glyph across the seam it
+   can drop one or two repeats. **Skipped:** the geometry fits several counts within the band of the cut glyphs, so
+   no count is better founded; it needs a word longer than the overlap in both tiles made of one repeated glyph.
+9. An attempt where only the overview succeeded committed a page holding only the large text, so a photo with text
+   lost it until the next attempt. **Fixed:** the overview alone commits nothing; its tiles stay to retry.
+10. The KDoc of `fittedSize` said "at most" the pixel limit, while rounding each side may exceed it by a few pixels.
+    **Fixed.**
+
+The new tests (seven in `PhotoAssemblyTest`, one in `PhotoRecognitionJobsTest`) fail on the old code, except the
+coverage threshold's, which documents the current behavior; two more cover the stitch of an Arabic word in an Arabic
+line and of a vertical word, which had no test.
+
+### Area 4, run 3
+
+1. The glyph band of run 2 (finding 3) and the stitch measured a glyph as the box length over code points, so in Thai,
+   Khmer, Hindi, Bengali and vowelled Arabic the marks counted as glyphs and the band was a fraction of a glyph: a
+   misread Thai word whose engine dropped the cut cell stayed, a Thai word cut by both tiles stayed in two pieces.
+   **Fixed:** a glyph is a place along the line, marks and Khmer subscripts sharing their letter's (the rule the
+   layout's even split of a word's box already had, now one function for both).
+2. Parts of one line in two tiles never joined when their directions differed, and the engines take a part's direction
+   from its own text: a tile that sees only a Latin name or a number at the end of an Arabic line reads it as a
+   left-to-right line, so the line split, its paragraph read the end first and the word-direction stitch of run 2 never
+   ran. **Fixed:** the parts join whatever their directions; the joined line takes the language's direction when they
+   differ.
+3. Run 2's fix (finding 9) kept the overview's large text also from a photo without text, where nothing would be
+   replaced. **Fixed:** a photo without text gets the large text with all regions failed; with only small text in the
+   overview nothing is committed, so the photo is not shown as one without text.
+4. The shared-word anchor now runs before the line-size check, so an engine line that holds two rows would join every
+   line of the other tile it shares a word with. **Skipped:** no engine is known to group two rows into one line, such
+   a line is wrong in its own tile already, and telling it from a slanted line needs the words' positions along it.
+5. The stitch compares character boxes with the NFC code point count, so NFD text with a box per code point would lose
+   its boxes. **Skipped:** not seen in any engine's output; the highlight then splits the word's box evenly.
+6. `rightToLeft` repeated the first-strong-letter loop of `isRightToLeftText`. **Fixed:** both use `strongRightToLeft`.
+7. No test kept a ruby line apart from its base read with a taller box in another tile (the size check that moved into
+   the shared-word anchor). **Fixed:** test added.
+8. Each word's text was normalized twice in `owners`. **Fixed.**
+9. No test of the direction fallback for a word without letters or digits (it follows its line). **Fixed:** test added.
+
+The tests of findings 1–3 (two in `PhotoAssemblyTest` for each of 1 and 2, two in `PhotoRecognitionJobsTest`) fail on
+the old code, except the one that commits nothing, which documents the kept behavior; the previous overview test now
+gives the overview large text, so it shows the previous text is kept although the overview found some.
+
+### Area 4, run 4
+
+1. Run 3's commit rule (finding 3) checked the text of the photo the caller passed, while the commit is based on the
+   revision read from the store when the attempt starts, which may hold the text of an attempt that finished meanwhile:
+   an attempt whose regions all failed could replace that text with the overview's large text. **Fixed:** the rule
+   reads the text of the photo the attempt is based on.
+2. A word without character boxes was split into glyphs in its line's direction, so a Latin word or a number in a
+   right-to-left line (cloud recognition gives no character boxes) had its glyphs mirrored: a tap on its left end hit
+   its last character. Run 3 also puts a tile part's Latin text into such a line. **Fixed:** each word is split in its
+   own direction, by the stitch's rule (one function for both); screen scans too.
+3. When the parts disagree, the joined line takes the language's direction, wrong for a line of the other direction
+   in the photo (a Hebrew sign in a photo set to English whose part in one tile holds only a number). **Skipped:** the
+   language is the best signal the line has; the case needs a line of the other script whose part in a tile holds
+   none of its letters.
+4. No test showed that parts agreeing on a direction keep it whatever the language. **Fixed:** test added.
+5. The page was assembled for an overview-only attempt that would not be committed. **Fixed:** not assembled.
+
+The tests of findings 1 and 2 fail on the old code.
+
+(A Both attempt whose device model was deleted fails instead of reading with the cloud alone: by design, recorded
+in area 1, run 1.)
+
+## Work from the owner's answers
+
+Status of each, updated as it goes:
+
+1. Import size limit of 100 MB with a "too large" message (question 1). Done in code with tests
+   (`PhotoImportsTest`, `CameraViewModelTest`). Emulator (API 37): a 101 MB JPEG picked in the photo picker showed
+   "The image is larger than 100 MB."; the current photo stayed and no partial copy was left in the app's storage.
+2. The camera keeps its chosen language while that language is off, shows the fallback meanwhile and returns to it
+   when it is on again (question 2). Done in code with tests (`CameraPreferencesTest`). Emulator (API 37): with
+   Slovenian active and Dutch chosen in the camera, turning Dutch off showed Slovenian in the camera; turning Dutch on
+   (which makes it active) and making Slovenian active again brought the camera back to Dutch. The camera's choice
+   also stayed while the active language changed.
+3. The whole-photo note picture scaled down to about 4 MP (question 3). Done in code: any photo crop for a note is
+   scaled to at most 4,000,000 pixels (a power-of-two decoder sample, then a filtered scale). Tests `FittedSizeTest`,
+   `PhotoImageTest` (instrumented). Emulator (API 37): Whole photo of a 2400 × 3000 import gave a 1789 × 2236 WebP
+   (4.0 MP, same aspect ratio), upright.
+4. The popup over a moving photo follows its word on each move if that is cheap enough, otherwise it is placed again
+   when the photo stops moving (question 6). Done in code: the popup's window moves on each move of the photo (no new
+   render; skipped when the rounded place is the same). Emulator (API 37, pans injected by `PhotoGestureDriver`): the
+   popup follows its word; over 120 frames of a moving photo the popup's window drew no frame of its own, and the
+   app's UI-thread time per frame was 2.62 ms median with the popup against 2.49 ms without it. The extra frames
+   come from the word highlight, which followed the photo before too. Cheap enough: the follow stays. A move that
+   takes the word away from the resting aim closes the popup or looks up the new word, as a bubble move would.
+5. `{document-title}` of photo notes: the localized word "Camera" (question 7). Done in code. Emulator: a note's
+   field `{sentence} | {document-title}` read "駅前の写真 | Camera" (template restored after the check).
+6. An extra pass over the whole photo scaled to 1500 px for text larger than the tile overlap (question 8). Done in
+   code: the overview tile (`PhotoTiles.overview`) runs first; assembly takes from it only words larger across their
+   line than 200 px lying whole in no successful tile, and drops the tiles' words at least half inside them; it is not
+   a region (progress, counts, the missing-region map and failed regions leave it out; its failure is not retried
+   from a finished recognition). Tests in `PhotoAssemblyTest`, `PhotoTilesTest`, `PhotoRecognitionJobsTest`,
+   `CameraPhotoControlsTest`, `PhotoRegionsTest` (instrumented). Emulator: a 2400 × 3000 import with a 600 px
+   headline across the seam of the tile rows showed "6 of 6 regions" while recognizing and when done; the stored
+   recognition holds the headline whole from the overview, while the tiles' pieces of it ("GREA", "BEAT", "REAT") were
+   dropped and the small text came from the tiles.
+
+Test cases CAM50–CAM55 added to `ai/test-model.md`. Docs updated (`docs/usage.md`, `docs/architecture.md`).
+
 ## Seen outside the scope
 
 Defects in code the feature did not change, noted for a later full review; not fixed now.
@@ -466,31 +631,40 @@ Collected during the runs and asked together at the end.
 1. Import size limit (area 1, finding 11). Gallery import and "Share → Screenlate" copy the incoming image into the
    app's storage before checking that it is an image; another app could share a huge or endless stream and fill the
    storage. Options: a limit such as 100 MB with a "too large" message (a 50 MP JPEG is 15–25 MB, a large PNG
-   screenshot 30–60 MB); or no limit, as now.
+   screenshot 30–60 MB); or no limit, as now. **Answer:** a 100 MB limit.
 2. Camera language after turning a language off (area 1, finding 12). When the camera's language is turned off in
    the language settings, the camera switches to another active language and stores it, so turning the first one on
    again does not bring it back. Options: keep the stored choice and only show the fallback while it is off; or keep
-   the current behavior.
+   the current behavior. **Answer:** keep the stored choice.
 
 3. Note image size (area 1, run 2, finding 1). "Add to Anki" with "Whole photo" puts the whole original into the
    note: a 50 MP photo becomes an image of several megabytes and takes about two seconds and 200 MB of memory to make.
    Options: cap the note image at about 4 MP (the size of a phone screenshot) by scaling it down; or keep the full
-   resolution, as now.
+   resolution, as now. **Answer:** about 4 MP.
 4. Builds of feature branches (optional). The CI workflow builds a debug APK only for pushes to `main`, pull requests
    and manual starts, so a feature branch has no build unless one is started by hand (done for `features/camera-lookup`).
-   Options: also build pushes to `features/**`; or keep starting them by hand.
+   Options: also build pushes to `features/**`; or keep starting them by hand. **Answer:** by hand, as now.
 5. Camera links and the tabs (area 2, run 2, finding 4). On the Camera tab, Manage languages in the language menu
    and the Open button of the "not ready" dialog open the language, dictionary or model page in the Settings tab, so
    Back from it leads to the Settings list and the camera needs another tap on its tab. Camera settings, by contrast,
    opens inside the Camera tab. Options: open these pages inside the Camera tab too, so Back returns to the camera; or
-   keep them in the Settings tab, where these pages live.
+   keep them in the Settings tab, where these pages live. **Answer:** in the Settings tab, as now.
 6. Popup and a moving photo (area 3, finding 3). When the bubble rests on a word of a photo and the photo is zoomed or
    panned, the word's highlight follows the word, but the popup stays where it was and can cover the enlarged word.
    Options: place the popup again on each move of the photo, so it follows the word; or keep it in place, as now, so
-   it does not move while the photo is zoomed.
+   it does not move while the photo is zoomed. A third option was offered: place it again when the photo stops
+   moving. **Answer:** follow the word on each move unless that costs too much; otherwise place it again when the
+   photo stops moving.
 7. Document title of photo notes (area 3, finding 4). The `{document-title}` field marker gets the name of the app in
    the foreground; for a photo that is Screenlate itself. Options: leave it empty for photos; a fixed word such as
-   "Camera"; the photo's date and time; or the app's name, as now.
+   "Camera"; the photo's date and time; or the app's name, as now. **Answer:** the localized word "Camera".
+8. Large text on a tile seam (area 4, finding 4). A photo is recognized in tiles of up to 1500 px that overlap by
+   200 px. Text taller (or, in a vertical line, wider) than 200 px that lies across a seam is cut in each of the two
+   tiles, so neither reads it whole: it comes out garbled or missing. On a 12 MP photo 200 px is about a fifteenth of
+   its height, a large headline or a sign shot close. Options: one more pass over the whole photo scaled to 1500 px,
+   from which only text larger than the overlap is added where the tiles read nothing (one more cloud request or
+   device run per photo); a larger overlap, such as 400 px (about a third more tiles, so a third more time, and the
+   limit only moves); or keep it as now. **Answer:** the extra pass.
 
 ## Changelog
 
@@ -514,3 +688,12 @@ Collected during the runs and asked together at the end.
   pages).
 - 2026-10-27: area 3, run 4 recorded, with the emulator check of the Camera dialog's dictionaries link; area 3
   committed.
+- 2026-10-27: area 4, run 1 recorded, with a replay of real tiles stored on the emulator; question 8 (large text on
+  a tile seam) added.
+- 2026-10-27: the owner answered questions 1–8 (a third option added to question 6); the answers are implemented
+  before area 4's run 2, which was paused with eight candidates and reviews those changes too; status kept current
+  after every step (owner).
+- 2026-10-27: the emulator checks of the six items of the work from the answers recorded under each item.
+- 2026-10-27: area 4, run 2 recorded (over the work from the answers too).
+- 2026-10-27: area 4, run 3 recorded.
+- 2026-10-27: area 4, run 4 recorded.

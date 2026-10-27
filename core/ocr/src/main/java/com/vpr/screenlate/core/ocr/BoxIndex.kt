@@ -12,8 +12,12 @@ internal class BoxIndex(private val boxes: List<Box>) {
         val found = mutableListOf<Int>()
         fun visit(node: Node?) {
             if (node == null || !node.bounds.touches(area)) return
-            if (node.left == null) node.entries.filterTo(found) { boxes[it].touches(area) }
-            else { visit(node.left); visit(node.right) }
+            if (node.left == null) {
+                node.entries.filterTo(found) { boxes[it].touches(area) }
+            } else {
+                visit(node.left)
+                visit(node.right)
+            }
         }
         visit(root)
         found.sort()

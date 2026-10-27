@@ -154,7 +154,7 @@ internal fun cameraStatus(document: PhotoDocument, state: CameraRecognitionState
     if (work != null) return CameraStatus.Recognizing(work.completed, work.total)
     val pending = state.pendingReason(document)
     val recognition = (document.text as? PhotoText.Recognized)?.recognition ?: return CameraStatus.Unrecognized(pending)
-    val done = recognition.tiles.size
+    val done = recognition.tiles.count { !document.isOverview(it.tile) }
     return CameraStatus.Recognized(recognition.language.takeIf { it != state.language }, done, done + recognition.failed.size,
         recognition.recognizedAt, pending)
 }
@@ -357,15 +357,20 @@ internal fun ChipFlag(language: Language, country: String, sizeDp: Int = 18) {
 internal fun cameraHasWarning(document: PhotoDocument?, work: PhotoWork?): Boolean {
     if (document == null) return false
     val running = (work as? PhotoWork.Running)?.takeIf { it.documentId == document.id }
-    val incomplete = document.attempt?.let { it.id != running?.attemptId && (!it.finished || it.remaining.isNotEmpty()) } == true
+    val incomplete = document.attempt?.let { attempt ->
+        attempt.id != running?.attemptId && (!attempt.finished || attempt.remaining.any { !document.isOverview(it) })
+    } == true
     return incomplete || document.attemptUnreadable || document.text == PhotoText.Unreadable ||
         (document.text as? PhotoText.Recognized)?.recognition?.failed?.isNotEmpty() == true ||
         (work is PhotoWork.Failed && work.documentId == document.id)
 }
 
-/** The regions of [document] that are missing from its text: the unfinished attempt's, else the last result's. */
+/**
+ * The regions of [document] that are missing from its text: the unfinished attempt's, else the last result's. The
+ * overview pass is not a region.
+ */
 internal fun cameraMissingRegions(document: PhotoDocument): List<PhotoBox> =
-    document.attempt?.remaining?.map { it.box }
+    document.attempt?.remaining?.filterNot(document::isOverview)?.map { it.box }
         ?: (document.text as? PhotoText.Recognized)?.recognition?.failed?.map { it.box }
         ?: emptyList()
 
@@ -376,9 +381,11 @@ internal fun CameraRecognitionWarning(document: PhotoDocument, state: CameraReco
     val previous = (document.text as? PhotoText.Recognized)?.recognition
     val work = (state?.work as? PhotoWork.Running)?.takeIf { it.documentId == document.id }
     val failure = (state?.work as? PhotoWork.Failed)?.takeIf { it.documentId == document.id }
-    val missing = attempt?.remaining?.size ?: previous?.failed?.size ?: 0
-    val total = attempt?.tiles?.size ?: ((previous?.tiles?.size ?: 0) + (previous?.failed?.size ?: 0))
-    val canRetry = missing > 0 && (attempt != null || previous?.tiles?.isNotEmpty() == true)
+    val missing = attempt?.remaining?.count { !document.isOverview(it) } ?: previous?.failed?.size ?: 0
+    val total = attempt?.tiles?.count { !document.isOverview(it) }
+        ?: ((previous?.tiles?.count { !document.isOverview(it.tile) } ?: 0) + (previous?.failed?.size ?: 0))
+    // An interrupted attempt may have only the overview pass left to run.
+    val canRetry = (attempt?.remaining?.isNotEmpty() ?: (missing > 0)) && (attempt != null || previous?.tiles?.isNotEmpty() == true)
     val causes = (attempt?.results?.mapNotNull { it.failure } ?: previous?.failed?.map { it.cause } ?: emptyList()) +
         listOfNotNull(failure?.cause)
     val regions = cameraMissingRegions(document)

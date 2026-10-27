@@ -36,6 +36,7 @@
     <string name="anki_error">Notiz konnte nicht hinzugefügt werden: %1$s</string>
     <string name="anki_rejected">AnkiDroid hat die Notiz nicht gespeichert.</string>
     <string name="anki_photo_unavailable">Das Foto ist nicht mehr verfügbar.</string>
+    <string name="anki_photo_document_title">Kamera</string>
     <string name="anki_picture_failed">Speichern des Bildes fehlgeschlagen.</string>
     <string name="anki_not_configured">Richte zuerst den Anki-Export in Screenlate ein.</string>
     <string name="anki_not_installed">AnkiDroid ist nicht installiert.</string>

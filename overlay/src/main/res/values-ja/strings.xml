@@ -36,6 +36,7 @@
     <string name="anki_error">ノートを追加できませんでした：%1$s</string>
     <string name="anki_rejected">AnkiDroid がノートを保存しませんでした。</string>
     <string name="anki_photo_unavailable">写真はもう利用できません。</string>
+    <string name="anki_photo_document_title">カメラ</string>
     <string name="anki_picture_failed">画像の保存に失敗しました。</string>
     <string name="anki_not_configured">先に Screenlate で Anki へのエクスポートを設定してください。</string>
     <string name="anki_not_installed">AnkiDroid がインストールされていません。</string>

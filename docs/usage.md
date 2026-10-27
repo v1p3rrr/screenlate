@@ -28,7 +28,10 @@ top bar closes the photograph and opens the camera. A photograph in the history 
 first whether to save it to the history or delete it.
 
 Recognition starts after a successful capture and continues when you switch tabs or put the app in the background.
-Camera remembers its own language, initially the active language, and offers only enabled languages. The language
+A large photograph is read in overlapping parts at full resolution, and once more as a whole, scaled down, for lettering
+too large to fit in one part.
+Camera remembers its own language, initially the active language, and offers only enabled languages. While its
+language is turned off, Camera uses the active language and returns to its own when it is turned on again. The language
 chip above the photograph, and over the preview, lists them with their flags, marks the active language and the
 languages that lack a dictionary or a recognition model, and links to the language settings. The shared Cloud, Device
 and Both settings and that language's local model apply. The strip under the top bar shows the recognition status:
@@ -40,7 +43,8 @@ After an app restart, interrupted work waits for this explicit retry; it never r
 
 Pan with one finger and pinch to zoom up to 8× the fitted size. Returning to the photograph fits it again. Pull the
 bubble over it to look up stored text; the glyph and dictionary follow the photo's recognition language. A tap briefly
-highlights recognized text. Moving, zooming and bubble gestures reuse saved coordinates without recognizing again.
+highlights recognized text. Moving, zooming and bubble gestures reuse saved coordinates without recognizing again;
+the popup follows its word as the photograph moves.
 The bubble reads only the photograph while this viewer is open; bars and empty margins are outside it. It never scans
 the live preview, dialogs or an unrecognized photograph. Leaving the viewer docks the bubble (while you drag it, when
 you lift the finger) and other pages retain ordinary screen lookup. The accessibility service is needed for the bubble,
@@ -48,7 +52,8 @@ independently of capture and viewing.
 
 To attach part of a photograph to Anki, hold the popup's add button. The crop editor fits the original photo above
 its controls and starts around the word's paragraph. Move the frame or its corners, switch between Frame and Whole
-photo, then tap Add. The attachment uses the original pixels, independently of the viewer's zoom. Cancel, or leaving
+photo, then tap Add. The attachment uses the original pixels, independently of the viewer's zoom, scaled down to about
+4 megapixels when larger (the size of a phone screenshot). Cancel, or leaving
 the photo while the editor is open, closes it without adding the note. Notes, sentence context, audio and translations use the language
 of the recognized text.
 
@@ -67,8 +72,8 @@ tab's language, and with Save automatically on it is added to the history. When 
 history (saving is manual, or saving it automatically failed), the app first asks whether to save it or delete it;
 Cancel keeps it and drops the image.
 Closing the picker changes nothing. JPEG, PNG, WebP and HEIF images are kept as they are; other formats (GIF, BMP and
-the like) are stored as PNG, scaled down beyond 24 megapixels. The history shows the time of the import, not when the
-image was made.
+the like) are stored as PNG, scaled down beyond 24 megapixels. Files larger than 100 MB are not imported; a message
+says so. The history shows the time of the import, not when the image was made.
 
 ### Photo history
 
