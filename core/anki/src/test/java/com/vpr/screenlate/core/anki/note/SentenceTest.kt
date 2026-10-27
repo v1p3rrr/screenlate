@@ -199,6 +199,22 @@ class SentenceTest {
     }
 
     @Test
+    fun esperantoSentenceTellsTheQuoteThatOpensFromTheOneThatClosesAndKeepsAbbreviations() {
+        // “ opens English quotes and closes „…“.
+        val paragraph = "Pluvis. Li diris „Jes.“ kaj foriris. “Venu, amiko.” Ŝi venis. Ekz. pomoj kaj piroj ktp. " +
+            "Poste ni manĝis. La 9-a jarcento a.K. estis longa. «Saluton!» ŝi diris."
+        assertThat(extract(paragraph, "foriris", Language.ESPERANTO).text).isEqualTo("Li diris „Jes.“ kaj foriris.")
+        assertThat(extract(paragraph, "amiko", Language.ESPERANTO).text).isEqualTo("“Venu, amiko.”")
+        assertThat(extract(paragraph, "venis", Language.ESPERANTO).text).isEqualTo("“Venu, amiko.” Ŝi venis.")
+        assertThat(extract(paragraph, "pomoj", Language.ESPERANTO).text).isEqualTo("Ekz. pomoj kaj piroj ktp.")
+        assertThat(extract(paragraph, "manĝis", Language.ESPERANTO).text).isEqualTo("Poste ni manĝis.")
+        assertThat(extract(paragraph, "longa", Language.ESPERANTO).text).isEqualTo("La 9-a jarcento a.K. estis longa.")
+        assertThat(extract(paragraph, "diris", Language.ESPERANTO).text).isEqualTo("Li diris „Jes.“ kaj foriris.")
+        val guillemets = "Bone. «Saluton!» ŝi diris."
+        assertThat(extract(guillemets, "diris", Language.ESPERANTO).text).isEqualTo("«Saluton!» ŝi diris.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

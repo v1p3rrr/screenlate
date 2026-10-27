@@ -52,6 +52,7 @@ DETECTORS = {
                            "properties": {"threshold": "0.2", "box_threshold": "0.45"}},
 }
 
+# Esperanto is left out: both models read every one of its hat letters wrong (ĝ as ġ or ğ, ŭ as ǔ or ů).
 LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,

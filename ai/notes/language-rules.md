@@ -160,6 +160,10 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | sl | No OCR letter fix: ML Kit dropped 2 of 40 marks on the test screens (č š ž read plain), which the keys without the caron find; no engine read a letter Slovenian never writes for one of its own (decision "OCR letter fixes" names no Slovenian fix) | — | SlovenianSupportTest `forms are keyed without the tonemic marks…` (`ocrWord` keeps čevlji and Dončić) | Isolation (`ocrWord` lists leave Slovenian out) | ok |
 | sl | Fonts: Latin with the extended subset and the letters č š ž (`fontLetters`), which every catalog Latin font has; the popup switch "Only for Slovenian text" | `lang/SlovenianSupport.kt` `fontSubsets`, `fontLetters`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `slovenian takes every latin font` | — | ok |
 | sl | Audio: Lingua Libre first (Q9063, 6 of 20 common words, voda among them), Wiktionary (2 of the 20), the voice last (Google's voices have no Slovenian) | `lang/SlovenianSupport.kt` `wikidataId`, `defaultAudioSources` | SlovenianSupportTest `slovenian's own code, name, flag and letters` | — | ok |
+| eo | Sentences: the period of ekz., t.e., t.n., tn., i.a., vd., kp., resp., ĉ., p., the titles (prof., dr., inĝ., mag., St.), nask. and the language labels before a foreign word (angl., lat., germ., franc., rus., esp.) ends nothing; that of ktp., k.t.p., k.a., k.s., ks., kc., k.c., the eras (a.K., p.K., a.K.E., p.K.E.), jc., jarc., pp., vol., nr., red., eld., proks., h. and min. only before a lowercase word or a number; the letters t, e, n, i, a, k of t. e., t. n., i. a. and k. a. take their period from the one beside them; no ordinal period (5-a); “…”, „…“ and «…» paired, so “ both closes „…“ and opens “…”: `Sentence.extract` keeps the open quotes on a stack and reads “ as a closer only when the innermost open quote is „ | `lang/EsperantoSupport.kt` `abbreviations`, `abbreviationsBeforeLowercase`, `pairedLetters`, `quotePairs`; `core/anki/.../note/Sentence.kt` `extract` (stacks instead of depth counters) | EsperantoSupportTest `abbreviations do not end a sentence, eras and lists before a capital do`, `letters of a spaced abbreviation hold only beside each other`, `ordinals take an ending…`, `english quotes, low quotes closing high and guillemets are paired`; SentenceTest `esperantoSentenceTellsTheQuoteThatOpensFromTheOneThatClosesAndKeepsAbbreviations` | Isolation (`pairedLetters` list); every other SentenceTest (no other language pairs a character both as an opener and as a closer, so the stacks give the depths the counters gave) | ok |
+| eo | OCR results: Š š Č č Ċ ċ Ġ ġ Ğ ğ Ģ ģ Ħ ħ Ũ ũ Ű ű Ů ů Ǔ ǔ become Ŝ ŝ Ĉ ĉ Ĉ ĉ Ĝ ĝ Ĝ ĝ Ĝ ĝ Ĥ ĥ Ŭ ŭ Ŭ ŭ Ŭ ŭ Ŭ ŭ, one for one (ML Kit read Ŝ Ĉ as Š Č and ŭ as ũ or ű, Paddle ĝ as ġ ğ ģ, ŭ as ǔ ů, ĉ as ċ, ĥ as ħ; Esperanto writes none of them: typed text has š 378, č 286, ů 40, ğ 18 times in 200,000 sentences, in Czech and Turkish names, which OCR turns into ŝ and ĝ); the capitals of the decided lowercase letters are added under the decision's own rule (question 29); app text is taken as written | `lang/EsperantoSupport.kt` `ocrWord`; `lang/OcrLetters.kt` `replaceLetters` | EsperantoSupportTest `ocr's letters of other languages are the hat letters, others stay` | Isolation (`šipo`, `ankaǔ`, `ġi` change only in Esperanto) | ok |
+| eo | Fonts: Latin with the extended subset and the letters ĉ ĝ ĥ ĵ ŝ ŭ (`fontLetters`), which Atkinson Hyperlegible Next lacks (none of the six pairs), so it is not offered; the popup switch "Only for Esperanto text" | `lang/EsperantoSupport.kt` `fontSubsets`, `fontLetters`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `esperanto takes the latin fonts that have its hat letters` | FontCatalogFileTest (the subsets loop skips Atkinson for Latin and Esperanto only) | ok |
+| eo | Audio: Lingua Libre first (Q143, 20 of 20 common words, 10 speakers), Wiktionary (20 of the 20, `Eo-`), the voice last (Google's voices have no Esperanto); the flag is the language's own (`lang_eo`, circle-flags `language/eo`) | `lang/EsperantoSupport.kt` `wikidataId`, `defaultAudioSources`, `flagCountries`; `overlay/.../ui/Flags.kt`; `scripts/flags/circle_flags.py` | EsperantoSupportTest `esperanto's own code, name, flag and letters`; FlagsTest | — | ok |
 
 ## Lookup pipeline (`dictionary:api`)
 
@@ -242,6 +246,8 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | sk | Import: every headword is also keyed without the acute (U+0301 on aeiouylr), the caron (U+030C on cdlnstz), the circumflex of ô and the diaeresis of ä, so text without them finds the words with them, the exact spelling first (byt, then byť; ma, then má), and a
 | sl | Czech's descriptor (capitalization only) under Slovenian's own code (`slv`): no rules, as wty sl-en lists 48,678 form headwords; the tonemic marks and the caron are kept by the text side (vôde and vode, žena and zena are two spellings each; the keys below join them) | `sl.js` bundle; `build.mjs` `borrowed` | glue `slovenian takes the czech capitalization under its own code and keeps the marks of its letters`, `russian stress marks…` (sl keeps them) | glue (other borrowed descriptors) | ok |
 | sl | Import: forms are keyed without the tonemic marks (U+0301 U+0300 U+0302 U+030F U+0311 U+0323 U+0304 after a vowel, r or ə: vôde, dẹ́lał, ravȃn, delajọ̄č, pə̏s; 39,804 of 48,678 sl-en form headwords carry them), with ł and ə written l and e (`replacements`; ł in 766 forms, ə in 405) and with both; lemma names of forms lose the marks (bíti → biti); then every headword is also keyed without the caron of č š ž (U+030C on csz) after the marks are gone and the replacements made (žȓł → zrl), so text without it finds the words with it, the exact spelling first (se, then še); ć keeps its acute (c is no base of the stress marks); 92.2% of sl-en's lemma names resolve as written, 93.2% without the marks | `lang/SlovenianSupport.kt` `headwordMarks` (`everyHeadword`, `lemmasAsWritten` false, `replacements`, `letterMarks`, `letterBases`); `cpp/language/archive_split.cpp` `MarkStripper::keys` (the letters' key made after the replacements) | SlovenianSupportTest `forms are keyed without the tonemic marks…`; I: LanguageLookupTest `slovenianFindsTonemicFormsAndWordsWrittenWithoutTheCaronTheExactSpellingFirst` | Isolation (`letterMarks` in Lithuanian and Slovenian; the `replacements` and `everyHeadword` lists; lemma names without marks while every headword is keyed in Arabic, Lithuanian and Slovenian); LanguageLookupTest of Lithuanian (letters' key without replacements as before) | ok |
+| eo | Yomitan's Esperanto descriptor (capitalization; 24 rules: accusative, plural, adverbial and adjectival endings, the diminutive, the affixes mal-, -ej-, -uj-, -ebl-, -ad- and others) with our x-system processor (cx gx hx jx sx ux, any case, as ĉ ĝ ĥ ĵ ŝ ŭ; the text kept as well) and Ukrainian's apostrophe variants (dank’ → dank'); the h-system (ch for ĉ) is not tried: 35 words with ch gh hh jh sh in the text are words or names as written (che, shi, chu), against 21 h-system words; the rule strings come from Yomitan's file (`inflections_eo.xml`, 30 strings, in all 14 locales) | `eo.js` bundle; `own-processors.js` `esperantoXSystem`; `build.mjs` `addedPreprocessors`; `generate-inflections.mjs`; `res/values*/inflections_eo.xml` | glue `esperanto reads the x-system as its letters and undoes yomitan's endings and affixes`; I: LanguageLookupTest `esperantoFindsWordsWrittenWithoutHatsOrInTheXSystemTheExactSpellingFirst` | glue `the esperanto x-system stays out of other languages` (en, de, pl, cs, sk, la) | ok |
+| eo | Import: every headword is also keyed without the circumflex (U+0302 on cghjs) and the breve (U+0306 on u), so text without them finds the words with them, the exact spelling first (si → si, then ŝi; cu → ĉu); 4,642 of 50,221 eo-en headwords with hats have a bare spelling that is a headword too (logantoj/loĝantoj, lacigu/laciĝu) | `lang/EsperantoSupport.kt` `headwordMarks` (`everyHeadword`, `markBases`) | EsperantoSupportTest `every headword is keyed without the hats`; I: LanguageLookupTest (cxu, cu, gi, mangajojn, si) | Isolation (`markBases` in Lithuanian, Slovak and Esperanto; the `everyHeadword` list) | ok |
 form-of item of a keyed word after the word (robit: robiť, then urobiť, its perfective); 459,930 of 484,507 marked words in running text are found through these keys, 24,577 have a bare spelling that is a word | `lang/SlovakSupport.kt` `headwordMarks` (`everyHeadword`, `markBases`) | SlovakSupportTest `every headword is keyed without the marks of its letters`; I: LanguageLookupTest `slovakFindsWordsWrittenWithoutTheirMarksTheExactSpellingFirst` | Isolation (`markBases` in Lithuanian and Slovak, `letterMarks` only in Lithuanian) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
 | th | Sara am given as ํ + า, also with the tone mark between them (น + ํ + ้ + า), tried as ำ; a tone mark or thanthakhat given before the vowel above its letter tried after it (thaiCharacterOrder); ๆ tried with and without the spaces around it (thaiMaiYamokSpace: wty th-en writes 43 of its 44 headwords with ๆ as จริง ๆ, one as นานๆ): the app's own text processors, added to Thai's descriptor, which has none | `th.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `thai sara am…`, `thai mai yamok…`, I: LanguageLookupTest `thaiText…` | glue `thai processors stay out of other languages` | ok |
@@ -350,6 +356,7 @@ form-of item of a keyed word after the word (robit: robiť, then urobiť, its pe
 | lt | ML Kit's Latin model main (2.6% of characters wrong over the clean and hard test screens: 6 of 92 marks dropped, į ą Ž Ū; Ū read as Ü, į as j or i, ė as é); Tesseract fast marked "more accurate" (0.0% clean, 1.4% hard, 0.7% overall; Paddle v5 latin 1.2%, v6 1.2%; cloud recognition 0.0%), the first Tesseract model recommended for a language ML Kit reads; Tesseract `lit` best and the Paddle models offered unticked | `scripts/ocr-models/tessdata_catalog.py` `RECOMMENDED`; `scripts/ocr-models/paddle_models.py` `LATIN` | CatalogFileTest `lithuanian offers seven wiktionaries…`; test_tessdata_catalog | — | ok |
 | sk | ML Kit's Latin model main (2.4% of characters wrong over the clean and hard test screens: ť ď ľ read as t d l); Tesseract fast marked "more accurate" (0.6%; best 0.4% on the emulator, not clearly better; Paddle v5 latin 2.5%, v6 4.2%, both reading ď ť ľ as d' t' l' or plain; cloud recognition 0.0%); Tesseract `slk` best and the Paddle models offered unticked | `scripts/ocr-models/tessdata_catalog.py` `RECOMMENDED`; `scripts/ocr-models/paddle_models.py` `LATIN` | CatalogFileTest `slovak offers six wiktionaries…` | — | ok |
 | sl | ML Kit's Latin model main (0.9% of characters wrong over the clean and hard test screens, 2 of 40 marks dropped); `paddle-latin` marked "more accurate" (0% on both sets, as v6: the smaller download wins the tie; Tesseract fast 0.5%, best 1.5% on the emulator; cloud recognition 1.6%, » « read as << >>); Paddle v6 and Tesseract `slv` fast and best offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `slovenian offers six wiktionaries…` | — | ok |
+| eo | ML Kit's Latin model main (2.2% of characters wrong over the clean and hard test screens: 12 of 40 hat letters without the hat, Ŝ Ĉ as Š Č, ŭ as ũ or ű); Tesseract fast marked "more accurate" (0.0% clean, 1.6% hard, 0.8% overall; cloud recognition 0.4%, ĥ as h); Tesseract `epo` best offered unticked; Paddle not offered (4.5% for v5 and v6, every hat letter wrong) | `scripts/ocr-models/tessdata_catalog.py` `LANGUAGES`, `RECOMMENDED`; `scripts/ocr-models/paddle_models.py` (Esperanto left out) | CatalogFileTest `esperanto offers ten wiktionaries, its transcription and tesseract fast, ticked, tesseract best and no paddle` | — | ok |
 
 ## Bugs fixed in this review
 
@@ -691,6 +698,15 @@ Found while building Slovak (2026-10-22):
   the wrong code page); such words find nothing. The i of "t. i." takes its period from any single letter beside it;
   before a capital, a single letter with a period is an initial and holds the sentence (n. I. Potem, Matej T.
   Vatovec), as in every spaced language.
+- Esperanto: wty eo-en and eo-ru find 88.3% of the news's lowercase words and 89.5% of Wikipedia's as written;
+  ESPDIC would add 2.1% and 2.0% (decision "ESPDIC and WikDict": listed once hosted). Missing are English words in
+  the news (of, the, in), units (km, mm, kg) and derived words (grandurbo, akademiuloj, pliigita). Text without
+  hats whose bare spelling is a word shows that word first (au before aŭ, si before ŝi, logantoj before loĝantoj),
+  the hat word after it. The x-system reads foreign words too (aux, Bordeaux: aŭ, Bordeaŭ), which find an entry
+  only where one exists; the h-system is not read. Czech and Slovak names in OCR text take the circumflex (Ŝkoda,
+  Ĉapek), and ǔ typed in place of ŭ (aǔ, laǔ: 73 times in 200,000 sentences) is fixed only in OCR text. A spaced
+  "k. t. p." and "a. K." before a capital keep the sentence running (p. holds before anything; K. reads as an
+  initial). An elided o joined to the next word (dank'al, 42 times) is not split.
 
 ## Owner decisions in this review
 
@@ -1159,6 +1175,41 @@ Leipzig's Slovenian news (2020, 100,000 sentences) and Wikipedia (2021, 100,000 
 - Fonts: every catalog Latin font has č š ž.
 - The bundle: Yomitan's Czech descriptor has capitalization only, so sl.js (Czech's under Slovenian's code) reads text
   as cs.js does; Slovenian needs no rules of its own (sl-en lists 48,678 forms).
+
+### Esperanto (2026-10-28)
+
+Leipzig's Esperanto news (2017, 100,000 sentences) and Wikipedia (2021, 100,000 sentences); eo-en and eo-ru (wty
+2026.10.22) and ESPDIC as the dictionaries.
+
+- wty eo-en: 317,333 rows; 19,748 headwords with definitions, 181,754 form headwords; rules field v 142,197, n
+  97,210, adj 64,862, adv 8,775. Marks in headwords: circumflex 35,129, breve 6,124 (acute 2). eo-ru: 37,053 rows,
+  11,752 with definitions, 25,269 forms; 18 headwords with ǔ (taǔgecoj), left as they are.
+- Coverage of lowercase words: news 1,605,838 words, wty 88.3% as written, the keys without hats 0.05% more (859:
+  pliigis → pliiĝis, gisis → ĝisis), ESPDIC 2.1% more, 9.5% missing; Wikipedia 1,278,503 words: 89.5%, 0.06%, 2.0%,
+  8.4%, the x-system 4 words (konatigxis).
+- Words with hats: 272,291 of 2,884,341 lowercase words (9.4%); 75,873 of them have a bare spelling that is a word
+  itself (au/aŭ 15,147, ankau/ankaŭ 11,731, lau/laŭ 4,123, ci/ĉi 2,943, si/ŝi 2,708, igis/iĝis 2,510), which the
+  exact-first order puts first.
+- The x-system: 256 tokens with cx gx hx jx sx ux, nearly all foreign (Huxley 18, Bordeaux 7, aux 7, Guangxi 5);
+  1,530 headwords contain such pairs (jxurnalo, an x-system form row). The h-system: 21 words (monahhejoj, egho),
+  against 35 words with ch gh hh jh sh that are words or names as written (che, shi, chu, char): not read.
+- Letters engines give for the hat letters, in typed text: Š 111, š 378, Č 77, č 286 (Czech names: Škoda, Čapek),
+  ů 40, ű 14, ğ 18, ħ 3, ũ 2; ǔ 73 (aǔ, laǔ, kontraǔ: typed for ŭ).
+- Apostrophes: 2,828 tokens; the elided o (dank'al 42, Dank'al 17, l' 59), English possessives and names (People's,
+  O'Connor), and it'oj (34), Francio'n (22), which mark an ending on a foreign word.
+- Abbreviations (lowercase / capital / end): ekz. 256 / 22 / 372 (9 before a digit); t.e. 194 / 19 / 5; t.n. 70 /
+  48 / 24; i.a. 80 / 8 / 16; ĉ. 404 before a digit, 44 / 0 / 21; p. 352 before a digit, 6 / 9 / 5; vd. 11 / 0 / 6;
+  kp. 7 / 0 / 10; resp. 28 / 0 / 24; ktp. 34 / 0 / 408; k.a. 2 / 5 / 6; a.K. 121 / 61 / 0; p.K. 42 / 23 / 0; jc.
+  10 / 0 / 29; nask. 3 / 3 / 6 (14 before a year); prof. 0 / 0 / 15, St. 3 / 0 / 280 (the splitter's cuts after
+  St. before a name). Leipzig's splitter cuts after many abbreviations, so the ends include its cuts. m. (metres,
+  70 before a capital, 70 at an end) and km. (127 at an end) end the sentence; n-ro and s-ro are written with a
+  hyphen and no period.
+- Numbers with a period: one or two digits 46 before a lowercase word, 239 before a capital (list items, 1. Supra);
+  ordinals take -a: 5,348 with -a, 2,263 with -an, 2,023 with -aj (1940-aj). No ordinal period.
+- Quotes: “ 1,521, ” 864, „ 893, « 642, » 596, " 36,293; “…” 635 pairs, „…“ 684, „…” 97, «…» 492, »…« 182, ”…”
+  140. Paired: “…”, „…“ and «…».
+- Audio: Lingua Libre Q143 has 20 of 20 common words from 10 speakers, Wiktionary 20 (`Eo-`).
+- Fonts: Atkinson Hyperlegible Next has none of ĉ ĝ ĥ ĵ ŝ ŭ; Literata, Inter, Lexend, PT Serif and PT Sans have all.
 
 ## Device checks
 

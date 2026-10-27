@@ -3660,6 +3660,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-epo",
+      "title": "Tesseract fast (epo)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "eo",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/epo.traineddata",
+      "downloadSize": 4728393,
+      "sha256": "71181a6a07af3812aeedfa1aa993623424f4b8a6aac3e271b36ec11774e674d9",
+      "model": "tesseract-fast-epo",
+      "engine": "tesseract",
+      "file": "tessdata/epo.traineddata",
+      "version": "71181a6a07af",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-epo",
+      "title": "Tesseract best (epo)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "eo",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/epo.traineddata",
+      "downloadSize": 7402169,
+      "sha256": "43b6b859a59e26b5787962e100fdd16999b2af918f10ca62bcc3f7d2f9744365",
+      "model": "tesseract-best-epo",
+      "engine": "tesseract",
+      "file": "tessdata/epo.traineddata",
+      "version": "43b6b859a59e",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -16301,6 +16335,224 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/sl/wty-sl-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 124275,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-en",
+      "title": "Wiktionary (eo–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-en",
+        "kty-eo-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/en/wty-eo-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 4024933,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-ru",
+      "title": "Wiktionary (eo–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-ru",
+        "kty-eo-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/ru/wty-eo-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 799719,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-de",
+      "title": "Wiktionary (eo–de)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-de",
+        "kty-eo-de"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "de",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-de-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/de/wty-eo-de.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 241986,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-es",
+      "title": "Wiktionary (eo–es)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-es",
+        "kty-eo-es"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "es",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-es-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/es/wty-eo-es.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 92464,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-fr",
+      "title": "Wiktionary (eo–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-fr",
+        "kty-eo-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/fr/wty-eo-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 4562700,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-ja",
+      "title": "Wiktionary (eo–ja)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-ja",
+        "kty-eo-ja"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "ja",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-ja-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/ja/wty-eo-ja.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 333676,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-pl",
+      "title": "Wiktionary (eo–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-pl",
+        "kty-eo-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/pl/wty-eo-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1058568,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-pt",
+      "title": "Wiktionary (eo–pt)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-pt",
+        "kty-eo-pt"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "pt",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-pt-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/pt/wty-eo-pt.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 140920,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-tr",
+      "title": "Wiktionary (eo–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-tr",
+        "kty-eo-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/tr/wty-eo-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 637911,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-zh",
+      "title": "Wiktionary (eo–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-eo-zh",
+        "kty-eo-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "eo",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/eo/zh/wty-eo-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1313704,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-eo-transcription",
+      "title": "Wiktionary transcription (eo)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-eo-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "eo",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-eo-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/eo/wty-eo-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1840364,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

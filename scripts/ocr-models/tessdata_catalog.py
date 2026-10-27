@@ -24,7 +24,7 @@ LANGUAGES = {
     "en": "eng", "de": "deu", "fr": "fra", "es": "spa", "it": "ita", "pt": "por",
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
     "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell", "hi": "hin", "bn": "ben", "ka": "kat", "hy": "hye",
-    "th": "tha", "km": "khm", "ar": "ara", "he": "heb", "kk": "kaz", "ky": "kir", "sv": "swe", "no": "nor", "da": "dan", "ro": "ron", "la": "lat", "lt": "lit", "sk": "slk", "sl": "slv",
+    "th": "tha", "km": "khm", "ar": "ara", "he": "heb", "kk": "kaz", "ky": "kir", "sv": "swe", "no": "nor", "da": "dan", "ro": "ron", "la": "lat", "lt": "lit", "sk": "slk", "sl": "slv", "eo": "epo",
     # Serbian's in Cyrillic, which its text is by default.
     "hr": "hrv", "sr": "srp",
 }
@@ -33,9 +33,13 @@ LANGUAGES = {
 # Georgian, Armenian, Thai, Khmer, Arabic and Hebrew, as best makes nearly as many errors and nothing else in the
 # catalog reads them on the device (Paddle's Arabic model is not in it yet, Paddle has no Hebrew one); Lithuanian's
 # fast model, 0.7% of the characters wrong against Paddle's 1.2% and ML Kit's 2.6%; Slovak's, 0.6% against ML Kit's
-# 2.4% and Paddle's 2.5% (Paddle reads ď ť ľ as d' t' l'); the other languages are read better by Paddle or ML Kit,
-# and paddle_models.py marks theirs.
-RECOMMENDED = {"ka": "fast", "hy": "fast", "th": "fast", "km": "fast", "ar": "fast", "he": "fast", "lt": "fast", "sk": "fast"}
+# 2.4% and Paddle's 2.5% (Paddle reads ď ť ľ as d' t' l'); Esperanto's, 0.8% against ML Kit's 2.2% (Paddle, which
+# reads every hat letter wrong, is not offered for it); the other languages are read better by Paddle or ML Kit, and
+# paddle_models.py marks theirs.
+RECOMMENDED = {
+    "ka": "fast", "hy": "fast", "th": "fast", "km": "fast", "ar": "fast", "he": "fast", "lt": "fast", "sk": "fast",
+    "eo": "fast",
+}
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CATALOG = os.path.join(ROOT, "dictionary", "api", "src", "main", "assets", "catalog", "dictionaries-v2.json")

@@ -524,6 +524,7 @@
     <string name="popup_font_script_only_lt">リトアニア語の文字だけに使う</string>
     <string name="popup_font_script_only_sk">スロバキア語の文字だけに使う</string>
     <string name="popup_font_script_only_sl">スロベニア語の文字だけに使う</string>
+    <string name="popup_font_script_only_eo">エスペラント語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

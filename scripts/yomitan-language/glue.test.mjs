@@ -903,3 +903,25 @@ test('latin u for v and the enclitics stay out of other languages', () => {
         assert.ok(!queried(language, 'videsne').has('vides'), language);
     }
 });
+
+test('esperanto reads the x-system as its letters and undoes yomitan\'s endings and affixes', () => {
+    assert.ok(queried('eo', 'cxu').has('ĉu'));
+    assert.ok(queried('eo', 'CXu').has('ĉu'));
+    assert.ok(queried('eo', 'Ehxosxangxo').has('eĥoŝanĝo'));
+    assert.ok(queried('eo', 'aux').has('aŭ'));
+    assert.ok(queried('eo', 'domojn').has('domo'));
+    assert.ok(queried('eo', 'mangxajxojn').has('manĝaĵo'));
+    assert.ok(queried('eo', 'malbona').has('bona'));
+    // The elided o is written with either apostrophe.
+    assert.ok(queried('eo', 'dank’').has("dank'"));
+    // The h-system is not tried, and the hats stay: the import keys headwords without them.
+    assert.ok(!queried('eo', 'chu').has('ĉu'));
+    assert.ok(!queried('eo', 'ĉu').has('cu'));
+});
+
+test('the esperanto x-system stays out of other languages', () => {
+    for (const language of ['en', 'de', 'pl', 'cs', 'sk', 'la']) {
+        assert.ok(!queried(language, 'cxu').has('ĉu'), language);
+        assert.ok(!queried(language, 'aux').has('aŭ'), language);
+    }
+});

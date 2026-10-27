@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">đối cách</string>
+    <string name="inflection_eo_accusative">Dạng đối cách của một từ</string>
+    <string name="inflection_eo_plural_label">số nhiều</string>
+    <string name="inflection_eo_plural">Dạng số nhiều của một từ</string>
+    <string name="inflection_eo_diminutive_label">chỉ nhỏ</string>
+    <string name="inflection_eo_diminutive">Dạng chỉ nhỏ của danh từ</string>
+    <string name="inflection_eo_directional_label">hướng</string>
+    <string name="inflection_eo_directional">Trạng từ ở đối cách chỉ hướng (kie: ở đâu, kien: đến đâu)</string>
+    <string name="inflection_eo_locational_label">nơi chốn</string>
+    <string name="inflection_eo_locational">Danh từ chuyển thành trạng từ chỉ nơi chốn (ĉambro: căn phòng, ĉambre: trong phòng)</string>
+    <string name="inflection_eo_adjectival_label">tính từ</string>
+    <string name="inflection_eo_adjectival">Dạng tính từ của danh từ</string>
+    <string name="inflection_eo_adverbial_adj_adv">Dạng trạng từ của tính từ</string>
+    <string name="inflection_eo_adverbial_v_adv">Dạng trạng từ của động từ</string>
+    <string name="inflection_eo_ejo_noun">Hậu tố chỉ nơi dành cho một vật (kafo: cà phê, kafejo: quán cà phê)</string>
+    <string name="inflection_eo_ejo_verb">Hậu tố chỉ nơi dành cho một hành động (kuiri: nấu ăn, kuirejo: nhà bếp)</string>
+    <string name="inflection_eo_ujo_noun">Hậu tố chỉ vật chứa một thứ (abelo: con ong, abelujo: tổ ong), đất nước của một dân tộc (patro: cha, patrujo: tổ quốc) hoặc cây cho quả đó (pomo: quả táo, pomujo: cây táo)</string>
+    <string name="inflection_eo_ujo_adjective">Hậu tố chỉ vật chứa những thứ thuộc loại đó (frida: lạnh, fridujo: tủ lạnh)</string>
+    <string name="inflection_eo_ujo_verb">Hậu tố chỉ vật chứa dành cho một hoạt động (lavi: rửa, lavujo: bồn rửa)</string>
+    <string name="inflection_eo_ebla">Hậu tố chỉ khả năng (kompreni: hiểu, komprenebla: có thể hiểu được)</string>
+    <string name="inflection_eo_ado">Hậu tố biến hành động thành sự vật (vivi: sống, vivado: cuộc sống; spiri: thở, spirado: sự hô hấp)</string>
+    <string name="inflection_eo_mal">Tiền tố mang nghĩa ngược lại</string>
+    <string name="inflection_eo_kun">Tiền tố “cùng với người khác” (labori: làm việc, kunlabori: cộng tác)</string>
+    <string name="inflection_eo_ekster">Tiền tố “bên ngoài” (lando: đất nước, eksterlando: nước ngoài)</string>
+    <string name="inflection_eo_ek">Tiền tố chỉ sự bắt đầu hành động (kanti: hát, ekkanti: bắt đầu hát)</string>
+    <string name="inflection_eo_us">Tiền tố “vừa mới” (vekita: được đánh thức, ĵusvekita: vừa mới được đánh thức)</string>
+    <string name="inflection_eo_el">Tiền tố “ra ngoài” hoặc “đến cùng” (tiri: kéo, eltiri: kéo ra; trinki: uống, eltrinki: uống cạn)</string>
+    <string name="inflection_eo_dis">Tiền tố chỉ sự tách rời, lan ra (fali: rơi, disfali: rã ra; doni: cho, disdoni: phân phát)</string>
+    <string name="inflection_eo_for">Tiền tố “đi xa” hoặc “đến khi hết” (flugi: bay, forflugi: bay đi; uzi: dùng, foruzi: dùng hết)</string>
+    <string name="inflection_eo_mis">Tiền tố “sai” (kompreni: hiểu, miskompreni: hiểu sai)</string>
+</resources>

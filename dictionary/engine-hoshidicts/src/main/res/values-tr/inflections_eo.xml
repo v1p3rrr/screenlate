@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">belirtme hâli</string>
+    <string name="inflection_eo_accusative">Bir kelimenin belirtme hâli</string>
+    <string name="inflection_eo_plural_label">çoğul</string>
+    <string name="inflection_eo_plural">Bir kelimenin çoğulu</string>
+    <string name="inflection_eo_diminutive_label">küçültme</string>
+    <string name="inflection_eo_diminutive">Bir ismin küçültme biçimi</string>
+    <string name="inflection_eo_directional_label">yön</string>
+    <string name="inflection_eo_directional">Belirtme hâlindeki bir zarf yön bildirir (kie: nerede, kien: nereye)</string>
+    <string name="inflection_eo_locational_label">yer</string>
+    <string name="inflection_eo_locational">Zarfa dönüşen bir isim yer bildirir (ĉambro: oda, ĉambre: odada)</string>
+    <string name="inflection_eo_adjectival_label">sıfat</string>
+    <string name="inflection_eo_adjectival">Bir ismin sıfat biçimi</string>
+    <string name="inflection_eo_adverbial_adj_adv">Bir sıfatın zarf biçimi</string>
+    <string name="inflection_eo_adverbial_v_adv">Bir fiilin zarf biçimi</string>
+    <string name="inflection_eo_ejo_noun">Bir şeye ayrılmış yeri bildiren sonek (kafo: kahve, kafejo: kafe)</string>
+    <string name="inflection_eo_ejo_verb">Bir eyleme ayrılmış yeri bildiren sonek (kuiri: pişirmek, kuirejo: mutfak)</string>
+    <string name="inflection_eo_ujo_noun">Bir şeyin kabını (abelo: arı, abelujo: kovan), bir halkın ülkesini (patro: baba, patrujo: anavatan) ya da bir meyvenin bitkisini (pomo: elma, pomujo: elma ağacı) bildiren sonek</string>
+    <string name="inflection_eo_ujo_adjective">O türden şeylerin kabını bildiren sonek (frida: soğuk, fridujo: buzdolabı)</string>
+    <string name="inflection_eo_ujo_verb">Bir etkinlik için kabı bildiren sonek (lavi: yıkamak, lavujo: lavabo)</string>
+    <string name="inflection_eo_ebla">Olabilirlik bildiren sonek (kompreni: anlamak, komprenebla: anlaşılır)</string>
+    <string name="inflection_eo_ado">Eylemi bir şey olarak bildiren sonek (vivi: yaşamak, vivado: yaşam; spiri: nefes almak, spirado: solunum)</string>
+    <string name="inflection_eo_mal">Karşıt anlam veren önek</string>
+    <string name="inflection_eo_kun">“Başkalarıyla birlikte” anlamındaki önek (labori: çalışmak, kunlabori: iş birliği yapmak)</string>
+    <string name="inflection_eo_ekster">“Dışında” anlamındaki önek (lando: ülke, eksterlando: yurt dışı)</string>
+    <string name="inflection_eo_ek">Eylemin başlangıcını bildiren önek (kanti: şarkı söylemek, ekkanti: şarkı söylemeye başlamak)</string>
+    <string name="inflection_eo_us">“Az önce” anlamındaki önek (vekita: uyandırılmış, ĵusvekita: az önce uyandırılmış)</string>
+    <string name="inflection_eo_el">“Dışarı” ya da “sonuna kadar” anlamındaki önek (tiri: çekmek, eltiri: çekip çıkarmak; trinki: içmek, eltrinki: içip bitirmek)</string>
+    <string name="inflection_eo_dis">Ayrılma, dağılma bildiren önek (fali: düşmek, disfali: dağılmak; doni: vermek, disdoni: dağıtmak)</string>
+    <string name="inflection_eo_for">“Uzağa” ya da “hiçbir şey kalmayana dek” anlamındaki önek (flugi: uçmak, forflugi: uçup gitmek; uzi: kullanmak, foruzi: tüketmek)</string>
+    <string name="inflection_eo_mis">“Yanlış” anlamındaki önek (kompreni: anlamak, miskompreni: yanlış anlamak)</string>
+</resources>

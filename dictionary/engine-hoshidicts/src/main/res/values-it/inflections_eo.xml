@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">accusativo</string>
+    <string name="inflection_eo_accusative">Forma all’accusativo di una parola</string>
+    <string name="inflection_eo_plural_label">plurale</string>
+    <string name="inflection_eo_plural">Forma plurale di una parola</string>
+    <string name="inflection_eo_diminutive_label">diminutivo</string>
+    <string name="inflection_eo_diminutive">Forma diminutiva di un sostantivo</string>
+    <string name="inflection_eo_directional_label">direzione</string>
+    <string name="inflection_eo_directional">Un avverbio all’accusativo indica la direzione (kie: dove, kien: verso dove)</string>
+    <string name="inflection_eo_locational_label">luogo</string>
+    <string name="inflection_eo_locational">Un sostantivo diventato avverbio indica il luogo (ĉambro: stanza, ĉambre: nella stanza)</string>
+    <string name="inflection_eo_adjectival_label">aggettivo</string>
+    <string name="inflection_eo_adjectival">Forma aggettivale di un sostantivo</string>
+    <string name="inflection_eo_adverbial_adj_adv">Forma avverbiale di un aggettivo</string>
+    <string name="inflection_eo_adverbial_v_adv">Forma avverbiale di un verbo</string>
+    <string name="inflection_eo_ejo_noun">Suffisso di un luogo destinato a una cosa (kafo: caffè, kafejo: bar)</string>
+    <string name="inflection_eo_ejo_verb">Suffisso di un luogo destinato a un’azione (kuiri: cucinare, kuirejo: cucina)</string>
+    <string name="inflection_eo_ujo_noun">Suffisso del contenitore di una cosa (abelo: ape, abelujo: alveare), del paese di un popolo (patro: padre, patrujo: patria) o della pianta di un frutto (pomo: mela, pomujo: melo)</string>
+    <string name="inflection_eo_ujo_adjective">Suffisso di un contenitore per cose di quel tipo (frida: freddo, fridujo: frigorifero)</string>
+    <string name="inflection_eo_ujo_verb">Suffisso di un contenitore per un’attività (lavi: lavare, lavujo: lavandino)</string>
+    <string name="inflection_eo_ebla">Suffisso di possibilità (kompreni: capire, komprenebla: comprensibile)</string>
+    <string name="inflection_eo_ado">Suffisso dell’azione come cosa (vivi: vivere, vivado: vita; spiri: respirare, spirado: respirazione)</string>
+    <string name="inflection_eo_mal">Prefisso di significato opposto</string>
+    <string name="inflection_eo_kun">Prefisso «insieme ad altri» (labori: lavorare, kunlabori: collaborare)</string>
+    <string name="inflection_eo_ekster">Prefisso «fuori da» (lando: paese, eksterlando: estero)</string>
+    <string name="inflection_eo_ek">Prefisso dell’inizio dell’azione (kanti: cantare, ekkanti: mettersi a cantare)</string>
+    <string name="inflection_eo_us">Prefisso «appena» (vekita: svegliato, ĵusvekita: appena svegliato)</string>
+    <string name="inflection_eo_el">Prefisso «verso l’esterno» o «fino in fondo» (tiri: tirare, eltiri: estrarre; trinki: bere, eltrinki: bere tutto)</string>
+    <string name="inflection_eo_dis">Prefisso di separazione, dispersione (fali: cadere, disfali: sfasciarsi; doni: dare, disdoni: distribuire)</string>
+    <string name="inflection_eo_for">Prefisso «lontano» o «fino a esaurimento» (flugi: volare, forflugi: volare via; uzi: usare, foruzi: consumare)</string>
+    <string name="inflection_eo_mis">Prefisso «in modo errato» (kompreni: capire, miskompreni: fraintendere)</string>
+</resources>

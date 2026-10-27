@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">対格</string>
+    <string name="inflection_eo_accusative">語の対格形</string>
+    <string name="inflection_eo_plural_label">複数</string>
+    <string name="inflection_eo_plural">語の複数形</string>
+    <string name="inflection_eo_diminutive_label">指小</string>
+    <string name="inflection_eo_diminutive">名詞の指小形</string>
+    <string name="inflection_eo_directional_label">方向</string>
+    <string name="inflection_eo_directional">対格の副詞は方向を表す（kie: どこに, kien: どこへ）</string>
+    <string name="inflection_eo_locational_label">場所</string>
+    <string name="inflection_eo_locational">副詞になった名詞は場所を表す（ĉambro: 部屋, ĉambre: 部屋で）</string>
+    <string name="inflection_eo_adjectival_label">形容詞</string>
+    <string name="inflection_eo_adjectival">名詞の形容詞形</string>
+    <string name="inflection_eo_adverbial_adj_adv">形容詞の副詞形</string>
+    <string name="inflection_eo_adverbial_v_adv">動詞の副詞形</string>
+    <string name="inflection_eo_ejo_noun">物のための場所を表す接尾辞（kafo: コーヒー, kafejo: 喫茶店）</string>
+    <string name="inflection_eo_ejo_verb">動作のための場所を表す接尾辞（kuiri: 料理する, kuirejo: 台所）</string>
+    <string name="inflection_eo_ujo_noun">物の入れ物（abelo: 蜂, abelujo: 巣箱）、民族の国（patro: 父, patrujo: 祖国）、果実のなる植物（pomo: りんご, pomujo: りんごの木）を表す接尾辞</string>
+    <string name="inflection_eo_ujo_adjective">その種類の物の入れ物を表す接尾辞（frida: 冷たい, fridujo: 冷蔵庫）</string>
+    <string name="inflection_eo_ujo_verb">動作のための入れ物を表す接尾辞（lavi: 洗う, lavujo: 流し）</string>
+    <string name="inflection_eo_ebla">可能を表す接尾辞（kompreni: 理解する, komprenebla: 理解できる）</string>
+    <string name="inflection_eo_ado">動作そのものを表す接尾辞（vivi: 生きる, vivado: 生活; spiri: 呼吸する, spirado: 呼吸）</string>
+    <string name="inflection_eo_mal">反対の意味を表す接頭辞</string>
+    <string name="inflection_eo_kun">「他の人と一緒に」を表す接頭辞（labori: 働く, kunlabori: 協力する）</string>
+    <string name="inflection_eo_ekster">「外」を表す接頭辞（lando: 国, eksterlando: 外国）</string>
+    <string name="inflection_eo_ek">動作の開始を表す接頭辞（kanti: 歌う, ekkanti: 歌い出す）</string>
+    <string name="inflection_eo_us">「…したばかり」を表す接頭辞（vekita: 起こされた, ĵusvekita: 起こされたばかりの）</string>
+    <string name="inflection_eo_el">「外へ」または「最後まで」を表す接頭辞（tiri: 引く, eltiri: 引き出す; trinki: 飲む, eltrinki: 飲み干す）</string>
+    <string name="inflection_eo_dis">分離・拡散を表す接頭辞（fali: 落ちる, disfali: ばらばらになる; doni: 与える, disdoni: 配る）</string>
+    <string name="inflection_eo_for">「遠くへ」または「なくなるまで」を表す接頭辞（flugi: 飛ぶ, forflugi: 飛び去る; uzi: 使う, foruzi: 使い果たす）</string>
+    <string name="inflection_eo_mis">「誤って」を表す接頭辞（kompreni: 理解する, miskompreni: 誤解する）</string>
+</resources>

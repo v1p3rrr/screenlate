@@ -115,7 +115,7 @@ detector is downloaded with it and not listed on its own. The recommended marks 
 The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.xml`) are generated from circle-flags
 (MIT) at a pinned commit: `python scripts/flags/circle_flags.py overlay/src/main/res/drawable`. A language support
 class lists its flag countries (`flagCountries`); add a new country to `COUNTRIES` in the script and to `Flags` in
-`overlay`, whose unit test checks that every listed country has a drawable. A language with a flag of its own (Latin)
+`overlay`, whose unit test checks that every listed country has a drawable. A language with a flag of its own (Latin, Esperanto)
 lists it as `lang_<code>`, taken from circle-flags' `language/<code>.svg`.
 
 Downloadable fonts offered by their Google Fonts subsets (catalog entries without `language` in

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">accusatif</string>
+    <string name="inflection_eo_accusative">Forme à l’accusatif d’un mot</string>
+    <string name="inflection_eo_plural_label">pluriel</string>
+    <string name="inflection_eo_plural">Forme plurielle d’un mot</string>
+    <string name="inflection_eo_diminutive_label">diminutif</string>
+    <string name="inflection_eo_diminutive">Forme diminutive d’un nom</string>
+    <string name="inflection_eo_directional_label">direction</string>
+    <string name="inflection_eo_directional">Un adverbe à l’accusatif indique la direction (kie : où, kien : vers où)</string>
+    <string name="inflection_eo_locational_label">lieu</string>
+    <string name="inflection_eo_locational">Un nom devenu adverbe indique le lieu (ĉambro : chambre, ĉambre : dans la chambre)</string>
+    <string name="inflection_eo_adjectival_label">adjectif</string>
+    <string name="inflection_eo_adjectival">Forme adjectivale d’un nom</string>
+    <string name="inflection_eo_adverbial_adj_adv">Forme adverbiale d’un adjectif</string>
+    <string name="inflection_eo_adverbial_v_adv">Forme adverbiale d’un verbe</string>
+    <string name="inflection_eo_ejo_noun">Suffixe d’un lieu destiné à une chose (kafo : le café, kafejo : un café)</string>
+    <string name="inflection_eo_ejo_verb">Suffixe d’un lieu destiné à une action (kuiri : cuisiner, kuirejo : cuisine)</string>
+    <string name="inflection_eo_ujo_noun">Suffixe du récipient d’une chose (abelo : abeille, abelujo : ruche), du pays d’un peuple (patro : père, patrujo : patrie) ou de la plante d’un fruit (pomo : pomme, pomujo : pommier)</string>
+    <string name="inflection_eo_ujo_adjective">Suffixe d’un récipient pour les choses de ce type (frida : froid, fridujo : réfrigérateur)</string>
+    <string name="inflection_eo_ujo_verb">Suffixe d’un récipient pour une activité (lavi : laver, lavujo : évier)</string>
+    <string name="inflection_eo_ebla">Suffixe de possibilité (kompreni : comprendre, komprenebla : compréhensible)</string>
+    <string name="inflection_eo_ado">Suffixe de l’action comme chose (vivi : vivre, vivado : vie ; spiri : respirer, spirado : respiration)</string>
+    <string name="inflection_eo_mal">Préfixe du sens contraire</string>
+    <string name="inflection_eo_kun">Préfixe « avec d’autres » (labori : travailler, kunlabori : collaborer)</string>
+    <string name="inflection_eo_ekster">Préfixe « hors de » (lando : pays, eksterlando : étranger)</string>
+    <string name="inflection_eo_ek">Préfixe du début de l’action (kanti : chanter, ekkanti : se mettre à chanter)</string>
+    <string name="inflection_eo_us">Préfixe « tout juste » (vekita : réveillé, ĵusvekita : tout juste réveillé)</string>
+    <string name="inflection_eo_el">Préfixe « vers l’extérieur » ou « jusqu’au bout » (tiri : tirer, eltiri : extraire ; trinki : boire, eltrinki : boire jusqu’au bout)</string>
+    <string name="inflection_eo_dis">Préfixe de séparation, de dispersion (fali : tomber, disfali : se désagréger ; doni : donner, disdoni : distribuer)</string>
+    <string name="inflection_eo_for">Préfixe « au loin » ou « jusqu’à épuisement » (flugi : voler, forflugi : s’envoler ; uzi : utiliser, foruzi : user)</string>
+    <string name="inflection_eo_mis">Préfixe « de travers » (kompreni : comprendre, miskompreni : mal comprendre)</string>
+</resources>

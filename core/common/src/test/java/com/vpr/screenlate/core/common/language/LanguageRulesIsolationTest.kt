@@ -155,7 +155,7 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
             .containsExactly(
                 Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN, Language.LITHUANIAN, Language.SLOVAK,
-                Language.SLOVENIAN,
+                Language.SLOVENIAN, Language.ESPERANTO,
             )
         // Czech and Slovak "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number)
         // holds alone. Slovenian l. (leto, year) holds before a lowercase word.
@@ -387,7 +387,7 @@ class LanguageRulesIsolationTest {
     fun `only Greek, Hindi, Khmer, Arabic, Persian, Kazakh and Kyrgyz key every headword in another spelling, only Arabic two further`() {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
-            Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN,
+            Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO,
         )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
             Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,
@@ -399,9 +399,10 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })
             .containsExactly(Language.ARABIC, Language.LITHUANIAN, Language.SLOVENIAN)
         // Lithuanian drops a mark after other letters than the rest (the dot over i, not over e), Slovak its caron,
-        // circumflex and diaeresis after their own letters; only Lithuanian and Slovenian key their headwords without the
-        // marks of their letters on a level of their own.
-        assertThat(all.where { it.headwordMarks?.markBases.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN, Language.SLOVAK)
+        // circumflex and diaeresis after their own letters, Esperanto the breve after u; only Lithuanian and Slovenian
+        // key their headwords without the marks of their letters on a level of their own.
+        assertThat(all.where { it.headwordMarks?.markBases.orEmpty().isNotEmpty() })
+            .containsExactly(Language.LITHUANIAN, Language.SLOVAK, Language.ESPERANTO)
         assertThat(all.where { it.headwordMarks?.letterMarks.orEmpty().isNotEmpty() })
             .containsExactly(Language.LITHUANIAN, Language.SLOVENIAN)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
@@ -467,6 +468,10 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.ocrWord("büti") != "büti" }).containsExactly(Language.LITHUANIAN)
         assertThat(all.where { it.ocrWord("upé") != "upé" }).containsExactly(Language.LITHUANIAN)
         assertThat(all.where { it.ocrWord("ịvykis") != "ịvykis" }).containsExactly(Language.LITHUANIAN)
+        // Esperanto, which writes none of š, ǔ and ġ, reads them as the hat letters engines give them for.
+        assertThat(all.where { it.ocrWord("šipo") != "šipo" }).containsExactly(Language.ESPERANTO)
+        assertThat(all.where { it.ocrWord("ankaǔ") != "ankaǔ" }).containsExactly(Language.ESPERANTO)
+        assertThat(all.where { it.ocrWord("ġi") != "ġi" }).containsExactly(Language.ESPERANTO)
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
         // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.

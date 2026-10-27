@@ -302,6 +302,20 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `esperanto offers ten wiktionaries, its transcription and tesseract fast, ticked, tesseract best and no paddle`() {
+        val esperanto = catalog!!.entries.filter { it.isFor(Language.ESPERANTO) }
+        assertThat(esperanto.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-eo-en", "wiktionary-eo-ru", "wiktionary-eo-de", "wiktionary-eo-es", "wiktionary-eo-fr",
+            "wiktionary-eo-ja", "wiktionary-eo-pl", "wiktionary-eo-pt", "wiktionary-eo-tr", "wiktionary-eo-zh",
+            "wiktionary-eo-transcription", "tesseract-fast-epo",
+        )
+        // Paddle's models read every hat letter wrong.
+        assertThat(esperanto.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-epo")
+        assertThat(esperanto.filter { it.category == CatalogCategory.FREQUENCY }).isEmpty()
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.ESPERANTO) }).isEqualTo(esperanto)
+    }
+
+    @Test
     fun `slovak also reads czech term dictionaries, not czech models, frequencies or transcriptions`() {
         val czech = catalog!!.entries.filter { it.isReadBy(Language.SLOVAK) && !it.isFor(Language.SLOVAK) }
         assertThat(czech).isNotEmpty()

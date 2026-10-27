@@ -54,7 +54,8 @@ const borrowed = {
  * zero-width non-joiners and write a verb prefix or an ending apart; Hebrew text may carry vowel points and write the
  * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә; Romanian text may
  * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le); Latin editions write u for
- * consonantal v (uita). Processors join the descriptor's capitalization processors, its own list, or make its list.
+ * consonantal v (uita); Esperanto is typed in the x-system where its letters cannot be (cxu for ĉu) and writes its
+ * elided o as Ukrainian writes apostrophes (dank' al, dank’ al). Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -70,6 +71,7 @@ const addedPreprocessors = {
     kk: ['kazakhLatinLetters'],
     ro: ['romanianCommaLetters', 'ukrainianApostropheVariants'],
     la: ['latinUAsV'],
+    eo: ['esperantoXSystem', 'ukrainianApostropheVariants'],
 };
 
 /**

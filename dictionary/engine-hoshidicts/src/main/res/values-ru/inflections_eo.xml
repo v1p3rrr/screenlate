@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">винительный падеж</string>
+    <string name="inflection_eo_accusative">Винительный падеж слова</string>
+    <string name="inflection_eo_plural_label">множественное число</string>
+    <string name="inflection_eo_plural">Множественное число слова</string>
+    <string name="inflection_eo_diminutive_label">уменьшительная форма</string>
+    <string name="inflection_eo_diminutive">Уменьшительная форма существительного</string>
+    <string name="inflection_eo_directional_label">направление</string>
+    <string name="inflection_eo_directional">Наречие в винительном падеже обозначает направление (kie: где, kien: куда)</string>
+    <string name="inflection_eo_locational_label">место</string>
+    <string name="inflection_eo_locational">Существительное, ставшее наречием, обозначает место (ĉambro: комната, ĉambre: в комнате)</string>
+    <string name="inflection_eo_adjectival_label">прилагательное</string>
+    <string name="inflection_eo_adjectival">Прилагательное от существительного</string>
+    <string name="inflection_eo_adverbial_adj_adv">Наречие от прилагательного</string>
+    <string name="inflection_eo_adverbial_v_adv">Наречие от глагола</string>
+    <string name="inflection_eo_ejo_noun">Суффикс места, предназначенного для предмета (kafo: кофе, kafejo: кафе)</string>
+    <string name="inflection_eo_ejo_verb">Суффикс места, предназначенного для действия (kuiri: готовить, kuirejo: кухня)</string>
+    <string name="inflection_eo_ujo_noun">Суффикс вместилища предмета (abelo: пчела, abelujo: улей), страны народа (patro: отец, patrujo: отечество) или растения с этим плодом (pomo: яблоко, pomujo: яблоня)</string>
+    <string name="inflection_eo_ujo_adjective">Суффикс вместилища для предметов с этим свойством (frida: холодный, fridujo: холодильник)</string>
+    <string name="inflection_eo_ujo_verb">Суффикс вместилища для действия (lavi: мыть, lavujo: раковина)</string>
+    <string name="inflection_eo_ebla">Суффикс возможности (kompreni: понимать, komprenebla: понятный)</string>
+    <string name="inflection_eo_ado">Суффикс действия как предмета (vivi: жить, vivado: жизнь; spiri: дышать, spirado: дыхание)</string>
+    <string name="inflection_eo_mal">Приставка противоположного значения</string>
+    <string name="inflection_eo_kun">Приставка «вместе с другими» (labori: работать, kunlabori: сотрудничать)</string>
+    <string name="inflection_eo_ekster">Приставка «вне» (lando: страна, eksterlando: заграница)</string>
+    <string name="inflection_eo_ek">Приставка начала действия (kanti: петь, ekkanti: запеть)</string>
+    <string name="inflection_eo_us">Приставка «только что» (vekita: разбуженный, ĵusvekita: только что разбуженный)</string>
+    <string name="inflection_eo_el">Приставка движения наружу или доведения до конца (tiri: тянуть, eltiri: вытянуть; trinki: пить, eltrinki: выпить)</string>
+    <string name="inflection_eo_dis">Приставка разделения, рассеивания (fali: падать, disfali: распасться; doni: давать, disdoni: раздать)</string>
+    <string name="inflection_eo_for">Приставка удаления или исчезновения (flugi: летать, forflugi: улететь; uzi: использовать, foruzi: израсходовать)</string>
+    <string name="inflection_eo_mis">Приставка ошибочности (kompreni: понимать, miskompreni: неправильно понять)</string>
+</resources>

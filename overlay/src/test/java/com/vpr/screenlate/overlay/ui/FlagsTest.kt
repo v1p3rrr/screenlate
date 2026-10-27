@@ -32,5 +32,7 @@ class FlagsTest {
     fun `a language's own flag is named by the language`() {
         assertThat(Flags.drawable("lang_la")).isNotNull()
         assertThat(Flags.countryName("lang_la", Locale.ENGLISH)).isEqualTo("Latin")
+        assertThat(Flags.drawable("lang_eo")).isNotNull()
+        assertThat(Flags.countryName("lang_eo", Locale.ENGLISH)).isEqualTo("Esperanto")
     }
 }

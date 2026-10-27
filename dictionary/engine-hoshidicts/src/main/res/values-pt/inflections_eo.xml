@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">acusativo</string>
+    <string name="inflection_eo_accusative">Forma acusativa de uma palavra</string>
+    <string name="inflection_eo_plural_label">plural</string>
+    <string name="inflection_eo_plural">Forma plural de uma palavra</string>
+    <string name="inflection_eo_diminutive_label">diminutivo</string>
+    <string name="inflection_eo_diminutive">Forma diminutiva de um substantivo</string>
+    <string name="inflection_eo_directional_label">direção</string>
+    <string name="inflection_eo_directional">Um advérbio no acusativo indica direção (kie: onde, kien: para onde)</string>
+    <string name="inflection_eo_locational_label">lugar</string>
+    <string name="inflection_eo_locational">Um substantivo que se torna advérbio indica lugar (ĉambro: quarto, ĉambre: no quarto)</string>
+    <string name="inflection_eo_adjectival_label">adjetivo</string>
+    <string name="inflection_eo_adjectival">Forma adjetiva de um substantivo</string>
+    <string name="inflection_eo_adverbial_adj_adv">Forma adverbial de um adjetivo</string>
+    <string name="inflection_eo_adverbial_v_adv">Forma adverbial de um verbo</string>
+    <string name="inflection_eo_ejo_noun">Sufixo de um lugar destinado a uma coisa (kafo: café, kafejo: cafeteria)</string>
+    <string name="inflection_eo_ejo_verb">Sufixo de um lugar destinado a uma ação (kuiri: cozinhar, kuirejo: cozinha)</string>
+    <string name="inflection_eo_ujo_noun">Sufixo do recipiente de uma coisa (abelo: abelha, abelujo: colmeia), do país de um povo (patro: pai, patrujo: pátria) ou da planta de um fruto (pomo: maçã, pomujo: macieira)</string>
+    <string name="inflection_eo_ujo_adjective">Sufixo de um recipiente para coisas desse tipo (frida: frio, fridujo: geladeira)</string>
+    <string name="inflection_eo_ujo_verb">Sufixo de um recipiente para uma atividade (lavi: lavar, lavujo: pia)</string>
+    <string name="inflection_eo_ebla">Sufixo de possibilidade (kompreni: entender, komprenebla: compreensível)</string>
+    <string name="inflection_eo_ado">Sufixo da ação como coisa (vivi: viver, vivado: vida; spiri: respirar, spirado: respiração)</string>
+    <string name="inflection_eo_mal">Prefixo de sentido oposto</string>
+    <string name="inflection_eo_kun">Prefixo «junto com outros» (labori: trabalhar, kunlabori: colaborar)</string>
+    <string name="inflection_eo_ekster">Prefixo «fora de» (lando: país, eksterlando: exterior)</string>
+    <string name="inflection_eo_ek">Prefixo do início da ação (kanti: cantar, ekkanti: começar a cantar)</string>
+    <string name="inflection_eo_us">Prefixo «recém» (vekita: acordado, ĵusvekita: recém-acordado)</string>
+    <string name="inflection_eo_el">Prefixo «para fora» ou «até o fim» (tiri: puxar, eltiri: tirar para fora; trinki: beber, eltrinki: beber tudo)</string>
+    <string name="inflection_eo_dis">Prefixo de separação, dispersão (fali: cair, disfali: desfazer-se; doni: dar, disdoni: distribuir)</string>
+    <string name="inflection_eo_for">Prefixo «para longe» ou «até não sobrar nada» (flugi: voar, forflugi: voar para longe; uzi: usar, foruzi: gastar)</string>
+    <string name="inflection_eo_mis">Prefixo «erradamente» (kompreni: entender, miskompreni: entender mal)</string>
+</resources>

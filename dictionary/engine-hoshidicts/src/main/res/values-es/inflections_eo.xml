@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">acusativo</string>
+    <string name="inflection_eo_accusative">Forma de acusativo de una palabra</string>
+    <string name="inflection_eo_plural_label">plural</string>
+    <string name="inflection_eo_plural">Forma plural de una palabra</string>
+    <string name="inflection_eo_diminutive_label">diminutivo</string>
+    <string name="inflection_eo_diminutive">Forma diminutiva de un sustantivo</string>
+    <string name="inflection_eo_directional_label">dirección</string>
+    <string name="inflection_eo_directional">Un adverbio en acusativo indica dirección (kie: dónde, kien: adónde)</string>
+    <string name="inflection_eo_locational_label">lugar</string>
+    <string name="inflection_eo_locational">Un sustantivo convertido en adverbio indica lugar (ĉambro: habitación, ĉambre: en la habitación)</string>
+    <string name="inflection_eo_adjectival_label">adjetivo</string>
+    <string name="inflection_eo_adjectival">Forma adjetiva de un sustantivo</string>
+    <string name="inflection_eo_adverbial_adj_adv">Forma adverbial de un adjetivo</string>
+    <string name="inflection_eo_adverbial_v_adv">Forma adverbial de un verbo</string>
+    <string name="inflection_eo_ejo_noun">Sufijo de un lugar destinado a una cosa (kafo: café, kafejo: cafetería)</string>
+    <string name="inflection_eo_ejo_verb">Sufijo de un lugar destinado a una acción (kuiri: cocinar, kuirejo: cocina)</string>
+    <string name="inflection_eo_ujo_noun">Sufijo del recipiente de una cosa (abelo: abeja, abelujo: colmena), el país de un pueblo (patro: padre, patrujo: patria) o la planta de un fruto (pomo: manzana, pomujo: manzano)</string>
+    <string name="inflection_eo_ujo_adjective">Sufijo de un recipiente para cosas de ese tipo (frida: frío, fridujo: nevera)</string>
+    <string name="inflection_eo_ujo_verb">Sufijo de un recipiente para una actividad (lavi: lavar, lavujo: fregadero)</string>
+    <string name="inflection_eo_ebla">Sufijo de posibilidad (kompreni: entender, komprenebla: comprensible)</string>
+    <string name="inflection_eo_ado">Sufijo de la acción como cosa (vivi: vivir, vivado: vida; spiri: respirar, spirado: respiración)</string>
+    <string name="inflection_eo_mal">Prefijo de significado opuesto</string>
+    <string name="inflection_eo_kun">Prefijo «junto con otros» (labori: trabajar, kunlabori: colaborar)</string>
+    <string name="inflection_eo_ekster">Prefijo «fuera de» (lando: país, eksterlando: extranjero)</string>
+    <string name="inflection_eo_ek">Prefijo del comienzo de la acción (kanti: cantar, ekkanti: empezar a cantar)</string>
+    <string name="inflection_eo_us">Prefijo «recién» (vekita: despertado, ĵusvekita: recién despertado)</string>
+    <string name="inflection_eo_el">Prefijo «hacia fuera» o «hasta el final» (tiri: tirar, eltiri: sacar; trinki: beber, eltrinki: beberse todo)</string>
+    <string name="inflection_eo_dis">Prefijo de separación o dispersión (fali: caer, disfali: deshacerse; doni: dar, disdoni: repartir)</string>
+    <string name="inflection_eo_for">Prefijo «lejos» o «hasta que no quede nada» (flugi: volar, forflugi: irse volando; uzi: usar, foruzi: gastar)</string>
+    <string name="inflection_eo_mis">Prefijo «erróneamente» (kompreni: entender, miskompreni: malentender)</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">賓格</string>
+    <string name="inflection_eo_accusative">詞的賓格形式</string>
+    <string name="inflection_eo_plural_label">複數</string>
+    <string name="inflection_eo_plural">詞的複數形式</string>
+    <string name="inflection_eo_diminutive_label">指小</string>
+    <string name="inflection_eo_diminutive">名詞的指小形式</string>
+    <string name="inflection_eo_directional_label">方向</string>
+    <string name="inflection_eo_directional">賓格副詞表示方向（kie：在哪裡，kien：往哪裡）</string>
+    <string name="inflection_eo_locational_label">處所</string>
+    <string name="inflection_eo_locational">名詞變成副詞表示處所（ĉambro：房間，ĉambre：在房間裡）</string>
+    <string name="inflection_eo_adjectival_label">形容詞</string>
+    <string name="inflection_eo_adjectival">名詞的形容詞形式</string>
+    <string name="inflection_eo_adverbial_adj_adv">形容詞的副詞形式</string>
+    <string name="inflection_eo_adverbial_v_adv">動詞的副詞形式</string>
+    <string name="inflection_eo_ejo_noun">表示專供某物的場所的後綴（kafo：咖啡，kafejo：咖啡館）</string>
+    <string name="inflection_eo_ejo_verb">表示專供某種動作的場所的後綴（kuiri：烹飪，kuirejo：廚房）</string>
+    <string name="inflection_eo_ujo_noun">表示某物的容器（abelo：蜜蜂，abelujo：蜂箱）、某民族的國家（patro：父親，patrujo：祖國）或結某種果實的植物（pomo：蘋果，pomujo：蘋果樹）的後綴</string>
+    <string name="inflection_eo_ujo_adjective">表示盛放該類事物的容器的後綴（frida：冷的，fridujo：冰箱）</string>
+    <string name="inflection_eo_ujo_verb">表示用於某種活動的容器的後綴（lavi：洗，lavujo：洗滌槽）</string>
+    <string name="inflection_eo_ebla">表示可能的後綴（kompreni：理解，komprenebla：可以理解的）</string>
+    <string name="inflection_eo_ado">把動作當作事物的後綴（vivi：生活，vivado：生活；spiri：呼吸，spirado：呼吸作用）</string>
+    <string name="inflection_eo_mal">表示相反意義的前綴</string>
+    <string name="inflection_eo_kun">表示「與他人一起」的前綴（labori：工作，kunlabori：合作）</string>
+    <string name="inflection_eo_ekster">表示「在……之外」的前綴（lando：國家，eksterlando：外國）</string>
+    <string name="inflection_eo_ek">表示動作開始的前綴（kanti：唱歌，ekkanti：開始唱）</string>
+    <string name="inflection_eo_us">表示「剛剛」的前綴（vekita：被喚醒的，ĵusvekita：剛被喚醒的）</string>
+    <string name="inflection_eo_el">表示「向外」或「到底」的前綴（tiri：拉，eltiri：拉出；trinki：喝，eltrinki：喝光）</string>
+    <string name="inflection_eo_dis">表示分開、散開的前綴（fali：落下，disfali：散架；doni：給，disdoni：分發）</string>
+    <string name="inflection_eo_for">表示「遠去」或「直到用盡」的前綴（flugi：飛，forflugi：飛走；uzi：使用，foruzi：用盡）</string>
+    <string name="inflection_eo_mis">表示「錯誤地」的前綴（kompreni：理解，miskompreni：誤解）</string>
+</resources>

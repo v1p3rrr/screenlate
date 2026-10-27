@@ -243,3 +243,20 @@ export const latinUAsV = {
 
 /** A Latin vowel, with or without its length mark. */
 const LATIN_VOWEL = /[aeiouyāēīōūȳăĕĭŏŭAEIOUYĀĒĪŌŪȲ]/;
+
+/**
+ * Esperanto typed in the x-system, which writes ĉ ĝ ĥ ĵ ŝ ŭ as cx gx hx jx sx ux where the letters cannot be typed:
+ * every pair at once, in either case (CXu → Ĉu), the text as written first. The h-system (ch for ĉ, au for aŭ) is not
+ * tried: ch and au are also letters of their own (ĉeĥa, Aŭstralio and aero).
+ * @type {import('language').TextProcessor}
+ */
+export const esperantoXSystem = {
+    name: 'Esperanto x-system',
+    description: 'cxu → ĉu, Ehxosxangxo → Eĥoŝanĝo',
+    process: (str) => {
+        const hats = str.replace(/([cghjsu])x/giu, (pair, letter) => ESPERANTO_X_SYSTEM[letter]);
+        return hats === str ? [str] : [str, hats];
+    },
+};
+
+const ESPERANTO_X_SYSTEM = {c: 'ĉ', g: 'ĝ', h: 'ĥ', j: 'ĵ', s: 'ŝ', u: 'ŭ', C: 'Ĉ', G: 'Ĝ', H: 'Ĥ', J: 'Ĵ', S: 'Ŝ', U: 'Ŭ'};

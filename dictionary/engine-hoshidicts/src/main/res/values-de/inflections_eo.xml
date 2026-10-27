@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">Akkusativ</string>
+    <string name="inflection_eo_accusative">Akkusativform eines Wortes</string>
+    <string name="inflection_eo_plural_label">Plural</string>
+    <string name="inflection_eo_plural">Pluralform eines Wortes</string>
+    <string name="inflection_eo_diminutive_label">Diminutiv</string>
+    <string name="inflection_eo_diminutive">Verkleinerungsform eines Substantivs</string>
+    <string name="inflection_eo_directional_label">Richtung</string>
+    <string name="inflection_eo_directional">Ein Adverb im Akkusativ gibt eine Richtung an (kie: wo, kien: wohin)</string>
+    <string name="inflection_eo_locational_label">Ort</string>
+    <string name="inflection_eo_locational">Ein zum Adverb gewordenes Substantiv gibt einen Ort an (ĉambro: Zimmer, ĉambre: im Zimmer)</string>
+    <string name="inflection_eo_adjectival_label">Adjektiv</string>
+    <string name="inflection_eo_adjectival">Adjektivform eines Substantivs</string>
+    <string name="inflection_eo_adverbial_adj_adv">Adverbform eines Adjektivs</string>
+    <string name="inflection_eo_adverbial_v_adv">Adverbform eines Verbs</string>
+    <string name="inflection_eo_ejo_noun">Suffix für einen Ort, der für eine Sache bestimmt ist (kafo: Kaffee, kafejo: Café)</string>
+    <string name="inflection_eo_ejo_verb">Suffix für einen Ort, der für eine Tätigkeit bestimmt ist (kuiri: kochen, kuirejo: Küche)</string>
+    <string name="inflection_eo_ujo_noun">Suffix für den Behälter einer Sache (abelo: Biene, abelujo: Bienenstock), das Land eines Volkes (patro: Vater, patrujo: Vaterland) oder die Pflanze einer Frucht (pomo: Apfel, pomujo: Apfelbaum)</string>
+    <string name="inflection_eo_ujo_adjective">Suffix für einen Behälter für Dinge dieser Art (frida: kalt, fridujo: Kühlschrank)</string>
+    <string name="inflection_eo_ujo_verb">Suffix für einen Behälter für eine Tätigkeit (lavi: waschen, lavujo: Waschbecken)</string>
+    <string name="inflection_eo_ebla">Suffix der Möglichkeit (kompreni: verstehen, komprenebla: verständlich)</string>
+    <string name="inflection_eo_ado">Suffix für die Tätigkeit als Sache (vivi: leben, vivado: Leben; spiri: atmen, spirado: Atmung)</string>
+    <string name="inflection_eo_mal">Präfix der gegenteiligen Bedeutung</string>
+    <string name="inflection_eo_kun">Präfix „zusammen mit anderen“ (labori: arbeiten, kunlabori: zusammenarbeiten)</string>
+    <string name="inflection_eo_ekster">Präfix „außerhalb“ (lando: Land, eksterlando: Ausland)</string>
+    <string name="inflection_eo_ek">Präfix des Beginns einer Handlung (kanti: singen, ekkanti: zu singen beginnen)</string>
+    <string name="inflection_eo_us">Präfix „soeben“ (vekita: geweckt, ĵusvekita: soeben geweckt)</string>
+    <string name="inflection_eo_el">Präfix „heraus“ oder „bis zu Ende“ (tiri: ziehen, eltiri: herausziehen; trinki: trinken, eltrinki: austrinken)</string>
+    <string name="inflection_eo_dis">Präfix „auseinander“ (fali: fallen, disfali: zerfallen; doni: geben, disdoni: verteilen)</string>
+    <string name="inflection_eo_for">Präfix „weg“ oder „bis nichts übrig ist“ (flugi: fliegen, forflugi: wegfliegen; uzi: benutzen, foruzi: aufbrauchen)</string>
+    <string name="inflection_eo_mis">Präfix „falsch“ (kompreni: verstehen, miskompreni: missverstehen)</string>
+</resources>

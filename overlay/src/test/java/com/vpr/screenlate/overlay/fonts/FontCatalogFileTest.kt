@@ -103,14 +103,22 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `esperanto takes the latin fonts that have its hat letters`() {
+        // Atkinson Hyperlegible Next declares Latin Extended but has no ĉ.
+        assertThat(fonts.filter { it.isOfferedFor(Language.ESPERANTO) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
     fun `a font offered by its subsets is offered for every language whose letters it has`() {
         val atkinson = fonts.single { it.id == "atkinson-hyperlegible-next" }
         assertThat(atkinson.hasLetters("āēīūæœ")).isTrue()
         assertThat(atkinson.hasLetters("ō")).isFalse()
         assertThat(atkinson.hasLetters("ĉ")).isFalse()
         assertThat(fonts.single { it.id == "inter" }.hasLetters("ĉĝĥĵŝŭāēīōū")).isTrue()
-        // Each language with subsets keeps every font that has them, but for Latin's Atkinson.
-        for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() && it != Language.LATIN }) {
+        // Each language with subsets keeps every font that has them, but for Latin's and Esperanto's Atkinson.
+        val withoutAtkinson = setOf(Language.LATIN, Language.ESPERANTO)
+        for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() && it !in withoutAtkinson }) {
             val bySubsets = fonts.filter { it.language == null && it.subsets.containsAll(language.support.fontSubsets) }
             assertThat(fonts.filter { it.language == null && it.isOfferedFor(language) }).containsExactlyElementsIn(bySubsets)
         }

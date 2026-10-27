@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">biernik</string>
+    <string name="inflection_eo_accusative">Forma biernika wyrazu</string>
+    <string name="inflection_eo_plural_label">liczba mnoga</string>
+    <string name="inflection_eo_plural">Forma liczby mnogiej wyrazu</string>
+    <string name="inflection_eo_diminutive_label">zdrobnienie</string>
+    <string name="inflection_eo_diminutive">Zdrobnienie rzeczownika</string>
+    <string name="inflection_eo_directional_label">kierunek</string>
+    <string name="inflection_eo_directional">Przysłówek w bierniku oznacza kierunek (kie: gdzie, kien: dokąd)</string>
+    <string name="inflection_eo_locational_label">miejsce</string>
+    <string name="inflection_eo_locational">Rzeczownik w funkcji przysłówka oznacza miejsce (ĉambro: pokój, ĉambre: w pokoju)</string>
+    <string name="inflection_eo_adjectival_label">przymiotnik</string>
+    <string name="inflection_eo_adjectival">Przymiotnik od rzeczownika</string>
+    <string name="inflection_eo_adverbial_adj_adv">Przysłówek od przymiotnika</string>
+    <string name="inflection_eo_adverbial_v_adv">Przysłówek od czasownika</string>
+    <string name="inflection_eo_ejo_noun">Przyrostek miejsca przeznaczonego na rzecz (kafo: kawa, kafejo: kawiarnia)</string>
+    <string name="inflection_eo_ejo_verb">Przyrostek miejsca przeznaczonego do czynności (kuiri: gotować, kuirejo: kuchnia)</string>
+    <string name="inflection_eo_ujo_noun">Przyrostek pojemnika na rzecz (abelo: pszczoła, abelujo: ul), kraju narodu (patro: ojciec, patrujo: ojczyzna) lub rośliny owocu (pomo: jabłko, pomujo: jabłoń)</string>
+    <string name="inflection_eo_ujo_adjective">Przyrostek pojemnika na rzeczy tego rodzaju (frida: zimny, fridujo: lodówka)</string>
+    <string name="inflection_eo_ujo_verb">Przyrostek pojemnika do czynności (lavi: myć, lavujo: zlew)</string>
+    <string name="inflection_eo_ebla">Przyrostek możliwości (kompreni: rozumieć, komprenebla: zrozumiały)</string>
+    <string name="inflection_eo_ado">Przyrostek czynności jako rzeczy (vivi: żyć, vivado: życie; spiri: oddychać, spirado: oddychanie)</string>
+    <string name="inflection_eo_mal">Przedrostek znaczenia przeciwnego</string>
+    <string name="inflection_eo_kun">Przedrostek „razem z innymi” (labori: pracować, kunlabori: współpracować)</string>
+    <string name="inflection_eo_ekster">Przedrostek „poza” (lando: kraj, eksterlando: zagranica)</string>
+    <string name="inflection_eo_ek">Przedrostek początku czynności (kanti: śpiewać, ekkanti: zaśpiewać)</string>
+    <string name="inflection_eo_us">Przedrostek „dopiero co” (vekita: obudzony, ĵusvekita: dopiero co obudzony)</string>
+    <string name="inflection_eo_el">Przedrostek „na zewnątrz” lub „do końca” (tiri: ciągnąć, eltiri: wyciągnąć; trinki: pić, eltrinki: wypić)</string>
+    <string name="inflection_eo_dis">Przedrostek rozdzielenia, rozproszenia (fali: padać, disfali: rozpaść się; doni: dawać, disdoni: rozdać)</string>
+    <string name="inflection_eo_for">Przedrostek „daleko” lub „do wyczerpania” (flugi: latać, forflugi: odlecieć; uzi: używać, foruzi: zużyć)</string>
+    <string name="inflection_eo_mis">Przedrostek „błędnie” (kompreni: rozumieć, miskompreni: źle zrozumieć)</string>
+</resources>

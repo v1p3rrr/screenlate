@@ -524,6 +524,7 @@
     <string name="popup_font_script_only_lt">僅用於立陶宛文文字</string>
     <string name="popup_font_script_only_sk">僅用於斯洛伐克文文字</string>
     <string name="popup_font_script_only_sl">僅用於斯洛維尼亞文文字</string>
+    <string name="popup_font_script_only_eo">僅用於世界文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

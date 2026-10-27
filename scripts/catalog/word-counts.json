@@ -27,6 +27,10 @@
     "size": 3777718,
     "words": 159380
   },
+  "dict/all/eo/wty-eo-ipa.zip": {
+    "size": 1840364,
+    "words": 174195
+  },
   "dict/all/fa/wty-fa-ipa.zip": {
     "size": 566297,
     "words": 13184
@@ -734,6 +738,54 @@
   "dict/en/zh/wty-en-zh.zip": {
     "size": 5509523,
     "words": 70849
+  },
+  "dict/eo/de/wty-eo-de.zip": {
+    "size": 241986,
+    "words": 1902
+  },
+  "dict/eo/en/wty-eo-en.zip": {
+    "size": 4024933,
+    "words": 19748
+  },
+  "dict/eo/es/wty-eo-es.zip": {
+    "size": 92464,
+    "words": 1539
+  },
+  "dict/eo/fr/wty-eo-fr.zip": {
+    "size": 4562700,
+    "words": 91836
+  },
+  "dict/eo/it/wty-eo-it.zip": {
+    "size": 47340,
+    "words": 1209
+  },
+  "dict/eo/ja/wty-eo-ja.zip": {
+    "size": 333676,
+    "words": 9260
+  },
+  "dict/eo/pl/wty-eo-pl.zip": {
+    "size": 1058568,
+    "words": 14945
+  },
+  "dict/eo/pt/wty-eo-pt.zip": {
+    "size": 140920,
+    "words": 2410
+  },
+  "dict/eo/ru/wty-eo-ru.zip": {
+    "size": 799719,
+    "words": 11752
+  },
+  "dict/eo/tr/wty-eo-tr.zip": {
+    "size": 637911,
+    "words": 42606
+  },
+  "dict/eo/vi/wty-eo-vi.zip": {
+    "size": 28405,
+    "words": 250
+  },
+  "dict/eo/zh/wty-eo-zh.zip": {
+    "size": 1313704,
+    "words": 6487
   },
   "dict/es/de/wty-es-de-gloss.zip": {
     "size": 191278,

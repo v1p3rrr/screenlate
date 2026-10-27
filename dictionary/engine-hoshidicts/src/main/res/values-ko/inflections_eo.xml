@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_eo_accusative_label">대격</string>
+    <string name="inflection_eo_accusative">단어의 대격형</string>
+    <string name="inflection_eo_plural_label">복수</string>
+    <string name="inflection_eo_plural">단어의 복수형</string>
+    <string name="inflection_eo_diminutive_label">지소</string>
+    <string name="inflection_eo_diminutive">명사의 지소형</string>
+    <string name="inflection_eo_directional_label">방향</string>
+    <string name="inflection_eo_directional">대격 부사는 방향을 나타냄 (kie: 어디에, kien: 어디로)</string>
+    <string name="inflection_eo_locational_label">장소</string>
+    <string name="inflection_eo_locational">부사가 된 명사는 장소를 나타냄 (ĉambro: 방, ĉambre: 방에서)</string>
+    <string name="inflection_eo_adjectival_label">형용사</string>
+    <string name="inflection_eo_adjectival">명사의 형용사형</string>
+    <string name="inflection_eo_adverbial_adj_adv">형용사의 부사형</string>
+    <string name="inflection_eo_adverbial_v_adv">동사의 부사형</string>
+    <string name="inflection_eo_ejo_noun">사물을 위한 장소를 나타내는 접미사 (kafo: 커피, kafejo: 카페)</string>
+    <string name="inflection_eo_ejo_verb">동작을 위한 장소를 나타내는 접미사 (kuiri: 요리하다, kuirejo: 부엌)</string>
+    <string name="inflection_eo_ujo_noun">사물의 그릇 (abelo: 벌, abelujo: 벌통), 민족의 나라 (patro: 아버지, patrujo: 조국), 열매가 열리는 식물 (pomo: 사과, pomujo: 사과나무)을 나타내는 접미사</string>
+    <string name="inflection_eo_ujo_adjective">그런 종류의 사물을 담는 그릇을 나타내는 접미사 (frida: 차가운, fridujo: 냉장고)</string>
+    <string name="inflection_eo_ujo_verb">활동을 위한 그릇을 나타내는 접미사 (lavi: 씻다, lavujo: 개수대)</string>
+    <string name="inflection_eo_ebla">가능을 나타내는 접미사 (kompreni: 이해하다, komprenebla: 이해할 수 있는)</string>
+    <string name="inflection_eo_ado">동작 자체를 나타내는 접미사 (vivi: 살다, vivado: 삶; spiri: 숨쉬다, spirado: 호흡)</string>
+    <string name="inflection_eo_mal">반대 의미의 접두사</string>
+    <string name="inflection_eo_kun">‘다른 사람과 함께’를 뜻하는 접두사 (labori: 일하다, kunlabori: 협력하다)</string>
+    <string name="inflection_eo_ekster">‘밖’을 뜻하는 접두사 (lando: 나라, eksterlando: 외국)</string>
+    <string name="inflection_eo_ek">동작의 시작을 나타내는 접두사 (kanti: 노래하다, ekkanti: 노래하기 시작하다)</string>
+    <string name="inflection_eo_us">‘방금’을 뜻하는 접두사 (vekita: 깨워진, ĵusvekita: 방금 깨워진)</string>
+    <string name="inflection_eo_el">‘밖으로’ 또는 ‘끝까지’를 뜻하는 접두사 (tiri: 당기다, eltiri: 끌어내다; trinki: 마시다, eltrinki: 다 마시다)</string>
+    <string name="inflection_eo_dis">분리·확산을 나타내는 접두사 (fali: 떨어지다, disfali: 산산이 흩어지다; doni: 주다, disdoni: 나누어 주다)</string>
+    <string name="inflection_eo_for">‘멀리’ 또는 ‘다 없어질 때까지’를 뜻하는 접두사 (flugi: 날다, forflugi: 날아가 버리다; uzi: 쓰다, foruzi: 다 써 버리다)</string>
+    <string name="inflection_eo_mis">‘잘못’을 뜻하는 접두사 (kompreni: 이해하다, miskompreni: 오해하다)</string>
+</resources>

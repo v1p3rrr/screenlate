@@ -999,6 +999,50 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun esperantoFindsWordsWrittenWithoutHatsOrInTheXSystemTheExactSpellingFirst() = runTest {
+        val imported = engine.import(esperantoDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val esperanto = LookupOptions(language = Language.ESPERANTO)
+        suspend fun all(text: String) = engine.lookup(text, esperanto).map { it.term.expression }
+
+        // The x-system (cx for ĉ) and text without hats find the words with them.
+        assertThat(all("cxu")).containsExactly("ĉu")
+        assertThat(all("CXu")).containsExactly("ĉu")
+        assertThat(all("cu")).containsExactly("ĉu")
+        assertThat(all("CU")).containsExactly("ĉu")
+        // Wiktionary's x-system rows lead to the same word once.
+        assertThat(all("gxi")).containsExactly("ĝi")
+        assertThat(all("gi")).containsExactly("ĝi")
+        // Yomitan's endings come off text in any of the three spellings.
+        assertThat(all("manĝaĵojn")).contains("manĝaĵo")
+        assertThat(all("mangxajxojn")).contains("manĝaĵo")
+        assertThat(all("mangajojn")).contains("manĝaĵo")
+        // Two words told apart by a hat alone: the exact spelling first, and a word with it finds only itself.
+        assertThat(all("si")).containsExactly("si", "ŝi").inOrder()
+        assertThat(all("ŝi")).containsExactly("ŝi")
+    }
+
+    /**
+     * Rows as Wiktionary's Esperanto exports write them: words with hats, an x-system row, a plural accusative form,
+     * two words told apart by a hat alone.
+     */
+    private fun esperantoDictionary(): File = zip(
+        "eo.zip",
+        "index.json" to """{"title":"Test Esperanto","revision":"1","format":3,"sourceLanguage":"eo"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["ĉu","","ptcl","",0,["whether"],1,""],
+              ["ĝi","","pron","",0,["it"],2,""],
+              ["gxi","","non-lemma","",0,[["ĝi",["X-system"]]],3,""],
+              ["manĝaĵo","","n","n",0,["food"],4,""],
+              ["manĝaĵojn","","non-lemma","n",0,[["manĝaĵo",["accusative plural"]]],5,""],
+              ["si","","pron","",0,["oneself"],6,""],
+              ["ŝi","","pron","",0,["she"],7,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
