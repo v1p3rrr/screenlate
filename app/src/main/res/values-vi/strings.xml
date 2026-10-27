@@ -64,6 +64,7 @@
     <string name="dictionaries_task_queued">Đang chờ: %1$s</string>
     <string name="dictionaries_task_downloading">Đang tải %1$s</string>
     <string name="dictionaries_task_retrying">Đang thử tải lại (%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_task_no_network">Đang chờ mạng: %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: đã dừng tải — %2$s</string>
     <string name="dictionaries_connection_lost">mất kết nối</string>
     <string name="dictionaries_task_importing">Đang nhập %1$s</string>
@@ -144,6 +145,7 @@
     <string name="dictionaries_task_converting">Đang giải nén %1$s</string>
     <string name="dictionaries_task_checking_space">Đang kiểm tra dung lượng trống cho %1$s</string>
     <string name="dictionaries_stage_queued">Đang chờ trong hàng đợi</string>
+    <string name="dictionaries_stage_no_network">Đang chờ mạng</string>
     <string name="dictionaries_stage_downloading">Đang tải</string>
     <string name="dictionaries_stage_checking_space">Đang kiểm tra dung lượng trống</string>
     <string name="dictionaries_stage_converting">Đang giải nén</string>

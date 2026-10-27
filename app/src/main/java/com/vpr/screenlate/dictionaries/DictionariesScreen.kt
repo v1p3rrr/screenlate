@@ -179,6 +179,7 @@ fun DictionariesScreen(
             state.tasks.forEach { task ->
                 TaskCard(
                     task,
+                    noNetwork = task.id in state.waitingForNetwork,
                     onDismiss = { viewModel.dismiss(task) },
                     onCancel = { viewModel.cancel(task) },
                     onResume = {
@@ -264,7 +265,12 @@ fun DictionariesScreen(
                     )
                     section.items.forEach { item ->
                         key(item.entry.title) {
-                            CatalogCard(item, onDownload = download, onCancel = viewModel::cancel)
+                            CatalogCard(
+                                item,
+                                noNetwork = item.task?.let { it.id in state.waitingForNetwork } == true,
+                                onDownload = download,
+                                onCancel = viewModel::cancel,
+                            )
                         }
                     }
                 }
@@ -518,6 +524,7 @@ private fun kindLabel(kind: DictionaryKind): Int = when (kind) {
 @Composable
 private fun TaskCard(
     task: ImportTask,
+    noNetwork: Boolean,
     onDismiss: () -> Unit,
     onCancel: () -> Unit,
     onResume: () -> Unit,
@@ -570,6 +577,8 @@ private fun TaskCard(
             val status = when (task.state) {
                 ImportTask.State.QUEUED -> if (task.retries > 0) {
                     stringResource(R.string.dictionaries_task_retrying, name, task.retries, DictionaryImportWorker.MAX_RETRIES)
+                } else if (noNetwork) {
+                    stringResource(R.string.dictionaries_task_no_network, name)
                 } else {
                     stringResource(R.string.dictionaries_task_queued, name)
                 }
@@ -579,6 +588,14 @@ private fun TaskCard(
                 else -> stringResource(R.string.dictionaries_task_importing, name)
             }
             Text(status, style = MaterialTheme.typography.bodyMedium)
+            // A download waiting for its retry keeps saying so; the network is named under it.
+            if (noNetwork && task.retries > 0) {
+                Text(
+                    stringResource(R.string.dictionaries_stage_no_network),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             val percent = task.percent
             if (percent != null) {
                 LinearProgressIndicator(progress = { percent / 100f }, modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
@@ -649,7 +666,7 @@ private fun ErrorCard(
 }
 
 @Composable
-private fun CatalogCard(item: CatalogItem, onDownload: (CatalogItem) -> Unit, onCancel: (ImportTask) -> Unit) {
+private fun CatalogCard(item: CatalogItem, noNetwork: Boolean, onDownload: (CatalogItem) -> Unit, onCancel: (ImportTask) -> Unit) {
     val entry = item.entry
     val task = item.task
     // The ring replaces Download at the tap, before the queued task shows up, so a double tap cannot queue it twice.
@@ -691,7 +708,7 @@ private fun CatalogCard(item: CatalogItem, onDownload: (CatalogItem) -> Unit, on
                     )
                 }
                 if (task != null || requested) {
-                    Text(taskStage(task), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                    Text(taskStage(task, noNetwork), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                 }
             }
             when {
@@ -727,11 +744,11 @@ private const val REQUEST_SHOWN_MS = 5_000L
 
 /** What a catalog card's import is doing, with the percent when it is known; null is a download just requested. */
 @Composable
-private fun taskStage(task: ImportTask?): String {
+private fun taskStage(task: ImportTask?, noNetwork: Boolean): String {
     if (task == null) return stringResource(R.string.dictionaries_stage_queued)
     val stage = stringResource(
         when (task.state) {
-            ImportTask.State.QUEUED -> R.string.dictionaries_stage_queued
+            ImportTask.State.QUEUED -> if (noNetwork) R.string.dictionaries_stage_no_network else R.string.dictionaries_stage_queued
             ImportTask.State.DOWNLOADING -> R.string.dictionaries_stage_downloading
             ImportTask.State.CHECKING_SPACE -> R.string.dictionaries_stage_checking_space
             ImportTask.State.CONVERTING -> R.string.dictionaries_stage_converting

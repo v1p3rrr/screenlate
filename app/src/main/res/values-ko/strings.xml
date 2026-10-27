@@ -64,6 +64,7 @@
     <string name="dictionaries_task_queued">대기 중: %1$s</string>
     <string name="dictionaries_task_downloading">%1$s 다운로드 중</string>
     <string name="dictionaries_task_retrying">다운로드 재시도 중(%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_task_no_network">네트워크 대기 중: %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: 다운로드 중지됨 — %2$s</string>
     <string name="dictionaries_connection_lost">연결 끊김</string>
     <string name="dictionaries_task_importing">%1$s 가져오는 중</string>
@@ -144,6 +145,7 @@
     <string name="dictionaries_task_converting">%1$s 압축 해제 중</string>
     <string name="dictionaries_task_checking_space">%1$s의 여유 공간 확인 중</string>
     <string name="dictionaries_stage_queued">대기 중</string>
+    <string name="dictionaries_stage_no_network">네트워크 대기 중</string>
     <string name="dictionaries_stage_downloading">다운로드 중</string>
     <string name="dictionaries_stage_checking_space">여유 공간 확인 중</string>
     <string name="dictionaries_stage_converting">압축 해제 중</string>

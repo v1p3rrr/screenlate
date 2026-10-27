@@ -21,6 +21,7 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +66,10 @@ internal fun catalogItems(
     }
 }
 
+/** The queued downloads of [tasks] that wait for a network, as none is up ([DictionaryImports.online]). */
+internal fun waitingForNetwork(tasks: List<ImportTask>, online: Boolean): Set<UUID> =
+    if (online) emptySet() else tasks.filter { it.state == ImportTask.State.QUEUED && it.needsNetwork }.mapTo(hashSetOf()) { it.id }
+
 /**
  * Catalog entries of one kind and language pair. [targetLanguage] is set for term dictionaries only; frequency,
  * pitch and kanji dictionaries are grouped by source language alone.
@@ -79,6 +84,8 @@ data class InstalledSection(val kind: DictionaryKind, val dictionaries: List<Dic
 data class DictionariesState(
     val installed: List<InstalledSection> = emptyList(),
     val tasks: List<ImportTask> = emptyList(),
+    /** The [tasks] that wait for a network ([waitingForNetwork]). */
+    val waitingForNetwork: Set<UUID> = emptySet(),
     val catalog: List<CatalogGroup> = emptyList(),
     /** The frequency dictionary used for sorting. */
     val sortDictionaryId: Long? = null,
@@ -121,20 +128,21 @@ class DictionariesViewModel @Inject constructor(
 
     val state: StateFlow<DictionariesState> = combine(
         repository.dictionaries,
-        imports.tasks,
+        combine(imports.tasks, imports.online, ::Pair),
         catalog.entries(),
         repository.sortDictionaryId,
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
         repository.dictionaries
             .map { remoteCss() to withoutFiles() }
             .onStart { emit((cache.last?.remoteCss ?: emptyMap()) to (cache.last?.withoutFiles ?: emptySet())) },
-    ) { dictionaries, tasks, entries, sortId, (remoteCss, withoutFiles) ->
+    ) { dictionaries, (tasks, online), entries, sortId, (remoteCss, withoutFiles) ->
         val items = catalogItems(entries, dictionaries, tasks)
         DictionariesState(
             installed = DictionaryKind.entries.mapNotNull { kind ->
                 dictionaries.filter { it.kind == kind }.takeIf { it.isNotEmpty() }?.let { InstalledSection(kind, it) }
             },
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
+            waitingForNetwork = waitingForNetwork(tasks, online),
             catalog = groupCatalog(items),
             sortDictionaryId = dictionaries
                 .filter { it.enabled && it.frequencyCount > 0 }

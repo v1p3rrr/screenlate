@@ -19,7 +19,9 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
+import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.NetworkType
 import androidx.work.WorkInfo
 import androidx.work.workDataOf
 import java.io.File
@@ -47,6 +49,7 @@ class DictionaryImportsTest {
         output: Data = Data.EMPTY,
         progress: Data = Data.EMPTY,
         archive: String? = null,
+        constraints: Constraints = Constraints.NONE,
     ) = WorkInfo(
         id = UUID.randomUUID(),
         state = state,
@@ -58,6 +61,7 @@ class DictionaryImportsTest {
         ),
         outputData = output,
         progress = progress,
+        constraints = constraints,
     )
 
     @Test
@@ -277,6 +281,105 @@ class DictionaryImportsTest {
         assertThat(DictionaryImports.readStops(stored)).containsExactly(id, 2, other, 1)
         // Entries that do not parse are dropped.
         assertThat(DictionaryImports.readStops(setOf("$id=x", "no count", "$other=3"))).containsExactly(other, 3)
+    }
+
+    @Test
+    fun `a stop by WorkManager is logged with what follows it`() {
+        assertThat(DictionaryImportWorker.afterStop(WorkInfo.STOP_REASON_CONSTRAINT_CONNECTIVITY))
+            .isEqualTo("waits for a network, then runs again")
+        assertThat(DictionaryImportWorker.afterStop(WorkInfo.STOP_REASON_CANCELLED_BY_APP)).isEqualTo("cancelled")
+        listOf(
+            WorkInfo.STOP_REASON_TIMEOUT,
+            WorkInfo.STOP_REASON_QUOTA,
+            WorkInfo.STOP_REASON_DEVICE_STATE,
+            WorkInfo.STOP_REASON_APP_STANDBY,
+            WorkInfo.STOP_REASON_SYSTEM_PROCESSING,
+            WorkInfo.STOP_REASON_UNKNOWN,
+        ).forEach { assertThat(DictionaryImportWorker.afterStop(it)).isEqualTo("runs again later") }
+    }
+
+    @Test
+    fun `the end of a task is kept for a run WorkManager starts after dropping its result`() {
+        val stopped = UUID.randomUUID()
+        val cancelled = UUID.randomUUID()
+        val finished = UUID.randomUUID()
+        val output = workDataOf(
+            KEY_SOURCE to SOURCE_URL,
+            KEY_URL to "https://example.org/a.zip",
+            KEY_ERROR to "timeout",
+            KEY_RESUMABLE to true,
+            KEY_DOWNLOAD_STOPPED to true,
+            KEY_CONNECTION_LOST to true,
+            KEY_TITLES to arrayOf("Jitendex"),
+        )
+        val unfinished = setOf(stopped, cancelled).mapTo(hashSetOf()) { it.toString() }
+        var ends = DictionaryImports.recordedEnds(emptySet(), finished, workDataOf(KEY_TITLES to arrayOf("Old")), setOf(finished.toString()))
+        ends = DictionaryImports.recordedEnds(ends, cancelled, workDataOf(KEY_CANCELLED to true), unfinished)
+        ends = DictionaryImports.recordedEnds(ends, stopped, output, unfinished)
+
+        val kept = DictionaryImports.endIn(ends, stopped)!!
+        assertThat(kept.keyValueMap.keys).isEqualTo(output.keyValueMap.keys)
+        assertThat(kept.getBoolean(KEY_CONNECTION_LOST, false)).isTrue()
+        assertThat(kept.getString(KEY_ERROR)).isEqualTo("timeout")
+        assertThat(kept.getStringArray(KEY_TITLES)).asList().containsExactly("Jitendex")
+        assertThat(DictionaryImports.endIn(ends, cancelled)!!.getBoolean(KEY_CANCELLED, false)).isTrue()
+        // The record of a task that finished meanwhile is dropped; a task without one has none.
+        assertThat(DictionaryImports.endIn(ends, finished)).isNull()
+        assertThat(DictionaryImports.endIn(ends, UUID.randomUUID())).isNull()
+        assertThat(ends).hasSize(2)
+        // Recording again replaces, and finished tasks leave.
+        ends = DictionaryImports.recordedEnds(ends, stopped, workDataOf(KEY_CANCELLED to true), unfinished)
+        assertThat(ends).hasSize(2)
+        assertThat(DictionaryImports.endIn(ends, stopped)!!.getBoolean(KEY_CANCELLED, false)).isTrue()
+        assertThat(DictionaryImports.unfinishedEnds(ends, setOf(cancelled.toString())).map { it.substringBefore('=') })
+            .containsExactly(cancelled.toString())
+        // An entry that does not parse reads as none.
+        assertThat(DictionaryImports.endIn(setOf("$stopped=not base64!"), stopped)).isNull()
+    }
+
+    @Test
+    fun `a download needs a network until it starts`() {
+        val network = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val waiting = work("Jitendex", WorkInfo.State.ENQUEUED, 1, constraints = network)
+        val behind = work("JMnedict", WorkInfo.State.BLOCKED, 2, constraints = network)
+        val running = work("KANJIDIC", WorkInfo.State.RUNNING, 3, constraints = network, progress = workDataOf(KEY_STAGE to STAGE_DOWNLOAD))
+        val file = work("File", WorkInfo.State.ENQUEUED, 4)
+
+        val tasks = importTasks(listOf(waiting, behind, running, file))
+
+        assertThat(tasks.map { it.name to it.needsNetwork }).containsExactly(
+            "Jitendex" to true,
+            "JMnedict" to true,
+            "KANJIDIC" to false,
+            "File" to false,
+        ).inOrder()
+    }
+
+    @Test
+    fun `a download WorkManager stopped for the lost network waits for it, not stopped`() {
+        val network = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        // Stopped by WorkManager during its third try: it is enqueued again, without an output.
+        val stopped = WorkInfo(
+            id = UUID.randomUUID(),
+            state = WorkInfo.State.ENQUEUED,
+            tags = setOf(DictionaryImports.TAG, DictionaryImports.NAME_TAG_PREFIX + "Jitendex", DictionaryImports.ORDER_TAG_PREFIX + 1),
+            runAttemptCount = 3,
+            constraints = network,
+            stopReason = WorkInfo.STOP_REASON_CONSTRAINT_CONNECTIVITY,
+        )
+
+        val task = importTasks(listOf(stopped), retries = mapOf(stopped.id.toString() to 2)).single()
+
+        assertThat(task.state).isEqualTo(ImportTask.State.QUEUED)
+        assertThat(task.needsNetwork).isTrue()
+        assertThat(task.retries).isEqualTo(2)
+        assertThat(task.resumable).isFalse()
+        assertThat(task.downloadStopped).isFalse()
+        assertThat(task.connectionLost).isFalse()
+        assertThat(task.error).isNull()
+        // Its partial file stays for the run after the network is back.
+        val archive = work("Jitendex", WorkInfo.State.ENQUEUED, 1, archive = "part.zip", constraints = network)
+        assertThat(archivesInUse(listOf(archive))).containsExactly("part.zip")
     }
 
     @Test

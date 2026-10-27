@@ -2,6 +2,9 @@ package com.vpr.screenlate.dictionary.api.imports
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.datastore.core.DataStore
@@ -53,16 +56,20 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
 import java.io.IOException
+import java.util.Base64
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
@@ -95,6 +102,8 @@ data class ImportTask(
     val connectionLost: Boolean = false,
     /** Automatic retries of a download so far; a queued task with some waits for the network or its next try. */
     val retries: Int = 0,
+    /** Set on a download that has not started yet: it starts only with a network ([DictionaryImports.online]). */
+    val needsNetwork: Boolean = false,
 ) {
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
@@ -132,6 +141,43 @@ class DictionaryImports @Inject constructor(
     ) { infos, marks -> importTasks(infos, marks.cancelled, marks.dismissed, marks.retries) }
 
     private data class TaskMarks(val cancelled: Set<String>, val dismissed: Set<String>, val retries: Map<String, Int>)
+
+    /**
+     * Whether a network that downloads wait for is up: the default network has internet access the system validated,
+     * as the downloads' network constraint asks.
+     */
+    val online: Flow<Boolean> = callbackFlow {
+        val manager = context.getSystemService(ConnectivityManager::class.java)
+        if (manager == null) {
+            send(true)
+            awaitClose()
+            return@callbackFlow
+        }
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
+                trySend(capabilities.downloadsCanRun())
+            }
+
+            override fun onLost(network: Network) {
+                trySend(false)
+            }
+        }
+        trySend(manager.activeNetwork?.let(manager::getNetworkCapabilities)?.downloadsCanRun() == true)
+        manager.registerDefaultNetworkCallback(callback)
+        awaitClose { manager.unregisterNetworkCallback(callback) }
+    }.distinctUntilChanged()
+
+    private fun NetworkCapabilities.downloadsCanRun(): Boolean =
+        hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+
+    /**
+     * Whether the network is gone ([online]) now or within [settleMs]: a download that breaks off as the network goes
+     * may fail a moment before the system notices.
+     */
+    internal suspend fun networkLost(settleMs: Long): Boolean = withTimeoutOrNull(settleMs) { online.first { !it } } != null
+
+    /** Waits up to [timeoutMs] for a network ([online]); returns whether one came. */
+    internal suspend fun awaitNetwork(timeoutMs: Long): Boolean = withTimeoutOrNull(timeoutMs) { online.first { it } } != null
 
     /**
      * Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to
@@ -302,6 +348,8 @@ class DictionaryImports @Inject constructor(
             if (stops.keys.any { it !in unfinished }) prefs[STOPPED] = writeStops(stops.filterKeys { it in unfinished })
             val retries = readStops(prefs[RETRIES].orEmpty())
             if (retries.keys.any { it !in unfinished }) prefs[RETRIES] = writeStops(retries.filterKeys { it in unfinished })
+            val ends = prefs[ENDED].orEmpty()
+            if (ends.any { endId(it) !in unfinished }) prefs[ENDED] = unfinishedEnds(ends, unfinished)
             // Dismissed tasks stay out of the list until WorkManager prunes their work.
             val dismissed = prefs[DISMISSED].orEmpty()
             if (dismissed.any { it !in known }) prefs[DISMISSED] = dismissed.filterTo(hashSetOf()) { it in known }
@@ -353,6 +401,20 @@ class DictionaryImports @Inject constructor(
     }
 
     /**
+     * Records that the task [id] ended with [output]. WorkManager drops the result of a worker it stops at that moment
+     * and runs the task again: that run ends with the same output ([endOf]) instead of doing the work again. Records of
+     * tasks that have finished meanwhile are dropped.
+     */
+    internal suspend fun recordEnd(id: UUID, output: Data) {
+        val unfinished = workManager.getWorkInfosByTagFlow(TAG).first().filterNot { it.state.isFinished }
+            .mapTo(hashSetOf()) { it.id.toString() }
+        preferences.edit { prefs -> prefs[ENDED] = recordedEnds(prefs[ENDED].orEmpty(), id, output, unfinished) }
+    }
+
+    /** The output the task [id] ended with in a run whose result WorkManager dropped; see [recordEnd]. */
+    internal suspend fun endOf(id: UUID): Data? = endIn(preferences.data.first()[ENDED].orEmpty(), id)
+
+    /**
      * Runs the worker [block] of the task [id] so that [cancel] stops it; returns null when it did. A stop by
      * WorkManager ([cancelAll], the system) still ends the worker as a cancellation.
      */
@@ -371,6 +433,7 @@ class DictionaryImports @Inject constructor(
         preferences.edit {
             it.remove(CANCELLED)
             it.remove(STOPPED)
+            it.remove(ENDED)
             it.remove(RETRIES)
         }
         Log.i(LOG_TAG, "All tasks cancelled in ${System.currentTimeMillis() - started} ms")
@@ -447,6 +510,12 @@ class DictionaryImports @Inject constructor(
          */
         val STOPPED = stringSetPreferencesKey("dictionary_imports_stopped")
 
+        /**
+         * Outputs of tasks that ended, as `id=` and the output's bytes in Base64, kept until their works have finished;
+         * see [recordEnd].
+         */
+        val ENDED = stringSetPreferencesKey("dictionary_imports_ended")
+
         /** Automatic retries of each unfinished download, as `id=count`; see [markRetry]. */
         val RETRIES = stringSetPreferencesKey("dictionary_imports_retries")
 
@@ -469,6 +538,20 @@ class DictionaryImports @Inject constructor(
         }.toMap()
 
         fun writeStops(stops: Map<String, Int>): Set<String> = stops.mapTo(hashSetOf()) { (id, count) -> "$id=$count" }
+
+        /** [ends] ([ENDED]) with the end of the task [id] recorded and those of tasks not [unfinished] dropped. */
+        fun recordedEnds(ends: Set<String>, id: UUID, output: Data, unfinished: Set<String>): Set<String> =
+            unfinishedEnds(ends, unfinished - id.toString()) + "$id=${Base64.getEncoder().encodeToString(output.toByteArray())}"
+
+        /** The entries of [ends] ([ENDED]) of the [unfinished] tasks. */
+        fun unfinishedEnds(ends: Set<String>, unfinished: Set<String>): Set<String> = ends.filterTo(hashSetOf()) { endId(it) in unfinished }
+
+        /** The output [ends] ([ENDED]) holds for the task [id]; null when none, or when it does not parse. */
+        fun endIn(ends: Set<String>, id: UUID): Data? = ends.firstOrNull { endId(it) == id.toString() }?.let { entry ->
+            runCatching { Data.fromByteArray(Base64.getDecoder().decode(entry.substringAfter('='))) }.getOrNull()
+        }
+
+        private fun endId(entry: String): String = entry.substringBefore('=')
     }
 }
 
@@ -544,5 +627,7 @@ private fun WorkInfo.toTask(retries: Int): ImportTask {
         downloadStopped = outputData.getBoolean(KEY_DOWNLOAD_STOPPED, false),
         connectionLost = outputData.getBoolean(KEY_CONNECTION_LOST, false),
         retries = if (state.isFinished) 0 else retries,
+        needsNetwork = (state == WorkInfo.State.ENQUEUED || state == WorkInfo.State.BLOCKED) &&
+            constraints.requiredNetworkType != NetworkType.NOT_REQUIRED,
     )
 }

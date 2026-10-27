@@ -64,6 +64,7 @@
     <string name="dictionaries_task_queued">В очереди: %1$s</string>
     <string name="dictionaries_task_downloading">Загрузка: %1$s</string>
     <string name="dictionaries_task_retrying">Повторная загрузка (%2$d из %3$d): %1$s</string>
+    <string name="dictionaries_task_no_network">Ждёт сеть: %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: загрузка остановлена — %2$s</string>
     <string name="dictionaries_connection_lost">соединение прервалось</string>
     <string name="dictionaries_task_importing">Импорт: %1$s</string>
@@ -145,6 +146,7 @@
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
     <string name="dictionaries_task_checking_space">Проверка свободного места: %1$s</string>
     <string name="dictionaries_stage_queued">В очереди</string>
+    <string name="dictionaries_stage_no_network">Ждёт сеть</string>
     <string name="dictionaries_stage_downloading">Загрузка</string>
     <string name="dictionaries_stage_checking_space">Проверка свободного места</string>
     <string name="dictionaries_stage_converting">Распаковка</string>

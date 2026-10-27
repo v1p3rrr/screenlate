@@ -64,6 +64,7 @@
     <string name="dictionaries_task_queued">In attesa: %1$s</string>
     <string name="dictionaries_task_downloading">Download di %1$s</string>
     <string name="dictionaries_task_retrying">Nuovo tentativo di download (%2$d di %3$d): %1$s</string>
+    <string name="dictionaries_task_no_network">In attesa della rete: %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: download interrotto — %2$s</string>
     <string name="dictionaries_connection_lost">connessione interrotta</string>
     <string name="dictionaries_task_importing">Importazione di %1$s</string>
@@ -144,6 +145,7 @@
     <string name="dictionaries_task_converting">Estrazione di %1$s</string>
     <string name="dictionaries_task_checking_space">Controllo dello spazio libero per %1$s</string>
     <string name="dictionaries_stage_queued">In coda</string>
+    <string name="dictionaries_stage_no_network">In attesa della rete</string>
     <string name="dictionaries_stage_downloading">Download</string>
     <string name="dictionaries_stage_checking_space">Controllo dello spazio libero</string>
     <string name="dictionaries_stage_converting">Estrazione</string>
