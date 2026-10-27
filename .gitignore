@@ -17,6 +17,9 @@ local.properties
 # Local research reports and source comparisons.
 /testdata/local-research/
 
+# Local builds of earlier releases for upgrade tests.
+/testdata/apk/
+
 # Release signing secrets.
 keystore.properties
 *.jks
