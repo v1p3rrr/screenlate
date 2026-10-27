@@ -81,8 +81,8 @@ the details.
 
 ### Host
 
-- `D:/tmp_apk` is an empty folder the camera review made for a short APK path; Claude's safety check refused to
-  remove it, so the owner deletes it.
+- Nothing left outside the project: the owner deleted `D:/tmp_apk` and `D:/tmp_sl` (2026-10-28). Scratch paths go
+  inside the project from now on (`notes/build-environment.md`).
 
 ### Outside the camera feature
 

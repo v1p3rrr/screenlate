@@ -106,7 +106,7 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   reportedly reset by a reboot and not always enough on MagicOS 9; developer forum reports, nothing official).
   Diagnostics that must work on such phones need the app's own file log and `ApplicationExitInfo`, not logcat.
 - Files pushed by adb into `/sdcard/Android/data/<pkg>` are not readable by the app (group `ext_data_rw`); copy through `run-as` into internal storage instead.
-- `adb install` cannot open a host path over 260 characters ("failed to stat"; the scratchpad's Gradle outputs reach it): copy the APK to a short path first.
+- `adb install` cannot open a host path over 260 characters ("failed to stat"; the scratchpad's Gradle outputs reach it): copy the APK to a short path inside the project first, e.g. `testdata/apk/` (git-ignored). Never at a drive root (the owner, 2026-10-28).
 - Short /data (2026-10-20, Khmer run): with about 0.39 GB free the 126 MB debug APK fails with
   `INSTALL_FAILED_INSUFFICIENT_STORAGE`. Install an x86_64-only copy instead (82 MB): copy every zip entry except
   `lib/arm64-v8a/`, `lib/armeabi-v7a/` and the signature files in `META-INF/` (`*.SF`, `*.RSA`, `*.EC`, `*.MF`) with
