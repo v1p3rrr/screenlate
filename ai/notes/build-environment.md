@@ -38,6 +38,13 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   capturing it; give classes passed as parameters an `equals` (data class); declare models of non-Compose modules and
   collections in `compose-stability.conf`. Measure with a `SideEffect` counter and `dumpsys gfxinfo` ("Slow UI
   thread"), or the compiler reports (`reportsDestination` in the Compose convention plugin, not kept).
+- Compose `SideEffect` (2026-10-27, the camera review): state read inside its lambda is not observed, so the page
+  does not recompose when only that state changes and the effect never sees the new value (the Camera page's menus
+  never hid the photo). Read the state in composition and pass the value in. And `SideEffect` runs after every
+  recomposition: an assignment with a cost, such as CameraX's `imageCaptureFlashMode` (a new camera request each
+  time), goes into a keyed `LaunchedEffect`.
+- kotlinx-coroutines-test: `advanceUntilIdle()` returns once only `backgroundScope` tasks are left, so a collector
+  started there may not have seen the last events yet; call `runCurrent()` after it.
 - `resValues` build feature is off by default in AGP 9; the app label per build type uses a manifest placeholder (`appLabel`).
 - Language bundles (`yomitan-language/<iso>.js`, 2026-10-22): the build needs a Yomitan clone at the commit in
   `scripts/yomitan-language/yomitan-commit.txt` (a `git clone --filter=blob:none` into the session's scratch folder is
@@ -55,7 +62,7 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - Bash heredocs in this environment turn `\\` into `\`, even with a quoted delimiter. Write files that contain backslashes (regexes, escapes) with the Write/Edit tools.
 - `cd` inside a Bash call can move the session's working directory; use absolute paths.
 - `/tmp` in Git Bash is not the same path Windows Python sees; pipe data into Python through stdin or use the scratchpad directory.
-- A new `git worktree` (e.g. of main for cherry-picks) has no hoshidicts submodule and no `local.properties`: before building there, copy `local.properties` and run `git submodule update --init --recursive`, or CMake fails with "does not contain a CMakeLists.txt file". Such a worktree can be removed only after `git -C <worktree> submodule deinit --all -f`, which also drops the submodule from the shared `.git/config`: run `git submodule init dictionary/engine-hoshidicts/src/main/cpp/hoshidicts` in the main checkout afterwards. A worktree only for cherry-picks needs neither.
+- A new `git worktree` (e.g. of main for cherry-picks) has no hoshidicts submodule and no `local.properties`: before building there, copy `local.properties` and run `git submodule update --init --recursive`, or CMake fails with "does not contain a CMakeLists.txt file". Such a worktree can be removed only after `git -C <worktree> submodule deinit --all -f`, which also drops the submodule from the shared `.git/config`: run `git submodule init dictionary/engine-hoshidicts/src/main/cpp/hoshidicts` in the main checkout afterwards. A worktree only for cherry-picks needs neither. `--reference` to the main checkout's MNN fails (that clone is shallow): fetch MNN from GitHub with `git submodule update --init --depth 1`. hoshidicts has eight submodules of its own (utfcpp, glaze, zstd, unordered_dense, xxHash, libdeflate, utf8proc, kanji-processor); without them CMake stops at utf8proc.
 
 ## Devices
 
@@ -63,6 +70,8 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   running the UI checks: `NoSuchMethodException: android.hardware.input.InputManager.getInstance`. Run them on
   API 30 (or the CI API 34 emulator) until the test dependency supports that platform. The non-UI registry and
   WorkManager tests run on API 37. This is a test framework failure, not an app exception.
+- Compose answers no `findAccessibilityNodeInfosByText`; a test that reads the window through `UiAutomation` walks
+  `rootInActiveWindow` and compares text and content descriptions (`FirstRunRequestTest`).
 - API 30's bundled WebView is too old for the existing popup page's `replaceChildren`. Tests of the real page use
   API 37 with `ActivityScenario<ComponentActivity>` and main-thread WebView callbacks, without Espresso's input
   injector. Wait for a painted frame before taking a screenshot: the JS bridge can answer before the GPU paints.
@@ -119,6 +128,35 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   test executors fail to start ("Could not write standard input to Gradle Test Executor", "The pipe is being closed",
   "finished with non-zero exit value 1"), which looks like failed tests. Rerun with `--max-workers=2`; do not
   `gradlew --stop`, as other sessions share the daemons.
+- A Gradle build outlives the session that started it (2026-10-27): after a session restart a build kept compiling
+  MNN for three ABIs (ninja with about 20 `clang++` under the Gradle daemon) for over an hour, and with BlueStacks
+  starting the Windows commit limit ran out ("insufficient memory for the Java Runtime Environment", an
+  `hs_err_pid*.log` in the worktree). Before a new build, list `java`, `ninja` and `clang++` processes and check
+  their worktree in the command line. The page file on E: is system-managed: it grew to 30 GB under that load and
+  shrank to about 6.5 GB after it.
+- A check build for the x86_64 emulator only (2026-10-28): an init script with
+  `allprojects { afterEvaluate { p -> def a = p.extensions.findByName("android"); if (a != null) { a.defaultConfig.ndk.abiFilters.clear(); a.defaultConfig.ndk.abiFilters.add("x86_64") } } }`
+  (`--init-script <file>`) builds native code for x86_64 alone and gives a 93 MB debug APK that installs without the
+  `zipfile` copy. It runs before the plugins' own `afterEvaluate`, so the DSL is still open. CI still builds every
+  ABI. A new worktree also needs `git submodule update --init --recursive` (hoshidicts' `external/` submodules),
+  or CMake stops at "does not contain a CMakeLists.txt file".
+- A small build to send to the phone (2026-10-27; a chat attachment takes at most 30 MiB): the release type with the
+  Dev package and label, debug-signed, one ABI, compressed native code and dex. An init script
+  (`--init-script dev-release.gradle`) sets on `:app` in `afterEvaluate`, for the release build type:
+  `applicationIdSuffix = '.debug'`, `versionNameSuffix = '-<sha>-min'`, `manifestPlaceholders['appLabel'] =
+  'Screenlate Dev'`, and `android.packaging.jniLibs.useLegacyPackaging = true`,
+  `android.packaging.dex.useLegacyPackaging = true`. Build with
+  `./gradlew --init-script <file> -Pscreenlate.debugSignedRelease :app:assembleRelease -x lintVitalRelease`, then
+  keep only `lib/arm64-v8a/` with the `zipfile` copy above. Sizes: 87 MB debug, 38.6 MB minified with stored
+  libraries, 20.6 MB compressed. It installs over local debug builds and keeps their data (same package and key).
+  Unlike a debug build it has no bug badge on the icon (the debug icon is in `app/src/debug/res/drawable`), is not
+  debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras) and has Check for updates. Keep
+  `app/build/outputs/mapping/release/mapping.txt` in `testdata/local-research/builds/` for stack traces.
+- CI debug APKs are signed with the runner's own debug key: they do not install over a local debug build, nor a
+  local one over them, without an uninstall, which deletes the app's data.
+- Instrumented tests (2026-10-27): a comma-separated list in `-Pandroid.testInstrumentationRunnerArguments.class`
+  ran only its first class; run one class per call. The app module's connected tests uninstall the app afterwards;
+  reinstall the debug APK (it comes back at its first run).
 - Gradle's incremental packaging reuses the old APK file: after assets are removed (e.g. `ocrCompareData` pointed at a smaller folder) the APK keeps its old size with unused bytes (168 MB for 74 MB of entries, 2026-10-20). Delete the APK before rebuilding.
 - The OCR comparison test (`experiments:ocr-compare`) without models in its APK, for the emulator's short /data: stream each model into the test package with `adb exec-in "run-as <test pkg> sh -c 'cat > files/tessdata_fast/tessdata/<lang>.traineddata'" < file`; Tesseract wants a data folder with a `tessdata/` subfolder. This needs `OcrCompareTest` to look in `files/<kind>/` before copying from the assets: a local change of group 5b's run (2026-10-20, on `languages/ocr-compare` 7000a05c), not committed there.
 - Overlay gestures with `adb shell input`: a single tap on the floating bubble starts a new scan, which is easier to time than a pull-out. A swipe that ends at the right edge often triggers the system Back gesture and closes the image viewer; start a dock swipe on the bubble itself and end it a few pixels short of the edge. To act while the cloud request is pending: `adb shell svc wifi disable` plus `adb emu network speed gprs` makes it time out after about 16–22 s, and the ML Kit draft arrives after 5–9 s (ML Kit is slow on the emulator; with a fast network the cloud result usually comes first and no draft is shown). Restore with `svc wifi enable` and `network speed full`. More reliable (2026-09-30): a host TCP server that accepts and never answers (`socket.bind(("127.0.0.1", 8899))`, keep the accepted sockets) plus `adb shell settings put global http_proxy 10.0.2.2:8899`; the cloud request hangs until its timeout (about 16-20 s in total) and the ML Kit draft comes after about 6.5 s. The proxy is not subject to `ACCESS_LOCAL_NETWORK`. Revert with `settings put global http_proxy :0`, then `settings delete global http_proxy` (deleting it alone leaves `global_http_proxy_host`/`_port` set and the proxy in force; `dumpsys connectivity | grep -A2 ProxyTracker` shows it). A scan in that state marks the cloud "unavailable" for the rest of that scan only; moving the bubble afterwards just looks up the final text again, so tap the bubble for a fresh scan.

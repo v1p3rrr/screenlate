@@ -71,6 +71,14 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   (`assembleDebugAndroidTest`, `adb install -r -t`) on `Pixel_10_Pro` and run them with `am instrument -w -e class …
   com.vpr.screenlate.debug.test/androidx.test.runner.AndroidJUnitRunner`, which keeps the installed app and its data
   (their fixture is isolated); uninstall the test APK and run `debug-device.sh install` to bind the service again.
+- Images from other apps: the Files app shares a file to the app with a read grant (select it, then Share). `am start
+  -a android.intent.action.SEND --eu android.intent.extra.STREAM …` from the shell carries no grant, so it only checks
+  the "could not be opened" path; with `--grant-read-uri-permission` and a `content://0@<app>.anki.media/…` link it
+  checks that the app's own provider is refused. `am start` cannot set clip data, so a request straight to the main
+  screen (`open=shared-image` with a clip) needs a temporary instrumented test that starts `MainActivity` with it; it
+  runs in the app's process, so a `file:` link to the app's files is what an attacker would send. On API 30 the Files app and its picker ignore `input tap` and long presses on file
+  items (only buttons react): select through ⋮ → Select all, or move to the item with `KEYCODE_TAB` and the arrow keys
+  and press `KEYCODE_ENTER`.
 
 ## Cases
 
@@ -93,14 +101,14 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-18 |
-| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-18 |
-| BUB3 | Tap the floating bubble → a new scan, recognized lines flash | F | M | 2026-10-18 |
+| BUB1 | Pull the bubble out of the dock over Japanese text → a scan starts and the entry of the word under the aim opens | E | M | 2026-10-27 |
+| BUB2 | Move the floating bubble → the entry follows the aim without a new scan | E | M | 2026-10-27 |
+| BUB3 | Tap the floating bubble → a new scan, recognized lines flash | F | M | 2026-10-25 |
 | BUB4 | Hold the floating bubble → the menu (copy paragraph, copy all, open Screenlate) above the bubble, below when there is no room; Back or a tap outside closes it without other effect | F | U MenuPlacementTest, CopyMenuTextTest, M | 2026-10-14 |
-| BUB5 | With two or three quick languages the hold menu shows their flags, the active one ringed; a tap switches the language, the docked glyph changes at once, the next scan uses the new language; one quick language → no flag row | E | M | 2026-10-18 |
+| BUB5 | With two or three quick languages the hold menu shows their flags, the active one ringed; a tap switches the language, the docked glyph changes at once, the next scan uses the new language; one quick language → no flag row | E | M | 2026-10-27 |
 | BUB6 | Double tap → the aim switches between above the finger and the bubble center | O | M | |
 | BUB7 | ✕ → the entry closes, the bubble stays and keeps the text; it stays closed until the bubble moves or scans | F | M | 2026-10-14 |
-| BUB8 | Drag to the left or right edge → docks once the center passes the edge or on release at the edge; top and bottom only with "Top and bottom edges" | F | U DockPlacementTest, M | 2026-10-14 |
+| BUB8 | Drag to the left or right edge → docks once the center passes the edge or on release at the edge; top and bottom only with "Top and bottom edges" | F | U DockPlacementTest, M | 2026-10-25 |
 | BUB9 | Drag the docked bubble along the edge → the dock moves | O | M | |
 | BUB10 | The dock stays clear of the bars and the system gesture strips; an open keyboard lifts a bottom dock; in a fullscreen app (`show <file> swipe`) the top and bottom docks go to the edge with a third past the strip | F | U DockSettingsTest, M | 2026-10-14 |
 | BUB11 | Rotating the screen → the entry closes, the bubble docks on the same side | F | M | 2026-10-14 |
@@ -108,12 +116,14 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB13 | Home's switch and Bubble → "Show the bubble" hide and show it | F | M | 2026-10-14 |
 | BUB14 | An app in the hidden apps list → the bubble hides there and comes back outside it | O | M | |
 | BUB15 | E-ink: the hold menu is white with a black frame, black text and a black ring around the active code, no shadow or ripple | F | M | 2026-10-14 |
+| BUB16 | No app task; "Look up in Screenlate" in a selection menu, then a button there that opens the app (the grey ➕ → "Open Anki settings", or "Manage dictionaries"); Home → the hold menu's "Open Screenlate", then the launcher icon → the same screen comes back, `dumpsys activity activities` lists one MainActivity, the task's root intent is the launcher's (`dumpsys activity recents`); Back leaves the app | F | I OpenAppTest, M | 2026-10-26 |
+| BUB17 | Hold the bubble over any Screenlate page (Home, settings, a photo) → no Open Screenlate in the menu; over another app it is there; with nothing to copy, no language row and Screenlate in front, holding opens no menu and gives no vibration | N | M | 2026-10-28 (API 37; the vibration not seen, the emulator records none) |
 
 ### OCR: text sources and recognition
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| OCR1 | Screen recognition, both engines → the on-device draft of the band around the aim, then the cloud result; the source chip says Lens | E | U CompositeOcrTest, FocusBandTest, M | 2026-10-18 |
+| OCR1 | Screen recognition, both engines → the on-device draft of the band around the aim, then the cloud result; the source chip says Lens | E | U CompositeOcrTest, FocusBandTest, M | 2026-10-27 |
 | OCR2 | Cloud unreachable (proxy that never answers) → the on-device result stays, ⚠ next to the source, a tap gives the reason; without any network → the offline message | F | U OcrStatusTest, M | 2026-10-14 |
 | OCR3 | Engines: cloud only (nothing without network) and device only (chip "On-device", OCR boost unavailable) | F | M | 2026-10-14 |
 | OCR4 | Reduce load → the whole screen is read on the device only after 3 s without a cloud answer (scan log) | O | M | |
@@ -270,12 +280,13 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP36 | A Lithuanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Lithuanian text"; one chosen sets ą č ę ė į š ų ū ž; the bubble shows Ė and the Languages screen Lithuania's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP37 | A Slovak entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovak text"; one chosen sets á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž; the bubble shows Ô and the Languages screen Slovakia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP38 | A Slovenian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovenian text"; one chosen sets č š ž; the bubble shows SL and the Languages screen Slovenia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
+| POP39 | Aim at a word, then off text so the popup closes, then at another word → the popup opens with the new word only, the previous one never shows; from one word straight to the next, the popup moves to the new word together with its content | N | M | 2026-10-28 (API 37, frame by frame) |
 
 ### AUD: audio
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| AUD1 | 🔊 plays the clip of the highest source that has one; holding it lists all recordings | F | U AudioFinderTest, M | 2026-10-14 |
+| AUD1 | 🔊 plays the clip of the highest source that has one; holding it lists all recordings | F | U AudioFinderTest, M | 2026-10-26 |
 | AUD2 | A failing source → its Test shows the error; home lists it in the audio card | O | U AudioErrorTest, M | 2026-10-22 |
 | AUD3 | English Wiktionary clips follow the Regions order; a changed order applies to the next selection | O | U AudioFinderTest, M | |
 | AUD4 | A custom URL source on `http://10.0.2.2:<port>` asks for the local network permission (API 37) and plays | O | U LocalNetworkTest, M | |
@@ -307,8 +318,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | ANK1 | AnkiDroid access, deck and note type; templates pre-filled for known note types and by field names | F | I AnkiDroidRoundTripTest, U FieldTemplateTest, M | 2026-10-14 |
-| ANK2 | ➕ adds a note with the sentence and audio, holding ➕ adds it with a picture from the crop editor; a duplicate shows 📖, which opens it in AnkiDroid's browser; holding 📖 offers "Add anyway" and "Add anyway, with a picture" | E | M | 2026-10-18 |
-| ANK3 | Holding ➕ opens the crop editor around the paragraph; "Whole screen" ↔ "Frame"; two notes in a row | F | I CropEditorTest, CropViewTest, U CropFocusTest, M | 2026-10-14 |
+| ANK2 | ➕ adds a note with the sentence and audio, holding ➕ adds it with a picture from the crop editor; a duplicate shows 📖, which opens it in AnkiDroid's browser; holding 📖 offers "Add anyway" and "Add anyway, with a picture" | E | M | 2026-10-27 |
+| ANK3 | Holding ➕ opens the crop editor around the paragraph; "Whole screen" ↔ "Frame"; two notes in a row | F | I CropEditorTest, ScreenNoteImageTest, U CropFocusTest, M | 2026-10-14 |
 | ANK4 | While the scan refines its text ➕ is grey and a tap says to wait | O | M | |
 | ANK5 | AnkiDroid permission revoked or deck deleted → a home card and a grey ➕ with the reason | O | U AnkiStatusCacheTest, M | |
 | ANK6 | Anki settings are per language (English deck apart from Japanese) | F | I AnkiProfileEditorsTest, M | 2026-10-14 |
@@ -342,7 +353,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| TR1 | The translation button in the popup: a tap shows the translation, the service name and a copy button; a second tap hides it; a new word starts without it | F | M | 2026-10-14 |
+| TR1 | The translation button in the popup: a tap shows the translation, the service name and a copy button; a second tap hides it; a new word starts without it | F | M | 2026-10-26 |
 | TR2 | Services in order with the 3 s fallback; all failing → each one's reason | O | U SentenceTranslatorTest, TranslationErrorTest, M | |
 | TR3 | "Translate into": search by any name, stars on top | O | U TranslationLanguagesTest, M | |
 | TR4 | Test asks every enabled service and shows answers and times | O | M | |
@@ -391,7 +402,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| LNG1 | Home's languages card: the quick flags, the active one ringed, its name and status, "All languages" | E | M | 2026-10-18 |
+| LNG1 | Home's languages card: the quick flags, the active one ringed, its name and status, "All languages" | E | M | 2026-10-27 |
 | LNG2 | The Languages screen: turned on (radio, star, Flag, Turn off), turned off with files (list with sizes, delete one, change its languages, Delete all, Turn on), not turned on | F | M | 2026-10-18 |
 | LNG3 | Star rules: at most three quick languages; making a starred one active swaps; making an unstarred one active moves the star | F | U LanguageProfilesTest, M | 2026-10-14 |
 | LNG4 | Flag country: English US by default, the UK from "Flag"; a language with one flag (all but English and Portuguese) has no "Flag" button | O | U FlagsTest, LanguageProfilesTest, M | 2026-10-16 |
@@ -440,7 +451,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | UPD1 | About: libraries, notices, installed dictionaries with licenses, "What the service reads and sends", "Report a problem" opens the form (not submitted) | O | M | |
-| UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-18 |
+| UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-27 |
 | UPD3 | Update check and install (release builds only) | O | D | |
 | UPD4 | The export starts with the own log (oldest first: "Process started", the exit reasons of earlier processes, scans, the service's stop report), then the logcat part; lines from before an app restart are still there | F | U LogFileTest, ExitReasonsTest, M | 2026-10-22 |
 | UPD5 | The own log keeps at most two files of 4 MB in `noBackupFilesDir/logs` (`run-as` on a debug build); uninstalling the app removes them, a log saved to `Download/Screenlate/` stays | O | U LogFileTest, M | 2026-10-22 (API 30) |
@@ -449,6 +460,83 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | UPD8 | The service turned off before the overlay has added its windows: jdb holds the main thread at the first `OverlayController.applySettings` after the service connects (`stop thread at`), the service is turned off with `settings delete secure enabled_accessibility_services`, the thread goes on (steps in the run log of 2026-10-22, `claude/jolly-cray-bc8ce9`) → no crash; the log has "Window not added, the system is unbinding the service" and then the stop report, the process lives on; turned on again, the bubble shows docked and scans. Also: on and off again with gaps of 0.1-3 s, no crash | F | U OverlayWindowsTest, M | 2026-10-22 |
 | UPD9 | The service stops and comes back within 3 s: `uiautomator dump` (UiAutomation pauses the service for about 1.5 s), two dumps in a row, turned off and on again within 3 s → no banner at any point (`dumpsys notification` has no Screenlate notification 3 and 5 s later); the log has the stop report and "3 s after the stop: … running: yes" | F | U StopFollowUpTest, M || 2026-10-22 |
 
+### CAM: camera photos
+
+Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit viewer and source activation.
+
+| ID | Check | Cat | Cov | Checked |
+|---|---|---|---|---|
+| CAM1 | A recognized photo on the Camera page, pull the bubble out → the entry of the word under the aim opens from the stored text: the log has no capture, app text or cloud connection; the glyph shows the photo's recognition language | F | U ScreenReadsTest, M | 2026-10-26 (API 37) |
+| CAM2 | Pan and zoom the photo under the resting bubble → the highlight and the popup follow the word; another word under the aim opens its entry | F | U TextFrameTest, M | 2026-10-26 (API 30/37) |
+| CAM3 | Aim at the toolbar, the letterbox or the part of a zoomed photo outside the viewer → no entry; a highlight is cut at the viewer's edge | F | U TextFrameTest, M | 2026-10-26 (API 37) |
+| CAM4 | The live camera, a photo still loading or not recognized yet → pull-out and tap show nothing and do not scan the screen | F | U ScreenReadsTest, M | 2026-10-26 (API 30/37) |
+| CAM5 | Bubble out over a photo, then another page, another app or the live camera → the bubble docks; while a finger drags it, it docks when the finger lifts, and back over the photo before that it stays out with the photo's text; back on the photo, the next pull-out takes its text without recognition | F | U SourceChangeTest, M | 2026-10-27 (API 37; leaving during a drag), 2026-10-26 (API 37) |
+| CAM6 | Bubble out over the screen of another page, then a recognized photo is shown → the old entry closes and the photo's text is under the aim | F | U SourceChangeTest, M | 2026-10-26 (API 37) |
+| CAM7 | Hold the bubble over a photo → copy only: no Open Screenlate (also over any other Screenlate page, BUB17) and no language flags; the docked glyph returns to the active language once the photo is left | F | M | 2026-10-28 (API 37), 2026-10-26 (API 37; Open Screenlate was still shown) |
+| CAM8 | Holding Add over a recognized photo opens a fitted original-photo crop; paragraph/frame/whole-photo and cancel work; the frame's margin around the paragraph is the same at any zoom of the viewer; Anki gets the original-pixel crop and sentence in the recognition language, with no screenshot read | F | U CropPlacementTest, PhotoViewportTest; I PhotoImageTest, CropEditorTest; M | 2026-10-27 (manual API 37), 2026-10-26 (API 30/37; manual API 37) |
+| CAM9 | The app closed and started again → the current photo and its text come back; a damaged text file leaves the photo without text | F | U PhotoStoreTest, I PhotoDatabaseTest | 2026-10-26 (API 37) |
+| CAM10 | No current photo → camera permission is requested once per process; deny → explanation and retry; deny permanently → app settings; grant there and return → live rear camera | F | M | 2026-10-26 (API 37) |
+| CAM11 | Capture → fitted current photo; New photo + Close or Back preserves it; a completed new capture replaces it; ✕ closes it (CAM34) | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
+| CAM12 | Tap preview → focus indicator; pinch → camera zoom and the zoom pill; tap the pill → 1× | F | I LiveCameraTest (API 30), D (focus quality) | 2026-10-26 (API 30) |
+| CAM13 | All 8 EXIF orientations display upright and report matching original-pixel-to-screen coordinates; loading/disposal never publishes another document's viewport | F | U PhotoDrawingTest, U CameraViewModelTest, I PhotoViewerTest | 2026-10-26 (API 37) |
+| CAM14 | Capture with the service unavailable; navigate and background; restart the device → the same private current photograph opens without camera permission being requested again; leaving capture releases the camera | F | U CameraViewModelTest, M | 2026-10-26 (API 37) |
+| CAM15 | Flash-capable camera → Off/Auto/On cycle affects capture; Off again in a new process; absent flash → action hidden | N | U PhotoDrawingTest (cycle), D | |
+| CAM16 | Tile grid covers both axes/edges; overlap assembly keeps full boundary words, repeats, character boxes, paragraphs, vertical/RTL order and combining marks; each word once across lines and orientations, the longer of two segmentations, no misread cut word, long words cut by both tiles joined also when the cut glyphs are dropped | F | U PhotoTilesTest, PhotoAssemblyTest | 2026-10-27 |
+| CAM17 | Indexed hit testing preserves the former linear algorithm's tolerance, center selection, ties and zero-area separator boxes | F | U BoxIndexTest, TextLayoutTest | 2026-10-26 |
+| CAM18 | Photo tile engine: Device makes no cloud call; Both waits for all readers, uses cloud or local fallback; pinned model/files ignore later changes, verified once on failure; a scan after a release request keeps the engines past the attempt; stored per-word provenance reads back and v1 still loads | F | U CompositeOcrTest, DeviceOcrTest, RecognitionCodecTest | 2026-10-27 |
+| CAM19 | Recognition publishes once after all tiles terminate; usable partial text stays searchable; warning explains failures and retry keeps successful tiles and original settings | F | U PhotoRecognitionJobsTest, CameraPhotoControlsTest; M | 2026-10-26 (API 37: real Cloud, one missing tile) |
+| CAM20 | Interrupted attempts and successful tiles survive process restart, remain separate from committed text and require explicit retry; Room v1 upgrades to v2; damaged progress preserves image/text | F | U PhotoStoreTest, AttemptCodecTest; I PhotoDatabaseTest | 2026-10-26 (API 37) |
+| CAM21 | Original-resolution region decoding handles all EXIF transforms and the far right/bottom edges without decoding a full-size whole image | F | I PhotoRegionsTest | 2026-10-26 (API 37) |
+| CAM22 | Camera language is independently remembered, limited to enabled languages; changes/settings show pending state and never rewrite actual OCR language or auto-recognize | F | U CameraPreferencesTest, CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
+| CAM23 | Successful capture starts recognition once; failed/cancelled capture preserves previous photo; work continues off Camera/backgrounded; cached lookup needs no OCR model and APP_TEXT_ONLY cannot bypass new image OCR readiness | F | U CameraViewModelTest, PhotoRecognitionJobsTest, LanguageInstallationTest; M | 2026-10-26 (API 37) |
+| CAM24 | Viewer pinch clamps fit..8×, pan clamps edges, reopening fits; only viewport changes and the source/layout generation stays; visible-region details remain sharp | F | U PhotoViewportTest, I PhotoViewerGestureTest (API 30); M (API 37) | 2026-10-26 (API 30/37) |
+| CAM25 | Explicit Save to gallery publishes ordinary original JPEG/PNG bytes with orientation and no OCR data; replacing/deleting the current document leaves the exported copy; failure/cancellation removes partial output and permits retry | F | U PhotoGalleryTest, CameraViewModelTest; I PhotoGalleryDeviceTest; M | 2026-10-26 (API 30/37) |
+| CAM26 | A retained image survives current-photo replacement/deletion until its owner closes it; a restart removes abandoned pins; late source/preview results cannot open an editor after the scan closes | F | U PhotoStoreTest; I CropEditorTest, PhotoImageTest | 2026-10-26 (API 30/37) |
+| CAM27 | The status strip over a photo: the language chip (flag, name, ▾), Recognize filled while there is no result or a change is pending and as a text button otherwise, hidden while recognizing; the status line "Recognized · N of M regions · time" (regions only with more than one), "Recognizing · k of M regions" with progress along the strip's bottom; a language change tints the strip and adds "Language changed" (a frame and bold text with the e-ink theme) | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
+| CAM28 | The language menu from the chip, over a photo and over the live camera: the header, every turned-on language with its flag, "Active" under the app's active language, "Dictionary missing" or "Recognition model missing" under unready ones, a check on the selected one; Manage languages opens Settings → Languages; with the menu open the bubble reads nothing | F | M | 2026-10-27 (API 37) |
+| CAM29 | The live camera: the 4:3 frame at the photo's viewer size with a blurred live copy around it and no black band at the bottom (plain black with the e-ink theme); the chip floats over the preview; the white ring shutter shrinks when pressed, a spinner replaces its disc during capture; the zoom pill above it resets to 1×; the captured photo keeps the resolution it had before the blur stream; the log shows no repeated `setFlashAsync` while the preview runs | F | U CameraPhotoControlsTest (fill steps); I LiveCameraTest; M | 2026-10-26 (API 30/37) |
+| CAM30 | Top bar: over a photo ✕ at the left and New photo as an icon; ⋮ holds Save to gallery, Save to history (only while the photo is outside the history: with manual saving, or after a failed automatic save), History, Import from gallery and Camera settings; over the live camera ⋮ holds History, Import from gallery and Camera settings; over the live camera with a photo the close icon at the left returns to it, the flash icon at the right; with ⋮ open the bubble reads nothing | F | M | 2026-10-27 (API 37; the menu and the bubble), 2026-10-26 (API 37) |
+| CAM31 | The partial-result dialog: the warning icon, the count of missing regions with "Words in these regions can't be looked up.", a small picture of the photo with the missing regions marked, the causes; Retry keeps the recognized regions | F | U CameraPhotoControlsTest; M | 2026-10-26 (API 37) |
+| CAM32 | Camera access off or blocked → an icon, a title, the text, a filled button and Import from gallery under it; deleting an unsaved photo on closing shows "Photo deleted"; loading shows "Opening photo…"; recognition blocked by a missing dictionary or model → the dialog is titled "Can't recognize <language>" | F | U CameraViewModelTest; M | 2026-10-26 (API 37) |
+| CAM33 | A zoomed photo keeps its zoom and center when the strip changes height (pending tint, a wrapped status line) | N | U PhotoViewportTest; M | |
+| CAM34 | ✕ over a photo: a photo in the history closes without a question and stays in the history; one outside it with manual saving asks "The current photo isn't saved to history and will be deleted" — Save to history keeps it there and opens the camera, Delete shows "Photo deleted", Cancel keeps it open; with automatic saving no question, unless saving that photo failed: then ✕, an import (CAM44) and a history photo (CAM37) ask as with manual saving | F | U CameraViewModelTest, PhotoHistoryViewModelTest; I UnsavedPhotoDialogTest (API 30); M | 2026-10-26 (API 30/37; a failed save by unit tests only) |
+| CAM35 | ⋮ Save to history → "Saved to history" and the item leaves the menu; with Save automatically on, a capture is in the history at once (thumbnail written) and the item is hidden; turning the switch on saves the open photo | F | U CameraViewModelTest, CameraSettingsViewModelTest, PhotoStoreTest; M | 2026-10-26 (API 37) |
+| CAM36 | The round button right of the shutter shows the latest history photo, the history icon while the history is empty and with the e-ink theme; it opens the history page | F | U CameraViewModelTest; M | 2026-10-26 (API 37; e-ink not checked) |
+| CAM37 | History page: a grid newest saved first, each tile with its date (time for today) and the flag of its recognition language; a tap opens the photo on the Camera tab with its stored text and no recognition; with manual saving and an unsaved open photo the same three-button question comes first, and Save keeps both photos | F | U PhotoHistoryViewModelTest, PhotoStoreTest; M | 2026-10-26 (API 37) |
+| CAM38 | Long press selects, "N selected", taps add or remove, ✕ or Back clears; the trash asks "N photos will be deleted from history" → their folders are gone; the photo open on the Camera tab among them is deleted and the tab shows the live camera | F | U PhotoHistoryViewModelTest, PhotoStoreTest, CameraViewModelTest; M | 2026-10-26 (API 37) |
+| CAM39 | Camera settings from ⋮ and from Settings (the row before Appearance): Save automatically, Photo limit and Size limit, MB (digits only, 0 = none), the usage "N photos · size" or "No photos in history"; lowering a limit below the history asks "The N oldest photos…" — Cancel restores the field, Delete trims, the open photo too when it is among them; a limit typed and left with Back (keyboard open or hidden) or the arrow is stored, and one that would delete photos asks first: Delete trims and closes the page, Cancel shows the stored limit again and the next Back leaves; a limit typed and left by tapping the current tab is stored (one that would delete photos is dropped), and by switching tabs asks on return | F | U CameraSettingsViewModelTest, HistoryLimitsTest, PhotoStoreTest; I LimitFieldTest (API 30); M | 2026-10-27 (API 37; leaving with a typed limit, tab taps, Delete and Cancel), 2026-10-26 (API 37) |
+| CAM40 | Clear history → "All photos in history will be deleted." → the history and its folders are empty; the photo open on the Camera tab, being in the history, is deleted and the tab shows the live camera; an open photo never saved (manual saving) stays | F | U PhotoStoreTest, CameraViewModelTest, CameraSettingsViewModelTest; M | 2026-10-26 (API 37; the unsaved case by unit test only) |
+| CAM41 | Room v2 → v3 keeps the photos (earlier history ordered by id, the current photo outside it); thumbnails are upright 320 px JPEGs | F | I PhotoDatabaseTest | 2026-10-26 (API 37) |
+| CAM42 | The round import button left of the shutter, ⋮ Import from gallery over a photo and over the live camera, and the button on the camera-access page open the system photo picker for one image; closing the picker changes nothing and leaves no staged file; the buttons are off while the page is busy | F | M | 2026-10-26 (API 30/37) |
+| CAM43 | A picked image opens as the current photo and is recognized at once in the chip's language; with Save automatically it is in the history at once; its history tile shows the import time; an EXIF-rotated JPEG shows upright | F | U CameraViewModelTest; M | 2026-10-26 (API 30/37) |
+| CAM44 | An unsaved current photo with manual saving → the question comes after the pick: Cancel keeps the photo and drops the copy, Delete opens the import, Save to history keeps both; a failed save keeps the photo | F | U CameraViewModelTest; M | 2026-10-26 (API 30/37) |
+| CAM45 | Share → Screenlate for one image from another app: the app comes to the front on the Camera tab from any tab and imports it as in CAM43–CAM44; during the first run the tab stays and the image opens when the Camera tab is first opened; without a read grant → "The image could not be opened." and the photo stays; a link to the app's own provider (also with a user prefix, `content://0@<app>.anki.media/…`) or a `file:` path → nothing opens, no crash; the same links sent to the main screen as an `open=shared-image` request with clip data → nothing opens | F | U CameraViewModelTest (the queue), ShareImageActivityTest; M | 2026-10-27 (API 37: the prefix and the main screen; the rest 2026-10-26, API 30/37) |
+| CAM46 | Formats: JPEG, PNG, WebP and HEIF are stored as they came (same bytes); GIF, BMP and others become a PNG of the upright pixels, scaled down past 24 MP; a file the phone cannot decode → "The image could not be opened." with no file left | F | U PhotoImportsTest; I PhotoImportDeviceTest; M | 2026-10-26 (API 30/37) |
+| CAM47 | A recognized photo with no text → the bubble over it says "No text found in the photo." | F | M | 2026-10-27 (API 37) |
+| CAM48 | A photo in a language other than the active one: the grey ➕ → "Open Anki settings" opens the Anki settings of the photo's language, the installation link of a photo whose dictionaries are missing opens its dictionaries; on the Camera page, the "Can't recognize <language>" dialog opens the dictionaries of that language; another such request while that page is open replaces it with the new language | F | M | 2026-10-27 (API 37; the popup's dictionaries link through the app intent; the Camera dialog with a dictionary folder moved aside) |
+| CAM49 | Whole photo of an imported long image (a side over 16383 px) → the note's picture is scaled to 16383 px, not an empty file | N | U WebpSizeTest; I WebpLimitTest | 2026-10-27 (API 37, instrumented only) |
+| CAM50 | An image over 100 MB from the picker or the share sheet → "The image is larger than 100 MB."; the current photo stays, no copy is left | N | U PhotoImportsTest, CameraViewModelTest; M | 2026-10-27 (API 37, the picker) |
+| CAM51 | The Camera tab's language turned off in the language settings → the chip shows the active language; turned on again → the Camera tab's own language returns; a language chosen on the chip meanwhile stays | N | U CameraPreferencesTest; M | 2026-10-27 (API 37) |
+| CAM52 | Add to Anki with Whole photo of a photo over 4 MP → the note's picture is about 4 MP and upright; a frame under 4 MP keeps the original pixels | N | U FittedSizeTest; I PhotoImageTest; M | 2026-10-27 (API 37, Whole photo) |
+| CAM53 | The bubble resting on a word of a photo, the photo panned or zoomed → the popup follows the word; the word out of the visible part → the popup stays where it was | N | M | 2026-10-27 (API 37, pans injected) |
+| CAM54 | A note made over a photo fills `{document-title}` with "Camera" in the app's language | N | M | 2026-10-27 (API 37, English) |
+| CAM55 | High accuracy on: a photo over 1500 px with lettering taller than 200 px across a tile seam → the lettering reads whole, small text comes from the tiles; the region count and the missing-region map leave the extra pass out; its failure alone gives no warning | N | U PhotoAssemblyTest, PhotoTilesTest, PhotoRecognitionJobsTest, CameraPhotoControlsTest; I PhotoRegionsTest; M | 2026-10-27 (API 37; the failure by unit test only) |
+| CAM56 | High accuracy off (the default): a photo over 1500 px is read in one request (the log names one tile), the status has no region count and the bar runs without a share; with Both and a network the device does not read it, with the cloud failing the device's text comes | N | U PhotoTilesTest, PhotoRecognitionJobsTest, CompositeOcrTest, CameraPhotoControlsTest; M | 2026-10-28 (API 37) |
+| CAM57 | Camera settings start with Recognition: High accuracy with its hint, Engines with the current choice and a chevron, opening the bubble settings at Screen recognition; Back returns to Camera settings; Settings → Camera reads "Accuracy, photo history, automatic saving, limits"; turning High accuracy on tints the strip of a large photo read whole ("Settings changed"), off leaves a photo read by tiles as it is | N | U CameraPhotoControlsTest; M | 2026-10-28 (API 37) |
+| CAM58 | ⋮ over a photo over 1500 px read whole: Recognize more accurately comes first; it reads the photo by tiles once (region count in the status) and then leaves the menu; it is not shown for a photo read by tiles, a photo up to 1500 px or while the photo is recognized | N | U CameraPhotoControlsTest; M | 2026-10-28 (API 37; a photo up to 1500 px by unit test only) |
+
+
+
+### NAV: bottom navigation
+
+| ID | Check | Cat | Cov | Checked |
+|---|---|---|---|---|
+| NAV1 | Home, Search, Camera, Settings left to right; query and Settings subpage survive tab changes; reselect returns to tab root; Back from root returns Home | F | M | 2026-10-26 (API 37) |
+| NAV2 | Overlay's Anki/settings request opens its page in the Settings tab; text-selection menu still resolves and opens standalone Search | F | I ProcessTextTest, M | 2026-10-26 (API 37; Anki request) |
+| NAV3 | First-launch language/setup and debug image viewer hide the bar; finishing setup reaches Home; background-tip badge behaves across tab changes | F | M | 2026-10-26 (API 30/37) |
+| NAV4 | The Search tab with a blank query opens without the keyboard, the bar stays usable; tapping the field opens it | F | M | 2026-10-26 (API 37) |
+| NAV5 | During the first run, a page requested from outside (the selection-menu search's link to Dictionaries, the overlay's Anki or settings request) opens over it without the bar; Back returns to the first-run question | F | I FirstRunRequestTest; M | 2026-10-27 (API 37) |
+
 ### NF: non-functional
 
 Baselines are measured on `Pixel_10_Pro` (API 37) with the host idle; a value more than 1.5 times the last run's on
@@ -456,9 +544,9 @@ the same AVD is a finding. The first run of this model records them in the run l
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| NF1 | Scan timings from the log: capture, band draft, full draft, cloud, final (earlier: band 1.6–2.4 s, full 5 s on the emulator) | E | M | 2026-10-18 |
+| NF1 | Scan timings from the log: capture, band draft, full draft, cloud, final (earlier: band 1.6–2.4 s, full 5 s on the emulator) | E | M | 2026-10-27 |
 | NF2 | Lookup to rendered entry (`popup-eval.mjs`; earlier 30–45 ms, する 100–180 ms) | F | M | 2026-10-14 |
-| NF3 | Dragging the bubble: janky frames and the median frame time against the last run's (`dumpsys gfxinfo` after `reset`, over text and over an empty area), the entry keeps up with the aim | E | M | 2026-10-18 |
+| NF3 | Dragging the bubble: janky frames and the median frame time against the last run's (`dumpsys gfxinfo` after `reset`, over text and over an empty area), the entry keeps up with the aim | E | M | 2026-10-27 |
 | NF4 | Pulling the bubble out has no move animation (`android.anim.lf` trace) on API 30 and API 37 | E | U BubbleWindowMoverTest, M | 2026-10-18 (API 37), 2026-10-22 (API 30) |
 | NF5 | Screen transitions without a white flash or a visible previous screen (screen recording, dark theme) | F | M | 2026-10-14 |
 | NF6 | Cold start: the splash until the settings are read, then content, no empty frame; `am start -W` TotalTime | F | M | 2026-10-14 |
@@ -484,6 +572,435 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `features/camera-followups` (uncommitted build on `be79b43c`), Pixel_10_Pro (API 37)
+
+- Build: the debug APK built with native code for x86_64 only (an init script clearing `ndk.abiFilters` to
+  `x86_64`; 93 MB), so no APK copy was needed; unit tests and lint passed. Slovenian active, screen source over
+  `sl-sample.png` in the debug viewer.
+- POP39: `screenrecord` at 640 × 1424 and every frame extracted (ffmpeg). Popup on "žlica", the bubble docked, pulled
+  out and aimed at "Žena" → the highlight first, then after about 150 ms the popup with "žena" only; no frame showed
+  "žlica". A popup closed by a lookup without results, then opened on another word: the same. From one word straight
+  to the next (the popup open), the old content stayed for one frame after the highlight moved, then the new one
+  (about 70 ms). The first popup after the install took about 0.4 s to appear. An aim far off the text keeps the
+  popup: "When the aim leaves the word" is off on this AVD.
+- BUB17: over the debug viewer (Screenlate in front) the hold menu has Copy this paragraph and Copy all recognized
+  text only; over the launcher Open Screenlate too, and it brought the open window back. Over the live camera
+  (nothing to copy, one quick language) holding opens no menu. `dumpsys vibrator_manager` lists no vibrations on
+  this AVD, not even a pull-out's, so the vibration part is not seen.
+- CAM7: over a recognized photo, the copy items only, no flags.
+- CAM56: `market-4000.jpg` (4000 × 3000) imported with High accuracy off → one cloud request (1500 × 1125, 164 KB,
+  1.9 s), "Recognizing" with a bar without a share, then "Recognized · <time>" without a region count. Wi-Fi and
+  data off, Recognize → read on the device (ML Kit's pipeline in the log), recognized whole.
+- CAM57: Settings → Camera reads "Accuracy, photo history, automatic saving, limits"; Camera settings start with
+  Recognition (High accuracy with its hint, Engines "Both" with a chevron); Engines opens Bubble at Screen
+  recognition, Back returns. High accuracy on → the photo read whole shows "Settings changed" with the tinted strip;
+  Recognize then reads the overview and 9 tiles (10 requests, "9 of 9 regions"); High accuracy off → that photo stays
+  as it is.
+- CAM58: ⋮ over the photo read whole → Recognize more accurately first; it read the overview and 9 tiles ("3 of 9
+  regions" while reading, "9 of 9 regions" after); then ⋮ has no such item; while a recognition runs it is not shown
+  either. A photo up to 1500 px: unit test only.
+- Host: the first build attempts failed on the host, not in the code: D: had about 8 GB free, then the Windows commit
+  limit ran out (a build left running before a session restart compiled MNN for three ABIs with 20 clang processes,
+  while BlueStacks started). `--max-workers=3` and the x86_64-only init script kept this run within memory.
+- Cleanup: the test photo deleted (no history), the photo language back to Japanese, the recordings on `/sdcard`
+  deleted; `market-4000.jpg` stays in `/sdcard/Pictures`. The AVD powered off, adb stopped.
+
+### 2026-10-27, `features/camera-lookup` at `a16ceda7` (the camera review's last commit), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Build: an x86_64-only copy of the debug APK on API 37; Japanese active, screen source over Search results for
+  "shashin".
+- BUB1/OCR1: pull-out → cloud final 42 paragraphs in 1.7–1.8 s, 何 with its highlight. The ML Kit band never came
+  before the cloud: offline, the band took 3.0–3.9 s and the whole page 7.6–7.9 s (8 and 39 paragraphs), about three
+  times the run of 2026-10-26 (draft in 1.1 s), before and after a reboot. The screen OCR path has no change since that
+  run and the emulator was idle between scans: the emulator ran slower today (see NF1, NF3). Offline the band draft
+  shows first, then the device's final.
+- BUB2: moved → lookups only (51–252 ms), no scan.
+- ANK2: ➕ → Added; 📖; holding 📖 → "Add anyway" and "Add anyway, with a picture" → crop editor → Added with a picture
+  (forced); 📖 opened AnkiDroid's card browser.
+- BUB5: Korean starred: the floating bubble's hold menu shows the Japanese and Korean flags, Japanese ringed; Korean →
+  glyph 한, log "Active language ko from the bubble menu"; back to Japanese the same way. The hold menu opens only on
+  a floating bubble; adb needs separate `motionevent` DOWN and UP for it.
+- LNG1: the home card with both flags, the active one ringed; with one quick language no flag row.
+- UPD2: the app's own log (2.3 MB) and logcat after the scans, lookups and notes: no CJK characters, none of the words.
+- NF1: tap rescans: cloud final 1.1–1.4 s, about 0.1–0.2 s after the scan starts; the device draft as above.
+- NF3: dragging the floating bubble over text: 99 % janky frames, median 113 ms, 90th percentile 200 ms (last run
+  82 %, 30–34 ms, 65–73 ms). The whole emulator ran about three times slower today, ML Kit's native time included;
+  to recheck on the phone or after a host restart.
+- Not run: OCR9 (U ReadingOrderTest), OCR18/OCR19 (no Paddle change), the lookup cases (no lookup change), and a hit
+  test of a Latin word or a number in an Arabic line on the emulator (TextLayoutTest covers the split; the change
+  also applies to screen scans in right-to-left languages).
+- Instrumented on API 37: PhotoImageTest 3/3, PhotoRegionsTest 2/2, CropEditorTest 7/7, ScreenNoteImageTest 4/4,
+  WebpLimitTest 1/1. On API 30: LimitFieldTest 1/1, FirstRunRequestTest 1/1. A comma list in
+  `-Pandroid.testInstrumentationRunnerArguments.class` ran only its first class: run one class per call.
+- A minified build of the same commit for the owner's phone (release type with the Dev id and label, debug-signed,
+  arm64 only, compressed native code): 20.6 MB. Its x86_64 copy scanned, looked up and opened Camera on API 37. The
+  R8 mapping is in `testdata/local-research/builds/`.
+- CI (`ci.yml` by hand on `a16ceda7`): passed.
+- Cleanup: API 37: the photo history (four test photos) and the current photo deleted; `/sdcard/Pictures/review-*.jpg`,
+  an old saved PNG and UI dumps on `/sdcard` deleted; Slovenian active again, Korean unstarred; test packages removed;
+  `sys_storage_threshold_max_bytes` set for one install and deleted. Updates of YouTube, YouTube Music, Maps, Gmail,
+  Photos and the Google app uninstalled (about 1 GB; the Play Store brings them back): data free 1.6 GB, it had
+  590 MB and refused installs. The local "Default" deck holds two more 枚 notes. API 30: the debug app reinstalled at
+  its first run (the connected run uninstalls it), the stale `dictionary.api.test` package removed. Both emulators
+  shut down; lock released. `/sdcard/AnkiDroid-owner-backup` (1.1 GB) stays.
+
+### 2026-10-27, `features/camera-lookup`, the work from the camera review's answers (uncommitted build on `325fe030`), Pixel_10_Pro (API 37)
+
+- Builds: an x86_64-only copy of the debug APK (storage thresholds lowered for the install, deleted after).
+- CAM50: a 101 MB JPEG (a small image padded after its end) picked in the photo picker → "The image is larger than
+  100 MB.", the current photo stays, no partial copy in the app's storage. A 104 MB PNG of 5900 × 5900 px filled the
+  emulator's memory while the media provider indexed it, and the picker no longer opened until a reboot; the padded
+  JPEG avoids that.
+- CAM51: Slovenian active, Dutch chosen on the chip → Dutch turned off (dictionaries kept) → the chip shows Slovenian;
+  Dutch turned on (it becomes active) and Slovenian made active again → the chip shows Dutch. The chip's choice also
+  stays while the active language changes. A language turned on again moves to the end of the chip's list.
+- CAM52: Whole photo of a 2400 × 3000 import → a 1789 × 2236 WebP (4.0 MP), upright.
+- CAM53: pans injected with `PhotoGestureDriver` (the `core:photos` test APK) → the popup follows its word; over 120
+  frames the popup's window drew no frame of its own; UI-thread time per frame 2.62 ms median with the popup, 2.49 ms
+  without.
+- CAM54: the Sentence field template `{sentence} | {document-title}` → "<sentence> | Camera" (template restored).
+- CAM55: a 2400 × 3000 import with a 600 px headline across the seam of the tile rows → "6 of 6 regions" while
+  recognizing and when done; the stored recognition holds the headline whole from the overview pass, its tile pieces
+  dropped, the small text from the tiles.
+
+### 2026-10-27, `features/camera-lookup`, the Camera screen review's fixes (uncommitted build on `205f3ddb`), Pixel_10_Pro (API 37)
+
+- Builds: an x86_64-only copy of the debug APK (storage thresholds lowered for the install, deleted after); the
+  accessibility service bound again after each install.
+- `:app:testDebugUnitTest` (camera tests 75/75), `:app:lintDebug` with no findings in the changed files; instrumented
+  `FirstRunRequestTest` passes on API 37 (failed before its fix); `LimitFieldTest` waits for the API 30 run.
+- By hand, each reproduced before its fix: an `open=shared-image` request to the launcher with a private `file:` link
+  and a share of `content://0@<app>…` → nothing imported; a Dictionaries request from the selection-menu search during
+  the first run → the page over the first run, Back returns to it, no bar (NAV5); a word of the photo under the open
+  language menu and under the open ⋮ menu → the bubble finds nothing there (CAM30); 10 s of live camera → no
+  `setFlashAsync` line (CAM29).
+- Camera settings (CAM39): a typed limit left with Back (keyboard open or hidden) or the arrow → stored; one that
+  would delete a photo → the question; Cancel → the stored limit in the field, the next Back leaves; Delete → trimmed
+  and the page closes; a quick double Back → one page closed; 10 typed and the Camera tab tapped → stored (lost
+  before); 3 typed and Home tapped → the question on return to the Camera tab.
+- ⋮ Save to history: shown for a manual capture, hidden for an automatically saved one (CAM30).
+
+### 2026-10-26, `features/camera-lookup`, importing images and sharing them to the app (uncommitted build on `ea48441d`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Builds: API 37 an x86_64-only copy of the debug APK (storage thresholds lowered for the install, deleted after);
+  API 30 the universal debug APK.
+- Root `assembleDebug testDebugUnitTest`: 1652 JVM tests, 0 failures, 5 skipped; `:app:lintDebug` and
+  `:core:photos:lintDebug` with no findings in the new code or strings.
+- API 37 instrumented `PhotoImportDeviceTest` 3/3 (JPEG bytes and orientation kept, a BMP becomes a PNG the viewer
+  reads, text rejected); the test APK uninstalled after.
+- API 37 by hand: the import button left of the shutter; closing the picker → no change, `.staging` empty (CAM42);
+  a JPEG with EXIF orientation 6 → upright, the stored bytes identical, recognized at once (CAM43); ⋮ over a photo:
+  Save to gallery, Save to history, History, Import from gallery, Camera settings; over the live camera: History,
+  Import from gallery, Camera settings (CAM30); a GIF over an unsaved photo → the question after the pick, Cancel →
+  the photo kept and the copy deleted; again → Delete → stored as PNG, the old folder gone; a BMP → Save to history →
+  the old photo in the history with a thumbnail (CAM44, CAM46); a share from the shell without a grant → "The image
+  could not be opened." (CAM45); a share from the Files app while on the Settings tab → the Camera tab and the
+  question, Delete → the image current; Save automatically on, a shared JPEG → no question, "Photo 28 saved to the
+  history"; the history tiles at the import times with the Japanese flag (CAM43); camera access blocked → "Open
+  settings" and "Import from gallery" → imported and saved (CAM32, CAM42).
+- API 30 by hand: a share from the Files app during the first run → the app in front, still on the first-run question;
+  after the first run (Japanese, JMdict and the recommended extras) the Camera tab opened the shared GIF as a PNG of
+  1,145,923 bytes, as on API 37, and recognized it (CAM45); ⋮ Import from gallery opened the Files app's picker (no
+  system photo picker on this image); a PNG picked over the unsaved photo → the question → Save to history → the GIF
+  in the history with a thumbnail, the PNG current with its 602,500 original bytes (CAM44, CAM46).
+- Findings, fixed: a share that reached the app without a read grant (the shell's `am start`) did nothing, as passing
+  the grant on threw a SecurityException that the start helper swallowed; the share activity now passes the image on
+  without the grant flag when it holds none, and the Camera page says it cannot open it. Lint then flagged the
+  exported share activity (UnsafeIntentLaunch): any app could hand it a link to the app's own providers or a `file:`
+  path into its data. It now takes only another app's `content:` link through `IntentSanitizer`. The first build of
+  that crashed on every share (the sanitizer requires a component rule) and the second dropped every link (it keeps
+  EXTRA_STREAM only with the read-grant flag allowed); both were found on API 37 before the commit. The final build on
+  API 37: the app's own log link and a `file:` path to its preferences → nothing opens, no crash; a media link from
+  the shell → "The image could not be opened."; a share from the Files app → imported and recognized. Lint reports
+  the Uri read from the share as an intent and ignores `@SuppressLint` and `tools:ignore` there, so `app/lint.xml`
+  ignores UnsafeIntentLaunch for that file alone.
+- Not checked by hand: a restart from the recent apps does not import the shared image again (it needs the process
+  stopped, which these checks never do).
+- New: CAM42–CAM46, all F. CAM30 and CAM32 reworded for the import items.
+
+Left on the emulators: API 37 Save automatically off, no photos, camera access granted, the test images and their
+media rows deleted, the storage threshold settings deleted, the service bound; API 30 the debug APK reinstalled to
+bring back the first run it had before, the test image deleted, the service bound. Both shut down.
+
+### 2026-10-26, `features/camera-lookup`, the photo history and Camera settings (uncommitted build on `9d3b8c24`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Builds: API 37 an x86_64-only copy of the debug APK (storage thresholds lowered for the install, deleted after);
+  API 30 an x86-only copy and the app's test APK.
+- Root `assembleDebug testDebugUnitTest`: 1636 JVM tests, 0 failures, 5 skipped; `:app:lintDebug` and
+  `:core:photos:lintDebug` with no findings in the camera code or the new strings.
+- API 37 instrumented `PhotoDatabaseTest` 9/9 (v2 → v3, history order, upright thumbnail). Its history-order test then
+  changed one line (`unsave` → `delete`) and was only compiled again.
+- API 37 by hand: the history icon right of the shutter, the latest thumbnail after saving (CAM36); ✕ at the left and
+  the ⋮ order (CAM30); Save to history → "Saved to history" and the item gone (CAM35); a saved photo closed silently;
+  the unsaved question, Delete → "Photo deleted", Save → in the history (CAM34); the grid with time and flag; opening
+  with the question → Save → the old photo with its stored text and no recognition in the log (CAM37); long press,
+  "2 selected", the plural question, folders deleted (CAM38); Camera settings from ⋮ and Settings, automatic saving
+  hiding the item, "The 2 oldest photos…" with Cancel restoring the field and Delete trimming (CAM39).
+- Owner's change during the check: a photo that leaves the history is deleted, the open one included. After it:
+  automatic saving put a capture in the history (thumbnail present, no Save to history in ⋮); Clear history →
+  "All photos in history will be deleted." → no photo folders, the Camera tab on the live camera (CAM40); deleting the
+  open photo on the history page → the live camera (CAM38).
+- API 30: `UnsavedPhotoDialogTest` 3/3.
+- Findings, fixed: Save to history in the question on the history page did nothing, as the dialog dismissed itself
+  (clearing the question) before answering; the answer now comes first (`UnsavedPhotoDialogTest`). Back on the Camera
+  tab after a deletion, the history button decoded the deleted photo's thumbnail from the last list it saw
+  (BitmapFactory error in the log, the icon shown); a missing file is now skipped.
+- Not checked by hand: the e-ink history button; Clear history keeping an unsaved open photo (unit test only).
+- New: CAM34–CAM41, all F. CAM11, CAM30 and CAM32 reworded for ✕ instead of Delete.
+
+Left on the emulators: API 37 Save automatically off, both limits 0, no photo, the storage threshold settings
+deleted, the service bound; API 30 the test APK removed, the universal debug APK reinstalled (an x86-only copy
+lacks ML Kit's libraries), the service bound. Both shut down.
+
+### 2026-10-26, `features/camera-lookup`, the Camera page restyle (uncommitted build on `54b310df`), Pixel_10_Pro (API 37) and Screenlate_API30_glide (API 30)
+
+- Builds: API 37 an x86_64-only copy of the debug APK; API 30 the universal debug APK.
+- Unit: CameraPhotoControlsTest (8), CameraViewModelTest (11), CameraLookupTest (3), PhotoDrawingTest (4) and
+  PhotoViewportTest passed; lint shows no new warnings in the camera code.
+- API 37, camera access off: the crossed-out camera icon, the title, the text and Allow camera; after the access was
+  denied in the system dialog, "Camera access is blocked" with Open settings (CAM32).
+- Live camera: the 4:3 frame at its viewer size with the blurred room around it and no black band above the tabs;
+  the chip at the top left; the ring shutter with a spinner in the ring during capture (CAM29). Photos stay 1280×960
+  (the virtual camera's largest JPEG) with the analysis stream at 320×240 (`dumpsys media.camera`).
+- Over a photo: New photo and Delete as icons, ⋮ → Save to gallery; the strip "Recognized · 2:05 PM" with Recognize as
+  a text button (CAM27, CAM30).
+- The chip's menu over the photo and over the live camera: "Photo language", the turned-on languages with flags, a
+  check on Japanese, "Active" under the app's active language, Manage languages → Settings → Languages (CAM28).
+  Choosing Khmer tinted the strip: "Recognized: Japanese · 2:05 PM · Language changed", Recognize filled; after
+  Recognize, "Recognized · 2:07 PM".
+- Partial fixture (`PhotoWorkflowTest -e photoFixture partialCloud`): "Recognized · 3 of 4 regions · 2:09 PM ·
+  Settings changed" with ⚠; the dialog with the warning icon, "1 of 4 regions could not be recognized. Words in these
+  regions can't be looked up.", the picture with the missing region marked and the cause; Retry missing regions →
+  "Recognizing · 3 of 4 regions" with the bar at 75 %, then "Recognized · 4 of 4 regions" (CAM27, CAM31).
+- With a photo, the live camera has ✕ at the left, which returned to the photo (CAM30). Delete → the dialog →
+  "Photo deleted" over the live camera (CAM32).
+- E-ink theme: black around the live frame, the chip with "JA"; a language change frames the strip and makes its
+  text bold (CAM27, CAM29).
+- API 30: LiveCameraTest (1), PhotoViewerTest and PhotoViewerGestureTest (2) passed. Below API 31 the fill is only
+  scaled, without blur; not looked at by hand, as the app there was at the first-run language choice.
+- Not checked by hand: the pressed shutter shrinking; "Dictionary missing" and "Recognition model missing" in the
+  menu (no turned-on language lacked either); the bubble with the menu open; "Opening photo…"; the blocked-recognition
+  dialog title (CameraViewModelTest only); CAM33, as adb cannot pinch on API 37 (PhotoViewportTest only).
+- Moved to F: CAM27–CAM32. CAM33 stays N.
+
+Left on the emulators: API 37 the Japanese camera language, no photo, e-ink off, camera access revoked with its user
+flags cleared, the storage threshold settings deleted, the service bound; API 30 the test APK removed, the service
+bound. Both shut down.
+
+### 2026-10-26, `claude/nifty-faraday-59a7fb` (`languages/main` d1977c62 with the fix, 0.2.3-5f4a75d6, x86_64-only copy), Pixel_10_Pro (API 37)
+
+Scope: "Open Screenlate" in the bubble's hold menu started a second MainActivity over a task that the selection
+menu's search had started. BUB16 (new, first check, moved to F).
+
+- Before, on 0.2.3-a2235350: `am start -n …/com.vpr.screenlate.MainActivity` (the intent the search used), Home, the
+  hold menu's "Open Screenlate" → task #289 with two MainActivity records.
+- `OpenAppTest` (4 cases, `am instrument -e class`): passed. With `SINGLE_TOP` removed from `OverlayIntents` for a
+  check, "a task started by another intent" and "search opens a screen in the running app" failed (a second instance,
+  a recreated one); the two search cases still passed, as the task's root intent is now the launcher's.
+- BUB16 by hand: "voda" selected in AnkiDroid's note editor → "Look up in Screenlate" (the second of two such items:
+  the release build is installed too) → the grey ➕ after `pm revoke … com.ichi2.anki.permission.READ_WRITE_DATABASE`
+  → "Open Anki settings" → task #295 with one MainActivity, root intent `MAIN`/`LAUNCHER`; Home → "Open Screenlate"
+  → Anki settings again, the same ActivityRecord, one in the task; Home → the launcher icon → the same; Back → the
+  home screen of the app, Back → the launcher. The permission was granted again afterwards.
+- The Contacts editor's selection menu on API 37 lists no "Look up in Screenlate" (only Cut, Copy, Share, Translate);
+  AnkiDroid's note editor does, behind ⋮.
+
+Left on the emulator: 0.2.3-5f4a75d6 instead of a2235350, data kept, the Anki permission granted, the service bound;
+the storage threshold settings deleted again; the emulator shut down.
+
+### 2026-10-26, `features/camera-lookup`, the Search tab without auto-focus (uncommitted build after `a2235350`), Pixel_10_Pro (API 37)
+
+- NAV4: the Search tab with a blank query opened with the field unfocused and no keyboard (`mInputShown=false`), the
+  bar visible; tapping the field opened the keyboard; Back, Home, Search again → no keyboard.
+- Moved to F: NAV4.
+
+### 2026-10-26, `features/camera-lookup`, phase 1.5 acceptance on `a2027390` with the two fixes below
+
+- Builds: Pixel_10_Pro (API 37) an x86_64-only copy of the debug APK; Screenlate_API30_glide (API 30, 32-bit x86)
+  the universal debug APK. An "x86-only" copy has no native libraries (the debug APK carries none for x86), and
+  ML Kit crashed at service start with UnsatisfiedLinkError; the universal APK runs armeabi-v7a through translation.
+- Fixtures: PhotoRegressionFixtureTest prepare/restore and firstRun on both, unrecognized on API 37;
+  PhotoWorkflowTest on API 37 only (`@SdkSuppress(minSdkVersion = 37)`); PhotoAnkiFixtureTest prepare/restore.
+- Before the fixes, API 37, generated recognized page: CAM1 again. CAM3: aim on the toolbar, both letterboxes and
+  the toolbar over a zoomed photo → no entry. CAM4: live camera, unrecognized photo and running recognition → pull-out
+  and tap log "Nothing to read on the Camera page", no capture or app text. CAM6: entry over the Search page, then the
+  photo shown → the entry closes, the photo's text attaches. CAM7: hold menu over the photo → Copy (12 characters),
+  Open Screenlate (a launcher-started task stays on Camera), no language chips; glyph SL → あ over the photo → SL
+  after leaving it. BUB5: flags still offered over the screen. NAV3: the debug image viewer and the first-run
+  language list have no bar; finishing the first run reaches Home; the background-tip badge stays across tab changes
+  and clears after leaving the Settings list.
+- Finding 1 (fixed): a highlight's 2 dp margin drew over the toolbar above a zoomed photo. The overlay now clips
+  highlights, margins included, to the photo's visible part (TextFrameTest). After: the toolbar's pixels at y 588-599
+  keep their colour, the highlight starts at 600.
+- Finding 2 (fixed): a pull-out right after tapping the Camera tab scanned the previous page, because the page became
+  the source only when resumed, about 200-300 ms after its entry on API 37. The Camera page now presents its source
+  from ON_START until ON_PAUSE. After: API 37 4/4 runs of tab tap + immediate pull-out log "Nothing to read on the
+  Camera page", then "Photo text attached (pull-out, 32 paragraphs)" about 230 ms later (one run opened a cloud
+  connection on touch-down before the page started; no image was sent). API 30, live camera: 3/3 "Nothing to read".
+- E regressions on the fixed build, API 37, Japanese active, screen source over Search results for "shashin":
+  BUB1/OCR1 ML Kit draft 7 paragraphs in 1102 ms, cloud final 42 paragraphs in 1900 ms, 何 with its highlight.
+  BUB2 moved → lookups only (37 and 128 ms), no scan. ANK2 ➕ → Added; 📖; holding 📖 → "Add anyway" and "Add anyway,
+  with a picture" → crop editor → Added with a picture (forced); holding ➕ → crop editor → Added with a picture;
+  📖 opened AnkiDroid's browser empty, as before (its deck filter). With `{audio}` in Meaning and
+  `{sentence-translation}` in Sentence of the test note type: Added, audio and translation. AUD1 holding 🔊 lists two
+  recordings; both play. TR1 translation shown with the service chip and copy (Bing failed after 3 s, Google
+  answered in 2.1 s); a second tap hides it; the next word starts without it. UPD2 logcat and the 1.7 MB app log:
+  no CJK characters, none of the words, the sentence or its translation. LNG1 home card.
+- NAV3 on API 30: first-run list → Arabic → its download page without the bar; Back returns to the list; no download
+  started.
+- Moved to F: CAM3, CAM4, CAM6, CAM7, NAV3.
+- Noticed, not changed: the Search tab focuses its field and opens the keyboard on a blank query, covering the bar
+  (asked the owner); "Open Screenlate" from the bubble menu stacks a second MainActivity when the task was started by
+  another intent, such as ProcessTextActivity's (before this branch); a screen scan's popup stays after an in-app tab
+  change (a scan is a snapshot; before this branch).
+- Checks: root `assembleDebug testDebugUnitTest lintDebug --max-workers=1`: 1586 JVM tests, 0 failures/errors,
+  5 skipped. Lint flagged one new UseKtx warning in the clip code; fixed with `withSave`, then `assembleDebug
+  :overlay:testDebugUnitTest :overlay:lintDebug` passed: overlay 241 tests, its lint back to the 5 earlier warnings.
+  Page scripts unchanged. Logs under ignored build/: photo-15b-*.log.
+- Cleanup: API 37 generated photo deleted (no current photo, as before), both fixtures restored (Slovenian active,
+  Japanese Anki settings back), camera language Japanese, test packages removed, install thresholds unset. The local
+  unsynced "Screenlate Photo Test" deck holds four more notes. API 30 preferences restored to its unanswered first run,
+  the universal debug APK stays installed, its test package removed. Both emulators shut down; lock released.
+- Still pending on a phone: sharpness, focus, flash, capture delay, repeated-capture memory and drag baselines.
+
+### 2026-10-26, `features/camera-lookup`, paused acceptance checkpoint after `6c3956a8`
+
+- Owner requested pause after the current coherent milestone. Phase 1.5 is incomplete; no new CAM/NAV manual case
+  was run or promoted. Next session must continue CAM3/4/6/7, NAV3 and relevant screen/Anki/audio/translation cases.
+- API 37 class-specific instrumentation: SearchLanguageTest (2), ProcessTextTest (2), InstallationPopupTest (1),
+  LanguageReactivationTest (1), LanguageSwitchTest (1): final 7/7 PASS. Initial batch had two failures. Installation
+  link failure reproduced alone; fixed obsolete native-test DOM selector to match popup.js `.message-link` button.
+  A missing isolated cache archive did not reproduce alone; moved fixture-owned files to noBackupFilesDir. Low-space
+  cache eviction is plausible, not conclusively diagnosed. No production camera change was needed for these checks.
+- Added explicit emulator-only PhotoRegressionFixtureTest. First smoke was rejected before execution because JUnit
+  required a void return; explicit Unit fixed it. Final prepare and restore: 1/1 each, exact common preference-map
+  equality checked and private backup removed. Other stages are compiled but not exercised. See camera notes for usage.
+- Root `assembleDebug testDebugUnitTest lintDebug :app:assembleDebugAndroidTest --max-workers=1 --console=plain`:
+  PASS (2m10s); 1585 JVM tests, 0 failures/errors, 5 skipped. Final helper return/import change reassembled native
+  test APK successfully (16s), then prepare/restore passed. Page scripts unchanged; prior 146/146 result retained.
+- Logs under ignored build/: photo-15-api37-app-fixed.log, photo-15-final-checks.log, photo-15-fixture-final-build.log,
+  photo-15-fixture-prepare.log, photo-15-fixture-restore.log. Test thresholds restored after installations. No Anki
+  writes/sync, photo replacement, force-stop, app-wide connected test or phone test in this checkpoint.
+- All temporary fixture preferences restored; auxiliary test APK removed and owned emulator shut down at pause.
+  Main debug app/data preserved; API 37 still has no current private photo from the previous deletion test.
+  Physical sharpness/focus/flash/delay and repeated-capture memory/responsiveness remain pending.
+
+### 2026-10-26, `features/camera-lookup`, original-photo Anki and gallery after `66b66d85`
+
+- Implementation pushed as `e8951271`, followed by import/name cleanup and final documentation. Added CAM25/CAM26,
+  replaced the temporary no-photo-image CAM8 expectation with original-photo crop behavior and promoted all three to F.
+- Root `assembleDebug testDebugUnitTest lintDebug` and both library test APKs: PASS (3m32s); 1585 JVM tests,
+  zero failures/errors, page tests 146/146. One duplicate import introduced during cleanup was removed before this run.
+  Targeted suites/app build and all test APKs passed before device checks.
+- API 37 and API 30: PhotoImageTest/PhotoGalleryDeviceTest 3/3 and CropEditorTest/CropViewTest 8/8 each. Checks include
+  eight orientations, outward fractional selection, larger-than-preview original crop, identical JPEG/PNG byte export,
+  orientation metadata, IS_PENDING cleared only after completion, screen coordinates/ownership and editor cancellation.
+- Real API 37 popup over a generated Japanese page while app active language was Slovenian: long-press Add opened the
+  original-photo editor; Cancel added no note; reopen, Whole photo/Frame toggle and bottom-right resize worked. Add
+  exported a 1541×1257 original crop (its drawn frame was about 650×530). Local Anki fixture verified the Japanese
+  sentence and image in the dedicated Screenlate Photo Test note. Only this new synthetic attachment was read back.
+- Anki fixture prepare/verify/restore passed; the Japanese app settings were restored. Only the emulator's unsynced
+  collection was used. No account, sync or AnkiWeb operation. No owner's collection changes.
+- Save to gallery showed success. The exported PNG's SHA-256 matched the private original. After deleting the private
+  current fixture through Camera, the gallery copy remained. No automatic export and no OCR call from gallery action.
+- API 30 is 32-bit x86: x86_64-only shrunk test APKs failed ABI matching, so universal class-specific test APKs were
+  installed and passed. Main app/data was not removed. API 37 used x86_64 APKs and temporarily lowered storage
+  thresholds; prior settings were restored in finally. No app force-stop or app-wide connected run.
+- Pending: physical sharpness/focus/flash/performance and phase 1.5's remaining manual CAM/NAV/audio/translation/
+  ordinary screen-Anki regression variants. These runs establish image ownership/cropping/export, not full release acceptance.
+
+### 2026-10-26, `features/camera-lookup`, recognition/viewer continuation after `01d24c0e`
+
+- App assembly/lint and targeted unit suites passed before final root checks: app 187, photos 56, overlay 238,
+  OCR 166. Coordinator tests cover terminal publication, two simultaneous workers, retained successful tiles,
+  all-failed preservation, explicit-only restart and cancellation while an image reader terminates.
+- API 37 `PhotoRegionsTest` + `PhotoDatabaseTest`: 7/7, all 8 EXIF transforms in original pixels, far edges,
+  Room migration 1→2 and progress restoration. Separate library test APK removed after checks.
+- Emulator-only `PhotoWorkflowTest`: real local ML Kit recognition of generated 2800×2400 Japanese two-column text,
+  four tiles and original coordinates; no cloud requests in Device mode. Opt-in partialCloud fixture: four real
+  cloud tiles at 1500×1500, then deliberately omit one saved tile for the UI retry scenario.
+- Actual bubble: pull-out attached stored Japanese text despite app active language Slovenian; dictionary popup and
+  highlights worked. Pinch and one-finger pan moved text beneath a stationary bubble and re-aimed from Japanese 語
+  to 写真. No screenshot/app-text read/cloud preparation/refinement occurred and no new OCR requests were sent.
+  Native public MotionEvent injection used a separate library test process with accessibility suppression disabled;
+  Espresso injection on API 37 is broken. Screenshots, counts and booleans used for evidence; no user text logged.
+- Camera language Japanese→Korean displayed Recognized: Japanese plus Settings changed, without OCR; restored Japanese.
+  Shared OCR Both→Cloud required explicit recognition; it completed while on Settings, published once, cleared pending.
+- Terminal warning: accessible top icon, 1 of 4 missing, network cause, Retry missing regions. Retry sent exactly one
+  real cloud request while the app was backgrounded; all four tiles were retained and the warning disappeared.
+- CameraX actual capture replaced the fixture with a 1280×960 EXIF-6 emulator frame; automatic OCR sent one 960×1280
+  cloud tile without a separate tap. Shared mode restored to Both. No Anki collection changes.
+- Emulator PSS observations (not physical-device baselines): fit + loaded dictionaries ~248 MB, zoom/lookup ~316 MB;
+  after replacement/refit ~190 MB, after leaving ~198 MB in a newly started process. Physical repeated-capture,
+  latency/sharpness/focus/flash remain pending.
+- Final root `assembleDebug testDebugUnitTest lintDebug --max-workers=1`: PASS, 1576 JVM tests, zero failures/errors.
+  After a final warning-message adjustment, app assembly/unit/lint and the test APK were rebuilt successfully.
+- API 30 `PhotoViewerGestureTest`, `PhotoViewerTest`, `LiveCameraTest`: 3/3 PASS. Actual pinch/pan updates only the
+  viewport, preserves source generation and recognition identity, and reopening fits again; all 8 painted EXIF
+  transforms and preview focus/pinch/reset remain correct. CAM24 promoted to F.
+- API 37 full shutdown/reboot restored the captured image, Japanese OCR and independent camera language. Both had
+  been restored while the saved result used Cloud: pending indication was correct. No new PhotoOCR/Lens request on
+  restoration. The emulator does not reconnect this accessibility service reliably after boot; manual toggle/rebind
+  was tested earlier. No app force-stop, app data reset or collection sync was used.
+- CAM1, CAM2, CAM5 and CAM9 promoted to F with their real-photo/restart evidence. CAM3/CAM7 remain N for their full
+  dedicated manual variations; CAM4 retains N until every inactive/loading variant is checked on-device. Physical
+  flash/sharpness/focus and repeated-capture performance are still pending, as are phase 1.4 photo attachments/export.
+
+### 2026-10-26, `features/camera-lookup`, photo OCR foundation after `76a4f679`
+
+Unit verification only; recognition is not wired into the Camera UI at this checkpoint. CAM16-CAM18 added as F after
+passing. OCR 165, photos 40, overlay 237 tests passed; app compilation and lint passed (`--max-workers=1`). Page tests
+146/146 passed after `npm --prefix scripts/page-tests ci`; no JavaScript changed. Device checks wait for complete UI.
+The combining-mark deduplication test initially expected a particular Unicode normalization from the less central
+tile; corrected it to assert canonical equality, preserving the engine's actual chosen text and boxes.
+
+### 2026-10-26, `features/camera-lookup` (on `f5a3ca43` with the camera implementation before its commit), Pixel_10_Pro (API 37)
+
+Scope: continuation of phase 1.2, camera and the previously unverified navigation bar. Installed an x86_64-only copy
+of the assembled debug APK over the existing app; preserved its data and local Anki collection. Temporarily lowered
+the emulator's storage threshold for installs and deleted both overrides afterwards. No force-stop, no Anki writes.
+
+- CAM10, CAM11, CAM13, CAM14, NAV1 and NAV2 added as F after passing. Camera permission: denied twice, opened app
+  settings from the blocked state, granted while-in-use there and returned to the working camera. Capture and fitted
+  image, retake/back, deletion/cancel/confirmation, replacement and single stored photo passed. Full emulator shutdown
+  and cold reboot kept the original photo directory and reopened the stored image. Camera had no active clients in
+  the viewer. No flash unit on this emulated camera: flash is correctly hidden, hardware behavior remains D.
+- CAM4 partly checked: pull-out/tap/drag over live preview gave no entry, capture, accessibility text or cloud scan;
+  log: "Nothing to read on the Camera page". Keep N until the loading/unrecognized-photo variants are checked.
+  CAM5-CAM8 await recognized photos in 1.3; do not count these as passed by the preview check.
+- Settings > Bubble restored after Camera and back; reselect returned to Settings root, Back returned Home. Typed
+  Search text survived Camera and back. An external Anki settings request selected Settings and opened that page.
+- `PhotoViewerTest`: all 8 EXIF transforms checked against actual painted colors and reported viewport, 1/1 passed;
+  `ProcessTextTest` 2/2 passed in the same class-specific instrumentation run. The first viewer test's disposal
+  assertion raced Compose; changed it to wait for disposal, then passed. Test APK uninstalled; main app retained.
+- `assembleDebug`, `testDebugUnitTest` (1533 tests, 0 failures/errors in 9 modules) and app `lintDebug` passed with
+  `--max-workers=1`. The 15 new JVM tests cover page/source lifetime, stale callbacks, capture concurrency/cancellation,
+  failure preservation, load retry, all EXIF matrices and sampling. New strings in all 14 locales pass translation tests.
+- No page-script change. Physical book-page sharpness, flash, focus quality, timing and memory under repeated full-size
+  captures remain pending. NAV3, CAM15 and recognition-dependent cases remain pending.
+- API 30 follow-up on `Screenlate_API30_glide`: `PhotoViewerTest` and `LiveCameraTest` 2/2 passed. The latter drives
+  real PreviewView tap focus, two-finger pinch and the accessible zoom-reset button; CAM12 added as F. Fresh-install
+  first-run page showed no bottom bar (NAV3 partly checked; finishing setup and the badge are still pending).
+  Installed the assembled APK without clearing data; granted CAMERA for the hardware test, removed only the test APK.
+  Both emulators were shut down with `reboot -p`, and the shared emulator lock released.
+
+### 2026-10-25, `features/camera-lookup` (on `870ad2c5` with the photo store and lookup source before their commit, 0.2.3-870ad2c5, x86_64-only copy), Pixel_10_Pro (API 37)
+
+Scope: the screen path of the bubble after its reads moved behind the lookup source gate; the photo database's
+instrumented test. Before: 0.2.3-4cca2cc0. Slovenian active (one quick language), `sl-sample.png`.
+
+Results: all passed, no crash.
+
+- BUB1: pull-out → "Scan started", window captured, app text read (0 nodes), ML Kit draft and cloud final, the entry
+  of "je" with its highlight on the word.
+- BUB2: moved over "dan" → lookups only, no new scan. BUB3: tap → a new scan, every line flashed, aligned.
+- Hold menu: copy paragraph, copy all, Open Screenlate; no flags (one quick language); Back closed it. Dropped at the
+  right edge → "Bubble docked".
+- CAM9's I part: `:core:photos:connectedDebugAndroidTest`, `PhotoDatabaseTest` 4 of 4. /data had about 0.5 GB free:
+  the 105 MB test APK and the 84 MB app copy installed only with `sys_storage_threshold_percentage 1` and
+  `sys_storage_threshold_max_bytes 104857600`, both deleted right after. The test package was uninstalled by Gradle.
+  The emulator keeps this build with the service enabled.
 
 ### 2026-10-22, `claude/jolly-cray-bc8ce9` (`languages/main` 9736102b with both overlay commits cherry-picked, 0.2.3-4cca2cc0), Pixel_10_Pro (API 37)
 
