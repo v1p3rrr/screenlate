@@ -24,6 +24,9 @@ data class PhotoViewport(
     /** The photo's part of the screen; null when none of it is in [area]. */
     val visible: Box? = toScreen(Box(0f, 0f, photoWidth.toFloat(), photoHeight.toFloat())).intersection(area)
 
+    /** The [scale] of the whole photo fitted in [area], the view a photo opens with. */
+    val fitScale: Float get() = minOf(area.width / photoWidth, area.height / photoHeight)
+
     /** The photo's point under the screen point ([x], [y]); null when the photo does not show there. */
     fun toPhoto(x: Float, y: Float): Pair<Float, Float>? {
         if (visible?.contains(x, y) != true) return null
@@ -50,7 +53,7 @@ data class PhotoViewport(
     /** Keeps the focal photo point under [focusX]/[focusY], then pans and constrains the image to its visible edges. */
     fun transformed(focusX: Float, focusY: Float, panX: Float, panY: Float, zoom: Float): PhotoViewport {
         require(zoom.isFinite() && zoom > 0f && listOf(focusX, focusY, panX, panY).all { it.isFinite() })
-        val fit = fit(photoWidth, photoHeight, area).scale
+        val fit = fitScale
         val next = (scale * zoom).coerceIn(fit, fit * 8f)
         val ratio = next / scale
         fun constrain(offset: Float, start: Float, end: Float, size: Float): Float =
@@ -68,7 +71,7 @@ data class PhotoViewport(
      */
     fun resized(area: Box): PhotoViewport {
         if (area == this.area) return this
-        val zoom = scale / fit(photoWidth, photoHeight, this.area).scale
+        val zoom = scale / fitScale
         val centerX = (this.area.centerX - offsetX) / scale
         val centerY = (this.area.centerY - offsetY) / scale
         val fitted = fit(photoWidth, photoHeight, area)

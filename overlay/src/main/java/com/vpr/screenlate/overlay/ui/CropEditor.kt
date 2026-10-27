@@ -9,13 +9,14 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.vpr.screenlate.core.common.geometry.Box
-import com.vpr.screenlate.overlay.anki.NoteImage
 import com.vpr.screenlate.overlay.R
+import com.vpr.screenlate.overlay.anki.NoteImage
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -31,8 +32,15 @@ class CropEditor(private val context: Context, private val windowManager: Window
 
     private var generation = 0L
 
-    /** Fits photo previews above the controls; selection maps back to the owned image's original coordinates. */
-    suspend fun edit(image: NoteImage, focus: RectF?): Bitmap? {
+    /**
+     * Shows the editor and returns the cropped picture, a new bitmap the caller frees, or null if the user cancelled.
+     * A photo is fitted above the controls, a screenshot keeps its place on the screen; the frame is cropped from
+     * [image]'s own pixels either way. [image] must stay open until then. An editor still open for another note closes
+     * as if cancelled.
+     *
+     * @param focus initial frame in [image]'s coordinates; the whole image when null.
+     */
+    suspend fun edit(image: NoteImage, focus: Box?): Bitmap? {
         cancel()
         val request = generation
         val bounds = windowManager.maximumWindowMetrics.bounds
@@ -43,12 +51,15 @@ class CropEditor(private val context: Context, private val windowManager: Window
         return image.crop(selection)
     }
 
-    private suspend fun select(image: NoteImage, preview: Bitmap, focus: RectF?): Box? =
+    /** The frame the user added, in [image]'s coordinates; null when cancelled. */
+    private suspend fun select(image: NoteImage, preview: Bitmap, focus: Box?): Box? =
         suspendCancellableCoroutine { continuation ->
-            val cropView = CropView(context, preview, 0f, 0f)
-            val initial = focus?.toBox()?.intersection(image.bounds) ?: image.bounds
+            val cropView = CropView(context, preview)
+            val initial = focus?.intersection(image.bounds) ?: image.bounds
+            // The frame to return to from the whole image: the paragraph, or the middle of the image.
             var frame = if (focus == null) image.bounds.insetQuarter() else initial
             var whole = focus == null
+            // Known once the editor is laid out; the frame and Add wait for it.
             var placement: CropPlacement? = null
             lateinit var session: Session
             val density = context.resources.displayMetrics.density
@@ -60,8 +71,12 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 val wholeLabel = if (image.fit) R.string.crop_whole_photo else R.string.crop_whole_screen
                 addView(button(if (whole) R.string.crop_frame else wholeLabel, primary = false) {
                     val shown = placement ?: return@button
-                    if (whole) cropView.setFrame(shown.toScreen(frame).toRect())
-                    else { frame = shown.toSource(cropView.frame.toBox()); cropView.selectAll() }
+                    if (whole) {
+                        cropView.setFrame(shown.toScreen(frame).toRect())
+                    } else {
+                        frame = shown.toSource(cropView.frame.toBox())
+                        cropView.selectAll()
+                    }
                     whole = !whole
                     setText(if (whole) R.string.crop_frame else wholeLabel)
                 })
@@ -72,14 +87,25 @@ class CropEditor(private val context: Context, private val windowManager: Window
             }
             val root = FrameLayout(context).apply {
                 addView(cropView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-                addView(bar, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM))
+                addView(
+                    bar,
+                    FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        Gravity.BOTTOM,
+                    ),
+                )
                 addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                     if (width <= 0 || height <= 0 || bar.top <= 0) return@addOnLayoutChangeListener
                     val padding = 16 * density
                     val top = windowManager.maximumWindowMetrics.windowInsets
-                        .getInsetsIgnoringVisibility(android.view.WindowInsets.Type.statusBars()).top + padding
-                    val area = Box(padding, top, (width - padding).coerceAtLeast(padding + 1),
-                        (bar.top - padding).coerceAtLeast(top + 1))
+                        .getInsetsIgnoringVisibility(WindowInsets.Type.statusBars()).top + padding
+                    val area = Box(
+                        padding,
+                        top,
+                        (width - padding).coerceAtLeast(padding + 1),
+                        (bar.top - padding).coerceAtLeast(top + 1),
+                    )
                     val next = CropPlacement.of(image.bounds, area, image.fit)
                     if (next != placement) {
                         val selected = placement?.toSource(cropView.frame.toBox()) ?: if (whole) image.bounds else initial
@@ -91,14 +117,16 @@ class CropEditor(private val context: Context, private val windowManager: Window
             }
             session = Session(root, continuation)
             if (!OverlayWindows.add(windowManager, root, OverlayWindows.editorParams())) {
+                // The service is being unbound: as if the user cancelled.
                 continuation.resume(null)
                 return@suspendCancellableCoroutine
             }
             open = session
+            // Cancellation may come from any thread; the window is removed on the main one.
             continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }
         }
 
-    /** Also invalidates a preview being decoded before its editor opens. */
+    /** Closes the open editor as if the user cancelled, and keeps one whose preview is still decoded from opening. */
     fun cancel() {
         generation++
         open?.finish(null)
@@ -106,6 +134,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
 
     private inner class Session(private val root: View, private val continuation: CancellableContinuation<Box?>) {
         val isOpen: Boolean get() = open === this
+
         fun finish(result: Box?) {
             if (!isOpen) return
             open = null
@@ -143,7 +172,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
 
     private fun navigationBarHeight(): Int {
         val insets = windowManager.maximumWindowMetrics.windowInsets
-        return insets.getInsetsIgnoringVisibility(android.view.WindowInsets.Type.navigationBars()).bottom
+        return insets.getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars()).bottom
     }
 
     private companion object {

@@ -14,27 +14,21 @@ import kotlin.math.abs
 import kotlin.math.hypot
 
 /**
- * Shows a screenshot at its screen position with a movable, resizable crop frame. Corners resize, anything
- * inside the frame moves it. Coordinates are screen coordinates (the view fills the screen).
- *
- * @param imageLeft screen position of the screenshot's left edge.
+ * Shows an image where [place] puts it, scaled to fit there, with a movable, resizable crop frame. Corners resize,
+ * anything inside the frame moves it. Coordinates are screen coordinates (the view fills the screen); the editor maps
+ * the frame back to the image's own pixels.
  */
 @SuppressLint("ViewConstructor")
-class CropView(
-    context: Context,
-    private val image: Bitmap,
-    private val imageLeft: Float,
-    private val imageTop: Float,
-) : View(context) {
+class CropView(context: Context, private val image: Bitmap) : View(context) {
     private val density = resources.displayMetrics.density
     private val handleRadius = HANDLE_DP * density
     private val minSize = MIN_SIZE_DP * density
-    private val imageBounds = RectF(imageLeft, imageTop, imageLeft + image.width, imageTop + image.height)
+    private val imageBounds = RectF(0f, 0f, image.width.toFloat(), image.height.toFloat())
 
     /** The crop frame in screen coordinates. */
     val frame = RectF(imageBounds)
 
-    /** Places a sampled preview in its measured editor bounds. Frame coordinates remain screen coordinates. */
+    /** Draws the image in [bounds] and selects all of it. */
     fun place(bounds: RectF) {
         imageBounds.set(bounds)
         frame.set(bounds)
@@ -58,25 +52,12 @@ class CropView(
 
     fun setFrame(rect: RectF) {
         frame.set(rect)
-        // A frame outside the screenshot is kept as is by intersect(); the whole screenshot is the safe choice.
+        // A frame outside the image is kept as is by intersect(); the whole image is the safe choice.
         if (!frame.intersect(imageBounds)) frame.set(imageBounds)
         invalidate()
     }
 
     fun selectAll() = setFrame(imageBounds)
-
-    /** The part of the screenshot inside the frame, as a new bitmap that the caller may free. */
-    fun cropped(): Bitmap {
-        val scaleX = image.width / imageBounds.width()
-        val scaleY = image.height / imageBounds.height()
-        val left = ((frame.left - imageBounds.left) * scaleX).toInt().coerceIn(0, image.width - 1)
-        val top = ((frame.top - imageBounds.top) * scaleY).toInt().coerceIn(0, image.height - 1)
-        val width = (frame.width() * scaleX).toInt().coerceIn(1, image.width - left)
-        val height = (frame.height() * scaleY).toInt().coerceIn(1, image.height - top)
-        val crop = Bitmap.createBitmap(image, left, top, width, height)
-        // For the whole of an immutable bitmap createBitmap returns the screenshot itself.
-        return if (crop === image) image.copy(image.config ?: Bitmap.Config.ARGB_8888, false) else crop
-    }
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawColor(Color.BLACK)

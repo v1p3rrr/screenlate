@@ -7,6 +7,7 @@
     <string name="overlay_engine_offline">En el dispositivo (sin conexión)</string>
 
     <string name="overlay_no_text">No se encontró texto en la pantalla.</string>
+    <string name="overlay_no_text_photo">No se encontró texto en la foto.</string>
     <string name="overlay_no_app_text">Esta app no expone su texto aquí. El reconocimiento de pantalla está desactivado (Solo texto de las apps en los ajustes de la burbuja).</string>
     <string name="overlay_error_secure">Esta app no permite capturas de pantalla.</string>
     <string name="overlay_error_capture">No se pudo hacer una captura de pantalla.</string>
@@ -34,6 +35,8 @@
     <string name="overlay_play_audio">Reproducir audio (mantén pulsado para elegir)</string>
     <string name="anki_error">No se pudo añadir la nota: %1$s</string>
     <string name="anki_rejected">AnkiDroid no guardó la nota.</string>
+    <string name="anki_photo_unavailable">La foto ya no está disponible.</string>
+    <string name="anki_picture_failed">Error al guardar la imagen.</string>
     <string name="anki_not_configured">Primero configura la exportación a Anki en Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid no está instalado.</string>
     <string name="anki_no_permission">Permite a Screenlate acceder a AnkiDroid en sus ajustes de Anki.</string>

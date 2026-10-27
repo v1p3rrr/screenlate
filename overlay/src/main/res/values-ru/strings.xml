@@ -8,6 +8,7 @@
     <string name="overlay_engine_offline">На устройстве (нет сети)</string>
 
     <string name="overlay_no_text">Текст на экране не найден.</string>
+    <string name="overlay_no_text_photo">Текст на снимке не найден.</string>
     <string name="overlay_no_app_text">Это приложение не предоставляет свой текст службам специальных возможностей. Распознавание экрана выключено («Только текст приложения» в настройках кнопки).</string>
     <string name="overlay_error_secure">Это приложение запрещает скриншоты.</string>
     <string name="overlay_error_capture">Не удалось сделать скриншот.</string>
@@ -35,6 +36,8 @@
     <string name="overlay_play_audio">Воспроизвести аудио (удерживайте — выбрать)</string>
     <string name="anki_error">Не удалось добавить карточку: %1$s</string>
     <string name="anki_rejected">AnkiDroid не сохранил карточку.</string>
+    <string name="anki_photo_unavailable">Снимок больше недоступен.</string>
+    <string name="anki_picture_failed">Ошибка при сохранении изображения.</string>
     <string name="anki_not_configured">Сначала настройте экспорт в Anki в Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid не установлен.</string>
     <string name="anki_no_permission">Разрешите Screenlate доступ к AnkiDroid в настройках Anki.</string>

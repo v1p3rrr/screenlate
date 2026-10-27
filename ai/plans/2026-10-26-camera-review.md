@@ -88,8 +88,8 @@ sentence rules (`notes/language-rules.md`).
 
 ## Current position
 
-Updated after every step so the work survives a context reset: areas 1 and 2 are reviewed (runs 1–4) and committed;
-area 3, run 1 is next. The API 37 emulator runs under the shared lock.
+Updated after every step so the work survives a context reset: areas 1–3 are reviewed (runs 1–4) and committed;
+area 4, run 1 is next. The API 37 emulator runs under the shared lock.
 
 ## Progress
 
@@ -97,7 +97,7 @@ area 3, run 1 is next. The API 37 emulator runs under the shared lock.
 |---|---|---|---|---|---|---|---|
 | 1 | Photo store | 19 findings: 9 fixed, 1 false alarm, 7 skipped, 2 questions | 9 findings: 5 fixed, 2 false alarms, 1 skipped, 1 question | 11 findings: 3 fixed, 2 false alarms, 6 skipped | 4 findings: 4 fixed (one change) | `core:photos` instrumented tests pass on API 37 | done |
 | 2 | Camera screen | 1 fixed ahead of the runs; 8 findings: 6 fixed, 1 false alarm, 1 skipped | 13 findings (2 found on the emulator): 7 fixed, 5 skipped, 1 question | 3 findings: 3 fixed | 10 findings: 4 fixed, 6 skipped | API 37 by hand: each fix of runs 1–4 | done |
-| 3 | Overlay and Anki integration | | | | | | |
+| 3 | Overlay and Anki integration | 14 findings: 10 fixed, 2 skipped, 2 questions | 8 findings (2 found on the emulator): 7 fixed, 1 false alarm; 1 more defect found while fixing, fixed | 7 findings: 5 fixed, 2 skipped | 3 findings: 3 fixed | API 37 by hand: runs 1–4 | done |
 | 4 | Photo recognition | | | | | | |
 | — | Final E regression | | | | | | |
 
@@ -339,9 +339,125 @@ history item, the docs).
    tests, and CAM39 checks the page by hand.
 10. Each keystroke recomposes the page. **Skipped:** a small page; no visible cost.
 
+### Area 3, run 1
+
+1. Leaving the photo while a finger dragged the bubble docked it under the finger: the rest of the touch dragged a
+   docked bubble, and on release it stayed out of the dock, translucent, with no aim marker and no source, so the
+   next photo did not attach. Reproduced on the emulator (Settings opened over the Camera page during the drag).
+   **Fixed:** the scan closes at once and the bubble docks when the touch ends; back over a photo before the release,
+   it does not dock. Checked on the emulator both ways.
+2. The crop frame of a photo note was padded by 48 dp divided by the viewer's current scale, while the editor always
+   shows the whole photo: about 48 dp around the paragraph at the fitted view, about 6 dp at 8× zoom. **Fixed:** the
+   padding uses the fitted scale (`PhotoViewport.fitScale`), the same whatever the zoom. Test
+   `the fitted scale stays whatever the zoom`; the zoom itself cannot be tried through adb (no pinch).
+3. The popup is not placed again when the photo is zoomed or panned under the same word; only the highlight follows.
+   **Question 6.**
+4. Photo notes fill `{document-title}` with the app's own name. **Question 7.**
+5. The screen crop moved to `ScreenNoteImage.crop`, while `CropViewTest` still tested the old copy. **Fixed:**
+   `ScreenNoteImageTest` (the whole screenshot copied, a frame in screen coordinates of a screenshot below the top, a
+   frame over the edge, a single release); `CropViewTest` removed with the dead code.
+6. `CropView.cropped()` and the image offset parameters were dead. **Fixed:** removed; the KDoc speaks of an image.
+7. Every move of the photo set the bubble's glyph and language again, redrawing the bubble and parsing a locale per
+   frame. **Fixed:** set only when they change.
+8. `CropEditor.edit` had lost its KDoc (who owns the bitmap, what null means, the focus coordinates) and its
+   comments. **Fixed.**
+9. The focus went Box → RectF → Box, and the paragraph lookup was written twice. **Fixed:** `NoteContext.focus` is a
+   `Box`, built by one local helper.
+10. `onAddNote` held the image under two names. **Fixed.**
+11. Several statements per line in `NoteImage.kt`, `CropPlacement.kt` and the photo branch of `noteSource`.
+    **Fixed.**
+12. Fully qualified names in `CropEditorTest` and the import order in the service. **Fixed.**
+13. The last photo's layout stays in memory after the Camera page is left. **Skipped:** it is what the bubble uses
+    when the page is shown again, and the next photo replaces it.
+14. No tests for `PhotoNoteImage` or for the bubble's reaction to source changes. **Skipped in part:**
+    `ScreenNoteImageTest` and a new `CropEditorTest` case (Whole photo, then Frame) cover the editor's side;
+    `PhotoNoteImage` needs a `PhotoImage`, whose constructor is internal to `core:photos`; the bubble's reaction was
+    checked on the emulator.
+
+On the emulator (API 37): the crop editor of a photo note fits the whole photo with the frame around the paragraph;
+Whole photo selects all of it, Frame goes back to the paragraph, and the note is added with the picture (the
+emulator's local AnkiDroid collection). `CropEditorTest` and `ScreenNoteImageTest` pass on API 37 (11 tests).
+
+### Area 3, run 2
+
+1. Open Anki settings under the grey ➕ opened the Anki settings of the active language, while the reason the popup
+   shows is about the scan's language, over a photo the photo's. Seen on the emulator. **Fixed:** the overlay passes
+   the language (`OverlayIntents.openAnkiSettings`) and the app opens `AnkiRoute(language)`.
+2. The installation link of a photo whose dictionaries are missing opened the dictionaries of the active language.
+   **Fixed:** `openInstallation(context, language)`; `DictionariesRoute(language)`, read by `DictionariesViewModel`.
+3. The note picture went to WebP without checking the result. WebP takes at most 16383 px per side, and an imported
+   long image keeps its size (a 1080 × 22000 screenshot is under the 24 MP limit), so Whole photo gave the note an
+   empty picture file and no error. **Fixed:** the picture is scaled down to fit and a failed encoding fails the note.
+   Tests `WebpSizeTest`; `WebpLimitTest` (instrumented) confirms the platform refuses a side of 16384 px.
+4. A photo with no text said "No text found on the screen." Seen on the emulator. **Fixed:** "No text found in the
+   photo." in the 14 languages.
+5. A photo deleted between ➕ and taking its image failed the note with the English "Photo image unavailable" in the
+   toast, even when the source had changed and the note should drop silently. **Fixed:** the source is checked first;
+   otherwise the note fails with "The photo is no longer available." (14 languages).
+6. Every scan over a photo set the active language before the photo's. **False alarm:** both happen in one main-thread
+   task and the collectors run on the non-immediate main dispatcher, so they only see the photo's language.
+7. Every move of the photo mapped all lines to the screen, though they show only during a flash. **Fixed:** mapped
+   only while a flash shows (`LayerView.linesShown`).
+8. `LanguageInstallation.observe` had no KDoc for `imageSource` and `engines`. **Fixed.**
+9. Found while fixing 1 and 2: a request opened its page with `launchSingleTop`, so with the Anki or Dictionaries page
+   already on top of the Settings tab its view model kept the old language. **Fixed:** the same page on top is
+   replaced.
+
+On the emulator (API 37): a Japanese photo with Slovenian active and the AnkiDroid permission revoked → grey ➕ →
+Open Anki settings → the Japanese Anki settings (permission granted again after). App intents with a language open
+the Anki settings and the dictionaries on it, a second request with another language replaces the open page, and one
+without a language opens the active one. A room photo with no text says "No text found in the photo.".
+`WebpLimitTest`, `CropEditorTest` and `ScreenNoteImageTest` pass on API 37 (12 tests).
+
+### Area 3, run 3
+
+1. The Camera page's "cannot recognize" dialog opened the dictionaries of the active language, not of the language it
+   names (run 2's finding 2 fixed only the popup's link). **Fixed:** `onOpenDictionaries(language)` →
+   `DictionariesRoute(language.code)`.
+2. `dockOnRelease` survived a touch whose window was removed (the bubble hidden in an excluded app during the drag), so
+   the next pull-out docked on release. **Fixed:** cleared with `touching` in `detachWindows`.
+3. A picture that cannot be encoded failed the note with an English message in the localized toast. **Fixed:** "Saving
+   the picture failed." in the 14 languages.
+4. No automated test for the language of the pages the app opens on request, or for the replacement of the same page.
+   **Skipped:** wiring between an intent, the navigation and a view model, with nothing to extract; checked by hand
+   (CAM48).
+5. The photo frame's padding uses the viewer's fitted scale, while the crop editor fits the photo into its own area,
+   so the margin there is 48 dp only as far as the two areas agree (somewhat more for a tall photo, whose editor area
+   is taller). **Skipped:** the margin is meant to be approximate; padding in the editor would need the paragraph's
+   lines instead of a frame.
+6. `LanguagePageRequest` repeated `OcrModelsRequest`, the requests were built by copied code, and `openInstallation`
+   had an unused nullable default. **Fixed:** one request type with `next(intent)`; the language is required.
+7. `docs/development.md` did not list the WebP tests. **Fixed.**
+
+On the emulator (API 37): the new build opens a language's on-device models from the app intent (the Korean models).
+The Camera dialog was not reproduced: every language turned on there has its dictionaries; the route it now uses was
+checked through the app intent in run 2. Reproduced in run 4.
+
+### Area 3, run 4
+
+1. The Camera page's "Can't recognize" dialog opening the dictionaries of its language was in no test case: CAM48
+   named only the popup's links, CAM32 only the dialog's title. **Fixed:** added to CAM48.
+2. The navigation's KDocs of the Anki settings and dictionaries requests did not say that the page opens on the
+   request's language and replaces the same page on top; the activity's dictionaries request had no KDoc.
+   **Fixed.**
+3. The request for a language's on-device models was checked for a language twice, in the activity and in the
+   navigation. **Fixed:** only the navigation checks it, as for the other two requests.
+
+On the emulator (API 37): with the Dutch dictionary's folder moved aside, Recognize on a photo set to Dutch shows
+"Can't recognize Dutch"; Installation status opens the Dutch dictionaries in place of the Dictionaries page that
+showed Japanese, and Back leaves it (the folder was put back, Dutch recognizes again). With the new build, a models
+request without a language leaves the app where it is, one with Korean opens the Korean models.
+
 ## Seen outside the scope
 
 Defects in code the feature did not change, noted for a later full review; not fixed now.
+
+- A double tap on the bubble switches the aim mode but keeps the aim point of the old mode, so lookups go on at the
+  old point until the bubble moves (`OverlayController.toggleAimMode`). The photo's moves keep that point too.
+- A screen size change during a touch docks the bubble under the finger (`onConfigurationChanged` calls `dock()`),
+  as area 3's finding 1 did before its fix.
+- The Search page and the selection menu's search open the Anki settings and the dictionaries of the active language,
+  not of the language being searched (`SearchScreen`, `ProcessTextActivity`); the requests can now carry a language.
 
 ## Questions for the owner
 
@@ -368,6 +484,13 @@ Collected during the runs and asked together at the end.
    Back from it leads to the Settings list and the camera needs another tap on its tab. Camera settings, by contrast,
    opens inside the Camera tab. Options: open these pages inside the Camera tab too, so Back returns to the camera; or
    keep them in the Settings tab, where these pages live.
+6. Popup and a moving photo (area 3, finding 3). When the bubble rests on a word of a photo and the photo is zoomed or
+   panned, the word's highlight follows the word, but the popup stays where it was and can cover the enlarged word.
+   Options: place the popup again on each move of the photo, so it follows the word; or keep it in place, as now, so
+   it does not move while the photo is zoomed.
+7. Document title of photo notes (area 3, finding 4). The `{document-title}` field marker gets the name of the app in
+   the foreground; for a photo that is Screenlate itself. Options: leave it empty for photos; a fixed word such as
+   "Camera"; the photo's date and time; or the app's name, as now.
 
 ## Changelog
 
@@ -382,3 +505,12 @@ Collected during the runs and asked together at the end.
 - 2026-10-27: area 2, run 3 recorded.
 - 2026-10-27: area 2, run 4 recorded, with the emulator reproduction of a typed limit lost on tapping the current tab;
   area 2 committed.
+- 2026-10-27: area 3, run 1 recorded, with the emulator reproduction of the bubble docked during a drag; questions 6
+  (popup and a moving photo) and 7 (document title of photo notes) added; two defects seen on the emulator kept for
+  run 2; two defects outside the scope noted.
+- 2026-10-27: area 3, run 2 recorded, with the emulator checks of the language of the Anki settings and dictionaries
+  opened from the popup and of the photo's no-text message.
+- 2026-10-27: area 3, run 3 recorded; one more defect outside the scope noted (search opens the active language's
+  pages).
+- 2026-10-27: area 3, run 4 recorded, with the emulator check of the Camera dialog's dictionaries link; area 3
+  committed.

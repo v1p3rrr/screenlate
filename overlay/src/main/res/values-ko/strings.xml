@@ -7,6 +7,7 @@
     <string name="overlay_engine_offline">기기(오프라인)</string>
 
     <string name="overlay_no_text">화면에서 텍스트를 찾지 못했습니다.</string>
+    <string name="overlay_no_text_photo">사진에서 텍스트를 찾지 못했습니다.</string>
     <string name="overlay_no_app_text">이 앱은 여기서 텍스트를 제공하지 않습니다. 화면 인식이 꺼져 있습니다(버블 설정의 ‘앱 텍스트만’).</string>
     <string name="overlay_error_secure">이 앱은 스크린샷을 허용하지 않습니다.</string>
     <string name="overlay_error_capture">스크린샷을 찍지 못했습니다.</string>
@@ -34,6 +35,8 @@
     <string name="overlay_play_audio">오디오 재생(길게 눌러 선택)</string>
     <string name="anki_error">노트를 추가하지 못했습니다: %1$s</string>
     <string name="anki_rejected">AnkiDroid가 노트를 저장하지 않았습니다.</string>
+    <string name="anki_photo_unavailable">사진을 더 이상 사용할 수 없습니다.</string>
+    <string name="anki_picture_failed">이미지 저장에 실패했습니다.</string>
     <string name="anki_not_configured">먼저 Screenlate에서 Anki 내보내기를 설정하세요.</string>
     <string name="anki_not_installed">AnkiDroid가 설치되어 있지 않습니다.</string>
     <string name="anki_no_permission">Screenlate의 Anki 설정에서 AnkiDroid 접근을 허용하세요.</string>

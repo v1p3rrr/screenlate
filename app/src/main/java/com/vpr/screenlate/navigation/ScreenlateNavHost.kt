@@ -76,8 +76,9 @@ private object SettingsRoute
 @Serializable
 private object OcrTestRoute
 
+/** @property language the code of the language the page opens on, as `DictionariesViewModel` reads it. */
 @Serializable
-private object DictionariesRoute
+private data class DictionariesRoute(val language: String? = null)
 
 /**
  * @property language the code of the language the page opens on, as `AnkiSettingsViewModel` reads it; null for the
@@ -91,8 +92,11 @@ private data class AnkiRoute(val language: String? = null, val audio: Boolean = 
 @Serializable
 private data class BubbleRoute(val showAppText: Boolean = false, val ocrModels: String? = null)
 
-/** Opens the on-device models of the language with [language] (its code); [number] tells repeated requests apart. */
-data class OcrModelsRequest(val language: String, val number: Int)
+/**
+ * Opens a page on the language with [language] (its code), or on the active one when null; [number] tells repeated
+ * requests apart.
+ */
+data class LanguagePageRequest(val language: String?, val number: Int)
 
 @Serializable
 private object LookupRoute
@@ -161,8 +165,9 @@ private enum class Tab(@param:StringRes val label: Int, @param:DrawableRes val i
  *
  * @param debugImagePath when set, starts on the debug image viewer instead of the home screen.
  * @param debugImageCaption text shown above the debug image, to test app text next to text in an image.
- * @param ankiSettingsRequests each increment opens the Anki settings (from the overlay's grey ➕).
- * @param dictionariesRequests each increment opens the Dictionaries screen (from search without a dictionary).
+ * @param ankiSettingsRequest opens the Anki settings of the request's language (from the overlay's grey ➕).
+ * @param dictionariesRequest opens the Dictionaries screen of the request's language (from search or a popup without a
+ *   dictionary). Either request replaces the same page already on top.
  * @param ocrModelsRequest opens a language's on-device models (from the overlay's message that the device cannot read).
  * @param cameraRequests each increment opens the Camera page (an image shared to the app), except during the first run.
  * @param firstRun starts on the question which language the user learns.
@@ -174,9 +179,9 @@ fun ScreenlateNavHost(
     firstRun: Boolean = false,
     debugImagePath: String? = null,
     debugImageCaption: String = "",
-    ankiSettingsRequests: Int = 0,
-    dictionariesRequests: Int = 0,
-    ocrModelsRequest: OcrModelsRequest? = null,
+    ankiSettingsRequest: LanguagePageRequest? = null,
+    dictionariesRequest: LanguagePageRequest? = null,
+    ocrModelsRequest: LanguagePageRequest? = null,
     cameraRequests: Int = 0,
     tip: BackgroundTipViewModel = hiltViewModel(),
 ) {
@@ -209,19 +214,21 @@ fun ScreenlateNavHost(
         tab = Tab.HOME
         inFirstRun = false
     }
-    // Requests from the overlay open their page in the Settings tab; during the first run, over it.
+    // Requests from the overlay open their page in the Settings tab; during the first run, over it. The same page
+    // already on top is replaced: its view model keeps the language it was opened on.
     val inSettings: (Any) -> Unit = { route ->
         if (!inFirstRun && tab != Tab.SETTINGS) select(Tab.SETTINGS)
-        navController.navigate(route) { launchSingleTop = true }
+        if (navController.currentDestination?.hasRoute(route::class) == true) navController.popBackStack()
+        navController.navigate(route)
     }
-    LaunchedEffect(ankiSettingsRequests) {
-        if (ankiSettingsRequests > 0) inSettings(AnkiRoute())
+    LaunchedEffect(ankiSettingsRequest) {
+        ankiSettingsRequest?.let { inSettings(AnkiRoute(it.language)) }
     }
-    LaunchedEffect(dictionariesRequests) {
-        if (dictionariesRequests > 0) inSettings(DictionariesRoute)
+    LaunchedEffect(dictionariesRequest) {
+        dictionariesRequest?.let { inSettings(DictionariesRoute(it.language)) }
     }
     LaunchedEffect(ocrModelsRequest) {
-        ocrModelsRequest?.let { inSettings(BubbleRoute(ocrModels = it.language)) }
+        ocrModelsRequest?.language?.let { inSettings(BubbleRoute(ocrModels = it)) }
     }
     val onTabRoot = entry?.destination?.hasRoute(tab.root::class) == true
     BackHandler(enabled = tab != Tab.HOME && onTabRoot) { select(Tab.HOME) }
@@ -249,7 +256,7 @@ fun ScreenlateNavHost(
         ) {
             composable<HomeRoute> {
                 HomeScreen(
-                    onOpenDictionaries = { go(DictionariesRoute) },
+                    onOpenDictionaries = { go(DictionariesRoute()) },
                     onOpenAnki = { language -> go(AnkiRoute(language?.code)) },
                     onOpenAudio = { language -> go(AnkiRoute(language?.code, audio = true)) },
                     onOpenAppText = { go(BubbleRoute(showAppText = true)) },
@@ -277,7 +284,7 @@ fun ScreenlateNavHost(
                                 SettingsPage.POPUP -> PopupRoute
                                 SettingsPage.TRANSLATION -> TranslationRoute
                                 SettingsPage.CAMERA -> CameraSettingsRoute
-                                SettingsPage.DICTIONARIES -> DictionariesRoute
+                                SettingsPage.DICTIONARIES -> DictionariesRoute()
                                 SettingsPage.ANKI -> AnkiRoute()
                                 SettingsPage.APPEARANCE -> AppearanceRoute
                                 SettingsPage.BACKUP -> BackupRoute()
@@ -299,7 +306,7 @@ fun ScreenlateNavHost(
             composable<BackupRoute> { entry ->
                 BackupScreen(
                     onBack = back,
-                    onOpenDictionaries = { go(DictionariesRoute) },
+                    onOpenDictionaries = { go(DictionariesRoute()) },
                     showYomitan = entry.toRoute<BackupRoute>().yomitan,
                 )
             }
@@ -317,12 +324,12 @@ fun ScreenlateNavHost(
                 SearchScreen(
                     onBack = null,
                     onOpenAnkiSettings = { go(AnkiRoute()) },
-                    onOpenDictionaries = { go(DictionariesRoute) },
+                    onOpenDictionaries = { go(DictionariesRoute()) },
                     initialQuery = entry.toRoute<SearchRoute>().query,
                 )
             }
             composable<CameraRoute> {
-                CameraScreen(onOpenDictionaries = { inSettings(DictionariesRoute) },
+                CameraScreen(onOpenDictionaries = { language -> inSettings(DictionariesRoute(language.code)) },
                     onOpenModels = { language -> inSettings(BubbleRoute(ocrModels = language.code)) },
                     onOpenLanguages = { inSettings(LanguagesRoute) },
                     onOpenHistory = { go(CameraHistoryRoute) },

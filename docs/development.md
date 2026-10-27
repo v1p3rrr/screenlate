@@ -39,8 +39,9 @@ fractional original-pixel crops for all eight EXIF orientations and crops larger
 orientation and MediaStore visibility. `PhotoImportsTest` covers the import copy (kept, converted, rejected, no
 partial file), `ShareImageActivityTest` the links a share may carry; instrumented `PhotoImportDeviceTest` checks that
 a JPEG keeps its bytes and a BMP becomes a PNG the viewer reads. `CropPlacementTest`, `CropEditorTest` and
-`CropViewTest` cover source coordinates, screen regressions and cancellation, including a scan closed while the
-preview loads. Run the native crop/gallery classes on API 30 and API 37. `PhotoAnkiFixtureTest` is opt-in and
+`ScreenNoteImageTest` cover source coordinates, screen regressions and cancellation, including a scan closed while the
+preview loads; `WebpSizeTest` the note picture scaled under WebP's side limit, which instrumented `WebpLimitTest`
+confirms on the device. Run the native crop/gallery classes on API 30 and API 37. `PhotoAnkiFixtureTest` is opt-in and
 emulator-only: `-e photoAnki prepare` backs up Japanese Anki settings and selects a dedicated local test deck/model;
 `verify` checks the generated sentence and image (`photoWord` selects the fixture word), and `restore` reinstates the
 original settings. Use only an unsynced test collection and always restore the settings after a manual popup-to-Anki

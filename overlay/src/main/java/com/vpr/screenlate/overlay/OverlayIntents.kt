@@ -10,8 +10,10 @@ object OverlayIntents {
     /** Which screen the app should open; see the `OPEN_*` values. */
     const val EXTRA_OPEN = "open"
 
-    /** The Anki settings, e.g. from the grey ➕ of a broken Anki setup. */
+    /** The Anki settings, e.g. from the grey ➕ of a broken Anki setup; of the language in [EXTRA_LANGUAGE] if given. */
     const val OPEN_ANKI_SETTINGS = "anki"
+
+    /** The dictionaries; of the language in [EXTRA_LANGUAGE] if given. */
     const val OPEN_DICTIONARIES = "dictionaries"
 
     /** The on-device models of the language in [EXTRA_LANGUAGE] (its code). */
@@ -20,7 +22,13 @@ object OverlayIntents {
     const val INSTALLATION_URL = "screenlate://installation"
     const val OCR_MODELS_URL = "screenlate://ocr-models"
 
-    fun openInstallation(context: Context) = openScreen(context, OPEN_DICTIONARIES)
+    /** The dictionaries of [language]. */
+    fun openInstallation(context: Context, language: Language) =
+        openScreen(context, OPEN_DICTIONARIES) { putExtra(EXTRA_LANGUAGE, language.code) }
+
+    /** The Anki settings of [language]. */
+    fun openAnkiSettings(context: Context, language: Language) =
+        openScreen(context, OPEN_ANKI_SETTINGS) { putExtra(EXTRA_LANGUAGE, language.code) }
 
     fun openOcrModels(context: Context, language: Language) =
         openScreen(context, OPEN_OCR_MODELS) { putExtra(EXTRA_LANGUAGE, language.code) }

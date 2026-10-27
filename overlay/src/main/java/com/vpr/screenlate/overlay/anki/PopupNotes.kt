@@ -2,8 +2,8 @@ package com.vpr.screenlate.overlay.anki
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.RectF
 import android.widget.Toast
+import androidx.core.graphics.scale
 import com.vpr.screenlate.core.anki.AddResult
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
@@ -22,6 +22,7 @@ import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
@@ -48,6 +49,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.File
+import java.io.IOException
 import com.vpr.screenlate.core.common.redacted
 
 /**
@@ -60,7 +62,7 @@ import com.vpr.screenlate.core.common.redacted
 data class NoteContext(
     val sentence: Sentence?,
     val image: NoteImage?,
-    val focus: RectF? = null,
+    val focus: Box? = null,
     val documentTitle: String = "",
 )
 
@@ -77,6 +79,17 @@ internal fun mediaExtension(path: String): String =
         .takeIf { it.isNotEmpty() && it.all(Char::isLetterOrDigit) }
         ?.lowercase()
         ?: "png"
+
+/** The longest side a WebP image may have. */
+internal const val WEBP_MAX_SIDE = 16383
+
+/** [width] × [height] scaled down in proportion until neither side exceeds [WEBP_MAX_SIDE]; unchanged when it fits. */
+internal fun webpSize(width: Int, height: Int): Pair<Int, Int> {
+    val longest = maxOf(width, height)
+    if (longest <= WEBP_MAX_SIDE) return width to height
+    fun scaled(side: Int) = (side.toLong() * WEBP_MAX_SIDE / longest).toInt().coerceAtLeast(1)
+    return scaled(width) to scaled(height)
+}
 
 /** Where a word came from, taken when its ➕ is pressed, so a view shown later does not change the note. */
 fun interface NoteSource {
@@ -304,10 +317,9 @@ class PopupNotes(
                     translated = async { translation.forNote(sentence, noteLanguage) }
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
-                val shot = context.image
-                if (shot != null && cropEditor != null) {
+                if (context.image != null && cropEditor != null) {
                     // Cancelling the editor cancels the note.
-                    picture = cropEditor.edit(shot, context.focus)
+                    picture = cropEditor.edit(context.image, context.focus)
                         ?: run {
                             showState(scan, index, noteTerm, "", null)
                             return@launch
@@ -507,9 +519,20 @@ class PopupNotes(
         }
     }
 
+    /** Encodes the note's picture, scaled down if a side is too long for WebP (a long imported screenshot). */
     private suspend fun saveScreenshot(bitmap: Bitmap): File = withContext(Dispatchers.IO) {
-        File(anki.mediaDirectory(), "screenshot_${System.currentTimeMillis()}.webp").also { file ->
-            file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, SCREENSHOT_QUALITY, it) }
+        val (width, height) = webpSize(bitmap.width, bitmap.height)
+        val fitted = if (width == bitmap.width && height == bitmap.height) bitmap else bitmap.scale(width, height)
+        try {
+            File(anki.mediaDirectory(), "screenshot_${System.currentTimeMillis()}.webp").also { file ->
+                val written = file.outputStream().use { fitted.compress(Bitmap.CompressFormat.WEBP_LOSSY, SCREENSHOT_QUALITY, it) }
+                if (!written) {
+                    file.delete()
+                    throw IOException(context.getString(R.string.anki_picture_failed))
+                }
+            }
+        } finally {
+            if (fitted !== bitmap) fitted.recycle()
         }
     }
 

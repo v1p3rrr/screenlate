@@ -107,9 +107,12 @@ class LayerView(context: Context) : View(context) {
         contentChanged()
     }
 
+    /** A flash of all lines is still showing. */
+    val linesShown: Boolean get() = allLineBoxes.isNotEmpty() && allLinesAlpha > 0f
+
     /** Moves the lines of a flash still showing, as when the photo under them moved; no new flash starts. */
     fun moveLines(boxes: List<Box>) {
-        if (allLineBoxes.isEmpty() || allLinesAlpha <= 0f) return
+        if (!linesShown) return
         allLineBoxes = boxes
         contentChanged()
     }

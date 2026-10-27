@@ -7,6 +7,7 @@
     <string name="overlay_engine_offline">Cihazda (çevrimdışı)</string>
 
     <string name="overlay_no_text">Ekranda metin bulunamadı.</string>
+    <string name="overlay_no_text_photo">Fotoğrafta metin bulunamadı.</string>
     <string name="overlay_no_app_text">Bu uygulama metnini burada paylaşmıyor. Ekran tanıma kapalı (baloncuk ayarlarında Yalnızca uygulama metni).</string>
     <string name="overlay_error_secure">Bu uygulama ekran görüntüsüne izin vermiyor.</string>
     <string name="overlay_error_capture">Ekran görüntüsü alınamadı.</string>
@@ -34,6 +35,8 @@
     <string name="overlay_play_audio">Sesi çal (seçmek için basılı tutun)</string>
     <string name="anki_error">Not eklenemedi: %1$s</string>
     <string name="anki_rejected">AnkiDroid notu kaydetmedi.</string>
+    <string name="anki_photo_unavailable">Fotoğraf artık kullanılamıyor.</string>
+    <string name="anki_picture_failed">Resim kaydedilirken hata oluştu.</string>
     <string name="anki_not_configured">Önce Screenlate’te Anki dışa aktarımını ayarlayın.</string>
     <string name="anki_not_installed">AnkiDroid yüklü değil.</string>
     <string name="anki_no_permission">Screenlate’in Anki ayarlarında AnkiDroid’e erişmesine izin verin.</string>

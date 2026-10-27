@@ -87,6 +87,15 @@ class PhotoViewportTest {
     }
 
     @Test
+    fun `the fitted scale stays whatever the zoom`() {
+        val fitted = PhotoViewport.fit(4000, 3000, area)
+        val zoomed = fitted.transformed(540f, 1200f, 0f, 0f, 5f)
+        assertThat(zoomed.scale).isWithin(0.0001f).of(fitted.scale * 5)
+        assertThat(zoomed.fitScale).isEqualTo(fitted.scale)
+        assertThat(fitted.fitScale).isEqualTo(fitted.scale)
+    }
+
+    @Test
     fun `a rotated screen fits the same photo again`() {
         val portrait = PhotoViewport.fit(4000, 3000, area)
         val landscape = PhotoViewport.fit(4000, 3000, Box(0f, 0f, 2400f, 1080f))

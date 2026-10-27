@@ -69,6 +69,14 @@ class LanguageInstallation @Inject constructor(
     private val device: DeviceOcr,
     private val settings: OverlaySettingsRepository,
 ) {
+    /**
+     * What [language] still needs, updated as dictionaries, imports, models and settings change.
+     *
+     * @param imageSource the text comes from an image, such as a photo, whatever the overlay's text source: a missing
+     *   recognition model counts then even when the overlay reads app text only.
+     * @param engines the recognition engines to check in place of the overlay's setting, such as a photo's; on-device
+     *   only requires the language's device model.
+     */
     fun observe(language: Language, imageSource: Boolean = false, engines: OcrEngines? = null): Flow<InstallationStatus> = combine(
         repository.dictionaries.map { all ->
             val missing = repository.missingFiles().mapTo(hashSetOf()) { it.id }

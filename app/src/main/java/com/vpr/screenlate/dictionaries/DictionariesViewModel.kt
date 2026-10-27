@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionaries
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
@@ -209,8 +210,10 @@ class DictionariesViewModel @Inject constructor(
     private val catalog: DictionaryCatalog,
     private val profiles: LanguageProfiles,
     private val store: OcrModelStore,
+    savedState: SavedStateHandle,
 ) : ViewModel() {
     private val shownLanguage = ShownLanguage(profiles, viewModelScope)
+        .apply { Language.of(savedState.get<String>(ARG_LANGUAGE))?.let(::show) }
     private val copyError = MutableStateFlow<String?>(null)
     private val mutableDeleteError = MutableStateFlow<String?>(null)
     private val updateCheck = MutableStateFlow<UpdateCheck?>(null)
@@ -443,6 +446,10 @@ class DictionariesViewModel @Inject constructor(
     /** Cancels the [tasks] of the waiting card; the others go on. */
     fun cancelAll(tasks: List<ImportTask>) {
         viewModelScope.launch { tasks.forEach { imports.cancel(it.id) } }
+    }
+
+    companion object {
+        const val ARG_LANGUAGE = "language"
     }
 }
 

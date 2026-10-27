@@ -173,7 +173,7 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 ## Screenshot lifetime (overlay)
 
 - `Bitmap.createBitmap(src, 0, 0, w, h)` returns `src` itself for an immutable source and the full rectangle; code that
-  recycles its crop must compare with the source (`CropView.cropped` copies instead, since the note frees it).
+  recycles its crop must compare with the source (`ScreenNoteImage.crop` copies instead, since the note frees it).
 - The scan's screenshot is a `SharedScreenshot`, created right after the capture: the scan holds it until `resetScan`,
   the recognition flow and each OCR boost band retain it while they read it, and a note retains it in `notePicture`
   and releases it once the crop editor returns (the editor draws it meanwhile). The bitmap is freed by the last user,

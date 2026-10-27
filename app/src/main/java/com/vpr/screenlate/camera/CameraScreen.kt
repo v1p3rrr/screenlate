@@ -66,7 +66,7 @@ import com.vpr.screenlate.core.photos.PhotoWork
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraScreen(
-    onOpenDictionaries: () -> Unit = {},
+    onOpenDictionaries: (Language) -> Unit = {},
     onOpenModels: (Language) -> Unit = {},
     onOpenLanguages: () -> Unit = {},
     onOpenHistory: () -> Unit = {},
@@ -159,7 +159,7 @@ fun CameraScreen(
                 TextButton(onClick = {
                     viewModel.recognition.dismissBlock()
                     if (blocked.status.requiresDevice && !blocked.status.deviceReady) onOpenModels(blocked.status.language)
-                    else onOpenDictionaries()
+                    else onOpenDictionaries(blocked.status.language)
                 }) { Text(stringResource(com.vpr.screenlate.overlay.R.string.installation_open)) }
             },
             dismissButton = { TextButton(onClick = viewModel.recognition::dismissBlock) { Text(stringResource(R.string.action_close)) } },

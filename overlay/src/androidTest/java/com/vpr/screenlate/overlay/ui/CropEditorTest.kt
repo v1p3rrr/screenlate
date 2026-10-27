@@ -8,7 +8,12 @@ import android.widget.TextView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.R
+import com.vpr.screenlate.overlay.anki.NoteImage
+import com.vpr.screenlate.overlay.anki.ScreenNoteImage
+import com.vpr.screenlate.overlay.capture.CapturedScreen
+import com.vpr.screenlate.overlay.capture.SharedScreenshot
 import java.lang.reflect.Proxy
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CompletableDeferred
@@ -50,8 +55,7 @@ class CropEditorTest {
     private val editor = CropEditor(context, windowManager)
     private val screenshot = Bitmap.createBitmap(40, 30, Bitmap.Config.ARGB_8888).copy(Bitmap.Config.ARGB_8888, false)
 
-    private val source = com.vpr.screenlate.overlay.anki.ScreenNoteImage(
-        com.vpr.screenlate.overlay.capture.SharedScreenshot(com.vpr.screenlate.overlay.capture.CapturedScreen(screenshot, 0, 0)))
+    private val source = ScreenNoteImage(SharedScreenshot(CapturedScreen(screenshot, 0, 0)))
 
     @Test
     fun cancelClosesTheEditorWithoutAPicture() = runBlocking(Dispatchers.Main) {
@@ -102,7 +106,7 @@ class CropEditorTest {
     @Test
     fun closingTheScanDuringPreviewDecodeCannotOpenALateEditor() = runBlocking(Dispatchers.Main) {
         val gate = CompletableDeferred<Unit>()
-        val delayed = object : com.vpr.screenlate.overlay.anki.NoteImage by source {
+        val delayed = object : NoteImage by source {
             override suspend fun preview(maxWidth: Int, maxHeight: Int): Bitmap { gate.await(); return screenshot }
         }
         val picture = async(start = CoroutineStart.UNDISPATCHED) { editor.edit(delayed, null) }
@@ -115,23 +119,55 @@ class CropEditorTest {
 
     @Test
     fun aFittedPhotoReturnsOriginalPixelSelectionRatherThanPreviewPixels() = runBlocking(Dispatchers.Main) {
-        var selection: com.vpr.screenlate.core.common.geometry.Box? = null
-        val photo = object : com.vpr.screenlate.overlay.anki.NoteImage by source {
-            override val bounds = com.vpr.screenlate.core.common.geometry.Box(0f, 0f, 8000f, 6000f)
+        var selection: Box? = null
+        val photo = object : NoteImage by source {
+            override val bounds = Box(0f, 0f, 8000f, 6000f)
             override val fit = true
-            override suspend fun crop(box: com.vpr.screenlate.core.common.geometry.Box): Bitmap {
+            override suspend fun crop(box: Box): Bitmap {
                 selection = box
                 return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
             }
         }
         val picture = async(start = CoroutineStart.UNDISPATCHED) {
-            editor.edit(photo, android.graphics.RectF(2000f, 1500f, 6000f, 4500f))
+            editor.edit(photo, Box(2000f, 1500f, 6000f, 4500f))
         }
         button(shown.single(), R.string.crop_add).performClick()
         picture.await()!!.recycle()
         assertThat(selection!!.width).isWithin(0.01f).of(4000f)
         assertThat(selection!!.left).isWithin(0.01f).of(2000f)
         assertThat(selection!!.height).isWithin(0.01f).of(3000f)
+    }
+
+    @Test
+    fun wholePhotoSelectsAllOfItAndFrameReturnsToTheParagraph() = runBlocking(Dispatchers.Main) {
+        val selections = mutableListOf<Box>()
+        val photo = object : NoteImage by source {
+            override val bounds = Box(0f, 0f, 8000f, 6000f)
+            override val fit = true
+            override suspend fun crop(selection: Box): Bitmap {
+                selections += selection
+                return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            }
+        }
+        val focus = Box(2000f, 1500f, 6000f, 4500f)
+        val whole = async(start = CoroutineStart.UNDISPATCHED) { editor.edit(photo, focus) }
+        button(shown.single(), R.string.crop_whole_photo).performClick()
+        button(shown.single(), R.string.crop_add).performClick()
+        whole.await()!!.recycle()
+
+        val frame = async(start = CoroutineStart.UNDISPATCHED) { editor.edit(photo, focus) }
+        button(shown.single(), R.string.crop_whole_photo).performClick()
+        button(shown.single(), R.string.crop_frame).performClick()
+        button(shown.single(), R.string.crop_add).performClick()
+        frame.await()!!.recycle()
+
+        assertThat(selections).hasSize(2)
+        for ((selection, expected) in selections.zip(listOf(photo.bounds, focus))) {
+            assertThat(selection.left).isWithin(0.5f).of(expected.left)
+            assertThat(selection.top).isWithin(0.5f).of(expected.top)
+            assertThat(selection.right).isWithin(0.5f).of(expected.right)
+            assertThat(selection.bottom).isWithin(0.5f).of(expected.bottom)
+        }
     }
 
     private fun button(root: View, text: Int): TextView {

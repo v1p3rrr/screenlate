@@ -42,8 +42,9 @@ Pan with one finger and pinch to zoom up to 8× the fitted size. Returning to th
 bubble over it to look up stored text; the glyph and dictionary follow the photo's recognition language. A tap briefly
 highlights recognized text. Moving, zooming and bubble gestures reuse saved coordinates without recognizing again.
 The bubble reads only the photograph while this viewer is open; bars and empty margins are outside it. It never scans
-the live preview, dialogs or an unrecognized photograph. Leaving the viewer docks the bubble and other pages retain
-ordinary screen lookup. The accessibility service is needed for the bubble, independently of capture and viewing.
+the live preview, dialogs or an unrecognized photograph. Leaving the viewer docks the bubble (while you drag it, when
+you lift the finger) and other pages retain ordinary screen lookup. The accessibility service is needed for the bubble,
+independently of capture and viewing.
 
 To attach part of a photograph to Anki, hold the popup's add button. The crop editor fits the original photo above
 its controls and starts around the word's paragraph. Move the frame or its corners, switch between Frame and Whole
@@ -146,7 +147,7 @@ The start screen keeps the search, the service status and warnings; everything e
 
 The ⟲ icon at the top of the Settings list resets every setting to its default: the bubble (whether it shows, its place, size and hidden apps), lookup, Anki and audio, the popup, sentence translation, the characters chosen for Chinese, the appearance, background work and the update announcements; hints, one-time offers and the accessibility service dialog are shown again. The dictionaries, turned-on languages, installed fonts and the interface language are kept. Bubble, Lookup, Anki and audio, Popup, Translation, Appearance and Background work each have the same icon for their own settings; a page reset affects only that page, and the battery and startup settings, which belong to Android, are never changed. Every reset asks first. Holding an icon button shows what it does.
 
-When something breaks outside Screenlate (AnkiDroid removed or its permission revoked, the note type or deck deleted, fields renamed, the accessibility service turned off, dictionary files missing, recognition model files damaged, audio sources failing), the start screen says what and links to the fix; several missing dictionaries share one card, as do damaged models, and so do a language's failed audio sources. A failed audio source is listed under the language of the lookup it failed in; a source several languages use is listed under each language whose lookups it failed in. With several languages turned on, a note setup or audio problem names its language, and its button opens that language's settings. In the popup, ➕ turns grey; tapping it shows the reason and a button that opens the Anki settings.
+When something breaks outside Screenlate (AnkiDroid removed or its permission revoked, the note type or deck deleted, fields renamed, the accessibility service turned off, dictionary files missing, recognition model files damaged, audio sources failing), the start screen says what and links to the fix; several missing dictionaries share one card, as do damaged models, and so do a language's failed audio sources. A failed audio source is listed under the language of the lookup it failed in; a source several languages use is listed under each language whose lookups it failed in. With several languages turned on, a note setup or audio problem names its language, and its button opens that language's settings. In the popup, ➕ turns grey; tapping it shows the reason and a button that opens the Anki settings of the popup's language (over a photo, the photo's recognition language).
 
 ## Entries
 

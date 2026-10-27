@@ -7,6 +7,7 @@
     <string name="overlay_engine_offline">设备（离线）</string>
 
     <string name="overlay_no_text">屏幕上未找到文字。</string>
+    <string name="overlay_no_text_photo">照片中未找到文字。</string>
     <string name="overlay_no_app_text">此应用在这里不提供文本。屏幕识别已关闭（悬浮球设置中的“仅应用文本”）。</string>
     <string name="overlay_error_secure">此应用不允许截屏。</string>
     <string name="overlay_error_capture">无法截屏。</string>
@@ -34,6 +35,8 @@
     <string name="overlay_play_audio">播放音频（长按选择）</string>
     <string name="anki_error">无法添加笔记：%1$s</string>
     <string name="anki_rejected">AnkiDroid 未保存该笔记。</string>
+    <string name="anki_photo_unavailable">该照片已不可用。</string>
+    <string name="anki_picture_failed">图片保存失败。</string>
     <string name="anki_not_configured">请先在 Screenlate 中设置 Anki 导出。</string>
     <string name="anki_not_installed">未安装 AnkiDroid。</string>
     <string name="anki_no_permission">请在 Screenlate 的 Anki 设置中允许访问 AnkiDroid。</string>

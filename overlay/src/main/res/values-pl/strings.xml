@@ -7,6 +7,7 @@
     <string name="overlay_engine_offline">Na urządzeniu (offline)</string>
 
     <string name="overlay_no_text">Nie znaleziono tekstu na ekranie.</string>
+    <string name="overlay_no_text_photo">Nie znaleziono tekstu na zdjęciu.</string>
     <string name="overlay_no_app_text">Ta aplikacja nie udostępnia tu swojego tekstu. Rozpoznawanie ekranu jest wyłączone (Tylko tekst aplikacji w ustawieniach dymka).</string>
     <string name="overlay_error_secure">Ta aplikacja nie pozwala na zrzuty ekranu.</string>
     <string name="overlay_error_capture">Nie udało się zrobić zrzutu ekranu.</string>
@@ -34,6 +35,8 @@
     <string name="overlay_play_audio">Odtwórz dźwięk (przytrzymaj, aby wybrać)</string>
     <string name="anki_error">Nie udało się dodać notatki: %1$s</string>
     <string name="anki_rejected">AnkiDroid nie zapisał notatki.</string>
+    <string name="anki_photo_unavailable">Zdjęcie nie jest już dostępne.</string>
+    <string name="anki_picture_failed">Błąd zapisu obrazu.</string>
     <string name="anki_not_configured">Najpierw skonfiguruj eksport do Anki w Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid nie jest zainstalowany.</string>
     <string name="anki_no_permission">Zezwól Screenlate na dostęp do AnkiDroid w jego ustawieniach Anki.</string>

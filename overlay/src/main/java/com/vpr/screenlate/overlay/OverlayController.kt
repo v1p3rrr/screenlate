@@ -54,6 +54,7 @@ import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import com.vpr.screenlate.core.ocr.withMissingFrom
 import com.vpr.screenlate.core.photos.LookupSource
 import com.vpr.screenlate.core.photos.LookupSources
+import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.covers
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
@@ -62,11 +63,10 @@ import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.overlay.anki.NoteContext
-import com.vpr.screenlate.overlay.anki.PhotoNoteImage
-import com.vpr.screenlate.overlay.anki.ScreenNoteImage
-import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.overlay.anki.NoteSource
+import com.vpr.screenlate.overlay.anki.PhotoNoteImage
 import com.vpr.screenlate.overlay.anki.PopupNotes
+import com.vpr.screenlate.overlay.anki.ScreenNoteImage
 import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
@@ -240,7 +240,8 @@ class OverlayController(
             }
         },
         onOpenAnkiSettings = {
-            OverlayIntents.openScreen(service, OverlayIntents.OPEN_ANKI_SETTINGS)
+            // The settings the grey ➕ explains: those of the popup's language, the photo's over a photo.
+            OverlayIntents.openAnkiSettings(service, language)
             dock()
         },
     )
@@ -282,6 +283,9 @@ class OverlayController(
 
     /** The layout of the photo text attached last, by photo and revision, kept for the next pull-out over it. */
     private var photoLayout: Pair<Pair<Long, Int>, TextLayout>? = null
+
+    /** The photo the bubble was out over stopped being the source during a touch: the bubble docks when it ends. */
+    private var dockOnRelease = false
 
     /** The user closed the popup and the bubble has not moved since: more text under the aim does not reopen it. */
     private var popupDismissed = false
@@ -380,11 +384,14 @@ class OverlayController(
         if (state == State.DOCKED) takeActiveLanguage()
     }
 
-    /** The active language, or a shown photo's: its text is looked up in the language it was recognized in. */
+    /**
+     * The active language, or a shown photo's: its text is looked up in the language it was recognized in. Called for
+     * every move of the photo as well, so the bubble is redrawn only when the glyph changes.
+     */
     private fun showGlyph() {
-        val language = glyphLanguage(lookupSources.source.value, activeLanguage)
-        bubbleView.glyphLanguage = language.support.languageTag
-        bubbleView.glyph = language.support.glyph
+        val support = glyphLanguage(lookupSources.source.value, activeLanguage).support
+        if (bubbleView.glyphLanguage != support.languageTag) bubbleView.glyphLanguage = support.languageTag
+        if (bubbleView.glyph != support.glyph) bubbleView.glyph = support.glyph
     }
 
     /** @param warmUp prepare on-device OCR for the language; a scan starting now does that itself. */
@@ -442,6 +449,7 @@ class OverlayController(
         bubbleMenu.dismiss()
         // A finger on the bubble gets no up or cancel once its window is gone.
         touching = false
+        dockOnRelease = false
         windowManager.removeView(bubbleView)
         popup.detach()
         windowManager.removeView(layerView)
@@ -603,6 +611,7 @@ class OverlayController(
     private fun dock(side: DockSide = settings.dockSide, atCurrentPlace: Boolean = false) {
         if (state != State.DOCKED) Log.d(TAG, "Bubble docked")
         state = State.DOCKED
+        dockOnRelease = false
         closeScan()
         takeActiveLanguage()
         haptic()
@@ -902,6 +911,10 @@ class OverlayController(
                         }
                         cancelled && pulledOut -> dock()
                         else -> endDrag(lastX, lastY)
+                    }
+                    if (dockOnRelease) {
+                        dockOnRelease = false
+                        if (state != State.DOCKED) dock()
                     }
                     // Back to the saved place after a cancelled move; a keyboard may also have changed during the touch.
                     if (state == State.DOCKED) placeDocked()
@@ -1210,7 +1223,15 @@ class OverlayController(
         when (sourceChange(open, source)) {
             SourceChange.NONE -> Unit
             SourceChange.MOVED -> onPhotoMoved(source as LookupSource.Photo)
-            SourceChange.DOCK -> {
+            SourceChange.DOCK -> if (touching) {
+                // Docked under the finger, the rest of the touch would drag a docked bubble and leave it out of the
+                // dock with no source. The scan closes now, the bubble docks when the touch ends.
+                Log.d(TAG, "Photo left: bubble docks when released")
+                closeScan()
+                scanSource = source
+                updateAimVisuals()
+                dockOnRelease = true
+            } else {
                 Log.d(TAG, "Photo left: bubble docked")
                 dock()
             }
@@ -1220,6 +1241,8 @@ class OverlayController(
                 updateAimVisuals()
             }
             SourceChange.ATTACH -> {
+                // Held over a photo again: it no longer docks when released.
+                dockOnRelease = false
                 closeScan()
                 scanSource = source
                 updateAimVisuals()
@@ -1257,7 +1280,7 @@ class OverlayController(
     private fun onPhotoMoved(source: LookupSource.Photo) {
         scanSource = source
         val layout = layout ?: return
-        layerView.moveLines(layout.lineBoxes().mapNotNull(frame::toScreen))
+        if (layerView.linesShown) layerView.moveLines(layout.lineBoxes().mapNotNull(frame::toScreen))
         val view = shownLookup
         val start = view?.start
         if (view != null && start != null && view.layout === layout) {
@@ -1309,7 +1332,8 @@ class OverlayController(
         // Its note takes the word and the sentence from the draft, as the note always holds the word the popup shows.
         if (hit == null && ocrFinal) refreshPopup()
         if (hit == null && ocrFinal && newLayout.page.paragraphs.isEmpty()) {
-            showMessage(service.getString(R.string.overlay_no_text))
+            val photo = scanSource is LookupSource.Photo
+            showMessage(service.getString(if (photo) R.string.overlay_no_text_photo else R.string.overlay_no_text))
         }
     }
 
@@ -1505,22 +1529,30 @@ class OverlayController(
         val scan = scanId
         val photo = scanSource as? LookupSource.Photo
         val documentTitle = foregroundPackage?.let(::appLabel).orEmpty()
+        // The word's paragraph with the padding around it, in the coordinates of the note's image.
+        fun focusIn(image: Box, padding: Float): Box? {
+            if (layout == null || position == null) return null
+            return CropFocus.of(layout.readingParagraphs[position.paragraphIndex].lines.map { it.box }, padding, image)
+        }
         return NoteSource { withScreenshot ->
             if (photo != null) {
                 fun valid() = scan == scanId && lookupSources.source.value.generation == photo.generation
                 if (!valid()) throw CancellationException("Photo source changed")
-                val image = if (withScreenshot) photos.pinImage(photo.documentId)
-                    ?: throw IOException("Photo image unavailable") else null
-                if (!valid()) { image?.close(); throw CancellationException("Photo source changed") }
-                val focus = if (layout != null && position != null && image != null) {
-                    CropFocus.of(layout.readingParagraphs[position.paragraphIndex].lines.map { it.box },
-                        FOCUS_PADDING_DP * density / photo.viewport.scale, image.bounds)?.let { RectF(it.left, it.top, it.right, it.bottom) }
-                } else null
-                NoteContext(sentence, image?.let(::PhotoNoteImage), focus, documentTitle)
+                val pinned = if (withScreenshot) photos.pinImage(photo.documentId) else null
+                // A photo deleted or replaced meanwhile drops the note, as any change of the source does.
+                if (!valid()) {
+                    pinned?.close()
+                    throw CancellationException("Photo source changed")
+                }
+                if (withScreenshot && pinned == null) throw IOException(service.getString(R.string.anki_photo_unavailable))
+                val image = pinned?.let(::PhotoNoteImage)
+                // The editor shows the whole photo, as the viewer does before zooming: the padding is the same there
+                // whatever the viewer's zoom.
+                val padding = FOCUS_PADDING_DP * density / photo.viewport.fitScale
+                NoteContext(sentence, image, image?.let { focusIn(it.bounds, padding) }, documentTitle)
             } else {
-                val shot = if (withScreenshot) notePicture(scan) else null
-                val focus = if (layout != null && position != null && shot != null) cropFocus(layout, position, shot.screen) else null
-                NoteContext(sentence, shot?.let(::ScreenNoteImage), focus, documentTitle)
+                val image = if (withScreenshot) notePicture(scan)?.let(::ScreenNoteImage) else null
+                NoteContext(sentence, image, image?.let { focusIn(it.bounds, FOCUS_PADDING_DP * density) }, documentTitle)
             }
         }
     }
@@ -1579,18 +1611,6 @@ class OverlayController(
             }
         }
         return screenshot?.takeIf { scan == scanId && it.retain() }
-    }
-
-    /** The initial crop frame: the word's paragraph, in screen coordinates. */
-    private fun cropFocus(layout: TextLayout, position: TextPosition, screen: CapturedScreen): RectF? {
-        val image = Box(
-            screen.left.toFloat(),
-            screen.top.toFloat(),
-            (screen.left + screen.bitmap.width).toFloat(),
-            (screen.top + screen.bitmap.height).toFloat(),
-        )
-        val lines = layout.readingParagraphs[position.paragraphIndex].lines.map { it.box }
-        return CropFocus.of(lines, FOCUS_PADDING_DP * density, image)?.let { RectF(it.left, it.top, it.right, it.bottom) }
     }
 
     private fun appLabel(packageName: String): String? = runCatching {
@@ -1746,7 +1766,7 @@ class OverlayController(
 
         override fun onOpenUrl(url: String) {
             if (url == OverlayIntents.INSTALLATION_URL) {
-                OverlayIntents.openInstallation(service)
+                OverlayIntents.openInstallation(service, language)
                 dock()
                 return
             }

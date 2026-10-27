@@ -21,7 +21,7 @@ import com.vpr.screenlate.audio.LocalNetworkAskEffect
 import com.vpr.screenlate.camera.ShareImageActivity
 import com.vpr.screenlate.camera.SharedImages
 import com.vpr.screenlate.camera.isAnotherAppsContent
-import com.vpr.screenlate.navigation.OcrModelsRequest
+import com.vpr.screenlate.navigation.LanguagePageRequest
 import com.vpr.screenlate.navigation.ScreenlateNavHost
 import com.vpr.screenlate.overlay.OverlayIntents
 import com.vpr.screenlate.ui.theme.ScreenlateTheme
@@ -35,15 +35,17 @@ class MainActivity : ComponentActivity() {
 
     @Inject lateinit var sharedImages: SharedImages
 
-    /** Counts requests to open the Anki settings, from the launch intent and later ones. */
-    private var ankiSettingsRequests by mutableIntStateOf(0)
-    private var dictionariesRequests by mutableIntStateOf(0)
+    /** The last request to open the Anki settings, from the launch intent or a later one. */
+    private var ankiSettingsRequest by mutableStateOf<LanguagePageRequest?>(null)
+
+    /** The last request to open the dictionaries, from the launch intent or a later one. */
+    private var dictionariesRequest by mutableStateOf<LanguagePageRequest?>(null)
 
     /** Counts images shared to the app; each opens the Camera page, which imports it from [sharedImages]. */
     private var cameraRequests by mutableIntStateOf(0)
 
     /** The last request to open a language's on-device models, from the overlay's message. */
-    private var ocrModelsRequest by mutableStateOf<OcrModelsRequest?>(null)
+    private var ocrModelsRequest by mutableStateOf<LanguagePageRequest?>(null)
 
     /**
      * Debug builds only: `--es debug_image <file>` opens a file from the app's internal files directory,
@@ -96,14 +98,18 @@ class MainActivity : ComponentActivity() {
                     firstRun = firstRun,
                     debugImagePath = debugImagePath(),
                     debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),
-                    ankiSettingsRequests = ankiSettingsRequests,
-                    dictionariesRequests = dictionariesRequests,
+                    ankiSettingsRequest = ankiSettingsRequest,
+                    dictionariesRequest = dictionariesRequest,
                     cameraRequests = cameraRequests,
                     ocrModelsRequest = ocrModelsRequest,
                 )
             }
         }
     }
+
+    /** The request after this one, on the language in [intent]'s extra. */
+    private fun LanguagePageRequest?.next(intent: Intent) =
+        LanguagePageRequest(intent.getStringExtra(OverlayIntents.EXTRA_LANGUAGE), (this?.number ?: 0) + 1)
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -112,11 +118,9 @@ class MainActivity : ComponentActivity() {
 
     private fun handleOpenRequest(intent: Intent) {
         when (intent.getStringExtra(OverlayIntents.EXTRA_OPEN)) {
-            OverlayIntents.OPEN_ANKI_SETTINGS -> ankiSettingsRequests++
-            OverlayIntents.OPEN_DICTIONARIES -> dictionariesRequests++
-            OverlayIntents.OPEN_OCR_MODELS -> intent.getStringExtra(OverlayIntents.EXTRA_LANGUAGE)?.let { code ->
-                ocrModelsRequest = OcrModelsRequest(code, (ocrModelsRequest?.number ?: 0) + 1)
-            }
+            OverlayIntents.OPEN_ANKI_SETTINGS -> ankiSettingsRequest = ankiSettingsRequest.next(intent)
+            OverlayIntents.OPEN_DICTIONARIES -> dictionariesRequest = dictionariesRequest.next(intent)
+            OverlayIntents.OPEN_OCR_MODELS -> ocrModelsRequest = ocrModelsRequest.next(intent)
             // A task restarted from the recent apps gets its first intent again, without the access to the image. Any
             // app can start this screen, so the link is checked again as the share screen does.
             ShareImageActivity.OPEN_SHARED_IMAGE -> if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0) {
