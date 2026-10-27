@@ -736,13 +736,14 @@ class OverlayController(
     }
 
     /**
-     * Holding the floating bubble: copy the paragraph under the aim or everything recognized, as whole text, or open
-     * the app, unless the app is in front already; with several quick languages ([LanguageProfilesState.quick]), flags
-     * switch the active one, which the next scan takes. Over a photo there are no flags: its text keeps the language
-     * it was recognized in. A menu without items does not open.
+     * Holding the bubble: copy the paragraph under the aim or everything recognized, as whole text (not while docked),
+     * or open the app, unless the app is in front already; with several quick languages ([LanguageProfilesState.quick]),
+     * flags switch the active one, which the next scan takes. Over a photo there are no flags: its text keeps the
+     * language it was recognized in. A menu without items does not open.
      */
     private fun showBubbleMenu() {
-        val layout = layout
+        // The docked bubble has no aim, and its scan is not shown.
+        val layout = layout.takeUnless { state == State.DOCKED }
         val paragraph = if (layout == null) "" else {
             val (x, y) = aim ?: aimPoint()
             val aimed = layout.hitTest(frame, x, y, HIT_TOLERANCE_DP * density)
@@ -842,7 +843,8 @@ class OverlayController(
                     alongDock = false
                     held = false
                     pulledOut = false
-                    if (state == State.FLOATING) {
+                    // A move before the hold time pulls the docked bubble out or moves its dock instead.
+                    if (state == State.FLOATING || state == State.DOCKED) {
                         mainHandler.postDelayed(hold, ViewConfiguration.getLongPressTimeout().toLong())
                     }
                 }
