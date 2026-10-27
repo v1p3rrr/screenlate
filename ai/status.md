@@ -89,8 +89,9 @@ the details.
 - Release from `main` ("Release from `main`" below): port the download-queue fix and the three related commits from
   `languages/main`, run the checks listed there, write the release notes; the version number is asked at release
   time.
-- The ColorOS report ("User report (2026-10-20)", `notes/oem-background-limits.md`): waiting for the user's answers
-  and logs.
+- The ColorOS report ("User report (2026-10-20)", `notes/oem-background-limits.md`): settled on 2026-10-28, adding
+  Screenlate to the security app's allowlist stopped the switch-offs; whether Background work should point there on
+  ColorOS is asked with the settings rework.
 - The temporary diagnostics build: waiting for the owner's export after a few days of use; then the branch is removed.
 - Languages ("Work in progress (2026-10-22, night)" and "(2026-10-19)" below): open questions 69 (pre-connect) and
   72-76 and those the block sessions added to their plans; not checked on a device: the Kazakh pronoun skip, the
@@ -234,7 +235,8 @@ ColorOS component does it is not in the app's log; experiments for the user are 
 the owner) reports ColorOS 16 builds turning off every downloaded app's service and an update resetting app permissions;
 the user is asked to test with a second app's service on. Web reports (in the note) say ColorOS 16 restricts the
 accessibility services of apps installed outside a store and that its security app's allowlist may help; the user is
-asked about both. Built on `claude/competent-rhodes-6bde05` (owner's choices, regular builds) and merged into `main`
+asked about both. Outcome (relayed by the owner, 2026-10-28): the user added Screenlate to the allowlist, and the
+service is no longer turned off. Built on `claude/competent-rhodes-6bde05` (owner's choices, regular builds) and merged into `main`
 (687f7029) and `languages/main` on 2026-10-22: the app's own log file (request 71 of the languages plan: 8 MB,
 `noBackupFilesDir/logs`, exported before the logcat part, exit reasons at each start), a stop report in the log and a
 "Screenlate service is off" notification at every stop. Test model UPD4-UPD7, all passed on the emulators on 2026-10-22
