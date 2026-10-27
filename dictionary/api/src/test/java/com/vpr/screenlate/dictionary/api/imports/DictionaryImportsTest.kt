@@ -2,17 +2,22 @@ package com.vpr.screenlate.dictionary.api.imports
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ARCHIVE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CONNECTION_LOST
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DOWNLOAD_STOPPED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INTERRUPTED
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NAME
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PAUSED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_RESUMABLE
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SOURCE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_URL
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
 import androidx.work.Data
 import androidx.work.WorkInfo
@@ -272,5 +277,23 @@ class DictionaryImportsTest {
         assertThat(DictionaryImports.readStops(stored)).containsExactly(id, 2, other, 1)
         // Entries that do not parse are dropped.
         assertThat(DictionaryImports.readStops(setOf("$id=x", "no count", "$other=3"))).containsExactly(other, 3)
+    }
+
+    @Test
+    fun `a task reads its own input, not the output of the task before it in its chain`() {
+        val own = workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/jmdict.zip", KEY_NAME to "JMdict", KEY_ARCHIVE to "b.zip")
+        val stoppedBefore = workDataOf(
+            KEY_SOURCE to SOURCE_URL,
+            KEY_URL to "https://example.org/jitendex.zip",
+            KEY_NAME to "Jitendex",
+            KEY_ARCHIVE to "a.zip",
+            KEY_RESUMABLE to true,
+            KEY_DOWNLOAD_STOPPED to true,
+        )
+
+        val input = OwnInputMerger().merge(listOf(own, stoppedBefore, workDataOf(KEY_TITLES to arrayOf("KANJIDIC"))))
+
+        assertThat(input.keyValueMap).isEqualTo(own.keyValueMap)
+        assertThat(OwnInputMerger().merge(emptyList())).isEqualTo(Data.EMPTY)
     }
 }

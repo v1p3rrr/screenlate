@@ -397,6 +397,7 @@ class DictionaryImports @Inject constructor(
         }
         val request = OneTimeWorkRequestBuilder<DictionaryImportWorker>()
             .setInputData(input)
+            .setInputMerger(OwnInputMerger::class.java)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .addTag(TAG)
             .addTag(NAME_TAG_PREFIX + name)
