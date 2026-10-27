@@ -459,6 +459,18 @@ Decided when the first language or group 1 is ready, before it is merged into th
   (Romanian and Latin rules in the Norwegian, Kazakh, Kyrgyz, Bengali, Persian and Hebrew bundles, about 2.4 KB each),
   because esbuild keeps the rule helpers' calls. `/* @__PURE__ */` on the helpers or one module per language would
   drop them; nothing breaks meanwhile.
+- Language flags in more places (owner, 2026-10-28): find the menus and screens that name languages (the dictionary
+  page's language chips, the download screen, the lookup and photo language pickers, notifications and the like) and
+  show the language's flag there as the bubble's quick-language menu does. Not researched yet.
+- Bubble glyph by the language's own name (owner, 2026-10-28): the bubble now shows a distinctive letter of each
+  language (`LanguageSupport.glyph`: ß, Ř, Æ, Ў). For languages whose script others share (Latin, Cyrillic and the
+  like) it would show the first letter of the language's name in that language (Deutsch → D, русский → Р); languages
+  with their own script keep their most common or most typical character (Japanese あ, Chinese a character most tied
+  to China, as 中 now), and the same wherever it applies. Future work, not worked out yet.
+- Popup delay check (owner, 2026-10-28): on the phone the popup comes noticeably late after the aim reaches a word,
+  and it does not look like the debounce but like slowness. Measure the path from the aim's stop to the drawn popup
+  (hit test, lookup, page render, window show) on the phone and the emulator from the app's log timings, compare with
+  earlier releases, and remove what is slow.
 
 ## Questions for the owner
 

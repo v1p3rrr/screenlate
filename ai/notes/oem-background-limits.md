@@ -72,6 +72,9 @@ a ColorOS phone. Human docs stay generic (`docs/usage.md`, "Background work"); v
     Our case (process alive, switch off) does not fit a kill.
   - Not applicable: restricted settings and in-call blocks act when the service is turned on; Play Protect's enhanced
     fraud protection acts at install; Android 17 Advanced Protection is Android 17 only.
+- Outcome of the 2026-10-20 report (relayed by the owner, 2026-10-28): the user added Screenlate to the security app's
+  allowlist (step 9 below), and the service is no longer turned off. So the ownvoice description holds for that phone:
+  ColorOS 16's security app turns off a sideloaded app's accessibility service unless the app is on its allowlist.
 
 ## Report: OPPO Reno 15, ColorOS, v0.2.3 arm64-v8a (2026-10-20)
 
@@ -342,5 +345,5 @@ after the stop; turning the service on removes it within 0.6 s.
 | Fix the crash | Once a trace shows it | Unknown until the log |
 | Keep-alive on by default on phones with a maker's startup screen | The notification that makes background killers leave the app alone more often | Small (hours), only if the notification test helps |
 | Lighter scans by default there | "Reduce load on the device", or skipping the on-device whole-screen pass once the cloud answered | Small to medium, only if the engine tests point there |
-| ColorOS allowlist step | Background work on ColorOS points to the security app's allowlist (and a hint that sideloaded apps are restricted), if the user's test shows the allowlist helps | Small to medium; strings in 14 languages; only after the user's result |
+| ColorOS allowlist step | Background work on ColorOS points to the security app's allowlist (and a hint that sideloaded apps are restricted), if the user's test shows the allowlist helps | Small to medium; strings in 14 languages; the user's result (2026-10-28): the allowlist helps |
 | Request the accessibility button | The system shortcut would do something in Screenlate (open or scan) instead of turning the service off | Small to medium; a behavior choice for the owner; no help against a force-stop |
