@@ -77,7 +77,7 @@ class IrishSupportTest {
         assertThat(IrishSupport.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(IrishSupport.linguaLibreItems).containsExactly("Q9142")
-        assertThat(IrishSupport.glyph).isEqualTo("Á")
+        assertThat(IrishSupport.glyph).isEqualTo("G")
         assertThat(IrishSupport.defaultScanLength).isEqualTo(16)
     }
 }

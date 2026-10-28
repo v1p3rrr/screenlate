@@ -80,6 +80,6 @@ class HungarianSupportTest {
         assertThat(HungarianSupport.fontSample.lowercase().toSet()).containsAtLeast('ő', 'ű', 'ö', 'ü', 'á', 'é')
         assertThat(HungarianSupport.defaultAudioSources).containsExactly("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
             .inOrder()
-        assertThat(HungarianSupport.glyph).isEqualTo("Ő")
+        assertThat(HungarianSupport.glyph).isEqualTo("M")
     }
 }

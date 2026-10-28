@@ -9,7 +9,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object EsperantoSupport : SpacedLanguageSupport() {
     override val language = Language.ESPERANTO
-    override val glyph = "Ĉ"
+    override val glyph = "E"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q143"
     override val languageTag = "eo"

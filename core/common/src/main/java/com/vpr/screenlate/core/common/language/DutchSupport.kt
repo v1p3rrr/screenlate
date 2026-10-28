@@ -8,7 +8,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object DutchSupport : SpacedLanguageSupport() {
     override val language = Language.DUTCH
-    override val glyph = "Ĳ"
+    override val glyph = "N"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q7411"
     override val languageTag = "nl"

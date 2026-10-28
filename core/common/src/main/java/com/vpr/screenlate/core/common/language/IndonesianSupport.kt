@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /** Wiktionary has almost no recordings of Indonesian words, and none name a region. */
 object IndonesianSupport : SpacedLanguageSupport() {
     override val language = Language.INDONESIAN
-    override val glyph = "ID"
+    override val glyph = "I"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9240"
     override val languageTag = "id"

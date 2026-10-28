@@ -101,6 +101,6 @@ class RomanianSupportTest {
             .inOrder()
         assertThat(RomanianSupport.linguaLibreItems).containsExactly("Q7913")
         assertThat(RomanianSupport.flagCountries).containsExactly("ro")
-        assertThat(RomanianSupport.glyph).isEqualTo("Ș")
+        assertThat(RomanianSupport.glyph).isEqualTo("R")
     }
 }

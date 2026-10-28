@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /** Wiktionary recordings and transcriptions of Polish name no regions, so there are no audio regions. */
 object PolishSupport : SpacedLanguageSupport() {
     override val language = Language.POLISH
-    override val glyph = "Ł"
+    override val glyph = "P"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q809"
     override val languageTag = "pl"

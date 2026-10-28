@@ -138,6 +138,8 @@ The entry opens above the word when it fits there, otherwise below the bubble, a
 
 The Quick Settings tile, the start screen and the "Show the bubble" switch in the bubble settings hide and show the bubble; holding the tile opens Screenlate. Turning the screen closes the entry and docks the bubble on the same side.
 
+The docked bubble shows the active language's letter: the first letter of the language's name in that language (D for Deutsch, Р for русский), or a typical character of a script of its own (あ, 한). When two quick languages have letters that look alike (English and Spanish, Russian and Polish), both show their two-letter codes instead (EN, ES); Cyrillic-script languages write their codes in Cyrillic (РУ), also in e-ink mode.
+
 A docked bubble stays clear of the status and navigation bars and of the strips along the edges where a swipe belongs to the system (the notifications at the top, going home at the bottom), so pulling it out is never taken for a system gesture; an open keyboard lifts a bottom dock above it. Where nothing takes a touch at the screen's edge, such as the left and right edges, it sits at the very edge. In fullscreen apps, where the bars are hidden, it goes to the very edge at the top and bottom too and shows more of itself, so that a third of it stands past the system's strip: pull it out by that part. Where the strip is wider than that allows, it stays where it is with the bars shown.
 
 ## Settings

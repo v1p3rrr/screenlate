@@ -11,7 +11,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object RomanianSupport : SpacedLanguageSupport() {
     override val language = Language.ROMANIAN
-    override val glyph = "Ș"
+    override val glyph = "R"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q7913"
     override val languageTag = "ro"

@@ -22,7 +22,7 @@ class IndonesianSupportTest {
 
     @Test
     fun `two letters stand in the bubble and fonts need only basic latin`() {
-        assertThat(IndonesianSupport.glyph).isEqualTo("ID")
+        assertThat(IndonesianSupport.glyph).isEqualTo("I")
         assertThat(IndonesianSupport.fontSubsets).containsExactly("latin")
         assertThat(IndonesianSupport.defaultAudioSources.first()).isEqualTo("LINGUA_LIBRE")
     }

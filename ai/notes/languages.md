@@ -21,6 +21,13 @@ questions: `plans/2026-10-09-more-languages.md`.
   Anki status, remembered note IDs, chosen clips, audio menus and auto-play. Late cache/audio answers cannot put
   values back into a closed session. The cache is also keyed by language as a second guard.
 
+## Bubble glyph by the own name (2026-10-29)
+
+The glyphs named in the sections below (ß, Ř, Æ, Ў, Å and the like) were replaced: the bubble shows the first letter
+of the language's own name, and quick languages whose letters look alike show their codes, Cyrillic ones in
+Cyrillic (`bubbleGlyph`; `notes/language-rules.md`, section "Recognition and app text"). A new language sets
+`glyph` to its own name's first letter, and a Cyrillic one also `codeLabel`; BubbleGlyphTest checks both.
+
 ## What in Screenlate is Japanese today
 
 - `Language` has one value, `JAPANESE`. `LanguageSupport` (`core/common/language`) already holds per-language rules:

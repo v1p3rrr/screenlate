@@ -12,7 +12,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object HungarianSupport : SpacedLanguageSupport() {
     override val language = Language.HUNGARIAN
-    override val glyph = "Ő"
+    override val glyph = "M"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9067"
     override val languageTag = "hu"

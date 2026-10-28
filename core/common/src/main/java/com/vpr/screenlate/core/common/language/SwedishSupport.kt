@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /** Wiktionary recordings of Swedish name no regions (`Sv-vatten.ogg`), so there are no audio regions. */
 object SwedishSupport : SpacedLanguageSupport() {
     override val language = Language.SWEDISH
-    override val glyph = "Å"
+    override val glyph = "S"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9027"
     override val languageTag = "sv"

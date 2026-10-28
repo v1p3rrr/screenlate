@@ -81,6 +81,6 @@ class WelshSupportTest {
         assertThat(WelshSupport.defaultAudioSources).containsExactly("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(WelshSupport.linguaLibreItems).containsExactly("Q9309")
-        assertThat(WelshSupport.glyph).isEqualTo("Ŵ")
+        assertThat(WelshSupport.glyph).isEqualTo("C")
     }
 }

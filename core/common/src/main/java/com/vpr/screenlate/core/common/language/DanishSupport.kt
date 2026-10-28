@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /** Wiktionary recordings of Danish name no regions (`Da-vand.ogg`), so there are no audio regions. */
 object DanishSupport : SpacedLanguageSupport() {
     override val language = Language.DANISH
-    override val glyph = "Æ"
+    override val glyph = "D"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9035"
     override val languageTag = "da"

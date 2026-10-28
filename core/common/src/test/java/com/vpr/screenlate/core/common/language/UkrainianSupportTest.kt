@@ -53,7 +53,7 @@ class UkrainianSupportTest {
         assertThat(support.fontSubsets).containsExactly("latin", "cyrillic")
         assertThat(support.defaultAudioSources.first()).isEqualTo("WIKTIONARY")
         assertThat(support.flagCountries).containsExactly("ua")
-        assertThat(support.glyph).isEqualTo("Ї")
+        assertThat(support.glyph).isEqualTo("У")
         assertThat(support.headwordMarks!!.bases).contains("ї")
     }
 }

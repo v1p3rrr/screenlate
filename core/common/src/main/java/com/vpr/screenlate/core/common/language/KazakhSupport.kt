@@ -13,6 +13,7 @@ import com.vpr.screenlate.core.common.Language
 object KazakhSupport : TurkicCyrillicSupport() {
     override val language = Language.KAZAKH
     override val glyph = "Қ"
+    override val codeLabel = "КК"
     override val wikidataId = "Q9252"
     override val languageTag = "kk"
     override val fontSample = "Әжем шаһардағы үлкен көпірдің қасында ұзақ жүрді."

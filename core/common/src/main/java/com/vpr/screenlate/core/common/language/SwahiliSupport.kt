@@ -10,7 +10,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object SwahiliSupport : SpacedLanguageSupport() {
     override val language = Language.SWAHILI
-    override val glyph = "SW"
+    override val glyph = "K"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q7838"
     override val languageTag = "sw"

@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /** Wiktionary recordings of Czech name no regions (`Cs-kočka.ogg`), so there are no audio regions. */
 object CzechSupport : SpacedLanguageSupport() {
     override val language = Language.CZECH
-    override val glyph = "Ř"
+    override val glyph = "Č"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9056"
     override val languageTag = "cs"

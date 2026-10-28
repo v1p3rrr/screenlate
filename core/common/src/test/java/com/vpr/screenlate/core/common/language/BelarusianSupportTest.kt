@@ -41,7 +41,7 @@ class BelarusianSupportTest {
         assertThat(support.fontSubsets).containsExactly("latin", "cyrillic")
         assertThat(support.defaultAudioSources.first()).isEqualTo("WIKTIONARY")
         assertThat(support.flagCountries).containsExactly("by")
-        assertThat(support.glyph).isEqualTo("Ў")
+        assertThat(support.glyph).isEqualTo("Б")
         assertThat(support.headwordMarks!!.bases).contains("ы")
         assertThat(support.frequencySpellings("сям'я")).isEmpty()
     }

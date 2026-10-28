@@ -93,6 +93,6 @@ class FinnishSupportTest {
         assertThat(FinnishSupport.fontSample.lowercase().toSet()).containsAtLeast('ä', 'ö', 'å')
         assertThat(FinnishSupport.defaultAudioSources).containsExactly("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
             .inOrder()
-        assertThat(FinnishSupport.glyph).isEqualTo("Ä")
+        assertThat(FinnishSupport.glyph).isEqualTo("S")
     }
 }

@@ -56,7 +56,7 @@ abstract class SerboCroatianSupport : SpacedLanguageSupport() {
 object CroatianSupport : SerboCroatianSupport() {
     override val language = Language.CROATIAN
     override val wikidataId = "Q6654"
-    override val glyph = "Đ"
+    override val glyph = "H"
     override val ocrScript = OcrScript.LATIN
     override val fontSample = "Gojazni đačić s biciklom drži hmelj i finu vatu u džepu nošnje."
     override val translationSample = "Danas je lijepo vrijeme. Hoćemo li u šetnju?"
@@ -87,7 +87,8 @@ object CroatianSupport : SerboCroatianSupport() {
 object SerbianSupport : SerboCroatianSupport() {
     override val language = Language.SERBIAN
     override val wikidataId = SERBIAN_WIKIDATA_ID
-    override val glyph = "Ћ"
+    override val glyph = "С"
+    override val codeLabel = "СР"
     override val ocrScript = OcrScript.CYRILLIC
     override val fontSample = "Гојазни ђачић с бициклом држи хмељ и фину вату у џепу ношње."
     override val translationSample = "Данас је лепо време. Хоћемо ли у шетњу?"

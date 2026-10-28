@@ -10,7 +10,8 @@ import com.vpr.screenlate.core.common.Language
  */
 object UkrainianSupport : SpacedLanguageSupport() {
     override val language = Language.UKRAINIAN
-    override val glyph = "Ї"
+    override val glyph = "У"
+    override val codeLabel = "УК"
     override val ocrScript = OcrScript.CYRILLIC
     override val wikidataId = "Q8798"
     override val languageTag = "uk"

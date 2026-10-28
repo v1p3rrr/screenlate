@@ -11,7 +11,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object EstonianSupport : SpacedLanguageSupport() {
     override val language = Language.ESTONIAN
-    override val glyph = "Õ"
+    override val glyph = "E"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9072"
     override val languageTag = "et"

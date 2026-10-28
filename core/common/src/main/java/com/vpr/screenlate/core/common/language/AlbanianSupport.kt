@@ -9,7 +9,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object AlbanianSupport : SpacedLanguageSupport() {
     override val language = Language.ALBANIAN
-    override val glyph = "Ë"
+    override val glyph = "S"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q8748"
     override val languageTag = "sq"

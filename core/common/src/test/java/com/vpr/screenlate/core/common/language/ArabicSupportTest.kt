@@ -86,7 +86,7 @@ class ArabicSupportTest {
         assertThat(support.defaultAudioSources).containsExactly("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH").inOrder()
         assertThat(support.wikidataId).isEqualTo("Q13955")
         assertThat(support.flagCountries).containsExactly("sa")
-        assertThat(support.glyph).isEqualTo("ض")
+        assertThat(support.glyph).isEqualTo("ع")
         assertThat(support.defaultScanLength).isEqualTo(24)
         assertThat(support.speechTag).isEqualTo("ar")
     }

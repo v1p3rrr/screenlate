@@ -80,7 +80,7 @@ class KyrgyzSupportTest {
         assertThat(support.fontSubsets).containsExactly("latin", "cyrillic", "cyrillic-ext")
         assertThat(support.defaultAudioSources.first()).isEqualTo("LINGUA_LIBRE")
         assertThat(support.flagCountries).containsExactly("kg")
-        assertThat(support.glyph).isEqualTo("Ң")
+        assertThat(support.glyph).isEqualTo("К")
         assertThat(support.ignoredFormTags)
             .containsExactly("Arabic", "romanization", "Yañalif", "Cyrillic", "Cyrillic sometimes")
         for (letter in "ңөү") assertThat(support.fontSample.lowercase()).contains(letter.toString())

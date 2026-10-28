@@ -10,7 +10,8 @@ import com.vpr.screenlate.core.common.Language
  */
 object KyrgyzSupport : TurkicCyrillicSupport() {
     override val language = Language.KYRGYZ
-    override val glyph = "Ң"
+    override val glyph = "К"
+    override val codeLabel = "КЫ"
     override val wikidataId = "Q9255"
     override val languageTag = "ky"
     override val fontSample = "Бүгүн көчөдө жаңы дүкөн ачылды, анда өрүк жана жүзүм сатылат."

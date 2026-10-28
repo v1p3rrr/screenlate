@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /** Wiktionary recordings of Latvian name no regions, so there are no audio regions. */
 object LatvianSupport : SpacedLanguageSupport() {
     override val language = Language.LATVIAN
-    override val glyph = "Ā"
+    override val glyph = "L"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9078"
     override val languageTag = "lv"

@@ -9,7 +9,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object NorwegianSupport : SpacedLanguageSupport() {
     override val language = Language.NORWEGIAN
-    override val glyph = "Ø"
+    override val glyph = "N"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9043"
     override val languageTag = "nb"

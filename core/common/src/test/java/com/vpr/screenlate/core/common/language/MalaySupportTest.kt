@@ -22,7 +22,7 @@ class MalaySupportTest {
 
     @Test
     fun `two letters stand in the bubble and the malaysian flag is the default`() {
-        assertThat(MalaySupport.glyph).isEqualTo("MS")
+        assertThat(MalaySupport.glyph).isEqualTo("M")
         assertThat(MalaySupport.flagCountries).containsExactly("my")
         assertThat(MalaySupport.fontSubsets).containsExactly("latin")
     }

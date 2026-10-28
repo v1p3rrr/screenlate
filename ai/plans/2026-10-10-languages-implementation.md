@@ -1305,6 +1305,7 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   blocks build on it and write no misread lists of their own; in the same step, language flags in more places (row
   "Language flags in more places").
 - 5d Cyrillic: Bulgarian, Mongolian; Macedonian.
+- After 5d the chain stops (owner, 2026-10-29): 5e and group 6 start only when the owner asks.
 - 5e Other scripts: Cantonese (Han characters as Chinese, jyutping readings), Kannada; Tamil, Telugu, Marathi
   (Brahmic scripts as Hindi; Kannada is read by the cloud only).
 - 5f Right to left, after group 4d: Yiddish (Hebrew script), Egyptian Arabic, Assyrian Neo-Aramaic (Syriac script,
@@ -1791,3 +1792,4 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   the download screen's title, the cards of turned-off languages and the first-run screen, built in the step
   between groups 5c and 5d; the bubble glyph is built by the coordinating session; Esperanto's frequency dictionary
   now comes from Leipzig's web texts of 2012.
+- 2026-10-29: the build chain stops after group 5d; groups 5e and 6 start only at the owner's word.

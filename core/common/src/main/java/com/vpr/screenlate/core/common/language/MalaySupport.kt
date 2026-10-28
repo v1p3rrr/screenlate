@@ -8,7 +8,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object MalaySupport : SpacedLanguageSupport() {
     override val language = Language.MALAY
-    override val glyph = "MS"
+    override val glyph = "M"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9237"
     override val languageTag = "ms"

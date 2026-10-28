@@ -4,7 +4,7 @@ import com.vpr.screenlate.core.common.Language
 
 object SpanishSupport : SpacedLanguageSupport() {
     override val language = Language.SPANISH
-    override val glyph = "Ñ"
+    override val glyph = "E"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q1321"
     override val languageTag = "es"

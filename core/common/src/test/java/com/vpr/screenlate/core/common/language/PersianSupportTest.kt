@@ -127,7 +127,7 @@ class PersianSupportTest {
         assertThat(support.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH").inOrder()
         assertThat(support.wikidataId).isEqualTo("Q9168")
         assertThat(support.flagCountries).containsExactly("ir")
-        assertThat(support.glyph).isEqualTo("پ")
+        assertThat(support.glyph).isEqualTo("ف")
         assertThat(support.defaultScanLength).isEqualTo(24)
         assertThat(support.speechTag).isEqualTo("fa")
         assertThat(support.quotePairs['«']).isEqualTo('»')

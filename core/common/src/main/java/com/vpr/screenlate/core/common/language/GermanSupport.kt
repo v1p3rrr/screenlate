@@ -4,7 +4,7 @@ import com.vpr.screenlate.core.common.Language
 
 object GermanSupport : SpacedLanguageSupport() {
     override val language = Language.GERMAN
-    override val glyph = "ß"
+    override val glyph = "D"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q188"
     override val languageTag = "de"

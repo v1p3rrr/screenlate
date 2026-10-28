@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /** Wiktionary recordings and transcriptions of Italian name no regions, so there are no audio regions. */
 object ItalianSupport : SpacedLanguageSupport() {
     override val language = Language.ITALIAN
-    override val glyph = "È"
+    override val glyph = "I"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q652"
     override val languageTag = "it"

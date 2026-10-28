@@ -29,6 +29,7 @@ import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.language.bubbleGlyph
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redactUrl
@@ -318,7 +319,13 @@ class OverlayController(
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { lookupSources.source.collect(::onLookupSource) }
         scope.launch { profiles.active.collect(::onActiveLanguage) }
-        scope.launch { profiles.state.collect { languages = it } }
+        scope.launch {
+            profiles.state.collect {
+                languages = it
+                // The quick languages decide between a glyph and a code.
+                showGlyph()
+            }
+        }
         scope.launch { scanLanguage.flatMapLatest { lookup.settingsUpdates(it) }.collect { scanLength = it.scanLength } }
         scope.launch { scanLanguage.flatMapLatest { pageAppearance.json(it) }.collect { popup.page.setAppearance(it) } }
         // A model chosen in the settings, or one installed or deleted, is loaded before the next scan needs it.
@@ -387,13 +394,16 @@ class OverlayController(
     }
 
     /**
-     * The active language, or a shown photo's: its text is looked up in the language it was recognized in. Called for
-     * every move of the photo as well, so the bubble is redrawn only when the glyph changes.
+     * The active language, or a shown photo's: its text is looked up in the language it was recognized in; its code
+     * where a quick language's glyph looks the same. Called for every move of the photo as well, so the bubble is
+     * redrawn only when the glyph changes.
      */
     private fun showGlyph() {
-        val support = glyphLanguage(lookupSources.source.value, activeLanguage).support
-        if (bubbleView.glyphLanguage != support.languageTag) bubbleView.glyphLanguage = support.languageTag
-        if (bubbleView.glyph != support.glyph) bubbleView.glyph = support.glyph
+        val language = glyphLanguage(lookupSources.source.value, activeLanguage)
+        val tag = language.support.languageTag
+        if (bubbleView.glyphLanguage != tag) bubbleView.glyphLanguage = tag
+        val glyph = bubbleGlyph(language, languages.quick)
+        if (bubbleView.glyph != glyph) bubbleView.glyph = glyph
     }
 
     /** @param warmUp prepare on-device OCR for the language; a scan starting now does that itself. */

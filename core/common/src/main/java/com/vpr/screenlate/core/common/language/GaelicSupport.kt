@@ -14,7 +14,7 @@ import java.util.Locale
  */
 object GaelicSupport : SpacedLanguageSupport() {
     override val language = Language.SCOTTISH_GAELIC
-    override val glyph = "Ò"
+    override val glyph = "G"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9314"
     override val languageTag = "gd"

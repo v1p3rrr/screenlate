@@ -9,7 +9,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object VietnameseSupport : SpacedLanguageSupport() {
     override val language = Language.VIETNAMESE
-    override val glyph = "Ư"
+    override val glyph = "T"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9199"
     override val languageTag = "vi"

@@ -14,7 +14,7 @@ import kotlin.math.max
  */
 object PersianSupport : SpacedLanguageSupport() {
     override val language = Language.PERSIAN
-    override val glyph = "پ"
+    override val glyph = "ف"
     override val ocrScript = OcrScript.ARABIC
     override val wikidataId = "Q9168"
     override val languageTag = "fa"

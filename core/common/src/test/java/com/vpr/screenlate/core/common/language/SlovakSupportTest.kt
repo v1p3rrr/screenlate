@@ -93,6 +93,6 @@ class SlovakSupportTest {
         assertThat(SlovakSupport.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(SlovakSupport.linguaLibreItems).containsExactly("Q9058")
-        assertThat(SlovakSupport.glyph).isEqualTo("Ô")
+        assertThat(SlovakSupport.glyph).isEqualTo("S")
     }
 }

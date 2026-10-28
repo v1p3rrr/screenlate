@@ -80,6 +80,6 @@ class SwahiliSupportTest {
         assertThat(SwahiliSupport.defaultAudioSources).containsExactly("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(SwahiliSupport.linguaLibreItems).containsExactly("Q7838")
-        assertThat(SwahiliSupport.glyph).isEqualTo("SW")
+        assertThat(SwahiliSupport.glyph).isEqualTo("K")
     }
 }

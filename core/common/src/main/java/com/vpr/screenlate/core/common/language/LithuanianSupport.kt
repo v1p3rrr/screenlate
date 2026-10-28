@@ -10,7 +10,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object LithuanianSupport : SpacedLanguageSupport() {
     override val language = Language.LITHUANIAN
-    override val glyph = "Ė"
+    override val glyph = "L"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9083"
     override val languageTag = "lt"

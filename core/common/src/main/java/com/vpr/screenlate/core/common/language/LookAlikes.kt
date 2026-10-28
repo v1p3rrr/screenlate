@@ -32,6 +32,11 @@ internal class LookAlikes(private val script: Character.UnicodeScript, private v
     /** Whether [c] is a Latin letter that looks like one of the script's. */
     fun isLookAlike(c: Char): Boolean = c in letters
 
+    /** The Latin letter that the script's letter [c] looks like, if any. */
+    fun latinOf(c: Char): Char? = latin[c]
+
+    private val latin = letters.entries.associate { (latin, own) -> own to latin }
+
     private fun isScriptLetter(c: Char) = c.isLetter() && Character.UnicodeScript.of(c.code) == script
 }
 

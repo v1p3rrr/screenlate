@@ -10,7 +10,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object FinnishSupport : SpacedLanguageSupport() {
     override val language = Language.FINNISH
-    override val glyph = "Ä"
+    override val glyph = "S"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q1412"
     override val languageTag = "fi"

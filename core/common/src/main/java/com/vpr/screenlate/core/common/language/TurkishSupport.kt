@@ -10,7 +10,7 @@ import java.util.Locale
  */
 object TurkishSupport : SpacedLanguageSupport() {
     override val language = Language.TURKISH
-    override val glyph = "Ğ"
+    override val glyph = "T"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q256"
     override val languageTag = "tr"

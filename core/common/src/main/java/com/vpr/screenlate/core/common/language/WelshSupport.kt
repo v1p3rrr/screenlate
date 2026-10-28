@@ -13,7 +13,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object WelshSupport : SpacedLanguageSupport() {
     override val language = Language.WELSH
-    override val glyph = "Ŵ"
+    override val glyph = "C"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9309"
     override val languageTag = "cy"

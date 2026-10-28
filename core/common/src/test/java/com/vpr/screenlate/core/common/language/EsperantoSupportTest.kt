@@ -94,6 +94,6 @@ class EsperantoSupportTest {
         assertThat(EsperantoSupport.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(EsperantoSupport.linguaLibreItems).containsExactly("Q143")
-        assertThat(EsperantoSupport.glyph).isEqualTo("Ĉ")
+        assertThat(EsperantoSupport.glyph).isEqualTo("E")
     }
 }

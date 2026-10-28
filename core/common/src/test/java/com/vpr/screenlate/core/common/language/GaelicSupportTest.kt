@@ -88,7 +88,7 @@ class GaelicSupportTest {
         assertThat(GaelicSupport.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(GaelicSupport.linguaLibreItems).containsExactly("Q9314")
-        assertThat(GaelicSupport.glyph).isEqualTo("Ò")
+        assertThat(GaelicSupport.glyph).isEqualTo("G")
         assertThat(GaelicSupport.defaultScanLength).isEqualTo(16)
     }
 }

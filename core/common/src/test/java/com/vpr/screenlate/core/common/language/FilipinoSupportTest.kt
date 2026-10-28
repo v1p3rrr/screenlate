@@ -39,7 +39,7 @@ class FilipinoSupportTest {
     @Test
     fun `baybayin spellings are not followed and the bubble shows ng`() {
         assertThat(FilipinoSupport.ignoredFormTags).containsExactly("Baybayin")
-        assertThat(FilipinoSupport.glyph).isEqualTo("Ng")
+        assertThat(FilipinoSupport.glyph).isEqualTo("F")
         assertThat(FilipinoSupport.flagCountries).containsExactly("ph")
         assertThat(FilipinoSupport.defaultAudioSources.first()).isEqualTo("LINGUA_LIBRE")
     }

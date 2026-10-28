@@ -9,7 +9,8 @@ import com.vpr.screenlate.core.common.Language
  */
 object RussianSupport : SpacedLanguageSupport() {
     override val language = Language.RUSSIAN
-    override val glyph = "Я"
+    override val glyph = "Р"
+    override val codeLabel = "РУ"
     override val ocrScript = OcrScript.CYRILLIC
     override val wikidataId = "Q7737"
     override val languageTag = "ru"

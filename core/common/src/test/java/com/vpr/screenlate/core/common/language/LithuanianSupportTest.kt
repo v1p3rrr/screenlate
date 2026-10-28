@@ -101,6 +101,6 @@ class LithuanianSupportTest {
         assertThat(LithuanianSupport.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(LithuanianSupport.linguaLibreItems).containsExactly("Q9083")
-        assertThat(LithuanianSupport.glyph).isEqualTo("Ė")
+        assertThat(LithuanianSupport.glyph).isEqualTo("L")
     }
 }

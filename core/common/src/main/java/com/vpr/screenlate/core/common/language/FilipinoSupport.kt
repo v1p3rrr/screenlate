@@ -9,7 +9,7 @@ import java.util.Locale
  */
 object FilipinoSupport : SpacedLanguageSupport() {
     override val language = Language.FILIPINO
-    override val glyph = "Ng"
+    override val glyph = "F"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q34057"
     override val languageTag = "fil"

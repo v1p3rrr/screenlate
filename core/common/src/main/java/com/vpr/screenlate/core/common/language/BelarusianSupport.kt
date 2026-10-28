@@ -9,7 +9,8 @@ import com.vpr.screenlate.core.common.Language
  */
 object BelarusianSupport : SpacedLanguageSupport() {
     override val language = Language.BELARUSIAN
-    override val glyph = "Ў"
+    override val glyph = "Б"
+    override val codeLabel = "БЕ"
     override val ocrScript = OcrScript.CYRILLIC
     override val wikidataId = "Q9091"
     override val languageTag = "be"

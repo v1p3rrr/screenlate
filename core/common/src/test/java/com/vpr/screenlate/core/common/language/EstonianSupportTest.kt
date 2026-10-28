@@ -71,6 +71,6 @@ class EstonianSupportTest {
         assertThat(EstonianSupport.fontSample.lowercase().toSet()).containsAtLeast('õ', 'ä', 'ö', 'ü', 'š', 'ž')
         assertThat(EstonianSupport.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
             .inOrder()
-        assertThat(EstonianSupport.glyph).isEqualTo("Õ")
+        assertThat(EstonianSupport.glyph).isEqualTo("E")
     }
 }

@@ -13,7 +13,7 @@ import java.text.Normalizer
  */
 object LatinSupport : SpacedLanguageSupport() {
     override val language = Language.LATIN
-    override val glyph = "LA"
+    override val glyph = "L"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q397"
     override val languageTag = "la"

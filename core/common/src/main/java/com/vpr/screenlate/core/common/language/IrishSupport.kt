@@ -11,7 +11,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object IrishSupport : SpacedLanguageSupport() {
     override val language = Language.IRISH
-    override val glyph = "Á"
+    override val glyph = "G"
     override val ocrScript = OcrScript.LATIN
     override val wikidataId = "Q9142"
     override val languageTag = "ga"

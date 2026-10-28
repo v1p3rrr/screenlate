@@ -13,7 +13,7 @@ import com.vpr.screenlate.core.common.Language
  */
 object ArabicSupport : SpacedLanguageSupport() {
     override val language = Language.ARABIC
-    override val glyph = "ض"
+    override val glyph = "ع"
     override val ocrScript = OcrScript.ARABIC
     override val wikidataId = "Q13955"
     override val languageTag = "ar"

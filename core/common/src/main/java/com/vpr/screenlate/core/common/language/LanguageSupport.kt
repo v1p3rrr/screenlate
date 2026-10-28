@@ -10,7 +10,11 @@ import java.util.Locale
 interface LanguageSupport {
     val language: Language
 
-    /** A characteristic letter of the language, shown on the docked bubble. */
+    /**
+     * The letter the docked bubble shows ([bubbleGlyph]): the first letter of the language's own name, capitalized
+     * (Deutsch D, русский Р, العربية ع after the article), or the most typical character of a script the language has
+     * to itself (あ, 한, Ω).
+     */
     val glyph: String
 
     /** Inserted between recognized words; empty for scripts written without spaces. */
@@ -179,7 +183,10 @@ interface LanguageSupport {
     /** BCP 47 tag of the text-to-speech voice: the language's code unless the voices know it by another. */
     val speechTag: String get() = language.code
 
-    /** What stands for the language where its flag cannot (e-ink): its code in capitals. */
+    /**
+     * What stands for the language where its flag or glyph cannot (e-ink, a glyph shaped like another quick language's):
+     * its code in capitals, in Cyrillic for a Cyrillic-script language (РУ).
+     */
     val codeLabel: String get() = language.code.uppercase(Locale.ROOT)
 
     /** The phone's fonts for the language, used by the lookup page unless the user picks another font. */

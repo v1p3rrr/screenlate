@@ -89,6 +89,6 @@ class AlbanianSupportTest {
         assertThat(AlbanianSupport.defaultAudioSources).containsExactly("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
             .inOrder()
         assertThat(AlbanianSupport.linguaLibreItems).containsExactly("Q8748")
-        assertThat(AlbanianSupport.glyph).isEqualTo("Ë")
+        assertThat(AlbanianSupport.glyph).isEqualTo("S")
     }
 }
