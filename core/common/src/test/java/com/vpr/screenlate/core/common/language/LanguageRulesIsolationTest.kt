@@ -188,6 +188,8 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.CZECH)
         assertThat(all.where { it.ocrLines(listOf(listOf("n", ".", "I", ".", "Potom"))).single()[2] == "l" })
             .containsExactly(Language.CZECH)
+        // Only Czech OCR text parts a word glued to the era's last period.
+        assertThat(all.where { it.ocrLines(listOf(listOf("n.l.a"))).single().single() != "n.l.a" }).containsExactly(Language.CZECH)
         val joined = "v roce 300 n.l. vznikl"
         assertThat(periodEnding.where { !it.endsSentence(joined, joined.indexOf("l.") + 1) }).containsExactly(Language.CZECH, Language.SLOVAK)
         // Before a capital the I is an initial in every language.

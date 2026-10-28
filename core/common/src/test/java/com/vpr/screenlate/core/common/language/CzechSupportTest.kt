@@ -57,6 +57,24 @@ class CzechSupportTest {
     }
 
     @Test
+    fun `a word ml kit glues to the era's last period is parted from it`() {
+        assertThat(ocrLine("300", "př.", "n.I.a", "se")).containsExactly("300", "př.", "n.l. a", "se").inOrder()
+        assertThat(ocrLine("př.n.l.Potom")).containsExactly("př.n.l. Potom").inOrder()
+        // Across a line break: "n." ends a line, "l.a" starts the next; and with each period a word of its own.
+        assertThat(CzechSupport.ocrLines(listOf(listOf("roku", "300", "n."), listOf("I.a", "kdy"))))
+            .containsExactly(listOf("roku", "300", "n."), listOf("l. a", "kdy")).inOrder()
+        assertThat(ocrLine("n", ".", "l.se")).containsExactly("n", ".", "l. se").inOrder()
+        // The parted era keeps the sentence going.
+        val fixed = ocrLine("300", "př.", "n.I.a", "se").joinToString(" ")
+        assertThat(ends(fixed, at = fixed.indexOf("l.") + 1)).isFalse()
+        // The era before a comma or apart from the next word, a word that only ends in n, other letters: they stay.
+        assertThat(ocrLine("n.l.,", "a")).containsExactly("n.l.,", "a").inOrder()
+        assertThat(ocrLine("n.l.", "a")).containsExactly("n.l.", "a").inOrder()
+        assertThat(ocrLine("Jan.I.a")).containsExactly("Jan.I.a").inOrder()
+        assertThat(ocrLine("n.o.a", "s.l.a")).containsExactly("n.o.a", "s.l.a").inOrder()
+    }
+
+    @Test
     fun `the era written without spaces does not end a sentence`() {
         val joined = "v roce 300 n.l. vznikl"
         assertThat(ends(joined, at = joined.indexOf("l.") + 1)).isFalse()

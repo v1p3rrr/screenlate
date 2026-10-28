@@ -52,8 +52,8 @@ data class OcrPage(
 }
 
 /**
- * The page with every word as [language] writes it ([LanguageSupport.ocrLines], [LanguageSupport.ocrQuotes]); the same
- * page when nothing changes.
+ * The page with every word as [language] writes it ([LanguageSupport.ocrLines], [LanguageSupport.ocrQuotes]), a word
+ * written with a space parted into words there; the same page when nothing changes.
  */
 fun OcrPage.inLanguage(language: Language): OcrPage {
     val support = language.support
@@ -65,13 +65,18 @@ fun OcrPage.inLanguage(language: Language): OcrPage {
             lines = paragraph.lines.map { line ->
                 val lineTexts = texts[lineIndex++]
                 line.copy(
-                    words = line.words.mapIndexed { index, word ->
+                    words = line.words.flatMapIndexed { index, word ->
                         val text = lineTexts[index]
-                        if (text == word.text) {
-                            word
-                        } else {
-                            changed = true
-                            word.copy(text = text, characterBoxes = word.characterBoxes?.let { joinedBoxes(word.text, text, it) })
+                        when {
+                            text == word.text -> listOf(word)
+                            ' ' in text && ' ' !in word.text -> {
+                                changed = true
+                                word.partedAt(text, line)
+                            }
+                            else -> {
+                                changed = true
+                                listOf(word.copy(text = text, characterBoxes = word.characterBoxes?.let { joinedBoxes(word.text, text, it) }))
+                            }
                         }
                     },
                 )
@@ -79,6 +84,37 @@ fun OcrPage.inLanguage(language: Language): OcrPage {
         )
     }
     return if (changed) copy(paragraphs = fixed) else this
+}
+
+/**
+ * The word as [text] writes it, one word for each part between its spaces, each with a space after it but the last,
+ * which keeps the word's separator. A part takes its character boxes where the word has them, else its share of the
+ * word's box by characters along the line.
+ */
+private fun OcrWord.partedAt(text: String, line: OcrLine): List<OcrWord> {
+    val parts = text.split(' ').filter { it.isNotEmpty() }
+    val joined = parts.joinToString("")
+    val boxes = characterBoxes?.let { joinedBoxes(this.text, joined, it) }
+    val total = joined.codePointCount(0, joined.length)
+    var start = 0
+    return parts.mapIndexed { index, part ->
+        val count = part.codePointCount(0, part.length)
+        val partBoxes = boxes?.subList(start, start + count)
+        val partBox = partBoxes?.let { Box.unionOf(it) } ?: box.share(start, start + count, total, line)
+        start += count
+        OcrWord(part, if (index == parts.lastIndex) separator else " ", partBox, partBoxes, engine)
+    }
+}
+
+/** The part of this box from character [from] to [to] of [total] in [line]'s direction. */
+private fun Box.share(from: Int, to: Int, total: Int, line: OcrLine): Box {
+    val start = from.toFloat() / total
+    val end = to.toFloat() / total
+    return when {
+        line.vertical -> Box(left, top + height * start, right, top + height * end)
+        line.rightToLeft -> Box(right - width * end, top, right - width * start, bottom)
+        else -> Box(left + width * start, top, left + width * end, bottom)
+    }
 }
 
 /**

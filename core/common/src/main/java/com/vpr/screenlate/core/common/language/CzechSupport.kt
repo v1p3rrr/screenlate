@@ -44,7 +44,8 @@ object CzechSupport : SpacedLanguageSupport() {
     /**
      * OCR reads the sans-serif l of "n. l." as a capital I: an I between "n." and a period is written l, across a line
      * break too, however the engine splits the words (cloud recognition gives each period as a word of its own, ML Kit
-     * may join "n.I." into one word). Text read from apps is taken as written.
+     * may join "n.I." into one word). ML Kit may also glue the next word to the era's last period ("n.I.a" for "n. l.
+     * a"): that word gets a space before it, so the page parts the two. Text read from apps is taken as written.
      */
     override fun ocrLines(lines: List<List<String>>): List<List<String>> {
         val fixed = super.ocrLines(lines).map { it.toMutableList() }
@@ -61,9 +62,19 @@ object CzechSupport : SpacedLanguageSupport() {
             val offset = at - starts[index]
             fixed[line][word] = fixed[line][word].replaceRange(offset, offset + 1, "l")
         }
+        for (match in ERA_GLUED.findAll(text).toList().asReversed()) {
+            val at = match.range.last + 1
+            val index = starts.indexOfLast { it <= at }
+            val (line, word) = words[index]
+            val offset = at - starts[index]
+            fixed[line][word] = fixed[line][word].replaceRange(offset, offset, " ")
+        }
         return fixed
     }
 
     /** The capital I between "n." and a period in the words joined with spaces: "n. I.", "n . I .", "n.I.". */
     private val ERA_L = Regex("""(?<![\p{L}\p{M}])n ?\. ?(I) ?\.""")
+
+    /** "n. l." in the words joined with spaces, its last period followed by a letter in the same word: "n.l.a". */
+    private val ERA_GLUED = Regex("""(?<![\p{L}\p{M}])n ?\. ?[lI] ?\.(?=\p{L})""")
 }

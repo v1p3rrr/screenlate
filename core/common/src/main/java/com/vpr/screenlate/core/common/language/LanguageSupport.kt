@@ -56,7 +56,8 @@ interface LanguageSupport {
 
     /**
      * A page's words as OCR read them, line by line, each as [ocrWord] writes it. A language written in two scripts
-     * decides by the line which one a word is in (Serbian).
+     * decides by the line which one a word is in (Serbian). A word that comes back with a space holds two words an
+     * engine glued together (Czech "n.l.a"); the page parts it there.
      */
     fun ocrLines(lines: List<List<String>>): List<List<String>> = lines.map { line -> line.map(::ocrWord) }
 

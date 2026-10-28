@@ -60,6 +60,29 @@ class OcrPageLanguageTest {
     }
 
     @Test
+    fun `a czech word glued to the era is parted into two words with their boxes`() {
+        // ML Kit's "n.I.a" for "n. l. a", with a box for each character.
+        val boxes = List(5) { Box(10f * it, 0f, 10f * it + 10f, 10f) }
+        val glued = OcrWord("n.I.a", " ", Box(0f, 0f, 50f, 10f), boxes)
+        val next = OcrWord("se", " ", Box(60f, 0f, 80f, 10f))
+        val page = OcrPage(100, 20, listOf(OcrParagraph(listOf(OcrLine(listOf(glued, next), Box(0f, 0f, 80f, 10f), vertical = false)))), OcrEngineType.ML_KIT)
+
+        val words = page.inLanguage(Language.CZECH).paragraphs.single().lines.single().words
+
+        assertThat(words.map { it.text to it.separator }).containsExactly("n.l." to " ", "a" to " ", "se" to " ").inOrder()
+        assertThat(words[0].characterBoxes).containsExactlyElementsIn(boxes.take(4)).inOrder()
+        assertThat(words[0].box).isEqualTo(Box(0f, 0f, 40f, 10f))
+        assertThat(words[1].characterBoxes).containsExactly(boxes[4])
+        assertThat(words[1].box).isEqualTo(boxes[4])
+        assertThat(TextLayout(page.inLanguage(Language.CZECH)).paragraphText(TextPosition(0, 0)).first.trim()).isEqualTo("n.l. a se")
+        // Without character boxes each part takes its share of the word's box.
+        val plain = OcrPage(100, 20, listOf(OcrParagraph(listOf(OcrLine(listOf(glued.copy(characterBoxes = null)), glued.box, vertical = false)))), OcrEngineType.ML_KIT)
+        val parts = plain.inLanguage(Language.CZECH).paragraphs.single().lines.single().words
+        assertThat(parts.map { it.box }).containsExactly(Box(0f, 0f, 40f, 10f), Box(40f, 0f, 50f, 10f)).inOrder()
+        assertThat(parts.map { it.characterBoxes }).containsExactly(null, null)
+    }
+
+    @Test
     fun `a page with nothing to change is the same page`() {
         val page = page("\u043co\u0440\u0435", "TOP")
 
