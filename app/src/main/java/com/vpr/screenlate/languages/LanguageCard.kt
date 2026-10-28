@@ -32,15 +32,24 @@ fun LanguageCard(
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
     SectionCard(title = shown.displayName()) {
-        LanguageChips(profiles.turnedOn, shown, onShow)
+        LanguageChips(profiles.turnedOn, shown, onShow, profiles::flagCountry)
         Hint(hint)
         content()
     }
 }
 
-/** A chip per turned-on language; the selected one is [shown]. Scrolls sideways when the chips do not fit. */
+/**
+ * A chip per turned-on language with its flag of [flagCountry]; the selected one is [shown]. Scrolls sideways when the
+ * chips do not fit.
+ */
 @Composable
-fun LanguageChips(languages: List<Language>, shown: Language, onShow: (Language) -> Unit, modifier: Modifier = Modifier) {
+fun LanguageChips(
+    languages: List<Language>,
+    shown: Language,
+    onShow: (Language) -> Unit,
+    flagCountry: (Language) -> String,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -50,6 +59,7 @@ fun LanguageChips(languages: List<Language>, shown: Language, onShow: (Language)
                 selected = language == shown,
                 onClick = { onShow(language) },
                 label = { Text(language.displayName()) },
+                leadingIcon = { ChipFlag(language, flagCountry(language)) },
                 colors = AccentDefaults.filterChipColors(),
             )
         }

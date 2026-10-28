@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
 import com.vpr.screenlate.core.ocr.model.ModelOcrEngine
 import com.vpr.screenlate.core.ocr.model.OcrModelChoices
@@ -24,7 +25,7 @@ import kotlinx.coroutines.withContext
 /** The on-device model of each turned-on language: chosen, downloaded and deleted in the recognition settings. */
 @HiltViewModel
 class OcrModelsViewModel @Inject constructor(
-    profiles: LanguageProfiles,
+    languageProfiles: LanguageProfiles,
     private val catalog: DictionaryCatalog,
     private val store: OcrModelStore,
     private val choices: OcrModelChoices,
@@ -36,7 +37,7 @@ class OcrModelsViewModel @Inject constructor(
 
     /** Null until the first read. */
     val lists: StateFlow<List<LanguageModelList>?> = combine(
-        profiles.state,
+        languageProfiles.state,
         catalog.entries(),
         store.models,
         choices.all,
@@ -44,6 +45,10 @@ class OcrModelsViewModel @Inject constructor(
     ) { profiles, entries, installed, chosen, tasks ->
         ocrModelLists(profiles.turnedOn, entries, installed.associate { it.id to it.bytes }, chosen, mlKit::reads, engineIds, tasks)
     }.flowOn(Dispatchers.IO).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** The languages' flags ([LanguageProfilesState.flagCountry]); null until the first read. */
+    val profiles: StateFlow<LanguageProfilesState?> =
+        languageProfiles.state.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     /** Makes [option] the model [language] reads with; only an installed one can be chosen. */
     fun choose(language: Language, option: OcrModelOption) {

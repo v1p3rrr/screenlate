@@ -76,6 +76,7 @@ import com.vpr.screenlate.core.photos.CameraPreferences
 import com.vpr.screenlate.core.photos.HistoryEntry
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoHistory
+import com.vpr.screenlate.languages.ChipFlag
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ConfirmDelete
 import com.vpr.screenlate.ui.components.TooltipIconButton

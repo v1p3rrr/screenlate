@@ -37,6 +37,7 @@ import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -123,7 +124,12 @@ fun FirstRunScreen(onSetup: (Language) -> Unit, onDone: () -> Unit, viewModel: F
                             .padding(vertical = 4.dp),
                     ) {
                         RadioButton(selected = language == chosen, onClick = null, modifier = Modifier.padding(12.dp))
-                        Text(language.displayName(), style = MaterialTheme.typography.bodyLarge)
+                        ChipFlag(language, language.support.flagCountries.first(), sizeDp = 24)
+                        Text(
+                            language.displayName(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 12.dp),
+                        )
                     }
                 }
             }
