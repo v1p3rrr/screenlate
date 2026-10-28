@@ -1793,3 +1793,7 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   between groups 5c and 5d; the bubble glyph is built by the coordinating session; Esperanto's frequency dictionary
   now comes from Leipzig's web texts of 2012.
 - 2026-10-29: the build chain stops after group 5d; groups 5e and 6 start only at the owner's word.
+- 2026-10-29: marks folded in the lookup and language flags in more places built on branch `languages/marks`
+  (`2026-10-29-folded-marks-and-flags.md`: technical choices, data check, progress); the data check finds one or two
+  extra results on a third or more of running text in Italian, Portuguese, Spanish, Irish and French, so the question
+  of the extra results is in that plan, the fold kept as decided until the answer.
