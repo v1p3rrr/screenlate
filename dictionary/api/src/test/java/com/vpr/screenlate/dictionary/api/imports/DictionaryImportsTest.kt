@@ -375,6 +375,38 @@ class DictionaryImportsTest {
     }
 
     @Test
+    fun `a failed read with the network up is a break-off, and no wait for the network follows`() = runTest {
+        var waited = false
+
+        val failure = failedRead(ensureActive = {}, networkLost = { false }, awaitNetwork = { waited = true; true })
+
+        assertThat(failure).isEqualTo(FailedRead.BROKE_OFF)
+        assertThat(waited).isFalse()
+    }
+
+    @Test
+    fun `a failed read as the network goes waits for it`() = runTest {
+        assertThat(failedRead(ensureActive = {}, networkLost = { true }, awaitNetwork = { true })).isEqualTo(FailedRead.NETWORK_BACK)
+        assertThat(failedRead(ensureActive = {}, networkLost = { true }, awaitNetwork = { false })).isEqualTo(FailedRead.NO_NETWORK)
+    }
+
+    @Test
+    fun `a failed read after WorkManager stopped the task checks nothing more`() {
+        var checked = false
+
+        assertThrows(CancellationException::class.java) {
+            runBlocking {
+                failedRead(
+                    ensureActive = { throw CancellationException("stopped") },
+                    networkLost = { checked = true; false },
+                    awaitNetwork = { checked = true; true },
+                )
+            }
+        }
+        assertThat(checked).isFalse()
+    }
+
+    @Test
     fun `a task reads its own input, not the output of the task before it in its chain`() {
         val own = workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/es-tr.zip", KEY_ENTRY_ID to "wiktionary-es-tr")
         val stoppedBefore = workDataOf(
