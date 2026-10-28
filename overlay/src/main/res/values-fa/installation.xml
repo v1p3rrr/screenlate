@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">آماده</string>
+    <string name="installation_running">نصب زبان در حال انجام است. اسکن و جستجو وقتی اجزای لازم آماده شوند در دسترس قرار می‌گیرند.</string>
+    <string name="installation_missing">واژه‌نامه‌ها یا مدل‌های تشخیص لازم موجود نیستند یا غیرفعال هستند. برای تکمیل راه‌اندازی، وضعیت نصب را باز کنید.</string>
+    <string name="installation_failed">نصب زبان انجام نشد. برای دیدن خطا و تلاش دوباره، وضعیت نصب را باز کنید.</string>
+    <string name="installation_open">وضعیت نصب</string>
+    <string name="installation_device_ready">تشخیص روی دستگاه: آماده</string>
+    <string name="installation_device_missing">تشخیص روی دستگاه: در دسترس نیست؛ تشخیص ابری در صورت فعال بودن قابل استفاده است.</string>
+    <string name="installation_remaining">نصب‌های باقی‌مانده: %1$d</string>
+    <string name="installation_errors">نصب‌های ناموفق: %1$d</string>
+</resources>

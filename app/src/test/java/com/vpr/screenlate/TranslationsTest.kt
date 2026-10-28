@@ -33,6 +33,7 @@ class TranslationsTest {
         "vi" to setOf("other"),
         "b+zh+Hans" to setOf("other"),
         "b+zh+Hant" to setOf("other"),
+        "fa" to setOf("one", "other"),
     )
 
     /** Translations whose screens are not checked yet: they ship, but the language settings do not offer them. */
