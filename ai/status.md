@@ -1954,6 +1954,6 @@ not run (no `lintDebug`, no `testDebugUnitTest`): plain JVM tests were compiled 
 417 of 419 (the Thai and Khmer "without the phone's ICU" cases fail only because the run supplies ICU through a
 shim). Not compiled: `HoshidictsEngine.kt` (one changed call). The coordinating session builds and tests locally.
 
-Open for the owner: questions 88-94 of `plans/2026-10-10-languages-implementation.md` (the vi Brazilian-flag chip,
-Vietnamese North/South, FreeDict's length rule, Russian «карточка», French «Recherche», Arabic form tags, arrows in
-right-to-left menu paths).
+Open for the owner: questions 88-92 of `plans/2026-10-10-languages-implementation.md` (the vi Brazilian-flag chip,
+Vietnamese North/South, FreeDict's length rule, Russian «карточка», French «Recherche»), and 93-94 on the
+right-to-left branch (Arabic form tags named as other languages' categories, arrows in right-to-left menu paths).
