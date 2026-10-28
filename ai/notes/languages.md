@@ -1689,8 +1689,29 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   494, sl-es 318, sl-it 287, sl-vi 124 words stay under the line); wordfreq's small list; PaddleOCR v5 Latin
   recommended (0% errors on the test screens against ML Kit's 0.9%), v6 and Tesseract `slv` fast and best unticked.
 - Coverage: sl-en and sl-ru find half the words of running text as written and 15% more through the stress keys;
-  34.9% stay missing (ob, naj, sicer, saj, ter). FreeDict's slv-eng (GPL-3.0+) would add 3.4%; question 27 of the
-  group 5a plan (deferred until hosting exists).
+  34.9% stay missing (ob, naj, sicer, saj, ter). FreeDict's slv-eng (GPL-3.0+) adds 3.4%: converted (below), listed
+  once hosting exists (group 5a plan, question 27).
+
+### The owner's answers of 2026-10-22 on `languages/5a-answers` (2026-10-28)
+
+- Scan length (question 21): Swedish, Danish and Norwegian consider 24 characters from the aim by default, as
+  Georgian, Armenian, Arabic, Persian and Hebrew do; words longer than 16 letters are 0.93%, 0.76% and 0.83% of their
+  tokens in Leipzig's news and Wikipedia text. German and Dutch keep 16.
+- OCR quotes (question 22): `LanguageSupport.ocrQuotes` runs after `ocrLines` in `OcrPage.inLanguage`, so on OCR
+  pages only. >> and << at a word's edge become » and « where the language pairs them; a " right after ! or ?
+  becomes the closer of the latest quote still open on the page (pairs whose closer is a bracket do not count).
+  Cloud recognition gives punctuation as words of its own (`aici`, `!`, `"`), so the character before a word's first
+  one is the last of the word before it. The word's character boxes stay usable: the two boxes of >> are joined.
+- Latin frequency (question 23): Leipzig's `lat_wikipedia_2021_100K` (15.5 MB, CC BY; no Latin news corpus is
+  published, the other Latin archive names return 404), built on the phone as Kazakh's and Kyrgyz's, with the
+  catalog template `leipzig-wikipedia` (the descriptions name Wikipedia articles, not news). Words lose macrons and
+  breves before counting (`LatinSupport.frequencyWord`): 938 of its 161,467 words carry one. amicus ranks 2,148,
+  amiciō is not in the list, so amicis shows amicus first.
+- FreeDict slv-eng (question 27): the converter reads FreeDict's older headers: languages from the file name
+  when the header has none, the authors from `respStmt`, the license paragraph, WikDict credited only for WikDict
+  files; genders kept on nouns and names only; `int`, `vt`, `vi` mapped. sl-en 0.1 gives 5,552 terms under 5,512
+  headwords (105 KB). The WikDict conversions come out unchanged. Listed once hosting exists, as ESPDIC and
+  WikDict.
 
 ## Group 5d research (2026-10-19)
 

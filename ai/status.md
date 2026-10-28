@@ -102,6 +102,9 @@ the details.
   Russian label of the -ыш rule, the other three PanLex archives; from the checks: the timing run's row "Default OCR
   engines", the speed marks in words and the Both-mode hint; DIC24 (resume after Clear cache) and DIC25 not run; the
   owner re-imports the Russian dictionaries (the stress-mark rule changes them at import).
+- Group 5a (`plans/2026-10-19-group-5a.md`), resumed 2026-10-28: the four answers of 2026-10-22 on
+  `languages/5a-answers`; Esperanto, Albanian and Swahili follow on `languages/eo`, `languages/sq`, `languages/sw`,
+  each from the newest `languages/main` and rebased before its report.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -391,6 +394,12 @@ Slovenian on `languages/sl` (from `languages/main` at `9736102b`): forms keyed w
 Wiktionary's Slovenian forms (the macron added; ł and ə read as l and e) and every headword also without the caron
 (the native letters' key now made after the replacements); abbreviations, paired letters t i, ordinals, »…« and „…“
 from the corpus; PaddleOCR v5 Latin as the more accurate model; plan question 27 (FreeDict slv-eng) deferred.
+
+The owner's answers of 2026-10-22 on `languages/5a-answers` (2026-10-28, from `languages/main` 913c5e29): a scan
+length of 24 for Swedish, Danish and Norwegian; quotes that OCR writes in ASCII written as the language's (>> << as
+» «, a " after ! or ? as the open quote's closer; OCR pages only); a Latin frequency dictionary built on the device
+from Leipzig's Latin Wikipedia, words counted without vowel lengths; the FreeDict converter reads older headers and
+slv-eng is converted (listed once hosted).
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
