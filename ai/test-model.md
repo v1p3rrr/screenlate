@@ -397,14 +397,14 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | F | M | 2026-10-22 |
 | DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | F | U TaskItemsTest, M | 2026-10-22 |
 | DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-28 (`main`: a queued download offline, which has no shared card; the file import not run) |
-| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build loses at the next import what no queued import reads (a file import queued there before the update still installs) and goes once empty | F | U StorageCleanUpTest, M | 2026-10-28 (`main`, before the fix that keeps the queued files; the queued file import of an older build and Clear cache not run) |
+| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build loses at the next import what no queued import reads (a file import queued there before the update still installs) and goes once empty | F | U StorageCleanUpTest, M | 2026-10-28 (`main`: the update from `2df1e55c` with a file import queued; Clear cache with a download waiting for a network), 2026-10-28 (`main`, before the fix that keeps the queued files) |
 | DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | F | U InstallingTest, UpdateCheckTest, M | 2026-10-22 |
 | DIC26 | A Leipzig frequency list (Kazakh): the setup downloads `kaz_newscrawl_2016_100K` (18 MB, SHA-256 checked), keeps only its word list, builds 100,000 words on the device and registers "Leipzig Corpora Collection (kk)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC27 | A Leipzig frequency list (Kyrgyz): the setup downloads `kir_newscrawl_2016_100K` (19 MB, SHA-256 checked), builds 100,000 words on the device and registers "Leipzig Corpora Collection (ky)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC28 | PanLex conversions (`scripts/panlex/panlex_yomitan.py`, kk and ky into ru and en) import from a file with their language pair ("PanLex ky-ru": ky → ru); a lookup shows one line of comma-separated translations with Russian stress marks, under the wty entry of the same headword; verb chains reach these untagged entries (алды → алуу) | O | U test_panlex_yomitan.py, M | 2026-10-20, 2026-10-22 (kk-en, ky-ru) |
-| DIC29 | Wi-Fi and mobile data off during a catalog download: its task card says "Waiting for a network: …" and its catalog card "Waiting for a network", the log "stopped by WorkManager (reason 7): waits for a network, then runs again" (or "the network went away during the download (…) and is back; continues", "…, none for 30 s; tries again"); no retry is counted and no "download stopped" card appears; with the network back the download continues from the bytes already there ("… KB already there") and installs | F | U DictionaryImportsTest, M | 2026-10-28 (`main`) |
+| DIC29 | Wi-Fi and mobile data off during a catalog download: its task card says "Waiting for a network: …" and its catalog card "Waiting for a network", the log "stopped by WorkManager (reason 7): waits for a network, then runs again" (or "the network went away during the download (…) and is back; continues", "…, none for 30 s; tries again"); no retry is counted and no "download stopped" card appears; with the network back the download continues from the bytes already there ("… KB already there") and installs | F | U DictionaryImportsTest, M | 2026-10-28 (`main` and `claude/download-fixes-lang` after the fix round), 2026-10-28 (`main`) |
 | DIC30 | The network goes at the moment the last retry breaks off (a proxy `10.0.2.2:8899` that never answers for the break-offs, Wi-Fi and data off just before or just after the third retry's 20 s read timeout): the card keeps "Retrying the download (3 of 3)" with "Waiting for a network", never "download stopped"; with the network back (proxy removed) it finishes. A task that ended (stopped after its last retry, cancelled, failed or installed) never runs again: turning the network off and on starts nothing | F | U DictionaryImportsTest, M | 2026-10-22 |
-| DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-28 (`main`: two downloads after a stopped one, Resume by hand) |
+| DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-28 (`main` after the fix round: the retries waiting in the run, two stopped cards, Resume on each), 2026-10-28 (`main`: two downloads after a stopped one, Resume by hand) |
 | DIC32 | A transcription dictionary with millions of tagged transcriptions imports with its tags (Chinese: Transcription (Wiktionary), wty-zh-ipa, 4.4 million): no "Reading or writing transcription tags failed" in the log, `transcription_tags.bin` in its directory, and the `{phonetic-transcriptions}` marker of 中国 gives "(zh_pron, Pinyin, Mandarin) Zhōngguó"; a transcription dictionary imported by an older version (the first file format) still shows its tags (English water) | F | U TranscriptionTagsTest, TranscriptionTagBanksTest, M | 2026-10-22 |
 | DIC33 | Norwegian dictionaries imported from a file: wty's nn–en archive (its index names nn) and the WikDict no-ru conversion (`scripts/freedict`, its index names no) are both filed under Norwegian, and a Norwegian lookup shows their entries | F | U IndexLanguageTest, test_freedict_yomitan.py, M | 2026-10-22 |
 | DIC34 | Czech dictionaries under Slovak: with Slovak on and Czech off, the Dictionaries screen lists the installed cs-en in Slovak's list (cs → en) and "Turned off" does not list it; turning Czech off with "Delete its dictionaries and models" keeps cs-en while Slovak is on; with both off, cs-en is listed under "Turned off" as Czech's | F | U DictionaryLanguagesTest, OcrModelsTest, M | 2026-10-22 |
@@ -597,12 +597,55 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-10-28 morning, `claude/port-fixes-to-main-3e7385` (0.2.3-0bf33bd9, the code of `d1f8ee9f`) and `claude/download-fixes-lang` (0.2.3-f35f90ec), Pixel_10_Pro (API 37)
+
+Scope: the emulator checks of the fix round: DIC24 as an update, DIC29 and DIC31 on `main`, DIC29 on the language
+branch. Side-by-side installs (init scripts in the scratchpad): `main` as `com.vpr.screenlate.debugmain`, the language
+branch as `com.vpr.screenlate.debuglang`; both uninstalled afterwards, the `languages/main` debug app not touched.
+
+Results: every case passed.
+
+- DIC24, the update: `main` 2df1e55c installed fresh, Wi-Fi and data off, Колобок 400k queued ("Waiting in the
+  queue"), then `grammar.zip` (Dictionary of Japanese Grammar, 389 KB) picked with Import from file: its copy in
+  `cache/dictionary-downloads/` queued behind the download; a file `stale-part.zip` planted next to it. 0.2.3-0bf33bd9
+  installed over it, the network back: the download's run logged "1 import leftovers, kept 2 queued archives" (the
+  planted file gone, the copy kept), Колобок installed, then the file import installed 日本語文法辞典(全集) from the copy.
+  After `am kill` in the background and a restart, the bundled install's cleanup removed the empty folder.
+- DIC24, Clear cache: Wiktionary (ja–ja) waiting for a network with 12 MB in `no_backup/dictionary-downloads/`; App
+  info → Storage & cache → Clear cache emptied `cache/` and kept the part, the process kept running; with the network
+  back: "12068 KB already there", installed.
+- DIC29 on `main`: Wi-Fi and data off during Wiktionary (ja–ja), four times in a row: each run "stopped by WorkManager
+  (reason 7): waits for a network, then runs again", the task card "Waiting for a network: Wiktionary (ja–ja)", the
+  catalog card "Waiting for a network", no retry, no "download stopped" card. Each next run started as soon as the
+  network was back, run 5 too (with the exponential backoff the downloads had, 30 s doubled per run, not before 4
+  minutes after the enqueue, 40 s later); it continued from the 12 MB and installed.
+- DIC31 on `main`: JMdict (French) and JMdict (German) queued together with `http_proxy` set to a closed port
+  (`10.0.2.2:8898`, refused at once): each broke off (ConnectException) and waited 30 s, 1 and 2 minutes in its one
+  run ("retry n of 3 in … s"), meanwhile the task card "Retrying the download (n of 3): JMdict (French)" and the
+  catalog card "Waiting in the queue", then "download stopped — connection lost" with Cancel and Resume; German ran
+  after French. Proxy removed, JMdict (Russian) and Wiktionary (ja–ru) started together: WorkManager's database lists
+  the stopped German task as the Russian task's prerequisite; each downloaded its own archive and installed. Resume on
+  the German card (the French one listed above it) downloaded `JMdict_german.zip`, then Resume on French
+  `JMdict_french.zip`; both installed.
+- DIC29 on the language branch: first run, Japanese, the suggested downloads (53 MB); Wi-Fi and data off 2 s into
+  Jitendex: Jitendex (chain 1) and Kanjium Pitch Accents (chain 0) "stopped by WorkManager (reason 7)", 6.9 MB kept;
+  the shared card "Waiting (4): Jitendex, Kanjium Pitch Accents, Transcription (Wiktionary), KANJIDIC" with "Waiting
+  for a network" under its title, Jitendex's catalog card "Waiting for a network"; no retry. With the network back
+  after 50 s both runs started at once, Jitendex "6940 KB already there", every task installed.
+- The emulator's network throttle did not help to cut a download midway: at `adb emu network speed 800` a queued
+  download did not start, at 2000 no byte came in 10 s, at 3000 a 16 MB file still came in 5 s. Switching the network
+  off on the device right after the app's "Downloading" line did (`notes/build-environment.md`).
+
+Left on the emulator: as before (the `languages/main` debug app, its service enabled, the proxy settings deleted, Wi-Fi
+and data on, the network speed full, `grammar.zip` removed from Downloads); the emulator shut down and the lock
+released after 28 minutes.
+
 ### 2026-10-28 night, `claude/port-fixes-to-main-3e7385` (`d1f8ee9f`) and `claude/download-fixes-lang` (from `9a401674`)
 
 Scope: the fix round after the review of the port: the old cache folder keeps the files a queued import reads, a
 download whose network went keeps waiting in its run, `main`'s retries wait in the run, the least linear backoff.
 Automated only: `main` unit tests 629, page tests 107, lint; `languages/main` unit tests 1750, lint. DIC24, DIC29 and
-DIC31 not run on the emulator: group 5a held the lock from 03:01 past 04:49.
+DIC31 not run on the emulator: group 5a held the lock from 03:01 past 04:49 (run in the morning, the entry above).
 
 ### 2026-10-28, `claude/port-fixes-to-main-3e7385` (`main` 2df1e55c with the fixes ported from `languages/main`, 0.2.3-7c4d2b30, side-by-side install), Pixel_10_Pro (API 37)
 
