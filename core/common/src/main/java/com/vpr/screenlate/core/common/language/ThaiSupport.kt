@@ -33,9 +33,6 @@ open class ThaiRules(segmenter: WordSegmenter = IcuWordSegmenter) : SegmentedLan
      */
     override val ocrSpaceGap = 0.4f
 
-    /** A third of the characters on the hard screens of the OCR comparison, 1% on the clean ones; cloud 0%. */
-    override val tesseractMisreadsBusyScreens = true
-
     /** Wiktionary lists classifiers as forms of the nouns they count: คน of 386 nouns, ตัว of 306. */
     override val ignoredFormTags = setOf("classifier")
 

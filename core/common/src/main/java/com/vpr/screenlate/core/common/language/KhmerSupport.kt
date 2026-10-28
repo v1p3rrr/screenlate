@@ -32,9 +32,6 @@ open class KhmerRules(segmenter: WordSegmenter = IcuWordSegmenter) : SegmentedLa
      */
     override val ocrSpaceGap = 0.15f
 
-    /** 57% of the characters on the hard screens of the OCR comparison, 9% on the clean ones; cloud 0.2%. */
-    override val tesseractMisreadsBusyScreens = true
-
     override val headwordMarks = HeadwordMarks(
         marks = "",
         bases = "",

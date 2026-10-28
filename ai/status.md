@@ -199,9 +199,8 @@ Built on `claude/app-fixes-1028` (from `languages/main`); the network timing als
   `onRegister`); the task card's Cancel stays and still comes too late there.
 - Home's "Download again" card stays hidden while the dictionary's download waits or runs, also after the app is
   left and opened again (it was not fixed before: the set was per ViewModel).
-- Every Tesseract model of every language says it misreads busy screens. `LanguageSupport.tesseractMisreadsBusyScreens`
-  (and the Thai and Khmer overrides with their test) is unused now; remove it once the OCR text rules branch has
-  landed, see the group 4c plan.
+- Every Tesseract model of every language says it misreads busy screens; `LanguageSupport.tesseractMisreadsBusyScreens`
+  and its Thai and Khmer overrides were removed after the merge with the OCR text rules.
 - The download screen's size after import: measured sizes (`catalog/installed-sizes.json`, 137 entries, written by
   `scripts/catalog/installed_sizes.py`), else shares per kind; the free space check takes a quarter more or a share
   above the largest measured. Chinese's defaults read 69 MB, as their import takes (43 MB with the old ×3). Refresh the

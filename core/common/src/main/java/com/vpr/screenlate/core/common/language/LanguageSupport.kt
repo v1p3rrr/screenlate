@@ -34,12 +34,6 @@ interface LanguageSupport {
      */
     val ocrSpaceGap: Float? get() = null
 
-    /**
-     * Tesseract misreads much of the language's text on busy screens (photos, gradients, outlined or decorative
-     * fonts), where cloud recognition reads nearly all of it; the model lists say so under its models.
-     */
-    val tesseractMisreadsBusyScreens: Boolean get() = false
-
     /** On-device recognizer to use. */
     val ocrScript: OcrScript
 

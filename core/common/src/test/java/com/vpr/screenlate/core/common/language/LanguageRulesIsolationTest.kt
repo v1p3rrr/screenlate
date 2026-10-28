@@ -116,7 +116,6 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.shownMatchLengths("การตลาด", setOf(1, 7)) != setOf(1, 7) })
             .containsExactly(Language.THAI, Language.KHMER)
         assertThat(all.where { it.ocrSpaceGap != null }).containsExactly(Language.THAI, Language.KHMER)
-        assertThat(all.where { it.tesseractMisreadsBusyScreens }).containsExactly(Language.THAI, Language.KHMER)
         // Only they start lookups inside the aimed word when nothing from its start reaches the aim, in their script.
         assertThat(all.where { it.innerStarts("โรงเรียน", 0, "โรงเรีย".length).isNotEmpty() }).containsExactly(Language.THAI)
         assertThat(all.where { it.innerStarts("ក្រុងភ្នំពេញ", 0, "ក្រុងភ្នំពេ".length).isNotEmpty() })
