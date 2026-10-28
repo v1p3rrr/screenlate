@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">의문</string>
     <string name="inflection_turkic_possessive_2pl_label">너희의</string>
     <string name="inflection_turkic_verbal_noun_label">동명사</string>
+    <string name="inflection_turkic_past_copula_label">계사 과거</string>
+    <string name="inflection_turkic_conditional_copula_label">계사 조건</string>
+    <string name="inflection_turkic_evidential_copula_label">계사 전언</string>
+    <string name="inflection_turkic_future_label">미래</string>
+    <string name="inflection_turkic_evidential_label">전언 과거</string>
+    <string name="inflection_turkic_necessity_label">당위</string>
+    <string name="inflection_turkic_participle_label">분사</string>
 </resources>

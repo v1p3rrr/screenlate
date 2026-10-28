@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">疑問</string>
     <string name="inflection_turkic_possessive_2pl_label">你們的</string>
     <string name="inflection_turkic_verbal_noun_label">動名詞</string>
+    <string name="inflection_turkic_past_copula_label">繫詞過去式</string>
+    <string name="inflection_turkic_conditional_copula_label">繫詞條件式</string>
+    <string name="inflection_turkic_evidential_copula_label">繫詞傳聞式</string>
+    <string name="inflection_turkic_future_label">將來時</string>
+    <string name="inflection_turkic_evidential_label">傳聞過去時</string>
+    <string name="inflection_turkic_necessity_label">必要式</string>
+    <string name="inflection_turkic_participle_label">分詞</string>
 </resources>

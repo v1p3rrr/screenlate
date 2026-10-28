@@ -298,6 +298,19 @@ class SentenceTest {
     }
 
     @Test
+    fun azerbaijaniSentenceKeepsAbbreviationsAndEndsAtVəSBeforeACapital() {
+        val paragraph = "Yağış yağdı. Bazardan alma, armud və s. aldıq. Prof. Əliyev Bakı şəh. Nizami küç. 5-də yaşayır. " +
+            "Kitablar, dəftərlər və s. Sonra evə getdik."
+        assertThat(extract(paragraph, "armud", Language.AZERBAIJANI).text).isEqualTo("Bazardan alma, armud və s. aldıq.")
+        assertThat(extract(paragraph, "yaşayır", Language.AZERBAIJANI).text)
+            .isEqualTo("Prof. Əliyev Bakı şəh. Nizami küç. 5-də yaşayır.")
+        assertThat(extract(paragraph, "dəftərlər", Language.AZERBAIJANI).text).isEqualTo("Kitablar, dəftərlər və s.")
+        // «…» quotes keep the period inside them.
+        val quoted = "Yağış yağdı. O dedi: «Gəlirəm.» və getdi. Sonra günəş çıxdı."
+        assertThat(extract(quoted, "getdi", Language.AZERBAIJANI).text).isEqualTo("O dedi: «Gəlirəm.» və getdi.")
+    }
+
+    @Test
     fun hungarianSentenceKeepsDatesOrdinalsAndAbbreviationsAndEndsAtStbBeforeACapital() {
         val paragraph = "Esett. 2023. május 3-án gyümölcsöt vettem, pl. almát és körtét stb. A ház a 19. sz. végén " +
             "épült. Ld. a kb. 5. oldalt. Minden rendben."

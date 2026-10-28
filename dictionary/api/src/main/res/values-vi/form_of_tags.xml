@@ -27,12 +27,14 @@
     <string name="form_of_tag_aorist">thể aorist</string>
     <string name="form_of_tag_apocopic">rút gọn cuối</string>
     <string name="form_of_tag_applicative">thể ứng dụng</string>
+    <string name="form_of_tag_arabic">chữ Ả Rập</string>
     <string name="form_of_tag_archaic">cổ</string>
     <string name="form_of_tag_assertive">khẳng định</string>
     <string name="form_of_tag_attributive">định ngữ</string>
     <string name="form_of_tag_augmentative">dạng tăng nghĩa</string>
     <string name="form_of_tag_before_vowel">trước nguyên âm</string>
     <string name="form_of_tag_benefactive">thụ hưởng</string>
+    <string name="form_of_tag_broken_form">dạng biến đổi trong</string>
     <string name="form_of_tag_by_personal_gender">theo giới tính của người</string>
     <string name="form_of_tag_cantonese">tiếng Quảng Đông</string>
     <string name="form_of_tag_causal_final">cách nguyên nhân-mục đích</string>
@@ -63,9 +65,11 @@
     <string name="form_of_tag_continuous">tiếp diễn</string>
     <string name="form_of_tag_contraction">rút gọn</string>
     <string name="form_of_tag_contrastive">đối lập</string>
+    <string name="form_of_tag_converb">trạng động từ</string>
     <string name="form_of_tag_count_form">dạng đếm</string>
     <string name="form_of_tag_countable">đếm được</string>
     <string name="form_of_tag_counter">lượng từ</string>
+    <string name="form_of_tag_cyrillic">chữ Kirin</string>
     <string name="form_of_tag_dated">cũ</string>
     <string name="form_of_tag_dative">tặng cách</string>
     <string name="form_of_tag_debitive">thức bắt buộc</string>
@@ -94,6 +98,7 @@
     <string name="form_of_tag_essive_modal">trạng thái cách phương thức</string>
     <string name="form_of_tag_eumhun">nghĩa và âm</string>
     <string name="form_of_tag_euphemistic">uyển ngữ</string>
+    <string name="form_of_tag_evidential">thức chứng cứ</string>
     <string name="form_of_tag_exaggerated">so sánh nhất nhấn mạnh</string>
     <string name="form_of_tag_female_equivalent">dạng nữ</string>
     <string name="form_of_tag_feminine">giống cái</string>
@@ -106,6 +111,7 @@
     <string name="form_of_tag_future_i">tương lai I</string>
     <string name="form_of_tag_future_ii">tương lai II</string>
     <string name="form_of_tag_gangwon">Gangwon</string>
+    <string name="form_of_tag_general">chung</string>
     <string name="form_of_tag_genitive">sở hữu cách</string>
     <string name="form_of_tag_gerund">danh động từ</string>
     <string name="form_of_tag_gerundive">tính động từ</string>
@@ -155,6 +161,7 @@
     <string name="form_of_tag_initialism">từ viết tắt chữ đầu</string>
     <string name="form_of_tag_instructive">chỉ dẫn cách</string>
     <string name="form_of_tag_instrumental">công cụ cách</string>
+    <string name="form_of_tag_intensifier">nhấn mạnh</string>
     <string name="form_of_tag_internet">mạng</string>
     <string name="form_of_tag_interrogative">nghi vấn</string>
     <string name="form_of_tag_intransitive">nội động</string>
@@ -181,6 +188,7 @@
     <string name="form_of_tag_min_nan">tiếng Mân Nam</string>
     <string name="form_of_tag_misspelling">viết sai</string>
     <string name="form_of_tag_mixed">hỗn hợp</string>
+    <string name="form_of_tag_modal">cách thức</string>
     <string name="form_of_tag_morpheme">hình vị</string>
     <string name="form_of_tag_motive_form">dạng mục đích</string>
     <string name="form_of_tag_name">tên gọi</string>
@@ -193,6 +201,7 @@
     <string name="form_of_tag_non_attributive">phi định ngữ</string>
     <string name="form_of_tag_non_past">phi quá khứ</string>
     <string name="form_of_tag_non_prospective">không tương lai</string>
+    <string name="form_of_tag_non_subject">phi chủ ngữ</string>
     <string name="form_of_tag_nonfinite">phi hữu định</string>
     <string name="form_of_tag_nonstandard">không chuẩn</string>
     <string name="form_of_tag_nonvirile">không chỉ người giống đực</string>
@@ -208,14 +217,18 @@
     <string name="form_of_tag_object_singular">tân ngữ số ít</string>
     <string name="form_of_tag_object_third_person">tân ngữ ngôi thứ ba</string>
     <string name="form_of_tag_objective">tân ngữ</string>
+    <string name="form_of_tag_obligative">thức bắt buộc</string>
     <string name="form_of_tag_obsolete">lỗi thời</string>
     <string name="form_of_tag_optative">mong muốn</string>
     <string name="form_of_tag_participle">phân từ</string>
     <string name="form_of_tag_partitive">bộ phận cách</string>
     <string name="form_of_tag_passive">bị động</string>
     <string name="form_of_tag_past">quá khứ</string>
+    <string name="form_of_tag_past_future">tương lai trong quá khứ</string>
     <string name="form_of_tag_pejorative">miệt thị</string>
     <string name="form_of_tag_perfect">hoàn thành</string>
+    <string name="form_of_tag_perfect_i">hoàn thành I</string>
+    <string name="form_of_tag_perfect_ii">hoàn thành II</string>
     <string name="form_of_tag_perfective">thể hoàn thành</string>
     <string name="form_of_tag_personal">nhân xưng</string>
     <string name="form_of_tag_pluperfect">quá khứ hoàn thành</string>
@@ -267,6 +280,7 @@
     <string name="form_of_tag_slang">tiếng lóng</string>
     <string name="form_of_tag_south_korea">Hàn Quốc</string>
     <string name="form_of_tag_southern">phương Nam</string>
+    <string name="form_of_tag_specific">cụ thể</string>
     <string name="form_of_tag_standard">chuẩn</string>
     <string name="form_of_tag_stressed">có trọng âm</string>
     <string name="form_of_tag_strong">mạnh</string>

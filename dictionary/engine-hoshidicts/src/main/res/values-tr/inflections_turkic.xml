@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">soru</string>
     <string name="inflection_turkic_possessive_2pl_label">sizin (çoğul)</string>
     <string name="inflection_turkic_verbal_noun_label">isim-fiil</string>
+    <string name="inflection_turkic_past_copula_label">ek-fiilin hikâyesi</string>
+    <string name="inflection_turkic_conditional_copula_label">ek-fiilin şartı</string>
+    <string name="inflection_turkic_evidential_copula_label">ek-fiilin rivayeti</string>
+    <string name="inflection_turkic_future_label">gelecek zaman</string>
+    <string name="inflection_turkic_evidential_label">öğrenilen geçmiş zaman</string>
+    <string name="inflection_turkic_necessity_label">gereklilik kipi</string>
+    <string name="inflection_turkic_participle_label">sıfat-fiil</string>
 </resources>

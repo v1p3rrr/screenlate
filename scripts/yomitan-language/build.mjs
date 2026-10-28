@@ -30,7 +30,8 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * Hindi's descriptor, which has neither, for the app's own processors and endings; Kazakh and Kyrgyz take Mongolian's
  * (Cyrillic, capitalization only) for the app's own endings; Lithuanian takes Latvian's (capitalization only), as
  * Wiktionary lists its forms; Slovak takes Czech's (capitalization only), the language its lookups fall back to; Slovenian takes Czech's as
- * well, as Wiktionary lists its forms; Swahili takes Czech's too, for the app's own verb prefixes.
+ * well, as Wiktionary lists its forms; Swahili takes Czech's too, for the app's own verb prefixes; Azerbaijani takes
+ * Turkish's (capitalization with the Turkish case pairs, glue.js) for the app's own endings.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
@@ -41,6 +42,7 @@ const borrowed = {
     sk: {from: 'cs', iso639_3: 'slk', name: 'Slovak', exampleText: 'čítať'},
     sl: {from: 'cs', iso639_3: 'slv', name: 'Slovenian', exampleText: 'brati'},
     sw: {from: 'cs', iso639_3: 'swa', name: 'Swahili', exampleText: 'kusoma'},
+    az: {from: 'tr', iso639_3: 'aze', name: 'Azerbaijani', exampleText: 'oxumaq'},
 };
 
 /**
@@ -59,7 +61,8 @@ const borrowed = {
  * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al); Swahili writes ng' so
  * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r), Irish and Scottish Gaelic their elided words (d'fhág, dh'fhàg);
  * Irish in Gaelic type writes lenition as a dot (ḃean for bhean), and Scottish Gaelic in its older spelling some
- * long vowels with the acute (mór for mòr); recognition reads Hungarian ő and ű as ö and ü, Estonian õ as ö.
+ * long vowels with the acute (mór for mòr); recognition reads Hungarian ő and ű as ö and ü, Estonian õ as ö,
+ * Azerbaijani ə and ı as e and i.
  * Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
@@ -84,14 +87,15 @@ const addedPreprocessors = {
     gd: ['ukrainianApostropheVariants', 'gaelicAcuteAsGrave'],
     hu: ['hungarianMisreadDoubleAcute'],
     et: ['estonianMisreadTilde'],
+    az: ['azerbaijaniMisreadLetters'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
- * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
- * article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial mutations, Finnish clitics and
- * possessive suffixes, Hungarian verb prefixes (Yomitan's Finnish and Hungarian descriptors have text processors
- * only).
+ * Persian endings and verb prefixes, Hebrew prefixes, Kazakh, Kyrgyz and Azerbaijani endings, the Norwegian genitive,
+ * Romanian article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial mutations, Finnish
+ * clitics and possessive suffixes, Hungarian verb prefixes (Yomitan's Finnish and Hungarian descriptors have text
+ * processors only).
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -107,6 +111,7 @@ const addedTransforms = {
     fi: 'finnishTransforms',
     hu: 'hungarianTransforms',
     et: 'estonianTransforms',
+    az: 'azerbaijaniTransforms',
 };
 
 /**

@@ -1360,6 +1360,70 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun azerbaijaniFindsItsWordsThroughEndingsWithTheTurkishCasePairsAndTriesSchwaAfterOcr() = runTest {
+        val imported = engine.import(azerbaijaniDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val azerbaijani = LookupOptions(language = Language.AZERBAIJANI)
+        suspend fun all(text: String, options: LookupOptions = azerbaijani) =
+            engine.lookup(text, options).map { it.term.expression }.distinct()
+
+        val books = engine.lookup("kitablarımızda", azerbaijani).first()
+        assertThat(books.term.expression).isEqualTo("kitab")
+        assertThat(books.trace.map { it.name }).containsExactly("plural", "possessive 1pl", "locative")
+        assertThat(books.trace.map { it.label }).doesNotContain("")
+        assertThat(books.trace.map { it.description }).doesNotContain("")
+        // k and q are written y and ğ before a vowel.
+        assertThat(all("çörəyi")).containsExactly("çörək")
+        assertThat(all("ayağı")).containsExactly("ayaq")
+        // Verb endings reach the infinitive; yaz "spring" is reached through the copula only.
+        val wrote = engine.lookup("yazdı", azerbaijani)
+        assertThat(wrote.first { it.term.expression == "yazmaq" }.trace.map { it.name }).containsExactly("past")
+        assertThat(wrote.filter { it.term.expression == "yaz" }.map { r -> r.trace.map { it.name } })
+            .containsExactly(listOf("past copula"))
+        assertThat(all("gəlirəm")).containsExactly("gəlmək")
+        // A word with its own entry shows it without the rules' results: yazı, not yaz through the possessive.
+        assertThat(all("yazı")).containsExactly("yazı")
+        // Two-letter stems come through Wiktionary's rows.
+        assertThat(all("olur")).containsExactly("olmaq")
+        // Capitals lower by the Turkish case pairs.
+        assertThat(all("QIZLAR")).containsExactly("qız")
+        assertThat(all("İLHAM")).containsExactly("ilham")
+
+        // ə and ı that recognition read as e and i are tried for words from OCR only.
+        val ocr = azerbaijani.copy(fromOcr = true)
+        assertThat(engine.lookup("seher", azerbaijani)).isEmpty()
+        assertThat(all("seher", ocr)).containsExactly("səhər")
+        assertThat(all("qizlar", ocr)).containsExactly("qız")
+        assertThat(all("-ci")).containsExactly("-ci")
+    }
+
+    /**
+     * Rows as Wiktionary's Azerbaijani export writes them: no rules, the part of speech in the tags; the forms of
+     * olmaq as form-of rows, a suffix entry.
+     */
+    private fun azerbaijaniDictionary(): File = zip(
+        "az.zip",
+        "index.json" to """{"title":"Test Azerbaijani","revision":"1","format":3,"sourceLanguage":"az"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["kitab","","n","",0,["book"],1,""],
+              ["çörək","","n","",0,["bread"],2,""],
+              ["ayaq","","n","",0,["foot"],3,""],
+              ["yaz","","n","",0,["spring"],4,""],
+              ["yazmaq","","v","",0,["to write"],5,""],
+              ["yazı","","n","",0,["writing"],6,""],
+              ["gəlmək","","v","",0,["to come"],7,""],
+              ["olmaq","","v vi","",0,["to be"],8,""],
+              ["olur","","non-lemma","",0,[["olmaq",["third-person singular present indicative"]]],9,""],
+              ["qız","","n","",0,["girl"],10,""],
+              ["ilham","","n","",0,["inspiration"],11,""],
+              ["səhər","","n","",0,["morning"],12,""],
+              ["-ci","","suffix","",0,["forms ordinal numbers"],13,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

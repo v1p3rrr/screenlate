@@ -27,12 +27,14 @@
     <string name="form_of_tag_aorist">geniş zaman</string>
     <string name="form_of_tag_apocopic">sonses düşmeli</string>
     <string name="form_of_tag_applicative">uygulamalı</string>
+    <string name="form_of_tag_arabic">Arap yazısı</string>
     <string name="form_of_tag_archaic">eskil</string>
     <string name="form_of_tag_assertive">kesinlik</string>
     <string name="form_of_tag_attributive">niteleme</string>
     <string name="form_of_tag_augmentative">büyütme</string>
     <string name="form_of_tag_before_vowel">ünlüden önce</string>
     <string name="form_of_tag_benefactive">yararlanıcı</string>
+    <string name="form_of_tag_broken_form">kırık biçim</string>
     <string name="form_of_tag_by_personal_gender">kişinin cinsiyetine göre</string>
     <string name="form_of_tag_cantonese">Kantonca</string>
     <string name="form_of_tag_causal_final">sebep-amaç hâli</string>
@@ -63,9 +65,11 @@
     <string name="form_of_tag_continuous">sürekli</string>
     <string name="form_of_tag_contraction">büzülme</string>
     <string name="form_of_tag_contrastive">karşıtlık</string>
+    <string name="form_of_tag_converb">zarf-fiil</string>
     <string name="form_of_tag_count_form">sayı sonrası biçim</string>
     <string name="form_of_tag_countable">sayılabilir</string>
     <string name="form_of_tag_counter">sınıflandırıcı</string>
+    <string name="form_of_tag_cyrillic">Kiril</string>
     <string name="form_of_tag_dated">eskice</string>
     <string name="form_of_tag_dative">yönelme hâli</string>
     <string name="form_of_tag_debitive">gereklilik kipi</string>
@@ -94,6 +98,7 @@
     <string name="form_of_tag_essive_modal">essif-modal</string>
     <string name="form_of_tag_eumhun">anlam ve okunuş</string>
     <string name="form_of_tag_euphemistic">örtmeceli</string>
+    <string name="form_of_tag_evidential">rivayet</string>
     <string name="form_of_tag_exaggerated">pekiştirilmiş enüstünlük</string>
     <string name="form_of_tag_female_equivalent">dişil biçim</string>
     <string name="form_of_tag_feminine">dişil</string>
@@ -106,6 +111,7 @@
     <string name="form_of_tag_future_i">gelecek zaman I</string>
     <string name="form_of_tag_future_ii">gelecek zaman II</string>
     <string name="form_of_tag_gangwon">Gangwon</string>
+    <string name="form_of_tag_general">genel</string>
     <string name="form_of_tag_genitive">tamlayan hâli</string>
     <string name="form_of_tag_gerund">ulaç</string>
     <string name="form_of_tag_gerundive">gerundivum</string>
@@ -155,6 +161,7 @@
     <string name="form_of_tag_initialism">baş harf kısaltması</string>
     <string name="form_of_tag_instructive">instrüktif</string>
     <string name="form_of_tag_instrumental">araç hâli</string>
+    <string name="form_of_tag_intensifier">pekiştirme</string>
     <string name="form_of_tag_internet">internet</string>
     <string name="form_of_tag_interrogative">soru</string>
     <string name="form_of_tag_intransitive">geçişsiz</string>
@@ -181,6 +188,7 @@
     <string name="form_of_tag_min_nan">Min Nan</string>
     <string name="form_of_tag_misspelling">yazım yanlışı</string>
     <string name="form_of_tag_mixed">karma</string>
+    <string name="form_of_tag_modal">durum</string>
     <string name="form_of_tag_morpheme">biçimbirim</string>
     <string name="form_of_tag_motive_form">amaç biçimi</string>
     <string name="form_of_tag_name">ad</string>
@@ -193,6 +201,7 @@
     <string name="form_of_tag_non_attributive">niteleme dışı</string>
     <string name="form_of_tag_non_past">geçmiş dışı</string>
     <string name="form_of_tag_non_prospective">gelecek dışı</string>
+    <string name="form_of_tag_non_subject">özne dışı</string>
     <string name="form_of_tag_nonfinite">çekimsiz</string>
     <string name="form_of_tag_nonstandard">standart dışı</string>
     <string name="form_of_tag_nonvirile">eril kişi dışı</string>
@@ -208,14 +217,18 @@
     <string name="form_of_tag_object_singular">tekil nesne</string>
     <string name="form_of_tag_object_third_person">üçüncü şahıs nesne</string>
     <string name="form_of_tag_objective">nesne</string>
+    <string name="form_of_tag_obligative">gereklilik kipi</string>
     <string name="form_of_tag_obsolete">eskimiş</string>
     <string name="form_of_tag_optative">istek kipi</string>
     <string name="form_of_tag_participle">ortaç</string>
     <string name="form_of_tag_partitive">partitif</string>
     <string name="form_of_tag_passive">edilgen</string>
     <string name="form_of_tag_past">geçmiş zaman</string>
+    <string name="form_of_tag_past_future">gelecek zamanın hikâyesi</string>
     <string name="form_of_tag_pejorative">aşağılayıcı</string>
     <string name="form_of_tag_perfect">bitmiş</string>
+    <string name="form_of_tag_perfect_i">bitmiş I</string>
+    <string name="form_of_tag_perfect_ii">bitmiş II</string>
     <string name="form_of_tag_perfective">bitmişlik</string>
     <string name="form_of_tag_personal">şahıs</string>
     <string name="form_of_tag_pluperfect">önceki geçmiş</string>
@@ -267,6 +280,7 @@
     <string name="form_of_tag_slang">argo</string>
     <string name="form_of_tag_south_korea">Güney Kore</string>
     <string name="form_of_tag_southern">güney</string>
+    <string name="form_of_tag_specific">özel</string>
     <string name="form_of_tag_standard">standart</string>
     <string name="form_of_tag_stressed">vurgulu</string>
     <string name="form_of_tag_strong">güçlü</string>

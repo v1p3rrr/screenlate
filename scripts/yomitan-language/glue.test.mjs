@@ -7,7 +7,7 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
-    albanianEndings, estonianTransforms, finnishTransforms, gaelicMutations, hebrewTransforms, hungarianTransforms,
+    albanianEndings, azerbaijaniTransforms, estonianTransforms, finnishTransforms, gaelicMutations, hebrewTransforms, hungarianTransforms,
     irishMutations, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms,
     welshTransforms, withOwnTransforms, withReplacedTransforms,
 } from './own-transforms.js';
@@ -760,7 +760,7 @@ test('kazakh and kyrgyz noun endings skip the pronouns whose case forms change t
 test('every turkic rule has a shared name and a description of its endings, which the app strings are generated from', () => {
     const res = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values');
     const labels = fs.readFileSync(path.join(res, 'inflections_turkic.xml'), 'utf8');
-    for (const descriptor of [kazakhTransforms, kyrgyzTransforms]) {
+    for (const descriptor of [kazakhTransforms, kyrgyzTransforms, azerbaijaniTransforms]) {
         const strings = fs.readFileSync(path.join(res, `inflections_${descriptor.language}.xml`), 'utf8');
         assert.equal(descriptor.sharedLabels, 'turkic');
         for (const [id, {name, description, hidden}] of Object.entries(descriptor.transforms)) {
@@ -1756,5 +1756,100 @@ test('every estonian rule has a name and a description of its own, which the app
 test('the estonian negative rule stays out of other languages', () => {
     for (const language of ['en', 'fi', 'hu', 'de']) {
         assert.ok(!queried(language, 'pole').has('olema'), language);
+    }
+});
+
+test('azerbaijani noun endings come off in the order of the grammar and match entries without a part of speech', () => {
+    const [book] = candidatesTo('az', 'kitablarımızda', 'kitab');
+    assert.ok(book.u);
+    assert.equal(book.g, undefined);
+    assert.deepEqual([...book.r[0]], ['plural', 'possessive 1pl', 'locative']);
+    // After a vowel the ending takes y or n first: ataya, atanın, atasına.
+    const chains = (text, lemma) => candidatesTo('az', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+    assert.ok(chains('ataya', 'ata').includes('dative'));
+    assert.ok(chains('atanın', 'ata').includes('genitive'));
+    assert.ok(chains('atasına', 'ata').includes('possessive 3rd < dative'));
+    // k and q written y and ğ before a vowel: çörəyi → çörək, ayağı → ayaq.
+    assert.ok(queried('az', 'çörəyi').has('çörək'));
+    assert.ok(queried('az', 'ayağı').has('ayaq'));
+    // -ya follows a vowel only, -na a possessive's vowel only: kitab-ya and kitab-na are no datives.
+    assert.ok(!queried('az', 'kitabya').has('kitab'));
+    assert.ok(!queried('az', 'kitabna').has('kitab'));
+    // The predicate's endings and the copula after it: müəlliməm, məktəbdəydi, Azərbaycandır.
+    assert.ok(chains('müəlliməm', 'müəllim').includes('1sg'));
+    assert.ok(chains('məktəbdəydi', 'məktəb').includes('locative < past copula'));
+    assert.ok(queried('az', 'Azərbaycandır').has('Azərbaycan'));
+    // A stem keeps three letters: su-yu is left to Wiktionary's own rows.
+    assert.ok(!queried('az', 'suyu').has('su'));
+    // The word as written stays typed.
+    assert.ok(!candidates('az', 'kitab').find((c) => c.d === 'kitab').u);
+});
+
+test('azerbaijani verb forms reach the infinitive and match only definitions tagged as verbs', () => {
+    const forms = {
+        'gəldi': ['gəlmək', ['past']],
+        'gəlmədi': ['gəlmək', ['negative', 'past']],
+        'gəlirəm': ['gəlmək', ['present', '1sg']],
+        'gəlmir': ['gəlmək', ['negative', 'present']],
+        'oxumur': ['oxumaq', ['negative', 'present']],
+        'oxuyur': ['oxumaq', ['present']],
+        'gələcəyik': ['gəlmək', ['future', '1pl']],
+        'oxuyacaq': ['oxumaq', ['future']],
+        'gəlirdim': ['gəlmək', ['present', 'past copula', '1sg']],
+        'gəlirsənmi': ['gəlmək', ['present', '2sg', 'question']],
+        'gəldiyi': ['gəlmək', ['past participle', 'possessive 3rd']],
+        'oxuduğu': ['oxumaq', ['past participle', 'possessive 3rd']],
+        'yazdırdı': ['yazmaq', ['causative', 'past']],
+        'yazıldı': ['yazmaq', ['passive', 'past']],
+        'baxmalı': ['baxmaq', ['necessity']],
+        'gələn': ['gəlmək', ['participle']],
+        'oxuyub': ['oxumaq', ['converb']],
+        'gedək': ['getmək', ['imperative']],
+        'gedir': ['getmək', ['present']],
+    };
+    for (const [text, [lemma, chain]] of Object.entries(forms)) {
+        assert.ok(isVerbThrough(candidatesTo('az', text, lemma), chain), text);
+    }
+    // ed- and ged- are also et- and get-; the infinitive takes -maq or -mək by the last vowel.
+    assert.ok(queried('az', 'gedir').has('gedmək'));
+    assert.ok(!queried('az', 'gəldi').has('gəlmaq'));
+    assert.ok(!queried('az', 'oxudu').has('oxumək'));
+    // Two-letter stems are left to Wiktionary's rows (olur, edir, dedi).
+    for (const text of ['olur', 'edir', 'dedi']) {
+        assert.ok(candidates('az', text).every((c) => !c.g), text);
+    }
+});
+
+test('azerbaijani capitals lower and rise with the turkish case pairs', () => {
+    assert.ok(queried('az', 'İLHAM').has('ilham'));
+    assert.ok(queried('az', 'QIZLAR').has('qız'));
+    assert.ok(!queried('az', 'QIZLAR').has('qiz'));
+    assert.ok(queried('az', 'ilham').has('İlham'));
+    assert.ok(queried('az', 'ılıq').has('Ilıq'));
+});
+
+test('azerbaijani e and i are tried as ə and ı for words from ocr only, as read first', () => {
+    assert.ok(queriedFromOcr('az', 'seher').has('səhər'));
+    assert.ok(queriedFromOcr('az', 'qiz').has('qız'));
+    assert.ok(queriedFromOcr('az', 'Eli').has('Əli'));
+    assert.ok(queriedFromOcr('az', 'ev').has('ev'));
+    // The letters change before the endings come off: qizlar finds qız.
+    assert.ok(queriedFromOcr('az', 'qizlar').has('qız'));
+    const steps = new Map(load('az').candidates('seher', 'az', 'word', true).map((c) => [c.d, c.s]));
+    assert.ok(steps.get('seher') < steps.get('səhər'));
+    // A written ə stays itself, and only the first word changes.
+    assert.ok(!queriedFromOcr('az', 'səhər').has('seher'));
+    assert.ok(!queriedFromOcr('az', 'ev seher').has('ev səhər'));
+    // App text and typed text are looked up as written.
+    assert.ok(!queried('az', 'seher').has('səhər'));
+    // Turkish reads the same either way.
+    assert.deepEqual(queriedFromOcr('tr', 'kiz'), queried('tr', 'kiz'));
+});
+
+test('azerbaijani rules stay out of other languages', () => {
+    for (const language of ['tr', 'kk', 'en']) {
+        assert.ok(!queried(language, 'kitablarımızda').has('kitab'), language);
+        assert.ok(!queried(language, 'gəldi').has('gəlmək'), language);
+        assert.ok(candidates(language, 'gəldi').every((c) => c.g === undefined), language);
     }
 });

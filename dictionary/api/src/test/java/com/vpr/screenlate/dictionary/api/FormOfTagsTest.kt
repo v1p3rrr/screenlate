@@ -100,6 +100,21 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `azerbaijani tenses, moods, participles and scripts are translated`() {
+        assertThat(label("first-person singular definite indicative past-future"))
+            .isEqualTo("first_person singular definite indicative past_future")
+        assertThat(label("third-person singular present perfect indicative perfect-ii"))
+            .isEqualTo("third_person singular present perfect indicative perfect_ii")
+        assertThat(label("first-person singular present evidential")).isEqualTo("first_person singular present evidential")
+        assertThat(label("first-person singular present obligative")).isEqualTo("first_person singular present obligative")
+        assertThat(label("participle negative non-subject")).isEqualTo("participle negative non_subject")
+        assertThat(label("non-past participle subject")).isEqualTo("non_past participle subjective")
+        assertThat(label("participle general temporal")).isEqualTo("participle general temporal")
+        assertThat(label("nominative plural broken-form")).isEqualTo("nominative plural broken_form")
+        assertThat(label("Cyrillic")).isEqualTo("cyrillic")
+    }
+
+    @Test
     fun `gloss left after two spaces is cut off`() {
         assertThat(FormOfTags.clean("hanja form   the Korean language”)")).isEqualTo("hanja form")
         assertThat(FormOfTags.clean("hanja form  ”)")).isEqualTo("hanja form")

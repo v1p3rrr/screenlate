@@ -27,12 +27,14 @@
     <string name="form_of_tag_aorist">Aorist</string>
     <string name="form_of_tag_apocopic">apokopiert</string>
     <string name="form_of_tag_applicative">Applikativ</string>
+    <string name="form_of_tag_arabic">arabische Schrift</string>
     <string name="form_of_tag_archaic">archaisch</string>
     <string name="form_of_tag_assertive">assertiv</string>
     <string name="form_of_tag_attributive">attributiv</string>
     <string name="form_of_tag_augmentative">Augmentativ</string>
     <string name="form_of_tag_before_vowel">vor Vokal</string>
     <string name="form_of_tag_benefactive">Benefaktiv</string>
+    <string name="form_of_tag_broken_form">gebrochene Form</string>
     <string name="form_of_tag_by_personal_gender">nach dem Geschlecht der Person</string>
     <string name="form_of_tag_cantonese">kantonesisch</string>
     <string name="form_of_tag_causal_final">Kausal-Final</string>
@@ -63,9 +65,11 @@
     <string name="form_of_tag_continuous">Verlaufsform</string>
     <string name="form_of_tag_contraction">Kontraktion</string>
     <string name="form_of_tag_contrastive">kontrastiv</string>
+    <string name="form_of_tag_converb">Konverb</string>
     <string name="form_of_tag_count_form">Zählform</string>
     <string name="form_of_tag_countable">zählbar</string>
     <string name="form_of_tag_counter">Zählwort</string>
+    <string name="form_of_tag_cyrillic">Kyrillisch</string>
     <string name="form_of_tag_dated">veraltend</string>
     <string name="form_of_tag_dative">Dativ</string>
     <string name="form_of_tag_debitive">Debitiv</string>
@@ -94,6 +98,7 @@
     <string name="form_of_tag_essive_modal">Essiv-Modal</string>
     <string name="form_of_tag_eumhun">Bedeutung und Lesung</string>
     <string name="form_of_tag_euphemistic">euphemistisch</string>
+    <string name="form_of_tag_evidential">Evidential</string>
     <string name="form_of_tag_exaggerated">verstärkter Superlativ</string>
     <string name="form_of_tag_female_equivalent">weibliche Form</string>
     <string name="form_of_tag_feminine">feminin</string>
@@ -106,6 +111,7 @@
     <string name="form_of_tag_future_i">Futur I</string>
     <string name="form_of_tag_future_ii">Futur II</string>
     <string name="form_of_tag_gangwon">Gangwon</string>
+    <string name="form_of_tag_general">allgemein</string>
     <string name="form_of_tag_genitive">Genitiv</string>
     <string name="form_of_tag_gerund">Gerundium</string>
     <string name="form_of_tag_gerundive">Gerundivum</string>
@@ -155,6 +161,7 @@
     <string name="form_of_tag_initialism">Initialwort</string>
     <string name="form_of_tag_instructive">Instruktiv</string>
     <string name="form_of_tag_instrumental">Instrumental</string>
+    <string name="form_of_tag_intensifier">verstärkend</string>
     <string name="form_of_tag_internet">Internet</string>
     <string name="form_of_tag_interrogative">interrogativ</string>
     <string name="form_of_tag_intransitive">intransitiv</string>
@@ -181,6 +188,7 @@
     <string name="form_of_tag_min_nan">Min Nan</string>
     <string name="form_of_tag_misspelling">Falschschreibung</string>
     <string name="form_of_tag_mixed">gemischt</string>
+    <string name="form_of_tag_modal">modal</string>
     <string name="form_of_tag_morpheme">Morphem</string>
     <string name="form_of_tag_motive_form">Absichtsform</string>
     <string name="form_of_tag_name">Name</string>
@@ -193,6 +201,7 @@
     <string name="form_of_tag_non_attributive">nicht attributiv</string>
     <string name="form_of_tag_non_past">Nichtvergangenheit</string>
     <string name="form_of_tag_non_prospective">nicht prospektiv</string>
+    <string name="form_of_tag_non_subject">Nicht-Subjektform</string>
     <string name="form_of_tag_nonfinite">infinit</string>
     <string name="form_of_tag_nonstandard">nicht standardsprachlich</string>
     <string name="form_of_tag_nonvirile">nicht maskulin-personal</string>
@@ -208,14 +217,18 @@
     <string name="form_of_tag_object_singular">Objekt Singular</string>
     <string name="form_of_tag_object_third_person">Objekt 3. Person</string>
     <string name="form_of_tag_objective">Objektform</string>
+    <string name="form_of_tag_obligative">Nezessitativ</string>
     <string name="form_of_tag_obsolete">veraltet</string>
     <string name="form_of_tag_optative">Optativ</string>
     <string name="form_of_tag_participle">Partizip</string>
     <string name="form_of_tag_partitive">Partitiv</string>
     <string name="form_of_tag_passive">Passiv</string>
     <string name="form_of_tag_past">Vergangenheit</string>
+    <string name="form_of_tag_past_future">Futur der Vergangenheit</string>
     <string name="form_of_tag_pejorative">pejorativ</string>
     <string name="form_of_tag_perfect">Perfekt</string>
+    <string name="form_of_tag_perfect_i">Perfekt I</string>
+    <string name="form_of_tag_perfect_ii">Perfekt II</string>
     <string name="form_of_tag_perfective">perfektiv</string>
     <string name="form_of_tag_personal">persönlich</string>
     <string name="form_of_tag_pluperfect">Plusquamperfekt</string>
@@ -267,6 +280,7 @@
     <string name="form_of_tag_slang">Slang</string>
     <string name="form_of_tag_south_korea">Südkorea</string>
     <string name="form_of_tag_southern">südlich</string>
+    <string name="form_of_tag_specific">spezifisch</string>
     <string name="form_of_tag_standard">standardsprachlich</string>
     <string name="form_of_tag_stressed">betont</string>
     <string name="form_of_tag_strong">stark</string>

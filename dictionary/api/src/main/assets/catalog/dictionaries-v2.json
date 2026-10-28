@@ -12,6 +12,10 @@
     "et": [
       "MAIN",
       "FORMS"
+    ],
+    "az": [
+      "MAIN",
+      "FORMS"
     ]
   },
   "templates": {
@@ -2220,6 +2224,25 @@
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },
     {
+      "id": "corpus-az",
+      "title": "Leipzig Corpora Collection (az)",
+      "template": "leipzig",
+      "oldTitles": [
+        "Leipzig Corpora Collection (az)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "az",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/aze_news_2020_30K.tar.gz",
+      "downloadSize": 5601885,
+      "sha256": "2340f80d378e83708c4eae11bf78e3260b955a19b566278c5c6e292c93ee508f",
+      "build": "corpus-counts",
+      "version": "2020",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
@@ -4123,6 +4146,40 @@
       "engine": "tesseract",
       "file": "tessdata/est.traineddata",
       "version": "d7bfea95a53c",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-aze",
+      "title": "Tesseract fast (aze)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "az",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/aze.traineddata",
+      "downloadSize": 3524799,
+      "sha256": "a365310848aecb739f19369cb3831d4660fcd9345d798e91a3042455f9ccc9f0",
+      "model": "tesseract-fast-aze",
+      "engine": "tesseract",
+      "file": "tessdata/aze.traineddata",
+      "version": "a365310848ae",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-aze",
+      "title": "Tesseract best (aze)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "az",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/aze.traineddata",
+      "downloadSize": 6281404,
+      "sha256": "6f183760f210177cf8c8eb6bf4821a8e488a4137ad06549ae483266c7cfd455f",
+      "model": "tesseract-best-aze",
+      "engine": "tesseract",
+      "file": "tessdata/aze.traineddata",
+      "version": "6f183760f210",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -6501,6 +6558,41 @@
       "model": "paddle-detector-v5",
       "engine": "paddle",
       "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-v6-az",
+      "title": "PaddleOCR v6 (az)",
+      "template": "paddle-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "az",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-v6.zip",
+      "downloadSize": 18446203,
+      "sha256": "a79ef27d6e71e1de59488e4bf87e3bbad73d0e19d63e98c5fcb407adb12db405",
+      "model": "paddle-v6",
+      "engine": "paddle",
+      "version": "a79ef27d6e71",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v6"
+      ]
+    },
+    {
+      "id": "paddle-detector-v6-az",
+      "title": "PaddleOCR detector-v6 (az)",
+      "template": "paddle-detector-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "az",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v6.zip",
+      "downloadSize": 7460475,
+      "sha256": "c46ad8ddd9ed2b79130851d32ea55bc8caebe1e44006d04ff6b269dd26f86101",
+      "model": "paddle-detector-v6",
+      "engine": "paddle",
+      "version": "c46ad8ddd9ed",
       "license": "Apache-2.0",
       "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
     },
@@ -18635,6 +18727,205 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/et/wty-et-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 96443,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-en",
+      "title": "Wiktionary (az–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-en",
+        "kty-az-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/en/wty-az-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 7702697,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-forms",
+      "title": "Wiktionary word forms (az)",
+      "template": "wiktionary-forms",
+      "oldTitles": [
+        "wty-az-en (forms)"
+      ],
+      "kind": "TERM",
+      "category": "FORMS",
+      "sourceLanguage": "az",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/en/wty-az-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 7702697,
+      "installedSize": 14680064,
+      "build": "forms",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-ru",
+      "title": "Wiktionary (az–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-ru",
+        "kty-az-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/ru/wty-az-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 416047,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-es",
+      "title": "Wiktionary (az–es)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-es",
+        "kty-az-es"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "es",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-es-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/es/wty-az-es.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 106422,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-fr",
+      "title": "Wiktionary (az–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-fr",
+        "kty-az-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/fr/wty-az-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 168995,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-ko",
+      "title": "Wiktionary (az–ko)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-ko",
+        "kty-az-ko"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "ko",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-ko-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/ko/wty-az-ko.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 93877,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-pl",
+      "title": "Wiktionary (az–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-pl",
+        "kty-az-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/pl/wty-az-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 84563,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-tr",
+      "title": "Wiktionary (az–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-tr",
+        "kty-az-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/tr/wty-az-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 222630,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-zh",
+      "title": "Wiktionary (az–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-az-zh",
+        "kty-az-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "az",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/az/zh/wty-az-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 465686,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-az-transcription",
+      "title": "Wiktionary transcription (az)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-az-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "az",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-az-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/az/wty-az-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 184390,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

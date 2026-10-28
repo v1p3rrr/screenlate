@@ -309,6 +309,22 @@ export const estonianMisreadTilde = {
 const ESTONIAN_TILDE = {ö: 'õ', Ö: 'Õ'};
 
 /**
+ * Azerbaijani ə and ı, which recognition reads as e and i (seher for səhər, qiz for qız): the text's first word is also
+ * tried with ə for its e and ı for its i, at the first three such letters, every combination of them, as read first, so
+ * ev still finds ev; a capital E as Ə too (Eli for Əli). For words from OCR only (`ocrOnly`, glue.js): app text and
+ * typed text are looked up as written.
+ * @type {import('language').TextProcessor & {ocrOnly: true}}
+ */
+export const azerbaijaniMisreadLetters = {
+    name: 'Misread schwa and dotless i',
+    description: 'seher → səhər, qiz → qız',
+    ocrOnly: true,
+    process: (str) => withMisreadLetters(str, AZERBAIJANI_LETTERS),
+};
+
+const AZERBAIJANI_LETTERS = {e: 'ə', E: 'Ə', i: 'ı'};
+
+/**
  * [str] as read, then with the letters [misread] maps put right in its first word, at the first [MISREAD_PLACES] of
  * them, every combination: seven texts at most besides the one as read.
  * @param {string} str

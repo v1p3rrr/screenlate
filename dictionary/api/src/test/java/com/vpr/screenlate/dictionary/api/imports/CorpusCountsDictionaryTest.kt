@@ -220,6 +220,24 @@ class CorpusCountsDictionaryTest {
         }
     }
 
+    @Test
+    fun `the azerbaijani dictionary credits the news texts and capitalizes by the turkish rules`() {
+        val list = listOf("1\tvə\t9", "2\tişıq\t3", "3\tİlham\t2").joinToString("\n")
+        val source = folder.newFile().apply { writeBytes(tarGz("aze/aze-words.txt" to list)) }
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "az", "2020", output)).isEqualTo(3)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("Leipzig Corpora Collection (az)")
+            assertThat(index["attribution"]!!.jsonPrimitive.content)
+                .startsWith("Word counts of the Azerbaijani news of 2020 (aze_news_2020_30K)")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
+                .containsExactly("və" to 1, "Və" to 1, "işıq" to 2, "İşıq" to 2, "ilham" to 3, "İlham" to 3).inOrder()
+        }
+    }
+
     /** The Leipzig archive itself, when it was copied into testdata (`scripts/frequency/corpus_catalog.py`). */
     @Test
     fun `the kazakh archive builds the top 100 000 words`() {

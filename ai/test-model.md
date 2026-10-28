@@ -174,6 +174,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR48 | Finnish recognition (`testdata/ocr/fi-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: clitics and possessives, EU:n and STT:lle, 1990-luvulla, 20-vuotias, a long compound): cloud recognition and ML Kit read ä ö, the colons and the hyphens | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR49 | Hungarian recognition (`testdata/ocr/hu-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: ő and ű words, prefixed verb forms, 2023-ban and EU-ban, a long compound): cloud recognition reads ő ű, á é í ó ú and the hyphens; ML Kit reads ű as ú and may capitalize ő, and such a word is still found (LK79) | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR50 | Estonian recognition (`testdata/ocr/et-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: õ, ä, ö, ü words, the negative forms of olema, NATO-ga and 5-ga, „…“ quotes, a compound): cloud recognition reads õ ä ö ü, š ž and the hyphens; ML Kit may read õ as ö, and such a word is still found (LK80) | F | U CatalogFileTest, M | 2026-10-28 |
+| OCR51 | Azerbaijani recognition (`testdata/ocr/az-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: ə, ı, ğ, ö, ü, ç, ş words, noun and verb endings, 2020-ci and ABŞ-da, «…» quotes; `az-misread.png` prints e and i where ə and ı belong): cloud recognition reads ə ı İ and the hyphens; ML Kit may read ə as e and ı as i, and such a word is still found (LK81) | F | U CatalogFileTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -257,6 +258,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK78 | Finnish lookups (overlay over `testdata/ocr/fi-sample.png` and the Search screen): Talossanikin finds talo with the chips possessive and clitic, the highlight over the whole word; Onkohan finds olla (clitic); a tap on the n of EU:n or on lle of STT:lle finds EU or STT, the highlight from the word's start; 1990-luvulla aimed at luvulla finds luku (the form row), 20-vuotias aimed at vuotias finds -vuotias (an entry of Wiktionary (fi–en) only); kirjastonhoitaja shows "Compound: kirjasto + hoitaja" or its own entry; Kuusi shows kuusi first and kuu only through the Russian dictionary's own row ("redirected from kuusi"), never through the possessive -si; vesi only vesi; talokin finds talo (clitic) | F | U FinnishSupportTest, CompoundsTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK79 | Hungarian lookups (overlay over `testdata/ocr/hu-sample.png` and the Search screen): Megtartottam finds tart with the chips verb prefix and the form row's tags, the highlight over the whole word; megtart and bevétel find their own entries, not tart or vesz; idegen finds idegen, never ide- with gén; a tap on ban of 2023-ban or EU-ban finds -ban (a suffix entry), the highlight from the hyphen; iskolaépület shows "Compound: iskola + épület" or its own entry; in Search, füzfa finds nothing and öt only öt, while the same words recognized (füzfa or fúzfa) find fűzfa, and öt then őt; hűvös read as húvös finds hűvös | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 | LK80 | Estonian lookups (overlay over `testdata/ocr/et-sample.png` and the Search screen): pole finds pole, then olema with the chip negative; polnud polnud, then olema; majas finds maja (singular inessive); a tap on ga of NATO-ga or 5-ga finds -ga (a suffix entry), the highlight from the hyphen; linnavalitsus shows "Compound: linna + valitsus" or its own entry; in Search, möte finds nothing and öö only öö, while möte recognized finds mõte | F | I LanguageLookupTest, glue, M | 2026-10-28 |
+| LK81 | Azerbaijani lookups (overlay over `testdata/ocr/az-sample.png` and `az-misread.png`, and the Search screen): kitablarımızda finds kitab (the form row's tags where the dictionary lists the form, else the chips plural, our, locative); gəlirəm finds gəlmək (present, 1st sg.); çörəyi finds çörək; belə shows belə and not bel, while a form row stays (yazı shows yazı, then yaz through the accusative row); məktəbdəydi finds məktəb (locative, past copula); olur finds olmaq through the dictionary's row; a tap on ci of 2020-ci or da of ABŞ-da finds the suffix entry where the dictionary has one, the highlight from the hyphen; recognized Seher and Qizlar find səhər and qız; in Search, seher finds nothing | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -310,6 +312,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP46 | A Finnish entry: the Popup settings' font card lists every Latin font with "Only for Finnish text" and the Finnish sample sentence; the bubble shows Ä and the Languages screen Finland's flag; the clitic and possessive chips and the cases of the form rows are named in the interface language (Russian too: «единственное число инессив», «агентивное причастие») | F | U FontCatalogFileTest, FlagsTest, FinnishSupportTest, M | 2026-10-28 |
 | POP47 | A Hungarian entry: the Popup settings' font card lists every Latin font with "Only for Hungarian text" and the Hungarian sample sentence; the bubble shows Ő and the Languages screen Hungary's flag; the verb prefix chip and the cases and conjugations of the form rows are named in the interface language (Russian too: «определённое спряжение», «терминатив») | F | U FontCatalogFileTest, FlagsTest, HungarianSupportTest, FormOfTagsTest, M | 2026-10-28 |
 | POP48 | An Estonian entry: the Popup settings' font card lists every Latin font with "Only for Estonian text" and the Estonian sample sentence; the bubble shows Õ and the Languages screen Estonia's flag; the negative chip and the moods and infinitives of the form rows are named in the interface language (Russian too: «отрицание», «косвенное наклонение», «на -da») | F | U FontCatalogFileTest, FlagsTest, EstonianSupportTest, FormOfTagsTest, M | 2026-10-28 |
+| POP49 | An Azerbaijani entry: the Popup settings' font card lists Literata, Inter and Lexend with "Only for Azerbaijani text" and the Azerbaijani sample sentence; the bubble shows Ə and the Languages screen Azerbaijan's flag; the ending chips and the tenses of the form rows are named in the interface language (Russian too: «связка прошедшего времени», «эвиденциальное прошедшее») | F | U FontCatalogFileTest, FlagsTest, AzerbaijaniSupportTest, FormOfTagsTest, M | 2026-10-28 |
 
 ### AUD: audio
 
@@ -350,6 +353,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD33 | Finnish audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; the Test of vesi finds Wiktionary's recording | F | U FinnishSupportTest, M | 2026-10-28 |
 | AUD34 | Hungarian audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; the Test of víz finds Wiktionary's recording | F | U HungarianSupportTest, M | 2026-10-28 |
 | AUD35 | Estonian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of vesi finds a recording | F | U EstonianSupportTest, M | 2026-10-28 |
+| AUD36 | Azerbaijani audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of su finds a recording | F | U AzerbaijaniSupportTest, M | 2026-10-28 |
 
 ### ANK: Anki
 
@@ -396,6 +400,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK40 | A Finnish Anki note (over `testdata/ocr/fi-anki.png`, one paragraph over five lines, ML Kit, cloud recognition where ML Kit misreads the word): for omenoita the sentence is "Ostin 24. toukokuuta hedelmiä, esim. omenoita ja päärynöitä jne." (the ordinal and esim. hold, jne. ends it before a capital); for tuella "Talo valmistui 1990-luvulla EU:n tuella." | F | U SentenceTest, FinnishSupportTest, M | 2026-10-28 |
 | ANK41 | A Hungarian Anki note (over `testdata/ocr/hu-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for almát the sentence is "2023. május 3-án gyümölcsöt vettem, pl. almát és körtét stb." (the date, the ordinal and pl. hold, stb. ends it before a capital); for épült "A ház a 19. sz. végén épült." | F | U SentenceTest, HungarianSupportTest, M | 2026-10-28 |
 | ANK42 | An Estonian Anki note (over `testdata/ocr/et-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for õunu the sentence is "2020. a. lõpus ostsime u. 5 kg õunu, pirne jne." (the year, a., u. and the number hold, jne. ends it before a capital); for ehitati "Maja ehitati 19. sajandil." | F | U SentenceTest, EstonianSupportTest, M | 2026-10-28 |
+| ANK43 | An Azerbaijani Anki note (over `testdata/ocr/az-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for armud the sentence is "Bazardan alma, armud və s. aldıq." (və s. holds before a lowercase word); for yaşayır "Prof. Əliyev Bakı şəh. Nizami küç. 5-də yaşayır." (prof., şəh. and küç. hold); for dəftərlər "Kitablar, dəftərlər və s." (və s. ends it before a capital) | F | U SentenceTest, AzerbaijaniSupportTest, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -453,6 +458,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC42 | The Finnish word forms item: with Russian chosen and Wiktionary (fi–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory, with its download and installed size; it imports the fi-en archive without definitions (import time and installed size recorded in the run log), the Dictionaries screen lists it, and Russian entries are found for inflected words (talossa → talo); with fi-en ticked the item is gone, and an installed fi-en counts as it | F | U LanguageSetupTest, CatalogFileTest, I LanguageLookupTest, M | 2026-10-28 |
 | DIC43 | The Hungarian word forms item: with Russian chosen and Wiktionary (hu–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the hu-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words (házban → ház); with hu-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
 | DIC44 | The Estonian word forms item: with Russian chosen and Wiktionary (et–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the et-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words (majas → maja); with et-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
+| DIC45 | The Azerbaijani word forms item: with Russian chosen and Wiktionary (az–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the az-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words; with az-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -493,6 +499,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG32 | Finnish setup: the download screen ticks Wiktionary into English, the word frequency and the transcription; with Wiktionary (fi–en) unticked, the word forms item is mandatory; ML Kit is the main model, Tesseract fin and PaddleOCR v5 and v6 unticked and unmarked; the flag is Finland's and the bubble shows Ä | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 | LNG33 | Hungarian setup: the download screen ticks Wiktionary into English, the word frequency and the transcription; with Wiktionary (hu–en) unticked, the word forms item is mandatory; ML Kit is the main model, Tesseract hun and PaddleOCR v5 and v6 unticked and unmarked; the flag is Hungary's and the bubble shows Ő | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 | LNG34 | Estonian setup: the download screen ticks Wiktionary into English, the word frequency (Leipzig news) and the transcription; with Wiktionary (et–en) unticked, the word forms item is mandatory; ML Kit is the main model, PaddleOCR v6 ticked and marked "More accurate", Tesseract est and PaddleOCR v5 unticked; the flag is Estonia's and the bubble shows Õ | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
+| LNG35 | Azerbaijani setup: the download screen ticks Wiktionary into English, the word frequency (Leipzig news) and the transcription; with Wiktionary (az–en) unticked, the word forms item is mandatory; ML Kit is the main model, PaddleOCR v6 ticked and marked "More accurate", Tesseract aze unticked, PaddleOCR v5 not offered; the flag is Azerbaijan's and the bubble shows Ə | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 
 ### SET: settings, backup, appearance
 
@@ -642,6 +649,68 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/az` (uncommitted build on `08463e01`), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Azerbaijani (LNG35, DIC45, OCR51, LK81, POP49, AUD36, ANK43) through the download screen,
+the Dictionaries screen, the overlay over `testdata/ocr/az-sample.png`, `az-anki.png` and `az-misread.png` (Segoe UI,
+in the debug viewer; the last prints e and i where ə and ı belong: "Seher gelirem." and "Qizlar evdedir.") with ML Kit
+alone, cloud recognition alone and both, the Search screen, the Popup, Audio, Appearance and Anki settings and Anki
+notes into the local "Screenlate Test" deck ({sentence} as Meaning); the engine's instrumented tests. An x86_64-only
+APK.
+
+Results: passed after three fixes (below). Automated: unit tests (1,868, five skipped), lint, the page tests (146), the
+glue and mutation exception tests (130, one skipped), the catalog generator tests (11) and the Python tests of the
+flag (5), frequency (19) and OCR model (9) scripts passed; `LanguageLookupTest` 41 of 41 and the engine's 67
+instrumented tests passed on the emulator, the test package uninstalled after.
+
+- LNG35: Azerbaijan's flag on the Languages screen; with English as the language of definitions Wiktionary (az–en,
+  7.7 MB) is the fixed main dictionary, the word frequency (Leipzig news, 5.6 MB) and the transcription (184 kB)
+  ticked; 13 MB to download, about 42 MB after import; ML Kit the main model, PaddleOCR v6 marked "More accurate",
+  ticked and "Installed" (from the other Latin languages), Tesseract fast (3.5 MB) and accurate (6.3 MB) unticked, no
+  PaddleOCR v5. The bubble shows Ə.
+- DIC45: with Russian chosen and az–en unticked the Word forms card lists "Word forms (Wiktionary)", 7.7 MB, fixed;
+  14 MB to download, about 34 MB after import. The forms task took 16.7 s (the 7,522 KB archive downloaded in 9.9 s,
+  imported in 4.7 s): 967,415 forms with 1,128,934 lemma links, no definitions; az–ru took
+  5.9 s (3,843 forms of its own); the word frequency downloaded 5,470 KB in 5.7 s and built 46,950 words in 3.4 s;
+  the transcription took 4.4 s.
+- OCR51: copied with the bubble menu's "Copy all recognized text": cloud recognition read every line of
+  `az-sample.png` exactly (ə, ı, ğ, ç, ş, 2020-ci, ABŞ-da, «…»); ML Kit read every line exactly except masasına
+  (masasIna), « (read <) and məktəbdəydi (maktəbdəydi).
+- LK81: kitablarımızda finds kitab through the row "locative first person plural plural possessed possessive";
+  gəlirəm gəlmək ("first person singular present indicative"); çörəyi çörək ("accusative singular definite");
+  məktəbdəydi məktəb with the chips locative and past copula; olur olmaq ("third person singular present
+  indicative"); yazı shows yazı, then yaz through the dictionary's row "accusative singular"; belə shows belə «так»
+  and not bel, then bələmək (the e read as ə, after the word as read); the aim on da of ABŞ-da finds -da (a suffix
+  entry, «аффикс местного падежа»), the highlight from the hyphen, then da; ci of 2020-ci finds nothing, as neither
+  az–ru nor az–en has -ci. ML Kit's masasIna finds nothing, as az–ru has no masa (az–en has it, and the forms list
+  masasına), and its maktəbdəydi nothing either (a is not tried for ə). Over `az-misread.png`, with ML Kit alone and
+  with cloud recognition alone: Seher finds səhər, Qizlar qız ("nominative plural"); with both, gelirem finds
+  gəlmək and evdedir evdə (3rd person) and ev (locative singular, 3rd person). In Search, seher and qizlar find nothing.
+- POP49: the font card lists the phone's font, Lexend (downloaded before), Literata (1.0 MB) and Inter (0.9 MB), no
+  PT or Atkinson, with "Only for Azerbaijani text" and the Azerbaijani sample sentence. In Russian, təkrarlamış (a
+  verb without form rows) finds təkrarlamaq with «эвиденциальное прошедшее» and məktəbdəydi məktəb with «местный
+  падеж» and «связка прошедшего времени»; the interface language restored to System.
+- AUD36: sources Lingua Libre, Wiktionary, Text-to-speech; the Test of su found Wiktionary's recording (Az-su.ogg),
+  Lingua Libre "No audio", the voice available; kitab found two Lingua Libre recordings, Wiktionary "No audio".
+- ANK43 (deck Screenlate Test, engines Both): armud "Bazardan alma, armud və s. aldıq."; yaşamaq (yaşayır, a row of
+  az–ru) "Prof. Əliyev Bakı şəh. Nizami küç. 5-də yaşayır."; dəftər (dəftərlər, "nominative plural") "Kitablar,
+  dəftərlər və s."
+- Fixed: `LanguageRulesIsolationTest` expected "Plan B. dann" to hold in no language; Azerbaijani's "və b." holds
+  before a lowercase word, so the test names Azerbaijani. `FontCatalogFileTest` expected Atkinson Hyperlegible Next
+  and the PT fonts for every Latin language; they lack ə and are listed as missing for Azerbaijani. şəh. and küç.
+  held only before a lowercase word, so "şəh. Nizami" ended a sentence; they hold before any word now, as in
+  addresses the street's name or the number follows.
+- Seen, not caused by the change: Lingua Libre once answered a test with an error (cirrussearch-regex-too-busy-error,
+  shown under "Needs attention" on Home); the next tests worked. Home showed the service as stopped by the system
+  after the reinstall while the bubble worked. As before, the overlay kept its scan when the debug viewer opened
+  another image in place, until the bubble was tapped. ServiceRequestsTest failed once on a network timeout; the
+  rerun passed.
+
+Left on the emulator: the `languages/az` debug app with Azerbaijani set up (az–ru, the forms, the word frequency and
+the transcription; its Anki settings on the "Screenlate Test" deck and note type, Meaning {sentence}), the other
+languages as before, engines Both, the interface language System, its service enabled; the Azerbaijani notes (armud,
+yaşamaq, dəftər) in the local deck; the emulator shut down and the lock released.
 
 ### 2026-10-28, `languages/et` (uncommitted build on `c00255b6`), Pixel_10_Pro (API 37)
 

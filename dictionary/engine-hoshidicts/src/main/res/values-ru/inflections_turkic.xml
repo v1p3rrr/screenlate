@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">вопрос</string>
     <string name="inflection_turkic_possessive_2pl_label">ваш</string>
     <string name="inflection_turkic_verbal_noun_label">имя действия</string>
+    <string name="inflection_turkic_past_copula_label">связка прошедшего времени</string>
+    <string name="inflection_turkic_conditional_copula_label">условная связка</string>
+    <string name="inflection_turkic_evidential_copula_label">эвиденциальная связка</string>
+    <string name="inflection_turkic_future_label">будущее время</string>
+    <string name="inflection_turkic_evidential_label">эвиденциальное прошедшее</string>
+    <string name="inflection_turkic_necessity_label">долженствование</string>
+    <string name="inflection_turkic_participle_label">причастие</string>
 </resources>
