@@ -101,15 +101,17 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     fun orphans(known: Collection<String>): List<File> = orphanDirectories(root, staging, known)
 
     /**
-     * Deletes what imports cut short by the process dying left behind ([importLeftovers]) and the archives of the
-     * cache directory older versions used, which no task reads any more; returns how many.
+     * Deletes what imports cut short by the process dying left behind ([importLeftovers]), also in the cache directory
+     * older versions kept archives in, and that directory once it is empty; returns how many.
      */
     fun removeImportLeftovers(archivesInUse: Set<String>?): Int {
         val now = System.currentTimeMillis()
         val processStart = now - (SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
-        val cached = cachedDownloads.listFiles().orEmpty().toList()
-        cachedDownloads.deleteRecursively()
-        return cached.size + importLeftovers(staging, downloads, archivesInUse, processStart, now).onEach { it.deleteRecursively() }.size
+        val removed = importLeftovers(staging, listOf(downloads, cachedDownloads), archivesInUse, processStart, now)
+            .onEach { it.deleteRecursively() }.size
+        // Nothing is written there any more; an import queued by an older version may still read a file in it.
+        cachedDownloads.delete()
+        return removed
     }
 
     private companion object {
@@ -130,19 +132,20 @@ internal fun orphanDirectories(root: File, staging: File, known: Collection<Stri
 
 /**
  * Staging directories made before [processStart] (only a running import writes there, and none from an earlier
- * process runs any more), and archives in [downloads] made before it that no queued import reads ([archivesInUse];
- * when null, only archives older than [STALE_MS] count), with their download state files.
+ * process runs any more), and archives in the [downloads] directories made before it that no queued import reads
+ * ([archivesInUse]; when null, only archives older than [STALE_MS] count), with their download state files. Archive
+ * names are unique across the directories, so a name in use keeps the file a queued import reads by its path.
  */
 internal fun importLeftovers(
     staging: File,
-    downloads: File,
+    downloads: List<File>,
     archivesInUse: Set<String>?,
     processStart: Long,
     now: Long,
 ): List<File> {
     val archivesBefore = if (archivesInUse == null) minOf(processStart, now - STALE_MS) else processStart
     return staging.listFiles().orEmpty().filter { it.lastModified() < processStart } +
-        downloads.listFiles().orEmpty().filter {
+        downloads.flatMap { it.listFiles().orEmpty().asList() }.filter {
             it.lastModified() < archivesBefore && it.name.removeSuffix(DOWNLOAD_STATE_SUFFIX) !in archivesInUse.orEmpty()
         }
 }
