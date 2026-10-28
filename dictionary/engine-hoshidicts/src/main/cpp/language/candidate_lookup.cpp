@@ -7,6 +7,7 @@
 #include <map>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_set>
 
 #include <glaze/glaze.hpp>
 
@@ -27,6 +28,8 @@ struct RawCandidate {
   bool u = false;
   std::vector<std::string> g;
   bool f = false;
+  int p = -1;
+  bool l = false;
 };
 
 }  // namespace candidate_json
@@ -53,6 +56,8 @@ struct Pending {
   bool respelled = false;
   // Whether the lemmas this text's form-of entries lead to need none of [tags] (LanguageCandidate::f).
   bool free_lemmas = false;
+  // Whether only the text's own entries count, not its form-of entries (LanguageCandidate::l).
+  bool own_entries_only = false;
 };
 
 struct Match {
@@ -157,7 +162,7 @@ std::vector<LanguageCandidate> parse_candidates(const std::string& json) {
   result.reserve(raw.size());
   for (auto& c : raw) {
     result.push_back({std::move(c.o), std::move(c.t), std::move(c.d), c.s, static_cast<uint32_t>(c.c), std::move(c.r), c.u,
-                      std::move(c.g), c.f});
+                      std::move(c.g), c.f, c.p, c.l});
   }
   return result;
 }
@@ -199,10 +204,14 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
       has_definitions = true;
       matches.push_back({p.matched, p.text, p.steps, p.chains, std::move(copy), p.respelled});
     }
-    for (const FormOfTable* table : tables) {
-      for (auto& item : table->find(p.text)) {
-        if (!fits(p, item.rules, part_of_speech_flags)) continue;
-        form_of.push_back(std::move(item));
+    if (p.own_entries_only) {
+      form_of.clear();
+    } else {
+      for (const FormOfTable* table : tables) {
+        for (auto& item : table->find(p.text)) {
+          if (!fits(p, item.rules, part_of_speech_flags)) continue;
+          form_of.push_back(std::move(item));
+        }
       }
     }
     // Whether [lemma] is the headword the text is itself: its own entry, which every entry of the text fits, or a
@@ -233,25 +242,55 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     return has_definitions;
   };
 
-  std::vector<Pending> lemmas;
-  for (const auto& candidate : candidates) {
+  // Visits [start] and follows their form-of entries: one step, as Yomitan; a second one only from a lemma that is
+  // itself only a form (шокирующее → шокирующий → шокировать), and not back to the text it came from (Jansen → Janssen
+  // → Jansen).
+  auto follow = [&](const std::vector<Pending>& start) {
+    std::vector<Pending> lemmas;
+    for (const auto& p : start) visit(p, lemmas);
+    std::vector<Pending> second;
+    for (const auto& lemma : lemmas) {
+      std::vector<Pending> further;
+      if (visit(lemma, further)) continue;
+      for (auto& next : further) {
+        if (next.text != lemma.from) second.push_back(std::move(next));
+      }
+    }
+    std::vector<Pending> ignored;
+    for (const auto& lemma : second) visit(lemma, ignored);
+  };
+  auto pending_of = [](const LanguageCandidate& candidate) {
     Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u, {}, candidate.t, candidate.g,
-              false, candidate.f};
+              false, candidate.f, candidate.l};
     if (p.chains.empty()) p.chains.emplace_back();
-    visit(p, lemmas);
-  }
-  // One form-of step, as Yomitan; a second one only from a lemma that is itself only a form (шокирующее →
-  // шокирующий → шокировать), and not back to the text it came from (Jansen → Janssen → Jansen).
-  std::vector<Pending> second;
-  for (const auto& lemma : lemmas) {
-    std::vector<Pending> further;
-    if (visit(lemma, further)) continue;
-    for (auto& next : further) {
-      if (next.text != lemma.from) second.push_back(std::move(next));
+    return p;
+  };
+
+  std::vector<Pending> plain;
+  std::vector<const LanguageCandidate*> fallback;
+  for (const auto& candidate : candidates) {
+    if (candidate.p >= 0) {
+      fallback.push_back(&candidate);
+    } else {
+      plain.push_back(pending_of(candidate));
     }
   }
-  std::vector<Pending> ignored;
-  for (const auto& lemma : second) visit(lemma, ignored);
+  follow(plain);
+  // Fallback rules only for a scanned text that nothing else found, by rank (fewer preprocessor steps first at the
+  // same rank), until one of them finds an entry.
+  if (!fallback.empty()) {
+    std::unordered_set<std::string> found;
+    for (const auto& match : matches) found.insert(match.matched);
+    std::stable_sort(fallback.begin(), fallback.end(), [](const LanguageCandidate* a, const LanguageCandidate* b) {
+      return a->p != b->p ? a->p < b->p : a->s < b->s;
+    });
+    for (const LanguageCandidate* candidate : fallback) {
+      if (found.count(candidate->o) != 0) continue;
+      const size_t before = matches.size();
+      follow({pending_of(*candidate)});
+      if (matches.size() > before) found.insert(candidate->o);
+    }
+  }
 
   // Every match of a headword, keyed by expression and reading.
   std::map<std::pair<std::string, std::string>, std::vector<Match*>> by_term;

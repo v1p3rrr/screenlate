@@ -777,6 +777,199 @@ export const latinEnclitics = {
     },
 };
 
+/** @typedef {'n' | 'adj' | 'v'} AlbanianCondition */
+
+/**
+ * An Albanian ending undone: the word keeps two letters at least. [lemmaOnly]: the texts the rule may reach only as a
+ * headword of their own, not through a form-of entry. `albanianRanks` sets the rank.
+ * @param {string} ending
+ * @param {string} replacement
+ * @param {AlbanianCondition} condition
+ * @param {RegExp} [lemmaOnly]
+ */
+function albanianEnding(ending, replacement, condition, lemmaOnly) {
+    return {
+        type: /** @type {const} */ ('suffix'),
+        isInflected: new RegExp('^[^ ]{2,}' + ending + '$'),
+        deinflected: replacement,
+        deinflect: (/** @type {string} */ text) => text.slice(0, -ending.length) + replacement,
+        conditionsIn: [],
+        conditionsOut: [condition],
+        ending,
+        rank: 0,
+        ...(lemmaOnly ? {lemmaOnly} : {}),
+    };
+}
+
+/**
+ * Case endings that never stack: a noun that ends in one is not reached through a form-of entry of its text by a
+ * second one (partneritet is not partnerit, a form of partner, with -et).
+ */
+const ALBANIAN_CASE_ENDINGS = /(it|in|ut|un|et|ët|ës|ën|isë|ve)$/;
+
+/** @param {string} ending @param {string} replacement */
+function albanianNounEnding(ending, replacement) {
+    return albanianEnding(ending, replacement, 'n', ALBANIAN_CASE_ENDINGS);
+}
+
+const ALBANIAN_CONDITION_ORDER = {n: 0, adj: 1, v: 2};
+
+/**
+ * [descriptor] with each rule's rank, the order the engine tries the endings in: the longest first, at equal length
+ * nouns, adjectives, then verbs, else as listed.
+ * @template {{transforms: Record<string, {rules: ReturnType<typeof albanianEnding>[]}>}} T
+ * @param {T} descriptor
+ * @returns {T}
+ */
+function albanianRanks(descriptor) {
+    Object.values(descriptor.transforms)
+        .flatMap((transform) => transform.rules)
+        .map((rule, index) => ({rule, index}))
+        .sort((a, b) => (b.rule.ending.length - a.rule.ending.length) ||
+            (ALBANIAN_CONDITION_ORDER[a.rule.conditionsOut[0]] - ALBANIAN_CONDITION_ORDER[b.rule.conditionsOut[0]]) ||
+            (a.index - b.index))
+        .forEach(({rule}, rank) => { rule.rank = rank; });
+    return descriptor;
+}
+
+/**
+ * Albanian endings added to Yomitan's rules, which leave adjective forms (rëndësishme, sotme), mediopassive verbs
+ * (ndodhet, shtrihet) and many noun cases unfound: 20% of the lowercase words of Wikipedia text have no entry after
+ * Yomitan's rules, and these endings find 18-20% of them (3.6-3.7% of the words), 1.3-1.4% of their hits wrong. Each
+ * names the part of speech of the entry it must reach (an entry of the text, or a form-of entry whose lemma has it) and
+ * is undone once. They are `fallback` rules (glue.js): the engine tries them only on a word that neither a headword
+ * nor Yomitan's rules find, by rank (`albanianRanks`: lejen → leje, a noun, before lej, a verb), and the first rule
+ * that reaches an entry gives the result.
+ * @type {import('language-transformer').LanguageTransformDescriptor<AlbanianCondition>}
+ */
+export const albanianEndings = /* @__PURE__ */ albanianRanks({
+    language: 'sq',
+    conditions: {},
+    transforms: {
+        '-e': {
+            name: 'feminine or plural',
+            description: 'feminine or plural of an adjective (moderne from modern, turistike from turistik)',
+            fallback: true,
+            rules: [albanianEnding('e', '', 'adj')],
+        },
+        'ë as e': {
+            name: 'e for ë',
+            description: 'final ë written as e (gjate for gjatë, mire for mirë)',
+            fallback: true,
+            rules: [albanianEnding('e', 'ë', 'adj')],
+        },
+        '-a': {
+            name: 'feminine plural',
+            description: 'feminine plural of an adjective (gjitha from gjithë, larta from lartë, vjetra from vjetër, vogla from vogël)',
+            fallback: true,
+            rules: [
+                albanianEnding('a', 'ë', 'adj'), albanianEnding('ta', 'të', 'adj'), albanianEnding('ra', 'ër', 'adj'),
+                albanianEnding('la', 'ël', 'adj'),
+            ],
+        },
+        '-me': {
+            name: 'feminine or plural',
+            description: 'feminine or plural of an adjective in -ëm (sotme from sotëm, rëndësishme from rëndësishëm)',
+            fallback: true,
+            rules: [albanianEnding('shme', 'shëm', 'adj'), albanianEnding('me', 'ëm', 'adj')],
+        },
+        '-het': {
+            name: 'mediopassive',
+            description: 'mediopassive present, third person (ndodhet and ndodhen from ndodh, shtrihet from shtrij, mendohet from mendoj)',
+            fallback: true,
+            rules: [
+                albanianEnding('ohet', 'oj', 'v'), albanianEnding('ohen', 'oj', 'v'), albanianEnding('het', 'j', 'v'),
+                albanianEnding('hen', 'j', 'v'), albanianEnding('et', '', 'v'), albanianEnding('en', '', 'v'),
+            ],
+        },
+        '-hej': {
+            name: 'mediopassive imperfect',
+            description: 'mediopassive imperfect, third person singular (bëhej from bëj, formohej from formoj)',
+            fallback: true,
+            rules: [albanianEnding('ohej', 'oj', 'v'), albanianEnding('hej', 'j', 'v')],
+        },
+        '-uar': {
+            name: 'participle',
+            description: 'participle, also as a feminine or plural adjective (bazuar and banuara from bazoj, banoj; shkruar from shkruaj; thirrur and mbetura from thirr, mbet; kthyer from kthej)',
+            fallback: true,
+            rules: [
+                albanianEnding('uara', 'oj', 'v'), albanianEnding('uara', 'uaj', 'v'), albanianEnding('uar', 'oj', 'v'),
+                albanianEnding('uar', 'uaj', 'v'), albanianEnding('ura', '', 'v'), albanianEnding('ur', '', 'v'),
+                albanianEnding('yer', 'ej', 'v'),
+            ],
+        },
+        '-ua': {
+            name: 'aorist',
+            description: 'aorist, third person (përfundoi from përfundoj; botua and vërtetuan from botoj, vërtetoj; shkrua from shkruaj; kthye from kthej)',
+            fallback: true,
+            rules: [
+                albanianEnding('uan', 'oj', 'v'), albanianEnding('ua', 'oj', 'v'), albanianEnding('ua', 'uaj', 'v'),
+                albanianEnding('ye', 'ej', 'v'), albanianEnding('oi', 'oj', 'v'),
+            ],
+        },
+        '-on': {
+            name: 'present',
+            description: 'present, third person (daton and datojnë from datoj, hyjnë from hyj)',
+            fallback: true,
+            rules: [albanianEnding('ojnë', 'oj', 'v'), albanianEnding('jnë', 'j', 'v'), albanianEnding('on', 'oj', 'v')],
+        },
+        '-onte': {
+            name: 'imperfect',
+            description: 'imperfect, third person singular (numëronte from numëroj)',
+            fallback: true,
+            rules: [albanianEnding('onte', 'oj', 'v')],
+        },
+        '-i': {
+            name: 'definite',
+            description: 'definite form of a masculine noun (termi from term, sporti from sport)',
+            fallback: true,
+            rules: [albanianNounEnding('i', ''), albanianNounEnding('u', '')],
+        },
+        '-it': {
+            name: 'definite genitive',
+            description: 'genitive, dative or ablative of a definite masculine noun (sulmit from sulm, jugut from jug)',
+            fallback: true,
+            rules: [albanianNounEnding('it', ''), albanianNounEnding('ut', '')],
+        },
+        '-in': {
+            name: 'definite accusative',
+            description: 'accusative of a definite masculine noun (sulmin from sulm, ndikimin from ndikim)',
+            fallback: true,
+            rules: [albanianNounEnding('in', ''), albanianNounEnding('un', '')],
+        },
+        '-ët': {
+            name: 'definite plural',
+            description: 'definite plural (aleatët from aleat, dokumentet from dokument)',
+            fallback: true,
+            rules: [albanianNounEnding('ët', ''), albanianNounEnding('et', '')],
+        },
+        '-ve': {
+            name: 'genitive plural',
+            description: 'genitive, dative or ablative plural (tipareve from tipar, shqiptarve from shqiptar, rrokjeve from rrokje)',
+            fallback: true,
+            rules: [albanianNounEnding('eve', ''), albanianNounEnding('ve', '')],
+        },
+        '-ia': {
+            name: 'definite',
+            description: 'definite form of a feminine noun (industria from industri, shitja from shitje, gjermanishtja from gjermanishte)',
+            fallback: true,
+            rules: [albanianNounEnding('ia', 'i'), albanianNounEnding('ja', 'je'), albanianNounEnding('ja', 'e')],
+        },
+        '-së': {
+            name: 'definite genitive',
+            description: 'genitive, dative or ablative of a definite feminine noun (drejtësisë from drejtësi, paqes from paqe, federatës from federatë)',
+            fallback: true,
+            rules: [albanianNounEnding('isë', 'i'), albanianNounEnding('es', 'e'), albanianNounEnding('ës', 'ë')],
+        },
+        '-ën': {
+            name: 'definite accusative',
+            description: 'accusative of a definite feminine noun (lejen from leje, konferencën from konferencë)',
+            fallback: true,
+            rules: [albanianNounEnding('en', 'e'), albanianNounEnding('ën', 'ë')],
+        },
+    },
+});
+
 /**
  * Yomitan's rules of a language with the app's own added: [own]'s rules after [base]'s, and its conditions.
  * @template {string} T

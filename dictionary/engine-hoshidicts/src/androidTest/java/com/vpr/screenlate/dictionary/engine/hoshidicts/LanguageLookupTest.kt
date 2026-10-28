@@ -847,6 +847,52 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun albanianEndingsFindOnlyWordsWithoutAnEntryTheFirstEndingThatReachesOne() = runTest {
+        val imported = engine.import(albanianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val albanian = LookupOptions(language = Language.ALBANIAN)
+        suspend fun all(text: String) = engine.lookup(text, albanian).map { it.term.expression }
+
+        val important = engine.lookup("rëndësishme", albanian).single()
+        assertThat(important.term.expression).isEqualTo("rëndësishëm")
+        assertThat(important.trace.map { it.name }).containsExactly("-me")
+        assertThat(important.trace.first().description).isNotEmpty()
+        assertThat(all("Rëndësishme")).containsExactly("rëndësishëm")
+        assertThat(all("moderne")).containsExactly("modern")
+        assertThat(all("drejtësisë")).containsExactly("drejtësi")
+        assertThat(all("botua")).containsExactly("botoj")
+        assertThat(all("aleatët")).containsExactly("aleat")
+        // The longest ending first: -eve gives tipar, and -ve's tipare, an entry too, is not tried.
+        assertThat(all("tipareve")).containsExactly("tipar")
+        // A word with an entry of its own takes no ending.
+        assertThat(all("kryesore")).containsExactly("kryesore")
+        // A noun ending in a case ending is not reached through its form-of entry: partneritet is not partnerit + -et.
+        assertThat(all("partneritet")).isEmpty()
+        assertThat(all("partnerit")).containsExactly("partner")
+    }
+
+    /** Rows as Wiktionary's Albanian exports write them: the part of speech in the rules, forms as form-of rows. */
+    private fun albanianDictionary(): File = zip(
+        "sq.zip",
+        "index.json" to """{"title":"Test Albanian","revision":"1","format":3,"sourceLanguage":"sq"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["rëndësishëm","","adj","adj",0,["important"],1,""],
+              ["modern","","adj","adj",0,["modern"],2,""],
+              ["drejtësi","","n","n",0,["justice"],3,""],
+              ["botoj","","v","v",0,["to publish"],4,""],
+              ["aleat","","n","n",0,["ally"],5,""],
+              ["tipar","","n","n",0,["feature"],6,""],
+              ["tipare","","n","n",0,["features"],7,""],
+              ["kryesor","","adj","adj",0,["main"],8,""],
+              ["kryesore","","adj","adj",0,["main, feminine"],9,""],
+              ["partner","","n","n",0,["partner"],10,""],
+              ["partnerit","","non-lemma","n",0,[["partner",["definite genitive singular"]]],11,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

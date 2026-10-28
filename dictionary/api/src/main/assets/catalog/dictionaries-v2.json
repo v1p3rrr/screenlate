@@ -2078,6 +2078,25 @@
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },
     {
+      "id": "corpus-sq",
+      "title": "Leipzig Corpora Collection (sq)",
+      "template": "leipzig",
+      "oldTitles": [
+        "Leipzig Corpora Collection (sq)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "sq",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/sqi_news_2020_100K.tar.gz",
+      "downloadSize": 24879274,
+      "sha256": "8ff3f8b93a75ef1e9c1cc1c4856718cf1717c658d1fe6cfb4b472175f4073ea6",
+      "build": "corpus-counts",
+      "version": "2020",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
@@ -3709,6 +3728,40 @@
       "engine": "tesseract",
       "file": "tessdata/epo.traineddata",
       "version": "43b6b859a59e",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-sqi",
+      "title": "Tesseract fast (sqi)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "sq",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/sqi.traineddata",
+      "downloadSize": 1874705,
+      "sha256": "1d89621d9afe8ddf35b403ecf8951edea52c3a960d241f287b1a7b2c5ba8daac",
+      "model": "tesseract-fast-sqi",
+      "engine": "tesseract",
+      "file": "tessdata/sqi.traineddata",
+      "version": "1d89621d9afe",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-sqi",
+      "title": "Tesseract best (sqi)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "sq",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/sqi.traineddata",
+      "downloadSize": 4631498,
+      "sha256": "42fa3ff84e1684b8989423d53c9f7d4fb8adaa65a54a3d87f9d259228d01226c",
+      "model": "tesseract-best-sqi",
+      "engine": "tesseract",
+      "file": "tessdata/sqi.traineddata",
+      "version": "42fa3ff84e16",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -5450,6 +5503,76 @@
       "template": "paddle-detector-v5",
       "category": "OCR_MODEL",
       "sourceLanguage": "sl",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-v6-sq",
+      "title": "PaddleOCR v6 (sq)",
+      "template": "paddle-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "sq",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-v6.zip",
+      "downloadSize": 18446203,
+      "sha256": "a79ef27d6e71e1de59488e4bf87e3bbad73d0e19d63e98c5fcb407adb12db405",
+      "model": "paddle-v6",
+      "engine": "paddle",
+      "version": "a79ef27d6e71",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v6"
+      ]
+    },
+    {
+      "id": "paddle-latin-sq",
+      "title": "PaddleOCR latin (sq)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "sq",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-latin.zip",
+      "downloadSize": 7314761,
+      "sha256": "e9d8bf4d0654742338c9f156bac19ae1eb259d278e29b72e9ea53fe4e69b9a3f",
+      "model": "paddle-latin",
+      "engine": "paddle",
+      "version": "e9d8bf4d0654",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v6-sq",
+      "title": "PaddleOCR detector-v6 (sq)",
+      "template": "paddle-detector-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "sq",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v6.zip",
+      "downloadSize": 7460475,
+      "sha256": "c46ad8ddd9ed2b79130851d32ea55bc8caebe1e44006d04ff6b269dd26f86101",
+      "model": "paddle-detector-v6",
+      "engine": "paddle",
+      "version": "c46ad8ddd9ed",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-detector-v5-sq",
+      "title": "PaddleOCR detector-v5 (sq)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "sq",
       "recommended": false,
       "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
       "downloadSize": 4502663,
@@ -16572,6 +16695,164 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/eo/wty-eo-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 1840364,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-en",
+      "title": "Wiktionary (sq–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-sq-en",
+        "kty-sq-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "sq",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sq/en/wty-sq-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 2641684,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-ru",
+      "title": "Wiktionary (sq–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-sq-ru",
+        "kty-sq-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "sq",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sq/ru/wty-sq-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 212235,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-de",
+      "title": "Wiktionary (sq–de)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-sq-de",
+        "kty-sq-de"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "sq",
+      "targetLanguage": "de",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-de-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sq/de/wty-sq-de.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 128536,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-fr",
+      "title": "Wiktionary (sq–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-sq-fr",
+        "kty-sq-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "sq",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sq/fr/wty-sq-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 165642,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-pl",
+      "title": "Wiktionary (sq–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-sq-pl",
+        "kty-sq-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "sq",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sq/pl/wty-sq-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 109871,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-tr",
+      "title": "Wiktionary (sq–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-sq-tr",
+        "kty-sq-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "sq",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sq/tr/wty-sq-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 96649,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-zh",
+      "title": "Wiktionary (sq–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-sq-zh",
+        "kty-sq-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "sq",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sq/zh/wty-sq-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 160012,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-sq-transcription",
+      "title": "Wiktionary transcription (sq)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-sq-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "sq",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sq-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/sq/wty-sq-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 118763,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

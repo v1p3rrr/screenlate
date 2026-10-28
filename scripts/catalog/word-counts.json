@@ -127,6 +127,10 @@
     "size": 124275,
     "words": 7752
   },
+  "dict/all/sq/wty-sq-ipa.zip": {
+    "size": 118763,
+    "words": 8149
+  },
   "dict/all/sv/wty-sv-ipa.zip": {
     "size": 265347,
     "words": 13885
@@ -2606,6 +2610,58 @@
   "dict/sl/zh/wty-sl-zh.zip": {
     "size": 87630,
     "words": 1548
+  },
+  "dict/sq/de/wty-sq-de.zip": {
+    "size": 128536,
+    "words": 1508
+  },
+  "dict/sq/en/wty-sq-en.zip": {
+    "size": 2641684,
+    "words": 12890
+  },
+  "dict/sq/es/wty-sq-es.zip": {
+    "size": 19395,
+    "words": 244
+  },
+  "dict/sq/fr/wty-sq-fr.zip": {
+    "size": 165642,
+    "words": 1987
+  },
+  "dict/sq/it/wty-sq-it.zip": {
+    "size": 16645,
+    "words": 166
+  },
+  "dict/sq/ja/wty-sq-ja.zip": {
+    "size": 23407,
+    "words": 284
+  },
+  "dict/sq/ko/wty-sq-ko.zip": {
+    "size": 42889,
+    "words": 1055
+  },
+  "dict/sq/pl/wty-sq-pl.zip": {
+    "size": 109871,
+    "words": 2648
+  },
+  "dict/sq/pt/wty-sq-pt.zip": {
+    "size": 37338,
+    "words": 813
+  },
+  "dict/sq/ru/wty-sq-ru.zip": {
+    "size": 212235,
+    "words": 3940
+  },
+  "dict/sq/tr/wty-sq-tr.zip": {
+    "size": 96649,
+    "words": 4179
+  },
+  "dict/sq/vi/wty-sq-vi.zip": {
+    "size": 18022,
+    "words": 144
+  },
+  "dict/sq/zh/wty-sq-zh.zip": {
+    "size": 160012,
+    "words": 2168
   },
   "dict/sv/de/wty-sv-de.zip": {
     "size": 1715422,

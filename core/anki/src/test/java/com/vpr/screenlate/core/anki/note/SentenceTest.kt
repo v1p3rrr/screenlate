@@ -215,6 +215,19 @@ class SentenceTest {
     }
 
     @Test
+    fun albanianSentenceKeepsAbbreviationsAndEndsAtEtjAndAnEraBeforeACapital() {
+        val paragraph = "Binte shi. Z. Hoxha lindi më 5 maj 1950 në rr. Durrësit. «Eja këtu!» bërtiti ajo. " +
+            "Frutat, p.sh. mollët e dardhat, kushtonin 5 lekë etj. Qyteti u themelua në shek. III p.e.s. Pastaj u shkatërrua."
+        assertThat(extract(paragraph, "Hoxha", Language.ALBANIAN).text)
+            .isEqualTo("Z. Hoxha lindi më 5 maj 1950 në rr. Durrësit.")
+        assertThat(extract(paragraph, "bërtiti", Language.ALBANIAN).text).isEqualTo("«Eja këtu!» bërtiti ajo.")
+        assertThat(extract(paragraph, "mollët", Language.ALBANIAN).text)
+            .isEqualTo("Frutat, p.sh. mollët e dardhat, kushtonin 5 lekë etj.")
+        assertThat(extract(paragraph, "themelua", Language.ALBANIAN).text).isEqualTo("Qyteti u themelua në shek. III p.e.s.")
+        assertThat(extract(paragraph, "shkatërrua", Language.ALBANIAN).text).isEqualTo("Pastaj u shkatërrua.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

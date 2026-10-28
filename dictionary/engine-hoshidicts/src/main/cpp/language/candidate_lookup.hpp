@@ -25,6 +25,10 @@ struct LanguageCandidate {
   bool u = false;  // an entry without a part of speech matches despite [c]
   std::vector<std::string> g;  // definition tags one of which a glossary needs; empty for any
   bool f = false;  // the lemmas form-of entries lead to need none of [g]
+  // The rank of the fallback rule the text comes from (the language script's `fallbackRules`): such texts are looked up
+  // only for a scanned text nothing else finds, one at a time by rank, until one finds an entry; -1 for other texts.
+  int p = -1;
+  bool l = false;  // only the text's own entries count, not its form-of entries
 };
 
 std::vector<LanguageCandidate> parse_candidates(const std::string& json);

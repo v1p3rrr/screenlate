@@ -53,9 +53,10 @@ const borrowed = {
  * final ة as ه and may give Persian letters for its own; Persian text may give Arabic letters for its own, lose its
  * zero-width non-joiners and write a verb prefix or an ending apart; Hebrew text may carry vowel points and write the
  * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә; Romanian text may
- * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le); Latin editions write u for
- * consonantal v (uita); Esperanto is typed in the x-system where its letters cannot be (cxu for ĉu) and writes its
- * elided o as Ukrainian writes apostrophes (dank' al, dank’ al). Processors join the descriptor's capitalization processors, its own list, or make its list.
+ * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le), as does Albanian (s'ka,
+ * s’ka); Latin editions write u for consonantal v (uita); Esperanto is typed in the x-system where its letters cannot
+ * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al). Processors join the
+ * descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -72,6 +73,7 @@ const addedPreprocessors = {
     ro: ['romanianCommaLetters', 'ukrainianApostropheVariants'],
     la: ['latinUAsV'],
     eo: ['esperantoXSystem', 'ukrainianApostropheVariants'],
+    sq: ['ukrainianApostropheVariants'],
 };
 
 /**
@@ -89,9 +91,13 @@ const addedTransforms = {
     ro: 'romanianTransforms',
 };
 
-/** Rules of the app's own (own-transforms.js) added to Yomitan's for a language: the Latin enclitics. */
+/**
+ * Rules of the app's own (own-transforms.js) added to Yomitan's for a language: the Latin enclitics, the Albanian
+ * endings.
+ */
 const extendedTransforms = {
     la: 'latinEnclitics',
+    sq: 'albanianEndings',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));

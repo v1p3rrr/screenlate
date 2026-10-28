@@ -422,6 +422,13 @@ quotes), Esperanto's own flag, Tesseract fast as the more accurate model, no Pad
 once hosted; a frequency dictionary built on the device from Leipzig's Esperanto Wikipedia (question 28, decided
 provisionally). Checked on the emulator; plan question 30 (straight quotes after a full stop in OCR text) is open.
 
+Albanian on `languages/sq` (2026-10-28, from `languages/main` at `9a401674`): Yomitan's 94 Albanian rules and our 18
+endings, which are fallback rules (looked up by rank only when nothing else finds an entry; the engine's candidate
+lookup takes the rank and a headword-only flag from the glue); the elisions s' ç' t' m'; abbreviations and quotes
+from the corpus; ě read as ë in OCR text; Leipzig's Albanian news counts as the frequency dictionary; PaddleOCR v5
+Latin as the more accurate model. Plan questions 31 (t' and m') and 32 (the frequency dictionary) decided
+provisionally.
+
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):

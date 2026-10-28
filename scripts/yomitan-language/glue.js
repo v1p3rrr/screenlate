@@ -16,6 +16,13 @@ const translator = new Translator(/** @type {any} */ (null));
 const hiddenRules = new Map();
 
 /**
+ * Rules of a language's descriptor marked `fallback` (own-transforms.js), by language and rule id: endings the engine
+ * tries only on a text that nothing else finds, one rule at a time by its rank (the Albanian endings).
+ * @type {Map<string, Map<string, {isInflected: RegExp, deinflect: (text: string) => string, conditionsOut: string[], rank: number, lemmaOnly?: RegExp}[]>>}
+ */
+const fallbackRules = new Map();
+
+/**
  * Prepares one language only; `Translator.prepare` builds every language's transformer (about 30 MB in QuickJS). The
  * transforms are taken by the descriptor's code: Georgian's name their language `kat`, under which Yomitan files them
  * and its Georgian lookups never find them.
@@ -30,6 +37,8 @@ function prepare(language) {
         translator._multiLanguageTransformer._languageTransformers.set(language, transformer);
         const hidden = Object.entries(descriptor.transforms).filter(([, t]) => t.hidden).map(([id]) => id);
         if (hidden.length > 0) { hiddenRules.set(language, new Set(hidden)); }
+        const fallback = Object.entries(descriptor.transforms).filter(([, t]) => t.fallback).map(([id, t]) => [id, t.rules]);
+        if (fallback.length > 0) { fallbackRules.set(language, new Map(fallback)); }
     }
     for (const {iso, textPreprocessors = [], textPostprocessors = []} of getAllLanguageTextProcessors()) {
         if (iso !== language) { continue; }
@@ -95,8 +104,10 @@ const replacedProcessors = {
  * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains, whether
  * an entry without a part of speech may match despite the conditions, the definition tags one of which a glossary
  * then needs (`taggedRules`; absent for any), and whether the lemmas its form-of entries lead to are free of them
- * (`freeFormLemmas`; absent when they need them too). A rule that strips a whole word (Georgian -მა from მა) leaves an empty
- * text, which is not asked for, and neither are the texts between the steps of marked rules (`isMarkedStep`).
+ * (`freeFormLemmas`; absent when they need them too). A text reached by a fallback rule (`fallbackRules`) carries the
+ * rule's rank and, when it may reach only a headword of its own, `l`. A rule that strips a whole word (Georgian -მა
+ * from მა) leaves an empty text, which is not asked for, and neither are the texts between the steps of marked rules
+ * (`isMarkedStep`).
  * @param {string} text
  * @param {string} language
  * @param {'letter'|'word'} searchResolution
@@ -109,9 +120,12 @@ function candidates(text, language, searchResolution) {
             isWellFormed(d.deinflectedText) && !(marked && isMarkedStep(d, language)));
     const verb = englishVerbFlags(language);
     const hidden = hiddenRules.get(language);
-    return list.map((d) => {
+    const fallback = fallbackRules.get(language);
+    return list.flatMap((d) => {
+        const step = fallback && fallbackStep(d, fallback, language);
+        if (step === null) { return []; }
         const tags = tagsOf(d, language);
-        return {
+        return [{
             o: d.originalText,
             t: d.transformedText,
             d: d.deinflectedText,
@@ -125,8 +139,33 @@ function candidates(text, language, searchResolution) {
                 tags.length > 0,
             ...(tags.length > 0 ? {g: tags} : {}),
             ...(tags.length > 0 && freeFormLemmas.has(language) ? {f: true} : {}),
-        };
+            ...(step ? {p: step.rank} : {}),
+            ...(step?.lemmaOnly ? {l: true} : {}),
+        }];
     });
+}
+
+/**
+ * The fallback rule (`fallbackRules`) that [d] comes from: its rank and whether its text may reach only a headword of
+ * its own (the rule's `lemmaOnly`). Undefined for a text of other rules; null for one that takes a fallback rule
+ * together with other rules, as each such ending is undone once and alone.
+ * @param {{conditions: number, transformedText: string, deinflectedText: string, inflectionRuleChainCandidates: {inflectionRules: string[]}[]}} d
+ * @param {Map<string, {isInflected: RegExp, deinflect: (text: string) => string, conditionsOut: string[], rank: number, lemmaOnly?: RegExp}[]>} rules
+ * @param {string} language
+ * @returns {{rank: number, lemmaOnly: boolean} | null | undefined}
+ */
+function fallbackStep(d, rules, language) {
+    const chains = d.inflectionRuleChainCandidates.map(({inflectionRules}) => inflectionRules);
+    if (!chains.some((chain) => chain.some((id) => rules.has(id)))) { return undefined; }
+    if (chains.length !== 1 || chains[0].length !== 1) { return null; }
+    const flags = translator._multiLanguageTransformer._languageTransformers.get(language)?._conditionTypeToConditionFlagsMap;
+    // The transform's rule that gives this text: the trace names the transform only.
+    const rule = (rules.get(chains[0][0]) ?? [])
+        .filter((r) => r.isInflected.test(d.transformedText) && r.deinflect(d.transformedText) === d.deinflectedText &&
+            r.conditionsOut.reduce((all, name) => all | (flags?.get(name) ?? 0), 0) === d.conditions)
+        .sort((a, b) => a.rank - b.rank)[0];
+    if (rule === undefined) { return null; }
+    return {rank: rule.rank, lemmaOnly: rule.lemmaOnly?.test(d.deinflectedText) ?? false};
 }
 
 /**

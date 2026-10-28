@@ -542,6 +542,7 @@ val Language.support: LanguageSupport
         Language.SLOVAK -> SlovakSupport
         Language.SLOVENIAN -> SlovenianSupport
         Language.ESPERANTO -> EsperantoSupport
+        Language.ALBANIAN -> AlbanianSupport
     }
 
 /**

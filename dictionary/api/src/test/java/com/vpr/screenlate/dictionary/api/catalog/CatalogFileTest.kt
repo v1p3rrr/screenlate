@@ -99,9 +99,9 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz, latin and esperanto have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin, esperanto and albanian have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq").inOrder()
         val esperanto = built.single { it.sourceLanguage == "eo" }
         assertThat(esperanto.recommended).isTrue()
         assertThat(esperanto.sha256).isEqualTo("afc637eeb783189b43dd646525b5ca61e45115b9143d67d7d022c42ecafcd620")
@@ -110,6 +110,13 @@ class CatalogFileTest {
         assertThat(esperanto.oldTitles).containsExactly(CorpusCountsDictionary.title("eo"))
         assertThat(esperanto.description(Locale.ENGLISH))
             .startsWith("Leipzig Corpora Collection, Esperanto: how common words are in Wikipedia")
+        val albanian = built.single { it.sourceLanguage == "sq" }
+        assertThat(albanian.recommended).isTrue()
+        assertThat(albanian.sha256).isEqualTo("8ff3f8b93a75ef1e9c1cc1c4856718cf1717c658d1fe6cfb4b472175f4073ea6")
+        assertThat(albanian.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/sqi_news_2020_100K.tar.gz")
+        assertThat(albanian.oldTitles).containsExactly(CorpusCountsDictionary.title("sq"))
+        assertThat(albanian.description(Locale.ENGLISH)).startsWith("Leipzig Corpora Collection, Albanian: how common words are in news")
         val latin = built.single { it.sourceLanguage == "la" }
         assertThat(latin.recommended).isTrue()
         assertThat(latin.sha256).matches("[0-9a-f]{64}")
@@ -321,6 +328,20 @@ class CatalogFileTest {
         assertThat(esperanto.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-epo")
         assertThat(esperanto.filter { it.category == CatalogCategory.FREQUENCY }.map { it.id }).containsExactly("corpus-eo")
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.ESPERANTO) }).isEqualTo(esperanto)
+    }
+
+    @Test
+    fun `albanian offers seven wiktionaries, its transcription, paddle latin and leipzig's word counts, ticked, and the other models`() {
+        val albanian = catalog!!.entries.filter { it.isFor(Language.ALBANIAN) }
+        assertThat(albanian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-sq-en", "wiktionary-sq-ru", "wiktionary-sq-de", "wiktionary-sq-fr", "wiktionary-sq-pl",
+            "wiktionary-sq-tr", "wiktionary-sq-zh", "wiktionary-sq-transcription", "paddle-latin-sq", "corpus-sq",
+        )
+        assertThat(albanian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-sqi", "tesseract-best-sqi", "paddle-v6-sq", "paddle-detector-v5-sq", "paddle-detector-v6-sq",
+        )
+        assertThat(albanian.filter { it.category == CatalogCategory.FREQUENCY }.map { it.id }).containsExactly("corpus-sq")
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.ALBANIAN) }).isEqualTo(albanian)
     }
 
     @Test

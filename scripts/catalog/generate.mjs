@@ -22,7 +22,7 @@ const COUNTS = path.join(ROOT, 'scripts/catalog/word-counts.json');
 export const SOURCES = [
   'ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi', 'lv',
   'nl', 'cs', 'id', 'ms', 'tl', 'sh', 'uk', 'be', 'el', 'hi', 'bn', 'ka', 'hy', 'th', 'km',
-  'ar', 'fa', 'he', 'kk', 'ky', 'sv', 'no', 'da', 'ro', 'la', 'lt', 'sk', 'sl', 'eo',
+  'ar', 'fa', 'he', 'kk', 'ky', 'sv', 'no', 'da', 'ro', 'la', 'lt', 'sk', 'sl', 'eo', 'sq',
 ];
 
 /**

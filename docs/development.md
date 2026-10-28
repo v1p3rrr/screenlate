@@ -85,8 +85,8 @@ is CC BY-SA 4.0, and so is the dictionary.
 A language wordfreq has no list for gets one from a corpus' word counts (`"build": "corpus-counts"`, Thai: the Thai
 National Corpus counts that PyThaiNLP publishes, CC0, one `word<TAB>count` line per word). `CorpusCountsDictionary`
 ranks them in the list's order, leaving out tokens without a letter or with a space.
-Kazakh's, Kyrgyz's, Latin's and Esperanto's come from Leipzig Corpora Collection archives (`kaz_newscrawl_2016_100K.tar.gz`,
-`kir_newscrawl_2016_100K.tar.gz`, `lat_wikipedia_2021_100K.tar.gz`, `epo_wikipedia_2021_100K.tar.gz`, CC BY): the builder reads the `.tar.gz` as a stream, keeps only the `-words.txt`
+Kazakh's, Kyrgyz's, Latin's, Esperanto's and Albanian's come from Leipzig Corpora Collection archives (`kaz_newscrawl_2016_100K.tar.gz`,
+`kir_newscrawl_2016_100K.tar.gz`, `lat_wikipedia_2021_100K.tar.gz`, `epo_wikipedia_2021_100K.tar.gz`, `sqi_news_2020_100K.tar.gz`, CC BY): the builder reads the `.tar.gz` as a stream, keeps only the `-words.txt`
 list (`id<TAB>word<TAB>count`, its place in the archive varies), lowercases the words, spells them as the dictionaries
 do (`LanguageSupport.frequencyWord`: Latin i inside a Cyrillic word as і in Kazakh, Latin words without macrons and breves), adds up the counts of tokens that
 become one word and leaves out tokens that are not words.
@@ -164,7 +164,7 @@ that are missing or no longer needed; translations are edited by hand. `glue.js`
 processors where its letter pairs differ from JavaScript's default (Turkish İ/i and I/ı). A language Yomitan has no
 descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian, Kazakh and Kyrgyz from Mongolian, which gives only Cyrillic capitalization); `addedPreprocessors`
 gives a language text processors its descriptor lacks (Georgian decapitalizing, for headings in Mtavruli capitals; the app's own ones in `own-processors.js`, such as Thai sara am, tone mark order and the spaces around ๆ, Khmer zero-width spaces and subscript TA read as DA) and
-`addedTransforms` the app's own rules (`own-transforms.js`: Bengali noun endings, Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz noun and verb endings, built from tables of endings by `turkicTransforms`; the Turkic rule names are shared by both languages and generated once into `inflections_turkic.xml`). The generator takes a language's own rules when Yomitan has none and writes their names as labels (Persian `-ها` is shown as "pl."); the string names come from the affix in Latin letters (`inflection_fa_ha`). The glue and
+`addedTransforms` the app's own rules (`own-transforms.js`: Bengali noun endings, Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz noun and verb endings, built from tables of endings by `turkicTransforms`; the Turkic rule names are shared by both languages and generated once into `inflections_turkic.xml`); `extendedTransforms` adds the app's rules to the ones Yomitan has (the Latin enclitics, the Albanian endings). A transform marked `fallback` (the Albanian endings) gives its texts a rank, which `glue.js` passes to the engine (`fallbackRules`): the engine looks them up only when no other text found an entry, one rank at a time. The generator takes a language's own rules when Yomitan has none and writes their names as labels (Persian `-ها` is shown as "pl."); the string names come from the affix in Latin letters (`inflection_fa_ha`). The glue and
 `generate-inflections.mjs` take a language's rules by its descriptor and folder, whatever code the rules name
 (Georgian's say `kat`), and the generator gives English labels to rule names Yomitan leaves as identifiers (`labels`). The bundles and the strings are GPL-3.0, like the engine module that holds
 them.

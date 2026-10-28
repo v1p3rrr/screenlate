@@ -7,7 +7,8 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
-    hebrewTransforms, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, withOwnTransforms,
+    albanianEndings, hebrewTransforms, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms,
+    withOwnTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -923,5 +924,93 @@ test('the esperanto x-system stays out of other languages', () => {
     for (const language of ['en', 'de', 'pl', 'cs', 'sk', 'la']) {
         assert.ok(!queried(language, 'cxu').has('ĉu'), language);
         assert.ok(!queried(language, 'aux').has('aŭ'), language);
+    }
+});
+
+test('albanian endings are tried in rank order: the longest first, at equal length nouns, adjectives, then verbs', () => {
+    const rules = Object.values(albanianEndings.transforms).flatMap((transform) => transform.rules);
+    assert.deepEqual(rules.map((rule) => rule.rank).sort((a, b) => a - b), rules.map((_, index) => index));
+    const rank = (ending, replacement, condition) => rules.find((rule) => rule.ending === ending &&
+        rule.deinflected === replacement && rule.conditionsOut[0] === condition).rank;
+    assert.ok(rank('uara', 'oj', 'v') < rank('uar', 'oj', 'v'));
+    assert.ok(rank('uar', 'oj', 'v') < rank('ua', 'oj', 'v'));
+    assert.ok(rank('en', 'e', 'n') < rank('en', '', 'v'));
+    assert.ok(rank('me', 'ëm', 'adj') < rank('et', '', 'v'));
+    // Same ending and part of speech: as listed.
+    assert.ok(rank('uara', 'oj', 'v') < rank('uara', 'uaj', 'v'));
+});
+
+test('albanian endings give texts with their rank, undone once and alone; texts of yomitan\'s rules carry none', () => {
+    const important = candidatesTo('sq', 'rëndësishme', 'rëndësishëm');
+    assert.ok(important.every((c) => typeof c.p === 'number' && c.l === undefined));
+    assert.ok(important.every((c) => JSON.stringify(c.r) === JSON.stringify([['-me']])));
+    assert.equal(candidates('sq', 'rëndësishme').find((c) => c.d === 'rëndësishme').p, undefined);
+    // lejen: the noun leje before the verb lej, both after Yomitan's own leje.
+    const permit = candidates('sq', 'lejen');
+    const own = (lemma) => permit.find((c) => c.d === lemma && c.p !== undefined).p;
+    assert.ok(own('leje') < own('lej'));
+    assert.ok(permit.some((c) => c.d === 'leje' && c.p === undefined));
+    for (const text of ['ndodhet', 'botuan', 'shkruara', 'vërtetuan', 'tipareve', 'drejtësisë', 'aleatët', 'moderne',
+        'formohej', 'numëronte', 'kthyer', 'gjitha', 'konferencën']) {
+        for (const c of candidates('sq', text).filter((c) => c.p !== undefined)) {
+            assert.equal(c.r.length, 1, `${text} → ${c.d}`);
+            assert.equal(c.r[0].length, 1, `${text} → ${c.d}`);
+        }
+    }
+    for (const [text, lemma] of [
+        ['moderne', 'modern'], ['gjate', 'gjatë'], ['vjetra', 'vjetër'], ['sotme', 'sotëm'], ['shtrihet', 'shtrij'],
+        ['mendohet', 'mendoj'], ['bëhej', 'bëj'], ['bazuar', 'bazoj'], ['shkruar', 'shkruaj'], ['thirrur', 'thirr'],
+        ['kthyer', 'kthej'], ['përfundoi', 'përfundoj'], ['botua', 'botoj'], ['shkrua', 'shkruaj'], ['daton', 'datoj'],
+        ['hyjnë', 'hyj'], ['numëronte', 'numëroj'], ['termi', 'term'], ['jugut', 'jug'], ['ndikimin', 'ndikim'],
+        ['dokumentet', 'dokument'], ['shqiptarve', 'shqiptar'], ['shitja', 'shitje'], ['paqes', 'paqe'],
+        ['federatës', 'federatë'],
+    ]) {
+        assert.ok(candidates('sq', text).some((c) => c.d === lemma && c.p !== undefined), `${text} → ${lemma}`);
+    }
+    // A stem keeps two letters.
+    assert.ok(candidates('sq', 'mie').some((c) => c.d === 'mi' && c.p !== undefined));
+    for (const text of ['ae', 'ia', 'uar']) assert.ok(candidates('sq', text).every((c) => c.p === undefined), text);
+});
+
+test('an albanian noun ending that leaves a case ending reaches only a headword of that text', () => {
+    const own = (text, lemma) => candidatesTo('sq', text, lemma).filter((c) => c.p !== undefined);
+    const through = (rule) => own('partneritet', 'partnerit').filter((c) => c.r[0][0] === rule);
+    assert.equal(through('-ët').length, 1);
+    assert.ok(through('-ët').every((c) => c.l === true));
+    // A verb has no case endings: partnerit as a verb (-het) is any entry's text.
+    assert.ok(through('-het').every((c) => c.l === undefined));
+    assert.ok(own('partnerit', 'partner').every((c) => c.l === undefined));
+    assert.ok(own('kryesore', 'kryesor').every((c) => c.l === undefined));
+});
+
+test('every albanian rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_sq.xml'), 'utf8');
+    const rules = Object.entries(albanianEndings.transforms);
+    assert.equal(rules.length, 18);
+    for (const [id, {name, description, fallback}] of rules) {
+        assert.equal(fallback, true, id);
+        assert.notEqual(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`>${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('the albanian endings may not take a name yomitan already gives an albanian rule', () => {
+    const yomitan = {language: 'sq', conditions: {}, transforms: {'-me': {name: '-me', rules: []}}};
+    assert.throws(() => withOwnTransforms(yomitan, albanianEndings));
+});
+
+test('albanian negation and elisions are tried with every apostrophe', () => {
+    assert.ok(queried('sq', 's’ka').has("s'ka"));
+    assert.ok(queried('sq', 'ç’është').has("ç'është"));
+});
+
+test('albanian endings stay out of other languages', () => {
+    for (const language of ['en', 'ro', 'it', 'la', 'de', 'tr', 'no']) {
+        assert.ok(candidates(language, 'rëndësishme').every((c) => c.p === undefined && c.l === undefined), language);
+        assert.ok(!queried(language, 'rëndësishme').has('rëndësishëm'), language);
+        assert.ok(!queried(language, 'ndodhet').has('ndodh'), language);
     }
 });

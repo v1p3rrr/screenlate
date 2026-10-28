@@ -21,17 +21,20 @@ class LanguageRulesIsolationTest {
         filter(predicate).map { it.language }
 
     @Test
-    fun `an elided word starts a new word only in French, Italian, Portuguese and Greek`() {
+    fun `an elided word starts a new word only in French, Italian, Portuguese, Greek and Albanian`() {
         assertThat(spaced.where { it.wordStartOffset("de l'ea", "u") == 2 })
             .containsExactly(Language.FRENCH, Language.ITALIAN)
         assertThat(spaced.where { it.wordStartOffset("gota d'águ", "a") == 3 })
             .containsExactly(Language.FRENCH, Language.ITALIAN, Language.PORTUGUESE)
         assertThat(spaced.where { it.wordStartOffset("σ'αγα", "π") == 3 }).containsExactly(Language.GREEK)
+        // French elides ça as well (ç'a été).
+        assertThat(spaced.where { it.wordStartOffset("ç'ësh", "të") == 3 }).containsExactly(Language.FRENCH, Language.ALBANIAN)
         // Everywhere else the apostrophe joins the word.
         for (support in spaced.filter { it.elisions.isEmpty() }) {
             assertThat(support.wordStartOffset("de l'ea", "u")).isEqualTo(4)
             assertThat(support.wordStartOffset("gota d'águ", "a")).isEqualTo(5)
             assertThat(support.wordStartOffset("σ'αγα", "π")).isEqualTo(5)
+            assertThat(support.wordStartOffset("ç'ësh", "të")).isEqualTo(5)
         }
     }
 
@@ -147,9 +150,9 @@ class LanguageRulesIsolationTest {
     @Test
     fun `abbreviations of one language do not hold the sentences of another`() {
         fun holds(support: LanguageSupport, text: String) = !support.endsSentence(text, text.indexOf('.'))
-        // German "z. B." holds its single letters only beside each other; "Plan B." before a lowercase word ends
-        // everywhere, and before a capital it is an initial everywhere.
-        assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
+        // German "z. B." holds its single letters only beside each other (Albanian z., zoti, holds alone); "Plan B."
+        // before a lowercase word ends everywhere, and before a capital it is an initial everywhere.
+        assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN, Language.ALBANIAN)
         assertThat(periodEnding.where { holds(it, "Plan B. dann") }).isEmpty()
         assertThat(periodEnding.where { !holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
@@ -172,8 +175,9 @@ class LanguageRulesIsolationTest {
         // Before a capital the I is an initial in every language.
         val capital = "v roce 300 n. I. Potom"
         assertThat(periodEnding.where { it.endsSentence(capital, capital.indexOf("I.") + 1) }).isEmpty()
-        // Croatian and Serbian mr. is magistar.
-        assertThat(periodEnding.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN)
+        // Croatian and Serbian mr. is magistar, Albanian mr. magjistër.
+        assertThat(periodEnding.where { holds(it, "Mr. Smith") })
+            .containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN, Language.ALBANIAN)
         // Slovak kr. of "pred Kr." holds before a lowercase word too.
         assertThat(periodEnding.where { holds(it, "Kr. godine") }).containsExactly(Language.CROATIAN, Language.SERBIAN, Language.SLOVAK)
         // Ukrainian т. holds for "т. зв." and "у т. ч.".
@@ -250,6 +254,13 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "št. Potem") }).isEmpty()
         val sloveneEra = "leta 400 pr. n. št. so"
         assertThat(periodEnding.where { !it.endsSentence(sloveneEra, sloveneEra.lastIndexOf('.')) }).containsExactly(Language.SLOVENIAN)
+        // Albanian zj. (zonja), p.sh. (për shembull) and etj. (e të tjera), which holds only before a lowercase word or a
+        // number.
+        assertThat(periodEnding.where { holds(it, "Zj. Hoxha") }).containsExactly(Language.ALBANIAN)
+        val forInstance = "frutat p.sh. mollët"
+        assertThat(periodEnding.where { !it.endsSentence(forInstance, forInstance.lastIndexOf('.')) }).containsExactly(Language.ALBANIAN)
+        assertThat(periodEnding.where { holds(it, "etj. dhe") }).containsExactly(Language.ALBANIAN)
+        assertThat(periodEnding.where { holds(it, "etj. Pastaj") }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -472,6 +483,8 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.ocrWord("šipo") != "šipo" }).containsExactly(Language.ESPERANTO)
         assertThat(all.where { it.ocrWord("ankaǔ") != "ankaǔ" }).containsExactly(Language.ESPERANTO)
         assertThat(all.where { it.ocrWord("ġi") != "ġi" }).containsExactly(Language.ESPERANTO)
+        // Albanian, which has no ě, writes it as the ë ML Kit reads it for.
+        assertThat(all.where { it.ocrWord("shtěpi") != "shtěpi" }).containsExactly(Language.ALBANIAN)
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
         // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.
