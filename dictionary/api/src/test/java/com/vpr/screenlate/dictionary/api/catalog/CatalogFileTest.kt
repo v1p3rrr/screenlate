@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
+import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.imports.CorpusCountsDictionary
@@ -16,7 +17,9 @@ import org.junit.Test
  */
 class CatalogFileTest {
 
-    private val catalog = DictionaryCatalog.parse(File("src/main/assets/catalog/dictionaries-v2.json").readText())
+    private val measured = DictionaryCatalog.parseSizes(File("src/main/assets/catalog/installed-sizes.json").readText())
+    private val catalog =
+        DictionaryCatalog.parse(File("src/main/assets/catalog/dictionaries-v2.json").readText(), measured)
     private val legacy = DictionaryCatalog.parse(File("src/main/assets/catalog/dictionaries.json").readText())
 
     /** The interface locales, as keys of catalog texts. */
@@ -584,6 +587,21 @@ class CatalogFileTest {
         )
         assertThat(korean.filter { it.matches(installed("KRDICT EN")) }.map { it.id }).containsExactly("krdict-en")
         assertThat(korean.filter { it.matches(installed("KRDICT")) }.map { it.id }).containsExactly("krdict-ko")
+    }
+
+    @Test
+    fun `measured sizes belong to entries without their own, and give Chinese about what its import takes`() {
+        val entries = catalog!!.entries.associateBy { it.id }
+        assertThat(measured).isNotEmpty()
+        for ((id, size) in measured) {
+            assertThat(entries.keys).contains(id)
+            assertThat(size.download).isGreaterThan(0L)
+            assertThat(size.installed).isGreaterThan(0L)
+        }
+        // CC-CEDICT, its characters and the word frequency took 33.4, 22.2 and 12.1 MB on the emulator; the shares
+        // per kind would give 16.6, 12.8 and 12 MB.
+        val chinese = listOf("cc-cedict", "cc-cedict-hanzi", "wordfreq-zh").sumOf { entries.getValue(it).installedBytes }
+        assertThat(chinese).isIn(Range.closed(65_000_000L, 73_000_000L))
     }
 
     @Test

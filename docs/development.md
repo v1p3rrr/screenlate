@@ -71,6 +71,12 @@ counts as it. It also writes
 `dictionaries.json`, the format 1 copy with the Japanese entries that older app versions read. `--tree <file>` uses a
 recorded listing, `--record <file>` saves one.
 
+The download screen's size after import comes from the entry's `installedSize`, else from
+`catalog/installed-sizes.json` (sizes measured on a device, scaled to the entry's current archive), else from a share
+of the archive per kind. After importing new catalog dictionaries on an emulator, refresh the file with the debug
+build's listing and registry: `python -I scripts/catalog/installed_sizes.py <du listing> <dictionaries.db>` (the
+script's header has the `adb` commands); it keeps the sizes of entries not installed there.
+
 A model entry (category `OCR_MODEL`) has no dictionary kind but names its model id, engine, version and SHA-256; the
 app installs the download only when the checksum matches. Entries of several languages may name the same model.
 

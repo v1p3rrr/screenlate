@@ -78,7 +78,8 @@ enum class CatalogCategory {
  *   dictionaries ticked by default.
  * @property resolveLatest ask [indexUrl] for the current `downloadUrl` before downloading.
  * @property downloadSize archive size in bytes; catalogs of format 1 give [sizeMb] instead.
- * @property installedSize measured size after import in bytes; [installedBytes] estimates it otherwise.
+ * @property installedSize measured size after import in bytes, from the entry or from `catalog/installed-sizes.json`
+ *   ([MeasuredSize]); [installedBytes] estimates it otherwise.
  * @property nonCommercial the license forbids commercial use.
  * @property sha256 checksum of the archive, where the project hosts the file; required for a model and for a file
  *   the app builds a dictionary from.
@@ -167,8 +168,11 @@ data class CatalogEntry(
      */
     val installedBytes: Long get() = installedSize ?: estimatedInstalledBytes(cautious = false)
 
-    /** [installedBytes] for the free space check: measured, or above every import measured so far. */
-    val installedBytesAtMost: Long get() = installedSize ?: estimatedInstalledBytes(cautious = true)
+    /**
+     * [installedBytes] for the free space check: measured with a quarter more for later releases, or above every
+     * import measured so far.
+     */
+    val installedBytesAtMost: Long get() = installedSize?.let { it + it / 4 } ?: estimatedInstalledBytes(cautious = true)
 
     private fun estimatedInstalledBytes(cautious: Boolean): Long {
         if (isModel) return downloadBytes
@@ -261,8 +265,9 @@ const val BUILD_FORMS = "forms"
 private val BUILDS = setOf(BUILD_WORDFREQ, BUILD_CORPUS_COUNTS)
 
 /**
- * Installed bytes per archive byte, from 150 imports measured on a device: [typical] near the median and the
- * size-weighted mean, [atMost] above the largest. The free space check prefers a guess too high to one too low.
+ * Installed bytes per archive byte for an entry with no measured size, from 150 imports measured on a device:
+ * [typical] near the median and the size-weighted mean, [atMost] above the largest. The free space check prefers a
+ * guess too high to one too low.
  */
 private enum class InstalledShare(val typical: Double, val atMost: Double) {
     /** Glossaries: 1.2-4.7, most near 2.2. */
@@ -313,6 +318,16 @@ data class Catalog(
     fun mandatory(language: Language): Set<CatalogCategory> = mandatory[language.code] ?: mandatory(language.dictionaryCode)
 }
 
+/**
+ * A dictionary's size after import measured on a device, with the size of the archive it was imported from;
+ * `scripts/catalog/installed_sizes.py` writes them into `catalog/installed-sizes.json`.
+ */
+@Serializable
+data class MeasuredSize(val download: Long, val installed: Long)
+
+@Serializable
+private data class MeasuredSizes(val sizes: Map<String, MeasuredSize> = emptyMap())
+
 @Serializable
 private data class CatalogTemplate(
     val title: Map<String, String> = emptyMap(),
@@ -341,6 +356,12 @@ class DictionaryCatalog @Inject constructor(
 ) {
     private val cacheFile = File(context.filesDir, "catalog-v2.json")
 
+    private val measuredSizes: Map<String, MeasuredSize> by lazy {
+        runCatching { context.assets.open(SIZES_ASSET).use { parseSizes(it.readBytes().decodeToString()) } }
+            .onFailure { Log.w(TAG, "Measured sizes unreadable: ${it.javaClass.simpleName}") }
+            .getOrDefault(emptyMap())
+    }
+
     /** Emits the cached or bundled catalog at once, then the fetched one if it differs. */
     fun catalog(): Flow<Catalog> = flow {
         val local = withContext(Dispatchers.IO) { localCatalog() }
@@ -364,16 +385,16 @@ class DictionaryCatalog @Inject constructor(
     fun local(): List<CatalogEntry> = localCatalog().entries
 
     private fun bundled(): Catalog =
-        context.assets.open(ASSET).use { parse(it.readBytes().decodeToString()) } ?: Catalog(emptyList())
+        context.assets.open(ASSET).use { parse(it.readBytes().decodeToString(), measuredSizes) } ?: Catalog(emptyList())
 
     private fun cached(): Catalog? =
-        runCatching { if (cacheFile.exists()) parse(cacheFile.readText()) else null }.getOrNull()
+        runCatching { if (cacheFile.exists()) parse(cacheFile.readText(), measuredSizes) else null }.getOrNull()
 
     private fun fetch(): Catalog? = runCatching {
         httpClient.newCall(Request.Builder().url(REMOTE_URL).build()).execute().use { response ->
             if (!response.isSuccessful) return null
             val text = response.body.string()
-            parse(text)?.also {
+            parse(text, measuredSizes)?.also {
                 cacheFile.writeText(text)
                 File(context.filesDir, FORMAT_1_CACHE).delete()
             }
@@ -385,22 +406,32 @@ class DictionaryCatalog @Inject constructor(
 
         /**
          * Null when the document is malformed or uses a format this app version does not understand. Format 1 has no
-         * templates and gives sizes in whole megabytes.
+         * templates and gives sizes in whole megabytes. An entry without its own size after import takes the one in
+         * [measured].
          */
-        fun parse(text: String): Catalog? = runCatching {
+        fun parse(text: String, measured: Map<String, MeasuredSize> = emptyMap()): Catalog? = runCatching {
             val document = json.decodeFromString<CatalogDocument>(text).takeIf { it.format in FORMATS } ?: return null
             val entries = document.dictionaries.mapNotNull { element ->
                 runCatching { json.decodeFromJsonElement<CatalogEntry>(element) }
                     .onFailure { Log.i(TAG, "Catalog entry skipped: ${it.message}") }
                     .getOrNull()
                     ?.takeIf { entry -> entry.isComplete.also { if (!it) Log.i(TAG, "Catalog entry ${entry.id} skipped: incomplete") } }
-                    ?.let { entry -> withTemplate(entry, document.templates) }
+                    ?.let { entry -> withMeasuredSize(withTemplate(entry, document.templates), measured) }
             }
             val mandatory = document.mandatory.mapValues { (_, names) ->
                 names.mapNotNullTo(linkedSetOf()) { name -> CatalogCategory.entries.firstOrNull { it.name == name } }
             }
             Catalog(entries, mandatory)
         }.getOrNull()
+
+        fun parseSizes(text: String): Map<String, MeasuredSize> = json.decodeFromString<MeasuredSizes>(text).sizes
+
+        /** The measured size, in proportion to the entry's archive now: a later release may be larger. */
+        private fun withMeasuredSize(entry: CatalogEntry, measured: Map<String, MeasuredSize>): CatalogEntry {
+            if (entry.installedSize != null) return entry
+            val size = measured[entry.id]?.takeIf { it.download > 0 } ?: return entry
+            return entry.copy(installedSize = size.installed * entry.downloadBytes / size.download)
+        }
 
         private fun withTemplate(entry: CatalogEntry, templates: Map<String, CatalogTemplate>): CatalogEntry {
             val template = entry.template?.let(templates::get) ?: return entry
@@ -409,6 +440,7 @@ class DictionaryCatalog @Inject constructor(
 
         private const val TAG = "DictionaryCatalog"
         private const val ASSET = "catalog/dictionaries-v2.json"
+        private const val SIZES_ASSET = "catalog/installed-sizes.json"
         private val FORMATS = 1..2
 
         /** Where versions before format 2 kept their copy of the catalog. */
