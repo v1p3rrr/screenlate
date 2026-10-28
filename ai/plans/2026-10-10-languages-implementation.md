@@ -338,6 +338,8 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Typed pinyin in search | Found in any form ("nihao", "ni hao", "ni3hao3", "nǐhǎo"); our own toneless pinyin index built at import; exact tones rank higher (owner, 2026-10-14) |
 | Translation button default | Off for new installs; an upgrade keeps it on for users who never touched the switch (the value is written as on during the upgrade). The Anki field switch is unchanged (owner, 2026-10-13, request 33; changes the "Translation settings" row of `2026-09-29-feedback-after-0.1.4.md`, "both on by default") |
 | Bubble menu languages | Only flags (the active one ringed, the language name for TalkBack); codes on e-ink (owner, 2026-10-13) |
+| Bubble glyph | The bubble shows the first letter of the language's own name, capitalized (Deutsch D, русский Р, čeština Č); languages with a script of their own keep their most typical character (Japanese あ, Korean 한, Greek Ω), and languages sharing a script other than Latin or Cyrillic also take their own name's first letter (Arabic ع after the article, Persian ف, Hindi हि, Marathi म, Chinese 中, Cantonese 粵). When two quick languages would show letters that look alike (Latin and Cyrillic look-alikes such as P and Р, and a letter with or without marks, as Č and C), both show their two-letter code instead (EN and ES). Codes of Cyrillic-script languages are written in Cyrillic (РУ, УК, БЕ, БГ, МК, МН, КК, КЫ, СР), on the bubble and in the e-ink codes that replace flags; other languages keep Latin codes (owner, 2026-10-28, replacing the hand-picked letters such as ß, Ř, Æ, Ў) |
+| Language flags in more places | A language's flag goes next to its name in the language chips (dictionaries, lookup, Anki, audio and popup text pages), the OCR model list's language headings, the download screen's title, the Languages screen's cards of turned-off languages and the first-run screen's language list; the interface language list already has them. The other places stay without flags: the language headings above the chips, the dictionary pair labels (ja → en), the catalog's per-language counts, the download screen's gloss-language list, the translation dialog's target list, the problems card and the backup page. Flags follow the e-ink rule (codes instead of flags there) and TalkBack keeps reading the name. Built in the step between groups 5c and 5d, with the folded marks (owner, 2026-10-28 night, after the table of places with screenshots; 2026-10-29: "флаги ... в ту же задачу, которая между сессиями языковыми") |
 | Chinese audio | Wiktionary (searched by tone-marked pinyin), Lingua Libre, text to speech (reads the characters) (owner, 2026-10-15) |
 | Pinyin search order | By the frequency dictionary, as Yomitan, also for a common character under a rare reading (owner, 2026-10-15) |
 | Chinese main dictionary | CC-CEDICT ticked for English glosses; Wiktionary zh–en listed unticked (owner, 2026-10-15) |
@@ -453,7 +455,8 @@ Decided when the first language or group 1 is ready, before it is merged into th
   download without looking for an unfinished task of the same entry while the stalled one held the single chain.
 - Right-to-left interface languages (owner, 2026-10-19, question 70 of `2026-10-19-group-4d.md`): Arabic, Persian
   and Hebrew interface translations with mirrored screens, a separate task after group 5's research (and maybe its
-  build) and group 4's build.
+  build) and group 4's build. The strings alone go earlier, in the cloud session of 2026-10-29 (owner, 2026-10-28);
+  the mirrored screens are checked on the emulator later, and the strings wait on their branch until then.
 - Bubble menu in the dock (owner, 2026-10-22, request 75): holding the docked bubble opens the same menu as holding the
   floating one: the quick-language flags and opening the app. Items that need a scan (copy the paragraph, copy all, and
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
@@ -467,15 +470,14 @@ Decided when the first language or group 1 is ready, before it is merged into th
   (Romanian and Latin rules in the Norwegian, Kazakh, Kyrgyz, Bengali, Persian and Hebrew bundles, about 2.4 KB each),
   because esbuild keeps the rule helpers' calls. `/* @__PURE__ */` on the helpers or one module per language would
   drop them; nothing breaks meanwhile.
-- Language flags in more places (owner, 2026-10-28): find the menus and screens that name languages (the dictionary
-  page's language chips, the download screen, the lookup and photo language pickers, notifications and the like) and
-  show the language's flag there as the bubble's quick-language menu does. On 2026-10-28 the owner asked for a
-  table of the places, with screenshots and a reason for or against a flag in each.
+- Language flags in more places (owner, 2026-10-28): decided on 2026-10-28 night from the table of places with
+  screenshots; see row "Language flags in more places". Built in the step between groups 5c and 5d.
 - Bubble glyph by the language's own name (owner, 2026-10-28): the bubble now shows a distinctive letter of each
   language (`LanguageSupport.glyph`: ß, Ř, Æ, Ў). For languages whose script others share (Latin, Cyrillic and the
   like) it would show the first letter of the language's name in that language (Deutsch → D, русский → Р); languages
   with their own script keep their most common or most typical character (Japanese あ, Chinese a character most tied
-  to China, as 中 now), and the same wherever it applies. On 2026-10-28 the owner asked for a table of the letters.
+  to China, as 中 now), and the same wherever it applies. Decided on 2026-10-28 after a table of the letters
+  (row "Bubble glyph"); to build.
 - Popup delay check (owner, 2026-10-28): on the phone the popup comes noticeably late after the aim reaches a word,
   and it does not look like the debounce but like slowness. Measure the path from the aim's stop to the drawn popup
   (hit test, lookup, page render, window show) on the phone and the emulator from the app's log timings, compare with
@@ -1300,7 +1302,8 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 5c Long suffix chains: Finnish, Estonian, Hungarian; Azerbaijani, Uzbek. Endings stacked on a stem, compounds in the
   Finnic languages and Hungarian; the Turkic ones as Turkish.
 - Between 5c and 5d: marks folded in the lookup (row "Marks folded in the lookup", request 79), so 5d and later
-  blocks build on it and write no misread lists of their own.
+  blocks build on it and write no misread lists of their own; in the same step, language flags in more places (row
+  "Language flags in more places").
 - 5d Cyrillic: Bulgarian, Mongolian; Macedonian.
 - 5e Other scripts: Cantonese (Han characters as Chinese, jyutping readings), Kannada; Tamil, Telugu, Marathi
   (Brahmic scripts as Hindi; Kannada is read by the cloud only).
@@ -1779,3 +1782,12 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-28 late evening: the PaddleOCR lines, converter data, AnkiDroid debugging and archive catch-up of questions
   72, 74 and 76 moved to the backlog as four entries at the owner's word, not built now; the owner asked for tables
   of the flag places and of the bubble letters.
+- 2026-10-28 night: the owner decided the bubble glyph (row "Bubble glyph": the own name's first letter, two-letter
+  codes when quick languages clash, Cyrillic codes in Cyrillic, also on e-ink; Arabic ع and Persian ف), chose the
+  Esperanto web corpus of 2012 (group 5a question 28), and sent five backlog tasks to one cloud session (interface
+  translation check, candidate interface languages, smaller language bundles, converter data, the right-to-left
+  strings); group 6's research stays in the local chain.
+- 2026-10-29: decision row "Language flags in more places" (owner): flags in the language chips, the OCR model list,
+  the download screen's title, the cards of turned-off languages and the first-run screen, built in the step
+  between groups 5c and 5d; the bubble glyph is built by the coordinating session; Esperanto's frequency dictionary
+  now comes from Leipzig's web texts of 2012.
