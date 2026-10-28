@@ -1251,6 +1251,66 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun hungarianVerbPrefixesComeOffIntoTheBareVerbsFormsOnlyWhereTheTextHasNoEntry() = runTest {
+        val imported = engine.import(hungarianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val hungarian = LookupOptions(language = Language.HUNGARIAN)
+        suspend fun all(text: String, options: LookupOptions = hungarian) =
+            engine.lookup(text, options).map { it.term.expression }.distinct()
+
+        // The tables list the bare verb's forms only: megtartottam is tartottam, a form of tart, with meg-.
+        val kept = engine.lookup("megtartottam", hungarian).first()
+        assertThat(kept.term.expression).isEqualTo("tart")
+        assertThat(kept.matched).isEqualTo("megtartottam")
+        assertThat(kept.trace.map { it.name }).contains("prefix")
+        assertThat(kept.trace.map { it.label }).doesNotContain("")
+        assertThat(all("olvasta")).containsExactly("olvas")
+        // A word with its own entry takes no prefix off: megtart is no tart, bevétel no vétel (vesz).
+        assertThat(all("megtart")).containsExactly("megtart")
+        assertThat(all("bevétel")).containsExactly("bevétel")
+        // The prefix comes off verbs only: kigén is no ki- with gén.
+        assertThat(engine.lookup("kigén", hungarian)).isEmpty()
+        assertThat(all("-ban")).containsExactly("-ban")
+
+        // ő and ű that recognition read as ö and ü (ű also as ú) are tried for words from OCR only, the word as read first.
+        val ocr = hungarian.copy(fromOcr = true)
+        assertThat(engine.lookup("füzfa", hungarian)).isEmpty()
+        assertThat(all("füzfa", ocr)).containsExactly("fűzfa")
+        // The built-in recognizer also reads ű as ú.
+        assertThat(all("fúzfa", ocr)).containsExactly("fűzfa")
+        assertThat(engine.lookup("fúzfa", hungarian)).isEmpty()
+        assertThat(all("öt")).containsExactly("öt")
+        assertThat(all("öt", ocr)).containsExactly("öt", "őt").inOrder()
+    }
+
+    /**
+     * Rows as Wiktionary's Hungarian export writes them: no rules, the part of speech in the tags, the bare verb's
+     * forms as form-of rows; prefixed verbs and nouns of their own.
+     */
+    private fun hungarianDictionary(): File = zip(
+        "hu.zip",
+        "index.json" to """{"title":"Test Hungarian","revision":"1","format":3,"sourceLanguage":"hu"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["tart","","v","",0,["to hold"],1,""],
+              ["tartottam","","non-lemma","",0,[["tart",["first-person singular definite/indefinite past indicative"]]],2,""],
+              ["megtart","","v vt","",0,["to keep"],3,""],
+              ["olvas","","v vt","",0,["to read"],4,""],
+              ["olvasta","","non-lemma","",0,[["olvas",["third-person singular definite past indicative"]]],5,""],
+              ["vesz","","v","",0,["to take"],6,""],
+              ["vétel","","n","",0,["purchase"],7,""],
+              ["vétel","","non-lemma","",0,[["vesz",["verbal noun"]]],8,""],
+              ["bevétel","","n","",0,["revenue"],9,""],
+              ["gén","","n","",0,["gene"],10,""],
+              ["fűzfa","","n","",0,["willow"],11,""],
+              ["öt","","num","",0,["five"],12,""],
+              ["őt","","pron","",0,["him, her"],13,""],
+              ["-ban","","suf","",0,["in"],14,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

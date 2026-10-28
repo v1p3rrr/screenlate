@@ -59,8 +59,8 @@ const borrowed = {
  * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al); Swahili writes ng' so
  * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r), Irish and Scottish Gaelic their elided words (d'fhág, dh'fhàg);
  * Irish in Gaelic type writes lenition as a dot (ḃean for bhean), and Scottish Gaelic in its older spelling some
- * long vowels with the acute (mór for mòr). Processors join the descriptor's capitalization processors, its own
- * list, or make its list.
+ * long vowels with the acute (mór for mòr); recognition reads Hungarian ő and ű as ö and ü. Processors join the
+ * descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -82,13 +82,15 @@ const addedPreprocessors = {
     cy: ['ukrainianApostropheVariants', 'welshMisreadCircumflex'],
     ga: ['ukrainianApostropheVariants', 'irishDottedConsonants'],
     gd: ['ukrainianApostropheVariants', 'gaelicAcuteAsGrave'],
+    hu: ['hungarianMisreadDoubleAcute'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
  * article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial mutations, Finnish clitics and
- * possessive suffixes (Yomitan's Finnish descriptor has text processors only).
+ * possessive suffixes, Hungarian verb prefixes (Yomitan's Finnish and Hungarian descriptors have text processors
+ * only).
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -102,6 +104,7 @@ const addedTransforms = {
     cy: 'welshTransforms',
     gd: 'gaelicMutations',
     fi: 'finnishTransforms',
+    hu: 'hungarianTransforms',
 };
 
 /**

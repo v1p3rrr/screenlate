@@ -73,7 +73,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi", "hu")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -408,6 +408,26 @@ class CatalogFileTest {
         )
         assertThat(gaelic.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.SCOTTISH_GAELIC) }).isEqualTo(gaelic)
+    }
+
+    @Test
+    fun `hungarian offers its wiktionaries, their word forms and frequencies, ticked, the forms mandatory, and the ocr models unticked`() {
+        val hungarian = catalog!!.entries.filter { it.isFor(Language.HUNGARIAN) }
+        assertThat(hungarian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-hu-en", "wiktionary-hu-forms", "wiktionary-hu-ru", "wiktionary-hu-fr", "wiktionary-hu-ja",
+            "wiktionary-hu-ko", "wiktionary-hu-pl", "wiktionary-hu-tr", "wiktionary-hu-zh", "wiktionary-hu-transcription",
+            "wordfreq-hu",
+        )
+        // No model reads Hungarian enough better than ML Kit to be marked.
+        assertThat(hungarian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-hun", "tesseract-best-hun", "paddle-v6-hu", "paddle-latin-hu", "paddle-detector-v6-hu",
+            "paddle-detector-v5-hu",
+        )
+        val forms = hungarian.single { it.category == CatalogCategory.FORMS }
+        assertThat(forms.build).isEqualTo(BUILD_FORMS)
+        assertThat(forms.downloadUrl).isEqualTo(hungarian.single { it.id == "wiktionary-hu-en" }.downloadUrl)
+        assertThat(catalog!!.mandatory(Language.HUNGARIAN)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.HUNGARIAN) }).isEqualTo(hungarian)
     }
 
     @Test

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">Verbpräfix</string>
+    <string name="inflection_hu_prefix">Verbpräfix: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- und andere (megtartottam von tartottam)</string>
+</resources>

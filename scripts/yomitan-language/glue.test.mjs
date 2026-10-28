@@ -7,8 +7,8 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
-    albanianEndings, finnishTransforms, gaelicMutations, hebrewTransforms, irishMutations, kazakhTransforms,
-    kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms,
+    albanianEndings, finnishTransforms, gaelicMutations, hebrewTransforms, hungarianTransforms, irishMutations,
+    kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms,
     withReplacedTransforms,
 } from './own-transforms.js';
 
@@ -1591,5 +1591,112 @@ test('finnish endings stay out of other languages', () => {
     for (const language of ['en', 'sv', 'no', 'lt', 'sw']) {
         assert.ok(!queried(language, 'talossanikin').has('talossa'), language);
         assert.ok(!queried(language, 'talokin').has('talo'), language);
+    }
+});
+
+/**
+ * The rule chains, outermost rule last as the engine reports them, that lead from [text] to [lemma] in Hungarian.
+ * @param {string} text
+ * @param {string} lemma
+ */
+function hungarianChains(text, lemma) {
+    return candidatesTo('hu', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+}
+
+test('hungarian verb prefixes come off once and reach verbs and their forms by their definition tags', () => {
+    for (const [text, lemma] of [
+        ['megtartottam', 'tartottam'],
+        ['elolvasta', 'olvasta'],
+        ['kimentek', 'mentek'],
+        ['visszaadta', 'adta'],
+        ['keresztülment', 'ment'],
+        ['összeszedte', 'szedte'],
+        ['előkerült', 'került'],
+        ['eléállt', 'állt'],
+        ['felmegy', 'megy'],
+        ['fölment', 'ment'],
+        ['átadta', 'adta'],
+        ['rávette', 'vette'],
+        ['Megtartottam', 'tartottam'],
+    ]) {
+        assert.deepEqual([...hungarianChains(text, lemma)], ['prefix'], `${text} → ${lemma}`);
+    }
+    const kept = candidatesTo('hu', 'megtartottam', 'tartottam')[0];
+    assert.ok(kept.u);
+    assert.deepEqual([...kept.g], ['v', 'non-lemma']);
+    // The text as written stays typed and needs no tags.
+    const written = candidates('hu', 'megtartottam').find((c) => c.d === 'megtartottam');
+    assert.equal(written.g, undefined);
+    assert.equal(written.r.flat().length, 0);
+});
+
+test('hungarian prefixes leave three letters and come off once', () => {
+    // elég is no el- with ég, kifli no ki- with fli: three letters stay after a prefix.
+    assert.ok(!queried('hu', 'elég').has('ég'));
+    assert.ok(!queried('hu', 'leül').has('ül'));
+    assert.ok(queried('hu', 'leült').has('ült'));
+    // One prefix only: visszaelad is vissza- + elad, not vissza- + el- + ad.
+    assert.ok(queried('hu', 'visszaelad').has('elad'));
+    assert.ok(!queried('hu', 'visszaelad').has('ad'));
+    // elő- and elé- come off whole, el- leaves őkerült as well, which no entry has.
+    assert.ok(queried('hu', 'előkerült').has('került'));
+    // A prefix inside a word is not one.
+    assert.ok(!queried('hu', 'hazamegy').has('hazagy'));
+});
+
+test('hungarian ö and ü are tried as ő and ű for words from ocr only, as read first', () => {
+    assert.ok(queriedFromOcr('hu', 'füzfa').has('fűzfa'));
+    // The built-in recognizer also reads ű as ú.
+    assert.ok(queriedFromOcr('hu', 'fúzfa').has('fűzfa'));
+    assert.ok(queriedFromOcr('hu', 'húvös').has('hűvös'));
+    assert.ok(queriedFromOcr('hu', 'úr').has('úr'));
+    assert.ok(queriedFromOcr('hu', 'Úr').has('Űr'));
+    assert.ok(queriedFromOcr('hu', 'öt').has('őt'));
+    assert.ok(queriedFromOcr('hu', 'öt').has('öt'));
+    assert.ok(queriedFromOcr('hu', 'Öt').has('Őt'));
+    assert.ok(queriedFromOcr('hu', 'ÖSZ').has('ŐSZ'));
+    // Every combination of the first three: tükörfürö gives tűkörfürö, tükőrfürö, tűkőrfűrö and the rest.
+    const texts = queriedFromOcr('hu', 'tükörfürö');
+    for (const text of ['tűkörfürö', 'tükőrfürö', 'tükörfűrö', 'tűkőrfűrö']) {
+        assert.ok(texts.has(text), text);
+    }
+    // The fourth is left as read.
+    assert.ok(!texts.has('tükörfürő'));
+    // The text as read comes first: it takes no processor step, the variants one.
+    const steps = new Map(load('hu').candidates('öt', 'hu', 'word', true).map((c) => [c.d, c.s]));
+    assert.ok(steps.get('öt') < steps.get('őt'));
+    // A written ő or ű stays itself, ó is read right, and only the first word changes.
+    assert.ok(!queriedFromOcr('hu', 'őt').has('öt'));
+    assert.ok(!queriedFromOcr('hu', 'jó').has('jő'));
+    assert.ok(!queriedFromOcr('hu', 'öt ünnep').has('öt űnnep'));
+    // Through the prefix rule as well: elő- misread as elö- still comes off.
+    assert.ok(queriedFromOcr('hu', 'elöfordult').has('fordult'));
+    // App text and typed text are looked up as written.
+    assert.ok(!queried('hu', 'füzfa').has('fűzfa'));
+    assert.ok(!queried('hu', 'fúzfa').has('fűzfa'));
+    assert.ok(!queried('hu', 'öt').has('őt'));
+    // Other languages read the same either way.
+    for (const [language, word] of [['de', 'öde'], ['fi', 'yö'], ['sv', 'höst'], ['tr', 'gönül']]) {
+        assert.deepEqual(queriedFromOcr(language, word), queried(language, word), language);
+    }
+});
+
+test('every hungarian rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_hu.xml'), 'utf8');
+    const rules = Object.entries(hungarianTransforms.transforms);
+    assert.deepEqual(rules.map(([id]) => id), ['prefix']);
+    assert.equal(hungarianTransforms.transforms.prefix.rules.length, 25);
+    for (const [id, {name, description}] of rules) {
+        assert.ok(description.startsWith(name), id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('hungarian prefixes stay out of other languages', () => {
+    for (const language of ['en', 'fi', 'de', 'sw', 'ro']) {
+        assert.ok(!queried(language, 'megtartottam').has('tartottam'), language);
     }
 });

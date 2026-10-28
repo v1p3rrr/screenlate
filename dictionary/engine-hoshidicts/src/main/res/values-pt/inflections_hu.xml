@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">prefixo verbal</string>
+    <string name="inflection_hu_prefix">prefixo verbal: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- e outros (megtartottam de tartottam)</string>
+</resources>

@@ -253,7 +253,8 @@ function isMarkedStep(d, language) {
  * names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller, mens → men "but").
  * Romanian article and agreement endings reach nominal words and forms (consiliul → consiliu, aflată → aflat, a form
  * of afla), not verbs or adverbs. Swahili verb prefixes reach verbs and forms (alisoma → soma), not nouns (wali, rice,
- * is no wa- + li-).
+ * is no wa- + li-). Hungarian verb prefixes reach verbs and their forms (megtartottam → tartottam, a form of tart), not
+ * nouns (idegen "foreign" is no ide- + gen "gene").
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
@@ -262,6 +263,7 @@ const taggedRules = new Map([
     ['no', {n: ['n', 'name', 'non-lemma']}],
     ['ro', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']}],
     ['sw', {v: ['v', 'non-lemma']}],
+    ['hu', {v: ['v', 'non-lemma']}],
 ]);
 
 /**

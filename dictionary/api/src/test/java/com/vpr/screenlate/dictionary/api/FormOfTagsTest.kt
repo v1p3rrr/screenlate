@@ -7,14 +7,23 @@ class FormOfTagsTest {
     /** Resource names instead of the texts, so the test shows which string each word took. */
     private val names: Map<Int, String> = R.string::class.java.fields.associate { it.getInt(null) to it.name }
 
-    private fun label(tag: String) =
-        FormOfTags.label(tag, { names.getValue(it).removePrefix("form_of_tag_") }) { "country:$it" }
+    private fun label(tag: String, aliases: Map<String, String> = emptyMap()) =
+        FormOfTags.label(tag, { names.getValue(it).removePrefix("form_of_tag_") }, aliases) { "country:$it" }
 
     @Test
     fun `every word of a tag is translated`() {
         assertThat(label("genitive")).isEqualTo("genitive")
         assertThat(label("Genitive  plural")).isEqualTo("genitive plural")
         assertThat(label("alt-of")).isEqualTo("alt_of")
+    }
+
+    @Test
+    fun `a language's aliases name a word as the word it stands for`() {
+        val hungarian = mapOf("definite" to "object-definite", "indefinite" to "object-indefinite")
+        assertThat(label("first-person singular definite/indefinite past indicative", hungarian))
+            .isEqualTo("first_person singular object_definite/object_indefinite past indicative")
+        assertThat(label("Definite", hungarian)).isEqualTo("object_definite")
+        assertThat(label("singular definite")).isEqualTo("singular definite")
     }
 
     @Test
@@ -62,6 +71,21 @@ class FormOfTagsTest {
         assertThat(label("noun-from-verb negative fourth-person")).isEqualTo("noun_from_verb negative fourth_person")
         assertThat(label("agent")).isEqualTo("agent")
         assertThat(label("present connegative")).isEqualTo("present connegative")
+    }
+
+    @Test
+    fun `hungarian cases and conjugations are translated`() {
+        assertThat(label("singular causal-final")).isEqualTo("singular causal_final")
+        assertThat(label("plural terminative")).isEqualTo("plural terminative")
+        assertThat(label("singular essive-formal")).isEqualTo("singular essive_formal")
+        assertThat(label("plural essive-modal")).isEqualTo("plural essive_modal")
+        assertThat(label("first-person singular past indicative object-definite"))
+            .isEqualTo("first_person singular past indicative object_definite")
+        assertThat(label("first-person singular present indicative object-indefinite"))
+            .isEqualTo("first_person singular present indicative object_indefinite")
+        assertThat(label("singular non-attributive possessive")).isEqualTo("singular non_attributive possessive")
+        assertThat(label("exaggerated")).isEqualTo("exaggerated")
+        assertThat(label("singular temporal")).isEqualTo("singular temporal")
     }
 
     @Test

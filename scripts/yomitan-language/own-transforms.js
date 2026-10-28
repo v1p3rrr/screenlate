@@ -1613,6 +1613,53 @@ export const finnishTransforms = {
 };
 
 /**
+ * Hungarian verb prefixes (igekötők), longest first where one starts another (elő, elé before el).
+ */
+const HUNGARIAN_PREFIXES = [
+    'keresztül', 'vissza', 'össze', 'végig', 'hozzá', 'körül', 'félre', 'agyon', 'abba', 'bele', 'szét', 'elő', 'elé',
+    'alá', 'oda', 'ide', 'meg', 'fel', 'föl', 'át', 'rá', 'el', 'ki', 'be', 'le',
+];
+
+/**
+ * A verb prefix taken off: three letters stay after it at least, so the rule leaves short words alone (elég is no
+ * el- with ég).
+ * @param {string} prefix
+ * @returns {import('language-transformer').Rule<'v'>}
+ */
+function hungarianPrefix(prefix) {
+    return {
+        type: 'prefix',
+        isInflected: new RegExp(`^${prefix}[^ ]{3}`),
+        deinflected: '',
+        deinflect: (text) => text.slice(prefix.length),
+        conditionsIn: [],
+        conditionsOut: ['v'],
+    };
+}
+
+/**
+ * Hungarian verb prefixes, as the app's own rule: Wiktionary lists a prefixed verb (megtart) without forms of its own,
+ * while the bare verb's table has them (tartottam, a form of tart), so megtartottam is found through tartottam, once,
+ * with the prefix named in the chain. The texts match verbs and their forms only (glue.js, `taggedRules`), and the
+ * engine shows them only where the text has no entry or form of its own (HungarianSupport's
+ * inflectionRulesOnlyWithoutEntry): megtart is found as written.
+ * @type {import('language-transformer').LanguageTransformDescriptor<'v'>}
+ */
+export const hungarianTransforms = {
+    language: 'hu',
+    conditions: {
+        v: {name: 'Verb', isDictionaryForm: true},
+    },
+    transforms: {
+        prefix: {
+            name: 'verb prefix',
+            description: 'verb prefix: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- and others (megtartottam from tartottam)',
+            rules: HUNGARIAN_PREFIXES.map(hungarianPrefix),
+        },
+    },
+};
+
+/**
  * [own] in place of Yomitan's descriptor of a language, with Yomitan's conditions, which [own]'s rules give; Yomitan's
  * rules are dropped.
  * @template {string} T

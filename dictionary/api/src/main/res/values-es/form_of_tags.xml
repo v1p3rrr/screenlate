@@ -35,6 +35,7 @@
     <string name="form_of_tag_benefactive">benefactivo</string>
     <string name="form_of_tag_by_personal_gender">según el género de la persona</string>
     <string name="form_of_tag_cantonese">cantonés</string>
+    <string name="form_of_tag_causal_final">causal-final</string>
     <string name="form_of_tag_causative">causativo</string>
     <string name="form_of_tag_central">central</string>
     <string name="form_of_tag_chakavian">chakavo</string>
@@ -89,8 +90,11 @@
     <string name="form_of_tag_equal">de igualdad</string>
     <string name="form_of_tag_equative">ecuativo</string>
     <string name="form_of_tag_essive">esivo</string>
+    <string name="form_of_tag_essive_formal">esivo-formal</string>
+    <string name="form_of_tag_essive_modal">esivo-modal</string>
     <string name="form_of_tag_eumhun">significado y lectura</string>
     <string name="form_of_tag_euphemistic">eufemístico</string>
+    <string name="form_of_tag_exaggerated">superlativo enfático</string>
     <string name="form_of_tag_female_equivalent">forma femenina</string>
     <string name="form_of_tag_feminine">femenino</string>
     <string name="form_of_tag_first_person">primera persona</string>
@@ -184,6 +188,7 @@
     <string name="form_of_tag_neuter">neutro</string>
     <string name="form_of_tag_no_plural">sin plural</string>
     <string name="form_of_tag_nominative">nominativo</string>
+    <string name="form_of_tag_non_attributive">no atributivo</string>
     <string name="form_of_tag_non_past">no pasado</string>
     <string name="form_of_tag_non_prospective">no prospectivo</string>
     <string name="form_of_tag_nonfinite">no personal</string>
@@ -193,7 +198,9 @@
     <string name="form_of_tag_northern">septentrional</string>
     <string name="form_of_tag_not_comparable">no comparable</string>
     <string name="form_of_tag_noun_from_verb">forma nominal</string>
+    <string name="form_of_tag_object_definite">conjugación definida</string>
     <string name="form_of_tag_object_first_person">objeto de primera persona</string>
+    <string name="form_of_tag_object_indefinite">conjugación indefinida</string>
     <string name="form_of_tag_object_plural">objeto plural</string>
     <string name="form_of_tag_object_second_person">objeto de segunda persona</string>
     <string name="form_of_tag_object_singular">objeto singular</string>
@@ -274,7 +281,9 @@
     <string name="form_of_tag_syncope">síncopa</string>
     <string name="form_of_tag_taiwan">Taiwán</string>
     <string name="form_of_tag_taraskievica">taraškievica</string>
+    <string name="form_of_tag_temporal">temporal</string>
     <string name="form_of_tag_teochew">teochew</string>
+    <string name="form_of_tag_terminative">terminativo</string>
     <string name="form_of_tag_third_person">tercera persona</string>
     <string name="form_of_tag_torlakian">torlaco</string>
     <string name="form_of_tag_traditional">tradicional</string>

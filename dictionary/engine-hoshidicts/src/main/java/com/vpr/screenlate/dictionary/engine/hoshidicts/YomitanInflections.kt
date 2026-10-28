@@ -958,6 +958,9 @@ internal object YomitanInflections {
             "clitic" to Strings(R.string.inflection_fi_clitic_label, R.string.inflection_fi_clitic),
             "possessive" to Strings(R.string.inflection_fi_possessive_label, R.string.inflection_fi_possessive),
         ),
+        "hu" to mapOf(
+            "prefix" to Strings(R.string.inflection_hu_prefix_label, R.string.inflection_hu_prefix),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

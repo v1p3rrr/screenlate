@@ -154,7 +154,7 @@ class LanguageRulesIsolationTest {
         val ordinals = listOf(
             Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
             Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN, Language.DANISH, Language.SLOVAK, Language.SLOVENIAN,
-            Language.FINNISH,
+            Language.FINNISH, Language.HUNGARIAN,
         )
         assertThat(periodEnding.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(periodEnding.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
@@ -317,6 +317,12 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "mm. Helsinki") }).containsExactly(Language.FRENCH, Language.FINNISH)
         assertThat(periodEnding.where { holds(it, "jne. ja") }).containsExactly(Language.FINNISH)
         assertThat(periodEnding.where { holds(it, "jne. Sitten") }).isEmpty()
+        // Hungarian pl. (például; Polish pl., plac, holds too) and kb. (körülbelül), and stb. (s a többi), which holds
+        // only before a lowercase word.
+        assertThat(periodEnding.where { holds(it, "pl. Alma") }).containsExactly(Language.POLISH, Language.HUNGARIAN)
+        assertThat(periodEnding.where { holds(it, "kb. 5") }).containsExactly(Language.HUNGARIAN)
+        assertThat(periodEnding.where { holds(it, "stb. és") }).containsExactly(Language.HUNGARIAN)
+        assertThat(periodEnding.where { holds(it, "stb. Aztán") }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -381,16 +387,17 @@ class LanguageRulesIsolationTest {
             // An apostrophe joins a word without dividing it into parts.
             assertThat(support.partStarts("rock'n'roll", 0, "rock'n'r".length)).isEmpty()
         }
-        // An ending or a particle is looked up with its hyphen in Kazakh and Kyrgyz after any part, in Finnish after a
-        // number only; a text starting at the hyphen is looked up in these three.
+        // An ending or a particle is looked up with its hyphen in Kazakh and Kyrgyz after any part, in Hungarian after
+        // a number or an abbreviation in capitals, in Finnish after a number only; a text starting at the hyphen is
+        // looked up in these four.
         assertThat(spaced.where { it.partStarts("1990-ға", 0, "1990-ғ".length) != listOf("1990-".length) })
-            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.FINNISH)
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.FINNISH, Language.HUNGARIAN)
         assertThat(spaced.where { it.partStarts("сондай-ақ", 0, "сондай-а".length) != listOf("сондай-".length) })
             .containsExactly(Language.KAZAKH, Language.KYRGYZ)
         assertThat(spaced.where { it.partStarts("EU-maat", 0, "EU-m".length) != listOf("EU-".length) })
-            .containsExactly(Language.KAZAKH, Language.KYRGYZ)
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.HUNGARIAN)
         assertThat(all.where { it.lookupStart("-ға", latinAsNative = false) != null })
-            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.FINNISH)
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.FINNISH, Language.HUNGARIAN)
         // The maqaf divides Hebrew words only.
         assertThat(spaced.where { it.partStarts("בית\u05BEספר", 0, "בית\u05BEס".length).isNotEmpty() })
             .containsExactly(Language.HEBREW)
@@ -399,10 +406,11 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only German, Dutch, Swedish, Norwegian, Danish and Finnish split compounds, German puts capitalized parts first`() {
+    fun `only German, Dutch, Swedish, Norwegian, Danish, Finnish and Hungarian split compounds, German puts capitalized parts first`() {
         assertThat(all.where { it.compoundLinks != null })
             .containsExactly(
                 Language.GERMAN, Language.DUTCH, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.FINNISH,
+                Language.HUNGARIAN,
             )
         assertThat(all.where { it.capitalizedNouns }).containsExactly(Language.GERMAN)
     }
@@ -423,7 +431,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
         assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
-            .containsExactly(Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.FINNISH)
+            .containsExactly(Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.FINNISH, Language.HUNGARIAN)
     }
 
     @Test

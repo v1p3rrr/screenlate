@@ -539,6 +539,7 @@
     <string name="popup_font_script_only_ga">Solo per il testo irlandese</string>
     <string name="popup_font_script_only_gd">Solo per il testo in gaelico scozzese</string>
     <string name="popup_font_script_only_fi">Solo per il testo finlandese</string>
+    <string name="popup_font_script_only_hu">Solo per il testo ungherese</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

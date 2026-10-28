@@ -43,6 +43,7 @@ object FormOfTags {
         "benefactive" to R.string.form_of_tag_benefactive,
         "by-personal-gender" to R.string.form_of_tag_by_personal_gender,
         "cantonese" to R.string.form_of_tag_cantonese,
+        "causal-final" to R.string.form_of_tag_causal_final,
         "causative" to R.string.form_of_tag_causative,
         "central" to R.string.form_of_tag_central,
         "chakavian" to R.string.form_of_tag_chakavian,
@@ -97,8 +98,11 @@ object FormOfTags {
         "equal" to R.string.form_of_tag_equal,
         "equative" to R.string.form_of_tag_equative,
         "essive" to R.string.form_of_tag_essive,
+        "essive-formal" to R.string.form_of_tag_essive_formal,
+        "essive-modal" to R.string.form_of_tag_essive_modal,
         "eumhun" to R.string.form_of_tag_eumhun,
         "euphemistic" to R.string.form_of_tag_euphemistic,
+        "exaggerated" to R.string.form_of_tag_exaggerated,
         "feminine" to R.string.form_of_tag_feminine,
         "first-person" to R.string.form_of_tag_first_person,
         "flanders" to R.string.form_of_tag_flanders,
@@ -190,6 +194,7 @@ object FormOfTags {
         "neuter" to R.string.form_of_tag_neuter,
         "no-plural" to R.string.form_of_tag_no_plural,
         "nominative" to R.string.form_of_tag_nominative,
+        "non-attributive" to R.string.form_of_tag_non_attributive,
         "non-past" to R.string.form_of_tag_non_past,
         "non-prospective" to R.string.form_of_tag_non_prospective,
         "nonfinite" to R.string.form_of_tag_nonfinite,
@@ -199,7 +204,9 @@ object FormOfTags {
         "northern" to R.string.form_of_tag_northern,
         "not-comparable" to R.string.form_of_tag_not_comparable,
         "noun-from-verb" to R.string.form_of_tag_noun_from_verb,
+        "object-definite" to R.string.form_of_tag_object_definite,
         "object-first-person" to R.string.form_of_tag_object_first_person,
+        "object-indefinite" to R.string.form_of_tag_object_indefinite,
         "object-plural" to R.string.form_of_tag_object_plural,
         "object-second-person" to R.string.form_of_tag_object_second_person,
         "object-singular" to R.string.form_of_tag_object_singular,
@@ -280,7 +287,9 @@ object FormOfTags {
         "syncope" to R.string.form_of_tag_syncope,
         "taiwan" to R.string.form_of_tag_taiwan,
         "taraškievica" to R.string.form_of_tag_taraskievica,
+        "temporal" to R.string.form_of_tag_temporal,
         "teochew" to R.string.form_of_tag_teochew,
+        "terminative" to R.string.form_of_tag_terminative,
         "third-person" to R.string.form_of_tag_third_person,
         "torlakian" to R.string.form_of_tag_torlakian,
         "traditional" to R.string.form_of_tag_traditional,
@@ -354,16 +363,24 @@ object FormOfTags {
         return if (end < 0) trimmed else trimmed.substring(0, end)
     }
 
-    /** [tag] in the interface language; null when none of its words is in the list. */
-    fun label(resources: Resources, tag: String): String? {
+    /**
+     * [tag] in the interface language; null when none of its words is in the list. A word in [aliases] is named as the
+     * word it maps to (the language's `formTagAliases`).
+     */
+    fun label(resources: Resources, tag: String, aliases: Map<String, String> = emptyMap()): String? {
         val locale = resources.configuration.locales[0]
-        return label(tag, { resources.getString(it) }) {
+        return label(tag, { resources.getString(it) }, aliases = aliases) {
             Locale.Builder().setRegion(it).build().getDisplayCountry(locale)
         }
     }
 
     /** [country] names a region code (`ES`). */
-    internal fun label(tag: String, string: (Int) -> String, country: (String) -> String = { it }): String? {
+    internal fun label(
+        tag: String,
+        string: (Int) -> String,
+        aliases: Map<String, String> = emptyMap(),
+        country: (String) -> String = { it },
+    ): String? {
         var translated = false
         val words = tag.trim().split(SPACES).filter { it.isNotEmpty() }
         val labels = mutableListOf<String>()
@@ -381,7 +398,7 @@ object FormOfTags {
                 continue
             }
             labels += expandPersons(words[index].split('/')).joinToString("/") { part ->
-                val key = part.lowercase()
+                val key = part.lowercase().let { aliases[it] ?: it }
                 STRINGS[key]?.let { translated = true; string(it) }
                     ?: COUNTRIES[key]?.let { translated = true; country(it) }
                     ?: part

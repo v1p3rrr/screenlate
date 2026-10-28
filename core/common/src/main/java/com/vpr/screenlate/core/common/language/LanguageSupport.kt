@@ -393,6 +393,12 @@ interface LanguageSupport {
     val formTagRules: Map<String, String> get() = emptyMap()
 
     /**
+     * Words of form-of tags that mean another tag's word in this language, named as that one: Hungarian `definite` on
+     * a verb form is the definite conjugation, which other rows of the same dictionary call `object-definite`.
+     */
+    val formTagAliases: Map<String, String> get() = emptyMap()
+
+    /**
      * Whether a word's results found through a headword's spelling without marks ([HeadwordMarks.everyHeadword]) are
      * left out when the same text finds a headword as written: Welsh ty finds tŷ, twr finds only twr.
      */
@@ -563,6 +569,7 @@ val Language.support: LanguageSupport
         Language.IRISH -> IrishSupport
         Language.SCOTTISH_GAELIC -> GaelicSupport
         Language.FINNISH -> FinnishSupport
+        Language.HUNGARIAN -> HungarianSupport
     }
 
 /**

@@ -35,6 +35,7 @@
     <string name="form_of_tag_benefactive">수혜</string>
     <string name="form_of_tag_by_personal_gender">사람의 성별에 따라</string>
     <string name="form_of_tag_cantonese">광둥어</string>
+    <string name="form_of_tag_causal_final">원인목적격</string>
     <string name="form_of_tag_causative">사동</string>
     <string name="form_of_tag_central">중부</string>
     <string name="form_of_tag_chakavian">차카비아 방언</string>
@@ -89,8 +90,11 @@
     <string name="form_of_tag_equal">동등</string>
     <string name="form_of_tag_equative">동등급</string>
     <string name="form_of_tag_essive">양태격</string>
+    <string name="form_of_tag_essive_formal">자격 양태격</string>
+    <string name="form_of_tag_essive_modal">방식 양태격</string>
     <string name="form_of_tag_eumhun">음훈</string>
     <string name="form_of_tag_euphemistic">완곡</string>
+    <string name="form_of_tag_exaggerated">강조 최상급</string>
     <string name="form_of_tag_female_equivalent">여성형</string>
     <string name="form_of_tag_feminine">여성</string>
     <string name="form_of_tag_first_person">1인칭</string>
@@ -184,6 +188,7 @@
     <string name="form_of_tag_neuter">중성</string>
     <string name="form_of_tag_no_plural">복수형 없음</string>
     <string name="form_of_tag_nominative">주격</string>
+    <string name="form_of_tag_non_attributive">비관형형</string>
     <string name="form_of_tag_non_past">비과거</string>
     <string name="form_of_tag_non_prospective">비예정</string>
     <string name="form_of_tag_nonfinite">비한정형</string>
@@ -193,7 +198,9 @@
     <string name="form_of_tag_northern">북부</string>
     <string name="form_of_tag_not_comparable">비교 변화 없음</string>
     <string name="form_of_tag_noun_from_verb">명사형</string>
+    <string name="form_of_tag_object_definite">한정 활용</string>
     <string name="form_of_tag_object_first_person">1인칭 목적어</string>
+    <string name="form_of_tag_object_indefinite">비한정 활용</string>
     <string name="form_of_tag_object_plural">복수 목적어</string>
     <string name="form_of_tag_object_second_person">2인칭 목적어</string>
     <string name="form_of_tag_object_singular">단수 목적어</string>
@@ -274,7 +281,9 @@
     <string name="form_of_tag_syncope">어중음 탈락</string>
     <string name="form_of_tag_taiwan">대만</string>
     <string name="form_of_tag_taraskievica">타라시케비차</string>
+    <string name="form_of_tag_temporal">시간격</string>
     <string name="form_of_tag_teochew">조주어</string>
+    <string name="form_of_tag_terminative">도달격</string>
     <string name="form_of_tag_third_person">3인칭</string>
     <string name="form_of_tag_torlakian">토를라크 방언</string>
     <string name="form_of_tag_traditional">전통적</string>

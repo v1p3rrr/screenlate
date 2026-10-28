@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">동사 접두사</string>
+    <string name="inflection_hu_prefix">동사 접두사: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- 등 (tartottam → megtartottam)</string>
+</resources>

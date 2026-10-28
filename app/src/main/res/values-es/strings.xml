@@ -539,6 +539,7 @@
     <string name="popup_font_script_only_ga">Solo para texto en irlandés</string>
     <string name="popup_font_script_only_gd">Solo para texto en gaélico escocés</string>
     <string name="popup_font_script_only_fi">Solo para texto en finés</string>
+    <string name="popup_font_script_only_hu">Solo para texto en húngaro</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

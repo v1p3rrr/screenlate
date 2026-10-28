@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">глагольная приставка</string>
+    <string name="inflection_hu_prefix">глагольная приставка: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- и другие (megtartottam от tartottam)</string>
+</resources>

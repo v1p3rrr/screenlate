@@ -35,6 +35,7 @@
     <string name="form_of_tag_benefactive">бенефактив</string>
     <string name="form_of_tag_by_personal_gender">по полу лица</string>
     <string name="form_of_tag_cantonese">кантонское</string>
+    <string name="form_of_tag_causal_final">каузалис-финалис</string>
     <string name="form_of_tag_causative">каузатив</string>
     <string name="form_of_tag_central">центральное</string>
     <string name="form_of_tag_chakavian">чакавское</string>
@@ -89,8 +90,11 @@
     <string name="form_of_tag_equal">равной степени</string>
     <string name="form_of_tag_equative">экватив</string>
     <string name="form_of_tag_essive">эссив</string>
+    <string name="form_of_tag_essive_formal">эссив-формалис</string>
+    <string name="form_of_tag_essive_modal">эссив-модалис</string>
     <string name="form_of_tag_eumhun">значение и чтение</string>
     <string name="form_of_tag_euphemistic">эвфемизм</string>
+    <string name="form_of_tag_exaggerated">усиленная превосходная степень</string>
     <string name="form_of_tag_female_equivalent">женская форма</string>
     <string name="form_of_tag_feminine">женский род</string>
     <string name="form_of_tag_first_person">1-е лицо</string>
@@ -184,6 +188,7 @@
     <string name="form_of_tag_neuter">средний род</string>
     <string name="form_of_tag_no_plural">без множественного числа</string>
     <string name="form_of_tag_nominative">именительный падеж</string>
+    <string name="form_of_tag_non_attributive">неатрибутивное</string>
     <string name="form_of_tag_non_past">непрошедшее время</string>
     <string name="form_of_tag_non_prospective">непроспективное</string>
     <string name="form_of_tag_nonfinite">неличная форма</string>
@@ -193,7 +198,9 @@
     <string name="form_of_tag_northern">северное</string>
     <string name="form_of_tag_not_comparable">без степеней сравнения</string>
     <string name="form_of_tag_noun_from_verb">именная форма</string>
+    <string name="form_of_tag_object_definite">определённое спряжение</string>
     <string name="form_of_tag_object_first_person">дополнение 1-го лица</string>
+    <string name="form_of_tag_object_indefinite">неопределённое спряжение</string>
     <string name="form_of_tag_object_plural">дополнение во мн. ч.</string>
     <string name="form_of_tag_object_second_person">дополнение 2-го лица</string>
     <string name="form_of_tag_object_singular">дополнение в ед. ч.</string>
@@ -274,7 +281,9 @@
     <string name="form_of_tag_syncope">синкопа</string>
     <string name="form_of_tag_taiwan">Тайвань</string>
     <string name="form_of_tag_taraskievica">тарашкевица</string>
+    <string name="form_of_tag_temporal">темпоралис</string>
     <string name="form_of_tag_teochew">чаошаньское</string>
+    <string name="form_of_tag_terminative">терминатив</string>
     <string name="form_of_tag_third_person">3-е лицо</string>
     <string name="form_of_tag_torlakian">торлакское</string>
     <string name="form_of_tag_traditional">традиционное</string>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">tiền tố động từ</string>
+    <string name="inflection_hu_prefix">tiền tố động từ: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- và các tiền tố khác (megtartottam từ tartottam)</string>
+</resources>

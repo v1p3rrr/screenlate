@@ -153,7 +153,8 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
     private fun localize(language: Language, transform: Transform): Transform {
         YomitanInflections.localize(context.resources, language.dictionaryCode, transform)?.let { return it }
         val tag = transform.copy(name = FormOfTags.clean(transform.name))
-        return FormOfTags.label(context.resources, tag.name)?.let { tag.copy(label = it) } ?: tag
+        return FormOfTags.label(context.resources, tag.name, language.support.formTagAliases)
+            ?.let { tag.copy(label = it) } ?: tag
     }
 
     override suspend fun styles(): List<DictionaryStyle> = session { handle ->

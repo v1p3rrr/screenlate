@@ -44,6 +44,10 @@ class EntryTest(unittest.TestCase):
         self.assertFalse(catalog.entry("fi", "fin", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("fi", "fin", "best", b"lstm")["recommended"])
         self.assertEqual(catalog.LANGUAGES["fi"], "fin")
+        # Hungarian: Tesseract fast 1.33% of the characters wrong against ML Kit's 1.56%, too few fewer to be marked.
+        self.assertFalse(catalog.entry("hu", "hun", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("hu", "hun", "best", b"lstm")["recommended"])
+        self.assertEqual(catalog.LANGUAGES["hu"], "hun")
 
 
 class ReplaceTest(unittest.TestCase):

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">動詞前綴</string>
+    <string name="inflection_hu_prefix">動詞前綴：meg-、el-、ki-、be-、fel-、le-、át-、rá-、össze-、vissza- 等（tartottam → megtartottam）</string>
+</resources>

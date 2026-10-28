@@ -35,6 +35,7 @@
     <string name="form_of_tag_benefactive">受益</string>
     <string name="form_of_tag_by_personal_gender">按人的性别</string>
     <string name="form_of_tag_cantonese">粤语</string>
+    <string name="form_of_tag_causal_final">原因目的格</string>
     <string name="form_of_tag_causative">使役</string>
     <string name="form_of_tag_central">中部</string>
     <string name="form_of_tag_chakavian">恰卡维亚方言</string>
@@ -89,8 +90,11 @@
     <string name="form_of_tag_equal">同等</string>
     <string name="form_of_tag_equative">同级</string>
     <string name="form_of_tag_essive">样格</string>
+    <string name="form_of_tag_essive_formal">资格样格</string>
+    <string name="form_of_tag_essive_modal">方式样格</string>
     <string name="form_of_tag_eumhun">音训</string>
     <string name="form_of_tag_euphemistic">委婉</string>
+    <string name="form_of_tag_exaggerated">强调最高级</string>
     <string name="form_of_tag_female_equivalent">女性形式</string>
     <string name="form_of_tag_feminine">阴性</string>
     <string name="form_of_tag_first_person">第一人称</string>
@@ -184,6 +188,7 @@
     <string name="form_of_tag_neuter">中性</string>
     <string name="form_of_tag_no_plural">无复数</string>
     <string name="form_of_tag_nominative">主格</string>
+    <string name="form_of_tag_non_attributive">非定语</string>
     <string name="form_of_tag_non_past">非过去</string>
     <string name="form_of_tag_non_prospective">非将然</string>
     <string name="form_of_tag_nonfinite">非限定形</string>
@@ -193,7 +198,9 @@
     <string name="form_of_tag_northern">北方</string>
     <string name="form_of_tag_not_comparable">无比较级</string>
     <string name="form_of_tag_noun_from_verb">名词形</string>
+    <string name="form_of_tag_object_definite">定指变位</string>
     <string name="form_of_tag_object_first_person">第一人称宾语</string>
+    <string name="form_of_tag_object_indefinite">不定指变位</string>
     <string name="form_of_tag_object_plural">复数宾语</string>
     <string name="form_of_tag_object_second_person">第二人称宾语</string>
     <string name="form_of_tag_object_singular">单数宾语</string>
@@ -274,7 +281,9 @@
     <string name="form_of_tag_syncope">词中省音</string>
     <string name="form_of_tag_taiwan">台湾</string>
     <string name="form_of_tag_taraskievica">塔拉什克维查</string>
+    <string name="form_of_tag_temporal">时间格</string>
     <string name="form_of_tag_teochew">潮州话</string>
+    <string name="form_of_tag_terminative">到格</string>
     <string name="form_of_tag_third_person">第三人称</string>
     <string name="form_of_tag_torlakian">托尔拉克方言</string>
     <string name="form_of_tag_traditional">传统</string>

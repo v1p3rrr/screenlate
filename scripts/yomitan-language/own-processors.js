@@ -279,6 +279,40 @@ export const welshMisreadCircumflex = {
 
 const WELSH_CIRCUMFLEX = {ý: 'ŷ', Ý: 'Ŷ', û: 'ŵ', Û: 'Ŵ'};
 
+/**
+ * Hungarian ő and ű, which recognition reads as ö and ü, and ű also as ú (füzfa and fúzfa for fűzfa, öt for őt): the
+ * text's first word is also tried with ő and ű for its first three ö, ü and ú, every combination of them, as read
+ * first, so öt still finds öt. For words from OCR only (`ocrOnly`, glue.js): app text and typed text are looked up as
+ * written.
+ * @type {import('language').TextProcessor & {ocrOnly: true}}
+ */
+export const hungarianMisreadDoubleAcute = {
+    name: 'Misread double acute',
+    description: 'füzfa, fúzfa → fűzfa, öt → őt',
+    ocrOnly: true,
+    process: (str) => {
+        const word = /^[\p{L}\p{M}]*/u.exec(str)[0];
+        const places = [];
+        for (let i = 0; i < word.length && places.length < HUNGARIAN_MISREAD_PLACES; i++) {
+            if (word[i] in HUNGARIAN_DOUBLE_ACUTE) { places.push(i); }
+        }
+        const out = [str];
+        for (let set = 1; set < 1 << places.length; set++) {
+            const letters = str.split('');
+            places.forEach((at, bit) => {
+                if (set & (1 << bit)) { letters[at] = HUNGARIAN_DOUBLE_ACUTE[letters[at]]; }
+            });
+            out.push(letters.join(''));
+        }
+        return out;
+    },
+};
+
+/** The most ö, ü and ú of a word tried as ő and ű: seven texts besides the one as read. */
+const HUNGARIAN_MISREAD_PLACES = 3;
+
+const HUNGARIAN_DOUBLE_ACUTE = {ö: 'ő', ü: 'ű', ú: 'ű', Ö: 'Ő', Ü: 'Ű', Ú: 'Ű'};
+
 /** A consonant of Irish lenition with the combining dot above (after NFD). */
 const IRISH_DOTTED = /* @__PURE__ */ new RegExp('([bcdfgmpstBCDFGMPST])' + String.fromCharCode(0x307), 'g');
 

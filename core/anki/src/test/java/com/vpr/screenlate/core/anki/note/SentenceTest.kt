@@ -284,6 +284,17 @@ class SentenceTest {
     }
 
     @Test
+    fun hungarianSentenceKeepsDatesOrdinalsAndAbbreviationsAndEndsAtStbBeforeACapital() {
+        val paragraph = "Esett. 2023. május 3-án gyümölcsöt vettem, pl. almát és körtét stb. A ház a 19. sz. végén " +
+            "épült. Ld. a kb. 5. oldalt. Minden rendben."
+        assertThat(extract(paragraph, "almát", Language.HUNGARIAN).text)
+            .isEqualTo("2023. május 3-án gyümölcsöt vettem, pl. almát és körtét stb.")
+        assertThat(extract(paragraph, "épült", Language.HUNGARIAN).text).isEqualTo("A ház a 19. sz. végén épült.")
+        assertThat(extract(paragraph, "oldalt", Language.HUNGARIAN).text).isEqualTo("Ld. a kb. 5. oldalt.")
+        assertThat(extract(paragraph, "rendben", Language.HUNGARIAN).text).isEqualTo("Minden rendben.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">fiil öneki</string>
+    <string name="inflection_hu_prefix">fiil öneki: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- ve diğerleri (tartottam → megtartottam)</string>
+</resources>

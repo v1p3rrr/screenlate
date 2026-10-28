@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_hu.xml. -->
+<resources>
+    <string name="inflection_hu_prefix_label">prefisso verbale</string>
+    <string name="inflection_hu_prefix">prefisso verbale: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- e altri (megtartottam da tartottam)</string>
+</resources>
