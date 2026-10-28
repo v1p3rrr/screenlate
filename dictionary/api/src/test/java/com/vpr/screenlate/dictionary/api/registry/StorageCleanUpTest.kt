@@ -12,6 +12,9 @@ class StorageCleanUpTest {
     private val staging = File(root, ".staging")
     private val downloads = File(base, "downloads")
 
+    /** Where older versions kept downloaded and copied archives. */
+    private val cache = File(base, "cache")
+
     private val now = 100 * HOUR
     private val processStart = now - 60_000
 
@@ -27,14 +30,14 @@ class StorageCleanUpTest {
             setLastModified(modified)
         }
 
-    private fun archive(name: String, modified: Long): File =
-        File(downloads.apply { mkdirs() }, name).apply {
+    private fun archive(name: String, modified: Long, directory: File = downloads): File =
+        File(directory.apply { mkdirs() }, name).apply {
             writeText("zip")
             setLastModified(modified)
         }
 
     private fun leftovers(archivesInUse: Set<String>?) =
-        importLeftovers(staging, downloads, archivesInUse, processStart, now)
+        importLeftovers(staging, listOf(downloads, cache), archivesInUse, processStart, now)
 
     @Test
     fun `directories of no dictionary go, the staging area and registered ones stay`() {
@@ -79,6 +82,26 @@ class StorageCleanUpTest {
     fun `with the archives in use unknown only old archives go`() {
         val old = archive("old.zip", modified = now - 7 * HOUR)
         val recent = archive("recent.zip", modified = processStart - 1)
+
+        assertThat(leftovers(archivesInUse = null)).containsExactly(old)
+        assertThat(recent.exists()).isTrue()
+    }
+
+    @Test
+    fun `archives in the old cache directory stay while a queued import reads them`() {
+        // A file picked in an older version, queued behind a long download when the app was updated.
+        val picked = archive("picked.zip", modified = now - 7 * HOUR, directory = cache)
+        val partialDownload = archive("download.zip", modified = now - 7 * HOUR, directory = cache)
+        val partialState = archive("download.zip$DOWNLOAD_STATE_SUFFIX", modified = now - 7 * HOUR, directory = cache)
+
+        assertThat(leftovers(archivesInUse = setOf("picked.zip"))).containsExactly(partialDownload, partialState)
+        assertThat(picked.exists()).isTrue()
+    }
+
+    @Test
+    fun `with the archives in use unknown only old archives of the old cache directory go`() {
+        val old = archive("old.zip", modified = now - 7 * HOUR, directory = cache)
+        val recent = archive("recent.zip", modified = now - HOUR, directory = cache)
 
         assertThat(leftovers(archivesInUse = null)).containsExactly(old)
         assertThat(recent.exists()).isTrue()
