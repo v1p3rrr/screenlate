@@ -33,6 +33,7 @@ class TranslationsTest {
         "vi" to setOf("other"),
         "b+zh+Hans" to setOf("other"),
         "b+zh+Hant" to setOf("other"),
+        "ar" to setOf("zero", "one", "two", "few", "many", "other"),
         "fa" to setOf("one", "other"),
     )
 
