@@ -1438,6 +1438,77 @@ export const irishMutations = {
     unmutated: ['bhfuil', 'chomh', 'cheana', 'chuaigh', 'chuile', 'chun', 'thar', 'thart', 'the', 'thíos'],
 };
 
+/** Scottish Gaelic vowels, with the grave accent and the acute of the older spelling. */
+const GAELIC_VOWELS = 'aeiouàèìòùáéíóú';
+const GAELIC_CAPITAL_VOWELS = 'AEIOUÀÈÌÒÙÁÉÍÓÚ';
+
+/** @typedef {'w'} GaelicCondition */
+
+/** @type {GaelicCondition[]} */
+const GAELIC_WORD = ['w'];
+
+/**
+ * Scottish Gaelic initial mutations undone ([mutationRule]): lenition (bh ch dh fh gh mh ph sh th for b c d f g m p s
+ * t, and t-s for s after the article: a' ghrian, an t-sràid), n- before a vowel (ar n-eilean), t- before one (an
+ * t-uisge) and h- before one (na h-Alba). The prefixes keep their hyphen before a capital too (an t-Eilean, na
+ * h-Alba). Wiktionary's Gaelic entries give no part of speech the rules could match, and list mutated forms as
+ * form-of entries under tags of their own, which the engine names after these rules (`LanguageSupport.formTagRules`):
+ * Wiktionary names t-s lenition and n- eclipsis, so the rules do too. [unmutated] lists common words that are no
+ * mutated forms although the rules read them so, lowercase.
+ * @type {import('language-transformer').LanguageTransformDescriptor<GaelicCondition> & {unmutated: string[]}}
+ */
+export const gaelicMutations = {
+    language: 'gd',
+    conditions: {
+        w: {name: 'Word', isDictionaryForm: true},
+    },
+    transforms: {
+        lenition: {
+            name: 'lenition',
+            description: 'lenition: bh ch dh fh gh mh ph sh th for b c d f g m p s t, t-s for s after the article (a\' ghrian from grian, an t-sràid from sràid)',
+            rules: [
+                ...mutationRules('bh', 'b', GAELIC_WORD),
+                ...mutationRules('ch', 'c', GAELIC_WORD),
+                ...mutationRules('dh', 'd', GAELIC_WORD),
+                ...mutationRules('fh', 'f', GAELIC_WORD),
+                ...mutationRules('gh', 'g', GAELIC_WORD),
+                ...mutationRules('mh', 'm', GAELIC_WORD),
+                ...mutationRules('ph', 'p', GAELIC_WORD),
+                ...mutationRules('sh', 's', GAELIC_WORD),
+                ...mutationRules('th', 't', GAELIC_WORD),
+                mutationRule('t-', '', GAELIC_WORD, {before: '[sS]'}),
+            ],
+        },
+        eclipsis: {
+            name: 'eclipsis',
+            description: 'n- before a vowel (ar n-eilean from eilean)',
+            rules: [
+                mutationRule('n-', '', GAELIC_WORD, {before: `[${GAELIC_VOWELS}${GAELIC_CAPITAL_VOWELS}]`}),
+            ],
+        },
+        't-prothesis': {
+            name: 't-prothesis',
+            description: 't- before a vowel (an t-uisge from uisge, an t-Eilean from Eilean)',
+            rules: [
+                mutationRule('t-', '', GAELIC_WORD, {before: `[${GAELIC_VOWELS}${GAELIC_CAPITAL_VOWELS}]`}),
+            ],
+        },
+        'h-prothesis': {
+            name: 'h-prothesis',
+            description: 'h- before a vowel (na h-Alba from Alba, na h-òrain from òrain)',
+            rules: [
+                mutationRule('h-', '', GAELIC_WORD, {before: `[${GAELIC_VOWELS}${GAELIC_CAPITAL_VOWELS}]`}),
+            ],
+        },
+    },
+    // From mutation-exceptions.mjs on the Gaelic Wikipedia dump of 2026-10-01 (the 1,000 commonest words), reviewed by
+    // hand with the words before each: words in their own right whose radical is another word (bhathar "was", not
+    // bathar "goods"; bheir "will give", not beir "catch"; dhuibh "to you", not duibh "black"; shuas "up", the place,
+    // not suas, the motion), chan "not" and dha "to him", and English the. The rest are right as mutations or lead
+    // back to the word (thug → tug → thoir, dheth → deth → dheth).
+    unmutated: ['bhathar', 'bheir', 'chan', 'dha', 'dhuibh', 'shuas', 'the'],
+};
+
 /**
  * [own] in place of Yomitan's descriptor of a language, with Yomitan's conditions, which [own]'s rules give; Yomitan's
  * rules are dropped.

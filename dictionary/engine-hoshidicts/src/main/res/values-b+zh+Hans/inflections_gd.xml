@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified Chinese translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">软音变</string>
+    <string name="inflection_gd_lenition">软音变：b c d f g m p s t 变为 bh ch dh fh gh mh ph sh th，冠词后 s 变为 t-s（grian → a\' ghrian、sràid → an t-sràid）</string>
+    <string name="inflection_gd_eclipsis_label">鼻音变</string>
+    <string name="inflection_gd_eclipsis">元音前加 n-（eilean → ar n-eilean）</string>
+    <string name="inflection_gd_t_prothesis_label">t 增音</string>
+    <string name="inflection_gd_t_prothesis">元音前加 t-（uisge → an t-uisge、Eilean → an t-Eilean）</string>
+    <string name="inflection_gd_h_prothesis_label">h 增音</string>
+    <string name="inflection_gd_h_prothesis">元音前加 h-（Alba → na h-Alba、òrain → na h-òrain）</string>
+</resources>

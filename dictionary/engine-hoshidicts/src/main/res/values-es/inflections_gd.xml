@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">lenición</string>
+    <string name="inflection_gd_lenition">lenición: bh ch dh fh gh mh ph sh th en lugar de b c d f g m p s t, t-s en lugar de s tras el artículo (a\' ghrian de grian, an t-sràid de sràid)</string>
+    <string name="inflection_gd_eclipsis_label">eclipsis</string>
+    <string name="inflection_gd_eclipsis">n- ante vocal (ar n-eilean de eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">prótesis de t</string>
+    <string name="inflection_gd_t_prothesis">t- ante vocal (an t-uisge de uisge, an t-Eilean de Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">prótesis de h</string>
+    <string name="inflection_gd_h_prothesis">h- ante vocal (na h-Alba de Alba, na h-òrain de òrain)</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">lenizione</string>
+    <string name="inflection_gd_lenition">lenizione: bh ch dh fh gh mh ph sh th al posto di b c d f g m p s t, t-s al posto di s dopo l’articolo (a\' ghrian da grian, an t-sràid da sràid)</string>
+    <string name="inflection_gd_eclipsis_label">eclissi</string>
+    <string name="inflection_gd_eclipsis">n- davanti a vocale (ar n-eilean da eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">protesi di t</string>
+    <string name="inflection_gd_t_prothesis">t- davanti a vocale (an t-uisge da uisge, an t-Eilean da Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">protesi di h</string>
+    <string name="inflection_gd_h_prothesis">h- davanti a vocale (na h-Alba da Alba, na h-òrain da òrain)</string>
+</resources>

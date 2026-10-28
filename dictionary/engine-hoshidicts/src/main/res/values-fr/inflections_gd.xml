@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">lénition</string>
+    <string name="inflection_gd_lenition">lénition : bh ch dh fh gh mh ph sh th pour b c d f g m p s t, t-s pour s après l’article (a\' ghrian de grian, an t-sràid de sràid)</string>
+    <string name="inflection_gd_eclipsis_label">éclipse</string>
+    <string name="inflection_gd_eclipsis">n- devant une voyelle (ar n-eilean de eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">prothèse de t</string>
+    <string name="inflection_gd_t_prothesis">t- devant une voyelle (an t-uisge de uisge, an t-Eilean de Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">prothèse de h</string>
+    <string name="inflection_gd_h_prothesis">h- devant une voyelle (na h-Alba de Alba, na h-òrain de òrain)</string>
+</resources>

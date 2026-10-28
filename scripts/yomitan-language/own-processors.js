@@ -300,3 +300,20 @@ export const irishDottedConsonants = {
         return plain === decomposed ? [str] : [str, plain.normalize('NFC')];
     },
 };
+
+/**
+ * Scottish Gaelic in the older spelling, which writes some long vowels with the acute (mór, ór for mòr, òr):
+ * the text is also tried with the grave, in any text, since people write it so. A few headwords keep the acute
+ * (cóigneir), so the text as written comes first.
+ * @type {import('language').TextProcessor}
+ */
+export const gaelicAcuteAsGrave = {
+    name: 'Acute as grave',
+    description: 'mór → mòr, Ó → Ò',
+    process: (str) => {
+        const grave = str.replace(/[áéíóúÁÉÍÓÚ]/g, (letter) => GAELIC_GRAVE[letter]);
+        return grave === str ? [str] : [str, grave];
+    },
+};
+
+const GAELIC_GRAVE = {á: 'à', é: 'è', í: 'ì', ó: 'ò', ú: 'ù', Á: 'À', É: 'È', Í: 'Ì', Ó: 'Ò', Ú: 'Ù'};

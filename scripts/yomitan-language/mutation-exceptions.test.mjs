@@ -2,8 +2,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {deflateRawSync} from 'node:zlib';
-import {candidates, corpusCounts, readDictionary, ruleResults, shares, termRows} from './mutation-exceptions.mjs';
-import {irishMutations, welshTransforms} from './own-transforms.js';
+import {
+    DESCRIPTORS, candidates, corpusCounts, readDictionary, ruleResults, shares, termRows,
+} from './mutation-exceptions.mjs';
+import {gaelicMutations, irishMutations, welshTransforms} from './own-transforms.js';
 
 /** A zip archive of [files] (name → JSON value), deflated when [deflate]. */
 function zip(files, deflate) {
@@ -83,6 +85,16 @@ test('the irish rules give the radical once, with the capital kept', () => {
     assert.deepEqual(ruleResults(irishMutations, 'hÉireann'), ['Éireann']);
     assert.deepEqual(ruleResults(irishMutations, 'mbmbean'), ['bmbean']);
     assert.deepEqual(ruleResults(irishMutations, 'bean'), []);
+});
+
+test('the gaelic rules take the hyphenated prefixes off, before a capital too', () => {
+    assert.deepEqual(ruleResults(gaelicMutations, 'h-Alba'), ['Alba']);
+    assert.deepEqual(ruleResults(gaelicMutations, 't-sluagh'), ['sluagh']);
+    assert.deepEqual(ruleResults(gaelicMutations, 't-ainm'), ['ainm']);
+    assert.deepEqual(ruleResults(gaelicMutations, 'n-eilean'), ['eilean']);
+    assert.deepEqual(ruleResults(gaelicMutations, 'bhliadhna'), ['bliadhna']);
+    assert.deepEqual(ruleResults(gaelicMutations, 'hiort'), []);
+    assert.deepEqual(Object.keys(DESCRIPTORS), ['cy', 'ga', 'gd']);
 });
 
 test('the corpus counts lowercase words and the words before them, after the sentence number', () => {

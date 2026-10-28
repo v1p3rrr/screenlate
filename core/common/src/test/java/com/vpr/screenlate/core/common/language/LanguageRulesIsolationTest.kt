@@ -21,15 +21,19 @@ class LanguageRulesIsolationTest {
         filter(predicate).map { it.language }
 
     @Test
-    fun `an elided word starts a new word only in French, Italian, Portuguese, Greek, Albanian and Irish`() {
+    fun `an elided word starts a new word only in French, Italian, Portuguese, Greek, Albanian, Irish and Scottish Gaelic`() {
         assertThat(spaced.where { it.wordStartOffset("de l'ea", "u") == 2 })
             .containsExactly(Language.FRENCH, Language.ITALIAN)
         assertThat(spaced.where { it.wordStartOffset("gota d'águ", "a") == 3 })
-            .containsExactly(Language.FRENCH, Language.ITALIAN, Language.PORTUGUESE, Language.IRISH)
-        // Irish m' (mo) and b' (ba): m'athair, b'fhéidir.
+            .containsExactly(Language.FRENCH, Language.ITALIAN, Language.PORTUGUESE, Language.IRISH, Language.SCOTTISH_GAELIC)
+        // Irish and Gaelic m' (mo) and b' (ba, bu): m'athair, b'fhéidir.
         assertThat(spaced.where { it.wordStartOffset("is m'athai", "r") == 5 })
-            .containsExactly(Language.FRENCH, Language.ITALIAN, Language.ALBANIAN, Language.IRISH)
-        assertThat(spaced.where { it.wordStartOffset("b'fhéidi", "r") == 6 }).containsExactly(Language.IRISH)
+            .containsExactly(Language.FRENCH, Language.ITALIAN, Language.ALBANIAN, Language.IRISH, Language.SCOTTISH_GAELIC)
+        assertThat(spaced.where { it.wordStartOffset("b'fhéidi", "r") == 6 })
+            .containsExactly(Language.IRISH, Language.SCOTTISH_GAELIC)
+        // Gaelic dh' and the th' of tha written onto ann: dh'fhàg, th'ann.
+        assertThat(spaced.where { it.wordStartOffset("dh'fh", "àg") == 2 }).containsExactly(Language.SCOTTISH_GAELIC)
+        assertThat(spaced.where { it.wordStartOffset("a th'an", "n") == 2 }).containsExactly(Language.SCOTTISH_GAELIC)
         assertThat(spaced.where { it.wordStartOffset("σ'αγα", "π") == 3 }).containsExactly(Language.GREEK)
         // French elides ça as well (ç'a été).
         assertThat(spaced.where { it.wordStartOffset("ç'ësh", "të") == 3 }).containsExactly(Language.FRENCH, Language.ALBANIAN)
@@ -290,6 +294,14 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "lch. 5") }).containsExactly(Language.IRISH)
         assertThat(periodEnding.where { holds(it, "srl. agus") }).containsExactly(Language.IRISH)
         assertThat(periodEnding.where { holds(it, "srl. Ansin") }).isEmpty()
+        // Gaelic m.e. (mar eisimpleir) and Urr. (Urramach), and msaa. (agus mar sin air adhart), which holds only
+        // before a lowercase word.
+        val gaelicExample = "measan m.e. ùbhlan"
+        assertThat(periodEnding.where { !it.endsSentence(gaelicExample, gaelicExample.lastIndexOf('.')) })
+            .containsExactly(Language.SCOTTISH_GAELIC)
+        assertThat(periodEnding.where { holds(it, "Urr. Iain") }).containsExactly(Language.SCOTTISH_GAELIC)
+        assertThat(periodEnding.where { holds(it, "msaa. agus") }).containsExactly(Language.SCOTTISH_GAELIC)
+        assertThat(periodEnding.where { holds(it, "msaa. Tha") }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -380,12 +392,13 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
             .containsExactly(
                 Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN,
-                Language.THAI, Language.KAZAKH, Language.KYRGYZ, Language.WELSH, Language.IRISH,
+                Language.THAI, Language.KAZAKH, Language.KYRGYZ, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC,
             )
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
-        // Welsh and Irish name their dictionaries' mutation rows after their own rules.
-        assertThat(all.where { it.formTagRules.isNotEmpty() }).containsExactly(Language.WELSH, Language.IRISH)
-        assertThat(all.where { it.respelledOnlyWithoutEntry }).containsExactly(Language.WELSH)
+        // Welsh, Irish and Gaelic name their dictionaries' mutation rows after their own rules.
+        assertThat(all.where { it.formTagRules.isNotEmpty() })
+            .containsExactly(Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC)
+        assertThat(all.where { it.respelledOnlyWithoutEntry }).containsExactly(Language.WELSH, Language.SCOTTISH_GAELIC)
         // Romanian leaves out the Moldovan Cyrillic spellings Wiktionary links its words to.
         assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
         assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
@@ -432,6 +445,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
             Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.WELSH,
+            Language.SCOTTISH_GAELIC,
         )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
             Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,

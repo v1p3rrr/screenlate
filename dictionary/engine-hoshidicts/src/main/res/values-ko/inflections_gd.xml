@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">연음 변이</string>
+    <string name="inflection_gd_lenition">연음 변이: b c d f g m p s t 대신 bh ch dh fh gh mh ph sh th, 관사 뒤 s 대신 t-s (grian → a\' ghrian, sràid → an t-sràid)</string>
+    <string name="inflection_gd_eclipsis_label">비음 변이</string>
+    <string name="inflection_gd_eclipsis">모음 앞의 n- (eilean → ar n-eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">t 첨가</string>
+    <string name="inflection_gd_t_prothesis">모음 앞의 t- (uisge → an t-uisge, Eilean → an t-Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">h 첨가</string>
+    <string name="inflection_gd_h_prothesis">모음 앞의 h- (Alba → na h-Alba, òrain → na h-òrain)</string>
+</resources>

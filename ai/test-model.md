@@ -170,6 +170,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR44 | Swahili recognition (`testdata/ocr/sw-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ’ and “…”): cloud recognition reads the screen; offline, ML Kit's Latin model reads it (no downloadable model is recommended); Ng’ombe finds ng'ombe | F | U SwahiliSupportTest, CatalogFileTest, M | 2026-10-28 |
 | OCR45 | Welsh recognition (`testdata/ocr/cy-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ŵ ŷ and mutated words): cloud recognition reads tŷ and tŵr; ML Kit reads tŷ as tý, and the popup on tý finds tŷ (the OCR-only variant); Tesseract cym fast reads tŷ and tŵr | F | U WelshSupportTest, CatalogFileTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | OCR46 | Irish recognition (`testdata/ocr/ga-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with the fada, mutated words and d'fhág): cloud recognition reads the fada and the lowercase prefixes before a capital (nGaillimh, hÉireann, tSín); ML Kit reads the prefixes and the fada of lowercase letters and may drop a capital's (hEireann), which then finds nothing, as Irish words are looked up as written | F | U CatalogFileTest, M | 2026-10-28 |
+| OCR47 | Scottish Gaelic recognition (`testdata/ocr/gd-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with the grave accent, hyphenated prefixes, dh'fhàg, th'ann and the acute of mhór): cloud recognition and ML Kit read the grave vowels and the prefixes with their hyphens (na h-Alba, an t-sràid, ar n-eilean) | F | U CatalogFileTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -249,6 +250,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK74 | Swahili lookups (overlay over `testdata/ocr/sw-sample.png`, and the Search screen): alisoma finds soma through "past « he/she"; hatukusoma finds soma ("past « we « negative"); aliyemwona finds ona ("object « relative « past « he/she"); kinachoitwa finds itwa; alikula shows kula first; aliunga shows the verb unga only; kupa shows only kupa; Angela finds nothing; ng'ombe and Ng’ombe find ng'ombe | F | U SwahiliSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK75 | Welsh lookups (overlay over `testdata/ocr/cy-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nghath finds cath and Nghymru Cymru ("nasal mutation"), the highlight over the whole word; fara finds bara ("soft mutation"), hysgol ysgol ("h-prothesis"), chath cath ("aspirate mutation"); mae shows bod's form, and with cy-fr alone no bae (bay); ty finds tŷ in app text and the Search screen, twr only twr; tý in app text and the Search screen finds no tŷ; i’w finds both dictionaries' i'w and i’w | F | U WelshSupportTest, glue.test.mjs, RuleOnlyResultsTest, I LanguageLookupTest, M | 2026-10-28 |
 | LK76 | Irish lookups (overlay over `testdata/ocr/ga-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nGaillimh finds Gaillimh ("eclipsis"), the highlight over the whole word; bhean finds bean ("lenition"), tSín Sín ("lenition"), hÉireann Éire through Éireann ("h-prothesis"), t-uisce uisce ("t-prothesis"); in d'fhág a tap on fhág finds fág, a tap on d' the whole word; chomh shows only chomh (no comh), thar shows tar only through ga-en's own row (lenited form); ḃean typed finds bean; fag finds nothing | F | U IrishSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
+| LK77 | Scottish Gaelic lookups (overlay over `testdata/ocr/gd-sample.png`, app text in AnkiDroid's note editor, and the Search screen): h-Alba finds Alba ("h-prothesis"), the highlight over the whole word; bhean finds bean ("lenition"), t-sràid sràid ("lenition"), t-uisge uisge ("t-prothesis"), n-eilean eilean ("eclipsis"); in Dh'fhàg a tap on fhàg finds fàg, a tap on Dh' the whole word; th'ann finds ann; mhór finds mòr; chan shows can only through gd-en's own row (cha chan), Bhathar no bathar; bith typed finds bìth, oran òran, bata only bata; hAlba without its hyphen finds nothing | F | U GaelicSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -298,6 +300,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP42 | A Swahili entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Swahili text" and a Swahili sample sentence; the bubble shows SW and the Languages screen Tanzania's flag; the chips of the prefix rules name them in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP43 | A Welsh entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next and Lexend, not PT Serif or PT Sans, with "Only for Welsh text" and a Welsh sample sentence; one chosen sets ŵ ŷ; the bubble shows Ŵ and the Languages screen Wales's flag; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP44 | An Irish entry: the Popup settings' font card lists every Latin font with "Only for Irish text" and the Irish sample sentence; the bubble shows Á and the Languages screen Ireland's flag; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
+| POP45 | A Scottish Gaelic entry: the Popup settings' font card lists every Latin font with "Only for Scottish Gaelic text" and the Gaelic sample sentence; the bubble shows Ò and the Languages screen Scotland's flag; the Russian interface names the language «Шотландский гэльский»; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, GaelicSupportTest, M | 2026-10-28 |
 
 ### AUD: audio
 
@@ -334,6 +337,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD29 | Swahili audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; holding 🔊 on a word Wiktionary has lists its recording; the phone's voice speaks Swahili where it has one | F | U SwahiliSupportTest, M | 2026-10-28 |
 | AUD30 | Welsh audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; holding 🔊 on dŵr lists Wiktionary's recording titled without the circumflex; the phone's voice speaks Welsh where it has one | F | U WelshSupportTest, M | 2026-10-28 |
 | AUD31 | Irish audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of uisce finds Lingua Libre's recording | F | U IrishSupportTest, M | 2026-10-28 |
+| AUD32 | Scottish Gaelic audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of uisge finds Lingua Libre's recording; a word with no recording says there is no audio | F | U GaelicSupportTest, M | 2026-10-28 |
 
 ### ANK: Anki
 
@@ -376,6 +380,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK36 | A Swahili Anki note (over `testdata/ocr/sw-anki.png`, one paragraph over five lines): for Juma the sentence is "Bw. Juma alifika tar. 5 Mei."; for wali "Walinunua vyakula, k.m. wali na maharage n.k." (n.k. ends it before a capital); for walirudi and for the phrase hata hivyo "Hata hivyo walirudi."; for karibu "“Karibu!”" and for alisema "“Karibu!” alisema Bi. Amina." where recognition keeps the curly quotes (where it writes them as ", plan question 30) | F | U SentenceTest, SwahiliSupportTest, M | 2026-10-28 |
 | ANK37 | A Welsh Anki note (over `testdata/ocr/cy-anki.png`, one paragraph over six lines): for yno the sentence is "Pregethodd y Parch. John Williams yno, h.y. yng Nghaerdydd."; for afalau "Prynodd ffrwythau, e.e. afalau a gellyg."; for Dafydd "Daeth Dafydd Jones, Ysw." (Ysw. ends it before a capital); for fawr "Mae'r tŷ yn fawr." (ML Kit writes tý) | F | U SentenceTest, WelshSupportTest, M | 2026-10-28 |
 | ANK38 | An Irish Anki note (over `testdata/ocr/ga-anki.png`, one paragraph over six lines, ML Kit): for úlla or piorraí the sentence is "Cheannaigh sí torthaí, m.sh. úlla agus piorraí srl." (srl. ends it before a capital); for leabhar "Féach lch. 5 den leabhar."; for baile "D'fhág an Br. Seán an baile." | F | U SentenceTest, IrishSupportTest, M | 2026-10-28 |
+| ANK39 | A Scottish Gaelic Anki note (over `testdata/ocr/gd-anki.png`, one paragraph over seven lines, ML Kit): for ùbhlan the sentence is "Cheannaich i measan, m.e. ùbhlan is peuran msaa." (msaa. ends it before a capital); for Iain "Chunnaic mi an Urr. Iain an-dè."; for dhachaigh "Thàinig an Dr. Dòmhnallach dhachaigh." | F | U SentenceTest, GaelicSupportTest, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -466,6 +471,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG28 | Swahili setup: the download screen offers Wiktionary into English, and Russian, Chinese and Polish under "Another language…", and Leipzig's word frequency ticked, no transcription; ML Kit is the main model, Tesseract swa fast and accurate and PaddleOCR v5 and v6 unticked, none marked "more accurate"; the flag is Tanzania's and the bubble shows SW | F | U CatalogFileTest, M | 2026-10-28 |
 | LNG29 | Welsh setup: the download screen ticks Wiktionary into English and the transcription, lists Russian and French under "Another language…", and offers no word frequency; ML Kit is the main model, Tesseract cym fast and accurate and PaddleOCR v5 and v6 unticked, all four marked "more accurate"; the flag is Wales's and the bubble shows Ŵ | F | U CatalogFileTest, M | 2026-10-28 |
 | LNG30 | Irish setup: the download screen ticks Wiktionary into English and the transcription, lists Russian, French and Polish under "Another language…", and offers no word frequency; ML Kit is the main model, Tesseract gle fast and accurate and PaddleOCR v5 and v6 unticked, none marked; the flag is Ireland's and the bubble shows Á | F | U CatalogFileTest, M | 2026-10-28 |
+| LNG31 | Scottish Gaelic setup: the download screen ticks Wiktionary into English and the transcription, lists Russian under "Another language…", and offers no word frequency; ML Kit is the main model, PaddleOCR v5 and v6 ticked and marked more accurate, Tesseract gla fast and accurate unticked and unmarked; the flag is Scotland's and the bubble shows Ò | F | U CatalogFileTest, M | 2026-10-28 |
 
 ### SET: settings, backup, appearance
 
@@ -615,6 +621,54 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/gd` (uncommitted build on `d9e40413`), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Scottish Gaelic (LNG31, OCR47, LK77, POP45, AUD32, ANK39) through the download screen, the
+overlay over `testdata/ocr/gd-sample.png` and `gd-anki.png` (Segoe UI, in the debug viewer) with both engines, cloud
+recognition alone and ML Kit alone, app text in AnkiDroid's note editor, the Search screen, the Popup, Audio,
+Appearance and Anki settings and Anki notes into the local "Screenlate Test" deck ({sentence} as Meaning); the
+engine's instrumented tests. An x86_64-only APK.
+
+Results: passed. Automated: unit tests (1816), lint, the page tests (146), the glue tests (104, one skipped),
+the mutation exception tests (8), the catalog tests (10), the flag tests (5) and the OCR model tests (9) passed;
+`LanguageLookupTest` 36 of 36 and the engine's 62 instrumented tests passed on the emulator, the test package
+uninstalled after.
+
+- LNG31: Scotland's flag on the Languages screen; Wiktionary into English and the transcription ticked, Russian alone
+  under "Another language…", no word frequency; ML Kit the main model, PaddleOCR v6 and v5 ticked and marked "More
+  accurate" ("Installed", from the other Latin languages), Tesseract fast (3.1 MB) and accurate (9.6 MB) unticked and
+  unmarked; Russian added, 1.3 MB to download, 4.5 MB in all; then Home shows Scottish Gaelic ready and the bubble Ò.
+- OCR47: copied with the bubble menu's "Copy all recognized text": cloud recognition and ML Kit both read every line
+  of `gd-sample.png` exactly (h-Alba, Dh'fhàg, t-sràid mhór, t-uisge, ar n-eilean, th'ann, bàta mòr); ML Kit joined
+  the first three lines into one paragraph.
+- LK77: overlay (both engines): h-Alba finds Alba ("h-prothesis"), the highlight over the whole word; bhean finds bean
+  ("lenition"); t-sràid mhór finds the phrase sràid mhòr (high street, "lenition") through the acute read as the
+  grave, then sràid; mhór finds mór (gd-ru's own headword) and mòr ("lenition"); in Dh'fhàg the aim on fhàg finds fàg
+  ("lenition"), on Dh the whole word (fàg, "past dependent personal"); Chan eil finds bi; t-uisge shows its own entry,
+  then uisge ("t-prothesis"); n-eilean finds eilean ("eclipsis"); in th'ann the aim on ann finds ann; Bhathar shows
+  bhathar and the gd-en rows that name it (thathar, nach, bi, is), no bathar. Search: chan shows abair and can, both
+  through gd-en's own rows (future dependent; future negative dependent, cha chan), none through the rule; bith finds
+  bìth, oran òran, mor mòr and mór; bata and cas only their own entries; hAlba "No dictionary entries found." App text
+  (AnkiDroid's note editor opened by sharing "Dh’fhàg i na h-Alba le bith"): the aim on fhàg after Dh’ finds fàg,
+  h-Alba Alba, bith bìth.
+- POP45: the font card lists the phone's font, Lexend and PT Serif (downloaded), Literata, Inter, Atkinson
+  Hyperlegible Next and PT Sans; "Only for Scottish Gaelic text"; the sample "Ruith an cù bàn sìos an rathad mòr gu
+  Loch Èite." In Russian, Home names the language «Шотландский гэльский» and the chips read «лениция», «эклипсис»,
+  «протеза t» and «протеза h»; the interface language restored to System.
+- AUD32: sources Lingua Libre, Wiktionary, Text-to-speech; the Test of uisge found Lingua Libre's recording (speaker
+  DaoineÈibhinn), Wiktionary "No audio".
+- ANK39 (deck Screenlate Test, ML Kit): ubhal (ùbhlan, "plural") "Cheannaich i measan, m.e. ùbhlan is peuran msaa.",
+  dhachaigh "Thàinig an Dr. Dòmhnallach dhachaigh."; the aim on Iain gave "Chunnaic mi an Urr. lain an-dè." (below).
+- Seen, ML Kit's: it read the capital I of Iain as a lowercase l (lain), which the unmarked fallback took to làin, a
+  form of làn; cloud recognition reads Iain. A look-alike of every Latin language, not fixed here.
+- Seen: the emulator has no Gaelic voice; with autoplay on, a lookup with no recording shows "No text-to-speech voice
+  for this language is installed."
+
+Left on the emulator: the `languages/gd` debug app with Scottish Gaelic set up (its Anki settings on the "Screenlate
+Test" deck and note type, Meaning {sentence}; ML Kit the main model), Irish and Welsh as before, engines Device (ML
+Kit), its service enabled; the Gaelic notes (ubhal, làn, dhachaigh) in the local deck; the emulator shut down and the
+lock released.
 
 ### 2026-10-28, `languages/ga` (uncommitted build on `e3776224`), Pixel_10_Pro (API 37)
 

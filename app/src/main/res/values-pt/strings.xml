@@ -537,6 +537,7 @@
     <string name="popup_font_script_only_sw">Só para texto em suaíli</string>
     <string name="popup_font_script_only_cy">Só para texto em galês</string>
     <string name="popup_font_script_only_ga">Só para texto em irlandês</string>
+    <string name="popup_font_script_only_gd">Só para texto em gaélico escocês</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
     <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>

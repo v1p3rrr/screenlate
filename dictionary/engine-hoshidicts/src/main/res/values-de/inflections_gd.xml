@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">Lenition</string>
+    <string name="inflection_gd_lenition">Lenition: bh ch dh fh gh mh ph sh th für b c d f g m p s t, t-s für s nach dem Artikel (a\' ghrian von grian, an t-sràid von sràid)</string>
+    <string name="inflection_gd_eclipsis_label">Eklipse</string>
+    <string name="inflection_gd_eclipsis">n- vor einem Vokal (ar n-eilean von eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">t-Prothese</string>
+    <string name="inflection_gd_t_prothesis">t- vor einem Vokal (an t-uisge von uisge, an t-Eilean von Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">h-Prothese</string>
+    <string name="inflection_gd_h_prothesis">h- vor einem Vokal (na h-Alba von Alba, na h-òrain von òrain)</string>
+</resources>

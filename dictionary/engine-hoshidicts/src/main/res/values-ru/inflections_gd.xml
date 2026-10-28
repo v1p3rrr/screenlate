@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">лениция</string>
+    <string name="inflection_gd_lenition">лениция: bh ch dh fh gh mh ph sh th вместо b c d f g m p s t, t-s вместо s после артикля (a\' ghrian от grian, an t-sràid от sràid)</string>
+    <string name="inflection_gd_eclipsis_label">эклипсис</string>
+    <string name="inflection_gd_eclipsis">n- перед гласной (ar n-eilean от eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">протеза t</string>
+    <string name="inflection_gd_t_prothesis">t- перед гласной (an t-uisge от uisge, an t-Eilean от Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">протеза h</string>
+    <string name="inflection_gd_h_prothesis">h- перед гласной (na h-Alba от Alba, na h-òrain от òrain)</string>
+</resources>

@@ -529,6 +529,7 @@
     <string name="popup_font_script_only_sw">僅用於史瓦希里文文字</string>
     <string name="popup_font_script_only_cy">僅用於威爾斯文文字</string>
     <string name="popup_font_script_only_ga">僅用於愛爾蘭文文字</string>
+    <string name="popup_font_script_only_gd">僅用於蘇格蘭蓋爾文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

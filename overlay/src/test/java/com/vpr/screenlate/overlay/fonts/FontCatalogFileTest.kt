@@ -121,6 +121,12 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `scottish gaelic takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.SCOTTISH_GAELIC) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
     fun `latin takes the latin fonts that have its long vowels`() {
         // Atkinson Hyperlegible Next declares Latin Extended but has no ō.
         assertThat(fonts.filter { it.isOfferedFor(Language.LATIN) }.map { it.family })

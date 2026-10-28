@@ -7,8 +7,8 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
-    albanianEndings, hebrewTransforms, irishMutations, kazakhTransforms, kyrgyzTransforms, latinEnclitics,
-    persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms, withReplacedTransforms,
+    albanianEndings, gaelicMutations, hebrewTransforms, irishMutations, kazakhTransforms, kyrgyzTransforms,
+    latinEnclitics, persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms, withReplacedTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1399,4 +1399,115 @@ test('irish mutations stay out of other languages', () => {
         assert.ok(!queried(language, 'tSín').has('Sín'), language);
         assert.ok(!queried(language, 'hÉireann').has('Éireann'), language);
     }
+});
+
+/** The rule chains through which [text] reaches [lemma] in Scottish Gaelic. */
+function gaelicChains(text, lemma) {
+    return candidatesTo('gd', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+}
+
+test('gaelic mutations are undone into the radical under the mutation name, capitals kept', () => {
+    for (const [text, lemma, name] of [
+        ['bhean', 'bean', 'lenition'],
+        ['chat', 'cat', 'lenition'],
+        ['dhoras', 'doras', 'lenition'],
+        ['fhada', 'fada', 'lenition'],
+        ['ghrian', 'grian', 'lenition'],
+        ['mhàthair', 'màthair', 'lenition'],
+        ['phìob', 'pìob', 'lenition'],
+        ['shràid', 'sràid', 'lenition'],
+        ['thaobh', 'taobh', 'lenition'],
+        ['Bhreatainn', 'Breatainn', 'lenition'],
+        ['Ghàidhealtachd', 'Gàidhealtachd', 'lenition'],
+        ['t-sràid', 'sràid', 'lenition'],
+        ['t-Sultain', 'Sultain', 'lenition'],
+        ['n-eilean', 'eilean', 'eclipsis'],
+        ['n-Alba', 'Alba', 'eclipsis'],
+        ['t-uisge', 'uisge', 't-prothesis'],
+        ['t-Eilean', 'Eilean', 't-prothesis'],
+        ['t-òran', 'òran', 't-prothesis'],
+        ['h-Alba', 'Alba', 'h-prothesis'],
+        ['h-uile', 'uile', 'h-prothesis'],
+        ['h-òrain', 'òrain', 'h-prothesis'],
+        ['h-Èireann', 'Èireann', 'h-prothesis'],
+    ]) {
+        assert.ok(gaelicChains(text, lemma).includes(name), `${text} → ${lemma}: ${gaelicChains(text, lemma)}`);
+    }
+    // The radical matches entries of any part of speech (Wiktionary's Gaelic entries give none the rules could match);
+    // the word as written stays typed and untagged.
+    const [radical] = candidatesTo('gd', 'h-Alba', 'Alba');
+    assert.ok(radical.u);
+    const written = candidates('gd', 'h-Alba').find((c) => c.d === 'h-Alba');
+    assert.ok(!written.u);
+    assert.equal(written.r.flat().length, 0);
+});
+
+test('gaelic prefixes need their hyphen, a radical keeps two letters, and a word is unmutated once', () => {
+    // h, t and n join a vowel with a hyphen: hiort, tuath and naoi are words of their own.
+    assert.ok(!queried('gd', 'hiort').has('iort'));
+    assert.ok(!queried('gd', 'tuath').has('uath'));
+    assert.ok(!queried('gd', 'naoi').has('aoi'));
+    // t- before s is lenition, before another consonant nothing.
+    assert.ok(!queried('gd', 't-bàta').has('bàta'));
+    // Elided th' and bh' (tha, bha) keep their letters: a radical keeps two.
+    for (const [text, lemma] of [['th', 't'], ['bh', 'b'], ['h-a', 'a'], ['t-s', 's'], ['n-e', 'e']]) {
+        assert.ok(!queried('gd', text).has(lemma), text);
+    }
+    // One mutation only.
+    assert.ok(!queried('gd', 't-shràid').has('sràid'));
+    assert.ok(!queried('gd', 'h-t-uisge').has('uisge'));
+});
+
+test('common gaelic words the rules would misread stay as written, in any case', () => {
+    for (const word of ['chan', 'Chan', 'dha', 'bhathar', 'bheir', 'shuas', 'the']) {
+        assert.ok(candidates('gd', word).every((c) => c.r.every((r) => r.length === 0)), word);
+    }
+    assert.ok(!queried('gd', 'bhathar').has('bathar'));
+    assert.ok(!queried('gd', 'the').has('te'));
+    // Mutated forms beside them are still undone.
+    assert.ok(queried('gd', 'thug').has('tug'));
+    assert.ok(queried('gd', 'bhliadhna').has('bliadhna'));
+    assert.deepEqual([...new Set(gaelicMutations.unmutated)], gaelicMutations.unmutated);
+    assert.ok(gaelicMutations.unmutated.every((word) => word === word.toLowerCase()));
+});
+
+test('gaelic acute vowels are tried as grave ones, the text as written first, in any text', () => {
+    for (const lookup of [queried, queriedFromOcr]) {
+        assert.ok(lookup('gd', 'mór').has('mòr'));
+        assert.ok(lookup('gd', 'mór').has('mór'));
+        assert.ok(lookup('gd', 'Ór').has('Òr'));
+        assert.ok(lookup('gd', 'MÓR').has('MÒR'));
+        // Through a mutation as well: mhór → mòr.
+        assert.ok(lookup('gd', 'mhór').has('mòr'));
+    }
+    assert.equal(candidates('gd', 'cóigneir')[0].d, 'cóigneir');
+    assert.ok(!queried('ga', 'mór').has('mòr'));
+    assert.ok(!queried('cy', 'mór').has('mòr'));
+});
+
+test('gaelic apostrophes match each other', () => {
+    assert.ok(queried('gd', 'dh’fhàg').has("dh'fhàg"));
+    assert.ok(queried('gd', "a' ghrian").has('a’ ghrian'));
+});
+
+test('every gaelic rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_gd.xml'), 'utf8');
+    const rules = Object.entries(gaelicMutations.transforms);
+    assert.deepEqual(rules.map(([id]) => id), ['lenition', 'eclipsis', 't-prothesis', 'h-prothesis']);
+    for (const [id, {name, description}] of rules) {
+        assert.equal(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        const escaped = description.replace(/'/g, "\\'");
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${escaped}</string>`), id);
+    }
+});
+
+test('gaelic mutations stay out of other languages', () => {
+    for (const language of ['en', 'cy', 'ga', 'sw', 'ro']) {
+        assert.ok(!queried(language, 'h-Alba').has('Alba'), language);
+        assert.ok(!queried(language, 't-sràid').has('sràid'), language);
+    }
+    assert.ok(!queried('cy', 'shràid').has('sràid'));
 });

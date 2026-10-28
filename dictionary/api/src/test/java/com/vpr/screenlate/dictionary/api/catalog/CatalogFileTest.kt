@@ -397,6 +397,20 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `scottish gaelic offers two wiktionaries and its transcription, ticked, and two paddle models marked more accurate`() {
+        val gaelic = catalog!!.entries.filter { it.isFor(Language.SCOTTISH_GAELIC) }
+        assertThat(gaelic.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-gd-en", "wiktionary-gd-ru", "wiktionary-gd-transcription", "paddle-v6-gd", "paddle-latin-gd",
+        )
+        // Tesseract reads Gaelic with fewer errors than ML Kit too, but by less than half a point.
+        assertThat(gaelic.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-gla", "tesseract-best-gla", "paddle-detector-v6-gd", "paddle-detector-v5-gd",
+        )
+        assertThat(gaelic.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.SCOTTISH_GAELIC) }).isEqualTo(gaelic)
+    }
+
+    @Test
     fun `slovak also reads czech term dictionaries, not czech models, frequencies or transcriptions`() {
         val czech = catalog!!.entries.filter { it.isReadBy(Language.SLOVAK) && !it.isFor(Language.SLOVAK) }
         assertThat(czech).isNotEmpty()

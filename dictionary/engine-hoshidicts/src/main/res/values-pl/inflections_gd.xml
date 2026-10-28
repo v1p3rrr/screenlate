@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">lenicja</string>
+    <string name="inflection_gd_lenition">lenicja: bh ch dh fh gh mh ph sh th zamiast b c d f g m p s t, t-s zamiast s po rodzajniku (a\' ghrian od grian, an t-sràid od sràid)</string>
+    <string name="inflection_gd_eclipsis_label">eklipsa</string>
+    <string name="inflection_gd_eclipsis">n- przed samogłoską (ar n-eilean od eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">proteza t</string>
+    <string name="inflection_gd_t_prothesis">t- przed samogłoską (an t-uisge od uisge, an t-Eilean od Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">proteza h</string>
+    <string name="inflection_gd_h_prothesis">h- przed samogłoską (na h-Alba od Alba, na h-òrain od òrain)</string>
+</resources>

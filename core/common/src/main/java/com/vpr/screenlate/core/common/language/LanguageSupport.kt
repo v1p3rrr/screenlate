@@ -560,6 +560,7 @@ val Language.support: LanguageSupport
         Language.SWAHILI -> SwahiliSupport
         Language.WELSH -> WelshSupport
         Language.IRISH -> IrishSupport
+        Language.SCOTTISH_GAELIC -> GaelicSupport
     }
 
 /**

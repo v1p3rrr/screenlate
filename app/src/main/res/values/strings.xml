@@ -537,6 +537,7 @@
     <string name="popup_font_script_only_sw">Only for Swahili text</string>
     <string name="popup_font_script_only_cy">Only for Welsh text</string>
     <string name="popup_font_script_only_ga">Only for Irish text</string>
+    <string name="popup_font_script_only_gd">Only for Scottish Gaelic text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

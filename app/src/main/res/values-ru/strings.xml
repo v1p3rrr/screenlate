@@ -542,6 +542,7 @@
     <string name="popup_font_script_only_sw">Только для текста на суахили</string>
     <string name="popup_font_script_only_cy">Только для валлийского текста</string>
     <string name="popup_font_script_only_ga">Только для ирландского текста</string>
+    <string name="popup_font_script_only_gd">Только для текста на шотландском гэльском</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

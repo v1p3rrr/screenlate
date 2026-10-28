@@ -36,6 +36,10 @@ class EntryTest(unittest.TestCase):
         # Irish: ML Kit reads it 0.45% wrong, too few errors left for a mark.
         self.assertFalse(catalog.entry("ga", "gle", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("ga", "gle", "best", b"lstm")["recommended"])
+        # Scottish Gaelic: 0.29% against ML Kit's 0.65%, less than 0.5 points fewer; Paddle is marked instead.
+        self.assertFalse(catalog.entry("gd", "gla", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("gd", "gla", "best", b"lstm")["recommended"])
+        self.assertEqual(catalog.LANGUAGES["gd"], "gla")
 
 
 class ReplaceTest(unittest.TestCase):

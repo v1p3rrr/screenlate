@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_gd.xml. -->
+<resources>
+    <string name="inflection_gd_lenition_label">biến âm mềm</string>
+    <string name="inflection_gd_lenition">biến âm mềm: bh ch dh fh gh mh ph sh th thay cho b c d f g m p s t, t-s thay cho s sau mạo từ (grian → a\' ghrian, sràid → an t-sràid)</string>
+    <string name="inflection_gd_eclipsis_label">biến âm mũi</string>
+    <string name="inflection_gd_eclipsis">n- trước nguyên âm (eilean → ar n-eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">thêm t</string>
+    <string name="inflection_gd_t_prothesis">t- trước nguyên âm (uisge → an t-uisge, Eilean → an t-Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">thêm h</string>
+    <string name="inflection_gd_h_prothesis">h- trước nguyên âm (Alba → na h-Alba, òrain → na h-òrain)</string>
+</resources>

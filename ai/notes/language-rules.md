@@ -184,6 +184,12 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | ga | OCR results: taken as read | `lang/IrishSupport.kt` (no `ocrWord`) | IrishSupportTest `recognized text is taken as read` | — | ok |
 | ga | Fonts: Latin (`fontSubsets` latin; `fontLetters` áéíóú): every Latin font; the popup switch "Only for Irish text" | `lang/IrishSupport.kt` `fontSubsets`, `fontLetters` | IrishSupportTest `irish's own code, name, flag and letters`; FontCatalogFileTest `irish takes every latin font` | FontCatalogFileTest (the Latin languages' list) | ok |
 | ga | Audio: Lingua Libre first (Q9142, 19 of 20 common words), Wiktionary (1 of 20), the voice last (no Google voice; eSpeak has one); the flag is Ireland's (`ie`, drawable `flag_ie`) | `lang/IrishSupport.kt` `wikidataId`, `defaultAudioSources`, `flagCountries`; `scripts/flags/circle_flags.py` | IrishSupportTest `irish's own code, name, flag and letters`; LanguageProfilesTest (every flag a country code); FlagsTest `every flag country of every language has a flag` | — | ok |
+| gd | Word starts: dh', m', d' and b', and th' and bh' (tha, bha) written onto the next word (either apostrophe), start a new word, as French l': a tap after the apostrophe looks the word up from there (dh'fhàg → fhàg → fàg, m'athair, th'ann), a tap on the elided letters the whole word; other apostrophes stay inside the word | `lang/GaelicSupport.kt` `elisions` | GaelicSupportTest `elided dh', m', d', b', th' and bh' start a new word, other apostrophes stay inside it` | Isolation `an elided word starts a new word only in French, Italian, Portuguese, Greek, Albanian, Irish and Scottish Gaelic` (dh' and th' Gaelic only; b' Irish and Gaelic) | ok |
+| gd | Sentences: the period of m.e., Urr., Dr., Mgr. and Oll. ends nothing; that of msaa. and msa., often the last word of a sentence, only before a lowercase word or a number; default quotes (“…”) | `lang/GaelicSupport.kt` `abbreviations`, `abbreviationsBeforeLowercase` | GaelicSupportTest `abbreviations do not end a sentence, those that end one often only before a lowercase word`; SentenceTest `gaelicSentenceKeepsAbbreviationsAndEndsAtMsaaBeforeACapital` | Isolation `abbreviations of one language do not hold the sentences of another` (m.e., Urr., msaa. agus only in Gaelic; msaa. Tha ends everywhere) | ok |
+| gd | OCR results: taken as read | `lang/GaelicSupport.kt` (no `ocrWord`) | GaelicSupportTest `recognized text is taken as read` | — | ok |
+| gd | Fonts: Latin (`fontSubsets` latin; `fontLetters` àèìòù): every Latin font; the popup switch "Only for Scottish Gaelic text" | `lang/GaelicSupport.kt` `fontSubsets`, `fontLetters` | GaelicSupportTest `gaelic's own code, flag and letters`; FontCatalogFileTest `scottish gaelic takes every latin font` | FontCatalogFileTest (the Latin languages' list) | ok |
+| gd | Name: Android's Russian name is «гэльский», which reads as Irish too, so the Russian interface says «шотландский гэльский» (`nameIn`); the other locales take the system's name | `lang/GaelicSupport.kt` `nameIn` | GaelicSupportTest `the russian interface names it scottish gaelic, the others as the system does` | GaelicSupportTest (Irish stays «ирландский») | ok |
+| gd | Audio: Lingua Libre first (Q9314, 12 files, uisge among them; none of 20 common words), Wiktionary (4 files, the Lewis dialect's `Gd-Lewis-` prefix, which the pattern misses), the voice last (no Google voice; eSpeak has one); the flag is Scotland's (`gb-sct`, drawable `flag_gb_sct`) | `lang/GaelicSupport.kt` `wikidataId`, `defaultAudioSources`, `flagCountries`; `scripts/flags/circle_flags.py` | GaelicSupportTest `gaelic's own code, flag and letters`; LanguageProfilesTest (a region code of one country); FlagsTest | — | ok |
 
 ## Lookup pipeline (`dictionary:api`)
 
@@ -324,6 +330,13 @@ form-of item of a keyed word after the word (robit: robiť, then urobiť, its pe
 | ga | Apostrophes: ' and ’ match each other (`ukrainianApostropheVariants`): d’fhág finds d'fhág | `build.mjs` `addedPreprocessors` ga | glue `irish apostrophes match each other`; I: LanguageLookupTest (d’fhág → fág) | — | ok |
 | ga | Rule names: lenition, eclipsis, t-prothesis, h-prothesis, each with a description, in the 14 locales (`inflections_ga.xml`, translated by hand; Yomitan's "eclipsis form of a noun" is gone) | `generate-inflections.mjs`; `res/values*/inflections_ga.xml`; `YomitanInflections.kt` | glue `every irish rule has a name and a description of its own…`; I: LanguageLookupTest (labels and descriptions) | — | ok |
 | ga | Marks as written: no unmarked fallback (owner, question 11): fag finds nothing, fág only as written | `lang/IrishSupport.kt` (no `headwordMarks`) | IrishSupportTest `mutation rows take the rule names, and words are looked up with their marks as written`; I: LanguageLookupTest (fag) | Isolation (`respelledOnlyWithoutEntry` only Welsh) | ok |
+| gd | Own mutation rules (`gaelicMutations`, from the grammar, no GPL code), added to Yomitan's capitalization (its descriptor has no rules): lenition (bh ch dh fh gh mh ph sh th; t-s for s after the article, named lenition as Wiktionary's rows name it), eclipsis (n- before a vowel, as Wiktionary names it), t-prothesis (t- before a vowel), h-prothesis (h- before a vowel), each undone; every prefix but lenition's only with its hyphen (hiort, tuath and naoi keep their letters; t- before another consonant is nothing) and the capital after it kept (h-Alba, t-Sultain); conditions in [], so one mutation per word (t-shràid finds nothing), out to any part of speech (`untypedRules` gd, two letters left at least: th and bh stay) | `own-transforms.js` `gaelicMutations`, `mutationRules`; `build.mjs` `addedTransforms`; `glue.js` `untypedRules` | glue `gaelic mutations are undone into the radical under the mutation name, capitals kept`, `gaelic prefixes need their hyphen, a radical keeps two letters, and a word is unmutated once`; I: LanguageLookupTest `gaelicMutations…` | glue `gaelic mutations stay out of other languages` (en, cy, ga, sw, ro) | ok |
+| gd | Exception list: the descriptor's `unmutated` (7 words: bhathar, bheir, chan, dha, dhuibh, shuas, the) drops a word's rule candidates in any case: bhathar finds no bathar "goods", English the no te, chan no can through the rule (gd-en's own row still gives can, chan being its negative dependent future: cha chan); thug → tug and bhliadhna → bliadhna stay undone. Chosen with `mutation-exceptions.mjs` on the Gaelic Wikipedia's articles (1,000 commonest words) and reviewed by hand; tokens shown an extra entry with gd-en 5.39% → 5.16% | `own-transforms.js` `gaelicMutations.unmutated`; `glue.js` `unmutatedWords`; `mutation-exceptions.mjs` (`DESCRIPTORS` gd) | glue `common gaelic words the rules would misread stay as written, in any case`; mutation-exceptions.test.mjs `the gaelic rules take the hyphenated prefixes off…`; I: LanguageLookupTest (chan, bhathar) | glue (thug, bhliadhna still undone) | ok |
+| gd | Mutation rows: gd-en's form-of tags `lenition mutation`, `lenited form`, `lenition`, `eclipsis mutation`, `eclipsis`, `mutation prothesis-h`, `prothesis-h` and `mutation prothesis-t` are renamed to the rule ids, so the popup shows one translated name and a chain the rule and the row both give once; the `mutation mutation-radical` rows, from a radical to its mutated form (cill → chill), are ignored | `lang/GaelicSupport.kt` `formTagRules`, `ignoredFormTags`; `RuleOnlyResults.kt` `withFormTagsAsRules` | GaelicSupportTest `mutation rows take the rule names…`; I: LanguageLookupTest (h-Alba: one trace, no other traces; cill only cill) | Isolation (`formTagRules` only Welsh, Irish and Gaelic) | ok |
+| gd | Acute as grave: `gaelicAcuteAsGrave` adds the text with á é í ó ú (capitals too) as à è ì ò ù beside the original, in any text, since the older spelling writes some long vowels so (mór, ór); the text as written comes first (cóigneir is a gd-en headword) | `own-processors.js` `gaelicAcuteAsGrave`; `build.mjs` `addedPreprocessors` gd | glue `gaelic acute vowels are tried as grave ones, the text as written first, in any text`; I: LanguageLookupTest (mór, mhór, Ór) | glue (ga and cy keep mór as written) | ok |
+| gd | Unmarked fallback: every headword is keyed without the grave and acute (`everyHeadword`, bases a e i o u), and a result reached only through such a key is dropped when the same text finds another result (`respelledOnlyWithoutEntry`): with gd-en bith finds bìth and oran òran, bata only bata (a stick, not bàta), mor mòr and mór; any text | `lang/GaelicSupport.kt` `headwordMarks`, `respelledOnlyWithoutEntry`; `RuleOnlyResults.kt` `withoutRespelledBesideEntries` | GaelicSupportTest; I: LanguageLookupTest (bata, cas, càs) | Isolation (`respelledOnlyWithoutEntry` only Welsh and Gaelic; `everyHeadword` list) | ok |
+| gd | Apostrophes: ' and ’ match each other (`ukrainianApostropheVariants`): dh’fhàg finds dh'fhàg | `build.mjs` `addedPreprocessors` gd | glue `gaelic apostrophes match each other`; I: LanguageLookupTest (dh’fhàg → fàg) | — | ok |
+| gd | Rule names: lenition, eclipsis, t-prothesis, h-prothesis, each with a description, in the 14 locales (`inflections_gd.xml`, translated by hand after the Irish ones) | `generate-inflections.mjs`; `res/values*/inflections_gd.xml`; `YomitanInflections.kt` | glue `every gaelic rule has a name and a description of its own…`; I: LanguageLookupTest (labels and descriptions) | — | ok |
 
 ## Page scripts (popup and Anki notes)
 
@@ -771,6 +784,12 @@ Found while building Slovak (2026-10-22):
   the test screen, which finds nothing (cloud recognition read it). Without a frequency dictionary a word reached
   through two dictionary rows keeps the dictionaries' order: Chuaigh shows cuach (its genitive singular definite
   row) before téigh (past indicative).
+- Scottish Gaelic: the rules undo every word that starts like a mutated one, as in Irish (5.16% of gd-en tokens show
+  an extra entry after the list). A prefix without its hyphen (hAlba, as some older texts write it) is not undone;
+  h-, t- and n- are written with the hyphen in the current spelling. A word without the grave that a mutation rule
+  turns into a headword finds that word and not the marked one (as dwr in Welsh). The acute is read as the grave in
+  any text, so an acute that recognition gives for a grave finds the word as well; the older spelling's é and ó for
+  short vowels (cóig for còig) are also covered.
 
 ## Owner decisions in this review
 
@@ -1379,6 +1398,35 @@ the abbreviations; wty ga-en, ga-ru, ga-fr and ga-pl (2026.10.22) as the diction
   stay under the line.
 - Recognition, audio, fonts: the plan's measurements (`plans/2026-10-19-group-5b.md`, Research).
 
+### Scottish Gaelic (2026-10-28)
+
+Leipzig has no Gaelic corpus, so the text of the Gaelic Wikipedia's articles (dump gdwiki-20261001, 36,615
+paragraphs, 1.58 million words, CC BY-SA; markup stripped: templates, references, tables, files, categories, lines
+under 40 characters; kept in `testdata/corpus/gd/`) served for the exception list and the abbreviations; wty gd-en
+and gd-ru (2026.10.22) as the dictionaries.
+
+- Exception list: `mutation-exceptions.mjs gd <text> 1000 wty-gd-en.zip wty-gd-ru.zip`: 21 not attested, none own
+  and common, 106 left to the rule. Listed 7 by hand: bhathar (was, not bathar "goods"), bheir (will give, not beir
+  "catch"), dhuibh (to you, not duibh "black"), shuas (up, the place, not suas, the motion), chan (not, not can
+  "say"), dha (to him, not da) and English the. Left to the rule as right mutations or as words leading back to
+  themselves: fhèin → fèin, thug → tug → thoir, dheth → deth → dheth, bhaile → baile, h-Alba → Alba and the rest.
+- Shares of tokens, without the list → with it: gd-en extra entries 5.39% → 5.16%; gd-ru 0.02% (unchanged).
+- Rows: gd-en writes `lenition mutation` 3,170, `lenited form` 437, `eclipsis mutation`, `mutation prothesis-h` and
+  `mutation prothesis-t` 594 each (one row each for every word starting with a vowel), `mutation mutation-radical`
+  104 (cill → chill, from the radical), `lenition` 2, `eclipsis` 3 (two from Irish-style tables: bhfigh → figh),
+  `prothesis-h` 3, and `triggers-*` tags on the words that cause a mutation (not form rows); gd-ru none.
+- Abbreviations (before a capital / a lowercase word / at the end): m.e. 61 / 78 / 51; Urr. 33 / 0 / 0; Dr. 15 / 0
+  / 0; Mgr. 8 / 0 / 2; Oll. 4 / 0 / 0. msaa. 4 / 0 / 5 and msa. 4 / 0 / 0, which close a list and often a sentence,
+  only before a lowercase word.
+- Elided words: dh' 4,731 (dh'àirde, dh'aois, dh'fhàs), th' 832 (th'ann 784), bh' 301 (bh'ann 259), d' 212
+  (d'fhuair), b' 173 (b'àbhaist, b'e), m' 3 (encyclopedic text has little dialogue; m'athair is common in other
+  text).
+- Catalog: wty gd-en 9,725 words, gd-ru 1,760 and the transcription (4,437) are listed and ticked; gd-fr 1,083,
+  gd-pt 987, gd-es 372, gd-zh 313, gd-tr 308, gd-ja 260 and gd-vi 59 stay under the line. The catalog was
+  regenerated for Gaelic only: the other entries wty changed since (333, and he-tr) are left for their own refresh.
+- Recognition: the plan's measurements (`plans/2026-10-19-group-5b.md`, Research): ML Kit 0.65% of letters wrong,
+  Tesseract 0.29% (unmarked: less than half a point better), PaddleOCR v5 0.07% and v6 none (marked more accurate).
+
 ## Device checks
 
 `test-model.md`: LK28 (stress and tone marks typed apart), LK29 (rock’n’roll), OCR26 (app text across a wrap),
@@ -1391,4 +1439,6 @@ opening “…”), DIC39 (Esperanto's frequency), LK73 (Albanian endings and el
 ANK35 (Albanian abbreviations and quotes), DIC40 (Albanian's frequency), LK74 (Swahili prefixes), ANK36 (Swahili
 abbreviations and quotes), DIC41 (Swahili's frequency), LK75 (Welsh mutations, the unmarked fallback and the
 OCR-only ý), OCR45 (Welsh ŵ ŷ by engine), ANK37 (Welsh abbreviations), LK76 (Irish mutations, the exception list,
-elisions and Gaelic type), OCR46 (Irish fada and prefixes by engine), ANK38 (Irish abbreviations).
+elisions and Gaelic type), OCR46 (Irish fada and prefixes by engine), ANK38 (Irish abbreviations), LK77 (Scottish
+Gaelic mutations, the exception list, the acute as grave and the unmarked fallback), OCR47 (Gaelic grave accents and
+hyphenated prefixes by engine), ANK39 (Gaelic abbreviations).

@@ -261,6 +261,18 @@ class SentenceTest {
     }
 
     @Test
+    fun gaelicSentenceKeepsAbbreviationsAndEndsAtMsaaBeforeACapital() {
+        val paragraph = "Bha e fuar. Cheannaich i measan, m.e. ùbhlan is peuran msaa. Chunnaic mi an Urr. Iain an-dè. " +
+            "Thàinig an Dr. Dòmhnallach dhachaigh. Tha an t-sìde brèagha."
+        assertThat(extract(paragraph, "ùbhlan", Language.SCOTTISH_GAELIC).text)
+            .isEqualTo("Cheannaich i measan, m.e. ùbhlan is peuran msaa.")
+        assertThat(extract(paragraph, "Iain", Language.SCOTTISH_GAELIC).text).isEqualTo("Chunnaic mi an Urr. Iain an-dè.")
+        assertThat(extract(paragraph, "dhachaigh", Language.SCOTTISH_GAELIC).text)
+            .isEqualTo("Thàinig an Dr. Dòmhnallach dhachaigh.")
+        assertThat(extract(paragraph, "brèagha", Language.SCOTTISH_GAELIC).text).isEqualTo("Tha an t-sìde brèagha.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

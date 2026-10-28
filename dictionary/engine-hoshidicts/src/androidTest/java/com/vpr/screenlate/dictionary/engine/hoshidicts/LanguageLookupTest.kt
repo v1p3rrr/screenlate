@@ -1095,6 +1095,81 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun gaelicMutationsAreUndoneOnceUnderTheirNamesAcuteVowelsReadAsGraveAndUnmarkedWordsFindMarkedOnes() = runTest {
+        val imported = engine.import(gaelicDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val gaelic = LookupOptions(language = Language.SCOTTISH_GAELIC)
+        suspend fun first(text: String) = engine.lookup(text, gaelic).first()
+        suspend fun all(text: String) = engine.lookup(text, gaelic).map { it.term.expression }
+
+        // The rule and the dictionary's own row give one chain, under the rule's name, which the popup shows translated.
+        val scotland = first("h-Alba")
+        assertThat(scotland.term.expression).isEqualTo("Alba")
+        assertThat(scotland.trace.map { it.name }).containsExactly("h-prothesis")
+        assertThat(scotland.otherTraces).isEmpty()
+        assertThat(scotland.trace.map { it.label }).doesNotContain("")
+        assertThat(scotland.trace.map { it.description }).doesNotContain("")
+        assertThat(first("bhean").trace.map { it.name }).containsExactly("lenition")
+        // Words the dictionary does not list as mutated are found by the rules, capitals kept.
+        assertThat(first("t-sràid").term.expression).isEqualTo("sràid")
+        assertThat(first("t-sràid").trace.map { it.name }).containsExactly("lenition")
+        assertThat(first("t-uisge").trace.map { it.name }).containsExactly("t-prothesis")
+        assertThat(first("n-eilean").trace.map { it.name }).containsExactly("eclipsis")
+        assertThat(first("Bhreatainn").term.expression).isEqualTo("Breatainn")
+        // One mutation per word, and the rows from a radical to its mutated form are left out.
+        assertThat(all("t-shràid")).isEmpty()
+        assertThat(all("cill")).containsExactly("cill")
+        // The rules leave chan "not" and bhathar "was" as written (these rows give no can or bathar).
+        assertThat(all("chan")).containsExactly("chan")
+        assertThat(all("bhathar")).containsExactly("bhathar")
+        // The older spelling's acute is read as the grave, through a mutation too.
+        assertThat(all("mór")).containsExactly("mòr")
+        assertThat(all("mhór")).containsExactly("mòr")
+        assertThat(all("Ór")).containsExactly("òr")
+        // bata finds bàta, as people type it; cas has an entry of its own and finds only that.
+        assertThat(all("bata")).containsExactly("bàta")
+        assertThat(all("cas")).containsExactly("cas")
+        assertThat(all("càs")).containsExactly("càs")
+        assertThat(first("dh’fhàg").term.expression).isEqualTo("fàg")
+    }
+
+    /**
+     * Rows as Wiktionary's Gaelic exports write them: no rules, mutated forms as form-of rows under the English
+     * edition's tags (`lenition mutation`, `mutation prothesis-h`) and a `mutation-radical` row from a radical to its
+     * lenited form; two words told apart by the grave accent alone.
+     */
+    private fun gaelicDictionary(): File = zip(
+        "gd.zip",
+        "index.json" to """{"title":"Test Gaelic","revision":"1","format":3,"sourceLanguage":"gd"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["bean","","n","",0,["woman"],1,""],
+              ["bhean","","non-lemma","",0,[["bean",["lenition mutation"]]],2,""],
+              ["Alba","","name","",0,["Scotland"],3,""],
+              ["h-Alba","","non-lemma","",0,[["Alba",["mutation prothesis-h"]]],4,""],
+              ["sràid","","n","",0,["street"],5,""],
+              ["uisge","","n","",0,["water"],6,""],
+              ["eilean","","n","",0,["island"],7,""],
+              ["Breatainn","","name","",0,["Britain"],8,""],
+              ["cill","","n","",0,["church"],9,""],
+              ["cill","","non-lemma","",0,[["chill",["mutation mutation-radical"]]],10,""],
+              ["chill","","non-lemma","",0,[["cill",["lenition mutation"]]],11,""],
+              ["chan","","particle","",0,["not"],12,""],
+              ["can","","v","",0,["to say"],13,""],
+              ["bhathar","","v","",0,["was (impersonal)"],14,""],
+              ["bathar","","n","",0,["goods"],15,""],
+              ["mòr","","adj","",0,["big"],16,""],
+              ["òr","","n","",0,["gold"],17,""],
+              ["bàta","","n","",0,["boat"],18,""],
+              ["cas","","n","",0,["foot"],19,""],
+              ["càs","","n","",0,["difficulty"],20,""],
+              ["fàg","","v","",0,["to leave"],21,""],
+              ["dh'fhàg","","non-lemma","",0,[["fàg",["past"]]],22,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

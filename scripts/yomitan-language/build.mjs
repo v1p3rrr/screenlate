@@ -57,8 +57,10 @@ const borrowed = {
  * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le), as does Albanian (s'ka,
  * s’ka); Latin editions write u for consonantal v (uita); Esperanto is typed in the x-system where its letters cannot
  * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al); Swahili writes ng' so
- * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r) and Irish its elided words (d'fhág); Irish in Gaelic type writes
- * lenition as a dot (ḃean for bhean). Processors join the descriptor's capitalization processors, its own list, or make its list.
+ * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r), Irish and Scottish Gaelic their elided words (d'fhág, dh'fhàg);
+ * Irish in Gaelic type writes lenition as a dot (ḃean for bhean), and Scottish Gaelic in its older spelling some
+ * long vowels with the acute (mór for mòr). Processors join the descriptor's capitalization processors, its own
+ * list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -79,12 +81,13 @@ const addedPreprocessors = {
     sw: ['ukrainianApostropheVariants'],
     cy: ['ukrainianApostropheVariants', 'welshMisreadCircumflex'],
     ga: ['ukrainianApostropheVariants', 'irishDottedConsonants'],
+    gd: ['ukrainianApostropheVariants', 'gaelicAcuteAsGrave'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
- * article and agreement endings, Swahili verb prefixes, Welsh initial mutations.
+ * article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial mutations.
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -96,6 +99,7 @@ const addedTransforms = {
     ro: 'romanianTransforms',
     sw: 'swahiliTransforms',
     cy: 'welshTransforms',
+    gd: 'gaelicMutations',
 };
 
 /**

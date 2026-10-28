@@ -124,8 +124,9 @@ the details.
   cloud recognition and ML Kit writing “Karibu!” as "Karibu!", so a note's sentence there starts or ends at the ".
   Open for the owner: the plan's questions 28-34 (decided provisionally and built).
 - Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
-  to check and merge: Welsh (`languages/cy`) merged; Irish (`languages/ga`) ready; Scottish Gaelic
-  (`languages/gd`) follows. Technical choices changed while building are marked provisional in the plan's rows and changelog.
+  to check and merge: Welsh (`languages/cy`) and Irish (`languages/ga`) merged; Scottish Gaelic (`languages/gd`)
+  ready, the group's last language. Technical choices changed while building are marked provisional in the plan's rows
+  and changelog. Left outside the group, for the owner: cloud recognition's missing line-end space.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -504,6 +505,17 @@ French l'; Gaelic type's dotted consonants read with h (ḃean → bhean); both 
 and PaddleOCR v5 and v6 listed, none marked; Ireland's flag; Lingua Libre first. Checked on the emulator (LNG30,
 OCR46, LK76, POP44, AUD31, ANK38). Found there, open for the owner: cloud recognition can give a line's last word
 no space ("Cheannaigh sítorthaí" in a note), for any language; the plan's follow-up and `notes/ocr-engines.md`.
+
+Scottish Gaelic (`languages/gd`, 2026-10-28, on `languages/main` `d9e40413`): our own mutation rules (lenition with
+t-s for s after the article, eclipsis as n- before a vowel, t and h before a vowel, each prefix taken off only with its
+hyphen; one per word) named as Wiktionary's Gaelic rows name them, in all 14 locales; 7 common words left as written
+(bhathar, chan, the), chosen on the article text of a Gaelic Wikipedia dump, as Leipzig has no Gaelic corpus; the
+dictionaries' mutation rows under the rules' names, the radical rows ignored; the acute read as the grave in any text
+(mór → mòr); words without the grave find the marked headword when nothing matches as written (bith → bìth, bata
+stays bata); dh', m', d', b', th', bh' elided (th'ann → ann); both apostrophes; abbreviations (m.e., Urr., msaa.
+only before a lowercase word); Tesseract gla listed unmarked, PaddleOCR v5 and v6 marked more accurate; Scotland's
+flag; the Russian name «Шотландский гэльский»; Lingua Libre first. Checked on the emulator (LNG31, OCR47, LK77,
+POP45, AUD32, ANK39). Seen there: ML Kit reads the capital I of Iain as l, a look-alike of every Latin language.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

@@ -53,7 +53,7 @@ DETECTORS = {
 }
 
 # Esperanto is left out: both models read every one of its hat letters wrong (ĝ as ġ or ğ, ŭ as ǔ or ů).
-LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy", "ga"]
+LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy", "ga", "gd"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,
 # which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian.
@@ -90,8 +90,9 @@ RECOMMENDED = {
 
 # Languages ML Kit reads whose comparison found several models more accurate than ML Kit: each is marked, Tesseract's
 # too (tessdata_catalog.py), and all stay unticked at setup. Welsh: Latin v5 1.25% and v6 1.09% of the characters
-# wrong against ML Kit's 2.19%.
-MORE_ACCURATE = {"cy": {"paddle-latin", "paddle-v6"}}
+# wrong against ML Kit's 2.19%. Scottish Gaelic: v5 0.07% and v6 none against ML Kit's 0.65%; Tesseract's 0.29% is
+# less than 0.5 points fewer, so it is not marked.
+MORE_ACCURATE = {"cy": {"paddle-latin", "paddle-v6"}, "gd": {"paddle-latin", "paddle-v6"}}
 
 TEMPLATES = {"paddle-detector-v5", "paddle-detector-v6", "paddle-v6", "paddle-v5"}
 
