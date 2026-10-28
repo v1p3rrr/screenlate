@@ -39,7 +39,7 @@
     <string name="dictionaries_import_failed">Importazione non riuscita: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: importazione non riuscita — %2$s</string>
     <string name="dictionaries_last_term">Almeno un dizionario con definizioni deve restare attivo.</string>
-    <string name="dictionaries_remote_css">⚠ Gli stili del dizionario caricano file da %1$s; questo server può vedere quando si cercano parole. Font e fogli di stile vengono caricati, gli altri file sono bloccati.</string>
+    <string name="dictionaries_remote_css">⚠ Gli stili del dizionario caricano file da %1$s; questo server può vedere quando si cercano parole. I caratteri e i fogli di stile vengono caricati, gli altri file sono bloccati.</string>
     <string name="dictionaries_import_no_space">Spazio libero insufficiente per importare %1$s: servono circa %2$s, liberi %3$s. Libera spazio e riprova.</string>
     <string name="dictionaries_installed">Installati</string>
     <string name="dictionaries_none">Nessun dizionario installato.</string>
@@ -95,7 +95,7 @@
     <string name="language_setup_pronunciation_info">Pronuncia in notazione fonetica, per esempio: %1$s</string>
     <string name="language_setup_download">Scarica (%1$s)</string>
     <string name="language_setup_turn_on">Attiva</string>
-    <string name="language_setup_missing">Niente di scelto in: %1$s</string>
+    <string name="language_setup_missing">Nessuna scelta in: %1$s</string>
     <string name="language_setup_no_space">Spazio insufficiente: servono circa %1$s, liberi %2$s.</string>
     <string name="language_setup_after_import">Circa %1$s sul telefono dopo l’importazione</string>
     <string name="language_setup_mobile_title">Scaricare con i dati mobili?</string>
@@ -136,7 +136,7 @@
     <string name="anki_tags">Etichette (separate da spazi)</string>
     <string name="anki_fields">Campi</string>
     <string name="anki_fields_hint">I modelli usano marcatori come {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Usa il pulsante + per inserirne uno. Il primo campo serve per il controllo dei duplicati.</string>
-    <string name="anki_fields_hint_rtl">Per una lingua scritta da destra a sinistra, «Compila con i modelli suggeriti» e il pulsante + mettono la parola e la frase dentro &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, così la scheda le mostra nell’ordine di lettura. Il primo campo non lo riceve, perché il controllo dei duplicati ne confronta il markup.</string>
+    <string name="anki_fields_hint_rtl">Per una lingua scritta da destra a sinistra, “Compila con i modelli suggeriti” e il pulsante + mettono la parola e la frase dentro &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, così la scheda le mostra nell’ordine di lettura. Il primo campo non lo riceve, perché il controllo dei duplicati ne confronta il markup.</string>
     <string name="anki_insert_marker">Inserisci marcatore</string>
     <string name="anki_marker_furigana_zh">Pinyin sopra i caratteri</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin come testo: 你[nǐ] 好[hǎo]</string>
@@ -172,13 +172,13 @@
     <string name="dictionaries_up_to_date">Tutti i dizionari sono aggiornati.</string>
     <string name="dictionaries_update">Aggiorna</string>
     <string name="dictionaries_update_all">Aggiorna tutti</string>
-    <string name="dictionaries_outdated_copy">È installata una versione precedente (%1$s); l\'aggiornamento la sostituisce.</string>
+    <string name="dictionaries_outdated_copy">È installata una versione precedente (%1$s); l’aggiornamento la sostituisce.</string>
     <string name="dictionaries_sort_by">Ordina i risultati secondo questo dizionario</string>
     <string name="bubble_title">Bolla</string>
     <string name="bubble_aim">Punto di mira</string>
     <string name="bubble_aim_above">Sopra il dito</string>
     <string name="bubble_aim_center">Centro della bolla</string>
-    <string name="bubble_aim_hint">Un doppio tocco sulla bolla fluttuante passa dall’uno all’altro.</string>
+    <string name="bubble_aim_hint">Con un doppio tocco sulla bolla fluttuante si passa dall’uno all’altro.</string>
     <string name="bubble_dock_side">Lato</string>
     <string name="bubble_dock_left">Sinistra</string>
     <string name="bubble_dock_right">Destra</string>
@@ -196,7 +196,7 @@
     <string name="bubble_read_app_text_info">Il testo viene letto dall’app tramite il servizio di accessibilità: è esatto, disponibile subito e non richiede la rete. Funziona solo nelle app che comunicano la posizione dei caratteri ai servizi di accessibilità; nelle altre app e per il testo nelle immagini, lo schermo viene riconosciuto come di consueto.\n\nSperimentale: alcune app comunicano posizioni dei caratteri errate, per cui l’evidenziazione si sposta o viene selezionata una parola vicina. In tal caso, disattiva l’opzione.</string>
     <string name="bubble_app_text_only">Solo testo delle app</string>
     <string name="bubble_app_text_only_hint">Niente screenshot e niente riconoscimento. Il testo nelle immagini non viene letto.</string>
-    <string name="bubble_app_text_only_info">Il riconoscimento dello schermo è disattivato: si legge solo il testo che le app comunicano ai servizi di accessibilità. Non si leggono il testo nelle immagini, nei manga, nei giochi e nelle app che non espongono il loro testo.\n\nPensato per lettori e-ink, dispositivi vecchi o di fascia bassa dove il riconoscimento non è disponibile o è lento, e per connessioni lente o a consumo: nessuna batteria viene usata per il riconoscimento e nessun dato viene inviato.</string>
+    <string name="bubble_app_text_only_info">Il riconoscimento dello schermo è disattivato: si legge solo il testo che le app comunicano ai servizi di accessibilità. Non si legge il testo nelle immagini, nei manga, nei giochi e nelle app che non espongono il loro testo.\n\nPensato per lettori e-ink, dispositivi vecchi o di fascia bassa dove il riconoscimento non è disponibile o è lento, e per connessioni lente o a consumo: non si consuma batteria per il riconoscimento e non vengono inviati dati.</string>
     <string name="bubble_app_text_only_confirm">Attiva</string>
     <string name="dictionaries_import_yomitan_backup">Importa una raccolta di dizionari di Yomitan</string>
     <string name="dictionaries_task_converting">Estrazione di %1$s</string>
@@ -212,7 +212,7 @@
     <string name="bubble_small_text_off">Disattivato</string>
     <string name="bubble_small_text_on_demand">Su richiesta</string>
     <string name="bubble_small_text_always">Sempre</string>
-    <string name="bubble_small_text_hint">Invia parti dello schermo separatamente al riconoscimento nel cloud, a una risoluzione più alta rispetto all’intero screenshot, per riconoscere il testo piccolo che una scansione di tutto lo schermo non rileva. Attivalo solo se il testo piccolo non viene riconosciuto: ogni parte è una richiesta aggiuntiva e consuma più dati.\n\nSu richiesta: la parte sotto il punto di mira, quando questo resta su un’area in cui non è stato trovato nulla.\n\nSempre: tutto lo schermo a parti a ogni scansione (più dati).</string>
+    <string name="bubble_small_text_hint">Invia parti dello schermo separatamente al riconoscimento nel cloud, a una risoluzione più alta rispetto all’intero screenshot, per riconoscere il testo piccolo che una scansione di tutto lo schermo non rileva. Attivalo solo se il testo piccolo non viene riconosciuto: ogni parte è una richiesta aggiuntiva e consuma più dati.\n\nSu richiesta: la parte sotto il punto di mira, quando questo resta su un’area in cui non è stato trovato nulla.\n\nSempre: tutto lo schermo, diviso in parti, a ogni scansione (più dati).</string>
     <string name="bubble_recognition">Riconoscimento dello schermo</string>
     <string name="bubble_ocr_engines">Motori</string>
     <string name="bubble_ocr_engines_both">Entrambi</string>
@@ -240,7 +240,7 @@
     <string name="anki_overwrite_prepend">aggiungi all’inizio</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Impostazioni</string>
-    <string name="settings_bubble_summary">Mira, lato, dimensione, app nascoste</string>
+    <string name="settings_bubble_summary">Punto di mira, lato, dimensione, app nascoste</string>
     <string name="lookup_title">Ricerca</string>
     <string name="settings_lookup_summary">Lunghezza di scansione, risultati, romaji, caratteri della parola</string>
     <string name="appearance_title">Aspetto</string>
@@ -254,7 +254,7 @@
     <string name="reset_recognition_text">I motori, il potenziamento OCR, la riduzione del carico, il modello sul dispositivo di ogni lingua e le impostazioni del testo delle app vengono ripristinati ai valori predefiniti. I modelli scaricati restano.</string>
         <string name="recognition_app_text_title">Testo delle app</string>
 <string name="recognition_test_title">Prova</string>
-    <string name="recognition_test_hint">Riconoscere un’immagine come in una scansione, con il testo e il tempo di ogni motore.</string>
+    <string name="recognition_test_hint">Riconosce un’immagine come una scansione e mostra il testo e il tempo di ogni motore.</string>
     <string name="bubble_hidden_apps_none">Visibile in tutte le app</string>
     <string name="background_allowlist_title">Se il servizio si disattiva</string>
     <string name="background_allowlist_text">Se il sistema disattiva di continuo il servizio di accessibilità di Screenlate e la bolla scompare dallo schermo, l’app di sicurezza del telefono potrebbe limitare le app installate fuori da uno store. Apri l’app di sicurezza (su alcuni telefoni Sicurezza o Gestione telefono), trova l’elenco delle app consentite o attendibili, aggiungi Screenlate e riattiva il servizio.</string>
@@ -449,7 +449,7 @@
     <string name="yomitan_collection_entries">%1$d voci</string>
     <string name="yomitan_collection_media">%1$d immagini</string>
     <string name="yomitan_collection_installed">già installato</string>
-    <string name="yomitan_collection_hint">I dizionari installati partono non selezionati; uno selezionato sostituisce la copia installata. I file grandi richiedono qualche minuto.</string>
+    <string name="yomitan_collection_hint">I dizionari già installati sono inizialmente deselezionati; se selezionati, sostituiscono la loro versione installata. I file grandi richiedono qualche minuto.</string>
     <string name="yomitan_collection_import">Importa %1$d</string>
     <string name="yomitan_collection_queued">Importazione di %1$d dizionari in background; la schermata Dizionari mostra l’avanzamento.</string>
     <string name="popup_show_source">Mostra il testo riconosciuto sopra le voci</string>
@@ -475,7 +475,7 @@
     <string name="popup_text_weight_medium">medio</string>
     <string name="popup_text_weight_semibold">semigrassetto</string>
     <string name="popup_text_weight_bold">grassetto</string>
-    <string name="popup_text_weight_info">Rende più leggibile il testo sottile. Con “Solo per il testo giapponese” attivo, o con il carattere del telefono, diventano più spessi solo i caratteri giapponesi; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
+    <string name="popup_text_weight_info">Rende più leggibile il testo sottile. Con “Solo per il testo giapponese” attivo, o con il carattere del telefono, diventano più marcati solo i caratteri giapponesi; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
     <string name="popup_letter_thickness">Spessore delle lettere: %1$d</string>
     <string name="popup_letter_thickness_off">Spessore delle lettere: disattivato</string>
     <string name="popup_font_catalog">Caratteri liberi da scaricare</string>
@@ -546,7 +546,7 @@
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>
     <string name="popup_font_script_only_ko">Solo per il testo coreano</string>
     <string name="popup_font_script_only_hint_any">Le altre scritture usano il carattere del telefono. Vale per i caratteri scaricati e aggiunti.</string>
-    <string name="popup_text_weight_info_languages">Rende più leggibile il testo sottile. Con “Solo per il testo …” attivo per una lingua, o con il carattere del telefono, diventano più spessi solo i caratteri di quella lingua; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
+    <string name="popup_text_weight_info_languages">Rende più leggibile il testo sottile. Con “Solo per il testo …” attivo per una lingua, o con il carattere del telefono, diventano più marcati solo i caratteri di quella lingua; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
     <string name="languages_settings_hint">Le impostazioni qui sotto valgono per la lingua scelta; il resto della pagina vale per tutte le lingue.</string>
     <string name="anki_languages_hint">Il mazzo, il tipo di nota, i modelli dei campi, le etichette e la gestione dei duplicati si impostano per ogni lingua. La traduzione nelle note è comune.</string>
     <string name="audio_languages_hint">Le fonti audio e l’ordine delle regioni si impostano per ogni lingua. La riproduzione automatica e il volume sono comuni.</string>
@@ -577,7 +577,7 @@
     <string name="css_problem_empty_font_name">Riga %1$d: un nome vuoto in font-family (una virgola di troppo?), il browser salta l’intera dichiarazione</string>
     <string name="css_problem_outside_rule">Riga %1$d: “%2$s” è fuori da qualsiasi regola { }</string>
     <string name="css_problem_unknown_font">Riga %1$d: il telefono non ha il carattere “%2$s”, si usa il successivo nell’elenco o il carattere del popup</string>
-    <string name="css_problem_remote_file">Riga %1$d: carica un file da %2$s; questo server può vedere quando si cercano parole. Font e fogli di stile da internet vengono caricati, gli altri file sono bloccati.</string>
+    <string name="css_problem_remote_file">Riga %1$d: carica un file da %2$s; questo server può vedere quando si cercano parole. I caratteri e i fogli di stile da internet vengono caricati, gli altri file sono bloccati.</string>
     <string name="yomitan_section_appearance">Aspetto del popup</string>
     <string name="yomitan_section_appearance_hint">Dimensione del testo e CSS personalizzato del popup</string>
     <string name="yomitan_summary_font_size">Dimensione del testo %1$d</string>
@@ -588,7 +588,7 @@
     <string name="about_licenses">Licenze</string>
     <string name="about_licenses_hint">Screenlate è costruito con librerie e codice open source; i dizionari mantengono le proprie licenze.</string>
     <string name="about_libraries">Librerie open source</string>
-    <string name="about_notices">Note di terze parti</string>
+    <string name="about_notices">Note legali di terze parti</string>
     <string name="about_dictionaries">Dizionari installati</string>
     <string name="about_dictionary_revision">Revisione %1$s</string>
     <string name="about_dictionary_author">Di %1$s</string>
@@ -607,7 +607,7 @@
     <string name="update_retry">Riprova</string>
     <string name="update_skip">Salta questa versione</string>
     <string name="update_downloading">Download… %1$d%%</string>
-    <string name="update_installing">Installazione in corso. Al termine Android chiude Screenlate; riaprilo poi.</string>
+    <string name="update_installing">Installazione in corso. Al termine Android chiude Screenlate; poi riapri l’app.</string>
     <string name="update_confirm_install">Continua l’installazione</string>
     <string name="update_allow_installs">Consenti l’installazione degli aggiornamenti</string>
     <string name="update_allow_installs_hint">Android ha bisogno del tuo permesso perché Screenlate installi i suoi aggiornamenti.</string>
@@ -615,7 +615,7 @@
     <string name="update_announce_hint">Al massimo una volta al giorno, all’apertura dell’app; ogni versione viene annunciata una sola volta.</string>
     <string name="update_error_network">Impossibile raggiungere GitHub. Controlla la connessione e riprova.</string>
     <string name="update_error_no_apk">Questa release non ha un APK per questo dispositivo.</string>
-    <string name="update_error_bad_apk">Il file scaricato non è uno Screenlate più recente firmato con la stessa chiave.</string>
+    <string name="update_error_bad_apk">Il file scaricato non è una versione più recente di Screenlate firmata con la stessa chiave.</string>
     <string name="update_error_install">Android non ha installato l’aggiornamento.</string>
     <string name="action_close">Chiudi</string>
     <string name="action_more_info">Informazioni su %1$s</string>
@@ -624,13 +624,13 @@
     <string name="translation_title">Traduzione</string>
     <string name="translation_sentence_title">Traduzione della frase</string>
     <string name="translation_hint">Un servizio online gratuito traduce la frase in cui si trova la parola. La traduzione è automatica e può essere imprecisa, e la frase viene inviata al server del servizio.</string>
-    <string name="translation_info">I servizi si usano senza account: Bing (il sito di Microsoft Translator), Google Traduttore e il traduttore integrato in Microsoft Edge. Non pubblicano i loro limiti; se uno rifiuta, subentra il successivo. La prima richiesta a Bing in un’ora richiede circa un secondo in più, perché Bing carica prima una chiave dal suo sito.</string>
+    <string name="translation_info">I servizi si usano senza account: Bing (il sito di Microsoft Translator), Google Traduttore e il traduttore integrato in Microsoft Edge. Non pubblicano i loro limiti; se un servizio rifiuta una richiesta, viene usato il successivo. La prima richiesta a Bing in un’ora richiede circa un secondo in più, perché prima viene caricata una chiave dal sito di Bing.</string>
     <string name="translation_button">Pulsante di traduzione</string>
     <string name="translation_button_hint">Traduce la frase e mostra la traduzione sotto l’intestazione del popup; un secondo tocco la nasconde. Se il testo riconosciuto è nascosto, il pulsante si trova tra i pulsanti della prima voce.</string>
     <string name="translation_anki">Traduzione nelle note di Anki</string>
     <string name="translation_anki_hint">Compila {sentence-translation} con la traduzione mostrata nel popup, oppure ne chiede una e la attende fino a 5 secondi. Senza traduzione il campo resta vuoto.</string>
     <string name="translation_services_title">Servizi</string>
-    <string name="translation_services_hint">Traduce il primo servizio attivo. Se non riesce o non risponde entro 3 secondi, subentra il successivo. Trascina la maniglia per cambiare l’ordine.</string>
+    <string name="translation_services_hint">Traduce il primo servizio attivo. Se restituisce un errore o non risponde entro 3 secondi, viene usato il successivo. Trascina la maniglia per cambiare l’ordine.</string>
     <string name="translation_service_bing_note">Di solito più preciso</string>
     <string name="translation_language_title">Traduci in</string>
     <string name="translation_language_interface">Lingua dell’interfaccia (%1$s)</string>
@@ -674,7 +674,7 @@
     <string name="background_battery_off">Disattivata per Screenlate: il sistema lascia la bolla in funzione.</string>
     <string name="background_battery_allow">Consenti l’attività in background</string>
     <string name="background_battery_list">Apri l’elenco di ottimizzazione della batteria</string>
-    <string name="background_battery_list_hint">Nell’elenco, trova Screenlate e disattiva la sua ottimizzazione (“Non ottimizzare”, “Senza limitazioni” o simile). Le app che all’inizio mancano dall’elenco si trovano spesso in “Tutte le app”.</string>
+    <string name="background_battery_list_hint">Nell’elenco, trova Screenlate e disattiva la sua ottimizzazione (“Non ottimizzare”, “Senza limitazioni” o simile). Se Screenlate non è nell’elenco, controlla “Tutte le app”.</string>
     <string name="background_launch_title">Avvio delle app</string>
     <string name="background_launch_text">Alcuni telefoni fermano le app in background anche tramite impostazioni proprie del produttore, oltre all’ottimizzazione della batteria. Lì, consenti a Screenlate di avviarsi da solo e di funzionare in background.</string>
     <string name="background_launch_path">Su questo telefono: Avvio app → Screenlate → Gestisci manualmente, con tutte e tre le opzioni attive.</string>
@@ -730,9 +730,9 @@
     <string name="backup_restore_button">Ripristina la selezione</string>
     <string name="backup_restored">Ripristinato</string>
     <string name="backup_section_general">Generale</string>
-    <string name="backup_section_general_hint">Lingue, tema, colori, modalità e-ink, avvisi di aggiornamento</string>
+    <string name="backup_section_general_hint">Lingue, tema, colori, modalità e-ink, avvisi di nuove versioni</string>
     <string name="backup_section_bubble">Bolla fluttuante e riconoscimento</string>
-    <string name="backup_section_bubble_hint">Dimensione, mira, motori di riconoscimento, testo delle app, app in cui la bolla è nascosta</string>
+    <string name="backup_section_bubble_hint">Dimensione, punto di mira, motori di riconoscimento, testo delle app, app in cui la bolla è nascosta</string>
     <string name="backup_section_lookup">Ricerca</string>
     <string name="backup_section_lookup_hint">Lunghezza di scansione, numero di risultati, romaji, caratteri della parola</string>
     <string name="backup_section_popup">Aspetto del popup</string>
@@ -768,7 +768,7 @@
     <string name="home_bubble_hidden">La bolla è nascosta</string>
     <string name="home_bubble_stopped">La bolla non è visualizzata: il sistema ha fermato il servizio</string>
     <string name="home_bubble_stopped_hint">Le app non possono riavviare un servizio di accessibilità. Per ripristinare la bolla, apri le impostazioni del servizio e disattiva e riattiva l’interruttore.</string>
-    <string name="home_bubble_show">Riporta la bolla</string>
+    <string name="home_bubble_show">Mostra di nuovo la bolla</string>
     <string name="home_bubble_hide">Nascondi la bolla</string>
     <string name="bubble_visible">Mostra la bolla</string>
     <string name="bubble_visible_hint">Se disattivato, la bolla è nascosta. Il riquadro delle impostazioni rapide attiva o disattiva la stessa opzione.</string>
@@ -855,7 +855,7 @@
     <string name="camera_recognized">Riconosciuto: %1$s</string>
     <string name="camera_pending">Impostazioni modificate</string>
     <string name="camera_incomplete">Riconoscimento incompleto</string>
-    <string name="camera_partial">Impossibile riconoscere %1$d aree su %2$d.</string>
+    <string name="camera_partial">Aree non riconosciute: %1$d su %2$d.</string>
     <string name="camera_interrupted">Il riconoscimento è stato interrotto. Le aree completate vengono conservate.</string>
     <string name="camera_retry_failed">Riprova le aree mancanti</string>
     <string name="camera_recognition_failed">Impossibile riconoscere la foto. Il testo salvato viene conservato.</string>
@@ -891,7 +891,7 @@
     <string name="camera_high_accuracy_hint">La foto viene letta a sezioni: il testo piccolo viene riconosciuto meglio, ma i tempi sono parecchie volte più lunghi e il riconoscimento nel cloud consuma più dati mobili.</string>
     <string name="camera_recognize_accurately">Riconosci con più precisione</string>
     <string name="history_empty">Nessuna foto nella cronologia</string>
-    <string name="history_empty_hint">Salva una foto con «Salva nella cronologia» nel suo menu o attiva il salvataggio automatico nelle impostazioni della fotocamera.</string>
+    <string name="history_empty_hint">Salva una foto con “Salva nella cronologia” nel suo menu o attiva il salvataggio automatico nelle impostazioni della fotocamera.</string>
     <plurals name="history_selected">
         <item quantity="one">%1$d selezionata</item>
         <item quantity="many">%1$d selezionate</item>
