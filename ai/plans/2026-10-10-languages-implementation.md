@@ -457,8 +457,8 @@ Decided when the first language or group 1 is ready, before it is merged into th
 - Bubble menu in the dock (owner, 2026-10-22, request 75): holding the docked bubble opens the same menu as holding the
   floating one: the quick-language flags and opening the app. Items that need a scan (copy the paragraph, copy all, and
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
-  hold timer (`OverlayController.BubbleTouchListener`). Built later with the other deferred features, after the
-  languages, or separately when the owner says.
+  hold timer (`OverlayController.BubbleTouchListener`). Built on 2026-10-28 night with the settings rework
+  (`2026-10-28-settings-rework.md`, decision "Docked bubble menu").
 - Initials in sentence ends (group 5a, 2026-10-22): a single capital letter with a period ends a sentence in every
   language, so names split (Lithuanian "A. Smetona": in its Leipzig corpus 9,048 such initials stand before a capital
   and 105 at a sentence end). Decided with group 4e's question 19 (owner, 2026-10-22): an initial before a capitalized
