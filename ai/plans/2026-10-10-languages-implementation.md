@@ -456,6 +456,14 @@ Decided when the first language or group 1 is ready, before it is merged into th
   and Hebrew interface translations with mirrored screens, a separate task after group 5's research (and maybe its
   build) and group 4's build. The strings alone go earlier, in the cloud session of 2026-10-29 (owner, 2026-10-28);
   the mirrored screens are checked on the emulator later, and the strings wait on their branch until then.
+  Strings done on 2026-10-29 (cloud session, `cloud/rtl-strings-2026-10-29`, from the tip of the interface check):
+  every string of the 17 string files in `values-ar`, `values-fa` and `values-iw` (Hebrew under Android's old code,
+  as the platform's own resources), 2,014 per language, with the plural categories and terms in
+  `notes/translations.md`; `TranslationsTest` covers the three. The language settings do not offer them: the locale
+  config is now the hand-written `res/xml/locales_config.xml` (generating it would list every folder), and the test
+  keeps it equal to the translations minus `unlisted`. To release: check the screens, then add ar, fa and he to the
+  list and empty `unlisted`. Until then a phone whose system language is one of them already gets the translated,
+  unchecked interface, so the branch is not merged before the check. Layouts are unchanged. Questions 93-94.
 - Bubble menu in the dock (owner, 2026-10-22, request 75): holding the docked bubble opens the same menu as holding the
   floating one: the quick-language flags and opening the app. Items that need a scan (copy the paragraph, copy all, and
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
@@ -910,6 +918,15 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
 92. (2026-10-29, cloud session, interface check) French: the Lookup settings screen and the Search tab are both
     «Recherche» (German now tells them apart: "Nachschlagen"/"Abfrage" against "Suche"). (a, as now) Keep it, as the
     lookup settings also apply to search; (b) name the settings «Consultation» or «Recherche dans les dictionnaires».
+
+93. (2026-10-29, cloud session, right-to-left strings) Wiktionary tags Arabic form rows with words that the form-of
+    tag labels name as other languages' categories: `elative` (the أفعل form) shows as the Finnish case (элатив,
+    حالة الخروج), `non-past` and `subjunctive` as general terms where an Arabic reader expects المضارع and المنصوب. In
+    every interface language. (a, recommended) Arabic `formTagAliases` to Arabic-specific tags with their own labels
+    in the 17 locales (elative → "elative (أفعل)"); (b) leave them.
+94. (2026-10-29, cloud session, right-to-left strings) Menu paths in the hints (Apps → Screenlate → Language) keep →
+    in Arabic, Persian and Hebrew, where it points against the reading direction. (a) Decide on the emulator check:
+    ← if → reads backwards there; (b) keep →.
 
 ## Branches and workflow
 
@@ -1839,3 +1856,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-29: cloud session (`cloud/backlog-2026-10-29`): smaller language bundles and converter data built
   (backlog); questions 88-90 added. Candidate interface languages researched, interface translation check done
   (backlog); questions 91-92 added.
+- 2026-10-29: cloud session, `cloud/rtl-strings-2026-10-29`: Arabic, Persian and Hebrew strings (backlog entry
+  "Right-to-left interface languages"), held out of the language settings; questions 93-94 added.

@@ -4,6 +4,11 @@ UI strings live in `values*/strings.xml` of `app`, `overlay`, `core/anki` and `d
 inflection names and descriptions shown in the popup in `values*/inflections_ja.xml` of `dictionary/engine-hoshidicts`
 (GPL, from Yomitan through hoshidicts; `tools/generate_inflections.py` writes only the English file, translations are
 edited by hand). 14 locales: English (`values`), ru, de, es, fr, it, ja, ko, pl, pt, tr, vi, `b+zh+Hans`, `b+zh+Hant`.
+Since 2026-10-29 (branch `cloud/rtl-strings-2026-10-29`, waiting for the emulator check of the mirrored screens) also
+ar, fa and Hebrew as `iw`: Android's own resources use the old codes `iw` (and `in` for Indonesian), which every
+version resolves; `values-he` works only where the platform maps he to iw. They are left out of
+`res/xml/locales_config.xml`, the hand-written list the language settings offer (generating it from the folders would
+offer them), and `TranslationsTest` checks that the list holds every other translation (`unlisted`).
 `TranslationsTest` finds every string file under `values/` of every module and checks that every key exists in every
 locale with the same format arguments, that plurals have the CLDR categories of their locale, and that apostrophes,
 quotes and line breaks are escaped.
@@ -19,7 +24,9 @@ Inflection terms per language follow the school grammar of Japanese taught in th
   `aapt2 dump resources`): paragraphs need `\n`, so "\n\n" between paragraphs of ⓘ texts. The test fails on a raw
   line break.
 - `'` and `"` must be escaped (`\'`, `\"`); typographic quotes and apostrophes need no escape.
-- Plural categories: ru/pl one, few, many, other; de/tr one, other; es/fr/it/pt one, many, other; ja/ko/vi/zh other.
+- Plural categories: ru/pl one, few, many, other; de/tr one, other; es/fr/it/pt one, many, other; ja/ko/vi/zh other;
+  ar zero, one, two, few, many, other; fa one, other; iw one, two, other (CLDR 42 dropped Hebrew many). Every item
+  carries the format argument (the test requires it), so Arabic one and two read «قاموس واحد (%1$d)», «قاموسان (%1$d)».
 
 ## Conventions per language
 
@@ -81,6 +88,19 @@ Settled on the way:
 - vi: "pinyin", progress "tiến độ", the bubble's hidden apps "ứng dụng ẩn bong bóng".
 - zh-Hans: the app's Home tab is 首页 (主屏幕 is the launcher). zh-Hant uses Taiwan words: 輕觸, 單字, 內建, 套用,
   還原 and 一般 in the backup screens, 拖曳控點, 震動, 直排, 憑證, 位址, 區域網路, 建置, 取得, 解壓縮.
+
+## Right-to-left locales (2026-10-29)
+
+- ar: Modern Standard Arabic, «» quotes, the Arabic comma and question mark, Western digits where English has
+  literal digits; progress جارٍ…, failures تعذّر…; bubble الفقاعة, popup النافذة المنبثقة, on-device recognition
+  التعرّف داخل الجهاز («على الجهاز» reads as recognizing the device); product names in Latin letters with و attached.
+- fa: Persian letters (ی ک) and zero-width non-joiners, «» quotes, Persian digits in the text (as `%d` prints them),
+  the polite plural address, verbal nouns on buttons; bubble حباب, popup پنجره بازشو, screenshot نماگرفت.
+- iw: no niqqud, full spelling, geresh ׳ and gershayim ״ (no ASCII apostrophes), UI names in escaped straight
+  quotes; verbal nouns on buttons and switches (מחיקה) and infinitives in confirmation questions, impersonal
+  instructions; Anki's own Hebrew terms (חפיסה, רשומה, סוג רשומה); definitions פירושים, as הגדרות means settings.
+- All three keep → in menu paths, which points against the reading direction; the emulator check decides whether
+  they take ← (question 94 of the languages plan).
 
 ## Tone (2026-10-14 audit)
 
