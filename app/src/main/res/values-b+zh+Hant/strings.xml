@@ -64,6 +64,7 @@
     <string name="dictionaries_task_queued">等待中：%1$s</string>
     <string name="dictionaries_task_downloading">正在下載 %1$s</string>
     <string name="dictionaries_task_retrying">正在重試下載（%2$d/%3$d）：%1$s</string>
+    <string name="dictionaries_task_no_network">等待網路：%1$s</string>
     <string name="dictionaries_download_stopped">%1$s：下載已停止（%2$s）</string>
     <string name="dictionaries_connection_lost">連線中斷</string>
     <string name="dictionaries_task_importing">正在匯入 %1$s</string>
@@ -144,6 +145,7 @@
     <string name="dictionaries_task_converting">正在解壓 %1$s</string>
     <string name="dictionaries_task_checking_space">正在檢查 %1$s 所需的剩餘空間</string>
     <string name="dictionaries_stage_queued">排隊等待中</string>
+    <string name="dictionaries_stage_no_network">等待網路</string>
     <string name="dictionaries_stage_downloading">正在下載</string>
     <string name="dictionaries_stage_checking_space">正在檢查剩餘空間</string>
     <string name="dictionaries_stage_converting">正在解壓</string>

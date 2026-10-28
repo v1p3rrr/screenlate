@@ -14,13 +14,18 @@ import kotlinx.serialization.json.Json
 
 /**
  * File layout of imported dictionaries: `filesDir/dictionaries/<uuid>/` per dictionary, and a staging area on
- * the same file system so a finished import is moved into place with a rename.
+ * the same file system so a finished import is moved into place with a rename. Archives being downloaded or copied
+ * are in `noBackupFilesDir/dictionary-downloads/`, where the system does not delete a stopped download's partial file
+ * as it does in the cache.
  */
 @Singleton
 class DictionaryStorage @Inject constructor(@ApplicationContext context: Context) {
     val root: File = File(context.filesDir, "dictionaries")
     private val staging: File = File(root, ".staging")
-    private val downloads: File = File(context.cacheDir, "dictionary-downloads")
+    private val downloads: File = File(context.noBackupFilesDir, "dictionary-downloads")
+
+    /** Where older versions kept archives. */
+    private val cachedDownloads: File = File(context.cacheDir, "dictionary-downloads")
 
     fun directoryOf(dictionary: DictionaryEntity): File = File(root, dictionary.directory)
 
@@ -71,11 +76,18 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     /** Dictionary directories that no registry entry ([known] directory names) points to. */
     fun orphans(known: Collection<String>): List<File> = orphanDirectories(root, staging, known)
 
-    /** Deletes what imports cut short by the process dying left behind ([importLeftovers]); returns how many. */
+    /**
+     * Deletes what imports cut short by the process dying left behind ([importLeftovers]), also in the cache directory
+     * older versions kept archives in, and that directory once it is empty; returns how many.
+     */
     fun removeImportLeftovers(archivesInUse: Set<String>?): Int {
         val now = System.currentTimeMillis()
         val processStart = now - (SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
-        return importLeftovers(staging, downloads, archivesInUse, processStart, now).onEach { it.deleteRecursively() }.size
+        val removed = importLeftovers(staging, listOf(downloads, cachedDownloads), archivesInUse, processStart, now)
+            .onEach { it.deleteRecursively() }.size
+        // Nothing is written there any more; an import queued by an older version may still read a file in it.
+        cachedDownloads.delete()
+        return removed
     }
 
     private companion object {
@@ -94,19 +106,20 @@ internal fun orphanDirectories(root: File, staging: File, known: Collection<Stri
 
 /**
  * Staging directories made before [processStart] (only a running import writes there, and none from an earlier
- * process runs any more), and archives in [downloads] made before it that no queued import reads ([archivesInUse];
- * when null, only archives older than [STALE_MS] count), with their download state files.
+ * process runs any more), and archives in the [downloads] directories made before it that no queued import reads
+ * ([archivesInUse]; when null, only archives older than [STALE_MS] count), with their download state files. Archive
+ * names are unique across the directories, so a name in use keeps the file a queued import reads by its path.
  */
 internal fun importLeftovers(
     staging: File,
-    downloads: File,
+    downloads: List<File>,
     archivesInUse: Set<String>?,
     processStart: Long,
     now: Long,
 ): List<File> {
     val archivesBefore = if (archivesInUse == null) minOf(processStart, now - STALE_MS) else processStart
     return staging.listFiles().orEmpty().filter { it.lastModified() < processStart } +
-        downloads.listFiles().orEmpty().filter {
+        downloads.flatMap { it.listFiles().orEmpty().asList() }.filter {
             it.lastModified() < archivesBefore && it.name.removeSuffix(DOWNLOAD_STATE_SUFFIX) !in archivesInUse.orEmpty()
         }
 }

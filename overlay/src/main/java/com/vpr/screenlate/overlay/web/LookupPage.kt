@@ -106,6 +106,9 @@ class LookupPage(
     private var pageReady = false
     private val pendingScripts = mutableListOf<String>()
 
+    /** [whenDrawn] requests waiting for the page; they follow the pending scripts. */
+    private val pendingDraws = mutableListOf<() -> Unit>()
+
     /** Evaluations waiting for the page; a renderer that goes away never answers them. */
     private val evaluations = mutableSetOf<CancellableContinuation<String?>>()
 
@@ -205,6 +208,37 @@ class LookupPage(
         run("Popup.setNoteStates($json)")
     }
 
+    /**
+     * Calls [callback] once what the scripts run so far show is ready to be drawn, or after [DRAW_TIMEOUT_MS] at the
+     * latest: the page may still be loading, or its renderer be slow or gone.
+     */
+    fun whenDrawn(callback: () -> Unit) {
+        var called = false
+        val once = Runnable {
+            if (!called) {
+                called = true
+                callback()
+            }
+        }
+        mainHandler.postDelayed(once, DRAW_TIMEOUT_MS)
+        val request = {
+            mainHandler.removeCallbacks(once)
+            once.run()
+        }
+        if (pageReady && webView != null) requestDraw(request) else pendingDraws += request
+    }
+
+    private fun requestDraw(onDrawn: () -> Unit) {
+        val view = webView ?: return
+        // The script's answer comes after the scripts before it ran; the frame with their changes follows.
+        view.evaluateJavascript("0") {
+            if (webView !== view) return@evaluateJavascript
+            view.postVisualStateCallback(0, object : WebView.VisualStateCallback() {
+                override fun onComplete(requestId: Long) = onDrawn()
+            })
+        }
+    }
+
     /** Evaluates [script] in the page and returns its JSON-encoded result, or null if the page is not ready. */
     suspend fun evaluate(script: String): String? {
         val view = webView
@@ -231,6 +265,7 @@ class LookupPage(
         webView = null
         pageReady = false
         pendingScripts.clear()
+        pendingDraws.clear()
         abandonEvaluations()
     }
 
@@ -307,6 +342,7 @@ class LookupPage(
             view.destroy()
             pageReady = false
             pendingScripts.clear()
+            pendingDraws.clear()
             webView = null
             abandonEvaluations()
             // A renderer the system reclaimed from a hidden popup comes back with the next scan.
@@ -324,6 +360,7 @@ class LookupPage(
             pageReady = true
             (persistent.values + pendingScripts).forEach { webView?.evaluateJavascript(it, null) }
             pendingScripts.clear()
+            pendingDraws.toList().also { pendingDraws.clear() }.forEach(::requestDraw)
         }
 
         @JavascriptInterface
@@ -386,5 +423,6 @@ class LookupPage(
         const val PAGE_URL = "https://$HOST/assets/popup/popup.html"
         const val MEDIA_PATH = "/media"
         const val FONTS_PATH = "/${PageFonts.DIRECTORY}/"
+        const val DRAW_TIMEOUT_MS = 600L
     }
 }

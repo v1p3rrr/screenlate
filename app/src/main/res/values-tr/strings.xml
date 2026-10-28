@@ -64,6 +64,7 @@
     <string name="dictionaries_task_queued">Bekliyor: %1$s</string>
     <string name="dictionaries_task_downloading">İndiriliyor: %1$s</string>
     <string name="dictionaries_task_retrying">İndirme yeniden deneniyor (%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_task_no_network">Ağ bekleniyor: %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: indirme durdu — %2$s</string>
     <string name="dictionaries_connection_lost">bağlantı kesildi</string>
     <string name="dictionaries_task_importing">İçe aktarılıyor: %1$s</string>
@@ -144,6 +145,7 @@
     <string name="dictionaries_task_converting">Açılıyor: %1$s</string>
     <string name="dictionaries_task_checking_space">%1$s için boş alan denetleniyor</string>
     <string name="dictionaries_stage_queued">Sırada bekliyor</string>
+    <string name="dictionaries_stage_no_network">Ağ bekleniyor</string>
     <string name="dictionaries_stage_downloading">İndiriliyor</string>
     <string name="dictionaries_stage_checking_space">Boş alan denetleniyor</string>
     <string name="dictionaries_stage_converting">Açılıyor</string>
