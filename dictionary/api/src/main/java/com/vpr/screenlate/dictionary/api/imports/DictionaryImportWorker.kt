@@ -429,7 +429,8 @@ class DictionaryImportWorker @AssistedInject constructor(
                     awaitNetwork = { imports.awaitNetwork(NETWORK_WAIT_MS) },
                 )
                 // A lost network is not a break-off of the host: no retry is counted. WorkManager stops the task as the
-                // network went; a network back before that continues here.
+                // network went; a network back before that continues here, and so does one it does not stop for, as a
+                // retry result would wait WorkManager's backoff, which grows with every run.
                 val reason = e.javaClass.simpleName
                 when (failure) {
                     FailedRead.NETWORK_BACK -> Log.i(TAG, "Task $id: the network went away during the download ($reason) and is back; continues")
