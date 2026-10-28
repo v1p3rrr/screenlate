@@ -49,7 +49,7 @@ data class SetupCategory(
             (choices[item.entry.id] ?: (item.entry.recommended && !builtIn && !item.ownEdition && !item.fallback))
 }
 
-/** Archive bytes to download, bytes after import, and the space the downloads need on the way. */
+/** Archive bytes to download, the typical bytes after import, and the space the downloads need at most. */
 data class SetupTotals(val downloadBytes: Long, val installedBytes: Long, val neededBytes: Long)
 
 /** Above this total the download screen asks before downloading over mobile data. */
@@ -220,14 +220,12 @@ internal fun setupInstalled(
 }
 
 /**
- * Downloads come one at a time: the largest archive lies next to everything imported before it is unpacked. Archives
- * the app carries count for space, not for the download.
+ * The space after import is the typical one ([CatalogEntry.installedBytes]); the space needed takes the most each
+ * dictionary may take ([CatalogEntry.installedBytesAtMost]). Downloads come one at a time: the largest archive lies
+ * next to everything imported before it is unpacked. Archives the app carries count for space, not for the download.
  */
-internal fun setupTotals(downloads: List<CatalogEntry>): SetupTotals {
-    val installed = downloads.sumOf { it.installedBytes }
-    return SetupTotals(
-        downloadBytes = downloads.filterNot { it.isBundled }.sumOf { it.downloadBytes },
-        installedBytes = installed,
-        neededBytes = installed + (downloads.maxOfOrNull { it.downloadBytes } ?: 0L),
-    )
-}
+internal fun setupTotals(downloads: List<CatalogEntry>): SetupTotals = SetupTotals(
+    downloadBytes = downloads.filterNot { it.isBundled }.sumOf { it.downloadBytes },
+    installedBytes = downloads.sumOf { it.installedBytes },
+    neededBytes = downloads.sumOf { it.installedBytesAtMost } + (downloads.maxOfOrNull { it.downloadBytes } ?: 0L),
+)

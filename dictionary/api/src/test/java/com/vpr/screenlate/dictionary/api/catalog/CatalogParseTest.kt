@@ -69,6 +69,22 @@ class CatalogParseTest {
     }
 
     @Test
+    fun `a built frequency dictionary takes about as much from a long source as from a short one`() {
+        val mb = 1024L * 1024L
+        val wordfreq = CatalogEntry(
+            id = "fi-freq", title = "Frequency", kind = DictionaryKind.FREQUENCY, sourceLanguage = "fi",
+            downloadUrl = "https://example.org/fi.msgpack.gz", downloadSize = 100_000, build = BUILD_WORDFREQ,
+        )
+        assertThat(wordfreq.installedBytes).isEqualTo(2_500_000L)
+        assertThat(wordfreq.copy(downloadSize = 4 * mb).installedBytes).isEqualTo(12 * mb)
+        assertThat(wordfreq.installedBytesAtMost).isEqualTo(16 * mb)
+        val corpus = wordfreq.copy(downloadSize = mb, build = BUILD_CORPUS_COUNTS)
+        assertThat(corpus.installedBytes).isEqualTo(5 * mb)
+        assertThat(corpus.copy(downloadSize = 20 * mb).installedBytes).isEqualTo(12 * mb)
+        assertThat(corpus.copy(downloadSize = 20 * mb).installedBytesAtMost).isEqualTo(16 * mb)
+    }
+
+    @Test
     fun `templates give texts an entry can override, and unknown entries leave out only themselves`() {
         val catalog = DictionaryCatalog.parse(
             """{"format": 2,
@@ -94,8 +110,12 @@ class CatalogParseTest {
         assertThat(entry.description(Locale.GERMAN)).isEqualTo("Eigener Text")
         assertThat(entry.downloadBytes).isEqualTo(1000L)
         assertThat(entry.installedBytes).isEqualTo(5000L)
-        assertThat(entry.copy(installedSize = null).installedBytes).isEqualTo(3000L)
-        assertThat(entry.copy(installedSize = null, kind = DictionaryKind.PITCH).installedBytes).isEqualTo(9000L)
+        assertThat(entry.installedBytesAtMost).isEqualTo(5000L)
+        val estimated = entry.copy(installedSize = null)
+        assertThat(estimated.installedBytes).isEqualTo(2200L)
+        assertThat(estimated.installedBytesAtMost).isEqualTo(5000L)
+        assertThat(estimated.copy(kind = DictionaryKind.PITCH).installedBytes).isEqualTo(10_500L)
+        assertThat(estimated.copy(kind = DictionaryKind.PITCH).installedBytesAtMost).isEqualTo(15_000L)
         assertThat(catalog.mandatory("it")).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
     }
 
