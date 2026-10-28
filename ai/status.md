@@ -316,11 +316,9 @@ check of `main` at `fee4c9fb` against v0.2.3:
     (`test-model.md`, 2026-10-28 morning), all passed: DIC24 as an update from `main` 2df1e55c with a file import
     queued behind a download (it installed, the emptied old folder went with the next process) and Clear cache with a
     download waiting for a network; DIC29 on both branches; DIC31 on `main` with the retries waiting in the run.
-- Question for the owner: may instrumented tests run with `am instrument` on the shared emulator? The system
-  force-stops the target package when instrumentation starts, which the no force-stop rule may cover, so
-  `OpenAppTest` was not run on `main` and its case was checked by hand. Recommendation: allow it for a build installed
-  under its own package (as `com.vpr.screenlate.debugmain` was), never for the `languages/main` app whose service is
-  on.
+- Answered (owner, 2026-10-28 evening): `am instrument` force-stops its target, so the app module's instrumented
+  tests (`OpenAppTest`) run only against a build installed under its own package (as `com.vpr.screenlate.debugmain`
+  was), never against the `languages/main` app whose service is on. `OpenAppTest` on `main` was checked by hand.
 - Not checked yet: `OpenAppTest` on `main` (it was run on `languages/main`), the E cases on `main`'s final build
   (each change was checked alone when built), the upgrade from
   the v0.2.3 release (last run 2026-10-14, on the language branch), a release build with R8 (CI builds debug only),

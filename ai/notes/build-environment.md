@@ -150,7 +150,9 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   gives the debug APK its own package (authorities follow `${applicationId}`; the test APK targets it too). Both
   apps show as "Screenlate Dev"; only one accessibility service should be on at a time. Uninstall it afterwards.
   `am instrument` force-stops its target package before it runs (the system does it when instrumentation starts),
-  which the no force-stop rule may cover; that run checked `OpenAppTest`'s case by hand instead (ask the owner).
+  so the app module's tests (`OpenAppTest`) run only against a build installed under its own package as above, never
+  against the app whose accessibility service is on (owner, 2026-10-28). Library modules' test APKs instrument
+  themselves and force-stop nothing else.
 - A new worktree needs `local.properties` (git-ignored; copy it from another checkout) before Gradle finds the SDK.
 - Cutting a download midway on the emulator: `adb emu network speed` does not slow it reliably (at 800 kbit/s a
   queued download did not start, at 3000 a 16 MB file still came in 5 s). Switch the network off on the device right
