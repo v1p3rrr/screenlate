@@ -259,11 +259,11 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK75 | Welsh lookups (overlay over `testdata/ocr/cy-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nghath finds cath and Nghymru Cymru ("nasal mutation"), the highlight over the whole word; fara finds bara ("soft mutation"), hysgol ysgol ("h-prothesis"), chath cath ("aspirate mutation"); mae shows bod's form, and with cy-fr alone no bae (bay); ty finds tŷ in app text and the Search screen, twr only twr; tý in app text and the Search screen finds no tŷ; i’w finds both dictionaries' i'w and i’w | F | U WelshSupportTest, glue.test.mjs, RuleOnlyResultsTest, I LanguageLookupTest, M | 2026-10-28 |
 | LK76 | Irish lookups (overlay over `testdata/ocr/ga-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nGaillimh finds Gaillimh ("eclipsis"), the highlight over the whole word; bhean finds bean ("lenition"), tSín Sín ("lenition"), hÉireann Éire through Éireann ("h-prothesis"), t-uisce uisce ("t-prothesis"); in d'fhág a tap on fhág finds fág, a tap on d' the whole word; chomh shows only chomh (no comh), thar shows tar only through ga-en's own row (lenited form); ḃean typed finds bean; fag finds nothing | F | U IrishSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK77 | Scottish Gaelic lookups (overlay over `testdata/ocr/gd-sample.png`, app text in AnkiDroid's note editor, and the Search screen): h-Alba finds Alba ("h-prothesis"), the highlight over the whole word; bhean finds bean ("lenition"), t-sràid sràid ("lenition"), t-uisge uisge ("t-prothesis"), n-eilean eilean ("eclipsis"); in Dh'fhàg a tap on fhàg finds fàg, a tap on Dh' the whole word; th'ann finds ann; mhór finds mòr; chan shows can only through gd-en's own row (cha chan), Bhathar no bathar; bith typed finds bìth, oran òran, bata only bata; hAlba without its hyphen finds nothing | F | U GaelicSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
-| LK78 | Finnish lookups (overlay over `testdata/ocr/fi-sample.png` and the Search screen): Talossanikin finds talo with the chips possessive and clitic, the highlight over the whole word; Onkohan finds olla (clitic); a tap on the n of EU:n or on lle of STT:lle finds EU or STT, the highlight from the word's start; 1990-luvulla aimed at luvulla finds luku (the form row), 20-vuotias aimed at vuotias finds -vuotias (an entry of Wiktionary (fi–en) only); kirjastonhoitaja shows "Compound: kirjasto + hoitaja" or its own entry; Kuusi shows kuusi first and kuu only through the Russian dictionary's own row ("redirected from kuusi"), never through the possessive -si; vesi only vesi; talokin finds talo (clitic) | F | U FinnishSupportTest, CompoundsTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
+| LK78 | Finnish lookups (overlay over `testdata/ocr/fi-sample.png` and the Search screen): Talossanikin finds talo with the chips possessive and clitic, the highlight over the whole word; Onkohan finds olla (clitic); a tap on the n of EU:n or on lle of STT:lle finds EU or STT, the highlight from the word's start; 1990-luvulla aimed at luvulla finds luku (the form row), 20-vuotias aimed at vuotias finds -vuotias (an entry of Wiktionary (fi–en) only); kirjastonhoitaja shows "Compound: kirjasto + hoitaja" or its own entry; Kuusi shows kuusi first, then kuu (through the Russian dictionary's own row "redirected from kuusi" and through the possessive -si, after the entries, owner 2026-10-28); vesi only vesi; talokin finds talo (clitic) | F | U FinnishSupportTest, CompoundsTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK79 | Hungarian lookups (overlay over `testdata/ocr/hu-sample.png` and the Search screen): Megtartottam finds tart with the chips verb prefix and the form row's tags, the highlight over the whole word; megtart and bevétel find their own entries, not tart or vesz; idegen finds idegen, never ide- with gén; a tap on ban of 2023-ban or EU-ban finds -ban (a suffix entry), the highlight from the hyphen; iskolaépület shows "Compound: iskola + épület" or its own entry; in Search, füzfa finds nothing and öt only öt, while the same words recognized (füzfa or fúzfa) find fűzfa, and öt then őt; hűvös read as húvös finds hűvös | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 | LK80 | Estonian lookups (overlay over `testdata/ocr/et-sample.png` and the Search screen): pole finds pole, then olema with the chip negative; polnud polnud, then olema; majas finds maja (singular inessive); a tap on ga of NATO-ga or 5-ga finds -ga (a suffix entry), the highlight from the hyphen; linnavalitsus shows "Compound: linna + valitsus" or its own entry; in Search, möte finds nothing and öö only öö, while möte recognized finds mõte | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 | LK81 | Azerbaijani lookups (overlay over `testdata/ocr/az-sample.png` and `az-misread.png`, and the Search screen): kitablarımızda finds kitab (the form row's tags where the dictionary lists the form, else the chips plural, our, locative); gəlirəm finds gəlmək (present, 1st sg.); çörəyi finds çörək; belə shows belə and not bel, while a form row stays (yazı shows yazı, then yaz through the accusative row); məktəbdəydi finds məktəb (locative, past copula); olur finds olmaq through the dictionary's row; a tap on ci of 2020-ci or da of ABŞ-da finds the suffix entry where the dictionary has one, the highlight from the hyphen; recognized Seher and Qizlar find səhər and qız; in Search, seher finds nothing | F | I LanguageLookupTest, glue, M | 2026-10-28 |
-| LK82 | Uzbek lookups (overlay over `testdata/ocr/uz-sample.png`, `uz-misread.png` and, with cloud recognition, `uz-cyrillic.png`, and the Search screen): Kitoblarimizda finds kitob (the form row's tags where the dictionary lists the form, else the chips plural, our, locative); boraman finds bormoq; Qishlogʻimizda finds qishloq; Yuragi finds yurak; Davom shows davom and not davo; a tap on yil of 2020-yil or da of BMT-da finds the suffix entry where the dictionary has one, the highlight from the hyphen; o'qidim finds oʻqimoq, so'z soʻz, ta'limga taʼlim, Qishlog'imizda qishloq, Bolsa boʻlsa (or boʻlmoq through its row); Китобларимизда finds kitob; in Search, ILM finds ilm and ot shows ot before oʻt, while oʻt shows only oʻt | F | I LanguageLookupTest, glue, M | 2026-10-28 |
+| LK82 | Uzbek lookups (overlay over `testdata/ocr/uz-sample.png`, `uz-misread.png` and, with cloud recognition, `uz-cyrillic.png`, and the Search screen): Kitoblarimizda finds kitob (the form row's tags where the dictionary lists the form, else the chips plural, our, locative); boraman finds bormoq; Qishlogʻimizda finds qishloq; Yuragi finds yurak; Davom shows davom and not davo with Wiktionary (uz–en) installed (uz–ru has no davom); a tap on yil of 2020-yil or da of BMT-da finds the suffix entry where the dictionary has one, the highlight from the hyphen; ma'lumot finds maʼlumot, o'qidim oʻqimoq, so'z soʻz, Qishlog'imizda qishloq, Bolsa boʻlsa (or boʻlmoq through its row); Китобларимизда finds kitob; in Search, ILM finds ilm (uz–en) and ot shows ot before oʻt, while oʻt shows only oʻt | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -659,6 +659,66 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/uz` (`b1ab89a0` and the uncommitted Finnish change), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Uzbek (LNG36, DIC46, OCR52, LK82, POP50, AUD37, ANK44) through the download screen, the
+Dictionaries screen, the overlay over `testdata/ocr/uz-sample.png`, `uz-anki.png`, `uz-misread.png` (' for ʻ and ʼ,
+Bolsa without its ʻ) and `uz-cyrillic.png` (Segoe UI, in the debug viewer) with ML Kit alone, cloud recognition alone
+and both, the Search screen, the Popup, Audio and Anki settings and Anki notes into the local "Screenlate Test" deck
+({sentence} as Meaning); the engine's instrumented tests, with Finnish rule results after the entries. An x86_64-only
+APK.
+
+Results: passed. Automated: unit tests (1,882, five skipped), lint, the page tests (146), the glue and mutation
+exception tests (136, one skipped), the catalog generator tests (11) and the Python tests of the flag (5), frequency
+(20) and OCR model (9) scripts passed; three timing tests (`SentenceTranslatorTest`, `AudioFinderTest`,
+`ServiceRequestsTest`) failed once each under load and passed when rerun alone. `LanguageLookupTest` 42 of 42 and the
+engine's 68 instrumented tests passed on the emulator, the test package uninstalled after.
+
+- LNG36: Uzbekistan's flag on the Languages screen; with English as the language of definitions Wiktionary (uz–en,
+  1.1 MB) is the fixed main dictionary and the word frequency (Leipzig news, 6.1 MB) ticked; 7.2 MB to download, about
+  22 MB after import; ML Kit the main model, Tesseract fast (6.5 MB) and accurate (13 MB) unticked, PaddleOCR v6
+  ticked and "Installed" (from the other Latin languages), none marked "More accurate", no PaddleOCR v5. The bubble
+  shows Oʻ.
+- DIC46: with Russian chosen and uz–en unticked the Word forms card lists "Word forms (Wiktionary)", 1.1 MB, fixed;
+  8.6 MB to download, about 25 MB after import. The forms task took 4.6 s (the 1,029 KB archive downloaded in 1.9 s,
+  imported in 0.7 s): 150,358 forms with 152,560 lemma links, no definitions; uz–ru took 6.5 s (1,373 KB in 2.0 s,
+  153,760 forms of its own); the word frequency downloaded 6,004 KB in 2.0 s and built 51,987 words in 2.5 s. uz–en
+  added later from the Dictionaries screen took 5.5 s; the forms item stayed installed beside it.
+- OCR52: copied with the bubble menu's "Copy all recognized text": cloud recognition read every line of
+  `uz-sample.png` exactly except ' for ʻ and ʼ, and read `uz-cyrillic.png` in Cyrillic; ML Kit gave ' for ʻ and ʼ,
+  < for «, - for – and "dediu" for "dedi u", and read the Cyrillic as Latin letters and digits.
+- LK82: Kitoblarimizda finds kitob through the row "locative first person plural possessive"; boraman shows the
+  suffix entry boraman, then bormoq ("singular present indicative"); Qishlogʻimizda (recognized Qishlog'imizda) finds
+  qishloq with the chips our and locative; Yuragi finds yurak; the aim on da of BMT-da finds -da, the highlight from
+  the hyphen; yil of 2020-yil finds yil (no -yil entry); oʻqidingmi finds oʻqimoq ("question" and "singular definite
+  past indicative"); ma'lumot finds maʼlumot. With uz–ru alone Davom finds davo with "my" (uz–ru has no davom, and
+  the forms dictionary brings forms, not headwords); with uz–en installed it shows only davom. Over `uz-misread.png`:
+  Bolsa finds boʻlmoq ("third person singular conditional"), o'qidim oʻqimoq, so'z soʻz, Qishlog'imizda qishloq;
+  ta'limga finds nothing, as neither dictionary has taʼlim. With cloud recognition over `uz-cyrillic.png`:
+  Китобларимизда finds kitob, Қишлоғимизда qishloq, маълумот maʼlumot, Шаҳар shows шаҳар, then shahar. In Search, ot
+  shows ot, then oʻt; oʻt only oʻt; ILM finds nothing with uz–ru alone and ilm with uz–en.
+- POP50: the font card lists the phone's font, Lexend (downloaded before), Literata (1.0 MB) and Inter (0.9 MB), no
+  PT or Atkinson, with "Only for Uzbek text" and the Uzbek sample sentence. In Russian the form tags read
+  «длительное обычное действие» (habitual) and «намерение» (intentive), the chips "вопрос « местный падеж";
+  Kitoblarimizdami shows Kitob (a proper noun) first, then kitob; the interface language restored to System.
+- AUD37: sources Lingua Libre, Wiktionary, Text-to-speech; the Test of yaxshi found one Lingua Libre recording,
+  Wiktionary "No audio", the phone's voice "No voice installed".
+- ANK44 (deck Screenlate Test, engines Both): nok "Bozordan olma, nok va h.k. oldik."; yashamoq (yashaydi, "third
+  person singular present indicative") "Prof. Karimov Toshkent sh. Navoiy ko'ch. 5-uyda yashaydi."; daftar
+  (daftarlar, "nominative plural") "Kitoblar, daftarlar va h.k."
+- Finnish (LK78, instrumented): kuusi shows kuusi, then kuu with the possessive -si; taloon shows talo only through
+  its illative row.
+- Seen, not caused by the change: Home showed the service as stopped by the system after the reinstall while the
+  bubble worked. As before, the overlay kept its scan when the debug viewer opened another image in place, until the
+  bubble was tapped. A build without Uzbek and Azerbaijani, installed over this one, turned both off and made Latin
+  the active language; turned on again, they worked as before. After the per-app locale was reset to the system's,
+  the Audio and Anki screens' language chips stayed in Russian.
+
+Left on the emulator: the `languages/uz` debug app with Uzbek set up (uz–ru, the forms, uz–en, the word frequency;
+its Anki settings on the "Screenlate Test" deck and note type, Meaning {sentence}), the other languages as before,
+engines Both, the interface language System, its service enabled; the Uzbek notes (nok, yashamoq, daftar) in the
+local deck; the emulator shut down and the lock released.
 
 ### 2026-10-28, `languages/az` (uncommitted build on `08463e01`), Pixel_10_Pro (API 37)
 

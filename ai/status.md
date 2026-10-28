@@ -129,7 +129,7 @@ the details.
   changelog. Left outside the group, for the owner: cloud recognition's missing line-end space.
 - Group 5c (`plans/2026-10-19-group-5c.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge, in the order Finnish (`languages/fi`, merged), Hungarian (`languages/hu`, merged), Estonian
-  (`languages/et`), Azerbaijani (`languages/az`), Uzbek (`languages/uz`, on `languages/az`). The Finnish branch carries the shared pieces: the "Word forms" item (the English dictionary's
+  (`languages/et`), Azerbaijani (`languages/az`), Uzbek (`languages/uz`, rebased on `languages/main` with the Azerbaijani commit). The Finnish branch carries the shared pieces: the "Word forms" item (the English dictionary's
   forms without its definitions, listed while the whole English dictionary is not ticked), the colon endings, the
   hyphen-ending scope per language and the translated cases and moods of form rows. Hungarian adds the verb prefix
   rule, ő ű tried for ö ü ú in words from recognition, the hyphen endings after numbers and capitals, the word forms
@@ -142,13 +142,13 @@ the details.
   question particle after nouns (shared), the typed apostrophes written as ʻ and ʼ, headwords also found without
   the ʻ of oʻ and gʻ, Cyrillic text looked up in Latin letters, rule results only without an entry, and the form
   tags habitual and intentive. Finnish, Hungarian, Estonian, Azerbaijani and Uzbek checked on the emulator (run
-  log 2026-10-28). Open for the owner: question 13 (Finnish rule results beside an entry, decided
-  provisionally and built; it also keeps only the form row's chain where a rule and a row reach the same result, in
-  ro, la, sw too), question 14 (the same for Hungarian prefix results), question 15 (ű tried for ú after
-  recognition, as ML Kit reads it), question 16 (õ tried for ö after recognition), question 17 (ə and ı tried for
-  e and i after recognition), question 18 (Azerbaijani rule results beside an entry) and question 19 (the same for
-  Uzbek), all provisional and built. Follow-up: 14 of Lingua Libre's Uzbek titles write ‘ for ʻ, so those
-  recordings are not found.
+  logs 2026-10-28 and 2026-10-29). The owner answered questions 13-16: Finnish rule results show after the entries, a result a
+  form row also reaches keeps the row's chain only (13 (b), built on `languages/uz`); 14-16 as built. Open for the
+  owner: question 17 (ə and ı tried for e and i after recognition), question 18 (Azerbaijani rule results beside an
+  entry) and question 19 (the same for Uzbek), provisional and built. Next in the block, after Uzbek is merged:
+  the languages plan's "Marks folded in the lookup", on its own branch from `languages/main`. Follow-up: 14 of Lingua Libre's Uzbek titles write ‘ for ʻ, so those
+  recordings are not found. With uz–ru and the word forms alone, Davom finds davo with "my": the forms dictionary
+  brings forms, not headwords, so the rule-only filter does not know davom (the import could keep the lemmas).
   Seen while checking Hungarian, older than the group and left for later: after the service was turned off and on
   within a second, Home said "the system stopped the service" while the bubble worked; right after the interface
   language went from Russian back to System, the language chips of the Anki and Audio settings stayed Russian until
