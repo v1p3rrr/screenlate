@@ -5,7 +5,7 @@
 
     <string name="anki_problem_not_installed">AnkiDroid n’est pas installé.</string>
     <string name="anki_problem_no_permission">Screenlate a perdu l’accès à AnkiDroid.</string>
-    <string name="anki_problem_model_missing">Le type de note n’existe plus dans AnkiDroid.</string>
-    <string name="anki_problem_deck_missing">Le paquet n’existe plus dans AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Le type de note est introuvable dans AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Le paquet est introuvable dans AnkiDroid.</string>
     <string name="anki_problem_fields_changed">Les champs du type de note ont changé.</string>
 </resources>

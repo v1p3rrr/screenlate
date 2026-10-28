@@ -1,6 +1,6 @@
 <resources>
     <string name="installation_ready">Prêt</string>
-    <string name="installation_running">L’installation de la langue est en cours. La numérisation et la recherche seront disponibles lorsque les composants nécessaires seront prêts.</string>
+    <string name="installation_running">L’installation de la langue est en cours. L’analyse et la recherche seront disponibles lorsque les composants nécessaires seront prêts.</string>
     <string name="installation_missing">Des dictionnaires ou modèles de reconnaissance nécessaires sont absents ou désactivés. Ouvrez l’état de l’installation pour terminer la configuration.</string>
     <string name="installation_failed">L’installation de la langue a échoué. Ouvrez l’état de l’installation pour voir l’erreur et réessayer.</string>
     <string name="installation_open">État de l’installation</string>
