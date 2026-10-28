@@ -676,13 +676,13 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val MAX_RETRIES = 3
 
         /** How long after a download broke off the network may still go, which makes it a wait for the network. */
-        private const val NETWORK_SETTLE_MS = 2_000L
+        private const val NETWORK_SETTLE_MS = 3_000L
 
         /**
          * How long a download whose network went waits for it before it tries again, in its run; WorkManager normally
          * stops the task first and runs it again once a network is up.
          */
-        private const val NETWORK_WAIT_MS = 30_000L
+        private const val NETWORK_WAIT_MS = 15_000L
 
         /** What follows a stop by WorkManager for [reason] (`WorkInfo.STOP_REASON_*`), for the log. */
         fun afterStop(reason: Int): String = when (reason) {

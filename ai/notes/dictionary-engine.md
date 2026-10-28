@@ -51,7 +51,7 @@ Hoshi Reader Android `app/src/main/assets/hoshi-web/popup/popup.js` (GPL-3.0): `
   and the work runs again, so the worker records every final result (`DictionaryImports.recordEnd`, the output's bytes
   per job id in DataStore) before returning it, and a run that finds a recorded end returns it at once. `Result.retry()`
   is not recorded: it runs again anyway. When the network goes, the read fails with an `IOException` and the reason-7
-  stop lands at about the same time, in either order; the worker checks the validated network (now or within 2 s) and
+  stop lands at about the same time, in either order; the worker checks the validated network (now or within 3 s) and
   treats such a failure as a wait for the network, not as a break-off, so it never counts a retry or ends the task.
   `getStopReason()` needs API 31 (minSdk is 30); `Result.Success`/`Retry` are restricted API, compare with
   `Result.retry()` instead.
