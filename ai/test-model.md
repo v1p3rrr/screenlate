@@ -172,6 +172,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR46 | Irish recognition (`testdata/ocr/ga-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with the fada, mutated words and d'fhág): cloud recognition reads the fada and the lowercase prefixes before a capital (nGaillimh, hÉireann, tSín); ML Kit reads the prefixes and the fada of lowercase letters and may drop a capital's (hEireann), which then finds nothing, as Irish words are looked up as written | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR47 | Scottish Gaelic recognition (`testdata/ocr/gd-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with the grave accent, hyphenated prefixes, dh'fhàg, th'ann and the acute of mhór): cloud recognition and ML Kit read the grave vowels and the prefixes with their hyphens (na h-Alba, an t-sràid, ar n-eilean) | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR48 | Finnish recognition (`testdata/ocr/fi-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: clitics and possessives, EU:n and STT:lle, 1990-luvulla, 20-vuotias, a long compound): cloud recognition and ML Kit read ä ö, the colons and the hyphens | F | U CatalogFileTest, M | 2026-10-28 |
+| OCR49 | Hungarian recognition (`testdata/ocr/hu-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: ő and ű words, prefixed verb forms, 2023-ban and EU-ban, a long compound): cloud recognition reads ő ű, á é í ó ú and the hyphens; ML Kit reads ű as ú and may capitalize ő, and such a word is still found (LK79) | F | U CatalogFileTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -253,6 +254,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK76 | Irish lookups (overlay over `testdata/ocr/ga-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nGaillimh finds Gaillimh ("eclipsis"), the highlight over the whole word; bhean finds bean ("lenition"), tSín Sín ("lenition"), hÉireann Éire through Éireann ("h-prothesis"), t-uisce uisce ("t-prothesis"); in d'fhág a tap on fhág finds fág, a tap on d' the whole word; chomh shows only chomh (no comh), thar shows tar only through ga-en's own row (lenited form); ḃean typed finds bean; fag finds nothing | F | U IrishSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK77 | Scottish Gaelic lookups (overlay over `testdata/ocr/gd-sample.png`, app text in AnkiDroid's note editor, and the Search screen): h-Alba finds Alba ("h-prothesis"), the highlight over the whole word; bhean finds bean ("lenition"), t-sràid sràid ("lenition"), t-uisge uisge ("t-prothesis"), n-eilean eilean ("eclipsis"); in Dh'fhàg a tap on fhàg finds fàg, a tap on Dh' the whole word; th'ann finds ann; mhór finds mòr; chan shows can only through gd-en's own row (cha chan), Bhathar no bathar; bith typed finds bìth, oran òran, bata only bata; hAlba without its hyphen finds nothing | F | U GaelicSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK78 | Finnish lookups (overlay over `testdata/ocr/fi-sample.png` and the Search screen): Talossanikin finds talo with the chips possessive and clitic, the highlight over the whole word; Onkohan finds olla (clitic); a tap on the n of EU:n or on lle of STT:lle finds EU or STT, the highlight from the word's start; 1990-luvulla aimed at luvulla finds luku (the form row), 20-vuotias aimed at vuotias finds -vuotias (an entry of Wiktionary (fi–en) only); kirjastonhoitaja shows "Compound: kirjasto + hoitaja" or its own entry; Kuusi shows kuusi first and kuu only through the Russian dictionary's own row ("redirected from kuusi"), never through the possessive -si; vesi only vesi; talokin finds talo (clitic) | F | U FinnishSupportTest, CompoundsTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
+| LK79 | Hungarian lookups (overlay over `testdata/ocr/hu-sample.png` and the Search screen): Megtartottam finds tart with the chips verb prefix and the form row's tags, the highlight over the whole word; megtart and bevétel find their own entries, not tart or vesz; idegen finds idegen, never ide- with gén; a tap on ban of 2023-ban or EU-ban finds -ban (a suffix entry), the highlight from the hyphen; iskolaépület shows "Compound: iskola + épület" or its own entry; in Search, füzfa finds nothing and öt only öt, while the same words recognized (füzfa or fúzfa) find fűzfa, and öt then őt; hűvös read as húvös finds hűvös | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -304,6 +306,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP44 | An Irish entry: the Popup settings' font card lists every Latin font with "Only for Irish text" and the Irish sample sentence; the bubble shows Á and the Languages screen Ireland's flag; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP45 | A Scottish Gaelic entry: the Popup settings' font card lists every Latin font with "Only for Scottish Gaelic text" and the Gaelic sample sentence; the bubble shows Ò and the Languages screen Scotland's flag; the Russian interface names the language «Шотландский гэльский»; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, GaelicSupportTest, M | 2026-10-28 |
 | POP46 | A Finnish entry: the Popup settings' font card lists every Latin font with "Only for Finnish text" and the Finnish sample sentence; the bubble shows Ä and the Languages screen Finland's flag; the clitic and possessive chips and the cases of the form rows are named in the interface language (Russian too: «единственное число инессив», «агентивное причастие») | F | U FontCatalogFileTest, FlagsTest, FinnishSupportTest, M | 2026-10-28 |
+| POP47 | A Hungarian entry: the Popup settings' font card lists every Latin font with "Only for Hungarian text" and the Hungarian sample sentence; the bubble shows Ő and the Languages screen Hungary's flag; the verb prefix chip and the cases and conjugations of the form rows are named in the interface language (Russian too: «определённое спряжение», «терминатив») | F | U FontCatalogFileTest, FlagsTest, HungarianSupportTest, FormOfTagsTest, M | 2026-10-28 |
 
 ### AUD: audio
 
@@ -342,6 +345,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD31 | Irish audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of uisce finds Lingua Libre's recording | F | U IrishSupportTest, M | 2026-10-28 |
 | AUD32 | Scottish Gaelic audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of uisge finds Lingua Libre's recording; a word with no recording says there is no audio | F | U GaelicSupportTest, M | 2026-10-28 |
 | AUD33 | Finnish audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; the Test of vesi finds Wiktionary's recording | F | U FinnishSupportTest, M | 2026-10-28 |
+| AUD34 | Hungarian audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; the Test of víz finds Wiktionary's recording | F | U HungarianSupportTest, M | 2026-10-28 |
 
 ### ANK: Anki
 
@@ -386,6 +390,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK38 | An Irish Anki note (over `testdata/ocr/ga-anki.png`, one paragraph over six lines, ML Kit): for úlla or piorraí the sentence is "Cheannaigh sí torthaí, m.sh. úlla agus piorraí srl." (srl. ends it before a capital); for leabhar "Féach lch. 5 den leabhar."; for baile "D'fhág an Br. Seán an baile." | F | U SentenceTest, IrishSupportTest, M | 2026-10-28 |
 | ANK39 | A Scottish Gaelic Anki note (over `testdata/ocr/gd-anki.png`, one paragraph over seven lines, ML Kit): for ùbhlan the sentence is "Cheannaich i measan, m.e. ùbhlan is peuran msaa." (msaa. ends it before a capital); for Iain "Chunnaic mi an Urr. Iain an-dè."; for dhachaigh "Thàinig an Dr. Dòmhnallach dhachaigh." | F | U SentenceTest, GaelicSupportTest, M | 2026-10-28 |
 | ANK40 | A Finnish Anki note (over `testdata/ocr/fi-anki.png`, one paragraph over five lines, ML Kit, cloud recognition where ML Kit misreads the word): for omenoita the sentence is "Ostin 24. toukokuuta hedelmiä, esim. omenoita ja päärynöitä jne." (the ordinal and esim. hold, jne. ends it before a capital); for tuella "Talo valmistui 1990-luvulla EU:n tuella." | F | U SentenceTest, FinnishSupportTest, M | 2026-10-28 |
+| ANK41 | A Hungarian Anki note (over `testdata/ocr/hu-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for almát the sentence is "2023. május 3-án gyümölcsöt vettem, pl. almát és körtét stb." (the date, the ordinal and pl. hold, stb. ends it before a capital); for épült "A ház a 19. sz. végén épült." | F | U SentenceTest, HungarianSupportTest, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -441,6 +446,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC40 | Albanian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming news texts; it builds on the device from Leipzig's archive (24.9 MB) and the frequency chip shows on Albanian entries | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC41 | Swahili's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (18.6 MB) and the frequency chip shows on Swahili entries | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC42 | The Finnish word forms item: with Russian chosen and Wiktionary (fi–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory, with its download and installed size; it imports the fi-en archive without definitions (import time and installed size recorded in the run log), the Dictionaries screen lists it, and Russian entries are found for inflected words (talossa → talo); with fi-en ticked the item is gone, and an installed fi-en counts as it | F | U LanguageSetupTest, CatalogFileTest, I LanguageLookupTest, M | 2026-10-28 |
+| DIC43 | The Hungarian word forms item: with Russian chosen and Wiktionary (hu–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the hu-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words (házban → ház); with hu-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -479,6 +485,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG30 | Irish setup: the download screen ticks Wiktionary into English and the transcription, lists Russian, French and Polish under "Another language…", and offers no word frequency; ML Kit is the main model, Tesseract gle fast and accurate and PaddleOCR v5 and v6 unticked, none marked; the flag is Ireland's and the bubble shows Á | F | U CatalogFileTest, M | 2026-10-28 |
 | LNG31 | Scottish Gaelic setup: the download screen ticks Wiktionary into English and the transcription, lists Russian under "Another language…", and offers no word frequency; ML Kit is the main model, PaddleOCR v5 and v6 ticked and marked more accurate, Tesseract gla fast and accurate unticked and unmarked; the flag is Scotland's and the bubble shows Ò | F | U CatalogFileTest, M | 2026-10-28 |
 | LNG32 | Finnish setup: the download screen ticks Wiktionary into English, the word frequency and the transcription; with Wiktionary (fi–en) unticked, the word forms item is mandatory; ML Kit is the main model, Tesseract fin and PaddleOCR v5 and v6 unticked and unmarked; the flag is Finland's and the bubble shows Ä | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
+| LNG33 | Hungarian setup: the download screen ticks Wiktionary into English, the word frequency and the transcription; with Wiktionary (hu–en) unticked, the word forms item is mandatory; ML Kit is the main model, Tesseract hun and PaddleOCR v5 and v6 unticked and unmarked; the flag is Hungary's and the bubble shows Ő | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 
 ### SET: settings, backup, appearance
 
@@ -628,6 +635,66 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/hu` (uncommitted build on `8f99513a`), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Hungarian (LNG33, DIC43, OCR49, LK79, POP47, AUD34, ANK41) through the download screen, the
+Dictionaries screen, the overlay over `testdata/ocr/hu-sample.png` and `hu-anki.png` (Segoe UI, in the debug viewer)
+with ML Kit alone and cloud recognition alone, the Search screen, the Popup, Audio, Appearance and Anki settings and
+Anki notes into the local "Screenlate Test" deck ({sentence} as Meaning); the engine's instrumented tests. An
+x86_64-only APK.
+
+Results: passed after two fixes (below). Automated: unit tests (1846, five skipped), lint, the page tests (146), the
+glue and mutation exception tests (121, one skipped), the catalog generator tests (11) and the Python tests of the
+flag, frequency and OCR model scripts passed; `LanguageLookupTest` 39 of 39 and the engine's 65 instrumented tests
+passed on the emulator, the test package uninstalled after.
+
+- LNG33: Hungary's flag on the Languages screen; with English as the language of definitions Wiktionary (hu–en, 13 MB)
+  is the fixed main dictionary, the word frequency (228 kB) and the transcription (876 kB) ticked; 14 MB to download,
+  about 48 MB after import; ML Kit the main model, Tesseract fast (5.3 MB) and accurate (12 MB) unticked, PaddleOCR v6
+  and v5 "Installed" (from the other Latin languages) without the "More accurate" mark. The bubble shows Ő.
+- DIC43: with Russian chosen and hu–en unticked the Word forms card lists "Word forms (Wiktionary)", 13 MB, fixed;
+  15 MB to download, about 29 MB after import. The forms task took 16.2 s (the 12,824 KB archive downloaded in 10.0 s,
+  imported in 4.5 s): 1,281,301 forms with 1,315,769 lemma links, a 14,493 KiB table, no definitions; hu–ru took 0.4 s
+  (380 forms of its own). The word frequency (46,638 words, 520 KB) was built in 2.2 s. házban finds ház «дом»
+  ("singular inessive", W 408, [haːz]). Downloaded later from the Dictionaries screen, the whole hu–en took 4.3 s to
+  download and 5.8 s to import. The catalog's installed size of the forms (18 MiB) is a quarter above the table,
+  as Finnish's is.
+- OCR49: copied with the bubble menu's "Copy all recognized text": cloud recognition read every line of
+  `hu-sample.png` exactly (fűzfa, őt, hűvös, őszi, éjjel, 2023-ban, EU-ban, iskolaépület); ML Kit read both ű as ú
+  (fúzfa, húvös), the ő of őszi as Ő and éjjel as éjel, the rest exactly.
+- LK79: overlay (ML Kit): Megtartottam finds tart ("verb prefix « first person singular definite/indefinite past
+  indicative", before the conjugation fix below), the highlight over the whole word; Elolvastam olvas (verb prefix), the highlight from the l (ML Kit's
+  box; over the whole word with cloud recognition); Öt öt, then őt; nőtt nő ("past participle"); the aim on ban of
+  2023-ban finds -ban (a suffix entry), the highlight from the hyphen; on EU-ban EU ("singular inessive"), then -ban,
+  the highlight over EU-ban; fűzfa (read fúzfa) and hűvös (read húvös) find fűzfa and hűvös after the fix below, and
+  with cloud recognition too. Search: megtartottam tart; megtart, bevétel and idegen their own entries; bevételt
+  bevétel ("accusative singular"); iskolaépület "Compound: iskola + épület"; füzfa "No dictionary entries found."; öt
+  only öt; -ban the suffix entry.
+- POP47: the font card lists the phone's font, Lexend and PT Serif (downloaded), Literata, Inter, Atkinson Hyperlegible
+  Next and PT Sans; "Only for Hungarian text"; the sample "Öt hűvös őszi éjjel az árvíztűrő tükörfúrógép zúgott." In
+  Russian the chips read «глагольная приставка», házig ház «единственное число терминатив», megtartottam tart
+  «1-е лицо единственное число определённое спряжение/неопределённое спряжение прошедшее время изъявительное
+  наклонение» after the fix below; the interface language restored to System.
+- AUD34: sources Wiktionary, Lingua Libre, Text-to-speech; the Test of víz found Wiktionary's recording (Hu-víz.ogg),
+  Lingua Libre "No audio".
+- ANK41 (deck Screenlate Test, ML Kit): alma (almát, "accusative singular") "2023. május 3-án gyümölcsöt vettem, pl.
+  almát és körtét stb."; épül (épült, "past participle") "A ház a 19. sz. végén épült."
+- Fixed: ML Kit reads ű as ú, which the ö and ü variants did not cover, so fűzfa and hűvös found nothing; the
+  OCR-only variant now tries ű for ú too (provisional, the plan's question 15).
+- Fixed: wty-hu-en names the definite conjugation both `definite` and `object-definite`; the plain one showed as
+  Russian «определённая форма», the noun form of other languages. Hungarian names it as the conjugation
+  (`formTagAliases`).
+- Seen, not caused by the change: after the service was turned off and on through the secure settings within a
+  second, Home said "The bubble is not shown: the system stopped the service" while the bubble worked; right after the
+  interface language went from Russian back to System, the language chips of the Anki settings stayed Russian until
+  the screen was opened again. Under load, ServiceRequestsTest timed out twice, AudioFinderTest once, and the overlay
+  module's test executor crashed once; reruns passed.
+
+Left on the emulator: the `languages/hu` debug app with Hungarian set up (hu–ru, the forms, hu–en, the word frequency
+and the transcription; its Anki settings on the "Screenlate Test" deck and note type, Meaning {sentence}), the other
+languages as before, engines Device (ML Kit), the interface language System, its service enabled; the Hungarian notes
+(alma, épül) in the local deck; the emulator shut down and the lock released.
 
 ### 2026-10-28, `languages/fi` (uncommitted build on `0a38e341`), Pixel_10_Pro (API 37)
 
