@@ -128,12 +128,15 @@ the details.
   merged; the group is done. Technical choices changed while building are marked provisional in the plan's rows and
   changelog. Left outside the group, for the owner: cloud recognition's missing line-end space.
 - Wikipedia as a corpus (owner's remark, 2026-10-28 night): some small Wikipedia editions were written largely by
-  non-speakers (Scots in 2020, Greenlandic, machine-translated, closed in 2025; neither is in the app), and small
-  editions also fill with bot-made stubs that skew word counts. Wikipedia text gives the frequency dictionaries of
-  Latin, Esperanto and Swahili and the mutation exception lists of Welsh and Scottish Gaelic, and is planned for
-  Azerbaijani and Uzbek (5c), Mongolian (5d), Afrikaans, Bashkir and Galician (group 6). A research agent checks each
-  edition's known problems and the non-Wikipedia corpora (Leipzig news and web corpora, native Gaelic corpora); its
-  findings and the choice per language go here.
+  non-speakers (Scots in 2020; Greenlandic, machine-translated, closed in 2025; neither is in the app). Checked with a
+  few web searches, not a full audit, as the owner asked. Wikipedia text gives the frequency dictionaries of Latin,
+  Esperanto and Swahili and the mutation exception lists of Welsh and Scottish Gaelic; groups 5c and 5d use Leipzig
+  news corpora (Estonian, Azerbaijani, Uzbek, Mongolian), and group 6's research names Bashkir's Wikipedia as its only
+  Leipzig corpus. Found: Uzbek Wikipedia had machine-translation trouble after 2022 (the app uses Uzbek news, so
+  nothing changes), and a 2026 study (arXiv 2608.21821, a username heuristic) counts 41.5% of the Swahili articles it
+  sampled as bot- or translation-made, the highest of its editions; Leipzig has no other Swahili corpus, so the
+  Swahili frequency list stays as it is, a known limit. Nothing was found for the others, Scottish Gaelic included;
+  the Gaelic exception list's seven words are common Gaelic words.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
