@@ -121,7 +121,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB16 | No app task; "Look up in Screenlate" in a selection menu, then a button there that opens the app (the grey ➕ → "Open Anki settings", or "Manage dictionaries"); Home → the hold menu's "Open Screenlate", then the launcher icon → the same screen comes back, `dumpsys activity activities` lists one MainActivity, the task's root intent is the launcher's (`dumpsys activity recents`); Back leaves the app | F | I OpenAppTest, M | 2026-10-28 (`main`: the hold menu over a task started by an explicit intent; the search path and OpenAppTest not run) |
 | BUB17 | Hold the bubble over any Screenlate page (Home, settings, a photo) → no Open Screenlate in the menu; over another app it is there; with nothing to copy, no language row and Screenlate in front, holding opens no menu and gives no vibration | N | M | 2026-10-28 (API 37, also on `main`; the vibration not seen, the emulator records none) |
 | BUB18 | Hold the docked bubble without moving it → the menu with the quick-language flags (two or more quick languages) and Open Screenlate (over another app), no copy items even after a scan; a flag switches the language and the docked glyph changes; over Screenlate with one quick language nothing opens; a move before the hold time still pulls the bubble out or moves the dock; the menu fits on screen at each dock side | N | M | |
-| BUB19 | The docked glyph is the own name's first letter: German D, Russian Р, Czech Č, Japanese あ. Quick languages English and Spanish → the bubble shows EN, after a switch ES; Russian with Polish → РУ and PL; Kazakh with Kyrgyz → Қ and К; adding or removing a star updates the glyph at once; with the e-ink theme the menu's codes are РУ, PL | N | U BubbleGlyphTest, M | — |
+| BUB19 | The docked glyph is the own name's first letter: German D, Russian Р, Czech Č, Japanese あ. Quick languages English and Spanish → the bubble shows EN, after a switch ES; Russian with Polish → РУ and PL; Kazakh with Kyrgyz → Қ and К; adding or removing a star updates the glyph at once; with the e-ink theme the menu's codes are РУ, PL | F | U BubbleGlyphTest, M | 2026-10-29 |
 | BUB20 | The debug build's selection menu item reads "Look up in Screenlate Dev" (in Russian "Найти в Screenlate Dev"), the release build's "Look up in Screenlate", so the two installed side by side can be told apart | N | U TranslationsTest, M | 2026-10-29 (English only; Russian by TranslationsTest) |
 
 ### OCR: text sources and recognition
@@ -665,6 +665,21 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/main` `2c72f956` (the own-name bubble letters, the OCR text rules and the app fixes), Pixel_10_Pro (API 37)
+
+Scope: BUB19. Results: passed. The emulator's turned-on languages hold none of the case's pairs (no English, Russian,
+Polish, Kazakh or Kyrgyz), so pairs among them stood in: French and Filipino for a shared letter, Serbian for a
+Cyrillic code.
+- German alone → D, Spanish alone → E (Greek starred beside it kept E: Greek's glyph is Ω, outside the Latin and
+  Cyrillic look-alikes), Japanese あ.
+- French active with Filipino starred → FR at once; the hold menu shows both flags; Filipino picked there → TL.
+  Filipino's star kept, French's removed → F at once.
+- Serbian active (Croatian and Filipino starred) → С; with e-ink mode on the hold menu reads TL, СР, HR (the
+  e-ink dialog's "Keep sizes" taken). Moved from N to F.
+- After it, `a6fe33ca` (with marks folded in the lookup and the flags) installed: the Dictionaries page's chips show
+  the flags, Search finds neko → ねこ, no crash.
+- Emulator left with Japanese active and starred alone, e-ink off.
 
 ### 2026-10-29, `claude/text-rules-1028` (`bcfd3b1d` on `0498d271`, the four text rules), Pixel_10_Pro (API 37)
 

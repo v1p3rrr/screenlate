@@ -120,16 +120,17 @@ the details.
   - Albanian (`languages/sq`, 33dab0fb);
   - Swahili (`languages/sw`, rebased as 7e27b4fe), the group's last language.
   The group is done (Basque and Maltese stay unbuilt, as the plan decided); group 5b follows. Question 30 is answered
-  (b) and built on `claude/text-rules-1028`: in recognized text a " after a full stop closes the quote open, a " at a
+  (b) and built (merged 2026-10-29): in recognized text a " after a full stop closes the quote open, a " at a
   word's start with none open is the language's opening quote, and a " that ends a word closes the quote open.
   Open for the owner: the plan's questions 28-34 (decided provisionally and built).
 - Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge: Welsh (`languages/cy`), Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`, `ad94d287`)
   merged; the group is done. Technical choices changed while building are marked provisional in the plan's rows and
   changelog. Cloud recognition's missing line-end space: screens now put the language's separator after every line
-  end without one, except Korean's unhyphenated ones (`claude/text-rules-1028`).
-- Text rules answered on 2026-10-28 evening, built on `claude/text-rules-1028` for the main session to check and
-  merge: the screen line-end separator (group 5b follow-up), straight quotes after a full stop (5a question 30), the
+  end without one, except Korean's unhyphenated ones (merged 2026-10-29).
+- Text rules answered on 2026-10-28 evening, built on `claude/text-rules-1028` and merged into `languages/main`
+  (`14c9b591`, 2026-10-29, together with the app fixes): the screen line-end separator (group 5b follow-up), straight quotes after a
+  full stop (5a question 30), the
   Czech era parted from a word ML Kit glues to it ("n.l.a" → "n.l. a", languages plan question 80), Thai sara am in
   two parts read as one only in recognized text (4c question 15). Checked on the emulator (ANK34, ANK36, ANK38, run
   log 2026-10-29). Not run: the instrumented `LanguageLookupTest` (its Thai case changed).
@@ -153,15 +154,17 @@ the details.
   form row also reaches keeps the row's chain only (13 (b), built on `languages/uz`); 14-16 as built. Open for the
   owner: question 17 (ə and ı tried for e and i after recognition), question 18 (Azerbaijani rule results beside an
   entry) and question 19 (the same for Uzbek), provisional and built. The next step, the languages plan's "Marks folded in the lookup" and
-  "Language flags in more places", is built on `languages/marks` (from `81654777`, `languages/main` merged in) for the
-  main session to check and merge (`plans/2026-10-29-folded-marks-and-flags.md`): every Latin- and Cyrillic-script
+  "Language flags in more places", was built on `languages/marks` and merged into `languages/main` (`a6fe33ca`,
+  2026-10-29; `plans/2026-10-29-folded-marks-and-flags.md`): every Latin- and Cyrillic-script
   language but Vietnamese keys headwords and form rows also without marks (the Hungarian and Estonian misread variants
   removed; Norwegian marks now also reach nb and nn dictionaries), text from recognition is also looked up folded, and
   flags stand in the language chips, the OCR model list, the download screen's title, the turned-off languages' cards
   and the first-run list. Checked on the emulator (run log 2026-10-29, `languages/marks`; the first-run list not).
   Open for the owner: the plan's question 1 (extra results through the fold: a third or more of running text in
   Italian, Portuguese, Spanish, Irish and French gets one or two below the words as written; Irish was looked up as
-  written by group 5b's question 11) and question 2 (the word forms import without the dictionary's headwords: Davom
+  written by group 5b's question 11; the folded keys also grow a dictionary's index, by up to 79% of its rows in
+  Hungarian, 76% in Turkish, 72% in Czech) and question 2 (the word forms import without the dictionary's
+  headwords: Davom
   finds davo "my" with uz–ru alone). Follow-up: 14 of Lingua Libre's Uzbek titles write ‘ for ʻ, so those
   recordings are not found. With uz–ru and the word forms alone, Davom finds davo with "my": the forms dictionary
   brings forms, not headwords, so the rule-only filter does not know davom (the import could keep the lemmas).
@@ -183,12 +186,12 @@ the details.
   Gaelic words.
 - Decided and built on 2026-10-28 night and 2026-10-29 (main session):
   - the bubble glyph is the first letter of the language's own name, and quick languages whose letters look alike
-    show their codes, Cyrillic ones in Cyrillic (`8f51b2db`; languages plan row "Bubble glyph"); BUB19 is not run on
-    the emulator yet;
+    show their codes, Cyrillic ones in Cyrillic (`8f51b2db`; languages plan row "Bubble glyph"); BUB19 passed on the
+    emulator (run log 2026-10-29);
   - Esperanto's frequency dictionary comes from Leipzig's web texts of 2012 (`cb3c1d7e`; DIC39 due again);
-  - language flags in more places are decided (languages plan row "Language flags in more places") and built on
-    `languages/marks`;
-  - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word;
+  - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
+  - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word. Group 5d (Bulgarian,
+    Mongolian, Macedonian) is being built on `languages/5d` from `a6fe33ca` by its research session;
   - a cloud session works through five backlog tasks (interface translation check, candidate interface languages,
     smaller language bundles, converter data, the right-to-left strings); its branches are checked and merged by the
     main session, the right-to-left strings only after the mirrored screens are checked on the emulator.
@@ -197,10 +200,11 @@ the details.
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
 - Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
 
-## App fixes from the owner's answers of 2026-10-28 evening (2026-10-29, `claude/app-fixes-1028`)
+## App fixes from the owner's answers of 2026-10-28 evening (2026-10-29, merged into `languages/main`)
 
-Built on `claude/app-fixes-1028` (from `languages/main`); the network timing also on `claude/network-timing-main`
-(from `main`). Plan: questions 72 (2), 77, 81-85 of the languages plan, question 16 of the group 4c plan.
+Built on `claude/app-fixes-1028` and merged into `languages/main` (`14c9b591`); the network timing also on `main`
+(`f4b33207`, from `claude/network-timing-main`). Plan: questions 72 (2), 77, 81-85 of the languages plan, question
+16 of the group 4c plan.
 - Downloads: a lost network gets 3 s to show (was 2 s) and the run waits 15 s for it (was 30 s).
 - The debug build's selection menu item is "Look up in Screenlate Dev" (`app/src/debug/res`, 14 locales).
 - The text detectors are one item, "PaddleOCR v6 text detector" (v5 the same), in every locale.
