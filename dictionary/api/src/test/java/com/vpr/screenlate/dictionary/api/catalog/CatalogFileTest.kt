@@ -104,12 +104,12 @@ class CatalogFileTest {
         assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw").inOrder()
         val swahili = built.single { it.sourceLanguage == "sw" }
         assertThat(swahili.recommended).isTrue()
-        assertThat(swahili.sha256).isEqualTo("05e41f4c58a27732bc223cac37155ee53b0b2e47c1815585428928456d7be1d5")
+        assertThat(swahili.sha256).isEqualTo("b46b072eab065bcc4a70ee2e13b1bc310b28d39e2b082434f611501b5bc26a1e")
         assertThat(swahili.downloadUrl)
-            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/swa_wikipedia_2021_100K.tar.gz")
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/swa_news_2020_30K.tar.gz")
         assertThat(swahili.oldTitles).containsExactly(CorpusCountsDictionary.title("sw"))
         assertThat(swahili.description(Locale.ENGLISH))
-            .startsWith("Leipzig Corpora Collection, Swahili: how common words are in Wikipedia")
+            .startsWith("Leipzig Corpora Collection, Swahili: how common words are in news")
         val esperanto = built.single { it.sourceLanguage == "eo" }
         assertThat(esperanto.recommended).isTrue()
         assertThat(esperanto.sha256).isEqualTo("afc637eeb783189b43dd646525b5ca61e45115b9143d67d7d022c42ecafcd620")

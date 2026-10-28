@@ -190,12 +190,12 @@ class CorpusCountsDictionaryTest {
         val source = folder.newFile().apply { writeBytes(tarGz("swa/swa-words.txt" to list)) }
         val output = folder.newFile()
 
-        assertThat(CorpusCountsDictionary.build(source, "sw", "2021", output)).isEqualTo(3)
+        assertThat(CorpusCountsDictionary.build(source, "sw", "2020", output)).isEqualTo(3)
         ZipFile(output).use { zip ->
             val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
             assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("Leipzig Corpora Collection (sw)")
             assertThat(index["attribution"]!!.jsonPrimitive.content)
-                .startsWith("Word counts of the Swahili Wikipedia of 2021 (swa_wikipedia_2021_100K)")
+                .startsWith("Word counts of the Swahili news of 2020 (swa_news_2020_30K)")
             val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
             assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
                 .containsExactly("na" to 1, "Na" to 1, "ya" to 2, "Ya" to 2, "ng'ombe" to 3, "Ng'ombe" to 3).inOrder()

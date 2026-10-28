@@ -2099,7 +2099,7 @@
     {
       "id": "corpus-sw",
       "title": "Leipzig Corpora Collection (sw)",
-      "template": "leipzig-wikipedia",
+      "template": "leipzig",
       "oldTitles": [
         "Leipzig Corpora Collection (sw)"
       ],
@@ -2107,11 +2107,11 @@
       "category": "FREQUENCY",
       "sourceLanguage": "sw",
       "recommended": true,
-      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/swa_wikipedia_2021_100K.tar.gz",
-      "downloadSize": 18605546,
-      "sha256": "05e41f4c58a27732bc223cac37155ee53b0b2e47c1815585428928456d7be1d5",
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/swa_news_2020_30K.tar.gz",
+      "downloadSize": 8253848,
+      "sha256": "b46b072eab065bcc4a70ee2e13b1bc310b28d39e2b082434f611501b5bc26a1e",
       "build": "corpus-counts",
-      "version": "2021",
+      "version": "2020",
       "license": "CC BY",
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },

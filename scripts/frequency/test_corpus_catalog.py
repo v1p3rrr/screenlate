@@ -89,13 +89,13 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(entry["downloadUrl"],
                          "https://downloads.wortschatz-leipzig.de/corpora/sqi_news_2020_100K.tar.gz")
 
-    def test_the_swahili_entry_is_the_leipzig_wikipedia_archive(self):
+    def test_the_swahili_entry_is_the_leipzig_news_archive(self):
         entry = catalog.entry("sw", catalog.CORPORA["sw"], b"x")
         self.assertEqual(entry["id"], "corpus-sw")
-        self.assertEqual(entry["template"], "leipzig-wikipedia")
-        self.assertEqual(entry["version"], "2021")
+        self.assertEqual(entry["template"], "leipzig")
+        self.assertEqual(entry["version"], "2020")
         self.assertEqual(entry["downloadUrl"],
-                         "https://downloads.wortschatz-leipzig.de/corpora/swa_wikipedia_2021_100K.tar.gz")
+                         "https://downloads.wortschatz-leipzig.de/corpora/swa_news_2020_30K.tar.gz")
 
     def test_the_kazakh_entry_is_the_leipzig_archive(self):
         entry = catalog.entry("kk", catalog.CORPORA["kk"], b"x")

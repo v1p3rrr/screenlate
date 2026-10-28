@@ -57,7 +57,7 @@ object CorpusCountsDictionary {
         "la" to leipzig("Latin", "lat_wikipedia_2021_100K", texts = "Wikipedia of 2021"),
         "eo" to leipzig("Esperanto", "epo_wikipedia_2021_100K", texts = "Wikipedia of 2021"),
         "sq" to leipzig("Albanian", "sqi_news_2020_100K", texts = "news of 2020"),
-        "sw" to leipzig("Swahili", "swa_wikipedia_2021_100K", texts = "Wikipedia of 2021"),
+        "sw" to leipzig("Swahili", "swa_news_2020_30K", texts = "news of 2020"),
     )
 
     /** The Leipzig archive [corpus] of [language]'s [texts]. */
