@@ -133,7 +133,7 @@ the details.
   full stop (5a question 30), the
   Czech era parted from a word ML Kit glues to it ("n.l.a" → "n.l. a", languages plan question 80), Thai sara am in
   two parts read as one only in recognized text (4c question 15). Checked on the emulator (ANK34, ANK36, ANK38, run
-  log 2026-10-29). Not run: the instrumented `LanguageLookupTest` (its Thai case changed).
+  log 2026-10-29). The instrumented `LanguageLookupTest` (its Thai case changed) passed after the merge (2026-10-29).
 - Group 5c (`plans/2026-10-19-group-5c.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge, in the order Finnish (`languages/fi`), Hungarian (`languages/hu`), Estonian (`languages/et`),
   Azerbaijani (`languages/az`, rebased by the main session as `17336e2e`), Uzbek (`languages/uz`, `81654777`): all
@@ -192,9 +192,12 @@ the details.
   - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
   - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word. Group 5d (Bulgarian,
     Mongolian, Macedonian) is being built on `languages/5d` from `a6fe33ca` by its research session;
-  - a cloud session works through five backlog tasks (interface translation check, candidate interface languages,
-    smaller language bundles, converter data, the right-to-left strings); its branches are checked and merged by the
-    main session, the right-to-left strings only after the mirrored screens are checked on the emulator.
+  - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
+    translation check, candidate interface languages, smaller language bundles, converter data) is merged into
+    `languages/main` (`3e82e306`; every bundle rebuilt from the merged sources, the 5c, marks and az/uz bundles shrank
+    by 25-28 KB too; 1,909 unit tests, lint, the engine's instrumented tests 68 of 68 with the text rules' Thai case).
+    Strings added after `772bbad7` did not go through the translation check. The right-to-left strings are being
+    brought onto `languages/main` and checked on the emulator on `claude/rtl-1029`.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
