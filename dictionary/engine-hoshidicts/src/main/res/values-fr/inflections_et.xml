@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">négation</string>
+    <string name="inflection_et_negative">négation d’olema : pole, polnud, poleks, poldud, polevat (pole d’olema)</string>
+</resources>

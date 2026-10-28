@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">否定</string>
+    <string name="inflection_et_negative">olema の否定形：pole、polnud、poleks、poldud、polevat（olema → pole）</string>
+</resources>

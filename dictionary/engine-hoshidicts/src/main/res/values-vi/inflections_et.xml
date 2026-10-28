@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">phủ định</string>
+    <string name="inflection_et_negative">phủ định của olema: pole, polnud, poleks, poldud, polevat (pole từ olema)</string>
+</resources>

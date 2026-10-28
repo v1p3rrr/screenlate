@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">eksiklik</string>
     <string name="form_of_tag_infinitive">mastar</string>
     <string name="form_of_tag_infinitive_aorist">aorist mastarı</string>
+    <string name="form_of_tag_infinitive_da">-da biçimi</string>
     <string name="form_of_tag_infinitive_i">birinci mastar</string>
     <string name="form_of_tag_infinitive_i_long">uzun birinci mastar</string>
     <string name="form_of_tag_infinitive_ii">ikinci mastar</string>
     <string name="form_of_tag_infinitive_iii">üçüncü mastar</string>
     <string name="form_of_tag_infinitive_iv">dördüncü mastar</string>
+    <string name="form_of_tag_infinitive_ma">-ma biçimi</string>
     <string name="form_of_tag_infinitive_v">beşinci mastar</string>
     <string name="form_of_tag_infinitive_zu">zu ile</string>
     <string name="form_of_tag_informal">gayriresmî</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">önerilmeyen</string>
     <string name="form_of_tag_prospective">gelecek</string>
     <string name="form_of_tag_quebec">Quebec</string>
+    <string name="form_of_tag_quotative">aktarma kipi</string>
     <string name="form_of_tag_rare">nadir</string>
     <string name="form_of_tag_reciprocal">işteş</string>
     <string name="form_of_tag_reduplication">ikileme</string>

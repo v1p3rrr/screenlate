@@ -545,6 +545,7 @@
     <string name="popup_font_script_only_gd">Только для текста на шотландском гэльском</string>
     <string name="popup_font_script_only_fi">Только для финского текста</string>
     <string name="popup_font_script_only_hu">Только для венгерского текста</string>
+    <string name="popup_font_script_only_et">Только для эстонского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

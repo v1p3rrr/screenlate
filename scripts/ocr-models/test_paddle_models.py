@@ -51,6 +51,10 @@ class EntriesTest(unittest.TestCase):
         hungarian = [e["model"] for e in built if e["sourceLanguage"] == "hu"]
         self.assertEqual(hungarian, ["paddle-v6", "paddle-latin", "paddle-detector-v6", "paddle-detector-v5"])
         self.assertFalse(any(e["recommended"] for e in built if e["sourceLanguage"] == "hu"))
+        # Estonian: v6 0.43% of the characters wrong against ML Kit's 1.33%; v5 0.80% is marked no more.
+        estonian = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == "et"}
+        self.assertEqual(estonian, {"paddle-v6": True, "paddle-latin": False, "paddle-detector-v6": False,
+                                    "paddle-detector-v5": False})
 
     def test_describes_an_archive_with_its_checksum(self):
         entry = paddle.entry("paddle-v6", "ja", "paddle-v6", b"zip", "paddle-detector-v6", True)

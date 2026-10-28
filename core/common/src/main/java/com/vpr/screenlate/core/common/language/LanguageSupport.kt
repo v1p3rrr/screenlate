@@ -570,6 +570,7 @@ val Language.support: LanguageSupport
         Language.SCOTTISH_GAELIC -> GaelicSupport
         Language.FINNISH -> FinnishSupport
         Language.HUNGARIAN -> HungarianSupport
+        Language.ESTONIAN -> EstonianSupport
     }
 
 /**

@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">niższości</string>
     <string name="form_of_tag_infinitive">bezokolicznik</string>
     <string name="form_of_tag_infinitive_aorist">bezokolicznik aorystu</string>
+    <string name="form_of_tag_infinitive_da">na -da</string>
     <string name="form_of_tag_infinitive_i">I bezokolicznik</string>
     <string name="form_of_tag_infinitive_i_long">długi I bezokolicznik</string>
     <string name="form_of_tag_infinitive_ii">II bezokolicznik</string>
     <string name="form_of_tag_infinitive_iii">III bezokolicznik</string>
     <string name="form_of_tag_infinitive_iv">IV bezokolicznik</string>
+    <string name="form_of_tag_infinitive_ma">na -ma</string>
     <string name="form_of_tag_infinitive_v">V bezokolicznik</string>
     <string name="form_of_tag_infinitive_zu">z zu</string>
     <string name="form_of_tag_informal">nieformalny</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">niezalecany</string>
     <string name="form_of_tag_prospective">prospektywny</string>
     <string name="form_of_tag_quebec">Quebec</string>
+    <string name="form_of_tag_quotative">tryb pośredni</string>
     <string name="form_of_tag_rare">rzadki</string>
     <string name="form_of_tag_reciprocal">wzajemny</string>
     <string name="form_of_tag_reduplication">reduplikacja</string>

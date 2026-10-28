@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">부정</string>
+    <string name="inflection_et_negative">olema의 부정형: pole, polnud, poleks, poldud, polevat (olema → pole)</string>
+</resources>

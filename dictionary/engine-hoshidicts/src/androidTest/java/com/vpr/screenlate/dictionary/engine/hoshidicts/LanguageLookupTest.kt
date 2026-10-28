@@ -1311,6 +1311,55 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun estonianNegativeFormsOfOlemaFindTheirOwnEntryThenTheVerb() = runTest {
+        val imported = engine.import(estonianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val estonian = LookupOptions(language = Language.ESTONIAN)
+        suspend fun all(text: String, options: LookupOptions = estonian) =
+            engine.lookup(text, options).map { it.term.expression }.distinct()
+
+        // pole has an entry of its own, which comes first; olema follows through the negative rule.
+        assertThat(all("pole")).containsExactly("pole", "olema").inOrder()
+        val verb = engine.lookup("pole", estonian).first { it.term.expression == "olema" }
+        assertThat(verb.trace.map { it.name }).containsExactly("negative")
+        assertThat(verb.trace.map { it.label }).doesNotContain("")
+        assertThat(all("Polnud")).containsExactly("polnud", "olema").inOrder()
+        assertThat(all("poleks")).contains("olema")
+        // The rule reaches verbs only, and whole words only.
+        assertThat(all("on")).containsExactly("olema")
+        assertThat(engine.lookup("polegi", estonian)).isEmpty()
+
+        // õ that recognition read as ö is tried for words from OCR only, the word as read first.
+        val ocr = estonian.copy(fromOcr = true)
+        assertThat(engine.lookup("möte", estonian)).isEmpty()
+        assertThat(all("möte", ocr)).containsExactly("mõte")
+        assertThat(all("öö", ocr)).containsExactly("öö")
+        assertThat(all("-ga")).containsExactly("-ga")
+    }
+
+    /**
+     * Rows as Wiktionary's Estonian export writes them: no rules, the part of speech in the tags; pole and polnud
+     * entries of their own, poleks a spelling of "ei oleks", olema's table as form-of rows.
+     */
+    private fun estonianDictionary(): File = zip(
+        "et.zip",
+        "index.json" to """{"title":"Test Estonian","revision":"1","format":3,"sourceLanguage":"et"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["olema","","v","",0,["to be"],1,""],
+              ["on","","non-lemma","",0,[["olema",["third-person singular present indicative"]]],2,""],
+              ["pole","","v abbv contr","",0,["is not"],3,""],
+              ["polnud","","v contr","",0,["was not"],4,""],
+              ["poleks","","non-lemma","",0,[["ei oleks",["alt-of"]]],5,""],
+              ["ei oleks","","v","",0,["would not be"],6,""],
+              ["mõte","","n","",0,["thought"],7,""],
+              ["öö","","n","",0,["night"],8,""],
+              ["-ga","","suf","",0,["with"],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

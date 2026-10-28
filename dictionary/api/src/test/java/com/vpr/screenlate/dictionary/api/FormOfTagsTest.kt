@@ -89,6 +89,17 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `estonian moods and infinitives are translated`() {
+        assertThat(label("perfect passive negative quotative")).isEqualTo("perfect passive negative quotative")
+        assertThat(label("present infinitive infinitive-da")).isEqualTo("present infinitive infinitive_da")
+        assertThat(label("active infinitive inessive infinitive-ma")).isEqualTo("active infinitive inessive infinitive_ma")
+        assertThat(label("da-infinitive")).isEqualTo("infinitive_da")
+        assertThat(label("first/second/third-person plural present indicative negative"))
+            .isEqualTo("first_person/second_person/third_person plural present indicative negative")
+        assertThat(label("singular terminative")).isEqualTo("singular terminative")
+    }
+
+    @Test
     fun `gloss left after two spaces is cut off`() {
         assertThat(FormOfTags.clean("hanja form   the Korean language”)")).isEqualTo("hanja form")
         assertThat(FormOfTags.clean("hanja form  ”)")).isEqualTo("hanja form")

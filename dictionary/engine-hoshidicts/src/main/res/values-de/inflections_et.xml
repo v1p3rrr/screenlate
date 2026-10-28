@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">Verneinung</string>
+    <string name="inflection_et_negative">Verneinung von olema: pole, polnud, poleks, poldud, polevat (pole von olema)</string>
+</resources>

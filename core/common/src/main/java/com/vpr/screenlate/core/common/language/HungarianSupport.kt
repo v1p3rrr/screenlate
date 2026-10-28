@@ -5,7 +5,7 @@ import com.vpr.screenlate.core.common.Language
 /**
  * Hungarian. Wiktionary's English edition lists the case and verb forms; the bundle adds the app's own rule for verb
  * prefixes, as the tables list the forms of the bare verb only (megtartottam → tartottam, a form of tart), tried only
- * where the text has no entry of its own. Words from OCR are also tried with ő and ű for ö and ü, which recognition
+ * where the text has no entry of its own. Words from OCR are also tried with ő and ű for ö, ü and ú, which recognition
  * reads them as (füzfa → fűzfa); app text and typed text are looked up as written. Long compounds are split into the
  * words they are made of ([compoundLinks]). An ending after a number or an abbreviation in capitals with a hyphen
  * (2023-ban, EU-ban) is also looked up with the hyphen.

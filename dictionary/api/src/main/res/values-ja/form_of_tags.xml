@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">劣等</string>
     <string name="form_of_tag_infinitive">不定詞</string>
     <string name="form_of_tag_infinitive_aorist">アオリスト不定詞</string>
+    <string name="form_of_tag_infinitive_da">-da 形</string>
     <string name="form_of_tag_infinitive_i">第一不定詞</string>
     <string name="form_of_tag_infinitive_i_long">第一不定詞長形</string>
     <string name="form_of_tag_infinitive_ii">第二不定詞</string>
     <string name="form_of_tag_infinitive_iii">第三不定詞</string>
     <string name="form_of_tag_infinitive_iv">第四不定詞</string>
+    <string name="form_of_tag_infinitive_ma">-ma 形</string>
     <string name="form_of_tag_infinitive_v">第五不定詞</string>
     <string name="form_of_tag_infinitive_zu">zu 付き</string>
     <string name="form_of_tag_informal">くだけた</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">非推奨</string>
     <string name="form_of_tag_prospective">予期</string>
     <string name="form_of_tag_quebec">ケベック</string>
+    <string name="form_of_tag_quotative">伝聞法</string>
     <string name="form_of_tag_rare">まれ</string>
     <string name="form_of_tag_reciprocal">相互</string>
     <string name="form_of_tag_reduplication">畳語</string>

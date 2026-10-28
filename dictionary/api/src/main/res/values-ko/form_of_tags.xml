@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">열등</string>
     <string name="form_of_tag_infinitive">부정사</string>
     <string name="form_of_tag_infinitive_aorist">부정과거 부정사</string>
+    <string name="form_of_tag_infinitive_da">-da 형</string>
     <string name="form_of_tag_infinitive_i">제1부정사</string>
     <string name="form_of_tag_infinitive_i_long">제1부정사 장형</string>
     <string name="form_of_tag_infinitive_ii">제2부정사</string>
     <string name="form_of_tag_infinitive_iii">제3부정사</string>
     <string name="form_of_tag_infinitive_iv">제4부정사</string>
+    <string name="form_of_tag_infinitive_ma">-ma 형</string>
     <string name="form_of_tag_infinitive_v">제5부정사</string>
     <string name="form_of_tag_infinitive_zu">zu 포함</string>
     <string name="form_of_tag_informal">비격식체</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">비표준</string>
     <string name="form_of_tag_prospective">예정</string>
     <string name="form_of_tag_quebec">퀘벡</string>
+    <string name="form_of_tag_quotative">전언법</string>
     <string name="form_of_tag_rare">드묾</string>
     <string name="form_of_tag_reciprocal">상호</string>
     <string name="form_of_tag_reduplication">첩어</string>

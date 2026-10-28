@@ -133,6 +133,12 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `estonian takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.ESTONIAN) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
     fun `hungarian takes every latin font`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.HUNGARIAN) }.map { it.family })
             .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")

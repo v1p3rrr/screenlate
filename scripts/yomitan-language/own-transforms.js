@@ -1660,6 +1660,48 @@ export const hungarianTransforms = {
 };
 
 /**
+ * The negative forms of olema that Wiktionary lists apart from its table: present, past, conditional, impersonal past
+ * and quotative.
+ */
+const ESTONIAN_NEGATIVES = ['pole', 'polnud', 'poleks', 'poldud', 'polevat'];
+
+/**
+ * A negative form of olema, the whole word, as olema.
+ * @param {string} form
+ * @returns {import('language-transformer').Rule<'v'>}
+ */
+function estonianNegative(form) {
+    return {
+        type: 'wholeWord',
+        isInflected: new RegExp(`^${form}$`),
+        deinflect: () => 'olema',
+        conditionsIn: [],
+        conditionsOut: ['v'],
+    };
+}
+
+/**
+ * Estonian negative forms of olema "to be", which join ei with the verb (pole "is not", polnud "was not"): Wiktionary
+ * lists them as words of their own or as spellings of "ei ole" and the like, not as forms of olema, so each is also
+ * tried as olema, with the rule named in the chain. The text matches verbs only (glue.js, `taggedRules`); pole's own
+ * entry comes first.
+ * @type {import('language-transformer').LanguageTransformDescriptor<'v'>}
+ */
+export const estonianTransforms = {
+    language: 'et',
+    conditions: {
+        v: {name: 'Verb', isDictionaryForm: true},
+    },
+    transforms: {
+        negative: {
+            name: 'negative',
+            description: 'negative of olema: pole, polnud, poleks, poldud, polevat (pole from olema)',
+            rules: ESTONIAN_NEGATIVES.map(estonianNegative),
+        },
+    },
+};
+
+/**
  * [own] in place of Yomitan's descriptor of a language, with Yomitan's conditions, which [own]'s rules give; Yomitan's
  * rules are dropped.
  * @template {string} T

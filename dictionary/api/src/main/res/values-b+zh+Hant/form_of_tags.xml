@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">劣等</string>
     <string name="form_of_tag_infinitive">不定式</string>
     <string name="form_of_tag_infinitive_aorist">不定過去時不定式</string>
+    <string name="form_of_tag_infinitive_da">-da 形式</string>
     <string name="form_of_tag_infinitive_i">第一不定式</string>
     <string name="form_of_tag_infinitive_i_long">第一不定式長形</string>
     <string name="form_of_tag_infinitive_ii">第二不定式</string>
     <string name="form_of_tag_infinitive_iii">第三不定式</string>
     <string name="form_of_tag_infinitive_iv">第四不定式</string>
+    <string name="form_of_tag_infinitive_ma">-ma 形式</string>
     <string name="form_of_tag_infinitive_v">第五不定式</string>
     <string name="form_of_tag_infinitive_zu">帶 zu</string>
     <string name="form_of_tag_informal">非正式</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">不規範</string>
     <string name="form_of_tag_prospective">將然</string>
     <string name="form_of_tag_quebec">魁北克</string>
+    <string name="form_of_tag_quotative">轉述式</string>
     <string name="form_of_tag_rare">罕用</string>
     <string name="form_of_tag_reciprocal">相互</string>
     <string name="form_of_tag_reduplication">疊詞</string>

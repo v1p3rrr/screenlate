@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">olumsuz biçim</string>
+    <string name="inflection_et_negative">olema fiilinin olumsuz biçimi: pole, polnud, poleks, poldud, polevat (olema → pole)</string>
+</resources>

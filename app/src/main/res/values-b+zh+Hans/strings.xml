@@ -532,6 +532,7 @@
     <string name="popup_font_script_only_gd">仅用于苏格兰盖尔语文字</string>
     <string name="popup_font_script_only_fi">仅用于芬兰语文字</string>
     <string name="popup_font_script_only_hu">仅用于匈牙利语文字</string>
+    <string name="popup_font_script_only_et">仅用于爱沙尼亚语文字</string>
     <string name="popup_font_system_zh">手机自带的中文字体</string>
     <string name="popup_font_system_ko">手机自带的韩文字体</string>
     <string name="popup_font_script_only_zh">仅用于中文文字</string>

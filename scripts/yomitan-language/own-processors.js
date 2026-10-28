@@ -290,26 +290,50 @@ export const hungarianMisreadDoubleAcute = {
     name: 'Misread double acute',
     description: 'füzfa, fúzfa → fűzfa, öt → őt',
     ocrOnly: true,
-    process: (str) => {
-        const word = /^[\p{L}\p{M}]*/u.exec(str)[0];
-        const places = [];
-        for (let i = 0; i < word.length && places.length < HUNGARIAN_MISREAD_PLACES; i++) {
-            if (word[i] in HUNGARIAN_DOUBLE_ACUTE) { places.push(i); }
-        }
-        const out = [str];
-        for (let set = 1; set < 1 << places.length; set++) {
-            const letters = str.split('');
-            places.forEach((at, bit) => {
-                if (set & (1 << bit)) { letters[at] = HUNGARIAN_DOUBLE_ACUTE[letters[at]]; }
-            });
-            out.push(letters.join(''));
-        }
-        return out;
-    },
+    process: (str) => withMisreadLetters(str, HUNGARIAN_DOUBLE_ACUTE),
 };
 
-/** The most ö, ü and ú of a word tried as ő and ű: seven texts besides the one as read. */
-const HUNGARIAN_MISREAD_PLACES = 3;
+/**
+ * Estonian õ, which recognition reads as ö (möte for mõte, vöi for või): the text's first word is also tried with õ for
+ * its first three ö, every combination of them, as read first, so öö still finds öö. For words from OCR only
+ * (`ocrOnly`, glue.js): app text and typed text are looked up as written.
+ * @type {import('language').TextProcessor & {ocrOnly: true}}
+ */
+export const estonianMisreadTilde = {
+    name: 'Misread tilde',
+    description: 'möte → mõte, vöi → või',
+    ocrOnly: true,
+    process: (str) => withMisreadLetters(str, ESTONIAN_TILDE),
+};
+
+const ESTONIAN_TILDE = {ö: 'õ', Ö: 'Õ'};
+
+/**
+ * [str] as read, then with the letters [misread] maps put right in its first word, at the first [MISREAD_PLACES] of
+ * them, every combination: seven texts at most besides the one as read.
+ * @param {string} str
+ * @param {Record<string, string>} misread
+ * @returns {string[]}
+ */
+function withMisreadLetters(str, misread) {
+    const word = /^[\p{L}\p{M}]*/u.exec(str)[0];
+    const places = [];
+    for (let i = 0; i < word.length && places.length < MISREAD_PLACES; i++) {
+        if (word[i] in misread) { places.push(i); }
+    }
+    const out = [str];
+    for (let set = 1; set < 1 << places.length; set++) {
+        const letters = str.split('');
+        places.forEach((at, bit) => {
+            if (set & (1 << bit)) { letters[at] = misread[letters[at]]; }
+        });
+        out.push(letters.join(''));
+    }
+    return out;
+}
+
+/** The most misread letters of a word tried as the letters meant. */
+const MISREAD_PLACES = 3;
 
 const HUNGARIAN_DOUBLE_ACUTE = {ö: 'ő', ü: 'ű', ú: 'ű', Ö: 'Ő', Ü: 'Ű', Ú: 'Ű'};
 

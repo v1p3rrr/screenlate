@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">de inferioridade</string>
     <string name="form_of_tag_infinitive">infinitivo</string>
     <string name="form_of_tag_infinitive_aorist">infinitivo aoristo</string>
+    <string name="form_of_tag_infinitive_da">em -da</string>
     <string name="form_of_tag_infinitive_i">primeiro infinitivo</string>
     <string name="form_of_tag_infinitive_i_long">primeiro infinitivo longo</string>
     <string name="form_of_tag_infinitive_ii">segundo infinitivo</string>
     <string name="form_of_tag_infinitive_iii">terceiro infinitivo</string>
     <string name="form_of_tag_infinitive_iv">quarto infinitivo</string>
+    <string name="form_of_tag_infinitive_ma">em -ma</string>
     <string name="form_of_tag_infinitive_v">quinto infinitivo</string>
     <string name="form_of_tag_infinitive_zu">com zu</string>
     <string name="form_of_tag_informal">informal</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">desaconselhado</string>
     <string name="form_of_tag_prospective">prospectivo</string>
     <string name="form_of_tag_quebec">Quebec</string>
+    <string name="form_of_tag_quotative">quotativo</string>
     <string name="form_of_tag_rare">raro</string>
     <string name="form_of_tag_reciprocal">recíproco</string>
     <string name="form_of_tag_reduplication">reduplicação</string>

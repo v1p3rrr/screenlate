@@ -99,9 +99,17 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian and swahili have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili and estonian have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et").inOrder()
+        val estonian = built.single { it.sourceLanguage == "et" }
+        assertThat(estonian.recommended).isTrue()
+        assertThat(estonian.sha256).isEqualTo("399cf09f698aeb0ffec1e63ddc870b50f15a2394723fed3dcb85d0c697aecce0")
+        assertThat(estonian.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/est_news_2020_100K.tar.gz")
+        assertThat(estonian.oldTitles).containsExactly(CorpusCountsDictionary.title("et"))
+        assertThat(estonian.description(Locale.ENGLISH))
+            .startsWith("Leipzig Corpora Collection, Estonian: how common words are in news")
         val swahili = built.single { it.sourceLanguage == "sw" }
         assertThat(swahili.recommended).isTrue()
         assertThat(swahili.sha256).isEqualTo("b46b072eab065bcc4a70ee2e13b1bc310b28d39e2b082434f611501b5bc26a1e")
@@ -408,6 +416,24 @@ class CatalogFileTest {
         )
         assertThat(gaelic.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.SCOTTISH_GAELIC) }).isEqualTo(gaelic)
+    }
+
+    @Test
+    fun `estonian offers its wiktionaries, their word forms and frequencies, ticked, the forms mandatory, and paddle v6 ticked`() {
+        val estonian = catalog!!.entries.filter { it.isFor(Language.ESTONIAN) }
+        assertThat(estonian.filter { it.recommended }.map { it.id }).containsExactly(
+            "corpus-et", "paddle-v6-et", "wiktionary-et-en", "wiktionary-et-forms", "wiktionary-et-ru", "wiktionary-et-fr",
+            "wiktionary-et-ko", "wiktionary-et-pl", "wiktionary-et-tr", "wiktionary-et-zh", "wiktionary-et-transcription",
+        )
+        // Paddle v6 got 0.43% of the characters wrong against ML Kit's 1.33%; the rest are offered unticked.
+        assertThat(estonian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-est", "tesseract-best-est", "paddle-latin-et", "paddle-detector-v6-et", "paddle-detector-v5-et",
+        )
+        val forms = estonian.single { it.category == CatalogCategory.FORMS }
+        assertThat(forms.build).isEqualTo(BUILD_FORMS)
+        assertThat(forms.downloadUrl).isEqualTo(estonian.single { it.id == "wiktionary-et-en" }.downloadUrl)
+        assertThat(catalog!!.mandatory(Language.ESTONIAN)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.ESTONIAN) }).isEqualTo(estonian)
     }
 
     @Test

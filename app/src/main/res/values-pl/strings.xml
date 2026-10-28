@@ -544,6 +544,7 @@
     <string name="popup_font_script_only_gd">Tylko dla tekstu szkockiego gaelickiego</string>
     <string name="popup_font_script_only_fi">Tylko dla tekstu fińskiego</string>
     <string name="popup_font_script_only_hu">Tylko dla tekstu węgierskiego</string>
+    <string name="popup_font_script_only_et">Tylko dla tekstu estońskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

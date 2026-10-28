@@ -59,8 +59,8 @@ const borrowed = {
  * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al); Swahili writes ng' so
  * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r), Irish and Scottish Gaelic their elided words (d'fhág, dh'fhàg);
  * Irish in Gaelic type writes lenition as a dot (ḃean for bhean), and Scottish Gaelic in its older spelling some
- * long vowels with the acute (mór for mòr); recognition reads Hungarian ő and ű as ö and ü. Processors join the
- * descriptor's capitalization processors, its own list, or make its list.
+ * long vowels with the acute (mór for mòr); recognition reads Hungarian ő and ű as ö and ü, Estonian õ as ö.
+ * Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -83,6 +83,7 @@ const addedPreprocessors = {
     ga: ['ukrainianApostropheVariants', 'irishDottedConsonants'],
     gd: ['ukrainianApostropheVariants', 'gaelicAcuteAsGrave'],
     hu: ['hungarianMisreadDoubleAcute'],
+    et: ['estonianMisreadTilde'],
 };
 
 /**
@@ -105,6 +106,7 @@ const addedTransforms = {
     gd: 'gaelicMutations',
     fi: 'finnishTransforms',
     hu: 'hungarianTransforms',
+    et: 'estonianTransforms',
 };
 
 /**

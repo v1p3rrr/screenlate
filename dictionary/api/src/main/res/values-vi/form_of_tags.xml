@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">kém</string>
     <string name="form_of_tag_infinitive">nguyên mẫu</string>
     <string name="form_of_tag_infinitive_aorist">nguyên mẫu aorist</string>
+    <string name="form_of_tag_infinitive_da">dạng -da</string>
     <string name="form_of_tag_infinitive_i">nguyên mẫu thứ nhất</string>
     <string name="form_of_tag_infinitive_i_long">nguyên mẫu thứ nhất dạng dài</string>
     <string name="form_of_tag_infinitive_ii">nguyên mẫu thứ hai</string>
     <string name="form_of_tag_infinitive_iii">nguyên mẫu thứ ba</string>
     <string name="form_of_tag_infinitive_iv">nguyên mẫu thứ tư</string>
+    <string name="form_of_tag_infinitive_ma">dạng -ma</string>
     <string name="form_of_tag_infinitive_v">nguyên mẫu thứ năm</string>
     <string name="form_of_tag_infinitive_zu">với zu</string>
     <string name="form_of_tag_informal">thân mật</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">không chuẩn</string>
     <string name="form_of_tag_prospective">tương lai</string>
     <string name="form_of_tag_quebec">Québec</string>
+    <string name="form_of_tag_quotative">thức thuật lại</string>
     <string name="form_of_tag_rare">hiếm</string>
     <string name="form_of_tag_reciprocal">tương hỗ</string>
     <string name="form_of_tag_reduplication">từ láy</string>

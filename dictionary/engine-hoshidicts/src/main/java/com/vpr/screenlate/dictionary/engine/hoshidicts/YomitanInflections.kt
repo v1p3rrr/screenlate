@@ -961,6 +961,9 @@ internal object YomitanInflections {
         "hu" to mapOf(
             "prefix" to Strings(R.string.inflection_hu_prefix_label, R.string.inflection_hu_prefix),
         ),
+        "et" to mapOf(
+            "negative" to Strings(R.string.inflection_et_negative_label, R.string.inflection_et_negative),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

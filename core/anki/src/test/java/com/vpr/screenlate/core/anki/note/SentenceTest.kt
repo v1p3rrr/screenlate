@@ -284,6 +284,20 @@ class SentenceTest {
     }
 
     @Test
+    fun estonianSentenceKeepsDatesOrdinalsAndAbbreviationsAndEndsAtJneBeforeACapital() {
+        val paragraph = "Sadas. 2020. a. lõpus ostsime u. 5 kg õunu, pirne jne. Maja ehitati 19. sajandil. " +
+            "Vt lk. 5, v.a. Tartu. Pole hullu."
+        assertThat(extract(paragraph, "õunu", Language.ESTONIAN).text)
+            .isEqualTo("2020. a. lõpus ostsime u. 5 kg õunu, pirne jne.")
+        assertThat(extract(paragraph, "ehitati", Language.ESTONIAN).text).isEqualTo("Maja ehitati 19. sajandil.")
+        assertThat(extract(paragraph, "Tartu", Language.ESTONIAN).text).isEqualTo("Vt lk. 5, v.a. Tartu.")
+        assertThat(extract(paragraph, "hullu", Language.ESTONIAN).text).isEqualTo("Pole hullu.")
+        // „…“ closes with the character English opens with.
+        val quoted = "Sadas. Ta ütles „Jah.“ ja lahkus. Siis tuli päike."
+        assertThat(extract(quoted, "lahkus", Language.ESTONIAN).text).isEqualTo("Ta ütles „Jah.“ ja lahkus.")
+    }
+
+    @Test
     fun hungarianSentenceKeepsDatesOrdinalsAndAbbreviationsAndEndsAtStbBeforeACapital() {
         val paragraph = "Esett. 2023. május 3-án gyümölcsöt vettem, pl. almát és körtét stb. A ház a 19. sz. végén " +
             "épült. Ld. a kb. 5. oldalt. Minden rendben."

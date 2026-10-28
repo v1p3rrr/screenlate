@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">przeczenie</string>
+    <string name="inflection_et_negative">przeczenie od olema: pole, polnud, poleks, poldud, polevat (pole od olema)</string>
+</resources>

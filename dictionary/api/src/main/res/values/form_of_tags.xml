@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">inferior</string>
     <string name="form_of_tag_infinitive">infinitive</string>
     <string name="form_of_tag_infinitive_aorist">aorist infinitive</string>
+    <string name="form_of_tag_infinitive_da">in -da</string>
     <string name="form_of_tag_infinitive_i">first infinitive</string>
     <string name="form_of_tag_infinitive_i_long">long first infinitive</string>
     <string name="form_of_tag_infinitive_ii">second infinitive</string>
     <string name="form_of_tag_infinitive_iii">third infinitive</string>
     <string name="form_of_tag_infinitive_iv">fourth infinitive</string>
+    <string name="form_of_tag_infinitive_ma">in -ma</string>
     <string name="form_of_tag_infinitive_v">fifth infinitive</string>
     <string name="form_of_tag_infinitive_zu">with zu</string>
     <string name="form_of_tag_informal">informal</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">proscribed</string>
     <string name="form_of_tag_prospective">prospective</string>
     <string name="form_of_tag_quebec">Quebec</string>
+    <string name="form_of_tag_quotative">quotative</string>
     <string name="form_of_tag_rare">rare</string>
     <string name="form_of_tag_reciprocal">reciprocal</string>
     <string name="form_of_tag_reduplication">reduplication</string>

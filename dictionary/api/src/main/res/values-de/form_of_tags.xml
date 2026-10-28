@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">Unterlegenheit</string>
     <string name="form_of_tag_infinitive">Infinitiv</string>
     <string name="form_of_tag_infinitive_aorist">Aoristinfinitiv</string>
+    <string name="form_of_tag_infinitive_da">auf -da</string>
     <string name="form_of_tag_infinitive_i">1. Infinitiv</string>
     <string name="form_of_tag_infinitive_i_long">langer 1. Infinitiv</string>
     <string name="form_of_tag_infinitive_ii">2. Infinitiv</string>
     <string name="form_of_tag_infinitive_iii">3. Infinitiv</string>
     <string name="form_of_tag_infinitive_iv">4. Infinitiv</string>
+    <string name="form_of_tag_infinitive_ma">auf -ma</string>
     <string name="form_of_tag_infinitive_v">5. Infinitiv</string>
     <string name="form_of_tag_infinitive_zu">mit zu</string>
     <string name="form_of_tag_informal">informell</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">nicht normgerecht</string>
     <string name="form_of_tag_prospective">prospektiv</string>
     <string name="form_of_tag_quebec">Québec</string>
+    <string name="form_of_tag_quotative">Quotativ</string>
     <string name="form_of_tag_rare">selten</string>
     <string name="form_of_tag_reciprocal">reziprok</string>
     <string name="form_of_tag_reduplication">Reduplikation</string>

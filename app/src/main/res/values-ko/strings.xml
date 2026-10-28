@@ -532,6 +532,7 @@
     <string name="popup_font_script_only_gd">스코틀랜드 게일어 텍스트에만 사용</string>
     <string name="popup_font_script_only_fi">핀란드어 텍스트에만 사용</string>
     <string name="popup_font_script_only_hu">헝가리어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_et">에스토니아어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

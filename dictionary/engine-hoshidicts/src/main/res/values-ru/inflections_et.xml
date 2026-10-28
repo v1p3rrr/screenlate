@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_et.xml. -->
+<resources>
+    <string name="inflection_et_negative_label">отрицание</string>
+    <string name="inflection_et_negative">отрицание olema: pole, polnud, poleks, poldud, polevat (pole от olema)</string>
+</resources>

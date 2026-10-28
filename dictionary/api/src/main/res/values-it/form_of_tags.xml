@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">di minoranza</string>
     <string name="form_of_tag_infinitive">infinito</string>
     <string name="form_of_tag_infinitive_aorist">infinito aoristo</string>
+    <string name="form_of_tag_infinitive_da">in -da</string>
     <string name="form_of_tag_infinitive_i">primo infinito</string>
     <string name="form_of_tag_infinitive_i_long">primo infinito lungo</string>
     <string name="form_of_tag_infinitive_ii">secondo infinito</string>
     <string name="form_of_tag_infinitive_iii">terzo infinito</string>
     <string name="form_of_tag_infinitive_iv">quarto infinito</string>
+    <string name="form_of_tag_infinitive_ma">in -ma</string>
     <string name="form_of_tag_infinitive_v">quinto infinito</string>
     <string name="form_of_tag_infinitive_zu">con zu</string>
     <string name="form_of_tag_informal">informale</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">sconsigliato</string>
     <string name="form_of_tag_prospective">prospettivo</string>
     <string name="form_of_tag_quebec">Québec</string>
+    <string name="form_of_tag_quotative">quotativo</string>
     <string name="form_of_tag_rare">raro</string>
     <string name="form_of_tag_reciprocal">reciproco</string>
     <string name="form_of_tag_reduplication">reduplicazione</string>

@@ -7,9 +7,9 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
-    albanianEndings, finnishTransforms, gaelicMutations, hebrewTransforms, hungarianTransforms, irishMutations,
-    kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms,
-    withReplacedTransforms,
+    albanianEndings, estonianTransforms, finnishTransforms, gaelicMutations, hebrewTransforms, hungarianTransforms,
+    irishMutations, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms,
+    welshTransforms, withOwnTransforms, withReplacedTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1698,5 +1698,63 @@ test('every hungarian rule has a name and a description of its own, which the ap
 test('hungarian prefixes stay out of other languages', () => {
     for (const language of ['en', 'fi', 'de', 'sw', 'ro']) {
         assert.ok(!queried(language, 'megtartottam').has('tartottam'), language);
+    }
+});
+
+test('estonian negative forms of olema reach the verb by its definition tag, under the rule name', () => {
+    for (const form of ['pole', 'polnud', 'poleks', 'poldud', 'polevat', 'Pole']) {
+        const reached = candidatesTo('et', form, 'olema');
+        assert.deepEqual([...reached.flatMap((c) => c.r.map((r) => r.join(' < ')))], ['negative'], form);
+        assert.ok(reached.every((c) => c.u && JSON.stringify(c.g) === JSON.stringify(['v'])), form);
+    }
+    // The text as written stays typed and needs no tags: pole's own entry comes first.
+    const written = candidates('et', 'pole').find((c) => c.d === 'pole');
+    assert.equal(written.g, undefined);
+    assert.equal(written.r.flat().length, 0);
+    // Only the whole word.
+    assert.ok(!queried('et', 'polegi').has('olema'));
+    assert.ok(!queried('et', 'tpole').has('olema'));
+    assert.ok(!queried('et', 'olen').has('olema'));
+});
+
+test('estonian ö is tried as õ for words from ocr only, as read first', () => {
+    assert.ok(queriedFromOcr('et', 'möte').has('mõte'));
+    assert.ok(queriedFromOcr('et', 'vöi').has('või'));
+    assert.ok(queriedFromOcr('et', 'Öhtu').has('Õhtu'));
+    assert.ok(queriedFromOcr('et', 'öö').has('öö'));
+    // Every combination of the first three: köögiöö gives kõögiöö, köõgiöö, kõõgiõö and the rest.
+    const texts = queriedFromOcr('et', 'köögiöö');
+    for (const text of ['kõögiöö', 'köõgiöö', 'köögiõö', 'kõõgiõö']) {
+        assert.ok(texts.has(text), text);
+    }
+    assert.ok(!texts.has('köögiöõ'));
+    const steps = new Map(load('et').candidates('möte', 'et', 'word', true).map((c) => [c.d, c.s]));
+    assert.ok(steps.get('möte') < steps.get('mõte'));
+    // A written õ stays itself, and only the first word changes.
+    assert.ok(!queriedFromOcr('et', 'mõte').has('möte'));
+    assert.ok(!queriedFromOcr('et', 'öö möödus').has('öö mõõdus'));
+    // App text and typed text are looked up as written.
+    assert.ok(!queried('et', 'möte').has('mõte'));
+    // Finnish, which shares ö, reads the same either way.
+    assert.deepEqual(queriedFromOcr('fi', 'yö'), queried('fi', 'yö'));
+});
+
+test('every estonian rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_et.xml'), 'utf8');
+    const rules = Object.entries(estonianTransforms.transforms);
+    assert.deepEqual(rules.map(([id]) => id), ['negative']);
+    assert.equal(estonianTransforms.transforms.negative.rules.length, 5);
+    for (const [id, {name, description}] of rules) {
+        assert.ok(description.startsWith(name), id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('the estonian negative rule stays out of other languages', () => {
+    for (const language of ['en', 'fi', 'hu', 'de']) {
+        assert.ok(!queried(language, 'pole').has('olema'), language);
     }
 });

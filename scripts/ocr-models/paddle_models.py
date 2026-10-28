@@ -53,7 +53,7 @@ DETECTORS = {
 }
 
 # Esperanto is left out: both models read every one of its hat letters wrong (ĝ as ġ or ğ, ŭ as ǔ or ů).
-LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy", "ga", "gd", "fi", "hu"]
+LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy", "ga", "gd", "fi", "hu", "et"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,
 # which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian.
@@ -78,14 +78,15 @@ RECOGNIZERS = {
 # none, and v5 is the smaller download; Romanian: v5 and v6 0.9% each (Tesseract fast 1.1%), v5 the smaller download;
 # Slovenian and Albanian: v5 and v6 both make none, and v5 is the smaller download. Swahili: ML Kit makes none
 # either, so no model is marked. Irish: ML Kit's 0.45% of the characters wrong leaves less than 0.5 points to gain,
-# so none is marked.
+# so none is marked. Estonian: v6 0.43% of the characters wrong against ML Kit's 1.33% (v5 0.80%), the only
+# model with a third fewer errors and 0.5 points fewer.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",
     "ru": "paddle-cyrillic", "cs": "paddle-v6", "uk": "paddle-cyrillic", "be": "paddle-cyrillic", "el": "paddle-el",
     "hr": "paddle-v6", "sr": "paddle-cyrillic", "kk": "paddle-cyrillic",
     "ky": "paddle-cyrillic", "sv": "paddle-latin", "no": "paddle-v6", "da": "paddle-latin", "ro": "paddle-latin",
-    "la": "paddle-v6", "sl": "paddle-latin", "sq": "paddle-latin",
+    "la": "paddle-v6", "sl": "paddle-latin", "sq": "paddle-latin", "et": "paddle-v6",
 }
 
 # Languages ML Kit reads whose comparison found several models more accurate than ML Kit: each is marked, Tesseract's

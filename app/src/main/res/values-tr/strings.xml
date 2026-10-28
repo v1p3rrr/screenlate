@@ -536,6 +536,7 @@
     <string name="popup_font_script_only_gd">Yalnızca İskoç Galcesi metin için</string>
     <string name="popup_font_script_only_fi">Yalnızca Fince metin için</string>
     <string name="popup_font_script_only_hu">Yalnızca Macarca metin için</string>
+    <string name="popup_font_script_only_et">Yalnızca Estonca metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>

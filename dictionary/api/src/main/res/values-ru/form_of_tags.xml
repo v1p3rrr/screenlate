@@ -142,11 +142,13 @@
     <string name="form_of_tag_inferior">меньшей степени</string>
     <string name="form_of_tag_infinitive">инфинитив</string>
     <string name="form_of_tag_infinitive_aorist">инфинитив аориста</string>
+    <string name="form_of_tag_infinitive_da">на -da</string>
     <string name="form_of_tag_infinitive_i">I инфинитив</string>
     <string name="form_of_tag_infinitive_i_long">длинный I инфинитив</string>
     <string name="form_of_tag_infinitive_ii">II инфинитив</string>
     <string name="form_of_tag_infinitive_iii">III инфинитив</string>
     <string name="form_of_tag_infinitive_iv">IV инфинитив</string>
+    <string name="form_of_tag_infinitive_ma">на -ma</string>
     <string name="form_of_tag_infinitive_v">V инфинитив</string>
     <string name="form_of_tag_infinitive_zu">с zu</string>
     <string name="form_of_tag_informal">неформальное</string>
@@ -240,6 +242,7 @@
     <string name="form_of_tag_proscribed">ненормативное</string>
     <string name="form_of_tag_prospective">проспективное</string>
     <string name="form_of_tag_quebec">Квебек</string>
+    <string name="form_of_tag_quotative">косвенное наклонение</string>
     <string name="form_of_tag_rare">редкое</string>
     <string name="form_of_tag_reciprocal">взаимное</string>
     <string name="form_of_tag_reduplication">редупликация</string>
