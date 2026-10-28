@@ -14,7 +14,7 @@ git submodule update --init --recursive
 ./gradlew testDebugUnitTest
 ```
 
-Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
+Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build; they are named "Screenlate Dev", also in the text selection menu ("Look up in Screenlate Dev", `app/src/debug/res`). `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
 
 Camera capture and Compose navigation are in `app`; persistent photos and the exclusive lookup-source contract are in
 `core:photos`. `CameraViewModelTest` covers replacement, cancellation, failures and source lifetime with a fake store.
