@@ -54,21 +54,21 @@ docked bubble's hold menu).
   cases SET14–SET17 and DIC36.
 - Docked bubble hold menu: the hold is posted while docked too; the menu leaves out the copy items there.
 
-## Deferred questions (owner asleep, decided provisionally)
+## Questions answered (owner, 2026-10-28 evening)
 
-- Text recognition groups its rows into three cards (Screen recognition, App text, Test) instead of one flat list.
-- The Audio page splits the former Audio card into Playback (auto play, volume), Sources, Regions and Test cards; a
-  "Playback" heading is new.
-- The bubble page keeps its flat layout; the hidden apps count leaves out apps uninstalled since they were hidden.
-- Catalog layout (owner's message of 2026-10-28 night, questions to ask afterwards):
-  - The heading over frequency, pitch and kanji is "Supplementary dictionaries" ("Дополнительные словари"), after a
-    divider. Alternatives: list the kinds ("Frequency, pitch accent, kanji"), or a divider without a heading.
-  - The three top groups keep the catalog's existing order: interface language, English, the language itself (the
-    message named English, the language itself, the interface language).
-  - "Other languages · N" counts languages, not dictionaries; its inner groups are indented.
-  - Open at first, as decided before: only the interface language's group and any group with a download or an update
-    waiting (then "Other languages" around it opens too); English and the language's own group start closed.
-  - Term dictionaries without a target language (none in the catalog now) stay on top.
+The choices made overnight without the owner, asked afterwards:
+
+- Text recognition groups its rows into three cards (Screen recognition, App text, Test): kept.
+- The Audio page's four cards (Playback with auto play and volume, Sources, Regions, Test): kept.
+- The bubble page stays one list, not split into cards, but sits on the same card background as the other pages'
+  items: "1 списком но сделай подложку как у других которые на пункты разбиты" (one list, with a background like the
+  others that are split into items). The hidden apps count leaves out apps uninstalled since they were hidden.
+- The heading over frequency, pitch and kanji, after a divider: "Supplementary dictionaries" ("Дополнительные
+  словари"): kept.
+- The three top groups keep the catalog's order: interface language, English, the language itself: kept.
+- "Other languages · N" counts languages: kept.
+- Open at first: only the interface language's group and any group with a download or an update waiting: kept.
+- Term dictionaries without a target language stay on top (not asked; none in the catalog now).
 
 ## Changelog
 
@@ -80,3 +80,5 @@ docked bubble's hold menu).
   other kinds; a second message: no arrows before the language names (decision "Catalog layout"); choices made without asking listed under Deferred questions. Emulator check
   of the rework: no faults; the Audio hint now says "Autoplay" as the switch does; catalog and language setup headings capitalize language
   names again (the capitalizing helper was shadowed by an import).
+- 2026-10-28 evening: the owner answered the overnight choices (section "Questions answered"): all kept, except the
+  bubble page, which gets the card background of the other pages while staying one list.

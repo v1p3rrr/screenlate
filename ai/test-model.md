@@ -52,7 +52,9 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   current debug build).
 - Logs: `adb logcat -d -s OverlayController ScreenlateService ScreenCapturer AccessibilityText PopupNotes` for scan
   stages and timings; `FATAL EXCEPTION` for crashes.
-- Rules: never `am force-stop` (drops the accessibility service; `am kill` after Home instead); a `uiautomator dump`
+- Rules: never `am force-stop` (drops the accessibility service; `am kill` after Home instead); `am instrument`
+  force-stops its target, so the app module's instrumented tests run only against a build under its own package
+  (`build-environment.md`), never the app with its service on (owner, 2026-10-28); a `uiautomator dump`
   reconnects the service and docks the bubble, so use screenshots during overlay checks; the popup page answers
   `scripts/popup-eval.mjs`; Chrome's first-run screen is not clicked through (it accepts terms).
 - Network failures: `svc wifi disable` with `adb emu network speed gprs`, or a host socket that never answers plus

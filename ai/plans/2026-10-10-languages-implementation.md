@@ -253,6 +253,13 @@ Requests 1–19 are in the previous plan. New ones:
     `uiautomator dump` pauses accessibility services for about 1.5 s, so each dump gave a banner that vanished a moment
     later; a short rebind on a phone does the same. A switch turned off and a system unbind without a rebind still
     get the notification. Both checked on the emulator (UPD8, UPD9) and merged into main and languages/main on 2026-10-22.
+79. (2026-10-28 evening) Marks folded in the lookup (owner): "взять все буквы, у которых ... есть какие-то вот эти
+    диакритические знаки ... при распознавании считать ... как будто бы мы находим вот обычную ... букву без вот этих
+    вот точек. А потом по этой букве мы пытаемся найти все слова, где фигурируют вот эти вот буквы" (take every letter
+    that carries marks over a base Latin or Cyrillic letter, read it as the base letter, and find every word with any
+    of that letter's marked forms), as Russian е finds ё; better than per-language lists measured on a few
+    screenshots, which another font or engine misreads differently. Answers of the same evening: decision row "Marks
+    folded in the lookup"; built as a step of its own after group 5c's Uzbek and before group 5d.
 
 ## Decisions
 
@@ -392,6 +399,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | PP-OCRv6 | PP-OCRv6 small is measured beside PP-OCRv5 on the clean and hard screens; where the recommendation rule finds it better, it takes the place of v5's main and Latin recognizers. v5 stays for the scripts v6 lacks (Korean, Cyrillic, Greek, Arabic, Thai, Devanagari) (owner, 2026-10-17, request 64) |
 | Latin look-alikes in Cyrillic text | In a recognized word of a Cyrillic-script language that has Cyrillic letters, Latin letters that look the same (a, c, e, o, p, x, y, A, B, C, E, H, K, M, O, P, T, X) become Cyrillic, whatever the engine. A word made only of such letters stays as read: looking it up as its Cyrillic twin as well was rejected because English words would find Russian ones (TOP as тор, COM as сом) (owner, 2026-10-17, request 65) |
 | Look-alike fixes only after OCR | Every language's fixes of letters that an engine reads as look-alikes (Latin in Cyrillic or Greek words, letters a language never writes) and matching OCR misreadings that cannot be fixed one for one (Welsh ý as ŷ, Hungarian ö as ő) apply to OCR results only (`LanguageSupport.ocrWord`, from `OcrPage.inLanguage`; lookup variants need each line's source); text read from the screen's apps is taken as it is. Where people often type the text itself that way (Uzbek o and g for oʻ and gʻ, Persian ک ی in Arabic text), the matching applies to any text (owner, 2026-10-20, request 69) |
+| Marks folded in the lookup | Every Latin- and Cyrillic-script language except Vietnamese (whose marks are tones) finds a word with any marks over or under its base letters: dictionaries key every headword and form row also without its marks (the `every_headword` keys Greek and Slovak have, with the letters Unicode does not decompose mapped by a table: ø ł đ ħ ı, Cyrillic ғ қ ң ө ұ ү and the like), and the lookup takes the scanned word without its marks as one more text. Results spelled as read come first, then the others, as the respelled keys sort now. A word without marks finds marked words in any text (fuzfa → fűzfa, as Greek and Slovak do), a wrong mark (fúzfa → fűzfa) is folded only in OCR text, as row "Look-alike fixes only after OCR" says. The rules (endings, prefixes) match their endings as written; the folded form rows cover inflected words the dictionary lists. Kana, Han and the other scripts are left alone. Each language gets a data check of the extra results, as other rules; a language where they swamp the popup goes back to the owner. The per-language misread variants (Hungarian ő ű, Estonian õ) give way to it; one-for-one fixes in `ocrWord` stay, as they also fix the sentence for Anki. Dictionaries get the keys at their next import or update. Built as its own step after group 5c (owner, 2026-10-28 evening, request 79: "Латиница и кириллица без вьетнамского" if it makes sense for all of them, else only where misreads were seen; "Нет знака — везде"; "Правила как написаны"; "После узбекского") |
 | OCR model list | A language's models open in a dialog (scrolls when long): ML Kit where it reads the language, then the catalog's models, each with its size, a recommended mark, an ⓘ and Download or Delete. The language rows stand in the Recognition section under the engine choice, below a subheading; with Cloud only or app text only they stay visible but disabled, as the other recognition settings do. Downloading a model only adds it: it becomes the language's model when chosen in the list (owner, 2026-10-17) |
 | Region order display | The audio settings show a language's region order while Wiktionary is among its audio sources or a transcription dictionary of the language is installed; the hint names both uses (recordings and transcriptions) (owner, 2026-10-18, question 28; request 55) |
 | Default OCR engines | Decided by the in-app timing run (emulator, then the phone): Cloud becomes the default for new installs when the device's draft comes less than 0.5 s before the cloud result on the phone, else Both stays. With Cloud by default, turning a language on downloads no on-device model (owner, 2026-10-18, request 68, question 36 of the OCR engines plan) |
@@ -1278,6 +1286,8 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   bean), so the lookup needs a rule for initial mutations.
 - 5c Long suffix chains: Finnish, Estonian, Hungarian; Azerbaijani, Uzbek. Endings stacked on a stem, compounds in the
   Finnic languages and Hungarian; the Turkic ones as Turkish.
+- Between 5c and 5d: marks folded in the lookup (row "Marks folded in the lookup", request 79), so 5d and later
+  blocks build on it and write no misread lists of their own.
 - 5d Cyrillic: Bulgarian, Mongolian; Macedonian.
 - 5e Other scripts: Cantonese (Han characters as Chinese, jyutping readings), Kannada; Tamil, Telugu, Marathi
   (Brahmic scripts as Hindi; Kannada is read by the cloud only).
@@ -1747,3 +1757,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   with request 78.
 - 2026-10-22: owner decision — the build chain pauses after group 5a's Slovenian, to keep the week's usage limit;
   Esperanto, Albanian, Swahili, 5b-5e and group 6 run later in a separate run.
+- 2026-10-28 evening: request 79 and decision row "Marks folded in the lookup" (owner): every Latin- and
+  Cyrillic-script language but Vietnamese finds words with any marks over its base letters; built between groups 5c
+  and 5d.
