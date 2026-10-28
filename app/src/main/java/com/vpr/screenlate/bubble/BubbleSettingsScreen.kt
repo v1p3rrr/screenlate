@@ -3,9 +3,11 @@ package com.vpr.screenlate.bubble
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -99,63 +101,70 @@ fun BubbleSettingsScreen(
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            SwitchRow(
-                label = stringResource(R.string.bubble_visible),
-                checked = settings.bubbleVisible,
-                onChange = viewModel::setBubbleVisible,
-                hint = stringResource(R.string.bubble_visible_hint),
-            )
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            Text(stringResource(R.string.bubble_aim), style = MaterialTheme.typography.titleMedium)
-            Segments(
-                options = AimMode.entries,
-                selected = settings.aimMode,
-                label = {
-                    stringResource(
-                        if (it == AimMode.ABOVE_FINGER) R.string.bubble_aim_above else R.string.bubble_aim_center,
+            // One card for the whole list, so the page looks like the pages split into sections.
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    SwitchRow(
+                        label = stringResource(R.string.bubble_visible),
+                        checked = settings.bubbleVisible,
+                        onChange = viewModel::setBubbleVisible,
+                        hint = stringResource(R.string.bubble_visible_hint),
                     )
-                },
-                onSelect = viewModel::setAimMode,
-            )
-            Hint(stringResource(R.string.bubble_aim_hint))
-            Text(stringResource(R.string.bubble_dock_side), style = MaterialTheme.typography.titleMedium)
-            Segments(
-                options = if (settings.dockTopBottom) DockSide.entries else DockSide.entries.filterNot { it.horizontal },
-                selected = settings.dockSide,
-                label = {
-                    stringResource(
-                        when (it) {
-                            DockSide.LEFT -> R.string.bubble_dock_left
-                            DockSide.RIGHT -> R.string.bubble_dock_right
-                            DockSide.TOP -> R.string.bubble_dock_top
-                            DockSide.BOTTOM -> R.string.bubble_dock_bottom
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Text(stringResource(R.string.bubble_aim), style = MaterialTheme.typography.titleMedium)
+                    Segments(
+                        options = AimMode.entries,
+                        selected = settings.aimMode,
+                        label = {
+                            stringResource(
+                                if (it == AimMode.ABOVE_FINGER) R.string.bubble_aim_above else R.string.bubble_aim_center,
+                            )
                         },
+                        onSelect = viewModel::setAimMode,
                     )
-                },
-                onSelect = viewModel::setDockSide,
-            )
-            SwitchRow(
-                label = stringResource(R.string.bubble_dock_top_bottom),
-                checked = settings.dockTopBottom,
-                onChange = viewModel::setDockTopBottom,
-                hint = stringResource(R.string.bubble_dock_top_bottom_hint),
-            )
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
-            SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
-            SwitchRow(stringResource(R.string.bubble_haptics), settings.haptics, viewModel::setHaptics)
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            NavigationRow(
-                stringResource(R.string.bubble_hidden_apps),
-                if (hidden == 0) {
-                    stringResource(R.string.bubble_hidden_apps_none)
-                } else {
-                    pluralStringResource(R.plurals.bubble_hidden_apps_count, hidden, hidden)
-                },
-                onOpenHiddenApps,
-            )
+                    Hint(stringResource(R.string.bubble_aim_hint))
+                    Text(stringResource(R.string.bubble_dock_side), style = MaterialTheme.typography.titleMedium)
+                    Segments(
+                        options = if (settings.dockTopBottom) DockSide.entries else DockSide.entries.filterNot { it.horizontal },
+                        selected = settings.dockSide,
+                        label = {
+                            stringResource(
+                                when (it) {
+                                    DockSide.LEFT -> R.string.bubble_dock_left
+                                    DockSide.RIGHT -> R.string.bubble_dock_right
+                                    DockSide.TOP -> R.string.bubble_dock_top
+                                    DockSide.BOTTOM -> R.string.bubble_dock_bottom
+                                },
+                            )
+                        },
+                        onSelect = viewModel::setDockSide,
+                    )
+                    SwitchRow(
+                        label = stringResource(R.string.bubble_dock_top_bottom),
+                        checked = settings.dockTopBottom,
+                        onChange = viewModel::setDockTopBottom,
+                        hint = stringResource(R.string.bubble_dock_top_bottom_hint),
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
+                    SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
+                    SwitchRow(stringResource(R.string.bubble_haptics), settings.haptics, viewModel::setHaptics)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    NavigationRow(
+                        stringResource(R.string.bubble_hidden_apps),
+                        if (hidden == 0) {
+                            stringResource(R.string.bubble_hidden_apps_none)
+                        } else {
+                            pluralStringResource(R.plurals.bubble_hidden_apps_count, hidden, hidden)
+                        },
+                        onOpenHiddenApps,
+                    )
+                }
+            }
         }
     }
 }
