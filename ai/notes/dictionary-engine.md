@@ -120,9 +120,12 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - Built frequency dictionaries do not follow their download: wordfreq builds take 1.2-13.6 MB (a short list about 25
   times its download, a long one about 12 MB at the 100,000-word cut), corpus counts 7-14 MB (Thai 4.6 times a 1.5 MB
   archive, the Leipzig ones 0.5-0.8 times 8-24 MB archives).
-- `CatalogEntry.installedBytes` (the download screen's line) takes the typical share, `installedBytesAtMost` (the free
-  space check) one above the largest; see `InstalledShare` in `DictionaryCatalog.kt`. Measure again with
-  `run-as … du -sk files/dictionaries/*`, `dictionaries.db` and the catalog when the catalog gains other kinds.
+- Shares per kind miss single dictionaries by up to two times: CC-CEDICT took 4.4 times its archive (33.4 MB),
+  CC-CEDICT Hanzi 5.2 (22.2 MB), so the Chinese set (CC-CEDICT, Hanzi, wordfreq) took 69 MB where the shares give
+  43 MB. Hence `catalog/installed-sizes.json`: 137 entries measured on the emulator (`scripts/catalog/installed_sizes.py`),
+  scaled to the entry's current archive; the shares (`InstalledShare` in `DictionaryCatalog.kt`) only for entries not
+  measured. `installedBytesAtMost` (the free space check) takes a measured size plus a quarter, else a share above
+  the largest measured.
 
 ### Harness
 

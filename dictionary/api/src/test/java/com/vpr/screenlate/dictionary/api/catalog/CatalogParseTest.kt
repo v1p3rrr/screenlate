@@ -69,6 +69,25 @@ class CatalogParseTest {
     }
 
     @Test
+    fun `an entry without its own size after import takes the measured one, in proportion to its archive now`() {
+        val text = """{"format": 2, "dictionaries": [
+            {"id": "a", "title": "A", "kind": "TERM", "sourceLanguage": "en", "downloadUrl": "https://example.org/a.zip",
+             "downloadSize": 2000},
+            {"id": "b", "title": "B", "kind": "TERM", "sourceLanguage": "en", "downloadUrl": "https://example.org/b.zip",
+             "downloadSize": 1000, "installedSize": 1500},
+            {"id": "c", "title": "C", "kind": "TERM", "sourceLanguage": "en", "downloadUrl": "https://example.org/c.zip",
+             "downloadSize": 1000}
+        ]}"""
+        val measured = DictionaryCatalog.parseSizes("""{"sizes": {"a": {"download": 1000, "installed": 4500},
+            "b": {"download": 1000, "installed": 9000}}}""")
+        val (a, b, c) = DictionaryCatalog.parse(text, measured)!!.entries
+        assertThat(a.installedBytes).isEqualTo(9000L)
+        assertThat(b.installedBytes).isEqualTo(1500L)
+        assertThat(c.installedBytes).isEqualTo(2200L)
+        assertThat(DictionaryCatalog.parse(text)!!.entries.first().installedBytes).isEqualTo(4400L)
+    }
+
+    @Test
     fun `a built frequency dictionary takes about as much from a long source as from a short one`() {
         val mb = 1024L * 1024L
         val wordfreq = CatalogEntry(
@@ -110,7 +129,7 @@ class CatalogParseTest {
         assertThat(entry.description(Locale.GERMAN)).isEqualTo("Eigener Text")
         assertThat(entry.downloadBytes).isEqualTo(1000L)
         assertThat(entry.installedBytes).isEqualTo(5000L)
-        assertThat(entry.installedBytesAtMost).isEqualTo(5000L)
+        assertThat(entry.installedBytesAtMost).isEqualTo(6250L)
         val estimated = entry.copy(installedSize = null)
         assertThat(estimated.installedBytes).isEqualTo(2200L)
         assertThat(estimated.installedBytesAtMost).isEqualTo(5000L)
