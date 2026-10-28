@@ -49,9 +49,9 @@ const labels = {
  * The transforms of [iso], imported from the language's own file: the descriptor list imports every language, and some
  * need libraries a checkout does not have until Yomitan is built. They are taken by the folder, as the bundles take
  * them by the descriptor's iso: the code they name their language by may differ (Georgian's say `kat`). A language
- * Yomitan has none for takes the app's own (`own`), whose names are labels for rules named by their affix, and
- * [shared] names the label file of languages whose own rules share their names. Own rules of a language Yomitan has
- * rules for are added after Yomitan's (`added`).
+ * Yomitan has none for takes the app's own (`own`), whose names are labels for rules named by their affix or in
+ * words, and [shared] names the label file of languages whose own rules share their names. Own rules of a language
+ * Yomitan has rules for are added after Yomitan's (`added`).
  * @param {string} iso
  * @returns {Promise<{transforms: [string, {name: string, description?: string, hidden?: boolean}][], own: boolean,
  *     added?: Set<string>, shared?: string}>}
@@ -180,7 +180,7 @@ for (const iso of languages) {
         while ([...keys.values()].includes(slug)) slug += '_';
         keys.set(id, slug);
         const ownRule = ownFile || added.has(id);
-        const label = ownRule ? name !== id : hasLabel(id, name);
+        const label = ownRule ? name !== id || hasLabel(id, name) : hasLabel(id, name);
         lines.push(`    <!-- ${id.replace(/--/g, '- -')} -->`);
         if (label) {
             // Labels are lowercase like the other rule names; Yomitan capitalizes a few (French "Preterite").

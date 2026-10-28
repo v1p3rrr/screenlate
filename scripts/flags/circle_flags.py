@@ -21,7 +21,7 @@ URL = "https://raw.githubusercontent.com/HatScripts/circle-flags/{commit}/flags/
 COUNTRIES = [
     "jp", "us", "gb", "cn", "kr", "es", "fr", "de", "it", "br", "pt", "pl", "tr", "lv", "nl", "cz", "id", "my", "ph", "vn", "ru",
     "hr", "rs", "ua", "by", "gr", "in", "bd", "ge", "am", "th", "kh", "sa", "ir", "il", "kz", "kg", "se", "no", "dk", "ro",
-    "lang_la", "lt", "sk", "si", "lang_eo", "al",
+    "lang_la", "lt", "sk", "si", "lang_eo", "al", "tz",
 ]
 LANGUAGE_FLAG = "lang_"
 

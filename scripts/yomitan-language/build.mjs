@@ -30,7 +30,7 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * Hindi's descriptor, which has neither, for the app's own processors and endings; Kazakh and Kyrgyz take Mongolian's
  * (Cyrillic, capitalization only) for the app's own endings; Lithuanian takes Latvian's (capitalization only), as
  * Wiktionary lists its forms; Slovak takes Czech's (capitalization only), the language its lookups fall back to; Slovenian takes Czech's as
- * well, as Wiktionary lists its forms.
+ * well, as Wiktionary lists its forms; Swahili takes Czech's too, for the app's own verb prefixes.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
@@ -40,6 +40,7 @@ const borrowed = {
     lt: {from: 'lv', iso639_3: 'lit', name: 'Lithuanian', exampleText: 'skaityti'},
     sk: {from: 'cs', iso639_3: 'slk', name: 'Slovak', exampleText: 'čítať'},
     sl: {from: 'cs', iso639_3: 'slv', name: 'Slovenian', exampleText: 'brati'},
+    sw: {from: 'cs', iso639_3: 'swa', name: 'Swahili', exampleText: 'kusoma'},
 };
 
 /**
@@ -55,8 +56,8 @@ const borrowed = {
  * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә; Romanian text may
  * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le), as does Albanian (s'ka,
  * s’ka); Latin editions write u for consonantal v (uita); Esperanto is typed in the x-system where its letters cannot
- * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al). Processors join the
- * descriptor's capitalization processors, its own list, or make its list.
+ * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al); Swahili writes ng' so
+ * too (ng'ombe, ng’ombe). Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -74,12 +75,13 @@ const addedPreprocessors = {
     la: ['latinUAsV'],
     eo: ['esperantoXSystem', 'ukrainianApostropheVariants'],
     sq: ['ukrainianApostropheVariants'],
+    sw: ['ukrainianApostropheVariants'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
- * article and agreement endings.
+ * article and agreement endings, Swahili verb prefixes.
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -89,6 +91,7 @@ const addedTransforms = {
     ky: 'kyrgyzTransforms',
     no: 'norwegianTransforms',
     ro: 'romanianTransforms',
+    sw: 'swahiliTransforms',
 };
 
 /**

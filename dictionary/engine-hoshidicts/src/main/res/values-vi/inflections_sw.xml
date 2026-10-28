@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">phủ định</string>
+    <string name="inflection_sw_negative">phủ định: ha- trước chủ ngữ (hatukusoma, hakusoma), si- cho “tôi” và hu- cho “bạn” (sikusoma, hukusoma), si- sau chủ ngữ, trước dạng quan hệ (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">tôi</string>
+    <string name="inflection_sw_i">chủ ngữ ni-: tôi (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">bạn</string>
+    <string name="inflection_sw_you">chủ ngữ u-: bạn, hoặc danh từ lớp 3, 11 và 14 (unasoma; mti umeanguka, cây đã đổ)</string>
+    <string name="inflection_sw_he_she_label">anh ấy/cô ấy</string>
+    <string name="inflection_sw_he_she">chủ ngữ a-: anh ấy hoặc cô ấy (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">chúng tôi</string>
+    <string name="inflection_sw_we">chủ ngữ tu-: chúng tôi (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">các bạn</string>
+    <string name="inflection_sw_you_pl">chủ ngữ m-: các bạn (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">họ</string>
+    <string name="inflection_sw_they">chủ ngữ wa-: họ (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">lớp danh từ</string>
+    <string name="inflection_sw_class">chủ ngữ của một lớp danh từ: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (nơi chốn: kulikuwa, đã có)</string>
+    <string name="inflection_sw_past_label">quá khứ</string>
+    <string name="inflection_sw_past">quá khứ: li-, và ku- sau phủ định (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">hiện tại</string>
+    <string name="inflection_sw_present">hiện tại: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">tương lai</string>
+    <string name="inflection_sw_future">tương lai: ta-, và taka- trước dạng quan hệ (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">hoàn thành</string>
+    <string name="inflection_sw_perfect">hoàn thành: me- (amesoma, đã đọc)</string>
+    <string name="inflection_sw_not_yet_label">chưa</string>
+    <string name="inflection_sw_not_yet">chưa: ja- sau phủ định (hajasoma, chưa đọc)</string>
+    <string name="inflection_sw_conditional_label">điều kiện</string>
+    <string name="inflection_sw_conditional">điều kiện: nge- và ngali- (angesoma, sẽ đọc; angalisoma, lẽ ra đã đọc)</string>
+    <string name="inflection_sw_when_label">khi</string>
+    <string name="inflection_sw_when">ki-: khi, trong lúc hoặc nếu (akisoma)</string>
+    <string name="inflection_sw_and_then_label">rồi</string>
+    <string name="inflection_sw_and_then">ka-: rồi, trong lời kể (akasoma)</string>
+    <string name="inflection_sw_habitual_label">thói quen</string>
+    <string name="inflection_sw_habitual">thói quen: hu- (husoma, thường đọc)</string>
+    <string name="inflection_sw_relative_label">dạng quan hệ</string>
+    <string name="inflection_sw_relative">dạng quan hệ: người, cái, nơi mà (aliyesoma, người đã đọc; kinachoitwa, cái được gọi là; waishio, những người sống)</string>
+    <string name="inflection_sw_object_label">tân ngữ</string>
+    <string name="inflection_sw_object">tân ngữ: ni- tôi, ku- bạn, m- hoặc mw- anh ấy hoặc cô ấy, tu- chúng tôi, wa- họ, và các tiền tố lớp ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">phản thân</string>
+    <string name="inflection_sw_reflexive">phản thân ji-: chính mình (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">nguyên mẫu</string>
+    <string name="inflection_sw_infinitive">nguyên mẫu: ku- hoặc kw- (kusoma, kwandika, kumpa)</string>
+</resources>

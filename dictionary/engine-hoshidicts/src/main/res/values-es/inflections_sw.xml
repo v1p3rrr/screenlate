@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">negación</string>
+    <string name="inflection_sw_negative">negación: ha- ante el sujeto (hatukusoma, hakusoma), si- para «yo» y hu- para «tú» (sikusoma, hukusoma), si- tras el sujeto ante un relativo (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">yo</string>
+    <string name="inflection_sw_i">sujeto ni-: yo (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">tú</string>
+    <string name="inflection_sw_you">sujeto u-: tú, o un sustantivo de las clases 3, 11 y 14 (unasoma; mti umeanguka, el árbol se ha caído)</string>
+    <string name="inflection_sw_he_she_label">él/ella</string>
+    <string name="inflection_sw_he_she">sujeto a-: él o ella (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">nosotros</string>
+    <string name="inflection_sw_we">sujeto tu-: nosotros (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">vosotros</string>
+    <string name="inflection_sw_you_pl">sujeto m-: vosotros o ustedes (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">ellos</string>
+    <string name="inflection_sw_they">sujeto wa-: ellos o ellas (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">clase nominal</string>
+    <string name="inflection_sw_class">sujeto de una clase nominal: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (lugares: kulikuwa, había)</string>
+    <string name="inflection_sw_past_label">pasado</string>
+    <string name="inflection_sw_past">pasado: li-, y ku- tras una negación (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">presente</string>
+    <string name="inflection_sw_present">presente: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">futuro</string>
+    <string name="inflection_sw_future">futuro: ta-, y taka- ante un relativo (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">perfecto</string>
+    <string name="inflection_sw_perfect">perfecto: me- (amesoma, ha leído)</string>
+    <string name="inflection_sw_not_yet_label">todavía no</string>
+    <string name="inflection_sw_not_yet">todavía no: ja- tras una negación (hajasoma, todavía no ha leído)</string>
+    <string name="inflection_sw_conditional_label">condicional</string>
+    <string name="inflection_sw_conditional">condicional: nge- y ngali- (angesoma, leería; angalisoma, habría leído)</string>
+    <string name="inflection_sw_when_label">cuando</string>
+    <string name="inflection_sw_when">ki-: cuando, mientras o si (akisoma)</string>
+    <string name="inflection_sw_and_then_label">y luego</string>
+    <string name="inflection_sw_and_then">ka-: y luego, en un relato (akasoma)</string>
+    <string name="inflection_sw_habitual_label">habitual</string>
+    <string name="inflection_sw_habitual">habitual: hu- (husoma, suele leer)</string>
+    <string name="inflection_sw_relative_label">relativo</string>
+    <string name="inflection_sw_relative">relativo: que, quien, donde (aliyesoma, el que leyó; kinachoitwa, que se llama; waishio, que viven)</string>
+    <string name="inflection_sw_object_label">objeto</string>
+    <string name="inflection_sw_object">objeto: ni- me, ku- te, m- o mw- lo o la, tu- nos, wa- los, y los prefijos de clase ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">reflexivo</string>
+    <string name="inflection_sw_reflexive">reflexivo ji-: uno mismo (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">infinitivo</string>
+    <string name="inflection_sw_infinitive">infinitivo: ku- o kw- (kusoma, kwandika, kumpa)</string>
+</resources>

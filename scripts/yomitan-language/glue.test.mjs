@@ -8,7 +8,7 @@ import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
     albanianEndings, hebrewTransforms, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms,
-    withOwnTransforms,
+    swahiliTransforms, withOwnTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1012,5 +1012,118 @@ test('albanian endings stay out of other languages', () => {
         assert.ok(candidates(language, 'rëndësishme').every((c) => c.p === undefined && c.l === undefined), language);
         assert.ok(!queried(language, 'rëndësishme').has('rëndësishëm'), language);
         assert.ok(!queried(language, 'ndodhet').has('ndodh'), language);
+    }
+});
+
+/**
+ * The rule chains, innermost step first, by which [text] reaches [lemma] in Swahili.
+ * @param {string} text
+ * @param {string} lemma
+ */
+function swahiliChains(text, lemma) {
+    return candidatesTo('sw', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+}
+
+test('swahili verb prefixes come off from the outside in and reach verbs and forms by their definition tags', () => {
+    const [read] = candidatesTo('sw', 'alisoma', 'soma');
+    assert.ok(read.u);
+    assert.deepEqual([...read.g], ['v', 'non-lemma']);
+    assert.equal(read.f, undefined);
+    assert.deepEqual([...read.r[0]], ['past', 'he/she']);
+    for (const [text, lemma, chain] of [
+        ['ninasoma', 'soma', 'present < I'],
+        ['unasoma', 'soma', 'present < you'],
+        ['tutasoma', 'soma', 'future < we'],
+        ['mnasoma', 'soma', 'present < you pl.'],
+        ['wamesoma', 'soma', 'perfect < they'],
+        ['kimeanguka', 'anguka', 'perfect < class'],
+        ['hatukusoma', 'soma', 'past < we < negative'],
+        ['sikusoma', 'soma', 'past < negative'],
+        ['hatasoma', 'soma', 'future < negative'],
+        ['hajasoma', 'soma', 'not yet < negative'],
+        ['angesoma', 'soma', 'conditional < he/she'],
+        ['angalisoma', 'soma', 'conditional < he/she'],
+        ['akisoma', 'soma', 'when < he/she'],
+        ['akasoma', 'soma', 'and then < he/she'],
+        ['husoma', 'soma', 'habitual'],
+        ['kusoma', 'soma', 'infinitive'],
+        ['kwandika', 'andika', 'infinitive'],
+        ['ninakupenda', 'penda', 'object < present < I'],
+        ['alimwona', 'ona', 'object < past < he/she'],
+        ['alijificha', 'ficha', 'reflexive < past < he/she'],
+        ['kujiunga', 'unga', 'reflexive < infinitive'],
+        ['kumpa', 'pa', 'object < infinitive'],
+        ['aliyesoma', 'soma', 'relative < past < he/she'],
+        ['kinachoitwa', 'itwa', 'relative < present < class'],
+        ['atakayesoma', 'soma', 'relative < future < he/she'],
+        ['aliyemwona', 'ona', 'object < relative < past < he/she'],
+        ['waishio', 'ishi', 'relative < they'],
+        ['isiyojulikana', 'julikana', 'relative < negative < class'],
+    ]) {
+        assert.ok(swahiliChains(text, lemma).includes(chain), `${text} → ${lemma}: ${swahiliChains(text, lemma)}`);
+    }
+    // The stem is asked for as it is, with ku- and with a hyphen, as dictionaries write verbs all three ways.
+    for (const stem of ['soma', 'kusoma', '-soma']) assert.ok(queried('sw', 'alisoma').has(stem), stem);
+    // The word as written stays typed and untagged.
+    const written = candidates('sw', 'alisoma').find((c) => c.d === 'alisoma');
+    assert.ok(!written.u);
+    assert.equal(written.g, undefined);
+});
+
+test('one-syllable swahili verbs keep their ku- after li-, na-, ta-, me-, nge- and a relative, and drop it elsewhere', () => {
+    assert.ok(swahiliChains('alikula', 'kula').includes('past < he/she'));
+    assert.ok(!swahiliChains('alikula', 'la').includes('past < he/she'));
+    assert.ok(swahiliChains('aliyekuwa', 'kuwa').includes('relative < past < he/she'));
+    assert.ok(swahiliChains('akaja', 'ja').includes('and then < he/she'));
+    assert.ok(swahiliChains('akiwa', 'wa').includes('when < he/she'));
+    assert.ok(swahiliChains('hakuwa', 'wa').includes('past < negative'));
+    assert.ok(swahiliChains('hajafa', 'fa').includes('not yet < negative'));
+    // The copula li and si end a relative without a tense: iliyo, which is; isiyo, which is not.
+    assert.ok(swahiliChains('iliyo', 'li').includes('relative < class'));
+    assert.ok(swahiliChains('isiyo', 'si').includes('relative < class'));
+    // Names read as one-syllable stems after a tense find nothing: Angela is no a-nge-la, Pamela no pa-me-la.
+    assert.ok(!queried('sw', 'Angela').has('la'));
+    assert.ok(!queried('sw', 'Pamela').has('la'));
+    // A stem keeps two letters.
+    assert.ok(!queried('sw', 'alia').has('a'));
+});
+
+test('swahili steps between prefixes are not asked for, and nouns are not read as verbs', () => {
+    const marked = (text) => [...text].some((c) => c.charCodeAt(0) >= 0xe000 && c.charCodeAt(0) <= 0xf8ff);
+    for (const text of ['hatukusoma', 'aliyemwona', 'ninakupenda', 'kinachoitwa', 'waishio']) {
+        const list = candidates('sw', text);
+        assert.ok(list.every((c) => !marked(c.d)), text);
+        // Every text but the one as written reaches only verbs and forms.
+        assert.ok(list.every((c) => c.r.length === 0 || c.r.every((r) => r.length === 0) ||
+            JSON.stringify(c.g) === JSON.stringify(['v', 'non-lemma'])), text);
+    }
+    // wali (rice) has no tense after wa-, so it is no verb form.
+    assert.deepEqual([...queried('sw', 'wali')].filter((d) => d !== 'wali' && d !== 'Wali'), []);
+});
+
+test('every swahili rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_sw.xml'), 'utf8');
+    const rules = Object.entries(swahiliTransforms.transforms);
+    assert.equal(rules.length, 21);
+    for (const [id, {name, description}] of rules) {
+        assert.equal(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        // Named in words, each rule gets a label the translations give in their language.
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('swahili ng' + "'" + ' is tried with every apostrophe', () => {
+    assert.ok(queried('sw', 'ng’ombe').has("ng'ombe"));
+    assert.ok(queried('sw', "ng'ombe").has('ng’ombe'));
+});
+
+test('swahili prefixes stay out of other languages', () => {
+    for (const language of ['cs', 'sk', 'en', 'id', 'ms', 'tl']) {
+        assert.ok(!queried(language, 'alisoma').has('soma'), language);
+        assert.ok(!queried(language, 'ninakupenda').has('penda'), language);
+        assert.ok(candidates(language, 'alisoma').every((c) => c.g === undefined), language);
     }
 });

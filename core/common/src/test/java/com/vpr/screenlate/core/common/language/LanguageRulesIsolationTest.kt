@@ -261,6 +261,17 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { !it.endsSentence(forInstance, forInstance.lastIndexOf('.')) }).containsExactly(Language.ALBANIAN)
         assertThat(periodEnding.where { holds(it, "etj. dhe") }).containsExactly(Language.ALBANIAN)
         assertThat(periodEnding.where { holds(it, "etj. Pastaj") }).isEmpty()
+        // Swahili Bw. (Bwana), k.m. (kwa mfano) and n.k. (na kadhalika), which holds only before a lowercase word or a
+        // number.
+        assertThat(periodEnding.where { holds(it, "Bw. Juma") }).containsExactly(Language.SWAHILI)
+        val swahiliExample = "vyakula k.m. wali"
+        assertThat(periodEnding.where { !it.endsSentence(swahiliExample, swahiliExample.lastIndexOf('.')) })
+            .containsExactly(Language.SWAHILI)
+        val swahiliEtc = "filamu n.k. na"
+        assertThat(periodEnding.where { !it.endsSentence(swahiliEtc, swahiliEtc.lastIndexOf('.')) })
+            .containsExactly(Language.SWAHILI)
+        val swahiliEtcEnd = "filamu n.k. Hata"
+        assertThat(periodEnding.where { !it.endsSentence(swahiliEtcEnd, swahiliEtcEnd.lastIndexOf('.')) }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -357,7 +368,8 @@ class LanguageRulesIsolationTest {
         // Romanian leaves out the Moldovan Cyrillic spellings Wiktionary links its words to.
         assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
         assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
-        assertThat(all.where { it.inflectionRulesOnlyWithoutEntry }).containsExactly(Language.ROMANIAN, Language.LATIN)
+        assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
+            .containsExactly(Language.ROMANIAN, Language.LATIN, Language.SWAHILI)
     }
 
     @Test

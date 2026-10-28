@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">Verneinung</string>
+    <string name="inflection_sw_negative">Verneinung: ha- vor dem Subjekt (hatukusoma, hakusoma), si- für „ich“ und hu- für „du“ (sikusoma, hukusoma), si- nach dem Subjekt vor einem Relativ (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">ich</string>
+    <string name="inflection_sw_i">Subjekt ni-: ich (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">du</string>
+    <string name="inflection_sw_you">Subjekt u-: du oder ein Substantiv der Klassen 3, 11 und 14 (unasoma; mti umeanguka, der Baum ist umgefallen)</string>
+    <string name="inflection_sw_he_she_label">er/sie</string>
+    <string name="inflection_sw_he_she">Subjekt a-: er oder sie (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">wir</string>
+    <string name="inflection_sw_we">Subjekt tu-: wir (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">ihr</string>
+    <string name="inflection_sw_you_pl">Subjekt m-: ihr (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">sie (Plural)</string>
+    <string name="inflection_sw_they">Subjekt wa-: sie, mehrere (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">Nominalklasse</string>
+    <string name="inflection_sw_class">Subjekt einer Nominalklasse: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (Orte: kulikuwa, es gab)</string>
+    <string name="inflection_sw_past_label">Vergangenheit</string>
+    <string name="inflection_sw_past">Vergangenheit: li-, nach einer Verneinung ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">Präsens</string>
+    <string name="inflection_sw_present">Präsens: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">Futur</string>
+    <string name="inflection_sw_future">Futur: ta-, vor einem Relativ taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">Perfekt</string>
+    <string name="inflection_sw_perfect">Perfekt: me- (amesoma, hat gelesen)</string>
+    <string name="inflection_sw_not_yet_label">noch nicht</string>
+    <string name="inflection_sw_not_yet">noch nicht: ja- nach einer Verneinung (hajasoma, hat noch nicht gelesen)</string>
+    <string name="inflection_sw_conditional_label">Konditional</string>
+    <string name="inflection_sw_conditional">Konditional: nge- und ngali- (angesoma, würde lesen; angalisoma, hätte gelesen)</string>
+    <string name="inflection_sw_when_label">wenn</string>
+    <string name="inflection_sw_when">ki-: wenn, während oder falls (akisoma)</string>
+    <string name="inflection_sw_and_then_label">und dann</string>
+    <string name="inflection_sw_and_then">ka-: und dann, in einer Erzählung (akasoma)</string>
+    <string name="inflection_sw_habitual_label">Gewohnheit</string>
+    <string name="inflection_sw_habitual">Gewohnheit: hu- (husoma, liest gewöhnlich)</string>
+    <string name="inflection_sw_relative_label">Relativform</string>
+    <string name="inflection_sw_relative">Relativform: der, die, das, wo (aliyesoma, der gelesen hat; kinachoitwa, das heißt; waishio, die leben)</string>
+    <string name="inflection_sw_object_label">Objekt</string>
+    <string name="inflection_sw_object">Objekt: ni- mich, ku- dich, m- oder mw- ihn oder sie, tu- uns, wa- sie (Plural) und die Präfixe der Nominalklassen ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">reflexiv</string>
+    <string name="inflection_sw_reflexive">reflexiv ji-: sich (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">Infinitiv</string>
+    <string name="inflection_sw_infinitive">Infinitiv: ku- oder kw- (kusoma, kwandika, kumpa)</string>
+</resources>

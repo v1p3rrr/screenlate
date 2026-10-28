@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">否定</string>
+    <string name="inflection_sw_negative">否定：主語の前の ha-（hatukusoma、hakusoma）、「私」には si-、「あなた」には hu-（sikusoma、hukusoma）、主語の後で関係形の前の si-（isiyojulikana）</string>
+    <string name="inflection_sw_i_label">私</string>
+    <string name="inflection_sw_i">主語 ni-：私（ninasoma、nilisoma）</string>
+    <string name="inflection_sw_you_label">あなた</string>
+    <string name="inflection_sw_you">主語 u-：あなた、または3・11・14類の名詞（unasoma、mti umeanguka「木が倒れた」）</string>
+    <string name="inflection_sw_he_she_label">彼・彼女</string>
+    <string name="inflection_sw_he_she">主語 a-：彼または彼女（anasoma、alisoma）</string>
+    <string name="inflection_sw_we_label">私たち</string>
+    <string name="inflection_sw_we">主語 tu-：私たち（tunasoma、hatukusoma）</string>
+    <string name="inflection_sw_you_pl_label">あなたたち</string>
+    <string name="inflection_sw_you_pl">主語 m-：あなたたち（mnasoma、hamkusoma）</string>
+    <string name="inflection_sw_they_label">彼ら</string>
+    <string name="inflection_sw_they">主語 wa-：彼ら（wanasoma、hawakusoma）</string>
+    <string name="inflection_sw_class_label">名詞クラス</string>
+    <string name="inflection_sw_class">名詞クラスの主語：ki- vi-（kitabu kimeanguka）、li- ya-（jina、majina）、i- zi-（nyumba）、ku- pa- mu-（場所：kulikuwa「あった」）</string>
+    <string name="inflection_sw_past_label">過去</string>
+    <string name="inflection_sw_past">過去：li-、否定の後は ku-（alisoma、hakusoma）</string>
+    <string name="inflection_sw_present_label">現在</string>
+    <string name="inflection_sw_present">現在：na-（anasoma）</string>
+    <string name="inflection_sw_future_label">未来</string>
+    <string name="inflection_sw_future">未来：ta-、関係形の前は taka-（atasoma、hatasoma、atakayesoma）</string>
+    <string name="inflection_sw_perfect_label">完了</string>
+    <string name="inflection_sw_perfect">完了：me-（amesoma「読んだ」）</string>
+    <string name="inflection_sw_not_yet_label">まだ〜ない</string>
+    <string name="inflection_sw_not_yet">まだ〜ない：否定の後の ja-（hajasoma「まだ読んでいない」）</string>
+    <string name="inflection_sw_conditional_label">条件法</string>
+    <string name="inflection_sw_conditional">条件法：nge- と ngali-（angesoma「読むだろうに」、angalisoma「読んだだろうに」）</string>
+    <string name="inflection_sw_when_label">〜とき</string>
+    <string name="inflection_sw_when">ki-：〜とき、〜しながら、〜なら（akisoma）</string>
+    <string name="inflection_sw_and_then_label">そして</string>
+    <string name="inflection_sw_and_then">ka-：そして、物語の中で（akasoma）</string>
+    <string name="inflection_sw_habitual_label">習慣</string>
+    <string name="inflection_sw_habitual">習慣：hu-（husoma「いつも読む」）</string>
+    <string name="inflection_sw_relative_label">関係形</string>
+    <string name="inflection_sw_relative">関係形：〜する人、〜するもの、〜する所（aliyesoma「読んだ人」、kinachoitwa「〜と呼ばれる」、waishio「住んでいる人々」）</string>
+    <string name="inflection_sw_object_label">目的語</string>
+    <string name="inflection_sw_object">目的語：ni- 私を、ku- あなたを、m- または mw- 彼・彼女を、tu- 私たちを、wa- 彼らを、名詞クラスの接頭辞 ki- vi- li- ya- i- zi- u- pa- mu-（ninakupenda、alimwona）</string>
+    <string name="inflection_sw_reflexive_label">再帰</string>
+    <string name="inflection_sw_reflexive">再帰 ji-：自分を（alijificha、kujiunga）</string>
+    <string name="inflection_sw_infinitive_label">不定詞</string>
+    <string name="inflection_sw_infinitive">不定詞：ku- または kw-（kusoma、kwandika、kumpa）</string>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">olumsuz</string>
+    <string name="inflection_sw_negative">olumsuzluk: özneden önce ha- (hatukusoma, hakusoma), “ben” için si-, “sen” için hu- (sikusoma, hukusoma), özneden sonra ilgi ekinden önce si- (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">ben</string>
+    <string name="inflection_sw_i">özne ni-: ben (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">sen</string>
+    <string name="inflection_sw_you">özne u-: sen ya da 3, 11 ve 14. sınıftan bir ad (unasoma; mti umeanguka, ağaç devrildi)</string>
+    <string name="inflection_sw_he_she_label">o</string>
+    <string name="inflection_sw_he_she">özne a-: o, bir kişi (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">biz</string>
+    <string name="inflection_sw_we">özne tu-: biz (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">siz</string>
+    <string name="inflection_sw_you_pl">özne m-: siz (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">onlar</string>
+    <string name="inflection_sw_they">özne wa-: onlar (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">ad sınıfı</string>
+    <string name="inflection_sw_class">bir ad sınıfının öznesi: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (yerler: kulikuwa, vardı)</string>
+    <string name="inflection_sw_past_label">geçmiş zaman</string>
+    <string name="inflection_sw_past">geçmiş zaman: li-, olumsuzluktan sonra ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">şimdiki zaman</string>
+    <string name="inflection_sw_present">şimdiki zaman: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">gelecek zaman</string>
+    <string name="inflection_sw_future">gelecek zaman: ta-, ilgi ekinden önce taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">yakın geçmiş</string>
+    <string name="inflection_sw_perfect">yakın geçmiş: me- (amesoma, okudu)</string>
+    <string name="inflection_sw_not_yet_label">henüz değil</string>
+    <string name="inflection_sw_not_yet">henüz değil: olumsuzluktan sonra ja- (hajasoma, henüz okumadı)</string>
+    <string name="inflection_sw_conditional_label">şart kipi</string>
+    <string name="inflection_sw_conditional">şart kipi: nge- ve ngali- (angesoma, okurdu; angalisoma, okumuş olurdu)</string>
+    <string name="inflection_sw_when_label">iken</string>
+    <string name="inflection_sw_when">ki-: -ince, -ken ya da -se (akisoma)</string>
+    <string name="inflection_sw_and_then_label">ve sonra</string>
+    <string name="inflection_sw_and_then">ka-: ve sonra, bir anlatıda (akasoma)</string>
+    <string name="inflection_sw_habitual_label">alışkanlık</string>
+    <string name="inflection_sw_habitual">alışkanlık: hu- (husoma, genellikle okur)</string>
+    <string name="inflection_sw_relative_label">ilgi biçimi</string>
+    <string name="inflection_sw_relative">ilgi biçimi: -an, -en, -dığı (aliyesoma, okuyan kişi; kinachoitwa, adı verilen; waishio, yaşayanlar)</string>
+    <string name="inflection_sw_object_label">nesne</string>
+    <string name="inflection_sw_object">nesne: ni- beni, ku- seni, m- ya da mw- onu, tu- bizi, wa- onları ve sınıf önekleri ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">dönüşlü</string>
+    <string name="inflection_sw_reflexive">dönüşlü ji-: kendini (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">mastar</string>
+    <string name="inflection_sw_infinitive">mastar: ku- ya da kw- (kusoma, kwandika, kumpa)</string>
+</resources>

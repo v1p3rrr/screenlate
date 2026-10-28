@@ -115,10 +115,13 @@ the details.
   owner re-imports the Russian dictionaries (the stress-mark rule changes them at import).
 - Group 5a (`plans/2026-10-19-group-5a.md`), resumed 2026-10-28. Merged into `languages/main`:
   - the four answers of 2026-10-22 (`languages/5a-answers`, 9a401674);
-  - Esperanto (`languages/eo`, cc6e26cf).
-  Albanian and Swahili follow on `languages/sq` and `languages/sw`, each rebased onto the newest `languages/main`
-  before its report. Question 30 is answered provisionally: a straight " that cloud recognition writes after a full
-  stop stays as it is.
+  - Esperanto (`languages/eo`, cc6e26cf);
+  - Albanian (`languages/sq`, 33dab0fb).
+  Swahili, the group's last language, is on `languages/sw`, rebased onto the newest `languages/main` before its
+  report; with it the group is done (Basque and Maltese stay unbuilt, as the plan decided). Question 30 is answered
+  provisionally: a straight " that recognition writes for a curly quote stays as it is; Swahili's check found both
+  cloud recognition and ML Kit writing “Karibu!” as "Karibu!", so a note's sentence there starts or ends at the ".
+  Open for the owner: the plan's questions 28-34 (decided provisionally and built).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -466,6 +469,16 @@ from the corpus; ě read as ë in OCR text; Leipzig's Albanian news counts as th
 Latin as the more accurate model. Plan questions 31 (t' and m') and 32 (the frequency dictionary) decided
 provisionally. Checked on the emulator; the Lingua Libre recordings of AUD28 are left for a run when Wikimedia
 answers (HTTP 503 throughout).
+
+Swahili on `languages/sw` (2026-10-28, from `languages/main` at `f7e55a7e`): 21 verb prefix rules of our own
+(subject, tense, object, relative and the negative, peeled from the outside in; the stem looked up with ku- and with
+a hyphen; a one-syllable verb keeps its ku-, so Angela is not read as a-nge-la), applied only to verbs and only to
+words without an entry of their own, in a bundle built from Czech's descriptor; the rule names as labels in all 14
+locales; abbreviations (Bw., Bi., tar., k.m., n.k.), no ordinal period and “…” from the corpus; the apostrophe of ng'
+kept inside the word; Leipzig's Swahili Wikipedia counts as the frequency dictionary; ML Kit alone recommended;
+Tanzania's flag; Wiktionary first among the audio sources. Plan questions 33 (the frequency dictionary) and 34 (the
+prefixes beyond the plan's row) decided provisionally. Checked on the emulator; AUD29's recordings are left for a run
+when Wikimedia answers (HTTP 503 again), and ANK36's quoted sentence waits on question 30.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

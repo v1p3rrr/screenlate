@@ -893,6 +893,61 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun swahiliPrefixesComeOffFromTheOutsideInAndReachVerbsOnlyWhereTheTextHasNoEntry() = runTest {
+        val imported = engine.import(swahiliDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val swahili = LookupOptions(language = Language.SWAHILI)
+        suspend fun first(text: String) = engine.lookup(text, swahili).first()
+        suspend fun all(text: String) = engine.lookup(text, swahili).map { it.term.expression }
+
+        val read = first("alisoma")
+        assertThat(read.term.expression).isEqualTo("soma")
+        assertThat(read.matched).isEqualTo("alisoma")
+        assertThat(read.trace.map { it.name }).containsExactly("past", "he/she").inOrder()
+        // The popup shows the rules' names and descriptions in the app's language.
+        assertThat(read.trace.map { it.label }).doesNotContain("")
+        assertThat(read.trace.map { it.description }).doesNotContain("")
+        assertThat(first("aliyemwona").trace.map { it.name })
+            .containsExactly("object", "relative", "past", "he/she").inOrder()
+        // Prefixes reach only the glossaries tagged as a verb: unga is "to join" and "flour".
+        val joined = engine.lookup("aliunga", swahili).flatMap { result -> result.term.glossaries.map { it.content } }
+            .joinToString()
+        assertThat(joined).contains("to join")
+        assertThat(joined).doesNotContain("flour")
+        // Verbs written with a hyphen or with ku- are found too; the reading with fewer prefixes comes first.
+        assertThat(all("aliandika")).containsExactly("-andika")
+        assertThat(all("alikula").first()).isEqualTo("kula")
+        // A one-syllable stem needs its ku- after a tense: Angela is no a-nge-la.
+        assertThat(all("Angela")).isEmpty()
+        // A word with an entry of its own takes no prefix: kupa is not ku- + pa.
+        assertThat(all("kupa")).containsExactly("kupa")
+        assertThat(all("ng’ombe")).containsExactly("ng'ombe")
+    }
+
+    /**
+     * Rows as Wiktionary's Swahili exports write them: the part of speech in the glossary's tags, no rules; one
+     * headword as a noun and a verb, a verb with a hyphen, one-syllable verbs with and without ku-.
+     */
+    private fun swahiliDictionary(): File = zip(
+        "sw.zip",
+        "index.json" to """{"title":"Test Swahili","revision":"1","format":3,"sourceLanguage":"sw"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["soma","","v","",0,["to read"],1,""],
+              ["ona","","v","",0,["to see"],2,""],
+              ["unga","","n","",0,["flour"],3,""],
+              ["unga","","v","",0,["to join"],4,""],
+              ["-andika","","v","",0,["to write"],5,""],
+              ["kula","","v","",0,["to eat"],6,""],
+              ["la","","v","",0,["to eat"],7,""],
+              ["kupa","","v","",0,["to give"],8,""],
+              ["pa","","v","",0,["to give"],9,""],
+              ["ng'ombe","","n","",0,["cow"],10,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

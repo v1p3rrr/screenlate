@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified Chinese translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">否定</string>
+    <string name="inflection_sw_negative">否定：主语前的 ha-（hatukusoma、hakusoma），“我”用 si-，“你”用 hu-（sikusoma、hukusoma），主语后、关系形式前的 si-（isiyojulikana）</string>
+    <string name="inflection_sw_i_label">我</string>
+    <string name="inflection_sw_i">主语 ni-：我（ninasoma、nilisoma）</string>
+    <string name="inflection_sw_you_label">你</string>
+    <string name="inflection_sw_you">主语 u-：你，或第 3、11、14 类名词（unasoma；mti umeanguka，树倒了）</string>
+    <string name="inflection_sw_he_she_label">他/她</string>
+    <string name="inflection_sw_he_she">主语 a-：他或她（anasoma、alisoma）</string>
+    <string name="inflection_sw_we_label">我们</string>
+    <string name="inflection_sw_we">主语 tu-：我们（tunasoma、hatukusoma）</string>
+    <string name="inflection_sw_you_pl_label">你们</string>
+    <string name="inflection_sw_you_pl">主语 m-：你们（mnasoma、hamkusoma）</string>
+    <string name="inflection_sw_they_label">他们</string>
+    <string name="inflection_sw_they">主语 wa-：他们（wanasoma、hawakusoma）</string>
+    <string name="inflection_sw_class_label">名词类</string>
+    <string name="inflection_sw_class">名词类的主语：ki- vi-（kitabu kimeanguka），li- ya-（jina、majina），i- zi-（nyumba），ku- pa- mu-（处所：kulikuwa，曾有）</string>
+    <string name="inflection_sw_past_label">过去时</string>
+    <string name="inflection_sw_past">过去时：li-，否定后用 ku-（alisoma、hakusoma）</string>
+    <string name="inflection_sw_present_label">现在时</string>
+    <string name="inflection_sw_present">现在时：na-（anasoma）</string>
+    <string name="inflection_sw_future_label">将来时</string>
+    <string name="inflection_sw_future">将来时：ta-，关系形式前用 taka-（atasoma、hatasoma、atakayesoma）</string>
+    <string name="inflection_sw_perfect_label">完成体</string>
+    <string name="inflection_sw_perfect">完成体：me-（amesoma，已读）</string>
+    <string name="inflection_sw_not_yet_label">尚未</string>
+    <string name="inflection_sw_not_yet">尚未：否定后的 ja-（hajasoma，还没读）</string>
+    <string name="inflection_sw_conditional_label">条件式</string>
+    <string name="inflection_sw_conditional">条件式：nge- 和 ngali-（angesoma，会读；angalisoma，本会读过）</string>
+    <string name="inflection_sw_when_label">当…时</string>
+    <string name="inflection_sw_when">ki-：当…时、一边…一边或如果（akisoma）</string>
+    <string name="inflection_sw_and_then_label">然后</string>
+    <string name="inflection_sw_and_then">ka-：然后，用于叙述（akasoma）</string>
+    <string name="inflection_sw_habitual_label">习惯</string>
+    <string name="inflection_sw_habitual">习惯：hu-（husoma，通常读）</string>
+    <string name="inflection_sw_relative_label">关系形式</string>
+    <string name="inflection_sw_relative">关系形式：…的人、…的东西、…的地方（aliyesoma，读过的人；kinachoitwa，被称为…的；waishio，居住的人们）</string>
+    <string name="inflection_sw_object_label">宾语</string>
+    <string name="inflection_sw_object">宾语：ni- 我，ku- 你，m- 或 mw- 他或她，tu- 我们，wa- 他们，以及名词类前缀 ki- vi- li- ya- i- zi- u- pa- mu-（ninakupenda、alimwona）</string>
+    <string name="inflection_sw_reflexive_label">反身</string>
+    <string name="inflection_sw_reflexive">反身 ji-：自己（alijificha、kujiunga）</string>
+    <string name="inflection_sw_infinitive_label">不定式</string>
+    <string name="inflection_sw_infinitive">不定式：ku- 或 kw-（kusoma、kwandika、kumpa）</string>
+</resources>

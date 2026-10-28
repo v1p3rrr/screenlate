@@ -543,6 +543,7 @@ val Language.support: LanguageSupport
         Language.SLOVENIAN -> SlovenianSupport
         Language.ESPERANTO -> EsperantoSupport
         Language.ALBANIAN -> AlbanianSupport
+        Language.SWAHILI -> SwahiliSupport
     }
 
 /**
