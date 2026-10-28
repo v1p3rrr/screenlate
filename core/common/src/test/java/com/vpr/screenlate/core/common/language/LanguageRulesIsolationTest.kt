@@ -466,9 +466,10 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
             .containsExactly(
-                Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.FINNISH, Language.HUNGARIAN,
-                Language.AZERBAIJANI, Language.UZBEK,
+                Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.HUNGARIAN, Language.AZERBAIJANI,
+                Language.UZBEK,
             )
+        assertThat(all.where { it.ruleChainsOnlyWithoutRow }).containsExactly(Language.FINNISH)
     }
 
     @Test

@@ -31,8 +31,8 @@ object FinnishSupport : SpacedLanguageSupport() {
     /** ”…” on both sides, »…» in books; English quotes are common too. */
     override val quotePairs = mapOf('”' to '”', '»' to '»', '“' to '”', '(' to ')', '[' to ']')
 
-    /** The clitic and possessive rules would put kuu (-si) beside kuusi and talo (-on) beside taloon. */
-    override val inflectionRulesOnlyWithoutEntry = true
+    /** kuusi shows kuusi, then kuu with -si; taloon shows talo's illative row, not also talo with -on. */
+    override val ruleChainsOnlyWithoutRow = true
 
     /** Compounds join their words without a link (kirjastonhoitaja: the genitive kirjaston is a form row). */
     override val compoundLinks = emptyList<String>()

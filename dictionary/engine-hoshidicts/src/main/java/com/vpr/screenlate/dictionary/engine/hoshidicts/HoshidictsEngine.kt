@@ -126,10 +126,12 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         )
         val support = language.support
         json.decodeFromString<List<LookupResult>>(raw.decodeToString()).let { results ->
-            if (support.inflectionRulesOnlyWithoutEntry) {
-                results.withoutRuleOnlyResults(YomitanInflections.names(language.dictionaryCode))
-            } else {
-                results
+            when {
+                support.inflectionRulesOnlyWithoutEntry ->
+                    results.withoutRuleOnlyResults(YomitanInflections.names(language.dictionaryCode))
+                support.ruleChainsOnlyWithoutRow ->
+                    results.withoutRuleChainsBesideFreeOnes(YomitanInflections.names(language.dictionaryCode))
+                else -> results
             }
         }.withFormTagsAsRules(support.formTagRules).let { results ->
             // After the chains of two mutations are gone: ddwr finds ddŵr's lemma, not twr through dwr.

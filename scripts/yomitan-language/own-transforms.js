@@ -1717,8 +1717,9 @@ function finnishLongVowelPossessive() {
  * and -kaan/-kään (onkohan, tulepahan, talossanikin); then a possessive suffix (-ni, -si, -mme, -nne, -nsa/-nsä, the
  * long vowel and -n). Wiktionary's Finnish entries give no part of speech, so the results match entries without one
  * (glue.js, `untypedRules`), and forms through their form-of entries (talossa → talo). The engine shows these results
- * only where the text has no entry or form of its own (FinnishSupport's inflectionRulesOnlyWithoutEntry): taloon is
- * the illative of talo, not talo with -Vn.
+ * after the text's own entries, and a result that a form row also reaches without them only through the row
+ * (FinnishSupport's ruleChainsOnlyWithoutRow): kuusi shows kuusi, then kuu with -si; taloon is the illative of talo,
+ * not talo with -Vn.
  * @type {import('language-transformer').LanguageTransformDescriptor<FinnishCondition>}
  */
 export const finnishTransforms = {

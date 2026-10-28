@@ -387,9 +387,17 @@ interface LanguageSupport {
      * Whether a word's results reached through the inflection rules are left out when the same text also finds results
      * without them: the dictionary lists the forms of most words itself, and the rules are there for the words whose
      * entries list none (Romanian consiliul → consiliu, where casă has its own entry and is not cas). A result reached
-     * both ways shows only its chains without the rules (Finnish taloon: talo's illative row, not -on).
+     * both ways shows only its chains without the rules, as with [ruleChainsOnlyWithoutRow].
      */
     val inflectionRulesOnlyWithoutEntry: Boolean get() = false
+
+    /**
+     * Whether a result that a chain free of the inflection rules also reaches (a form-of row) drops its chains through
+     * the rules, while the results only the rules reach stay, after the entries: Finnish taloon shows talo's illative
+     * row, not also talo with -on, and kuusi shows kuusi, then kuu with -si. [inflectionRulesOnlyWithoutEntry] does
+     * this too.
+     */
+    val ruleChainsOnlyWithoutRow: Boolean get() = false
 
     /**
      * Tags of the dictionaries' form-of entries that stand for one of the language's inflection rules, with that rule's

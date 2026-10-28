@@ -66,8 +66,9 @@ class FinnishSupportTest {
     }
 
     @Test
-    fun `rules only where the text has no entry, compounds split without links`() {
-        assertThat(FinnishSupport.inflectionRulesOnlyWithoutEntry).isTrue()
+    fun `rule results after the entries, rule chains only without a row, compounds split without links`() {
+        assertThat(FinnishSupport.inflectionRulesOnlyWithoutEntry).isFalse()
+        assertThat(FinnishSupport.ruleChainsOnlyWithoutRow).isTrue()
         assertThat(FinnishSupport.compoundLinks).isEmpty()
         assertThat(FinnishSupport.headwordMarks).isNull()
         assertThat(FinnishSupport.fallbackLanguage).isNull()

@@ -55,6 +55,20 @@ class RuleOnlyResultsTest {
     fun `nothing is left out without rules`() {
         val list = listOf(result("casă", "casă"), result("casă", "cas", listOf("agreement")))
         assertThat(list.withoutRuleOnlyResults(emptySet())).isSameInstanceAs(list)
+        assertThat(list.withoutRuleChainsBesideFreeOnes(emptySet())).isSameInstanceAs(list)
+    }
+
+    @Test
+    fun `beside a form row only the rule chains go, and the rules' own results stay`() {
+        val six = result("kuusi", "kuusi")
+        val moon = result("kuusi", "kuu", listOf("-si"))
+        val house = result("taloon", "talo", listOf("-on"), listOf("illative"))
+        val shown = listOf(six, moon, house).withoutRuleChainsBesideFreeOnes(setOf("-si", "-on"))
+        assertThat(shown.map { it.term.expression }).containsExactly("kuusi", "kuu", "talo").inOrder()
+        assertThat(shown[0]).isSameInstanceAs(six)
+        assertThat(shown[1]).isSameInstanceAs(moon)
+        assertThat(shown[2].trace.map { it.name }).containsExactly("illative")
+        assertThat(shown[2].otherTraces).isEmpty()
     }
 
     @Test

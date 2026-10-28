@@ -1170,7 +1170,7 @@ class LanguageLookupTest {
     )
 
     @Test
-    fun finnishCliticsAndPossessiveSuffixesComeOffIntoTheListedFormsOnlyWhereTheTextHasNoEntry() = runTest {
+    fun finnishCliticsAndPossessiveSuffixesComeOffIntoTheListedFormsAfterTheEntries() = runTest {
         val imported = engine.import(finnishDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
         val finnish = LookupOptions(language = Language.FINNISH)
@@ -1190,9 +1190,16 @@ class LanguageLookupTest {
         assertThat(all("talokin")).containsExactly("talo")
         assertThat(all("talossaan")).containsExactly("talo")
         assertThat(all("onkohan")).containsExactly("olla")
-        // Words and forms of their own take no suffix off: kuusi is no kuu with -si, taloon no talo with -on.
-        assertThat(all("kuusi")).containsExactly("kuusi")
-        assertThat(first("taloon").trace.map { it.name }).doesNotContain("possessive")
+        // A word of its own comes first, then the rules' result: kuusi, then kuu with -si. A form row keeps only its
+        // own chain: taloon is talo's illative, not also talo with -on.
+        assertThat(all("kuusi")).containsExactly("kuusi", "kuu").inOrder()
+        val moon = engine.lookup("kuusi", finnish).first { it.term.expression == "kuu" }
+        assertThat(moon.trace.map { it.name }).contains("possessive")
+        val illative = engine.lookup("taloon", finnish).filter { it.term.expression == "talo" }
+        assertThat(illative).isNotEmpty()
+        illative.forEach { result ->
+            assertThat((listOf(result.trace) + result.otherTraces).flatten().map { it.name }).doesNotContain("possessive")
+        }
         assertThat(all("vesi")).containsExactly("vesi")
         // An ending after a colon: no dictionary has EU:n, so the word before the colon is found.
         val union = first("EU:n")

@@ -8,22 +8,32 @@ import com.vpr.screenlate.dictionary.api.model.Transform
  * The results without those reached only through [rules] (rule ids) where another result of the same matched text
  * needs none of them: Romanian casă finds its own entry, and the agreement ending's cas is left out
  * (`LanguageSupport.inflectionRulesOnlyWithoutEntry`). A form-of entry's chain is not a rule's. A result reached
- * both ways keeps only its chains free of them: Finnish taloon shows talo's illative row, not talo with -on.
+ * both ways keeps only its chains free of them ([withoutRuleChainsBesideFreeOnes]).
  */
 internal fun List<LookupResult>.withoutRuleOnlyResults(rules: Set<String>): List<LookupResult> {
     if (rules.isEmpty()) return this
-    fun chains(result: LookupResult) = listOf(result.trace) + result.otherTraces
-    fun throughRules(chain: List<Transform>) = chain.any { it.name in rules }
-    val plain = filterNot { result -> chains(result).all(::throughRules) }.mapTo(HashSet()) { it.matched }
-    return mapNotNull { result ->
-        val free = chains(result).filterNot(::throughRules)
-        when {
-            free.isEmpty() -> result.takeUnless { it.matched in plain }
-            free.size == result.otherTraces.size + 1 -> result
-            else -> result.copy(trace = free.first(), otherTraces = free.drop(1))
-        }
+    fun onlyThroughRules(result: LookupResult) = chains(result).all { it.throughAny(rules) }
+    val plain = filterNot(::onlyThroughRules).mapTo(HashSet()) { it.matched }
+    return filterNot { onlyThroughRules(it) && it.matched in plain }.withoutRuleChainsBesideFreeOnes(rules)
+}
+
+/**
+ * The results with their chains through [rules] (rule ids) left out where a chain free of them reaches the same result,
+ * while results only the rules reach stay (`LanguageSupport.ruleChainsOnlyWithoutRow`): Finnish taloon shows talo's
+ * illative row, not also talo with -on, and kuusi still shows kuu with -si after its own entry.
+ */
+internal fun List<LookupResult>.withoutRuleChainsBesideFreeOnes(rules: Set<String>): List<LookupResult> {
+    if (rules.isEmpty()) return this
+    return map { result ->
+        val all = chains(result)
+        val free = all.filterNot { it.throughAny(rules) }
+        if (free.isEmpty() || free.size == all.size) result else result.copy(trace = free.first(), otherTraces = free.drop(1))
     }
 }
+
+private fun chains(result: LookupResult) = listOf(result.trace) + result.otherTraces
+
+private fun List<Transform>.throughAny(rules: Set<String>) = any { it.name in rules }
 
 /**
  * The results without those found through a headword's spelling without marks ([LookupResult.respelled]) where another
