@@ -770,7 +770,7 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
 68. Answered (2026-10-22): (a); the first download taking the link is fine (owner). On a slow link the second of two
     parallel downloads gets almost nothing until the first ends. (a, recommended) Leave it. (b) One download at a time
     on a metered or slow network.
-69. Open (2026-10-22; the owner asked whether the first diagnostics build has it: both builds the owner got, 2a65358f
+69. Answered (owner, 2026-10-28 evening): (a), leave it and measure with the diagnostics build; question 73 keeps the touch as the moment (2026-10-22; the owner asked whether the first diagnostics build has it: both builds the owner got, 2a65358f
     and 9937cc41, open the connection on a touch and log each opening as `lens_preconnect` and the wait as
     `preconnect_wait_ms`): Opening the connection on a touch still leaves the handshake visible when it takes longer
     than the time from the touch to the request (1.5 s on the emulator's mobile network). (a, recommended) Leave it and
@@ -778,63 +778,63 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     overlay starts.
 70. Answered (2026-10-22): (a). The accessibility disclosure does not mention the header-only request that opens the
     connection on a touch (it carries no screenshot or text). (a, recommended) Leave it. (b) Add a sentence.
-71. Decided provisionally: (a). A plain bug, fixed under the owner's standing rule while the owner was away
+71. Answered (plain bug, owner's standing rule): (a), built. A plain bug, fixed under the owner's standing rule while the owner was away
     (2026-10-22); built with question 67's fix. Home's audio-failure card names the first turned-on language whose
     sources include the failing source: it said Korean for failures in Vietnamese, English and German lookups. (a,
     recommended) Name the language of the lookup that failed. (b) Leave it.
-72. Open (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
+72. Answered (owner, 2026-10-28 evening): fix (1) the PaddleOCR lines and (2) the installed size on the download screen; (3) after an explanation, fix the data in our converters (de-ru long labels moved into the gloss, it-ru "( approfondimento)" dropped, OpenRussian's gapirish through an exception list) and give vi's "Central" tag a clear name in our tag labels; (4) debug first whether we send something wrong or AnkiDroid has not added the note yet ("про анки надо подебажить понять в чем дело для начала, мб передаем не так что то, или он еще добавить не успел"). (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
     paragraph, and the v5 detector splits Russian lines into overlapping boxes (38 paragraphs on the Russian page); (2)
     the download screen shows the download size, while the installed size is larger (Chinese: 42 MB shown, about 69 MB
     installed); (3) upstream data: FreeDict de-ru's very long sense labels, it-ru's "( approfondimento)", OpenRussian's
     "gapirish", Wiktionary vi-en's "Central" tag; (4) the dictionary button on a duplicate opened an empty AnkiDroid
     browser (AnkiDroid's side).
-73. Open (2026-10-22): The agent's own values in the four features built on 2026-10-19: PaddleOCR memory trimmed 10 s
+73. Answered (owner, 2026-10-28 evening): (a), kept. The owner first asked to open the connection when the bubble leaves the dock instead of on any touch ("лучше когда из дока выходит сразу же"); told that the scan starts at that very moment, the owner kept the touch. (2026-10-22): The agent's own values in the four features built on 2026-10-19: PaddleOCR memory trimmed 10 s
     after the last recognition; the popup page created 150 ms after the capture; the connection opened by a HEAD request
     on any touch, at most every 30 s, with a 3 s wait; three new log lines; one sentence in docs/usage. (a, recommended)
     Keep them. (b) Change some (the owner says which).
-74. Open (2026-10-22): The owner's archive keeps copies of the hi, bn, ka, hy, th, ar, kk and ky files under future/,
+74. Answered (owner, 2026-10-28 evening): (a), delete the duplicates once the catalog copies pass the hash check, showing the list first. (2026-10-22): The owner's archive keeps copies of the hi, bn, ka, hy, th, ar, kk and ky files under future/,
     made before they were in the catalog. Once their catalog copies pass the checks: (a, recommended) delete the future/
     duplicates (about 56 MiB plus 16 tessdata files); (b) keep them, marked as superseded.
-75. Open (2026-10-22): Files of the researched blocks that are not in the catalog yet (5a-5e and group 6: their
+75. Answered (owner, 2026-10-28 evening): (a), as each block puts them in the catalog; 5e keeps or redoes its converted models until then. (2026-10-22): Files of the researched blocks that are not in the catalog yet (5a-5e and group 6: their
     Wiktionary pairs; 5e's converted Tamil and Telugu Paddle models and tessdata tam, tel, kan, mar, now only in a
     session scratchpad). (a, recommended) The archive copies them when each block puts them in the catalog (the normal
     refresh). (b) Pre-copy them all under future/ now. (c) Not at all.
-76. Open (2026-10-22): The archive lacks 25 catalog entries added after 2026-10-19 (the km, fa and he Wiktionary pairs
+76. Answered (owner, 2026-10-28 evening): (a), fix the future list and fetch them now. (2026-10-22): The archive lacks 25 catalog entries added after 2026-10-19 (the km, fa and he Wiktionary pairs
     and transcriptions, wordfreq fa and he, tessdata khm and heb, the Thai, Kazakh and Kyrgyz frequency corpora; 65 MiB,
     all with pinned hashes). (a, recommended) Fix the script's future list (so the hi-ky files are not fetched twice)
     and fetch them now. (b) Later, with the next refresh.
-77. Decided provisionally (2026-10-22, the download fix of question 67): a download that breaks off while the network
+77. Answered (owner, 2026-10-28 evening): 3 s and 15 s instead of 2 s and 30 s ("3 и 15"), on `main` and `languages/main`; when the network comes back the run continues at once, so the 15 s only matter when the system does not report it (2026-10-22, the download fix of question 67): a download that breaks off while the network
     goes counts as waiting for it when the network is gone within 2 s of the failure; if WorkManager does not stop the
     task then, the run waits 30 s for the network before it ends and runs again later (on the emulator WorkManager
     always stopped it first). (a, built) Keep 2 s and 30 s. (b) Other values (the owner says which).
-78. Decided provisionally (2026-10-22, the audio card fix of question 71): a failing audio source is listed per lookup
+78. Answered (owner, 2026-10-28 evening): (a), per language, as built (2026-10-22, the audio card fix of question 71): a failing audio source is listed per lookup
     language, and a lookup that finds the source working clears its failure only on that language's card. (a, built) Per
     language: a shared source (Lingua Libre, Wiktionary) that failed in Kyrgyz and Hebrew shows on both cards, and a
     working Kyrgyz lookup leaves the Hebrew card. (b) A working lookup in any language clears the source's failure on
     every card.
-79. Open (2026-10-22, night checks): the PanLex kk-en conversion lists related words among a headword's translations
+79. Answered (owner, 2026-10-28 evening): (a), leave it and look for a filter when the dictionary goes into the catalog (2026-10-22, night checks): the PanLex kk-en conversion lists related words among a headword's translations
     (кітап "book" also gives bookseller, bookshop), as PanLex files them under the same meaning. (a, recommended) Leave
     it until PanLex is hosted, and look for a filter then (for example translations given by only one source). (b)
     Filter them in the converter now.
-80. Open (2026-10-22, night checks): after a Czech era (př. n. l.), ML Kit glues the next word to it ("n.l.a" for "n. l.
+80. Answered (owner, 2026-10-28 evening): (a), split it in Czech OCR lines (2026-10-22, night checks): after a Czech era (př. n. l.), ML Kit glues the next word to it ("n.l.a" for "n. l.
     a"), so the word after the era is not looked up on its own. (a, recommended) Split it in Czech OCR lines (recognized
     text only). (b) Leave it.
-81. Open (2026-10-22, night checks): with the release and the debug build both installed, the text selection menu shows
+81. Answered (owner, 2026-10-28 evening): (a), "Look up in Screenlate Dev" for the debug build (2026-10-22, night checks): with the release and the debug build both installed, the text selection menu shows
     two identical "Look up in Screenlate" items. (a, recommended) Give the debug build its own label ("Look up in
     Screenlate Dev"). (b) Leave it.
-82. Open (2026-10-22, night checks): the waiting tasks card lists "…, PaddleOCR v6, text detector, …": the comma makes
+82. Answered (owner, 2026-10-28 evening): (a), one name, "PaddleOCR v6 text detector" (2026-10-22, night checks): the waiting tasks card lists "…, PaddleOCR v6, text detector, …": the comma makes
     the detector look like a separate item. (a, recommended) Name it "PaddleOCR v6 text detector" in the list. (b) Leave
     it.
-83. Open (2026-10-22, night checks): Cancel in an import's notification during its last milliseconds (the dictionary
+83. Answered (owner, 2026-10-28 evening): (a), hide Cancel during the last step (2026-10-22, night checks): Cancel in an import's notification during its last milliseconds (the dictionary
     being registered) installs the dictionary anyway. (a, recommended) Hide Cancel during that last step. (b) Remove the
     dictionary again after such a Cancel. (c) Leave it.
-84. Decided provisionally (2026-10-22, night checks): Home's "Download again" card for a damaged or missing dictionary
+84. Plain bug (owner's standing rule), to build if not built yet (2026-10-22, night checks): Home's "Download again" card for a damaged or missing dictionary
     comes back when Home is reopened while that download waits in the queue. A plain bug: the card is hidden while its
     download is queued or running; to build in the next session that works on downloads.
-85. Open (2026-10-22, night checks): case DIC9 (an interrupted dictionary reset) expects a spinner that cannot be seen:
+85. Answered (owner, 2026-10-28 evening): (a), drop the spinner from the case (2026-10-22, night checks): case DIC9 (an interrupted dictionary reset) expects a spinner that cannot be seen:
     the deletion takes 450 ms and the screen's first frame comes 4 s after the start. (a, recommended) Drop the spinner
     from the case. (b) Show a spinner while the bundled dictionaries install after the reset.
-86. Open (2026-10-22, night checks): the transcription tags of large dictionaries (Chinese Wiktionary: 4.4 million
+86. Answered (owner, 2026-10-28 evening): (a), accepted (2026-10-22, night checks): the transcription tags of large dictionaries (Chinese Wiktionary: 4.4 million
     tagged transcriptions) are now kept in a mapped file with a 39-bit hash per transcription (it ran out of memory
     before and installed without tags): about 15 pairs of transcriptions share a hash and show each other's tags, and
     about 8 in a million untagged ones show another's tags. (a, recommended) Accept it. (b) Keep more bits (a larger
@@ -1760,3 +1760,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-28 evening: request 79 and decision row "Marks folded in the lookup" (owner): every Latin- and
   Cyrillic-script language but Vietnamese finds words with any marks over its base letters; built between groups 5c
   and 5d.
+- 2026-10-28 evening: the owner answered questions 69-86 (the rest of 71 and 84 are plain bugs): to build are 72 (1, 2,
+  3 and the AnkiDroid debugging of 4), 77 (3 s and 15 s), 80, 81, 82, 83, 85, and for the archive 74 and 76; 69, 73,
+  75, 78, 79 and 86 stay as they are.
