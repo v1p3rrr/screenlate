@@ -488,7 +488,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   (hit test, lookup, page render, window show) on the phone and the emulator from the app's log timings, compare with
   earlier releases, and remove what is slow.
 - More interface languages (owner, 2026-10-28): choose, among the languages the app reads, the most widely used ones
-  that would be worth translating the interface into later (the interface has 14 locales now). Not worked out yet.
+  that would be worth translating the interface into later (the interface has 14 locales now). Researched on
+  2026-10-29 (cloud session): the ranked list with reasons is in `notes/translations.md`, "Candidate interface
+  languages" (Indonesian, Thai, Ukrainian first; Arabic, Persian and Hebrew have their strings already). The owner
+  chooses which to build.
 - Interface translation check (owner, 2026-10-28): a separate pass over every interface locale for correct and
   natural translations (terms, grammar, consistency between screens). Not worked out yet.
 - PaddleOCR lines (owner, 2026-10-28 evening, question 72 (1); moved here from a proposed session at the owner's
