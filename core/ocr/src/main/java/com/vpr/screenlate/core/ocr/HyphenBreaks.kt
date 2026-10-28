@@ -1,31 +1,37 @@
 package com.vpr.screenlate.core.ocr
 
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.language.LanguageSupport
 
 /**
- * The page with [separator], the language's word separator, after a word hyphenated at a line end ("impor-" ending a
- * line, "tant" starting the next). Lens joins the halves with no separator, as one hyphenated word, and the language
- * rules join a word or keep its hyphen only across a break (`SpacedLanguageSupport.spellingVariants`), which
- * "impor-tant" would not show. A language written without spaces keeps the page as it is.
+ * The page with a separator after each line's last word that Lens gives none although its paragraph goes on. Lens
+ * joins the halves of a word hyphenated at a line end ("impor-" ending a line, "tant" starting the next) as one
+ * hyphenated word, and at times an unhyphenated line's last word with the next line's first ("sí" and "torthaí" as
+ * "sítorthaí"). A word hyphenated after a letter gets the language's word separator, so the language rules see the
+ * break (`SpacedLanguageSupport.spellingVariants`); any other line end gets [LanguageSupport.lineEndSeparator], which
+ * is empty where words break across lines without a hyphen (Korean). A language written without spaces keeps the page
+ * as it is.
  */
-internal fun OcrPage.withHyphenBreaks(separator: String): OcrPage {
-    if (separator.isEmpty()) return this
+internal fun OcrPage.withLineEndSeparators(support: LanguageSupport): OcrPage {
+    if (support.wordSeparator.isEmpty()) return this
     return copy(
         paragraphs = paragraphs.map { paragraph ->
             paragraph.copy(
                 lines = paragraph.lines.mapIndexed { index, line ->
-                    if (index == paragraph.lines.lastIndex) line else line.withHyphenBreak(separator)
+                    if (index == paragraph.lines.lastIndex) line else line.withLineEndSeparator(support)
                 },
             )
         },
     )
 }
 
-private fun OcrLine.withHyphenBreak(separator: String): OcrLine {
+private fun OcrLine.withLineEndSeparator(support: LanguageSupport): OcrLine {
     val last = words.lastOrNull() ?: return this
+    if (last.separator.isNotEmpty()) return this
     val text = last.text
     val hyphenated = text.length >= 2 && text.last() in LINE_END_HYPHENS && text[text.length - 2].isLetter()
-    if (!hyphenated || last.separator.isNotEmpty()) return this
+    val separator = if (hyphenated) support.wordSeparator else support.lineEndSeparator
+    if (separator.isEmpty()) return this
     return copy(words = words.dropLast(1) + last.copy(separator = separator))
 }
 

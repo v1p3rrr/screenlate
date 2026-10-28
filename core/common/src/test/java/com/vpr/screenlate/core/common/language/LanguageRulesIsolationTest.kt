@@ -688,4 +688,10 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.wordSeparator.isEmpty() })
             .containsExactly(Language.JAPANESE, Language.CHINESE, Language.THAI, Language.KHMER)
     }
+
+    @Test
+    fun `a line end recognition gives no separator takes the word separator in every language but Korean`() {
+        assertThat(all.where { it.lineEndSeparator != it.wordSeparator }).containsExactly(Language.KOREAN)
+        assertThat(Language.KOREAN.support.lineEndSeparator).isEmpty()
+    }
 }

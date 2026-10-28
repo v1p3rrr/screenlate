@@ -1,7 +1,9 @@
 package com.vpr.screenlate.core.ocr
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.language.support
 import org.junit.Test
 
 class HyphenBreaksTest {
@@ -19,16 +21,33 @@ class HyphenBreaksTest {
 
     private fun OcrPage.paragraphText() = TextLayout(this).paragraphText(TextPosition(0, 0)).first
 
+    private fun OcrPage.inEnglish() = withLineEndSeparators(Language.ENGLISH.support)
+
     @Test
     fun `a word hyphenated at a line end gets the line break that lens leaves out`() {
         val lens = page(line(0, "an" to " ", "impor-" to ""), line(1, "tant" to " ", "thing" to ""))
         assertThat(lens.paragraphText()).isEqualTo("an impor-tant thing")
-        assertThat(lens.withHyphenBreaks(" ").paragraphText()).isEqualTo("an impor- tant thing")
+        assertThat(lens.inEnglish().paragraphText()).isEqualTo("an impor- tant thing")
         // The Unicode hyphen and the soft hyphen too.
         val unicode = page(line(0, "impor‐" to ""), line(1, "tant" to ""))
-        assertThat(unicode.withHyphenBreaks(" ").paragraphText()).isEqualTo("impor‐ tant")
+        assertThat(unicode.inEnglish().paragraphText()).isEqualTo("impor‐ tant")
         val soft = page(line(0, "impor" + Char(0xAD) to ""), line(1, "tant" to ""))
-        assertThat(soft.withHyphenBreaks(" ").paragraphText()).isEqualTo("impor" + Char(0xAD) + " tant")
+        assertThat(soft.inEnglish().paragraphText()).isEqualTo("impor" + Char(0xAD) + " tant")
+        // Korean, whose other line ends stay as Lens gives them.
+        val korean = page(line(0, "중요-" to ""), line(1, "하다" to ""))
+        assertThat(korean.withLineEndSeparators(Language.KOREAN.support).paragraphText()).isEqualTo("중요- 하다")
+    }
+
+    @Test
+    fun `a line end lens gives no separator gets the language's when the paragraph goes on`() {
+        // ga-anki.png: "Cheannaigh sí" ending a line and "torthaí" starting the next came as "sítorthaí".
+        val irish = page(line(0, "Cheannaigh" to " ", "sí" to ""), line(1, "torthaí" to " ", "úra." to ""))
+        assertThat(irish.paragraphText()).isEqualTo("Cheannaigh sítorthaí úra.")
+        assertThat(irish.withLineEndSeparators(Language.IRISH.support).paragraphText())
+            .isEqualTo("Cheannaigh sí torthaí úra.")
+        // A dash of its own and a hyphen after a digit too, as on-device recognition and photos read them.
+        val dashes = page(line(0, "this" to " ", "-" to ""), line(1, "COVID-19-" to ""), line(2, "Impfung" to ""))
+        assertThat(dashes.inEnglish().paragraphText()).isEqualTo("this - COVID-19- Impfung")
     }
 
     @Test
@@ -66,17 +85,22 @@ class HyphenBreaksTest {
     }
 
     @Test
-    fun `other line ends, the last line and languages without spaces stay`() {
-        // A dash of its own, a hyphen after a digit, a separator Lens gave, and a hyphen inside the line.
+    fun `separators lens gave, the last line, korean line ends and languages without spaces stay`() {
+        // A separator Lens gave, a hyphen inside the line with a separator after it, and the paragraph's last line.
         val others = page(
-            line(0, "this" to " ", "-" to ""),
-            line(1, "COVID-19-" to ""),
-            line(2, "Haus-" to " "),
-            line(3, "well-known" to " ", "and" to ""),
-            line(4, "last-" to ""),
+            line(0, "Haus-" to " "),
+            line(1, "well-known" to " ", "and" to " "),
+            line(2, "last" to ""),
         )
-        assertThat(others.withHyphenBreaks(" ")).isEqualTo(others)
+        assertThat(others.inEnglish()).isEqualTo(others)
+        // Korean breaks a word at any syllable at a line end.
+        val korean = page(line(0, "먹었" to ""), line(1, "습니다" to ""))
+        assertThat(korean.withLineEndSeparators(Language.KOREAN.support)).isEqualTo(korean)
         val japanese = page(line(0, "大切-" to ""), line(1, "です" to ""))
-        assertThat(japanese.withHyphenBreaks("")).isEqualTo(japanese)
+        assertThat(japanese.withLineEndSeparators(Language.JAPANESE.support)).isEqualTo(japanese)
+        val chinese = page(line(0, "重要" to ""), line(1, "的" to ""))
+        assertThat(chinese.withLineEndSeparators(Language.CHINESE.support)).isEqualTo(chinese)
+        val thai = page(line(0, "จริง" to ""), line(1, "ๆ" to ""))
+        assertThat(thai.withLineEndSeparators(Language.THAI.support)).isEqualTo(thai)
     }
 }

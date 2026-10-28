@@ -21,6 +21,13 @@ interface LanguageSupport {
     val wordSeparator: String
 
     /**
+     * Put after a line's last word that cloud recognition gives no separator although the paragraph goes on: the
+     * [wordSeparator], or empty where text breaks words across lines without a hyphen, so such a line end may fall
+     * inside a word.
+     */
+    val lineEndSeparator: String get() = wordSeparator
+
+    /**
      * The gap between two words of a line, in line heights, from which on-device recognition parts them with a space
      * in a language without spaces between words, where its words are clusters (Tesseract's Thai) or phrases (its
      * Khmer); closer ones are joined. Null where words take [wordSeparator].

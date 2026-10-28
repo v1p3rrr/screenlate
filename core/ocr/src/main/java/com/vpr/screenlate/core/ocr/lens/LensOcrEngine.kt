@@ -9,7 +9,7 @@ import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrPage
-import com.vpr.screenlate.core.ocr.withHyphenBreaks
+import com.vpr.screenlate.core.ocr.withLineEndSeparators
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import javax.inject.Inject
@@ -98,7 +98,7 @@ class LensOcrEngine @Inject constructor(
         }
         return withContext(Dispatchers.Default) {
             val page = LensProtocol.parseResponse(bytes, image.width, image.height)
-            page.withHyphenBreaks(language.support.wordSeparator)
+            page.withLineEndSeparators(language.support)
         }
     }
 

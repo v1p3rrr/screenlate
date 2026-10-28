@@ -12,6 +12,9 @@ object KoreanSupport : LanguageSupport {
     override val language = Language.KOREAN
     override val glyph = "한"
     override val wordSeparator = " "
+
+    /** Korean text breaks a word at any syllable at a line end, without a hyphen. */
+    override val lineEndSeparator = ""
     override val ocrScript = OcrScript.KOREAN
     override val flagCountries = listOf("kr")
     override val searchResolution = SearchResolution.LETTER
