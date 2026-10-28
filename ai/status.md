@@ -124,9 +124,16 @@ the details.
   cloud recognition and ML Kit writing “Karibu!” as "Karibu!", so a note's sentence there starts or ends at the ".
   Open for the owner: the plan's questions 28-34 (decided provisionally and built).
 - Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
-  to check and merge: Welsh (`languages/cy`) and Irish (`languages/ga`) merged; Scottish Gaelic (`languages/gd`)
-  ready, the group's last language. Technical choices changed while building are marked provisional in the plan's rows
-  and changelog. Left outside the group, for the owner: cloud recognition's missing line-end space.
+  to check and merge: Welsh (`languages/cy`), Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`, `ad94d287`)
+  merged; the group is done. Technical choices changed while building are marked provisional in the plan's rows and
+  changelog. Left outside the group, for the owner: cloud recognition's missing line-end space.
+- Wikipedia as a corpus (owner's remark, 2026-10-28 night): some small Wikipedia editions were written largely by
+  non-speakers (Scots in 2020, Greenlandic, machine-translated, closed in 2025; neither is in the app), and small
+  editions also fill with bot-made stubs that skew word counts. Wikipedia text gives the frequency dictionaries of
+  Latin, Esperanto and Swahili and the mutation exception lists of Welsh and Scottish Gaelic, and is planned for
+  Azerbaijani and Uzbek (5c), Mongolian (5d), Afrikaans, Bashkir and Galician (group 6). A research agent checks each
+  edition's known problems and the non-Wikipedia corpora (Leipzig news and web corpora, native Gaelic corpora); its
+  findings and the choice per language go here.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -506,7 +513,7 @@ and PaddleOCR v5 and v6 listed, none marked; Ireland's flag; Lingua Libre first.
 OCR46, LK76, POP44, AUD31, ANK38). Found there, open for the owner: cloud recognition can give a line's last word
 no space ("Cheannaigh sítorthaí" in a note), for any language; the plan's follow-up and `notes/ocr-engines.md`.
 
-Scottish Gaelic (`languages/gd`, 2026-10-28, on `languages/main` `d9e40413`): our own mutation rules (lenition with
+Scottish Gaelic (`languages/gd`, 2026-10-28, merged into `languages/main` as `ad94d287`): our own mutation rules (lenition with
 t-s for s after the article, eclipsis as n- before a vowel, t and h before a vowel, each prefix taken off only with its
 hyphen; one per word) named as Wiktionary's Gaelic rows name them, in all 14 locales; 7 common words left as written
 (bhathar, chan, the), chosen on the article text of a Gaelic Wikipedia dump, as Leipzig has no Gaelic corpus; the
