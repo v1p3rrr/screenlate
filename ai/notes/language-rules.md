@@ -1245,6 +1245,9 @@ Leipzig's Albanian Wikipedia (2021, 100,000 sentences) and news (2020, 100,000 s
 - Recognition (clean / hard / both, characters wrong): ML Kit 1.2 / 0.9 / 1.0%; Tesseract fast 2.3 / 9.5 / 5.9%;
   Paddle v5 and v6 0%; cloud recognition 0.0%; Tesseract best 4.3% on the emulator.
 - Audio: Lingua Libre Q8748 has 3 of 20 common words, Wiktionary none.
+- On the emulator: ML Kit reads Ç'është as Çështë, the apostrophe lost; çështje is a word of its own, so no OCR
+  rule puts it back. Cloud recognition and PaddleOCR v5 keep it. All three read “…” around a short word as "…".
+  sq-en has no kryesore and no kryesor; the fallback endings were seen on rëndësishme and ndodhet.
 
 ## Device checks
 

@@ -166,7 +166,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR40 | Slovak recognition (`testdata/ocr/sk-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with á ä č ď é í ľ ň ó ô š ť ú ý ž): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, and a word whose marks it drops (ť ď ľ read as t d l) is found through the keys without marks (tazke finds ťažké); Tesseract slk fast, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovakSupportTest, CatalogFileTest, M | 2026-10-22 |
 | OCR41 | Slovenian recognition (`testdata/ocr/sl-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with č š ž and »…«): cloud recognition reads the screen (» « may come as >> <<); offline, ML Kit's Latin model reads it, and a word whose caron it drops is found through the keys (zena finds žena); PaddleOCR v5 Latin, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovenianSupportTest, CatalogFileTest, M | 2026-10-22 |
 | OCR42 | Esperanto recognition (`testdata/ocr/eo-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ĉ ĝ ĥ ĵ ŝ ŭ): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, a hat letter it reads as Š Č ũ ű shows as Ŝ Ĉ ŭ in the recognized text, and a word whose hat it drops is found through the keys; Tesseract fast, marked "more accurate" and chosen in the Text recognition settings, reads the screen; no PaddleOCR model is offered | N | U EsperantoSupportTest, CatalogFileTest, M | 2026-10-28 |
-| OCR43 | Albanian recognition (`testdata/ocr/sq-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ë ç, «…» and “…”): cloud recognition reads the screen; offline, ML Kit's Latin model reads it; PaddleOCR v5 Latin, marked "more accurate" and chosen in the Bubble settings, reads the screen; a word an engine reads with ě is looked up with ë | F | U AlbanianSupportTest, CatalogFileTest, M | 2026-10-28 |
+| OCR43 | Albanian recognition (`testdata/ocr/sq-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ë ç, «…» and “…”): cloud recognition reads the screen; offline, ML Kit's Latin model reads it; PaddleOCR v5 Latin, marked "more accurate" and chosen under Text recognition → On-device model, reads the screen; a word an engine reads with ě is looked up with ë | F | U AlbanianSupportTest, CatalogFileTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -242,7 +242,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK70 | Slovenian lookups (overlay over `testdata/ocr/sl-sample.png`, and the Search screen): vode finds voda through its form row vôde; delal finds delati through dẹ́lał; je finds biti through its form row's lemma bíti; zena and ZENA find žena; se shows se first, then še | F | U SlovenianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-22 |
 | LK71 | Long compounds: with the scan length never changed, the Lookup settings show 24 for Swedish, Danish and Norwegian and 16 for German; aimed at the start of statsministerkandidat in the overlay (an image of "Statsministerkandidaten talade länge.", `scripts/text-image.py`, Segoe UI), the compound line shows statsminister + kandidat | N | U SwedishSupportTest, DanishSupportTest, NorwegianSupportTest, Isolation, M | 2026-10-28 |
 | LK72 | Esperanto lookups (overlay over `testdata/ocr/eo-sample.png`, and the Search screen): cxu, CXu and cu find ĉu; mangxajxojn and mangajojn find manĝaĵo; pomojn finds pomo (accusative, plural); malbona shows malbona, then bona; si shows si first, then ŝi; dank’ al and dank' al find dank' al | N | U EsperantoSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
-| LK73 | Albanian lookups (overlay over `testdata/ocr/sq-sample.png`, and the Search screen): rëndësishme finds rëndësishëm through "feminine or plural"; ndodhet finds ndodh; sulmit finds sulm; lejen shows leje (a noun) before any verb; kryesore shows its own entry only; gjate finds gjatë through "e for ë"; aimed at ka in s'ka, at është in ç'është and at i in t'i (with ' and ’) the lookup starts after the apostrophe | F | U AlbanianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
+| LK73 | Albanian lookups (overlay over `testdata/ocr/sq-sample.png`, and the Search screen): rëndësishme finds rëndësishëm through "feminine or plural"; ndodhet finds ndodh; sulmit finds sulm; lejen shows leje (a noun) before any verb; shqiptare, a headword of its own, shows its own entries first, with no ending chip; gjate finds gjatë through "e for ë"; aimed at ka in s'ka, at është in ç'është and at i in t'i (with ' and ’) the lookup starts after the apostrophe | F | U AlbanianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -413,7 +413,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC37 | Latin's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (15.5 MB) and the frequency chip shows on Latin entries; amicis shows amicus (rank 2,148) before amicio | N | U CorpusCountsDictionaryTest, CatalogFileTest, LatinSupportTest, M | 2026-10-28 |
 | DIC38 | FreeDict slv-eng converted by `scripts/freedict` imports from a file under Slovenian (its index names sl), credits Gorazd Gorup and FreeDict, and ob shows its FreeDict line | O | U test_freedict_yomitan.py, M | 2026-10-28 |
 | DIC39 | Esperanto's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (19.1 MB) and the frequency chip shows on Esperanto entries; si still shows si before ŝi, the chips giving si 366 and ŝi 46 | N | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
-| DIC40 | Albanian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming news texts; it builds on the device from Leipzig's archive (24.9 MB) and the frequency chip shows on Albanian entries | N | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
+| DIC40 | Albanian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming news texts; it builds on the device from Leipzig's archive (24.9 MB) and the frequency chip shows on Albanian entries | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -596,6 +596,53 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/sq` (`5b2f337e` on `d5bd5919`), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Albanian (LNG27, DIC40, OCR43, LK73, POP41, AUD28, ANK35) through the download screen, the
+overlay over `testdata/ocr/sq-sample.png` and `sq-anki.png` (Segoe UI, in the debug viewer) with cloud recognition,
+ML Kit and PaddleOCR v5, app text in AnkiDroid's note editor, the Search screen and the selected-text action, the
+Popup, Audio and Anki settings and Anki notes into the local "Screenlate Test" deck ({sentence} as Meaning); the
+engine's instrumented tests. An x86_64-only APK.
+
+Results: passed, with the deviations below; AUD28's recordings not checked. DIC40 moved from N to F. Automated: unit
+tests, lint, the page tests (146), the glue tests (76), the catalog, frequency and flag tests passed; I
+`LanguageLookupTest` 32 of 32 and the engine's 58 instrumented tests on the emulator, the test package uninstalled
+after.
+
+- LNG27: Albania's flag on the Languages screen; English definitions by default, "Another language…" Russian, French,
+  German, Chinese, Polish and Turkish; Word frequency (Leipzig Corpora Collection) ticked, 25 MB, its description
+  naming news texts; Transcription (Wiktionary) ticked (119 kB); ML Kit the main model, PaddleOCR v5 "More accurate",
+  Tesseract fast (1.9 MB) and accurate (4.6 MB) unticked. Both PaddleOCR models showed ticked and "Installed", as
+  earlier Latin-script languages had downloaded them. The download was 28 MB; the bubble shows Ë.
+- DIC40: built on the device as "Leipzig Corpora Collection (sq)", sorting results; the frequency chip shows on
+  Albanian entries (gjatë L 47, sulm L 1726, leje L 1040, shqiptare L 151).
+- OCR43: cloud recognition, ML Kit and PaddleOCR v5 (chosen under Text recognition → On-device model, engines Device)
+  read every word and mark of `sq-sample.png`, except that ML Kit reads Ç'është as Çështë (the apostrophe lost, and
+  nothing is found there); all three write “Po” as "Po".
+- LK73 (Search screen): gjate finds gjatë ("e for ë"); sulmit sulm ("plural « definite", Yomitan's rules); ndodhet
+  ndodh ("mediopassive « present indicative third-person singular"); lejen leje ("singular definite accusative"), a
+  noun only; shqiptare, a headword of its own, shows its own entries first, then shqiptar and shqyptare through the
+  dictionary's form rows, with no ending chip. kryesore finds nothing: sq-en has neither kryesore nor kryesor (sq-fr
+  and sq-pl have kryesor); the case had named it from the instrumented test's data and now names shqiptare. The
+  selected-text action: s’ka finds ska ("alternative"). Overlay (cloud recognition, then PaddleOCR v5): rëndësishme
+  finds rëndësishëm ("feminine or plural"); ndodhet, sulmit and lejen as on the Search screen; aimed at ka in s'ka,
+  at është in Ç'është and at i in t'i, the lookup starts after the apostrophe (ka, jam, the entries of i); from the s
+  of s'ka it finds ska. The start after ’ was not seen on the device (the sample has ', and the Search screen looks up
+  from the text's start); AlbanianSupportTest covers it.
+- POP41: the font card lists the phone's font, Lexend and PT Serif (downloaded), Literata, Inter, Atkinson
+  Hyperlegible Next and PT Sans, with "Only for Albanian text" and an Albanian sample sentence; with PT Serif chosen,
+  the page's chosen face is PT Serif over U+0-24F, which holds ë ç; the phone's font restored after. In Russian the
+  chip of an ending of our own reads "женский род или мн. ч."; the interface language restored to System.
+- AUD28: sources Lingua Libre, Wiktionary, Text-to-speech; the Test button of the phone's voice found it, and Google's
+  engine spoke with its Albanian voice (sq-al). The recordings were not checked: commons.wikimedia.org and
+  lingualibre.org answered HTTP 503 to most requests, from the emulator and from the computer, throughout the run;
+  holding 🔊 on diell (which Lingua Libre has) listed only Text-to-speech, and Home showed "Needs attention: Audio
+  sources that failed" with both sources and the status.
+- ANK35 (deck Screenlate Test, cloud recognition): banon "Z. Hoxha banon në rr. Durrësit, nr. 5.", revista "Libra,
+  revista etj. dhe gazeta janë këtu.", vitin "Cezari vdiq në vitin 44 p.e.s.", Pastaj "Pastaj Roma ndryshoi.", ka
+  "«Ai s'ka kohë!»", tha "«Ai s'ka kohë!» tha ajo.". App text in AnkiDroid's note editor (10 of 10 text nodes):
+  banon, added anyway as a duplicate, "Z. Hoxha banon në rr. Durrësit, nr. 5."; the editor's text discarded.
 
 ### 2026-10-28, `languages/eo` (`ee52f32d` on `d206dcaf`; DIC39 after the rebase onto `9a401674`), Pixel_10_Pro (API 37)
 
