@@ -421,13 +421,13 @@
     <string name="yomitan_section_anki">Anki</string>
     <string name="yomitan_section_anki_hint">Deck, note type, field templates, tags and duplicate handling</string>
     <string name="yomitan_section_audio">Audio</string>
-    <string name="yomitan_section_audio_hint">Sources, volume and auto-play</string>
+    <string name="yomitan_section_audio_hint">Sources, volume and autoplay</string>
     <string name="yomitan_section_lookup">Lookup</string>
     <string name="yomitan_section_lookup_hint">Scan length and entries per lookup</string>
     <string name="yomitan_import_apply">Import</string>
     <string name="yomitan_import_another">Import another file</string>
     <string name="yomitan_import_done">Imported from the profile \"%1$s\":</string>
-    <string name="yomitan_summary_dictionaries">Order and state of %1$d dictionaries</string>
+    <string name="yomitan_summary_dictionaries">Order and state of dictionaries: %1$d</string>
     <string name="yomitan_summary_dictionaries_missing">Not installed here: %1$s</string>
     <string name="yomitan_summary_sort">Sorting by %1$s</string>
     <string name="yomitan_summary_sort_missing">The sort dictionary %1$s is not installed here</string>
@@ -438,7 +438,7 @@
     <string name="yomitan_summary_anki_deck_missing">AnkiDroid has no deck %1$s; choose a deck in the Anki settings</string>
     <string name="yomitan_summary_anki_dropped">Fields the note type does not have: %1$s</string>
     <string name="yomitan_summary_anki_saved">Templates kept for other note types: %1$s</string>
-    <string name="yomitan_summary_audio">%1$d audio sources, volume and auto-play</string>
+    <string name="yomitan_summary_audio">Audio sources: %1$d, volume and autoplay</string>
     <string name="yomitan_summary_audio_off">Audio is off in Yomitan; no sources were set</string>
     <string name="yomitan_summary_audio_unknown">Unsupported audio sources: %1$s</string>
     <string name="yomitan_summary_lookup">Scan length %1$s, entries per lookup %2$s</string>

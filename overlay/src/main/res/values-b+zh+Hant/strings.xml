@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">螢幕上未找到文字。</string>
     <string name="overlay_no_text_photo">照片中未找到文字。</string>
-    <string name="overlay_no_app_text">此應用程式不向無障礙服務提供其文字。螢幕辨識已關閉（懸浮球設定中的「僅應用程式文字」）。</string>
+    <string name="overlay_no_app_text">此應用程式不向無障礙服務提供其文字。螢幕辨識已關閉（文字辨識設定中的「僅應用程式文字」）。</string>
     <string name="overlay_error_secure">此應用程式不允許截圖。</string>
     <string name="overlay_error_capture">無法截圖。</string>
     <string name="overlay_error_ocr">文字辨識失敗。</string>
     <string name="overlay_error_offline">沒有網路，且設定中已關閉裝置端辨識。</string>
-    <string name="overlay_error_no_device_ocr">此語言沒有裝置端模型。請下載一個，或在懸浮球設定中將「引擎」設為「兩者」或「雲端」。</string>
+    <string name="overlay_error_no_device_ocr">此語言沒有裝置端模型。請下載一個，或在文字辨識設定中將「引擎」設為「兩者」或「雲端」。</string>
     <string name="overlay_open_ocr_models">裝置端模型</string>
     <string name="overlay_error_offline_no_device">沒有網路連線，且裝置端辨識不支援此語言。</string>
     <string name="overlay_ocr_error_title">雲端辨識</string>

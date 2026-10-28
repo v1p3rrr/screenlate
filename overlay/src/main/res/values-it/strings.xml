@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">Nessun testo trovato sullo schermo.</string>
     <string name="overlay_no_text_photo">Nessun testo trovato nella foto.</string>
-    <string name="overlay_no_app_text">Questa app non comunica il suo testo ai servizi di accessibilità. Il riconoscimento dello schermo è disattivato (Solo testo delle app nelle impostazioni della bolla).</string>
+    <string name="overlay_no_app_text">Questa app non comunica il suo testo ai servizi di accessibilità. Il riconoscimento dello schermo è disattivato (“Solo testo delle app” nelle impostazioni di Riconoscimento del testo).</string>
     <string name="overlay_error_secure">Questa app non consente gli screenshot.</string>
     <string name="overlay_error_capture">Impossibile fare uno screenshot.</string>
     <string name="overlay_error_ocr">Riconoscimento del testo non riuscito.</string>
     <string name="overlay_error_offline">Nessuna rete, e il riconoscimento sul dispositivo è disattivato nelle impostazioni.</string>
-    <string name="overlay_error_no_device_ocr">Questa lingua non ha un modello sul dispositivo. Scaricane uno oppure, nelle impostazioni della bolla, imposta “Motori” su “Entrambi” o “Cloud”.</string>
+    <string name="overlay_error_no_device_ocr">Questa lingua non ha un modello sul dispositivo. Scaricane uno oppure, nelle impostazioni di Riconoscimento del testo, imposta “Motori” su “Entrambi” o “Cloud”.</string>
     <string name="overlay_open_ocr_models">Modello sul dispositivo</string>
     <string name="overlay_error_offline_no_device">Nessuna connessione di rete, e il riconoscimento sul dispositivo non supporta questa lingua.</string>
     <string name="overlay_ocr_error_title">Riconoscimento nel cloud</string>

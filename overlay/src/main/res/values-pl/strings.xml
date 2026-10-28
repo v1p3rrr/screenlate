@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">Nie znaleziono tekstu na ekranie.</string>
     <string name="overlay_no_text_photo">Nie znaleziono tekstu na zdjęciu.</string>
-    <string name="overlay_no_app_text">Ta aplikacja nie udostępnia swojego tekstu usługom ułatwień dostępu. Rozpoznawanie ekranu jest wyłączone („Tylko tekst aplikacji” w ustawieniach dymka).</string>
+    <string name="overlay_no_app_text">Ta aplikacja nie udostępnia swojego tekstu usługom ułatwień dostępu. Rozpoznawanie ekranu jest wyłączone („Tylko tekst aplikacji” w ustawieniach rozpoznawania tekstu).</string>
     <string name="overlay_error_secure">Ta aplikacja nie pozwala na zrzuty ekranu.</string>
     <string name="overlay_error_capture">Nie udało się zrobić zrzutu ekranu.</string>
     <string name="overlay_error_ocr">Rozpoznawanie tekstu nie powiodło się.</string>
     <string name="overlay_error_offline">Brak połączenia z siecią, a rozpoznawanie na urządzeniu jest wyłączone w ustawieniach.</string>
-    <string name="overlay_error_no_device_ocr">Ten język nie ma modelu na urządzeniu. Pobierz model albo w ustawieniach dymka ustaw „Silniki” na „Oba” lub „Chmura”.</string>
+    <string name="overlay_error_no_device_ocr">Ten język nie ma modelu na urządzeniu. Pobierz model albo w ustawieniach rozpoznawania tekstu ustaw „Silniki” na „Oba” lub „Chmura”.</string>
     <string name="overlay_open_ocr_models">Model na urządzeniu</string>
     <string name="overlay_error_offline_no_device">Brak połączenia z siecią, a rozpoznawanie na urządzeniu nie obsługuje tego języka.</string>
     <string name="overlay_ocr_error_title">Rozpoznawanie w chmurze</string>

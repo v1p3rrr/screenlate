@@ -423,7 +423,7 @@
     <string name="yomitan_import_apply">Importieren</string>
     <string name="yomitan_import_another">Weitere Datei importieren</string>
     <string name="yomitan_import_done">Aus dem Profil „%1$s“ importiert:</string>
-    <string name="yomitan_summary_dictionaries">Reihenfolge und Zustand von %1$d Wörterbüchern</string>
+    <string name="yomitan_summary_dictionaries">Reihenfolge und Zustand der Wörterbücher: %1$d</string>
     <string name="yomitan_summary_dictionaries_missing">Hier nicht installiert: %1$s</string>
     <string name="yomitan_summary_sort">Sortierung nach %1$s</string>
     <string name="yomitan_summary_sort_missing">Das Sortierwörterbuch %1$s ist hier nicht installiert</string>
@@ -434,7 +434,7 @@
     <string name="yomitan_summary_anki_deck_missing">AnkiDroid hat keinen Stapel %1$s; wähle einen Stapel in den Anki-Einstellungen</string>
     <string name="yomitan_summary_anki_dropped">Felder, die der Notiztyp nicht hat: %1$s</string>
     <string name="yomitan_summary_anki_saved">Vorlagen für andere Notiztypen aufbewahrt: %1$s</string>
-    <string name="yomitan_summary_audio">%1$d Audioquellen, Lautstärke und automatische Wiedergabe</string>
+    <string name="yomitan_summary_audio">Audioquellen: %1$d, Lautstärke und automatische Wiedergabe</string>
     <string name="yomitan_summary_audio_off">Audio ist in Yomitan aus; es wurden keine Quellen gesetzt</string>
     <string name="yomitan_summary_audio_unknown">Nicht unterstützte Audioquellen: %1$s</string>
     <string name="yomitan_summary_lookup">Scanlänge %1$s, Einträge pro Abfrage %2$s</string>

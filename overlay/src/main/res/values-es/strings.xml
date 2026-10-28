@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">No se encontró texto en la pantalla.</string>
     <string name="overlay_no_text_photo">No se encontró texto en la foto.</string>
-    <string name="overlay_no_app_text">Esta app no comunica su texto a los servicios de accesibilidad. El reconocimiento de pantalla está desactivado («Solo texto de las apps» en los ajustes de la burbuja).</string>
+    <string name="overlay_no_app_text">Esta app no comunica su texto a los servicios de accesibilidad. El reconocimiento de pantalla está desactivado («Solo texto de las apps» en los ajustes de reconocimiento de texto).</string>
     <string name="overlay_error_secure">Esta app no permite capturas de pantalla.</string>
     <string name="overlay_error_capture">No se pudo hacer una captura de pantalla.</string>
     <string name="overlay_error_ocr">Falló el reconocimiento de texto.</string>
     <string name="overlay_error_offline">No hay conexión de red y el reconocimiento en el dispositivo está desactivado en los ajustes.</string>
-    <string name="overlay_error_no_device_ocr">Este idioma no tiene modelo en el dispositivo. Descarga uno o, en los ajustes de la burbuja, pon «Motores» en «Ambos» o «Nube».</string>
+    <string name="overlay_error_no_device_ocr">Este idioma no tiene modelo en el dispositivo. Descarga uno o, en los ajustes de reconocimiento de texto, pon «Motores» en «Ambos» o «Nube».</string>
     <string name="overlay_open_ocr_models">Modelo en el dispositivo</string>
     <string name="overlay_error_offline_no_device">No hay conexión de red y el reconocimiento en el dispositivo no admite este idioma.</string>
     <string name="overlay_ocr_error_title">Reconocimiento en la nube</string>

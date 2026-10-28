@@ -427,7 +427,7 @@
     <string name="yomitan_import_apply">Importar</string>
     <string name="yomitan_import_another">Importar outro arquivo</string>
     <string name="yomitan_import_done">Importado do perfil “%1$s”:</string>
-    <string name="yomitan_summary_dictionaries">Ordem e estado de %1$d dicionários</string>
+    <string name="yomitan_summary_dictionaries">Ordem e estado dos dicionários: %1$d</string>
     <string name="yomitan_summary_dictionaries_missing">Não instalados aqui: %1$s</string>
     <string name="yomitan_summary_sort">Ordenação por %1$s</string>
     <string name="yomitan_summary_sort_missing">O dicionário de ordenação %1$s não está instalado aqui</string>
@@ -438,7 +438,7 @@
     <string name="yomitan_summary_anki_deck_missing">O AnkiDroid não tem o baralho %1$s; escolha um baralho nas configurações do Anki</string>
     <string name="yomitan_summary_anki_dropped">Campos que o tipo de nota não tem: %1$s</string>
     <string name="yomitan_summary_anki_saved">Modelos mantidos para outros tipos de nota: %1$s</string>
-    <string name="yomitan_summary_audio">%1$d fontes de áudio, volume e reprodução automática</string>
+    <string name="yomitan_summary_audio">Fontes de áudio: %1$d, volume e reprodução automática</string>
     <string name="yomitan_summary_audio_off">O áudio está desativado no Yomitan; nenhuma fonte foi definida</string>
     <string name="yomitan_summary_audio_unknown">Fontes de áudio sem suporte: %1$s</string>
     <string name="yomitan_summary_lookup">Alcance da varredura %1$s, entradas por pesquisa %2$s</string>
