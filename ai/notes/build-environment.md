@@ -152,6 +152,13 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `am instrument` force-stops its target package before it runs (the system does it when instrumentation starts),
   which the no force-stop rule may cover; that run checked `OpenAppTest`'s case by hand instead (ask the owner).
 - A new worktree needs `local.properties` (git-ignored; copy it from another checkout) before Gradle finds the SDK.
+- Cutting a download midway on the emulator: `adb emu network speed` does not slow it reliably (at 800 kbit/s a
+  queued download did not start, at 3000 a 16 MB file still came in 5 s). Switch the network off on the device right
+  after the app's log line instead:
+  `adb shell 'while ! logcat -d -s DictionaryImport:I | grep -q Downloading; do sleep 0.1; done; sleep 1.4; svc wifi disable; svc data disable'`
+  (1.4 s left 12 of 14 MB at full speed; the line comes before the first byte). A proxy on a closed port
+  (`settings put global http_proxy 10.0.2.2:8898`) makes downloads break off at once with the network up; reset it
+  with `settings put global http_proxy :0` and delete the `http_proxy` and `global_http_proxy_*` keys afterwards.
 - A small build to send to the phone (2026-10-27; a chat attachment takes at most 30 MiB): the release type with the
   Dev package and label, debug-signed, one ABI, compressed native code and dex. An init script
   (`--init-script dev-release.gradle`) sets on `:app` in `afterEvaluate`, for the release build type:

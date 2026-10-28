@@ -264,10 +264,10 @@ check of `main` at `fee4c9fb` against v0.2.3:
     network went keeps waiting in its run and tries again every 30 s instead of a retry result, and downloads have
     the least linear backoff (10 s a run), which only applies after a stop. The choice between a lost network and a
     break-off is `failedRead`, with tests.
-  - Checks: `main` unit tests 629, page tests 107, lint; `languages/main` unit tests 1750, lint. Not run on the
-    emulator: group 5a held the lock from 03:01 past 04:49. To run: DIC29 and DIC31 on a side-by-side build of the
-    branch, and DIC24 as an update: `main` at `2df1e55c` built with the side-by-side init script, a file import queued
-    behind a long download, then the branch's build installed over it; the import must still install.
+  - Checks: `main` unit tests 629, page tests 107, lint; `languages/main` unit tests 1750, lint. On the emulator
+    (`test-model.md`, 2026-10-28 morning), all passed: DIC24 as an update from `main` 2df1e55c with a file import
+    queued behind a download (it installed, the emptied old folder went with the next process) and Clear cache with a
+    download waiting for a network; DIC29 on both branches; DIC31 on `main` with the retries waiting in the run.
 - Question for the owner: may instrumented tests run with `am instrument` on the shared emulator? The system
   force-stops the target package when instrumentation starts, which the no force-stop rule may cover, so
   `OpenAppTest` was not run on `main` and its case was checked by hand. Recommendation: allow it for a build installed
