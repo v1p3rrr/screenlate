@@ -97,7 +97,7 @@
     <string name="language_setup_mobile_title">使用移动数据下载？</string>
     <string name="language_setup_mobile_text">将使用移动数据下载 %1$s。</string>
     <string name="first_run_question">你在学习哪种语言？</string>
-    <string name="first_run_hint">之后可以在主屏幕添加其他语言。</string>
+    <string name="first_run_hint">之后可以在首页添加其他语言。</string>
     <string name="first_run_continue">继续</string>
     <string name="dictionaries_bundled">内置词典</string>
     <string name="dictionaries_task_queued">等待中：%1$s</string>
@@ -152,7 +152,7 @@
     <string name="anki_duplicate_behavior">存在重复时</string>
     <string name="anki_behavior_prevent">阻止</string>
     <string name="anki_behavior_overwrite">覆盖</string>
-    <string name="anki_behavior_new">仍然新增</string>
+    <string name="anki_behavior_new">仍然添加</string>
 
     <string name="audio_title">音频</string>
     <string name="audio_playback">播放</string>
@@ -214,7 +214,7 @@
     <string name="bubble_ocr_engines_both">两者</string>
     <string name="bubble_ocr_engines_cloud">云端</string>
     <string name="bubble_ocr_engines_device">设备</string>
-    <string name="bubble_ocr_engines_hint">推荐：两者。仅在低配置或高负载的设备上关闭其中一个引擎。云端识别会使用移动数据（每次扫描约 0.1–0.4 MB），设备端识别不会。</string>
+    <string name="bubble_ocr_engines_hint">推荐：“两者”。仅在低配置或高负载的设备上关闭其中一个引擎。云端识别会使用移动数据（每次扫描约 0.1–0.4 MB），设备端识别不会。</string>
     <string name="bubble_ocr_engines_info">两者：设备端识别和云端识别同时开始。设备先识别瞄准点周围的文字，因此词语几乎立即可用；更准确的云端结果到达后会替换它。没有网络连接或云端出错时，保留设备的结果。\n\n云端：没有网络连接时无法识别任何内容；词语只有在服务器响应后才可用。\n\n设备：可离线使用，但对竖排文字和漫画的识别准确度较低；OCR 增强不可用。</string>
     <string name="bubble_ocr_saving">减轻设备负载</string>
     <string name="bubble_ocr_saving_hint">仅当云端识别 3 秒内未响应时，才开始在设备上识别整个屏幕。可降低负载和耗电；远离瞄准点的词会较晚可用。如果更看重速度，请保持关闭。</string>
@@ -304,7 +304,7 @@
     <string name="home_language_turn_off_text">将停用该语言。其设置会保留，重新启用时恢复。</string>
     <string name="home_language_delete_files">删除其词典和模型（%1$s）</string>
     <string name="home_language_turn_off_confirm">停用</string>
-    <string name="languages_hint">当前语言和最多两种加星标的语言可在主屏幕和长按悬浮球的菜单中切换。</string>
+    <string name="languages_hint">当前语言和最多两种加星标的语言可在首页和长按悬浮球的菜单中切换。</string>
     <string name="languages_turned_on">已启用</string>
     <string name="languages_turned_off">已停用</string>
     <string name="languages_turned_off_hint">已停用语言的文件。查词时不使用。</string>
@@ -616,13 +616,13 @@
     <string name="translation_title">翻译</string>
     <string name="translation_sentence_title">句子翻译</string>
     <string name="translation_hint">由免费的在线服务翻译单词所在的句子。译文为机器翻译，可能不准确，句子会发送到该服务的服务器。</string>
-    <string name="translation_info">这些服务无需账号即可使用：Bing（Microsoft Translator 网站）、Google 翻译和 Microsoft Edge 内置的翻译器。它们没有公布使用限制；一个服务拒绝时，由下一个接替。每小时第一次请求 Bing 会多花约一秒，因为 Bing 要先从网站加载密钥。</string>
+    <string name="translation_info">这些服务无需账号即可使用：Bing（Microsoft Translator 网站）、Google 翻译和 Microsoft Edge 内置的翻译器。它们没有公布使用限制；某个服务拒绝请求时，改用下一个。每小时第一次请求 Bing 会多花约一秒，因为要先从 Bing 网站加载密钥。</string>
     <string name="translation_button">翻译按钮</string>
     <string name="translation_button_hint">翻译句子，并在弹窗标题栏下方显示译文，再点一次即可隐藏。隐藏识别出的文本时，该按钮位于第一个词条的按钮之间。</string>
     <string name="translation_anki">Anki 笔记中的译文</string>
     <string name="translation_anki_hint">用弹窗中显示的译文填写 {sentence-translation}；若没有，则请求翻译并最多等待 5 秒。没有译文时该字段留空。</string>
     <string name="translation_services_title">服务</string>
-    <string name="translation_services_hint">由第一个已启用的服务翻译。如果它失败或 3 秒内没有响应，由下一个接替。拖动手柄可调整顺序。</string>
+    <string name="translation_services_hint">由第一个已启用的服务翻译。如果它失败或 3 秒内没有响应，则改用下一个。拖动手柄可调整顺序。</string>
     <string name="translation_service_bing_note">通常更准确</string>
     <string name="translation_language_title">翻译为</string>
     <string name="translation_language_interface">界面语言（%1$s）</string>
@@ -660,13 +660,13 @@
     <string name="about_logs_save_failed">无法保存日志。</string>
     <string name="background_title">后台运行</string>
     <string name="background_summary">防止系统停止悬浮球</string>
-    <string name="background_intro">除非以下某项设置为了省电而停止它，系统会自动重启悬浮球服务。这两项都是系统自身的设置：Screenlate 只是帮你打开它们。</string>
+    <string name="background_intro">除非以下某项设置为了省电而停止它，系统会自动重启悬浮球服务。这两项都是系统自身的设置：Screenlate 只负责打开它们。</string>
     <string name="background_battery_title">电池优化</string>
     <string name="background_battery_on">已对 Screenlate 开启：系统可能在后台停止悬浮球。</string>
     <string name="background_battery_off">已对 Screenlate 关闭：系统会让悬浮球保持运行。</string>
     <string name="background_battery_allow">允许后台运行</string>
     <string name="background_battery_list">打开电池优化列表</string>
-    <string name="background_battery_list_hint">在列表中找到 Screenlate 并关闭其优化（“不优化”“无限制”或类似选项）。一开始不在列表中的应用，通常在“所有应用”里。</string>
+    <string name="background_battery_list_hint">在列表中找到 Screenlate 并关闭其优化（“不优化”“无限制”或类似选项）。如果列表中没有 Screenlate，请查看“所有应用”。</string>
     <string name="background_launch_title">应用启动管理</string>
     <string name="background_launch_text">除电池优化外，有些手机还会通过厂商自己的设置停止后台应用。请在那里允许 Screenlate 自启动并在后台运行。</string>
     <string name="background_launch_path">在此手机上：应用启动管理 → Screenlate → 手动管理，开启全部三个选项。</string>
@@ -759,7 +759,7 @@
     <string name="background_keep_alive_title">常驻通知</string>
     <string name="background_keep_alive_text">会停止后台应用的系统也可能停止显示悬浮球的服务。带有常驻通知的应用被停止的频率要低得多。</string>
     <string name="background_keep_alive_switch">服务运行时显示通知</string>
-    <string name="background_keep_alive_hint">无法防止所有停止。服务停止后，只有在无障碍设置中将服务关闭再打开，悬浮球才会恢复。</string>
+    <string name="background_keep_alive_hint">无法完全防止服务被停止。服务停止后，只有在无障碍设置中将服务关闭再打开，悬浮球才会恢复。</string>
     <string name="background_keep_alive_notifications_off">Screenlate 的通知已关闭：服务仍在运行，但不会显示其通知。</string>
     <string name="background_keep_alive_notifications_allow">允许通知</string>
     <string name="action_reset">重置</string>
@@ -774,7 +774,7 @@
     <string name="reset_bubble_text">悬浮球的所有设置都将重置为默认值，包括隐藏的应用、悬浮球的大小及其在屏幕上的位置。已隐藏的悬浮球会重新显示。</string>
     <string name="reset_lookup_text">扫描长度、每次查词的词条数和其他查词设置将重置为默认值。</string>
     <string name="reset_anki_text">牌组、笔记类型、字段模板、标签和重复处理方式将重置为默认值。AnkiDroid 中的内容不会改变。</string>
-    <string name="reset_popup_text">顶部的识别文本、释义复制、自动隐藏、字体选择、文字大小和粗细以及自定义 CSS 将重置为默认值。已下载和已添加的字体仍保留安装。</string>
+    <string name="reset_popup_text">顶部的识别文本、释义复制、自动隐藏、字体选择、文字大小和粗细以及自定义 CSS 将重置为默认值。已下载和已添加的字体会保留。</string>
     <string name="reset_translation_text">翻译按钮、笔记中的译文、服务的顺序和开关、语言以及收藏的语言将重置为默认值。</string>
     <string name="reset_appearance_text">主题重新跟随系统，颜色重置为 Screenlate 的默认配色，墨水屏模式关闭，并恢复该模式放大过的尺寸。应用语言保持不变。</string>
     <string name="reset_background_text">常驻通知将关闭。电池和自启动设置属于 Android，不会更改。</string>
@@ -787,12 +787,12 @@
     <string name="reset_dictionaries_gave_up_title">词典重置未完成</string>
     <string name="reset_dictionaries_gave_up_text">重置词典时应用关闭了两次，因此已停止重置。部分词典可能残留或缺失。请在“词典”页面删除不再需要的词典，并下载缺少的词典。</string>
     <string name="reset_dictionaries_gave_up_open">打开词典</string>
-    <string name="accessibility_disclosure_title">无障碍服务做什么</string>
+    <string name="accessibility_disclosure_title">无障碍服务的作用</string>
     <string name="accessibility_disclosure_intro">Screenlate 通过其无障碍服务在其他应用上方显示悬浮球，并读取其下方的文字。</string>
     <string name="accessibility_disclosure_reads_title">读取的内容</string>
     <string name="accessibility_disclosure_reads">• 截屏：仅在你点按或拖出悬浮球时。在“仅应用文本”模式下，仅用于 Anki 笔记中的图片。\n• 应用在屏幕上显示的文字：在同样的时刻，且开启了“读取应用文本”或“仅应用文本”时。\n• 打开的是哪个应用，键盘和系统栏的位置：用于在你选择的应用中隐藏悬浮球，并让它避开系统栏。</string>
     <string name="accessibility_disclosure_sends_title">发送到哪里</string>
-    <string name="accessibility_disclosure_sends">• 截屏发送到云端文字识别，除非“引擎”选的是“设备”，或开启了“仅应用文本”。设备上的识别不发送任何内容。\n• 句子在你点按翻译按钮或笔记模板需要译文时发送到在线翻译服务。\n• 单词及其读音发送到你选择的音频来源，用于获取发音。\n• 笔记发送到本设备上的 AnkiDroid。</string>
+    <string name="accessibility_disclosure_sends">• 截屏发送到云端文字识别，除非“引擎”选的是“设备”，或开启了“仅应用文本”。设备端识别不发送任何内容。\n• 句子在你点按翻译按钮或笔记模板需要译文时发送到在线翻译服务。\n• 单词及其读音发送到你选择的音频来源，用于获取发音。\n• 笔记发送到本设备上的 AnkiDroid。</string>
     <string name="accessibility_disclosure_outro">该服务不会替你点按或输入任何内容。读取的内容不会保存：截屏只在悬浮球停靠回边缘之前保留在内存中，笔记只获得截屏中你选中的部分，日志中从不包含屏幕上的文字。</string>
     <string name="accessibility_disclosure_agree">同意</string>
     <string name="accessibility_disclosure_later">暂不</string>
@@ -839,7 +839,7 @@
     <string name="camera_recognized">已识别：%1$s</string>
     <string name="camera_pending">设置已更改</string>
     <string name="camera_incomplete">识别不完整</string>
-    <string name="camera_partial">%2$d个区域中有%1$d个未能识别。</string>
+    <string name="camera_partial">%2$d 个区域中有 %1$d 个未能识别。</string>
     <string name="camera_interrupted">识别已中断。已完成的区域会保留。</string>
     <string name="camera_retry_failed">重试未完成的区域</string>
     <string name="camera_recognition_failed">无法识别照片。已保存的文本会保留。</string>
@@ -904,6 +904,6 @@
     <string name="camera_opening">正在打开照片…</string>
     <string name="camera_partial_words">这些区域中的词无法查询。</string>
     <plurals name="camera_status_regions">
-        <item quantity="other">%1$d/%2$d个区域</item>
+        <item quantity="other">%1$d/%2$d 个区域</item>
     </plurals>
 </resources>
