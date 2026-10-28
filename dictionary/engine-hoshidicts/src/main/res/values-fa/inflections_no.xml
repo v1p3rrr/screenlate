@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_no.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -s -->
+    <string name="inflection_no_s_label">حالت اضافی</string>
+    <string name="inflection_no_s">حالت اضافی (dagens، Norges)</string>
+</resources>

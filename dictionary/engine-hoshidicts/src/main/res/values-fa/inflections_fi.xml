@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_fi.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- clitic -->
+    <string name="inflection_fi_clitic_label">واژه‌بست</string>
+    <string name="inflection_fi_clitic">واژه‌بست: -kin، -kaan/-kään، -ko/-kö، -pa/-pä، -han/-hän (talokin از talo، talossakaan از talossa، onkohan از onko)</string>
+    <!-- possessive -->
+    <string name="inflection_fi_possessive_label">پسوند ملکی</string>
+    <string name="inflection_fi_possessive">پسوند ملکی: -ni، -si، -mme، -nne، -nsa/-nsä، مصوت بلند و -n (talossani و talossaan از talossa، taloni از talo)</string>
+</resources>

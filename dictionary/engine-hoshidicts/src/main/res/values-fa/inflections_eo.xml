@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- accusative -->
+    <string name="inflection_eo_accusative_label">حالت مفعولی</string>
+    <string name="inflection_eo_accusative">حالت مفعولی واژه</string>
+    <!-- plural -->
+    <string name="inflection_eo_plural_label">جمع</string>
+    <string name="inflection_eo_plural">صورت جمع واژه</string>
+    <!-- diminutive -->
+    <string name="inflection_eo_diminutive_label">تصغیری</string>
+    <string name="inflection_eo_diminutive">صورت تصغیری اسم</string>
+    <!-- directional -->
+    <string name="inflection_eo_directional_label">جهتی</string>
+    <string name="inflection_eo_directional">قید در حالت مفعولی بر جهت دلالت می‌کند\nkie: کجا\nkien: به کجا</string>
+    <!-- locational -->
+    <string name="inflection_eo_locational_label">مکانی</string>
+    <string name="inflection_eo_locational">اسمی که به قید بدل شود بر مکان دلالت می‌کند\nsurpinto : قله، نوک، بالا\nsurpinte: در قله، در نوک، در بالا\nĉambro : اتاق\nĉambre: در اتاق، درون اتاق</string>
+    <!-- adjectival -->
+    <string name="inflection_eo_adjectival_label">صفتی</string>
+    <string name="inflection_eo_adjectival">صورت صفتی اسم</string>
+    <!-- adverbial (adj -> adv) -->
+    <string name="inflection_eo_adverbial_adj_adv">صورت قیدی صفت</string>
+    <!-- adverbial (v -> adv) -->
+    <string name="inflection_eo_adverbial_v_adv">صورت قیدی فعل</string>
+    <!-- -ejo (noun) -->
+    <string name="inflection_eo_ejo_noun">پسوندی که واژه را به نام مکانی ویژهٔ آن چیز بدل می‌کند\nkafo: قهوه\nkafejo: کافه</string>
+    <!-- -ejo (verb) -->
+    <string name="inflection_eo_ejo_verb">پسوندی که واژه را به نام مکانی ویژهٔ آن کار بدل می‌کند\nkuiri: پختن\nkuirejo: آشپزخانه</string>
+    <!-- -ujo (noun) -->
+    <string name="inflection_eo_ujo_noun">پسوندی که واژه را به نام جعبه یا ظرفی برای آن چیز بدل می‌کند\nabelo: زنبور عسل\nabelujo: کندو\n\nپسوندی که واژه را به نام جایی بدل می‌کند که گروهی از مردم در آن یافت می‌شوند\npatro: پدر\npatrujo: میهن\n\nپسوندی که گل یا میوه را به نام گیاه یا درختی بدل می‌کند که آن گل یا میوه بر آن می‌روید\npomo: سیب\npomujo: درخت سیب</string>
+    <!-- -ujo (adjective) -->
+    <string name="inflection_eo_ujo_adjective">پسوندی که واژهٔ وصفی را به نام جعبه یا ظرفی برای چیزهایی با آن ویژگی بدل می‌کند\nfrida: سرد\nfridujo: یخچال</string>
+    <!-- -ujo (verb) -->
+    <string name="inflection_eo_ujo_verb">پسوندی که کنش را به نام جعبه یا ظرفی برای آن نوع کار بدل می‌کند\nlavi: شستن\nlavujo: سینک ظرف‌شویی</string>
+    <!-- -ebla -->
+    <string name="inflection_eo_ebla">پسوندی که امکان را نشان می‌دهد\nkompreni: فهمیدن\nkomprenebla: فهمیدنی</string>
+    <!-- -ado -->
+    <string name="inflection_eo_ado">پسوندی که کنش را به اسمی بدل می‌کند که خودِ آن کنش را نشان می‌دهد\nvivi: زیستن\nvivado: زندگی\nspiri: نفس کشیدن\nspirado: تنفس</string>
+    <!-- mal- -->
+    <string name="inflection_eo_mal">پیشوندی که کنش، وصف، چیز یا جهت را به معنای متضادش بدل می‌کند</string>
+    <!-- kun- -->
+    <string name="inflection_eo_kun">پیشوند به معنای انجام دادن کار همراه با دیگران\nlabori: کار کردن\nkunlabori: همکاری کردن</string>
+    <!-- ekster- -->
+    <string name="inflection_eo_ekster">پیشوند به معنای «بیرون از»\nlando: کشور\neksterlando: کشور بیگانه</string>
+    <!-- ek- -->
+    <string name="inflection_eo_ek">پیشوند به معنای آغاز کردن کار\nkanti: آواز خواندن\nekkanti: شروع به آواز خواندن کردن</string>
+    <!-- ĵus- -->
+    <string name="inflection_eo_us">پیشوند به معنای اینکه کاری تازه یا به‌تازگی انجام شده است\nvekita: بیدارشده\nĵusvekita: تازه بیدارشده/به‌تازگی بیدارشده</string>
+    <!-- el- -->
+    <string name="inflection_eo_el">پیشوند به معنای انجام دادن کار به سوی بیرون\ntiri: کشیدن\neltiri: بیرون کشیدن\n\nپیشوند به معنای انجام دادن کار تا پایان\ntrinki: نوشیدن\neltrinki: سر کشیدن، همهٔ چیزی را نوشیدن\nlerni: آموختن\nellerni: هرچه می‌توان آموختن، استاد شدن\nuzi: به کار بردن\neluzi: تا ته مصرف کردن، فرسودن</string>
+    <!-- dis- -->
+    <string name="inflection_eo_dis">پیشوند به معنای «جدایی، از هم دور بودن، پراکنده شدن»\nŝvebi: شناور بودن\ndisŝvebi: پراکنده/جداجدا شناور شدن\nfali: افتادن\ndisfali: از هم پاشیدن\ndoni: دادن\ndisdoni: پخش کردن، توزیع کردن\nsendo: چیزی که فرستاده می‌شود\ndissendo: پخش برنامه</string>
+    <!-- for- -->
+    <string name="inflection_eo_for">پیشوند به معنای «حرکت به دوردست»\nflugi: پرواز کردن\nforflugi: پرواز کردن و دور شدن\n\nپیشوند به معنای «ناپدید شدن/نابودی»\nuzi: به کار بردن\nforuzi: تا ته مصرف کردن (تا چیزی نماند)</string>
+    <!-- mis- -->
+    <string name="inflection_eo_mis">پیشوند به معنای «نادرست، اشتباه»\nkompreni: فهمیدن\nmiskompreni: بد فهمیدن\nparoli: سخن گفتن\nmisparoli: اشتباه گفتن</string>
+</resources>
