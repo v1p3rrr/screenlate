@@ -8,8 +8,8 @@ import com.vpr.screenlate.core.common.Language
  * and the abbreviation mark ฯ (กรุงเทพฯ, ฯลฯ); a period closes abbreviations (พ.ศ.) and ends nothing after Thai letters.
  * The vowels เ แ โ ใ ไ are written before the consonant they are read after, and า ำ ะ ๅ after it as letters of their
  * own: a lookup neither starts nor ends between them and their consonant. Wiktionary's classifier rows (คน for 386
- * nouns) are left out as the Vietnamese ones. The bundle's text processors read ํา as ำ and put a tone mark typed
- * before the vowel above after it. Lingua Libre has recordings of common words, Wiktionary few.
+ * nouns) are left out as the Vietnamese ones. The bundle's text processors read ํา as ำ in recognized text, and put a
+ * tone mark typed before the vowel above after it in any text. Lingua Libre has recordings of common words, Wiktionary few.
  */
 open class ThaiRules(segmenter: WordSegmenter = IcuWordSegmenter) : SegmentedLanguageSupport(segmenter) {
     override val language = Language.THAI

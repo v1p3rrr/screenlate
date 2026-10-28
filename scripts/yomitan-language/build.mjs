@@ -53,7 +53,8 @@ const borrowed = {
  * сям’я), and Yomitan gives it capitalization only; Hindi and Bengali text is not always composed as the headwords
  * are, and Hindi writes candrabindu and anusvara for each other; Georgian headings are written in Mtavruli capitals
  * (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ), which Yomitan does not lowercase; Armenian writes marks inside words and its ligature և out; Thai
- * text may give ำ in two parts or a tone mark before its vowel, and write ๆ without the spaces headwords have; Khmer
+ * text may give a tone mark before its vowel and write ๆ without the spaces headwords have, and recognition ำ in two
+ * parts; Khmer
  * text carries zero-width spaces between words and writes subscript TA and DA for each other; Arabic text writes a
  * final ة as ه and may give Persian letters for its own; Persian text may give Arabic letters for its own, lose its
  * zero-width non-joiners and write a verb prefix or an ending apart; Hebrew text may carry vowel points and write the
@@ -73,7 +74,7 @@ const addedPreprocessors = {
     bn: ['composeCharacters'],
     ka: ['decapitalize'],
     hy: ['removeArmenianMarks', 'armenianLigatureEv'],
-    th: ['thaiCharacterOrder', 'thaiMaiYamokSpace'],
+    th: ['thaiCharacterOrder', 'thaiMaiYamokSpace', 'thaiSaraAmInTwoParts'],
     km: ['khmerZeroWidthSpace', 'khmerSubscriptDa'],
     ar: ['arabicTaMarbutaAsHa', 'arabicLetters'],
     fa: ['persianLetters', 'removePersianZeroWidthNonJoiner', 'persianJoinedAffixes'],

@@ -47,17 +47,29 @@ export const armenianLigatureEv = {
 };
 
 /**
- * Thai text in the order and form headwords are written: sara am ำ given as nikhahit + sara aa (ํ + า), also with the
- * tone mark between them (น + ํ + ้ + า for น้ำ), and a tone mark or thanthakhat given before the vowel above its letter
- * (ก + ่ + ี for กี่). Both look the same as the headword; recognizers and keyboards give either.
+ * Thai text in the order headwords are written: a tone mark or thanthakhat given before the vowel above its letter
+ * (ก + ่ + ี for กี่), which looks the same as the headword and some typed text has.
  * @type {import('language').TextProcessor}
  */
 export const thaiCharacterOrder = {
     name: 'Thai character order',
-    description: 'ํา → ำ, ก่ี → กี่',
-    process: (str) => [str, str
-        .replace(/\u0E4D([\u0E48-\u0E4B]?)\u0E32/g, '$1\u0E33')
-        .replace(/([\u0E48-\u0E4C])([\u0E31\u0E34-\u0E37])/g, '$2$1')],
+    description: 'ก่ี → กี่',
+    process: (str) => [str, str.replace(/([\u0E48-\u0E4C])([\u0E31\u0E34-\u0E37])/g, '$2$1')],
+};
+
+/**
+ * Thai sara am ำ, which on-device recognition gives as nikhahit + sara aa (ํ + า), also with the tone mark between them
+ * (น + ํ + ้ + า for น้ำ). For words from OCR only (`ocrOnly`, glue.js): typed text almost never has the two parts.
+ * @type {import('language').TextProcessor & {ocrOnly: true}}
+ */
+export const thaiSaraAmInTwoParts = {
+    name: 'Sara am in two parts',
+    description: 'ํา → ำ',
+    ocrOnly: true,
+    process: (str) => {
+        const fixed = str.replace(/\u0E4D([\u0E48-\u0E4B]?)\u0E32/g, '$1\u0E33');
+        return fixed === str ? [str] : [str, fixed];
+    },
 };
 
 /**

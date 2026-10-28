@@ -361,10 +361,12 @@ class LanguageLookupTest {
 
         // Letter by letter, the longest word first: Thai has no spaces between words.
         assertThat(first("ห้องสมุดเปิดเช้า").term.expression).isEqualTo("ห้องสมุด")
-        // Sara am given as nikhahit + sara aa, the tone mark between them.
-        val water = first("น\u0E4D\u0E49\u0E32เย็น")
+        // Sara am given as nikhahit + sara aa, the tone mark between them: recognized text only.
+        val split = "น\u0E4D\u0E49\u0E32เย็น"
+        val water = engine.lookup(split, thai.copy(fromOcr = true)).first()
         assertThat(water.term.expression).isEqualTo("น้ำ")
         assertThat(water.matched).isEqualTo("น\u0E4D\u0E49\u0E32")
+        assertThat(engine.lookup(split, thai).map { it.term.expression }).doesNotContain("น้ำ")
         // Mai yamok right after its word, where the headword has a space before it.
         val children = first("เด็กๆ ชอบเล่น")
         assertThat(children.term.expression).isEqualTo("เด็ก ๆ")

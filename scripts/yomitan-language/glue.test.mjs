@@ -286,21 +286,34 @@ test('armenian marks and the ligature stay out of other languages', () => {
 });
 
 /**
- * The texts the engine would query for Thai [text], which it looks up letter by letter.
+ * The texts the engine would query for Thai [text], which it looks up letter by letter; [fromOcr]: recognized in a
+ * screenshot.
  * @param {string} text
+ * @param {boolean} [fromOcr]
  */
-function queriedThai(text) {
-    return new Set(load('th').candidates(text, 'th', 'letter').map((c) => c.d));
+function queriedThai(text, fromOcr = false) {
+    return new Set(load('th').candidates(text, 'th', 'letter', fromOcr).map((c) => c.d));
 }
 
-test('thai sara am in two parts and a tone mark before its vowel are tried as headwords write them', () => {
-    // น + nikhahit + mai tho + sara aa, as a recognizer may give น้ำ.
-    assert.ok(queriedThai('น\u0E4D\u0E49\u0E32').has('น้ำ'));
-    assert.ok(queriedThai('ท\u0E4D\u0E32').has('ทำ'));
-    // ก + mai ek + sara ii, typed for กี่.
-    assert.ok(queriedThai('ก\u0E48\u0E35').has('กี่'));
-    assert.ok(queriedThai('สิทธ\u0E4C\u0E34').has('สิทธิ์'));
-    assert.ok(queriedThai('กี่').has('กี่'));
+test('thai sara am in two parts is tried as one in recognized text only', () => {
+    // น + nikhahit + mai tho + sara aa, as Tesseract gives น้ำ.
+    assert.ok(queriedThai('น\u0E4D\u0E49\u0E32', true).has('น้ำ'));
+    assert.ok(queriedThai('ท\u0E4D\u0E32', true).has('ทำ'));
+    assert.ok(queriedThai('ท\u0E4D\u0E32', true).has('ท\u0E4D\u0E32'));
+    // App text and typed text are looked up as written.
+    assert.ok(!queriedThai('น\u0E4D\u0E49\u0E32').has('น้ำ'));
+    assert.ok(!queriedThai('ท\u0E4D\u0E32').has('ทำ'));
+});
+
+test('thai tone mark before its vowel is tried as headwords write it in any text', () => {
+    for (const fromOcr of [false, true]) {
+        // ก + mai ek + sara ii, typed for กี่.
+        assert.ok(queriedThai('ก\u0E48\u0E35', fromOcr).has('กี่'));
+        assert.ok(queriedThai('สิทธ\u0E4C\u0E34', fromOcr).has('สิทธิ์'));
+        assert.ok(queriedThai('กี่', fromOcr).has('กี่'));
+    }
+    // With sara am in two parts in the same text, recognized: both.
+    assert.ok(queriedThai('ท\u0E4D\u0E32ก\u0E48\u0E35', true).has('ทำกี่'));
 });
 
 test('thai mai yamok is tried with and without the spaces around it', () => {
@@ -316,7 +329,8 @@ test('thai mai yamok is tried with and without the spaces around it', () => {
 
 test('thai processors stay out of other languages', () => {
     for (const language of ['en', 'vi', 'hi']) {
-        assert.ok(!queried(language, 'ท\u0E4D\u0E32').has('ทำ'), language);
+        assert.ok(!queriedFromOcr(language, 'ท\u0E4D\u0E32').has('ทำ'), language);
+        assert.ok(!queried(language, 'ก\u0E48\u0E35').has('กี่'), language);
         assert.ok(!queried(language, 'เด็กๆ').has('เด็ก ๆ'), language);
     }
 });
