@@ -1754,6 +1754,25 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   dictionary, built on the phone (wordfreq has no Albanian; plan question 32); PaddleOCR v5 Latin recommended (0%
   errors on the test screens against ML Kit's 1.0%), v6 and Tesseract `sqi` fast and best unticked.
 
+### Swahili on `languages/sw` (2026-10-28)
+
+- `Language.SWAHILI` (`sw`), `SwahiliSupport`: glyph SW, Tanzania's flag, every Latin font, Wiktionary first for audio
+  (18 of 20 common words, `Sw-ke-…`; Lingua Libre Q7838 none), no ordinal period (ordinals are words), “…” paired,
+  the abbreviation lists of `notes/language-rules.md`, the ng' apostrophe inside the word, no OCR letter fix.
+- Bundle (`sw.js`, 68 KB): Yomitan has no Swahili descriptor; Czech's (capitalization) under `sw`, Ukrainian's
+  apostrophe variants (ng'ombe, ng’ombe) and 21 verb prefix rules of our own (`swahiliTransforms`), named in words
+  (past, he/she, relative), which `generate-inflections.mjs` now writes as labels for own rules too (`hasLabel`).
+- Glue: Swahili is a marked language (the texts between steps are not looked up, as Kazakh's) and a tagged one (the
+  prefixes reach only glossaries tagged v or non-lemma); `inflectionRulesOnlyWithoutEntry` drops what only the
+  prefixes reach when the text has an entry of its own (Wiktionary lists many Swahili forms as entries: kupa shows
+  only kupa, not pa through the infinitive's ku-).
+- Catalog: wty sw into en ru pl zh, all ticked (no transcription: 1,282 words); Leipzig's Swahili Wikipedia counts
+  (`swa_wikipedia_2021_100K`, 18.6 MB, CC BY; the only Swahili corpus Leipzig publishes) as the frequency
+  dictionary, built on the phone (wordfreq has no Swahili; plan question 33); ML Kit alone recommended (0.2% errors
+  on the test screens), Tesseract `swa` fast and best and PaddleOCR v5 and v6 unticked.
+- Coverage: sw-en finds 81.4% of Wikipedia's words as written, the prefixes 8.9% more; every Swahili dictionary
+  together 83.6% and 7.5%.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

@@ -167,6 +167,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR41 | Slovenian recognition (`testdata/ocr/sl-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with č š ž and »…«): cloud recognition reads the screen (» « may come as >> <<); offline, ML Kit's Latin model reads it, and a word whose caron it drops is found through the keys (zena finds žena); PaddleOCR v5 Latin, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovenianSupportTest, CatalogFileTest, M | 2026-10-22 |
 | OCR42 | Esperanto recognition (`testdata/ocr/eo-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ĉ ĝ ĥ ĵ ŝ ŭ): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, a hat letter it reads as Š Č ũ ű shows as Ŝ Ĉ ŭ in the recognized text, and a word whose hat it drops is found through the keys; Tesseract fast, marked "more accurate" and chosen in the Text recognition settings, reads the screen; no PaddleOCR model is offered | N | U EsperantoSupportTest, CatalogFileTest, M | 2026-10-28 |
 | OCR43 | Albanian recognition (`testdata/ocr/sq-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ë ç, «…» and “…”): cloud recognition reads the screen; offline, ML Kit's Latin model reads it; PaddleOCR v5 Latin, marked "more accurate" and chosen under Text recognition → On-device model, reads the screen; a word an engine reads with ě is looked up with ë | F | U AlbanianSupportTest, CatalogFileTest, M | 2026-10-28 |
+| OCR44 | Swahili recognition (`testdata/ocr/sw-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ’ and “…”): cloud recognition reads the screen; offline, ML Kit's Latin model reads it (no downloadable model is recommended); Ng’ombe finds ng'ombe | F | U SwahiliSupportTest, CatalogFileTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -243,6 +244,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK71 | Long compounds: with the scan length never changed, the Lookup settings show 24 for Swedish, Danish and Norwegian and 16 for German; aimed at the start of statsministerkandidat in the overlay (an image of "Statsministerkandidaten talade länge.", `scripts/text-image.py`, Segoe UI), the compound line shows statsminister + kandidat | N | U SwedishSupportTest, DanishSupportTest, NorwegianSupportTest, Isolation, M | 2026-10-28 |
 | LK72 | Esperanto lookups (overlay over `testdata/ocr/eo-sample.png`, and the Search screen): cxu, CXu and cu find ĉu; mangxajxojn and mangajojn find manĝaĵo; pomojn finds pomo (accusative, plural); malbona shows malbona, then bona; si shows si first, then ŝi; dank’ al and dank' al find dank' al | N | U EsperantoSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK73 | Albanian lookups (overlay over `testdata/ocr/sq-sample.png`, and the Search screen): rëndësishme finds rëndësishëm through "feminine or plural"; ndodhet finds ndodh; sulmit finds sulm; lejen shows leje (a noun) before any verb; shqiptare, a headword of its own, shows its own entries first, with no ending chip; gjate finds gjatë through "e for ë"; aimed at ka in s'ka, at është in ç'është and at i in t'i (with ' and ’) the lookup starts after the apostrophe | F | U AlbanianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
+| LK74 | Swahili lookups (overlay over `testdata/ocr/sw-sample.png`, and the Search screen): alisoma finds soma through "past « he/she"; hatukusoma finds soma ("past « we « negative"); aliyemwona finds ona ("object « relative « past « he/she"); kinachoitwa finds itwa; alikula shows kula first; aliunga shows the verb unga only; kupa shows only kupa; Angela finds nothing; ng'ombe and Ng’ombe find ng'ombe | F | U SwahiliSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -289,6 +291,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP40 | An Esperanto entry: the Popup settings' font card lists Literata, Inter, Lexend, PT Serif and PT Sans with "Only for text in Esperanto", and not Atkinson Hyperlegible Next; one chosen sets ĉ ĝ ĥ ĵ ŝ ŭ; the bubble shows Ĉ and the Languages screen the Esperanto flag (a green star) | N | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP39 | Aim at a word, then off text so the popup closes, then at another word → the popup opens with the new word only, the previous one never shows; from one word straight to the next, the popup moves to the new word together with its content | N | M | 2026-10-28 (API 37, frame by frame; `main` by screenshots only) |
 | POP41 | An Albanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Albanian text"; one chosen sets ë ç; the bubble shows Ë and the Languages screen Albania's flag; the rule chip of an ending of our own names it in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
+| POP42 | A Swahili entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Swahili text" and a Swahili sample sentence; the bubble shows SW and the Languages screen Tanzania's flag; the chips of the prefix rules name them in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 
 ### AUD: audio
 
@@ -322,6 +325,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD26 | Slovenian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on voda lists Lingua Libre's recording; the phone's voice speaks Slovenian where it has one | F | U SlovenianSupportTest, M | 2026-10-22 |
 | AUD27 | Esperanto audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on akvo lists Lingua Libre's recordings first, then Wiktionary's | N | U EsperantoSupportTest, M | 2026-10-28 |
 | AUD28 | Albanian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on a word Lingua Libre has lists its recording; the phone's voice speaks Albanian where it has one | F | U AlbanianSupportTest, M | 2026-10-28 |
+| AUD29 | Swahili audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; holding 🔊 on a word Wiktionary has lists its recording; the phone's voice speaks Swahili where it has one | F | U SwahiliSupportTest, M | 2026-10-28 |
 
 ### ANK: Anki
 
@@ -361,6 +365,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK33 | Quotes that cloud recognition reads as plain characters: over `testdata/ocr/sl-anki.png`, the popup's text has »Pridi sem!« and the note for sem has "»Pridi sem!«", the one for je after it "»Pridi sem!« je zaklicala."; over an image of "„Vino aici!” a strigat ea." (Romanian) the strigat note has the whole sentence; the same Slovenian sentence typed with >> << in AnkiDroid's note editor (app text) keeps >> << (there they are no quotes, so the ! ends the sentence: ">>Pridi sem!" for sem, "<< je zaklicala." for je) | N | U OcrQuotesTest, OcrPageLanguageTest, Isolation, M | 2026-10-28 |
 | ANK34 | An Esperanto Anki note (`testdata/ocr/eo-anki.png`, one paragraph), with on-device recognition: for foriris the sentence is "Li diris „Jes.“ kaj foriris.", for amiko "“Venu, amiko.”", for venis "“Venu, amiko.” Ŝi venis."; for pomoj "Ekz. pomoj kaj piroj ktp."; for jarcento "La 9-a jarcento a.K. estis longa."; with cloud recognition pomoj and jarcento as above, while foriris, amiko and venis get the " it writes for the “ after Jes. and before Venu (group 5a question 30) | N | U SentenceTest, EsperantoSupportTest, M | 2026-10-28 |
 | ANK35 | An Albanian Anki note (over `testdata/ocr/sq-anki.png`, and app text in AnkiDroid's note editor): for banon in "Z. Hoxha banon në rr. Durrësit, nr. 5." the sentence is whole and ends at 5.; for revista in "Libra, revista etj. dhe gazeta janë këtu." it is whole; "Cezari vdiq në vitin 44 p.e.s. Pastaj Roma ndryshoi." ends at p.e.s.; for ka inside "«Ai s'ka kohë!» tha ajo." the note has "«Ai s'ka kohë!»", for tha after it the whole sentence | F | U SentenceTest, AlbanianSupportTest, M | 2026-10-28 |
+| ANK36 | A Swahili Anki note (over `testdata/ocr/sw-anki.png`, one paragraph over five lines): for Juma the sentence is "Bw. Juma alifika tar. 5 Mei."; for wali "Walinunua vyakula, k.m. wali na maharage n.k." (n.k. ends it before a capital); for walirudi and for the phrase hata hivyo "Hata hivyo walirudi."; for karibu "“Karibu!”" and for alisema "“Karibu!” alisema Bi. Amina." where recognition keeps the curly quotes (where it writes them as ", plan question 30) | F | U SentenceTest, SwahiliSupportTest, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -414,6 +419,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC38 | FreeDict slv-eng converted by `scripts/freedict` imports from a file under Slovenian (its index names sl), credits Gorazd Gorup and FreeDict, and ob shows its FreeDict line | O | U test_freedict_yomitan.py, M | 2026-10-28 |
 | DIC39 | Esperanto's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (19.1 MB) and the frequency chip shows on Esperanto entries; si still shows si before ŝi, the chips giving si 366 and ŝi 46 | N | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC40 | Albanian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming news texts; it builds on the device from Leipzig's archive (24.9 MB) and the frequency chip shows on Albanian entries | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
+| DIC41 | Swahili's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (18.6 MB) and the frequency chip shows on Swahili entries | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -447,6 +453,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG25 | Slovenian setup: the download screen offers Wiktionary into English, Russian, French, Polish, Turkish and Chinese, the transcription and wordfreq ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract slv fast and accurate unticked; the flag is Slovenia's and the bubble shows SL | F | U CatalogFileTest, M | 2026-10-22 |
 | LNG26 | Esperanto setup: the download screen offers Wiktionary into English, Russian, German, Spanish, French, Japanese, Polish, Portuguese, Turkish and Chinese and the transcription, ticked, and Leipzig's word frequency, ticked; ML Kit is the main model, Tesseract epo fast unticked and marked "more accurate", accurate unticked, no PaddleOCR; the flag is Esperanto's own and the bubble shows Ĉ | N | U CatalogFileTest, M | 2026-10-28 |
 | LNG27 | Albanian setup: the download screen offers Wiktionary into English, Russian, German, French, Polish, Turkish and Chinese, the transcription and Leipzig's word frequency ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract sqi fast and accurate unticked; the flag is Albania's and the bubble shows Ë | F | U CatalogFileTest, M | 2026-10-28 |
+| LNG28 | Swahili setup: the download screen offers Wiktionary into English, and Russian, Chinese and Polish under "Another language…", and Leipzig's word frequency ticked, no transcription; ML Kit is the main model, Tesseract swa fast and accurate and PaddleOCR v5 and v6 unticked, none marked "more accurate"; the flag is Tanzania's and the bubble shows SW | F | U CatalogFileTest, M | 2026-10-28 |
 
 ### SET: settings, backup, appearance
 
@@ -596,6 +603,54 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/sw` (uncommitted build on `f7e55a7e`), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Swahili (LNG28, DIC41, OCR44, LK74, POP42, AUD29, ANK36) through the download screen, the
+overlay over `testdata/ocr/sw-sample.png` and `sw-anki.png` (Segoe UI, in the debug viewer) with cloud recognition and
+ML Kit, the Search screen, the Popup, Audio, Appearance and Anki settings and Anki notes into the local "Screenlate
+Test" deck ({sentence} as Meaning); the engine's instrumented tests. An x86_64-only APK.
+
+Results: passed, with the deviations below; AUD29's recordings not checked, ANK36's quoted sentence not as written.
+Automated: unit tests (1,783), lint, the page tests (146), the glue tests (82), the catalog tests (10), the frequency,
+flag and OCR model tests passed; `LanguageLookupTest` 33 of 33 and the engine's 59 instrumented tests passed on the
+emulator, the test package uninstalled after.
+
+- LNG28: Tanzania's flag on the Languages screen; English definitions by default (sw-en, 2.0 MB), "Another language…"
+  Russian, Chinese and Polish; Word frequency (Leipzig Corpora Collection) ticked, 19 MB, its description naming
+  Wikipedia articles; no transcription; ML Kit the main model, Tesseract fast (2.2 MB) and accurate (4.9 MB)
+  unticked, PaddleOCR v5 and v6 without the "more accurate" mark (both showed "Installed", as earlier Latin-script
+  languages had downloaded them). The download was 21 MB, about 62 MB after import; the bubble shows SW.
+- DIC41: built on the device as "Leipzig Corpora Collection (sw)", sorting results; the frequency chip shows on
+  Swahili entries (soma L 8847, sema L 6233, karibu L 124, hata L 63).
+- OCR44: cloud recognition (engines Both) and ML Kit (engines Device) read the words of `sw-sample.png`; aimed at
+  Ng’ombe both find Ng'ombe (a name) and ng'ombe. Both write “Karibu!” with straight quotes (see ANK36).
+- LK74 (Search screen): alisoma finds soma ("past « he/she"); hatukusoma soma ("past « we « negative"); aliyemwona ona
+  ("object « relative « past « he/she"); kinachoitwa itwa ("relative « present « class"); alikula shows kula first,
+  then la ("object « past « he/she"); kupa shows only kupa; Angela finds nothing; ng'ombe shows ng'ombe and the name
+  Ng'ombe; aliunga shows only the verb unga (join, subscribe, season). Overlay (cloud recognition, then ML Kit):
+  Alisoma soma, aliyemwona ona, kinachoitwa itwa, alisema sema ("past « he/she"), Walinunua nunua ("past « they"),
+  walirudi rudi; aimed at Angela no popup opens; wali shows wali (cooked rice), then mwali; Hata hivyo finds the
+  phrase hata hivyo, then hata.
+- POP42: the font card lists the phone's font, Lexend and PT Serif (downloaded), Literata, Inter, Atkinson
+  Hyperlegible Next and PT Sans, with "Only for Swahili text" and a Swahili sample sentence. In Russian the prefix
+  chips read "объект « относительная форма « прошедшее время « он/она", "прошедшее время « мы « отрицание" and
+  "относительная форма « настоящее время « именной класс"; the interface language restored to System.
+- AUD29: sources Wiktionary, Lingua Libre, Text-to-speech; the Test button of the phone's voice found it, and Google's
+  engine spoke with its Swahili voice (sw-ke). The recordings were not checked: the Wiktionary source's Test answered
+  "Failed: The server answered with an error (HTTP 503)", and Home showed "Needs attention: Audio sources that failed"
+  for Swahili with Wiktionary and Lingua Libre (HTTP 503, once a timeout).
+- ANK36 (deck Screenlate Test): Juma "Bw. Juma alifika tar. 5 Mei.", wali "Walinunua vyakula, k.m. wali na maharage
+  n.k.", rudi and hata hivyo "Hata hivyo walirudi." with ML Kit. Both engines wrote “Karibu!” as "Karibu!", so karibu
+  got '"Karibu!' with either, and sema '" alisema' with ML Kit (the sentence ended at the line, without Bi. Amina.)
+  and '" alisema Bi. Amina.' with cloud recognition. Plan question 30 (straight quotes in OCR text) got Swahili's
+  data; with curly quotes SentenceTest gives "“Karibu!” alisema Bi. Amina.".
+- Seen, not the app's: after uiautomator dumps the system stopped and rebound the accessibility service; the bubble
+  came back with Home's "Bring the bubble back".
+
+Left on the emulator: the `languages/sw` debug app with Swahili set up (its Anki settings on the "Screenlate Test"
+deck and note type, Meaning {sentence}), engines Both, its service enabled; the Swahili notes in the local deck; the
+emulator shut down and the lock released.
 
 ### 2026-10-28 morning, `claude/port-fixes-to-main-3e7385` (0.2.3-0bf33bd9, the code of `d1f8ee9f`) and `claude/download-fixes-lang` (0.2.3-f35f90ec), Pixel_10_Pro (API 37)
 
