@@ -131,8 +131,8 @@ the details.
 - Text rules answered on 2026-10-28 evening, built on `claude/text-rules-1028` for the main session to check and
   merge: the screen line-end separator (group 5b follow-up), straight quotes after a full stop (5a question 30), the
   Czech era parted from a word ML Kit glues to it ("n.l.a" → "n.l. a", languages plan question 80), Thai sara am in
-  two parts read as one only in recognized text (4c question 15). Not run: the instrumented `LanguageLookupTest`
-  (its Thai case changed).
+  two parts read as one only in recognized text (4c question 15). Checked on the emulator (ANK34, ANK36, ANK38, run
+  log 2026-10-29). Not run: the instrumented `LanguageLookupTest` (its Thai case changed).
 - Group 5c (`plans/2026-10-19-group-5c.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge, in the order Finnish (`languages/fi`), Hungarian (`languages/hu`), Estonian (`languages/et`),
   Azerbaijani (`languages/az`, rebased by the main session as `17336e2e`), Uzbek (`languages/uz`, `81654777`): all
