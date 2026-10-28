@@ -63,8 +63,9 @@ interface LanguageSupport {
 
     /**
      * A page's words as [ocrLines] gives them, with quotes that engines write in ASCII written as the language's: >>
-     * and << at a word's start or end as » and « where [quotePairs] has them, and a " right after ! or ? as the
-     * closing quote of the latest quote still open on the page. Not one for one: two characters become one.
+     * and << at a word's start or end as » and « where [quotePairs] has them, a " right after a full stop, ! or ? or at
+     * a word's end as the closing quote of the latest quote still open on the page, and a " at a word's start with no
+     * quote open as the first opening quote of [quotePairs]. Not one for one: two characters become one.
      */
     fun ocrQuotes(lines: List<List<String>>): List<List<String>> = OcrQuotes.fix(lines, quotePairs)
 

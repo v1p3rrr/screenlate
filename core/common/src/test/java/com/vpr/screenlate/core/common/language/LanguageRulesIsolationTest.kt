@@ -615,7 +615,7 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `ocr quotes take the guillemets only where the language pairs them, a straight quote only after a quote it opened`() {
+    fun `ocr quotes take the guillemets only where the language pairs them, a straight quote the language's own`() {
         val guillemets = all.where { support -> support.quotePairs.let { '»' in it.keys + it.values } }
         assertThat(guillemets).containsAtLeast(Language.DANISH, Language.SLOVENIAN, Language.NORWEGIAN, Language.RUSSIAN)
         assertThat(guillemets).containsNoneOf(Language.ENGLISH, Language.SWEDISH, Language.LITHUANIAN, Language.SLOVAK)
@@ -626,6 +626,12 @@ class LanguageRulesIsolationTest {
         // After an English quote it closes it wherever “ opens a quote.
         assertThat(all.where { it.ocrQuotes(listOf(listOf("“a!\""))).single().single() == "“a!”" })
             .containsExactlyElementsIn(all.where { it.quotePairs['“'] == '”' })
+        // At a word's start with no quote open it is the language's first opening quote wherever it pairs quotation
+        // marks: not in Japanese, whose quotes are brackets.
+        val opens = all.where { it.ocrQuotes(listOf(listOf("\"a"))).single().single() != "\"a" }
+        assertThat(opens).containsExactlyElementsIn(all.where { support -> support.quotePairs.values.any { it in "»«”“’‘" } })
+        assertThat(opens).doesNotContain(Language.JAPANESE)
+        assertThat(Language.GERMAN.support.ocrQuotes(listOf(listOf("\"a\"")))).containsExactly(listOf("„a“"))
     }
 
     @Test
