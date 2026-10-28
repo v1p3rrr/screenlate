@@ -176,7 +176,7 @@ scripts/yomitan-language/mutation-exceptions.mjs <iso> <corpus> <top N> <english
 candidates for the hand review: the commonest words of a corpus (a Leipzig sentences file or plain text, kept in
 `testdata/corpus/<iso>/`; Scottish Gaelic, which Leipzig has no corpus of, used the article text of a Gaelic Wikipedia dump) that the rules turn into another headword, grouped by whether the English dictionary gives
 that headword as the word's lemma, with the words most often before each, and the share of tokens the list spares
-an extra entry. A text processor marked `ocrOnly` (`own-processors.js`: Welsh ý and û read as ŷ and ŵ, Hungarian ö, ü and ú as ő and ű, Estonian ö as õ, Azerbaijani e and i as ə and ı) runs only for
+an extra entry. A text processor marked `ocrOnly` (`own-processors.js`: Welsh ý and û read as ŷ and ŵ, Hungarian ö, ü and ú as ő and ű, Estonian ö as õ, Azerbaijani e and i as ə and ı, Thai sara am in two parts) runs only for
 text from OCR, which the engine passes on (`fromOcr`). The glue and
 `generate-inflections.mjs` take a language's rules by its descriptor and folder, whatever code the rules name
 (Georgian's say `kat`), and the generator gives English labels to rule names Yomitan leaves as identifiers (`labels`). The bundles and the strings are GPL-3.0, like the engine module that holds

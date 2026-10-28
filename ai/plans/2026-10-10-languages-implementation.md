@@ -833,7 +833,8 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     Filter them in the converter now.
 80. Answered (owner, 2026-10-28 evening): (a), split it in Czech OCR lines (2026-10-22, night checks): after a Czech era (př. n. l.), ML Kit glues the next word to it ("n.l.a" for "n. l.
     a"), so the word after the era is not looked up on its own. (a, recommended) Split it in Czech OCR lines (recognized
-    text only). (b) Leave it.
+    text only). (b) Leave it. Built 2026-10-28: `CzechSupport.ocrLines` gives "n.l. a" and `OcrPage.inLanguage` parts
+    the word with its boxes.
 81. Answered (owner, 2026-10-28 evening): (a), "Look up in Screenlate Dev" for the debug build (2026-10-22, night checks): with the release and the debug build both installed, the text selection menu shows
     two identical "Look up in Screenlate" items. (a, recommended) Give the debug build its own label ("Look up in
     Screenlate Dev"). (b) Leave it.
@@ -1793,3 +1794,4 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   between groups 5c and 5d; the bubble glyph is built by the coordinating session; Esperanto's frequency dictionary
   now comes from Leipzig's web texts of 2012.
 - 2026-10-29: the build chain stops after group 5d; groups 5e and 6 start only at the owner's word.
+- 2026-10-29: question 80 built (the Czech era parted from a glued word in OCR lines).
