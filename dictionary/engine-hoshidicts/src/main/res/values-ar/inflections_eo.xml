@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- accusative -->
+    <string name="inflection_eo_accusative_label">حالة النصب</string>
+    <string name="inflection_eo_accusative">الكلمة في حالة النصب</string>
+    <!-- plural -->
+    <string name="inflection_eo_plural_label">الجمع</string>
+    <string name="inflection_eo_plural">صيغة الجمع للكلمة</string>
+    <!-- diminutive -->
+    <string name="inflection_eo_diminutive_label">صيغة التصغير</string>
+    <string name="inflection_eo_diminutive">صيغة التصغير للاسم</string>
+    <!-- directional -->
+    <string name="inflection_eo_directional_label">الاتجاه</string>
+    <string name="inflection_eo_directional">الظرف في حالة النصب يدل على الاتجاه\nkie: أين\nkien: إلى أين</string>
+    <!-- locational -->
+    <string name="inflection_eo_locational_label">المكان</string>
+    <string name="inflection_eo_locational">الاسم إذا صار ظرفًا دلّ على المكان\nsurpinto : قمة، طرف، أعلى\nsurpinte: في القمة، عند الطرف، في الأعلى\nĉambro : غرفة\nĉambre: عند الغرفة، في الغرفة</string>
+    <!-- adjectival -->
+    <string name="inflection_eo_adjectival_label">وصفي</string>
+    <string name="inflection_eo_adjectival">الصيغة الوصفية للاسم</string>
+    <!-- adverbial (adj -> adv) -->
+    <string name="inflection_eo_adverbial_adj_adv">الصيغة الظرفية للصفة</string>
+    <!-- adverbial (v -> adv) -->
+    <string name="inflection_eo_adverbial_v_adv">الصيغة الظرفية للفعل</string>
+    <!-- -ejo (noun) -->
+    <string name="inflection_eo_ejo_noun">لاحقة تجعل الكلمة اسم مكان مخصصًا لذلك الشيء\nkafo: قهوة\nkafejo: مقهى</string>
+    <!-- -ejo (verb) -->
+    <string name="inflection_eo_ejo_verb">لاحقة تجعل الكلمة اسم مكان مخصصًا لذلك الفعل\nkuiri: يطبخ\nkuirejo: مطبخ</string>
+    <!-- -ujo (noun) -->
+    <string name="inflection_eo_ujo_noun">لاحقة تجعل الكلمة وعاءً أو حاوية لذلك الشيء\nabelo: نحلة\nabelujo: خلية نحل\n\nلاحقة تجعل الكلمة مكانًا يوجد فيه صنف من الناس\npatro: أب\npatrujo: وطن\n\nلاحقة تجعل الزهرة أو الثمرة نباتًا أو شجرة توجد فيها تلك الزهرة أو الثمرة\npomo: تفاحة\npomujo: شجرة تفاح</string>
+    <!-- -ujo (adjective) -->
+    <string name="inflection_eo_ujo_adjective">لاحقة تجعل الكلمة الواصفة وعاءً أو حاوية لذلك الصنف من الأشياء\nfrida: بارد\nfridujo: ثلاجة</string>
+    <!-- -ujo (verb) -->
+    <string name="inflection_eo_ujo_verb">لاحقة تجعل الفعل وعاءً أو حاوية لذلك النوع من النشاط\nlavi: يغسل\nlavujo: مغسلة</string>
+    <!-- -ebla -->
+    <string name="inflection_eo_ebla">لاحقة تدل على الإمكان\nkompreni: يفهم\nkomprenebla: مفهوم</string>
+    <!-- -ado -->
+    <string name="inflection_eo_ado">لاحقة تجعل الفعل شيئًا يدل على الفعل نفسه\nvivi: يعيش\nvivado: حياة\nspiri: يتنفس\nspirado: تنفّس</string>
+    <!-- mal- -->
+    <string name="inflection_eo_mal">سابقة تقلب الفعل أو الوصف أو الشيء أو الاتجاه إلى ضده في المعنى</string>
+    <!-- kun- -->
+    <string name="inflection_eo_kun">سابقة بمعنى القيام بالفعل مع أشخاص آخرين\nlabori: يعمل\nkunlabori: يتعاون</string>
+    <!-- ekster- -->
+    <string name="inflection_eo_ekster">سابقة بمعنى «خارج»\nlando: بلد\neksterlando: بلد أجنبي</string>
+    <!-- ek- -->
+    <string name="inflection_eo_ek">سابقة بمعنى بدء الفعل\nkanti: يغني\nekkanti: يبدأ الغناء</string>
+    <!-- ĵus- -->
+    <string name="inflection_eo_us">سابقة تدل على أن الشيء حدث حديثًا أو منذ قليل\nvekita: مُوقَظ\nĵusvekita: مُوقَظ للتو، منذ قليل</string>
+    <!-- el- -->
+    <string name="inflection_eo_el">سابقة بمعنى القيام بالفعل باتجاه الخارج\ntiri: يسحب\neltiri: يسحب إلى الخارج\n\nسابقة بمعنى إتمام الفعل حتى نهايته\ntrinki: يشرب\neltrinki: يشرب حتى آخره، يشرب الشيء كله\nlerni: يتعلم\nellerni: يتعلم كل ما يستطيع، يتقن\nuzi: يستعمل\neluzi: يستنفد، يُبلي</string>
+    <!-- dis- -->
+    <string name="inflection_eo_dis">سابقة بمعنى «الانفصال، التباعد، الانتشار»\nŝvebi: يطفو\ndisŝvebi: يطفو متفرقًا، كلٌّ على حدة\nfali: يسقط\ndisfali: يتفكك\ndoni: يعطي\ndisdoni: يوزّع، يفرّق\nsendo: شيء مُرسَل\ndissendo: بث</string>
+    <!-- for- -->
+    <string name="inflection_eo_for">سابقة بمعنى «الحركة إلى مسافة بعيدة»\nflugi: يطير\nforflugi: يطير بعيدًا\n\nسابقة بمعنى «الزوال أو الفناء»\nuzi: يستعمل\nforuzi: يستهلك (حتى لا يبقى شيء)</string>
+    <!-- mis- -->
+    <string name="inflection_eo_mis">سابقة بمعنى «خاطئ، مغلوط»\nkompreni: يفهم\nmiskompreni: يسيء الفهم\nparoli: يتكلم\nmisparoli: يخطئ في الكلام</string>
+</resources>

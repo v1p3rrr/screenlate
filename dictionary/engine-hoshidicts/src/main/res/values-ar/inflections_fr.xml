@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- present indicative -->
+    <string name="inflection_fr_present_indicative_label">الحاضر الإخباري</string>
+    <string name="inflection_fr_present_indicative">صيغة الحاضر الإخباري للفعل</string>
+    <!-- imperfect indicative -->
+    <string name="inflection_fr_imperfect_indicative_label">الماضي الناقص الإخباري</string>
+    <string name="inflection_fr_imperfect_indicative">صيغة الماضي الناقص الإخباري للفعل</string>
+    <!-- future -->
+    <string name="inflection_fr_future_label">المستقبل</string>
+    <string name="inflection_fr_future">صيغة المستقبل للفعل</string>
+    <!-- imperative present -->
+    <string name="inflection_fr_imperative_present_label">صيغة الأمر الحاضر</string>
+    <string name="inflection_fr_imperative_present">صيغة الأمر للفعل</string>
+    <!-- Conditional -->
+    <string name="inflection_fr_conditional_label">صيغة الشرط</string>
+    <string name="inflection_fr_conditional">صيغة الشرط للفعل</string>
+    <!-- Preterite -->
+    <string name="inflection_fr_preterite_label">الماضي البسيط</string>
+    <string name="inflection_fr_preterite">صيغة الماضي البسيط للفعل</string>
+    <!-- plural -->
+    <string name="inflection_fr_plural_label">الجمع</string>
+    <string name="inflection_fr_plural">صيغة الجمع للاسم</string>
+    <!-- present participle -->
+    <string name="inflection_fr_present_participle_label">اسم الفاعل</string>
+    <string name="inflection_fr_present_participle">صيغة اسم الفاعل للفعل</string>
+    <!-- present subjunctive -->
+    <string name="inflection_fr_present_subjunctive_label">الحاضر الافتراضي</string>
+    <string name="inflection_fr_present_subjunctive">الحاضر من الصيغة الافتراضية للفعل</string>
+</resources>

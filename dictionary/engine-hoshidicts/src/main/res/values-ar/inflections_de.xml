@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- nominalization -->
+    <string name="inflection_de_nominalization_label">التحويل إلى اسم</string>
+    <string name="inflection_de_nominalization">اسم مشتق من فعل</string>
+    <!-- -bar -->
+    <string name="inflection_de_bar">صفة مشتقة من فعل تدل على القابلية (-able)</string>
+    <!-- negative -->
+    <string name="inflection_de_negative_label">النفي</string>
+    <string name="inflection_de_negative">النفي</string>
+    <!-- past participle -->
+    <string name="inflection_de_past_participle_label">اسم المفعول</string>
+    <!-- separated prefix -->
+    <string name="inflection_de_separated_prefix_label">سابقة منفصلة</string>
+    <!-- zu-infinitive -->
+    <string name="inflection_de_zu_infinitive_label">صيغة المصدر مع zu</string>
+    <!-- -heit -->
+    <string name="inflection_de_heit">1. تحوّل الصفة إلى اسم يدل عادةً على معنى مجرد من جذر الصفة، وتقابل غالبًا اللواحق الإنجليزية -ness و -th و -ty و -dom:\n	 schön («جميل») + -heit → Schönheit («جمال»)\n	 neu («جديد») + -heit → Neuheit («جِدّة»)\n2. تحوّل أسماء الذات إلى أسماء معنى:\n	 Kind («طفل») + -heit → Kindheit («طفولة»)\n	 Christ («مسيحي») + -heit → Christenheit («العالم المسيحي»)\n</string>
+</resources>

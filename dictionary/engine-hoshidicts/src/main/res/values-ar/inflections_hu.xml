@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_hu.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- prefix -->
+    <string name="inflection_hu_prefix_label">سابقة فعلية</string>
+    <string name="inflection_hu_prefix">سابقة فعلية: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- وغيرها (megtartottam من tartottam)</string>
+</resources>

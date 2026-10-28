@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- nounAdjSuffixStripping -->
+    <string name="inflection_ka_nounadjsuffixstripping_label">تصريف الاسم</string>
+    <string name="inflection_ka_nounadjsuffixstripping">لواحق تصريف الأسماء والصفات في الجورجية</string>
+    <!-- nounAdjStemCompletion -->
+    <string name="inflection_ka_nounadjstemcompletion_label">حالة الرفع</string>
+    <string name="inflection_ka_nounadjstemcompletion">لاحقة حالة الرفع -ი تُعاد إلى جذع الاسم أو الصفة المنتهي بصامت</string>
+    <!-- vowelRestoration -->
+    <string name="inflection_ka_vowelrestoration_label">صائت محذوف</string>
+    <string name="inflection_ka_vowelrestoration">صائت محذوف من الجذع يُعاد إليه عند الحاجة</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_cy.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- soft mutation -->
+    <string name="inflection_cy_soft_mutation_label">التحول الليّن</string>
+    <string name="inflection_cy_soft_mutation">التحول الليّن: b d g f dd l r بدلًا من p t c b/m d ll rh، وحذف g (ei gath من cath، dy wely من gwely)</string>
+    <!-- nasal mutation -->
+    <string name="inflection_cy_nasal_mutation_label">التحول الأنفي</string>
+    <string name="inflection_cy_nasal_mutation">التحول الأنفي: mh nh ngh m n ng بدلًا من p t c b d g (fy nghath من cath، yng Nghymru من Cymru)</string>
+    <!-- aspirate mutation -->
+    <string name="inflection_cy_aspirate_mutation_label">التحول النفَسي</string>
+    <string name="inflection_cy_aspirate_mutation">التحول النفَسي: ph th ch بدلًا من p t c (ei chath من cath)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_cy_h_prothesis_label">إقحام h</string>
+    <string name="inflection_cy_h_prothesis">h قبل صائت (ei hysgol من ysgol)</string>
+</resources>

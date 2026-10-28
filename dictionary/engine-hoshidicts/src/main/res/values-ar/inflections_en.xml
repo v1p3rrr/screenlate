@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_en_plural_label">الجمع</string>
+    <string name="inflection_en_plural">صيغة الجمع للاسم</string>
+    <!-- possessive -->
+    <string name="inflection_en_possessive_label">صيغة الملكية</string>
+    <string name="inflection_en_possessive">صيغة الملكية للاسم</string>
+    <!-- past -->
+    <string name="inflection_en_past_label">الماضي</string>
+    <string name="inflection_en_past">الماضي البسيط للفعل</string>
+    <!-- ing -->
+    <string name="inflection_en_ing_label">صيغة ing</string>
+    <string name="inflection_en_ing">اسم الفاعل من الفعل</string>
+    <!-- 3rd pers. sing. pres -->
+    <string name="inflection_en_3rd_pers_sing_pres_label">الغائب المفرد، الحاضر</string>
+    <string name="inflection_en_3rd_pers_sing_pres">زمن الحاضر للفعل مع الغائب المفرد</string>
+    <!-- interposed object -->
+    <string name="inflection_en_interposed_object_label">مفعول به متوسط</string>
+    <string name="inflection_en_interposed_object">فعل مركب يتوسطه المفعول به</string>
+    <!-- archaic -->
+    <string name="inflection_en_archaic_label">قديم</string>
+    <string name="inflection_en_archaic">صيغة قديمة للكلمة</string>
+    <!-- adverb -->
+    <string name="inflection_en_adverb_label">ظرف</string>
+    <string name="inflection_en_adverb">ظرف مشتق من صفة</string>
+    <!-- comparative -->
+    <string name="inflection_en_comparative_label">صيغة المقارنة</string>
+    <string name="inflection_en_comparative">صيغة المقارنة للصفة</string>
+    <!-- superlative -->
+    <string name="inflection_en_superlative_label">صيغة التفضيل</string>
+    <string name="inflection_en_superlative">صيغة التفضيل للصفة</string>
+    <!-- dropped g -->
+    <string name="inflection_en_dropped_g_label">حذف g</string>
+    <string name="inflection_en_dropped_g">حذف g من صيغة -ing للفعل</string>
+    <!-- -y -->
+    <string name="inflection_en_y">صفة مشتقة من فعل أو اسم</string>
+    <!-- un- -->
+    <string name="inflection_en_un">صيغة النفي لصفة أو ظرف أو فعل</string>
+    <!-- going-to future -->
+    <string name="inflection_en_going_to_future_label">المستقبل بـ going to</string>
+    <string name="inflection_en_going_to_future">زمن المستقبل للفعل بـ going to</string>
+    <!-- will future -->
+    <string name="inflection_en_will_future_label">المستقبل بـ will</string>
+    <string name="inflection_en_will_future">زمن المستقبل للفعل بـ will</string>
+    <!-- imperative negative -->
+    <string name="inflection_en_imperative_negative_label">النهي</string>
+    <string name="inflection_en_imperative_negative">صيغة الأمر المنفية للفعل (النهي)</string>
+    <!-- -able -->
+    <string name="inflection_en_able">صفة مشتقة من فعل</string>
+</resources>
