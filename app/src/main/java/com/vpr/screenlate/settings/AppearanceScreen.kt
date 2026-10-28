@@ -77,8 +77,8 @@ fun AppearanceScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Uni
 }
 
 /**
- * The same setting as the system's per-app language, as a drop-down: the phone's language, then every language the
- * app has strings for (the locale config generated from the resources), so a new translation shows up by itself.
+ * The same setting as the system's per-app language, as a drop-down: the phone's language, then every language of
+ * the locale config (`res/xml/locales_config.xml`: the translations whose screens are checked).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

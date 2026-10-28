@@ -35,6 +35,11 @@ class TranslationsTest {
         "b+zh+Hant" to setOf("other"),
     )
 
+    /** Translations whose screens are not checked yet: they ship, but the language settings do not offer them. */
+    private val unlisted = setOf("ar", "fa", "iw")
+
+    private val androidNamespace = "http://schemas.android.com/apk/res/android"
+
     private val format = Regex("""%(\d+\$)?[-#+ 0,(]*\d*(\.\d+)?[sdfx%]""")
 
     private class Strings(val strings: Map<String, String>, val plurals: Map<String, Map<String, String>>)
@@ -97,6 +102,21 @@ class TranslationsTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `the language settings offer english and every translation but the unchecked ones`() {
+        val config = DocumentBuilderFactory.newInstance().apply { isNamespaceAware = true }.newDocumentBuilder()
+            .parse(File("src/main/res/xml/locales_config.xml"))
+        val listed = config.getElementsByTagName("locale").let { nodes ->
+            (0 until nodes.length).map { (nodes.item(it) as Element).getAttributeNS(androidNamespace, "name") }
+        }
+        val translated = File("src/main/res").listFiles().orEmpty()
+            .filter { it.name.startsWith("values-") && File(it, "strings.xml").exists() }
+            .map { it.name.removePrefix("values-") }
+            .filter { it !in unlisted }
+            .map { it.removePrefix("b+").replace('+', '-') }
+        assertWithMessage("locales_config.xml").that(listed).containsExactlyElementsIn(translated + "en")
     }
 
     @Test
