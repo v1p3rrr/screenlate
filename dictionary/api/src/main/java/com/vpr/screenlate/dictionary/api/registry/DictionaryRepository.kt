@@ -83,7 +83,8 @@ class DictionaryRepository @Inject constructor(
      * ([DictionaryLanguageDetector]), so the dictionary is used for its language only. Frequency and pitch
      * dictionaries keep only a source language. A term dictionary of a language with a reading search gets its
      * [ReadingIndex]. With [formsOnly], or when the replaced dictionary was imported so ([isFormsOnly]), only the
-     * archive's inflected forms are kept ([DictionaryEngine.import]).
+     * archive's inflected forms are kept ([DictionaryEngine.import]). [onRegister] runs after the last check for a
+     * cancel, as the dictionary is about to be registered.
      */
     suspend fun import(
         archive: File,
@@ -91,6 +92,7 @@ class DictionaryRepository @Inject constructor(
         replaces: Long? = null,
         catalog: List<CatalogEntry> = emptyList(),
         formsOnly: Boolean = false,
+        onRegister: suspend () -> Unit = {},
     ): DictionaryEntity {
         val staging = storage.newStagingDirectory()
         try {
@@ -135,6 +137,7 @@ class DictionaryRepository @Inject constructor(
             }
             // The engine's step cannot be stopped; a cancelled import ends here instead of registering its dictionary.
             currentCoroutineContext().ensureActive()
+            onRegister()
             return mutex.withLock {
                 val existing = replaced(replaces, metadata.title, kind, bundled)
                 // An update may take the title of another installed dictionary, which it then replaces as well.

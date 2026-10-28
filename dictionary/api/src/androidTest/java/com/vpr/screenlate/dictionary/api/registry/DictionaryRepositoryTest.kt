@@ -81,6 +81,14 @@ class DictionaryRepositoryTest {
     }
 
     @Test
+    fun registrationHookRunsBeforeTheDictionaryIsRegistered() = runTest {
+        var listed: List<String>? = null
+        val terms = repository.import(archive("Terms", terms = 1), onRegister = { listed = repository.getAll().map { it.title } })
+        assertThat(listed).isEmpty()
+        assertThat(repository.getAll().map { it.id }).containsExactly(terms.id)
+    }
+
+    @Test
     fun updateReplacesTheDictionaryItWasStartedFor() = runTest {
         repository.import(archive("Other", terms = 1))
         val old = repository.import(archive("Dict [2026-01-01]", terms = 1))
