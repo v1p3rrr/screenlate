@@ -168,6 +168,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR42 | Esperanto recognition (`testdata/ocr/eo-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ĉ ĝ ĥ ĵ ŝ ŭ): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, a hat letter it reads as Š Č ũ ű shows as Ŝ Ĉ ŭ in the recognized text, and a word whose hat it drops is found through the keys; Tesseract fast, marked "more accurate" and chosen in the Text recognition settings, reads the screen; no PaddleOCR model is offered | N | U EsperantoSupportTest, CatalogFileTest, M | 2026-10-28 |
 | OCR43 | Albanian recognition (`testdata/ocr/sq-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ë ç, «…» and “…”): cloud recognition reads the screen; offline, ML Kit's Latin model reads it; PaddleOCR v5 Latin, marked "more accurate" and chosen under Text recognition → On-device model, reads the screen; a word an engine reads with ě is looked up with ë | F | U AlbanianSupportTest, CatalogFileTest, M | 2026-10-28 |
 | OCR44 | Swahili recognition (`testdata/ocr/sw-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ’ and “…”): cloud recognition reads the screen; offline, ML Kit's Latin model reads it (no downloadable model is recommended); Ng’ombe finds ng'ombe | F | U SwahiliSupportTest, CatalogFileTest, M | 2026-10-28 |
+| OCR45 | Welsh recognition (`testdata/ocr/cy-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ŵ ŷ and mutated words): cloud recognition reads tŷ and tŵr; ML Kit reads tŷ as tý, and the popup on tý finds tŷ (the OCR-only variant); Tesseract cym fast reads tŷ and tŵr | F | U WelshSupportTest, CatalogFileTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -245,6 +246,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK72 | Esperanto lookups (overlay over `testdata/ocr/eo-sample.png`, and the Search screen): cxu, CXu and cu find ĉu; mangxajxojn and mangajojn find manĝaĵo; pomojn finds pomo (accusative, plural); malbona shows malbona, then bona; si shows si first, then ŝi; dank’ al and dank' al find dank' al | N | U EsperantoSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK73 | Albanian lookups (overlay over `testdata/ocr/sq-sample.png`, and the Search screen): rëndësishme finds rëndësishëm through "feminine or plural"; ndodhet finds ndodh; sulmit finds sulm; lejen shows leje (a noun) before any verb; shqiptare, a headword of its own, shows its own entries first, with no ending chip; gjate finds gjatë through "e for ë"; aimed at ka in s'ka, at është in ç'është and at i in t'i (with ' and ’) the lookup starts after the apostrophe | F | U AlbanianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK74 | Swahili lookups (overlay over `testdata/ocr/sw-sample.png`, and the Search screen): alisoma finds soma through "past « he/she"; hatukusoma finds soma ("past « we « negative"); aliyemwona finds ona ("object « relative « past « he/she"); kinachoitwa finds itwa; alikula shows kula first; aliunga shows the verb unga only; kupa shows only kupa; Angela finds nothing; ng'ombe and Ng’ombe find ng'ombe | F | U SwahiliSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
+| LK75 | Welsh lookups (overlay over `testdata/ocr/cy-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nghath finds cath and Nghymru Cymru ("nasal mutation"), the highlight over the whole word; fara finds bara ("soft mutation"), hysgol ysgol ("h-prothesis"), chath cath ("aspirate mutation"); mae shows bod's form, and with cy-fr alone no bae (bay); ty finds tŷ in app text and the Search screen, twr only twr; tý in app text and the Search screen finds no tŷ; i’w finds both dictionaries' i'w and i’w | F | U WelshSupportTest, glue.test.mjs, RuleOnlyResultsTest, I LanguageLookupTest, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -292,6 +294,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP39 | Aim at a word, then off text so the popup closes, then at another word → the popup opens with the new word only, the previous one never shows; from one word straight to the next, the popup moves to the new word together with its content | N | M | 2026-10-28 (API 37, frame by frame; `main` by screenshots only) |
 | POP41 | An Albanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Albanian text"; one chosen sets ë ç; the bubble shows Ë and the Languages screen Albania's flag; the rule chip of an ending of our own names it in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP42 | A Swahili entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Swahili text" and a Swahili sample sentence; the bubble shows SW and the Languages screen Tanzania's flag; the chips of the prefix rules name them in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
+| POP43 | A Welsh entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next and Lexend, not PT Serif or PT Sans, with "Only for Welsh text" and a Welsh sample sentence; one chosen sets ŵ ŷ; the bubble shows Ŵ and the Languages screen Wales's flag; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 
 ### AUD: audio
 
@@ -326,6 +329,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD27 | Esperanto audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on akvo lists Lingua Libre's recordings first, then Wiktionary's | N | U EsperantoSupportTest, M | 2026-10-28 |
 | AUD28 | Albanian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on a word Lingua Libre has lists its recording; the phone's voice speaks Albanian where it has one | F | U AlbanianSupportTest, M | 2026-10-28 |
 | AUD29 | Swahili audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; holding 🔊 on a word Wiktionary has lists its recording; the phone's voice speaks Swahili where it has one | F | U SwahiliSupportTest, M | 2026-10-28 |
+| AUD30 | Welsh audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; holding 🔊 on dŵr lists Wiktionary's recording titled without the circumflex; the phone's voice speaks Welsh where it has one | F | U WelshSupportTest, M | 2026-10-28 |
 
 ### ANK: Anki
 
@@ -366,6 +370,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK34 | An Esperanto Anki note (`testdata/ocr/eo-anki.png`, one paragraph), with on-device recognition: for foriris the sentence is "Li diris „Jes.“ kaj foriris.", for amiko "“Venu, amiko.”", for venis "“Venu, amiko.” Ŝi venis."; for pomoj "Ekz. pomoj kaj piroj ktp."; for jarcento "La 9-a jarcento a.K. estis longa."; with cloud recognition pomoj and jarcento as above, while foriris, amiko and venis get the " it writes for the “ after Jes. and before Venu (group 5a question 30) | N | U SentenceTest, EsperantoSupportTest, M | 2026-10-28 |
 | ANK35 | An Albanian Anki note (over `testdata/ocr/sq-anki.png`, and app text in AnkiDroid's note editor): for banon in "Z. Hoxha banon në rr. Durrësit, nr. 5." the sentence is whole and ends at 5.; for revista in "Libra, revista etj. dhe gazeta janë këtu." it is whole; "Cezari vdiq në vitin 44 p.e.s. Pastaj Roma ndryshoi." ends at p.e.s.; for ka inside "«Ai s'ka kohë!» tha ajo." the note has "«Ai s'ka kohë!»", for tha after it the whole sentence | F | U SentenceTest, AlbanianSupportTest, M | 2026-10-28 |
 | ANK36 | A Swahili Anki note (over `testdata/ocr/sw-anki.png`, one paragraph over five lines): for Juma the sentence is "Bw. Juma alifika tar. 5 Mei."; for wali "Walinunua vyakula, k.m. wali na maharage n.k." (n.k. ends it before a capital); for walirudi and for the phrase hata hivyo "Hata hivyo walirudi."; for karibu "“Karibu!”" and for alisema "“Karibu!” alisema Bi. Amina." where recognition keeps the curly quotes (where it writes them as ", plan question 30) | F | U SentenceTest, SwahiliSupportTest, M | 2026-10-28 |
+| ANK37 | A Welsh Anki note (over `testdata/ocr/cy-anki.png`, one paragraph over six lines): for yno the sentence is "Pregethodd y Parch. John Williams yno, h.y. yng Nghaerdydd."; for afalau "Prynodd ffrwythau, e.e. afalau a gellyg."; for Dafydd "Daeth Dafydd Jones, Ysw." (Ysw. ends it before a capital); for fawr "Mae'r tŷ yn fawr." (ML Kit writes tý) | F | U SentenceTest, WelshSupportTest, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -454,6 +459,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG26 | Esperanto setup: the download screen offers Wiktionary into English, Russian, German, Spanish, French, Japanese, Polish, Portuguese, Turkish and Chinese and the transcription, ticked, and Leipzig's word frequency, ticked; ML Kit is the main model, Tesseract epo fast unticked and marked "more accurate", accurate unticked, no PaddleOCR; the flag is Esperanto's own and the bubble shows Ĉ | N | U CatalogFileTest, M | 2026-10-28 |
 | LNG27 | Albanian setup: the download screen offers Wiktionary into English, Russian, German, French, Polish, Turkish and Chinese, the transcription and Leipzig's word frequency ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract sqi fast and accurate unticked; the flag is Albania's and the bubble shows Ë | F | U CatalogFileTest, M | 2026-10-28 |
 | LNG28 | Swahili setup: the download screen offers Wiktionary into English, and Russian, Chinese and Polish under "Another language…", and Leipzig's word frequency ticked, no transcription; ML Kit is the main model, Tesseract swa fast and accurate and PaddleOCR v5 and v6 unticked, none marked "more accurate"; the flag is Tanzania's and the bubble shows SW | F | U CatalogFileTest, M | 2026-10-28 |
+| LNG29 | Welsh setup: the download screen ticks Wiktionary into English and the transcription, lists Russian and French under "Another language…", and offers no word frequency; ML Kit is the main model, Tesseract cym fast and accurate and PaddleOCR v5 and v6 unticked, all four marked "more accurate"; the flag is Wales's and the bubble shows Ŵ | F | U CatalogFileTest, M | 2026-10-28 |
 
 ### SET: settings, backup, appearance
 
@@ -603,6 +609,55 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/cy` (uncommitted build on `b883ed27`), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Welsh (LNG29, OCR45, LK75, POP43, AUD30, ANK37) through the download screen, the overlay
+over `testdata/ocr/cy-sample.png` and `cy-anki.png` (Segoe UI, in the debug viewer) with cloud recognition, ML Kit and
+Tesseract cym fast, app text in AnkiDroid's note editor, the Search screen, the Popup, Audio, Appearance, Text
+recognition and Anki settings and Anki notes into the local "Screenlate Test" deck ({sentence} as Meaning); the
+engine's instrumented tests. An x86_64-only APK.
+
+Results: passed after one fix (below). Automated: unit tests (1,799), lint, the page tests (146), the glue tests (88, one
+skipped), the mutation exception tests (6), the catalog tests (10), the flag tests (5) and the OCR model tests (9)
+passed; `LanguageLookupTest` 34 of 34 and the engine's 60 instrumented tests passed on the emulator, the test package
+uninstalled after.
+
+- LNG29: Wales's flag on the Languages screen; Wiktionary into English and the transcription ticked, Russian and French
+  under "Another language…", no word frequency; ML Kit the main model, Tesseract fast and accurate and PaddleOCR v5
+  and v6 unticked, all four marked "More accurate" (in Text recognition's model list "Recommended"); the bubble shows
+  Ŵ. Ticking Tesseract fast on the download screen made it the main model, as for other languages; ML Kit chosen again.
+- OCR45: cloud recognition read every line of `cy-sample.png`, tŷ, tŵr and dŵr included; Tesseract fast read every
+  line exactly too. ML Kit read tŷ, dŵr and tŵr as "tý", "dw" and "twr"; aimed at tý the popup finds tŷ through
+  the OCR-only variant.
+- LK75: overlay (ML Kit, cloud recognition) and the Search screen: Nghymru finds Cymru and nghath cath ("nasal
+  mutation", the highlight over the whole word; cathod first, see below), fara bara ("soft mutation"), hysgol ysgol
+  ("h-prothesis"), chath cath ("aspirate mutation"); mae shows bod's form and no bae with cy-fr; ty finds tŷ, twr
+  only twr, ddwr dŵr; tý typed finds nothing; i’w finds both dictionaries' i'w and i’w; dŵr shows dŵr, then tŵr
+  ("soft mutation"). App text (AnkiDroid's note editor, "Mae fy nghath yn y tý a ty Mabon"): tý finds nothing, ty
+  finds tŷ.
+- POP43: the font card lists the phone's font and Lexend (downloaded), Literata, Inter and Atkinson Hyperlegible Next;
+  no PT Serif (downloaded for Swahili) or PT Sans; "Only for Welsh text"; with Lexend chosen the sample "Parciais fy
+  jac codi baw hud llawn dŵr ger tŷ Mabon." shows ŵ and ŷ; the phone's font chosen again. In Russian the chips read
+  "мягкая мутация", "носовая мутация", "придыхательная мутация" and "протеза h"; the interface language restored to
+  System.
+- AUD30: sources Wiktionary, Lingua Libre, Text-to-speech; the Test of dŵr found Wiktionary's Cy-dwr.ogg, Lingua
+  Libre nothing; Google's engine spoke with its Welsh voice (cy-GB); holding 🔊 on dŵr lists Cy-dwr.ogg and the
+  phone's voice.
+- ANK37 (deck Screenlate Test, ML Kit): yno "Pregethodd y Parch. John Williams yno, h.y. yng Nghaerdydd.", afalau
+  (afal, "plural") "Prynodd ffrwythau, e.e. afalau a gellyg.", Dafydd "Daeth Dafydd Jones, Ysw.", fawr (mawr) "Mae'r
+  tý yn fawr." with ML Kit's tý. Williams has no entry in the Welsh dictionaries, so the case aims at yno.
+- Fixed: chains of two mutations. fara showed para through bara's own "soft" row after the rule's soft mutation, and
+  ddwr showed twr through dwr's row. The engine now drops chains with two mutation steps, before the unmarked
+  fallback, so ddwr finds dŵr (`RuleOnlyResultsTest`, `LanguageLookupTest`).
+- Seen, the dictionaries': nghath shows cathod first, from the French edition's row nghath → cathod ("nasalization");
+  the English edition's rows give a few wrong mutated forms (dal → thal, nhal).
+- Seen, not the app's: after uiautomator dumps the system stopped the accessibility service; "Bring the bubble back"
+  on Home restored it.
+
+Left on the emulator: the `languages/cy` debug app with Welsh set up (its Anki settings on the "Screenlate Test" deck
+and note type, Meaning {sentence}; ML Kit the main model, Tesseract fast, PaddleOCR v5 and v6 installed), engines
+Both, its service enabled; the Welsh notes in the local deck; the emulator shut down and the lock released.
 
 ### 2026-10-28, `languages/sw` (uncommitted build on `f7e55a7e`), Pixel_10_Pro (API 37)
 

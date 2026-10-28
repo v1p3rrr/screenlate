@@ -123,6 +123,9 @@ the details.
   provisionally: a straight " that recognition writes for a curly quote stays as it is; Swahili's check found both
   cloud recognition and ML Kit writing “Karibu!” as "Karibu!", so a note's sentence there starts or ends at the ".
   Open for the owner: the plan's questions 28-34 (decided provisionally and built).
+- Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
+  to check and merge: Welsh (`languages/cy`) ready; Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`)
+  follow. Technical choices changed while building are marked provisional in the plan's rows and changelog.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -480,6 +483,17 @@ kept inside the word; Leipzig's Swahili Wikipedia counts as the frequency dictio
 Tanzania's flag; Wiktionary first among the audio sources. Plan questions 33 (the frequency dictionary) and 34 (the
 prefixes beyond the plan's row) decided provisionally. Checked on the emulator; AUD29's recordings are left for a run
 when Wikimedia answers (HTTP 503 again), and ANK36's quoted sentence waits on question 30.
+
+Welsh (`languages/cy`, 2026-10-28, on `languages/main` `b883ed27`): our own mutation rules (soft, nasal, aspirate, h
+before a vowel; one per word, two letters of the radical kept, any part of speech) with their names in all 14
+locales; 94 common words left as written (mae, ar, dŵr), chosen with `mutation-exceptions.mjs` on Leipzig's Welsh
+Wikipedia; the dictionaries' mutation rows shown under the rules' names, chains of two mutations and single-letter
+lemmas dropped; words without the circumflex find the marked headword when nothing matches as written (ty → tŷ,
+twr → twr); the lookup knows whether its text was recognized, and ý û read as ŷ ŵ only then (the piece group 5c's
+Hungarian reuses); the apostrophes of mae'r kept inside the word; abbreviations; Tesseract cym fast and accurate and
+PaddleOCR v5 and v6 marked more accurate; the Welsh flag; fonts with ŵ ŷ; Wiktionary first, titles without the
+circumflex. Checked on the emulator (LNG29, OCR45, LK75, POP43, AUD30, ANK37). Left as limits: the French edition's
+rows that name another word (nghath shows cathod first), dwr finds twr.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
