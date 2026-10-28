@@ -143,6 +143,15 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `zipfile` copy. It runs before the plugins' own `afterEvaluate`, so the DSL is still open. CI still builds every
   ABI. A new worktree also needs `git submodule update --init --recursive` (hoshidicts' `external/` submodules),
   or CMake stops at "does not contain a CMakeLists.txt file".
+- A `main` build next to the `languages/main` one (2026-10-28): `main`'s debug build is a downgrade over the
+  language branch's (its data would not open), and uninstalling that loses its dictionaries and settings. A second
+  init script
+  `allprojects { pluginManager.withPlugin("com.android.application") { def c = extensions.getByName("androidComponents"); c.onVariants(c.selector().withBuildType("debug")) { v -> v.applicationId.set("com.vpr.screenlate.debugmain") } } }`
+  gives the debug APK its own package (authorities follow `${applicationId}`; the test APK targets it too). Both
+  apps show as "Screenlate Dev"; only one accessibility service should be on at a time. Uninstall it afterwards.
+  `am instrument` force-stops its target package before it runs (the system does it when instrumentation starts),
+  which the no force-stop rule may cover; that run checked `OpenAppTest`'s case by hand instead (ask the owner).
+- A new worktree needs `local.properties` (git-ignored; copy it from another checkout) before Gradle finds the SDK.
 - A small build to send to the phone (2026-10-27; a chat attachment takes at most 30 MiB): the release type with the
   Dev package and label, debug-signed, one ABI, compressed native code and dex. An init script
   (`--init-script dev-release.gradle`) sets on `:app` in `afterEvaluate`, for the release build type:
