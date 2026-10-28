@@ -1766,9 +1766,15 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   prefixes reach only glossaries tagged v or non-lemma); `inflectionRulesOnlyWithoutEntry` drops what only the
   prefixes reach when the text has an entry of its own (Wiktionary lists many Swahili forms as entries: kupa shows
   only kupa, not pa through the infinitive's ku-).
-- Catalog: wty sw into en ru pl zh, all ticked (no transcription: 1,282 words); Leipzig's Swahili Wikipedia counts
-  (`swa_wikipedia_2021_100K`, 18.6 MB, CC BY; the only Swahili corpus Leipzig publishes) as the frequency
-  dictionary, built on the phone (wordfreq has no Swahili; plan question 33); ML Kit alone recommended (0.2% errors
+- Catalog: wty sw into en ru pl zh, all ticked (no transcription: 1,282 words); Leipzig's Swahili news counts
+  (`swa_news_2020_30K`, 8.3 MB, CC BY) as the frequency dictionary, built on the phone (wordfreq has no Swahili; plan
+  question 33). Built first from the Wikipedia counts (`swa_wikipedia_2021_100K`, 18.6 MB), switched on 2026-10-28
+  at the owner's word: the Wikipedia's commonest words carry the bot-made stubs about languages and places (lugha,
+  idadi, wasemaji, kufuatana, uainishaji, imehesabiwa, wakazi, sensa in its top 40), and a 2026 study (arXiv
+  2608.21821) counts 41.5% of sampled Swahili articles as bot- or translation-made. The news (680,913 tokens, 49,583
+  word forms against 1,539,097 and 109,458) shares 66% of the top 1,000 and 57% of the top 5,000; its own top words
+  are plain prose (alisema, serikali, nchini, rais, jana) with some of 2020's news (corona, magufuli). A dictionary
+  built from the Wikipedia counts stays until removed and installed again; ML Kit alone recommended (0.2% errors
   on the test screens), Tesseract `swa` fast and best and PaddleOCR v5 and v6 unticked.
 - Coverage: sw-en finds 81.4% of Wikipedia's words as written, the prefixes 8.9% more; every Swahili dictionary
   together 83.6% and 7.5%.

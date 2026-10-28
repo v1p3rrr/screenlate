@@ -134,9 +134,11 @@ the details.
   news corpora (Estonian, Azerbaijani, Uzbek, Mongolian), and group 6's research names Bashkir's Wikipedia as its only
   Leipzig corpus. Found: Uzbek Wikipedia had machine-translation trouble after 2022 (the app uses Uzbek news, so
   nothing changes), and a 2026 study (arXiv 2608.21821, a username heuristic) counts 41.5% of the Swahili articles it
-  sampled as bot- or translation-made, the highest of its editions; Leipzig has no other Swahili corpus, so the
-  Swahili frequency list stays as it is, a known limit. Nothing was found for the others, Scottish Gaelic included;
-  the Gaelic exception list's seven words are common Gaelic words.
+  sampled as bot- or translation-made, the highest of its editions. At the owner's word the Swahili frequency
+  dictionary now comes from Leipzig's Swahili news (`swa_news_2020_30K`, missed before, as only the 100K names were
+  tried): the Wikipedia's top words carry the stubs about languages and places (`notes/languages.md`, Swahili).
+  Nothing was found for the others, Scottish Gaelic included; the Gaelic exception list's seven words are common
+  Gaelic words.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.

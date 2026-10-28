@@ -1325,8 +1325,8 @@ Leipzig's Albanian Wikipedia (2021, 100,000 sentences) and news (2020, 100,000 s
 
 ### Swahili (2026-10-28)
 
-Leipzig's Swahili Wikipedia (2021, 100,000 sentences; Leipzig publishes no other Swahili corpus: the news, newscrawl,
-web and community names return 404); wty sw-en (2026.10.22) as the dictionary.
+Leipzig's Swahili Wikipedia (2021, 100,000 sentences; the 100K news, newscrawl, web and community names return 404,
+and only `swa_news_2020_30K` and `_10K` exist besides); wty sw-en (2026.10.22) as the dictionary.
 
 - Abbreviations (before a lowercase word / a capital / a digit / at the end; Leipzig's splitter cuts after many
   abbreviations, so the ends include its cuts): k.m. 20 / 18 / 1 / 61; Bw. 1 / 0 / 0 / 71; Bi. 0 / 0 / 0 / 74; Mt.
