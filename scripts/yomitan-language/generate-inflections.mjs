@@ -51,7 +51,8 @@ const labels = {
  * them by the descriptor's iso: the code they name their language by may differ (Georgian's say `kat`). A language
  * Yomitan has none for takes the app's own (`own`), whose names are labels for rules named by their affix or in
  * words, and [shared] names the label file of languages whose own rules share their names. Own rules of a language
- * Yomitan has rules for are added after Yomitan's (`added`).
+ * Yomitan has rules for are added after Yomitan's (`added`), or take their place when they name Yomitan's file as one
+ * they replace (Irish, build.mjs `replacedTransforms`).
  * @param {string} iso
  * @returns {Promise<{transforms: [string, {name: string, description?: string, hidden?: boolean}][], own: boolean,
  *     added?: Set<string>, shared?: string}>}
@@ -59,6 +60,7 @@ const labels = {
 async function transformsOf(iso) {
     const own = await import(pathToFileURL(path.join(here, 'own-transforms.js')).href);
     const ownDescriptor = Object.values(own).find((d) => d?.language === iso && d.transforms);
+    if (ownDescriptor?.replaces) return {transforms: Object.entries(ownDescriptor.transforms), own: true};
     const dir = path.join(yomitanRoot, 'ext/js/language', iso);
     const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith('transforms.js')) : [];
     for (const file of files) {

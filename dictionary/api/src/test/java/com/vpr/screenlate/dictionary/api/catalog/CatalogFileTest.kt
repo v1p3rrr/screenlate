@@ -382,6 +382,21 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `irish offers four wiktionaries and its transcription, ticked, and the ocr models unticked`() {
+        val irish = catalog!!.entries.filter { it.isFor(Language.IRISH) }
+        assertThat(irish.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-ga-en", "wiktionary-ga-ru", "wiktionary-ga-fr", "wiktionary-ga-pl", "wiktionary-ga-transcription",
+        )
+        // ML Kit reads Irish with few errors, so no model is marked more accurate.
+        assertThat(irish.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-gle", "tesseract-best-gle", "paddle-v6-ga", "paddle-latin-ga", "paddle-detector-v6-ga",
+            "paddle-detector-v5-ga",
+        )
+        assertThat(irish.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.IRISH) }).isEqualTo(irish)
+    }
+
+    @Test
     fun `slovak also reads czech term dictionaries, not czech models, frequencies or transcriptions`() {
         val czech = catalog!!.entries.filter { it.isReadBy(Language.SLOVAK) && !it.isFor(Language.SLOVAK) }
         assertThat(czech).isNotEmpty()

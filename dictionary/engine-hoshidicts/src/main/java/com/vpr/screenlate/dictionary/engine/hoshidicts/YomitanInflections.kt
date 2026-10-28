@@ -942,6 +942,12 @@ internal object YomitanInflections {
             "aspirate mutation" to Strings(R.string.inflection_cy_aspirate_mutation_label, R.string.inflection_cy_aspirate_mutation),
             "h-prothesis" to Strings(R.string.inflection_cy_h_prothesis_label, R.string.inflection_cy_h_prothesis),
         ),
+        "ga" to mapOf(
+            "lenition" to Strings(R.string.inflection_ga_lenition_label, R.string.inflection_ga_lenition),
+            "eclipsis" to Strings(R.string.inflection_ga_eclipsis_label, R.string.inflection_ga_eclipsis),
+            "t-prothesis" to Strings(R.string.inflection_ga_t_prothesis_label, R.string.inflection_ga_t_prothesis),
+            "h-prothesis" to Strings(R.string.inflection_ga_h_prothesis_label, R.string.inflection_ga_h_prothesis),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

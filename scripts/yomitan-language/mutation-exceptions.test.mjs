@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {deflateRawSync} from 'node:zlib';
 import {candidates, corpusCounts, readDictionary, ruleResults, shares, termRows} from './mutation-exceptions.mjs';
-import {welshTransforms} from './own-transforms.js';
+import {irishMutations, welshTransforms} from './own-transforms.js';
 
 /** A zip archive of [files] (name → JSON value), deflated when [deflate]. */
 function zip(files, deflate) {
@@ -74,6 +74,15 @@ test('the rules give every text they turn a word into, other than the word', () 
     assert.deepEqual(ruleResults(welshTransforms, 'mae'), ['bae']);
     assert.deepEqual(ruleResults(welshTransforms, 'ysgol'), ['gysgol']);
     assert.deepEqual(ruleResults(welshTransforms, 'cath'), []);
+});
+
+test('the irish rules give the radical once, with the capital kept', () => {
+    assert.deepEqual(ruleResults(irishMutations, 'bhean'), ['bean']);
+    assert.deepEqual(ruleResults(irishMutations, 'nGaillimh'), ['Gaillimh']);
+    assert.deepEqual(ruleResults(irishMutations, 'tsráid'), ['sráid']);
+    assert.deepEqual(ruleResults(irishMutations, 'hÉireann'), ['Éireann']);
+    assert.deepEqual(ruleResults(irishMutations, 'mbmbean'), ['bmbean']);
+    assert.deepEqual(ruleResults(irishMutations, 'bean'), []);
 });
 
 test('the corpus counts lowercase words and the words before them, after the sentence number', () => {

@@ -309,6 +309,7 @@ const untypedRules = new Map([
     ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['cy', {shortest: 2}],
+    ['ga', {shortest: 2}],
 ]);
 
 /**

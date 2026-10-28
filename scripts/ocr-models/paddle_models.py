@@ -53,7 +53,7 @@ DETECTORS = {
 }
 
 # Esperanto is left out: both models read every one of its hat letters wrong (ĝ as ġ or ğ, ŭ as ǔ or ů).
-LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy"]
+LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy", "ga"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,
 # which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian.
@@ -77,7 +77,8 @@ RECOGNIZERS = {
 # fewest errors of the on-device models over the clean and hard screens; Norwegian: v6; Danish: v5 and v6 both make
 # none, and v5 is the smaller download; Romanian: v5 and v6 0.9% each (Tesseract fast 1.1%), v5 the smaller download;
 # Slovenian and Albanian: v5 and v6 both make none, and v5 is the smaller download. Swahili: ML Kit makes none
-# either, so no model is marked.
+# either, so no model is marked. Irish: ML Kit's 0.45% of the characters wrong leaves less than 0.5 points to gain,
+# so none is marked.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",

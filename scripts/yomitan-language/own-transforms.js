@@ -1350,6 +1350,108 @@ export const welshTransforms = {
     ],
 };
 
+/** Irish vowels, with the fada. */
+const IRISH_VOWELS = 'aeiouáéíóú';
+const IRISH_CAPITAL_VOWELS = 'AEIOUÁÉÍÓÚ';
+
+/**
+ * Yomitan's Irish conditions that dictionary forms take (`v`, `n`, `adj`, `adv`, with their subconditions), as
+ * Wiktionary's Irish entries name their part of speech.
+ * @type {('v' | 'n' | 'adj' | 'adv')[]}
+ */
+const IRISH_WORD = ['v', 'n', 'adj', 'adv'];
+
+/**
+ * Irish initial mutations undone ([mutationRule]), in place of Yomitan's noun eclipsis (build.mjs
+ * `replacedTransforms`): lenition (bh ch dh fh gh mh ph sh th for b c d f g m p s t, and ts for s after the article:
+ * an bhean, an tsráid), eclipsis (mb gc nd bhf ng bp dt for b c d f g p t, n- before a vowel: i nGaillimh, ár
+ * n-athair), t before a vowel (an t-uisce) and h before one (na hÉireann). Before a capital the mutation is written
+ * in lowercase (nGaillimh, bhFrainc, tSín, nAlbain, tAontas, hÉireann), and the capital stays. Each rule gives every
+ * part of speech, so the radical matches entries of any (glue.js `untypedRules` for entries without one).
+ * Wiktionary's own mutation rows show under the same names (`LanguageSupport.formTagRules`), which name ts for s
+ * lenition as well. [unmutated] lists common words that are no mutated forms although the rules read them so,
+ * lowercase. [replaces] names Yomitan's file of the rules these replace and its git object id when they were reviewed.
+ * @type {import('language-transformer').LanguageTransformDescriptor<any> & {unmutated: string[], replaces: {file: string, blob: string}}}
+ */
+export const irishMutations = {
+    language: 'ga',
+    replaces: {file: 'ext/js/language/ga/irish-transforms.js', blob: '8a93988656aeb7beb057ca6c495981e8b46f1516'},
+    conditions: {},
+    transforms: {
+        lenition: {
+            name: 'lenition',
+            description: 'lenition: bh ch dh fh gh mh ph sh th for b c d f g m p s t, ts for s after the article (an bhean from bean, an tsráid from sráid)',
+            rules: [
+                ...mutationRules('bh', 'b', IRISH_WORD, {not: '[fF]'}),
+                ...mutationRules('ch', 'c', IRISH_WORD),
+                ...mutationRules('dh', 'd', IRISH_WORD),
+                ...mutationRules('fh', 'f', IRISH_WORD),
+                ...mutationRules('gh', 'g', IRISH_WORD),
+                ...mutationRules('mh', 'm', IRISH_WORD),
+                ...mutationRules('ph', 'p', IRISH_WORD),
+                ...mutationRules('sh', 's', IRISH_WORD),
+                ...mutationRules('th', 't', IRISH_WORD),
+                mutationRule('t', '', IRISH_WORD, {before: '[sS]'}),
+            ],
+        },
+        eclipsis: {
+            name: 'eclipsis',
+            description: 'eclipsis: mb gc nd bhf ng bp dt for b c d f g p t, n- before a vowel (i nGaillimh from Gaillimh, ár n-athair from athair)',
+            rules: [
+                ...mutationRules('mb', 'b', IRISH_WORD),
+                ...mutationRules('gc', 'c', IRISH_WORD),
+                ...mutationRules('nd', 'd', IRISH_WORD),
+                ...mutationRules('bhf', 'f', IRISH_WORD),
+                ...mutationRules('ng', 'g', IRISH_WORD),
+                ...mutationRules('bp', 'p', IRISH_WORD),
+                ...mutationRules('dt', 't', IRISH_WORD),
+                mutationRule('m', '', IRISH_WORD, {before: 'B'}),
+                mutationRule('g', '', IRISH_WORD, {before: 'C'}),
+                mutationRule('n', '', IRISH_WORD, {before: `[DG${IRISH_CAPITAL_VOWELS}]`}),
+                mutationRule('bh', '', IRISH_WORD, {before: 'F'}),
+                mutationRule('b', '', IRISH_WORD, {before: 'P'}),
+                mutationRule('d', '', IRISH_WORD, {before: 'T'}),
+                mutationRule('n-', '', IRISH_WORD, {before: `[${IRISH_VOWELS}${IRISH_CAPITAL_VOWELS}]`}),
+            ],
+        },
+        't-prothesis': {
+            name: 't-prothesis',
+            description: 't before a vowel (an t-uisce from uisce, an tAontas from Aontas)',
+            rules: [
+                mutationRule('t-', '', IRISH_WORD, {before: `[${IRISH_VOWELS}]`}),
+                mutationRule('t', '', IRISH_WORD, {before: `[${IRISH_CAPITAL_VOWELS}]`}),
+            ],
+        },
+        'h-prothesis': {
+            name: 'h-prothesis',
+            description: 'h before a vowel (na hÉireann from Éireann, a hathair from athair)',
+            rules: [
+                mutationRule('h', '', IRISH_WORD, {before: `[${IRISH_VOWELS}${IRISH_CAPITAL_VOWELS}]`}),
+            ],
+        },
+    },
+    // From mutation-exceptions.mjs on Leipzig's Irish news sample (the 1,000 commonest words), reviewed by hand with
+    // the words before each: words in their own right whose radical is another word (chun "towards", not cun; thar
+    // "over", not tar "come"; cheana, chomh, thart, thíos, chuile "every", chuaigh "went"), bhfuil, whose own entry
+    // leads to bí as the rule's fuil "blood" does not, and English the. The rest are right as mutations (bhí → bí, i
+    // ndiaidh → diaidh, na hÉireann → Éireann).
+    unmutated: ['bhfuil', 'chomh', 'cheana', 'chuaigh', 'chuile', 'chun', 'thar', 'thart', 'the', 'thíos'],
+};
+
+/**
+ * [own] in place of Yomitan's descriptor of a language, with Yomitan's conditions, which [own]'s rules give; Yomitan's
+ * rules are dropped.
+ * @template {string} T
+ * @template {import('language-transformer').LanguageTransformDescriptor<any>} D
+ * @param {import('language-transformer').LanguageTransformDescriptor<T>} base
+ * @param {D} own
+ * @returns {D}
+ */
+export function withReplacedTransforms(base, own) {
+    if (base.language !== own.language) throw new Error(`${own.language}: replaces ${base.language}'s rules`);
+    return {...own, conditions: {...base.conditions, ...own.conditions}};
+}
+
 /**
  * Yomitan's rules of a language with the app's own added: [own]'s rules after [base]'s, and its conditions.
  * @template {string} T

@@ -179,6 +179,11 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | cy | OCR results: taken as read; ML Kit's tý for tŷ is no one-for-one fix (ý is a letter of Welsh words too), so it is a lookup variant for OCR words (engine table) | `lang/WelshSupport.kt` (no `ocrWord`) | WelshSupportTest `recognized text is taken as read` | — | ok |
 | cy | Fonts: Latin with Latin Extended-A (`fontSubsets` latin, latin-ext; `fontLetters` ŵŷ): Literata, Inter, Atkinson Hyperlegible Next, Lexend; PT Serif and PT Sans lack ŵ ŷ; the popup switch "Only for Welsh text" | `lang/WelshSupport.kt` `fontSubsets`, `fontLetters` | WelshSupportTest `welsh's own code, name, flag and letters`; FontCatalogFileTest `welsh takes the latin fonts that have its circumflex w and y` | FontCatalogFileTest (the Latin languages' list, PT fonts kept for the others) | ok |
 | cy | Audio: Wiktionary first (6 of 20 common words), Lingua Libre (Q9309, 5 of 20, mostly place names), the voice last (Google's cy-GB); the Wiktionary search also tries the title without the circumflex (`Cy-dwr.ogg` for dŵr); the flag is Wales's (`gb-wls`, drawable `flag_gb_wls`) | `lang/WelshSupport.kt` `wikidataId`, `defaultAudioSources`, `recordings`, `flagCountries`; `scripts/flags/circle_flags.py` | WelshSupportTest `recordings are also searched without the circumflex`, `welsh's own code, name, flag and letters`; LanguageProfilesTest (a region code of one country); FlagsTest | WelshSupportTest (cath gives one title) | ok |
+| ga | Word starts: d', m' and b' (either apostrophe) start a new word, as French l': a tap after the apostrophe looks the word up from there (d'fhág → fhág → fág, m'athair, b'fhéidir), a tap on the elided letter the whole word (d'fhág is a headword of its own); other apostrophes stay inside the word | `lang/IrishSupport.kt` `elisions` | IrishSupportTest `elided d', m' and b' start a new word, other apostrophes stay inside it` | Isolation `an elided word starts a new word only in French, Italian, Portuguese, Greek, Albanian and Irish` (m' also French, Italian and Albanian; b' Irish only) | ok |
+| ga | Sentences: the period of m.sh., m.s., lch., uimh., Br., Dr. and Co. ends nothing; that of srl., Teo., r.n. and i.n., often the last word of a sentence, only before a lowercase word or a number; default quotes (“…”) | `lang/IrishSupport.kt` `abbreviations`, `abbreviationsBeforeLowercase` | IrishSupportTest `abbreviations do not end a sentence, those that end one often only before a lowercase word`; SentenceTest `irishSentenceKeepsAbbreviationsAndEndsAtSrlBeforeACapital` | Isolation `abbreviations of one language do not hold the sentences of another` (m.sh., lch. 5, srl. agus only in Irish; srl. Ansin ends everywhere) | ok |
+| ga | OCR results: taken as read | `lang/IrishSupport.kt` (no `ocrWord`) | IrishSupportTest `recognized text is taken as read` | — | ok |
+| ga | Fonts: Latin (`fontSubsets` latin; `fontLetters` áéíóú): every Latin font; the popup switch "Only for Irish text" | `lang/IrishSupport.kt` `fontSubsets`, `fontLetters` | IrishSupportTest `irish's own code, name, flag and letters`; FontCatalogFileTest `irish takes every latin font` | FontCatalogFileTest (the Latin languages' list) | ok |
+| ga | Audio: Lingua Libre first (Q9142, 19 of 20 common words), Wiktionary (1 of 20), the voice last (no Google voice; eSpeak has one); the flag is Ireland's (`ie`, drawable `flag_ie`) | `lang/IrishSupport.kt` `wikidataId`, `defaultAudioSources`, `flagCountries`; `scripts/flags/circle_flags.py` | IrishSupportTest `irish's own code, name, flag and letters`; LanguageProfilesTest (every flag a country code); FlagsTest `every flag country of every language has a flag` | — | ok |
 
 ## Lookup pipeline (`dictionary:api`)
 
@@ -311,6 +316,14 @@ form-of item of a keyed word after the word (robit: robiť, then urobiť, its pe
 | cy | OCR-only variant: `welshMisreadCircumflex` adds the text with ý û (and capitals) as ŷ ŵ beside the original, marked `ocrOnly`; the glue keeps two processor sets per language and takes the OCR one when the engine passes `fromOcr` (JNI → `yomitan_language.cpp` → `candidates(…, fromOcr)`): tý and thý from OCR find tŷ, from app text and the search screen they do not; cytûn finds itself | `own-processors.js` `welshMisreadCircumflex`; `glue.js` `processorSets`, `useProcessors`; `jni_bridge.cpp`, `language/yomitan_language.cpp` | glue `welsh ý and û are tried as ŷ and ŵ for words from ocr only`; I: LanguageLookupTest (tý, thý) | glue (other languages read the same either way) | ok |
 | cy | Apostrophes: ' and ’ match each other (`ukrainianApostropheVariants`, the text with the other apostrophe beside it): mae’r finds mae'r | `build.mjs` `addedPreprocessors` cy | glue `welsh apostrophes match each other`; I: LanguageLookupTest (mae’r → mae'r) | — | ok |
 | cy | Rule names: soft mutation, nasal mutation, aspirate mutation, h-prothesis, each with a description, in the 14 locales (`inflections_cy.xml`, translated by hand) | `generate-inflections.mjs`; `res/values*/inflections_cy.xml`; `YomitanInflections.kt` | glue `every welsh rule has a name and a description of its own…`; I: LanguageLookupTest (labels and descriptions) | — | ok |
+| ga | Own mutation rules (`irishMutations`, from the grammar, no GPL code) in place of Yomitan's `irishTransforms` (noun eclipsis only, chaining: mbmbean → bean): lenition (bh ch dh fh gh mh ph sh th, bh not before f; ts for s after the article, named lenition as Wiktionary's rows name it), eclipsis (mb gc nd bhf ng bp dt, n- before a vowel), t-prothesis (t- before a lowercase vowel, t before a capital one), h-prothesis (h before a vowel), each undone; the lowercase prefix before a capital (nGaillimh, bhFrainc, tSín, tAontas, hÉireann) and a capitalized one before lowercase (Bhí → Bí); conditions in [], so one mutation per word (mbmbean → bmbean only); out to Yomitan's Irish conditions (v, n, adj, adv) and any part of speech (`untypedRules` ga, two letters left at least). Letters that only look mutated stay (bhf is eclipsed f, not lenited b; nathair and tuisce keep their n and t) | `own-transforms.js` `irishMutations`, `mutationRules`, `withReplacedTransforms`; `build.mjs` `replacedTransforms`; `glue.js` `untypedRules` | glue `irish mutations are undone into the radical under the mutation name, capitals kept`, `irish letters that only look mutated stay, and a word is unmutated once`; I: LanguageLookupTest `irishMutations…` | glue `irish mutations stay out of other languages` (en, sw, sq, ro; cy undoes hÉireann with its own h-prothesis) | ok |
+| ga | Replacement check: the descriptor's `replaces` names Yomitan's `ext/js/language/ga/irish-transforms.js` and the git blob reviewed (8a939886, Yomitan e7334a96); `build.mjs` fails when the file changes ("ga: … changed; review irishMutations") and keeps Yomitan's conditions; `generate-inflections.mjs` takes only the own rules' names | `build.mjs` `replacedTransforms`; `own-transforms.js` `withReplacedTransforms`; `generate-inflections.mjs` `transformsOf` | glue `the irish rules replace yomitan's, with its conditions`; a wrong blob fails the build (checked by hand) | glue (the language must match) | ok |
+| ga | Exception list: the descriptor's `unmutated` (10 words: bhfuil, chomh, cheana, chuaigh, chuile, chun, thar, thart, the, thíos) drops a word's rule candidates in any case: chomh finds no comh, cheana no ceana, bhfuil no fuil "blood" (its own rows lead to bí), English the no te; bhí → bí, ndiaidh → diaidh and hÉireann → Éireann stay undone. ga-en's own rows still lead several listed words to the same radicals (thar → tar and thart → tart as `lenited form`, thíos → tíos, chun → cun as a genitive), which show through the row, as for Welsh's listed words; the list matters most with the other editions, which have no such rows. Chosen with `mutation-exceptions.mjs` on Leipzig's Irish news corpus (1,000 commonest words) and reviewed by hand; tokens shown an extra entry with ga-en 13.4% → 12.0% | `own-transforms.js` `irishMutations.unmutated`; `glue.js` `unmutatedWords`; `mutation-exceptions.mjs` (`DESCRIPTORS` ga) | glue `common irish words the rules would misread stay as written, in any case`; mutation-exceptions.test.mjs `the irish rules give the radical once…`; I: LanguageLookupTest (chun, thar without rows) | glue (bhí, ndiaidh still undone) | ok |
+| ga | Mutation rows: ga-en's form-of tags `eclipsis`, `lenition`, `lenited form`, `lenition mutation` and `prothesis-h` are renamed to the rule ids, so the popup shows one translated name and a chain the rule and the row both give once; chains of two mutation steps are dropped as for Welsh; the French edition's `radical` and `radical lenition` rows, from a radical to its mutated forms (abróimid → n-abróimid), are ignored | `lang/IrishSupport.kt` `formTagRules`, `ignoredFormTags`; `RuleOnlyResults.kt` `withFormTagsAsRules`, `withoutChainsThrough` | IrishSupportTest `mutation rows take the rule names…`; I: LanguageLookupTest (bhean: one trace, no other traces; abróimid → abair only) | Isolation (`formTagRules` only Welsh and Irish) | ok |
+| ga | Dotted consonants: `irishDottedConsonants` adds the text with ḃ ċ ḋ ḟ ġ ṁ ṗ ṡ ṫ (composed or decomposed, capitals too) as consonant + h (H inside a word in capitals: ṠEÁN → SHEÁN) beside the original, in any text, since it is a spelling (Gaelic type), not an OCR look-alike; the text as written comes first (ṡlógacallam is a ga-en headword) | `own-processors.js` `irishDottedConsonants`; `build.mjs` `addedPreprocessors` ga | glue `irish dotted consonants are read as consonant and h, in any text`; I: LanguageLookupTest (ḃean → bean) | glue (cy keeps ḃean as written) | ok |
+| ga | Apostrophes: ' and ’ match each other (`ukrainianApostropheVariants`): d’fhág finds d'fhág | `build.mjs` `addedPreprocessors` ga | glue `irish apostrophes match each other`; I: LanguageLookupTest (d’fhág → fág) | — | ok |
+| ga | Rule names: lenition, eclipsis, t-prothesis, h-prothesis, each with a description, in the 14 locales (`inflections_ga.xml`, translated by hand; Yomitan's "eclipsis form of a noun" is gone) | `generate-inflections.mjs`; `res/values*/inflections_ga.xml`; `YomitanInflections.kt` | glue `every irish rule has a name and a description of its own…`; I: LanguageLookupTest (labels and descriptions) | — | ok |
+| ga | Marks as written: no unmarked fallback (owner, question 11): fag finds nothing, fág only as written | `lang/IrishSupport.kt` (no `headwordMarks`) | IrishSupportTest `mutation rows take the rule names, and words are looked up with their marks as written`; I: LanguageLookupTest (fag) | Isolation (`respelledOnlyWithoutEntry` only Welsh) | ok |
 
 ## Page scripts (popup and Anki notes)
 
@@ -388,6 +401,7 @@ form-of item of a keyed word after the word (robit: robiť, then urobiť, its pe
 | sq | ML Kit's Latin model main (1.0% of characters wrong over the clean and hard test screens; it keeps ë and ç); `paddle-latin` marked "more accurate" (0% on both sets, as v6: the smaller download wins the tie; Tesseract fast 5.9%, best 4.3% on the emulator; cloud recognition 0%); Paddle v6 and Tesseract `sqi` fast and best offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`, `RECOMMENDED`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `albanian offers seven wiktionaries, its transcription, paddle latin and leipzig's word counts, ticked, and the other models` | — | ok |
 | sw | ML Kit's Latin model main, no model marked (0.2% of characters wrong over the clean and hard test screens; Paddle v5 and v6 0%, 0.2 points better, too little for row "OCR engine choice"; Tesseract fast 0.7%; cloud recognition 0%); Tesseract `swa` fast and best and Paddle v5 and v6 offered unticked | `scripts/ocr-models/paddle_models.py` `LATIN`; `scripts/ocr-models/tessdata_catalog.py` | CatalogFileTest `swahili offers four wiktionaries and leipzig's word counts, ticked, and the ocr models unticked` | — | ok |
 | cy | ML Kit's Latin model main (2.19% of characters wrong over the four test screens: ŷ as ý in 6 of 8, ŵ as w in 3 of 4); Tesseract fast and best (0.00%, every ŵ ŷ read) and Paddle v6 and Latin v5 (1.09%, 1.25%) all marked "more accurate" (`MORE_ACCURATE`), unticked at setup; detectors listed apart | `scripts/ocr-models/tessdata_catalog.py`, `paddle_models.py` `MORE_ACCURATE`; catalog `tesseract-fast-cym`, `tesseract-best-cym`, `paddle-v6-cy`, `paddle-latin-cy` | CatalogFileTest `welsh offers three wiktionaries and its transcription…`; test_tessdata_catalog, test_paddle_models (`MORE_ACCURATE`) | test_paddle_models (one mark per other language) | ok |
+| ga | ML Kit's Latin model main (0.45% of characters wrong over the four test screens); Tesseract `gle` fast and best (0.37%, 0.45%) and Paddle v6 and Latin v5 (0.07%, 0.00%) listed unticked, none marked: less than 0.5 points to gain (rows "OCR engine choice", "Diacritics of Latin-script languages"); detectors listed apart | `scripts/ocr-models/tessdata_catalog.py` `LANGUAGES` ga → gle, `paddle_models.py` `LATIN`; catalog `tesseract-fast-gle`, `tesseract-best-gle`, `paddle-v6-ga`, `paddle-latin-ga` | CatalogFileTest `irish offers four wiktionaries and its transcription…`; test_tessdata_catalog, test_paddle_models (no mark for ga) | — | ok |
 
 ## Bugs fixed in this review
 
@@ -748,6 +762,15 @@ Found while building Slovak (2026-10-22):
   name forms of other words as the lemma: nghath → cathod ("nasalization"), so nghath shows cathod before cath;
   1,488 of cy-fr's 3,875 mutation rows and 727 of cy-en's 20,532 do not end like their lemma, some of them right
   (jip → tsip, risiau → gris), so the rows are kept.
+- Irish: the rules undo every word that starts like a mutated one, whatever the context: words the list does not
+  hold also find the radical, mostly right (bhí finds bí, i ndiaidh finds diaidh), sometimes beside an entry of their
+  own (12.0% of ga-en tokens show an extra entry). The list holds only the words the review found wrong among the
+  1,000 commonest. ts → s after the article is named lenition, as Wiktionary's rows name it (an tSín), not
+  t-prothesis. The Tironian et (⁊ for agus) is a symbol and is not looked up as agus. Words are looked up with the
+  fada as written (question 11), so a fada the recognizer drops loses the word: ML Kit read hÉireann as hEireann on
+  the test screen, which finds nothing (cloud recognition read it). Without a frequency dictionary a word reached
+  through two dictionary rows keeps the dictionaries' order: Chuaigh shows cuach (its genitive singular definite
+  row) before téigh (past indicative).
 
 ## Owner decisions in this review
 
@@ -1329,6 +1352,33 @@ cy-en, cy-fr and cy-ru (2026.10.22) as the dictionaries.
   cy-pl 1,303, cy-zh 1,108, cy-pt 905, cy-tr 544, cy-es 435, cy-ja 413, cy-de 150 and cy-vi 56 stay under the line.
 - Recognition, audio, fonts: the plan's measurements (`plans/2026-10-19-group-5b.md`, Research).
 
+### Irish (2026-10-28)
+
+Leipzig's Irish news corpus (2014, 300,000 sentences, `gle_newscrawl_2014_300K`, CC BY) for the exception list and
+the abbreviations; wty ga-en, ga-ru, ga-fr and ga-pl (2026.10.22) as the dictionaries.
+
+- Exception list: `mutation-exceptions.mjs ga <sentences> 1000 wty-ga-en.zip wty-ga-ru.zip wty-ga-fr.zip
+  wty-ga-pl.zip`, reviewed by hand. Listed 10: chun, thar, thart, thíos, chomh, cheana, chuaigh, chuile (own sense,
+  wrong radical: cun, tar, tart, tíos, comh, ceana, cuaigh, cuile), bhfuil (the rule's fuil "blood" is an extra
+  entry; bhfuil's own rows lead to bí) and English the (→ te). Left to the rule as right mutations: bhí → bí, i
+  ndiaidh → diaidh, na hÉireann → Éireann and the rest.
+- Shares of tokens, without the list → with it: ga-en extra entries 13.44% → 11.99%; found by the rule alone with
+  ga-ru 3.18% → 3.05%, ga-fr 5.56% → 4.84%, ga-pl 3.08% → 3.02%.
+- Rows: ga-en writes `eclipsis` 19,816, `lenition` 17,867, `lenited form` 1,962, `prothesis-h` 272 and `lenition
+  mutation` once (ṡlógacallam → slógacallam), and `triggers-*` tags on the words that cause a mutation (not form
+  rows); ga-fr `radical` 13 and `radical lenition` once, from a radical to its mutated forms, and `lenition` twice;
+  ga-ru and ga-pl none.
+- Abbreviations (before a lowercase word / a capital / a digit / at the end; Leipzig's splitter cuts after many
+  abbreviations, so the ends include its cuts): m.sh. 52 / 14 / 2 / 11; m.s. 3 / 1 / 0 / 2; lch. 3 / 0 / 20 / 5; Br.
+  2 / 0 / 0 / 0; Dr. 142 at the end; Co. 215 / 0 / 0 / 252 (Co. na Gaillimhe, Co. Chiarraí cut). Before a
+  lowercase word only: srl. 35 / 0 / 2 / 263; Teo. 11 / 0 / 0 / 50; i.n. 37 / 24 / 0 / 3; r.n. 17 / 4 / 0 / 2. a.m.
+  (9 / 4 / 0 / 11) is also English and left out.
+- Elided words: d’ 16,171 and d' 7,663; b’ 3,940 and b' 1,940; m’ 810 and m' 395.
+- Catalog: wty ga-en 21,903 words, ga-ru 3,848, ga-fr 2,303, ga-pl 2,110 and the transcription (11,828) are listed
+  and ticked; ga-es 1,149, ga-zh 838, ga-pt 816, ga-ko 588, ga-tr 481, ga-ja 435, ga-de 254, ga-it 148 and ga-vi 127
+  stay under the line.
+- Recognition, audio, fonts: the plan's measurements (`plans/2026-10-19-group-5b.md`, Research).
+
 ## Device checks
 
 `test-model.md`: LK28 (stress and tone marks typed apart), LK29 (rock’n’roll), OCR26 (app text across a wrap),
@@ -1340,4 +1390,5 @@ form tags beside a plain word), POP27 (Persian transcription order), LK54 (Arabi
 opening “…”), DIC39 (Esperanto's frequency), LK73 (Albanian endings and elisions),
 ANK35 (Albanian abbreviations and quotes), DIC40 (Albanian's frequency), LK74 (Swahili prefixes), ANK36 (Swahili
 abbreviations and quotes), DIC41 (Swahili's frequency), LK75 (Welsh mutations, the unmarked fallback and the
-OCR-only ý), OCR45 (Welsh ŵ ŷ by engine), ANK37 (Welsh abbreviations).
+OCR-only ý), OCR45 (Welsh ŵ ŷ by engine), ANK37 (Welsh abbreviations), LK76 (Irish mutations, the exception list,
+elisions and Gaelic type), OCR46 (Irish fada and prefixes by engine), ANK38 (Irish abbreviations).

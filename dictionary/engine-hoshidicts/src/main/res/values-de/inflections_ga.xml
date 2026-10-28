@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">Lenition</string>
+    <string name="inflection_ga_lenition">Lenition: bh ch dh fh gh mh ph sh th für b c d f g m p s t, ts für s nach dem Artikel (an bhean von bean, an tsráid von sráid)</string>
+    <string name="inflection_ga_eclipsis_label">Eklipse</string>
+    <string name="inflection_ga_eclipsis">Eklipse: mb gc nd bhf ng bp dt für b c d f g p t, n- vor einem Vokal (i nGaillimh von Gaillimh, ár n-athair von athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t-Prothese</string>
+    <string name="inflection_ga_t_prothesis">t vor einem Vokal (an t-uisce von uisce, an tAontas von Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h-Prothese</string>
+    <string name="inflection_ga_h_prothesis">h vor einem Vokal (na hÉireann von Éireann, a hathair von athair)</string>
+</resources>

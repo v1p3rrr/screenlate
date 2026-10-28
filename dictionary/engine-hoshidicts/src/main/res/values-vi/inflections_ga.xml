@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">biến âm mềm</string>
+    <string name="inflection_ga_lenition">biến âm mềm: bh ch dh fh gh mh ph sh th thay cho b c d f g m p s t, ts thay cho s sau mạo từ (bean → an bhean, sráid → an tsráid)</string>
+    <string name="inflection_ga_eclipsis_label">biến âm mũi</string>
+    <string name="inflection_ga_eclipsis">biến âm mũi: mb gc nd bhf ng bp dt thay cho b c d f g p t, n- trước nguyên âm (Gaillimh → i nGaillimh, athair → ár n-athair)</string>
+    <string name="inflection_ga_t_prothesis_label">thêm t</string>
+    <string name="inflection_ga_t_prothesis">t trước nguyên âm (uisce → an t-uisce, Aontas → an tAontas)</string>
+    <string name="inflection_ga_h_prothesis_label">thêm h</string>
+    <string name="inflection_ga_h_prothesis">h trước nguyên âm (Éireann → na hÉireann, athair → a hathair)</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">lénition</string>
+    <string name="inflection_ga_lenition">lénition : bh ch dh fh gh mh ph sh th pour b c d f g m p s t, ts pour s après l’article (an bhean de bean, an tsráid de sráid)</string>
+    <string name="inflection_ga_eclipsis_label">éclipse</string>
+    <string name="inflection_ga_eclipsis">éclipse : mb gc nd bhf ng bp dt pour b c d f g p t, n- devant une voyelle (i nGaillimh de Gaillimh, ár n-athair de athair)</string>
+    <string name="inflection_ga_t_prothesis_label">prothèse de t</string>
+    <string name="inflection_ga_t_prothesis">t devant une voyelle (an t-uisce de uisce, an tAontas de Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">prothèse de h</string>
+    <string name="inflection_ga_h_prothesis">h devant une voyelle (na hÉireann de Éireann, a hathair de athair)</string>
+</resources>

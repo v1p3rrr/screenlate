@@ -7,8 +7,8 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
-    albanianEndings, hebrewTransforms, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms,
-    swahiliTransforms, welshTransforms, withOwnTransforms,
+    albanianEndings, hebrewTransforms, irishMutations, kazakhTransforms, kyrgyzTransforms, latinEnclitics,
+    persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms, withReplacedTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1264,5 +1264,139 @@ test('welsh mutations stay out of other languages', () => {
         assert.ok(!queried(language, 'nghath').has('cath'), language);
         assert.ok(!queried(language, 'Nghymru').has('Cymru'), language);
         assert.ok(!queried(language, 'hysgol').has('ysgol'), language);
+    }
+});
+
+/** The rule chains through which [text] reaches [lemma] in Irish. */
+function irishChains(text, lemma) {
+    return candidatesTo('ga', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+}
+
+test('irish mutations are undone into the radical under the mutation name, capitals kept', () => {
+    for (const [text, lemma, name] of [
+        ['bhean', 'bean', 'lenition'],
+        ['chat', 'cat', 'lenition'],
+        ['dheacair', 'deacair', 'lenition'],
+        ['fhág', 'fág', 'lenition'],
+        ['ghrian', 'grian', 'lenition'],
+        ['mháthair', 'máthair', 'lenition'],
+        ['phobal', 'pobal', 'lenition'],
+        ['shaol', 'saol', 'lenition'],
+        ['thír', 'tír', 'lenition'],
+        ['Bhí', 'Bí', 'lenition'],
+        ['tsráid', 'sráid', 'lenition'],
+        ['tSín', 'Sín', 'lenition'],
+        ['mbean', 'bean', 'eclipsis'],
+        ['gcat', 'cat', 'eclipsis'],
+        ['ndul', 'dul', 'eclipsis'],
+        ['bhfear', 'fear', 'eclipsis'],
+        ['nglinn', 'glinn', 'eclipsis'],
+        ['bpáiste', 'páiste', 'eclipsis'],
+        ['dtír', 'tír', 'eclipsis'],
+        ['n-athair', 'athair', 'eclipsis'],
+        ['nGaillimh', 'Gaillimh', 'eclipsis'],
+        ['nGaeilge', 'Gaeilge', 'eclipsis'],
+        ['bhFrainc', 'Frainc', 'eclipsis'],
+        ['mBéarla', 'Béarla', 'eclipsis'],
+        ['gCorcaigh', 'Corcaigh', 'eclipsis'],
+        ['nDoire', 'Doire', 'eclipsis'],
+        ['bPáras', 'Páras', 'eclipsis'],
+        ['dTuaisceart', 'Tuaisceart', 'eclipsis'],
+        ['nAlbain', 'Albain', 'eclipsis'],
+        ['t-uisce', 'uisce', 't-prothesis'],
+        ['tAontas', 'Aontas', 't-prothesis'],
+        ['hÉireann', 'Éireann', 'h-prothesis'],
+        ['hiomlán', 'iomlán', 'h-prothesis'],
+        ['hAlbain', 'Albain', 'h-prothesis'],
+    ]) {
+        assert.ok(irishChains(text, lemma).includes(name), `${text} → ${lemma}: ${irishChains(text, lemma)}`);
+    }
+    // The radical matches entries of any part of speech and those without one; the word as written stays typed.
+    const [radical] = candidatesTo('ga', 'nGaillimh', 'Gaillimh');
+    assert.ok(radical.u);
+    const written = candidates('ga', 'nGaillimh').find((c) => c.d === 'nGaillimh');
+    assert.ok(!written.u);
+    assert.equal(written.r.flat().length, 0);
+});
+
+test('irish letters that only look mutated stay, and a word is unmutated once', () => {
+    // bhf is eclipsed f, not lenited b.
+    assert.ok(!queried('ga', 'bhfear').has('bfear'));
+    assert.ok(!queried('ga', 'bhFrainc').has('bFrainc'));
+    // n and t join a lowercase vowel with a hyphen only.
+    assert.ok(!queried('ga', 'nathair').has('athair'));
+    assert.ok(!queried('ga', 'tuisce').has('uisce'));
+    // A radical keeps two letters.
+    for (const [text, lemma] of [['bh', 'b'], ['ts', 's'], ['hÉ', 'É'], ['n-a', 'a'], ['mb', 'b']]) {
+        assert.ok(!queried('ga', text).has(lemma), text);
+    }
+    // One mutation only: Yomitan's eclipsis chained (mbmbean → bean), these rules do not.
+    assert.ok(queried('ga', 'mbmbean').has('bmbean'));
+    assert.ok(!queried('ga', 'mbmbean').has('bean'));
+    assert.ok(!queried('ga', 'bhfhear').has('fear'));
+});
+
+test("the irish rules replace yomitan's, with its conditions", () => {
+    const yomitan = {
+        language: 'ga',
+        conditions: {n: {name: 'Noun', isDictionaryForm: true}},
+        transforms: {eclipsis: {name: 'eclipsis', rules: []}},
+    };
+    const replaced = withReplacedTransforms(yomitan, irishMutations);
+    assert.deepEqual(Object.keys(replaced.transforms), ['lenition', 'eclipsis', 't-prothesis', 'h-prothesis']);
+    assert.deepEqual(replaced.conditions, yomitan.conditions);
+    assert.deepEqual(replaced.unmutated, irishMutations.unmutated);
+    assert.throws(() => withReplacedTransforms({...yomitan, language: 'gd'}, irishMutations));
+    assert.match(irishMutations.replaces.blob, /^[0-9a-f]{40}$/);
+});
+
+test('common irish words the rules would misread stay as written, in any case', () => {
+    for (const word of ['chun', 'Chun', 'thar', 'cheana', 'bhfuil', 'the']) {
+        assert.ok(candidates('ga', word).every((c) => c.r.every((r) => r.length === 0)), word);
+    }
+    assert.ok(!queried('ga', 'thar').has('tar'));
+    // Mutated forms beside them are still undone.
+    assert.ok(queried('ga', 'bhí').has('bí'));
+    assert.ok(queried('ga', 'ndiaidh').has('diaidh'));
+    assert.deepEqual([...new Set(irishMutations.unmutated)], irishMutations.unmutated);
+    assert.ok(irishMutations.unmutated.every((word) => word === word.toLowerCase()));
+});
+
+test('irish dotted consonants are read as consonant and h, in any text', () => {
+    for (const lookup of [queried, queriedFromOcr]) {
+        assert.ok(lookup('ga', 'ḃean').has('bhean'));
+        assert.ok(lookup('ga', 'ḃean').has('bean'));
+        assert.ok(lookup('ga', 'ḃean').has('ḃean'));
+        assert.ok(lookup('ga', 'Ṡeán').has('Sheán'));
+        assert.ok(lookup('ga', 'ṠEÁN').has('SHEÁN'));
+        // Decomposed dots as well.
+        assert.ok(lookup('ga', 'c' + String.fromCharCode(0x307) + 'eann').has('cheann'));
+    }
+    assert.ok(!queried('cy', 'ḃean').has('bhean'));
+});
+
+test('irish apostrophes match each other', () => {
+    assert.ok(queried('ga', 'd’fhág').has("d'fhág"));
+    assert.ok(queried('ga', "b'fhéidir").has('b’fhéidir'));
+});
+
+test('every irish rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_ga.xml'), 'utf8');
+    for (const [id, {name, description}] of Object.entries(irishMutations.transforms)) {
+        assert.equal(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+    // Yomitan's own eclipsis rule is gone.
+    assert.ok(!strings.includes('eclipsis form of a noun'));
+});
+
+test('irish mutations stay out of other languages', () => {
+    for (const language of ['en', 'sw', 'sq', 'ro']) {
+        assert.ok(!queried(language, 'nGaillimh').has('Gaillimh'), language);
+        assert.ok(!queried(language, 'tSín').has('Sín'), language);
+        assert.ok(!queried(language, 'hÉireann').has('Éireann'), language);
     }
 });

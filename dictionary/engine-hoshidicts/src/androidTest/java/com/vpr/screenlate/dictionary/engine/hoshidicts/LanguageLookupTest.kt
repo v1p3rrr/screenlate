@@ -1026,6 +1026,75 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun irishMutationsAreUndoneOnceUnderTheirNamesCommonWordsStayAndWordsAreLookedUpAsWritten() = runTest {
+        val imported = engine.import(irishDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val irish = LookupOptions(language = Language.IRISH)
+        suspend fun first(text: String) = engine.lookup(text, irish).first()
+        suspend fun all(text: String) = engine.lookup(text, irish).map { it.term.expression }
+
+        // The rule and the dictionary's own row give one chain, under the rule's name, which the popup shows translated.
+        val woman = first("bhean")
+        assertThat(woman.term.expression).isEqualTo("bean")
+        assertThat(woman.trace.map { it.name }).containsExactly("lenition")
+        assertThat(woman.otherTraces).isEmpty()
+        assertThat(woman.trace.map { it.label }).doesNotContain("")
+        assertThat(woman.trace.map { it.description }).doesNotContain("")
+        assertThat(first("nGaillimh").trace.map { it.name }).containsExactly("eclipsis")
+        // Words the dictionary does not list as mutated are found by the rules, the capital after the prefix kept.
+        assertThat(first("tSín").term.expression).isEqualTo("Sín")
+        assertThat(first("tSín").trace.map { it.name }).containsExactly("lenition")
+        assertThat(first("t-uisce").trace.map { it.name }).containsExactly("t-prothesis")
+        assertThat(first("hÉireann").trace.map { it.name }).contains("h-prothesis")
+        assertThat(all("hÉireann")).containsExactly("Éire")
+        assertThat(all("Bhí")).containsExactly("bí")
+        // One mutation per word, and the French edition's rows from a radical to its mutated forms are left out.
+        assertThat(all("mbmbean")).isEmpty()
+        assertThat(all("abróimid")).containsExactly("abair")
+        assertThat(first("abróimid").trace.map { it.name }).doesNotContain("radical")
+        // The rules leave chun "towards" and thar "over" as written (these rows give no cun or tar).
+        assertThat(all("chun")).containsExactly("chun")
+        assertThat(all("thar")).containsExactly("thar")
+        // Gaelic type and the other apostrophe.
+        assertThat(all("ḃean")).containsExactly("bean")
+        assertThat(first("d’fhág").term.expression).isEqualTo("fág")
+        // Irish words are looked up with the fada as written.
+        assertThat(all("fag")).isEmpty()
+    }
+
+    /**
+     * Rows as Wiktionary's Irish exports write them: no rules, mutated forms as form-of rows under the English
+     * edition's tags (`lenited form`, `eclipsis`) and a French `radical` row from a radical to its eclipsed form.
+     */
+    private fun irishDictionary(): File = zip(
+        "ga.zip",
+        "index.json" to """{"title":"Test Irish","revision":"1","format":3,"sourceLanguage":"ga"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["bean","","n","",0,["woman"],1,""],
+              ["bhean","","non-lemma","",0,[["bean",["lenited form"]]],2,""],
+              ["Gaillimh","","name","",0,["Galway"],3,""],
+              ["nGaillimh","","non-lemma","",0,[["Gaillimh",["eclipsis"]]],4,""],
+              ["Sín","","name","",0,["China"],5,""],
+              ["uisce","","n","",0,["water"],6,""],
+              ["Éire","","name","",0,["Ireland"],7,""],
+              ["Éireann","","non-lemma","",0,[["Éire",["genitive singular"]]],8,""],
+              ["bí","","v","",0,["to be"],9,""],
+              ["abair","","v","",0,["to say"],10,""],
+              ["abróimid","","non-lemma","",0,[["abair",["future first-person plural"]]],11,""],
+              ["abróimid","","non-lemma","",0,[["n-abróimid",["radical"]]],12,""],
+              ["n-abróimid","","non-lemma","",0,[["abróimid",["eclipsis"]]],13,""],
+              ["chun","","prep","",0,["towards"],14,""],
+              ["cun","","n","",0,["stoutness"],15,""],
+              ["thar","","prep","",0,["over"],16,""],
+              ["tar","","v","",0,["to come"],17,""],
+              ["fág","","v","",0,["to leave"],18,""],
+              ["d'fhág","","non-lemma","",0,[["fág",["past indicative analytic independent"]]],19,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

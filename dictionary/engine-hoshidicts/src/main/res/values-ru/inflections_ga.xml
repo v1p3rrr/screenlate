@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">лениция</string>
+    <string name="inflection_ga_lenition">лениция: bh ch dh fh gh mh ph sh th вместо b c d f g m p s t, ts вместо s после артикля (an bhean от bean, an tsráid от sráid)</string>
+    <string name="inflection_ga_eclipsis_label">эклипсис</string>
+    <string name="inflection_ga_eclipsis">эклипсис: mb gc nd bhf ng bp dt вместо b c d f g p t, n- перед гласной (i nGaillimh от Gaillimh, ár n-athair от athair)</string>
+    <string name="inflection_ga_t_prothesis_label">протеза t</string>
+    <string name="inflection_ga_t_prothesis">t перед гласной (an t-uisce от uisce, an tAontas от Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">протеза h</string>
+    <string name="inflection_ga_h_prothesis">h перед гласной (na hÉireann от Éireann, a hathair от athair)</string>
+</resources>

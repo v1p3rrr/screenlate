@@ -33,6 +33,9 @@ class EntryTest(unittest.TestCase):
         # Welsh, which ML Kit reads: both are marked more accurate than ML Kit, 0.00% against 2.19%.
         self.assertTrue(catalog.entry("cy", "cym", "fast", b"lstm")["recommended"])
         self.assertTrue(catalog.entry("cy", "cym", "best", b"lstm")["recommended"])
+        # Irish: ML Kit reads it 0.45% wrong, too few errors left for a mark.
+        self.assertFalse(catalog.entry("ga", "gle", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("ga", "gle", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

@@ -57,7 +57,8 @@ const borrowed = {
  * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le), as does Albanian (s'ka,
  * s’ka); Latin editions write u for consonantal v (uita); Esperanto is typed in the x-system where its letters cannot
  * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al); Swahili writes ng' so
- * too (ng'ombe, ng’ombe). Processors join the descriptor's capitalization processors, its own list, or make its list.
+ * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r) and Irish its elided words (d'fhág); Irish in Gaelic type writes
+ * lenition as a dot (ḃean for bhean). Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -77,6 +78,7 @@ const addedPreprocessors = {
     sq: ['ukrainianApostropheVariants'],
     sw: ['ukrainianApostropheVariants'],
     cy: ['ukrainianApostropheVariants', 'welshMisreadCircumflex'],
+    ga: ['ukrainianApostropheVariants', 'irishDottedConsonants'],
 };
 
 /**
@@ -105,7 +107,18 @@ const extendedTransforms = {
     sq: 'albanianEndings',
 };
 
+/**
+ * Rules of the app's own (own-transforms.js) in place of Yomitan's for a language: the Irish initial mutations for
+ * Yomitan's noun eclipsis, which misses capitals (nGaeilge) and chains (mbmbean). The build fails when Yomitan's file
+ * of the replaced rules is not the one reviewed (the descriptor's `replaces`, with its git object id), so a new Yomitan
+ * commit's rules are looked at before they are dropped.
+ */
+const replacedTransforms = {
+    ga: 'irishMutations',
+};
+
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
+const ownTransforms = await import(new URL('./own-transforms.js', import.meta.url).href);
 
 /** @param {string} source @param {string} iso */
 function keepLanguage(source, iso) {
@@ -150,6 +163,17 @@ function keepLanguage(source, iso) {
         if (!yomitan) throw new Error(`${iso}: Yomitan has no inflection rules to add to`);
         block = block.replace(own, `languageTransforms: withOwnTransforms(${yomitan}, ${extension}),`);
         imports += `import {withOwnTransforms, ${extension}} from 'screenlate/own-transforms.js';\n`;
+    }
+    const replacement = replacedTransforms[iso];
+    if (replacement) {
+        const {file, blob} = ownTransforms[replacement].replaces;
+        const reviewed = execFileSync('git', ['-C', yomitanRoot, 'rev-parse', `HEAD:${file}`], {encoding: 'utf8'}).trim();
+        if (reviewed !== blob) throw new Error(`${iso}: ${file} changed; review ${replacement}`);
+        const own = /languageTransforms: (\w+),/;
+        const yomitan = own.exec(block)?.[1];
+        if (!yomitan) throw new Error(`${iso}: Yomitan has no inflection rules to replace`);
+        block = block.replace(own, `languageTransforms: withReplacedTransforms(${yomitan}, ${replacement}),`);
+        imports += `import {withReplacedTransforms, ${replacement}} from 'screenlate/own-transforms.js';\n`;
     }
     const transforms = addedTransforms[iso];
     if (transforms) {

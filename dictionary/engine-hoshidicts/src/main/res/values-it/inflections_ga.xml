@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">lenizione</string>
+    <string name="inflection_ga_lenition">lenizione: bh ch dh fh gh mh ph sh th al posto di b c d f g m p s t, ts al posto di s dopo l’articolo (an bhean da bean, an tsráid da sráid)</string>
+    <string name="inflection_ga_eclipsis_label">eclissi</string>
+    <string name="inflection_ga_eclipsis">eclissi: mb gc nd bhf ng bp dt al posto di b c d f g p t, n- davanti a vocale (i nGaillimh da Gaillimh, ár n-athair da athair)</string>
+    <string name="inflection_ga_t_prothesis_label">protesi di t</string>
+    <string name="inflection_ga_t_prothesis">t davanti a vocale (an t-uisce da uisce, an tAontas da Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">protesi di h</string>
+    <string name="inflection_ga_h_prothesis">h davanti a vocale (na hÉireann da Éireann, a hathair da athair)</string>
+</resources>

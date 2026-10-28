@@ -528,6 +528,7 @@
     <string name="popup_font_script_only_sq">Chỉ cho chữ tiếng Albania</string>
     <string name="popup_font_script_only_sw">Chỉ cho chữ tiếng Swahili</string>
     <string name="popup_font_script_only_cy">Chỉ cho chữ tiếng Wales</string>
+    <string name="popup_font_script_only_ga">Chỉ cho chữ tiếng Ireland</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">lenicja</string>
+    <string name="inflection_ga_lenition">lenicja: bh ch dh fh gh mh ph sh th zamiast b c d f g m p s t, ts zamiast s po rodzajniku (an bhean od bean, an tsráid od sráid)</string>
+    <string name="inflection_ga_eclipsis_label">eklipsa</string>
+    <string name="inflection_ga_eclipsis">eklipsa: mb gc nd bhf ng bp dt zamiast b c d f g p t, n- przed samogłoską (i nGaillimh od Gaillimh, ár n-athair od athair)</string>
+    <string name="inflection_ga_t_prothesis_label">proteza t</string>
+    <string name="inflection_ga_t_prothesis">t przed samogłoską (an t-uisce od uisce, an tAontas od Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">proteza h</string>
+    <string name="inflection_ga_h_prothesis">h przed samogłoską (na hÉireann od Éireann, a hathair od athair)</string>
+</resources>

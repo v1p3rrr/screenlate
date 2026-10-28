@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">軟音變</string>
+    <string name="inflection_ga_lenition">軟音變：b c d f g m p s t 變為 bh ch dh fh gh mh ph sh th，冠詞後 s 變為 ts（bean → an bhean、sráid → an tsráid）</string>
+    <string name="inflection_ga_eclipsis_label">鼻音變</string>
+    <string name="inflection_ga_eclipsis">鼻音變：b c d f g p t 變為 mb gc nd bhf ng bp dt，母音前加 n-（Gaillimh → i nGaillimh、athair → ár n-athair）</string>
+    <string name="inflection_ga_t_prothesis_label">t 增音</string>
+    <string name="inflection_ga_t_prothesis">母音前加 t（uisce → an t-uisce、Aontas → an tAontas）</string>
+    <string name="inflection_ga_h_prothesis_label">h 增音</string>
+    <string name="inflection_ga_h_prothesis">母音前加 h（Éireann → na hÉireann、athair → a hathair）</string>
+</resources>

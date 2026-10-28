@@ -250,6 +250,17 @@ class SentenceTest {
     }
 
     @Test
+    fun irishSentenceKeepsAbbreviationsAndEndsAtSrlBeforeACapital() {
+        val paragraph = "Bhí sé fuar. Cheannaigh sí torthaí, m.sh. úlla agus piorraí srl. Féach lch. 5 den leabhar. " +
+            "D'fhág an Br. Seán an baile. Tá an aimsir go breá."
+        assertThat(extract(paragraph, "úlla", Language.IRISH).text)
+            .isEqualTo("Cheannaigh sí torthaí, m.sh. úlla agus piorraí srl.")
+        assertThat(extract(paragraph, "leabhar", Language.IRISH).text).isEqualTo("Féach lch. 5 den leabhar.")
+        assertThat(extract(paragraph, "Seán", Language.IRISH).text).isEqualTo("D'fhág an Br. Seán an baile.")
+        assertThat(extract(paragraph, "aimsir", Language.IRISH).text).isEqualTo("Tá an aimsir go breá.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

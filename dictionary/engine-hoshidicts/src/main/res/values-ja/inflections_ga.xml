@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">軟音化</string>
+    <string name="inflection_ga_lenition">軟音化：b c d f g m p s t が bh ch dh fh gh mh ph sh th に、冠詞の後の s が ts に（bean → an bhean、sráid → an tsráid）</string>
+    <string name="inflection_ga_eclipsis_label">鼻音化</string>
+    <string name="inflection_ga_eclipsis">鼻音化：b c d f g p t が mb gc nd bhf ng bp dt に、母音の前に n-（Gaillimh → i nGaillimh、athair → ár n-athair）</string>
+    <string name="inflection_ga_t_prothesis_label">t の付加</string>
+    <string name="inflection_ga_t_prothesis">母音の前の t（uisce → an t-uisce、Aontas → an tAontas）</string>
+    <string name="inflection_ga_h_prothesis_label">h の付加</string>
+    <string name="inflection_ga_h_prothesis">母音の前の h（Éireann → na hÉireann、athair → a hathair）</string>
+</resources>

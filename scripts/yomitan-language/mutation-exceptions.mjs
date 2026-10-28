@@ -18,10 +18,10 @@ import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {inflateRawSync} from 'node:zlib';
-import {welshTransforms} from './own-transforms.js';
+import {irishMutations, welshTransforms} from './own-transforms.js';
 
 /** Descriptors whose mutation rules the script applies. */
-export const DESCRIPTORS = {cy: welshTransforms};
+export const DESCRIPTORS = {cy: welshTransforms, ga: irishMutations};
 
 const WORD = /\p{L}+(?:['’-]\p{L}+)*/gu;
 

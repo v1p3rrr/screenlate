@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">yumuşak mutasyon</string>
+    <string name="inflection_ga_lenition">yumuşak mutasyon: b c d f g m p s t yerine bh ch dh fh gh mh ph sh th, tanımlıktan sonra s yerine ts (bean → an bhean, sráid → an tsráid)</string>
+    <string name="inflection_ga_eclipsis_label">genizsil mutasyon</string>
+    <string name="inflection_ga_eclipsis">genizsil mutasyon: b c d f g p t yerine mb gc nd bhf ng bp dt, ünlüden önce n- (Gaillimh → i nGaillimh, athair → ár n-athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t eklenmesi</string>
+    <string name="inflection_ga_t_prothesis">ünlüden önce t (uisce → an t-uisce, Aontas → an tAontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h eklenmesi</string>
+    <string name="inflection_ga_h_prothesis">ünlüden önce h (Éireann → na hÉireann, athair → a hathair)</string>
+</resources>

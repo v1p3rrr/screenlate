@@ -536,6 +536,7 @@
     <string name="popup_font_script_only_sq">Solo per il testo albanese</string>
     <string name="popup_font_script_only_sw">Solo per il testo in swahili</string>
     <string name="popup_font_script_only_cy">Solo per il testo gallese</string>
+    <string name="popup_font_script_only_ga">Solo per il testo irlandese</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

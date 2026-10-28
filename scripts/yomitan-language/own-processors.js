@@ -278,3 +278,25 @@ export const welshMisreadCircumflex = {
 };
 
 const WELSH_CIRCUMFLEX = {ý: 'ŷ', Ý: 'Ŷ', û: 'ŵ', Û: 'Ŵ'};
+
+/** A consonant of Irish lenition with the combining dot above (after NFD). */
+const IRISH_DOTTED = /* @__PURE__ */ new RegExp('([bcdfgmpstBCDFGMPST])' + String.fromCharCode(0x307), 'g');
+
+/**
+ * Irish in Gaelic type, which writes lenition as a dot over the consonant (ḃean, ṡlí for bhean, shlí): the text is
+ * also tried with consonant + h, in capitals within a word in capitals (ḂEAN → BHEAN), in any text, since people write
+ * it so. A few headwords keep the dot (ṡlógacallam), so the text as written comes first.
+ * @type {import('language').TextProcessor}
+ */
+export const irishDottedConsonants = {
+    name: 'Dotted consonants',
+    description: 'ḃean → bhean, Ṡeán → Sheán',
+    process: (str) => {
+        const decomposed = str.normalize('NFD');
+        const plain = decomposed.replace(IRISH_DOTTED, (pair, letter, offset) => {
+            const next = decomposed.charAt(offset + pair.length);
+            return letter + (letter !== letter.toLowerCase() && next !== next.toLowerCase() ? 'H' : 'h');
+        });
+        return plain === decomposed ? [str] : [str, plain.normalize('NFC')];
+    },
+};

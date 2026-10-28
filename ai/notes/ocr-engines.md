@@ -153,6 +153,13 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
   the word (MlKitLineEndHyphenTest, German). Lens keeps the hyphen but gives the word no separator ("impor-tant");
   `withHyphenBreaks` puts the language's separator there. PaddleOCR lines are paragraphs of their own, so its
   halves are looked up apart.
+- Lens can also give an unhyphenated line's last word no separator: on `testdata/ocr/ga-anki.png` (Segoe UI,
+  2026-10-28) "Cheannaigh sí" ending a line and "torthaí" starting the next came as "sítorthaí", with Irish and
+  with Welsh named in the request, while the other line ends of the paragraph had a space. The screen path keeps
+  Lens's separators (only a hyphenated end gets the language's), so `{sentence}` read "Cheannaigh sítorthaí"; ML
+  Kit gave the space. Photos already put the language's separator after every line end without one
+  (`PhotoAssembly`). Lens also split that paragraph after "Br." ending a line, so with cloud recognition the
+  sentence of a word below it starts at "Seán"; and it read "lch." as "Ich.".
 - Engines split "n. l." (Czech, before the Common Era; Arial, where l and I look alike) differently: cloud recognition
   gives "n", ".", "I", "." as four words, ML Kit "n.I." as one and glues the next word's start to it ("l.a" in a
   tight image, 2026-10-22). `CzechSupport.ocrLines` therefore matches the I over the line's words joined with spaces,

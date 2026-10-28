@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">lenición</string>
+    <string name="inflection_ga_lenition">lenición: bh ch dh fh gh mh ph sh th en lugar de b c d f g m p s t, ts en lugar de s tras el artículo (an bhean de bean, an tsráid de sráid)</string>
+    <string name="inflection_ga_eclipsis_label">eclipsis</string>
+    <string name="inflection_ga_eclipsis">eclipsis: mb gc nd bhf ng bp dt en lugar de b c d f g p t, n- ante vocal (i nGaillimh de Gaillimh, ár n-athair de athair)</string>
+    <string name="inflection_ga_t_prothesis_label">prótesis de t</string>
+    <string name="inflection_ga_t_prothesis">t ante vocal (an t-uisce de uisce, an tAontas de Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">prótesis de h</string>
+    <string name="inflection_ga_h_prothesis">h ante vocal (na hÉireann de Éireann, a hathair de athair)</string>
+</resources>

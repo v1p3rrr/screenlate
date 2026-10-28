@@ -559,6 +559,7 @@ val Language.support: LanguageSupport
         Language.ALBANIAN -> AlbanianSupport
         Language.SWAHILI -> SwahiliSupport
         Language.WELSH -> WelshSupport
+        Language.IRISH -> IrishSupport
     }
 
 /**

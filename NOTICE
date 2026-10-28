@@ -119,9 +119,9 @@ word counts of the Kazakh and Kyrgyz news corpora of the Leipzig Corpora Collect
 University, CC BY, and for Latin and Esperanto those of their Wikipedia corpora (lat_wikipedia_2021_100K,
 epo_wikipedia_2021_100K), CC BY, for Albanian those of its Albanian news corpus
 (sqi_news_2020_100K), CC BY, and for Swahili those of its Wikipedia corpus (swa_wikipedia_2021_100K), CC BY.
-The list of common Welsh words that the app's mutation rules leave as written
-(scripts/yomitan-language/own-transforms.js) was chosen with the word counts of the Welsh Wikipedia corpus of the
-Leipzig Corpora Collection (cym_wikipedia_2021_100K), CC BY.
+The lists of common Welsh and Irish words that the app's mutation rules leave as written
+(scripts/yomitan-language/own-transforms.js) were chosen with the word counts of the Welsh Wikipedia corpus and the
+Irish news corpus of the Leipzig Corpora Collection (cym_wikipedia_2021_100K, gle_newscrawl_2014_300K), CC BY.
 
 Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Bengali, Thai, Khmer, Arabic,
 Persian, Hebrew and Latin, from the Google Fonts repository, https://github.com/google/fonts) are not part of the APK

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_ga.xml. -->
+<resources>
+    <string name="inflection_ga_lenition_label">연음 변이</string>
+    <string name="inflection_ga_lenition">연음 변이: b c d f g m p s t 대신 bh ch dh fh gh mh ph sh th, 관사 뒤 s 대신 ts (bean → an bhean, sráid → an tsráid)</string>
+    <string name="inflection_ga_eclipsis_label">비음 변이</string>
+    <string name="inflection_ga_eclipsis">비음 변이: b c d f g p t 대신 mb gc nd bhf ng bp dt, 모음 앞에 n- (Gaillimh → i nGaillimh, athair → ár n-athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t 첨가</string>
+    <string name="inflection_ga_t_prothesis">모음 앞의 t (uisce → an t-uisce, Aontas → an tAontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h 첨가</string>
+    <string name="inflection_ga_h_prothesis">모음 앞의 h (Éireann → na hÉireann, athair → a hathair)</string>
+</resources>
