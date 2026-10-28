@@ -469,12 +469,13 @@ Decided when the first language or group 1 is ready, before it is merged into th
   drop them; nothing breaks meanwhile.
 - Language flags in more places (owner, 2026-10-28): find the menus and screens that name languages (the dictionary
   page's language chips, the download screen, the lookup and photo language pickers, notifications and the like) and
-  show the language's flag there as the bubble's quick-language menu does. Not researched yet.
+  show the language's flag there as the bubble's quick-language menu does. On 2026-10-28 the owner asked for a
+  table of the places, with screenshots and a reason for or against a flag in each.
 - Bubble glyph by the language's own name (owner, 2026-10-28): the bubble now shows a distinctive letter of each
   language (`LanguageSupport.glyph`: ß, Ř, Æ, Ў). For languages whose script others share (Latin, Cyrillic and the
   like) it would show the first letter of the language's name in that language (Deutsch → D, русский → Р); languages
   with their own script keep their most common or most typical character (Japanese あ, Chinese a character most tied
-  to China, as 中 now), and the same wherever it applies. Future work, not worked out yet.
+  to China, as 中 now), and the same wherever it applies. On 2026-10-28 the owner asked for a table of the letters.
 - Popup delay check (owner, 2026-10-28): on the phone the popup comes noticeably late after the aim reaches a word,
   and it does not look like the debounce but like slowness. Measure the path from the aim's stop to the drawn popup
   (hit test, lookup, page render, window show) on the phone and the emulator from the app's log timings, compare with
@@ -483,6 +484,18 @@ Decided when the first language or group 1 is ready, before it is merged into th
   that would be worth translating the interface into later (the interface has 14 locales now). Not worked out yet.
 - Interface translation check (owner, 2026-10-28): a separate pass over every interface locale for correct and
   natural translations (terms, grammar, consistency between screens). Not worked out yet.
+- PaddleOCR lines (owner, 2026-10-28 evening, question 72 (1); moved here from a proposed session at the owner's
+  word): PaddleOCR gives one line per paragraph, and the v5 detector splits Russian lines into overlapping boxes
+  (38 paragraphs on the Russian page). Fix the line split and the overlapping boxes, measured on the OCR screenshots.
+- Converter data (owner, 2026-10-28 evening, question 72 (3)): in our converters, move FreeDict de-ru's long sense
+  labels into the gloss, drop it-ru's "( approfondimento)", handle OpenRussian's "gapirish" through an exception
+  list, and give Wiktionary vi-en's "Central" tag a clear name in our tag labels; rebuild the affected dictionaries.
+- Empty AnkiDroid browser (owner, 2026-10-28 evening, question 72 (4)): the dictionary button on a duplicate opened
+  an empty AnkiDroid browser. Debug first whether the app sends a wrong query or AnkiDroid has not added the note
+  yet; fix after that.
+- Archive catch-up (owner, 2026-10-28 evening, questions 74 and 76): fix the archive's future list and fetch the
+  25 catalog entries it lacks; then delete the copies under future/ that the catalog copies duplicate, once they
+  pass the hash check, after showing the owner the list.
 
 ## Questions for the owner
 
@@ -782,7 +795,7 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     (2026-10-22); built with question 67's fix. Home's audio-failure card names the first turned-on language whose
     sources include the failing source: it said Korean for failures in Vietnamese, English and German lookups. (a,
     recommended) Name the language of the lookup that failed. (b) Leave it.
-72. Answered (owner, 2026-10-28 evening): fix (1) the PaddleOCR lines and (2) the installed size on the download screen; (3) after an explanation, fix the data in our converters (de-ru long labels moved into the gloss, it-ru "( approfondimento)" dropped, OpenRussian's gapirish through an exception list) and give vi's "Central" tag a clear name in our tag labels; (4) debug first whether we send something wrong or AnkiDroid has not added the note yet ("про анки надо подебажить понять в чем дело для начала, мб передаем не так что то, или он еще добавить не успел"). (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
+72. Answered (owner, 2026-10-28 evening; all but (2) moved to the backlog the same evening): fix (1) the PaddleOCR lines and (2) the installed size on the download screen; (3) after an explanation, fix the data in our converters (de-ru long labels moved into the gloss, it-ru "( approfondimento)" dropped, OpenRussian's gapirish through an exception list) and give vi's "Central" tag a clear name in our tag labels; (4) debug first whether we send something wrong or AnkiDroid has not added the note yet ("про анки надо подебажить понять в чем дело для начала, мб передаем не так что то, или он еще добавить не успел"). (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
     paragraph, and the v5 detector splits Russian lines into overlapping boxes (38 paragraphs on the Russian page); (2)
     the download screen shows the download size, while the installed size is larger (Chinese: 42 MB shown, about 69 MB
     installed); (3) upstream data: FreeDict de-ru's very long sense labels, it-ru's "( approfondimento)", OpenRussian's
@@ -792,14 +805,14 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     after the last recognition; the popup page created 150 ms after the capture; the connection opened by a HEAD request
     on any touch, at most every 30 s, with a 3 s wait; three new log lines; one sentence in docs/usage. (a, recommended)
     Keep them. (b) Change some (the owner says which).
-74. Answered (owner, 2026-10-28 evening): (a), delete the duplicates once the catalog copies pass the hash check, showing the list first. (2026-10-22): The owner's archive keeps copies of the hi, bn, ka, hy, th, ar, kk and ky files under future/,
+74. Answered (owner, 2026-10-28 evening; moved to the backlog the same evening): (a), delete the duplicates once the catalog copies pass the hash check, showing the list first. (2026-10-22): The owner's archive keeps copies of the hi, bn, ka, hy, th, ar, kk and ky files under future/,
     made before they were in the catalog. Once their catalog copies pass the checks: (a, recommended) delete the future/
     duplicates (about 56 MiB plus 16 tessdata files); (b) keep them, marked as superseded.
 75. Answered (owner, 2026-10-28 evening): (a), as each block puts them in the catalog; 5e keeps or redoes its converted models until then. (2026-10-22): Files of the researched blocks that are not in the catalog yet (5a-5e and group 6: their
     Wiktionary pairs; 5e's converted Tamil and Telugu Paddle models and tessdata tam, tel, kan, mar, now only in a
     session scratchpad). (a, recommended) The archive copies them when each block puts them in the catalog (the normal
     refresh). (b) Pre-copy them all under future/ now. (c) Not at all.
-76. Answered (owner, 2026-10-28 evening): (a), fix the future list and fetch them now. (2026-10-22): The archive lacks 25 catalog entries added after 2026-10-19 (the km, fa and he Wiktionary pairs
+76. Answered (owner, 2026-10-28 evening; moved to the backlog the same evening): (a), fix the future list and fetch them now. (2026-10-22): The archive lacks 25 catalog entries added after 2026-10-19 (the km, fa and he Wiktionary pairs
     and transcriptions, wordfreq fa and he, tessdata khm and heb, the Thai, Kazakh and Kyrgyz frequency corpora; 65 MiB,
     all with pinned hashes). (a, recommended) Fix the script's future list (so the hi-ky files are not fetched twice)
     and fetch them now. (b) Later, with the next refresh.
@@ -1763,3 +1776,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-28 evening: the owner answered questions 69-86 (the rest of 71 and 84 are plain bugs): to build are 72 (1, 2,
   3 and the AnkiDroid debugging of 4), 77 (3 s and 15 s), 80, 81, 82, 83, 85, and for the archive 74 and 76; 69, 73,
   75, 78, 79 and 86 stay as they are.
+- 2026-10-28 late evening: the PaddleOCR lines, converter data, AnkiDroid debugging and archive catch-up of questions
+  72, 74 and 76 moved to the backlog as four entries at the owner's word, not built now; the owner asked for tables
+  of the flag places and of the bubble letters.
