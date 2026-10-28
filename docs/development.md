@@ -89,11 +89,11 @@ A language wordfreq has no list for gets one from a corpus' word counts (`"build
 National Corpus counts that PyThaiNLP publishes, CC0, one `word<TAB>count` line per word). `CorpusCountsDictionary`
 ranks them in the list's order, leaving out tokens without a letter or with a space.
 Kazakh's, Kyrgyz's, Latin's, Esperanto's, Albanian's, Swahili's and Estonian's come from Leipzig Corpora Collection archives (`kaz_newscrawl_2016_100K.tar.gz`,
-`kir_newscrawl_2016_100K.tar.gz`, `lat_wikipedia_2021_100K.tar.gz`, `epo_wikipedia_2021_100K.tar.gz`, `sqi_news_2020_100K.tar.gz`, `swa_news_2020_30K.tar.gz`, `est_news_2020_100K.tar.gz`, CC BY): the builder reads the `.tar.gz` as a stream, keeps only the `-words.txt`
+`kir_newscrawl_2016_100K.tar.gz`, `lat_wikipedia_2021_100K.tar.gz`, `epo_web_2012_100K.tar.gz`, `sqi_news_2020_100K.tar.gz`, `swa_news_2020_30K.tar.gz`, `est_news_2020_100K.tar.gz`, CC BY): the builder reads the `.tar.gz` as a stream, keeps only the `-words.txt`
 list (`id<TAB>word<TAB>count`, its place in the archive varies), lowercases the words, spells them as the dictionaries
 do (`LanguageSupport.frequencyWord`: Latin i inside a Cyrillic word as і in Kazakh, Latin words without macrons and breves), adds up the counts of tokens that
 become one word and leaves out tokens that are not words.
-`python scripts/frequency/corpus_catalog.py` checks the list and writes its entry (templates `tnc`, `leipzig` and `leipzig-wikipedia`),
+`python scripts/frequency/corpus_catalog.py` checks the list and writes its entry (templates `tnc`, `leipzig`, `leipzig-wikipedia` and `leipzig-web`),
 keeping the downloads in `testdata/corpus/`, where unit tests also build them.
 
 On-device recognition models are catalog entries of the category `OCR_MODEL` with the model's id, engine, version and

@@ -491,8 +491,8 @@ Esperanto on `languages/eo` (2026-10-28, rebased onto `languages/main` 9a401674)
 letters fixed in OCR text (š → ŝ, ǔ → ŭ, the capitals too: plan question 29, decided provisionally), the
 abbreviations and quotes from the corpus (“ closes „…“ and opens “…”: `Sentence.extract` now keeps a stack of open
 quotes), Esperanto's own flag, Tesseract fast as the more accurate model, no PaddleOCR; ESPDIC converted, listed
-once hosted; a frequency dictionary built on the device from Leipzig's Esperanto Wikipedia (question 28, decided
-provisionally). Checked on the emulator; plan question 30 (straight quotes after a full stop in OCR text) is open.
+once hosted; a frequency dictionary built on the device from Leipzig's Esperanto web texts of 2012 (question 28; Wikipedia
+until 2026-10-29, when the owner chose the web corpus). Checked on the emulator; plan question 30 (straight quotes after a full stop in OCR text) is open.
 
 Albanian on `languages/sq` (2026-10-28, rebased onto `languages/main` at `d5bd5919`): Yomitan's 94 Albanian rules and our 18
 endings, which are fallback rules (looked up by rank only when nothing else finds an entry; the engine's candidate

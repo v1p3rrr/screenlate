@@ -38,7 +38,7 @@ LEIPZIG = "https://downloads.wortschatz-leipzig.de/corpora"
 
 def leipzig(corpus, language, template="leipzig", version="2016"):
     """The entry of the Leipzig archive [corpus], whose texts [template] names: "leipzig" news, "leipzig-wikipedia"
-    Wikipedia articles."""
+    Wikipedia articles, "leipzig-web" texts of websites."""
     return {
         "template": template,
         "title": f"Leipzig Corpora Collection ({language})",
@@ -54,7 +54,7 @@ def leipzig(corpus, language, template="leipzig", version="2016"):
 CORPORA["kk"] = leipzig("kaz_newscrawl_2016_100K", "kk")
 CORPORA["ky"] = leipzig("kir_newscrawl_2016_100K", "ky")
 CORPORA["la"] = leipzig("lat_wikipedia_2021_100K", "la", template="leipzig-wikipedia", version="2021")
-CORPORA["eo"] = leipzig("epo_wikipedia_2021_100K", "eo", template="leipzig-wikipedia", version="2021")
+CORPORA["eo"] = leipzig("epo_web_2012_100K", "eo", template="leipzig-web", version="2012")
 CORPORA["sq"] = leipzig("sqi_news_2020_100K", "sq", version="2020")
 CORPORA["sw"] = leipzig("swa_news_2020_30K", "sw", version="2020")
 CORPORA["et"] = leipzig("est_news_2020_100K", "et", version="2020")

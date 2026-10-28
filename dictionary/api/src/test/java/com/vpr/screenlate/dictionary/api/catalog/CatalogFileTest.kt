@@ -120,12 +120,12 @@ class CatalogFileTest {
             .startsWith("Leipzig Corpora Collection, Swahili: how common words are in news")
         val esperanto = built.single { it.sourceLanguage == "eo" }
         assertThat(esperanto.recommended).isTrue()
-        assertThat(esperanto.sha256).isEqualTo("afc637eeb783189b43dd646525b5ca61e45115b9143d67d7d022c42ecafcd620")
+        assertThat(esperanto.sha256).isEqualTo("3f011e22b9a258a998172101fcf5a625dea2fe5fdd5c6069636a10baee64188a")
         assertThat(esperanto.downloadUrl)
-            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/epo_wikipedia_2021_100K.tar.gz")
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/epo_web_2012_100K.tar.gz")
         assertThat(esperanto.oldTitles).containsExactly(CorpusCountsDictionary.title("eo"))
         assertThat(esperanto.description(Locale.ENGLISH))
-            .startsWith("Leipzig Corpora Collection, Esperanto: how common words are in Wikipedia")
+            .startsWith("Leipzig Corpora Collection, Esperanto: how common words are in texts of websites")
         val albanian = built.single { it.sourceLanguage == "sq" }
         assertThat(albanian.recommended).isTrue()
         assertThat(albanian.sha256).isEqualTo("8ff3f8b93a75ef1e9c1cc1c4856718cf1717c658d1fe6cfb4b472175f4073ea6")

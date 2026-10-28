@@ -253,6 +253,40 @@
         "zh-Hant": "Leipzig Corpora Collection，{source}：單詞在維基百科條目中的使用頻率，搜尋結果按此排序。在裝置上由該語料庫集的詞頻統計產生。"
       }
     },
+    "leipzig-web": {
+      "title": {
+        "en": "Word frequency (Leipzig Corpora Collection)",
+        "ru": "Частотность слов (Leipzig Corpora Collection)",
+        "de": "Worthäufigkeit (Leipzig Corpora Collection)",
+        "es": "Frecuencia de palabras (Leipzig Corpora Collection)",
+        "fr": "Fréquence des mots (Leipzig Corpora Collection)",
+        "it": "Frequenza delle parole (Leipzig Corpora Collection)",
+        "ja": "単語の頻度（Leipzig Corpora Collection）",
+        "ko": "단어 빈도 (Leipzig Corpora Collection)",
+        "pl": "Częstość wyrazów (Leipzig Corpora Collection)",
+        "pt": "Frequência de palavras (Leipzig Corpora Collection)",
+        "tr": "Sözcük sıklığı (Leipzig Corpora Collection)",
+        "vi": "Tần suất từ (Leipzig Corpora Collection)",
+        "zh": "词频（Leipzig Corpora Collection）",
+        "zh-Hant": "詞頻（Leipzig Corpora Collection）"
+      },
+      "description": {
+        "en": "Leipzig Corpora Collection, {source}: how common words are in texts of websites; results are sorted by it. Built on the device from the collection's word counts.",
+        "ru": "Leipzig Corpora Collection, {source}: частотность слов в текстах сайтов, по ней сортируются результаты. Собирается на устройстве из подсчётов слов коллекции.",
+        "de": "Leipzig Corpora Collection, {source}: wie häufig Wörter in Texten von Websites sind; die Ergebnisse werden danach sortiert. Wird auf dem Gerät aus den Wortzählungen der Sammlung erstellt.",
+        "es": "Leipzig Corpora Collection, {source}: la frecuencia de las palabras en textos de sitios web; los resultados se ordenan por ella. Se crea en el dispositivo a partir de los recuentos de palabras de la colección.",
+        "fr": "Leipzig Corpora Collection, {source} : la fréquence des mots dans des textes de sites web ; les résultats sont triés selon elle. Créé sur l'appareil à partir des comptages de mots de la collection.",
+        "it": "Leipzig Corpora Collection, {source}: la frequenza delle parole nei testi di siti web; i risultati sono ordinati in base a essa. Creato sul dispositivo dai conteggi delle parole della raccolta.",
+        "ja": "Leipzig Corpora Collection（{source}）：ウェブサイトの文章における単語の使用頻度。検索結果の並べ替えに使います。コレクションの単語の出現数から端末上で作成します。",
+        "ko": "Leipzig Corpora Collection, {source}: 웹사이트 텍스트에서 단어의 사용 빈도로, 검색 결과를 이 순서로 정렬합니다. 컬렉션의 단어 출현 횟수로 기기에서 만듭니다.",
+        "pl": "Leipzig Corpora Collection, {source}: częstość występowania wyrazów w tekstach ze stron internetowych; według niej sortowane są wyniki. Tworzony na urządzeniu z liczby wystąpień wyrazów w kolekcji.",
+        "pt": "Leipzig Corpora Collection, {source}: a frequência das palavras em textos de sites; os resultados são ordenados por ela. Criado no dispositivo a partir das contagens de palavras da coleção.",
+        "tr": "Leipzig Corpora Collection, {source}: web sitelerindeki metinlerde sözcüklerin kullanım sıklığı; sonuçlar buna göre sıralanır. Cihazda koleksiyonun sözcük sayımlarından oluşturulur.",
+        "vi": "Leipzig Corpora Collection, {source}: tần suất sử dụng của từ trong các văn bản trên trang web; kết quả được sắp xếp theo đó. Được tạo trên thiết bị từ số lần xuất hiện của từ trong bộ sưu tập.",
+        "zh": "Leipzig Corpora Collection，{source}：单词在网站文本中的使用频率，搜索结果按此排序。在设备上由该语料库集的词频统计生成。",
+        "zh-Hant": "Leipzig Corpora Collection，{source}：單詞在網站文本中的使用頻率，搜尋結果按此排序。在裝置上由該語料庫集的詞頻統計產生。"
+      }
+    },
     "krdict": {
       "title": {
         "en": "KRDICT ({src}–{tgt})",
@@ -2146,7 +2180,7 @@
     {
       "id": "corpus-eo",
       "title": "Leipzig Corpora Collection (eo)",
-      "template": "leipzig-wikipedia",
+      "template": "leipzig-web",
       "oldTitles": [
         "Leipzig Corpora Collection (eo)"
       ],
@@ -2154,11 +2188,11 @@
       "category": "FREQUENCY",
       "sourceLanguage": "eo",
       "recommended": true,
-      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/epo_wikipedia_2021_100K.tar.gz",
-      "downloadSize": 19106073,
-      "sha256": "afc637eeb783189b43dd646525b5ca61e45115b9143d67d7d022c42ecafcd620",
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/epo_web_2012_100K.tar.gz",
+      "downloadSize": 20109899,
+      "sha256": "3f011e22b9a258a998172101fcf5a625dea2fe5fdd5c6069636a10baee64188a",
       "build": "corpus-counts",
-      "version": "2021",
+      "version": "2012",
       "license": "CC BY",
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },
