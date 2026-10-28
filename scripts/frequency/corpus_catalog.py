@@ -58,6 +58,7 @@ CORPORA["eo"] = leipzig("epo_web_2012_100K", "eo", template="leipzig-web", versi
 CORPORA["sq"] = leipzig("sqi_news_2020_100K", "sq", version="2020")
 CORPORA["sw"] = leipzig("swa_news_2020_30K", "sw", version="2020")
 CORPORA["et"] = leipzig("est_news_2020_100K", "et", version="2020")
+CORPORA["az"] = leipzig("aze_news_2020_30K", "az", version="2020")
 
 BUILD = "corpus-counts"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

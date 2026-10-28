@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">pergunta</string>
     <string name="inflection_turkic_possessive_2pl_label">de vocês</string>
     <string name="inflection_turkic_verbal_noun_label">substantivo verbal</string>
+    <string name="inflection_turkic_past_copula_label">passado da cópula</string>
+    <string name="inflection_turkic_conditional_copula_label">condicional da cópula</string>
+    <string name="inflection_turkic_evidential_copula_label">evidencial da cópula</string>
+    <string name="inflection_turkic_future_label">futuro</string>
+    <string name="inflection_turkic_evidential_label">passado evidencial</string>
+    <string name="inflection_turkic_necessity_label">necessidade</string>
+    <string name="inflection_turkic_participle_label">particípio</string>
 </resources>

@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">domanda</string>
     <string name="inflection_turkic_possessive_2pl_label">vostro</string>
     <string name="inflection_turkic_verbal_noun_label">nome verbale</string>
+    <string name="inflection_turkic_past_copula_label">passato della copula</string>
+    <string name="inflection_turkic_conditional_copula_label">condizionale della copula</string>
+    <string name="inflection_turkic_evidential_copula_label">evidenziale della copula</string>
+    <string name="inflection_turkic_future_label">futuro</string>
+    <string name="inflection_turkic_evidential_label">passato evidenziale</string>
+    <string name="inflection_turkic_necessity_label">necessità</string>
+    <string name="inflection_turkic_participle_label">participio</string>
 </resources>

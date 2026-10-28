@@ -118,8 +118,9 @@ word counts of the Kazakh and Kyrgyz news corpora of the Leipzig Corpora Collect
 (https://wortschatz.uni-leipzig.de/en/download, kaz_newscrawl_2016_100K, kir_newscrawl_2016_100K) by Leipzig
 University, CC BY, for Latin those of its Wikipedia corpus (lat_wikipedia_2021_100K), CC BY, for Esperanto those of
 its web corpus (epo_web_2012_100K), CC BY, for Albanian those of its Albanian news corpus
-(sqi_news_2020_100K), CC BY, for Swahili those of its news corpus (swa_news_2020_30K), CC BY, and for
-Estonian those of its news corpus (est_news_2020_100K), CC BY.
+(sqi_news_2020_100K), CC BY, for Swahili those of its news corpus (swa_news_2020_30K), CC BY, for
+Estonian those of its news corpus (est_news_2020_100K), CC BY, and for Azerbaijani those of its news corpus
+(aze_news_2020_30K), CC BY.
 The lists of common Welsh and Irish words that the app's mutation rules leave as written
 (scripts/yomitan-language/own-transforms.js) were chosen with the word counts of the Welsh Wikipedia corpus and the
 Irish news corpus of the Leipzig Corpora Collection (cym_wikipedia_2021_100K, gle_newscrawl_2014_300K), CC BY, and

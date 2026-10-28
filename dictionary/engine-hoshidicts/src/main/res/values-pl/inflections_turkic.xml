@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">pytanie</string>
     <string name="inflection_turkic_possessive_2pl_label">wasz</string>
     <string name="inflection_turkic_verbal_noun_label">rzeczownik odczasownikowy</string>
+    <string name="inflection_turkic_past_copula_label">czas przeszły łącznika</string>
+    <string name="inflection_turkic_conditional_copula_label">tryb warunkowy łącznika</string>
+    <string name="inflection_turkic_evidential_copula_label">ewidencjalny łącznika</string>
+    <string name="inflection_turkic_future_label">czas przyszły</string>
+    <string name="inflection_turkic_evidential_label">czas przeszły ewidencjalny</string>
+    <string name="inflection_turkic_necessity_label">konieczność</string>
+    <string name="inflection_turkic_participle_label">imiesłów</string>
 </resources>

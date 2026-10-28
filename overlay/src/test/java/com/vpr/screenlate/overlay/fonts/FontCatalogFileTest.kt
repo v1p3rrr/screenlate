@@ -139,6 +139,13 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `azerbaijani takes the latin fonts with schwa`() {
+        // PT Serif, PT Sans and Atkinson Hyperlegible Next lack ə and Ə.
+        assertThat(fonts.filter { it.isOfferedFor(Language.AZERBAIJANI) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Lexend")
+    }
+
+    @Test
     fun `hungarian takes every latin font`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.HUNGARIAN) }.map { it.family })
             .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
@@ -166,12 +173,13 @@ class FontCatalogFileTest {
         assertThat(atkinson.hasLetters("ĉ")).isFalse()
         assertThat(fonts.single { it.id == "inter" }.hasLetters("ĉĝĥĵŝŭāēīōū")).isTrue()
         assertThat(fonts.single { it.id == "pt-serif" }.hasLetters("ŵŷ")).isFalse()
-        // Each language with subsets keeps every font that has them, but for Latin's and Esperanto's Atkinson and
-        // Welsh's PT fonts.
+        // Each language with subsets keeps every font that has them, but for Latin's and Esperanto's Atkinson, Welsh's
+        // PT fonts and the three without Azerbaijani ə.
         val lacking = mapOf(
             Language.LATIN to setOf("atkinson-hyperlegible-next"),
             Language.ESPERANTO to setOf("atkinson-hyperlegible-next"),
             Language.WELSH to setOf("pt-serif", "pt-sans"),
+            Language.AZERBAIJANI to setOf("atkinson-hyperlegible-next", "pt-serif", "pt-sans"),
         )
         for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() }) {
             val bySubsets = fonts.filter {

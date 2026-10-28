@@ -90,10 +90,30 @@ function turkishUpperCase(text) {
 }
 
 /**
+ * Decapitalization and capitalization with the Turkish case pairs (`replacedProcessors`).
+ * @returns {Record<string, import('language').TextProcessor>}
+ */
+function turkishCase() {
+    return {
+        decapitalize: {
+            name: 'Decapitalize text',
+            description: 'IŞIK → ışık, İSTANBUL → istanbul',
+            process: (str) => [str, str.replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase()],
+        },
+        capitalizeFirstLetter: {
+            name: 'Capitalize first letter',
+            description: 'istanbul → İstanbul, ılık → Ilık',
+            process: (str) => [str, turkishUpperCase(str.charAt(0)) + str.slice(1)],
+        },
+    };
+}
+
+/**
  * Text processors that replace Yomitan's by id. Turkish case pairs: without a locale (QuickJS has none) JavaScript
  * lowercases I to i and İ to i with a combining dot, so a Turkish word written in capitals (IŞIK, İSTANBUL) would find
- * no entry. Serbo-Croatian accent marks: Yomitan drops them from Latin vowels and r only, so Cyrillic text written
- * with the marks of readings (ку̏ћа) would find no entry. Arabic hamza: Yomitan puts a hamza on the text's first alif
+ * no entry; Azerbaijani, which takes Turkish's processors (build.mjs), writes the same pairs (İLHAM, QIZ).
+ * Serbo-Croatian accent marks: Yomitan drops them from Latin vowels and r only, so Cyrillic text written with the
+ * marks of readings (ку̏ћа) would find no entry. Arabic hamza: Yomitan puts a hamza on the text's first alif
  * (ألكتاب, كتإبهم) and never after a prefix (الاسلام); the import keys headwords with hamza alefs under a bare alif
  * instead (ArabicSupport's `HeadwordMarks`), so the two processors give nothing. Arabic alif maqsura: ى is written ي at
  * the end of every word of the text, not only of its last.
@@ -109,18 +129,8 @@ const replacedProcessors = {
             process: (str) => [str, str.replace(/ى(?=\s|$)/g, 'ي')],
         },
     },
-    tr: {
-        decapitalize: {
-            name: 'Decapitalize text',
-            description: 'IŞIK → ışık, İSTANBUL → istanbul',
-            process: (str) => [str, str.replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase()],
-        },
-        capitalizeFirstLetter: {
-            name: 'Capitalize first letter',
-            description: 'istanbul → İstanbul, ılık → Ilık',
-            process: (str) => [str, turkishUpperCase(str.charAt(0)) + str.slice(1)],
-        },
-    },
+    tr: turkishCase(),
+    az: turkishCase(),
     sh: {
         removeSerboCroatianAccentMarks: {
             name: 'Remove vowel accents',
@@ -222,7 +232,7 @@ function fallbackStep(d, rules, language) {
  * Turkic verb stem, which only the hidden dictionary form rule makes a word of, and the present tense mark that a
  * person ending leaves; the Swahili texts that a tense or an object prefix still has to come off.
  */
-const markedLanguages = new Set(['kk', 'ky', 'sw']);
+const markedLanguages = new Set(['kk', 'ky', 'az', 'sw']);
 
 const PRIVATE_USE_FIRST = 0xe000;
 const PRIVATE_USE_LAST = 0xf8ff;
@@ -247,19 +257,21 @@ function isMarkedStep(d, language) {
 
 /**
  * Conditions whose texts match only glossaries that carry one of the given part-of-speech tags among their definition
- * tags, by language; a glossary without definition tags matches as well. Wiktionary's Kazakh and Kyrgyz entries give
- * no part of speech in their rules and tag each definition instead (v, n, adj), so a verb read through its endings
- * (барды → бару) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a genitive reaches nouns,
- * names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller, mens → men "but").
- * Romanian article and agreement endings reach nominal words and forms (consiliul → consiliu, aflată → aflat, a form
- * of afla), not verbs or adverbs. Swahili verb prefixes reach verbs and forms (alisoma → soma), not nouns (wali, rice,
- * is no wa- + li-). Hungarian verb prefixes reach verbs and their forms (megtartottam → tartottam, a form of tart), not
- * nouns (idegen "foreign" is no ide- + gen "gene"). The Estonian negative forms reach the verb olema (pole → olema).
+ * tags, by language; a glossary without definition tags matches as well. Wiktionary's Kazakh, Kyrgyz and Azerbaijani
+ * entries give no part of speech in their rules and tag each definition instead (v, n, adj), so a verb read through its
+ * endings (барды → бару, gəldi → gəlmək) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a
+ * genitive reaches nouns, names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller,
+ * mens → men "but"). Romanian article and agreement endings reach nominal words and forms (consiliul → consiliu, aflată
+ * → aflat, a form of afla), not verbs or adverbs. Swahili verb prefixes reach verbs and forms (alisoma → soma), not
+ * nouns (wali, rice, is no wa- + li-). Hungarian verb prefixes reach verbs and their forms (megtartottam → tartottam, a
+ * form of tart), not nouns (idegen "foreign" is no ide- + gen "gene"). The Estonian negative forms reach the verb olema
+ * (pole → olema).
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
     ['kk', {v: ['v']}],
     ['ky', {v: ['v']}],
+    ['az', {v: ['v']}],
     ['no', {n: ['n', 'name', 'non-lemma']}],
     ['ro', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']}],
     ['sw', {v: ['v', 'non-lemma']}],
@@ -297,10 +309,10 @@ function tagsOf(d, language) {
  * least. Yomitan's Georgian rules chain and cut words down to a letter or two (ვადის → ვ), which would find only the
  * letters' entries. Wiktionary's Arabic adjectives and adverbs give none either (والطويلة → طويل), and the noun rules
  * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed. Wiktionary's Persian and Hebrew entries give
- * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least. Wiktionary's Kazakh and
- * Kyrgyz entries give none either: the app's nominal endings (cases, possessives, plurals, the person endings of
- * predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their definition tags
- * (`taggedRules`). Wiktionary's Welsh and Scottish Gaelic entries give none either; the app's mutation rules leave two
+ * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least. Wiktionary's Kazakh,
+ * Kyrgyz and Azerbaijani entries give none either: the app's nominal endings (cases, possessives, plurals, the person
+ * endings of predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their
+ * definition tags (`taggedRules`); Azerbaijani's leave three letters at least. Wiktionary's Welsh and Scottish Gaelic entries give none either; the app's mutation rules leave two
  * letters at least. Wiktionary's Finnish entries give none either; the app's clitic and possessive rules leave three
  * letters at least.
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
@@ -313,6 +325,7 @@ const untypedRules = new Map([
     ['he', {shortest: 2}],
     ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
+    ['az', {shortest: 3, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['cy', {shortest: 2}],
     ['ga', {shortest: 2}],
     ['gd', {shortest: 2}],

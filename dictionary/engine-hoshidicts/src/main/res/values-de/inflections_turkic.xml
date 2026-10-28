@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">Frage</string>
     <string name="inflection_turkic_possessive_2pl_label">euer</string>
     <string name="inflection_turkic_verbal_noun_label">Verbalsubstantiv</string>
+    <string name="inflection_turkic_past_copula_label">Vergangenheit der Kopula</string>
+    <string name="inflection_turkic_conditional_copula_label">Konditional der Kopula</string>
+    <string name="inflection_turkic_evidential_copula_label">Evidential der Kopula</string>
+    <string name="inflection_turkic_future_label">Futur</string>
+    <string name="inflection_turkic_evidential_label">evidentielle Vergangenheit</string>
+    <string name="inflection_turkic_necessity_label">Notwendigkeit</string>
+    <string name="inflection_turkic_participle_label">Partizip</string>
 </resources>

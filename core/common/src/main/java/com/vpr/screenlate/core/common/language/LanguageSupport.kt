@@ -578,6 +578,7 @@ val Language.support: LanguageSupport
         Language.FINNISH -> FinnishSupport
         Language.HUNGARIAN -> HungarianSupport
         Language.ESTONIAN -> EstonianSupport
+        Language.AZERBAIJANI -> AzerbaijaniSupport
     }
 
 /**

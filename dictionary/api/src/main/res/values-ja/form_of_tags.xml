@@ -27,12 +27,14 @@
     <string name="form_of_tag_aorist">アオリスト</string>
     <string name="form_of_tag_apocopic">語尾脱落形</string>
     <string name="form_of_tag_applicative">適用態</string>
+    <string name="form_of_tag_arabic">アラビア文字</string>
     <string name="form_of_tag_archaic">古語</string>
     <string name="form_of_tag_assertive">断定</string>
     <string name="form_of_tag_attributive">連体</string>
     <string name="form_of_tag_augmentative">指大形</string>
     <string name="form_of_tag_before_vowel">母音の前</string>
     <string name="form_of_tag_benefactive">受益</string>
+    <string name="form_of_tag_broken_form">内部変化形</string>
     <string name="form_of_tag_by_personal_gender">人の性別による</string>
     <string name="form_of_tag_cantonese">広東語</string>
     <string name="form_of_tag_causal_final">原因目的格</string>
@@ -63,9 +65,11 @@
     <string name="form_of_tag_continuous">継続</string>
     <string name="form_of_tag_contraction">縮約</string>
     <string name="form_of_tag_contrastive">対比</string>
+    <string name="form_of_tag_converb">副動詞</string>
     <string name="form_of_tag_count_form">計数形</string>
     <string name="form_of_tag_countable">可算</string>
     <string name="form_of_tag_counter">助数詞</string>
+    <string name="form_of_tag_cyrillic">キリル文字</string>
     <string name="form_of_tag_dated">古風</string>
     <string name="form_of_tag_dative">与格</string>
     <string name="form_of_tag_debitive">義務法</string>
@@ -94,6 +98,7 @@
     <string name="form_of_tag_essive_modal">様態様格</string>
     <string name="form_of_tag_eumhun">音訓</string>
     <string name="form_of_tag_euphemistic">婉曲</string>
+    <string name="form_of_tag_evidential">証拠法</string>
     <string name="form_of_tag_exaggerated">強調最上級</string>
     <string name="form_of_tag_female_equivalent">女性形</string>
     <string name="form_of_tag_feminine">女性</string>
@@ -106,6 +111,7 @@
     <string name="form_of_tag_future_i">未来第1式</string>
     <string name="form_of_tag_future_ii">未来第2式</string>
     <string name="form_of_tag_gangwon">江原</string>
+    <string name="form_of_tag_general">一般</string>
     <string name="form_of_tag_genitive">属格</string>
     <string name="form_of_tag_gerund">動名詞</string>
     <string name="form_of_tag_gerundive">動形容詞</string>
@@ -155,6 +161,7 @@
     <string name="form_of_tag_initialism">頭字語</string>
     <string name="form_of_tag_instructive">具格</string>
     <string name="form_of_tag_instrumental">具格</string>
+    <string name="form_of_tag_intensifier">強意</string>
     <string name="form_of_tag_internet">ネット</string>
     <string name="form_of_tag_interrogative">疑問</string>
     <string name="form_of_tag_intransitive">自動詞</string>
@@ -181,6 +188,7 @@
     <string name="form_of_tag_min_nan">閩南語</string>
     <string name="form_of_tag_misspelling">誤記</string>
     <string name="form_of_tag_mixed">混合</string>
+    <string name="form_of_tag_modal">様態</string>
     <string name="form_of_tag_morpheme">形態素</string>
     <string name="form_of_tag_motive_form">意図形</string>
     <string name="form_of_tag_name">名称</string>
@@ -193,6 +201,7 @@
     <string name="form_of_tag_non_attributive">非連体</string>
     <string name="form_of_tag_non_past">非過去</string>
     <string name="form_of_tag_non_prospective">非予期</string>
+    <string name="form_of_tag_non_subject">非主語形</string>
     <string name="form_of_tag_nonfinite">非定形</string>
     <string name="form_of_tag_nonstandard">非標準</string>
     <string name="form_of_tag_nonvirile">非男性人称</string>
@@ -208,14 +217,18 @@
     <string name="form_of_tag_object_singular">目的語単数</string>
     <string name="form_of_tag_object_third_person">目的語三人称</string>
     <string name="form_of_tag_objective">目的語形</string>
+    <string name="form_of_tag_obligative">義務法</string>
     <string name="form_of_tag_obsolete">廃語</string>
     <string name="form_of_tag_optative">願望法</string>
     <string name="form_of_tag_participle">分詞</string>
     <string name="form_of_tag_partitive">分格</string>
     <string name="form_of_tag_passive">受動態</string>
     <string name="form_of_tag_past">過去</string>
+    <string name="form_of_tag_past_future">過去未来</string>
     <string name="form_of_tag_pejorative">軽蔑的</string>
     <string name="form_of_tag_perfect">完了</string>
+    <string name="form_of_tag_perfect_i">完了第1式</string>
+    <string name="form_of_tag_perfect_ii">完了第2式</string>
     <string name="form_of_tag_perfective">完了体</string>
     <string name="form_of_tag_personal">人称</string>
     <string name="form_of_tag_pluperfect">過去完了</string>
@@ -267,6 +280,7 @@
     <string name="form_of_tag_slang">俗語</string>
     <string name="form_of_tag_south_korea">韓国</string>
     <string name="form_of_tag_southern">南方</string>
+    <string name="form_of_tag_specific">特定</string>
     <string name="form_of_tag_standard">標準語</string>
     <string name="form_of_tag_stressed">強勢形</string>
     <string name="form_of_tag_strong">強変化</string>

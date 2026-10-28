@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">疑問</string>
     <string name="inflection_turkic_possessive_2pl_label">あなたたちの</string>
     <string name="inflection_turkic_verbal_noun_label">動名詞</string>
+    <string name="inflection_turkic_past_copula_label">繋辞の過去</string>
+    <string name="inflection_turkic_conditional_copula_label">繋辞の条件</string>
+    <string name="inflection_turkic_evidential_copula_label">繋辞の伝聞</string>
+    <string name="inflection_turkic_future_label">未来</string>
+    <string name="inflection_turkic_evidential_label">伝聞過去</string>
+    <string name="inflection_turkic_necessity_label">義務</string>
+    <string name="inflection_turkic_participle_label">分詞</string>
 </resources>

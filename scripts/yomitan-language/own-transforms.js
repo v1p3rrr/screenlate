@@ -260,13 +260,14 @@ export const hebrewTransforms = {
 };
 
 /**
- * Kazakh and Kyrgyz endings, the app's own rules written from the grammar: a noun is stem [plural] [possessive] [case]
- * [predicative], a verb stem [voice] [negation] and then a tense, mood, participle or converb, a participle taking noun
- * endings after it; Kyrgyz attaches its question particle to the word (барасыңбы). Every ending comes in its
- * vowel-harmony and consonant variants, and also with the language's own letters as their Russian twins (-нын for
- * -ның), as OCR and keyboards write them; the import keys headwords under those twins too (`HeadwordMarks`). A stem
- * keeps two letters and a vowel at least; after an ending that starts with a vowel, a noun stem is also tried with its
- * last consonant as the dictionary writes it (аумағы → аумақ, кітабы → кітап).
+ * Kazakh, Kyrgyz and Azerbaijani endings, the app's own rules written from the grammar: a noun is stem [plural]
+ * [possessive] [case] [predicative], a verb stem [voice] [negation] and then a tense, mood, participle or converb, a
+ * participle taking noun endings after it; Kyrgyz and Azerbaijani attach the question particle to the word
+ * (барасыңбы, gəlirsənmi). Every ending comes in its vowel-harmony and consonant variants, and also with the
+ * language's own letters as their Russian twins (-нын for -ның), as OCR and keyboards write them; the import keys
+ * headwords under those twins too (`HeadwordMarks`). A stem keeps two letters (Azerbaijani three) and a vowel at
+ * least; after an ending that starts with a vowel, a noun stem is also tried with its last consonant as the
+ * dictionary writes it (аумағы → аумақ, кітабы → кітап, ayağı → ayaq).
  *
  * Every Yomitan rule applies to the word as written as well, so the steps that only continue another (negation, voice,
  * the present tense mark before its person ending, a verb stem's dictionary form) read a text that ends in a mark no
@@ -294,6 +295,7 @@ const turkicSlots = {
     please: {conditionsIn: [], conditionsOut: ['im']},
     pleaseStem: {conditionsIn: [], conditionsOut: ['vt'], leaves: TURKIC_VERB},
     predicative: {conditionsIn: ['q'], conditionsOut: ['cs', 'px', 'pl', 'pt', 'cv', 'n']},
+    copula: {conditionsIn: ['q', 'pc'], conditionsOut: ['cs', 'px', 'pl', 'pt', 'cv', 'n']},
     presentPerson: {conditionsIn: ['q'], conditionsOut: ['pr'], leaves: TURKIC_PRESENT},
     pastPerson: {conditionsIn: ['q'], conditionsOut: ['pc']},
     case: {conditionsIn: ['q', 'cs'], conditionsOut: ['px', 'pl', 'pt', 'n']},
@@ -318,6 +320,7 @@ const turkicSlots = {
  * @property {string} vowels the vowels, the Russian twins of the language's own included
  * @property {string} linkingVowels vowels an ending starts with only after a consonant (-ым after кітап, -м after бала)
  * @property {string} [glides] vowel letters that take a linking vowel as a consonant does (Kazakh у: оқуы, тауым)
+ * @property {number} [minStem] the letters a stem keeps at least, a vowel among them; 2 by default
  * @property {string} consonants the letters a stem ends in before an ending written with /C (кітап-ты, су-ды, not
  *   оқы-ды, which is a past tense)
  * @property {string} presentVowels what the present tense mark ends in before its person ending (бара-ды, сөйлей-ді)
@@ -336,13 +339,13 @@ const turkicSlots = {
  * @property {string} name
  * @property {string} example
  * @property {Record<string, string>} endings by kind (`turkicSlots`), each a space-separated list; an ending written
- *   with a slash follows only the letters after it (на/ыі: баласына, not бала-на), with /C only a consonant; one
- *   written with > takes the stem's letters after it back (уып>п: тауып from тап-)
+ *   with a slash follows only the letters after it (на/ыі: баласына, not бала-на), with /C only a consonant, with /V
+ *   only a vowel; one written with > takes the stem's letters after it back (уып>п: тауып from тап-)
  * @property {string[]} [afterNegation] participle endings that follow only the negation (Kazakh бар-ма-с)
  */
 
 /**
- * The transforms of [grammar]. Kazakh and Kyrgyz name their rules alike, so their labels are one set of strings
+ * The transforms of [grammar]. The Turkic languages name their rules alike, so their labels are one set of strings
  * (`sharedLabels`, generate-inflections.mjs); a rule's description lists its endings with an example, which needs no
  * translation.
  * @param {TurkicGrammar} grammar
@@ -354,10 +357,11 @@ function turkicTransforms(grammar) {
     const vowelClass = `[${grammar.vowels}]`;
     const consonantClass = `[^ ${grammar.vowels}${TURKIC_VERB}${TURKIC_PRESENT}]`;
     const beforeLinking = grammar.glides ? `(?:${consonantClass}|[${grammar.glides}])` : consonantClass;
-    /** Whether the last word of [text] has two characters and a vowel at least. */
+    const minStem = grammar.minStem ?? 2;
+    /** Whether the last word of [text] has [minStem] characters and a vowel at least. */
     const isStem = (text) => {
         const word = [...text.slice(text.lastIndexOf(' ') + 1)];
-        return word.length >= 2 && word.some((c) => vowels.has(c));
+        return word.length >= minStem && word.some((c) => vowels.has(c));
     };
     /** [ending] and, when it has letters of the language's own, the spelling with their Russian twins. */
     const spellings = (ending) => [...new Set([ending, [...ending].map((c) => grammar.twins[c] ?? c).join('')])];
@@ -405,7 +409,7 @@ function turkicTransforms(grammar) {
         const [ending, after] = item.split('/');
         const first = spelling[0];
         const contracted = grammar.contracted[ending];
-        const letters = after === 'C' ? grammar.consonants : after;
+        const letters = {C: grammar.consonants, V: grammar.vowels}[after] ?? after;
         if (letters) return [rule(spelling, slot, `[${[...new Set(spellings(letters).join(''))].join('')}]`)];
         if (contracted) return contracted.map((vowel) => rule(spelling, slot, consonantClass, (stem) => stem + vowel));
         if (slot === 'presentPerson') return [rule(spelling, slot, `[${grammar.presentVowels}]`)];
@@ -623,6 +627,79 @@ export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
         {id: 'reflexive', name: 'reflexive', example: 'жуунду', endings: {voice: 'ын ин ун үн н'}},
         {id: 'reciprocal', name: 'reciprocal', example: 'көрүштү', endings: {voice: 'ыш иш уш үш ш'}},
         {id: 'causative', name: 'causative', example: 'жаздырды', endings: {voice: 'дыр дир дур дүр тыр тир тур түр гыз гиз гуз гүз кыз киз куз күз т'}},
+    ],
+});
+
+/**
+ * Azerbaijani: two- and four-way vowel harmony (-lar, -lər; -ın, -in, -un, -ün), a buffer y or n after a vowel (ataya,
+ * atanın), k and q written y and ğ before a vowel (çörəyi → çörək, ayağı → ayaq). The present (-ır), the future
+ * (-acaq) and the evidential (-mış) are participles that take the person endings of predicates (gəlirəm, gələcəyik);
+ * the copula's past, conditional and evidential follow a predicate (evdəydi, gəlirdim), and the question particle is
+ * joined (gəlirsənmi). A verb stem becomes its infinitive in -maq or -mək by its last vowel, and ed-, ged- also et-,
+ * get- (edir → etmək). A stem keeps three letters at least: Wiktionary's tables list the forms of the two-letter
+ * stems (ol-, et-, de-).
+ */
+export const azerbaijaniTransforms = /* @__PURE__ */ turkicTransforms({
+    language: 'az',
+    vowels: 'aıoueəiöü',
+    // After a vowel an ending takes y or n first (ataya, atanın).
+    linkingVowels: 'aıoueəiöü',
+    consonants: 'bcçdfgğhxjkqlmnprsştvyz',
+    presentVowels: 'r',
+    twins: {},
+    hardened: {'ğ': 'q', 'y': 'k'},
+    contracted: {},
+    minStem: 3,
+    dictionaryForms: (stem) => {
+        const vowel = [...stem].reverse().find((c) => 'aıoueəiöü'.includes(c)) ?? 'a';
+        const ending = 'aıou'.includes(vowel) ? 'maq' : 'mək';
+        return stem.endsWith('d') ? [stem + ending, stem.slice(0, -1) + 't' + ending] : [stem + ending];
+    },
+    transforms: [
+        {id: 'question', name: 'question', example: 'gəlirsənmi', endings: {question: 'mı mi mu mü'}},
+        {id: 'plural', name: 'plural', example: 'kitablar, evlər', endings: {plural: 'lar lər'}},
+        {id: 'possessive 1sg', name: 'my', example: 'kitabım, atam', endings: {possessive: 'ım im um üm m'}},
+        {id: 'possessive 2sg', name: 'your', example: 'kitabın, atan', endings: {possessive: 'ın in un ün n'}},
+        {id: 'possessive 3rd', name: 'his, her, their', example: 'kitabı, atası', endings: {possessive: 'ı i u ü sı/V si/V su/V sü/V'}},
+        {id: 'possessive 1pl', name: 'our', example: 'kitabımız, atamız', endings: {possessive: 'ımız imiz umuz ümüz mız/V miz/V muz/V müz/V'}},
+        {id: 'possessive 2pl', name: 'your (pl.)', example: 'kitabınız, atanız', endings: {possessive: 'ınız iniz unuz ünüz nız/V niz/V nuz/V nüz/V'}},
+        {id: 'genitive', name: 'genitive', example: 'kitabın, atanın', endings: {case: 'ın in un ün nın/V nin/V nun/V nün/V'}},
+        {id: 'dative', name: 'dative', example: 'kitaba, ataya, atasına', endings: {case: 'a ə ya/V yə/V na/ıiuü nə/ıiuü'}},
+        {id: 'accusative', name: 'accusative', example: 'kitabı, atanı', endings: {case: 'ı i u ü nı/V ni/V nu/V nü/V'}},
+        {id: 'locative', name: 'locative', example: 'kitabda, atasında', endings: {case: 'da də nda/ıiuü ndə/ıiuü'}},
+        {id: 'ablative', name: 'ablative', example: 'kitabdan, atasından', endings: {case: 'dan dən ndan/ıiuü ndən/ıiuü'}},
+        {id: 'instrumental', name: 'instrumental', example: 'kitabla, atayla', endings: {case: 'la/C lə/C yla/V ylə/V'}},
+        {id: 'attributive locative', name: 'attributive locative', example: 'evdəki, atasındakı', endings: {case: 'dakı dəki ndakı/ıiuü ndəki/ıiuü'}},
+        {id: 'attributive', name: 'attributive', example: 'bugünkü, indiki', endings: {case: 'kı ki ku kü'}},
+        {id: 'manner', name: 'manner', example: 'azərbaycanca, mənimcə', endings: {case: 'ca cə'}},
+        {persons: [
+            ['1sg', '1st sg.', 'müəlliməm, gəlirəm, gəldim', 'am əm yam/V yəm/V', '', 'm'],
+            ['2sg', '2nd sg.', 'müəllimsən, gəlirsən, gəldin', 'san sən', '', 'n'],
+            ['3rd', '3rd person', 'müəllimdir, gəldilər', 'dır dir dur dür', '', 'lar lər'],
+            ['1pl', '1st pl.', 'müəllimik, gəlirik, gəldik', 'ıq ik uq ük yıq/V yik/V yuq/V yük/V', '', 'q k'],
+            ['2pl', '2nd pl.', 'müəllimsiniz, gəlirsiniz, gəldiniz', 'sınız siniz sunuz sünüz', '', 'nız niz nuz nüz'],
+        ]},
+        {id: 'past copula', name: 'past copula', example: 'evdəydi, gəlirdim', endings: {copula: 'dı di du dü ydı/V ydi/V ydu/V ydü/V'}},
+        {id: 'conditional copula', name: 'conditional copula', example: 'evdəysə, gəlirsə', endings: {copula: 'sa sə ysa/V ysə/V'}},
+        {id: 'evidential copula', name: 'evidential copula', example: 'evdəymiş, gəlirmiş', endings: {copula: 'mış miş muş müş ymış/V ymiş/V ymuş/V ymüş/V'}},
+        {id: 'past', name: 'past', example: 'gəldi, oxudu', endings: {past: 'dı di du dü'}},
+        {id: 'conditional', name: 'conditional', example: 'gəlsə, oxusa', endings: {conditional: 'sa sə'}},
+        {id: 'present', name: 'present', example: 'gəlir, oxuyur', endings: {participle: 'ır ir ur ür yır/V yir/V yur/V yür/V'}},
+        {id: 'future', name: 'future', example: 'gələcək, oxuyacaq', endings: {participle: 'acaq əcək yacaq/V yəcək/V'}},
+        {id: 'evidential', name: 'evidential', example: 'gəlmiş, oxumuş', endings: {participle: 'mış miş muş müş'}},
+        {id: 'necessity', name: 'necessity', example: 'gəlməli, oxumalı', endings: {participle: 'malı məli'}},
+        {id: 'participle', name: 'participle', example: 'gələn, oxuyan', endings: {participle: 'an ən yan/V yən/V'}},
+        {id: 'past participle', name: 'past participle', example: 'gəldiyi, oxuduğu', endings: {participle: 'dıq dik duq dük'}},
+        {id: 'aorist', name: 'aorist', example: 'gələr, oxuyar, gəlməz', endings: {participle: 'ar ər yar/V yər/V maz məz'}},
+        {id: 'verbal noun', name: 'verbal noun', example: 'gəlmə, oxuma', endings: {participle: 'ma mə'}},
+        {id: 'converb', name: 'converb', example: 'gəlib, oxuyaraq, gəlmədən', endings: {converb: 'ıb ib ub üb yıb/V yib/V yub/V yüb/V araq ərək yaraq/V yərək/V madan mədən arkən ərkən yarkən/V yərkən/V'}},
+        {id: 'until', name: 'until', example: 'gəlincə, oxuduqca', endings: {converb: 'ınca incə unca üncə yınca/V yincə/V yunca/V yüncə/V dıqca dikcə duqca dükcə'}},
+        {id: 'imperative', name: 'imperative', example: 'gəlin, gəlsin, gedək', endings: {imperative: 'ın in un ün yın/V yin/V yun/V yün/V ınız iniz unuz ünüz yınız/V yiniz/V yunuz/V yünüz/V sın sin sun sün sınlar sinlər sunlar sünlər aq ək yaq/V yək/V ım im um üm yım/V yim/V yum/V yüm/V'}},
+        {id: 'negative', name: 'negative', example: 'gəlmədi, gəlmir', endings: {negation: 'ma mə m m/C'}},
+        {id: 'passive', name: 'passive', example: 'yazıldı', endings: {voice: 'ıl il ul ül'}},
+        {id: 'reflexive', name: 'reflexive', example: 'geyindi, oxundu', endings: {voice: 'ın in un ün n'}},
+        {id: 'reciprocal', name: 'reciprocal', example: 'görüşdü', endings: {voice: 'ış iş uş üş ş'}},
+        {id: 'causative', name: 'causative', example: 'yazdırdı, oxutdu', endings: {voice: 'dır dir dur dür t'}},
     ],
 });
 

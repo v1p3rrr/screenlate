@@ -27,12 +27,14 @@
     <string name="form_of_tag_aorist">不定过去时</string>
     <string name="form_of_tag_apocopic">词尾脱落形</string>
     <string name="form_of_tag_applicative">施用式</string>
+    <string name="form_of_tag_arabic">阿拉伯字母</string>
     <string name="form_of_tag_archaic">古语</string>
     <string name="form_of_tag_assertive">断定</string>
     <string name="form_of_tag_attributive">定语</string>
     <string name="form_of_tag_augmentative">指大</string>
     <string name="form_of_tag_before_vowel">元音前</string>
     <string name="form_of_tag_benefactive">受益</string>
+    <string name="form_of_tag_broken_form">内部变化形</string>
     <string name="form_of_tag_by_personal_gender">按人的性别</string>
     <string name="form_of_tag_cantonese">粤语</string>
     <string name="form_of_tag_causal_final">原因目的格</string>
@@ -63,9 +65,11 @@
     <string name="form_of_tag_continuous">进行</string>
     <string name="form_of_tag_contraction">缩约</string>
     <string name="form_of_tag_contrastive">对比</string>
+    <string name="form_of_tag_converb">副动词</string>
     <string name="form_of_tag_count_form">计数形</string>
     <string name="form_of_tag_countable">可数</string>
     <string name="form_of_tag_counter">量词</string>
+    <string name="form_of_tag_cyrillic">西里尔字母</string>
     <string name="form_of_tag_dated">过时</string>
     <string name="form_of_tag_dative">与格</string>
     <string name="form_of_tag_debitive">义务式</string>
@@ -94,6 +98,7 @@
     <string name="form_of_tag_essive_modal">方式样格</string>
     <string name="form_of_tag_eumhun">音训</string>
     <string name="form_of_tag_euphemistic">委婉</string>
+    <string name="form_of_tag_evidential">示证式</string>
     <string name="form_of_tag_exaggerated">强调最高级</string>
     <string name="form_of_tag_female_equivalent">女性形式</string>
     <string name="form_of_tag_feminine">阴性</string>
@@ -106,6 +111,7 @@
     <string name="form_of_tag_future_i">将来时第一式</string>
     <string name="form_of_tag_future_ii">将来时第二式</string>
     <string name="form_of_tag_gangwon">江原</string>
+    <string name="form_of_tag_general">一般</string>
     <string name="form_of_tag_genitive">属格</string>
     <string name="form_of_tag_gerund">动名词</string>
     <string name="form_of_tag_gerundive">动形容词</string>
@@ -155,6 +161,7 @@
     <string name="form_of_tag_initialism">首字母缩略词</string>
     <string name="form_of_tag_instructive">指示格</string>
     <string name="form_of_tag_instrumental">工具格</string>
+    <string name="form_of_tag_intensifier">强调</string>
     <string name="form_of_tag_internet">网络</string>
     <string name="form_of_tag_interrogative">疑问</string>
     <string name="form_of_tag_intransitive">不及物</string>
@@ -181,6 +188,7 @@
     <string name="form_of_tag_min_nan">闽南语</string>
     <string name="form_of_tag_misspelling">误拼</string>
     <string name="form_of_tag_mixed">混合</string>
+    <string name="form_of_tag_modal">方式</string>
     <string name="form_of_tag_morpheme">语素</string>
     <string name="form_of_tag_motive_form">意图形</string>
     <string name="form_of_tag_name">名称</string>
@@ -193,6 +201,7 @@
     <string name="form_of_tag_non_attributive">非定语</string>
     <string name="form_of_tag_non_past">非过去</string>
     <string name="form_of_tag_non_prospective">非将然</string>
+    <string name="form_of_tag_non_subject">非主语形</string>
     <string name="form_of_tag_nonfinite">非限定形</string>
     <string name="form_of_tag_nonstandard">非标准</string>
     <string name="form_of_tag_nonvirile">非阳性人称</string>
@@ -208,14 +217,18 @@
     <string name="form_of_tag_object_singular">单数宾语</string>
     <string name="form_of_tag_object_third_person">第三人称宾语</string>
     <string name="form_of_tag_objective">宾语形</string>
+    <string name="form_of_tag_obligative">必要式</string>
     <string name="form_of_tag_obsolete">废弃</string>
     <string name="form_of_tag_optative">祈愿式</string>
     <string name="form_of_tag_participle">分词</string>
     <string name="form_of_tag_partitive">部分格</string>
     <string name="form_of_tag_passive">被动</string>
     <string name="form_of_tag_past">过去时</string>
+    <string name="form_of_tag_past_future">过去将来时</string>
     <string name="form_of_tag_pejorative">贬义</string>
     <string name="form_of_tag_perfect">完成时</string>
+    <string name="form_of_tag_perfect_i">完成时第一式</string>
+    <string name="form_of_tag_perfect_ii">完成时第二式</string>
     <string name="form_of_tag_perfective">完成体</string>
     <string name="form_of_tag_personal">人称</string>
     <string name="form_of_tag_pluperfect">过去完成时</string>
@@ -267,6 +280,7 @@
     <string name="form_of_tag_slang">俚语</string>
     <string name="form_of_tag_south_korea">韩国</string>
     <string name="form_of_tag_southern">南方</string>
+    <string name="form_of_tag_specific">特定</string>
     <string name="form_of_tag_standard">标准语</string>
     <string name="form_of_tag_stressed">重读</string>
     <string name="form_of_tag_strong">强变化</string>

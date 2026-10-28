@@ -27,12 +27,14 @@
     <string name="form_of_tag_aorist">부정과거</string>
     <string name="form_of_tag_apocopic">어말음 탈락형</string>
     <string name="form_of_tag_applicative">적용태</string>
+    <string name="form_of_tag_arabic">아랍 문자</string>
     <string name="form_of_tag_archaic">고어</string>
     <string name="form_of_tag_assertive">단정형</string>
     <string name="form_of_tag_attributive">관형형</string>
     <string name="form_of_tag_augmentative">확대형</string>
     <string name="form_of_tag_before_vowel">모음 앞</string>
     <string name="form_of_tag_benefactive">수혜</string>
+    <string name="form_of_tag_broken_form">내적 변화형</string>
     <string name="form_of_tag_by_personal_gender">사람의 성별에 따라</string>
     <string name="form_of_tag_cantonese">광둥어</string>
     <string name="form_of_tag_causal_final">원인목적격</string>
@@ -63,9 +65,11 @@
     <string name="form_of_tag_continuous">진행</string>
     <string name="form_of_tag_contraction">축약</string>
     <string name="form_of_tag_contrastive">대조</string>
+    <string name="form_of_tag_converb">부동사</string>
     <string name="form_of_tag_count_form">계수형</string>
     <string name="form_of_tag_countable">가산</string>
     <string name="form_of_tag_counter">단위 명사</string>
+    <string name="form_of_tag_cyrillic">키릴 문자</string>
     <string name="form_of_tag_dated">예스러운 말</string>
     <string name="form_of_tag_dative">여격</string>
     <string name="form_of_tag_debitive">의무법</string>
@@ -94,6 +98,7 @@
     <string name="form_of_tag_essive_modal">방식 양태격</string>
     <string name="form_of_tag_eumhun">음훈</string>
     <string name="form_of_tag_euphemistic">완곡</string>
+    <string name="form_of_tag_evidential">증거법</string>
     <string name="form_of_tag_exaggerated">강조 최상급</string>
     <string name="form_of_tag_female_equivalent">여성형</string>
     <string name="form_of_tag_feminine">여성</string>
@@ -106,6 +111,7 @@
     <string name="form_of_tag_future_i">미래 1식</string>
     <string name="form_of_tag_future_ii">미래 2식</string>
     <string name="form_of_tag_gangwon">강원</string>
+    <string name="form_of_tag_general">일반</string>
     <string name="form_of_tag_genitive">속격</string>
     <string name="form_of_tag_gerund">동명사</string>
     <string name="form_of_tag_gerundive">동형용사</string>
@@ -155,6 +161,7 @@
     <string name="form_of_tag_initialism">두문자어</string>
     <string name="form_of_tag_instructive">조격</string>
     <string name="form_of_tag_instrumental">도구격</string>
+    <string name="form_of_tag_intensifier">강조</string>
     <string name="form_of_tag_internet">인터넷</string>
     <string name="form_of_tag_interrogative">의문</string>
     <string name="form_of_tag_intransitive">자동사</string>
@@ -181,6 +188,7 @@
     <string name="form_of_tag_min_nan">민난어</string>
     <string name="form_of_tag_misspelling">오기</string>
     <string name="form_of_tag_mixed">혼합</string>
+    <string name="form_of_tag_modal">양태</string>
     <string name="form_of_tag_morpheme">형태소</string>
     <string name="form_of_tag_motive_form">의도형</string>
     <string name="form_of_tag_name">명칭</string>
@@ -193,6 +201,7 @@
     <string name="form_of_tag_non_attributive">비관형형</string>
     <string name="form_of_tag_non_past">비과거</string>
     <string name="form_of_tag_non_prospective">비예정</string>
+    <string name="form_of_tag_non_subject">비주어형</string>
     <string name="form_of_tag_nonfinite">비한정형</string>
     <string name="form_of_tag_nonstandard">비표준</string>
     <string name="form_of_tag_nonvirile">비남성 인칭</string>
@@ -208,14 +217,18 @@
     <string name="form_of_tag_object_singular">단수 목적어</string>
     <string name="form_of_tag_object_third_person">3인칭 목적어</string>
     <string name="form_of_tag_objective">목적어형</string>
+    <string name="form_of_tag_obligative">의무법</string>
     <string name="form_of_tag_obsolete">폐어</string>
     <string name="form_of_tag_optative">기원법</string>
     <string name="form_of_tag_participle">분사</string>
     <string name="form_of_tag_partitive">분격</string>
     <string name="form_of_tag_passive">수동태</string>
     <string name="form_of_tag_past">과거</string>
+    <string name="form_of_tag_past_future">과거 미래</string>
     <string name="form_of_tag_pejorative">경멸적</string>
     <string name="form_of_tag_perfect">완료</string>
+    <string name="form_of_tag_perfect_i">완료 1식</string>
+    <string name="form_of_tag_perfect_ii">완료 2식</string>
     <string name="form_of_tag_perfective">완료상</string>
     <string name="form_of_tag_personal">인칭</string>
     <string name="form_of_tag_pluperfect">과거완료</string>
@@ -267,6 +280,7 @@
     <string name="form_of_tag_slang">속어</string>
     <string name="form_of_tag_south_korea">남한</string>
     <string name="form_of_tag_southern">남부</string>
+    <string name="form_of_tag_specific">특정</string>
     <string name="form_of_tag_standard">표준어</string>
     <string name="form_of_tag_stressed">강세형</string>
     <string name="form_of_tag_strong">강변화</string>

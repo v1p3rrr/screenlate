@@ -99,9 +99,16 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili and estonian have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili, estonian and azerbaijani have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et", "az").inOrder()
+        val azerbaijani = built.single { it.sourceLanguage == "az" }
+        assertThat(azerbaijani.recommended).isTrue()
+        assertThat(azerbaijani.sha256).isEqualTo("2340f80d378e83708c4eae11bf78e3260b955a19b566278c5c6e292c93ee508f")
+        assertThat(azerbaijani.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/aze_news_2020_30K.tar.gz")
+        assertThat(azerbaijani.description(Locale.ENGLISH))
+            .startsWith("Leipzig Corpora Collection, Azerbaijani: how common words are in news")
         val estonian = built.single { it.sourceLanguage == "et" }
         assertThat(estonian.recommended).isTrue()
         assertThat(estonian.sha256).isEqualTo("399cf09f698aeb0ffec1e63ddc870b50f15a2394723fed3dcb85d0c697aecce0")
@@ -434,6 +441,26 @@ class CatalogFileTest {
         assertThat(forms.downloadUrl).isEqualTo(estonian.single { it.id == "wiktionary-et-en" }.downloadUrl)
         assertThat(catalog!!.mandatory(Language.ESTONIAN)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.ESTONIAN) }).isEqualTo(estonian)
+    }
+
+    @Test
+    fun `azerbaijani offers its wiktionaries, their word forms and frequencies, ticked, the forms mandatory, and paddle v6 ticked`() {
+        val azerbaijani = catalog!!.entries.filter { it.isFor(Language.AZERBAIJANI) }
+        assertThat(azerbaijani.filter { it.recommended }.map { it.id }).containsExactly(
+            "corpus-az", "paddle-v6-az", "wiktionary-az-en", "wiktionary-az-forms", "wiktionary-az-ru", "wiktionary-az-es",
+            "wiktionary-az-fr", "wiktionary-az-ko", "wiktionary-az-pl", "wiktionary-az-tr", "wiktionary-az-zh",
+            "wiktionary-az-transcription",
+        )
+        // Paddle v6 got 1.52% of the characters wrong against ML Kit's 4.99% and holds up over pictures; v5 drops every
+        // ə, so it is not offered.
+        assertThat(azerbaijani.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-aze", "tesseract-best-aze", "paddle-detector-v6-az",
+        )
+        val forms = azerbaijani.single { it.category == CatalogCategory.FORMS }
+        assertThat(forms.build).isEqualTo(BUILD_FORMS)
+        assertThat(forms.downloadUrl).isEqualTo(azerbaijani.single { it.id == "wiktionary-az-en" }.downloadUrl)
+        assertThat(catalog!!.mandatory(Language.AZERBAIJANI)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.AZERBAIJANI) }).isEqualTo(azerbaijani)
     }
 
     @Test

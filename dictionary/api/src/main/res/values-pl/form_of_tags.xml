@@ -27,12 +27,14 @@
     <string name="form_of_tag_aorist">aoryst</string>
     <string name="form_of_tag_apocopic">z apokopą</string>
     <string name="form_of_tag_applicative">aplikatyw</string>
+    <string name="form_of_tag_arabic">pismo arabskie</string>
     <string name="form_of_tag_archaic">archaiczny</string>
     <string name="form_of_tag_assertive">twierdzący</string>
     <string name="form_of_tag_attributive">atrybutywny</string>
     <string name="form_of_tag_augmentative">zgrubienie</string>
     <string name="form_of_tag_before_vowel">przed samogłoską</string>
     <string name="form_of_tag_benefactive">benefaktyw</string>
+    <string name="form_of_tag_broken_form">forma łamana</string>
     <string name="form_of_tag_by_personal_gender">według płci osoby</string>
     <string name="form_of_tag_cantonese">kantoński</string>
     <string name="form_of_tag_causal_final">kauzalis-finalis</string>
@@ -63,9 +65,11 @@
     <string name="form_of_tag_continuous">ciągły</string>
     <string name="form_of_tag_contraction">ściągnięcie</string>
     <string name="form_of_tag_contrastive">kontrastywny</string>
+    <string name="form_of_tag_converb">konwerb</string>
     <string name="form_of_tag_count_form">forma liczebnikowa</string>
     <string name="form_of_tag_countable">policzalny</string>
     <string name="form_of_tag_counter">klasyfikator</string>
+    <string name="form_of_tag_cyrillic">cyrylica</string>
     <string name="form_of_tag_dated">dawny</string>
     <string name="form_of_tag_dative">celownik</string>
     <string name="form_of_tag_debitive">tryb powinności</string>
@@ -94,6 +98,7 @@
     <string name="form_of_tag_essive_modal">esyw-modalis</string>
     <string name="form_of_tag_eumhun">znaczenie i czytanie</string>
     <string name="form_of_tag_euphemistic">eufemistyczny</string>
+    <string name="form_of_tag_evidential">ewidencjalny</string>
     <string name="form_of_tag_exaggerated">wzmocniony stopień najwyższy</string>
     <string name="form_of_tag_female_equivalent">forma żeńska</string>
     <string name="form_of_tag_feminine">rodzaj żeński</string>
@@ -106,6 +111,7 @@
     <string name="form_of_tag_future_i">czas przyszły I</string>
     <string name="form_of_tag_future_ii">czas przyszły II</string>
     <string name="form_of_tag_gangwon">Gangwon</string>
+    <string name="form_of_tag_general">ogólny</string>
     <string name="form_of_tag_genitive">dopełniacz</string>
     <string name="form_of_tag_gerund">gerundium</string>
     <string name="form_of_tag_gerundive">gerundivum</string>
@@ -155,6 +161,7 @@
     <string name="form_of_tag_initialism">skrótowiec</string>
     <string name="form_of_tag_instructive">instruktyw</string>
     <string name="form_of_tag_instrumental">narzędnik</string>
+    <string name="form_of_tag_intensifier">wzmacniający</string>
     <string name="form_of_tag_internet">internetowy</string>
     <string name="form_of_tag_interrogative">pytający</string>
     <string name="form_of_tag_intransitive">nieprzechodni</string>
@@ -181,6 +188,7 @@
     <string name="form_of_tag_min_nan">minnański</string>
     <string name="form_of_tag_misspelling">błędna pisownia</string>
     <string name="form_of_tag_mixed">mieszany</string>
+    <string name="form_of_tag_modal">modalny</string>
     <string name="form_of_tag_morpheme">morfem</string>
     <string name="form_of_tag_motive_form">forma celowa</string>
     <string name="form_of_tag_name">nazwa</string>
@@ -193,6 +201,7 @@
     <string name="form_of_tag_non_attributive">nieatrybutywny</string>
     <string name="form_of_tag_non_past">czas nieprzeszły</string>
     <string name="form_of_tag_non_prospective">nieprospektywny</string>
+    <string name="form_of_tag_non_subject">niepodmiotowy</string>
     <string name="form_of_tag_nonfinite">nieosobowy</string>
     <string name="form_of_tag_nonstandard">niestandardowy</string>
     <string name="form_of_tag_nonvirile">niemęskoosobowy</string>
@@ -208,14 +217,18 @@
     <string name="form_of_tag_object_singular">dopełnienie w l. poj.</string>
     <string name="form_of_tag_object_third_person">dopełnienie w 3. osobie</string>
     <string name="form_of_tag_objective">dopełnieniowy</string>
+    <string name="form_of_tag_obligative">tryb powinnościowy</string>
     <string name="form_of_tag_obsolete">przestarzały</string>
     <string name="form_of_tag_optative">tryb życzący</string>
     <string name="form_of_tag_participle">imiesłów</string>
     <string name="form_of_tag_partitive">partytyw</string>
     <string name="form_of_tag_passive">strona bierna</string>
     <string name="form_of_tag_past">czas przeszły</string>
+    <string name="form_of_tag_past_future">czas przyszły w przeszłości</string>
     <string name="form_of_tag_pejorative">pejoratywny</string>
     <string name="form_of_tag_perfect">perfectum</string>
+    <string name="form_of_tag_perfect_i">perfectum I</string>
+    <string name="form_of_tag_perfect_ii">perfectum II</string>
     <string name="form_of_tag_perfective">aspekt dokonany</string>
     <string name="form_of_tag_personal">osobowy</string>
     <string name="form_of_tag_pluperfect">czas zaprzeszły</string>
@@ -267,6 +280,7 @@
     <string name="form_of_tag_slang">slang</string>
     <string name="form_of_tag_south_korea">Korea Południowa</string>
     <string name="form_of_tag_southern">południowy</string>
+    <string name="form_of_tag_specific">szczegółowy</string>
     <string name="form_of_tag_standard">standardowy</string>
     <string name="form_of_tag_stressed">akcentowany</string>
     <string name="form_of_tag_strong">mocny</string>
