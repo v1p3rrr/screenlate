@@ -27,6 +27,7 @@ import com.vpr.screenlate.dictionary.api.catalog.BUILD_CORPUS_COUNTS
 import com.vpr.screenlate.dictionary.api.catalog.BUILD_FORMS
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
+import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
@@ -76,6 +77,9 @@ class DictionaryImportWorker @AssistedInject constructor(
 
     /** Languages for dictionaries whose index.json names none. */
     private val catalogEntries: List<CatalogEntry> by lazy { catalog.local() }
+
+    /** The notification shows no Cancel ([importArchive]). */
+    private var cancelHidden = false
 
     /**
      * Whether this run is counted as one the app did not die in ([DictionaryImports.markStopped]): set while it
@@ -309,7 +313,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             try {
                 bundled.copy(asset, archive)
                 val started = System.currentTimeMillis()
-                val dictionary = repository.import(archive, bundled = true, catalog = catalogEntries)
+                val dictionary = importArchive(archive, isBundled = true)
                 bundled.markInstalled(asset, dictionary.title, dictionary.revision)
                 Log.i(TAG, "Installed ${dictionary.title} in ${System.currentTimeMillis() - started} ms")
                 dictionary.title
@@ -334,7 +338,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         Log.i(TAG, "Importing a file of ${archive.length() shr 10} KB")
         setProgress(workDataOf(KEY_STAGE to STAGE_IMPORT))
         try {
-            return repository.import(archive, catalog = catalogEntries).title
+            return importArchive(archive).title
         } finally {
             discardInput()
         }
@@ -432,7 +436,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             started = System.currentTimeMillis()
             val titles = importEach(archives, backup::titleOf) { index, archive ->
                 setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT, KEY_PERCENT to index * 100 / archives.size))
-                repository.import(archive, catalog = catalogEntries).title
+                importArchive(archive).title
             }
             Log.i(TAG, "Imported ${titles.size} dictionaries in ${System.currentTimeMillis() - started} ms")
             return titles
@@ -537,7 +541,7 @@ class DictionaryImportWorker @AssistedInject constructor(
 
     private suspend fun importDownloaded(archive: File, formsOnly: Boolean): String {
         val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
-        return repository.import(archive, replaces = replaces, catalog = catalogEntries, formsOnly = formsOnly).title
+        return importArchive(archive, replaces = replaces, formsOnly = formsOnly).title
     }
 
     /**
@@ -561,7 +565,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             currentCoroutineContext().ensureActive()
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
             val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
-            val dictionary = repository.import(archive, replaces = replaces, catalog = catalogEntries)
+            val dictionary = importArchive(archive, replaces = replaces)
             if (dictionary.kind == DictionaryKind.FREQUENCY) {
                 Language.withDictionaries(entry.sourceLanguage).forEach { repository.preferSortDictionary(it, dictionary.id) }
             }
@@ -571,12 +575,32 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
     }
 
+    /**
+     * [DictionaryRepository.import] whose notification has no Cancel while the dictionary is registered: a cancel then
+     * comes too late, and the dictionary would be installed anyway. The task's next import shows Cancel again.
+     */
+    private suspend fun importArchive(archive: File, isBundled: Boolean = false, replaces: Long? = null, formsOnly: Boolean = false): DictionaryEntity {
+        if (cancelHidden) updateNotification(cancellable = true)
+        return repository.import(archive, isBundled, replaces, catalogEntries, formsOnly, onRegister = { updateNotification(cancellable = false) })
+    }
+
+    private suspend fun updateNotification(cancellable: Boolean) {
+        cancelHidden = !cancellable
+        try {
+            setForeground(foregroundInfo(shownName(), cancellable))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "Task $id: updating its notification failed: ${e.javaClass.simpleName}")
+        }
+    }
+
     override suspend fun getForegroundInfo(): ForegroundInfo = foregroundInfo(shownName())
 
     private fun shownName(): String =
         shownImportName(inputData.getString(KEY_NAME).orEmpty(), inputData.getString(KEY_ENTRY_ID), catalogEntries)
 
-    private fun foregroundInfo(name: String): ForegroundInfo {
+    private fun foregroundInfo(name: String, cancellable: Boolean = true): ForegroundInfo {
         val manager = applicationContext.getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(
             NotificationChannel(
@@ -592,7 +616,9 @@ class DictionaryImportWorker @AssistedInject constructor(
             .setProgress(0, 0, true)
             .setOngoing(true)
             .setSilent(true)
-            .addAction(0, applicationContext.getString(R.string.dictionary_import_cancel), ImportCancelReceiver.intent(applicationContext, id))
+            .apply {
+                if (cancellable) addAction(0, applicationContext.getString(R.string.dictionary_import_cancel), ImportCancelReceiver.intent(applicationContext, id))
+            }
             .build()
         // One notification per chain: two tasks run at a time.
         val chain = tags.tagValue(DictionaryImports.CHAIN_TAG_PREFIX)?.toIntOrNull() ?: 0
