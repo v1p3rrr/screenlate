@@ -122,6 +122,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB17 | Hold the bubble over any Screenlate page (Home, settings, a photo) → no Open Screenlate in the menu; over another app it is there; with nothing to copy, no language row and Screenlate in front, holding opens no menu and gives no vibration | N | M | 2026-10-28 (API 37, also on `main`; the vibration not seen, the emulator records none) |
 | BUB18 | Hold the docked bubble without moving it → the menu with the quick-language flags (two or more quick languages) and Open Screenlate (over another app), no copy items even after a scan; a flag switches the language and the docked glyph changes; over Screenlate with one quick language nothing opens; a move before the hold time still pulls the bubble out or moves the dock; the menu fits on screen at each dock side | N | M | |
 | BUB19 | The docked glyph is the own name's first letter: German D, Russian Р, Czech Č, Japanese あ. Quick languages English and Spanish → the bubble shows EN, after a switch ES; Russian with Polish → РУ and PL; Kazakh with Kyrgyz → Қ and К; adding or removing a star updates the glyph at once; with the e-ink theme the menu's codes are РУ, PL | N | U BubbleGlyphTest, M | — |
+| BUB20 | The debug build's selection menu item reads "Look up in Screenlate Dev" (in Russian "Найти в Screenlate Dev"), the release build's "Look up in Screenlate", so the two installed side by side can be told apart | N | U TranslationsTest, M | 2026-10-29 (English only; Russian by TranslationsTest) |
 
 ### OCR: text sources and recognition
 
@@ -433,7 +434,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC8 | A Yomitan collection export: list, checks, space check, import | O | U CollectionSpaceTest, YomitanBackupJvmTest, I YomitanBackupTest, M | 2026-10-14 (I) |
 | DIC9 | No ⟲ on the Dictionaries screen (removed 2026-10-16, owner); a reset an earlier version left interrupted still finishes at start (no spinner is expected: deleting ends before a cold start's first frame; owner, 2026-10-28) | F | U DictionaryResetTest, M | 2026-10-22 (the interrupted reset; its spinner not seen: deleting ends before a cold start's first frame) |
 | DIC10 | A deleted bundled dictionary stays deleted after an app update (`main` only) | F | U BundledDictionariesTest, M | 2026-10-14 |
-| DIC11 | Missing dictionary files → the home card; catalog ones downloaded again, copies an earlier version bundled too (`main`: bundled ones restored from the APK) | O | M | |
+| DIC11 | Missing dictionary files → the home card; catalog ones downloaded again, copies an earlier version bundled too (`main`: bundled ones restored from the APK); while the download waits or runs the card stays hidden, also after leaving the app and opening it again | O | U MissingDictionariesTest, M | 2026-10-29 (the card hidden while the download waited, also after leaving the app) |
 | DIC12 | Dictionary languages shown and changed by hand; a dictionary is used only for its word language | O | U DictionaryLanguagesTest, M | |
 | DIC13 | wordfreq frequency dictionary built on the device: the list downloads, the checksum passes, the dictionary imports and sorts English | O | U WordfreqDictionaryTest, M | 2026-10-14 |
 | DIC14 | Importing wty-en-ipa writes the transcription regions (shown in POP6) | O | U TranscriptionTagBanksTest, M | 2026-10-14 |
@@ -468,6 +469,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC44 | The Estonian word forms item: with Russian chosen and Wiktionary (et–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the et-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words (majas → maja); with et-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
 | DIC45 | The Azerbaijani word forms item: with Russian chosen and Wiktionary (az–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the az-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words; with az-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
 | DIC46 | The Uzbek word forms item: with Russian chosen and Wiktionary (uz–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the uz-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words; with uz-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
+| DIC47 | The import notification has no Cancel while its dictionary is registered (the last step, after the archive is read): the notification polled with `dumpsys notification --noredact` shows Cancel during the download and the import and none in the registration; the task's next archive gets Cancel back; the task card keeps its Cancel | N | I DictionaryRepositoryTest (2026-10-29), M | 2026-10-29 (one archive: the next archive and the task card not seen) |
+| DIC48 | The PaddleOCR text detector is named "PaddleOCR v6 text detector" (v5 the same) in the task cards, the "Waiting (N): …" list and the notification, in every locale, with no comma in it | N | U CatalogFileTest, M | 2026-10-29 (English: v5 in the damaged-models card, the task card and the notification) |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -490,7 +493,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG14 | Character dictionaries ticked on the download screen: KANJIDIC for Japanese (in each chosen gloss language that has one), CC-CEDICT Hanzi for Chinese, Unihan Hanja for Korean; each can be unticked | F | M | 2026-10-18 |
 | LNG15 | Kazakh setup: the download screen offers Wiktionary in six gloss languages (English, Russian, French, Korean, Polish, Chinese), the transcriptions, the Leipzig list and PaddleOCR's Cyrillic model ticked, Tesseract kaz unticked; the flag is Kazakhstan's and the bubble shows Қ | F | U CatalogFileTest, M | 2026-10-20 |
 | LNG16 | Kyrgyz setup: the download screen offers Wiktionary, the transcriptions, the Leipzig list and PaddleOCR's Cyrillic model ticked, Tesseract kir fast and accurate unticked; the flag is Kyrgyzstan's and the bubble shows Ң | F | U CatalogFileTest, M | 2026-10-20 |
-| LNG17 | Every language: under each Tesseract model, in Bubble → On-device model and on the download screen, "Often misreads text on busy screens; cloud recognition is more accurate." (Thai, Khmer, Georgian, a Latin language); PaddleOCR models have no such line | O | U OcrModelsTest, M | 2026-10-22 (Thai and Khmer only) |
+| LNG17 | Every language: under each Tesseract model, in Bubble → On-device model and on the download screen, "Often misreads text on busy screens; cloud recognition is more accurate." (Thai, Khmer, Georgian, a Latin language); PaddleOCR models have no such line | O | U OcrModelsTest, M | 2026-10-29 (Georgian and Lithuanian in Bubble → On-device model), 2026-10-22 (Thai and Khmer only) |
 | LNG18 | Swedish setup: the download screen offers Wiktionary in eleven gloss languages, the transcriptions and wordfreq ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract swe fast and accurate unticked; the flag is Sweden's and the bubble shows Å | F | U CatalogFileTest, M | 2026-10-22 |
 | LNG19 | Norwegian setup: the download screen offers Wiktionary nb–en, nb–ja, nb–pl, nb–zh, no–ru, no–fr and no–vi ticked, no–zh and the Nynorsk pairs (nn–en, described "Norwegian Nynorsk → English") unticked, Bokmål's transcription and wordfreq ticked; ML Kit is the main model, PaddleOCR v6 unticked and marked "more accurate", PaddleOCR v5 Latin and Tesseract nor fast and accurate unticked; the flag is Norway's and the bubble shows Ø | F | U CatalogFileTest, generate.test.mjs, M | 2026-10-22 |
 | LNG20 | Danish setup: the download screen offers Wiktionary into English, Russian, French, Japanese, Polish, Turkish and Chinese, the transcription and wordfreq ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract dan fast and accurate unticked; the flag is Denmark's and the bubble shows Æ | F | U CatalogFileTest, M | 2026-10-22 |
@@ -510,6 +513,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG34 | Estonian setup: the download screen ticks Wiktionary into English, the word frequency (Leipzig news) and the transcription; with Wiktionary (et–en) unticked, the word forms item is mandatory; ML Kit is the main model, PaddleOCR v6 ticked and marked "More accurate", Tesseract est and PaddleOCR v5 unticked; the flag is Estonia's and the bubble shows Õ | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 | LNG35 | Azerbaijani setup: the download screen ticks Wiktionary into English, the word frequency (Leipzig news) and the transcription; with Wiktionary (az–en) unticked, the word forms item is mandatory; ML Kit is the main model, PaddleOCR v6 ticked and marked "More accurate", Tesseract aze unticked, PaddleOCR v5 not offered; the flag is Azerbaijan's and the bubble shows Ə | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 | LNG36 | Uzbek setup: the download screen ticks Wiktionary into English and the word frequency (Leipzig news), no transcription; with Wiktionary (uz–en) unticked, the word forms item is mandatory; ML Kit is the main model, PaddleOCR v6 and Tesseract uzb unticked and none marked "More accurate", PaddleOCR v5 not offered; the flag is Uzbekistan's and the bubble shows O | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
+| LNG37 | The line under the download button gives the space after import (`CatalogEntry.installedBytes`): measured sizes from `catalog/installed-sizes.json` scaled to the current archive, else term ×2.2, kanji ×3, frequency ×10, pitch and IPA ×10.5, a built frequency dictionary up to 12 MB; the free space check takes a measured size plus a quarter or the largest share measured (`installedBytesAtMost`) plus the largest archive; after the import the dictionaries take about what the line said (Chinese with its defaults) | N | U CatalogParseTest, CatalogFileTest, LanguageSetupTest, M | 2026-10-29 (Chinese defaults: 69 MB shown and taken) |
 
 ### SET: settings, backup, appearance
 
@@ -683,6 +687,30 @@ mutation exception tests (137) passed again.
   "Bi. Amina."), as before, now with the curly quotes.
 - The emulator's active language (Japanese) and engines (both) restored afterwards.
 
+### 2026-10-29, `claude/app-fixes-1028` (0.2.3-7c83e9e3 with the size work on top, then 0.2.3-2a1a579d's code), Pixel_10_Pro (API 37)
+
+Scope: BUB20, DIC11, DIC47, DIC48, LNG17, LNG37 (new or changed). Results: passed after one change (LNG37).
+- BUB20: "voda" in AnkiDroid's note editor (shared to it, discarded after) → the selection menu lists "Look up in
+  Screenlate" (the release build) and "Look up in Screenlate Dev"; the second opened the debug build's search.
+- DIC11: wty-ka-ipa's directory moved aside → Home "Dictionaries whose files are missing: wty-ka-ipa"; Wi-Fi and data
+  off, Download again → the card gone, the task waiting for a network; Back out of the app (no MainActivity left) and
+  opened again → still no card. With Wi-Fi back it downloaded (422 KB) and registered; the card stayed gone.
+- DIC47: that import with the notification polled every 0.2 s: Cancel from the start through the download and the
+  engine import (5.1 s), a notification without Cancel from 719.19 s (registration logged at 719.25 s), gone at
+  719.70 s. A task with several archives was not tried.
+- DIC48: paddle-detector-v5's model file truncated → Home "Recognition models whose files are damaged: PaddleOCR v5
+  text detector"; offline, Download again → the task card "Waiting for a network: PaddleOCR v5 text detector"; online
+  the notification read "PaddleOCR v5 text detector"; the model was installed again (4,744,612 bytes).
+- LNG17: Georgian and Lithuanian in Text recognition → On-device model: both Tesseract models carry "Often misreads text
+  on busy screens; cloud recognition is more accurate."; PaddleOCR v5 and v6 none.
+- LNG37: Chinese's download screen ticked CC-CEDICT, wordfreq and CC-CEDICT Hanzi: "Download (14 MB)", "About 43 MB
+  on the phone after import" with the shares per kind; downloaded, they took 33.4, 22.2 and 12.1 MB (69 MB; the turn-off
+  dialog said 69 MB too). With the measured sizes (`installed-sizes.json`) the same screen says "About 69 MB". Chinese
+  was turned off with its files deleted afterwards.
+- `DictionaryRepositoryTest` (instrumented, `:dictionary:api` with its own test package): 18 of 18, the new
+  `registrationHookRunsBeforeTheDictionaryIsRegistered` among them.
+- Emulator left with Japanese active, the languages as before (Korean was made active once by a tap and back),
+  airplane mode off.
 ### 2026-10-29, `languages/uz` (`b1ab89a0` and the uncommitted Finnish change), Pixel_10_Pro (API 37)
 
 Scope: the first checks of Uzbek (LNG36, DIC46, OCR52, LK82, POP50, AUD37, ANK44) through the download screen, the
