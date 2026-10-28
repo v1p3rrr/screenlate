@@ -124,8 +124,8 @@ the details.
   cloud recognition and ML Kit writing “Karibu!” as "Karibu!", so a note's sentence there starts or ends at the ".
   Open for the owner: the plan's questions 28-34 (decided provisionally and built).
 - Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
-  to check and merge: Welsh (`languages/cy`) ready; Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`)
-  follow. Technical choices changed while building are marked provisional in the plan's rows and changelog.
+  to check and merge: Welsh (`languages/cy`) merged; Irish (`languages/ga`) ready; Scottish Gaelic
+  (`languages/gd`) follows. Technical choices changed while building are marked provisional in the plan's rows and changelog.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -494,6 +494,16 @@ Hungarian reuses); the apostrophes of mae'r kept inside the word; abbreviations;
 PaddleOCR v5 and v6 marked more accurate; the Welsh flag; fonts with ŵ ŷ; Wiktionary first, titles without the
 circumflex. Checked on the emulator (LNG29, OCR45, LK75, POP43, AUD30, ANK37). Left as limits: the French edition's
 rows that name another word (nghath shows cathod first), dwr finds twr.
+
+Irish (`languages/ga`, 2026-10-28, on `languages/main` `e3776224`): our own mutation rules in place of Yomitan's
+noun eclipsis (lenition, eclipsis, t and h before a vowel, the lowercase prefix before a capital: nGaillimh, tSín,
+hÉireann; one per word, any part of speech), the build failing when Yomitan's Irish rules change; their names in all
+14 locales; 10 common words left as written (chun, thar, cheana), chosen on Leipzig's Irish news corpus; the
+dictionaries' mutation rows under the rules' names, the French edition's radical rows ignored; d', m', b' elided as
+French l'; Gaelic type's dotted consonants read with h (ḃean → bhean); both apostrophes; abbreviations; Tesseract gle
+and PaddleOCR v5 and v6 listed, none marked; Ireland's flag; Lingua Libre first. Checked on the emulator (LNG30,
+OCR46, LK76, POP44, AUD31, ANK38). Found there, open for the owner: cloud recognition can give a line's last word
+no space ("Cheannaigh sítorthaí" in a note), for any language; the plan's follow-up and `notes/ocr-engines.md`.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
