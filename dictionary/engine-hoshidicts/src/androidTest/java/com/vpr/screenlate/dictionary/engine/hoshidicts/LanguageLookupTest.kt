@@ -1060,8 +1060,10 @@ class LanguageLookupTest {
         // Gaelic type and the other apostrophe.
         assertThat(all("ḃean")).containsExactly("bean")
         assertThat(first("d’fhág").term.expression).isEqualTo("fág")
-        // Irish words are looked up with the fada as written.
-        assertThat(all("fag")).isEmpty()
+        // A word without the fada finds the word with it, as in every Latin-script language but Vietnamese; so does
+        // hÉireann read without it, through the h-prothesis rule.
+        assertThat(all("fag")).containsExactly("fág")
+        assertThat(all("hEireann")).containsExactly("Éire")
     }
 
     /**

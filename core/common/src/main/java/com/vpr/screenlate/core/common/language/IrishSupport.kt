@@ -7,7 +7,7 @@ import com.vpr.screenlate.core.common.Language
  * eclipsis, t and h before a vowel: an bhean → bean, i nGaillimh → Gaillimh, an t-uisce → uisce, na hÉireann →
  * Éireann), and the dictionaries' mutation rows show under the same names ([formTagRules]). Elided d', m' and b' are
  * looked up as French l' is (d'fhág → fhág → fág); apostrophes match each other. Irish in Gaelic type (ḃean) is also
- * tried with consonant + h, in any text. Words are looked up with their marks as written: Irish text keeps the fada.
+ * tried with consonant + h, in any text. A word without the fada also finds the word with it ([foldsMarks]).
  */
 object IrishSupport : SpacedLanguageSupport() {
     override val language = Language.IRISH
