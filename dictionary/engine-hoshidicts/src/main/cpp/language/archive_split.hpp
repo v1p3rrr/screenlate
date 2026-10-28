@@ -39,6 +39,10 @@ struct HeadwordMarks {
   // word is found under: text written without them finds the words with them.
   std::string letter_marks;
   std::string letter_bases;
+  // Whether every headword and form is also found without any mark over or under its Latin and Cyrillic letters, with
+  // the letters Unicode does not decompose (ø ł ı, ғ қ ө) as their base letters: text written without them finds the
+  // words with them, after the words it spells as written.
+  bool fold_marks = false;
 };
 
 class MarkStripper {
@@ -53,6 +57,13 @@ class MarkStripper {
   std::vector<std::string> keys(std::string_view text) const;
 
   bool every_headword() const { return every_headword_; }
+
+  // Whether headwords with definitions get keys of their own: they carry the marks, or marks are folded.
+  bool keys_headwords() const { return every_headword_ || fold_marks_; }
+
+  // With [HeadwordMarks::fold_marks], [text] and its [keys] folded ([folded]), each once, those that are [text] or
+  // among [keys] left out; otherwise none.
+  std::vector<std::string> folded_keys(std::string_view text, const std::vector<std::string>& keys) const;
 
   bool lemmas_as_written() const { return lemmas_as_written_; }
 
@@ -78,11 +89,17 @@ class MarkStripper {
   std::vector<MarkSet> letters_;
   std::vector<int32_t> bases_;
   bool every_headword_;
+  bool fold_marks_;
   bool lemmas_as_written_;
   bool forms_in_script_;
   Replacements replacements_;
   Replacements further_replacements_;
 };
+
+// [text] without the marks over or under its Latin and Cyrillic letters, those Unicode does not decompose (ø ł ı, ғ қ
+// ө) as their base letters, composed again (NFC): fűzfa, fúzfa → fuzfa, Łódź → Lodz, Қазақстан → Казакстан, ёлка →
+// елка. Letters of their own without a mark (æ ß ə ŋ, і ә һ) and other scripts stay. Empty when nothing changes.
+std::string folded(std::string_view text);
 
 struct ArchiveSplit {
   // Whether [output] holds the archive to import instead of the original: one without the form-of rows.
@@ -112,6 +129,8 @@ inline constexpr std::string_view kFormsOnlyTitleSuffix = " (forms)";
 // unless [HeadwordMarks::lemmas_as_written]. A form written with a romanization or note after it, or with two
 // spellings, is keyed by its words; one of an unfilled template by none, and one outside the language's script by none
 // with [HeadwordMarks::forms_in_script]. Inflection template names among a form's tags (ar-infl-a) are dropped.
+// With [HeadwordMarks::fold_marks], every headword with definitions and every form is also found under its folded
+// spellings ([MarkStripper::folded_keys]) as a respelling, and every term bank is read for them.
 // With [forms_only] (the "Word forms" item of a language whose forms only the English Wiktionary dictionary lists),
 // the definitions are left out as well: nothing is written to [output], as hoshidicts imports no dictionary without
 // entries; the table and [ArchiveSplit::index] make the dictionary, and every row with a form-of item counts as a

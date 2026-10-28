@@ -538,6 +538,19 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
+    fun `every Latin- and Cyrillic-script language but Vietnamese folds marks, no other`() {
+        assertThat(all.where { it.foldsMarks }).containsExactly(
+            Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE,
+            Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.CZECH, Language.INDONESIAN,
+            Language.MALAY, Language.FILIPINO, Language.RUSSIAN, Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN,
+            Language.BELARUSIAN, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH,
+            Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO,
+            Language.ALBANIAN, Language.SWAHILI, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC, Language.FINNISH,
+            Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK,
+        )
+    }
+
+    @Test
     fun `only Japanese respells the text and converts romaji`() {
         for (text in listOf("1人", "人々", "ヤッタ", "東京・大阪")) {
             assertThat(all.where { it.spellingVariants(MappedText.identity(text)).isNotEmpty() })

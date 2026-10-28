@@ -631,7 +631,7 @@ class LanguageLookupTest {
     )
 
     @Test
-    fun swedishFindsFormRowsFromCapitalsAndKeepsTheMarksOfItsLetters() = runTest {
+    fun swedishFindsFormRowsFromCapitalsAndWordsWithoutTheMarksOfTheirLettersAfterTheWordsAsWritten() = runTest {
         val imported = engine.import(swedishDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
         val swedish = LookupOptions(language = Language.SWEDISH)
@@ -641,10 +641,11 @@ class LanguageLookupTest {
         assertThat(house.term.expression).isEqualTo("hus")
         assertThat(house.matched).isEqualTo("Huset")
         assertThat(all("läser")).contains("läsa")
-        // å and ä are letters of their own: a word without the ring or the dots is another word.
+        // A word without the ring or the dots finds the word with them, after the word written as it is.
         assertThat(all("år")).containsExactly("år")
-        assertThat(all("ar")).containsExactly("ar")
-        assertThat(all("lasa")).isEmpty()
+        assertThat(all("ar")).containsExactly("ar", "år").inOrder()
+        assertThat(all("lasa")).containsExactly("läsa")
+        assertThat(all("laser")).contains("läsa")
     }
 
     /** Rows as Wiktionary's Swedish exports write them: form rows naming their lemma, two words that differ in å. */
@@ -686,9 +687,9 @@ class LanguageLookupTest {
             .flatMap { result -> result.term.glossaries.map { it.content } }.joinToString()
         assertThat(harm).contains("harm")
         assertThat(harm).doesNotContain("but")
-        // å and ø are letters of their own.
+        // A word without the ring finds the word with it.
         assertThat(all("år")).containsExactly("år")
-        assertThat(all("ar")).isEmpty()
+        assertThat(all("ar")).containsExactly("år")
     }
 
     /**
@@ -714,7 +715,7 @@ class LanguageLookupTest {
     )
 
     @Test
-    fun danishFindsFormRowsAndGenitivesFromCapitalsAndKeepsTheMarksOfItsLetters() = runTest {
+    fun danishFindsFormRowsAndGenitivesFromCapitalsAndWordsWithoutTheRingAfterTheWordsAsWritten() = runTest {
         val imported = engine.import(danishDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
         val danish = LookupOptions(language = Language.DANISH)
@@ -726,9 +727,10 @@ class LanguageLookupTest {
         // Wiktionary lists Danish genitives as form rows.
         assertThat(all("Dagens")).contains("dag")
         assertThat(all("læser")).contains("læse")
-        // æ, ø and å are letters of their own: a word without them is another word.
+        // A word without the ring finds the word with it, after the word written as it is; æ is a letter of its own, no
+        // a with a mark.
         assertThat(all("år")).containsExactly("år")
-        assertThat(all("ar")).containsExactly("ar")
+        assertThat(all("ar")).containsExactly("ar", "år").inOrder()
         assertThat(all("lase")).isEmpty()
     }
 
@@ -1279,15 +1281,20 @@ class LanguageLookupTest {
         assertThat(engine.lookup("kigén", hungarian)).isEmpty()
         assertThat(all("-ban")).containsExactly("-ban")
 
-        // ő and ű that recognition read as ö and ü (ű also as ú) are tried for words from OCR only, the word as read first.
+        // A word without marks finds the words with them, in any text, after the word written as it is; forms too.
+        assertThat(all("fuzfa")).containsExactly("fűzfa")
+        assertThat(all("ot")).containsExactly("öt", "őt")
+        assertThat(all("el")).containsExactly("el", "él").inOrder()
+        assertThat(all("fuzfat")).containsExactly("fűzfa")
+        // A wrong mark (ő and ű read as ö and ü, ű also as ú) is folded for words from OCR only, the word as read first.
         val ocr = hungarian.copy(fromOcr = true)
         assertThat(engine.lookup("füzfa", hungarian)).isEmpty()
         assertThat(all("füzfa", ocr)).containsExactly("fűzfa")
-        // The built-in recognizer also reads ű as ú.
         assertThat(all("fúzfa", ocr)).containsExactly("fűzfa")
         assertThat(engine.lookup("fúzfa", hungarian)).isEmpty()
         assertThat(all("öt")).containsExactly("öt")
         assertThat(all("öt", ocr)).containsExactly("öt", "őt").inOrder()
+        assertThat(all("él", ocr)).containsExactly("él", "el").inOrder()
     }
 
     /**
@@ -1312,7 +1319,10 @@ class LanguageLookupTest {
               ["fűzfa","","n","",0,["willow"],11,""],
               ["öt","","num","",0,["five"],12,""],
               ["őt","","pron","",0,["him, her"],13,""],
-              ["-ban","","suf","",0,["in"],14,""]
+              ["-ban","","suf","",0,["in"],14,""],
+              ["el","","adv","",0,["away"],15,""],
+              ["él","","v","",0,["to live"],16,""],
+              ["fűzfát","","non-lemma","",0,[["fűzfa",["accusative singular"]]],17,""]
             ]
         """.trimIndent().toByteArray(),
     )
@@ -1336,7 +1346,8 @@ class LanguageLookupTest {
         assertThat(all("on")).containsExactly("olema")
         assertThat(engine.lookup("polegi", estonian)).isEmpty()
 
-        // õ that recognition read as ö is tried for words from OCR only, the word as read first.
+        // A word without the tilde finds the word with it in any text; ö for õ is folded for words from OCR only.
+        assertThat(all("mote")).containsExactly("mõte")
         val ocr = estonian.copy(fromOcr = true)
         assertThat(engine.lookup("möte", estonian)).isEmpty()
         assertThat(all("möte", ocr)).containsExactly("mõte")

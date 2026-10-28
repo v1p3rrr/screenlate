@@ -434,6 +434,15 @@ interface LanguageSupport {
      */
     val headwordMarks: HeadwordMarks? get() = null
 
+    /**
+     * Whether words are also found without any mark over or under their letters: the import keys every headword and
+     * form also without them (the letters Unicode does not decompose, ø ł ı ғ қ ө, as their base letters), so text
+     * written without them finds the words with them, after the words it spells as written; text from OCR is also
+     * looked up without them, which a wrong mark needs (fúzfa for fűzfa). The Latin- and Cyrillic-script languages;
+     * Vietnamese, whose marks are tones, does not.
+     */
+    val foldsMarks: Boolean get() = ocrScript == OcrScript.LATIN || ocrScript == OcrScript.CYRILLIC
+
     /** A dictionary's reading as entries show it, without notations it adds ("xíng (xing²)" → "xíng"). */
     fun displayReading(reading: String): String = reading
 

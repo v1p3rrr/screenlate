@@ -1235,9 +1235,9 @@ test('welsh ý and û are tried as ŷ and ŵ for words from ocr only', () => {
     // App text and typed text are looked up as written.
     assert.ok(!queried('cy', 'tý').has('tŷ'));
     assert.ok(!queried('cy', 'tûr').has('tŵr'));
-    // Other languages read the same either way.
-    for (const [language, word] of [['en', 'tý'], ['tr', 'IŞIK'], ['sw', 'alisoma'], ['ro', 'şi']]) {
-        assert.deepEqual(queriedFromOcr(language, word), queried(language, word), language);
+    // Other languages try no ŷ or ŵ.
+    for (const [language, word] of [['en', 'tý'], ['en', 'tûr'], ['ga', 'tý']]) {
+        assert.ok(![...queriedFromOcr(language, word)].some((text) => /[ŷŵŶŴ]/.test(text)), language);
     }
 });
 
@@ -1644,40 +1644,38 @@ test('hungarian prefixes leave three letters and come off once', () => {
     assert.ok(!queried('hu', 'hazamegy').has('hazagy'));
 });
 
-test('hungarian ö and ü are tried as ő and ű for words from ocr only, as read first', () => {
-    assert.ok(queriedFromOcr('hu', 'füzfa').has('fűzfa'));
-    // The built-in recognizer also reads ű as ú.
-    assert.ok(queriedFromOcr('hu', 'fúzfa').has('fűzfa'));
-    assert.ok(queriedFromOcr('hu', 'húvös').has('hűvös'));
-    assert.ok(queriedFromOcr('hu', 'úr').has('úr'));
-    assert.ok(queriedFromOcr('hu', 'Úr').has('Űr'));
-    assert.ok(queriedFromOcr('hu', 'öt').has('őt'));
-    assert.ok(queriedFromOcr('hu', 'öt').has('öt'));
-    assert.ok(queriedFromOcr('hu', 'Öt').has('Őt'));
-    assert.ok(queriedFromOcr('hu', 'ÖSZ').has('ŐSZ'));
-    // Every combination of the first three: tükörfürö gives tűkörfürö, tükőrfürö, tűkőrfűrö and the rest.
-    const texts = queriedFromOcr('hu', 'tükörfürö');
-    for (const text of ['tűkörfürö', 'tükőrfürö', 'tükörfűrö', 'tűkőrfűrö']) {
-        assert.ok(texts.has(text), text);
+test('text from ocr is also looked up without the marks of its latin and cyrillic letters, as read first', () => {
+    // A mark recognition reads wrong: fúzfa and füzfa for fűzfa, möte for mõte.
+    assert.ok(queriedFromOcr('hu', 'fúzfa').has('fuzfa'));
+    assert.ok(queriedFromOcr('hu', 'füzfa').has('fuzfa'));
+    assert.ok(queriedFromOcr('et', 'möte').has('mote'));
+    // Every mark of the text, of capitals too, and the letters Unicode does not decompose.
+    for (const [language, text, folded] of [
+        ['hu', 'ŐSZ', 'OSZ'], ['hu', 'öt ünnep', 'ot unnep'], ['pl', 'Łódź', 'Lodz'], ['cs', 'příliš', 'prilis'],
+        ['no', 'blåbærsyltetøy', 'blabærsyltetoy'], ['tr', 'kız', 'kiz'], ['tr', 'İstanbul', 'Istanbul'],
+        ['sh', 'đak', 'dak'], ['ro', 'ţară', 'tara'], ['lv', 'ģimene', 'gimene'], ['kk', 'Қазақстан', 'Казакстан'],
+        ['kk', 'өрік', 'орік'], ['ru', 'ёлка', 'елка'], ['ru', 'мой', 'мои'], ['uk', 'їжак', 'іжак'],
+        ['be', 'ўсё', 'усе'], ['sh', 'ку́ћа', 'кућа'],
+    ]) {
+        assert.ok(queriedFromOcr(language, text).has(folded), `${language} ${text}`);
     }
-    // The fourth is left as read.
-    assert.ok(!texts.has('tükörfürő'));
-    // The text as read comes first: it takes no processor step, the variants one.
-    const steps = new Map(load('hu').candidates('öt', 'hu', 'word', true).map((c) => [c.d, c.s]));
-    assert.ok(steps.get('öt') < steps.get('őt'));
-    // A written ő or ű stays itself, ó is read right, and only the first word changes.
-    assert.ok(!queriedFromOcr('hu', 'őt').has('öt'));
-    assert.ok(!queriedFromOcr('hu', 'jó').has('jő'));
-    assert.ok(!queriedFromOcr('hu', 'öt ünnep').has('öt űnnep'));
-    // Through the prefix rule as well: elő- misread as elö- still comes off.
-    assert.ok(queriedFromOcr('hu', 'elöfordult').has('fordult'));
-    // App text and typed text are looked up as written.
-    assert.ok(!queried('hu', 'füzfa').has('fűzfa'));
-    assert.ok(!queried('hu', 'fúzfa').has('fűzfa'));
-    assert.ok(!queried('hu', 'öt').has('őt'));
-    // Other languages read the same either way.
-    for (const [language, word] of [['de', 'öde'], ['fi', 'yö'], ['sv', 'höst'], ['tr', 'gönül']]) {
-        assert.deepEqual(queriedFromOcr(language, word), queried(language, word), language);
+    // The text as read comes first: it takes no processor step, the folded text one.
+    const steps = new Map(load('hu').candidates('fúzfa', 'hu', 'word', true).map((c) => [c.d, c.s]));
+    assert.ok(steps.get('fúzfa') < steps.get('fuzfa'));
+    // Letters of their own without a mark stay, as do the Uzbek ʻ and ʼ and the marks of other scripts.
+    for (const [language, text] of [
+        ['da', 'æble'], ['de', 'Straße'], ['az', 'əl'], ['kk', 'әке'], ['uk', 'кіт'], ['uz', 'soʻz'], ['ru', 'σκύλος'],
+    ]) {
+        assert.deepEqual(queriedFromOcr(language, text), queried(language, text), `${language} ${text}`);
+    }
+    // App text and typed text are looked up as written: a word typed without marks reaches the folded keys of the
+    // import as it is, and a wrong mark typed stays one.
+    assert.ok(!queried('hu', 'fúzfa').has('fuzfa'));
+    assert.ok(!queried('et', 'möte').has('mote'));
+    assert.ok(!queried('pl', 'Łódź').has('Lodz'));
+    // Vietnamese marks are tones, and the other scripts keep theirs.
+    for (const [language, text] of [['vi', 'người'], ['el', 'σκύλος'], ['zh', 'nǐ hǎo'], ['hi', 'क़लम']]) {
+        assert.deepEqual(queriedFromOcr(language, text), queried(language, text), language);
     }
 });
 
@@ -1715,28 +1713,6 @@ test('estonian negative forms of olema reach the verb by its definition tag, und
     assert.ok(!queried('et', 'polegi').has('olema'));
     assert.ok(!queried('et', 'tpole').has('olema'));
     assert.ok(!queried('et', 'olen').has('olema'));
-});
-
-test('estonian ö is tried as õ for words from ocr only, as read first', () => {
-    assert.ok(queriedFromOcr('et', 'möte').has('mõte'));
-    assert.ok(queriedFromOcr('et', 'vöi').has('või'));
-    assert.ok(queriedFromOcr('et', 'Öhtu').has('Õhtu'));
-    assert.ok(queriedFromOcr('et', 'öö').has('öö'));
-    // Every combination of the first three: köögiöö gives kõögiöö, köõgiöö, kõõgiõö and the rest.
-    const texts = queriedFromOcr('et', 'köögiöö');
-    for (const text of ['kõögiöö', 'köõgiöö', 'köögiõö', 'kõõgiõö']) {
-        assert.ok(texts.has(text), text);
-    }
-    assert.ok(!texts.has('köögiöõ'));
-    const steps = new Map(load('et').candidates('möte', 'et', 'word', true).map((c) => [c.d, c.s]));
-    assert.ok(steps.get('möte') < steps.get('mõte'));
-    // A written õ stays itself, and only the first word changes.
-    assert.ok(!queriedFromOcr('et', 'mõte').has('möte'));
-    assert.ok(!queriedFromOcr('et', 'öö möödus').has('öö mõõdus'));
-    // App text and typed text are looked up as written.
-    assert.ok(!queried('et', 'möte').has('mõte'));
-    // Finnish, which shares ö, reads the same either way.
-    assert.deepEqual(queriedFromOcr('fi', 'yö'), queried('fi', 'yö'));
 });
 
 test('every estonian rule has a name and a description of its own, which the app strings are generated from', () => {
