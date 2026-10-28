@@ -457,8 +457,8 @@ Decided when the first language or group 1 is ready, before it is merged into th
   build) and group 4's build. The strings alone go earlier, in the cloud session of 2026-10-29 (owner, 2026-10-28);
   the mirrored screens are checked on the emulator later, and the strings wait on their branch until then.
   Strings done on 2026-10-29 (cloud session, `cloud/rtl-strings-2026-10-29`, from the tip of the interface check):
-  every string of the 17 string files in `values-ar`, `values-fa` and `values-iw` (Hebrew under Android's old code,
-  as the platform's own resources), 2,014 per language, with the plural categories and terms in
+  every string of the 31 string files in `values-ar`, `values-fa` and `values-iw` (Hebrew under Android's old code,
+  as the platform's own resources), 2,014 strings and 13 plurals per language, with the plural categories and terms in
   `notes/translations.md`; `TranslationsTest` covers the three. The language settings do not offer them: the locale
   config is now the hand-written `res/xml/locales_config.xml` (generating it would list every folder), and the test
   keeps it equal to the translations minus `unlisted`. To release: check the screens, then add ar, fa and he to the
