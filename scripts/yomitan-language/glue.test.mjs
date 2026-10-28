@@ -9,7 +9,7 @@ import vm from 'node:vm';
 import {
     albanianEndings, azerbaijaniTransforms, estonianTransforms, finnishTransforms, gaelicMutations, hebrewTransforms, hungarianTransforms,
     irishMutations, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms,
-    welshTransforms, withOwnTransforms, withReplacedTransforms,
+    uzbekTransforms, welshTransforms, withOwnTransforms, withReplacedTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -760,7 +760,7 @@ test('kazakh and kyrgyz noun endings skip the pronouns whose case forms change t
 test('every turkic rule has a shared name and a description of its endings, which the app strings are generated from', () => {
     const res = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values');
     const labels = fs.readFileSync(path.join(res, 'inflections_turkic.xml'), 'utf8');
-    for (const descriptor of [kazakhTransforms, kyrgyzTransforms, azerbaijaniTransforms]) {
+    for (const descriptor of [kazakhTransforms, kyrgyzTransforms, azerbaijaniTransforms, uzbekTransforms]) {
         const strings = fs.readFileSync(path.join(res, `inflections_${descriptor.language}.xml`), 'utf8');
         assert.equal(descriptor.sharedLabels, 'turkic');
         for (const [id, {name, description, hidden}] of Object.entries(descriptor.transforms)) {
@@ -1851,5 +1851,128 @@ test('azerbaijani rules stay out of other languages', () => {
         assert.ok(!queried(language, 'kitablarımızda').has('kitab'), language);
         assert.ok(!queried(language, 'gəldi').has('gəlmək'), language);
         assert.ok(candidates(language, 'gəldi').every((c) => c.g === undefined), language);
+    }
+});
+
+test('uzbek noun endings come off in the order of the grammar and match entries without a part of speech', () => {
+    const [book] = candidatesTo('uz', 'kitoblarimizda', 'kitob');
+    assert.ok(book.u);
+    assert.equal(book.g, undefined);
+    assert.deepEqual([...book.r[0]], ['plural', 'possessive 1pl', 'locative']);
+    const chains = (text, lemma) => candidatesTo('uz', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+    // After a vowel an ending drops its linking i: otam, otasiga.
+    assert.ok(chains('otam', 'ota').includes('possessive 1sg'));
+    assert.ok(chains('otasiga', 'ota').includes('possessive 3rd < dative'));
+    // -si and -m follow a vowel only, -im a consonant only.
+    assert.ok(!queried('uz', 'kitobsi').has('kitob'));
+    assert.ok(!queried('uz', 'otaim').has('ota'));
+    // -ka after k, -qa after q: tokka, qishloqqa.
+    assert.ok(chains('tokka', 'tok').includes('dative'));
+    assert.ok(chains('qishloqqa', 'qishloq').includes('dative'));
+    assert.ok(!queried('uz', 'kitobqa').has('kitob'));
+    // k and q written g and gʻ before a vowel: yuragi → yurak, qishlogʻimizda → qishloq.
+    assert.ok(queried('uz', 'yuragi').has('yurak'));
+    assert.ok(chains('qishlogʻi', 'qishloq').includes('possessive 3rd'));
+    assert.ok(chains('qishlogʻimizda', 'qishloq').includes('possessive 1pl < locative'));
+    // Predicates and the question particle: talabaman, kitobmi.
+    assert.ok(chains('talabaman', 'talaba').includes('1sg'));
+    assert.ok(chains('kitobmi', 'kitob').includes('question'));
+    // The particle follows a noun in Kyrgyz and Azerbaijani as well: китепби, kitabmı.
+    assert.ok(queried('ky', 'китепби').has('китеп'));
+    assert.ok(queried('az', 'kitabmı').has('kitab'));
+    // A stem keeps three letters: uy-da is left to Wiktionary's rows.
+    assert.ok(!queried('uz', 'uyda').has('uy'));
+    // The word as written stays typed.
+    assert.ok(!candidates('uz', 'kitob').find((c) => c.d === 'kitob').u);
+});
+
+test('uzbek verb forms reach the infinitive and match only definitions tagged as verbs', () => {
+    const forms = {
+        'bordi': ['bormoq', ['past']],
+        'bordim': ['bormoq', ['past', '1sg']],
+        'bordilar': ['bormoq', ['past', '3rd']],
+        'bormadi': ['bormoq', ['negative', 'past']],
+        'boraman': ['bormoq', ['present', '1sg']],
+        'boradi': ['bormoq', ['present', '3rd']],
+        'bormayman': ['bormoq', ['negative', 'present', '1sg']],
+        'ishlaydi': ['ishlamoq', ['present', '3rd']],
+        'boryapti': ['bormoq', ['present']],
+        'boryapman': ['bormoq', ['present', '1sg']],
+        'borgan': ['bormoq', ['past participle']],
+        'chiqqan': ['chiqmoq', ['past participle']],
+        'borsa': ['bormoq', ['conditional']],
+        'borsam': ['bormoq', ['conditional', '1sg']],
+        'borib': ['bormoq', ['converb']],
+        'ishlab': ['ishlamoq', ['converb']],
+        'borgach': ['bormoq', ['converb']],
+        'boradigan': ['bormoq', ['habitual participle']],
+        'borayotgan': ['bormoq', ['participle']],
+        'bormoqchiman': ['bormoq', ['intention', '1sg']],
+        'boribdi': ['bormoq', ['evidential']],
+        'borguncha': ['bormoq', ['until']],
+        'borsin': ['bormoq', ['imperative']],
+        'yozildi': ['yozmoq', ['passive', 'past']],
+        'oʻqitdi': ['oʻqimoq', ['causative', 'past']],
+        'borasanmi': ['bormoq', ['present', '2sg', 'question']],
+    };
+    for (const [text, [lemma, chain]] of Object.entries(forms)) {
+        assert.ok(isVerbThrough(candidatesTo('uz', text, lemma), chain), text);
+    }
+    // -moqda is the continuous present and the infinitive's locative.
+    const continuous = candidatesTo('uz', 'bormoqda', 'bormoq');
+    assert.ok(continuous.some((c) => c.u && JSON.stringify(c.g) === JSON.stringify(['v']) &&
+        c.r.some((r) => r.join() === 'present')));
+    // The infinitive takes -moq.
+    assert.ok(!queried('uz', 'bordi').has('bormaq'));
+});
+
+test('uzbek apostrophes are written as the dictionaries write them, in any text', () => {
+    assert.ok(queried('uz', "so'z").has('soʻz'));
+    assert.ok(queried('uz', 'so‘z').has('soʻz'));
+    assert.ok(queried('uz', "O'zbekiston").has('Oʻzbekiston'));
+    assert.ok(queried('uz', "ta'lim").has('taʼlim'));
+    assert.ok(queried('uz', 'ta`til').has('taʼtil'));
+    assert.ok(queried('uz', 'ta’sir').has('taʼsir'));
+    // A turned comma after another letter is the apostrophe.
+    assert.ok(queried('uz', 'taʻlim').has('taʼlim'));
+    // The endings come off the text so written: qishlog'imizda finds qishloq.
+    assert.ok(queried('uz', "qishlog'imizda").has('qishloq'));
+    // The text as written is tried as well.
+    assert.ok(queried('uz', "so'z").has("so'z"));
+    assert.ok(queried('uz', 'soʻz').has('soʻz'));
+});
+
+test('uzbek cyrillic text is looked up in latin letters', () => {
+    for (const [cyrillic, latin] of [
+        ['китоб', 'kitob'], ['ўқимоқ', 'oʻqimoq'], ['ғалла', 'gʻalla'], ['Шаҳар', 'shahar'], ['ер', 'yer'],
+        ['келди', 'keldi'], ['маъно', 'maʼno'], ['цирк', 'sirk'], ['милиция', 'militsiya'], ['чой', 'choy'],
+    ]) {
+        assert.ok(queried('uz', cyrillic).has(latin), cyrillic);
+    }
+    // A capital gives a capital first letter: Тошкент → Toshkent.
+    assert.ok(queried('uz', 'Тошкент').has('Toshkent'));
+    // The endings come off the Latin text: китобларимизда finds kitob.
+    assert.ok(queried('uz', 'китобларимизда').has('kitob'));
+    // Latin text gains nothing from it.
+    assert.ok(![...queried('uz', 'kitob')].some((text) => /[а-я]/.test(text)));
+});
+
+test('uzbek capitals take the default case pairs', () => {
+    assert.ok(queried('uz', 'ILM').has('ilm'));
+    assert.ok(!queried('uz', 'ILM').has('ılm'));
+    assert.ok(queried('uz', 'ilm').has('Ilm'));
+    assert.ok(!queried('uz', 'ilm').has('İlm'));
+});
+
+test('uzbek rules and text processors stay out of other languages', () => {
+    for (const language of ['tr', 'kk', 'en']) {
+        assert.ok(!queried(language, 'kitoblarimizda').has('kitob'), language);
+    }
+    // Azerbaijani writes some of the same endings (-lar, -imiz, -da), not -gʻi or -moq.
+    for (const language of ['tr', 'az', 'kk', 'en']) {
+        assert.ok(!queried(language, 'qishlogʻi').has('qishloq'), language);
+        assert.ok(!queried(language, 'bordi').has('bormoq'), language);
+        assert.ok(!queried(language, "so'z").has('soʻz'), language);
+        assert.ok(!queried(language, 'китоб').has('kitob'), language);
     }
 });

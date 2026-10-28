@@ -534,6 +534,7 @@
     <string name="popup_font_script_only_hu">ハンガリー語の文字だけに使う</string>
     <string name="popup_font_script_only_et">エストニア語の文字だけに使う</string>
     <string name="popup_font_script_only_az">アゼルバイジャン語の文字だけに使う</string>
+    <string name="popup_font_script_only_uz">ウズベク語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

@@ -53,14 +53,15 @@ DETECTORS = {
 }
 
 # Esperanto is left out: both models read every one of its hat letters wrong (ĝ as ġ or ğ, ŭ as ǔ or ů).
-# Azerbaijani takes v6 only: v5 drops every ə.
+# Azerbaijani takes v6 only: v5 drops every ə. Uzbek takes v6 only too: v5's detector loses lines over pictures, and
+# neither reads ʻ (dropped, or given as ‘ and ').
 LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy", "ga", "gd", "fi", "hu", "et"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,
 # which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian.
 RECOGNIZERS = {
     "paddle-v6": {"source": "PP-OCRv6_small_rec", "template": "paddle-v6", "requires": "paddle-detector-v6",
-                  "languages": ["ja", "zh"] + LATIN + ["sr", "az"]},
+                  "languages": ["ja", "zh"] + LATIN + ["sr", "az", "uz"]},
     "paddle-latin": {"source": "latin_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
                      "languages": LATIN},
     "paddle-cyrillic": {"source": "cyrillic_PP-OCRv5_mobile_rec", "template": "paddle-v5",
@@ -82,6 +83,7 @@ RECOGNIZERS = {
 # so none is marked. Estonian: v6 0.43% of the characters wrong against ML Kit's 1.33% (v5 0.80%), the only
 # model with a third fewer errors and 0.5 points fewer. Azerbaijani: v6 1.52% against ML Kit's 4.99% (ə read as
 # e, ı as i); Tesseract fast's 1.43% is about the same, and v6 holds up better over pictures (the owner's choice).
+# Uzbek: ML Kit 2.72% (0.6% with the apostrophes counted as one), none a third fewer, so none is marked.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",

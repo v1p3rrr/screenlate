@@ -260,14 +260,14 @@ export const hebrewTransforms = {
 };
 
 /**
- * Kazakh, Kyrgyz and Azerbaijani endings, the app's own rules written from the grammar: a noun is stem [plural]
+ * Kazakh, Kyrgyz, Azerbaijani and Uzbek endings, the app's own rules written from the grammar: a noun is stem [plural]
  * [possessive] [case] [predicative], a verb stem [voice] [negation] and then a tense, mood, participle or converb, a
- * participle taking noun endings after it; Kyrgyz and Azerbaijani attach the question particle to the word
- * (барасыңбы, gəlirsənmi). Every ending comes in its vowel-harmony and consonant variants, and also with the
+ * participle taking noun endings after it; Kyrgyz, Azerbaijani and Uzbek attach the question particle to the word
+ * (барасыңбы, gəlirsənmi, borasanmi). Every ending comes in its vowel-harmony and consonant variants, and also with the
  * language's own letters as their Russian twins (-нын for -ның), as OCR and keyboards write them; the import keys
  * headwords under those twins too (`HeadwordMarks`). A stem keeps two letters (Azerbaijani three) and a vowel at
  * least; after an ending that starts with a vowel, a noun stem is also tried with its last consonant as the
- * dictionary writes it (аумағы → аумақ, кітабы → кітап, ayağı → ayaq).
+ * dictionary writes it (аумағы → аумақ, кітабы → кітап, ayağı → ayaq, qishlogʻi → qishloq).
  *
  * Every Yomitan rule applies to the word as written as well, so the steps that only continue another (negation, voice,
  * the present tense mark before its person ending, a verb stem's dictionary form) read a text that ends in a mark no
@@ -291,7 +291,8 @@ const TURKIC_PRESENT = /* @__PURE__ */ String.fromCharCode(0xe001);
  * @type {Record<string, {conditionsIn: TurkicCondition[], conditionsOut: TurkicCondition[], reads?: string, leaves?: string}>}
  */
 const turkicSlots = {
-    question: {conditionsIn: [], conditionsOut: ['q']},
+    // The particle follows a noun as well (kitobmi, китепби), which is then a word of its own.
+    question: {conditionsIn: [], conditionsOut: ['q', 'n']},
     please: {conditionsIn: [], conditionsOut: ['im']},
     pleaseStem: {conditionsIn: [], conditionsOut: ['vt'], leaves: TURKIC_VERB},
     predicative: {conditionsIn: ['q'], conditionsOut: ['cs', 'px', 'pl', 'pt', 'cv', 'n']},
@@ -420,7 +421,7 @@ function turkicTransforms(grammar) {
         // Verb stems keep the consonant their dictionary form has (табады, табу).
         if (!turkicSlots[slot].leaves) {
             for (const [from, to] of Object.entries(grammar.hardened)) {
-                rules.push(rule(spelling, slot, from, (stem) => stem.slice(0, -1) + to));
+                rules.push(rule(spelling, slot, from, (stem) => stem.slice(0, -from.length) + to));
             }
         }
         return rules;
@@ -700,6 +701,72 @@ export const azerbaijaniTransforms = /* @__PURE__ */ turkicTransforms({
         {id: 'reflexive', name: 'reflexive', example: 'geyindi, oxundu', endings: {voice: 'ın in un ün n'}},
         {id: 'reciprocal', name: 'reciprocal', example: 'görüşdü', endings: {voice: 'ış iş uş üş ş'}},
         {id: 'causative', name: 'causative', example: 'yazdırdı, oxutdu', endings: {voice: 'dır dir dur dür t'}},
+    ],
+});
+
+/**
+ * Uzbek: no vowel harmony (-lar, -da, -ning after any stem); after a vowel an ending drops its linking i (kitobim,
+ * otam; kitobi, otasi); k and q written g and gʻ before a vowel (yuragi → yurak, qishlogʻi → qishloq); -ga, -gan and
+ * the like are -ka, -kan after k and -qa, -qan after q (tokka, chiqqan). The present (-a, -y) takes person endings of
+ * its own (boraman, boradi); the continuous (-yap, -moqda, -ayotir) and the participles take those of predicates
+ * (boryapman, borganman), and the question particle is joined (borasanmi). A verb stem becomes its infinitive in -moq.
+ * A stem keeps three letters at least: Wiktionary's tables list the forms of the two-letter stems (uy, ol-).
+ */
+export const uzbekTransforms = /* @__PURE__ */ turkicTransforms({
+    language: 'uz',
+    vowels: 'aeiou',
+    linkingVowels: 'i',
+    // ʻ ends gʻ; ʼ is the glottal stop.
+    consonants: 'bdfghjklmnpqrstvxyzʻʼ',
+    presentVowels: 'ay',
+    twins: {},
+    hardened: {'g': 'k', 'gʻ': 'q'},
+    contracted: {},
+    minStem: 3,
+    dictionaryForms: (stem) => [stem + 'moq'],
+    transforms: [
+        {id: 'question', name: 'question', example: 'kitobmi, borasanmi', endings: {question: 'mi'}},
+        {id: 'plural', name: 'plural', example: 'kitoblar', endings: {plural: 'lar'}},
+        {id: 'possessive 1sg', name: 'my', example: 'kitobim, otam', endings: {possessive: 'im m'}},
+        {id: 'possessive 2sg', name: 'your', example: 'kitobing, otang', endings: {possessive: 'ing ng/V'}},
+        {id: 'possessive 3rd', name: 'his, her, their', example: 'kitobi, otasi', endings: {possessive: 'i si/V'}},
+        {id: 'possessive 1pl', name: 'our', example: 'kitobimiz, otamiz', endings: {possessive: 'imiz miz/V'}},
+        {id: 'possessive 2pl', name: 'your (pl.)', example: 'kitobingiz, otangiz', endings: {possessive: 'ingiz ngiz/V'}},
+        {id: 'genitive', name: 'genitive', example: 'kitobning', endings: {case: 'ning'}},
+        {id: 'dative', name: 'dative', example: 'kitobga, tokka, qishloqqa', endings: {case: 'ga ka/k qa/q'}},
+        {id: 'accusative', name: 'accusative', example: 'kitobni', endings: {case: 'ni'}},
+        {id: 'locative', name: 'locative', example: 'kitobda', endings: {case: 'da'}},
+        {id: 'ablative', name: 'ablative', example: 'kitobdan', endings: {case: 'dan'}},
+        {id: 'attributive locative', name: 'attributive locative', example: 'shahardagi', endings: {case: 'dagi'}},
+        {id: 'attributive', name: 'attributive', example: 'kechagi, ichki, tashqi', endings: {case: 'gi ki qi'}},
+        {id: 'equative', name: 'equative', example: 'boladay, toshdek', endings: {case: 'day dek'}},
+        {id: 'manner', name: 'manner', example: 'oʻzbekcha', endings: {case: 'cha'}},
+        {persons: [
+            ['1sg', '1st sg.', 'talabaman, boraman, bordim', 'man', 'man', 'm'],
+            ['2sg', '2nd sg.', 'talabasan, borasan, bording', 'san', 'san', 'ng'],
+            ['3rd', '3rd person', 'talabadir, boradi, bordilar', 'dir', 'di dilar', 'lar'],
+            ['1pl', '1st pl.', 'talabamiz, boramiz, bordik', 'miz', 'miz', 'k'],
+            ['2pl', '2nd pl.', 'talabasiz, borasiz, bordingiz', 'siz sizlar', 'siz sizlar', 'ngiz ngizlar'],
+        ]},
+        {id: 'past', name: 'past', example: 'bordi', endings: {past: 'di'}},
+        {id: 'conditional', name: 'conditional', example: 'borsa', endings: {conditional: 'sa'}},
+        {id: 'present', name: 'present', example: 'boraman, ishlaydi, boryapti, bormoqda', endings: {present: 'a/C y/V', participle: 'yap yapti moqda ayotir/C yotir/V'}},
+        {id: 'habitual participle', name: 'habitual participle', example: 'boradigan, ishlaydigan', endings: {participle: 'adigan/C ydigan/V'}},
+        {id: 'participle', name: 'participle', example: 'borayotgan, ishlayotgan', endings: {participle: 'ayotgan/C yotgan/V'}},
+        {id: 'past participle', name: 'past participle', example: 'borgan, chiqqan', endings: {participle: 'gan kan/k qan/q'}},
+        {id: 'aorist', name: 'aorist', example: 'borar, ishlar, bormas', endings: {participle: 'ar/C r/V mas'}},
+        {id: 'intention', name: 'intention', example: 'bormoqchi', endings: {participle: 'moqchi'}},
+        {id: 'verbal noun', name: 'verbal noun', example: 'borish, ishlash', endings: {participle: 'ish/C sh/V'}},
+        {id: 'evidential', name: 'evidential', example: 'boribdi, ishlabdi', endings: {participle: 'ibdi/C bdi/V'}},
+        {id: 'converb', name: 'converb', example: 'borib, ishlab, borgach, bora, bormasdan', endings: {converb: 'ib/C b/V gach kach/k qach/q masdan', converbAlone: 'a/C y/V'}},
+        {id: 'until', name: 'until', example: 'borguncha', endings: {converb: 'guncha kuncha/k quncha/q'}},
+        {id: 'purpose', name: 'purpose', example: 'borgani', endings: {converb: 'gani kani/k qani/q'}},
+        {id: 'imperative', name: 'imperative', example: 'boring, borsin, boraylik, borgin', endings: {imperative: 'ay/C y/V aylik/C ylik/V ing ng/V ingiz ngiz/V sin sinlar gin kin/k qin/q'}},
+        {id: 'negative', name: 'negative', example: 'bormadi, bormayman', endings: {negation: 'ma'}},
+        {id: 'passive', name: 'passive', example: 'yozildi, oʻqildi', endings: {voice: 'il l/V'}},
+        {id: 'reflexive', name: 'reflexive', example: 'yuvindi', endings: {voice: 'in n/V'}},
+        {id: 'reciprocal', name: 'reciprocal', example: 'koʻrishdi', endings: {voice: 'ish sh/V'}},
+        {id: 'causative', name: 'causative', example: 'yozdirdi, oʻqitdi', endings: {voice: 'dir tir t/V'}},
     ],
 });
 

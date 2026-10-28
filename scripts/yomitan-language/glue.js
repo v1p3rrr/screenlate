@@ -232,7 +232,7 @@ function fallbackStep(d, rules, language) {
  * Turkic verb stem, which only the hidden dictionary form rule makes a word of, and the present tense mark that a
  * person ending leaves; the Swahili texts that a tense or an object prefix still has to come off.
  */
-const markedLanguages = new Set(['kk', 'ky', 'az', 'sw']);
+const markedLanguages = new Set(['kk', 'ky', 'az', 'uz', 'sw']);
 
 const PRIVATE_USE_FIRST = 0xe000;
 const PRIVATE_USE_LAST = 0xf8ff;
@@ -257,9 +257,9 @@ function isMarkedStep(d, language) {
 
 /**
  * Conditions whose texts match only glossaries that carry one of the given part-of-speech tags among their definition
- * tags, by language; a glossary without definition tags matches as well. Wiktionary's Kazakh, Kyrgyz and Azerbaijani
- * entries give no part of speech in their rules and tag each definition instead (v, n, adj), so a verb read through its
- * endings (барды → бару, gəldi → gəlmək) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a
+ * tags, by language; a glossary without definition tags matches as well. Wiktionary's Kazakh, Kyrgyz, Azerbaijani
+ * and Uzbek entries give no part of speech in their rules and tag each definition instead (v, n, adj), so a verb
+ * read through its endings (барды → бару, gəldi → gəlmək, bordi → bormoq) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a
  * genitive reaches nouns, names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller,
  * mens → men "but"). Romanian article and agreement endings reach nominal words and forms (consiliul → consiliu, aflată
  * → aflat, a form of afla), not verbs or adverbs. Swahili verb prefixes reach verbs and forms (alisoma → soma), not
@@ -272,6 +272,7 @@ const taggedRules = new Map([
     ['kk', {v: ['v']}],
     ['ky', {v: ['v']}],
     ['az', {v: ['v']}],
+    ['uz', {v: ['v']}],
     ['no', {n: ['n', 'name', 'non-lemma']}],
     ['ro', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']}],
     ['sw', {v: ['v', 'non-lemma']}],
@@ -310,9 +311,9 @@ function tagsOf(d, language) {
  * letters' entries. Wiktionary's Arabic adjectives and adverbs give none either (والطويلة → طويل), and the noun rules
  * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed. Wiktionary's Persian and Hebrew entries give
  * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least. Wiktionary's Kazakh,
- * Kyrgyz and Azerbaijani entries give none either: the app's nominal endings (cases, possessives, plurals, the person
- * endings of predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their
- * definition tags (`taggedRules`); Azerbaijani's leave three letters at least. Wiktionary's Welsh and Scottish Gaelic entries give none either; the app's mutation rules leave two
+ * Kyrgyz, Azerbaijani and Uzbek entries give none either: the app's nominal endings (cases, possessives, plurals, the
+ * person endings of predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their
+ * definition tags (`taggedRules`); Azerbaijani's and Uzbek's leave three letters at least. Wiktionary's Welsh and Scottish Gaelic entries give none either; the app's mutation rules leave two
  * letters at least. Wiktionary's Finnish entries give none either; the app's clitic and possessive rules leave three
  * letters at least.
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
@@ -326,6 +327,7 @@ const untypedRules = new Map([
     ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['az', {shortest: 3, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
+    ['uz', {shortest: 3, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['cy', {shortest: 2}],
     ['ga', {shortest: 2}],
     ['gd', {shortest: 2}],

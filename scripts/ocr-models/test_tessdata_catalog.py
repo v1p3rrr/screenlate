@@ -54,6 +54,10 @@ class EntryTest(unittest.TestCase):
         # Azerbaijani: Tesseract fast 1.43% of the characters wrong, about Paddle v6's 1.52%; Paddle v6 is marked.
         self.assertFalse(catalog.entry("az", "aze", "fast", b"lstm")["recommended"])
         self.assertEqual(catalog.LANGUAGES["az"], "aze")
+        # Uzbek: Tesseract fast 3.59% of the characters wrong against ML Kit's 2.72%; the Latin model only.
+        self.assertFalse(catalog.entry("uz", "uzb", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("uz", "uzb", "best", b"lstm")["recommended"])
+        self.assertEqual(catalog.LANGUAGES["uz"], "uzb")
 
 
 class ReplaceTest(unittest.TestCase):

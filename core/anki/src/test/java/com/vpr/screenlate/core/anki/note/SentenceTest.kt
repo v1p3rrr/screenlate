@@ -311,6 +311,19 @@ class SentenceTest {
     }
 
     @Test
+    fun uzbekSentenceKeepsAbbreviationsWithAnyApostropheAndEndsAtVaHkBeforeACapital() {
+        val paragraph = "Yomgʻir yogʻdi. Bozordan olma, nok va h.k. oldik. Prof. Karimov Toshkent sh. Navoiy ko'ch. 5-uyda " +
+            "yashaydi. Kitoblar, daftarlar va h.k. Keyin uyga qaytdik."
+        assertThat(extract(paragraph, "nok", Language.UZBEK).text).isEqualTo("Bozordan olma, nok va h.k. oldik.")
+        assertThat(extract(paragraph, "yashaydi", Language.UZBEK).text)
+            .isEqualTo("Prof. Karimov Toshkent sh. Navoiy ko'ch. 5-uyda yashaydi.")
+        assertThat(extract(paragraph, "daftarlar", Language.UZBEK).text).isEqualTo("Kitoblar, daftarlar va h.k.")
+        // A year before a lowercase month keeps the sentence going.
+        val dated = "Yangilik. 2020 y. yanvar oyida maktab ochildi. Hamma xursand."
+        assertThat(extract(dated, "maktab", Language.UZBEK).text).isEqualTo("2020 y. yanvar oyida maktab ochildi.")
+    }
+
+    @Test
     fun hungarianSentenceKeepsDatesOrdinalsAndAbbreviationsAndEndsAtStbBeforeACapital() {
         val paragraph = "Esett. 2023. május 3-án gyümölcsöt vettem, pl. almát és körtét stb. A ház a 19. sz. végén " +
             "épült. Ld. a kb. 5. oldalt. Minden rendben."

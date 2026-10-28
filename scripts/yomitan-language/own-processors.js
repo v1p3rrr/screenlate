@@ -325,6 +325,62 @@ export const azerbaijaniMisreadLetters = {
 const AZERBAIJANI_LETTERS = {e: 'ə', E: 'Ə', i: 'ı'};
 
 /**
+ * Uzbek ʻ (of oʻ and gʻ) and ʼ (the glottal stop) as dictionaries write them, from the ' ‘ ’ ` ´ that keyboards and
+ * recognition give for both: a mark after o or g is ʻ, after another letter ʼ (so'z → soʻz, ta'lim → taʼlim, ta`til →
+ * taʼtil). The import keys headwords written with those characters under the same spellings
+ * (`HeadwordMarks.replacements`).
+ * @type {import('language').TextProcessor}
+ */
+export const uzbekApostrophes = {
+    name: 'Uzbek apostrophes',
+    description: "so'z → soʻz, ta'lim → taʼlim",
+    process: (str) => [str, str.replace(/(\p{L})['`´‘’ʻʼ]/gu, (_, letter) => letter + ('oOgG'.includes(letter) ? 'ʻ' : 'ʼ'))],
+};
+
+/**
+ * Uzbek text in Cyrillic letters as the Latin alphabet writes it, which dictionaries use (китоб → kitob, ўқимоқ →
+ * oʻqimoq, ғалла → gʻalla): е is ye at a word's start and after a vowel, ъ or ь, ц is ts after a vowel and s elsewhere,
+ * ъ is ʼ and ь is dropped; a capital gives a capital first letter (Шаҳар → Shahar). Text without Cyrillic letters stays
+ * as it is.
+ * @type {import('language').TextProcessor}
+ */
+export const uzbekCyrillicAsLatin = {
+    name: 'Uzbek Cyrillic as Latin',
+    description: 'китоб → kitob, ўқимоқ → oʻqimoq',
+    process: (str) => (/[а-яёўқғҳ]/i.test(str) ? [str, uzbekLatin(str)] : [str]),
+};
+
+const UZBEK_LATIN = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'ғ': 'gʻ', 'д': 'd', 'ж': 'j', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k',
+    'қ': 'q', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ў': 'oʻ',
+    'ф': 'f', 'х': 'x', 'ҳ': 'h', 'ч': 'ch', 'ш': 'sh', 'ъ': 'ʼ', 'ь': '', 'э': 'e', 'ё': 'yo', 'ю': 'yu', 'я': 'ya',
+};
+
+const UZBEK_CYRILLIC_VOWELS = 'аеёиоуўэюя';
+
+/**
+ * [str] with its Uzbek Cyrillic letters as Latin ones (`uzbekCyrillicAsLatin`).
+ * @param {string} str
+ * @returns {string}
+ */
+function uzbekLatin(str) {
+    const letters = [...str];
+    return letters.map((letter, i) => {
+        const lower = letter.toLowerCase();
+        const before = i > 0 ? letters[i - 1].toLowerCase() : '';
+        let latin = UZBEK_LATIN[lower];
+        if (lower === 'е') {
+            const afterVowel = before !== '' && (UZBEK_CYRILLIC_VOWELS.includes(before) || 'ъь'.includes(before));
+            latin = afterVowel || !/\p{L}/u.test(before) ? 'ye' : 'e';
+        } else if (lower === 'ц') {
+            latin = before !== '' && UZBEK_CYRILLIC_VOWELS.includes(before) ? 'ts' : 's';
+        }
+        if (latin === undefined) { return letter; }
+        return letter === lower || latin === '' ? latin : latin[0].toUpperCase() + latin.slice(1);
+    }).join('');
+}
+
+/**
  * [str] as read, then with the letters [misread] maps put right in its first word, at the first [MISREAD_PLACES] of
  * them, every combination: seven texts at most besides the one as read.
  * @param {string} str

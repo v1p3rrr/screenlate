@@ -168,10 +168,10 @@ class LanguageRulesIsolationTest {
     fun `abbreviations of one language do not hold the sentences of another`() {
         fun holds(support: LanguageSupport, text: String) = !support.endsSentence(text, text.indexOf('.'))
         // German "z. B." holds its single letters only beside each other (Albanian z., zoti, holds alone); "Plan B."
-        // before a lowercase word ends everywhere but in Azerbaijani, whose "və b." (and others) holds before one, and
-        // before a capital it is an initial everywhere.
+        // before a lowercase word ends everywhere but in Azerbaijani and Uzbek, whose "və b." and "va b." (and others)
+        // hold before one, and before a capital it is an initial everywhere.
         assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN, Language.ALBANIAN)
-        assertThat(periodEnding.where { holds(it, "Plan B. dann") }).containsExactly(Language.AZERBAIJANI)
+        assertThat(periodEnding.where { holds(it, "Plan B. dann") }).containsExactly(Language.AZERBAIJANI, Language.UZBEK)
         assertThat(periodEnding.where { !holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
             .containsExactly(
@@ -256,12 +256,14 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { !it.endsSentence(latinEra, latinEra.lastIndexOf('.')) }).containsExactly(Language.LATIN)
         assertThat(spaced.filter { it.capitalizedAbbreviations.isNotEmpty() }.map { it.language }).containsExactly(Language.LATIN)
         // Lithuanian pvz. (pavyzdžiui), tūkst. (thousand), which Latvian writes too but Lithuanian holds only before a
-        // lowercase word or a number, and the y of "t. y.", which takes its period from the t beside it.
+        // lowercase word or a number, and the y of "t. y.", which takes its period from the t beside it (Uzbek y., yil,
+        // year, holds before a lowercase word too).
         assertThat(periodEnding.where { holds(it, "pvz. obuoliai") }).containsExactly(Language.LITHUANIAN)
         assertThat(periodEnding.where { holds(it, "5 tūkst. eurų") }).containsExactly(Language.LATVIAN, Language.LITHUANIAN)
         assertThat(periodEnding.where { holds(it, "5 tūkst. Vėliau") }).containsExactly(Language.LATVIAN)
         val thatIs = "vaisiai, t. y. obuoliai"
-        assertThat(periodEnding.where { !it.endsSentence(thatIs, thatIs.lastIndexOf(". ")) }).containsExactly(Language.LITHUANIAN)
+        assertThat(periodEnding.where { !it.endsSentence(thatIs, thatIs.lastIndexOf(". ")) })
+            .containsExactly(Language.LITHUANIAN, Language.UZBEK)
         // Slovak napr. (napríklad), which Czech writes např.
         assertThat(periodEnding.where { holds(it, "napr. jablká") }).containsExactly(Language.SLOVAK)
         assertThat(periodEnding.where { holds(it, "napr. Jablká") }).containsExactly(Language.SLOVAK)
@@ -337,6 +339,16 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "şəh. Nizami") }).containsExactly(Language.AZERBAIJANI)
         assertThat(periodEnding.where { holds(it, "mlrd. manat") }).contains(Language.AZERBAIJANI)
         assertThat(periodEnding.where { holds(it, "mlrd. Sonra") }).doesNotContain(Language.AZERBAIJANI)
+        // Uzbek dots. (dotsent) and koʻch. (koʻchasi) in an address, the latter with any apostrophe, and h.k. (hokazo),
+        // which holds only before a lowercase word.
+        assertThat(periodEnding.where { holds(it, "dots. Aliyev") }).containsExactly(Language.UZBEK)
+        assertThat(periodEnding.where { holds(it, "koʻch. Navoiy") }).containsExactly(Language.UZBEK)
+        // English ch. (chapter) holds after the apostrophe.
+        assertThat(periodEnding.where { holds(it, "ko'ch. Navoiy") }).containsExactly(Language.ENGLISH, Language.UZBEK)
+        val uzbekEtc = "daftarlar va h.k. olindi"
+        assertThat(periodEnding.where { !it.endsSentence(uzbekEtc, uzbekEtc.lastIndexOf('.')) }).containsExactly(Language.UZBEK)
+        val uzbekEtcEnd = "daftarlar va h.k. Keyin"
+        assertThat(periodEnding.where { !it.endsSentence(uzbekEtcEnd, uzbekEtcEnd.lastIndexOf('.')) }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -402,21 +414,23 @@ class LanguageRulesIsolationTest {
             assertThat(support.partStarts("rock'n'roll", 0, "rock'n'r".length)).isEmpty()
         }
         // An ending or a particle is looked up with its hyphen in Kazakh and Kyrgyz after any part, in Hungarian,
-        // Estonian and Azerbaijani after a number or an abbreviation in capitals, in Finnish after a number only; a
-        // text starting at the hyphen is looked up in these six.
+        // Estonian, Azerbaijani and Uzbek after a number or an abbreviation in capitals, in Finnish after a number only;
+        // a text starting at the hyphen is looked up in these seven.
         assertThat(spaced.where { it.partStarts("1990-ға", 0, "1990-ғ".length) != listOf("1990-".length) })
             .containsExactly(
                 Language.KAZAKH, Language.KYRGYZ, Language.FINNISH, Language.HUNGARIAN, Language.ESTONIAN,
-                Language.AZERBAIJANI,
+                Language.AZERBAIJANI, Language.UZBEK,
             )
         assertThat(spaced.where { it.partStarts("сондай-ақ", 0, "сондай-а".length) != listOf("сондай-".length) })
             .containsExactly(Language.KAZAKH, Language.KYRGYZ)
         assertThat(spaced.where { it.partStarts("EU-maat", 0, "EU-m".length) != listOf("EU-".length) })
-            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI)
+            .containsExactly(
+                Language.KAZAKH, Language.KYRGYZ, Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK,
+            )
         assertThat(all.where { it.lookupStart("-ға", latinAsNative = false) != null })
             .containsExactly(
                 Language.KAZAKH, Language.KYRGYZ, Language.FINNISH, Language.HUNGARIAN, Language.ESTONIAN,
-                Language.AZERBAIJANI,
+                Language.AZERBAIJANI, Language.UZBEK,
             )
         // The maqaf divides Hebrew words only.
         assertThat(spaced.where { it.partStarts("בית\u05BEספר", 0, "בית\u05BEס".length).isNotEmpty() })
@@ -453,7 +467,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
             .containsExactly(
                 Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.FINNISH, Language.HUNGARIAN,
-                Language.AZERBAIJANI,
+                Language.AZERBAIJANI, Language.UZBEK,
             )
     }
 
@@ -496,11 +510,11 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
             Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.WELSH,
-            Language.SCOTTISH_GAELIC,
+            Language.SCOTTISH_GAELIC, Language.UZBEK,
         )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
             Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,
-            Language.SLOVENIAN,
+            Language.SLOVENIAN, Language.UZBEK,
         )
         assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
         // Arabic lemmas lose their vowel marks and Lithuanian and Slovenian ones their stress although every headword is
@@ -643,6 +657,13 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.where { it.wordStartOffset("say\"", "hi") != 0 }).containsExactly(Language.HEBREW)
         // The apostrophe joins words everywhere.
         assertThat(spaced.where { it.wordStartOffset("ג'", "ירפה") == 0 }).isEmpty()
+    }
+
+    @Test
+    fun `only Uzbek joins a word at the quote mark, the grave and the acute typed for its apostrophes`() {
+        assertThat(spaced.where { it.wordStartOffset("so‘", "z") != 0 }).containsExactly(Language.UZBEK)
+        assertThat(spaced.where { it.wordStartOffset("so`", "z") != 0 }).containsExactly(Language.UZBEK)
+        assertThat(spaced.where { it.wordStartOffset("ta´", "til") != 0 }).containsExactly(Language.UZBEK)
     }
 
     @Test

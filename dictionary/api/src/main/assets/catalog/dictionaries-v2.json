@@ -16,6 +16,10 @@
     "az": [
       "MAIN",
       "FORMS"
+    ],
+    "uz": [
+      "MAIN",
+      "FORMS"
     ]
   },
   "templates": {
@@ -2277,6 +2281,25 @@
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },
     {
+      "id": "corpus-uz",
+      "title": "Leipzig Corpora Collection (uz)",
+      "template": "leipzig",
+      "oldTitles": [
+        "Leipzig Corpora Collection (uz)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "uz",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/uzb_news_2020_30K.tar.gz",
+      "downloadSize": 6148205,
+      "sha256": "33844aa9b4ad140e0d40fd51d2ed92d5d1ab67828ef6583344cf81b705f2f38e",
+      "build": "corpus-counts",
+      "version": "2020",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
@@ -4214,6 +4237,40 @@
       "engine": "tesseract",
       "file": "tessdata/aze.traineddata",
       "version": "6f183760f210",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-uzb",
+      "title": "Tesseract fast (uzb)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "uz",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/uzb.traineddata",
+      "downloadSize": 6470703,
+      "sha256": "0e39021eefe692906b50d9bd22e580fa57fe43fa35db6846ad8b6369ddc21ea8",
+      "model": "tesseract-fast-uzb",
+      "engine": "tesseract",
+      "file": "tessdata/uzb.traineddata",
+      "version": "0e39021eefe6",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-uzb",
+      "title": "Tesseract best (uzb)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "uz",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/uzb.traineddata",
+      "downloadSize": 12953454,
+      "sha256": "5bd8a1958b3cee68aa225774b89775f3a510dd2141e7d9eb2b5931adca2624c8",
+      "model": "tesseract-best-uzb",
+      "engine": "tesseract",
+      "file": "tessdata/uzb.traineddata",
+      "version": "5bd8a1958b3c",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -6620,6 +6677,41 @@
       "template": "paddle-detector-v6",
       "category": "OCR_MODEL",
       "sourceLanguage": "az",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v6.zip",
+      "downloadSize": 7460475,
+      "sha256": "c46ad8ddd9ed2b79130851d32ea55bc8caebe1e44006d04ff6b269dd26f86101",
+      "model": "paddle-detector-v6",
+      "engine": "paddle",
+      "version": "c46ad8ddd9ed",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-v6-uz",
+      "title": "PaddleOCR v6 (uz)",
+      "template": "paddle-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "uz",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-v6.zip",
+      "downloadSize": 18446203,
+      "sha256": "a79ef27d6e71e1de59488e4bf87e3bbad73d0e19d63e98c5fcb407adb12db405",
+      "model": "paddle-v6",
+      "engine": "paddle",
+      "version": "a79ef27d6e71",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v6"
+      ]
+    },
+    {
+      "id": "paddle-detector-v6-uz",
+      "title": "PaddleOCR detector-v6 (uz)",
+      "template": "paddle-detector-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "uz",
       "recommended": false,
       "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v6.zip",
       "downloadSize": 7460475,
@@ -18960,6 +19052,87 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/az/wty-az-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 184390,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-uz-en",
+      "title": "Wiktionary (uz–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-uz-en",
+        "kty-uz-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "uz",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uz-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uz/en/wty-uz-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1054230,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-uz-forms",
+      "title": "Wiktionary word forms (uz)",
+      "template": "wiktionary-forms",
+      "oldTitles": [
+        "wty-uz-en (forms)"
+      ],
+      "kind": "TERM",
+      "category": "FORMS",
+      "sourceLanguage": "uz",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uz-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uz/en/wty-uz-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1054230,
+      "installedSize": 2097152,
+      "build": "forms",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-uz-ru",
+      "title": "Wiktionary (uz–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-uz-ru",
+        "kty-uz-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "uz",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uz-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uz/ru/wty-uz-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1406088,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-uz-tr",
+      "title": "Wiktionary (uz–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-uz-tr",
+        "kty-uz-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "uz",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uz-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uz/tr/wty-uz-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 83525,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

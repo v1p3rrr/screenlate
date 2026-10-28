@@ -116,6 +116,7 @@
     <string name="form_of_tag_gerund">gerund</string>
     <string name="form_of_tag_gerundive">gerundive</string>
     <string name="form_of_tag_gyeongsang">Gyeongsang</string>
+    <string name="form_of_tag_habitual">habitual</string>
     <string name="form_of_tag_hakka">Hakka</string>
     <string name="form_of_tag_hamgyong">Hamgyong</string>
     <string name="form_of_tag_han_nom">Hán-Nôm spelling</string>
@@ -162,6 +163,7 @@
     <string name="form_of_tag_instructive">instructive</string>
     <string name="form_of_tag_instrumental">instrumental</string>
     <string name="form_of_tag_intensifier">intensifier</string>
+    <string name="form_of_tag_intentive">intentive</string>
     <string name="form_of_tag_internet">Internet</string>
     <string name="form_of_tag_interrogative">interrogative</string>
     <string name="form_of_tag_intransitive">intransitive</string>

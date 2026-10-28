@@ -115,6 +115,13 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `uzbek habitual and intentive forms are translated`() {
+        assertThat(label("third-person singular present indicative negative continuative habitual"))
+            .isEqualTo("third_person singular present indicative negative continuous habitual")
+        assertThat(label("plural intentive")).isEqualTo("plural intentive")
+    }
+
+    @Test
     fun `gloss left after two spaces is cut off`() {
         assertThat(FormOfTags.clean("hanja form   the Korean language”)")).isEqualTo("hanja form")
         assertThat(FormOfTags.clean("hanja form  ”)")).isEqualTo("hanja form")

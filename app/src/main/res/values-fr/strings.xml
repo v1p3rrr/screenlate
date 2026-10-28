@@ -542,6 +542,7 @@
     <string name="popup_font_script_only_hu">Seulement pour le texte hongrois</string>
     <string name="popup_font_script_only_et">Seulement pour le texte estonien</string>
     <string name="popup_font_script_only_az">Seulement pour le texte azerbaïdjanais</string>
+    <string name="popup_font_script_only_uz">Seulement pour le texte ouzbek</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>

@@ -99,9 +99,16 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili, estonian and azerbaijani have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili, estonian, azerbaijani and uzbek have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et", "az").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et", "az", "uz").inOrder()
+        val uzbek = built.single { it.sourceLanguage == "uz" }
+        assertThat(uzbek.recommended).isTrue()
+        assertThat(uzbek.sha256).isEqualTo("33844aa9b4ad140e0d40fd51d2ed92d5d1ab67828ef6583344cf81b705f2f38e")
+        assertThat(uzbek.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/uzb_news_2020_30K.tar.gz")
+        assertThat(uzbek.description(Locale.ENGLISH))
+            .startsWith("Leipzig Corpora Collection, Uzbek: how common words are in news")
         val azerbaijani = built.single { it.sourceLanguage == "az" }
         assertThat(azerbaijani.recommended).isTrue()
         assertThat(azerbaijani.sha256).isEqualTo("2340f80d378e83708c4eae11bf78e3260b955a19b566278c5c6e292c93ee508f")
@@ -461,6 +468,24 @@ class CatalogFileTest {
         assertThat(forms.downloadUrl).isEqualTo(azerbaijani.single { it.id == "wiktionary-az-en" }.downloadUrl)
         assertThat(catalog!!.mandatory(Language.AZERBAIJANI)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.AZERBAIJANI) }).isEqualTo(azerbaijani)
+    }
+
+    @Test
+    fun `uzbek offers its wiktionaries, their word forms and frequencies, ticked, the forms mandatory, and the ocr models unticked`() {
+        val uzbek = catalog!!.entries.filter { it.isFor(Language.UZBEK) }
+        assertThat(uzbek.filter { it.recommended }.map { it.id }).containsExactly(
+            "corpus-uz", "wiktionary-uz-en", "wiktionary-uz-forms", "wiktionary-uz-ru", "wiktionary-uz-tr",
+        )
+        // ML Kit got 2.72% of the characters wrong and no model a third fewer; Paddle v5 loses lines over pictures, so
+        // only v6 is offered.
+        assertThat(uzbek.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-uzb", "tesseract-best-uzb", "paddle-v6-uz", "paddle-detector-v6-uz",
+        )
+        val forms = uzbek.single { it.category == CatalogCategory.FORMS }
+        assertThat(forms.build).isEqualTo(BUILD_FORMS)
+        assertThat(forms.downloadUrl).isEqualTo(uzbek.single { it.id == "wiktionary-uz-en" }.downloadUrl)
+        assertThat(catalog!!.mandatory(Language.UZBEK)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.UZBEK) }).isEqualTo(uzbek)
     }
 
     @Test

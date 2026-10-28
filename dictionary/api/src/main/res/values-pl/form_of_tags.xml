@@ -116,6 +116,7 @@
     <string name="form_of_tag_gerund">gerundium</string>
     <string name="form_of_tag_gerundive">gerundivum</string>
     <string name="form_of_tag_gyeongsang">Gyeongsang</string>
+    <string name="form_of_tag_habitual">nawykowy</string>
     <string name="form_of_tag_hakka">hakka</string>
     <string name="form_of_tag_hamgyong">Hamgyong</string>
     <string name="form_of_tag_han_nom">zapis Hán-Nôm</string>
@@ -162,6 +163,7 @@
     <string name="form_of_tag_instructive">instruktyw</string>
     <string name="form_of_tag_instrumental">narzędnik</string>
     <string name="form_of_tag_intensifier">wzmacniający</string>
+    <string name="form_of_tag_intentive">intencjonalny</string>
     <string name="form_of_tag_internet">internetowy</string>
     <string name="form_of_tag_interrogative">pytający</string>
     <string name="form_of_tag_intransitive">nieprzechodni</string>

@@ -1424,6 +1424,68 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun uzbekFindsItsWordsThroughEndingsApostrophesAndCyrillicAndWithoutTheTurnedComma() = runTest {
+        val imported = engine.import(uzbekDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val uzbek = LookupOptions(language = Language.UZBEK)
+        suspend fun all(text: String) = engine.lookup(text, uzbek).map { it.term.expression }.distinct()
+
+        val books = engine.lookup("kitoblarimizda", uzbek).first()
+        assertThat(books.term.expression).isEqualTo("kitob")
+        assertThat(books.trace.map { it.name }).containsExactly("plural", "possessive 1pl", "locative")
+        assertThat(books.trace.map { it.label }).doesNotContain("")
+        assertThat(books.trace.map { it.description }).doesNotContain("")
+        // k and q are written g and gʻ before a vowel, gʻ in any of its typed spellings.
+        assertThat(all("yuragi")).containsExactly("yurak")
+        assertThat(all("qishlogʻi")).containsExactly("qishloq")
+        assertThat(all("qishlog'i")).containsExactly("qishloq")
+        // Verb endings reach the infinitive.
+        val went = engine.lookup("bordi", uzbek)
+        assertThat(went.first { it.term.expression == "bormoq" }.trace.map { it.name }).containsExactly("past")
+        assertThat(all("boraman")).containsExactly("bormoq")
+        // A word with its own entry shows it without the rules' results: davom, not davo through the possessive.
+        assertThat(all("davom")).containsExactly("davom")
+        // Typed apostrophes find the dictionary's ʻ and ʼ; a headword written with ' is found with ʻ.
+        assertThat(all("so'z")).containsExactly("soʻz")
+        assertThat(all("ta`lim")).containsExactly("taʼlim")
+        assertThat(all("soʻrmoq")).containsExactly("so'rmoq")
+        // Without the turned comma: ot finds itself first, then oʻt; a written oʻ finds only itself.
+        assertThat(all("ot")).containsExactly("ot", "oʻt").inOrder()
+        assertThat(all("oʻt")).containsExactly("oʻt")
+        assertThat(all("bolsa")).containsExactly("boʻlmoq")
+        // Cyrillic text is read in Latin letters; capitals lower by the default case pairs.
+        assertThat(all("китоб")).containsExactly("kitob")
+        assertThat(all("ILM")).containsExactly("ilm")
+    }
+
+    /**
+     * Rows as Wiktionary's Uzbek export writes them: no rules, the part of speech in the tags, ʻ and ʼ in the
+     * headwords (one with a plain apostrophe); boʻlsa as a form-of row.
+     */
+    private fun uzbekDictionary(): File = zip(
+        "uz.zip",
+        "index.json" to """{"title":"Test Uzbek","revision":"1","format":3,"sourceLanguage":"uz"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["kitob","","n","",0,["book"],1,""],
+              ["yurak","","n","",0,["heart"],2,""],
+              ["qishloq","","n","",0,["village"],3,""],
+              ["bormoq","","v","",0,["to go"],4,""],
+              ["davo","","n","",0,["remedy"],5,""],
+              ["davom","","n","",0,["continuation"],6,""],
+              ["soʻz","","n","",0,["word"],7,""],
+              ["taʼlim","","n","",0,["education"],8,""],
+              ["so'rmoq","","v","",0,["to ask"],9,""],
+              ["ot","","n","",0,["horse"],10,""],
+              ["oʻt","","n","",0,["fire"],11,""],
+              ["boʻlmoq","","v","",0,["to be"],12,""],
+              ["boʻlsa","","non-lemma","",0,[["boʻlmoq",["conditional"]]],13,""],
+              ["ilm","","n","",0,["knowledge"],14,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

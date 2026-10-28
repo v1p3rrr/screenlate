@@ -116,6 +116,7 @@
     <string name="form_of_tag_gerund">ulaç</string>
     <string name="form_of_tag_gerundive">gerundivum</string>
     <string name="form_of_tag_gyeongsang">Gyeongsang</string>
+    <string name="form_of_tag_habitual">alışkanlık</string>
     <string name="form_of_tag_hakka">Hakka</string>
     <string name="form_of_tag_hamgyong">Hamgyong</string>
     <string name="form_of_tag_han_nom">Hán-Nôm yazılışı</string>
@@ -162,6 +163,7 @@
     <string name="form_of_tag_instructive">instrüktif</string>
     <string name="form_of_tag_instrumental">araç hâli</string>
     <string name="form_of_tag_intensifier">pekiştirme</string>
+    <string name="form_of_tag_intentive">niyet</string>
     <string name="form_of_tag_internet">internet</string>
     <string name="form_of_tag_interrogative">soru</string>
     <string name="form_of_tag_intransitive">geçişsiz</string>

@@ -30,6 +30,9 @@ abstract class SpacedLanguageSupport : LanguageSupport {
      */
     open val abbreviations: Set<String> = emptySet()
 
+    /** Apostrophes inside [abbreviations] (Uzbek "ko'ch." beside "koʻch."): the word before a period runs over them. */
+    protected open val abbreviationApostrophes: String = ""
+
     /**
      * Single letters, lowercase, that abbreviate only together with another one written apart (German "z. B.",
      * "d. h."): a period after one keeps the sentence going only when a letter with its period stands right before or
@@ -237,13 +240,15 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     override fun characterEntry(text: String): String? = null
 
-    /** The word before the period at [index] with its inner periods: "p.m" in "at 5 p.m.". */
+    /**
+     * The word before the period at [index] with its inner periods and [abbreviationApostrophes]: "p.m" in "at 5 p.m.".
+     */
     private fun wordBefore(text: String, index: Int): String {
         var start = index
         while (start > 0) {
             val previous = text[start - 1]
-            val inWord = previous.isLetterOrMark() ||
-                previous == '.' && start > 1 && text[start - 2].isLetterOrMark()
+            val joining = previous == '.' || previous in abbreviationApostrophes
+            val inWord = previous.isLetterOrMark() || joining && start > 1 && text[start - 2].isLetterOrMark()
             if (!inWord) break
             start--
         }

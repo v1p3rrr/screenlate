@@ -116,6 +116,7 @@
     <string name="form_of_tag_gerund">danh động từ</string>
     <string name="form_of_tag_gerundive">tính động từ</string>
     <string name="form_of_tag_gyeongsang">Gyeongsang</string>
+    <string name="form_of_tag_habitual">thói quen</string>
     <string name="form_of_tag_hakka">tiếng Khách Gia</string>
     <string name="form_of_tag_hamgyong">Hamgyong</string>
     <string name="form_of_tag_han_nom">chữ Hán Nôm</string>
@@ -162,6 +163,7 @@
     <string name="form_of_tag_instructive">chỉ dẫn cách</string>
     <string name="form_of_tag_instrumental">công cụ cách</string>
     <string name="form_of_tag_intensifier">nhấn mạnh</string>
+    <string name="form_of_tag_intentive">ý định</string>
     <string name="form_of_tag_internet">mạng</string>
     <string name="form_of_tag_interrogative">nghi vấn</string>
     <string name="form_of_tag_intransitive">nội động</string>

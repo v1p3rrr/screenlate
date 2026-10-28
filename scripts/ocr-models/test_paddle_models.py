@@ -58,6 +58,9 @@ class EntriesTest(unittest.TestCase):
         # Azerbaijani: v6 only, as v5 drops every ə; marked, 1.52% of the characters wrong against ML Kit's 4.99%.
         azerbaijani = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == "az"}
         self.assertEqual(azerbaijani, {"paddle-v6": True, "paddle-detector-v6": False})
+        # Uzbek: v6 only, unmarked; no model makes a third fewer errors than ML Kit.
+        uzbek = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == "uz"}
+        self.assertEqual(uzbek, {"paddle-v6": False, "paddle-detector-v6": False})
 
     def test_describes_an_archive_with_its_checksum(self):
         entry = paddle.entry("paddle-v6", "ja", "paddle-v6", b"zip", "paddle-detector-v6", True)

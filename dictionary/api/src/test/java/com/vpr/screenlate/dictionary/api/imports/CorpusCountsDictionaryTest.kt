@@ -238,6 +238,24 @@ class CorpusCountsDictionaryTest {
         }
     }
 
+    @Test
+    fun `the uzbek dictionary credits the news texts and keeps the turned comma of its letters`() {
+        val list = listOf("1\tva\t9", "2\tsoʻz\t3", "3\tOʻzbekiston\t2").joinToString("\n")
+        val source = folder.newFile().apply { writeBytes(tarGz("uzb/uzb-words.txt" to list)) }
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "uz", "2020", output)).isEqualTo(3)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("Leipzig Corpora Collection (uz)")
+            assertThat(index["attribution"]!!.jsonPrimitive.content)
+                .startsWith("Word counts of the Uzbek news of 2020 (uzb_news_2020_30K)")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
+                .containsExactly("va" to 1, "Va" to 1, "soʻz" to 2, "Soʻz" to 2, "oʻzbekiston" to 3, "Oʻzbekiston" to 3).inOrder()
+        }
+    }
+
     /** The Leipzig archive itself, when it was copied into testdata (`scripts/frequency/corpus_catalog.py`). */
     @Test
     fun `the kazakh archive builds the top 100 000 words`() {

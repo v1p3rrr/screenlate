@@ -116,6 +116,7 @@
     <string name="form_of_tag_gerund">동명사</string>
     <string name="form_of_tag_gerundive">동형용사</string>
     <string name="form_of_tag_gyeongsang">경상</string>
+    <string name="form_of_tag_habitual">습관</string>
     <string name="form_of_tag_hakka">객가어</string>
     <string name="form_of_tag_hamgyong">함경</string>
     <string name="form_of_tag_han_nom">한놈 표기</string>
@@ -162,6 +163,7 @@
     <string name="form_of_tag_instructive">조격</string>
     <string name="form_of_tag_instrumental">도구격</string>
     <string name="form_of_tag_intensifier">강조</string>
+    <string name="form_of_tag_intentive">의도</string>
     <string name="form_of_tag_internet">인터넷</string>
     <string name="form_of_tag_interrogative">의문</string>
     <string name="form_of_tag_intransitive">자동사</string>

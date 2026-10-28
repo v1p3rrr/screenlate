@@ -116,6 +116,7 @@
     <string name="form_of_tag_gerund">動名詞</string>
     <string name="form_of_tag_gerundive">動形容詞</string>
     <string name="form_of_tag_gyeongsang">慶尚</string>
+    <string name="form_of_tag_habitual">習慣</string>
     <string name="form_of_tag_hakka">客家話</string>
     <string name="form_of_tag_hamgyong">咸鏡</string>
     <string name="form_of_tag_han_nom">漢喃寫法</string>
@@ -162,6 +163,7 @@
     <string name="form_of_tag_instructive">指示格</string>
     <string name="form_of_tag_instrumental">工具格</string>
     <string name="form_of_tag_intensifier">強調</string>
+    <string name="form_of_tag_intentive">意圖</string>
     <string name="form_of_tag_internet">網路</string>
     <string name="form_of_tag_interrogative">疑問</string>
     <string name="form_of_tag_intransitive">不及物</string>

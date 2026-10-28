@@ -116,6 +116,7 @@
     <string name="form_of_tag_gerund">герундий</string>
     <string name="form_of_tag_gerundive">герундив</string>
     <string name="form_of_tag_gyeongsang">Кёнсан</string>
+    <string name="form_of_tag_habitual">обычное действие</string>
     <string name="form_of_tag_hakka">хакка</string>
     <string name="form_of_tag_hamgyong">Хамгён</string>
     <string name="form_of_tag_han_nom">запись ханном</string>
@@ -162,6 +163,7 @@
     <string name="form_of_tag_instructive">инструктив</string>
     <string name="form_of_tag_instrumental">творительный падеж</string>
     <string name="form_of_tag_intensifier">усилительное</string>
+    <string name="form_of_tag_intentive">намерение</string>
     <string name="form_of_tag_internet">интернет</string>
     <string name="form_of_tag_interrogative">вопросительное</string>
     <string name="form_of_tag_intransitive">непереходное</string>
