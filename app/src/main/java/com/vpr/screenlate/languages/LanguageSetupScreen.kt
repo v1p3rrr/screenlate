@@ -238,7 +238,7 @@ private fun CategoryCard(
                 main = model?.let { it == state.mainModel },
                 onMain = { main -> model?.let { onMain(it, main) } },
                 moreAccurate = category.builtIn && item.entry.recommended,
-                busyScreens = item.entry.misreadsBusyScreens(state.language),
+                busyScreens = item.entry.misreadsBusyScreens,
             )
         }
         when {
