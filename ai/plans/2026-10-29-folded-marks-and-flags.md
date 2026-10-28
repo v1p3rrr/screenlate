@@ -114,6 +114,16 @@ as written.
      pl, no, sq, sv, sh), a) in the rest;
    - d) leave the fold out where it finds nothing new and only adds extras: English, Dutch, Indonesian, Malay, Filipino,
      Latin, Swahili (gain 0.02% or less).
+2. **Word forms without the dictionary's headwords (not built; the coordinating session's follow-up to Uzbek).** The
+   "Word forms" item imports only the English Wiktionary's form rows, not its headwords. In Uzbek (and Azerbaijani),
+   ending rules show their results only when the word has no entry of its own; with uz–ru and the word forms alone,
+   Davom finds davo with the ending "my", because uz–ru has no davom and the forms import does not know davom is a
+   word. Options:
+   - a) the forms import keeps a list of the dictionary's headwords, and a rule result is left out when the word is one
+     of them, though nothing is shown for it (Davom then shows nothing with uz–ru alone, instead of davo "my");
+   - b) keep as is (davo "my" shows; with Wiktionary into English installed, davom shows its entry).
+   a) changes what the popup shows and needs a headword list in the forms import and in the filter, so it waits for the
+   owner.
 
 ## Progress
 

@@ -75,6 +75,7 @@ class LanguageSetupViewModel @Inject constructor(
     /** The country of the language's flag ([LanguageProfilesState.flagCountry]). */
     val flagCountry: StateFlow<String> = profiles.state.map { it.flagCountry(language) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), language.support.flagCountries.first())
+
     private val firstRun: Boolean = savedState.get<Boolean>(ARG_FIRST_RUN) ?: false
     private val interfaceLanguage = Locale.getDefault().languageCode
 
