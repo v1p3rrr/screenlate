@@ -51,7 +51,7 @@ Hoshi Reader Android `app/src/main/assets/hoshi-web/popup/popup.js` (GPL-3.0): `
   and the work runs again, so the worker records every final result (`DictionaryImports.recordEnd`, the output's bytes
   per job id in DataStore) before returning it, and a run that finds a recorded end returns it at once. `Result.retry()`
   is not recorded: it runs again anyway. When the network goes, the read fails with an `IOException` and the reason-7
-  stop lands at about the same time, in either order; the worker checks the validated network (now or within 2 s) and
+  stop lands at about the same time, in either order; the worker checks the validated network (now or within 3 s) and
   treats such a failure as a wait for the network, not as a break-off, so it never counts a retry or ends the task.
   `getStopReason()` needs API 31 (minSdk is 30); `Result.Success`/`Retry` are restricted API, compare with
   `Result.retry()` instead.
@@ -109,6 +109,23 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - The check is exact about the export: a first pass (`YomitanBackup.measure`) counts bank rows, value bytes and media bytes per chosen dictionary. `CollectionSpace` estimates archives (text, or 40% of it deflated, plus media) and installed size (text/2 + 120 B per row + media + 1 MB), and the peak for the import order (all archives exist first; each is deleted after its dictionary is installed), plus a 128 MB reserve.
 - Ratios measured per dictionary on the owner's export: deflated banks 5–38% of their text; installed size 12–140% of the text (highest for frequency and kanji dictionaries with small rows). With the chosen coefficients no dictionary exceeded its estimate (lowest estimate/actual 1.03); the peak estimate was 2.2 GB for 1.83 GB actual uncompressed and 1.8 GB for 1.25 GB actual deflated.
 - The installed dictionaries of this export take 921 MB.
+
+### Size after import of catalog downloads (measured 2026-10-29)
+
+- 150 dictionaries on the API 37 emulator, `du -sk files/dictionaries/*` against the catalog's `downloadSize`
+  (installed / download): term dictionaries median 2.22, size-weighted 2.12, 1.2-4.7 (JMdict Russian 4.7, wty-ja-ja
+  3.7, small Wiktionary pairs into Russian 3.4-3.9, the smallest up to 5.5); kanji about 3 (Unihan Hanja 5.5, 0.2 MB);
+  IPA transcriptions (kind PITCH) median 9.9, weighted 10.7, 7.1-14; Kanjium pitch 13.8; plain frequency lists 8.7
+  (Jiten) and 15.9 (aozora-jukugo); word forms 1.1-1.25 (the catalog carries their measured `installedSize`).
+- Built frequency dictionaries do not follow their download: wordfreq builds take 1.2-13.6 MB (a short list about 25
+  times its download, a long one about 12 MB at the 100,000-word cut), corpus counts 7-14 MB (Thai 4.6 times a 1.5 MB
+  archive, the Leipzig ones 0.5-0.8 times 8-24 MB archives).
+- Shares per kind miss single dictionaries by up to two times: CC-CEDICT took 4.4 times its archive (33.4 MB),
+  CC-CEDICT Hanzi 5.2 (22.2 MB), so the Chinese set (CC-CEDICT, Hanzi, wordfreq) took 69 MB where the shares give
+  43 MB. Hence `catalog/installed-sizes.json`: 137 entries measured on the emulator (`scripts/catalog/installed_sizes.py`),
+  scaled to the entry's current archive; the shares (`InstalledShare` in `DictionaryCatalog.kt`) only for entries not
+  measured. `installedBytesAtMost` (the free space check) takes a measured size plus a quarter, else a share above
+  the largest measured.
 
 ### Harness
 

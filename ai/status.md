@@ -120,13 +120,19 @@ the details.
   - Albanian (`languages/sq`, 33dab0fb);
   - Swahili (`languages/sw`, rebased as 7e27b4fe), the group's last language.
   The group is done (Basque and Maltese stay unbuilt, as the plan decided); group 5b follows. Question 30 is answered
-  provisionally: a straight " that recognition writes for a curly quote stays as it is; Swahili's check found both
-  cloud recognition and ML Kit writing “Karibu!” as "Karibu!", so a note's sentence there starts or ends at the ".
+  (b) and built on `claude/text-rules-1028`: in recognized text a " after a full stop closes the quote open, a " at a
+  word's start with none open is the language's opening quote, and a " that ends a word closes the quote open.
   Open for the owner: the plan's questions 28-34 (decided provisionally and built).
 - Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge: Welsh (`languages/cy`), Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`, `ad94d287`)
   merged; the group is done. Technical choices changed while building are marked provisional in the plan's rows and
-  changelog. Left outside the group, for the owner: cloud recognition's missing line-end space.
+  changelog. Cloud recognition's missing line-end space: screens now put the language's separator after every line
+  end without one, except Korean's unhyphenated ones (`claude/text-rules-1028`).
+- Text rules answered on 2026-10-28 evening, built on `claude/text-rules-1028` for the main session to check and
+  merge: the screen line-end separator (group 5b follow-up), straight quotes after a full stop (5a question 30), the
+  Czech era parted from a word ML Kit glues to it ("n.l.a" → "n.l. a", languages plan question 80), Thai sara am in
+  two parts read as one only in recognized text (4c question 15). Checked on the emulator (ANK34, ANK36, ANK38, run
+  log 2026-10-29). Not run: the instrumented `LanguageLookupTest` (its Thai case changed).
 - Group 5c (`plans/2026-10-19-group-5c.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge, in the order Finnish (`languages/fi`), Hungarian (`languages/hu`), Estonian (`languages/et`),
   Azerbaijani (`languages/az`, rebased by the main session as `17336e2e`), Uzbek (`languages/uz`, `81654777`): all
@@ -181,6 +187,29 @@ the details.
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
 - Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
+
+## App fixes from the owner's answers of 2026-10-28 evening (2026-10-29, `claude/app-fixes-1028`)
+
+Built on `claude/app-fixes-1028` (from `languages/main`); the network timing also on `claude/network-timing-main`
+(from `main`). Plan: questions 72 (2), 77, 81-85 of the languages plan, question 16 of the group 4c plan.
+- Downloads: a lost network gets 3 s to show (was 2 s) and the run waits 15 s for it (was 30 s).
+- The debug build's selection menu item is "Look up in Screenlate Dev" (`app/src/debug/res`, 14 locales).
+- The text detectors are one item, "PaddleOCR v6 text detector" (v5 the same), in every locale.
+- The import notification hides Cancel while a dictionary is registered (`DictionaryRepository.import`'s
+  `onRegister`); the task card's Cancel stays and still comes too late there.
+- Home's "Download again" card stays hidden while the dictionary's download waits or runs, also after the app is
+  left and opened again (it was not fixed before: the set was per ViewModel).
+- Every Tesseract model of every language says it misreads busy screens; `LanguageSupport.tesseractMisreadsBusyScreens`
+  and its Thai and Khmer overrides were removed after the merge with the OCR text rules.
+- The download screen's size after import: measured sizes (`catalog/installed-sizes.json`, 137 entries, written by
+  `scripts/catalog/installed_sizes.py`), else shares per kind; the free space check takes a quarter more or a share
+  above the largest measured. Chinese's defaults read 69 MB, as their import takes (43 MB with the old ×3). Refresh the
+  file after new catalog dictionaries are imported on an emulator.
+- DIC9 no longer expects a spinner.
+- Checked on the emulator (run log 2026-10-29): BUB20, DIC11, DIC47 (one archive), DIC48, LNG17, LNG37; the
+  instrumented `DictionaryRepositoryTest` 18 of 18. Not tried: a task with several archives (Cancel back for the next).
+- `AudioFinderTest > a source that does not answer in time is skipped` failed once under load (a wall-clock bound),
+  passed on the rerun.
 
 ## Settings rework and the docked bubble's menu (2026-10-28 night, merged into `languages/main`)
 

@@ -151,19 +151,20 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 - ML Kit leaves a line-final hyphen out of the line's last element ("impor" / "tant", emulator, LK30) but keeps it
   in the line's text; `withLineEndHyphen` puts it back after the word (box to the line's end), so the lookup joins
   the word (MlKitLineEndHyphenTest, German). Lens keeps the hyphen but gives the word no separator ("impor-tant");
-  `withHyphenBreaks` puts the language's separator there. PaddleOCR lines are paragraphs of their own, so its
+  `withLineEndSeparators` puts the language's separator there. PaddleOCR lines are paragraphs of their own, so its
   halves are looked up apart.
 - Lens can also give an unhyphenated line's last word no separator: on `testdata/ocr/ga-anki.png` (Segoe UI,
   2026-10-28) "Cheannaigh sí" ending a line and "torthaí" starting the next came as "sítorthaí", with Irish and
-  with Welsh named in the request, while the other line ends of the paragraph had a space. The screen path keeps
-  Lens's separators (only a hyphenated end gets the language's), so `{sentence}` read "Cheannaigh sítorthaí"; ML
-  Kit gave the space. Photos already put the language's separator after every line end without one
-  (`PhotoAssembly`). Lens also split that paragraph after "Br." ending a line, so with cloud recognition the
+  with Welsh named in the request, while the other line ends of the paragraph had a space, so `{sentence}` read
+  "Cheannaigh sítorthaí"; ML Kit gave the space. Photos already put the language's separator after every line end
+  without one (`PhotoAssembly`); since 2026-10-28 screens do too (`withLineEndSeparators`), except an unhyphenated
+  line end in Korean, which breaks words at any syllable (`LanguageSupport.lineEndSeparator`). Lens also split that paragraph after "Br." ending a line, so with cloud recognition the
   sentence of a word below it starts at "Seán"; and it read "lch." as "Ich.".
 - Engines split "n. l." (Czech, before the Common Era; Arial, where l and I look alike) differently: cloud recognition
   gives "n", ".", "I", "." as four words, ML Kit "n.I." as one and glues the next word's start to it ("l.a" in a
   tight image, 2026-10-22). `CzechSupport.ocrLines` therefore matches the I over the line's words joined with spaces,
-  not word by word.
+  not word by word, and puts a space after the era's last period where a letter follows it at once ("n.l. a");
+  `OcrPage.inLanguage` parts such a word in two, cutting its character boxes or sharing its box by characters.
 - ML Kit's Latin model can lose one of a doubled narrow letter: on `testdata/ocr/fi-sample.png` and `fi-anki.png`
   (Segoe UI, emulator, 2026-10-28) it read riittävä as rittävä and tuella as tuela, every other word of the two
   screens exactly; cloud recognition read both. A word misread so finds nothing (tuela) or another word.
