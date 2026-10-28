@@ -30,6 +30,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
@@ -66,7 +67,7 @@ class DictionaryImportWorker @AssistedInject constructor(
 
     /**
      * Whether this run is counted as one the app did not die in ([DictionaryImports.markStopped]): set while it
-     * downloads, so that a death then does not count towards [MAX_RUN_ATTEMPTS], and kept when it ends for a retry.
+     * downloads, waits for a network or for a retry, so that a death then does not count towards [MAX_RUN_ATTEMPTS].
      */
     private var uncounted = false
 
@@ -110,8 +111,7 @@ class DictionaryImportWorker @AssistedInject constructor(
                         imports.cancellable(id) { work() } ?: cancelled(started = true)
                     }
                 }
-                // A retry runs again and keeps counting its stops and retries. (Result.Success is restricted API.)
-                if (result != Result.retry()) ended(result.outputData)
+                ended(result.outputData)
                 result
             }
         } catch (e: CancellationException) {
@@ -196,18 +196,8 @@ class DictionaryImportWorker @AssistedInject constructor(
             workDataOf(KEY_TITLES to titles.toTypedArray())
         } catch (e: CancellationException) {
             throw e
-        } catch (e: NetworkLostException) {
-            Log.i(TAG, "Task $id: no network for ${NETWORK_WAIT_MS / 1000} s; runs again once one is up")
-            return Result.retry()
         } catch (e: DownloadBrokeOffException) {
-            val retries = imports.retriesOf(id)
-            if (retries < MAX_RETRIES) {
-                Log.w(TAG, "Task $id: the download broke off (${e.cause?.javaClass?.simpleName}); retry ${retries + 1} of $MAX_RETRIES")
-                imports.markRetry(id)
-                countRunAsStopped()
-                return Result.retry()
-            }
-            Log.w(TAG, "Task $id: the download broke off $MAX_RETRIES times; stopped", e.cause)
+            Log.w(TAG, "Task $id: the download broke off after $MAX_RETRIES retries; stopped", e.cause)
             resumable(workDataOf(KEY_ERROR to e.reason().take(MAX_ERROR_LENGTH), KEY_DOWNLOAD_STOPPED to true, KEY_CONNECTION_LOST to true))
         } catch (e: ResumableDownload.FinalStatusException) {
             Log.w(TAG, "Task $id: the server answered HTTP ${e.code}")
@@ -406,9 +396,10 @@ class DictionaryImportWorker @AssistedInject constructor(
     }.onFailure { Log.w(TAG, "Cannot read $indexUrl", it) }.getOrNull()
 
     /**
-     * Downloads [url] into the task's archive, which [install] gets; returns what [install] returns. The archive stays
-     * when the download breaks off ([DownloadBrokeOffException]), so the next run continues it; it is deleted once
-     * installed or when the install fails.
+     * Downloads [url] into the task's archive, which [install] gets; returns what [install] returns. A download that
+     * breaks off waits for its retry and continues ([MAX_RETRIES] times), one whose network went waits for it; the
+     * archive stays when it stops ([DownloadBrokeOffException], a stop by WorkManager), so a later run continues it. It
+     * is deleted once installed or when the install fails.
      */
     private suspend fun download(url: String, name: String, install: suspend (File) -> String): String {
         // Queued by an older version: no archive of its own to continue.
@@ -418,7 +409,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         val started = System.currentTimeMillis()
         val before = if (archive.exists()) archive.length() else 0L
         Log.i(TAG, "Downloading $url" + if (before > 0) ", ${before shr 10} KB already there" else "")
-        val throttle = ProgressThrottle()
+        var throttle = ProgressThrottle()
         while (true) {
             try {
                 ResumableDownload(downloadClient).fetch(url, archive, state) { copied, total ->
@@ -431,14 +422,32 @@ class DictionaryImportWorker @AssistedInject constructor(
             } catch (e: ResumableDownload.FinalStatusException) {
                 throw e
             } catch (e: IOException) {
-                // Stopped by WorkManager meanwhile, e.g. for the lost network: it runs the task again.
-                currentCoroutineContext().ensureActive()
-                if (!imports.networkLost(NETWORK_SETTLE_MS)) throw DownloadBrokeOffException(e)
-                // Not a break-off of the host: no retry is counted. WorkManager stops the task as the network went;
-                // a network back before that continues here.
-                Log.i(TAG, "Task $id: the network went away during the download (${e.javaClass.simpleName}); waits for it")
-                if (!imports.awaitNetwork(NETWORK_WAIT_MS)) throw NetworkLostException()
-                Log.i(TAG, "Task $id: the network is back; the download continues")
+                val failure = failedRead(
+                    // Stopped by WorkManager meanwhile, e.g. for the lost network: it runs the task again.
+                    ensureActive = { currentCoroutineContext().ensureActive() },
+                    networkLost = { imports.networkLost(NETWORK_SETTLE_MS) },
+                    awaitNetwork = { imports.awaitNetwork(NETWORK_WAIT_MS) },
+                )
+                // A lost network is not a break-off of the host: no retry is counted. WorkManager stops the task as the
+                // network went; a network back before that continues here.
+                val reason = e.javaClass.simpleName
+                when (failure) {
+                    FailedRead.NETWORK_BACK -> Log.i(TAG, "Task $id: the network went away during the download ($reason) and is back; continues")
+                    FailedRead.NO_NETWORK -> Log.i(TAG, "Task $id: the network went away during the download ($reason), none for ${NETWORK_WAIT_MS / 1000} s; tries again")
+                    FailedRead.BROKE_OFF -> {
+                        val retries = imports.retriesOf(id)
+                        if (retries >= MAX_RETRIES) throw DownloadBrokeOffException(e)
+                        val wait = retryDelayMs(retries + 1)
+                        Log.w(TAG, "Task $id: the download broke off ($reason); retry ${retries + 1} of $MAX_RETRIES in ${wait / 1000} s")
+                        imports.markRetry(id)
+                        // Waited here: WorkManager's backoff after a retry result grows with every run, also with the
+                        // runs it stopped for a lost network.
+                        setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_RETRY))
+                        delay(wait)
+                        setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
+                        throttle = ProgressThrottle()
+                    }
+                }
             }
         }
         Log.i(TAG, "Downloaded ${(archive.length() - before) shr 10} KB of ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
@@ -456,13 +465,13 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
     }
 
-    /** A download that broke off while the network stayed up: a timeout, a server error. The next run continues it. */
+    /**
+     * A download that broke off while the network stayed up (a timeout, a server error) after its retries; a resume
+     * continues it.
+     */
     private class DownloadBrokeOffException(cause: IOException) : IOException(cause) {
         fun reason(): String = cause?.message ?: cause?.javaClass?.simpleName.orEmpty()
     }
-
-    /** The network went away during a download and did not come back while WorkManager let the task run. */
-    private class NetworkLostException : Exception()
 
     private suspend fun importDownloaded(archive: File): String {
         val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
@@ -537,6 +546,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val SOURCE_YOMITAN_BACKUP = "yomitan_backup"
 
         const val STAGE_DOWNLOAD = "download"
+
+        /** A download waiting in its run for its automatic retry; its task shows as queued with its retries. */
+        const val STAGE_RETRY = "retry"
         const val STAGE_IMPORT = "import"
         const val STAGE_CONVERT = "convert"
         const val STAGE_CHECK = "check"
@@ -552,14 +564,23 @@ class DictionaryImportWorker @AssistedInject constructor(
         /** Automatic retries of a download that broke off, after which it waits for the user (owner). */
         const val MAX_RETRIES = 3
 
+        /** The wait before the first automatic retry; it doubles with each retry ([retryDelayMs]). */
+        private const val RETRY_DELAY_MS = 30_000L
+
         /** How long after a download broke off the network may still go, which makes it a wait for the network. */
         private const val NETWORK_SETTLE_MS = 2_000L
 
         /**
-         * How long a download whose network went waits for it in its run; WorkManager normally stops the task first
-         * and runs it again once a network is up.
+         * How long a download whose network went waits for it before it tries again, in its run; WorkManager normally
+         * stops the task first and runs it again once a network is up.
          */
         private const val NETWORK_WAIT_MS = 30_000L
+
+        /**
+         * The wait in the run before the automatic [retry] (from 1) of a download that broke off: 30 s, 1 min, 2 min.
+         * It does not depend on WorkManager's run count, which grows with every stop for a lost network too.
+         */
+        fun retryDelayMs(retry: Int): Long = RETRY_DELAY_MS shl (retry - 1)
 
         /** What follows a stop by WorkManager for [reason] (`WorkInfo.STOP_REASON_*`), for the log. */
         fun afterStop(reason: Int): String = when (reason) {
@@ -573,6 +594,36 @@ class DictionaryImportWorker @AssistedInject constructor(
          * ([DictionaryImports.markStopped]), which WorkManager counts as well.
          */
         fun interruptions(runAttemptCount: Int, stops: Int): Int = (runAttemptCount - stops).coerceAtLeast(0)
+    }
+}
+
+/** What a failed read of a download was; see [failedRead]. */
+internal enum class FailedRead {
+    /** The network went and came back: the download continues at once. */
+    NETWORK_BACK,
+
+    /** The network went and did not come back within the wait: the download tries again. */
+    NO_NETWORK,
+
+    /** The network stayed up: a timeout, a server error. The download waits for its retry or stops. */
+    BROKE_OFF,
+}
+
+/**
+ * Tells a lost network from a download that broke off, after a failed read. [ensureActive] throws when WorkManager
+ * stopped the task meanwhile; [networkLost] says whether the network is gone now or a moment later (a read may fail
+ * just before the system notices); [awaitNetwork] waits a while for the network and says whether it came back.
+ */
+internal suspend fun failedRead(
+    ensureActive: suspend () -> Unit,
+    networkLost: suspend () -> Boolean,
+    awaitNetwork: suspend () -> Boolean,
+): FailedRead {
+    ensureActive()
+    return when {
+        !networkLost() -> FailedRead.BROKE_OFF
+        awaitNetwork() -> FailedRead.NETWORK_BACK
+        else -> FailedRead.NO_NETWORK
     }
 }
 

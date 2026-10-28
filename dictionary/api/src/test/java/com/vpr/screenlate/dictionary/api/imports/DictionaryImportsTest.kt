@@ -19,6 +19,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_RETRY
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
@@ -380,6 +381,58 @@ class DictionaryImportsTest {
         // Its partial file stays for the run after the network is back.
         val archive = work("Jitendex", WorkInfo.State.ENQUEUED, 1, archive = "part.zip", constraints = network)
         assertThat(archivesInUse(listOf(archive))).containsExactly("part.zip")
+    }
+
+    @Test
+    fun `a download waiting in its run for a retry shows as queued with its retries`() {
+        val network = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val waiting = work("Jitendex", WorkInfo.State.RUNNING, 1, constraints = network, progress = workDataOf(KEY_NAME to "Jitendex", KEY_STAGE to STAGE_RETRY))
+
+        val task = importTasks(listOf(waiting), retries = mapOf(waiting.id.toString() to 1)).single()
+
+        assertThat(task.state).isEqualTo(ImportTask.State.QUEUED)
+        assertThat(task.retries).isEqualTo(1)
+        assertThat(task.percent).isNull()
+        // It runs, so it waits for no network.
+        assertThat(task.needsNetwork).isFalse()
+    }
+
+    @Test
+    fun `retries wait 30 s, then twice as long each`() {
+        assertThat((1..DictionaryImportWorker.MAX_RETRIES).map { DictionaryImportWorker.retryDelayMs(it) })
+            .containsExactly(30_000L, 60_000L, 120_000L).inOrder()
+    }
+
+    @Test
+    fun `a failed read with the network up is a break-off, and no wait for the network follows`() = runTest {
+        var waited = false
+
+        val failure = failedRead(ensureActive = {}, networkLost = { false }, awaitNetwork = { waited = true; true })
+
+        assertThat(failure).isEqualTo(FailedRead.BROKE_OFF)
+        assertThat(waited).isFalse()
+    }
+
+    @Test
+    fun `a failed read as the network goes waits for it`() = runTest {
+        assertThat(failedRead(ensureActive = {}, networkLost = { true }, awaitNetwork = { true })).isEqualTo(FailedRead.NETWORK_BACK)
+        assertThat(failedRead(ensureActive = {}, networkLost = { true }, awaitNetwork = { false })).isEqualTo(FailedRead.NO_NETWORK)
+    }
+
+    @Test
+    fun `a failed read after WorkManager stopped the task checks nothing more`() {
+        var checked = false
+
+        assertThrows(CancellationException::class.java) {
+            runBlocking {
+                failedRead(
+                    ensureActive = { throw CancellationException("stopped") },
+                    networkLost = { checked = true; false },
+                    awaitNetwork = { checked = true; true },
+                )
+            }
+        }
+        assertThat(checked).isFalse()
     }
 
     @Test

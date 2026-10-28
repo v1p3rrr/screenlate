@@ -20,6 +20,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import androidx.work.await
 import androidx.work.workDataOf
 import com.vpr.screenlate.core.common.log.Log
@@ -53,6 +54,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_CHECK
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_CONVERT
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_RETRY
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -467,9 +469,11 @@ class DictionaryImports @Inject constructor(
             .addTag(SOURCE_TAG_PREFIX + source)
             .apply {
                 if (download) {
-                    // Waits for a network; one that broke off tries again (DictionaryImportWorker.MAX_RETRIES).
+                    // Waits for a network. WorkManager counts every run, also one it stopped for a lost network, and
+                    // starts the next no sooner than the backoff after the enqueue: the least linear one (10 s a run)
+                    // stays behind the time the runs took. Retries wait in the run (DictionaryImportWorker.retryDelayMs).
                     setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                    setBackoffCriteria(BackoffPolicy.EXPONENTIAL, RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
+                    setBackoffCriteria(BackoffPolicy.LINEAR, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
                 }
             }
             .addTag(ORDER_TAG_PREFIX + lastOrder.updateAndGet { maxOf(it + 1, System.currentTimeMillis()) })
@@ -506,7 +510,7 @@ class DictionaryImports @Inject constructor(
 
         /**
          * Runs of each unfinished task that do not count as runs the app died in, as `id=count`: WorkManager stopped
-         * them, they were downloading, or they ended for a retry; see [markStopped].
+         * them, or they were downloading; see [markStopped].
          */
         val STOPPED = stringSetPreferencesKey("dictionary_imports_stopped")
 
@@ -524,9 +528,6 @@ class DictionaryImports @Inject constructor(
 
         /** Sources whose tasks download their archive and may continue it; see [ImportTask.resumable]. */
         private val DOWNLOAD_SOURCES = setOf(SOURCE_URL)
-
-        /** The first wait before a download that broke off tries again; it doubles with each retry. */
-        private const val RETRY_DELAY_SECONDS = 30L
 
         /** What a stopped download keeps in its output to be queued again; see [resume]. */
         val RESUME_KEYS = listOf(KEY_SOURCE, KEY_URL, KEY_INDEX_URL, KEY_NAME, KEY_REPLACE_ID, KEY_ARCHIVE)
@@ -605,6 +606,7 @@ private fun WorkInfo.toTask(retries: Int): ImportTask {
         WorkInfo.State.FAILED -> ImportTask.State.FAILED
         WorkInfo.State.RUNNING -> when (progress.getString(KEY_STAGE)) {
             STAGE_DOWNLOAD -> ImportTask.State.DOWNLOADING
+            STAGE_RETRY -> ImportTask.State.QUEUED
             STAGE_CHECK -> ImportTask.State.CHECKING_SPACE
             STAGE_CONVERT -> ImportTask.State.CONVERTING
             else -> ImportTask.State.IMPORTING
