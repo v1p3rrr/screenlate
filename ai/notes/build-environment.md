@@ -55,10 +55,14 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   carries `glue.js`, so after an edit of `glue.js` or `own-transforms.js` rebuild all of them, not only the language
   edited: `languages/lt` had rebuilt only `ro.js` after its last glue change, and the merge into `languages/main`
   rebuilt the other 37. Minified names shift whenever shared code changes, so compare a rebuild with the committed
-  files with one- and two-letter identifiers normalized (the coordinating session's check). Each bundle that imports
-  from `own-transforms.js` also carries the other languages' rules there (Romanian and Latin in no, kk, ky, bn, fa,
-  he: about 2.4 KB), since esbuild keeps the rule helpers' calls; marking the module `sideEffects: false` in the
-  resolver does not drop them.
+  files with one- and two-letter identifiers normalized (the coordinating session's check). esbuild keeps a top-level
+  statement of `own-transforms.js` it cannot prove free of side effects (a helper's call, a spread), so until
+  2026-10-29 every bundle that imported one rule from it carried all the others (about 27 KB each in 16 bundles);
+  marking the module `sideEffects: false` in the resolver does not drop them. A descriptor built by calls is now
+  wrapped in `/* @__PURE__ */ (() => ({...}))()`, and `build.mjs` fails when `own-transforms.js` or
+  `own-processors.js` leaves any code in a bundle that imports nothing from it. To check a rebuild that changes
+  minified names, compare the bundles' `candidatesJson` output on the test texts instead (the 2026-10-29 cloud session
+  ran every quoted string of `glue.test.mjs` through the old and new bundles: 76,160 calls, no difference).
 
 ## Agent tooling gotchas
 

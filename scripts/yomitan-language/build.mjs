@@ -131,6 +131,24 @@ const replacedTransforms = {
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
 const ownTransforms = await import(new URL('./own-transforms.js', import.meta.url).href);
 
+/**
+ * Every bundle that imports one rule or processor of the app's own would carry all of them where esbuild cannot tell
+ * that a top-level statement is free of side effects (a call, a spread), so a file imported for nothing must leave no
+ * code. A descriptor built by calls is wrapped in `/* @__PURE__ *\/ (() => ({...}))()`.
+ */
+for (const file of ['own-transforms.js', 'own-processors.js']) {
+    const probe = await esbuild.build({
+        stdin: {contents: `import './${file}';`, resolveDir: here},
+        bundle: true,
+        format: 'iife',
+        write: false,
+        minify: true,
+        metafile: true,
+    });
+    const kept = Object.values(Object.values(probe.metafile.outputs)[0].inputs).reduce((sum, i) => sum + i.bytesInOutput, 0);
+    if (kept > 0) throw new Error(`${file} keeps ${kept} bytes in bundles that import nothing from it; mark its calls pure`);
+}
+
 /** @param {string} source @param {string} iso */
 function keepLanguage(source, iso) {
     const start = source.indexOf('const languageDescriptors = [');

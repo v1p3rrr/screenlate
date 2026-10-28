@@ -166,7 +166,10 @@ check out Yomitan at the commit in `scripts/yomitan-language/yomitan-commit.txt`
 `npm --prefix scripts/yomitan-language ci` and `node scripts/yomitan-language/build.mjs <yomitan checkout> <out dir>
 <iso>...`. `node scripts/yomitan-language/generate-inflections.mjs <yomitan checkout> <iso>...` regenerates the
 inflection rule names (`res/values/inflections_<iso>.xml` and `YomitanInflections.kt`) and lists the translations
-that are missing or no longer needed; translations are edited by hand. `glue.js` may replace a language's case
+that are missing or no longer needed; translations are edited by hand. The build fails when `own-transforms.js` or
+`own-processors.js` leaves code in a bundle that imports nothing from it, as esbuild keeps top-level calls: a
+descriptor built by calls is wrapped in `/* @__PURE__ */ (() => ({...}))()`, so other languages' bundles leave it
+out. `glue.js` may replace a language's case
 processors where its letter pairs differ from JavaScript's default (Turkish İ/i and I/ı). A language Yomitan has no
 descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian, Kazakh and Kyrgyz from Mongolian, which gives only Cyrillic capitalization, Swahili from Czech); `addedPreprocessors`
 gives a language text processors its descriptor lacks (Georgian decapitalizing, for headings in Mtavruli capitals; the app's own ones in `own-processors.js`, such as Thai sara am, tone mark order and the spaces around ๆ, Khmer zero-width spaces and subscript TA read as DA, Irish dotted consonants read as consonant + h, the Scottish Gaelic acute read as the grave) and

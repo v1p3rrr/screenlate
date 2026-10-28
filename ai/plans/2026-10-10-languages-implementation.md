@@ -468,7 +468,11 @@ Decided when the first language or group 1 is ready, before it is merged into th
 - Smaller language bundles (2026-10-22): the rules of `own-transforms.js` reach every bundle that imports from it
   (Romanian and Latin rules in the Norwegian, Kazakh, Kyrgyz, Bengali, Persian and Hebrew bundles, about 2.4 KB each),
   because esbuild keeps the rule helpers' calls. `/* @__PURE__ */` on the helpers or one module per language would
-  drop them; nothing breaks meanwhile.
+  drop them; nothing breaks meanwhile. Done on 2026-10-29 (cloud session, `cloud/backlog-2026-10-29`): the leak was
+  about 27 KB in 16 bundles (bn, cy, et, fa, fi, ga, gd, he, hu, kk, ky, la, no, ro, sq, sw), as every rule added
+  since went there too; the descriptors built by calls are wrapped in a pure IIFE, the bundles lost 21-28 KB each
+  (412 KB in all), their candidates are unchanged on every quoted text of `glue.test.mjs`, and `build.mjs` fails
+  when either file of the app's own leaves code in a bundle that imports nothing from it.
 - Language flags in more places (owner, 2026-10-28): find the menus and screens that name languages (the dictionary
   page's language chips, the download screen, the lookup and photo language pickers, notifications and the like) and
   show the language's flag there as the bubble's quick-language menu does. On 2026-10-28 the owner asked for a
