@@ -35,6 +35,7 @@ class TranslationsTest {
         "b+zh+Hant" to setOf("other"),
         "ar" to setOf("zero", "one", "two", "few", "many", "other"),
         "fa" to setOf("one", "other"),
+        "iw" to setOf("one", "two", "other"),
     )
 
     /** Translations whose screens are not checked yet: they ship, but the language settings do not offer them. */

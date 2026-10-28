@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">מוכן</string>
+    <string name="installation_running">התקנת השפה בתהליך. הסריקה והחיפוש במילון יהיו זמינים כשהרכיבים הנדרשים יהיו מוכנים.</string>
+    <string name="installation_missing">מילונים או מודלי זיהוי נדרשים חסרים או מושבתים. כדי להשלים את ההגדרה, יש לפתוח את מצב ההתקנה.</string>
+    <string name="installation_failed">התקנת השפה נכשלה. כדי לראות את השגיאה ולנסות שוב, יש לפתוח את מצב ההתקנה.</string>
+    <string name="installation_open">מצב ההתקנה</string>
+    <string name="installation_device_ready">זיהוי במכשיר: מוכן</string>
+    <string name="installation_device_missing">זיהוי במכשיר: לא זמין; אפשר להשתמש בזיהוי בענן כשהוא מופעל.</string>
+    <string name="installation_remaining">התקנות שנותרו: %1$d</string>
+    <string name="installation_errors">התקנות שנכשלו: %1$d</string>
+</resources>
