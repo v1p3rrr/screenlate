@@ -58,6 +58,15 @@ data class AnkiSummary(val deck: String, val model: String)
 /** Files of a downloaded or imported dictionary are gone; [catalogEntry] allows downloading it again. */
 data class MissingDictionary(val dictionary: DictionaryEntity, val catalogEntry: CatalogEntry?)
 
+/**
+ * The [missing] dictionaries whose catalog entry is not being downloaded: a download queued or running brings their
+ * files back, so the card leaves them out until it ends.
+ */
+internal fun missingNotDownloading(missing: List<MissingDictionary>, tasks: List<ImportTask>): List<MissingDictionary> {
+    val downloading = tasks.filter { !it.finished }.mapNotNullTo(hashSetOf()) { it.catalogEntry }
+    return missing.filter { it.catalogEntry?.id !in downloading }
+}
+
 /** A downloaded recognition model whose files are damaged; [catalogEntry] downloads it again. */
 data class DamagedModel(val id: String, val catalogEntry: CatalogEntry?)
 
@@ -233,7 +242,14 @@ class HomeViewModel @Inject constructor(
             val without = statuses.associate { it.language to missingNotInstalling(it, entries) }.filterValues { it.isNotEmpty() }
             val noTerms = HomeProblem.NoTermDictionaries(without, languages.several).takeIf { without.isNotEmpty() }
             val broken = damagedModels(damaged, entries, tasks).takeIf { it.isNotEmpty() }?.let(HomeProblem::DamagedModels)
-            found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(broken, noTerms)
+            found.mapNotNull { problem ->
+                when (problem) {
+                    is HomeProblem.NoTermDictionaries -> null
+                    is HomeProblem.MissingDictionaries ->
+                        missingNotDownloading(problem.dictionaries, tasks).takeIf { it.isNotEmpty() }?.let(HomeProblem::MissingDictionaries)
+                    else -> problem
+                }
+            } + listOfNotNull(broken, noTerms)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** Checks AnkiDroid, dictionary files and audio sources again; call when the screen is shown. */
