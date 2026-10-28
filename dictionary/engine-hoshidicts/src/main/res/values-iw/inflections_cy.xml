@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_cy.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- soft mutation -->
+    <string name="inflection_cy_soft_mutation_label">מוטציה רכה</string>
+    <string name="inflection_cy_soft_mutation">מוטציה רכה: b d g f dd l r במקום p t c b/m d ll rh, והאות g נשמטת (ei gath מן cath, dy wely מן gwely)</string>
+    <!-- nasal mutation -->
+    <string name="inflection_cy_nasal_mutation_label">מוטציה אפית</string>
+    <string name="inflection_cy_nasal_mutation">מוטציה אפית: mh nh ngh m n ng במקום p t c b d g (fy nghath מן cath, yng Nghymru מן Cymru)</string>
+    <!-- aspirate mutation -->
+    <string name="inflection_cy_aspirate_mutation_label">מוטציה נשיפתית</string>
+    <string name="inflection_cy_aspirate_mutation">מוטציה נשיפתית: ph th ch במקום p t c (ei chath מן cath)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_cy_h_prothesis_label">פרותזה של h</string>
+    <string name="inflection_cy_h_prothesis">הוספת h לפני תנועה (ei hysgol מן ysgol)</string>
+</resources>

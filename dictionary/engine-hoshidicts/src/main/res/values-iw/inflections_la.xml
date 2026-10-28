@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_la_plural_label">רבים</string>
+    <string name="inflection_la_plural">נטייה ברבים</string>
+    <!-- feminine -->
+    <string name="inflection_la_feminine_label">נקבה</string>
+    <string name="inflection_la_feminine">צורת שם תואר</string>
+    <!-- neuter -->
+    <string name="inflection_la_neuter_label">סתמי</string>
+    <string name="inflection_la_neuter">צורת שם תואר</string>
+    <!-- ablative -->
+    <string name="inflection_la_ablative_label">יחסת המוצא</string>
+    <string name="inflection_la_ablative">יחסת המוצא</string>
+    <!-- -que -->
+    <string name="inflection_la_que">אנקליטיקה שמשמעה \"ו־\" (magisque מן magis)</string>
+    <!-- -ne -->
+    <string name="inflection_la_ne">אנקליטיקה של שאלה (videsne מן vides)</string>
+    <!-- -ve -->
+    <string name="inflection_la_ve">אנקליטיקה שמשמעה \"או\" (mortuusve מן mortuus)</string>
+</resources>

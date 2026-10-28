@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_fi.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- clitic -->
+    <string name="inflection_fi_clitic_label">קליטיקה</string>
+    <string name="inflection_fi_clitic">קליטיקה: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin מן talo, talossakaan מן talossa, onkohan מן onko)</string>
+    <!-- possessive -->
+    <string name="inflection_fi_possessive_label">סיומת קניין</string>
+    <string name="inflection_fi_possessive">סיומת קניין: -ni, -si, -mme, -nne, -nsa/-nsä, תנועה ארוכה ואחריה -n (talossani, talossaan מן talossa, taloni מן talo)</string>
+</resources>

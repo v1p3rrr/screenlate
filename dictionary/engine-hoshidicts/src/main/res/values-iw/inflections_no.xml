@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_no.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -s -->
+    <string name="inflection_no_s_label">יחסת הקניין</string>
+    <string name="inflection_no_s">יחסת הקניין (dagens, Norges)</string>
+</resources>

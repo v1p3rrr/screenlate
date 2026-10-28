@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_sq.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- definite -->
+    <string name="inflection_sq_definite_label">מיודע</string>
+    <string name="inflection_sq_definite">צורה מיודעת של שם עצם</string>
+    <!-- singular definite accusative -->
+    <string name="inflection_sq_singular_definite_accusative_label">יחסת המושא, יחיד, מיודע</string>
+    <string name="inflection_sq_singular_definite_accusative">צורת יחסת המושא ביחיד של שם עצם מיודע</string>
+    <!-- plural -->
+    <string name="inflection_sq_plural_label">רבים</string>
+    <string name="inflection_sq_plural">צורת הרבים של שם עצם</string>
+    <!-- present indicative second-person singular -->
+    <string name="inflection_sq_present_indicative_second_person_singular_label">הווה, גוף שני יחיד</string>
+    <string name="inflection_sq_present_indicative_second_person_singular">פועל בזמן הווה בדרך החיווי, גוף שני יחיד</string>
+    <!-- present indicative third-person singular -->
+    <string name="inflection_sq_present_indicative_third_person_singular_label">הווה, גוף שלישי יחיד</string>
+    <string name="inflection_sq_present_indicative_third_person_singular">פועל בזמן הווה בדרך החיווי, גוף שלישי יחיד</string>
+    <!-- present indicative first-person plural -->
+    <string name="inflection_sq_present_indicative_first_person_plural_label">הווה, גוף ראשון רבים</string>
+    <string name="inflection_sq_present_indicative_first_person_plural">פועל בזמן הווה בדרך החיווי, גוף ראשון רבים</string>
+    <!-- present indicative second-person plural -->
+    <string name="inflection_sq_present_indicative_second_person_plural_label">הווה, גוף שני רבים</string>
+    <string name="inflection_sq_present_indicative_second_person_plural">פועל בזמן הווה בדרך החיווי, גוף שני רבים</string>
+    <!-- present indicative third-person plural -->
+    <string name="inflection_sq_present_indicative_third_person_plural_label">הווה, גוף שלישי רבים</string>
+    <string name="inflection_sq_present_indicative_third_person_plural">פועל בזמן הווה בדרך החיווי, גוף שלישי רבים</string>
+    <!-- imperfect first-person singular indicative -->
+    <string name="inflection_sq_imperfect_first_person_singular_indicative_label">אימפרפקט, גוף ראשון יחיד</string>
+    <string name="inflection_sq_imperfect_first_person_singular_indicative">פועל באימפרפקט בדרך החיווי, גוף ראשון יחיד</string>
+    <!-- imperfect second-person singular indicative -->
+    <string name="inflection_sq_imperfect_second_person_singular_indicative_label">אימפרפקט, גוף שני יחיד</string>
+    <string name="inflection_sq_imperfect_second_person_singular_indicative">פועל באימפרפקט בדרך החיווי, גוף שני יחיד</string>
+    <!-- imperfect third-person singular indicative -->
+    <string name="inflection_sq_imperfect_third_person_singular_indicative_label">אימפרפקט, גוף שלישי יחיד</string>
+    <string name="inflection_sq_imperfect_third_person_singular_indicative">פועל באימפרפקט בדרך החיווי, גוף שלישי יחיד</string>
+    <!-- imperfect first-person plural indicative -->
+    <string name="inflection_sq_imperfect_first_person_plural_indicative_label">אימפרפקט, גוף ראשון רבים</string>
+    <string name="inflection_sq_imperfect_first_person_plural_indicative">פועל באימפרפקט בדרך החיווי, גוף ראשון רבים</string>
+    <!-- imperfect second-person plural indicative -->
+    <string name="inflection_sq_imperfect_second_person_plural_indicative_label">אימפרפקט, גוף שני רבים</string>
+    <string name="inflection_sq_imperfect_second_person_plural_indicative">פועל באימפרפקט בדרך החיווי, גוף שני רבים</string>
+    <!-- imperfect third-person plural indicative -->
+    <string name="inflection_sq_imperfect_third_person_plural_indicative_label">אימפרפקט, גוף שלישי רבים</string>
+    <string name="inflection_sq_imperfect_third_person_plural_indicative">פועל באימפרפקט בדרך החיווי, גוף שלישי רבים</string>
+    <!-- aorist first-person singular indicative -->
+    <string name="inflection_sq_aorist_first_person_singular_indicative_label">אאוריסט, גוף ראשון יחיד</string>
+    <string name="inflection_sq_aorist_first_person_singular_indicative">פועל באאוריסט בדרך החיווי, גוף ראשון יחיד</string>
+    <!-- aorist second-person singular indicative -->
+    <string name="inflection_sq_aorist_second_person_singular_indicative_label">אאוריסט, גוף שני יחיד</string>
+    <string name="inflection_sq_aorist_second_person_singular_indicative">פועל באאוריסט בדרך החיווי, גוף שני יחיד</string>
+    <!-- aorist third-person singular indicative -->
+    <string name="inflection_sq_aorist_third_person_singular_indicative_label">אאוריסט, גוף שלישי יחיד</string>
+    <string name="inflection_sq_aorist_third_person_singular_indicative">פועל באאוריסט בדרך החיווי, גוף שלישי יחיד</string>
+    <!-- aorist first-person plural indicative -->
+    <string name="inflection_sq_aorist_first_person_plural_indicative_label">אאוריסט, גוף ראשון רבים</string>
+    <string name="inflection_sq_aorist_first_person_plural_indicative">פועל באאוריסט בדרך החיווי, גוף ראשון רבים</string>
+    <!-- aorist second-person plural indicative -->
+    <string name="inflection_sq_aorist_second_person_plural_indicative_label">אאוריסט, גוף שני רבים</string>
+    <string name="inflection_sq_aorist_second_person_plural_indicative">פועל באאוריסט בדרך החיווי, גוף שני רבים</string>
+    <!-- aorist third-person plural indicative -->
+    <string name="inflection_sq_aorist_third_person_plural_indicative_label">אאוריסט, גוף שלישי רבים</string>
+    <string name="inflection_sq_aorist_third_person_plural_indicative">פועל באאוריסט בדרך החיווי, גוף שלישי רבים</string>
+    <!-- imperative second-person singular present -->
+    <string name="inflection_sq_imperative_second_person_singular_present_label">ציווי, גוף שני יחיד</string>
+    <string name="inflection_sq_imperative_second_person_singular_present">פועל בציווי, גוף שני יחיד</string>
+    <!-- imperative second-person plural present -->
+    <string name="inflection_sq_imperative_second_person_plural_present_label">ציווי, גוף שני רבים</string>
+    <string name="inflection_sq_imperative_second_person_plural_present">פועל בציווי, גוף שני רבים</string>
+    <!-- participle -->
+    <string name="inflection_sq_participle_label">בינוני</string>
+    <string name="inflection_sq_participle">צורת הבינוני של פועל</string>
+    <!-- mediopassive -->
+    <string name="inflection_sq_mediopassive_label">מדיו-פסיבי</string>
+    <string name="inflection_sq_mediopassive">צורה מדיו-פסיבית של פועל</string>
+    <!-- optative first-person singular present -->
+    <string name="inflection_sq_optative_first_person_singular_present_label">איווי, גוף ראשון יחיד</string>
+    <string name="inflection_sq_optative_first_person_singular_present">פועל בדרך האיווי בזמן הווה, גוף ראשון יחיד</string>
+    <!-- optative second-person singular present -->
+    <string name="inflection_sq_optative_second_person_singular_present_label">איווי, גוף שני יחיד</string>
+    <string name="inflection_sq_optative_second_person_singular_present">פועל בדרך האיווי בזמן הווה, גוף שני יחיד</string>
+    <!-- optative third-person singular present -->
+    <string name="inflection_sq_optative_third_person_singular_present_label">איווי, גוף שלישי יחיד</string>
+    <string name="inflection_sq_optative_third_person_singular_present">פועל בדרך האיווי בזמן הווה, גוף שלישי יחיד</string>
+    <!-- optative first-person plural present -->
+    <string name="inflection_sq_optative_first_person_plural_present_label">איווי, גוף ראשון רבים</string>
+    <string name="inflection_sq_optative_first_person_plural_present">פועל בדרך האיווי בזמן הווה, גוף ראשון רבים</string>
+    <!-- optative second-person plural present -->
+    <string name="inflection_sq_optative_second_person_plural_present_label">איווי, גוף שני רבים</string>
+    <string name="inflection_sq_optative_second_person_plural_present">פועל בדרך האיווי בזמן הווה, גוף שני רבים</string>
+    <!-- optative third-person plural present -->
+    <string name="inflection_sq_optative_third_person_plural_present_label">איווי, גוף שלישי רבים</string>
+    <string name="inflection_sq_optative_third_person_plural_present">פועל בדרך האיווי בזמן הווה, גוף שלישי רבים</string>
+    <!-- nominalization -->
+    <string name="inflection_sq_nominalization_label">נומינליזציה</string>
+    <string name="inflection_sq_nominalization">שם עצם שנוצר מפועל</string>
+    <!-- -e -->
+    <string name="inflection_sq_e_label">נקבה או רבים</string>
+    <string name="inflection_sq_e">צורת נקבה או רבים של שם תואר (moderne מן modern, turistike מן turistik)</string>
+    <!-- ë as e -->
+    <string name="inflection_sq_as_e_label">כתיב e במקום ë</string>
+    <string name="inflection_sq_as_e">כתיב e במקום ë סופית (gjate במקום gjatë, mire במקום mirë)</string>
+    <!-- -a -->
+    <string name="inflection_sq_a_label">נקבה, רבים</string>
+    <string name="inflection_sq_a">צורת נקבה רבות של שם תואר (gjitha מן gjithë, larta מן lartë, vjetra מן vjetër, vogla מן vogël)</string>
+    <!-- -me -->
+    <string name="inflection_sq_me_label">נקבה או רבים</string>
+    <string name="inflection_sq_me">צורת נקבה או רבים של שם תואר בסיומת -ëm (sotme מן sotëm, rëndësishme מן rëndësishëm)</string>
+    <!-- -het -->
+    <string name="inflection_sq_het_label">מדיו-פסיבי</string>
+    <string name="inflection_sq_het">מדיו-פסיבי בזמן הווה, גוף שלישי (ndodhet, ndodhen מן ndodh, shtrihet מן shtrij, mendohet מן mendoj)</string>
+    <!-- -hej -->
+    <string name="inflection_sq_hej_label">מדיו-פסיבי, אימפרפקט</string>
+    <string name="inflection_sq_hej">מדיו-פסיבי באימפרפקט, גוף שלישי יחיד (bëhej מן bëj, formohej מן formoj)</string>
+    <!-- -uar -->
+    <string name="inflection_sq_uar_label">בינוני</string>
+    <string name="inflection_sq_uar">בינוני, גם כשם תואר בנקבה או ברבים (bazuar, banuara מן bazoj, banoj; shkruar מן shkruaj; thirrur, mbetura מן thirr, mbet; kthyer מן kthej)</string>
+    <!-- -ua -->
+    <string name="inflection_sq_ua_label">אאוריסט</string>
+    <string name="inflection_sq_ua">אאוריסט, גוף שלישי (përfundoi מן përfundoj; botua, vërtetuan מן botoj, vërtetoj; shkrua מן shkruaj; kthye מן kthej)</string>
+    <!-- -on -->
+    <string name="inflection_sq_on_label">זמן הווה</string>
+    <string name="inflection_sq_on">זמן הווה, גוף שלישי (daton, datojnë מן datoj, hyjnë מן hyj)</string>
+    <!-- -onte -->
+    <string name="inflection_sq_onte_label">אימפרפקט</string>
+    <string name="inflection_sq_onte">אימפרפקט, גוף שלישי יחיד (numëronte מן numëroj)</string>
+    <!-- -i -->
+    <string name="inflection_sq_i_label">מיודע</string>
+    <string name="inflection_sq_i">צורה מיודעת של שם עצם בזכר (termi מן term, sporti מן sport)</string>
+    <!-- -it -->
+    <string name="inflection_sq_it_label">יחסת הקניין, מיודע</string>
+    <string name="inflection_sq_it">יחסת הקניין, יחסת הנמען או יחסת המוצא של שם עצם מיודע בזכר (sulmit מן sulm, jugut מן jug)</string>
+    <!-- -in -->
+    <string name="inflection_sq_in_label">יחסת המושא, מיודע</string>
+    <string name="inflection_sq_in">יחסת המושא של שם עצם מיודע בזכר (sulmin מן sulm, ndikimin מן ndikim)</string>
+    <!-- -ët -->
+    <string name="inflection_sq_t_label">מיודע, רבים</string>
+    <string name="inflection_sq_t">צורת רבים מיודעת (aleatët מן aleat, dokumentet מן dokument)</string>
+    <!-- -ve -->
+    <string name="inflection_sq_ve_label">יחסת הקניין, רבים</string>
+    <string name="inflection_sq_ve">יחסת הקניין, יחסת הנמען או יחסת המוצא ברבים (tipareve מן tipar, shqiptarve מן shqiptar, rrokjeve מן rrokje)</string>
+    <!-- -ia -->
+    <string name="inflection_sq_ia_label">מיודע</string>
+    <string name="inflection_sq_ia">צורה מיודעת של שם עצם בנקבה (industria מן industri, shitja מן shitje, gjermanishtja מן gjermanishte)</string>
+    <!-- -së -->
+    <string name="inflection_sq_s_label">יחסת הקניין, מיודע</string>
+    <string name="inflection_sq_s">יחסת הקניין, יחסת הנמען או יחסת המוצא של שם עצם מיודע בנקבה (drejtësisë מן drejtësi, paqes מן paqe, federatës מן federatë)</string>
+    <!-- -ën -->
+    <string name="inflection_sq_n_label">יחסת המושא, מיודע</string>
+    <string name="inflection_sq_n">יחסת המושא של שם עצם מיודע בנקבה (lejen מן leje, konferencën מן konferencë)</string>
+</resources>

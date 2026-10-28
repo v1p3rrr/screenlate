@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_he.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- ו- -->
+    <string name="inflection_he_v_label">ו׳ החיבור</string>
+    <string name="inflection_he_v">ו׳ החיבור (ואני, והבית)</string>
+    <!-- ש- -->
+    <string name="inflection_he_sh_label">ש׳ הזיקה</string>
+    <string name="inflection_he_sh">ש׳ הזיקה: אשר, כי (שאמר, שבבית)</string>
+    <!-- כש- -->
+    <string name="inflection_he_ksh_label">כאשר</string>
+    <string name="inflection_he_ksh">כש־: כאשר, בשעה ש־ (כשהגעתי)</string>
+    <!-- ב- -->
+    <string name="inflection_he_b_label">ב׳ היחס</string>
+    <string name="inflection_he_b">ב׳ היחס: בתוך, אצל, באמצעות (בבית)</string>
+    <!-- כ- -->
+    <string name="inflection_he_k_label">כ׳ הדמיון</string>
+    <string name="inflection_he_k">כ׳ הדמיון: כמו, בתור (כילד)</string>
+    <!-- ל- -->
+    <string name="inflection_he_l_label">ל׳ היחס</string>
+    <string name="inflection_he_l">ל׳ היחס: אל, בשביל (לבית)</string>
+    <!-- מ- -->
+    <string name="inflection_he_m_label">מ׳ היחס</string>
+    <string name="inflection_he_m">מ׳ היחס: מן, מאשר (מירושלים, מהבית)</string>
+    <!-- ה- -->
+    <string name="inflection_he_h_label">ה׳ הידיעה</string>
+    <string name="inflection_he_h">ה׳ הידיעה (הבית)</string>
+</resources>

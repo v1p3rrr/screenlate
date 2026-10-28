@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- present indicative -->
+    <string name="inflection_fr_present_indicative_label">הווה (חיווי)</string>
+    <string name="inflection_fr_present_indicative">צורת זמן הווה בדרך החיווי של פועל</string>
+    <!-- imperfect indicative -->
+    <string name="inflection_fr_imperfect_indicative_label">אימפרפקט (חיווי)</string>
+    <string name="inflection_fr_imperfect_indicative">צורת האימפרפקט בדרך החיווי של פועל</string>
+    <!-- future -->
+    <string name="inflection_fr_future_label">זמן עתיד</string>
+    <string name="inflection_fr_future">צורת זמן עתיד של פועל</string>
+    <!-- imperative present -->
+    <string name="inflection_fr_imperative_present_label">ציווי הווה</string>
+    <string name="inflection_fr_imperative_present">צורת הציווי של פועל</string>
+    <!-- Conditional -->
+    <string name="inflection_fr_conditional_label">דרך התנאי</string>
+    <string name="inflection_fr_conditional">צורת התנאי של פועל</string>
+    <!-- Preterite -->
+    <string name="inflection_fr_preterite_label">עבר פשוט</string>
+    <string name="inflection_fr_preterite">צורת הפרטריט (עבר פשוט) של פועל</string>
+    <!-- plural -->
+    <string name="inflection_fr_plural_label">רבים</string>
+    <string name="inflection_fr_plural">צורת הרבים של שם עצם</string>
+    <!-- present participle -->
+    <string name="inflection_fr_present_participle_label">בינוני הווה</string>
+    <string name="inflection_fr_present_participle">צורת בינוני הווה של פועל</string>
+    <!-- present subjunctive -->
+    <string name="inflection_fr_present_subjunctive_label">סוביונקטיב הווה</string>
+    <string name="inflection_fr_present_subjunctive">צורת סוביונקטיב הווה של פועל</string>
+</resources>

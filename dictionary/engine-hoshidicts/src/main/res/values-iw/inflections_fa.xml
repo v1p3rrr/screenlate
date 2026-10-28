@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_fa.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -م -->
+    <string name="inflection_fa_m_label">גוף ראשון יחיד</string>
+    <string name="inflection_fa_m">גוף ראשון יחיד: שלי (کتابم) או \"אני ...\" (خوشحالم)</string>
+    <!-- -ت -->
+    <string name="inflection_fa_t_label">גוף שני יחיד</string>
+    <string name="inflection_fa_t">גוף שני יחיד: שלך (کتابت)</string>
+    <!-- -ش -->
+    <string name="inflection_fa_sh_label">גוף שלישי יחיד</string>
+    <string name="inflection_fa_sh">גוף שלישי יחיד: שלו, שלה (کتابش)</string>
+    <!-- -مان -->
+    <string name="inflection_fa_man_label">גוף ראשון רבים</string>
+    <string name="inflection_fa_man">גוף ראשון רבים: שלנו (کتابمان)</string>
+    <!-- -تان -->
+    <string name="inflection_fa_tan_label">גוף שני רבים</string>
+    <string name="inflection_fa_tan">גוף שני רבים: שלכם (کتابتان)</string>
+    <!-- -شان -->
+    <string name="inflection_fa_shan_label">גוף שלישי רבים</string>
+    <string name="inflection_fa_shan">גוף שלישי רבים: שלהם (کتابشان)</string>
+    <!-- -ام -->
+    <string name="inflection_fa_am_label">גוף ראשון יחיד</string>
+    <string name="inflection_fa_am">גוף ראשון יחיד אחרי ه: שלי (خانه‌ام) או \"אני ...\" (خسته‌ام)</string>
+    <!-- -ات -->
+    <string name="inflection_fa_at_label">גוף שני יחיד</string>
+    <string name="inflection_fa_at">גוף שני יחיד אחרי ه: שלך (خانه‌ات)</string>
+    <!-- -اش -->
+    <string name="inflection_fa_ash_label">גוף שלישי יחיד</string>
+    <string name="inflection_fa_ash">גוף שלישי יחיד אחרי ه: שלו, שלה (خانه‌اش)</string>
+    <!-- -یم -->
+    <string name="inflection_fa_ym_label">גוף ראשון יחיד; גוף ראשון רבים</string>
+    <string name="inflection_fa_ym">גוף ראשון: שלי אחרי תנועה (پایم) או \"אנחנו ...\" (خوبیم)</string>
+    <!-- -یت -->
+    <string name="inflection_fa_yt_label">גוף שני יחיד</string>
+    <string name="inflection_fa_yt">גוף שני יחיד אחרי תנועה: שלך (پایت)</string>
+    <!-- -یش -->
+    <string name="inflection_fa_ysh_label">גוף שלישי יחיד</string>
+    <string name="inflection_fa_ysh">גוף שלישי יחיד אחרי תנועה: שלו, שלה (پایش)</string>
+    <!-- -یمان -->
+    <string name="inflection_fa_yman_label">גוף ראשון רבים</string>
+    <string name="inflection_fa_yman">גוף ראשון רבים אחרי תנועה: שלנו (پایمان)</string>
+    <!-- -یتان -->
+    <string name="inflection_fa_ytan_label">גוף שני רבים</string>
+    <string name="inflection_fa_ytan">גוף שני רבים אחרי תנועה: שלכם (پایتان)</string>
+    <!-- -یشان -->
+    <string name="inflection_fa_yshan_label">גוף שלישי רבים</string>
+    <string name="inflection_fa_yshan">גוף שלישי רבים אחרי תנועה: שלהם (پایشان)</string>
+    <!-- -مون -->
+    <string name="inflection_fa_mvn_label">גוף ראשון רבים</string>
+    <string name="inflection_fa_mvn">גוף ראשון רבים בלשון הדיבור: שלנו (کتابمون) או לנו (بهمون)</string>
+    <!-- -تون -->
+    <string name="inflection_fa_tvn_label">גוף שני רבים</string>
+    <string name="inflection_fa_tvn">גוף שני רבים בלשון הדיבור: שלכם (کتابتون) או לכם (بهتون)</string>
+    <!-- -شون -->
+    <string name="inflection_fa_shvn_label">גוף שלישי רבים</string>
+    <string name="inflection_fa_shvn">גוף שלישי רבים בלשון הדיבור: שלהם (کتابشون) או להם (بهشون)</string>
+    <!-- -ی -->
+    <string name="inflection_fa_y_label">לא מיודע; גוף שני יחיד; אזאפה</string>
+    <string name="inflection_fa_y">סמן אי-יידוע (کتابی), \"אתה ...\" (خوبی) או האזאפה אחרי תנועה (پای)</string>
+    <!-- -ای -->
+    <string name="inflection_fa_ay_label">לא מיודע; גוף שני יחיד</string>
+    <string name="inflection_fa_ay">אחרי ه: סמן אי-יידוע (خانه‌ای) או \"אתה ...\" (خسته‌ای)</string>
+    <!-- -یی -->
+    <string name="inflection_fa_yy_label">לא מיודע; גוף שני יחיד</string>
+    <string name="inflection_fa_yy">אחרי תנועה: סמן אי-יידוע (دانشجویی) או \"אתה ...\" (کجایی)</string>
+    <!-- -اند -->
+    <string name="inflection_fa_and_label">גוף שלישי רבים</string>
+    <string name="inflection_fa_and">גוף שלישי רבים אחרי ه: \"הם ...\" (خسته‌اند)</string>
+    <!-- -اید -->
+    <string name="inflection_fa_ayd_label">גוף שני רבים</string>
+    <string name="inflection_fa_ayd">גוף שני רבים אחרי ه: \"אתם ...\" (خسته‌اید)</string>
+    <!-- -ایم -->
+    <string name="inflection_fa_aym_label">גוף ראשון רבים</string>
+    <string name="inflection_fa_aym">גוף ראשון רבים אחרי ه: \"אנחנו ...\" (خسته‌ایم)</string>
+    <!-- -را -->
+    <string name="inflection_fa_ra_label">מושא</string>
+    <string name="inflection_fa_ra">סמן המושא را בכתיב מחובר (آنرا)</string>
+    <!-- -ها -->
+    <string name="inflection_fa_ha_label">רבים</string>
+    <string name="inflection_fa_ha">רבים (کتابها)</string>
+    <!-- -ان -->
+    <string name="inflection_fa_an_label">רבים</string>
+    <string name="inflection_fa_an">רבים, בעיקר של בני אדם ובעלי חיים (مردان)</string>
+    <!-- -یان -->
+    <string name="inflection_fa_yan_label">רבים</string>
+    <string name="inflection_fa_yan">רבים אחרי תנועה (دانشجویان)</string>
+    <!-- -گان -->
+    <string name="inflection_fa_gan_label">רבים</string>
+    <string name="inflection_fa_gan">רבים של מילה המסתיימת ב־ه שאינה נהגית, ההופכת ל־گ (ستارگان מן ستاره)</string>
+    <!-- -تر -->
+    <string name="inflection_fa_tr_label">דרגת ההשוואה</string>
+    <string name="inflection_fa_tr">דרגת ההשוואה (بزرگتر)</string>
+    <!-- -ترین -->
+    <string name="inflection_fa_tryn_label">דרגת ההפלגה</string>
+    <string name="inflection_fa_tryn">דרגת ההפלגה (بزرگترین)</string>
+    <!-- -مین -->
+    <string name="inflection_fa_myn_label">מספר סודר</string>
+    <string name="inflection_fa_myn">מספר סודר לפני שם עצם (دومین מן دوم)</string>
+    <!-- می- -->
+    <string name="inflection_fa_my_label">המשכי</string>
+    <string name="inflection_fa_my">תחילית ההמשכיות: זמן הווה (می‌روم) ועבר מתמשך (می‌رفتم)</string>
+    <!-- نمی- -->
+    <string name="inflection_fa_nmy_label">המשכי בשלילה</string>
+    <string name="inflection_fa_nmy">תחילית ההמשכיות בשלילה: זמן הווה (نمی‌روم) ועבר מתמשך (نمی‌رفتم)</string>
+    <!-- ب- -->
+    <string name="inflection_fa_b_label">סוביונקטיב</string>
+    <string name="inflection_fa_b">תחילית הסוביונקטיב (بروم) והציווי (برو)</string>
+    <!-- ن- -->
+    <string name="inflection_fa_n_label">שלילה</string>
+    <string name="inflection_fa_n">תחילית השלילה: זמן עבר (نرفتم) וציווי (نرو)</string>
+</resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_turkic.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_turkic_plural_label">רבים</string>
+    <string name="inflection_turkic_possessive_1sg_label">שלי</string>
+    <string name="inflection_turkic_possessive_2sg_label">שלך</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">שלך (בנימוס)</string>
+    <string name="inflection_turkic_possessive_3rd_label">שלו, שלה, שלהם</string>
+    <string name="inflection_turkic_possessive_1pl_label">שלנו</string>
+    <string name="inflection_turkic_genitive_label">יחסת הקניין</string>
+    <string name="inflection_turkic_dative_label">יחסת הנמען</string>
+    <string name="inflection_turkic_accusative_label">יחסת המושא</string>
+    <string name="inflection_turkic_locative_label">יחסת המקום</string>
+    <string name="inflection_turkic_ablative_label">יחסת המוצא</string>
+    <string name="inflection_turkic_instrumental_label">יחסת הכלי</string>
+    <string name="inflection_turkic_attributive_locative_label">לוואי של מקום</string>
+    <string name="inflection_turkic_attributive_label">צורת לוואי</string>
+    <string name="inflection_turkic_equative_label">אקווטיב</string>
+    <string name="inflection_turkic_manner_label">אופן</string>
+    <string name="inflection_turkic_1sg_label">גוף ראשון יחיד</string>
+    <string name="inflection_turkic_2sg_label">גוף שני יחיד</string>
+    <string name="inflection_turkic_2sg_polite_label">גוף שני יחיד, בנימוס</string>
+    <string name="inflection_turkic_3rd_label">גוף שלישי</string>
+    <string name="inflection_turkic_1pl_label">גוף ראשון רבים</string>
+    <string name="inflection_turkic_2pl_label">גוף שני רבים</string>
+    <string name="inflection_turkic_2pl_polite_label">גוף שני רבים, בנימוס</string>
+    <string name="inflection_turkic_past_label">זמן עבר</string>
+    <string name="inflection_turkic_present_label">זמן הווה</string>
+    <string name="inflection_turkic_conditional_label">דרך התנאי</string>
+    <string name="inflection_turkic_past_participle_label">בינוני עבר</string>
+    <string name="inflection_turkic_habitual_participle_label">בינוני הרגלי</string>
+    <string name="inflection_turkic_aorist_label">אאוריסט</string>
+    <string name="inflection_turkic_intention_label">כוונה</string>
+    <string name="inflection_turkic_converb_label">קונוורב</string>
+    <string name="inflection_turkic_purpose_label">תכלית</string>
+    <string name="inflection_turkic_until_label">עד ש־</string>
+    <string name="inflection_turkic_imperative_label">ציווי</string>
+    <string name="inflection_turkic_please_label">בקשה</string>
+    <string name="inflection_turkic_negative_label">שלילה</string>
+    <string name="inflection_turkic_passive_label">סביל</string>
+    <string name="inflection_turkic_reflexive_label">חוזר</string>
+    <string name="inflection_turkic_reciprocal_label">הדדי</string>
+    <string name="inflection_turkic_causative_label">גורם</string>
+    <string name="inflection_turkic_question_label">שאלה</string>
+    <string name="inflection_turkic_possessive_2pl_label">שלכם</string>
+    <string name="inflection_turkic_verbal_noun_label">שם פעולה</string>
+</resources>
