@@ -338,6 +338,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Typed pinyin in search | Found in any form ("nihao", "ni hao", "ni3hao3", "nǐhǎo"); our own toneless pinyin index built at import; exact tones rank higher (owner, 2026-10-14) |
 | Translation button default | Off for new installs; an upgrade keeps it on for users who never touched the switch (the value is written as on during the upgrade). The Anki field switch is unchanged (owner, 2026-10-13, request 33; changes the "Translation settings" row of `2026-09-29-feedback-after-0.1.4.md`, "both on by default") |
 | Bubble menu languages | Only flags (the active one ringed, the language name for TalkBack); codes on e-ink (owner, 2026-10-13) |
+| Bubble glyph | The bubble shows the first letter of the language's own name, capitalized (Deutsch D, русский Р, čeština Č); languages with a script of their own keep their most typical character (Japanese あ, Korean 한, Greek Ω), and languages sharing a script other than Latin or Cyrillic also take their own name's first letter (Arabic ع after the article, Persian ف, Hindi हि, Marathi म, Chinese 中, Cantonese 粵). When two quick languages would show letters that look alike (Latin and Cyrillic look-alikes such as P and Р, and a letter with or without marks, as Č and C), both show their two-letter code instead (EN and ES). Codes of Cyrillic-script languages are written in Cyrillic (РУ, УК, БЕ, БГ, МК, МН, КК, КЫ, СР), on the bubble and in the e-ink codes that replace flags; other languages keep Latin codes (owner, 2026-10-28, replacing the hand-picked letters such as ß, Ř, Æ, Ў) |
 | Chinese audio | Wiktionary (searched by tone-marked pinyin), Lingua Libre, text to speech (reads the characters) (owner, 2026-10-15) |
 | Pinyin search order | By the frequency dictionary, as Yomitan, also for a common character under a rare reading (owner, 2026-10-15) |
 | Chinese main dictionary | CC-CEDICT ticked for English glosses; Wiktionary zh–en listed unticked (owner, 2026-10-15) |
@@ -453,7 +454,8 @@ Decided when the first language or group 1 is ready, before it is merged into th
   download without looking for an unfinished task of the same entry while the stalled one held the single chain.
 - Right-to-left interface languages (owner, 2026-10-19, question 70 of `2026-10-19-group-4d.md`): Arabic, Persian
   and Hebrew interface translations with mirrored screens, a separate task after group 5's research (and maybe its
-  build) and group 4's build.
+  build) and group 4's build. The strings alone go earlier, in the cloud session of 2026-10-29 (owner, 2026-10-28);
+  the mirrored screens are checked on the emulator later, and the strings wait on their branch until then.
 - Bubble menu in the dock (owner, 2026-10-22, request 75): holding the docked bubble opens the same menu as holding the
   floating one: the quick-language flags and opening the app. Items that need a scan (copy the paragraph, copy all, and
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
@@ -475,7 +477,8 @@ Decided when the first language or group 1 is ready, before it is merged into th
   language (`LanguageSupport.glyph`: ß, Ř, Æ, Ў). For languages whose script others share (Latin, Cyrillic and the
   like) it would show the first letter of the language's name in that language (Deutsch → D, русский → Р); languages
   with their own script keep their most common or most typical character (Japanese あ, Chinese a character most tied
-  to China, as 中 now), and the same wherever it applies. On 2026-10-28 the owner asked for a table of the letters.
+  to China, as 中 now), and the same wherever it applies. Decided on 2026-10-28 after a table of the letters
+  (row "Bubble glyph"); to build.
 - Popup delay check (owner, 2026-10-28): on the phone the popup comes noticeably late after the aim reaches a word,
   and it does not look like the debounce but like slowness. Measure the path from the aim's stop to the drawn popup
   (hit test, lookup, page render, window show) on the phone and the emulator from the app's log timings, compare with
@@ -1779,3 +1782,8 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-28 late evening: the PaddleOCR lines, converter data, AnkiDroid debugging and archive catch-up of questions
   72, 74 and 76 moved to the backlog as four entries at the owner's word, not built now; the owner asked for tables
   of the flag places and of the bubble letters.
+- 2026-10-28 night: the owner decided the bubble glyph (row "Bubble glyph": the own name's first letter, two-letter
+  codes when quick languages clash, Cyrillic codes in Cyrillic, also on e-ink; Arabic ع and Persian ف), chose the
+  Esperanto web corpus of 2012 (group 5a question 28), and sent five backlog tasks to one cloud session (interface
+  translation check, candidate interface languages, smaller language bundles, converter data, the right-to-left
+  strings); group 6's research stays in the local chain.
