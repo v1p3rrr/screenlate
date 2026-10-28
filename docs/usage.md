@@ -310,7 +310,7 @@ A translation is kept for 10 minutes, so adding a note after reading the transla
 - A Yomitan collection export is listed first; check the dictionaries to import (those already installed start unchecked). Large exports are read in place, without a copy. A dictionary that cannot be imported does not stop the others; the task names the ones that failed.
 - Before a collection import writes anything, it checks the free space for the chosen dictionaries. The fastest import needs roughly as much free space as those dictionaries take in the export; with less, the import packs its temporary files more tightly and takes longer. If even that does not fit, the import stops with a message saying how much space is needed. With at least four times the file size free, the check is skipped.
 - A dictionary's details link to its website and to where it can be downloaded, when the dictionary or the catalog names them.
-- Dictionaries from the catalog whose files are missing can be downloaded again in one tap.
+- Dictionaries from the catalog whose files are missing can be downloaded again in one tap; while the download waits or runs, the start screen leaves the dictionary off its card.
 - The Dictionaries screen has no reset: each dictionary has its own delete, and the order, switches and sort dictionary are changed on the screen. A dictionary reset that an earlier version left unfinished completes the next time Screenlate starts, with a spinner at the top of the Dictionaries screen while it deletes the dictionaries; if Screenlate closes during that run too, the start screen says so once and the Dictionaries screen shows a card until you close it.
 
 ## Backup and restore
