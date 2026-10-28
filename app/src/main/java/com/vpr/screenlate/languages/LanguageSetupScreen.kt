@@ -84,6 +84,7 @@ val CatalogCategory.label: Int
 @Composable
 fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: LanguageSetupViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val flagCountry by viewModel.flagCountry.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var askMobileData by rememberSaveable { mutableStateOf(false) }
     val confirmation by viewModel.confirmed.collectAsStateWithLifecycle()
@@ -105,7 +106,12 @@ fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: Langu
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(state.language.displayName(), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        ChipFlag(state.language, flagCountry, sizeDp = 24)
+                        Text(state.language.displayName(), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                },
                 navigationIcon = { BackButton(onBack) },
             )
         },

@@ -84,6 +84,9 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
          */
         fun ofDictionaries(code: String?): Language? = withDictionaries(code).firstOrNull()
 
+        /** The other codes [of] reads as [language]: nb and nn for Norwegian, which dictionaries name too. */
+        fun otherCodes(language: Language): List<String> = OTHER_CODES.filterValues { it == language }.keys.toList()
+
         private val OTHER_CODES = mapOf("fil" to FILIPINO, "nb" to NORWEGIAN, "nn" to NORWEGIAN)
     }
 }

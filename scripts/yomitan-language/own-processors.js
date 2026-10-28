@@ -292,33 +292,23 @@ export const welshMisreadCircumflex = {
 const WELSH_CIRCUMFLEX = {ý: 'ŷ', Ý: 'Ŷ', û: 'ŵ', Û: 'Ŵ'};
 
 /**
- * Hungarian ő and ű, which recognition reads as ö and ü, and ű also as ú (füzfa and fúzfa for fűzfa, öt for őt): the
- * text's first word is also tried with ő and ű for its first three ö, ü and ú, every combination of them, as read
- * first, so öt still finds öt. For words from OCR only (`ocrOnly`, glue.js): app text and typed text are looked up as
- * written.
+ * The text without the marks over or under its Latin and Cyrillic letters, the letters Unicode does not decompose (ø ł
+ * ı, ғ қ ө) as their base letters: fúzfa → fuzfa, Łódź → Lodz. The import keys every headword and form of the
+ * languages that take this processor under the same spelling (`HeadwordMarks.fold_marks`, archive_split.cpp, whose
+ * fold this one matches), so a mark recognition reads wrong (fúzfa for fűzfa) or adds still finds the word, after the
+ * text as read. For words from OCR only (`ocrOnly`, glue.js): app text and typed text are looked up as written, and
+ * a word written without marks reaches the folded keys as it is.
  * @type {import('language').TextProcessor & {ocrOnly: true}}
  */
-export const hungarianMisreadDoubleAcute = {
-    name: 'Misread double acute',
-    description: 'füzfa, fúzfa → fűzfa, öt → őt',
+export const foldedMarks = {
+    name: 'Folded marks',
+    description: 'fúzfa → fuzfa, Łódź → Lodz',
     ocrOnly: true,
-    process: (str) => withMisreadLetters(str, HUNGARIAN_DOUBLE_ACUTE),
+    process: (str) => {
+        const folded = foldMarks(str);
+        return folded === str ? [str] : [str, folded];
+    },
 };
-
-/**
- * Estonian õ, which recognition reads as ö (möte for mõte, vöi for või): the text's first word is also tried with õ for
- * its first three ö, every combination of them, as read first, so öö still finds öö. For words from OCR only
- * (`ocrOnly`, glue.js): app text and typed text are looked up as written.
- * @type {import('language').TextProcessor & {ocrOnly: true}}
- */
-export const estonianMisreadTilde = {
-    name: 'Misread tilde',
-    description: 'möte → mõte, vöi → või',
-    ocrOnly: true,
-    process: (str) => withMisreadLetters(str, ESTONIAN_TILDE),
-};
-
-const ESTONIAN_TILDE = {ö: 'õ', Ö: 'Õ'};
 
 /**
  * Azerbaijani ə and ı, which recognition reads as e and i (seher for səhər, qiz for qız): the text's first word is also
@@ -419,8 +409,6 @@ function withMisreadLetters(str, misread) {
 /** The most misread letters of a word tried as the letters meant. */
 const MISREAD_PLACES = 3;
 
-const HUNGARIAN_DOUBLE_ACUTE = {ö: 'ő', ü: 'ű', ú: 'ű', Ö: 'Ő', Ü: 'Ű', Ú: 'Ű'};
-
 /** A consonant of Irish lenition with the combining dot above (after NFD). */
 const IRISH_DOTTED = /* @__PURE__ */ new RegExp('([bcdfgmpstBCDFGMPST])' + String.fromCharCode(0x307), 'g');
 
@@ -459,3 +447,49 @@ export const gaelicAcuteAsGrave = {
 };
 
 const GAELIC_GRAVE = {á: 'à', é: 'è', í: 'ì', ó: 'ò', ú: 'ù', Á: 'À', É: 'È', Í: 'Ì', Ó: 'Ò', Ú: 'Ù'};
+
+/** Code points of the Latin and Cyrillic blocks; their letters drop the marks after them when folded. */
+const FOLDED_SCRIPTS = [
+    [0x0041, 0x005A], [0x0061, 0x007A], [0x00C0, 0x02AF], [0x0400, 0x052F], [0x1C80, 0x1C8F], [0x1E00, 0x1EFF],
+    [0x2C60, 0x2C7F], [0xA640, 0xA69F], [0xA720, 0xA7FF], [0xAB30, 0xAB6F], [0xFF21, 0xFF3A], [0xFF41, 0xFF5A],
+];
+
+/**
+ * Latin and Cyrillic letters with a stroke, bar, descender or hook that Unicode does not decompose, with their base
+ * letters: ø ł đ ħ ı ŧ ƀ ɨ ƶ ǥ, ғ ҕ ӷ қ ҝ ҟ ҡ ӄ ң ӈ ө ұ ү ҳ ҷ ҹ ӌ ҫ ҙ ҭ ԓ and their capitals.
+ */
+const FOLDED_LETTERS = /* @__PURE__ */ new Map([
+    [0x00D8, 0x004F], [0x00F8, 0x006F], [0x0110, 0x0044], [0x0111, 0x0064], [0x0126, 0x0048], [0x0127, 0x0068],
+    [0x0131, 0x0069], [0x0141, 0x004C], [0x0142, 0x006C], [0x0166, 0x0054], [0x0167, 0x0074], [0x0180, 0x0062],
+    [0x0197, 0x0049], [0x01B5, 0x005A], [0x01B6, 0x007A], [0x01E4, 0x0047], [0x01E5, 0x0067], [0x0243, 0x0042],
+    [0x0268, 0x0069], [0x0492, 0x0413], [0x0493, 0x0433], [0x0494, 0x0413], [0x0495, 0x0433], [0x0498, 0x0417],
+    [0x0499, 0x0437], [0x049A, 0x041A], [0x049B, 0x043A], [0x049C, 0x041A], [0x049D, 0x043A], [0x049E, 0x041A],
+    [0x049F, 0x043A], [0x04A0, 0x041A], [0x04A1, 0x043A], [0x04A2, 0x041D], [0x04A3, 0x043D], [0x04AA, 0x0421],
+    [0x04AB, 0x0441], [0x04AC, 0x0422], [0x04AD, 0x0442], [0x04AE, 0x0423], [0x04AF, 0x0443], [0x04B0, 0x0423],
+    [0x04B1, 0x0443], [0x04B2, 0x0425], [0x04B3, 0x0445], [0x04B6, 0x0427], [0x04B7, 0x0447], [0x04B8, 0x0427],
+    [0x04B9, 0x0447], [0x04C3, 0x041A], [0x04C4, 0x043A], [0x04C7, 0x041D], [0x04C8, 0x043D], [0x04CB, 0x0427],
+    [0x04CC, 0x0447], [0x04E8, 0x041E], [0x04E9, 0x043E], [0x04F6, 0x0413], [0x04F7, 0x0433], [0x0512, 0x041B],
+    [0x0513, 0x043B],
+]);
+
+/**
+ * [str] without the marks over or under its Latin and Cyrillic letters, composed again (NFC), as [foldedMarks] says.
+ * @param {string} str
+ * @returns {string}
+ */
+function foldMarks(str) {
+    let out = '';
+    let afterLetter = false;
+    for (const char of str.normalize('NFD')) {
+        if (/\p{Mn}/u.test(char)) {
+            // A mark after another mark goes with the same letter.
+            if (afterLetter) continue;
+        } else {
+            const point = char.codePointAt(0);
+            afterLetter = /\p{L}/u.test(char) && FOLDED_SCRIPTS.some(([first, last]) => first <= point && point <= last);
+        }
+        const base = FOLDED_LETTERS.get(char.codePointAt(0));
+        out += base === undefined ? char : String.fromCodePoint(base);
+    }
+    return out.normalize('NFC');
+}

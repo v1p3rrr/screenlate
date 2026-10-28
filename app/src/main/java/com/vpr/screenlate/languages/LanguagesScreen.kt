@@ -117,6 +117,7 @@ fun LanguagesScreen(
                 leftovers.forEach { leftover ->
                     LeftoverCard(
                         leftover = leftover,
+                        flagCountry = profiles::flagCountry,
                         onTurnOn = viewModel::turnOn,
                         onDeleteAll = { deletingFiles = leftover },
                         onDeleteDictionary = { deletingDictionary = it },
@@ -324,6 +325,7 @@ private fun StarButton(active: Boolean, starred: Boolean, canStar: Boolean, onSt
 @Composable
 private fun LeftoverCard(
     leftover: LanguageLeftovers,
+    flagCountry: (Language) -> String,
     onTurnOn: (Language) -> Unit,
     onDeleteAll: () -> Unit,
     onDeleteDictionary: (DictionaryEntity) -> Unit,
@@ -338,7 +340,10 @@ private fun LeftoverCard(
                 .clickable { expanded = !expanded }
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
-            Text(leftoverName(leftover.code), style = MaterialTheme.typography.titleMedium)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                leftover.languages.forEach { language -> ChipFlag(language, flagCountry(language), sizeDp = 24) }
+                Text(leftoverName(leftover.code), style = MaterialTheme.typography.titleMedium)
+            }
             Hint(
                 listOfNotNull(
                     leftover.dictionaries.size.takeIf { it > 0 }?.let {

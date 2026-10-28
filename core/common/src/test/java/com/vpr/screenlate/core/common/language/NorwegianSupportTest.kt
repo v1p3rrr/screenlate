@@ -55,6 +55,8 @@ class NorwegianSupportTest {
         assertThat(Language.NORWEGIAN.dictionaryCode).isEqualTo("no")
         assertThat(Language.of("nb")).isEqualTo(Language.NORWEGIAN)
         assertThat(Language.of("nn")).isEqualTo(Language.NORWEGIAN)
+        assertThat(Language.otherCodes(Language.NORWEGIAN)).containsExactly("nb", "nn")
+        assertThat(Language.otherCodes(Language.SWEDISH)).isEmpty()
         assertThat(NorwegianSupport.languageTag).isEqualTo("nb")
         assertThat(NorwegianSupport.speechTag).isEqualTo("nb")
         assertThat(NorwegianSupport.localeLanguages).containsExactly("no", "nb", "nn")

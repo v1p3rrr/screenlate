@@ -4,7 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.languageCode
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
 import com.vpr.screenlate.core.ocr.model.OcrModelChoices
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
@@ -23,6 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -64,8 +68,14 @@ class LanguageSetupViewModel @Inject constructor(
     private val models: OcrModelStore,
     private val modelChoices: OcrModelChoices,
     private val mlKit: MlKitOcrEngine,
+    profiles: LanguageProfiles,
 ) : ViewModel() {
     val language: Language = requireNotNull(Language.of(savedState.get<String>(ARG_CODE)))
+
+    /** The country of the language's flag ([LanguageProfilesState.flagCountry]). */
+    val flagCountry: StateFlow<String> = profiles.state.map { it.flagCountry(language) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), language.support.flagCountries.first())
+
     private val firstRun: Boolean = savedState.get<Boolean>(ARG_FIRST_RUN) ?: false
     private val interfaceLanguage = Locale.getDefault().languageCode
 

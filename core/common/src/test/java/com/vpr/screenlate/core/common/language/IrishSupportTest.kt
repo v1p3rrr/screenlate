@@ -40,7 +40,7 @@ class IrishSupportTest {
     }
 
     @Test
-    fun `mutation rows take the rule names, and words are looked up with their marks as written`() {
+    fun `mutation rows take the rule names, and the fada is folded as in other Latin-script languages`() {
         assertThat(IrishSupport.formTagRules["eclipsis"]).isEqualTo("eclipsis")
         assertThat(IrishSupport.formTagRules["lenition"]).isEqualTo("lenition")
         assertThat(IrishSupport.formTagRules["lenited form"]).isEqualTo("lenition")
@@ -50,6 +50,7 @@ class IrishSupportTest {
         assertThat(IrishSupport.respelledOnlyWithoutEntry).isFalse()
         assertThat(IrishSupport.inflectionRulesOnlyWithoutEntry).isFalse()
         assertThat(IrishSupport.headwordMarks).isNull()
+        assertThat(IrishSupport.foldsMarks).isTrue()
         assertThat(IrishSupport.fallbackLanguage).isNull()
         assertThat(Language.IRISH.lookupDictionaryCodes).containsExactly("ga")
     }

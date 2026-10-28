@@ -152,8 +152,17 @@ the details.
   logs 2026-10-28 and 2026-10-29). The owner answered questions 13-16: Finnish rule results show after the entries, a result a
   form row also reaches keeps the row's chain only (13 (b), built on `languages/uz`); 14-16 as built. Open for the
   owner: question 17 (ə and ı tried for e and i after recognition), question 18 (Azerbaijani rule results beside an
-  entry) and question 19 (the same for Uzbek), provisional and built. Next in the block, from `languages/main` `81654777`:
-  the languages plan's "Marks folded in the lookup" and, in the same step, "Language flags in more places". Follow-up: 14 of Lingua Libre's Uzbek titles write ‘ for ʻ, so those
+  entry) and question 19 (the same for Uzbek), provisional and built. The next step, the languages plan's "Marks folded in the lookup" and
+  "Language flags in more places", is built on `languages/marks` (from `81654777`, `languages/main` merged in) for the
+  main session to check and merge (`plans/2026-10-29-folded-marks-and-flags.md`): every Latin- and Cyrillic-script
+  language but Vietnamese keys headwords and form rows also without marks (the Hungarian and Estonian misread variants
+  removed; Norwegian marks now also reach nb and nn dictionaries), text from recognition is also looked up folded, and
+  flags stand in the language chips, the OCR model list, the download screen's title, the turned-off languages' cards
+  and the first-run list. Checked on the emulator (run log 2026-10-29, `languages/marks`; the first-run list not).
+  Open for the owner: the plan's question 1 (extra results through the fold: a third or more of running text in
+  Italian, Portuguese, Spanish, Irish and French gets one or two below the words as written; Irish was looked up as
+  written by group 5b's question 11) and question 2 (the word forms import without the dictionary's headwords: Davom
+  finds davo "my" with uz–ru alone). Follow-up: 14 of Lingua Libre's Uzbek titles write ‘ for ʻ, so those
   recordings are not found. With uz–ru and the word forms alone, Davom finds davo with "my": the forms dictionary
   brings forms, not headwords, so the rule-only filter does not know davom (the import could keep the lemmas).
   Seen while checking Hungarian, older than the group and left for later: after the service was turned off and on
@@ -177,8 +186,8 @@ the details.
     show their codes, Cyrillic ones in Cyrillic (`8f51b2db`; languages plan row "Bubble glyph"); BUB19 is not run on
     the emulator yet;
   - Esperanto's frequency dictionary comes from Leipzig's web texts of 2012 (`cb3c1d7e`; DIC39 due again);
-  - language flags in more places are decided (languages plan row "Language flags in more places") and built by
-    group 5c's next step;
+  - language flags in more places are decided (languages plan row "Language flags in more places") and built on
+    `languages/marks`;
   - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word;
   - a cloud session works through five backlog tasks (interface translation check, candidate interface languages,
     smaller language bundles, converter data, the right-to-left strings); its branches are checked and merged by the

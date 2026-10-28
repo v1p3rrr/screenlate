@@ -2,6 +2,7 @@ package com.vpr.screenlate.languages
 
 import android.text.format.Formatter
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,6 +47,7 @@ import com.vpr.screenlate.ui.components.LabelWithInfo
 @Composable
 fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrModelsViewModel = hiltViewModel()) {
     val lists by viewModel.lists.collectAsStateWithLifecycle()
+    val profiles by viewModel.profiles.collectAsStateWithLifecycle()
     var opened by rememberSaveable { mutableStateOf(openLanguage) }
     LabelWithInfo(
         stringResource(R.string.ocr_models_heading),
@@ -52,14 +55,23 @@ fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrM
         style = MaterialTheme.typography.titleMedium,
     )
     lists.orEmpty().forEach { list ->
-        val color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        val color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_ALPHA)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(enabled = enabled) { opened = list.language.code }
                 .padding(vertical = 6.dp),
         ) {
-            Text(list.language.displayName(), color = color)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                profiles?.let { profiles ->
+                    ChipFlag(
+                        list.language,
+                        profiles.flagCountry(list.language),
+                        modifier = Modifier.alpha(if (enabled) 1f else DISABLED_ALPHA),
+                    )
+                }
+                Text(list.language.displayName(), color = color)
+            }
             Hint(list.active?.let { modelTitle(it) } ?: stringResource(R.string.ocr_models_none))
         }
     }
@@ -163,3 +175,6 @@ private fun OcrModelRow(
 @Composable
 private fun modelTitle(option: OcrModelOption): String =
     option.entry?.displayTitle() ?: stringResource(R.string.ocr_models_mlkit)
+
+/** Material's alpha of disabled content. */
+private const val DISABLED_ALPHA = 0.38f

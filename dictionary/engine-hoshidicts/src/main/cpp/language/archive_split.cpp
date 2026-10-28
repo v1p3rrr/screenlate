@@ -416,6 +416,7 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
     return std::nullopt;
   }
   const bool every_headword = stripper != nullptr && stripper->every_headword();
+  const bool keys_headwords = stripper != nullptr && stripper->keys_headwords();
   std::string out = "[";
   bool changed = false;
   bool first = true;
@@ -450,16 +451,22 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
       }
     }
     std::string expression;
-    if ((form_of.empty() && !every_headword) || glz::read_json(expression, fields[0].str) || expression.empty()) {
+    if ((form_of.empty() && !keys_headwords) || glz::read_json(expression, fields[0].str) || expression.empty()) {
       keep(row.str);
       continue;
     }
     std::string rules;
     if (glz::read_json(rules, fields[3].str)) rules.clear();
     const std::vector<std::string> keys = stripper != nullptr ? stripper->keys(expression) : std::vector<std::string>();
-    // Text without the marks (ΣΚΥΛΟΣ, σκυλος) finds the headword (σκύλος) as a form of itself, with no step to show.
-    if (every_headword && !definitions.empty()) {
-      for (const auto& key : keys) split.table.add(key, expression, {}, rules);
+    const std::vector<std::string> folded_keys =
+        stripper != nullptr ? stripper->folded_keys(expression, keys) : std::vector<std::string>();
+    // Text without the marks (ΣΚΥΛΟΣ, σκυλος) finds the headword (σκύλος) as a form of itself, with no step to show;
+    // folded text (fuzfa) finds it (fűzfa) after the words it spells as written.
+    if (!definitions.empty()) {
+      if (every_headword) {
+        for (const auto& key : keys) split.table.add(key, expression, {}, rules);
+      }
+      for (const auto& key : folded_keys) split.table.add(key, expression, {}, rules, true);
     }
     if (form_of.empty()) {
       keep(row.str);
@@ -469,8 +476,13 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
     const bool dropped = stripper != nullptr && stripper->drops_form(expression);
     for (const auto& headword : dropped ? std::vector<std::string>() : form_headwords(expression)) {
       std::vector<std::string> other_keys;
-      if (headword != expression && stripper != nullptr) other_keys = stripper->keys(headword);
+      std::vector<std::string> other_folded_keys;
+      if (headword != expression && stripper != nullptr) {
+        other_keys = stripper->keys(headword);
+        other_folded_keys = stripper->folded_keys(headword, other_keys);
+      }
       const auto& form_keys = headword == expression ? keys : other_keys;
+      const auto& form_folded_keys = headword == expression ? folded_keys : other_folded_keys;
       for (const auto& [lemma, tags] : form_of) {
         const std::string plain_lemma =
             stripper != nullptr && !stripper->lemmas_as_written() ? stripper->strip(lemma) : std::string();
@@ -479,6 +491,7 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
         split.table.add(headword, target, shown, rules);
         // Where every headword is keyed, a key is another spelling of the form, as for the headword itself above.
         for (const auto& key : form_keys) split.table.add(key, target, shown, rules, every_headword);
+        for (const auto& key : form_folded_keys) split.table.add(key, target, shown, rules, true);
       }
     }
     if (definitions.empty() || forms_only) {
@@ -528,11 +541,87 @@ bool contains(const std::vector<int32_t>& sorted, int32_t point) {
   return std::binary_search(sorted.begin(), sorted.end(), point);
 }
 
+// Code points of the Latin and Cyrillic blocks; their letters drop the marks after them when folded.
+constexpr std::pair<int32_t, int32_t> kFoldedScripts[] = {
+    {0x0041, 0x005A}, {0x0061, 0x007A}, {0x00C0, 0x02AF}, {0x0400, 0x052F}, {0x1C80, 0x1C8F}, {0x1E00, 0x1EFF},
+    {0x2C60, 0x2C7F}, {0xA640, 0xA69F}, {0xA720, 0xA7FF}, {0xAB30, 0xAB6F}, {0xFF21, 0xFF3A}, {0xFF41, 0xFF5A},
+};
+
+// Latin and Cyrillic letters with a stroke, bar, descender or hook that Unicode does not decompose, with their base
+// letters, sorted: ø ł đ ħ ı ŧ ƀ ɨ ƶ ǥ, ғ ҕ ӷ қ ҝ ҟ ҡ ӄ ң ӈ ө ұ ү ҳ ҷ ҹ ӌ ҫ ҙ ҭ ԓ and their capitals.
+constexpr std::pair<int32_t, int32_t> kFoldedLetters[] = {
+    {0x00D8, 0x004F}, {0x00F8, 0x006F}, {0x0110, 0x0044}, {0x0111, 0x0064}, {0x0126, 0x0048}, {0x0127, 0x0068},
+    {0x0131, 0x0069}, {0x0141, 0x004C}, {0x0142, 0x006C}, {0x0166, 0x0054}, {0x0167, 0x0074}, {0x0180, 0x0062},
+    {0x0197, 0x0049}, {0x01B5, 0x005A}, {0x01B6, 0x007A}, {0x01E4, 0x0047}, {0x01E5, 0x0067}, {0x0243, 0x0042},
+    {0x0268, 0x0069}, {0x0492, 0x0413}, {0x0493, 0x0433}, {0x0494, 0x0413}, {0x0495, 0x0433}, {0x0498, 0x0417},
+    {0x0499, 0x0437}, {0x049A, 0x041A}, {0x049B, 0x043A}, {0x049C, 0x041A}, {0x049D, 0x043A}, {0x049E, 0x041A},
+    {0x049F, 0x043A}, {0x04A0, 0x041A}, {0x04A1, 0x043A}, {0x04A2, 0x041D}, {0x04A3, 0x043D}, {0x04AA, 0x0421},
+    {0x04AB, 0x0441}, {0x04AC, 0x0422}, {0x04AD, 0x0442}, {0x04AE, 0x0423}, {0x04AF, 0x0443}, {0x04B0, 0x0423},
+    {0x04B1, 0x0443}, {0x04B2, 0x0425}, {0x04B3, 0x0445}, {0x04B6, 0x0427}, {0x04B7, 0x0447}, {0x04B8, 0x0427},
+    {0x04B9, 0x0447}, {0x04C3, 0x041A}, {0x04C4, 0x043A}, {0x04C7, 0x041D}, {0x04C8, 0x043D}, {0x04CB, 0x0427},
+    {0x04CC, 0x0447}, {0x04E8, 0x041E}, {0x04E9, 0x043E}, {0x04F6, 0x0413}, {0x04F7, 0x0433}, {0x0512, 0x041B},
+    {0x0513, 0x043B},
+};
+
+bool latin_or_cyrillic_letter(int32_t point) {
+  const auto category = utf8proc_category(point);
+  if (category < UTF8PROC_CATEGORY_LU || category > UTF8PROC_CATEGORY_LO) return false;
+  return std::any_of(std::begin(kFoldedScripts), std::end(kFoldedScripts),
+                     [&](const auto& range) { return point >= range.first && point <= range.second; });
+}
+
+int32_t base_letter(int32_t point) {
+  const auto* end = std::end(kFoldedLetters);
+  const auto* found = std::lower_bound(std::begin(kFoldedLetters), end, point,
+                                       [](const auto& letter, int32_t value) { return letter.first < value; });
+  return found != end && found->first == point ? found->second : point;
+}
+
 }  // namespace
+
+std::string folded(std::string_view text) {
+  if (std::all_of(text.begin(), text.end(), [](char c) { return static_cast<unsigned char>(c) < 0x80; })) return {};
+  const auto* bytes = reinterpret_cast<const utf8proc_uint8_t*>(text.data());
+  const auto size = static_cast<utf8proc_ssize_t>(text.size());
+  // One more entry than the code points, which re-encoding in place needs for its terminating zero.
+  std::vector<utf8proc_int32_t> points(text.size() + 1);
+  utf8proc_ssize_t count = utf8proc_decompose(bytes, size, points.data(), static_cast<utf8proc_ssize_t>(points.size()),
+                                              UTF8PROC_DECOMPOSE);
+  if (count > static_cast<utf8proc_ssize_t>(points.size())) {
+    points.resize(static_cast<size_t>(count) + 1);
+    count = utf8proc_decompose(bytes, size, points.data(), static_cast<utf8proc_ssize_t>(points.size()),
+                               UTF8PROC_DECOMPOSE);
+  }
+  if (count < 0) return {};
+  utf8proc_ssize_t kept = 0;
+  bool after_letter = false;
+  bool changed = false;
+  for (utf8proc_ssize_t i = 0; i < count; i++) {
+    const utf8proc_int32_t point = points[static_cast<size_t>(i)];
+    if (utf8proc_category(point) == UTF8PROC_CATEGORY_MN) {
+      // A mark after another mark goes with the same letter.
+      if (after_letter) {
+        changed = true;
+        continue;
+      }
+    } else {
+      after_letter = latin_or_cyrillic_letter(point);
+    }
+    const int32_t base = base_letter(point);
+    changed = changed || base != point;
+    points[static_cast<size_t>(kept++)] = base;
+  }
+  if (!changed || kept == 0) return {};
+  const utf8proc_ssize_t length =
+      utf8proc_reencode(points.data(), kept, static_cast<utf8proc_option_t>(UTF8PROC_STABLE | UTF8PROC_COMPOSE));
+  if (length < 0) return {};
+  return std::string(reinterpret_cast<const char*>(points.data()), static_cast<size_t>(length));
+}
 
 MarkStripper::MarkStripper(const HeadwordMarks& marks)
     : bases_(code_points(marks.bases)),
       every_headword_(marks.every_headword),
+      fold_marks_(marks.fold_marks),
       lemmas_as_written_(marks.lemmas_as_written),
       forms_in_script_(marks.forms_in_script),
       replacements_(marks.replacements.begin(), marks.replacements.end()),
@@ -568,6 +657,21 @@ std::vector<std::string> MarkStripper::keys(std::string_view text) const {
     const std::string swapped = replaced(bare, replacements_);
     add(strip(swapped.empty() ? bare : std::string_view(swapped), letters_));
   }
+  return out;
+}
+
+std::vector<std::string> MarkStripper::folded_keys(std::string_view text, const std::vector<std::string>& keys) const {
+  std::vector<std::string> out;
+  if (!fold_marks_) return out;
+  auto add = [&](std::string key) {
+    if (key.empty() || key == text || std::find(keys.begin(), keys.end(), key) != keys.end() ||
+        std::find(out.begin(), out.end(), key) != out.end()) {
+      return;
+    }
+    out.push_back(std::move(key));
+  };
+  add(folded(text));
+  for (const auto& key : keys) add(folded(key));
   return out;
 }
 
@@ -684,9 +788,9 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
       const Entry& entry = (*entries)[i];
       if (!is_term_bank(entry.name)) continue;
       const auto content = inflate(file, entry, compressors.decompressor);
-      const bool every_headword = stripper && stripper->every_headword();
+      const bool keys_headwords = stripper && stripper->keys_headwords();
       std::optional<std::string> rest;
-      if (content && (every_headword || may_hold_form_of(*content))) {
+      if (content && (keys_headwords || may_hold_form_of(*content))) {
         rest = split_bank(*content, split, stripper ? &*stripper : nullptr, false);
       }
       if (!rest) continue;

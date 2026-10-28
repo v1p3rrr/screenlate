@@ -28,6 +28,9 @@ object VietnameseSupport : SpacedLanguageSupport() {
     /** Wiktionary lists "cái" as the classifier form of hundreds of nouns. */
     override val ignoredFormTags = setOf("classifier")
 
+    /** Its marks are tones: a word without them is another word. */
+    override val foldsMarks = false
+
     /**
      * Titles and administrative units: TP. (thành phố), Q. and P. (quận, phường in addresses), TS., ThS., GS., PGS.
      * (academic degrees). "v.v." (and so on) usually ends a sentence and is left out.

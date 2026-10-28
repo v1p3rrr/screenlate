@@ -4,9 +4,9 @@ import com.vpr.screenlate.core.common.Language
 
 /**
  * Estonian. Wiktionary's English edition lists the case and verb forms; the bundle adds the app's own rule for the
- * negative forms of olema (pole, polnud → olema), which Wiktionary lists as words of their own. Words from OCR are also
- * tried with õ for ö, which recognition reads it as (möte → mõte); app text and typed text are looked up as written.
- * Long compounds are split into the words they are made of ([compoundLinks]). An ending after a number or an
+ * negative forms of olema (pole, polnud → olema), which Wiktionary lists as words of their own. Words without marks find
+ * the words with them, and words from OCR are also looked up without theirs, which recognition reads õ wrong for (möte
+ * → mõte; [foldsMarks]). Long compounds are split into the words they are made of ([compoundLinks]). An ending after a number or an
  * abbreviation in capitals with a hyphen (NATO-ga, 1990-ndatel) is also looked up with the hyphen.
  */
 object EstonianSupport : SpacedLanguageSupport() {

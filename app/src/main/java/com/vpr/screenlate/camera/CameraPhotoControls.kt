@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
@@ -46,7 +44,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -74,7 +71,7 @@ import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoText
 import com.vpr.screenlate.core.photos.PhotoViewport
 import com.vpr.screenlate.core.photos.PhotoWork
-import com.vpr.screenlate.overlay.ui.Flags
+import com.vpr.screenlate.languages.ChipFlag
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.LocalEInk
 import java.text.DateFormat
@@ -341,17 +338,6 @@ internal fun CameraLanguageChip(
                 },
             )
         }
-    }
-}
-
-/** A language's round flag, or its code on e-ink or without a flag. */
-@Composable
-internal fun ChipFlag(language: Language, country: String, sizeDp: Int = 18) {
-    val flag = Flags.drawable(country)
-    if (LocalEInk.current || flag == null) {
-        Text(Flags.code(language), style = MaterialTheme.typography.labelSmall)
-    } else {
-        Image(painterResource(flag), contentDescription = null, modifier = Modifier.size(sizeDp.dp).clip(CircleShape))
     }
 }
 

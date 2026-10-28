@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.engine.hoshidicts
 
 import android.content.Context
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.HeadwordMarks
 import com.vpr.screenlate.core.common.language.SearchResolution
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
@@ -189,7 +190,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         FrequencyOrder.DISABLED -> ORDER_DISABLED
     }
 
-    private companion object {
+    internal companion object {
         /** hoshidicts' own lookup and deinflector are Japanese's. */
         val NATIVE_LANGUAGE = Language.JAPANESE
 
@@ -200,13 +201,16 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         const val FORM_OF_TABLE = "form_of.bin"
 
         /**
-         * Each language's [headwordMarks][com.vpr.screenlate.core.common.language.LanguageSupport.headwordMarks], by the
-         * source language dictionaries name ([Language.dictionaryCode]).
+         * Each language's [headwordMarks][com.vpr.screenlate.core.common.language.LanguageSupport.headwordMarks] and
+         * [foldsMarks][com.vpr.screenlate.core.common.language.LanguageSupport.foldsMarks], by the source language
+         * dictionaries name ([Language.dictionaryCode], and the [other codes][Language.otherCodes] they may name).
          */
         val HEADWORD_MARKS: ByteArray = buildJsonObject {
             for (language in Language.entries.distinctBy { it.dictionaryCode }) {
-                val marks = language.support.headwordMarks ?: continue
-                put(language.dictionaryCode, buildJsonObject {
+                val support = language.support
+                val marks = support.headwordMarks
+                    ?: if (support.foldsMarks) HeadwordMarks(marks = "", bases = "") else continue
+                val entry = buildJsonObject {
                     put("marks", marks.marks)
                     put("bases", marks.bases)
                     put("every_headword", marks.everyHeadword)
@@ -220,7 +224,9 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                     put("mark_bases", buildJsonObject { marks.markBases.forEach { (mark, bases) -> put(mark, bases) } })
                     put("letter_marks", marks.letterMarks)
                     put("letter_bases", marks.letterBases)
-                })
+                    put("fold_marks", support.foldsMarks)
+                }
+                for (code in listOf(language.dictionaryCode) + Language.otherCodes(language)) put(code, entry)
             }
         }.toString().encodeToByteArray()
 

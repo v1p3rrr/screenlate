@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -74,6 +75,20 @@ fun LanguageFlag(
         } else {
             Image(painterResource(flag), contentDescription = null, modifier = Modifier.size(size).clip(CircleShape))
         }
+    }
+}
+
+/**
+ * [language]'s small round flag of [country] next to its name in a chip, list or title, or its code on e-ink or without
+ * a flag. Decoration: TalkBack reads the name beside it.
+ */
+@Composable
+fun ChipFlag(language: Language, country: String, sizeDp: Int = 18, modifier: Modifier = Modifier) {
+    val flag = Flags.drawable(country)
+    if (LocalEInk.current || flag == null) {
+        Text(Flags.code(language), style = MaterialTheme.typography.labelSmall, modifier = modifier.clearAndSetSemantics {})
+    } else {
+        Image(painterResource(flag), contentDescription = null, modifier = modifier.size(sizeDp.dp).clip(CircleShape))
     }
 }
 

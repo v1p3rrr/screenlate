@@ -1802,3 +1802,7 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   alone gave Chinese 43 MB for 69 MB taken (CC-CEDICT ×4.4, its Hanzi ×5.2). The free space check takes a measured
   size plus a quarter, else a share above the largest measured (×5, ×6, ×17, ×15, 16 MB), above the former ×3 and ×9,
   which Jiten (×8.7), JMdict Russian (×4.7) and IPA dictionaries (up to ×14) exceeded.
+- 2026-10-29: marks folded in the lookup and language flags in more places built on branch `languages/marks`
+  (`2026-10-29-folded-marks-and-flags.md`: technical choices, data check, progress); the data check finds one or two
+  extra results on a third or more of running text in Italian, Portuguese, Spanish, Irish and French, so the question
+  of the extra results is in that plan, the fold kept as decided until the answer.

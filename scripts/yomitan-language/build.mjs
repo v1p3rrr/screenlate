@@ -64,9 +64,9 @@ const borrowed = {
  * be (cxu for ĉu) and writes its elided o as Ukrainian writes apostrophes (dank' al, dank’ al); Swahili writes ng' so
  * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r), Irish and Scottish Gaelic their elided words (d'fhág, dh'fhàg);
  * Irish in Gaelic type writes lenition as a dot (ḃean for bhean), and Scottish Gaelic in its older spelling some
- * long vowels with the acute (mór for mòr); recognition reads Hungarian ő and ű as ö and ü, Estonian õ as ö,
- * Azerbaijani ə and ı as e and i; Uzbek text writes ʻ and ʼ as ' ‘ ’ ` ´ and is also written in Cyrillic letters.
- * Processors join the descriptor's capitalization processors, its own list, or make its list.
+ * long vowels with the acute (mór for mòr); recognition reads Azerbaijani ə and ı as e and i; Uzbek text writes ʻ
+ * and ʼ as ' ‘ ’ ` ´ and is also written in Cyrillic letters. Processors join the descriptor's capitalization
+ * processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -88,11 +88,21 @@ const addedPreprocessors = {
     cy: ['ukrainianApostropheVariants', 'welshMisreadCircumflex'],
     ga: ['ukrainianApostropheVariants', 'irishDottedConsonants'],
     gd: ['ukrainianApostropheVariants', 'gaelicAcuteAsGrave'],
-    hu: ['hungarianMisreadDoubleAcute'],
-    et: ['estonianMisreadTilde'],
     az: ['azerbaijaniMisreadLetters'],
     uz: ['uzbekApostrophes', 'uzbekCyrillicAsLatin'],
 };
+
+/**
+ * Languages whose dictionaries key every headword and form also without the marks over or under their letters
+ * (`LanguageSupport.foldsMarks`, which a test of the engine keeps equal to this list): text from OCR is also looked up
+ * so (`foldedMarks`, after the processors above), as a wrong mark needs. The Latin- and Cyrillic-script languages but
+ * Vietnamese, whose marks are tones.
+ */
+const foldedMarkLanguages = [
+    'az', 'be', 'cs', 'cy', 'da', 'de', 'en', 'eo', 'es', 'et', 'fi', 'fr', 'ga', 'gd', 'hu', 'id', 'it', 'kk', 'ky',
+    'la', 'lt', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sh', 'sk', 'sl', 'sq', 'sv', 'sw', 'tl', 'tr', 'uk',
+    'uz',
+];
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
@@ -159,9 +169,9 @@ function keepLanguage(source, iso) {
             .replace(/name: '[^']*'/, `name: '${borrowing.name}'`);
         if (borrowing.exampleText) block = block.replace(/exampleText: '[^']*'/, `exampleText: '${borrowing.exampleText}'`);
     }
-    const added = addedPreprocessors[iso];
+    const added = [...(addedPreprocessors[iso] ?? []), ...(foldedMarkLanguages.includes(iso) ? ['foldedMarks'] : [])];
     let imports = '';
-    if (added) {
+    if (added.length > 0) {
         const plain = 'textPreprocessors: capitalizationPreprocessors,';
         const example = /(\n {8}exampleText: [^\n]*\n)/;
         const list = /(\n {8}textPreprocessors: \{\n(?: {12}(?:\.\.\.)?\w+,\n)+)( {8}\},)/;
