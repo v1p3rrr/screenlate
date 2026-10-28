@@ -1,5 +1,5 @@
 <resources>
-    <string name="overlay_service_description">Показывает плавающую кнопку, которая распознаёт текст на экране и ищет слова в ваших словарях. Screenlate делает скриншот только когда вы вытаскиваете кнопку или нажимаете на неё, и отправляет его в облачный сервис распознавания текста.</string>
+    <string name="overlay_service_description">Показывает плавающую кнопку, которая распознаёт текст на экране и ищет слова в ваших словарях. Screenlate делает скриншот, только когда вы вытягиваете кнопку или нажимаете на неё, и отправляет его в облачный сервис распознавания текста.</string>
     <string name="overlay_tile_label">Кнопка Screenlate</string>
 
     <string name="overlay_engine_draft">Черновик с устройства</string>
@@ -8,13 +8,13 @@
     <string name="overlay_engine_offline">На устройстве (нет сети)</string>
 
     <string name="overlay_no_text">Текст на экране не найден.</string>
-    <string name="overlay_no_text_photo">Текст на снимке не найден.</string>
-    <string name="overlay_no_app_text">Это приложение не предоставляет свой текст службам специальных возможностей. Распознавание экрана выключено («Только текст приложения» в настройках кнопки).</string>
+    <string name="overlay_no_text_photo">Текст на фото не найден.</string>
+    <string name="overlay_no_app_text">Это приложение не предоставляет свой текст службам специальных возможностей. Распознавание экрана выключено («Только текст приложения» в настройках распознавания текста).</string>
     <string name="overlay_error_secure">Это приложение запрещает скриншоты.</string>
     <string name="overlay_error_capture">Не удалось сделать скриншот.</string>
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>
     <string name="overlay_error_offline">Нет подключения к сети, а распознавание на устройстве выключено в настройках.</string>
-    <string name="overlay_error_no_device_ocr">Для этого языка нет модели на устройстве. Скачайте её или выберите в настройках плавающей кнопки в пункте «Движки» «Оба» или «Облако».</string>
+    <string name="overlay_error_no_device_ocr">Для этого языка нет модели на устройстве. Скачайте её или в настройках распознавания текста выберите в пункте «Движки» значение «Оба» или «Облако».</string>
     <string name="overlay_open_ocr_models">Модель на устройстве</string>
     <string name="overlay_error_offline_no_device">Нет подключения к сети, а распознавание на устройстве не поддерживает этот язык.</string>
     <string name="overlay_ocr_error_title">Облачное распознавание</string>
@@ -36,7 +36,7 @@
     <string name="overlay_play_audio">Воспроизвести аудио (удерживайте — выбрать)</string>
     <string name="anki_error">Не удалось добавить карточку: %1$s</string>
     <string name="anki_rejected">AnkiDroid не сохранил карточку.</string>
-    <string name="anki_photo_unavailable">Снимок больше недоступен.</string>
+    <string name="anki_photo_unavailable">Фото больше недоступно.</string>
     <string name="anki_photo_document_title">Камера</string>
     <string name="anki_picture_failed">Ошибка при сохранении изображения.</string>
     <string name="anki_not_configured">Сначала настройте экспорт в Anki в Screenlate.</string>
@@ -52,7 +52,7 @@
     <string name="overlay_kanji_kunyomi">Кун</string>
     <string name="overlay_character_pinyin">Пиньинь</string>
     <string name="overlay_character_korean_reading">Корейское чтение</string>
-    <string name="overlay_kanji_strokes">Черт</string>
+    <string name="overlay_kanji_strokes">Черты</string>
     <string name="overlay_kanji_grade">Класс</string>
     <string name="overlay_kanji_frequency">Частота</string>
     <string name="overlay_engine_app_text">Текст приложения</string>
@@ -62,15 +62,15 @@
     <string name="overlay_open_note">Открыть в AnkiDroid (удерживайте — добавить всё равно)</string>
     <string name="overlay_add_anyway">Добавить всё равно</string>
     <string name="overlay_add_anyway_picture">Добавить всё равно, с картинкой</string>
-    <string name="overlay_audio_loading">Ищу аудио…</string>
+    <string name="overlay_audio_loading">Поиск аудио…</string>
     <string name="overlay_open_app">Открыть настройки Anki</string>
-    <string name="audio_no_voice">Нет голоса синтеза речи для этого языка.</string>
+    <string name="audio_no_voice">Для этого языка не установлен голос синтеза речи.</string>
     <string name="overlay_close">Закрыть</string>
-    <string name="overlay_pitch_dictionaries">Ударение из словарей</string>
+    <string name="overlay_pitch_dictionaries">Питч-акцент из словарей</string>
     <string name="overlay_transcription_dictionaries">Транскрипция из словарей</string>
     <string name="overlay_show_all">Показать все</string>
-    <string name="overlay_copy_paragraph">Скопировать этот абзац</string>
-    <string name="overlay_copy_all">Скопировать весь распознанный текст</string>
+    <string name="overlay_copy_paragraph">Копировать этот абзац</string>
+    <string name="overlay_copy_all">Копировать весь распознанный текст</string>
     <string name="overlay_menu_open_app">Открыть Screenlate</string>
     <string name="overlay_copied">Скопировано</string>
     <string name="overlay_keep_alive_channel">Служба работает</string>
@@ -80,7 +80,7 @@
     <string name="overlay_service_off_title">Служба Screenlate отключена</string>
     <string name="overlay_service_off_text">Плавающая кнопка пропала, потому что служба специальных возможностей Screenlate была отключена. Нажмите, чтобы включить её снова.</string>
     <string name="overlay_translate">Перевести предложение</string>
-    <string name="overlay_translating">Перевожу…</string>
+    <string name="overlay_translating">Перевод…</string>
     <string name="overlay_compound">Составное слово: %1$s</string>
     <string name="translation_failed">Не удалось перевести предложение.</string>
     <string name="translation_failed_other">Ошибка перевода.</string>
@@ -93,12 +93,12 @@
     <string name="translation_error_secure">Не удалось установить защищённое соединение (сертификат или TLS).</string>
     <string name="translation_error_network">Не удалось связаться с сервером.</string>
     <string name="translation_error_http">Сервер ответил ошибкой %1$d.</string>
-    <string name="translation_error_limited">Слишком много запросов, попробуйте позже.</string>
+    <string name="translation_error_limited">Слишком много запросов; попробуйте позже.</string>
     <string name="translation_error_captcha">Сервис требует пройти капчу; повторите попытку позже.</string>
     <string name="translation_error_rejected">Запрос отклонён.</string>
     <string name="translation_error_language">Этот язык не поддерживается.</string>
     <string name="translation_error_too_long">Текст слишком длинный.</string>
     <string name="translation_error_bad_answer">Не удалось прочитать ответ.</string>
     <string name="translation_error_other">Неизвестная ошибка.</string>
-    <string name="crop_whole_photo">Весь снимок</string>
+    <string name="crop_whole_photo">Всё фото</string>
 </resources>

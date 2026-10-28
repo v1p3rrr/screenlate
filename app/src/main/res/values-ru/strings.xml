@@ -3,7 +3,7 @@
     <string name="onboarding_service_enabled">Включена</string>
     <string name="onboarding_service_disabled">Не включена</string>
     <string name="onboarding_service_explanation">Screenlate нужна служба специальных возможностей, чтобы показывать плавающую кнопку поверх других приложений и делать скриншоты для распознавания текста. Откройте настройки, найдите Screenlate среди установленных служб и включите её.</string>
-    <string name="onboarding_open_accessibility_settings">Открыть настройки спецвозможностей</string>
+    <string name="onboarding_open_accessibility_settings">Открыть настройки специальных возможностей</string>
 
     <string name="onboarding_device_title">Настройка устройства</string>
     <string name="onboarding_device_restricted_settings">Если переключатель Screenlate неактивен (приложение установлено из файла), откройте Сведения о приложении → ⋮ → Разрешить ограниченные настройки и попробуйте снова.</string>
@@ -31,7 +31,7 @@
 
     <string name="home_dictionaries_title">Словари</string>
     <string name="home_dictionaries_summary">Установлено: %1$d, включено: %2$d.</string>
-    <string name="home_dictionaries_installing">Устанавливаю словари…</string>
+    <string name="home_dictionaries_installing">Установка словарей…</string>
     <string name="home_dictionaries_open">Управление словарями</string>
 
     <string name="dictionaries_title">Словари</string>
@@ -52,7 +52,7 @@
     <string name="dictionaries_counts">Содержимое</string>
     <string name="dictionaries_count_terms">терминов: %1$d</string>
     <string name="dictionaries_count_frequencies">частот: %1$d</string>
-    <string name="dictionaries_count_pitches">ударений: %1$d</string>
+    <string name="dictionaries_count_pitches">питч-акцентов: %1$d</string>
     <string name="dictionaries_count_kanji">кандзи: %1$d</string>
     <string name="dictionaries_count_media">медиафайлов: %1$d</string>
     <string name="dictionaries_kind_term">Термины</string>
@@ -61,8 +61,8 @@
     <string name="dictionaries_kind_kanji">Кандзи</string>
     <string name="dictionaries_kind_pronunciation">Произношение</string>
     <string name="dictionaries_kind_characters">Иероглифы</string>
-    <string name="dictionaries_count_transcriptions">транскрипции: %1$d</string>
-    <string name="dictionaries_count_characters">иероглифы: %1$d</string>
+    <string name="dictionaries_count_transcriptions">транскрипций: %1$d</string>
+    <string name="dictionaries_count_characters">иероглифов: %1$d</string>
     <string name="dictionaries_languages_hint">Установленные и доступные для загрузки словари ниже относятся к выбранному языку. Словари без языка используются для всех языков.</string>
     <string name="dictionaries_other_languages">Другие языки</string>
     <string name="dictionaries_other_languages_hint">Словари и модели распознавания выключенных языков. Не используются и только занимают место.</string>
@@ -109,7 +109,7 @@
     <string name="dictionaries_task_queued">В очереди: %1$s</string>
     <string name="dictionaries_task_downloading">Загрузка: %1$s</string>
     <string name="dictionaries_task_retrying">Повторная загрузка (%2$d из %3$d): %1$s</string>
-    <string name="dictionaries_task_no_network">Ждёт сеть: %1$s</string>
+    <string name="dictionaries_task_no_network">Ожидание сети: %1$s</string>
     <string name="dictionaries_tasks_waiting">В очереди (%1$d): %2$s</string>
     <string name="dictionaries_tasks_waiting_count">В очереди (%1$d)</string>
     <string name="dictionaries_tasks_cancel_all">Отменить все</string>
@@ -118,7 +118,7 @@
     <string name="dictionaries_download_stopped">%1$s: загрузка остановлена — %2$s</string>
     <string name="dictionaries_connection_lost">соединение прервалось</string>
     <string name="dictionaries_task_importing">Импорт: %1$s</string>
-    <string name="dictionaries_installed_mark">Установлен</string>
+    <string name="dictionaries_installed_mark">Установлено</string>
     <string name="dictionaries_download">Скачать</string>
     <string name="dictionaries_section_terms">Словари</string>
     <string name="dictionaries_catalog_other_targets">Другие языки</string>
@@ -138,7 +138,7 @@
     <string name="anki_choose">Выбрать…</string>
     <string name="anki_tags">Метки (через пробел)</string>
     <string name="anki_fields">Поля</string>
-    <string name="anki_fields_hint">В шаблонах используются маркеры вроде {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Кнопка + вставляет маркер. По первому полю проверяются дубли.</string>
+    <string name="anki_fields_hint">В шаблонах используются маркеры, например {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Кнопка + вставляет маркер. По первому полю проверяются дубли.</string>
     <string name="anki_fields_hint_rtl">Для языка с письмом справа налево «Подставить рекомендуемые шаблоны» и кнопка + заключают слово и предложение в &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, чтобы карточка показывала их в порядке чтения. В первом поле этого нет: проверка дублей сравнивает его разметку.</string>
     <string name="anki_insert_marker">Вставить маркер</string>
     <string name="anki_marker_furigana_zh">Пиньинь над иероглифами</string>
@@ -164,14 +164,14 @@
     <string name="audio_title">Аудио</string>
     <string name="audio_playback">Воспроизведение</string>
     <string name="audio_auto_play">Автовоспроизведение аудио</string>
-    <string name="audio_sources_hint">Источники перебираются сверху вниз; играет и попадает в карточки первое найденное аудио. Нажмите на источник, чтобы изменить его.</string>
+    <string name="audio_sources_hint">Источники перебираются сверху вниз; воспроизводится и попадает в карточки первое найденное аудио. Нажмите на источник, чтобы изменить его.</string>
     <string name="audio_url_template">Шаблон URL</string>
     <string name="audio_add_source">Добавить источник аудио</string>
     <string name="search_title">Поиск слов</string>
     <string name="search_hint">Слово или текст</string>
     <string name="process_text_label">Найти в Screenlate</string>
     <string name="dictionaries_check_updates">Проверить обновления</string>
-    <string name="dictionaries_checking_updates">Проверяю обновления…</string>
+    <string name="dictionaries_checking_updates">Проверка обновлений…</string>
     <string name="dictionaries_up_to_date">Все словари актуальны.</string>
     <string name="dictionaries_update">Обновить</string>
     <string name="dictionaries_update_all">Обновить все</string>
@@ -181,7 +181,7 @@
     <string name="bubble_aim">Прицел</string>
     <string name="bubble_aim_above">Над пальцем</string>
     <string name="bubble_aim_center">Центр кнопки</string>
-    <string name="bubble_aim_hint">Двойной тап по кнопке переключает режим.</string>
+    <string name="bubble_aim_hint">Двойное нажатие на кнопку переключает режим.</string>
     <string name="bubble_dock_side">Сторона</string>
     <string name="bubble_dock_left">Слева</string>
     <string name="bubble_dock_right">Справа</string>
@@ -198,14 +198,14 @@
     <string name="bubble_read_app_text_hint">Быстрее в приложениях, которые предоставляют свой текст.</string>
     <string name="bubble_read_app_text_info">Текст считывается из приложения через службу специальных возможностей: он точный, доступен сразу и не требует сети. Работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных приложениях и для текста на изображениях экран распознаётся как обычно.\n\nЭкспериментальная функция: некоторые приложения сообщают неверные позиции символов, из-за чего подсветка смещается или выбирается соседнее слово. В этом случае отключите параметр.</string>
     <string name="bubble_app_text_only">Только текст приложения</string>
-    <string name="bubble_app_text_only_hint">Без скриншотов и распознавания. Текст на картинках не читается.</string>
+    <string name="bubble_app_text_only_hint">Без скриншотов и распознавания. Текст на изображениях не читается.</string>
     <string name="bubble_app_text_only_info">Распознавание экрана отключено: читается только текст, который приложения предоставляют службам специальных возможностей. Текст на изображениях, в манге, играх и приложениях, которые не предоставляют свой текст, не читается.\n\nПредназначено для устройств с экраном e-ink, старых или слабых устройств, где распознавание недоступно или работает медленно, а также для медленного или лимитного подключения: заряд на распознавание не расходуется, данные не отправляются.</string>
     <string name="bubble_app_text_only_confirm">Включить</string>
     <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
     <string name="dictionaries_task_checking_space">Проверка свободного места: %1$s</string>
     <string name="dictionaries_stage_queued">В очереди</string>
-    <string name="dictionaries_stage_no_network">Ждёт сеть</string>
+    <string name="dictionaries_stage_no_network">Ожидание сети</string>
     <string name="dictionaries_stage_downloading">Загрузка</string>
     <string name="dictionaries_stage_checking_space">Проверка свободного места</string>
     <string name="dictionaries_stage_converting">Распаковка</string>
@@ -215,7 +215,7 @@
     <string name="bubble_small_text_off">Выкл</string>
     <string name="bubble_small_text_on_demand">По требованию</string>
     <string name="bubble_small_text_always">Всегда</string>
-    <string name="bubble_small_text_hint">Отправляет части экрана на облачное распознавание отдельно, в большем разрешении относительно всего снимка, чтобы распознавался мелкий текст, пропущенный при скане всего экрана. Включайте, только если мелкий текст не распознаётся: каждая часть — дополнительный запрос и дополнительный трафик.\n\nПо требованию: часть под прицелом, когда прицел остаётся на месте, где ничего не найдено.\n\nВсегда: весь экран частями при каждом скане (больше трафика).</string>
+    <string name="bubble_small_text_hint">Отправляет части экрана на облачное распознавание отдельно, в большем разрешении относительно всего скриншота, чтобы распознавался мелкий текст, пропущенный при скане всего экрана. Включайте, только если мелкий текст не распознаётся: каждая часть — дополнительный запрос и дополнительный трафик.\n\nПо требованию: часть под прицелом, когда прицел остаётся на месте, где ничего не найдено.\n\nВсегда: весь экран частями при каждом скане (больше трафика).</string>
     <string name="bubble_recognition">Распознавание экрана</string>
     <string name="bubble_ocr_engines">Движки</string>
     <string name="bubble_ocr_engines_both">Оба</string>
@@ -295,12 +295,12 @@
     <string name="lookup_script">Иероглифы</string>
     <string name="lookup_script_simplified">Упрощённые</string>
     <string name="lookup_script_traditional">Традиционные</string>
-    <string name="lookup_script_hint">Слова, найденные по пиньиню, показываются в этих иероглифах. Иероглифы, которые одинаковы в обеих системах, рисуются в начертании этой, если по тексту не видно, какая из них.</string>
+    <string name="lookup_script_hint">Слова, найденные по пиньиню, показываются в этих иероглифах. Иероглифы, которые одинаковы в обеих системах, получают начертание выбранной системы, если по тексту не видно, какая из них используется.</string>
     <string name="lookup_fixed_script">Все слова в этих иероглифах</string>
     <string name="lookup_fixed_script_hint">Текст в другой системе ищется и в этих иероглифах, а слова показываются в них, если словарь их так пишет.</string>
     <string name="problems_title">Требует внимания</string>
     <string name="problems_open_anki">Открыть настройки Anki</string>
-    <string name="problems_dictionaries_missing">Пропали файлы словарей:</string>
+    <string name="problems_dictionaries_missing">Словари, файлы которых отсутствуют:</string>
     <string name="problems_models_damaged">Повреждены файлы моделей распознавания:</string>
     <string name="problems_download_again">Скачать заново</string>
     <string name="problems_import_again">Импортируйте его файл заново.</string>
@@ -308,7 +308,7 @@
     <string name="problems_no_dictionaries">Не включён ни один словарь с определениями.</string>
     <string name="problems_no_dictionaries_language">%1$s: не включён ни один словарь с определениями.</string>
     <string name="problems_missing_categories">%1$s — не хватает: %2$s</string>
-    <string name="problems_installing">Устанавливаю словари, в очереди: %1$d</string>
+    <string name="problems_installing">Установка словарей, в очереди: %1$d</string>
     <string name="home_languages_title">Языки</string>
     <string name="home_languages_hint">Сканы и поиск используют выбранный язык; у каждого языка свои словари и настройки.</string>
     <string name="home_language_turn_off_text">Язык будет выключен. Его настройки сохранятся и будут восстановлены при повторном включении.</string>
@@ -407,10 +407,10 @@
     <string name="audio_local_network_allow">Разрешить доступ к локальной сети</string>
     <string name="audio_test_none">Нет аудио</string>
     <string name="audio_test_running">Запрос к источнику…</string>
-    <string name="audio_test_found">Найдено: %1$d, играет первое</string>
+    <string name="audio_test_found">Найдено: %1$d, воспроизводится первое</string>
     <string name="audio_source_dialog">Источник аудио</string>
-    <string name="audio_url_hint">{term} и {reading} заменяются словом и его чтением; URL должен отдавать аудиофайл.</string>
-    <string name="audio_url_json_hint">URL должен отдавать список источников аудио Yomitan (JSON); {term} и {reading} заменяются.</string>
+    <string name="audio_url_hint">{term} и {reading} заменяются словом и его чтением; URL должен возвращать аудиофайл.</string>
+    <string name="audio_url_json_hint">URL должен возвращать список источников аудио Yomitan (JSON); {term} и {reading} заменяются.</string>
     <string name="action_save">Сохранить</string>
     <string name="audio_test_no_voice">Голос не установлен</string>
     <string name="yomitan_import_settings">Настройки</string>
@@ -426,7 +426,7 @@
     <string name="yomitan_section_anki">Anki</string>
     <string name="yomitan_section_anki_hint">Колода, тип записи, шаблоны полей, метки и обработка дублей</string>
     <string name="yomitan_section_audio">Аудио</string>
-    <string name="yomitan_section_audio_hint">Источники, громкость и автопроигрывание</string>
+    <string name="yomitan_section_audio_hint">Источники, громкость и автовоспроизведение</string>
     <string name="yomitan_section_lookup">Поиск</string>
     <string name="yomitan_section_lookup_hint">Длина скана и число статей</string>
     <string name="yomitan_import_apply">Импортировать</string>
@@ -441,17 +441,17 @@
     <string name="yomitan_summary_anki_model_missing">В AnkiDroid нет типа записи %1$s; его шаблоны применятся, когда он появится и будет выбран</string>
     <string name="yomitan_summary_anki_deck">Колода %1$s</string>
     <string name="yomitan_summary_anki_deck_missing">В AnkiDroid нет колоды %1$s; выберите колоду в настройках Anki</string>
-    <string name="yomitan_summary_anki_dropped">Полей нет в типе записи: %1$s</string>
+    <string name="yomitan_summary_anki_dropped">Поля, которых нет в типе записи: %1$s</string>
     <string name="yomitan_summary_anki_saved">Шаблоны сохранены для других типов записей: %1$s</string>
-    <string name="yomitan_summary_audio">Источников аудио: %1$d, громкость и автопроигрывание</string>
+    <string name="yomitan_summary_audio">Источников аудио: %1$d, громкость и автовоспроизведение</string>
     <string name="yomitan_summary_audio_off">Аудио в Yomitan выключено; источники не заданы</string>
     <string name="yomitan_summary_audio_unknown">Неподдерживаемые источники аудио: %1$s</string>
     <string name="yomitan_summary_lookup">Длина скана %1$s, статей на поиск %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Замены текста (правил: %1$d) не переносятся: цифры как кандзи, 々, ッ и знаки препинания учитываются автоматически</string>
     <string name="yomitan_collection_not_collection">Это не экспорт коллекции словарей Yomitan.</string>
-    <string name="yomitan_collection_failed">Не удалось начать импорт: файл не читается или не копируется.</string>
+    <string name="yomitan_collection_failed">Не удалось начать импорт: ошибка чтения или копирования файла.</string>
     <string name="yomitan_collection_choose">Словари в файле</string>
-    <string name="yomitan_collection_entries">записей: %1$d</string>
+    <string name="yomitan_collection_entries">статей: %1$d</string>
     <string name="yomitan_collection_media">картинок: %1$d</string>
     <string name="yomitan_collection_installed">уже установлен</string>
     <string name="yomitan_collection_hint">Установленные словари не отмечены; отмеченный заменит установленную копию. Большие файлы обрабатываются несколько минут.</string>
@@ -460,7 +460,7 @@
     <string name="popup_show_source">Показывать распознанный текст над статьями</string>
     <string name="popup_show_source_hint">Если выключено, попап начинается с первой статьи, а ✕ располагается рядом с её кнопками.</string>
     <string name="popup_pitch_colors">Цвета питч-акцента</string>
-    <string name="popup_pitch_colors_hint">Слово и чтение окрашиваются в цвет первого ударения, а каждое ударение — в свой: хэйбан синий, атамадака красный, накадака оранжевый, одака зелёный, кифуку (глаголы и i-прилагательные с понижением) фиолетовый. Нужен словарь питч-акцента.</string>
+    <string name="popup_pitch_colors_hint">Слово и чтение окрашиваются в цвет первого питч-акцента, а каждый акцент — в свой: хэйбан синий, атамадака красный, накадака оранжевый, одака зелёный, кифуку (глаголы и i-прилагательные с понижением) фиолетовый. Нужен словарь питч-акцента.</string>
     <string name="popup_tone_colors">Цвета тонов</string>
     <string name="popup_tone_colors_hint">Слоги пиньиня окрашиваются по тону: первый красный, второй оранжевый, третий зелёный, четвёртый синий, нейтральный серый.</string>
     <string name="popup_font_title">Шрифт попапа</string>
@@ -480,7 +480,7 @@
     <string name="popup_text_weight_medium">средняя</string>
     <string name="popup_text_weight_semibold">полужирная</string>
     <string name="popup_text_weight_bold">жирная</string>
-    <string name="popup_text_weight_info">Делает тонкий текст разборчивее. Когда включено «Только для японского текста» или выбран шрифт телефона, толще становятся только японские символы; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. У шрифта с одним начертанием есть только обычная и жирная, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
+    <string name="popup_text_weight_info">Делает тонкий текст разборчивее. Когда включено «Только для японского текста» или выбран шрифт телефона, толще становятся только японские символы; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. Шрифт с одним начертанием переходит с обычной жирности сразу на жирную, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
     <string name="popup_letter_thickness">Толщина букв: %1$d</string>
     <string name="popup_letter_thickness_off">Толщина букв: нет</string>
     <string name="popup_font_catalog">Бесплатные шрифты для скачивания</string>
@@ -551,7 +551,7 @@
     <string name="popup_font_script_only_zh">Только для китайского текста</string>
     <string name="popup_font_script_only_ko">Только для корейского текста</string>
     <string name="popup_font_script_only_hint_any">Для других письменностей используется шрифт телефона. Относится к скачанным и добавленным шрифтам.</string>
-    <string name="popup_text_weight_info_languages">Делает тонкий текст разборчивее. Когда у языка включено «Только для … текста» или выбран шрифт телефона, толще становятся только символы этого языка; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. У шрифта с одним начертанием есть только обычная и жирная, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
+    <string name="popup_text_weight_info_languages">Делает тонкий текст разборчивее. Когда у языка включено «Только для … текста» или выбран шрифт телефона, толще становятся только символы этого языка; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. Шрифт с одним начертанием переходит с обычной жирности сразу на жирную, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
     <string name="languages_settings_hint">Настройки ниже относятся к выбранному языку; остальное на странице — общее для всех языков.</string>
     <string name="anki_languages_hint">Колода, тип записи, шаблоны полей, метки и обработка дублей задаются для каждого языка. Перевод в карточках — общий.</string>
     <string name="audio_languages_hint">Источники аудио и порядок регионов задаются для каждого языка. Автовоспроизведение и громкость — общие.</string>
@@ -561,7 +561,7 @@
     <string name="popup_content_title">Элементы попапа</string>
     <string name="popup_auto_hide_title">Автоскрытие</string>
     <string name="popup_hide_after_add">После добавления в Anki</string>
-    <string name="popup_hide_after_add_hint">Попап закрывается, как только ➕ добавил слово.</string>
+    <string name="popup_hide_after_add_hint">Попап закрывается, как только ➕ добавит слово.</string>
     <string name="popup_hide_off_word">Когда прицел ушёл со слова</string>
     <string name="popup_hide_off_word_hint">Пока вы двигаете кнопку, попап закрывается, когда прицел отходит от слова на несколько миллиметров туда, где нет текста.</string>
     <string name="popup_copy_switch">Кнопка копирования у названий словарей</string>
@@ -575,13 +575,13 @@
     <string name="css_problem_unclosed_comment">Строка %1$d: комментарий не закрыт (нет */), всё после него игнорируется</string>
     <string name="css_problem_unclosed_string">Строка %1$d: кавычка не закрыта</string>
     <string name="css_problem_unexpected_brace">Строка %1$d: лишняя }</string>
-    <string name="css_problem_unclosed_block">Строка %1$d: блок «%2$s» не закрыт }</string>
+    <string name="css_problem_unclosed_block">Строка %1$d: блок «%2$s» не закрыт скобкой }</string>
     <string name="css_problem_missing_colon">Строка %1$d: «%2$s» — не объявление (нет двоеточия)</string>
     <string name="css_problem_bad_property">Строка %1$d: «%2$s» — не имя свойства</string>
     <string name="css_problem_empty_value">Строка %1$d: у %2$s нет значения</string>
     <string name="css_problem_empty_font_name">Строка %1$d: пустое имя в font-family (лишняя запятая?), браузер пропустит всё объявление</string>
     <string name="css_problem_outside_rule">Строка %1$d: «%2$s» стоит вне правила { }</string>
-    <string name="css_problem_unknown_font">Строка %1$d: шрифта «%2$s» нет на телефоне, будет следующий из списка или шрифт попапа</string>
+    <string name="css_problem_unknown_font">Строка %1$d: шрифта «%2$s» нет на телефоне, используется следующий из списка или шрифт попапа</string>
     <string name="css_problem_remote_file">Строка %1$d: загружает файл с %2$s; этот сервер может видеть, когда выполняется поиск слов. Шрифты и таблицы стилей из интернета загружаются, остальные файлы блокируются.</string>
     <string name="yomitan_section_appearance">Оформление попапа</string>
     <string name="yomitan_section_appearance_hint">Размер текста и свой CSS попапа</string>
@@ -631,7 +631,7 @@
     <string name="translation_hint">Предложение вокруг слова переводит бесплатный онлайн-сервис. Перевод машинный и может быть неточным, а предложение отправляется на сервер сервиса.</string>
     <string name="translation_info">Сервисы используются без аккаунта: Bing (сайт Microsoft Translator), Google Переводчик и переводчик, встроенный в Microsoft Edge. Лимиты они не публикуют; если сервис отклоняет запрос, используется следующий. Первый за час запрос к Bing выполняется примерно на секунду дольше: сначала с сайта Bing загружается ключ.</string>
     <string name="translation_button">Кнопка перевода</string>
-    <string name="translation_button_hint">Переводит предложение и показывает перевод под заголовком попапа, повторное нажатие скрывает его. Если распознанный текст скрыт, кнопка находится среди кнопок первой статьи.</string>
+    <string name="translation_button_hint">Переводит предложение и показывает перевод под заголовком попапа; повторное нажатие скрывает его. Если распознанный текст скрыт, кнопка находится среди кнопок первой статьи.</string>
     <string name="translation_anki">Перевод в карточках Anki</string>
     <string name="translation_anki_hint">Заполняет {sentence-translation} переводом, который показан в попапе, или запрашивает новый и ждёт его до 5 секунд. Без перевода поле остаётся пустым.</string>
     <string name="translation_services_title">Сервисы</string>
@@ -682,7 +682,7 @@
     <string name="background_battery_list_hint">Найдите Screenlate в списке и отключите для него оптимизацию («Не оптимизировать», «Без ограничений» или аналогичный пункт). Если Screenlate нет в списке, проверьте раздел «Все приложения».</string>
     <string name="background_launch_title">Запуск приложений</string>
     <string name="background_launch_text">Некоторые телефоны останавливают фоновые приложения также через настройки производителя, отдельно от оптимизации батареи. В этих настройках разрешите Screenlate автозапуск и работу в фоне.</string>
-    <string name="background_launch_path">На этом телефоне: Запуск приложений → Screenlate → Управлять вручную и включить все три пункта.</string>
+    <string name="background_launch_path">На этом телефоне: Запуск приложений → Screenlate → Управлять вручную, затем включите все три пункта.</string>
     <string name="background_launch_open">Открыть настройки запуска</string>
     <string name="background_launch_app_info">Открыть сведения о приложении</string>
     <string name="background_launch_app_info_hint">На этом телефоне нет известных экранов запуска. Обычно из сведений о приложении можно перейти к настройкам батареи и работы в фоне.</string>
@@ -690,7 +690,7 @@
     <string name="eink_title">Экран e-ink</string>
     <string name="eink_switch">Режим e-ink</string>
     <string name="eink_hint">Для электронных книг и других устройств с экраном на электронных чернилах (e-ink). Чёрно-белый, без анимаций, рамки вместо полупрозрачной подсветки. Заменяет тему.</string>
-    <string name="eink_enlarge_title">Крупнее кнопка и текст?</string>
+    <string name="eink_enlarge_title">Увеличить кнопку и текст?</string>
     <string name="eink_enlarge_message">Увеличить плавающую кнопку до %1$d dp (если она меньше), а текст попапа — на %2$d px? Оба размера можно менять. При выключении режима вернутся прежние размеры, если вы их не меняли.</string>
     <string name="eink_enlarge_confirm">Увеличить</string>
     <string name="eink_enlarge_keep">Оставить как есть</string>
@@ -701,7 +701,7 @@
     <string name="dictionaries_website">Сайт</string>
     <string name="dictionaries_download_link">Скачать</string>
     <string name="backup_title">Резервная копия</string>
-    <string name="settings_backup_summary">Сохранить настройки и словари в файл, восстановить их, импорт из Yomitan</string>
+    <string name="settings_backup_summary">Сохранить настройки и словари в файл, восстановить их, импортировать из Yomitan</string>
     <string name="backup_create">Создать копию</string>
     <string name="backup_create_hint">Один файл с выбранными частями: настройками, шрифтами, словарями. Файл можно хранить в телефоне, на карте памяти или в облаке.</string>
     <string name="backup_parts_save">Что сохранить</string>
@@ -714,7 +714,7 @@
     <string name="backup_languages_hint">Собственные настройки, словари, шрифты и модели распознавания каждого языка</string>
     <string name="backup_language_models">Модели распознавания · %1$s</string>
     <string name="backup_create_button">Создать копию…</string>
-    <string name="backup_creating">Создаётся копия…</string>
+    <string name="backup_creating">Создание копии…</string>
     <string name="backup_created">Копия сохранена (%1$s).</string>
     <plurals name="backup_created_dictionaries">
         <item quantity="one">Копия сохранена (%1$s, %2$d словарь).</item>
@@ -722,7 +722,7 @@
         <item quantity="many">Копия сохранена (%1$s, %2$d словарей).</item>
         <item quantity="other">Копия сохранена (%1$s, %2$d словаря).</item>
     </plurals>
-    <string name="backup_write_failed">Не удалось записать копию. Проверьте свободное место или выберите другое место.</string>
+    <string name="backup_write_failed">Не удалось записать копию. Проверьте свободное место или выберите другое расположение.</string>
     <string name="backup_restore">Восстановление</string>
     <string name="backup_restore_hint">Выберите файл копии, затем — что восстановить.</string>
     <string name="backup_choose">Выбрать копию…</string>
@@ -732,15 +732,15 @@
     <string name="backup_read_failed">Не удалось прочитать копию.</string>
     <string name="backup_loaded">Копия от %1$s, версия %2$s</string>
     <string name="backup_sections">Что восстановить</string>
-    <string name="backup_replace_warning">Отмеченные разделы заменят текущие; неотмеченные языки сохранят свои настройки. Шрифты, словари и модели распознавания из копии добавляются или заменяют те же; остальные установленные сохраняются. Вместе с разделом «Общие» включаются отмеченные языки.</string>
+    <string name="backup_replace_warning">Отмеченные разделы заменят текущие; неотмеченные языки сохранят свои настройки. Шрифты, словари и модели распознавания из копии добавляются или заменяют свои установленные версии; остальные установленные сохраняются. Вместе с разделом «Общие» включаются отмеченные языки.</string>
     <string name="backup_restore_button">Восстановить отмеченное</string>
     <string name="backup_restored">Восстановлено</string>
     <string name="backup_section_general">Общие</string>
     <string name="backup_section_general_hint">Языки, тема, цвета, режим e-ink, сообщения о новых версиях</string>
     <string name="backup_section_bubble">Плавающая кнопка и распознавание</string>
-    <string name="backup_section_bubble_hint">Размер, прицел, движки распознавания, текст приложений, приложения, где кнопка скрыта</string>
+    <string name="backup_section_bubble_hint">Размер, прицел, движки распознавания, текст приложения, приложения, где кнопка скрыта</string>
     <string name="backup_section_lookup">Поиск</string>
-    <string name="backup_section_lookup_hint">Длина скана, число результатов, ромадзи, иероглифы слова</string>
+    <string name="backup_section_lookup_hint">Длина скана, число статей, ромадзи, иероглифы слова</string>
     <string name="backup_section_popup">Оформление попапа</string>
     <string name="backup_section_popup_hint">Шрифт, размер текста, свой CSS</string>
     <string name="backup_section_anki">Anki</string>
@@ -788,8 +788,8 @@
     <string name="background_keep_alive_notifications_off">Уведомления для Screenlate выключены: служба работает, но её уведомление не видно.</string>
     <string name="background_keep_alive_notifications_allow">Разрешить уведомления</string>
     <string name="action_reset">Сбросить</string>
-    <string name="action_move_up">Выше</string>
-    <string name="action_move_down">Ниже</string>
+    <string name="action_move_up">Переместить выше</string>
+    <string name="action_move_down">Переместить ниже</string>
     <string name="tooltip_more_info">Подробнее</string>
     <string name="reset_all_tooltip">Сбросить все настройки</string>
     <string name="reset_all_title">Сбросить все настройки?</string>
@@ -804,10 +804,10 @@
     <string name="reset_appearance_text">Тема снова будет следовать системе, цвета вернутся к цветам Screenlate по умолчанию, режим e-ink выключится, а увеличенные им размеры вернутся к прежним. Язык приложения сохранится.</string>
     <string name="reset_background_text">Постоянное уведомление будет выключено. Настройки батареи и автозапуска относятся к Android и не изменятся.</string>
     <string name="reset_dictionaries_running">Остановка импорта и удаление словарей…</string>
-    <string name="reset_dictionaries_busy">Словари сбрасываются…</string>
+    <string name="reset_dictionaries_busy">Сброс словарей…</string>
     <string name="reset_dictionaries_failed">Не удалось сбросить словари: %1$s</string>
     <string name="dictionaries_delete_failed">Не удалось удалить словарь: %1$s</string>
-    <string name="dictionaries_import_interrupted">%1$s: приложение дважды закрылось во время импорта, поэтому импорт остановлен. Повторите попытку; если ошибка повторится, файл может быть повреждён или слишком велик для этого устройства.</string>
+    <string name="dictionaries_import_interrupted">%1$s: приложение дважды закрылось во время импорта, поэтому импорт остановлен. Попробуйте ещё раз; если ошибка повторится, файл может быть повреждён или слишком велик для этого устройства.</string>
     <string name="dictionaries_bundled_paused">Установка встроенных словарей остановлена: приложение дважды закрылось во время неё. Она будет повторена после следующего обновления приложения; чтобы повторить сейчас, нажмите «Попробовать ещё раз».</string>
     <string name="reset_dictionaries_gave_up_title">Сброс словарей не завершился</string>
     <string name="reset_dictionaries_gave_up_text">Приложение дважды закрылось во время сброса словарей, поэтому сброс остановлен. Часть словарей может остаться или отсутствовать. На странице «Словари» удалите ненужные и скачайте недостающие.</string>
@@ -839,7 +839,7 @@
     <string name="ocr_models_delete_text">Модель «%1$s» (%2$s) будет удалена.</string>
     <string name="ocr_models_delete_shared">Она удалится и для этих языков: %1$s.</string>
     <string name="language_setup_main_model">Основная модель</string>
-    <string name="language_setup_models_info">Основная модель распознаёт язык на устройстве. Остальные отмеченные модели тоже скачиваются, их можно выбрать позже в настройках распознавания экрана. ML Kit встроен в приложение и читает китайский, японский, корейский, текст на деванагари, на бенгальском письме и на латинице; для этих языков он используется, пока ни одна модель не основная.</string>
+    <string name="language_setup_models_info">Основная модель распознаёт язык на устройстве. Остальные отмеченные модели тоже скачиваются, их можно выбрать позже в настройках распознавания экрана. ML Kit встроен в приложение и читает китайский, японский, корейский, текст на деванагари, на бенгальском письме и на латинице; для этих языков он используется, пока ни одна модель не выбрана основной.</string>
     <string name="nav_home">Главная</string>
     <string name="nav_search">Поиск</string>
     <string name="camera_title">Камера</string>
@@ -858,8 +858,8 @@
     <string name="camera_capture_failed">Не удалось сделать фото. Повторите попытку.</string>
     <string name="camera_photo_unreadable">Не удалось открыть фото.</string>
     <string name="camera_zoom_reset">Вернуться к 1×</string>
-    <string name="camera_language">Язык снимка</string>
-    <string name="camera_recognize">Распознать снимок</string>
+    <string name="camera_language">Язык фото</string>
+    <string name="camera_recognize">Распознать фото</string>
     <string name="camera_unrecognized">Не распознано</string>
     <string name="camera_recognized">Распознано: %1$s</string>
     <string name="camera_pending">Настройки изменены</string>
@@ -867,15 +867,15 @@
     <string name="camera_partial">Не удалось распознать областей: %1$d из %2$d.</string>
     <string name="camera_interrupted">Распознавание прервано. Обработанные области сохранены.</string>
     <string name="camera_retry_failed">Повторить недостающие</string>
-    <string name="camera_recognition_failed">Не удалось распознать снимок. Сохранённый текст остаётся.</string>
+    <string name="camera_recognition_failed">Не удалось распознать фото. Сохранённый текст остаётся.</string>
     <string name="camera_more_actions">Другие действия</string>
-    <string name="camera_photo_description">Фотография</string>
+    <string name="camera_photo_description">Фото</string>
     <string name="camera_export">Сохранить в галерею</string>
     <string name="camera_import">Импорт из галереи</string>
     <string name="camera_import_failed">Не удалось открыть изображение.</string>
     <string name="camera_import_too_large">Изображение больше 100 МБ.</string>
-    <string name="camera_exported">Снимок сохранён в галерею.</string>
-    <string name="camera_export_failed">Не удалось сохранить снимок в галерею.</string>
+    <string name="camera_exported">Фото сохранено в галерею.</string>
+    <string name="camera_export_failed">Не удалось сохранить фото в галерею.</string>
     <string name="camera_status_recognized">Распознано</string>
     <string name="camera_status_recognizing">Распознавание</string>
     <string name="camera_recognize_short">Распознать</string>
@@ -883,7 +883,7 @@
     <string name="camera_language_no_model">Нет модели распознавания</string>
     <string name="camera_language_no_dictionary">Нет словаря</string>
     <string name="camera_manage_languages">Управление языками</string>
-    <string name="camera_deleted">Фотография удалена</string>
+    <string name="camera_deleted">Фото удалено</string>
     <string name="camera_permission_title">Нет доступа к камере</string>
     <string name="camera_permission_blocked_title">Доступ к камере заблокирован</string>
     <string name="camera_cannot_recognize">Распознавание недоступно: %1$s</string>
@@ -938,7 +938,7 @@
         <item quantity="many">%1$d самых старых фото будут удалены из истории.</item>
         <item quantity="other">%1$d самых старых фото будут удалены из истории.</item>
     </plurals>
-    <string name="camera_opening">Открытие фотографии…</string>
+    <string name="camera_opening">Открытие фото…</string>
     <string name="camera_partial_words">Слова в этих областях недоступны для поиска.</string>
     <plurals name="camera_status_regions">
         <item quantity="one">%1$d из %2$d области</item>
