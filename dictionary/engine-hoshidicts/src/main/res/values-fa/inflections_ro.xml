@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_ro.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ul -->
+    <string name="inflection_ro_ul_label">معرفه</string>
+    <string name="inflection_ro_ul">حرف تعریف معرفه (procesul از proces، consiliul از consiliu)</string>
+    <!-- -le -->
+    <string name="inflection_ro_le_label">معرفه</string>
+    <string name="inflection_ro_le">حرف تعریف معرفه (fratele از frate، textele از texte)</string>
+    <!-- -a -->
+    <string name="inflection_ro_a_label">معرفه</string>
+    <string name="inflection_ro_a">حرف تعریف معرفهٔ اسم‌های مؤنث (dezvoltarea از dezvoltare، comisia از comisie)</string>
+    <!-- -i -->
+    <string name="inflection_ro_i_label">جمع معرفه</string>
+    <string name="inflection_ro_i">حرف تعریف معرفهٔ جمع‌های مذکر (pomii از pomi)</string>
+    <!-- -ului -->
+    <string name="inflection_ro_ului_label">حالت اضافی معرفه</string>
+    <string name="inflection_ro_ului">حالت اضافی و برایی با حرف تعریف معرفه (procesului از proces، fratelui از frate)</string>
+    <!-- -ei -->
+    <string name="inflection_ro_ei_label">حالت اضافی معرفه</string>
+    <string name="inflection_ro_ei">حالت اضافی و برایی اسم‌های مؤنث با حرف تعریف معرفه (Moldovei از Moldova، comisiei از comisie)</string>
+    <!-- -ii -->
+    <string name="inflection_ro_ii_label">حالت اضافی معرفه</string>
+    <string name="inflection_ro_ii">حالت اضافی و برایی اسم‌های مؤنث مختوم به -e با حرف تعریف معرفه (lumii از lume، dezvoltării از dezvoltare)</string>
+    <!-- -lor -->
+    <string name="inflection_ro_lor_label">حالت اضافی جمع معرفه</string>
+    <string name="inflection_ro_lor">حالت اضافی و برایی جمع با حرف تعریف معرفه (caselor از case)</string>
+    <!-- agreement -->
+    <string name="inflection_ro_agreement_label">مؤنث یا جمع</string>
+    <string name="inflection_ro_agreement">صورت مؤنث یا جمعِ وجه وصفی یا صفت (aflată، aflate، aflați از aflat؛ pusă از pus)</string>
+</resources>

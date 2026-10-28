@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_ga.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- lenition -->
+    <string name="inflection_ga_lenition_label">التليين</string>
+    <string name="inflection_ga_lenition">التليين: bh ch dh fh gh mh ph sh th بدلًا من b c d f g m p s t، و ts بدلًا من s بعد أداة التعريف (an bhean من bean، an tsráid من sráid)</string>
+    <!-- eclipsis -->
+    <string name="inflection_ga_eclipsis_label">الكسوف</string>
+    <string name="inflection_ga_eclipsis">الكسوف: mb gc nd bhf ng bp dt بدلًا من b c d f g p t، و n- قبل صائت (i nGaillimh من Gaillimh، ár n-athair من athair)</string>
+    <!-- t-prothesis -->
+    <string name="inflection_ga_t_prothesis_label">إقحام t</string>
+    <string name="inflection_ga_t_prothesis">t قبل صائت (an t-uisce من uisce، an tAontas من Aontas)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_ga_h_prothesis_label">إقحام h</string>
+    <string name="inflection_ga_h_prothesis">h قبل صائت (na hÉireann من Éireann، a hathair من athair)</string>
+</resources>

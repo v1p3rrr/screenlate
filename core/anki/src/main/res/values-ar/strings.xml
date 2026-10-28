@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">تحويل النص إلى كلام</string>
+    <string name="audio_source_url">عنوان URL مخصّص</string>
+    <string name="audio_source_json">عنوان URL مخصّص (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid غير مثبّت.</string>
+    <string name="anki_problem_no_permission">لم يعد لدى Screenlate وصول إلى AnkiDroid.</string>
+    <string name="anki_problem_model_missing">لم يُعثر على نوع الملاحظة في AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">لم يُعثر على الرزمة في AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">تغيّرت حقول نوع الملاحظة.</string>
+</resources>

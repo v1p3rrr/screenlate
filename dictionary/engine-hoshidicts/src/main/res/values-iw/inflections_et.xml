@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_et.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- negative -->
+    <string name="inflection_et_negative_label">שלילה</string>
+    <string name="inflection_et_negative">שלילה של olema: pole, polnud, poleks, poldud, polevat (pole מן olema)</string>
+</resources>

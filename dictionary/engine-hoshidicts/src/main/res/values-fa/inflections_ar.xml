@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_ar.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- NPref-Wa -->
+    <string name="inflection_ar_npref_wa_label">و</string>
+    <string name="inflection_ar_npref_wa">و (و)؛ و، پس (ف)</string>
+    <!-- NPref-Bi -->
+    <string name="inflection_ar_npref_bi_label">با، به‌وسیلهٔ</string>
+    <string name="inflection_ar_npref_bi">با، به‌وسیلهٔ</string>
+    <!-- NPref-Ka -->
+    <string name="inflection_ar_npref_ka_label">مانند، همچون</string>
+    <string name="inflection_ar_npref_ka">مانند، همچون</string>
+    <!-- NPref-Li -->
+    <string name="inflection_ar_npref_li_label">برای، به؛ همانا، به‌راستی</string>
+    <string name="inflection_ar_npref_li">برای، به (لِ)؛ همانا، به‌راستی (لَ)</string>
+    <!-- NPref-Al -->
+    <string name="inflection_ar_npref_al_label">ال تعریف</string>
+    <string name="inflection_ar_npref_al">حرف تعریف ال</string>
+    <!-- NPref-BiAl -->
+    <string name="inflection_ar_npref_bial_label">با + ال</string>
+    <string name="inflection_ar_npref_bial">با/به‌وسیلهٔ + ال</string>
+    <!-- NPref-KaAl -->
+    <string name="inflection_ar_npref_kaal_label">مانند + ال</string>
+    <string name="inflection_ar_npref_kaal">مانند/همچون + ال</string>
+    <!-- NPref-Lil -->
+    <string name="inflection_ar_npref_lil_label">برای + ال</string>
+    <string name="inflection_ar_npref_lil">برای/به + ال</string>
+    <!-- NPref-LiAl -->
+    <string name="inflection_ar_npref_lial_label">برای + ال</string>
+    <string name="inflection_ar_npref_lial">برای/به + ال، ادغام‌شده با ل آغازین</string>
+    <!-- NSuff-h -->
+    <string name="inflection_ar_nsuff_h_label">ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_h">ضمیر متصل ملکی</string>
+    <!-- NSuff-ap -->
+    <string name="inflection_ar_nsuff_ap_label">مفرد مؤنث</string>
+    <string name="inflection_ar_nsuff_ap">مفرد مؤنث</string>
+    <!-- NSuff-ath -->
+    <string name="inflection_ar_nsuff_ath_label">مفرد مؤنث + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_ath">مفرد مؤنث + ضمیر متصل ملکی</string>
+    <!-- NSuff-AF -->
+    <string name="inflection_ar_nsuff_af_label">منصوب نکره</string>
+    <string name="inflection_ar_nsuff_af">منصوب نکره (اً)</string>
+    <!-- NSuff-An -->
+    <string name="inflection_ar_nsuff_an_label">مثنی</string>
+    <string name="inflection_ar_nsuff_an">مثنای مذکر مرفوع</string>
+    <!-- NSuff-Ah -->
+    <string name="inflection_ar_nsuff_ah_label">مثنی + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_ah">مثنای مذکر مرفوع + ضمیر متصل ملکی</string>
+    <!-- NSuff-ayn -->
+    <string name="inflection_ar_nsuff_ayn_label">مثنی</string>
+    <string name="inflection_ar_nsuff_ayn">مثنای مذکر منصوب/مجرور</string>
+    <!-- NSuff-ayh -->
+    <string name="inflection_ar_nsuff_ayh_label">مثنی + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_ayh">مثنای مذکر منصوب/مجرور + ضمیر متصل ملکی</string>
+    <!-- NSuff-atAn -->
+    <string name="inflection_ar_nsuff_atan_label">مثنی</string>
+    <string name="inflection_ar_nsuff_atan">مثنای مؤنث مرفوع</string>
+    <!-- NSuff-atAh -->
+    <string name="inflection_ar_nsuff_atah_label">مثنی + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_atah">مثنای مؤنث مرفوع + ضمیر متصل ملکی</string>
+    <!-- NSuff-tayn -->
+    <string name="inflection_ar_nsuff_tayn_label">مثنی</string>
+    <string name="inflection_ar_nsuff_tayn">مثنای مؤنث منصوب/مجرور</string>
+    <!-- NSuff-tayh -->
+    <string name="inflection_ar_nsuff_tayh_label">مثنی + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_tayh">مثنای مؤنث منصوب/مجرور + ضمیر متصل ملکی</string>
+    <!-- NSuff-At -->
+    <string name="inflection_ar_nsuff_at_label">جمع مؤنث</string>
+    <string name="inflection_ar_nsuff_at">جمع مؤنث سالم</string>
+    <!-- NSuff-Ath -->
+    <string name="inflection_ar_nsuff_ath__label">جمع مؤنث + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_ath_">جمع مؤنث سالم + ضمیر متصل ملکی</string>
+    <!-- NSuff-wn -->
+    <string name="inflection_ar_nsuff_wn_label">جمع مذکر</string>
+    <string name="inflection_ar_nsuff_wn">جمع مذکر سالم مرفوع</string>
+    <!-- NSuff-wh -->
+    <string name="inflection_ar_nsuff_wh_label">جمع مذکر + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_wh">جمع مذکر سالم مرفوع + ضمیر متصل ملکی</string>
+    <!-- NSuff-iyn -->
+    <string name="inflection_ar_nsuff_iyn_label">جمع مذکر</string>
+    <string name="inflection_ar_nsuff_iyn">جمع مذکر سالم منصوب/مجرور</string>
+    <!-- NSuff-iyh -->
+    <string name="inflection_ar_nsuff_iyh_label">جمع مذکر + ضمیر ملکی</string>
+    <string name="inflection_ar_nsuff_iyh">جمع مذکر سالم منصوب/مجرور + ضمیر متصل ملکی</string>
+    <!-- PVPref-Wa -->
+    <string name="inflection_ar_pvpref_wa_label">و</string>
+    <string name="inflection_ar_pvpref_wa">و (و)؛ و، پس (ف)</string>
+    <!-- PVPref-La -->
+    <string name="inflection_ar_pvpref_la_label">جواب شرط</string>
+    <string name="inflection_ar_pvpref_la">حرف جواب شرط (اگر ...، ... می‌کردم)</string>
+    <!-- PVSuff-ah -->
+    <string name="inflection_ar_pvsuff_ah_label">ماضی</string>
+    <string name="inflection_ar_pvsuff_ah">فعل ماضی + ضمیر متصل مفعولی</string>
+    <!-- PVSuff-n -->
+    <string name="inflection_ar_pvsuff_n_label">ماضی</string>
+    <string name="inflection_ar_pvsuff_n">شناسه‌های فعل ماضی که با ن ادغام می‌شوند</string>
+    <!-- PVSuff-t -->
+    <string name="inflection_ar_pvsuff_t_label">ماضی</string>
+    <string name="inflection_ar_pvsuff_t">شناسه‌های فعل ماضی که با ت ادغام می‌شوند</string>
+    <!-- PVSuff-at -->
+    <string name="inflection_ar_pvsuff_at_label">ماضی</string>
+    <string name="inflection_ar_pvsuff_at">شناسه‌های ت‌دار فعل ماضی که ادغام نمی‌شوند</string>
+    <!-- PVSuff-A -->
+    <string name="inflection_ar_pvsuff_a_label">ماضی</string>
+    <string name="inflection_ar_pvsuff_a">فعل ماضی، سوم‌شخص مثنای مذکر</string>
+    <!-- PVSuff-uw -->
+    <string name="inflection_ar_pvsuff_uw_label">ماضی</string>
+    <string name="inflection_ar_pvsuff_uw">فعل ماضی، سوم‌شخص جمع مذکر</string>
+    <!-- IVPref-hw -->
+    <string name="inflection_ar_ivpref_hw_label">مضارع</string>
+    <string name="inflection_ar_ivpref_hw">فعل مضارع، سوم‌شخص مفرد مذکر</string>
+    <!-- IVPref-hy -->
+    <string name="inflection_ar_ivpref_hy_label">مضارع</string>
+    <string name="inflection_ar_ivpref_hy">فعل مضارع، سوم‌شخص مفرد مؤنث</string>
+    <!-- IVPref-hmA -->
+    <string name="inflection_ar_ivpref_hma_label">مضارع</string>
+    <string name="inflection_ar_ivpref_hma">فعل مضارع، سوم‌شخص مثنای مذکر</string>
+    <!-- IVPref-hmA-ta -->
+    <string name="inflection_ar_ivpref_hma_ta_label">مضارع</string>
+    <string name="inflection_ar_ivpref_hma_ta">فعل مضارع، سوم‌شخص مثنای مؤنث</string>
+    <!-- IVPref-hm -->
+    <string name="inflection_ar_ivpref_hm_label">مضارع</string>
+    <string name="inflection_ar_ivpref_hm">فعل مضارع، سوم‌شخص جمع مذکر</string>
+    <!-- IVPref-hn -->
+    <string name="inflection_ar_ivpref_hn_label">مضارع</string>
+    <string name="inflection_ar_ivpref_hn">فعل مضارع، سوم‌شخص جمع مؤنث</string>
+    <!-- IVPref-Anta -->
+    <string name="inflection_ar_ivpref_anta_label">مضارع</string>
+    <string name="inflection_ar_ivpref_anta">فعل مضارع، دوم‌شخص مفرد مذکر</string>
+    <!-- IVPref-Anti -->
+    <string name="inflection_ar_ivpref_anti_label">مضارع</string>
+    <string name="inflection_ar_ivpref_anti">فعل مضارع، دوم‌شخص مفرد مؤنث</string>
+    <!-- IVPref-AntmA -->
+    <string name="inflection_ar_ivpref_antma_label">مضارع</string>
+    <string name="inflection_ar_ivpref_antma">فعل مضارع، دوم‌شخص مثنی</string>
+    <!-- IVPref-Antm -->
+    <string name="inflection_ar_ivpref_antm_label">مضارع</string>
+    <string name="inflection_ar_ivpref_antm">فعل مضارع، دوم‌شخص جمع مذکر</string>
+    <!-- IVPref-Antn -->
+    <string name="inflection_ar_ivpref_antn_label">مضارع</string>
+    <string name="inflection_ar_ivpref_antn">فعل مضارع، دوم‌شخص جمع مؤنث</string>
+    <!-- IVPref-AnA -->
+    <string name="inflection_ar_ivpref_ana_label">مضارع</string>
+    <string name="inflection_ar_ivpref_ana">فعل مضارع، اول‌شخص مفرد</string>
+    <!-- IVPref-nHn -->
+    <string name="inflection_ar_ivpref_nhn_label">مضارع</string>
+    <string name="inflection_ar_ivpref_nhn">فعل مضارع، اول‌شخص جمع</string>
+    <!-- CVPref -->
+    <string name="inflection_ar_cvpref_label">امر</string>
+    <string name="inflection_ar_cvpref">فعل امر</string>
+    <!-- CVSuff -->
+    <string name="inflection_ar_cvsuff_label">امر</string>
+    <string name="inflection_ar_cvsuff">فعل امر</string>
+</resources>

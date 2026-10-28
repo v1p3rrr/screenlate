@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_tl.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- hyphenated -->
+    <string name="inflection_tl_hyphenated_label">במקף</string>
+    <string name="inflection_tl_hyphenated">כתיב מילים במקף</string>
+    <!-- -an -->
+    <!-- -in -->
+    <!-- ma- -->
+    <!-- pang- -->
+    <!-- ka- -->
+    <!-- kaka- -->
+    <!-- ka-...-an -->
+    <!-- mag- -->
+    <!-- mag- + rep1 -->
+    <!-- magka- -->
+    <!-- magkaka- -->
+    <!-- mang- + rep1 -->
+    <!-- pa- -->
+    <!-- pa-...-an -->
+    <!-- pag- -->
+    <!-- pag- + rep1 -->
+    <!-- pagka- -->
+    <!-- pakiki- -->
+    <!-- pakikipag- -->
+    <!-- pang- + rep1 -->
+    <!-- tag- -->
+    <!-- taga- -->
+    <!-- tagapag- -->
+    <!-- tagapang- -->
+    <!-- i- -->
+    <!-- ika- -->
+    <!-- ipa- -->
+    <!-- ipag- -->
+    <!-- ipag- + rep1 -->
+    <!-- ipang- -->
+    <!-- ma-...-an -->
+    <!-- mag-...-an -->
+    <!-- magkanda- -->
+    <!-- magma- -->
+    <!-- magpa- -->
+    <!-- magpaka- -->
+    <!-- magsi- -->
+    <!-- makapang- -->
+    <!-- makapag- -->
+    <!-- maka- -->
+    <!-- maki- -->
+    <!-- makipag- -->
+    <!-- makipag-...-an -->
+    <!-- mang- -->
+    <!-- mapa- -->
+    <!-- pa-...-in -->
+    <!-- pag-...-an -->
+    <!-- pang-...-an -->
+    <!-- pag-...-in -->
+    <!-- papang-...-in -->
+    <!-- ma-...-in -->
+    <!-- mapag- -->
+    <!-- naka- -->
+    <!-- nakaka- -->
+    <!-- nakakapang- -->
+    <!-- naka- + rep1 -->
+    <!-- nakapang- + rep1 -->
+    <!-- pala- -->
+    <!-- -ng -->
+</resources>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_sw.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- negative -->
+    <string name="inflection_sw_negative_label">النفي</string>
+    <string name="inflection_sw_negative">النفي: ha- قبل علامة الفاعل (hatukusoma, hakusoma)، و si- للمتكلم «أنا» و hu- للمخاطب «أنت» (sikusoma, hukusoma)، و si- بعد علامة الفاعل وقبل الموصول (isiyojulikana)</string>
+    <!-- I -->
+    <string name="inflection_sw_i_label">أنا</string>
+    <string name="inflection_sw_i">علامة الفاعل ni-: أنا (ninasoma, nilisoma)</string>
+    <!-- you -->
+    <string name="inflection_sw_you_label">أنت</string>
+    <string name="inflection_sw_you">علامة الفاعل u-: أنت، أو اسم من الفئات 3 و 11 و 14 (unasoma؛ mti umeanguka، سقطت الشجرة)</string>
+    <!-- he/she -->
+    <string name="inflection_sw_he_she_label">هو/هي</string>
+    <string name="inflection_sw_he_she">علامة الفاعل a-: هو أو هي (anasoma, alisoma)</string>
+    <!-- we -->
+    <string name="inflection_sw_we_label">نحن</string>
+    <string name="inflection_sw_we">علامة الفاعل tu-: نحن (tunasoma, hatukusoma)</string>
+    <!-- you pl. -->
+    <string name="inflection_sw_you_pl_label">أنتم</string>
+    <string name="inflection_sw_you_pl">علامة الفاعل m-: أنتم، لأكثر من واحد (mnasoma, hamkusoma)</string>
+    <!-- they -->
+    <string name="inflection_sw_they_label">هم</string>
+    <string name="inflection_sw_they">علامة الفاعل wa-: هم (wanasoma, hawakusoma)</string>
+    <!-- class -->
+    <string name="inflection_sw_class_label">الفئة الاسمية</string>
+    <string name="inflection_sw_class">علامة الفاعل لفئة اسمية: ki- vi- (kitabu kimeanguka)، li- ya- (jina, majina)، i- zi- (nyumba)، ku- pa- mu- (للأماكن: kulikuwa، كان هناك)</string>
+    <!-- past -->
+    <string name="inflection_sw_past_label">الماضي</string>
+    <string name="inflection_sw_past">الماضي: li-، و ku- بعد النفي (alisoma, hakusoma)</string>
+    <!-- present -->
+    <string name="inflection_sw_present_label">الحاضر</string>
+    <string name="inflection_sw_present">الحاضر: na- (anasoma)</string>
+    <!-- future -->
+    <string name="inflection_sw_future_label">المستقبل</string>
+    <string name="inflection_sw_future">المستقبل: ta-، و taka- قبل الموصول (atasoma, hatasoma, atakayesoma)</string>
+    <!-- perfect -->
+    <string name="inflection_sw_perfect_label">التام</string>
+    <string name="inflection_sw_perfect">التام: me- (amesoma، قد قرأ)</string>
+    <!-- not yet -->
+    <string name="inflection_sw_not_yet_label">ليس بعد</string>
+    <string name="inflection_sw_not_yet">ليس بعد: ja- بعد النفي (hajasoma، لم يقرأ بعد)</string>
+    <!-- conditional -->
+    <string name="inflection_sw_conditional_label">صيغة الشرط</string>
+    <string name="inflection_sw_conditional">صيغة الشرط: nge- و ngali- (angesoma، لَقرأ؛ angalisoma، لَكان قد قرأ)</string>
+    <!-- when -->
+    <string name="inflection_sw_when_label">عندما</string>
+    <string name="inflection_sw_when">ki-: عندما أو بينما أو إذا (akisoma)</string>
+    <!-- and then -->
+    <string name="inflection_sw_and_then_label">ثم</string>
+    <string name="inflection_sw_and_then">ka-: ثم، في السرد (akasoma)</string>
+    <!-- habitual -->
+    <string name="inflection_sw_habitual_label">الاعتيادي</string>
+    <string name="inflection_sw_habitual">الاعتيادي: hu- (husoma، يقرأ عادةً)</string>
+    <!-- relative -->
+    <string name="inflection_sw_relative_label">صيغة الموصول</string>
+    <string name="inflection_sw_relative">صيغة الموصول: الذي، التي، حيث (aliyesoma، الذي قرأ؛ kinachoitwa، الذي يُسمّى؛ waishio، الذين يعيشون)</string>
+    <!-- object -->
+    <string name="inflection_sw_object_label">المفعول به</string>
+    <string name="inflection_sw_object">المفعول به: ni- ـني، ku- ـك، m- أو mw- ـه أو ـها، tu- ـنا، wa- ـهم، وسوابق الفئات الاسمية ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <!-- reflexive -->
+    <string name="inflection_sw_reflexive_label">الصيغة الانعكاسية</string>
+    <string name="inflection_sw_reflexive">الصيغة الانعكاسية ji-: نفسه (alijificha, kujiunga)</string>
+    <!-- infinitive -->
+    <string name="inflection_sw_infinitive_label">صيغة المصدر</string>
+    <string name="inflection_sw_infinitive">صيغة المصدر: ku- أو kw- (kusoma, kwandika, kumpa)</string>
+</resources>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_fa.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -م -->
+    <string name="inflection_fa_m_label">اول‌شخص مفرد</string>
+    <string name="inflection_fa_m">اول‌شخص مفرد: ضمیر متصل ملکی (کتابم) یا فعل ربطی پیوسته (خوشحالم)</string>
+    <!-- -ت -->
+    <string name="inflection_fa_t_label">دوم‌شخص مفرد</string>
+    <string name="inflection_fa_t">دوم‌شخص مفرد: ضمیر متصل ملکی (کتابت)</string>
+    <!-- -ش -->
+    <string name="inflection_fa_sh_label">سوم‌شخص مفرد</string>
+    <string name="inflection_fa_sh">سوم‌شخص مفرد: ضمیر متصل ملکی (کتابش)</string>
+    <!-- -مان -->
+    <string name="inflection_fa_man_label">اول‌شخص جمع</string>
+    <string name="inflection_fa_man">اول‌شخص جمع: ضمیر متصل ملکی (کتابمان)</string>
+    <!-- -تان -->
+    <string name="inflection_fa_tan_label">دوم‌شخص جمع</string>
+    <string name="inflection_fa_tan">دوم‌شخص جمع: ضمیر متصل ملکی (کتابتان)</string>
+    <!-- -شان -->
+    <string name="inflection_fa_shan_label">سوم‌شخص جمع</string>
+    <string name="inflection_fa_shan">سوم‌شخص جمع: ضمیر متصل ملکی (کتابشان)</string>
+    <!-- -ام -->
+    <string name="inflection_fa_am_label">اول‌شخص مفرد</string>
+    <string name="inflection_fa_am">اول‌شخص مفرد پس از ه: ضمیر متصل ملکی (خانه‌ام) یا فعل ربطی پیوسته (خسته‌ام)</string>
+    <!-- -ات -->
+    <string name="inflection_fa_at_label">دوم‌شخص مفرد</string>
+    <string name="inflection_fa_at">دوم‌شخص مفرد پس از ه: ضمیر متصل ملکی (خانه‌ات)</string>
+    <!-- -اش -->
+    <string name="inflection_fa_ash_label">سوم‌شخص مفرد</string>
+    <string name="inflection_fa_ash">سوم‌شخص مفرد پس از ه: ضمیر متصل ملکی (خانه‌اش)</string>
+    <!-- -یم -->
+    <string name="inflection_fa_ym_label">اول‌شخص مفرد؛ اول‌شخص جمع</string>
+    <string name="inflection_fa_ym">اول‌شخص: ضمیر متصل ملکی مفرد پس از مصوت (پایم) یا فعل ربطی پیوستهٔ جمع (خوبیم)</string>
+    <!-- -یت -->
+    <string name="inflection_fa_yt_label">دوم‌شخص مفرد</string>
+    <string name="inflection_fa_yt">دوم‌شخص مفرد پس از مصوت: ضمیر متصل ملکی (پایت)</string>
+    <!-- -یش -->
+    <string name="inflection_fa_ysh_label">سوم‌شخص مفرد</string>
+    <string name="inflection_fa_ysh">سوم‌شخص مفرد پس از مصوت: ضمیر متصل ملکی (پایش)</string>
+    <!-- -یمان -->
+    <string name="inflection_fa_yman_label">اول‌شخص جمع</string>
+    <string name="inflection_fa_yman">اول‌شخص جمع پس از مصوت: ضمیر متصل ملکی (پایمان)</string>
+    <!-- -یتان -->
+    <string name="inflection_fa_ytan_label">دوم‌شخص جمع</string>
+    <string name="inflection_fa_ytan">دوم‌شخص جمع پس از مصوت: ضمیر متصل ملکی (پایتان)</string>
+    <!-- -یشان -->
+    <string name="inflection_fa_yshan_label">سوم‌شخص جمع</string>
+    <string name="inflection_fa_yshan">سوم‌شخص جمع پس از مصوت: ضمیر متصل ملکی (پایشان)</string>
+    <!-- -مون -->
+    <string name="inflection_fa_mvn_label">اول‌شخص جمع</string>
+    <string name="inflection_fa_mvn">اول‌شخص جمع گفتاری: ضمیر متصل در نقش ملکی (کتابمون) یا متمم (بهمون)</string>
+    <!-- -تون -->
+    <string name="inflection_fa_tvn_label">دوم‌شخص جمع</string>
+    <string name="inflection_fa_tvn">دوم‌شخص جمع گفتاری: ضمیر متصل در نقش ملکی (کتابتون) یا متمم (بهتون)</string>
+    <!-- -شون -->
+    <string name="inflection_fa_shvn_label">سوم‌شخص جمع</string>
+    <string name="inflection_fa_shvn">سوم‌شخص جمع گفتاری: ضمیر متصل در نقش ملکی (کتابشون) یا متمم (بهشون)</string>
+    <!-- -ی -->
+    <string name="inflection_fa_y_label">نکره؛ دوم‌شخص مفرد؛ اضافه</string>
+    <string name="inflection_fa_y">یای نکره (کتابی)، فعل ربطی پیوستهٔ دوم‌شخص مفرد (خوبی) یا نشانهٔ اضافه پس از مصوت (پای)</string>
+    <!-- -ای -->
+    <string name="inflection_fa_ay_label">نکره؛ دوم‌شخص مفرد</string>
+    <string name="inflection_fa_ay">پس از ه: یای نکره (خانه‌ای) یا فعل ربطی پیوستهٔ دوم‌شخص مفرد (خسته‌ای)</string>
+    <!-- -یی -->
+    <string name="inflection_fa_yy_label">نکره؛ دوم‌شخص مفرد</string>
+    <string name="inflection_fa_yy">پس از مصوت: یای نکره (دانشجویی) یا فعل ربطی پیوستهٔ دوم‌شخص مفرد (کجایی)</string>
+    <!-- -اند -->
+    <string name="inflection_fa_and_label">سوم‌شخص جمع</string>
+    <string name="inflection_fa_and">سوم‌شخص جمع پس از ه: فعل ربطی پیوسته (خسته‌اند)</string>
+    <!-- -اید -->
+    <string name="inflection_fa_ayd_label">دوم‌شخص جمع</string>
+    <string name="inflection_fa_ayd">دوم‌شخص جمع پس از ه: فعل ربطی پیوسته (خسته‌اید)</string>
+    <!-- -ایم -->
+    <string name="inflection_fa_aym_label">اول‌شخص جمع</string>
+    <string name="inflection_fa_aym">اول‌شخص جمع پس از ه: فعل ربطی پیوسته (خسته‌ایم)</string>
+    <!-- -را -->
+    <string name="inflection_fa_ra_label">مفعول</string>
+    <string name="inflection_fa_ra">نشانهٔ مفعولی «را» که پیوسته نوشته شده است (آنرا)</string>
+    <!-- -ها -->
+    <string name="inflection_fa_ha_label">جمع</string>
+    <string name="inflection_fa_ha">نشانهٔ جمع (کتابها)</string>
+    <!-- -ان -->
+    <string name="inflection_fa_an_label">جمع</string>
+    <string name="inflection_fa_an">جمع، بیشتر برای انسان و جانور (مردان)</string>
+    <!-- -یان -->
+    <string name="inflection_fa_yan_label">جمع</string>
+    <string name="inflection_fa_yan">جمع پس از مصوت (دانشجویان)</string>
+    <!-- -گان -->
+    <string name="inflection_fa_gan_label">جمع</string>
+    <string name="inflection_fa_gan">جمع واژهٔ مختوم به های غیرملفوظ که به گ بدل می‌شود (ستارگان از ستاره)</string>
+    <!-- -تر -->
+    <string name="inflection_fa_tr_label">تفضیلی</string>
+    <string name="inflection_fa_tr">صفت تفضیلی (بزرگتر)</string>
+    <!-- -ترین -->
+    <string name="inflection_fa_tryn_label">عالی</string>
+    <string name="inflection_fa_tryn">صفت عالی (بزرگترین)</string>
+    <!-- -مین -->
+    <string name="inflection_fa_myn_label">ترتیبی</string>
+    <string name="inflection_fa_myn">عدد ترتیبی پیش از اسم (دومین از دوم)</string>
+    <!-- می- -->
+    <string name="inflection_fa_my_label">استمراری</string>
+    <string name="inflection_fa_my">پیشوند استمرار: حال اخباری (می‌روم) و گذشتهٔ استمراری (می‌رفتم)</string>
+    <!-- نمی- -->
+    <string name="inflection_fa_nmy_label">استمراری منفی</string>
+    <string name="inflection_fa_nmy">پیشوند استمرار منفی: حال اخباری (نمی‌روم) و گذشتهٔ استمراری (نمی‌رفتم)</string>
+    <!-- ب- -->
+    <string name="inflection_fa_b_label">التزامی</string>
+    <string name="inflection_fa_b">پیشوند حال التزامی (بروم) و امر (برو)</string>
+    <!-- ن- -->
+    <string name="inflection_fa_n_label">منفی</string>
+    <string name="inflection_fa_n">پیشوند نفی: گذشته (نرفتم) و نهی (نرو)</string>
+</resources>

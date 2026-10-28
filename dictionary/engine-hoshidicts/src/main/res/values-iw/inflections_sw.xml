@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_sw.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- negative -->
+    <string name="inflection_sw_negative_label">שלילה</string>
+    <string name="inflection_sw_negative">שלילה: ha- לפני סמן הנושא (hatukusoma, hakusoma), si- עבור \"אני\", hu- עבור \"אתה\" (sikusoma, hukusoma), si- אחרי סמן הנושא ולפני סמן הזיקה (isiyojulikana)</string>
+    <!-- I -->
+    <string name="inflection_sw_i_label">אני</string>
+    <string name="inflection_sw_i">סמן הנושא ni-: אני (ninasoma, nilisoma)</string>
+    <!-- you -->
+    <string name="inflection_sw_you_label">אתה</string>
+    <string name="inflection_sw_you">סמן הנושא u-: אתה, או שם עצם מהמחלקות 3, 11 ו־14 (unasoma; mti umeanguka, העץ נפל)</string>
+    <!-- he/she -->
+    <string name="inflection_sw_he_she_label">הוא/היא</string>
+    <string name="inflection_sw_he_she">סמן הנושא a-: הוא או היא (anasoma, alisoma)</string>
+    <!-- we -->
+    <string name="inflection_sw_we_label">אנחנו</string>
+    <string name="inflection_sw_we">סמן הנושא tu-: אנחנו (tunasoma, hatukusoma)</string>
+    <!-- you pl. -->
+    <string name="inflection_sw_you_pl_label">אתם</string>
+    <string name="inflection_sw_you_pl">סמן הנושא m-: אתם, יותר מאחד (mnasoma, hamkusoma)</string>
+    <!-- they -->
+    <string name="inflection_sw_they_label">הם</string>
+    <string name="inflection_sw_they">סמן הנושא wa-: הם (wanasoma, hawakusoma)</string>
+    <!-- class -->
+    <string name="inflection_sw_class_label">מחלקה שמנית</string>
+    <string name="inflection_sw_class">סמן נושא של מחלקה שמנית: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (מקומות: kulikuwa, היה)</string>
+    <!-- past -->
+    <string name="inflection_sw_past_label">זמן עבר</string>
+    <string name="inflection_sw_past">זמן עבר: li-, ואחרי שלילה ku- (alisoma, hakusoma)</string>
+    <!-- present -->
+    <string name="inflection_sw_present_label">זמן הווה</string>
+    <string name="inflection_sw_present">זמן הווה: na- (anasoma)</string>
+    <!-- future -->
+    <string name="inflection_sw_future_label">זמן עתיד</string>
+    <string name="inflection_sw_future">זמן עתיד: ta-, ולפני סמן הזיקה taka- (atasoma, hatasoma, atakayesoma)</string>
+    <!-- perfect -->
+    <string name="inflection_sw_perfect_label">פרפקט</string>
+    <string name="inflection_sw_perfect">פרפקט: me- (amesoma, כבר קרא)</string>
+    <!-- not yet -->
+    <string name="inflection_sw_not_yet_label">עדיין לא</string>
+    <string name="inflection_sw_not_yet">עדיין לא: ja- אחרי שלילה (hajasoma, עדיין לא קרא)</string>
+    <!-- conditional -->
+    <string name="inflection_sw_conditional_label">דרך התנאי</string>
+    <string name="inflection_sw_conditional">דרך התנאי: nge- ו־ngali- (angesoma, היה קורא; angalisoma, היה קורא אז)</string>
+    <!-- when -->
+    <string name="inflection_sw_when_label">כאשר</string>
+    <string name="inflection_sw_when">התחילית ki-: כאשר, בעוד או אם (akisoma)</string>
+    <!-- and then -->
+    <string name="inflection_sw_and_then_label">ואז</string>
+    <string name="inflection_sw_and_then">התחילית ka-: ואז, בסיפור (akasoma)</string>
+    <!-- habitual -->
+    <string name="inflection_sw_habitual_label">פעולה הרגלית</string>
+    <string name="inflection_sw_habitual">פעולה הרגלית: hu- (husoma, קורא בדרך כלל)</string>
+    <!-- relative -->
+    <string name="inflection_sw_relative_label">צורת זיקה</string>
+    <string name="inflection_sw_relative">צורת זיקה: מי ש־, אשר, שבו (aliyesoma, זה שקרא; kinachoitwa, שנקרא; waishio, שחיים)</string>
+    <!-- object -->
+    <string name="inflection_sw_object_label">מושא</string>
+    <string name="inflection_sw_object">מושא: ni- אותי, ku- אותך, m- או mw- אותו או אותה, tu- אותנו, wa- אותם, וכן תחיליות המחלקות השמניות ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <!-- reflexive -->
+    <string name="inflection_sw_reflexive_label">צורה חוזרת</string>
+    <string name="inflection_sw_reflexive">צורה חוזרת ji-: את עצמו (alijificha, kujiunga)</string>
+    <!-- infinitive -->
+    <string name="inflection_sw_infinitive_label">שם הפועל</string>
+    <string name="inflection_sw_infinitive">שם הפועל: ku- או kw- (kusoma, kwandika, kumpa)</string>
+</resources>

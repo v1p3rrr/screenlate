@@ -1,0 +1,5 @@
+<resources>
+    <string name="dictionary_import_channel">ייבוא מילונים</string>
+    <string name="dictionary_import_notification">מתבצע ייבוא מילונים</string>
+    <string name="dictionary_import_cancel">ביטול</string>
+</resources>

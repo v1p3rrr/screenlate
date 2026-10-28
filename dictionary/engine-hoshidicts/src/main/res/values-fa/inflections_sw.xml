@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_sw.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- negative -->
+    <string name="inflection_sw_negative_label">منفی</string>
+    <string name="inflection_sw_negative">نفی: ha- پیش از نشانهٔ فاعلی (hatukusoma، hakusoma)، si- برای «من» و hu- برای «تو» (sikusoma، hukusoma)، si- پس از نشانهٔ فاعلی و پیش از نشانهٔ موصولی (isiyojulikana)</string>
+    <!-- I -->
+    <string name="inflection_sw_i_label">من</string>
+    <string name="inflection_sw_i">فاعل ni-: من (ninasoma، nilisoma)</string>
+    <!-- you -->
+    <string name="inflection_sw_you_label">تو</string>
+    <string name="inflection_sw_you">فاعل u-: تو، یا اسمی از طبقه‌های ۳، ۱۱ و ۱۴ (unasoma؛ mti umeanguka، درخت افتاده است)</string>
+    <!-- he/she -->
+    <string name="inflection_sw_he_she_label">او</string>
+    <string name="inflection_sw_he_she">فاعل a-: او، مرد یا زن (anasoma، alisoma)</string>
+    <!-- we -->
+    <string name="inflection_sw_we_label">ما</string>
+    <string name="inflection_sw_we">فاعل tu-: ما (tunasoma، hatukusoma)</string>
+    <!-- you pl. -->
+    <string name="inflection_sw_you_pl_label">شما</string>
+    <string name="inflection_sw_you_pl">فاعل m-: شما، بیش از یک نفر (mnasoma، hamkusoma)</string>
+    <!-- they -->
+    <string name="inflection_sw_they_label">آن‌ها</string>
+    <string name="inflection_sw_they">فاعل wa-: آن‌ها (wanasoma، hawakusoma)</string>
+    <!-- class -->
+    <string name="inflection_sw_class_label">طبقهٔ اسمی</string>
+    <string name="inflection_sw_class">فاعلِ طبقهٔ اسمی: ki- vi- (kitabu kimeanguka)، li- ya- (jina، majina)، i- zi- (nyumba)، ku- pa- mu- (مکان‌ها: kulikuwa، وجود داشت)</string>
+    <!-- past -->
+    <string name="inflection_sw_past_label">گذشته</string>
+    <string name="inflection_sw_past">گذشته: li-، و ku- پس از نفی (alisoma، hakusoma)</string>
+    <!-- present -->
+    <string name="inflection_sw_present_label">حال</string>
+    <string name="inflection_sw_present">حال: na- (anasoma)</string>
+    <!-- future -->
+    <string name="inflection_sw_future_label">آینده</string>
+    <string name="inflection_sw_future">آینده: ta-، و taka- پیش از نشانهٔ موصولی (atasoma، hatasoma، atakayesoma)</string>
+    <!-- perfect -->
+    <string name="inflection_sw_perfect_label">گذشتهٔ نقلی</string>
+    <string name="inflection_sw_perfect">گذشتهٔ نقلی: me- (amesoma، خوانده است)</string>
+    <!-- not yet -->
+    <string name="inflection_sw_not_yet_label">هنوز نه</string>
+    <string name="inflection_sw_not_yet">هنوز نه: ja- پس از نفی (hajasoma، هنوز نخوانده است)</string>
+    <!-- conditional -->
+    <string name="inflection_sw_conditional_label">شرطی</string>
+    <string name="inflection_sw_conditional">شرطی: nge- و ngali- (angesoma، می‌خواند؛ angalisoma، خوانده بود)</string>
+    <!-- when -->
+    <string name="inflection_sw_when_label">وقتی</string>
+    <string name="inflection_sw_when">ki-: وقتی، در حالی که یا اگر (akisoma)</string>
+    <!-- and then -->
+    <string name="inflection_sw_and_then_label">و سپس</string>
+    <string name="inflection_sw_and_then">ka-: و سپس، در روایت (akasoma)</string>
+    <!-- habitual -->
+    <string name="inflection_sw_habitual_label">عادتی</string>
+    <string name="inflection_sw_habitual">عادتی: hu- (husoma، معمولاً می‌خواند)</string>
+    <!-- relative -->
+    <string name="inflection_sw_relative_label">موصولی</string>
+    <string name="inflection_sw_relative">موصولی: کسی که، چیزی که، جایی که (aliyesoma، کسی که خواند؛ kinachoitwa، چیزی که نامیده می‌شود؛ waishio، کسانی که زندگی می‌کنند)</string>
+    <!-- object -->
+    <string name="inflection_sw_object_label">مفعول</string>
+    <string name="inflection_sw_object">مفعول: ni- مرا، ku- تو را، m- یا mw- او را، tu- ما را، wa- آن‌ها را، و پیشوندهای طبقهٔ اسمی ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda، alimwona)</string>
+    <!-- reflexive -->
+    <string name="inflection_sw_reflexive_label">بازتابی</string>
+    <string name="inflection_sw_reflexive">بازتابی ji-: خود (alijificha، kujiunga)</string>
+    <!-- infinitive -->
+    <string name="inflection_sw_infinitive_label">مصدر</string>
+    <string name="inflection_sw_infinitive">مصدر: ku- یا kw- (kusoma، kwandika، kumpa)</string>
+</resources>

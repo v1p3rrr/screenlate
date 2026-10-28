@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_turkic.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_turkic_plural_label">جمع</string>
+    <string name="inflection_turkic_possessive_1sg_label">ملکی: من</string>
+    <string name="inflection_turkic_possessive_2sg_label">ملکی: تو</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">ملکی: شما (مؤدبانه)</string>
+    <string name="inflection_turkic_possessive_3rd_label">ملکی: او، آن‌ها</string>
+    <string name="inflection_turkic_possessive_1pl_label">ملکی: ما</string>
+    <string name="inflection_turkic_genitive_label">حالت اضافی</string>
+    <string name="inflection_turkic_dative_label">حالت برایی</string>
+    <string name="inflection_turkic_accusative_label">حالت مفعولی</string>
+    <string name="inflection_turkic_locative_label">حالت مکانی</string>
+    <string name="inflection_turkic_ablative_label">حالت ازی</string>
+    <string name="inflection_turkic_instrumental_label">حالت بایی</string>
+    <string name="inflection_turkic_attributive_locative_label">حالت مکانی وصفی</string>
+    <string name="inflection_turkic_attributive_label">وصفی</string>
+    <string name="inflection_turkic_equative_label">حالت برابری</string>
+    <string name="inflection_turkic_manner_label">چگونگی</string>
+    <string name="inflection_turkic_1sg_label">اول‌شخص مفرد</string>
+    <string name="inflection_turkic_2sg_label">دوم‌شخص مفرد</string>
+    <string name="inflection_turkic_2sg_polite_label">دوم‌شخص مفرد مؤدبانه</string>
+    <string name="inflection_turkic_3rd_label">سوم‌شخص</string>
+    <string name="inflection_turkic_1pl_label">اول‌شخص جمع</string>
+    <string name="inflection_turkic_2pl_label">دوم‌شخص جمع</string>
+    <string name="inflection_turkic_2pl_polite_label">دوم‌شخص جمع مؤدبانه</string>
+    <string name="inflection_turkic_past_label">گذشته</string>
+    <string name="inflection_turkic_present_label">حال</string>
+    <string name="inflection_turkic_conditional_label">شرطی</string>
+    <string name="inflection_turkic_past_participle_label">وجه وصفی گذشته</string>
+    <string name="inflection_turkic_habitual_participle_label">وجه وصفی عادتی</string>
+    <string name="inflection_turkic_aorist_label">آئوریست</string>
+    <string name="inflection_turkic_intention_label">قصد</string>
+    <string name="inflection_turkic_converb_label">وجه قیدی</string>
+    <string name="inflection_turkic_purpose_label">هدف</string>
+    <string name="inflection_turkic_until_label">تا</string>
+    <string name="inflection_turkic_imperative_label">امری</string>
+    <string name="inflection_turkic_please_label">خواهش</string>
+    <string name="inflection_turkic_negative_label">منفی</string>
+    <string name="inflection_turkic_passive_label">مجهول</string>
+    <string name="inflection_turkic_reflexive_label">بازتابی</string>
+    <string name="inflection_turkic_reciprocal_label">متقابل</string>
+    <string name="inflection_turkic_causative_label">سببی</string>
+    <string name="inflection_turkic_question_label">پرسشی</string>
+    <string name="inflection_turkic_possessive_2pl_label">ملکی: شما (جمع)</string>
+    <string name="inflection_turkic_verbal_noun_label">اسم مصدر</string>
+</resources>

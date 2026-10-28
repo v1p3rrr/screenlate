@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_ro.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ul -->
+    <string name="inflection_ro_ul_label">المعرفة</string>
+    <string name="inflection_ro_ul">أداة التعريف (procesul من proces، consiliul من consiliu)</string>
+    <!-- -le -->
+    <string name="inflection_ro_le_label">المعرفة</string>
+    <string name="inflection_ro_le">أداة التعريف (fratele من frate، textele من texte)</string>
+    <!-- -a -->
+    <string name="inflection_ro_a_label">المعرفة</string>
+    <string name="inflection_ro_a">أداة التعريف للأسماء المؤنثة (dezvoltarea من dezvoltare، comisia من comisie)</string>
+    <!-- -i -->
+    <string name="inflection_ro_i_label">الجمع المعرفة</string>
+    <string name="inflection_ro_i">أداة التعريف لجمع المذكر (pomii من pomi)</string>
+    <!-- -ului -->
+    <string name="inflection_ro_ului_label">حالة الجر المعرفة</string>
+    <string name="inflection_ro_ului">حالتا الجر والقابل مع أداة التعريف (procesului من proces، fratelui من frate)</string>
+    <!-- -ei -->
+    <string name="inflection_ro_ei_label">حالة الجر المعرفة</string>
+    <string name="inflection_ro_ei">حالتا الجر والقابل للأسماء المؤنثة مع أداة التعريف (Moldovei من Moldova، comisiei من comisie)</string>
+    <!-- -ii -->
+    <string name="inflection_ro_ii_label">حالة الجر المعرفة</string>
+    <string name="inflection_ro_ii">حالتا الجر والقابل للأسماء المؤنثة المنتهية بـ -e مع أداة التعريف (lumii من lume، dezvoltării من dezvoltare)</string>
+    <!-- -lor -->
+    <string name="inflection_ro_lor_label">حالة الجر المعرفة الجمع</string>
+    <string name="inflection_ro_lor">حالتا الجر والقابل في الجمع مع أداة التعريف (caselor من case)</string>
+    <!-- agreement -->
+    <string name="inflection_ro_agreement_label">المؤنث أو الجمع</string>
+    <string name="inflection_ro_agreement">المؤنث أو الجمع من اسم المفعول أو الصفة (aflată, aflate, aflați من aflat؛ pusă من pus)</string>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_es_plural_label">جمع</string>
+    <string name="inflection_es_plural">صورت جمع اسم</string>
+    <!-- feminine adjective -->
+    <string name="inflection_es_feminine_adjective_label">صفت مؤنث</string>
+    <string name="inflection_es_feminine_adjective">صورت مؤنث صفت</string>
+    <!-- present indicative -->
+    <string name="inflection_es_present_indicative_label">حال اخباری</string>
+    <string name="inflection_es_present_indicative">صورت حال اخباری فعل</string>
+    <!-- preterite -->
+    <string name="inflection_es_preterite_label">گذشتهٔ ساده</string>
+    <string name="inflection_es_preterite">صورت گذشتهٔ سادهٔ فعل</string>
+    <!-- imperfect -->
+    <string name="inflection_es_imperfect_label">گذشتهٔ استمراری</string>
+    <string name="inflection_es_imperfect">صورت گذشتهٔ استمراری فعل</string>
+    <!-- progressive -->
+    <string name="inflection_es_progressive_label">مستمر</string>
+    <string name="inflection_es_progressive">صورت مستمر فعل</string>
+    <!-- imperative -->
+    <string name="inflection_es_imperative_label">امری</string>
+    <string name="inflection_es_imperative">صورت امری فعل</string>
+    <!-- conditional -->
+    <string name="inflection_es_conditional_label">شرطی</string>
+    <string name="inflection_es_conditional">صورت شرطی فعل</string>
+    <!-- future -->
+    <string name="inflection_es_future_label">آینده</string>
+    <string name="inflection_es_future">صورت آیندهٔ فعل</string>
+    <!-- present subjunctive -->
+    <string name="inflection_es_present_subjunctive_label">حال التزامی</string>
+    <string name="inflection_es_present_subjunctive">صورت حال التزامی فعل</string>
+    <!-- imperfect subjunctive -->
+    <string name="inflection_es_imperfect_subjunctive_label">گذشتهٔ استمراری التزامی</string>
+    <string name="inflection_es_imperfect_subjunctive">صورت گذشتهٔ استمراری التزامی فعل</string>
+    <!-- participle -->
+    <string name="inflection_es_participle_label">وجه وصفی</string>
+    <string name="inflection_es_participle">وجه وصفی فعل</string>
+    <!-- reflexive -->
+    <string name="inflection_es_reflexive_label">بازتابی</string>
+    <string name="inflection_es_reflexive">صورت بازتابی فعل</string>
+    <!-- pronoun substitution -->
+    <string name="inflection_es_pronoun_substitution_label">جایگزینی ضمیر</string>
+    <string name="inflection_es_pronoun_substitution">ضمیر جایگزین‌شده در فعل بازتابی</string>
+    <!-- pronominal -->
+    <string name="inflection_es_pronominal_label">ضمیری</string>
+    <string name="inflection_es_pronominal">صورت ضمیری فعل</string>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_la_plural_label">جمع</string>
+    <string name="inflection_la_plural">صرف جمع</string>
+    <!-- feminine -->
+    <string name="inflection_la_feminine_label">مؤنث</string>
+    <string name="inflection_la_feminine">صورت صفت</string>
+    <!-- neuter -->
+    <string name="inflection_la_neuter_label">خنثی</string>
+    <string name="inflection_la_neuter">صورت صفت</string>
+    <!-- ablative -->
+    <string name="inflection_la_ablative_label">حالت ازی</string>
+    <string name="inflection_la_ablative">حالت ازی</string>
+    <!-- -que -->
+    <string name="inflection_la_que">پی‌بست «و» (magisque از magis)</string>
+    <!-- -ne -->
+    <string name="inflection_la_ne">پی‌بست پرسشی (videsne از vides)</string>
+    <!-- -ve -->
+    <string name="inflection_la_ve">پی‌بست «یا» (mortuusve از mortuus)</string>
+</resources>

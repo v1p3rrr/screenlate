@@ -37,9 +37,11 @@ android {
         buildConfig = true
     }
 
-    // Lists every translated language in the system's per-app language settings.
+    // The system's per-app language settings list the languages of res/xml/locales_config.xml (TranslationsTest keeps
+    // it in step with the translations). Generating it from the resources would also offer the right-to-left
+    // translations, whose mirrored screens are not checked yet.
     androidResources {
-        generateLocaleConfig = true
+        generateLocaleConfig = false
     }
 
     signingConfigs {

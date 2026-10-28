@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_ar.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- NPref-Wa -->
+    <string name="inflection_ar_npref_wa_label">ו׳ החיבור</string>
+    <string name="inflection_ar_npref_wa">ו׳ החיבור (و); ואז, ולכן (ف)</string>
+    <!-- NPref-Bi -->
+    <string name="inflection_ar_npref_bi_label">ב־, עם</string>
+    <string name="inflection_ar_npref_bi">ב־, עם</string>
+    <!-- NPref-Ka -->
+    <string name="inflection_ar_npref_ka_label">כמו, כגון</string>
+    <string name="inflection_ar_npref_ka">כמו, כגון</string>
+    <!-- NPref-Li -->
+    <string name="inflection_ar_npref_li_label">בשביל, ל־; אכן, באמת</string>
+    <string name="inflection_ar_npref_li">בשביל, ל־ (لِ); אכן, באמת (لَ)</string>
+    <!-- NPref-Al -->
+    <string name="inflection_ar_npref_al_label">יידוע</string>
+    <string name="inflection_ar_npref_al">תווית היידוע</string>
+    <!-- NPref-BiAl -->
+    <string name="inflection_ar_npref_bial_label">ב־/עם + יידוע</string>
+    <string name="inflection_ar_npref_bial">ב־/עם + תווית היידוע</string>
+    <!-- NPref-KaAl -->
+    <string name="inflection_ar_npref_kaal_label">כמו/כגון + יידוע</string>
+    <string name="inflection_ar_npref_kaal">כמו/כגון + תווית היידוע</string>
+    <!-- NPref-Lil -->
+    <string name="inflection_ar_npref_lil_label">בשביל/ל־ + יידוע</string>
+    <string name="inflection_ar_npref_lil">בשביל/ל־ + תווית היידוע</string>
+    <!-- NPref-LiAl -->
+    <string name="inflection_ar_npref_lial_label">בשביל/ל־ + יידוע</string>
+    <string name="inflection_ar_npref_lial">בשביל/ל־ + תווית היידוע, המתמזגת עם ل שבראש המילה</string>
+    <!-- NSuff-h -->
+    <string name="inflection_ar_nsuff_h_label">כינוי קניין</string>
+    <string name="inflection_ar_nsuff_h">כינוי קניין</string>
+    <!-- NSuff-ap -->
+    <string name="inflection_ar_nsuff_ap_label">נקבה, יחיד</string>
+    <string name="inflection_ar_nsuff_ap">נקבה, יחיד</string>
+    <!-- NSuff-ath -->
+    <string name="inflection_ar_nsuff_ath_label">נקבה, יחיד + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_ath">נקבה, יחיד + כינוי קניין</string>
+    <!-- NSuff-AF -->
+    <string name="inflection_ar_nsuff_af_label">יחסת המושא, לא מיודע</string>
+    <string name="inflection_ar_nsuff_af">יחסת המושא, לא מיודע (اً)</string>
+    <!-- NSuff-An -->
+    <string name="inflection_ar_nsuff_an_label">זוגי</string>
+    <string name="inflection_ar_nsuff_an">יחסת הנושא, זכר, זוגי</string>
+    <!-- NSuff-Ah -->
+    <string name="inflection_ar_nsuff_ah_label">זוגי + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_ah">יחסת הנושא, זכר, זוגי + כינוי קניין</string>
+    <!-- NSuff-ayn -->
+    <string name="inflection_ar_nsuff_ayn_label">זוגי</string>
+    <string name="inflection_ar_nsuff_ayn">יחסת המושא/הקניין, זכר, זוגי</string>
+    <!-- NSuff-ayh -->
+    <string name="inflection_ar_nsuff_ayh_label">זוגי + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_ayh">יחסת המושא/הקניין, זכר, זוגי + כינוי קניין</string>
+    <!-- NSuff-atAn -->
+    <string name="inflection_ar_nsuff_atan_label">זוגי</string>
+    <string name="inflection_ar_nsuff_atan">יחסת הנושא, נקבה, זוגי</string>
+    <!-- NSuff-atAh -->
+    <string name="inflection_ar_nsuff_atah_label">זוגי + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_atah">יחסת הנושא, נקבה, זוגי + כינוי קניין</string>
+    <!-- NSuff-tayn -->
+    <string name="inflection_ar_nsuff_tayn_label">זוגי</string>
+    <string name="inflection_ar_nsuff_tayn">יחסת המושא/הקניין, נקבה, זוגי</string>
+    <!-- NSuff-tayh -->
+    <string name="inflection_ar_nsuff_tayh_label">זוגי + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_tayh">יחסת המושא/הקניין, נקבה, זוגי + כינוי קניין</string>
+    <!-- NSuff-At -->
+    <string name="inflection_ar_nsuff_at_label">נקבה, רבים</string>
+    <string name="inflection_ar_nsuff_at">ריבוי נקבה שלם</string>
+    <!-- NSuff-Ath -->
+    <string name="inflection_ar_nsuff_ath__label">נקבה, רבים + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_ath_">ריבוי נקבה שלם + כינוי קניין</string>
+    <!-- NSuff-wn -->
+    <string name="inflection_ar_nsuff_wn_label">זכר, רבים</string>
+    <string name="inflection_ar_nsuff_wn">יחסת הנושא, ריבוי זכר שלם</string>
+    <!-- NSuff-wh -->
+    <string name="inflection_ar_nsuff_wh_label">זכר, רבים + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_wh">יחסת הנושא, ריבוי זכר שלם + כינוי קניין</string>
+    <!-- NSuff-iyn -->
+    <string name="inflection_ar_nsuff_iyn_label">זכר, רבים</string>
+    <string name="inflection_ar_nsuff_iyn">יחסת המושא/הקניין, ריבוי זכר שלם</string>
+    <!-- NSuff-iyh -->
+    <string name="inflection_ar_nsuff_iyh_label">זכר, רבים + כינוי קניין</string>
+    <string name="inflection_ar_nsuff_iyh">יחסת המושא/הקניין, ריבוי זכר שלם + כינוי קניין</string>
+    <!-- PVPref-Wa -->
+    <string name="inflection_ar_pvpref_wa_label">ו׳ החיבור</string>
+    <string name="inflection_ar_pvpref_wa">ו׳ החיבור (و); ואז, ולכן (ف)</string>
+    <!-- PVPref-La -->
+    <string name="inflection_ar_pvpref_la_label">תנאי בטל</string>
+    <string name="inflection_ar_pvpref_la">מילית בפסוקית התוצאה (אילו ... הייתי ...)</string>
+    <!-- PVSuff-ah -->
+    <string name="inflection_ar_pvsuff_ah_label">עבר</string>
+    <string name="inflection_ar_pvsuff_ah">פועל בעבר + כינוי מושא ישיר</string>
+    <!-- PVSuff-n -->
+    <string name="inflection_ar_pvsuff_n_label">עבר</string>
+    <string name="inflection_ar_pvsuff_n">סיומות של פועל בעבר המתמזגות עם ن</string>
+    <!-- PVSuff-t -->
+    <string name="inflection_ar_pvsuff_t_label">עבר</string>
+    <string name="inflection_ar_pvsuff_t">סיומות של פועל בעבר המתמזגות עם ت</string>
+    <!-- PVSuff-at -->
+    <string name="inflection_ar_pvsuff_at_label">עבר</string>
+    <string name="inflection_ar_pvsuff_at">סיומות ت של פועל בעבר שאינן מתמזגות</string>
+    <!-- PVSuff-A -->
+    <string name="inflection_ar_pvsuff_a_label">עבר</string>
+    <string name="inflection_ar_pvsuff_a">פועל בעבר, גוף שלישי, זכר, זוגי</string>
+    <!-- PVSuff-uw -->
+    <string name="inflection_ar_pvsuff_uw_label">עבר</string>
+    <string name="inflection_ar_pvsuff_uw">פועל בעבר, גוף שלישי, זכר, רבים</string>
+    <!-- IVPref-hw -->
+    <string name="inflection_ar_ivpref_hw_label">עתיד</string>
+    <string name="inflection_ar_ivpref_hw">פועל בעתיד, גוף שלישי, זכר, יחיד</string>
+    <!-- IVPref-hy -->
+    <string name="inflection_ar_ivpref_hy_label">עתיד</string>
+    <string name="inflection_ar_ivpref_hy">פועל בעתיד, גוף שלישי, נקבה, יחיד</string>
+    <!-- IVPref-hmA -->
+    <string name="inflection_ar_ivpref_hma_label">עתיד</string>
+    <string name="inflection_ar_ivpref_hma">פועל בעתיד, גוף שלישי, זכר, זוגי</string>
+    <!-- IVPref-hmA-ta -->
+    <string name="inflection_ar_ivpref_hma_ta_label">עתיד</string>
+    <string name="inflection_ar_ivpref_hma_ta">פועל בעתיד, גוף שלישי, נקבה, זוגי</string>
+    <!-- IVPref-hm -->
+    <string name="inflection_ar_ivpref_hm_label">עתיד</string>
+    <string name="inflection_ar_ivpref_hm">פועל בעתיד, גוף שלישי, זכר, רבים</string>
+    <!-- IVPref-hn -->
+    <string name="inflection_ar_ivpref_hn_label">עתיד</string>
+    <string name="inflection_ar_ivpref_hn">פועל בעתיד, גוף שלישי, נקבה, רבים</string>
+    <!-- IVPref-Anta -->
+    <string name="inflection_ar_ivpref_anta_label">עתיד</string>
+    <string name="inflection_ar_ivpref_anta">פועל בעתיד, גוף שני, זכר, יחיד</string>
+    <!-- IVPref-Anti -->
+    <string name="inflection_ar_ivpref_anti_label">עתיד</string>
+    <string name="inflection_ar_ivpref_anti">פועל בעתיד, גוף שני, נקבה, יחיד</string>
+    <!-- IVPref-AntmA -->
+    <string name="inflection_ar_ivpref_antma_label">עתיד</string>
+    <string name="inflection_ar_ivpref_antma">פועל בעתיד, גוף שני, זוגי</string>
+    <!-- IVPref-Antm -->
+    <string name="inflection_ar_ivpref_antm_label">עתיד</string>
+    <string name="inflection_ar_ivpref_antm">פועל בעתיד, גוף שני, זכר, רבים</string>
+    <!-- IVPref-Antn -->
+    <string name="inflection_ar_ivpref_antn_label">עתיד</string>
+    <string name="inflection_ar_ivpref_antn">פועל בעתיד, גוף שני, נקבה, רבים</string>
+    <!-- IVPref-AnA -->
+    <string name="inflection_ar_ivpref_ana_label">עתיד</string>
+    <string name="inflection_ar_ivpref_ana">פועל בעתיד, גוף ראשון, יחיד</string>
+    <!-- IVPref-nHn -->
+    <string name="inflection_ar_ivpref_nhn_label">עתיד</string>
+    <string name="inflection_ar_ivpref_nhn">פועל בעתיד, גוף ראשון, רבים</string>
+    <!-- CVPref -->
+    <string name="inflection_ar_cvpref_label">ציווי</string>
+    <string name="inflection_ar_cvpref">פועל בציווי</string>
+    <!-- CVSuff -->
+    <string name="inflection_ar_cvsuff_label">ציווי</string>
+    <string name="inflection_ar_cvsuff">פועל בציווי</string>
+</resources>

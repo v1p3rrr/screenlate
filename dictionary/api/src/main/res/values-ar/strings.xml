@@ -1,0 +1,5 @@
+<resources>
+    <string name="dictionary_import_channel">استيراد القواميس</string>
+    <string name="dictionary_import_notification">جارٍ استيراد القواميس</string>
+    <string name="dictionary_import_cancel">إلغاء</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_gd.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- lenition -->
+    <string name="inflection_gd_lenition_label">التليين</string>
+    <string name="inflection_gd_lenition">التليين: bh ch dh fh gh mh ph sh th بدلًا من b c d f g m p s t، و t-s بدلًا من s بعد أداة التعريف (a\' ghrian من grian، an t-sràid من sràid)</string>
+    <!-- eclipsis -->
+    <string name="inflection_gd_eclipsis_label">الكسوف</string>
+    <string name="inflection_gd_eclipsis">n- قبل صائت (ar n-eilean من eilean)</string>
+    <!-- t-prothesis -->
+    <string name="inflection_gd_t_prothesis_label">إقحام t</string>
+    <string name="inflection_gd_t_prothesis">t- قبل صائت (an t-uisge من uisge، an t-Eilean من Eilean)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_gd_h_prothesis_label">إقحام h</string>
+    <string name="inflection_gd_h_prothesis">h- قبل صائت (na h-Alba من Alba، na h-òrain من òrain)</string>
+</resources>

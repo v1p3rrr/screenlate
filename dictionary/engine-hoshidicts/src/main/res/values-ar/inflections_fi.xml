@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_fi.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- clitic -->
+    <string name="inflection_fi_clitic_label">أداة متصلة</string>
+    <string name="inflection_fi_clitic">أداة متصلة: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin من talo، talossakaan من talossa، onkohan من onko)</string>
+    <!-- possessive -->
+    <string name="inflection_fi_possessive_label">لاحقة الملكية</string>
+    <string name="inflection_fi_possessive">لاحقة الملكية: -ni, -si, -mme, -nne, -nsa/-nsä، وصائت طويل مع -n (talossani و talossaan من talossa، taloni من talo)</string>
+</resources>

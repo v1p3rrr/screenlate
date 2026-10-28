@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">جاهز</string>
+    <string name="installation_running">تثبيت اللغة قيد التنفيذ. سيتاح المسح والبحث في القواميس عندما تجهز المكونات المطلوبة.</string>
+    <string name="installation_missing">بعض القواميس أو نماذج التعرّف المطلوبة مفقودة أو معطّلة. افتح «حالة التثبيت» لإكمال الإعداد.</string>
+    <string name="installation_failed">تعذّر تثبيت اللغة. افتح «حالة التثبيت» لعرض الخطأ وإعادة المحاولة.</string>
+    <string name="installation_open">حالة التثبيت</string>
+    <string name="installation_device_ready">التعرّف داخل الجهاز: جاهز</string>
+    <string name="installation_device_missing">التعرّف داخل الجهاز: غير متاح، ويمكن استخدام التعرّف السحابي عند تفعيله.</string>
+    <string name="installation_remaining">عمليات التثبيت المتبقية: %1$d</string>
+    <string name="installation_errors">عمليات التثبيت المتعذّرة: %1$d</string>
+</resources>
