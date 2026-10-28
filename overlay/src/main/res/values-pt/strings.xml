@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">Nenhum texto encontrado na tela.</string>
     <string name="overlay_no_text_photo">Nenhum texto encontrado na foto.</string>
-    <string name="overlay_no_app_text">Este app não expõe o texto dele aqui. O reconhecimento de tela está desativado (Somente texto dos apps nas configurações da bolha).</string>
+    <string name="overlay_no_app_text">Este app não informa o texto dele aos serviços de acessibilidade. O reconhecimento de tela está desativado (“Somente texto dos apps” nas configurações da bolha).</string>
     <string name="overlay_error_secure">Este app não permite capturas de tela.</string>
     <string name="overlay_error_capture">Não foi possível fazer uma captura de tela.</string>
     <string name="overlay_error_ocr">Falha no reconhecimento de texto.</string>
-    <string name="overlay_error_offline">Sem rede, e o reconhecimento no dispositivo está desativado nas configurações.</string>
-    <string name="overlay_error_no_device_ocr">Este idioma não tem modelo no dispositivo. Baixe um ou, nas configurações de Bolha, defina Mecanismos como “Ambos” ou “Nuvem”.</string>
+    <string name="overlay_error_offline">Sem conexão de rede, e o reconhecimento no dispositivo está desativado nas configurações.</string>
+    <string name="overlay_error_no_device_ocr">Este idioma não tem modelo no dispositivo. Baixe um ou, nas configurações da bolha, defina “Mecanismos” como “Ambos” ou “Nuvem”.</string>
     <string name="overlay_open_ocr_models">Modelo no dispositivo</string>
     <string name="overlay_error_offline_no_device">Sem conexão de rede, e o reconhecimento no dispositivo não oferece suporte a este idioma.</string>
     <string name="overlay_ocr_error_title">Reconhecimento na nuvem</string>
@@ -31,7 +31,7 @@
     <string name="overlay_no_dictionaries">Os dicionários ainda estão sendo instalados. Tente de novo em instantes.</string>
     <string name="overlay_no_dictionaries_on">Nenhum dicionário com definições está ativado. Ative ou adicione um em Dicionários, no Screenlate.</string>
     <string name="overlay_add_note">Adicionar ao Anki (segure para uma imagem)</string>
-    <string name="overlay_note_wait">Aguarde o texto final (até o indicador parar).</string>
+    <string name="overlay_note_wait">O texto ainda está sendo refinado; aguarde até o indicador de carregamento sumir.</string>
     <string name="overlay_play_audio">Tocar áudio (segure para escolher)</string>
     <string name="anki_error">Não foi possível adicionar a nota: %1$s</string>
     <string name="anki_rejected">O AnkiDroid não salvou a nota.</string>
