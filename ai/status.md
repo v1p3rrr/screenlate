@@ -182,6 +182,30 @@ the details.
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
 - Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
 
+## App fixes from the owner's answers of 2026-10-28 evening (2026-10-29, `claude/app-fixes-1028`)
+
+Built on `claude/app-fixes-1028` (from `languages/main`); the network timing also on `claude/network-timing-main`
+(from `main`). Plan: questions 72 (2), 77, 81-85 of the languages plan, question 16 of the group 4c plan.
+- Downloads: a lost network gets 3 s to show (was 2 s) and the run waits 15 s for it (was 30 s).
+- The debug build's selection menu item is "Look up in Screenlate Dev" (`app/src/debug/res`, 14 locales).
+- The text detectors are one item, "PaddleOCR v6 text detector" (v5 the same), in every locale.
+- The import notification hides Cancel while a dictionary is registered (`DictionaryRepository.import`'s
+  `onRegister`); the task card's Cancel stays and still comes too late there.
+- Home's "Download again" card stays hidden while the dictionary's download waits or runs, also after the app is
+  left and opened again (it was not fixed before: the set was per ViewModel).
+- Every Tesseract model of every language says it misreads busy screens. `LanguageSupport.tesseractMisreadsBusyScreens`
+  (and the Thai and Khmer overrides with their test) is unused now; remove it once the OCR text rules branch has
+  landed, see the group 4c plan.
+- The download screen's size after import: measured sizes (`catalog/installed-sizes.json`, 137 entries, written by
+  `scripts/catalog/installed_sizes.py`), else shares per kind; the free space check takes a quarter more or a share
+  above the largest measured. Chinese's defaults read 69 MB, as their import takes (43 MB with the old ×3). Refresh the
+  file after new catalog dictionaries are imported on an emulator.
+- DIC9 no longer expects a spinner.
+- Checked on the emulator (run log 2026-10-29): BUB20, DIC11, DIC47 (one archive), DIC48, LNG17, LNG37; the
+  instrumented `DictionaryRepositoryTest` 18 of 18. Not tried: a task with several archives (Cancel back for the next).
+- `AudioFinderTest > a source that does not answer in time is skipped` failed once under load (a wall-clock bound),
+  passed on the rerun.
+
 ## Settings rework and the docked bubble's menu (2026-10-28 night, merged into `languages/main`)
 
 Plan `plans/2026-10-28-settings-rework.md` (decisions, the owner's later catalog messages, deferred questions).

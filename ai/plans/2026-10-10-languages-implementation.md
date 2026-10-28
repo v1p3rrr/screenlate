@@ -797,7 +797,7 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     (2026-10-22); built with question 67's fix. Home's audio-failure card names the first turned-on language whose
     sources include the failing source: it said Korean for failures in Vietnamese, English and German lookups. (a,
     recommended) Name the language of the lookup that failed. (b) Leave it.
-72. Answered (owner, 2026-10-28 evening; all but (2) moved to the backlog the same evening): fix (1) the PaddleOCR lines and (2) the installed size on the download screen; (3) after an explanation, fix the data in our converters (de-ru long labels moved into the gloss, it-ru "( approfondimento)" dropped, OpenRussian's gapirish through an exception list) and give vi's "Central" tag a clear name in our tag labels; (4) debug first whether we send something wrong or AnkiDroid has not added the note yet ("про анки надо подебажить понять в чем дело для начала, мб передаем не так что то, или он еще добавить не успел"). (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
+72. Answered (owner, 2026-10-28 evening; all but (2) moved to the backlog the same evening): fix (1) the PaddleOCR lines and (2) the installed size on the download screen ((2) built 2026-10-29 on `claude/app-fixes-1028`: the line under the button already gave the size after import, a cautious ×3, ×9 for pronunciation; asked how it should read, the owner chose that line with an honest number ("Строка, честное число"): it gives sizes measured on the emulator (`catalog/installed-sizes.json`, 137 entries), shares per kind for the rest, and the free space check a quarter more or the largest share measured; Chinese now reads about 69 MB, as its import takes); (3) after an explanation, fix the data in our converters (de-ru long labels moved into the gloss, it-ru "( approfondimento)" dropped, OpenRussian's gapirish through an exception list) and give vi's "Central" tag a clear name in our tag labels; (4) debug first whether we send something wrong or AnkiDroid has not added the note yet ("про анки надо подебажить понять в чем дело для начала, мб передаем не так что то, или он еще добавить не успел"). (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
     paragraph, and the v5 detector splits Russian lines into overlapping boxes (38 paragraphs on the Russian page); (2)
     the download screen shows the download size, while the installed size is larger (Chinese: 42 MB shown, about 69 MB
     installed); (3) upstream data: FreeDict de-ru's very long sense labels, it-ru's "( approfondimento)", OpenRussian's
@@ -818,7 +818,7 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     and transcriptions, wordfreq fa and he, tessdata khm and heb, the Thai, Kazakh and Kyrgyz frequency corpora; 65 MiB,
     all with pinned hashes). (a, recommended) Fix the script's future list (so the hi-ky files are not fetched twice)
     and fetch them now. (b) Later, with the next refresh.
-77. Answered (owner, 2026-10-28 evening): 3 s and 15 s instead of 2 s and 30 s ("3 и 15"), on `main` and `languages/main`; when the network comes back the run continues at once, so the 15 s only matter when the system does not report it (2026-10-22, the download fix of question 67): a download that breaks off while the network
+77. Answered (owner, 2026-10-28 evening): 3 s and 15 s instead of 2 s and 30 s ("3 и 15"), on `main` and `languages/main`; built 2026-10-29 (`claude/app-fixes-1028`, `claude/network-timing-main`); when the network comes back the run continues at once, so the 15 s only matter when the system does not report it (2026-10-22, the download fix of question 67): a download that breaks off while the network
     goes counts as waiting for it when the network is gone within 2 s of the failure; if WorkManager does not stop the
     task then, the run waits 30 s for the network before it ends and runs again later (on the emulator WorkManager
     always stopped it first). (a, built) Keep 2 s and 30 s. (b) Other values (the owner says which).
@@ -834,19 +834,19 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
 80. Answered (owner, 2026-10-28 evening): (a), split it in Czech OCR lines (2026-10-22, night checks): after a Czech era (př. n. l.), ML Kit glues the next word to it ("n.l.a" for "n. l.
     a"), so the word after the era is not looked up on its own. (a, recommended) Split it in Czech OCR lines (recognized
     text only). (b) Leave it.
-81. Answered (owner, 2026-10-28 evening): (a), "Look up in Screenlate Dev" for the debug build (2026-10-22, night checks): with the release and the debug build both installed, the text selection menu shows
+81. Answered (owner, 2026-10-28 evening): (a), "Look up in Screenlate Dev" for the debug build; built 2026-10-29 (a debug resource override in all 14 locales) (2026-10-22, night checks): with the release and the debug build both installed, the text selection menu shows
     two identical "Look up in Screenlate" items. (a, recommended) Give the debug build its own label ("Look up in
     Screenlate Dev"). (b) Leave it.
-82. Answered (owner, 2026-10-28 evening): (a), one name, "PaddleOCR v6 text detector" (2026-10-22, night checks): the waiting tasks card lists "…, PaddleOCR v6, text detector, …": the comma makes
+82. Answered (owner, 2026-10-28 evening): (a), one name, "PaddleOCR v6 text detector"; built 2026-10-29 for the v5 and v6 detectors in every locale (2026-10-22, night checks): the waiting tasks card lists "…, PaddleOCR v6, text detector, …": the comma makes
     the detector look like a separate item. (a, recommended) Name it "PaddleOCR v6 text detector" in the list. (b) Leave
     it.
-83. Answered (owner, 2026-10-28 evening): (a), hide Cancel during the last step (2026-10-22, night checks): Cancel in an import's notification during its last milliseconds (the dictionary
+83. Answered (owner, 2026-10-28 evening): (a), hide Cancel during the last step; built 2026-10-29 (the notification only; the task card's Cancel stays) (2026-10-22, night checks): Cancel in an import's notification during its last milliseconds (the dictionary
     being registered) installs the dictionary anyway. (a, recommended) Hide Cancel during that last step. (b) Remove the
     dictionary again after such a Cancel. (c) Leave it.
-84. Plain bug (owner's standing rule), to build if not built yet (2026-10-22, night checks): Home's "Download again" card for a damaged or missing dictionary
+84. Plain bug (owner's standing rule), built 2026-10-29: it was not fixed yet (2026-10-22, night checks): Home's "Download again" card for a damaged or missing dictionary
     comes back when Home is reopened while that download waits in the queue. A plain bug: the card is hidden while its
     download is queued or running; to build in the next session that works on downloads.
-85. Answered (owner, 2026-10-28 evening): (a), drop the spinner from the case (2026-10-22, night checks): case DIC9 (an interrupted dictionary reset) expects a spinner that cannot be seen:
+85. Answered (owner, 2026-10-28 evening): (a), drop the spinner from the case; done 2026-10-29 (2026-10-22, night checks): case DIC9 (an interrupted dictionary reset) expects a spinner that cannot be seen:
     the deletion takes 450 ms and the screen's first frame comes 4 s after the start. (a, recommended) Drop the spinner
     from the case. (b) Show a spinner while the bundled dictionaries install after the reset.
 86. Answered (owner, 2026-10-28 evening): (a), accepted (2026-10-22, night checks): the transcription tags of large dictionaries (Chinese Wiktionary: 4.4 million
@@ -1793,3 +1793,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   between groups 5c and 5d; the bubble glyph is built by the coordinating session; Esperanto's frequency dictionary
   now comes from Leipzig's web texts of 2012.
 - 2026-10-29: the build chain stops after group 5d; groups 5e and 6 start only at the owner's word.
+- 2026-10-29: built 77 (also on `main`), 81, 82, 83, 84 (it was not fixed yet) and 85, and 72 (2): the size after
+  import on the download screen is the measured one (`catalog/installed-sizes.json`, written by
+  `scripts/catalog/installed_sizes.py` from the emulator's 160 dictionaries), else a typical share per kind (term
+  dictionaries ×2.2, kanji ×3, frequency ×10, pitch and IPA ×10.5, a built frequency dictionary about 12 MB); shares
+  alone gave Chinese 43 MB for 69 MB taken (CC-CEDICT ×4.4, its Hanzi ×5.2). The free space check takes a measured
+  size plus a quarter, else a share above the largest measured (×5, ×6, ×17, ×15, 16 MB), above the former ×3 and ×9,
+  which Jiten (×8.7), JMdict Russian (×4.7) and IPA dictionaries (up to ×14) exceeded.
