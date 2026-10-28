@@ -26,6 +26,7 @@ import java.io.File
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToLong
 
 /**
  * What a catalog entry is for on the download screen. Without an explicit category an entry takes the one of its
@@ -160,15 +161,30 @@ data class CatalogEntry(
     val isBundled: Boolean get() = downloadUrl.startsWith(ASSET_URL_PREFIX)
 
     /**
-     * The space the dictionary takes once imported: measured, or a cautious guess from the archive size. A model is
-     * stored as downloaded or unpacked, which compressed weights barely shrink.
+     * The space the dictionary takes once imported, as the download screen shows it: measured, or the typical share
+     * of the archive size ([InstalledShare]). A model is stored as downloaded or unpacked, which compressed weights
+     * barely shrink.
      */
-    val installedBytes: Long
-        get() = installedSize ?: when {
-            isModel -> downloadBytes
-            kind == DictionaryKind.PITCH -> downloadBytes * PITCH_INSTALLED_PER_DOWNLOADED
-            else -> downloadBytes * INSTALLED_PER_DOWNLOADED
+    val installedBytes: Long get() = installedSize ?: estimatedInstalledBytes(cautious = false)
+
+    /** [installedBytes] for the free space check: measured, or above every import measured so far. */
+    val installedBytesAtMost: Long get() = installedSize ?: estimatedInstalledBytes(cautious = true)
+
+    private fun estimatedInstalledBytes(cautious: Boolean): Long {
+        if (isModel) return downloadBytes
+        if (build == BUILD_WORDFREQ || build == BUILD_CORPUS_COUNTS) {
+            if (cautious) return BUILT_INSTALLED_AT_MOST
+            val share = if (build == BUILD_WORDFREQ) WORDFREQ_INSTALLED_PER_DOWNLOADED else CORPUS_INSTALLED_PER_DOWNLOADED
+            return minOf(downloadBytes * share, BUILT_INSTALLED_TYPICAL)
         }
+        val share = when (kind) {
+            DictionaryKind.KANJI -> InstalledShare.KANJI
+            DictionaryKind.FREQUENCY -> InstalledShare.FREQUENCY
+            DictionaryKind.PITCH -> InstalledShare.PITCH
+            else -> InstalledShare.TERM
+        }
+        return (downloadBytes * if (cautious) share.atMost else share.typical).roundToLong()
+    }
 
     fun displayTitle(locale: Locale = Locale.getDefault()): String =
         localized(titles, locale)?.let { fill(it, locale) } ?: title
@@ -245,11 +261,30 @@ const val BUILD_FORMS = "forms"
 private val BUILDS = setOf(BUILD_WORDFREQ, BUILD_CORPUS_COUNTS)
 
 /**
- * Imports measured so far stay below these: term dictionaries take 2-2.5 times their archive, Wiktionary glossaries 3,
- * IPA transcriptions 8 (many short rows). The free space check prefers a guess too high to one too low.
+ * Installed bytes per archive byte, from 150 imports measured on a device: [typical] near the median and the
+ * size-weighted mean, [atMost] above the largest. The free space check prefers a guess too high to one too low.
  */
-private const val INSTALLED_PER_DOWNLOADED = 3L
-private const val PITCH_INSTALLED_PER_DOWNLOADED = 9L
+private enum class InstalledShare(val typical: Double, val atMost: Double) {
+    /** Glossaries: 1.2-4.7, most near 2.2. */
+    TERM(2.2, 5.0),
+    KANJI(3.0, 6.0),
+
+    /** Many short rows: 8.7-16. */
+    FREQUENCY(10.0, 17.0),
+
+    /** Pitch accents and IPA transcriptions: 7-14, most near 10. */
+    PITCH(10.5, 15.0),
+}
+
+/**
+ * A built frequency dictionary keeps a language's most frequent words (`WordfreqDictionary.DEFAULT_SIZE`), so a long
+ * source takes no more than a shorter one: 1-14 MB measured, about 12 MB from a long list. A short wordfreq list takes
+ * about 25 times its download, a corpus' counts about 5 times.
+ */
+private const val BUILT_INSTALLED_TYPICAL = 12L * MIB
+private const val BUILT_INSTALLED_AT_MOST = 16L * MIB
+private const val WORDFREQ_INSTALLED_PER_DOWNLOADED = 25L
+private const val CORPUS_INSTALLED_PER_DOWNLOADED = 5L
 
 /** The key of catalog texts for [locale]: the language, or `zh-Hant` for Chinese in traditional characters. */
 fun localeKey(locale: Locale): String = when {

@@ -110,6 +110,20 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - Ratios measured per dictionary on the owner's export: deflated banks 5–38% of their text; installed size 12–140% of the text (highest for frequency and kanji dictionaries with small rows). With the chosen coefficients no dictionary exceeded its estimate (lowest estimate/actual 1.03); the peak estimate was 2.2 GB for 1.83 GB actual uncompressed and 1.8 GB for 1.25 GB actual deflated.
 - The installed dictionaries of this export take 921 MB.
 
+### Size after import of catalog downloads (measured 2026-10-29)
+
+- 150 dictionaries on the API 37 emulator, `du -sk files/dictionaries/*` against the catalog's `downloadSize`
+  (installed / download): term dictionaries median 2.22, size-weighted 2.12, 1.2-4.7 (JMdict Russian 4.7, wty-ja-ja
+  3.7, small Wiktionary pairs into Russian 3.4-3.9, the smallest up to 5.5); kanji about 3 (Unihan Hanja 5.5, 0.2 MB);
+  IPA transcriptions (kind PITCH) median 9.9, weighted 10.7, 7.1-14; Kanjium pitch 13.8; plain frequency lists 8.7
+  (Jiten) and 15.9 (aozora-jukugo); word forms 1.1-1.25 (the catalog carries their measured `installedSize`).
+- Built frequency dictionaries do not follow their download: wordfreq builds take 1.2-13.6 MB (a short list about 25
+  times its download, a long one about 12 MB at the 100,000-word cut), corpus counts 7-14 MB (Thai 4.6 times a 1.5 MB
+  archive, the Leipzig ones 0.5-0.8 times 8-24 MB archives).
+- `CatalogEntry.installedBytes` (the download screen's line) takes the typical share, `installedBytesAtMost` (the free
+  space check) one above the largest; see `InstalledShare` in `DictionaryCatalog.kt`. Measure again with
+  `run-as … du -sk files/dictionaries/*`, `dictionaries.db` and the catalog when the catalog gains other kinds.
+
 ### Harness
 
 - hoshidicts builds on Linux with gcc 14 (`std::ranges::to`); clang 18 with libstdc++ 13 fails on `std::expected`. CMake >= 3.31 from pip. `-DHOSHIDICTS_BENCHMARK=ON -DHOSHIDICTS_CLI=ON` gives `benchmark-import <zip> <n>` and `hoshidicts-cli import <zip>` (imports next to the zip).

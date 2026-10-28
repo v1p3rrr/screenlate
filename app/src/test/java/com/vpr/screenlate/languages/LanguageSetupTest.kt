@@ -213,11 +213,11 @@ class LanguageSetupTest {
     }
 
     @Test
-    fun `totals add the archives, the space after import, and the largest archive on the way`() {
+    fun `totals add the archives, the typical space after import, and the most space with the largest archive`() {
         val totals = setupTotals(listOf(entry("a", "ru", size = 10), entry("b", "ru", size = 30)))
         assertThat(totals.downloadBytes).isEqualTo(40)
-        assertThat(totals.installedBytes).isEqualTo(120)
-        assertThat(totals.neededBytes).isEqualTo(150)
+        assertThat(totals.installedBytes).isEqualTo(88)
+        assertThat(totals.neededBytes).isEqualTo(230)
     }
 
     @Test
@@ -225,7 +225,7 @@ class LanguageSetupTest {
         val bundled = entry("hanja", "en", size = 20, url = "asset:///catalog/hanja.zip")
         val totals = setupTotals(listOf(entry("a", "ru", size = 10), bundled))
         assertThat(totals.downloadBytes).isEqualTo(10)
-        assertThat(totals.installedBytes).isEqualTo(90)
+        assertThat(totals.installedBytes).isEqualTo(66)
     }
 
     private val index = "https://example.org/fi-en-index.json"
