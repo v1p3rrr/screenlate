@@ -116,8 +116,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB13 | Home's switch and Bubble → "Show the bubble" hide and show it | F | M | 2026-10-14 |
 | BUB14 | An app in the hidden apps list → the bubble hides there and comes back outside it | O | M | |
 | BUB15 | E-ink: the hold menu is white with a black frame, black text and a black ring around the active code, no shadow or ripple | F | M | 2026-10-14 |
-| BUB16 | No app task; "Look up in Screenlate" in a selection menu, then a button there that opens the app (the grey ➕ → "Open Anki settings", or "Manage dictionaries"); Home → the hold menu's "Open Screenlate", then the launcher icon → the same screen comes back, `dumpsys activity activities` lists one MainActivity, the task's root intent is the launcher's (`dumpsys activity recents`); Back leaves the app | F | I OpenAppTest, M | 2026-10-26 |
-| BUB17 | Hold the bubble over any Screenlate page (Home, settings, a photo) → no Open Screenlate in the menu; over another app it is there; with nothing to copy, no language row and Screenlate in front, holding opens no menu and gives no vibration | N | M | 2026-10-28 (API 37; the vibration not seen, the emulator records none) |
+| BUB16 | No app task; "Look up in Screenlate" in a selection menu, then a button there that opens the app (the grey ➕ → "Open Anki settings", or "Manage dictionaries"); Home → the hold menu's "Open Screenlate", then the launcher icon → the same screen comes back, `dumpsys activity activities` lists one MainActivity, the task's root intent is the launcher's (`dumpsys activity recents`); Back leaves the app | F | I OpenAppTest, M | 2026-10-28 (`main`: the hold menu over a task started by an explicit intent; the search path and OpenAppTest not run) |
+| BUB17 | Hold the bubble over any Screenlate page (Home, settings, a photo) → no Open Screenlate in the menu; over another app it is there; with nothing to copy, no language row and Screenlate in front, holding opens no menu and gives no vibration | N | M | 2026-10-28 (API 37, also on `main`; the vibration not seen, the emulator records none) |
 | BUB18 | Hold the docked bubble without moving it → the menu with the quick-language flags (two or more quick languages) and Open Screenlate (over another app), no copy items even after a scan; a flag switches the language and the docked glyph changes; over Screenlate with one quick language nothing opens; a move before the hold time still pulls the bubble out or moves the dock; the menu fits on screen at each dock side | N | M | |
 
 ### OCR: text sources and recognition
@@ -282,7 +282,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP36 | A Lithuanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Lithuanian text"; one chosen sets ą č ę ė į š ų ū ž; the bubble shows Ė and the Languages screen Lithuania's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP37 | A Slovak entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovak text"; one chosen sets á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž; the bubble shows Ô and the Languages screen Slovakia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP38 | A Slovenian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovenian text"; one chosen sets č š ž; the bubble shows SL and the Languages screen Slovenia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
-| POP39 | Aim at a word, then off text so the popup closes, then at another word → the popup opens with the new word only, the previous one never shows; from one word straight to the next, the popup moves to the new word together with its content | N | M | 2026-10-28 (API 37, frame by frame) |
+| POP39 | Aim at a word, then off text so the popup closes, then at another word → the popup opens with the new word only, the previous one never shows; from one word straight to the next, the popup moves to the new word together with its content | N | M | 2026-10-28 (API 37, frame by frame; `main` by screenshots only) |
 
 ### AUD: audio
 
@@ -386,15 +386,15 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC20 | A download started again while it is queued, running or waiting for its retry (catalog card, language setup, home "Download again", Update after "Check for updates") adds no second task; with its stopped card listed, a new download of it continues it and the stopped card goes | F | U DictionaryImportsTest, M | 2026-10-19 (catalog card, Update), 2026-10-22 (setup, home) |
 | DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | F | M | 2026-10-22 |
 | DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | F | U TaskItemsTest, M | 2026-10-22 |
-| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-22 (a waiting retry, a shared card; the file import not run) |
-| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build goes at the next import | F | M | 2026-10-22 |
+| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-28 (`main`: a queued download offline, which has no shared card; the file import not run) |
+| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build loses at the next import what no queued import reads (a file import queued there before the update still installs) and goes once empty | F | U StorageCleanUpTest, M | 2026-10-28 (`main`, before the fix that keeps the queued files; the queued file import of an older build and Clear cache not run) |
 | DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | F | U InstallingTest, UpdateCheckTest, M | 2026-10-22 |
 | DIC26 | A Leipzig frequency list (Kazakh): the setup downloads `kaz_newscrawl_2016_100K` (18 MB, SHA-256 checked), keeps only its word list, builds 100,000 words on the device and registers "Leipzig Corpora Collection (kk)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC27 | A Leipzig frequency list (Kyrgyz): the setup downloads `kir_newscrawl_2016_100K` (19 MB, SHA-256 checked), builds 100,000 words on the device and registers "Leipzig Corpora Collection (ky)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC28 | PanLex conversions (`scripts/panlex/panlex_yomitan.py`, kk and ky into ru and en) import from a file with their language pair ("PanLex ky-ru": ky → ru); a lookup shows one line of comma-separated translations with Russian stress marks, under the wty entry of the same headword; verb chains reach these untagged entries (алды → алуу) | O | U test_panlex_yomitan.py, M | 2026-10-20, 2026-10-22 (kk-en, ky-ru) |
-| DIC29 | Wi-Fi and mobile data off during a catalog download: its task card says "Waiting for a network: …" and its catalog card "Waiting for a network", the log "stopped by WorkManager (reason 7): waits for a network, then runs again" (or "the network went away during the download …; waits for it"); no retry is counted and no "download stopped" card appears; with the network back the download continues from the bytes already there ("… KB already there") and installs | F | U DictionaryImportsTest, M | 2026-10-22 |
+| DIC29 | Wi-Fi and mobile data off during a catalog download: its task card says "Waiting for a network: …" and its catalog card "Waiting for a network", the log "stopped by WorkManager (reason 7): waits for a network, then runs again" (or "the network went away during the download (…) and is back; continues", "…, none for 30 s; tries again"); no retry is counted and no "download stopped" card appears; with the network back the download continues from the bytes already there ("… KB already there") and installs | F | U DictionaryImportsTest, M | 2026-10-28 (`main`) |
 | DIC30 | The network goes at the moment the last retry breaks off (a proxy `10.0.2.2:8899` that never answers for the break-offs, Wi-Fi and data off just before or just after the third retry's 20 s read timeout): the card keeps "Retrying the download (3 of 3)" with "Waiting for a network", never "download stopped"; with the network back (proxy removed) it finishes. A task that ended (stopped after its last retry, cancelled, failed or installed) never runs again: turning the network off and on starts nothing | F | U DictionaryImportsTest, M | 2026-10-22 |
-| DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-22 (two downloads after a stopped one; Resume by unit test) |
+| DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-28 (`main`: two downloads after a stopped one, Resume by hand) |
 | DIC32 | A transcription dictionary with millions of tagged transcriptions imports with its tags (Chinese: Transcription (Wiktionary), wty-zh-ipa, 4.4 million): no "Reading or writing transcription tags failed" in the log, `transcription_tags.bin` in its directory, and the `{phonetic-transcriptions}` marker of 中国 gives "(zh_pron, Pinyin, Mandarin) Zhōngguó"; a transcription dictionary imported by an older version (the first file format) still shows its tags (English water) | F | U TranscriptionTagsTest, TranscriptionTagBanksTest, M | 2026-10-22 |
 | DIC33 | Norwegian dictionaries imported from a file: wty's nn–en archive (its index names nn) and the WikDict no-ru conversion (`scripts/freedict`, its index names no) are both filed under Norwegian, and a Norwegian lookup shows their entries | F | U IndexLanguageTest, test_freedict_yomitan.py, M | 2026-10-22 |
 | DIC34 | Czech dictionaries under Slovak: with Slovak on and Czech off, the Dictionaries screen lists the installed cs-en in Slovak's list (cs → en) and "Turned off" does not list it; turning Czech off with "Delete its dictionaries and models" keeps cs-en while Slovak is on; with both off, cs-en is listed under "Turned off" as Czech's | F | U DictionaryLanguagesTest, OcrModelsTest, M | 2026-10-22 |
@@ -582,6 +582,53 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28 night, `claude/port-fixes-to-main-3e7385` (`d1f8ee9f`) and `claude/download-fixes-lang` (from `9a401674`)
+
+Scope: the fix round after the review of the port: the old cache folder keeps the files a queued import reads, a
+download whose network went keeps waiting in its run, `main`'s retries wait in the run, the least linear backoff.
+Automated only: `main` unit tests 629, page tests 107, lint; `languages/main` unit tests 1750, lint. DIC24, DIC29 and
+DIC31 not run on the emulator: group 5a held the lock from 03:01 past 04:49.
+
+### 2026-10-28, `claude/port-fixes-to-main-3e7385` (`main` 2df1e55c with the fixes ported from `languages/main`, 0.2.3-7c4d2b30, side-by-side install), Pixel_10_Pro (API 37)
+
+Scope: the download fixes ported to `main` (the own input merger, the wait for a network, partial downloads in
+`no_backup`) and a smoke test of the other ports (the app opened with the launcher's intent, the hold menu without
+Open Screenlate over the app, the popup hidden until its new view is drawn). Cases DIC23, DIC24, DIC29, DIC31, BUB16
+(the hold menu path), BUB17, POP39. The x86_64-only debug APK was built with an init script (scratchpad only) that set
+the application ID to `com.vpr.screenlate.debugmain`, so it installed next to the `languages/main` debug app without
+touching its data; uninstalled afterwards. Automated: unit tests 622, page tests 107, lint passed (no issue in the
+changed lines).
+
+Results: every case passed.
+
+- First launch: the bundled install (4 dictionaries) in 5.4 s.
+- DIC23: Wi-Fi and data off, JMdict (Spanish) queued: the task card "Waiting for a network: JMdict (Spanish)", the
+  catalog card "Waiting for a network"; with the network back it started at once and installed. `main` has no shared
+  waiting card; a waiting retry and the file import not run.
+- DIC29: Wi-Fi and data off 3 s into Колобок 400k (42 MB): "stopped by WorkManager (reason 7): waits for a network,
+  then runs again", both cards "Waiting for a network", 1.7 MB in `no_backup/dictionary-downloads/`, nothing in
+  `cache/`. Network back after 50 s: run 2, "1660 KB already there", installed; no retry counted.
+- DIC31: JMdict (French) through a host socket that accepts and never answers (`settings put global http_proxy
+  10.0.2.2:8899`): four runs (60 s timeouts, retries 30 s, 1 min and 2 min apart), then "JMdict (French): download
+  stopped — connection lost" with Cancel and Resume. Proxy removed, JMdict (Russian) and Wiktionary (ja–ru) started
+  together: each downloaded its own archive (`JMdict_russian.zip`, `wty-ja-ru.zip`) and installed. WorkManager's
+  database lists the stopped French task (SUCCEEDED) as the Russian task's prerequisite, the case the default input
+  merger got wrong. After `am kill` in the background and a restart the stopped card stayed and nothing ran by
+  itself; Resume downloaded `JMdict_french.zip` and installed it.
+- DIC24: a file planted in `cache/dictionary-downloads/` went with the first import of the next process (the bundled
+  install at start logged "1 import leftovers"); Clear cache not run.
+- BUB16, the hold menu path: the task removed, `am start -n …/MainActivity` (the intent the search used before), Home,
+  the bubble pulled out over the launcher, its hold menu: Copy all recognized text and Open Screenlate; Open Screenlate
+  brought back the same ActivityRecord, one MainActivity in the task. The selection menu's path and `OpenAppTest` not
+  run (`am instrument` force-stops its target).
+- BUB17: over the app's Home the hold menu has only Copy all recognized text.
+- POP39, by screenshots only: `form-of-ja.png` in the debug viewer, the aim on く of 動く → the popup with its entries;
+  on to 社會 → the popup moved with 社會's entries; ✕, then the aim on 行く → the popup opened with the new word. Once
+  drawn the popup window is touchable again (no `NOT_TOUCHABLE`). Single frames not checked.
+
+Left on the emulator: as before (the `languages/main` debug app, its service enabled, the proxy settings deleted,
+Wi-Fi and data on); the emulator shut down and the lock released.
 
 ### 2026-10-28, `languages/5a-answers` (`00661d7b` and the straight-quote fix on top), Pixel_10_Pro (API 37)
 
