@@ -116,7 +116,8 @@ has no list for, they use the word counts of the Thai National Corpus published 
 (https://github.com/PyThaiNLP/pythainlp, pythainlp/corpus/tnc_freq.txt), CC0 1.0. For Kazakh and Kyrgyz they use the
 word counts of the Kazakh and Kyrgyz news corpora of the Leipzig Corpora Collection
 (https://wortschatz.uni-leipzig.de/en/download, kaz_newscrawl_2016_100K, kir_newscrawl_2016_100K) by Leipzig
-University, CC BY, and for Latin those of its Latin Wikipedia corpus (lat_wikipedia_2021_100K), CC BY.
+University, CC BY, and for Latin and Esperanto those of their Wikipedia corpora (lat_wikipedia_2021_100K,
+epo_wikipedia_2021_100K), CC BY.
 
 Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Bengali, Thai, Khmer, Arabic,
 Persian, Hebrew and Latin, from the Google Fonts repository, https://github.com/google/fonts) are not part of the APK

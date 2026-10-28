@@ -1730,8 +1730,9 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
 - Import: every headword is also keyed without the circumflex of ĉ ĝ ĥ ĵ ŝ and the breve of ŭ (`markBases`), the
   exact spelling first (si, then ŝi).
 - Catalog: wty eo into en ru de es fr ja pl pt tr zh and the transcription, all ticked (eo-it 1,209 and eo-vi 250
-  words stay under the line); no frequency dictionary (wordfreq has no Esperanto; question 28 of the group 5a plan
-  proposes Leipzig's Wikipedia counts); Tesseract `epo` fast recommended (0.8% errors on the test screens against ML
+  words stay under the line); Leipzig's Wikipedia word counts (`epo_wikipedia_2021_100K`, 19.1 MB, CC BY) as the frequency
+  dictionary, built on the phone as Latin's (wordfreq has no Esperanto; question 28 of the group 5a plan, decided
+  provisionally); Tesseract `epo` fast recommended (0.8% errors on the test screens against ML
   Kit's 2.2%), best unticked; Paddle not offered (it reads every hat letter wrong).
 - Coverage: eo-en and eo-ru find 88-90% of the lowercase words of running text as written; ESPDIC (63,829 terms,
   converted: 977 KB, CC BY 3.0) would add 2%, listed once hosted.

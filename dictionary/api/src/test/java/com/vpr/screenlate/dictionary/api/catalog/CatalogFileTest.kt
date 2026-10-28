@@ -99,9 +99,17 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz and latin have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin and esperanto have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo").inOrder()
+        val esperanto = built.single { it.sourceLanguage == "eo" }
+        assertThat(esperanto.recommended).isTrue()
+        assertThat(esperanto.sha256).isEqualTo("afc637eeb783189b43dd646525b5ca61e45115b9143d67d7d022c42ecafcd620")
+        assertThat(esperanto.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/epo_wikipedia_2021_100K.tar.gz")
+        assertThat(esperanto.oldTitles).containsExactly(CorpusCountsDictionary.title("eo"))
+        assertThat(esperanto.description(Locale.ENGLISH))
+            .startsWith("Leipzig Corpora Collection, Esperanto: how common words are in Wikipedia")
         val latin = built.single { it.sourceLanguage == "la" }
         assertThat(latin.recommended).isTrue()
         assertThat(latin.sha256).matches("[0-9a-f]{64}")
@@ -302,16 +310,16 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `esperanto offers ten wiktionaries, its transcription and tesseract fast, ticked, tesseract best and no paddle`() {
+    fun `esperanto offers ten wiktionaries, its transcription, the leipzig counts and tesseract fast, ticked, tesseract best and no paddle`() {
         val esperanto = catalog!!.entries.filter { it.isFor(Language.ESPERANTO) }
         assertThat(esperanto.filter { it.recommended }.map { it.id }).containsExactly(
             "wiktionary-eo-en", "wiktionary-eo-ru", "wiktionary-eo-de", "wiktionary-eo-es", "wiktionary-eo-fr",
             "wiktionary-eo-ja", "wiktionary-eo-pl", "wiktionary-eo-pt", "wiktionary-eo-tr", "wiktionary-eo-zh",
-            "wiktionary-eo-transcription", "tesseract-fast-epo",
+            "wiktionary-eo-transcription", "corpus-eo", "tesseract-fast-epo",
         )
         // Paddle's models read every hat letter wrong.
         assertThat(esperanto.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-epo")
-        assertThat(esperanto.filter { it.category == CatalogCategory.FREQUENCY }).isEmpty()
+        assertThat(esperanto.filter { it.category == CatalogCategory.FREQUENCY }.map { it.id }).containsExactly("corpus-eo")
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.ESPERANTO) }).isEqualTo(esperanto)
     }
 

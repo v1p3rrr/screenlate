@@ -2059,6 +2059,25 @@
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },
     {
+      "id": "corpus-eo",
+      "title": "Leipzig Corpora Collection (eo)",
+      "template": "leipzig-wikipedia",
+      "oldTitles": [
+        "Leipzig Corpora Collection (eo)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "eo",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/epo_wikipedia_2021_100K.tar.gz",
+      "downloadSize": 19106073,
+      "sha256": "afc637eeb783189b43dd646525b5ca61e45115b9143d67d7d022c42ecafcd620",
+      "build": "corpus-counts",
+      "version": "2021",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
