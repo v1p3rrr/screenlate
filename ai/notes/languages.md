@@ -1713,6 +1713,30 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   headwords (105 KB). The WikDict conversions come out unchanged. Listed once hosting exists, as ESPDIC and
   WikDict.
 
+### Esperanto on `languages/eo` (2026-10-28)
+
+- `Language.ESPERANTO` (`eo`), `EsperantoSupport`: glyph Ĉ, the Esperanto flag (`lang_eo`, circle-flags
+  `language/eo`), the Latin fonts with latin-ext that have ĉ ĝ ĥ ĵ ŝ ŭ (Atkinson Hyperlegible Next has none of them),
+  Lingua Libre first for audio (Q143, 20 of 20 common words, 10 speakers; Wiktionary 20 too; Google's voices have no
+  Esperanto), ordinals with an ending (5-a, no ordinal period), “…”, „…“ and «…» paired, the abbreviation lists and
+  paired letters (t. e., i. a.) of `notes/language-rules.md`. OCR letter fix: the letters engines give for the hat
+  letters (š č ċ ġ ğ ģ ħ ũ ű ů ǔ and their capitals) become ĉ ĝ ĥ ŝ ŭ, in OCR text only.
+- Sentences: “ closes „…“ and opens “…”. `Sentence.extract` keeps the open (and, walking back, the closed) quotes on a
+  stack instead of depth counters and reads such a character as a closer only when it closes the innermost quote; no
+  other language pairs one character both ways, so their results are unchanged.
+- Bundle (`eo.js`, 53 KB): Yomitan's Esperanto descriptor (capitalization, 24 rules) with our x-system processor (cx
+  for ĉ, ux for ŭ, any case; the h-system is not read) and Ukrainian's apostrophe variants (dank’ al, dank' al). The
+  rule names and descriptions are Yomitan's, translated in all 14 locales (`inflections_eo.xml`, 30 strings).
+- Import: every headword is also keyed without the circumflex of ĉ ĝ ĥ ĵ ŝ and the breve of ŭ (`markBases`), the
+  exact spelling first (si, then ŝi).
+- Catalog: wty eo into en ru de es fr ja pl pt tr zh and the transcription, all ticked (eo-it 1,209 and eo-vi 250
+  words stay under the line); Leipzig's Wikipedia word counts (`epo_wikipedia_2021_100K`, 19.1 MB, CC BY) as the frequency
+  dictionary, built on the phone as Latin's (wordfreq has no Esperanto; question 28 of the group 5a plan, decided
+  provisionally); Tesseract `epo` fast recommended (0.8% errors on the test screens against ML
+  Kit's 2.2%), best unticked; Paddle not offered (it reads every hat letter wrong).
+- Coverage: eo-en and eo-ru find 88-90% of the lowercase words of running text as written; ESPDIC (63,829 terms,
+  converted: 977 KB, CC BY 3.0) would add 2%, listed once hosted.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

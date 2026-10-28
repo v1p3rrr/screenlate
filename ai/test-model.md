@@ -165,6 +165,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR39 | Lithuanian recognition (`testdata/ocr/lt-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ą č ę ė į š ų ū ž and Ū): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, an Ū, ė or į it reads as Ü, é or ị is found as the Lithuanian letter, and a word whose marks it drops is found too (Ukis finds ūkis); Tesseract lit fast, marked "more accurate" and chosen in the Bubble settings, reads the screen; app text of a Lithuanian sentence with a foreign é (José, AnkiDroid's note editor) keeps the é | F | U LithuanianSupportTest, CatalogFileTest, M | 2026-10-22 |
 | OCR40 | Slovak recognition (`testdata/ocr/sk-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with á ä č ď é í ľ ň ó ô š ť ú ý ž): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, and a word whose marks it drops (ť ď ľ read as t d l) is found through the keys without marks (tazke finds ťažké); Tesseract slk fast, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovakSupportTest, CatalogFileTest, M | 2026-10-22 |
 | OCR41 | Slovenian recognition (`testdata/ocr/sl-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with č š ž and »…«): cloud recognition reads the screen (» « may come as >> <<); offline, ML Kit's Latin model reads it, and a word whose caron it drops is found through the keys (zena finds žena); PaddleOCR v5 Latin, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovenianSupportTest, CatalogFileTest, M | 2026-10-22 |
+| OCR42 | Esperanto recognition (`testdata/ocr/eo-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ĉ ĝ ĥ ĵ ŝ ŭ): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, a hat letter it reads as Š Č ũ ű shows as Ŝ Ĉ ŭ in the recognized text, and a word whose hat it drops is found through the keys; Tesseract fast, marked "more accurate" and chosen in the Text recognition settings, reads the screen; no PaddleOCR model is offered | N | U EsperantoSupportTest, CatalogFileTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -239,6 +240,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK67 | The Kyrgyz verbal noun in -ыш: болушу finds болуу ("verbal noun « his, her, their"); иш finds only иш, no verb | F | U glue `kyrgyz verbal nouns in -ыш…`, M | 2026-10-22 |
 | LK70 | Slovenian lookups (overlay over `testdata/ocr/sl-sample.png`, and the Search screen): vode finds voda through its form row vôde; delal finds delati through dẹ́lał; je finds biti through its form row's lemma bíti; zena and ZENA find žena; se shows se first, then še | F | U SlovenianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-22 |
 | LK71 | Long compounds: with the scan length never changed, the Lookup settings show 24 for Swedish, Danish and Norwegian and 16 for German; aimed at the start of statsministerkandidat in the overlay (an image of "Statsministerkandidaten talade länge.", `scripts/text-image.py`, Segoe UI), the compound line shows statsminister + kandidat | N | U SwedishSupportTest, DanishSupportTest, NorwegianSupportTest, Isolation, M | 2026-10-28 |
+| LK72 | Esperanto lookups (overlay over `testdata/ocr/eo-sample.png`, and the Search screen): cxu, CXu and cu find ĉu; mangxajxojn and mangajojn find manĝaĵo; pomojn finds pomo (accusative, plural); malbona shows malbona, then bona; si shows si first, then ŝi; dank’ al and dank' al find dank' al | N | U EsperantoSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -282,6 +284,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP36 | A Lithuanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Lithuanian text"; one chosen sets ą č ę ė į š ų ū ž; the bubble shows Ė and the Languages screen Lithuania's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP37 | A Slovak entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovak text"; one chosen sets á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž; the bubble shows Ô and the Languages screen Slovakia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP38 | A Slovenian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovenian text"; one chosen sets č š ž; the bubble shows SL and the Languages screen Slovenia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
+| POP40 | An Esperanto entry: the Popup settings' font card lists Literata, Inter, Lexend, PT Serif and PT Sans with "Only for text in Esperanto", and not Atkinson Hyperlegible Next; one chosen sets ĉ ĝ ĥ ĵ ŝ ŭ; the bubble shows Ĉ and the Languages screen the Esperanto flag (a green star) | N | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP39 | Aim at a word, then off text so the popup closes, then at another word → the popup opens with the new word only, the previous one never shows; from one word straight to the next, the popup moves to the new word together with its content | N | M | 2026-10-28 (API 37, frame by frame) |
 
 ### AUD: audio
@@ -314,6 +317,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD24 | Lithuanian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on vanduo lists Lingua Libre's recording; the phone's voice speaks Lithuanian where it has one | F | U LithuanianSupportTest, M | 2026-10-22 |
 | AUD25 | Slovak audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on mäso lists Lingua Libre's recording (Lingua Libre has no voda); the phone's voice speaks Slovak where it has one | F | U SlovakSupportTest, M | 2026-10-22 |
 | AUD26 | Slovenian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on voda lists Lingua Libre's recording; the phone's voice speaks Slovenian where it has one | F | U SlovenianSupportTest, M | 2026-10-22 |
+| AUD27 | Esperanto audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on akvo lists Lingua Libre's recordings first, then Wiktionary's | N | U EsperantoSupportTest, M | 2026-10-28 |
 
 ### ANK: Anki
 
@@ -351,6 +355,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK30 | An initial before a surname holds the sentence: a Kyrgyz note added from the popup for келди in "Президент К. Бакиев Ошко келди." (`scripts/text-image.py`, Segoe UI) has the whole sentence as Sentence | F | U SentenceTest `anInitialBeforeASurnameKeepsTheSentenceInEverySpacedLanguage`, KyrgyzSupportTest, M | 2026-10-22 |
 | ANK32 | A Slovenian Anki note: for Novak in "Prof. dr. Novak se je rodil 5. maja 1950 v Ljubljani." the sentence is whole; for jabolka in "Sadje, t. i. jabolka in hruške, je stalo npr. 5 tis. evrov." it is whole; for je after the quote in "»Pridi sem!« je zaklicala." it is whole, for sem inside it "»Pridi sem!«"; "Mesto je nastalo v 3. stol. pr. n. št. Potem je propadlo." ends at št. | F | U SentenceTest, SlovenianSupportTest, M | 2026-10-22 |
 | ANK33 | Quotes that cloud recognition reads as plain characters: over `testdata/ocr/sl-anki.png`, the popup's text has »Pridi sem!« and the note for sem has "»Pridi sem!«", the one for je after it "»Pridi sem!« je zaklicala."; over an image of "„Vino aici!” a strigat ea." (Romanian) the strigat note has the whole sentence; the same Slovenian sentence typed with >> << in AnkiDroid's note editor (app text) keeps >> << (there they are no quotes, so the ! ends the sentence: ">>Pridi sem!" for sem, "<< je zaklicala." for je) | N | U OcrQuotesTest, OcrPageLanguageTest, Isolation, M | 2026-10-28 |
+| ANK34 | An Esperanto Anki note (`testdata/ocr/eo-anki.png`, one paragraph), with on-device recognition: for foriris the sentence is "Li diris „Jes.“ kaj foriris.", for amiko "“Venu, amiko.”", for venis "“Venu, amiko.” Ŝi venis."; for pomoj "Ekz. pomoj kaj piroj ktp."; for jarcento "La 9-a jarcento a.K. estis longa."; with cloud recognition pomoj and jarcento as above, while foriris, amiko and venis get the " it writes for the “ after Jes. and before Venu (group 5a question 30) | N | U SentenceTest, EsperantoSupportTest, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -402,6 +407,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC36 | Catalog parts: each translation language and each other kind is a heading with its count ("Russian · 3", no arrow); English, the language's own (Japanese for Japanese) and the interface language's come first, the other translation languages sit inside "Other languages · N" (N languages, closed at first, each inner part indented and closed), then a divider and "Supplementary dictionaries" over frequency, pitch and kanji; with the interface in English only English is open, in Russian only Russian; a download or an update waiting in an inner part opens it and "Other languages"; a part with a download under way or an update waiting opens by itself; a part closed by hand stays closed (also with a download in it) after leaving the page and coming back, and starts from the defaults again after the process restarts; TalkBack reads "Show the list" or "Hide the list" on a heading | N | U CatalogSectionsTest, M | |
 | DIC37 | Latin's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (15.5 MB) and the frequency chip shows on Latin entries; amicis shows amicus (rank 2,148) before amicio | N | U CorpusCountsDictionaryTest, CatalogFileTest, LatinSupportTest, M | 2026-10-28 |
 | DIC38 | FreeDict slv-eng converted by `scripts/freedict` imports from a file under Slovenian (its index names sl), credits Gorazd Gorup and FreeDict, and ob shows its FreeDict line | O | U test_freedict_yomitan.py, M | 2026-10-28 |
+| DIC39 | Esperanto's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (19.1 MB) and the frequency chip shows on Esperanto entries; si still shows si before ŝi, the chips giving si 366 and ŝi 46 | N | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -433,6 +439,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG23 | Lithuanian setup: the download screen offers Wiktionary into English, Russian, German, French, Korean, Polish and Chinese and the transcription, ticked, and wordfreq; ML Kit is the main model, Tesseract lit fast unticked and marked "more accurate" (ticked, it becomes the chosen model), Tesseract accurate and PaddleOCR v5 Latin and v6 unticked; the flag is Lithuania's | F | U CatalogFileTest, FlagsTest, M | 2026-10-22 |
 | LNG24 | Slovak setup: the download screen offers Wiktionary into English, Russian, French, Polish, Turkish and Chinese and the transcription, ticked, and wordfreq; after Slovak's own main dictionaries the Czech ones in the chosen languages of definitions, unticked, each with "Fallback dictionary (Czech)"; with only a Czech one ticked the button stays disabled; ticking cs-en downloads it with Slovak's; ML Kit is the main model, Tesseract slk fast unticked and marked "more accurate", Tesseract accurate and PaddleOCR v5 Latin and v6 unticked; the flag is Slovakia's | F | U LanguageSetupTest, CatalogFileTest, FlagsTest, M | 2026-10-22 |
 | LNG25 | Slovenian setup: the download screen offers Wiktionary into English, Russian, French, Polish, Turkish and Chinese, the transcription and wordfreq ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract slv fast and accurate unticked; the flag is Slovenia's and the bubble shows SL | F | U CatalogFileTest, M | 2026-10-22 |
+| LNG26 | Esperanto setup: the download screen offers Wiktionary into English, Russian, German, Spanish, French, Japanese, Polish, Portuguese, Turkish and Chinese and the transcription, ticked, and Leipzig's word frequency, ticked; ML Kit is the main model, Tesseract epo fast unticked and marked "more accurate", accurate unticked, no PaddleOCR; the flag is Esperanto's own and the bubble shows Ĉ | N | U CatalogFileTest, M | 2026-10-28 |
 
 ### SET: settings, backup, appearance
 
@@ -582,6 +589,40 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/eo` (`ee52f32d` on `d206dcaf`; DIC39 after the rebase onto `9a401674`), Pixel_10_Pro (API 37)
+
+- Build: debug APK for x86_64 only; unit tests, lint, the page tests (146) and the glue tests passed; LanguageLookupTest
+  (31 tests) passed on the emulator, its test package uninstalled after.
+- LNG26: the download screen offers English, and "Another language…" Russian, Spanish, French, German, Chinese,
+  Japanese, Polish, Portuguese and Turkish; Transcription (Wiktionary) ticked; ML Kit (built in) checked, Tesseract fast
+  "More accurate" unticked (4.7 MB), accurate unticked (7.4 MB), no PaddleOCR; the Esperanto flag; the bubble shows Ĉ.
+  Downloaded with Tesseract fast ticked (11 MB). Checked before the frequency dictionary existed (DIC39).
+- OCR42: cloud recognition (final from cloud) gives the text but for Eĥoŝanĝo, read as Ehoŝanĝo. ML Kit (Engines on
+  Device): "HarkovO." still finds Ĥarkovo through the keys, "manĝis jus?", "Ŝi aĉetis fresaj" (Ŝ and ĉ written).
+  Tesseract fast, chosen under Text recognition → On-device model ("Recommended · Installed"): "Eĥoŝanĝo ĉiuĵaŭd" with
+  every hat (final from the device model).
+- LK72: Search: cxu, CXu and cu find ĉu; mangxajxojn and mangajojn find manĝaĵo; pomojn finds pomo (accusative «
+  plural); malbona shows malbona, malbono, then bona (mal-); si shows si, then ŝi; dank' alone finds nothing (the
+  dictionary has dank' al and dank'al), dank' al and dank’ al (sent through the selected-text action, as `input text`
+  cannot type ’) find dank' al. Overlay: Ĉu finds ĉu (cloud); with ML Kit pomojn finds pomo, malbona malbona and
+  malbono.
+- POP40: the font card lists the phone's font, Lexend, PT Serif, Literata, Inter and PT Sans with "Only for text in
+  Esperanto", no Atkinson Hyperlegible Next; PT Serif draws ĥ ŝ ĝ ŭ in the headwords; the phone's font restored after.
+- AUD27: sources Lingua Libre, Wiktionary, Text-to-speech; holding 🔊 on akvo lists six Lingua Libre speakers, then
+  Eo-akvo.ogg (Wiktionary), then Text-to-speech.
+- ANK34 (deck Screenlate Test): on-device (Tesseract fast) foriri "Li diris „Jes.“ kaj foriris.", amiko "“Venu,
+  amiko.”", veni "“Venu, amiko.” Ŝi venis."; cloud recognition: pomo "Ekz. pomoj kaj piroj ktp.", jarcento "La 9-a
+  jarcento a.K. estis longa.", but it writes the “ after Jes. and the one before Venu as ", so foriri got '" kaj
+  foriris.', amiko '"Venu, amiko.”' and veni both sentences. The straight-quote rule reads a " only after ! or ?
+  (question 22); plan question 30 added, decided provisionally to leave it.
+- DIC39: the catalog's Frequency part lists "Word frequency (Leipzig Corpora Collection)", eo, 19 MB, CC BY, its
+  description naming Wikipedia articles; it built on the device as "Leipzig Corpora Collection (eo)", sorting results;
+  si shows si (L 366), then ŝi (L 46); au, no headword of its own, finds aŭ (L 22). The tick on the first download
+  screen was not seen: Esperanto was already set up (CatalogFileTest covers its recommended flag).
+- Seen, not the app's: the emulator's NFC service crashed every few seconds, and the system stopped and rebound the
+  accessibility service about every 10 s throughout the run; each time it was back within about a second, and Home
+  kept the card "The bubble is not shown: the system stopped the service" while the service ran.
 
 ### 2026-10-28, `languages/5a-answers` (`00661d7b` and the straight-quote fix on top), Pixel_10_Pro (API 37)
 

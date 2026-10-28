@@ -90,9 +90,19 @@ the details.
 
 ### Outside the camera feature
 
-- Release from `main` ("Release from `main`" below): port the download-queue fix and the three related commits from
-  `languages/main`, run the checks listed there, write the release notes; the version number is asked at release
+- Release from `main` ("Release from `main`" below): the fixes are ported on `claude/port-fixes-to-main-3e7385`
+  (2026-10-28 night). A separate review found one bug, which `languages/main` has too: the start-up clean-up deletes
+  the old `cache/dictionary-downloads/` outright, so a file or collection import queued by an older version fails
+  after the update. It also found two smaller issues:
+  - WorkManager's exponential backoff grows with every network stop, so after a few losses the next run waits long;
+  - the clean-up and the download loop's choice between a lost network and a break-off have no tests.
+  The port session fixes all three on the port branch and on `claude/download-fixes-lang` (from `languages/main`);
+  then the merge into `main`, the checks listed below and the release notes. The version number is asked at release
   time.
+- Seen on the emulator by group 5a (2026-10-28): while the NFC HAL crash-loops, the system rebinds Screenlate's
+  accessibility service about every 10 s, and Home keeps showing "The bubble is not shown: the system stopped the
+  service" while the service runs. Not checked yet: whether the card should ignore a rebind that follows within
+  seconds.
 - The ColorOS report ("User report (2026-10-20)", `notes/oem-background-limits.md`): settled on 2026-10-28, adding
   Screenlate to the security app's allowlist stopped the switch-offs; Background work now says so on every phone
   (settings rework).
@@ -102,9 +112,12 @@ the details.
   Russian label of the -ыш rule, the other three PanLex archives; from the checks: the timing run's row "Default OCR
   engines", the speed marks in words and the Both-mode hint; DIC24 (resume after Clear cache) and DIC25 not run; the
   owner re-imports the Russian dictionaries (the stress-mark rule changes them at import).
-- Group 5a (`plans/2026-10-19-group-5a.md`), resumed 2026-10-28: the four answers of 2026-10-22 on
-  `languages/5a-answers`; Esperanto, Albanian and Swahili follow on `languages/eo`, `languages/sq`, `languages/sw`,
-  each from the newest `languages/main` and rebased before its report.
+- Group 5a (`plans/2026-10-19-group-5a.md`), resumed 2026-10-28. Merged into `languages/main`:
+  - the four answers of 2026-10-22 (`languages/5a-answers`, 9a401674);
+  - Esperanto (`languages/eo`, cc6e26cf).
+  Albanian and Swahili follow on `languages/sq` and `languages/sw`, each rebased onto the newest `languages/main`
+  before its report. Question 30 is answered provisionally: a straight " that cloud recognition writes after a full
+  stop stays as it is.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -400,6 +413,14 @@ length of 24 for Swedish, Danish and Norwegian; quotes that OCR writes in ASCII 
 » «, a " after ! or ? as the open quote's closer; OCR pages only); a Latin frequency dictionary built on the device
 from Leipzig's Latin Wikipedia, words counted without vowel lengths; the FreeDict converter reads older headers and
 slv-eng is converted (listed once hosted).
+
+Esperanto on `languages/eo` (2026-10-28, rebased onto `languages/main` 9a401674): every headword keyed without the hats
+(cu finds ĉu, si shows si, then ŝi), the x-system read in any text (cxu), the letters engines give for the hat
+letters fixed in OCR text (š → ŝ, ǔ → ŭ, the capitals too: plan question 29, decided provisionally), the
+abbreviations and quotes from the corpus (“ closes „…“ and opens “…”: `Sentence.extract` now keeps a stack of open
+quotes), Esperanto's own flag, Tesseract fast as the more accurate model, no PaddleOCR; ESPDIC converted, listed
+once hosted; a frequency dictionary built on the device from Leipzig's Esperanto Wikipedia (question 28, decided
+provisionally). Checked on the emulator; plan question 30 (straight quotes after a full stop in OCR text) is open.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
