@@ -36,6 +36,52 @@ Inflection terms per language follow the school grammar of Japanese taught in th
   the lookup feature "Kanji of the word" is named the same in summaries; a dictionary from a backup "replaces its
   installed version".
 
+## Shared terms per locale (checked 2026-10-29)
+
+The interface check of 2026-10-29 (cloud session) read every string of the 13 translations against English and
+settled one word per concept; new strings use these. Main terms:
+
+| Locale | bubble | popup | scan / scan length | cloud / on-device recognition | deck · note · note type | sentence |
+|---|---|---|---|---|---|---|
+| ru | плавающая кнопка (кнопка) | попап | скан / длина скана | облачное распознавание / распознавание на устройстве | колода · карточка · тип записи | предложение |
+| de | Blase | Popup | Scan / Scanlänge | Cloud-Erkennung / Erkennung auf dem Gerät | Stapel · Notiz · Notiztyp | Satz |
+| es | burbuja | ventana emergente | análisis / longitud de análisis | reconocimiento en la nube / en el dispositivo | mazo · nota · tipo de nota | frase |
+| fr | bulle | fenêtre contextuelle | analyse / longueur d’analyse | reconnaissance dans le cloud / sur l’appareil | paquet · note · type de note | phrase |
+| it | bolla | popup | scansione / lunghezza di scansione | riconoscimento nel cloud / sul dispositivo | mazzo · nota · tipo di nota | frase |
+| ja | バブル | ポップアップ | スキャン / スキャン長 | クラウド認識 / 端末上の認識 | デッキ · ノート · ノートタイプ | 文 |
+| ko | 버블 | 팝업 | 스캔 / 스캔 길이 | 클라우드 인식 / 기기 내 인식 | 덱 · 노트 · 노트 유형 | 문장 |
+| pl | dymek | okienko | skan / zasięg skanowania | rozpoznawanie w chmurze / na urządzeniu | talia · notatka · typ notatki | zdanie |
+| pt | bolha | pop-up | varredura / alcance da varredura | reconhecimento na nuvem / no dispositivo | baralho · nota · tipo de nota | frase |
+| tr | baloncuk | açılır pencere | tarama / tarama uzunluğu | bulut tanıma / cihazda tanıma | deste · not · not türü | cümle |
+| vi | bong bóng | cửa sổ bật lên | quét / độ dài quét | nhận dạng đám mây / trên thiết bị | bộ thẻ · ghi chú · loại ghi chú | câu |
+| zh-Hans | 悬浮球 | 弹窗 | 扫描 / 扫描长度 | 云端识别 / 设备端识别 | 牌组 · 笔记 · 笔记类型 | 句子 |
+| zh-Hant | 懸浮球 | 彈出視窗 | 掃描 / 掃描長度 | 雲端辨識 / 裝置端辨識 | 牌組 · 筆記 · 筆記類型 | 句子 |
+
+Settled on the way:
+
+- Everywhere: the next translation service "is used" (never "takes over"); AnkiDroid items "were not found" (never "no
+  longer exist"); a dictionary from a file or backup replaces "its installed version"; the battery list hint is the
+  instruction "if Screenlate is not listed, check All apps"; app text is not provided "to accessibility services"
+  (several locales had "here" from an older English); a count in a plain string is written as a label ("Régions non
+  reconnues : %1$d sur %2$d"), never "%1$d regions", which reads "1 regions".
+- ru: progress texts are nouns («Установка словарей…», «Перевод…»), the camera's photo is «фото», Japanese pitch accent
+  «питч-акцент» (ударение is the Russian stress mark), autoplay «автовоспроизведение», entries «статьи».
+- de: lookups are "Nachschlagen"/"Abfrage" and "Suche" is the Search tab; network connection "Netzwerkverbindung";
+  the accessibility service "Bedienungshilfe".
+- es: home screen "pantalla de inicio" (the Inicio tab), startup settings "inicio automático"; "tomar foto".
+- fr: "paramètres" (Réglages rapides only as the Android name), "import", "appli"; Lookup and the Search tab are both
+  "Recherche" (open question for the owner).
+- it: "carattere" for a font, "Note legali di terze parti" (nota is an Anki note), text weight "più marcati".
+- ja: defaults 初期値, text size 文字サイズ, definitions 定義, update announcements アップデートのお知らせ; E Ink モード
+  for the mode, 電子ペーパー for the screen.
+- ko: definitions 뜻풀이, 전자잉크 모드, button names in ‘’; an HTTP code goes in parentheses (오류(%1$d)로) so the
+  particle fits any number.
+- pt: lookup and search "pesquisa", field templates "modelos de campo", "e-ink".
+- tr: "kelime" (not sözcük), "görsel" for a picture, autoplay "otomatik oynatma".
+- vi: "pinyin", progress "tiến độ", the bubble's hidden apps "ứng dụng ẩn bong bóng".
+- zh-Hans: the app's Home tab is 首页 (主屏幕 is the launcher). zh-Hant uses Taiwan words: 輕觸, 單字, 內建, 套用,
+  還原 and 一般 in the backup screens, 拖曳控點, 震動, 直排, 憑證, 位址, 區域網路, 建置, 取得, 解壓縮.
+
 ## Tone (2026-10-14 audit)
 
 UI texts, hints and docs use the dry tone of software documentation (request 40 of the languages plan). Wording

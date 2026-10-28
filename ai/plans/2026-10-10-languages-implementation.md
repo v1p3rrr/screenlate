@@ -493,7 +493,15 @@ Decided when the first language or group 1 is ready, before it is merged into th
   languages" (Indonesian, Thai, Ukrainian first; Arabic, Persian and Hebrew have their strings already). The owner
   chooses which to build.
 - Interface translation check (owner, 2026-10-28): a separate pass over every interface locale for correct and
-  natural translations (terms, grammar, consistency between screens). Not worked out yet.
+  natural translations (terms, grammar, consistency between screens). Done on 2026-10-29 (cloud session,
+  `cloud/backlog-2026-10-29`, one commit per locale): every string of `app`, `overlay`, `core/anki` and
+  `dictionary/api` (`strings.xml`, `installation.xml`, plurals) in the 13 translations read against English; 603
+  changes (ru 67, fr 58, tr 54, de 45, vi 43, pt 41, ko 39, es 36, pl 34, it 32, ja 32, zh-Hant 78, zh-Hans 20):
+  wording that drifted from the English, the settled tone, one word per concept (`notes/translations.md`, "Shared
+  terms per locale"), Taiwan words in zh-Hant. English fixed where plainly wrong: two popup messages sent users to
+  the Bubble settings for Engines and App text only, which are on Text recognition now; "1 dictionaries" and "1 audio
+  sources" in the Yomitan import summary; "auto-play". Not covered: the form-of tags and inflection names (other
+  files, translated by hand earlier). Questions 91-92.
 - PaddleOCR lines (owner, 2026-10-28 evening, question 72 (1); moved here from a proposed session at the owner's
   word): PaddleOCR gives one line per paragraph, and the v5 detector splits Russian lines into overlapping boxes
   (38 paragraphs on the Russian page). Fix the line split and the overlapping boxes, measured on the OCR screenshots.
@@ -894,6 +902,14 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
 90. (2026-10-29, cloud session) FreeDict's long definitions follow the translations from 121 characters on (about
     three lines in the popup), in every pair, not only de-ru; the Italian links "( tassonomia)" and "( citazioni)" are
     dropped with "( approfondimento)". (a, built) Keep it; (b) only de-ru; (c) another length (the owner says which).
+
+91. (2026-10-29, cloud session, interface check) Russian: an Anki note is «карточка» in about 20 strings («Карточки
+    добавляются в …», «Не удалось добавить карточку»), while the note type keeps AnkiDroid's own «тип записи», where
+    a note is «запись». (a, recommended, as now) Keep «карточка», the word users say; (b) «запись» everywhere, as
+    AnkiDroid names it, at the cost of a stiffer text.
+92. (2026-10-29, cloud session, interface check) French: the Lookup settings screen and the Search tab are both
+    «Recherche» (German now tells them apart: "Nachschlagen"/"Abfrage" against "Suche"). (a, as now) Keep it, as the
+    lookup settings also apply to search; (b) name the settings «Consultation» or «Recherche dans les dictionnaires».
 
 ## Branches and workflow
 
@@ -1821,4 +1837,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   translation check, candidate interface languages, smaller language bundles, converter data, the right-to-left
   strings); group 6's research stays in the local chain.
 - 2026-10-29: cloud session (`cloud/backlog-2026-10-29`): smaller language bundles and converter data built
-  (backlog); questions 88-90 added.
+  (backlog); questions 88-90 added. Candidate interface languages researched, interface translation check done
+  (backlog); questions 91-92 added.
