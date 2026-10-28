@@ -53,9 +53,11 @@ internal fun CatalogEntry.modelSpec(): OcrModelSpec =
         file = file,
     )
 
-/** Whether the model lists say under this model that it misreads [language] on busy screens. */
-internal fun CatalogEntry.misreadsBusyScreens(language: Language): Boolean =
-    engine == TesseractOcrEngine.ID && language.support.tesseractMisreadsBusyScreens
+/**
+ * Whether the model lists say under this model that it often misreads text on busy screens: every Tesseract model,
+ * as Tesseract misread 26-74% of the characters of hard screens in every language compared.
+ */
+internal val CatalogEntry.misreadsBusyScreens: Boolean get() = engine == TesseractOcrEngine.ID
 
 /** Whether [store] holds this model entry's version. */
 internal fun CatalogEntry.isInstalledIn(store: OcrModelStore): Boolean {

@@ -141,7 +141,7 @@ private fun OcrModelRow(
                 }
             }
             if (details.isNotEmpty()) Hint(details.joinToString(" · "))
-            if (option.entry?.misreadsBusyScreens(language) == true) Hint(stringResource(R.string.ocr_models_busy_screens))
+            if (option.entry?.misreadsBusyScreens == true) Hint(stringResource(R.string.ocr_models_busy_screens))
             val users = (option.deletion as? ModelDeletion.InUse)?.languages?.filter { it != language }.orEmpty()
             if (users.isNotEmpty()) Hint(stringResource(R.string.ocr_models_in_use, users.joinToString(", ") { it.displayName() }))
         }

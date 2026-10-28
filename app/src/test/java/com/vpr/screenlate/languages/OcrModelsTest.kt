@@ -208,11 +208,11 @@ class OcrModelsTest {
     }
 
     @Test
-    fun `thai and khmer tesseract models say that they misread busy screens`() {
+    fun `every tesseract model says that it misreads busy screens`() {
         val tesseract = model("th-fast", "th", "tesseract-fast-tha").copy(engine = "tesseract")
-        assertThat(tesseract.misreadsBusyScreens(Language.THAI)).isTrue()
-        assertThat(tesseract.copy(sourceLanguage = "km").misreadsBusyScreens(Language.KHMER)).isTrue()
-        assertThat(model("th-rec", "th", "thai").misreadsBusyScreens(Language.THAI)).isFalse()
-        assertThat(tesseract.copy(sourceLanguage = "ru").misreadsBusyScreens(Language.RUSSIAN)).isFalse()
+        assertThat(tesseract.misreadsBusyScreens).isTrue()
+        assertThat(tesseract.copy(sourceLanguage = "km").misreadsBusyScreens).isTrue()
+        assertThat(tesseract.copy(sourceLanguage = "ru", model = "tesseract-fast-rus").misreadsBusyScreens).isTrue()
+        assertThat(model("th-rec", "th", "thai").misreadsBusyScreens).isFalse()
     }
 }
