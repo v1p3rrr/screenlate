@@ -495,7 +495,7 @@ Decided when the first language or group 1 is ready, before it is merged into th
 - Interface translation check (owner, 2026-10-28): a separate pass over every interface locale for correct and
   natural translations (terms, grammar, consistency between screens). Done on 2026-10-29 (cloud session,
   `cloud/backlog-2026-10-29`, one commit per locale): every string of `app`, `overlay`, `core/anki` and
-  `dictionary/api` (`strings.xml`, `installation.xml`, plurals) in the 13 translations read against English; 603
+  `dictionary/api` (`strings.xml`, `installation.xml`, plurals) in the 13 translations read against English; 579
   changes (ru 67, fr 58, tr 54, de 45, vi 43, pt 41, ko 39, es 36, pl 34, it 32, ja 32, zh-Hant 78, zh-Hans 20):
   wording that drifted from the English, the settled tone, one word per concept (`notes/translations.md`, "Shared
   terms per locale"), Taiwan words in zh-Hant. English fixed where plainly wrong: two popup messages sent users to
