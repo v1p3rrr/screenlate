@@ -1700,11 +1700,12 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
 - OCR quotes (question 22): `LanguageSupport.ocrQuotes` runs after `ocrLines` in `OcrPage.inLanguage`, so on OCR
   pages only. >> and << at a word's edge become » and « where the language pairs them; a " right after ! or ?
   becomes the closer of the latest quote still open on the page (pairs whose closer is a bracket do not count).
-  The word's character boxes stay usable: the two boxes of >> are joined.
+  Cloud recognition gives punctuation as words of its own (`aici`, `!`, `"`), so the character before a word's first
+  one is the last of the word before it. The word's character boxes stay usable: the two boxes of >> are joined.
 - Latin frequency (question 23): Leipzig's `lat_wikipedia_2021_100K` (15.5 MB, CC BY; no Latin news corpus is
   published, the other Latin archive names return 404), built on the phone as Kazakh's and Kyrgyz's, with the
   catalog template `leipzig-wikipedia` (the descriptions name Wikipedia articles, not news). Words lose macrons and
-  breves before counting (`LatinSupport.frequencyWord`): 938 of its 161,467 words carry one. amicus ranks 2,147,
+  breves before counting (`LatinSupport.frequencyWord`): 938 of its 161,467 words carry one. amicus ranks 2,148,
   amiciō is not in the list, so amicis shows amicus first.
 - FreeDict slv-eng (question 27): the converter reads FreeDict's older headers: languages from the file name
   when the header has none, the authors from `respStmt`, the license paragraph, WikDict credited only for WikDict

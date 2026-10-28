@@ -35,6 +35,10 @@ class OcrQuotesTest {
         assertThat(read(Language.ENGLISH, "“Stop!\" she said.")).containsExactly("“Stop!” she said.")
         // The quote opened on the line before.
         assertThat(read(Language.ROMANIAN, "„Vino", "aici!\" a strigat.")).containsExactly("„Vino", "aici!” a strigat.").inOrder()
+        // Punctuation as words of its own, as cloud recognition gives it.
+        assertThat(Language.ROMANIAN.support.ocrQuotes(listOf(listOf("„", "Vino", "aici", "!", "\"", "a", "strigat", "ea", "."))))
+            .containsExactly(listOf("„", "Vino", "aici", "!", "”", "a", "strigat", "ea", "."))
+        assertThat(read(Language.ROMANIAN, "„Vino aici! \" a strigat.")).containsExactly("„Vino aici! ” a strigat.")
         // The latest quote open: the inner one.
         assertThat(read(Language.GERMAN, "„Er rief ‚Halt!\" und lief.")).containsExactly("„Er rief ‚Halt!‘ und lief.")
     }

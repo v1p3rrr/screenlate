@@ -14,10 +14,21 @@ internal object OcrQuotes {
         val guillemets = GUILLEMETS.filterValues { it in written }
         // The closing quotes of the quotes open so far, the latest last, across lines and words in reading order.
         val open = ArrayList<Char>()
-        return lines.map { line -> line.map { word -> fixWord(word, quotes, guillemets, open) } }
+        // Cloud recognition gives punctuation as words of its own (aici ! "), so a word's first character follows the
+        // last one of the word before it.
+        var last: Char? = null
+        return lines.map { line ->
+            line.map { word -> fixWord(word, last, quotes, guillemets, open).also { last = it.lastOrNull() ?: last } }
+        }
     }
 
-    private fun fixWord(word: String, quotes: Map<Char, Char>, guillemets: Map<String, Char>, open: MutableList<Char>): String {
+    private fun fixWord(
+        word: String,
+        before: Char?,
+        quotes: Map<Char, Char>,
+        guillemets: Map<String, Char>,
+        open: MutableList<Char>,
+    ): String {
         var text = word
         for ((standIn, quote) in guillemets) {
             if (text.startsWith(standIn)) text = quote + text.substring(standIn.length)
@@ -27,7 +38,8 @@ internal object OcrQuotes {
         for (index in out.indices) {
             val c = out[index]
             when {
-                c == '"' && index > 0 && out[index - 1] in "!?" && open.isNotEmpty() -> out[index] = open.removeAt(open.lastIndex)
+                c == '"' && (if (index > 0) out[index - 1] else before) in BANGS && open.isNotEmpty() ->
+                    out[index] = open.removeAt(open.lastIndex)
                 c in open -> repeat(open.size - open.lastIndexOf(c)) { open.removeAt(open.lastIndex) }
                 c in quotes -> open += quotes.getValue(c)
             }
@@ -35,5 +47,6 @@ internal object OcrQuotes {
         return out.toString()
     }
 
+    private val BANGS = setOf('!', '?')
     private val QUOTE_TYPES = setOf(Character.INITIAL_QUOTE_PUNCTUATION, Character.FINAL_QUOTE_PUNCTUATION)
 }

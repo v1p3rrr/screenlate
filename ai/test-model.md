@@ -238,7 +238,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK66 | Kazakh and Kyrgyz noun endings skip the pronouns whose case forms change their stem: on the search screen Kyrgyz алды shows алуу ("past") and no ал with the accusative; бизге still finds биз ("dative") | F | U glue `kazakh and kyrgyz noun endings skip the pronouns…`, M | 2026-10-22 |
 | LK67 | The Kyrgyz verbal noun in -ыш: болушу finds болуу ("verbal noun « his, her, their"); иш finds only иш, no verb | F | U glue `kyrgyz verbal nouns in -ыш…`, M | 2026-10-22 |
 | LK70 | Slovenian lookups (overlay over `testdata/ocr/sl-sample.png`, and the Search screen): vode finds voda through its form row vôde; delal finds delati through dẹ́lał; je finds biti through its form row's lemma bíti; zena and ZENA find žena; se shows se first, then še | F | U SlovenianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-22 |
-| LK71 | Long compounds: with the scan length never changed, the Lookup settings show 24 for Swedish, Danish and Norwegian and 16 for German; aimed at the start of statsministerkandidat in the overlay (an image of "Statsministerkandidaten talade länge.", `scripts/text-image.py`, Segoe UI), the compound line shows statsminister + kandidat | N | U SwedishSupportTest, DanishSupportTest, NorwegianSupportTest, Isolation, M | — |
+| LK71 | Long compounds: with the scan length never changed, the Lookup settings show 24 for Swedish, Danish and Norwegian and 16 for German; aimed at the start of statsministerkandidat in the overlay (an image of "Statsministerkandidaten talade länge.", `scripts/text-image.py`, Segoe UI), the compound line shows statsminister + kandidat | N | U SwedishSupportTest, DanishSupportTest, NorwegianSupportTest, Isolation, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -350,7 +350,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK29 | A Slovak Anki note: for Novák in "Prof. Novák sa narodil 5. mája 1950 v Bratislave." the sentence is whole; for jablká in "Ovocie, t. j. jablká a hrušky, stálo napr. 5 tis. eur." it is whole; "Vznikol v 3. stor. pred Kr. Potom zanikol." ends at Kr. | F | U SentenceTest, SlovakSupportTest, M | 2026-10-22 |
 | ANK30 | An initial before a surname holds the sentence: a Kyrgyz note added from the popup for келди in "Президент К. Бакиев Ошко келди." (`scripts/text-image.py`, Segoe UI) has the whole sentence as Sentence | F | U SentenceTest `anInitialBeforeASurnameKeepsTheSentenceInEverySpacedLanguage`, KyrgyzSupportTest, M | 2026-10-22 |
 | ANK32 | A Slovenian Anki note: for Novak in "Prof. dr. Novak se je rodil 5. maja 1950 v Ljubljani." the sentence is whole; for jabolka in "Sadje, t. i. jabolka in hruške, je stalo npr. 5 tis. evrov." it is whole; for je after the quote in "»Pridi sem!« je zaklicala." it is whole, for sem inside it "»Pridi sem!«"; "Mesto je nastalo v 3. stol. pr. n. št. Potem je propadlo." ends at št. | F | U SentenceTest, SlovenianSupportTest, M | 2026-10-22 |
-| ANK33 | Quotes that cloud recognition reads as plain characters: over `testdata/ocr/sl-anki.png`, the popup's text has »Pridi sem!« and the note for sem has "»Pridi sem!«", the one for je after it "»Pridi sem!« je zaklicala."; over an image of "„Vino aici!” a strigat ea." (Romanian) the strigat note has the whole sentence; the same Slovenian sentence typed with >> << in AnkiDroid's note editor (app text) keeps >> << | N | U OcrQuotesTest, OcrPageLanguageTest, Isolation, M | — |
+| ANK33 | Quotes that cloud recognition reads as plain characters: over `testdata/ocr/sl-anki.png`, the popup's text has »Pridi sem!« and the note for sem has "»Pridi sem!«", the one for je after it "»Pridi sem!« je zaklicala."; over an image of "„Vino aici!” a strigat ea." (Romanian) the strigat note has the whole sentence; the same Slovenian sentence typed with >> << in AnkiDroid's note editor (app text) keeps >> << (there they are no quotes, so the ! ends the sentence: ">>Pridi sem!" for sem, "<< je zaklicala." for je) | N | U OcrQuotesTest, OcrPageLanguageTest, Isolation, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -399,10 +399,10 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC33 | Norwegian dictionaries imported from a file: wty's nn–en archive (its index names nn) and the WikDict no-ru conversion (`scripts/freedict`, its index names no) are both filed under Norwegian, and a Norwegian lookup shows their entries | F | U IndexLanguageTest, test_freedict_yomitan.py, M | 2026-10-22 |
 | DIC34 | Czech dictionaries under Slovak: with Slovak on and Czech off, the Dictionaries screen lists the installed cs-en in Slovak's list (cs → en) and "Turned off" does not list it; turning Czech off with "Delete its dictionaries and models" keeps cs-en while Slovak is on; with both off, cs-en is listed under "Turned off" as Czech's | F | U DictionaryLanguagesTest, OcrModelsTest, M | 2026-10-22 |
 | DIC35 | PanLex keeps capitalized headwords without time zones and interface strings: a PanLex ky-ru built by the converter after 2026-10-22 imports from a file, and "Иран риалы" shows its PanLex line "Иранский риал" | O | U test_panlex_yomitan.py, M | 2026-10-22 |
-| DIC36 | Latin's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (15.5 MB) and the frequency chip shows on Latin entries; amicis shows amicus (rank 2,147) before amicio | N | U CorpusCountsDictionaryTest, CatalogFileTest, LatinSupportTest, M | — |
-| DIC37 | FreeDict slv-eng converted by `scripts/freedict` imports from a file under Slovenian (its index names sl), credits Gorazd Gorup and FreeDict, and ob shows its FreeDict line | O | U test_freedict_yomitan.py, M | — |
-| DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 | DIC36 | Catalog parts: each translation language and each other kind is a heading with its count ("Russian · 3", no arrow); English, the language's own (Japanese for Japanese) and the interface language's come first, the other translation languages sit inside "Other languages · N" (N languages, closed at first, each inner part indented and closed), then a divider and "Supplementary dictionaries" over frequency, pitch and kanji; with the interface in English only English is open, in Russian only Russian; a download or an update waiting in an inner part opens it and "Other languages"; a part with a download under way or an update waiting opens by itself; a part closed by hand stays closed (also with a download in it) after leaving the page and coming back, and starts from the defaults again after the process restarts; TalkBack reads "Show the list" or "Hide the list" on a heading | N | U CatalogSectionsTest, M | |
+| DIC37 | Latin's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (15.5 MB) and the frequency chip shows on Latin entries; amicis shows amicus (rank 2,148) before amicio | N | U CorpusCountsDictionaryTest, CatalogFileTest, LatinSupportTest, M | 2026-10-28 |
+| DIC38 | FreeDict slv-eng converted by `scripts/freedict` imports from a file under Slovenian (its index names sl), credits Gorazd Gorup and FreeDict, and ob shows its FreeDict line | O | U test_freedict_yomitan.py, M | 2026-10-28 |
+| DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
 
@@ -582,6 +582,26 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/5a-answers` (`00661d7b` and the straight-quote fix on top), Pixel_10_Pro (API 37)
+
+- Build: debug APK for x86_64 only; unit tests, lint and the page tests passed.
+- LK71: Lookup → Scan length shows 24 for Swedish, Norwegian and Danish, 16 for German; over an image of
+  "Statsministerkandidaten talade länge." aimed at its start, the popup's compound line is statsminister + kandidat.
+- ANK33: `sl-anki.png` with cloud recognition (final from cloud): the sem note has "»Pridi sem!«", the je note
+  "»Pridi sem!« je zaklicala.". Romanian "„Vino aici!” a strigat ea.": found, the strigat note had `" a strigat ea.`;
+  cloud recognition gives the ! and the " as words of their own, and the rule looked only inside a word. Fixed (the
+  character before a word is the last one of the word before it); after the fix the note has "„Vino aici!” a strigat
+  ea.". The Slovenian sentence typed with >> << in AnkiDroid's note editor (app text): sem → ">>Pridi sem!", je → "<<
+  je zaklicala."; the typed note was discarded, not saved.
+- DIC37: the catalog's Frequency part lists "Word frequency (Leipzig Corpora Collection)", la, 16 MB, CC BY, its
+  description naming Wikipedia articles; it built on the device as "Leipzig Corpora Collection (la)", sorting results;
+  amicis shows amicus (L 2148), amica (6970), then amicio unranked. The rank in the notes said 2,147; recounted as the
+  app counts (1 the most frequent) it is 2,148, corrected. The tick on the first download screen was not seen: Latin
+  was already set up (CatalogFileTest covers its recommended flag).
+- DIC38: `freedict-slv-eng.zip` imported from Downloads lands under Slovenian as "FreeDict sl-en" (sl → en), version
+  0.1, author "Gorazd Gorup, FreeDict", 5,552 terms, the GPL notice and a Website button; ob shows its line "at,
+  against, along, by, beside, on"; sem shows its "here" after the two Wiktionary dictionaries.
 
 ### 2026-10-28 night, `features/settings-rework` (`fe1afd9a` and the catalog layout on top), Pixel_10_Pro (API 37)
 
