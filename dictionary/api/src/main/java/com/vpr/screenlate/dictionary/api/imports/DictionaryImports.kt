@@ -11,6 +11,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -19,6 +20,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import androidx.work.await
 import androidx.work.workDataOf
 import com.vpr.screenlate.core.common.log.Log
@@ -603,6 +605,10 @@ class DictionaryImports @Inject constructor(
                 downloadKey(input)?.let { addTag(DOWNLOAD_TAG_PREFIX + it) }
                 if (download && input.getString(KEY_URL)?.startsWith(ASSET_URL_PREFIX) != true) {
                     setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    // WorkManager counts every run, also one it stopped for a lost network, and starts the next no
+                    // sooner than the backoff after the enqueue: the least linear one (10 s a run) stays behind the
+                    // time the runs took, where the default exponential one holds the task back longer after each stop.
+                    setBackoffCriteria(BackoffPolicy.LINEAR, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
                 }
                 if (retries > 0) {
                     // A download that broke off tries again after a wait (DictionaryImportWorker.MAX_RETRIES); an
