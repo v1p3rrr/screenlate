@@ -101,7 +101,7 @@
     <string name="language_setup_mobile_title">¿Descargar con datos móviles?</string>
     <string name="language_setup_mobile_text">Se descargarán %1$s con datos móviles.</string>
     <string name="first_run_question">¿Qué idioma estás aprendiendo?</string>
-    <string name="first_run_hint">Puedes añadir más idiomas después en la pantalla principal.</string>
+    <string name="first_run_hint">Puedes añadir más idiomas después en la pantalla de inicio.</string>
     <string name="first_run_continue">Continuar</string>
     <string name="dictionaries_bundled">diccionarios incluidos</string>
     <string name="dictionaries_task_queued">En espera: %1$s</string>
@@ -136,7 +136,7 @@
     <string name="anki_tags">Etiquetas (separadas por espacios)</string>
     <string name="anki_fields">Campos</string>
     <string name="anki_fields_hint">Las plantillas usan marcadores como {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Usa el botón + para insertar uno. El primer campo se usa para detectar duplicados.</string>
-    <string name="anki_fields_hint_rtl">En un idioma que se escribe de derecha a izquierda, «Rellenar con las plantillas sugeridas» y el botón + ponen la palabra y la oración dentro de &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, para que la tarjeta las muestre en orden de lectura. El primer campo no lo lleva, porque la detección de duplicados compara su marcado.</string>
+    <string name="anki_fields_hint_rtl">En un idioma que se escribe de derecha a izquierda, «Rellenar con las plantillas sugeridas» y el botón + ponen la palabra y la frase dentro de &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, para que la tarjeta las muestre en orden de lectura. El primer campo no lo lleva, porque la detección de duplicados compara su marcado.</string>
     <string name="anki_insert_marker">Insertar marcador</string>
     <string name="anki_marker_furigana_zh">Pinyin sobre los caracteres</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin como texto: 你[nǐ] 好[hǎo]</string>
@@ -185,7 +185,7 @@
     <string name="bubble_dock_top">Arriba</string>
     <string name="bubble_dock_bottom">Abajo</string>
     <string name="bubble_dock_top_bottom">Bordes superior e inferior</string>
-    <string name="bubble_dock_top_bottom_hint">Permite acoplar la burbuja en el borde superior o inferior arrastrándola hasta allí. La burbuja no se superpone a la barra de estado, la barra de navegación ni los gestos del sistema desde el borde, también en apps a pantalla completa.</string>
+    <string name="bubble_dock_top_bottom_hint">Permite acoplar la burbuja en el borde superior o inferior arrastrándola hasta allí. La burbuja se mantiene fuera de la barra de estado, la barra de navegación y las zonas de gestos del sistema en los bordes, incluso en apps a pantalla completa.</string>
     <string name="bubble_highlight">Resaltar la palabra bajo el punto de mira</string>
     <string name="bubble_haptics">Vibrar con cada palabra nueva</string>
     <string name="bubble_hidden_apps">Ocultar la burbuja en apps</string>
@@ -218,7 +218,7 @@
     <string name="bubble_ocr_engines_both">Ambos</string>
     <string name="bubble_ocr_engines_cloud">Nube</string>
     <string name="bubble_ocr_engines_device">Dispositivo</string>
-    <string name="bubble_ocr_engines_hint">Recomendado: Ambos. Desactiva un motor solo en dispositivos de gama baja o muy cargados. El reconocimiento en la nube usa datos móviles (unos 0,1–0,4 MB por análisis); el del dispositivo, no.</string>
+    <string name="bubble_ocr_engines_hint">Recomendado: «Ambos». Desactiva un motor solo en dispositivos de gama baja o muy cargados. El reconocimiento en la nube usa datos móviles (unos 0,1–0,4 MB por análisis); el del dispositivo, no.</string>
     <string name="bubble_ocr_engines_info">Ambos: el reconocimiento en el dispositivo y en la nube empiezan a la vez. El dispositivo reconoce primero el texto alrededor del punto de mira, así que las palabras están disponibles casi al instante; el resultado de la nube, más preciso, lo reemplaza cuando llega. Sin conexión de red o ante un error de la nube, se mantiene el resultado del dispositivo.\n\nNube: sin conexión de red no se reconoce nada; las palabras solo están disponibles después de que responde el servidor.\n\nDispositivo: funciona sin conexión, pero reconoce con menos precisión el texto vertical y el manga; el refuerzo de OCR no está disponible.</string>
     <string name="bubble_ocr_saving">Reducir la carga del dispositivo</string>
     <string name="bubble_ocr_saving_hint">El reconocimiento de toda la pantalla en el dispositivo empieza solo si el reconocimiento en la nube no ha respondido en 3 s. Reduce la carga y el consumo de batería; las palabras alejadas del punto de mira están disponibles más tarde. Déjalo desactivado si la velocidad es más importante.</string>
@@ -254,7 +254,7 @@
     <string name="reset_recognition_text">Los motores, el refuerzo de OCR, la reducción de carga, el modelo en el dispositivo de cada idioma y los ajustes del texto de las apps se restablecen a sus valores predeterminados. Los modelos descargados se conservan.</string>
         <string name="recognition_app_text_title">Texto de las apps</string>
 <string name="recognition_test_title">Prueba</string>
-    <string name="recognition_test_hint">Reconocer una imagen como en un escaneo, con el texto y el tiempo de cada motor.</string>
+    <string name="recognition_test_hint">Reconocer una imagen como en un análisis, con el texto y el tiempo de cada motor.</string>
     <string name="bubble_hidden_apps_none">Visible en todas las apps</string>
     <string name="background_allowlist_title">Si el servicio se desactiva</string>
     <string name="background_allowlist_text">Si el sistema desactiva una y otra vez el servicio de accesibilidad de Screenlate y la burbuja desaparece de la pantalla, puede que la app de seguridad del teléfono limite las apps instaladas fuera de una tienda. Abre la app de seguridad (en algunos teléfonos, Seguridad o Administrador del teléfono), busca su lista de apps permitidas o de confianza, añade Screenlate y vuelve a activar el servicio.</string>
@@ -306,11 +306,11 @@
     <string name="problems_missing_categories">%1$s — falta: %2$s</string>
     <string name="problems_installing">Instalando diccionarios, en cola: %1$d</string>
     <string name="home_languages_title">Idiomas</string>
-    <string name="home_languages_hint">Los escaneos y la búsqueda usan el idioma elegido; cada idioma tiene sus propios diccionarios y ajustes.</string>
+    <string name="home_languages_hint">Los análisis y la búsqueda usan el idioma elegido; cada idioma tiene sus propios diccionarios y ajustes.</string>
     <string name="home_language_turn_off_text">El idioma se desactivará. Sus ajustes se conservan y se restauran al volver a activarlo.</string>
     <string name="home_language_delete_files">Eliminar sus diccionarios y modelos (%1$s)</string>
     <string name="home_language_turn_off_confirm">Desactivar</string>
-    <string name="languages_hint">El idioma activo y hasta dos idiomas con estrella se cambian en la pantalla de inicio y en el menú que se abre al mantener pulsada la burbuja.</string>
+    <string name="languages_hint">Se puede cambiar entre el idioma activo y hasta dos idiomas con estrella en la pantalla de inicio y en el menú que se abre al mantener pulsada la burbuja.</string>
     <string name="languages_turned_on">Activados</string>
     <string name="languages_turned_off">Desactivados</string>
     <string name="languages_turned_off_hint">Archivos de idiomas desactivados. No se usan en las búsquedas.</string>
@@ -332,7 +332,7 @@
     <string name="languages_delete_files_text">Se eliminarán los diccionarios y modelos de reconocimiento de este idioma (%1$s).</string>
     <string name="languages_open">Abrir Idiomas</string>
     <string name="home_languages_all">Todos los idiomas</string>
-    <string name="home_languages_star_hint">Los idiomas marcados con estrella en la pantalla Idiomas se cambian aquí y en el menú que se abre al mantener pulsada la burbuja.</string>
+    <string name="home_languages_star_hint">Aquí y en el menú que se abre al mantener pulsada la burbuja se puede cambiar entre los idiomas marcados con estrella en la pantalla Idiomas.</string>
     <string name="problems_audio_sources">Fuentes de audio que fallaron:</string>
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Ajustes de audio</string>
@@ -449,7 +449,7 @@
     <string name="yomitan_collection_entries">%1$d entradas</string>
     <string name="yomitan_collection_media">%1$d imágenes</string>
     <string name="yomitan_collection_installed">ya instalado</string>
-    <string name="yomitan_collection_hint">Los diccionarios instalados empiezan sin marcar; uno marcado reemplaza la copia instalada. Los archivos grandes tardan unos minutos.</string>
+    <string name="yomitan_collection_hint">Los diccionarios instalados empiezan sin marcar; uno marcado reemplaza la versión instalada. Los archivos grandes tardan unos minutos.</string>
     <string name="yomitan_collection_import">Importar %1$d</string>
     <string name="yomitan_collection_queued">Importando %1$d diccionarios en segundo plano; la pantalla Diccionarios muestra el progreso.</string>
     <string name="popup_show_source">Mostrar el texto reconocido encima de las entradas</string>
@@ -543,8 +543,8 @@
     <string name="popup_font_script_only_et">Solo para texto en estonio</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
-    <string name="popup_font_script_only_zh">Solo para texto chino</string>
-    <string name="popup_font_script_only_ko">Solo para texto coreano</string>
+    <string name="popup_font_script_only_zh">Solo para texto en chino</string>
+    <string name="popup_font_script_only_ko">Solo para texto en coreano</string>
     <string name="popup_font_script_only_hint_any">Las demás escrituras usan la fuente del teléfono. Se aplica a las fuentes descargadas y añadidas.</string>
     <string name="popup_text_weight_info_languages">Hace más legible el texto fino. Con «Solo para texto en …» activado en un idioma, o con la fuente del teléfono, solo los caracteres de ese idioma se vuelven más gruesos; con el ajuste desactivado, todo el texto.\n\nEl peso usa los pesos propios de la fuente. Una fuente con un solo peso pasa de normal directamente a negrita, así que medio se ve igual que normal.\n\nEl grosor de las letras dibuja un contorno fino alrededor de cada letra: funciona con cualquier fuente y se suma al peso.</string>
     <string name="languages_settings_hint">Los ajustes de abajo son del idioma elegido; el resto de la página se aplica a todos los idiomas.</string>
@@ -554,7 +554,7 @@
     <string name="reset_section_language">Se restablecen los ajustes comunes a todos los idiomas y los del idioma que muestra la página; los demás idiomas conservan los suyos.</string>
     <string name="popup_settings_title">Ventana emergente</string>
     <string name="popup_content_title">Elementos de la ventana emergente</string>
-    <string name="popup_auto_hide_title">Ocultar automáticamente</string>
+    <string name="popup_auto_hide_title">Ocultación automática</string>
     <string name="popup_hide_after_add">Tras añadir a Anki</string>
     <string name="popup_hide_after_add_hint">La ventana emergente se cierra en cuanto ➕ añade la palabra.</string>
     <string name="popup_hide_off_word">Cuando el punto de mira deja la palabra</string>
@@ -566,7 +566,7 @@
     <string name="popup_copy_mode_all_hint">Todo lo que muestra el diccionario. Las apps que admiten formato lo reciben con formato; las demás, como texto sin formato.</string>
     <string name="popup_copy_mode_meanings_hint">Las acepciones numeradas como texto sin formato, sin ejemplos, notas ni referencias. No está garantizado en todos los diccionarios: si no se pueden distinguir las acepciones, se copia todo el texto.</string>
     <string name="popup_css_title">CSS personalizado</string>
-    <string name="popup_css_hint">Se aplica a la ventana emergente y a la página de búsqueda después de los estilos de los diccionarios, como el CSS personalizado de la ventana de Yomitan. Las entradas usan los nombres de clase de Yomitan, y los colores de las etiquetas siguen las variables de Yomitan (--tag-frequency-background-color y otras). Una fuente que el teléfono no tiene se sustituye por la de la ventana emergente.</string>
+    <string name="popup_css_hint">Se aplica a la ventana emergente y a la página de búsqueda después de los estilos de los diccionarios, como el CSS personalizado de la ventana emergente de Yomitan. Las entradas usan los nombres de clase de Yomitan, y los colores de las etiquetas siguen las variables de Yomitan (--tag-frequency-background-color y otras). Una fuente que el teléfono no tiene se sustituye por la de la ventana emergente.</string>
     <string name="css_problem_unclosed_comment">Línea %1$d: un comentario no está cerrado (falta */), todo lo que sigue se ignora</string>
     <string name="css_problem_unclosed_string">Línea %1$d: unas comillas no están cerradas</string>
     <string name="css_problem_unexpected_brace">Línea %1$d: una } de más</string>
@@ -579,9 +579,9 @@
     <string name="css_problem_unknown_font">Línea %1$d: el teléfono no tiene la fuente «%2$s», se usa la siguiente de la lista o la de la ventana emergente</string>
     <string name="css_problem_remote_file">Línea %1$d: carga un archivo de %2$s; ese servidor puede ver cuándo se buscan palabras. Se cargan fuentes y hojas de estilo de internet; los demás archivos se bloquean.</string>
     <string name="yomitan_section_appearance">Apariencia de la ventana emergente</string>
-    <string name="yomitan_section_appearance_hint">Tamaño del texto y CSS personalizado de la ventana</string>
+    <string name="yomitan_section_appearance_hint">Tamaño del texto y CSS personalizado de la ventana emergente</string>
     <string name="yomitan_summary_font_size">Tamaño del texto %1$d</string>
-    <string name="yomitan_summary_css">CSS personalizado de la ventana: %1$d líneas</string>
+    <string name="yomitan_summary_css">CSS personalizado de la ventana emergente: %1$d líneas</string>
     <string name="yomitan_summary_css_issues">El CSS tiene problemas (%1$d), consulta «Ventana emergente»</string>
     <string name="yomitan_summary_font_family">La fuente «%1$s» no se importa: elige una fuente en «Ventana emergente»</string>
     <string name="popup_font_system_missing">Este teléfono no tiene una fuente japonesa del sistema, así que los kanji pueden verse con formas chinas. Descarga Noto Sans JP más abajo.</string>
@@ -615,7 +615,7 @@
     <string name="update_announce_hint">Como mucho una vez al día, al abrir la app; cada versión se anuncia una sola vez.</string>
     <string name="update_error_network">No se pudo conectar con GitHub. Comprueba la conexión y vuelve a intentarlo.</string>
     <string name="update_error_no_apk">Esta versión no tiene APK para este dispositivo.</string>
-    <string name="update_error_bad_apk">El archivo descargado no es un Screenlate más reciente firmado con la misma clave.</string>
+    <string name="update_error_bad_apk">El archivo descargado no es una versión más reciente de Screenlate firmada con la misma clave.</string>
     <string name="update_error_install">Android no instaló la actualización.</string>
     <string name="action_close">Cerrar</string>
     <string name="action_more_info">Acerca de %1$s</string>
@@ -624,13 +624,13 @@
     <string name="translation_title">Traducción</string>
     <string name="translation_sentence_title">Traducción de la frase</string>
     <string name="translation_hint">Un servicio en línea gratuito traduce la frase en la que está la palabra. La traducción es automática y puede ser inexacta, y la frase se envía al servidor del servicio.</string>
-    <string name="translation_info">Los servicios se usan sin cuenta: Bing (el sitio web de Microsoft Translator), Google Traductor y el traductor integrado en Microsoft Edge. No publican sus límites; si uno se niega, el siguiente toma el relevo. La primera solicitud a Bing en una hora tarda alrededor de un segundo más, porque antes carga una clave de su sitio web.</string>
+    <string name="translation_info">Los servicios se usan sin cuenta: Bing (el sitio web de Microsoft Translator), Google Traductor y el traductor integrado en Microsoft Edge. No publican sus límites; si un servicio rechaza una solicitud, se usa el siguiente. La primera solicitud a Bing en una hora tarda alrededor de un segundo más, porque antes se carga una clave desde el sitio web de Bing.</string>
     <string name="translation_button">Botón de traducción</string>
     <string name="translation_button_hint">Traduce la frase y muestra la traducción bajo la cabecera de la ventana emergente; un segundo toque la oculta. Si el texto reconocido está oculto, el botón aparece entre los botones de la primera entrada.</string>
     <string name="translation_anki">Traducción en las notas de Anki</string>
     <string name="translation_anki_hint">Rellena {sentence-translation} con la traducción que muestra la ventana emergente, o pide una y espera hasta 5 segundos. Sin traducción, el campo queda vacío.</string>
     <string name="translation_services_title">Servicios</string>
-    <string name="translation_services_hint">Traduce el primer servicio activado. Si falla o no responde en 3 segundos, toma el relevo el siguiente. Arrastra el asa para cambiar el orden.</string>
+    <string name="translation_services_hint">El primer servicio activado traduce la frase. Si devuelve un error o no responde en 3 segundos, se usa el siguiente. Arrastra el asa para cambiar el orden.</string>
     <string name="translation_service_bing_note">Suele ser más preciso</string>
     <string name="translation_language_title">Traducir a</string>
     <string name="translation_language_interface">Idioma de la interfaz (%1$s)</string>
@@ -674,19 +674,19 @@
     <string name="background_battery_off">Desactivada para Screenlate: el sistema deja la burbuja en marcha.</string>
     <string name="background_battery_allow">Permitir la actividad en segundo plano</string>
     <string name="background_battery_list">Abrir la lista de optimización de batería</string>
-    <string name="background_battery_list_hint">En la lista, busca Screenlate y desactiva su optimización («No optimizar», «Sin restricciones» o similar). Las apps que no aparecen al principio suelen estar en «Todas las apps».</string>
+    <string name="background_battery_list_hint">En la lista, busca Screenlate y desactiva su optimización («No optimizar», «Sin restricciones» o similar). Si Screenlate no aparece, elige «Todas las apps».</string>
     <string name="background_launch_title">Inicio de apps</string>
     <string name="background_launch_text">Algunos teléfonos también detienen las apps en segundo plano mediante ajustes propios del fabricante, aparte de la optimización de batería. Allí, permite que Screenlate se inicie solo y funcione en segundo plano.</string>
     <string name="background_launch_path">En este teléfono: Inicio de apps → Screenlate → Gestionar manualmente, con las tres opciones activadas.</string>
-    <string name="background_launch_open">Abrir los ajustes de inicio</string>
+    <string name="background_launch_open">Abrir los ajustes de inicio automático</string>
     <string name="background_launch_app_info">Abrir información de la app</string>
-    <string name="background_launch_app_info_hint">Este teléfono no tiene ninguna de las pantallas de inicio conocidas. La información de la app suele llevar a los ajustes de batería y segundo plano.</string>
+    <string name="background_launch_app_info_hint">Este teléfono no tiene ninguna de las pantallas conocidas de inicio automático. La información de la app suele llevar a los ajustes de batería y segundo plano.</string>
     <string name="settings_badge">Nuevo consejo</string>
     <string name="eink_title">Pantalla de tinta electrónica</string>
     <string name="eink_switch">Modo e-ink</string>
     <string name="eink_hint">Para lectores de libros electrónicos y otros dispositivos con pantalla de papel electrónico (e-ink). Blanco y negro, sin animaciones, marcos en lugar de resaltados translúcidos. Tiene prioridad sobre el tema.</string>
     <string name="eink_enlarge_title">¿Burbuja y texto más grandes?</string>
-    <string name="eink_enlarge_message">¿Agrandar la burbuja flotante a %1$d dp (si es más pequeña) y el texto de la ventana emergente %2$d px? Ambos siguen siendo ajustables. Al desactivar el modo e-ink vuelven los tamaños anteriores, salvo que los cambies mientras tanto.</string>
+    <string name="eink_enlarge_message">¿Agrandar la burbuja flotante a %1$d dp (si es más pequeña) y el texto de la ventana emergente en %2$d px? Ambos siguen siendo ajustables. Al desactivar el modo e-ink vuelven los tamaños anteriores, salvo que los cambies mientras tanto.</string>
     <string name="eink_enlarge_confirm">Agrandar</string>
     <string name="eink_enlarge_keep">Mantener tamaños</string>
     <string name="eink_home_title">¿Pantalla de tinta electrónica?</string>
@@ -793,7 +793,7 @@
     <string name="reset_popup_text">El texto reconocido arriba, la copia de definiciones, la ocultación automática, la fuente elegida, el tamaño y el peso del texto y el CSS personalizado se restablecen a sus valores predeterminados. Las fuentes descargadas y añadidas siguen instaladas.</string>
     <string name="reset_translation_text">El botón de traducción, la traducción en las notas, el orden y los interruptores de los servicios, el idioma y los idiomas favoritos se restablecen a sus valores predeterminados.</string>
     <string name="reset_appearance_text">El tema vuelve a seguir al sistema, los colores se restablecen a los predeterminados de Screenlate y el modo e-ink se desactiva, lo que restaura los tamaños que había aumentado. El idioma de la app se conserva.</string>
-    <string name="reset_background_text">La notificación persistente se desactiva. Los ajustes de batería y de inicio son de Android y no se modifican.</string>
+    <string name="reset_background_text">La notificación persistente se desactiva. Los ajustes de batería y de inicio automático son de Android y no se modifican.</string>
     <string name="reset_dictionaries_running">Deteniendo importaciones y eliminando diccionarios…</string>
     <string name="reset_dictionaries_busy">Restableciendo los diccionarios…</string>
     <string name="reset_dictionaries_failed">Error al restablecer los diccionarios: %1$s</string>
@@ -837,7 +837,7 @@
     <string name="camera_flash_off">Flash desactivado</string>
     <string name="camera_flash_auto">Flash automático</string>
     <string name="camera_flash_on">Flash activado</string>
-    <string name="camera_take_photo">Hacer foto</string>
+    <string name="camera_take_photo">Tomar foto</string>
     <string name="camera_new_photo">Nueva foto</string>
     <string name="camera_back_to_photo">Volver a la foto</string>
     <string name="camera_permission_text">Permite el acceso a la cámara para fotografiar texto y leerlo con la burbuja.</string>
@@ -846,7 +846,7 @@
     <string name="camera_allow">Permitir cámara</string>
     <string name="camera_no_rear">No hay cámara trasera disponible.</string>
     <string name="camera_unavailable">No se pudo abrir la cámara.</string>
-    <string name="camera_capture_failed">No se pudo hacer la foto. Inténtalo de nuevo.</string>
+    <string name="camera_capture_failed">No se pudo tomar la foto. Inténtalo de nuevo.</string>
     <string name="camera_photo_unreadable">No se pudo abrir la foto.</string>
     <string name="camera_zoom_reset">Volver a 1×</string>
     <string name="camera_language">Idioma de la foto</string>
