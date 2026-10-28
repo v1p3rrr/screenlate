@@ -587,6 +587,24 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `a text detector has one name with its version and no comma, which a list of tasks would split`() {
+        val detectors = catalog!!.entries.filter { it.model?.startsWith("paddle-detector-") == true }
+        assertThat(detectors).isNotEmpty()
+        for (detector in detectors) {
+            assertThat(detector.titles.keys).containsAtLeastElementsIn(locales)
+            val version = detector.model!!.removePrefix("paddle-detector-").substringBefore('-')
+            for (locale in locales) {
+                val title = detector.displayTitle(Locale.forLanguageTag(locale))
+                assertThat(title).doesNotContain(",")
+                // German joins the words with hyphens: PaddleOCR-v6-Textdetektor.
+                assertThat(title).containsMatch("PaddleOCR[ -]$version")
+            }
+        }
+        assertThat(detectors.first { it.model!!.startsWith("paddle-detector-v6") }.displayTitle(Locale.ENGLISH))
+            .isEqualTo("PaddleOCR v6 text detector")
+    }
+
+    @Test
     fun `installed titles tell entries apart`() {
         val all = catalog!!.entries
         for (entry in all) {
