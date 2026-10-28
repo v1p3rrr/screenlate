@@ -169,11 +169,11 @@ function fallbackStep(d, rules, language) {
 }
 
 /**
- * Languages whose rules (own-transforms.js) end the texts between their steps in a private-use character: the
+ * Languages whose rules (own-transforms.js) mark the texts between their steps with a private-use character: the
  * Turkic verb stem, which only the hidden dictionary form rule makes a word of, and the present tense mark that a
- * person ending leaves.
+ * person ending leaves; the Swahili texts that a tense or an object prefix still has to come off.
  */
-const markedLanguages = new Set(['kk', 'ky']);
+const markedLanguages = new Set(['kk', 'ky', 'sw']);
 
 const PRIVATE_USE_FIRST = 0xe000;
 const PRIVATE_USE_LAST = 0xf8ff;
@@ -203,7 +203,8 @@ function isMarkedStep(d, language) {
  * (барды → бару) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a genitive reaches nouns,
  * names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller, mens → men "but").
  * Romanian article and agreement endings reach nominal words and forms (consiliul → consiliu, aflată → aflat, a form
- * of afla), not verbs or adverbs.
+ * of afla), not verbs or adverbs. Swahili verb prefixes reach verbs and forms (alisoma → soma), not nouns (wali, rice,
+ * is no wa- + li-).
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
@@ -211,6 +212,7 @@ const taggedRules = new Map([
     ['ky', {v: ['v']}],
     ['no', {n: ['n', 'name', 'non-lemma']}],
     ['ro', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']}],
+    ['sw', {v: ['v', 'non-lemma']}],
 ]);
 
 /**

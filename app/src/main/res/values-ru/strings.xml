@@ -539,6 +539,7 @@
     <string name="popup_font_script_only_sl">Только для словенского текста</string>
     <string name="popup_font_script_only_eo">Только для текста на эсперанто</string>
     <string name="popup_font_script_only_sq">Только для албанского текста</string>
+    <string name="popup_font_script_only_sw">Только для текста на суахили</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

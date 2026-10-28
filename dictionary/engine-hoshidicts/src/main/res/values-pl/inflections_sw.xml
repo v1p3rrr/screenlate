@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">przeczenie</string>
+    <string name="inflection_sw_negative">przeczenie: ha- przed podmiotem (hatukusoma, hakusoma), si- dla „ja” i hu- dla „ty” (sikusoma, hukusoma), si- po podmiocie przed formą względną (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">ja</string>
+    <string name="inflection_sw_i">podmiot ni-: ja (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">ty</string>
+    <string name="inflection_sw_you">podmiot u-: ty albo rzeczownik klas 3, 11 i 14 (unasoma; mti umeanguka, drzewo się przewróciło)</string>
+    <string name="inflection_sw_he_she_label">on/ona</string>
+    <string name="inflection_sw_he_she">podmiot a-: on lub ona (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">my</string>
+    <string name="inflection_sw_we">podmiot tu-: my (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">wy</string>
+    <string name="inflection_sw_you_pl">podmiot m-: wy (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">oni</string>
+    <string name="inflection_sw_they">podmiot wa-: oni lub one (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">klasa rzeczownikowa</string>
+    <string name="inflection_sw_class">podmiot klasy rzeczownikowej: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (miejsca: kulikuwa, było)</string>
+    <string name="inflection_sw_past_label">czas przeszły</string>
+    <string name="inflection_sw_past">czas przeszły: li-, a po przeczeniu ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">czas teraźniejszy</string>
+    <string name="inflection_sw_present">czas teraźniejszy: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">czas przyszły</string>
+    <string name="inflection_sw_future">czas przyszły: ta-, a przed formą względną taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">perfekt</string>
+    <string name="inflection_sw_perfect">perfekt: me- (amesoma, przeczytał)</string>
+    <string name="inflection_sw_not_yet_label">jeszcze nie</string>
+    <string name="inflection_sw_not_yet">jeszcze nie: ja- po przeczeniu (hajasoma, jeszcze nie przeczytał)</string>
+    <string name="inflection_sw_conditional_label">tryb warunkowy</string>
+    <string name="inflection_sw_conditional">tryb warunkowy: nge- i ngali- (angesoma, czytałby; angalisoma, przeczytałby wtedy)</string>
+    <string name="inflection_sw_when_label">gdy</string>
+    <string name="inflection_sw_when">ki-: gdy, podczas gdy lub jeśli (akisoma)</string>
+    <string name="inflection_sw_and_then_label">a potem</string>
+    <string name="inflection_sw_and_then">ka-: a potem, w opowiadaniu (akasoma)</string>
+    <string name="inflection_sw_habitual_label">czynność zwykła</string>
+    <string name="inflection_sw_habitual">czynność zwykła: hu- (husoma, zwykle czyta)</string>
+    <string name="inflection_sw_relative_label">forma względna</string>
+    <string name="inflection_sw_relative">forma względna: który, gdzie (aliyesoma, ten, kto przeczytał; kinachoitwa, który się nazywa; waishio, którzy mieszkają)</string>
+    <string name="inflection_sw_object_label">dopełnienie</string>
+    <string name="inflection_sw_object">dopełnienie: ni- mnie, ku- ciebie, m- lub mw- jego lub ją, tu- nas, wa- ich oraz przedrostki klas ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">forma zwrotna</string>
+    <string name="inflection_sw_reflexive">forma zwrotna ji-: siebie (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">bezokolicznik</string>
+    <string name="inflection_sw_infinitive">bezokolicznik: ku- lub kw- (kusoma, kwandika, kumpa)</string>
+</resources>

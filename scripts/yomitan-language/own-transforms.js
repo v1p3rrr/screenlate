@@ -744,6 +744,241 @@ export const romanianTransforms = {
 };
 
 /**
+ * Swahili verb prefixes, as the app's own rules written from the grammar: a verb is [negation] subject tense [object]
+ * stem, joined into one word (a-li-ni-ona, ha-tu-ku-soma). Wiktionary lists the present, habitual, infinitive,
+ * subjunctive and negative present forms of its verbs, and none of the past, future or perfect ones (alisoma, atasoma,
+ * amesoma), nor of the forms with an object (ninakupenda) or a relative (aliyesoma). The rules take the prefixes off
+ * from the outside in: a negation, then a subject, then a tense, then a relative, then an object or the reflexive ji-;
+ * the habitual hu- and an infinitive's ku- stand alone (husoma, kusoma: Wiktionary links an infinitive to -soma, a
+ * headword it does not have), and a relative may also end a verb without a tense (waishio). Every Yomitan rule
+ * applies to the word as written as well, so the texts between the steps start with a mark no real text holds (what
+ * comes next: a tense, a negative tense, a relative or an object), the rules after the first read only such texts,
+ * and the engine asks for none of them (glue.js). A stem is asked for as it is, with ku- (kula, kuandika: some
+ * dictionaries write their verbs so) and with a hyphen (-amka, as others write them). It keeps two letters at least,
+ * and two syllables after li-, na-, ta-, me-, nge- and a relative, where one-syllable verbs keep their ku- (alikula,
+ * aliyekuwa; so Angela is no a-nge-la); after ki-, ka-, ja- and the negative ku- they drop it (akiwa, akaja, hakuwa).
+ * Wiktionary's Swahili entries leave the rules field empty and tag each definition (v, n, non-lemma), so a stem
+ * reaches the verbs and forms only (glue.js, `taggedRules`), and the engine keeps these results
+ * only for a text without an entry of its own (`LanguageSupport.inflectionRulesOnlyWithoutEntry`). The negative
+ * present's -i (hasomi) is left to Wiktionary's form rows.
+ */
+
+/** Starts a text after an affirmative subject: a tense follows. */
+const SWAHILI_TENSE = /* @__PURE__ */ String.fromCharCode(0xe010);
+
+/** Starts a text after ha-: a subject or a negative tense follows. */
+const SWAHILI_NEGATED = /* @__PURE__ */ String.fromCharCode(0xe011);
+
+/** Starts a text after a negative subject (or si-, hu-): a negative tense follows. */
+const SWAHILI_NEGATIVE_TENSE = /* @__PURE__ */ String.fromCharCode(0xe012);
+
+/** Starts a text after a tense, a relative, the habitual or an infinitive's ku-: an object or the reflexive follows. */
+const SWAHILI_OBJECT = /* @__PURE__ */ String.fromCharCode(0xe013);
+
+/**
+ * Relative markers, by the class of what they stand for: -ye- (a person), -o- (people; classes 3, 11, 14), -cho- -vyo-,
+ * -lo- -yo-, -yo- -zo-, -po- -ko- -mo- (place and time).
+ */
+const swahiliRelatives = ['ye', 'o', 'cho', 'vyo', 'lo', 'yo', 'zo', 'po', 'ko', 'mo'];
+
+/** @typedef {'s' | 'n' | 't' | 'o' | 'r' | 'v'} SwahiliCondition */
+
+/** What follows a prefix: two letters at least, or two syllables. */
+const SWAHILI_REST = "[a-z'’]{2}";
+const SWAHILI_TWO_SYLLABLES = "[^aeiou]*[aeiou][^aeiou]*[aeiou]";
+
+/**
+ * A prefix taken off [reads] (the mark the text starts with, or the word as written), leaving [leaves] (the next
+ * step's mark) or the stem as [headword] writes it ('' as it is, 'ku', '-'); [rest] is what has to follow.
+ * @param {string} reads
+ * @param {string} prefix
+ * @param {SwahiliCondition[]} conditionsIn
+ * @param {{leaves: string, condition: SwahiliCondition} | {headword: string}} out
+ * @param {string} rest
+ * @returns {import('language-transformer').Rule<SwahiliCondition>}
+ */
+function swahiliPrefix(reads, prefix, conditionsIn, out, rest = SWAHILI_REST) {
+    const start = 'leaves' in out ? out.leaves : out.headword;
+    const length = reads.length + prefix.length;
+    return {
+        type: 'prefix',
+        isInflected: new RegExp(`^${reads}${prefix}${rest}`),
+        deinflected: start,
+        deinflect: (text) => start + text.slice(length),
+        conditionsIn,
+        conditionsOut: ['leaves' in out ? out.condition : 'v'],
+    };
+}
+
+/**
+ * A prefix that leaves a stem: the stem as it is, with a hyphen, and with ku- where [withKu], of two syllables where
+ * [twoSyllables]; and, where [next] names what may follow (`o` a relative or an object, `r` an object), the text that
+ * comes off.
+ * @param {string} reads
+ * @param {string} prefix
+ * @param {SwahiliCondition[]} conditionsIn
+ * @param {{withKu?: boolean, twoSyllables?: boolean, next?: 'o' | 'r'}} options
+ * @returns {import('language-transformer').Rule<SwahiliCondition>[]}
+ */
+function swahiliStem(reads, prefix, conditionsIn, {withKu = false, twoSyllables = false, next} = {}) {
+    const stem = twoSyllables ? SWAHILI_TWO_SYLLABLES : SWAHILI_REST;
+    return [
+        swahiliPrefix(reads, prefix, conditionsIn, {headword: ''}, stem),
+        swahiliPrefix(reads, prefix, conditionsIn, {headword: '-'}, stem),
+        ...(withKu ? [swahiliPrefix(reads, prefix, conditionsIn, {headword: 'ku'}, stem)] : []),
+        ...(next ? [swahiliPrefix(reads, prefix, conditionsIn, {leaves: SWAHILI_OBJECT, condition: next})] : []),
+    ];
+}
+
+/**
+ * A tense prefix: after an affirmative subject or, for [negative] ones, after a negation; one-syllable verbs keep their
+ * ku- after it where [keepsKu].
+ * @param {string} prefix
+ * @param {{affirmative?: boolean, negative?: boolean, keepsKu?: boolean}} kinds
+ * @returns {import('language-transformer').Rule<SwahiliCondition>[]}
+ */
+function swahiliTense(prefix, {affirmative = true, negative = false, keepsKu = true} = {}) {
+    const options = {withKu: true, twoSyllables: keepsKu, next: /** @type {'o'} */ ('o')};
+    return [
+        ...(affirmative ? swahiliStem(SWAHILI_TENSE, prefix, ['t'], options) : []),
+        ...(negative ? swahiliStem(SWAHILI_NEGATED, prefix, ['s'], options) : []),
+        ...(negative ? swahiliStem(SWAHILI_NEGATIVE_TENSE, prefix, ['n'], options) : []),
+    ];
+}
+
+/**
+ * A subject prefix: on the word as written, a tense follows; after ha-, a negative tense ([negative]: not ni- and a-,
+ * which si- and ha- stand for).
+ * @param {string} prefix
+ * @param {boolean} negative
+ * @returns {import('language-transformer').Rule<SwahiliCondition>[]}
+ */
+function swahiliSubject(prefix, negative = true) {
+    return [
+        swahiliPrefix('', prefix, [], {leaves: SWAHILI_TENSE, condition: 't'}),
+        ...(negative ? [swahiliPrefix(SWAHILI_NEGATED, prefix, ['s'], {leaves: SWAHILI_NEGATIVE_TENSE, condition: 'n'})] : []),
+    ];
+}
+
+/** Noun classes' subject prefixes: ki- vi- li- ya- i- zi- ku- pa- mu-; u- is also you's. */
+const swahiliClassSubjects = ['ki', 'vi', 'li', 'ya', 'i', 'zi', 'ku', 'pa', 'mu'];
+
+/** Object prefixes: ni- ku- m- mw- tu- wa- (persons) and the noun classes' ki- vi- li- ya- i- zi- u- pa- mu-. */
+const swahiliObjects = ['ni', 'ku', 'mw', 'm', 'tu', 'wa', 'ki', 'vi', 'li', 'ya', 'i', 'zi', 'u', 'pa', 'mu'];
+
+/**
+ * A relative ending a verb without a tense, after its subject (wa-ishi-o, i-itwa-yo): the stem as it is and with a
+ * hyphen. The stem ends in a vowel; it may be the copula's li- or si- (iliyo, isiyo).
+ * @param {string} relative
+ * @returns {import('language-transformer').Rule<SwahiliCondition>[]}
+ */
+function swahiliRelativeSuffix(relative) {
+    return ['', '-'].map((headword) => ({
+        type: 'prefix',
+        isInflected: new RegExp(`^${SWAHILI_TENSE}[a-z'’]+[aeiu]${relative}$`),
+        deinflected: headword,
+        deinflect: (text) => headword + text.slice(SWAHILI_TENSE.length, -relative.length),
+        conditionsIn: ['t'],
+        conditionsOut: ['v'],
+    }));
+}
+
+/** @type {import('language-transformer').LanguageTransformDescriptor<SwahiliCondition>} */
+export const swahiliTransforms = {
+    language: 'sw',
+    conditions: {
+        s: {name: 'After ha-', isDictionaryForm: false},
+        n: {name: 'Before a negative tense', isDictionaryForm: false},
+        t: {name: 'Before a tense', isDictionaryForm: false},
+        o: {name: 'Before a relative or an object', isDictionaryForm: false},
+        r: {name: 'Before an object', isDictionaryForm: false},
+        v: {name: 'Verb', isDictionaryForm: true},
+    },
+    transforms: {
+        'negative': {
+            name: 'negative',
+            description: 'negative: ha- before the subject (hatukusoma, hakusoma), si- for I and hu- for you (sikusoma, hukusoma), si- after the subject before a relative (isiyojulikana)',
+            rules: [
+                swahiliPrefix('', 'ha', [], {leaves: SWAHILI_NEGATED, condition: 's'}),
+                swahiliPrefix('', 'si', [], {leaves: SWAHILI_NEGATIVE_TENSE, condition: 'n'}),
+                swahiliPrefix('', 'hu', [], {leaves: SWAHILI_NEGATIVE_TENSE, condition: 'n'}),
+                swahiliPrefix(SWAHILI_TENSE, 'si', ['t'], {leaves: SWAHILI_OBJECT, condition: 'o'}),
+            ],
+        },
+        'I': {name: 'I', description: 'subject ni-: I (ninasoma, nilisoma)', rules: swahiliSubject('ni', false)},
+        'you': {
+            name: 'you',
+            description: 'subject u-: you, or a noun of classes 3, 11 and 14 (unasoma; mti umeanguka, the tree has fallen)',
+            rules: swahiliSubject('u'),
+        },
+        'he/she': {name: 'he/she', description: 'subject a-: he or she (anasoma, alisoma)', rules: swahiliSubject('a', false)},
+        'we': {name: 'we', description: 'subject tu-: we (tunasoma, hatukusoma)', rules: swahiliSubject('tu')},
+        'you pl.': {name: 'you pl.', description: 'subject m-: you, more than one (mnasoma, hamkusoma)', rules: swahiliSubject('m')},
+        'they': {name: 'they', description: 'subject wa-: they (wanasoma, hawakusoma)', rules: swahiliSubject('wa')},
+        'class': {
+            name: 'class',
+            description: 'subject of a noun class: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (places: kulikuwa, there was)',
+            rules: swahiliClassSubjects.flatMap((prefix) => swahiliSubject(prefix)),
+        },
+        'past': {
+            name: 'past',
+            description: 'past: li-, and ku- after a negation (alisoma, hakusoma)',
+            rules: [...swahiliTense('li'), ...swahiliTense('ku', {affirmative: false, negative: true, keepsKu: false})],
+        },
+        'present': {name: 'present', description: 'present: na- (anasoma)', rules: swahiliTense('na')},
+        'future': {
+            name: 'future',
+            description: 'future: ta-, and taka- before a relative (atasoma, hatasoma, atakayesoma)',
+            rules: [...swahiliTense('ta', {negative: true}), ...swahiliTense('taka')],
+        },
+        'perfect': {name: 'perfect', description: 'perfect: me- (amesoma, has read)', rules: swahiliTense('me')},
+        'not yet': {
+            name: 'not yet',
+            description: 'not yet: ja- after a negation (hajasoma, has not read yet)',
+            rules: swahiliTense('ja', {affirmative: false, negative: true, keepsKu: false}),
+        },
+        'conditional': {
+            name: 'conditional',
+            description: 'conditional: nge- and ngali- (angesoma, would read; angalisoma, would have read)',
+            rules: [...swahiliTense('nge'), ...swahiliTense('ngali')],
+        },
+        'when': {name: 'when', description: 'ki-: when, while or if (akisoma)', rules: swahiliTense('ki', {keepsKu: false})},
+        'and then': {name: 'and then', description: 'ka-: and then, in a story (akasoma)', rules: swahiliTense('ka', {keepsKu: false})},
+        'habitual': {
+            name: 'habitual',
+            description: 'habitual: hu- (husoma, reads as a rule)',
+            rules: swahiliStem('', 'hu', [], {withKu: true, next: 'r'}),
+        },
+        'relative': {
+            name: 'relative',
+            description: 'relative: who, which, where (aliyesoma, the one who read; kinachoitwa, which is called; waishio, who live)',
+            rules: [
+                ...swahiliRelatives.flatMap((relative) => [
+                    ...swahiliStem(SWAHILI_OBJECT, relative, ['o'], {twoSyllables: true}),
+                    swahiliPrefix(SWAHILI_OBJECT, relative, ['o'], {leaves: SWAHILI_OBJECT, condition: 'r'}),
+                ]),
+                ...swahiliRelatives.flatMap(swahiliRelativeSuffix),
+            ],
+        },
+        'object': {
+            name: 'object',
+            description: 'object: ni- me, ku- you, m- or mw- him or her, tu- us, wa- them, and the noun class prefixes ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)',
+            rules: swahiliObjects.flatMap((prefix) => swahiliStem(SWAHILI_OBJECT, prefix, ['o', 'r'])),
+        },
+        'reflexive': {
+            name: 'reflexive',
+            description: 'reflexive ji-: oneself (alijificha, kujiunga)',
+            rules: swahiliStem(SWAHILI_OBJECT, 'ji', ['o', 'r']),
+        },
+        'infinitive': {
+            name: 'infinitive',
+            description: 'infinitive: ku- or kw- (kusoma, kwandika, kumpa)',
+            rules: [...swahiliStem('', 'ku', [], {next: 'r'}), ...swahiliStem('', 'kw', [])],
+        },
+    },
+};
+
+/**
  * A Latin enclitic undone: the word before it keeps two letters at least.
  * @param {string} enclitic
  * @returns {import('language-transformer').SuffixRule<never>}

@@ -99,9 +99,17 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz, latin, esperanto and albanian have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian and swahili have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw").inOrder()
+        val swahili = built.single { it.sourceLanguage == "sw" }
+        assertThat(swahili.recommended).isTrue()
+        assertThat(swahili.sha256).isEqualTo("05e41f4c58a27732bc223cac37155ee53b0b2e47c1815585428928456d7be1d5")
+        assertThat(swahili.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/swa_wikipedia_2021_100K.tar.gz")
+        assertThat(swahili.oldTitles).containsExactly(CorpusCountsDictionary.title("sw"))
+        assertThat(swahili.description(Locale.ENGLISH))
+            .startsWith("Leipzig Corpora Collection, Swahili: how common words are in Wikipedia")
         val esperanto = built.single { it.sourceLanguage == "eo" }
         assertThat(esperanto.recommended).isTrue()
         assertThat(esperanto.sha256).isEqualTo("afc637eeb783189b43dd646525b5ca61e45115b9143d67d7d022c42ecafcd620")
@@ -342,6 +350,21 @@ class CatalogFileTest {
         )
         assertThat(albanian.filter { it.category == CatalogCategory.FREQUENCY }.map { it.id }).containsExactly("corpus-sq")
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.ALBANIAN) }).isEqualTo(albanian)
+    }
+
+    @Test
+    fun `swahili offers four wiktionaries and leipzig's word counts, ticked, and the ocr models unticked`() {
+        val swahili = catalog!!.entries.filter { it.isFor(Language.SWAHILI) }
+        assertThat(swahili.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-sw-en", "wiktionary-sw-ru", "wiktionary-sw-pl", "wiktionary-sw-zh", "corpus-sw",
+        )
+        assertThat(swahili.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-swa", "tesseract-best-swa", "paddle-v6-sw", "paddle-latin-sw", "paddle-detector-v5-sw",
+            "paddle-detector-v6-sw",
+        )
+        // Wiktionary has too few Swahili pronunciations for a transcription dictionary.
+        assertThat(swahili.none { it.category == CatalogCategory.PRONUNCIATION }).isTrue()
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.SWAHILI) }).isEqualTo(swahili)
     }
 
     @Test

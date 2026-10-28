@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">부정</string>
+    <string name="inflection_sw_negative">부정: 주어 앞의 ha- (hatukusoma, hakusoma), ‘나’에는 si-, ‘너’에는 hu- (sikusoma, hukusoma), 주어 뒤 관계형 앞의 si- (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">나</string>
+    <string name="inflection_sw_i">주어 ni-: 나 (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">너</string>
+    <string name="inflection_sw_you">주어 u-: 너, 또는 3·11·14류 명사 (unasoma; mti umeanguka, 나무가 쓰러졌다)</string>
+    <string name="inflection_sw_he_she_label">그/그녀</string>
+    <string name="inflection_sw_he_she">주어 a-: 그 또는 그녀 (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">우리</string>
+    <string name="inflection_sw_we">주어 tu-: 우리 (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">너희</string>
+    <string name="inflection_sw_you_pl">주어 m-: 너희 (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">그들</string>
+    <string name="inflection_sw_they">주어 wa-: 그들 (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">명사 부류</string>
+    <string name="inflection_sw_class">명사 부류의 주어: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (장소: kulikuwa, 있었다)</string>
+    <string name="inflection_sw_past_label">과거</string>
+    <string name="inflection_sw_past">과거: li-, 부정 뒤에서는 ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">현재</string>
+    <string name="inflection_sw_present">현재: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">미래</string>
+    <string name="inflection_sw_future">미래: ta-, 관계형 앞에서는 taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">완료</string>
+    <string name="inflection_sw_perfect">완료: me- (amesoma, 읽었다)</string>
+    <string name="inflection_sw_not_yet_label">아직 ~않음</string>
+    <string name="inflection_sw_not_yet">아직 ~않음: 부정 뒤의 ja- (hajasoma, 아직 읽지 않았다)</string>
+    <string name="inflection_sw_conditional_label">조건법</string>
+    <string name="inflection_sw_conditional">조건법: nge-와 ngali- (angesoma, 읽을 텐데; angalisoma, 읽었을 텐데)</string>
+    <string name="inflection_sw_when_label">~할 때</string>
+    <string name="inflection_sw_when">ki-: ~할 때, ~하면서, ~하면 (akisoma)</string>
+    <string name="inflection_sw_and_then_label">그리고</string>
+    <string name="inflection_sw_and_then">ka-: 그리고, 이야기에서 (akasoma)</string>
+    <string name="inflection_sw_habitual_label">습관</string>
+    <string name="inflection_sw_habitual">습관: hu- (husoma, 늘 읽는다)</string>
+    <string name="inflection_sw_relative_label">관계형</string>
+    <string name="inflection_sw_relative">관계형: ~하는 사람, ~하는 것, ~하는 곳 (aliyesoma, 읽은 사람; kinachoitwa, ~라고 불리는; waishio, 사는 사람들)</string>
+    <string name="inflection_sw_object_label">목적어</string>
+    <string name="inflection_sw_object">목적어: ni- 나를, ku- 너를, m- 또는 mw- 그를·그녀를, tu- 우리를, wa- 그들을, 그리고 명사 부류 접두사 ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">재귀</string>
+    <string name="inflection_sw_reflexive">재귀 ji-: 자기 자신을 (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">부정사</string>
+    <string name="inflection_sw_infinitive">부정사: ku- 또는 kw- (kusoma, kwandika, kumpa)</string>
+</resources>

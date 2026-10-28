@@ -228,6 +228,17 @@ class SentenceTest {
     }
 
     @Test
+    fun swahiliSentenceKeepsAbbreviationsAndEndsAtNkBeforeACapital() {
+        val paragraph = "Mvua ilinyesha. Bw. Juma alifika tar. 5 Mei. “Karibu!” alisema Bi. Amina. " +
+            "Walinunua vyakula, k.m. wali na maharage n.k. Hata hivyo walirudi."
+        assertThat(extract(paragraph, "Juma", Language.SWAHILI).text).isEqualTo("Bw. Juma alifika tar. 5 Mei.")
+        assertThat(extract(paragraph, "alisema", Language.SWAHILI).text).isEqualTo("“Karibu!” alisema Bi. Amina.")
+        assertThat(extract(paragraph, "wali", Language.SWAHILI).text)
+            .isEqualTo("Walinunua vyakula, k.m. wali na maharage n.k.")
+        assertThat(extract(paragraph, "walirudi", Language.SWAHILI).text).isEqualTo("Hata hivyo walirudi.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

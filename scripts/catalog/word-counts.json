@@ -135,6 +135,10 @@
     "size": 265347,
     "words": 13885
   },
+  "dict/all/sw/wty-sw-ipa.zip": {
+    "size": 26499,
+    "words": 1282
+  },
   "dict/all/th/wty-th-ipa.zip": {
     "size": 583894,
     "words": 35452
@@ -2714,6 +2718,54 @@
   "dict/sv/zh/wty-sv-zh.zip": {
     "size": 1434668,
     "words": 21458
+  },
+  "dict/sw/de/wty-sw-de.zip": {
+    "size": 22945,
+    "words": 117
+  },
+  "dict/sw/en/wty-sw-en.zip": {
+    "size": 1960735,
+    "words": 11649
+  },
+  "dict/sw/es/wty-sw-es.zip": {
+    "size": 19280,
+    "words": 446
+  },
+  "dict/sw/fr/wty-sw-fr.zip": {
+    "size": 89698,
+    "words": 1397
+  },
+  "dict/sw/ja/wty-sw-ja.zip": {
+    "size": 27083,
+    "words": 513
+  },
+  "dict/sw/ko/wty-sw-ko.zip": {
+    "size": 30163,
+    "words": 665
+  },
+  "dict/sw/pl/wty-sw-pl.zip": {
+    "size": 72449,
+    "words": 2061
+  },
+  "dict/sw/pt/wty-sw-pt.zip": {
+    "size": 30268,
+    "words": 661
+  },
+  "dict/sw/ru/wty-sw-ru.zip": {
+    "size": 249930,
+    "words": 8143
+  },
+  "dict/sw/tr/wty-sw-tr.zip": {
+    "size": 17613,
+    "words": 362
+  },
+  "dict/sw/vi/wty-sw-vi.zip": {
+    "size": 13242,
+    "words": 97
+  },
+  "dict/sw/zh/wty-sw-zh.zip": {
+    "size": 122362,
+    "words": 2386
   },
   "dict/th/de/wty-th-de-gloss.zip": {
     "size": 31022,

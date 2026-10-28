@@ -184,6 +184,24 @@ class CorpusCountsDictionaryTest {
         }
     }
 
+    @Test
+    fun `the swahili dictionary credits the wikipedia texts and keeps the apostrophe of ng'`() {
+        val list = listOf("1\tna\t9", "2\tya\t5", "3\tNg'ombe\t2").joinToString("\n")
+        val source = folder.newFile().apply { writeBytes(tarGz("swa/swa-words.txt" to list)) }
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "sw", "2021", output)).isEqualTo(3)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("Leipzig Corpora Collection (sw)")
+            assertThat(index["attribution"]!!.jsonPrimitive.content)
+                .startsWith("Word counts of the Swahili Wikipedia of 2021 (swa_wikipedia_2021_100K)")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
+                .containsExactly("na" to 1, "Na" to 1, "ya" to 2, "Ya" to 2, "ng'ombe" to 3, "Ng'ombe" to 3).inOrder()
+        }
+    }
+
     /** The Leipzig archive itself, when it was copied into testdata (`scripts/frequency/corpus_catalog.py`). */
     @Test
     fun `the kazakh archive builds the top 100 000 words`() {

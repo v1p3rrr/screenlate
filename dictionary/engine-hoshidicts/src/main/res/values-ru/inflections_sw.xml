@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_sw.xml. -->
+<resources>
+    <string name="inflection_sw_negative_label">отрицание</string>
+    <string name="inflection_sw_negative">отрицание: ha- перед показателем субъекта (hatukusoma, hakusoma), si- для «я» и hu- для «ты» (sikusoma, hukusoma), si- после показателя субъекта перед относительным показателем (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">я</string>
+    <string name="inflection_sw_i">субъект ni-: я (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">ты</string>
+    <string name="inflection_sw_you">субъект u-: ты или существительное классов 3, 11 и 14 (unasoma; mti umeanguka, дерево упало)</string>
+    <string name="inflection_sw_he_she_label">он/она</string>
+    <string name="inflection_sw_he_she">субъект a-: он или она (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">мы</string>
+    <string name="inflection_sw_we">субъект tu-: мы (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">вы</string>
+    <string name="inflection_sw_you_pl">субъект m-: вы, несколько человек (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">они</string>
+    <string name="inflection_sw_they">субъект wa-: они (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">именной класс</string>
+    <string name="inflection_sw_class">субъект именного класса: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (места: kulikuwa, было)</string>
+    <string name="inflection_sw_past_label">прошедшее время</string>
+    <string name="inflection_sw_past">прошедшее время: li-, а после отрицания ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">настоящее время</string>
+    <string name="inflection_sw_present">настоящее время: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">будущее время</string>
+    <string name="inflection_sw_future">будущее время: ta-, а перед относительным показателем taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">перфект</string>
+    <string name="inflection_sw_perfect">перфект: me- (amesoma, прочитал)</string>
+    <string name="inflection_sw_not_yet_label">ещё не</string>
+    <string name="inflection_sw_not_yet">ещё не: ja- после отрицания (hajasoma, ещё не прочитал)</string>
+    <string name="inflection_sw_conditional_label">условное наклонение</string>
+    <string name="inflection_sw_conditional">условное наклонение: nge- и ngali- (angesoma, читал бы; angalisoma, прочитал бы тогда)</string>
+    <string name="inflection_sw_when_label">когда</string>
+    <string name="inflection_sw_when">ki-: когда, пока или если (akisoma)</string>
+    <string name="inflection_sw_and_then_label">и затем</string>
+    <string name="inflection_sw_and_then">ka-: и затем, в повествовании (akasoma)</string>
+    <string name="inflection_sw_habitual_label">обычное действие</string>
+    <string name="inflection_sw_habitual">обычное действие: hu- (husoma, обычно читает)</string>
+    <string name="inflection_sw_relative_label">относительная форма</string>
+    <string name="inflection_sw_relative">относительная форма: который, где (aliyesoma, тот, кто прочитал; kinachoitwa, который называется; waishio, которые живут)</string>
+    <string name="inflection_sw_object_label">объект</string>
+    <string name="inflection_sw_object">объект: ni- меня, ku- тебя, m- или mw- его или её, tu- нас, wa- их и приставки именных классов ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">возвратная форма</string>
+    <string name="inflection_sw_reflexive">возвратная форма ji-: себя (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">инфинитив</string>
+    <string name="inflection_sw_infinitive">инфинитив: ku- или kw- (kusoma, kwandika, kumpa)</string>
+</resources>
