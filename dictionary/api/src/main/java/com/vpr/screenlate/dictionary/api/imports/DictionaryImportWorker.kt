@@ -569,13 +569,13 @@ class DictionaryImportWorker @AssistedInject constructor(
         private const val RETRY_DELAY_MS = 30_000L
 
         /** How long after a download broke off the network may still go, which makes it a wait for the network. */
-        private const val NETWORK_SETTLE_MS = 2_000L
+        private const val NETWORK_SETTLE_MS = 3_000L
 
         /**
          * How long a download whose network went waits for it before it tries again, in its run; WorkManager normally
          * stops the task first and runs it again once a network is up.
          */
-        private const val NETWORK_WAIT_MS = 30_000L
+        private const val NETWORK_WAIT_MS = 15_000L
 
         /**
          * The wait in the run before the automatic [retry] (from 1) of a download that broke off: 30 s, 1 min, 2 min.
