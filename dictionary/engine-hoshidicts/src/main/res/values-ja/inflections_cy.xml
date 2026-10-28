@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">軟音化</string>
+    <string name="inflection_cy_soft_mutation">軟音化：p t c b/m d ll rh が b d g f dd l r に、g は脱落（cath → ei gath、gwely → dy wely）</string>
+    <string name="inflection_cy_nasal_mutation_label">鼻音化</string>
+    <string name="inflection_cy_nasal_mutation">鼻音化：p t c b d g が mh nh ngh m n ng に（cath → fy nghath、Cymru → yng Nghymru）</string>
+    <string name="inflection_cy_aspirate_mutation_label">帯気音化</string>
+    <string name="inflection_cy_aspirate_mutation">帯気音化：p t c が ph th ch に（cath → ei chath）</string>
+    <string name="inflection_cy_h_prothesis_label">h の付加</string>
+    <string name="inflection_cy_h_prothesis">母音の前の h（ysgol → ei hysgol）</string>
+</resources>

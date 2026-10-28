@@ -1206,6 +1206,151 @@ export const albanianEndings = /* @__PURE__ */ albanianRanks({
 });
 
 /**
+ * A letter of a Latin-script word, with its marks (ŵ ŷ á ò). Yomitan joins the patterns of a transform's rules into
+ * one without flags (its heuristic), so the letters are given by range, not by Unicode property.
+ */
+const LATIN_LETTER = '[A-Za-zÀ-ÖØ-öø-ÿĀ-ſḀ-ỿ]';
+
+/**
+ * A rule undoing an initial mutation: [mutated] at the start of a word becomes [radical] (nghath → cath, Nghymru →
+ * Cymru). It applies to the word as written only (no conditions in), so a word is never unmutated twice, and gives
+ * [conditionsOut], every dictionary form of the language, so the radical matches entries of any part of speech
+ * (glue.js `untypedRules` for entries without one). A letter follows the mutated ones and the radical keeps two
+ * letters at least: Gaelic th' and bh' are elided tha and bha, not mutated t' and b'. [before] is a pattern the rest
+ * of the word starts with (a vowel after h-), [not] one it does not (dd is soft d, not soft t + d); [nextCase] changes
+ * the case of the letter after the mutated ones (Wely → Gwely, Hysgol → Ysgol).
+ * @template {string} T
+ * @param {string} mutated
+ * @param {string} radical
+ * @param {T[]} conditionsOut
+ * @param {{before?: string, not?: string, nextCase?: 'lower' | 'upper'}} [context]
+ * @returns {import('language-transformer').Rule<T>}
+ */
+function mutationRule(mutated, radical, conditionsOut, {before, not, nextCase} = {}) {
+    const rest = Math.max(1, 2 - radical.length);
+    /** @type {(c: string) => string} */
+    const cased = nextCase === 'lower' ? (c) => c.toLowerCase() : nextCase === 'upper' ? (c) => c.toUpperCase() : (c) => c;
+    return {
+        type: 'prefix',
+        isInflected: new RegExp('^' + mutated + (not ? `(?!${not})` : '') + (before ? `(?=${before})` : '') +
+            `(?=${LATIN_LETTER}{${rest}})`),
+        deinflected: radical,
+        deinflect: (text) => radical + cased(text.charAt(mutated.length)) + text.slice(mutated.length + 1),
+        conditionsIn: [],
+        conditionsOut,
+    };
+}
+
+/**
+ * [mutationRule] for a word in lowercase and for one starting with a capital: [mutated] and [radical] with their first
+ * letter in upper case (Ngh → C), or the radical alone when nothing was dropped (Ardd → Gardd, [upperBefore] then
+ * naming the capitals that may follow).
+ * @template {string} T
+ * @param {string} mutated
+ * @param {string} radical
+ * @param {T[]} conditionsOut
+ * @param {{before?: string, upperBefore?: string, not?: string}} [context]
+ * @returns {import('language-transformer').Rule<T>[]}
+ */
+function mutationRules(mutated, radical, conditionsOut, {before, upperBefore, not} = {}) {
+    /** @param {string} s */
+    const capital = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+    return [
+        mutationRule(mutated, radical, conditionsOut, {before, not}),
+        mutated === '' ?
+            mutationRule('', capital(radical), conditionsOut, {before: upperBefore, nextCase: 'lower'}) :
+            mutationRule(capital(mutated), capital(radical), conditionsOut,
+                {before: upperBefore ?? before, not, ...(radical === '' ? {nextCase: /** @type {const} */ ('upper')} : {})}),
+    ];
+}
+
+/** Welsh vowels, w and y among them, with the marks the language writes on them. */
+const WELSH_VOWELS = 'aeiouwyâêîôûŵŷáéíóúẃýàèìòùẁỳäëïöüẅÿ';
+const WELSH_CAPITAL_VOWELS = 'AEIOUWYÂÊÎÔÛŴŶÁÉÍÓÚẂÝÀÈÌÒÙẀỲÄËÏÖÜẄŸ';
+
+/** @typedef {'w'} WelshCondition */
+
+/** @type {WelshCondition[]} */
+const WELSH_WORD = ['w'];
+
+/**
+ * Welsh initial mutations undone ([mutationRule]): soft (b d g f dd l r for p t c b/m d ll rh, and the g it drops
+ * before a vowel, w, l and r: wely → gwely, ardd → gardd), nasal (mh nh ngh m n ng for p t c b d g), aspirate (ph th
+ * ch for p t c) and h before a vowel (ei hysgol → ysgol). Wiktionary's Welsh entries give no part of speech and list
+ * mutated forms as form-of entries under tags of their own, which the engine names after these rules
+ * (`LanguageSupport.formTagRules`). [unmutated] lists common words that are no mutated forms although the rules read
+ * them so (mae "is", not bae "bay"), lowercase: the rules leave them as written (glue.js), their own form-of entries
+ * still lead where they do.
+ * @type {import('language-transformer').LanguageTransformDescriptor<WelshCondition> & {unmutated: string[]}}
+ */
+export const welshTransforms = {
+    language: 'cy',
+    conditions: {
+        w: {name: 'Word', isDictionaryForm: true},
+    },
+    transforms: {
+        'soft mutation': {
+            name: 'soft mutation',
+            description: 'soft mutation: b d g f dd l r for p t c b/m d ll rh, g dropped (ei gath from cath, dy wely from gwely)',
+            rules: [
+                ...mutationRules('b', 'p', WELSH_WORD),
+                ...mutationRules('d', 't', WELSH_WORD, {not: 'd'}),
+                ...mutationRules('g', 'c', WELSH_WORD),
+                ...mutationRules('f', 'b', WELSH_WORD, {not: 'f'}),
+                ...mutationRules('f', 'm', WELSH_WORD, {not: 'f'}),
+                ...mutationRules('dd', 'd', WELSH_WORD),
+                ...mutationRules('l', 'll', WELSH_WORD, {not: 'l'}),
+                ...mutationRules('r', 'rh', WELSH_WORD, {not: 'h'}),
+                ...mutationRules('', 'g', WELSH_WORD, {
+                    before: `(?:[${WELSH_VOWELS}]|l(?!l)|r(?!h))`,
+                    upperBefore: `(?:[${WELSH_CAPITAL_VOWELS}]|L(?!l)|R(?!h))`,
+                }),
+            ],
+        },
+        'nasal mutation': {
+            name: 'nasal mutation',
+            description: 'nasal mutation: mh nh ngh m n ng for p t c b d g (fy nghath from cath, yng Nghymru from Cymru)',
+            rules: [
+                ...mutationRules('mh', 'p', WELSH_WORD),
+                ...mutationRules('nh', 't', WELSH_WORD),
+                ...mutationRules('ngh', 'c', WELSH_WORD),
+                ...mutationRules('m', 'b', WELSH_WORD, {not: 'h'}),
+                ...mutationRules('n', 'd', WELSH_WORD, {not: '[hg]'}),
+                ...mutationRules('ng', 'g', WELSH_WORD, {not: 'h'}),
+            ],
+        },
+        'aspirate mutation': {
+            name: 'aspirate mutation',
+            description: 'aspirate mutation: ph th ch for p t c (ei chath from cath)',
+            rules: [
+                ...mutationRules('ph', 'p', WELSH_WORD),
+                ...mutationRules('th', 't', WELSH_WORD),
+                ...mutationRules('ch', 'c', WELSH_WORD),
+            ],
+        },
+        'h-prothesis': {
+            name: 'h-prothesis',
+            description: 'h before a vowel (ei hysgol from ysgol)',
+            rules: mutationRules('h', '', WELSH_WORD, {before: `[${WELSH_VOWELS}]`}),
+        },
+    },
+    // From mutation-exceptions.mjs on Leipzig's Welsh Wikipedia sample (the 1,000 commonest words), reviewed by hand
+    // with the words before each: those whose rule result the English dictionary does not give as their lemma (a,
+    // mae, wedi; not elwir, which follows a), those with a sense of their own at least five times as common as the
+    // result (ar, gan, dal, dŵr; not lan, mostly glan after ar), and a few that are themselves wherever they stand (yr,
+    // hun, menywod, English the and of).
+    unmutated: [
+        'a', 'aeth', 'afon', 'allan', 'am', 'angen', 'ap', 'ar', 'awr', 'bellach', 'blaen', 'ble', 'da', 'dail', 'dal',
+        'dan', 'dau', 'de', 'deg', 'draw', 'dros', 'drwy', 'du', 'dwyn', 'dyn', 'dynion', 'dŵr', 'ei', 'er', 'gaeaf',
+        'gall', 'gan', 'ganwyd', 'gellir', 'ger', 'glas', 'glo', 'gol', 'golau', 'gorau', 'gwyn', 'haf', 'hanner',
+        'hen', 'hir', 'holl', 'hun', 'hwn', 'hwy', 'hyd', 'hyn', 'hŷn', 'i', 'in', 'ledled', 'mab', 'mae', 'maen',
+        'maent', 'mai', 'man', 'marw', 'math', 'mawr', 'menywod', 'miliwn', 'modd', 'mwy', 'môr', 'na', 'nad', 'nag',
+        'naw', 'nes', 'ni', 'nodedig', 'nodi', 'nos', 'o', 'oed', 'oes', 'of', 'ras', 'rôl', 'the', 'wedi', 'wyneb',
+        'wyth', 'ym', 'ymuno', 'ymysg', 'yr', 'yw', 'ôl',
+    ],
+};
+
+/**
  * Yomitan's rules of a language with the app's own added: [own]'s rules after [base]'s, and its conditions.
  * @template {string} T
  * @param {import('language-transformer').LanguageTransformDescriptor<T>} base

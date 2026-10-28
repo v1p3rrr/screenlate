@@ -24,7 +24,7 @@ LANGUAGES = {
     "en": "eng", "de": "deu", "fr": "fra", "es": "spa", "it": "ita", "pt": "por",
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
     "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell", "hi": "hin", "bn": "ben", "ka": "kat", "hy": "hye",
-    "th": "tha", "km": "khm", "ar": "ara", "he": "heb", "kk": "kaz", "ky": "kir", "sv": "swe", "no": "nor", "da": "dan", "ro": "ron", "la": "lat", "lt": "lit", "sk": "slk", "sl": "slv", "eo": "epo", "sq": "sqi", "sw": "swa",
+    "th": "tha", "km": "khm", "ar": "ara", "he": "heb", "kk": "kaz", "ky": "kir", "sv": "swe", "no": "nor", "da": "dan", "ro": "ron", "la": "lat", "lt": "lit", "sk": "slk", "sl": "slv", "eo": "epo", "sq": "sqi", "sw": "swa", "cy": "cym",
     # Serbian's in Cyrillic, which its text is by default.
     "hr": "hrv", "sr": "srp",
 }
@@ -40,6 +40,11 @@ RECOMMENDED = {
     "ka": "fast", "hy": "fast", "th": "fast", "km": "fast", "ar": "fast", "he": "fast", "lt": "fast", "sk": "fast",
     "eo": "fast",
 }
+
+# Languages ML Kit reads whose comparison found several models more accurate than ML Kit: each is marked, and all
+# stay unticked at setup. Welsh: fast and best 0.00% of the characters wrong against ML Kit's 2.19%, ŵ and ŷ read
+# right (ML Kit reads tŷ as tý).
+MORE_ACCURATE = {"cy": {"fast", "best"}}
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CATALOG = os.path.join(ROOT, "dictionary", "api", "src", "main", "assets", "catalog", "dictionaries-v2.json")
@@ -78,7 +83,7 @@ def entry(language, code, variant, data):
         "template": template(variant),
         "category": "OCR_MODEL",
         "sourceLanguage": language,
-        "recommended": RECOMMENDED.get(language) == variant,
+        "recommended": RECOMMENDED.get(language) == variant or variant in MORE_ACCURATE.get(language, ()),
         "downloadUrl": url(variant, code),
         "downloadSize": len(data),
         "sha256": sha256,

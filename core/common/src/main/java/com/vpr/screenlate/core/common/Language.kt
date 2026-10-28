@@ -58,6 +58,7 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     ESPERANTO("eo"),
     ALBANIAN("sq"),
     SWAHILI("sw"),
+    WELSH("cy"),
     ;
 
     companion object {

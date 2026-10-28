@@ -61,6 +61,7 @@ object Flags {
         "lang_eo" to R.drawable.flag_lang_eo,
         "al" to R.drawable.flag_al,
         "tz" to R.drawable.flag_tz,
+        "gb-wls" to R.drawable.flag_gb_wls,
     )
 
     /** The flag of [country] (or of a language, `lang_la`); null for a country without one. */
@@ -74,10 +75,15 @@ object Flags {
     /** The letters shown instead of a flag. */
     fun code(language: Language): String = language.support.codeLabel
 
-    /** The country's name in [locale], or the language's for a language's own flag, for a flag's choice and TalkBack. */
+    /**
+     * The country's name in [locale], or the language's for a language's own flag, for a flag's choice and TalkBack. A
+     * region's flag (`gb-wls`), which locales do not name, gives its code.
+     */
     fun countryName(country: String, locale: Locale = Locale.getDefault()): String =
         if (country.startsWith(LANGUAGE_FLAG)) {
             Locale.forLanguageTag(country.removePrefix(LANGUAGE_FLAG)).getDisplayLanguage(locale)
+        } else if ('-' in country) {
+            country.uppercase(Locale.ROOT)
         } else {
             Locale.Builder().setRegion(country.uppercase(Locale.ROOT)).build().getDisplayCountry(locale)
         }

@@ -416,7 +416,8 @@ JNIEXPORT void JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_Hosh
 
 JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_HoshidictsNative_lookupLanguage(
     JNIEnv* env, jobject, jlong handle, jbyteArray language, jbyteArray text, jbyteArray resolution, jint max_results,
-    jint scan_length, jbyteArray frequency_dictionary, jboolean frequency_descending, jbyteArray primary_reading) {
+    jint scan_length, jbyteArray frequency_dictionary, jboolean frequency_descending, jbyteArray primary_reading,
+    jboolean from_ocr) {
   try {
     Session* s = session(handle);
     const std::string code = to_string(env, language);
@@ -427,7 +428,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
     }
     const std::string source = prefix(to_string(env, text), static_cast<size_t>(std::max(scan_length, 0)));
     auto candidates = screenlate_language::parse_candidates(
-        loaded->second.script->candidates_json(source, code, to_string(env, resolution)));
+        loaded->second.script->candidates_json(source, code, to_string(env, resolution), from_ocr == JNI_TRUE));
     screenlate_language::CandidateLookupOptions options;
     options.max_results = max_results;
     options.frequency_dictionary = to_optional_string(env, frequency_dictionary);

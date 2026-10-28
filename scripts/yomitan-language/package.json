@@ -5,7 +5,7 @@
   "description": "Builds Yomitan's language code into one script per language for the dictionary engine.",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node --test glue.test.mjs"
+    "test": "node --test glue.test.mjs mutation-exceptions.test.mjs"
   },
   "devDependencies": {
     "esbuild": "0.25.10",

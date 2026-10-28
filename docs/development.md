@@ -110,13 +110,16 @@ catalog entries (templates `paddle-v5`, `paddle-v6`, `paddle-detector-v5`, `padd
 point at the GitHub prerelease `ocr-models-1`; new archives go into a new prerelease, never the latest release, so
 the update check and the README link keep pointing at the app. A recognizer requires its detector (`requires`); the
 detector is downloaded with it and not listed on its own. The recommended marks follow the measurements in
-`ai/notes/ocr-engines.md`.
+`ai/notes/ocr-engines.md`: one model per language, or every model listed in `MORE_ACCURATE` of either script for a
+language that several read more accurately than the built-in recognizer (Welsh); a marked model of a language the
+built-in recognizer reads stays unticked at setup.
 
 The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.xml`) are generated from circle-flags
 (MIT) at a pinned commit: `python scripts/flags/circle_flags.py overlay/src/main/res/drawable`. A language support
 class lists its flag countries (`flagCountries`); add a new country to `COUNTRIES` in the script and to `Flags` in
 `overlay`, whose unit test checks that every listed country has a drawable. A language with a flag of its own (Latin, Esperanto)
-lists it as `lang_<code>`, taken from circle-flags' `language/<code>.svg`.
+lists it as `lang_<code>`, taken from circle-flags' `language/<code>.svg`; a region's flag (Wales) by its circle-flags
+name (`gb-wls`), whose drawable takes `_` for the hyphen (`flag_gb_wls`).
 
 Downloadable fonts offered by their Google Fonts subsets (catalog entries without `language` in
 `overlay/src/main/assets/fonts/catalog.json`) list the letters they have: `python scripts/fonts/font_letters.py
@@ -164,7 +167,14 @@ that are missing or no longer needed; translations are edited by hand. `glue.js`
 processors where its letter pairs differ from JavaScript's default (Turkish İ/i and I/ı). A language Yomitan has no
 descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian, Kazakh and Kyrgyz from Mongolian, which gives only Cyrillic capitalization, Swahili from Czech); `addedPreprocessors`
 gives a language text processors its descriptor lacks (Georgian decapitalizing, for headings in Mtavruli capitals; the app's own ones in `own-processors.js`, such as Thai sara am, tone mark order and the spaces around ๆ, Khmer zero-width spaces and subscript TA read as DA) and
-`addedTransforms` the app's own rules (`own-transforms.js`: Bengali noun endings, Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz noun and verb endings, built from tables of endings by `turkicTransforms`; the Turkic rule names are shared by both languages and generated once into `inflections_turkic.xml`; Swahili verb prefixes); `extendedTransforms` adds the app's rules to the ones Yomitan has (the Latin enclitics, the Albanian endings). A transform marked `fallback` (the Albanian endings) gives its texts a rank, which `glue.js` passes to the engine (`fallbackRules`): the engine looks them up only when no other text found an entry, one rank at a time. The generator takes a language's own rules when Yomitan has none and writes their names as labels (Persian `-ها` is shown as "pl."); the string names come from the affix in Latin letters (`inflection_fa_ha`), or from the rule's name where it is in words (Swahili `past`, `inflection_sw_past`). The glue and
+`addedTransforms` the app's own rules (`own-transforms.js`: Bengali noun endings, Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz noun and verb endings, built from tables of endings by `turkicTransforms`; the Turkic rule names are shared by both languages and generated once into `inflections_turkic.xml`; Swahili verb prefixes, Welsh initial mutations); `extendedTransforms` adds the app's rules to the ones Yomitan has (the Latin enclitics, the Albanian endings). A transform marked `fallback` (the Albanian endings) gives its texts a rank, which `glue.js` passes to the engine (`fallbackRules`): the engine looks them up only when no other text found an entry, one rank at a time. The generator takes a language's own rules when Yomitan has none and writes their names as labels (Persian `-ها` is shown as "pl."); the string names come from the affix in Latin letters (`inflection_fa_ha`), or from the rule's name where it is in words (Swahili `past`, `inflection_sw_past`). A descriptor's `unmutated` lists
+the lowercase words whose rule candidates the glue drops (Welsh mae, ar, dŵr); `node
+scripts/yomitan-language/mutation-exceptions.mjs <iso> <corpus> <top N> <english zip> [<other zip>...]` prints the
+candidates for the hand review: the commonest words of a corpus (a Leipzig sentences file, kept in
+`testdata/corpus/<iso>/`) that the rules turn into another headword, grouped by whether the English dictionary gives
+that headword as the word's lemma, with the words most often before each, and the share of tokens the list spares
+an extra entry. A text processor marked `ocrOnly` (`own-processors.js`: Welsh ý and û read as ŷ and ŵ) runs only for
+text from OCR, which the engine passes on (`fromOcr`). The glue and
 `generate-inflections.mjs` take a language's rules by its descriptor and folder, whatever code the rules name
 (Georgian's say `kat`), and the generator gives English labels to rule names Yomitan leaves as identifiers (`labels`). The bundles and the strings are GPL-3.0, like the engine module that holds
 them.
@@ -176,6 +186,7 @@ them.
 - `node --test scripts/catalog/generate.test.mjs`: the catalog generator, against a recorded listing.
 - `node --test scripts/yomitan-language/glue.test.mjs`: the committed language bundles, called as the engine calls them
   (Turkish case pairs).
+- `node --test scripts/yomitan-language/mutation-exceptions.test.mjs`: the mutation exception candidates.
 - `python -m unittest discover scripts/frequency`: the frequency dictionary builder (wordfreq itself is not needed).
 - `python -m unittest discover scripts/flags`: the flag converter.
 - `python -m unittest discover scripts/ocr-models`: the catalog entries of the recognition models.

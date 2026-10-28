@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">연음 변이</string>
+    <string name="inflection_cy_soft_mutation">연음 변이: p t c b/m d ll rh 대신 b d g f dd l r, g는 탈락 (cath → ei gath, gwely → dy wely)</string>
+    <string name="inflection_cy_nasal_mutation_label">비음 변이</string>
+    <string name="inflection_cy_nasal_mutation">비음 변이: p t c b d g 대신 mh nh ngh m n ng (cath → fy nghath, Cymru → yng Nghymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">기음 변이</string>
+    <string name="inflection_cy_aspirate_mutation">기음 변이: p t c 대신 ph th ch (cath → ei chath)</string>
+    <string name="inflection_cy_h_prothesis_label">h 첨가</string>
+    <string name="inflection_cy_h_prothesis">모음 앞의 h (ysgol → ei hysgol)</string>
+</resources>

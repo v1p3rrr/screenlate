@@ -260,3 +260,21 @@ export const esperantoXSystem = {
 };
 
 const ESPERANTO_X_SYSTEM = {c: 'ĉ', g: 'ĝ', h: 'ĥ', j: 'ĵ', s: 'ŝ', u: 'ŭ', C: 'Ĉ', G: 'Ĝ', H: 'Ĥ', J: 'Ĵ', S: 'Ŝ', U: 'Ŭ'};
+
+/**
+ * Welsh ŷ and ŵ, which recognition reads as ý and û (tý, dý for tŷ, dŷ; tûr for tŵr): the text is also tried with
+ * them, as read first, so cytûn still finds cytûn. For words from OCR only (`ocrOnly`, glue.js): app text and typed
+ * text are looked up as written.
+ * @type {import('language').TextProcessor & {ocrOnly: true}}
+ */
+export const welshMisreadCircumflex = {
+    name: 'Misread circumflex',
+    description: 'tý → tŷ, tûr → tŵr',
+    ocrOnly: true,
+    process: (str) => {
+        const fixed = str.replace(/[ýÝûÛ]/g, (letter) => WELSH_CIRCUMFLEX[letter]);
+        return fixed === str ? [str] : [str, fixed];
+    },
+};
+
+const WELSH_CIRCUMFLEX = {ý: 'ŷ', Ý: 'Ŷ', û: 'ŵ', Û: 'Ŵ'};

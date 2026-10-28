@@ -50,6 +50,7 @@ class DictionaryLookup @Inject constructor(
      * @param aimedCharAt UTF-16 index in [text] of the aimed character, at or after [aimedAt]: when no word found
      *   covers it, the lookup starts inside the aimed word as well; see [reachingAimedCharacter]. After a hyphen in
      *   the aimed word, the lookup starts at the aimed part too; see [withHyphenatedParts].
+     * @param fromOcr [text] was recognized in a screenshot ([LookupOptions.fromOcr]).
      */
     suspend fun lookup(
         text: String,
@@ -59,6 +60,7 @@ class DictionaryLookup @Inject constructor(
         extraEntries: Boolean = true,
         aimedAt: Int = 0,
         aimedCharAt: Int = aimedAt,
+        fromOcr: Boolean = false,
     ): List<LookupResult> {
         if (text.isBlank()) return emptyList()
         val settings = lookupSettings.current(language)
@@ -71,6 +73,7 @@ class DictionaryLookup @Inject constructor(
                 primaryReading = primaryReading,
                 maxResults = limit,
                 language = language,
+                fromOcr = fromOcr,
             )
             val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
             val script = settings.script?.takeIf { settings.fixedScript }

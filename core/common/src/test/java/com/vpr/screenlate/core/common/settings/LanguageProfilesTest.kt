@@ -228,13 +228,14 @@ class LanguageProfilesTest {
     }
 
     @Test
-    fun `every flag country is a lower-case country code or the language's own flag`() {
+    fun `every flag country is a lower-case country code, a region of one, or the language's own flag`() {
         for (language in Language.entries) {
             val countries = language.support.flagCountries
             assertThat(countries).isNotEmpty()
-            countries.forEach { assertThat(it).matches("[a-z]{2}|lang_${language.code}") }
+            countries.forEach { assertThat(it).matches("[a-z]{2}(-[a-z]{3})?|lang_${language.code}") }
         }
         assertThat(Language.LATIN.support.flagCountries).containsExactly("lang_la")
+        assertThat(Language.WELSH.support.flagCountries).containsExactly("gb-wls")
     }
 
     @Test

@@ -531,6 +531,7 @@
     <string name="popup_font_script_only_eo">Nur für Text auf Esperanto</string>
     <string name="popup_font_script_only_sq">Nur für albanischen Text</string>
     <string name="popup_font_script_only_sw">Nur für Text auf Suaheli</string>
+    <string name="popup_font_script_only_cy">Nur für walisischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

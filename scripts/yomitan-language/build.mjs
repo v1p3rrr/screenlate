@@ -76,12 +76,13 @@ const addedPreprocessors = {
     eo: ['esperantoXSystem', 'ukrainianApostropheVariants'],
     sq: ['ukrainianApostropheVariants'],
     sw: ['ukrainianApostropheVariants'],
+    cy: ['ukrainianApostropheVariants', 'welshMisreadCircumflex'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
- * article and agreement endings, Swahili verb prefixes.
+ * article and agreement endings, Swahili verb prefixes, Welsh initial mutations.
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -92,6 +93,7 @@ const addedTransforms = {
     no: 'norwegianTransforms',
     ro: 'romanianTransforms',
     sw: 'swahiliTransforms',
+    cy: 'welshTransforms',
 };
 
 /**

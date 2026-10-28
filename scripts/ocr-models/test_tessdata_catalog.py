@@ -30,6 +30,9 @@ class EntryTest(unittest.TestCase):
         # Hebrew: both read clean screens without an error, best hard ones 43.7% wrong against fast's 48.5%.
         self.assertTrue(catalog.entry("he", "heb", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("he", "heb", "best", b"lstm")["recommended"])
+        # Welsh, which ML Kit reads: both are marked more accurate than ML Kit, 0.00% against 2.19%.
+        self.assertTrue(catalog.entry("cy", "cym", "fast", b"lstm")["recommended"])
+        self.assertTrue(catalog.entry("cy", "cym", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

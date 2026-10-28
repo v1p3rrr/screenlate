@@ -948,6 +948,84 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun welshMutationsAreUndoneUnderTheirNamesCommonWordsStayAndUnmarkedWordsFindMarkedOnesWithoutAnEntry() = runTest {
+        val imported = engine.import(welshDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val welsh = LookupOptions(language = Language.WELSH)
+        suspend fun first(text: String, options: LookupOptions = welsh) = engine.lookup(text, options).first()
+        suspend fun all(text: String, options: LookupOptions = welsh) = engine.lookup(text, options).map { it.term.expression }
+
+        // The rule and the dictionary's own row give one chain, under the rule's name, which the popup shows translated.
+        val cat = first("nghath")
+        assertThat(cat.term.expression).isEqualTo("cath")
+        assertThat(cat.matched).isEqualTo("nghath")
+        assertThat(cat.trace.map { it.name }).containsExactly("nasal mutation")
+        assertThat(cat.otherTraces).isEmpty()
+        assertThat(cat.trace.map { it.label }).doesNotContain("")
+        assertThat(cat.trace.map { it.description }).doesNotContain("")
+        // Words the dictionary does not list as mutated are found by the rule, capitals kept.
+        assertThat(first("Nghymru").term.expression).isEqualTo("Cymru")
+        assertThat(first("hysgol").trace.map { it.name }).containsExactly("h-prothesis")
+        // A row whose lemma is a single letter (fara as the soft form of b) is left out, and so is a second mutation
+        // (bara as the soft form of para).
+        assertThat(all("fara")).containsExactly("bara")
+        assertThat(first("fara").trace.map { it.name }).containsExactly("soft mutation")
+        // The rows' own tag names the same rule as the rule: the aspirate row of the and the rule's reading are one.
+        assertThat(first("the").trace.map { it.name }).containsExactly("aspirate mutation")
+        // mae is "is", not bae "bay".
+        assertThat(all("mae")).containsExactly("bod")
+        assertThat(all("Mae")).containsExactly("bod")
+        // ty finds tŷ, as people type it; twr has an entry of its own and finds only that.
+        assertThat(all("ty")).containsExactly("tŷ")
+        // ddwr would reach twr only through two mutations (dwr, the soft form of twr), so it finds dŵr; dwr itself finds
+        // twr, its lemma, and not dŵr.
+        assertThat(all("ddwr")).containsExactly("dŵr")
+        assertThat(all("dwr")).containsExactly("twr")
+        assertThat(all("twr")).containsExactly("twr")
+        // tý, as recognition reads tŷ, finds it only in text read from a screenshot.
+        assertThat(all("tý")).isEmpty()
+        assertThat(all("tý", welsh.copy(fromOcr = true))).containsExactly("tŷ")
+        assertThat(all("thý", welsh.copy(fromOcr = true))).containsExactly("tŷ")
+        assertThat(first("mae’r").term.expression).isEqualTo("mae'r")
+    }
+
+    /**
+     * Rows as Wiktionary's Welsh exports write them: no rules, mutated forms as form-of rows under the edition's tags
+     * (`nasal mutation`, `soft`, `aspirate mutation`), one of them with a single-letter lemma; a word written with
+     * and without the circumflex.
+     */
+    private fun welshDictionary(): File = zip(
+        "cy.zip",
+        "index.json" to """{"title":"Test Welsh","revision":"1","format":3,"sourceLanguage":"cy"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["cath","","n fem","",0,["cat"],1,""],
+              ["nghath","","non-lemma","",0,[["cath",["nasal mutation"]]],2,""],
+              ["Cymru","","name","",0,["Wales"],3,""],
+              ["bara","","n masc","",0,["bread"],4,""],
+              ["fara","","non-lemma","",0,[["bara",["soft mutation"]]],5,""],
+              ["fara","","non-lemma","",0,[["b",["soft"]]],6,""],
+              ["b","","char","",0,["the letter b"],7,""],
+              ["ysgol","","n fem","",0,["school"],8,""],
+              ["te","","n masc","",0,["tea"],9,""],
+              ["the","","non-lemma","",0,[["te",["aspirate mutation"]]],10,""],
+              ["bod","","verb","",0,["to be"],11,""],
+              ["mae","","non-lemma","",0,[["bod",["third-person singular present"]]],12,""],
+              ["bae","","n masc","",0,["bay"],13,""],
+              ["tŷ","","n masc","",0,["house"],14,""],
+              ["dŵr","","n masc","",0,["water"],15,""],
+              ["ddŵr","","non-lemma","",0,[["dŵr",["soft mutation"]]],16,""],
+              ["tŵr","","n masc","",0,["tower"],17,""],
+              ["twr","","n masc","",0,["heap"],18,""],
+              ["mae'r","","phrase","",0,["is the"],19,""],
+              ["para","","n masc","",0,["continuance"],20,""],
+              ["bara","","non-lemma","",0,[["para",["soft"]]],21,""],
+              ["dwr","","non-lemma","",0,[["twr",["soft"]]],22,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

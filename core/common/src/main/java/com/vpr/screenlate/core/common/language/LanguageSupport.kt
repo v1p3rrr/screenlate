@@ -384,6 +384,20 @@ interface LanguageSupport {
     val inflectionRulesOnlyWithoutEntry: Boolean get() = false
 
     /**
+     * Tags of the dictionaries' form-of entries that stand for one of the language's inflection rules, with that rule's
+     * id: Wiktionary's Welsh `soft` and French-edition `lenition` rows are soft mutations, which the rules undo too. A
+     * result shows such a row under the rule's name, once, and a row whose lemma is a single letter (Welsh fara → b)
+     * is left out.
+     */
+    val formTagRules: Map<String, String> get() = emptyMap()
+
+    /**
+     * Whether a word's results found through a headword's spelling without marks ([HeadwordMarks.everyHeadword]) are
+     * left out when the same text finds a headword as written: Welsh ty finds tŷ, twr finds only twr.
+     */
+    val respelledOnlyWithoutEntry: Boolean get() = false
+
+    /**
      * The language whose term dictionaries lookups also search where the language's own find no entry for the text:
      * Wiktionary's Slovak dictionaries lack many common words that Czech writes the same (v, už, však), so Slovak reads
      * the Czech dictionaries the user has, their entries marked as Czech. Null for the others.
@@ -544,6 +558,7 @@ val Language.support: LanguageSupport
         Language.ESPERANTO -> EsperantoSupport
         Language.ALBANIAN -> AlbanianSupport
         Language.SWAHILI -> SwahiliSupport
+        Language.WELSH -> WelshSupport
     }
 
 /**

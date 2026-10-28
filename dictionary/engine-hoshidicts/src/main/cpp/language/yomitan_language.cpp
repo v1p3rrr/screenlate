@@ -43,9 +43,9 @@ YomitanLanguage::~YomitanLanguage() {
 }
 
 std::string YomitanLanguage::candidates_json(const std::string& text, const std::string& language,
-                                             const std::string& resolution) {
-  const std::string args[] = {text, language, resolution};
-  return call("candidatesJson", args, 3);
+                                             const std::string& resolution, bool from_ocr) {
+  const std::string args[] = {text, language, resolution, from_ocr ? "ocr" : "text"};
+  return call("candidatesJson", args, 4);
 }
 
 std::string YomitanLanguage::part_of_speech_flags_json(const std::string& language) {

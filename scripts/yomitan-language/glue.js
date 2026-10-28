@@ -23,13 +23,28 @@ const hiddenRules = new Map();
 const fallbackRules = new Map();
 
 /**
+ * Words a language's rules leave as written, lowercase: the descriptor's `unmutated` (own-transforms.js), common words
+ * that are no mutated forms although the rules read them so (Welsh mae "is", not bae "bay").
+ * @type {Map<string, Set<string>>}
+ */
+const unmutatedWords = new Map();
+
+/**
+ * Text processors of a language for text from OCR and for other text, by language: processors marked `ocrOnly`
+ * (own-processors.js) fix letters recognition misreads, and words from app text or typed text are looked up as
+ * written (Welsh tý is tŷ only after OCR).
+ * @type {Map<string, {ocr: import('language').TextProcessorWithId<unknown>[], text: import('language').TextProcessorWithId<unknown>[], postprocessors: import('language').TextProcessorWithId<unknown>[]}>}
+ */
+const processorSets = new Map();
+
+/**
  * Prepares one language only; `Translator.prepare` builds every language's transformer (about 30 MB in QuickJS). The
  * transforms are taken by the descriptor's code: Georgian's name their language `kat`, under which Yomitan files them
  * and its Georgian lookups never find them.
  * @param {string} language
  */
 function prepare(language) {
-    if (translator._textProcessors.has(language)) { return; }
+    if (processorSets.has(language)) { return; }
     for (const {iso, languageTransforms: descriptor} of getAllLanguageTransformDescriptors()) {
         if (iso !== language) { continue; }
         const transformer = new LanguageTransformer();
@@ -39,12 +54,31 @@ function prepare(language) {
         if (hidden.length > 0) { hiddenRules.set(language, new Set(hidden)); }
         const fallback = Object.entries(descriptor.transforms).filter(([, t]) => t.fallback).map(([id, t]) => [id, t.rules]);
         if (fallback.length > 0) { fallbackRules.set(language, new Map(fallback)); }
+        if (descriptor.unmutated?.length > 0) { unmutatedWords.set(language, new Set(descriptor.unmutated)); }
     }
     for (const {iso, textPreprocessors = [], textPostprocessors = []} of getAllLanguageTextProcessors()) {
         if (iso !== language) { continue; }
         const preprocessors = textPreprocessors.map((p) => ({...p, textProcessor: replacedProcessors[iso]?.[p.id] ?? p.textProcessor}));
-        translator._textProcessors.set(iso, {textPreprocessors: preprocessors, textPostprocessors});
+        processorSets.set(iso, {
+            ocr: preprocessors,
+            text: preprocessors.filter((p) => !p.textProcessor.ocrOnly),
+            postprocessors: textPostprocessors,
+        });
     }
+}
+
+/**
+ * Makes the translator use [language]'s text processors for text from OCR or for other text ([processorSets]).
+ * @param {string} language
+ * @param {boolean} fromOcr
+ */
+function useProcessors(language, fromOcr) {
+    const sets = processorSets.get(language);
+    if (!sets) { return; }
+    translator._textProcessors.set(language, {
+        textPreprocessors: fromOcr ? sets.ocr : sets.text,
+        textPostprocessors: sets.postprocessors,
+    });
 }
 
 /**
@@ -107,17 +141,22 @@ const replacedProcessors = {
  * (`freeFormLemmas`; absent when they need them too). A text reached by a fallback rule (`fallbackRules`) carries the
  * rule's rank and, when it may reach only a headword of its own, `l`. A rule that strips a whole word (Georgian -მა
  * from მა) leaves an empty text, which is not asked for, and neither are the texts between the steps of marked rules
- * (`isMarkedStep`).
+ * (`isMarkedStep`), nor the rules' texts of a word they leave as written ([unmutatedWords]). [fromOcr]: the text comes
+ * from OCR, which adds the processors for misread letters ([processorSets]).
  * @param {string} text
  * @param {string} language
  * @param {'letter'|'word'} searchResolution
+ * @param {boolean} [fromOcr]
  */
-function candidates(text, language, searchResolution) {
+function candidates(text, language, searchResolution, fromOcr = false) {
     prepare(language);
+    useProcessors(language, fromOcr);
     const marked = markedLanguages.has(language);
+    const unmutated = unmutatedWords.get(language);
     const list = translator._getAlgorithmDeinflections(text, {language, searchResolution, textReplacements: [null]})
         .filter((d) => d.deinflectedText !== '' && isWellFormed(d.originalText) && isWellFormed(d.transformedText) &&
-            isWellFormed(d.deinflectedText) && !(marked && isMarkedStep(d, language)));
+            isWellFormed(d.deinflectedText) && !(marked && isMarkedStep(d, language)) &&
+            !(unmutated && isUnmutated(d, unmutated)));
     const verb = englishVerbFlags(language);
     const hidden = hiddenRules.get(language);
     const fallback = fallbackRules.get(language);
@@ -143,6 +182,16 @@ function candidates(text, language, searchResolution) {
             ...(step?.lemmaOnly ? {l: true} : {}),
         }];
     });
+}
+
+/**
+ * Whether [d] is a rule's text of a word the rules leave as written ([unmutatedWords]): Mae and mae stay mae.
+ * @param {{transformedText: string, inflectionRuleChainCandidates: {inflectionRules: string[]}[]}} d
+ * @param {Set<string>} words
+ */
+function isUnmutated(d, words) {
+    return d.inflectionRuleChainCandidates.every(({inflectionRules}) => inflectionRules.length > 0) &&
+        words.has(d.transformedText.toLowerCase());
 }
 
 /**
@@ -248,7 +297,7 @@ function tagsOf(d, language) {
  * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least. Wiktionary's Kazakh and
  * Kyrgyz entries give none either: the app's nominal endings (cases, possessives, plurals, the person endings of
  * predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their definition tags
- * (`taggedRules`).
+ * (`taggedRules`). Wiktionary's Welsh entries give none either; the app's mutation rules leave two letters at least.
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
 const untypedRules = new Map([
@@ -259,6 +308,7 @@ const untypedRules = new Map([
     ['he', {shortest: 2}],
     ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
+    ['cy', {shortest: 2}],
 ]);
 
 /**
@@ -359,6 +409,7 @@ function partOfSpeechFlagsJson(language) {
 
 globalThis.yomitanLang = {
     candidates,
-    candidatesJson: (text, language, resolution) => JSON.stringify(candidates(text, language, resolution)),
+    candidatesJson: (text, language, resolution, source) =>
+        JSON.stringify(candidates(text, language, resolution, source === 'ocr')),
     partOfSpeechFlagsJson,
 };

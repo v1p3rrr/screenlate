@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">mutation douce</string>
+    <string name="inflection_cy_soft_mutation">mutation douce : b d g f dd l r pour p t c b/m d ll rh, g disparaît (ei gath de cath, dy wely de gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">mutation nasale</string>
+    <string name="inflection_cy_nasal_mutation">mutation nasale : mh nh ngh m n ng pour p t c b d g (fy nghath de cath, yng Nghymru de Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">mutation spirante</string>
+    <string name="inflection_cy_aspirate_mutation">mutation spirante : ph th ch pour p t c (ei chath de cath)</string>
+    <string name="inflection_cy_h_prothesis_label">prothèse de h</string>
+    <string name="inflection_cy_h_prothesis">h devant une voyelle (ei hysgol de ysgol)</string>
+</resources>

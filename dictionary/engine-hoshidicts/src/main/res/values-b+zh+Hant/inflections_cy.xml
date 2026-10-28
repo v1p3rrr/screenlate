@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">軟音變</string>
+    <string name="inflection_cy_soft_mutation">軟音變：p t c b/m d ll rh 變為 b d g f dd l r，g 脫落（cath → ei gath、gwely → dy wely）</string>
+    <string name="inflection_cy_nasal_mutation_label">鼻音變</string>
+    <string name="inflection_cy_nasal_mutation">鼻音變：p t c b d g 變為 mh nh ngh m n ng（cath → fy nghath、Cymru → yng Nghymru）</string>
+    <string name="inflection_cy_aspirate_mutation_label">送氣音變</string>
+    <string name="inflection_cy_aspirate_mutation">送氣音變：p t c 變為 ph th ch（cath → ei chath）</string>
+    <string name="inflection_cy_h_prothesis_label">h 增音</string>
+    <string name="inflection_cy_h_prothesis">母音前加 h（ysgol → ei hysgol）</string>
+</resources>

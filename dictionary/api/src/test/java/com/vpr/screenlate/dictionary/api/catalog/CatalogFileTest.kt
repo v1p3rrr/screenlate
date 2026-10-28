@@ -368,6 +368,20 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `welsh offers three wiktionaries and its transcription, ticked, and four ocr models marked more accurate`() {
+        val welsh = catalog!!.entries.filter { it.isFor(Language.WELSH) }
+        assertThat(welsh.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-cy-en", "wiktionary-cy-ru", "wiktionary-cy-fr", "wiktionary-cy-transcription",
+            "tesseract-fast-cym", "tesseract-best-cym", "paddle-v6-cy", "paddle-latin-cy",
+        )
+        assertThat(welsh.filterNot { it.recommended }.map { it.id })
+            .containsExactly("paddle-detector-v6-cy", "paddle-detector-v5-cy")
+        // No frequency dictionary for Welsh.
+        assertThat(welsh.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.WELSH) }).isEqualTo(welsh)
+    }
+
+    @Test
     fun `slovak also reads czech term dictionaries, not czech models, frequencies or transcriptions`() {
         val czech = catalog!!.entries.filter { it.isReadBy(Language.SLOVAK) && !it.isFor(Language.SLOVAK) }
         assertThat(czech).isNotEmpty()

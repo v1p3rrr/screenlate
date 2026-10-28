@@ -18,8 +18,10 @@ class YomitanLanguage {
   YomitanLanguage& operator=(const YomitanLanguage&) = delete;
 
   // JSON array of {o, t, d, s, c, r}: original substring, preprocessed text, deinflected text, preprocessor
-  // steps, condition flags, inflection rule chains.
-  std::string candidates_json(const std::string& text, const std::string& language, const std::string& resolution);
+  // steps, condition flags, inflection rule chains. [from_ocr]: the text was recognized in a screenshot, which adds
+  // the bundle's processors for misread letters.
+  std::string candidates_json(const std::string& text, const std::string& language, const std::string& resolution,
+                              bool from_ocr);
 
   // JSON object mapping part-of-speech names in dictionary `rules` to condition flags.
   std::string part_of_speech_flags_json(const std::string& language);

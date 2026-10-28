@@ -108,6 +108,13 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `welsh takes the latin fonts that have its circumflex w and y`() {
+        // PT Serif and PT Sans declare Latin Extended but have no ŵ or ŷ.
+        assertThat(fonts.filter { it.isOfferedFor(Language.WELSH) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend")
+    }
+
+    @Test
     fun `latin takes the latin fonts that have its long vowels`() {
         // Atkinson Hyperlegible Next declares Latin Extended but has no ō.
         assertThat(fonts.filter { it.isOfferedFor(Language.LATIN) }.map { it.family })
@@ -128,10 +135,18 @@ class FontCatalogFileTest {
         assertThat(atkinson.hasLetters("ō")).isFalse()
         assertThat(atkinson.hasLetters("ĉ")).isFalse()
         assertThat(fonts.single { it.id == "inter" }.hasLetters("ĉĝĥĵŝŭāēīōū")).isTrue()
-        // Each language with subsets keeps every font that has them, but for Latin's and Esperanto's Atkinson.
-        val withoutAtkinson = setOf(Language.LATIN, Language.ESPERANTO)
-        for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() && it !in withoutAtkinson }) {
-            val bySubsets = fonts.filter { it.language == null && it.subsets.containsAll(language.support.fontSubsets) }
+        assertThat(fonts.single { it.id == "pt-serif" }.hasLetters("ŵŷ")).isFalse()
+        // Each language with subsets keeps every font that has them, but for Latin's and Esperanto's Atkinson and
+        // Welsh's PT fonts.
+        val lacking = mapOf(
+            Language.LATIN to setOf("atkinson-hyperlegible-next"),
+            Language.ESPERANTO to setOf("atkinson-hyperlegible-next"),
+            Language.WELSH to setOf("pt-serif", "pt-sans"),
+        )
+        for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() }) {
+            val bySubsets = fonts.filter {
+                it.language == null && it.subsets.containsAll(language.support.fontSubsets) && it.id !in lacking[language].orEmpty()
+            }
             assertThat(fonts.filter { it.language == null && it.isOfferedFor(language) }).containsExactlyElementsIn(bySubsets)
         }
     }

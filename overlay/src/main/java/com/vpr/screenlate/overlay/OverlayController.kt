@@ -184,6 +184,8 @@ class OverlayController(
         val query: String = text,
         /** UTF-16 index in [query] of the aimed character. */
         val aimedCharAt: Int = 0,
+        /** The aimed word was recognized in a screenshot rather than read from the app (`LookupOptions.fromOcr`). */
+        val fromOcr: Boolean = false,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -1383,20 +1385,22 @@ class OverlayController(
         val query = layout.textFrom(earliest, scanLength + earlier)
         val aimedAt = layout.textFrom(earliest, earlier).length
         val aimedCharAt = layout.textFrom(earliest, aimed.offset - earliest.offset).length
+        val fromOcr = (engineAt(layout, aimed) ?: layout.page.engine) != OcrEngineType.ACCESSIBILITY
         val previous = lookupJob
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
             // Within the word shown the results stay, unless they came from inside it for another character or
             // another part of a hyphenated word is aimed at.
             val cached = shownLookup?.takeIf { view ->
-                view.query == query && popup.isShowing && (
+                view.query == query && view.fromOcr == fromOcr && popup.isShowing && (
                     view.aimedCharAt == aimedCharAt ||
                         view.results.firstOrNull()?.covers(aimedCharAt) != false &&
                         language.support.partStarts(query, aimedAt, view.aimedCharAt) ==
                         language.support.partStarts(query, aimedAt, aimedCharAt)
                     )
             }
-            val results = cached?.results ?: lookupResults(query, aimedAt = aimedAt, aimedCharAt = aimedCharAt)
+            val results = cached?.results
+                ?: lookupResults(query, aimedAt = aimedAt, aimedCharAt = aimedCharAt, fromOcr = fromOcr)
             // The first result may be a word that starts before the aimed one.
             val shownAt = results.firstOrNull()?.start ?: aimedAt
             val position = earliest.copy(offset = earliest.offset + query.codePointCount(0, shownAt))
@@ -1428,6 +1432,7 @@ class OverlayController(
                 anchor = anchor,
                 query = query,
                 aimedCharAt = aimedCharAt,
+                fromOcr = fromOcr,
             )
             shownLookup = view
             val word = results.firstOrNull()?.term?.let { it.expression to it.reading } ?: kanji?.let { it.character to "" }
@@ -1444,6 +1449,7 @@ class OverlayController(
      * @param link [text] is a dictionary link's term, looked up whole rather than as text at the aim point.
      * @param aimedAt where the aimed word starts in [text], after the words before it that the language looks up from.
      * @param aimedCharAt where the aimed character is in [text].
+     * @param fromOcr [text] was recognized in a screenshot; a link's term never is.
      */
     private suspend fun lookupResults(
         text: String,
@@ -1451,12 +1457,20 @@ class OverlayController(
         primaryReading: String? = null,
         aimedAt: Int = 0,
         aimedCharAt: Int = aimedAt,
+        fromOcr: Boolean = false,
     ): List<LookupResult> = try {
         val started = System.currentTimeMillis()
         val results = if (link) {
             lookup.lookupQuery(text, language, primaryReading)
         } else {
-            lookup.lookup(text, language, primaryReading = primaryReading, aimedAt = aimedAt, aimedCharAt = aimedCharAt)
+            lookup.lookup(
+                text,
+                language,
+                primaryReading = primaryReading,
+                aimedAt = aimedAt,
+                aimedCharAt = aimedCharAt,
+                fromOcr = fromOcr,
+            )
         }
         results.also {
             Log.d(TAG, "Lookup found ${it.size} entries in ${System.currentTimeMillis() - started} ms")
@@ -1695,10 +1709,13 @@ class OverlayController(
         val kept = keptWord()
         val source = kept?.layout ?: layout
         val position = if (kept != null) kept.start else hit
-        val paragraphEngine = position?.let { source?.readingParagraphs?.getOrNull(it.paragraphIndex)?.engine }
-        val wordEngine = position?.let { source?.characterAt(it)?.engine }
-        return wordEngine ?: paragraphEngine ?: kept?.layout?.page?.engine ?: ocrEngine
+        val engine = if (source != null && position != null) engineAt(source, position) else null
+        return engine ?: kept?.layout?.page?.engine ?: ocrEngine
     }
+
+    /** The engine that read the character at [position] of [layout], else its paragraph's; null when neither says. */
+    private fun engineAt(layout: TextLayout, position: TextPosition): OcrEngineType? =
+        layout.characterAt(position).engine ?: layout.readingParagraphs.getOrNull(position.paragraphIndex)?.engine
 
     /** The word shown from an earlier layout, kept because the newer text has no word under the aim. */
     private fun keptWord(): LookupView? = shownLookup?.takeIf { hit == null && it.layout != null && it.layout !== layout }

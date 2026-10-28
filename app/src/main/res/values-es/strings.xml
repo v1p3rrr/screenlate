@@ -535,6 +535,7 @@
     <string name="popup_font_script_only_eo">Solo para texto en esperanto</string>
     <string name="popup_font_script_only_sq">Solo para texto en albanés</string>
     <string name="popup_font_script_only_sw">Solo para texto en suajili</string>
+    <string name="popup_font_script_only_cy">Solo para texto en galés</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

@@ -28,9 +28,16 @@ class EntriesTest(unittest.TestCase):
 
     def test_recommends_one_model_per_language_by_the_rule(self):
         built = paddle.entries(self.archives)
-        recommended = {e["sourceLanguage"]: e["model"] for e in built if e["recommended"]}
+        recommended = {e["sourceLanguage"]: e["model"] for e in built
+                       if e["recommended"] and e["sourceLanguage"] not in paddle.MORE_ACCURATE}
         self.assertEqual(recommended, paddle.RECOMMENDED)
         self.assertNotIn("ko", recommended)
+
+    def test_marks_every_model_more_accurate_than_ml_kit_where_there_are_several(self):
+        built = paddle.entries(self.archives)
+        welsh = [e["model"] for e in built if e["sourceLanguage"] == "cy" and e["recommended"]]
+        self.assertEqual(sorted(welsh), ["paddle-latin", "paddle-v6"])
+        self.assertNotIn("cy", paddle.RECOMMENDED)
 
     def test_describes_an_archive_with_its_checksum(self):
         entry = paddle.entry("paddle-v6", "ja", "paddle-v6", b"zip", "paddle-detector-v6", True)

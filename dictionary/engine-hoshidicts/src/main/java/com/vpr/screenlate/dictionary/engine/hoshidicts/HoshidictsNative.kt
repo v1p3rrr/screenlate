@@ -55,6 +55,7 @@ internal object HoshidictsNative {
      * Lookup through the language's bundle: its deinflection candidates, exact queries, form-of entries followed.
      *
      * @param resolution `word` or `letter` (Yomitan's search resolution).
+     * @param fromOcr the text was recognized in a screenshot: the bundle adds its processors for misread letters.
      */
     external fun lookupLanguage(
         handle: Long,
@@ -66,6 +67,7 @@ internal object HoshidictsNative {
         frequencyDictionary: ByteArray?,
         frequencyDescending: Boolean,
         primaryReading: ByteArray?,
+        fromOcr: Boolean,
     ): ByteArray
 
     external fun styles(handle: Long): ByteArray

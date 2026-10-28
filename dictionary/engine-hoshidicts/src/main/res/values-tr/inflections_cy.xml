@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">yumuşak mutasyon</string>
+    <string name="inflection_cy_soft_mutation">yumuşak mutasyon: p t c b/m d ll rh yerine b d g f dd l r, g düşer (cath → ei gath, gwely → dy wely)</string>
+    <string name="inflection_cy_nasal_mutation_label">genizsil mutasyon</string>
+    <string name="inflection_cy_nasal_mutation">genizsil mutasyon: p t c b d g yerine mh nh ngh m n ng (cath → fy nghath, Cymru → yng Nghymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">soluklu mutasyon</string>
+    <string name="inflection_cy_aspirate_mutation">soluklu mutasyon: p t c yerine ph th ch (cath → ei chath)</string>
+    <string name="inflection_cy_h_prothesis_label">h eklenmesi</string>
+    <string name="inflection_cy_h_prothesis">ünlüden önce h (ysgol → ei hysgol)</string>
+</resources>

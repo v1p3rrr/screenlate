@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">мягкая мутация</string>
+    <string name="inflection_cy_soft_mutation">мягкая мутация: b d g f dd l r вместо p t c b/m d ll rh, g выпадает (ei gath от cath, dy wely от gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">носовая мутация</string>
+    <string name="inflection_cy_nasal_mutation">носовая мутация: mh nh ngh m n ng вместо p t c b d g (fy nghath от cath, yng Nghymru от Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">придыхательная мутация</string>
+    <string name="inflection_cy_aspirate_mutation">придыхательная мутация: ph th ch вместо p t c (ei chath от cath)</string>
+    <string name="inflection_cy_h_prothesis_label">протеза h</string>
+    <string name="inflection_cy_h_prothesis">h перед гласной (ei hysgol от ysgol)</string>
+</resources>

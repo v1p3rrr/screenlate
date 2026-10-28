@@ -936,6 +936,12 @@ internal object YomitanInflections {
             "reflexive" to Strings(R.string.inflection_sw_reflexive_label, R.string.inflection_sw_reflexive),
             "infinitive" to Strings(R.string.inflection_sw_infinitive_label, R.string.inflection_sw_infinitive),
         ),
+        "cy" to mapOf(
+            "soft mutation" to Strings(R.string.inflection_cy_soft_mutation_label, R.string.inflection_cy_soft_mutation),
+            "nasal mutation" to Strings(R.string.inflection_cy_nasal_mutation_label, R.string.inflection_cy_nasal_mutation),
+            "aspirate mutation" to Strings(R.string.inflection_cy_aspirate_mutation_label, R.string.inflection_cy_aspirate_mutation),
+            "h-prothesis" to Strings(R.string.inflection_cy_h_prothesis_label, R.string.inflection_cy_h_prothesis),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

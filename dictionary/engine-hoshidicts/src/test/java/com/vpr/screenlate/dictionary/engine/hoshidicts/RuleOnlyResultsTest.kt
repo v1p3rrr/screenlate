@@ -44,4 +44,57 @@ class RuleOnlyResultsTest {
         val list = listOf(result("casă", "casă"), result("casă", "cas", listOf("agreement")))
         assertThat(list.withoutRuleOnlyResults(emptySet())).isSameInstanceAs(list)
     }
+
+    @Test
+    fun `a respelled headword is left out where the text finds one as written`() {
+        val twr = result("twr", "twr")
+        val tower = result("twr", "tŵr").copy(respelled = true)
+        val house = result("ty", "tŷ").copy(respelled = true)
+        assertThat(listOf(twr, tower, house).withoutRespelledBesideEntries()).containsExactly(twr, house).inOrder()
+    }
+
+    private val welsh = mapOf("soft" to "soft mutation", "lenition" to "soft mutation", "soft mutation" to "soft mutation")
+
+    @Test
+    fun `form-of tags take the rule's name and a chain shows once`() {
+        val bara = result("fara", "bara", listOf("soft mutation"), listOf("soft"), listOf("lenition"))
+        val shown = listOf(bara).withFormTagsAsRules(welsh).single()
+        assertThat(shown.trace.map { it.name }).containsExactly("soft mutation")
+        assertThat(shown.otherTraces).isEmpty()
+    }
+
+    @Test
+    fun `other tags and chains stay`() {
+        val form = result("ferch", "merch", listOf("soft"), listOf("plural"))
+        val shown = listOf(form).withFormTagsAsRules(welsh).single()
+        assertThat(shown.trace.map { it.name }).containsExactly("soft mutation")
+        assertThat(shown.otherTraces.map { chain -> chain.map { it.name } }).containsExactly(listOf("plural"))
+    }
+
+    @Test
+    fun `a chain of two mutations is dropped, and a result left without chains`() {
+        val para = result("fara", "para", listOf("soft mutation", "soft"))
+        val both = result("ddwr", "twr", listOf("soft mutation", "soft"), listOf("plural"))
+        val bara = result("fara", "bara", listOf("soft mutation"))
+        val shown = listOf(para, both, bara).withFormTagsAsRules(welsh)
+        assertThat(shown.map { it.term.expression }).containsExactly("twr", "bara").inOrder()
+        assertThat(shown.first().trace.map { it.name }).containsExactly("plural")
+        assertThat(shown.first().otherTraces).isEmpty()
+    }
+
+    @Test
+    fun `a single letter reached only through mutation rows is left out`() {
+        val letter = result("fara", "b", listOf("soft"))
+        val word = result("fara", "bara", listOf("soft"))
+        val own = result("a", "a")
+        val plural = result("au", "a", listOf("plural"))
+        assertThat(listOf(letter, word, own, plural).withFormTagsAsRules(welsh).map { it.term.expression })
+            .containsExactly("bara", "a", "a").inOrder()
+    }
+
+    @Test
+    fun `results stay as they are without form tag rules`() {
+        val list = listOf(result("fara", "b", listOf("soft")))
+        assertThat(list.withFormTagsAsRules(emptyMap())).isSameInstanceAs(list)
+    }
 }

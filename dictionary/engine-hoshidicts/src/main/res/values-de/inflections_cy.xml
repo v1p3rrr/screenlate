@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">weiche Mutation</string>
+    <string name="inflection_cy_soft_mutation">weiche Mutation: b d g f dd l r für p t c b/m d ll rh, g fällt weg (ei gath von cath, dy wely von gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">Nasalmutation</string>
+    <string name="inflection_cy_nasal_mutation">Nasalmutation: mh nh ngh m n ng für p t c b d g (fy nghath von cath, yng Nghymru von Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">Spirantenmutation</string>
+    <string name="inflection_cy_aspirate_mutation">Spirantenmutation: ph th ch für p t c (ei chath von cath)</string>
+    <string name="inflection_cy_h_prothesis_label">h-Prothese</string>
+    <string name="inflection_cy_h_prothesis">h vor einem Vokal (ei hysgol von ysgol)</string>
+</resources>

@@ -35,4 +35,10 @@ class FlagsTest {
         assertThat(Flags.drawable("lang_eo")).isNotNull()
         assertThat(Flags.countryName("lang_eo", Locale.ENGLISH)).isEqualTo("Esperanto")
     }
+
+    @Test
+    fun `a region's flag has a drawable and its code for a name`() {
+        assertThat(Flags.drawable("gb-wls")).isNotNull()
+        assertThat(Flags.countryName("gb-wls", Locale.ENGLISH)).isEqualTo("GB-WLS")
+    }
 }

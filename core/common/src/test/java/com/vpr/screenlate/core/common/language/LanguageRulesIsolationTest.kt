@@ -272,6 +272,13 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.SWAHILI)
         val swahiliEtcEnd = "filamu n.k. Hata"
         assertThat(periodEnding.where { !it.endsSentence(swahiliEtcEnd, swahiliEtcEnd.lastIndexOf('.')) }).isEmpty()
+        // Welsh e.e. (er enghraifft) and Parch. (Parchedig), and Ysw. (Yswain), which holds only before a lowercase word.
+        val welshExample = "ffrwythau e.e. afalau"
+        assertThat(periodEnding.where { !it.endsSentence(welshExample, welshExample.lastIndexOf('.')) })
+            .containsExactly(Language.WELSH)
+        assertThat(periodEnding.where { holds(it, "Parch. Jones") }).containsExactly(Language.WELSH)
+        assertThat(periodEnding.where { holds(it, "Ysw. a") }).containsExactly(Language.WELSH)
+        assertThat(periodEnding.where { holds(it, "Ysw. Mae") }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -362,9 +369,12 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
             .containsExactly(
                 Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN,
-                Language.THAI, Language.KAZAKH, Language.KYRGYZ,
+                Language.THAI, Language.KAZAKH, Language.KYRGYZ, Language.WELSH,
             )
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
+        // Welsh names its dictionaries' mutation rows after its own rules.
+        assertThat(all.where { it.formTagRules.isNotEmpty() }).containsExactly(Language.WELSH)
+        assertThat(all.where { it.respelledOnlyWithoutEntry }).containsExactly(Language.WELSH)
         // Romanian leaves out the Moldovan Cyrillic spellings Wiktionary links its words to.
         assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
         assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
@@ -410,7 +420,7 @@ class LanguageRulesIsolationTest {
     fun `only Greek, Hindi, Khmer, Arabic, Persian, Kazakh and Kyrgyz key every headword in another spelling, only Arabic two further`() {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
-            Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO,
+            Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.WELSH,
         )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
             Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,

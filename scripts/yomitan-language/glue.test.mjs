@@ -8,7 +8,7 @@ import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
     albanianEndings, hebrewTransforms, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms,
-    swahiliTransforms, withOwnTransforms,
+    swahiliTransforms, welshTransforms, withOwnTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1125,5 +1125,144 @@ test('swahili prefixes stay out of other languages', () => {
         assert.ok(!queried(language, 'alisoma').has('soma'), language);
         assert.ok(!queried(language, 'ninakupenda').has('penda'), language);
         assert.ok(candidates(language, 'alisoma').every((c) => c.g === undefined), language);
+    }
+});
+
+/**
+ * The texts the engine would query for [text] recognized in a screenshot.
+ * @param {string} language
+ * @param {string} text
+ */
+function queriedFromOcr(language, text) {
+    return new Set(load(language).candidates(text, language, 'word', true).map((c) => c.d));
+}
+
+/** The rule chains through which [text] reaches [lemma] in Welsh. */
+function welshChains(text, lemma) {
+    return candidatesTo('cy', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+}
+
+test('welsh mutations are undone into the radical under the mutation name, capitals kept', () => {
+    for (const [text, lemma, name] of [
+        ['gath', 'cath', 'soft mutation'],
+        ['bysgod', 'pysgod', 'soft mutation'],
+        ['dad', 'tad', 'soft mutation'],
+        ['fara', 'bara', 'soft mutation'],
+        ['fam', 'mam', 'soft mutation'],
+        ['ddraig', 'draig', 'soft mutation'],
+        ['law', 'llaw', 'soft mutation'],
+        ['Lanelli', 'Llanelli', 'soft mutation'],
+        ['raglen', 'rhaglen', 'soft mutation'],
+        ['wely', 'gwely', 'soft mutation'],
+        ['Wely', 'Gwely', 'soft mutation'],
+        ['ardd', 'gardd', 'soft mutation'],
+        ['lan', 'glan', 'soft mutation'],
+        ['mhen', 'pen', 'nasal mutation'],
+        ['nhad', 'tad', 'nasal mutation'],
+        ['nghath', 'cath', 'nasal mutation'],
+        ['Nghymru', 'Cymru', 'nasal mutation'],
+        ['mara', 'bara', 'nasal mutation'],
+        ['nannedd', 'dannedd', 'nasal mutation'],
+        ['ngardd', 'gardd', 'nasal mutation'],
+        ['phen', 'pen', 'aspirate mutation'],
+        ['thŷ', 'tŷ', 'aspirate mutation'],
+        ['chath', 'cath', 'aspirate mutation'],
+        ['hysgol', 'ysgol', 'h-prothesis'],
+        ['Hysgol', 'Ysgol', 'h-prothesis'],
+        ['hŵyr', 'ŵyr', 'h-prothesis'],
+    ]) {
+        assert.ok(welshChains(text, lemma).includes(name), `${text} → ${lemma}: ${welshChains(text, lemma)}`);
+    }
+    // The text reached matches entries of any part of speech (Wiktionary's Welsh entries give none).
+    const [radical] = candidatesTo('cy', 'nghath', 'cath');
+    assert.ok(radical.u);
+    // The word as written stays typed and untagged.
+    const written = candidates('cy', 'nghath').find((c) => c.d === 'nghath');
+    assert.ok(!written.u);
+    assert.equal(written.r.flat().length, 0);
+});
+
+test('welsh letters that only look mutated stay, and a radical keeps two letters', () => {
+    // ll, rh, ff, dd, ng, nh, mh, ph, th and ch are letters of their own.
+    assert.ok(!queried('cy', 'llaw').has('lllaw'));
+    assert.ok(!queried('cy', 'rhaglen').has('rhhaglen'));
+    assert.ok(!queried('cy', 'ffordd').has('bfordd'));
+    assert.ok(!queried('cy', 'ffordd').has('mfordd'));
+    assert.ok(!queried('cy', 'ddraig').has('tdraig'));
+    assert.ok(!queried('cy', 'nghath').has('dghath'));
+    assert.ok(!queried('cy', 'nhad').has('dhad'));
+    assert.ok(!queried('cy', 'nghath').has('ghath'));
+    assert.ok(!queried('cy', 'mhen').has('bhen'));
+    // g is dropped before a vowel, w, l and r only, not before ll or rh.
+    assert.ok(!queried('cy', 'llaw').has('gllaw'));
+    assert.ok(!queried('cy', 'rhaglen').has('grhaglen'));
+    assert.ok(!queried('cy', 'nos').has('gnos'));
+    // A radical keeps two letters: b and dd alone are no mutated forms.
+    assert.ok(!queried('cy', 'b').has('p'));
+    assert.ok(!queried('cy', 'dd').has('d'));
+    // One mutation only: a radical is not mutated again (aradr → garadr, not caradr).
+    assert.ok(!queried('cy', 'nghath').has('gath'));
+    assert.ok(queried('cy', 'aradr').has('garadr'));
+    assert.ok(!queried('cy', 'aradr').has('caradr'));
+});
+
+test('common welsh words the rules would misread stay as written, in any case', () => {
+    for (const word of ['mae', 'Mae', 'MAE', 'ar', 'gan', 'yr', 'i', 'dŵr', 'hyn']) {
+        assert.ok(candidates('cy', word).every((c) => c.r.every((r) => r.length === 0)), word);
+    }
+    assert.ok(!queried('cy', 'mae').has('bae'));
+    assert.ok(!queried('cy', 'Mae').has('Bae'));
+    assert.ok(!queried('cy', 'dŵr').has('tŵr'));
+    // A mutated form beside them is still undone, and so are words not on the list.
+    assert.ok(queried('cy', 'fara').has('bara'));
+    assert.ok(queried('cy', 'elwir').has('gelwir'));
+    assert.ok(queried('cy', 'lan').has('glan'));
+    assert.deepEqual([...new Set(welshTransforms.unmutated)], welshTransforms.unmutated);
+    assert.ok(welshTransforms.unmutated.every((word) => word === word.toLowerCase()));
+});
+
+test('welsh ý and û are tried as ŷ and ŵ for words from ocr only', () => {
+    assert.ok(queriedFromOcr('cy', 'tý').has('tŷ'));
+    assert.ok(queriedFromOcr('cy', 'tý').has('tý'));
+    assert.ok(queriedFromOcr('cy', 'Tý').has('Tŷ'));
+    assert.ok(queriedFromOcr('cy', 'tûr').has('tŵr'));
+    assert.ok(queriedFromOcr('cy', 'TÛR').has('TŴR'));
+    // Through a mutation as well: thý → tŷ.
+    assert.ok(queriedFromOcr('cy', 'thý').has('tŷ'));
+    // Headwords with û keep theirs.
+    assert.ok(queriedFromOcr('cy', 'cytûn').has('cytûn'));
+    // App text and typed text are looked up as written.
+    assert.ok(!queried('cy', 'tý').has('tŷ'));
+    assert.ok(!queried('cy', 'tûr').has('tŵr'));
+    // Other languages read the same either way.
+    for (const [language, word] of [['en', 'tý'], ['tr', 'IŞIK'], ['sw', 'alisoma'], ['ro', 'şi']]) {
+        assert.deepEqual(queriedFromOcr(language, word), queried(language, word), language);
+    }
+});
+
+test('welsh apostrophes match each other', () => {
+    assert.ok(queried('cy', 'mae’r').has("mae'r"));
+    assert.ok(queried('cy', "mae'r").has('mae’r'));
+    assert.ok(queried('cy', 'fe’i').has("fe'i"));
+});
+
+test('every welsh rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_cy.xml'), 'utf8');
+    const rules = Object.entries(welshTransforms.transforms);
+    assert.deepEqual(rules.map(([id]) => id), ['soft mutation', 'nasal mutation', 'aspirate mutation', 'h-prothesis']);
+    for (const [id, {name, description}] of rules) {
+        assert.equal(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('welsh mutations stay out of other languages', () => {
+    for (const language of ['en', 'sw', 'sq', 'ro', 'la']) {
+        assert.ok(!queried(language, 'nghath').has('cath'), language);
+        assert.ok(!queried(language, 'Nghymru').has('Cymru'), language);
+        assert.ok(!queried(language, 'hysgol').has('ysgol'), language);
     }
 });

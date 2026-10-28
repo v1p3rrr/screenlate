@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">mutacja miękka</string>
+    <string name="inflection_cy_soft_mutation">mutacja miękka: b d g f dd l r zamiast p t c b/m d ll rh, g odpada (ei gath od cath, dy wely od gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">mutacja nosowa</string>
+    <string name="inflection_cy_nasal_mutation">mutacja nosowa: mh nh ngh m n ng zamiast p t c b d g (fy nghath od cath, yng Nghymru od Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">mutacja przydechowa</string>
+    <string name="inflection_cy_aspirate_mutation">mutacja przydechowa: ph th ch zamiast p t c (ei chath od cath)</string>
+    <string name="inflection_cy_h_prothesis_label">proteza h</string>
+    <string name="inflection_cy_h_prothesis">h przed samogłoską (ei hysgol od ysgol)</string>
+</resources>

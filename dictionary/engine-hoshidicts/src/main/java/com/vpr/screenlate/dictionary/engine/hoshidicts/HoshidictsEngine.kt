@@ -121,13 +121,18 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             frequencyDictionary = frequencyDictionary?.encodeToByteArray(),
             frequencyDescending = options.frequencyOrder == FrequencyOrder.DESCENDING,
             primaryReading = options.primaryReading?.encodeToByteArray(),
+            fromOcr = options.fromOcr,
         )
+        val support = language.support
         json.decodeFromString<List<LookupResult>>(raw.decodeToString()).let { results ->
-            if (language.support.inflectionRulesOnlyWithoutEntry) {
+            if (support.inflectionRulesOnlyWithoutEntry) {
                 results.withoutRuleOnlyResults(YomitanInflections.names(language.dictionaryCode))
             } else {
                 results
             }
+        }.withFormTagsAsRules(support.formTagRules).let { results ->
+            // After the chains of two mutations are gone: ddwr finds ddŵr's lemma, not twr through dwr.
+            if (support.respelledOnlyWithoutEntry) results.withoutRespelledBesideEntries() else results
         }.map { result ->
             if (result.trace.isEmpty() && result.otherTraces.isEmpty()) {
                 result

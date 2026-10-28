@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">biến âm mềm</string>
+    <string name="inflection_cy_soft_mutation">biến âm mềm: b d g f dd l r thay cho p t c b/m d ll rh, g bị lược (cath → ei gath, gwely → dy wely)</string>
+    <string name="inflection_cy_nasal_mutation_label">biến âm mũi</string>
+    <string name="inflection_cy_nasal_mutation">biến âm mũi: mh nh ngh m n ng thay cho p t c b d g (cath → fy nghath, Cymru → yng Nghymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">biến âm bật hơi</string>
+    <string name="inflection_cy_aspirate_mutation">biến âm bật hơi: ph th ch thay cho p t c (cath → ei chath)</string>
+    <string name="inflection_cy_h_prothesis_label">thêm h</string>
+    <string name="inflection_cy_h_prothesis">h trước nguyên âm (ysgol → ei hysgol)</string>
+</resources>

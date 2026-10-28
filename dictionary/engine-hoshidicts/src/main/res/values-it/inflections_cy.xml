@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_cy.xml. -->
+<resources>
+    <string name="inflection_cy_soft_mutation_label">mutazione dolce</string>
+    <string name="inflection_cy_soft_mutation">mutazione dolce: b d g f dd l r al posto di p t c b/m d ll rh, la g cade (ei gath da cath, dy wely da gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">mutazione nasale</string>
+    <string name="inflection_cy_nasal_mutation">mutazione nasale: mh nh ngh m n ng al posto di p t c b d g (fy nghath da cath, yng Nghymru da Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">mutazione aspirata</string>
+    <string name="inflection_cy_aspirate_mutation">mutazione aspirata: ph th ch al posto di p t c (ei chath da cath)</string>
+    <string name="inflection_cy_h_prothesis_label">protesi di h</string>
+    <string name="inflection_cy_h_prothesis">h davanti a vocale (ei hysgol da ysgol)</string>
+</resources>

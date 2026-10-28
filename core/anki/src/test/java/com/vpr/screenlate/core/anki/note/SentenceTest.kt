@@ -239,6 +239,17 @@ class SentenceTest {
     }
 
     @Test
+    fun welshSentenceKeepsAbbreviationsAndEndsAtYswBeforeACapital() {
+        val paragraph = "Roedd hi'n bwrw glaw. Pregethodd y Parch. John Williams yno, h.y. yng Nghaerdydd. " +
+            "Prynodd ffrwythau, e.e. afalau a gellyg. Daeth Dafydd Jones, Ysw. Mae'r tŷ yn fawr."
+        assertThat(extract(paragraph, "Williams", Language.WELSH).text)
+            .isEqualTo("Pregethodd y Parch. John Williams yno, h.y. yng Nghaerdydd.")
+        assertThat(extract(paragraph, "afalau", Language.WELSH).text).isEqualTo("Prynodd ffrwythau, e.e. afalau a gellyg.")
+        assertThat(extract(paragraph, "Dafydd", Language.WELSH).text).isEqualTo("Daeth Dafydd Jones, Ysw.")
+        assertThat(extract(paragraph, "tŷ", Language.WELSH).text).isEqualTo("Mae'r tŷ yn fawr.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

@@ -55,6 +55,8 @@ data class DictionarySet(
  * @property primaryReading terms with this reading are sorted first.
  * @property language language of the text; decides its text processing and deinflection.
  * @property searchResolution how the text is shortened when a longer match fails; the language's own when null.
+ * @property fromOcr the text was recognized in a screenshot (on the device or in the cloud), not read from an app or
+ * typed: the lookup also tries the letters recognition misreads (Welsh tý as tŷ).
  */
 data class LookupOptions(
     val maxResults: Int = 16,
@@ -64,6 +66,7 @@ data class LookupOptions(
     val primaryReading: String? = null,
     val language: Language = Language.JAPANESE,
     val searchResolution: SearchResolution? = null,
+    val fromOcr: Boolean = false,
 )
 
 enum class FrequencyOrder {

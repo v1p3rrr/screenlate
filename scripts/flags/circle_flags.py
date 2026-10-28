@@ -3,7 +3,8 @@
     python scripts/flags/circle_flags.py overlay/src/main/res/drawable [--source <directory of SVG files>]
 
 Without --source the SVG files are downloaded from the circle-flags repository at COMMIT. Each flag becomes
-`flag_<country>.xml`; a language's own flag (`lang_la`, circle-flags' `language/la.svg`) becomes `flag_lang_la.xml`. The flags are drawn on a 512 x 512 square and masked by a circle; the drawable clips them to the
+`flag_<country>.xml`; a language's own flag (`lang_la`, circle-flags' `language/la.svg`) becomes `flag_lang_la.xml`, a
+region's (`gb-wls`) `flag_gb_wls.xml`, as resource names take no hyphen. The flags are drawn on a 512 x 512 square and masked by a circle; the drawable clips them to the
 same circle. Only the elements the flags use are converted (path, circle, rect); anything else stops the script, so a
 new flag that needs more is noticed. circle-flags is MIT licensed (see NOTICE).
 """
@@ -21,7 +22,7 @@ URL = "https://raw.githubusercontent.com/HatScripts/circle-flags/{commit}/flags/
 COUNTRIES = [
     "jp", "us", "gb", "cn", "kr", "es", "fr", "de", "it", "br", "pt", "pl", "tr", "lv", "nl", "cz", "id", "my", "ph", "vn", "ru",
     "hr", "rs", "ua", "by", "gr", "in", "bd", "ge", "am", "th", "kh", "sa", "ir", "il", "kz", "kg", "se", "no", "dk", "ro",
-    "lang_la", "lt", "sk", "si", "lang_eo", "al", "tz",
+    "lang_la", "lt", "sk", "si", "lang_eo", "al", "tz", "gb-wls",
 ]
 LANGUAGE_FLAG = "lang_"
 
@@ -132,6 +133,11 @@ def svg_name(flag):
     return "language/" + flag[len(LANGUAGE_FLAG):] if flag.startswith(LANGUAGE_FLAG) else flag
 
 
+def resource_name(flag):
+    """The drawable's name: `flag_gb_wls` for `gb-wls`."""
+    return "flag_" + flag.replace("-", "_")
+
+
 def read_svg(flag, source):
     name = svg_name(flag)
     if source:
@@ -149,9 +155,9 @@ def main(argv):
     os.makedirs(args.out, exist_ok=True)
     for country in COUNTRIES:
         drawable = vector_drawable(read_svg(country, args.source), svg_name(country))
-        with open(os.path.join(args.out, f"flag_{country}.xml"), "w", encoding="utf-8", newline="\n") as file:
+        with open(os.path.join(args.out, f"{resource_name(country)}.xml"), "w", encoding="utf-8", newline="\n") as file:
             file.write(drawable)
-        print(f"flag_{country}.xml: {len(drawable)} bytes")
+        print(f"{resource_name(country)}.xml: {len(drawable)} bytes")
 
 
 if __name__ == "__main__":

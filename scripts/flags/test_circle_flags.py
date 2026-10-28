@@ -48,6 +48,11 @@ class CircleFlagsTest(unittest.TestCase):
             with self.assertRaises(circle_flags.UnsupportedSvg):
                 circle_flags.shapes(text)
 
+    def test_resource_names_take_underscores(self):
+        self.assertEqual(circle_flags.resource_name("tz"), "flag_tz")
+        self.assertEqual(circle_flags.resource_name("lang_la"), "flag_lang_la")
+        self.assertEqual(circle_flags.resource_name("gb-wls"), "flag_gb_wls")
+
     def test_numbers_are_short(self):
         self.assertEqual(circle_flags.number("256.0"), "256")
         self.assertEqual(circle_flags.number(-0.0), "0")

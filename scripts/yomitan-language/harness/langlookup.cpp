@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     std::string text = argv[i];
     for (int round = 0; round < 2; round++) {
       auto t0 = std::chrono::steady_clock::now();
-      auto candidates = parse_candidates(js.candidates_json(text, language, resolution));
+      auto candidates = parse_candidates(js.candidates_json(text, language, resolution, false));
       double t_js = ms_since(t0);
       auto t1 = std::chrono::steady_clock::now();
       auto results = lookup_candidates(query, candidates, flags, 8);
