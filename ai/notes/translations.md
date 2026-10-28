@@ -36,6 +36,52 @@ Inflection terms per language follow the school grammar of Japanese taught in th
   the lookup feature "Kanji of the word" is named the same in summaries; a dictionary from a backup "replaces its
   installed version".
 
+## Shared terms per locale (checked 2026-10-29)
+
+The interface check of 2026-10-29 (cloud session) read every string of the 13 translations against English and
+settled one word per concept; new strings use these. Main terms:
+
+| Locale | bubble | popup | scan / scan length | cloud / on-device recognition | deck · note · note type | sentence |
+|---|---|---|---|---|---|---|
+| ru | плавающая кнопка (кнопка) | попап | скан / длина скана | облачное распознавание / распознавание на устройстве | колода · карточка · тип записи | предложение |
+| de | Blase | Popup | Scan / Scanlänge | Cloud-Erkennung / Erkennung auf dem Gerät | Stapel · Notiz · Notiztyp | Satz |
+| es | burbuja | ventana emergente | análisis / longitud de análisis | reconocimiento en la nube / en el dispositivo | mazo · nota · tipo de nota | frase |
+| fr | bulle | fenêtre contextuelle | analyse / longueur d’analyse | reconnaissance dans le cloud / sur l’appareil | paquet · note · type de note | phrase |
+| it | bolla | popup | scansione / lunghezza di scansione | riconoscimento nel cloud / sul dispositivo | mazzo · nota · tipo di nota | frase |
+| ja | バブル | ポップアップ | スキャン / スキャン長 | クラウド認識 / 端末上の認識 | デッキ · ノート · ノートタイプ | 文 |
+| ko | 버블 | 팝업 | 스캔 / 스캔 길이 | 클라우드 인식 / 기기 내 인식 | 덱 · 노트 · 노트 유형 | 문장 |
+| pl | dymek | okienko | skan / zasięg skanowania | rozpoznawanie w chmurze / na urządzeniu | talia · notatka · typ notatki | zdanie |
+| pt | bolha | pop-up | varredura / alcance da varredura | reconhecimento na nuvem / no dispositivo | baralho · nota · tipo de nota | frase |
+| tr | baloncuk | açılır pencere | tarama / tarama uzunluğu | bulut tanıma / cihazda tanıma | deste · not · not türü | cümle |
+| vi | bong bóng | cửa sổ bật lên | quét / độ dài quét | nhận dạng đám mây / trên thiết bị | bộ thẻ · ghi chú · loại ghi chú | câu |
+| zh-Hans | 悬浮球 | 弹窗 | 扫描 / 扫描长度 | 云端识别 / 设备端识别 | 牌组 · 笔记 · 笔记类型 | 句子 |
+| zh-Hant | 懸浮球 | 彈出視窗 | 掃描 / 掃描長度 | 雲端辨識 / 裝置端辨識 | 牌組 · 筆記 · 筆記類型 | 句子 |
+
+Settled on the way:
+
+- Everywhere: the next translation service "is used" (never "takes over"); AnkiDroid items "were not found" (never "no
+  longer exist"); a dictionary from a file or backup replaces "its installed version"; the battery list hint is the
+  instruction "if Screenlate is not listed, check All apps"; app text is not provided "to accessibility services"
+  (several locales had "here" from an older English); a count in a plain string is written as a label ("Régions non
+  reconnues : %1$d sur %2$d"), never "%1$d regions", which reads "1 regions".
+- ru: progress texts are nouns («Установка словарей…», «Перевод…»), the camera's photo is «фото», Japanese pitch accent
+  «питч-акцент» (ударение is the Russian stress mark), autoplay «автовоспроизведение», entries «статьи».
+- de: lookups are "Nachschlagen"/"Abfrage" and "Suche" is the Search tab; network connection "Netzwerkverbindung";
+  the accessibility service "Bedienungshilfe".
+- es: home screen "pantalla de inicio" (the Inicio tab), startup settings "inicio automático"; "tomar foto".
+- fr: "paramètres" (Réglages rapides only as the Android name), "import", "appli"; Lookup and the Search tab are both
+  "Recherche" (open question for the owner).
+- it: "carattere" for a font, "Note legali di terze parti" (nota is an Anki note), text weight "più marcati".
+- ja: defaults 初期値, text size 文字サイズ, definitions 定義, update announcements アップデートのお知らせ; E Ink モード
+  for the mode, 電子ペーパー for the screen.
+- ko: definitions 뜻풀이, 전자잉크 모드, button names in ‘’; an HTTP code goes in parentheses (오류(%1$d)로) so the
+  particle fits any number.
+- pt: lookup and search "pesquisa", field templates "modelos de campo", "e-ink".
+- tr: "kelime" (not sözcük), "görsel" for a picture, autoplay "otomatik oynatma".
+- vi: "pinyin", progress "tiến độ", the bubble's hidden apps "ứng dụng ẩn bong bóng".
+- zh-Hans: the app's Home tab is 首页 (主屏幕 is the launcher). zh-Hant uses Taiwan words: 輕觸, 單字, 內建, 套用,
+  還原 and 一般 in the backup screens, 拖曳控點, 震動, 直排, 憑證, 位址, 區域網路, 建置, 取得, 解壓縮.
+
 ## Tone (2026-10-14 audit)
 
 UI texts, hints and docs use the dry tone of software documentation (request 40 of the languages plan). Wording
@@ -64,3 +110,79 @@ the session scratchpad only; the steps are simple enough to redo: parse each `st
 values back with `xml.sax.saxutils.escape` plus the Android escapes above. The 2026-10-14 tone audit did the same,
 with new texts kept in Python dicts (`{key: {locale: text}}`) and `¶` standing for the literal `\n\n` paragraph break,
 so no backslashes pass through tool inputs.
+
+## Candidate interface languages (research, 2026-10-29)
+
+Which of the languages the app reads (`core.common.Language`, 52 now, and the planned groups 5c-5f and 6: az, uz, bg,
+mk, mn, yue, ta, te, kn, mr, ur, ca, gl, is, af, tt, ba, sa) are worth an interface translation after the 14 locales.
+Written by the cloud session of 2026-10-29 from web sources (below); the owner decides the order.
+
+What one more locale costs: about 1,000 strings of `strings.xml` and `installation.xml` (about 6,800 English words,
+nearly all in `app`), 313 form-of tag names (400 words) and 721 inflection names and descriptions (4,900 words,
+a third of them the Japanese ones), checked by `TranslationsTest` once the locale is in its plural table; the CLDR
+plural categories (Arabic six, the Slavic and Baltic languages three or four, most others one or two); for the
+right-to-left languages also the mirrored screens. The agent's translation is fluent for the large languages and
+weaker for the small ones; nobody on the project reads any of the candidates, so quality depends on users' reports.
+
+Who would use it: the app is a pop-up dictionary for reading foreign text on an Android screen, so the users are
+learners of Japanese, English, Korean, Chinese and the other languages it reads, whose own language is the interface.
+A locale matters where such learners are many, use Android, and keep their phones in their own language rather than
+in English (or in Russian, Turkish or Spanish, which many speakers of a candidate read as well).
+
+Ranked, with the data behind each (speakers: Ethnologue, total L1 + L2; Android: StatCounter mobile OS share,
+September 2026; Japanese learners: Japan Foundation survey 2024):
+
+1. **Indonesian (id).** 255 M speakers; Android 79%; the second-largest number of Japanese learners abroad (732,914,
+   after China) and a large Korean and English learner base; phones are normally used in Indonesian. No plurals
+   (`other` only), Latin script: the cheapest translation of the list, and Malay readers (Malaysia, Brunei) mostly
+   understand it.
+2. **Thai (th).** 71 M; Android 74%; fifth in Japanese learners (194,366); English is little used in phone
+   interfaces. No plurals; Thai has no spaces between words, so long strings need a look on the device (Android's
+   line breaking handles Thai). Moderate effort.
+3. **Ukrainian (uk).** About 30-40 M; Android 62%; many learners of English, German, Polish and Japanese, and since
+   2022 a strong wish for a Ukrainian interface instead of the Russian one. The Russian strings are a close start (the
+   same plural categories, similar grammar), so the effort is low.
+4. **Arabic (ar).** 335 M (Modern Standard Arabic is everyone's second language); Android 83% in Egypt, 48% in Saudi
+   Arabia; a large learner base for English, Japanese and Korean. Six plural categories, right to left: the strings
+   are done on `cloud/rtl-strings-2026-10-29`, the mirrored screens are left.
+5. **Persian (fa).** 82 M; Android 88% in Iran, where Google Play is not offered, so an APK from GitHub is the usual
+   way to get apps; English learning is common. Plurals one/other, right to left: strings done on the same branch.
+6. **Hindi (hi).** 611 M; Android 94% in India; growing Japanese and Korean interest. Many smartphone users who would
+   learn languages keep their phones in English, so the gain is smaller than the speaker count suggests. Devanagari,
+   plurals one/other; moderate effort.
+7. **Bengali (bn).** 274 M; Android 93% in Bangladesh, where phones are used in Bengali more often than Indian ones
+   in Hindi; Japanese is learned for work programs. Moderate effort.
+8. **Uzbek (uz, planned in group 5c).** About 35-45 M; Android 82%; many learn Korean (the EPS-TOPIK work program) and
+   Japanese for work abroad. Many read Russian, which covers part of them. Latin script, plurals one/other.
+9. **Urdu (ur, planned as group 5f).** 246 M; Android 90% in Pakistan; English interfaces are common among the users
+   who would learn languages. Right to left, reusing the Arabic, Persian and Hebrew work, with Nastaliq text in the
+   interface to check.
+10. **Hebrew (he).** About 9-10 M; Android 71% in Israel; high English proficiency. Small, but its strings are done
+    with Arabic and Persian (plurals one, two, other).
+11. **Romanian (ro), Hungarian (hu), Greek (el), Czech (cs).** 24 M, 13 M, 13 M, 10 M (Slovak readers understand
+    Czech); Android 78%, 73%, 72%, 69%; moderate English proficiency and steady Japanese and Korean interest. Czech
+    has four plural categories, the others two or three.
+12. **Malay (ms), Filipino (tl).** Malaysia: Android 55%, interfaces mostly in English or Malay (Indonesian is close);
+    the Philippines: Android 87%, but phones are mostly in English. Low gain.
+13. **Tamil, Telugu, Marathi, Kannada (planned in group 5e).** 86 M, 96 M, 99 M, 59 M; Android 94% in India; as with
+    Hindi, the users most likely to learn languages mostly use English interfaces.
+14. **Dutch (nl), Swedish (sv), Norwegian (no), Danish (da), Finnish (fi).** Very high English proficiency, and the
+    Nordic markets are iPhone-heavy (Sweden: Android 44%; the Netherlands 68%). Low gain.
+15. **Covered by a neighbor's locale:** Belarusian, Kazakh and Kyrgyz speakers mostly read Russian (Kazakhstan:
+    Android 69%), Azerbaijani speakers Turkish (Android 84%), Slovak Czech, Malay Indonesian, Catalan and Galician
+    Spanish, Cantonese the Traditional Chinese locale. Catalan stands out for loyalty to its own interface but has
+    about 10 M speakers.
+16. **The rest** (bg, mk, sr, hr, sl, lt, lv, et, ka, hy, km, mn, sq, sw, is, af, tt, ba, cy, ga, gd, eo, la, sa):
+    small audiences, English or another locale commonly used (Swahili users in Kenya, Android 95%, mostly keep
+    English), or few learners who would read with a pop-up dictionary. Khmer: Cambodia is iPhone-heavy for the
+    region (Android 64%).
+
+Outside the read languages, Burmese would be the strongest case (Myanmar is ninth in Japanese learners, 100,315),
+but the app does not read Burmese.
+
+Sources: Ethnologue 2026 figures as tabulated in Wikipedia's "List of languages by total number of speakers";
+StatCounter Global Stats, mobile OS market share per country (gs.statcounter.com/os-market-share/mobile/<country>,
+September 2026); Japan Foundation, Survey on Japanese-Language Education Abroad 2024 (4,000,750 learners; country
+figures as reported by esuj.gr.jp); Duolingo Language Report 2025 (Japanese the fourth most studied language) and
+Duolingo's course expansion of 2025-04-30 (courses from Hindi, Bengali, Telugu, Tamil, Thai, Indonesian, Tagalog).
+Speaker numbers for languages under 50 M are common estimates, not Ethnologue's table.

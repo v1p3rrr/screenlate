@@ -133,7 +133,7 @@ the details.
   full stop (5a question 30), the
   Czech era parted from a word ML Kit glues to it ("n.l.a" → "n.l. a", languages plan question 80), Thai sara am in
   two parts read as one only in recognized text (4c question 15). Checked on the emulator (ANK34, ANK36, ANK38, run
-  log 2026-10-29). Not run: the instrumented `LanguageLookupTest` (its Thai case changed).
+  log 2026-10-29). The instrumented `LanguageLookupTest` (its Thai case changed) passed after the merge (2026-10-29).
 - Group 5c (`plans/2026-10-19-group-5c.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge, in the order Finnish (`languages/fi`), Hungarian (`languages/hu`), Estonian (`languages/et`),
   Azerbaijani (`languages/az`, rebased by the main session as `17336e2e`), Uzbek (`languages/uz`, `81654777`): all
@@ -192,9 +192,12 @@ the details.
   - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
   - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word. Group 5d (Bulgarian,
     Mongolian, Macedonian) is being built on `languages/5d` from `a6fe33ca` by its research session;
-  - a cloud session works through five backlog tasks (interface translation check, candidate interface languages,
-    smaller language bundles, converter data, the right-to-left strings); its branches are checked and merged by the
-    main session, the right-to-left strings only after the mirrored screens are checked on the emulator.
+  - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
+    translation check, candidate interface languages, smaller language bundles, converter data) is merged into
+    `languages/main` (`3e82e306`; every bundle rebuilt from the merged sources, the 5c, marks and az/uz bundles shrank
+    by 25-28 KB too; 1,909 unit tests, lint, the engine's instrumented tests 68 of 68 with the text rules' Thai case).
+    Strings added after `772bbad7` did not go through the translation check. The right-to-left strings are being
+    brought onto `languages/main` and checked on the emulator on `claude/rtl-1029`.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -1977,3 +1980,46 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
   `CLAUDE.md`); committed on both branches.
 - The AVD `Screenlate_API30` is locked by a qemu process that cannot be killed (PID 70992 this session); a fresh AVD
   `Screenlate_API30_glide` (pixel_4, google_apis x86) replaced it for this check. A reboot of the PC frees the lock.
+
+## Cloud session 2026-10-29
+
+Five backlog tasks, done in a claude.ai cloud session (no Android SDK, no emulator, no `testdata/`) from
+`languages/main` `772bbad7`. Branches for the coordinating session to review, build and merge:
+
+- `cloud/backlog-2026-10-29` (tasks 1-4, tip: the commit that adds this section);
+- `cloud/rtl-strings-2026-10-29` (task 5, cut from task 4's tip `c028ebed`, tip `e0251129`); it waits for the emulator
+  check of the mirrored screens.
+
+Per task:
+
+1. Smaller language bundles: the descriptors of `own-transforms.js` built by calls are wrapped in pure IIFEs, so 16
+   bundles lost 21-28 KB each (412 KB in all, sizes in the commit message); `build.mjs` fails when either file of
+   the app's own leaves code in a bundle that imports nothing from it. The old and new bundles give the same
+   candidates for every quoted text of `glue.test.mjs` (76,160 calls); the inflection generator writes the same files.
+2. Converter data: FreeDict definitions over 120 characters follow the translations; it-ru loses "( approfondimento)"
+   and the same links "( tassonomia)", "( citazioni)"; OpenRussian drops "gapirish" through `STRAY_WORDS`;
+   Vietnamese `Central` alone reads Central Vietnam (`LanguageSupport.formTagNames`, 14 locales). To rebuild: the
+   FreeDict conversions the owner keeps and OpenRussian ru-en (ru-de and wty need nothing). wty's tag table gives
+   "Central" a Brazilian flag chip on 294 vi-en definitions (question 88).
+3. Candidate interface languages: ranked list in `notes/translations.md` ("Candidate interface languages"):
+   Indonesian, Thai, Ukrainian first, then Arabic and Persian (strings done), Hindi, Bengali, Uzbek, Urdu, Hebrew.
+4. Interface translation check: 579 changes over the 13 translations, one commit per locale, plus the English fix
+   (two popup messages pointed to the Bubble settings for Engines and App text only, now on Text recognition; "1
+   dictionaries", "1 audio sources"; "auto-play") carried into every locale. Terms per locale in
+   `notes/translations.md` ("Shared terms per locale"). Reviewed per locale by subagents against the conventions
+   note; every proposal read before it was applied.
+5. Right-to-left strings: `values-ar`, `values-fa`, `values-iw` for all 31 string files (2,014 strings and 13
+   plurals each); the language settings read a hand-written `res/xml/locales_config.xml` without them
+   (`generateLocaleConfig` off, `android:localeConfig` in the manifest), kept in step by `TranslationsTest`
+   (`unlisted`). A phone set to one of the three already shows it, so the branch stays unmerged until the check.
+
+Tests run here: `node --test` glue and mutation exceptions 124 pass (1 skipped without `YOMITAN`; 117 of 117 with
+it), page tests 146 pass, `python -m pytest -q scripts` 67 pass, catalog generator 11 pass. Without an SDK, Gradle did
+not run (no `lintDebug`, no `testDebugUnitTest`): plain JVM tests were compiled with kotlinc 2.2.20 against stub
+`android` classes and pass: `TranslationsTest` (both branches), `FormOfTagsTest` 19, the `core:common` language tests
+417 of 419 (the Thai and Khmer "without the phone's ICU" cases fail only because the run supplies ICU through a
+shim). Not compiled: `HoshidictsEngine.kt` (one changed call). The coordinating session builds and tests locally.
+
+Open for the owner: questions 88-92 of `plans/2026-10-10-languages-implementation.md` (the vi Brazilian-flag chip,
+Vietnamese North/South, FreeDict's length rule, Russian «карточка», French «Recherche»), and 93-94 on the
+right-to-left branch (Arabic form tags named as other languages' categories, arrows in right-to-left menu paths).
