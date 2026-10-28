@@ -673,13 +673,15 @@ Results: passed. Automated: unit tests (1,882, five skipped), lint, the page tes
 exception tests (136, one skipped), the catalog generator tests (11) and the Python tests of the flag (5), frequency
 (20) and OCR model (9) scripts passed; three timing tests (`SentenceTranslatorTest`, `AudioFinderTest`,
 `ServiceRequestsTest`) failed once each under load and passed when rerun alone. `LanguageLookupTest` 42 of 42 and the
-engine's 68 instrumented tests passed on the emulator, the test package uninstalled after.
+engine's 68 instrumented tests passed on the emulator, the test package uninstalled after. After the rebase onto
+`a6567eec` (the bubble's own-name letters, Azerbaijani merged) the unit tests (1,890, five skipped), lint and the
+script tests passed again; that build's bubble shows O, and yashaydi still finds yashamoq.
 
 - LNG36: Uzbekistan's flag on the Languages screen; with English as the language of definitions Wiktionary (uz–en,
   1.1 MB) is the fixed main dictionary and the word frequency (Leipzig news, 6.1 MB) ticked; 7.2 MB to download, about
   22 MB after import; ML Kit the main model, Tesseract fast (6.5 MB) and accurate (13 MB) unticked, PaddleOCR v6
   ticked and "Installed" (from the other Latin languages), none marked "More accurate", no PaddleOCR v5. The bubble
-  shows Oʻ.
+  showed Oʻ; since the rebase onto the own-name rule it is O (unit tests).
 - DIC46: with Russian chosen and uz–en unticked the Word forms card lists "Word forms (Wiktionary)", 1.1 MB, fixed;
   8.6 MB to download, about 25 MB after import. The forms task took 4.6 s (the 1,029 KB archive downloaded in 1.9 s,
   imported in 0.7 s): 150,358 forms with 152,560 lemma links, no definitions; uz–ru took 6.5 s (1,373 KB in 2.0 s,
