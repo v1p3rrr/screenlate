@@ -91,14 +91,15 @@ the details.
 ### Outside the camera feature
 
 - Release from `main` ("Release from `main`" below): the fixes are ported on `claude/port-fixes-to-main-3e7385`
-  (2026-10-28 night). A separate review found one bug, which `languages/main` has too: the start-up clean-up deletes
-  the old `cache/dictionary-downloads/` outright, so a file or collection import queued by an older version fails
+  (2026-10-28 night). A separate review found one bug, which `languages/main` had too: the start-up clean-up deleted
+  the old `cache/dictionary-downloads/` outright, so a file or collection import queued by an older version failed
   after the update. It also found two smaller issues:
-  - WorkManager's exponential backoff grows with every network stop, so after a few losses the next run waits long;
-  - the clean-up and the download loop's choice between a lost network and a break-off have no tests.
-  The port session fixes all three on the port branch and on `claude/download-fixes-lang` (from `languages/main`);
-  then the merge into `main`, the checks listed below and the release notes. The version number is asked at release
-  time.
+  - WorkManager's exponential backoff grew with every network stop, so after a few losses the next run waited long;
+  - the clean-up and the download loop's choice between a lost network and a break-off had no tests.
+  The port session fixed all three in one round, and the same fixes for `languages/main` are merged from
+  `claude/download-fixes-lang`: the old cache folder keeps the files a queued import reads, and a download whose
+  network went waits in its run with WorkManager's least linear backoff. Next: the merge into `main`, the checks
+  listed below and the release notes. The version number is asked at release time.
 - Seen on the emulator by group 5a (2026-10-28): while the NFC HAL crash-loops, the system rebinds Screenlate's
   accessibility service about every 10 s, and Home keeps showing "The bubble is not shown: the system stopped the
   service" while the service runs. Not checked yet: whether the card should ignore a rebind that follows within
@@ -238,18 +239,53 @@ a share from the phone's gallery); merging is the owner's decision. No merge of 
 branch. Emulators, test APKs and the shared lock are cleaned up; API 37 has no current photo, automatic saving off and
 no limits; API 30 has the universal debug APK at its original unanswered first run.
 
-## Release from `main`: open items (2026-10-23, owner: come back to it later)
+## Release from `main`: open items (2026-10-23, updated 2026-10-28; owner: come back to it later)
 
 No release is planned yet (`plans/2026-10-15-main-fixes-and-backups.md`, decision "Release"). Before one, from the
 check of `main` at `fee4c9fb` against v0.2.3:
 
-- Bug on `main`: a catalog download queued after one that stopped (connection lost after the retries, an HTTP error)
-  fetches the stopped dictionary. `DictionaryImports` chains the queue with `APPEND_OR_REPLACE`, a stopped download
-  returns `success` with its `RESUME_KEYS`, and the default input merger lays them over the next task's input. Fixed
-  only on `languages/main` (`e16394c6`, `OwnInputMerger`); to port together with `fd5e8dd0` (wait for the network
-  instead of stopping), `16225ee0` (partial downloads outside the cache) and the "Waiting for a network" label of
-  `fa1b0863`. Proposed as a session card ("Port the download fixes from languages/main to main").
-- Not checked yet: the E cases on `main`'s final build (each change was checked alone when built), the upgrade from
+- Ported to `main` on `claude/port-fixes-to-main-3e7385` (from `main` 2df1e55c; not merged yet), one commit each:
+  the own input merger (`e16394c6`: a download queued after a stopped one fetched the stopped dictionary), partial
+  downloads in `no_backup` (`16225ee0`), the wait for a network instead of stopping, with the "Waiting for a network"
+  labels of `fa1b0863` (`fd5e8dd0`, adapted to `main`'s single chain and its retry count: a lost network counts no
+  retry, ends are recorded so a dropped result is not run again), the app opened with the launcher's intent
+  (`5f4a75d6`), the audio clip directory made again after a cache clear (`ca52b3da`), the popup hidden until its new
+  view is drawn (`bc6d36de`, without the camera's `move`), no Open Screenlate in the hold menu over the app
+  (`a597e88f`, without the photo part), the downloadable popup fonts named in NOTICE (from `c08f5f64`), and ignore
+  rules for JVM replay logs, Python bytecode and `testdata/apk/`. Checked: unit tests 622, page tests 107, lint; on
+  the emulator DIC23, DIC24, DIC29, DIC31, BUB16 (the hold menu path), BUB17 and POP39 (`test-model.md`, run of
+  2026-10-28).
+- Left on `languages/main`: every language-specific fix (they fix code `main` does not have), the camera's fixes
+  (its review found nothing outside the camera code that `main` has: the WebP side limit only matters for photos, the
+  first-run page requests and the language of the pages the app opens have no counterpart), the two import chains
+  and the shared waiting card (`4c1df97e`, `c38082a8`: a feature; `main`'s catalog card already keeps a download from
+  being queued twice), the localized catalog titles (`9aec26d9`: `main` has none), the reset button's removal and
+  the interrupted reset message (`17a01c5a`, `5c0e041c`), the Search tab without the keyboard (`290217bb`: `main` has
+  no tabs). The neutral "characters of the word" wording (`c08f5f64`) stays out: `main` is Japanese only.
+- Fix round after the review of the port (2026-10-28 night, `72ad5f68`, `0bf33bd9` and `d1f8ee9f` on the same
+  branch; the parts `languages/main` has the code for on `claude/download-fixes-lang`):
+  - The first import of a process deleted the whole cache folder older versions kept archives in, so a picked file or
+    collection copy queued there before an update was missing when its import ran. The folder now follows the
+    downloads folder's rules (kept while a queued import names the file; with the archives in use unknown, kept for
+    six hours) and goes once it is empty (`StorageCleanUpTest`).
+  - WorkManager counts every run, also those it stops for a lost network, and its exponential backoff grew with each:
+    after seven lost networks a download waited about half an hour for its next run, and a break-off after that an
+    hour for its retry. On `main` a download that broke off waits 30 s, 1 and 2 minutes in its run (shown as
+    retrying) and continues; `languages/main` already queues its retries anew (`requeue`). On both, a download whose
+    network went keeps waiting in its run and tries again every 30 s instead of a retry result, and downloads have
+    the least linear backoff (10 s a run), which only applies after a stop. The choice between a lost network and a
+    break-off is `failedRead`, with tests.
+  - Checks: `main` unit tests 629, page tests 107, lint; `languages/main` unit tests 1750, lint. Not run on the
+    emulator: group 5a held the lock from 03:01 past 04:49. To run: DIC29 and DIC31 on a side-by-side build of the
+    branch, and DIC24 as an update: `main` at `2df1e55c` built with the side-by-side init script, a file import queued
+    behind a long download, then the branch's build installed over it; the import must still install.
+- Question for the owner: may instrumented tests run with `am instrument` on the shared emulator? The system
+  force-stops the target package when instrumentation starts, which the no force-stop rule may cover, so
+  `OpenAppTest` was not run on `main` and its case was checked by hand. Recommendation: allow it for a build installed
+  under its own package (as `com.vpr.screenlate.debugmain` was), never for the `languages/main` app whose service is
+  on.
+- Not checked yet: `OpenAppTest` on `main` (it was run on `languages/main`), the E cases on `main`'s final build
+  (each change was checked alone when built), the upgrade from
   the v0.2.3 release (last run 2026-10-14, on the language branch), a release build with R8 (CI builds debug only),
   the own log, the service-off notification and the overlay crash fix on a real phone (the owner's diagnostics build
   predates them; the ColorOS user gets the CI debug build `fee4c9f`). The crash fix and the delayed notification were
@@ -257,7 +293,8 @@ check of `main` at `fee4c9fb` against v0.2.3:
 - To weigh: the "Screenlate service is off" notification also comes when the user turns the service off, as the app
   cannot tell the two apart; the code review of the new code (`plans/2026-10-15-full-code-review.md`, which covers
   `main`'s changes) has not started and says no releases; the ColorOS user's logs may call for an allowlist hint.
-- Release notes draft: drop the romaji item (`94f5ed9e` was reverted by `ce6e7c81`, owner's choice of 2026-10-15).
+- Release notes draft: drop the romaji item (`94f5ed9e` was reverted by `ce6e7c81`, owner's choice of 2026-10-15);
+  add the ported fixes above.
   The version number is asked at release time.
 
 ## User report (2026-10-20): the bubble disappears on a ColorOS phone
@@ -421,6 +458,14 @@ abbreviations and quotes from the corpus (“ closes „…“ and opens “…�
 quotes), Esperanto's own flag, Tesseract fast as the more accurate model, no PaddleOCR; ESPDIC converted, listed
 once hosted; a frequency dictionary built on the device from Leipzig's Esperanto Wikipedia (question 28, decided
 provisionally). Checked on the emulator; plan question 30 (straight quotes after a full stop in OCR text) is open.
+
+Albanian on `languages/sq` (2026-10-28, rebased onto `languages/main` at `d5bd5919`): Yomitan's 94 Albanian rules and our 18
+endings, which are fallback rules (looked up by rank only when nothing else finds an entry; the engine's candidate
+lookup takes the rank and a headword-only flag from the glue); the elisions s' ç' t' m'; abbreviations and quotes
+from the corpus; ě read as ë in OCR text; Leipzig's Albanian news counts as the frequency dictionary; PaddleOCR v5
+Latin as the more accurate model. Plan questions 31 (t' and m') and 32 (the frequency dictionary) decided
+provisionally. Checked on the emulator; the Lingua Libre recordings of AUD28 are left for a run when Wikimedia
+answers (HTTP 503 throughout).
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

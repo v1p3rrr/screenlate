@@ -1737,6 +1737,23 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
 - Coverage: eo-en and eo-ru find 88-90% of the lowercase words of running text as written; ESPDIC (63,829 terms,
   converted: 977 KB, CC BY 3.0) would add 2%, listed once hosted.
 
+### Albanian on `languages/sq` (2026-10-28)
+
+- `Language.ALBANIAN` (`sq`), `AlbanianSupport`: glyph Ë, Albania's flag, every Latin font (ë and ç are Latin-1
+  letters), Lingua Libre first for audio (Q8748, 3 of 20 common words; Wiktionary has none), no ordinal period
+  (ordinals take an ending), “…” and «…» paired, the abbreviation lists of `notes/language-rules.md`, the elisions s'
+  ç' t' m' (the word after the apostrophe starts anew, as after French l'), the OCR letter fix ě → ë.
+- Bundle (`sq.js`, 70 KB): Yomitan's Albanian descriptor (94 rules), Ukrainian's apostrophe variants (s'ka, s’ka) and
+  18 endings of our own (`albanianEndings`, `extendedTransforms`), the list measured in the plan's research.
+- Fallback rules: a transform marked `fallback` gives its texts a rank (`p`) and, for a noun ending that leaves a
+  case ending, `l` (the text must be a headword of its own: partneritet is not partnerit + -et). `candidate_lookup.cpp`
+  looks such texts up only when no other text found an entry, by rank, and stops at the first that finds one. Other
+  languages' texts carry no rank and are looked up as before.
+- Catalog: wty sq into en ru de fr pl tr zh and the transcription, all ticked (sq-ko 1,055, sq-pt 813, sq-ja 284,
+  sq-es 244, sq-it 166, sq-vi 144 words stay under the line); Leipzig's Albanian news counts (2020) as the frequency
+  dictionary, built on the phone (wordfreq has no Albanian; plan question 32); PaddleOCR v5 Latin recommended (0%
+  errors on the test screens against ML Kit's 1.0%), v6 and Tesseract `sqi` fast and best unticked.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.
