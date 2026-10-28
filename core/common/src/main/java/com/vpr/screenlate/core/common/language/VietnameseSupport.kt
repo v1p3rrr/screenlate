@@ -31,6 +31,9 @@ object VietnameseSupport : SpacedLanguageSupport() {
     /** Its marks are tones: a word without them is another word. */
     override val foldsMarks = false
 
+    /** The dialect forms of Central Vietnam (tau for tao) carry `Central` alone. */
+    override val formTagNames = mapOf("central" to "central-vietnam")
+
     /**
      * Titles and administrative units: TP. (thành phố), Q. and P. (quận, phường in addresses), TS., ThS., GS., PGS.
      * (academic degrees). "v.v." (and so on) usually ends a sentence and is left out.

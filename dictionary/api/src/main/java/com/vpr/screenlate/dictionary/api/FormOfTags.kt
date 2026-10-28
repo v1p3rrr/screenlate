@@ -48,6 +48,7 @@ object FormOfTags {
         "causal-final" to R.string.form_of_tag_causal_final,
         "causative" to R.string.form_of_tag_causative,
         "central" to R.string.form_of_tag_central,
+        "central-vietnam" to R.string.form_of_tag_central_vietnam,
         "chakavian" to R.string.form_of_tag_chakavian,
         "china" to R.string.form_of_tag_china,
         "chinese" to R.string.form_of_tag_chinese,
@@ -386,11 +387,16 @@ object FormOfTags {
 
     /**
      * [tag] in the interface language; null when none of its words is in the list. A word in [aliases] is named as the
-     * word it maps to (the language's `formTagAliases`).
+     * word it maps to (the language's `formTagAliases`), a whole tag in [names] as the tag it maps to (`formTagNames`).
      */
-    fun label(resources: Resources, tag: String, aliases: Map<String, String> = emptyMap()): String? {
+    fun label(
+        resources: Resources,
+        tag: String,
+        aliases: Map<String, String> = emptyMap(),
+        names: Map<String, String> = emptyMap(),
+    ): String? {
         val locale = resources.configuration.locales[0]
-        return label(tag, { resources.getString(it) }, aliases = aliases) {
+        return label(tag, { resources.getString(it) }, aliases = aliases, names = names) {
             Locale.Builder().setRegion(it).build().getDisplayCountry(locale)
         }
     }
@@ -400,8 +406,10 @@ object FormOfTags {
         tag: String,
         string: (Int) -> String,
         aliases: Map<String, String> = emptyMap(),
+        names: Map<String, String> = emptyMap(),
         country: (String) -> String = { it },
     ): String? {
+        names[tag.trim().lowercase()]?.let { STRINGS[it] }?.let { return string(it) }
         var translated = false
         val words = tag.trim().split(SPACES).filter { it.isNotEmpty() }
         val labels = mutableListOf<String>()

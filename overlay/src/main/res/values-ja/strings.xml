@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">画面に文字が見つかりません。</string>
     <string name="overlay_no_text_photo">写真に文字が見つかりません。</string>
-    <string name="overlay_no_app_text">このアプリはここでテキストを提供していません。画面の認識はオフです（バブルの設定の「アプリのテキストのみ」）。</string>
+    <string name="overlay_no_app_text">このアプリはユーザー補助サービスにテキストを提供していません。画面の認識はオフです（文字認識の設定の「アプリのテキストのみ」）。</string>
     <string name="overlay_error_secure">このアプリではスクリーンショットが許可されていません。</string>
     <string name="overlay_error_capture">スクリーンショットを撮れませんでした。</string>
     <string name="overlay_error_ocr">文字認識に失敗しました。</string>
-    <string name="overlay_error_offline">ネットワークがなく、端末上の認識は設定でオフになっています。</string>
-    <string name="overlay_error_no_device_ocr">この言語には端末上のモデルがありません。モデルをダウンロードするか、バブルの設定で「エンジン」を「両方」か「クラウド」にしてください。</string>
+    <string name="overlay_error_offline">ネットワークに接続されておらず、端末上の認識は設定でオフになっています。</string>
+    <string name="overlay_error_no_device_ocr">この言語には端末上のモデルがありません。モデルをダウンロードするか、文字認識の設定で「エンジン」を「両方」か「クラウド」にしてください。</string>
     <string name="overlay_open_ocr_models">端末上のモデル</string>
     <string name="overlay_error_offline_no_device">ネットワークに接続されておらず、端末上の認識はこの言語に対応していません。</string>
     <string name="overlay_ocr_error_title">クラウド認識</string>

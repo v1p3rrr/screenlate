@@ -417,6 +417,13 @@ interface LanguageSupport {
     val formTagAliases: Map<String, String> get() = emptyMap()
 
     /**
+     * Form-of tags that mean more in this language than their word says when they stand alone, named as another tag:
+     * Vietnamese `Central` is Central Vietnam, as wty gives each word of Wiktionary's "North Central Vietnam" as a tag
+     * of its own. A tag of several words is named word by word.
+     */
+    val formTagNames: Map<String, String> get() = emptyMap()
+
+    /**
      * Whether a word's results found through a headword's spelling without marks ([HeadwordMarks.everyHeadword]) are
      * left out when the same text finds a headword as written: Welsh ty finds tŷ, twr finds only twr.
      */

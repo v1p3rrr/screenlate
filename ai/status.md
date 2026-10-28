@@ -1977,3 +1977,46 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
   `CLAUDE.md`); committed on both branches.
 - The AVD `Screenlate_API30` is locked by a qemu process that cannot be killed (PID 70992 this session); a fresh AVD
   `Screenlate_API30_glide` (pixel_4, google_apis x86) replaced it for this check. A reboot of the PC frees the lock.
+
+## Cloud session 2026-10-29
+
+Five backlog tasks, done in a claude.ai cloud session (no Android SDK, no emulator, no `testdata/`) from
+`languages/main` `772bbad7`. Branches for the coordinating session to review, build and merge:
+
+- `cloud/backlog-2026-10-29` (tasks 1-4, tip: the commit that adds this section);
+- `cloud/rtl-strings-2026-10-29` (task 5, cut from task 4's tip `c028ebed`, tip `e0251129`); it waits for the emulator
+  check of the mirrored screens.
+
+Per task:
+
+1. Smaller language bundles: the descriptors of `own-transforms.js` built by calls are wrapped in pure IIFEs, so 16
+   bundles lost 21-28 KB each (412 KB in all, sizes in the commit message); `build.mjs` fails when either file of
+   the app's own leaves code in a bundle that imports nothing from it. The old and new bundles give the same
+   candidates for every quoted text of `glue.test.mjs` (76,160 calls); the inflection generator writes the same files.
+2. Converter data: FreeDict definitions over 120 characters follow the translations; it-ru loses "( approfondimento)"
+   and the same links "( tassonomia)", "( citazioni)"; OpenRussian drops "gapirish" through `STRAY_WORDS`;
+   Vietnamese `Central` alone reads Central Vietnam (`LanguageSupport.formTagNames`, 14 locales). To rebuild: the
+   FreeDict conversions the owner keeps and OpenRussian ru-en (ru-de and wty need nothing). wty's tag table gives
+   "Central" a Brazilian flag chip on 294 vi-en definitions (question 88).
+3. Candidate interface languages: ranked list in `notes/translations.md` ("Candidate interface languages"):
+   Indonesian, Thai, Ukrainian first, then Arabic and Persian (strings done), Hindi, Bengali, Uzbek, Urdu, Hebrew.
+4. Interface translation check: 579 changes over the 13 translations, one commit per locale, plus the English fix
+   (two popup messages pointed to the Bubble settings for Engines and App text only, now on Text recognition; "1
+   dictionaries", "1 audio sources"; "auto-play") carried into every locale. Terms per locale in
+   `notes/translations.md` ("Shared terms per locale"). Reviewed per locale by subagents against the conventions
+   note; every proposal read before it was applied.
+5. Right-to-left strings: `values-ar`, `values-fa`, `values-iw` for all 31 string files (2,014 strings and 13
+   plurals each); the language settings read a hand-written `res/xml/locales_config.xml` without them
+   (`generateLocaleConfig` off, `android:localeConfig` in the manifest), kept in step by `TranslationsTest`
+   (`unlisted`). A phone set to one of the three already shows it, so the branch stays unmerged until the check.
+
+Tests run here: `node --test` glue and mutation exceptions 124 pass (1 skipped without `YOMITAN`; 117 of 117 with
+it), page tests 146 pass, `python -m pytest -q scripts` 67 pass, catalog generator 11 pass. Without an SDK, Gradle did
+not run (no `lintDebug`, no `testDebugUnitTest`): plain JVM tests were compiled with kotlinc 2.2.20 against stub
+`android` classes and pass: `TranslationsTest` (both branches), `FormOfTagsTest` 19, the `core:common` language tests
+417 of 419 (the Thai and Khmer "without the phone's ICU" cases fail only because the run supplies ICU through a
+shim). Not compiled: `HoshidictsEngine.kt` (one changed call). The coordinating session builds and tests locally.
+
+Open for the owner: questions 88-92 of `plans/2026-10-10-languages-implementation.md` (the vi Brazilian-flag chip,
+Vietnamese North/South, FreeDict's length rule, Russian «карточка», French «Recherche»), and 93-94 on the
+right-to-left branch (Arabic form tags named as other languages' categories, arrows in right-to-left menu paths).

@@ -63,7 +63,7 @@
     <string name="dictionaries_kind_characters">Znaki</string>
     <string name="dictionaries_count_transcriptions">transkrypcje: %1$d</string>
     <string name="dictionaries_count_characters">znaki: %1$d</string>
-    <string name="dictionaries_languages_hint">Zainstalowane i dostępne do pobrania słowniki poniżej dotyczą wybranego języka. Słowniki bez języka służą wszystkim językom.</string>
+    <string name="dictionaries_languages_hint">Zainstalowane i dostępne do pobrania słowniki poniżej dotyczą wybranego języka. Słowniki bez przypisanego języka są używane dla wszystkich języków.</string>
     <string name="dictionaries_other_languages">Inne języki</string>
     <string name="dictionaries_other_languages_hint">Słowniki i modele rozpoznawania wyłączonych języków. Nie są używane i zajmują tylko miejsce.</string>
     <plurals name="dictionaries_other_language_count">
@@ -87,7 +87,7 @@
     <string name="catalog_category_characters">Znaki</string>
     <string name="catalog_category_ocr_model">Rozpoznawanie na urządzeniu</string>
     <string name="language_setup_hint">Wybierz słowniki do pobrania. Później można je dodać lub usunąć na stronie Słowniki.</string>
-    <string name="language_setup_glosses">Języki objaśnień</string>
+    <string name="language_setup_glosses">Języki definicji</string>
     <string name="language_setup_glosses_hint">Poniżej są słowniki, które objaśniają słowa w tych językach.</string>
     <string name="language_setup_gloss_add">Inny język…</string>
     <string name="language_setup_gloss_none">Brak</string>
@@ -109,7 +109,7 @@
     <string name="dictionaries_task_queued">Oczekuje: %1$s</string>
     <string name="dictionaries_task_downloading">Pobieranie: %1$s</string>
     <string name="dictionaries_task_retrying">Ponawianie pobierania (%2$d z %3$d): %1$s</string>
-    <string name="dictionaries_task_no_network">Czeka na sieć: %1$s</string>
+    <string name="dictionaries_task_no_network">Oczekiwanie na sieć: %1$s</string>
     <string name="dictionaries_tasks_waiting">W kolejce (%1$d): %2$s</string>
     <string name="dictionaries_tasks_waiting_count">W kolejce (%1$d)</string>
     <string name="dictionaries_tasks_cancel_all">Anuluj wszystkie</string>
@@ -138,7 +138,7 @@
     <string name="anki_tags">Tagi (oddzielone spacjami)</string>
     <string name="anki_fields">Pola</string>
     <string name="anki_fields_hint">Szablony używają znaczników takich jak {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Przycisk + wstawia znacznik. Pierwsze pole służy do sprawdzania duplikatów.</string>
-    <string name="anki_fields_hint_rtl">W języku pisanym od prawej do lewej „Wypełnij sugerowanymi szablonami” i przycisk + umieszczają słowo i zdanie w &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, żeby karta pokazała je w kolejności czytania. Pierwsze pole tego nie dostaje, bo sprawdzanie duplikatów porównuje jego znaczniki.</string>
+    <string name="anki_fields_hint_rtl">Dla języka pisanego od prawej do lewej „Wypełnij sugerowanymi szablonami” i przycisk + umieszczają słowo i zdanie w &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, aby karta pokazywała je w kolejności czytania. W pierwszym polu tego nie ma, bo sprawdzanie duplikatów porównuje jego kod HTML.</string>
     <string name="anki_insert_marker">Wstaw znacznik</string>
     <string name="anki_marker_furigana_zh">Pinyin nad znakami</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin jako tekst: 你[nǐ] 好[hǎo]</string>
@@ -204,7 +204,7 @@
     <string name="dictionaries_task_converting">Rozpakowywanie: %1$s</string>
     <string name="dictionaries_task_checking_space">Sprawdzanie wolnego miejsca dla %1$s</string>
     <string name="dictionaries_stage_queued">W kolejce</string>
-    <string name="dictionaries_stage_no_network">Czeka na sieć</string>
+    <string name="dictionaries_stage_no_network">Oczekiwanie na sieć</string>
     <string name="dictionaries_stage_downloading">Pobieranie</string>
     <string name="dictionaries_stage_checking_space">Sprawdzanie wolnego miejsca</string>
     <string name="dictionaries_stage_converting">Rozpakowywanie</string>
@@ -235,7 +235,7 @@
     <string name="anki_suggest_templates">Wypełnij sugerowanymi szablonami</string>
     <string name="anki_overwrite_mode">Przy nadpisywaniu: %1$s</string>
     <string name="anki_overwrite_coalesce">zachowaj istniejącą wartość, chyba że jest pusta</string>
-    <string name="anki_overwrite_coalesce_new">weź nową wartość, chyba że jest pusta</string>
+    <string name="anki_overwrite_coalesce_new">użyj nowej wartości, chyba że jest pusta</string>
     <string name="anki_overwrite_overwrite">zastąp</string>
     <string name="anki_overwrite_skip">zachowaj</string>
     <string name="anki_overwrite_append">dopisz na końcu</string>
@@ -368,11 +368,11 @@
     <string name="anki_check_fields_missing">Pola, których typ notatki już nie ma: %1$s</string>
     <string name="anki_check_fields_new">Nowe pola typu notatki: %1$s</string>
     <string name="anki_check_fix_fields">Odśwież listę pól poniżej.</string>
-    <string name="anki_check_not_checked">%1$s: bez sprawdzenia</string>
+    <string name="anki_check_not_checked">%1$s: nie sprawdzono</string>
     <string name="audio_sources">Źródła</string>
     <string name="audio_reset_sources">Przywróć domyślne źródła</string>
     <string name="audio_regions">Regiony</string>
-    <string name="audio_regions_hint">Nagrania z Wiktionary i transkrypcje z regionów wyżej na liście są pierwsze.</string>
+    <string name="audio_regions_hint">Nagrania z Wiktionary i transkrypcje: najpierw te z regionów wyżej na liście.</string>
     <string name="audio_region_us">Stany Zjednoczone</string>
     <string name="audio_region_uk">Wielka Brytania</string>
     <string name="audio_region_latin_america">Ameryka Łacińska</string>
@@ -459,7 +459,7 @@
     <string name="popup_show_source">Pokazuj rozpoznany tekst nad hasłami</string>
     <string name="popup_show_source_hint">Wyłączone: okienko zaczyna się od pierwszego hasła, a ✕ znajduje się obok jego przycisków.</string>
     <string name="popup_pitch_colors">Kolory akcentu tonicznego</string>
-    <string name="popup_pitch_colors_hint">Wyraz i jego odczyt mają kolor pierwszego akcentu tonicznego, a każdy akcent własny: heiban niebieski, atamadaka czerwony, nakadaka pomarańczowy, odaka zielony, kifuku (czasowniki i przymiotniki -i ze spadkiem) fioletowy. Wymaga słownika akcentu tonicznego.</string>
+    <string name="popup_pitch_colors_hint">Słowo i jego czytanie mają kolor pierwszego akcentu tonicznego, a każdy akcent własny: heiban niebieski, atamadaka czerwony, nakadaka pomarańczowy, odaka zielony, kifuku (czasowniki i przymiotniki -i ze spadkiem) fioletowy. Wymaga słownika akcentu tonicznego.</string>
     <string name="popup_tone_colors">Kolory tonów</string>
     <string name="popup_tone_colors_hint">Sylaby pinyinu przyjmują kolor swojego tonu: pierwszy czerwony, drugi pomarańczowy, trzeci zielony, czwarty niebieski, neutralny szary.</string>
     <string name="popup_font_title">Czcionka okienka</string>
@@ -467,7 +467,7 @@
     <string name="popup_font_system">Japońska czcionka telefonu</string>
     <string name="popup_font_system_hint">Preinstalowana, bez pobierania</string>
     <string name="popup_font_script_only">Tylko dla tekstu japońskiego</string>
-    <string name="popup_font_script_only_hint">Pisma łacińskie, cyrylica i inne używają czcionki telefonu. Dotyczy pobranych i dodanych czcionek.</string>
+    <string name="popup_font_script_only_hint">Pismo łacińskie, cyrylica i inne pisma używają czcionki telefonu. Dotyczy pobranych i dodanych czcionek.</string>
     <string name="popup_font_downloaded">Pobrane</string>
     <string name="popup_font_own_file">Twój plik</string>
     <string name="popup_font_delete">Usuń %1$s</string>
@@ -576,12 +576,12 @@
     <string name="css_problem_unclosed_comment">Wiersz %1$d: komentarz nie jest zamknięty (brak */), wszystko dalej jest pomijane</string>
     <string name="css_problem_unclosed_string">Wiersz %1$d: cudzysłów nie jest zamknięty</string>
     <string name="css_problem_unexpected_brace">Wiersz %1$d: nadmiarowy }</string>
-    <string name="css_problem_unclosed_block">Wiersz %1$d: blok „%2$s” nie jest zamknięty przez }</string>
+    <string name="css_problem_unclosed_block">Wiersz %1$d: blok „%2$s” nie jest zamknięty znakiem }</string>
     <string name="css_problem_missing_colon">Wiersz %1$d: „%2$s” nie jest deklaracją (brak dwukropka)</string>
     <string name="css_problem_bad_property">Wiersz %1$d: „%2$s” nie jest nazwą właściwości</string>
     <string name="css_problem_empty_value">Wiersz %1$d: %2$s nie ma wartości</string>
     <string name="css_problem_empty_font_name">Wiersz %1$d: pusta nazwa w font-family (o jeden przecinek za dużo?), przeglądarka pomija całą deklarację</string>
-    <string name="css_problem_outside_rule">Wiersz %1$d: „%2$s” jest poza jakąkolwiek regułą { }</string>
+    <string name="css_problem_outside_rule">Wiersz %1$d: „%2$s” nie należy do żadnej reguły { }</string>
     <string name="css_problem_unknown_font">Wiersz %1$d: telefon nie ma czcionki „%2$s”, używana jest następna z listy lub czcionka okienka</string>
     <string name="css_problem_remote_file">Wiersz %1$d: wczytuje plik z %2$s; ten serwer może widzieć, kiedy wyszukiwane są słowa. Czcionki i arkusze stylów z internetu są wczytywane, inne pliki są blokowane.</string>
     <string name="yomitan_section_appearance">Wygląd okienka</string>
@@ -594,7 +594,7 @@
     <string name="about_licenses">Licencje</string>
     <string name="about_licenses_hint">Screenlate powstał z użyciem otwartych bibliotek i kodu; słowniki mają własne licencje.</string>
     <string name="about_libraries">Biblioteki open source</string>
-    <string name="about_notices">Informacje o stronach trzecich</string>
+    <string name="about_notices">Informacje o oprogramowaniu stron trzecich</string>
     <string name="about_dictionaries">Zainstalowane słowniki</string>
     <string name="about_dictionary_revision">Wydanie %1$s</string>
     <string name="about_dictionary_author">Autor: %1$s</string>
@@ -616,12 +616,12 @@
     <string name="update_installing">Instalowanie. Po zakończeniu Android zamknie Screenlate; otwórz go wtedy ponownie.</string>
     <string name="update_confirm_install">Kontynuuj instalację</string>
     <string name="update_allow_installs">Zezwól na instalowanie aktualizacji</string>
-    <string name="update_allow_installs_hint">Android potrzebuje Twojej zgody, aby Screenlate mógł instalować swoje aktualizacje.</string>
+    <string name="update_allow_installs_hint">Android wymaga zgody, aby Screenlate mógł instalować aktualizacje.</string>
     <string name="update_announce">Powiadamiaj o nowych wersjach</string>
     <string name="update_announce_hint">Najwyżej raz dziennie, przy otwarciu aplikacji; każda wersja jest ogłaszana raz.</string>
     <string name="update_error_network">Nie udało się połączyć z GitHubem. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="update_error_no_apk">To wydanie nie ma pliku APK dla tego urządzenia.</string>
-    <string name="update_error_bad_apk">Pobrany plik nie jest nowszym Screenlate podpisanym tym samym kluczem.</string>
+    <string name="update_error_bad_apk">Pobrany plik nie jest nowszą wersją Screenlate podpisaną tym samym kluczem.</string>
     <string name="update_error_install">Android nie zainstalował aktualizacji.</string>
     <string name="action_close">Zamknij</string>
     <string name="action_more_info">Informacje: %1$s</string>
@@ -630,13 +630,13 @@
     <string name="translation_title">Tłumaczenie</string>
     <string name="translation_sentence_title">Tłumaczenie zdania</string>
     <string name="translation_hint">Darmowa usługa online tłumaczy zdanie, w którym jest słowo. Tłumaczenie jest maszynowe i może być niedokładne, a zdanie trafia na serwer usługi.</string>
-    <string name="translation_info">Usługi działają bez konta: Bing (strona Microsoft Translator), Tłumacz Google i tłumacz wbudowany w Microsoft Edge. Nie publikują swoich limitów; gdy jedna odmówi, przejmuje następna. Pierwsze w danej godzinie żądanie do Binga trwa około sekundy dłużej, bo Bing najpierw pobiera klucz ze swojej strony.</string>
+    <string name="translation_info">Usługi działają bez konta: Bing (strona Microsoft Translator), Tłumacz Google i tłumacz wbudowany w Microsoft Edge. Nie publikują swoich limitów; gdy usługa odrzuci żądanie, używana jest następna. Pierwsze w danej godzinie żądanie do Binga trwa około sekundy dłużej, bo najpierw pobierany jest klucz ze strony Binga.</string>
     <string name="translation_button">Przycisk tłumaczenia</string>
     <string name="translation_button_hint">Tłumaczy zdanie i pokazuje tłumaczenie pod nagłówkiem okienka; drugie dotknięcie je ukrywa. Gdy rozpoznany tekst jest ukryty, przycisk jest wśród przycisków pierwszego hasła.</string>
     <string name="translation_anki">Tłumaczenie w notatkach Anki</string>
     <string name="translation_anki_hint">Wypełnia {sentence-translation} tłumaczeniem widocznym w okienku albo prosi o nowe i czeka na nie do 5 sekund. Bez tłumaczenia pole zostaje puste.</string>
     <string name="translation_services_title">Usługi</string>
-    <string name="translation_services_hint">Tłumaczy pierwsza włączona usługa. Jeśli zawiedzie albo nie odpowie w ciągu 3 sekund, przejmuje następna. Przeciągnij uchwyt, aby zmienić kolejność.</string>
+    <string name="translation_services_hint">Tłumaczy pierwsza włączona usługa. Jeśli zwróci błąd albo nie odpowie w ciągu 3 sekund, używana jest następna. Przeciągnij uchwyt, aby zmienić kolejność.</string>
     <string name="translation_service_bing_note">Zwykle dokładniejszy</string>
     <string name="translation_language_title">Tłumacz na</string>
     <string name="translation_language_interface">Język interfejsu (%1$s)</string>
@@ -680,7 +680,7 @@
     <string name="background_battery_off">Wyłączona dla Screenlate: system pozostawia dymek uruchomiony.</string>
     <string name="background_battery_allow">Zezwól na pracę w tle</string>
     <string name="background_battery_list">Otwórz listę optymalizacji baterii</string>
-    <string name="background_battery_list_hint">Na liście znajdź Screenlate i wyłącz dla niego optymalizację („Nie optymalizuj”, „Bez ograniczeń” lub podobnie). Aplikacje, których początkowo nie ma na liście, często są w „Wszystkie aplikacje”.</string>
+    <string name="background_battery_list_hint">Na liście znajdź Screenlate i wyłącz dla niego optymalizację („Nie optymalizuj”, „Bez ograniczeń” lub podobnie). Jeśli Screenlate nie ma na liście, sprawdź „Wszystkie aplikacje”.</string>
     <string name="background_launch_title">Uruchamianie aplikacji</string>
     <string name="background_launch_text">Niektóre telefony zatrzymują aplikacje w tle także przez własne ustawienia producenta, niezależnie od optymalizacji baterii. Tam zezwól Screenlate na samodzielne uruchamianie się i działanie w tle.</string>
     <string name="background_launch_path">Na tym telefonie: Uruchamianie aplikacji → Screenlate → Zarządzaj ręcznie, z włączonymi wszystkimi trzema opcjami.</string>
@@ -700,11 +700,11 @@
     <string name="eink_home_turn_on">Włącz tryb e-ink</string>
     <string name="eink_home_app_text">Tylko tekst aplikacji…</string>
     <string name="dictionaries_website">Strona</string>
-    <string name="dictionaries_download_link">Pobieranie</string>
+    <string name="dictionaries_download_link">Strona pobierania</string>
     <string name="backup_title">Kopia zapasowa i przywracanie</string>
     <string name="settings_backup_summary">Zapisz ustawienia i słowniki w pliku, przywróć je, importuj z Yomitan</string>
     <string name="backup_create">Utwórz kopię zapasową</string>
-    <string name="backup_create_hint">Jeden plik z wybranymi częściami: ustawieniami, czcionkami, słownikami. Przechowuj go gdziekolwiek: w telefonie, na karcie pamięci lub w chmurze.</string>
+    <string name="backup_create_hint">Jeden plik z wybranymi częściami: ustawieniami, czcionkami, słownikami. Można go przechowywać w telefonie, na karcie pamięci lub w chmurze.</string>
     <string name="backup_parts_save">Części do zapisania</string>
     <string name="backup_section_fonts">Czcionki</string>
     <string name="backup_files_chosen">Wybrano %1$d z %2$d, %3$s</string>
@@ -737,7 +737,7 @@
     <string name="backup_restore_button">Przywróć zaznaczone</string>
     <string name="backup_restored">Przywrócono</string>
     <string name="backup_section_general">Ogólne</string>
-    <string name="backup_section_general_hint">Języki, motyw, kolory, tryb e-ink, powiadomienia o aktualizacjach</string>
+    <string name="backup_section_general_hint">Języki, motyw, kolory, tryb e-ink, powiadomienia o nowych wersjach</string>
     <string name="backup_section_bubble">Pływający dymek i rozpoznawanie</string>
     <string name="backup_section_bubble_hint">Rozmiar, celownik, silniki rozpoznawania, tekst aplikacji, aplikacje, w których dymek jest ukryty</string>
     <string name="backup_section_lookup">Wyszukiwanie</string>
@@ -802,8 +802,8 @@
     <string name="reset_anki_text">Talia, typ notatki, szablony pól, tagi i obsługa duplikatów zostaną przywrócone do wartości domyślnych. W AnkiDroid nic się nie zmieni.</string>
     <string name="reset_popup_text">Rozpoznany tekst na górze, kopiowanie definicji, automatyczne ukrywanie, wybór czcionki, rozmiar i grubość tekstu oraz własny CSS zostaną przywrócone do wartości domyślnych. Pobrane i dodane czcionki pozostaną zainstalowane.</string>
     <string name="reset_translation_text">Przycisk tłumaczenia, tłumaczenie w notatkach, kolejność i przełączniki usług, język i ulubione języki zostaną przywrócone do wartości domyślnych.</string>
-    <string name="reset_appearance_text">Motyw znowu podąża za systemem, kolory wracają do domyślnych kolorów Screenlate, a tryb e-ink zostaje wyłączony, co przywraca powiększone przez niego rozmiary. Język aplikacji zostanie zachowany.</string>
-    <string name="reset_background_text">Stałe powiadomienie zostanie wyłączone. Ustawienia baterii i autostartu należą do Androida i nie zostaną zmienione.</string>
+    <string name="reset_appearance_text">Motyw znów będzie zgodny z systemem, kolory zostaną przywrócone do domyślnych kolorów Screenlate, a tryb e-ink zostanie wyłączony, co przywróci powiększone przez niego rozmiary. Język aplikacji zostanie zachowany.</string>
+    <string name="reset_background_text">Stałe powiadomienie zostanie wyłączone. Ustawienia baterii i uruchamiania należą do Androida i nie zostaną zmienione.</string>
     <string name="reset_dictionaries_running">Zatrzymywanie importów i usuwanie słowników…</string>
     <string name="reset_dictionaries_busy">Resetowanie słowników…</string>
     <string name="reset_dictionaries_failed">Resetowanie słowników nie powiodło się: %1$s</string>
@@ -818,7 +818,7 @@
     <string name="accessibility_disclosure_reads_title">Co czyta</string>
     <string name="accessibility_disclosure_reads">• Zrzut ekranu, gdy dotykasz dymka lub go wyciągasz. W trybie „Tylko tekst aplikacji” tylko do obrazka w notatce Anki.\n• Tekst, który aplikacje pokazują na ekranie, w tych samych chwilach, jeśli włączone jest „Czytaj tekst aplikacji” lub „Tylko tekst aplikacji”.\n• Która aplikacja jest otwarta i gdzie są klawiatura oraz paski systemowe: aby ukrywać dymek w wybranych aplikacjach i trzymać go z dala od pasków.</string>
     <string name="accessibility_disclosure_sends_title">Dokąd trafia</string>
-    <string name="accessibility_disclosure_sends">• Zrzut ekranu trafia do rozpoznawania tekstu w chmurze, chyba że w „Silnikach” wybrano „Urządzenie” lub włączono „Tylko tekst aplikacji”. Rozpoznawanie na urządzeniu niczego nie wysyła.\n• Zdanie trafia do tłumacza online, gdy dotkniesz przycisku tłumaczenia lub szablon notatki prosi o jego tłumaczenie.\n• Słowo i jego czytanie trafiają do wybranych źródeł audio, po wymowę.\n• Notatki trafiają do AnkiDroid na tym urządzeniu.</string>
+    <string name="accessibility_disclosure_sends">• Zrzut ekranu trafia do rozpoznawania tekstu w chmurze, chyba że w „Silnikach” wybrano „Urządzenie” lub włączono „Tylko tekst aplikacji”. Rozpoznawanie na urządzeniu niczego nie wysyła.\n• Zdanie trafia do tłumacza online, gdy dotkniesz przycisku tłumaczenia lub szablon notatki prosi o jego tłumaczenie.\n• Słowo i jego czytanie trafiają do wybranych źródeł dźwięku, aby pobrać wymowę.\n• Notatki trafiają do AnkiDroid na tym urządzeniu.</string>
     <string name="accessibility_disclosure_outro">Usługa niczego za ciebie nie dotyka ani nie wpisuje. To, co czyta, nie jest zapisywane: zrzut ekranu zostaje w pamięci tylko do chwili, gdy dymek znów schowa się przy krawędzi, notatka dostaje tylko wybraną przez ciebie część zrzutu, a logi nigdy nie zawierają tekstu z ekranu.</string>
     <string name="accessibility_disclosure_agree">Zgadzam się</string>
     <string name="accessibility_disclosure_later">Nie teraz</string>
@@ -867,7 +867,7 @@
     <string name="camera_incomplete">Rozpoznawanie niepełne</string>
     <string name="camera_partial">Nie udało się rozpoznać %1$d z %2$d obszarów.</string>
     <string name="camera_interrupted">Rozpoznawanie zostało przerwane. Ukończone obszary są zachowane.</string>
-    <string name="camera_retry_failed">Ponów brakujące obszary</string>
+    <string name="camera_retry_failed">Rozpoznaj brakujące obszary</string>
     <string name="camera_recognition_failed">Nie udało się rozpoznać zdjęcia. Zapisany tekst jest zachowany.</string>
     <string name="camera_more_actions">Więcej działań</string>
     <string name="camera_photo_description">Zdjęcie</string>

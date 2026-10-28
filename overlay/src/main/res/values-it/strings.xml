@@ -1,5 +1,5 @@
 <resources>
-    <string name="overlay_service_description">Mostra una bolla fluttuante che legge il testo sullo schermo e cerca le parole nei tuoi dizionari. Screenlate fa screenshot solo quando estrai la bolla o la tocchi, e li invia a un servizio di riconoscimento del testo nel cloud.</string>
+    <string name="overlay_service_description">Mostra una bolla fluttuante che legge il testo sullo schermo e cerca le parole nei tuoi dizionari. Screenlate fa screenshot solo quando trascini fuori la bolla o la tocchi, e li invia a un servizio di riconoscimento del testo nel cloud.</string>
     <string name="overlay_tile_label">Bolla di Screenlate</string>
     <string name="overlay_engine_draft">Bozza sul dispositivo</string>
     <string name="overlay_engine_device">Sul dispositivo (Lens non disponibile)</string>
@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">Nessun testo trovato sullo schermo.</string>
     <string name="overlay_no_text_photo">Nessun testo trovato nella foto.</string>
-    <string name="overlay_no_app_text">Questa app non espone qui il suo testo. Il riconoscimento dello schermo è disattivato (Solo testo delle app nelle impostazioni della bolla).</string>
+    <string name="overlay_no_app_text">Questa app non comunica il suo testo ai servizi di accessibilità. Il riconoscimento dello schermo è disattivato (“Solo testo delle app” nelle impostazioni di Riconoscimento del testo).</string>
     <string name="overlay_error_secure">Questa app non consente gli screenshot.</string>
     <string name="overlay_error_capture">Impossibile fare uno screenshot.</string>
     <string name="overlay_error_ocr">Riconoscimento del testo non riuscito.</string>
     <string name="overlay_error_offline">Nessuna rete, e il riconoscimento sul dispositivo è disattivato nelle impostazioni.</string>
-    <string name="overlay_error_no_device_ocr">Questa lingua non ha un modello sul dispositivo. Scaricane uno oppure, nelle impostazioni Bolla, imposta Motori su «Entrambi» o «Cloud».</string>
+    <string name="overlay_error_no_device_ocr">Questa lingua non ha un modello sul dispositivo. Scaricane uno oppure, nelle impostazioni di Riconoscimento del testo, imposta “Motori” su “Entrambi” o “Cloud”.</string>
     <string name="overlay_open_ocr_models">Modello sul dispositivo</string>
     <string name="overlay_error_offline_no_device">Nessuna connessione di rete, e il riconoscimento sul dispositivo non supporta questa lingua.</string>
     <string name="overlay_ocr_error_title">Riconoscimento nel cloud</string>
@@ -26,18 +26,18 @@
     <string name="overlay_ocr_error_refused">Il riconoscimento nel cloud ha rifiutato la richiesta; le richieste sono sospese per qualche minuto.</string>
     <string name="overlay_ocr_error_server">Errore del server di riconoscimento nel cloud (%1$d).</string>
     <string name="overlay_ocr_error_other">Riconoscimento nel cloud non riuscito.</string>
-    <string name="overlay_ocr_error_fallback">Il testo è stato riconosciuto sul dispositivo, che è meno preciso.</string>
+    <string name="overlay_ocr_error_fallback">Testo riconosciuto sul dispositivo; la precisione è inferiore.</string>
     <string name="overlay_no_results">Nessuna voce trovata nei dizionari.</string>
     <string name="overlay_no_dictionaries">I dizionari sono ancora in installazione. Riprova tra un momento.</string>
     <string name="overlay_no_dictionaries_on">Nessun dizionario con definizioni è attivo. Attivane o aggiungine uno in Dizionari, in Screenlate.</string>
     <string name="overlay_add_note">Aggiungi ad Anki (tieni premuto per un’immagine)</string>
-    <string name="overlay_note_wait">Attendi il testo definitivo, finché l’indicatore non scompare.</string>
+    <string name="overlay_note_wait">Il testo viene ancora perfezionato; attendi che l’indicatore di caricamento scompaia.</string>
     <string name="overlay_play_audio">Riproduci audio (tieni premuto per scegliere)</string>
     <string name="anki_error">Impossibile aggiungere la nota: %1$s</string>
     <string name="anki_rejected">AnkiDroid non ha salvato la nota.</string>
     <string name="anki_photo_unavailable">La foto non è più disponibile.</string>
     <string name="anki_photo_document_title">Fotocamera</string>
-    <string name="anki_picture_failed">Errore durante il salvataggio dell\'immagine.</string>
+    <string name="anki_picture_failed">Errore durante il salvataggio dell’immagine.</string>
     <string name="anki_not_configured">Configura prima l’esportazione su Anki in Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid non è installato.</string>
     <string name="anki_no_permission">Consenti a Screenlate di accedere ad AnkiDroid nelle sue impostazioni di Anki.</string>

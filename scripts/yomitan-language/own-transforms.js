@@ -1,5 +1,6 @@
 // Inflection rules of the app's own, which build.mjs gives to languages Yomitan has none for (addedTransforms) or adds
-// to Yomitan's (extendedTransforms).
+// to Yomitan's (extendedTransforms). A descriptor built by calls is wrapped in a pure IIFE, so esbuild leaves it out of
+// the other languages' bundles; build.mjs fails when this file keeps code in a bundle that imports nothing from it.
 
 /**
  * Bengali noun endings, longest first: classifiers (টি, টা, খানা, গুলো), plurals (রা, দের) and cases (র, কে, তে, এ).
@@ -29,7 +30,7 @@ function bengaliEnding(ending) {
 }
 
 /** @type {import('language-transformer').LanguageTransformDescriptor<'n'>} */
-export const bengaliTransforms = {
+export const bengaliTransforms = /* @__PURE__ */ (() => ({
     language: 'bn',
     conditions: {
         n: {name: 'Noun', isDictionaryForm: true},
@@ -38,7 +39,7 @@ export const bengaliTransforms = {
         `-${ending}`,
         {name: `-${ending}`, rules: [bengaliEnding(ending)]},
     ])),
-};
+}))();
 
 /**
  * Persian endings and verb prefixes, as the app's own rules: Wiktionary lists the verb forms (میفرستادیم, نمیدانم) and
@@ -168,7 +169,7 @@ const persianPrefixes = [
 ];
 
 /** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'p' | 'c'>} */
-export const persianTransforms = {
+export const persianTransforms = /* @__PURE__ */ (() => ({
     language: 'fa',
     conditions: {
         n: {name: 'Word', isDictionaryForm: true},
@@ -198,7 +199,7 @@ export const persianTransforms = {
             rules: [persianPrefix(prefix, rest)],
         }]),
     ]),
-};
+}))();
 
 /**
  * Hebrew prefixes, written joined to their word, with a name and a description: ו (and), ש and כש (that, when), ב כ ל
@@ -243,7 +244,7 @@ function hebrewPrefix(prefix, conditionsIn, conditionOut) {
 }
 
 /** @type {import('language-transformer').LanguageTransformDescriptor<HebrewCondition>} */
-export const hebrewTransforms = {
+export const hebrewTransforms = /* @__PURE__ */ (() => ({
     language: 'he',
     conditions: {
         w: {name: 'After ו', isDictionaryForm: false},
@@ -257,7 +258,7 @@ export const hebrewTransforms = {
         description,
         rules: rules.map(([conditionsIn, conditionOut]) => hebrewPrefix(prefix, conditionsIn, conditionOut)),
     }])),
-};
+}))();
 
 /**
  * Kazakh, Kyrgyz, Azerbaijani and Uzbek endings, the app's own rules written from the grammar: a noun is stem [plural]
@@ -828,7 +829,7 @@ function romanianSuffix(suffix, replacement) {
  * Verb forms are Wiktionary's own (există, știu) and get no rules.
  * @type {import('language-transformer').LanguageTransformDescriptor<'n'>}
  */
-export const romanianTransforms = {
+export const romanianTransforms = /* @__PURE__ */ (() => ({
     language: 'ro',
     conditions: {
         n: {name: 'Noun or adjective', isDictionaryForm: true},
@@ -885,7 +886,7 @@ export const romanianTransforms = {
             ],
         },
     },
-};
+}))();
 
 /**
  * Swahili verb prefixes, as the app's own rules written from the grammar: a verb is [negation] subject tense [object]
@@ -1028,7 +1029,7 @@ function swahiliRelativeSuffix(relative) {
 }
 
 /** @type {import('language-transformer').LanguageTransformDescriptor<SwahiliCondition>} */
-export const swahiliTransforms = {
+export const swahiliTransforms = /* @__PURE__ */ (() => ({
     language: 'sw',
     conditions: {
         s: {name: 'After ha-', isDictionaryForm: false},
@@ -1120,7 +1121,7 @@ export const swahiliTransforms = {
             rules: [...swahiliStem('', 'ku', [], {next: 'r'}), ...swahiliStem('', 'kw', [])],
         },
     },
-};
+}))();
 
 /**
  * A Latin enclitic undone: the word before it keeps two letters at least.
@@ -1146,7 +1147,7 @@ function latinEnclitic(enclitic) {
  * and on classical prose and verse 2.7%, nearly all of them right.
  * @type {import('language-transformer').LanguageTransformDescriptor<never>}
  */
-export const latinEnclitics = {
+export const latinEnclitics = /* @__PURE__ */ (() => ({
     language: 'la',
     conditions: {},
     transforms: {
@@ -1154,7 +1155,7 @@ export const latinEnclitics = {
         '-ne': {name: '-ne', description: 'Enclitic asking a question (videsne from vides)', rules: [latinEnclitic('ne')]},
         '-ve': {name: '-ve', description: 'Enclitic "or" (mortuusve from mortuus)', rules: [latinEnclitic('ve')]},
     },
-};
+}))();
 
 /** @typedef {'n' | 'adj' | 'v'} AlbanianCondition */
 
@@ -1221,7 +1222,7 @@ function albanianRanks(descriptor) {
  * that reaches an entry gives the result.
  * @type {import('language-transformer').LanguageTransformDescriptor<AlbanianCondition>}
  */
-export const albanianEndings = /* @__PURE__ */ albanianRanks({
+export const albanianEndings = /* @__PURE__ */ (() => albanianRanks({
     language: 'sq',
     conditions: {},
     transforms: {
@@ -1347,7 +1348,7 @@ export const albanianEndings = /* @__PURE__ */ albanianRanks({
             rules: [albanianNounEnding('en', 'e'), albanianNounEnding('ën', 'ë')],
         },
     },
-});
+}))();
 
 /**
  * A letter of a Latin-script word, with its marks (ŵ ŷ á ò). Yomitan joins the patterns of a transform's rules into
@@ -1427,7 +1428,7 @@ const WELSH_WORD = ['w'];
  * still lead where they do.
  * @type {import('language-transformer').LanguageTransformDescriptor<WelshCondition> & {unmutated: string[]}}
  */
-export const welshTransforms = {
+export const welshTransforms = /* @__PURE__ */ (() => ({
     language: 'cy',
     conditions: {
         w: {name: 'Word', isDictionaryForm: true},
@@ -1492,7 +1493,7 @@ export const welshTransforms = {
         'naw', 'nes', 'ni', 'nodedig', 'nodi', 'nos', 'o', 'oed', 'oes', 'of', 'ras', 'rôl', 'the', 'wedi', 'wyneb',
         'wyth', 'ym', 'ymuno', 'ymysg', 'yr', 'yw', 'ôl',
     ],
-};
+}))();
 
 /** Irish vowels, with the fada. */
 const IRISH_VOWELS = 'aeiouáéíóú';
@@ -1517,7 +1518,7 @@ const IRISH_WORD = ['v', 'n', 'adj', 'adv'];
  * lowercase. [replaces] names Yomitan's file of the rules these replace and its git object id when they were reviewed.
  * @type {import('language-transformer').LanguageTransformDescriptor<any> & {unmutated: string[], replaces: {file: string, blob: string}}}
  */
-export const irishMutations = {
+export const irishMutations = /* @__PURE__ */ (() => ({
     language: 'ga',
     replaces: {file: 'ext/js/language/ga/irish-transforms.js', blob: '8a93988656aeb7beb057ca6c495981e8b46f1516'},
     conditions: {},
@@ -1580,7 +1581,7 @@ export const irishMutations = {
     // leads to bí as the rule's fuil "blood" does not, and English the. The rest are right as mutations (bhí → bí, i
     // ndiaidh → diaidh, na hÉireann → Éireann).
     unmutated: ['bhfuil', 'chomh', 'cheana', 'chuaigh', 'chuile', 'chun', 'thar', 'thart', 'the', 'thíos'],
-};
+}))();
 
 /** Scottish Gaelic vowels, with the grave accent and the acute of the older spelling. */
 const GAELIC_VOWELS = 'aeiouàèìòùáéíóú';
@@ -1601,7 +1602,7 @@ const GAELIC_WORD = ['w'];
  * mutated forms although the rules read them so, lowercase.
  * @type {import('language-transformer').LanguageTransformDescriptor<GaelicCondition> & {unmutated: string[]}}
  */
-export const gaelicMutations = {
+export const gaelicMutations = /* @__PURE__ */ (() => ({
     language: 'gd',
     conditions: {
         w: {name: 'Word', isDictionaryForm: true},
@@ -1651,7 +1652,7 @@ export const gaelicMutations = {
     // not suas, the motion), chan "not" and dha "to him", and English the. The rest are right as mutations or lead
     // back to the word (thug → tug → thoir, dheth → deth → dheth).
     unmutated: ['bhathar', 'bheir', 'chan', 'dha', 'dhuibh', 'shuas', 'the'],
-};
+}))();
 
 /**
  * Conditions of the Finnish rules, in the order the endings come off: a text before an outer clitic (`o`, -han), one
@@ -1722,7 +1723,7 @@ function finnishLongVowelPossessive() {
  * not talo with -Vn.
  * @type {import('language-transformer').LanguageTransformDescriptor<FinnishCondition>}
  */
-export const finnishTransforms = {
+export const finnishTransforms = /* @__PURE__ */ (() => ({
     language: 'fi',
     conditions: {
         w: {name: 'Word', isDictionaryForm: true},
@@ -1755,7 +1756,7 @@ export const finnishTransforms = {
             ],
         },
     },
-};
+}))();
 
 /**
  * Hungarian verb prefixes (igekötők), longest first where one starts another (elő, elé before el).
@@ -1790,7 +1791,7 @@ function hungarianPrefix(prefix) {
  * inflectionRulesOnlyWithoutEntry): megtart is found as written.
  * @type {import('language-transformer').LanguageTransformDescriptor<'v'>}
  */
-export const hungarianTransforms = {
+export const hungarianTransforms = /* @__PURE__ */ (() => ({
     language: 'hu',
     conditions: {
         v: {name: 'Verb', isDictionaryForm: true},
@@ -1802,7 +1803,7 @@ export const hungarianTransforms = {
             rules: HUNGARIAN_PREFIXES.map(hungarianPrefix),
         },
     },
-};
+}))();
 
 /**
  * The negative forms of olema that Wiktionary lists apart from its table: present, past, conditional, impersonal past
@@ -1832,7 +1833,7 @@ function estonianNegative(form) {
  * entry comes first.
  * @type {import('language-transformer').LanguageTransformDescriptor<'v'>}
  */
-export const estonianTransforms = {
+export const estonianTransforms = /* @__PURE__ */ (() => ({
     language: 'et',
     conditions: {
         v: {name: 'Verb', isDictionaryForm: true},
@@ -1844,7 +1845,7 @@ export const estonianTransforms = {
             rules: ESTONIAN_NEGATIVES.map(estonianNegative),
         },
     },
-};
+}))();
 
 /**
  * [own] in place of Yomitan's descriptor of a language, with Yomitan's conditions, which [own]'s rules give; Yomitan's

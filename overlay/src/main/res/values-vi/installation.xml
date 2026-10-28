@@ -5,7 +5,7 @@
     <string name="installation_failed">Cài đặt ngôn ngữ không thành công. Mở trạng thái cài đặt để xem lỗi và thử lại.</string>
     <string name="installation_open">Trạng thái cài đặt</string>
     <string name="installation_device_ready">Nhận dạng trên thiết bị: sẵn sàng</string>
-    <string name="installation_device_missing">Nhận dạng trên thiết bị: không khả dụng; có thể dùng nhận dạng trên đám mây khi được bật.</string>
+    <string name="installation_device_missing">Nhận dạng trên thiết bị: không khả dụng; có thể dùng nhận dạng đám mây khi được bật.</string>
     <string name="installation_remaining">Số mục còn cần cài đặt: %1$d</string>
     <string name="installation_errors">Số mục cài đặt thất bại: %1$d</string>
 </resources>

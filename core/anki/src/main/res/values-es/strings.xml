@@ -5,7 +5,7 @@
 
     <string name="anki_problem_not_installed">AnkiDroid no está instalado.</string>
     <string name="anki_problem_no_permission">Screenlate perdió el acceso a AnkiDroid.</string>
-    <string name="anki_problem_model_missing">El tipo de nota ya no existe en AnkiDroid.</string>
-    <string name="anki_problem_deck_missing">El mazo ya no existe en AnkiDroid.</string>
+    <string name="anki_problem_model_missing">No se encontró el tipo de nota en AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">No se encontró el mazo en AnkiDroid.</string>
     <string name="anki_problem_fields_changed">Los campos del tipo de nota cambiaron.</string>
 </resources>

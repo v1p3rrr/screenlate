@@ -4,8 +4,10 @@
     python scripts/freedict/freedict_yomitan.py <freedict-deu-rus-2025.11.23.src.tar.xz | deu-rus.tei> <out.zip>
 
 Each sense becomes one definition: its translations as a list, the source-language definition that tells the senses
-apart above it. Parts of speech and the genders of nouns become tags; the part of speech also becomes the rule
-Yomitan's deinflection matches. Chinese headwords get the pinyin of their first pronunciation as the reading.
+apart above it, or below it when the definition is long. Parts of speech and the genders of nouns become tags; the
+part of speech also becomes the rule Yomitan's deinflection matches. Chinese headwords get the pinyin of their first
+pronunciation as the reading. The Italian Wiktionary's links to Wikipedia, Wikispecies and Wikiquote are dropped from
+the definitions.
 
 Older FreeDict files (slv-eng) name no languages in the text: they come from the file name (`slv-eng.tei`), and the
 authors from the header's `respStmt` instead of WikDict's maintainer. Usage examples are left out.
@@ -115,6 +117,11 @@ PINYIN = re.compile(r"^-\{-\{(.+)\}-\}-$")
 
 TERMS_PER_BANK = 10_000
 
+#: Longest source-language definition shown as a sense's label above its translations; a longer one follows them as
+#: the sense's text. WikDict joins the definitions of every Wiktionary sense a translation belongs to, up to 1,400
+#: characters in deu-rus, which pushed the translations far down.
+LONG_LABEL = 120
+
 STYLES = """div[data-sc-content="sense-label"] { font-style: italic; opacity: 0.75; }
 ul[data-sc-content="glossary"] { margin: 0; padding-left: 1.2em; }
 """
@@ -124,6 +131,9 @@ ul[data-sc-content="glossary"] { margin: 0; padding-left: 1.2em; }
 LINK = re.compile(r"#[{](?:[^|}]*[|])?([^}]*)[}]#")
 #: What is left of a template WikDict could not read (`}#|tellelig|kat`, `Verb|minner]] om`).
 RESIDUE = re.compile(r"[}]#|#[{]|[|]|]]|[{][{]")
+#: The Italian Wiktionary's links to its sister projects, as WikDict leaves them in a definition: Wikipedia
+#: "( approfondimento)", Wikispecies "( tassonomia)", Wikiquote "( citazioni)".
+SISTER_LINK = re.compile(r"\s*\( (?:approfondimento|tassonomia|citazioni)\)")
 
 
 def text(element):
@@ -131,10 +141,10 @@ def text(element):
 
 
 def plain(definition):
-    """A definition as one line without WikDict's link markup and HTML entities; empty when only a broken template is
-    left."""
+    """A definition as one line without WikDict's link markup, HTML entities and links to sister projects; empty when
+    only a broken template is left."""
     line = " ".join(html.unescape(LINK.sub(lambda m: m.group(1), definition)).replace("[[", "").split())
-    return "" if RESIDUE.search(line) else line
+    return "" if RESIDUE.search(line) else SISTER_LINK.sub("", line).strip()
 
 
 def unique(items):
@@ -200,17 +210,21 @@ def read_entry(entry, source):
 
 
 def glossary(senses):
-    """One structured-content definition per sense, laid out as Wiktionary dictionaries for Yomitan do."""
+    """One structured-content definition per sense, laid out as Wiktionary dictionaries for Yomitan do; a long
+    definition follows the translations instead of labelling them."""
     result = []
     for label, translations in senses:
+        long = len(label) > LONG_LABEL
         content = []
-        if label:
+        if label and not long:
             content.append({"tag": "div", "data": {"content": "sense-label"}, "content": label})
         content.append({
             "tag": "ul",
             "data": {"content": "glossary"},
             "content": [{"tag": "li", "content": t} for t in translations],
         })
+        if long:
+            content.append({"tag": "div", "data": {"content": "sense-definition"}, "content": label})
         result.append({"type": "structured-content", "content": {"tag": "div", "content": content}})
     return result
 

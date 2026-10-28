@@ -8,19 +8,19 @@
 
     <string name="overlay_no_text">Không tìm thấy văn bản trên màn hình.</string>
     <string name="overlay_no_text_photo">Không tìm thấy văn bản trong ảnh.</string>
-    <string name="overlay_no_app_text">Ứng dụng này không cung cấp văn bản của nó ở đây. Nhận dạng màn hình đang tắt (Chỉ văn bản ứng dụng trong cài đặt bong bóng).</string>
+    <string name="overlay_no_app_text">Ứng dụng này không cung cấp văn bản cho dịch vụ hỗ trợ tiếp cận. Nhận dạng màn hình đang tắt (“Chỉ văn bản ứng dụng” trong cài đặt Nhận dạng văn bản).</string>
     <string name="overlay_error_secure">Ứng dụng này không cho phép chụp màn hình.</string>
     <string name="overlay_error_capture">Không chụp được màn hình.</string>
     <string name="overlay_error_ocr">Nhận dạng văn bản thất bại.</string>
     <string name="overlay_error_offline">Không có mạng, và nhận dạng trên thiết bị đang tắt trong cài đặt.</string>
-    <string name="overlay_error_no_device_ocr">Ngôn ngữ này chưa có mô hình trên thiết bị. Hãy tải xuống một mô hình, hoặc trong cài đặt Bong bóng, đặt Công cụ nhận dạng thành “Cả hai” hoặc “Đám mây”.</string>
+    <string name="overlay_error_no_device_ocr">Ngôn ngữ này chưa có mô hình trên thiết bị. Hãy tải xuống một mô hình, hoặc trong cài đặt Nhận dạng văn bản, đặt “Công cụ nhận dạng” thành “Cả hai” hoặc “Đám mây”.</string>
     <string name="overlay_open_ocr_models">Mô hình trên thiết bị</string>
     <string name="overlay_error_offline_no_device">Không có kết nối mạng, và nhận dạng trên thiết bị không hỗ trợ ngôn ngữ này.</string>
     <string name="overlay_ocr_error_title">Nhận dạng đám mây</string>
     <string name="overlay_ocr_error_offline">Không có kết nối mạng.</string>
     <string name="overlay_ocr_error_paused">Nhận dạng đám mây đã từ chối các yêu cầu gần đây; các yêu cầu được tạm dừng trong vài phút.</string>
     <string name="overlay_ocr_error_timeout">Nhận dạng đám mây không trả lời trong 15 giây.</string>
-    <string name="overlay_ocr_error_http">Nhận dạng đám mây trả lời với lỗi %1$d.</string>
+    <string name="overlay_ocr_error_http">Nhận dạng đám mây trả về lỗi %1$d.</string>
     <string name="overlay_ocr_error_network">Không kết nối được tới nhận dạng đám mây.</string>
     <string name="overlay_ocr_error_too_many">Nhận dạng đám mây nhận quá nhiều yêu cầu; các yêu cầu được tạm dừng trong vài phút.</string>
     <string name="overlay_ocr_error_refused">Nhận dạng đám mây đã từ chối yêu cầu; các yêu cầu được tạm dừng trong vài phút.</string>
@@ -31,7 +31,7 @@
     <string name="overlay_no_dictionaries">Từ điển vẫn đang được cài. Hãy thử lại sau giây lát.</string>
     <string name="overlay_no_dictionaries_on">Không có từ điển có định nghĩa nào được bật. Hãy bật hoặc thêm một từ điển trong mục Từ điển của Screenlate.</string>
     <string name="overlay_add_note">Thêm vào Anki (giữ để thêm ảnh)</string>
-    <string name="overlay_note_wait">Chờ văn bản hoàn tất (đến khi biểu tượng dừng quay).</string>
+    <string name="overlay_note_wait">Văn bản vẫn đang được hoàn thiện; hãy chờ đến khi biểu tượng đang tải biến mất.</string>
     <string name="overlay_play_audio">Phát âm thanh (giữ để chọn)</string>
     <string name="anki_error">Không thêm được ghi chú: %1$s</string>
     <string name="anki_rejected">AnkiDroid không lưu ghi chú.</string>
@@ -40,7 +40,7 @@
     <string name="anki_picture_failed">Lỗi khi lưu hình ảnh.</string>
     <string name="anki_not_configured">Hãy thiết lập xuất sang Anki trong Screenlate trước.</string>
     <string name="anki_not_installed">AnkiDroid chưa được cài.</string>
-    <string name="anki_no_permission">Hãy cho phép Screenlate truy cập AnkiDroid trong cài đặt Anki của nó.</string>
+    <string name="anki_no_permission">Hãy cho phép truy cập AnkiDroid trong cài đặt Anki của Screenlate.</string>
     <string name="audio_not_found">Không tìm thấy âm thanh cho từ này.</string>
     <string name="crop_whole_screen">Toàn màn hình</string>
     <string name="crop_frame">Khung</string>
@@ -49,7 +49,7 @@
     <string name="overlay_no_kanji">Không có từ điển kanji nào chứa ký tự này. Có thể tải từ điển kanji ở màn hình Từ điển.</string>
     <string name="overlay_kanji_onyomi">On</string>
     <string name="overlay_kanji_kunyomi">Kun</string>
-    <string name="overlay_character_pinyin">Bính âm</string>
+    <string name="overlay_character_pinyin">Pinyin</string>
     <string name="overlay_character_korean_reading">Âm đọc tiếng Hàn</string>
     <string name="overlay_kanji_strokes">Số nét</string>
     <string name="overlay_kanji_grade">Lớp</string>
@@ -83,7 +83,7 @@
     <string name="overlay_compound">Từ ghép: %1$s</string>
     <string name="translation_failed">Không dịch được câu.</string>
     <string name="translation_failed_other">Dịch không thành công.</string>
-    <string name="translation_none_enabled">Chưa bật dịch vụ dịch nào. Các dịch vụ nằm trong mục Dịch của phần cài đặt Screenlate.</string>
+    <string name="translation_none_enabled">Chưa bật dịch vụ dịch nào. Có thể thiết lập các dịch vụ trong mục Dịch của cài đặt Screenlate.</string>
     <string name="translation_no_sentence">Không có câu nào để dịch.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Không có kết nối mạng.</string>
@@ -91,13 +91,13 @@
     <string name="translation_error_clock">Chứng chỉ của máy chủ không hợp lệ với ngày trên thiết bị: hãy kiểm tra ngày và giờ.</string>
     <string name="translation_error_secure">Kết nối bảo mật thất bại (chứng chỉ hoặc TLS).</string>
     <string name="translation_error_network">Không kết nối được với máy chủ.</string>
-    <string name="translation_error_http">Máy chủ trả lời với lỗi %1$d.</string>
+    <string name="translation_error_http">Máy chủ trả về lỗi %1$d.</string>
     <string name="translation_error_limited">Quá nhiều yêu cầu; hãy thử lại sau.</string>
     <string name="translation_error_captcha">Dịch vụ yêu cầu giải captcha; hãy thử lại sau.</string>
     <string name="translation_error_rejected">Yêu cầu bị từ chối.</string>
     <string name="translation_error_language">Ngôn ngữ này không được hỗ trợ.</string>
     <string name="translation_error_too_long">Văn bản quá dài.</string>
-    <string name="translation_error_bad_answer">Không đọc được câu trả lời.</string>
+    <string name="translation_error_bad_answer">Không đọc được phản hồi.</string>
     <string name="translation_error_other">Lỗi không xác định.</string>
     <string name="crop_whole_photo">Toàn bộ ảnh</string>
 </resources>

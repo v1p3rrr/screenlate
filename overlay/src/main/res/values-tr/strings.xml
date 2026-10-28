@@ -8,12 +8,12 @@
 
     <string name="overlay_no_text">Ekranda metin bulunamadı.</string>
     <string name="overlay_no_text_photo">Fotoğrafta metin bulunamadı.</string>
-    <string name="overlay_no_app_text">Bu uygulama metnini burada paylaşmıyor. Ekran tanıma kapalı (baloncuk ayarlarında Yalnızca uygulama metni).</string>
+    <string name="overlay_no_app_text">Bu uygulama metnini erişilebilirlik hizmetlerine bildirmiyor. Ekran tanıma kapalı (metin tanıma ayarlarında “Yalnızca uygulama metni”).</string>
     <string name="overlay_error_secure">Bu uygulama ekran görüntüsüne izin vermiyor.</string>
     <string name="overlay_error_capture">Ekran görüntüsü alınamadı.</string>
     <string name="overlay_error_ocr">Metin tanıma başarısız oldu.</string>
-    <string name="overlay_error_offline">Ağ yok ve cihazda tanıma ayarlarda kapalı.</string>
-    <string name="overlay_error_no_device_ocr">Bu dil için cihazda model yok. Bir model indirin veya Baloncuk ayarlarında Motorlar seçeneğini “İkisi de” ya da “Bulut” yapın.</string>
+    <string name="overlay_error_offline">Ağ bağlantısı yok ve cihazda tanıma ayarlarda kapalı.</string>
+    <string name="overlay_error_no_device_ocr">Bu dil için cihazda model yok. Bir model indirin veya metin tanıma ayarlarında “Motorlar” seçeneğini “İkisi de” ya da “Bulut” yapın.</string>
     <string name="overlay_open_ocr_models">Cihazdaki model</string>
     <string name="overlay_error_offline_no_device">Ağ bağlantısı yok ve cihazda tanıma bu dili desteklemiyor.</string>
     <string name="overlay_ocr_error_title">Bulut tanıma</string>
@@ -31,13 +31,13 @@
     <string name="overlay_no_dictionaries">Sözlükler hâlâ yükleniyor. Biraz sonra yeniden deneyin.</string>
     <string name="overlay_no_dictionaries_on">Tanım içeren hiçbir sözlük açık değil. Screenlate’te Sözlükler bölümünden birini açın veya ekleyin.</string>
     <string name="overlay_add_note">Anki’ye ekle (görsel için basılı tutun)</string>
-    <string name="overlay_note_wait">Metnin kesinleşmesini bekleyin (gösterge durana kadar).</string>
+    <string name="overlay_note_wait">Metin hâlâ iyileştiriliyor; yükleme göstergesi kaybolana kadar bekleyin.</string>
     <string name="overlay_play_audio">Sesi çal (seçmek için basılı tutun)</string>
     <string name="anki_error">Not eklenemedi: %1$s</string>
     <string name="anki_rejected">AnkiDroid notu kaydetmedi.</string>
     <string name="anki_photo_unavailable">Fotoğraf artık kullanılamıyor.</string>
     <string name="anki_photo_document_title">Kamera</string>
-    <string name="anki_picture_failed">Resim kaydedilirken hata oluştu.</string>
+    <string name="anki_picture_failed">Görsel kaydedilemedi.</string>
     <string name="anki_not_configured">Önce Screenlate’te Anki dışa aktarımını ayarlayın.</string>
     <string name="anki_not_installed">AnkiDroid yüklü değil.</string>
     <string name="anki_no_permission">Screenlate’in Anki ayarlarında AnkiDroid’e erişmesine izin verin.</string>
@@ -66,7 +66,7 @@
     <string name="audio_no_voice">Bu dil için yüklü metin okuma sesi yok.</string>
     <string name="overlay_close">Kapat</string>
     <string name="overlay_pitch_dictionaries">Ton vurgusu kaynağı</string>
-    <string name="overlay_transcription_dictionaries">Transkripsiyon kaynağı</string>
+    <string name="overlay_transcription_dictionaries">Fonetik yazım kaynağı</string>
     <string name="overlay_show_all">Tümünü göster</string>
     <string name="overlay_copy_paragraph">Bu paragrafı kopyala</string>
     <string name="overlay_copy_all">Tanınan tüm metni kopyala</string>
@@ -80,7 +80,7 @@
     <string name="overlay_service_off_text">Screenlate erişilebilirlik hizmeti kapatıldığı için baloncuk kayboldu. Yeniden açmak için dokunun.</string>
     <string name="overlay_translate">Cümleyi çevir</string>
     <string name="overlay_translating">Çevriliyor…</string>
-    <string name="overlay_compound">Birleşik sözcük: %1$s</string>
+    <string name="overlay_compound">Birleşik kelime: %1$s</string>
     <string name="translation_failed">Cümle çevrilemedi.</string>
     <string name="translation_failed_other">Çeviri başarısız oldu.</string>
     <string name="translation_none_enabled">Hiçbir çeviri hizmeti açık değil. Hizmetler, Screenlate ayarlarındaki Çeviri bölümündedir.</string>

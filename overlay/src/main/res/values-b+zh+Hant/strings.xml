@@ -1,5 +1,5 @@
 <resources>
-    <string name="overlay_service_description">顯示一個懸浮球，用於讀取螢幕上的文字並在詞典中查詞。Screenlate 僅在你拖動或點按懸浮球時截圖，並將截圖傳送到雲端文字辨識服務。</string>
+    <string name="overlay_service_description">顯示一個懸浮球，用於讀取螢幕上的文字並在詞典中查詞。Screenlate 僅在你拖出或輕觸懸浮球時截圖，並將截圖傳送到雲端文字辨識服務。</string>
     <string name="overlay_tile_label">Screenlate 懸浮球</string>
     <string name="overlay_engine_draft">裝置端初步辨識</string>
     <string name="overlay_engine_device">裝置（Lens 不可用）</string>
@@ -8,22 +8,22 @@
 
     <string name="overlay_no_text">螢幕上未找到文字。</string>
     <string name="overlay_no_text_photo">照片中未找到文字。</string>
-    <string name="overlay_no_app_text">此應用程式在這裡不提供文字。螢幕辨識已關閉（懸浮球設定中的「僅應用程式文字」）。</string>
+    <string name="overlay_no_app_text">此應用程式不向無障礙服務提供其文字。螢幕辨識已關閉（文字辨識設定中的「僅應用程式文字」）。</string>
     <string name="overlay_error_secure">此應用程式不允許截圖。</string>
     <string name="overlay_error_capture">無法截圖。</string>
     <string name="overlay_error_ocr">文字辨識失敗。</string>
     <string name="overlay_error_offline">沒有網路，且設定中已關閉裝置端辨識。</string>
-    <string name="overlay_error_no_device_ocr">此語言沒有裝置端模型。請下載一個，或在懸浮球設定中將「引擎」設為「兩者」或「雲端」。</string>
+    <string name="overlay_error_no_device_ocr">此語言沒有裝置端模型。請下載一個，或在文字辨識設定中將「引擎」設為「兩者」或「雲端」。</string>
     <string name="overlay_open_ocr_models">裝置端模型</string>
     <string name="overlay_error_offline_no_device">沒有網路連線，且裝置端辨識不支援此語言。</string>
     <string name="overlay_ocr_error_title">雲端辨識</string>
-    <string name="overlay_ocr_error_offline">未連線網路。</string>
-    <string name="overlay_ocr_error_paused">雲端辨識拒絕了最近的請求，對其請求將暫停幾分鐘。</string>
+    <string name="overlay_ocr_error_offline">沒有網路連線。</string>
+    <string name="overlay_ocr_error_paused">雲端辨識拒絕了最近的請求，接下來幾分鐘內不再向其傳送請求。</string>
     <string name="overlay_ocr_error_timeout">雲端辨識在 15 秒內沒有回應。</string>
     <string name="overlay_ocr_error_http">雲端辨識回傳了錯誤 %1$d。</string>
     <string name="overlay_ocr_error_network">無法連線到雲端辨識。</string>
-    <string name="overlay_ocr_error_too_many">雲端辨識收到的請求過多，對其請求將暫停幾分鐘。</string>
-    <string name="overlay_ocr_error_refused">雲端辨識拒絕了請求，對其請求將暫停幾分鐘。</string>
+    <string name="overlay_ocr_error_too_many">雲端辨識收到的請求過多，接下來幾分鐘內不再向其傳送請求。</string>
+    <string name="overlay_ocr_error_refused">雲端辨識拒絕了請求，接下來幾分鐘內不再向其傳送請求。</string>
     <string name="overlay_ocr_error_server">雲端辨識伺服器錯誤（%1$d）。</string>
     <string name="overlay_ocr_error_other">雲端辨識失敗。</string>
     <string name="overlay_ocr_error_fallback">文字由裝置辨識，準確度較低。</string>
@@ -31,7 +31,7 @@
     <string name="overlay_no_dictionaries">詞典仍在安裝中。請稍後再試。</string>
     <string name="overlay_no_dictionaries_on">沒有啟用帶釋義的詞典。請在 Screenlate 的「詞典」中啟用或新增一個。</string>
     <string name="overlay_add_note">新增到 Anki（長按附帶圖片）</string>
-    <string name="overlay_note_wait">請等待文字確定（載入圖示消失後）。</string>
+    <string name="overlay_note_wait">文字仍在完善中，請等待載入圖示消失。</string>
     <string name="overlay_play_audio">播放音訊（長按選擇）</string>
     <string name="anki_error">無法新增筆記：%1$s</string>
     <string name="anki_rejected">AnkiDroid 未儲存該筆記。</string>
@@ -77,7 +77,7 @@
     <string name="overlay_keep_alive_text">在背景保持懸浮球可用</string>
     <string name="overlay_service_off_channel">服務已關閉</string>
     <string name="overlay_service_off_title">Screenlate 服務已關閉</string>
-    <string name="overlay_service_off_text">Screenlate 的無障礙服務已被關閉，因此懸浮球消失了。點按即可重新開啟。</string>
+    <string name="overlay_service_off_text">Screenlate 的無障礙服務已被關閉，因此懸浮球消失了。輕觸即可重新開啟。</string>
     <string name="overlay_translate">翻譯句子</string>
     <string name="overlay_translating">正在翻譯…</string>
     <string name="overlay_compound">複合詞：%1$s</string>
@@ -86,10 +86,10 @@
     <string name="translation_none_enabled">沒有啟用任何翻譯服務。請在 Screenlate 設定的「翻譯」中啟用。</string>
     <string name="translation_no_sentence">沒有可翻譯的句子。</string>
     <string name="translation_service_error">%1$s：%2$s</string>
-    <string name="translation_error_offline">未連線網路。</string>
+    <string name="translation_error_offline">沒有網路連線。</string>
     <string name="translation_error_timeout">請求逾時。</string>
     <string name="translation_error_clock">伺服器憑證在裝置目前日期下無效：請檢查日期和時間。</string>
-    <string name="translation_error_secure">安全連線失敗（證書或 TLS）。</string>
+    <string name="translation_error_secure">安全連線失敗（憑證或 TLS）。</string>
     <string name="translation_error_network">無法連線到伺服器。</string>
     <string name="translation_error_http">伺服器回傳了錯誤 %1$d。</string>
     <string name="translation_error_limited">請求過多，請稍後再試。</string>

@@ -116,6 +116,10 @@ WORD = re.compile(r"^[^\W\d_]+(?:-[^\W\d_]+)*$")
 #: The German translations bracket asides with box-drawing corners: `└ seinen / ihren┘`.
 CORNERS = re.compile(r"└\s*(.*?)\s*┘")
 
+#: Words of another language left among the translations, by gloss language, dropped where they stand between spaces:
+#: Uzbek "gapirish" (to speak) after говорить's "speak, talk".
+STRAY_WORDS = {"en": {"gapirish"}}
+
 TERMS_PER_BANK = 10_000
 
 
@@ -150,11 +154,14 @@ def forms(cell):
     return unique(result)
 
 
-def definitions(translations):
-    """One definition per group of translations the source separates with semicolons."""
+def definitions(translations, gloss):
+    """One definition per group of translations the source separates with semicolons, without the gloss language's
+    stray words."""
+    stray = STRAY_WORDS.get(gloss, set())
     result = []
     for group in translations.split(";"):
-        group = CORNERS.sub(r"(\1)", " ".join(group.split())).replace("└", "").replace("┘", "")
+        group = " ".join(word for word in group.split() if word not in stray)
+        group = CORNERS.sub(r"(\1)", group).replace("└", "").replace("┘", "")
         result.append(group.strip(" ,"))
     return unique(result)
 
@@ -166,7 +173,7 @@ def read_rows(folder, gloss):
     for name in FILES:
         with open(Path(folder) / f"{name}.csv", encoding="utf-8", newline="") as stream:
             for row in csv.DictReader(stream, delimiter="\t"):
-                translations = definitions(row.get(f"translations_{gloss}") or "")
+                translations = definitions(row.get(f"translations_{gloss}") or "", gloss)
                 headword = bare(row["bare"]).strip()
                 if not translations or not headword:
                     continue

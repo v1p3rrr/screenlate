@@ -7,8 +7,11 @@ class FormOfTagsTest {
     /** Resource names instead of the texts, so the test shows which string each word took. */
     private val names: Map<Int, String> = R.string::class.java.fields.associate { it.getInt(null) to it.name }
 
-    private fun label(tag: String, aliases: Map<String, String> = emptyMap()) =
-        FormOfTags.label(tag, { names.getValue(it).removePrefix("form_of_tag_") }, aliases) { "country:$it" }
+    private fun label(
+        tag: String,
+        aliases: Map<String, String> = emptyMap(),
+        tagNames: Map<String, String> = emptyMap(),
+    ) = FormOfTags.label(tag, { names.getValue(it).removePrefix("form_of_tag_") }, aliases, tagNames) { "country:$it" }
 
     @Test
     fun `every word of a tag is translated`() {
@@ -24,6 +27,15 @@ class FormOfTagsTest {
             .isEqualTo("first_person singular object_definite/object_indefinite past indicative")
         assertThat(label("Definite", hungarian)).isEqualTo("object_definite")
         assertThat(label("singular definite")).isEqualTo("singular definite")
+    }
+
+    @Test
+    fun `a language's tag names name a whole tag only`() {
+        val vietnamese = mapOf("central" to "central-vietnam")
+        assertThat(label("Central", tagNames = vietnamese)).isEqualTo("central_vietnam")
+        assertThat(label("alternative Central North Vietnam", tagNames = vietnamese))
+            .isEqualTo("alternative central northern country:VN")
+        assertThat(label("Central")).isEqualTo("central")
     }
 
     @Test

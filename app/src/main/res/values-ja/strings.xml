@@ -63,7 +63,7 @@
     <string name="dictionaries_kind_characters">漢字</string>
     <string name="dictionaries_count_transcriptions">発音記号：%1$d</string>
     <string name="dictionaries_count_characters">漢字：%1$d</string>
-    <string name="dictionaries_languages_hint">下のインストール済みの辞書とダウンロード可能な辞書は、選んだ言語のものです。言語のない辞書はすべての言語で使われます。</string>
+    <string name="dictionaries_languages_hint">下のインストール済みの辞書とダウンロード可能な辞書は、選んだ言語のものです。言語が未設定の辞書はすべての言語で使われます。</string>
     <string name="dictionaries_other_languages">その他の言語</string>
     <string name="dictionaries_other_languages_hint">オフにした言語の辞書と認識モデルです。使われず、容量のみを占有します。</string>
     <plurals name="dictionaries_other_language_count">
@@ -81,12 +81,12 @@
     <string name="catalog_category_characters">漢字</string>
     <string name="catalog_category_ocr_model">端末上の認識</string>
     <string name="language_setup_hint">ダウンロードする辞書を選んでください。辞書はあとから「辞書」ページで追加・削除できます。</string>
-    <string name="language_setup_glosses">説明の言語</string>
+    <string name="language_setup_glosses">定義の言語</string>
     <string name="language_setup_glosses_hint">以下は、これらの言語で語を説明する辞書です。</string>
     <string name="language_setup_gloss_add">別の言語…</string>
     <string name="language_setup_gloss_none">なし</string>
     <string name="language_setup_none_available">選んだ言語の辞書はありません。</string>
-    <string name="language_setup_choose_one">少なくとも1つ選んでください。</string>
+    <string name="language_setup_choose_one">少なくとも 1 つ選んでください。</string>
     <string name="language_setup_fallback">予備の辞書（%1$s）</string>
     <string name="language_setup_pronunciation_info">発音記号による発音。例：%1$s</string>
     <string name="language_setup_download">ダウンロード（%1$s）</string>
@@ -147,7 +147,7 @@
     <string name="anki_duplicate_scope">検索範囲</string>
     <string name="anki_scope_collection">コレクション</string>
     <string name="anki_scope_deck">デッキ</string>
-    <string name="anki_scope_deck_root">親デッキ</string>
+    <string name="anki_scope_deck_root">最上位のデッキ</string>
     <string name="anki_duplicate_all_models">すべてのノートタイプをチェック</string>
     <string name="anki_duplicate_behavior">重複がある場合</string>
     <string name="anki_behavior_prevent">追加しない</string>
@@ -208,13 +208,13 @@
     <string name="bubble_small_text_off">オフ</string>
     <string name="bubble_small_text_on_demand">必要なとき</string>
     <string name="bubble_small_text_always">常に</string>
-    <string name="bubble_small_text_hint">画面の一部を個別にクラウド認識へ送り、スクリーンショット全体に対して高い解像度で認識させます。全画面の読み取りで見逃された小さな文字を認識するための機能です。小さな文字が認識されない場合にのみオンにしてください。部分ごとにリクエストが増え、データ使用量も増えます。\n\n必要なとき：何も見つからなかった場所に照準が留まったとき、その下の部分。\n\n常に：読み取りのたびに画面全体を分割して送信（データ使用量が増えます）。</string>
+    <string name="bubble_small_text_hint">画面の一部を個別にクラウド認識へ送り、スクリーンショット全体に対して高い解像度で認識させます。全画面のスキャンで見逃された小さな文字を認識するための機能です。小さな文字が認識されない場合にのみオンにしてください。部分ごとにリクエストが増え、データ使用量も増えます。\n\n必要なとき：何も見つからなかった場所に照準が留まったとき、その下の部分。\n\n常に：スキャンのたびに画面全体を分割して送信（データ使用量が増えます）。</string>
     <string name="bubble_recognition">画面の認識</string>
     <string name="bubble_ocr_engines">エンジン</string>
     <string name="bubble_ocr_engines_both">両方</string>
     <string name="bubble_ocr_engines_cloud">クラウド</string>
     <string name="bubble_ocr_engines_device">端末</string>
-    <string name="bubble_ocr_engines_hint">推奨：両方。片方のエンジンをオフにするのは、低性能の端末や負荷の高い端末の場合だけにしてください。クラウド認識はモバイルデータを使います（1 回の読み取りで約 0.1〜0.4 MB）。端末上の認識は使いません。</string>
+    <string name="bubble_ocr_engines_hint">推奨：両方。片方のエンジンをオフにするのは、低性能の端末や負荷の高い端末の場合だけにしてください。クラウド認識はモバイルデータを使います（1 回のスキャンで約 0.1〜0.4 MB）。端末上の認識は使いません。</string>
     <string name="bubble_ocr_engines_info">両方：端末上の認識とクラウド認識を同時に開始します。端末が先に照準のまわりの文字を認識するため、語はほぼすぐに使えます。より正確なクラウドの結果が届くと、それに置き換わります。ネットワーク接続がない場合やクラウドでエラーが起きた場合は、端末の結果が残ります。\n\nクラウド：ネットワーク接続がないと何も認識されません。語はサーバーの応答後に使えるようになります。\n\n端末：オフラインで動作しますが、縦書きやマンガの認識精度は下がります。OCR ブーストは使えません。</string>
     <string name="bubble_ocr_saving">端末の負荷を減らす</string>
     <string name="bubble_ocr_saving_hint">端末による画面全体の認識は、クラウド認識が 3 秒以内に応答しなかった場合にのみ開始します。負荷とバッテリー消費を抑えられますが、照準から離れた語は使えるようになるまで時間がかかります。速度を優先する場合はオフのままにしてください。</string>
@@ -224,7 +224,7 @@
     <string name="settings_language">言語</string>
     <string name="settings_language_system">システム</string>
     <string name="settings_language_hint">システム設定でも変更できます：アプリ → Screenlate → 言語</string>
-    <string name="settings_language_translations">翻訳は AI で作成されたもので、ネイティブスピーカーによる確認は受けていません。修正は GitHub で歓迎します。</string>
+    <string name="settings_language_translations">翻訳は AI で作成されたもので、ネイティブスピーカーによる確認は受けていません。修正の提案は GitHub で受け付けています。</string>
     <string name="action_clear">クリア</string>
     <string name="anki_suggest_templates">おすすめのテンプレートを入力</string>
     <string name="anki_overwrite_mode">上書き時：%1$s</string>
@@ -261,14 +261,14 @@
     <string name="about_title">アプリについて</string>
     <string name="settings_about_summary">バージョン、アップデート、ライセンス、ログ</string>
     <string name="about_version">バージョン %1$s</string>
-    <string name="about_description">語学学習のためのアプリ：画面上の文字のためのポップアップ辞書です。</string>
+    <string name="about_description">語学学習用のアプリで、画面上の文字を調べるポップアップ辞書です。</string>
     <string name="about_author">作者：vpr</string>
     <string name="about_license">GNU 一般公衆利用許諾書 バージョン 3 のもとで配布されるフリーソフトウェアです。</string>
     <string name="about_source">ソースコード</string>
     <string name="about_report_bug">問題を報告</string>
     <string name="yomitan_import_dictionaries">辞書</string>
     <string name="yomitan_import_dictionaries_hint">Yomitan で：設定 → バックアップ → 辞書コレクションをエクスポート。ファイルにはインストール済みのすべての辞書が含まれます。</string>
-    <string name="yomitan_import_single_hint">個別の辞書（1 つずつ .zip ファイル）は「辞書」画面の「ファイルからインポート」で追加します。</string>
+    <string name="yomitan_import_single_hint">個別の辞書（辞書ごとに 1 つの .zip ファイル）は「辞書」画面の「ファイルからインポート」で追加します。</string>
     <string name="lookup_scanning">スキャン</string>
     <string name="lookup_scan_length">スキャン長：%1$d 文字</string>
     <string name="lookup_scan_length_hint">照準から何文字先までを検索の対象にするかを決めます。値を大きくすると長い表現も見つかります。</string>
@@ -297,7 +297,7 @@
     <string name="problems_remove">削除</string>
     <string name="problems_no_dictionaries">定義のある辞書が 1 つも有効になっていません。</string>
     <string name="problems_no_dictionaries_language">%1$s：定義のある辞書が 1 つも有効になっていません。</string>
-    <string name="problems_missing_categories">%1$s：不足している辞書 — %2$s</string>
+    <string name="problems_missing_categories">%1$s：不足している辞書（%2$s）</string>
     <string name="problems_installing">辞書をインストール中、待機中：%1$d</string>
     <string name="home_languages_title">言語</string>
     <string name="home_languages_hint">スキャンと検索は選んだ言語で行います。辞書と設定は言語ごとに分かれています。</string>
@@ -358,7 +358,7 @@
     <string name="anki_check_fix_fields">下でフィールド一覧を更新してください。</string>
     <string name="anki_check_not_checked">%1$s：未確認</string>
     <string name="audio_sources">ソース</string>
-    <string name="audio_reset_sources">デフォルトのソースに戻す</string>
+    <string name="audio_reset_sources">ソースを初期値に戻す</string>
     <string name="audio_regions">地域</string>
     <string name="audio_regions_hint">リストの上にある地域の Wiktionary の録音と発音記号が先に来ます。</string>
     <string name="audio_region_us">アメリカ</string>
@@ -449,7 +449,7 @@
     <string name="popup_pitch_colors">アクセントの色分け</string>
     <string name="popup_pitch_colors_hint">単語と読みは最初のアクセントの型の色、各アクセントはそれぞれの型の色で表示します：平板型は青、頭高型は赤、中高型はオレンジ、尾高型は緑、起伏型（下がり目のある動詞・イ形容詞）は紫。アクセント辞書が必要です。</string>
     <string name="popup_tone_colors">声調の色分け</string>
-    <string name="popup_tone_colors_hint">ピンインの音節を声調の色で表示します：第1声は赤、第2声はオレンジ、第3声は緑、第4声は青、軽声はグレー。</string>
+    <string name="popup_tone_colors_hint">ピンインの音節を声調の色で表示します：第 1 声は赤、第 2 声はオレンジ、第 3 声は緑、第 4 声は青、軽声はグレー。</string>
     <string name="popup_font_title">ポップアップのフォント</string>
     <string name="popup_font_hint">ポップアップと検索ページで使われます。</string>
     <string name="popup_font_system">端末の日本語フォント</string>
@@ -482,7 +482,7 @@
     <string name="popup_font_too_large">フォントとしてはファイルが大きすぎます（64 MB 超）。</string>
     <string name="popup_font_web_font">これは Web フォント（.woff または .woff2）なので追加できません。先に .ttf か .otf に変換してください。</string>
     <string name="popup_font_import_failed">ファイルを追加できませんでした。もう一度試すか、端末の空き容量を確認してください。</string>
-    <string name="popup_text_title">文字の大きさと太さ</string>
+    <string name="popup_text_title">文字サイズと太さ</string>
     <string name="popup_font_system_default">端末のフォント</string>
     <string name="popup_font_script_only_en">英語の文字だけに使う</string>
     <string name="popup_font_script_only_es">スペイン語の文字だけに使う</string>
@@ -553,7 +553,7 @@
     <string name="popup_hide_after_add_hint">➕ で単語を追加すると、すぐにポップアップが閉じます。</string>
     <string name="popup_hide_off_word">照準が単語から離れたとき</string>
     <string name="popup_hide_off_word_hint">バブルを動かしている間、照準が単語から数ミリ離れてテキストのない場所に来ると、ポップアップが閉じます。</string>
-    <string name="popup_copy_switch">辞書名の横にコピーボタン</string>
+    <string name="popup_copy_switch">辞書名の横のコピーボタン</string>
     <string name="popup_copy_switch_hint">ポップアップと検索で、各辞書名の横のボタンがその辞書の定義をコピーします。</string>
     <string name="popup_copy_mode_all">すべて</string>
     <string name="popup_copy_mode_meanings">語義のみ</string>
@@ -609,7 +609,7 @@
     <string name="update_announce_hint">多くても 1 日 1 回、アプリを開いたときに確認します。各バージョンのお知らせは 1 回だけです。</string>
     <string name="update_error_network">GitHub に接続できませんでした。接続を確認してもう一度お試しください。</string>
     <string name="update_error_no_apk">このリリースにはこの端末向けの APK がありません。</string>
-    <string name="update_error_bad_apk">ダウンロードしたファイルは、同じ鍵で署名された新しい Screenlate ではありません。</string>
+    <string name="update_error_bad_apk">ダウンロードしたファイルは、同じ鍵で署名された Screenlate の新しいバージョンではありません。</string>
     <string name="update_error_install">Android がアップデートをインストールしませんでした。</string>
     <string name="action_close">閉じる</string>
     <string name="action_more_info">%1$s について</string>
@@ -618,13 +618,13 @@
     <string name="translation_title">翻訳</string>
     <string name="translation_sentence_title">文の翻訳</string>
     <string name="translation_hint">単語を含む文を無料のオンラインサービスが翻訳します。機械翻訳のため不正確な場合があり、文はサービスのサーバーに送信されます。</string>
-    <string name="translation_info">サービスはアカウントなしで利用します：Bing（Microsoft Translator のサイト）、Google 翻訳、Microsoft Edge に組み込まれた翻訳機能。各サービスは制限を公開していません。1 つが拒否すると、次のサービスが引き継ぎます。1 時間のうち最初の Bing へのリクエストは、先にサイトからキーを読み込むため約 1 秒長くかかります。</string>
+    <string name="translation_info">サービスはアカウントなしで利用します：Bing（Microsoft Translator のサイト）、Google 翻訳、Microsoft Edge に組み込まれた翻訳機能。各サービスは制限を公開していません。サービスがリクエストを拒否した場合は、次のサービスが使われます。1 時間のうち最初の Bing へのリクエストは、先に Bing のサイトからキーを読み込むため約 1 秒長くかかります。</string>
     <string name="translation_button">翻訳ボタン</string>
     <string name="translation_button_hint">文を翻訳し、ポップアップのヘッダーの下に表示します。もう一度タップすると隠れます。認識したテキストを表示しない場合、ボタンは最初の項目のボタンの中にあります。</string>
     <string name="translation_anki">Anki ノートの翻訳</string>
     <string name="translation_anki_hint">{sentence-translation} に、ポップアップに表示中の翻訳を入れます。なければ翻訳を依頼して最大 5 秒待ちます。翻訳がないとフィールドは空のままです。</string>
     <string name="translation_services_title">サービス</string>
-    <string name="translation_services_hint">有効なサービスのうち最初のものが翻訳します。失敗するか 3 秒以内に応答しない場合は、次のサービスが引き継ぎます。ハンドルをドラッグして順番を変えます。</string>
+    <string name="translation_services_hint">有効なサービスのうち最初のものが翻訳します。エラーを返すか 3 秒以内に応答しない場合は、次のサービスが使われます。ハンドルをドラッグして順番を変えます。</string>
     <string name="translation_service_bing_note">通常はより正確</string>
     <string name="translation_language_title">翻訳先の言語</string>
     <string name="translation_language_interface">表示言語（%1$s）</string>
@@ -654,7 +654,7 @@
     <string name="dictionaries_languages_edit">変更</string>
     <string name="dictionaries_languages_title">辞書の言語</string>
     <string name="dictionaries_language_source">見出し語の言語</string>
-    <string name="dictionaries_language_target">語義の言語</string>
+    <string name="dictionaries_language_target">定義の言語</string>
     <string name="dictionaries_language_none">未設定</string>
     <string name="about_logs_save">ダウンロードに保存</string>
     <string name="about_logs_saved">%1$s に保存しました</string>
@@ -668,7 +668,7 @@
     <string name="background_battery_off">Screenlate に対してオフ：システムはバブルを動かしたままにします。</string>
     <string name="background_battery_allow">バックグラウンド動作を許可</string>
     <string name="background_battery_list">バッテリー最適化の一覧を開く</string>
-    <string name="background_battery_list_hint">一覧で Screenlate を探し、最適化をオフにしてください（「最適化しない」「制限なし」など）。最初は一覧にないアプリも、「すべてのアプリ」の中にあることが多いです。</string>
+    <string name="background_battery_list_hint">一覧で Screenlate を探し、最適化をオフにしてください（「最適化しない」「制限なし」など）。一覧に Screenlate がない場合は、「すべてのアプリ」を確認してください。</string>
     <string name="background_launch_title">アプリの起動</string>
     <string name="background_launch_text">一部の端末は、バッテリーの最適化とは別に、メーカー独自の設定でもバックグラウンドのアプリを止めます。その設定で、Screenlate の自動起動とバックグラウンド動作を許可してください。</string>
     <string name="background_launch_path">この端末では：アプリ起動 → Screenlate → 手動で管理、3 つのオプションをすべてオン。</string>
@@ -690,7 +690,7 @@
     <string name="dictionaries_website">ウェブサイト</string>
     <string name="dictionaries_download_link">ダウンロード</string>
     <string name="backup_title">バックアップと復元</string>
-    <string name="settings_backup_summary">設定と辞書をファイルに保存し、復元する。Yomitan からのインポート</string>
+    <string name="settings_backup_summary">設定と辞書のファイルへの保存・復元、Yomitan からのインポート</string>
     <string name="backup_create">バックアップを作成</string>
     <string name="backup_create_hint">選んだ部分（設定、フォント、辞書）を 1 つのファイルにまとめます。端末、メモリーカード、クラウドストレージなど、好きな場所に保管してください。</string>
     <string name="backup_parts_save">保存する部分</string>
@@ -770,13 +770,13 @@
     <string name="tooltip_more_info">詳細</string>
     <string name="reset_all_tooltip">すべての設定をリセット</string>
     <string name="reset_all_title">すべての設定をリセットしますか？</string>
-    <string name="reset_all_text">すべての設定が初期値にリセットされます：バブルと非表示にしたアプリ、検索、フィールドのテンプレートを含む Anki と音声、フォント・サイズ・CSS を含むポップアップ、翻訳、中国語の字体、テーマ、カラー、E Ink モード、バックグラウンド動作、新しいバージョンの通知。ヒントも再び表示されます。辞書、オンの言語、インストール済みのフォント、アプリの言語は保持されます。</string>
+    <string name="reset_all_text">すべての設定が初期値にリセットされます：バブルと非表示にしたアプリ、検索、フィールドのテンプレートを含む Anki と音声、フォント・サイズ・CSS を含むポップアップ、翻訳、中国語の字体、テーマ、カラー、E Ink モード、バックグラウンド動作、アップデートのお知らせ。ヒントも再び表示されます。辞書、オンの言語、インストール済みのフォント、アプリの言語は保持されます。</string>
     <string name="reset_section_tooltip">このセクションをリセット</string>
     <string name="reset_section_title">このセクションをリセットしますか？</string>
     <string name="reset_bubble_text">バブルの設定がすべて初期値にリセットされます。非表示にしたアプリ、バブルのサイズ、画面上の位置も含みます。非表示のバブルは再び表示されます。</string>
     <string name="reset_lookup_text">スキャン長、1 回の検索の項目数、その他の検索設定が初期値にリセットされます。</string>
     <string name="reset_anki_text">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱いが初期値にリセットされます。AnkiDroid 側は何も変わりません。</string>
-    <string name="reset_popup_text">上部の認識したテキスト、定義のコピー、自動で閉じる設定、フォントの選択、文字のサイズと太さ、カスタム CSS が初期値にリセットされます。ダウンロード・追加したフォントは残ります。</string>
+    <string name="reset_popup_text">上部の認識したテキスト、定義のコピー、自動で閉じる設定、フォントの選択、文字サイズと太さ、カスタム CSS が初期値にリセットされます。ダウンロード・追加したフォントは残ります。</string>
     <string name="reset_translation_text">翻訳ボタン、ノートの翻訳、サービスの順序とスイッチ、言語、お気に入りの言語が初期値にリセットされます。</string>
     <string name="reset_appearance_text">テーマはシステムに従う設定に戻り、カラーは Screenlate の初期配色にリセットされます。E Ink モードはオフになり、このモードで拡大したサイズも元に戻ります。アプリの言語は保持されます。</string>
     <string name="reset_background_text">常駐通知がオフになります。バッテリーと自動起動の設定は Android 側のもので、変更されません。</string>
@@ -794,7 +794,7 @@
     <string name="accessibility_disclosure_reads_title">読み取るもの</string>
     <string name="accessibility_disclosure_reads">• スクリーンショット：バブルをタップしたときや引き出したときだけ。「アプリのテキストのみ」では、Anki ノートの画像用にだけ撮ります。\n• アプリが画面に表示しているテキスト：「アプリのテキストを読む」または「アプリのテキストのみ」がオンのとき、同じタイミングで。\n• 開いているアプリ、キーボードとシステムバーの位置：選んだアプリでバブルを隠し、バーに重ならないようにするため。</string>
     <string name="accessibility_disclosure_sends_title">送信先</string>
-    <string name="accessibility_disclosure_sends">• スクリーンショット：クラウドの文字認識へ。「エンジン」で「端末」を選んでいる場合や「アプリのテキストのみ」がオンの場合は送りません。端末での認識は何も送信しません。\n• 文：翻訳ボタンをタップしたときや、ノートのテンプレートが翻訳を求めるときに、オンライン翻訳サービスへ。\n• 単語と読み：発音のために、選んだ音声ソースへ。\n• ノート：この端末の AnkiDroid へ。</string>
+    <string name="accessibility_disclosure_sends">• スクリーンショット：クラウドの文字認識へ。「エンジン」で「端末」を選んでいる場合や「アプリのテキストのみ」がオンの場合は送りません。端末上の認識は何も送信しません。\n• 文：翻訳ボタンをタップしたときや、ノートのテンプレートが翻訳を求めるときに、オンライン翻訳サービスへ。\n• 単語と読み：発音のために、選んだ音声ソースへ。\n• ノート：この端末の AnkiDroid へ。</string>
     <string name="accessibility_disclosure_outro">このサービスが代わりにタップや入力をすることはありません。読み取った内容は保存しません。スクリーンショットはバブルが端に戻るまでの間だけメモリーに保持され、ノートにはスクリーンショットの選んだ部分だけが入り、ログに画面のテキストが残ることはありません。</string>
     <string name="accessibility_disclosure_agree">同意する</string>
     <string name="accessibility_disclosure_later">後で</string>
@@ -820,9 +820,9 @@
     <string name="nav_home">ホーム</string>
     <string name="nav_search">検索</string>
     <string name="camera_title">カメラ</string>
-    <string name="camera_flash_off">フラッシュ オフ</string>
-    <string name="camera_flash_auto">フラッシュ 自動</string>
-    <string name="camera_flash_on">フラッシュ オン</string>
+    <string name="camera_flash_off">フラッシュ：オフ</string>
+    <string name="camera_flash_auto">フラッシュ：自動</string>
+    <string name="camera_flash_on">フラッシュ：オン</string>
     <string name="camera_take_photo">写真を撮影</string>
     <string name="camera_new_photo">新しい写真</string>
     <string name="camera_back_to_photo">写真に戻る</string>
@@ -841,7 +841,7 @@
     <string name="camera_recognized">認識済み：%1$s</string>
     <string name="camera_pending">設定が変更されています</string>
     <string name="camera_incomplete">認識が不完全です</string>
-    <string name="camera_partial">%2$d領域中%1$d領域を認識できませんでした。</string>
+    <string name="camera_partial">%2$d 領域中 %1$d 領域を認識できませんでした。</string>
     <string name="camera_interrupted">認識が中断されました。処理済みの領域は保存されています。</string>
     <string name="camera_retry_failed">未処理の領域を再試行</string>
     <string name="camera_recognition_failed">写真を認識できませんでした。保存済みのテキストは保持されます。</string>
@@ -906,6 +906,6 @@
     <string name="camera_opening">写真を開いています…</string>
     <string name="camera_partial_words">これらの領域の単語は調べられません。</string>
     <plurals name="camera_status_regions">
-        <item quantity="other">%1$d/%2$d領域</item>
+        <item quantity="other">%1$d/%2$d 領域</item>
     </plurals>
 </resources>
