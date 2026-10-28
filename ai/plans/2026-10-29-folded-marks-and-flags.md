@@ -114,6 +114,12 @@ as written.
      pl, no, sq, sv, sh), a) in the rest;
    - d) leave the fold out where it finds nothing new and only adds extras: English, Dutch, Indonesian, Malay, Filipino,
      Latin, Swahili (gain 0.02% or less).
+
+   Irish: group 5b's question 11 had Irish words looked up as written (fag finds nothing), while Welsh and Gaelic
+   got the fallback that shows marked words only for a word without an entry. The later decision row folds Irish as
+   every Latin-script language, so fag now finds fág, and hEireann (the built-in recognizer's reading of hÉireann)
+   finds Éire, which it did not before; Irish is the fourth noisiest (an → án, a → á, ar → ár). Under b) or c) Irish
+   would work as Welsh and Gaelic do.
 2. **Word forms without the dictionary's headwords (not built; the coordinating session's follow-up to Uzbek).** The
    "Word forms" item imports only the English Wiktionary's form rows, not its headwords. In Uzbek (and Azerbaijani),
    ending rules show their results only when the word has no entry of its own; with uz–ru and the word forms alone,
@@ -133,9 +139,15 @@ as written.
   instrumented tests; docs and the language rules note. Data check done, question 1 written.
 - 2026-10-29: flags in LanguageChips, the OCR model list, the download screen's title, the cards of turned-off languages
   and the first-run list; `ChipFlag` shared.
+- 2026-10-29: question 2 (word forms without headwords) recorded, not built. Emulator: the engine's instrumented tests
+  (the Irish fag test moved to the fold), flags in the chips, OCR model list, download title, leftover cards and e-ink
+  codes, Spanish updated with this build and checked in Search and the popup (que, cancion, cancíon from OCR,
+  pinguino); the first-run list not checked. Run log 2026-10-29, `languages/marks`.
 
 ## Changelog
 
 - 2026-10-29: plan written (autonomous mode).
 - 2026-10-29: data check filled in, question 1 (extra results) added, the nb/nn keying, the flag sizes and the Hungarian
   prefix loss recorded.
+- 2026-10-29: Irish follows the fold as the decision row says (fag finds fág), against group 5b's question 11; noted
+  under question 1.
