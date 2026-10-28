@@ -98,8 +98,9 @@ the details.
   - the clean-up and the download loop's choice between a lost network and a break-off had no tests.
   The port session fixed all three in one round, and the same fixes for `languages/main` are merged from
   `claude/download-fixes-lang`: the old cache folder keeps the files a queued import reads, and a download whose
-  network went waits in its run with WorkManager's least linear backoff. Next: the merge into `main`, the checks
-  listed below and the release notes. The version number is asked at release time.
+  network went waits in its run with WorkManager's least linear backoff. The emulator checks of the downloads passed
+  on both branches, and the port is merged into `main` (`b61b7a24`, 2026-10-28 morning). Next: the checks listed
+  below and the release notes. The version number is asked at release time.
 - Seen on the emulator by group 5a (2026-10-28): while the NFC HAL crash-loops, the system rebinds Screenlate's
   accessibility service about every 10 s, and Home keeps showing "The bubble is not shown: the system stopped the
   service" while the service runs. Not checked yet: whether the card should ignore a rebind that follows within
@@ -116,9 +117,9 @@ the details.
 - Group 5a (`plans/2026-10-19-group-5a.md`), resumed 2026-10-28. Merged into `languages/main`:
   - the four answers of 2026-10-22 (`languages/5a-answers`, 9a401674);
   - Esperanto (`languages/eo`, cc6e26cf);
-  - Albanian (`languages/sq`, 33dab0fb).
-  Swahili, the group's last language, is on `languages/sw`, rebased onto the newest `languages/main` before its
-  report; with it the group is done (Basque and Maltese stay unbuilt, as the plan decided). Question 30 is answered
+  - Albanian (`languages/sq`, 33dab0fb);
+  - Swahili (`languages/sw`, rebased as 7e27b4fe), the group's last language.
+  The group is done (Basque and Maltese stay unbuilt, as the plan decided); group 5b follows. Question 30 is answered
   provisionally: a straight " that recognition writes for a curly quote stays as it is; Swahili's check found both
   cloud recognition and ML Kit writing “Karibu!” as "Karibu!", so a note's sentence there starts or ends at the ".
   Open for the owner: the plan's questions 28-34 (decided provisionally and built).
@@ -247,7 +248,7 @@ no limits; API 30 has the universal debug APK at its original unanswered first r
 No release is planned yet (`plans/2026-10-15-main-fixes-and-backups.md`, decision "Release"). Before one, from the
 check of `main` at `fee4c9fb` against v0.2.3:
 
-- Ported to `main` on `claude/port-fixes-to-main-3e7385` (from `main` 2df1e55c; not merged yet), one commit each:
+- Ported to `main` on `claude/port-fixes-to-main-3e7385` (from `main` 2df1e55c; merged into `main` as `b61b7a24` on 2026-10-28), one commit each:
   the own input merger (`e16394c6`: a download queued after a stopped one fetched the stopped dictionary), partial
   downloads in `no_backup` (`16225ee0`), the wait for a network instead of stopping, with the "Waiting for a network"
   labels of `fa1b0863` (`fd5e8dd0`, adapted to `main`'s single chain and its retry count: a lost network counts no
@@ -470,7 +471,7 @@ Latin as the more accurate model. Plan questions 31 (t' and m') and 32 (the freq
 provisionally. Checked on the emulator; the Lingua Libre recordings of AUD28 are left for a run when Wikimedia
 answers (HTTP 503 throughout).
 
-Swahili on `languages/sw` (2026-10-28, from `languages/main` at `f7e55a7e`): 21 verb prefix rules of our own
+Swahili (`languages/sw`, 2026-10-28, merged into `languages/main` as `7e27b4fe`): 21 verb prefix rules of our own
 (subject, tense, object, relative and the negative, peeled from the outside in; the stem looked up with ku- and with
 a hyphen; a one-syllable verb keeps its ku-, so Angela is not read as a-nge-la), applied only to verbs and only to
 words without an entry of their own, in a bundle built from Czech's descriptor; the rule names as labels in all 14
