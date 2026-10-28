@@ -508,6 +508,11 @@ leaves every form that already finds something as it was.
 - Quality: zh→ru has 74% of its senses as lists of single Russian words in alphabetical order that mix unrelated
   meanings, and nearly every entry tagged as a noun; en→ru 10% such senses; the others about 1%. Senses with a
   source-language definition above them: de and pl 100%, en 96%, it 65%, es 58%, fr 32% (question 18 in the plan).
+- Definition lengths (2025.11.23): WikDict joins the definitions of every sense a translation belongs to with "; ",
+  so de-ru's run to 1,413 characters (median 65, 90th percentile 146) and it-ru's to 907 (median 83, 90th 220); the
+  converter puts those over 120 characters below the translations (2026-10-29). The Italian Wiktionary's links to
+  its sister projects stay in it-ru's definitions as "( approfondimento)", "( tassonomia)" and "( citazioni)" (a
+  space after the bracket); the converter drops them. fr, es and pl have no such leftovers.
 - OpenRussian: the official SQL dump URL (`api.openrussian.org/downloads/openrussian-sql.zip`, from openrussian-cli's
   Makefile) returns 404 "Route not found"; the TogetherDB database the site's GitHub README points at
   (`app.togetherdb.com/db/o9puugtgtauo1ih5/russian3/words`) loads with "Request failed". The CSVs in

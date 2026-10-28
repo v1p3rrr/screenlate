@@ -26,7 +26,7 @@ NOUNS = [
 ]
 VERBS = [
     {
-        "bare": "говорить", "accented": "говори'ть", "translations_en": "speak, talk; say",
+        "bare": "говорить", "accented": "говори'ть", "translations_en": "speak, talk gapirish; say",
         "translations_de": "sprechen, └ seinen / ihren┘ Senf dazugeben", "aspect": "imperfective",
         "partner": "сказать;поговорить", "presfut_sg1": "говорю'", "past_f": "говори'ла",
     },
@@ -122,6 +122,12 @@ class ConverterTest(unittest.TestCase):
         self.assertNotIn("серьга", [t[0] for t in terms(files)])
         self.assertNotIn("серьги", [t[0] for t in terms(files)])
         self.assertEqual(lemma(files, "и")[5], ["und", "auch"])
+
+    def test_stray_words_of_another_language_are_dropped(self):
+        # The source has "speak, talk gapirish": the Uzbek word for speaking.
+        self.assertEqual(lemma(convert(), "говорить")[5][0], "speak, talk")
+        self.assertEqual(converter.definitions("gapirish", "en"), [])
+        self.assertEqual(converter.definitions("gapirish", "de"), ["gapirish"])
 
     def test_german_asides_in_corners_become_parentheses(self):
         self.assertEqual(lemma(convert("de"), "говорить")[5][0], "sprechen, (seinen / ihren) Senf dazugeben")

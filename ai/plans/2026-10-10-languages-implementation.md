@@ -497,6 +497,21 @@ Decided when the first language or group 1 is ready, before it is merged into th
 - Converter data (owner, 2026-10-28 evening, question 72 (3)): in our converters, move FreeDict de-ru's long sense
   labels into the gloss, drop it-ru's "( approfondimento)", handle OpenRussian's "gapirish" through an exception
   list, and give Wiktionary vi-en's "Central" tag a clear name in our tag labels; rebuild the affected dictionaries.
+  Built on 2026-10-29 (cloud session, `cloud/backlog-2026-10-29`; checked against the sources of 2025.11.23, the
+  OpenRussian export of 2020-09-09 and wty 2026.10.22):
+  - FreeDict: a definition longer than 120 characters follows its sense's translations as plain text (WikDict joins
+    the definitions of every sense a translation belongs to, up to 1,413 characters in de-ru); 4,949 of de-ru's 30,585
+    labels and 3,121 of it-ru's 9,594 move. The rule holds for every pair (question 90).
+  - it-ru: "( approfondimento)" (Wikipedia, 9 definitions) is dropped, and so are the same kind of links "( tassonomia)"
+    (Wikispecies, 264) and "( citazioni)" (Wikiquote, 1); no other pair has them.
+  - OpenRussian: `STRAY_WORDS` drops "gapirish" (Uzbek) from говорить's "speak, talk gapirish"; nothing else in ru-en
+    or ru-de changes.
+  - vi: wty gives each word of Wiktionary's "North Central Vietnam" as a form-of tag of its own, so tau → tao showed
+    only "central"; a `Central` that stands alone now reads Central Vietnam (`formTagNames`, 14 locales). Seen on the
+    way: wty's shared tag table gives the definition tag "Central" the chip 🇧🇷🎯 (Brazil's central region) in every
+    language, on 294 vi-en definitions (question 88).
+  - To rebuild: every FreeDict conversion the owner keeps (de-ru and it-ru change most; fr, es, pl, en and zh too
+    where a definition is long) and OpenRussian ru-en; ru-de and the wty dictionaries need no rebuild.
 - Empty AnkiDroid browser (owner, 2026-10-28 evening, question 72 (4)): the dictionary button on a duplicate opened
   an empty AnkiDroid browser. Debug first whether the app sends a wrong query or AnkiDroid has not added the note
   yet; fix after that.
@@ -865,6 +880,17 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     de-en, 50 in it-en, 30 in ja-en), while real misspellings and old spellings on screen now lead to the word. (a) Hide
     such redirects when the matched text has an entry of its own. (b, chosen) Show them as wty and Yomitan do: below the
     word itself (the engine sorts shorter chains first), with the tag's label. (c) Hide them always.
+88. (2026-10-29, cloud session, converter data) wty's shared tag table gives the definition tag "Central" the chip
+    🇧🇷🎯 (Brazil's central region, right for Portuguese) in every language: 294 vi-en definitions (o "aunt" in
+    Central Vietnam) show a Brazilian flag; a tap shows "Central". (a, recommended) In a dictionary of another
+    language, show such a chip as the tag's note ("Central") instead of the flag; (b) leave it until wty fixes its
+    table (the owner may report it); (c) leave it.
+89. (2026-10-29, cloud session) The same split leaves Vietnamese `North`, `Northern`, `South` and `Southern` alone on
+    dialect forms (nhem → lem: northern; núa → nói shows Central Vietnam now). (a) Name them Northern and Southern
+    Vietnam as well, as `Central` now; (b, as built) leave them "northern" and "southern".
+90. (2026-10-29, cloud session) FreeDict's long definitions follow the translations from 121 characters on (about
+    three lines in the popup), in every pair, not only de-ru; the Italian links "( tassonomia)" and "( citazioni)" are
+    dropped with "( approfondimento)". (a, built) Keep it; (b) only de-ru; (c) another length (the owner says which).
 
 ## Branches and workflow
 
@@ -1791,3 +1817,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   Esperanto web corpus of 2012 (group 5a question 28), and sent five backlog tasks to one cloud session (interface
   translation check, candidate interface languages, smaller language bundles, converter data, the right-to-left
   strings); group 6's research stays in the local chain.
+- 2026-10-29: cloud session (`cloud/backlog-2026-10-29`): smaller language bundles and converter data built
+  (backlog); questions 88-90 added.

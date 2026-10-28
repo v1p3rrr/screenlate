@@ -32,4 +32,10 @@ class VietnameseSupportTest {
         assertThat(VietnameseSupport.fontSubsets).containsExactly("latin", "vietnamese")
         assertThat(VietnameseSupport.defaultAudioSources.first()).isEqualTo("LINGUA_LIBRE")
     }
+
+    @Test
+    fun `central alone names central vietnam`() {
+        assertThat(VietnameseSupport.formTagNames).containsExactly("central", "central-vietnam")
+        assertThat(ThaiSupport.formTagNames).isEmpty()
+    }
 }

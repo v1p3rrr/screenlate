@@ -172,6 +172,14 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual(len(second), 1)
         self.assertEqual([li["content"] for li in second[0]["content"]], ["приём", "принятие"])
 
+    def test_a_long_definition_follows_the_translations_of_its_sense(self):
+        short = "x" * converter.LONG_LABEL
+        long = "x" * (converter.LONG_LABEL + 1)
+        first, second = (g["content"]["content"] for g in converter.glossary([(short, ["а"]), (long, ["б"])]))
+        self.assertEqual([part["data"]["content"] for part in first], ["sense-label", "glossary"])
+        self.assertEqual([part["data"]["content"] for part in second], ["glossary", "sense-definition"])
+        self.assertEqual(second[1]["content"], long)
+
     def test_long_part_of_speech_names_become_short_tags_and_unknown_rules_stay_empty(self):
         terms = convert(SAMPLE)["term_bank_1.json"]
         und = next(t for t in terms if t[0] == "und")
@@ -195,6 +203,17 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual(converter.plain("betegner at noe #{likne|likner}# på noe, [[minne"),
                          "betegner at noe likner på noe, minne")
         self.assertEqual(converter.plain("urteplante, 30&ndash;50&nbsp;cm høy"), "urteplante, 30–50 cm høy")
+
+    def test_definitions_lose_the_italian_links_to_sister_projects(self):
+        self.assertEqual(converter.plain("derivato dai fiori dell'assenzio ( approfondimento)"),
+                         "derivato dai fiori dell'assenzio")
+        self.assertEqual(converter.plain("(araldica) punta ( approfondimento):"), "(araldica) punta:")
+        self.assertEqual(converter.plain("è Acer campestre ( tassonomia), è Acer opalus ( tassonomia)"),
+                         "è Acer campestre, è Acer opalus")
+        self.assertEqual(converter.plain("casa ( citazioni)"), "casa")
+        # The word itself and other parentheses stay.
+        self.assertEqual(converter.plain("mancanza di approfondimento ( di clima)"),
+                         "mancanza di approfondimento ( di clima)")
 
     def test_definitions_that_are_only_a_broken_template_are_dropped(self):
         self.assertEqual(converter.plain("}#|utellelig|kat"), "")
