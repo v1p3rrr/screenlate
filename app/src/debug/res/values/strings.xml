@@ -1,0 +1,4 @@
+<resources>
+    <!-- The debug build's own text selection item, so it differs from the release's when both are installed. -->
+    <string name="process_text_label">Look up in Screenlate Dev</string>
+</resources>

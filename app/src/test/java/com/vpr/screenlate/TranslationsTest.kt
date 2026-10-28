@@ -10,11 +10,11 @@ import org.w3c.dom.Element
 class TranslationsTest {
     /**
      * English resource files with strings in every module (one or two levels below the root, like `app` and
-     * `core/anki`). The tests run in the app module, so the root is its parent.
+     * `core/anki`), the debug build's overrides included. The tests run in the app module, so the root is its parent.
      */
     private val englishFiles: List<File> = File("..").listFiles().orEmpty()
         .flatMap { listOf(it) + it.listFiles().orEmpty() }
-        .map { File(it, "src/main/res/values") }
+        .flatMap { listOf(File(it, "src/main/res/values"), File(it, "src/debug/res/values")) }
         .flatMap { it.listFiles { file -> file.extension == "xml" }.orEmpty().toList() }
         .filter { read(it).let { strings -> strings.strings.isNotEmpty() || strings.plurals.isNotEmpty() } }
 
@@ -96,6 +96,16 @@ class TranslationsTest {
                     }
                 }
             }
+        }
+    }
+
+    @Test
+    fun `debug strings override strings of the main resources`() {
+        val debugFiles = englishFiles.filter { "/src/debug/" in it.invariantSeparatorsPath }
+        assertWithMessage("debug string files").that(debugFiles).isNotEmpty()
+        for (debugFile in debugFiles) {
+            val main = File(debugFile.invariantSeparatorsPath.replace("/src/debug/", "/src/main/"))
+            assertWithMessage("$debugFile keys").that(main.exists() && read(main).strings.keys.containsAll(read(debugFile).strings.keys)).isTrue()
         }
     }
 
