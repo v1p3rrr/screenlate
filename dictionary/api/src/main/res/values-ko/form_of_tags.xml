@@ -2,20 +2,24 @@
 <!-- Korean translation of values/form_of_tags.xml. -->
 <resources>
     <string name="form_of_tag_abbreviation">약어</string>
+    <string name="form_of_tag_abessive">결격</string>
     <string name="form_of_tag_ablative">탈격</string>
     <string name="form_of_tag_absolute">절대</string>
     <string name="form_of_tag_abstract_noun">추상 명사</string>
     <string name="form_of_tag_accusative">대격</string>
     <string name="form_of_tag_acronym">약성어</string>
     <string name="form_of_tag_active">능동태</string>
+    <string name="form_of_tag_adessive">접격</string>
     <string name="form_of_tag_adjectival">형용사적</string>
     <string name="form_of_tag_adjective">형용사</string>
     <string name="form_of_tag_adnominal">관형형</string>
     <string name="form_of_tag_adverb">부사</string>
     <string name="form_of_tag_adverbial">부사형</string>
+    <string name="form_of_tag_agent">행위자 분사</string>
     <string name="form_of_tag_agent_noun">행위자 명사</string>
     <string name="form_of_tag_all_case">모든 격</string>
     <string name="form_of_tag_all_gender">모든 성</string>
+    <string name="form_of_tag_allative">향격</string>
     <string name="form_of_tag_alt_of">이형</string>
     <string name="form_of_tag_alternative">대체형</string>
     <string name="form_of_tag_animate">유정</string>
@@ -42,6 +46,7 @@
     <string name="form_of_tag_clitic">접어</string>
     <string name="form_of_tag_collective">집합</string>
     <string name="form_of_tag_colloquial">구어</string>
+    <string name="form_of_tag_comitative">공동격</string>
     <string name="form_of_tag_common">흔함</string>
     <string name="form_of_tag_common_gender">통성</string>
     <string name="form_of_tag_comparative">비교급</string>
@@ -51,6 +56,7 @@
     <string name="form_of_tag_conditional_ii">조건법 2식</string>
     <string name="form_of_tag_conjunctive">연결형</string>
     <string name="form_of_tag_connective">연결형</string>
+    <string name="form_of_tag_connegative">부정형</string>
     <string name="form_of_tag_contemplative">예정상</string>
     <string name="form_of_tag_contemporary">동시</string>
     <string name="form_of_tag_continuous">진행</string>
@@ -63,6 +69,7 @@
     <string name="form_of_tag_dative">여격</string>
     <string name="form_of_tag_debitive">의무법</string>
     <string name="form_of_tag_definite">한정</string>
+    <string name="form_of_tag_delative">이격</string>
     <string name="form_of_tag_demonym">주민 명칭</string>
     <string name="form_of_tag_dependent">의존형</string>
     <string name="form_of_tag_derived_adverb">파생 부사</string>
@@ -76,10 +83,12 @@
     <string name="form_of_tag_dual">쌍수</string>
     <string name="form_of_tag_early_modern">근대 국어</string>
     <string name="form_of_tag_ekavian">에카비아 방언</string>
+    <string name="form_of_tag_elative">출격</string>
     <string name="form_of_tag_emphatic">강조</string>
     <string name="form_of_tag_endearing">애칭</string>
     <string name="form_of_tag_equal">동등</string>
     <string name="form_of_tag_equative">동등급</string>
+    <string name="form_of_tag_essive">양태격</string>
     <string name="form_of_tag_eumhun">음훈</string>
     <string name="form_of_tag_euphemistic">완곡</string>
     <string name="form_of_tag_female_equivalent">여성형</string>
@@ -87,6 +96,7 @@
     <string name="form_of_tag_first_person">1인칭</string>
     <string name="form_of_tag_flanders">플랑드르</string>
     <string name="form_of_tag_formal">격식체</string>
+    <string name="form_of_tag_fourth_person">4인칭</string>
     <string name="form_of_tag_frequentative">반복</string>
     <string name="form_of_tag_future">미래</string>
     <string name="form_of_tag_future_i">미래 1식</string>
@@ -111,6 +121,7 @@
     <string name="form_of_tag_idiomatic">관용</string>
     <string name="form_of_tag_ijekavian">이예카비아 방언</string>
     <string name="form_of_tag_ikavian">이카비아 방언</string>
+    <string name="form_of_tag_illative">입격</string>
     <string name="form_of_tag_imperative">명령형</string>
     <string name="form_of_tag_imperfect">미완료 과거</string>
     <string name="form_of_tag_imperfect_se">-se 형</string>
@@ -122,13 +133,21 @@
     <string name="form_of_tag_indeterminate">다방향</string>
     <string name="form_of_tag_indicative">직설법</string>
     <string name="form_of_tag_indirect">간접</string>
+    <string name="form_of_tag_inessive">내격</string>
     <string name="form_of_tag_inferential">전언법</string>
     <string name="form_of_tag_inferior">열등</string>
     <string name="form_of_tag_infinitive">부정사</string>
     <string name="form_of_tag_infinitive_aorist">부정과거 부정사</string>
+    <string name="form_of_tag_infinitive_i">제1부정사</string>
+    <string name="form_of_tag_infinitive_i_long">제1부정사 장형</string>
+    <string name="form_of_tag_infinitive_ii">제2부정사</string>
+    <string name="form_of_tag_infinitive_iii">제3부정사</string>
+    <string name="form_of_tag_infinitive_iv">제4부정사</string>
+    <string name="form_of_tag_infinitive_v">제5부정사</string>
     <string name="form_of_tag_infinitive_zu">zu 포함</string>
     <string name="form_of_tag_informal">비격식체</string>
     <string name="form_of_tag_initialism">두문자어</string>
+    <string name="form_of_tag_instructive">조격</string>
     <string name="form_of_tag_instrumental">도구격</string>
     <string name="form_of_tag_internet">인터넷</string>
     <string name="form_of_tag_interrogative">의문</string>
@@ -140,6 +159,7 @@
     <string name="form_of_tag_kajkavian">카이카비아 방언</string>
     <string name="form_of_tag_katharevousa">카타레부사</string>
     <string name="form_of_tag_latin_america">라틴아메리카</string>
+    <string name="form_of_tag_lative">방향격</string>
     <string name="form_of_tag_literary">문어</string>
     <string name="form_of_tag_locative">처격</string>
     <string name="form_of_tag_long_form">긴 형</string>
@@ -200,11 +220,13 @@
     <string name="form_of_tag_possessed_single">소유 대상 단수</string>
     <string name="form_of_tag_possessive">소유</string>
     <string name="form_of_tag_postpositional">후치</string>
+    <string name="form_of_tag_potential">가능법</string>
     <string name="form_of_tag_predicative">서술적</string>
     <string name="form_of_tag_prepositional">전치격</string>
     <string name="form_of_tag_present">현재</string>
     <string name="form_of_tag_preterite">과거형</string>
     <string name="form_of_tag_progressive">진행형</string>
+    <string name="form_of_tag_prolative">경유격</string>
     <string name="form_of_tag_pronoun">대명사</string>
     <string name="form_of_tag_pronunciation_spelling">발음 표기</string>
     <string name="form_of_tag_proper_noun">고유 명사</string>
@@ -242,7 +264,9 @@
     <string name="form_of_tag_subjunctive">접속법</string>
     <string name="form_of_tag_subjunctive_i">접속법 1식</string>
     <string name="form_of_tag_subjunctive_ii">접속법 2식</string>
+    <string name="form_of_tag_sublative">착격</string>
     <string name="form_of_tag_subordinate_clause">종속절</string>
+    <string name="form_of_tag_superessive">상격</string>
     <string name="form_of_tag_superior">우등</string>
     <string name="form_of_tag_superlative">최상급</string>
     <string name="form_of_tag_supine">목적분사</string>
@@ -257,6 +281,7 @@
     <string name="form_of_tag_traditional_chinese">번체</string>
     <string name="form_of_tag_transgressive">부동사</string>
     <string name="form_of_tag_transitive">타동사</string>
+    <string name="form_of_tag_translative">변격</string>
     <string name="form_of_tag_tuscany">토스카나</string>
     <string name="form_of_tag_uncommon">흔하지 않음</string>
     <string name="form_of_tag_uncountable">불가산</string>

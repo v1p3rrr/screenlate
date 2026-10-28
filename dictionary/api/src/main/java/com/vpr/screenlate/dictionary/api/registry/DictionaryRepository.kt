@@ -82,19 +82,22 @@ class DictionaryRepository @Inject constructor(
      * then from index.json, then from the replaced dictionary, then from the archive's content
      * ([DictionaryLanguageDetector]), so the dictionary is used for its language only. Frequency and pitch
      * dictionaries keep only a source language. A term dictionary of a language with a reading search gets its
-     * [ReadingIndex].
+     * [ReadingIndex]. With [formsOnly], or when the replaced dictionary was imported so ([isFormsOnly]), only the
+     * archive's inflected forms are kept ([DictionaryEngine.import]).
      */
     suspend fun import(
         archive: File,
         bundled: Boolean = false,
         replaces: Long? = null,
         catalog: List<CatalogEntry> = emptyList(),
+        formsOnly: Boolean = false,
     ): DictionaryEntity {
         val staging = storage.newStagingDirectory()
         try {
             var started = System.currentTimeMillis()
-            Log.i(TAG, "Importing an archive of ${archive.length() shr 10} KB (bundled $bundled, replaces $replaces)")
-            val imported = engine.import(archive, staging)
+            val onlyForms = formsOnly || replaces?.let { dao.get(it) }?.title?.let(::isFormsOnly) == true
+            Log.i(TAG, "Importing an archive of ${archive.length() shr 10} KB (bundled $bundled, replaces $replaces, forms only $onlyForms)")
+            val imported = engine.import(archive, staging, onlyForms)
             Log.i(TAG, "Engine import of ${imported.metadata.title} took ${System.currentTimeMillis() - started} ms")
             started = System.currentTimeMillis()
             val tagNotes = runCatching { TagBanks.read(archive) }

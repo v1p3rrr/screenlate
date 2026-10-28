@@ -298,6 +298,7 @@ function tagsOf(d, language) {
  * Kyrgyz entries give none either: the app's nominal endings (cases, possessives, plurals, the person endings of
  * predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their definition tags
  * (`taggedRules`). Wiktionary's Welsh and Scottish Gaelic entries give none either; the app's mutation rules leave two
+ * letters at least. Wiktionary's Finnish entries give none either; the app's clitic and possessive rules leave three
  * letters at least.
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
@@ -312,6 +313,7 @@ const untypedRules = new Map([
     ['cy', {shortest: 2}],
     ['ga', {shortest: 2}],
     ['gd', {shortest: 2}],
+    ['fi', {shortest: 3}],
 ]);
 
 /**

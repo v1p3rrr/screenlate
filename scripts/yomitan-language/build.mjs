@@ -87,7 +87,8 @@ const addedPreprocessors = {
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
- * article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial mutations.
+ * article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial mutations, Finnish clitics and
+ * possessive suffixes (Yomitan's Finnish descriptor has text processors only).
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -100,6 +101,7 @@ const addedTransforms = {
     sw: 'swahiliTransforms',
     cy: 'welshTransforms',
     gd: 'gaelicMutations',
+    fi: 'finnishTransforms',
 };
 
 /**

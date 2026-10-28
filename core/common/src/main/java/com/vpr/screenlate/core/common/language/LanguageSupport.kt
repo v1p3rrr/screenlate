@@ -379,7 +379,8 @@ interface LanguageSupport {
     /**
      * Whether a word's results reached through the inflection rules are left out when the same text also finds results
      * without them: the dictionary lists the forms of most words itself, and the rules are there for the words whose
-     * entries list none (Romanian consiliul → consiliu, where casă has its own entry and is not cas).
+     * entries list none (Romanian consiliul → consiliu, where casă has its own entry and is not cas). A result reached
+     * both ways shows only its chains without the rules (Finnish taloon: talo's illative row, not -on).
      */
     val inflectionRulesOnlyWithoutEntry: Boolean get() = false
 
@@ -561,6 +562,7 @@ val Language.support: LanguageSupport
         Language.WELSH -> WelshSupport
         Language.IRISH -> IrishSupport
         Language.SCOTTISH_GAELIC -> GaelicSupport
+        Language.FINNISH -> FinnishSupport
     }
 
 /**

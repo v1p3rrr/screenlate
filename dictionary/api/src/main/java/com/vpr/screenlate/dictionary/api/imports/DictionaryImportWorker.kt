@@ -24,6 +24,7 @@ import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.R
 import com.vpr.screenlate.dictionary.api.catalog.ASSET_URL_PREFIX
 import com.vpr.screenlate.dictionary.api.catalog.BUILD_CORPUS_COUNTS
+import com.vpr.screenlate.dictionary.api.catalog.BUILD_FORMS
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -197,14 +198,14 @@ class DictionaryImportWorker @AssistedInject constructor(
                 SOURCE_URL -> {
                     // Reading the index and connecting take a moment; the task says it is downloading meanwhile.
                     setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
-                    val built = inputData.getString(KEY_ENTRY_ID)
-                        ?.let { id -> catalogEntries.firstOrNull { it.id == id && it.build != null } }
+                    val entry = inputData.getString(KEY_ENTRY_ID)?.let { id -> catalogEntries.firstOrNull { it.id == id } }
+                    val built = entry?.takeIf { it.build != null && it.build != BUILD_FORMS }
                     if (built != null) {
                         listOf(download(built.downloadUrl, name) { buildAndImport(built, it, name) })
                     } else {
                         val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
                             ?: requireNotNull(inputData.getString(KEY_URL))
-                        listOf(download(url, name, ::importDownloaded))
+                        listOf(download(url, name) { importDownloaded(it, formsOnly = entry?.build == BUILD_FORMS) })
                     }
                 }
                 SOURCE_MODEL -> {
@@ -534,9 +535,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         fun reason(): String = cause?.message ?: cause?.javaClass?.simpleName.orEmpty()
     }
 
-    private suspend fun importDownloaded(archive: File): String {
+    private suspend fun importDownloaded(archive: File, formsOnly: Boolean): String {
         val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
-        return repository.import(archive, replaces = replaces, catalog = catalogEntries).title
+        return repository.import(archive, replaces = replaces, catalog = catalogEntries, formsOnly = formsOnly).title
     }
 
     /**

@@ -13,6 +13,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ENTRY_ID
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PAUSED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REPLACE_ID
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REQUEUED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_RESUMABLE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SOURCE
@@ -507,6 +508,11 @@ class DictionaryImportsTest {
         assertThat(downloadKey(entry)).isEqualTo("entry:jiten-global")
         assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_MODEL, KEY_ENTRY_ID to "paddle"))).isEqualTo("entry:paddle")
         assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/a.zip")))
+            .isEqualTo("url:https://example.org/a.zip")
+        // One file may update a dictionary and its forms only.
+        assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/a.zip", KEY_REPLACE_ID to 7L)))
+            .isEqualTo("url:https://example.org/a.zip replacing 7")
+        assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/a.zip", KEY_REPLACE_ID to -1L)))
             .isEqualTo("url:https://example.org/a.zip")
         assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_FILE, KEY_PATH to "/a.zip"))).isNull()
     }

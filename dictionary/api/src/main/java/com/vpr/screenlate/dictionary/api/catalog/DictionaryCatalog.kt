@@ -7,6 +7,7 @@ import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
+import com.vpr.screenlate.dictionary.api.registry.isFormsOnly
 import com.vpr.screenlate.dictionary.api.registry.updatesItself
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -91,7 +92,9 @@ enum class CatalogCategory {
  *   the data the downloaded file holds.
  * @property build how the app builds the dictionary from the downloaded file instead of importing it as it is:
  *   [BUILD_WORDFREQ] for one of wordfreq's word lists ([com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary]),
- *   [BUILD_CORPUS_COUNTS] for a corpus' word counts ([com.vpr.screenlate.dictionary.api.imports.CorpusCountsDictionary]).
+ *   [BUILD_CORPUS_COUNTS] for a corpus' word counts ([com.vpr.screenlate.dictionary.api.imports.CorpusCountsDictionary]);
+ *   [BUILD_FORMS] imports only the inflected forms of the downloaded dictionary, the same file another entry installs
+ *   whole.
  */
 @Serializable
 data class CatalogEntry(
@@ -141,11 +144,12 @@ data class CatalogEntry(
 
     /**
      * A dictionary names its kind; a model its id, engine, version and checksum; a built dictionary a known [build],
-     * the version and the checksum.
+     * the version and the checksum. The forms of a dictionary come from its upstream file, which has no checksum.
      */
     internal val isComplete: Boolean
         get() = when {
             isModel -> model != null && engine != null && version != null && sha256 != null
+            build == BUILD_FORMS -> kind != null
             build != null -> build in BUILDS && kind != null && version != null && sha256 != null
             else -> kind != null
         }
@@ -191,10 +195,27 @@ data class CatalogEntry(
     fun matches(dictionary: DictionaryEntity): Boolean =
         dictionary.kind == kind && matches(dictionary.indexUrl, dictionary.title)
 
-    /** Whether a dictionary with this index URL and title is a copy of this entry; the caller compares the kind. */
+    /**
+     * Whether a dictionary with this index URL and title is a copy of this entry; the caller compares the kind. The
+     * forms of a dictionary ([BUILD_FORMS]) share its index URL; their title tells them apart ([isFormsOnly]).
+     */
     fun matches(indexUrl: String?, title: String): Boolean =
-        (this.indexUrl != null && indexUrl == this.indexUrl) || installedTitle?.let(title::startsWith) == true ||
-            formerTitles.any(title::startsWith) || oldTitles.any { title == it || title.startsWith("$it [") }
+        isFormsOnly(title) == (build == BUILD_FORMS) &&
+            ((this.indexUrl != null && indexUrl == this.indexUrl) || installedTitle?.let(title::startsWith) == true ||
+                formerTitles.any(title::startsWith) || oldTitles.any { title == it || title.startsWith("$it [") })
+
+    /**
+     * Whether this entry, the forms of a dictionary ([BUILD_FORMS]), is cut from [dictionary], an installed copy of the
+     * whole dictionary, which holds the forms as well.
+     */
+    fun isCutFrom(dictionary: DictionaryEntity): Boolean =
+        build == BUILD_FORMS && dictionary.kind == kind && indexUrl != null && dictionary.indexUrl == indexUrl &&
+            !isFormsOnly(dictionary.title)
+
+    /** Whether this entry, the forms of a dictionary ([BUILD_FORMS]), is cut from [entry], the whole dictionary. */
+    fun isCutFrom(entry: CatalogEntry): Boolean =
+        build == BUILD_FORMS && entry.build != BUILD_FORMS && entry.kind == kind && indexUrl != null &&
+            entry.indexUrl == indexUrl
 
     /**
      * The copy among [copies] (copies of this entry) to replace with this entry's current build: an old one that cannot
@@ -217,6 +238,9 @@ const val BUILD_WORDFREQ = "wordfreq"
 
 /** [CatalogEntry.build] of a frequency dictionary built from a corpus' word counts. */
 const val BUILD_CORPUS_COUNTS = "corpus-counts"
+
+/** [CatalogEntry.build] of the inflected forms of a dictionary, imported without its definitions. */
+const val BUILD_FORMS = "forms"
 
 private val BUILDS = setOf(BUILD_WORDFREQ, BUILD_CORPUS_COUNTS)
 

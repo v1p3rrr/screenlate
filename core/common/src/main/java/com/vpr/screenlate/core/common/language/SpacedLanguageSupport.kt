@@ -106,9 +106,15 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         return !word.lowercaseIn(abbreviations)
     }
 
-    /** A word starts with a letter or digit; phrases and inflections are tried by the engine. */
+    /**
+     * A word starts with a letter or digit; phrases and inflections are tried by the engine. With [hyphenedEndings],
+     * a hyphen right before a letter starts one as well, for the dictionaries' suffix entries (-ға, -vuotias).
+     */
     override fun lookupStart(text: String, latinAsNative: Boolean): LookupStart? {
         if (text.isEmpty()) return null
+        if (hyphenedEndings != HyphenedEndings.NONE && text.length > 1 && text[0] == '-' && text[1].isLetter()) {
+            return LookupStart.Any
+        }
         return if (Character.isLetterOrDigit(text.codePointAt(0))) LookupStart.Any else null
     }
 
@@ -119,7 +125,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     }
 
     /** The characters (code points) of the word that [before] ends with, its connectors included. */
-    private fun wordLengthBefore(before: String): Int {
+    protected fun wordLengthBefore(before: String): Int {
         var index = before.length
         var count = 0
         while (index > 0) {
@@ -156,9 +162,30 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * Whether an ending written after [part] with a hyphen is looked up with the hyphen as well, for the dictionaries'
-     * suffix entries: Kazakh and Kyrgyz after any part (1990-ға, АҚШ-қа, сондай-ақ).
+     * suffix entries; see [hyphenedEndings].
      */
-    protected open fun takesHyphenedEnding(part: String): Boolean = false
+    protected open fun takesHyphenedEnding(part: String): Boolean = when (hyphenedEndings) {
+        HyphenedEndings.NONE -> false
+        HyphenedEndings.AFTER_NUMBERS -> isNumber(part)
+        HyphenedEndings.AFTER_NUMBERS_AND_CAPITALS -> isNumber(part) || isCapitalsAbbreviation(part)
+        HyphenedEndings.AFTER_ANY -> true
+    }
+
+    /** Which parts of a hyphenated word an ending after the hyphen is looked up with the hyphen for. */
+    protected open val hyphenedEndings: HyphenedEndings = HyphenedEndings.NONE
+
+    protected enum class HyphenedEndings {
+        NONE,
+
+        /** Finnish: 1990-luvulla, 20-vuotias; the part after an abbreviation is a compound's (EU-maat). */
+        AFTER_NUMBERS,
+
+        /** Hungarian, Estonian, Azerbaijani, Uzbek: 2023-ban, EU-ban, NATO-ya. */
+        AFTER_NUMBERS_AND_CAPITALS,
+
+        /** Kazakh and Kyrgyz: endings after numbers and abbreviations (АҚШ-қа), particles after a word (сондай-ақ). */
+        AFTER_ANY,
+    }
 
     /** Words before the aimed one that the lookup starts at as well; see [earlierStartOffset]. */
     open val earlierWords: Int = 0
@@ -327,6 +354,13 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     private fun isMark(type: Int): Boolean =
         type == Character.NON_SPACING_MARK.toInt() || type == Character.COMBINING_SPACING_MARK.toInt() ||
             type == Character.ENCLOSING_MARK.toInt()
+
+    /** Digits only: 1990. */
+    private fun isNumber(part: String): Boolean = part.isNotEmpty() && part.all { it.isDigit() }
+
+    /** Two capitals or more, digits among them: EU, NATO, MP3; a single one is an initial or a compound's part. */
+    private fun isCapitalsAbbreviation(part: String): Boolean =
+        part.count { it.isUpperCase() } >= 2 && part.all { it.isUpperCase() || it.isDigit() }
 
     private companion object {
         /** A Roman numeral in capitals, I to MMMCMXCIX (IV, XIV). */

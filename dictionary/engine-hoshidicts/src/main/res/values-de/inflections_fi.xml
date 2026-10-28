@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">Klitikon</string>
+    <string name="inflection_fi_clitic">Klitikon: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin von talo, talossakaan von talossa, onkohan von onko)</string>
+    <string name="inflection_fi_possessive_label">Possessivsuffix</string>
+    <string name="inflection_fi_possessive">Possessivsuffix: -ni, -si, -mme, -nne, -nsa/-nsä, langer Vokal und -n (talossani und talossaan von talossa, taloni von talo)</string>
+</resources>

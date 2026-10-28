@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">phụ tố clitic</string>
+    <string name="inflection_fi_clitic">phụ tố clitic: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin từ talo, talossakaan từ talossa, onkohan từ onko)</string>
+    <string name="inflection_fi_possessive_label">hậu tố sở hữu</string>
+    <string name="inflection_fi_possessive">hậu tố sở hữu: -ni, -si, -mme, -nne, -nsa/-nsä, nguyên âm dài và -n (talossani và talossaan từ talossa, taloni từ talo)</string>
+</resources>

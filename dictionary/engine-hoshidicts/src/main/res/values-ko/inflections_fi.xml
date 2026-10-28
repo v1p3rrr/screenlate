@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">접어</string>
+    <string name="inflection_fi_clitic">접어: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talo → talokin, talossa → talossakaan, onko → onkohan)</string>
+    <string name="inflection_fi_possessive_label">소유 접미사</string>
+    <string name="inflection_fi_possessive">소유 접미사: -ni, -si, -mme, -nne, -nsa/-nsä, 장모음과 -n (talossa → talossani, talossaan, talo → taloni)</string>
+</resources>

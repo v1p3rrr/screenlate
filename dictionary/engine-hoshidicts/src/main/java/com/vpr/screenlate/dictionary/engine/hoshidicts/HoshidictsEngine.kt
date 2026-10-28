@@ -42,7 +42,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
     private val mutex = Mutex()
     private var handle = 0L
 
-    override suspend fun import(archive: File, outputDir: File): ImportedDictionary = withContext(Dispatchers.IO) {
+    override suspend fun import(archive: File, outputDir: File, formsOnly: Boolean): ImportedDictionary = withContext(Dispatchers.IO) {
         ArchiveTitles.check(archive)
         outputDir.mkdirs()
         val raw = try {
@@ -51,6 +51,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                 outputDir.absolutePath.encodeToByteArray(),
                 false,
                 HEADWORD_MARKS,
+                formsOnly,
             )
         } catch (e: RuntimeException) {
             throw DictionaryImportException(e.message ?: "Import failed", e)

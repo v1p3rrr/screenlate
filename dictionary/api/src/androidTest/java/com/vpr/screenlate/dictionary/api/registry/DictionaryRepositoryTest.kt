@@ -361,7 +361,7 @@ class DictionaryRepositoryTest {
         var onLookup: suspend () -> Unit = { }
         var onMedia: suspend (String, String) -> ByteArray? = { _, _ -> null }
 
-        override suspend fun import(archive: File, outputDir: File): ImportedDictionary {
+        override suspend fun import(archive: File, outputDir: File, formsOnly: Boolean): ImportedDictionary {
             val (title, terms, frequencies, mode) = archive.readText().split("\n")
             val directory = File(outputDir, title).apply { mkdirs() }
             File(directory, "data").writeText(title)

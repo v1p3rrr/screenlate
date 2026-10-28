@@ -36,7 +36,19 @@ class RuleOnlyResultsTest {
         val form = result("aflată", "afla", listOf("feminine singular"))
         val both = result("aflată", "aflat", listOf("agreement"), listOf("feminine"))
         val rule = result("aflată", "afl", listOf("agreement"))
-        assertThat(listOf(form, both, rule).withoutRuleOnlyResults(rules)).containsExactly(form, both).inOrder()
+        val shown = listOf(form, both, rule).withoutRuleOnlyResults(rules)
+        assertThat(shown.map { it.term.expression }).containsExactly("afla", "aflat").inOrder()
+        assertThat(shown.first()).isSameInstanceAs(form)
+    }
+
+    @Test
+    fun `a result reached both ways keeps the chains free of rules`() {
+        val house = result("taloon", "talo", listOf("-on"), listOf("illative"), listOf("-on", "plural"))
+        val shown = listOf(house).withoutRuleOnlyResults(setOf("-on")).single()
+        assertThat(shown.trace.map { it.name }).containsExactly("illative")
+        assertThat(shown.otherTraces).isEmpty()
+        val consiliu = result("Consiliul", "consiliu", listOf("-ul"), listOf("-ul", "plural"))
+        assertThat(listOf(consiliu).withoutRuleOnlyResults(rules).single()).isSameInstanceAs(consiliu)
     }
 
     @Test

@@ -23,6 +23,7 @@ export const SOURCES = [
   'ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi', 'lv',
   'nl', 'cs', 'id', 'ms', 'tl', 'sh', 'uk', 'be', 'el', 'hi', 'bn', 'ka', 'hy', 'th', 'km',
   'ar', 'fa', 'he', 'kk', 'ky', 'sv', 'no', 'da', 'ro', 'la', 'lt', 'sk', 'sl', 'eo', 'sq', 'sw', 'cy', 'ga', 'gd',
+  'fi',
 ];
 
 /**
@@ -69,7 +70,18 @@ const LICENSE = 'CC BY-SA 4.0';
 export const TEMPLATE_MAIN = 'wiktionary';
 export const TEMPLATE_GLOSSARY = 'wiktionary-glossary';
 export const TEMPLATE_TRANSCRIPTION = 'wiktionary-transcription';
-const TEMPLATES = new Set([TEMPLATE_MAIN, TEMPLATE_GLOSSARY, TEMPLATE_TRANSCRIPTION]);
+export const TEMPLATE_FORMS = 'wiktionary-forms';
+const TEMPLATES = new Set([TEMPLATE_MAIN, TEMPLATE_GLOSSARY, TEMPLATE_TRANSCRIPTION, TEMPLATE_FORMS]);
+
+/**
+ * Languages whose inflected forms only the English edition lists, with the space its form rows take once imported in
+ * MiB, estimated from the rows: their "Word forms" entry imports the source–English dictionary without its definitions
+ * for users who do not choose English, and is mandatory then.
+ */
+export const FORMS_SOURCES = { fi: 65, hu: 18, az: 14, et: 3, uz: 2 };
+
+/** Ends the title the app gives a dictionary imported for its forms only (FORMS_ONLY_TITLE_SUFFIX in the app). */
+const FORMS_TITLE_SUFFIX = ' (forms)';
 
 /** Files of a tree listing as `{path, size}`, without the MDict builds. */
 export function archives(listing) {
@@ -139,6 +151,30 @@ function transcriptionEntry(folder, size, source = folder) {
   };
 }
 
+/** The "Word forms" entry of [source]: the source–English dictionary, imported for its forms only. */
+function formsEntry(folder, size, source = folder) {
+  const name = `wty-${folder}-en`;
+  return {
+    id: `wiktionary-${folder}-forms`,
+    title: `Wiktionary word forms (${folder})`,
+    template: TEMPLATE_FORMS,
+    oldTitles: [`${name}${FORMS_TITLE_SUFFIX}`],
+    kind: 'TERM',
+    category: 'FORMS',
+    sourceLanguage: source,
+    targetLanguage: 'en',
+    recommended: true,
+    indexUrl: `${RELEASE}/index/${name}-index.json?download=true`,
+    downloadUrl: `${RELEASE}/dict/${folder}/en/${name}.zip?download=true`,
+    resolveLatest: true,
+    downloadSize: size,
+    installedSize: FORMS_SOURCES[source] * MIB,
+    build: 'forms',
+    license: LICENSE,
+    homepage: HOMEPAGE,
+  };
+}
+
 /**
  * The languages [source]'s dictionaries go into: the gloss languages and, for a language that is none of them, its
  * own Wiktionary edition, which the download screen lists unticked.
@@ -185,6 +221,7 @@ export function wiktionaryEntries(files, manual, words = new Map(), templates = 
           !ticked.has(target);
         if (recommended) ticked.add(target);
         entries.push(mainEntry(folder, target, sizes.get(file), recommended, source));
+        if (target === 'en' && source in FORMS_SOURCES) entries.push(formsEntry(folder, sizes.get(file), source));
       }
       for (const target of GLOSSES) {
         const file = `dict/${folder}/${target}/wty-${folder}-${target}-gloss.zip`;
@@ -292,10 +329,19 @@ async function downloadArchive(file) {
   return Buffer.from(await response.arrayBuffer());
 }
 
-/** The catalog document with its Wiktionary entries replaced by [generated], hand-written entries first. */
+/**
+ * The catalog document with its Wiktionary entries replaced by [generated], hand-written entries first; a language
+ * with a "Word forms" entry needs one of its own then, beside the main dictionary.
+ */
 export function rebuild(document, generated) {
   const manual = document.dictionaries.filter((e) => !TEMPLATES.has(e.template));
-  return { ...document, dictionaries: [...manual, ...generated] };
+  const mandatory = Object.fromEntries(
+    Object.entries(document.mandatory ?? {}).filter(([, categories]) => !categories.includes('FORMS')),
+  );
+  for (const entry of generated) {
+    if (entry.template === TEMPLATE_FORMS) mandatory[entry.sourceLanguage] = ['MAIN', 'FORMS'];
+  }
+  return { ...document, mandatory, dictionaries: [...manual, ...generated] };
 }
 
 /** Fills a template text in [locale]: `{source}`/`{target}` with language names, `{src}`/`{tgt}` with codes. */

@@ -534,6 +534,7 @@
     <string name="popup_font_script_only_cy">Nur für walisischen Text</string>
     <string name="popup_font_script_only_ga">Nur für irischen Text</string>
     <string name="popup_font_script_only_gd">Nur für schottisch-gälischen Text</string>
+    <string name="popup_font_script_only_fi">Nur für finnischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

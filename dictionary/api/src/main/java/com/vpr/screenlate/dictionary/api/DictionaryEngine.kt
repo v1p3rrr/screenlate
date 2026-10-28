@@ -15,11 +15,13 @@ import java.io.File
  */
 interface DictionaryEngine {
     /**
-     * Converts a Yomitan archive into the engine's format inside a new subdirectory of [outputDir].
+     * Converts a Yomitan archive into the engine's format inside a new subdirectory of [outputDir]. With [formsOnly],
+     * only the inflected forms the archive lists are kept, for lookups in the other dictionaries of its language; the
+     * title gets [com.vpr.screenlate.dictionary.api.registry.FORMS_ONLY_TITLE_SUFFIX].
      *
-     * @throws DictionaryImportException if the archive is not a valid dictionary.
+     * @throws DictionaryImportException if the archive is not a valid dictionary, or with [formsOnly] lists no forms.
      */
-    suspend fun import(archive: File, outputDir: File): ImportedDictionary
+    suspend fun import(archive: File, outputDir: File, formsOnly: Boolean = false): ImportedDictionary
 
     /** Replaces the set of dictionaries used by [lookup]; lists are in priority order. */
     suspend fun load(dictionaries: DictionarySet)

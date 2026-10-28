@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">附著語素</string>
+    <string name="inflection_fi_clitic">附著語素：-kin、-kaan/-kään、-ko/-kö、-pa/-pä、-han/-hän（talo → talokin，talossa → talossakaan，onko → onkohan）</string>
+    <string name="inflection_fi_possessive_label">物主後綴</string>
+    <string name="inflection_fi_possessive">物主後綴：-ni、-si、-mme、-nne、-nsa/-nsä、長元音加 -n（talossa → talossani、talossaan，talo → taloni）</string>
+</resources>

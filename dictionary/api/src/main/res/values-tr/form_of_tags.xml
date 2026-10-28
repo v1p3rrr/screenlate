@@ -2,20 +2,24 @@
 <!-- Turkish translation of values/form_of_tags.xml. -->
 <resources>
     <string name="form_of_tag_abbreviation">kısaltma</string>
+    <string name="form_of_tag_abessive">abessif</string>
     <string name="form_of_tag_ablative">ayrılma hâli</string>
     <string name="form_of_tag_absolute">mutlak</string>
     <string name="form_of_tag_abstract_noun">soyut ad</string>
     <string name="form_of_tag_accusative">belirtme hâli</string>
     <string name="form_of_tag_acronym">akronim</string>
     <string name="form_of_tag_active">etken</string>
+    <string name="form_of_tag_adessive">adessif</string>
     <string name="form_of_tag_adjectival">sıfat</string>
     <string name="form_of_tag_adjective">sıfat</string>
     <string name="form_of_tag_adnominal">ad niteleyen</string>
     <string name="form_of_tag_adverb">zarf</string>
     <string name="form_of_tag_adverbial">zarf</string>
+    <string name="form_of_tag_agent">fail ortacı</string>
     <string name="form_of_tag_agent_noun">fail adı</string>
     <string name="form_of_tag_all_case">tüm haller</string>
     <string name="form_of_tag_all_gender">tüm cinsler</string>
+    <string name="form_of_tag_allative">allatif</string>
     <string name="form_of_tag_alt_of">alternatif biçim</string>
     <string name="form_of_tag_alternative">alternatif</string>
     <string name="form_of_tag_animate">canlı</string>
@@ -42,6 +46,7 @@
     <string name="form_of_tag_clitic">klitik</string>
     <string name="form_of_tag_collective">topluluk</string>
     <string name="form_of_tag_colloquial">konuşma dili</string>
+    <string name="form_of_tag_comitative">komitatif</string>
     <string name="form_of_tag_common">yaygın</string>
     <string name="form_of_tag_common_gender">ortak cins</string>
     <string name="form_of_tag_comparative">karşılaştırma</string>
@@ -51,6 +56,7 @@
     <string name="form_of_tag_conditional_ii">şart kipi II</string>
     <string name="form_of_tag_conjunctive">bağlayıcı</string>
     <string name="form_of_tag_connective">bağlayıcı</string>
+    <string name="form_of_tag_connegative">konnegatif</string>
     <string name="form_of_tag_contemplative">gelecek görünüş</string>
     <string name="form_of_tag_contemporary">eşzamanlı</string>
     <string name="form_of_tag_continuous">sürekli</string>
@@ -63,6 +69,7 @@
     <string name="form_of_tag_dative">yönelme hâli</string>
     <string name="form_of_tag_debitive">gereklilik kipi</string>
     <string name="form_of_tag_definite">belirli</string>
+    <string name="form_of_tag_delative">delatif</string>
     <string name="form_of_tag_demonym">halk adı</string>
     <string name="form_of_tag_dependent">bağımlı</string>
     <string name="form_of_tag_derived_adverb">türemiş zarf</string>
@@ -76,10 +83,12 @@
     <string name="form_of_tag_dual">ikil</string>
     <string name="form_of_tag_early_modern">erken modern Korece</string>
     <string name="form_of_tag_ekavian">ekavca</string>
+    <string name="form_of_tag_elative">elatif</string>
     <string name="form_of_tag_emphatic">vurgulu</string>
     <string name="form_of_tag_endearing">sevgi bildiren</string>
     <string name="form_of_tag_equal">eşitlik</string>
     <string name="form_of_tag_equative">eşitlik derecesi</string>
+    <string name="form_of_tag_essive">essif</string>
     <string name="form_of_tag_eumhun">anlam ve okunuş</string>
     <string name="form_of_tag_euphemistic">örtmeceli</string>
     <string name="form_of_tag_female_equivalent">dişil biçim</string>
@@ -87,6 +96,7 @@
     <string name="form_of_tag_first_person">birinci şahıs</string>
     <string name="form_of_tag_flanders">Flandre</string>
     <string name="form_of_tag_formal">resmî</string>
+    <string name="form_of_tag_fourth_person">dördüncü şahıs</string>
     <string name="form_of_tag_frequentative">sıklık bildiren</string>
     <string name="form_of_tag_future">gelecek zaman</string>
     <string name="form_of_tag_future_i">gelecek zaman I</string>
@@ -111,6 +121,7 @@
     <string name="form_of_tag_idiomatic">deyimsel</string>
     <string name="form_of_tag_ijekavian">ijekavca</string>
     <string name="form_of_tag_ikavian">ikavca</string>
+    <string name="form_of_tag_illative">illatif</string>
     <string name="form_of_tag_imperative">emir kipi</string>
     <string name="form_of_tag_imperfect">bitmemiş geçmiş</string>
     <string name="form_of_tag_imperfect_se">-se biçimi</string>
@@ -122,13 +133,21 @@
     <string name="form_of_tag_indeterminate">çok yönlü</string>
     <string name="form_of_tag_indicative">bildirme kipi</string>
     <string name="form_of_tag_indirect">dolaylı</string>
+    <string name="form_of_tag_inessive">inessif</string>
     <string name="form_of_tag_inferential">rivayet</string>
     <string name="form_of_tag_inferior">eksiklik</string>
     <string name="form_of_tag_infinitive">mastar</string>
     <string name="form_of_tag_infinitive_aorist">aorist mastarı</string>
+    <string name="form_of_tag_infinitive_i">birinci mastar</string>
+    <string name="form_of_tag_infinitive_i_long">uzun birinci mastar</string>
+    <string name="form_of_tag_infinitive_ii">ikinci mastar</string>
+    <string name="form_of_tag_infinitive_iii">üçüncü mastar</string>
+    <string name="form_of_tag_infinitive_iv">dördüncü mastar</string>
+    <string name="form_of_tag_infinitive_v">beşinci mastar</string>
     <string name="form_of_tag_infinitive_zu">zu ile</string>
     <string name="form_of_tag_informal">gayriresmî</string>
     <string name="form_of_tag_initialism">baş harf kısaltması</string>
+    <string name="form_of_tag_instructive">instrüktif</string>
     <string name="form_of_tag_instrumental">araç hâli</string>
     <string name="form_of_tag_internet">internet</string>
     <string name="form_of_tag_interrogative">soru</string>
@@ -140,6 +159,7 @@
     <string name="form_of_tag_kajkavian">Kaykavca</string>
     <string name="form_of_tag_katharevousa">Katarevusa</string>
     <string name="form_of_tag_latin_america">Latin Amerika</string>
+    <string name="form_of_tag_lative">latif</string>
     <string name="form_of_tag_literary">edebî</string>
     <string name="form_of_tag_locative">bulunma hâli</string>
     <string name="form_of_tag_long_form">uzun biçim</string>
@@ -200,11 +220,13 @@
     <string name="form_of_tag_possessed_single">sahip olunan tekil</string>
     <string name="form_of_tag_possessive">iyelik</string>
     <string name="form_of_tag_postpositional">ilgeç</string>
+    <string name="form_of_tag_potential">potansiyel kip</string>
     <string name="form_of_tag_predicative">yüklem</string>
     <string name="form_of_tag_prepositional">ilgeç hâli</string>
     <string name="form_of_tag_present">şimdiki zaman</string>
     <string name="form_of_tag_preterite">di\'li geçmiş</string>
     <string name="form_of_tag_progressive">sürerlik</string>
+    <string name="form_of_tag_prolative">prolatif</string>
     <string name="form_of_tag_pronoun">zamir</string>
     <string name="form_of_tag_pronunciation_spelling">söylenişe göre yazım</string>
     <string name="form_of_tag_proper_noun">özel ad</string>
@@ -242,7 +264,9 @@
     <string name="form_of_tag_subjunctive">dilek kipi</string>
     <string name="form_of_tag_subjunctive_i">dilek kipi I</string>
     <string name="form_of_tag_subjunctive_ii">dilek kipi II</string>
+    <string name="form_of_tag_sublative">sublatif</string>
     <string name="form_of_tag_subordinate_clause">yan cümle</string>
+    <string name="form_of_tag_superessive">süperessif</string>
     <string name="form_of_tag_superior">üstünlük</string>
     <string name="form_of_tag_superlative">enüstünlük</string>
     <string name="form_of_tag_supine">supin</string>
@@ -257,6 +281,7 @@
     <string name="form_of_tag_traditional_chinese">geleneksel</string>
     <string name="form_of_tag_transgressive">ulaç</string>
     <string name="form_of_tag_transitive">geçişli</string>
+    <string name="form_of_tag_translative">translatif</string>
     <string name="form_of_tag_tuscany">Toskana</string>
     <string name="form_of_tag_uncommon">az yaygın</string>
     <string name="form_of_tag_uncountable">sayılamaz</string>

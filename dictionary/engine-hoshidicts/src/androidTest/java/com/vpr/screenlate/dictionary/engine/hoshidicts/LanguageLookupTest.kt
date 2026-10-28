@@ -1170,6 +1170,87 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun finnishCliticsAndPossessiveSuffixesComeOffIntoTheListedFormsOnlyWhereTheTextHasNoEntry() = runTest {
+        val imported = engine.import(finnishDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val finnish = LookupOptions(language = Language.FINNISH)
+        suspend fun first(text: String) = engine.lookup(text, finnish).first()
+        suspend fun all(text: String) = engine.lookup(text, finnish).map { it.term.expression }.distinct()
+
+        // A clitic and a possessive suffix come off, then the dictionary's row gives the case.
+        val house = first("talossanikin")
+        assertThat(house.term.expression).isEqualTo("talo")
+        assertThat(house.matched).isEqualTo("talossanikin")
+        assertThat(house.trace.map { it.name }).containsAtLeast("possessive", "clitic").inOrder()
+        assertThat(house.trace.map { it.label }).doesNotContain("")
+        // The form row's step shows the dictionary's tags, with no description.
+        assertThat(house.trace.filter { it.name in setOf("possessive", "clitic") }.map { it.description })
+            .doesNotContain("")
+        assertThat(all("talossakaan")).containsExactly("talo")
+        assertThat(all("talokin")).containsExactly("talo")
+        assertThat(all("talossaan")).containsExactly("talo")
+        assertThat(all("onkohan")).containsExactly("olla")
+        // Words and forms of their own take no suffix off: kuusi is no kuu with -si, taloon no talo with -on.
+        assertThat(all("kuusi")).containsExactly("kuusi")
+        assertThat(first("taloon").trace.map { it.name }).doesNotContain("possessive")
+        assertThat(all("vesi")).containsExactly("vesi")
+        // An ending after a colon: no dictionary has EU:n, so the word before the colon is found.
+        val union = first("EU:n")
+        assertThat(union.term.expression).isEqualTo("EU")
+        assertThat(union.matched).isEqualTo("EU")
+        assertThat(all("-vuotias")).containsExactly("-vuotias")
+    }
+
+    @Test
+    fun finnishFormsImportedAloneLeadToTheEntriesOfAnotherDictionary() = runTest {
+        val forms = engine.import(finnishDictionary(), File(root, "forms"), formsOnly = true)
+        val russian = engine.import(finnishRussianDictionary(), File(root, "ru"))
+        assertThat(forms.directory.name).endsWith(" (forms)")
+        engine.load(DictionarySet(terms = listOf(russian.directory, forms.directory)))
+        val finnish = LookupOptions(language = Language.FINNISH)
+        val results = engine.lookup("talossanikin", finnish)
+        assertThat(results.map { it.term.expression }.distinct()).containsExactly("talo")
+        // The forms bring no definitions of their own.
+        val glossaries = results.flatMap { result -> result.term.glossaries.map { it.content } }.joinToString()
+        assertThat(glossaries).contains("дом")
+        assertThat(glossaries).doesNotContain("house")
+    }
+
+    /**
+     * Rows as Wiktionary's Finnish exports write them: no rules, the part of speech in the tags, case and verb forms as
+     * form-of rows; a word that is also another word with a possessive suffix (kuusi, kuu), a suffix entry.
+     */
+    private fun finnishDictionary(): File = zip(
+        "fi.zip",
+        "index.json" to """{"title":"Test Finnish","revision":"1","format":3,"sourceLanguage":"fi"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["talo","","noun","",0,["house"],1,""],
+              ["talossa","","non-lemma","",0,[["talo",["inessive singular"]]],2,""],
+              ["taloon","","non-lemma","",0,[["talo",["illative singular"]]],3,""],
+              ["kuusi","","num","",0,["six"],4,""],
+              ["kuu","","noun","",0,["moon"],5,""],
+              ["vesi","","noun","",0,["water"],6,""],
+              ["olla","","verb","",0,["to be"],7,""],
+              ["onko","","non-lemma","",0,[["olla",["third-person singular present interrogative"]]],8,""],
+              ["EU","","name","",0,["European Union"],9,""],
+              ["-vuotias","","suffix","",0,["-year-old"],10,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /** A dictionary of a gloss language without forms, as Wiktionary's Russian edition writes Finnish. */
+    private fun finnishRussianDictionary(): File = zip(
+        "fi-ru.zip",
+        "index.json" to """{"title":"Test Finnish Russian","revision":"1","format":3,"sourceLanguage":"fi"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["talo","","noun","",0,["дом"],1,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst() = runTest {
         val imported = engine.import(lithuanianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

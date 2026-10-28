@@ -92,7 +92,13 @@ struct ArchiveSplit {
   size_t form_rows = 0;
   // Rows that kept their definitions while their form-of items went into the table.
   size_t mixed_rows = 0;
+  // With [split_form_of]'s forms_only, the archive's index.json titled with [kFormsOnlyTitleSuffix].
+  std::string index;
 };
+
+// Appended to the index title of a dictionary imported for its forms only ([split_form_of]'s forms_only), so it is
+// told apart from the whole dictionary it was cut from.
+inline constexpr std::string_view kFormsOnlyTitleSuffix = " (forms)";
 
 // Reads the term banks of the archive at [archive]; when they hold form-of items, writes an archive without them to
 // [output] and returns them in the table. Only dictionaries whose index names a source language other than Japanese are
@@ -106,7 +112,11 @@ struct ArchiveSplit {
 // unless [HeadwordMarks::lemmas_as_written]. A form written with a romanization or note after it, or with two
 // spellings, is keyed by its words; one of an unfilled template by none, and one outside the language's script by none
 // with [HeadwordMarks::forms_in_script]. Inflection template names among a form's tags (ar-infl-a) are dropped.
+// With [forms_only] (the "Word forms" item of a language whose forms only the English Wiktionary dictionary lists),
+// the definitions are left out as well: nothing is written to [output], as hoshidicts imports no dictionary without
+// entries; the table and [ArchiveSplit::index] make the dictionary, and every row with a form-of item counts as a
+// form row.
 ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
-                           const std::map<std::string, HeadwordMarks>& marks);
+                           const std::map<std::string, HeadwordMarks>& marks, bool forms_only = false);
 
 }  // namespace screenlate_language

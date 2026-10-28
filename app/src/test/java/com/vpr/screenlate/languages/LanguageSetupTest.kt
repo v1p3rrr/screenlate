@@ -3,6 +3,7 @@ package com.vpr.screenlate.languages
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionaries.catalogTargetOrder
+import com.vpr.screenlate.dictionary.api.catalog.BUILD_FORMS
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -225,6 +226,62 @@ class LanguageSetupTest {
         val totals = setupTotals(listOf(entry("a", "ru", size = 10), bundled))
         assertThat(totals.downloadBytes).isEqualTo(10)
         assertThat(totals.installedBytes).isEqualTo(90)
+    }
+
+    private val index = "https://example.org/fi-en-index.json"
+    private val finnish = Catalog(
+        listOf(
+            entry("fi-en", "en", CatalogCategory.MAIN, recommended = true, source = "fi").copy(indexUrl = index),
+            entry("fi-ru", "ru", CatalogCategory.MAIN, recommended = true, source = "fi"),
+            entry("fi-forms", "en", CatalogCategory.FORMS, recommended = true, source = "fi")
+                .copy(installedTitle = null, oldTitles = listOf("wty-fi-en (forms)"), indexUrl = index, build = BUILD_FORMS),
+        ),
+        mapOf("fi" to setOf(CatalogCategory.MAIN, CatalogCategory.FORMS)),
+    )
+
+    @Test
+    fun `word forms are a fixed item while the whole dictionary is not ticked, and gone with it`() {
+        val glosses = listOf("ru", "en")
+        val withEnglish = setupCategories(finnish, Language.FINNISH, glosses, installed = emptyList())
+        assertThat(withEnglish.map { it.category }).doesNotContain(CatalogCategory.FORMS)
+        assertThat(missingChoices(withEnglish, emptyMap())).isEmpty()
+        assertThat(setupDownloads(withEnglish, emptyMap()).map { it.id }).containsExactly("fi-ru", "fi-en").inOrder()
+
+        val unticked = mapOf("fi-en" to false)
+        val withoutEnglish = setupCategories(finnish, Language.FINNISH, glosses, installed = emptyList(), choices = unticked)
+        val forms = withoutEnglish.single { it.category == CatalogCategory.FORMS }
+        assertThat(forms.mandatory).isTrue()
+        assertThat(forms.fixed).isTrue()
+        assertThat(missingChoices(withoutEnglish, unticked)).isEmpty()
+        assertThat(setupDownloads(withoutEnglish, unticked).map { it.id }).containsExactly("fi-ru", "fi-forms").inOrder()
+
+        // The only dictionary of the main category is always taken, and with it the forms.
+        val englishOnly = setupCategories(finnish, Language.FINNISH, listOf("en"), installed = emptyList(), choices = unticked)
+        assertThat(englishOnly.map { it.category }).doesNotContain(CatalogCategory.FORMS)
+        val russianOnly = setupCategories(finnish, Language.FINNISH, listOf("ru"), installed = emptyList())
+        assertThat(setupDownloads(russianOnly, emptyMap()).map { it.id }).containsExactly("fi-ru", "fi-forms").inOrder()
+    }
+
+    @Test
+    fun `the whole dictionary holds its word forms, a copy of the forms only does not count as it`() {
+        val whole = installed("wty-fi-en", source = "fi").copy(indexUrl = index)
+        val formsOnly = installed("wty-fi-en (forms)", source = "fi").copy(indexUrl = index)
+        val (main, forms) = finnish.entries.let { it.first() to it.last() }
+        assertThat(main.matches(whole)).isTrue()
+        assertThat(main.matches(formsOnly)).isFalse()
+        assertThat(forms.matches(formsOnly)).isTrue()
+        assertThat(forms.matches(whole)).isFalse()
+        assertThat(forms.isCutFrom(whole)).isTrue()
+        assertThat(forms.isCutFrom(formsOnly)).isFalse()
+        assertThat(forms.isCutFrom(main)).isTrue()
+        assertThat(main.isCutFrom(forms)).isFalse()
+
+        assertThat(missingCategories(Language.FINNISH, listOf(installed("fi-ru", source = "fi")), finnish))
+            .containsExactly(CatalogCategory.FORMS)
+        assertThat(missingCategories(Language.FINNISH, listOf(installed("fi-ru", source = "fi"), formsOnly), finnish)).isEmpty()
+        assertThat(missingCategories(Language.FINNISH, listOf(whole), finnish)).isEmpty()
+        val categories = setupCategories(finnish, Language.FINNISH, listOf("ru"), installed = listOf(whole))
+        assertThat(categories.single { it.category == CatalogCategory.FORMS }.items.single().installed).isTrue()
     }
 
     @Test

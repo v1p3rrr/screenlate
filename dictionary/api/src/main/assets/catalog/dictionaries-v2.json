@@ -1,6 +1,11 @@
 {
   "format": 2,
-  "mandatory": {},
+  "mandatory": {
+    "fi": [
+      "MAIN",
+      "FORMS"
+    ]
+  },
   "templates": {
     "wiktionary": {
       "title": {
@@ -476,6 +481,40 @@
         "vi": "Tìm các dòng chữ để mô hình PaddleOCR v6 đọc; một bản dùng chung cho mọi ngôn ngữ.",
         "zh": "查找 PaddleOCR v6 模型要识别的文本行；所有语言共用一份。",
         "zh-Hant": "尋找 PaddleOCR v6 模型要辨識的文字行；所有語言共用一份。"
+      }
+    },
+    "wiktionary-forms": {
+      "title": {
+        "en": "Word forms (Wiktionary)",
+        "ru": "Словоформы (Викисловарь)",
+        "de": "Wortformen (Wiktionary)",
+        "es": "Formas de las palabras (Wikcionario)",
+        "fr": "Formes des mots (Wiktionnaire)",
+        "it": "Forme delle parole (Wikizionario)",
+        "ja": "語形（ウィクショナリー）",
+        "ko": "단어 형태 (위키낱말사전)",
+        "pl": "Formy wyrazów (Wikisłownik)",
+        "pt": "Formas das palavras (Wikcionário)",
+        "tr": "Sözcük biçimleri (Vikisözlük)",
+        "vi": "Dạng từ (Wiktionary)",
+        "zh": "词形（维基词典）",
+        "zh-Hant": "詞形（維基詞典）"
+      },
+      "description": {
+        "en": "Wiktionary, {source}: the inflected forms listed in the English edition, without its definitions. Dictionaries in other languages find words in any form through them.",
+        "ru": "Викисловарь, {source}: формы слов из английского издания, без его определений. По ним словари на других языках находят слова в любой форме.",
+        "de": "Wiktionary, {source}: die flektierten Formen aus der englischen Ausgabe, ohne ihre Definitionen. Über sie finden Wörterbücher in anderen Sprachen Wörter in jeder Form.",
+        "es": "Wikcionario, {source}: las formas flexionadas de la edición inglesa, sin sus definiciones. Con ellas, los diccionarios en otros idiomas encuentran las palabras en cualquier forma.",
+        "fr": "Wiktionnaire, {source} : les formes fléchies de l’édition anglaise, sans ses définitions. Grâce à elles, les dictionnaires dans d’autres langues trouvent les mots sous toutes leurs formes.",
+        "it": "Wikizionario, {source}: le forme flesse dell’edizione inglese, senza le sue definizioni. Con esse i dizionari in altre lingue trovano le parole in qualsiasi forma.",
+        "ja": "ウィクショナリー（{source}）：英語版にある語形変化の一覧（定義は含まない）。他の言語の辞書でも、変化した形から単語を引けるようになる。",
+        "ko": "위키낱말사전, {source}: 영어판에 실린 단어 변화형(정의 제외). 다른 언어 사전에서도 이를 통해 변화한 형태로 단어를 찾는다.",
+        "pl": "Wikisłownik, {source}: formy fleksyjne z wersji angielskiej, bez jej definicji. Dzięki nim słowniki w innych językach znajdują wyrazy w każdej formie.",
+        "pt": "Wikcionário, {source}: as formas flexionadas da edição inglesa, sem as suas definições. Com elas, os dicionários em outros idiomas encontram as palavras em qualquer forma.",
+        "tr": "Vikisözlük, {source}: İngilizce sürümdeki çekimli biçimler, tanımları olmadan. Diğer dillerdeki sözlükler sözcükleri bunlar sayesinde her biçimde bulur.",
+        "vi": "Wiktionary, {source}: các dạng biến tố trong phiên bản tiếng Anh, không kèm định nghĩa. Nhờ đó, từ điển bằng ngôn ngữ khác tìm được từ ở mọi dạng.",
+        "zh": "维基词典，{source}：英语版中列出的词形变化，不含释义。其他语言的词典借此可按任意词形查到单词。",
+        "zh-Hant": "維基詞典，{source}：英語版中列出的詞形變化，不含釋義。其他語言的詞典藉此可按任意詞形查到單詞。"
       }
     }
   },
@@ -1977,6 +2016,25 @@
       "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_sl.msgpack.gz",
       "downloadSize": 235774,
       "sha256": "68fa0bfb6c083e90cef397435832fd744f7e7a6b90e60319ab969fb266124ae1",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-fi",
+      "title": "wordfreq (fi)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq fi"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "fi",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_fi.msgpack.gz",
+      "downloadSize": 4230131,
+      "sha256": "98fb498142d5cb4ff47df65d6c4784dff4fa2fc6d191a0b26cf6341101922151",
       "build": "wordfreq",
       "version": "3.2",
       "license": "CC BY-SA 4.0",
@@ -3917,6 +3975,40 @@
       "engine": "tesseract",
       "file": "tessdata/gla.traineddata",
       "version": "b0c35f0b10ff",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-fin",
+      "title": "Tesseract fast (fin)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "fi",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/fin.traineddata",
+      "downloadSize": 7865732,
+      "sha256": "61a04cd62b507c3d9ae0e1cda399e6715ebf49dea9df47897c8acdcd3bd3e13c",
+      "model": "tesseract-fast-fin",
+      "engine": "tesseract",
+      "file": "tessdata/fin.traineddata",
+      "version": "61a04cd62b50",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-fin",
+      "title": "Tesseract best (fin)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "fi",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/fin.traineddata",
+      "downloadSize": 14369979,
+      "sha256": "96745dd0900fe997541516863d859616df6120430db546424feae72923828423",
+      "model": "tesseract-best-fin",
+      "engine": "tesseract",
+      "file": "tessdata/fin.traineddata",
+      "version": "96745dd0900f",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -6008,6 +6100,76 @@
       "template": "paddle-detector-v5",
       "category": "OCR_MODEL",
       "sourceLanguage": "gd",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-v6-fi",
+      "title": "PaddleOCR v6 (fi)",
+      "template": "paddle-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "fi",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-v6.zip",
+      "downloadSize": 18446203,
+      "sha256": "a79ef27d6e71e1de59488e4bf87e3bbad73d0e19d63e98c5fcb407adb12db405",
+      "model": "paddle-v6",
+      "engine": "paddle",
+      "version": "a79ef27d6e71",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v6"
+      ]
+    },
+    {
+      "id": "paddle-latin-fi",
+      "title": "PaddleOCR latin (fi)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "fi",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-latin.zip",
+      "downloadSize": 7314761,
+      "sha256": "e9d8bf4d0654742338c9f156bac19ae1eb259d278e29b72e9ea53fe4e69b9a3f",
+      "model": "paddle-latin",
+      "engine": "paddle",
+      "version": "e9d8bf4d0654",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v6-fi",
+      "title": "PaddleOCR detector-v6 (fi)",
+      "template": "paddle-detector-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "fi",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v6.zip",
+      "downloadSize": 7460475,
+      "sha256": "c46ad8ddd9ed2b79130851d32ea55bc8caebe1e44006d04ff6b269dd26f86101",
+      "model": "paddle-detector-v6",
+      "engine": "paddle",
+      "version": "c46ad8ddd9ed",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-detector-v5-fi",
+      "title": "PaddleOCR detector-v5 (fi)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "fi",
       "recommended": false,
       "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
       "downloadSize": 4502663,
@@ -17602,6 +17764,245 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/gd/wty-gd-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 105415,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-en",
+      "title": "Wiktionary (fi–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-en",
+        "kty-fi-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/en/wty-fi-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 43430022,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-forms",
+      "title": "Wiktionary word forms (fi)",
+      "template": "wiktionary-forms",
+      "oldTitles": [
+        "wty-fi-en (forms)"
+      ],
+      "kind": "TERM",
+      "category": "FORMS",
+      "sourceLanguage": "fi",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/en/wty-fi-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 43430022,
+      "installedSize": 68157440,
+      "build": "forms",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-ru",
+      "title": "Wiktionary (fi–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-ru",
+        "kty-fi-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/ru/wty-fi-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 960770,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-fr",
+      "title": "Wiktionary (fi–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-fr",
+        "kty-fi-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/fr/wty-fi-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 3546275,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-it",
+      "title": "Wiktionary (fi–it)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-it",
+        "kty-fi-it"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "it",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-it-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/it/wty-fi-it.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 63282,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-ja",
+      "title": "Wiktionary (fi–ja)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-ja",
+        "kty-fi-ja"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "ja",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-ja-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/ja/wty-fi-ja.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 161492,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-ko",
+      "title": "Wiktionary (fi–ko)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-ko",
+        "kty-fi-ko"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "ko",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-ko-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/ko/wty-fi-ko.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 87251,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-pl",
+      "title": "Wiktionary (fi–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-pl",
+        "kty-fi-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/pl/wty-fi-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 338336,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-pt",
+      "title": "Wiktionary (fi–pt)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-pt",
+        "kty-fi-pt"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "pt",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-pt-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/pt/wty-fi-pt.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 92032,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-tr",
+      "title": "Wiktionary (fi–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-tr",
+        "kty-fi-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/tr/wty-fi-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 533674,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-zh",
+      "title": "Wiktionary (fi–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fi-zh",
+        "kty-fi-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fi",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fi/zh/wty-fi-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 738233,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fi-transcription",
+      "title": "Wiktionary transcription (fi)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-fi-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "fi",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fi-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/fi/wty-fi-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 5703442,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

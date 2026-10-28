@@ -54,6 +54,21 @@ class CatalogParseTest {
     }
 
     @Test
+    fun `word forms need no checksum, another build does`() {
+        val catalog = DictionaryCatalog.parse(
+            """{"format": 2, "mandatory": {"fi": ["MAIN", "FORMS"]}, "dictionaries": [
+                {"id": "fi-forms", "title": "Forms", "kind": "TERM", "category": "FORMS", "sourceLanguage": "fi",
+                 "targetLanguage": "en", "build": "forms", "downloadUrl": "https://example.org/fi-en.zip"},
+                {"id": "fi-freq", "title": "Frequency", "kind": "FREQUENCY", "sourceLanguage": "fi", "build": "wordfreq",
+                 "version": "3", "downloadUrl": "https://example.org/fi.msgpack.gz"}
+            ]}""",
+        )!!
+        assertThat(catalog.entries.map { it.id }).containsExactly("fi-forms")
+        assertThat(catalog.entries.single().category).isEqualTo(CatalogCategory.FORMS)
+        assertThat(catalog.mandatory("fi")).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS).inOrder()
+    }
+
+    @Test
     fun `templates give texts an entry can override, and unknown entries leave out only themselves`() {
         val catalog = DictionaryCatalog.parse(
             """{"format": 2,

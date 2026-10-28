@@ -111,7 +111,7 @@ class LanguageSwitchTest {
     }
 
     private class UnusedEngine : DictionaryEngine {
-        override suspend fun import(archive: File, outputDir: File): ImportedDictionary = error("No import expected")
+        override suspend fun import(archive: File, outputDir: File, formsOnly: Boolean): ImportedDictionary = error("No import expected")
         override suspend fun load(dictionaries: DictionarySet) = Unit
         override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> = error("No lookup expected")
         override suspend fun styles(): List<DictionaryStyle> = emptyList()

@@ -40,6 +40,10 @@ class EntryTest(unittest.TestCase):
         self.assertFalse(catalog.entry("gd", "gla", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("gd", "gla", "best", b"lstm")["recommended"])
         self.assertEqual(catalog.LANGUAGES["gd"], "gla")
+        # Finnish: ML Kit reads it with few errors, so neither is marked.
+        self.assertFalse(catalog.entry("fi", "fin", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("fi", "fin", "best", b"lstm")["recommended"])
+        self.assertEqual(catalog.LANGUAGES["fi"], "fin")
 
 
 class ReplaceTest(unittest.TestCase):

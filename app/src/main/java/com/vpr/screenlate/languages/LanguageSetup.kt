@@ -2,6 +2,7 @@ package com.vpr.screenlate.languages
 
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.dictionary.api.catalog.BUILD_FORMS
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -82,8 +83,10 @@ internal fun glossChoices(
 /**
  * The categories of [language]'s download screen with the gloss languages [glosses]: dictionaries into one of them or
  * into [language] itself (its own Wiktionary edition, after the others), and those without a gloss language
- * (frequency, transcription, the entry's own recognition models). Categories go in their declared order, a mandatory one even when
- * empty; within one, in the order of [glosses], the recommended first. A model counts
+ * (frequency, transcription, the entry's own recognition models). The word forms of a dictionary ([BUILD_FORMS]) are
+ * listed only while the whole dictionary is not ticked ([choices]; English, their gloss language, is always offered),
+ * as it holds them; their category is not mandatory without them. Categories go in their declared order, a mandatory
+ * one even when empty; within one, in the order of [glosses], the recommended first. A model counts
  * as installed when [modelInstalled] says so; a model others require is not listed but goes with them
  * ([SetupItem.requires]). Where [mlKitReads] the language, the model category is [SetupCategory.builtIn]. The main
  * dictionaries of the language its lookups fall back to, into [glosses], follow the language's own as
@@ -95,15 +98,37 @@ internal fun setupCategories(
     glosses: List<String>,
     installed: List<DictionaryEntity>,
     mlKitReads: Boolean = false,
+    choices: Map<String, Boolean> = emptyMap(),
     modelInstalled: (CatalogEntry) -> Boolean = { false },
 ): List<SetupCategory> {
     val code = language.dictionaryCode
     val fallbackCode = language.support.fallbackLanguage?.dictionaryCode
     fun fallback(entry: CatalogEntry) = !entry.isFor(language) && entry.sourceLanguage == fallbackCode
-    val entries = catalog.entries.filter {
-        it.isFor(language) && (it.targetLanguage == null || it.targetLanguage in glosses || it.targetLanguage == code) ||
-            (fallback(it) && it.category == CatalogCategory.MAIN && it.isReadBy(language) && it.targetLanguage in glosses)
+    val listed = catalog.entries.filter {
+        it.build != BUILD_FORMS &&
+            (it.isFor(language) && (it.targetLanguage == null || it.targetLanguage in glosses || it.targetLanguage == code) ||
+                (fallback(it) && it.category == CatalogCategory.MAIN && it.isReadBy(language) && it.targetLanguage in glosses))
     }
+    val withoutForms = setupCategoriesOf(catalog, listed, language, glosses, installed, mlKitReads, ::fallback, modelInstalled)
+    val ticked = withoutForms.flatMap { category -> category.items.filter { category.ticked(it, choices) }.map { it.entry } }
+    val forms = catalog.entries.filter { entry ->
+        entry.build == BUILD_FORMS && entry.isFor(language) && ticked.none { entry.isCutFrom(it) }
+    }
+    if (forms.isEmpty()) return withoutForms
+    return setupCategoriesOf(catalog, listed + forms, language, glosses, installed, mlKitReads, ::fallback, modelInstalled)
+}
+
+private fun setupCategoriesOf(
+    catalog: Catalog,
+    entries: List<CatalogEntry>,
+    language: Language,
+    glosses: List<String>,
+    installed: List<DictionaryEntity>,
+    mlKitReads: Boolean,
+    fallback: (CatalogEntry) -> Boolean,
+    modelInstalled: (CatalogEntry) -> Boolean,
+): List<SetupCategory> {
+    val code = language.dictionaryCode
     val mandatory = catalog.mandatory(language)
     val required = catalog.entries.flatMapTo(hashSetOf()) { it.requires }
     fun requiredItems(entry: CatalogEntry) = entry.requires.mapNotNull { id ->
@@ -123,13 +148,14 @@ internal fun setupCategories(
                 } else {
                     SetupItem(
                         entry,
-                        installed.any(entry::matches),
+                        installed.any { entry.matches(it) || entry.isCutFrom(it) },
                         ownEdition = entry.targetLanguage == code && code !in glosses,
                         fallback = fallback(entry),
                     )
                 }
             }
-        SetupCategory(category, items, category in mandatory, builtIn = mlKitReads && category == CatalogCategory.OCR_MODEL)
+        val needed = category in mandatory && (category != CatalogCategory.FORMS || items.isNotEmpty())
+        SetupCategory(category, items, needed, builtIn = mlKitReads && category == CatalogCategory.OCR_MODEL)
             .takeIf { items.isNotEmpty() || it.mandatory }
     }
 }
@@ -189,7 +215,8 @@ internal fun setupInstalled(
 ): Set<Long> {
     val selected = categories.flatMap { category -> category.items.filter { it.installed && category.ticked(it, choices) } }
         .filterNot { it.entry.isModel }
-    return installed.filter { dictionary -> selected.any { it.entry.matches(dictionary) } }.mapTo(linkedSetOf()) { it.id }
+    return installed.filter { dictionary -> selected.any { it.entry.matches(dictionary) || it.entry.isCutFrom(dictionary) } }
+        .mapTo(linkedSetOf()) { it.id }
 }
 
 /**

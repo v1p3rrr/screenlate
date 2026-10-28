@@ -273,6 +273,17 @@ class SentenceTest {
     }
 
     @Test
+    fun finnishSentenceKeepsOrdinalsAndAbbreviationsAndEndsAtJneBeforeACapital() {
+        val paragraph = "Sataa. Ostin 24. toukokuuta hedelmiä, esim. omenoita ja päärynöitä jne. Talo valmistui 1990-luvulla " +
+            "EU:n tuella. Ks. s. 5 ja vrt. mm. Helsinki. Kaikki hyvin."
+        assertThat(extract(paragraph, "omenoita", Language.FINNISH).text)
+            .isEqualTo("Ostin 24. toukokuuta hedelmiä, esim. omenoita ja päärynöitä jne.")
+        assertThat(extract(paragraph, "tuella", Language.FINNISH).text).isEqualTo("Talo valmistui 1990-luvulla EU:n tuella.")
+        assertThat(extract(paragraph, "Helsinki", Language.FINNISH).text).isEqualTo("Ks. s. 5 ja vrt. mm. Helsinki.")
+        assertThat(extract(paragraph, "hyvin", Language.FINNISH).text).isEqualTo("Kaikki hyvin.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

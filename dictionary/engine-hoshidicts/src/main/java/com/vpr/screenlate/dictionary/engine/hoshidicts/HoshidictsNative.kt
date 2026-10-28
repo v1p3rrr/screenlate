@@ -25,6 +25,7 @@ internal object HoshidictsNative {
         outputDir: ByteArray,
         lowRam: Boolean,
         headwordMarks: ByteArray,
+        formsOnly: Boolean,
     ): ByteArray
 
     external fun load(

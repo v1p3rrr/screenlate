@@ -21,6 +21,14 @@ class SameDictionaryTest {
         )
 
     @Test
+    fun `the forms of a dictionary are another dictionary`() {
+        val whole = dictionary(1, "wty-fi-en [2026-10-01]")
+        assertThat(isFormsOnly("wty-fi-en [2026-10-01] (forms)")).isTrue()
+        assertThat(isFormsOnly(whole.title)).isFalse()
+        assertThat(sameDictionary(listOf(whole), "wty-fi-en [2026-10-08] (forms)", DictionaryKind.TERM, bundled = false)).isNull()
+    }
+
+    @Test
     fun `a new revision mark finds the installed dictionary`() {
         val jmdict = dictionary(1, "JMdict [2026-09-27]", bundled = true)
         assertThat(sameDictionary(listOf(jmdict), "JMdict [2026-10-04]", DictionaryKind.TERM, bundled = true))

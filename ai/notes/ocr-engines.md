@@ -164,6 +164,9 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
   gives "n", ".", "I", "." as four words, ML Kit "n.I." as one and glues the next word's start to it ("l.a" in a
   tight image, 2026-10-22). `CzechSupport.ocrLines` therefore matches the I over the line's words joined with spaces,
   not word by word.
+- ML Kit's Latin model can lose one of a doubled narrow letter: on `testdata/ocr/fi-sample.png` and `fi-anki.png`
+  (Segoe UI, emulator, 2026-10-28) it read riittävä as rittävä and tuella as tuela, every other word of the two
+  screens exactly; cloud recognition read both. A word misread so finds nothing (tuela) or another word.
 - `OcrOptions.deferWholeImage` ("Reduce load on the device"): the band around the aim runs at once, the whole screen
   only when Lens is 3 s late, fails or is unavailable.
 - Threads: the scan flow is collected on the main thread, so every engine moves its own heavy work off it: ML Kit's

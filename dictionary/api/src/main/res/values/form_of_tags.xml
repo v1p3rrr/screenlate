@@ -2,20 +2,24 @@
 <!-- Grammatical tags of form-of entries in Wiktionary dictionaries (FormOfTags). -->
 <resources>
     <string name="form_of_tag_abbreviation">abbreviation</string>
+    <string name="form_of_tag_abessive">abessive</string>
     <string name="form_of_tag_ablative">ablative</string>
     <string name="form_of_tag_absolute">absolute</string>
     <string name="form_of_tag_abstract_noun">abstract noun</string>
     <string name="form_of_tag_accusative">accusative</string>
     <string name="form_of_tag_acronym">acronym</string>
     <string name="form_of_tag_active">active</string>
+    <string name="form_of_tag_adessive">adessive</string>
     <string name="form_of_tag_adjectival">adjectival</string>
     <string name="form_of_tag_adjective">adjective</string>
     <string name="form_of_tag_adnominal">adnominal</string>
     <string name="form_of_tag_adverb">adverb</string>
     <string name="form_of_tag_adverbial">adverbial</string>
+    <string name="form_of_tag_agent">agent participle</string>
     <string name="form_of_tag_agent_noun">agent noun</string>
     <string name="form_of_tag_all_case">all cases</string>
     <string name="form_of_tag_all_gender">all genders</string>
+    <string name="form_of_tag_allative">allative</string>
     <string name="form_of_tag_alt_of">alternative form</string>
     <string name="form_of_tag_alternative">alternative</string>
     <string name="form_of_tag_animate">animate</string>
@@ -42,6 +46,7 @@
     <string name="form_of_tag_clitic">clitic</string>
     <string name="form_of_tag_collective">collective</string>
     <string name="form_of_tag_colloquial">colloquial</string>
+    <string name="form_of_tag_comitative">comitative</string>
     <string name="form_of_tag_common">common</string>
     <string name="form_of_tag_common_gender">common gender</string>
     <string name="form_of_tag_comparative">comparative</string>
@@ -51,6 +56,7 @@
     <string name="form_of_tag_conditional_ii">conditional II</string>
     <string name="form_of_tag_conjunctive">conjunctive</string>
     <string name="form_of_tag_connective">connective</string>
+    <string name="form_of_tag_connegative">connegative</string>
     <string name="form_of_tag_contemplative">contemplative</string>
     <string name="form_of_tag_contemporary">contemporary</string>
     <string name="form_of_tag_continuous">continuous</string>
@@ -63,6 +69,7 @@
     <string name="form_of_tag_dative">dative</string>
     <string name="form_of_tag_debitive">debitive</string>
     <string name="form_of_tag_definite">definite</string>
+    <string name="form_of_tag_delative">delative</string>
     <string name="form_of_tag_demonym">demonym</string>
     <string name="form_of_tag_dependent">dependent</string>
     <string name="form_of_tag_derived_adverb">derived adverb</string>
@@ -76,10 +83,12 @@
     <string name="form_of_tag_dual">dual</string>
     <string name="form_of_tag_early_modern">Early Modern Korean</string>
     <string name="form_of_tag_ekavian">Ekavian</string>
+    <string name="form_of_tag_elative">elative</string>
     <string name="form_of_tag_emphatic">emphatic</string>
     <string name="form_of_tag_endearing">endearing</string>
     <string name="form_of_tag_equal">equal</string>
     <string name="form_of_tag_equative">equative</string>
+    <string name="form_of_tag_essive">essive</string>
     <string name="form_of_tag_eumhun">meaning and reading</string>
     <string name="form_of_tag_euphemistic">euphemistic</string>
     <string name="form_of_tag_female_equivalent">female form</string>
@@ -87,6 +96,7 @@
     <string name="form_of_tag_first_person">first person</string>
     <string name="form_of_tag_flanders">Flanders</string>
     <string name="form_of_tag_formal">formal</string>
+    <string name="form_of_tag_fourth_person">fourth person</string>
     <string name="form_of_tag_frequentative">frequentative</string>
     <string name="form_of_tag_future">future</string>
     <string name="form_of_tag_future_i">future I</string>
@@ -111,6 +121,7 @@
     <string name="form_of_tag_idiomatic">idiomatic</string>
     <string name="form_of_tag_ijekavian">Ijekavian</string>
     <string name="form_of_tag_ikavian">Ikavian</string>
+    <string name="form_of_tag_illative">illative</string>
     <string name="form_of_tag_imperative">imperative</string>
     <string name="form_of_tag_imperfect">imperfect</string>
     <string name="form_of_tag_imperfect_se">-se form</string>
@@ -122,13 +133,21 @@
     <string name="form_of_tag_indeterminate">indeterminate</string>
     <string name="form_of_tag_indicative">indicative</string>
     <string name="form_of_tag_indirect">indirect</string>
+    <string name="form_of_tag_inessive">inessive</string>
     <string name="form_of_tag_inferential">inferential</string>
     <string name="form_of_tag_inferior">inferior</string>
     <string name="form_of_tag_infinitive">infinitive</string>
     <string name="form_of_tag_infinitive_aorist">aorist infinitive</string>
+    <string name="form_of_tag_infinitive_i">first infinitive</string>
+    <string name="form_of_tag_infinitive_i_long">long first infinitive</string>
+    <string name="form_of_tag_infinitive_ii">second infinitive</string>
+    <string name="form_of_tag_infinitive_iii">third infinitive</string>
+    <string name="form_of_tag_infinitive_iv">fourth infinitive</string>
+    <string name="form_of_tag_infinitive_v">fifth infinitive</string>
     <string name="form_of_tag_infinitive_zu">with zu</string>
     <string name="form_of_tag_informal">informal</string>
     <string name="form_of_tag_initialism">initialism</string>
+    <string name="form_of_tag_instructive">instructive</string>
     <string name="form_of_tag_instrumental">instrumental</string>
     <string name="form_of_tag_internet">Internet</string>
     <string name="form_of_tag_interrogative">interrogative</string>
@@ -140,6 +159,7 @@
     <string name="form_of_tag_kajkavian">Kajkavian</string>
     <string name="form_of_tag_katharevousa">Katharevousa</string>
     <string name="form_of_tag_latin_america">Latin America</string>
+    <string name="form_of_tag_lative">lative</string>
     <string name="form_of_tag_literary">literary</string>
     <string name="form_of_tag_locative">locative</string>
     <string name="form_of_tag_long_form">long form</string>
@@ -200,11 +220,13 @@
     <string name="form_of_tag_possessed_single">singular possessed</string>
     <string name="form_of_tag_possessive">possessive</string>
     <string name="form_of_tag_postpositional">postpositional</string>
+    <string name="form_of_tag_potential">potential</string>
     <string name="form_of_tag_predicative">predicative</string>
     <string name="form_of_tag_prepositional">prepositional</string>
     <string name="form_of_tag_present">present</string>
     <string name="form_of_tag_preterite">preterite</string>
     <string name="form_of_tag_progressive">progressive</string>
+    <string name="form_of_tag_prolative">prolative</string>
     <string name="form_of_tag_pronoun">pronoun</string>
     <string name="form_of_tag_pronunciation_spelling">pronunciation spelling</string>
     <string name="form_of_tag_proper_noun">proper noun</string>
@@ -242,7 +264,9 @@
     <string name="form_of_tag_subjunctive">subjunctive</string>
     <string name="form_of_tag_subjunctive_i">subjunctive I</string>
     <string name="form_of_tag_subjunctive_ii">subjunctive II</string>
+    <string name="form_of_tag_sublative">sublative</string>
     <string name="form_of_tag_subordinate_clause">subordinate clause</string>
+    <string name="form_of_tag_superessive">superessive</string>
     <string name="form_of_tag_superior">superior</string>
     <string name="form_of_tag_superlative">superlative</string>
     <string name="form_of_tag_supine">supine</string>
@@ -257,6 +281,7 @@
     <string name="form_of_tag_traditional_chinese">Traditional</string>
     <string name="form_of_tag_transgressive">transgressive</string>
     <string name="form_of_tag_transitive">transitive</string>
+    <string name="form_of_tag_translative">translative</string>
     <string name="form_of_tag_tuscany">Tuscany</string>
     <string name="form_of_tag_uncommon">uncommon</string>
     <string name="form_of_tag_uncountable">uncountable</string>

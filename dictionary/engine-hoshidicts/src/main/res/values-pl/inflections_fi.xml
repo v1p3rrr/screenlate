@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">klityka</string>
+    <string name="inflection_fi_clitic">klityka: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin od talo, talossakaan od talossa, onkohan od onko)</string>
+    <string name="inflection_fi_possessive_label">sufiks dzierżawczy</string>
+    <string name="inflection_fi_possessive">sufiks dzierżawczy: -ni, -si, -mme, -nne, -nsa/-nsä, długa samogłoska i -n (talossani i talossaan od talossa, taloni od talo)</string>
+</resources>

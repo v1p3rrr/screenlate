@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">клитика</string>
+    <string name="inflection_fi_clitic">клитика: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin от talo, talossakaan от talossa, onkohan от onko)</string>
+    <string name="inflection_fi_possessive_label">притяжательный суффикс</string>
+    <string name="inflection_fi_possessive">притяжательный суффикс: -ni, -si, -mme, -nne, -nsa/-nsä, долгая гласная и -n (talossani и talossaan от talossa, taloni от talo)</string>
+</resources>

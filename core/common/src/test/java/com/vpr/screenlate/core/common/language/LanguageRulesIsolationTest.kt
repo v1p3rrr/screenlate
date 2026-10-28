@@ -47,6 +47,14 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
+    fun `an ending written after a colon joins the word before it only in Finnish`() {
+        assertThat(spaced.where { it.wordStartOffset("EU:", "n", "") == 3 }).containsExactly(Language.FINNISH)
+        assertThat(spaced.where { it.wordStartOffset("STT:l", "l", "e") == 5 }).containsExactly(Language.FINNISH)
+        // A time or a ratio stays apart everywhere.
+        assertThat(spaced.where { it.wordStartOffset("klo 12:", "3", "0") != 0 }).isEmpty()
+    }
+
+    @Test
     fun `a pronoun or preposition joined with a hyphen starts a new word only in Romanian`() {
         assertThat(spaced.where { it.wordStartOffset("s-", "a dus") == 0 }).containsExactly(Language.ROMANIAN)
         assertThat(spaced.where { it.wordStartOffset("într-", "o zi") == 0 }).containsExactly(Language.ROMANIAN)
@@ -146,6 +154,7 @@ class LanguageRulesIsolationTest {
         val ordinals = listOf(
             Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
             Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN, Language.DANISH, Language.SLOVAK, Language.SLOVENIAN,
+            Language.FINNISH,
         )
         assertThat(periodEnding.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(periodEnding.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
@@ -302,6 +311,12 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "Urr. Iain") }).containsExactly(Language.SCOTTISH_GAELIC)
         assertThat(periodEnding.where { holds(it, "msaa. agus") }).containsExactly(Language.SCOTTISH_GAELIC)
         assertThat(periodEnding.where { holds(it, "msaa. Tha") }).isEmpty()
+        // Finnish esim. (esimerkiksi) and mm. (muun muassa; French MM., messieurs, holds too), and jne. (ja niin
+        // edelleen), which holds only before a lowercase word.
+        assertThat(periodEnding.where { holds(it, "esim. Omenoita") }).containsExactly(Language.FINNISH)
+        assertThat(periodEnding.where { holds(it, "mm. Helsinki") }).containsExactly(Language.FRENCH, Language.FINNISH)
+        assertThat(periodEnding.where { holds(it, "jne. ja") }).containsExactly(Language.FINNISH)
+        assertThat(periodEnding.where { holds(it, "jne. Sitten") }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -366,13 +381,16 @@ class LanguageRulesIsolationTest {
             // An apostrophe joins a word without dividing it into parts.
             assertThat(support.partStarts("rock'n'roll", 0, "rock'n'r".length)).isEmpty()
         }
-        // An ending or a particle is looked up with its hyphen in Kazakh and Kyrgyz only, from a hyphen as well.
+        // An ending or a particle is looked up with its hyphen in Kazakh and Kyrgyz after any part, in Finnish after a
+        // number only; a text starting at the hyphen is looked up in these three.
         assertThat(spaced.where { it.partStarts("1990-ға", 0, "1990-ғ".length) != listOf("1990-".length) })
-            .containsExactly(Language.KAZAKH, Language.KYRGYZ)
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.FINNISH)
         assertThat(spaced.where { it.partStarts("сондай-ақ", 0, "сондай-а".length) != listOf("сондай-".length) })
             .containsExactly(Language.KAZAKH, Language.KYRGYZ)
-        assertThat(all.where { it.lookupStart("-ға", latinAsNative = false) != null })
+        assertThat(spaced.where { it.partStarts("EU-maat", 0, "EU-m".length) != listOf("EU-".length) })
             .containsExactly(Language.KAZAKH, Language.KYRGYZ)
+        assertThat(all.where { it.lookupStart("-ға", latinAsNative = false) != null })
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ, Language.FINNISH)
         // The maqaf divides Hebrew words only.
         assertThat(spaced.where { it.partStarts("בית\u05BEספר", 0, "בית\u05BEס".length).isNotEmpty() })
             .containsExactly(Language.HEBREW)
@@ -381,9 +399,11 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only German, Dutch, Swedish, Norwegian and Danish split compounds, German puts capitalized parts first`() {
+    fun `only German, Dutch, Swedish, Norwegian, Danish and Finnish split compounds, German puts capitalized parts first`() {
         assertThat(all.where { it.compoundLinks != null })
-            .containsExactly(Language.GERMAN, Language.DUTCH, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH)
+            .containsExactly(
+                Language.GERMAN, Language.DUTCH, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.FINNISH,
+            )
         assertThat(all.where { it.capitalizedNouns }).containsExactly(Language.GERMAN)
     }
 
@@ -403,7 +423,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
         assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
-            .containsExactly(Language.ROMANIAN, Language.LATIN, Language.SWAHILI)
+            .containsExactly(Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.FINNISH)
     }
 
     @Test
@@ -539,10 +559,10 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Georgian, Armenian, Arabic, Persian, Hebrew, Swedish, Danish and Norwegian consider more characters from the aim than Yomitan's 16 by default`() {
+    fun `only Georgian, Armenian, Arabic, Persian, Hebrew, Swedish, Danish, Norwegian and Finnish consider more characters from the aim than Yomitan's 16 by default`() {
         assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(
             Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.SWEDISH,
-            Language.DANISH, Language.NORWEGIAN,
+            Language.DANISH, Language.NORWEGIAN, Language.FINNISH,
         )
     }
 

@@ -99,7 +99,9 @@ class LanguageSetupViewModel @Inject constructor(
         val choosable = slots.indexOf(null).takeIf { it >= 0 }
         val glosses = if (choosable == null || chosen == null) slots else slots.toMutableList().also { it[choosable] = chosen.code }
         val mlKitReads = mlKit.reads(language)
-        val categories = setupCategories(catalog, language, glosses.filterNotNull(), installed, mlKitReads) { it.isInstalledIn(models) }
+        val categories = setupCategories(catalog, language, glosses.filterNotNull(), installed, mlKitReads, choices) {
+            it.isInstalledIn(models)
+        }
         val downloads = setupDownloads(categories, choices)
         val candidates = mainModelCandidates(categories, choices, catalog.entries.flatMapTo(hashSetOf()) { it.requires })
         return LanguageSetupState(

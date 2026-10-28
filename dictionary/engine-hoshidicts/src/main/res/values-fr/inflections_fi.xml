@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">clitique</string>
+    <string name="inflection_fi_clitic">clitique : -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin de talo, talossakaan de talossa, onkohan de onko)</string>
+    <string name="inflection_fi_possessive_label">suffixe possessif</string>
+    <string name="inflection_fi_possessive">suffixe possessif : -ni, -si, -mme, -nne, -nsa/-nsä, voyelle longue et -n (talossani et talossaan de talossa, taloni de talo)</string>
+</resources>

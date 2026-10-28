@@ -7,8 +7,9 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
-    albanianEndings, gaelicMutations, hebrewTransforms, irishMutations, kazakhTransforms, kyrgyzTransforms,
-    latinEnclitics, persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms, withReplacedTransforms,
+    albanianEndings, finnishTransforms, gaelicMutations, hebrewTransforms, irishMutations, kazakhTransforms,
+    kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms, welshTransforms, withOwnTransforms,
+    withReplacedTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1510,4 +1511,85 @@ test('gaelic mutations stay out of other languages', () => {
         assert.ok(!queried(language, 't-sràid').has('sràid'), language);
     }
     assert.ok(!queried('cy', 'shràid').has('sràid'));
+});
+
+/**
+ * The rule chains, outermost rule last as the engine reports them, that lead from [text] to [lemma] in Finnish.
+ * @param {string} text
+ * @param {string} lemma
+ */
+function finnishChains(text, lemma) {
+    return candidatesTo('fi', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+}
+
+test('finnish clitics and possessive suffixes come off into the case form, untyped', () => {
+    for (const [text, lemma, chain] of [
+        ['talokin', 'talo', 'clitic'],
+        ['rahatkin', 'rahat', 'clitic'],
+        ['talossakaan', 'talossa', 'clitic'],
+        ['kädessäkään', 'kädessä', 'clitic'],
+        ['talossako', 'talossa', 'clitic'],
+        ['tulepahan', 'tule', 'clitic < clitic'],
+        ['tulossapa', 'tulossa', 'clitic'],
+        ['talossani', 'talossa', 'possessive'],
+        ['talossasi', 'talossa', 'possessive'],
+        ['talossamme', 'talossa', 'possessive'],
+        ['talossanne', 'talossa', 'possessive'],
+        ['talossansa', 'talossa', 'possessive'],
+        ['kädessänsä', 'kädessä', 'possessive'],
+        ['talossaan', 'talossa', 'possessive'],
+        ['kädessään', 'kädessä', 'possessive'],
+        ['taloni', 'talon', 'possessive'],
+        ['taloni', 'talo', 'possessive'],
+        ['tueksesi', 'tueksi', 'possessive'],
+        ['tuekseen', 'tueksi', 'possessive'],
+        ['talossanikin', 'talossa', 'possessive < clitic'],
+        ['kirjoissammekaan', 'kirjoissa', 'possessive < clitic'],
+        ['Talossanikin', 'Talossa', 'possessive < clitic'],
+    ]) {
+        assert.ok(finnishChains(text, lemma).includes(chain), `${text} → ${lemma}: ${finnishChains(text, lemma)}`);
+    }
+    // Wiktionary's Finnish entries give no part of speech: the texts the rules give match any entry, the text as
+    // written stays typed.
+    assert.ok(candidatesTo('fi', 'talossani', 'talossa').every((c) => c.u));
+    const written = candidates('fi', 'talossani').find((c) => c.d === 'talossani');
+    assert.ok(!written.u);
+    assert.equal(written.r.flat().length, 0);
+});
+
+test('finnish endings leave three letters, come off in their order and once each', () => {
+    // Three letters stay before an ending: vesi is no ve with -si, onko no on with -ko.
+    assert.ok(!queried('fi', 'vesi').has('ve'));
+    assert.ok(!queried('fi', 'onko').has('on'));
+    assert.ok(queried('fi', 'kuusi').has('kuu'));
+    // -han is the outermost clitic, -ko the inner one: taloko-han, not talohan-ko.
+    assert.ok(queried('fi', 'talokohan').has('talo'));
+    assert.ok(!queried('fi', 'talohanko').has('talo'));
+    // One clitic of each place and one possessive suffix.
+    assert.ok(!queried('fi', 'talokinkin').has('talo'));
+    assert.ok(!queried('fi', 'talossanini').has('talossa'));
+    // A possessive suffix comes before a clitic, not after it.
+    assert.ok(!queried('fi', 'talossakinni').has('talossa'));
+    // -Vn needs the vowel before it twice: talossan is no talossa with a possessive.
+    assert.ok(!candidates('fi', 'talossan').some((c) => c.d === 'talossa' && c.r.flat().length > 0));
+});
+
+test('every finnish rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_fi.xml'), 'utf8');
+    const rules = Object.entries(finnishTransforms.transforms);
+    assert.deepEqual(rules.map(([id]) => id), ['clitic', 'possessive']);
+    for (const [id, {name, description}] of rules) {
+        assert.equal(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('finnish endings stay out of other languages', () => {
+    for (const language of ['en', 'sv', 'no', 'lt', 'sw']) {
+        assert.ok(!queried(language, 'talossanikin').has('talossa'), language);
+        assert.ok(!queried(language, 'talokin').has('talo'), language);
+    }
 });

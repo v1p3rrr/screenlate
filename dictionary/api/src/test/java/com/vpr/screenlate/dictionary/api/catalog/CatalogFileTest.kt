@@ -73,7 +73,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -408,6 +408,29 @@ class CatalogFileTest {
         )
         assertThat(gaelic.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.SCOTTISH_GAELIC) }).isEqualTo(gaelic)
+    }
+
+    @Test
+    fun `finnish offers its wiktionaries, their word forms and frequencies, ticked, the forms mandatory, and the ocr models unticked`() {
+        val finnish = catalog!!.entries.filter { it.isFor(Language.FINNISH) }
+        assertThat(finnish.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-fi-en", "wiktionary-fi-forms", "wiktionary-fi-ru", "wiktionary-fi-fr", "wiktionary-fi-it",
+            "wiktionary-fi-ja", "wiktionary-fi-ko", "wiktionary-fi-pl", "wiktionary-fi-pt", "wiktionary-fi-tr",
+            "wiktionary-fi-zh", "wiktionary-fi-transcription", "wordfreq-fi",
+        )
+        // ML Kit reads Finnish with few errors, so no model is marked more accurate.
+        assertThat(finnish.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-fin", "tesseract-best-fin", "paddle-v6-fi", "paddle-latin-fi", "paddle-detector-v6-fi",
+            "paddle-detector-v5-fi",
+        )
+        // The forms come from the English edition's file, which the English dictionary installs as well.
+        val forms = finnish.single { it.category == CatalogCategory.FORMS }
+        val english = finnish.single { it.id == "wiktionary-fi-en" }
+        assertThat(forms.build).isEqualTo(BUILD_FORMS)
+        assertThat(forms.downloadUrl).isEqualTo(english.downloadUrl)
+        assertThat(forms.indexUrl).isEqualTo(english.indexUrl)
+        assertThat(catalog!!.mandatory(Language.FINNISH)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.FINNISH) }).isEqualTo(finnish)
     }
 
     @Test

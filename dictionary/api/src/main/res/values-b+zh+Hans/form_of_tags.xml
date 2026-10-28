@@ -2,20 +2,24 @@
 <!-- Simplified Chinese translation of values/form_of_tags.xml. -->
 <resources>
     <string name="form_of_tag_abbreviation">缩写</string>
+    <string name="form_of_tag_abessive">欠格</string>
     <string name="form_of_tag_ablative">离格</string>
     <string name="form_of_tag_absolute">绝对</string>
     <string name="form_of_tag_abstract_noun">抽象名词</string>
     <string name="form_of_tag_accusative">宾格</string>
     <string name="form_of_tag_acronym">首字母拼读词</string>
     <string name="form_of_tag_active">主动</string>
+    <string name="form_of_tag_adessive">所格</string>
     <string name="form_of_tag_adjectival">形容词性</string>
     <string name="form_of_tag_adjective">形容词</string>
     <string name="form_of_tag_adnominal">定语形</string>
     <string name="form_of_tag_adverb">副词</string>
     <string name="form_of_tag_adverbial">副词性</string>
+    <string name="form_of_tag_agent">施事分词</string>
     <string name="form_of_tag_agent_noun">施事名词</string>
     <string name="form_of_tag_all_case">各格</string>
     <string name="form_of_tag_all_gender">各性</string>
+    <string name="form_of_tag_allative">向格</string>
     <string name="form_of_tag_alt_of">异体</string>
     <string name="form_of_tag_alternative">变体</string>
     <string name="form_of_tag_animate">有生</string>
@@ -42,6 +46,7 @@
     <string name="form_of_tag_clitic">附着形</string>
     <string name="form_of_tag_collective">集合</string>
     <string name="form_of_tag_colloquial">口语</string>
+    <string name="form_of_tag_comitative">共格</string>
     <string name="form_of_tag_common">常见</string>
     <string name="form_of_tag_common_gender">通性</string>
     <string name="form_of_tag_comparative">比较级</string>
@@ -51,6 +56,7 @@
     <string name="form_of_tag_conditional_ii">条件式第二式</string>
     <string name="form_of_tag_conjunctive">连接形</string>
     <string name="form_of_tag_connective">连接形</string>
+    <string name="form_of_tag_connegative">否定形</string>
     <string name="form_of_tag_contemplative">未然体</string>
     <string name="form_of_tag_contemporary">同时</string>
     <string name="form_of_tag_continuous">进行</string>
@@ -63,6 +69,7 @@
     <string name="form_of_tag_dative">与格</string>
     <string name="form_of_tag_debitive">义务式</string>
     <string name="form_of_tag_definite">定指</string>
+    <string name="form_of_tag_delative">上离格</string>
     <string name="form_of_tag_demonym">居民称谓</string>
     <string name="form_of_tag_dependent">依附形</string>
     <string name="form_of_tag_derived_adverb">派生副词</string>
@@ -76,10 +83,12 @@
     <string name="form_of_tag_dual">双数</string>
     <string name="form_of_tag_early_modern">近代朝鲜语</string>
     <string name="form_of_tag_ekavian">埃卡维亚方言</string>
+    <string name="form_of_tag_elative">出格</string>
     <string name="form_of_tag_emphatic">强调</string>
     <string name="form_of_tag_endearing">爱称</string>
     <string name="form_of_tag_equal">同等</string>
     <string name="form_of_tag_equative">同级</string>
+    <string name="form_of_tag_essive">样格</string>
     <string name="form_of_tag_eumhun">音训</string>
     <string name="form_of_tag_euphemistic">委婉</string>
     <string name="form_of_tag_female_equivalent">女性形式</string>
@@ -87,6 +96,7 @@
     <string name="form_of_tag_first_person">第一人称</string>
     <string name="form_of_tag_flanders">佛兰德</string>
     <string name="form_of_tag_formal">正式</string>
+    <string name="form_of_tag_fourth_person">第四人称</string>
     <string name="form_of_tag_frequentative">反复体</string>
     <string name="form_of_tag_future">将来时</string>
     <string name="form_of_tag_future_i">将来时第一式</string>
@@ -111,6 +121,7 @@
     <string name="form_of_tag_idiomatic">习语</string>
     <string name="form_of_tag_ijekavian">伊耶卡维亚方言</string>
     <string name="form_of_tag_ikavian">伊卡维亚方言</string>
+    <string name="form_of_tag_illative">入格</string>
     <string name="form_of_tag_imperative">命令式</string>
     <string name="form_of_tag_imperfect">未完成过去时</string>
     <string name="form_of_tag_imperfect_se">-se 形式</string>
@@ -122,13 +133,21 @@
     <string name="form_of_tag_indeterminate">不定向</string>
     <string name="form_of_tag_indicative">直陈式</string>
     <string name="form_of_tag_indirect">间接</string>
+    <string name="form_of_tag_inessive">内格</string>
     <string name="form_of_tag_inferential">传闻式</string>
     <string name="form_of_tag_inferior">劣等</string>
     <string name="form_of_tag_infinitive">不定式</string>
     <string name="form_of_tag_infinitive_aorist">不定过去时不定式</string>
+    <string name="form_of_tag_infinitive_i">第一不定式</string>
+    <string name="form_of_tag_infinitive_i_long">第一不定式长形</string>
+    <string name="form_of_tag_infinitive_ii">第二不定式</string>
+    <string name="form_of_tag_infinitive_iii">第三不定式</string>
+    <string name="form_of_tag_infinitive_iv">第四不定式</string>
+    <string name="form_of_tag_infinitive_v">第五不定式</string>
     <string name="form_of_tag_infinitive_zu">带 zu</string>
     <string name="form_of_tag_informal">非正式</string>
     <string name="form_of_tag_initialism">首字母缩略词</string>
+    <string name="form_of_tag_instructive">指示格</string>
     <string name="form_of_tag_instrumental">工具格</string>
     <string name="form_of_tag_internet">网络</string>
     <string name="form_of_tag_interrogative">疑问</string>
@@ -140,6 +159,7 @@
     <string name="form_of_tag_kajkavian">卡伊卡维亚方言</string>
     <string name="form_of_tag_katharevousa">纯正希腊语</string>
     <string name="form_of_tag_latin_america">拉丁美洲</string>
+    <string name="form_of_tag_lative">方向格</string>
     <string name="form_of_tag_literary">书面</string>
     <string name="form_of_tag_locative">方位格</string>
     <string name="form_of_tag_long_form">长形式</string>
@@ -200,11 +220,13 @@
     <string name="form_of_tag_possessed_single">被领有者单数</string>
     <string name="form_of_tag_possessive">所有格</string>
     <string name="form_of_tag_postpositional">后置</string>
+    <string name="form_of_tag_potential">可能式</string>
     <string name="form_of_tag_predicative">表语</string>
     <string name="form_of_tag_prepositional">前置格</string>
     <string name="form_of_tag_present">现在时</string>
     <string name="form_of_tag_preterite">过去式</string>
     <string name="form_of_tag_progressive">进行式</string>
+    <string name="form_of_tag_prolative">经由格</string>
     <string name="form_of_tag_pronoun">代词</string>
     <string name="form_of_tag_pronunciation_spelling">按发音拼写</string>
     <string name="form_of_tag_proper_noun">专有名词</string>
@@ -242,7 +264,9 @@
     <string name="form_of_tag_subjunctive">虚拟式</string>
     <string name="form_of_tag_subjunctive_i">虚拟式第一式</string>
     <string name="form_of_tag_subjunctive_ii">虚拟式第二式</string>
+    <string name="form_of_tag_sublative">上向格</string>
     <string name="form_of_tag_subordinate_clause">从句</string>
+    <string name="form_of_tag_superessive">上格</string>
     <string name="form_of_tag_superior">优等</string>
     <string name="form_of_tag_superlative">最高级</string>
     <string name="form_of_tag_supine">目的动名词</string>
@@ -257,6 +281,7 @@
     <string name="form_of_tag_traditional_chinese">繁体</string>
     <string name="form_of_tag_transgressive">副动词</string>
     <string name="form_of_tag_transitive">及物</string>
+    <string name="form_of_tag_translative">转格</string>
     <string name="form_of_tag_tuscany">托斯卡纳</string>
     <string name="form_of_tag_uncommon">不常见</string>
     <string name="form_of_tag_uncountable">不可数</string>

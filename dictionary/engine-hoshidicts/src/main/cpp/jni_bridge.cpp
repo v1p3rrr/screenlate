@@ -12,8 +12,10 @@
 #include <jni.h>
 
 #include <algorithm>
+#include <chrono>
 #include <exception>
 #include <filesystem>
+#include <fstream>
 #include <limits>
 #include <map>
 #include <memory>
@@ -284,6 +286,32 @@ std::string prefix(const std::string& text, size_t count) {
   return std::string(text.begin(), end);
 }
 
+// A dictionary imported for its forms only: hoshidicts imports none without entries, so its folder holds the
+// summary and, written by the caller, the form-of table. hoshidicts' query skips a folder without its version
+// file, and the table is loaded with the others.
+ImportResult import_forms_only(const screenlate_language::ArchiveSplit& split, const std::filesystem::path& output) {
+  ImportResult result;
+  if (glz::read<glz::opts{.error_on_unknown_keys = false}>(result.summary, split.index) ||
+      result.summary.title.empty()) {
+    throw std::runtime_error("cannot read the dictionary index");
+  }
+  const auto now = std::chrono::system_clock::now().time_since_epoch();
+  result.summary.importDate = std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
+  result.summary.importSuccess = true;
+  result.summary.counts.termMeta["total"] = 0;
+  result.summary.counts.kanjiMeta["total"] = 0;
+  result.title = result.summary.title;
+  const std::filesystem::path directory = output / result.title;
+  std::filesystem::create_directories(directory);
+  std::string summary_json;
+  if (glz::write_json(result.summary, summary_json)) throw std::runtime_error("cannot write the dictionary index");
+  std::ofstream index(directory / "index.json", std::ios::binary);
+  index.write(summary_json.data(), static_cast<std::streamsize>(summary_json.size()));
+  if (!index) throw std::runtime_error("cannot write the dictionary index");
+  result.success = true;
+  return result;
+}
+
 }  // namespace screenlate_jni
 
 using namespace screenlate_jni;
@@ -305,7 +333,8 @@ JNIEXPORT void JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_Hosh
 }
 
 JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_HoshidictsNative_importDictionary(
-    JNIEnv* env, jobject, jbyteArray zip_path, jbyteArray output_dir, jboolean low_ram, jbyteArray headword_marks) {
+    JNIEnv* env, jobject, jbyteArray zip_path, jbyteArray output_dir, jboolean low_ram, jbyteArray headword_marks,
+    jboolean forms_only) {
   try {
     const std::string archive = to_string(env, zip_path);
     const std::filesystem::path output = to_string(env, output_dir);
@@ -316,9 +345,12 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
     }
     // Form-of rows go into our own table; hoshidicts imports the archive without them.
     const std::string split_path = (output / kSplitArchive).string();
-    screenlate_language::ArchiveSplit split = screenlate_language::split_form_of(archive, split_path, marks);
-    ImportResult result = dictionary_importer::import(split.written ? split_path : archive, output.string(),
-                                                      low_ram == JNI_TRUE);
+    screenlate_language::ArchiveSplit split =
+        screenlate_language::split_form_of(archive, split_path, marks, forms_only == JNI_TRUE);
+    ImportResult result = forms_only == JNI_TRUE
+                              ? import_forms_only(split, output)
+                              : dictionary_importer::import(split.written ? split_path : archive,
+                                                            output.string(), low_ram == JNI_TRUE);
     std::error_code error;
     if (split.written) std::filesystem::remove(split_path, error);
     // Without a rewritten archive the table holds only headwords found without their marks (HeadwordMarks).

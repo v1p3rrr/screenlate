@@ -2,20 +2,24 @@
 <!-- Vietnamese translation of values/form_of_tags.xml. -->
 <resources>
     <string name="form_of_tag_abbreviation">viết tắt</string>
+    <string name="form_of_tag_abessive">khiếm cách</string>
     <string name="form_of_tag_ablative">ly cách</string>
     <string name="form_of_tag_absolute">tuyệt đối</string>
     <string name="form_of_tag_abstract_noun">danh từ trừu tượng</string>
     <string name="form_of_tag_accusative">đối cách</string>
     <string name="form_of_tag_acronym">từ cấu tạo từ chữ đầu</string>
     <string name="form_of_tag_active">chủ động</string>
+    <string name="form_of_tag_adessive">tiếp cách</string>
     <string name="form_of_tag_adjectival">tính từ</string>
     <string name="form_of_tag_adjective">tính từ</string>
     <string name="form_of_tag_adnominal">định ngữ</string>
     <string name="form_of_tag_adverb">trạng từ</string>
     <string name="form_of_tag_adverbial">trạng ngữ</string>
+    <string name="form_of_tag_agent">phân từ tác nhân</string>
     <string name="form_of_tag_agent_noun">danh từ chỉ người làm</string>
     <string name="form_of_tag_all_case">mọi cách</string>
     <string name="form_of_tag_all_gender">mọi giống</string>
+    <string name="form_of_tag_allative">hướng cách</string>
     <string name="form_of_tag_alt_of">dạng khác</string>
     <string name="form_of_tag_alternative">biến thể</string>
     <string name="form_of_tag_animate">hữu sinh</string>
@@ -42,6 +46,7 @@
     <string name="form_of_tag_clitic">từ bám</string>
     <string name="form_of_tag_collective">tập hợp</string>
     <string name="form_of_tag_colloquial">khẩu ngữ</string>
+    <string name="form_of_tag_comitative">cộng cách</string>
     <string name="form_of_tag_common">phổ biến</string>
     <string name="form_of_tag_common_gender">giống chung</string>
     <string name="form_of_tag_comparative">so sánh hơn</string>
@@ -51,6 +56,7 @@
     <string name="form_of_tag_conditional_ii">điều kiện II</string>
     <string name="form_of_tag_conjunctive">liên kết</string>
     <string name="form_of_tag_connective">liên kết</string>
+    <string name="form_of_tag_connegative">dạng phủ định</string>
     <string name="form_of_tag_contemplative">sắp diễn</string>
     <string name="form_of_tag_contemporary">đồng thời</string>
     <string name="form_of_tag_continuous">tiếp diễn</string>
@@ -63,6 +69,7 @@
     <string name="form_of_tag_dative">tặng cách</string>
     <string name="form_of_tag_debitive">thức bắt buộc</string>
     <string name="form_of_tag_definite">xác định</string>
+    <string name="form_of_tag_delative">thượng xuất cách</string>
     <string name="form_of_tag_demonym">tên gọi cư dân</string>
     <string name="form_of_tag_dependent">phụ thuộc</string>
     <string name="form_of_tag_derived_adverb">trạng từ phái sinh</string>
@@ -76,10 +83,12 @@
     <string name="form_of_tag_dual">số đôi</string>
     <string name="form_of_tag_early_modern">tiếng Triều Tiên cận đại</string>
     <string name="form_of_tag_ekavian">Ekavia</string>
+    <string name="form_of_tag_elative">xuất cách</string>
     <string name="form_of_tag_emphatic">nhấn mạnh</string>
     <string name="form_of_tag_endearing">thân mật</string>
     <string name="form_of_tag_equal">ngang bằng</string>
     <string name="form_of_tag_equative">so sánh ngang bằng</string>
+    <string name="form_of_tag_essive">trạng thái cách</string>
     <string name="form_of_tag_eumhun">nghĩa và âm</string>
     <string name="form_of_tag_euphemistic">uyển ngữ</string>
     <string name="form_of_tag_female_equivalent">dạng nữ</string>
@@ -87,6 +96,7 @@
     <string name="form_of_tag_first_person">ngôi thứ nhất</string>
     <string name="form_of_tag_flanders">Flanders</string>
     <string name="form_of_tag_formal">trang trọng</string>
+    <string name="form_of_tag_fourth_person">ngôi thứ tư</string>
     <string name="form_of_tag_frequentative">lặp lại</string>
     <string name="form_of_tag_future">tương lai</string>
     <string name="form_of_tag_future_i">tương lai I</string>
@@ -111,6 +121,7 @@
     <string name="form_of_tag_idiomatic">thành ngữ</string>
     <string name="form_of_tag_ijekavian">Ijekavia</string>
     <string name="form_of_tag_ikavian">Ikavia</string>
+    <string name="form_of_tag_illative">nhập cách</string>
     <string name="form_of_tag_imperative">mệnh lệnh</string>
     <string name="form_of_tag_imperfect">quá khứ chưa hoàn thành</string>
     <string name="form_of_tag_imperfect_se">dạng -se</string>
@@ -122,13 +133,21 @@
     <string name="form_of_tag_indeterminate">nhiều chiều</string>
     <string name="form_of_tag_indicative">thức trình bày</string>
     <string name="form_of_tag_indirect">gián tiếp</string>
+    <string name="form_of_tag_inessive">nội cách</string>
     <string name="form_of_tag_inferential">gián tiếp</string>
     <string name="form_of_tag_inferior">kém</string>
     <string name="form_of_tag_infinitive">nguyên mẫu</string>
     <string name="form_of_tag_infinitive_aorist">nguyên mẫu aorist</string>
+    <string name="form_of_tag_infinitive_i">nguyên mẫu thứ nhất</string>
+    <string name="form_of_tag_infinitive_i_long">nguyên mẫu thứ nhất dạng dài</string>
+    <string name="form_of_tag_infinitive_ii">nguyên mẫu thứ hai</string>
+    <string name="form_of_tag_infinitive_iii">nguyên mẫu thứ ba</string>
+    <string name="form_of_tag_infinitive_iv">nguyên mẫu thứ tư</string>
+    <string name="form_of_tag_infinitive_v">nguyên mẫu thứ năm</string>
     <string name="form_of_tag_infinitive_zu">với zu</string>
     <string name="form_of_tag_informal">thân mật</string>
     <string name="form_of_tag_initialism">từ viết tắt chữ đầu</string>
+    <string name="form_of_tag_instructive">chỉ dẫn cách</string>
     <string name="form_of_tag_instrumental">công cụ cách</string>
     <string name="form_of_tag_internet">mạng</string>
     <string name="form_of_tag_interrogative">nghi vấn</string>
@@ -140,6 +159,7 @@
     <string name="form_of_tag_kajkavian">Kajkavia</string>
     <string name="form_of_tag_katharevousa">Katharevousa</string>
     <string name="form_of_tag_latin_america">Mỹ Latinh</string>
+    <string name="form_of_tag_lative">tới cách</string>
     <string name="form_of_tag_literary">văn chương</string>
     <string name="form_of_tag_locative">vị trí cách</string>
     <string name="form_of_tag_long_form">dạng dài</string>
@@ -200,11 +220,13 @@
     <string name="form_of_tag_possessed_single">vật sở hữu số ít</string>
     <string name="form_of_tag_possessive">sở hữu</string>
     <string name="form_of_tag_postpositional">hậu trí</string>
+    <string name="form_of_tag_potential">khả năng</string>
     <string name="form_of_tag_predicative">vị ngữ</string>
     <string name="form_of_tag_prepositional">giới cách</string>
     <string name="form_of_tag_present">hiện tại</string>
     <string name="form_of_tag_preterite">quá khứ đơn</string>
     <string name="form_of_tag_progressive">tiếp diễn</string>
+    <string name="form_of_tag_prolative">kinh qua cách</string>
     <string name="form_of_tag_pronoun">đại từ</string>
     <string name="form_of_tag_pronunciation_spelling">viết theo phát âm</string>
     <string name="form_of_tag_proper_noun">danh từ riêng</string>
@@ -242,7 +264,9 @@
     <string name="form_of_tag_subjunctive">giả định</string>
     <string name="form_of_tag_subjunctive_i">giả định I</string>
     <string name="form_of_tag_subjunctive_ii">giả định II</string>
+    <string name="form_of_tag_sublative">thượng nhập cách</string>
     <string name="form_of_tag_subordinate_clause">mệnh đề phụ</string>
+    <string name="form_of_tag_superessive">thượng cách</string>
     <string name="form_of_tag_superior">hơn</string>
     <string name="form_of_tag_superlative">so sánh nhất</string>
     <string name="form_of_tag_supine">thể supin</string>
@@ -257,6 +281,7 @@
     <string name="form_of_tag_traditional_chinese">phồn thể</string>
     <string name="form_of_tag_transgressive">trạng động từ</string>
     <string name="form_of_tag_transitive">ngoại động</string>
+    <string name="form_of_tag_translative">chuyển cách</string>
     <string name="form_of_tag_tuscany">Toscana</string>
     <string name="form_of_tag_uncommon">ít phổ biến</string>
     <string name="form_of_tag_uncountable">không đếm được</string>

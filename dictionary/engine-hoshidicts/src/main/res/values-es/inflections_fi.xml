@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">clítico</string>
+    <string name="inflection_fi_clitic">clítico: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin de talo, talossakaan de talossa, onkohan de onko)</string>
+    <string name="inflection_fi_possessive_label">sufijo posesivo</string>
+    <string name="inflection_fi_possessive">sufijo posesivo: -ni, -si, -mme, -nne, -nsa/-nsä, vocal larga y -n (talossani y talossaan de talossa, taloni de talo)</string>
+</resources>

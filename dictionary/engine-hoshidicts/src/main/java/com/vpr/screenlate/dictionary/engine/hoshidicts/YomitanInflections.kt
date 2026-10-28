@@ -954,6 +954,10 @@ internal object YomitanInflections {
             "t-prothesis" to Strings(R.string.inflection_gd_t_prothesis_label, R.string.inflection_gd_t_prothesis),
             "h-prothesis" to Strings(R.string.inflection_gd_h_prothesis_label, R.string.inflection_gd_h_prothesis),
         ),
+        "fi" to mapOf(
+            "clitic" to Strings(R.string.inflection_fi_clitic_label, R.string.inflection_fi_clitic),
+            "possessive" to Strings(R.string.inflection_fi_possessive_label, R.string.inflection_fi_possessive),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

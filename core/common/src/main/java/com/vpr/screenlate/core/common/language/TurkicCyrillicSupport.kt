@@ -25,12 +25,6 @@ abstract class TurkicCyrillicSupport : SpacedLanguageSupport() {
      */
     override val ignoredFormTags = setOf("Arabic", "romanization", "Yañalif", "Cyrillic", "Cyrillic sometimes")
 
-    /** A hyphen right before a letter starts a lookup as well, for the dictionaries' suffix entries (-ға). */
-    override fun lookupStart(text: String, latinAsNative: Boolean): LookupStart? {
-        if (text.length > 1 && text[0] == '-' && text[1].isLetter()) return LookupStart.Any
-        return super.lookupStart(text, latinAsNative)
-    }
-
     /**
      * The text with the language's own letters as their Russian twins ([headwordMarks]), when its first word writes
      * one and is not a word as written: OCR and keyboards lose some of a word's letters and keep others (Қазакстан for
@@ -51,6 +45,9 @@ abstract class TurkicCyrillicSupport : SpacedLanguageSupport() {
         }
     }
 
-    /** After any part: endings after digits and abbreviations (1990-ға, АҚШ-қа), particles after a word (сондай-ақ). */
-    override fun takesHyphenedEnding(part: String): Boolean = true
+    /**
+     * After any part, a hyphen before a letter starting a lookup as well: endings after digits and abbreviations
+     * (1990-ға, АҚШ-қа), particles after a word (сондай-ақ).
+     */
+    override val hyphenedEndings = HyphenedEndings.AFTER_ANY
 }

@@ -253,6 +253,11 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   (glaze into `std::string`) for the form-of table. wty and Yomitan's exports write the characters themselves (the
   app finds wty-fa-en's نمی‌دانم), so no catalog dictionary is affected; a third-party dictionary made that way
   would import but find nothing. Not fixed: hoshidicts' code; decoding there costs a copy per string at import.
+- A dictionary of forms only (2026-10-28, the Finnish "Word forms" item): hoshidicts' import throws "empty
+  dictionary" when no bank leaves an entry (`importer.cpp`, no blob offsets). `split_form_of` with `forms_only`
+  therefore writes no archive; `import_forms_only` in `jni_bridge.cpp` makes the folder from the index (title with
+  " (forms)") and the form-of table. Without a `.hoshidicts_N` file, `DictionaryQuery::add_dict` skips the folder
+  silently, while `load` still opens its table, as tables are read from every term path.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

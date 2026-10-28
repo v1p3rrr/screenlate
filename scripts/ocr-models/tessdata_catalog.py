@@ -24,7 +24,7 @@ LANGUAGES = {
     "en": "eng", "de": "deu", "fr": "fra", "es": "spa", "it": "ita", "pt": "por",
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
     "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell", "hi": "hin", "bn": "ben", "ka": "kat", "hy": "hye",
-    "th": "tha", "km": "khm", "ar": "ara", "he": "heb", "kk": "kaz", "ky": "kir", "sv": "swe", "no": "nor", "da": "dan", "ro": "ron", "la": "lat", "lt": "lit", "sk": "slk", "sl": "slv", "eo": "epo", "sq": "sqi", "sw": "swa", "cy": "cym", "ga": "gle", "gd": "gla",
+    "th": "tha", "km": "khm", "ar": "ara", "he": "heb", "kk": "kaz", "ky": "kir", "sv": "swe", "no": "nor", "da": "dan", "ro": "ron", "la": "lat", "lt": "lit", "sk": "slk", "sl": "slv", "eo": "epo", "sq": "sqi", "sw": "swa", "cy": "cym", "ga": "gle", "gd": "gla", "fi": "fin",
     # Serbian's in Cyrillic, which its text is by default.
     "hr": "hrv", "sr": "srp",
 }

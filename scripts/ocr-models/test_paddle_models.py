@@ -44,6 +44,9 @@ class EntriesTest(unittest.TestCase):
         gaelic = [e["model"] for e in built if e["sourceLanguage"] == "gd" and e["recommended"]]
         self.assertEqual(sorted(gaelic), ["paddle-latin", "paddle-v6"])
         self.assertNotIn("gd", paddle.RECOMMENDED)
+        finnish = [e["model"] for e in built if e["sourceLanguage"] == "fi"]
+        self.assertEqual(finnish, ["paddle-v6", "paddle-latin", "paddle-detector-v6", "paddle-detector-v5"])
+        self.assertFalse(any(e["recommended"] for e in built if e["sourceLanguage"] == "fi"))
 
     def test_describes_an_archive_with_its_checksum(self):
         entry = paddle.entry("paddle-v6", "ja", "paddle-v6", b"zip", "paddle-detector-v6", True)

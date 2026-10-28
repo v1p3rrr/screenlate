@@ -21,14 +21,17 @@ import kotlinx.coroutines.withContext
 
 /**
  * Mandatory categories of [language] that none of [dictionaries] covers: the main dictionary is an enabled one with
- * definitions, any other category an enabled copy of one of its catalog entries.
+ * definitions, any other category an enabled copy of one of its catalog entries; word forms also the whole dictionary
+ * they are cut from ([CatalogEntry.isCutFrom]).
  */
 internal fun missingCategories(language: Language, dictionaries: List<DictionaryEntity>, catalog: Catalog): Set<CatalogCategory> {
     val own = dictionaries.filter { it.enabled && it.isFor(language) }
     return catalog.mandatory(language).filterTo(linkedSetOf()) { category ->
         when (category) {
             CatalogCategory.MAIN -> own.none { it.termCount > 0 }
-            else -> own.none { dictionary -> catalog.entries.any { it.category == category && it.matches(dictionary) } }
+            else -> own.none { dictionary ->
+                catalog.entries.any { it.category == category && (it.matches(dictionary) || it.isCutFrom(dictionary)) }
+            }
         }
     }
 }

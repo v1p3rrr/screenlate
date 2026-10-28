@@ -243,6 +243,24 @@ bool is_term_bank(const std::string& name) {
   return name.starts_with("term_bank_") && name.ends_with(".json") && name.find('/') == std::string::npos;
 }
 
+// [content], an index.json, with [kFormsOnlyTitleSuffix] after its title; its other fields stay as they are, so the
+// dictionary still updates from its index URL.
+std::string forms_only_index(const std::string& content) {
+  std::map<std::string, glz::raw_json> index;
+  std::string title;
+  const auto found = glz::read_json(index, content) ? index.end() : index.find("title");
+  if (found == index.end() || glz::read_json(title, found->second.str) || title.empty()) {
+    throw std::runtime_error("cannot read the dictionary index");
+  }
+  if (!title.ends_with(kFormsOnlyTitleSuffix)) title += kFormsOnlyTitleSuffix;
+  std::string quoted;
+  if (glz::write_json(title, quoted)) throw std::runtime_error("cannot write the dictionary index");
+  found->second.str = std::move(quoted);
+  std::string out;
+  if (glz::write_json(index, out)) throw std::runtime_error("cannot write the dictionary index");
+  return out;
+}
+
 class ArchiveWriter {
  public:
   explicit ArchiveWriter(const std::string& path) : file_(std::fopen(path.c_str(), "wb")) {
@@ -389,9 +407,14 @@ std::vector<std::string> cleaned_tags(const std::vector<std::string>& tags) {
   return out;
 }
 
-std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& split, const MarkStripper* stripper) {
+std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& split, const MarkStripper* stripper,
+                                      bool forms_only) {
   std::vector<glz::raw_json_view> rows;
-  if (glz::read_json(rows, content)) return std::nullopt;
+  if (glz::read_json(rows, content)) {
+    // Kept as it is, the bank would bring its definitions along.
+    if (forms_only) throw std::runtime_error("cannot read a term bank");
+    return std::nullopt;
+  }
   const bool every_headword = stripper != nullptr && stripper->every_headword();
   std::string out = "[";
   bool changed = false;
@@ -401,11 +424,19 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
     out += row;
     first = false;
   };
+  // A row without form-of items, which a dictionary imported for its forms only leaves out.
+  auto keep = [&](std::string_view row) {
+    if (forms_only) {
+      changed = true;
+    } else {
+      append(row);
+    }
+  };
   for (const auto& row : rows) {
     std::vector<glz::raw_json_view> fields;
     std::vector<glz::raw_json_view> items;
     if (glz::read_json(fields, row.str) || fields.size() < 6 || glz::read_json(items, fields[5].str)) {
-      append(row.str);
+      keep(row.str);
       continue;
     }
     std::vector<std::tuple<std::string, std::vector<std::string>>> form_of;
@@ -420,7 +451,7 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
     }
     std::string expression;
     if ((form_of.empty() && !every_headword) || glz::read_json(expression, fields[0].str) || expression.empty()) {
-      append(row.str);
+      keep(row.str);
       continue;
     }
     std::string rules;
@@ -431,7 +462,7 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
       for (const auto& key : keys) split.table.add(key, expression, {}, rules);
     }
     if (form_of.empty()) {
-      append(row.str);
+      keep(row.str);
       continue;
     }
     changed = true;
@@ -450,7 +481,7 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
         for (const auto& key : form_keys) split.table.add(key, target, shown, rules, every_headword);
       }
     }
-    if (definitions.empty()) {
+    if (definitions.empty() || forms_only) {
       split.form_rows++;
       continue;
     }
@@ -599,13 +630,18 @@ std::string MarkStripper::strip(std::string_view text, const std::vector<MarkSet
 }
 
 ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
-                           const std::map<std::string, HeadwordMarks>& marks) {
+                           const std::map<std::string, HeadwordMarks>& marks, bool forms_only) {
   ArchiveSplit split;
   MappedFile file(archive);
   const auto entries = read_entries(file);
+  // Left to hoshidicts, the whole dictionary would be imported.
+  if (!entries && forms_only) throw std::runtime_error("cannot read the dictionary archive");
   if (!entries) return split;
   Compressors compressors;
-  if (compressors.decompressor == nullptr || compressors.compressor == nullptr) return split;
+  if (compressors.decompressor == nullptr || compressors.compressor == nullptr) {
+    if (forms_only) throw std::runtime_error("cannot read the dictionary archive");
+    return split;
+  }
 
   // A dictionary without a source language also serves Japanese lookups, which would lose the rows moved out.
   bool other_language = false;
@@ -619,11 +655,29 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
     const auto language = other_language ? marks.find(*index.sourceLanguage) : marks.end();
     if (language != marks.end()) stripper.emplace(language->second);
   }
+  if (!other_language && forms_only) throw std::runtime_error("the dictionary names no language of its own");
   if (!other_language) return split;
+
+  if (forms_only) {
+    for (const auto& entry : *entries) {
+      const bool index = entry.name == "index.json";
+      if (!index && !is_term_bank(entry.name)) continue;
+      const auto content = inflate(file, entry, compressors.decompressor);
+      if (!content) throw std::runtime_error("cannot read the dictionary archive");
+      if (index) {
+        split.index = forms_only_index(*content);
+      } else {
+        split_bank(*content, split, stripper ? &*stripper : nullptr, true);
+      }
+    }
+    if (split.index.empty()) throw std::runtime_error("cannot read the dictionary index");
+    if (split.table.empty()) throw std::runtime_error("the dictionary lists no word forms");
+    return split;
+  }
 
   std::error_code error;
   try {
-    // Written from the first bank that changes; until then nothing is written.
+    // Written from the first entry that changes; until then nothing is written.
     std::unique_ptr<ArchiveWriter> writer;
     size_t copied = 0;
     for (size_t i = 0; i < entries->size(); i++) {
@@ -631,9 +685,10 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
       if (!is_term_bank(entry.name)) continue;
       const auto content = inflate(file, entry, compressors.decompressor);
       const bool every_headword = stripper && stripper->every_headword();
-      const auto rest = content && (every_headword || may_hold_form_of(*content))
-                            ? split_bank(*content, split, stripper ? &*stripper : nullptr)
-                            : std::nullopt;
+      std::optional<std::string> rest;
+      if (content && (every_headword || may_hold_form_of(*content))) {
+        rest = split_bank(*content, split, stripper ? &*stripper : nullptr, false);
+      }
       if (!rest) continue;
       if (!writer) writer = std::make_unique<ArchiveWriter>(output);
       for (; copied < i; copied++) writer->add((*entries)[copied], file.data() + (*entries)[copied].data_offset);

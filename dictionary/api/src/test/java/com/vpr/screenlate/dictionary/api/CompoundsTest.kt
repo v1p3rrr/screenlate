@@ -3,6 +3,7 @@ package com.vpr.screenlate.dictionary.api
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.DanishSupport
 import com.vpr.screenlate.core.common.language.DutchSupport
+import com.vpr.screenlate.core.common.language.FinnishSupport
 import com.vpr.screenlate.core.common.language.NorwegianSupport
 import com.vpr.screenlate.core.common.language.SwedishSupport
 import com.vpr.screenlate.dictionary.api.model.LookupResult
@@ -85,6 +86,20 @@ class CompoundsTest {
         assertThat(danish("sportschef", "sport", "chef")).containsExactly("sport", "chef").inOrder()
         // o is no Danish link.
         assertThat(danish("kirkogård", "kirke", "kirk", "gård")).isNull()
+    }
+
+    @Test
+    fun `finnish joins its words without a link, a genitive first part is a word of its own`() {
+        fun finnish(word: String, vararg words: String) = runBlocking {
+            Compounds.split(word, FinnishSupport.compoundLinks!!) { prefixes(words.toSet(), it) }
+                ?.map { word.substring(it.first, it.last + 1) }
+        }
+        // kirjaston, the genitive of kirjasto, is a form row of the dictionary.
+        assertThat(finnish("kirjastonhoitaja", "kirjasto", "kirjaston", "hoitaja")).containsExactly("kirjaston", "hoitaja")
+            .inOrder()
+        assertThat(finnish("rautatieasema", "rauta", "rautatie", "tie", "asema")).containsExactly("rautatie", "asema")
+            .inOrder()
+        assertThat(finnish("kirjastossa", "kirjasto")).isNull()
     }
 
     @Test

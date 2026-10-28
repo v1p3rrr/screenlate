@@ -114,7 +114,7 @@ internal class LanguageTestFixture : AutoCloseable {
     private class TestEngine : DictionaryEngine {
         var calls = 0
         lateinit var next: DictionaryMetadata
-        override suspend fun import(archive: File, outputDir: File): ImportedDictionary =
+        override suspend fun import(archive: File, outputDir: File, formsOnly: Boolean): ImportedDictionary =
             ImportedDictionary(File(outputDir, "test").apply { mkdirs(); File(this, "data").writeText("test") }, next)
         override suspend fun load(dictionaries: DictionarySet) = Unit
         override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> {

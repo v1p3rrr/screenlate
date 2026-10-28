@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_fi.xml. -->
+<resources>
+    <string name="inflection_fi_clitic_label">clitico</string>
+    <string name="inflection_fi_clitic">clitico: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin da talo, talossakaan da talossa, onkohan da onko)</string>
+    <string name="inflection_fi_possessive_label">suffisso possessivo</string>
+    <string name="inflection_fi_possessive">suffisso possessivo: -ni, -si, -mme, -nne, -nsa/-nsä, vocale lunga e -n (talossani e talossaan da talossa, taloni da talo)</string>
+</resources>

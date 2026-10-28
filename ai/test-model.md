@@ -171,6 +171,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR45 | Welsh recognition (`testdata/ocr/cy-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ŵ ŷ and mutated words): cloud recognition reads tŷ and tŵr; ML Kit reads tŷ as tý, and the popup on tý finds tŷ (the OCR-only variant); Tesseract cym fast reads tŷ and tŵr | F | U WelshSupportTest, CatalogFileTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | OCR46 | Irish recognition (`testdata/ocr/ga-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with the fada, mutated words and d'fhág): cloud recognition reads the fada and the lowercase prefixes before a capital (nGaillimh, hÉireann, tSín); ML Kit reads the prefixes and the fada of lowercase letters and may drop a capital's (hEireann), which then finds nothing, as Irish words are looked up as written | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR47 | Scottish Gaelic recognition (`testdata/ocr/gd-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with the grave accent, hyphenated prefixes, dh'fhàg, th'ann and the acute of mhór): cloud recognition and ML Kit read the grave vowels and the prefixes with their hyphens (na h-Alba, an t-sràid, ar n-eilean) | F | U CatalogFileTest, M | 2026-10-28 |
+| OCR48 | Finnish recognition (`testdata/ocr/fi-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: clitics and possessives, EU:n and STT:lle, 1990-luvulla, 20-vuotias, a long compound): cloud recognition and ML Kit read ä ö, the colons and the hyphens | F | U CatalogFileTest, M | 2026-10-28 |
 
 ### LK: lookup
 
@@ -251,6 +252,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK75 | Welsh lookups (overlay over `testdata/ocr/cy-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nghath finds cath and Nghymru Cymru ("nasal mutation"), the highlight over the whole word; fara finds bara ("soft mutation"), hysgol ysgol ("h-prothesis"), chath cath ("aspirate mutation"); mae shows bod's form, and with cy-fr alone no bae (bay); ty finds tŷ in app text and the Search screen, twr only twr; tý in app text and the Search screen finds no tŷ; i’w finds both dictionaries' i'w and i’w | F | U WelshSupportTest, glue.test.mjs, RuleOnlyResultsTest, I LanguageLookupTest, M | 2026-10-28 |
 | LK76 | Irish lookups (overlay over `testdata/ocr/ga-sample.png`, app text in AnkiDroid's note editor, and the Search screen): nGaillimh finds Gaillimh ("eclipsis"), the highlight over the whole word; bhean finds bean ("lenition"), tSín Sín ("lenition"), hÉireann Éire through Éireann ("h-prothesis"), t-uisce uisce ("t-prothesis"); in d'fhág a tap on fhág finds fág, a tap on d' the whole word; chomh shows only chomh (no comh), thar shows tar only through ga-en's own row (lenited form); ḃean typed finds bean; fag finds nothing | F | U IrishSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 | LK77 | Scottish Gaelic lookups (overlay over `testdata/ocr/gd-sample.png`, app text in AnkiDroid's note editor, and the Search screen): h-Alba finds Alba ("h-prothesis"), the highlight over the whole word; bhean finds bean ("lenition"), t-sràid sràid ("lenition"), t-uisge uisge ("t-prothesis"), n-eilean eilean ("eclipsis"); in Dh'fhàg a tap on fhàg finds fàg, a tap on Dh' the whole word; th'ann finds ann; mhór finds mòr; chan shows can only through gd-en's own row (cha chan), Bhathar no bathar; bith typed finds bìth, oran òran, bata only bata; hAlba without its hyphen finds nothing | F | U GaelicSupportTest, glue.test.mjs, mutation-exceptions.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
+| LK78 | Finnish lookups (overlay over `testdata/ocr/fi-sample.png` and the Search screen): Talossanikin finds talo with the chips possessive and clitic, the highlight over the whole word; Onkohan finds olla (clitic); a tap on the n of EU:n or on lle of STT:lle finds EU or STT, the highlight from the word's start; 1990-luvulla aimed at luvulla finds luku (the form row), 20-vuotias aimed at vuotias finds -vuotias (an entry of Wiktionary (fi–en) only); kirjastonhoitaja shows "Compound: kirjasto + hoitaja" or its own entry; Kuusi shows kuusi first and kuu only through the Russian dictionary's own row ("redirected from kuusi"), never through the possessive -si; vesi only vesi; talokin finds talo (clitic) | F | U FinnishSupportTest, CompoundsTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-28 |
 
 ### POP: the popup
 
@@ -301,6 +303,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP43 | A Welsh entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next and Lexend, not PT Serif or PT Sans, with "Only for Welsh text" and a Welsh sample sentence; one chosen sets ŵ ŷ; the bubble shows Ŵ and the Languages screen Wales's flag; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP44 | An Irish entry: the Popup settings' font card lists every Latin font with "Only for Irish text" and the Irish sample sentence; the bubble shows Á and the Languages screen Ireland's flag; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-28 |
 | POP45 | A Scottish Gaelic entry: the Popup settings' font card lists every Latin font with "Only for Scottish Gaelic text" and the Gaelic sample sentence; the bubble shows Ò and the Languages screen Scotland's flag; the Russian interface names the language «Шотландский гэльский»; the mutation chips name the mutation in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, GaelicSupportTest, M | 2026-10-28 |
+| POP46 | A Finnish entry: the Popup settings' font card lists every Latin font with "Only for Finnish text" and the Finnish sample sentence; the bubble shows Ä and the Languages screen Finland's flag; the clitic and possessive chips and the cases of the form rows are named in the interface language (Russian too: «единственное число инессив», «агентивное причастие») | F | U FontCatalogFileTest, FlagsTest, FinnishSupportTest, M | 2026-10-28 |
 
 ### AUD: audio
 
@@ -338,6 +341,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD30 | Welsh audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; holding 🔊 on dŵr lists Wiktionary's recording titled without the circumflex; the phone's voice speaks Welsh where it has one | F | U WelshSupportTest, M | 2026-10-28 |
 | AUD31 | Irish audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of uisce finds Lingua Libre's recording | F | U IrishSupportTest, M | 2026-10-28 |
 | AUD32 | Scottish Gaelic audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of uisge finds Lingua Libre's recording; a word with no recording says there is no audio | F | U GaelicSupportTest, M | 2026-10-28 |
+| AUD33 | Finnish audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; the Test of vesi finds Wiktionary's recording | F | U FinnishSupportTest, M | 2026-10-28 |
 
 ### ANK: Anki
 
@@ -381,6 +385,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK37 | A Welsh Anki note (over `testdata/ocr/cy-anki.png`, one paragraph over six lines): for yno the sentence is "Pregethodd y Parch. John Williams yno, h.y. yng Nghaerdydd."; for afalau "Prynodd ffrwythau, e.e. afalau a gellyg."; for Dafydd "Daeth Dafydd Jones, Ysw." (Ysw. ends it before a capital); for fawr "Mae'r tŷ yn fawr." (ML Kit writes tý) | F | U SentenceTest, WelshSupportTest, M | 2026-10-28 |
 | ANK38 | An Irish Anki note (over `testdata/ocr/ga-anki.png`, one paragraph over six lines, ML Kit): for úlla or piorraí the sentence is "Cheannaigh sí torthaí, m.sh. úlla agus piorraí srl." (srl. ends it before a capital); for leabhar "Féach lch. 5 den leabhar."; for baile "D'fhág an Br. Seán an baile." | F | U SentenceTest, IrishSupportTest, M | 2026-10-28 |
 | ANK39 | A Scottish Gaelic Anki note (over `testdata/ocr/gd-anki.png`, one paragraph over seven lines, ML Kit): for ùbhlan the sentence is "Cheannaich i measan, m.e. ùbhlan is peuran msaa." (msaa. ends it before a capital); for Iain "Chunnaic mi an Urr. Iain an-dè."; for dhachaigh "Thàinig an Dr. Dòmhnallach dhachaigh." | F | U SentenceTest, GaelicSupportTest, M | 2026-10-28 |
+| ANK40 | A Finnish Anki note (over `testdata/ocr/fi-anki.png`, one paragraph over five lines, ML Kit, cloud recognition where ML Kit misreads the word): for omenoita the sentence is "Ostin 24. toukokuuta hedelmiä, esim. omenoita ja päärynöitä jne." (the ordinal and esim. hold, jne. ends it before a capital); for tuella "Talo valmistui 1990-luvulla EU:n tuella." | F | U SentenceTest, FinnishSupportTest, M | 2026-10-28 |
 
 ### TR: sentence translation
 
@@ -435,6 +440,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC39 | Esperanto's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (19.1 MB) and the frequency chip shows on Esperanto entries; si still shows si before ŝi, the chips giving si 366 and ŝi 46 | N | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC40 | Albanian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming news texts; it builds on the device from Leipzig's archive (24.9 MB) and the frequency chip shows on Albanian entries | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
 | DIC41 | Swahili's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)", its description naming Wikipedia articles; it builds on the device from Leipzig's archive (18.6 MB) and the frequency chip shows on Swahili entries | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-28 |
+| DIC42 | The Finnish word forms item: with Russian chosen and Wiktionary (fi–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory, with its download and installed size; it imports the fi-en archive without definitions (import time and installed size recorded in the run log), the Dictionaries screen lists it, and Russian entries are found for inflected words (talossa → talo); with fi-en ticked the item is gone, and an installed fi-en counts as it | F | U LanguageSetupTest, CatalogFileTest, I LanguageLookupTest, M | 2026-10-28 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -472,6 +478,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG29 | Welsh setup: the download screen ticks Wiktionary into English and the transcription, lists Russian and French under "Another language…", and offers no word frequency; ML Kit is the main model, Tesseract cym fast and accurate and PaddleOCR v5 and v6 unticked, all four marked "more accurate"; the flag is Wales's and the bubble shows Ŵ | F | U CatalogFileTest, M | 2026-10-28 |
 | LNG30 | Irish setup: the download screen ticks Wiktionary into English and the transcription, lists Russian, French and Polish under "Another language…", and offers no word frequency; ML Kit is the main model, Tesseract gle fast and accurate and PaddleOCR v5 and v6 unticked, none marked; the flag is Ireland's and the bubble shows Á | F | U CatalogFileTest, M | 2026-10-28 |
 | LNG31 | Scottish Gaelic setup: the download screen ticks Wiktionary into English and the transcription, lists Russian under "Another language…", and offers no word frequency; ML Kit is the main model, PaddleOCR v5 and v6 ticked and marked more accurate, Tesseract gla fast and accurate unticked and unmarked; the flag is Scotland's and the bubble shows Ò | F | U CatalogFileTest, M | 2026-10-28 |
+| LNG32 | Finnish setup: the download screen ticks Wiktionary into English, the word frequency and the transcription; with Wiktionary (fi–en) unticked, the word forms item is mandatory; ML Kit is the main model, Tesseract fin and PaddleOCR v5 and v6 unticked and unmarked; the flag is Finland's and the bubble shows Ä | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 
 ### SET: settings, backup, appearance
 
@@ -621,6 +628,66 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-28, `languages/fi` (uncommitted build on `0a38e341`), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Finnish (LNG32, DIC42, OCR48, LK78, POP46, AUD33, ANK40) through the download screen, the
+Dictionaries screen, the overlay over `testdata/ocr/fi-sample.png` and `fi-anki.png` (Segoe UI, in the debug viewer)
+with ML Kit alone and cloud recognition alone, the Search screen, the Popup, Audio, Appearance and Anki settings and
+Anki notes into the local "Screenlate Test" deck ({sentence} as Meaning); the engine's instrumented tests. An
+x86_64-only APK.
+
+Results: passed after one fix (the form tags below). Automated: unit tests (1834, five skipped), lint, the page tests
+(146), the glue and mutation exception tests (116, one skipped), the catalog generator tests (11) and the Python tests
+of the flag, frequency and OCR model scripts passed; `LanguageLookupTest` 38 of 38, the engine's 64 instrumented tests
+and `DictionaryRepositoryTest` 17 of 17 passed on the emulator, the test package uninstalled after.
+
+- LNG32: Finland's flag on the Languages screen; with English as the language of definitions Wiktionary (fi–en, 43 MB)
+  is the fixed main dictionary, the word frequency (4.2 MB) and the transcription (5.7 MB) ticked, no Word forms card;
+  ML Kit the main model, Tesseract fast (7.9 MB) and accurate (14 MB) unticked and unmarked, PaddleOCR v6 and v5
+  "Installed" (from the other Latin languages) without the "More accurate" mark; 53 MB to download, about 194 MB after
+  import. "Another language…" lists Russian, French, Chinese, Italian, Japanese, Korean, Polish, Portuguese and
+  Turkish. Home shows Finnish ready and the bubble Ä.
+- DIC42: with Russian chosen and Wiktionary (fi–en) unticked the Word forms card lists "Word forms (Wiktionary)",
+  43 MB, fixed; 54 MB to download, about 135 MB after import (fi–en ticked: no Word forms card, about 197 MB). The forms
+  import read the 42,412 KB archive in 15.9 s: 4,386,686 forms with 4,623,281 lemma links, a 52,852 KiB table, no
+  definitions; fi–ru took 1.3 s (8,459 forms of its own). The Dictionaries screen lists "wty-fi-en (forms)", and
+  talossa finds talo ("singular inessive") with the Russian definition. Downloaded later from the Dictionaries screen,
+  the whole fi–en took 10 s to download and 21.8 s to import.
+- OCR48: copied with the bubble menu's "Copy all recognized text": cloud recognition read every line of
+  `fi-sample.png` exactly (Talossanikin, EU:n, STT:lle, 1990-luvulla, 20-vuotias, kirjastonhoitaja,
+  Kirjoitettiinkohan); ML Kit every line but riittävä, read as rittävä (below).
+- LK78: overlay (ML Kit, then cloud recognition with fi–en installed): Talossanikin finds talo ("possessive « clitic «
+  singular inessive"), the highlight over the whole word; Onkohan olla ("clitic « third person singular present
+  indicative"); the aim on the n of EU:n finds EU through fi–en's row for EU:n ("genitive/accusative singular"), the
+  highlight over EU:n; on the first l of STT:lle STT, the highlight over STT; on luvulla of 1990-luvulla luku
+  ("singular adessive"), the highlight over luvulla; on vuotias of 20-vuotias -vuotias (fi–en), then vuotias (fi–ru),
+  the highlight from the hyphen; on 20 nothing; kirjastonhoitaja its own entry; Kuusi kuusi (number, noun), then kuu
+  through fi–ru's own row "redirected from kuusi"; kuusta kuusi ("partitive singular"), then kuu ("singular elative");
+  vesi vesi; Kirjoitettiinkohan kirjoittaa ("clitic « clitic « past passive indicative"); talokin talo ("clitic").
+  Search: taloon shows talo's illative row only; talossaan talo ("third person singular possessive of inessive", the
+  row); rautatieasema its own entry; EU:n and -vuotias "No dictionary entries found." while only fi–ru and the forms
+  were installed.
+- POP46: the font card lists the phone's font, Lexend and PT Serif (downloaded), Literata, Inter, Atkinson
+  Hyperlegible Next and PT Sans; "Only for Finnish text"; the sample "Vähäinen sää ja öinen myrsky veivät laivan
+  Ålandin saaristoon." In Russian the chips read «притяжательный суффикс « клитика « единственное число инессив» and
+  kirjoittama «агентивное причастие»; the interface language restored to System.
+- AUD33: sources Wiktionary, Lingua Libre, Text-to-speech; the Test of vesi found Wiktionary's recording ("Found 1"),
+  Lingua Libre "No audio".
+- ANK40 (deck Screenlate Test): omena (omenoita, "plural", ML Kit) "Ostin 24. toukokuuta hedelmiä, esim. omenoita ja
+  päärynöitä jne."; tuki (tuella, "singular adessive", cloud recognition) "Talo valmistui 1990-luvulla EU:n tuella."
+- Fixed: the cases, moods and infinitives of Finnish form rows were in English in every other interface language
+  (Russian «единственное число inessive»); `FormOfTags` now translates them in the 14 locales, with the local cases
+  Hungarian and Estonian will need.
+- Seen, ML Kit's: a doubled narrow letter lost (riittävä read as rittävä, tuella as tuela, which finds nothing); cloud
+  recognition reads both. Not fixed here.
+- Seen: Kuusi shows kuu after kuusi through fi–ru's own "redirected from kuusi" row, not through the possessive rule;
+  the case now says so.
+
+Left on the emulator: the `languages/fi` debug app with Finnish set up (fi–ru, the forms, fi–en, the word frequency
+and the transcription; its Anki settings on the "Screenlate Test" deck and note type, Meaning {sentence}), the other
+languages as before, engines Device (ML Kit), the interface language System, its service enabled; the Finnish notes
+(omena, tuki) in the local deck; the emulator shut down and the lock released.
 
 ### 2026-10-28, `languages/gd` (uncommitted build on `d9e40413`), Pixel_10_Pro (API 37)
 

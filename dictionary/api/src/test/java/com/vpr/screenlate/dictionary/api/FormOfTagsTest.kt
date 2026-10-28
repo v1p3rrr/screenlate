@@ -53,6 +53,18 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `finnish cases, moods and infinitives are translated`() {
+        assertThat(label("singular inessive")).isEqualTo("singular inessive")
+        assertThat(label("plural illative")).isEqualTo("plural illative")
+        assertThat(label("third-person singular present potential")).isEqualTo("third_person singular present potential")
+        assertThat(label("past infinitive-i-long")).isEqualTo("past infinitive_i_long")
+        assertThat(label("third-person elative")).isEqualTo("third_person elative")
+        assertThat(label("noun-from-verb negative fourth-person")).isEqualTo("noun_from_verb negative fourth_person")
+        assertThat(label("agent")).isEqualTo("agent")
+        assertThat(label("present connegative")).isEqualTo("present connegative")
+    }
+
+    @Test
     fun `gloss left after two spaces is cut off`() {
         assertThat(FormOfTags.clean("hanja form   the Korean language”)")).isEqualTo("hanja form")
         assertThat(FormOfTags.clean("hanja form  ”)")).isEqualTo("hanja form")

@@ -2,20 +2,24 @@
 <!-- Russian translation of values/form_of_tags.xml. -->
 <resources>
     <string name="form_of_tag_abbreviation">сокращение</string>
+    <string name="form_of_tag_abessive">абессив</string>
     <string name="form_of_tag_ablative">аблатив</string>
     <string name="form_of_tag_absolute">абсолютное</string>
     <string name="form_of_tag_abstract_noun">отвлечённое существительное</string>
     <string name="form_of_tag_accusative">винительный падеж</string>
     <string name="form_of_tag_acronym">акроним</string>
     <string name="form_of_tag_active">действительный залог</string>
+    <string name="form_of_tag_adessive">адессив</string>
     <string name="form_of_tag_adjectival">адъективное</string>
     <string name="form_of_tag_adjective">прилагательное</string>
     <string name="form_of_tag_adnominal">определительная форма</string>
     <string name="form_of_tag_adverb">наречие</string>
     <string name="form_of_tag_adverbial">наречная форма</string>
+    <string name="form_of_tag_agent">агентивное причастие</string>
     <string name="form_of_tag_agent_noun">имя деятеля</string>
     <string name="form_of_tag_all_case">все падежи</string>
     <string name="form_of_tag_all_gender">все роды</string>
+    <string name="form_of_tag_allative">аллатив</string>
     <string name="form_of_tag_alt_of">вариант</string>
     <string name="form_of_tag_alternative">альтернативное</string>
     <string name="form_of_tag_animate">одушевлённое</string>
@@ -42,6 +46,7 @@
     <string name="form_of_tag_clitic">клитика</string>
     <string name="form_of_tag_collective">собирательное</string>
     <string name="form_of_tag_colloquial">разговорное</string>
+    <string name="form_of_tag_comitative">комитатив</string>
     <string name="form_of_tag_common">частое</string>
     <string name="form_of_tag_common_gender">общий род</string>
     <string name="form_of_tag_comparative">сравнительная степень</string>
@@ -51,6 +56,7 @@
     <string name="form_of_tag_conditional_ii">условное наклонение II</string>
     <string name="form_of_tag_conjunctive">соединительная форма</string>
     <string name="form_of_tag_connective">связующее</string>
+    <string name="form_of_tag_connegative">коннегатив</string>
     <string name="form_of_tag_contemplative">предстоящее</string>
     <string name="form_of_tag_contemporary">одновременное</string>
     <string name="form_of_tag_continuous">длительное</string>
@@ -63,6 +69,7 @@
     <string name="form_of_tag_dative">дательный падеж</string>
     <string name="form_of_tag_debitive">долженствовательное наклонение</string>
     <string name="form_of_tag_definite">определённая форма</string>
+    <string name="form_of_tag_delative">делатив</string>
     <string name="form_of_tag_demonym">название жителей</string>
     <string name="form_of_tag_dependent">зависимая форма</string>
     <string name="form_of_tag_derived_adverb">производное наречие</string>
@@ -76,10 +83,12 @@
     <string name="form_of_tag_dual">двойственное число</string>
     <string name="form_of_tag_early_modern">ранний новокорейский</string>
     <string name="form_of_tag_ekavian">экавское</string>
+    <string name="form_of_tag_elative">элатив</string>
     <string name="form_of_tag_emphatic">усилительное</string>
     <string name="form_of_tag_endearing">ласкательное</string>
     <string name="form_of_tag_equal">равной степени</string>
     <string name="form_of_tag_equative">экватив</string>
+    <string name="form_of_tag_essive">эссив</string>
     <string name="form_of_tag_eumhun">значение и чтение</string>
     <string name="form_of_tag_euphemistic">эвфемизм</string>
     <string name="form_of_tag_female_equivalent">женская форма</string>
@@ -87,6 +96,7 @@
     <string name="form_of_tag_first_person">1-е лицо</string>
     <string name="form_of_tag_flanders">Фландрия</string>
     <string name="form_of_tag_formal">официальное</string>
+    <string name="form_of_tag_fourth_person">4-е лицо</string>
     <string name="form_of_tag_frequentative">многократное</string>
     <string name="form_of_tag_future">будущее время</string>
     <string name="form_of_tag_future_i">будущее время I</string>
@@ -111,6 +121,7 @@
     <string name="form_of_tag_idiomatic">идиоматическое</string>
     <string name="form_of_tag_ijekavian">иекавское</string>
     <string name="form_of_tag_ikavian">икавское</string>
+    <string name="form_of_tag_illative">иллатив</string>
     <string name="form_of_tag_imperative">повелительное наклонение</string>
     <string name="form_of_tag_imperfect">имперфект</string>
     <string name="form_of_tag_imperfect_se">форма на -se</string>
@@ -122,13 +133,21 @@
     <string name="form_of_tag_indeterminate">разнонаправленное</string>
     <string name="form_of_tag_indicative">изъявительное наклонение</string>
     <string name="form_of_tag_indirect">косвенное</string>
+    <string name="form_of_tag_inessive">инессив</string>
     <string name="form_of_tag_inferential">заглазное наклонение</string>
     <string name="form_of_tag_inferior">меньшей степени</string>
     <string name="form_of_tag_infinitive">инфинитив</string>
     <string name="form_of_tag_infinitive_aorist">инфинитив аориста</string>
+    <string name="form_of_tag_infinitive_i">I инфинитив</string>
+    <string name="form_of_tag_infinitive_i_long">длинный I инфинитив</string>
+    <string name="form_of_tag_infinitive_ii">II инфинитив</string>
+    <string name="form_of_tag_infinitive_iii">III инфинитив</string>
+    <string name="form_of_tag_infinitive_iv">IV инфинитив</string>
+    <string name="form_of_tag_infinitive_v">V инфинитив</string>
     <string name="form_of_tag_infinitive_zu">с zu</string>
     <string name="form_of_tag_informal">неформальное</string>
     <string name="form_of_tag_initialism">аббревиатура</string>
+    <string name="form_of_tag_instructive">инструктив</string>
     <string name="form_of_tag_instrumental">творительный падеж</string>
     <string name="form_of_tag_internet">интернет</string>
     <string name="form_of_tag_interrogative">вопросительное</string>
@@ -140,6 +159,7 @@
     <string name="form_of_tag_kajkavian">кайкавское</string>
     <string name="form_of_tag_katharevousa">кафаревуса</string>
     <string name="form_of_tag_latin_america">Латинская Америка</string>
+    <string name="form_of_tag_lative">латив</string>
     <string name="form_of_tag_literary">книжное</string>
     <string name="form_of_tag_locative">местный падеж</string>
     <string name="form_of_tag_long_form">полная форма</string>
@@ -200,11 +220,13 @@
     <string name="form_of_tag_possessed_single">обладаемое в ед. ч.</string>
     <string name="form_of_tag_possessive">притяжательное</string>
     <string name="form_of_tag_postpositional">послеложное</string>
+    <string name="form_of_tag_potential">потенциал</string>
     <string name="form_of_tag_predicative">предикативное</string>
     <string name="form_of_tag_prepositional">предложный падеж</string>
     <string name="form_of_tag_present">настоящее время</string>
     <string name="form_of_tag_preterite">претерит</string>
     <string name="form_of_tag_progressive">продолженное</string>
+    <string name="form_of_tag_prolative">пролатив</string>
     <string name="form_of_tag_pronoun">местоимение</string>
     <string name="form_of_tag_pronunciation_spelling">написание по произношению</string>
     <string name="form_of_tag_proper_noun">имя собственное</string>
@@ -242,7 +264,9 @@
     <string name="form_of_tag_subjunctive">сослагательное наклонение</string>
     <string name="form_of_tag_subjunctive_i">конъюнктив I</string>
     <string name="form_of_tag_subjunctive_ii">конъюнктив II</string>
+    <string name="form_of_tag_sublative">сублатив</string>
     <string name="form_of_tag_subordinate_clause">придаточное предложение</string>
+    <string name="form_of_tag_superessive">суперэссив</string>
     <string name="form_of_tag_superior">большей степени</string>
     <string name="form_of_tag_superlative">превосходная степень</string>
     <string name="form_of_tag_supine">супин</string>
@@ -257,6 +281,7 @@
     <string name="form_of_tag_traditional_chinese">традиционное</string>
     <string name="form_of_tag_transgressive">деепричастие</string>
     <string name="form_of_tag_transitive">переходное</string>
+    <string name="form_of_tag_translative">транслатив</string>
     <string name="form_of_tag_tuscany">Тоскана</string>
     <string name="form_of_tag_uncommon">нечастое</string>
     <string name="form_of_tag_uncountable">неисчисляемое</string>

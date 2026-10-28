@@ -731,10 +731,14 @@ internal fun Set<String>.tagValue(prefix: String): String? = firstOrNull { it.st
 
 private fun WorkInfo.tagValue(prefix: String): String? = tags.tagValue(prefix)
 
-/** What the download [data] gets, the same for two downloads of one thing: its catalog entry, else its URL. */
+/**
+ * What the download [data] gets, the same for two downloads of one thing: its catalog entry, else its URL and the
+ * dictionary it replaces, as one file may update two (a dictionary and its forms only).
+ */
 internal fun downloadKey(data: Data): String? {
     if (data.getString(KEY_SOURCE) !in DictionaryImports.DOWNLOAD_SOURCES) return null
-    return data.getString(KEY_ENTRY_ID)?.let { "entry:$it" } ?: data.getString(KEY_URL)?.let { "url:$it" }
+    val replaces = data.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }?.let { " replacing $it" }.orEmpty()
+    return data.getString(KEY_ENTRY_ID)?.let { "entry:$it" } ?: data.getString(KEY_URL)?.let { "url:$it$replaces" }
 }
 
 /**

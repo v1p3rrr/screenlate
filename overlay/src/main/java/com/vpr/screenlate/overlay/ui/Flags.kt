@@ -64,6 +64,7 @@ object Flags {
         "gb-wls" to R.drawable.flag_gb_wls,
         "ie" to R.drawable.flag_ie,
         "gb-sct" to R.drawable.flag_gb_sct,
+        "fi" to R.drawable.flag_fi,
     )
 
     /** The flag of [country] (or of a language, `lang_la`); null for a country without one. */

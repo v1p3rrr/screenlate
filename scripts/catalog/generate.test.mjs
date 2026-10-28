@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { deflateRawSync } from 'node:zlib';
 import {
   archives, wiktionaryEntries, rebuild, legacy, fill, countWords, needsCount, refreshCounts, MIN_WORDS,
-  TEMPLATE_MAIN, TEMPLATE_TRANSCRIPTION,
+  TEMPLATE_MAIN, TEMPLATE_TRANSCRIPTION, TEMPLATE_FORMS,
 } from './generate.mjs';
 
 const listing = JSON.parse(await readFile(new URL('./test-tree.json', import.meta.url), 'utf8'));
@@ -159,6 +159,28 @@ test('rebuilding keeps hand-written entries first and replaces the Wiktionary on
   const rebuilt = rebuild(document, wiktionaryEntries(archives(listing), manual, words));
   assert.equal(rebuilt.dictionaries[0].id, 'jitendex');
   assert.ok(!rebuilt.dictionaries.some((e) => e.id === 'wiktionary-en-de'));
+});
+
+test('a language whose forms only the English edition lists gets a mandatory word forms entry from it', () => {
+  const MIB = 1024 * 1024;
+  const files = [
+    { path: 'dict/fi/en/wty-fi-en.zip', size: 40 * MIB },
+    { path: 'dict/fi/ru/wty-fi-ru.zip', size: 9 * MIB },
+    { path: 'dict/sw/en/wty-sw-en.zip', size: 9 * MIB },
+  ];
+  const entries = wiktionaryEntries(files, []);
+  const forms = entries.filter((e) => e.template === TEMPLATE_FORMS);
+  assert.deepEqual(forms.map((e) => e.id), ['wiktionary-fi-forms']);
+  const [entry] = forms;
+  assert.equal(entry.category, 'FORMS');
+  assert.equal(entry.build, 'forms');
+  assert.equal(entry.targetLanguage, 'en');
+  assert.equal(entry.downloadUrl, entries.find((e) => e.id === 'wiktionary-fi-en').downloadUrl);
+  assert.deepEqual(entry.oldTitles, ['wty-fi-en (forms)']);
+  assert.equal(entry.installedSize, 65 * MIB);
+
+  const document = { format: 2, templates: {}, mandatory: { et: ['MAIN', 'FORMS'], xx: ['MAIN', 'GLOSSARY'] }, dictionaries: [] };
+  assert.deepEqual(rebuild(document, entries).mandatory, { xx: ['MAIN', 'GLOSSARY'], fi: ['MAIN', 'FORMS'] });
 });
 
 test('templates take language names in the locale and codes', () => {

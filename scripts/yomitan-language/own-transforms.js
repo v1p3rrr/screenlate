@@ -1510,6 +1510,109 @@ export const gaelicMutations = {
 };
 
 /**
+ * Conditions of the Finnish rules, in the order the endings come off: a text before an outer clitic (`o`, -han), one
+ * before -pa after it (`p`), one before an inner clitic (`c`: talossanikin, talossani) and a word (`w`). Each may be a
+ * word or a form as it stands.
+ * @typedef {'w' | 'c' | 'p' | 'o'} FinnishCondition
+ */
+
+/**
+ * A Finnish ending undone: three letters stay before it at least, so the rules leave short words alone (vesi is no
+ * ve with -si); [kept], the last of them, is required as well (the vowel that -Vn lengthens).
+ * @param {string} ending
+ * @param {string} replacement
+ * @param {FinnishCondition[]} conditionsIn
+ * @param {FinnishCondition[]} conditionsOut
+ * @param {string} [kept]
+ * @returns {import('language-transformer').SuffixRule<FinnishCondition>}
+ */
+function finnishEnding(ending, replacement, conditionsIn, conditionsOut, kept = '') {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp(`[^ ]{${3 - kept.length}}${kept}${ending}$`),
+        deinflected: replacement,
+        deinflect: (text) => text.slice(0, -ending.length) + replacement,
+        conditionsIn,
+        conditionsOut,
+    };
+}
+
+/** @type {FinnishCondition[]} */
+const FINNISH_BEFORE_POSSESSIVE = ['c', 'p', 'o'];
+
+/**
+ * A possessive suffix undone: the case form before it as it stands (talossa from talossani), with the -n that the
+ * genitive and the nominative plural lose before it (talon from taloni) and with the translative's -ksi, which is
+ * -kse before it (tueksi from tueksesi).
+ * @param {string} suffix
+ * @returns {import('language-transformer').SuffixRule<FinnishCondition>[]}
+ */
+function finnishPossessive(suffix) {
+    return [
+        finnishEnding(suffix, '', FINNISH_BEFORE_POSSESSIVE, ['w']),
+        finnishEnding(suffix, 'n', FINNISH_BEFORE_POSSESSIVE, ['w']),
+        finnishEnding('kse' + suffix, 'ksi', FINNISH_BEFORE_POSSESSIVE, ['w']),
+    ];
+}
+
+/**
+ * The third-person suffix written as the vowel before it lengthened and -n (talossaan from talossa, tuekseen from
+ * tueksi); a rule per vowel, as Yomitan joins the rules' patterns into one, where a backreference would not hold.
+ * @returns {import('language-transformer').SuffixRule<FinnishCondition>[]}
+ */
+function finnishLongVowelPossessive() {
+    return [...'aeiouyäö'].flatMap((vowel) => [
+        finnishEnding(vowel + 'n', '', FINNISH_BEFORE_POSSESSIVE, ['w'], vowel),
+        ...(vowel === 'e' ? [finnishEnding('kseen', 'ksi', FINNISH_BEFORE_POSSESSIVE, ['w'])] : []),
+    ]);
+}
+
+/**
+ * Finnish clitics and possessive suffixes, which Wiktionary's tables list for few words (talossaan, not talossani or
+ * rahatkin), as the app's own rules. The clitics come off first: -han/-hän outermost, then -pa/-pä, then -ko/-kö, -kin
+ * and -kaan/-kään (onkohan, tulepahan, talossanikin); then a possessive suffix (-ni, -si, -mme, -nne, -nsa/-nsä, the
+ * long vowel and -n). Wiktionary's Finnish entries give no part of speech, so the results match entries without one
+ * (glue.js, `untypedRules`), and forms through their form-of entries (talossa → talo). The engine shows these results
+ * only where the text has no entry or form of its own (FinnishSupport's inflectionRulesOnlyWithoutEntry): taloon is
+ * the illative of talo, not talo with -Vn.
+ * @type {import('language-transformer').LanguageTransformDescriptor<FinnishCondition>}
+ */
+export const finnishTransforms = {
+    language: 'fi',
+    conditions: {
+        w: {name: 'Word', isDictionaryForm: true},
+        c: {name: 'Before a clitic', isDictionaryForm: true},
+        p: {name: 'Before -pa', isDictionaryForm: true},
+        o: {name: 'Before -han', isDictionaryForm: true},
+    },
+    transforms: {
+        clitic: {
+            name: 'clitic',
+            description: 'clitic: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin from talo, talossakaan from talossa, onkohan from onko)',
+            rules: [
+                finnishEnding('han', '', [], ['o']),
+                finnishEnding('hän', '', [], ['o']),
+                finnishEnding('pa', '', ['o'], ['p']),
+                finnishEnding('pä', '', ['o'], ['p']),
+                finnishEnding('ko', '', ['o', 'p'], ['c']),
+                finnishEnding('kö', '', ['o', 'p'], ['c']),
+                finnishEnding('kin', '', ['o'], ['c']),
+                finnishEnding('kaan', '', ['o'], ['c']),
+                finnishEnding('kään', '', ['o'], ['c']),
+            ],
+        },
+        possessive: {
+            name: 'possessive',
+            description: 'possessive suffix: -ni, -si, -mme, -nne, -nsa/-nsä, a long vowel and -n (talossani and talossaan from talossa, taloni from talo)',
+            rules: [
+                ...['ni', 'si', 'mme', 'nne', 'nsa', 'nsä'].flatMap(finnishPossessive),
+                ...finnishLongVowelPossessive(),
+            ],
+        },
+    },
+};
+
+/**
  * [own] in place of Yomitan's descriptor of a language, with Yomitan's conditions, which [own]'s rules give; Yomitan's
  * rules are dropped.
  * @template {string} T
