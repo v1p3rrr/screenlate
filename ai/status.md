@@ -127,6 +127,13 @@ the details.
   to check and merge: Welsh (`languages/cy`), Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`, `ad94d287`)
   merged; the group is done. Technical choices changed while building are marked provisional in the plan's rows and
   changelog. Left outside the group, for the owner: cloud recognition's missing line-end space.
+- Group 5c (`plans/2026-10-19-group-5c.md`), built overnight 2026-10-28 one branch per language for the main session
+  to check and merge, in the order Finnish (`languages/fi`), Hungarian, Estonian, Azerbaijani, Uzbek. The Finnish
+  branch carries the shared pieces: the "Word forms" item (the English dictionary's forms without its definitions,
+  listed while the whole English dictionary is not ticked), the colon endings, the hyphen-ending scope per language
+  and the translated cases and moods of form rows. Finnish checked on the emulator (run log 2026-10-28,
+  `languages/fi`). Open for the owner: question 13 (Finnish rule results beside an entry, decided provisionally and
+  built; it also keeps only the form row's chain where a rule and a row reach the same result, in ro, la, sw too).
 - Wikipedia as a corpus (owner's remark, 2026-10-28 night): some small Wikipedia editions were written largely by
   non-speakers (Scots in 2020; Greenlandic, machine-translated, closed in 2025; neither is in the app). Checked with a
   few web searches, not a full audit, as the owner asked. Wikipedia text gives the frequency dictionaries of Latin,
