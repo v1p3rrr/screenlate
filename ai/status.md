@@ -233,8 +233,11 @@ the details.
     the run log; Tamil `languages/ta` `7520bf41` is merged, with `DravidianSupport` for what Tamil, Telugu and
     Kannada share and a soft hyphen inside a word read in every spaced language; the main session's recheck: 1,992
     unit tests, lint, page (148), glue (155), catalog (11) and Python (86) tests, all 57 bundles rebuilt byte for
-    byte; the session's device run and engine tests 74 of 74 are in the run log; Telugu, Kannada and Cantonese
-    follow). Group 5d (Bulgarian,
+    byte; the session's device run and engine tests 74 of 74 are in the run log; Telugu `languages/te` `b0bfb95f` is
+    merged, with the word-end import key (`HeadwordMarks.endingReplacements`, Telugu -ము as -ం); the main session's
+    recheck: 2,007 unit tests, lint, page (148), glue (159), catalog (11) and Python (86) tests, all 58 bundles
+    rebuilt byte for byte; the session's device run and engine tests 75 of 75 are in the run log; Kannada and
+    Cantonese follow). Group 5d (Bulgarian,
     Mongolian, Macedonian) is merged into `languages/main` (bullet above);
   - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
@@ -266,8 +269,9 @@ the details.
     (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question (form-of steps
     marked by the native lookup, `notes/language-rules.md` bug 48; engine instrumented tests 72 of 72, LK82's
     kengligiga → kenglik on the emulator).
-  - Group 5e's questions 18-20 (decided provisionally as built), 21 (repeated India flags on Home, not built) and 22
-    (a Tamil "Word forms" item for users who untick ta-en, not built) wait for the owner's return.
+  - Group 5e's questions 18-20 (decided provisionally as built), 21 (repeated India flags on Home, not built), 22
+    (a Tamil "Word forms" item for users who untick ta-en, not built) and 23 (the same for Telugu, recommended
+    without) wait for the owner's return.
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
