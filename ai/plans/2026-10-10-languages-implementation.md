@@ -464,7 +464,12 @@ Decided when the first language or group 1 is ready, before it is merged into th
   config is now the hand-written `res/xml/locales_config.xml` (generating it would list every folder), and the test
   keeps it equal to the translations minus `unlisted`. To release: check the screens, then add ar, fa and he to the
   list and empty `unlisted`. Until then a phone whose system language is one of them already gets the translated,
-  unchecked interface, so the branch is not merged before the check. Layouts are unchanged. Questions 93-94.
+  unchecked interface, so the branch is not merged before the check. Questions 93-94.
+  Screens checked on 2026-10-29 (`claude/rtl-1029`, the cloud branch merged onto `languages/main` `3e82e306` with the
+  26 newer strings translated): the back arrow and chevrons mirror, expand arrows point down and up, the bubble's side
+  segments keep screen order, menu paths in the three scripts take ←, Persian Lookup is told from Search, and text not
+  in the interface language keeps its own direction (findings in `notes/translations.md`). Released, provisionally:
+  `locales_config.xml` lists ar, fa and he, `unlisted` is empty. Questions 95-100.
 - Bubble menu in the dock (owner, 2026-10-22, request 75): holding the docked bubble opens the same menu as holding the
   floating one: the quick-language flags and opening the app. Items that need a scan (copy the paragraph, copy all, and
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
@@ -923,10 +928,28 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     tag labels name as other languages' categories: `elative` (the أفعل form) shows as the Finnish case (элатив,
     حالة الخروج), `non-past` and `subjunctive` as general terms where an Arabic reader expects المضارع and المنصوب. In
     every interface language. (a, recommended) Arabic `formTagAliases` to Arabic-specific tags with their own labels
-    in the 17 locales (elative → "elative (أفعل)"); (b) leave them.
+    in the 17 locales (elative → "elative (أفعل)"); (b) leave them. Still open after the emulator check of the
+    right-to-left screens, which did not touch it.
 94. (2026-10-29, cloud session, right-to-left strings) Menu paths in the hints (Apps → Screenlate → Language) keep →
     in Arabic, Persian and Hebrew, where it points against the reading direction. (a) Decide on the emulator check:
-    ← if → reads backwards there; (b) keep →.
+    ← if → reads backwards there; (b) keep →. Decided provisionally on the check (2026-10-29): → reads backwards, so
+    paths written in the three scripts take ←; paths in Latin letters (the Hebrew Yomitan hints name the English
+    menus), romaji examples and language-code pairs keep →, since they run left to right.
+95. (2026-10-29, right-to-left screens) The bubble's side choice names screen edges. (a, built, provisional) Keep
+    Left on the left and Right on the right in every language; (b) mirror it like the other segments (Right first).
+96. (2026-10-29, right-to-left screens) Mirrored icons. (a, built, provisional) Material's auto-mirrored set: the back
+    arrow, the chevrons, and the volume, lookup and dictionaries icons; (b) only the arrows and chevrons.
+97. (2026-10-29, right-to-left screens) Persian named the Lookup settings and the Search tab both جستجو. (a, built,
+    provisional) Lookup is جستجو در واژه‌نامه‌ها («search in the dictionaries»); (b) keep one word for both.
+98. (2026-10-29, right-to-left screens) Release. (a, built, provisional) Offer Arabic, Persian and Hebrew in the
+    language settings now, with flags SA, IR and IL in Appearance's list (the defaults of the Languages screen);
+    (b) wait for a native speaker's review of the strings.
+99. (2026-10-29, right-to-left screens) Catalog texts (70 dictionary and model texts, 38 font descriptions) have no
+    Arabic, Persian or Hebrew version. (a, built, provisional) Show the English one, marked to keep its direction and
+    naming the languages in English; (b) translate them into the three, a separate task.
+100. (2026-10-29, right-to-left screens) Lists joined in code take ", " (22 places, a dictionary's counts among them),
+    a Latin comma in Arabic and Persian (،) and in Japanese and Chinese (、). (a, recommended) A list separator
+    string per locale; (b, as now) leave it.
 
 ## Branches and workflow
 
@@ -1877,3 +1900,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   (backlog); questions 91-92 added.
 - 2026-10-29: cloud session, `cloud/rtl-strings-2026-10-29`: Arabic, Persian and Hebrew strings (backlog entry
   "Right-to-left interface languages"), held out of the language settings; questions 93-94 added.
+- 2026-10-29: `claude/rtl-1029`: the right-to-left screens checked on the emulator and fixed; Arabic, Persian and
+  Hebrew offered in the language settings (provisional); question 94 decided provisionally (← in paths written in
+  the three scripts); questions 95-100 added.
