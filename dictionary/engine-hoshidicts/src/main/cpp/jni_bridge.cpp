@@ -61,6 +61,8 @@ struct Session {
 struct TransformDto {
   std::string name;
   std::string description;
+  // A form-of entry's tag rather than an inflection rule (languages other than Japanese).
+  bool form = false;
 };
 
 // The glossary stays JSON text inside a string: parsing it into a tree in Kotlin and writing it back for the
@@ -222,10 +224,10 @@ LookupDto to_dto(LookupResult&& result) {
 }
 
 // Rule names only: their descriptions are resources on the Kotlin side.
-std::vector<TransformDto> to_transforms(std::vector<std::string>&& chain) {
+std::vector<TransformDto> to_transforms(screenlate_language::Chain&& chain) {
   std::vector<TransformDto> transforms;
   transforms.reserve(chain.size());
-  for (auto& name : chain) transforms.push_back({std::move(name), {}});
+  for (auto& step : chain) transforms.push_back({std::move(step.name), {}, step.form});
   return transforms;
 }
 

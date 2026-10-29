@@ -52,6 +52,24 @@ class RuleOnlyResultsTest {
     }
 
     @Test
+    fun `a form row's tag named as a rule is no rule`() {
+        val home = setOf("dative")
+        val homewards = result("uyga", "uyga")
+        val form = Transform("dative", form = true)
+        val house = LookupResult(
+            matched = "uyga",
+            deinflected = "uy",
+            trace = listOf(Transform("dative")),
+            otherTraces = listOf(listOf(form)),
+            term = TermEntry("uy", "uy"),
+        )
+        val shown = listOf(homewards, house).withoutRuleOnlyResults(home)
+        assertThat(shown.map { it.term.expression }).containsExactly("uyga", "uy").inOrder()
+        assertThat(shown[1].trace).containsExactly(form)
+        assertThat(shown[1].otherTraces).isEmpty()
+    }
+
+    @Test
     fun `nothing is left out without rules`() {
         val list = listOf(result("casă", "casă"), result("casă", "cas", listOf("agreement")))
         assertThat(list.withoutRuleOnlyResults(emptySet())).isSameInstanceAs(list)

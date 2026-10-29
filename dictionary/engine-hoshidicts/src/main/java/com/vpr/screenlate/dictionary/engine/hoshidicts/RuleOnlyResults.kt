@@ -7,8 +7,9 @@ import com.vpr.screenlate.dictionary.api.model.Transform
 /**
  * The results without those reached only through [rules] (rule ids) where another result of the same matched text
  * needs none of them: Romanian casă finds its own entry, and the agreement ending's cas is left out
- * (`LanguageSupport.inflectionRulesOnlyWithoutEntry`). A form-of entry's chain is not a rule's. A result reached
- * both ways keeps only its chains free of them ([withoutRuleChainsBesideFreeOnes]).
+ * (`LanguageSupport.inflectionRulesOnlyWithoutEntry`). A form-of entry's chain is not a rule's, also where its tag is
+ * named as a rule ([Transform.form]: the dative rows of Wiktionary's Uzbek export). A result reached both ways keeps
+ * only its chains free of them ([withoutRuleChainsBesideFreeOnes]).
  */
 internal fun List<LookupResult>.withoutRuleOnlyResults(rules: Set<String>): List<LookupResult> {
     if (rules.isEmpty()) return this
@@ -33,7 +34,7 @@ internal fun List<LookupResult>.withoutRuleChainsBesideFreeOnes(rules: Set<Strin
 
 private fun chains(result: LookupResult) = listOf(result.trace) + result.otherTraces
 
-private fun List<Transform>.throughAny(rules: Set<String>) = any { it.name in rules }
+private fun List<Transform>.throughAny(rules: Set<String>) = any { !it.form && it.name in rules }
 
 /**
  * The results without those found through a headword's spelling without marks ([LookupResult.respelled]) where another

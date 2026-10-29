@@ -695,6 +695,16 @@ Found while building Slovak (2026-10-22):
     (`LanguageFiles` `dictionariesOf`, OcrModelsTest `czech keeps the definitions slovak falls back to while slovak
     stays on`; test-model case DIC34).
 
+Found while measuring the word forms import for Uzbek and Azerbaijani (2026-10-29):
+
+48. The rule-only filter (`RuleOnlyResults`, languages with `inflectionRulesOnlyWithoutEntry`) took a form row whose tag
+    is named as one of the language's rules for a rule's result, so beside the word's own entry it dropped that row's
+    lemma: Wiktionary's Uzbek dative, genitive, accusative and locative rows (about 40,000 in uz–ru), Azerbaijani
+    plural and converb rows (75 Uzbek and 693 Azerbaijani news tokens; deyil lost demək). The native lookup now marks
+    the steps that come from form-of entries (`ChainStep.form`, `Transform.form`), and the filter skips them
+    (RuleOnlyResultsTest `a form row's tag named as a rule is no rule`; I: LanguageLookupTest, uyga with its own entry
+    and a dative row of uy).
+
 ## Limits left as they are
 
 - Bengali endings are undone once: ছেলেদেরকে finds ছেলেদের, not ছেলে. Verb forms come only from Wiktionary's form

@@ -254,7 +254,9 @@ the details.
     import; Uzbek: 1,445 wrong results removed, no right one) with group 5c's questions 18 and 19. Found while
     measuring: the rule filter (`RuleOnlyResults.throughAny`) takes a form row whose tag is named as a rule (uz
     dative, genitive, accusative, locative; az plural, converb) for a rule's result and drops it beside an entry
-    (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question.
+    (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question (form-of steps
+    marked by the native lookup, `notes/language-rules.md` bug 48; the engine's instrumented tests wait for the
+    emulator).
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
