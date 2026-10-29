@@ -41,7 +41,8 @@ the details.
   it and keeps the data); whether it is installed is not known. Installing it ends the diagnostics recording, so the
   diagnostics export comes first if those days are wanted. On the night of 2026-10-28 the owner also got
   `screenlate-dev-fe1afd9a-min.apk` and then `screenlate-dev-9c26bae8-min.apk` (settings rework, the docked hold menu,
-  the catalog layout), which bring the bug badge back (the init script adds `src/debug/res` to the release source set).
+  the catalog layout), and on 2026-10-29 evening `screenlate-dev-4a637b67-min.apk` (`languages/main` `4a637b67`, 22 MB,
+  mapping in the main checkout's `testdata/local-research/builds/`), which bring the bug badge back (the init script adds `src/debug/res` to the release source set).
   They are release-type builds: not debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras), Check
   for updates active. Recipe and R8 mapping: `notes/build-environment.md`, the main checkout's
   `testdata/local-research/builds/`.
@@ -311,6 +312,13 @@ the details.
     updated names languages in English under a Russian interface (Home's "Cantonese"); reopening the app gives
     "Кантонский". `Language.displayName` reads `Locale.getDefault()`, which seems not yet to carry the per-app locale
     on that first start.
+  - Child sessions at the end of 2026-10-29 (owner: archive those with no planned work): archived group 5c research,
+    group 5e research, the app and download fixes and the OCR text rules (their branches are in `languages/main`);
+    group 5a and 5d research could not be archived while a Remote Control client holds them (the owner archives them
+    from the sidebar); group 5b research shares its worktree with the private dictionary copies and stays with it.
+    Kept for planned work: group 5e (Cantonese frequency, irregular Marathi pasts, the Tamil and Telugu headword
+    measurement), group 4e research (its questions 23-27), the port to main, the private dictionary copies (hosting),
+    the emulator checks and the diagnostics build (its export).
   - Before the full release of the languages branch, remind the owner of the five waiting Paddle models (Thai,
     Devanagari, Arabic, Tamil, Telugu; `notes/hosting-files.md`); until then they stay unreleased (owner, 2026-10-29).
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
