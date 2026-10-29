@@ -180,6 +180,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR50 | Estonian recognition (`testdata/ocr/et-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: õ, ä, ö, ü words, the negative forms of olema, NATO-ga and 5-ga, „…“ quotes, a compound): cloud recognition reads õ ä ö ü, š ž and the hyphens; ML Kit may read õ as ö, and such a word is still found (LK80) | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR51 | Azerbaijani recognition (`testdata/ocr/az-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: ə, ı, ğ, ö, ü, ç, ş words, noun and verb endings, 2020-ci and ABŞ-da, «…» quotes; `az-misread.png` prints e and i where ə and ı belong): cloud recognition reads ə ı İ and the hyphens; ML Kit may read ə as e and ı as i, and such a word is still found (LK81) | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR52 | Uzbek recognition (`testdata/ocr/uz-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: oʻ, gʻ and ʼ words, noun and verb endings, 2020-yil and BMT-da, «…» quotes; `uz-misread.png` prints ' for ʻ and ʼ and drops ʻ in Bolsa; `uz-cyrillic.png` is in the Cyrillic alphabet): cloud recognition reads the Latin lines and the Cyrillic; ML Kit may give ʻ as ' or ‘ or drop it, and such a word is still found (LK82); ML Kit reads no Cyrillic | F | U CatalogFileTest, M | 2026-10-28 |
+| OCR53 | Bulgarian and Mongolian recognition (`testdata/ocr/bg-sample.png` and `mn-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/arial.ttf`: Bulgarian articles, plurals, кнѝгата and the pronoun ѝ; Mongolian case and verb endings, ө and ү): cloud recognition reads every word and gives ѝ as й, which still finds ѝ (LK84); ML Kit reads no Cyrillic, so PaddleOCR v5's Cyrillic model is the main on-device model | F | U CatalogFileTest, M | 2026-10-29 (cloud recognition) |
+| OCR54 | Macedonian recognition on the device (`testdata/ocr/mk-sample.png`, Arial: ќ ѓ љ ј ѕ, сѐ and Ѝ; `mk-retry.png` prints Л for Љ in Лубица and capital Ѕ in Ѕвездите): PaddleOCR v5 reads ќ ѓ љ ј and Ѝ, gives capital Ѕ as Latin S, which the letter-for-letter fix turns into Ѕ, and ѕ inside a line as с, which the retry finds (LK85); cloud recognition reads every letter | F | U MacedonianSupportTest, MisreadMatchesTest, M | 2026-10-29 |
 
 ### LK: lookup
 
@@ -266,6 +268,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK81 | Azerbaijani lookups (overlay over `testdata/ocr/az-sample.png` and `az-misread.png`, and the Search screen): kitablarımızda finds kitab (the form row's tags where the dictionary lists the form, else the chips plural, our, locative); gəlirəm finds gəlmək (present, 1st sg.); çörəyi finds çörək; belə shows belə and not bel, while a form row stays (yazı shows yazı, then yaz through the accusative row); məktəbdəydi finds məktəb (locative, past copula); olur finds olmaq through the dictionary's row; a tap on ci of 2020-ci or da of ABŞ-da finds the suffix entry where the dictionary has one, the highlight from the hyphen; recognized Seher and Qizlar find səhər and qız; in Search, seher finds nothing | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 | LK82 | Uzbek lookups (overlay over `testdata/ocr/uz-sample.png`, `uz-misread.png` and, with cloud recognition, `uz-cyrillic.png`, and the Search screen): Kitoblarimizda finds kitob (the form row's tags where the dictionary lists the form, else the chips plural, our, locative); boraman finds bormoq; Qishlogʻimizda finds qishloq; Yuragi finds yurak; Davom shows davom and not davo with Wiktionary (uz–en) installed (uz–ru has no davom); a tap on yil of 2020-yil or da of BMT-da finds the suffix entry where the dictionary has one, the highlight from the hyphen; ma'lumot finds maʼlumot, o'qidim oʻqimoq, so'z soʻz, Qishlog'imizda qishloq, Bolsa boʻlsa (or boʻlmoq through its row); Китобларимизда finds kitob; in Search, ILM finds ilm (uz–en) and ot shows ot before oʻt, while oʻt shows only oʻt | F | I LanguageLookupTest, glue, M | 2026-10-28 |
 | LK83 | Marks folded (Latin- and Cyrillic-script languages but Vietnamese; dictionaries imported or updated after the fold): in Search, a word typed without its marks finds the marked words after the words spelled as typed (Spanish que → que, then qué; Swedish ar → ar, then år; Polish Lodz → Łódź; Kazakh Казакстан → Қазақстан); a word typed with a wrong mark finds only that spelling (Hungarian fúzfa nothing); the same wrong mark recognized finds the right word (overlay: fúzfa → fűzfa); letters of their own stay (Danish æble only æble, German Straße only Straße); Vietnamese ma finds no mà or má through the fold; Welsh and Gaelic words with an entry show no folded results | N | I LanguageLookupTest, glue, U FoldedMarksTest, M | 2026-10-29 (Spanish only: que, cancion, overlay cancíon and pinguino) |
+| LK84 | Bulgarian lookups (overlay over `testdata/ocr/bg-sample.png` with cloud recognition, and the Search screen): министерството finds министерство, книгите книга (plural definite), кнѝгата книга, умна умен, фирмата фирма; ѝ read as й shows й and Й, then ѝ (the pronoun); in Search, четат finds чета, децата дете, Дадох дам; a verb whose dictionary form wty-bg-en lacks (публикува, гарантира) finds nothing | F | U BulgarianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
+| LK85 | Macedonian lookups (overlay over `testdata/ocr/mk-sample.png` and `mk-retry.png` with PaddleOCR v5 alone, then cloud recognition, and the Search screen): Куќата finds куќа, then кука through the folded marks; Ѓорѓи, ќе and Скопје find their entries; сè уште finds сѐ уште, then сѐ; Ѝ finds Ѝ and ѝ; ѕвездите read as свездите finds ѕвезда, the source chip On-device; Лубица finds Љубица through the retry, while лубов, a form of луб, finds луб and is not retried; with cloud recognition ѕвездите finds ѕвезда; in Search ѕвездите finds ѕвезда and typed свездите nothing (the retry is for OCR words only) | F | U MacedonianSupportTest, MisreadMatchesTest, I LanguageLookupTest, M | 2026-10-29 |
+| LK86 | Mongolian lookups (overlay over `testdata/ocr/mn-sample.png` with cloud recognition, and the Search screen): номуудаасаа finds ном ("ablative plural definite possessive"); уншаад finds унших, "perfective converb" first, then "imperfect participle « dative-locative"; Хуулийн finds хууль (genitive), асуудлыг асуудал (accusative), хугацаанд хугацаа (dative-locative), Өнөөдөр өнөөдөр; хүн shows хүн, then хун through the folded marks; in Search, хун shows хун (swan), then хүн, and хийнэ finds хийх (present-future) | F | U MongolianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
 
 ### POP: the popup
 
@@ -321,6 +326,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP48 | An Estonian entry: the Popup settings' font card lists every Latin font with "Only for Estonian text" and the Estonian sample sentence; the bubble shows Õ and the Languages screen Estonia's flag; the negative chip and the moods and infinitives of the form rows are named in the interface language (Russian too: «отрицание», «косвенное наклонение», «на -da») | F | U FontCatalogFileTest, FlagsTest, EstonianSupportTest, FormOfTagsTest, M | 2026-10-28 |
 | POP49 | An Azerbaijani entry: the Popup settings' font card lists Literata, Inter and Lexend with "Only for Azerbaijani text" and the Azerbaijani sample sentence; the bubble shows Ə and the Languages screen Azerbaijan's flag; the ending chips and the tenses of the form rows are named in the interface language (Russian too: «связка прошедшего времени», «эвиденциальное прошедшее») | F | U FontCatalogFileTest, FlagsTest, AzerbaijaniSupportTest, FormOfTagsTest, M | 2026-10-28 |
 | POP50 | An Uzbek entry: the Popup settings' font card lists Literata, Inter and Lexend with "Only for Uzbek text" and the Uzbek sample sentence, ʻ and ʼ drawn; the bubble shows O and the Languages screen Uzbekistan's flag; the ending chips and the habitual and intentive form tags are named in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, UzbekSupportTest, FormOfTagsTest, M | 2026-10-28 |
+| POP51 | A Bulgarian entry: the font catalog offers Sofia Sans, Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, and the Popup settings' font card lists those installed (all but Inter in the run); its sample in Sofia Sans, Montserrat and Commissioner shows the Bulgarian letter forms (д like g, т like m, и like u), in PT Sans, PT Serif and Literata the Russian ones with ѝ from the phone's font; with Montserrat chosen the lookup page draws the source text and headwords in the Bulgarian forms, the search field keeps the Russian ones; the bubble shows Б and the Languages screen Bulgaria's flag | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
+| POP52 | Macedonian and Mongolian entries: the catalog offers both languages Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, no Sofia Sans, and the Macedonian font card lists those installed, and PT and Literata draw сѐ and ѝ in its sample; the bubble shows М for both, МК and МН while both are quick languages; with e-ink on, Home's chips and the bubble menu show БГ, МК and МН instead of the flags and the bubble МК; the flags are North Macedonia's and Mongolia's | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -363,6 +370,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD35 | Estonian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of vesi finds a recording | F | U EstonianSupportTest, M | 2026-10-28 |
 | AUD36 | Azerbaijani audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of su finds a recording | F | U AzerbaijaniSupportTest, M | 2026-10-28 |
 | AUD37 | Uzbek audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of yaxshi answers from a source or says "No audio" for each | F | U UzbekSupportTest, M | 2026-10-28 |
+| AUD38 | Bulgarian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of вода finds a Lingua Libre recording, Wiktionary "No audio", and the phone's voice reads it (Google's Bulgarian voice) | F | U BulgarianSupportTest, M | 2026-10-29 |
+| AUD39 | Macedonian and Mongolian audio: both list Lingua Libre first, Wiktionary, then the phone's voice; the Macedonian Test of вода finds a Lingua Libre recording, Wiktionary "No audio" and the phone's voice "No voice installed"; the Mongolian Test of ус says "No audio" for both sources and "No voice installed"; with autoplay on, a lookup in either language shows "No text-to-speech voice for this language is installed." | F | U MacedonianSupportTest, MongolianSupportTest, M | 2026-10-29 |
 
 ### ANK: Anki
 
@@ -411,6 +420,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK42 | An Estonian Anki note (over `testdata/ocr/et-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for õunu the sentence is "2020. a. lõpus ostsime u. 5 kg õunu, pirne jne." (the year, a., u. and the number hold, jne. ends it before a capital); for ehitati "Maja ehitati 19. sajandil." | F | U SentenceTest, EstonianSupportTest, M | 2026-10-28 |
 | ANK43 | An Azerbaijani Anki note (over `testdata/ocr/az-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for armud the sentence is "Bazardan alma, armud və s. aldıq." (və s. holds before a lowercase word); for yaşayır "Prof. Əliyev Bakı şəh. Nizami küç. 5-də yaşayır." (prof., şəh. and küç. hold); for dəftərlər "Kitablar, dəftərlər və s." (və s. ends it before a capital) | F | U SentenceTest, AzerbaijaniSupportTest, M | 2026-10-28 |
 | ANK44 | An Uzbek Anki note (over `testdata/ocr/uz-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for nok the sentence is "Bozordan olma, nok va h.k. oldik." (va h.k. holds before a lowercase word); for yashaydi "Prof. Karimov Toshkent sh. Navoiy ko'ch. 5-uyda yashaydi." (prof., sh. and ko'ch. hold); for daftarlar "Kitoblar, daftarlar va h.k." (va h.k. ends it before a capital) | F | U SentenceTest, UzbekSupportTest, M | 2026-10-28 |
+| ANK45 | Bulgarian and Macedonian Anki notes: the sentence keeps "г.", "пр. н. е.", "проф.", "ул." and "нпр." inside it, and "и т.н." or "итн." ends it before a capital ("Купихме ябълки, круши и т.н."; "Таа сака овошје, нпр. јаболка и круши итн.") | N | U SentenceTest, M | |
 
 ### TR: sentence translation
 
@@ -472,6 +482,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC46 | The Uzbek word forms item: with Russian chosen and Wiktionary (uz–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the uz-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words; with uz-en ticked the item is gone | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-28 |
 | DIC47 | The import notification has no Cancel while its dictionary is registered (the last step, after the archive is read): the notification polled with `dumpsys notification --noredact` shows Cancel during the download and the import and none in the registration; the task's next archive gets Cancel back; the task card keeps its Cancel | N | I DictionaryRepositoryTest (2026-10-29), M | 2026-10-29 (one archive: the next archive and the task card not seen) |
 | DIC48 | The PaddleOCR text detector is named "PaddleOCR v6 text detector" (v5 the same) in the task cards, the "Waiting (N): …" list and the notification, in every locale, with no comma in it | N | U CatalogFileTest, M | 2026-10-29 (English: v5 in the damaged-models card, the task card and the notification) |
+| DIC49 | Mongolian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)" (19 MB, CC BY), its description naming news texts; it builds on the device from Leipzig's `mon_news_2020_100K` and the frequency chip shows on Mongolian entries (хүн 11, ном 637) | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-29 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -516,6 +527,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG36 | Uzbek setup: the download screen ticks Wiktionary into English and the word frequency (Leipzig news), no transcription; with Wiktionary (uz–en) unticked, the word forms item is mandatory; ML Kit is the main model, PaddleOCR v6 and Tesseract uzb unticked and none marked "More accurate", PaddleOCR v5 not offered; the flag is Uzbekistan's and the bubble shows O | F | U CatalogFileTest, LanguageSetupTest, M | 2026-10-28 |
 | LNG37 | The line under the download button gives the space after import (`CatalogEntry.installedBytes`): measured sizes from `catalog/installed-sizes.json` scaled to the current archive, else term ×2.2, kanji ×3, frequency ×10, pitch and IPA ×10.5, a built frequency dictionary up to 12 MB; the free space check takes a measured size plus a quarter or the largest share measured (`installedBytesAtMost`) plus the largest archive; after the import the dictionaries take about what the line said (Chinese with its defaults) | N | U CatalogParseTest, CatalogFileTest, LanguageSetupTest, M | 2026-10-29 (Chinese defaults: 69 MB shown and taken) |
 | LNG38 | Flags next to language names: the language chips of the Dictionaries, Lookup, Anki, Audio and popup text pages show each turned-on language's chosen flag before its name; the OCR models list shows a flag before each language heading (dimmed with a turned-off language); the download screen's top bar shows the flag before the language's name; a card of a turned-off language on the Languages screen shows its flag (two for Serbo-Croatian's files); the first-run list shows each language's default flag; with e-ink on, the codes instead of the flags; TalkBack reads only the names; the headings above the chips, pair labels, catalog counts, gloss languages, translation targets, the problems card and backup show no flag | N | M | 2026-10-29 (not the first-run list, which needs the app's data cleared) |
+| LNG39 | Bulgarian setup: the download screen ticks Wiktionary (bg–en) as the main dictionary, the word frequency (wordfreq) and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract bul fast and accurate unticked; "Download (6.4 MB)", about 24 MB after import; the flag is Bulgaria's and the bubble shows Б | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
+| LNG40 | Macedonian setup: the download screen ticks Wiktionary (mk–en) as the main dictionary, the word frequency (wordfreq) and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract mkd unticked; "Download (11 MB)", about 40 MB after import; the flag is North Macedonia's and the bubble shows М | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
+| LNG41 | Mongolian setup: the download screen ticks Wiktionary (mn–en) as the main dictionary, the Leipzig word frequency and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract mon unticked; "Download (20 MB)", about 15 MB after import; the flag is Mongolia's and the bubble shows М | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
 
 ### SET: settings, backup, appearance
 
@@ -668,6 +682,72 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/5d` (0.2.3-d47d6cf2, then with the Macedonian С → Ѕ retry before its commit), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Bulgarian, Macedonian and Mongolian (LNG39-41, DIC49, OCR53-54, LK84-86, POP51-52,
+AUD38-39) through the Languages and download screens, the overlay over `testdata/ocr/bg-sample.png`, `mk-sample.png`,
+`mk-retry.png` and `mn-sample.png` (Arial, in the debug viewer) with cloud recognition and with PaddleOCR v5 alone, the
+Search screen and the Popup, Audio and Appearance settings; the engine's instrumented tests. An x86_64-only APK.
+
+Results: passed after one change (the С → Ѕ retry, below). Automated: unit tests (1,935, four skipped), lint, the page
+tests (146), the glue tests (137, one skipped), the mutation exception tests (8), the catalog generator tests (11) and
+the Python tests of the frequency, flag, OCR model, catalog, FreeDict, OpenRussian, PanLex and MonWN scripts passed.
+The engine's instrumented tests, with `LanguageLookupTest`'s Bulgarian, Macedonian and Mongolian cases: 72 of 72. After
+the change the unit tests (1,937, four skipped) and lint passed again.
+
+- LNG39-41: the Languages screen shows Bulgaria's, North Macedonia's and Mongolia's flags. Bulgarian: Wiktionary
+  (bg–en, 5.6 MB) the main dictionary, wordfreq (202 kB) and the transcription (604 kB) ticked, PaddleOCR v5
+  "Installed" (from the other Cyrillic languages) and the main model, Tesseract fast (1.7 MB) and accurate (8.8 MB)
+  unticked; "Download (6.4 MB)", "About 24 MB on the phone after import". Macedonian: mk–en 8.3 MB, wordfreq 1.5 MB;
+  "Download (11 MB)", about 40 MB. Mongolian: mn–en 637 kB, the Leipzig word frequency (19 MB, CC BY) and the
+  transcription (96 kB) ticked, PaddleOCR v5 the main model, Tesseract fast (2.1 MB) unticked; "Download (20 MB)",
+  about 15 MB. The bubble showed Б with Bulgarian active, М with Macedonian or Mongolian.
+- DIC49: the Mongolian Leipzig archive downloaded 18,644 KB in 3.8 s and built 73,375 words (771 KB) in 2.7 s, the
+  task 6.8 s; wty-mn-en (621 KB) imported in 1.3 s. The frequency chip on Mongolian entries: хүн 11, хууль 67,
+  асуудал 82, өнөөдөр 91, хийх 139, хугацаа 389, ном 637, унших 3,182, хун 7,491.
+- OCR53, LK84 (cloud recognition): министерството finds министерство, книгите книга (plural definite), кнѝгата
+  книга (singular definite), умна умен (singular indefinite feminine), фирмата фирма. Cloud recognition read ѝ as й:
+  the popup shows й and Й, then ѝ after scrolling, as the Search screen does for a typed й. In Search, четат finds
+  чета and децата дете; гарантира, гарантирам, публикува and публикувам find nothing, as wty-bg-en has neither the
+  forms nor the verbs.
+- LK86 (cloud recognition): номуудаасаа finds ном ("ablative plural definite possessive"); уншаад finds унших,
+  "perfective converb" first and, as the second rule chain, "imperfect participle « dative-locative"; Хуулийн finds
+  хууль (genitive), асуудлыг асуудал (accusative), хугацаанд хугацаа (dative-locative), Өнөөдөр өнөөдөр; хүн shows
+  хүн and, after scrolling, хун through the folded marks. In Search, a typed хун shows хун (swan), then хүн (the 5d
+  plan's question 17); хийнэ finds хийх ("present-future").
+- OCR54, LK85 (PaddleOCR v5 alone, the recognized text shown above the entries): Куќата finds куќа, then кука through
+  the fold; Ѓорѓи, ќе and Скопје find their entries; сè уште finds сѐ уште, then сѐ; Ѝ finds Ѝ and ѝ; Љубица is read
+  right. PaddleOCR read the ѕ of ѕвездите inside the line as с, and свездите found nothing, as the retry had only Л → Љ.
+  С → Ѕ joined the Macedonian retry (an edge detail of the owner's answer to the 5d plan's question 4, which named the
+  letters PaddleOCR misreads); with the change свездите finds ѕвезда, the source chip On-device. Over `mk-retry.png`:
+  Ѕвездите, its capital read as Latin S, finds ѕвезда through the letter-for-letter fix; Лубица finds Љубица through
+  the retry; лубов is a form of луб (singular definite proximal), so the retry does not run. With cloud recognition
+  ѕвездите finds ѕвезда. In Search, ѕвездите finds ѕвезда ("plural definite unspecified") and a typed свездите
+  nothing.
+- POP51: the Bulgarian font card lists the phone's font, PT Serif, Sofia Sans, Montserrat, Commissioner, PT Sans and
+  Literata (downloaded one at a time during the run; Inter, also offered, was not downloaded). Sofia Sans, Montserrat and Commissioner draw the sample in the
+  Bulgarian forms; PT Sans, PT Serif and Literata in the Russian ones, with ѝ from the phone's font. With Montserrat
+  chosen for Bulgarian, the Search screen's page drew "Дадох ѝ кни́гата, където" and the headword дам in the
+  Bulgarian forms (д like g, т like m, и like u), the search field in the Russian ones; set back to the phone's font.
+- POP52: the Macedonian card lists the phone's font, PT Serif, Montserrat, Commissioner, PT Sans and Literata, no Sofia
+  Sans; PT Sans, PT Serif and Literata draw сѐ and ѝ in the sample "… Њој сѐ уште ѝ се јавуваат." With all three new
+  languages quick, the bubble menu's flags switch the bubble to Б, МК and МН. With e-ink on, Home's chips and the
+  bubble menu show БГ, МК and МН, the bubble МК; e-ink off again.
+- AUD38, AUD39: all three list Lingua Libre, Wiktionary, then Text-to-speech. Bulgarian вода: a Lingua Libre
+  recording, Wiktionary "No audio", and the phone's voice spoke it with Google's Bulgarian voice. Macedonian вода: a
+  Lingua Libre recording, Wiktionary "No audio", the phone's voice "No voice installed". Mongolian ус: "No audio" from
+  both sources and "No voice installed". With autoplay on (the emulator's setting), Macedonian and Mongolian lookups
+  show the toast "No text-to-speech voice for this language is installed."
+- Seen, not caused by the change: the Audio settings' test word changes only when the language is picked on that
+  screen; after the active language was switched from the bubble menu it kept the previous language's word
+  (`AudioSettingsViewModel.show`). As before, the scan keeps its screenshot while the bubble is out, so after the
+  debug viewer showed another image the bubble had to be docked before the new image was read.
+
+Left on the emulator: Bulgarian, Macedonian and Mongolian set up (Wiktionary into English, the word frequency, the
+transcription), Bulgarian and Mongolian on Home's quick list, Japanese active, engines Both, e-ink off, the recognized
+text off, every language's font the phone's (PT Serif, PT Sans, Literata, Sofia Sans, Montserrat and Commissioner
+downloaded), the bubble docked; the emulator shut down and the lock released.
 
 ### 2026-10-29, `claude/rtl-1029` (`cloud/rtl-strings-2026-10-29` merged onto `languages/main` `3e82e306`; the fixes below built uncommitted, committed after the run), Pixel_10_Pro (API 37)
 
