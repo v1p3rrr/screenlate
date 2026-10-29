@@ -1919,6 +1919,27 @@ Cantonese, Kannada, Tamil, Telugu and Marathi: research, OCR measurements, decis
   released, best is offered unticked.
 - Fonts: Anek Telugu and Tiro Telugu, for Telugu only. Audio: Lingua Libre first, Wiktionary, the voice.
 
+### Kannada on `languages/kn` (2026-10-29)
+
+- Built on Tamil's shared pieces (`DravidianSupport`, `OcrScript.KANNADA`). The bundle is Yomitan's own Kannada
+  descriptor, which Tamil and Telugu borrow, with `composeCharacters` and `removeZeroWidthCharacters` added for kn;
+  ta.js and te.js rebuild byte for byte, as added processors and rules go by language code.
+- wty kn-en (2026.10.22): 2,675 words with meanings and 19,544 form rows, case forms of about 1,045 nouns and forms
+  of 170 verbs. 858 form rows write the stem's -ು before the ending's vowel sign (ಹೊರಡುೋಣ); the import keys them
+  without it (813 repaired). Only kn-en and the transcription are listed (kn-ru 1,217 words, under the line), so a
+  Kannada "Word forms" item has nothing to stand in for.
+- Headwords keyed without the joiners (ಪೆನ್ + ZWNJ + ಡ್ರೈವ್).
+- Own case endings over the stems' increments (-ದ-, -ವ-, -ಯ-, -ನ-, -ಿನ-, -ರ-), the dative and purpose forms, the
+  plural and the particles -ೂ, -ೇ (`kannadaTransforms`); measured on Leipzig `kan_newscrawl_2016_100K` (top 20,000
+  against kn-en): lemma 1,221, form 1,690, through the endings 1,337, nothing 15,752; rules only for words without
+  an entry or form. The 16 rule ids are listed without strings (`inflections_kn.xml`).
+- Sentences: the period ends 95,742 of 100,000 news sentences, the danda 73; abbreviations, Latin letter names and
+  one-syllable initials hold it (ಕೆ. ಶಿವರಾಮ್), but for ಬಾ; the months ಅ, ಆ, ನ, ಏ hold it only before a number.
+  The popup looks at 16 letters (1.3% of running words pass it).
+- No frequency list (question 9). No ML Kit model: Tesseract kan fast is ticked, best is offered unticked;
+  Paddle's Kannada model is not offered.
+- Fonts: Anek Kannada and Tiro Kannada, for Kannada only. Audio: Lingua Libre first, Wiktionary, the voice.
+
 ## Group 4d research (2026-10-19)
 
 Arabic (ar), Persian (fa), Hebrew (he): scripts written right to left with spaces between words. Urdu (ur), Egyptian

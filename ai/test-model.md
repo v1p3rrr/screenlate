@@ -185,6 +185,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR54 | Macedonian recognition on the device (`testdata/ocr/mk-sample.png`, Arial: ќ ѓ љ ј ѕ, сѐ and Ѝ; `mk-retry.png` prints Л for Љ in Лубица and capital Ѕ in Ѕвездите): PaddleOCR v5 reads ќ ѓ љ ј and Ѝ, gives capital Ѕ as Latin S, which the letter-for-letter fix turns into Ѕ, and ѕ inside a line as с, which the retry finds (LK85); cloud recognition reads every letter | F | U MacedonianSupportTest, MisreadMatchesTest, M | 2026-10-29 |
 | OCR55 | Tamil recognition on the device (`testdata/ocr/ta-sample.png`, see LK88): Tesseract tam fast reads the six lines; the non-joiner it writes after a pulli is gone from the recognized text (a tap on மரத்தில் finds மரம், which the joiner would stop), a tap on the last letter of a word that ends in a pulli selects that word; கௌரவம், which the model has no letter for, comes as கெளரவம் and finds கௌரவம் | F | U TamilSupportTest, OcrPageLanguageTest, M | 2026-10-29 |
 | OCR56 | Telugu recognition on the device (`testdata/ocr/te-sample.png`, see LK89): Tesseract tel fast reads the five lines; a tap on a word finds its entry, with no joiner left in the recognized text; a tap on the last letter of a word selects that word | F | U TeluguSupportTest, M | — |
+| OCR57 | Kannada recognition on the device (`testdata/ocr/kn-sample.png`, see LK90), engines set to the device: Tesseract kan fast reads the five lines; the bubble dragged onto each word finds its entry | F | U KannadaSupportTest, M | 2026-10-29 |
 
 ### LK: lookup
 
@@ -277,6 +278,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK87 | Marathi lookups (Search screen, and the overlay over `testdata/ocr/mr-sample.png` from `scripts/text-image-wpf.ps1` (Nirmala UI, mr-IN): "शाळेत आज पाण्यात खेळ झाला.", "विद्यार्थ्यांना वाचण्यासाठी पुस्तके", "आतापर्यंत घरातही काम चालू आहे.", "शेतकऱ्यांना मोठ्या अडचणी आल्या.", ML Kit Devanagari): पाण्यात finds पाणी with the tag -त; घरातही finds घर (-त, -ही); विद्यार्थ्यांना विद्यार्थी; शेतकऱ्यांना शेतकरी; आतापर्यंत आता; वाचण्यासाठी the verb वाचणे; करत and करताना find the verb करणे through the participle (-त, -ताना), not कर (tax); दिसत finds दिसणे; विदय़ार्थी typed with U+095F finds विद्यार्थी; बँक finds बॅंक, ज़मीन जमीन, अॅ the letter ॲ (mr-en has no मोठा or ॲप); होकारार्थी finds nothing; in the overlay, the aimed word inside a conjunct (शाळेत aimed at ळे) is looked up from its start; the popup shows no reading line | F | U MarathiSupportTest, glue.test.mjs, I LanguageLookupTest, HoshidictsEngineTest, M | 2026-10-29 |
 | LK88 | Tamil lookups (Search screen, and the overlay over `testdata/ocr/ta-sample.png` from `scripts/text-image-wpf.ps1 -Font "Nirmala UI" -Culture ta-IN`: "மரத்தில் பறவைகள்", "நானும் மழையில்", "நகரத்தில் நடந்தேன்.", "மாவட்ட சேவைத் துறை", "கௌரவம் வழியில்", "மரங்களிலும் வெளியே", Tesseract tam fast): மரத்தில் finds மரம் with the tag -இல்; மரங்களிலும் மரம் (-கள், -இல், -உம்); நகரத்தில் நகரம்; மழையில் மழை; வழியில் வழி; நானும் நான் (-உம்); மாவட்ட மாவட்டம் (-அ); சேவைத் சேவை with no tag; வீட்டில் and அதற்கு find வீடு and அது as Wiktionary's forms; காலை shows காலை and its listed form of கால், no results of the rules; வௌியே finds வெளியே, கெளரவம் கௌரவம், ஸ்ரீ ஶ்ரீ; செய்துவிடு finds செய் (Wiktionary's "past of" row); in the overlay the words read by Tesseract find the same entries; the popup shows no reading line | F | U TamilSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
 | LK89 | Telugu lookups (Search screen, and the overlay over `testdata/ocr/te-sample.png` from `scripts/text-image-wpf.ps1 -Font "Nirmala UI" -Culture te-IN`: "రాష్ట్రంలో పిల్లలకు", "పుస్తకాన్ని చదివాను.", "విధానం రోజే మారింది.", "దేశంలోనూ రైతులే", "కుమార్తెలు మనుషులు", Tesseract tel fast): రాష్ట్రంలో finds రాష్ట్రము with the tag -లో; పిల్లలకు పిల్ల (-ల, -కు); పుస్తకాన్ని పుస్తకము (-ఆన్ని); విధానం విధానము and కోసం కోసము (the -ము key); రోజే రోజు (-ఏ); దేశంలోనూ దేశం (-లో, -నూ); రైతులే రైతు; కుమార్తెలు and మనుషులు find కుమార్తె and మనిషి as Wiktionary's plurals; చదివాను finds చదువు by its form row; జీవగర్ర and కత్తిమీదిసాము find జీవగఱ్ఱ and కత్తిమీఁదిసాము; in the overlay the words read by Tesseract find the same entries; the popup shows no reading line | F | U TeluguSupportTest, glue.test.mjs, I LanguageLookupTest, M | — |
+| LK90 | Kannada lookups (Search screen, and the overlay over `testdata/ocr/kn-sample.png` from `scripts/text-image-wpf.ps1 -Font "Nirmala UI" -Culture kn-IN`: "ಮರದಲ್ಲಿ ಮನೆಯಲ್ಲೂ ಹಣ", "ಕಾಡಿಗೆ ಮರಗಳಲ್ಲಿ ಊರಿನಲ್ಲಿ", "ಇದರಲ್ಲಿ ಮನಸ್ಸಿನಲ್ಲಿ ದೇಶದಲ್ಲಿ", "ಶಾಲೆಯಲ್ಲಿ ಪುಸ್ತಕಗಳನ್ನು ಓದು", "ಹೊರಡೋಣ ಕಾಡೂ ಸಭೆಗೆ"): ಮರದಲ್ಲಿ → ಮರ (-ಅಲ್ಲಿ); ಮನೆಯಲ್ಲೂ → ಮನೆ (-ಅಲ್ಲಿ, -ಊ); ಮರಗಳಲ್ಲಿ → ಮರ (-ಗಳ, -ಅಲ್ಲಿ); ಊರಿನಲ್ಲಿ → ಊರು, ಇದರಲ್ಲಿ → ಇದು, ಮನಸ್ಸಿನಲ್ಲಿ → ಮನಸ್ಸು, ದೇಶದಲ್ಲಿ → ದೇಶ, ಶಾಲೆಯಲ್ಲಿ → ಶಾಲೆ (-ಅಲ್ಲಿ); ಕಾಡೂ → ಕಾಡು (-ಊ); ಸಭೆಗೆ → ಸಭೆ (-ಗೆ); ಕಾಡಿಗೆ, ಮರಕ್ಕೆ and ಪುಸ್ತಕಗಳನ್ನು by their Wiktionary forms; ಹೊರಡೋಣ → ಹೊರಡು by its repaired form row; "ಯುನೈಟೆಡ್ ಕಿಂಗ್ಡಂ" → the headword written with ZWNJ | F | U KannadaSupportTest, glue, I LanguageLookupTest, M | 2026-10-29 |
 
 ### POP: the popup
 
@@ -339,6 +341,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP55 | Marathi fonts: Popup settings → Text font for Marathi lists Mukta and Tiro Devanagari Marathi (not Hind or Tiro Devanagari Hindi); downloading Mukta there makes it installed for Hindi too (one file, listed under both); the sample text draws Marathi's own ल and श in a font that has them; Backup with Marathi alone turned on lists Mukta | F | U FontCatalogFileTest, BackupChoiceTest, M | 2026-10-29 |
 | POP56 | Tamil fonts: Popup settings → Text font for Tamil lists the phone's font, then Hind Madurai, Mukta Malar and Tiro Tamil (not Hindi's or Marathi's); a downloaded one draws the sample text; Backup with Tamil alone turned on lists it | F | U FontCatalogFileTest, M | 2026-10-29 |
 | POP57 | Telugu fonts: Popup settings → Text font for Telugu lists the phone's font, then Anek Telugu and Tiro Telugu (not Tamil's or Hindi's); a downloaded one draws the sample text, three-consonant clusters (లక్ష్మి, సామర్థ్యం) included | F | U FontCatalogFileTest, M | 2026-10-29 |
+| POP58 | Kannada fonts: Popup settings → Text font for Kannada lists the phone's font, then Anek Kannada and Tiro Kannada (not Telugu's or Hindi's); a downloaded one draws the sample text, stacked consonants (ಲಕ್ಷ್ಮಿ, ಕ್ಷೇತ್ರ) included | N | U FontCatalogFileTest, M | — |
 
 ### AUD: audio
 
@@ -386,6 +389,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD40 | Marathi audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with पाणी; with autoplay on and no Marathi voice installed, a lookup shows the no-voice notice | F | U MarathiSupportTest, M | 2026-10-29 |
 | AUD41 | Tamil audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; Test with தண்ணீர் | F | U TamilSupportTest, M | 2026-10-29 |
 | AUD42 | Telugu audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with నీరు | F | U TeluguSupportTest, M | 2026-10-29 |
+| AUD43 | Kannada audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with ನೀರು | N | U KannadaSupportTest, M | — |
 
 ### ANK: Anki
 
@@ -438,6 +442,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK46 | A Marathi Anki note (over `testdata/ocr/mr-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96`, one paragraph over four lines: "पु. ल. देशपांडे यांचा जन्म इ.स." / "1919 मध्ये झाला. डॉ. जोशी आणि" / "प्रा. पाटील आले. कोण आले? मी." / "तू कुठे होतास? तो आला। आता जा।", ML Kit Devanagari): the sentence keeps "डॉ.", "प्रा.", "इ.स." and the initials "पु. ल." inside it ("पु. ल. देशपांडे यांचा जन्म इ.स. 1919 मध्ये झाला."), and a one-syllable word of dialogue ends one ("कोण आले? मी. तू कुठे होतास?" gives "मी." for मी); a danda ends a sentence as a period does | F | U SentenceTest, MarathiSupportTest, M | 2026-10-29 |
 | ANK47 | A Tamil Anki note (over `testdata/ocr/ta-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture ta-IN`, four lines: "திரு. ராமன் 15 கி.மீ. நடந்தார்." / "க. சண்முகம் ஜன. 15 அன்று" / "வந்தார். யார் வந்தது?" / "நீ. இங்கே வா. அவர் சென்றார்."): under cloud recognition ராமன் gives "திரு. ராமன் 15 கி.மீ. நடந்தார்." (the title and the unit hold the sentence), நீ gives "நீ." and வா "இங்கே வா." (words of dialogue end sentences); under on-device recognition (Tesseract tam fast, one paragraph) வந்தார் gives "க. சண்முகம் ஜன. 15 அன்று வந்தார்." (a one-syllable initial and a month before a date, across the line end; cloud recognition makes a paragraph of each line of this image) | F | U SentenceTest, TamilSupportTest, M | 2026-10-29 |
 | ANK48 | A Telugu Anki note (over `testdata/ocr/te-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture te-IN`, five lines: "డా. రాజు 15 కి.మీ." / "నడిచారు. కె. చంద్రశేఖర్" / "రావు నిన్న వచ్చారు." / "ఎవరు వచ్చారు? ఇక్కడికి" / "రా. ఆయన వెళ్ళారు."): under on-device recognition (Tesseract tel fast, one paragraph) రాజు gives "డా. రాజు 15 కి.మీ. నడిచారు." (the title and the unit hold the sentence) and నిన్న "కె. చంద్రశేఖర్ రావు నిన్న వచ్చారు." (a one-syllable initial across the line end); under cloud recognition రా gives "ఇక్కడికి రా." (రా ends the sentence; Tesseract tel fast drops that period) | F | U SentenceTest, TeluguSupportTest, M | 2026-10-29 |
+| ANK49 | A Kannada Anki note (over `testdata/ocr/kn-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture kn-IN`, six lines: "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ." / "ನಡೆದರು. ಕೆ. ಶಿವರಾಮ್" / "ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." / "ಅ. 15 ರಂದು ಸಭೆ" / "ನಡೆಯಿತು. ಇಲ್ಲಿಗೆ" / "ಬಾ. ಅವನು ಹೋದನು."), Anki for Kannada: deck and note type Screenlate Test, Word {expression}, Meaning {sentence}: ನಡೆದರು gives "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ. ನಡೆದರು." (the title and the unit hold the sentence), ಮನೆಗೆ "ಕೆ. ಶಿವರಾಮ್ ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." (a one-syllable initial across the line end), ಸಭೆ "ಅ. 15 ರಂದು ಸಭೆ ನಡೆಯಿತು." (the month before a number), ಬಾ "ಇಲ್ಲಿಗೆ ಬಾ." | N | U SentenceTest, KannadaSupportTest, M | — |
 
 ### TR: sentence translation
 
@@ -551,6 +556,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG42 | Marathi setup: Languages offers Marathi (मराठी) with India's flag; the download screen ticks Wiktionary (mr–en) and the transcription, lists no word frequency, and offers Tesseract mar fast and best unticked (the bundled Devanagari model reads it); the bubble shows म; with Hindi and Marathi both quick languages the bubble shows हि and म | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
 | LNG43 | Tamil setup: Languages offers Tamil (தமிழ்) with India's flag; the download screen ticks Wiktionary ta–en, the transcription, wordfreq and Tesseract tam fast, and offers Tesseract tam best unticked; the bubble shows த; with Japanese, Hindi and Tamil quick the hold menu shows Japan's flag bare and puts HI and TA on the two India flags | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | 2026-10-29 |
 | LNG44 | Telugu setup: Languages offers Telugu (తెలుగు) with India's flag; the download screen ticks Wiktionary te–en, te–ru, te–zh, the transcription and Tesseract tel fast, and offers Tesseract tel best unticked; the bubble shows తె; with Tamil and Telugu quick the hold menu puts TA and TE on the two India flags | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | — |
+| LNG45 | Kannada setup: Languages offers Kannada with India's flag; the download screen ticks Wiktionary kn–en, the transcription and Tesseract kan fast (the main model), and offers Tesseract kan best unticked; the language becomes active and ready | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | 2026-10-29 |
 
 ### SET: settings, backup, appearance
 
@@ -705,6 +711,29 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/kn` (Kannada, after its code commit), Pixel_10_Pro (API 37)
+
+Scope: LNG45, LK90, OCR57 and ANK49, interface in Russian. Words in the Search screen sent with
+`am start -a android.intent.action.PROCESS_TEXT`; the overlay over `testdata/ocr/kn-sample.png` and
+`kn-anki.png` (`scripts/text-image-wpf.ps1`, Nirmala UI, kn-IN) with the engines set to the device (Tesseract kan
+fast), set back to both afterwards. Wiktionary kn-en and the transcription of 2026.10.22. The engine's
+instrumented tests: 76 passed.
+
+Results: LNG45, LK90 and OCR57 passed and moved from N to F; ANK49, POP58 and AUD43 not reached.
+- LNG45: Kannada (India's flag) under "Не включены"; the download screen ticks kn-en (404 kB), the transcription
+  (35 kB) and Tesseract kan fast (3.6 MB, the main model), offers kan best (10 MB) unticked; 4.0 MB to download,
+  then "Активный · Готово".
+- LK90: every word as listed in the case, in the Search screen and in the overlay. ಹೊರಡೋಣ shows Wiktionary's own
+  label "cohortative-i" beside "cohortative" (the row's tags carry it).
+- OCR57: Tesseract kan fast read all five lines; each of 13 words, aimed by dragging the bubble onto it, found its
+  entry. A tap on a word of the scan did not re-aim the popup in this run; dragging the bubble did.
+- ANK49 not reached: with Anki set up for Kannada (deck and note type Screenlate Test, Meaning {sentence}), the
+  add button was pressed through `popup-eval.mjs` (a script click), no note was added, and the popup did not show
+  again over the image afterwards (the page kept its entries, its window had no size) until the run ended. To
+  redo with a real tap on the add button. The sentences are covered by SentenceTest and KannadaSupportTest.
+- Found while writing the engine test: a joiner written as a JSON escape (`\u200C`) in a term bank is not found
+  by its headword; Wiktionary's files write it as the character, and the test fixture now does too.
 
 ### 2026-10-29, `languages/te` (Telugu, after its code commit), Pixel_10_Pro (API 37)
 
