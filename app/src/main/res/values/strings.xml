@@ -834,6 +834,7 @@
     <string name="language_setup_models_info">The main model reads the language on the device. The other ticked models are downloaded too; they can be chosen later in the screen recognition settings. ML Kit, built into the app, reads Chinese, Japanese, Korean, Devanagari, Bengali and Latin-script text; for those languages it is used while no model is main.</string>
     <string name="nav_home">Home</string>
     <string name="nav_search">Search</string>
+    <string name="list_separator">,\u0020</string>
     <string name="camera_title">Camera</string>
     <string name="camera_flash_off">Flash off</string>
     <string name="camera_flash_auto">Flash auto</string>

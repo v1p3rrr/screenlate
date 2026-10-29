@@ -80,6 +80,7 @@ import com.vpr.screenlate.languages.ChipFlag
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ConfirmDelete
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.theme.LocalEInk
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
@@ -324,7 +325,7 @@ fun PhotoHistoryScreen(onBack: () -> Unit, viewModel: PhotoHistoryViewModel = hi
 @Composable
 private fun HistoryTile(entry: HistoryEntry, selected: Boolean, country: String?, onClick: () -> Unit, onLongClick: () -> Unit) {
     val date = DateUtils.formatSameDayTime(entry.createdAt, System.currentTimeMillis(), DateFormat.SHORT, DateFormat.SHORT).toString()
-    val description = listOfNotNull(date, entry.language?.displayName()).joinToString(", ")
+    val description = listOfNotNull(date, entry.language?.displayName()).joinToString(listSeparator())
     val image = rememberThumbnail(entry.thumbnail)
     val shape = RoundedCornerShape(8.dp)
     Column(

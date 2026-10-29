@@ -78,6 +78,7 @@ import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ReorderableColumn
 import com.vpr.screenlate.ui.components.IconButtonProgress
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.components.ownDirection
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
@@ -463,7 +464,7 @@ private fun OtherLanguagesCard(others: List<OtherLanguage>, onOpenLanguages: () 
             Text(stringResource(R.string.dictionaries_other_languages), style = MaterialTheme.typography.titleMedium)
             Text(
                 listOfNotNull(
-                    others.joinToString(", ") { languageName(it.code) },
+                    others.joinToString(listSeparator()) { languageName(it.code) },
                     pluralStringResource(R.plurals.dictionaries_other_language_count, count, count).takeIf { count > 0 },
                     pluralStringResource(R.plurals.languages_model_count, models.size, models.size).takeIf { models.isNotEmpty() },
                     bytes?.let { Formatter.formatShortFileSize(context, it) },
@@ -527,7 +528,7 @@ private fun DictionaryCard(
                 )
                 if (remoteHosts.isNotEmpty()) {
                     Text(
-                        stringResource(R.string.dictionaries_remote_css, remoteHosts.joinToString(", ")),
+                        stringResource(R.string.dictionaries_remote_css, remoteHosts.joinToString(listSeparator())),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -667,7 +668,7 @@ private fun counts(dictionary: DictionaryEntity): String {
         dictionary.pitchCount.takeIf { it > 0 }?.let { stringResource(strings.pitchCount, it) },
         dictionary.kanjiCount.takeIf { it > 0 }?.let { stringResource(strings.kanjiCount, it) },
         dictionary.mediaCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_media, it) },
-    ).joinToString(", ")
+    ).joinToString(listSeparator())
 }
 
 /** The name of a kind of dictionary for the language with [code]: pitch accent or pronunciation, kanji or characters. */
@@ -788,7 +789,7 @@ private fun WaitingTasksCard(
             val title = if (expanded) {
                 stringResource(R.string.dictionaries_tasks_waiting_count, tasks.size)
             } else {
-                stringResource(R.string.dictionaries_tasks_waiting, tasks.size, shown.joinToString(", "))
+                stringResource(R.string.dictionaries_tasks_waiting, tasks.size, shown.joinToString(listSeparator()))
             }
             Text(title, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(end = 8.dp))
             if (noNetwork) NoNetworkLine()

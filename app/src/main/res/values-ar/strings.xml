@@ -862,6 +862,7 @@
     <string name="language_setup_models_info">يقرأ النموذج الرئيسي اللغة داخل الجهاز. وتُنزَّل النماذج الأخرى المحددة أيضًا، ويمكن اختيارها لاحقًا في إعدادات التعرّف على الشاشة. يقرأ ML Kit، المدمج في التطبيق، النص الصيني والياباني والكوري والنص المكتوب بالديفاناغارية والبنغالية والحروف اللاتينية، ويُستخدم لهذه اللغات ما دام لا يوجد نموذج رئيسي.</string>
     <string name="nav_home">الرئيسية</string>
     <string name="nav_search">البحث</string>
+    <string name="list_separator">،\u0020</string>
     <string name="camera_title">الكاميرا</string>
     <string name="camera_flash_off">الفلاش: إيقاف</string>
     <string name="camera_flash_auto">الفلاش: تلقائي</string>

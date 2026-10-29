@@ -837,7 +837,8 @@
     <string name="language_setup_main_model">Modèle principal</string>
     <string name="language_setup_models_info">Le modèle principal reconnaît la langue sur l’appareil. Les autres modèles cochés sont aussi téléchargés ; ils peuvent être choisis plus tard dans les paramètres de reconnaissance de l’écran. ML Kit, intégré à l’appli, reconnaît le chinois, le japonais, le coréen et les textes en devanagari, en écriture bengalie et en alphabet latin ; pour ces langues, il est utilisé tant qu’aucun modèle n’est principal.</string>
     <string name="nav_home">Accueil</string>
-    <string name="nav_search">Recherche</string>
+    <string name="nav_search">Rechercher</string>
+    <string name="list_separator">,\u0020</string>
     <string name="camera_title">Caméra</string>
     <string name="camera_flash_off">Flash désactivé</string>
     <string name="camera_flash_auto">Flash automatique</string>

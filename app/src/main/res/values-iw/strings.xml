@@ -838,6 +838,7 @@
     <string name="language_setup_models_info">המודל הראשי קורא את השפה במכשיר. גם שאר המודלים המסומנים יורדו; אפשר לבחור בהם מאוחר יותר בהגדרות זיהוי המסך. ML Kit, שמובנה באפליקציה, קורא טקסט בסינית, ביפנית, בקוריאנית, בדוואנגרי, בבנגלית ובכתב לטיני; בשפות האלה הוא משמש כל עוד אין מודל ראשי.</string>
     <string name="nav_home">בית</string>
     <string name="nav_search">חיפוש</string>
+    <string name="list_separator">,\u0020</string>
     <string name="camera_title">מצלמה</string>
     <string name="camera_flash_off">פלאש כבוי</string>
     <string name="camera_flash_auto">פלאש אוטומטי</string>

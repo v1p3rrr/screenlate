@@ -830,6 +830,7 @@
     <string name="language_setup_models_info">Das Hauptmodell erkennt die Sprache auf dem Gerät. Die anderen markierten Modelle werden ebenfalls heruntergeladen und können später in den Einstellungen der Bildschirmerkennung ausgewählt werden. ML Kit ist in der App enthalten und erkennt chinesischen, japanischen und koreanischen Text sowie Text in Devanagari, bengalischer und lateinischer Schrift; für diese Sprachen wird es verwendet, solange kein Modell das Hauptmodell ist.</string>
     <string name="nav_home">Start</string>
     <string name="nav_search">Suche</string>
+    <string name="list_separator">,\u0020</string>
     <string name="camera_title">Kamera</string>
     <string name="camera_flash_off">Blitz aus</string>
     <string name="camera_flash_auto">Blitz automatisch</string>

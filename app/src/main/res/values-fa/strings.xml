@@ -830,6 +830,7 @@
     <string name="language_setup_models_info">مدل اصلی زبان را روی دستگاه می‌خواند. مدل‌های علامت‌خورده دیگر هم بارگیری می‌شوند؛ بعداً می‌توان آن‌ها را در تنظیمات تشخیص صفحه انتخاب کرد. ML Kit که در برنامه تعبیه شده است، متن چینی، ژاپنی، کره‌ای، دوناگری، بنگالی و متن به خط لاتین را می‌خواند؛ برای این زبان‌ها، تا وقتی هیچ مدلی اصلی نباشد، از آن استفاده می‌شود.</string>
     <string name="nav_home">صفحه اصلی</string>
     <string name="nav_search">جستجو</string>
+    <string name="list_separator">،\u0020</string>
     <string name="camera_title">دوربین</string>
     <string name="camera_flash_off">فلاش خاموش</string>
     <string name="camera_flash_auto">فلاش خودکار</string>

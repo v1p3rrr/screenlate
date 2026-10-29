@@ -847,6 +847,7 @@
     <string name="language_setup_models_info">Основная модель распознаёт язык на устройстве. Остальные отмеченные модели тоже скачиваются, их можно выбрать позже в настройках распознавания экрана. ML Kit встроен в приложение и читает китайский, японский, корейский, текст на деванагари, на бенгальском письме и на латинице; для этих языков он используется, пока ни одна модель не выбрана основной.</string>
     <string name="nav_home">Главная</string>
     <string name="nav_search">Поиск</string>
+    <string name="list_separator">,\u0020</string>
     <string name="camera_title">Камера</string>
     <string name="camera_flash_off">Вспышка выключена</string>
     <string name="camera_flash_auto">Вспышка: авто</string>

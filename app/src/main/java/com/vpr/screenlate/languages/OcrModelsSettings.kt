@@ -39,6 +39,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.InfoDialog
 import com.vpr.screenlate.ui.components.LabelWithInfo
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.components.ownDirection
 
 /**
@@ -111,7 +112,7 @@ private fun OcrModelDialog(
         val text = buildList {
             add(stringResource(R.string.ocr_models_delete_text, title, Formatter.formatShortFileSize(context, option.bytes)))
             (option.deletion as? ModelDeletion.Allowed)?.alsoFor?.takeIf { it.isNotEmpty() }?.let { languages ->
-                add(stringResource(R.string.ocr_models_delete_shared, languages.joinToString(", ") { it.displayName() }))
+                add(stringResource(R.string.ocr_models_delete_shared, languages.joinToString(listSeparator()) { it.displayName() }))
             }
         }.joinToString(" ")
         ConfirmDelete(
@@ -156,7 +157,7 @@ private fun OcrModelRow(
             if (details.isNotEmpty()) Hint(details.joinToString(" · "))
             if (option.entry?.misreadsBusyScreens == true) Hint(stringResource(R.string.ocr_models_busy_screens))
             val users = (option.deletion as? ModelDeletion.InUse)?.languages?.filter { it != language }.orEmpty()
-            if (users.isNotEmpty()) Hint(stringResource(R.string.ocr_models_in_use, users.joinToString(", ") { it.displayName() }))
+            if (users.isNotEmpty()) Hint(stringResource(R.string.ocr_models_in_use, users.joinToString(listSeparator()) { it.displayName() }))
         }
         when {
             option.downloading -> Box(modifier = Modifier.padding(12.dp)) {

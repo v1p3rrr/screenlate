@@ -822,6 +822,7 @@
     <string name="language_setup_models_info">Mô hình chính nhận dạng ngôn ngữ trên thiết bị. Các mô hình khác đã đánh dấu cũng được tải xuống và có thể chọn sau trong cài đặt nhận dạng màn hình. ML Kit có sẵn trong ứng dụng, nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn, chữ Devanagari, chữ Bengal và chữ Latinh; với các ngôn ngữ này, ML Kit được dùng khi chưa có mô hình chính.</string>
     <string name="nav_home">Trang chủ</string>
     <string name="nav_search">Tìm kiếm</string>
+    <string name="list_separator">,\u0020</string>
     <string name="camera_title">Máy ảnh</string>
     <string name="camera_flash_off">Đèn flash tắt</string>
     <string name="camera_flash_auto">Đèn flash tự động</string>

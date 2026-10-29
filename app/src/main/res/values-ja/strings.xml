@@ -822,6 +822,7 @@
     <string name="language_setup_models_info">メインのモデルが端末上でこの言語を認識します。チェックしたほかのモデルもダウンロードされ、あとで画面の認識の設定で選べます。ML Kit はアプリに内蔵され、中国語、日本語、韓国語、デーヴァナーガリー文字、ベンガル文字とラテン文字のテキストを認識します。これらの言語では、メインのモデルがない間は ML Kit が使われます。</string>
     <string name="nav_home">ホーム</string>
     <string name="nav_search">検索</string>
+    <string name="list_separator">、</string>
     <string name="camera_title">カメラ</string>
     <string name="camera_flash_off">フラッシュ：オフ</string>
     <string name="camera_flash_auto">フラッシュ：自動</string>

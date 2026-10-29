@@ -57,6 +57,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.settings.EInkHint
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import com.vpr.screenlate.update.UpdateAnnouncementCard
 import com.vpr.screenlate.update.UpdateViewModel
@@ -351,7 +352,7 @@ private fun ProblemsCard(
                                         stringResource(
                                             R.string.problems_missing_categories,
                                             language.displayName(),
-                                            others.map { stringResource(it.label) }.joinToString(", "),
+                                            others.map { stringResource(it.label) }.joinToString(listSeparator()),
                                         ),
                                     )
                                 }

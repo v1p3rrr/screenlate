@@ -846,6 +846,7 @@
     <string name="language_setup_models_info">Model główny rozpoznaje język na urządzeniu. Pozostałe zaznaczone modele też zostaną pobrane; można je wybrać później w ustawieniach rozpoznawania ekranu. ML Kit jest wbudowany w aplikację i rozpoznaje tekst chiński, japoński, koreański, w dewanagari, w piśmie bengalskim i w alfabecie łacińskim; dla tych języków jest używany, dopóki żaden model nie jest główny.</string>
     <string name="nav_home">Start</string>
     <string name="nav_search">Szukaj</string>
+    <string name="list_separator">,\u0020</string>
     <string name="camera_title">Aparat</string>
     <string name="camera_flash_off">Flesz wyłączony</string>
     <string name="camera_flash_auto">Flesz automatyczny</string>

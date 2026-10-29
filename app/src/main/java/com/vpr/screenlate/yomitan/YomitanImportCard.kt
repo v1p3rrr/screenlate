@@ -31,6 +31,7 @@ import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
 private val JSON_TYPES = arrayOf("application/json", "application/octet-stream", "*/*")
@@ -196,12 +197,12 @@ private fun Summary(done: SettingsImportState.Done) {
     summary.dictionaries?.let { outcome ->
         SummaryLine(stringResource(R.string.yomitan_summary_dictionaries, outcome.matched))
         if (outcome.missing.isNotEmpty()) {
-            SummaryLine(stringResource(R.string.yomitan_summary_dictionaries_missing, outcome.missing.joinToString(", ")), warning = true)
+            SummaryLine(stringResource(R.string.yomitan_summary_dictionaries_missing, outcome.missing.joinToString(listSeparator())), warning = true)
         }
         outcome.sortDictionary?.let { SummaryLine(stringResource(R.string.yomitan_summary_sort, it)) }
         outcome.sortMissing?.let { SummaryLine(stringResource(R.string.yomitan_summary_sort_missing, it), warning = true) }
         if (outcome.keptOn.isNotEmpty()) {
-            SummaryLine(stringResource(R.string.dictionaries_kept_on, outcome.keptOn.joinToString(", ")), warning = true)
+            SummaryLine(stringResource(R.string.dictionaries_kept_on, outcome.keptOn.joinToString(listSeparator())), warning = true)
         }
     }
     summary.anki?.let { outcome ->
@@ -211,10 +212,10 @@ private fun Summary(done: SettingsImportState.Done) {
         outcome.deck?.let { SummaryLine(stringResource(R.string.yomitan_summary_anki_deck, it)) }
         outcome.deckMissing?.let { SummaryLine(stringResource(R.string.yomitan_summary_anki_deck_missing, it), warning = true) }
         if (outcome.droppedFields.isNotEmpty()) {
-            SummaryLine(stringResource(R.string.yomitan_summary_anki_dropped, outcome.droppedFields.joinToString(", ")), warning = true)
+            SummaryLine(stringResource(R.string.yomitan_summary_anki_dropped, outcome.droppedFields.joinToString(listSeparator())), warning = true)
         }
         if (outcome.savedModels.isNotEmpty()) {
-            SummaryLine(stringResource(R.string.yomitan_summary_anki_saved, outcome.savedModels.joinToString(", ")))
+            SummaryLine(stringResource(R.string.yomitan_summary_anki_saved, outcome.savedModels.joinToString(listSeparator())))
         }
     }
     summary.audio?.let { outcome ->
@@ -226,7 +227,7 @@ private fun Summary(done: SettingsImportState.Done) {
             },
         )
         if (outcome.unknown.isNotEmpty()) {
-            SummaryLine(stringResource(R.string.yomitan_summary_audio_unknown, outcome.unknown.joinToString(", ")), warning = true)
+            SummaryLine(stringResource(R.string.yomitan_summary_audio_unknown, outcome.unknown.joinToString(listSeparator())), warning = true)
         }
     }
     summary.appearance?.let { outcome ->

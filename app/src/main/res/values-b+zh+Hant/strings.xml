@@ -822,6 +822,7 @@
     <string name="language_setup_models_info">主要模型在裝置上辨識該語言。其他勾選的模型也會下載，之後可在螢幕辨識設定中選擇。ML Kit 內建於應用程式中，可辨識中文、日文、韓文、天城文、孟加拉文和拉丁字母文字；對於這些語言，沒有主要模型時使用 ML Kit。</string>
     <string name="nav_home">首頁</string>
     <string name="nav_search">搜尋</string>
+    <string name="list_separator">、</string>
     <string name="camera_title">相機</string>
     <string name="camera_flash_off">閃光燈關閉</string>
     <string name="camera_flash_auto">閃光燈自動</string>

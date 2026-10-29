@@ -51,6 +51,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import com.vpr.screenlate.yomitan.YomitanImportCard
 import java.text.DateFormat
@@ -429,17 +430,17 @@ private fun Summary(summary: RestoreSummary) {
     summary.dictionaryFiles?.let { SummaryLine(pluralStringResource(R.plurals.backup_summary_dictionaries, it, it)) }
     if (summary.models > 0) SummaryLine(pluralStringResource(R.plurals.languages_model_count, summary.models, summary.models))
     if (summary.turnedOn.isNotEmpty()) {
-        SummaryLine(stringResource(R.string.backup_summary_languages, summary.turnedOn.joinToString(", ") { it.displayName() }))
+        SummaryLine(stringResource(R.string.backup_summary_languages, summary.turnedOn.joinToString(listSeparator()) { it.displayName() }))
     }
     if (summary.listApplied) SummaryLine(stringResource(R.string.backup_section_dictionary_list))
     if (summary.failed.isNotEmpty()) {
-        SummaryLine(stringResource(R.string.backup_summary_failed, summary.failed.joinToString(", ")), warning = true)
+        SummaryLine(stringResource(R.string.backup_summary_failed, summary.failed.joinToString(listSeparator())), warning = true)
     }
     if (summary.missing.isNotEmpty()) {
-        SummaryLine(stringResource(R.string.backup_summary_missing, summary.missing.joinToString(", ")), warning = true)
+        SummaryLine(stringResource(R.string.backup_summary_missing, summary.missing.joinToString(listSeparator())), warning = true)
     }
     if (summary.keptOn.isNotEmpty()) {
-        SummaryLine(stringResource(R.string.dictionaries_kept_on, summary.keptOn.joinToString(", ")), warning = true)
+        SummaryLine(stringResource(R.string.dictionaries_kept_on, summary.keptOn.joinToString(listSeparator())), warning = true)
     }
 }
 

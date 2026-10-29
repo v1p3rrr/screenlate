@@ -74,6 +74,7 @@ import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.components.pending
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
@@ -219,9 +220,9 @@ private fun CheckList(check: AnkiCheck, modifier: Modifier = Modifier) {
                 stringResource(R.string.anki_check_fields_differ),
                 *listOfNotNull(
                     check.missingFields.takeIf { it.isNotEmpty() }
-                        ?.let { stringResource(R.string.anki_check_fields_missing, it.joinToString(", ")) },
+                        ?.let { stringResource(R.string.anki_check_fields_missing, it.joinToString(listSeparator())) },
                     check.newFields.takeIf { it.isNotEmpty() }
-                        ?.let { stringResource(R.string.anki_check_fields_new, it.joinToString(", ")) },
+                        ?.let { stringResource(R.string.anki_check_fields_new, it.joinToString(listSeparator())) },
                     stringResource(R.string.anki_check_fix_fields),
                 ).toTypedArray(),
             )

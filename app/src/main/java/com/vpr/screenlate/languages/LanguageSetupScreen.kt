@@ -56,6 +56,7 @@ import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.components.ownDirection
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
@@ -367,7 +368,7 @@ private fun ConfirmBar(state: LanguageSetupState, enabled: Boolean, onConfirm: (
                 state.missing.isNotEmpty() -> Hint(
                     stringResource(
                         R.string.language_setup_missing,
-                        state.missing.map { stringResource(it.label) }.joinToString(", "),
+                        state.missing.map { stringResource(it.label) }.joinToString(listSeparator()),
                     ),
                 )
                 !state.enoughSpace -> Text(
