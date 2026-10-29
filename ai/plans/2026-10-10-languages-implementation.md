@@ -470,6 +470,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   segments keep screen order, menu paths in the three scripts take ←, Persian Lookup is told from Search, and text not
   in the interface language keeps its own direction (findings in `notes/translations.md`). Released, provisionally:
   `locales_config.xml` lists ar, fa and he, `unlisted` is empty. Questions 95-100.
+- Translation review (owner, 2026-10-29, later, on the owner's command): every interface locale's strings checked by
+  its own agent, one locale per agent, run separately. The catalog texts in Arabic, Persian and Hebrew (question 99:
+  70 dictionary and model texts, 38 font descriptions) are translated with this task, not before; until then they
+  show in English. New strings keep being translated into all locales as they are added.
 - Bubble menu in the dock (owner, 2026-10-22, request 75): holding the docked bubble opens the same menu as holding the
   floating one: the quick-language flags and opening the app. Items that need a scan (copy the paragraph, copy all, and
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
@@ -904,50 +908,51 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     de-en, 50 in it-en, 30 in ja-en), while real misspellings and old spellings on screen now lead to the word. (a) Hide
     such redirects when the matched text has an entry of its own. (b, chosen) Show them as wty and Yomitan do: below the
     word itself (the engine sorts shorter chains first), with the tag's label. (c) Hide them always.
-88. (2026-10-29, cloud session, converter data) wty's shared tag table gives the definition tag "Central" the chip
+88. Decided (2026-10-29, a bug, not a choice): (a), to build. (2026-10-29, cloud session, converter data) wty's shared tag table gives the definition tag "Central" the chip
     🇧🇷🎯 (Brazil's central region, right for Portuguese) in every language: 294 vi-en definitions (o "aunt" in
     Central Vietnam) show a Brazilian flag; a tap shows "Central". (a, recommended) In a dictionary of another
     language, show such a chip as the tag's note ("Central") instead of the flag; (b) leave it until wty fixes its
     table (the owner may report it); (c) leave it.
-89. (2026-10-29, cloud session) The same split leaves Vietnamese `North`, `Northern`, `South` and `Southern` alone on
+89. Decided (2026-10-29, completes the Central fix): (a), to build. (2026-10-29, cloud session) The same split leaves Vietnamese `North`, `Northern`, `South` and `Southern` alone on
     dialect forms (nhem → lem: northern; núa → nói shows Central Vietnam now). (a) Name them Northern and Southern
     Vietnam as well, as `Central` now; (b, as built) leave them "northern" and "southern".
-90. (2026-10-29, cloud session) FreeDict's long definitions follow the translations from 121 characters on (about
+90. Decided (2026-10-29, completes the owner's answer to question 72): (a), as built. (2026-10-29, cloud session) FreeDict's long definitions follow the translations from 121 characters on (about
     three lines in the popup), in every pair, not only de-ru; the Italian links "( tassonomia)" and "( citazioni)" are
     dropped with "( approfondimento)". (a, built) Keep it; (b) only de-ru; (c) another length (the owner says which).
 
-91. (2026-10-29, cloud session, interface check) Russian: an Anki note is «карточка» in about 20 strings («Карточки
+91. Answered (owner, 2026-10-29): (a), keep «карточка». (2026-10-29, cloud session, interface check) Russian: an Anki note is «карточка» in about 20 strings («Карточки
     добавляются в …», «Не удалось добавить карточку»), while the note type keeps AnkiDroid's own «тип записи», where
     a note is «запись». (a, recommended, as now) Keep «карточка», the word users say; (b) «запись» everywhere, as
     AnkiDroid names it, at the cost of a stiffer text.
-92. (2026-10-29, cloud session, interface check) French: the Lookup settings screen and the Search tab are both
+92. Answered (owner, 2026-10-29): the settings stay «Recherche», the Search tab becomes the verb «Rechercher», as in
+    Spanish, Italian and Portuguese (the owner found «Recherche dans les dictionnaires» too long); to build. (2026-10-29, cloud session, interface check) French: the Lookup settings screen and the Search tab are both
     «Recherche» (German now tells them apart: "Nachschlagen"/"Abfrage" against "Suche"). (a, as now) Keep it, as the
     lookup settings also apply to search; (b) name the settings «Consultation» or «Recherche dans les dictionnaires».
 
-93. (2026-10-29, cloud session, right-to-left strings) Wiktionary tags Arabic form rows with words that the form-of
+93. Decided (2026-10-29, a bug, not a choice): (a), to build. (2026-10-29, cloud session, right-to-left strings) Wiktionary tags Arabic form rows with words that the form-of
     tag labels name as other languages' categories: `elative` (the أفعل form) shows as the Finnish case (элатив,
     حالة الخروج), `non-past` and `subjunctive` as general terms where an Arabic reader expects المضارع and المنصوب. In
     every interface language. (a, recommended) Arabic `formTagAliases` to Arabic-specific tags with their own labels
     in the 17 locales (elative → "elative (أفعل)"); (b) leave them. Still open after the emulator check of the
     right-to-left screens, which did not touch it.
-94. (2026-10-29, cloud session, right-to-left strings) Menu paths in the hints (Apps → Screenlate → Language) keep →
+94. Decided (2026-10-29): (a), as built. (2026-10-29, cloud session, right-to-left strings) Menu paths in the hints (Apps → Screenlate → Language) keep →
     in Arabic, Persian and Hebrew, where it points against the reading direction. (a) Decide on the emulator check:
     ← if → reads backwards there; (b) keep →. Decided provisionally on the check (2026-10-29): → reads backwards, so
     paths written in the three scripts take ←; paths in Latin letters (the Hebrew Yomitan hints name the English
     menus), romaji examples and language-code pairs keep →, since they run left to right.
-95. (2026-10-29, right-to-left screens) The bubble's side choice names screen edges. (a, built, provisional) Keep
+95. Decided (2026-10-29; (b) would put «Right» at the left edge): (a), as built. (2026-10-29, right-to-left screens) The bubble's side choice names screen edges. (a, built, provisional) Keep
     Left on the left and Right on the right in every language; (b) mirror it like the other segments (Right first).
-96. (2026-10-29, right-to-left screens) Mirrored icons. (a, built, provisional) Material's auto-mirrored set: the back
+96. Decided (2026-10-29, Material's standard set): (a), as built. (2026-10-29, right-to-left screens) Mirrored icons. (a, built, provisional) Material's auto-mirrored set: the back
     arrow, the chevrons, and the volume, lookup and dictionaries icons; (b) only the arrows and chevrons.
-97. (2026-10-29, right-to-left screens) Persian named the Lookup settings and the Search tab both جستجو. (a, built,
+97. Decided (2026-10-29): (a), as built. (2026-10-29, right-to-left screens) Persian named the Lookup settings and the Search tab both جستجو. (a, built,
     provisional) Lookup is جستجو در واژه‌نامه‌ها («search in the dictionaries»); (b) keep one word for both.
-98. (2026-10-29, right-to-left screens) Release. (a, built, provisional) Offer Arabic, Persian and Hebrew in the
+98. Answered (owner, 2026-10-29): (a), offer them now. (2026-10-29, right-to-left screens) Release. (a, built, provisional) Offer Arabic, Persian and Hebrew in the
     language settings now, with flags SA, IR and IL in Appearance's list (the defaults of the Languages screen);
     (b) wait for a native speaker's review of the strings.
-99. (2026-10-29, right-to-left screens) Catalog texts (70 dictionary and model texts, 38 font descriptions) have no
+99. Decided (2026-10-29, every string in every locale): (b), with the translation review (Backlog, owner). (2026-10-29, right-to-left screens) Catalog texts (70 dictionary and model texts, 38 font descriptions) have no
     Arabic, Persian or Hebrew version. (a, built, provisional) Show the English one, marked to keep its direction and
     naming the languages in English; (b) translate them into the three, a separate task.
-100. (2026-10-29, right-to-left screens) Lists joined in code take ", " (22 places, a dictionary's counts among them),
+100. Decided (2026-10-29, the Latin comma is a wrong mark there, a bug): (a), to build. (2026-10-29, right-to-left screens) Lists joined in code take ", " (22 places, a dictionary's counts among them),
     a Latin comma in Arabic and Persian (،) and in Japanese and Chinese (、). (a, recommended) A list separator
     string per locale; (b, as now) leave it.
 
@@ -1903,3 +1908,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-29: `claude/rtl-1029`: the right-to-left screens checked on the emulator and fixed; Arabic, Persian and
   Hebrew offered in the language settings (provisional); question 94 decided provisionally (← in paths written in
   the three scripts); questions 95-100 added.
+- 2026-10-29: questions 88-100 answered or decided with the owner: 91, 92 (tab «Rechercher») and 98 by the owner;
+  88, 93 and 100 as bugs; 89, 90 and 94-97 as details of rules already chosen; 99 goes with the translation review,
+  added to the Backlog (owner: per-locale review agents, later).

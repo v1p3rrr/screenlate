@@ -110,7 +110,9 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
 
 ## Questions
 
-1. **Extra results through the fold (provisional: kept as decided).** The fold works: a word typed without marks finds
+1. **Extra results through the fold. Answered (owner, 2026-10-29): (a), keep as built in every language, Irish,
+   Macedonian and Mongolian included; the owner's condition, the word as recognized or typed coming first, holds
+   (LanguageLookupTest: "the exact spelling first", "the word as read first").** The fold works: a word typed without marks finds
    the marked words, a mark recognition misreads finds the right word. The cost, measured above: in many languages the
    short common words get one or two extra results below their own, because a marked word of the same letters exists
    (Spanish de → dé, que → qué, el → él; Italian e → è, é; Portuguese a → á, ã, â, à; French la → là; Hungarian a → á;
@@ -135,7 +137,10 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    Macedonian (added 2026-10-29 with its language) is past the threshold too: 10.3% typed, 10.4% after OCR, и → ѝ,
    се → сѐ, е → ѐ, не → нѐ (the grave tells the pronoun and the particles from the conjunction and the verb); under c)
    it would work as Welsh and Gaelic do.
-2. **Word forms without the dictionary's headwords (not built; the coordinating session's follow-up to Uzbek).** The
+2. **Word forms without the dictionary's headwords. Answered (owner, 2026-10-29): measure first. Count on the Uzbek
+   and Azerbaijani news corpora how many words get a false rule result with uz–ru (az–ru) and the word forms alone, and
+   how many right results a headword list would drop; decide on the numbers. The owner's aim: a word spelled as
+   scanned comes first, a parsed one after.** The
    "Word forms" item imports only the English Wiktionary's form rows, not its headwords. In Uzbek (and Azerbaijani),
    ending rules show their results only when the word has no entry of its own; with uz–ru and the word forms alone,
    Davom finds davo with the ending "my", because uz–ru has no davom and the forms import does not know davom is a
@@ -168,3 +173,4 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
   under question 1.
 - 2026-10-29: Bulgarian, Macedonian and Mongolian added to the data check with their languages (group 5d); Macedonian
   is past the threshold and joins question 1.
+- 2026-10-29: question 1 answered (a), Irish and Mongolian staying in the fold; question 2 answered: measure first.
