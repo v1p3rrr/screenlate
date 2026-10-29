@@ -75,8 +75,9 @@ the details.
 
 ### Emulators (2026-10-29: both shut down)
 
-- 2026-10-29: the main session last ran API 37 with the debug app of `combine-cloud` (the app's language Russian
-  through the per-app setting) and shut it down; the lock `.worktrees/emulator.lock` is free. The notes below are
+- 2026-10-29: the main session last ran API 37 with the debug app of `combine-cloud` `19801288` (the app's language
+  Russian through the per-app setting; Azerbaijani and Uzbek turned on, Uzbek active) and shut it down; the lock
+  `.worktrees/emulator.lock` is free. The notes below are
   of 2026-10-28.
 - API 37 (`Pixel_10_Pro`): the debug app of the settings rework (`0.2.3-9c26bae8` built before its commit, x86_64
   only; the app's language back to the system's), Slovenian active, Korean unstarred, the photo language Japanese, no current photo and
@@ -254,7 +255,9 @@ the details.
     import; Uzbek: 1,445 wrong results removed, no right one) with group 5c's questions 18 and 19. Found while
     measuring: the rule filter (`RuleOnlyResults.throughAny`) takes a form row whose tag is named as a rule (uz
     dative, genitive, accusative, locative; az plural, converb) for a rule's result and drops it beside an entry
-    (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question.
+    (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question (form-of steps
+    marked by the native lookup, `notes/language-rules.md` bug 48; engine instrumented tests 72 of 72, LK82's
+    kengligiga → kenglik on the emulator).
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)

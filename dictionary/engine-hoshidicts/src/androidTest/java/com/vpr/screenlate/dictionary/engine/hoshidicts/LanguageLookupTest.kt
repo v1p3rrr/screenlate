@@ -1640,6 +1640,11 @@ class LanguageLookupTest {
         assertThat(all("boraman")).containsExactly("bormoq")
         // A word with its own entry shows it without the rules' results: davom, not davo through the possessive.
         assertThat(all("davom")).containsExactly("davom")
+        // A form row whose tag is named as a rule is no rule's result: uyga shows itself, then uy through its row.
+        assertThat(all("uyga")).containsExactly("uyga", "uy").inOrder()
+        val house = engine.lookup("uyga", uzbek).first { it.term.expression == "uy" }
+        assertThat(house.trace.map { it.name to it.form }).containsExactly("dative" to true)
+        assertThat(house.otherTraces).isEmpty()
         // Typed apostrophes find the dictionary's ʻ and ʼ; a headword written with ' is found with ʻ.
         assertThat(all("so'z")).containsExactly("soʻz")
         assertThat(all("ta`lim")).containsExactly("taʼlim")
@@ -1655,7 +1660,8 @@ class LanguageLookupTest {
 
     /**
      * Rows as Wiktionary's Uzbek export writes them: no rules, the part of speech in the tags, ʻ and ʼ in the
-     * headwords (one with a plain apostrophe); boʻlsa as a form-of row.
+     * headwords (one with a plain apostrophe); boʻlsa as a form-of row, uyga as a word and a form-of row tagged as the
+     * dative rule is named.
      */
     private fun uzbekDictionary(): File = zip(
         "uz.zip",
@@ -1675,7 +1681,10 @@ class LanguageLookupTest {
               ["oʻt","","n","",0,["fire"],11,""],
               ["boʻlmoq","","v","",0,["to be"],12,""],
               ["boʻlsa","","non-lemma","",0,[["boʻlmoq",["conditional"]]],13,""],
-              ["ilm","","n","",0,["knowledge"],14,""]
+              ["ilm","","n","",0,["knowledge"],14,""],
+              ["uy","","n","",0,["house"],15,""],
+              ["uyga","","adv","",0,["homewards"],16,""],
+              ["uyga","","non-lemma","",0,[["uy",["dative"]]],17,""]
             ]
         """.trimIndent().toByteArray(),
     )

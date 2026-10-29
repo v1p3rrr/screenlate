@@ -42,11 +42,21 @@ struct CandidateLookupOptions {
   std::optional<std::string> primary_reading;
 };
 
+// A step of a chain: an inflection rule of the language script, or a tag of a form-of entry ([form]), which may be
+// named as a rule (Uzbek's dative rows).
+struct ChainStep {
+  std::string name;
+  bool form = false;
+  bool operator==(const ChainStep&) const = default;
+};
+
+using Chain = std::vector<ChainStep>;
+
 struct CandidateResult {
   std::string matched;
   std::string deinflected;
   // Rule chains from the matched text to the term, the shortest first; Yomitan lists every one.
-  std::vector<std::vector<std::string>> chains;
+  std::vector<Chain> chains;
   int preprocessor_steps = 0;
   TermResult term;
   // Whether the headword was reached only through another spelling, a form-of entry with no tags (a headword keyed

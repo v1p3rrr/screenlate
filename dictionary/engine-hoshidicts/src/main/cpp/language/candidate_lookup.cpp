@@ -43,7 +43,7 @@ struct Pending {
   std::string matched;
   int steps = 0;
   uint32_t conditions = 0;
-  std::vector<std::vector<std::string>> chains;
+  std::vector<Chain> chains;
   std::string text;
   bool untyped = false;
   // The text whose form-of entry led to [text]; empty for a candidate.
@@ -64,7 +64,7 @@ struct Match {
   std::string matched;
   std::string deinflected;
   int steps = 0;
-  std::vector<std::vector<std::string>> chains;
+  std::vector<Chain> chains;
   TermResult term;
   bool respelled = false;
 };
@@ -130,7 +130,7 @@ std::optional<int> frequency_in(const TermResult& term, const std::string& dicti
 
 size_t length_of(const std::string& text) { return utf8::unchecked::distance(text.begin(), text.end()); }
 
-size_t shortest(const std::vector<std::vector<std::string>>& chains) {
+size_t shortest(const std::vector<Chain>& chains) {
   size_t best = SIZE_MAX;
   for (const auto& chain : chains) best = std::min(best, chain.size());
   return best == SIZE_MAX ? 0 : best;
@@ -234,7 +234,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
                     p.respelled || item.tags.empty() || item.respelled};
       for (const auto& chain : p.chains) {
         auto extended = chain;
-        extended.insert(extended.end(), item.tags.begin(), item.tags.end());
+        for (const auto& tag : item.tags) extended.push_back({tag, true});
         lemma.chains.push_back(std::move(extended));
       }
       next.push_back(std::move(lemma));
@@ -260,8 +260,12 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     for (const auto& lemma : second) visit(lemma, ignored);
   };
   auto pending_of = [](const LanguageCandidate& candidate) {
-    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u, {}, candidate.t, candidate.g,
+    Pending p{candidate.o, candidate.s, candidate.c, {}, candidate.d, candidate.u, {}, candidate.t, candidate.g,
               false, candidate.f, candidate.l};
+    for (const auto& rules : candidate.r) {
+      Chain& chain = p.chains.emplace_back();
+      for (const auto& rule : rules) chain.push_back({rule});
+    }
     if (p.chains.empty()) p.chains.emplace_back();
     return p;
   };

@@ -42,13 +42,15 @@ data class LookupResult(
 
 /**
  * One deinflection step. [name] is the engine's rule name (Anki's `{conjugation}` uses it); [label] and
- * [description] are for display, in the interface language when the engine provides them.
+ * [description] are for display, in the interface language when the engine provides them. [form]: the step is a
+ * form-of entry's tag, not an inflection rule, even where the tag is named as one (languages other than Japanese).
  */
 @Serializable
 data class Transform(
     val name: String,
     val description: String = "",
     val label: String = "",
+    val form: Boolean = false,
 )
 
 /** @property rules part-of-speech rules of the term, space-separated (Yomitan `rules`). */

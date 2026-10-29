@@ -172,7 +172,8 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    - Found: the rule filter takes a form row whose tag is named as a rule (uz–ru's dative, genitive, accusative and
      locative rows, about 40,000; az-en's plural and converb) for a rule's result, so beside an entry it drops such
      form results too: 75 Uzbek tokens, 693 Azerbaijani (deyil → demək). A plain bug, fixed apart from this question
-     (the filter's own rule says a form-of entry's chain is not a rule's).
+     on 2026-10-29 (`notes/language-rules.md`, bug 48; the filter's own rule says a form-of entry's chain is not a
+     rule's).
    To ask the owner on return, with these numbers.
 
 ## Progress
