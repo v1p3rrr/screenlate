@@ -66,6 +66,7 @@ simulated.
 | sh | Serbo-Croatian | 12.9 / 15.4 | 1.81 / 1.69 | 0.08 / 0.10 | 170,104 | 17.2 | u → ȕ, ȗ; i → ȉ, ȋ; a → ȁ, ȃ |
 | lt | Lithuanian | 0.1 / 11.5 | 2.00 / 1.83 | 0.00 / 0.22 | 2 | 0.0 | į → i̷, ɨ, i (OCR); yra → yrà, ỹra; tai → tái |
 | tr | Turkish | 5.6 / 10.6 | 1.05 / 1.08 | 0.28 / 0.42 | 2,080,432 | 75.8 | çok → çök (OCR); o → ö; ama → âmâ |
+| mk | Macedonian | 10.3 / 10.4 | 1.00 / 1.00 | 0.02 / 0.03 | 16,383 | 2.1 | и → ѝ; се → сѐ; е → ѐ |
 | nl | Dutch | 9.2 / 9.3 | 1.00 / 1.00 | 0.02 / 0.06 | 3,297 | 1.3 | de → dé; een → één; of → óf |
 | en | English | 8.1 / 8.1 | 3.87 / 3.87 | 0.01 / 0.01 | 10,152 | 0.6 | a → ã, à, â, ä, ā, ă, ȧ, ạ; i → ĩ, î, ī, ĭ, ị; is → ĩs |
 | ru | Russian | 7.1 / 7.9 | 1.00 / 1.00 | 0.94 / 1.03 | 164,961 | 11.0 | и → й; я → я̈; все → всё |
@@ -73,10 +74,12 @@ simulated.
 | sk | Slovak | 4.0 / 7.2 | 1.00 / 1.03 | 0.00 / 0.36 | 211 | 0.2 | a → ä, á, à; z → ž; s → š |
 | fi | Finnish | 3.4 / 6.4 | 1.06 / 1.04 | 0.04 / 0.06 | 1,241,134 | 26.7 | tai → täi; vain → väin; tämä → tama (OCR) |
 | be | Belarusian | 2.9 / 6.2 | 1.06 / 1.20 | 0.01 / 0.57 | 14,273 | 22.4 | ў → у (OCR); у → ў; гэта → гэ́та |
+| bg | Bulgarian | 4.1 / 4.7 | 1.99 / 1.98 | 0.00 / 0.00 | 23,170 | 7.4 | и → й, ѝ; които → който; някои → някой |
 | az | Azerbaijani | 2.4 / 4.5 | 1.00 / 1.13 | 0.06 / 0.14 | 680,054 | 69.1 | üçün → ucun, uçun (OCR); o → ö; baş → bas (OCR) |
 | et | Estonian | 2.8 / 4.5 | 1.01 / 1.01 | 0.11 / 0.15 | 71,630 | 28.8 | oli → õli; pole → põle; ole → õle |
 | uk | Ukrainian | 2.4 / 2.7 | 1.00 / 1.00 | 0.03 / 0.03 | 56,563 | 12.6 | і → ї; й → и (OCR); и → й |
 | eo | Esperanto | 0.0 / 2.5 | 0.00 / 1.01 | 0.00 / 0.06 | 1 | 0.0 | ankaŭ → ankau (OCR); aŭ → au (OCR); ĉi → ci (OCR) |
+| mn | Mongolian | 1.1 / 2.3 | 1.00 / 1.00 | 0.14 / 0.32 | 10,597 | 42.0 | хүн → хун (OCR); олон → өлөн; уу → үү |
 | sl | Slovenian | 0.7 / 1.8 | 3.18 / 2.43 | 0.00 / 0.05 | 142 | 0.2 | je → jȅ, jẹ́; se → sẹ̑, še; da → dá |
 | la | Latin | 1.5 / 1.5 | 1.00 / 1.00 | 0.00 / 0.00 | 27 | 0.0 | a → aͣ; fuit → fu͛it; e → ę |
 | ky | Kyrgyz | 0.9 / 1.3 | 1.00 / 1.01 | 0.07 / 0.38 | 12,907 | 22.9 | болуп → бөлүп; болгон → бөлгөн; кол → көл |
@@ -96,6 +99,14 @@ commonest word gets eight (a → ã, à, â, ä, ā, ă, ȧ, ạ, letter entries
 folded results only for a word without an entry. Every language with real noise is past the provisional threshold, so
 the question below goes to the owner. Until the answer, the fold works as the decision row says, extras after the words
 as written.
+
+Bulgarian, Macedonian and Mongolian were measured the same way when their languages were added (2026-10-29): wty-bg-en
+against wordfreq small_bg, net of the Bulgarian й → ѝ processor and the stress keys; wty-mk-en against large_mk;
+wty-mn-en against the Leipzig corpus mon_news_2020_100K. Macedonian is past the threshold (10.3% typed): its graves tell
+the pronoun ѝ and the particles сѐ, нѐ, ѐ from и, се, не, е, so the commonest words get the other one below their own.
+Bulgarian is under it, though both и (3.7% of text) and които get a second result (й and ѝ, който: й folds to и).
+Mongolian is under it; its growth of 42% comes from ө and ү, letters of their own that the table folds to о and у, so
+о and у words find ө and ү words after their own (олон → өлөн, уу → үү): the group 5d plan's question 17.
 
 ## Questions
 
@@ -120,6 +131,10 @@ as written.
    every Latin-script language, so fag now finds fág, and hEireann (the built-in recognizer's reading of hÉireann)
    finds Éire, which it did not before; Irish is the fourth noisiest (an → án, a → á, ar → ár). Under b) or c) Irish
    would work as Welsh and Gaelic do.
+
+   Macedonian (added 2026-10-29 with its language) is past the threshold too: 10.3% typed, 10.4% after OCR, и → ѝ,
+   се → сѐ, е → ѐ, не → нѐ (the grave tells the pronoun and the particles from the conjunction and the verb); under c)
+   it would work as Welsh and Gaelic do.
 2. **Word forms without the dictionary's headwords (not built; the coordinating session's follow-up to Uzbek).** The
    "Word forms" item imports only the English Wiktionary's form rows, not its headwords. In Uzbek (and Azerbaijani),
    ending rules show their results only when the word has no entry of its own; with uz–ru and the word forms alone,
@@ -151,3 +166,5 @@ as written.
   prefix loss recorded.
 - 2026-10-29: Irish follows the fold as the decision row says (fag finds fág), against group 5b's question 11; noted
   under question 1.
+- 2026-10-29: Bulgarian, Macedonian and Mongolian added to the data check with their languages (group 5d); Macedonian
+  is past the threshold and joins question 1.

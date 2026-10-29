@@ -172,6 +172,31 @@ the details.
   within a second, Home said "the system stopped the service" while the bubble worked; right after the interface
   language went from Russian back to System, the language chips of the Anki and Audio settings stayed Russian until
   the screen was opened again.
+- Group 5d (`plans/2026-10-19-group-5d.md`), built on 2026-10-29 while the owner was away on `languages/5d`
+  (rebased on `languages/main` `9cf24772`) and merged into `languages/main` (`f14819a5`, a fast-forward; the main
+  session's check: every bundle rebuilt to the same sizes, the same suites pass): Bulgarian,
+  Macedonian and Mongolian with their support classes, bundles and ending lists (Bulgarian 9 rules for words without
+  an entry, Mongolian 25 in every vowel-harmony variant with the Turkic names, Macedonian on the Bulgarian bundle
+  without its endings), catalog entries (Wiktionary, wordfreq for bg and mk, Leipzig's Mongolian news built on the
+  phone, PaddleOCR's Cyrillic model recommended, Tesseract unticked), flags, bubble letters Б, М, М with the codes БГ,
+  МК, МН, fonts (Sofia Sans for Bulgarian only; Montserrat and Commissioner, which draw the Bulgarian letter forms in
+  Bulgarian text), the import cleanup of Wiktionary's export faults for every language, the Macedonian fixes after
+  recognition and the retry for recognized words (Л → Љ, then С → Ѕ), strings in the 17 locales. Checked on the
+  emulator (run log 2026-10-29, `languages/5d`); not run: ANK45 (the Anki sentences), Bulgarian and Mongolian with
+  on-device recognition, Montserrat under Macedonian. After the rebase the Bulgarian and Mongolian descriptors were
+  marked pure for the bundle check (bg.js 86 to 58 KB), every bundle was rebuilt and the new strings got Arabic,
+  Persian and Hebrew; unit tests (1,945, four skipped), lint, page (146), glue and mutation (146, one skipped),
+  catalog and Python tests pass, the engine's instrumented tests 72 of 72. Open for the owner: the plan's questions 17
+  (Mongolian о and у find ө and ү through the folded marks, provisional), 18 (С → Ѕ in the Macedonian retry,
+  provisional) and 19 (hosting the Mongolian WordNet dictionary, parked); Macedonian is past the folding plan's
+  threshold (10.3% of typed words get an extra result: и → ѝ, се → сѐ), one more line under its question 1.
+  Two import rules apply to every language's Wiktionary import, not only these three: a row that repeats an earlier
+  one word for word is kept once (a set of 64-bit row hashes over all term banks of the archive: by estimate, not
+  measured, some 40 bytes of native memory a row during the import, tens of MB for a million rows), and a form-of item whose form is a lone ending of its lemma (at
+  most three letters, fewer than the lemma's, another first letter, only number and definiteness tags) is left out;
+  a gender after a lemma's name ("куќа f") is dropped too. Fixed after the merge (main session): the Audio settings'
+  test word follows the shown language also when the active one changes elsewhere, as from the bubble menu (SET21,
+  `testWordAfter`); the Slovak import row of `notes/language-rules.md`'s Engine table is whole again.
 - Wikipedia as a corpus (owner's remark, 2026-10-28 night): some small Wikipedia editions were written largely by
   non-speakers (Scots in 2020; Greenlandic, machine-translated, closed in 2025; neither is in the app). Checked with a
   few web searches, not a full audit, as the owner asked. Wikipedia text gives the frequency dictionary of Latin (Esperanto's and
@@ -191,7 +216,7 @@ the details.
   - Esperanto's frequency dictionary comes from Leipzig's web texts of 2012 (`cb3c1d7e`; DIC39 due again);
   - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
   - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word. Group 5d (Bulgarian,
-    Mongolian, Macedonian) is being built on `languages/5d` from `a6fe33ca` by its research session;
+    Mongolian, Macedonian) is merged into `languages/main` (bullet above);
   - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
     `languages/main` (`3e82e306`; every bundle rebuilt from the merged sources, the 5c, marks and az/uz bundles shrank
