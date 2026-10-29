@@ -341,7 +341,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP55 | Marathi fonts: Popup settings → Text font for Marathi lists Mukta and Tiro Devanagari Marathi (not Hind or Tiro Devanagari Hindi); downloading Mukta there makes it installed for Hindi too (one file, listed under both); the sample text draws Marathi's own ल and श in a font that has them; Backup with Marathi alone turned on lists Mukta | F | U FontCatalogFileTest, BackupChoiceTest, M | 2026-10-29 |
 | POP56 | Tamil fonts: Popup settings → Text font for Tamil lists the phone's font, then Hind Madurai, Mukta Malar and Tiro Tamil (not Hindi's or Marathi's); a downloaded one draws the sample text; Backup with Tamil alone turned on lists it | F | U FontCatalogFileTest, M | 2026-10-29 |
 | POP57 | Telugu fonts: Popup settings → Text font for Telugu lists the phone's font, then Anek Telugu and Tiro Telugu (not Tamil's or Hindi's); a downloaded one draws the sample text, three-consonant clusters (లక్ష్మి, సామర్థ్యం) included | F | U FontCatalogFileTest, M | 2026-10-29 |
-| POP58 | Kannada fonts: Popup settings → Text font for Kannada lists the phone's font, then Anek Kannada and Tiro Kannada (not Telugu's or Hindi's); a downloaded one draws the sample text, stacked consonants (ಲಕ್ಷ್ಮಿ, ಕ್ಷೇತ್ರ) included | N | U FontCatalogFileTest, M | — |
+| POP58 | Kannada fonts: Popup settings → Text font for Kannada lists the phone's font, then Anek Kannada and Tiro Kannada (not Telugu's or Hindi's); a downloaded one draws the sample text, stacked consonants (ಲಕ್ಷ್ಮಿ, ಕ್ಷೇತ್ರ) included | F | U FontCatalogFileTest, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -389,7 +389,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD40 | Marathi audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with पाणी; with autoplay on and no Marathi voice installed, a lookup shows the no-voice notice | F | U MarathiSupportTest, M | 2026-10-29 |
 | AUD41 | Tamil audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; Test with தண்ணீர் | F | U TamilSupportTest, M | 2026-10-29 |
 | AUD42 | Telugu audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with నీరు | F | U TeluguSupportTest, M | 2026-10-29 |
-| AUD43 | Kannada audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with ನೀರು | N | U KannadaSupportTest, M | — |
+| AUD43 | Kannada audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with ನೀರು | F | U KannadaSupportTest, M | 2026-10-29 |
 
 ### ANK: Anki
 
@@ -442,7 +442,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK46 | A Marathi Anki note (over `testdata/ocr/mr-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96`, one paragraph over four lines: "पु. ल. देशपांडे यांचा जन्म इ.स." / "1919 मध्ये झाला. डॉ. जोशी आणि" / "प्रा. पाटील आले. कोण आले? मी." / "तू कुठे होतास? तो आला। आता जा।", ML Kit Devanagari): the sentence keeps "डॉ.", "प्रा.", "इ.स." and the initials "पु. ल." inside it ("पु. ल. देशपांडे यांचा जन्म इ.स. 1919 मध्ये झाला."), and a one-syllable word of dialogue ends one ("कोण आले? मी. तू कुठे होतास?" gives "मी." for मी); a danda ends a sentence as a period does | F | U SentenceTest, MarathiSupportTest, M | 2026-10-29 |
 | ANK47 | A Tamil Anki note (over `testdata/ocr/ta-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture ta-IN`, four lines: "திரு. ராமன் 15 கி.மீ. நடந்தார்." / "க. சண்முகம் ஜன. 15 அன்று" / "வந்தார். யார் வந்தது?" / "நீ. இங்கே வா. அவர் சென்றார்."): under cloud recognition ராமன் gives "திரு. ராமன் 15 கி.மீ. நடந்தார்." (the title and the unit hold the sentence), நீ gives "நீ." and வா "இங்கே வா." (words of dialogue end sentences); under on-device recognition (Tesseract tam fast, one paragraph) வந்தார் gives "க. சண்முகம் ஜன. 15 அன்று வந்தார்." (a one-syllable initial and a month before a date, across the line end; cloud recognition makes a paragraph of each line of this image) | F | U SentenceTest, TamilSupportTest, M | 2026-10-29 |
 | ANK48 | A Telugu Anki note (over `testdata/ocr/te-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture te-IN`, five lines: "డా. రాజు 15 కి.మీ." / "నడిచారు. కె. చంద్రశేఖర్" / "రావు నిన్న వచ్చారు." / "ఎవరు వచ్చారు? ఇక్కడికి" / "రా. ఆయన వెళ్ళారు."): under on-device recognition (Tesseract tel fast, one paragraph) రాజు gives "డా. రాజు 15 కి.మీ. నడిచారు." (the title and the unit hold the sentence) and నిన్న "కె. చంద్రశేఖర్ రావు నిన్న వచ్చారు." (a one-syllable initial across the line end); under cloud recognition రా gives "ఇక్కడికి రా." (రా ends the sentence; Tesseract tel fast drops that period) | F | U SentenceTest, TeluguSupportTest, M | 2026-10-29 |
-| ANK49 | A Kannada Anki note (over `testdata/ocr/kn-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture kn-IN`, six lines: "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ." / "ನಡೆದರು. ಕೆ. ಶಿವರಾಮ್" / "ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." / "ಅ. 15 ರಂದು ಸಭೆ" / "ನಡೆಯಿತು. ಇಲ್ಲಿಗೆ" / "ಬಾ. ಅವನು ಹೋದನು."), Anki for Kannada: deck and note type Screenlate Test, Word {expression}, Meaning {sentence}: ನಡೆದರು gives "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ. ನಡೆದರು." (the title and the unit hold the sentence), ಮನೆಗೆ "ಕೆ. ಶಿವರಾಮ್ ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." (a one-syllable initial across the line end), ಸಭೆ "ಅ. 15 ರಂದು ಸಭೆ ನಡೆಯಿತು." (the month before a number), ಬಾ "ಇಲ್ಲಿಗೆ ಬಾ." | N | U SentenceTest, KannadaSupportTest, M | — |
+| ANK49 | A Kannada Anki note (over `testdata/ocr/kn-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture kn-IN`, six lines: "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ." / "ನಡೆದರು. ಕೆ. ಶಿವರಾಮ್" / "ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." / "ಅ. 15 ರಂದು ಸಭೆ" / "ನಡೆಯಿತು. ಇಲ್ಲಿಗೆ" / "ಬಾ. ಅವನು ಹೋದನು."), Anki for Kannada: deck and note type Screenlate Test, Word {expression}, Meaning {sentence}: ನಡೆದರು gives "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ. ನಡೆದರು." (the title and the unit hold the sentence), ಮನೆಗೆ "ಕೆ. ಶಿವರಾಮ್ ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." (a one-syllable initial across the line end), ಸಭೆ "ಅ. 15 ರಂದು ಸಭೆ ನಡೆಯಿತು." (the month before a number), ಬಾ "ಇಲ್ಲಿಗೆ ಬಾ." | F | U SentenceTest, KannadaSupportTest, M | 2026-10-29 |
 
 ### TR: sentence translation
 
@@ -711,6 +711,25 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/kn` `ec6c47e0` (the main session's recheck before the merge), Pixel_10_Pro (API 37)
+
+Scope: ANK49, AUD43 and POP58, the cases the branch's run did not reach; interface in Russian. The overlay over
+`testdata/ocr/kn-anki.png` with the engines set to the device (Tesseract kan fast), then to both, and back to both
+afterwards. Anki for Kannada: deck and note type Screenlate Test, Word {expression}, Meaning {sentence}; real taps on
+the add button, a held add button for a word already added ("Добавить всё равно").
+
+Results: ANK49, AUD43 and POP58 passed and moved from N to F, ANK49 with the cloud recognition limit below.
+- ANK49 under on-device recognition: the four notes carry the sentences listed in the case. The popup stays usable
+  after each add.
+- ANK49 under both engines (cloud recognition final): ಮನೆಗೆ, ಸಭೆ and ಬಾ as listed; ನಡೆದರು gives "ನಡೆದರು.". Cloud
+  recognition ends a paragraph after the line ending "ಕಿ.ಮೀ.", and the sentence stops at the engine's paragraph, as
+  in the Tamil run's ANK47.
+- AUD43: Lingua Libre, Wiktionary, then the phone's voice; Test with ನೀರು: a Lingua Libre recording, Wiktionary's
+  clip (Kn-ನೀರು.ogg) and the phone's voice.
+- POP58: the phone's font, then Anek Kannada (1.3 MB) and Tiro Kannada (0.5 MB), with "Только для текста на
+  каннада"; Tiro Kannada downloaded and chosen draws the sample text, ಲಕ್ಷ್ಮಿ and ಕ್ಷೇತ್ರ included, in shapes that
+  differ from the phone's font.
 
 ### 2026-10-29, `languages/kn` (Kannada, after its code commit), Pixel_10_Pro (API 37)
 
