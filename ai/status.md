@@ -763,7 +763,9 @@ autonomous session (`notes/languages.md`, "Group 6 research"; `plans/2026-10-20-
 blocks (6a Catalan, Galician; 6b Icelandic, Afrikaans; 6c Tatar, Bashkir after group 4e; 6d Sanskrit), 26 questions,
 10 deferred (among them Galician's fallback language and enclitic rule, Tatar's missing wty dictionary, Sanskrit
 sandhi and Monier-Williams's license) and 16 decided provisionally, to be asked when the owner is back. Recognition
-was measured on the PC only (Paddle); ML Kit, Tesseract and cloud wait for the emulator. Not started.
+was measured on the PC only (Paddle); ML Kit, Tesseract and cloud wait for the emulator. Not started. On 2026-10-29
+morning the owner gave the research to the cloud session to bring up to date (`cloud/group-6-research-2026-10-29`,
+research only; plan changelog).
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,

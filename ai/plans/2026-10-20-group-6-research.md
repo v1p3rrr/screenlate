@@ -1208,3 +1208,8 @@ the fallback reused); 6c about a session once group 4e's engine exists, plus the
 - 2026-10-22: wty closed both issues with its release 2026.10.22: the contractions are back (checked in ca-en, gl-en,
   de-en, it-en), so question 5's supplement is not needed; Tatar is in wty (13 gloss languages), so the Tatar block
   lists wty tt-ru and tt-en with no converter of ours (question 14).
+- 2026-10-29: at the owner's word the cloud session that did the backlog of 2026-10-29 brings this research up to date
+  with `languages/main` `23448dd3` (folded marks, own endings, the import cleanup, Leipzig corpora, groups 4e, 5c and
+  5d) on `cloud/group-6-research-2026-10-29`: sources re-checked, the folding noise and coverage measured without the
+  emulator, the 26 questions gone through. Research only; the build waits for the owner's word, recognition on the
+  emulator for a local session.
