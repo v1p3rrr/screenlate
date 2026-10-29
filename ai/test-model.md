@@ -180,7 +180,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR50 | Estonian recognition (`testdata/ocr/et-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: õ, ä, ö, ü words, the negative forms of olema, NATO-ga and 5-ga, „…“ quotes, a compound): cloud recognition reads õ ä ö ü, š ž and the hyphens; ML Kit may read õ as ö, and such a word is still found (LK80) | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR51 | Azerbaijani recognition (`testdata/ocr/az-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: ə, ı, ğ, ö, ü, ç, ş words, noun and verb endings, 2020-ci and ABŞ-da, «…» quotes; `az-misread.png` prints e and i where ə and ı belong): cloud recognition reads ə ı İ and the hyphens; ML Kit may read ə as e and ı as i, and such a word is still found (LK81) | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR52 | Uzbek recognition (`testdata/ocr/uz-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: oʻ, gʻ and ʼ words, noun and verb endings, 2020-yil and BMT-da, «…» quotes; `uz-misread.png` prints ' for ʻ and ʼ and drops ʻ in Bolsa; `uz-cyrillic.png` is in the Cyrillic alphabet): cloud recognition reads the Latin lines and the Cyrillic; ML Kit may give ʻ as ' or ‘ or drop it, and such a word is still found (LK82); ML Kit reads no Cyrillic | F | U CatalogFileTest, M | 2026-10-28 |
-| OCR53 | Bulgarian and Mongolian recognition (`testdata/ocr/bg-sample.png` and `mn-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/arial.ttf`: Bulgarian articles, plurals, кнѝгата and the pronoun ѝ; Mongolian case and verb endings, ө and ү): cloud recognition reads every word and gives ѝ as й, which still finds ѝ (LK84); ML Kit reads no Cyrillic, so PaddleOCR v5's Cyrillic model is the main on-device model | F | U CatalogFileTest, M | 2026-10-29 (cloud recognition) |
+| OCR53 | Bulgarian and Mongolian recognition (`testdata/ocr/bg-sample.png` and `mn-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/arial.ttf`: Bulgarian articles, plurals, кнѝгата and the pronoun ѝ; Mongolian case and verb endings, ө and ү): cloud recognition reads every word and gives ѝ as й, which still finds ѝ (LK84); ML Kit reads no Cyrillic, so PaddleOCR v5's Cyrillic model is the main on-device model; PaddleOCR v5 alone reads every word, ѝ as и and кнѝгата as книгата (which still find ѝ and книга), and Mongolian Ө, ө and ү as the Cyrillic letters | F | U CatalogFileTest, M | 2026-10-29 |
 | OCR54 | Macedonian recognition on the device (`testdata/ocr/mk-sample.png`, Arial: ќ ѓ љ ј ѕ, сѐ and Ѝ; `mk-retry.png` prints Л for Љ in Лубица and capital Ѕ in Ѕвездите): PaddleOCR v5 reads ќ ѓ љ ј and Ѝ, gives capital Ѕ as Latin S, which the letter-for-letter fix turns into Ѕ, and ѕ inside a line as с, which the retry finds (LK85); cloud recognition reads every letter | F | U MacedonianSupportTest, MisreadMatchesTest, M | 2026-10-29 |
 
 ### LK: lookup
@@ -327,7 +327,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP49 | An Azerbaijani entry: the Popup settings' font card lists Literata, Inter and Lexend with "Only for Azerbaijani text" and the Azerbaijani sample sentence; the bubble shows Ə and the Languages screen Azerbaijan's flag; the ending chips and the tenses of the form rows are named in the interface language (Russian too: «связка прошедшего времени», «эвиденциальное прошедшее») | F | U FontCatalogFileTest, FlagsTest, AzerbaijaniSupportTest, FormOfTagsTest, M | 2026-10-28 |
 | POP50 | An Uzbek entry: the Popup settings' font card lists Literata, Inter and Lexend with "Only for Uzbek text" and the Uzbek sample sentence, ʻ and ʼ drawn; the bubble shows O and the Languages screen Uzbekistan's flag; the ending chips and the habitual and intentive form tags are named in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, UzbekSupportTest, FormOfTagsTest, M | 2026-10-28 |
 | POP51 | A Bulgarian entry: the font catalog offers Sofia Sans, Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, and the Popup settings' font card lists those installed (all but Inter in the run); its sample in Sofia Sans, Montserrat and Commissioner shows the Bulgarian letter forms (д like g, т like m, и like u), in PT Sans, PT Serif and Literata the Russian ones with ѝ from the phone's font; with Montserrat chosen the lookup page draws the source text and headwords in the Bulgarian forms, the search field keeps the Russian ones; the bubble shows Б and the Languages screen Bulgaria's flag | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
-| POP52 | Macedonian and Mongolian entries: the catalog offers both languages Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, no Sofia Sans, and the Macedonian font card lists those installed, and PT and Literata draw сѐ and ѝ in its sample; the bubble shows М for both, МК and МН while both are quick languages; with e-ink on, Home's chips and the bubble menu show БГ, МК and МН instead of the flags and the bubble МК; the flags are North Macedonia's and Mongolia's | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
+| POP52 | Macedonian and Mongolian entries: the catalog offers both languages Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, no Sofia Sans, and the Macedonian font card lists those installed, and PT and Literata draw сѐ and ѝ in its sample; the bubble shows М for both, МК and МН while both are quick languages; with e-ink on, Home's chips and the bubble menu show БГ, МК and МН instead of the flags and the bubble МК; the flags are North Macedonia's and Mongolia's; with Montserrat chosen for Macedonian its sample and the lookup page draw the Russian letter forms, not the Bulgarian ones it draws in Bulgarian text | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -420,7 +420,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK42 | An Estonian Anki note (over `testdata/ocr/et-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for õunu the sentence is "2020. a. lõpus ostsime u. 5 kg õunu, pirne jne." (the year, a., u. and the number hold, jne. ends it before a capital); for ehitati "Maja ehitati 19. sajandil." | F | U SentenceTest, EstonianSupportTest, M | 2026-10-28 |
 | ANK43 | An Azerbaijani Anki note (over `testdata/ocr/az-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for armud the sentence is "Bazardan alma, armud və s. aldıq." (və s. holds before a lowercase word); for yaşayır "Prof. Əliyev Bakı şəh. Nizami küç. 5-də yaşayır." (prof., şəh. and küç. hold); for dəftərlər "Kitablar, dəftərlər və s." (və s. ends it before a capital) | F | U SentenceTest, AzerbaijaniSupportTest, M | 2026-10-28 |
 | ANK44 | An Uzbek Anki note (over `testdata/ocr/uz-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for nok the sentence is "Bozordan olma, nok va h.k. oldik." (va h.k. holds before a lowercase word); for yashaydi "Prof. Karimov Toshkent sh. Navoiy ko'ch. 5-uyda yashaydi." (prof., sh. and ko'ch. hold); for daftarlar "Kitoblar, daftarlar va h.k." (va h.k. ends it before a capital) | F | U SentenceTest, UzbekSupportTest, M | 2026-10-28 |
-| ANK45 | Bulgarian and Macedonian Anki notes: the sentence keeps "г.", "пр. н. е.", "проф.", "ул." and "нпр." inside it, and "и т.н." or "итн." ends it before a capital ("Купихме ябълки, круши и т.н."; "Таа сака овошје, нпр. јаболка и круши итн.") | N | U SentenceTest, M | |
+| ANK45 | Bulgarian and Macedonian Anki notes (over `testdata/ocr/bg-anki.png` and `mk-anki.png`, Arial, one paragraph over five and six lines, cloud recognition): the sentence keeps "г.", "пр. н. е.", "проф.", "ул." and "нпр." inside it, and "и т.н." or "итн." ends it before a capital ("Купихме ябълки, круши и т.н."; "Таа сака овошје, нпр. јаболка и круши итн."; "Проф. Иванов живее на ул. Шипка от 2020 г. насам."; "Во 44 г. пр. н. е. Цезар бил убиен."); PaddleOCR gives each line as a paragraph of its own, so its sentences end at the line ends | F | U SentenceTest, M | 2026-10-29 |
 
 ### TR: sentence translation
 
@@ -683,6 +683,39 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/main` `ff87b33c` (0.2.3-ff87b33c), Pixel_10_Pro (API 37)
+
+Scope: the checks the Bulgarian, Macedonian and Mongolian run left out: OCR53 with PaddleOCR v5 alone (the overlay
+over `testdata/ocr/bg-sample.png` and `mn-sample.png`, the recognized text shown above the entries), Montserrat under
+Macedonian (POP52) and ANK45 (new) over `bg-anki.png` and `mk-anki.png` (Arial, `PITCH=96`, one paragraph over five
+and six lines) with cloud recognition (engines Both) and, for Macedonian, PaddleOCR v5 alone. An x86_64-only APK.
+
+Results: passed; ANK45 moved from N to F.
+- OCR53 (PaddleOCR v5 alone, source chip On-device, about 2.5 s for the three lines): Bulgarian is read as printed
+  but for the grave accents: ѝ comes as и (U+0438), кнѝгата as книгата. и shows и, И, й, then ѝ through the folded
+  marks; книгата finds книга (singular definite), книгите книга (plural definite), Министерството министерство,
+  Дадох дам ("first person singular aorist indicative"), умна умен, Децата дете (plural definite), четат чета,
+  фирмата фирма; публикува finds nothing, as with cloud recognition. Mongolian Ө, ө and ү come as the Cyrillic
+  letters (U+04E8, U+04E9, U+04AF): Монголчууд finds Монгол (plural), номуудаасаа ном ("ablative plural definite
+  possessive"), уншаад унших ("perfective converb"), Хуулийн хууль (genitive), асуудлыг асуудал (accusative),
+  хугацаанд хугацаа (dative-locative), Өнөөдөр өнөөдөр, хүйтэн its entry, үлээв үлээх (past); хүн shows хүн, then хун.
+- POP52, Montserrat under Macedonian: with Montserrat chosen for Macedonian, the font card's sample and the Search
+  screen's page (`lang="mk"`, "Screenlate Chosen" loading Montserrat) draw "Детето патува со џип над градот и гледа
+  ѕвезди." and the headword дете in the Russian forms (д with its descenders, т and и as in Russian), not the
+  Bulgarian ones Montserrat draws in Bulgarian text (POP51); set back to the phone's font.
+- ANK45 (deck and note type Screenlate Test, Meaning {sentence}, cloud recognition, one paragraph for each image):
+  Bulgarian ябълка (ябълки) "Купихме ябълки, круши и т.н."; живея (живее) "Проф. Иванов живее на ул. Шипка от 2020
+  г. насам."; убия (убит) "През 44 г. пр. н. е. Цезар е убит." Macedonian круша (круши) "Таа сака овошје, нпр.
+  јаболка и круши итн."; наваму "Проф. Петровски живее на ул. Партизанска од 2020 г. наваму."; убие (убиен) "Во 44
+  г. пр. н. е. Цезар бил убиен." With PaddleOCR v5 alone `mk-anki.png` came as six paragraphs, one a line (PaddleOCR
+  lines are paragraphs of their own, `ocr-engines.md`), so the sentences end at the line ends: јаболка "јаболка и
+  круши итн." (итн. still ends it before Проф.), живее "Петровски живее на ул.", сум (бил) "Во 44 г. пр. н. е.
+  Цезар бил".
+
+Left on the emulator: Japanese active, Bulgarian and Mongolian quick, engines Both, the recognized text off, every
+language's font the phone's; Bulgarian's and Macedonian's Anki settings on the "Screenlate Test" deck and note type,
+Meaning {sentence}; the nine notes above in the local deck; the emulator shut down and the lock released.
 
 ### 2026-10-29, `languages/main` `f14819a5` with the Audio test word fix (uncommitted), Pixel_10_Pro (API 37)
 

@@ -197,6 +197,12 @@ the details.
   a gender after a lemma's name ("куќа f") is dropped too. Fixed after the merge (main session): the Audio settings'
   test word follows the shown language also when the active one changes elsewhere, as from the bubble menu (SET21,
   `testWordAfter`); the Slovak import row of `notes/language-rules.md`'s Engine table is whole again.
+  The three checks left out ran on `languages/main` `ff87b33c` (run log 2026-10-29, `ff87b33c`), all passed:
+  PaddleOCR v5 alone reads the Bulgarian and Mongolian samples (ѝ as и, кнѝгата as книгата, which still find ѝ and
+  книга; ө and ү right) and its words look up as with cloud recognition; Montserrat under
+  Macedonian draws the Russian letter forms; the Bulgarian and Macedonian Anki sentences keep г., пр. н. е., проф.,
+  ул. and нпр. and end after и т.н. / итн. before a capital (ANK45 now F; PaddleOCR's one-line paragraphs cut them
+  at the line ends).
 - Wikipedia as a corpus (owner's remark, 2026-10-28 night): some small Wikipedia editions were written largely by
   non-speakers (Scots in 2020; Greenlandic, machine-translated, closed in 2025; neither is in the app). Checked with a
   few web searches, not a full audit, as the owner asked. Wikipedia text gives the frequency dictionary of Latin (Esperanto's and
