@@ -428,6 +428,17 @@ class SentenceTest {
     }
 
     @Test
+    fun kannadaSentencesEndAtThePeriodAndKeepAbbreviationsSyllableInitialsAndDates() {
+        val kannada = "ಅವನು ಬಂದನು. ಡಾ. ರಾಜು ಹೇಳಿದರು, “ನಾಳೆ ಬಾ. ತಪ್ಪದೆ.” ನಂತರ ಹೋದರು. ಕೆ. ಶಿವರಾಮ್ ನಾಯಕರು. " +
+            "ಅ. 15 ರಂದು ಸಭೆ ನಡೆಯಿತು. ಯಾರು? ಬಾ. ಕೊನೆ."
+        assertThat(extract(kannada, "ರಾಜು", Language.KANNADA).text)
+            .isEqualTo("ಡಾ. ರಾಜು ಹೇಳಿದರು, “ನಾಳೆ ಬಾ. ತಪ್ಪದೆ.” ನಂತರ ಹೋದರು.")
+        assertThat(extract(kannada, "ಶಿವರಾಮ್", Language.KANNADA).text).isEqualTo("ಕೆ. ಶಿವರಾಮ್ ನಾಯಕರು.")
+        assertThat(extract(kannada, "ಸಭೆ", Language.KANNADA).text).isEqualTo("ಅ. 15 ರಂದು ಸಭೆ ನಡೆಯಿತು.")
+        assertThat(extract(kannada, "ಕೊನೆ", Language.KANNADA).text).isEqualTo("ಕೊನೆ.")
+    }
+
+    @Test
     fun bengaliSentencesEndAtTheDandaAndKeepQuotesAbbreviationsAndInitials() {
         val bengali = "সে বাড়ি গেল। ড. ইউনূস বললেন, “কাল এসো। অবশ্যই।” তারপর তাঁরা চলে গেলেন। শেষ।"
         assertThat(extract(bengali, "ইউনূস", Language.BENGALI).text)

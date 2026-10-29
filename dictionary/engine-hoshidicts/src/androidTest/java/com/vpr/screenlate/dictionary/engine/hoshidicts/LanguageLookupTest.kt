@@ -419,6 +419,35 @@ class LanguageLookupTest {
     }
 
     @Test
+    fun kannadaEndingsAndParticlesFindNominalEntriesAndRepairedFormsFindTheirLemmas() = runTest {
+        val imported = engine.import(kannadaDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val kannada = LookupOptions(language = Language.KANNADA)
+        suspend fun first(text: String) = engine.lookup(text, kannada).first().term.expression
+        suspend fun whole(text: String) = engine.lookup(text, kannada).filter { it.matched == text }.map { it.term.expression }
+
+        // A case ending after the stem's increment, a particle after it, the plural before it.
+        val tree = engine.lookup("ಮರದಲ್ಲಿ", kannada).first()
+        assertThat(tree.term.expression).isEqualTo("ಮರ")
+        assertThat(tree.trace.map { it.name }).containsExactly("-ಅಲ್ಲಿ")
+        assertThat(whole("ಮನೆಯಲ್ಲೂ")).containsExactly("ಮನೆ")
+        assertThat(whole("ಮರಗಳಲ್ಲಿ")).containsExactly("ಮರ")
+        assertThat(whole("ಕಾಡಿಗೆ")).containsExactly("ಕಾಡು")
+        // A form row with the stem's -ು before the ending's vowel sign is keyed without it.
+        val leave = engine.lookup("ಹೊರಡೋಣ", kannada).first()
+        assertThat(leave.term.expression).isEqualTo("ಹೊರಡು")
+        assertThat(leave.trace.map { it.name }).containsExactly("hortative")
+        // A joiner in the text and in a headword.
+        assertThat(first("ಬ್ಯಾಂಕ್\u200Cನಲ್ಲಿ")).isEqualTo("ಬ್ಯಾಂಕ್")
+        assertThat(first("ಪೆನ್ಡ್ರೈವ್")).isEqualTo("ಪೆನ್\u200Cಡ್ರೈವ್")
+        // A particle after any word; case endings reach nominal words only: ಓದು is a verb here.
+        assertThat(whole("ಕಾಡೂ")).containsExactly("ಕಾಡು")
+        assertThat(whole("ಓದನ್ನು")).isEmpty()
+        // A word with an entry of its own shows no results of the rules.
+        assertThat(whole("ಕದನ")).containsExactly("ಕದನ")
+    }
+
+    @Test
     fun georgianRulesFindEntriesWithoutPartOfSpeechAndMtavruliHeadingsFindTheOrdinaryLetters() = runTest {
         val imported = engine.import(georgianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
@@ -2250,6 +2279,25 @@ class LanguageLookupTest {
               ["చదువు","","v","",0,["to read"],11,""],
               ["రాజు","","n","",0,["king"],12,""],
               ["రాజా","","n","",0,["raja"],13,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun kannadaDictionary(): File = zip(
+        "kn.zip",
+        "index.json" to """{"title":"Test Kannada","revision":"1","format":3,"sourceLanguage":"kn"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["ಮರ","","n","",0,["tree"],1,""],
+              ["ಮನೆ","","n","",0,["house"],2,""],
+              ["ಕಾಡು","","n","",0,["forest"],3,""],
+              ["ಹೊರಡು","","v","",0,["to leave"],4,""],
+              ["ಹೊರಡುೋಣ","","non-lemma","",0,[["ಹೊರಡು",["hortative"]]],5,""],
+              ["ಬ್ಯಾಂಕ್","","n","",0,["bank"],6,""],
+              ["ಪೆನ್\u200Cಡ್ರೈವ್","","n","",0,["pen drive"],7,""],
+              ["ಓದು","","v","",0,["to read"],8,""],
+              ["ಕದ","","n","",0,["door"],9,""],
+              ["ಕದನ","","n","",0,["battle"],10,""]
             ]
         """.trimIndent().toByteArray(),
     )

@@ -4555,6 +4555,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-kan",
+      "title": "Tesseract fast (kan)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "kn",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/kan.traineddata",
+      "downloadSize": 3608331,
+      "sha256": "bd31e6b6ae93271e3bcf5383d306d8eefbb91542937cd6d735a5930c970e61d8",
+      "model": "tesseract-fast-kan",
+      "engine": "tesseract",
+      "file": "tessdata/kan.traineddata",
+      "version": "bd31e6b6ae93",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-kan",
+      "title": "Tesseract best (kan)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "kn",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/kan.traineddata",
+      "downloadSize": 10233763,
+      "sha256": "6f195e0f33f0ec5118c97eff777ed70ac453d67c32bf06a43f79dab875f8ebfe",
+      "model": "tesseract-best-kan",
+      "engine": "tesseract",
+      "file": "tessdata/kan.traineddata",
+      "version": "6f195e0f33f0",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -20086,6 +20120,44 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/te/wty-te-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 88399,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kn-en",
+      "title": "Wiktionary (kn–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-kn-en",
+        "kty-kn-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "kn",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kn-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kn/en/wty-kn-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 403684,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kn-transcription",
+      "title": "Wiktionary transcription (kn)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-kn-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "kn",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kn-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/kn/wty-kn-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 35053,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

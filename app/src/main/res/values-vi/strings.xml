@@ -541,6 +541,7 @@
     <string name="popup_font_script_only_mr">Chỉ cho chữ tiếng Marathi</string>
     <string name="popup_font_script_only_ta">Chỉ cho chữ tiếng Tamil</string>
     <string name="popup_font_script_only_te">Chỉ cho chữ tiếng Telugu</string>
+    <string name="popup_font_script_only_kn">Chỉ cho chữ tiếng Kannada</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

@@ -255,8 +255,8 @@ function tamilVowelEndingRules(ending, oblique, condition) {
 }
 
 /**
- * A rule of the Tamil and Telugu endings: [cut] characters off the end of a word that matches [pattern], [direct] in
- * their place.
+ * A rule of the Tamil, Telugu and Kannada endings: [cut] characters off the end of a word that matches [pattern],
+ * [direct] in their place.
  * @param {string} pattern the ending and what must stand before it
  * @param {number} cut how many characters come off the end
  * @param {string} direct what takes their place
@@ -411,6 +411,122 @@ export const teluguTransforms = /* @__PURE__ */ (() => ({
                 stemSuffix(`.{2}${TELUGU_CONSONANT}${particle}`, 1, '', ['p'], ['p']),
             ],
         }]),
+    ]),
+}))();
+
+/**
+ * Kannada case endings, the plural and the particles -ಊ "also" and -ಏ written joined to a word, as the app's own rules:
+ * Wiktionary lists some case forms of about a thousand nouns and the locative of none but pronouns. A case ending comes
+ * off the increment a stem takes before it: -ದ- of a noun in -ಅ (ಮರದಲ್ಲಿ → ಮರ), -ವ- of one in -ಅ or -ಉ (ಮರವನ್ನು, ಗುರುವಿಗೆ),
+ * -ಯ- of one in -ಇ or -ಎ (ಮನೆಯಲ್ಲಿ → ಮನೆ), -ನ- of a masculine noun in -ಅ or a word in a consonant (ಅಣ್ಣನ, ಬ್ಯಾಂಕ್ನಲ್ಲಿ),
+ * -ಇನ- of a noun in -ಉ (ಮನಸ್ಸಿನಲ್ಲಿ → ಮನಸ್ಸು), -ಅರ- of a word in -ದು (ಇದರಲ್ಲಿ → ಇದು); a noun in -ಉ loses it before a
+ * vowel (ಕಾಡನ್ನು, ಕಾಡಿಗೆ → ಕಾಡು); -ಗೆ and -ಕ್ಕೆ follow the stem (ಮನೆಗೆ, ಮರಕ್ಕೆ; ಇದಕ್ಕೆ → ಇದು). Before a case the plural is in
+ * -ಗಳ, which is taken back to the stem and to the plural Wiktionary lists (ಮರಗಳಲ್ಲಿ → ಮರಗಳು, ಮರ); no rule follows a
+ * plural's. The particles take the place of a final -ಉ (ಕಾಡೂ → ಕಾಡು) and of the vowel of -ಲ್ಲಿ, -ಗೆ and -ಕ್ಕೆ (ಮನೆಯಲ್ಲೂ,
+ * ಮನೆಗೂ), or follow an increment (ಮರವೂ, ಮನೆಯೂ) and -ಇಂದಲ (ಮರದಿಂದಲೂ). No ending's -ದ- follows a vowel sign, which keeps
+ * the participles in -ಇದ off it (ಕತ್ತರಿಸಿದ). Wiktionary's Kannada entries tag each definition with its part of speech, so
+ * the texts of the endings reach nominal words and forms, those of the particles any word (glue.js, `taggedRules`,
+ * `untypedRules`). Two characters stay at least. The endings are in NFC, as the composed text and the headwords.
+ */
+
+/** The case endings by their names, with what follows the increment's consonant (ಮರ-ದ-ಲ್ಲಿ, ಮನೆ-ಯ-ನ್ನು). */
+const kannadaCaseEndings = {
+    'ಅನ್ನು': 'ನ್ನು', 'ಅಲ್ಲಿ': 'ಲ್ಲಿ', 'ಇಂದ': 'ಿಂದ', 'ಒಂದಿಗೆ': 'ೊಂದಿಗೆ', 'ಅ': '', 'ಉ': 'ು', 'ಆಗಿ': 'ಾಗಿ', 'ಇಗೆ': 'ಿಗೆ',
+};
+
+const KANNADA_CONSONANT = '[\u0C95-\u0CB9\u0CDE]';
+const KANNADA_FRONT_VOWEL = '[\u0CBF\u0CC0\u0CC6\u0CC7\u0CC8]';
+const KANNADA_U = '\u0CC1';
+const KANNADA_VIRAMA = '\u0CCD';
+
+/**
+ * The increments: the letters between a stem and its case ending, what stands before them, the endings that take them
+ * and what the stem ends in without them.
+ * @type {[string, string, string[], string][]}
+ */
+const kannadaIncrements = /* @__PURE__ */ (() => [
+    ['ದ', KANNADA_CONSONANT, ['ಅಲ್ಲಿ', 'ಇಂದ', 'ಒಂದಿಗೆ', 'ಅ'], ''],
+    ['ವ', `(?:${KANNADA_CONSONANT}|${KANNADA_U})`, ['ಅನ್ನು', 'ಉ', 'ಆಗಿ'], ''],
+    ['ವ', KANNADA_U, ['ಇಗೆ'], ''],
+    ['ಯ', KANNADA_FRONT_VOWEL, ['ಅನ್ನು', 'ಅಲ್ಲಿ', 'ಇಂದ', 'ಒಂದಿಗೆ', 'ಅ', 'ಉ', 'ಆಗಿ'], ''],
+    ['ನ', `(?:${KANNADA_CONSONANT}|${KANNADA_VIRAMA})`, ['ಅನ್ನು', 'ಅಲ್ಲಿ', 'ಇಂದ', 'ಒಂದಿಗೆ', 'ಅ', 'ಉ'], ''],
+    ['ಿನ', KANNADA_CONSONANT, ['ಅಲ್ಲಿ', 'ಇಂದ', 'ಒಂದಿಗೆ', 'ಅ'], KANNADA_U],
+    ['ರ', 'ದ', ['ಅಲ್ಲಿ', 'ಇಂದ', 'ಒಂದಿಗೆ', 'ಅ'], KANNADA_U],
+])();
+
+/** The case endings a noun in -ಉ takes in place of its -ಉ (ಕಾಡನ್ನು, ಕಾಡಿಗೆ, ಕಾಡಾಗಿ), and the plural's -ಗಳ before them. */
+const kannadaVowelEndings = ['ಅನ್ನು', 'ಇಗೆ', 'ಆಗಿ'];
+const kannadaPluralEndings = ['ಅನ್ನು', 'ಅಲ್ಲಿ', 'ಇಂದ', 'ಒಂದಿಗೆ', 'ಇಗೆ', 'ಆಗಿ'];
+
+/**
+ * The rules of a case ending: off each increment that takes it, off a noun in -ಉ, after the plural's -ಗಳ.
+ * @param {string} name
+ * @returns {import('language-transformer').SuffixRule<'n' | 'p' | 's'>[]}
+ */
+function kannadaCaseRules(name) {
+    const rest = kannadaCaseEndings[name];
+    return [
+        ...kannadaIncrements.filter(([, , names]) => names.includes(name)).map(([increment, before, , direct]) => (
+            stemSuffix(`.${before}${increment}${rest}`, increment.length + rest.length, direct, ['p'], ['n'])
+        )),
+        ...(kannadaVowelEndings.includes(name) ? [stemSuffix(`.${KANNADA_CONSONANT}${rest}`, rest.length, KANNADA_U, ['p'], ['n'])] : []),
+        ...(kannadaPluralEndings.includes(name) ? [stemSuffix(`.{2}ಗಳ${rest}`, rest.length, '', ['p'], ['n'])] : []),
+    ];
+}
+
+/**
+ * The rules of a particle: in place of a final -ಉ and of the vowel of -ಲ್ಲಿ, -ಗೆ and -ಕ್ಕೆ, after an increment and -ಇಂದಲ.
+ * @param {string} sign the particle's vowel sign
+ * @returns {import('language-transformer').SuffixRule<'n' | 'p' | 's'>[]}
+ */
+function kannadaParticleRules(sign) {
+    return [
+        stemSuffix(`.{2}${KANNADA_CONSONANT}${sign}`, 1, KANNADA_U, ['p'], ['p']),
+        stemSuffix(`.{2}ಲ್ಲ${sign}`, 1, 'ಿ', ['p'], ['p']),
+        stemSuffix(`.(?:.ಗ|ಕ್ಕ)${sign}`, 1, 'ೆ', ['p'], ['p']),
+        stemSuffix(`.(?:${KANNADA_CONSONANT}|${KANNADA_U})ವ${sign}`, 2, '', ['p'], ['p']),
+        stemSuffix(`.${KANNADA_FRONT_VOWEL}ಯ${sign}`, 2, '', ['p'], ['p']),
+        stemSuffix(`.(?:${KANNADA_CONSONANT}|${KANNADA_VIRAMA})ನ${sign}`, 2, '', ['p'], ['p']),
+        stemSuffix(`.{2}ಂದಲ${sign}`, 2, '', ['p'], ['p']),
+    ];
+}
+
+/** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'p' | 's'>} */
+export const kannadaTransforms = /* @__PURE__ */ (() => ({
+    language: 'kn',
+    conditions: {
+        n: {name: 'Noun', isDictionaryForm: true},
+        p: {name: 'Word', isDictionaryForm: true},
+        s: {name: 'Singular noun', isDictionaryForm: true},
+    },
+    transforms: Object.fromEntries([
+        ...Object.keys(kannadaCaseEndings).map((name) => [`-${name}`, {name: `-${name}`, rules: kannadaCaseRules(name)}]),
+        ['-ಗೆ', {name: '-ಗೆ', rules: [stemSuffix('.{2}ಗೆ', 2, '', ['p'], ['n'])]}],
+        ['-ಕ್ಕೆ', {
+            name: '-ಕ್ಕೆ',
+            rules: [
+                stemSuffix(`.${KANNADA_CONSONANT}ಕ್ಕೆ`, 4, '', ['p'], ['n']),
+                stemSuffix('.ದಕ್ಕೆ', 4, KANNADA_U, ['p'], ['n']),
+            ],
+        }],
+        ['-ಗಾಗಿ', {name: '-ಗಾಗಿ', rules: [stemSuffix('.{2}ಗಾಗಿ', 4, '', ['p'], ['n'])]}],
+        ['-ಕ್ಕಾಗಿ', {
+            name: '-ಕ್ಕಾಗಿ',
+            rules: [
+                stemSuffix(`.${KANNADA_CONSONANT}ಕ್ಕಾಗಿ`, 6, '', ['p'], ['n']),
+                stemSuffix('.ದಕ್ಕಾಗಿ', 6, KANNADA_U, ['p'], ['n']),
+            ],
+        }],
+        ['-ಗಳು', {name: '-ಗಳು', rules: [stemSuffix('.{2}ಗಳು', 3, '', ['n', 'p'], ['s'])]}],
+        ['-ಗಳ', {
+            name: '-ಗಳ',
+            rules: [
+                stemSuffix('.{2}ಗಳ', 2, '', ['n', 'p'], ['s']),
+                stemSuffix('.{2}ಗಳ', 0, KANNADA_U, ['n', 'p'], ['s']),
+            ],
+        }],
+        ['-ಊ', {name: '-ಊ', rules: kannadaParticleRules('ೂ')}],
+        ['-ಏ', {name: '-ಏ', rules: kannadaParticleRules('ೇ')}],
     ]),
 }))();
 

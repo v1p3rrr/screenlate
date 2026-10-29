@@ -185,6 +185,29 @@ std::string join_plural(std::string text) {
   return text;
 }
 
+// Whether [text] holds a Kannada vowel sign (ಾ to ೌ) at the byte [pos].
+bool kannada_vowel_sign_at(std::string_view text, size_t pos) {
+  utf8proc_int32_t point = 0;
+  const auto* bytes = reinterpret_cast<const utf8proc_uint8_t*>(text.data() + pos);
+  if (utf8proc_iterate(bytes, static_cast<utf8proc_ssize_t>(text.size() - pos), &point) <= 0) return false;
+  return (point >= 0x0CBE && point <= 0x0CC4) || (point >= 0x0CC6 && point <= 0x0CC8) ||
+         (point >= 0x0CCA && point <= 0x0CCC);
+}
+
+// [text] without a Kannada vowel sign ು written before another one: the stem's -ು that a Kannada form row keeps before
+// its ending ("ಹೊರಡುೋಣ" for ಹೊರಡೋಣ).
+std::string drop_kannada_u(std::string text) {
+  constexpr std::string_view kU = "ು";  // U+0CC1
+  for (size_t pos = text.find(kU); pos != std::string::npos; pos = text.find(kU, pos)) {
+    if (pos + kU.size() < text.size() && kannada_vowel_sign_at(text, pos + kU.size())) {
+      text.erase(pos, kU.size());
+    } else {
+      pos += kU.size();
+    }
+  }
+  return text;
+}
+
 std::string_view trimmed(std::string_view text) {
   while (!text.empty() && is_space(text.front())) text.remove_prefix(1);
   while (!text.empty() && is_space(text.back())) text.remove_suffix(1);
@@ -198,7 +221,8 @@ std::string_view trimmed(std::string_view text) {
 // (aṭittuviṭu)"; English rows "past of flytip" have no romanization and are left as they are), or an unfilled template
 // ("{{{3}}}ে"), which stands for no word. A Hebrew construct form written with the maqaf that joins it to the next word
 // ("כֶּלֶב־") stands for the word without it as well. Telugu plurals are written with the ending apart ("కుమార్తె లు" for
-// కుమార్తెలు) and a few forms with the wiki's namespace ("Main:మనిషి").
+// కుమార్తెలు) and a few forms with the wiki's namespace ("Main:మనిషి"). Kannada forms may keep the stem's -ು before the
+// ending's vowel sign ("ಹೊರಡುೋಣ" for ಹೊರಡೋಣ).
 std::vector<std::string> form_headwords(const std::string& expression) {
   std::vector<std::string> out;
   if (expression.find("{{{") != std::string::npos) return out;
@@ -235,7 +259,7 @@ std::vector<std::string> form_headwords(const std::string& expression) {
       i = next - 1;
     }
     const std::string_view part = trimmed(text.substr(0, cut));
-    if (!part.empty()) out.push_back(join_plural(join_marks(part)));
+    if (!part.empty()) out.push_back(drop_kannada_u(join_plural(join_marks(part))));
     constexpr std::string_view kMaqaf = "־";  // U+05BE
     if (part.size() > kMaqaf.size() && part.ends_with(kMaqaf)) {
       out.push_back(join_marks(part.substr(0, part.size() - kMaqaf.size())));

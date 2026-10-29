@@ -1210,6 +1210,24 @@ internal object YomitanInflections {
             "-ఊ" to Strings(null, null),
             "-ఆ" to Strings(null, null),
         ),
+        "kn" to mapOf(
+            "-ಅನ್ನು" to Strings(null, null),
+            "-ಅಲ್ಲಿ" to Strings(null, null),
+            "-ಇಂದ" to Strings(null, null),
+            "-ಒಂದಿಗೆ" to Strings(null, null),
+            "-ಅ" to Strings(null, null),
+            "-ಉ" to Strings(null, null),
+            "-ಆಗಿ" to Strings(null, null),
+            "-ಇಗೆ" to Strings(null, null),
+            "-ಗೆ" to Strings(null, null),
+            "-ಕ್ಕೆ" to Strings(null, null),
+            "-ಗಾಗಿ" to Strings(null, null),
+            "-ಕ್ಕಾಗಿ" to Strings(null, null),
+            "-ಗಳು" to Strings(null, null),
+            "-ಗಳ" to Strings(null, null),
+            "-ಊ" to Strings(null, null),
+            "-ಏ" to Strings(null, null),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

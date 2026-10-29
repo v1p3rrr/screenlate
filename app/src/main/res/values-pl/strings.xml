@@ -553,6 +553,7 @@
     <string name="popup_font_script_only_mr">Tylko dla tekstu w marathi</string>
     <string name="popup_font_script_only_ta">Tylko dla tekstu tamilskiego</string>
     <string name="popup_font_script_only_te">Tylko dla tekstu w telugu</string>
+    <string name="popup_font_script_only_kn">Tylko dla tekstu w kannada</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

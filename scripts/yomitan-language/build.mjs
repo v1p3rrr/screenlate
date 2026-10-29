@@ -76,8 +76,8 @@ const borrowed = {
  * acute or grave, as Russian is, Bulgarian writes the pronoun ѝ as й and Macedonian its ѐ as the Latin è; Marathi text
  * is composed as Hindi's, may come in an old font's य़ for the य of a conjunct, with a nukta the headwords leave out, and
  * with अॅ, ऍ and ँ for the headwords' ॲ and ॅं; Tamil text is composed as Hindi's, writes the vowel sign ௌ and ெள for
- * each other, and ஸ்ரீ where the headwords write ஶ்ரீ; Telugu text is composed so too and may carry zero-width joiners
- * and spaces and soft hyphens inside words. Processors
+ * each other, and ஸ்ரீ where the headwords write ஶ்ரீ; Telugu and Kannada text is composed so too and may carry
+ * zero-width joiners and spaces and soft hyphens inside words. Processors
  * join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
@@ -107,6 +107,7 @@ const addedPreprocessors = {
     mr: ['composeCharacters', 'marathiLegacyYa', 'removeNukta', 'marathiCandra'],
     ta: ['composeCharacters', 'tamilAuSign', 'tamilShri'],
     te: ['composeCharacters', 'removeZeroWidthCharacters'],
+    kn: ['composeCharacters', 'removeZeroWidthCharacters'],
 };
 
 /**
@@ -126,7 +127,7 @@ const foldedMarkLanguages = [
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh, Kyrgyz, Azerbaijani and Uzbek endings, the Norwegian
  * genitive, Romanian article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial
  * mutations, Finnish clitics and possessive suffixes, Hungarian verb prefixes, Bulgarian articles and endings, Mongolian
- * endings, Marathi, Tamil and Telugu endings and particles (Yomitan's Finnish, Hungarian, Bulgarian and Mongolian descriptors have text processors only).
+ * endings, Marathi, Tamil, Telugu and Kannada endings and particles (Yomitan's Finnish, Hungarian, Bulgarian and Mongolian descriptors have text processors only).
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -149,6 +150,7 @@ const addedTransforms = {
     mr: 'marathiTransforms',
     ta: 'tamilTransforms',
     te: 'teluguTransforms',
+    kn: 'kannadaTransforms',
 };
 
 /**

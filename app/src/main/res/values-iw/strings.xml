@@ -549,6 +549,7 @@
     <string name="popup_font_script_only_mr">רק לטקסט במראטהית</string>
     <string name="popup_font_script_only_ta">רק לטקסט בטמילית</string>
     <string name="popup_font_script_only_te">רק לטקסט בטלוגו</string>
+    <string name="popup_font_script_only_kn">רק לטקסט בקנאדה</string>
     <string name="popup_font_system_zh">הגופן הסיני של הטלפון</string>
     <string name="popup_font_system_ko">הגופן הקוריאני של הטלפון</string>
     <string name="popup_font_script_only_zh">רק לטקסט בסינית</string>

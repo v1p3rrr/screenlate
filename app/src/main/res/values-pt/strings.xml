@@ -549,6 +549,7 @@
     <string name="popup_font_script_only_mr">Só para texto em marati</string>
     <string name="popup_font_script_only_ta">Só para texto em tâmil</string>
     <string name="popup_font_script_only_te">Só para texto em télugo</string>
+    <string name="popup_font_script_only_kn">Só para texto em canarês</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
     <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>

@@ -743,6 +743,60 @@
       "homepage": "https://fonts.google.com/specimen/Tiro+Telugu"
     },
     {
+      "id": "anek-kannada",
+      "family": "Anek Kannada",
+      "languages": ["kn"],
+      "description": {
+        "en": "Sans-serif by Ek Type for Kannada and Latin, from thin to extra bold.",
+        "ru": "Шрифт без засечек Ek Type для письма каннада и латиницы, от тонкого до очень жирного.",
+        "de": "Serifenlose Schrift von Ek Type für Kannada-Schrift und Lateinisch, von dünn bis extrafett.",
+        "es": "Fuente sin serifa de Ek Type para canarés y latino, de fina a extranegrita.",
+        "fr": "Police sans empattement d’Ek Type pour le kannada et le latin, de maigre à extra-grasse.",
+        "it": "Carattere senza grazie di Ek Type per kannada e latino, da sottile a extra grassetto.",
+        "ja": "Ek Type によるカンナダ文字とラテン文字のサンセリフ。極細から極太まで。",
+        "ko": "Ek Type이 만든 칸나다 문자와 라틴 문자용 산세리프로, 가는 굵기부터 아주 굵게까지 있습니다.",
+        "pl": "Krój bezszeryfowy Ek Type dla pisma kannada i łacinki, od cienkiego do bardzo grubego.",
+        "pt": "Fonte sem serifa da Ek Type para canarês e latino, de fina a extranegrito.",
+        "tr": "Ek Type’ın Kannada ve Latin alfabeleri için tırnaksız yazı tipi; inceden çok kalına.",
+        "vi": "Phông không chân của Ek Type cho chữ Kannada và Latinh, từ mảnh đến rất đậm.",
+        "zh": "Ek Type 出品的卡纳达文和拉丁字母无衬线字体，从细体到特粗体。",
+        "zh-Hant": "Ek Type 出品的卡納達文和拉丁字母無襯線字型，從細體到特粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/anekkannada/AnekKannada%5Bwdth,wght%5D.ttf", "weight": "100 800"}
+      ],
+      "sizeMb": 1.3,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Anek+Kannada"
+    },
+    {
+      "id": "tiro-kannada",
+      "family": "Tiro Kannada",
+      "languages": ["kn"],
+      "description": {
+        "en": "Serif by Tiro Typeworks in the style of printed Kannada books, with Latin; regular only.",
+        "ru": "Шрифт с засечками Tiro Typeworks в стиле печатных книг на каннада, с латиницей; только обычное начертание.",
+        "de": "Serifenschrift von Tiro Typeworks im Stil gedruckter Bücher in Kannada, mit Lateinisch; nur normal.",
+        "es": "Fuente con serifa de Tiro Typeworks al estilo de los libros impresos en canarés, con latino; solo normal.",
+        "fr": "Police à empattements de Tiro Typeworks dans le style des livres imprimés en kannada, avec le latin ; normale seulement.",
+        "it": "Carattere con grazie di Tiro Typeworks nello stile dei libri stampati in kannada, con il latino; solo normale.",
+        "ja": "Tiro Typeworks によるセリフ体。カンナダ語の印刷本の書体にならい、ラテン文字付き。標準のみ。",
+        "ko": "Tiro Typeworks가 만든 세리프로, 칸나다어 인쇄본의 글자 모양을 따르며 라틴 문자도 있습니다. 보통만 있습니다.",
+        "pl": "Krój szeryfowy Tiro Typeworks w stylu drukowanych książek w języku kannada, z łacinką; tylko zwykły.",
+        "pt": "Fonte com serifa da Tiro Typeworks no estilo dos livros impressos em canarês, com latino; só normal.",
+        "tr": "Tiro Typeworks’ün basılı Kannadaca kitapların tarzında tırnaklı yazı tipi, Latin harfleriyle; yalnızca normal.",
+        "vi": "Phông có chân của Tiro Typeworks theo kiểu sách in tiếng Kannada, kèm chữ Latinh; chỉ kiểu thường.",
+        "zh": "Tiro Typeworks 出品的衬线字体，仿卡纳达语印刷书籍的字形，附拉丁字母；仅常规。",
+        "zh-Hant": "Tiro Typeworks 出品的襯線字型，仿卡納達語印刷書籍的字形，附拉丁字母；僅常規。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/tirokannada/TiroKannada-Regular.ttf", "weight": "400"}
+      ],
+      "sizeMb": 0.5,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Tiro+Kannada"
+    },
+    {
       "id": "sarabun",
       "family": "Sarabun",
       "languages": ["th"],

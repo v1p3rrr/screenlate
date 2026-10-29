@@ -561,6 +561,7 @@
     <string name="popup_font_script_only_mr">للنص المكتوب بالماراثية فقط</string>
     <string name="popup_font_script_only_ta">للنص التاميلي فقط</string>
     <string name="popup_font_script_only_te">للنص المكتوب بالتيلوجو فقط</string>
+    <string name="popup_font_script_only_kn">للنص المكتوب بالكانادا فقط</string>
     <string name="popup_font_system_zh">الخط الصيني في الهاتف</string>
     <string name="popup_font_system_ko">الخط الكوري في الهاتف</string>
     <string name="popup_font_script_only_zh">للنص الصيني فقط</string>

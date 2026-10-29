@@ -80,8 +80,9 @@ export const tamilShri = {
 };
 
 /**
- * Telugu text with the zero-width joiners and spaces and the soft hyphens that keyboards and apps leave inside words,
- * which headwords do not have: they are dropped, except at the end of the text, so a match never takes one in.
+ * Telugu and Kannada text with the zero-width joiners and spaces and the soft hyphens that keyboards and apps leave
+ * inside words, which headwords do not have: they are dropped, except at the end of the text, so a match never takes
+ * one in.
  * @type {import('language').TextProcessor}
  */
 export const removeZeroWidthCharacters = {

@@ -103,6 +103,10 @@
     "size": 69264,
     "words": 2318
   },
+  "dict/all/kn/wty-kn-ipa.zip": {
+    "size": 35053,
+    "words": 1971
+  },
   "dict/all/ko/wty-ko-ipa.zip": {
     "size": 1384065,
     "words": 89428
@@ -1998,6 +2002,38 @@
   "dict/km/zh/wty-km-zh.zip": {
     "size": 84068,
     "words": 939
+  },
+  "dict/kn/de/wty-kn-de.zip": {
+    "size": 13725,
+    "words": 88
+  },
+  "dict/kn/en/wty-kn-en.zip": {
+    "size": 403684,
+    "words": 2442
+  },
+  "dict/kn/fr/wty-kn-fr.zip": {
+    "size": 13587,
+    "words": 125
+  },
+  "dict/kn/pl/wty-kn-pl.zip": {
+    "size": 32917,
+    "words": 529
+  },
+  "dict/kn/pt/wty-kn-pt.zip": {
+    "size": 12356,
+    "words": 138
+  },
+  "dict/kn/ru/wty-kn-ru.zip": {
+    "size": 60487,
+    "words": 1217
+  },
+  "dict/kn/tr/wty-kn-tr.zip": {
+    "size": 12015,
+    "words": 85
+  },
+  "dict/kn/zh/wty-kn-zh.zip": {
+    "size": 38532,
+    "words": 361
   },
   "dict/ko/de/wty-ko-de-gloss.zip": {
     "size": 146681,

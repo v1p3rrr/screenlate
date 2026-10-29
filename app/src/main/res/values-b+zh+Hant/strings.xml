@@ -541,6 +541,7 @@
     <string name="popup_font_script_only_mr">僅用於馬拉地文文字</string>
     <string name="popup_font_script_only_ta">僅用於泰米爾文文字</string>
     <string name="popup_font_script_only_te">僅用於泰盧固文文字</string>
+    <string name="popup_font_script_only_kn">僅用於卡納達文文字</string>
     <string name="popup_font_system_zh">手機內建的中文字型</string>
     <string name="popup_font_system_ko">手機內建的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

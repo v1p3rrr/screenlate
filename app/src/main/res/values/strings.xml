@@ -549,6 +549,7 @@
     <string name="popup_font_script_only_mr">Only for Marathi text</string>
     <string name="popup_font_script_only_ta">Only for Tamil text</string>
     <string name="popup_font_script_only_te">Only for Telugu text</string>
+    <string name="popup_font_script_only_kn">Only for Kannada text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

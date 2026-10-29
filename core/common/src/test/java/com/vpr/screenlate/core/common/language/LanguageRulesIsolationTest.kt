@@ -226,19 +226,27 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { !it.endsSentence(bengaliAcronym, bengaliAcronym.indexOf(". ")) })
             .containsExactly(Language.BENGALI)
         assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.HINDI, Language.BENGALI, Language.MARATHI, Language.TAMIL, Language.TELUGU)
-        // Marathi, Tamil and Telugu initials are syllables ("पु. ल. देशपांडे", "க. சண்முகம்", "కె. చంద్రశేఖర్"), but for
-        // their one-syllable words of dialogue.
+            .containsExactly(
+                Language.HINDI, Language.BENGALI, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA,
+            )
+        // Marathi, Tamil, Telugu and Kannada initials are syllables ("पु. ल. देशपांडे", "க. சண்முகம்", "కె. చంద్రశేఖర్",
+        // "ಕೆ. ಶಿವರಾಮ್"), but for their one-syllable words of dialogue.
         assertThat(periodEnding.where { holds(it, "पु. ल. देशपांडे") }).containsExactly(Language.MARATHI)
         assertThat(periodEnding.where { holds(it, "हो. मी") }).isEmpty()
         assertThat(periodEnding.where { holds(it, "க. சண்முகம்") }).containsExactly(Language.TAMIL)
         assertThat(periodEnding.where { holds(it, "வா. நான்") }).isEmpty()
         assertThat(periodEnding.where { holds(it, "కె. చంద్రశేఖర్") }).containsExactly(Language.TELUGU)
         assertThat(periodEnding.where { holds(it, "రా. నేను") }).isEmpty()
+        assertThat(periodEnding.where { holds(it, "ಕೆ. ಶಿವರಾಮ್") }).containsExactly(Language.KANNADA)
+        assertThat(periodEnding.where { holds(it, "ಬಾ. ನಾನು") }).isEmpty()
         assertThat(spaced.filter { it.syllableInitialScript != null }.map { it.language })
-            .containsExactly(Language.MARATHI, Language.TAMIL, Language.TELUGU)
+            .containsExactly(Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA)
         // Telugu డా. and కి.మీ.
         assertThat(periodEnding.where { holds(it, "డా. రాజు") }).containsExactly(Language.TELUGU)
+        // Kannada ಡಾ.; its months that are words or vowels hold before a number only.
+        assertThat(periodEnding.where { holds(it, "ಡಾ. ರಾಜ್") }).containsExactly(Language.KANNADA)
+        assertThat(periodEnding.where { holds(it, "ಆ. 15") }).containsExactly(Language.KANNADA)
+        assertThat(periodEnding.where { holds(it, "ಆ. ಅವರು") }).isEmpty()
         // Tamil திரு. and ரூ.; its months hold before a number only.
         assertThat(periodEnding.where { holds(it, "திரு. ராமன்") }).containsExactly(Language.TAMIL)
         assertThat(periodEnding.where { holds(it, "ஜன. 15") }).containsExactly(Language.TAMIL)
@@ -398,10 +406,14 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Hindi, Bengali and Marathi end a sentence at the danda`() {
+    fun `only Hindi, Bengali, Marathi and Kannada end a sentence at the danda, Kannada not at the double danda`() {
         val danda = listOf(Language.HINDI, Language.BENGALI, Language.MARATHI)
-        assertThat(all.where { it.endsSentence("वह आया। फिर", "वह आया".length) }).containsExactlyElementsIn(danda)
-        assertThat(all.where { it.endsSentence("সে এল। তারপর", "সে এল".length) }).containsExactlyElementsIn(danda)
+        assertThat(all.where { it.endsSentence("वह आया। फिर", "वह आया".length) })
+            .containsExactlyElementsIn(danda + Language.KANNADA)
+        assertThat(all.where { it.endsSentence("ಭವಂತು। ಇದು", "ಭವಂತು".length) })
+            .containsExactlyElementsIn(danda + Language.KANNADA)
+        assertThat(all.where { it.endsSentence("সে এল। তারপর", "সে এল".length) })
+            .containsExactlyElementsIn(danda + Language.KANNADA)
         assertThat(all.where { it.endsSentence("राम॥ अब", "राम".length) }).containsExactlyElementsIn(danda)
     }
 
@@ -527,7 +539,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
             .containsExactly(
                 Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.HUNGARIAN, Language.AZERBAIJANI,
-                Language.UZBEK, Language.BULGARIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU,
+                Language.UZBEK, Language.BULGARIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA,
             )
         assertThat(all.where { it.ruleChainsOnlyWithoutRow }).containsExactly(Language.FINNISH)
     }
@@ -572,11 +584,11 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
             Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.WELSH,
-            Language.SCOTTISH_GAELIC, Language.UZBEK, Language.TELUGU,
+            Language.SCOTTISH_GAELIC, Language.UZBEK, Language.TELUGU, Language.KANNADA,
         )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
             Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,
-            Language.SLOVENIAN, Language.UZBEK, Language.TELUGU,
+            Language.SLOVENIAN, Language.UZBEK, Language.TELUGU, Language.KANNADA,
         )
         assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
         assertThat(all.where { it.headwordMarks?.endingReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.TELUGU)

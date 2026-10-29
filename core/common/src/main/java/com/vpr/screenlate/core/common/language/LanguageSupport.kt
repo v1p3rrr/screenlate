@@ -630,6 +630,7 @@ val Language.support: LanguageSupport
         Language.MARATHI -> MarathiSupport
         Language.TAMIL -> TamilSupport
         Language.TELUGU -> TeluguSupport
+        Language.KANNADA -> KannadaSupport
     }
 
 /**

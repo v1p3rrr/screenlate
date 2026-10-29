@@ -74,6 +74,10 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(catalog.LANGUAGES["te"], "tel")
         self.assertTrue(catalog.entry("te", "tel", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("te", "tel", "best", b"lstm")["recommended"])
+        # Kannada: the fast model, as Paddle's Kannada model is not offered.
+        self.assertEqual(catalog.LANGUAGES["kn"], "kan")
+        self.assertTrue(catalog.entry("kn", "kan", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("kn", "kan", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

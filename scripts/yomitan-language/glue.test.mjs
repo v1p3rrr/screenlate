@@ -479,6 +479,78 @@ test('telugu endings and processors stay out of other languages', () => {
     assert.ok(!queriedWhole('ta', 'ఎన్\u200Cటీఆర్').has('ఎన్టీఆర్'));
 });
 
+test('kannada endings come off the increments and the plural and reach nominal entries by their tags', () => {
+    /** @param {string} text @param {string} lemma */
+    const nominal = (text, lemma) => {
+        const found = candidates('kn', text).filter((c) => c.o === text && c.d === lemma);
+        assert.ok(found.length > 0, `${text} → ${lemma}`);
+        assert.ok(found.every((c) => c.u && c.g.includes('n') && c.g.includes('non-lemma') && !c.g.includes('v')), text);
+    };
+    nominal('ಮರದಲ್ಲಿ', 'ಮರ');
+    nominal('ಮರವನ್ನು', 'ಮರ');
+    nominal('ಮನೆಯಲ್ಲಿ', 'ಮನೆ');
+    nominal('ಗುರುವಿಗೆ', 'ಗುರು');
+    nominal('ಅಣ್ಣನ', 'ಅಣ್ಣ');
+    nominal('ಬ್ಯಾಂಕ್ನಲ್ಲಿ', 'ಬ್ಯಾಂಕ್');
+    nominal('ಮನಸ್ಸಿನಲ್ಲಿ', 'ಮನಸ್ಸು');
+    nominal('ಇದರಲ್ಲಿ', 'ಇದು');
+    nominal('ಇದಕ್ಕೆ', 'ಇದು');
+    nominal('ಮಾಡುವುದಕ್ಕಾಗಿ', 'ಮಾಡುವುದು');
+    nominal('ಕಾಡನ್ನು', 'ಕಾಡು');
+    nominal('ಕಾಡಿಗೆ', 'ಕಾಡು');
+    nominal('ಮನೆಗೆ', 'ಮನೆ');
+    nominal('ಮರಕ್ಕೆ', 'ಮರ');
+    nominal('ಮರಗಳು', 'ಮರ');
+    nominal('ಮರಗಳಲ್ಲಿ', 'ಮರ');
+    nominal('ಮರಗಳಲ್ಲಿ', 'ಮರಗಳು');
+    nominal('ಮರಗಳ', 'ಮರ');
+    const tree = candidates('kn', 'ಮರದಲ್ಲಿ').find((c) => c.o === 'ಮರದಲ್ಲಿ' && c.d === 'ಮರ');
+    assert.equal(JSON.stringify(tree.r), JSON.stringify([['-ಅಲ್ಲಿ']]));
+    const trees = candidates('kn', 'ಮರಗಳಲ್ಲಿ').find((c) => c.o === 'ಮರಗಳಲ್ಲಿ' && c.d === 'ಮರಗಳು');
+    assert.equal(JSON.stringify(trees.r), JSON.stringify([['-ಗಳ', '-ಅಲ್ಲಿ']]));
+    // No rule follows a plural's: the plural is not cut twice.
+    assert.ok(!queriedWhole('kn', 'ಗಳಗಳು').has('ಗ'));
+    // The -ದ- of a case follows no vowel sign: the participle ಕತ್ತರಿಸಿದ is no genitive of ಕತ್ತರಿಸಿ.
+    assert.ok(!queriedWhole('kn', 'ಕತ್ತರಿಸಿದ').has('ಕತ್ತರಿಸಿ'));
+    // Two characters stay at least: a bare consonant is one.
+    assert.ok(!queriedWhole('kn', 'ಕದಲ್ಲಿ').has('ಕ'));
+    // The text itself stays typed.
+    assert.ok(!candidates('kn', 'ಮರದಲ್ಲಿ').find((c) => c.d === 'ಮರದಲ್ಲಿ').u);
+});
+
+test('kannada particles come off any word, and an ending may come before them', () => {
+    const forest = candidates('kn', 'ಕಾಡೂ').find((c) => c.o === 'ಕಾಡೂ' && c.d === 'ಕಾಡು');
+    assert.ok(forest && forest.u && !forest.g);
+    assert.ok(candidates('kn', 'ಮರವೂ').find((c) => c.o === 'ಮರವೂ' && c.d === 'ಮರ').u);
+    assert.ok(candidates('kn', 'ಮನೆಯೇ').find((c) => c.o === 'ಮನೆಯೇ' && c.d === 'ಮನೆ').u);
+    assert.ok(candidates('kn', 'ಇದ್ದೂ').find((c) => c.o === 'ಇದ್ದೂ' && c.d === 'ಇದ್ದು').u);
+    const home = candidates('kn', 'ಮನೆಯಲ್ಲೂ').filter((c) => c.o === 'ಮನೆಯಲ್ಲೂ' && c.d === 'ಮನೆ');
+    assert.ok(home.length > 0 && home.every((c) => c.g.includes('n')));
+    assert.ok(home.some((c) => JSON.stringify(c.r) === JSON.stringify([['-ಅಲ್ಲಿ', '-ಊ']])));
+    const toHome = candidates('kn', 'ಮನೆಗೂ').filter((c) => c.o === 'ಮನೆಗೂ' && c.d === 'ಮನೆ');
+    assert.ok(toHome.some((c) => JSON.stringify(c.r) === JSON.stringify([['-ಗೆ', '-ಊ']])));
+    assert.ok(queriedWhole('kn', 'ಅದಕ್ಕೇ').has('ಅದು'));
+    assert.ok(queriedWhole('kn', 'ಮರದಿಂದಲೂ').has('ಮರ'));
+    assert.ok(queriedWhole('kn', 'ಮಕ್ಕಳೇ').has('ಮಕ್ಕಳು'));
+    // The particles take the place of the vowel of -ಲ್ಲಿ, -ಗೆ and -ಕ್ಕೆ only: ಹಿಂದೂ is no ಹಿಂದಿ "also".
+    assert.ok(!queriedWhole('kn', 'ಹಿಂದೂ').has('ಹಿಂದಿ'));
+});
+
+test('kannada text loses the zero-width characters inside words and is composed', () => {
+    assert.ok(queriedWhole('kn', 'ಬ್ಯಾಂಕ್\u200Cನಲ್ಲಿ').has('ಬ್ಯಾಂಕ್'));
+    assert.ok(queriedWhole('kn', 'ಕನ್ನ\u00ADಡ').has('ಕನ್ನಡ'));
+    assert.ok(queriedWhole('kn', 'ಕನ್\u200Dನಡ').has('ಕನ್ನಡ'));
+    assert.ok(queriedWhole('kn', 'ಕ\u0CC6\u0CC2ಡು').has('ಕೊಡು'));
+});
+
+test('kannada endings and processors stay out of other languages', () => {
+    for (const language of ['ta', 'te', 'hi', 'mr', 'bn']) {
+        assert.ok(!queriedWhole(language, 'ಮರದಲ್ಲಿ').has('ಮರ'), language);
+        assert.ok(!queriedWhole(language, 'ಮರಗಳಲ್ಲಿ').has('ಮರಗಳು'), language);
+    }
+    assert.ok(!queriedWhole('kn', 'రాష్ట్రంలో').has('రాష్ట్రం'));
+});
+
 test('georgian rules load, chain and match entries without a part of speech when three letters stay', () => {
     // Yomitan files its Georgian rules under kat, not ka.
     const book = candidates('ka', 'წიგნს').find((c) => c.d === 'წიგნი');

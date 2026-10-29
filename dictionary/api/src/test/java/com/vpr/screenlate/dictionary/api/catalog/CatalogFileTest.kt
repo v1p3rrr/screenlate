@@ -554,6 +554,17 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `kannada offers its english wiktionary, transcription and tesseract fast ticked, tesseract best unticked, no frequency`() {
+        val kannada = catalog!!.entries.filter { it.isFor(Language.KANNADA) }
+        assertThat(kannada.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-kn-en", "wiktionary-kn-transcription", "tesseract-fast-kan",
+        )
+        // Paddle's Kannada model misreads stacked consonants and is not offered.
+        assertThat(kannada.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-kan")
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.KANNADA) }).isEqualTo(kannada)
+    }
+
+    @Test
     fun `telugu offers its wiktionaries, transcription and tesseract fast ticked, tesseract best unticked, no frequency`() {
         val telugu = catalog!!.entries.filter { it.isFor(Language.TELUGU) }
         assertThat(telugu.filter { it.recommended }.map { it.id }).containsExactly(

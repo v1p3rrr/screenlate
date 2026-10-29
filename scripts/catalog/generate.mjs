@@ -23,7 +23,7 @@ export const SOURCES = [
   'ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi', 'lv',
   'nl', 'cs', 'id', 'ms', 'tl', 'sh', 'uk', 'be', 'el', 'hi', 'bn', 'ka', 'hy', 'th', 'km',
   'ar', 'fa', 'he', 'kk', 'ky', 'sv', 'no', 'da', 'ro', 'la', 'lt', 'sk', 'sl', 'eo', 'sq', 'sw', 'cy', 'ga', 'gd',
-  'fi', 'hu', 'et', 'az', 'uz', 'bg', 'mk', 'mn', 'mr', 'ta', 'te',
+  'fi', 'hu', 'et', 'az', 'uz', 'bg', 'mk', 'mn', 'mr', 'ta', 'te', 'kn',
 ];
 
 /**
