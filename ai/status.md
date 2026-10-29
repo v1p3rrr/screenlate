@@ -122,7 +122,7 @@ the details.
   The group is done (Basque and Maltese stay unbuilt, as the plan decided); group 5b follows. Question 30 is answered
   (b) and built (merged 2026-10-29): in recognized text a " after a full stop closes the quote open, a " at a
   word's start with none open is the language's opening quote, and a " that ends a word closes the quote open.
-  Open for the owner: the plan's questions 28-34 (decided provisionally and built).
+  The plan's questions 28-34 were answered by the owner on 2026-10-28; none is open.
 - Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
   to check and merge: Welsh (`languages/cy`), Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`, `ad94d287`)
   merged; the group is done. Technical choices changed while building are marked provisional in the plan's rows and
@@ -182,7 +182,7 @@ the details.
   МК, МН, fonts (Sofia Sans for Bulgarian only; Montserrat and Commissioner, which draw the Bulgarian letter forms in
   Bulgarian text), the import cleanup of Wiktionary's export faults for every language, the Macedonian fixes after
   recognition and the retry for recognized words (Л → Љ, then С → Ѕ), strings in the 17 locales. Checked on the
-  emulator (run log 2026-10-29, `languages/5d`); not run: ANK45 (the Anki sentences), Bulgarian and Mongolian with
+  emulator (run log 2026-10-29, `languages/5d`); left out there and run afterwards (below): ANK45 (the Anki sentences), Bulgarian and Mongolian with
   on-device recognition, Montserrat under Macedonian. After the rebase the Bulgarian and Mongolian descriptors were
   marked pure for the bundle check (bg.js 86 to 58 KB), every bundle was rebuilt and the new strings got Arabic,
   Persian and Hebrew; unit tests (1,945, four skipped), lint, page (146), glue and mutation (146, one skipped),
@@ -197,6 +197,12 @@ the details.
   a gender after a lemma's name ("куќа f") is dropped too. Fixed after the merge (main session): the Audio settings'
   test word follows the shown language also when the active one changes elsewhere, as from the bubble menu (SET21,
   `testWordAfter`); the Slovak import row of `notes/language-rules.md`'s Engine table is whole again.
+  The three checks left out ran on `languages/main` `ff87b33c` (run log 2026-10-29, `ff87b33c`), all passed:
+  PaddleOCR v5 alone reads the Bulgarian and Mongolian samples (ѝ as и, кнѝгата as книгата, which still find ѝ and
+  книга; ө and ү right) and its words look up as with cloud recognition; Montserrat under
+  Macedonian draws the Russian letter forms; the Bulgarian and Macedonian Anki sentences keep г., пр. н. е., проф.,
+  ул. and нпр. and end after и т.н. / итн. before a capital (ANK45 now F; PaddleOCR's one-line paragraphs cut them
+  at the line ends).
 - Wikipedia as a corpus (owner's remark, 2026-10-28 night): some small Wikipedia editions were written largely by
   non-speakers (Scots in 2020; Greenlandic, machine-translated, closed in 2025; neither is in the app). Checked with a
   few web searches, not a full audit, as the owner asked. Wikipedia text gives the frequency dictionary of Latin (Esperanto's and
@@ -284,8 +290,8 @@ Plan `plans/2026-10-28-settings-rework.md` (decisions, the owner's later catalog
 - Checked on Pixel_10_Pro (run log of 2026-10-28 night). Not reached there: the e-ink hint's link to App text (shows
   only on e-ink models), the overlay's models link, Home's failed-audio link, an uninstalled hidden app in the count,
   the hold menu's flags (one quick language) and other dock sides.
-- Deferred questions for the owner are listed in the plan (layout of Text recognition and Audio, the catalog's
-  heading name, the order and default state of its top groups).
+- The questions deferred overnight (layout of Text recognition and Audio, the catalog's heading name, the order and
+  default state of its top groups) were answered on 2026-10-28 evening (plan, "Questions answered").
 
 ## Camera follow-ups from the phone build (2026-10-27 to 2026-10-28, merged into `languages/main`)
 
