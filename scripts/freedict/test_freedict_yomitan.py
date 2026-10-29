@@ -218,6 +218,26 @@ class ConverterTest(unittest.TestCase):
     def test_definitions_that_are_only_a_broken_template_are_dropped(self):
         self.assertEqual(converter.plain("}#|utellelig|kat"), "")
         self.assertEqual(converter.plain("Verb|minner]] om noe"), "")
+        self.assertEqual(converter.plain("(Batrachologie)|lang=fr |cat=Amphibiens } |nocat="), "")
+
+    def test_a_spanish_subject_label_goes_in_parentheses(self):
+        self.assertEqual(converter.plain("Química| Se usa para formar los nombres de los hidrocarburos saturados."),
+                         "(Química) Se usa para formar los nombres de los hidrocarburos saturados.")
+        self.assertEqual(converter.plain("Química, mineralogía| Designa minerales."),
+                         "(Química, mineralogía) Designa minerales.")
+        self.assertEqual(converter.plain("Historia (Eclesiástica)| Secta cristiana."),
+                         "(Historia (Eclesiástica)) Secta cristiana.")
+        self.assertEqual(converter.plain("Lingüística|"), "(Lingüística)")
+
+    def test_definitions_keep_a_pipe_character_and_the_text_of_cut_links(self):
+        self.assertEqual(converter.plain("(computing, typography) The character |."),
+                         "(computing, typography) The character |.")
+        self.assertEqual(converter.plain("(motoryzacja) (zobacz) akumulator, samochodowy]]"),
+                         "(motoryzacja) (zobacz) akumulator, samochodowy")
+        self.assertEqual(converter.plain("della famiglia dei camelidi ([w:[Vicugna pacos|Vicugna pacos]]), addomesticato"),
+                         "della famiglia dei camelidi (Vicugna pacos), addomesticato")
+        self.assertEqual(converter.plain("famille des Rosacées (Rosaceae]]) aux feuilles"),
+                         "famille des Rosacées (Rosaceae) aux feuilles")
 
     def test_chinese_headwords_read_as_their_pinyin(self):
         terms = convert(CHINESE)["term_bank_1.json"]

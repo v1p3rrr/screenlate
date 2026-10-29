@@ -7,7 +7,8 @@ Each sense becomes one definition: its translations as a list, the source-langua
 apart above it, or below it when the definition is long. Parts of speech and the genders of nouns become tags; the
 part of speech also becomes the rule Yomitan's deinflection matches. Chinese headwords get the pinyin of their first
 pronunciation as the reading. The Italian Wiktionary's links to Wikipedia, Wikispecies and Wikiquote are dropped from
-the definitions.
+the definitions, the Spanish Wiktionary's subject labels ("Química| …") go in parentheses, and a definition with
+what is left of a template WikDict could not read is left out.
 
 Older FreeDict files (slv-eng) name no languages in the text: they come from the file name (`slv-eng.tei`), and the
 authors from the header's `respStmt` instead of WikDict's maintainer. Usage examples are left out.
@@ -127,10 +128,17 @@ ul[data-sc-content="glossary"] { margin: 0; padding-left: 1.2em; }
 """
 
 
-#: WikDict's links inside definitions, `#{target|shown text}#`; `[[` is left where it cut a Wiktionary link off.
+#: WikDict's links inside definitions, `#{target|shown text}#`; `[[` or `]]` is left where it cut a Wiktionary link
+#: off.
 LINK = re.compile(r"#[{](?:[^|}]*[|])?([^}]*)[}]#")
-#: What is left of a template WikDict could not read (`}#|tellelig|kat`, `Verb|minner]] om`).
-RESIDUE = re.compile(r"[}]#|#[{]|[|]|]]|[{][{]")
+#: Wiktionary links WikDict left as they are, `[[target|shown text]]` and the interwiki `[w:[target|shown text]]`.
+WIKI_LINK = re.compile(r"\[(?:w:)?\[(?:[^|\[\]]*[|])?([^|\[\]]*)]]")
+#: The Spanish Wiktionary's subject label, `Química| Se usa…`, `Historia (Eclesiástica)| Secta…`.
+SUBJECT = re.compile(r"^([^|#{}\[\]]+)[|](?:\s+|$)")
+#: What is left of a template WikDict could not read (`}#|tellelig|kat`, `Verb|minner]] om`,
+#: `(Batrachologie)|lang=fr |cat=Amphibiens`): a `|` between two words or before a parameter. A `|` written as a
+#: character (`The character |.`) is not one.
+RESIDUE = re.compile(r"[}]#|#[{]|[{][{]|\w[|]\w|[|]\s*\w+=")
 #: The Italian Wiktionary's links to its sister projects, as WikDict leaves them in a definition: Wikipedia
 #: "( approfondimento)", Wikispecies "( tassonomia)", Wikiquote "( citazioni)".
 SISTER_LINK = re.compile(r"\s*\( (?:approfondimento|tassonomia|citazioni)\)")
@@ -141,9 +149,11 @@ def text(element):
 
 
 def plain(definition):
-    """A definition as one line without WikDict's link markup, HTML entities and links to sister projects; empty when
-    only a broken template is left."""
-    line = " ".join(html.unescape(LINK.sub(lambda m: m.group(1), definition)).replace("[[", "").split())
+    """A definition as one line without WikDict's link markup, HTML entities and links to sister projects, a Spanish
+    subject label in parentheses; empty when a broken template is left."""
+    line = " ".join(html.unescape(LINK.sub(lambda m: m.group(1), definition)).split())
+    line = WIKI_LINK.sub(lambda m: m.group(1), line).replace("[[", "").replace("]]", "")
+    line = SUBJECT.sub(lambda m: f"({m.group(1).strip()}) ", line)
     return "" if RESIDUE.search(line) else SISTER_LINK.sub("", line).strip()
 
 
