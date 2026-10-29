@@ -678,7 +678,8 @@ catalog lists it with cyrillic-ext. `fontSubsets` latin, cyrillic, cyrillic-ext.
   башҡорт теле (CLDR "татар", "башҡорт").
 - circle-flags: `ru-ta` (Tatarstan, 330 B → 709), `ru-ba` (Bashkortostan, 380 B → 817, without the kurai flower);
   `language/tt` and `language/ba` link to them. `flags/tt.svg` is Trinidad and Tobago and `flags/ba.svg` Bosnia and
-  Herzegovina: never use them. E-ink codes TT, BA.
+  Herzegovina: never use them. E-ink codes TT, BA (ТТ, БА since row "Bubble glyph", 2026-10-28: Cyrillic-script
+  languages write their codes in Cyrillic).
 ### Sanskrit
 
 Sources: Yomitan e7334a9; wty (dataset sha c22cd95, release 2026.10.11, downloaded 2026-10-20); the Cologne Digital
@@ -881,22 +882,187 @@ Devanagari font; the system draws Noto. Whether the phone's copies have the Vedi
 - CLDR: Sanskrit / санскрит / サンスクリット語 / 梵语 / 梵文 / Sanskrit / sánscrito / sanskrit / sanscrito / sanskryt /
   sânscrito / Sanskrit / Tiếng Phạn / 산스크리트어; own name in CLDR संस्कृत भाषा (usual संस्कृतम्).
 - Translation: Google only (`sa`). circle-flags has no `language/sa`; `in` is in the app. E-ink code SA. Bubble letter
-  candidates (हि and म taken): सं, ॐ, अ.
+  candidates (हि and म taken): सं, ॐ, अ; row "Bubble glyph" (2026-10-28) gives सं, the first akshara of संस्कृतम्.
 ### Plain fixes found (no owner decision)
 
 - Flags: circle-flags' `language/*` files are symlink text; read `es-ct`, `es-ga`, `ru-ta`, `ru-ba` directly; resource
-  names with an underscore; never `tt.svg` (Trinidad and Tobago) or `ba.svg` (Bosnia and Herzegovina).
+  names with an underscore (done for gb-wls, 2026-10-29); never `tt.svg` (Trinidad and Tobago) or `ba.svg` (Bosnia
+  and Herzegovina).
 - Catalan: `wordBefore` must accept the middle dot (Il·lm.); check that the Catalan path normalizes to NFC (U+0387 →
   U+00B7).
 - Afrikaans: the 'n word start (without it the most frequent word after die finds nothing); form rows to
   Arabic-script spellings dropped, as the Jawi rows.
 - Icelandic: Đ đ ž š → Ð ð ð ð in `ocrWord` (letters it never writes); `ordinalPeriod`.
-- Bashkir: Ç ç → Ҫ ҫ and the other look-alikes in `ocrWord`; Literata not offered; never the `bak_news*` Leipzig
-  corpora.
-- Sanskrit: the import cleanup of sa-en, `Compounds.word()` counting marks as part of the word if reused.
+- Bashkir: Ç ç → Ҫ ҫ and the other look-alikes in `ocrWord`; Literata not offered (by `fontLetters` alone since the
+  font catalog checks letters); never the `bak_news*` Leipzig corpora.
+- Sanskrit: the import cleanup of sa-en (the digits and middle dots; group 5d covers the rest, recheck of 2026-10-29),
+  `Compounds.word()` counting marks as part of the word if reused.
+- Tatar (found 2026-10-29): the fold's table has ҷ (U+04B7, che with descender) but not Җ җ (U+0496, U+0497, zhe with
+  descender), which fold to Ж ж as the other descender letters do; add them with Tatar (`FOLDED_LETTERS` and the
+  engine's table).
 - The catalog's letter lists leave out ŀ Ŀ ŉ.
 - Catalan Wiktionary audio tags of three letters (`occ`) are not read as regions; no change now (none of the common
   words is affected).
+
+## Recheck against languages/main (2026-10-29)
+
+An autonomous cloud session (the owner not asked) re-read this plan against `origin/languages/main` 23448dd3 and
+re-measured the sources; research only, nothing built. Sources: wty release 2026.10.22 (dataset commit de7ed9cd, still
+the latest on 2026-10-29), wordfreq 912caf6, the Leipzig archives of question 7, tessdata at the pins of
+`tessdata_catalog.py` and at `main`, PaddleOCR's models on Hugging Face, the font catalog's files, Commons. Scripts in
+the agent's scratchpad (not in the repo): word counts by `countWords` of `scripts/catalog/generate.mjs`; bundles built
+by a copy of `build.mjs` from Yomitan e7334a96 with the borrowed descriptors of the technical choices and, for tt and ba,
+scratch grammar tables in the Turkic engine of `own-transforms.js` (written from the grammar notes under "Tatar and
+Bashkir", not reviewed, not in the repo); a lookup that takes each word's candidates from such a bundle (glue
+`candidates`) and matches them as `candidate_lookup.cpp` does (conditions, untyped candidates, definition tags, form-of
+steps). Nothing was run on a device.
+
+### What languages/main has now, and what it changes here
+
+| piece (where) | now | for group 6 |
+|---|---|---|
+| Folded marks (row "Marks folded in the lookup"; plan `2026-10-29-folded-marks-and-flags.md`) | Latin- and Cyrillic-script languages but Vietnamese key every headword and form row also without marks (`foldsMarks`; OCR text also folded, `foldedMarks`); a table folds ø ł đ ħ ı and Cyrillic ғ қ ң ө ұ ү ҡ ҙ ҫ and the like; æ þ ð ә һ stay | ca, gl, is, af, tt and ba fold; sa does not (Devanagari). Supersedes question 9 and implements question 11. Tatar ң ө ү and Bashkir ҡ ғ ҙ ҫ ң ө ү fold; ә and һ (both) and Tatar җ (U+0497 is not in the table, though ҷ is) do not, so question 15's twin keys stay needed for them. Noise and growth below. |
+| Own ending rules: `turkicTransforms` (kk, ky, az, uz), `taggedRules`, `untypedRules`, `inflectionRulesOnlyWithoutEntry` (bg, la, hu, uz, sw, az, ro) | Group 4e's engine is built and shared by four languages | 6c waits for nothing: Tatar and Bashkir are two more grammar tables. The scratch tables found three engine limits: four dictionary forms at most (a Tatar consonant stem needs -ырга, -арга, -у and the voiced -барга, -гарга), the class the negative aorist follows lacks ә (-мәс, -мәҫ), and no plural ending follows a finite verb (алдылар, баралар: 0.18% of Tatar news tokens in the past alone). Whether rule results show for a word with its own entry: question 27. |
+| Import cleanup of group 5d (`archive_split.cpp`: `form_headwords`, `bare_ending`, duplicate rows, `{{{`) | Notes after " (" and " ," cut, " / " split, marks written apart joined; bare endings, duplicates and template residue dropped | Covers the bracketed romanizations of sa-en (141 rows) and its detached signs (71), its 18,100 duplicate rows, is-en's 48 `{{{` rows, bare endings (ca 85, gl 28, is 19, af 5, sa 41). Still Sanskrit's own: trailing footnote digits (25,176 form rows, 22,042 distinct headwords; the earlier 18,033 counted otherwise), middle dots (89 rows), Latin residue (49 rows: "in later language", "a-"). `HeadwordMarks.formsInScript` drops the Latin rows, and with them the ~3k form rows in Sinhala, Brahmi, Sharada and other scripts, which no Devanagari text reaches (technical choice "Sanskrit import" changed). |
+| Pure descriptors (`build.mjs` probe) | A descriptor built by calls is wrapped `/* @__PURE__ */`, or the build fails | The Galician enclitic list, the Tatar and Bashkir tables and the Sanskrit endings follow it; the scratch tables (`/* @__PURE__ */ turkicTransforms({...})`) pass the probe. Bundles: tt 64 KB, ba 66 KB (kk 66 KB), ca, gl, is, af 51 KB. |
+| Bubble glyph (row "Bubble glyph", owner 2026-10-28; `BubbleGlyph.kt`, `BubbleGlyphTest`) | The first letter of the own name; on a shape clash among the quick languages the code; Cyrillic languages' codes in Cyrillic | Supersedes question 19: ca C, gl G, is Í, af A, tt Т, ba Б, sa सं (the first akshara, as Hindi हि). Codes CA, GL, IS, AF, SA and ТТ, БА (on e-ink too, replacing TT, BA). Clashes: C with Czech Č and Welsh C; G with Irish and Scottish Gaelic; Í with Italian and Indonesian I; A with Azerbaijani; Т with Turkish and Vietnamese T (look-alikes); Б with Bulgarian and Belarusian; सं with none. |
+| Flags (rows "Flags", "Language flags in more places") | Region flags with hyphenated codes exist (gb-wls, gb-sct as `flag_gb_wls`); flags in the chips, the OCR model list, titles, the first-run list; codes on e-ink | es-ct, es-ga, ru-ta, ru-ba go the way gb-wls did (the underscore fix is done); is, za and in as they are. |
+| Leipzig frequency (`corpus_catalog.py`, 10 corpora) | Built on the phone; sw, az and uz take 30K news archives | Question 7's archives are unchanged: SHA-256 of tat_news_2015_100K, tat_web_2018_100K and bak_wikipedia_2021_100K as recorded; glg_newscrawl_2016_100K b0e15c14c66de678068ef0a5b6fabec61ffc1a36a58e76a59a1616952f664d57, afr_mixed_2019_100K 6f663bbede1cc85ef3ac039b87260e00fad6906f0456bab4baf117752c8f8eec. No newer Galician, Afrikaans, Tatar or Bashkir corpus (HEAD checks of 100K names 2010-2025, six kinds; the corpus API lists only some). Bashkir stays on Wikipedia, its only Bashkir text there; its top 80 words, checked for bot stubs as Swahili's were (group 5a question 33), are function words, with урынлашҡан (located, rank 47), улы (son of, 63) and хәрби (military, 72) the only stub words. |
+| Fallback language (`fallbackLanguage`, `DictionaryLookup.preferringOwn`, `LanguageSetup`) | Built in 5a (Slovak → Czech): one language, whose dictionaries are searched with the language's own candidates when its own find nothing, offered unticked | Galician → Spanish (question 3) and Afrikaans → Dutch (question 12) fit as built. The fallback runs only when the own dictionaries find nothing, so a wrong enclitic split (debate → deba + te) would also hide Spanish's debate: question 4's guard keeps the fallback reachable too. |
+| OCR misread retry (`LanguageSupport.misreadSpellings`, `DictionaryLookup.misreadMatches`; 5d's Macedonian л → љ, с → ѕ) | Spellings tried for OCR text when the word as read finds nothing | The mechanism question 10 (Þ for P, Æ for AE) would use; the question still waits for the emulator run. |
+| Interface locales | 17 (Arabic, Persian and Hebrew written, not in the locale list) | Rule names, form tags and language names need 17 translations, not 14. |
+| Font catalog (`overlay/src/main/assets/fonts/catalog.json`, `FontModels`) | A font is offered for a language when it has every letter of its `fontLetters`; Montserrat, Commissioner and Sofia Sans added, and Hindi's Mukta, Hind and Tiro Devanagari Hindi | Literata leaves Bashkir out by itself (it lacks ҡ ҙ ҫ Ҡ Ҙ Ҫ), no exclusion to write. Montserrat has every letter of the group, Commissioner all but ŉ. Sanskrit: the Devanagari fonts are entries of `language: hi`; Mukta has 127 of 128 Devanagari points and 39 of 48 Vedic Extensions with ॑ ॒, Tiro Devanagari Hindi all 128 and no Vedic sign, Hind 94 and neither ॑ nor ॒ (own cmap reader); Tiro Devanagari Sanskrit (108 / 43 / 30) stays the Sanskrit addition. |
+
+### Dictionaries in wty 2026.10.22
+
+Cells: archive MB, words with their own meaning (`countWords`); ✗ under 1,500. Changes against the tables above:
+
+- ca: en 4.65 31.7k, ru 0.41 8.4k, pl 0.26 7.4k, zh 1.09 6.9k, fr 0.89 17.3k, ja 0.25 5.5k, pt 0.13 2.7k, es 0.17 2.8k,
+  de 0.41 5.1k; tr 903 ✗ (was 861), it 544 ✗, vi 276 ✗; transcription 52,017. Outside the gloss languages ca-nl 1,562.
+- gl: en 3.80 18.7k, pt 2.15 27.2k, ru 0.30 5.9k, ja 3.1k, pl 2.7k, zh 2.4k, es 2.2k, fr 2.1k; transcription 15,168.
+- is: en 3.22 18.7k, fr 6.2k, ru 5.7k, pl 5.3k, zh 5.0k, tr 2.3k, pt 2.3k, ja 1,561 (inside `needsCount`'s band);
+  transcription 16,093.
+- af: en 0.53 5,770 (was 5.6k), fr 4.5k, ru 4.0k, pl 1,690, zh 1,611 (both inside the band); transcription 2,801;
+  af-nl 2,566 (Dutch is no gloss language).
+- tt (new since 2026.10.22): ru 1.24 11,817 (11,647 Cyrillic), tr 0.17 5,839 (133 Cyrillic: Zamanälif Latin), ko
+  0.21 4,596 (2,369 Cyrillic), en 0.24 1,770 (1,232 Cyrillic); fr 1,229 ✗, zh 914 ✗, ja 876 ✗; transcription 1,691,
+  which passes row "Transcription threshold" inside `needsCount`'s band (this plan said "Tatar has none"). Question 29.
+- ba: en 3,042, ru 4,180, pl 2,045 (unchanged); transcription 3,178.
+- sa: en 3.80 9.5k (277,714 rows, 156 fewer), ru 13.1k (13,313 rows, the same), pl 1,263 ✗; transcription 11,202.
+  The coverage and sandhi numbers of "Sanskrit" stand.
+- The release also writes MDict copies (`<pair>/mdict/`); the catalog reads the Yomitan files as before.
+- tt-ru: 83,047 rows, 70,953 form rows: 16 case and possessive forms each of 4,481 nouns, 98 "redirected from" rows
+  (mostly verb stems to infinitives, ал → алырга), 95 Cyrillic → Latin and 36 Arabic-script rows; no verb forms. The rules field is empty; parts of speech in the tags (n 6,302,
+  v 2,507, adj 1,745). Its form tags come from Russian Wiktionary's tables: the genitive is tagged "singular possessive"
+  and "plural possessive" (the Turkic grammar's name, притяжательный падеж), the ablative plural only "plural", and the
+  ablative singular is missing. ba-ru and the shipped ky-ru have the same; kk-ru the same ablative, with its genitive right;
+  the English editions' tables (tt-en, ba-en) are right. Question 30.
+- Catalan del, al, pel, pels, dels are entries; ben is now a form row of bé (the release turned alt-of rows round).
+  Galician moi, neste, deste, daquel, naquel, tódolos are entries; desta, nesta, nese, diso and 13 more forms are still
+  missing (0.18% of the lowercase news tokens), so the contraction split stays for them; empresa, crise, final, sector
+  are still missing.
+
+### Extra results through the folded marks
+
+Measured as the folded-marks plan's data check: the main Wiktionary dictionary (every headword and form row; Tatar
+tt-ru with tt-en; Bashkir ba-en, and ba-en with ba-ru) against the 30,000 most frequent words of the frequency source,
+weighted by frequency; for Tatar and Bashkir also net of the Russian-twin keys of question 15.
+
+| Code | Language | Noise typed / OCR % | Extras per word typed / OCR | Gain typed / OCR % | Extra keys | Growth % | Most frequent extras |
+|---|---|---:|---:|---:|---:|---:|---|
+| gl | Galician | 26.0 / 30.4 | 1.24 / 1.24 | 0.24 / 0.46 | 75,657 | 27.4 | de → dê; a → à, á; o → ó; e → é |
+| ca | Catalan | 18.7 / 22.3 | 1.25 / 1.23 | 0.10 / 0.15 | 80,557 | 28.8 | a → à; i → í, ï; que → què; per → pèr |
+| is | Icelandic | 9.6 / 21.1 | 1.02 / 1.05 | 0.32 / 0.39 | 93,399 | 45.0 | að → áð; við → víð; var → vár; í → i (OCR) |
+| af | Afrikaans | 8.4 / 8.8 | 1.09 / 1.11 | 0.07 / 0.18 | 606 | 4.3 | die → dié; se → sé, sê; hoe → hoë |
+| tt | Tatar, fold alone | 1.7 / 2.5 | 1.00 / 1.02 | 0.43 / 0.65 | 38,222 | 38.1 | казан → казаң; анда → аңда; аны → аңы |
+| tt | Tatar, net of twins | 0.2 / 2.5 | 1.00 / 1.02 | 0.12 / 0.65 | 25,202 | 25.1 | дәвамында → дәвамыңда; аның → аңың, мең → мен (OCR) |
+| ba | Bashkir en, fold alone | 0.1 / 0.5 | 1.02 / 1.01 | 0.07 / 0.24 | 16,789 | 80.3 | ун → уң; мин → миң; и → й |
+| ba | Bashkir en + ru, net of twins | 0.0 / 1.6 | 1.00 / 1.07 | 0.06 / 0.87 | 20,294 | 42.2 | и → й; өсөн → осоң, көн → ҡон (OCR) |
+
+Frequency sources: gl glg_newscrawl_2016_100K, ca wordfreq `large_ca`, is `small_is`, af afr_mixed_2019_100K, tt
+tat_news_2015_100K, ba bak_wikipedia_2021_100K. Galician, Catalan, Icelandic and Afrikaans are past the provisional
+threshold (5% typed); Tatar and Bashkir are under it, as Kazakh (0.1 / 1.2) and Kyrgyz (0.9 / 1.3) are. Most extras are
+words the mark tells apart (Galician e "and" and é "is", Catalan que and què, Afrikaans die and dié); some are letter
+entries (Catalan à, í; Icelandic i after OCR read í right) or rare forms (Icelandic áð, the supine of æja; þáð, of
+þiggja). Question 28.
+
+### Lookup coverage on today's dictionaries
+
+Share of the list's words found; "types" counts the top 1,000 / 5,000 / 20,000 words, "tokens" weights the whole list by
+its counts. Leipzig lists keep the forms the corpus writes in lowercase only (as the earlier measurements did); words
+with a letter only. The fold adds 0.0-1.1 points everywhere (not in the table).
+
+| lang, list | dictionaries | top 1,000 | 5,000 | 20,000 |
+|---|---|---|---|---|
+| ca, `large_ca` | ca-en | 98.9% | 96.1% | 84.5% |
+| ca | ca-ru | 29.3% | 21.6% | 13.7% |
+| gl, glg_newscrawl_2016 | gl-en | 89.6% | 74.9% | 59.6% |
+| gl | gl-en + gl-ru | 90.6% | 76.6% | 61.3% |
+| gl | gl-en + gl-pt | 90.7% | 76.4% | 61.0% |
+| gl | gl-en, Spanish fallback (es-en) | 97.8% | 93.1% | 86.3% |
+| gl | gl-en, Portuguese fallback (pt-en) | 97.1% | 89.2% | 77.4% |
+| gl | gl-en + gl-pt, both fallbacks | 98.8% | 96.0% | 89.9% |
+| is, `small_is` | is-en | 94.5% | 84.4% | 70.0% |
+| is | is-en + is-ru | 94.5% | 84.5% | 70.4% |
+| af, afr_mixed_2019_100K | af-en + af-ru | 70.3% | 46.6% | 24.8% |
+| af | af-en + af-ru, Dutch fallback (nl-en) | 88.6% | 71.1% | 48.3% |
+
+Catalan's top 5,000 misses are now English words and names, enclitic apostrophes (se'n, se'ns, se'l, me'n),
+abbreviations (núm, sr, dr, pp, km) and Roman numerals; del, al and pel are found. Icelandic's are still the verb forms
+(kemur, segir, finnst, gæti: question 8's BÍN). Galician's 1,000 most frequent still miss desta, final, sector, empresa,
+crise, campaña, xornada (the Spanish fallback finds most).
+
+Tatar and Bashkir, share of lowercase Cyrillic tokens (headword / + form rows / + the scratch rules), against the
+numbers this plan simulated from kaikki:
+
+| text | dictionaries | measured | simulated (2026-10-20) |
+|---|---|---|---|
+| tat_news_2015 | tt-en | 19.1 / 25.0 / 40.6 | |
+| tat_news_2015 | tt-ru | 42.2 / 54.8 / 81.4 | |
+| tat_news_2015 | tt-en + tt-ru | 43.4 / 58.9 / 83.1 | 43.6 / 71.1 / 85.0 |
+| tat_web_2018 | tt-en + tt-ru | 43.8 / 59.6 / 84.1 | 44.4 / 73.8 / 86.6 |
+| bak_wikipedia_2021 | ba-en | 33.4 / 40.8 / 65.3 | |
+| bak_wikipedia_2021 | ba-ru | 31.4 / 39.3 / 55.8 | |
+| bak_wikipedia_2021 | ba-en + ba-ru | 35.5 / 46.3 / 69.1 | |
+| bak_wikipedia_2021 | ba-en + ba-ru + ba-pl | 40.2 / 51.0 / 75.0 | 40.4 / 51.1 / 76.5 |
+
+- The real tt-ru has a quarter of the simulated form rows (no verb tables), so form rows find 12 points less; the rules
+  make it up (83-84%). As types with the rules: Tatar 88.0 / 79.0 / 68.8% of the top 1,000 / 5,000 / 20,000, Bashkir
+  (en + ru + pl) 82.1 / 69.8 / 56.4%.
+- Precision of 40 rule hits each, drawn by frequency (agent's judgement): Tatar 37 (wrong: алдылар → алды "front", since
+  no plural follows the past; карата → кара + locative; алган also finds алга through н read as ң), Bashkir 38 (атала
+  also as ата "father" + locative besides атау; ҡамасаулай also as ҡамасау + equative). The earlier samples had 35 and
+  34.
+- Words that have an entry as written and that the rules also take to another word: 11.9% of Tatar tokens, 8.4% of
+  Bashkir ones (question 27).
+
+### Audio (2026-10-29)
+
+Commons' search API answers 429 (`x-envoy-ratelimited`) from the cloud egress after a few queries, so the twenty-word
+searches of "Audio and voices" were not repeated; the counts are being taken again by listing Lingua Libre's categories
+and the Wiktionary prefixes instead (a later commit fills them in). Checked so far: Lingua Libre's Catalan category
+still holds 22,918 files. Until then the table of "Audio and voices" stands.
+
+### For the emulator session (local)
+
+Recognition and checks this cloud session could not run; each block's session measures them before building (row of
+2026-10-21 under "Work"):
+
+- ML Kit, Tesseract fast and best, cloud recognition and Paddle v5 and v6 on the research screens in
+  `testdata/ocr/compare/new/6/` (ca, gl, is, af; tt and ba with Paddle `cyrillic`; sa with the Devanagari model):
+  character errors per engine for question 21; Icelandic Þ → P and Æ → AE per engine for question 10; Catalan l·l (the
+  dot dropped, a hyphen, a period, ŀ); Afrikaans ’n; Bashkir Ҫ → Ç and capitals read small; Sanskrit avagraha, conjuncts
+  and ॐ.
+- The fold on real imports: index size of is-en, ca-en, gl-en, tt-ru and ba-ru with and without the folded keys (growth
+  here 4-80% of rows), and the popup order of the extras (Galician e and é, Catalan que and què).
+- Voices on the emulator's engine for af, gl, ca, is (Google Cloud lists af-ZA and gl-ES; TalkBack's list ca and is).
+- The Vedic signs (॑ ॒, the Vedic Extensions) and candrabindu in the system Devanagari font and in Mukta; Tiro Devanagari
+  Sanskrit if offered.
+- Gboard's Tatar and Bashkir layouts (which letters a phone keyboard gives: evidence for question 15's twin typing).
+- Lookup time of the Sanskrit rules on long lines and of the Tatar and Bashkir bundles (the scratch tables give 17 and
+  10 candidates a word on average over the 5,000 commonest, up to 246).
+- Tatar's legacy 8-bit letters and the OCR look-alike fixes on screens; how the popup names the mistagged forms of
+  question 30 (singular, possessive).
 
 ## Blocks and order (proposed)
 
@@ -926,13 +1092,13 @@ only (`ocrWord`); spellings people type themselves stay matched in any text.
 | ca | "ll" tried as l·l when the word is not found (an engine dropped the dot); "l-l" from OCR is covered by the any-text row | OCR only |
 | gl | enclitic split, demonstrative contractions, the fallback language | any text (grammar, not misreadings) |
 | is | Đ đ → Ð ð, ž š → ð (letters Icelandic never writes, row "OCR letter fixes" of group 5a) | OCR only |
-| is | Þ for P and Æ for AE, tried when the word as read is not found (question 10) | OCR only |
+| is | Þ for P and Æ for AE, tried when the word as read is not found (question 10; through `misreadSpellings`, built in 5d) | OCR only |
 | is | compounds with links s, a, ar, u; ordinals with a period; abbreviations | any text |
 | af | an apostrophe (' ’ ‘ ` ´ ʼ) before a lone n, s or t belongs to the word and is read as '; ŉ read as 'n | any text (seven spellings people type) |
-| af | apostrophe variants inside words; emphasis acutes also looked up without them; keys without ê ë î ô û ï (question 11) | any text |
+| af | apostrophe variants inside words; emphasis acutes also looked up without them; keys without ê ë î ô û ï (question 11): both now the folded marks | any text; a wrong mark only after OCR (row "Marks folded in the lookup") |
 | af | the Dutch fallback | any text |
 | tt, ba | ending rules; hyphen and digit rules; particle variants | any text |
-| tt, ba | Kazakh-style letter keys (the Russian twins) | any text (a keyboard habit, as Kazakh's row "Letters OCR loses") |
+| tt, ba | Kazakh-style letter keys (the Russian twins; ң ө ү and Bashkir ҡ ғ ҙ ҫ are folded marks too) | any text (a keyboard habit, as Kazakh's row "Letters OCR loses") |
 | tt | legacy 8-bit letters ђ љ њ ћ ќ џ read as ә ө ү ң җ һ (the text itself is written so; the letters never occur in Tatar words) | any text |
 | tt, ba | Latin ə h ç Ç ş, ѳ, γ, ӊ and the usual Latin look-alikes as Cyrillic letters (0.03-0.15% typed: not a habit) | OCR only |
 | sa | NFC; Vedic accents dropped; anusvara and class nasals keyed alike; sandhi rules and noun endings | any text |
@@ -941,18 +1107,21 @@ only (`ocrWord`); spellings people type themselves stay matched in any text.
 ## Decisions this plan builds on
 
 Rows of the languages plan: "Depth", "Gloss languages", "Catalog threshold", "Transcription threshold"
-(Galician, Catalan, Icelandic, Bashkir, Sanskrit pass; Afrikaans passes with 2,800; Tatar has none), "Own-language
+(Galician, Catalan, Icelandic, Bashkir, Sanskrit pass; Afrikaans passes with 2,800; Tatar with 1,691 since wty
+2026.10.22), "Own-language
 dictionaries" (none exists), "Recommended dictionaries", "Frequency dictionaries" (built on the phone; Catalan and
 Icelandic from wordfreq `large_ca` and `small_is`), "Dictionaries we convert" and "FreeDict into Russian" (converted
 dictionaries listed once hosted), "Second form-of step", "Inflection names and tags", "Rule chains", "German
 compounds" (later for other languages with compounds), "Compound part order" (German only), "On-device OCR engines",
 "OCR engine choice", "Diacritics of Latin-script languages", "ML Kit at setup", "Look-alike fixes only after OCR",
 "Latin look-alikes in Cyrillic text", "Tesseract models", "Paddle model hosting", "OCR model list", "Flags", "Flag
-country" (a default flag only), "Bubble letters", "Audio order, groups 2 and 3" (by measured coverage), "Text to
+country" (a default flag only), "Bubble glyph" (2026-10-28, in place of "Bubble letters"), "Language flags in more
+places", "Marks folded in the lookup" (2026-10-28, built 2026-10-29), "Audio order, groups 2 and 3" (by measured coverage), "Text to
 speech" (last source), "Font lists across languages", "Ordinals with a period", "Greek accents" (spellings matched at
 import), "Group 5 release" (the model for when these ship). Group 4e's rows "Endings", "Letters OCR loses", "Written
 Kazakh letters", "Hyphenated words", "Frequency", "PanLex languages"; group 4b's "Scan length"; group 5a's "Czech
-dictionaries for Slovak" (the fallback model), "OCR letter fixes", "Words without their marks", "ESPDIC and WikDict".
+dictionaries for Slovak" (the fallback model), "OCR letter fixes", "Words without their marks" (for Latin-script languages now the fold), "ESPDIC and WikDict";
+group 5d's technical rows "Import cleanup" and "Macedonian retry" (`misreadSpellings`).
 
 Technical choices of the agent (the owner may object; recorded in the changelog when changed):
 
@@ -962,20 +1131,20 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 | Catalan elisions | French's elision rule with l d s m t n. |
 | Catalan l·l | `·` in Catalan's `wordConnectors`; the typed look-alikes as a lookup variant after the exact word (any text); "ll" → l·l for OCR words only, after the exact word (the 65 headword pairs such as col·la/colla keep the exact spelling first). |
 | Galician contractions | desta, neste, nese, diso, naquel and the rest: d- and n- before the demonstratives split into de and en + the word, shown as a rule result. |
-| Icelandic letters | No keys without þ ð æ ö and acutes (58 frequent keys would be shared, little evidence of such typing; question 9). OCR letter fixes Đ đ ž š → Ð ð ð ð. |
+| Icelandic letters | Superseded by row "Marks folded in the lookup" (2026-10-29): á é í ó ú ý ö fold like every Latin-script language's marks, þ ð æ stay (question 9 settled; noise under "Recheck", question 28). OCR letter fixes Đ đ ž š → Ð ð ð ð kept (`ocrWord` runs before the lookup, and the fold would make Đ a D). |
 | Afrikaans 'n | The word start keeps an apostrophe before a lone n, s or t ('n, 's, 't) and reads it as '; ŉ read as 'n. |
 | Afrikaans endings | No own list: form rows cover plurals, diminutives and participles; a naive list reached 3.6% of the top 5,000 at about 20% false. |
 | Compounds | `compoundLinks`: is s, a, ar, u; af s, e. |
 | Ordinals | Icelandic joins `ordinalPeriod`; Afrikaans, Catalan and Galician need nothing. |
-| Turkic rules | Group 4e's engine with Tatar and Bashkir tables (two- and four-way harmony, Bashkir's ҙ variants, -һы after a vowel); Tatar verbs produce both the -у/-ү form and the -рга/-ргә infinitive; particle variants (Tatar та тә, Bashkir ла лә ҙа ҙә та тә) looked up as the dictionary's да/дә; the lookup starts after the digits of joined Tatar forms (5нче) as after a hyphen. |
-| Turkic letter keys | As Kazakh's row "Letters OCR loses": every match, the exact spelling first; a Tatar or Bashkir letter written in the word is exact (as "Written Kazakh letters"). Collisions are 1.7% and 2.2% (Kazakh 0.9%; question 15). |
+| Turkic rules | Group 4e's engine with Tatar and Bashkir tables (two- and four-way harmony, Bashkir's ҙ variants, -һы after a vowel); Tatar verbs produce both the -у/-ү form and the -рга/-ргә infinitive; particle variants (Tatar та тә, Bashkir ла лә ҙа ҙә та тә) looked up as the dictionary's да/дә; the lookup starts after the digits of joined Tatar forms (5нче) as after a hyphen. The engine (`turkicTransforms`) takes up to six dictionary forms, ә in the negative aorist's class (-мәс, -мәҫ) and a plural after the past, present and conditional (алдылар, баралар), measured with scratch tables on 2026-10-29. |
+| Turkic letter keys | As Kazakh's row "Letters OCR loses": every match, the exact spelling first; a Tatar or Bashkir letter written in the word is exact (as "Written Kazakh letters"). Collisions are 1.7% and 2.2% (Kazakh 0.9%; question 15). Since the fold (2026-10-29) Tatar ң ө ү and Bashkir ҡ ғ ҙ ҫ ң ө ү are also folded keys; the twin keys add ә, һ and Tatar җ, and both are built as Kazakh's (`headwordMarks.replacements`, `keyedSpelling`). |
 | Tatar Latin | Cyrillic only (Latin Zamanälif is not one to one with Cyrillic; 0.0-0.1% of the Leipzig Tatar corpora). |
 | Tesseract | None for Tatar and Bashkir (`tat` is a Latin-script model; no `bak`); Paddle `cyrillic` for both. |
 | Leipzig | Never the `bak_news*` or `bak_newscrawl` corpora for Bashkir (they are Tatar text). |
-| Fonts | Literata not offered for Bashkir (it lacks ҡ ҙ ҫ), by the row "Font lists across languages"; ŀ Ŀ ŉ not in any letter list. Sanskrit offers Tiro Devanagari Sanskrit (OFL) as a downloadable font if the catalog gets a Devanagari font; the system's Noto otherwise. |
-| Sanskrit import | sa-en cleaned at import: trailing footnote digits (18,033 rows), bracketed romanizations (149), middle dots (89), detached vowel signs (89) and Latin residue rows (15); Vedic accents dropped from headwords (`HeadwordMarks`); class nasal + virama keyed as anusvara (`replacements`, about 20 pairs); other-script form rows kept (only that script's text reaches them). |
+| Fonts | Literata not offered for Bashkir (it lacks ҡ ҙ ҫ), by the row "Font lists across languages": `fontLetters` with ҡ ҙ ҫ leaves it out by itself (`FontModels`, 2026-10-29); ŀ Ŀ ŉ not in any letter list. The catalog has Devanagari fonts now (Hindi's Mukta, Hind, Tiro Devanagari Hindi, entries of `language: hi`): Sanskrit offers Mukta and Tiro Devanagari Hindi (not Hind, which lacks ॑ ॒) and adds Tiro Devanagari Sanskrit (OFL, the Vedic signs); the system's Noto otherwise. |
+| Sanskrit import | sa-en cleaned at import: trailing footnote digits (25,176 form rows in release 2026.10.22) and middle dots (89) by new cleanup; bracketed romanizations (141) and detached vowel signs (71) by group 5d's `form_headwords`; Latin residue rows (49) and the other-script form rows (about 3k, which no Devanagari text reaches) dropped by `HeadwordMarks.formsInScript` (changed 2026-10-29: kept before); Vedic accents dropped from headwords (`HeadwordMarks`); class nasal + virama keyed as anusvara (`replacements`, about 20 pairs). |
 | Sanskrit text | Sentence ends at । and ॥ (verse numbers inside ॥…॥ stay with the verse); scan length 24 by default (5.0-15.8% of tokens are longer than 16 code units). |
-| Flags | Circle-flags' `es-ct`, `es-ga`, `ru-ta`, `ru-ba` read directly (never the symlink files or `tt.svg`, `ba.svg`), resources named with an underscore. |
+| Flags | Circle-flags' `es-ct`, `es-ga`, `ru-ta`, `ru-ba` read directly (never the symlink files or `tt.svg`, `ba.svg`), resources named with an underscore, as `gb-wls` is (`flag_gb_wls`, built for Welsh). |
 | Audio order | Lingua Libre first for ca, is, af, tt, sa; Wiktionary first for gl and ba; text to speech last. |
 | Voice | Languages without a voice keep the popup's "No text-to-speech voice for this language is installed". |
 | OCR | ML Kit main for ca, gl, is, af and sa (row "ML Kit at setup"); Paddle `cyrillic` for tt and ba (ML Kit has no Cyrillic); the "more accurate" marks after the emulator run (question 21). |
@@ -994,6 +1163,8 @@ recommended option; what changing it takes is said).
    group 4e); 6d Sanskrit. (b) The same blocks, Sanskrit before the Turkic block. (c) One language at a time by
    learners: Catalan, Afrikaans, Galician, Icelandic, Sanskrit, Tatar, Bashkir. (d) Only some of them now. Changing it
    reorders the work list only.
+   Recheck (2026-10-29): stands; what each block's session measures on the emulator is listed under "Recheck", "For the
+   emulator session".
 2. Answered (owner, 2026-10-21): (a). Catalan l·l. Today the middle dot ends a word: aimed at the second half of
    col·lecció the popup shows "lecció" (lesson), for 20% of the words with the dot. People also type l.l, l-l, l•l or
    ŀl; Paddle dropped the dot once and read it as a hyphen three times in 16 (the other engines are measured later). (a,
@@ -1001,6 +1172,7 @@ recommended option; what changing it takes is said).
    written is not found, in any text; a recognized "ll" is also tried as l·l when not found, for OCR words only (col·la
    and colla are both words, so the exact spelling comes first). (b) The dot and ŀ only. (c) The dot only. Changing it
    drops lookup variants and their tests.
+   Recheck (2026-10-29): stands; `wordConnectors` exists now (Hebrew, Uzbek), so the dot joins Catalan words through it.
 3. Answered (owner, 2026-10-21): (a). A fallback language for Galician (as Slovak looks up Czech when a word has no
    Slovak entry). gl-en finds 77.1% of the 5,000 most frequent Galician words; with the user's Spanish dictionary 93.4%,
    with the Portuguese one 90.2%, both and gl-pt 96.0%. The official Galician spelling (x, ñ, ll, -ción) is close to
@@ -1009,6 +1181,9 @@ recommended option; what changing it takes is said).
    searched and their entries marked Spanish; the Spanish dictionaries offered unticked on Galician's download screen.
    (b) Portuguese (better for the rare Portuguese-like reintegrationist spelling). (c) Both, Spanish first: the fallback
    becomes a list instead of one language. (d) None. Blocks: Galician's fallback and its catalog entries.
+   Recheck (2026-10-29): the fallback piece is built (group 5a, `fallbackLanguage`, one language), so Spanish alone
+   needs no list. On today's dictionaries gl-en finds 74.9% of the 5,000 most frequent words (glg_newscrawl_2016,
+   lowercase forms), with the Spanish fallback 93.1%, the Portuguese 89.2%, with gl-pt and both 96.0%.
 4. Answered (owner, 2026-10-21): (a) only if a check at implementation shows that the false hits are few and do more
    good than finding nothing: each wrong hit is counted as harmless when the right word is still shown first, harmful
    when the rule's guess is the only or the first result; the numbers go to the owner before the rule is kept. Galician
@@ -1020,6 +1195,9 @@ recommended option; what changing it takes is said).
    with the guard, shown as a rule result like the other own lists, the measured examples as tests. (b) The rule without
    the guard (more wrong hits, about 8-10%, estimated). (c) No rule. The owner's threshold decides (for Albanian: keep
    only if false hits are removed or cut to a few percent). Blocks: the Galician enclitic rule.
+   Recheck (2026-10-29): the fallback runs only when Galician's own dictionaries find nothing, so a wrong split also
+   hides the Spanish entry (debate → deba + te instead of Spanish debate): the guard stays needed. The check at
+   implementation as decided.
 5. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
    text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399, with the cause and the
    wider scope found then ("Catalan and Galician"). The owner then chose (2026-10-22) to wait two weeks: if wty has not
@@ -1030,15 +1208,24 @@ recommended option; what changing it takes is said).
    targets). (a, recommended) Report them to wty with the page names and wait (an outward-facing step: the owner files
    it or allows it). (b) Also ship a small supplement of our own for these few words (our own glosses, a license note).
    (c) Leave it. Blocks: the supplement.
+   Recheck (2026-10-29): checked again in release 2026.10.22: ca-en has del, al, pel, pels and dels as entries and ben
+   as a form row of bé; gl-en has moi, and now neste, deste, daquel, naquel and tódolos (desta, nesta, nese, diso still
+   missing, 0.18% of the news tokens: the contraction split of the technical choices).
 6. Answered (owner, 2026-10-21): (a). WikDict's Catalan → Russian dictionary (CC BY-SA 3.0). wty ca-ru finds 1,842 of
    the 5,000 most frequent Catalan words, WikDict cat-rus 4,001, both 4,144. (a, recommended) Convert it and list it
    unticked once hosted, as WikDict sv, da, no → ru (decision "ESPDIC and WikDict"). (b) Not offered. Galician has no
    WikDict pair. Changing it drops one catalog source.
+   Recheck (2026-10-29): stands; ca-ru measured again finds the same (29.3% / 21.6% / 13.7% of the top 1,000 / 5,000 /
+   20,000).
 7. Answered (owner, 2026-10-21): (a). Frequency for Galician, Afrikaans, Tatar and Bashkir (wordfreq has none of them;
    Catalan and Icelandic take wordfreq's lists). (a, recommended) Built on the phone from Leipzig, as Kazakh's: Galician
    `glg_newscrawl_2016_100K` (26.6 MB), Afrikaans `afr_mixed_2019_100K` (22.0 MB), Tatar `tat_news_2015_100K` (19.6 MB;
    `tat_web_2018_100K` finds 819 of the top 1,000 against 766 and is the alternative), Bashkir `bak_wikipedia_2021_100K`
    (19.3 MB; encyclopedic: йыл, район, ауыл). (b) As (a) without Bashkir. (c) None. Changing it removes catalog entries.
+   Recheck (2026-10-29): the archives are unchanged (SHA-256 under "Recheck") and Leipzig has no newer corpus of the
+   four. Bashkir Wikipedia's commonest words were checked for bot stubs, since group 5a's question 33 moved Swahili off
+   its Wikipedia: they are function words (урынлашҡан, улы, хәрби at ranks 47-72 the only stub words), and Leipzig has
+   no other Bashkir text, so (a) stands.
 8. Answered (owner, 2026-10-21): (a); no own verb ending list, Icelandic verb forms are found once the BÍN dictionary is
    hosted. Icelandic verb forms. Wiktionary gives Icelandic verbs mostly by their principal parts: kemur, segir, finnst,
    gæti are not found (248 of the 786 misses among the 5,000 most frequent words). The Icelandic morphology database BÍN
@@ -1046,10 +1233,16 @@ recommended option; what changing it takes is said).
    forms, about 0.2-0.5 MB, hosted): 84.3% → 89.5% of the top 5,000. (b) An own verb ending list: 38% of the missed verb
    forms, 3% wrong, no download, strong verbs (kemur, fer) still missed. (c) Both, the list until BÍN is hosted. (d)
    Neither. The plan assumes (c); (a) alone drops the list.
+   Recheck (2026-10-29): is-en finds 84.4% of the top 5,000 (unchanged); kemur, segir, finnst and gæti are still the
+   commonest misses.
 9. Answered (owner, 2026-10-21): (a). Icelandic typed without þ ð æ ö and the acutes. The written sources show little of
    it (ad for að is rank 4,156, að rank 4); keys without marks would make 58 keys of the 5,000 most frequent words
    shared (á/a, að/ad, vel/vél, fór/for/för). (a, recommended) No keys without marks. (b) Keys without marks, after the
    exact match (thad → það needs th → þ besides). Changing it adds an import key and its tests, as Slovak's.
+   Settled (2026-10-29) by row "Marks folded in the lookup" (owner, 2026-10-28, built 2026-10-29), which overrides (a):
+   á é í ó ú ý ö fold in any text like every Latin-script language's marks, þ ð æ stay, the word as written first.
+   Measured: 9.6% of running text gets an extra result when typed, 21.1% after OCR (að → áð, við → víð, það → þáð: rare
+   forms; question 28).
 10. Deferred (owner, 2026-10-21): asked again with the emulator measurement of ML Kit, Tesseract and cloud. Icelandic
     letters misread by OCR that are real letters elsewhere: Paddle v5 read Þ as P on every screen (v6 right), v6 read Æ
     as AE on every screen. P and "ae" also occur in Icelandic words, so no one-for-one fix. (a, recommended) Wait for
@@ -1057,11 +1250,17 @@ recommended option; what changing it takes is said).
     AE for OCR words only when the word as read is not found. (b) No fallback; mark the engine that does it as less
     accurate. Blocks: the Icelandic OCR fallback. (Đ → Ð and ž š → ð follow group 5a's decision "OCR letter fixes" and
     are planned.)
+    Recheck (2026-10-29): the retry this needs exists since group 5d (`misreadSpellings`,
+    `DictionaryLookup.misreadMatches`, Macedonian л → љ): Þ for P and Æ for AE would be two more such spellings. The
+    fold does not help (Þ and Æ do not fold to P and AE). Still deferred to the emulator run.
 11. Answered (owner, 2026-10-21): (a). Afrikaans typed without ê ë î ô û ï. 4.6-18% of the uses of common marked words
     are typed without them (wereld for wêreld 6.6%, reel for reël 18%); keys without marks share 25 keys of the 5,000
     most frequent words (se/sê, voel/voël, hoe/hoë). Emphasis acutes (dít, nóg, ná) are also looked up without them (dié
     and ná are words of their own, so the exact match comes first). (a, recommended) Keys without marks, the exact match
     first, as Slovak (decision "Words without their marks"). (b) As written only. Changing it removes an import key.
+    Settled (2026-10-29) by row "Marks folded in the lookup": the fold gives these keys in any text, the exact match
+    first, and folds the emphasis acutes too (dít → dit). Measured: 8.4% typed noise (die → dié, se → sé, sê), 4.3% more
+    keys (question 28).
 12. Answered (owner, 2026-10-21): (a). Dutch dictionaries for Afrikaans. English Wiktionary lacks many basic Afrikaans
     words (om, na, weer, dus, terwyl): af-en + af-ru find 71.1% of the 1,000 most frequent words and 46.6% of the top
     5,000. With the user's Dutch dictionary 88.4% and 70.3%, about 4% of the Dutch hits false friends (verken "explore"
@@ -1070,9 +1269,12 @@ recommended option; what changing it takes is said).
     unticked on Afrikaans's download screen. (b) As (a) plus respelling Afrikaans as Dutch (y → ij, sk → sch, -tjie →
     -tje): about 5 points more, about 12% of those hits wrong. (c) No fallback. Changing (a) to (c) removes the fallback
     entry for Afrikaans.
+    Recheck (2026-10-29): built as Slovak's fallback is; with nl-en af-en + af-ru go from 70.3% to 88.6% of the top
+    1,000 and from 46.6% to 71.1% of the top 5,000.
 13. Answered (owner, 2026-10-21): (a). FreeDict afr-eng (GPL-2.0+, Ergane word lists, 5,129 entries): with af-en and
     af-ru 71.1% → 85.0% of the top 1,000, with Dutch as well 93.1%. (a, recommended) Convert it and list it unticked
     once hosted, with the GPL source offer as for the FreeDict pairs. (b) Not offered. Blocks: one catalog entry.
+    Recheck (2026-10-29): stands.
 14. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
     text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/400; wty added Tatar in its
     release 2026.10.22 the same day (13 gloss languages, tt-ru and tt-en among them). A Tatar dictionary. wty
@@ -1081,39 +1283,60 @@ recommended option; what changing it takes is said).
     at yomidevs/wiktionary-to-yomitan); the catalog then lists tt-ru and tt-en without code of ours; our own converter
     only if the request is refused. (b) Our own kaikki → Yomitan converter now, hosted, with CC BY-SA attribution. (c)
     Defer Tatar. Blocks: Tatar's dictionaries (the rest of the Tatar work can be prepared).
+    Recheck (2026-10-29): tt-ru has 11,817 words (11,647 Cyrillic), tt-en 1,770 (1,232 Cyrillic) and a transcription of
+    1,691 words that passes the threshold; tt-tr and tt-ko pass by count but hold mostly Latin headwords (question 29);
+    tt-ru's form tags are question 30.
 15. Answered (owner, 2026-10-21): (a). Tatar and Bashkir letters taken as their Russian twins (Kazakh's rule "он" shows
     он, оң, өң). Here more dictionary words share a key: Tatar 1.7%, Bashkir 2.2% (Kazakh 0.9%), because harmony pairs
     differ only in ә/а, ө/о, ү/у (булу/бүлү, тороу/төрөү). (a, recommended) As Kazakh: every match, the exact spelling
     first. (b) Only when the word as written finds nothing. (c) Exact letters only. Changing it is a flag in the support
     class.
+    Recheck (2026-10-29): the fold now gives Tatar ң ө ү and Bashkir ҡ ғ ҙ ҫ ң ө ү keys with their twins; the twin keys
+    add ә, һ and Tatar җ. (a) stands; the fold's own noise net of the twins is 0.2% typed and 2.5% after OCR for Tatar,
+    0.0% and 0.5-1.6% for Bashkir (table under "Recheck").
 16. Answered (owner, 2026-10-21): (a). Ending rules for Tatar and Bashkir. Form rows alone find 70-74% of Tatar and
     49-53% of Bashkir running text; group 4e's design with their tables 83-87% and 71-77%, right on 35 and 34 of 40
     samples. (a, recommended) Our own rules as for Kazakh. (b) Form rows only. Changing it drops the tables.
+    Recheck (2026-10-29): with the real wty dictionaries and scratch tables in the built engine: Tatar news 43.4 / 58.9
+    / 83.1% of tokens (headword / + forms / + rules), Bashkir 40.2 / 51.0 / 75.0%; 37 and 38 of 40 samples right. Three
+    engine limits and question 27 under "Recheck".
 17. Answered (owner, 2026-10-21): (a). PanLex for Tatar and Bashkir (the CC0 mirror Kazakh's converter uses): 9.5k Tatar
     and 4.0k Bashkir words with a Russian translation, some wrong; +4-8 points of the top 2,000 words. (a, recommended)
     Both, into English and Russian, unticked, listed once hosted. (b) Ticked for Bashkir (its dictionaries are small),
     as Kyrgyz. (c) Neither. Changing it is a catalog entry each.
+    Recheck (2026-10-29): stands; the mirror is still at revision 0422f0e.
 18. Answered (owner, 2026-10-21): (a). Flags (row "Flag country": one default flag per language). (a, recommended)
     Catalonia for Catalan, Galicia for Galician, Iceland, South Africa for Afrikaans, Tatarstan for Tatar, Bashkortostan
     for Bashkir, India for Sanskrit. (b) Andorra for Catalan (the only state where Catalan alone is official). (c)
     Russia for Tatar and Bashkir. (d) Namibia for Afrikaans. (e) No flag for Sanskrit (the code in a circle). Changing
     one is a drawable and a line.
+    Recheck (2026-10-29): flags in more places are built (row "Language flags in more places"); hyphenated region flags
+    work as Welsh's gb-wls does.
 19. Answered (owner, 2026-10-21): (a); for Tatar the owner asked for something more interesting, and Җ was kept after
     the other Tatar letters were compared (Ө and Ң taken, Ә looks like Azerbaijani Ə, Ү and Һ shared with the
     neighbours). Bubble letters. Taken: Ñ Ç ß È Ã Я Ł Ğ Ư Ā Ĳ Ř ID MS Ng Đ Ћ Ї Ў Ω Қ Ң, group 5's Ș Å Æ Ø Ë Ĉ Ô Ė Ŵ Á Ò
     Ä Õ Ő Ə Oʻ Ъ Ѓ Ө and the script letters. (a, recommended) Catalan Ŀ, Galician GL, Icelandic Þ, Afrikaans Ê, Tatar Җ,
     Bashkir Ҡ, Sanskrit सं. (b) Catalan CA, Galician X, Bashkir Ҙ, Sanskrit ॐ. Changing one is a string.
+    Settled (2026-10-29) by row "Bubble glyph" (owner, 2026-10-28), which replaces the hand-picked letters: Catalan C,
+    Galician G, Icelandic Í, Afrikaans A, Tatar Т, Bashkir Б, Sanskrit सं, and the codes CA, GL, IS, AF, ТТ, БА, SA when
+    quick languages clash (under "Recheck"). Tatar's Җ, the owner's pick of 2026-10-21, gives way as Belarusian's Ў and
+    Czech's Ř did.
 20. Answered (owner, 2026-10-21): (a). Sanskrit in Latin letters. Scholarly editions write IAST (dharmakṣetre), yoga
     texts write plain ASCII (asana); 15.1% of Sanskrit romanizations share a key with another word when the marks are
     dropped, and a Latin word without an IAST letter cannot be told from English. Converting IAST to Devanagari
     reproduces 86.7% of the headwords. (a, recommended) None at first: Sanskrit is looked up in Devanagari. (b) Latin
     words with an IAST letter converted to Devanagari before lookup. (c) Also Harvard-Kyoto and ITRANS, as a setting.
     Changing it adds a text processor (vidyut-lipi's or sanscript's table, MIT).
+    Recheck (2026-10-29): stands.
 21. Deferred. Recognition models and their "more accurate" marks. Measured on the PC only (Paddle: Catalan and
     Galician 0.2-0.4%, Afrikaans 0.1%, Icelandic 1.5%; Tatar 0.5%, Bashkir 1.1%; Sanskrit 12.6% on Devanagari). ML
     Kit, Tesseract (cat glg isl afr san) and cloud are measured on the emulator on the same screens at implementation,
     then the recommendation rule picks. Blocks: the marks only (ML Kit stays main for the Latin languages and Sanskrit,
     Paddle `cyrillic` for Tatar and Bashkir).
+    Recheck (2026-10-29): what to measure is listed under "Recheck", "For the emulator session". tessdata is unchanged
+    at the pins and at `main` (fast / best MB: cat 1.15 / 3.80, glg 2.55 / 12.71, isl 2.28 / 9.49, afr 2.65 / 12.80, san
+    12.40 / 15.14); PaddleOCR has no new language model (PP-OCRv6 tiny, small and medium, 2026-06-12, have no Cyrillic
+    or Devanagari).
 22. Answered (owner, 2026-10-21): converted and hosted under the stricter license of the file header (CC BY-NC-SA 3.0),
     with the non-commercial mark of decision "Risky dictionaries"; the maintainers are not asked. For a Google Play
     build it moves to self-hosting or is removed (noted in `ai/notes/store-publishing.md`). Monier-Williams and the
@@ -1123,6 +1346,7 @@ recommended option; what changing it takes is said).
     domain. (a, recommended) Ask the Cologne maintainers which applies; wty only meanwhile. (b) Convert and host it
     under the repositories' CC BY-SA 4.0 (about 10-20 MB, estimated). (c) The DCS lemma list instead (CC BY 4.0, 164k
     short English glosses of unclear provenance). (d) None. Blocks: any Sanskrit dictionary beyond wty.
+    Recheck (2026-10-29): stands.
 23. Answered (owner, 2026-10-21): (b), the longest dictionary start, as it is 5 points below (a) for less than half the
     work. Second part, the agent's choice (owner): yes, after the first-word lookup is built and measured, since a tap
     on the second word is expected to find that word. Sanskrit sandhi. Sanskrit joins words in writing: तथा + इति is
@@ -1134,18 +1358,66 @@ recommended option; what changing it takes is said).
     through JNI: about 80 MB of data, 2-3 weeks, not better on the first word here. (d) None. A second part: should a
     tap inside a joined word start at the restored second word (एति → इति), 2-3 days more? Blocks: Sanskrit's lookup
     beyond the exact word.
+    Recheck (2026-10-29): sa-en has 156 rows fewer, sa-ru is the same: the measured numbers stand.
 24. Answered (owner, 2026-10-21): (a). Vedic accents (marks above and below the letters in Vedic editions; 0.01% of
     Wikipedia tokens, 60% of wty's form headwords). (a, recommended) Dropped in any text and at import, so accented and
     plain words match. (b) Kept significant. Changing it removes a `HeadwordMarks` entry and a processor.
+    Recheck (2026-10-29): stands.
 25. Answered (owner, 2026-10-21): (a). Sanskrit into Russian. sa-ru (13.1k words) is wty's largest Sanskrit dictionary;
     Friš's reader vocabulary (7,671 Russian glosses, repository CC BY-SA 4.0, edition Moscow 2015) adds a little (Friš +
     wty ru 89.9% of the corpus words against 82.8%); Kochergina's dictionary is in copyright. (a, recommended) sa-ru
     only. (b) Friš converted once its license is confirmed. Changing it adds a converter.
+    Recheck (2026-10-29): stands (sa-ru 13,313 rows, 13,109 words).
 26. Answered (owner, 2026-10-21): (a). Smaller items, one line each: (a, recommended) no Softcatalà English-Catalan
     conversion (CC BY 4.0, +28 of the top 5,000); no Valencian ending list (parle, cante, tinguera unfound; no Valencian
     corpus to measure); no Afrikaans ending list (20% wrong); no Tesseract for Bashkir (`kaz` lacks җ ҫ but has the
     Bashkir letters; it could be offered unticked); Latin Tatar not read (Cyrillic only); Sanskrit silent without a
     voice (a Hindi voice would read it only approximately). (b) Any of them done; the owner names which.
+    Recheck (2026-10-29): stands; Tesseract still has no `bak` (`kaz` fast 4.73 MB, best 7.53, unchanged), and Tatar's
+    Latin-script dictionaries are question 29.
+27. Deferred (new, 2026-10-29). Tatar and Bashkir rule results for a word that has an entry as written. Kazakh and
+    Kyrgyz show the ending rules' results after the word's own entry; Uzbek and Azerbaijani show them only when the
+    word has none (`inflectionRulesOnlyWithoutEntry`). With the scratch tables 11.9% of Tatar tokens and 8.4% of
+    Bashkir ones have an entry and also reach another word through the rules. Of the 30 most frequent such Tatar words
+    about 12 reach a right second reading, nearly all through verb endings (булды → булырга "was", where tt-ru's entry
+    is a suffix; тора → торырга "stands", the entry being Torah; ала → алырга, узган → узарга, караганда → карарга),
+    and about 18 a wrong one, nearly all through noun endings (өчен "for" → өч "three", кеше → кеш, сум → су "water",
+    якын → як, акча → ак). Bashkir's 30 the same: the 9 verb results right (була → булыу, ала → алыу, күрә → күреү),
+    the noun results mostly wrong (өсөн → өс, уны → ун, хатта → хат). (a, recommended) Verb endings also for a word
+    with an entry, noun endings only for a word without (a per-condition form of `inflectionRulesOnlyWithoutEntry`, new
+    code in the filter). (b) As Kazakh and Kyrgyz: every rule result after the entry. (c) As Uzbek: no rule result for
+    a word with an entry (булды would show only its suffix entry). Blocks: the filter setting of the two support
+    classes; the same split may suit Kazakh and Kyrgyz (not measured).
+28. Deferred (new, 2026-10-29; joins question 1 of `2026-10-29-folded-marks-and-flags.md`). Extra results through
+    the folded marks in Catalan, Galician, Icelandic and Afrikaans. The decision row folds them as every Latin-script
+    language; measured under "Recheck": Galician 26.0% of running text typed and 30.4% after OCR (e "and" → é "is",
+    a → á, à, de → dê), Catalan 18.7% and 22.3% (que → què, a → à), Icelandic 9.6% and 21.1% (að → áð, a rare supine),
+    Afrikaans 8.4% and 8.8% (die → dié); Tatar and Bashkir stay under the threshold (2.5% at most). The answer to that
+    question 1 applies here too: (a, recommended until then) keep: the extras after the words as written; (b) folded
+    results only for a word without an entry, as Welsh and Scottish Gaelic; (c) (b) only past 10% typed noise:
+    Catalan and Galician would take it, Icelandic (9.6%) and Afrikaans (8.4%) not; that question's (d), no fold where it
+    finds nothing new, fits none of the four (gain 0.07-0.46%). Blocks: nothing (a setting per support class).
+29. Deferred (new, 2026-10-29). Tatar dictionaries with Latin headwords. wty's tt-tr (5,839 words) and tt-ko (4,596)
+    pass the catalog threshold by count, but tt-tr comes from the Turkish Wiktionary, which writes Tatar in the Latin
+    Zamanälif (133 of its words are Cyrillic), and tt-ko is half Latin (2,369 Cyrillic). Tatar is looked up in Cyrillic
+    only (technical choice "Tatar Latin", question 26), so a Turkish-gloss user would get a dictionary that finds almost
+    nothing. (a, recommended) Leave tt-tr out of the catalog; list tt-ko and tt-en as counted (Cyrillic parts of 2,369
+    and 1,232 words; tt-en is the only English one). (b) Count only words in the language's script for every pair
+    (tt-tr and tt-en fail; row "Gloss languages" wants an English dictionary, so tt-en would be kept by hand). (c) List
+    all three as counted. Changing it is a line in the catalog script.
+30. Deferred (new, 2026-10-29). Form tags of Russian Wiktionary's Turkic tables. wty's tt-ru, ba-ru and the shipped
+    ky-ru tag the genitive "singular possessive" and "plural possessive" (the Turkic grammars' Russian name for it,
+    притяжательный падеж) and some cases only by number: tt-ru's ablative plural is "plural" and its ablative singular
+    is missing; ba-ru's locative and ablative plurals are both "plural" and both singulars are missing; ky-ru's "plural"
+    covers several cases; kk-ru tags its genitive right but has the same ablative (the plural as "plural", no
+    singular). The popup then names Tatar онның and Kyrgyz аганын "singular, possessive", which reads as a possessive
+    ending. The English editions' tables are right (tt-en,
+    ba-en). (a, recommended) Both: the agent drafts a report for wty, which the owner files as #399 and #400 were (an
+    outward-facing step), and until a release fixes it the support classes rename the tags (`formTagNames`: "singular
+    possessive" → genitive singular, "plural possessive" → genitive plural; Tatar's lone "plural", on ablative plural
+    rows only, → ablative plural; the mixed lone "plural" of ba-ru and ky-ru stays); the missing singulars are found
+    through the ending rules. (b) The report only. (c) The renaming only. (d) Neither. Kyrgyz is built, so (a) and (c)
+    change a shipped language.
 
 ## Work
 
@@ -1155,34 +1427,38 @@ Per block, as group 5a's work list; detailed when the block starts.
   the session measures on the emulator every engine and model offered for its languages (ML Kit, Tesseract fast and
   best, Paddle v5 and v6, cloud) and checks each rule's hypothesis on data; the numbers go into the block's plan.
 
-- Shared: the fallback language (from group 5a's Slovak → Czech, generalized to a list if question 3 chooses (c));
-  flags with hyphenated codes; the font letter lists without ŀ Ŀ ŉ and the Literata exclusion for Bashkir; the
-  `paddle_ref.py` threshold options (testdata script, outside git).
+- Shared: the fallback language (group 5a's Slovak → Czech, built; one language each: Spanish for Galician, Dutch for
+  Afrikaans); flags with hyphenated codes (done for gb-wls); the font letter lists without ŀ Ŀ ŉ (Bashkir's ҡ ҙ ҫ leave
+  Literata out by themselves); the six Latin- and Cyrillic-script languages in both fold lists (`foldsMarks`,
+  `build.mjs` `foldedMarkLanguages`); the `paddle_ref.py` threshold options (testdata script, outside git).
 - 6a: bundles (pt borrowed, `apostropheVariants`), elisions, l·l connector and its variants, `wordBefore` with the
   dot, the Galician contraction split, the enclitic rule (question 4), the fallback (question 3), catalog (`SOURCES`:
   the passing pairs, ipa; WikDict cat-rus converted), frequency (`large_ca`; Galician Leipzig), tessdata cat glg,
-  Paddle v5 latin and v6, flags es-ct es-ga, quotes and abbreviations, strings in all 14 locales.
+  Paddle v5 latin and v6, flags es-ct es-ga, quotes and abbreviations, strings in all 17 locales.
 - 6b: bundles (sv and nl borrowed, Ukrainian's apostrophe processor for af), the 'n word start, Icelandic OCR letter
-  fixes, `compoundLinks`, `ordinalPeriod` for is, BÍN converter (question 8; no own verb list), keys without marks for
-  Afrikaans, the Dutch fallback, FreeDict afr-eng (question 13), Arabic-script form rows dropped (die → دي),
+  fixes, `compoundLinks`, `ordinalPeriod` for is, BÍN converter (question 8; no own verb list), the fold for both
+  (Afrikaans's keys without marks, question 11), the Dutch fallback, FreeDict afr-eng (question 13), Arabic-script form rows dropped (die → دي),
   frequency (`small_is`; Afrikaans Leipzig), flags is za.
-- 6c: Tatar and Bashkir tables in group 4e's engine (both verb dictionary forms for Tatar), letter keys, legacy Tatar
-  letters, OCR-only look-alikes (Bashkir Ç ç → Ҫ ҫ), particle variants, digit-joined forms, abbreviations and quotes,
-  `paddle-cyrillic` gains tt and ba, Leipzig sources (Tatar and Bashkir Wikipedia only), PanLex (question 17), the
-  Tatar dictionary (question 14), flags ru-ta ru-ba.
+- 6c: Tatar and Bashkir tables in group 4e's engine (both verb dictionary forms for Tatar), with the engine's three
+  changes found on 2026-10-29 (six dictionary forms, ә in the negative aorist's class, a plural after a finite verb);
+  letter keys, the filter of question 27, the tag names of question 30, legacy Tatar letters, OCR-only look-alikes
+  (Bashkir Ç ç → Ҫ ҫ), particle variants, digit-joined forms, abbreviations and quotes, `paddle-cyrillic` gains tt and
+  ba, Leipzig sources (Tatar news 2015, Bashkir Wikipedia 2021; question 7), PanLex (question 17), wty's tt-ru, tt-en,
+  tt-ko and transcription (question 29 on tt-tr), flags ru-ta ru-ba, strings in all 17 locales.
 - 6d: the Sanskrit bundle, import cleanup and keys, the longest-start sandhi lookup, then the restored second word
   (question 23), Monier-Williams converted with its non-commercial mark (question 22), sentence ends, scan length 24,
-  tessdata san, `ocrWord` S s 5 → ऽ, the Devanagari font, flag in, strings.
+  tessdata san, `ocrWord` S s 5 → ऽ, the Devanagari fonts (Mukta and Tiro Devanagari Hindi listed for sa as well, Tiro
+  Devanagari Sanskrit added), flag in, strings in all 17 locales.
 - Tests per language as group 5a's (the measured examples as positive and negative tests, rows of
   `notes/language-rules.md` with their reading source), catalog and frequency script tests, docs (`docs/usage.md`,
   `docs/architecture.md`), NOTICE (wty, Leipzig, BÍN's credit line, WikDict, FreeDict, PanLex, flags).
 - Test model: new cases after group 5's; emulator checks under the lock: ML Kit, Tesseract and cloud on the PC
   screens of this research (in `testdata/ocr/compare/new/6/`), the voices list
   for af and gl, the Vedic signs in the system Devanagari font, Gboard's Tatar and Bashkir layouts, the lookup time of
-  the Sanskrit rules on long lines.
+  the Sanskrit rules on long lines; the full list under "Recheck", "For the emulator session".
 
 Effort (estimated): 6a about two sessions (Galician's rules and the fallback the most); 6b about two (BÍN converter,
-the fallback reused); 6c about a session once group 4e's engine exists, plus the Tatar dictionary; 6d two to three
+the fallback reused); 6c about a session (group 4e's engine and wty's Tatar exist since 2026-10-22); 6d two to three
 (sandhi rules, import cleanup, fonts).
 
 ## Progress
@@ -1190,6 +1466,11 @@ the fallback reused); 6c about a session once group 4e's engine exists, plus the
 - 2026-10-20: research written by an autonomous session (five research helpers in parallel; nothing measured on a
   device); 26 questions recorded, 10 deferred and 16 decided provisionally. Not started: the build order is the
   owner's decision.
+- 2026-10-29: recheck against `languages/main` 23448dd3 by an autonomous cloud session (section "Recheck"): sources
+  re-measured on wty 2026.10.22, the fold's noise and growth, coverage with scratch bundles and Tatar and Bashkir
+  tables in the built Turkic engine; questions 9, 11 and 19 settled by later rows, the others given recheck notes, 27-30
+  added. Still not started: 6a-6d start only when the owner asks (languages plan: after 5d the chain stops, owner
+  2026-10-29).
 
 ## Changelog
 
@@ -1208,3 +1489,12 @@ the fallback reused); 6c about a session once group 4e's engine exists, plus the
 - 2026-10-22: wty closed both issues with its release 2026.10.22: the contractions are back (checked in ca-en, gl-en,
   de-en, it-en), so question 5's supplement is not needed; Tatar is in wty (13 gloss languages), so the Tatar block
   lists wty tt-ru and tt-en with no converter of ours (question 14).
+- 2026-10-29: recheck against `languages/main` (autonomous cloud session, owner not asked): new section "Recheck
+  against languages/main" (what the built pieces change, wty 2026.10.22's pairs, the fold's noise and growth for ca,
+  gl, is, af, tt and ba, coverage on today's dictionaries, Tatar and Bashkir with scratch tables, the emulator list);
+  questions 9 and 11 settled by row "Marks folded in the lookup" and 19 by row "Bubble glyph"; recheck notes on the
+  others; new deferred questions 27 (Tatar and Bashkir rule results beside an entry), 28 (the fold's extras in ca, gl,
+  is, af; joins question 1 of the folded-marks plan), 29 (tt-tr and tt-ko with Latin headwords) and 30 (form tags of
+  Russian Wiktionary's Turkic tables, Kyrgyz included). Technical choices changed: "Icelandic letters" (the fold),
+  "Sanskrit import" (other-script form rows dropped by `formsInScript`), "Turkic rules" (three engine changes),
+  "Turkic letter keys", "Fonts", "Flags" (notes); plain fix added: Җ җ in the fold's table.

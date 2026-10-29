@@ -229,6 +229,9 @@ the details.
     by 25-28 KB too; 1,909 unit tests, lint, the engine's instrumented tests 68 of 68 with the text rules' Thai case).
     Strings added after `772bbad7` did not go through the translation check. The right-to-left strings had their
     mirrored screens checked on 2026-10-29 and are merged into `languages/main` (section below).
+  - a second cloud session rechecked group 6's research against `languages/main` (section "Cloud session 2026-10-29,
+    group 6"): branch `cloud/group-6-research-2026-10-29`, plan and notes only; new deferred questions 27-30 of the
+    group 6 plan.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -2071,3 +2074,29 @@ shim). Not compiled: `HoshidictsEngine.kt` (one changed call). The coordinating 
 Open for the owner: questions 88-92 of `plans/2026-10-10-languages-implementation.md` (the vi Brazilian-flag chip,
 Vietnamese North/South, FreeDict's length rule, Russian «карточка», French «Recherche»), and 93-94 on the
 right-to-left branch (Arabic form tags named as other languages' categories, arrows in right-to-left menu paths).
+
+## Cloud session 2026-10-29, group 6
+
+Research only, in a claude.ai cloud session (no SDK, no emulator, no `testdata/`), from `languages/main` `23448dd3` on
+`cloud/group-6-research-2026-10-29`, for the coordinating session to review and merge. The group 6 plan
+(`plans/2026-10-20-group-6-research.md`) has a new section "Recheck against languages/main", recheck notes on its 26
+questions and new deferred questions 27-30; `notes/languages.md` ("Group 6 research", recheck) has the facts a later
+session needs; the folded-marks plan's question 1 points to the new numbers. Nothing of the app changed.
+
+- What changed for group 6: the fold settles questions 9 and 11 (Icelandic and Afrikaans without marks) and the bubble
+  glyph row question 19 (C, G, Í, A, Т, Б, सं; codes ТТ, БА in Cyrillic); group 4e's Turkic engine, 5a's fallback, 5d's
+  import cleanup and `misreadSpellings`, region flags and the font catalog's letter check are built, so 6a-6d need
+  less new code. Tatar is in wty since 2026.10.22 (tt-ru 11,817 words; tt-tr is Latin-script, question 29).
+- Measured: the fold's extra results (Galician 26.0% of running text typed, Catalan 18.7%, Icelandic 9.6%, Afrikaans
+  8.4%, past the provisional threshold; Tatar and Bashkir under it), lookup coverage on today's dictionaries (Catalan
+  96.1% of the top 5,000, Galician 74.9% and 93.1% with the Spanish fallback, Icelandic 84.4%, Afrikaans 46.6% and
+  71.1% with Dutch), and Tatar and Bashkir with scratch ending tables in the built engine (83.1% and 75.0% of tokens,
+  37 and 38 of 40 samples right; three engine limits found).
+- Found: wty's Russian-edition Turkic tables tag the genitive "possessive" and lose some cases, in Kyrgyz (built) as
+  well (question 30); the fold's tables lack Җ җ (a plain fix with Tatar).
+- Open for the owner: questions 27 (Tatar and Bashkir rule results beside an entry), 28 (the fold's extras in ca, gl,
+  is, af; joins the folded-marks plan's question 1), 29 (tt-tr and tt-ko), 30 (the Turkic form tags; a report to wty
+  is an outward-facing step), and the deferred 10 and 21 after the emulator run.
+- For a local session: recognition on the emulator (ML Kit, Tesseract, cloud, Paddle on the research screens), voices,
+  the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports; the list is in the
+  plan ("For the emulator session").

@@ -1554,6 +1554,40 @@ Catalan, Galician, Icelandic, Afrikaans, Tatar, Bashkir and Sanskrit (request 70
 languages and the rest of the long list deferred with reasons): research, proposed blocks 6a-6d, technical choices and
 the deferred questions in `plans/2026-10-20-group-6-research.md`. Not started: the build order is the owner's call.
 
+### Recheck against languages/main (2026-10-29)
+
+Autonomous cloud session, research only; details, tables and questions 27-30 in the plan's section "Recheck against
+languages/main". What a later session would otherwise rediscover:
+
+- wty 2026.10.22 (still the latest release on 2026-10-29) has Tatar: tt-ru 11,817 words (1.24 MB) with 16 forms of
+  each of 4,481 nouns and no verb forms (98 "redirected from" rows lead verb stems to infinitives, ал → алырга);
+  tt-en 1,770 words (1,232 Cyrillic); tt-tr 5,839 words of which 133 are Cyrillic (the Turkish Wiktionary writes Tatar
+  in the Latin Zamanälif); tt-ko 4,596 (2,369 Cyrillic); a transcription of 1,691 words. The release also publishes
+  MDict copies under `<pair>/mdict/`.
+- Russian Wiktionary's Turkic declension tables reach wty with wrong tags: the genitive as "singular possessive" and
+  "plural possessive" (притяжательный падеж), some cases only by number ("plural"), some singulars missing: tt-ru (the
+  ablative), ba-ru (locative and ablative), ky-ru (several cases under "plural"; Kyrgyz is built), kk-ru (the ablative
+  plural as "plural", no ablative singular; its genitive is right). The English editions' tables (tt-en, ba-en) are
+  right.
+- Measured with real wty dictionaries and scratch Tatar and Bashkir tables in the Turkic engine (`turkicTransforms`):
+  Tatar news 43.4 / 58.9 / 83.1% of lowercase tokens (headword / + form rows / + rules), Bashkir Wikipedia 40.2 / 51.0
+  / 75.0% (en + ru + pl); 37 and 38 of 40 rule hits right. The simulated tt-ru of 2026-10-20 had four times the form
+  rows; the rules make up the difference.
+- The Turkic engine's limits that Tatar and Bashkir hit: four dictionary forms per stem at most (`[0, 1, 2, 3]` in the
+  hidden "dictionary form" transform), the negative aorist's class `[мбп][аеоө]` without ә, no plural after a finite
+  verb (алдылар).
+- The fold's tables (`own-processors.js` `FOLDED_LETTERS`, `archive_split.cpp`) have ҷ but not Җ җ.
+- The fold's noise (folded-marks plan's method): Galician 26.0% typed / 30.4% after OCR, Catalan 18.7 / 22.3,
+  Icelandic 9.6 / 21.1, Afrikaans 8.4 / 8.8, Tatar 0.2 / 2.5 and Bashkir 0.0 / 1.6 net of the Russian-twin keys;
+  growth of keys against rows: Bashkir 80% (43% net of twins), Icelandic 45%, Tatar 38% (25%), Catalan 29%, Galician
+  27%, Afrikaans 4%.
+- The font catalog offers a font only when it has every letter of `fontLetters` (`FontModels`), so Bashkir's ҡ ҙ ҫ keep
+  Literata out with no special case. Its Devanagari fonts (Hindi's) carry `language: hi`: Mukta has ॑ ॒ and 39 of 48
+  Vedic Extensions, Tiro Devanagari Hindi none, Hind neither ॑ nor ॒.
+- Tooling in the cloud container: no fontTools (a short cmap reader does), no msgpack (wordfreq's format decodes in a
+  few lines); Commons' search API answers 429 (`x-envoy-ratelimited`) after a few queries from the shared egress,
+  while single queries such as `prop=categoryinfo` still answered.
+
 ## Group 5b research (2026-10-19)
 
 Welsh, Irish and Scottish Gaelic (Breton researched, not built): research, decisions and work in

@@ -135,6 +135,11 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    Macedonian (added 2026-10-29 with its language) is past the threshold too: 10.3% typed, 10.4% after OCR, и → ѝ,
    се → сѐ, е → ѐ, не → нѐ (the grave tells the pronoun and the particles from the conjunction and the verb); under c)
    it would work as Welsh and Gaelic do.
+
+   Group 6's languages (not built; measured the same way on 2026-10-29, `2026-10-20-group-6-research.md`, question 28):
+   Galician 26.0% typed and 30.4% after OCR (e → é, a → á, de → dê), Catalan 18.7% and 22.3% (que → què), Icelandic
+   9.6% and 21.1% (að → áð), Afrikaans 8.4% and 8.8% (die → dié); Tatar and Bashkir 2.5% at most. The answer here
+   applies to them when they are built; under c) Catalan and Galician would work as Welsh and Gaelic do.
 2. **Word forms without the dictionary's headwords (not built; the coordinating session's follow-up to Uzbek).** The
    "Word forms" item imports only the English Wiktionary's form rows, not its headwords. In Uzbek (and Azerbaijani),
    ending rules show their results only when the word has no entry of its own; with uz–ru and the word forms alone,
@@ -168,3 +173,5 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
   under question 1.
 - 2026-10-29: Bulgarian, Macedonian and Mongolian added to the data check with their languages (group 5d); Macedonian
   is past the threshold and joins question 1.
+- 2026-10-29: group 6's six Latin- and Cyrillic-script languages measured for question 1 in their research plan
+  (question 28 there); noted under question 1.
