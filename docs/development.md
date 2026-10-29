@@ -116,8 +116,8 @@ MNN's converter (pip package `mnn` of the same version as the submodule), takes 
 its `inference.yml` into `dict.txt`, and zips each model with the Apache License and a note on its source; a detector
 with its own thresholds gets `detector.properties`. It writes the archives to `testdata/ocr/paddle/archives` and the
 catalog entries (templates `paddle-v5`, `paddle-v6`, `paddle-detector-v5`, `paddle-detector-v6`), whose download URLs
-point at the GitHub prerelease `ocr-models-1`; new archives go into a new prerelease, never the latest release, so
-the update check and the README link keep pointing at the app. A recognizer requires its detector (`requires`); the
+point at the GitHub release `ocr-models-1`, which holds model files only and is never marked latest; new archives go
+into it, so the update check and the README link keep pointing at the app. A recognizer requires its detector (`requires`); the
 detector is downloaded with it and not listed on its own. The recommended marks follow the measurements in
 `ai/notes/ocr-engines.md`: one model per language, or every model listed in `MORE_ACCURATE` of either script for a
 language that several read more accurately than the built-in recognizer (Welsh); a marked model of a language the

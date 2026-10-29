@@ -106,8 +106,8 @@ Branch `languages/ocr-engines`, stacked on the whole group 1-3 stack (`languages
   puts right-to-left recognizers' lines into reading order. Latin look-alikes in Cyrillic words become Cyrillic for
   every engine (`LanguageSupport.ocrWord`).
 - Models: six archives built by `scripts/ocr-models/paddle_models.py` from the pinned ONNX files (the converted files
-  the comparison measured), uploaded with the owner's approval to the GitHub prerelease `ocr-models-1` (not latest;
-  the latest release stays v0.2.3). Offered per language: v6 for ja, zh and the Latin languages, v5 Latin for the
+  the comparison measured), uploaded with the owner's approval to the GitHub release `ocr-models-1` (a prerelease at first, a regular release
+  not marked latest since 2026-10-19; the latest release stays v0.2.3). Offered per language: v6 for ja, zh and the Latin languages, v5 Latin for the
   Latin languages, v5 Cyrillic for ru, v5 Korean for ko; vi has none.
 - Step 5 done for the 14 languages: recommended marks by the rule (v6 ja, zh, de, fr, it, pl, lv; v5 Latin en, es,
   pt, tr; Cyrillic ru; ko and vi keep ML Kit; Tesseract recommends none of them). The ⓘ of a catalog model is its

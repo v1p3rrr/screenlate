@@ -73,8 +73,11 @@ the details.
     language, not of the searched one (`SearchScreen`, `ProcessTextActivity`);
   - a screen scan's popup stays after a tab change inside the app (a scan is a snapshot).
 
-### Emulators (2026-10-28: both shut down)
+### Emulators (2026-10-29: both shut down)
 
+- 2026-10-29: the main session last ran API 37 with the debug app of `combine-cloud` (the app's language Russian
+  through the per-app setting) and shut it down; the lock `.worktrees/emulator.lock` is free. The notes below are
+  of 2026-10-28.
 - API 37 (`Pixel_10_Pro`): the debug app of the settings rework (`0.2.3-9c26bae8` built before its commit, x86_64
   only; the app's language back to the system's), Slovenian active, Korean unstarred, the photo language Japanese, no current photo and
   an empty photo history; `/sdcard/Pictures/market-4000.jpg` (4000 × 3000, English) for photo cases. The updates of
@@ -221,7 +224,8 @@ the details.
     emulator (run log 2026-10-29);
   - Esperanto's frequency dictionary comes from Leipzig's web texts of 2012 (`cb3c1d7e`; DIC39 due again);
   - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
-  - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word. Group 5d (Bulgarian,
+  - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word (5e: given on 2026-10-29,
+    its session started that afternoon). Group 5d (Bulgarian,
     Mongolian, Macedonian) is merged into `languages/main` (bullet above);
   - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
@@ -232,6 +236,26 @@ the details.
   - a second cloud session rechecked group 6's research against `languages/main` (section "Cloud session 2026-10-29,
     group 6"): branch `cloud/group-6-research-2026-10-29` (plan, notes, a draft patch and three measuring tools; no
     app code); the owner answered its questions 27 and 29, left 28 to the main session and deferred 30 for later.
+  - the main session on 2026-10-29 afternoon (merged into `languages/main`): the owner's answers on folding, word
+    forms, Anki wording, the French tab and the right-to-left release recorded (`66a27013`); a wty region chip of
+    another country (🇧🇷🎯) shows its direction in the interface language, also inside a definition; Arabic elative,
+    non-past, subjunctive and Vietnamese Northern and Southern form tags named; lists built in the app joined with
+    the interface language's separator (`Lists.kt`); the French Search tab reads "Rechercher". The FreeDict converter
+    keeps Spanish subject labels in parentheses and the text of cut links (its residue rule had dropped 3,869 of the
+    10,093 Spanish definitions); FreeDict de, en, es, fr, it, pl, zh → ru and OpenRussian ru-en rebuilt, checked entry
+    by entry and on the emulator, the private archive's copies and manifest rows replaced. POP53, POP54, SET22 and
+    DIC50 passed (run log 2026-10-29, `combine-cloud`; POP53's en-en part not run). The group 6 recheck is merged
+    (`52af6f7d`); its question 28 is settled by the folded plan's question 1 (a).
+  - `notes/hosting-files.md` lists every file to host with source, license, size, status and plan rows; the plans
+    and docs it contradicted are fixed (`ocr-models-1` is a regular release never marked latest, wordfreq lists are
+    built on the phone, PanLex uses the pinned CC0 dump). Open there: whether the archive's copies of the catalog's
+    files are ever served from our hosting.
+  - Measured, waiting for the owner's return: the folded plan's question 2 (a headword list in the word forms
+    import; Uzbek: 1,445 wrong results removed, no right one) with group 5c's questions 18 and 19. Found while
+    measuring: the rule filter (`RuleOnlyResults.throughAny`) takes a form row whose tag is named as a rule (uz
+    dative, genitive, accusative, locative; az plural, converb) for a rule's result and drops it beside an entry
+    (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question.
+  - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -918,7 +942,8 @@ the CC0 mirror `cointegrated/panlex-meanings` (2024-03-01 dump, pinned revision)
 definition per headword, translations comma-separated by support, at most ten; headwords outside the lowercase
 alphabet, loose groups, lists and other-script translations are left out (kk-ru 16,374 headwords, kk-en 13,835,
 ky-ru 5,729, ky-en 6,357). DIC28 passed on the emulator. The archives are not hosted or in the catalog: hosting and
-the license check (the live site says CC BY-NC-SA 4.0) come first, then the catalog entries with Kyrgyz PanLex ticked
+the license check (the live site says CC BY-NC-SA 4.0; since settled: the pinned CC0 dump, group 4e row "PanLex")
+come first, then the catalog entries with Kyrgyz PanLex ticked
 and a NOTICE entry. Overnight questions 17 (entry layout) and 18 (names left out) are decided provisionally.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
@@ -926,7 +951,7 @@ and a NOTICE entry. Overnight questions 17 (entry layout) and 18 (names left out
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
 `languages/ocr-engines` (pushed) holds the whole group 1-3 stack plus ML Kit Latin, Tesseract, the model choice per
 language and Paddle on MNN; its CI run (workflow_dispatch) gives the owner's "Screenlate Dev" APK (artifact
-`screenlate-debug-<sha7>`). The Paddle model archives are on the prerelease `ocr-models-1`. Next: docs (`usage.md`,
+`screenlate-debug-<sha7>`). The Paddle model archives are on `ocr-models-1` (a regular release since 2026-10-19, never marked latest). Next: docs (`usage.md`,
 `architecture.md`), the remaining test-model cases, the emulator checks of groups 1-3 and the OCR cases, a phone timing
 run, then fast-forward `languages/main`; the module code review comes after the owner has tried the build. The
 comparison session (`languages/ocr-compare`, `.worktrees/lang`) is finished. Leftovers to clean when done: the
@@ -1022,7 +1047,7 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
 - v0.2.3 is released (2026-10-11, tag on main 3f2123c): 0.2.2 plus the bubble glide fix, checked by the owner on
   the phone. `languages/main` has the same fix.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
-  `scripts/frequency/`).
+  `scripts/frequency/`). Superseded on 2026-10-14: they are built on the phone, nothing hosted.
 - The findings from all three delegated reviews against `2215893` are fixed on `languages/main`; see the
   "language isolation review fixes", "follow-up language review fixes" and "language installation readiness" entries.
   Request 27 is also built: explicit active-language readiness on Home, queue links in Search/popup and a scan gate

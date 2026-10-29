@@ -156,6 +156,25 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    a) changes what the popup shows and needs a headword list in the forms import and in the filter, so it waits for the
    owner.
 
+   Measured (2026-10-29; Leipzig news 2020 30K, 452,534 Uzbek and 408,760 Azerbaijani word tokens; the app's import,
+   candidate lookup, rule filter and popup order rebuilt in Node over the built bundles; scratchpad tools, not in the
+   repository):
+   - Uzbek, uz–ru with the word forms alone: the ending rules give a result for 32,685 tokens (7.2%). A headword list
+     (a) would remove 1,445 tokens' results (0.32% of all tokens, 9 words), every one wrong: yangi 978 → yanvar
+     (through a uz–ru abbreviation row), davom 409 → davo, terim 28 → teri, olam 20 → olmoq, inglizcha 3 → ingliz,
+     burungi 2 → burun, zararsiz 2 → zarar, qissa 2 → qismoq; it would drop no right result. With Wiktionary into
+     English installed in full, none of this happens.
+   - Azerbaijani: az–ru is not on the PC (wty `latest/dict/az/ru`, 416,047 B, not downloaded); a stand-in, az-en with
+     the word's own entry removed, gives an upper bound (the same stand-in gives 2,608 Uzbek tokens against the real
+     1,445): (a) would remove 12,415 tokens' results (3.0%, 306 words), wrong ones (yeni 910 → yenmək, erməni 826 →
+     ermək, artıq 776 → artmaq, belə 769 → bel, həmin 493 → həm) but also 312 right ones (0.08%, 6 words; yoxdur 299
+     → yox). A quarter of the commonest wrong results have the right root with a derived form (xüsusi → xüsus).
+   - Found: the rule filter takes a form row whose tag is named as a rule (uz–ru's dative, genitive, accusative and
+     locative rows, about 40,000; az-en's plural and converb) for a rule's result, so beside an entry it drops such
+     form results too: 75 Uzbek tokens, 693 Azerbaijani (deyil → demək). A plain bug, fixed apart from this question
+     (the filter's own rule says a form-of entry's chain is not a rule's).
+   To ask the owner on return, with these numbers.
+
 ## Progress
 
 - 2026-10-29: branch `languages/marks` from `languages/uz` 81654777; plan written; data check started.
@@ -181,3 +200,5 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
 - 2026-10-29: question 1 answered (a), Irish and Mongolian staying in the fold; question 2 answered: measure first.
 - 2026-10-29: group 6's six Latin- and Cyrillic-script languages measured for question 1 in their research plan
   (question 28 there); noted under question 1.
+- 2026-10-29: question 2 measured (Uzbek: a headword list would remove 1,445 wrong results and no right one; Azerbaijani
+  upper bound 12,415 wrong, 312 right); the rule filter's form-row bug found; to be asked on the owner's return.

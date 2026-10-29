@@ -25,6 +25,7 @@ Read linked notes only when relevant to the current task. If the index is absent
    - `audio-sources.md` — hosts of the default audio sources, mobile networks that freeze foreign hosting, the owner's audio server.
    - `translation-services.md` — free translators tried for a sentence translation button, their requests and quality ja→ru.
    - `store-publishing.md` — what a Google Play build would have to change, Android developer verification and its paths.
+   - `hosting-files.md` — every file to be hosted (built dictionaries, OCR models, audio packs): source, license, size, status, plan rows; update its row when a file is built, rebuilt or uploaded.
    - `module-map.md` — functional modules, how they integrate, and the instruction for the pending full code review (one run per module, started only on the owner's command).
    - `dictionary-archive.md` — the owner's private copy of every catalog file, the sources we convert and the OCR models: layout, refresh script, licenses that limit sharing.
    - `languages.md` — what is Japanese-only in the app and in hoshidicts, how Yomitan supports other languages, Wiktionary and other dictionaries with licenses and gloss-language coverage, OCR scripts and model sizes, the QuickJS lookup experiment (en, zh, ru, ko).

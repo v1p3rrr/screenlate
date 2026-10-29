@@ -1399,8 +1399,9 @@ recommended option; what changing it takes is said).
     code in the filter). (b) As Kazakh and Kyrgyz: every rule result after the entry. (c) As Uzbek: no rule result for
     a word with an entry (булды would show only its suffix entry). Blocks: the filter setting of the two support
     classes; the same split may suit Kazakh and Kyrgyz (not measured).
-28. Left to the main session (owner, 2026-10-29: "pass it to the main session, it will sort it out"), with question 1
-    of `2026-10-29-folded-marks-and-flags.md`, which it joins. Extra results through
+28. Settled (main session, 2026-10-29): (a), the owner's answer to question 1 of `2026-10-29-folded-marks-and-flags.md`
+    (keep the fold; the word as written first, the folded results after it). Left to the main session (owner,
+    2026-10-29: "pass it to the main session, it will sort it out"), with that question 1, which it joins. Extra results through
     the folded marks in Catalan, Galician, Icelandic and Afrikaans. The decision row folds them as every Latin-script
     language; measured under "Recheck": Galician 26.0% of running text typed and 30.4% after OCR (e "and" → é "is",
     a → á, à, de → dê), Catalan 18.7% and 22.3% (que → què, a → à), Icelandic 9.6% and 21.1% (að → áð, a rare supine),
@@ -1525,3 +1526,4 @@ the fallback reused); 6c about a session (group 4e's engine and wty's Tatar exis
   folded-marks plan's question 1, 29 (a) (tt-tr left out), 30 deferred for later. The draft Tatar and Bashkir tables
   are kept as `scripts/yomitan-language/drafts/group-6-turkic.patch` with a README, and the measuring tools are in
   `scripts/yomitan-language/tools/` (`freq_list.py`, `fold_noise.py`, `coverage.mjs`), both at the owner's word.
+- 2026-10-29: question 28 settled by the owner's answer to question 1 of the folded-marks plan, (a) (main session).
