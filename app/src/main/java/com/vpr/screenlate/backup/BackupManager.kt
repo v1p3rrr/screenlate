@@ -84,7 +84,8 @@ enum class BackupFailure { NOT_BACKUP, NEWER_VERSION, WRITE, READ }
  *   language's code.
  * @property bytes null when unknown (dictionaries in backups of older versions); for a language, the size of its
  *   recognition models, null without any.
- * @property language the code of the language whose file it is; null for one every language shares.
+ * @property languages the codes of the languages whose file it is (a font one script's languages share); empty for one
+ *   every language shares.
  */
 data class BackupFile(val key: String, val name: String, val bytes: Long?, val languages: List<String> = emptyList())
 

@@ -226,7 +226,11 @@ the details.
   - Esperanto's frequency dictionary comes from Leipzig's web texts of 2012 (`cb3c1d7e`; DIC39 due again);
   - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
   - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word (5e: given on 2026-10-29,
-    its session started that afternoon). Group 5d (Bulgarian,
+    its session started that afternoon; one language a branch, each merged before the next starts: Marathi
+    `languages/mr` `0a6364c7` is merged, with the language-coded flags in the bubble menu and the fonts and backup
+    files shared by Hindi and Marathi; the main session's recheck: 1,974 unit tests, lint, page, glue, catalog and
+    Python tests, every bundle rebuilt byte for byte; the session's own device run and engine tests 73 of 73 are in
+    the run log; Tamil, Telugu, Kannada and Cantonese follow). Group 5d (Bulgarian,
     Mongolian, Macedonian) is merged into `languages/main` (bullet above);
   - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
