@@ -236,8 +236,11 @@ the details.
     byte; the session's device run and engine tests 74 of 74 are in the run log; Telugu `languages/te` `b0bfb95f` is
     merged, with the word-end import key (`HeadwordMarks.endingReplacements`, Telugu -ము as -ం); the main session's
     recheck: 2,007 unit tests, lint, page (148), glue (159), catalog (11) and Python (86) tests, all 58 bundles
-    rebuilt byte for byte; the session's device run and engine tests 75 of 75 are in the run log; Kannada and
-    Cantonese follow). Group 5d (Bulgarian,
+    rebuilt byte for byte; the session's device run and engine tests 75 of 75 are in the run log; Kannada
+    `languages/kn` `ec6c47e0` is merged; the main session's recheck: 2,023 unit tests, lint, page (148), glue (163),
+    catalog (11) and Python (86) tests, all 59 bundles rebuilt byte for byte, and the device cases the branch's run
+    did not reach (Anki sentences, audio, fonts); the session's engine tests 76 of 76 are in the run log; Cantonese
+    follows). Group 5d (Bulgarian,
     Mongolian, Macedonian) is merged into `languages/main` (bullet above);
   - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
