@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">传闻过去时</string>
     <string name="inflection_turkic_necessity_label">必要式</string>
     <string name="inflection_turkic_participle_label">分词</string>
+    <string name="inflection_turkic_dative_locative_label">与格-方位格</string>
+    <string name="inflection_turkic_comitative_label">共格</string>
+    <string name="inflection_turkic_privative_label">缺格</string>
+    <string name="inflection_turkic_reflexive_possessive_label">反身领属</string>
+    <string name="inflection_turkic_present_future_label">现在-将来时</string>
+    <string name="inflection_turkic_imperfect_participle_label">未完成分词</string>
+    <string name="inflection_turkic_imperfective_converb_label">未完成副动词</string>
+    <string name="inflection_turkic_perfective_converb_label">完成副动词</string>
+    <string name="inflection_turkic_when_label">当……时</string>
+    <string name="inflection_turkic_as_soon_as_label">一……就</string>
 </resources>

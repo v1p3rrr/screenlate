@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">전언 과거</string>
     <string name="inflection_turkic_necessity_label">당위</string>
     <string name="inflection_turkic_participle_label">분사</string>
+    <string name="inflection_turkic_dative_locative_label">여격·처격</string>
+    <string name="inflection_turkic_comitative_label">공동격</string>
+    <string name="inflection_turkic_privative_label">결여격</string>
+    <string name="inflection_turkic_reflexive_possessive_label">재귀 소유</string>
+    <string name="inflection_turkic_present_future_label">현재·미래</string>
+    <string name="inflection_turkic_imperfect_participle_label">미완료 분사</string>
+    <string name="inflection_turkic_imperfective_converb_label">미완료 부동사</string>
+    <string name="inflection_turkic_perfective_converb_label">완료 부동사</string>
+    <string name="inflection_turkic_when_label">~할 때</string>
+    <string name="inflection_turkic_as_soon_as_label">~하자마자</string>
 </resources>

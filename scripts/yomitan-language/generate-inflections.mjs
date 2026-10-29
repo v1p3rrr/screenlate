@@ -5,7 +5,7 @@
 // in own-transforms.js name them) and YomitanInflections.kt in dictionary/engine-hoshidicts, then lists the keys that
 // translations in res/values-*/inflections_<iso>.xml lack or no longer need. Own rules added to Yomitan's (the Latin
 // enclitics, build.mjs `extendedTransforms`) follow Yomitan's in the same file. Own rules of languages that share their
-// names (`sharedLabels` of a descriptor: Kazakh and Kyrgyz, 'turkic') take their labels from one file,
+// names (`sharedLabels` of a descriptor: the Turkic languages and Mongolian, 'turkic') take their labels from one file,
 // inflections_<shared>.xml, and keep their descriptions, which list endings, untranslated. Rules marked `hidden` get no
 // strings. Translations are edited by hand.
 import {execFileSync} from 'node:child_process';

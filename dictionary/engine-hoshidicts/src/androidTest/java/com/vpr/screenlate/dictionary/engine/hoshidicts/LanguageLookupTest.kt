@@ -633,6 +633,148 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun bulgarianFindsWordsThroughArticlesAndEndingsAndWithoutTheirStressMarks() = runTest {
+        val imported = engine.import(bulgarianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val bulgarian = LookupOptions(language = Language.BULGARIAN)
+        suspend fun first(text: String) = engine.lookup(text, bulgarian).first()
+        suspend fun all(text: String) = engine.lookup(text, bulgarian).map { it.term.expression }
+
+        // The article ending reaches a noun without a form row; the popup names it in the app's language.
+        val ministry = first("министерството")
+        assertThat(ministry.term.expression).isEqualTo("министерство")
+        assertThat(ministry.trace.map { it.name }).containsExactly("definite")
+        assertThat(ministry.trace.map { it.label }).doesNotContain("")
+        assertThat(ministry.trace.map { it.description }).doesNotContain("")
+        assertThat(first("умна").trace.map { it.name }).containsExactly("feminine")
+        // The article comes off a plural form row, which leads on to its lemma.
+        assertThat(all("книгите")).contains("книга")
+        val guarantees = engine.lookup("гарантира", bulgarian).first { it.term.expression == "гарантирам" }
+        assertThat(guarantees.trace.map { it.name }).contains("present")
+        // Stress marks of a dictionary's spelling: grave and acute.
+        assertThat(first("кнѝга").term.expression).isEqualTo("книга")
+        assertThat(first("кни́га").term.expression).isEqualTo("книга")
+        assertThat(first("паркѐт").term.expression).isEqualTo("паркет")
+        // A standalone й is also the pronoun ѝ; й inside a word is that letter.
+        assertThat(all("й")).containsExactly("ѝ")
+        assertThat(first("ѝ").term.expression).isEqualTo("ѝ")
+        assertThat(first("и").term.expression).isEqualTo("и")
+        assertThat(first("край").term.expression).isEqualTo("край")
+    }
+
+    /** Rows as Wiktionary's Bulgarian exports write them: the part of speech in the tags, a plural as a form row. */
+    private fun bulgarianDictionary(): File = zip(
+        "bg.zip",
+        "index.json" to """{"title":"Test Bulgarian","revision":"1","format":3,"sourceLanguage":"bg"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["книга","","n","",0,["book"],1,""],
+              ["книги","","non-lemma","",0,[["книга",["plural indefinite"]]],2,""],
+              ["министерство","","n","",0,["ministry"],3,""],
+              ["гарантирам","","v","",0,["to guarantee"],4,""],
+              ["умен","","adj","",0,["clever"],5,""],
+              ["паркет","","n","",0,["parquet"],6,""],
+              ["ѝ","","pron","",0,["her (dative)"],7,""],
+              ["и","","conj","",0,["and"],8,""],
+              ["край","","n","",0,["end"],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun macedonianTakesTheBulgarianStressRulesButNotItsEndingsAndReadsLatinGraveAsItsOwn() = runTest {
+        val imported = engine.import(macedonianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val macedonian = LookupOptions(language = Language.MACEDONIAN)
+        suspend fun all(text: String) = engine.lookup(text, macedonian).map { it.term.expression }
+
+        // è typed or recognized in a Cyrillic word is ѐ; the word without its grave is found first.
+        assertThat(all("сè").first()).isEqualTo("сѐ")
+        assertThat(all("сѐ").first()).isEqualTo("сѐ")
+        assertThat(all("се").first()).isEqualTo("се")
+        assertThat(all("паркѐт")).containsExactly("паркет")
+        // ќ written without its mark; no Bulgarian article ending.
+        assertThat(all("кука")).containsExactly("куќа")
+        assertThat(all("куќата")).isEmpty()
+    }
+
+    /** Rows as Wiktionary's Macedonian exports write them: two words that differ only in a grave. */
+    private fun macedonianDictionary(): File = zip(
+        "mk.zip",
+        "index.json" to """{"title":"Test Macedonian","revision":"1","format":3,"sourceLanguage":"mk"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["сѐ","","pron","",0,["everything"],1,""],
+              ["се","","pron","",0,["oneself"],2,""],
+              ["куќа","","n","",0,["house"],3,""],
+              ["паркет","","n","",0,["parquet"],4,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun mongolianFindsNounsAndVerbsThroughEndingsInVowelHarmonyAndOcrTextWithoutTheMarksOfItsLetters() = runTest {
+        val imported = engine.import(mongolianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val mongolian = LookupOptions(language = Language.MONGOLIAN)
+        suspend fun first(text: String) = engine.lookup(text, mongolian).first()
+        suspend fun all(text: String, options: LookupOptions = mongolian) =
+            engine.lookup(text, options).map { it.term.expression }
+
+        // Plural, case and the reflexive possessive in the order of the grammar.
+        val books = first("номуудаасаа")
+        assertThat(books.term.expression).isEqualTo("ном")
+        assertThat(books.trace.map { it.name }).containsExactly("plural", "ablative", "reflexive possessive").inOrder()
+        assertThat(books.trace.map { it.label }).doesNotContain("")
+        assertThat(books.trace.map { it.description }).doesNotContain("")
+        // ь before -ийн, the fleeting vowel, -нд after a long vowel; an adverb takes a case too.
+        assertThat(first("хуулийн").term.expression).isEqualTo("хууль")
+        assertThat(first("асуудлыг").term.expression).isEqualTo("асуудал")
+        assertThat(first("хугацаанд").trace.map { it.name }).containsExactly("dative-locative")
+        assertThat(first("өнөөдрийн").term.expression).isEqualTo("өнөөдөр")
+        // Verb endings reach the dictionary form in -х, and only definitions tagged as verbs.
+        val established = first("байгуулна")
+        assertThat(established.term.expression).isEqualTo("байгуулах")
+        assertThat(established.trace.map { it.name }).containsExactly("present-future")
+        assertThat(first("хийнэ").term.expression).isEqualTo("хийх")
+        assertThat(engine.lookup("хийнэ", mongolian).filter { it.term.expression == "хий" }.map { it.matched })
+            .containsNoneOf("хийнэ", "хийн")
+        // The converb comes first; Wiktionary's row for the same form follows as another way to it.
+        val read = engine.lookup("уншаад", mongolian).first { it.term.expression == "унших" }
+        assertThat(read.trace.map { it.name }).containsExactly("perfective converb")
+        assertThat(read.otherTraces.map { trace -> trace.map { it.name } }).contains(listOf("locative imperfect"))
+        // ө and ү: typed text finds the word as written and, without the marks, both; OCR text both, as read first.
+        assertThat(all("хүн")).containsExactly("хүн")
+        assertThat(all("хун")).containsExactly("хун", "хүн").inOrder()
+        assertThat(all("хүн", mongolian.copy(fromOcr = true))).containsExactly("хүн", "хун").inOrder()
+    }
+
+    /**
+     * Rows as Wiktionary's Mongolian exports write them: the part of speech in the tags, verbs in -х, a converb as a
+     * form row; a noun the verb endings would reach from хийнэ, two words that differ only in ү.
+     */
+    private fun mongolianDictionary(): File = zip(
+        "mn.zip",
+        "index.json" to """{"title":"Test Mongolian","revision":"1","format":3,"sourceLanguage":"mn"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["ном","","n","",0,["book"],1,""],
+              ["хууль","","n","",0,["law"],2,""],
+              ["асуудал","","n","",0,["question"],3,""],
+              ["хугацаа","","n","",0,["period"],4,""],
+              ["өнөөдөр","","adv","",0,["today"],5,""],
+              ["байгуулах","","v","",0,["to establish"],6,""],
+              ["хийх","","v","",0,["to do"],7,""],
+              ["хий","","n","",0,["air"],8,""],
+              ["унших","","v","",0,["to read"],9,""],
+              ["уншаад","","non-lemma","",0,[["унших",["locative imperfect"]]],10,""],
+              ["хүн","","n","",0,["person"],11,""],
+              ["хун","","n","",0,["swan"],12,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun swedishFindsFormRowsFromCapitalsAndWordsWithoutTheMarksOfTheirLettersAfterTheWordsAsWritten() = runTest {
         val imported = engine.import(swedishDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">czas przeszły ewidencjalny</string>
     <string name="inflection_turkic_necessity_label">konieczność</string>
     <string name="inflection_turkic_participle_label">imiesłów</string>
+    <string name="inflection_turkic_dative_locative_label">celownik-miejscownik</string>
+    <string name="inflection_turkic_comitative_label">komitatyw</string>
+    <string name="inflection_turkic_privative_label">karytyw</string>
+    <string name="inflection_turkic_reflexive_possessive_label">zwrotna forma dzierżawcza</string>
+    <string name="inflection_turkic_present_future_label">czas teraźniejszo-przyszły</string>
+    <string name="inflection_turkic_imperfect_participle_label">imiesłów niedokonany</string>
+    <string name="inflection_turkic_imperfective_converb_label">konwerb niedokonany</string>
+    <string name="inflection_turkic_perfective_converb_label">konwerb dokonany</string>
+    <string name="inflection_turkic_when_label">gdy</string>
+    <string name="inflection_turkic_as_soon_as_label">gdy tylko</string>
 </resources>

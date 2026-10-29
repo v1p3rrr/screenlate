@@ -267,7 +267,8 @@ function isMarkedStep(d, language) {
  * form of tart), not nouns (idegen "foreign" is no ide- + gen "gene"). The Estonian negative forms reach the verb olema
  * (pole → olema). Bulgarian articles, plurals and agreement endings reach nominal words and forms (книгите → книги, a
  * form of книга; министерството → министерство), verb endings and participles the verbs (гарантира → гарантирам, not
- * a noun гарантир).
+ * a noun гарантир). Mongolian case, plural and possessive endings reach nominal words and forms, adverbs and
+ * postpositions among them (өнөөдрийн → өнөөдөр, дээрээс → дээр), verb endings the verbs (хийнэ → хийх, not хий "air").
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
@@ -281,6 +282,7 @@ const taggedRules = new Map([
     ['hu', {v: ['v', 'non-lemma']}],
     ['et', {v: ['v']}],
     ['bg', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma'], v: ['v']}],
+    ['mn', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'adv', 'postp', 'non-lemma'], v: ['v']}],
 ]);
 
 /**

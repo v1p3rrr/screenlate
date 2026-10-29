@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">passado evidencial</string>
     <string name="inflection_turkic_necessity_label">necessidade</string>
     <string name="inflection_turkic_participle_label">particípio</string>
+    <string name="inflection_turkic_dative_locative_label">dativo-locativo</string>
+    <string name="inflection_turkic_comitative_label">comitativo</string>
+    <string name="inflection_turkic_privative_label">privativo</string>
+    <string name="inflection_turkic_reflexive_possessive_label">possessivo reflexivo</string>
+    <string name="inflection_turkic_present_future_label">presente-futuro</string>
+    <string name="inflection_turkic_imperfect_participle_label">particípio imperfectivo</string>
+    <string name="inflection_turkic_imperfective_converb_label">converbo imperfectivo</string>
+    <string name="inflection_turkic_perfective_converb_label">converbo perfectivo</string>
+    <string name="inflection_turkic_when_label">quando</string>
+    <string name="inflection_turkic_as_soon_as_label">assim que</string>
 </resources>

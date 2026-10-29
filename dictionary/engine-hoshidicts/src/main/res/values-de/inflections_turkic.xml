@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">evidentielle Vergangenheit</string>
     <string name="inflection_turkic_necessity_label">Notwendigkeit</string>
     <string name="inflection_turkic_participle_label">Partizip</string>
+    <string name="inflection_turkic_dative_locative_label">Dativ-Lokativ</string>
+    <string name="inflection_turkic_comitative_label">Komitativ</string>
+    <string name="inflection_turkic_privative_label">Privativ</string>
+    <string name="inflection_turkic_reflexive_possessive_label">reflexiv-possessive Form</string>
+    <string name="inflection_turkic_present_future_label">Präsens-Futur</string>
+    <string name="inflection_turkic_imperfect_participle_label">imperfektives Partizip</string>
+    <string name="inflection_turkic_imperfective_converb_label">imperfektives Konverb</string>
+    <string name="inflection_turkic_perfective_converb_label">perfektives Konverb</string>
+    <string name="inflection_turkic_when_label">wenn</string>
+    <string name="inflection_turkic_as_soon_as_label">sobald</string>
 </resources>

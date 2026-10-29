@@ -8,8 +8,8 @@ import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 import {
     albanianEndings, azerbaijaniTransforms, estonianTransforms, finnishTransforms, gaelicMutations, hebrewTransforms, hungarianTransforms,
-    irishMutations, kazakhTransforms, kyrgyzTransforms, latinEnclitics, persianTransforms, swahiliTransforms,
-    uzbekTransforms, welshTransforms, withOwnTransforms, withReplacedTransforms,
+    irishMutations, kazakhTransforms, kyrgyzTransforms, latinEnclitics, mongolianTransforms, persianTransforms,
+    swahiliTransforms, uzbekTransforms, welshTransforms, withOwnTransforms, withReplacedTransforms, bulgarianTransforms,
 } from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -774,7 +774,7 @@ test('kazakh and kyrgyz noun endings skip the pronouns whose case forms change t
 test('every turkic rule has a shared name and a description of its endings, which the app strings are generated from', () => {
     const res = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values');
     const labels = fs.readFileSync(path.join(res, 'inflections_turkic.xml'), 'utf8');
-    for (const descriptor of [kazakhTransforms, kyrgyzTransforms, azerbaijaniTransforms, uzbekTransforms]) {
+    for (const descriptor of [kazakhTransforms, kyrgyzTransforms, azerbaijaniTransforms, uzbekTransforms, mongolianTransforms]) {
         const strings = fs.readFileSync(path.join(res, `inflections_${descriptor.language}.xml`), 'utf8');
         assert.equal(descriptor.sharedLabels, 'turkic');
         for (const [id, {name, description, hidden}] of Object.entries(descriptor.transforms)) {
@@ -1964,5 +1964,165 @@ test('uzbek rules and text processors stay out of other languages', () => {
         assert.ok(!queried(language, 'bordi').has('bormoq'), language);
         assert.ok(!queried(language, "so'z").has('soʻz'), language);
         assert.ok(!queried(language, 'китоб').has('kitob'), language);
+    }
+});
+
+/** The combining acute, a stress mark. */
+const ACUTE = String.fromCharCode(0x301);
+
+test('bulgarian articles and endings reach nominal words and forms, verb endings the verbs, by their definition tags', () => {
+    const chains = (text, lemma) => candidatesTo('bg', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+    assert.ok(chains('министерството', 'министерство').includes('definite'));
+    assert.ok(chains('книгите', 'книги').includes('definite'));
+    assert.ok(chains('умна', 'умен').includes('feminine'));
+    assert.ok(chains('добри', 'добър').includes('plural'));
+    assert.ok(chains('изминалата', 'измина').includes('past participle < definite'));
+    for (const [text, lemma] of [['министерството', 'министерство'], ['умна', 'умен']]) {
+        assert.ok(candidatesTo('bg', text, lemma).every((c) => c.u && c.g.includes('n') && !c.g.includes('v')), text);
+    }
+    assert.ok(isVerbThrough(candidatesTo('bg', 'гарантира', 'гарантирам'), ['present']));
+    assert.ok(isVerbThrough(candidatesTo('bg', 'четат', 'чета'), ['present']));
+    // The word as written stays typed.
+    assert.ok(!candidates('bg', 'книга').find((c) => c.d === 'книга').u);
+});
+
+test('bulgarian grave stress drops on longer words and a standalone й is also tried as ѝ, in any text', () => {
+    assert.ok(queried('bg', 'кнѝга').has('книга'));
+    assert.ok(queried('bg', 'паркѐт').has('паркет'));
+    assert.ok(queried('bg', 'кни' + ACUTE + 'га').has('книга'));
+    // The pronoun ѝ keeps its letter: short words are left alone.
+    assert.ok(!queried('bg', 'ѝ').has('и'));
+    assert.ok(queried('bg', 'й').has('ѝ'));
+    assert.ok(queried('bg', 'Й').has('Ѝ'));
+    assert.ok(queried('bg', 'й').has('й'));
+    // й inside a word is that letter: край, йога.
+    assert.ok(!queried('bg', 'край').has('краѝ'));
+    assert.ok(!queried('bg', 'йога').has('ѝога'));
+});
+
+test('every bulgarian rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_bg.xml'), 'utf8');
+    for (const [id, {name, description}] of Object.entries(bulgarianTransforms.transforms)) {
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`_label">${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('macedonian takes the bulgarian capitalization and stress processors under its own code, not its endings', () => {
+    assert.ok(queried('mk', 'Книга').has('книга'));
+    assert.ok(queried('mk', 'кни' + ACUTE + 'га').has('книга'));
+    assert.ok(queried('mk', 'паркѐт').has('паркет'));
+    assert.ok(!queried('mk', 'книгите').has('книги'));
+    assert.ok(candidates('mk', 'книгите').every((c) => c.g === undefined));
+    // è in a Cyrillic word is the Macedonian ѐ; a Latin word keeps it; й is no Macedonian letter.
+    assert.ok(queried('mk', 'сè').has('сѐ'));
+    assert.ok(queried('mk', 'сèуште').has('сѐуште'));
+    assert.ok(!queried('mk', 'café').has('cafѐ'));
+    assert.ok(!queried('mk', 'й').has('ѝ'));
+});
+
+test('bulgarian and macedonian processors and endings stay out of other languages', () => {
+    for (const language of ['ru', 'uk', 'sh', 'en']) {
+        assert.ok(!queried(language, 'министерството').has('министерство'), language);
+        assert.ok(!queried(language, 'й').has('ѝ'), language);
+        assert.ok(!queried(language, 'сè').has('сѐ'), language);
+    }
+    assert.ok(!queried('bg', 'сè').has('сѐ'));
+});
+
+test('mongolian noun endings come off in the order of the grammar and reach nominal words by their definition tags', () => {
+    const [books] = candidatesTo('mn', 'номуудаасаа', 'ном');
+    assert.deepEqual([...books.r[0]], ['plural', 'ablative', 'reflexive possessive']);
+    assert.ok(books.u && books.g.includes('n') && books.g.includes('adv') && !books.g.includes('v'));
+    const chains = (text, lemma) => candidatesTo('mn', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+    // ь before -ийн, the fleeting vowel, -нд and -ны after a long vowel or a hidden н.
+    assert.ok(chains('хуулийн', 'хууль').includes('genitive'));
+    assert.ok(chains('асуудлыг', 'асуудал').includes('accusative'));
+    assert.ok(chains('тээврийн', 'тээвэр').includes('genitive'));
+    assert.ok(chains('хөгжлийн', 'хөгжил').includes('genitive'));
+    assert.ok(chains('хугацаанд', 'хугацаа').includes('dative-locative'));
+    assert.ok(chains('хорооны', 'хороо').includes('genitive'));
+    assert.ok(chains('усанд', 'ус').includes('dative-locative'));
+    assert.ok(chains('гэртээ', 'гэр').includes('dative-locative < reflexive possessive'));
+    assert.ok(chains('найзтайгаа', 'найз').includes('comitative < reflexive possessive'));
+    assert.ok(chains('монголчууд', 'монгол').includes('plural'));
+    assert.ok(chains('малчид', 'малчин').includes('plural'));
+    assert.ok(chains('номгүй', 'ном').includes('privative'));
+    assert.ok(chains('өнөөдрийн', 'өнөөдөр').includes('genitive'));
+    // -ын follows a consonant, -г a vowel: номг is no accusative.
+    assert.ok(!queried('mn', 'номг').has('ном'));
+    // The word as written stays typed.
+    assert.ok(!candidates('mn', 'ном').find((c) => c.d === 'ном').u);
+});
+
+test('mongolian verb forms reach the form in -х and match only definitions tagged as verbs', () => {
+    const forms = [
+        ['байгуулна', 'байгуулах', ['present-future']],
+        ['хийнэ', 'хийх', ['present-future']],
+        ['уншина', 'унших', ['present-future']],
+        ['орно', 'орох', ['present-future']],
+        ['өгнө', 'өгөх', ['present-future']],
+        ['явав', 'явах', ['past']],
+        ['ирлээ', 'ирэх', ['past']],
+        ['явжээ', 'явах', ['evidential']],
+        ['барсан', 'барах', ['past participle']],
+        ['ярьсан', 'ярих', ['past participle']],
+        ['явдаг', 'явах', ['habitual participle']],
+        ['байгаа', 'байх', ['imperfect participle']],
+        ['яримаар', 'ярих', ['intention']],
+        ['уншиж', 'унших', ['imperfective converb']],
+        ['гарч', 'гарах', ['imperfective converb']],
+        ['уншаад', 'унших', ['perfective converb']],
+        ['яриад', 'ярих', ['perfective converb']],
+        ['уугаад', 'уух', ['perfective converb']],
+        ['ирвэл', 'ирэх', ['conditional']],
+        ['иртэл', 'ирэх', ['until']],
+        ['явахаар', 'явах', ['purpose']],
+        ['асуухад', 'асуух', ['when']],
+        ['ирэхдээ', 'ирэх', ['when']],
+        ['ирмэгц', 'ирэх', ['as soon as']],
+        ['яваарай', 'явах', ['imperative']],
+        ['явъя', 'явах', ['imperative']],
+        ['авлгүй', 'авах', ['negative']],
+        // A participle takes a case or the negation after it; the verbal noun in -х a case.
+        ['явсангүй', 'явах', ['past participle', 'negative']],
+        ['яваагүй', 'явах', ['imperfect participle', 'negative']],
+        ['явахгүй', 'явах', ['negative']],
+        ['авсныг', 'авах', ['past participle', 'accusative']],
+        ['ярьдгийн', 'ярих', ['habitual participle', 'genitive']],
+        ['авдагт', 'авах', ['habitual participle', 'dative-locative']],
+        ['явахыг', 'явах', ['accusative']],
+        ['ирэхээс', 'ирэх', ['ablative']],
+    ];
+    for (const [text, lemma, chain] of forms) {
+        const found = candidatesTo('mn', text, lemma).filter((c) => c.g?.includes('v'));
+        assert.ok(isVerbThrough(found, chain), text);
+    }
+    // хийнэ is хийх's, not хий "air" with an ending.
+    assert.ok(!queried('mn', 'хийнэ').has('хий'));
+});
+
+test('a mongolian -аад form shows the perfective converb before the locative of the imperfect participle', () => {
+    const chains = candidatesTo('mn', 'уншаад', 'унших').flatMap((c) => c.r.map((r) => r.join(' < ')));
+    assert.equal(chains[0], 'perfective converb');
+    assert.ok(chains.includes('imperfect participle < dative-locative'));
+});
+
+test('mongolian text from ocr is also looked up without the marks of its letters, typed text as written', () => {
+    assert.ok(queriedFromOcr('mn', 'хүн').has('хун'));
+    assert.ok(queriedFromOcr('mn', 'хүн').has('хүн'));
+    assert.ok(!queried('mn', 'хүн').has('хун'));
+    // Legacy-font letters are looked up as written.
+    assert.ok(!queried('mn', 'хvн').has('хүн'));
+    assert.ok(!queried('mn', 'мєн').has('мөн'));
+});
+
+test('mongolian rules stay out of other languages', () => {
+    for (const language of ['kk', 'ky', 'ru', 'bg']) {
+        assert.ok(!queried(language, 'номуудаасаа').has('ном'), language);
+        assert.ok(!queried(language, 'уншаад').has('унших'), language);
+        assert.ok(!queried(language, 'хуулийн').has('хууль'), language);
     }
 });

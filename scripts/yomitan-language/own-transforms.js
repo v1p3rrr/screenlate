@@ -958,7 +958,7 @@ function bulgarianVerb(suffixes, replacements) {
  * the form rows.
  * @type {import('language-transformer').LanguageTransformDescriptor<'n'|'v'|'d'>}
  */
-export const bulgarianTransforms = {
+export const bulgarianTransforms = /* @__PURE__ */ (() => ({
     language: 'bg',
     conditions: {
         n: {name: 'Noun or adjective', isDictionaryForm: true},
@@ -1058,7 +1058,179 @@ export const bulgarianTransforms = {
             ],
         },
     },
+}))();
+
+/**
+ * Mongolian endings, as the app's own rules written from the grammar: a noun is stem [plural] [case] [reflexive
+ * possessive] (номуудаасаа), a verb stem takes a tense, a converb or a participle, and a participle takes a case or the
+ * negation -гүй after it (явсанд, явсангүй). Wiktionary declines few nouns and conjugates few verbs (ээж, нүд, нохой
+ * have no forms; 14 of 46 probed verb forms are rows), and lists verbs by their form in -х. Every ending is spelled in
+ * each of its vowel-harmony variants (-аас -ээс -оос -өөс). Before an ending that starts with a vowel a noun stem is
+ * also tried with its fleeting vowel back between its last two consonants (асуудлыг → асуудал, тээврийн → тээвэр,
+ * хөгжлийн → хөгжил), and before one in и with ь after it (хуулийн → хууль, яриад → ярих); an ending in н after a vowel
+ * reads a stem with a hidden н (хугацаанд, хорооны). A verb stem becomes its form in -х: after a vowel or й with -х
+ * alone (асуу- → асуух, хий- → хийх), after ь, ш, ж or ч with -их (ярь- → ярих, унш- → унших), otherwise with the vowel
+ * of its last vowel's harmony (яв- → явах, ор- → орох, үз- → үзэх, өг- → өгөх). A case after the verbal noun in -х
+ * (явахыг, ирэхээс) reaches the verb. A stem keeps two letters and a vowel at least.
+ *
+ * Wiktionary's own row for -аад forms reads them as the locative of the imperfect participle (уншаад → унших
+ * <locative imperfect>); the perfective converb, the common reading, comes from these rules and shows first. Its
+ * Mongolian entries leave the rules field empty and tag each definition (n, v, adj), so a nominal result reaches the
+ * nominal words and forms and a verb result the verbs (glue.js, `taggedRules`). Mongolian names its rules as the Turkic
+ * languages do, so it shares their labels (`sharedLabels`); a description lists the endings with an example.
+ */
+
+/** Mongolian vowel letters. */
+const MONGOLIAN_VOWELS = 'аэиоуөүыяеёю';
+
+/**
+ * What each kind of Mongolian ending applies after and leaves, and the stems the text before it may stand for
+ * (`mongolianStems`). A word as written has no conditions, so every kind applies to it.
+ * @type {Record<string, {conditionsIn: ('n'|'v'|'cs'|'pl'|'pt')[], conditionsOut: ('n'|'v'|'cs'|'pl'|'pt')[], stems: 'nominal'|'verb'|'verbal noun'|'as written'}>}
+ */
+const mongolianSlots = {
+    // Outermost: after a stem (номоо), a case (гэрээсээ) or a plural (номуудаа).
+    reflexive: {conditionsIn: [], conditionsOut: ['n', 'cs', 'pl', 'pt'], stems: 'nominal'},
+    case: {conditionsIn: ['cs'], conditionsOut: ['n', 'pl', 'pt'], stems: 'nominal'},
+    // -гүй "without" on a noun; a participle takes the negation instead.
+    privative: {conditionsIn: ['cs'], conditionsOut: ['n', 'pl'], stems: 'nominal'},
+    plural: {conditionsIn: ['pl'], conditionsOut: ['n'], stems: 'nominal'},
+    // A case after the verbal noun in -х, which the stem keeps: явахыг → явах.
+    verbalNoun: {conditionsIn: ['cs'], conditionsOut: ['v'], stems: 'verbal noun'},
+    participle: {conditionsIn: ['pt'], conditionsOut: ['v'], stems: 'verb'},
+    verb: {conditionsIn: [], conditionsOut: ['v'], stems: 'verb'},
+    // -гүй after a participle (явсангүй) or the verbal noun (явахгүй), which is a verb as it is.
+    negation: {conditionsIn: [], conditionsOut: ['pt', 'v'], stems: 'as written'},
 };
+
+/**
+ * The vowel a Mongolian verb stem takes before -х by its last vowel but и: а after а у ы я ю, о after о ё, ө after ө,
+ * э after э ү е or none.
+ * @param {string} stem
+ */
+function mongolianHarmony(stem) {
+    for (const c of [...stem].reverse()) {
+        if ('ауыяю'.includes(c)) return 'а';
+        if ('оё'.includes(c)) return 'о';
+        if (c === 'ө') return 'ө';
+        if ('эүе'.includes(c)) return 'э';
+    }
+    return 'э';
+}
+
+/**
+ * A Mongolian verb stem's form in -х, by which dictionaries list verbs.
+ * @param {string} stem
+ */
+function mongolianVerbForm(stem) {
+    const last = stem.slice(-1);
+    if (last === 'ь') return stem.slice(0, -1) + 'их';
+    if (MONGOLIAN_VOWELS.includes(last) || last === 'й') return stem + 'х';
+    if ('шжч'.includes(last)) return stem + 'их';
+    return stem + mongolianHarmony(stem) + 'х';
+}
+
+/**
+ * The texts [stem], what is left of a word before [ending], may stand for as a word of [kind]: itself, and before an
+ * ending in и with ь after it; a nominal stem before an ending that starts with a vowel also with its fleeting vowel
+ * back, of the stem's harmony or и; a verb stem as its form in -х. A stem without two letters and a vowel gives none.
+ * @param {string} stem
+ * @param {string} ending
+ * @param {'nominal'|'verb'|'verbal noun'|'as written'} kind
+ * @returns {string[]}
+ */
+function mongolianStems(stem, ending, kind) {
+    const word = [...stem.slice(stem.lastIndexOf(' ') + 1)];
+    if (word.length < 2 || !word.some((c) => MONGOLIAN_VOWELS.includes(c))) return [];
+    if (kind === 'as written' || kind === 'verbal noun') return [stem];
+    const consonant = (c) => c !== undefined && !MONGOLIAN_VOWELS.includes(c) && !'йьъ'.includes(c);
+    const last = word[word.length - 1];
+    const stems = [stem];
+    if (ending.startsWith('и') && consonant(last)) stems.push(stem + 'ь');
+    if (kind === 'nominal' && MONGOLIAN_VOWELS.includes(ending[0]) && consonant(last) && consonant(word[word.length - 2])) {
+        for (const vowel of new Set([mongolianHarmony(stem), 'и'])) stems.push(stem.slice(0, -1) + vowel + stem.slice(-1));
+    }
+    return kind === 'verb' ? stems.map(mongolianVerbForm) : stems;
+}
+
+/**
+ * The rules of one Mongolian ending: [item] is the ending, with what it follows after a slash (V a vowel, C a
+ * consonant, or the letters themselves) and the letters it takes the place of after a > (малчид, a plural of малчин:
+ * ид>ин).
+ * @param {string} item
+ * @param {string} slot
+ * @returns {import('language-transformer').SuffixRule<'n'|'v'|'cs'|'pl'|'pt'>[]}
+ */
+function mongolianRules(item, slot) {
+    const [written, after = ''] = item.split('/');
+    const [ending, replaced = ''] = written.split('>');
+    const letters = after.replace('V', MONGOLIAN_VOWELS).replace('C', 'бвгджзклмнпрстфхцчшщ');
+    const {conditionsIn, conditionsOut, stems} = mongolianSlots[slot];
+    // As many rules as a stem has texts at most; each gives one, or no text.
+    return [0, 1, 2, 3].map((index) => ({
+        type: 'suffix',
+        isInflected: new RegExp((letters ? `[${letters}]` : '') + ending + '$'),
+        deinflected: '',
+        deinflect: (text) => mongolianStems(text.slice(0, -ending.length) + replaced, ending, stems)[index] ?? '',
+        conditionsIn,
+        conditionsOut,
+    }));
+}
+
+/**
+ * The transforms of the Mongolian rules: id (also the name), example and the endings by kind (`mongolianSlots`), each
+ * a space-separated list of `mongolianRules` items.
+ * @type {[string, string, Record<string, string>][]}
+ */
+const mongolianEndings = [
+    ['plural', 'номууд, хуулиуд, хорооднууд', {plural: 'ууд/C үүд/C нууд нүүд гууд/V гүүд/V чууд чүүд иуд/C ид/ч ид>ин эд>эн'}],
+    ['genitive', 'номын, хуулийн, хорооны, далайн', {case: 'ын/C ийн/C ы/н ий/н ны ний гийн/V н/й', verbalNoun: 'ын/х ийн/х'}],
+    ['accusative', 'номыг, хуулийг, хороог, явахыг', {case: 'ыг/C ийг/C г/Vй', verbalNoun: 'ыг/х ийг/х'}],
+    ['dative-locative', 'номд, гэрт, хотод, хугацаанд, усанд', {case: 'д/Vлмнйь т/рсвг ад/C эд/C од/C өд/C ид/жчш нд/V анд/C энд/C онд/C өнд/C'}],
+    ['ablative', 'номоос, гэрээс, хорооноос, хуулиас, явахаас', {case: 'аас/C ээс/C оос/C өөс/C гаас/Vй гээс/Vй гоос/Vй гөөс/Vй наас нээс ноос нөөс иас/C иос/C', verbalNoun: 'аас/х ээс/х оос/х өөс/х'}],
+    ['instrumental', 'номоор, гэрээр, хорооноор, хуулиар', {case: 'аар/C ээр/C оор/C өөр/C гаар/Vй гээр/Vй гоор/Vй гөөр/Vй иар/C иор/C'}],
+    ['comitative', 'номтой, гэртэй, найзтай', {case: 'тай тэй той', verbalNoun: 'тай/х тэй/х той/х'}],
+    ['privative', 'номгүй, мөнгөгүй', {privative: 'гүй'}],
+    ['reflexive possessive', 'номоо, гэрээсээ, хороогоо, ирэхээ', {reflexive: 'аа/C ээ/C оо/C өө/C гаа/Vй гээ/Vй гоо/Vй гөө/Vй иа/C', verbalNoun: 'аа/х ээ/х оо/х өө/х'}],
+    ['present-future', 'явна, ирнэ, орно, өгнө, уншина', {verb: 'на нэ но нө'}],
+    ['past', 'явав, уншив, явлаа, ирлээ', {verb: 'в/V лаа лээ лоо лөө'}],
+    ['evidential', 'явжээ, гарчээ', {verb: 'жээ чээ'}],
+    ['past participle', 'явсан, ирсэн, орсон, өгсөн', {participle: 'сан сэн сон сөн'}],
+    ['habitual participle', 'явдаг, ирдэг, ордог, өгдөг', {participle: 'даг дэг дог дөг'}],
+    ['imperfect participle', 'яваа, байгаа, яриа', {participle: 'аа/C ээ/C оо/C өө/C гаа/Vй гээ/Vй гоо/Vй гөө/Vй иа/C'}],
+    ['intention', 'явмаар, ирмээр', {participle: 'маар мээр моор мөөр'}],
+    ['imperfective converb', 'явж, гарч, уншиж', {verb: 'ж ч'}],
+    ['perfective converb', 'уншаад, ирээд, ороод, өгөөд, байгаад, яриад', {verb: 'аад/C ээд/C оод/C өөд/C гаад/Vй гээд/Vй гоод/Vй гөөд/Vй иад/C'}],
+    ['conditional', 'явбал, ирвэл, болбол', {verb: 'вал вэл вол вөл бал бэл бол бөл'}],
+    ['until', 'явтал, иртэл', {verb: 'тал тэл тол төл'}],
+    ['purpose', 'явахаар, ирэхээр', {verb: 'хаар хээр хоор хөөр'}],
+    ['when', 'асуухад, ирэхэд, ирэхдээ', {verb: 'хад хэд ход хөд хдаа хдээ хдоо хдөө'}],
+    ['as soon as', 'ирмэгц, явмагц', {verb: 'магц мэгц могц мөгц'}],
+    ['imperative', 'яваарай, ирээрэй, явъя, ирье, асууя, яваасай', {verb: 'аарай/C ээрэй/C оорой/C өөрөй/C гаарай/Vй гээрэй/Vй гоорой/Vй гөөрөй/Vй иарай/C аач/C ээч/C ооч/C өөч/C гаач/Vй гээч/Vй гтун/V гтүн/V ъя/C ье/C ъё/C я/V е/Vй ё/V аасай/C ээсэй/C оосой/C өөсэй/C гаасай/Vй гээсэй/Vй'}],
+    ['negative', 'явсангүй, явахгүй, яваагүй, авалгүй', {negation: 'гүй', verb: 'лгүй'}],
+];
+
+/** @type {import('language-transformer').LanguageTransformDescriptor<'n'|'v'|'cs'|'pl'|'pt'> & {sharedLabels: string}} */
+export const mongolianTransforms = /* @__PURE__ */ (() => ({
+    language: 'mn',
+    sharedLabels: 'turkic',
+    conditions: {
+        n: {name: 'Noun or adjective', isDictionaryForm: true},
+        v: {name: 'Verb', isDictionaryForm: true},
+        cs: {name: 'Before a case ending', isDictionaryForm: false},
+        pl: {name: 'Before a plural ending', isDictionaryForm: false},
+        pt: {name: 'Before a participle ending', isDictionaryForm: false},
+    },
+    transforms: Object.fromEntries(mongolianEndings.map(([id, example, endings]) => {
+        const items = Object.values(endings).flatMap((list) => list.split(' '));
+        const listed = [...new Set(items.map((item) => item.split(/[/>]/)[0]))];
+        return [id, {
+            name: id,
+            description: `${listed.map((e) => '-' + e).join(' ')} (${example})`,
+            rules: Object.entries(endings).flatMap(([slot, list]) => list.split(' ').flatMap((item) => mongolianRules(item, slot))),
+        }];
+    })),
+}))();
 
 /**
  * Swahili verb prefixes, as the app's own rules written from the grammar: a verb is [negation] subject tense [object]

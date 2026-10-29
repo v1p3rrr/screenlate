@@ -134,6 +134,7 @@ const addedTransforms = {
     az: 'azerbaijaniTransforms',
     uz: 'uzbekTransforms',
     bg: 'bulgarianTransforms',
+    mn: 'mongolianTransforms',
 };
 
 /**
