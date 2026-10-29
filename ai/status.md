@@ -240,7 +240,11 @@ the details.
     `languages/kn` `ec6c47e0` is merged; the main session's recheck: 2,023 unit tests, lint, page (148), glue (163),
     catalog (11) and Python (86) tests, all 59 bundles rebuilt byte for byte, and the device cases the branch's run
     did not reach (Anki sentences, audio, fonts); the session's engine tests 76 of 76 are in the run log; Cantonese
-    follows). Group 5d (Bulgarian,
+    `languages/yue` `4f787dde` is merged, with Jyutping search and readings, the Hong Kong and Taiwan variant
+    characters in lookup and frequency, tones 5 and 6 colored and the zh-HK voice when the phone has no yue-HK one;
+    the main session's recheck: 2,048 unit tests, lint, page (154), glue (166), catalog (11) and Python (89) tests,
+    all 60 bundles rebuilt byte for byte; the session's device run and engine tests 81 of 81 are in the run log; the
+    group is done). Group 5d (Bulgarian,
     Mongolian, Macedonian) is merged into `languages/main` (bullet above);
   - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
@@ -273,8 +277,10 @@ the details.
     marked by the native lookup, `notes/language-rules.md` bug 48; engine instrumented tests 72 of 72, LK82's
     kengligiga → kenglik on the emulator).
   - Group 5e's questions 18-20 (decided provisionally as built), 21 (repeated India flags on Home, not built), 22
-    (a Tamil "Word forms" item for users who untick ta-en, not built) and 23 (the same for Telugu, recommended
-    without) wait for the owner's return.
+    (a Tamil "Word forms" item for users who untick ta-en, not built), 23 (the same for Telugu, recommended
+    without), 24 (words.hk's character dictionary ticked, built so) and 25 (Cantonese frequency ranks each word under
+    its variant spellings instead of folding OpenCC's forms as the decision row says, built so) wait for the owner's
+    return.
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
