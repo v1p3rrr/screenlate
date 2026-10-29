@@ -89,6 +89,9 @@ Conclusion: downscaling to 1500 px costs nothing in quality; full resolution is 
   though one of them ends with a word. The Bulgarian, Macedonian and Uzbek images of the same size and pitch came as
   one paragraph. Under cloud recognition a Tamil sentence across a line end is cut there; Tesseract keeps one
   paragraph.
+- Telugu (2026-10-29, `testdata/ocr/te-anki.png`, the same size and pitch): five lines came as four paragraphs, the
+  first line (ending with the abbreviation కి.మీ.) alone and the last two together. Tesseract tel fast kept one
+  paragraph but dropped the period after రా and the subscript ర of చంద్రశేఖర్.
 
 ## Translation (probe 2026-10-08, `testdata/ocr/x-thread.png`, from a desktop connection)
 

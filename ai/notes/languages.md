@@ -1899,6 +1899,26 @@ Cantonese, Kannada, Tamil, Telugu and Marathi: research, OCR measurements, decis
   until Paddle's Tamil model is released, best is offered unticked.
 - Fonts: Hind Madurai, Mukta Malar and Tiro Tamil, for Tamil only. Audio: Wiktionary first, Lingua Libre, the voice.
 
+### Telugu on `languages/te` (2026-10-29)
+
+- Built on Tamil's shared pieces (`DravidianSupport`, `OcrScript.TELUGU`). The bundle is Kannada's under Telugu's
+  code with `composeCharacters` and `removeZeroWidthCharacters` (ZWNJ, ZWJ, zero-width space and soft hyphen inside a
+  word dropped; Telugu writes ZWNJ in loanwords such as ఎన్‌టీఆర్).
+- wty te-en (2026.10.22): 15,686 words with meanings and 18,866 form rows, nearly all plurals; 4,939 plurals are
+  written with the ending apart ("కుమార్తె లు") and keyed joined at import, one row carries the wiki's "Main:".
+  te-ru (1,799 words, no forms), te-zh (1,740 words, 4,441 form rows) and the transcription (5,523) are listed.
+- Older spellings of the dictionary keyed under the modern ones: the arasunna ఁ dropped, ఱ as ర, a final -ము as -ం
+  (a new word-end key, `HeadwordMarks.endingReplacements`, made in the native `keys()`).
+- Own case endings and postpositions, the plural and the particles (`teluguTransforms`); measured on Leipzig
+  `tel_news_2020_100K` (top 20,000 against te-en): lemma 2,203, form 813, through the endings 3,237, nothing 13,747;
+  rules only for words without an entry or form (539 overlaps). The 34 rule ids are listed without strings
+  (`inflections_te.xml`).
+- Sentences: the period ends 98,505 of 100,000 news sentences; abbreviations, Latin letter names and one-syllable
+  initials hold it (కె. చంద్రశేఖర్), but for రా. The popup looks at 16 letters (0.6% of running words pass it).
+- No frequency list (question 9). No ML Kit model: Tesseract tel fast is ticked until Paddle's Telugu model is
+  released, best is offered unticked.
+- Fonts: Anek Telugu and Tiro Telugu, for Telugu only. Audio: Lingua Libre first, Wiktionary, the voice.
+
 ## Group 4d research (2026-10-19)
 
 Arabic (ar), Persian (fa), Hebrew (he): scripts written right to left with spaces between words. Urdu (ur), Egyptian
