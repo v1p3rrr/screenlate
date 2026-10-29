@@ -542,6 +542,7 @@
     <string name="popup_font_script_only_bg">Nur für bulgarischen Text</string>
     <string name="popup_font_script_only_mk">Nur für mazedonischen Text</string>
     <string name="popup_font_script_only_mn">Nur für mongolischen Text</string>
+    <string name="popup_font_script_only_mr">Nur für Marathi-Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

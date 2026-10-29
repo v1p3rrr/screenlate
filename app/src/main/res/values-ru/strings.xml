@@ -551,6 +551,7 @@
     <string name="popup_font_script_only_bg">Только для болгарского текста</string>
     <string name="popup_font_script_only_mk">Только для македонского текста</string>
     <string name="popup_font_script_only_mn">Только для монгольского текста</string>
+    <string name="popup_font_script_only_mr">Только для текста на маратхи</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

@@ -2,7 +2,7 @@
 
     python scripts/fonts/font_letters.py overlay/src/main/assets/fonts/catalog.json [--cache <directory>] [--write]
 
-For every font offered by its subsets (one without "language"), the files are downloaded (or read from --cache, where
+For every font offered by its subsets (one without "languages"), the files are downloaded (or read from --cache, where
 they are kept by file name) and the code points below U+2000 that are letters or marks (Unicode categories L and M) in
 all of them are written as hex ranges to the font's "letters" (`0041-005A,00AA,...`). The app offers such a font for a
 language only when it has the language's letters (`LanguageSupport.fontLetters`). Without --write the script prints
@@ -63,7 +63,7 @@ def main(argv):
     with open(args.catalog, encoding="utf-8") as file:
         text = file.read()
     for font in json.loads(text)["fonts"]:
-        if font.get("language") or not font.get("subsets"):
+        if font.get("languages") or not font.get("subsets"):
             continue
         listed = ranges(letters_of([font_file(f["url"], args.cache) for f in font["files"]]))
         print(f"{font['id']}: {len(listed)} characters of ranges")

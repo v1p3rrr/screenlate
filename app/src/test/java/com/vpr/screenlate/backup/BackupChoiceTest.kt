@@ -74,7 +74,7 @@ class BackupChoiceTest {
     @Test
     fun `files of a language left out are not offered`() {
         val languages = listOf(BackupFile("ja", "Japanese", 10), BackupFile("en", "English", null))
-        val files = listOf(BackupFile("a", "A", 1, "ja"), BackupFile("b", "B", 1, "en"), BackupFile("c", "C", 1, null))
+        val files = listOf(BackupFile("a", "A", 1, listOf("ja")), BackupFile("b", "B", 1, listOf("en")), BackupFile("c", "C", 1))
         val withoutJapanese = BackupChoice(languages = FileChoice(on = true).toggle("ja", listOf("ja", "en")))
         assertThat(withoutJapanese.visible(files, languages).map { it.key }).containsExactly("b", "c").inOrder()
         assertThat(withoutJapanese.takesModels(languages)).isFalse()
@@ -83,9 +83,19 @@ class BackupChoiceTest {
     }
 
     @Test
+    fun `a font of two languages is offered while either is taken`() {
+        val languages = listOf(BackupFile("hi", "Hindi", 10), BackupFile("mr", "Marathi", 10))
+        val files = listOf(BackupFile("mukta", "Mukta", 1, listOf("hi", "mr")), BackupFile("b", "B", 1, listOf("hi")))
+        val marathiOnly = BackupChoice(languages = FileChoice(on = true).toggle("hi", languages.map { it.key }))
+        assertThat(marathiOnly.visible(files, languages).map { it.key }).containsExactly("mukta")
+        val none = BackupChoice(languages = FileChoice(on = false))
+        assertThat(none.visible(files, languages)).isEmpty()
+    }
+
+    @Test
     fun `croatian or serbian takes the shared dictionaries`() {
         val languages = listOf(BackupFile("hr", "Croatian", 10), BackupFile("sr", "Serbian", 10))
-        val files = listOf(BackupFile("a", "A", 1, "sh"), BackupFile("b", "B", 1, "ru"))
+        val files = listOf(BackupFile("a", "A", 1, listOf("sh")), BackupFile("b", "B", 1, listOf("ru")))
         val croatianOnly = BackupChoice(languages = FileChoice(on = true).toggle("sr", languages.map { it.key }))
         assertThat(croatianOnly.chosenLanguages(languages)).containsExactly("hr", "sh")
         assertThat(croatianOnly.visible(files, languages).map { it.key }).containsExactly("a")
@@ -96,7 +106,7 @@ class BackupChoiceTest {
     @Test
     fun `slovak takes the czech dictionaries it falls back to`() {
         val languages = listOf(BackupFile("sk", "Slovak", 10), BackupFile("ja", "Japanese", 10))
-        val files = listOf(BackupFile("a", "A", 1, "sk"), BackupFile("b", "B", 1, "cs"), BackupFile("c", "C", 1, "ja"))
+        val files = listOf(BackupFile("a", "A", 1, listOf("sk")), BackupFile("b", "B", 1, listOf("cs")), BackupFile("c", "C", 1, listOf("ja")))
         val slovakOnly = BackupChoice(languages = FileChoice(on = true).toggle("ja", languages.map { it.key }))
         assertThat(slovakOnly.chosenLanguages(languages)).containsExactly("sk", "cs")
         assertThat(slovakOnly.visible(files, languages).map { it.key }).containsExactly("a", "b").inOrder()

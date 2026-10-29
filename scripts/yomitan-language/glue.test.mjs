@@ -242,6 +242,107 @@ test('bengali endings and untyped matches stay out of hindi', () => {
     assert.ok(candidates('hi', 'पढ़ने').every((c) => !c.u));
 });
 
+/**
+ * The texts the engine would query for the whole of [text], without the shorter texts the scan tries after it.
+ * @param {string} language
+ * @param {string} text
+ */
+function queriedWhole(language, text) {
+    return new Set(candidates(language, text).filter((c) => c.o === text).map((c) => c.d));
+}
+
+test('marathi endings come off oblique stems and reach nominal entries by their tags', () => {
+    /** @param {string} text @param {string} lemma */
+    const nominal = (text, lemma) => {
+        const found = candidates('mr', text).filter((c) => c.o === text && c.d === lemma);
+        assert.ok(found.length > 0, `${text} → ${lemma}`);
+        assert.ok(found.every((c) => c.u && c.g.includes('n') && c.g.includes('non-lemma') && !c.g.includes('v')), text);
+    };
+    nominal('नदीला', 'नदी');
+    nominal('मुलग्याला', 'मुलगा');
+    nominal('पाण्यात', 'पाणी');
+    nominal('घरात', 'घर');
+    nominal('शाळेत', 'शाळा');
+    nominal('वेळेला', 'वेळ');
+    nominal('लोकांना', 'लोक');
+    nominal('शाळांमध्ये', 'शाळा');
+    nominal('तालुक्यांमध्ये', 'तालुका');
+    nominal('मुलींना', 'मुली');
+    nominal('शेतकऱ्यांना', 'शेतकरी');
+    nominal('घरून', 'घर');
+    nominal('शहरातील', 'शहर');
+    nominal('आजच्या', 'आज');
+    nominal('महाराष्ट्राने', 'महाराष्ट्र');
+    // The verbal noun reaches verbs only.
+    const doing = candidates('mr', 'करण्यासाठी').filter((c) => c.o === 'करण्यासाठी' && c.d === 'करणे');
+    assert.ok(doing.length > 0 && doing.every((c) => c.u && JSON.stringify(c.g) === JSON.stringify(['v'])));
+    assert.equal(JSON.stringify(doing[0].r), JSON.stringify([['-साठी']]));
+    // The locative and dative follow vowels only: करत is no कर + त, but the participle of करणे.
+    assert.ok(!queriedWhole('mr', 'करत').has('कर'));
+    assert.ok(queriedWhole('mr', 'करण्यास').has('करणे'));
+    // Two characters stay: त्याला is not ता.
+    assert.ok(!queriedWhole('mr', 'त्याला').has('ता'));
+    assert.ok(queriedWhole('mr', 'त्याला').has('त्या'));
+    // One ending: घराच्याला is not cut down to घर.
+    assert.ok(!queriedWhole('mr', 'घराच्याला').has('घर'));
+    // The text itself stays typed.
+    assert.ok(!candidates('mr', 'नदीला').find((c) => c.d === 'नदीला').u);
+});
+
+test('marathi participles in -त and -ताना come off verb stems for the infinitive and reach verbs only', () => {
+    /** @param {string} text @param {string} lemma @param {string} rule */
+    const verb = (text, lemma, rule) => {
+        const found = candidates('mr', text).filter((c) => c.o === text && c.d === lemma);
+        assert.ok(found.length > 0, `${text} → ${lemma}`);
+        assert.ok(found.every((c) => c.u && JSON.stringify(c.g) === JSON.stringify(['v'])), text);
+        assert.equal(JSON.stringify(found[0].r), JSON.stringify([[rule]]));
+    };
+    verb('करत', 'करणे', '-त');
+    verb('येत', 'येणे', '-त');
+    verb('दिसत', 'दिसणे', '-त');
+    verb('करताना', 'करणे', '-ताना');
+    verb('असताना', 'असणे', '-ताना');
+    // The noun's locative keeps its own rule: घरात is घर + त, and घराणे is looked for as a verb only.
+    const family = candidates('mr', 'घरात').filter((c) => c.d === 'घराणे');
+    assert.ok(family.length > 0 && family.every((c) => JSON.stringify(c.g) === JSON.stringify(['v'])));
+    // Two characters stay: तत is not णे.
+    assert.ok(!queriedWhole('mr', 'तत').has('णे'));
+    // A particle may come first: करतानाही → करताना → करणे.
+    assert.ok(queriedWhole('mr', 'करतानाही').has('करणे'));
+});
+
+test('marathi particles come off any word, and an ending may follow them', () => {
+    const also = candidates('mr', 'आजही').find((c) => c.o === 'आजही' && c.d === 'आज');
+    assert.ok(also && also.u && !also.g);
+    assert.ok(candidates('mr', 'गेलाच').find((c) => c.o === 'गेलाच' && c.d === 'गेला').u);
+    const house = candidates('mr', 'घरातही').filter((c) => c.o === 'घरातही' && c.d === 'घर');
+    assert.ok(house.length > 0 && house.every((c) => c.g.includes('n')));
+    assert.equal(JSON.stringify(house[0].r), JSON.stringify([['-त', '-ही']]));
+    // A particle once: आजहीच is not cut down to आज.
+    assert.ok(!queriedWhole('mr', 'आजहीच').has('आज'));
+});
+
+test('marathi text is read in the headwords spelling', () => {
+    // An old font's य़ for the य of a conjunct, precomposed or with nukta, with or without the virama.
+    for (const ya of ['\u095F', '\u092F\u093C', '\u094D\u095F']) {
+        assert.ok(queriedWhole('mr', `मोठ${ya}\u093E`).has('मोठ\u094D\u092F\u093E'), ya);
+    }
+    assert.ok(queriedWhole('mr', 'ज\u093Cमीन').has('जमीन'));
+    assert.ok(queriedWhole('mr', 'अ\u0945प').has('\u0972प'));
+    assert.ok(queriedWhole('mr', 'अ\u200D\u0945प').has('\u0972प'));
+    assert.ok(queriedWhole('mr', '\u090Dप').has('\u0972प'));
+    assert.ok(queriedWhole('mr', 'ब\u0901क').has('ब\u0945\u0902क'));
+    // र with nukta is composed into the eyelash ऱ, as the headwords write it.
+    assert.ok(queriedWhole('mr', 'तर\u093C\u094Dहा').has('त\u0931\u094Dहा'));
+});
+
+test('marathi endings and processors stay out of hindi', () => {
+    assert.ok(!queriedWhole('hi', 'घराला').has('घर'));
+    assert.ok(!queriedWhole('hi', 'ब\u0901क').has('ब\u0945\u0902क'));
+    assert.ok(!queriedWhole('hi', 'ज\u093Cमीन').has('जमीन'));
+    assert.ok(!queriedWhole('hi', 'करताना').has('करणे'));
+});
+
 test('georgian rules load, chain and match entries without a part of speech when three letters stay', () => {
     // Yomitan files its Georgian rules under kat, not ka.
     const book = candidates('ka', 'წიგნს').find((c) => c.d === 'წიგნი');

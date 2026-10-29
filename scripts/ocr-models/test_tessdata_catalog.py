@@ -62,6 +62,10 @@ class EntryTest(unittest.TestCase):
         for language, code in (("bg", "bul"), ("mk", "mkd"), ("mn", "mon")):
             self.assertEqual(catalog.LANGUAGES[language], code)
             self.assertFalse(catalog.entry(language, code, "fast", b"lstm")["recommended"])
+        # Marathi: ML Kit's bundled Devanagari model reads it; both Tesseract models stay unmarked.
+        self.assertEqual(catalog.LANGUAGES["mr"], "mar")
+        self.assertFalse(catalog.entry("mr", "mar", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("mr", "mar", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

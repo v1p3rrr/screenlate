@@ -538,6 +538,7 @@
     <string name="popup_font_script_only_bg">僅用於保加利亞文文字</string>
     <string name="popup_font_script_only_mk">僅用於馬其頓文文字</string>
     <string name="popup_font_script_only_mn">僅用於蒙古文文字</string>
+    <string name="popup_font_script_only_mr">僅用於馬拉地文文字</string>
     <string name="popup_font_system_zh">手機內建的中文字型</string>
     <string name="popup_font_system_ko">手機內建的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

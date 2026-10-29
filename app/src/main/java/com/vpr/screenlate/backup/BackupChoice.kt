@@ -82,7 +82,7 @@ data class BackupChoice(
     /** The [files] that are shared or belong to a language taken from [listed]. */
     fun visible(files: List<BackupFile>, listed: List<BackupFile>): List<BackupFile> {
         val chosen = chosenLanguages(listed)
-        return files.filter { it.language == null || it.language in chosen }
+        return files.filter { file -> file.languages.isEmpty() || file.languages.any { it in chosen } }
     }
 
     /** The sections [fonts] and [dictionaries] leave something in, in the order of [BackupSection]. */

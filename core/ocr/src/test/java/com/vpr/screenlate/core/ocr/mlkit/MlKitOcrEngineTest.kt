@@ -33,5 +33,6 @@ class MlKitOcrEngineTest {
         assertThat(engine.reads(Language.VIETNAMESE)).isTrue()
         assertThat(engine.reads(Language.HINDI)).isTrue()
         assertThat(engine.reads(Language.BENGALI)).isTrue()
+        assertThat(engine.reads(Language.MARATHI)).isTrue()
     }
 }

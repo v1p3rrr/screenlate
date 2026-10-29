@@ -314,6 +314,37 @@ class LanguageLookupTest {
     }
 
     @Test
+    fun marathiEndingsComeOffObliqueStemsAndVerbStemsByPartOfSpeechAndOldSpellingsFindTheHeadwords() = runTest {
+        val imported = engine.import(marathiDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val marathi = LookupOptions(language = Language.MARATHI)
+        suspend fun first(text: String) = engine.lookup(text, marathi).first().term.expression
+        suspend fun whole(text: String) = engine.lookup(text, marathi).filter { it.matched == text }.map { it.term.expression }
+
+        // A case ending off the oblique stem, and a particle before it.
+        val water = engine.lookup("पाण्यात", marathi).first()
+        assertThat(water.term.expression).isEqualTo("पाणी")
+        assertThat(water.trace.map { it.name }).containsExactly("-त")
+        assertThat(whole("शाळेतही")).containsExactly("शाळा")
+        assertThat(whole("विद्यार्थ्यांना")).containsExactly("विद्यार्थी")
+        // Noun endings reach adverbs; the verbal noun before साठी reaches the verb.
+        assertThat(whole("आतापर्यंत")).containsExactly("आता")
+        assertThat(whole("वाचण्यासाठी")).containsExactly("वाचणे")
+        // The locative -त only after a vowel: करत is no कर (tax), but the participle of करणे, as करताना.
+        val doing = engine.lookup("करत", marathi).filter { it.matched == "करत" }
+        assertThat(doing.map { it.term.expression }).containsExactly("करणे")
+        assertThat(doing.single().trace.map { it.name }).containsExactly("-त")
+        assertThat(whole("करताना")).containsExactly("करणे")
+        // A word with an entry of its own shows no results of the rules.
+        assertThat(whole("घरात")).containsExactly("घरात")
+        // An old font's य़, a nukta and अॅ find the headwords' spelling.
+        assertThat(first("मोठय\u093C\u093E")).isEqualTo("मोठा")
+        assertThat(first("मोठ\u095F\u093E")).isEqualTo("मोठा")
+        assertThat(first("फ\u093Cोन")).isEqualTo("फोन")
+        assertThat(first("अॅप")).isEqualTo("ॲप")
+    }
+
+    @Test
     fun georgianRulesFindEntriesWithoutPartOfSpeechAndMtavruliHeadingsFindTheOrdinaryLetters() = runTest {
         val imported = engine.import(georgianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
@@ -2068,6 +2099,28 @@ class LanguageLookupTest {
               ["করিস  / koris","","non-lemma","",0,[["করা",["second-person present very familiar"]]],4,""],
               ["কর ো","","non-lemma","",0,[["করা",["imperative familiar"]]],5,""],
               ["{{{3}}}ে ({{{4}}}e)","","non-lemma","",0,[["করা",["third-person present familiar"]]],6,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun marathiDictionary(): File = zip(
+        "mr.zip",
+        "index.json" to """{"title":"Test Marathi","revision":"1","format":3,"sourceLanguage":"mr"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["घर","","n neut","",0,["house"],1,""],
+              ["घरात","","adv","",0,["at home"],2,""],
+              ["पाणी","","n neut","",0,["water"],3,""],
+              ["विद्यार्थी","","n masc","",0,["student"],4,""],
+              ["आता","","adv","",0,["now"],5,""],
+              ["वाचणे","","v vt","",0,["to read"],6,""],
+              ["शाळा","","n fem","",0,["school"],7,""],
+              ["कर","","n masc","",0,["tax"],8,""],
+              ["करणे","","v vt","",0,["to do"],9,""],
+              ["मोठा","","adj","",0,["big"],11,""],
+              ["मोठ्या","","non-lemma","",0,[["मोठा",["oblique"]]],12,""],
+              ["फोन","","n masc","",0,["phone"],13,""],
+              ["ॲप","","n neut","",0,["app"],14,""]
             ]
         """.trimIndent().toByteArray(),
     )

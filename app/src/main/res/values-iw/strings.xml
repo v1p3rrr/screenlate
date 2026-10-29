@@ -546,6 +546,7 @@
     <string name="popup_font_script_only_bg">רק לטקסט בבולגרית</string>
     <string name="popup_font_script_only_mk">רק לטקסט במקדונית</string>
     <string name="popup_font_script_only_mn">רק לטקסט במונגולית</string>
+    <string name="popup_font_script_only_mr">רק לטקסט במראטהית</string>
     <string name="popup_font_system_zh">הגופן הסיני של הטלפון</string>
     <string name="popup_font_system_ko">הגופן הקוריאני של הטלפון</string>
     <string name="popup_font_script_only_zh">רק לטקסט בסינית</string>

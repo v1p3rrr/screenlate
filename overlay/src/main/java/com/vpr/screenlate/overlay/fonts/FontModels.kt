@@ -35,9 +35,9 @@ data class CatalogFontFile(val url: String, val weight: String = "400")
 /**
  * A freely licensed font offered for download.
  *
- * @param language the code of the language whose page alone offers it (`Language.code`); null for a font offered by
- *   the letters it has.
- * @param subsets the Google Fonts subsets the font covers; a font without [language] is offered for every language
+ * @param languages the codes of the languages whose pages alone offer it (`Language.code`), Mukta's Hindi and
+ *   Marathi; empty for a font offered by the letters it has.
+ * @param subsets the Google Fonts subsets the font covers; a font without [languages] is offered for every language
  *   whose [LanguageSupport.fontSubsets] are among them and whose [LanguageSupport.fontLetters] it has.
  * @param letters the letters and marks below U+2000 the font has, as hex ranges (`0041-005A,00AA`), written by
  *   `scripts/fonts/font_letters.py`; null for a font made for one language.
@@ -47,7 +47,7 @@ data class CatalogFontFile(val url: String, val weight: String = "400")
 data class CatalogFont(
     val id: String,
     val family: String,
-    val language: String? = null,
+    val languages: List<String> = emptyList(),
     val subsets: List<String> = emptyList(),
     val letters: String? = null,
     val description: Map<String, String> = emptyMap(),
@@ -59,7 +59,7 @@ data class CatalogFont(
     fun description(locale: Locale): String = description[localeKey(locale)] ?: description["en"].orEmpty()
 
     fun isOfferedFor(language: Language): Boolean {
-        this.language?.let { return it == language.code }
+        if (languages.isNotEmpty()) return language.code in languages
         val needed = language.support.fontSubsets
         return needed.isNotEmpty() && subsets.containsAll(needed) && hasLetters(language.support.fontLetters)
     }

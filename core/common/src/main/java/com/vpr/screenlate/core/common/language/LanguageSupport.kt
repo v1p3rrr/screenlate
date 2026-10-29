@@ -535,6 +535,8 @@ enum class SearchResolution { WORD, LETTER }
  * them, the exact spelling first.
  * @property comparativePrefixes prefixes of comparative forms (Bulgarian по-, най-): the "comparative" tag of a form
  * without one is dropped at import, as Wiktionary's Bulgarian tables put it on positive forms.
+ * @property droppedForms form headwords left out at import, as written: labels of Wiktionary's tables that its export
+ * gives as forms of every tabled word (Marathi होकारार्थी "affirmative").
  */
 data class HeadwordMarks(
     val marks: String,
@@ -548,6 +550,7 @@ data class HeadwordMarks(
     val letterMarks: String = "",
     val letterBases: String = "",
     val comparativePrefixes: List<String> = emptyList(),
+    val droppedForms: Set<String> = emptySet(),
 )
 
 /** The markers of [LanguageSupport.rightToLeftMarkers] every right-to-left language has. */
@@ -621,6 +624,7 @@ val Language.support: LanguageSupport
         Language.BULGARIAN -> BulgarianSupport
         Language.MACEDONIAN -> MacedonianSupport
         Language.MONGOLIAN -> MongolianSupport
+        Language.MARATHI -> MarathiSupport
     }
 
 /**

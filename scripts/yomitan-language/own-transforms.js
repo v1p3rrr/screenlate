@@ -42,6 +42,120 @@ export const bengaliTransforms = /* @__PURE__ */ (() => ({
 }))();
 
 /**
+ * Marathi case endings and postpositions written joined to a word, longest first, as the app's own rules: Wiktionary
+ * lists verb tables and some plurals, no case forms. An ending comes off the oblique stem, which is taken back to the
+ * direct form in each way it may have been made ([marathiObliques]). The particles ही and च come off first, and an
+ * ending may follow them (घरातही → घरात → घर). Wiktionary's Marathi entries tag each definition with its part of
+ * speech, so the texts of the endings reach nominal words and forms, those of the verbal noun the verbs, and those of
+ * the particles any word (glue.js, `taggedRules`, `untypedRules`). Two characters stay at least. The endings are in
+ * NFC, as the composed text and the headwords. The imperfective participle's -त and -ताना come off a verb's stem for
+ * its infinitive in -णे (करत, करताना → करणे): Wiktionary lists the forms of few verbs ([marathiParticiples]).
+ */
+const marathiEndings = [
+    'प्रमाणे', 'मध्ये', 'पर्यंत', 'पासून', 'मधील', 'मधून', 'विषयी', 'बद्दल', 'पेक्षा', 'सारखा', 'सारखी', 'सारखे', 'बरोबर',
+    'करिता', 'पूर्वी', 'कडून', 'कडील', 'च्या', 'साठी', 'वरील', 'वरून', 'नंतर', 'मुळे', 'खाली', 'सोबत', 'समोर', 'जवळ',
+    'कडे', 'तील', 'तून', 'हून', 'आधी', 'ून', 'ला', 'ना', 'ने', 'नी', 'चा', 'ची', 'चे', 'वर', 'शी', 'त', 'स',
+];
+
+/** Endings that follow a vowel only: करत is a verb's form, not कर with the locative. */
+const marathiEndingsAfterVowels = new Set(['त', 'स']);
+
+/** The imperfective participle's endings, which come off a verb's stem (येत, येताना → येणे). */
+const marathiParticiples = ['ताना', 'त'];
+
+/**
+ * Oblique stems and their direct forms: the stem as it is (नदीला → नदी), -्या for -ा and -ी (मुलग्याला → मुलगा,
+ * पाण्यात → पाणी; ऱ्या for रा and री, as ऱ is र before य: शेतकऱ्याला → शेतकरी), -ा dropped (घरात → घर), -े for -ा or for
+ * nothing (शाळेत → शाळा, वेळेला → वेळ), the plural -ां for nothing or -ा (लोकांना → लोक, शाळांना → शाळा) and -्यां as -्या,
+ * -ीं and -ूं for -ी and -ू (मुलींना → मुली), and the verbal noun's -ण्या for -णे (करण्यासाठी → करणे), which reaches verbs.
+ * @type {[string, string, 'n' | 'v'][]}
+ */
+const marathiObliques = [
+    ['', '', 'n'],
+    ['्या', 'ा', 'n'], ['्या', 'ी', 'n'], ['ऱ्या', 'रा', 'n'], ['ऱ्या', 'री', 'n'],
+    ['्यां', 'ा', 'n'], ['्यां', 'ी', 'n'], ['ऱ्यां', 'रा', 'n'], ['ऱ्यां', 'री', 'n'],
+    ['ा', '', 'n'],
+    ['े', 'ा', 'n'], ['े', '', 'n'],
+    ['ां', '', 'n'], ['ां', 'ा', 'n'],
+    ['ीं', 'ी', 'n'], ['ूं', 'ू', 'n'],
+    ['ण्या', 'णे', 'v'],
+];
+
+/** A vowel sign, an independent vowel or anusvara, as a pattern without Unicode classes. */
+const MARATHI_VOWEL_END = '[\u0904-\u0914\u093E-\u094C\u0902]';
+
+/**
+ * @param {string} ending
+ * @returns {import('language-transformer').SuffixRule<'n' | 'v' | 'p'>[]}
+ */
+function marathiEndingRules(ending) {
+    return marathiObliques.map(([oblique, direct, condition]) => {
+        const before = oblique === '' && marathiEndingsAfterVowels.has(ending) ? `.${MARATHI_VOWEL_END}` : '.{2}';
+        const cut = oblique.length + ending.length;
+        return {
+            type: 'suffix',
+            isInflected: new RegExp(before + oblique + ending + '$'),
+            deinflected: direct,
+            deinflect: (text) => text.slice(0, -cut) + direct,
+            conditionsIn: ['p'],
+            conditionsOut: [condition],
+        };
+    });
+}
+
+/**
+ * @param {string} ending
+ * @returns {import('language-transformer').SuffixRule<'v' | 'p'>}
+ */
+function marathiParticiple(ending) {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp('.{2}' + ending + '$'),
+        deinflected: 'णे',
+        deinflect: (text) => text.slice(0, -ending.length) + 'णे',
+        conditionsIn: ['p'],
+        conditionsOut: ['v'],
+    };
+}
+
+/**
+ * @param {string} particle
+ * @returns {import('language-transformer').SuffixRule<'p'>}
+ */
+function marathiParticle(particle) {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp('.{2}' + particle + '$'),
+        deinflected: '',
+        deinflect: (text) => text.slice(0, -particle.length),
+        conditionsIn: [],
+        conditionsOut: ['p'],
+    };
+}
+
+/** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'v' | 'p'>} */
+export const marathiTransforms = /* @__PURE__ */ (() => ({
+    language: 'mr',
+    conditions: {
+        n: {name: 'Noun', isDictionaryForm: true},
+        v: {name: 'Verb', isDictionaryForm: true},
+        p: {name: 'Word', isDictionaryForm: true},
+    },
+    transforms: Object.fromEntries([
+        ...marathiEndings.map((ending) => [`-${ending}`, {
+            name: `-${ending}`,
+            rules: [
+                ...marathiEndingRules(ending),
+                ...(marathiParticiples.includes(ending) ? [marathiParticiple(ending)] : []),
+            ],
+        }]),
+        ...marathiParticiples.filter((ending) => !marathiEndings.includes(ending))
+            .map((ending) => [`-${ending}`, {name: `-${ending}`, rules: [marathiParticiple(ending)]}]),
+        ...['ही', 'च'].map((particle) => [`-${particle}`, {name: `-${particle}`, rules: [marathiParticle(particle)]}]),
+    ]),
+}))();
+
+/**
  * Persian endings and verb prefixes, as the app's own rules: Wiktionary lists the verb forms (میفرستادیم, نمیدانم) and
  * few noun forms. An enclitic comes off first: a possessive (کتابم, کتابشان, خانهاش, پایم, spoken کتابشون), the
  * indefinite or ezafe ی (کتابی, خانهای, پایی), a copula (رفتهاند) or a joined را (آنرا); then a plural (کتابها,

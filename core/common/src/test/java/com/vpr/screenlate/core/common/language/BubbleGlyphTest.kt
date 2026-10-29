@@ -62,6 +62,15 @@ class BubbleGlyphTest {
     }
 
     @Test
+    fun `hindi and marathi keep their own devanagari letters side by side`() {
+        val quick = listOf(Language.HINDI, Language.MARATHI, Language.MONGOLIAN)
+        assertThat(bubbleGlyph(Language.HINDI, quick)).isEqualTo("हि")
+        assertThat(bubbleGlyph(Language.MARATHI, quick)).isEqualTo("म")
+        assertThat(bubbleGlyph(Language.MONGOLIAN, quick)).isEqualTo("М")
+        assertThat(Language.MARATHI.support.codeLabel).isEqualTo("MR")
+    }
+
+    @Test
     fun `a letter with marks counts as the letter without them`() {
         val quick = listOf(Language.CZECH, Language.WELSH)
         assertThat(bubbleGlyph(Language.CZECH, quick)).isEqualTo("CS")

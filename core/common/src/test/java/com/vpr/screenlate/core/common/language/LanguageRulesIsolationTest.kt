@@ -215,16 +215,22 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { !it.endsSentence(andSoOn, andSoOn.lastIndexOf(". ")) }).containsExactly(Language.KYRGYZ)
         val example = "π.χ. το"
         assertThat(periodEnding.where { !it.endsSentence(example, example.indexOf(". ")) }).containsExactly(Language.GREEK)
-        // Hindi डॉ., whose vowel sign is a mark, and Latin letter names joined by periods; Bengali the same way.
-        assertThat(periodEnding.where { holds(it, "डॉ. शर्मा") }).containsExactly(Language.HINDI)
+        // Hindi and Marathi डॉ., whose vowel sign is a mark, and Latin letter names joined by periods; Bengali the same
+        // way.
+        assertThat(periodEnding.where { holds(it, "डॉ. शर्मा") }).containsExactly(Language.HINDI, Language.MARATHI)
         val acronym = "ए.पी.जे. कलाम"
-        assertThat(periodEnding.where { !it.endsSentence(acronym, acronym.indexOf(". ")) }).containsExactly(Language.HINDI)
+        assertThat(periodEnding.where { !it.endsSentence(acronym, acronym.indexOf(". ")) })
+            .containsExactly(Language.HINDI, Language.MARATHI)
         assertThat(periodEnding.where { holds(it, "মো. রহিম") }).containsExactly(Language.BENGALI)
         val bengaliAcronym = "এ.কে. ফজলুল"
         assertThat(periodEnding.where { !it.endsSentence(bengaliAcronym, bengaliAcronym.indexOf(". ")) })
             .containsExactly(Language.BENGALI)
         assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.HINDI, Language.BENGALI)
+            .containsExactly(Language.HINDI, Language.BENGALI, Language.MARATHI)
+        // Marathi initials are syllables ("पु. ल. देशपांडे"), but for its one-syllable words of dialogue.
+        assertThat(periodEnding.where { holds(it, "पु. ल. देशपांडे") }).containsExactly(Language.MARATHI)
+        assertThat(periodEnding.where { holds(it, "हो. मी") }).isEmpty()
+        assertThat(spaced.filter { it.syllableInitialScript != null }.map { it.language }).containsExactly(Language.MARATHI)
         // Georgian ქ. (city) and წ. (year), single letters without a partner.
         assertThat(periodEnding.where { holds(it, "ქ. თბილისი") }).containsExactly(Language.GEORGIAN)
         assertThat(periodEnding.where { holds(it, "1991 წ. დაიწყო") }).containsExactly(Language.GEORGIAN)
@@ -380,12 +386,11 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Hindi and Bengali end a sentence at the danda`() {
-        assertThat(all.where { it.endsSentence("वह आया। फिर", "वह आया".length) })
-            .containsExactly(Language.HINDI, Language.BENGALI)
-        assertThat(all.where { it.endsSentence("সে এল। তারপর", "সে এল".length) })
-            .containsExactly(Language.HINDI, Language.BENGALI)
-        assertThat(all.where { it.endsSentence("राम॥ अब", "राम".length) }).containsExactly(Language.HINDI, Language.BENGALI)
+    fun `only Hindi, Bengali and Marathi end a sentence at the danda`() {
+        val danda = listOf(Language.HINDI, Language.BENGALI, Language.MARATHI)
+        assertThat(all.where { it.endsSentence("वह आया। फिर", "वह आया".length) }).containsExactlyElementsIn(danda)
+        assertThat(all.where { it.endsSentence("সে এল। তারপর", "সে এল".length) }).containsExactlyElementsIn(danda)
+        assertThat(all.where { it.endsSentence("राम॥ अब", "राम".length) }).containsExactlyElementsIn(danda)
     }
 
     @Test
@@ -487,7 +492,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
             .containsExactly(
                 Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.HUNGARIAN, Language.AZERBAIJANI,
-                Language.UZBEK, Language.BULGARIAN,
+                Language.UZBEK, Language.BULGARIAN, Language.MARATHI,
             )
         assertThat(all.where { it.ruleChainsOnlyWithoutRow }).containsExactly(Language.FINNISH)
     }

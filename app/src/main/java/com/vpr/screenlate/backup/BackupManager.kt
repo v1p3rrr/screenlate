@@ -86,7 +86,7 @@ enum class BackupFailure { NOT_BACKUP, NEWER_VERSION, WRITE, READ }
  *   recognition models, null without any.
  * @property language the code of the language whose file it is; null for one every language shares.
  */
-data class BackupFile(val key: String, val name: String, val bytes: Long?, val language: String? = null)
+data class BackupFile(val key: String, val name: String, val bytes: Long?, val languages: List<String> = emptyList())
 
 /**
  * The installed fonts and the dictionaries with files, which a backup can hold, in their order on screen. Those of
@@ -160,10 +160,10 @@ class BackupManager @Inject constructor(
         val modelLanguages = modelLanguages()
         BackupFiles(
             fonts = fonts.installed.value.map { font ->
-                BackupFile(font.id, font.family, sizes[font.id], fontLanguage(font))
-            }.filter { it.language == null || it.language in codes },
+                BackupFile(font.id, font.family, sizes[font.id], fontLanguages(font))
+            }.filter { font -> font.languages.isEmpty() || font.languages.any { it in codes } },
             dictionaries = installed.filter { storage.hasFiles(it) }.map {
-                BackupFile(it.title, it.title, bytesOf(storage.directoryOf(it)), it.sourceLanguage)
+                BackupFile(it.title, it.title, bytesOf(storage.directoryOf(it)), listOfNotNull(it.sourceLanguage))
             },
             listed = installed.map { it.sourceLanguage },
             languages = turnedOn.map { language ->
@@ -179,9 +179,9 @@ class BackupManager @Inject constructor(
         return { id -> entries.filter { it.model == id }.map { it.sourceLanguage }.distinct() }
     }
 
-    /** The language a catalog font was made for; null for the user's own fonts and fonts offered by their letters. */
-    private fun fontLanguage(font: InstalledFont): String? =
-        font.catalogId?.let { id -> fonts.catalog.firstOrNull { it.id == id }?.language }
+    /** The languages a catalog font was made for; none for the user's own fonts and fonts offered by their letters. */
+    private fun fontLanguages(font: InstalledFont): List<String> =
+        font.catalogId?.let { id -> fonts.catalog.firstOrNull { it.id == id }?.languages }.orEmpty()
 
     /**
      * Writes a backup of [sections] into the document at [uri], with the fonts [fontIds] and the files of the
@@ -278,10 +278,10 @@ class BackupManager @Inject constructor(
                     runCatching { FontBackup.decode(index) }.getOrDefault(emptyList())
                 }.orEmpty().filter { font -> font.files.all { it.name in head.fontSizes } }
                 val fontFiles = backupFonts.map { font ->
-                    BackupFile(font.id, font.family, font.files.sumOf { head.fontSizes[it.name] ?: 0 }, fontLanguage(font))
+                    BackupFile(font.id, font.family, font.files.sumOf { head.fontSizes[it.name] ?: 0 }, fontLanguages(font))
                 }
                 val list = head.dictionaries.dictionaries
-                val languages = BackupLanguages.of(head.manifest, head.settings, list.map { it.sourceLanguage } + fontFiles.map { it.language })
+                val languages = BackupLanguages.of(head.manifest, head.settings, list.map { it.sourceLanguage } + fontFiles.flatMap { it.languages })
                 BackupState.Loaded(
                     uri = uri,
                     manifest = head.manifest,
@@ -291,7 +291,7 @@ class BackupManager @Inject constructor(
                     listed = list.map { it.sourceLanguage },
                     fonts = fontFiles,
                     dictionaryFiles = list.withIndex().filter { it.value.files }.map {
-                        BackupFile(it.index.toString(), it.value.title, it.value.bytes.takeIf { bytes -> bytes > 0 }, it.value.sourceLanguage)
+                        BackupFile(it.index.toString(), it.value.title, it.value.bytes.takeIf { bytes -> bytes > 0 }, listOfNotNull(it.value.sourceLanguage))
                     },
                     languages = languages.map { language ->
                         val bytes = head.manifest.models.filter { language.code in it.languages }.sumOf { it.bytes }

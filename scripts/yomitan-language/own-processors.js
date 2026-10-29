@@ -24,6 +24,41 @@ export const candrabinduAsAnusvara = {
 };
 
 /**
+ * Marathi text set in old fonts writes the \u092f of a conjunct as \u092f\u093c (\u092e\u094b\u0920\u092f\u093c\u093e for \u092e\u094b\u0920\u094d\u092f\u093e), with or without the virama and
+ * in either Unicode form of \u092f\u093c (U+095F, or \u092f + nukta as NFC gives it).
+ * @type {import('language').TextProcessor}
+ */
+export const marathiLegacyYa = {
+    name: 'Legacy ya',
+    description: '\u092e\u094b\u0920\u092f\u093c\u093e \u2192 \u092e\u094b\u0920\u094d\u092f\u093e',
+    process: (str) => [str, str.replace(/([\u0915-\u0939])\u094d?(?:\u095f|\u092f\u093c)/g, '$1\u094d\u092f')],
+};
+
+/**
+ * Devanagari text with a nukta that the headwords leave out (\u091c\u093c for \u091c).
+ * @type {import('language').TextProcessor}
+ */
+export const removeNukta = {
+    name: 'Remove nukta',
+    description: '\u091c\u093c \u2192 \u091c',
+    process: (str) => [str, str.replace(/\u093c/g, '')],
+};
+
+/**
+ * The Marathi vowel \u0972 written as \u0905 with the candra sign (\u0905\u0945, also with a zero-width joiner) or as \u090d, and the candra
+ * with anusvara written as candrabindu (\u092c\u0901\u0915 for the headwords' \u092c\u0945\u0902\u0915).
+ * @type {import('language').TextProcessor}
+ */
+export const marathiCandra = {
+    name: 'Candra vowels',
+    description: '\u0905\u0945 \u2192 \u0972, \u092c\u0901\u0915 \u2192 \u092c\u0945\u0902\u0915',
+    process: (str) => [
+        str,
+        str.replace(/\u0905\u200d?\u0945|\u090d/g, '\u0972').replace(/\u0901/g, '\u0945\u0902'),
+    ],
+};
+
+/**
  * Armenian emphasis, exclamation and question marks, written on the stressed vowel inside a word (ինչո՞ւ for ինչու,
  * կարդա՛): headwords are written without them. The import keys Wiktionary's forms written with them without them too.
  * @type {import('language').TextProcessor}

@@ -131,6 +131,10 @@
     "size": 96068,
     "words": 5303
   },
+  "dict/all/mr/wty-mr-ipa.zip": {
+    "size": 85558,
+    "words": 4900
+  },
   "dict/all/ms/wty-ms-ipa.zip": {
     "size": 223548,
     "words": 9047
@@ -2382,6 +2386,42 @@
   "dict/mn/zh/wty-mn-zh.zip": {
     "size": 204554,
     "words": 1923
+  },
+  "dict/mr/de/wty-mr-de.zip": {
+    "size": 42156,
+    "words": 335
+  },
+  "dict/mr/en/wty-mr-en.zip": {
+    "size": 840945,
+    "words": 5057
+  },
+  "dict/mr/fr/wty-mr-fr.zip": {
+    "size": 13631,
+    "words": 127
+  },
+  "dict/mr/ja/wty-mr-ja.zip": {
+    "size": 14121,
+    "words": 68
+  },
+  "dict/mr/pl/wty-mr-pl.zip": {
+    "size": 30000,
+    "words": 507
+  },
+  "dict/mr/pt/wty-mr-pt.zip": {
+    "size": 17979,
+    "words": 300
+  },
+  "dict/mr/ru/wty-mr-ru.zip": {
+    "size": 51068,
+    "words": 968
+  },
+  "dict/mr/tr/wty-mr-tr.zip": {
+    "size": 19821,
+    "words": 291
+  },
+  "dict/mr/zh/wty-mr-zh.zip": {
+    "size": 45815,
+    "words": 321
   },
   "dict/ms/de/wty-ms-de-gloss.zip": {
     "size": 21017,

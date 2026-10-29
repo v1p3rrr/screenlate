@@ -550,6 +550,7 @@
     <string name="popup_font_script_only_bg">Tylko dla tekstu bułgarskiego</string>
     <string name="popup_font_script_only_mk">Tylko dla tekstu macedońskiego</string>
     <string name="popup_font_script_only_mn">Tylko dla tekstu mongolskiego</string>
+    <string name="popup_font_script_only_mr">Tylko dla tekstu w marathi</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

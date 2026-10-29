@@ -399,6 +399,17 @@ class SentenceTest {
     }
 
     @Test
+    fun marathiSentencesEndAtThePeriodAndKeepAbbreviationsAndSyllableInitials() {
+        val marathi = "तो घरी गेला. डॉ. जोशी म्हणाले, “उद्या या. नक्की.” मग ते निघाले. पु. ल. देशपांडे लेखक होते. कोण? मी. शेवट."
+        assertThat(extract(marathi, "जोशी", Language.MARATHI).text)
+            .isEqualTo("डॉ. जोशी म्हणाले, “उद्या या. नक्की.” मग ते निघाले.")
+        assertThat(extract(marathi, "देशपांडे", Language.MARATHI).text).isEqualTo("पु. ल. देशपांडे लेखक होते.")
+        assertThat(extract(marathi, "मी", Language.MARATHI).text).isEqualTo("मी.")
+        val danda = "तो आला। आता जा।"
+        assertThat(extract(danda, "आला", Language.MARATHI).text).isEqualTo("तो आला।")
+    }
+
+    @Test
     fun bengaliSentencesEndAtTheDandaAndKeepQuotesAbbreviationsAndInitials() {
         val bengali = "সে বাড়ি গেল। ড. ইউনূস বললেন, “কাল এসো। অবশ্যই।” তারপর তাঁরা চলে গেলেন। শেষ।"
         assertThat(extract(bengali, "ইউনূস", Language.BENGALI).text)

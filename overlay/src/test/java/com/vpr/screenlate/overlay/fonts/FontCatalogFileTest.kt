@@ -22,9 +22,9 @@ class FontCatalogFileTest {
         assertThat(fonts.map { it.id }).containsNoDuplicates()
         assertThat(fonts.map { it.family }).containsNoDuplicates()
         for (font in fonts) {
-            val language = font.language
-            if (language != null) {
-                assertThat(Language.of(language)).isNotNull()
+            if (font.languages.isNotEmpty()) {
+                font.languages.forEach { assertThat(Language.of(it)).isNotNull() }
+                assertThat(font.languages).containsNoDuplicates()
             } else {
                 assertThat(font.subsets).isNotEmpty()
                 assertThat(font.letters.orEmpty()).matches("[0-9A-F]{4}(-[0-9A-F]{4})?(,[0-9A-F]{4}(-[0-9A-F]{4})?)*")
@@ -109,7 +109,7 @@ class FontCatalogFileTest {
             .containsExactly(
                 "Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans", "Montserrat", "Commissioner",
             )
-        assertThat(fonts.filter { it.language == null && it.subsets.contains("latin-ext") }.all { it.hasLetters("ąčęėįšųūž") })
+        assertThat(fonts.filter { it.languages.isEmpty() && it.subsets.contains("latin-ext") }.all { it.hasLetters("ąčęėįšųūž") })
             .isTrue()
     }
 
@@ -119,7 +119,7 @@ class FontCatalogFileTest {
             .containsExactly(
                 "Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans", "Montserrat", "Commissioner",
             )
-        assertThat(fonts.filter { it.language == null && it.subsets.contains("latin-ext") }.all { it.hasLetters("áäčďéíĺľňóôŕšťúýž") })
+        assertThat(fonts.filter { it.languages.isEmpty() && it.subsets.contains("latin-ext") }.all { it.hasLetters("áäčďéíĺľňóôŕšťúýž") })
             .isTrue()
     }
 
@@ -241,38 +241,47 @@ class FontCatalogFileTest {
         )
         for (language in Language.entries.filter { it.support.fontSubsets.isNotEmpty() }) {
             val bySubsets = fonts.filter {
-                it.language == null && it.subsets.containsAll(language.support.fontSubsets) && it.id !in lacking[language].orEmpty()
+                it.languages.isEmpty() && it.subsets.containsAll(language.support.fontSubsets) && it.id !in lacking[language].orEmpty()
             }
-            assertThat(fonts.filter { it.language == null && it.isOfferedFor(language) }).containsExactlyElementsIn(bySubsets)
+            assertThat(fonts.filter { it.languages.isEmpty() && it.isOfferedFor(language) }).containsExactlyElementsIn(bySubsets)
         }
     }
 
     @Test
     fun `chinese has fonts for both scripts`() {
-        val chinese = fonts.filter { it.language == Language.CHINESE.code }.map { it.family }
+        val chinese = fonts.filter { Language.CHINESE.code in it.languages }.map { it.family }
         assertThat(chinese).containsExactly("Noto Sans SC", "Noto Serif SC", "Noto Sans TC", "Noto Serif TC", "LXGW WenKai TC")
     }
 
     @Test
     fun `korean has gothic and myeongjo fonts`() {
-        val korean = fonts.filter { it.language == Language.KOREAN.code }.map { it.family }
+        val korean = fonts.filter { Language.KOREAN.code in it.languages }.map { it.family }
         assertThat(korean).containsExactly("Noto Sans KR", "Noto Serif KR", "Nanum Gothic", "Nanum Myeongjo")
     }
 
     @Test
-    fun `hindi has two sans-serifs and a serif, offered for hindi only`() {
-        val hindi = fonts.filter { it.language == Language.HINDI.code }
+    fun `hindi has two sans-serifs and a serif, mukta offered for marathi as well`() {
+        val hindi = fonts.filter { Language.HINDI.code in it.languages }
         assertThat(hindi.map { it.family }).containsExactly("Mukta", "Hind", "Tiro Devanagari Hindi")
         for (font in hindi) {
-            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.HINDI)
+            val offered = if (font.id == "mukta") listOf(Language.HINDI, Language.MARATHI) else listOf(Language.HINDI)
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactlyElementsIn(offered)
         }
         // Latin fonts have no Devanagari.
         assertThat(fonts.filter { it.isOfferedFor(Language.HINDI) }).containsExactlyElementsIn(hindi)
     }
 
     @Test
+    fun `marathi has hindi's mukta and a serif of its own`() {
+        val marathi = fonts.filter { it.isOfferedFor(Language.MARATHI) }
+        assertThat(marathi.map { it.family }).containsExactly("Mukta", "Tiro Devanagari Marathi")
+        val tiro = fonts.single { it.id == "tiro-devanagari-marathi" }
+        assertThat(Language.entries.filter { tiro.isOfferedFor(it) }).containsExactly(Language.MARATHI)
+    }
+
+    @Test
     fun `bengali has a sans-serif and a serif, offered for bengali only`() {
-        val bengali = fonts.filter { it.language == Language.BENGALI.code }
+        val bengali = fonts.filter { Language.BENGALI.code in it.languages }
         assertThat(bengali.map { it.family }).containsExactly("Hind Siliguri", "Tiro Bangla")
         for (font in bengali) {
             assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.BENGALI)
@@ -282,7 +291,7 @@ class FontCatalogFileTest {
 
     @Test
     fun `thai has looped and loopless fonts, offered for thai only`() {
-        val thai = fonts.filter { it.language == Language.THAI.code }
+        val thai = fonts.filter { Language.THAI.code in it.languages }
         assertThat(thai.map { it.family }).containsExactly("Sarabun", "Noto Sans Thai Looped", "Kanit", "Prompt")
         for (font in thai) {
             assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.THAI)
@@ -293,7 +302,7 @@ class FontCatalogFileTest {
 
     @Test
     fun `khmer has a sans-serif and a serif, offered for khmer only`() {
-        val khmer = fonts.filter { it.language == Language.KHMER.code }
+        val khmer = fonts.filter { Language.KHMER.code in it.languages }
         assertThat(khmer.map { it.family }).containsExactly("Kantumruy Pro", "Hanuman")
         for (font in khmer) {
             assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.KHMER)

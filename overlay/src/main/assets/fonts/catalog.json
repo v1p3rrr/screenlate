@@ -3,7 +3,7 @@
     {
       "id": "noto-sans-jp",
       "family": "Noto Sans JP",
-      "language": "ja",
+      "languages": ["ja"],
       "description": {
         "en": "Clean gothic (sans-serif) in every weight, the web version of the phone's Japanese font.",
         "ru": "Аккуратная готика (без засечек) во всех начертаниях, веб-версия японского шрифта телефона.",
@@ -30,7 +30,7 @@
     {
       "id": "noto-serif-jp",
       "family": "Noto Serif JP",
-      "language": "ja",
+      "languages": ["ja"],
       "description": {
         "en": "Mincho (serif) to match Noto Sans JP, close to Yu Mincho.",
         "ru": "Минтё (с засечками) в пару к Noto Sans JP, близок к Yu Mincho.",
@@ -57,7 +57,7 @@
     {
       "id": "biz-udpgothic",
       "family": "BIZ UDPGothic",
-      "language": "ja",
+      "languages": ["ja"],
       "description": {
         "en": "Proportional gothic by Morisawa designed for readability, close to Meiryo.",
         "ru": "Пропорциональная готика Morisawa, сделанная для удобного чтения, близка к Meiryo.",
@@ -85,7 +85,7 @@
     {
       "id": "biz-udpmincho",
       "family": "BIZ UDPMincho",
-      "language": "ja",
+      "languages": ["ja"],
       "description": {
         "en": "Proportional mincho by Morisawa, easy to read at small sizes.",
         "ru": "Пропорциональный минтё Morisawa, хорошо читается мелким кеглем.",
@@ -113,7 +113,7 @@
     {
       "id": "klee-one",
       "family": "Klee One",
-      "language": "ja",
+      "languages": ["ja"],
       "description": {
         "en": "Handwritten textbook style: kanji look the way they are taught to be written.",
         "ru": "Рукописный учебный стиль: кандзи выглядят так, как их учат писать.",
@@ -141,7 +141,7 @@
     {
       "id": "zen-maru-gothic",
       "family": "Zen Maru Gothic",
-      "language": "ja",
+      "languages": ["ja"],
       "description": {
         "en": "Rounded gothic, soft and easy on the eyes.",
         "ru": "Скруглённая готика, мягкая и спокойная.",
@@ -169,7 +169,7 @@
     {
       "id": "m-plus-1p",
       "family": "M PLUS 1p",
-      "language": "ja",
+      "languages": ["ja"],
       "description": {
         "en": "Light modern gothic, the smallest download.",
         "ru": "Лёгкая современная готика, самая маленькая загрузка.",
@@ -197,7 +197,7 @@
     {
       "id": "noto-sans-sc",
       "family": "Noto Sans SC",
-      "language": "zh",
+      "languages": ["zh"],
       "description": {
         "en": "Clean sans-serif (hei) in every weight with the Simplified forms of mainland China, the web version of the phone's Chinese font.",
         "ru": "Аккуратный шрифт без засечек (хэй) во всех начертаниях, с упрощёнными формами материкового Китая, веб-версия китайского шрифта телефона.",
@@ -224,7 +224,7 @@
     {
       "id": "noto-serif-sc",
       "family": "Noto Serif SC",
-      "language": "zh",
+      "languages": ["zh"],
       "description": {
         "en": "Song (serif) in every weight with Simplified forms, to match Noto Sans SC.",
         "ru": "Сун (с засечками) во всех начертаниях, с упрощёнными формами, в пару к Noto Sans SC.",
@@ -251,7 +251,7 @@
     {
       "id": "noto-sans-tc",
       "family": "Noto Sans TC",
-      "language": "zh",
+      "languages": ["zh"],
       "description": {
         "en": "Clean sans-serif (hei) in every weight with the Traditional forms used in Taiwan.",
         "ru": "Аккуратный шрифт без засечек (хэй) во всех начертаниях, с традиционными формами, принятыми на Тайване.",
@@ -278,7 +278,7 @@
     {
       "id": "noto-serif-tc",
       "family": "Noto Serif TC",
-      "language": "zh",
+      "languages": ["zh"],
       "description": {
         "en": "Ming (serif) in every weight with Traditional forms, to match Noto Sans TC.",
         "ru": "Мин (с засечками) во всех начертаниях, с традиционными формами, в пару к Noto Sans TC.",
@@ -305,7 +305,7 @@
     {
       "id": "lxgw-wenkai-tc",
       "family": "LXGW WenKai TC",
-      "language": "zh",
+      "languages": ["zh"],
       "description": {
         "en": "Handwritten regular script (kai) based on Klee One, with Traditional characters in their inherited forms.",
         "ru": "Рукописный уставной стиль (кай) на основе Klee One, традиционные иероглифы в унаследованных формах.",
@@ -333,7 +333,7 @@
     {
       "id": "noto-sans-kr",
       "family": "Noto Sans KR",
-      "language": "ko",
+      "languages": ["ko"],
       "description": {
         "en": "Clean gothic (sans-serif) in every weight with Korean forms of hanja, the web version of the phone's Korean font.",
         "ru": "Аккуратная готика (без засечек) во всех начертаниях, с корейскими формами ханча, веб-версия корейского шрифта телефона.",
@@ -360,7 +360,7 @@
     {
       "id": "noto-serif-kr",
       "family": "Noto Serif KR",
-      "language": "ko",
+      "languages": ["ko"],
       "description": {
         "en": "Myeongjo (serif) in every weight, to match Noto Sans KR.",
         "ru": "Мёнджо (с засечками) во всех начертаниях, в пару к Noto Sans KR.",
@@ -387,7 +387,7 @@
     {
       "id": "nanum-gothic",
       "family": "Nanum Gothic",
-      "language": "ko",
+      "languages": ["ko"],
       "description": {
         "en": "Gothic by Naver, common on Korean websites; regular and bold, a small download.",
         "ru": "Готика Naver, частая на корейских сайтах; обычное и жирное начертания, небольшая загрузка.",
@@ -415,7 +415,7 @@
     {
       "id": "nanum-myeongjo",
       "family": "Nanum Myeongjo",
-      "language": "ko",
+      "languages": ["ko"],
       "description": {
         "en": "Myeongjo (serif) by Naver for long texts; regular and bold.",
         "ru": "Мёнджо (с засечками) Naver для длинных текстов; обычное и жирное начертания.",
@@ -443,7 +443,7 @@
     {
       "id": "mukta",
       "family": "Mukta",
-      "language": "hi",
+      "languages": ["hi", "mr"],
       "description": {
         "en": "Sans-serif by Ek Type for Devanagari and Latin, one of the most used on websites; regular and bold.",
         "ru": "Шрифт без засечек Ek Type для деванагари и латиницы, один из самых частых на сайтах; обычное и жирное начертания.",
@@ -471,7 +471,7 @@
     {
       "id": "hind",
       "family": "Hind",
-      "language": "hi",
+      "languages": ["hi"],
       "description": {
         "en": "Sans-serif by Indian Type Foundry for Devanagari and Latin, made for text on screens; regular and bold.",
         "ru": "Шрифт без засечек Indian Type Foundry для деванагари и латиницы, сделан для текста на экранах; обычное и жирное начертания.",
@@ -499,7 +499,7 @@
     {
       "id": "tiro-devanagari-hindi",
       "family": "Tiro Devanagari Hindi",
-      "language": "hi",
+      "languages": ["hi"],
       "description": {
         "en": "Serif by Tiro Typeworks in the style of printed Hindi books, with Latin; regular only.",
         "ru": "Шрифт с засечками Tiro Typeworks в стиле печатных книг на хинди, с латиницей; только обычное начертание.",
@@ -524,9 +524,36 @@
       "homepage": "https://fonts.google.com/specimen/Tiro+Devanagari+Hindi"
     },
     {
+      "id": "tiro-devanagari-marathi",
+      "family": "Tiro Devanagari Marathi",
+      "languages": ["mr"],
+      "description": {
+        "en": "Serif by Tiro Typeworks in the style of printed Marathi books, with Latin; regular only.",
+        "ru": "Шрифт с засечками Tiro Typeworks в стиле печатных книг на маратхи, с латиницей; только обычное начертание.",
+        "de": "Serifenschrift von Tiro Typeworks im Stil gedruckter Marathi-Bücher, mit Lateinisch; nur normal.",
+        "es": "Fuente con serifa de Tiro Typeworks al estilo de los libros impresos en maratí, con latino; solo normal.",
+        "fr": "Police à empattements de Tiro Typeworks dans le style des livres imprimés en marathi, avec le latin ; normale seulement.",
+        "it": "Carattere con grazie di Tiro Typeworks nello stile dei libri stampati in marathi, con il latino; solo normale.",
+        "ja": "Tiro Typeworks によるセリフ体。マラーティー語の印刷本の書体にならい、ラテン文字付き。標準のみ。",
+        "ko": "Tiro Typeworks가 만든 세리프로, 마라티어 인쇄본의 글자 모양을 따르며 라틴 문자도 있습니다. 보통만 있습니다.",
+        "pl": "Krój szeryfowy Tiro Typeworks w stylu drukowanych książek w marathi, z łacinką; tylko zwykły.",
+        "pt": "Fonte com serifa da Tiro Typeworks no estilo dos livros impressos em marati, com latino; só normal.",
+        "tr": "Tiro Typeworks’ün basılı Marathi kitapların tarzında tırnaklı yazı tipi, Latin harfleriyle; yalnızca normal.",
+        "vi": "Phông có chân của Tiro Typeworks theo kiểu sách in tiếng Marathi, kèm chữ Latinh; chỉ kiểu thường.",
+        "zh": "Tiro Typeworks 出品的衬线字体，仿马拉地语印刷书籍的字形，附拉丁字母；仅常规。",
+        "zh-Hant": "Tiro Typeworks 出品的襯線字型，仿馬拉地語印刷書籍的字形，附拉丁字母；僅常規。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/tirodevanagarimarathi/TiroDevanagariMarathi-Regular.ttf", "weight": "400"}
+      ],
+      "sizeMb": 0.4,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Tiro+Devanagari+Marathi"
+    },
+    {
       "id": "hind-siliguri",
       "family": "Hind Siliguri",
-      "language": "bn",
+      "languages": ["bn"],
       "description": {
         "en": "Sans-serif by Indian Type Foundry for Bengali and Latin, made for text on screens; regular and bold.",
         "ru": "Шрифт без засечек Indian Type Foundry для бенгальского письма и латиницы, сделан для текста на экранах; обычное и жирное начертания.",
@@ -554,7 +581,7 @@
     {
       "id": "tiro-bangla",
       "family": "Tiro Bangla",
-      "language": "bn",
+      "languages": ["bn"],
       "description": {
         "en": "Serif by Tiro Typeworks in the style of printed Bengali books, with Latin; regular only.",
         "ru": "Шрифт с засечками Tiro Typeworks в стиле печатных книг на бенгальском, с латиницей; только обычное начертание.",
@@ -581,7 +608,7 @@
     {
       "id": "sarabun",
       "family": "Sarabun",
-      "language": "th",
+      "languages": ["th"],
       "description": {
         "en": "Looped Thai font TH Sarabun New by Suppakit Chalermlarp, used in Thai government documents, with Latin; regular and bold.",
         "ru": "Тайский шрифт с петлями TH Sarabun New Суппакита Чалермларпа, которым набирают документы правительства Таиланда, с латиницей; обычное и жирное начертания.",
@@ -609,7 +636,7 @@
     {
       "id": "noto-sans-thai-looped",
       "family": "Noto Sans Thai Looped",
-      "language": "th",
+      "languages": ["th"],
       "description": {
         "en": "Sans-serif by Google in the traditional looped forms of the Thai script, in every weight.",
         "ru": "Шрифт без засечек Google в традиционной форме тайского письма с петлями, во всех начертаниях.",
@@ -636,7 +663,7 @@
     {
       "id": "kanit",
       "family": "Kanit",
-      "language": "th",
+      "languages": ["th"],
       "description": {
         "en": "Loopless Thai sans-serif by Cadson Demak, formal and compact, with Latin; regular and bold.",
         "ru": "Тайский шрифт без петель и засечек Cadson Demak, строгий и компактный, с латиницей; обычное и жирное начертания.",
@@ -664,7 +691,7 @@
     {
       "id": "prompt",
       "family": "Prompt",
-      "language": "th",
+      "languages": ["th"],
       "description": {
         "en": "Loopless Thai sans-serif by Cadson Demak, wide and geometric, with Latin; regular and bold.",
         "ru": "Тайский шрифт без петель и засечек Cadson Demak, широкий и геометрический, с латиницей; обычное и жирное начертания.",
@@ -692,7 +719,7 @@
     {
       "id": "kantumruy-pro",
       "family": "Kantumruy Pro",
-      "language": "km",
+      "languages": ["km"],
       "description": {
         "en": "Modern Khmer sans-serif by Tep Sovichet and Wei Huang, with Latin, from thin to bold.",
         "ru": "Современный кхмерский шрифт без засечек, авторы — Tep Sovichet и Wei Huang; с латиницей, от тонкого до жирного.",
@@ -719,7 +746,7 @@
     {
       "id": "hanuman",
       "family": "Hanuman",
-      "language": "km",
+      "languages": ["km"],
       "description": {
         "en": "Khmer serif by Danh Hong for body text, with Latin, in every weight.",
         "ru": "Кхмерский шрифт с засечками для основного текста, автор — Danh Hong; с латиницей, во всех начертаниях.",
@@ -746,7 +773,7 @@
     {
       "id": "sofia-sans",
       "family": "Sofia Sans",
-      "language": "bg",
+      "languages": ["bg"],
       "description": {
         "en": "Sans-serif in every weight with the Bulgarian letter forms: д like g, т like m, и like u.",
         "ru": "Шрифт без засечек во всех начертаниях с болгарскими формами букв: д как g, т как m, и как u.",

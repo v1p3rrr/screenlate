@@ -530,6 +530,18 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `marathi offers its english wiktionary and transcription ticked, no frequency, and tesseract unticked`() {
+        val marathi = catalog!!.entries.filter { it.isFor(Language.MARATHI) }
+        assertThat(marathi.filter { it.recommended }.map { it.id })
+            .containsExactly("wiktionary-mr-en", "wiktionary-mr-transcription")
+        // ML Kit's Devanagari model, bundled for Hindi, reads Marathi on the device.
+        assertThat(marathi.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-fast-mar", "tesseract-best-mar")
+        assertThat(marathi.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
+        assertThat(catalog!!.mandatory(Language.MARATHI)).containsExactly(CatalogCategory.MAIN)
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.MARATHI) }).isEqualTo(marathi)
+    }
+
+    @Test
     fun `hungarian offers its wiktionaries, their word forms and frequencies, ticked, the forms mandatory, and the ocr models unticked`() {
         val hungarian = catalog!!.entries.filter { it.isFor(Language.HUNGARIAN) }
         assertThat(hungarian.filter { it.recommended }.map { it.id }).containsExactly(

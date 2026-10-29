@@ -46,6 +46,9 @@ struct HeadwordMarks {
   // Prefixes of comparative forms (Bulgarian по-, най-): a "comparative" tag of a form-of item whose form has none of
   // them is dropped, as Wiktionary's Bulgarian tables put it on positive forms (мо́ята → мой <comparative>).
   std::vector<std::string> comparative_prefixes;
+  // Form headwords left out, as written: labels of Wiktionary's tables that its export gives as forms of every tabled
+  // word (Marathi होकारार्थी "affirmative").
+  std::vector<std::string> dropped_forms;
 };
 
 class MarkStripper {
@@ -70,7 +73,8 @@ class MarkStripper {
 
   bool lemmas_as_written() const { return lemmas_as_written_; }
 
-  // Whether a form-of row of [text] is left out: forms are in the script of the bases and [text] has none of them.
+  // Whether a form-of row of [text] is left out: [text] is one of [HeadwordMarks::dropped_forms], or forms are in the
+  // script of the bases and [text] has none of them.
   bool drops_form(std::string_view text) const;
 
   // Whether a "comparative" tag of a form-of item of [form] stays ([HeadwordMarks::comparative_prefixes]).
@@ -100,6 +104,7 @@ class MarkStripper {
   bool forms_in_script_;
   // [HeadwordMarks::comparative_prefixes] lowercase without marks.
   std::vector<std::string> comparative_prefixes_;
+  std::vector<std::string> dropped_forms_;
   Replacements replacements_;
   Replacements further_replacements_;
 };

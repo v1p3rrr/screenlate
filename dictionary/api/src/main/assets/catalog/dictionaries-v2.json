@@ -4434,6 +4434,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-mar",
+      "title": "Tesseract fast (mar)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mr",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/mar.traineddata",
+      "downloadSize": 2118233,
+      "sha256": "0ba3f2d116972e72fe9e176bc84c38e81dfb6670f4ed1f7f6c8e16a27da7cb61",
+      "model": "tesseract-fast-mar",
+      "engine": "tesseract",
+      "file": "tessdata/mar.traineddata",
+      "version": "0ba3f2d11697",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-mar",
+      "title": "Tesseract best (mar)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mr",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/mar.traineddata",
+      "downloadSize": 13437670,
+      "sha256": "799405456528ffd688bc8173ea9179c0646120436ac35099dccb175c4c70f652",
+      "model": "tesseract-best-mar",
+      "engine": "tesseract",
+      "file": "tessdata/mar.traineddata",
+      "version": "799405456528",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -19771,6 +19805,44 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/mn/wty-mn-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 96068,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mr-en",
+      "title": "Wiktionary (mr–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mr-en",
+        "kty-mr-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mr",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mr-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mr/en/wty-mr-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 840945,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mr-transcription",
+      "title": "Wiktionary transcription (mr)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-mr-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "mr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mr-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/mr/wty-mr-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 85558,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

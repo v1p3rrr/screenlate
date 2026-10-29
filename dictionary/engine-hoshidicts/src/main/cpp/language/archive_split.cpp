@@ -730,6 +730,7 @@ MarkStripper::MarkStripper(const HeadwordMarks& marks)
       fold_marks_(marks.fold_marks),
       lemmas_as_written_(marks.lemmas_as_written),
       forms_in_script_(marks.forms_in_script),
+      dropped_forms_(marks.dropped_forms),
       replacements_(marks.replacements.begin(), marks.replacements.end()),
       further_replacements_(marks.further_replacements.begin(), marks.further_replacements.end()) {
   marks_.push_back({code_points(marks.marks), bases_});
@@ -783,6 +784,7 @@ std::vector<std::string> MarkStripper::folded_keys(std::string_view text, const 
 }
 
 bool MarkStripper::drops_form(std::string_view text) const {
+  if (std::find(dropped_forms_.begin(), dropped_forms_.end(), text) != dropped_forms_.end()) return true;
   if (!forms_in_script_) return false;
   const std::vector<int32_t> points = code_points(text);
   return std::none_of(points.begin(), points.end(), [&](int32_t point) { return contains(bases_, utf8proc_tolower(point)); });

@@ -13,7 +13,7 @@ class FontsForLanguageTest {
     private fun catalog(id: String, language: String?, subsets: List<String> = emptyList()) = CatalogFont(
         id = id,
         family = id,
-        language = language,
+        languages = listOfNotNull(language),
         subsets = subsets,
         files = listOf(CatalogFontFile("https://example.org/$id.ttf")),
         sizeMb = 1.0,

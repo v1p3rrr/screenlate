@@ -34,7 +34,7 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * Turkish's (capitalization with the Turkish case pairs, glue.js) for the app's own endings; Uzbek takes Turkish's
  * with the default case pairs (Uzbek cases i and I as English does) for the app's own processors and endings;
  * Macedonian takes Bulgarian's (Cyrillic, capitalization only, without Bulgarian's own endings), as Wiktionary lists
- * its forms.
+ * its forms; Marathi takes Hindi's, as Bengali does.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
@@ -48,6 +48,7 @@ const borrowed = {
     az: {from: 'tr', iso639_3: 'aze', name: 'Azerbaijani', exampleText: 'oxumaq'},
     uz: {from: 'tr', iso639_3: 'uzb', name: 'Uzbek', exampleText: 'oʻqimoq'},
     mk: {from: 'bg', iso639_3: 'mkd', name: 'Macedonian', exampleText: 'читам'},
+    mr: {from: 'hi', iso639_3: 'mar', name: 'Marathi', exampleText: 'वाचण्यासाठी'},
 };
 
 /**
@@ -69,7 +70,9 @@ const borrowed = {
  * Irish in Gaelic type writes lenition as a dot (ḃean for bhean), and Scottish Gaelic in its older spelling some
  * long vowels with the acute (mór for mòr); recognition reads Azerbaijani ə and ı as e and i; Uzbek text writes ʻ
  * and ʼ as ' ‘ ’ ` ´ and is also written in Cyrillic letters; Bulgarian and Macedonian are written with stress marks,
- * acute or grave, as Russian is, Bulgarian writes the pronoun ѝ as й and Macedonian its ѐ as the Latin è. Processors
+ * acute or grave, as Russian is, Bulgarian writes the pronoun ѝ as й and Macedonian its ѐ as the Latin è; Marathi text
+ * is composed as Hindi's, may come in an old font's य़ for the य of a conjunct, with a nukta the headwords leave out, and
+ * with अॅ, ऍ and ँ for the headwords' ॲ and ॅं. Processors
  * join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
@@ -96,6 +99,7 @@ const addedPreprocessors = {
     uz: ['uzbekApostrophes', 'uzbekCyrillicAsLatin'],
     bg: ['removeRussianDiacritics', 'removeGraveStress', 'bulgarianShortIAsPronoun'],
     mk: ['removeRussianDiacritics', 'removeGraveStress', 'macedonianLatinGrave'],
+    mr: ['composeCharacters', 'marathiLegacyYa', 'removeNukta', 'marathiCandra'],
 };
 
 /**
@@ -115,7 +119,7 @@ const foldedMarkLanguages = [
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh, Kyrgyz, Azerbaijani and Uzbek endings, the Norwegian
  * genitive, Romanian article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial
  * mutations, Finnish clitics and possessive suffixes, Hungarian verb prefixes, Bulgarian articles and endings, Mongolian
- * endings (Yomitan's Finnish, Hungarian, Bulgarian and Mongolian descriptors have text processors only).
+ * endings, Marathi endings and particles (Yomitan's Finnish, Hungarian, Bulgarian and Mongolian descriptors have text processors only).
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -135,6 +139,7 @@ const addedTransforms = {
     uz: 'uzbekTransforms',
     bg: 'bulgarianTransforms',
     mn: 'mongolianTransforms',
+    mr: 'marathiTransforms',
 };
 
 /**

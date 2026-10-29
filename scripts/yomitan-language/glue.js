@@ -269,6 +269,8 @@ function isMarkedStep(d, language) {
  * form of книга; министерството → министерство), verb endings and participles the verbs (гарантира → гарантирам, not
  * a noun гарантир). Mongolian case, plural and possessive endings reach nominal words and forms, adverbs and
  * postpositions among them (өнөөдрийн → өнөөдөр, дээрээс → дээр), verb endings the verbs (хийнэ → хийх, not хий "air").
+ * Marathi case endings reach nominal words and forms, adverbs and postpositions among them (आजच्या → आज), the verbal
+ * noun's endings the verbs (करण्यासाठी → करणे, not करणी).
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
@@ -283,6 +285,7 @@ const taggedRules = new Map([
     ['et', {v: ['v']}],
     ['bg', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma'], v: ['v']}],
     ['mn', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'adv', 'postp', 'non-lemma'], v: ['v']}],
+    ['mr', {n: ['n', 'name', 'adj', 'num', 'pron', 'adv', 'postp', 'non-lemma'], v: ['v']}],
 ]);
 
 /**
@@ -320,7 +323,8 @@ function tagsOf(d, language) {
  * person endings of predicates) fit any entry but a few pronouns' (`skippedByNominalRules`), and verbs match by their
  * definition tags (`taggedRules`); Azerbaijani's and Uzbek's leave three letters at least. Wiktionary's Welsh and Scottish Gaelic entries give none either; the app's mutation rules leave two
  * letters at least. Wiktionary's Finnish entries give none either; the app's clitic and possessive rules leave three
- * letters at least.
+ * letters at least. Marathi's particles ही and च follow any word (आजही, गेलाच); the endings after them match by their
+ * definition tags.
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
 const untypedRules = new Map([
@@ -337,6 +341,7 @@ const untypedRules = new Map([
     ['ga', {shortest: 2}],
     ['gd', {shortest: 2}],
     ['fi', {shortest: 3}],
+    ['mr', {shortest: 2, conditions: ['p']}],
 ]);
 
 /**

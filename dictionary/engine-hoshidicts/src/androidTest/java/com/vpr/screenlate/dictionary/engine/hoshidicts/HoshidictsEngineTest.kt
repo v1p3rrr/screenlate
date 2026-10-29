@@ -111,7 +111,8 @@ class HoshidictsEngineTest {
     fun dropsWiktionaryFaultsAtImport() = runTest {
         val bulgarian = engine.import(bulgarianFaultsDictionary(), File(root, "out"))
         val macedonian = engine.import(macedonianFaultsDictionary(), File(root, "out"))
-        engine.load(DictionarySet(terms = listOf(bulgarian.directory, macedonian.directory)))
+        val marathi = engine.import(marathiFaultsDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(bulgarian.directory, macedonian.directory, marathi.directory)))
         val bg = LookupOptions(language = Language.BULGARIAN)
         suspend fun found(text: String, options: LookupOptions = bg) = engine.lookup(text, options).map { it.term.expression }
         suspend fun steps(text: String, lemma: String) = engine.lookup(text, bg).filter { it.term.expression == lemma }
@@ -133,6 +134,11 @@ class HoshidictsEngineTest {
         assertThat(steps("по-добре", "добре")).contains("comparative")
         // A gender left after the lemma a form names is dropped.
         assertThat(found("куќи", LookupOptions(language = Language.MACEDONIAN))).contains("куќа")
+        // The labels of Marathi verb tables are no forms; the verbs' own forms stay.
+        val mr = LookupOptions(language = Language.MARATHI)
+        assertThat(found("होकारार्थी", mr)).isEmpty()
+        assertThat(found("Affirmative", mr)).isEmpty()
+        assertThat(found("करतो", mr)).contains("करणे")
     }
 
     @Test(expected = DictionaryImportException::class)
@@ -233,6 +239,19 @@ class HoshidictsEngineTest {
             [
               ["куќа","","n","",0,["house"],1,""],
               ["куќи","","non-lemma","",0,[["куќа f",["plural indefinite"]]],2,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun marathiFaultsDictionary(): File = zip(
+        "mr.zip",
+        "index.json" to """{"title":"Test Marathi","revision":"1","format":3,"sourceLanguage":"mr"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["करणे","","v vt","",0,["to do"],1,""],
+              ["करतो","","non-lemma","",0,[["करणे",["masculine present"]]],2,""],
+              ["होकारार्थी","","non-lemma","",0,[["करणे",["past"]],["करणे",["present"]]],3,""],
+              ["Affirmative","","non-lemma","",0,[["करणे",["subjunctive"]]],4,""]
             ]
         """.trimIndent().toByteArray(),
     )

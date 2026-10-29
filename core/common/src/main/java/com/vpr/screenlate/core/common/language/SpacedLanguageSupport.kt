@@ -61,6 +61,17 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val initials: Set<String> = emptySet()
 
     /**
+     * The script whose words of one written syllable before a period are taken as initials or abbreviations (Marathi
+     * "पु. ल. देशपांडे", "प.पू."): one akshara of it, a consonant or a conjunct with its signs, or a vowel, alone or joined
+     * to others by periods, keeps the sentence going, unless it is one of [syllableSentenceEnds]. Other scripts' letters
+     * are not counted.
+     */
+    open val syllableInitialScript: Character.UnicodeScript? = null
+
+    /** Words of one syllable that end sentences (Marathi हो, मी, घ्या), lowercase; see [syllableInitialScript]. */
+    open val syllableSentenceEnds: Set<String> = emptySet()
+
+    /**
      * Words written joined to the next one with an apostrophe without being part of it (French l', qu'), lowercase: a
      * word aimed after the apostrophe is looked up from there ("l'eau" → "eau").
      */
@@ -89,8 +100,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
      * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com), it closes an
      * initial (one capital letter before a capitalized word: J. Smith, К. Бакиев), an abbreviation (a paired letter
      * only beside another, see [pairedLetters]; one of [capitalizedAbbreviations] only when capitalized) or
-     * [initials], or, with [ordinalPeriod], an ordinal number. An abbreviation or a capital letter at the real end of a
-     * sentence (vitamin C. It…) keeps it running on, which is the smaller error.
+     * [initials], a syllable of [syllableInitialScript], or, with [ordinalPeriod], an ordinal number. An abbreviation or a
+     * capital letter at the real end of a sentence (vitamin C. It…) keeps it running on, which is the smaller error.
      */
     override fun endsSentence(text: String, index: Int): Boolean {
         val character = text[index]
@@ -106,6 +117,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         if (word.lowercaseIn(abbreviationsBeforeLowercase)) return !lowercaseOrNumberAfter(text, index)
         if (word.firstOrNull()?.isUpperCase() == true && word.lowercaseIn(capitalizedAbbreviations)) return false
         if ('.' in word && word.split('.').all { it.lowercaseIn(initials) }) return false
+        val syllableScript = syllableInitialScript
+        if (syllableScript != null && word.split('.').all { isOneSyllable(it, syllableScript) } &&
+            ('.' in word || word !in syllableSentenceEnds)
+        ) {
+            return false
+        }
         return !word.lowercaseIn(abbreviations)
     }
 
@@ -256,6 +273,25 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     }
 
     /**
+     * Whether [part] is one written syllable of [script]: one letter, or several joined by a virama or a zero-width
+     * joiner (क्ष, श्री), with their vowel signs and marks (पु, प्रा).
+     */
+    private fun isOneSyllable(part: String, script: Character.UnicodeScript): Boolean {
+        var letters = 0
+        var joined = false
+        for (character in part) {
+            if (character.isLetter()) {
+                if (Character.UnicodeScript.of(character.code) != script) return false
+                if (!joined) letters++
+            } else if (!character.isLetterOrMark() && character.code != ZWJ) {
+                return false
+            }
+            joined = character in VIRAMAS || character.code == ZWJ
+        }
+        return letters == 1
+    }
+
+    /**
      * Whether the letter at [letter], with its period at [period], has another letter with a period right before or
      * after it, spaces between them: "z. B.".
      */
@@ -373,6 +409,9 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
         const val ZWNJ = 0x200C
         const val ZWJ = 0x200D
+
+        /** The viramas of the Brahmic scripts, Devanagari to Malayalam, which join a consonant to the next one. */
+        const val VIRAMAS = "\u094D\u09CD\u0A4D\u0ACD\u0B4D\u0BCD\u0C4D\u0CCD\u0D4D"
 
         /** Characters inside one word: don't, rock'n'roll, well-known, and the Armenian hyphen (հայ֊ռուսական). */
         const val WORD_CONNECTORS = "'’-֊"
