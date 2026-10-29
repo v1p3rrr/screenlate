@@ -555,6 +555,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | SET18 | Right-to-left interface (Arabic, Persian, Hebrew; `cmd locale set-app-locales com.vpr.screenlate.debug --locales ar`, `fa`, `he`, the activity in the foreground): Home, Languages, the Settings list, Bubble, Text recognition, Dictionaries, Appearance, Anki, Backup and Search are mirrored (navigation bar from the right, back arrow pointing right, chevrons left, the volume, lookup and dictionaries icons mirrored, switches and sliders from the right); Bubble's side segments keep Left on the left; expand arrows (catalog sections, the backup parts dialog) point down, up when open; the docked bubble's hold menu lists the flags from the right with the active one first; no clipped or overlapping text, no raw placeholders | F | M | 2026-10-29 |
 | SET19 | Mixed directions in a right-to-left interface: Latin names and brackets in translated strings in order ("… Default (Screenlate Photo Test).", "ML Kit (…)", "48 dp" read as "dp 48"); menu paths in the locale's script with ← (Appearance: Apps ← Screenlate ← Language), paths in Latin letters with → (Hebrew Yomitan import hints); a catalog description in English ("Swedish glosses of JMdict.") keeps its full stop at its end and names the languages in English ("Wiktionary, Japanese → Russian: …"); a dictionary's index.json description reads left to right with its links; the popup's Japanese and the Search results (neko → ねこ) stay left to right | F | U KeepDirectionTest, CatalogParseTest, M | 2026-10-29 |
 | SET20 | Appearance → Language lists العربية 🇸🇦, فارسی 🇮🇷 and עברית 🇮🇱 among the 17 and shows the one in use; Hebrew is stored as he and loads `values-iw` (`get-app-locales` → `[he]`); Persian's Lookup settings (جستجو در واژه‌نامه‌ها) are told from its Search tab (جستجو) | F | U TranslationsTest, LanguageOptionsTest, M | 2026-10-29 |
+| SET21 | Audio follows the active language switched from the bubble menu while the page is open: sources and the test word become the new language's (Bulgarian вода, Mongolian ус); a word typed by hand stays; a language picked on the page's language card stays shown when the active one changes | F | U TestWordAfterTest, M | 2026-10-29 |
 
 ### UPD: About, logs, updates
 
@@ -682,6 +683,15 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/main` `f14819a5` with the Audio test word fix (uncommitted), Pixel_10_Pro (API 37)
+
+Scope: SET21 (new, F). Japanese, Bulgarian and Mongolian quick, Japanese active.
+- SET21: Audio opened on Bulgarian (Lingua Libre, Wiktionary, Text-to-speech; word вода); Mongolian picked in the
+  bubble menu turned the page to Mongolian with ус. Japanese picked on the page's card showed JapanesePod101 and the
+  custom sources; Bulgarian then picked in the bubble menu left the page on Japanese. Passed. A first build that let
+  `show` pick the language already shown kept the page on its first language after the bubble switch; fixed before
+  the commit. Japanese active again afterwards.
 
 ### 2026-10-29, `languages/5d` (0.2.3-d47d6cf2, then with the Macedonian С → Ѕ retry before its commit), Pixel_10_Pro (API 37)
 

@@ -48,6 +48,10 @@ data class SourceTest(
 internal fun regionsUsed(sources: List<AudioSource>, hasTranscriptions: Boolean): Boolean =
     hasTranscriptions || sources.any { it.type == AudioSourceType.WIKTIONARY }
 
+/** The test [word] once [language] is shown after [previous]: blank or [previous]'s sample, it becomes [language]'s. */
+internal fun testWordAfter(word: String, previous: Language, language: Language): String =
+    if (word.isBlank() || word == previous.support.audioTestWord) language.support.audioTestWord else word
+
 /** A played test clip: which candidate, and whether it turned out to have no audio. */
 data class PlayState(val candidateId: String? = null, val sourceIndex: Int = -1, val missing: Boolean = false)
 
@@ -75,6 +79,9 @@ class AudioSettingsViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     val testWord = MutableStateFlow(shown.language.value.support.audioTestWord)
+
+    /** The language [testWord] and the test results are for. */
+    private var testedLanguage = shown.language.value
     val tests = MutableStateFlow<List<SourceTest>>(emptyList())
     val played = MutableStateFlow(PlayState())
 
@@ -88,19 +95,21 @@ class AudioSettingsViewModel @Inject constructor(
     init {
         // Opens on the route's `language` (from the home screen), otherwise on the active one.
         Language.of(savedState.get<String>(ARG_LANGUAGE))?.let(::show)
+        // The shown language also changes when the active one is changed elsewhere, as from the bubble's menu.
+        viewModelScope.launch { shown.language.collect(::shownChanged) }
     }
 
-    /**
-     * Shows [language]'s sources. A test word left as the previous language's sample becomes the new language's, and
-     * earlier test results go.
-     */
+    /** Shows [language]'s sources; the language already shown stays unpicked, so the page keeps following the active one. */
     fun show(language: Language) {
-        val previous = shown.language.value
+        if (language != shown.language.value) shown.show(language)
+    }
+
+    /** A test word left as the previous language's sample becomes [language]'s, and earlier test results go. */
+    private fun shownChanged(language: Language) {
+        val previous = testedLanguage
         if (language == previous) return
-        shown.show(language)
-        if (testWord.value.isBlank() || testWord.value == previous.support.audioTestWord) {
-            testWord.value = language.support.audioTestWord
-        }
+        testedLanguage = language
+        testWord.value = testWordAfter(testWord.value, previous, language)
         testJob?.cancel()
         tests.value = emptyList()
         played.value = PlayState()
