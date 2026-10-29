@@ -110,7 +110,9 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
 
 ## Questions
 
-1. **Extra results through the fold (provisional: kept as decided).** The fold works: a word typed without marks finds
+1. **Extra results through the fold. Answered (owner, 2026-10-29): (a), keep as built in every language, Irish,
+   Macedonian and Mongolian included; the owner's condition, the word as recognized or typed coming first, holds
+   (LanguageLookupTest: "the exact spelling first", "the word as read first").** The fold works: a word typed without marks finds
    the marked words, a mark recognition misreads finds the right word. The cost, measured above: in many languages the
    short common words get one or two extra results below their own, because a marked word of the same letters exists
    (Spanish de → dé, que → qué, el → él; Italian e → è, é; Portuguese a → á, ã, â, à; French la → là; Hungarian a → á;
@@ -135,7 +137,15 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    Macedonian (added 2026-10-29 with its language) is past the threshold too: 10.3% typed, 10.4% after OCR, и → ѝ,
    се → сѐ, е → ѐ, не → нѐ (the grave tells the pronoun and the particles from the conjunction and the verb); under c)
    it would work as Welsh and Gaelic do.
-2. **Word forms without the dictionary's headwords (not built; the coordinating session's follow-up to Uzbek).** The
+
+   Group 6's languages (not built; measured the same way on 2026-10-29, `2026-10-20-group-6-research.md`, question 28):
+   Galician 26.0% typed and 30.4% after OCR (e → é, a → á, de → dê), Catalan 18.7% and 22.3% (que → què), Icelandic
+   9.6% and 21.1% (að → áð), Afrikaans 8.4% and 8.8% (die → dié); Tatar and Bashkir 2.5% at most. The answer here
+   applies to them when they are built; under c) Catalan and Galician would work as Welsh and Gaelic do.
+2. **Word forms without the dictionary's headwords. Answered (owner, 2026-10-29): measure first. Count on the Uzbek
+   and Azerbaijani news corpora how many words get a false rule result with uz–ru (az–ru) and the word forms alone, and
+   how many right results a headword list would drop; decide on the numbers. The owner's aim: a word spelled as
+   scanned comes first, a parsed one after.** The
    "Word forms" item imports only the English Wiktionary's form rows, not its headwords. In Uzbek (and Azerbaijani),
    ending rules show their results only when the word has no entry of its own; with uz–ru and the word forms alone,
    Davom finds davo with the ending "my", because uz–ru has no davom and the forms import does not know davom is a
@@ -145,6 +155,25 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    - b) keep as is (davo "my" shows; with Wiktionary into English installed, davom shows its entry).
    a) changes what the popup shows and needs a headword list in the forms import and in the filter, so it waits for the
    owner.
+
+   Measured (2026-10-29; Leipzig news 2020 30K, 452,534 Uzbek and 408,760 Azerbaijani word tokens; the app's import,
+   candidate lookup, rule filter and popup order rebuilt in Node over the built bundles; scratchpad tools, not in the
+   repository):
+   - Uzbek, uz–ru with the word forms alone: the ending rules give a result for 32,685 tokens (7.2%). A headword list
+     (a) would remove 1,445 tokens' results (0.32% of all tokens, 9 words), every one wrong: yangi 978 → yanvar
+     (through a uz–ru abbreviation row), davom 409 → davo, terim 28 → teri, olam 20 → olmoq, inglizcha 3 → ingliz,
+     burungi 2 → burun, zararsiz 2 → zarar, qissa 2 → qismoq; it would drop no right result. With Wiktionary into
+     English installed in full, none of this happens.
+   - Azerbaijani: az–ru is not on the PC (wty `latest/dict/az/ru`, 416,047 B, not downloaded); a stand-in, az-en with
+     the word's own entry removed, gives an upper bound (the same stand-in gives 2,608 Uzbek tokens against the real
+     1,445): (a) would remove 12,415 tokens' results (3.0%, 306 words), wrong ones (yeni 910 → yenmək, erməni 826 →
+     ermək, artıq 776 → artmaq, belə 769 → bel, həmin 493 → həm) but also 312 right ones (0.08%, 6 words; yoxdur 299
+     → yox). A quarter of the commonest wrong results have the right root with a derived form (xüsusi → xüsus).
+   - Found: the rule filter takes a form row whose tag is named as a rule (uz–ru's dative, genitive, accusative and
+     locative rows, about 40,000; az-en's plural and converb) for a rule's result, so beside an entry it drops such
+     form results too: 75 Uzbek tokens, 693 Azerbaijani (deyil → demək). A plain bug, fixed apart from this question
+     (the filter's own rule says a form-of entry's chain is not a rule's).
+   To ask the owner on return, with these numbers.
 
 ## Progress
 
@@ -168,3 +197,8 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
   under question 1.
 - 2026-10-29: Bulgarian, Macedonian and Mongolian added to the data check with their languages (group 5d); Macedonian
   is past the threshold and joins question 1.
+- 2026-10-29: question 1 answered (a), Irish and Mongolian staying in the fold; question 2 answered: measure first.
+- 2026-10-29: group 6's six Latin- and Cyrillic-script languages measured for question 1 in their research plan
+  (question 28 there); noted under question 1.
+- 2026-10-29: question 2 measured (Uzbek: a headword list would remove 1,445 wrong results and no right one; Azerbaijani
+  upper bound 12,415 wrong, 312 right); the rule filter's form-row bug found; to be asked on the owner's return.

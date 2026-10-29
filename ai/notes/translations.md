@@ -25,6 +25,7 @@ Inflection terms per language follow the school grammar of Japanese taught in th
   `aapt2 dump resources`): paragraphs need `\n`, so "\n\n" between paragraphs of ⓘ texts. The test fails on a raw
   line break.
 - `'` and `"` must be escaped (`\'`, `\"`); typographic quotes and apostrophes need no escape.
+- Lists the code joins (a dictionary's counts, language names in hints and summaries) take `list_separator`: «, » (written `,\u0020`, since aapt2 trims a plain trailing space and the test forbids quoting the string), «، » in Arabic and Persian, «、» in Japanese and both Chinese. Compose code calls `listSeparator()` (`ui/components/Lists.kt`); a CSS font list stays «, ».
 - Plural categories: ru/pl one, few, many, other; de/tr one, other; es/fr/it/pt one, many, other; ja/ko/vi/zh other;
   ar zero, one, two, few, many, other; fa one, other; iw one, two, other (CLDR 42 dropped Hebrew many). Every item
   carries the format argument (the test requires it), so Arabic one and two read «قاموس واحد (%1$d)», «قاموسان (%1$d)».

@@ -73,8 +73,11 @@ the details.
     language, not of the searched one (`SearchScreen`, `ProcessTextActivity`);
   - a screen scan's popup stays after a tab change inside the app (a scan is a snapshot).
 
-### Emulators (2026-10-28: both shut down)
+### Emulators (2026-10-29: both shut down)
 
+- 2026-10-29: the main session last ran API 37 with the debug app of `combine-cloud` (the app's language Russian
+  through the per-app setting) and shut it down; the lock `.worktrees/emulator.lock` is free. The notes below are
+  of 2026-10-28.
 - API 37 (`Pixel_10_Pro`): the debug app of the settings rework (`0.2.3-9c26bae8` built before its commit, x86_64
   only; the app's language back to the system's), Slovenian active, Korean unstarred, the photo language Japanese, no current photo and
   an empty photo history; `/sdcard/Pictures/market-4000.jpg` (4000 × 3000, English) for photo cases. The updates of
@@ -221,7 +224,8 @@ the details.
     emulator (run log 2026-10-29);
   - Esperanto's frequency dictionary comes from Leipzig's web texts of 2012 (`cb3c1d7e`; DIC39 due again);
   - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
-  - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word. Group 5d (Bulgarian,
+  - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word (5e: given on 2026-10-29,
+    its session started that afternoon). Group 5d (Bulgarian,
     Mongolian, Macedonian) is merged into `languages/main` (bullet above);
   - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
@@ -229,6 +233,29 @@ the details.
     by 25-28 KB too; 1,909 unit tests, lint, the engine's instrumented tests 68 of 68 with the text rules' Thai case).
     Strings added after `772bbad7` did not go through the translation check. The right-to-left strings had their
     mirrored screens checked on 2026-10-29 and are merged into `languages/main` (section below).
+  - a second cloud session rechecked group 6's research against `languages/main` (section "Cloud session 2026-10-29,
+    group 6"): branch `cloud/group-6-research-2026-10-29` (plan, notes, a draft patch and three measuring tools; no
+    app code); the owner answered its questions 27 and 29, left 28 to the main session and deferred 30 for later.
+  - the main session on 2026-10-29 afternoon (merged into `languages/main`): the owner's answers on folding, word
+    forms, Anki wording, the French tab and the right-to-left release recorded (`66a27013`); a wty region chip of
+    another country (🇧🇷🎯) shows its direction in the interface language, also inside a definition; Arabic elative,
+    non-past, subjunctive and Vietnamese Northern and Southern form tags named; lists built in the app joined with
+    the interface language's separator (`Lists.kt`); the French Search tab reads "Rechercher". The FreeDict converter
+    keeps Spanish subject labels in parentheses and the text of cut links (its residue rule had dropped 3,869 of the
+    10,093 Spanish definitions); FreeDict de, en, es, fr, it, pl, zh → ru and OpenRussian ru-en rebuilt, checked entry
+    by entry and on the emulator, the private archive's copies and manifest rows replaced. POP53, POP54, SET22 and
+    DIC50 passed (run log 2026-10-29, `combine-cloud`; POP53's en-en part not run). The group 6 recheck is merged
+    (`52af6f7d`); its question 28 is settled by the folded plan's question 1 (a).
+  - `notes/hosting-files.md` lists every file to host with source, license, size, status and plan rows; the plans
+    and docs it contradicted are fixed (`ocr-models-1` is a regular release never marked latest, wordfreq lists are
+    built on the phone, PanLex uses the pinned CC0 dump). Open there: whether the archive's copies of the catalog's
+    files are ever served from our hosting.
+  - Measured, waiting for the owner's return: the folded plan's question 2 (a headword list in the word forms
+    import; Uzbek: 1,445 wrong results removed, no right one) with group 5c's questions 18 and 19. Found while
+    measuring: the rule filter (`RuleOnlyResults.throughAny`) takes a form row whose tag is named as a rule (uz
+    dative, genitive, accusative, locative; az plural, converb) for a rule's result and drops it beside an entry
+    (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question.
+  - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -915,7 +942,8 @@ the CC0 mirror `cointegrated/panlex-meanings` (2024-03-01 dump, pinned revision)
 definition per headword, translations comma-separated by support, at most ten; headwords outside the lowercase
 alphabet, loose groups, lists and other-script translations are left out (kk-ru 16,374 headwords, kk-en 13,835,
 ky-ru 5,729, ky-en 6,357). DIC28 passed on the emulator. The archives are not hosted or in the catalog: hosting and
-the license check (the live site says CC BY-NC-SA 4.0) come first, then the catalog entries with Kyrgyz PanLex ticked
+the license check (the live site says CC BY-NC-SA 4.0; since settled: the pinned CC0 dump, group 4e row "PanLex")
+come first, then the catalog entries with Kyrgyz PanLex ticked
 and a NOTICE entry. Overnight questions 17 (entry layout) and 18 (names left out) are decided provisionally.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
@@ -923,7 +951,7 @@ and a NOTICE entry. Overnight questions 17 (entry layout) and 18 (names left out
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
 `languages/ocr-engines` (pushed) holds the whole group 1-3 stack plus ML Kit Latin, Tesseract, the model choice per
 language and Paddle on MNN; its CI run (workflow_dispatch) gives the owner's "Screenlate Dev" APK (artifact
-`screenlate-debug-<sha7>`). The Paddle model archives are on the prerelease `ocr-models-1`. Next: docs (`usage.md`,
+`screenlate-debug-<sha7>`). The Paddle model archives are on `ocr-models-1` (a regular release since 2026-10-19, never marked latest). Next: docs (`usage.md`,
 `architecture.md`), the remaining test-model cases, the emulator checks of groups 1-3 and the OCR cases, a phone timing
 run, then fast-forward `languages/main`; the module code review comes after the owner has tried the build. The
 comparison session (`languages/ocr-compare`, `.worktrees/lang`) is finished. Leftovers to clean when done: the
@@ -1019,7 +1047,7 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
 - v0.2.3 is released (2026-10-11, tag on main 3f2123c): 0.2.2 plus the bubble glide fix, checked by the owner on
   the phone. `languages/main` has the same fix.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
-  `scripts/frequency/`).
+  `scripts/frequency/`). Superseded on 2026-10-14: they are built on the phone, nothing hosted.
 - The findings from all three delegated reviews against `2215893` are fixed on `languages/main`; see the
   "language isolation review fixes", "follow-up language review fixes" and "language installation readiness" entries.
   Request 27 is also built: explicit active-language readiness on Home, queue links in Search/popup and a scan gate
@@ -2073,3 +2101,37 @@ shim). Not compiled: `HoshidictsEngine.kt` (one changed call). The coordinating 
 Open for the owner: questions 88-92 of `plans/2026-10-10-languages-implementation.md` (the vi Brazilian-flag chip,
 Vietnamese North/South, FreeDict's length rule, Russian «карточка», French «Recherche»), and 93-94 on the
 right-to-left branch (Arabic form tags named as other languages' categories, arrows in right-to-left menu paths).
+
+## Cloud session 2026-10-29, group 6
+
+Research only, in a claude.ai cloud session (no SDK, no emulator, no `testdata/`), from `languages/main` `23448dd3` on
+`cloud/group-6-research-2026-10-29`, for the coordinating session to review and merge. The group 6 plan
+(`plans/2026-10-20-group-6-research.md`) has a new section "Recheck against languages/main", recheck notes on its 26
+questions and new deferred questions 27-30; `notes/languages.md` ("Group 6 research", recheck) has the facts a later
+session needs; the folded-marks plan's question 1 points to the new numbers. Nothing of the app changed.
+
+- What changed for group 6: the fold settles questions 9 and 11 (Icelandic and Afrikaans without marks) and the bubble
+  glyph row question 19 (C, G, Í, A, Т, Б, सं; codes ТТ, БА in Cyrillic); group 4e's Turkic engine, 5a's fallback, 5d's
+  import cleanup and `misreadSpellings`, region flags and the font catalog's letter check are built, so 6a-6d need
+  less new code. Tatar is in wty since 2026.10.22 (tt-ru 11,817 words; tt-tr is Latin-script, question 29).
+- Measured: the fold's extra results (Galician 26.0% of running text typed, Catalan 18.7%, Icelandic 9.6%, Afrikaans
+  8.4%, past the provisional threshold; Tatar and Bashkir under it), lookup coverage on today's dictionaries (Catalan
+  96.1% of the top 5,000, Galician 74.9% and 93.1% with the Spanish fallback, Icelandic 84.4%, Afrikaans 46.6% and
+  71.1% with Dutch), and Tatar and Bashkir with scratch ending tables in the built engine (83.1% and 75.0% of tokens,
+  37 and 38 of 40 samples right; three engine limits found).
+- Found: wty's Russian-edition Turkic tables tag the genitive "possessive" and lose some cases, in Kyrgyz (built) as
+  well (question 30); the fold's tables lack Җ җ (a plain fix with Tatar).
+- The owner's answers (2026-10-29, in the plan): 27 with a rule of the owner's own (beside a word's own entry, verb-ending
+  results shown, noun-ending results only where the noun can take that ending; the agent's reading is to be
+  confirmed at implementation); 29 (a), tt-tr left out of the catalog.
+- For the main session, at the owner's word: question 28 (the fold's extra results in ca, gl, is, af) is yours to
+  settle, together with question 1 of `plans/2026-10-29-folded-marks-and-flags.md`; question 30 (Russian Wiktionary's
+  Turkic form tags in tt-ru, ba-ru and the shipped ky-ru; a report to wty would be an outward-facing step) goes into
+  the questions deferred for later, not to be asked soon. Questions 10 and 21 still wait for the emulator run.
+- Added at the owner's word: `scripts/yomitan-language/drafts/group-6-turkic.patch` with its README (draft Tatar and
+  Bashkir tables and two engine changes for block 6c; not built, the bundles are unchanged) and the measuring tools
+  `scripts/yomitan-language/tools/freq_list.py`, `fold_noise.py`, `coverage.mjs` (checked here: they give the
+  plan's numbers again).
+- For a local session: recognition on the emulator (ML Kit, Tesseract, cloud, Paddle on the research screens), voices,
+  the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports, and the audio counts
+  (Commons rate-limited the cloud session); the list is in the plan ("For the emulator session").

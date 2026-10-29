@@ -328,6 +328,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP50 | An Uzbek entry: the Popup settings' font card lists Literata, Inter and Lexend with "Only for Uzbek text" and the Uzbek sample sentence, ʻ and ʼ drawn; the bubble shows O and the Languages screen Uzbekistan's flag; the ending chips and the habitual and intentive form tags are named in the interface language (Russian too) | F | U FontCatalogFileTest, FlagsTest, UzbekSupportTest, FormOfTagsTest, M | 2026-10-28 |
 | POP51 | A Bulgarian entry: the font catalog offers Sofia Sans, Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, and the Popup settings' font card lists those installed (all but Inter in the run); its sample in Sofia Sans, Montserrat and Commissioner shows the Bulgarian letter forms (д like g, т like m, и like u), in PT Sans, PT Serif and Literata the Russian ones with ѝ from the phone's font; with Montserrat chosen the lookup page draws the source text and headwords in the Bulgarian forms, the search field keeps the Russian ones; the bubble shows Б and the Languages screen Bulgaria's flag | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
 | POP52 | Macedonian and Mongolian entries: the catalog offers both languages Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, no Sofia Sans, and the Macedonian font card lists those installed, and PT and Literata draw сѐ and ѝ in its sample; the bubble shows М for both, МК and МН while both are quick languages; with e-ink on, Home's chips and the bubble menu show БГ, МК and МН instead of the flags and the bubble МК; the flags are North Macedonia's and Mongolia's; with Montserrat chosen for Macedonian its sample and the lookup page draw the Russian letter forms, not the Bulgarian ones it draws in Bulgarian text | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
+| POP53 | Region chips of another language's country: Wiktionary vi-en's o (aunt) shows «Центральный Вьетнам» in place of 🇧🇷🎯 with no tap note, 🇺🇸 stays a flag; the same tag inside a definition (lúa, sense 2) shows the label too and its tap opens nothing; Wiktionary pt-en keeps 🇧🇷 as a flag (ônibus); English «yea» shows «западное» in place of 🇩🇪⬅️ | F | U RegionChipsTest, P popup.test, M | 2026-10-29 |
+| POP54 | Arabic form tags: أكبر also finds كبير, its tag «элатив (أفعل)» in Russian and «اسم التفضيل» in Arabic; a verb form (أحسن) names non-past «المضارع» and the subjunctive «المنصوب» in Arabic; Vietnamese trải → giải shows «Северный Вьетнам», hôn → hun «Центральный Вьетнам» | F | U FormOfTagsTest, ArabicSupportTest, VietnameseSupportTest, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -483,6 +485,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC47 | The import notification has no Cancel while its dictionary is registered (the last step, after the archive is read): the notification polled with `dumpsys notification --noredact` shows Cancel during the download and the import and none in the registration; the task's next archive gets Cancel back; the task card keeps its Cancel | N | I DictionaryRepositoryTest (2026-10-29), M | 2026-10-29 (one archive: the next archive and the task card not seen) |
 | DIC48 | The PaddleOCR text detector is named "PaddleOCR v6 text detector" (v5 the same) in the task cards, the "Waiting (N): …" list and the notification, in every locale, with no comma in it | N | U CatalogFileTest, M | 2026-10-29 (English: v5 in the damaged-models card, the task card and the notification) |
 | DIC49 | Mongolian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)" (19 MB, CC BY), its description naming news texts; it builds on the device from Leipzig's `mon_news_2020_100K` and the frequency chip shows on Mongolian entries (хүн 11, ном 637) | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-29 |
+| DIC50 | Rebuilt FreeDict de-ru, it-ru and es-ru: a definition over 120 characters follows its sense's translations as plain text (de Aas); es-ru's ano reads «(Química) Se usa …» below its translation and año keeps its definition; it-ru's oleandro has no «( tassonomia)»; OpenRussian ru-en's говорить reads «speak, talk» | F | U test_freedict_yomitan.py, test_openrussian_yomitan.py, M | 2026-10-29 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -556,6 +559,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | SET19 | Mixed directions in a right-to-left interface: Latin names and brackets in translated strings in order ("… Default (Screenlate Photo Test).", "ML Kit (…)", "48 dp" read as "dp 48"); menu paths in the locale's script with ← (Appearance: Apps ← Screenlate ← Language), paths in Latin letters with → (Hebrew Yomitan import hints); a catalog description in English ("Swedish glosses of JMdict.") keeps its full stop at its end and names the languages in English ("Wiktionary, Japanese → Russian: …"); a dictionary's index.json description reads left to right with its links; the popup's Japanese and the Search results (neko → ねこ) stay left to right | F | U KeepDirectionTest, CatalogParseTest, M | 2026-10-29 |
 | SET20 | Appearance → Language lists العربية 🇸🇦, فارسی 🇮🇷 and עברית 🇮🇱 among the 17 and shows the one in use; Hebrew is stored as he and loads `values-iw` (`get-app-locales` → `[he]`); Persian's Lookup settings (جستجو در واژه‌نامه‌ها) are told from its Search tab (جستجو) | F | U TranslationsTest, LanguageOptionsTest, M | 2026-10-29 |
 | SET21 | Audio follows the active language switched from the bubble menu while the page is open: sources and the test word become the new language's (Bulgarian вода, Mongolian ус); a word typed by hand stays; a language picked on the page's language card stays shown when the active one changes | F | U TestWordAfterTest, M | 2026-10-29 |
+| SET22 | Lists joined in the interface take the language's mark: a dictionary card's counts (Jitendex: terms, media files) read «435448، …» in Arabic, «435448、…» in Japanese, «, » in Russian and French; the French Search tab reads «Rechercher», the Lookup settings «Recherche» | F | M | 2026-10-29 |
 
 ### UPD: About, logs, updates
 
@@ -683,6 +687,38 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `combine-cloud` after `66a27013` (region chips, Arabic tags, the list separator, the rebuilt converters; uncommitted build), Pixel_10_Pro (API 37)
+
+Scope: POP53, POP54, SET22 and DIC50 in the Search tab (selected text sent to it with `am start -a
+android.intent.action.PROCESS_TEXT`, which takes non-ASCII words that `input text` cannot type), interface in
+Russian, Arabic, Japanese and French (`cmd locale set-app-locales`). FreeDict de-ru, it-ru, es-ru and OpenRussian
+ru-en imported from files rebuilt with the fixed converter. An x86_64-only APK.
+
+Results: passed but for the English part of POP53 (no Wiktionary en-en on the emulator; RegionChipsTest covers it);
+POP53, POP54, SET22 and DIC50 moved from N to F.
+- POP53: o shows «Центральный Вьетнам» on its noun and pronoun senses, no dotted line, a tap opens nothing. Found
+  meanwhile: the same 🇧🇷🎯 also stands inside definitions as a structured-content tag (lúa "paddy"; 96 rows of
+  vi-en), which the chip fix did not reach. Fixed in the build: popup.js labels a definition's tags as the chips and
+  drops their title; lúa then shows «Центральный Вьетнам». ônibus keeps 🇧🇷.
+- POP54: trải → giải «Северный Вьетнам», hôn → hun «Центральный Вьетнам». The case first named dóm → nhóm and
+  tau → tao: wty's rows go the other way (nhóm is the Northern form of dóm, tao the Central and North form of tau,
+  and dóm → nhóm is tagged "alternative"). أكبر shows كبير third with «элатив (أفعل)» (Russian) and «اسم التفضيل»
+  (Arabic); أحسن's verb forms read «المضارع» and «المنصوب» in Arabic, «непрошедшее время» and «сослагательное
+  наклонение» in Russian. The rule chip «المضارع» (imperfect) then stands next to the tag «المضارع» (non-past) in the
+  same row: the Arabic grammar has one term for both.
+- SET22: Jitendex's counts carry U+060C and a space in Arabic (the ` ` written in the resource survives aapt2),
+  U+3001 in Japanese, ", " in Russian and French. The home and settings summary "Installed: …, enabled: …" has its own
+  string with the Arabic comma. The Dictionaries page's card of turned-off languages joins them with ", " in Russian.
+- DIC50: Aas (de-ru) shows its first sense's short definition above the translations and the second's 238 characters
+  after them; ano (es-ru) "(Química) Se usa para formar los nombres de los hidrocarburos saturados.; (Química) …"
+  under «а́н»; año "Intervalo de tiempo …" under «год, лет»; oleandro (it-ru) "(botanica) ; la sua classificazione
+  scientifica è Nerium oleander"; говорить (ru-en) "speak, talk", "perfective: сказать, поговорить".
+- Found while preparing DIC50: the residue rule of the FreeDict converter (2026-10-22) dropped every definition with a
+  `|`, which took 3,869 of 10,093 Spanish definitions (the Spanish Wiktionary's subject label "Química| …") and four
+  others (eng "The character |."); fixed before the rebuild, with tests. Entry by entry against the archive's
+  conversions of 2026-10-19: no definition lost but four that are template residue (eng norm, fra triton and
+  salamandre, spa gurú).
 
 ### 2026-10-29, `languages/main` `ff87b33c` (0.2.3-ff87b33c), Pixel_10_Pro (API 37)
 
