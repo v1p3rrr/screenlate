@@ -198,6 +198,9 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   lines in a UTF-8 file and pass `@FILE` (each line of the file is a line of the image). A line whose first strong
   letter is right to left (Arabic, Hebrew) is drawn right to left through `TextLayout`, each run in the font that
   has its characters and aligned right; for Arabic use the phone's `NotoNaskhArabic-Regular.ttf`.
+- Devanagari from `text-image.py` comes out unshaped as well (conjuncts with a visible virama, ि after its consonant).
+  `pwsh scripts/text-image-wpf.ps1 -Out testdata/ocr/NAME.png -LinesFile lines.txt -Font "Nirmala UI" -Culture mr-IN`
+  renders it shaped through WPF, with a language's own letter forms (Marathi श and ल) where the font has them.
 - The bubble's aim point on the Pixel 10 Pro emulator is 134 px above the bubble's centre, at the same x: to aim at
   (x, y), hold the bubble and move it to (x, y + 134) before the UP. Dragged from its docked place at the right edge, the aim lands about 43 px right of the finger, so move to (x - 43, y + 134). The bubble stays where it is released; a DOWN at the edge where it no longer is starts the system Back gesture (it closes the debug viewer). Dock it again with `input swipe <bubble> 1262 <y> 400`.
 - The popup WebView is debuggable in debug builds. `ADB="D:/Android/Sdk/platform-tools/adb.exe" node scripts/popup-eval.mjs "<js>"` evaluates JS in it (Node 22+, no packages; pass a Windows-style ADB path, Node does not understand `/d/...`). Useful for clicking links, reading rendered state, checking CSS.
