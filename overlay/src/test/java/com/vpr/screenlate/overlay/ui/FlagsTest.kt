@@ -41,4 +41,19 @@ class FlagsTest {
         assertThat(Flags.drawable("gb-wls")).isNotNull()
         assertThat(Flags.countryName("gb-wls", Locale.ENGLISH)).isEqualTo("GB-WLS")
     }
+
+    @Test
+    fun `only flags shown more than once in the bubble menu carry codes`() {
+        val india = Flags.drawable("in")
+        val japan = Flags.drawable("jp")
+        val usa = Flags.drawable("us")
+        assertThat(Flags.repeated(listOf(india, japan))).isEmpty()
+        assertThat(Flags.repeated(listOf(india, japan, india))).containsExactly(india)
+        assertThat(Flags.repeated(listOf(usa, india, usa, india, usa, japan))).containsExactly(usa, india)
+    }
+
+    @Test
+    fun `codes standing in for flags on e-ink are not counted`() {
+        assertThat(Flags.repeated(listOf(null, null, Flags.drawable("jp")))).isEmpty()
+    }
 }

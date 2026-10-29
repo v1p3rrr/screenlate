@@ -86,6 +86,13 @@ object Flags {
     fun code(language: Language): String = language.support.codeLabel
 
     /**
+     * Of [flags], shown side by side (null where a code stands instead), those shown more than once: such a flag carries
+     * its language's [code] in the bubble menu (Hindi and Marathi both show India's).
+     */
+    fun repeated(flags: List<Int?>): Set<Int> =
+        flags.filterNotNull().groupingBy { it }.eachCount().filterValues { it > 1 }.keys
+
+    /**
      * The country's name in [locale], or the language's for a language's own flag, for a flag's choice and TalkBack. A
      * region's flag (`gb-wls`), which locales do not name, gives its code.
      */

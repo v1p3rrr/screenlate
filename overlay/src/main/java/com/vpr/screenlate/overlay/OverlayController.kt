@@ -773,12 +773,16 @@ class OverlayController(
             if (!inApp) add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
         }
         val locale = service.resources.configuration.locales[0]
-        val chips = languages.quick.takeIf { it.size > 1 && scanSource !is LookupSource.Photo }.orEmpty().map { language ->
+        val shown = languages.quick.takeIf { it.size > 1 && scanSource !is LookupSource.Photo }.orEmpty()
+        val flags = shown.map { if (eInk) null else Flags.of(languages, it) }
+        val repeated = Flags.repeated(flags)
+        val chips = shown.zip(flags).map { (language, flag) ->
             BubbleMenu.Chip(
                 name = language.displayName(locale),
                 code = Flags.code(language),
-                flag = if (eInk) null else Flags.of(languages, language),
+                flag = flag,
                 selected = language == activeLanguage,
+                coded = flag in repeated,
             ) {
                 if (language != activeLanguage) {
                     Log.d(TAG, "Active language ${language.code} from the bubble menu")

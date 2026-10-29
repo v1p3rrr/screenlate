@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -47,9 +48,17 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
 
     /**
      * A language to switch to: its [flag], or its [code] where flags are not shown (e-ink); TalkBack reads [name]. The
-     * [selected] one, the active language, is ringed.
+     * [selected] one, the active language, is ringed. With [coded], the flag carries the [code] on a badge over its lower
+     * edge: another chip shows the same flag ([Flags.repeated]).
      */
-    class Chip(val name: String, val code: String, @DrawableRes val flag: Int?, val selected: Boolean, val onClick: () -> Unit)
+    class Chip(
+        val name: String,
+        val code: String,
+        @DrawableRes val flag: Int?,
+        val selected: Boolean,
+        val coded: Boolean = false,
+        val onClick: () -> Unit,
+    )
 
     /** Made again for each menu: a theme keeps the day or night look it was made with. */
     private var themed: Context = context
@@ -187,11 +196,40 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         }
         inner.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         addView(inner, FrameLayout.LayoutParams(size - 2 * inset, size - 2 * inset))
+        if (chip.flag != null && chip.coded) addView(codeBadge(chip.code, primary, inset))
         layoutParams = LinearLayout.LayoutParams(size, size).apply { marginEnd = (CHIP_GAP_DP * density).roundToInt() }
         setOnClickListener {
             dismiss()
             chip.onClick()
         }
+    }
+
+    /**
+     * The [code] of a flag that another chip shows too, on a rounded badge in the menu's colors over the flag's lower
+     * edge; the flag stays visible above it. The chip's [inset] around the flag is taken back, so the badge straddles
+     * the circle's edge.
+     */
+    private fun codeBadge(code: String, textColor: Int, inset: Int) = TextView(themed).apply {
+        text = code
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, BADGE_TEXT_SP)
+        setTextColor(textColor)
+        typeface = Typeface.DEFAULT_BOLD
+        includeFontPadding = false
+        isSingleLine = true
+        gravity = Gravity.CENTER
+        val horizontal = (BADGE_PADDING_DP * density).roundToInt()
+        val vertical = (BADGE_VERTICAL_PADDING_DP * density).roundToInt()
+        setPadding(horizontal, vertical, horizontal, vertical)
+        background = GradientDrawable().apply {
+            setColor(attr(android.R.attr.colorBackgroundFloating).data)
+            cornerRadius = BADGE_CORNER_DP * density
+        }
+        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        layoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
+        ).apply { bottomMargin = -inset }
     }
 
     private fun root(card: View, shadow: Int) = Root(themed).apply {
@@ -293,6 +331,10 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         const val RING_GAP_DP = 2f
         const val CHIP_GAP_DP = 8f
         const val CHIP_TEXT_SP = 14f
+        const val BADGE_TEXT_SP = 10f
+        const val BADGE_PADDING_DP = 4f
+        const val BADGE_VERTICAL_PADDING_DP = 1f
+        const val BADGE_CORNER_DP = 6f
         const val OUTLINE_ALPHA = 0x80
         const val E_INK_FRAME_DP = 2f
     }
