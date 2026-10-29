@@ -129,10 +129,12 @@ the list of Scottish Gaelic words with those of the articles of the Gaelic Wikip
 https://dumps.wikimedia.org/gdwiki/), CC BY-SA 4.0; the lists hold only the chosen words. The Marathi case endings
 (scripts/yomitan-language/own-transforms.js) and the one-syllable words that end Marathi sentences were checked
 against the word counts of the Marathi news corpus of the Leipzig Corpora Collection (mar_news_2020_100K), CC BY;
-the lists hold only the chosen words.
+the lists hold only the chosen words. The Tamil case endings, abbreviations and one-syllable words that end Tamil
+sentences were checked the same way against the Tamil news corpus (tam_news_2020_100K), CC BY.
 
-Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Marathi, Bengali, Thai, Khmer,
-Arabic, Persian, Hebrew, Bulgarian, Latin and Cyrillic, from the Google Fonts repository, https://github.com/google/fonts)
+Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Marathi, Bengali, Tamil, Thai,
+Khmer, Arabic, Persian, Hebrew, Bulgarian, Latin and Cyrillic, from the Google Fonts repository,
+https://github.com/google/fonts)
 are not part of the APK either; each is under the SIL Open Font License 1.1, shown in the app with its source.
 
 Unicode License V3

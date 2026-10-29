@@ -606,6 +606,89 @@
       "homepage": "https://fonts.google.com/specimen/Tiro+Bangla"
     },
     {
+      "id": "hind-madurai",
+      "family": "Hind Madurai",
+      "languages": ["ta"],
+      "description": {
+        "en": "Sans-serif by Indian Type Foundry for Tamil and Latin, made for text on screens; regular and bold.",
+        "ru": "Шрифт без засечек Indian Type Foundry для тамильского письма и латиницы, сделан для текста на экранах; обычное и жирное начертания.",
+        "de": "Serifenlose Schrift von Indian Type Foundry für tamilische Schrift und Lateinisch, gemacht für Text auf Bildschirmen; normal und fett.",
+        "es": "Fuente sin serifa de Indian Type Foundry para tamil y latino, hecha para texto en pantalla; normal y negrita.",
+        "fr": "Police sans empattement d’Indian Type Foundry pour le tamoul et le latin, conçue pour le texte à l’écran ; normale et grasse.",
+        "it": "Carattere senza grazie di Indian Type Foundry per tamil e latino, pensato per il testo su schermo; normale e grassetto.",
+        "ja": "Indian Type Foundry によるタミル文字とラテン文字のサンセリフ。画面上の文章向け。標準と太字。",
+        "ko": "Indian Type Foundry가 만든 타밀 문자와 라틴 문자용 산세리프로, 화면의 본문에 맞게 만들었습니다. 보통과 굵게가 있습니다.",
+        "pl": "Krój bezszeryfowy Indian Type Foundry dla pisma tamilskiego i łacinki, zrobiony do tekstu na ekranie; zwykły i pogrubiony.",
+        "pt": "Fonte sem serifa da Indian Type Foundry para tâmil e latino, feita para texto na tela; normal e negrito.",
+        "tr": "Indian Type Foundry’nin Tamil ve Latin alfabeleri için tırnaksız yazı tipi, ekrandaki metinler için yapılmış; normal ve kalın.",
+        "vi": "Phông không chân của Indian Type Foundry cho chữ Tamil và Latinh, làm cho văn bản trên màn hình; thường và đậm.",
+        "zh": "Indian Type Foundry 出品的泰米尔文和拉丁字母无衬线字体，为屏幕上的正文设计；常规和粗体。",
+        "zh-Hant": "Indian Type Foundry 出品的泰米爾文和拉丁字母無襯線字型，為螢幕上的內文設計；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hindmadurai/HindMadurai-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hindmadurai/HindMadurai-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.3,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Hind+Madurai"
+    },
+    {
+      "id": "mukta-malar",
+      "family": "Mukta Malar",
+      "languages": ["ta"],
+      "description": {
+        "en": "Sans-serif by Ek Type for Tamil and Latin, the Tamil design of the Mukta family; regular and bold.",
+        "ru": "Шрифт без засечек Ek Type для тамильского письма и латиницы, тамильский вариант семейства Mukta; обычное и жирное начертания.",
+        "de": "Serifenlose Schrift von Ek Type für tamilische Schrift und Lateinisch, die tamilische Ausführung der Familie Mukta; normal und fett.",
+        "es": "Fuente sin serifa de Ek Type para tamil y latino, la versión tamil de la familia Mukta; normal y negrita.",
+        "fr": "Police sans empattement d’Ek Type pour le tamoul et le latin, la version tamoule de la famille Mukta ; normale et grasse.",
+        "it": "Carattere senza grazie di Ek Type per tamil e latino, la versione tamil della famiglia Mukta; normale e grassetto.",
+        "ja": "Ek Type によるタミル文字とラテン文字のサンセリフ。Mukta ファミリーのタミル文字版。標準と太字。",
+        "ko": "Ek Type이 만든 타밀 문자와 라틴 문자용 산세리프로, Mukta 패밀리의 타밀 문자판입니다. 보통과 굵게가 있습니다.",
+        "pl": "Krój bezszeryfowy Ek Type dla pisma tamilskiego i łacinki, tamilska odmiana rodziny Mukta; zwykły i pogrubiony.",
+        "pt": "Fonte sem serifa da Ek Type para tâmil e latino, a versão tâmil da família Mukta; normal e negrito.",
+        "tr": "Ek Type’ın Tamil ve Latin alfabeleri için tırnaksız yazı tipi, Mukta ailesinin Tamil sürümü; normal ve kalın.",
+        "vi": "Phông không chân của Ek Type cho chữ Tamil và Latinh, bản chữ Tamil của họ phông Mukta; thường và đậm.",
+        "zh": "Ek Type 出品的泰米尔文和拉丁字母无衬线字体，Mukta 字体家族的泰米尔文版本；常规和粗体。",
+        "zh-Hant": "Ek Type 出品的泰米爾文和拉丁字母無襯線字型，Mukta 字型家族的泰米爾文版本；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/muktamalar/MuktaMalar-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/muktamalar/MuktaMalar-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.5,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Mukta+Malar"
+    },
+    {
+      "id": "tiro-tamil",
+      "family": "Tiro Tamil",
+      "languages": ["ta"],
+      "description": {
+        "en": "Serif by Tiro Typeworks in the style of printed Tamil books, with Latin; regular only.",
+        "ru": "Шрифт с засечками Tiro Typeworks в стиле печатных книг на тамильском, с латиницей; только обычное начертание.",
+        "de": "Serifenschrift von Tiro Typeworks im Stil gedruckter tamilischer Bücher, mit Lateinisch; nur normal.",
+        "es": "Fuente con serifa de Tiro Typeworks al estilo de los libros impresos en tamil, con latino; solo normal.",
+        "fr": "Police à empattements de Tiro Typeworks dans le style des livres imprimés en tamoul, avec le latin ; normale seulement.",
+        "it": "Carattere con grazie di Tiro Typeworks nello stile dei libri stampati in tamil, con il latino; solo normale.",
+        "ja": "Tiro Typeworks によるセリフ体。タミル語の印刷本の書体にならい、ラテン文字付き。標準のみ。",
+        "ko": "Tiro Typeworks가 만든 세리프로, 타밀어 인쇄본의 글자 모양을 따르며 라틴 문자도 있습니다. 보통만 있습니다.",
+        "pl": "Krój szeryfowy Tiro Typeworks w stylu drukowanych książek w języku tamilskim, z łacinką; tylko zwykły.",
+        "pt": "Fonte com serifa da Tiro Typeworks no estilo dos livros impressos em tâmil, com latino; só normal.",
+        "tr": "Tiro Typeworks’ün basılı Tamilce kitapların tarzında tırnaklı yazı tipi, Latin harfleriyle; yalnızca normal.",
+        "vi": "Phông có chân của Tiro Typeworks theo kiểu sách in tiếng Tamil, kèm chữ Latinh; chỉ kiểu thường.",
+        "zh": "Tiro Typeworks 出品的衬线字体，仿泰米尔语印刷书籍的字形，附拉丁字母；仅常规。",
+        "zh-Hant": "Tiro Typeworks 出品的襯線字型，仿泰米爾語印刷書籍的字形，附拉丁字母；僅常規。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/tirotamil/TiroTamil-Regular.ttf", "weight": "400"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Tiro+Tamil"
+    },
+    {
       "id": "sarabun",
       "family": "Sarabun",
       "languages": ["th"],

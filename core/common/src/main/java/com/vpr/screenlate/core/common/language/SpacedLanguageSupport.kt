@@ -242,13 +242,16 @@ abstract class SpacedLanguageSupport : LanguageSupport {
      * A word hyphenated at a line end, the line's separator after the hyphen ("impor- tant"): tried joined
      * ("important") when the second half starts in lowercase, and with the hyphen kept ("well- known" as
      * "well-known"). Halves that are words of their own ("Haus- und Gartenarbeit") find nothing joined and keep the
-     * results of the text as written.
+     * results of the text as written. A soft hyphen between letters is left out (Kan\u00ADnada as Kannada).
      */
     override fun spellingVariants(text: MappedText): List<MappedText> {
-        if (!HYPHEN_BREAK.containsMatchIn(text.text)) return emptyList()
-        return listOf(text.replace(HYPHEN_JOINED, ""), text.replace(HYPHEN_KEPT, "$1"))
-            .filter { it.text != text.text }
-            .distinctBy { it.text }
+        val unbroken = text.replace(SOFT_HYPHEN_INSIDE, "")
+        val joined = if (HYPHEN_BREAK.containsMatchIn(unbroken.text)) {
+            listOf(unbroken.replace(HYPHEN_JOINED, ""), unbroken.replace(HYPHEN_KEPT, "$1"))
+        } else {
+            emptyList()
+        }
+        return (joined + unbroken).filter { it.text != text.text }.distinctBy { it.text }
     }
 
     override fun fromLatin(text: MappedText): MappedText? = null
@@ -259,17 +262,19 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * The word before the period at [index] with its inner periods and [abbreviationApostrophes]: "p.m" in "at 5 p.m.".
+     * The zero-width joiners inside it are passed over and left out (ಎನ್‌ as ಎನ್).
      */
     private fun wordBefore(text: String, index: Int): String {
         var start = index
         while (start > 0) {
             val previous = text[start - 1]
             val joining = previous == '.' || previous in abbreviationApostrophes
-            val inWord = previous.isLetterOrMark() || joining && start > 1 && text[start - 2].isLetterOrMark()
+            val inWord = previous.isLetterOrMark() || previous.isJoiner() ||
+                joining && start > 1 && text[start - 2].isLetterOrMark()
             if (!inWord) break
             start--
         }
-        return text.substring(start, index)
+        return text.substring(start, index).filterNot { it.isJoiner() }
     }
 
     /**
@@ -383,14 +388,17 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * Letters, digits, combining marks and [wordMarks]: the vowel signs of Indic scripts are spacing marks (पढ़ा, বাড়ি),
-     * drawn before their letter at times; the zero-width joiners shape letters inside a word.
+     * drawn before their letter at times; the zero-width joiners shape letters inside a word, and a soft hyphen marks
+     * where a word may break.
      */
     private fun isWordCharacter(codePoint: Int): Boolean = Character.isLetterOrDigit(codePoint) ||
-        isMark(Character.getType(codePoint)) || codePoint == ZWNJ || codePoint == ZWJ ||
+        isMark(Character.getType(codePoint)) || codePoint == ZWNJ || codePoint == ZWJ || codePoint == SOFT_HYPHEN ||
         (codePoint < 0x10000 && codePoint.toChar() in wordMarks)
 
     /** A letter or a combining mark: the vowel sign of "डॉ." belongs to the abbreviation. */
     private fun Char.isLetterOrMark(): Boolean = isLetter() || isMark(Character.getType(this))
+
+    private fun Char.isJoiner(): Boolean = code == ZWNJ || code == ZWJ
 
     private fun isMark(type: Int): Boolean =
         type == Character.NON_SPACING_MARK.toInt() || type == Character.COMBINING_SPACING_MARK.toInt() ||
@@ -409,6 +417,10 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
         const val ZWNJ = 0x200C
         const val ZWJ = 0x200D
+        const val SOFT_HYPHEN = 0x00AD
+
+        /** A soft hyphen between letters, left out of a word's spelling variant (Kan\u00ADnada as Kannada). */
+        val SOFT_HYPHEN_INSIDE = Regex("(?<=[\\p{L}\\p{M}])\u00AD(?=[\\p{L}\\p{M}])")
 
         /** The viramas of the Brahmic scripts, Devanagari to Malayalam, which join a consonant to the next one. */
         const val VIRAMAS = "\u094D\u09CD\u0A4D\u0ACD\u0B4D\u0BCD\u0C4D\u0CCD\u0D4D"

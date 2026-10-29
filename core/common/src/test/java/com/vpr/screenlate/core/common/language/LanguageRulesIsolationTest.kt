@@ -226,11 +226,19 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { !it.endsSentence(bengaliAcronym, bengaliAcronym.indexOf(". ")) })
             .containsExactly(Language.BENGALI)
         assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.HINDI, Language.BENGALI, Language.MARATHI)
-        // Marathi initials are syllables ("पु. ल. देशपांडे"), but for its one-syllable words of dialogue.
+            .containsExactly(Language.HINDI, Language.BENGALI, Language.MARATHI, Language.TAMIL)
+        // Marathi and Tamil initials are syllables ("पु. ल. देशपांडे", "க. சண்முகம்"), but for their one-syllable words of
+        // dialogue.
         assertThat(periodEnding.where { holds(it, "पु. ल. देशपांडे") }).containsExactly(Language.MARATHI)
         assertThat(periodEnding.where { holds(it, "हो. मी") }).isEmpty()
-        assertThat(spaced.filter { it.syllableInitialScript != null }.map { it.language }).containsExactly(Language.MARATHI)
+        assertThat(periodEnding.where { holds(it, "க. சண்முகம்") }).containsExactly(Language.TAMIL)
+        assertThat(periodEnding.where { holds(it, "வா. நான்") }).isEmpty()
+        assertThat(spaced.filter { it.syllableInitialScript != null }.map { it.language })
+            .containsExactly(Language.MARATHI, Language.TAMIL)
+        // Tamil திரு. and ரூ.; its months hold before a number only.
+        assertThat(periodEnding.where { holds(it, "திரு. ராமன்") }).containsExactly(Language.TAMIL)
+        assertThat(periodEnding.where { holds(it, "ஜன. 15") }).containsExactly(Language.TAMIL)
+        assertThat(periodEnding.where { holds(it, "ஜன. அவர்") }).isEmpty()
         // Georgian ქ. (city) and წ. (year), single letters without a partner.
         assertThat(periodEnding.where { holds(it, "ქ. თბილისი") }).containsExactly(Language.GEORGIAN)
         assertThat(periodEnding.where { holds(it, "1991 წ. დაიწყო") }).containsExactly(Language.GEORGIAN)
@@ -419,6 +427,29 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
+    fun `a soft hyphen inside a word keeps the word whole in every spaced language`() {
+        val word = "Kan\u00ADnada"
+        for (support in spaced) {
+            assertThat(support.wordStartOffset("the Kan\u00ADna", "da")).isEqualTo("Kan\u00ADna".length)
+            assertThat(support.spellingVariants(MappedText.identity("$word is")).map { it.text })
+                .containsExactly("Kannada is")
+            // At a line end the soft hyphen joins the halves as a hyphen does.
+            assertThat(support.spellingVariants(MappedText.identity("Kan\u00AD nada")).map { it.text })
+                .containsExactly("Kannada")
+        }
+        val joined = EnglishSupport.spellingVariants(MappedText.identity(word))[0]
+        assertThat(joined.sourceLength("Kannada".length)).isEqualTo(word.length)
+    }
+
+    @Test
+    fun `a zero-width joiner inside an abbreviation keeps it whole in every spaced language`() {
+        for (support in spaced) {
+            assertThat(support.endsSentence("Mr\u200C. Smith", "Mr\u200C".length))
+                .isEqualTo(support.endsSentence("Mr. Smith", "Mr".length))
+        }
+    }
+
+    @Test
     fun `a later part of a hyphenated word is looked up in every spaced language`() {
         // Kazakh and Kyrgyz start at each hyphen before a part as well, for their particles and endings (сондай-ақ).
         val hyphened = setOf(Language.KAZAKH.support, Language.KYRGYZ.support)
@@ -492,7 +523,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
             .containsExactly(
                 Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.HUNGARIAN, Language.AZERBAIJANI,
-                Language.UZBEK, Language.BULGARIAN, Language.MARATHI,
+                Language.UZBEK, Language.BULGARIAN, Language.MARATHI, Language.TAMIL,
             )
         assertThat(all.where { it.ruleChainsOnlyWithoutRow }).containsExactly(Language.FINNISH)
     }
@@ -654,10 +685,10 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Georgian, Armenian, Arabic, Persian, Hebrew, Swedish, Danish, Norwegian and Finnish consider more characters from the aim than Yomitan's 16 by default`() {
+    fun `only Georgian, Armenian, Arabic, Persian, Hebrew, Swedish, Danish, Norwegian, Finnish and Tamil consider more characters from the aim than Yomitan's 16 by default`() {
         assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(
             Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.SWEDISH,
-            Language.DANISH, Language.NORWEGIAN, Language.FINNISH,
+            Language.DANISH, Language.NORWEGIAN, Language.FINNISH, Language.TAMIL,
         )
     }
 

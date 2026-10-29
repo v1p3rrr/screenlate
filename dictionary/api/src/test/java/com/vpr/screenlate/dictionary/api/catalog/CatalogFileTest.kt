@@ -76,7 +76,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi", "hu", "bg", "mk")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi", "hu", "bg", "mk", "ta")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -539,6 +539,18 @@ class CatalogFileTest {
         assertThat(marathi.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
         assertThat(catalog!!.mandatory(Language.MARATHI)).containsExactly(CatalogCategory.MAIN)
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.MARATHI) }).isEqualTo(marathi)
+    }
+
+    @Test
+    fun `tamil offers its wiktionaries, transcription, frequency and tesseract fast ticked, tesseract best unticked`() {
+        val tamil = catalog!!.entries.filter { it.isFor(Language.TAMIL) }
+        assertThat(tamil.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-ta-en", "wiktionary-ta-ru", "wiktionary-ta-fr", "wiktionary-ta-transcription", "wordfreq-ta",
+            "tesseract-fast-tam",
+        )
+        // Paddle's Tamil model reads it far better and replaces the fast model once it is released.
+        assertThat(tamil.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-tam")
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.TAMIL) }).isEqualTo(tamil)
     }
 
     @Test

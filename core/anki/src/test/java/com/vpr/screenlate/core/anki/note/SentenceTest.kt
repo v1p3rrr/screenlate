@@ -410,6 +410,15 @@ class SentenceTest {
     }
 
     @Test
+    fun tamilSentencesEndAtThePeriodAndKeepAbbreviationsAndSyllableInitials() {
+        val tamil = "அவர் வந்தார். திரு. ராமன் சொன்னார், “நாளை வா. கட்டாயம்.” பின்னர் சென்றார். க. சண்முகம் எழுத்தாளர். யார்? நீ. முடிவு."
+        assertThat(extract(tamil, "ராமன்", Language.TAMIL).text)
+            .isEqualTo("திரு. ராமன் சொன்னார், “நாளை வா. கட்டாயம்.” பின்னர் சென்றார்.")
+        assertThat(extract(tamil, "சண்முகம்", Language.TAMIL).text).isEqualTo("க. சண்முகம் எழுத்தாளர்.")
+        assertThat(extract(tamil, "நீ", Language.TAMIL).text).isEqualTo("நீ.")
+    }
+
+    @Test
     fun bengaliSentencesEndAtTheDandaAndKeepQuotesAbbreviationsAndInitials() {
         val bengali = "সে বাড়ি গেল। ড. ইউনূস বললেন, “কাল এসো। অবশ্যই।” তারপর তাঁরা চলে গেলেন। শেষ।"
         assertThat(extract(bengali, "ইউনূস", Language.BENGALI).text)

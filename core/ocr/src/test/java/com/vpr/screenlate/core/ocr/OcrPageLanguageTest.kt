@@ -60,6 +60,20 @@ class OcrPageLanguageTest {
     }
 
     @Test
+    fun `a Tamil word loses the joiner after its virama and keeps a box for each character`() {
+        // Tesseract's அவன் with a non-joiner after the pulli, beside "வந்தான்".
+        val boxes = List(5) { Box(10f * it, 0f, 10f * it + 10f, 10f) }
+        val word = OcrWord("அவன்\u200C", " ", Box(0f, 0f, 50f, 10f), boxes)
+        val next = OcrWord("வந்தான்", " ", Box(60f, 0f, 100f, 10f))
+        val page = OcrPage(100, 20, listOf(OcrParagraph(listOf(OcrLine(listOf(word, next), Box(0f, 0f, 100f, 10f), vertical = false)))), OcrEngineType.DEVICE_MODEL)
+
+        val words = page.inLanguage(Language.TAMIL).paragraphs.single().lines.single().words
+
+        assertThat(words.map { it.text }).containsExactly("அவன்", "வந்தான்").inOrder()
+        assertThat(words[0].characterBoxes).containsExactly(boxes[0], boxes[1], boxes[2], Box(30f, 0f, 50f, 10f)).inOrder()
+    }
+
+    @Test
     fun `a czech word glued to the era is parted into two words with their boxes`() {
         // ML Kit's "n.I.a" for "n. l. a", with a box for each character.
         val boxes = List(5) { Box(10f * it, 0f, 10f * it + 10f, 10f) }

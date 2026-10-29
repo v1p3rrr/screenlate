@@ -343,6 +343,74 @@ test('marathi endings and processors stay out of hindi', () => {
     assert.ok(!queriedWhole('hi', 'करताना').has('करणे'));
 });
 
+test('tamil endings come off oblique stems and reach nominal entries by their tags', () => {
+    /** @param {string} text @param {string} lemma */
+    const nominal = (text, lemma) => {
+        const found = candidates('ta', text).filter((c) => c.o === text && c.d === lemma);
+        assert.ok(found.length > 0, `${text} → ${lemma}`);
+        assert.ok(found.every((c) => c.u && c.g.includes('n') && c.g.includes('non-lemma') && !c.g.includes('v')), text);
+    };
+    nominal('மரத்தில்', 'மரம்');
+    nominal('மரத்திலிருந்து', 'மரம்');
+    nominal('வீட்டில்', 'வீடு');
+    nominal('ஆற்றில்', 'ஆறு');
+    nominal('கண்ணில்', 'கண்');
+    nominal('அவனை', 'அவன்');
+    nominal('பாட்டை', 'பாட்டு');
+    nominal('வழியில்', 'வழி');
+    nominal('பலாவை', 'பலா');
+    nominal('தலைக்கு', 'தலை');
+    nominal('பெண்கள்', 'பெண்');
+    nominal('மக்களுக்கு', 'மக்கள்');
+    nominal('மரங்களில்', 'மரம்');
+    nominal('மாவட்ட', 'மாவட்டம்');
+    nominal('ஆயிரத்து', 'ஆயிரம்');
+    nominal('அதன்', 'அது');
+    nominal('அதற்கு', 'அது');
+    const tree = candidates('ta', 'மரத்தில்').find((c) => c.o === 'மரத்தில்' && c.d === 'மரம்');
+    assert.equal(JSON.stringify(tree.r), JSON.stringify([['-இல்']]));
+    const trees = candidates('ta', 'மரங்களில்').find((c) => c.o === 'மரங்களில்' && c.d === 'மரம்');
+    assert.equal(JSON.stringify(trees.r), JSON.stringify([['-கள்', '-இல்']]));
+    // The oblique stem -த்த- follows a consonant: கொடுத்து is no கொடும்.
+    assert.ok(!queriedWhole('ta', 'கொடுத்து').has('கொடும்'));
+    // The text itself stays typed.
+    assert.ok(!candidates('ta', 'மரத்தில்').find((c) => c.d === 'மரத்தில்').u);
+});
+
+test('tamil particles and the doubled consonant come off any word, and an ending may follow them', () => {
+    const also = candidates('ta', 'நானும்').find((c) => c.o === 'நானும்' && c.d === 'நான்');
+    assert.ok(also && also.u && !also.g);
+    assert.ok(candidates('ta', 'அவனே').find((c) => c.o === 'அவனே' && c.d === 'அவன்').u);
+    assert.ok(candidates('ta', 'இன்றோ').find((c) => c.o === 'இன்றோ' && c.d === 'இன்று').u);
+    const tree = candidates('ta', 'மரத்திலும்').filter((c) => c.o === 'மரத்திலும்' && c.d === 'மரம்');
+    assert.ok(tree.length > 0 && tree.every((c) => c.g.includes('n')));
+    assert.equal(JSON.stringify(tree[0].r), JSON.stringify([['-இல்', '-உம்']]));
+    // The doubled consonant before the next word is not shown in the chain.
+    const service = candidates('ta', 'சேவைத்').find((c) => c.o === 'சேவைத்' && c.d === 'சேவை');
+    assert.ok(service && service.u);
+    assert.equal(JSON.stringify(service.r), JSON.stringify([[]]));
+    const object = candidates('ta', 'மரத்தைப்').find((c) => c.o === 'மரத்தைப்' && c.d === 'மரம்');
+    assert.equal(JSON.stringify(object.r), JSON.stringify([['-ஐ']]));
+    // Not after a pulli: கல்க் is no கல்.
+    assert.ok(!queriedWhole('ta', 'கல்க்').has('கல்'));
+});
+
+test('tamil text is read in the headwords spelling', () => {
+    assert.ok(queriedWhole('ta', 'வ\u0BCCியே').has('வெளியே'));
+    assert.ok(queriedWhole('ta', 'க\u0BC6\u0BB3தம்').has('கௌதம்'));
+    assert.ok(queriedWhole('ta', 'ஸ்ரீ').has('ஶ்ரீ'));
+    // A two-part vowel sign written as its parts is composed.
+    assert.ok(queriedWhole('ta', 'க\u0BC6\u0BBEடு').has('கொடு'));
+});
+
+test('tamil endings and processors stay out of other languages', () => {
+    for (const language of ['hi', 'mr', 'bn']) {
+        assert.ok(!queriedWhole(language, 'மரத்தில்').has('மரம்'), language);
+        assert.ok(!queriedWhole(language, 'வ\u0BCCியே').has('வெளியே'), language);
+        assert.ok(!queriedWhole(language, 'ஸ்ரீ').has('ஶ்ரீ'), language);
+    }
+});
+
 test('georgian rules load, chain and match entries without a part of speech when three letters stay', () => {
     // Yomitan files its Georgian rules under kat, not ka.
     const book = candidates('ka', 'წიგნს').find((c) => c.d === 'წიგნი');

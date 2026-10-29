@@ -156,6 +156,169 @@ export const marathiTransforms = /* @__PURE__ */ (() => ({
 }))();
 
 /**
+ * Tamil case endings, postpositions, the plural and particles written joined to a word, as the app's own rules:
+ * Wiktionary's tables decline most nouns but leave out the locative -இல் and the genitive -இன், and many nouns have
+ * none. An ending that starts with a vowel is written as that vowel's sign on the stem's last consonant (மரத்தில்:
+ * மரத்த் and -இல்), so it comes off as the sign and the rest, and the stem is taken back to the direct form in each way
+ * it may have been made ([tamilStems]). A particle (-உம், -ஏ, -ஓ) comes off first and an ending may follow
+ * (மரத்திலும் → மரத்தில் → மரம்); the plural -கள் comes off after a case ending (மரங்களில் → மரங்கள் → மரம்). The
+ * consonant doubled after a vowel before the next word (மரத்தைப் பார்த்தான்) comes off before anything and is not
+ * shown. The attributive stem of a noun in -அம் (மாவட்ட, ஆயிரத்து) and the augment -அன்- of the pronouns and verbal
+ * nouns in -து (அதன், செய்வதற்கு) are undone as well. Wiktionary's Tamil entries tag each definition with its part of
+ * speech, so the texts of the endings reach nominal words and forms, those of the particles and the doubled consonant
+ * any word (glue.js, `taggedRules`, `untypedRules`). The patterns name characters by code point ranges, as Yomitan
+ * tests them without flags. The endings are in NFC, as the composed text and the headwords.
+ */
+const tamilCaseEndings = [
+    'ிடமிருந்து', 'ிலிருந்து', 'ினுடைய', 'ிற்காக', 'ுக்காக', 'ிடத்தில்', 'ிலுள்ள', 'ினால்', 'ுடைய', 'ிற்கு', 'ுக்கு',
+    'ோடு', 'ுடன்', 'ிடம்', 'ால்', 'ில்', 'ின்', 'ை', 'ாக', 'ான',
+];
+
+/** The dative after a vowel (வழிக்கு → வழி, தலைக்காக → தலை). */
+const tamilVowelEndings = ['க்காக', 'க்கு'];
+
+/** The particles: -உம் "and, also", the emphatic -ஏ, -ஓ of doubt or choice. */
+const tamilParticles = ['ும்', 'ே', 'ோ'];
+
+/** The endings after the augment -அன்- of a word in -து (அதன், அதனை, அதற்கு → அது). */
+const tamilAugmentEndings = ['னுடைய', 'னுக்கு', 'ற்காக', 'னால்', 'ற்கு', 'னை', 'ன்'];
+
+/** The consonants doubled before a word that starts with one of them (சேவைத் துறை, மாவட்டக் குழு). */
+const tamilDoubledConsonants = ['க்', 'ச்', 'த்', 'ப்'];
+
+const TAMIL_CONSONANT = '[\u0B95-\u0BB9]';
+const TAMIL_PULLI = '\u0BCD';
+const TAMIL_U = '\u0BC1';
+
+/** A vowel sign or an independent vowel: a word's last sound when it is a vowel other than the inherent a. */
+const TAMIL_VOWEL = '[\u0BBE-\u0BCC\u0B85-\u0B94]';
+
+/** Front vowels, after which a vowel ending is joined by ய (வழியில்). */
+const TAMIL_FRONT_VOWEL = '[\u0BBF\u0BC0\u0BC6-\u0BC8\u0B87\u0B88\u0B8E-\u0B90]';
+
+/** Back vowels and the inherent a of a bare consonant, after which a vowel ending is joined by வ (பலாவை, எனவும்). */
+const TAMIL_BACK_VOWEL = '[\u0BBE\u0BC1\u0BC2\u0BCA-\u0BCC\u0B85\u0B86\u0B89\u0B8A\u0B92-\u0B94\u0B95-\u0BB9]';
+
+/** The independent vowels of the vowel signs that start endings, for the rules' names (-இல் for ில்). */
+const TAMIL_VOWEL_LETTERS = {'\u0BBE': 'ஆ', '\u0BBF': 'இ', '\u0BC1': 'உ', '\u0BC7': 'ஏ', '\u0BC8': 'ஐ', '\u0BCB': 'ஓ'};
+
+/**
+ * The name of an ending as grammars write it: one that starts with a vowel sign with the vowel's letter (-இல்).
+ * @param {string} ending
+ * @returns {string}
+ */
+function tamilEndingName(ending) {
+    const vowel = TAMIL_VOWEL_LETTERS[ending[0]];
+    return vowel ? `-${vowel}${ending.slice(1)}` : `-${ending}`;
+}
+
+/**
+ * The stems before an ending that starts with a vowel, each as a pattern before the ending and its direct form: a
+ * consonant as it is, its pulli back (அவனை → அவன்) or its -உ back (பாட்டை → பாட்டு); -த்த- for -ம் (மரத்தில் → மரம்);
+ * -ட்ட- and -ற்ற- for -டு and -று (வீட்டில் → வீடு, ஆற்றில் → ஆறு); a doubled ண ல ள ன ய for one (கண்ணில் → கண்);
+ * the joining ய after a front vowel and வ after a back one dropped (வழியில் → வழி, பலாவை → பலா). [oblique] says
+ * whether the forms of the oblique stem (-த்த-, -ட்ட-, -ற்ற-) are tried: the particles follow the direct form.
+ * @param {boolean} oblique
+ * @returns {[string, number, string][]} the pattern before the ending, how many of its last characters come off, and
+ *     what takes their place
+ */
+function tamilStems(oblique) {
+    return [
+        [`.${TAMIL_CONSONANT}`, 0, TAMIL_PULLI],
+        [`.${TAMIL_CONSONANT}`, 0, TAMIL_U],
+        ...(oblique ? [
+            [`.${TAMIL_CONSONANT}த${TAMIL_PULLI}த`, 3, 'ம்'],
+            [`.ட${TAMIL_PULLI}ட`, 2, TAMIL_U],
+            [`.ற${TAMIL_PULLI}ற`, 2, TAMIL_U],
+        ] : []),
+        ...['ண', 'ல', 'ள', 'ன', 'ய'].map((letter) => [`.${letter}${TAMIL_PULLI}${letter}`, 1, '']),
+        [`.${TAMIL_FRONT_VOWEL}ய`, 1, ''],
+        [`.${TAMIL_BACK_VOWEL}வ`, 1, ''],
+    ];
+}
+
+/**
+ * @param {string} ending
+ * @param {boolean} oblique
+ * @param {'n' | 'p'} condition
+ * @returns {import('language-transformer').SuffixRule<'n' | 'p'>[]}
+ */
+function tamilVowelEndingRules(ending, oblique, condition) {
+    return tamilStems(oblique).map(([before, cut, direct]) => ({
+        type: 'suffix',
+        isInflected: new RegExp(before + ending + '$'),
+        deinflected: direct,
+        deinflect: (text) => text.slice(0, -(cut + ending.length)) + direct,
+        conditionsIn: ['p'],
+        conditionsOut: [condition],
+    }));
+}
+
+/**
+ * @param {string} pattern the ending and what must stand before it
+ * @param {number} cut how many characters come off the end
+ * @param {string} direct what takes their place
+ * @param {('n' | 'p')[]} conditionsIn
+ * @param {('n' | 'p')[]} conditionsOut
+ * @returns {import('language-transformer').SuffixRule<'n' | 'p'>}
+ */
+function tamilSuffix(pattern, cut, direct, conditionsIn, conditionsOut) {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp(pattern + '$'),
+        deinflected: direct,
+        deinflect: (text) => (cut === 0 ? text : text.slice(0, -cut)) + direct,
+        conditionsIn,
+        conditionsOut,
+    };
+}
+
+/** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'p'>} */
+export const tamilTransforms = /* @__PURE__ */ (() => ({
+    language: 'ta',
+    conditions: {
+        n: {name: 'Noun', isDictionaryForm: true},
+        p: {name: 'Word', isDictionaryForm: true},
+    },
+    transforms: Object.fromEntries([
+        ...tamilCaseEndings.map((ending) => [tamilEndingName(ending), {
+            name: tamilEndingName(ending),
+            rules: tamilVowelEndingRules(ending, true, 'n'),
+        }]),
+        ...tamilVowelEndings.map((ending) => [`-${ending}`, {
+            name: `-${ending}`,
+            rules: [tamilSuffix(`.${TAMIL_VOWEL}${ending}`, ending.length, '', ['p'], ['n'])],
+        }]),
+        ['-கள்', {
+            name: '-கள்',
+            rules: [
+                tamilSuffix(`.${TAMIL_VOWEL}கள்`, 3, '', ['n', 'p'], ['n']),
+                tamilSuffix(`.${TAMIL_CONSONANT}${TAMIL_PULLI}கள்`, 3, '', ['n', 'p'], ['n']),
+                tamilSuffix(`.${TAMIL_VOWEL}க்கள்`, 5, '', ['n', 'p'], ['n']),
+                tamilSuffix('.ங்கள்', 5, 'ம்', ['n', 'p'], ['n']),
+                tamilSuffix('.ற்கள்', 5, 'ல்', ['n', 'p'], ['n']),
+                tamilSuffix('.ட்கள்', 5, 'ள்', ['n', 'p'], ['n']),
+            ],
+        }],
+        ['-அ', {name: '-அ', rules: [tamilSuffix(`.{2}${TAMIL_CONSONANT}`, 0, 'ம்', ['p'], ['n'])]}],
+        ['-அத்து', {name: '-அத்து', rules: [tamilSuffix(`.${TAMIL_CONSONANT}த்து`, 4, 'ம்', ['p'], ['n'])]}],
+        ...tamilAugmentEndings.map((ending) => [`-அ${ending}`, {
+            name: `-அ${ending}`,
+            rules: [tamilSuffix(`.த${ending}`, ending.length, TAMIL_U, ['p'], ['n'])],
+        }]),
+        ...tamilParticles.map((particle) => [tamilEndingName(particle), {
+            name: tamilEndingName(particle),
+            rules: tamilVowelEndingRules(particle, false, 'p'),
+        }]),
+        ...tamilDoubledConsonants.map((consonant) => [`-${consonant}`, {
+            name: `-${consonant}`,
+            hidden: true,
+            rules: [tamilSuffix(`.{2}[^${TAMIL_PULLI}]${consonant}`, consonant.length, '', [], ['p'])],
+        }]),
+    ]),
+}))();
+
+/**
  * Persian endings and verb prefixes, as the app's own rules: Wiktionary lists the verb forms (میفرستادیم, نمیدانم) and
  * few noun forms. An enclitic comes off first: a possessive (کتابم, کتابشان, خانهاش, پایم, spoken کتابشون), the
  * indefinite or ezafe ی (کتابی, خانهای, پایی), a copula (رفتهاند) or a joined را (آنرا); then a plural (کتابها,

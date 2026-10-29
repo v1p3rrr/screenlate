@@ -59,6 +59,27 @@ export const marathiCandra = {
 };
 
 /**
+ * Tamil text that writes the vowel sign ௌ as ெ and the letter ள, which look the same (வெளியே as வௌியே, கௌதம் as
+ * கெளதம்): each is also read as the other.
+ * @type {import('language').TextProcessor}
+ */
+export const tamilAuSign = {
+    name: 'Au sign',
+    description: 'வௌியே → வெளியே, கெளதம் → கௌதம்',
+    process: (str) => [str, str.replace(/\u0BCC/g, '\u0BC6\u0BB3'), str.replace(/\u0BC6\u0BB3/g, '\u0BCC')],
+};
+
+/**
+ * Tamil text that writes ஸ்ரீ with ஸ, where the headwords write ஶ்ரீ.
+ * @type {import('language').TextProcessor}
+ */
+export const tamilShri = {
+    name: 'Shri',
+    description: 'ஸ்ரீ → ஶ்ரீ',
+    process: (str) => [str, str.replace(/\u0BB8\u0BCD\u0BB0\u0BC0/g, '\u0BB6\u0BCD\u0BB0\u0BC0')],
+};
+
+/**
  * Armenian emphasis, exclamation and question marks, written on the stressed vowel inside a word (ինչո՞ւ for ինչու,
  * կարդա՛): headwords are written without them. The import keys Wiktionary's forms written with them without them too.
  * @type {import('language').TextProcessor}

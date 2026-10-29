@@ -119,7 +119,8 @@ private fun Box.share(from: Int, to: Int, total: Int, line: OcrLine): Box {
 
 /**
  * The character boxes of [old] for [new], which writes each character of [old] as one, or two of them as one (>> as
- * »): their boxes joined. Null when they do not line up.
+ * »): their boxes joined. Characters [new] leaves out at the end join the last box (a joiner after a virama). Null
+ * when they do not line up.
  */
 private fun joinedBoxes(old: String, new: String, boxes: List<Box>): List<Box>? {
     val from = old.codePoints().toArray()
@@ -137,6 +138,10 @@ private fun joinedBoxes(old: String, new: String, boxes: List<Box>): List<Box>? 
         } else {
             result += boxes[index++]
         }
+    }
+    if (index < from.size && result.isNotEmpty()) {
+        result[result.lastIndex] = boxes.subList(index, from.size).fold(result.last(), Box::union)
+        index = from.size
     }
     return result.takeIf { index == from.size }
 }

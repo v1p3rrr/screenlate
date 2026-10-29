@@ -70,6 +70,7 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     MACEDONIAN("mk"),
     MONGOLIAN("mn"),
     MARATHI("mr"),
+    TAMIL("ta"),
     ;
 
     companion object {

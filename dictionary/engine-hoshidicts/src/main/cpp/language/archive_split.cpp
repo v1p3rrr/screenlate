@@ -183,14 +183,19 @@ std::string_view trimmed(std::string_view text) {
 // The headwords a form-of row stands for. Wiktionary exports write some forms with a romanization or a note after
 // them ("মাসটি (maśṭa (colloquial), maśṭi (formal))", "বইগুলো , boigulo"), two spellings apart ("ծագմանը / ծագմանն"),
 // an ending apart from its word ("মুখ ে"), the classical spellings of Armenian words after a label
-// ("orthography spelling գիւղ"), or an unfilled template ("{{{3}}}ে"), which stands for no word. A Hebrew construct
-// form written with the maqaf that joins it to the next word ("כֶּלֶב־") stands for the word without it as well.
+// ("orthography spelling գիւղ"), Tamil forms after a label and before their romanization ("past of அடித்துவிடு
+// (aṭittuviṭu)"; English rows "past of flytip" have no romanization and are left as they are), or an unfilled template
+// ("{{{3}}}ে"), which stands for no word. A Hebrew construct form written with the maqaf that joins it to the next word
+// ("כֶּלֶב־") stands for the word without it as well.
 std::vector<std::string> form_headwords(const std::string& expression) {
   std::vector<std::string> out;
   if (expression.find("{{{") != std::string::npos) return out;
   std::string_view text = expression;
   constexpr std::string_view kSpellingLabel = "orthography spelling ";
   if (text.starts_with(kSpellingLabel)) text.remove_prefix(kSpellingLabel.size());
+  for (const std::string_view label : {std::string_view("past of "), std::string_view("future of ")}) {
+    if (text.starts_with(label) && text.ends_with(')')) text.remove_prefix(label.size());
+  }
   for (size_t i = 0; i < text.size(); i++) {
     if (!is_space(text[i])) continue;
     size_t next = i;

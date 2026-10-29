@@ -345,6 +345,44 @@ class LanguageLookupTest {
     }
 
     @Test
+    fun tamilEndingsComeOffObliqueStemsByPartOfSpeechAndLookAlikeSpellingsFindTheHeadwords() = runTest {
+        val imported = engine.import(tamilDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val tamil = LookupOptions(language = Language.TAMIL)
+        suspend fun first(text: String) = engine.lookup(text, tamil).first().term.expression
+        suspend fun whole(text: String) = engine.lookup(text, tamil).filter { it.matched == text }.map { it.term.expression }
+
+        // A case ending off the oblique stem of a noun in -ம், and a particle after it.
+        val tree = engine.lookup("மரத்தில்", tamil).first()
+        assertThat(tree.term.expression).isEqualTo("மரம்")
+        assertThat(tree.trace.map { it.name }).containsExactly("-இல்")
+        assertThat(whole("மரத்திலும்")).containsExactly("மரம்")
+        // The plural before a case ending, the doubled -ட்ட- of a noun in -டு, the dative after a vowel.
+        assertThat(whole("மரங்களில்")).containsExactly("மரம்")
+        assertThat(whole("வீட்டில்")).containsExactly("வீடு")
+        assertThat(whole("தலைக்கு")).containsExactly("தலை")
+        // The consonant doubled before the next word comes off and is not shown.
+        val service = engine.lookup("சேவைத் துறை", tamil).first()
+        assertThat(service.term.expression).isEqualTo("சேவை")
+        assertThat(service.matched).isEqualTo("சேவைத்")
+        // The attributive stem and the augment of a pronoun in -து.
+        assertThat(whole("மாவட்ட")).containsExactly("மாவட்டம்")
+        assertThat(whole("அதன்")).containsExactly("அது")
+        // Case endings reach nominal words only: படி is a verb here.
+        assertThat(whole("படியை")).isEmpty()
+        // A word with an entry of its own shows no results of the rules.
+        assertThat(whole("காலை")).containsExactly("காலை")
+        // ௌ and ெள read as each other, ஸ்ரீ as ஶ்ரீ.
+        assertThat(first("வ\u0BCCியே")).isEqualTo("வெளியே")
+        assertThat(first("க\u0BC6\u0BB3தம்")).isEqualTo("கௌதம்")
+        assertThat(first("ஸ்ரீ")).isEqualTo("ஶ்ரீ")
+        // "past of அடித்துவிடு (aṭittuviṭu)" is keyed as அடித்துவிடு.
+        val hit = engine.lookup("அடித்துவிடு", tamil).first()
+        assertThat(hit.term.expression).isEqualTo("அடி")
+        assertThat(hit.trace.map { it.name }).containsExactly("singular present perfect imperative")
+    }
+
+    @Test
     fun georgianRulesFindEntriesWithoutPartOfSpeechAndMtavruliHeadingsFindTheOrdinaryLetters() = runTest {
         val imported = engine.import(georgianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
@@ -2130,6 +2168,30 @@ class LanguageLookupTest {
               ["मोठ्या","","non-lemma","",0,[["मोठा",["oblique"]]],12,""],
               ["फोन","","n masc","",0,["phone"],13,""],
               ["ॲप","","n neut","",0,["app"],14,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun tamilDictionary(): File = zip(
+        "ta.zip",
+        "index.json" to """{"title":"Test Tamil","revision":"1","format":3,"sourceLanguage":"ta"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["மரம்","","n","",0,["tree"],1,""],
+              ["வீடு","","n","",0,["house"],2,""],
+              ["தலை","","n","",0,["head"],3,""],
+              ["சேவை","","n","",0,["service"],4,""],
+              ["துறை","","n","",0,["department"],5,""],
+              ["மாவட்டம்","","n","",0,["district"],6,""],
+              ["அது","","pron","",0,["that"],7,""],
+              ["படி","","v","",0,["to read"],8,""],
+              ["கால்","","n","",0,["leg"],9,""],
+              ["காலை","","n","",0,["morning"],10,""],
+              ["வெளியே","","adv","",0,["outside"],11,""],
+              ["கௌதம்","","name","",0,["Gautam"],12,""],
+              ["ஶ்ரீ","","n","",0,["Sri"],13,""],
+              ["அடி","","v","",0,["to hit"],14,""],
+              ["past of அடித்துவிடு (aṭittuviṭu)","","non-lemma","",0,[["அடி",["singular present perfect imperative"]]],15,""]
             ]
         """.trimIndent().toByteArray(),
     )

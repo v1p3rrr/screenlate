@@ -60,7 +60,7 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
         OcrScript.KOREAN -> OcrScript.KOREAN
         OcrScript.DEVANAGARI, OcrScript.BENGALI -> OcrScript.DEVANAGARI
         OcrScript.ARABIC, OcrScript.ARMENIAN, OcrScript.CYRILLIC, OcrScript.GEORGIAN, OcrScript.GREEK, OcrScript.KHMER,
-        OcrScript.HEBREW, OcrScript.THAI,
+        OcrScript.HEBREW, OcrScript.KANNADA, OcrScript.TAMIL, OcrScript.TELUGU, OcrScript.THAI,
         -> null
     }
 

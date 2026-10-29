@@ -21,7 +21,7 @@ HOMEPAGE = "https://github.com/rspeer/wordfreq"
 TEMPLATE = "wordfreq"
 
 # The app's source languages except Japanese, which bundles its own frequency dictionary.
-LANGUAGES = ["en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi", "hu", "bg", "mk"]
+LANGUAGES = ["en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi", "hu", "bg", "mk", "ta"]
 
 # wordfreq's codes where they differ from the app's: Tagalog is its "fil" (Filipino), Norwegian its Bokmål "nb".
 WORDFREQ_CODES = {"tl": "fil", "no": "nb"}

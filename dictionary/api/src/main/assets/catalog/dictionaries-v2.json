@@ -2148,6 +2148,25 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-ta",
+      "title": "wordfreq (ta)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq ta"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "ta",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_ta.msgpack.gz",
+      "downloadSize": 453574,
+      "sha256": "68ed68a8bd703e1aafe8c0adc3827dada57eb3226837dabf26716187fb796547",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "corpus-th",
       "title": "Thai National Corpus (th)",
       "template": "tnc",
@@ -4464,6 +4483,40 @@
       "engine": "tesseract",
       "file": "tessdata/mar.traineddata",
       "version": "799405456528",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-tam",
+      "title": "Tesseract fast (tam)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ta",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/tam.traineddata",
+      "downloadSize": 3237963,
+      "sha256": "d02fbec24be4b07e32e80d0ccfc3b6b67a3c5d61c9d0a7c8532677990912c6ec",
+      "model": "tesseract-fast-tam",
+      "engine": "tesseract",
+      "file": "tessdata/tam.traineddata",
+      "version": "d02fbec24be4",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-tam",
+      "title": "Tesseract best (tam)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ta",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/tam.traineddata",
+      "downloadSize": 6023201,
+      "sha256": "4b9ce85987f629dd31eaf87443a1646452a43cdf91fcf05e017382ad595dcb9e",
+      "model": "tesseract-best-tam",
+      "engine": "tesseract",
+      "file": "tessdata/tam.traineddata",
+      "version": "4b9ce85987f6",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -19843,6 +19896,84 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/mr/wty-mr-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 85558,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ta-en",
+      "title": "Wiktionary (ta–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ta-en",
+        "kty-ta-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ta",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ta-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ta/en/wty-ta-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 2981044,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ta-ru",
+      "title": "Wiktionary (ta–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ta-ru",
+        "kty-ta-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ta",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ta-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ta/ru/wty-ta-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 92166,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ta-fr",
+      "title": "Wiktionary (ta–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ta-fr",
+        "kty-ta-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ta",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ta-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ta/fr/wty-ta-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 67799,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ta-transcription",
+      "title": "Wiktionary transcription (ta)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-ta-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "ta",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ta-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ta/wty-ta-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 205866,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

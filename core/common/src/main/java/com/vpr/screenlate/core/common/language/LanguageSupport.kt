@@ -561,8 +561,8 @@ data class RecordingTitle(val prefix: String, val title: String)
 
 /** On-device OCR models; each one covers a script family. */
 enum class OcrScript {
-    LATIN, ARABIC, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, HEBREW, JAPANESE, KHMER, KOREAN,
-    THAI,
+    LATIN, ARABIC, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, HEBREW, JAPANESE, KANNADA, KHMER,
+    KOREAN, TAMIL, TELUGU, THAI,
 }
 
 val Language.support: LanguageSupport
@@ -625,6 +625,7 @@ val Language.support: LanguageSupport
         Language.MACEDONIAN -> MacedonianSupport
         Language.MONGOLIAN -> MongolianSupport
         Language.MARATHI -> MarathiSupport
+        Language.TAMIL -> TamilSupport
     }
 
 /**
