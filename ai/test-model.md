@@ -123,6 +123,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB18 | Hold the docked bubble without moving it → the menu with the quick-language flags (two or more quick languages) and Open Screenlate (over another app), no copy items even after a scan; a flag switches the language and the docked glyph changes; over Screenlate with one quick language nothing opens; a move before the hold time still pulls the bubble out or moves the dock; the menu fits on screen at each dock side | N | M | |
 | BUB19 | The docked glyph is the own name's first letter: German D, Russian Р, Czech Č, Japanese あ. Quick languages English and Spanish → the bubble shows EN, after a switch ES; Russian with Polish → РУ and PL; Kazakh with Kyrgyz → Қ and К; adding or removing a star updates the glyph at once; with the e-ink theme the menu's codes are РУ, PL | F | U BubbleGlyphTest, M | 2026-10-29 |
 | BUB20 | The debug build's selection menu item reads "Look up in Screenlate Dev" (in Russian "Найти в Screenlate Dev"), the release build's "Look up in Screenlate", so the two installed side by side can be told apart | N | U TranslationsTest, M | 2026-10-29 (English only; Russian by TranslationsTest) |
+| BUB21 | Quick languages Hindi, Marathi and Japanese → in the hold menu the two India flags carry HI and MR on a small rounded badge over the flag's lower edge, in the menu's colors, the flag visible above it; Japan's flag has none; turn Marathi off → Hindi's badge goes; e-ink shows the codes alone as before; TalkBack reads the names | F | U FlagsTest, M | 2026-10-29 |
 
 ### OCR: text sources and recognition
 
@@ -271,6 +272,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK84 | Bulgarian lookups (overlay over `testdata/ocr/bg-sample.png` with cloud recognition, and the Search screen): министерството finds министерство, книгите книга (plural definite), кнѝгата книга, умна умен, фирмата фирма; ѝ read as й shows й and Й, then ѝ (the pronoun); in Search, четат finds чета, децата дете, Дадох дам; a verb whose dictionary form wty-bg-en lacks (публикува, гарантира) finds nothing | F | U BulgarianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
 | LK85 | Macedonian lookups (overlay over `testdata/ocr/mk-sample.png` and `mk-retry.png` with PaddleOCR v5 alone, then cloud recognition, and the Search screen): Куќата finds куќа, then кука through the folded marks; Ѓорѓи, ќе and Скопје find their entries; сè уште finds сѐ уште, then сѐ; Ѝ finds Ѝ and ѝ; ѕвездите read as свездите finds ѕвезда, the source chip On-device; Лубица finds Љубица through the retry, while лубов, a form of луб, finds луб and is not retried; with cloud recognition ѕвездите finds ѕвезда; in Search ѕвездите finds ѕвезда and typed свездите nothing (the retry is for OCR words only) | F | U MacedonianSupportTest, MisreadMatchesTest, I LanguageLookupTest, M | 2026-10-29 |
 | LK86 | Mongolian lookups (overlay over `testdata/ocr/mn-sample.png` with cloud recognition, and the Search screen): номуудаасаа finds ном ("ablative plural definite possessive"); уншаад finds унших, "perfective converb" first, then "imperfect participle « dative-locative"; Хуулийн finds хууль (genitive), асуудлыг асуудал (accusative), хугацаанд хугацаа (dative-locative), Өнөөдөр өнөөдөр; хүн shows хүн, then хун through the folded marks; in Search, хун shows хун (swan), then хүн, and хийнэ finds хийх (present-future) | F | U MongolianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
+| LK87 | Marathi lookups (Search screen, and the overlay over `testdata/ocr/mr-sample.png` from `scripts/text-image-wpf.ps1` (Nirmala UI, mr-IN): "शाळेत आज पाण्यात खेळ झाला.", "विद्यार्थ्यांना वाचण्यासाठी पुस्तके", "आतापर्यंत घरातही काम चालू आहे.", "शेतकऱ्यांना मोठ्या अडचणी आल्या.", ML Kit Devanagari): पाण्यात finds पाणी with the tag -त; घरातही finds घर (-त, -ही); विद्यार्थ्यांना विद्यार्थी; शेतकऱ्यांना शेतकरी; आतापर्यंत आता; वाचण्यासाठी the verb वाचणे; करत and करताना find the verb करणे through the participle (-त, -ताना), not कर (tax); दिसत finds दिसणे; विदय़ार्थी typed with U+095F finds विद्यार्थी; बँक finds बॅंक, ज़मीन जमीन, अॅ the letter ॲ (mr-en has no मोठा or ॲप); होकारार्थी finds nothing; in the overlay, the aimed word inside a conjunct (शाळेत aimed at ळे) is looked up from its start; the popup shows no reading line | F | U MarathiSupportTest, glue.test.mjs, I LanguageLookupTest, HoshidictsEngineTest, M | 2026-10-29 |
 
 ### POP: the popup
 
@@ -330,6 +332,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP52 | Macedonian and Mongolian entries: the catalog offers both languages Literata, Inter, PT Serif, PT Sans, Montserrat and Commissioner, no Sofia Sans, and the Macedonian font card lists those installed, and PT and Literata draw сѐ and ѝ in its sample; the bubble shows М for both, МК and МН while both are quick languages; with e-ink on, Home's chips and the bubble menu show БГ, МК and МН instead of the flags and the bubble МК; the flags are North Macedonia's and Mongolia's; with Montserrat chosen for Macedonian its sample and the lookup page draw the Russian letter forms, not the Bulgarian ones it draws in Bulgarian text | F | U FontCatalogFileTest, FlagsTest, BubbleGlyphTest, M | 2026-10-29 |
 | POP53 | Region chips of another language's country: Wiktionary vi-en's o (aunt) shows «Центральный Вьетнам» in place of 🇧🇷🎯 with no tap note, 🇺🇸 stays a flag; the same tag inside a definition (lúa, sense 2) shows the label too and its tap opens nothing; Wiktionary pt-en keeps 🇧🇷 as a flag (ônibus); English «yea» shows «западное» in place of 🇩🇪⬅️ | F | U RegionChipsTest, P popup.test, M | 2026-10-29 |
 | POP54 | Arabic form tags: أكبر also finds كبير, its tag «элатив (أفعل)» in Russian and «اسم التفضيل» in Arabic; a verb form (أحسن) names non-past «المضارع» and the subjunctive «المنصوب» in Arabic; Vietnamese trải → giải shows «Северный Вьетнам», hôn → hun «Центральный Вьетнам» | F | U FormOfTagsTest, ArabicSupportTest, VietnameseSupportTest, M | 2026-10-29 |
+| POP55 | Marathi fonts: Popup settings → Text font for Marathi lists Mukta and Tiro Devanagari Marathi (not Hind or Tiro Devanagari Hindi); downloading Mukta there makes it installed for Hindi too (one file, listed under both); the sample text draws Marathi's own ल and श in a font that has them; Backup with Marathi alone turned on lists Mukta | F | U FontCatalogFileTest, BackupChoiceTest, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -374,6 +377,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD37 | Uzbek audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of yaxshi answers from a source or says "No audio" for each | F | U UzbekSupportTest, M | 2026-10-28 |
 | AUD38 | Bulgarian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of вода finds a Lingua Libre recording, Wiktionary "No audio", and the phone's voice reads it (Google's Bulgarian voice) | F | U BulgarianSupportTest, M | 2026-10-29 |
 | AUD39 | Macedonian and Mongolian audio: both list Lingua Libre first, Wiktionary, then the phone's voice; the Macedonian Test of вода finds a Lingua Libre recording, Wiktionary "No audio" and the phone's voice "No voice installed"; the Mongolian Test of ус says "No audio" for both sources and "No voice installed"; with autoplay on, a lookup in either language shows "No text-to-speech voice for this language is installed." | F | U MacedonianSupportTest, MongolianSupportTest, M | 2026-10-29 |
+| AUD40 | Marathi audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with पाणी; with autoplay on and no Marathi voice installed, a lookup shows the no-voice notice | F | U MarathiSupportTest, M | 2026-10-29 |
 
 ### ANK: Anki
 
@@ -423,6 +427,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK43 | An Azerbaijani Anki note (over `testdata/ocr/az-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for armud the sentence is "Bazardan alma, armud və s. aldıq." (və s. holds before a lowercase word); for yaşayır "Prof. Əliyev Bakı şəh. Nizami küç. 5-də yaşayır." (prof., şəh. and küç. hold); for dəftərlər "Kitablar, dəftərlər və s." (və s. ends it before a capital) | F | U SentenceTest, AzerbaijaniSupportTest, M | 2026-10-28 |
 | ANK44 | An Uzbek Anki note (over `testdata/ocr/uz-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for nok the sentence is "Bozordan olma, nok va h.k. oldik." (va h.k. holds before a lowercase word); for yashaydi "Prof. Karimov Toshkent sh. Navoiy ko'ch. 5-uyda yashaydi." (prof., sh. and ko'ch. hold); for daftarlar "Kitoblar, daftarlar va h.k." (va h.k. ends it before a capital) | F | U SentenceTest, UzbekSupportTest, M | 2026-10-28 |
 | ANK45 | Bulgarian and Macedonian Anki notes (over `testdata/ocr/bg-anki.png` and `mk-anki.png`, Arial, one paragraph over five and six lines, cloud recognition): the sentence keeps "г.", "пр. н. е.", "проф.", "ул." and "нпр." inside it, and "и т.н." or "итн." ends it before a capital ("Купихме ябълки, круши и т.н."; "Таа сака овошје, нпр. јаболка и круши итн."; "Проф. Иванов живее на ул. Шипка от 2020 г. насам."; "Во 44 г. пр. н. е. Цезар бил убиен."); PaddleOCR gives each line as a paragraph of its own, so its sentences end at the line ends | F | U SentenceTest, M | 2026-10-29 |
+| ANK46 | A Marathi Anki note (over `testdata/ocr/mr-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96`, one paragraph over four lines: "पु. ल. देशपांडे यांचा जन्म इ.स." / "1919 मध्ये झाला. डॉ. जोशी आणि" / "प्रा. पाटील आले. कोण आले? मी." / "तू कुठे होतास? तो आला। आता जा।", ML Kit Devanagari): the sentence keeps "डॉ.", "प्रा.", "इ.स." and the initials "पु. ल." inside it ("पु. ल. देशपांडे यांचा जन्म इ.स. 1919 मध्ये झाला."), and a one-syllable word of dialogue ends one ("कोण आले? मी. तू कुठे होतास?" gives "मी." for मी); a danda ends a sentence as a period does | F | U SentenceTest, MarathiSupportTest, M | 2026-10-29 |
 
 ### TR: sentence translation
 
@@ -533,6 +538,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG39 | Bulgarian setup: the download screen ticks Wiktionary (bg–en) as the main dictionary, the word frequency (wordfreq) and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract bul fast and accurate unticked; "Download (6.4 MB)", about 24 MB after import; the flag is Bulgaria's and the bubble shows Б | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
 | LNG40 | Macedonian setup: the download screen ticks Wiktionary (mk–en) as the main dictionary, the word frequency (wordfreq) and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract mkd unticked; "Download (11 MB)", about 40 MB after import; the flag is North Macedonia's and the bubble shows М | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
 | LNG41 | Mongolian setup: the download screen ticks Wiktionary (mn–en) as the main dictionary, the Leipzig word frequency and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract mon unticked; "Download (20 MB)", about 15 MB after import; the flag is Mongolia's and the bubble shows М | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
+| LNG42 | Marathi setup: Languages offers Marathi (मराठी) with India's flag; the download screen ticks Wiktionary (mr–en) and the transcription, lists no word frequency, and offers Tesseract mar fast and best unticked (the bundled Devanagari model reads it); the bubble shows म; with Hindi and Marathi both quick languages the bubble shows हि and म | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
 
 ### SET: settings, backup, appearance
 
@@ -687,6 +693,36 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/mr` (Marathi, before its commit), Pixel_10_Pro (API 37)
+
+Scope: LNG42, BUB21, LK87, ANK46, POP55 and AUD40, interface in Russian. Words in the Search screen sent with
+`am start -a android.intent.action.PROCESS_TEXT`; the overlay over `testdata/ocr/mr-sample.png` and `mr-anki.png`
+(`scripts/text-image-wpf.ps1`, Nirmala UI, mr-IN) with ML Kit. Wiktionary mr-en and the transcription of
+2026.10.22. Anki notes went to the emulator's local collection and were read from a pulled copy of it.
+
+Results: passed but for the parts named below; the six cases moved from N to F.
+- LNG42: Marathi (मराठी) with India's flag; the download screen ticks mr-en and the transcription, lists no word
+  frequency, offers Tesseract mar fast and best unticked; the bubble shows म, and हि for Hindi beside it.
+- BUB21: the hold menu shows Japan's flag bare and the two India flags with HI and MR. Not checked: e-ink, and
+  TalkBack itself (the overlay's windows are not in a uiautomator dump; the names come from the language chips).
+- LK87: all words as listed, in the Search screen and the overlay; aimed at ळे inside शाळेत, the overlay looks up
+  शाळेत from its start and finds शाळा (-त); the headword has no reading, the transcription's IPA line stands under
+  it. Extra entries beside the right one: करताना also shows करिता, आतापर्यंत also आत.
+- ANK46: जन्म → "पु. ल. देशपांडे यांचा जन्म इ.स. 1919 मध्ये झाला.", पाटील → "डॉ. जोशी आणि प्रा. पाटील आले.",
+  मी → "मी.", आला → "तो आला।" (the note's word is आले: mr-en lists आला as its form).
+- POP55: Marathi lists Mukta and Tiro Devanagari Marathi; after Mukta's download Hindi lists it as downloaded beside
+  Hind and Tiro Devanagari Hindi (one file). The sample's श and ल match the same Mukta file drawn by DirectWrite
+  under mr-IN, not under hi-IN. Backup with Marathi alone lists Mukta among the fonts, beside those that belong to no
+  language (Lexend, Amiri, Vazirmatn, Heebo and others, as before).
+- AUD40: Lingua Libre, Wiktionary, then the phone's voice; Test with पाणी: Lingua Libre finds one clip, Wiktionary
+  none, the phone's voice is there. Not checked: the no-voice notice (the emulator's speech engine has a Marathi
+  voice).
+- Found and fixed meanwhile: Wiktionary gives the forms of few Marathi verbs, so with the real mr-en करत and करताना
+  did not reach करणे (the engine test's fixture had करत as a form row); the imperfective participle (-त, -ताना over
+  verb stems) was added, group 5e question 20. The engine's instrumented test showed घर beside घरात, which has an
+  entry of its own: Marathi's rule ids were missing from the generated list the rules-only filter reads; generated,
+  with a test that every language with that filter has its ids.
 
 ### 2026-10-29, `combine-cloud` after `66a27013` (region chips, Arabic tags, the list separator, the rebuilt converters; uncommitted build), Pixel_10_Pro (API 37)
 

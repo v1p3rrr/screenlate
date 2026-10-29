@@ -1849,6 +1849,30 @@ Finnish, Estonian, Hungarian, Azerbaijani and Uzbek: research, decisions and wor
 Cantonese, Kannada, Tamil, Telugu and Marathi: research, OCR measurements, decisions and work in
 `plans/2026-10-19-group-5e.md`.
 
+### Marathi on `languages/mr` (2026-10-29)
+
+- The bundle is Hindi's under Marathi's code with `composeCharacters` and three own processors: an old font's य़ as the
+  य of a conjunct (मोठय़ा in one news source), the nukta dropped (the headwords write none), अॅ, ऍ and ँ as the
+  headwords' ॲ and ॅं. Hindi's nukta and candrabindu import keys are not used: they change 10 headwords and find
+  nothing more.
+- wty mr-en (2026.10.22): 5,057 words with meanings, every definition tagged with its part of speech; verb tables
+  give forms, nouns almost none. The tables' labels (होकारार्थी, नकारार्थी, Affirmative, Negative and four more) come
+  out as form headwords of every tabled verb; the import drops them for Marathi (`HeadwordMarks.droppedForms`). mr-ru
+  (968), mr-pl (507) and the other editions stay under the listing line; the transcription (4,900) is listed.
+- Own case endings, postpositions and particles over the oblique stems (`marathiTransforms`); the measurement on
+  Leipzig `mar_news_2020_100K` (top 20,000 words against mr-en): lemma 2,176, form 572, through the endings 3,876,
+  nothing 13,376; a hand check of 30 random words through the endings found 28 to 30 right. Rules only for words
+  without an entry of their own (77 overlaps on words with entries were noise). The imperfective participle's -त and
+  -ताना come off verb stems for the infinitive (करत → करणे, 161 of the commonest words; the other verb endings are
+  group 5e question 20). The rule ids are listed without strings (`inflections_mr.xml`), as the rule-only filter
+  needs them.
+- Sentences: 95,810 of 100,000 news sentences end with a period, 257 with a danda. One-syllable initials are the
+  common way to write names (पु. ल., ग. दि.), so one akshara before a period holds the sentence, but for 15 words
+  of dialogue. Two-syllable words cannot be told from sentence ends: 64% of sentences end with one (आहे 29,976).
+- No word frequency (none in wordfreq; owner, question 9). ML Kit's Devanagari model reads it; Tesseract mar is
+  offered unticked.
+- Fonts: Mukta (Hindi's entry, `languages` hi and mr: one download) and Tiro Devanagari Marathi.
+
 ## Group 4d research (2026-10-19)
 
 Arabic (ar), Persian (fa), Hebrew (he): scripts written right to left with spaces between words. Urdu (ur), Egyptian
