@@ -262,6 +262,8 @@ the details.
     (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question (form-of steps
     marked by the native lookup, `notes/language-rules.md` bug 48; engine instrumented tests 72 of 72, LK82's
     kengligiga → kenglik on the emulator).
+  - Group 5e's questions 18-20 (decided provisionally as built) and 21 (repeated India flags on Home, not built) wait
+    for the owner's return.
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
