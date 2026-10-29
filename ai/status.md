@@ -73,8 +73,12 @@ the details.
     language, not of the searched one (`SearchScreen`, `ProcessTextActivity`);
   - a screen scan's popup stays after a tab change inside the app (a scan is a snapshot).
 
-### Emulators (2026-10-29: both shut down)
+### Emulators (2026-10-29: API 37 running)
 
+- 2026-10-29 evening: API 37 (emulator-5554) runs the debug app of `combine-cloud` with the evening's work (interface
+  Russian through the per-app setting; Japanese, Hindi and Cantonese quick, Cantonese active; Tamil, Telugu, Kannada,
+  Marathi, Uzbek and Azerbaijani on; one Kannada camera photo in the history). The lock `.worktrees/emulator.lock` is
+  free.
 - 2026-10-29: the main session last ran API 37 with the debug app of `combine-cloud` `19801288` (the app's language
   Russian through the per-app setting; Azerbaijani and Uzbek turned on, Uzbek active) and shut it down; the lock
   `.worktrees/emulator.lock` is free. The notes below are
@@ -269,19 +273,56 @@ the details.
     and docs it contradicted are fixed (`ocr-models-1` is a regular release never marked latest, wordfreq lists are
     built on the phone, PanLex uses the pinned CC0 dump). Open there: whether the archive's copies of the catalog's
     files are ever served from our hosting.
-  - Measured, waiting for the owner's return: the folded plan's question 2 (a headword list in the word forms
-    import; Uzbek: 1,445 wrong results removed, no right one) with group 5c's questions 18 and 19. Found while
+  - Answered by the owner on 2026-10-29 after the measurement: the folded plan's question 2 (a), a headword list in
+    the word forms import for Uzbek and Azerbaijani (Uzbek: 1,445 wrong results removed, no right one), to build;
+    group 5c's questions 18 and 19 (a), as built. Found while
     measuring: the rule filter (`RuleOnlyResults.throughAny`) takes a form row whose tag is named as a rule (uz
     dative, genitive, accusative, locative; az plural, converb) for a rule's result and drops it beside an entry
     (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question (form-of steps
     marked by the native lookup, `notes/language-rules.md` bug 48; engine instrumented tests 72 of 72, LK82's
     kengligiga → kenglik on the emulator).
-  - Group 5e's questions 18-20 (decided provisionally as built), 21 (repeated India flags on Home, not built), 22
-    (a Tamil "Word forms" item for users who untick ta-en, not built), 23 (the same for Telugu, recommended
-    without), 24 (words.hk's character dictionary ticked, built so) and 25 (Cantonese frequency ranks each word under
-    its variant spellings instead of folding OpenCC's forms as the decision row says, built so) wait for the owner's
-    return.
+  - Group 5e's questions answered on 2026-10-29: 18, 19 and 24 as built; 21 widened (a language whose flag another
+    language also shows carries its code badge wherever its flag is shown); 22 and 23 a "Word forms" item for Tamil
+    and Telugu; 20 the present, past and -ून Marathi endings that pass a check of right against wrong results; 25 as
+    built (row "Cantonese frequency" changed); 26 (sentences across a recognition paragraph break) kept as is. To
+    build: 20-23 and the folded plan's question 2; the owner asked for nothing new beyond them until the weekly limit
+    resets.
+  - Answered the same day, to build after the weekly limit resets: group 4e's questions 23 (ending consonants by the
+    grammar) and 24 (dictionary form rows and verb chains first at the same length), each with a count first; 25-27
+    as bugs (the "without" rule, the pronouns' case forms, PanLex Title Case phrases); group 5e's question 27
+    (words.hk's frequency list for Cantonese, ticked, once checked to hold 我哋 佢哋 你哋 喺度 為咗). Group 6's
+    question 30: a report to wiktextract only (the agent drafts it, the owner files it); the renaming of the Turkic
+    Russian-Wiktionary tags goes to the Backlog, to build if the fix does not reach wty's releases.
+  - Built on 2026-10-29 evening (main session and four subagents, `combine-cloud`): the "Word forms" item for Tamil
+    and Telugu (ta-en, te-en; mandatory unless the whole dictionary is ticked) and Telugu place words found from their
+    dative (`1027f4a4`); Marathi present, past, perfect participle and -ून/-ऊन verb endings, each kept where its right
+    results outnumber the wrong ones, with नेते, नेता, चाहते, चाहता, सांगली and सलून left as written (`69e62589`; the
+    irregular आली, आल्या and their participles still find nothing, as no list of irregular stems is built); a headword
+    list in every word forms import, counted as entries by the Uzbek and Azerbaijani rule filter (`d8a69c1c`; Hungarian,
+    Tamil and Telugu could take it with one line each, a question for the owner; word forms imported earlier work as
+    before until updated); the code badge on every flag another language shows, wherever the flag is drawn (`3a8e0195`,
+    checked on the emulator by its agent except the first run, the not turned-on list and the flag dialog); Home's word
+    forms status counts the whole dictionary they are cut from, as turning a language on did (a plain bug, seen on the
+    emulator with ta-en installed). Engine instrumented `LanguageLookupTest` 51 of 51; cases LK92-94, DIC51-52 and
+    LNG47-48 added, BUB21 changed. The wiktextract report draft was widened after a check of 21 Turkic languages'
+    tables (group 6 plan, question 30) and waits for the owner's yes to be filed.
+  - Found on the emulator, to look into after the weekly limit resets: the first screen after the app is installed or
+    updated names languages in English under a Russian interface (Home's "Cantonese"); reopening the app gives
+    "Кантонский". `Language.displayName` reads `Locale.getDefault()`, which seems not yet to carry the per-app locale
+    on that first start.
+  - Before the full release of the languages branch, remind the owner of the five waiting Paddle models (Thai,
+    Devanagari, Arabic, Tamil, Telugu; `notes/hosting-files.md`); until then they stay unreleased (owner, 2026-10-29).
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
+- Backlog: composing the test model for all 62 languages (owner's question, 2026-10-29, made precise the same day): a
+  pass over the plans, the language rules, the code and the existing cases that writes the missing cases, not one that
+  runs them. It looks for each language's own points (script, rules, sources, the engines chosen) and for rules made for
+  a set of languages, and gives each point a case of the fitting kind: an emulator case, a check on corpus data, an
+  integration or a unit test. About 12 rule families, one session each, with a closing pass that merges the cases into
+  `test-model.md`; estimated for the owner at 15-25% of a weekly limit. Running the cases (the corpus checks above all)
+  is a separate task. Starts on the owner's command, after the limit resets.
+- Backlog: rename the Turkic form tags of Russian Wiktionary in our support classes (`formTagNames`: "singular/plural
+  possessive" → genitive, Tatar's lone ablative "plural" → ablative plural) if the wiktextract report's fix does not
+  reach wty's releases (group 6, question 30; owner, 2026-10-29).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.

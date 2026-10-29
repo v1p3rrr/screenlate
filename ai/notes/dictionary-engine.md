@@ -275,6 +275,15 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   therefore writes no archive; `import_forms_only` in `jni_bridge.cpp` makes the folder from the index (title with
   " (forms)") and the form-of table. Without a `.hoshidicts_N` file, `DictionaryQuery::add_dict` skips the folder
   silently, while `load` still opens its table, as tables are read from every term path.
+  Since 2026-10-29 the folder also holds `headwords.bin` (`language/headword_list.hpp`: magic SLHW, the distinct
+  headwords of the rows with definitions, sorted, with an offset index; memory-mapped at load). `lookupLanguage`
+  returns `{results, headwords}`, the second the scanned texts whose candidate without a rule is such a headword
+  (`listed_headword_texts`), for the rule filter of `LanguageSupport.formsHeadwordsCountAsEntries` (uz, az). Sizes from
+  the wty archives of 2026-10: uz-en 3,508 headwords (39 KB), az-en 11,892 (153 KB), et-en 8,364 (95 KB), ta-en
+  10,125 (268 KB), te-en 15,686 (407 KB), hu-en 38,216 (514 KB), fi-en 173,563 (2.7 MB); the import holds them as
+  strings until written (fi-en under 10 MB, beside its form-of table builder of millions of forms) and sorts them
+  once. Word forms imported before have no list and work as before; nothing re-imports them, an update of the item
+  or a new download writes it.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

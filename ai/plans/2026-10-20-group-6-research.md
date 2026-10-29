@@ -1419,7 +1419,13 @@ recommended option; what changing it takes is said).
     and 1,232 words; tt-en is the only English one). (b) Count only words in the language's script for every pair
     (tt-tr and tt-en fail; row "Gloss languages" wants an English dictionary, so tt-en would be kept by hand). (c) List
     all three as counted. Changing it is a line in the catalog script.
-30. Deferred for later (owner, 2026-10-29): not one to ask soon; the main session records it among the questions
+30. Answered (owner, 2026-10-29): (b), the report only; the renaming goes to the Backlog, to build if the fix does
+    not reach wty's releases. Checked before the answer: the source tables are right (ru.wiktionary's Tatar and
+    Bashkir китап: rows Им., Прит., Д., В., М., Исх., both numbers in every row). The error is wiktextract's
+    (`src/wiktextract/extractor/ru/tags.py`): "прит." maps to possessive; "Исх.", Bashkir's "местно-временной падеж",
+    Kyrgyz's "Дат.-н.", the possessive rows' "Принадлежность" and Kyrgyz's "2 веж." stay raw tags, so those rows carry
+    only a number (kaikki.org's tt, ba and ky китап/китеп). The report therefore goes to tatuylonen/wiktextract, filed
+    by the owner; the agent drafted it. Was deferred: not one to ask soon; the main session records it among the questions
     deferred for later and brings it back when its time comes (the Turkic dictionaries' tags worked on: block 6c, or
     Kyrgyz's tags). Form tags of Russian Wiktionary's Turkic tables. wty's tt-ru, ba-ru and the shipped
     ky-ru tag the genitive "singular possessive" and "plural possessive" (the Turkic grammars' Russian name for it,
@@ -1434,6 +1440,72 @@ recommended option; what changing it takes is said).
     rows only, → ablative plural; the mixed lone "plural" of ba-ru and ky-ru stays); the missing singulars are found
     through the ending rules. (b) The report only. (c) The renaming only. (d) Neither. Kyrgyz is built, so (a) and (c)
     change a shipped language.
+
+    The report draft shown to the owner on 2026-10-29, rewritten the same day to state the problem first and again
+    after a check of the tables of 21 Turkic languages (new: Yakut "Ср." as neuter and its untranslated cases,
+    Kumyk "Осн." and "Н.", the possessor labels of Uzbek and Khakas, label cells read as forms in Khakas, Altai and
+    Shor, possessive blocks without `possessive`). To file at github.com/tatuylonen/wiktextract/issues from the
+    owner's account; not filed yet:
+
+    > **ru: wrong or missing case tags in Turkic declension tables ("Прит." tagged possessive, "Ср." tagged neuter, many labels untranslated)**
+    >
+    > **Problem.** The Russian extractor turns the row labels of Russian Wiktionary's declension tables into tags with the table in `src/wiktextract/extractor/ru/tags.py` (looked up as `raw_tag.lower()`). For Turkic languages some labels are translated wrongly, many are not translated, and in three languages the labels are not recognised as labels at all. I went through the noun and pronoun tables of 21 Turkic languages on kaikki.org/ruwiktionary (dump of 2026-10-01). The tables themselves are correct.
+    >
+    > **1. Wrong tags**
+    >
+    > - "Прит." (притяжательный падеж) becomes `possessive`. In Russian grammars of Turkic languages this is the name of the genitive case (Tatar китапның "of the book"), so these forms should get `genitive`. The real possessive forms are a separate block of the same table, "Принадлежность". Used in Tatar, Bashkir, Kyrgyz, Khakas and Altai.
+    > - "Ср." in the Yakut table is сравнительный падеж (the comparative case), but becomes `neuter`.
+    >
+    > Both abbreviations can keep their usual meaning elsewhere (possessive pronouns, neuter gender), so the fix probably has to depend on the table.
+    >
+    > **2. Labels with no tag.** The forms keep only a number, and the label stays in `raw_tags`:
+    >
+    > | Label | Meaning | Expected | Languages |
+    > |---|---|---|---|
+    > | Исх. | исходный | `ablative` | nearly every Turkic table (only "исх. п." is mapped) |
+    > | местно-временной падеж | the link target of Bashkir's "М." | `locative` | Bashkir |
+    > | Дат.-н. | дательно-направительный | `dative` | Kyrgyz |
+    > | Осн. | основной | `nominative` | Kumyk, Khakas, Shor |
+    > | Н. | направительный | `dative` in Kumyk; in Khakas a separate directive case next to "Дат." | Kumyk, Khakas |
+    > | Вн., Дт., Рз., Ис., Ор., Св. | винительный, дательный, разделительный, исходный, орудный, совместный | `accusative`, `dative`, `partitive`, `ablative`, `instrumental`, `comitative` | Yakut |
+    > | Принадлежность | the possessive forms | `possessive` | Tatar, Bashkir, Kumyk, Kyrgyz, Uzbek, Khakas |
+    > | 1-е лицо ед. ч. (мой), 2-е лицо ед. ч. (твой), 3-е лицо ед. ч. (его), 1-е лицо мн. ч. (наш), 2-е лицо мн. ч. (ваш), 3-е лицо мн. ч. (их) | the possessor's person and number | the person, `possessive` | Uzbek, Khakas |
+    > | 2 веж. | second person, polite | `second-person`, `formal` | Kyrgyz |
+    > | Простое склонение | the title of the Yakut table, in the raw_tags of every form | (ignore) | Yakut |
+    >
+    > In Uzbek the ablative of the possessive forms (kitobimdan) gets no tag at all.
+    >
+    > **3. Label cells read as forms (Khakas, Altai, Shor).** These tables put the case labels in `<td>` cells, not `<th>`. Each label becomes a form of its own (form "Осн." with raw_tags `["падеж"]`), and the real forms get only `singular` or `plural`, so their case is lost. Once these cells are read as headers, they also need "Оруд." (instrumental), "Прич." (причинный, causal), "П.-с." (продольно-сравнительный), and Shor's "П.-Р." (притяжательно-родительный, genitive), "Н.-Д." (dative), "М.-В." (locative) and "С.-О." (совместно-орудийный, comitative and instrumental).
+    >
+    > **4. Possessive blocks.** In Tatar, Bashkir, Kumyk and Kyrgyz the ед./мн. columns of the "Принадлежность" block give the possessor's number, but the forms get a plain `singular` or `plural` and no `possessive`: Kumyk китабыбыз "our book" is tagged `plural, first-person`, which reads as "books". (The Uzbek possessive table and the Bashkir pronoun мин have no number headers in the source, so their forms get no number; that part is on the Wiktionary side.)
+    >
+    > **Examples**
+    >
+    > | Word | Form | Label | Tags now | Expected |
+    > |---|---|---|---|---|
+    > | Tatar китап | китапның | Прит. | singular, possessive | singular, genitive |
+    > | Yakut муоста | муостатааҕар | Ср. | singular, neuter | singular, comparative |
+    > | Tatar китап | китаптан | Исх. | singular (raw_tags) | singular, ablative |
+    > | Bashkir китап | китапта | местно-временной падеж | singular (raw_tags) | singular, locative |
+    > | Kyrgyz китеп | китепке | Дат.-н. | singular (raw_tags) | singular, dative |
+    > | Kumyk китап | китапгъа | Н. | singular (raw_tags) | singular, dative |
+    > | Yakut муоста | муостаҕа | Дт. | singular (raw_tags) | singular, dative |
+    > | Uzbek kitob | kitobimdan | 1-е лицо ед. ч. (мой), Исх. | none (raw_tags only) | first-person, possessive, ablative |
+    > | Kyrgyz китеп | китебиңиз | 2 веж. | singular (raw_tags) | singular, second-person, formal |
+    > | Kumyk китап | китабыбыз | Принадлежность | plural, first-person | first-person, plural, possessive |
+    > | Khakas пала | палада | Мест. (a `<td>` cell) | singular | singular, locative |
+    >
+    > Pages: [китап](https://ru.wiktionary.org/wiki/китап) (Tatar, Bashkir, Kumyk), [китеп](https://ru.wiktionary.org/wiki/китеп) (Kyrgyz), [муоста](https://ru.wiktionary.org/wiki/муоста) (Yakut), [kitob](https://ru.wiktionary.org/wiki/kitob) (Uzbek), [пала](https://ru.wiktionary.org/wiki/пала) (Khakas), [бала](https://ru.wiktionary.org/wiki/бала) (Altai), [таш](https://ru.wiktionary.org/wiki/таш) (Shor).
+    >
+    > **Not affected.** Kazakh, Turkish, Turkmen and Azerbaijani tables are tagged correctly apart from "Исх.". Crimean Tatar, Nogai, Karakalpak, Karachay-Balkar, Chuvash, Tuvan, Uyghur and Gagauz have no declension tables on Russian Wiktionary.
+    >
+    > **Suggested fix.**
+    >
+    > - In `tags.py`: map "прит." to `genitive` and "ср." to `comparative` where they label rows of a Turkic declension table, and add the labels of section 2 ("н." per language: `dative` in Kumyk, directive in Khakas).
+    > - Read the label cells of the Khakas, Altai and Shor tables as row headers.
+    > - Add `possessive` to the forms of the "Принадлежность" blocks.
+    >
+    > **Effect downstream.** Dictionaries built from this data (wiktionary-to-yomitan's tt-ru, ba-ru and ky-ru) show the genitive as "singular possessive", which readers take for a possessive suffix, and the ablative forms lose their case.
 
 ## Work
 
@@ -1527,3 +1599,7 @@ the fallback reused); 6c about a session (group 4e's engine and wty's Tatar exis
   are kept as `scripts/yomitan-language/drafts/group-6-turkic.patch` with a README, and the measuring tools are in
   `scripts/yomitan-language/tools/` (`freq_list.py`, `fold_noise.py`, `coverage.mjs`), both at the owner's word.
 - 2026-10-29: question 28 settled by the owner's answer to question 1 of the folded-marks plan, (a) (main session).
+- 2026-10-29: question 30 answered (b) by the owner after a check of the source: the report goes to wiktextract, the
+  renaming to the Backlog (main session).
+- 2026-10-29: question 30's report draft widened after a check of the tables of 21 Turkic languages: Yakut, Kumyk,
+  Uzbek and Khakas labels, label cells read as forms, possessive blocks (main session).
