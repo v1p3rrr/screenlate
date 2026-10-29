@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">پرسشی</string>
     <string name="inflection_turkic_possessive_2pl_label">ملکی: شما (جمع)</string>
     <string name="inflection_turkic_verbal_noun_label">اسم مصدر</string>
+    <string name="inflection_turkic_past_copula_label">فعل ربطی گذشته</string>
+    <string name="inflection_turkic_conditional_copula_label">فعل ربطی شرطی</string>
+    <string name="inflection_turkic_evidential_copula_label">فعل ربطی گواه‌نما</string>
+    <string name="inflection_turkic_future_label">آینده</string>
+    <string name="inflection_turkic_evidential_label">گذشتهٔ گواه‌نما</string>
+    <string name="inflection_turkic_necessity_label">لزوم</string>
+    <string name="inflection_turkic_participle_label">وجه وصفی</string>
 </resources>

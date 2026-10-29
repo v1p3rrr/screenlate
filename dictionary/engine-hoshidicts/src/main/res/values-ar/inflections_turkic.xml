@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">الاستفهام</string>
     <string name="inflection_turkic_possessive_2pl_label">ملكية المخاطب الجمع</string>
     <string name="inflection_turkic_verbal_noun_label">المصدر</string>
+    <string name="inflection_turkic_past_copula_label">الرابطة في الماضي</string>
+    <string name="inflection_turkic_conditional_copula_label">الرابطة الشرطية</string>
+    <string name="inflection_turkic_evidential_copula_label">الرابطة للإخبار غير المباشر</string>
+    <string name="inflection_turkic_future_label">المستقبل</string>
+    <string name="inflection_turkic_evidential_label">الماضي المنقول</string>
+    <string name="inflection_turkic_necessity_label">الوجوب</string>
+    <string name="inflection_turkic_participle_label">صفة فعلية</string>
 </resources>

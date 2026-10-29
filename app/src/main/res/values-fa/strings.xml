@@ -537,6 +537,8 @@
     <string name="popup_font_script_only_fi">فقط برای متن فنلاندی</string>
     <string name="popup_font_script_only_hu">فقط برای متن مجاری</string>
     <string name="popup_font_script_only_et">فقط برای متن استونیایی</string>
+    <string name="popup_font_script_only_az">فقط برای متن ترکی آذربایجانی</string>
+    <string name="popup_font_script_only_uz">فقط برای متن ازبکی</string>
     <string name="popup_font_system_zh">قلم چینی تلفن</string>
     <string name="popup_font_system_ko">قلم کره‌ای تلفن</string>
     <string name="popup_font_script_only_zh">فقط برای متن چینی</string>

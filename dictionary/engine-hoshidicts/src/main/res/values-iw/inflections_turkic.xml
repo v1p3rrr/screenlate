@@ -44,4 +44,11 @@
     <string name="inflection_turkic_question_label">שאלה</string>
     <string name="inflection_turkic_possessive_2pl_label">שלכם</string>
     <string name="inflection_turkic_verbal_noun_label">שם פעולה</string>
+    <string name="inflection_turkic_past_copula_label">אוגד בעבר</string>
+    <string name="inflection_turkic_conditional_copula_label">אוגד בתנאי</string>
+    <string name="inflection_turkic_evidential_copula_label">אוגד אווידנציאלי</string>
+    <string name="inflection_turkic_future_label">זמן עתיד</string>
+    <string name="inflection_turkic_evidential_label">עבר אווידנציאלי</string>
+    <string name="inflection_turkic_necessity_label">חובה</string>
+    <string name="inflection_turkic_participle_label">בינוני</string>
 </resources>
