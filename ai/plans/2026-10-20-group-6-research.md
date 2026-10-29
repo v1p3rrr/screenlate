@@ -1444,8 +1444,8 @@ recommended option; what changing it takes is said).
     The report draft shown to the owner on 2026-10-29, rewritten the same day to state the problem first and again
     after a check of the tables of 21 Turkic languages (new: Yakut "Ср." as neuter and its untranslated cases,
     Kumyk "Осн." and "Н.", the possessor labels of Uzbek and Khakas, label cells read as forms in Khakas, Altai and
-    Shor, possessive blocks without `possessive`). To file at github.com/tatuylonen/wiktextract/issues from the
-    owner's account; not filed yet:
+    Shor, possessive blocks without `possessive`). Filed from the owner's account on 2026-10-29 at the owner's word:
+    https://github.com/tatuylonen/wiktextract/issues/1734 (the links of the "Pages" line as below):
 
     > **ru: wrong or missing case tags in Turkic declension tables ("Прит." tagged possessive, "Ср." tagged neuter, many labels untranslated)**
     >
@@ -1603,3 +1603,4 @@ the fallback reused); 6c about a session (group 4e's engine and wty's Tatar exis
   renaming to the Backlog (main session).
 - 2026-10-29: question 30's report draft widened after a check of the tables of 21 Turkic languages: Yakut, Kumyk,
   Uzbek and Khakas labels, label cells read as forms, possessive blocks (main session).
+- 2026-10-29: question 30's report filed as tatuylonen/wiktextract#1734 from the owner's account (main session).
