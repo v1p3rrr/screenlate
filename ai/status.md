@@ -2098,5 +2098,5 @@ session needs; the folded-marks plan's question 1 points to the new numbers. Not
   is, af; joins the folded-marks plan's question 1), 29 (tt-tr and tt-ko), 30 (the Turkic form tags; a report to wty
   is an outward-facing step), and the deferred 10 and 21 after the emulator run.
 - For a local session: recognition on the emulator (ML Kit, Tesseract, cloud, Paddle on the research screens), voices,
-  the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports; the list is in the
-  plan ("For the emulator session").
+  the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports, and the audio counts
+  (Commons rate-limited the cloud session); the list is in the plan ("For the emulator session").

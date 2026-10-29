@@ -1038,10 +1038,10 @@ numbers this plan simulated from kaikki:
 
 ### Audio (2026-10-29)
 
-Commons' search API answers 429 (`x-envoy-ratelimited`) from the cloud egress after a few queries, so the twenty-word
-searches of "Audio and voices" were not repeated; the counts are being taken again by listing Lingua Libre's categories
-and the Wiktionary prefixes instead (a later commit fills them in). Checked so far: Lingua Libre's Catalan category
-still holds 22,918 files. Until then the table of "Audio and voices" stands.
+Not recounted: from the cloud container Commons' API answered 429 (`x-envoy-ratelimited`) to the twenty-word searches
+of "Audio and voices" and, for half an hour, to plain category and prefix listings as well; lingualibre.org did not
+answer. One query got through: Lingua Libre's Catalan category still holds 22,918 files, as on 2026-10-20. The table of
+"Audio and voices" stands; the local session recounts it (list below).
 
 ### For the emulator session (local)
 
@@ -1056,6 +1056,8 @@ Recognition and checks this cloud session could not run; each block's session me
 - The fold on real imports: index size of is-en, ca-en, gl-en, tt-ru and ba-ru with and without the folded keys (growth
   here 4-80% of rows), and the popup order of the extras (Galician e and é, Catalan que and què).
 - Voices on the emulator's engine for af, gl, ca, is (Google Cloud lists af-ZA and gl-ES; TalkBack's list ca and is).
+- The audio table of "Audio and voices" counted again from the PC (Commons rate-limited this session): Lingua Libre and
+  Wiktionary files for the twenty common words, Lingua Libre's file and speaker counts.
 - The Vedic signs (॑ ॒, the Vedic Extensions) and candrabindu in the system Devanagari font and in Mukta; Tiro Devanagari
   Sanskrit if offered.
 - Gboard's Tatar and Bashkir layouts (which letters a phone keyboard gives: evidence for question 15's twin typing).

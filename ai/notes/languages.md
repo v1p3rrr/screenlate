@@ -1585,8 +1585,8 @@ languages/main". What a later session would otherwise rediscover:
   Literata out with no special case. Its Devanagari fonts (Hindi's) carry `language: hi`: Mukta has ॑ ॒ and 39 of 48
   Vedic Extensions, Tiro Devanagari Hindi none, Hind neither ॑ nor ॒.
 - Tooling in the cloud container: no fontTools (a short cmap reader does), no msgpack (wordfreq's format decodes in a
-  few lines); Commons' search API answers 429 (`x-envoy-ratelimited`) after a few queries from the shared egress,
-  while single queries such as `prop=categoryinfo` still answered.
+  few lines); Commons' API answers 429 (`x-envoy-ratelimited`) from the shared egress after a few queries, searches and
+  then plain listings too, for half an hour and more, and lingualibre.org did not answer: count audio from the PC.
 
 ## Group 5b research (2026-10-19)
 
