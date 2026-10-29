@@ -269,18 +269,20 @@ the details.
     and docs it contradicted are fixed (`ocr-models-1` is a regular release never marked latest, wordfreq lists are
     built on the phone, PanLex uses the pinned CC0 dump). Open there: whether the archive's copies of the catalog's
     files are ever served from our hosting.
-  - Measured, waiting for the owner's return: the folded plan's question 2 (a headword list in the word forms
-    import; Uzbek: 1,445 wrong results removed, no right one) with group 5c's questions 18 and 19. Found while
+  - Answered by the owner on 2026-10-29 after the measurement: the folded plan's question 2 (a), a headword list in
+    the word forms import for Uzbek and Azerbaijani (Uzbek: 1,445 wrong results removed, no right one), to build;
+    group 5c's questions 18 and 19 (a), as built. Found while
     measuring: the rule filter (`RuleOnlyResults.throughAny`) takes a form row whose tag is named as a rule (uz
     dative, genitive, accusative, locative; az plural, converb) for a rule's result and drops it beside an entry
     (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question (form-of steps
     marked by the native lookup, `notes/language-rules.md` bug 48; engine instrumented tests 72 of 72, LK82's
     kengligiga → kenglik on the emulator).
-  - Group 5e's questions 18-20 (decided provisionally as built), 21 (repeated India flags on Home, not built), 22
-    (a Tamil "Word forms" item for users who untick ta-en, not built), 23 (the same for Telugu, recommended
-    without), 24 (words.hk's character dictionary ticked, built so) and 25 (Cantonese frequency ranks each word under
-    its variant spellings instead of folding OpenCC's forms as the decision row says, built so) wait for the owner's
-    return.
+  - Group 5e's questions answered on 2026-10-29: 18, 19 and 24 as built; 21 widened (a language whose flag another
+    language also shows carries its code badge wherever its flag is shown); 22 and 23 a "Word forms" item for Tamil
+    and Telugu; 20 the present, past and -ून Marathi endings that pass a check of right against wrong results; 25 as
+    built (row "Cantonese frequency" changed); 26 (sentences across a recognition paragraph break) kept as is. To
+    build: 20-23 and the folded plan's question 2; the owner asked for nothing new beyond them until the weekly limit
+    resets.
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)

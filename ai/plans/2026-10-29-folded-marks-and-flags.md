@@ -145,7 +145,8 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
 2. **Word forms without the dictionary's headwords. Answered (owner, 2026-10-29): measure first. Count on the Uzbek
    and Azerbaijani news corpora how many words get a false rule result with uz–ru (az–ru) and the word forms alone, and
    how many right results a headword list would drop; decide on the numbers. The owner's aim: a word spelled as
-   scanned comes first, a parsed one after.** The
+   scanned comes first, a parsed one after. Answered after the measurement (owner, 2026-10-29): (a) for Uzbek and
+   Azerbaijani; to build.** The
    "Word forms" item imports only the English Wiktionary's form rows, not its headwords. In Uzbek (and Azerbaijani),
    ending rules show their results only when the word has no entry of its own; with uz–ru and the word forms alone,
    Davom finds davo with the ending "my", because uz–ru has no davom and the forms import does not know davom is a
@@ -174,7 +175,7 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
      form results too: 75 Uzbek tokens, 693 Azerbaijani (deyil → demək). A plain bug, fixed apart from this question
      on 2026-10-29 (`notes/language-rules.md`, bug 48; the filter's own rule says a form-of entry's chain is not a
      rule's).
-   To ask the owner on return, with these numbers.
+   Asked with these numbers on 2026-10-29; the owner chose (a) for both languages.
 
 ## Progress
 
@@ -203,3 +204,4 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
   (question 28 there); noted under question 1.
 - 2026-10-29: question 2 measured (Uzbek: a headword list would remove 1,445 wrong results and no right one; Azerbaijani
   upper bound 12,415 wrong, 312 right); the rule filter's form-row bug found; to be asked on the owner's return.
+- 2026-10-29: question 2 answered (a) for Uzbek and Azerbaijani, after the measurement (owner).
