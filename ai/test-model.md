@@ -723,6 +723,8 @@ Results: passed but for the parts named below; the six cases moved from N to F.
   verb stems) was added, group 5e question 20. The engine's instrumented test showed घर beside घरात, which has an
   entry of its own: Marathi's rule ids were missing from the generated list the rules-only filter reads; generated,
   with a test that every language with that filter has its ids.
+- After merging `languages/main` `9ecf5b46` (form rows named as rules): the engine's instrumented tests 73 of 73,
+  Marathi's and Uzbek's lookups among them.
 
 ### 2026-10-29, `combine-cloud` `19801288` (form rows named as rules beside an entry), Pixel_10_Pro (API 37)
 
