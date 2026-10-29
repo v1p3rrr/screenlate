@@ -1873,6 +1873,32 @@ Cantonese, Kannada, Tamil, Telugu and Marathi: research, OCR measurements, decis
   offered unticked.
 - Fonts: Mukta (Hindi's entry, `languages` hi and mr: one download) and Tiro Devanagari Marathi.
 
+### Tamil on `languages/ta` (2026-10-29)
+
+- Shared pieces for Tamil, Telugu and Kannada: `DravidianSupport` (curly and round quotes, the zero-width joiners
+  dropped from recognized text), `OcrScript` KANNADA, TAMIL and TELUGU (no ML Kit model for any), the joiners passed
+  over in the word before a period, and a soft hyphen inside a word taken as part of it in every spaced language.
+- The bundle is Kannada's (no processors, no rules) under Tamil's code with `composeCharacters` and two own
+  processors: the vowel sign ௌ and ெள read as each other (they look the same; Tesseract's tam model has no ௌ), and
+  ஸ்ரீ as the headwords' ஶ்ரீ.
+- wty ta-en (2026.10.22): 10,125 words with meanings, every definition tagged with its part of speech; the noun
+  tables give every case but the locative -இல் and the genitive -இன். 4,698 form rows are written "past of
+  அடித்துவிடு (aṭittuviṭu)": the import keys them by the native word (only when the text ends with ")", so English
+  "past of" rows stay). ta-ru (1,883), ta-fr (1,619) and the transcription (11,377) are listed; the other editions
+  stay under the listing line.
+- Own case endings, plural, particles and the doubled consonant before the next word (`tamilTransforms`); the
+  measurement on Leipzig `tam_news_2020_100K` (top 20,000 words against ta-en): lemma 2,572, form 3,046, through the
+  endings 4,351, nothing 10,031; hand checks of 60 random words through the endings found 57 to 60 right. Rules only
+  for words without an entry or form of their own (2,318 overlaps were noise). The endings reach nominal words only;
+  verbs are found through Wiktionary's tables (1,427 verbs). The 35 shown rule ids are listed without strings
+  (`inflections_ta.xml`); the doubled consonant is a hidden rule, left out of the chain.
+- Sentences: 96,811 of 100,000 news sentences end with a period. One-syllable initials are the common way to write
+  names (க. சண்முகம், தி.மு.க.), so one syllable before a period holds the sentence, but for வா, போ and நீ; months
+  hold it only before a number (ஜன. 15). The popup looks at 24 letters (3.2% of running words pass 16).
+- wordfreq's small Tamil list is the frequency (owner, question 9). No ML Kit model: Tesseract tam fast is ticked
+  until Paddle's Tamil model is released, best is offered unticked.
+- Fonts: Hind Madurai, Mukta Malar and Tiro Tamil, for Tamil only. Audio: Wiktionary first, Lingua Libre, the voice.
+
 ## Group 4d research (2026-10-19)
 
 Arabic (ar), Persian (fa), Hebrew (he): scripts written right to left with spaces between words. Urdu (ur), Egyptian
