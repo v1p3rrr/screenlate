@@ -51,8 +51,8 @@ interface LanguageSupport {
     /**
      * Spellings of [text], which OCR read and which finds nothing as read, to look up instead, in order: letters an
      * engine reads as other letters of the script, which no one-for-one fix in [ocrWord] can put right as the read
-     * letters are words' letters too (Macedonian Љ read as Л or ЛЬ). Each changes the first word in one place; the first
-     * spelling that finds something is shown. Empty for the languages without such letters.
+     * letters are words' letters too (Macedonian Љ read as Л or ЛЬ, Ѕ as С). Each changes the first word in one place;
+     * the first spelling that finds something is shown. Empty for the languages without such letters.
      */
     fun misreadSpellings(text: String): List<MappedText> = emptyList()
 

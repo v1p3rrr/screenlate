@@ -61,6 +61,15 @@ class MacedonianSupportTest {
     }
 
     @Test
+    fun `an S of the first word is tried as DZE after its Ls`() {
+        assertThat(support.misreadSpellings("свездите се").map { it.text }).containsExactly("ѕвездите се")
+        assertThat(support.misreadSpellings("Свезда").map { it.text }).containsExactly("Ѕвезда")
+        assertThat(support.misreadSpellings("слава").map { it.text }).containsExactly("сљава", "ѕлава").inOrder()
+        val dze = support.misreadSpellings("свезда").single()
+        assertThat(dze.sourceLength(6)).isEqualTo(6)
+    }
+
+    @Test
     fun `the frequency list's latin letters inside cyrillic words are the macedonian ones`() {
         assertThat(support.frequencyWord("сè")).isEqualTo("сѐ")
         assertThat(support.frequencyWord("jас")).isEqualTo("јас")

@@ -11,7 +11,7 @@ import org.junit.Test
 
 class MisreadMatchesTest {
 
-    private val headwords = listOf("љубов", "љала", "лаља", "лале")
+    private val headwords = listOf("љубов", "љала", "лаља", "лале", "ѕвезда")
 
     /** What a lookup by words finds from the start of a text: each headword it starts with, case aside. */
     private fun engine(text: String): List<LookupResult> = headwords.filter { text.lowercase().startsWith(it) }
@@ -28,6 +28,12 @@ class MisreadMatchesTest {
     }
 
     @Test
+    fun `an S read for DZE finds the word`() {
+        assertThat(matches("свезда е")).containsExactly("ѕвезда" to "свезда")
+        assertThat(matches("Свезда")).containsExactly("ѕвезда" to "Свезда")
+    }
+
+    @Test
     fun `LJ read as L and the soft sign covers both letters`() {
         assertThat(matches("ЛЬубов е")).containsExactly("љубов" to "ЛЬубов")
     }
@@ -39,7 +45,7 @@ class MisreadMatchesTest {
     }
 
     @Test
-    fun `nothing for a word without an L or a language without misread letters`() {
+    fun `nothing for a word without an L or an S or a language without misread letters`() {
         assertThat(matches("мачка")).isEmpty()
         assertThat(matches("лубов", BulgarianSupport)).isEmpty()
     }
