@@ -1584,6 +1584,17 @@ languages/main". What a later session would otherwise rediscover:
 - The font catalog offers a font only when it has every letter of `fontLetters` (`FontModels`), so Bashkir's ҡ ҙ ҫ keep
   Literata out with no special case. Its Devanagari fonts (Hindi's) carry `language: hi`: Mukta has ॑ ॒ and 39 of 48
   Vedic Extensions, Tiro Devanagari Hindi none, Hind neither ॑ nor ॒.
+- Tools for such measurements, in the repo since 2026-10-29 (usage at the top of each file):
+  `scripts/yomitan-language/tools/freq_list.py` (wordfreq or Leipzig → `word<TAB>count`; `--lowercase-forms` keeps
+  only the forms a corpus writes in lowercase), `tools/fold_noise.py` (the fold's extra results, the folded-marks
+  plan's method) and `tools/coverage.mjs` (a list looked up through a bundle's candidates as the engine matches them,
+  with `--fold`, `--fallback` and the MISSES, SAMPLE and BOTH printouts). Both read the fold tables from
+  `own-processors.js`, so they follow its changes.
+- The draft Tatar and Bashkir tables are `scripts/yomitan-language/drafts/group-6-turkic.patch`; its README says what
+  it changes (two engine changes that also alter the kk, ky, az, uz bundles) and what block 6c still has to do.
+- The owner's answers of 2026-10-29: question 27 (Tatar and Bashkir rule results beside an entry: verb endings shown,
+  noun endings only where the noun can take that ending), 28 left to the main session with the folded-marks plan's
+  question 1, 29 tt-tr left out of the catalog, 30 (the Turkic form tags) deferred for later.
 - Tooling in the cloud container: no fontTools (a short cmap reader does), no msgpack (wordfreq's format decodes in a
   few lines); Commons' API answers 429 (`x-envoy-ratelimited`) from the shared egress after a few queries, searches and
   then plain listings too, for half an hour and more, and lingualibre.org did not answer: count audio from the PC.

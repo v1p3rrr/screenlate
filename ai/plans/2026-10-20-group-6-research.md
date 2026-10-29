@@ -909,13 +909,15 @@ Devanagari font; the system draws Noto. Whether the phone's copies have the Vedi
 An autonomous cloud session (the owner not asked) re-read this plan against `origin/languages/main` 23448dd3 and
 re-measured the sources; research only, nothing built. Sources: wty release 2026.10.22 (dataset commit de7ed9cd, still
 the latest on 2026-10-29), wordfreq 912caf6, the Leipzig archives of question 7, tessdata at the pins of
-`tessdata_catalog.py` and at `main`, PaddleOCR's models on Hugging Face, the font catalog's files, Commons. Scripts in
-the agent's scratchpad (not in the repo): word counts by `countWords` of `scripts/catalog/generate.mjs`; bundles built
-by a copy of `build.mjs` from Yomitan e7334a96 with the borrowed descriptors of the technical choices and, for tt and ba,
-scratch grammar tables in the Turkic engine of `own-transforms.js` (written from the grammar notes under "Tatar and
-Bashkir", not reviewed, not in the repo); a lookup that takes each word's candidates from such a bundle (glue
-`candidates`) and matches them as `candidate_lookup.cpp` does (conditions, untyped candidates, definition tags, form-of
-steps). Nothing was run on a device.
+`tessdata_catalog.py` and at `main`, PaddleOCR's models on Hugging Face, the font catalog's files, Commons. Tools (in
+the repo since 2026-10-29 at the owner's word, usage at the top of each file): word counts by `countWords` of
+`scripts/catalog/generate.mjs`; frequency lists by `scripts/yomitan-language/tools/freq_list.py`; the fold's noise by
+`tools/fold_noise.py`; coverage by `tools/coverage.mjs`, which takes each word's candidates from a bundle (glue
+`candidates`) and matches them as `candidate_lookup.cpp` does (conditions, untyped candidates, definition tags,
+form-of steps). The bundles were built by `build.mjs` from Yomitan e7334a96 with
+`scripts/yomitan-language/drafts/group-6-turkic.patch` applied: the borrowed descriptors of the technical choices and,
+for tt and ba, draft ending tables in the Turkic engine (written from the grammar notes under "Tatar and Bashkir", not
+reviewed; `drafts/README.md` lists what they lack). Nothing was run on a device.
 
 ### What languages/main has now, and what it changes here
 
@@ -980,7 +982,8 @@ weighted by frequency; for Tatar and Bashkir also net of the Russian-twin keys o
 | ba | Bashkir en + ru, net of twins | 0.0 / 1.6 | 1.00 / 1.07 | 0.06 / 0.87 | 20,294 | 42.2 | и → й; өсөн → осоң, көн → ҡон (OCR) |
 
 Frequency sources: gl glg_newscrawl_2016_100K, ca wordfreq `large_ca`, is `small_is`, af afr_mixed_2019_100K, tt
-tat_news_2015_100K, ba bak_wikipedia_2021_100K. Galician, Catalan, Icelandic and Afrikaans are past the provisional
+tat_news_2015_100K, ba bak_wikipedia_2021_100K; the Leipzig words lowercased and merged (`freq_list.py` without
+`--lowercase-forms`; with it, Tatar's OCR noise reads 2.1% instead of 2.5%). Galician, Catalan, Icelandic and Afrikaans are past the provisional
 threshold (5% typed); Tatar and Bashkir are under it, as Kazakh (0.1 / 1.2) and Kyrgyz (0.9 / 1.3) are. Most extras are
 words the mark tells apart (Galician e "and" and é "is", Catalan que and què, Afrikaans die and dié); some are letter
 entries (Catalan à, í; Icelandic i after OCR read í right) or rare forms (Icelandic áð, the supine of æja; þáð, of
@@ -989,8 +992,8 @@ entries (Catalan à, í; Icelandic i after OCR read í right) or rare forms (Ice
 ### Lookup coverage on today's dictionaries
 
 Share of the list's words found; "types" counts the top 1,000 / 5,000 / 20,000 words, "tokens" weights the whole list by
-its counts. Leipzig lists keep the forms the corpus writes in lowercase only (as the earlier measurements did); words
-with a letter only. The fold adds 0.0-1.1 points everywhere (not in the table).
+its counts. Leipzig lists keep the forms the corpus writes in lowercase only (`freq_list.py --lowercase-forms`, as the
+earlier measurements did); words with a letter only. The fold adds 0.0-1.1 points everywhere (not in the table).
 
 | lang, list | dictionaries | top 1,000 | 5,000 | 20,000 |
 |---|---|---|---|---|
@@ -1377,7 +1380,13 @@ recommended option; what changing it takes is said).
     voice (a Hindi voice would read it only approximately). (b) Any of them done; the owner names which.
     Recheck (2026-10-29): stands; Tesseract still has no `bak` (`kaz` fast 4.73 MB, best 7.53, unchanged), and Tatar's
     Latin-script dictionaries are question 29.
-27. Deferred (new, 2026-10-29). Tatar and Bashkir rule results for a word that has an entry as written. Kazakh and
+27. Answered (owner, 2026-10-29) with a rule of the owner's own: a noun-ending result beside a word's own entry is left
+    out where the language cannot decline that noun so, and kept where such a form with such an ending can exist. The
+    agent's reading, to confirm with the owner at implementation: verb-ending results are shown beside an entry, as
+    (a); a noun-ending result beside an entry stays only when the ending fits the stem (vowel harmony, the stem's last
+    letter) and is written with the language's own letters, not a Russian twin (Tatar өчен as өч + ең written with н
+    goes; сум as су + м, "my water", a real form, stays). The block's session measures what this removes from the
+    wrong results and shows the owner. The question as asked: Tatar and Bashkir rule results for a word that has an entry as written. Kazakh and
     Kyrgyz show the ending rules' results after the word's own entry; Uzbek and Azerbaijani show them only when the
     word has none (`inflectionRulesOnlyWithoutEntry`). With the scratch tables 11.9% of Tatar tokens and 8.4% of
     Bashkir ones have an entry and also reach another word through the rules. Of the 30 most frequent such Tatar words
@@ -1390,7 +1399,8 @@ recommended option; what changing it takes is said).
     code in the filter). (b) As Kazakh and Kyrgyz: every rule result after the entry. (c) As Uzbek: no rule result for
     a word with an entry (булды would show only its suffix entry). Blocks: the filter setting of the two support
     classes; the same split may suit Kazakh and Kyrgyz (not measured).
-28. Deferred (new, 2026-10-29; joins question 1 of `2026-10-29-folded-marks-and-flags.md`). Extra results through
+28. Left to the main session (owner, 2026-10-29: "pass it to the main session, it will sort it out"), with question 1
+    of `2026-10-29-folded-marks-and-flags.md`, which it joins. Extra results through
     the folded marks in Catalan, Galician, Icelandic and Afrikaans. The decision row folds them as every Latin-script
     language; measured under "Recheck": Galician 26.0% of running text typed and 30.4% after OCR (e "and" → é "is",
     a → á, à, de → dê), Catalan 18.7% and 22.3% (que → què, a → à), Icelandic 9.6% and 21.1% (að → áð, a rare supine),
@@ -1399,15 +1409,18 @@ recommended option; what changing it takes is said).
     results only for a word without an entry, as Welsh and Scottish Gaelic; (c) (b) only past 10% typed noise:
     Catalan and Galician would take it, Icelandic (9.6%) and Afrikaans (8.4%) not; that question's (d), no fold where it
     finds nothing new, fits none of the four (gain 0.07-0.46%). Blocks: nothing (a setting per support class).
-29. Deferred (new, 2026-10-29). Tatar dictionaries with Latin headwords. wty's tt-tr (5,839 words) and tt-ko (4,596)
-    pass the catalog threshold by count, but tt-tr comes from the Turkish Wiktionary, which writes Tatar in the Latin
+29. Answered (owner, 2026-10-29): (a), tt-tr left out. Tatar dictionaries with Latin headwords. wty's tt-tr (5,839
+    words) and tt-ko (4,596) pass the catalog threshold by count, but tt-tr comes from the Turkish Wiktionary, which
+    writes Tatar in the Latin
     Zamanälif (133 of its words are Cyrillic), and tt-ko is half Latin (2,369 Cyrillic). Tatar is looked up in Cyrillic
     only (technical choice "Tatar Latin", question 26), so a Turkish-gloss user would get a dictionary that finds almost
     nothing. (a, recommended) Leave tt-tr out of the catalog; list tt-ko and tt-en as counted (Cyrillic parts of 2,369
     and 1,232 words; tt-en is the only English one). (b) Count only words in the language's script for every pair
     (tt-tr and tt-en fail; row "Gloss languages" wants an English dictionary, so tt-en would be kept by hand). (c) List
     all three as counted. Changing it is a line in the catalog script.
-30. Deferred (new, 2026-10-29). Form tags of Russian Wiktionary's Turkic tables. wty's tt-ru, ba-ru and the shipped
+30. Deferred for later (owner, 2026-10-29): not one to ask soon; the main session records it among the questions
+    deferred for later and brings it back when its time comes (the Turkic dictionaries' tags worked on: block 6c, or
+    Kyrgyz's tags). Form tags of Russian Wiktionary's Turkic tables. wty's tt-ru, ba-ru and the shipped
     ky-ru tag the genitive "singular possessive" and "plural possessive" (the Turkic grammars' Russian name for it,
     притяжательный падеж) and some cases only by number: tt-ru's ablative plural is "plural" and its ablative singular
     is missing; ba-ru's locative and ablative plurals are both "plural" and both singulars are missing; ky-ru's "plural"
@@ -1446,7 +1459,9 @@ Per block, as group 5a's work list; detailed when the block starts.
   letter keys, the filter of question 27, the tag names of question 30, legacy Tatar letters, OCR-only look-alikes
   (Bashkir Ç ç → Ҫ ҫ), particle variants, digit-joined forms, abbreviations and quotes, `paddle-cyrillic` gains tt and
   ba, Leipzig sources (Tatar news 2015, Bashkir Wikipedia 2021; question 7), PanLex (question 17), wty's tt-ru, tt-en,
-  tt-ko and transcription (question 29 on tt-tr), flags ru-ta ru-ba, strings in all 17 locales.
+  tt-ko and transcription (tt-tr left out, question 29), flags ru-ta ru-ba, strings in all 17 locales. Starts from
+  `scripts/yomitan-language/drafts/group-6-turkic.patch` (draft tables and two of the three engine changes; its
+  README lists what is missing).
 - 6d: the Sanskrit bundle, import cleanup and keys, the longest-start sandhi lookup, then the restored second word
   (question 23), Monier-Williams converted with its non-commercial mark (question 22), sentence ends, scan length 24,
   tessdata san, `ocrWord` S s 5 → ऽ, the Devanagari fonts (Mukta and Tiro Devanagari Hindi listed for sa as well, Tiro
@@ -1500,3 +1515,8 @@ the fallback reused); 6c about a session (group 4e's engine and wty's Tatar exis
   Russian Wiktionary's Turkic tables, Kyrgyz included). Technical choices changed: "Icelandic letters" (the fold),
   "Sanskrit import" (other-script form rows dropped by `formsInScript`), "Turkic rules" (three engine changes),
   "Turkic letter keys", "Fonts", "Flags" (notes); plain fix added: Җ җ in the fold's table.
+- 2026-10-29: the owner's answers to the new questions: 27 with a rule of the owner's own (noun-ending results beside an
+  entry only where the noun can take that ending; verb endings shown), 28 left to the main session with the
+  folded-marks plan's question 1, 29 (a) (tt-tr left out), 30 deferred for later. The draft Tatar and Bashkir tables
+  are kept as `scripts/yomitan-language/drafts/group-6-turkic.patch` with a README, and the measuring tools are in
+  `scripts/yomitan-language/tools/` (`freq_list.py`, `fold_noise.py`, `coverage.mjs`), both at the owner's word.

@@ -230,8 +230,8 @@ the details.
     Strings added after `772bbad7` did not go through the translation check. The right-to-left strings had their
     mirrored screens checked on 2026-10-29 and are merged into `languages/main` (section below).
   - a second cloud session rechecked group 6's research against `languages/main` (section "Cloud session 2026-10-29,
-    group 6"): branch `cloud/group-6-research-2026-10-29`, plan and notes only; new deferred questions 27-30 of the
-    group 6 plan.
+    group 6"): branch `cloud/group-6-research-2026-10-29` (plan, notes, a draft patch and three measuring tools; no
+    app code); the owner answered its questions 27 and 29, left 28 to the main session and deferred 30 for later.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
@@ -2094,9 +2094,17 @@ session needs; the folded-marks plan's question 1 points to the new numbers. Not
   37 and 38 of 40 samples right; three engine limits found).
 - Found: wty's Russian-edition Turkic tables tag the genitive "possessive" and lose some cases, in Kyrgyz (built) as
   well (question 30); the fold's tables lack Җ җ (a plain fix with Tatar).
-- Open for the owner: questions 27 (Tatar and Bashkir rule results beside an entry), 28 (the fold's extras in ca, gl,
-  is, af; joins the folded-marks plan's question 1), 29 (tt-tr and tt-ko), 30 (the Turkic form tags; a report to wty
-  is an outward-facing step), and the deferred 10 and 21 after the emulator run.
+- The owner's answers (2026-10-29, in the plan): 27 with a rule of the owner's own (beside a word's own entry, verb-ending
+  results shown, noun-ending results only where the noun can take that ending; the agent's reading is to be
+  confirmed at implementation); 29 (a), tt-tr left out of the catalog.
+- For the main session, at the owner's word: question 28 (the fold's extra results in ca, gl, is, af) is yours to
+  settle, together with question 1 of `plans/2026-10-29-folded-marks-and-flags.md`; question 30 (Russian Wiktionary's
+  Turkic form tags in tt-ru, ba-ru and the shipped ky-ru; a report to wty would be an outward-facing step) goes into
+  the questions deferred for later, not to be asked soon. Questions 10 and 21 still wait for the emulator run.
+- Added at the owner's word: `scripts/yomitan-language/drafts/group-6-turkic.patch` with its README (draft Tatar and
+  Bashkir tables and two engine changes for block 6c; not built, the bundles are unchanged) and the measuring tools
+  `scripts/yomitan-language/tools/freq_list.py`, `fold_noise.py`, `coverage.mjs` (checked here: they give the
+  plan's numbers again).
 - For a local session: recognition on the emulator (ML Kit, Tesseract, cloud, Paddle on the research screens), voices,
   the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports, and the audio counts
   (Commons rate-limited the cloud session); the list is in the plan ("For the emulator session").
