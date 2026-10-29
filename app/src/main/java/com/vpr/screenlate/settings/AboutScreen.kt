@@ -41,6 +41,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
+import com.vpr.screenlate.ui.components.ownDirection
 import com.vpr.screenlate.update.AboutUpdateCard
 import com.vpr.screenlate.update.UpdateViewModel
 import kotlinx.coroutines.launch
@@ -177,7 +178,8 @@ private fun DictionaryAttribution(dictionary: DictionaryEntity) {
                 dictionary.author?.takeIf { it.isNotBlank() }?.let { stringResource(R.string.about_dictionary_author, it) },
                 dictionary.attribution?.takeIf { it.isNotBlank() }?.let(::plainText),
                 dictionary.description?.takeIf { it.isNotBlank() && it != dictionary.attribution }?.let(::plainText),
-            ).forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
+            // The texts from index.json are in the dictionary's language; lines in the interface's language stay as they are.
+            ).forEach { Text(ownDirection(it), style = MaterialTheme.typography.bodyMedium) }
             dictionary.url?.takeIf { it.startsWith("http") }?.let { url ->
                 Text(
                     url,

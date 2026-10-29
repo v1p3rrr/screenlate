@@ -78,6 +78,7 @@ import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ReorderableColumn
 import com.vpr.screenlate.ui.components.IconButtonProgress
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.components.ownDirection
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
 import java.util.UUID
@@ -558,9 +559,9 @@ private fun DictionaryCard(
                 DetailLine(R.string.dictionaries_version, dictionary.revision)
                 DetailLine(R.string.dictionaries_author, dictionary.author)
                 DetailLine(R.string.dictionaries_counts, counts(dictionary))
-                dictionary.description?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+                dictionary.description?.let { Text(ownDirection(it), style = MaterialTheme.typography.bodySmall) }
                 dictionary.attribution?.let {
-                    Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(ownDirection(it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 if (links != null && !links.isEmpty) LinkButtons(links)
             }
@@ -900,7 +901,7 @@ private fun CatalogCard(item: CatalogItem, noNetwork: Boolean, onDownload: (Cata
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Text(entry.description(), style = MaterialTheme.typography.bodySmall)
+                Text(ownDirection(entry.description()), style = MaterialTheme.typography.bodySmall)
                 val outdated = item.outdated
                 if (outdated != null && task == null && !requested) {
                     Text(

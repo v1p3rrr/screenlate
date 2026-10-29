@@ -127,6 +127,8 @@ class CatalogParseTest {
         assertThat(entry.displayTitle(Locale.forLanguageTag("ko"))).isEqualTo("G")
         assertThat(entry.description(Locale.ENGLISH)).isEqualTo("English → Russian")
         assertThat(entry.description(Locale.GERMAN)).isEqualTo("Eigener Text")
+        // A language without its own text gets the English one, which names the languages in English as well.
+        assertThat(entry.description(Locale.forLanguageTag("ar"))).isEqualTo("English → Russian")
         assertThat(entry.downloadBytes).isEqualTo(1000L)
         assertThat(entry.installedBytes).isEqualTo(5000L)
         assertThat(entry.installedBytesAtMost).isEqualTo(6250L)

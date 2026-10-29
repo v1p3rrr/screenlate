@@ -62,6 +62,7 @@ import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.components.ownDirection
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import kotlin.math.roundToInt
 
@@ -350,7 +351,7 @@ private fun CatalogRow(font: CatalogFont, download: FontDownload?, onDownload: (
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(font.family, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
             InfoButton(font.family) {
-                Text(font.description(locale))
+                Text(ownDirection(font.description(locale)))
                 Text(stringResource(R.string.popup_font_license, font.license), style = MaterialTheme.typography.bodySmall)
                 Text(font.homepage, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
             }
