@@ -73,8 +73,12 @@ the details.
     language, not of the searched one (`SearchScreen`, `ProcessTextActivity`);
   - a screen scan's popup stays after a tab change inside the app (a scan is a snapshot).
 
-### Emulators (2026-10-29: both shut down)
+### Emulators (2026-10-29: API 37 running)
 
+- 2026-10-29 evening: API 37 (emulator-5554) runs the debug app of `combine-cloud` with the evening's work (interface
+  Russian through the per-app setting; Japanese, Hindi and Cantonese quick, Cantonese active; Tamil, Telugu, Kannada,
+  Marathi, Uzbek and Azerbaijani on; one Kannada camera photo in the history). The lock `.worktrees/emulator.lock` is
+  free.
 - 2026-10-29: the main session last ran API 37 with the debug app of `combine-cloud` `19801288` (the app's language
   Russian through the per-app setting; Azerbaijani and Uzbek turned on, Uzbek active) and shut it down; the lock
   `.worktrees/emulator.lock` is free. The notes below are
@@ -289,6 +293,23 @@ the details.
     (words.hk's frequency list for Cantonese, ticked, once checked to hold 我哋 佢哋 你哋 喺度 為咗). Group 6's
     question 30: a report to wiktextract only (the agent drafts it, the owner files it); the renaming of the Turkic
     Russian-Wiktionary tags goes to the Backlog, to build if the fix does not reach wty's releases.
+  - Built on 2026-10-29 evening (main session and four subagents, `combine-cloud`): the "Word forms" item for Tamil
+    and Telugu (ta-en, te-en; mandatory unless the whole dictionary is ticked) and Telugu place words found from their
+    dative (`1027f4a4`); Marathi present, past, perfect participle and -ून/-ऊन verb endings, each kept where its right
+    results outnumber the wrong ones, with नेते, नेता, चाहते, चाहता, सांगली and सलून left as written (`69e62589`; the
+    irregular आली, आल्या and their participles still find nothing, as no list of irregular stems is built); a headword
+    list in every word forms import, counted as entries by the Uzbek and Azerbaijani rule filter (`d8a69c1c`; Hungarian,
+    Tamil and Telugu could take it with one line each, a question for the owner; word forms imported earlier work as
+    before until updated); the code badge on every flag another language shows, wherever the flag is drawn (`3a8e0195`,
+    checked on the emulator by its agent except the first run, the not turned-on list and the flag dialog); Home's word
+    forms status counts the whole dictionary they are cut from, as turning a language on did (a plain bug, seen on the
+    emulator with ta-en installed). Engine instrumented `LanguageLookupTest` 51 of 51; cases LK92-94, DIC51-52 and
+    LNG47-48 added, BUB21 changed. The wiktextract report draft was widened after a check of 21 Turkic languages'
+    tables (group 6 plan, question 30) and waits for the owner's yes to be filed.
+  - Found on the emulator, to look into after the weekly limit resets: the first screen after the app is installed or
+    updated names languages in English under a Russian interface (Home's "Cantonese"); reopening the app gives
+    "Кантонский". `Language.displayName` reads `Locale.getDefault()`, which seems not yet to carry the per-app locale
+    on that first start.
   - Before the full release of the languages branch, remind the owner of the five waiting Paddle models (Thai,
     Devanagari, Arabic, Tamil, Telugu; `notes/hosting-files.md`); until then they stay unreleased (owner, 2026-10-29).
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
