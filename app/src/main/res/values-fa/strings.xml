@@ -6,7 +6,7 @@
     <string name="onboarding_open_accessibility_settings">باز کردن تنظیمات دسترس‌پذیری</string>
 
     <string name="onboarding_device_title">راه‌اندازی دستگاه</string>
-    <string name="onboarding_device_restricted_settings">اگر کلید Screenlate خاکستری است (برنامه از فایل نصب شده است)، به اطلاعات برنامه → ⋮ → اجازه دادن به تنظیمات محدودشده بروید و دوباره امتحان کنید.</string>
+    <string name="onboarding_device_restricted_settings">اگر کلید Screenlate خاکستری است (برنامه از فایل نصب شده است)، به اطلاعات برنامه ← ⋮ ← اجازه دادن به تنظیمات محدودشده بروید و دوباره امتحان کنید.</string>
 
     <string name="settings_theme_title">زمینه</string>
     <string name="settings_theme_system">سیستم</string>
@@ -225,7 +225,7 @@
     <string name="search_empty_hint">مدخل‌ها هم‌زمان با تایپ نشان داده می‌شوند. در برنامه‌های دیگر، متن را انتخاب کنید و در منوی انتخاب، «جستجو در Screenlate» را برگزینید.</string>
     <string name="settings_language">زبان</string>
     <string name="settings_language_system">سیستم</string>
-    <string name="settings_language_hint">در تنظیمات سیستم هم در دسترس است: برنامه‌ها → Screenlate → زبان.</string>
+    <string name="settings_language_hint">در تنظیمات سیستم هم در دسترس است: برنامه‌ها ← Screenlate ← زبان.</string>
     <string name="settings_language_translations">ترجمه‌ها با هوش مصنوعی انجام شده‌اند و گویشوران بومی آن‌ها را بازبینی نکرده‌اند. اصلاحات در GitHub پذیرفته می‌شوند.</string>
     <string name="action_clear">پاک کردن</string>
     <string name="anki_suggest_templates">پر کردن الگوهای پیشنهادی</string>
@@ -239,7 +239,7 @@
     <string name="audio_volume">میزان صدا: %1$d%%</string>
     <string name="settings_title">تنظیمات</string>
     <string name="settings_bubble_summary">نقطه هدف، لبه، اندازه، پنهان شدن در برنامه‌ها</string>
-    <string name="lookup_title">جستجو</string>
+    <string name="lookup_title">جستجو در واژه‌نامه‌ها</string>
     <string name="settings_lookup_summary">طول اسکن، نتایج، روماجی، نویسه‌های واژه</string>
     <string name="appearance_title">ظاهر</string>
     <string name="settings_appearance_summary">زمینه، رنگ‌ها، جوهر الکترونیکی، زبان</string>
@@ -270,7 +270,7 @@
     <string name="about_source">کد منبع</string>
     <string name="about_report_bug">گزارش مشکل</string>
     <string name="yomitan_import_dictionaries">واژه‌نامه‌ها</string>
-    <string name="yomitan_import_dictionaries_hint">در Yomitan: تنظیمات → پشتیبان‌گیری → صادر کردن مجموعه واژه‌نامه. این فایل همه واژه‌نامه‌های نصب‌شده را در بر دارد.</string>
+    <string name="yomitan_import_dictionaries_hint">در Yomitan: تنظیمات ← پشتیبان‌گیری ← صادر کردن مجموعه واژه‌نامه. این فایل همه واژه‌نامه‌های نصب‌شده را در بر دارد.</string>
     <string name="yomitan_import_single_hint">واژه‌نامه‌های تکی، هر کدام در یک فایل .zip، در صفحه «واژه‌نامه‌ها» با «وارد کردن از فایل» اضافه می‌شوند.</string>
     <string name="lookup_scanning">اسکن</string>
     <string name="lookup_scan_length">طول اسکن: %1$d نویسه</string>
@@ -405,7 +405,7 @@
     <string name="action_save">ذخیره</string>
     <string name="audio_test_no_voice">صدایی نصب نشده است</string>
     <string name="yomitan_import_settings">تنظیمات</string>
-    <string name="yomitan_import_settings_hint">در Yomitan: تنظیمات → پشتیبان‌گیری → صادر کردن تنظیمات. فایل را اینجا انتخاب کنید و نمایه‌ای را که تنظیمات از آن گرفته می‌شود برگزینید.</string>
+    <string name="yomitan_import_settings_hint">در Yomitan: تنظیمات ← پشتیبان‌گیری ← صادر کردن تنظیمات. فایل را اینجا انتخاب کنید و نمایه‌ای را که تنظیمات از آن گرفته می‌شود برگزینید.</string>
     <string name="yomitan_import_not_settings">این فایل، تنظیمات صادرشده Yomitan نیست.</string>
     <string name="yomitan_import_failed">وارد کردن با خطا متوقف شد. تنظیماتی که پیش از آن وارد شده‌اند همچنان اعمال‌شده باقی می‌مانند.</string>
     <string name="yomitan_import_choose_settings">انتخاب فایل تنظیمات</string>
@@ -418,7 +418,7 @@
     <string name="yomitan_section_anki_hint">دسته، نوع یادداشت، الگوهای فیلد، برچسب‌ها و نحوه برخورد با موارد تکراری</string>
     <string name="yomitan_section_audio">صوت</string>
     <string name="yomitan_section_audio_hint">منابع، میزان صدا و پخش خودکار</string>
-    <string name="yomitan_section_lookup">جستجو</string>
+    <string name="yomitan_section_lookup">جستجو در واژه‌نامه‌ها</string>
     <string name="yomitan_section_lookup_hint">طول اسکن و تعداد مدخل در هر جستجو</string>
     <string name="yomitan_import_apply">وارد کردن</string>
     <string name="yomitan_import_another">وارد کردن فایلی دیگر</string>
@@ -675,7 +675,7 @@
     <string name="background_battery_list_hint">Screenlate را در فهرست پیدا کنید و بهینه‌سازی را برای آن خاموش کنید («بهینه‌سازی نشود»، «نامحدود» یا گزینه مشابه). اگر Screenlate در فهرست نیست، «همه برنامه‌ها» را بررسی کنید.</string>
     <string name="background_launch_title">راه‌اندازی برنامه</string>
     <string name="background_launch_text">برخی تلفن‌ها برنامه‌های پس‌زمینه را از طریق تنظیمات خود سازنده هم متوقف می‌کنند، جدا از بهینه‌سازی باتری. در این تنظیمات، اجازه دهید Screenlate به‌طور خودکار راه‌اندازی شود و در پس‌زمینه اجرا شود.</string>
-    <string name="background_launch_path">در این تلفن: راه‌اندازی برنامه → Screenlate → مدیریت دستی، با روشن بودن هر سه گزینه.</string>
+    <string name="background_launch_path">در این تلفن: راه‌اندازی برنامه ← Screenlate ← مدیریت دستی، با روشن بودن هر سه گزینه.</string>
     <string name="background_launch_open">باز کردن تنظیمات راه‌اندازی خودکار</string>
     <string name="background_launch_app_info">باز کردن اطلاعات برنامه</string>
     <string name="background_launch_app_info_hint">این تلفن هیچ‌یک از صفحه‌های شناخته‌شده راه‌اندازی خودکار را ندارد. اطلاعات برنامه معمولاً به تنظیمات باتری و پس‌زمینه راه دارد.</string>
@@ -730,7 +730,7 @@
     <string name="backup_section_general_hint">زبان‌ها، زمینه، رنگ‌ها، حالت جوهر الکترونیکی، اطلاع‌رسانی نسخه‌های جدید</string>
     <string name="backup_section_bubble">حباب شناور و تشخیص</string>
     <string name="backup_section_bubble_hint">اندازه، نقطه هدف، موتورهای تشخیص، متن برنامه، برنامه‌هایی که حباب در آن‌ها پنهان است</string>
-    <string name="backup_section_lookup">جستجو</string>
+    <string name="backup_section_lookup">جستجو در واژه‌نامه‌ها</string>
     <string name="backup_section_lookup_hint">طول اسکن، تعداد نتایج، روماجی، نویسه‌های واژه</string>
     <string name="backup_section_popup">ظاهر پنجره بازشو</string>
     <string name="backup_section_popup_hint">قلم، اندازه متن، CSS سفارشی</string>

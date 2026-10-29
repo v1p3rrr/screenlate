@@ -6,7 +6,7 @@
     <string name="onboarding_open_accessibility_settings">פתיחת הגדרות הנגישות</string>
 
     <string name="onboarding_device_title">הגדרת המכשיר</string>
-    <string name="onboarding_device_restricted_settings">אם המתג של Screenlate מופיע באפור (האפליקציה הותקנה מקובץ), יש לפתוח את פרטי האפליקציה → ⋮ → הרשאה להגדרות מוגבלות, ואז לנסות שוב.</string>
+    <string name="onboarding_device_restricted_settings">אם המתג של Screenlate מופיע באפור (האפליקציה הותקנה מקובץ), יש לפתוח את פרטי האפליקציה ← ⋮ ← הרשאה להגדרות מוגבלות, ואז לנסות שוב.</string>
 
     <string name="settings_theme_title">עיצוב</string>
     <string name="settings_theme_system">מערכת</string>
@@ -227,7 +227,7 @@
     <string name="search_empty_hint">הערכים מופיעים תוך כדי הקלדה. באפליקציות אחרות אפשר לסמן טקסט ולבחור \"חיפוש ב-Screenlate\" בתפריט הסימון.</string>
     <string name="settings_language">שפה</string>
     <string name="settings_language_system">שפת המערכת</string>
-    <string name="settings_language_hint">זמין גם בהגדרות המערכת: אפליקציות → Screenlate → שפה.</string>
+    <string name="settings_language_hint">זמין גם בהגדרות המערכת: אפליקציות ← Screenlate ← שפה.</string>
     <string name="settings_language_translations">התרגומים נעשו באמצעות בינה מלאכותית ולא נבדקו על ידי דוברים ילידיים. תיקונים יתקבלו בברכה ב-GitHub.</string>
     <string name="action_clear">ניקוי</string>
     <string name="anki_suggest_templates">מילוי תבניות מוצעות</string>
@@ -679,7 +679,7 @@
     <string name="background_battery_list_hint">יש למצוא את Screenlate ברשימה ולכבות עבורה את האופטימיזציה (\"ללא אופטימיזציה\", \"ללא הגבלות\" או דומה). אם Screenlate לא מופיעה ברשימה, יש לבדוק ברשימה \"כל האפליקציות\".</string>
     <string name="background_launch_title">הפעלת אפליקציות</string>
     <string name="background_launch_text">בחלק מהטלפונים אפליקציות ברקע נעצרות גם דרך ההגדרות של היצרן, בנפרד מהאופטימיזציה של הסוללה. בהגדרות האלה יש לאפשר ל-Screenlate הפעלה אוטומטית ופעולה ברקע.</string>
-    <string name="background_launch_path">בטלפון הזה: הפעלת אפליקציות → Screenlate → ניהול ידני, עם כל שלוש האפשרויות מופעלות.</string>
+    <string name="background_launch_path">בטלפון הזה: הפעלת אפליקציות ← Screenlate ← ניהול ידני, עם כל שלוש האפשרויות מופעלות.</string>
     <string name="background_launch_open">פתיחת הגדרות ההפעלה האוטומטית</string>
     <string name="background_launch_app_info">פתיחת פרטי האפליקציה</string>
     <string name="background_launch_app_info_hint">בטלפון הזה אין אף אחד ממסכי ההפעלה האוטומטית המוכרים. דרך פרטי האפליקציה בדרך כלל אפשר להגיע להגדרות הסוללה והפעולה ברקע.</string>

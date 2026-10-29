@@ -420,10 +420,10 @@ private fun CatalogSectionHeader(label: String, count: Int, open: Boolean, modif
             modifier = Modifier.weight(1f),
         )
         Icon(
-            painterResource(R.drawable.ic_chevron_right),
+            painterResource(R.drawable.ic_expand_more),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.rotate(if (open) -90f else 90f),
+            modifier = Modifier.rotate(if (open) 180f else 0f),
         )
     }
 }

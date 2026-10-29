@@ -6,7 +6,7 @@
     <string name="onboarding_open_accessibility_settings">فتح إعدادات سهولة الاستخدام</string>
 
     <string name="onboarding_device_title">إعداد الجهاز</string>
-    <string name="onboarding_device_restricted_settings">إذا كان مفتاح Screenlate غير نشط (لأن التطبيق ثُبّت من ملف)، فافتح معلومات التطبيق → ⋮ → السماح بالإعدادات المحظورة، ثم أعد المحاولة.</string>
+    <string name="onboarding_device_restricted_settings">إذا كان مفتاح Screenlate غير نشط (لأن التطبيق ثُبّت من ملف)، فافتح معلومات التطبيق ← ⋮ ← السماح بالإعدادات المحظورة، ثم أعد المحاولة.</string>
 
     <string name="settings_theme_title">السمة</string>
     <string name="settings_theme_system">حسب النظام</string>
@@ -233,7 +233,7 @@
     <string name="search_empty_hint">تظهر المداخل أثناء الكتابة. في التطبيقات الأخرى، حدّد نصًا واختر «البحث في Screenlate» من قائمة التحديد.</string>
     <string name="settings_language">اللغة</string>
     <string name="settings_language_system">لغة النظام</string>
-    <string name="settings_language_hint">متاح أيضًا في إعدادات النظام: التطبيقات → Screenlate → اللغة.</string>
+    <string name="settings_language_hint">متاح أيضًا في إعدادات النظام: التطبيقات ← Screenlate ← اللغة.</string>
     <string name="settings_language_translations">الترجمات مُعدّة بالذكاء الاصطناعي ولم يراجعها متحدثون أصليون. التصحيحات مُرحَّب بها على GitHub.</string>
     <string name="action_clear">مسح</string>
     <string name="anki_suggest_templates">ملء القوالب المقترحة</string>
@@ -282,7 +282,7 @@
     <string name="about_source">الشيفرة المصدرية</string>
     <string name="about_report_bug">الإبلاغ عن مشكلة</string>
     <string name="yomitan_import_dictionaries">القواميس</string>
-    <string name="yomitan_import_dictionaries_hint">في Yomitan: الإعدادات → النسخ الاحتياطي → تصدير مجموعة القواميس. يحتوي الملف على كل القواميس المثبّتة.</string>
+    <string name="yomitan_import_dictionaries_hint">في Yomitan: الإعدادات ← النسخ الاحتياطي ← تصدير مجموعة القواميس. يحتوي الملف على كل القواميس المثبّتة.</string>
     <string name="yomitan_import_single_hint">تُضاف القواميس المفردة، كل منها في ملف .zip، من شاشة «القواميس» بالأمر «استيراد من ملف».</string>
     <string name="lookup_scanning">المسح</string>
     <string name="lookup_scan_length">طول المسح بالأحرف: %1$d</string>
@@ -421,7 +421,7 @@
     <string name="action_save">حفظ</string>
     <string name="audio_test_no_voice">لم يُثبَّت صوت لتحويل النص إلى كلام</string>
     <string name="yomitan_import_settings">الإعدادات</string>
-    <string name="yomitan_import_settings_hint">في Yomitan: الإعدادات → النسخ الاحتياطي → تصدير الإعدادات. اختر الملف هنا، ثم اختر الملف الشخصي الذي تؤخذ منه الإعدادات.</string>
+    <string name="yomitan_import_settings_hint">في Yomitan: الإعدادات ← النسخ الاحتياطي ← تصدير الإعدادات. اختر الملف هنا، ثم اختر الملف الشخصي الذي تؤخذ منه الإعدادات.</string>
     <string name="yomitan_import_not_settings">هذا الملف ليس ملف إعدادات مُصدَّرًا من Yomitan.</string>
     <string name="yomitan_import_failed">توقف الاستيراد بسبب خطأ. تبقى الإعدادات التي استُوردت قبله مطبّقة.</string>
     <string name="yomitan_import_choose_settings">اختيار ملف الإعدادات</string>
@@ -691,7 +691,7 @@
     <string name="background_battery_list_hint">ابحث عن Screenlate في القائمة وأوقف التحسين له («عدم التحسين» أو «غير مقيَّد» أو ما يشبههما). وإذا لم يكن Screenlate مُدرجًا، فتحقق من «كل التطبيقات».</string>
     <string name="background_launch_title">تشغيل التطبيقات</string>
     <string name="background_launch_text">تُوقف بعض الهواتف أيضًا التطبيقات العاملة في الخلفية من خلال إعدادات خاصة بالشركة المصنّعة، بمعزل عن تحسين البطارية. في هذه الإعدادات، اسمح لتطبيق Screenlate بالبدء تلقائيًا والعمل في الخلفية.</string>
-    <string name="background_launch_path">في هذا الهاتف: تشغيل التطبيقات → Screenlate → الإدارة يدويًا، مع تفعيل الخيارات الثلاثة كلها.</string>
+    <string name="background_launch_path">في هذا الهاتف: تشغيل التطبيقات ← Screenlate ← الإدارة يدويًا، مع تفعيل الخيارات الثلاثة كلها.</string>
     <string name="background_launch_open">فتح إعدادات بدء التشغيل</string>
     <string name="background_launch_app_info">فتح معلومات التطبيق</string>
     <string name="background_launch_app_info_hint">لا يحتوي هذا الهاتف على أي من شاشات بدء التشغيل المعروفة. وعادةً ما تؤدي معلومات التطبيق إلى إعدادات البطارية والعمل في الخلفية.</string>

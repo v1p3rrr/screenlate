@@ -13,14 +13,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -128,21 +131,24 @@ fun BubbleSettingsScreen(
                     )
                     Hint(stringResource(R.string.bubble_aim_hint))
                     Text(stringResource(R.string.bubble_dock_side), style = MaterialTheme.typography.titleMedium)
-                    Segments(
-                        options = if (settings.dockTopBottom) DockSide.entries else DockSide.entries.filterNot { it.horizontal },
-                        selected = settings.dockSide,
-                        label = {
-                            stringResource(
-                                when (it) {
-                                    DockSide.LEFT -> R.string.bubble_dock_left
-                                    DockSide.RIGHT -> R.string.bubble_dock_right
-                                    DockSide.TOP -> R.string.bubble_dock_top
-                                    DockSide.BOTTOM -> R.string.bubble_dock_bottom
-                                },
-                            )
-                        },
-                        onSelect = viewModel::setDockSide,
-                    )
+                    // The segments name screen edges, so Left stays on the left in right-to-left languages too.
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        Segments(
+                            options = if (settings.dockTopBottom) DockSide.entries else DockSide.entries.filterNot { it.horizontal },
+                            selected = settings.dockSide,
+                            label = {
+                                stringResource(
+                                    when (it) {
+                                        DockSide.LEFT -> R.string.bubble_dock_left
+                                        DockSide.RIGHT -> R.string.bubble_dock_right
+                                        DockSide.TOP -> R.string.bubble_dock_top
+                                        DockSide.BOTTOM -> R.string.bubble_dock_bottom
+                                    },
+                                )
+                            },
+                            onSelect = viewModel::setDockSide,
+                        )
+                    }
                     SwitchRow(
                         label = stringResource(R.string.bubble_dock_top_bottom),
                         checked = settings.dockTopBottom,
