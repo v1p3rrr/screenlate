@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +22,7 @@ import com.vpr.screenlate.audio.LocalNetworkAskEffect
 import com.vpr.screenlate.camera.ShareImageActivity
 import com.vpr.screenlate.camera.SharedImages
 import com.vpr.screenlate.camera.isAnotherAppsContent
+import com.vpr.screenlate.languages.LocalFlagCodes
 import com.vpr.screenlate.navigation.LanguagePageRequest
 import com.vpr.screenlate.navigation.ScreenlateNavHost
 import com.vpr.screenlate.overlay.OverlayIntents
@@ -86,23 +88,26 @@ class MainActivity : ComponentActivity() {
             val pending = viewModel.firstRun.collectAsStateWithLifecycle().value ?: return@setContent
             // Read once: answering the first run must not change the start screen under the restored back stack.
             val firstRun = rememberSaveable { pending }
+            val flagCodes by viewModel.flagCodes.collectAsStateWithLifecycle()
             ScreenlateTheme(
                 themeMode = theme.mode,
                 eInk = theme.eInk,
                 systemColors = theme.systemColors,
             ) {
-                LocalNetworkAskEffect()
-                ScreenlateNavHost(
-                    themeMode = theme.mode,
-                    onThemeModeChange = viewModel::setThemeMode,
-                    firstRun = firstRun,
-                    debugImagePath = debugImagePath(),
-                    debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),
-                    ankiSettingsRequest = ankiSettingsRequest,
-                    dictionariesRequest = dictionariesRequest,
-                    cameraRequests = cameraRequests,
-                    ocrModelsRequest = ocrModelsRequest,
-                )
+                CompositionLocalProvider(LocalFlagCodes provides flagCodes) {
+                    LocalNetworkAskEffect()
+                    ScreenlateNavHost(
+                        themeMode = theme.mode,
+                        onThemeModeChange = viewModel::setThemeMode,
+                        firstRun = firstRun,
+                        debugImagePath = debugImagePath(),
+                        debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),
+                        ankiSettingsRequest = ankiSettingsRequest,
+                        dictionariesRequest = dictionariesRequest,
+                        cameraRequests = cameraRequests,
+                        ocrModelsRequest = ocrModelsRequest,
+                    )
+                }
             }
         }
     }

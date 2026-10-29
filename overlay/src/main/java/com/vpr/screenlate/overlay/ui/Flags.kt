@@ -83,15 +83,8 @@ object Flags {
     @DrawableRes
     fun of(state: LanguageProfilesState, language: Language): Int? = drawable(state.flagCountry(language))
 
-    /** The letters shown instead of a flag. */
+    /** The letters shown instead of a flag, and on a flag that another language shows too ([FlagCodes]). */
     fun code(language: Language): String = language.support.codeLabel
-
-    /**
-     * Of [flags], shown side by side (null where a code stands instead), those shown more than once: such a flag carries
-     * its language's [code] in the bubble menu (Hindi and Marathi both show India's).
-     */
-    fun repeated(flags: List<Int?>): Set<Int> =
-        flags.filterNotNull().groupingBy { it }.eachCount().filterValues { it > 1 }.keys
 
     /**
      * The country's name in [locale], or the language's for a language's own flag, for a flag's choice and TalkBack. A
@@ -108,4 +101,26 @@ object Flags {
 
     /** The prefix of a language's own flag in `LanguageSupport.flagCountries`: Latin's laurel wreath, `lang_la`. */
     private const val LANGUAGE_FLAG = "lang_"
+}
+
+/**
+ * Which flags carry their language's [Flags.code] on a badge: a flag that another language the app offers shows too,
+ * turned on or not, with the user's flag choices in [state] ([LanguageProfilesState.flagCountry]). Hindi, Marathi,
+ * Tamil, Telugu and Kannada all show India's flag, so each carries its code wherever it is drawn, also with no other
+ * of them on screen; Cantonese alone shows Hong Kong's.
+ */
+class FlagCodes(state: LanguageProfilesState = LanguageProfilesState.DEFAULT) {
+    private val countries: Map<Language, String> = Language.entries.associateWith(state::flagCountry)
+    private val shownBy: Map<String, List<Language>> = countries.keys.groupBy(countries::getValue)
+
+    /**
+     * Whether [language]'s flag of [country] carries its code: another language shows that flag. [country] is the flag
+     * [language] shows unless a flag to choose is drawn.
+     */
+    fun coded(language: Language, country: String = countries.getValue(language)): Boolean =
+        shownBy[country].orEmpty().any { it != language }
+
+    override fun equals(other: Any?): Boolean = other is FlagCodes && other.countries == countries
+
+    override fun hashCode(): Int = countries.hashCode()
 }

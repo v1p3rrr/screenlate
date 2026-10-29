@@ -49,7 +49,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
     /**
      * A language to switch to: its [flag], or its [code] where flags are not shown (e-ink); TalkBack reads [name]. The
      * [selected] one, the active language, is ringed. With [coded], the flag carries the [code] on a badge over its lower
-     * edge: another chip shows the same flag ([Flags.repeated]).
+     * edge: another language shows the same flag ([FlagCodes]), on screen or not.
      */
     class Chip(
         val name: String,
@@ -205,7 +205,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
     }
 
     /**
-     * The [code] of a flag that another chip shows too, on a rounded badge in the menu's colors over the flag's lower
+     * The [code] of a flag that another language shows too, on a rounded badge in the menu's colors over the flag's lower
      * edge; the flag stays visible above it. The chip's [inset] around the flag is taken back, so the badge straddles
      * the circle's edge.
      */

@@ -43,63 +43,74 @@ class FlagsTest {
     }
 
     @Test
-    fun `only flags shown more than once in the bubble menu carry codes`() {
-        val india = Flags.drawable("in")
-        val japan = Flags.drawable("jp")
-        val usa = Flags.drawable("us")
-        assertThat(Flags.repeated(listOf(india, japan))).isEmpty()
-        assertThat(Flags.repeated(listOf(india, japan, india))).containsExactly(india)
-        assertThat(Flags.repeated(listOf(usa, india, usa, india, usa, japan))).containsExactly(usa, india)
+    fun `the five languages with india's flag carry codes, the others none`() {
+        val codes = FlagCodes()
+        val india = listOf(Language.HINDI, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA)
+        india.forEach { assertThat(codes.coded(it)).isTrue() }
+        assertThat(Language.entries.filter { codes.coded(it) }).containsExactlyElementsIn(india)
+        assertThat(india.map(Flags::code)).containsExactly("HI", "MR", "TA", "TE", "KN").inOrder()
     }
 
     @Test
-    fun `hindi and marathi share india's flag, so both carry codes`() {
-        val quick = listOf(Language.HINDI, Language.MARATHI, Language.JAPANESE)
-        val state = LanguageProfilesState(quick, Language.HINDI)
-        val flags = quick.map { Flags.of(state, it) }
-        assertThat(Flags.repeated(flags)).containsExactly(Flags.drawable("in"))
-        assertThat(Flags.repeated(flags.take(1) + flags.drop(2))).isEmpty()
+    fun `a language carries its code whether or not the others with its flag are turned on`() {
+        val alone = FlagCodes(LanguageProfilesState(listOf(Language.HINDI, Language.JAPANESE), Language.HINDI))
+        assertThat(alone.coded(Language.HINDI)).isTrue()
+        assertThat(alone.coded(Language.JAPANESE)).isFalse()
+        val nothingOn = FlagCodes(LanguageProfilesState(listOf(Language.JAPANESE), Language.JAPANESE))
+        assertThat(nothingOn.coded(Language.TAMIL)).isTrue()
     }
 
     @Test
-    fun `tamil shares india's flag with hindi and marathi`() {
-        val quick = listOf(Language.HINDI, Language.MARATHI, Language.TAMIL)
-        val state = LanguageProfilesState(quick, Language.TAMIL)
-        val flags = quick.map { Flags.of(state, it) }
-        assertThat(flags.distinct()).containsExactly(Flags.drawable("in"))
-        assertThat(Flags.repeated(flags)).containsExactly(Flags.drawable("in"))
-    }
-
-    @Test
-    fun `kannada shares india's flag with telugu and hindi`() {
-        val quick = listOf(Language.TELUGU, Language.KANNADA, Language.JAPANESE, Language.HINDI)
-        val state = LanguageProfilesState(quick, Language.KANNADA)
-        val flags = quick.map { Flags.of(state, it) }
-        assertThat(flags[1]).isEqualTo(Flags.drawable("in"))
-        assertThat(Flags.repeated(flags)).containsExactly(Flags.drawable("in"))
-    }
-
-    @Test
-    fun `cantonese has hong kong's flag, apart from chinese`() {
-        val quick = listOf(Language.CHINESE, Language.CANTONESE)
-        val state = LanguageProfilesState(quick, Language.CANTONESE)
-        val flags = quick.map { Flags.of(state, it) }
-        assertThat(flags[1]).isEqualTo(Flags.drawable("hk"))
+    fun `cantonese has hong kong's flag, apart from chinese, so neither carries a code`() {
+        val state = LanguageProfilesState(listOf(Language.CHINESE, Language.CANTONESE), Language.CANTONESE)
+        assertThat(Flags.of(state, Language.CANTONESE)).isEqualTo(Flags.drawable("hk"))
         assertThat(Flags.drawable("hk")).isNotNull()
-        assertThat(Flags.repeated(flags)).isEmpty()
+        val codes = FlagCodes(state)
+        assertThat(codes.coded(Language.CANTONESE)).isFalse()
+        assertThat(codes.coded(Language.CHINESE)).isFalse()
     }
 
     @Test
-    fun `telugu shares india's flag with tamil and hindi`() {
-        val quick = listOf(Language.TAMIL, Language.TELUGU, Language.JAPANESE, Language.HINDI)
-        val state = LanguageProfilesState(quick, Language.TELUGU)
-        val flags = quick.map { Flags.of(state, it) }
-        assertThat(flags[1]).isEqualTo(Flags.drawable("in"))
-        assertThat(Flags.repeated(flags)).containsExactly(Flags.drawable("in"))
+    fun `either english flag stands alone`() {
+        val state = LanguageProfilesState(listOf(Language.ENGLISH), Language.ENGLISH)
+        assertThat(FlagCodes(state).coded(Language.ENGLISH)).isFalse()
+        assertThat(FlagCodes(state.copy(flags = mapOf(Language.ENGLISH to "gb"))).coded(Language.ENGLISH)).isFalse()
     }
 
     @Test
-    fun `codes standing in for flags on e-ink are not counted`() {
-        assertThat(Flags.repeated(listOf(null, null, Flags.drawable("jp")))).isEmpty()
+    fun `the user's flag choice decides which flag a language shows`() {
+        val state = LanguageProfilesState(listOf(Language.ENGLISH), Language.ENGLISH)
+        val british = FlagCodes(state.copy(flags = mapOf(Language.ENGLISH to "gb")))
+        // Another language's flag of the United Kingdom would be English's too then, and the United States' no longer.
+        assertThat(british.coded(Language.WELSH, "gb")).isTrue()
+        assertThat(british.coded(Language.WELSH, "us")).isFalse()
+        assertThat(FlagCodes(state).coded(Language.WELSH, "gb")).isFalse()
+        assertThat(FlagCodes(state).coded(Language.WELSH, "us")).isTrue()
+        // A choice outside a language's flags is ignored, as everywhere.
+        assertThat(FlagCodes(state.copy(flags = mapOf(Language.TAMIL to "lk"))).coded(Language.TAMIL)).isTrue()
+    }
+
+    @Test
+    fun `a flag to choose carries the code when another language shows it`() {
+        val codes = FlagCodes()
+        assertThat(codes.coded(Language.ENGLISH, "gb")).isFalse()
+        assertThat(codes.coded(Language.ENGLISH, "in")).isTrue()
+        assertThat(codes.coded(Language.PORTUGUESE, "pt")).isFalse()
+        assertThat(codes.coded(Language.HINDI, "in")).isTrue()
+    }
+
+    @Test
+    fun `serbian's code is written in cyrillic letters`() {
+        assertThat(Flags.code(Language.SERBIAN)).isEqualTo("СР")
+        assertThat(Flags.code(Language.CROATIAN)).isEqualTo("HR")
+    }
+
+    @Test
+    fun `flag codes of the same choices are equal`() {
+        val state = LanguageProfilesState(listOf(Language.ENGLISH), Language.ENGLISH)
+        // The languages turned on do not matter, only the flag choices.
+        assertThat(FlagCodes(state)).isEqualTo(FlagCodes(LanguageProfilesState(listOf(Language.HINDI, Language.TAMIL), Language.TAMIL)))
+        assertThat(FlagCodes(state)).isEqualTo(FlagCodes())
+        assertThat(FlagCodes(state.copy(flags = mapOf(Language.ENGLISH to "gb")))).isNotEqualTo(FlagCodes(state))
     }
 }

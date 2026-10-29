@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.common.settings.AppColors
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.ThemeMode
+import com.vpr.screenlate.overlay.ui.FlagCodes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -32,6 +34,10 @@ class MainViewModel @Inject constructor(
         profiles.awaitFirstRunSettled()
         emitAll(profiles.firstRunPending)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Which flags carry their language's code, by the user's flag choices; the default choices until they are read. */
+    val flagCodes: StateFlow<FlagCodes> = profiles.state.map { FlagCodes(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, FlagCodes())
 
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch { settings.setThemeMode(mode) }

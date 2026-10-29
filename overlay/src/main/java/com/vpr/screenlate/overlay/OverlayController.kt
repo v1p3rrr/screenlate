@@ -95,6 +95,7 @@ import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.BubbleWindowMover
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.CropFocus
+import com.vpr.screenlate.overlay.ui.FlagCodes
 import com.vpr.screenlate.overlay.ui.Flags
 import com.vpr.screenlate.overlay.ui.DockPlacement
 import com.vpr.screenlate.overlay.ui.LayerView
@@ -774,15 +775,15 @@ class OverlayController(
         }
         val locale = service.resources.configuration.locales[0]
         val shown = languages.quick.takeIf { it.size > 1 && scanSource !is LookupSource.Photo }.orEmpty()
-        val flags = shown.map { if (eInk) null else Flags.of(languages, it) }
-        val repeated = Flags.repeated(flags)
-        val chips = shown.zip(flags).map { (language, flag) ->
+        val codes = FlagCodes(languages)
+        val chips = shown.map { language ->
+            val flag = if (eInk) null else Flags.of(languages, language)
             BubbleMenu.Chip(
                 name = language.displayName(locale),
                 code = Flags.code(language),
                 flag = flag,
                 selected = language == activeLanguage,
-                coded = flag in repeated,
+                coded = flag != null && codes.coded(language),
             ) {
                 if (language != activeLanguage) {
                     Log.d(TAG, "Active language ${language.code} from the bubble menu")
