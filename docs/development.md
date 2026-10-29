@@ -64,7 +64,7 @@ listing of wty-release for the supported source languages and the interface lang
 archives under 0.5 MB, and fills titles and descriptions from the templates in the file. A language may read folders
 under other codes (Norwegian: Bokmål's nb, the editions' no and Nynorsk's nn); their entries keep the folder's code in
 the title and its language name in the description, and each gloss language is ticked from the first folder that has
-it. A language whose forms only the English edition lists (`FORMS_SOURCES`: Finnish, Hungarian, Estonian, Azerbaijani, Uzbek) also gets a "Word forms" entry,
+it. A language whose forms only the English edition lists (`FORMS_SOURCES`: Finnish, Hungarian, Estonian, Azerbaijani, Uzbek, Tamil, Telugu) also gets a "Word forms" entry,
 the source–English archive with `"build": "forms"`, mandatory beside the main dictionary; the download screen lists it only while the whole
 English dictionary is not ticked, the app imports it without definitions, and an installed English dictionary
 counts as it. It also writes

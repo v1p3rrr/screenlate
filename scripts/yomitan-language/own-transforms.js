@@ -324,7 +324,9 @@ export const tamilTransforms = /* @__PURE__ */ (() => ({
  * Telugu case endings, postpositions and particles written joined to a word, as the app's own rules: Wiktionary lists
  * the plurals and few case forms. An ending comes off the direct form (రాష్ట్రంలో → రాష్ట్రం, రోజుకు → రోజు) or off the
  * oblique -ఇ of a noun in -ఉ (ఊరికి → ఊరు, కుమారుడిని → కుమారుడు); a noun in -అం takes -ఆన్ని, -ఆనికి and -ఆన in place
- * of its -ం (పుస్తకాన్ని → పుస్తకం). Before an ending the plural is in its oblique -ల, which is taken back to the stem
+ * of its -ం (పుస్తకాన్ని → పుస్తకం). A place word in -అ takes the dative -కి after an -ఇ in place of its -అ (ఇక్కడికి →
+ * ఇక్కడ, కిందికి → కింద); that rule reaches only the adverbs, postpositions and suffixes Wiktionary tags so, as nouns in
+ * -అ give wrong words there (వారికి is వారు's, not వార's). Before an ending the plural is in its oblique -ల, which is taken back to the stem
  * and to the plural Wiktionary lists (పిల్లలకు → పిల్లలు, చెట్ల → చెట్లు); a plural in -ఆలు is a noun's in -అం
  * (పుస్తకాలు → పుస్తకం); no rule follows a plural's. The emphatic -ఏ, -ఊ "also" and the question -ఆ take the place of a final -ఉ or -ఇ or follow the
  * word (రోజే, మీరూ, నిజమా → నిజము), and -నే and -నూ follow an ending (రాష్ట్రంలోనే); an ending may come before them.
@@ -364,13 +366,14 @@ function teluguEndingName(ending) {
     return vowel ? `-${vowel}${ending.slice(1)}` : `-${ending}`;
 }
 
-/** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'p' | 's'>} */
+/** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'p' | 's' | 'a'>} */
 export const teluguTransforms = /* @__PURE__ */ (() => ({
     language: 'te',
     conditions: {
         n: {name: 'Noun', isDictionaryForm: true},
         p: {name: 'Word', isDictionaryForm: true},
         s: {name: 'Singular noun', isDictionaryForm: true},
+        a: {name: 'Place word', isDictionaryForm: true},
     },
     transforms: Object.fromEntries([
         ...teluguCaseEndings.map((ending) => [`-${ending}`, {
@@ -378,6 +381,9 @@ export const teluguTransforms = /* @__PURE__ */ (() => ({
             rules: [
                 stemSuffix(`.{2}${ending}`, ending.length, '', ['p'], ['n']),
                 stemSuffix(`.{2}${TELUGU_I}${ending}`, ending.length + 1, TELUGU_U, ['p'], ['n']),
+                ...(ending === 'కి' ?
+                    [stemSuffix(`.{2}${TELUGU_CONSONANT}${TELUGU_I}${ending}`, ending.length + 1, '', ['p'], ['a'])] :
+                    []),
             ],
         }]),
         ...teluguAmEndings.map((ending) => [teluguEndingName(ending), {

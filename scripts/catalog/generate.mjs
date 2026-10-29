@@ -78,7 +78,7 @@ const TEMPLATES = new Set([TEMPLATE_MAIN, TEMPLATE_GLOSSARY, TEMPLATE_TRANSCRIPT
  * MiB, estimated from the rows: their "Word forms" entry imports the source–English dictionary without its definitions
  * for users who do not choose English, and is mandatory then.
  */
-export const FORMS_SOURCES = { fi: 65, hu: 18, az: 14, et: 3, uz: 2 };
+export const FORMS_SOURCES = { fi: 65, hu: 18, az: 14, ta: 5, et: 3, uz: 2, te: 1 };
 
 /** Ends the title the app gives a dictionary imported for its forms only (FORMS_ONLY_TITLE_SUFFIX in the app). */
 const FORMS_TITLE_SUFFIX = ' (forms)';

@@ -460,6 +460,20 @@ test('telugu endings come off direct and oblique stems and reach nominal entries
     nominal('చెట్ల', 'చెట్లు');
     nominal('పుస్తకాలు', 'పుస్తకం');
     nominal('అంశాలపై', 'అంశం');
+    /** @param {string} text @param {string} lemma */
+    const place = (text, lemma) => {
+        const found = candidates('te', text).filter((c) => c.o === text && c.d === lemma);
+        assert.ok(found.length > 0, `${text} → ${lemma}`);
+        assert.ok(found.every((c) => c.u && ['adv', 'prep', 'postp', 'suf'].some((tag) => c.g.includes(tag))), text);
+        assert.ok(found.every((c) => !c.g.includes('n')), text);
+    };
+    place('ఇక్కడికి', 'ఇక్కడ');
+    place('ఎక్కడికి', 'ఎక్కడ');
+    place('కిందికి', 'కింద');
+    // A noun in -అ is no place word: వారికి is the dative of వారు, మందికి that of మంది.
+    for (const [text, noun] of [['వారికి', 'వార'], ['మందికి', 'మంద']]) {
+        assert.ok(candidates('te', text).filter((c) => c.o === text && c.d === noun).every((c) => !c.g.includes('n')), text);
+    }
     const book = candidates('te', 'పుస్తకాన్ని').find((c) => c.o === 'పుస్తకాన్ని' && c.d === 'పుస్తకం');
     assert.equal(JSON.stringify(book.r), JSON.stringify([['-ఆన్ని']]));
     const children = candidates('te', 'పిల్లలకు').find((c) => c.o === 'పిల్లలకు' && c.d === 'పిల్లలు');

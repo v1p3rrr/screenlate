@@ -551,14 +551,18 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `tamil offers its wiktionaries, transcription, frequency and tesseract fast ticked, tesseract best unticked`() {
+    fun `tamil offers its wiktionaries, word forms, transcription, frequency and tesseract fast ticked, the forms mandatory, tesseract best unticked`() {
         val tamil = catalog!!.entries.filter { it.isFor(Language.TAMIL) }
         assertThat(tamil.filter { it.recommended }.map { it.id }).containsExactly(
-            "wiktionary-ta-en", "wiktionary-ta-ru", "wiktionary-ta-fr", "wiktionary-ta-transcription", "wordfreq-ta",
-            "tesseract-fast-tam",
+            "wiktionary-ta-en", "wiktionary-ta-forms", "wiktionary-ta-ru", "wiktionary-ta-fr", "wiktionary-ta-transcription",
+            "wordfreq-ta", "tesseract-fast-tam",
         )
         // Paddle's Tamil model reads it far better and replaces the fast model once it is released.
         assertThat(tamil.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-tam")
+        val forms = tamil.single { it.category == CatalogCategory.FORMS }
+        assertThat(forms.build).isEqualTo(BUILD_FORMS)
+        assertThat(forms.downloadUrl).isEqualTo(tamil.single { it.id == "wiktionary-ta-en" }.downloadUrl)
+        assertThat(catalog!!.mandatory(Language.TAMIL)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.TAMIL) }).isEqualTo(tamil)
     }
 
@@ -589,13 +593,18 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `telugu offers its wiktionaries, transcription and tesseract fast ticked, tesseract best unticked, no frequency`() {
+    fun `telugu offers its wiktionaries, word forms, transcription and tesseract fast ticked, the forms mandatory, tesseract best unticked, no frequency`() {
         val telugu = catalog!!.entries.filter { it.isFor(Language.TELUGU) }
         assertThat(telugu.filter { it.recommended }.map { it.id }).containsExactly(
-            "wiktionary-te-en", "wiktionary-te-ru", "wiktionary-te-zh", "wiktionary-te-transcription", "tesseract-fast-tel",
+            "wiktionary-te-en", "wiktionary-te-forms", "wiktionary-te-ru", "wiktionary-te-zh", "wiktionary-te-transcription",
+            "tesseract-fast-tel",
         )
         // Paddle's Telugu model reads it far better and replaces the fast model once it is released.
         assertThat(telugu.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-tel")
+        val forms = telugu.single { it.category == CatalogCategory.FORMS }
+        assertThat(forms.build).isEqualTo(BUILD_FORMS)
+        assertThat(forms.downloadUrl).isEqualTo(telugu.single { it.id == "wiktionary-te-en" }.downloadUrl)
+        assertThat(catalog!!.mandatory(Language.TELUGU)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.TELUGU) }).isEqualTo(telugu)
     }
 
