@@ -1050,6 +1050,17 @@ internal object YomitanInflections {
             "reciprocal" to Strings(R.string.inflection_turkic_reciprocal_label, R.string.inflection_uz_reciprocal),
             "causative" to Strings(R.string.inflection_turkic_causative_label, R.string.inflection_uz_causative),
         ),
+        "bg" to mapOf(
+            "definite" to Strings(R.string.inflection_bg_definite_label, R.string.inflection_bg_definite),
+            "plural" to Strings(R.string.inflection_bg_plural_label, R.string.inflection_bg_plural),
+            "feminine" to Strings(R.string.inflection_bg_feminine_label, R.string.inflection_bg_feminine),
+            "neuter" to Strings(R.string.inflection_bg_neuter_label, R.string.inflection_bg_neuter),
+            "present" to Strings(R.string.inflection_bg_present_label, R.string.inflection_bg_present),
+            "past" to Strings(R.string.inflection_bg_past_label, R.string.inflection_bg_past),
+            "past participle" to Strings(R.string.inflection_bg_past_participle_label, R.string.inflection_bg_past_participle),
+            "passive participle" to Strings(R.string.inflection_bg_passive_participle_label, R.string.inflection_bg_passive_participle),
+            "imperative" to Strings(R.string.inflection_bg_imperative_label, R.string.inflection_bg_imperative),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

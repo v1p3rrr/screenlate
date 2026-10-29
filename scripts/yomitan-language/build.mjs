@@ -32,7 +32,9 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * Wiktionary lists its forms; Slovak takes Czech's (capitalization only), the language its lookups fall back to; Slovenian takes Czech's as
  * well, as Wiktionary lists its forms; Swahili takes Czech's too, for the app's own verb prefixes; Azerbaijani takes
  * Turkish's (capitalization with the Turkish case pairs, glue.js) for the app's own endings; Uzbek takes Turkish's
- * with the default case pairs (Uzbek cases i and I as English does) for the app's own processors and endings.
+ * with the default case pairs (Uzbek cases i and I as English does) for the app's own processors and endings;
+ * Macedonian takes Bulgarian's (Cyrillic, capitalization only, without Bulgarian's own endings), as Wiktionary lists
+ * its forms.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
@@ -45,6 +47,7 @@ const borrowed = {
     sw: {from: 'cs', iso639_3: 'swa', name: 'Swahili', exampleText: 'kusoma'},
     az: {from: 'tr', iso639_3: 'aze', name: 'Azerbaijani', exampleText: 'oxumaq'},
     uz: {from: 'tr', iso639_3: 'uzb', name: 'Uzbek', exampleText: 'oʻqimoq'},
+    mk: {from: 'bg', iso639_3: 'mkd', name: 'Macedonian', exampleText: 'читам'},
 };
 
 /**
@@ -65,8 +68,9 @@ const borrowed = {
  * too (ng'ombe, ng’ombe), Welsh its clitics (mae'r), Irish and Scottish Gaelic their elided words (d'fhág, dh'fhàg);
  * Irish in Gaelic type writes lenition as a dot (ḃean for bhean), and Scottish Gaelic in its older spelling some
  * long vowels with the acute (mór for mòr); recognition reads Azerbaijani ə and ı as e and i; Uzbek text writes ʻ
- * and ʼ as ' ‘ ’ ` ´ and is also written in Cyrillic letters. Processors join the descriptor's capitalization
- * processors, its own list, or make its list.
+ * and ʼ as ' ‘ ’ ` ´ and is also written in Cyrillic letters; Bulgarian and Macedonian are written with stress marks,
+ * acute or grave, as Russian is, Bulgarian writes the pronoun ѝ as й and Macedonian its ѐ as the Latin è. Processors
+ * join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -90,6 +94,8 @@ const addedPreprocessors = {
     gd: ['ukrainianApostropheVariants', 'gaelicAcuteAsGrave'],
     az: ['azerbaijaniMisreadLetters'],
     uz: ['uzbekApostrophes', 'uzbekCyrillicAsLatin'],
+    bg: ['removeRussianDiacritics', 'removeGraveStress', 'bulgarianShortIAsPronoun'],
+    mk: ['removeRussianDiacritics', 'removeGraveStress', 'macedonianLatinGrave'],
 };
 
 /**
@@ -99,17 +105,17 @@ const addedPreprocessors = {
  * Vietnamese, whose marks are tones.
  */
 const foldedMarkLanguages = [
-    'az', 'be', 'cs', 'cy', 'da', 'de', 'en', 'eo', 'es', 'et', 'fi', 'fr', 'ga', 'gd', 'hu', 'id', 'it', 'kk', 'ky',
-    'la', 'lt', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sh', 'sk', 'sl', 'sq', 'sv', 'sw', 'tl', 'tr', 'uk',
-    'uz',
+    'az', 'be', 'bg', 'cs', 'cy', 'da', 'de', 'en', 'eo', 'es', 'et', 'fi', 'fr', 'ga', 'gd', 'hu', 'id', 'it', 'kk',
+    'ky', 'la', 'lt', 'lv', 'mk', 'mn', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sh', 'sk', 'sl', 'sq', 'sv', 'sw',
+    'tl', 'tr', 'uk', 'uz',
 ];
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh, Kyrgyz, Azerbaijani and Uzbek endings, the Norwegian
  * genitive, Romanian article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial
- * mutations, Finnish clitics and possessive suffixes, Hungarian verb prefixes (Yomitan's Finnish and Hungarian
- * descriptors have text processors only).
+ * mutations, Finnish clitics and possessive suffixes, Hungarian verb prefixes, Bulgarian articles and endings, Mongolian
+ * endings (Yomitan's Finnish, Hungarian, Bulgarian and Mongolian descriptors have text processors only).
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -127,6 +133,7 @@ const addedTransforms = {
     et: 'estonianTransforms',
     az: 'azerbaijaniTransforms',
     uz: 'uzbekTransforms',
+    bg: 'bulgarianTransforms',
 };
 
 /**

@@ -76,7 +76,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi", "hu")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl", "fi", "hu", "bg", "mk")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -102,9 +102,17 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili, estonian, azerbaijani and uzbek have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili, estonian, azerbaijani, uzbek and mongolian have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et", "az", "uz").inOrder()
+        assertThat(built.map { it.sourceLanguage })
+            .containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et", "az", "uz", "mn").inOrder()
+        val mongolian = built.single { it.sourceLanguage == "mn" }
+        assertThat(mongolian.recommended).isTrue()
+        assertThat(mongolian.sha256).isEqualTo("421ee074485df3a8de98a746e4d37f941d91d5212236d858e53fa0590480761e")
+        assertThat(mongolian.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/mon_news_2020_100K.tar.gz")
+        assertThat(mongolian.description(Locale.ENGLISH))
+            .startsWith("Leipzig Corpora Collection, Mongolian: how common words are in news")
         val uzbek = built.single { it.sourceLanguage == "uz" }
         assertThat(uzbek.recommended).isTrue()
         assertThat(uzbek.sha256).isEqualTo("33844aa9b4ad140e0d40fd51d2ed92d5d1ab67828ef6583344cf81b705f2f38e")
@@ -219,11 +227,11 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `hebrew offers six wiktionaries, its transcription, wordfreq's large list and tesseract fast, ticked, and best`() {
+    fun `hebrew offers seven wiktionaries, its transcription, wordfreq's large list and tesseract fast, ticked, and best`() {
         val hebrew = catalog!!.entries.filter { it.sourceLanguage == "he" }
         assertThat(hebrew.filter { it.recommended }.map { it.id }).containsExactly(
             "wiktionary-he-en", "wiktionary-he-ru", "wiktionary-he-es", "wiktionary-he-ja", "wiktionary-he-pl",
-            "wiktionary-he-zh", "wiktionary-he-transcription", "wordfreq-he", "tesseract-fast-heb",
+            "wiktionary-he-tr", "wiktionary-he-zh", "wiktionary-he-transcription", "wordfreq-he", "tesseract-fast-heb",
         )
         assertThat(hebrew.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-heb")
         assertThat(hebrew.first { it.id == "wordfreq-he" }.downloadUrl).endsWith("/large_he.msgpack.gz")
@@ -489,6 +497,36 @@ class CatalogFileTest {
         assertThat(forms.downloadUrl).isEqualTo(uzbek.single { it.id == "wiktionary-uz-en" }.downloadUrl)
         assertThat(catalog!!.mandatory(Language.UZBEK)).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.UZBEK) }).isEqualTo(uzbek)
+    }
+
+    @Test
+    fun `bulgarian, macedonian and mongolian offer their wiktionaries and frequencies with paddle's cyrillic model, ticked`() {
+        val bulgarian = catalog!!.entries.filter { it.isFor(Language.BULGARIAN) }
+        assertThat(bulgarian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wordfreq-bg", "paddle-cyrillic-bg", "wiktionary-bg-en", "wiktionary-bg-ru", "wiktionary-bg-fr", "wiktionary-bg-ko",
+            "wiktionary-bg-pl", "wiktionary-bg-tr", "wiktionary-bg-zh", "wiktionary-bg-transcription",
+        )
+        val macedonian = catalog!!.entries.filter { it.isFor(Language.MACEDONIAN) }
+        assertThat(macedonian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wordfreq-mk", "paddle-cyrillic-mk", "wiktionary-mk-en", "wiktionary-mk-ru", "wiktionary-mk-pl", "wiktionary-mk-zh",
+            "wiktionary-mk-transcription",
+        )
+        // Mongolian has no wordfreq list; its frequencies are built from Leipzig's news.
+        val mongolian = catalog!!.entries.filter { it.isFor(Language.MONGOLIAN) }
+        assertThat(mongolian.filter { it.recommended }.map { it.id }).containsExactly(
+            "corpus-mn", "paddle-cyrillic-mn", "wiktionary-mn-en", "wiktionary-mn-ru", "wiktionary-mn-fr", "wiktionary-mn-zh",
+            "wiktionary-mn-transcription",
+        )
+        // Paddle's Cyrillic model got 6, 25 and 0 characters wrong over the four screens against Tesseract fast's 104,
+        // 115 and 174; Tesseract is offered unticked, the eslav model not at all.
+        for ((language, code) in listOf(Language.BULGARIAN to "bul", Language.MACEDONIAN to "mkd", Language.MONGOLIAN to "mon")) {
+            val entries = catalog!!.entries.filter { it.isFor(language) }
+            assertThat(entries.filterNot { it.recommended }.map { it.id }).containsExactly(
+                "tesseract-fast-$code", "tesseract-best-$code", "paddle-detector-v5-${language.code}",
+            )
+            assertThat(catalog!!.mandatory(language)).containsExactly(CatalogCategory.MAIN)
+            assertThat(catalog!!.entries.filter { it.isReadBy(language) }).isEqualTo(entries)
+        }
     }
 
     @Test

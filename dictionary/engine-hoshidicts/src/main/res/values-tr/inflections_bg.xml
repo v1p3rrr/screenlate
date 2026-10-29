@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">belirli</string>
+    <string name="inflection_bg_definite">belirli tanımlık: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">çoğul</string>
+    <string name="inflection_bg_plural">çoğul: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">dişil</string>
+    <string name="inflection_bg_feminine">bir sıfatın dişil biçimi: -а (нова, умен → умна, добър → добра, българска)</string>
+    <string name="inflection_bg_neuter_label">nötr</string>
+    <string name="inflection_bg_neuter">bir sıfatın nötr biçimi: -о (ново, умен → умно, добър → добро, българско, синьо)</string>
+    <string name="inflection_bg_present_label">şimdiki zaman</string>
+    <string name="inflection_bg_present">şimdiki zaman (гарантирам → гарантира, гарантират; чета → четеш, четат; говоря → говори)</string>
+    <string name="inflection_bg_past_label">geçmiş zaman</string>
+    <string name="inflection_bg_past">aorist veya imperfekt (чакам → чаках, чакаше; чета → четох, четеше; говоря → говорих)</string>
+    <string name="inflection_bg_past_participle_label">geçmiş ortaç</string>
+    <string name="inflection_bg_past_participle">-л ile etken geçmiş zaman ortacı (гарантирам → гарантирал, измина → изминала, говоря → говорили)</string>
+    <string name="inflection_bg_passive_participle_label">edilgen ortaç</string>
+    <string name="inflection_bg_passive_participle">-н ile edilgen geçmiş zaman ortacı (гарантирам → гарантиран, гарантирана; говоря → говорено)</string>
+    <string name="inflection_bg_imperative_label">emir kipi</string>
+    <string name="inflection_bg_imperative">emir kipi -ай -айте (чакам → чакай, чакайте; стрелям → стреляй)</string>
+</resources>

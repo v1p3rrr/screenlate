@@ -49,6 +49,14 @@ interface LanguageSupport {
     }
 
     /**
+     * Spellings of [text], which OCR read and which finds nothing as read, to look up instead, in order: letters an
+     * engine reads as other letters of the script, which no one-for-one fix in [ocrWord] can put right as the read
+     * letters are words' letters too (Macedonian Љ read as Л or ЛЬ). Each changes the first word in one place; the first
+     * spelling that finds something is shown. Empty for the languages without such letters.
+     */
+    fun misreadSpellings(text: String): List<MappedText> = emptyList()
+
+    /**
      * A page's words as OCR read them, line by line, each as [ocrWord] writes it. A language written in two scripts
      * decides by the line which one a word is in (Serbian). A word that comes back with a space holds two words an
      * engine glued together (Czech "n.l.a"); the page parts it there.
@@ -525,6 +533,8 @@ enum class SearchResolution { WORD, LETTER }
  * @property letterMarks marks of the language's letters (ą č ė), dropped after [letterBases] once [marks] are, for one
  * more key of each form (and, with [everyHeadword], each headword): text written without them finds the words with
  * them, the exact spelling first.
+ * @property comparativePrefixes prefixes of comparative forms (Bulgarian по-, най-): the "comparative" tag of a form
+ * without one is dropped at import, as Wiktionary's Bulgarian tables put it on positive forms.
  */
 data class HeadwordMarks(
     val marks: String,
@@ -537,6 +547,7 @@ data class HeadwordMarks(
     val markBases: Map<String, String> = emptyMap(),
     val letterMarks: String = "",
     val letterBases: String = "",
+    val comparativePrefixes: List<String> = emptyList(),
 )
 
 /** The markers of [LanguageSupport.rightToLeftMarkers] every right-to-left language has. */
@@ -607,6 +618,9 @@ val Language.support: LanguageSupport
         Language.ESTONIAN -> EstonianSupport
         Language.AZERBAIJANI -> AzerbaijaniSupport
         Language.UZBEK -> UzbekSupport
+        Language.BULGARIAN -> BulgarianSupport
+        Language.MACEDONIAN -> MacedonianSupport
+        Language.MONGOLIAN -> MongolianSupport
     }
 
 /**

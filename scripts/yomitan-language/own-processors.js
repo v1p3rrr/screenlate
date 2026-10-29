@@ -217,6 +217,50 @@ export const kazakhLatinLetters = {
         word))],
 };
 
+/** The combining grave, which dictionaries and textbooks put on a stressed Cyrillic vowel (гра̀д). */
+const GRAVE = /* @__PURE__ */ String.fromCharCode(0x300);
+
+/** The Cyrillic vowels written with a grave as one character, with their letters. */
+const GRAVE_LETTERS = {'ѐ': 'е', 'ѝ': 'и', 'Ѐ': 'Е', 'Ѝ': 'И'};
+
+/**
+ * Bulgarian and Macedonian text with the stress written as a grave, as dictionaries and textbooks print it (кнѝга,
+ * паркѐт, гра̀д): words of three letters or more are also tried without it. Shorter words keep it: the Bulgarian
+ * pronoun ѝ and the Macedonian сѐ and нѐ are words of their own. The acute is Yomitan's removeRussianDiacritics.
+ * @type {import('language').TextProcessor}
+ */
+export const removeGraveStress = {
+    name: 'Remove grave stress',
+    description: 'кнѝга → книга, паркѐт → паркет',
+    process: (str) => [str, str.replace(/[\p{L}\p{M}]+/gu, (word) => ([...word.replace(/\p{M}/gu, '')].length < 3 ?
+        word :
+        word.replace(/[ѐѝЀЍ]/g, (letter) => GRAVE_LETTERS[letter]).split(GRAVE).join('')))],
+};
+
+/**
+ * Bulgarian й standing alone, as most typed text and recognition write the pronoun ѝ ("her"): also tried as ѝ, in any
+ * text. A й inside a word is that letter.
+ * @type {import('language').TextProcessor}
+ */
+export const bulgarianShortIAsPronoun = {
+    name: 'Short i as the pronoun',
+    description: 'й → ѝ',
+    process: (str) => [str, str.replace(/(?<![\p{L}\p{M}])[йЙ](?![\p{L}\p{M}])/gu, (letter) => (letter === 'й' ? 'ѝ' : 'Ѝ'))],
+};
+
+/**
+ * Macedonian text with the Latin è in a Cyrillic word, as most typed text writes ѐ (сè, нè, сèуште): the Macedonian ѐ,
+ * in any text. A word of Latin letters only stays as it is.
+ * @type {import('language').TextProcessor}
+ */
+export const macedonianLatinGrave = {
+    name: 'Latin e grave as Cyrillic',
+    description: 'сè → сѐ',
+    process: (str) => [str, str.replace(/[\p{L}\p{M}]+/gu, (word) => (/\p{Script=Cyrillic}/u.test(word) ?
+        word.replace(/[èÈ]/g, (letter) => (letter === 'è' ? 'ѐ' : 'Ѐ')) :
+        word))],
+};
+
 /** The Romanian comma letters by the cedilla letters older keyboards and encodings type for them. */
 const ROMANIAN_COMMA_LETTERS = {'ş': 'ș', 'ţ': 'ț', 'Ş': 'Ș', 'Ţ': 'Ț'};
 

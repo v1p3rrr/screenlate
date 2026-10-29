@@ -51,6 +51,17 @@ class BubbleGlyphTest {
     }
 
     @Test
+    fun `macedonian and mongolian share a letter, as bulgarian and belarusian do`() {
+        val quick = listOf(Language.MACEDONIAN, Language.MONGOLIAN)
+        assertThat(bubbleGlyph(Language.MACEDONIAN, quick)).isEqualTo("МК")
+        assertThat(bubbleGlyph(Language.MONGOLIAN, quick)).isEqualTo("МН")
+        assertThat(bubbleGlyph(Language.MACEDONIAN, listOf(Language.MACEDONIAN, Language.BULGARIAN))).isEqualTo("М")
+        val b = listOf(Language.BULGARIAN, Language.BELARUSIAN)
+        assertThat(bubbleGlyph(Language.BULGARIAN, b)).isEqualTo("БГ")
+        assertThat(bubbleGlyph(Language.BELARUSIAN, b)).isEqualTo("БЕ")
+    }
+
+    @Test
     fun `a letter with marks counts as the letter without them`() {
         val quick = listOf(Language.CZECH, Language.WELSH)
         assertThat(bubbleGlyph(Language.CZECH, quick)).isEqualTo("CS")
@@ -89,5 +100,6 @@ class BubbleGlyphTest {
         assertThat(UkrainianSupport.codeLabel).isEqualTo("УК")
         assertThat(BelarusianSupport.codeLabel).isEqualTo("БЕ")
         assertThat(KazakhSupport.codeLabel).isEqualTo("КК")
+        assertThat(MongolianSupport.codeLabel).isEqualTo("МН")
     }
 }

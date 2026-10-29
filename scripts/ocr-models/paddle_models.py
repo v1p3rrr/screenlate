@@ -65,7 +65,7 @@ RECOGNIZERS = {
     "paddle-latin": {"source": "latin_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
                      "languages": LATIN},
     "paddle-cyrillic": {"source": "cyrillic_PP-OCRv5_mobile_rec", "template": "paddle-v5",
-                        "requires": "paddle-detector-v5", "languages": ["ru", "uk", "be", "sr", "kk", "ky"]},
+                        "requires": "paddle-detector-v5", "languages": ["ru", "uk", "be", "sr", "kk", "ky", "bg", "mk", "mn"]},
     "paddle-korean": {"source": "korean_PP-OCRv5_mobile_rec", "template": "paddle-v5",
                       "requires": "paddle-detector-v5", "languages": ["ko"]},
     "paddle-el": {"source": "el_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
@@ -84,6 +84,8 @@ RECOGNIZERS = {
 # model with a third fewer errors and 0.5 points fewer. Azerbaijani: v6 1.52% against ML Kit's 4.99% (ə read as
 # e, ı as i); Tesseract fast's 1.43% is about the same, and v6 holds up better over pictures (the owner's choice).
 # Uzbek: ML Kit 2.72% (0.6% with the apostrophes counted as one), none a third fewer, so none is marked.
+# Bulgarian, Macedonian, Mongolian (which ML Kit does not read): the Cyrillic v5 model, 6, 25 and 0 characters wrong
+# over the four screens against Tesseract fast's 104, 115 and 174; the eslav model, which lacks ѝ, is not offered.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",
@@ -91,6 +93,7 @@ RECOMMENDED = {
     "hr": "paddle-v6", "sr": "paddle-cyrillic", "kk": "paddle-cyrillic",
     "ky": "paddle-cyrillic", "sv": "paddle-latin", "no": "paddle-v6", "da": "paddle-latin", "ro": "paddle-latin",
     "la": "paddle-v6", "sl": "paddle-latin", "sq": "paddle-latin", "et": "paddle-v6", "az": "paddle-v6",
+    "bg": "paddle-cyrillic", "mk": "paddle-cyrillic", "mn": "paddle-cyrillic",
 }
 
 # Languages ML Kit reads whose comparison found several models more accurate than ML Kit: each is marked, Tesseract's

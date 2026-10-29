@@ -50,7 +50,8 @@ class DictionaryLookup @Inject constructor(
      * @param aimedCharAt UTF-16 index in [text] of the aimed character, at or after [aimedAt]: when no word found
      *   covers it, the lookup starts inside the aimed word as well; see [reachingAimedCharacter]. After a hyphen in
      *   the aimed word, the lookup starts at the aimed part too; see [withHyphenatedParts].
-     * @param fromOcr [text] was recognized in a screenshot ([LookupOptions.fromOcr]).
+     * @param fromOcr [text] was recognized in a screenshot ([LookupOptions.fromOcr]); a word that finds nothing is also
+     *   tried in the spellings of letters engines misread ([misreadMatches]).
      */
     suspend fun lookup(
         text: String,
@@ -100,7 +101,10 @@ class DictionaryLookup @Inject constructor(
                 }
                 val lengths = support.shownMatchLengths(source, candidates.mapTo(HashSet()) { it.matched.length })
                 val found = candidates.filter { it.matched.length in lengths }
-                val whole = shown(found, start)
+                val whole = shown(found, start).ifEmpty {
+                    if (!fromOcr) return@ifEmpty emptyList()
+                    misreadMatches(source, support, { engine.lookup(it, engineOptions) }) { shown(it, start) }
+                }
                 return support.compoundLinks?.let { links ->
                     compoundParts(source, whole, links) { part ->
                         // Every word the rest starts with, not only whole words.
@@ -432,6 +436,24 @@ internal suspend fun keyedMatches(
         .mapNotNull { it.shownBy(support) }
         .filter { it.matched.length >= longest && it.matched.length !in exact }
         .filter { (it.term.expression to it.term.reading) !in found && support.keepsWrittenLetters(source, it.term.expression) }
+}
+
+/**
+ * What the first of [support]'s misread spellings of [source] finds ([LanguageSupport.misreadSpellings]: Macedonian
+ * лубов read for љубов), as [shown] keeps it and mapped back to [source]; for a word from OCR that finds nothing as
+ * read. Empty when no spelling finds anything.
+ */
+internal suspend fun misreadMatches(
+    source: String,
+    support: LanguageSupport,
+    lookup: suspend (String) -> List<LookupResult>,
+    shown: suspend (List<LookupResult>) -> List<LookupResult>,
+): List<LookupResult> {
+    for (spelling in support.misreadSpellings(source)) {
+        val found = shown(lookup(spelling.text).fromVariant(source, spelling, support).mapNotNull { it.shownBy(support) })
+        if (found.isNotEmpty()) return found
+    }
+    return emptyList()
 }
 
 /**

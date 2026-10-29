@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <memory>
@@ -18,6 +19,7 @@
 #include <stdexcept>
 #include <string_view>
 #include <tuple>
+#include <unordered_set>
 #include <vector>
 
 #include <glaze/glaze.hpp>
@@ -407,8 +409,103 @@ std::vector<std::string> cleaned_tags(const std::vector<std::string>& tags) {
   return out;
 }
 
+// [tags] without the word [word], a tag left empty dropped.
+std::vector<std::string> without_word(const std::vector<std::string>& tags, std::string_view word) {
+  std::vector<std::string> out;
+  for (const auto& tag : tags) {
+    std::string kept;
+    std::string_view rest = tag;
+    while (!rest.empty()) {
+      const size_t space = rest.find(' ');
+      const std::string_view part = rest.substr(0, space);
+      if (!part.empty() && part != word) {
+        if (!kept.empty()) kept += ' ';
+        kept += part;
+      }
+      rest = space == std::string_view::npos ? std::string_view() : rest.substr(space + 1);
+    }
+    if (!kept.empty()) out.push_back(std::move(kept));
+  }
+  return out;
+}
+
+// [lemma] without a gender written after it ("куќа f", "волк m"), which no headword carries.
+std::string_view without_gender(std::string_view lemma) {
+  if (lemma.size() > 2 && lemma[lemma.size() - 2] == ' ') {
+    const char gender = lemma.back();
+    if (gender == 'm' || gender == 'f' || gender == 'n') return trimmed(lemma.substr(0, lemma.size() - 2));
+  }
+  return lemma;
+}
+
+// [text] lowercase without any marks, for comparing words: По́-добре → по-добре, най → наи.
+std::string bare(std::string_view text) {
+  utf8proc_uint8_t* mapped = nullptr;
+  const utf8proc_ssize_t length = utf8proc_map(
+      reinterpret_cast<const utf8proc_uint8_t*>(text.data()), static_cast<utf8proc_ssize_t>(text.size()), &mapped,
+      static_cast<utf8proc_option_t>(UTF8PROC_DECOMPOSE | UTF8PROC_STRIPMARK | UTF8PROC_CASEFOLD));
+  if (length < 0) return std::string(text);
+  std::string out(reinterpret_cast<const char*>(mapped), static_cast<size_t>(length));
+  std::free(mapped);
+  return out;
+}
+
+// The code points of [text] and the first of them.
+std::pair<size_t, int32_t> letters_of(std::string_view text) {
+  const auto* bytes = reinterpret_cast<const utf8proc_uint8_t*>(text.data());
+  const auto size = static_cast<utf8proc_ssize_t>(text.size());
+  size_t count = 0;
+  int32_t first = -1;
+  for (utf8proc_ssize_t pos = 0; pos < size;) {
+    utf8proc_int32_t point = 0;
+    const utf8proc_ssize_t read = utf8proc_iterate(bytes + pos, size - pos, &point);
+    if (read <= 0) break;
+    if (count++ == 0) first = point;
+    pos += read;
+  }
+  return {count, first};
+}
+
+// Tags of the number and definiteness of a noun's or adjective's forms.
+constexpr std::string_view kNumberTags[] = {
+    "singular", "plural", "definite", "indefinite", "definite/indefinite", "count-form", "vocative",
+};
+
+// Whether [form] is a lone ending standing for a form of [lemma], from a table whose stem went missing (the bg-ru rows
+// и, а, ите of революционер): three letters at most and fewer than the lemma's, another first letter, and only number
+// and definiteness tags. A short word of its own has other tags or the lemma's first letter (е of съм, ова of овој).
+bool bare_ending(std::string_view form, std::string_view lemma, const std::vector<std::string>& tags) {
+  if (tags.empty()) return false;
+  for (const auto& tag : tags) {
+    std::string_view rest = tag;
+    while (!rest.empty()) {
+      const size_t space = rest.find(' ');
+      const std::string_view word = rest.substr(0, space);
+      if (!word.empty() && std::find(std::begin(kNumberTags), std::end(kNumberTags), word) == std::end(kNumberTags)) {
+        return false;
+      }
+      rest = space == std::string_view::npos ? std::string_view() : rest.substr(space + 1);
+    }
+  }
+  const std::string plain_form = bare(form);
+  const auto [letters, first] = letters_of(plain_form);
+  if (letters == 0 || letters > 3 || plain_form.find(' ') != std::string::npos) return false;
+  const auto [lemma_letters, lemma_first] = letters_of(bare(lemma));
+  return letters < lemma_letters && first != lemma_first;
+}
+
+// 64-bit FNV-1a of a row, to keep one of the rows a dictionary repeats word for word.
+uint64_t row_hash(std::string_view row) {
+  uint64_t hash = 0xcbf29ce484222325ULL;
+  for (const char c : row) {
+    hash ^= static_cast<unsigned char>(c);
+    hash *= 0x100000001b3ULL;
+  }
+  return hash;
+}
+
 std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& split, const MarkStripper* stripper,
-                                      bool forms_only) {
+                                      bool forms_only, std::unordered_set<uint64_t>& seen_rows) {
   std::vector<glz::raw_json_view> rows;
   if (glz::read_json(rows, content)) {
     // Kept as it is, the bank would bring its definitions along.
@@ -434,6 +531,11 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
     }
   };
   for (const auto& row : rows) {
+    // Wiktionary's exports repeat some rows (mk-en 1,448), which would show the same definitions twice.
+    if (!seen_rows.insert(row_hash(row.str)).second) {
+      changed = true;
+      continue;
+    }
     std::vector<glz::raw_json_view> fields;
     std::vector<glz::raw_json_view> items;
     if (glz::read_json(fields, row.str) || fields.size() < 6 || glz::read_json(items, fields[5].str)) {
@@ -483,11 +585,15 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
       }
       const auto& form_keys = headword == expression ? keys : other_keys;
       const auto& form_folded_keys = headword == expression ? folded_keys : other_folded_keys;
+      const bool comparative = stripper == nullptr || stripper->keeps_comparative(headword);
       for (const auto& [lemma, tags] : form_of) {
+        const std::string_view named = without_gender(lemma);
+        if (bare_ending(headword, named, tags)) continue;
         const std::string plain_lemma =
-            stripper != nullptr && !stripper->lemmas_as_written() ? stripper->strip(lemma) : std::string();
-        const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
-        const std::vector<std::string> shown = cleaned_tags(tags);
+            stripper != nullptr && !stripper->lemmas_as_written() ? stripper->strip(named) : std::string();
+        const std::string_view target = plain_lemma.empty() ? named : std::string_view(plain_lemma);
+        const std::vector<std::string> shown =
+            comparative ? cleaned_tags(tags) : without_word(cleaned_tags(tags), "comparative");
         split.table.add(headword, target, shown, rules);
         // Where every headword is keyed, a key is another spelling of the form, as for the headword itself above.
         for (const auto& key : form_keys) split.table.add(key, target, shown, rules, every_headword);
@@ -631,6 +737,7 @@ MarkStripper::MarkStripper(const HeadwordMarks& marks)
   if (!marks.letter_marks.empty()) {
     letters_.push_back({code_points(marks.letter_marks), code_points(marks.letter_bases)});
   }
+  for (const auto& prefix : marks.comparative_prefixes) comparative_prefixes_.push_back(bare(prefix));
 }
 
 std::vector<std::string> MarkStripper::keys(std::string_view text) const {
@@ -679,6 +786,13 @@ bool MarkStripper::drops_form(std::string_view text) const {
   if (!forms_in_script_) return false;
   const std::vector<int32_t> points = code_points(text);
   return std::none_of(points.begin(), points.end(), [&](int32_t point) { return contains(bases_, utf8proc_tolower(point)); });
+}
+
+bool MarkStripper::keeps_comparative(std::string_view form) const {
+  if (comparative_prefixes_.empty()) return true;
+  const std::string plain = bare(form);
+  return std::any_of(comparative_prefixes_.begin(), comparative_prefixes_.end(),
+                     [&](const std::string& prefix) { return plain.starts_with(prefix); });
 }
 
 std::string MarkStripper::replaced(std::string_view text, const Replacements& replacements) {
@@ -761,6 +875,8 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
   }
   if (!other_language && forms_only) throw std::runtime_error("the dictionary names no language of its own");
   if (!other_language) return split;
+  // Rows seen so far, across term banks.
+  std::unordered_set<uint64_t> seen_rows;
 
   if (forms_only) {
     for (const auto& entry : *entries) {
@@ -771,7 +887,7 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
       if (index) {
         split.index = forms_only_index(*content);
       } else {
-        split_bank(*content, split, stripper ? &*stripper : nullptr, true);
+        split_bank(*content, split, stripper ? &*stripper : nullptr, true, seen_rows);
       }
     }
     if (split.index.empty()) throw std::runtime_error("cannot read the dictionary index");
@@ -791,7 +907,7 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
       const bool keys_headwords = stripper && stripper->keys_headwords();
       std::optional<std::string> rest;
       if (content && (keys_headwords || may_hold_form_of(*content))) {
-        rest = split_bank(*content, split, stripper ? &*stripper : nullptr, false);
+        rest = split_bank(*content, split, stripper ? &*stripper : nullptr, false, seen_rows);
       }
       if (!rest) continue;
       if (!writer) writer = std::make_unique<ArchiveWriter>(output);

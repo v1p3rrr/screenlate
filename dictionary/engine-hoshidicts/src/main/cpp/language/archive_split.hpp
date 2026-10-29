@@ -43,6 +43,9 @@ struct HeadwordMarks {
   // the letters Unicode does not decompose (ø ł ı, ғ қ ө) as their base letters: text written without them finds the
   // words with them, after the words it spells as written.
   bool fold_marks = false;
+  // Prefixes of comparative forms (Bulgarian по-, най-): a "comparative" tag of a form-of item whose form has none of
+  // them is dropped, as Wiktionary's Bulgarian tables put it on positive forms (мо́ята → мой <comparative>).
+  std::vector<std::string> comparative_prefixes;
 };
 
 class MarkStripper {
@@ -70,6 +73,9 @@ class MarkStripper {
   // Whether a form-of row of [text] is left out: forms are in the script of the bases and [text] has none of them.
   bool drops_form(std::string_view text) const;
 
+  // Whether a "comparative" tag of a form-of item of [form] stays ([HeadwordMarks::comparative_prefixes]).
+  bool keeps_comparative(std::string_view form) const;
+
  private:
   using Replacements = std::vector<std::pair<std::string, std::string>>;
 
@@ -92,6 +98,8 @@ class MarkStripper {
   bool fold_marks_;
   bool lemmas_as_written_;
   bool forms_in_script_;
+  // [HeadwordMarks::comparative_prefixes] lowercase without marks.
+  std::vector<std::string> comparative_prefixes_;
   Replacements replacements_;
   Replacements further_replacements_;
 };
@@ -128,7 +136,10 @@ inline constexpr std::string_view kFormsOnlyTitleSuffix = " (forms)";
 // [HeadwordMarks::replacements] give such a form or headword further spellings the same way; lemmas lose the marks
 // unless [HeadwordMarks::lemmas_as_written]. A form written with a romanization or note after it, or with two
 // spellings, is keyed by its words; one of an unfilled template by none, and one outside the language's script by none
-// with [HeadwordMarks::forms_in_script]. Inflection template names among a form's tags (ar-infl-a) are dropped.
+// with [HeadwordMarks::forms_in_script]. Inflection template names among a form's tags (ar-infl-a) are dropped, and
+// so is a gender left after the lemma a form names ("куќа f"). A form-of item whose form is a lone ending of its lemma
+// (bg-ru's и and ите for революционер) is left out, and a row that repeats an earlier one word for word is kept once,
+// in every term bank this reads.
 // With [HeadwordMarks::fold_marks], every headword with definitions and every form is also found under its folded
 // spellings ([MarkStripper::folded_keys]) as a respelling, and every term bank is read for them.
 // With [forms_only] (the "Word forms" item of a language whose forms only the English Wiktionary dictionary lists),

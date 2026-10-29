@@ -547,6 +547,9 @@
     <string name="popup_font_script_only_et">Tylko dla tekstu estońskiego</string>
     <string name="popup_font_script_only_az">Tylko dla tekstu azerskiego</string>
     <string name="popup_font_script_only_uz">Tylko dla tekstu uzbeckiego</string>
+    <string name="popup_font_script_only_bg">Tylko dla tekstu bułgarskiego</string>
+    <string name="popup_font_script_only_mk">Tylko dla tekstu macedońskiego</string>
+    <string name="popup_font_script_only_mn">Tylko dla tekstu mongolskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

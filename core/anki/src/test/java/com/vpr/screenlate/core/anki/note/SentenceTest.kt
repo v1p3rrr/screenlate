@@ -490,6 +490,40 @@ class SentenceTest {
     }
 
     @Test
+    fun bulgarianSentencesKeepTheEraAndOtherAbbreviationsAndEndAtITNBeforeACapital() {
+        val bulgarian = "Вали. През 44 г. пр. н. е. Цезар е убит. Купихме ябълки, круши и т.н. Тогава си тръгнахме. " +
+            "Проф. Иванов живее на ул. Шипка 5. Край."
+        assertThat(extract(bulgarian, "Цезар", Language.BULGARIAN).text).isEqualTo("През 44 г. пр. н. е. Цезар е убит.")
+        assertThat(extract(bulgarian, "круши", Language.BULGARIAN).text).isEqualTo("Купихме ябълки, круши и т.н.")
+        assertThat(extract(bulgarian, "Тогава", Language.BULGARIAN).text).isEqualTo("Тогава си тръгнахме.")
+        assertThat(extract(bulgarian, "Иванов", Language.BULGARIAN).text).isEqualTo("Проф. Иванов живее на ул. Шипка 5.")
+        val quoted = "Вали. Тя каза: „Идвам.“ и си тръгна. Край."
+        assertThat(extract(quoted, "тръгна", Language.BULGARIAN).text).isEqualTo("Тя каза: „Идвам.“ и си тръгна.")
+    }
+
+    @Test
+    fun macedonianSentencesKeepTheirAbbreviationsAndEndAtItnBeforeACapital() {
+        val macedonian = "Врне. Таа сака овошје, нпр. јаболка и круши итн. Потоа си заминавме. " +
+            "Проф. Петровски живее на ул. Партизанска 5. Крај."
+        assertThat(extract(macedonian, "јаболка", Language.MACEDONIAN).text)
+            .isEqualTo("Таа сака овошје, нпр. јаболка и круши итн.")
+        assertThat(extract(macedonian, "Потоа", Language.MACEDONIAN).text).isEqualTo("Потоа си заминавме.")
+        assertThat(extract(macedonian, "Петровски", Language.MACEDONIAN).text)
+            .isEqualTo("Проф. Петровски живее на ул. Партизанска 5.")
+        val quoted = "Врне. Таа рече: „Доаѓам.“ и замина. Крај."
+        assertThat(extract(quoted, "замина", Language.MACEDONIAN).text).isEqualTo("Таа рече: „Доаѓам.“ и замина.")
+    }
+
+    @Test
+    fun mongolianSentencesKeepAnInitialJoinedToTheName() {
+        val mongolian = "Бороо орсон. Ерөнхийлөгч Х.Баттулга ирэв. Дараа нь явсан."
+        assertThat(extract(mongolian, "ирэв", Language.MONGOLIAN).text).isEqualTo("Ерөнхийлөгч Х.Баттулга ирэв.")
+        assertThat(extract(mongolian, "явсан", Language.MONGOLIAN).text).isEqualTo("Дараа нь явсан.")
+        val quoted = "Бороо орсон. Тэр «Ирлээ.» гэж хэлэв. Дараа нь явсан."
+        assertThat(extract(quoted, "хэлэв", Language.MONGOLIAN).text).isEqualTo("Тэр «Ирлээ.» гэж хэлэв.")
+    }
+
+    @Test
     fun anInitialBeforeASurnameKeepsTheSentenceInEverySpacedLanguage() {
         val kyrgyz = "Жаан жаады. Президент К. Бакиев келди. Кийин кетти."
         assertThat(extract(kyrgyz, "Бакиев", Language.KYRGYZ).text).isEqualTo("Президент К. Бакиев келди.")

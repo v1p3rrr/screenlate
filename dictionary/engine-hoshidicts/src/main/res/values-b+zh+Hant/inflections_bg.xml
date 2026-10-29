@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">定指形式</string>
+    <string name="inflection_bg_definite">定冠詞：-ът -ят -а -я、-та -то -те（градът、учителя、книгата、селото、книгите）</string>
+    <string name="inflection_bg_plural_label">複數</string>
+    <string name="inflection_bg_plural">複數：-и -ове -ища -а -та -ия（студенти、книги、градове、пътища、села、морета、събития）</string>
+    <string name="inflection_bg_feminine_label">陰性</string>
+    <string name="inflection_bg_feminine">形容詞的陰性形式：-а（нова、умен → умна、добър → добра、българска）</string>
+    <string name="inflection_bg_neuter_label">中性</string>
+    <string name="inflection_bg_neuter">形容詞的中性形式：-о（ново、умен → умно、добър → добро、българско、синьо）</string>
+    <string name="inflection_bg_present_label">現在式</string>
+    <string name="inflection_bg_present">現在式（гарантирам → гарантира、гарантират；чета → четеш、четат；говоря → говори）</string>
+    <string name="inflection_bg_past_label">過去式</string>
+    <string name="inflection_bg_past">不定過去式或未完成過去式（чакам → чаках、чакаше；чета → четох、четеше；говоря → говорих）</string>
+    <string name="inflection_bg_past_participle_label">過去分詞</string>
+    <string name="inflection_bg_past_participle">以 -л 結尾的過去主動分詞（гарантирам → гарантирал、измина → изминала、говоря → говорили）</string>
+    <string name="inflection_bg_passive_participle_label">被動分詞</string>
+    <string name="inflection_bg_passive_participle">以 -н 結尾的過去被動分詞（гарантирам → гарантиран、гарантирана；говоря → говорено）</string>
+    <string name="inflection_bg_imperative_label">命令式</string>
+    <string name="inflection_bg_imperative">命令式 -ай -айте（чакам → чакай、чакайте；стрелям → стреляй）</string>
+</resources>

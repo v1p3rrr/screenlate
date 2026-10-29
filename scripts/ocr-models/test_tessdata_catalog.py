@@ -58,6 +58,10 @@ class EntryTest(unittest.TestCase):
         self.assertFalse(catalog.entry("uz", "uzb", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("uz", "uzb", "best", b"lstm")["recommended"])
         self.assertEqual(catalog.LANGUAGES["uz"], "uzb")
+        # Bulgarian, Macedonian and Mongolian: fast and best unmarked, Paddle's Cyrillic model is.
+        for language, code in (("bg", "bul"), ("mk", "mkd"), ("mn", "mon")):
+            self.assertEqual(catalog.LANGUAGES[language], code)
+            self.assertFalse(catalog.entry(language, code, "fast", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

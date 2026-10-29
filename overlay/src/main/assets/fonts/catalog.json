@@ -744,6 +744,33 @@
       "homepage": "https://fonts.google.com/specimen/Hanuman"
     },
     {
+      "id": "sofia-sans",
+      "family": "Sofia Sans",
+      "language": "bg",
+      "description": {
+        "en": "Sans-serif in every weight with the Bulgarian letter forms: д like g, т like m, и like u.",
+        "ru": "Шрифт без засечек во всех начертаниях с болгарскими формами букв: д как g, т как m, и как u.",
+        "de": "Serifenlose Schrift in allen Strichstärken mit den bulgarischen Buchstabenformen: д wie g, т wie m, и wie u.",
+        "es": "Fuente sin serifa en todos los pesos con las formas de letra búlgaras: д como g, т como m, и como u.",
+        "fr": "Police sans empattement dans toutes les graisses avec les formes de lettres bulgares : д comme g, т comme m, и comme u.",
+        "it": "Carattere senza grazie in tutti i pesi con le forme delle lettere bulgare: д come g, т come m, и come u.",
+        "ja": "ブルガリア語の字形（д は g、т は m、и は u に似た形）を持つ、すべてのウェイトがそろったサンセリフ。",
+        "ko": "불가리아어 글자 모양(д는 g, т는 m, и는 u와 비슷한 모양)을 갖춘 산세리프로, 모든 굵기를 갖추었습니다.",
+        "pl": "Krój bezszeryfowy we wszystkich grubościach z bułgarskimi formami liter: д jak g, т jak m, и jak u.",
+        "pt": "Fonte sem serifa em todos os pesos com as formas de letras búlgaras: д como g, т como m, и como u.",
+        "tr": "Bulgarca harf biçimleriyle her kalınlıkta tırnaksız yazı tipi: д g gibi, т m gibi, и u gibi.",
+        "vi": "Phông không chân đủ mọi độ đậm, với dạng chữ tiếng Bulgaria: д giống g, т giống m, и giống u.",
+        "zh": "带保加利亚字母形态的无衬线字体（д 形如 g，т 形如 m，и 形如 u），各种字重齐全。",
+        "zh-Hant": "帶保加利亞字母形態的無襯線字型（д 形如 g，т 形如 m，и 形如 u），各種字重齊全。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sofiasans/SofiaSans%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.3,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Sofia+Sans"
+    },
+    {
       "id": "noto-sans-arabic",
       "family": "Noto Sans Arabic",
       "subsets": ["arabic"],
@@ -1053,6 +1080,62 @@
       "sizeMb": 0.9,
       "license": "SIL OFL 1.1",
       "homepage": "https://fonts.google.com/specimen/PT+Sans"
+    },
+    {
+      "id": "montserrat",
+      "family": "Montserrat",
+      "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext"],
+      "letters": "0041-005A,0061-007A,00AA,00B5,00BA,00C0-00D6,00D8-00F6,00F8-0183,0186-018C,018E-0194,0196-01A1,01A4-01A6,01A9,01AC-01B9,01C0-01F5,01F8-0220,0222-0223,0226-0233,0237,023A-023E,0241-0251,0253-0254,0256-0259,025B-025C,025F-0260,0263-0266,0268-026C,026F,0271-0272,0274-0275,027D-027E,0280,0283,0287-028C,028E,0292,0294-0295,0298,029D,02B0,02B7-02C1,02C6-02CC,02EC,02EE,0300-0304,0306-030D,030F-0313,0315,031B,0320,0323-0329,032D-0332,0334-0338,034F,0358,035C-035D,035F,0361-0362,0394,039B,03A7,03A9,03BB-03BC,03C0,03C7,0400-045F,0462-0463,046A-046B,0472-0475,048A-04FF,0510-0513,051A-051D,0524-0529,052E-052F,1D3A,1D43,1D49,1D4B,1D52-1D53,1D58,1D5B,1D7B,1D7D-1D7E,1D91,1DA4,1DB6,1DBB,1DBF,1DC4-1DCA,1E00-1E9B,1E9E,1EA0-1EF9",
+      "description": {
+        "en": "Geometric sans-serif in every weight; Bulgarian and Macedonian text gets its own letter forms. Latin, Cyrillic and Vietnamese.",
+        "ru": "Геометрический шрифт без засечек во всех начертаниях; болгарский и македонский текст — в своих формах букв. Латиница, кириллица и вьетнамский.",
+        "de": "Geometrische serifenlose Schrift in allen Strichstärken; bulgarischer und mazedonischer Text erhält die eigenen Buchstabenformen. Lateinisch, Kyrillisch und Vietnamesisch.",
+        "es": "Fuente sin serifa geométrica en todos los pesos; el texto búlgaro y macedonio usa sus propias formas de letra. Latino, cirílico y vietnamita.",
+        "fr": "Police sans empattement géométrique dans toutes les graisses ; le texte bulgare et macédonien prend ses propres formes de lettres. Latin, cyrillique et vietnamien.",
+        "it": "Carattere senza grazie geometrico in tutti i pesi; il testo bulgaro e macedone usa le proprie forme delle lettere. Latino, cirillico e vietnamita.",
+        "ja": "すべてのウェイトがそろった幾何学的なサンセリフ。ブルガリア語とマケドニア語の文字はそれぞれ固有の字形で表示。ラテン文字、キリル文字、ベトナム語。",
+        "ko": "모든 굵기를 갖춘 기하학적 산세리프로, 불가리아어와 마케도니아어 텍스트는 고유한 글자 모양으로 표시됩니다. 라틴 문자, 키릴 문자, 베트남어.",
+        "pl": "Geometryczny krój bezszeryfowy we wszystkich grubościach; tekst bułgarski i macedoński dostaje własne formy liter. Łacinka, cyrylica i wietnamski.",
+        "pt": "Fonte sem serifa geométrica em todos os pesos; o texto búlgaro e macedônio usa suas próprias formas de letras. Latino, cirílico e vietnamita.",
+        "tr": "Her kalınlıkta geometrik tırnaksız yazı tipi; Bulgarca ve Makedonca metin kendi harf biçimleriyle gösterilir. Latin, Kiril alfabeleri ve Vietnamca.",
+        "vi": "Phông không chân hình học, đủ mọi độ đậm; chữ tiếng Bulgaria và Macedonia dùng dạng chữ riêng. Chữ Latinh, Kirin và tiếng Việt.",
+        "zh": "几何风格的无衬线字体，各种字重齐全；保加利亚文和马其顿文使用各自的字母形态。拉丁字母、西里尔字母和越南语。",
+        "zh-Hant": "幾何風格的無襯線字型，各種字重齊全；保加利亞文和馬其頓文使用各自的字母形態。拉丁字母、西里爾字母和越南語。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/montserrat/Montserrat%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.7,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Montserrat"
+    },
+    {
+      "id": "commissioner",
+      "family": "Commissioner",
+      "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek"],
+      "letters": "0041-005A,0061-007A,00AA,00B5,00BA,00C0-00D6,00D8-00F6,00F8-0131,0134-0148,014A-017E,018F,0192,01A0-01A1,01AF-01B0,01C4-01CC,01E6-01E7,01EA-01EB,01FA-021B,022A-022D,0230-0233,0237,0259,02BB-02BC,02BE-02BF,02C6-02CC,0300-0304,0306-030C,030F,0311-0312,031B,0323-0324,0326-0328,032E,0331,0374,0386,0388-038A,038C,038E-03A1,03A3-03CE,03D7,0400-045F,0462-0463,046A-046B,0472-0475,048A-04FF,0510-0513,051A-051D,0524-0529,052E-052F,1E08-1E09,1E0C-1E0F,1E14-1E17,1E1C-1E1D,1E20-1E21,1E24-1E25,1E2A-1E2B,1E2E-1E2F,1E36-1E37,1E3A-1E3B,1E42-1E49,1E4C-1E53,1E5A-1E5B,1E5E-1E69,1E6C-1E6F,1E78-1E7B,1E80-1E85,1E8E-1E8F,1E92-1E93,1E97,1E9E,1EA0-1EF9",
+      "description": {
+        "en": "Sans-serif in every weight; Bulgarian text gets its own letter forms. Latin, Cyrillic, Greek and Vietnamese.",
+        "ru": "Шрифт без засечек во всех начертаниях; болгарский текст — в своих формах букв. Латиница, кириллица, греческий и вьетнамский.",
+        "de": "Serifenlose Schrift in allen Strichstärken; bulgarischer Text erhält die eigenen Buchstabenformen. Lateinisch, Kyrillisch, Griechisch und Vietnamesisch.",
+        "es": "Fuente sin serifa en todos los pesos; el texto búlgaro usa sus propias formas de letra. Latino, cirílico, griego y vietnamita.",
+        "fr": "Police sans empattement dans toutes les graisses ; le texte bulgare prend ses propres formes de lettres. Latin, cyrillique, grec et vietnamien.",
+        "it": "Carattere senza grazie in tutti i pesi; il testo bulgaro usa le proprie forme delle lettere. Latino, cirillico, greco e vietnamita.",
+        "ja": "すべてのウェイトがそろったサンセリフ。ブルガリア語の文字は固有の字形で表示。ラテン文字、キリル文字、ギリシャ文字、ベトナム語。",
+        "ko": "모든 굵기를 갖춘 산세리프로, 불가리아어 텍스트는 고유한 글자 모양으로 표시됩니다. 라틴 문자, 키릴 문자, 그리스 문자, 베트남어.",
+        "pl": "Krój bezszeryfowy we wszystkich grubościach; tekst bułgarski dostaje własne formy liter. Łacinka, cyrylica, greka i wietnamski.",
+        "pt": "Fonte sem serifa em todos os pesos; o texto búlgaro usa suas próprias formas de letras. Latino, cirílico, grego e vietnamita.",
+        "tr": "Her kalınlıkta tırnaksız yazı tipi; Bulgarca metin kendi harf biçimleriyle gösterilir. Latin, Kiril, Yunan alfabeleri ve Vietnamca.",
+        "vi": "Phông không chân, đủ mọi độ đậm; chữ tiếng Bulgaria dùng dạng chữ riêng. Chữ Latinh, Kirin, Hy Lạp và tiếng Việt.",
+        "zh": "无衬线字体，各种字重齐全；保加利亚文使用其本身的字母形态。拉丁字母、西里尔字母、希腊字母和越南语。",
+        "zh-Hant": "無襯線字型，各種字重齊全；保加利亞文使用其本身的字母形態。拉丁字母、西里爾字母、希臘字母和越南語。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/commissioner/Commissioner%5BFLAR,VOLM,slnt,wght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.7,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Commissioner"
     }
   ]
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">forma określona</string>
+    <string name="inflection_bg_definite">rodzajnik określony: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">liczba mnoga</string>
+    <string name="inflection_bg_plural">liczba mnoga: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">rodzaj żeński</string>
+    <string name="inflection_bg_feminine">rodzaj żeński przymiotnika: -а (нова, умна od умен, добра od добър, българска)</string>
+    <string name="inflection_bg_neuter_label">rodzaj nijaki</string>
+    <string name="inflection_bg_neuter">rodzaj nijaki przymiotnika: -о (ново, умно od умен, добро od добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">czas teraźniejszy</string>
+    <string name="inflection_bg_present">czas teraźniejszy (гарантира, гарантират od гарантирам; четеш, четат od чета; говори od говоря)</string>
+    <string name="inflection_bg_past_label">czas przeszły</string>
+    <string name="inflection_bg_past">aoryst lub imperfekt (чаках, чакаше od чакам; четох, четеше od чета; говорих od говоря)</string>
+    <string name="inflection_bg_past_participle_label">imiesłów przeszły</string>
+    <string name="inflection_bg_past_participle">imiesłów przeszły czynny na -л (гарантирал, изминала od измина, говорили od говоря)</string>
+    <string name="inflection_bg_passive_participle_label">imiesłów bierny</string>
+    <string name="inflection_bg_passive_participle">imiesłów przeszły bierny na -н (гарантиран, гарантирана od гарантирам; говорено od говоря)</string>
+    <string name="inflection_bg_imperative_label">tryb rozkazujący</string>
+    <string name="inflection_bg_imperative">tryb rozkazujący -ай -айте (чакай, чакайте od чакам; стреляй od стрелям)</string>
+</resources>

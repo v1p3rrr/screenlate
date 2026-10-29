@@ -535,6 +535,9 @@
     <string name="popup_font_script_only_et">Chỉ cho chữ tiếng Estonia</string>
     <string name="popup_font_script_only_az">Chỉ cho chữ tiếng Azerbaijan</string>
     <string name="popup_font_script_only_uz">Chỉ cho chữ tiếng Uzbek</string>
+    <string name="popup_font_script_only_bg">Chỉ cho chữ tiếng Bulgaria</string>
+    <string name="popup_font_script_only_mk">Chỉ cho chữ tiếng Macedonia</string>
+    <string name="popup_font_script_only_mn">Chỉ cho chữ tiếng Mông Cổ</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

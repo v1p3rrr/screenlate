@@ -2110,6 +2110,44 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-bg",
+      "title": "wordfreq (bg)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq bg"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "bg",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_bg.msgpack.gz",
+      "downloadSize": 202364,
+      "sha256": "b19e0a302b7c50439af94ed72b4e3d049b5233db9956add43f16922349fca359",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-mk",
+      "title": "wordfreq (mk)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq mk"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "mk",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_mk.msgpack.gz",
+      "downloadSize": 1486661,
+      "sha256": "edec2769d3f093adc82da15c16177f29c29955dc2c2bcf6dc5393c2b6cb7a2c8",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "corpus-th",
       "title": "Thai National Corpus (th)",
       "template": "tnc",
@@ -2294,6 +2332,25 @@
       "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/uzb_news_2020_30K.tar.gz",
       "downloadSize": 6148205,
       "sha256": "33844aa9b4ad140e0d40fd51d2ed92d5d1ab67828ef6583344cf81b705f2f38e",
+      "build": "corpus-counts",
+      "version": "2020",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
+      "id": "corpus-mn",
+      "title": "Leipzig Corpora Collection (mn)",
+      "template": "leipzig",
+      "oldTitles": [
+        "Leipzig Corpora Collection (mn)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "mn",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/mon_news_2020_100K.tar.gz",
+      "downloadSize": 19091919,
+      "sha256": "421ee074485df3a8de98a746e4d37f941d91d5212236d858e53fa0590480761e",
       "build": "corpus-counts",
       "version": "2020",
       "license": "CC BY",
@@ -4271,6 +4328,108 @@
       "engine": "tesseract",
       "file": "tessdata/uzb.traineddata",
       "version": "5bd8a1958b3c",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-bul",
+      "title": "Tesseract fast (bul)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "bg",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/bul.traineddata",
+      "downloadSize": 1675212,
+      "sha256": "aebc9b0fcc8cfaf8a9f38a02bb7b85052bd850744696a2c11cf0081820e5b21e",
+      "model": "tesseract-fast-bul",
+      "engine": "tesseract",
+      "file": "tessdata/bul.traineddata",
+      "version": "aebc9b0fcc8c",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-bul",
+      "title": "Tesseract best (bul)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "bg",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/bul.traineddata",
+      "downloadSize": 8844613,
+      "sha256": "87322f07ae023d0f61d3c12507f6f1ed22411c00f1b2e722d2e13b723584fad1",
+      "model": "tesseract-best-bul",
+      "engine": "tesseract",
+      "file": "tessdata/bul.traineddata",
+      "version": "87322f07ae02",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-mkd",
+      "title": "Tesseract fast (mkd)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mk",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/mkd.traineddata",
+      "downloadSize": 1600188,
+      "sha256": "58622bf154830fa62103359938564aeb8112b929759e22a48224f3ecfaac34c6",
+      "model": "tesseract-fast-mkd",
+      "engine": "tesseract",
+      "file": "tessdata/mkd.traineddata",
+      "version": "58622bf15483",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-mkd",
+      "title": "Tesseract best (mkd)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mk",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/mkd.traineddata",
+      "downloadSize": 3453054,
+      "sha256": "be5f0af7a7b7a1a804069bcab83225286d78ce3171c6a1d1587f975b083af299",
+      "model": "tesseract-best-mkd",
+      "engine": "tesseract",
+      "file": "tessdata/mkd.traineddata",
+      "version": "be5f0af7a7b7",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-mon",
+      "title": "Tesseract fast (mon)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mn",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/mon.traineddata",
+      "downloadSize": 2137042,
+      "sha256": "a151a3806d61ac43619cd383896d551ba5c3b07388ffec6fc83c8c604d677570",
+      "model": "tesseract-fast-mon",
+      "engine": "tesseract",
+      "file": "tessdata/mon.traineddata",
+      "version": "a151a3806d61",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-mon",
+      "title": "Tesseract best (mon)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mn",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/mon.traineddata",
+      "downloadSize": 8646663,
+      "sha256": "186dcb2ef79e0dc1ab88da2231926d79070c20176bf7416a19389331f68faf65",
+      "model": "tesseract-best-mon",
+      "engine": "tesseract",
+      "file": "tessdata/mon.traineddata",
+      "version": "186dcb2ef79e",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -6898,6 +7057,111 @@
       "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
     },
     {
+      "id": "paddle-cyrillic-bg",
+      "title": "PaddleOCR cyrillic (bg)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "bg",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-cyrillic.zip",
+      "downloadSize": 7344469,
+      "sha256": "e22911ed9991338d24651c81887fa77d18eda89e56efbca5006ea41991f5ebbf",
+      "model": "paddle-cyrillic",
+      "engine": "paddle",
+      "version": "e22911ed9991",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v5-bg",
+      "title": "PaddleOCR detector-v5 (bg)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "bg",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-cyrillic-mk",
+      "title": "PaddleOCR cyrillic (mk)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mk",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-cyrillic.zip",
+      "downloadSize": 7344469,
+      "sha256": "e22911ed9991338d24651c81887fa77d18eda89e56efbca5006ea41991f5ebbf",
+      "model": "paddle-cyrillic",
+      "engine": "paddle",
+      "version": "e22911ed9991",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v5-mk",
+      "title": "PaddleOCR detector-v5 (mk)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mk",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-cyrillic-mn",
+      "title": "PaddleOCR cyrillic (mn)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mn",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-cyrillic.zip",
+      "downloadSize": 7344469,
+      "sha256": "e22911ed9991338d24651c81887fa77d18eda89e56efbca5006ea41991f5ebbf",
+      "model": "paddle-cyrillic",
+      "engine": "paddle",
+      "version": "e22911ed9991",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v5-mn",
+      "title": "PaddleOCR detector-v5 (mn)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "mn",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
       "id": "paddle-korean-ko",
       "title": "PaddleOCR korean (ko)",
       "template": "paddle-v5",
@@ -6983,7 +7247,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/en/wty-ja-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 16462437,
+      "downloadSize": 16677700,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7043,7 +7307,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/fr/wty-ja-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2554977,
+      "downloadSize": 2556973,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7083,7 +7347,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/ja/wty-ja-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 13939658,
+      "downloadSize": 13939852,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7143,7 +7407,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/pt/wty-ja-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 370922,
+      "downloadSize": 370955,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7163,7 +7427,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/tr/wty-ja-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 214612,
+      "downloadSize": 215145,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7183,7 +7447,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-vi-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/vi/wty-ja-vi.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 314955,
+      "downloadSize": 328640,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7203,7 +7467,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/zh/wty-ja-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 6945208,
+      "downloadSize": 6948437,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7449,7 +7713,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ja/wty-ja-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1701130,
+      "downloadSize": 1701544,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7469,7 +7733,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/en/wty-en-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 108212678,
+      "downloadSize": 110539099,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7509,7 +7773,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/de/wty-en-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2035968,
+      "downloadSize": 2041314,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7529,7 +7793,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/es/wty-en-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1637346,
+      "downloadSize": 1637344,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7549,7 +7813,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/fr/wty-en-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 8477150,
+      "downloadSize": 8479237,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7569,7 +7833,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-it-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/it/wty-en-it.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1424484,
+      "downloadSize": 1424488,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7589,7 +7853,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/ja/wty-en-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 4402478,
+      "downloadSize": 4402494,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7609,7 +7873,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-ko-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/ko/wty-en-ko.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1172621,
+      "downloadSize": 1172624,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7629,7 +7893,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/pl/wty-en-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5029748,
+      "downloadSize": 5040798,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7649,7 +7913,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/pt/wty-en-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1015504,
+      "downloadSize": 1017124,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7669,7 +7933,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/tr/wty-en-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2309025,
+      "downloadSize": 2909452,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7689,7 +7953,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-vi-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/vi/wty-en-vi.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 6064029,
+      "downloadSize": 6069377,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7709,7 +7973,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/zh/wty-en-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5509523,
+      "downloadSize": 5542609,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7728,7 +7992,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/ru/wty-en-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3281663,
+      "downloadSize": 3281661,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7747,7 +8011,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/de/wty-en-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3325393,
+      "downloadSize": 3325391,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7804,7 +8068,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/it/wty-en-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2144623,
+      "downloadSize": 2144622,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7861,7 +8125,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/pl/wty-en-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2914587,
+      "downloadSize": 2914586,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7880,7 +8144,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/pt/wty-en-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2337659,
+      "downloadSize": 2337658,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7899,7 +8163,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-tr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/en/tr/wty-en-tr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1160394,
+      "downloadSize": 1160393,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7955,7 +8219,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-en-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/en/wty-en-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3777718,
+      "downloadSize": 3778345,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7975,7 +8239,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/en/wty-zh-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 21084266,
+      "downloadSize": 21332823,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -7995,7 +8259,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/fr/wty-zh-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1028307,
+      "downloadSize": 1028346,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8015,7 +8279,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/ja/wty-zh-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1809535,
+      "downloadSize": 1809530,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8035,7 +8299,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-ko-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/ko/wty-zh-ko.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1016459,
+      "downloadSize": 1016458,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8055,7 +8319,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/pl/wty-zh-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 660232,
+      "downloadSize": 676985,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8075,7 +8339,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/pt/wty-zh-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 90886,
+      "downloadSize": 91628,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8095,7 +8359,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-vi-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/vi/wty-zh-vi.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 167044,
+      "downloadSize": 177332,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8115,7 +8379,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/zh/wty-zh-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 8598255,
+      "downloadSize": 8654095,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8286,7 +8550,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/zh/pl/wty-zh-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 291076,
+      "downloadSize": 291075,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8361,7 +8625,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-zh-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/zh/wty-zh-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 39356884,
+      "downloadSize": 39372384,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8381,7 +8645,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/en/wty-ko-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 7423546,
+      "downloadSize": 7472324,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8401,7 +8665,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/ru/wty-ko-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 300517,
+      "downloadSize": 300518,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8421,7 +8685,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/fr/wty-ko-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1044559,
+      "downloadSize": 1048015,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8441,7 +8705,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/ja/wty-ko-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1258720,
+      "downloadSize": 1258722,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8501,7 +8765,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/zh/wty-ko-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 7286643,
+      "downloadSize": 7287316,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8596,7 +8860,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-fr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/fr/wty-ko-fr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 152316,
+      "downloadSize": 152315,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8653,7 +8917,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/pt/wty-ko-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 120690,
+      "downloadSize": 120689,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8691,7 +8955,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-vi-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/vi/wty-ko-vi-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 82428,
+      "downloadSize": 82427,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8728,7 +8992,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ko/wty-ko-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1384065,
+      "downloadSize": 1384093,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8748,7 +9012,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/en/wty-es-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 21767357,
+      "downloadSize": 21857656,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8788,7 +9052,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/de/wty-es-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 275956,
+      "downloadSize": 276399,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8808,7 +9072,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/es/wty-es-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 22258061,
+      "downloadSize": 22258062,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8828,7 +9092,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/fr/wty-es-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 6472613,
+      "downloadSize": 6473637,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8848,7 +9112,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-it-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/it/wty-es-it.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 231463,
+      "downloadSize": 231494,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8908,7 +9172,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/pl/wty-es-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2037242,
+      "downloadSize": 2042553,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8928,7 +9192,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/pt/wty-es-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 408888,
+      "downloadSize": 412320,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8948,7 +9212,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/tr/wty-es-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 165810,
+      "downloadSize": 190266,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -8968,7 +9232,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/zh/wty-es-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3407574,
+      "downloadSize": 3408861,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9063,7 +9327,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/it/wty-es-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 139669,
+      "downloadSize": 139668,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9139,7 +9403,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-tr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/es/tr/wty-es-tr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 33422,
+      "downloadSize": 33421,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9157,7 +9421,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-es-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/es/wty-es-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 14391182,
+      "downloadSize": 14391506,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9177,7 +9441,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/en/wty-fr-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 11070293,
+      "downloadSize": 11171590,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9197,7 +9461,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/ru/wty-fr-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1732208,
+      "downloadSize": 1732209,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9217,7 +9481,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/de/wty-fr-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 880553,
+      "downloadSize": 881221,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9237,7 +9501,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/es/wty-fr-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 493280,
+      "downloadSize": 493281,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9257,7 +9521,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/fr/wty-fr-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 76560229,
+      "downloadSize": 76577591,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9277,7 +9541,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-it-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/it/wty-fr-it.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 569474,
+      "downloadSize": 569475,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9297,7 +9561,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/ja/wty-fr-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 905213,
+      "downloadSize": 905212,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9337,7 +9601,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/pl/wty-fr-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1412747,
+      "downloadSize": 1413330,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9357,7 +9621,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/pt/wty-fr-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 279266,
+      "downloadSize": 279296,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9377,7 +9641,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/tr/wty-fr-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3334097,
+      "downloadSize": 3518507,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9397,7 +9661,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-vi-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/vi/wty-fr-vi.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3261033,
+      "downloadSize": 3262782,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9417,7 +9681,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/zh/wty-fr-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3038870,
+      "downloadSize": 3040763,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9550,7 +9814,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-ko-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/ko/wty-fr-ko-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 200889,
+      "downloadSize": 200888,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9588,7 +9852,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/pt/wty-fr-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 680106,
+      "downloadSize": 680105,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9626,7 +9890,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-vi-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fr/vi/wty-fr-vi-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 125083,
+      "downloadSize": 125082,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9663,7 +9927,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fr-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/fr/wty-fr-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 16231340,
+      "downloadSize": 16231718,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9683,7 +9947,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/en/wty-de-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 17171998,
+      "downloadSize": 17318061,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9703,7 +9967,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/ru/wty-de-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5092553,
+      "downloadSize": 5092552,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9723,7 +9987,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/de/wty-de-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 54357088,
+      "downloadSize": 54735836,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9743,7 +10007,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/es/wty-de-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 227984,
+      "downloadSize": 227983,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9763,7 +10027,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/fr/wty-de-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 16873898,
+      "downloadSize": 16874319,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9783,7 +10047,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-it-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/it/wty-de-it.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 524586,
+      "downloadSize": 524561,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9823,7 +10087,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-ko-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/ko/wty-de-ko.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 236675,
+      "downloadSize": 236678,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9843,7 +10107,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/pl/wty-de-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2527094,
+      "downloadSize": 2532634,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9863,7 +10127,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/pt/wty-de-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 277076,
+      "downloadSize": 277543,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9883,7 +10147,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/tr/wty-de-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1024429,
+      "downloadSize": 1030508,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9903,7 +10167,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/zh/wty-de-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5680493,
+      "downloadSize": 5683711,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9922,7 +10186,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/en/wty-de-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 4269002,
+      "downloadSize": 4320392,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9941,7 +10205,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/ru/wty-de-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1695029,
+      "downloadSize": 1711982,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9960,7 +10224,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-es-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/es/wty-de-es-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2120245,
+      "downloadSize": 2139694,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9979,7 +10243,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-fr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/fr/wty-de-fr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3480698,
+      "downloadSize": 3511703,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -9998,7 +10262,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/it/wty-de-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1951216,
+      "downloadSize": 1967092,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10017,7 +10281,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-ja-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/ja/wty-de-ja-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 452050,
+      "downloadSize": 455583,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10036,7 +10300,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-ko-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/ko/wty-de-ko-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 164974,
+      "downloadSize": 166732,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10055,7 +10319,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/pl/wty-de-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1351347,
+      "downloadSize": 1365012,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10074,7 +10338,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/pt/wty-de-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1164041,
+      "downloadSize": 1174005,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10093,7 +10357,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-tr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/tr/wty-de-tr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 919975,
+      "downloadSize": 928371,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10112,7 +10376,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-vi-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/vi/wty-de-vi-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 158174,
+      "downloadSize": 159528,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10131,7 +10395,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-zh-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/de/zh/wty-de-zh-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 228049,
+      "downloadSize": 228171,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10149,7 +10413,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-de-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/de/wty-de-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 11865140,
+      "downloadSize": 11932462,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10169,7 +10433,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/en/wty-it-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 17287067,
+      "downloadSize": 17357566,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10189,7 +10453,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/ru/wty-it-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 916968,
+      "downloadSize": 916967,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10209,7 +10473,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/de/wty-it-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 754754,
+      "downloadSize": 754767,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10229,7 +10493,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/es/wty-it-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 299316,
+      "downloadSize": 299320,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10249,7 +10513,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/fr/wty-it-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 19985914,
+      "downloadSize": 19986286,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10269,7 +10533,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-it-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/it/wty-it-it.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 13269627,
+      "downloadSize": 13269582,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10309,7 +10573,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-ko-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/ko/wty-it-ko.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 205766,
+      "downloadSize": 205767,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10329,7 +10593,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/pl/wty-it-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2116129,
+      "downloadSize": 2116390,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10349,7 +10613,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/pt/wty-it-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 200199,
+      "downloadSize": 200483,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10369,7 +10633,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/tr/wty-it-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2759813,
+      "downloadSize": 2771077,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10389,7 +10653,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/zh/wty-it-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2626881,
+      "downloadSize": 2627410,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10408,7 +10672,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/en/wty-it-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1068320,
+      "downloadSize": 1068318,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10427,7 +10691,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/ru/wty-it-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 65735,
+      "downloadSize": 65733,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10446,7 +10710,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/de/wty-it-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 264483,
+      "downloadSize": 264481,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10503,7 +10767,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/it/pt/wty-it-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 107728,
+      "downloadSize": 107726,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10521,7 +10785,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-it-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/it/wty-it-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 7955583,
+      "downloadSize": 7955685,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10541,7 +10805,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/en/wty-pt-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 11342979,
+      "downloadSize": 11427166,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10561,7 +10825,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/ru/wty-pt-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 706964,
+      "downloadSize": 706963,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10581,7 +10845,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/es/wty-pt-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 357757,
+      "downloadSize": 357756,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10601,7 +10865,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/fr/wty-pt-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5187535,
+      "downloadSize": 5187732,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10621,7 +10885,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-it-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/it/wty-pt-it.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 72434,
+      "downloadSize": 72433,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10641,7 +10905,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/ja/wty-pt-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 505958,
+      "downloadSize": 505957,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10681,7 +10945,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/pl/wty-pt-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 430809,
+      "downloadSize": 430868,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10701,7 +10965,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/pt/wty-pt-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 12355747,
+      "downloadSize": 12408813,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10721,7 +10985,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/tr/wty-pt-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 67922,
+      "downloadSize": 323340,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10741,7 +11005,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/zh/wty-pt-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1929833,
+      "downloadSize": 1930988,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10760,7 +11024,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/en/wty-pt-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 370285,
+      "downloadSize": 372535,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10779,7 +11043,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/ru/wty-pt-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 150364,
+      "downloadSize": 150713,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10798,7 +11062,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/de/wty-pt-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 229538,
+      "downloadSize": 229998,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10817,7 +11081,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-es-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/es/wty-pt-es-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 259549,
+      "downloadSize": 260336,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10836,7 +11100,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-fr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/fr/wty-pt-fr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 261119,
+      "downloadSize": 262521,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10855,7 +11119,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/it/wty-pt-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 209610,
+      "downloadSize": 210650,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10874,7 +11138,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-ja-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/ja/wty-pt-ja-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 122710,
+      "downloadSize": 122940,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10893,7 +11157,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-ko-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/ko/wty-pt-ko-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 72714,
+      "downloadSize": 72957,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10912,7 +11176,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/pl/wty-pt-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 136171,
+      "downloadSize": 136491,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10931,7 +11195,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-tr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/tr/wty-pt-tr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 83979,
+      "downloadSize": 84133,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10950,7 +11214,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-vi-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/vi/wty-pt-vi-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 41969,
+      "downloadSize": 42003,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10969,7 +11233,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-zh-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pt/zh/wty-pt-zh-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 96078,
+      "downloadSize": 96315,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -10987,7 +11251,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pt-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/pt/wty-pt-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 7322012,
+      "downloadSize": 7324671,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11007,7 +11271,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/en/wty-ru-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 26166169,
+      "downloadSize": 26228831,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11027,7 +11291,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/ru/wty-ru-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 83735595,
+      "downloadSize": 83735713,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11047,7 +11311,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/de/wty-ru-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 352340,
+      "downloadSize": 353276,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11067,7 +11331,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/fr/wty-ru-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 8485169,
+      "downloadSize": 8486565,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11087,7 +11351,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/ja/wty-ru-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 654962,
+      "downloadSize": 654961,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11127,7 +11391,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/pl/wty-ru-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1566555,
+      "downloadSize": 1568922,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11147,7 +11411,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/pt/wty-ru-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 199788,
+      "downloadSize": 199781,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11167,7 +11431,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/tr/wty-ru-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 631062,
+      "downloadSize": 630397,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11187,7 +11451,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-vi-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/vi/wty-ru-vi.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2735156,
+      "downloadSize": 2736546,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11207,7 +11471,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/zh/wty-ru-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 7740607,
+      "downloadSize": 7742877,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11226,7 +11490,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/en/wty-ru-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1468448,
+      "downloadSize": 1468447,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11245,7 +11509,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/de/wty-ru-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 831909,
+      "downloadSize": 831908,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11302,7 +11566,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/it/wty-ru-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 560505,
+      "downloadSize": 560504,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11321,7 +11585,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-ja-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/ja/wty-ru-ja-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 297216,
+      "downloadSize": 297215,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11359,7 +11623,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/pl/wty-ru-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 453859,
+      "downloadSize": 453858,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11378,7 +11642,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/pt/wty-ru-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 390266,
+      "downloadSize": 390265,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11397,7 +11661,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-tr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ru/tr/wty-ru-tr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 323650,
+      "downloadSize": 323649,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11453,7 +11717,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ru-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ru/wty-ru-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 10438318,
+      "downloadSize": 10438270,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11473,7 +11737,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/en/wty-pl-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 22022948,
+      "downloadSize": 21982295,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11513,7 +11777,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/de/wty-pl-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1404021,
+      "downloadSize": 1404552,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11533,7 +11797,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/fr/wty-pl-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1586630,
+      "downloadSize": 1588813,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11613,7 +11877,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/pl/wty-pl-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 22988033,
+      "downloadSize": 23047586,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11633,7 +11897,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/pt/wty-pl-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 132085,
+      "downloadSize": 132210,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11653,7 +11917,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/tr/wty-pl-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 581533,
+      "downloadSize": 582157,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11673,7 +11937,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/zh/wty-pl-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 999003,
+      "downloadSize": 1001188,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11692,7 +11956,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/en/wty-pl-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 722276,
+      "downloadSize": 725781,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11711,7 +11975,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/ru/wty-pl-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 494793,
+      "downloadSize": 495865,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11730,7 +11994,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/de/wty-pl-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 433199,
+      "downloadSize": 434543,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11749,7 +12013,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-es-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/es/wty-pl-es-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 392345,
+      "downloadSize": 393116,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11768,7 +12032,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-fr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/fr/wty-pl-fr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 329375,
+      "downloadSize": 329808,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11787,7 +12051,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/it/wty-pl-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 337247,
+      "downloadSize": 337752,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11806,7 +12070,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-ja-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/ja/wty-pl-ja-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 84764,
+      "downloadSize": 84772,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11844,7 +12108,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/pt/wty-pl-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 97116,
+      "downloadSize": 97274,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11863,7 +12127,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-tr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/tr/wty-pl-tr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 72882,
+      "downloadSize": 73791,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11882,7 +12146,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-zh-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/pl/zh/wty-pl-zh-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 56804,
+      "downloadSize": 57038,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11900,7 +12164,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-pl-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/pl/wty-pl-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3521911,
+      "downloadSize": 3524216,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11920,7 +12184,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/en/wty-tr-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 17524285,
+      "downloadSize": 17549650,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11940,7 +12204,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/ru/wty-tr-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 994425,
+      "downloadSize": 994424,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11960,7 +12224,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/fr/wty-tr-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 252854,
+      "downloadSize": 252885,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -11980,7 +12244,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/pl/wty-tr-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 367343,
+      "downloadSize": 371998,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12000,7 +12264,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/tr/wty-tr-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 14781764,
+      "downloadSize": 14720712,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12020,7 +12284,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/zh/wty-tr-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 478135,
+      "downloadSize": 478376,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12039,7 +12303,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/en/wty-tr-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 272091,
+      "downloadSize": 271886,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12058,7 +12322,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/ru/wty-tr-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 114792,
+      "downloadSize": 114728,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12077,7 +12341,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/de/wty-tr-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 180837,
+      "downloadSize": 180653,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12096,7 +12360,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-es-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/es/wty-tr-es-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 79439,
+      "downloadSize": 79563,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12115,7 +12379,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-fr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/fr/wty-tr-fr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 146870,
+      "downloadSize": 146909,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12134,7 +12398,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/it/wty-tr-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 85400,
+      "downloadSize": 85393,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12153,7 +12417,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/pl/wty-tr-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 62193,
+      "downloadSize": 62331,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12172,7 +12436,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tr/pt/wty-tr-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 47504,
+      "downloadSize": 47565,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12190,7 +12454,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tr-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/tr/wty-tr-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 484283,
+      "downloadSize": 482011,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12210,7 +12474,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/en/wty-vi-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 4341834,
+      "downloadSize": 4376918,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12230,7 +12494,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/ru/wty-vi-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 102337,
+      "downloadSize": 102336,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12250,7 +12514,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/fr/wty-vi-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1309974,
+      "downloadSize": 1309990,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12270,7 +12534,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/ja/wty-vi-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 433616,
+      "downloadSize": 433615,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12310,7 +12574,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/pl/wty-vi-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 104450,
+      "downloadSize": 104589,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12330,7 +12594,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-vi-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/vi/wty-vi-vi.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3772313,
+      "downloadSize": 3795497,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12350,7 +12614,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/zh/wty-vi-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1594265,
+      "downloadSize": 1594175,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12369,7 +12633,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/vi/en/wty-vi-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 99119,
+      "downloadSize": 100370,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12387,7 +12651,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-vi-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/vi/wty-vi-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2195331,
+      "downloadSize": 2190646,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12407,7 +12671,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-lv-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/lv/en/wty-lv-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 4000904,
+      "downloadSize": 4001579,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12427,7 +12691,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-lv-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/lv/ru/wty-lv-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 520903,
+      "downloadSize": 520905,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12447,7 +12711,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-lv-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/lv/fr/wty-lv-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 460190,
+      "downloadSize": 460188,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12507,7 +12771,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-lv-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/lv/zh/wty-lv-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 289762,
+      "downloadSize": 289806,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12545,7 +12809,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/en/wty-nl-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 8633253,
+      "downloadSize": 8683630,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12565,7 +12829,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/ru/wty-nl-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 637211,
+      "downloadSize": 637210,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12605,7 +12869,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/fr/wty-nl-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2548116,
+      "downloadSize": 2548199,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12685,7 +12949,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/pl/wty-nl-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 224662,
+      "downloadSize": 224737,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12725,7 +12989,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/tr/wty-nl-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 89142,
+      "downloadSize": 125763,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12745,7 +13009,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/zh/wty-nl-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 924442,
+      "downloadSize": 927143,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12765,7 +13029,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-nl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/nl/wty-nl-nl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 27391254,
+      "downloadSize": 27572761,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12784,7 +13048,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/en/wty-nl-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1322205,
+      "downloadSize": 1323647,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12803,7 +13067,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/ru/wty-nl-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 157980,
+      "downloadSize": 158431,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12822,7 +13086,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/de/wty-nl-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 736719,
+      "downloadSize": 737276,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12841,7 +13105,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-es-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/es/wty-nl-es-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 843486,
+      "downloadSize": 844248,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12860,7 +13124,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-fr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/fr/wty-nl-fr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 697064,
+      "downloadSize": 699748,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12879,7 +13143,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/it/wty-nl-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 248660,
+      "downloadSize": 248858,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12898,7 +13162,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-ja-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/ja/wty-nl-ja-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 105112,
+      "downloadSize": 105147,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12917,7 +13181,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/pl/wty-nl-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 202802,
+      "downloadSize": 202916,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12936,7 +13200,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/pt/wty-nl-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 158822,
+      "downloadSize": 158889,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12955,7 +13219,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-tr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/tr/wty-nl-tr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 94707,
+      "downloadSize": 94925,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12974,7 +13238,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-zh-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/nl/zh/wty-nl-zh-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 68359,
+      "downloadSize": 68424,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -12992,7 +13256,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-nl-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/nl/wty-nl-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2113890,
+      "downloadSize": 2430400,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13012,7 +13276,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/en/wty-cs-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 7595534,
+      "downloadSize": 7602638,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13052,7 +13316,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/de/wty-cs-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2496130,
+      "downloadSize": 2496247,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13072,7 +13336,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/fr/wty-cs-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5584551,
+      "downloadSize": 5584816,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13092,7 +13356,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/ja/wty-cs-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 123266,
+      "downloadSize": 123268,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13132,7 +13396,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/pl/wty-cs-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1595489,
+      "downloadSize": 1596631,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13172,7 +13436,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/tr/wty-cs-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 183079,
+      "downloadSize": 183783,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13192,7 +13456,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/zh/wty-cs-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 623019,
+      "downloadSize": 623386,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13231,7 +13495,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/en/wty-cs-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 714358,
+      "downloadSize": 713831,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13250,7 +13514,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-ru-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/ru/wty-cs-ru-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 332140,
+      "downloadSize": 332110,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13269,7 +13533,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-de-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/de/wty-cs-de-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 601363,
+      "downloadSize": 601148,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13288,7 +13552,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-es-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/es/wty-cs-es-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 166371,
+      "downloadSize": 166320,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13307,7 +13571,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-fr-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/fr/wty-cs-fr-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 522766,
+      "downloadSize": 521937,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13326,7 +13590,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-it-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/it/wty-cs-it-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 218803,
+      "downloadSize": 218626,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13345,7 +13609,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-ja-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/ja/wty-cs-ja-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 82653,
+      "downloadSize": 82548,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13364,7 +13628,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-pl-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/pl/wty-cs-pl-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 324828,
+      "downloadSize": 324730,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13383,7 +13647,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-cs-pt-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/cs/pt/wty-cs-pt-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 58592,
+      "downloadSize": 58591,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13421,7 +13685,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-id-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/id/en/wty-id-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3933885,
+      "downloadSize": 4036603,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13441,7 +13705,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-id-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/id/ru/wty-id-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 221791,
+      "downloadSize": 221790,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13461,7 +13725,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-id-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/id/fr/wty-id-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 678226,
+      "downloadSize": 678228,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13481,7 +13745,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-id-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/id/pl/wty-id-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 67211,
+      "downloadSize": 67243,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13501,7 +13765,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-id-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/id/zh/wty-id-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 221587,
+      "downloadSize": 222302,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13559,7 +13823,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ms-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ms/en/wty-ms-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1696100,
+      "downloadSize": 1682749,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13599,7 +13863,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ms-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ms/fr/wty-ms-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 73119,
+      "downloadSize": 73118,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13619,7 +13883,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ms-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ms/zh/wty-ms-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 461230,
+      "downloadSize": 461471,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13639,7 +13903,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ms-ms-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ms/ms/wty-ms-ms.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 839079,
+      "downloadSize": 839038,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13657,7 +13921,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ms-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ms/wty-ms-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 223548,
+      "downloadSize": 223563,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13677,7 +13941,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tl-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tl/en/wty-tl-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 4292012,
+      "downloadSize": 4295045,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13717,7 +13981,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tl-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tl/fr/wty-tl-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 77250,
+      "downloadSize": 77278,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13737,7 +14001,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tl-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tl/tr/wty-tl-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 47727,
+      "downloadSize": 47794,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13757,7 +14021,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tl-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/tl/zh/wty-tl-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 160015,
+      "downloadSize": 160364,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13775,7 +14039,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-tl-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/tl/wty-tl-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 737427,
+      "downloadSize": 737400,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13795,7 +14059,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sh-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sh/en/wty-sh-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 11975717,
+      "downloadSize": 11989217,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13815,7 +14079,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sh-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sh/ja/wty-sh-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 152456,
+      "downloadSize": 152455,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13835,7 +14099,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sh-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sh/zh/wty-sh-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 595992,
+      "downloadSize": 596482,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13853,7 +14117,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sh-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/sh/wty-sh-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 667859,
+      "downloadSize": 667877,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13873,7 +14137,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uk-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uk/en/wty-uk-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 9799517,
+      "downloadSize": 9826557,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13933,7 +14197,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uk-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uk/fr/wty-uk-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2914667,
+      "downloadSize": 2914890,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13953,7 +14217,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uk-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uk/ja/wty-uk-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 145946,
+      "downloadSize": 145945,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -13993,7 +14257,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uk-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uk/pl/wty-uk-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1842528,
+      "downloadSize": 1843796,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14013,7 +14277,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uk-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uk/tr/wty-uk-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 307180,
+      "downloadSize": 306885,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14033,7 +14297,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uk-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uk/zh/wty-uk-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 520940,
+      "downloadSize": 521430,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14051,7 +14315,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-uk-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/uk/wty-uk-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 924760,
+      "downloadSize": 924818,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14071,7 +14335,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-be-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/be/en/wty-be-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1383910,
+      "downloadSize": 1388393,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14091,7 +14355,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-be-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/be/ru/wty-be-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1297776,
+      "downloadSize": 1297777,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14131,7 +14395,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-be-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/be/pl/wty-be-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1234590,
+      "downloadSize": 1246372,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14149,7 +14413,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-be-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/be/wty-be-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 202048,
+      "downloadSize": 202078,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14169,7 +14433,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-el-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/el/en/wty-el-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 6048036,
+      "downloadSize": 6062302,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14209,7 +14473,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-el-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/el/fr/wty-el-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 848029,
+      "downloadSize": 848019,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14229,7 +14493,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-el-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/el/pl/wty-el-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1124133,
+      "downloadSize": 1129920,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14249,7 +14513,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-el-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/el/tr/wty-el-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 6258673,
+      "downloadSize": 6581449,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14269,7 +14533,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-el-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/el/zh/wty-el-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 442768,
+      "downloadSize": 442153,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14289,7 +14553,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-el-el-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/el/el/wty-el-el.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 37795870,
+      "downloadSize": 37791020,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14516,7 +14780,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-el-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/el/wty-el-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 984101,
+      "downloadSize": 984583,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14536,7 +14800,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hi-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hi/en/wty-hi-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5608361,
+      "downloadSize": 5602889,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14556,7 +14820,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hi-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hi/ru/wty-hi-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 297088,
+      "downloadSize": 297087,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14576,7 +14840,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hi-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hi/pl/wty-hi-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 175463,
+      "downloadSize": 176146,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14596,7 +14860,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hi-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hi/zh/wty-hi-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 272374,
+      "downloadSize": 272141,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14614,7 +14878,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hi-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/hi/wty-hi-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 658555,
+      "downloadSize": 658534,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14634,7 +14898,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bn-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bn/en/wty-bn-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1670553,
+      "downloadSize": 1670952,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14674,7 +14938,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bn-it-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bn/it/wty-bn-it.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 102140,
+      "downloadSize": 102141,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14692,7 +14956,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bn-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/bn/wty-bn-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 204366,
+      "downloadSize": 204394,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14712,7 +14976,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ka-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ka/en/wty-ka-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 5491280,
+      "downloadSize": 5497405,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14732,7 +14996,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ka-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ka/ru/wty-ka-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 382269,
+      "downloadSize": 382270,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14752,7 +15016,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ka-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ka/fr/wty-ka-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 160734,
+      "downloadSize": 160737,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14790,7 +15054,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ka-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ka/wty-ka-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 432593,
+      "downloadSize": 432613,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14810,7 +15074,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/en/wty-hy-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 7500411,
+      "downloadSize": 7498521,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14890,7 +15154,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/tr/wty-hy-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 199952,
+      "downloadSize": 202394,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14910,7 +15174,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/zh/wty-hy-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 187341,
+      "downloadSize": 187094,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14928,7 +15192,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/hy/wty-hy-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 642362,
+      "downloadSize": 642552,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14948,7 +15212,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-th-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/th/en/wty-th-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2717026,
+      "downloadSize": 2735797,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14968,7 +15232,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-th-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/th/ru/wty-th-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 158353,
+      "downloadSize": 158354,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -14988,7 +15252,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-th-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/th/ja/wty-th-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 141667,
+      "downloadSize": 141666,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15028,7 +15292,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-th-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/th/zh/wty-th-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 284025,
+      "downloadSize": 284212,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15048,7 +15312,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-th-th-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/th/th/wty-th-th.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2942599,
+      "downloadSize": 2945808,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15067,7 +15331,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-th-en-gloss-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/th/en/wty-th-en-gloss.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 78908,
+      "downloadSize": 79176,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15085,7 +15349,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-th-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/th/wty-th-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 583894,
+      "downloadSize": 585133,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15105,7 +15369,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-km-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/km/en/wty-km-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 964753,
+      "downloadSize": 964279,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15125,7 +15389,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-km-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/km/ru/wty-km-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 228961,
+      "downloadSize": 228962,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15143,7 +15407,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-km-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/km/wty-km-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 69264,
+      "downloadSize": 69394,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15163,7 +15427,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ar/en/wty-ar-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 13600988,
+      "downloadSize": 13609450,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15183,7 +15447,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ar/ru/wty-ar-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 603419,
+      "downloadSize": 603418,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15203,7 +15467,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ar/fr/wty-ar-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1199449,
+      "downloadSize": 1199843,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15223,7 +15487,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-ko-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ar/ko/wty-ar-ko.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 84680,
+      "downloadSize": 84681,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15243,7 +15507,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ar/pl/wty-ar-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 741493,
+      "downloadSize": 741490,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15263,7 +15527,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ar/tr/wty-ar-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 240089,
+      "downloadSize": 229173,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15283,7 +15547,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ar/zh/wty-ar-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 382279,
+      "downloadSize": 382631,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15301,7 +15565,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ar-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ar/wty-ar-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 419354,
+      "downloadSize": 419363,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15321,7 +15585,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/en/wty-fa-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3338272,
+      "downloadSize": 3341570,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15341,7 +15605,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/ru/wty-fa-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 437431,
+      "downloadSize": 437432,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15361,7 +15625,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/fr/wty-fa-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 125017,
+      "downloadSize": 125016,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15381,7 +15645,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/pl/wty-fa-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 109486,
+      "downloadSize": 106233,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15401,7 +15665,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/zh/wty-fa-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 248334,
+      "downloadSize": 248264,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15419,7 +15683,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/fa/wty-fa-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 566297,
+      "downloadSize": 567071,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15439,7 +15703,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-he-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/he/en/wty-he-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 3320549,
+      "downloadSize": 3362754,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15459,7 +15723,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-he-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/he/ru/wty-he-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 504781,
+      "downloadSize": 504780,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15479,7 +15743,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-he-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/he/es/wty-he-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 157473,
+      "downloadSize": 157478,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15499,7 +15763,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-he-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/he/ja/wty-he-ja.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 90236,
+      "downloadSize": 90235,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15524,6 +15788,26 @@
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
     {
+      "id": "wiktionary-he-tr",
+      "title": "Wiktionary (he–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-he-tr",
+        "kty-he-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "he",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-he-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/he/tr/wty-he-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 65080,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
       "id": "wiktionary-he-zh",
       "title": "Wiktionary (he–zh)",
       "template": "wiktionary",
@@ -15539,7 +15823,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-he-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/he/zh/wty-he-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 225414,
+      "downloadSize": 225628,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15577,7 +15861,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/en/wty-kk-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1744849,
+      "downloadSize": 1746191,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15597,7 +15881,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-ru-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/ru/wty-kk-ru.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 795991,
+      "downloadSize": 795994,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15657,7 +15941,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/pl/wty-kk-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 178054,
+      "downloadSize": 178053,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15677,7 +15961,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/zh/wty-kk-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 189306,
+      "downloadSize": 189309,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15695,7 +15979,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/kk/wty-kk-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 177274,
+      "downloadSize": 177281,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15715,7 +15999,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ky-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ky/en/wty-ky-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 622622,
+      "downloadSize": 623070,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15753,7 +16037,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ky-ipa-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ky/wty-ky-ipa.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 36130,
+      "downloadSize": 36178,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15773,7 +16057,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/en/wty-sv-en.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 8365749,
+      "downloadSize": 8410783,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15813,7 +16097,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-de-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/de/wty-sv-de.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1715422,
+      "downloadSize": 1715423,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15833,7 +16117,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-es-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/es/wty-sv-es.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 186440,
+      "downloadSize": 186439,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15853,7 +16137,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/fr/wty-sv-fr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 2054144,
+      "downloadSize": 2054163,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15913,7 +16197,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-pl-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/pl/wty-sv-pl.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1056180,
+      "downloadSize": 1056278,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15933,7 +16217,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-pt-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/pt/wty-sv-pt.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 98964,
+      "downloadSize": 98962,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15953,7 +16237,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-tr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/tr/wty-sv-tr.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 167823,
+      "downloadSize": 214919,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -15973,7 +16257,7 @@
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-sv-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/sv/zh/wty-sv-zh.zip?download=true",
       "resolveLatest": true,
-      "downloadSize": 1434668,
+      "downloadSize": 1437773,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
@@ -19133,6 +19417,360 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/uz/tr/wty-uz-tr.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 83525,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-en",
+      "title": "Wiktionary (bg–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bg-en",
+        "kty-bg-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bg",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bg/en/wty-bg-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 5608021,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-ru",
+      "title": "Wiktionary (bg–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bg-ru",
+        "kty-bg-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bg",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bg/ru/wty-bg-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 984773,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-fr",
+      "title": "Wiktionary (bg–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bg-fr",
+        "kty-bg-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bg",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bg/fr/wty-bg-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1785447,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-ko",
+      "title": "Wiktionary (bg–ko)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bg-ko",
+        "kty-bg-ko"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bg",
+      "targetLanguage": "ko",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-ko-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bg/ko/wty-bg-ko.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 162334,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-pl",
+      "title": "Wiktionary (bg–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bg-pl",
+        "kty-bg-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bg",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bg/pl/wty-bg-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1619879,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-tr",
+      "title": "Wiktionary (bg–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bg-tr",
+        "kty-bg-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bg",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bg/tr/wty-bg-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 128099,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-zh",
+      "title": "Wiktionary (bg–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bg-zh",
+        "kty-bg-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bg",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bg/zh/wty-bg-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 407505,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bg-transcription",
+      "title": "Wiktionary transcription (bg)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-bg-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "bg",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bg-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/bg/wty-bg-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 604142,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mk-en",
+      "title": "Wiktionary (mk–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mk-en",
+        "kty-mk-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mk",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mk-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mk/en/wty-mk-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 8282906,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mk-ru",
+      "title": "Wiktionary (mk–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mk-ru",
+        "kty-mk-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mk",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mk-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mk/ru/wty-mk-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 479140,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mk-pl",
+      "title": "Wiktionary (mk–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mk-pl",
+        "kty-mk-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mk",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mk-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mk/pl/wty-mk-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 155717,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mk-zh",
+      "title": "Wiktionary (mk–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mk-zh",
+        "kty-mk-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mk",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mk-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mk/zh/wty-mk-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 337278,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mk-transcription",
+      "title": "Wiktionary transcription (mk)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-mk-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "mk",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mk-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/mk/wty-mk-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 860186,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mn-en",
+      "title": "Wiktionary (mn–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mn-en",
+        "kty-mn-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mn",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mn-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mn/en/wty-mn-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 636619,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mn-ru",
+      "title": "Wiktionary (mn–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mn-ru",
+        "kty-mn-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mn",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mn-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mn/ru/wty-mn-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 151735,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mn-fr",
+      "title": "Wiktionary (mn–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mn-fr",
+        "kty-mn-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mn",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mn-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mn/fr/wty-mn-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 97267,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mn-zh",
+      "title": "Wiktionary (mn–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-mn-zh",
+        "kty-mn-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "mn",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mn-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/mn/zh/wty-mn-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 204554,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-mn-transcription",
+      "title": "Wiktionary transcription (mn)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-mn-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "mn",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-mn-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/mn/wty-mn-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 96068,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

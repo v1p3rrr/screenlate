@@ -120,7 +120,8 @@ University, CC BY, for Latin those of its Wikipedia corpus (lat_wikipedia_2021_1
 its web corpus (epo_web_2012_100K), CC BY, for Albanian those of its Albanian news corpus
 (sqi_news_2020_100K), CC BY, for Swahili those of its news corpus (swa_news_2020_30K), CC BY, for
 Estonian those of its news corpus (est_news_2020_100K), CC BY, for Azerbaijani those of its news corpus
-(aze_news_2020_30K), CC BY, and for Uzbek those of its news corpus (uzb_news_2020_30K), CC BY.
+(aze_news_2020_30K), CC BY, for Uzbek those of its news corpus (uzb_news_2020_30K), CC BY, and for Mongolian those
+of its news corpus (mon_news_2020_100K), CC BY.
 The lists of common Welsh and Irish words that the app's mutation rules leave as written
 (scripts/yomitan-language/own-transforms.js) were chosen with the word counts of the Welsh Wikipedia corpus and the
 Irish news corpus of the Leipzig Corpora Collection (cym_wikipedia_2021_100K, gle_newscrawl_2014_300K), CC BY, and
@@ -128,8 +129,8 @@ the list of Scottish Gaelic words with those of the articles of the Gaelic Wikip
 https://dumps.wikimedia.org/gdwiki/), CC BY-SA 4.0; the lists hold only the chosen words.
 
 Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Bengali, Thai, Khmer, Arabic,
-Persian, Hebrew and Latin, from the Google Fonts repository, https://github.com/google/fonts) are not part of the APK
-either; each is under the SIL Open Font License 1.1, shown in the app with its source.
+Persian, Hebrew, Bulgarian, Latin and Cyrillic, from the Google Fonts repository, https://github.com/google/fonts)
+are not part of the APK either; each is under the SIL Open Font License 1.1, shown in the app with its source.
 
 Unicode License V3
 ------------------

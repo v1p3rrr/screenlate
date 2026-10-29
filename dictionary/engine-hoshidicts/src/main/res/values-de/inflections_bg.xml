@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">bestimmt</string>
+    <string name="inflection_bg_definite">bestimmter Artikel: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">Plural</string>
+    <string name="inflection_bg_plural">Plural: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">Femininum</string>
+    <string name="inflection_bg_feminine">Femininum eines Adjektivs: -а (нова, умна von умен, добра von добър, българска)</string>
+    <string name="inflection_bg_neuter_label">Neutrum</string>
+    <string name="inflection_bg_neuter">Neutrum eines Adjektivs: -о (ново, умно von умен, добро von добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">Präsens</string>
+    <string name="inflection_bg_present">Präsens (гарантира, гарантират von гарантирам; четеш, четат von чета; говори von говоря)</string>
+    <string name="inflection_bg_past_label">Vergangenheit</string>
+    <string name="inflection_bg_past">Aorist oder Imperfekt (чаках, чакаше von чакам; четох, четеше von чета; говорих von говоря)</string>
+    <string name="inflection_bg_past_participle_label">Partizip der Vergangenheit</string>
+    <string name="inflection_bg_past_participle">aktives Partizip der Vergangenheit auf -л (гарантирал, изминала von измина, говорили von говоря)</string>
+    <string name="inflection_bg_passive_participle_label">Passivpartizip</string>
+    <string name="inflection_bg_passive_participle">passives Partizip der Vergangenheit auf -н (гарантиран, гарантирана von гарантирам; говорено von говоря)</string>
+    <string name="inflection_bg_imperative_label">Imperativ</string>
+    <string name="inflection_bg_imperative">Imperativ -ай -айте (чакай, чакайте von чакам; стреляй von стрелям)</string>
+</resources>

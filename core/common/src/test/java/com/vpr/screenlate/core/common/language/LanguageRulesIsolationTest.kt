@@ -175,7 +175,7 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
             .containsExactly(
                 Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN, Language.LITHUANIAN, Language.SLOVAK,
-                Language.SLOVENIAN, Language.ESPERANTO,
+                Language.SLOVENIAN, Language.ESPERANTO, Language.BULGARIAN, Language.MACEDONIAN,
             )
         // Czech and Slovak "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number)
         // holds alone. Slovenian l. (leto, year) holds before a lowercase word.
@@ -199,12 +199,13 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN, Language.ALBANIAN)
         // Slovak kr. of "pred Kr." holds before a lowercase word too.
         assertThat(periodEnding.where { holds(it, "Kr. godine") }).containsExactly(Language.CROATIAN, Language.SERBIAN, Language.SLOVAK)
-        // Ukrainian т. holds for "т. зв." and "у т. ч.".
-        assertThat(periodEnding.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN, Language.UKRAINIAN)
+        // Ukrainian т. holds for "т. зв." and "у т. ч.", Bulgarian т. is том (volume), Macedonian т. pairs with е and н.
+        assertThat(periodEnding.where { holds(it, "т. е. так") })
+            .containsExactly(Language.RUSSIAN, Language.UKRAINIAN, Language.BULGARIAN, Language.MACEDONIAN)
         assertThat(periodEnding.where { holds(it, "у 1991 р. він") }).containsExactly(Language.UKRAINIAN)
         // г. is год, гады and година; Croatian keeps the Cyrillic abbreviations Serbian has.
         assertThat(periodEnding.where { holds(it, "у 1991 г. ён") }).containsExactly(
-            Language.RUSSIAN, Language.BELARUSIAN, Language.CROATIAN, Language.SERBIAN,
+            Language.RUSSIAN, Language.BELARUSIAN, Language.CROATIAN, Language.SERBIAN, Language.BULGARIAN, Language.MACEDONIAN,
         )
         assertThat(periodEnding.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         // Kazakh and Kyrgyz ж. (year) holds before a lowercase word only; Kyrgyz writes ж. б. (and so on) spaced.
@@ -350,6 +351,24 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { !it.endsSentence(uzbekEtc, uzbekEtc.lastIndexOf('.')) }).containsExactly(Language.UZBEK)
         val uzbekEtcEnd = "daftarlar va h.k. Keyin"
         assertThat(periodEnding.where { !it.endsSentence(uzbekEtcEnd, uzbekEtcEnd.lastIndexOf('.')) }).isEmpty()
+        // Bulgarian and Macedonian пр. н. е. (before the common era), spaced, as Russian and Serbian hold it, or joined;
+        // Bulgarian лв. (лева) and хил. (хиляди), Macedonian илј. (илјади) and нпр. (на пример, as Serbian). Bulgarian
+        // "и т.н." (and so on) ends a sentence; Macedonian and Russian т.н. is "so-called".
+        val bulgarianEra = "през 44 г. пр. н. е. Цезар"
+        assertThat(periodEnding.where { !it.endsSentence(bulgarianEra, bulgarianEra.lastIndexOf('.')) }).containsExactly(
+            Language.RUSSIAN, Language.CROATIAN, Language.SERBIAN, Language.BULGARIAN, Language.MACEDONIAN,
+        )
+        val joinedEra = "през 44 г. пр.н.е. Цезар"
+        assertThat(periodEnding.where { !it.endsSentence(joinedEra, joinedEra.lastIndexOf('.')) })
+            .containsExactly(Language.BULGARIAN, Language.MACEDONIAN)
+        assertThat(periodEnding.where { holds(it, "5 лв. за") }).containsExactly(Language.BULGARIAN)
+        assertThat(periodEnding.where { holds(it, "5 хил. души") }).containsExactly(Language.BULGARIAN)
+        assertThat(periodEnding.where { holds(it, "5 илј. денари") }).containsExactly(Language.MACEDONIAN)
+        assertThat(periodEnding.where { holds(it, "нпр. јаболка") })
+            .containsExactly(Language.CROATIAN, Language.SERBIAN, Language.MACEDONIAN)
+        val bulgarianEtc = "ябълки и т.н. Тогава"
+        assertThat(periodEnding.where { !it.endsSentence(bulgarianEtc, bulgarianEtc.lastIndexOf('.')) })
+            .containsExactly(Language.RUSSIAN, Language.MACEDONIAN)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -468,7 +487,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.inflectionRulesOnlyWithoutEntry })
             .containsExactly(
                 Language.ROMANIAN, Language.LATIN, Language.SWAHILI, Language.HUNGARIAN, Language.AZERBAIJANI,
-                Language.UZBEK,
+                Language.UZBEK, Language.BULGARIAN,
             )
         assertThat(all.where { it.ruleChainsOnlyWithoutRow }).containsExactly(Language.FINNISH)
     }
@@ -497,6 +516,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.frequencyWord("اين") != "اين" }).containsExactly(Language.PERSIAN)
         assertThat(all.where { it.frequencyWord("צה\"ל") != "צה\"ל" }).containsExactly(Language.HEBREW)
         assertThat(all.where { it.frequencyWord("кiтап") != "кiтап" }).containsExactly(Language.KAZAKH)
+        assertThat(all.where { it.frequencyWord("сè") != "сè" }).containsExactly(Language.MACEDONIAN)
         assertThat(all.where { it.frequencyWord("vīta") != "vīta" }).containsExactly(Language.LATIN)
         assertThat(all.where { it.firstTranscription(listOf("Modern-Israeli")) }).containsExactly(Language.HEBREW)
         assertThat(all.where { it.firstTranscription(listOf("🇮🇷", "formal")) }).containsExactly(Language.PERSIAN)
@@ -547,7 +567,8 @@ class LanguageRulesIsolationTest {
             Language.BELARUSIAN, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH,
             Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO,
             Language.ALBANIAN, Language.SWAHILI, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC, Language.FINNISH,
-            Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK,
+            Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK, Language.BULGARIAN,
+            Language.MACEDONIAN, Language.MONGOLIAN,
         )
     }
 
@@ -577,14 +598,23 @@ class LanguageRulesIsolationTest {
     @Test
     fun `look-alikes are fixed only in Cyrillic and Greek text, the Serbian j and the Latin i only where they have a twin`() {
         assertThat(all.where { it.ocrWord("\u043co\u0440e") != "\u043co\u0440e" })
-            .containsExactly(Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.KAZAKH, Language.KYRGYZ)
+            .containsExactly(
+                Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.KAZAKH, Language.KYRGYZ,
+                Language.BULGARIAN, Language.MACEDONIAN, Language.MONGOLIAN,
+            )
         assertThat(all.where { it.ocrWord("j\u043e\u0448") != "j\u043e\u0448" })
-            .containsExactly(Language.SERBIAN)
+            .containsExactly(Language.SERBIAN, Language.MACEDONIAN)
+        // Macedonian writes Latin S and the letters of other Cyrillic languages it reads for Ѕ, Ѓ and Ѝ as those.
+        assertThat(all.where { it.ocrWord("Sвезда") != "Sвезда" }).containsExactly(Language.MACEDONIAN)
+        assertThat(all.where { it.ocrWord("ґавол") != "ґавол" }).containsExactly(Language.MACEDONIAN)
+        assertThat(all.where { it.ocrWord("й") != "й" }).containsExactly(Language.MACEDONIAN)
+        // Only Macedonian tries a word from OCR that finds nothing with an Л read for Љ.
+        assertThat(all.where { it.misreadSpellings("лубов").isNotEmpty() }).containsExactly(Language.MACEDONIAN)
         // A word of one letter has no other one to show its script.
         assertThat(all.where { it.ocrWord("y") != "y" })
             .containsExactly(
                 Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.KAZAKH,
-                Language.KYRGYZ,
+                Language.KYRGYZ, Language.BULGARIAN, Language.MACEDONIAN, Language.MONGOLIAN,
             )
         assertThat(all.where { it.ocrWord("i") != "i" })
             .containsExactly(Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.KAZAKH)

@@ -3,6 +3,7 @@ package com.vpr.screenlate.dictionary.engine.hoshidicts
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.LookupOptions
@@ -106,6 +107,34 @@ class HoshidictsEngineTest {
         assertThat(lemma.trace.map { it.name }).containsExactly("stem")
     }
 
+    @Test
+    fun dropsWiktionaryFaultsAtImport() = runTest {
+        val bulgarian = engine.import(bulgarianFaultsDictionary(), File(root, "out"))
+        val macedonian = engine.import(macedonianFaultsDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(bulgarian.directory, macedonian.directory)))
+        val bg = LookupOptions(language = Language.BULGARIAN)
+        suspend fun found(text: String, options: LookupOptions = bg) = engine.lookup(text, options).map { it.term.expression }
+        suspend fun steps(text: String, lemma: String) = engine.lookup(text, bg).filter { it.term.expression == lemma }
+            .flatMap { result -> (result.otherTraces + listOf(result.trace)).flatten() }.map { it.name }
+
+        // A lone ending standing for a form (a table without its stem) leads nowhere; the word of its own stays, and so
+        // does a short form of another word (е of съм).
+        assertThat(found("и")).containsExactly("и")
+        assertThat(found("ите")).doesNotContain("революционер")
+        assertThat(found("революционери")).contains("революционер")
+        assertThat(found("е")).contains("съм")
+        // A form of an unfilled template is no word.
+        assertThat(found("ът")).doesNotContain("позор")
+        // A row repeated word for word is shown once.
+        assertThat(engine.lookup("вода", bg).single().term.glossaries).hasSize(1)
+        // Bulgarian positive forms lose Wiktionary's "comparative"; the forms with по- keep it.
+        assertThat(steps("моята", "мой")).contains("singular definite feminine objective")
+        assertThat(steps("моята", "мой").joinToString()).doesNotContain("comparative")
+        assertThat(steps("по-добре", "добре")).contains("comparative")
+        // A gender left after the lemma a form names is dropped.
+        assertThat(found("куќи", LookupOptions(language = Language.MACEDONIAN))).contains("куќа")
+    }
+
     @Test(expected = DictionaryImportException::class)
     fun rejectsArchiveWithoutIndex() = runTest {
         val archive = zip("broken.zip", "term_bank_1.json" to "[]".toByteArray())
@@ -168,6 +197,42 @@ class HoshidictsEngineTest {
               ["混ぜない","","non-lemma","v",0,[["混ぜる",["imperfective negative"]]],9,""],
               ["書","しょ","","n",0,["writing",["書く",["stem"]]],10,""],
               ["書く","かく","","v5",0,["to write"],11,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    // Rows in the shape of Wiktionary's Bulgarian exports, with their faults.
+    private fun bulgarianFaultsDictionary(): File = zip(
+        "bg.zip",
+        "index.json" to """{"title":"Test Bulgarian","revision":"1","format":3,"sourceLanguage":"bg"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["и","","conj","",0,["and"],1,""],
+              ["революционер","","n","",0,["revolutionary"],2,""],
+              ["и","","non-lemma","",0,[["революционер",["plural indefinite"]]],3,""],
+              ["ите","","non-lemma","",0,[["революционер",["plural definite"]]],4,""],
+              ["революционери","","non-lemma","",0,[["революционер",["plural indefinite"]]],5,""],
+              ["позор","","n","",0,["disgrace"],6,""],
+              ["{{{1}}}ът","","non-lemma","",0,[["позор",["singular definite"]]],7,""],
+              ["съм","","v","",0,["to be"],8,""],
+              ["е","","non-lemma","",0,[["съм",["third-person singular present indicative"]]],9,""],
+              ["вода","","n","",0,["water"],10,""],
+              ["вода","","n","",0,["water"],10,""],
+              ["мой","","pron","",0,["my"],11,""],
+              ["мо́ята","","non-lemma","",0,[["мой",["singular definite feminine comparative objective"]]],12,""],
+              ["добре","","adv","",0,["well"],13,""],
+              ["по́-добре","","non-lemma","",0,[["добре",["comparative"]]],14,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun macedonianFaultsDictionary(): File = zip(
+        "mk.zip",
+        "index.json" to """{"title":"Test Macedonian","revision":"1","format":3,"sourceLanguage":"mk"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["куќа","","n","",0,["house"],1,""],
+              ["куќи","","non-lemma","",0,[["куќа f",["plural indefinite"]]],2,""]
             ]
         """.trimIndent().toByteArray(),
     )

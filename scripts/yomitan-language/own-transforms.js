@@ -889,6 +889,178 @@ export const romanianTransforms = /* @__PURE__ */ (() => ({
 }))();
 
 /**
+ * @param {string} suffix
+ * @param {string} replacement
+ * @param {('n'|'v'|'d')[]} conditionsIn
+ * @param {('n'|'v'|'d')[]} conditionsOut
+ * @param {string} [before] the letters one of which comes before [suffix], as a character class
+ * @returns {import('language-transformer').SuffixRule<'n'|'v'|'d'>}
+ */
+function bulgarianSuffix(suffix, replacement, conditionsIn, conditionsOut, before = '.') {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp('.' + before + suffix + '$'),
+        deinflected: replacement,
+        deinflect: (text) => text.slice(0, -suffix.length) + replacement,
+        conditionsIn,
+        conditionsOut,
+    };
+}
+
+/**
+ * An article, taken off the text as written; what is left may still be a plural or an agreement form.
+ * @param {string} suffix
+ * @param {string} replacement
+ * @param {string} [before]
+ */
+function bulgarianArticle(suffix, replacement, before) {
+    return bulgarianSuffix(suffix, replacement, [], ['n', 'd'], before);
+}
+
+/** A plural or agreement ending, taken off the text as written or off what an article left. */
+function bulgarianNominal(suffix, replacement) {
+    return bulgarianSuffix(suffix, replacement, ['d'], ['n']);
+}
+
+/**
+ * A participle's ending, taken off the text as written or off what an article left, for each of [replacements]: the
+ * verb is what is found.
+ * @param {string[]} suffixes
+ * @param {string[]} replacements
+ */
+function bulgarianParticiple(suffixes, replacements) {
+    return suffixes.flatMap((suffix) => replacements.map((replacement) => bulgarianSuffix(suffix, replacement, ['d'], ['v'])));
+}
+
+/**
+ * A verb ending, taken off the text as written, for each of [replacements]: the endings of the first person singular,
+ * by which dictionaries list verbs (чета, пия, говоря, държа, чакам, стрелям).
+ * @param {string[]} suffixes
+ * @param {string[]} replacements
+ */
+function bulgarianVerb(suffixes, replacements) {
+    return suffixes.flatMap((suffix) => replacements.map((replacement) => bulgarianSuffix(suffix, replacement, [], ['v'])));
+}
+
+/**
+ * Bulgarian endings, as the app's own rules written from the grammar. Wiktionary's form rows give the forms of the words
+ * with declension and conjugation tables (stored without their stress marks: книгата for кни́гата), but none of words
+ * whose entries have none: министерството, конкуренцията, парламентарната, гарантира, функционират (on the UD
+ * Bulgarian treebank 2.1% of the words find nothing although their lemma is a headword). An article comes off first
+ * (-ът -ят -а -я -та -то -те), then a plural or agreement ending of a noun or adjective, the fleeting е or ъ of an
+ * adjective put back (умна → умен, добри → добър); a verb ending comes off alone and gives the first person singular,
+ * which dictionaries list verbs by, of the -ам verbs (гарантира → гарантирам) or of the others (четат → чета); a
+ * participle may carry an article (изминалата → измина). Each ending leaves two letters at least. Wiktionary's
+ * Bulgarian entries leave the rules field empty and tag each definition (n, adj, v, non-lemma), so a noun or
+ * adjective ending reaches the nominal words and forms, a verb ending the verbs (glue.js, `taggedRules`), and the
+ * engine keeps these results only for a text without an entry of its own
+ * (`LanguageSupport.inflectionRulesOnlyWithoutEntry`). Irregular stems (чел from чета, писах from пиша) are left to
+ * the form rows.
+ * @type {import('language-transformer').LanguageTransformDescriptor<'n'|'v'|'d'>}
+ */
+export const bulgarianTransforms = {
+    language: 'bg',
+    conditions: {
+        n: {name: 'Noun or adjective', isDictionaryForm: true},
+        v: {name: 'Verb', isDictionaryForm: true},
+        d: {name: 'Without its article', isDictionaryForm: false},
+    },
+    transforms: {
+        'definite': {
+            name: 'definite',
+            description: 'definite article: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)',
+            rules: [
+                bulgarianArticle('ът', ''), bulgarianArticle('ят', ''), bulgarianArticle('ят', 'й'),
+                bulgarianArticle('а', ''), bulgarianArticle('я', ''), bulgarianArticle('я', 'й'),
+                // -та follows а, я or a consonant (книгата, земята, нощта); after е, и, у, ю it ends a plural (морета).
+                bulgarianArticle('та', '', '[^еиоуюэ]'), bulgarianArticle('то', ''), bulgarianArticle('те', ''),
+            ],
+        },
+        'plural': {
+            name: 'plural',
+            description: 'plural: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)',
+            rules: [
+                bulgarianNominal('и', ''), bulgarianNominal('и', 'а'), bulgarianNominal('и', 'я'),
+                bulgarianNominal('и', 'ин'), bulgarianNominal('ове', ''), bulgarianNominal('еве', 'й'),
+                bulgarianNominal('ища', ''), bulgarianNominal('ци', 'к'), bulgarianNominal('ци', 'ец'),
+                bulgarianNominal('зи', 'г'), bulgarianNominal('си', 'х'), bulgarianNominal('а', 'о'),
+                bulgarianNominal('ета', 'е'), bulgarianNominal('ита', 'и'), bulgarianNominal('юта', 'ю'),
+                bulgarianNominal('ута', 'у'), bulgarianNominal('ия', 'ие'), bulgarianNominal('ена', 'е'),
+                bulgarianNominal('ни', 'ен'), bulgarianNominal('ри', 'ър'), bulgarianNominal('ки', 'ък'),
+                bulgarianNominal('ли', 'ъл'),
+            ],
+        },
+        'feminine': {
+            name: 'feminine',
+            description: 'feminine of an adjective: -а (нова, умна from умен, добра from добър, българска)',
+            rules: [
+                bulgarianNominal('а', ''), bulgarianNominal('на', 'ен'), bulgarianNominal('ра', 'ър'),
+                bulgarianNominal('ка', 'ък'), bulgarianNominal('ла', 'ъл'), bulgarianNominal('ска', 'ски'),
+            ],
+        },
+        'neuter': {
+            name: 'neuter',
+            description: 'neuter of an adjective: -о (ново, умно from умен, добро from добър, българско, синьо)',
+            rules: [
+                bulgarianNominal('о', ''), bulgarianNominal('но', 'ен'), bulgarianNominal('ро', 'ър'),
+                bulgarianNominal('ко', 'ък'), bulgarianNominal('ло', 'ъл'), bulgarianNominal('ско', 'ски'),
+                bulgarianNominal('ьо', ''),
+            ],
+        },
+        'present': {
+            name: 'present',
+            description: 'present tense (гарантира, гарантират from гарантирам; четеш, четат from чета; говори from говоря)',
+            rules: [
+                ...bulgarianVerb(['а', 'аш', 'аме', 'ате', 'ат'], ['ам']),
+                ...bulgarianVerb(['я', 'яш', 'яме', 'яте', 'ят'], ['ям']),
+                ...bulgarianVerb(['еш', 'е', 'ем', 'ете', 'иш', 'и', 'им', 'ите'], ['а', 'я']),
+                ...bulgarianVerb(['ат'], ['а']),
+                ...bulgarianVerb(['ят'], ['я']),
+            ],
+        },
+        'past': {
+            name: 'past',
+            description: 'aorist or imperfect (чаках, чакаше from чакам; четох, четеше from чета; говорих from говоря)',
+            rules: [
+                ...bulgarianVerb(['ах', 'аше', 'ахме', 'ахте', 'аха'], ['ам']),
+                ...bulgarianVerb(['ях', 'яше', 'яхме', 'яхте', 'яха'], ['ям']),
+                ...bulgarianVerb(['их', 'ихме', 'ихте', 'иха'], ['я']),
+                ...bulgarianVerb(['ох', 'охме', 'охте', 'оха'], ['а']),
+                ...bulgarianVerb(['еше'], ['а', 'я']),
+                ...bulgarianVerb(['ях', 'яха'], ['а']),
+                ...bulgarianVerb(['ех', 'еха'], ['я']),
+            ],
+        },
+        'past participle': {
+            name: 'past participle',
+            description: 'past active participle -л (гарантирал, изминала from измина, говорили from говоря)',
+            rules: [
+                ...bulgarianParticiple(['ал', 'ала', 'ало', 'али'], ['ам', 'а']),
+                ...bulgarianParticiple(['ял', 'яла', 'яло', 'яли'], ['ям', 'я']),
+                ...bulgarianParticiple(['ил', 'ила', 'ило', 'или'], ['я']),
+            ],
+        },
+        'passive participle': {
+            name: 'passive participle',
+            description: 'past passive participle -н (гарантиран, гарантирана from гарантирам; говорено from говоря)',
+            rules: [
+                ...bulgarianParticiple(['ан', 'ана', 'ано', 'ани'], ['ам']),
+                ...bulgarianParticiple(['ян', 'яна', 'яно', 'яни'], ['ям']),
+                ...bulgarianParticiple(['ен', 'ена', 'ено', 'ени'], ['а', 'я']),
+            ],
+        },
+        'imperative': {
+            name: 'imperative',
+            description: 'imperative -ай -айте (чакай, чакайте from чакам; стреляй from стрелям)',
+            rules: [
+                ...bulgarianVerb(['ай', 'айте'], ['ам']),
+                ...bulgarianVerb(['яй', 'яйте'], ['ям']),
+            ],
+        },
+    },
+};
+
+/**
  * Swahili verb prefixes, as the app's own rules written from the grammar: a verb is [negation] subject tense [object]
  * stem, joined into one word (a-li-ni-ona, ha-tu-ku-soma). Wiktionary lists the present, habitual, infinitive,
  * subjunctive and negative present forms of its verbs, and none of the past, future or perfect ones (alisoma, atasoma,

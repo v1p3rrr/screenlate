@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">한정형</string>
+    <string name="inflection_bg_definite">정관사: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">복수</string>
+    <string name="inflection_bg_plural">복수: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">여성형</string>
+    <string name="inflection_bg_feminine">형용사의 여성형: -а (нова, умен → умна, добър → добра, българска)</string>
+    <string name="inflection_bg_neuter_label">중성형</string>
+    <string name="inflection_bg_neuter">형용사의 중성형: -о (ново, умен → умно, добър → добро, българско, синьо)</string>
+    <string name="inflection_bg_present_label">현재</string>
+    <string name="inflection_bg_present">현재 시제 (гарантирам → гарантира, гарантират; чета → четеш, четат; говоря → говори)</string>
+    <string name="inflection_bg_past_label">과거</string>
+    <string name="inflection_bg_past">부정과거 또는 미완료과거 (чакам → чаках, чакаше; чета → четох, четеше; говоря → говорих)</string>
+    <string name="inflection_bg_past_participle_label">과거분사</string>
+    <string name="inflection_bg_past_participle">-л 과거 능동 분사 (гарантирам → гарантирал, измина → изминала, говоря → говорили)</string>
+    <string name="inflection_bg_passive_participle_label">수동 분사</string>
+    <string name="inflection_bg_passive_participle">-н 과거 수동 분사 (гарантирам → гарантиран, гарантирана; говоря → говорено)</string>
+    <string name="inflection_bg_imperative_label">명령형</string>
+    <string name="inflection_bg_imperative">명령형 -ай -айте (чакам → чакай, чакайте; стрелям → стреляй)</string>
+</resources>

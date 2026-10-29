@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">défini</string>
+    <string name="inflection_bg_definite">article défini : -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">pluriel</string>
+    <string name="inflection_bg_plural">pluriel : -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">féminin</string>
+    <string name="inflection_bg_feminine">féminin d’un adjectif : -а (нова, умна de умен, добра de добър, българска)</string>
+    <string name="inflection_bg_neuter_label">neutre</string>
+    <string name="inflection_bg_neuter">neutre d’un adjectif : -о (ново, умно de умен, добро de добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">présent</string>
+    <string name="inflection_bg_present">présent (гарантира, гарантират de гарантирам; четеш, четат de чета; говори de говоря)</string>
+    <string name="inflection_bg_past_label">passé</string>
+    <string name="inflection_bg_past">aoriste ou imparfait (чаках, чакаше de чакам; четох, четеше de чета; говорих de говоря)</string>
+    <string name="inflection_bg_past_participle_label">participe passé</string>
+    <string name="inflection_bg_past_participle">participe passé actif en -л (гарантирал, изминала de измина, говорили de говоря)</string>
+    <string name="inflection_bg_passive_participle_label">participe passif</string>
+    <string name="inflection_bg_passive_participle">participe passé passif en -н (гарантиран, гарантирана de гарантирам; говорено de говоря)</string>
+    <string name="inflection_bg_imperative_label">impératif</string>
+    <string name="inflection_bg_imperative">impératif -ай -айте (чакай, чакайте de чакам; стреляй de стрелям)</string>
+</resources>

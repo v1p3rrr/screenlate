@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">定形</string>
+    <string name="inflection_bg_definite">定冠詞：-ът -ят -а -я、-та -то -те（градът、учителя、книгата、селото、книгите）</string>
+    <string name="inflection_bg_plural_label">複数</string>
+    <string name="inflection_bg_plural">複数：-и -ове -ища -а -та -ия（студенти、книги、градове、пътища、села、морета、събития）</string>
+    <string name="inflection_bg_feminine_label">女性形</string>
+    <string name="inflection_bg_feminine">形容詞の女性形：-а（нова、умен → умна、добър → добра、българска）</string>
+    <string name="inflection_bg_neuter_label">中性形</string>
+    <string name="inflection_bg_neuter">形容詞の中性形：-о（ново、умен → умно、добър → добро、българско、синьо）</string>
+    <string name="inflection_bg_present_label">現在</string>
+    <string name="inflection_bg_present">現在時制（гарантирам → гарантира、гарантират；чета → четеш、четат；говоря → говори）</string>
+    <string name="inflection_bg_past_label">過去</string>
+    <string name="inflection_bg_past">アオリストまたは未完了過去（чакам → чаках、чакаше；чета → четох、четеше；говоря → говорих）</string>
+    <string name="inflection_bg_past_participle_label">過去分詞</string>
+    <string name="inflection_bg_past_participle">-л の過去能動分詞（гарантирам → гарантирал、измина → изминала、говоря → говорили）</string>
+    <string name="inflection_bg_passive_participle_label">受動分詞</string>
+    <string name="inflection_bg_passive_participle">-н の過去受動分詞（гарантирам → гарантиран、гарантирана；говоря → говорено）</string>
+    <string name="inflection_bg_imperative_label">命令形</string>
+    <string name="inflection_bg_imperative">命令形 -ай -айте（чакам → чакай、чакайте；стрелям → стреляй）</string>
+</resources>

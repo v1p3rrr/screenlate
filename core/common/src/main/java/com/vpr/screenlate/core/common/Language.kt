@@ -66,6 +66,9 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     ESTONIAN("et"),
     AZERBAIJANI("az"),
     UZBEK("uz"),
+    BULGARIAN("bg"),
+    MACEDONIAN("mk"),
+    MONGOLIAN("mn"),
     ;
 
     companion object {

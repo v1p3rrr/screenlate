@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">xác định</string>
+    <string name="inflection_bg_definite">mạo từ xác định: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">số nhiều</string>
+    <string name="inflection_bg_plural">số nhiều: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">giống cái</string>
+    <string name="inflection_bg_feminine">dạng giống cái của tính từ: -а (нова, умен → умна, добър → добра, българска)</string>
+    <string name="inflection_bg_neuter_label">giống trung</string>
+    <string name="inflection_bg_neuter">dạng giống trung của tính từ: -о (ново, умен → умно, добър → добро, българско, синьо)</string>
+    <string name="inflection_bg_present_label">hiện tại</string>
+    <string name="inflection_bg_present">thì hiện tại (гарантирам → гарантира, гарантират; чета → четеш, четат; говоря → говори)</string>
+    <string name="inflection_bg_past_label">quá khứ</string>
+    <string name="inflection_bg_past">thì aorist hoặc quá khứ chưa hoàn thành (чакам → чаках, чакаше; чета → четох, четеше; говоря → говорих)</string>
+    <string name="inflection_bg_past_participle_label">phân từ quá khứ</string>
+    <string name="inflection_bg_past_participle">phân từ chủ động quá khứ -л (гарантирам → гарантирал, измина → изминала, говоря → говорили)</string>
+    <string name="inflection_bg_passive_participle_label">phân từ bị động</string>
+    <string name="inflection_bg_passive_participle">phân từ bị động quá khứ -н (гарантирам → гарантиран, гарантирана; говоря → говорено)</string>
+    <string name="inflection_bg_imperative_label">mệnh lệnh</string>
+    <string name="inflection_bg_imperative">thức mệnh lệnh -ай -айте (чакам → чакай, чакайте; стрелям → стреляй)</string>
+</resources>

@@ -539,6 +539,9 @@
     <string name="popup_font_script_only_et">Yalnızca Estonca metin için</string>
     <string name="popup_font_script_only_az">Yalnızca Azerice metin için</string>
     <string name="popup_font_script_only_uz">Yalnızca Özbekçe metin için</string>
+    <string name="popup_font_script_only_bg">Yalnızca Bulgarca metin için</string>
+    <string name="popup_font_script_only_mk">Yalnızca Makedonca metin için</string>
+    <string name="popup_font_script_only_mn">Yalnızca Moğolca metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>

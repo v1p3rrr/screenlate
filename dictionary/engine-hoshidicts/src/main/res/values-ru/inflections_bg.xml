@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_bg.xml. -->
+<resources>
+    <string name="inflection_bg_definite_label">определённая форма</string>
+    <string name="inflection_bg_definite">определённый артикль: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">множественное число</string>
+    <string name="inflection_bg_plural">множественное число: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">женский род</string>
+    <string name="inflection_bg_feminine">женский род прилагательного: -а (нова, умна от умен, добра от добър, българска)</string>
+    <string name="inflection_bg_neuter_label">средний род</string>
+    <string name="inflection_bg_neuter">средний род прилагательного: -о (ново, умно от умен, добро от добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">настоящее время</string>
+    <string name="inflection_bg_present">настоящее время (гарантира, гарантират от гарантирам; четеш, четат от чета; говори от говоря)</string>
+    <string name="inflection_bg_past_label">прошедшее время</string>
+    <string name="inflection_bg_past">аорист или имперфект (чаках, чакаше от чакам; четох, четеше от чета; говорих от говоря)</string>
+    <string name="inflection_bg_past_participle_label">прошедшее причастие</string>
+    <string name="inflection_bg_past_participle">действительное причастие прошедшего времени на -л (гарантирал, изминала от измина, говорили от говоря)</string>
+    <string name="inflection_bg_passive_participle_label">страдательное причастие</string>
+    <string name="inflection_bg_passive_participle">страдательное причастие прошедшего времени на -н (гарантиран, гарантирана от гарантирам; говорено от говоря)</string>
+    <string name="inflection_bg_imperative_label">повелительное наклонение</string>
+    <string name="inflection_bg_imperative">повелительное наклонение -ай -айте (чакай, чакайте от чакам; стреляй от стрелям)</string>
+</resources>

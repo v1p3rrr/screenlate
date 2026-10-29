@@ -61,6 +61,10 @@ class EntriesTest(unittest.TestCase):
         # Uzbek: v6 only, unmarked; no model makes a third fewer errors than ML Kit.
         uzbek = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == "uz"}
         self.assertEqual(uzbek, {"paddle-v6": False, "paddle-detector-v6": False})
+        # Bulgarian, Macedonian and Mongolian: the Cyrillic v5 model, marked.
+        for language in ("bg", "mk", "mn"):
+            models = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == language}
+            self.assertEqual(models, {"paddle-cyrillic": True, "paddle-detector-v5": False})
 
     def test_describes_an_archive_with_its_checksum(self):
         entry = paddle.entry("paddle-v6", "ja", "paddle-v6", b"zip", "paddle-detector-v6", True)

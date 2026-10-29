@@ -265,7 +265,9 @@ function isMarkedStep(d, language) {
  * → aflat, a form of afla), not verbs or adverbs. Swahili verb prefixes reach verbs and forms (alisoma → soma), not
  * nouns (wali, rice, is no wa- + li-). Hungarian verb prefixes reach verbs and their forms (megtartottam → tartottam, a
  * form of tart), not nouns (idegen "foreign" is no ide- + gen "gene"). The Estonian negative forms reach the verb olema
- * (pole → olema).
+ * (pole → olema). Bulgarian articles, plurals and agreement endings reach nominal words and forms (книгите → книги, a
+ * form of книга; министерството → министерство), verb endings and participles the verbs (гарантира → гарантирам, not
+ * a noun гарантир).
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
@@ -278,6 +280,7 @@ const taggedRules = new Map([
     ['sw', {v: ['v', 'non-lemma']}],
     ['hu', {v: ['v', 'non-lemma']}],
     ['et', {v: ['v']}],
+    ['bg', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma'], v: ['v']}],
 ]);
 
 /**
