@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_eo.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- accusative -->
+    <string name="inflection_eo_accusative_label">יחסת המושא</string>
+    <string name="inflection_eo_accusative">צורת יחסת המושא של מילה</string>
+    <!-- plural -->
+    <string name="inflection_eo_plural_label">רבים</string>
+    <string name="inflection_eo_plural">צורת הרבים של מילה</string>
+    <!-- diminutive -->
+    <string name="inflection_eo_diminutive_label">הקטנה</string>
+    <string name="inflection_eo_diminutive">צורת הקטנה של שם עצם</string>
+    <!-- directional -->
+    <string name="inflection_eo_directional_label">כיוון</string>
+    <string name="inflection_eo_directional">תואר פועל ביחסת המושא מציין כיוון\nkie: איפה\nkien: לאן</string>
+    <!-- locational -->
+    <string name="inflection_eo_locational_label">מקום</string>
+    <string name="inflection_eo_locational">שם עצם שהופך לתואר פועל מציין מקום\nsurpinto : פסגה, קצה, ראש\nsurpinte: בפסגה, בקצה, בראש\nĉambro : חדר\nĉambre: בחדר</string>
+    <!-- adjectival -->
+    <string name="inflection_eo_adjectival_label">צורה תוארית</string>
+    <string name="inflection_eo_adjectival">צורה תוארית של שם עצם</string>
+    <!-- adverbial (adj -> adv) -->
+    <string name="inflection_eo_adverbial_adj_adv">צורת תואר הפועל של שם תואר</string>
+    <!-- adverbial (v -> adv) -->
+    <string name="inflection_eo_adverbial_v_adv">צורת תואר הפועל של פועל</string>
+    <!-- -ejo (noun) -->
+    <string name="inflection_eo_ejo_noun">סיומת שהופכת מילה למקום המיועד לדבר מסוים זה\nkafo: קפה\nkafejo: בית קפה</string>
+    <!-- -ejo (verb) -->
+    <string name="inflection_eo_ejo_verb">סיומת שהופכת מילה למקום המיועד לפעולה מסוימת זו\nkuiri: לבשל\nkuirejo: מטבח</string>
+    <!-- -ujo (noun) -->
+    <string name="inflection_eo_ujo_noun">סיומת שהופכת מילה לקופסה או לכלי קיבול של דבר מסוים זה\nabelo: דבורה\nabelujo: כוורת\n\nסיומת שהופכת מילה למקום שבו נמצא סוג מסוים של אנשים\npatro: אב\npatrujo: מולדת\n\nסיומת שהופכת פרח או פרי לצמח או לעץ שעליו הם גדלים\npomo: תפוח\npomujo: עץ תפוח</string>
+    <!-- -ujo (adjective) -->
+    <string name="inflection_eo_ujo_adjective">סיומת שהופכת מילת תיאור לקופסה או לכלי קיבול של דברים מסוג זה\nfrida: קר\nfridujo: מקרר</string>
+    <!-- -ujo (verb) -->
+    <string name="inflection_eo_ujo_verb">סיומת שהופכת פעולה לקופסה או לכלי קיבול לפעילות מסוג זה\nlavi: לרחוץ\nlavujo: כיור</string>
+    <!-- -ebla -->
+    <string name="inflection_eo_ebla">סיומת המציינת אפשרות\nkompreni: להבין\nkomprenebla: מובן</string>
+    <!-- -ado -->
+    <string name="inflection_eo_ado">סיומת שהופכת פעולה לדבר המייצג את הפעולה\nvivi: לחיות\nvivado: חיים\nspiri: לנשום\nspirado: נשימה</string>
+    <!-- mal- -->
+    <string name="inflection_eo_mal">תחילית שהופכת פעולה, תיאור, דבר או כיוון למשמעות ההפוכה</string>
+    <!-- kun- -->
+    <string name="inflection_eo_kun">תחילית שמשמעה לעשות את הפעולה יחד עם אנשים אחרים\nlabori: לעבוד\nkunlabori: לשתף פעולה</string>
+    <!-- ekster- -->
+    <string name="inflection_eo_ekster">תחילית שמשמעה \"מחוץ ל־\"\nlando: ארץ\neksterlando: חוץ לארץ</string>
+    <!-- ek- -->
+    <string name="inflection_eo_ek">תחילית שמשמעה להתחיל בפעולה\nkanti: לשיר\nekkanti: להתחיל לשיר</string>
+    <!-- ĵus- -->
+    <string name="inflection_eo_us">תחילית שמשמעה שדבר מה נעשה זה עתה או לאחרונה\nvekita: שהוער\nĵusvekita: שהוער זה עתה</string>
+    <!-- el- -->
+    <string name="inflection_eo_el">תחילית שמשמעה לעשות את הפעולה בכיוון החוצה\ntiri: למשוך\neltiri: לשלוף\n\nתחילית שמשמעה לעשות את הפעולה עד תומה\ntrinki: לשתות\neltrinki: לשתות עד תום, לשתות את כל הדבר\nlerni: ללמוד\nellerni: ללמוד כל מה שאפשר, לשלוט בדבר\nuzi: להשתמש\neluzi: לכלות, לשחוק</string>
+    <!-- dis- -->
+    <string name="inflection_eo_dis">תחילית שמשמעה \"הפרדה, פירוד, התפזרות\"\nŝvebi: לרחף\ndisŝvebi: לרחף לכל עבר, בנפרד\nfali: ליפול\ndisfali: להתפרק\ndoni: לתת\ndisdoni: לחלק, להפיץ\nsendo: דבר שנשלח\ndissendo: שידור</string>
+    <!-- for- -->
+    <string name="inflection_eo_for">תחילית שמשמעה \"תנועה למרחק רב\"\nflugi: לעוף\nforflugi: לעוף משם\n\nתחילית שמשמעה \"היעלמות, כליה\"\nuzi: להשתמש\nforuzi: לכלות (עד שלא נשאר דבר)</string>
+    <!-- mis- -->
+    <string name="inflection_eo_mis">תחילית שמשמעה \"שגוי, מוטעה\"\nkompreni: להבין\nmiskompreni: להבין לא נכון\nparoli: לדבר\nmisparoli: לטעות בדיבור</string>
+</resources>

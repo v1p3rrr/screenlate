@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">تبدیل متن به گفتار</string>
+    <string name="audio_source_url">URL سفارشی</string>
+    <string name="audio_source_json">URL سفارشی (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid نصب نیست.</string>
+    <string name="anki_problem_no_permission">Screenlate دیگر به AnkiDroid دسترسی ندارد.</string>
+    <string name="anki_problem_model_missing">نوع یادداشت در AnkiDroid پیدا نشد.</string>
+    <string name="anki_problem_deck_missing">دسته در AnkiDroid پیدا نشد.</string>
+    <string name="anki_problem_fields_changed">فیلدهای نوع یادداشت تغییر کرده‌اند.</string>
+</resources>

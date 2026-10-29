@@ -27,6 +27,16 @@ class LanguageOptionsTest {
     }
 
     @Test
+    fun `right-to-left languages have the flags of the languages screen`() {
+        val options = LanguageOptions.of(listOf("ar", "fa", "he").map(Locale::forLanguageTag))
+        assertThat(options.first { it.tag == "ar" }.flag).isEqualTo("🇸🇦")
+        assertThat(options.first { it.tag == "fa" }.flag).isEqualTo("🇮🇷")
+        assertThat(options.first { it.tag == "he" }.flag).isEqualTo("🇮🇱")
+        assertThat(LanguageOptions.flag(Locale.forLanguageTag("iw"))).isEqualTo("🇮🇱")
+        assertThat(LanguageOptions.selected(options, "iw")?.tag).isEqualTo("he")
+    }
+
+    @Test
     fun `the current locale matches by language and script`() {
         val options = LanguageOptions.of(listOf("en", "pt", "zh-Hans", "zh-Hant").map(Locale::forLanguageTag))
         fun selected(tag: String) = LanguageOptions.selected(options, tag)?.tag

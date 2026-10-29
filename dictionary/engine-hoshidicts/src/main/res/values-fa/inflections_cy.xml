@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_cy.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- soft mutation -->
+    <string name="inflection_cy_soft_mutation_label">جهش نرم</string>
+    <string name="inflection_cy_soft_mutation">جهش نرم: b d g f dd l r به‌جای p t c b/m d ll rh، حذف g (ei gath از cath، dy wely از gwely)</string>
+    <!-- nasal mutation -->
+    <string name="inflection_cy_nasal_mutation_label">جهش خیشومی</string>
+    <string name="inflection_cy_nasal_mutation">جهش خیشومی: mh nh ngh m n ng به‌جای p t c b d g (fy nghath از cath، yng Nghymru از Cymru)</string>
+    <!-- aspirate mutation -->
+    <string name="inflection_cy_aspirate_mutation_label">جهش دمیده</string>
+    <string name="inflection_cy_aspirate_mutation">جهش دمیده: ph th ch به‌جای p t c (ei chath از cath)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_cy_h_prothesis_label">پیش‌افزایی h</string>
+    <string name="inflection_cy_h_prothesis">h پیش از مصوت (ei hysgol از ysgol)</string>
+</resources>

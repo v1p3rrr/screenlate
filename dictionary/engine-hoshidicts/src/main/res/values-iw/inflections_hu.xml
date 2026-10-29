@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_hu.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- prefix -->
+    <string name="inflection_hu_prefix_label">תחילית פועל</string>
+    <string name="inflection_hu_prefix">תחילית פועל: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- ואחרות (megtartottam מן tartottam)</string>
+</resources>

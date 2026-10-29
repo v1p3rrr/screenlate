@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_la.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_la_plural_label">الجمع</string>
+    <string name="inflection_la_plural">التصريف في الجمع</string>
+    <!-- feminine -->
+    <string name="inflection_la_feminine_label">المؤنث</string>
+    <string name="inflection_la_feminine">صيغة الصفة</string>
+    <!-- neuter -->
+    <string name="inflection_la_neuter_label">المحايد</string>
+    <string name="inflection_la_neuter">صيغة الصفة</string>
+    <!-- ablative -->
+    <string name="inflection_la_ablative_label">حالة الانفصال</string>
+    <string name="inflection_la_ablative">حالة الانفصال</string>
+    <!-- -que -->
+    <string name="inflection_la_que">أداة متصلة بمعنى «و» (magisque من magis)</string>
+    <!-- -ne -->
+    <string name="inflection_la_ne">أداة متصلة للاستفهام (videsne من vides)</string>
+    <!-- -ve -->
+    <string name="inflection_la_ve">أداة متصلة بمعنى «أو» (mortuusve من mortuus)</string>
+</resources>

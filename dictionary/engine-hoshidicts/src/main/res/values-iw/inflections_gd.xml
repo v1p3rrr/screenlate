@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_gd.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- lenition -->
+    <string name="inflection_gd_lenition_label">ריכוך</string>
+    <string name="inflection_gd_lenition">ריכוך: bh ch dh fh gh mh ph sh th במקום b c d f g m p s t, ואחרי תווית היידוע t-s במקום s (a\' ghrian מן grian, an t-sràid מן sràid)</string>
+    <!-- eclipsis -->
+    <string name="inflection_gd_eclipsis_label">אקליפסיס</string>
+    <string name="inflection_gd_eclipsis">הוספת n- לפני תנועה (ar n-eilean מן eilean)</string>
+    <!-- t-prothesis -->
+    <string name="inflection_gd_t_prothesis_label">פרותזה של t</string>
+    <string name="inflection_gd_t_prothesis">הוספת t- לפני תנועה (an t-uisge מן uisge, an t-Eilean מן Eilean)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_gd_h_prothesis_label">פרותזה של h</string>
+    <string name="inflection_gd_h_prothesis">הוספת h- לפני תנועה (na h-Alba מן Alba, na h-òrain מן òrain)</string>
+</resources>

@@ -377,7 +377,7 @@ private fun ExpandableItem(
         trailing = {
             val label = stringResource(if (expanded) R.string.backup_files_hide else R.string.backup_files_show)
             TooltipIconButton(label, onClick = { expanded = !expanded }) {
-                Icon(painterResource(R.drawable.ic_chevron_right), label, Modifier.rotate(if (expanded) -90f else 90f))
+                Icon(painterResource(R.drawable.ic_expand_more), label, Modifier.rotate(if (expanded) 180f else 0f))
             }
         },
     )

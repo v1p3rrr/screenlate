@@ -1,0 +1,5 @@
+<resources>
+    <string name="dictionary_import_channel">وارد کردن واژه‌نامه‌ها</string>
+    <string name="dictionary_import_notification">در حال وارد کردن واژه‌نامه‌ها</string>
+    <string name="dictionary_import_cancel">لغو</string>
+</resources>

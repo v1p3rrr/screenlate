@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_he.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- ו- -->
+    <string name="inflection_he_v_label">و</string>
+    <string name="inflection_he_v">و (ואני، והבית)</string>
+    <!-- ש- -->
+    <string name="inflection_he_sh_label">که</string>
+    <string name="inflection_he_sh">که، آنچه، کسی که (שאמר، שבבית)</string>
+    <!-- כש- -->
+    <string name="inflection_he_ksh_label">وقتی</string>
+    <string name="inflection_he_ksh">وقتی، هنگامی که (כשהגעתי)</string>
+    <!-- ב- -->
+    <string name="inflection_he_b_label">در</string>
+    <string name="inflection_he_b">در، نزد، با (בבית)</string>
+    <!-- כ- -->
+    <string name="inflection_he_k_label">مانند</string>
+    <string name="inflection_he_k">مانند، همچون (כילד)</string>
+    <!-- ל- -->
+    <string name="inflection_he_l_label">به</string>
+    <string name="inflection_he_l">به، برای (לבית)</string>
+    <!-- מ- -->
+    <string name="inflection_he_m_label">از</string>
+    <string name="inflection_he_m">از، نسبت به (מירושלים، מהבית)</string>
+    <!-- ה- -->
+    <string name="inflection_he_h_label">حرف تعریف</string>
+    <string name="inflection_he_h">حرف تعریف معرفه (הבית)</string>
+</resources>

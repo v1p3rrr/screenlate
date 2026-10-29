@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_sq.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- definite -->
+    <string name="inflection_sq_definite_label">المعرفة</string>
+    <string name="inflection_sq_definite">صيغة المعرفة للاسم</string>
+    <!-- singular definite accusative -->
+    <string name="inflection_sq_singular_definite_accusative_label">المفرد المعرفة في حالة النصب</string>
+    <string name="inflection_sq_singular_definite_accusative">صيغة المفرد المعرفة للاسم في حالة النصب</string>
+    <!-- plural -->
+    <string name="inflection_sq_plural_label">الجمع</string>
+    <string name="inflection_sq_plural">صيغة الجمع للاسم</string>
+    <!-- present indicative second-person singular -->
+    <string name="inflection_sq_present_indicative_second_person_singular_label">الحاضر الإخباري، المخاطب المفرد</string>
+    <string name="inflection_sq_present_indicative_second_person_singular">صيغة الحاضر الإخباري للفعل، المخاطب المفرد</string>
+    <!-- present indicative third-person singular -->
+    <string name="inflection_sq_present_indicative_third_person_singular_label">الحاضر الإخباري، الغائب المفرد</string>
+    <string name="inflection_sq_present_indicative_third_person_singular">صيغة الحاضر الإخباري للفعل، الغائب المفرد</string>
+    <!-- present indicative first-person plural -->
+    <string name="inflection_sq_present_indicative_first_person_plural_label">الحاضر الإخباري، المتكلم الجمع</string>
+    <string name="inflection_sq_present_indicative_first_person_plural">صيغة الحاضر الإخباري للفعل، المتكلم الجمع</string>
+    <!-- present indicative second-person plural -->
+    <string name="inflection_sq_present_indicative_second_person_plural_label">الحاضر الإخباري، المخاطب الجمع</string>
+    <string name="inflection_sq_present_indicative_second_person_plural">صيغة الحاضر الإخباري للفعل، المخاطب الجمع</string>
+    <!-- present indicative third-person plural -->
+    <string name="inflection_sq_present_indicative_third_person_plural_label">الحاضر الإخباري، الغائب الجمع</string>
+    <string name="inflection_sq_present_indicative_third_person_plural">صيغة الحاضر الإخباري للفعل، الغائب الجمع</string>
+    <!-- imperfect first-person singular indicative -->
+    <string name="inflection_sq_imperfect_first_person_singular_indicative_label">الماضي الناقص الإخباري، المتكلم المفرد</string>
+    <string name="inflection_sq_imperfect_first_person_singular_indicative">صيغة الماضي الناقص الإخباري للفعل، المتكلم المفرد</string>
+    <!-- imperfect second-person singular indicative -->
+    <string name="inflection_sq_imperfect_second_person_singular_indicative_label">الماضي الناقص الإخباري، المخاطب المفرد</string>
+    <string name="inflection_sq_imperfect_second_person_singular_indicative">صيغة الماضي الناقص الإخباري للفعل، المخاطب المفرد</string>
+    <!-- imperfect third-person singular indicative -->
+    <string name="inflection_sq_imperfect_third_person_singular_indicative_label">الماضي الناقص الإخباري، الغائب المفرد</string>
+    <string name="inflection_sq_imperfect_third_person_singular_indicative">صيغة الماضي الناقص الإخباري للفعل، الغائب المفرد</string>
+    <!-- imperfect first-person plural indicative -->
+    <string name="inflection_sq_imperfect_first_person_plural_indicative_label">الماضي الناقص الإخباري، المتكلم الجمع</string>
+    <string name="inflection_sq_imperfect_first_person_plural_indicative">صيغة الماضي الناقص الإخباري للفعل، المتكلم الجمع</string>
+    <!-- imperfect second-person plural indicative -->
+    <string name="inflection_sq_imperfect_second_person_plural_indicative_label">الماضي الناقص الإخباري، المخاطب الجمع</string>
+    <string name="inflection_sq_imperfect_second_person_plural_indicative">صيغة الماضي الناقص الإخباري للفعل، المخاطب الجمع</string>
+    <!-- imperfect third-person plural indicative -->
+    <string name="inflection_sq_imperfect_third_person_plural_indicative_label">الماضي الناقص الإخباري، الغائب الجمع</string>
+    <string name="inflection_sq_imperfect_third_person_plural_indicative">صيغة الماضي الناقص الإخباري للفعل، الغائب الجمع</string>
+    <!-- aorist first-person singular indicative -->
+    <string name="inflection_sq_aorist_first_person_singular_indicative_label">الأوريست الإخباري، المتكلم المفرد</string>
+    <string name="inflection_sq_aorist_first_person_singular_indicative">صيغة الأوريست الإخباري للفعل، المتكلم المفرد</string>
+    <!-- aorist second-person singular indicative -->
+    <string name="inflection_sq_aorist_second_person_singular_indicative_label">الأوريست الإخباري، المخاطب المفرد</string>
+    <string name="inflection_sq_aorist_second_person_singular_indicative">صيغة الأوريست الإخباري للفعل، المخاطب المفرد</string>
+    <!-- aorist third-person singular indicative -->
+    <string name="inflection_sq_aorist_third_person_singular_indicative_label">الأوريست الإخباري، الغائب المفرد</string>
+    <string name="inflection_sq_aorist_third_person_singular_indicative">صيغة الأوريست الإخباري للفعل، الغائب المفرد</string>
+    <!-- aorist first-person plural indicative -->
+    <string name="inflection_sq_aorist_first_person_plural_indicative_label">الأوريست الإخباري، المتكلم الجمع</string>
+    <string name="inflection_sq_aorist_first_person_plural_indicative">صيغة الأوريست الإخباري للفعل، المتكلم الجمع</string>
+    <!-- aorist second-person plural indicative -->
+    <string name="inflection_sq_aorist_second_person_plural_indicative_label">الأوريست الإخباري، المخاطب الجمع</string>
+    <string name="inflection_sq_aorist_second_person_plural_indicative">صيغة الأوريست الإخباري للفعل، المخاطب الجمع</string>
+    <!-- aorist third-person plural indicative -->
+    <string name="inflection_sq_aorist_third_person_plural_indicative_label">الأوريست الإخباري، الغائب الجمع</string>
+    <string name="inflection_sq_aorist_third_person_plural_indicative">صيغة الأوريست الإخباري للفعل، الغائب الجمع</string>
+    <!-- imperative second-person singular present -->
+    <string name="inflection_sq_imperative_second_person_singular_present_label">صيغة الأمر، المخاطب المفرد</string>
+    <string name="inflection_sq_imperative_second_person_singular_present">صيغة الأمر للفعل، المخاطب المفرد</string>
+    <!-- imperative second-person plural present -->
+    <string name="inflection_sq_imperative_second_person_plural_present_label">صيغة الأمر، المخاطب الجمع</string>
+    <string name="inflection_sq_imperative_second_person_plural_present">صيغة الأمر للفعل، المخاطب الجمع</string>
+    <!-- participle -->
+    <string name="inflection_sq_participle_label">اسم المفعول</string>
+    <string name="inflection_sq_participle">صيغة اسم المفعول للفعل</string>
+    <!-- mediopassive -->
+    <string name="inflection_sq_mediopassive_label">المطاوعة والمجهول</string>
+    <string name="inflection_sq_mediopassive">صيغة المطاوعة والمبني للمجهول للفعل</string>
+    <!-- optative first-person singular present -->
+    <string name="inflection_sq_optative_first_person_singular_present_label">صيغة التمني، المتكلم المفرد</string>
+    <string name="inflection_sq_optative_first_person_singular_present">صيغة التمني للفعل في الحاضر، المتكلم المفرد</string>
+    <!-- optative second-person singular present -->
+    <string name="inflection_sq_optative_second_person_singular_present_label">صيغة التمني، المخاطب المفرد</string>
+    <string name="inflection_sq_optative_second_person_singular_present">صيغة التمني للفعل في الحاضر، المخاطب المفرد</string>
+    <!-- optative third-person singular present -->
+    <string name="inflection_sq_optative_third_person_singular_present_label">صيغة التمني، الغائب المفرد</string>
+    <string name="inflection_sq_optative_third_person_singular_present">صيغة التمني للفعل في الحاضر، الغائب المفرد</string>
+    <!-- optative first-person plural present -->
+    <string name="inflection_sq_optative_first_person_plural_present_label">صيغة التمني، المتكلم الجمع</string>
+    <string name="inflection_sq_optative_first_person_plural_present">صيغة التمني للفعل في الحاضر، المتكلم الجمع</string>
+    <!-- optative second-person plural present -->
+    <string name="inflection_sq_optative_second_person_plural_present_label">صيغة التمني، المخاطب الجمع</string>
+    <string name="inflection_sq_optative_second_person_plural_present">صيغة التمني للفعل في الحاضر، المخاطب الجمع</string>
+    <!-- optative third-person plural present -->
+    <string name="inflection_sq_optative_third_person_plural_present_label">صيغة التمني، الغائب الجمع</string>
+    <string name="inflection_sq_optative_third_person_plural_present">صيغة التمني للفعل في الحاضر، الغائب الجمع</string>
+    <!-- nominalization -->
+    <string name="inflection_sq_nominalization_label">التحويل إلى اسم</string>
+    <string name="inflection_sq_nominalization">صيغة اسمية من الفعل</string>
+    <!-- -e -->
+    <string name="inflection_sq_e_label">المؤنث أو الجمع</string>
+    <string name="inflection_sq_e">المؤنث أو الجمع من الصفة (moderne من modern، turistike من turistik)</string>
+    <!-- ë as e -->
+    <string name="inflection_sq_as_e_label">e بدلًا من ë</string>
+    <string name="inflection_sq_as_e">ë الأخيرة مكتوبةً e (gjate بدلًا من gjatë، mire بدلًا من mirë)</string>
+    <!-- -a -->
+    <string name="inflection_sq_a_label">جمع المؤنث</string>
+    <string name="inflection_sq_a">جمع المؤنث من الصفة (gjitha من gjithë، larta من lartë، vjetra من vjetër، vogla من vogël)</string>
+    <!-- -me -->
+    <string name="inflection_sq_me_label">المؤنث أو الجمع</string>
+    <string name="inflection_sq_me">المؤنث أو الجمع من الصفة المنتهية بـ -ëm (sotme من sotëm، rëndësishme من rëndësishëm)</string>
+    <!-- -het -->
+    <string name="inflection_sq_het_label">المطاوعة والمجهول</string>
+    <string name="inflection_sq_het">المطاوعة والمجهول في الحاضر، الغائب (ndodhet و ndodhen من ndodh، shtrihet من shtrij، mendohet من mendoj)</string>
+    <!-- -hej -->
+    <string name="inflection_sq_hej_label">المطاوعة والمجهول في الماضي الناقص</string>
+    <string name="inflection_sq_hej">المطاوعة والمجهول في الماضي الناقص، الغائب المفرد (bëhej من bëj، formohej من formoj)</string>
+    <!-- -uar -->
+    <string name="inflection_sq_uar_label">اسم المفعول</string>
+    <string name="inflection_sq_uar">اسم المفعول، ويأتي أيضًا صفةً مؤنثة أو جمعًا (bazuar و banuara من bazoj, banoj؛ shkruar من shkruaj؛ thirrur و mbetura من thirr, mbet؛ kthyer من kthej)</string>
+    <!-- -ua -->
+    <string name="inflection_sq_ua_label">الأوريست</string>
+    <string name="inflection_sq_ua">الأوريست، الغائب (përfundoi من përfundoj؛ botua و vërtetuan من botoj, vërtetoj؛ shkrua من shkruaj؛ kthye من kthej)</string>
+    <!-- -on -->
+    <string name="inflection_sq_on_label">الحاضر</string>
+    <string name="inflection_sq_on">الحاضر، الغائب (daton و datojnë من datoj، hyjnë من hyj)</string>
+    <!-- -onte -->
+    <string name="inflection_sq_onte_label">الماضي الناقص</string>
+    <string name="inflection_sq_onte">الماضي الناقص، الغائب المفرد (numëronte من numëroj)</string>
+    <!-- -i -->
+    <string name="inflection_sq_i_label">المعرفة</string>
+    <string name="inflection_sq_i">صيغة المعرفة للاسم المذكر (termi من term، sporti من sport)</string>
+    <!-- -it -->
+    <string name="inflection_sq_it_label">حالة الجر المعرفة</string>
+    <string name="inflection_sq_it">حالة الجر أو القابل أو الانفصال للاسم المذكر المعرفة (sulmit من sulm، jugut من jug)</string>
+    <!-- -in -->
+    <string name="inflection_sq_in_label">حالة النصب المعرفة</string>
+    <string name="inflection_sq_in">حالة النصب للاسم المذكر المعرفة (sulmin من sulm، ndikimin من ndikim)</string>
+    <!-- -ët -->
+    <string name="inflection_sq_t_label">الجمع المعرفة</string>
+    <string name="inflection_sq_t">الجمع المعرفة (aleatët من aleat، dokumentet من dokument)</string>
+    <!-- -ve -->
+    <string name="inflection_sq_ve_label">حالة الجر الجمع</string>
+    <string name="inflection_sq_ve">حالة الجر أو القابل أو الانفصال في الجمع (tipareve من tipar، shqiptarve من shqiptar، rrokjeve من rrokje)</string>
+    <!-- -ia -->
+    <string name="inflection_sq_ia_label">المعرفة</string>
+    <string name="inflection_sq_ia">صيغة المعرفة للاسم المؤنث (industria من industri، shitja من shitje، gjermanishtja من gjermanishte)</string>
+    <!-- -së -->
+    <string name="inflection_sq_s_label">حالة الجر المعرفة</string>
+    <string name="inflection_sq_s">حالة الجر أو القابل أو الانفصال للاسم المؤنث المعرفة (drejtësisë من drejtësi، paqes من paqe، federatës من federatë)</string>
+    <!-- -ën -->
+    <string name="inflection_sq_n_label">حالة النصب المعرفة</string>
+    <string name="inflection_sq_n">حالة النصب للاسم المؤنث المعرفة (lejen من leje، konferencën من konferencë)</string>
+</resources>

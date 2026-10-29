@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- nounAdjSuffixStripping -->
+    <string name="inflection_ka_nounadjsuffixstripping_label">נטיית שם</string>
+    <string name="inflection_ka_nounadjsuffixstripping">סיומת יחסה או סיומת רבים של שם עצם או של שם תואר בגאורגית</string>
+    <!-- nounAdjStemCompletion -->
+    <string name="inflection_ka_nounadjstemcompletion_label">יחסת הנושא</string>
+    <string name="inflection_ka_nounadjstemcompletion">סיומת יחסת הנושא -ი, שהושבה לגזע של שם עצם או של שם תואר המסתיים בעיצור</string>
+    <!-- vowelRestoration -->
+    <string name="inflection_ka_vowelrestoration_label">תנועה שנשמטה</string>
+    <string name="inflection_ka_vowelrestoration">תנועת גזע שנשמטה והושבה</string>
+</resources>

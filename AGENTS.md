@@ -21,7 +21,7 @@ Read linked notes only when relevant to the current task. If the index is absent
    - `overlay-system-ui.md` — insets, keyboard and fullscreen detection from the overlay, which edge swipes the system takes.
    - `ocr-engines.md` — OCR and app text costs, ML Kit quirks, trusted character boxes, popup renderer priority, OCR threads and the scan screenshot's lifetime.
    - `ocr-engine-research.md` — outside sources on ML Kit, Tesseract and PaddleOCR: published comparisons, known model defects, licenses, model descriptions for the app.
-   - `translations.md` — the 14 locales, escaping and line-break pitfalls, per-language conventions and shared terms.
+   - `translations.md` — the 17 locales, escaping and line-break pitfalls, per-language conventions and shared terms.
    - `audio-sources.md` — hosts of the default audio sources, mobile networks that freeze foreign hosting, the owner's audio server.
    - `translation-services.md` — free translators tried for a sentence translation button, their requests and quality ja→ru.
    - `store-publishing.md` — what a Google Play build would have to change, Android developer verification and its paths.

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_es_plural_label">الجمع</string>
+    <string name="inflection_es_plural">صيغة الجمع للاسم</string>
+    <!-- feminine adjective -->
+    <string name="inflection_es_feminine_adjective_label">صفة مؤنثة</string>
+    <string name="inflection_es_feminine_adjective">صيغة المؤنث للصفة</string>
+    <!-- present indicative -->
+    <string name="inflection_es_present_indicative_label">الحاضر الإخباري</string>
+    <string name="inflection_es_present_indicative">صيغة الحاضر الإخباري للفعل</string>
+    <!-- preterite -->
+    <string name="inflection_es_preterite_label">الماضي البسيط</string>
+    <string name="inflection_es_preterite">صيغة الماضي البسيط للفعل</string>
+    <!-- imperfect -->
+    <string name="inflection_es_imperfect_label">الماضي الناقص</string>
+    <string name="inflection_es_imperfect">صيغة الماضي الناقص للفعل</string>
+    <!-- progressive -->
+    <string name="inflection_es_progressive_label">المستمر</string>
+    <string name="inflection_es_progressive">الصيغة المستمرة للفعل</string>
+    <!-- imperative -->
+    <string name="inflection_es_imperative_label">صيغة الأمر</string>
+    <string name="inflection_es_imperative">صيغة الأمر للفعل</string>
+    <!-- conditional -->
+    <string name="inflection_es_conditional_label">صيغة الشرط</string>
+    <string name="inflection_es_conditional">صيغة الشرط للفعل</string>
+    <!-- future -->
+    <string name="inflection_es_future_label">المستقبل</string>
+    <string name="inflection_es_future">صيغة المستقبل للفعل</string>
+    <!-- present subjunctive -->
+    <string name="inflection_es_present_subjunctive_label">الحاضر الافتراضي</string>
+    <string name="inflection_es_present_subjunctive">الحاضر من الصيغة الافتراضية للفعل</string>
+    <!-- imperfect subjunctive -->
+    <string name="inflection_es_imperfect_subjunctive_label">الماضي الناقص الافتراضي</string>
+    <string name="inflection_es_imperfect_subjunctive">الماضي الناقص من الصيغة الافتراضية للفعل</string>
+    <!-- participle -->
+    <string name="inflection_es_participle_label">اسم المفعول</string>
+    <string name="inflection_es_participle">صيغة اسم المفعول للفعل</string>
+    <!-- reflexive -->
+    <string name="inflection_es_reflexive_label">الصيغة الانعكاسية</string>
+    <string name="inflection_es_reflexive">الصيغة الانعكاسية للفعل</string>
+    <!-- pronoun substitution -->
+    <string name="inflection_es_pronoun_substitution_label">استبدال الضمير</string>
+    <string name="inflection_es_pronoun_substitution">فعل انعكاسي استُبدل ضميره</string>
+    <!-- pronominal -->
+    <string name="inflection_es_pronominal_label">الصيغة الضميرية</string>
+    <string name="inflection_es_pronominal">الصيغة الضميرية للفعل</string>
+</resources>

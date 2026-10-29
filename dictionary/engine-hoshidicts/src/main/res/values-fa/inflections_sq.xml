@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_sq.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- definite -->
+    <string name="inflection_sq_definite_label">معرفه</string>
+    <string name="inflection_sq_definite">صورت معرفهٔ اسم</string>
+    <!-- singular definite accusative -->
+    <string name="inflection_sq_singular_definite_accusative_label">حالت مفعولی مفرد معرفه</string>
+    <string name="inflection_sq_singular_definite_accusative">صورت مفعولی مفرد معرفهٔ اسم</string>
+    <!-- plural -->
+    <string name="inflection_sq_plural_label">جمع</string>
+    <string name="inflection_sq_plural">صورت جمع اسم</string>
+    <!-- present indicative second-person singular -->
+    <string name="inflection_sq_present_indicative_second_person_singular_label">حال اخباری، دوم‌شخص مفرد</string>
+    <string name="inflection_sq_present_indicative_second_person_singular">صورت حال اخباری دوم‌شخص مفرد فعل</string>
+    <!-- present indicative third-person singular -->
+    <string name="inflection_sq_present_indicative_third_person_singular_label">حال اخباری، سوم‌شخص مفرد</string>
+    <string name="inflection_sq_present_indicative_third_person_singular">صورت حال اخباری سوم‌شخص مفرد فعل</string>
+    <!-- present indicative first-person plural -->
+    <string name="inflection_sq_present_indicative_first_person_plural_label">حال اخباری، اول‌شخص جمع</string>
+    <string name="inflection_sq_present_indicative_first_person_plural">صورت حال اخباری اول‌شخص جمع فعل</string>
+    <!-- present indicative second-person plural -->
+    <string name="inflection_sq_present_indicative_second_person_plural_label">حال اخباری، دوم‌شخص جمع</string>
+    <string name="inflection_sq_present_indicative_second_person_plural">صورت حال اخباری دوم‌شخص جمع فعل</string>
+    <!-- present indicative third-person plural -->
+    <string name="inflection_sq_present_indicative_third_person_plural_label">حال اخباری، سوم‌شخص جمع</string>
+    <string name="inflection_sq_present_indicative_third_person_plural">صورت حال اخباری سوم‌شخص جمع فعل</string>
+    <!-- imperfect first-person singular indicative -->
+    <string name="inflection_sq_imperfect_first_person_singular_indicative_label">گذشتهٔ استمراری اخباری، اول‌شخص مفرد</string>
+    <string name="inflection_sq_imperfect_first_person_singular_indicative">صورت گذشتهٔ استمراری اخباری اول‌شخص مفرد فعل</string>
+    <!-- imperfect second-person singular indicative -->
+    <string name="inflection_sq_imperfect_second_person_singular_indicative_label">گذشتهٔ استمراری اخباری، دوم‌شخص مفرد</string>
+    <string name="inflection_sq_imperfect_second_person_singular_indicative">صورت گذشتهٔ استمراری اخباری دوم‌شخص مفرد فعل</string>
+    <!-- imperfect third-person singular indicative -->
+    <string name="inflection_sq_imperfect_third_person_singular_indicative_label">گذشتهٔ استمراری اخباری، سوم‌شخص مفرد</string>
+    <string name="inflection_sq_imperfect_third_person_singular_indicative">صورت گذشتهٔ استمراری اخباری سوم‌شخص مفرد فعل</string>
+    <!-- imperfect first-person plural indicative -->
+    <string name="inflection_sq_imperfect_first_person_plural_indicative_label">گذشتهٔ استمراری اخباری، اول‌شخص جمع</string>
+    <string name="inflection_sq_imperfect_first_person_plural_indicative">صورت گذشتهٔ استمراری اخباری اول‌شخص جمع فعل</string>
+    <!-- imperfect second-person plural indicative -->
+    <string name="inflection_sq_imperfect_second_person_plural_indicative_label">گذشتهٔ استمراری اخباری، دوم‌شخص جمع</string>
+    <string name="inflection_sq_imperfect_second_person_plural_indicative">صورت گذشتهٔ استمراری اخباری دوم‌شخص جمع فعل</string>
+    <!-- imperfect third-person plural indicative -->
+    <string name="inflection_sq_imperfect_third_person_plural_indicative_label">گذشتهٔ استمراری اخباری، سوم‌شخص جمع</string>
+    <string name="inflection_sq_imperfect_third_person_plural_indicative">صورت گذشتهٔ استمراری اخباری سوم‌شخص جمع فعل</string>
+    <!-- aorist first-person singular indicative -->
+    <string name="inflection_sq_aorist_first_person_singular_indicative_label">آئوریست اخباری، اول‌شخص مفرد</string>
+    <string name="inflection_sq_aorist_first_person_singular_indicative">صورت آئوریست اخباری اول‌شخص مفرد فعل</string>
+    <!-- aorist second-person singular indicative -->
+    <string name="inflection_sq_aorist_second_person_singular_indicative_label">آئوریست اخباری، دوم‌شخص مفرد</string>
+    <string name="inflection_sq_aorist_second_person_singular_indicative">صورت آئوریست اخباری دوم‌شخص مفرد فعل</string>
+    <!-- aorist third-person singular indicative -->
+    <string name="inflection_sq_aorist_third_person_singular_indicative_label">آئوریست اخباری، سوم‌شخص مفرد</string>
+    <string name="inflection_sq_aorist_third_person_singular_indicative">صورت آئوریست اخباری سوم‌شخص مفرد فعل</string>
+    <!-- aorist first-person plural indicative -->
+    <string name="inflection_sq_aorist_first_person_plural_indicative_label">آئوریست اخباری، اول‌شخص جمع</string>
+    <string name="inflection_sq_aorist_first_person_plural_indicative">صورت آئوریست اخباری اول‌شخص جمع فعل</string>
+    <!-- aorist second-person plural indicative -->
+    <string name="inflection_sq_aorist_second_person_plural_indicative_label">آئوریست اخباری، دوم‌شخص جمع</string>
+    <string name="inflection_sq_aorist_second_person_plural_indicative">صورت آئوریست اخباری دوم‌شخص جمع فعل</string>
+    <!-- aorist third-person plural indicative -->
+    <string name="inflection_sq_aorist_third_person_plural_indicative_label">آئوریست اخباری، سوم‌شخص جمع</string>
+    <string name="inflection_sq_aorist_third_person_plural_indicative">صورت آئوریست اخباری سوم‌شخص جمع فعل</string>
+    <!-- imperative second-person singular present -->
+    <string name="inflection_sq_imperative_second_person_singular_present_label">امری حال، دوم‌شخص مفرد</string>
+    <string name="inflection_sq_imperative_second_person_singular_present">صورت امری حال دوم‌شخص مفرد فعل</string>
+    <!-- imperative second-person plural present -->
+    <string name="inflection_sq_imperative_second_person_plural_present_label">امری حال، دوم‌شخص جمع</string>
+    <string name="inflection_sq_imperative_second_person_plural_present">صورت امری حال دوم‌شخص جمع فعل</string>
+    <!-- participle -->
+    <string name="inflection_sq_participle_label">وجه وصفی</string>
+    <string name="inflection_sq_participle">وجه وصفی فعل</string>
+    <!-- mediopassive -->
+    <string name="inflection_sq_mediopassive_label">میانه‌مجهول</string>
+    <string name="inflection_sq_mediopassive">صورت میانه‌مجهول فعل</string>
+    <!-- optative first-person singular present -->
+    <string name="inflection_sq_optative_first_person_singular_present_label">دعایی حال، اول‌شخص مفرد</string>
+    <string name="inflection_sq_optative_first_person_singular_present">صورت دعایی حال اول‌شخص مفرد فعل</string>
+    <!-- optative second-person singular present -->
+    <string name="inflection_sq_optative_second_person_singular_present_label">دعایی حال، دوم‌شخص مفرد</string>
+    <string name="inflection_sq_optative_second_person_singular_present">صورت دعایی حال دوم‌شخص مفرد فعل</string>
+    <!-- optative third-person singular present -->
+    <string name="inflection_sq_optative_third_person_singular_present_label">دعایی حال، سوم‌شخص مفرد</string>
+    <string name="inflection_sq_optative_third_person_singular_present">صورت دعایی حال سوم‌شخص مفرد فعل</string>
+    <!-- optative first-person plural present -->
+    <string name="inflection_sq_optative_first_person_plural_present_label">دعایی حال، اول‌شخص جمع</string>
+    <string name="inflection_sq_optative_first_person_plural_present">صورت دعایی حال اول‌شخص جمع فعل</string>
+    <!-- optative second-person plural present -->
+    <string name="inflection_sq_optative_second_person_plural_present_label">دعایی حال، دوم‌شخص جمع</string>
+    <string name="inflection_sq_optative_second_person_plural_present">صورت دعایی حال دوم‌شخص جمع فعل</string>
+    <!-- optative third-person plural present -->
+    <string name="inflection_sq_optative_third_person_plural_present_label">دعایی حال، سوم‌شخص جمع</string>
+    <string name="inflection_sq_optative_third_person_plural_present">صورت دعایی حال سوم‌شخص جمع فعل</string>
+    <!-- nominalization -->
+    <string name="inflection_sq_nominalization_label">اسم‌سازی</string>
+    <string name="inflection_sq_nominalization">صورت اسمی فعل</string>
+    <!-- -e -->
+    <string name="inflection_sq_e_label">مؤنث یا جمع</string>
+    <string name="inflection_sq_e">صورت مؤنث یا جمعِ صفت (moderne از modern، turistike از turistik)</string>
+    <!-- ë as e -->
+    <string name="inflection_sq_as_e_label">e به‌جای ë</string>
+    <string name="inflection_sq_as_e">ë پایانی که به صورت e نوشته شده است (gjate به‌جای gjatë، mire به‌جای mirë)</string>
+    <!-- -a -->
+    <string name="inflection_sq_a_label">جمع مؤنث</string>
+    <string name="inflection_sq_a">جمع مؤنثِ صفت (gjitha از gjithë، larta از lartë، vjetra از vjetër، vogla از vogël)</string>
+    <!-- -me -->
+    <string name="inflection_sq_me_label">مؤنث یا جمع</string>
+    <string name="inflection_sq_me">صورت مؤنث یا جمعِ صفت مختوم به -ëm (sotme از sotëm، rëndësishme از rëndësishëm)</string>
+    <!-- -het -->
+    <string name="inflection_sq_het_label">میانه‌مجهول</string>
+    <string name="inflection_sq_het">میانه‌مجهول حال، سوم‌شخص (ndodhet و ndodhen از ndodh، shtrihet از shtrij، mendohet از mendoj)</string>
+    <!-- -hej -->
+    <string name="inflection_sq_hej_label">میانه‌مجهول گذشتهٔ استمراری</string>
+    <string name="inflection_sq_hej">میانه‌مجهول گذشتهٔ استمراری، سوم‌شخص مفرد (bëhej از bëj، formohej از formoj)</string>
+    <!-- -uar -->
+    <string name="inflection_sq_uar_label">وجه وصفی</string>
+    <string name="inflection_sq_uar">وجه وصفی، همچنین در نقش صفت مؤنث یا جمع (bazuar و banuara از bazoj، banoj؛ shkruar از shkruaj؛ thirrur و mbetura از thirr، mbet؛ kthyer از kthej)</string>
+    <!-- -ua -->
+    <string name="inflection_sq_ua_label">آئوریست</string>
+    <string name="inflection_sq_ua">آئوریست، سوم‌شخص (përfundoi از përfundoj؛ botua و vërtetuan از botoj، vërtetoj؛ shkrua از shkruaj؛ kthye از kthej)</string>
+    <!-- -on -->
+    <string name="inflection_sq_on_label">حال</string>
+    <string name="inflection_sq_on">حال، سوم‌شخص (daton و datojnë از datoj، hyjnë از hyj)</string>
+    <!-- -onte -->
+    <string name="inflection_sq_onte_label">گذشتهٔ استمراری</string>
+    <string name="inflection_sq_onte">گذشتهٔ استمراری، سوم‌شخص مفرد (numëronte از numëroj)</string>
+    <!-- -i -->
+    <string name="inflection_sq_i_label">معرفه</string>
+    <string name="inflection_sq_i">صورت معرفهٔ اسم مذکر (termi از term، sporti از sport)</string>
+    <!-- -it -->
+    <string name="inflection_sq_it_label">حالت اضافی معرفه</string>
+    <string name="inflection_sq_it">حالت اضافی، برایی یا ازیِ اسم مذکر معرفه (sulmit از sulm، jugut از jug)</string>
+    <!-- -in -->
+    <string name="inflection_sq_in_label">حالت مفعولی معرفه</string>
+    <string name="inflection_sq_in">حالت مفعولیِ اسم مذکر معرفه (sulmin از sulm، ndikimin از ndikim)</string>
+    <!-- -ët -->
+    <string name="inflection_sq_t_label">جمع معرفه</string>
+    <string name="inflection_sq_t">جمع معرفه (aleatët از aleat، dokumentet از dokument)</string>
+    <!-- -ve -->
+    <string name="inflection_sq_ve_label">حالت اضافی جمع</string>
+    <string name="inflection_sq_ve">حالت اضافی، برایی یا ازیِ جمع (tipareve از tipar، shqiptarve از shqiptar، rrokjeve از rrokje)</string>
+    <!-- -ia -->
+    <string name="inflection_sq_ia_label">معرفه</string>
+    <string name="inflection_sq_ia">صورت معرفهٔ اسم مؤنث (industria از industri، shitja از shitje، gjermanishtja از gjermanishte)</string>
+    <!-- -së -->
+    <string name="inflection_sq_s_label">حالت اضافی معرفه</string>
+    <string name="inflection_sq_s">حالت اضافی، برایی یا ازیِ اسم مؤنث معرفه (drejtësisë از drejtësi، paqes از paqe، federatës از federatë)</string>
+    <!-- -ën -->
+    <string name="inflection_sq_n_label">حالت مفعولی معرفه</string>
+    <string name="inflection_sq_n">حالت مفعولیِ اسم مؤنث معرفه (lejen از leje، konferencën از konferencë)</string>
+</resources>

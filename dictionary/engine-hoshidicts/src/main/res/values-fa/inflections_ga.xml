@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_ga.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- lenition -->
+    <string name="inflection_ga_lenition_label">نرم‌شدگی</string>
+    <string name="inflection_ga_lenition">نرم‌شدگی: bh ch dh fh gh mh ph sh th به‌جای b c d f g m p s t، و ts به‌جای s پس از حرف تعریف (an bhean از bean، an tsráid از sráid)</string>
+    <!-- eclipsis -->
+    <string name="inflection_ga_eclipsis_label">اکلیپسیس</string>
+    <string name="inflection_ga_eclipsis">اکلیپسیس: mb gc nd bhf ng bp dt به‌جای b c d f g p t، و n- پیش از مصوت (i nGaillimh از Gaillimh، ár n-athair از athair)</string>
+    <!-- t-prothesis -->
+    <string name="inflection_ga_t_prothesis_label">پیش‌افزایی t</string>
+    <string name="inflection_ga_t_prothesis">t پیش از مصوت (an t-uisce از uisce، an tAontas از Aontas)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_ga_h_prothesis_label">پیش‌افزایی h</string>
+    <string name="inflection_ga_h_prothesis">h پیش از مصوت (na hÉireann از Éireann، a hathair از athair)</string>
+</resources>

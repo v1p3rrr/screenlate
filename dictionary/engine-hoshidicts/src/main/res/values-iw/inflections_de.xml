@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- nominalization -->
+    <string name="inflection_de_nominalization_label">נומינליזציה</string>
+    <string name="inflection_de_nominalization">שם עצם שנוצר מפועל</string>
+    <!-- -bar -->
+    <string name="inflection_de_bar">שם תואר בסיומת -bar שנוצר מפועל, כמו -able באנגלית</string>
+    <!-- negative -->
+    <string name="inflection_de_negative_label">שלילה</string>
+    <string name="inflection_de_negative">שלילה בתחילית un-</string>
+    <!-- past participle -->
+    <string name="inflection_de_past_participle_label">בינוני עבר</string>
+    <!-- separated prefix -->
+    <string name="inflection_de_separated_prefix_label">תחילית מופרדת</string>
+    <!-- zu-infinitive -->
+    <string name="inflection_de_zu_infinitive_label">שם פועל עם zu</string>
+    <!-- -heit -->
+    <string name="inflection_de_heit">1. הופכת שם תואר לשם עצם, ובדרך כלל מציינת תכונה מופשטת של השורש התוארי. לרוב היא מקבילה לסיומות האנגליות -ness, -th, -ty, -dom:\n	 schön (\"יפה\") + -heit → Schönheit (\"יופי\")\n	 neu (\"חדש\") + -heit → Neuheit (\"חידוש\")\n2. הופכת שמות עצם מוחשיים לשמות עצם מופשטים:\n	 Kind (\"ילד\") + -heit → Kindheit (\"ילדות\")\n	 Christ (\"נוצרי\") + -heit → Christenheit (\"העולם הנוצרי\")\n</string>
+</resources>

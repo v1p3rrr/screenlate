@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_ga.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- lenition -->
+    <string name="inflection_ga_lenition_label">ריכוך</string>
+    <string name="inflection_ga_lenition">ריכוך: bh ch dh fh gh mh ph sh th במקום b c d f g m p s t, ואחרי תווית היידוע ts במקום s (an bhean מן bean, an tsráid מן sráid)</string>
+    <!-- eclipsis -->
+    <string name="inflection_ga_eclipsis_label">אקליפסיס</string>
+    <string name="inflection_ga_eclipsis">אקליפסיס: mb gc nd bhf ng bp dt במקום b c d f g p t, ולפני תנועה n- (i nGaillimh מן Gaillimh, ár n-athair מן athair)</string>
+    <!-- t-prothesis -->
+    <string name="inflection_ga_t_prothesis_label">פרותזה של t</string>
+    <string name="inflection_ga_t_prothesis">הוספת t לפני תנועה (an t-uisce מן uisce, an tAontas מן Aontas)</string>
+    <!-- h-prothesis -->
+    <string name="inflection_ga_h_prothesis_label">פרותזה של h</string>
+    <string name="inflection_ga_h_prothesis">הוספת h לפני תנועה (na hÉireann מן Éireann, a hathair מן athair)</string>
+</resources>

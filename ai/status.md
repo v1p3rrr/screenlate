@@ -196,12 +196,29 @@ the details.
     translation check, candidate interface languages, smaller language bundles, converter data) is merged into
     `languages/main` (`3e82e306`; every bundle rebuilt from the merged sources, the 5c, marks and az/uz bundles shrank
     by 25-28 KB too; 1,909 unit tests, lint, the engine's instrumented tests 68 of 68 with the text rules' Thai case).
-    Strings added after `772bbad7` did not go through the translation check. The right-to-left strings are being
-    brought onto `languages/main` and checked on the emulator on `claude/rtl-1029`.
+    Strings added after `772bbad7` did not go through the translation check. The right-to-left strings had their
+    mirrored screens checked on 2026-10-29 and are merged into `languages/main` (section below).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
 - Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
+
+## Right-to-left interface languages (2026-10-29, merged into `languages/main`)
+
+`cloud/rtl-strings-2026-10-29` (Arabic, Persian and Hebrew strings) merged onto `languages/main` `3e82e306`; the 26
+strings added since the cloud branch started (the debug app's text action, two font notes, 16 form-of tags, 7 Turkic
+inflection labels) translated into the three. Checked on the emulator in the three locales (run log 2026-10-29,
+SET18-SET20) and fixed: the back arrow and chevrons mirror (`autoMirrored`, also the volume, lookup and dictionaries
+icons), expand arrows use their own icon, the bubble's side segments keep screen order, menu paths in the three
+scripts take ←, Persian Lookup is told from Search, and text not in the interface language keeps its direction
+(`ownDirection`; a catalog description falling back to English names the languages in English). Released,
+provisionally: `locales_config.xml` lists ar, fa and he (17 languages), `unlisted` is empty. Unit tests 1,915 (four
+skipped), lint and page tests (146) passed.
+
+- Provisional, for the owner (languages plan questions 94-100): ← in menu paths, the side segments, the mirrored icon
+  set, Persian Lookup's name, the release with the flags SA, IR, IL, English catalog texts.
+- Open: question 93 (Arabic form tags); lists joined with ", " in code (question 100); catalog and font texts in the
+  three (question 99); Wiktionary has no ar, fa or he gloss edition.
 
 ## App fixes from the owner's answers of 2026-10-28 evening (2026-10-29, merged into `languages/main`)
 

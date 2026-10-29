@@ -526,7 +526,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | SET3 | Yomitan settings import from the last card of the backup screen: the summary, applied to the profile's language | F | U YomitanSettingsTest, M | 2026-10-15 |
 | SET4 | Theme (system, light, dark) and colors (own, system) | O | U ThemeModeTest, M | |
 | SET5 | E-ink mode: black and white, larger sizes offered, turning off restores them | O | U EInkSizesTest, EInkEnlargementTest, M | |
-| SET6 | Interface language: each of the 14 locales; the bubble, popup and notifications follow it; a language chosen in the system's app settings while the app runs renames languages at once (`cmd locale set-app-locales`) | F | I AppLanguageResourcesTest, U TranslationsTest, M | 2026-10-14 |
+| SET6 | Interface language: each of the 17 locales (the right-to-left ones in SET18-SET20); the bubble, popup and notifications follow it; a language chosen in the system's app settings while the app runs renames languages at once (`cmd locale set-app-locales`) | F | I AppLanguageResourcesTest, U TranslationsTest, M | 2026-10-14 |
 | SET7 | Background work: battery optimization status and request, persistent notification switch, notifications-off note | O | M | |
 | SET8 | Holding an icon button shows its description | O | M | |
 | SET9 | Backup parts dialog: the list scrolls while Cancel and Next stay in view; Fonts and Dictionaries expand into files with sizes; an item's box is ✓, — or empty for all, some or none of its files; Cancel drops the changes; the next backup starts with the last accepted choice; in Russian | F | U BackupChoiceTest, M | 2026-10-15 |
@@ -538,6 +538,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | SET15 | Bubble → "Hide the bubble in apps" says "Shown in all apps" or "Hidden in N apps" (Russian: 1 приложении, 2 и 5 приложениях), an uninstalled hidden app not counted; it opens the list with its search, hidden apps first; a change shows in the count on return | N | M | |
 | SET16 | Anki and Audio are two pages, each with the language card while several languages are on; Home's failed audio sources link opens Audio on that language; Anki's reset keeps the audio settings; Audio's reset returns auto play, volume, sources and regions (of another language than Japanese: its own sources and the shared auto play and volume); Text recognition's reset returns the engines, OCR boost, Reduce load, the model choices and the text source, Bubble's no longer touches them | N | U SettingsKeysTest, M | |
 | SET17 | Background work ends with "If the service turns off" and its instruction (English and Russian; no vendor names) | N | M | |
+| SET18 | Right-to-left interface (Arabic, Persian, Hebrew; `cmd locale set-app-locales com.vpr.screenlate.debug --locales ar`, `fa`, `he`, the activity in the foreground): Home, Languages, the Settings list, Bubble, Text recognition, Dictionaries, Appearance, Anki, Backup and Search are mirrored (navigation bar from the right, back arrow pointing right, chevrons left, the volume, lookup and dictionaries icons mirrored, switches and sliders from the right); Bubble's side segments keep Left on the left; expand arrows (catalog sections, the backup parts dialog) point down, up when open; the docked bubble's hold menu lists the flags from the right with the active one first; no clipped or overlapping text, no raw placeholders | F | M | 2026-10-29 |
+| SET19 | Mixed directions in a right-to-left interface: Latin names and brackets in translated strings in order ("… Default (Screenlate Photo Test).", "ML Kit (…)", "48 dp" read as "dp 48"); menu paths in the locale's script with ← (Appearance: Apps ← Screenlate ← Language), paths in Latin letters with → (Hebrew Yomitan import hints); a catalog description in English ("Swedish glosses of JMdict.") keeps its full stop at its end and names the languages in English ("Wiktionary, Japanese → Russian: …"); a dictionary's index.json description reads left to right with its links; the popup's Japanese and the Search results (neko → ねこ) stay left to right | F | U KeepDirectionTest, CatalogParseTest, M | 2026-10-29 |
+| SET20 | Appearance → Language lists العربية 🇸🇦, فارسی 🇮🇷 and עברית 🇮🇱 among the 17 and shows the one in use; Hebrew is stored as he and loads `values-iw` (`get-app-locales` → `[he]`); Persian's Lookup settings (جستجو در واژه‌نامه‌ها) are told from its Search tab (جستجو) | F | U TranslationsTest, LanguageOptionsTest, M | 2026-10-29 |
 
 ### UPD: About, logs, updates
 
@@ -646,7 +649,7 @@ the same AVD is a finding. The first run of this model records them in the run l
 | NF7 | Settings pages open with the current values, no defaults shown first; the Dictionaries page's first opening in a process shows a progress indicator in place of the lists, not empty sections (screen recording after a restart) | F | M | 2026-10-14 |
 | NF8 | Memory: PSS docked, after a scan, and after 20 scans back near the docked value (no growth) | F | M | 2026-10-14 |
 | NF9 | Sizes: APK per ABI against the last release; installed size (app, data) after a fresh install with Japanese | F | M | 2026-10-14, 2026-10-15 (APK) |
-| NF10 | Long texts wrap and screens scroll in all 14 locales (download screen, Languages, settings hints; spot checks in de, ru, vi, ja) | F | M | 2026-10-14 |
+| NF10 | Long texts wrap and screens scroll in all 17 locales (download screen, Languages, settings hints; spot checks in de, ru, vi, ja) | F | M | 2026-10-14 |
 | NF11 | Import times: JMdict from a file, the Japanese defaults on first run (download and import) | O | M | 2026-10-14 (bundled) |
 | NF12 | Search updates while typing without visible lag | O | M | 2026-10-14 |
 | NF13 | PaddleOCR memory: 10 s after the last recognition "Freed the memory of large inputs: … MB" (v6 on `ja-page-light.png`: ~360 → ~35 MB; native heap in `dumpsys meminfo` back near its value before the scan); scans less than 10 s apart do not trim between them; the next scan after a trim reads the same paragraphs | F | U IdleActionTest, M | 2026-10-19 |
@@ -665,6 +668,31 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `claude/rtl-1029` (`cloud/rtl-strings-2026-10-29` merged onto `languages/main` `3e82e306`; the fixes below built uncommitted, committed after the run), Pixel_10_Pro (API 37)
+
+Scope: the right-to-left interface in Arabic, Persian and Hebrew, set per app (`cmd locale set-app-locales`; the
+system language stayed English). An x86_64-only APK. Automated: unit tests (1,915, four skipped), lint and the page
+tests (146) passed.
+
+- First pass (the branch as merged), in all three: every screen listed in SET18 is mirrored and its text fits; the
+  popup over `ja-page-light.png` (ました, 真下) and Search's neko → ねこ stay left to right. Found: the back arrow
+  and the chevrons did not mirror; the bubble's side segments showed Right on the left; → in menu paths read
+  backwards; Persian named Lookup and Search the same; Appearance's list lacked the three (not released yet).
+- Second pass (fixed build): the arrows and chevrons point the reading way, the expand arrows of the catalog sections
+  and the backup parts dialog turn as before, Left is on the left in Bubble's side, the Appearance hint reads
+  Apps ← Screenlate ← Language, and the list offers العربية, فارسی and עברית with their flags and shows the current
+  one. Found: a catalog description falling back to English showed its full stop on the left (Compose gives a
+  paragraph the screen's direction) and, in Arabic, mixed the Arabic language names into the English sentence; fixed
+  with `ownDirection` and English names, checked in Arabic and Hebrew ("Swedish glosses of JMdict.", "Wiktionary,
+  Japanese → Russian: …", Jitendex's index.json text with its link). Korean starred for the hold menu: the flags run
+  from the right, the active Japanese first; the star removed afterwards.
+- Left: lists joined with ", " in code (a Latin comma in Arabic and Persian), the catalog and font texts in English
+  (questions 99-100 of the languages plan).
+- Gotcha: after the reinstall, a locale set while only the service ran left the restored activity with Persian
+  strings and Arabic language names; set with the activity in the foreground, it switched at once.
+- Moved from N to F: SET18, SET19, SET20 (added with this run). The app locale reset to the system default
+  (`get-app-locales` → `[]`), Japanese active and starred alone, the service bound; the emulator powered off.
 
 ### 2026-10-29, `languages/main` `2c72f956` (the own-name bubble letters, the OCR text rules and the app fixes), Pixel_10_Pro (API 37)
 

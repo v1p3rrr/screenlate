@@ -56,6 +56,7 @@ import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.ownDirection
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
 import androidx.compose.runtime.mutableIntStateOf
@@ -328,7 +329,7 @@ private fun SetupItemRow(
                 style = MaterialTheme.typography.bodySmall,
                 color = if (item.installed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            entry.description().takeIf { it.isNotEmpty() }?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+            entry.description().takeIf { it.isNotEmpty() }?.let { Text(ownDirection(it), style = MaterialTheme.typography.bodySmall) }
             if (main != null) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.language_setup_main_model), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))

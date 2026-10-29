@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_es_plural_label">רבים</string>
+    <string name="inflection_es_plural">צורת הרבים של שם עצם</string>
+    <!-- feminine adjective -->
+    <string name="inflection_es_feminine_adjective_label">שם תואר בנקבה</string>
+    <string name="inflection_es_feminine_adjective">צורת הנקבה של שם תואר</string>
+    <!-- present indicative -->
+    <string name="inflection_es_present_indicative_label">הווה (חיווי)</string>
+    <string name="inflection_es_present_indicative">צורת זמן הווה בדרך החיווי של פועל</string>
+    <!-- preterite -->
+    <string name="inflection_es_preterite_label">פרטריט</string>
+    <string name="inflection_es_preterite">צורת הפרטריט (עבר) של פועל</string>
+    <!-- imperfect -->
+    <string name="inflection_es_imperfect_label">אימפרפקט</string>
+    <string name="inflection_es_imperfect">צורת האימפרפקט של פועל</string>
+    <!-- progressive -->
+    <string name="inflection_es_progressive_label">צורה מתמשכת</string>
+    <string name="inflection_es_progressive">הצורה המתמשכת (גרונדיו) של פועל</string>
+    <!-- imperative -->
+    <string name="inflection_es_imperative_label">ציווי</string>
+    <string name="inflection_es_imperative">צורת הציווי של פועל</string>
+    <!-- conditional -->
+    <string name="inflection_es_conditional_label">דרך התנאי</string>
+    <string name="inflection_es_conditional">צורת התנאי של פועל</string>
+    <!-- future -->
+    <string name="inflection_es_future_label">זמן עתיד</string>
+    <string name="inflection_es_future">צורת זמן עתיד של פועל</string>
+    <!-- present subjunctive -->
+    <string name="inflection_es_present_subjunctive_label">סוביונקטיב הווה</string>
+    <string name="inflection_es_present_subjunctive">צורת סוביונקטיב הווה של פועל</string>
+    <!-- imperfect subjunctive -->
+    <string name="inflection_es_imperfect_subjunctive_label">סוביונקטיב אימפרפקט</string>
+    <string name="inflection_es_imperfect_subjunctive">צורת סוביונקטיב אימפרפקט של פועל</string>
+    <!-- participle -->
+    <string name="inflection_es_participle_label">בינוני</string>
+    <string name="inflection_es_participle">צורת הבינוני של פועל</string>
+    <!-- reflexive -->
+    <string name="inflection_es_reflexive_label">צורה חוזרת</string>
+    <string name="inflection_es_reflexive">צורה חוזרת של פועל</string>
+    <!-- pronoun substitution -->
+    <string name="inflection_es_pronoun_substitution_label">החלפת כינוי</string>
+    <string name="inflection_es_pronoun_substitution">כינוי מוחלף של פועל חוזר</string>
+    <!-- pronominal -->
+    <string name="inflection_es_pronominal_label">פועל כינויי</string>
+    <string name="inflection_es_pronominal">צורה כינויית של פועל: כינוי חוזר לפני הפועל</string>
+</resources>

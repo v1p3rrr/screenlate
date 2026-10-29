@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_turkic.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_turkic_plural_label">الجمع</string>
+    <string name="inflection_turkic_possessive_1sg_label">ملكية المتكلم</string>
+    <string name="inflection_turkic_possessive_2sg_label">ملكية المخاطب</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">ملكية المخاطب (احترامًا)</string>
+    <string name="inflection_turkic_possessive_3rd_label">ملكية الغائب</string>
+    <string name="inflection_turkic_possessive_1pl_label">ملكية المتكلم الجمع</string>
+    <string name="inflection_turkic_genitive_label">حالة الجر</string>
+    <string name="inflection_turkic_dative_label">حالة القابل</string>
+    <string name="inflection_turkic_accusative_label">حالة النصب</string>
+    <string name="inflection_turkic_locative_label">حالة الظرفية</string>
+    <string name="inflection_turkic_ablative_label">حالة الانفصال</string>
+    <string name="inflection_turkic_instrumental_label">حالة الأداة</string>
+    <string name="inflection_turkic_attributive_locative_label">الظرفية النعتية</string>
+    <string name="inflection_turkic_attributive_label">صفة النسبة</string>
+    <string name="inflection_turkic_equative_label">حالة التشبيه</string>
+    <string name="inflection_turkic_manner_label">الكيفية</string>
+    <string name="inflection_turkic_1sg_label">المتكلم المفرد</string>
+    <string name="inflection_turkic_2sg_label">المخاطب المفرد</string>
+    <string name="inflection_turkic_2sg_polite_label">المخاطب المفرد (احترامًا)</string>
+    <string name="inflection_turkic_3rd_label">الغائب</string>
+    <string name="inflection_turkic_1pl_label">المتكلم الجمع</string>
+    <string name="inflection_turkic_2pl_label">المخاطب الجمع</string>
+    <string name="inflection_turkic_2pl_polite_label">المخاطب الجمع (احترامًا)</string>
+    <string name="inflection_turkic_past_label">الماضي</string>
+    <string name="inflection_turkic_present_label">الحاضر</string>
+    <string name="inflection_turkic_conditional_label">صيغة الشرط</string>
+    <string name="inflection_turkic_past_participle_label">الصفة الفعلية الماضية</string>
+    <string name="inflection_turkic_habitual_participle_label">الصفة الفعلية الاعتيادية</string>
+    <string name="inflection_turkic_aorist_label">الأوريست</string>
+    <string name="inflection_turkic_intention_label">النية</string>
+    <string name="inflection_turkic_converb_label">صيغة الحال</string>
+    <string name="inflection_turkic_purpose_label">صيغة الغرض</string>
+    <string name="inflection_turkic_until_label">حتى</string>
+    <string name="inflection_turkic_imperative_label">صيغة الأمر</string>
+    <string name="inflection_turkic_please_label">الطلب المهذب</string>
+    <string name="inflection_turkic_negative_label">النفي</string>
+    <string name="inflection_turkic_passive_label">المبني للمجهول</string>
+    <string name="inflection_turkic_reflexive_label">الصيغة الانعكاسية</string>
+    <string name="inflection_turkic_reciprocal_label">الصيغة التبادلية</string>
+    <string name="inflection_turkic_causative_label">السببية</string>
+    <string name="inflection_turkic_question_label">الاستفهام</string>
+    <string name="inflection_turkic_possessive_2pl_label">ملكية المخاطب الجمع</string>
+    <string name="inflection_turkic_verbal_noun_label">المصدر</string>
+    <string name="inflection_turkic_past_copula_label">الرابطة في الماضي</string>
+    <string name="inflection_turkic_conditional_copula_label">الرابطة الشرطية</string>
+    <string name="inflection_turkic_evidential_copula_label">الرابطة للإخبار غير المباشر</string>
+    <string name="inflection_turkic_future_label">المستقبل</string>
+    <string name="inflection_turkic_evidential_label">الماضي المنقول</string>
+    <string name="inflection_turkic_necessity_label">الوجوب</string>
+    <string name="inflection_turkic_participle_label">صفة فعلية</string>
+</resources>

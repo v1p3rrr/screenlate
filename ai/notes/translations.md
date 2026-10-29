@@ -3,7 +3,13 @@
 UI strings live in `values*/strings.xml` of `app`, `overlay`, `core/anki` and `dictionary/api`, and the Japanese
 inflection names and descriptions shown in the popup in `values*/inflections_ja.xml` of `dictionary/engine-hoshidicts`
 (GPL, from Yomitan through hoshidicts; `tools/generate_inflections.py` writes only the English file, translations are
-edited by hand). 14 locales: English (`values`), ru, de, es, fr, it, ja, ko, pl, pt, tr, vi, `b+zh+Hans`, `b+zh+Hant`.
+edited by hand). 17 locales: English (`values`), ru, de, es, fr, it, ja, ko, pl, pt, tr, vi, `b+zh+Hans`, `b+zh+Hant`,
+and since 2026-10-29 ar, fa and Hebrew as `iw`: Android's own resources use the old codes `iw` (and `in` for
+Indonesian), which every version resolves; `values-he` works only where the platform maps he to iw.
+`res/xml/locales_config.xml`, the list the language settings offer, is written by hand and names Hebrew `he`, which
+resolves to `values-iw` (checked on API 37: `set-app-locales --locales he` loads the Hebrew strings, and
+`get-app-locales` reports `[he]`). `TranslationsTest` checks that the list holds every translation (iw as he) except
+those in `unlisted`, which held ar, fa and iw until their screens were checked and is empty since.
 `TranslationsTest` finds every string file under `values/` of every module and checks that every key exists in every
 locale with the same format arguments, that plurals have the CLDR categories of their locale, and that apostrophes,
 quotes and line breaks are escaped.
@@ -19,7 +25,9 @@ Inflection terms per language follow the school grammar of Japanese taught in th
   `aapt2 dump resources`): paragraphs need `\n`, so "\n\n" between paragraphs of ⓘ texts. The test fails on a raw
   line break.
 - `'` and `"` must be escaped (`\'`, `\"`); typographic quotes and apostrophes need no escape.
-- Plural categories: ru/pl one, few, many, other; de/tr one, other; es/fr/it/pt one, many, other; ja/ko/vi/zh other.
+- Plural categories: ru/pl one, few, many, other; de/tr one, other; es/fr/it/pt one, many, other; ja/ko/vi/zh other;
+  ar zero, one, two, few, many, other; fa one, other; iw one, two, other (CLDR 42 dropped Hebrew many). Every item
+  carries the format argument (the test requires it), so Arabic one and two read «قاموس واحد (%1$d)», «قاموسان (%1$d)».
 
 ## Conventions per language
 
@@ -81,6 +89,55 @@ Settled on the way:
 - vi: "pinyin", progress "tiến độ", the bubble's hidden apps "ứng dụng ẩn bong bóng".
 - zh-Hans: the app's Home tab is 首页 (主屏幕 is the launcher). zh-Hant uses Taiwan words: 輕觸, 單字, 內建, 套用,
   還原 and 一般 in the backup screens, 拖曳控點, 震動, 直排, 憑證, 位址, 區域網路, 建置, 取得, 解壓縮.
+
+## Right-to-left locales (2026-10-29)
+
+- ar: Modern Standard Arabic, «» quotes, the Arabic comma and question mark, Western digits where English has
+  literal digits; progress جارٍ…, failures تعذّر…; bubble الفقاعة, popup النافذة المنبثقة, on-device recognition
+  التعرّف داخل الجهاز («على الجهاز» reads as recognizing the device); product names in Latin letters with و attached.
+- fa: Persian letters (ی ک) and zero-width non-joiners, «» quotes, Persian digits in the text (as `%d` prints them),
+  the polite plural address, verbal nouns on buttons; bubble حباب, popup پنجره بازشو, screenshot نماگرفت.
+- iw: no niqqud, full spelling, geresh ׳ and gershayim ״ (no ASCII apostrophes), UI names in escaped straight
+  quotes; verbal nouns on buttons and switches (מחיקה) and infinitives in confirmation questions, impersonal
+  instructions; Anki's own Hebrew terms (חפיסה, רשומה, סוג רשומה); definitions פירושים, as הגדרות means settings.
+- Menu paths written in the locale's script take ← (Apps ← Screenlate ← Language), as → points against the reading
+  direction there (question 94 of the languages plan, provisional): `settings_language_hint`,
+  `onboarding_device_restricted_settings` and `background_launch_path` in all three, the Yomitan import hints in ar
+  and fa. Paths written in Latin letters keep → since they form a left-to-right run: the iw Yomitan hints name the
+  English menus (Settings → Backup → Export Settings); romaji examples (taberu → たべる) and language-code pairs
+  (ja → en) as well.
+- fa: the Lookup settings and their sections are جستجو در واژه‌نامه‌ها, as the Search tab is جستجو (ar البحث في
+  القواميس and iw חיפוש במילון were apart already).
+- The terms added with the strings of 2026-10-29 (form-of tags, Turkic inflection labels): ar صيغة التكسير (broken
+  form), الإخبار غير المباشر (evidential), الرابطة (copula), صفة فعلية (participle); fa گواه‌نما (evidential), وجه
+  وصفی (participle), فعل ربطی (copula), گذشتهٔ نقلی (perfect); iw אווידנציאלי (evidential), אוגד (copula), בינוני
+  (participle), קונוורב (converb).
+
+## Right-to-left screens (emulator check of 2026-10-29)
+
+- Compose mirrors the layout by itself (rows, navigation bar, switches and sliders start from the right). Vector
+  drawables that point a way need `android:autoMirrored="true"`: the back arrow and the chevron, and, as in Material's
+  auto-mirrored set, the volume, lookup (manage search) and dictionaries (library books) icons. An expand arrow is
+  `ic_expand_more` turned 180° when open: a mirrored chevron turned 90° would point up when closed.
+- Controls that name screen edges stay left to right (`LocalLayoutDirection provides LayoutDirection.Ltr` around the
+  bubble's side segments), so Left is on the left.
+- Compose gives a paragraph the screen's direction whatever its first letter (a `TextView` would take the first
+  strong letter), so an English sentence in a right-to-left screen shows its full stop on the left.
+  `ownDirection` (`ui/components/Bidi.kt`) wraps each line whose first letter has the other direction in a Unicode
+  isolate (LRI or RLI … PDI): catalog and font descriptions, a dictionary's index.json description and attribution,
+  OCR model descriptions. The English fallback of a catalog description names the languages in English
+  (`DictionaryCatalog.description`); with the interface's names it mixed Arabic names into the English sentence, and
+  the arrow between them turned with the Arabic run.
+- Translated strings with Latin names and brackets need nothing: the bracket-pair rule keeps «… Default (Screenlate
+  Photo Test).», «ML Kit (مدمج)»; «48 dp» reads «dp 48», as usual in these scripts. `Formatter.formatShortFileSize`
+  marks its own result. Persian `%d` prints Persian digits; Arabic (without region) prints Western ones.
+- Content stays left to right where it is not in these scripts: the popup's Japanese and the Search results.
+- Not done: lists joined in code with ", " (22 places, for example a dictionary's counts) keep a Latin comma where
+  Arabic and Persian write ، (and Japanese and Chinese 、); the 70 catalog texts and 38 font descriptions have no ar,
+  fa or he version and show the English one; Wiktionary has no ar, fa or he gloss edition.
+- Emulator gotcha: after a reinstall, `cmd locale set-app-locales` sent while only the accessibility service runs can
+  leave the restored activity with the previous locale's strings (`Locale.getDefault()` already the new one, so
+  language names change); set the locale with the activity in the foreground.
 
 ## Tone (2026-10-14 audit)
 

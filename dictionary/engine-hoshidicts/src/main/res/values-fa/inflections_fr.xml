@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- present indicative -->
+    <string name="inflection_fr_present_indicative_label">حال اخباری</string>
+    <string name="inflection_fr_present_indicative">صورت حال اخباری فعل</string>
+    <!-- imperfect indicative -->
+    <string name="inflection_fr_imperfect_indicative_label">گذشتهٔ استمراری اخباری</string>
+    <string name="inflection_fr_imperfect_indicative">صورت گذشتهٔ استمراری اخباری فعل</string>
+    <!-- future -->
+    <string name="inflection_fr_future_label">آینده</string>
+    <string name="inflection_fr_future">صورت آیندهٔ فعل</string>
+    <!-- imperative present -->
+    <string name="inflection_fr_imperative_present_label">امری حال</string>
+    <string name="inflection_fr_imperative_present">صورت امری فعل</string>
+    <!-- Conditional -->
+    <string name="inflection_fr_conditional_label">شرطی</string>
+    <string name="inflection_fr_conditional">صورت شرطی فعل</string>
+    <!-- Preterite -->
+    <string name="inflection_fr_preterite_label">گذشتهٔ ساده</string>
+    <string name="inflection_fr_preterite">صورت گذشتهٔ ساده (passé simple) فعل</string>
+    <!-- plural -->
+    <string name="inflection_fr_plural_label">جمع</string>
+    <string name="inflection_fr_plural">صورت جمع اسم</string>
+    <!-- present participle -->
+    <string name="inflection_fr_present_participle_label">وجه وصفی حال</string>
+    <string name="inflection_fr_present_participle">وجه وصفی حال فعل</string>
+    <!-- present subjunctive -->
+    <string name="inflection_fr_present_subjunctive_label">حال التزامی</string>
+    <string name="inflection_fr_present_subjunctive">صورت حال التزامی فعل</string>
+</resources>

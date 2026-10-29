@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_et.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- negative -->
+    <string name="inflection_et_negative_label">النفي</string>
+    <string name="inflection_et_negative">نفي olema: pole, polnud, poleks, poldud, polevat (pole من olema)</string>
+</resources>

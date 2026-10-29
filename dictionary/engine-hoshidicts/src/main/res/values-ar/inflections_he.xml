@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_he.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- ו- -->
+    <string name="inflection_he_v_label">واو العطف</string>
+    <string name="inflection_he_v">حرف العطف «و» (ואני, והבית)</string>
+    <!-- ש- -->
+    <string name="inflection_he_sh_label">الذي</string>
+    <string name="inflection_he_sh">أنّ، الذي، مَن (שאמר, שבבית)</string>
+    <!-- כש- -->
+    <string name="inflection_he_ksh_label">عندما</string>
+    <string name="inflection_he_ksh">عندما، حين (כשהגעתי)</string>
+    <!-- ב- -->
+    <string name="inflection_he_b_label">في</string>
+    <string name="inflection_he_b">في، عند، بـ (בבית)</string>
+    <!-- כ- -->
+    <string name="inflection_he_k_label">مثل</string>
+    <string name="inflection_he_k">مثل، كـ (כילד)</string>
+    <!-- ל- -->
+    <string name="inflection_he_l_label">إلى</string>
+    <string name="inflection_he_l">إلى، لـ (לבית)</string>
+    <!-- מ- -->
+    <string name="inflection_he_m_label">من</string>
+    <string name="inflection_he_m">من، للابتداء وللمقارنة (מירושלים, מהבית)</string>
+    <!-- ה- -->
+    <string name="inflection_he_h_label">أداة التعريف</string>
+    <string name="inflection_he_h">أداة التعريف (הבית)</string>
+</resources>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_fa.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -م -->
+    <string name="inflection_fa_m_label">المتكلم المفرد</string>
+    <string name="inflection_fa_m">المتكلم المفرد: «ـي» للملكية (کتابم) أو «أنا ...» (خوشحالم)</string>
+    <!-- -ت -->
+    <string name="inflection_fa_t_label">المخاطب المفرد</string>
+    <string name="inflection_fa_t">المخاطب المفرد: «ـك» للملكية (کتابت)</string>
+    <!-- -ش -->
+    <string name="inflection_fa_sh_label">الغائب المفرد</string>
+    <string name="inflection_fa_sh">الغائب المفرد: «ـه، ـها» للملكية (کتابش)</string>
+    <!-- -مان -->
+    <string name="inflection_fa_man_label">المتكلم الجمع</string>
+    <string name="inflection_fa_man">المتكلم الجمع: «ـنا» للملكية (کتابمان)</string>
+    <!-- -تان -->
+    <string name="inflection_fa_tan_label">المخاطب الجمع</string>
+    <string name="inflection_fa_tan">المخاطب الجمع: «ـكم» للملكية (کتابتان)</string>
+    <!-- -شان -->
+    <string name="inflection_fa_shan_label">الغائب الجمع</string>
+    <string name="inflection_fa_shan">الغائب الجمع: «ـهم» للملكية (کتابشان)</string>
+    <!-- -ام -->
+    <string name="inflection_fa_am_label">المتكلم المفرد</string>
+    <string name="inflection_fa_am">المتكلم المفرد بعد ه: «ـي» للملكية (خانه‌ام) أو «أنا ...» (خسته‌ام)</string>
+    <!-- -ات -->
+    <string name="inflection_fa_at_label">المخاطب المفرد</string>
+    <string name="inflection_fa_at">المخاطب المفرد بعد ه: «ـك» للملكية (خانه‌ات)</string>
+    <!-- -اش -->
+    <string name="inflection_fa_ash_label">الغائب المفرد</string>
+    <string name="inflection_fa_ash">الغائب المفرد بعد ه: «ـه، ـها» للملكية (خانه‌اش)</string>
+    <!-- -یم -->
+    <string name="inflection_fa_ym_label">المتكلم المفرد؛ المتكلم الجمع</string>
+    <string name="inflection_fa_ym">المتكلم: «ـي» للملكية بعد صائت (پایم) أو «نحن ...» (خوبیم)</string>
+    <!-- -یت -->
+    <string name="inflection_fa_yt_label">المخاطب المفرد</string>
+    <string name="inflection_fa_yt">المخاطب المفرد بعد صائت: «ـك» للملكية (پایت)</string>
+    <!-- -یش -->
+    <string name="inflection_fa_ysh_label">الغائب المفرد</string>
+    <string name="inflection_fa_ysh">الغائب المفرد بعد صائت: «ـه، ـها» للملكية (پایش)</string>
+    <!-- -یمان -->
+    <string name="inflection_fa_yman_label">المتكلم الجمع</string>
+    <string name="inflection_fa_yman">المتكلم الجمع بعد صائت: «ـنا» للملكية (پایمان)</string>
+    <!-- -یتان -->
+    <string name="inflection_fa_ytan_label">المخاطب الجمع</string>
+    <string name="inflection_fa_ytan">المخاطب الجمع بعد صائت: «ـكم» للملكية (پایتان)</string>
+    <!-- -یشان -->
+    <string name="inflection_fa_yshan_label">الغائب الجمع</string>
+    <string name="inflection_fa_yshan">الغائب الجمع بعد صائت: «ـهم» للملكية (پایشان)</string>
+    <!-- -مون -->
+    <string name="inflection_fa_mvn_label">المتكلم الجمع</string>
+    <string name="inflection_fa_mvn">المتكلم الجمع في العامية: «ـنا» للملكية (کتابمون) أو «لنا» (بهمون)</string>
+    <!-- -تون -->
+    <string name="inflection_fa_tvn_label">المخاطب الجمع</string>
+    <string name="inflection_fa_tvn">المخاطب الجمع في العامية: «ـكم» للملكية (کتابتون) أو «لكم» (بهتون)</string>
+    <!-- -شون -->
+    <string name="inflection_fa_shvn_label">الغائب الجمع</string>
+    <string name="inflection_fa_shvn">الغائب الجمع في العامية: «ـهم» للملكية (کتابشون) أو «لهم» (بهشون)</string>
+    <!-- -ی -->
+    <string name="inflection_fa_y_label">النكرة؛ المخاطب المفرد؛ الإضافة</string>
+    <string name="inflection_fa_y">ياء النكرة (کتابی)، أو «أنت ...» (خوبی)، أو الإضافة بعد صائت (پای)</string>
+    <!-- -ای -->
+    <string name="inflection_fa_ay_label">النكرة؛ المخاطب المفرد</string>
+    <string name="inflection_fa_ay">بعد ه: ياء النكرة (خانه‌ای) أو «أنت ...» (خسته‌ای)</string>
+    <!-- -یی -->
+    <string name="inflection_fa_yy_label">النكرة؛ المخاطب المفرد</string>
+    <string name="inflection_fa_yy">بعد صائت: ياء النكرة (دانشجویی) أو «أنت ...» (کجایی)</string>
+    <!-- -اند -->
+    <string name="inflection_fa_and_label">الغائب الجمع</string>
+    <string name="inflection_fa_and">الغائب الجمع بعد ه: «هم ...» (خسته‌اند)</string>
+    <!-- -اید -->
+    <string name="inflection_fa_ayd_label">المخاطب الجمع</string>
+    <string name="inflection_fa_ayd">المخاطب الجمع بعد ه: «أنتم ...» (خسته‌اید)</string>
+    <!-- -ایم -->
+    <string name="inflection_fa_aym_label">المتكلم الجمع</string>
+    <string name="inflection_fa_aym">المتكلم الجمع بعد ه: «نحن ...» (خسته‌ایم)</string>
+    <!-- -را -->
+    <string name="inflection_fa_ra_label">المفعول به</string>
+    <string name="inflection_fa_ra">علامة المفعول به را مكتوبةً متصلة (آنرا)</string>
+    <!-- -ها -->
+    <string name="inflection_fa_ha_label">الجمع</string>
+    <string name="inflection_fa_ha">الجمع (کتابها)</string>
+    <!-- -ان -->
+    <string name="inflection_fa_an_label">الجمع</string>
+    <string name="inflection_fa_an">الجمع، وأغلبه للناس والحيوانات (مردان)</string>
+    <!-- -یان -->
+    <string name="inflection_fa_yan_label">الجمع</string>
+    <string name="inflection_fa_yan">الجمع بعد صائت (دانشجویان)</string>
+    <!-- -گان -->
+    <string name="inflection_fa_gan_label">الجمع</string>
+    <string name="inflection_fa_gan">جمع الكلمة المنتهية بـ ه غير الملفوظة، التي تتحول إلى گ (ستارگان من ستاره)</string>
+    <!-- -تر -->
+    <string name="inflection_fa_tr_label">صيغة المقارنة</string>
+    <string name="inflection_fa_tr">صيغة المقارنة (بزرگتر)</string>
+    <!-- -ترین -->
+    <string name="inflection_fa_tryn_label">صيغة التفضيل</string>
+    <string name="inflection_fa_tryn">صيغة التفضيل (بزرگترین)</string>
+    <!-- -مین -->
+    <string name="inflection_fa_myn_label">العدد الترتيبي</string>
+    <string name="inflection_fa_myn">العدد الترتيبي قبل الاسم (دومین من دوم)</string>
+    <!-- می- -->
+    <string name="inflection_fa_my_label">الاستمرار</string>
+    <string name="inflection_fa_my">سابقة الاستمرار: الحاضر (می‌روم) والماضي المستمر (می‌رفتم)</string>
+    <!-- نمی- -->
+    <string name="inflection_fa_nmy_label">النفي + الاستمرار</string>
+    <string name="inflection_fa_nmy">سابقة الاستمرار المنفية: الحاضر (نمی‌روم) والماضي المستمر (نمی‌رفتم)</string>
+    <!-- ب- -->
+    <string name="inflection_fa_b_label">الصيغة الافتراضية</string>
+    <string name="inflection_fa_b">سابقة الصيغة الافتراضية (بروم) وصيغة الأمر (برو)</string>
+    <!-- ن- -->
+    <string name="inflection_fa_n_label">النفي</string>
+    <string name="inflection_fa_n">سابقة النفي: الماضي (نرفتم) وصيغة الأمر (نرو)</string>
+</resources>

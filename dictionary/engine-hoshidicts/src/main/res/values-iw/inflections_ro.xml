@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_ro.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ul -->
+    <string name="inflection_ro_ul_label">מיודע</string>
+    <string name="inflection_ro_ul">תווית היידוע (procesul מן proces, consiliul מן consiliu)</string>
+    <!-- -le -->
+    <string name="inflection_ro_le_label">מיודע</string>
+    <string name="inflection_ro_le">תווית היידוע (fratele מן frate, textele מן texte)</string>
+    <!-- -a -->
+    <string name="inflection_ro_a_label">מיודע</string>
+    <string name="inflection_ro_a">תווית היידוע של שמות עצם בנקבה (dezvoltarea מן dezvoltare, comisia מן comisie)</string>
+    <!-- -i -->
+    <string name="inflection_ro_i_label">מיודע, רבים</string>
+    <string name="inflection_ro_i">תווית היידוע של שמות עצם בזכר רבים (pomii מן pomi)</string>
+    <!-- -ului -->
+    <string name="inflection_ro_ului_label">יחסת הקניין, מיודע</string>
+    <string name="inflection_ro_ului">יחסת הקניין ויחסת הנמען עם תווית היידוע (procesului מן proces, fratelui מן frate)</string>
+    <!-- -ei -->
+    <string name="inflection_ro_ei_label">יחסת הקניין, מיודע</string>
+    <string name="inflection_ro_ei">יחסת הקניין ויחסת הנמען של שמות עצם בנקבה עם תווית היידוע (Moldovei מן Moldova, comisiei מן comisie)</string>
+    <!-- -ii -->
+    <string name="inflection_ro_ii_label">יחסת הקניין, מיודע</string>
+    <string name="inflection_ro_ii">יחסת הקניין ויחסת הנמען של שמות עצם בנקבה בסיומת -e, עם תווית היידוע (lumii מן lume, dezvoltării מן dezvoltare)</string>
+    <!-- -lor -->
+    <string name="inflection_ro_lor_label">יחסת הקניין, מיודע, רבים</string>
+    <string name="inflection_ro_lor">יחסת הקניין ויחסת הנמען ברבים עם תווית היידוע (caselor מן case)</string>
+    <!-- agreement -->
+    <string name="inflection_ro_agreement_label">נקבה או רבים</string>
+    <string name="inflection_ro_agreement">צורת נקבה או רבים של בינוני או של שם תואר (aflată, aflate, aflați מן aflat; pusă מן pus)</string>
+</resources>

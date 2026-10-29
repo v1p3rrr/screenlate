@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_uk.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- nominative plural -->
+    <string name="inflection_uk_nominative_plural_label">حالت فاعلی جمع</string>
+    <string name="inflection_uk_nominative_plural">حالت فاعلی جمعِ اسم یا صفت</string>
+    <!-- genitive -->
+    <string name="inflection_uk_genitive_label">حالت اضافی</string>
+    <string name="inflection_uk_genitive">حالت اضافیِ اسم یا صفت</string>
+    <!-- dative -->
+    <string name="inflection_uk_dative_label">حالت برایی</string>
+    <string name="inflection_uk_dative">حالت براییِ اسم یا صفت</string>
+    <!-- accusative -->
+    <string name="inflection_uk_accusative_label">حالت مفعولی</string>
+    <string name="inflection_uk_accusative">حالت مفعولیِ اسم یا صفت</string>
+    <!-- instrumental -->
+    <string name="inflection_uk_instrumental_label">حالت بایی</string>
+    <string name="inflection_uk_instrumental">حالت باییِ اسم یا صفت</string>
+    <!-- locative -->
+    <string name="inflection_uk_locative_label">حالت مکانی</string>
+    <string name="inflection_uk_locative">حالت مکانیِ اسم یا صفت</string>
+    <!-- vocative -->
+    <string name="inflection_uk_vocative_label">حالت ندایی</string>
+    <string name="inflection_uk_vocative">حالت ندایی اسم</string>
+    <!-- feminine -->
+    <string name="inflection_uk_feminine_label">مؤنث</string>
+    <string name="inflection_uk_feminine">صورت مؤنث صفت</string>
+    <!-- neuter -->
+    <string name="inflection_uk_neuter_label">خنثی</string>
+    <string name="inflection_uk_neuter">صورت خنثای صفت</string>
+    <!-- comparative -->
+    <string name="inflection_uk_comparative_label">تفضیلی</string>
+    <string name="inflection_uk_comparative">درجهٔ تفضیلی صفت یا قید</string>
+    <!-- superlative -->
+    <string name="inflection_uk_superlative_label">عالی</string>
+    <string name="inflection_uk_superlative">درجهٔ عالی صفت یا قید</string>
+    <!-- present -->
+    <string name="inflection_uk_present_label">حال</string>
+    <string name="inflection_uk_present">زمان حالِ فعل با نمود ناقص، یا زمان آیندهٔ فعل با نمود کامل</string>
+    <!-- future -->
+    <string name="inflection_uk_future_label">آینده</string>
+    <string name="inflection_uk_future">زمان آیندهٔ ترکیبی (یک‌واژه‌ای) فعل با نمود ناقص</string>
+    <!-- reflexive infinitive -->
+    <string name="inflection_uk_reflexive_infinitive_label">مصدر بازتابی</string>
+    <string name="inflection_uk_reflexive_infinitive">گونهٔ -тись از مصدر بازتابی، در کنار صورت معیار -тися</string>
+    <!-- past -->
+    <string name="inflection_uk_past_label">گذشته</string>
+    <string name="inflection_uk_past">زمان گذشتهٔ فعل</string>
+    <!-- imperative -->
+    <string name="inflection_uk_imperative_label">امری</string>
+    <string name="inflection_uk_imperative">وجه امری فعل</string>
+    <!-- passive participle -->
+    <string name="inflection_uk_passive_participle_label">وجه وصفی مجهول</string>
+    <string name="inflection_uk_passive_participle">وجه وصفی مجهولِ فعل</string>
+    <!-- active participle -->
+    <string name="inflection_uk_active_participle_label">وجه وصفی معلوم</string>
+    <string name="inflection_uk_active_participle">وجه وصفی معلومِ فعل</string>
+    <!-- adverbial participle -->
+    <string name="inflection_uk_adverbial_participle_label">وجه قیدی</string>
+    <string name="inflection_uk_adverbial_participle">وجه قیدی فعل</string>
+    <!-- colloquial present -->
+    <string name="inflection_uk_colloquial_present_label">حال محاوره‌ای</string>
+    <string name="inflection_uk_colloquial_present">صورت کوتاه محاوره‌ای اول‌شخص جمعِ زمان حال، در کنار صورت معیار -мо</string>
+    <!-- colloquial future -->
+    <string name="inflection_uk_colloquial_future_label">آیندهٔ محاوره‌ای</string>
+    <string name="inflection_uk_colloquial_future">صورت کوتاه محاوره‌ای اول‌شخص جمعِ آیندهٔ ترکیبی، در کنار صورت معیار -мо</string>
+    <!-- suppletive noun -->
+    <string name="inflection_uk_suppletive_noun_label">اسم با ستاک مکمل</string>
+    <string name="inflection_uk_suppletive_noun">صورت صرف‌شدهٔ اسمی که ستاک جمعش با ستاک مفردش فرق دارد</string>
+    <!-- indefinite pronoun -->
+    <string name="inflection_uk_indefinite_pronoun_label">ضمیر مبهم</string>
+    <string name="inflection_uk_indefinite_pronoun">صورت صرف‌شدهٔ ضمیر مبهم (хто-небудь، будь-що، щось)</string>
+    <!-- suppletive verb -->
+    <string name="inflection_uk_suppletive_verb_label">فعل با ستاک مکمل</string>
+    <string name="inflection_uk_suppletive_verb">صورتی از فعل که ستاکش مکمل است (бути)</string>
+    <!-- motion verb -->
+    <string name="inflection_uk_motion_verb_label">فعل حرکتی</string>
+    <string name="inflection_uk_motion_verb">حال یا گذشتهٔ іти/йти و صورت‌های پیشونددار آن، که ستاک‌هایشان مکمل‌اند</string>
+    <!-- truncated stem -->
+    <string name="inflection_uk_truncated_stem_label">ستاک کوتاه‌شده</string>
+    <string name="inflection_uk_truncated_stem">امر یا حال محاوره‌ای ساخته‌شده از ستاک بی‌پسوند (знач، бач، зна)</string>
+    <!-- alternating genitive plural -->
+    <string name="inflection_uk_alternating_genitive_plural_label">حالت اضافی جمع با تناوب</string>
+    <string name="inflection_uk_alternating_genitive_plural">حالت اضافی جمعِ بی‌پایانه که در ستاکش о/е به і بدل می‌شود (гора → гір)</string>
+    <!-- substantivised neuter -->
+    <string name="inflection_uk_substantivised_neuter_label">خنثای جانشین اسم</string>
+    <string name="inflection_uk_substantivised_neuter">صورت غیرفاعلیِ صفت خنثی در نقش اسم (майбутнє، минуле، дані)</string>
+    <!-- collective numeral -->
+    <string name="inflection_uk_collective_numeral_label">عدد جمعی</string>
+    <string name="inflection_uk_collective_numeral">صورت صرف‌شدهٔ عدد جمعی (двоє، троє، обоє)</string>
+    <!-- short adjective -->
+    <string name="inflection_uk_short_adjective_label">صفت کوتاه</string>
+    <string name="inflection_uk_short_adjective">صورت کوتاه اسنادیِ صفت</string>
+    <!-- pronoun declension -->
+    <string name="inflection_uk_pronoun_declension_label">صرف ضمیر</string>
+    <string name="inflection_uk_pronoun_declension">صورت صرف‌شدهٔ ضمیر یا تعیین‌کننده</string>
+    <!-- numeral declension -->
+    <string name="inflection_uk_numeral_declension_label">صرف عدد</string>
+    <string name="inflection_uk_numeral_declension">صورت صرف‌شدهٔ عدد</string>
+    <!-- impersonal passive -->
+    <string name="inflection_uk_impersonal_passive_label">مجهول غیرشخصی</string>
+    <string name="inflection_uk_impersonal_passive">صورت مجهول غیرشخصی فعل، مانند «було зроблено»</string>
+    <!-- possessive adjective -->
+    <string name="inflection_uk_possessive_adjective_label">صفت ملکی</string>
+    <string name="inflection_uk_possessive_adjective">صورت صرف‌شدهٔ صفت ملکی</string>
+    <!-- verbal noun -->
+    <string name="inflection_uk_verbal_noun_label">اسم مصدر</string>
+    <string name="inflection_uk_verbal_noun">اسم مصدرِ ساخته‌شده از فعل</string>
+</resources>

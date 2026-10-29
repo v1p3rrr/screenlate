@@ -39,6 +39,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.InfoDialog
 import com.vpr.screenlate.ui.components.LabelWithInfo
+import com.vpr.screenlate.ui.components.ownDirection
 
 /**
  * The on-device model of each turned-on language, under a subheading; a row opens the language's models, and so does
@@ -143,7 +144,7 @@ private fun OcrModelRow(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f, fill = false))
                 val mlKitInfo = stringResource(R.string.ocr_models_mlkit_info)
-                InfoButton(title, option.entry?.description()?.takeIf { it.isNotEmpty() } ?: mlKitInfo)
+                InfoButton(title, option.entry?.description()?.takeIf { it.isNotEmpty() }?.let { ownDirection(it) } ?: mlKitInfo)
             }
             val details = buildList {
                 if (option.recommended) add(stringResource(R.string.ocr_models_recommended))

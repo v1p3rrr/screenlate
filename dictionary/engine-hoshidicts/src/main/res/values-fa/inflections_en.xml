@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- plural -->
+    <string name="inflection_en_plural_label">جمع</string>
+    <string name="inflection_en_plural">صورت جمع اسم</string>
+    <!-- possessive -->
+    <string name="inflection_en_possessive_label">ملکی</string>
+    <string name="inflection_en_possessive">صورت ملکی اسم</string>
+    <!-- past -->
+    <string name="inflection_en_past_label">گذشته</string>
+    <string name="inflection_en_past">گذشتهٔ سادهٔ فعل</string>
+    <!-- ing -->
+    <string name="inflection_en_ing_label">صورت ing</string>
+    <string name="inflection_en_ing">وجه وصفی حال فعل</string>
+    <!-- 3rd pers. sing. pres -->
+    <string name="inflection_en_3rd_pers_sing_pres_label">سوم‌شخص مفرد حال</string>
+    <string name="inflection_en_3rd_pers_sing_pres">سوم‌شخص مفرد زمان حال فعل</string>
+    <!-- interposed object -->
+    <string name="inflection_en_interposed_object_label">مفعول میانی</string>
+    <string name="inflection_en_interposed_object">فعل عبارتی با مفعولی میان اجزای آن</string>
+    <!-- archaic -->
+    <string name="inflection_en_archaic_label">کهن</string>
+    <string name="inflection_en_archaic">صورت کهن واژه</string>
+    <!-- adverb -->
+    <string name="inflection_en_adverb_label">قید</string>
+    <string name="inflection_en_adverb">صورت قیدی صفت</string>
+    <!-- comparative -->
+    <string name="inflection_en_comparative_label">تفضیلی</string>
+    <string name="inflection_en_comparative">صورت تفضیلی صفت</string>
+    <!-- superlative -->
+    <string name="inflection_en_superlative_label">عالی</string>
+    <string name="inflection_en_superlative">صورت عالی صفت</string>
+    <!-- dropped g -->
+    <string name="inflection_en_dropped_g_label">حذف g</string>
+    <string name="inflection_en_dropped_g">حذف g در صورت -ing فعل</string>
+    <!-- -y -->
+    <string name="inflection_en_y">صفت ساخته‌شده از فعل یا اسم</string>
+    <!-- un- -->
+    <string name="inflection_en_un">صورت منفی صفت، قید یا فعل</string>
+    <!-- going-to future -->
+    <string name="inflection_en_going_to_future_label">آینده با going to</string>
+    <string name="inflection_en_going_to_future">زمان آیندهٔ فعل با going to</string>
+    <!-- will future -->
+    <string name="inflection_en_will_future_label">آینده با will</string>
+    <string name="inflection_en_will_future">زمان آیندهٔ فعل با will</string>
+    <!-- imperative negative -->
+    <string name="inflection_en_imperative_negative_label">نهی</string>
+    <string name="inflection_en_imperative_negative">صورت نهی (امر منفی) فعل</string>
+    <!-- -able -->
+    <string name="inflection_en_able">صفت ساخته‌شده از فعل</string>
+</resources>

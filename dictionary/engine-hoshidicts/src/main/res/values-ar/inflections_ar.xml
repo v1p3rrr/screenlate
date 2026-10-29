@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_ar.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- NPref-Wa -->
+    <string name="inflection_ar_npref_wa_label">حرف العطف</string>
+    <string name="inflection_ar_npref_wa">الواو للعطف (و)؛ الفاء للعطف والتعقيب (ف)</string>
+    <!-- NPref-Bi -->
+    <string name="inflection_ar_npref_bi_label">باء الجر</string>
+    <string name="inflection_ar_npref_bi">باء الجر للاستعانة والمصاحبة</string>
+    <!-- NPref-Ka -->
+    <string name="inflection_ar_npref_ka_label">كاف التشبيه</string>
+    <string name="inflection_ar_npref_ka">كاف التشبيه بمعنى «مثل»</string>
+    <!-- NPref-Li -->
+    <string name="inflection_ar_npref_li_label">لام الجر؛ لام التوكيد</string>
+    <string name="inflection_ar_npref_li">لام الجر للاختصاص والتعليل (لِ)؛ لام التوكيد (لَ)</string>
+    <!-- NPref-Al -->
+    <string name="inflection_ar_npref_al_label">أل التعريف</string>
+    <string name="inflection_ar_npref_al">أداة التعريف «أل»</string>
+    <!-- NPref-BiAl -->
+    <string name="inflection_ar_npref_bial_label">الباء + أل</string>
+    <string name="inflection_ar_npref_bial">باء الجر + أل التعريف</string>
+    <!-- NPref-KaAl -->
+    <string name="inflection_ar_npref_kaal_label">الكاف + أل</string>
+    <string name="inflection_ar_npref_kaal">كاف التشبيه + أل التعريف</string>
+    <!-- NPref-Lil -->
+    <string name="inflection_ar_npref_lil_label">اللام + أل</string>
+    <string name="inflection_ar_npref_lil">لام الجر + أل التعريف</string>
+    <!-- NPref-LiAl -->
+    <string name="inflection_ar_npref_lial_label">اللام + أل</string>
+    <string name="inflection_ar_npref_lial">لام الجر + أل التعريف، مدغمةً في ل أول الاسم</string>
+    <!-- NSuff-h -->
+    <string name="inflection_ar_nsuff_h_label">ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_h">ضمير الملكية المتصل</string>
+    <!-- NSuff-ap -->
+    <string name="inflection_ar_nsuff_ap_label">مفرد مؤنث</string>
+    <string name="inflection_ar_nsuff_ap">المفرد المؤنث</string>
+    <!-- NSuff-ath -->
+    <string name="inflection_ar_nsuff_ath_label">مفرد مؤنث + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_ath">المفرد المؤنث + ضمير الملكية المتصل</string>
+    <!-- NSuff-AF -->
+    <string name="inflection_ar_nsuff_af_label">منصوب نكرة</string>
+    <string name="inflection_ar_nsuff_af">المنصوب النكرة (اً)</string>
+    <!-- NSuff-An -->
+    <string name="inflection_ar_nsuff_an_label">مثنى</string>
+    <string name="inflection_ar_nsuff_an">المثنى المذكر المرفوع</string>
+    <!-- NSuff-Ah -->
+    <string name="inflection_ar_nsuff_ah_label">مثنى + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_ah">المثنى المذكر المرفوع + ضمير الملكية المتصل</string>
+    <!-- NSuff-ayn -->
+    <string name="inflection_ar_nsuff_ayn_label">مثنى</string>
+    <string name="inflection_ar_nsuff_ayn">المثنى المذكر المنصوب أو المجرور</string>
+    <!-- NSuff-ayh -->
+    <string name="inflection_ar_nsuff_ayh_label">مثنى + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_ayh">المثنى المذكر المنصوب أو المجرور + ضمير الملكية المتصل</string>
+    <!-- NSuff-atAn -->
+    <string name="inflection_ar_nsuff_atan_label">مثنى</string>
+    <string name="inflection_ar_nsuff_atan">المثنى المؤنث المرفوع</string>
+    <!-- NSuff-atAh -->
+    <string name="inflection_ar_nsuff_atah_label">مثنى + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_atah">المثنى المؤنث المرفوع + ضمير الملكية المتصل</string>
+    <!-- NSuff-tayn -->
+    <string name="inflection_ar_nsuff_tayn_label">مثنى</string>
+    <string name="inflection_ar_nsuff_tayn">المثنى المؤنث المنصوب أو المجرور</string>
+    <!-- NSuff-tayh -->
+    <string name="inflection_ar_nsuff_tayh_label">مثنى + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_tayh">المثنى المؤنث المنصوب أو المجرور + ضمير الملكية المتصل</string>
+    <!-- NSuff-At -->
+    <string name="inflection_ar_nsuff_at_label">جمع مؤنث</string>
+    <string name="inflection_ar_nsuff_at">جمع المؤنث السالم</string>
+    <!-- NSuff-Ath -->
+    <string name="inflection_ar_nsuff_ath__label">جمع مؤنث + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_ath_">جمع المؤنث السالم + ضمير الملكية المتصل</string>
+    <!-- NSuff-wn -->
+    <string name="inflection_ar_nsuff_wn_label">جمع مذكر</string>
+    <string name="inflection_ar_nsuff_wn">جمع المذكر السالم المرفوع</string>
+    <!-- NSuff-wh -->
+    <string name="inflection_ar_nsuff_wh_label">جمع مذكر + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_wh">جمع المذكر السالم المرفوع + ضمير الملكية المتصل</string>
+    <!-- NSuff-iyn -->
+    <string name="inflection_ar_nsuff_iyn_label">جمع مذكر</string>
+    <string name="inflection_ar_nsuff_iyn">جمع المذكر السالم المنصوب أو المجرور</string>
+    <!-- NSuff-iyh -->
+    <string name="inflection_ar_nsuff_iyh_label">جمع مذكر + ضمير الملكية</string>
+    <string name="inflection_ar_nsuff_iyh">جمع المذكر السالم المنصوب أو المجرور + ضمير الملكية المتصل</string>
+    <!-- PVPref-Wa -->
+    <string name="inflection_ar_pvpref_wa_label">حرف العطف</string>
+    <string name="inflection_ar_pvpref_wa">الواو للعطف (و)؛ الفاء للعطف والتعقيب (ف)</string>
+    <!-- PVPref-La -->
+    <string name="inflection_ar_pvpref_la_label">لام جواب لو</string>
+    <string name="inflection_ar_pvpref_la">اللام الواقعة في جواب الشرط (لو ... لَفعلتُ ...)</string>
+    <!-- PVSuff-ah -->
+    <string name="inflection_ar_pvsuff_ah_label">الماضي</string>
+    <string name="inflection_ar_pvsuff_ah">الفعل الماضي + ضمير المفعول به المتصل</string>
+    <!-- PVSuff-n -->
+    <string name="inflection_ar_pvsuff_n_label">الماضي</string>
+    <string name="inflection_ar_pvsuff_n">الفعل الماضي: لواحق مدغمة مع ن</string>
+    <!-- PVSuff-t -->
+    <string name="inflection_ar_pvsuff_t_label">الماضي</string>
+    <string name="inflection_ar_pvsuff_t">الفعل الماضي: لواحق مدغمة مع ت</string>
+    <!-- PVSuff-at -->
+    <string name="inflection_ar_pvsuff_at_label">الماضي</string>
+    <string name="inflection_ar_pvsuff_at">الفعل الماضي: لواحق ت غير المدغمة</string>
+    <!-- PVSuff-A -->
+    <string name="inflection_ar_pvsuff_a_label">الماضي</string>
+    <string name="inflection_ar_pvsuff_a">الفعل الماضي: الغائب المثنى المذكر</string>
+    <!-- PVSuff-uw -->
+    <string name="inflection_ar_pvsuff_uw_label">الماضي</string>
+    <string name="inflection_ar_pvsuff_uw">الفعل الماضي: الغائب الجمع المذكر</string>
+    <!-- IVPref-hw -->
+    <string name="inflection_ar_ivpref_hw_label">المضارع</string>
+    <string name="inflection_ar_ivpref_hw">الفعل المضارع: الغائب المفرد المذكر</string>
+    <!-- IVPref-hy -->
+    <string name="inflection_ar_ivpref_hy_label">المضارع</string>
+    <string name="inflection_ar_ivpref_hy">الفعل المضارع: الغائب المفرد المؤنث</string>
+    <!-- IVPref-hmA -->
+    <string name="inflection_ar_ivpref_hma_label">المضارع</string>
+    <string name="inflection_ar_ivpref_hma">الفعل المضارع: الغائب المثنى المذكر</string>
+    <!-- IVPref-hmA-ta -->
+    <string name="inflection_ar_ivpref_hma_ta_label">المضارع</string>
+    <string name="inflection_ar_ivpref_hma_ta">الفعل المضارع: الغائب المثنى المؤنث</string>
+    <!-- IVPref-hm -->
+    <string name="inflection_ar_ivpref_hm_label">المضارع</string>
+    <string name="inflection_ar_ivpref_hm">الفعل المضارع: الغائب الجمع المذكر</string>
+    <!-- IVPref-hn -->
+    <string name="inflection_ar_ivpref_hn_label">المضارع</string>
+    <string name="inflection_ar_ivpref_hn">الفعل المضارع: الغائب الجمع المؤنث</string>
+    <!-- IVPref-Anta -->
+    <string name="inflection_ar_ivpref_anta_label">المضارع</string>
+    <string name="inflection_ar_ivpref_anta">الفعل المضارع: المخاطب المفرد المذكر</string>
+    <!-- IVPref-Anti -->
+    <string name="inflection_ar_ivpref_anti_label">المضارع</string>
+    <string name="inflection_ar_ivpref_anti">الفعل المضارع: المخاطب المفرد المؤنث</string>
+    <!-- IVPref-AntmA -->
+    <string name="inflection_ar_ivpref_antma_label">المضارع</string>
+    <string name="inflection_ar_ivpref_antma">الفعل المضارع: المخاطب المثنى</string>
+    <!-- IVPref-Antm -->
+    <string name="inflection_ar_ivpref_antm_label">المضارع</string>
+    <string name="inflection_ar_ivpref_antm">الفعل المضارع: المخاطب الجمع المذكر</string>
+    <!-- IVPref-Antn -->
+    <string name="inflection_ar_ivpref_antn_label">المضارع</string>
+    <string name="inflection_ar_ivpref_antn">الفعل المضارع: المخاطب الجمع المؤنث</string>
+    <!-- IVPref-AnA -->
+    <string name="inflection_ar_ivpref_ana_label">المضارع</string>
+    <string name="inflection_ar_ivpref_ana">الفعل المضارع: المتكلم المفرد</string>
+    <!-- IVPref-nHn -->
+    <string name="inflection_ar_ivpref_nhn_label">المضارع</string>
+    <string name="inflection_ar_ivpref_nhn">الفعل المضارع: المتكلم الجمع</string>
+    <!-- CVPref -->
+    <string name="inflection_ar_cvpref_label">الأمر</string>
+    <string name="inflection_ar_cvpref">فعل الأمر</string>
+    <!-- CVSuff -->
+    <string name="inflection_ar_cvsuff_label">الأمر</string>
+    <string name="inflection_ar_cvsuff">فعل الأمر</string>
+</resources>

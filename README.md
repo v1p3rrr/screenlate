@@ -26,7 +26,7 @@ A pop-up Japanese dictionary for Android that works over any app. Pull the bubbl
 - **Copy text** from anything on the screen: hold the bubble to copy the paragraph under it or all recognized text.
 - **Search** screen and "Look up in Screenlate" in the text selection menu of other apps.
 - **Import from Yomitan**: dictionary order, Anki setup, audio sources, lookup and popup settings.
-- **Appearance**: popup font, text size and weight, custom CSS; Screenlate's own violet colors or the phone's, light and dark theme, an e-ink mode; the interface is in English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean and Chinese (Simplified and Traditional).
+- **Appearance**: popup font, text size and weight, custom CSS; Screenlate's own violet colors or the phone's, light and dark theme, an e-ink mode; the interface is in English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean, Chinese (Simplified and Traditional), Arabic, Persian and Hebrew.
 - **Backup and restore** of all settings and, optionally, the dictionaries, in one file.
 - **Updates** from GitHub Releases inside the app.
 

@@ -33,7 +33,15 @@ class TranslationsTest {
         "vi" to setOf("other"),
         "b+zh+Hans" to setOf("other"),
         "b+zh+Hant" to setOf("other"),
+        "ar" to setOf("zero", "one", "two", "few", "many", "other"),
+        "fa" to setOf("one", "other"),
+        "iw" to setOf("one", "two", "other"),
     )
+
+    /** Translations whose screens are not checked yet: they ship, but the language settings do not offer them. */
+    private val unlisted = emptySet<String>()
+
+    private val androidNamespace = "http://schemas.android.com/apk/res/android"
 
     private val format = Regex("""%(\d+\$)?[-#+ 0,(]*\d*(\.\d+)?[sdfx%]""")
 
@@ -107,6 +115,23 @@ class TranslationsTest {
             val main = File(debugFile.invariantSeparatorsPath.replace("/src/debug/", "/src/main/"))
             assertWithMessage("$debugFile keys").that(main.exists() && read(main).strings.keys.containsAll(read(debugFile).strings.keys)).isTrue()
         }
+    }
+
+    @Test
+    fun `the language settings offer english and every translation but the unchecked ones`() {
+        val config = DocumentBuilderFactory.newInstance().apply { isNamespaceAware = true }.newDocumentBuilder()
+            .parse(File("src/main/res/xml/locales_config.xml"))
+        val listed = config.getElementsByTagName("locale").let { nodes ->
+            (0 until nodes.length).map { (nodes.item(it) as Element).getAttributeNS(androidNamespace, "name") }
+        }
+        val translated = File("src/main/res").listFiles().orEmpty()
+            .filter { it.name.startsWith("values-") && File(it, "strings.xml").exists() }
+            .map { it.name.removePrefix("values-") }
+            .filter { it !in unlisted }
+            .map { it.removePrefix("b+").replace('+', '-') }
+            // Hebrew's folder has Android's old code; the config names the language he, which resolves to it.
+            .map { if (it == "iw") "he" else it }
+        assertWithMessage("locales_config.xml").that(listed).containsExactlyElementsIn(translated + "en")
     }
 
     @Test

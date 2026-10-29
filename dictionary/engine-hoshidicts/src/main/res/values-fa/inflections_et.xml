@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_et.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- negative -->
+    <string name="inflection_et_negative_label">منفی</string>
+    <string name="inflection_et_negative">صورت منفی olema: pole، polnud، poleks، poldud، polevat (pole از olema)</string>
+</resources>

@@ -193,8 +193,9 @@ data class CatalogEntry(
     fun displayTitle(locale: Locale = Locale.getDefault()): String =
         localized(titles, locale)?.let { fill(it, locale) } ?: title
 
+    /** The description in [locale]'s language, or else in English, which then names the languages in English too. */
     fun description(locale: Locale = Locale.getDefault()): String =
-        (localized(description, locale) ?: description["en"])?.let { fill(it, locale) }.orEmpty()
+        (localized(description, locale)?.let { fill(it, locale) } ?: description["en"]?.let { fill(it, Locale.ENGLISH) }).orEmpty()
 
     private fun localized(texts: Map<String, String>, locale: Locale): String? =
         texts[localeKey(locale)] ?: texts[locale.language]

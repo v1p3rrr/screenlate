@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Interface languages offered in the system's and the app's language settings: English and every translation
+     whose screens are checked. Hebrew's strings are in values-iw, Android's old code, which he resolves to. -->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="ru" />
+    <locale android:name="de" />
+    <locale android:name="es" />
+    <locale android:name="fr" />
+    <locale android:name="it" />
+    <locale android:name="ja" />
+    <locale android:name="ko" />
+    <locale android:name="pl" />
+    <locale android:name="pt" />
+    <locale android:name="tr" />
+    <locale android:name="vi" />
+    <locale android:name="zh-Hans" />
+    <locale android:name="zh-Hant" />
+    <locale android:name="ar" />
+    <locale android:name="fa" />
+    <locale android:name="he" />
+</locale-config>
