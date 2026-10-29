@@ -290,7 +290,7 @@ the details.
   - Answered the same day, to build after the weekly limit resets: group 4e's questions 23 (ending consonants by the
     grammar) and 24 (dictionary form rows and verb chains first at the same length), each with a count first; 25-27
     as bugs (the "without" rule, the pronouns' case forms, PanLex Title Case phrases); group 5e's question 27
-    (words.hk's frequency list for Cantonese, ticked, once checked to hold 我哋 佢哋 你哋 喺度 為咗). Group 6's
+    (words.hk's frequency list for Cantonese, ticked, once checked to hold 我哋 佢哋 你哋 喺度 為咗); the folded plan's question 3 (the headword list in Hungarian, Tamil and Telugu: measure first) and group 5e's question 28 (a short list of irregular Marathi past stems, each kept by a count). Group 6's
     question 30: a report to wiktextract only (the agent drafts it, the owner files it); the renaming of the Turkic
     Russian-Wiktionary tags goes to the Backlog, to build if the fix does not reach wty's releases.
   - Built on 2026-10-29 evening (main session and four subagents, `combine-cloud`): the "Word forms" item for Tamil
