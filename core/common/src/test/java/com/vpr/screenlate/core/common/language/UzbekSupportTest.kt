@@ -75,6 +75,7 @@ class UzbekSupportTest {
     @Test
     fun `rules only for words without an entry, no compounds, plain case pairs`() {
         assertThat(UzbekSupport.inflectionRulesOnlyWithoutEntry).isTrue()
+        assertThat(UzbekSupport.formsHeadwordsCountAsEntries).isTrue()
         assertThat(UzbekSupport.compoundLinks).isNull()
         assertThat(UzbekSupport.fallbackLanguage).isNull()
         assertThat(Language.UZBEK.lookupDictionaryCodes).containsExactly("uz")

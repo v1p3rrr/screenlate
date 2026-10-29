@@ -40,6 +40,7 @@ class AzerbaijaniSupportTest {
     fun `rules only for words without an entry, no compounds`() {
         // belə "so" shows its own entry, not bel "waist" through the dative.
         assertThat(AzerbaijaniSupport.inflectionRulesOnlyWithoutEntry).isTrue()
+        assertThat(AzerbaijaniSupport.formsHeadwordsCountAsEntries).isTrue()
         assertThat(AzerbaijaniSupport.compoundLinks).isNull()
         assertThat(AzerbaijaniSupport.headwordMarks).isNull()
         assertThat(AzerbaijaniSupport.fallbackLanguage).isNull()

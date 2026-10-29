@@ -55,6 +55,9 @@ object UzbekSupport : SpacedLanguageSupport() {
     /** The ending rules would put davo "remedy" (-m, my) beside davom "continuation". */
     override val inflectionRulesOnlyWithoutEntry = true
 
+    /** Also with the word forms alone: davom is a word of the English dictionary, though uz–ru lacks it. */
+    override val formsHeadwordsCountAsEntries = true
+
     /**
      * Before a name "prof.", "dots." (dotsent) and "akad." (akademik); in addresses, before the street's name or the
      * number, "sh." (shahri, city), "q." (qishlogʻi, village) and "koʻch." (koʻchasi, street), also with the

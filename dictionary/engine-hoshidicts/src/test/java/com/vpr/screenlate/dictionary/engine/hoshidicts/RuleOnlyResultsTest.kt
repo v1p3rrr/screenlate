@@ -70,9 +70,39 @@ class RuleOnlyResultsTest {
     }
 
     @Test
+    fun `a rule's result is left out where the text is a headword of the word forms' dictionary`() {
+        val possessive = setOf("possessive 1sg")
+        val remedy = result("Davom", "davo", listOf("possessive 1sg"))
+        val books = result("kitobim", "kitob", listOf("possessive 1sg"))
+        val shown = listOf(remedy, books).withoutRuleOnlyResults(possessive, headwords = setOf("Davom"))
+        assertThat(shown).containsExactly(books)
+        // Without the list (a dictionary imported before it, or a language that does not count it) as before.
+        assertThat(listOf(remedy, books).withoutRuleOnlyResults(possessive)).containsExactly(remedy, books).inOrder()
+    }
+
+    @Test
+    fun `a headword of the word forms' dictionary leaves results free of rules and form rows`() {
+        val home = setOf("dative")
+        val homewards = result("uyga", "uyga")
+        val house = LookupResult(
+            matched = "uyga",
+            deinflected = "uy",
+            trace = listOf(Transform("dative", form = true)),
+            term = TermEntry("uy", "uy"),
+        )
+        val rule = result("uyga", "uy", listOf("dative"))
+        val shown = listOf(homewards, house, rule).withoutRuleOnlyResults(home, headwords = setOf("uyga"))
+        assertThat(shown).containsExactly(homewards, house).inOrder()
+        val both = result("uyga", "uy", listOf("dative"), listOf("dative case"))
+        assertThat(listOf(both).withoutRuleOnlyResults(home, headwords = setOf("uyga")).single().trace.map { it.name })
+            .containsExactly("dative case")
+    }
+
+    @Test
     fun `nothing is left out without rules`() {
         val list = listOf(result("casă", "casă"), result("casă", "cas", listOf("agreement")))
         assertThat(list.withoutRuleOnlyResults(emptySet())).isSameInstanceAs(list)
+        assertThat(list.withoutRuleOnlyResults(emptySet(), headwords = setOf("casă"))).isSameInstanceAs(list)
         assertThat(list.withoutRuleChainsBesideFreeOnes(emptySet())).isSameInstanceAs(list)
     }
 

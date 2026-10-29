@@ -353,4 +353,20 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
   return results;
 }
 
+std::vector<std::string> listed_headword_texts(const std::vector<LanguageCandidate>& candidates,
+                                               const std::vector<const HeadwordList*>& lists) {
+  std::vector<std::string> texts;
+  if (lists.empty()) return texts;
+  for (const auto& candidate : candidates) {
+    const bool free = candidate.r.empty() ||
+                      std::any_of(candidate.r.begin(), candidate.r.end(), [](const auto& chain) { return chain.empty(); });
+    if (!free || (candidate.c != 0 && !candidate.u)) continue;
+    if (std::find(texts.begin(), texts.end(), candidate.o) != texts.end()) continue;
+    if (std::any_of(lists.begin(), lists.end(), [&](const HeadwordList* list) { return list->contains(candidate.d); })) {
+      texts.push_back(candidate.o);
+    }
+  }
+  return texts;
+}
+
 }  // namespace screenlate_language

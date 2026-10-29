@@ -1695,6 +1695,38 @@ class LanguageLookupTest {
         assertThat(all("-ci")).containsExactly("-ci")
     }
 
+    @Test
+    fun azerbaijaniWordFormsAloneCountTheirDictionarysHeadwordsAsEntries() = runTest {
+        val forms = engine.import(azerbaijaniDictionary(), File(root, "forms"), formsOnly = true)
+        val russian = engine.import(azerbaijaniRussianDictionary(), File(root, "ru"))
+        engine.load(DictionarySet(terms = listOf(russian.directory, forms.directory)))
+        val azerbaijani = LookupOptions(language = Language.AZERBAIJANI)
+        suspend fun all(text: String) = engine.lookup(text, azerbaijani).map { it.term.expression }.distinct()
+
+        // yazı (writing) is a headword of the dictionary the forms come from, which the other lacks: no yaz with the
+        // possessive or the accusative, also in capitals lowered by the Turkish pairs.
+        assertThat(engine.lookup("yazı", azerbaijani)).isEmpty()
+        assertThat(engine.lookup("YAZI", azerbaijani)).isEmpty()
+        // Words that are no headwords there still get the rules' results; a listed form keeps its row.
+        assertThat(all("kitablarımızda")).containsExactly("kitab")
+        assertThat(all("yazdı")).contains("yazmaq")
+        assertThat(all("olur")).containsExactly("olmaq")
+    }
+
+    /** A dictionary of a gloss language without forms and without yazı, as az–ru. */
+    private fun azerbaijaniRussianDictionary(): File = zip(
+        "az-ru.zip",
+        "index.json" to """{"title":"Test Azerbaijani Russian","revision":"1","format":3,"sourceLanguage":"az"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["kitab","","n","",0,["книга"],1,""],
+              ["yaz","","n","",0,["весна"],2,""],
+              ["yazmaq","","v","",0,["писать"],3,""],
+              ["olmaq","","v vi","",0,["быть"],4,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     /**
      * Rows as Wiktionary's Azerbaijani export writes them: no rules, the part of speech in the tags; the forms of
      * olmaq as form-of rows, a suffix entry.
@@ -1760,6 +1792,50 @@ class LanguageLookupTest {
         assertThat(all("китоб")).containsExactly("kitob")
         assertThat(all("ILM")).containsExactly("ilm")
     }
+
+    @Test
+    fun uzbekWordFormsAloneCountTheirDictionarysHeadwordsAsEntries() = runTest {
+        val forms = engine.import(uzbekDictionary(), File(root, "forms"), formsOnly = true)
+        val russian = engine.import(uzbekRussianDictionary(), File(root, "ru"))
+        assertThat(File(forms.directory, HEADWORD_LIST).isFile).isTrue()
+        assertThat(File(russian.directory, HEADWORD_LIST).exists()).isFalse()
+        val terms = DictionarySet(terms = listOf(russian.directory, forms.directory))
+        engine.load(terms)
+        val uzbek = LookupOptions(language = Language.UZBEK)
+        suspend fun all(text: String) = engine.lookup(text, uzbek).map { it.term.expression }.distinct()
+
+        // davom is a headword of the dictionary the forms come from, which uz–ru lacks: no davo with -m, also with a
+        // capital at a sentence start and in the Cyrillic alphabet.
+        assertThat(engine.lookup("davom", uzbek)).isEmpty()
+        assertThat(engine.lookup("Davom", uzbek)).isEmpty()
+        assertThat(engine.lookup("давом", uzbek)).isEmpty()
+        // A word that is no headword there still gets the rules' results; a listed form keeps its row.
+        assertThat(all("kitoblarimizda")).containsExactly("kitob")
+        assertThat(all("boʻlsa")).containsExactly("boʻlmoq")
+        // uyga is a headword too (homewards): uy comes through its dative row, not through the rule.
+        val house = engine.lookup("uyga", uzbek).single()
+        assertThat(house.term.expression).isEqualTo("uy")
+        assertThat((listOf(house.trace) + house.otherTraces).flatten().map { it.form }).containsExactly(true)
+
+        // Word forms imported before the list: as before, davo with -m.
+        assertThat(File(forms.directory, HEADWORD_LIST).delete()).isTrue()
+        engine.load(terms)
+        assertThat(all("davom")).containsExactly("davo")
+    }
+
+    /** A dictionary of a gloss language without forms and without davom, uyga and boʻlsa, as uz–ru. */
+    private fun uzbekRussianDictionary(): File = zip(
+        "uz-ru.zip",
+        "index.json" to """{"title":"Test Uzbek Russian","revision":"1","format":3,"sourceLanguage":"uz"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["davo","","n","",0,["лекарство"],1,""],
+              ["kitob","","n","",0,["книга"],2,""],
+              ["boʻlmoq","","v","",0,["быть"],3,""],
+              ["uy","","n","",0,["дом"],4,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
 
     /**
      * Rows as Wiktionary's Uzbek export writes them: no rules, the part of speech in the tags, ʻ and ʼ in the
@@ -2401,6 +2477,9 @@ class LanguageLookupTest {
     private companion object {
         /** The table's file name inside a dictionary directory (`HoshidictsEngine`). */
         const val FORM_OF_TABLE = "form_of.bin"
+
+        /** The headword list of a dictionary imported for its forms only (`jni_bridge.cpp`). */
+        const val HEADWORD_LIST = "headwords.bin"
 
         /**
          * The zero-width non-joiner, written into raw JSON as the character itself, as Wiktionary's exports hold it:

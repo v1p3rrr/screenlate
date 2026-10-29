@@ -128,10 +128,13 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             fromOcr = options.fromOcr,
         )
         val support = language.support
-        json.decodeFromString<List<LookupResult>>(raw.decodeToString()).let { results ->
+        val lookup = json.decodeFromString<NativeLanguageLookup>(raw.decodeToString())
+        lookup.results.let { results ->
             when {
-                support.inflectionRulesOnlyWithoutEntry ->
-                    results.withoutRuleOnlyResults(YomitanInflections.names(language.dictionaryCode))
+                support.inflectionRulesOnlyWithoutEntry -> results.withoutRuleOnlyResults(
+                    YomitanInflections.names(language.dictionaryCode),
+                    if (support.formsHeadwordsCountAsEntries) lookup.headwords else emptySet(),
+                )
                 support.ruleChainsOnlyWithoutRow ->
                     results.withoutRuleChainsBesideFreeOnes(YomitanInflections.names(language.dictionaryCode))
                 else -> results
@@ -244,6 +247,16 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         const val ORDER_DISABLED = 3
     }
 }
+
+/**
+ * @property headwords scanned texts that are headwords of a dictionary loaded for its forms only, whose definitions the
+ *   import left out (`headwords.bin`); empty without such a dictionary or one imported before the lists.
+ */
+@Serializable
+private data class NativeLanguageLookup(
+    val results: List<LookupResult> = emptyList(),
+    val headwords: Set<String> = emptySet(),
+)
 
 @Serializable
 private data class NativeImportResult(

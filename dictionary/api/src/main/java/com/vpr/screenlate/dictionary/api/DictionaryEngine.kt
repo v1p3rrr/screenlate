@@ -16,8 +16,9 @@ import java.io.File
 interface DictionaryEngine {
     /**
      * Converts a Yomitan archive into the engine's format inside a new subdirectory of [outputDir]. With [formsOnly],
-     * only the inflected forms the archive lists are kept, for lookups in the other dictionaries of its language; the
-     * title gets [com.vpr.screenlate.dictionary.api.registry.FORMS_ONLY_TITLE_SUFFIX].
+     * only the inflected forms the archive lists are kept, for lookups in the other dictionaries of its language, and a
+     * list of its headwords without their definitions; the title gets
+     * [com.vpr.screenlate.dictionary.api.registry.FORMS_ONLY_TITLE_SUFFIX].
      *
      * @throws DictionaryImportException if the archive is not a valid dictionary, or with [formsOnly] lists no forms.
      */

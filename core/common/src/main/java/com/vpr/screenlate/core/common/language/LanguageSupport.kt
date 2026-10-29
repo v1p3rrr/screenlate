@@ -406,6 +406,13 @@ interface LanguageSupport {
     val inflectionRulesOnlyWithoutEntry: Boolean get() = false
 
     /**
+     * With [inflectionRulesOnlyWithoutEntry], whether a word that is a headword of the dictionary a "Word forms" item
+     * was cut from counts as having an entry, though the item brings none of its definitions: Uzbek davom with the word
+     * forms and a dictionary without davom shows nothing from the rules, not davo (remedy) with -m.
+     */
+    val formsHeadwordsCountAsEntries: Boolean get() = false
+
+    /**
      * Whether a result that a chain free of the inflection rules also reaches (a form-of row) drops its chains through
      * the rules, while the results only the rules reach stay, after the entries: Finnish taloon shows talo's illative
      * row, not also talo with -on, and kuusi shows kuusi, then kuu with -si. [inflectionRulesOnlyWithoutEntry] does

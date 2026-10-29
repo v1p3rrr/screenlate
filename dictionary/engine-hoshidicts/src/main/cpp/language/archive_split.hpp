@@ -132,6 +132,9 @@ struct ArchiveSplit {
   size_t mixed_rows = 0;
   // With [split_form_of]'s forms_only, the archive's index.json titled with [kFormsOnlyTitleSuffix].
   std::string index;
+  // With [split_form_of]'s forms_only, the headwords of the rows with definitions, as written, in the archive's order
+  // and with repeats (HeadwordList).
+  std::vector<std::string> headwords;
 };
 
 // Appended to the index title of a dictionary imported for its forms only ([split_form_of]'s forms_only), so it is
@@ -157,8 +160,8 @@ inline constexpr std::string_view kFormsOnlyTitleSuffix = " (forms)";
 // spellings ([MarkStripper::folded_keys]) as a respelling, and every term bank is read for them.
 // With [forms_only] (the "Word forms" item of a language whose forms only the English Wiktionary dictionary lists),
 // the definitions are left out as well: nothing is written to [output], as hoshidicts imports no dictionary without
-// entries; the table and [ArchiveSplit::index] make the dictionary, and every row with a form-of item counts as a
-// form row.
+// entries; the table and [ArchiveSplit::index] make the dictionary, every row with a form-of item counts as a
+// form row, and the headwords of the rows with definitions go to [ArchiveSplit::headwords].
 ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
                            const std::map<std::string, HeadwordMarks>& marks, bool forms_only = false);
 

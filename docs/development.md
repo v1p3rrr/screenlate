@@ -66,7 +66,7 @@ under other codes (Norwegian: Bokmål's nb, the editions' no and Nynorsk's nn); 
 the title and its language name in the description, and each gloss language is ticked from the first folder that has
 it. A language whose forms only the English edition lists (`FORMS_SOURCES`: Finnish, Hungarian, Estonian, Azerbaijani, Uzbek, Tamil, Telugu) also gets a "Word forms" entry,
 the source–English archive with `"build": "forms"`, mandatory beside the main dictionary; the download screen lists it only while the whole
-English dictionary is not ticked, the app imports it without definitions, and an installed English dictionary
+English dictionary is not ticked, the app imports it without definitions but with a list of the headwords (`headwords.bin`), and an installed English dictionary
 counts as it. It also writes
 `dictionaries.json`, the format 1 copy with the Japanese entries that older app versions read. `--tree <file>` uses a
 recorded listing, `--record <file>` saves one.

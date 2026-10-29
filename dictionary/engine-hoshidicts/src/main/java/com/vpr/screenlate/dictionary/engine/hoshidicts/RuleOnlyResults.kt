@@ -8,14 +8,20 @@ import com.vpr.screenlate.dictionary.api.model.Transform
  * The results without those reached only through [rules] (rule ids) where another result of the same matched text
  * needs none of them: Romanian casă finds its own entry, and the agreement ending's cas is left out
  * (`LanguageSupport.inflectionRulesOnlyWithoutEntry`). A form-of entry's chain is not a rule's, also where its tag is
- * named as a rule ([Transform.form]: the dative rows of Wiktionary's Uzbek export). A result reached both ways keeps
- * only its chains free of them ([withoutRuleChainsBesideFreeOnes]).
+ * named as a rule ([Transform.form]: the dative rows of Wiktionary's Uzbek export). A matched text among [headwords]
+ * counts as having an entry, though none is shown: Uzbek davom, a headword of the dictionary a "Word forms" item was
+ * cut from, shows nothing rather than davo with -m (`LanguageSupport.formsHeadwordsCountAsEntries`). A result reached
+ * both ways keeps only its chains free of them ([withoutRuleChainsBesideFreeOnes]).
  */
-internal fun List<LookupResult>.withoutRuleOnlyResults(rules: Set<String>): List<LookupResult> {
+internal fun List<LookupResult>.withoutRuleOnlyResults(
+    rules: Set<String>,
+    headwords: Set<String> = emptySet(),
+): List<LookupResult> {
     if (rules.isEmpty()) return this
     fun onlyThroughRules(result: LookupResult) = chains(result).all { it.throughAny(rules) }
     val plain = filterNot(::onlyThroughRules).mapTo(HashSet()) { it.matched }
-    return filterNot { onlyThroughRules(it) && it.matched in plain }.withoutRuleChainsBesideFreeOnes(rules)
+    return filterNot { onlyThroughRules(it) && (it.matched in plain || it.matched in headwords) }
+        .withoutRuleChainsBesideFreeOnes(rules)
 }
 
 /**

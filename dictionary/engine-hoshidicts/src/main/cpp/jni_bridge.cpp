@@ -36,12 +36,15 @@
 #include "language/archive_split.hpp"
 #include "language/candidate_lookup.hpp"
 #include "language/form_of_table.hpp"
+#include "language/headword_list.hpp"
 #include "language/yomitan_language.hpp"
 
 // glaze reflection needs types with linkage, so this is a named namespace.
 namespace screenlate_jni {
 
 constexpr const char* kFormOfTable = "form_of.bin";
+// Headwords of a dictionary imported for its forms only (language/headword_list.hpp).
+constexpr const char* kHeadwordList = "headwords.bin";
 constexpr const char* kSplitArchive = "form-of-split.zip";
 
 struct LanguageScript {
@@ -54,6 +57,9 @@ struct Session {
   Deinflector deinflector;
   // Form-of tables of the loaded term dictionaries that have one.
   std::vector<std::unique_ptr<screenlate_language::FormOfTable>> form_of_tables;
+  // Headword lists of the loaded term dictionaries imported for their forms only; those imported before the lists
+  // have none.
+  std::vector<std::unique_ptr<screenlate_language::HeadwordList>> headword_lists;
   // Yomitan's language code by ISO 639-1 code, for the languages looked up so far.
   std::unordered_map<std::string, LanguageScript> languages;
 };
@@ -117,6 +123,12 @@ struct LookupDto {
   int preprocessorSteps = 0;
   // Reached only through a form-of entry without tags: a headword keyed without its marks or letters.
   bool respelled = false;
+};
+
+struct LanguageLookupDto {
+  std::vector<LookupDto> results;
+  // Scanned texts that are headwords of a dictionary loaded for its forms only (listed_headword_texts).
+  std::vector<std::string> headwords;
 };
 
 struct ImportDto {
@@ -363,6 +375,11 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
       __android_log_print(ANDROID_LOG_INFO, "HoshidictsNative", "Form-of table: %zu forms, %zu entries, %zu mixed rows",
                           split.table.form_count(), split.table.entry_count(), split.mixed_rows);
     }
+    if (result.success && !split.headwords.empty()) {
+      const size_t rows = split.headwords.size();
+      screenlate_language::HeadwordList::write(output / result.title / kHeadwordList, std::move(split.headwords));
+      __android_log_print(ANDROID_LOG_INFO, "HoshidictsNative", "Headword list: %zu rows", rows);
+    }
     ImportDto dto{result.success, std::move(result.title), std::move(result.error), std::move(result.summary)};
     return write_json(env, dto);
   } catch (const std::exception& e) {
@@ -381,6 +398,7 @@ JNIEXPORT void JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_Hosh
     for (const auto& path : to_strings(env, pitch_paths)) query.add_pitch_dict(path);
     for (const auto& path : to_strings(env, kanji_paths)) query.add_kanji_dict(path);
     std::vector<std::unique_ptr<screenlate_language::FormOfTable>> tables;
+    std::vector<std::unique_ptr<screenlate_language::HeadwordList>> headword_lists;
     for (const auto& path : to_strings(env, term_paths)) {
       try {
         if (auto table = screenlate_language::FormOfTable::open(std::filesystem::path(path) / kFormOfTable)) {
@@ -390,10 +408,19 @@ JNIEXPORT void JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_Hosh
         // The registry reports such a dictionary as broken (HoshidictsEngine.isComplete); the others still load.
         __android_log_print(ANDROID_LOG_WARN, "HoshidictsNative", "Skipping a form-of table: %s", e.what());
       }
+      try {
+        if (auto list = screenlate_language::HeadwordList::open(std::filesystem::path(path) / kHeadwordList)) {
+          headword_lists.push_back(std::move(list));
+        }
+      } catch (const std::exception& e) {
+        // Without its list the dictionary works as one imported before the lists.
+        __android_log_print(ANDROID_LOG_WARN, "HoshidictsNative", "Skipping a headword list: %s", e.what());
+      }
     }
     Session* s = session(handle);
     s->query = std::move(query);
     s->form_of_tables = std::move(tables);
+    s->headword_lists = std::move(headword_lists);
   } catch (const std::exception& e) {
     throw_runtime(env, e.what());
   }
@@ -472,12 +499,15 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
     for (const auto& table : s->form_of_tables) tables.push_back(table.get());
     auto results = screenlate_language::lookup_candidates(s->query, tables, candidates,
                                                           loaded->second.part_of_speech_flags, options);
-    std::vector<LookupDto> dtos;
-    dtos.reserve(results.size());
+    std::vector<const screenlate_language::HeadwordList*> lists;
+    for (const auto& list : s->headword_lists) lists.push_back(list.get());
+    LanguageLookupDto dto;
+    dto.results.reserve(results.size());
     for (auto& result : results) {
-      dtos.push_back(to_dto(std::move(result)));
+      dto.results.push_back(to_dto(std::move(result)));
     }
-    return write_json(env, dtos);
+    dto.headwords = screenlate_language::listed_headword_texts(candidates, lists);
+    return write_json(env, dto);
   } catch (const std::exception& e) {
     throw_runtime(env, e.what());
     return nullptr;

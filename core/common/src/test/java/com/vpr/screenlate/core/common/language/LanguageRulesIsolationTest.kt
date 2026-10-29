@@ -542,6 +542,9 @@ class LanguageRulesIsolationTest {
                 Language.UZBEK, Language.BULGARIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA,
             )
         assertThat(all.where { it.ruleChainsOnlyWithoutRow }).containsExactly(Language.FINNISH)
+        // The owner's choice for these two; Hungarian, Tamil and Telugu have word forms items too.
+        assertThat(all.where { it.formsHeadwordsCountAsEntries }).containsExactly(Language.AZERBAIJANI, Language.UZBEK)
+        assertThat(all.where { it.formsHeadwordsCountAsEntries && !it.inflectionRulesOnlyWithoutEntry }).isEmpty()
     }
 
     @Test

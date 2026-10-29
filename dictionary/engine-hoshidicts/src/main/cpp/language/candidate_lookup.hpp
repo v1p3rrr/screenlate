@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "form_of_table.hpp"
+#include "headword_list.hpp"
 #include "hoshidicts/query.hpp"
 
 namespace screenlate_language {
@@ -69,5 +70,12 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
                                                const std::vector<LanguageCandidate>& candidates,
                                                const std::unordered_map<std::string, uint32_t>& part_of_speech_flags,
                                                const CandidateLookupOptions& options);
+
+// The scanned texts ([LanguageCandidate::o]) with a candidate that is a headword of [lists] and would be found as an
+// entry: a chain of it has no rule, and an entry without a part of speech fits it (the lists hold none, as Wiktionary's
+// exports name none). Davom, whose candidate davom is a headword of the dictionary a forms-only import was cut from,
+// has an entry there. Each once, in the candidates' order.
+std::vector<std::string> listed_headword_texts(const std::vector<LanguageCandidate>& candidates,
+                                               const std::vector<const HeadwordList*>& lists);
 
 }  // namespace screenlate_language

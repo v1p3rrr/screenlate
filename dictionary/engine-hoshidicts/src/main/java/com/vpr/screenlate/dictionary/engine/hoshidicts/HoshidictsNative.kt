@@ -54,6 +54,8 @@ internal object HoshidictsNative {
 
     /**
      * Lookup through the language's bundle: its deinflection candidates, exact queries, form-of entries followed.
+     * Returns JSON of `{results, headwords}`: the results, and the scanned texts that are headwords of a dictionary
+     * loaded for its forms only (`listed_headword_texts`).
      *
      * @param resolution `word` or `letter` (Yomitan's search resolution).
      * @param fromOcr the text was recognized in a screenshot: the bundle adds its processors for misread letters.

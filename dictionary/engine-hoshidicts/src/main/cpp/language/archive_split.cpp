@@ -595,8 +595,16 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
         definitions.push_back(item.str);
       }
     }
+    // A headword whose definitions a dictionary imported for its forms only leaves out, listed apart.
+    const bool listed = forms_only && !definitions.empty();
     std::string expression;
-    if ((form_of.empty() && !keys_headwords) || glz::read_json(expression, fields[0].str) || expression.empty()) {
+    if ((form_of.empty() && !keys_headwords && !listed) || glz::read_json(expression, fields[0].str) ||
+        expression.empty()) {
+      keep(row.str);
+      continue;
+    }
+    if (listed) split.headwords.push_back(expression);
+    if (form_of.empty() && !keys_headwords) {
       keep(row.str);
       continue;
     }

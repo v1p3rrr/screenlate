@@ -29,6 +29,7 @@ add_library(screenlate_hoshidicts SHARED
     language/archive_split.cpp
     language/candidate_lookup.cpp
     language/form_of_table.cpp
+    language/headword_list.cpp
     language/yomitan_language.cpp
 )
 

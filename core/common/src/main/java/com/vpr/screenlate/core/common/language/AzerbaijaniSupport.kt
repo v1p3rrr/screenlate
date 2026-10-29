@@ -42,6 +42,9 @@ object AzerbaijaniSupport : SpacedLanguageSupport() {
     /** The ending rules would put bel "waist" (dative -ə) beside belə "so". */
     override val inflectionRulesOnlyWithoutEntry = true
 
+    /** Also with the word forms alone: a word of the English dictionary that az–ru lacks gets no ending's result. */
+    override val formsHeadwordsCountAsEntries = true
+
     /**
      * "məs." (məsələn, for example); before a name "prof.", "dos." (dosent) and "akad." (akademik); in addresses, before
      * the street's name or the number, "şəh." (şəhəri, city) and "küç." (küçəsi, street): Bakı şəh. Nizami küç. 5.
