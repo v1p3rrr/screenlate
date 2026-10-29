@@ -338,7 +338,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP54 | Arabic form tags: أكبر also finds كبير, its tag «элатив (أفعل)» in Russian and «اسم التفضيل» in Arabic; a verb form (أحسن) names non-past «المضارع» and the subjunctive «المنصوب» in Arabic; Vietnamese trải → giải shows «Северный Вьетнам», hôn → hun «Центральный Вьетнам» | F | U FormOfTagsTest, ArabicSupportTest, VietnameseSupportTest, M | 2026-10-29 |
 | POP55 | Marathi fonts: Popup settings → Text font for Marathi lists Mukta and Tiro Devanagari Marathi (not Hind or Tiro Devanagari Hindi); downloading Mukta there makes it installed for Hindi too (one file, listed under both); the sample text draws Marathi's own ल and श in a font that has them; Backup with Marathi alone turned on lists Mukta | F | U FontCatalogFileTest, BackupChoiceTest, M | 2026-10-29 |
 | POP56 | Tamil fonts: Popup settings → Text font for Tamil lists the phone's font, then Hind Madurai, Mukta Malar and Tiro Tamil (not Hindi's or Marathi's); a downloaded one draws the sample text; Backup with Tamil alone turned on lists it | F | U FontCatalogFileTest, M | 2026-10-29 |
-| POP57 | Telugu fonts: Popup settings → Text font for Telugu lists Anek Telugu and Tiro Telugu (not Tamil's or Hindi's), with the system serif; a downloaded one draws the sample text, three-consonant clusters (లక్ష్మి, సామర్థ్యం) included | N | U FontCatalogFileTest, M | — |
+| POP57 | Telugu fonts: Popup settings → Text font for Telugu lists the phone's font, then Anek Telugu and Tiro Telugu (not Tamil's or Hindi's); a downloaded one draws the sample text, three-consonant clusters (లక్ష్మి, సామర్థ్యం) included | F | U FontCatalogFileTest, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -385,7 +385,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD39 | Macedonian and Mongolian audio: both list Lingua Libre first, Wiktionary, then the phone's voice; the Macedonian Test of вода finds a Lingua Libre recording, Wiktionary "No audio" and the phone's voice "No voice installed"; the Mongolian Test of ус says "No audio" for both sources and "No voice installed"; with autoplay on, a lookup in either language shows "No text-to-speech voice for this language is installed." | F | U MacedonianSupportTest, MongolianSupportTest, M | 2026-10-29 |
 | AUD40 | Marathi audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with पाणी; with autoplay on and no Marathi voice installed, a lookup shows the no-voice notice | F | U MarathiSupportTest, M | 2026-10-29 |
 | AUD41 | Tamil audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; Test with தண்ணீர் | F | U TamilSupportTest, M | 2026-10-29 |
-| AUD42 | Telugu audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with నీరు | N | U TeluguSupportTest, M | — |
+| AUD42 | Telugu audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with నీరు | F | U TeluguSupportTest, M | 2026-10-29 |
 
 ### ANK: Anki
 
@@ -437,7 +437,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK45 | Bulgarian and Macedonian Anki notes (over `testdata/ocr/bg-anki.png` and `mk-anki.png`, Arial, one paragraph over five and six lines, cloud recognition): the sentence keeps "г.", "пр. н. е.", "проф.", "ул." and "нпр." inside it, and "и т.н." or "итн." ends it before a capital ("Купихме ябълки, круши и т.н."; "Таа сака овошје, нпр. јаболка и круши итн."; "Проф. Иванов живее на ул. Шипка от 2020 г. насам."; "Во 44 г. пр. н. е. Цезар бил убиен."); PaddleOCR gives each line as a paragraph of its own, so its sentences end at the line ends | F | U SentenceTest, M | 2026-10-29 |
 | ANK46 | A Marathi Anki note (over `testdata/ocr/mr-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96`, one paragraph over four lines: "पु. ल. देशपांडे यांचा जन्म इ.स." / "1919 मध्ये झाला. डॉ. जोशी आणि" / "प्रा. पाटील आले. कोण आले? मी." / "तू कुठे होतास? तो आला। आता जा।", ML Kit Devanagari): the sentence keeps "डॉ.", "प्रा.", "इ.स." and the initials "पु. ल." inside it ("पु. ल. देशपांडे यांचा जन्म इ.स. 1919 मध्ये झाला."), and a one-syllable word of dialogue ends one ("कोण आले? मी. तू कुठे होतास?" gives "मी." for मी); a danda ends a sentence as a period does | F | U SentenceTest, MarathiSupportTest, M | 2026-10-29 |
 | ANK47 | A Tamil Anki note (over `testdata/ocr/ta-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture ta-IN`, four lines: "திரு. ராமன் 15 கி.மீ. நடந்தார்." / "க. சண்முகம் ஜன. 15 அன்று" / "வந்தார். யார் வந்தது?" / "நீ. இங்கே வா. அவர் சென்றார்."): under cloud recognition ராமன் gives "திரு. ராமன் 15 கி.மீ. நடந்தார்." (the title and the unit hold the sentence), நீ gives "நீ." and வா "இங்கே வா." (words of dialogue end sentences); under on-device recognition (Tesseract tam fast, one paragraph) வந்தார் gives "க. சண்முகம் ஜன. 15 அன்று வந்தார்." (a one-syllable initial and a month before a date, across the line end; cloud recognition makes a paragraph of each line of this image) | F | U SentenceTest, TamilSupportTest, M | 2026-10-29 |
-| ANK48 | A Telugu Anki note (over `testdata/ocr/te-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture te-IN`, one paragraph over five lines: "డా. రాజు 15 కి.మీ." / "నడిచారు. కె. చంద్రశేఖర్" / "రావు నిన్న వచ్చారు." / "ఎవరు వచ్చారు? ఇక్కడికి" / "రా. ఆయన వెళ్ళారు.", Tesseract tel fast): రాజు gives "డా. రాజు 15 కి.మీ. నడిచారు." (the title and the unit hold the sentence); చంద్రశేఖర్ gives "కె. చంద్రశేఖర్ రావు నిన్న వచ్చారు." (a one-syllable initial across the line end); ఇక్కడికి gives "ఇక్కడికి రా." (రా ends the sentence) | N | U SentenceTest, TeluguSupportTest, M | — |
+| ANK48 | A Telugu Anki note (over `testdata/ocr/te-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture te-IN`, five lines: "డా. రాజు 15 కి.మీ." / "నడిచారు. కె. చంద్రశేఖర్" / "రావు నిన్న వచ్చారు." / "ఎవరు వచ్చారు? ఇక్కడికి" / "రా. ఆయన వెళ్ళారు."): under on-device recognition (Tesseract tel fast, one paragraph) రాజు gives "డా. రాజు 15 కి.మీ. నడిచారు." (the title and the unit hold the sentence) and నిన్న "కె. చంద్రశేఖర్ రావు నిన్న వచ్చారు." (a one-syllable initial across the line end); under cloud recognition రా gives "ఇక్కడికి రా." (రా ends the sentence; Tesseract tel fast drops that period) | F | U SentenceTest, TeluguSupportTest, M | 2026-10-29 |
 
 ### TR: sentence translation
 
@@ -708,12 +708,12 @@ Newest first: date, build, scope, results, cases moved from N, findings.
 
 ### 2026-10-29, `languages/te` (Telugu, after its code commit), Pixel_10_Pro (API 37)
 
-Scope: LNG44, LK89 and OCR56, interface in Russian. Words in the Search screen sent with
+Scope: LNG44, LK89, OCR56, ANK48, POP57 and AUD42, interface in Russian. Words in the Search screen sent with
 `am start -a android.intent.action.PROCESS_TEXT`; the overlay over `testdata/ocr/te-sample.png`
-(`scripts/text-image-wpf.ps1`, Nirmala UI, te-IN) with Tesseract tel fast. Wiktionary te-en, te-ru and the
-transcription of 2026.10.22. The engine's instrumented tests: 75 passed.
+(`scripts/text-image-wpf.ps1`, Nirmala UI, te-IN) with Tesseract tel fast, and with both engines for ANK48. Wiktionary
+te-en, te-ru and the transcription of 2026.10.22. The engine's instrumented tests: 75 passed.
 
-Results: passed but for the parts named below; LNG44, LK89 and OCR56 moved from N to F.
+Results: passed but for the parts named below; LNG44, LK89, OCR56, ANK48, POP57 and AUD42 moved from N to F.
 - LNG44: Telugu with India's flag; the download screen ticks te-ru, te-en, the transcription and Tesseract tel fast
   (4.5 MB) and offers tel best unticked; the bubble shows తె. te-zh is not on the screen: Chinese is not a chosen
   definitions language on the emulator.
@@ -724,6 +724,19 @@ Results: passed but for the parts named below; LNG44, LK89 and OCR56 moved from 
   వాడు through te-en's spelling row. In the overlay రాష్ట్రంలో, పిల్లలకు, చదివాను and రైతులే as in the Search screen.
 - OCR56: the words read by Tesseract find their entries; aimed at the last letter of చదివాను, the overlay selects
   that word.
+- ANK48 (deck and note type Screenlate Test, Meaning {sentence}; duplicates set to "add new" for the run and back to
+  "prevent" after it): on-device recognition: రాజు → "డా. రాజు 15 కి.మీ. నడిచారు.", నిన్న → "కె. చందశేఖర్ రావు నిన్న
+  వచ్చారు." (Tesseract read చంద్రశేఖర్ without its subscript ర); cloud recognition: రా → "ఇక్కడికి రా.".
+- Found in ANK48: the name చంద్రశేఖర్ and ఇక్కడికి have no entry, so the case now aims at నిన్న and రా. ఇక్కడికి,
+  అక్కడికి and ఎక్కడికి (170 times in the news corpus) are not found: the dative -ికి after the place words in -అ has
+  no rule. Cloud recognition gave four paragraphs for the five lines with the first line alone, so రాజు gave
+  "డా. రాజు 15 కి.మీ." there. Tesseract tel fast kept one paragraph but dropped the period after రా, so రా gave
+  "ఇక్కడికి రా ఆయన వెళ్ళారు." under on-device recognition.
+- POP57: the phone's font, then Anek Telugu (1.8 MB) and Tiro Telugu (0.6 MB), with "Только для текста на телугу";
+  Tiro Telugu downloaded and chosen draws the sample text, లక్ష్మి and సామర్థ్యం included, in shapes that differ
+  from the phone's font.
+- AUD42: Lingua Libre, Wiktionary, then the phone's voice; Test with నీరు: Lingua Libre's recordings, Wiktionary's
+  clip (Te-నీరు.oga), the phone's voice there.
 
 ### 2026-10-29, `languages/ta` (Tamil, before its commit), Pixel_10_Pro (API 37)
 

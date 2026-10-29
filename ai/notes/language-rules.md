@@ -750,6 +750,8 @@ Found while measuring the word forms import for Uzbek and Azerbaijani (2026-10-2
   (వెళ్లే → వెళ్లు, అందించే → అందించు). Wrong hits of the hand checks: a name in -ా read as the particle (నడ్డా → నడ్డి),
   బట్టే also బట్ట. The -ము key is made for every headword that ends so, also where text keeps -ము (పాము is keyed పాం
   as well, which no text writes). A one-syllable word before a period other than రా (పో.) keeps the sentence going.
+  ఇక్కడికి, అక్కడికి and ఎక్కడికి (170 times in the news corpus) are not found: the dative -ికి after the place words
+  in -అ has no rule.
 - Bengali endings are undone once: ছেলেদেরকে finds ছেলেদের, not ছেলে. Verb forms come only from Wiktionary's form
   rows. The endings are tried on every word that ends like one (সাগর also queries সাগ); such a word shows only if a
   dictionary has it, after the full word.
