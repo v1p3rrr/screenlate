@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
+import com.vpr.screenlate.dictionary.api.catalog.BUILD_FORMS
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -63,6 +64,18 @@ class LanguageInstallationTest {
         assertThat(status(listOf(dictionary()), catalog = catalog).scanReady).isFalse()
         assertThat(status(listOf(dictionary(), dictionary("Forms", enabled = false)), catalog = catalog).scanReady).isFalse()
         assertThat(status(listOf(dictionary(), dictionary("Forms")), catalog = catalog).scanReady).isTrue()
+    }
+
+    @Test
+    fun `the whole dictionary the forms are cut from counts as the forms`() {
+        val index = "https://example.org/en-en/index.json"
+        val forms = entry("wty-en-en (forms)", CatalogCategory.FORMS).copy(indexUrl = index, build = BUILD_FORMS)
+        val catalog = Catalog(listOf(entry("English"), forms), mapOf("en" to setOf(CatalogCategory.MAIN, CatalogCategory.FORMS)))
+        val whole = dictionary("wty-en-en").copy(indexUrl = index)
+        assertThat(status(listOf(dictionary()), catalog = catalog).missing).containsExactly(CatalogCategory.FORMS)
+        assertThat(status(listOf(dictionary(), whole), catalog = catalog).missing).isEmpty()
+        assertThat(status(listOf(dictionary(), whole.copy(enabled = false)), catalog = catalog).missing)
+            .containsExactly(CatalogCategory.FORMS)
     }
 
     @Test

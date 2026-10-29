@@ -119,7 +119,9 @@ internal fun installationStatus(
                 entries.filter { it.isModel && it.model !in required }.none { entry -> models.any { it.id == entry.model } } &&
                     requiresImage
             }
-            else -> entries.filter { it.category == category }.none { entry -> enabled.any(entry::matches) }
+            // Word forms also come with the whole dictionary they are cut from.
+            else -> entries.filter { it.category == category }
+                .none { entry -> enabled.any { entry.matches(it) || entry.isCutFrom(it) } }
         }
     }
     val names = entries.mapTo(hashSetOf()) { it.title }.apply { own.forEach { add(it.title) } }
