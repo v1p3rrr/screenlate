@@ -250,6 +250,41 @@ test('a character entry shows its tags, and a tap opens a tag note', () => {
     assert.equal(page.document.getElementById('info-text').textContent, 'On the list of basic hanja for education (2007)');
 });
 
+test("a region chip of another language's region shows its label, and a tap opens nothing", () => {
+    const glossaries = [{ dictionary: 'Wiktionary vi-en', definitionTags: 'n 🇧🇷🎯 🇺🇸', content: JSON.stringify(['aunt']) }];
+    Popup.render(state({ results: [{ matched: 'o', term: { expression: 'o', reading: '', glossaries } }] }));
+    Popup.setTagNotes([{
+        dictionary: 'Wiktionary vi-en',
+        notes: { n: 'noun', '🇺🇸': 'US' },
+        labels: { '🇧🇷🎯': 'Central Vietnam' },
+    }]);
+    const tags = [...content.querySelectorAll('.definition .tag')];
+    assert.deepEqual(tags.map(tag => tag.textContent), ['n', 'Central Vietnam', '🇺🇸']);
+    assert.deepEqual(tags.map(tag => tag.classList.contains('described')), [true, false, true]);
+    tags[2].click();
+    assert.equal(page.document.getElementById('info-text').textContent, 'US');
+});
+
+test('a region tag inside a definition takes the same label and loses its title', () => {
+    const sense = (flag, title) => ({ tag: 'span', title, data: { content: 'tag', category: 'variety' }, content: flag });
+    const glossary = {
+        type: 'structured-content',
+        content: [{ tag: 'div', data: { content: 'tags' }, content: [sense('🇧🇷🎯', 'Central'), sense('🇺🇸', 'US')] }, 'paddy'],
+    };
+    const glossaries = [{ dictionary: 'Wiktionary vi-en', content: JSON.stringify([glossary]) }];
+    Popup.render(state({ results: [{ matched: 'lúa', term: { expression: 'lúa', reading: '', glossaries } }] }));
+    Popup.setTagNotes([{ dictionary: 'Wiktionary vi-en', notes: {}, labels: { '🇧🇷🎯': 'Central Vietnam' } }]);
+    const tags = [...content.querySelectorAll('.definition-body [data-sc-content="tag"]')];
+    assert.deepEqual(tags.map(tag => tag.textContent), ['Central Vietnam', '🇺🇸']);
+    assert.deepEqual(tags.map(tag => tag.title), ['', 'US']);
+    tags[0].click();
+    assert.equal(page.document.getElementById('info').hidden, true);
+
+    // Labels known before the lookup apply as the definition renders.
+    Popup.render(state({ results: [{ matched: 'lúa', term: { expression: 'lúa', reading: '', glossaries } }] }));
+    assert.equal(content.querySelector('.definition-body [data-sc-content="tag"]').textContent, 'Central Vietnam');
+});
+
 test('chinese headwords get a syllable above each character, marked with its tone', () => {
     Popup.render(state({
         source: { text: '图书馆', matched: 3, lang: 'zh-Hans' },

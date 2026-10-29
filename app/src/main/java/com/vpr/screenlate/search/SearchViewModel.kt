@@ -1,5 +1,6 @@
 package com.vpr.screenlate.search
 
+import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.AnkiDroid
@@ -105,7 +106,7 @@ class SearchViewModel @Inject constructor(
 
     suspend fun styles(language: Language): List<DictionaryStyle> = orElse(emptyList()) { lookup.styles(language) }
 
-    suspend fun tagNotes(): List<DictionaryTagNotes> = orElse(emptyList()) { lookup.tagNotes() }
+    suspend fun tagNotes(resources: Resources): List<DictionaryTagNotes> = orElse(emptyList()) { lookup.tagNotes(resources) }
 
     /** [fallback] when [block] fails; a cancellation is passed on, so a replaced search does not show as empty. */
     private inline fun <T> orElse(fallback: T, block: () -> T): T = try {

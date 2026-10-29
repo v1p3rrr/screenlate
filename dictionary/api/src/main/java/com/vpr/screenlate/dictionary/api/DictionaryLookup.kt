@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api
 
+import android.content.res.Resources
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.LookupStart
@@ -19,6 +20,7 @@ import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
 import javax.inject.Inject
 import javax.inject.Provider
+import java.util.Locale
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -37,6 +39,10 @@ class DictionaryLookup @Inject constructor(
     // Asked for every scan or shown word; kept until the dictionaries change.
     private val cachedStyles = PerGeneration<List<DictionaryStyle>>()
     private val cachedTagNotes = PerGeneration<List<DictionaryTagNotes>>()
+
+    /** [cachedTagNotes] with the chip labels in one interface language; the same list while neither changes. */
+    @Volatile
+    private var labelledTagNotes: LabelledTagNotes? = null
     private val cachedFrequencyModes = PerGeneration<Map<String, String>>()
     private val cachedTranscriptionTags = PerGeneration<Map<String, TranscriptionTags>>()
     private val cachedReadingIndexes = PerGeneration<Pair<Language, List<ReadingIndex>>>()
@@ -280,8 +286,16 @@ class DictionaryLookup @Inject constructor(
         engine.media(dictionary, path)
     }
 
-    /** Tag descriptions of the enabled dictionaries, shown when a tag in the popup is tapped. */
-    suspend fun tagNotes(): List<DictionaryTagNotes> = cachedTagNotes.get(repository.generation) { repository.tagNotes() }
+    /**
+     * Tag descriptions of the enabled dictionaries, shown when a tag in the popup is tapped, with the labels of the
+     * chips that name a region of another language's country ([RegionChips]) in [resources]' language.
+     */
+    suspend fun tagNotes(resources: Resources): List<DictionaryTagNotes> {
+        val notes = cachedTagNotes.get(repository.generation) { repository.tagNotes() }
+        val locale = resources.configuration.locales[0]
+        labelledTagNotes?.takeIf { it.notes === notes && it.locale == locale }?.let { return it.labelled }
+        return notes.map { RegionChips.labelled(it, resources) }.also { labelledTagNotes = LabelledTagNotes(notes, locale, it) }
+    }
 
     /** Entries for one character from the enabled kanji dictionaries; empty when there are none. */
     suspend fun kanji(character: String, language: Language): KanjiResult {
@@ -489,3 +503,5 @@ internal fun List<LookupResult>.withoutDefinitionsOf(dictionaries: Set<String>):
         }
     }
 }
+
+private class LabelledTagNotes(val notes: List<DictionaryTagNotes>, val locale: Locale, val labelled: List<DictionaryTagNotes>)

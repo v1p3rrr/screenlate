@@ -1669,7 +1669,7 @@ class OverlayController(
                 pageStyles = styles
                 popup.page.setStyles(json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), styles))
             }
-            val tagNotes = runCatching { lookup.tagNotes() }
+            val tagNotes = runCatching { lookup.tagNotes(service.resources) }
                 .onFailure { if (it is CancellationException) throw it else Log.w(TAG, "Loading tag descriptions failed", it) }
                 .getOrDefault(emptyList())
             if (tagNotes !== pageTagNotes) {

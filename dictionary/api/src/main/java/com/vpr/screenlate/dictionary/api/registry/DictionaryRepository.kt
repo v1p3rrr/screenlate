@@ -399,7 +399,8 @@ class DictionaryRepository @Inject constructor(
     /** Tag descriptions of the enabled dictionaries that have any, for the popup. */
     suspend fun tagNotes(): List<DictionaryTagNotes> = withContext(Dispatchers.IO) {
         dao.getAll().filter { it.enabled }.mapNotNull { dictionary ->
-            storage.tagNotes(dictionary).takeIf { it.isNotEmpty() }?.let { DictionaryTagNotes(dictionary.title, it) }
+            storage.tagNotes(dictionary).takeIf { it.isNotEmpty() }
+                ?.let { DictionaryTagNotes(dictionary.title, it, sourceLanguage = dictionary.sourceLanguage) }
         }
     }
 

@@ -28,6 +28,9 @@
     <string name="form_of_tag_apocopic">sonses düşmeli</string>
     <string name="form_of_tag_applicative">uygulamalı</string>
     <string name="form_of_tag_arabic">Arap yazısı</string>
+    <string name="form_of_tag_arabic_elative">ism-i tafdil (أفعل)</string>
+    <string name="form_of_tag_arabic_non_past">geçmiş dışı</string>
+    <string name="form_of_tag_arabic_subjunctive">dilek kipi</string>
     <string name="form_of_tag_archaic">eskil</string>
     <string name="form_of_tag_assertive">kesinlik</string>
     <string name="form_of_tag_attributive">niteleme</string>
@@ -88,6 +91,7 @@
     <string name="form_of_tag_directional">yönelme</string>
     <string name="form_of_tag_dual">ikil</string>
     <string name="form_of_tag_early_modern">erken modern Korece</string>
+    <string name="form_of_tag_eastern">doğu</string>
     <string name="form_of_tag_ekavian">ekavca</string>
     <string name="form_of_tag_elative">elatif</string>
     <string name="form_of_tag_emphatic">vurgulu</string>
@@ -209,7 +213,9 @@
     <string name="form_of_tag_nonstandard">standart dışı</string>
     <string name="form_of_tag_nonvirile">eril kişi dışı</string>
     <string name="form_of_tag_north_korea">Kuzey Kore</string>
+    <string name="form_of_tag_northeastern">kuzeydoğu</string>
     <string name="form_of_tag_northern">kuzey</string>
+    <string name="form_of_tag_northern_vietnam">Kuzey Vietnam</string>
     <string name="form_of_tag_not_comparable">karşılaştırılamaz</string>
     <string name="form_of_tag_noun_from_verb">isim biçimi</string>
     <string name="form_of_tag_object_definite">belirli çekim</string>
@@ -283,6 +289,7 @@
     <string name="form_of_tag_slang">argo</string>
     <string name="form_of_tag_south_korea">Güney Kore</string>
     <string name="form_of_tag_southern">güney</string>
+    <string name="form_of_tag_southern_vietnam">Güney Vietnam</string>
     <string name="form_of_tag_specific">özel</string>
     <string name="form_of_tag_standard">standart</string>
     <string name="form_of_tag_stressed">vurgulu</string>
@@ -323,6 +330,7 @@
     <string name="form_of_tag_voseo">voseo</string>
     <string name="form_of_tag_vulgar">kaba</string>
     <string name="form_of_tag_weak">zayıf</string>
+    <string name="form_of_tag_western">batı</string>
     <string name="form_of_tag_with_tu">tú ile</string>
     <string name="form_of_tag_with_vos">vos ile</string>
     <string name="form_of_tag_without_article">tanımlıksız</string>

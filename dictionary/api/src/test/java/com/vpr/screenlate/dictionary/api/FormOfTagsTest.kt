@@ -39,6 +39,22 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `arabic categories take their own strings, other languages keep the general ones`() {
+        val arabic = mapOf("elative" to "arabic-elative", "non-past" to "arabic-non-past", "subjunctive" to "arabic-subjunctive")
+        assertThat(label("elative masculine", arabic)).isEqualTo("arabic_elative masculine")
+        assertThat(label("non-past subjunctive", arabic)).isEqualTo("arabic_non_past arabic_subjunctive")
+        assertThat(label("elative plural")).isEqualTo("elative plural")
+    }
+
+    @Test
+    fun `vietnamese regions stand alone, north and south of north central vietnam stay plain`() {
+        val vietnamese = mapOf("central" to "central-vietnam", "northern" to "northern-vietnam", "southern" to "southern-vietnam")
+        assertThat(label("Northern", tagNames = vietnamese)).isEqualTo("northern_vietnam")
+        assertThat(label("Southern", tagNames = vietnamese)).isEqualTo("southern_vietnam")
+        assertThat(label("North", tagNames = vietnamese)).isEqualTo("northern")
+    }
+
+    @Test
     fun `words outside the list stay as they are`() {
         assertThat(label("genitive ezafe")).isEqualTo("genitive ezafe")
         assertThat(label("ezafe")).isNull()

@@ -70,6 +70,16 @@ object ArabicSupport : SpacedLanguageSupport() {
         formsInScript = true,
     )
 
+    /**
+     * Wiktionary's words for Arabic forms that name other languages' categories elsewhere: `elative` is the أفعل
+     * form, not the Finnish case; `non-past` and `subjunctive` are المضارع and المنصوب to an Arabic reader.
+     */
+    override val formTagAliases = mapOf(
+        "elative" to "arabic-elative",
+        "non-past" to "arabic-non-past",
+        "subjunctive" to "arabic-subjunctive",
+    )
+
     /** 4% of Wiktionary's Arabic recordings and 17% of Lingua Libre's are titled vowelled (`Ar-كِتَابٌ.oga`). */
     override val recordingMarks = ARABIC_VOWEL_MARKS
 

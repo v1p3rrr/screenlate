@@ -230,11 +230,38 @@ const Popup = (() => {
     }
 
     function tagNote(chip) {
-        return tagNotes.get(chip.dataset.dictionary)?.get(chip.textContent) || '';
+        return tagNotes.get(chip.dataset.dictionary)?.notes.get(chip.dataset.tag) || '';
+    }
+
+    /** A dictionary's tag; a region chip of another language's region shows the label the app gives it. */
+    function tagChip(tag, dictionary) {
+        const chip = element('span', 'tag', tag);
+        chip.dataset.dictionary = dictionary;
+        chip.dataset.tag = tag;
+        markTag(chip);
+        return chip;
     }
 
     function markTag(chip) {
+        chip.textContent = tagNotes.get(chip.dataset.dictionary)?.labels.get(chip.dataset.tag) || chip.dataset.tag;
         chip.classList.toggle('described', Boolean(tagNote(chip)));
+    }
+
+    /** Tags inside a definition (Wiktionary's sense tags) take the labels of the dictionary's tag chips. */
+    function markContentTags(body, dictionary) {
+        body.querySelectorAll('[data-sc-content="tag"]').forEach(tag => {
+            tag.dataset.dictionary = dictionary;
+            tag.dataset.tag = tag.textContent;
+            markContentTag(tag);
+        });
+    }
+
+    /** A labelled tag loses its title, the tag's name in the dictionary's language, as a labelled chip has no note. */
+    function markContentTag(tag) {
+        const label = tagNotes.get(tag.dataset.dictionary)?.labels.get(tag.dataset.tag);
+        if (!label) return;
+        tag.textContent = label;
+        tag.removeAttribute('title');
     }
 
     /**
@@ -720,12 +747,7 @@ const Popup = (() => {
             const tags = (entry.tags || '').split(' ').filter(Boolean);
             if (tags.length) {
                 const tagRow = element('div', 'tags kanji-tags');
-                tags.forEach(tag => {
-                    const chip = element('span', 'tag', tag);
-                    chip.dataset.dictionary = entry.dictionary;
-                    markTag(chip);
-                    tagRow.append(chip);
-                });
+                tags.forEach(tag => tagRow.append(tagChip(tag, entry.dictionary)));
                 section.append(tagRow);
             }
             const readings = [
@@ -1084,18 +1106,14 @@ const Popup = (() => {
             const tags = (glossary.definitionTags || '').split(' ').filter(Boolean);
             if (tags.length) {
                 const tagRow = element('span', 'tags');
-                tags.forEach(tag => {
-                    const chip = element('span', 'tag', tag);
-                    chip.dataset.dictionary = dictionary;
-                    markTag(chip);
-                    tagRow.append(chip);
-                });
+                tags.forEach(tag => tagRow.append(tagChip(tag, dictionary)));
                 definition.append(tagRow);
             }
             const body = element('div', 'definition-body');
             const content = glossaryContent(glossary);
             if (renderer) {
                 renderer.renderGlossary(body, content, dictionary, renderOptions);
+                markContentTags(body, dictionary);
             } else {
                 body.textContent = plainText(content);
             }
@@ -1248,10 +1266,14 @@ const Popup = (() => {
         ScreenlateBridge.onViewRestored();
     }
 
-    /** Tag descriptions by dictionary: [{ dictionary, notes: { tag: description } }]. */
+    /** Tag descriptions and chip labels by dictionary: [{ dictionary, notes: { tag: description }, labels: { tag: text } }]. */
     function setTagNotes(list) {
-        tagNotes = new Map((list || []).map(item => [item.dictionary, new Map(Object.entries(item.notes || {}))]));
-        content.querySelectorAll('.tag').forEach(markTag);
+        tagNotes = new Map((list || []).map(item => [item.dictionary, {
+            notes: new Map(Object.entries(item.notes || {})),
+            labels: new Map(Object.entries(item.labels || {})),
+        }]));
+        content.querySelectorAll('.tag[data-tag]').forEach(markTag);
+        content.querySelectorAll('.definition-body [data-sc-content="tag"][data-tag]').forEach(markContentTag);
     }
 
     function setStyles(newStyles) {

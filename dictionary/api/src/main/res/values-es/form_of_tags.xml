@@ -28,6 +28,9 @@
     <string name="form_of_tag_apocopic">apocopado</string>
     <string name="form_of_tag_applicative">aplicativo</string>
     <string name="form_of_tag_arabic">escritura árabe</string>
+    <string name="form_of_tag_arabic_elative">elativo (أفعل)</string>
+    <string name="form_of_tag_arabic_non_past">no pasado</string>
+    <string name="form_of_tag_arabic_subjunctive">subjuntivo</string>
     <string name="form_of_tag_archaic">arcaico</string>
     <string name="form_of_tag_assertive">asertivo</string>
     <string name="form_of_tag_attributive">atributivo</string>
@@ -88,6 +91,7 @@
     <string name="form_of_tag_directional">direccional</string>
     <string name="form_of_tag_dual">dual</string>
     <string name="form_of_tag_early_modern">coreano moderno temprano</string>
+    <string name="form_of_tag_eastern">oriental</string>
     <string name="form_of_tag_ekavian">ekavo</string>
     <string name="form_of_tag_elative">elativo</string>
     <string name="form_of_tag_emphatic">enfático</string>
@@ -209,7 +213,9 @@
     <string name="form_of_tag_nonstandard">no estándar</string>
     <string name="form_of_tag_nonvirile">no masculino personal</string>
     <string name="form_of_tag_north_korea">Corea del Norte</string>
+    <string name="form_of_tag_northeastern">nororiental</string>
     <string name="form_of_tag_northern">septentrional</string>
+    <string name="form_of_tag_northern_vietnam">norte de Vietnam</string>
     <string name="form_of_tag_not_comparable">no comparable</string>
     <string name="form_of_tag_noun_from_verb">forma nominal</string>
     <string name="form_of_tag_object_definite">conjugación definida</string>
@@ -283,6 +289,7 @@
     <string name="form_of_tag_slang">jerga</string>
     <string name="form_of_tag_south_korea">Corea del Sur</string>
     <string name="form_of_tag_southern">meridional</string>
+    <string name="form_of_tag_southern_vietnam">sur de Vietnam</string>
     <string name="form_of_tag_specific">específico</string>
     <string name="form_of_tag_standard">estándar</string>
     <string name="form_of_tag_stressed">tónico</string>
@@ -323,6 +330,7 @@
     <string name="form_of_tag_voseo">voseo</string>
     <string name="form_of_tag_vulgar">vulgar</string>
     <string name="form_of_tag_weak">débil</string>
+    <string name="form_of_tag_western">occidental</string>
     <string name="form_of_tag_with_tu">con tú</string>
     <string name="form_of_tag_with_vos">con vos</string>
     <string name="form_of_tag_without_article">sin artículo</string>

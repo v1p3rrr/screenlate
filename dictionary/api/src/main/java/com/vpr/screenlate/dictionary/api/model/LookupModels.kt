@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.model
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 /**
  * One term found for a lookup string. Terms are grouped by expression and reading; [TermEntry.glossaries]
@@ -121,11 +122,18 @@ data class DictionaryStyle(
     val css: String,
 )
 
-/** Descriptions of a dictionary's tags by tag name, from its tag banks (Yomitan's `notes`). */
+/**
+ * Descriptions of a dictionary's tags by tag name, from its tag banks (Yomitan's `notes`).
+ *
+ * @property labels text a tag's chip shows instead of its name ([com.vpr.screenlate.dictionary.api.RegionChips]).
+ * @property sourceLanguage the dictionary's language code, not sent to the page.
+ */
 @Serializable
 data class DictionaryTagNotes(
     val dictionary: String,
     val notes: Map<String, String>,
+    val labels: Map<String, String> = emptyMap(),
+    @Transient val sourceLanguage: String? = null,
 )
 
 /** @property lang as [LookupResult.lang]. */

@@ -28,6 +28,9 @@
     <string name="form_of_tag_apocopic">詞尾脫落形</string>
     <string name="form_of_tag_applicative">施用式</string>
     <string name="form_of_tag_arabic">阿拉伯字母</string>
+    <string name="form_of_tag_arabic_elative">比較名詞 (أفعل)</string>
+    <string name="form_of_tag_arabic_non_past">非過去</string>
+    <string name="form_of_tag_arabic_subjunctive">虛擬式</string>
     <string name="form_of_tag_archaic">古語</string>
     <string name="form_of_tag_assertive">斷定</string>
     <string name="form_of_tag_attributive">定語</string>
@@ -88,6 +91,7 @@
     <string name="form_of_tag_directional">方向</string>
     <string name="form_of_tag_dual">雙數</string>
     <string name="form_of_tag_early_modern">近代朝鮮語</string>
+    <string name="form_of_tag_eastern">東部</string>
     <string name="form_of_tag_ekavian">埃卡維亞方言</string>
     <string name="form_of_tag_elative">出格</string>
     <string name="form_of_tag_emphatic">強調</string>
@@ -209,7 +213,9 @@
     <string name="form_of_tag_nonstandard">非標準</string>
     <string name="form_of_tag_nonvirile">非陽性人稱</string>
     <string name="form_of_tag_north_korea">北韓</string>
+    <string name="form_of_tag_northeastern">東北</string>
     <string name="form_of_tag_northern">北方</string>
+    <string name="form_of_tag_northern_vietnam">越南北部</string>
     <string name="form_of_tag_not_comparable">無比較級</string>
     <string name="form_of_tag_noun_from_verb">名詞形</string>
     <string name="form_of_tag_object_definite">定指變位</string>
@@ -283,6 +289,7 @@
     <string name="form_of_tag_slang">俚語</string>
     <string name="form_of_tag_south_korea">南韓</string>
     <string name="form_of_tag_southern">南方</string>
+    <string name="form_of_tag_southern_vietnam">越南南部</string>
     <string name="form_of_tag_specific">特定</string>
     <string name="form_of_tag_standard">標準語</string>
     <string name="form_of_tag_stressed">重讀</string>
@@ -323,6 +330,7 @@
     <string name="form_of_tag_voseo">vos 稱呼</string>
     <string name="form_of_tag_vulgar">粗俗</string>
     <string name="form_of_tag_weak">弱變化</string>
+    <string name="form_of_tag_western">西部</string>
     <string name="form_of_tag_with_tu">配 tú</string>
     <string name="form_of_tag_with_vos">配 vos</string>
     <string name="form_of_tag_without_article">無冠詞</string>

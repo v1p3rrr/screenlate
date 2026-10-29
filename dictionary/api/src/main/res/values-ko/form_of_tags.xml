@@ -28,6 +28,9 @@
     <string name="form_of_tag_apocopic">어말음 탈락형</string>
     <string name="form_of_tag_applicative">적용태</string>
     <string name="form_of_tag_arabic">아랍 문자</string>
+    <string name="form_of_tag_arabic_elative">비교·최상급 (أفعل)</string>
+    <string name="form_of_tag_arabic_non_past">비과거</string>
+    <string name="form_of_tag_arabic_subjunctive">접속법</string>
     <string name="form_of_tag_archaic">고어</string>
     <string name="form_of_tag_assertive">단정형</string>
     <string name="form_of_tag_attributive">관형형</string>
@@ -88,6 +91,7 @@
     <string name="form_of_tag_directional">방향</string>
     <string name="form_of_tag_dual">쌍수</string>
     <string name="form_of_tag_early_modern">근대 국어</string>
+    <string name="form_of_tag_eastern">동부</string>
     <string name="form_of_tag_ekavian">에카비아 방언</string>
     <string name="form_of_tag_elative">출격</string>
     <string name="form_of_tag_emphatic">강조</string>
@@ -209,7 +213,9 @@
     <string name="form_of_tag_nonstandard">비표준</string>
     <string name="form_of_tag_nonvirile">비남성 인칭</string>
     <string name="form_of_tag_north_korea">북한</string>
+    <string name="form_of_tag_northeastern">북동부</string>
     <string name="form_of_tag_northern">북부</string>
+    <string name="form_of_tag_northern_vietnam">베트남 북부</string>
     <string name="form_of_tag_not_comparable">비교 변화 없음</string>
     <string name="form_of_tag_noun_from_verb">명사형</string>
     <string name="form_of_tag_object_definite">한정 활용</string>
@@ -283,6 +289,7 @@
     <string name="form_of_tag_slang">속어</string>
     <string name="form_of_tag_south_korea">남한</string>
     <string name="form_of_tag_southern">남부</string>
+    <string name="form_of_tag_southern_vietnam">베트남 남부</string>
     <string name="form_of_tag_specific">특정</string>
     <string name="form_of_tag_standard">표준어</string>
     <string name="form_of_tag_stressed">강세형</string>
@@ -323,6 +330,7 @@
     <string name="form_of_tag_voseo">보세오</string>
     <string name="form_of_tag_vulgar">비속어</string>
     <string name="form_of_tag_weak">약변화</string>
+    <string name="form_of_tag_western">서부</string>
     <string name="form_of_tag_with_tu">tú 용</string>
     <string name="form_of_tag_with_vos">vos 용</string>
     <string name="form_of_tag_without_article">관사 없음</string>

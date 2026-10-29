@@ -31,8 +31,15 @@ object VietnameseSupport : SpacedLanguageSupport() {
     /** Its marks are tones: a word without them is another word. */
     override val foldsMarks = false
 
-    /** The dialect forms of Central Vietnam (tau for tao) carry `Central` alone. */
-    override val formTagNames = mapOf("central" to "central-vietnam")
+    /**
+     * The dialect forms of a region carry its word alone (dóm for nhóm: `Northern`). `North` and `South` come only
+     * beside `Central`, as the words of North and South Central Vietnam (tau for tao), so they keep their own label.
+     */
+    override val formTagNames = mapOf(
+        "central" to "central-vietnam",
+        "northern" to "northern-vietnam",
+        "southern" to "southern-vietnam",
+    )
 
     /**
      * Titles and administrative units: TP. (thành phố), Q. and P. (quận, phường in addresses), TS., ThS., GS., PGS.

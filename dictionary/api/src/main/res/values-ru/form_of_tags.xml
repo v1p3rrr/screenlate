@@ -28,6 +28,9 @@
     <string name="form_of_tag_apocopic">усечённое</string>
     <string name="form_of_tag_applicative">аппликатив</string>
     <string name="form_of_tag_arabic">арабское письмо</string>
+    <string name="form_of_tag_arabic_elative">элатив (أفعل)</string>
+    <string name="form_of_tag_arabic_non_past">непрошедшее время</string>
+    <string name="form_of_tag_arabic_subjunctive">сослагательное наклонение</string>
     <string name="form_of_tag_archaic">архаичное</string>
     <string name="form_of_tag_assertive">утвердительное</string>
     <string name="form_of_tag_attributive">атрибутивное</string>
@@ -88,6 +91,7 @@
     <string name="form_of_tag_directional">направительное</string>
     <string name="form_of_tag_dual">двойственное число</string>
     <string name="form_of_tag_early_modern">ранний новокорейский</string>
+    <string name="form_of_tag_eastern">восточное</string>
     <string name="form_of_tag_ekavian">экавское</string>
     <string name="form_of_tag_elative">элатив</string>
     <string name="form_of_tag_emphatic">усилительное</string>
@@ -209,7 +213,9 @@
     <string name="form_of_tag_nonstandard">нестандартное</string>
     <string name="form_of_tag_nonvirile">немужсколичное</string>
     <string name="form_of_tag_north_korea">Северная Корея</string>
+    <string name="form_of_tag_northeastern">северо-восточное</string>
     <string name="form_of_tag_northern">северное</string>
+    <string name="form_of_tag_northern_vietnam">Северный Вьетнам</string>
     <string name="form_of_tag_not_comparable">без степеней сравнения</string>
     <string name="form_of_tag_noun_from_verb">именная форма</string>
     <string name="form_of_tag_object_definite">определённое спряжение</string>
@@ -283,6 +289,7 @@
     <string name="form_of_tag_slang">сленг</string>
     <string name="form_of_tag_south_korea">Южная Корея</string>
     <string name="form_of_tag_southern">южное</string>
+    <string name="form_of_tag_southern_vietnam">Южный Вьетнам</string>
     <string name="form_of_tag_specific">конкретное</string>
     <string name="form_of_tag_standard">нормативное</string>
     <string name="form_of_tag_stressed">ударное</string>
@@ -323,6 +330,7 @@
     <string name="form_of_tag_voseo">восео</string>
     <string name="form_of_tag_vulgar">вульгарное</string>
     <string name="form_of_tag_weak">слабое</string>
+    <string name="form_of_tag_western">западное</string>
     <string name="form_of_tag_with_tu">с tú</string>
     <string name="form_of_tag_with_vos">с vos</string>
     <string name="form_of_tag_without_article">без артикля</string>

@@ -34,8 +34,12 @@ class VietnameseSupportTest {
     }
 
     @Test
-    fun `central alone names central vietnam`() {
-        assertThat(VietnameseSupport.formTagNames).containsExactly("central", "central-vietnam")
+    fun `central, northern and southern alone name the regions of vietnam`() {
+        assertThat(VietnameseSupport.formTagNames).containsExactly(
+            "central", "central-vietnam",
+            "northern", "northern-vietnam",
+            "southern", "southern-vietnam",
+        )
         assertThat(ThaiSupport.formTagNames).isEmpty()
     }
 }

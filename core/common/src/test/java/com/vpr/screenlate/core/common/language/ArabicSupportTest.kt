@@ -102,6 +102,16 @@ class ArabicSupportTest {
     }
 
     @Test
+    fun `form tags of arabic categories take arabic names`() {
+        assertThat(support.formTagAliases).containsExactly(
+            "elative", "arabic-elative",
+            "non-past", "arabic-non-past",
+            "subjunctive", "arabic-subjunctive",
+        )
+        assertThat(PersianSupport.formTagAliases).isEmpty()
+    }
+
+    @Test
     fun `the language is called Arabic as the phone names it`() {
         assertThat(support.nameIn(Locale.ENGLISH)).isEqualTo("Arabic")
         val russian = Locale.forLanguageTag("ru")

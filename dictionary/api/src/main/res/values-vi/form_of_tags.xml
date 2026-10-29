@@ -28,6 +28,9 @@
     <string name="form_of_tag_apocopic">rút gọn cuối</string>
     <string name="form_of_tag_applicative">thể ứng dụng</string>
     <string name="form_of_tag_arabic">chữ Ả Rập</string>
+    <string name="form_of_tag_arabic_elative">dạng so sánh (أفعل)</string>
+    <string name="form_of_tag_arabic_non_past">phi quá khứ</string>
+    <string name="form_of_tag_arabic_subjunctive">giả định</string>
     <string name="form_of_tag_archaic">cổ</string>
     <string name="form_of_tag_assertive">khẳng định</string>
     <string name="form_of_tag_attributive">định ngữ</string>
@@ -88,6 +91,7 @@
     <string name="form_of_tag_directional">chỉ hướng</string>
     <string name="form_of_tag_dual">số đôi</string>
     <string name="form_of_tag_early_modern">tiếng Triều Tiên cận đại</string>
+    <string name="form_of_tag_eastern">miền Đông</string>
     <string name="form_of_tag_ekavian">Ekavia</string>
     <string name="form_of_tag_elative">xuất cách</string>
     <string name="form_of_tag_emphatic">nhấn mạnh</string>
@@ -209,7 +213,9 @@
     <string name="form_of_tag_nonstandard">không chuẩn</string>
     <string name="form_of_tag_nonvirile">không chỉ người giống đực</string>
     <string name="form_of_tag_north_korea">Triều Tiên</string>
+    <string name="form_of_tag_northeastern">miền Đông Bắc</string>
     <string name="form_of_tag_northern">phương Bắc</string>
+    <string name="form_of_tag_northern_vietnam">miền Bắc</string>
     <string name="form_of_tag_not_comparable">không so sánh được</string>
     <string name="form_of_tag_noun_from_verb">dạng danh từ</string>
     <string name="form_of_tag_object_definite">chia xác định</string>
@@ -283,6 +289,7 @@
     <string name="form_of_tag_slang">tiếng lóng</string>
     <string name="form_of_tag_south_korea">Hàn Quốc</string>
     <string name="form_of_tag_southern">phương Nam</string>
+    <string name="form_of_tag_southern_vietnam">miền Nam</string>
     <string name="form_of_tag_specific">cụ thể</string>
     <string name="form_of_tag_standard">chuẩn</string>
     <string name="form_of_tag_stressed">có trọng âm</string>
@@ -323,6 +330,7 @@
     <string name="form_of_tag_voseo">voseo</string>
     <string name="form_of_tag_vulgar">thô tục</string>
     <string name="form_of_tag_weak">yếu</string>
+    <string name="form_of_tag_western">miền Tây</string>
     <string name="form_of_tag_with_tu">với tú</string>
     <string name="form_of_tag_with_vos">với vos</string>
     <string name="form_of_tag_without_article">không có mạo từ</string>

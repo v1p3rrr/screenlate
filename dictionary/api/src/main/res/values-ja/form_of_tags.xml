@@ -28,6 +28,9 @@
     <string name="form_of_tag_apocopic">語尾脱落形</string>
     <string name="form_of_tag_applicative">適用態</string>
     <string name="form_of_tag_arabic">アラビア文字</string>
+    <string name="form_of_tag_arabic_elative">比較・最上級 (أفعل)</string>
+    <string name="form_of_tag_arabic_non_past">非過去</string>
+    <string name="form_of_tag_arabic_subjunctive">接続法</string>
     <string name="form_of_tag_archaic">古語</string>
     <string name="form_of_tag_assertive">断定</string>
     <string name="form_of_tag_attributive">連体</string>
@@ -88,6 +91,7 @@
     <string name="form_of_tag_directional">方向</string>
     <string name="form_of_tag_dual">双数</string>
     <string name="form_of_tag_early_modern">近代朝鮮語</string>
+    <string name="form_of_tag_eastern">東部</string>
     <string name="form_of_tag_ekavian">エ方言</string>
     <string name="form_of_tag_elative">出格</string>
     <string name="form_of_tag_emphatic">強調</string>
@@ -209,7 +213,9 @@
     <string name="form_of_tag_nonstandard">非標準</string>
     <string name="form_of_tag_nonvirile">非男性人称</string>
     <string name="form_of_tag_north_korea">北朝鮮</string>
+    <string name="form_of_tag_northeastern">北東部</string>
     <string name="form_of_tag_northern">北部</string>
+    <string name="form_of_tag_northern_vietnam">ベトナム北部</string>
     <string name="form_of_tag_not_comparable">比較変化なし</string>
     <string name="form_of_tag_noun_from_verb">名詞形</string>
     <string name="form_of_tag_object_definite">定活用</string>
@@ -283,6 +289,7 @@
     <string name="form_of_tag_slang">俗語</string>
     <string name="form_of_tag_south_korea">韓国</string>
     <string name="form_of_tag_southern">南方</string>
+    <string name="form_of_tag_southern_vietnam">ベトナム南部</string>
     <string name="form_of_tag_specific">特定</string>
     <string name="form_of_tag_standard">標準語</string>
     <string name="form_of_tag_stressed">強勢形</string>
@@ -323,6 +330,7 @@
     <string name="form_of_tag_voseo">ボセオ</string>
     <string name="form_of_tag_vulgar">卑語</string>
     <string name="form_of_tag_weak">弱変化</string>
+    <string name="form_of_tag_western">西部</string>
     <string name="form_of_tag_with_tu">tú 用</string>
     <string name="form_of_tag_with_vos">vos 用</string>
     <string name="form_of_tag_without_article">無冠詞</string>
