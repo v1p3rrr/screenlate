@@ -48,8 +48,10 @@ export const bengaliTransforms = /* @__PURE__ */ (() => ({
  * ending may follow them (घरातही → घरात → घर). Wiktionary's Marathi entries tag each definition with its part of
  * speech, so the texts of the endings reach nominal words and forms, those of the verbal noun the verbs, and those of
  * the particles any word (glue.js, `taggedRules`, `untypedRules`). Two characters stay at least. The endings are in
- * NFC, as the composed text and the headwords. The imperfective participle's -त and -ताना come off a verb's stem for
- * its infinitive in -णे (करत, करताना → करणे): Wiktionary lists the forms of few verbs ([marathiParticiples]).
+ * NFC, as the composed text and the headwords. Verb endings come off a verb's stem for its infinitive in -णे and reach
+ * verbs only: Wiktionary lists the forms of few verbs ([marathiVerbEndings], [marathiPastEndings]). Each was kept where
+ * its right results outnumber its wrong ones over the commonest news words without an entry; the words they read
+ * wrong most often are left as written ([unmutated]: नेते "leaders" is no form of नेणे, सांगली a city).
  */
 const marathiEndings = [
     'प्रमाणे', 'मध्ये', 'पर्यंत', 'पासून', 'मधील', 'मधून', 'विषयी', 'बद्दल', 'पेक्षा', 'सारखा', 'सारखी', 'सारखे', 'बरोबर',
@@ -60,8 +62,26 @@ const marathiEndings = [
 /** Endings that follow a vowel only: करत is a verb's form, not कर with the locative. */
 const marathiEndingsAfterVowels = new Set(['त', 'स']);
 
-/** The imperfective participle's endings, which come off a verb's stem (येत, येताना → येणे). */
-const marathiParticiples = ['ताना', 'त'];
+/**
+ * Endings that come off a verb's stem: the imperfective participle (येत, येताना → येणे), the present (करतो, करते,
+ * करता, करतात) and the conjunctive participle, -ून after a consonant (करून, पाहून) and -ऊन after a vowel (घेऊन → घेणे).
+ * The present's second person singular (-तोस, -तेस) met no such word in news and is left out.
+ */
+const marathiVerbEndings = ['ताना', 'तात', 'तो', 'ते', 'ता', 'त', 'ऊन', 'ून'];
+
+/**
+ * The past and perfect participle endings, which come off a past stem ([marathiPastStems]): the past by gender,
+ * number and the second person plural (बसला, बसली, बसले, बसलो, बसल्या, पाहिलात) and the perfect participle (बसलेला,
+ * बसलेल्या). The second person singular (-लास, -लीस) and the spoken -लेत met no such word in news and are left out.
+ */
+const marathiPastEndings = ['लेल्या', 'लेला', 'लेली', 'लेले', 'ल्या', 'लात', 'ला', 'ली', 'ले', 'लो'];
+
+/**
+ * What a past stem adds to the verb's: nothing (बसला → बसणे), -ा- (मिळाला, म्हणाले → म्हणणे), -ि- (पाहिला → पाहणे,
+ * the older पाठविला → पाठवणे), -ित- (सांगितला → सांगणे) or -त- (घेतला → घेणे). The irregular pasts (केला, गेला, आला,
+ * झाला, दिला) are Wiktionary's forms.
+ */
+const marathiPastStems = ['', 'ा', 'ि', 'ित', 'त'];
 
 /**
  * Oblique stems and their direct forms: the stem as it is (नदीला → नदी), -्या for -ा and -ी (मुलग्याला → मुलगा,
@@ -104,18 +124,23 @@ function marathiEndingRules(ending) {
 }
 
 /**
+ * The rules that take [ending] off a verb's stem, or off each past stem ([marathiPastStems]); none for a nominal one.
  * @param {string} ending
- * @returns {import('language-transformer').SuffixRule<'v' | 'p'>}
+ * @returns {import('language-transformer').SuffixRule<'v' | 'p'>[]}
  */
-function marathiParticiple(ending) {
-    return {
-        type: 'suffix',
-        isInflected: new RegExp('.{2}' + ending + '$'),
-        deinflected: 'णे',
-        deinflect: (text) => text.slice(0, -ending.length) + 'णे',
-        conditionsIn: ['p'],
-        conditionsOut: ['v'],
-    };
+function marathiVerbRules(ending) {
+    const stems = marathiPastEndings.includes(ending) ? marathiPastStems : marathiVerbEndings.includes(ending) ? [''] : [];
+    return stems.map((stem) => {
+        const cut = stem.length + ending.length;
+        return {
+            type: 'suffix',
+            isInflected: new RegExp('.{2}' + stem + ending + '$'),
+            deinflected: 'णे',
+            deinflect: (text) => text.slice(0, -cut) + 'णे',
+            conditionsIn: ['p'],
+            conditionsOut: ['v'],
+        };
+    });
 }
 
 /**
@@ -133,7 +158,12 @@ function marathiParticle(particle) {
     };
 }
 
-/** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'v' | 'p'>} */
+/**
+ * [unmutated]: nouns and a name that the verb endings would read as a verb's form, the commonest wrong results among
+ * the news words without an entry (नेते 502 times, सांगली 112, नेता 48, चाहते 48, सलून 14, चाहता 11); no rule
+ * finds their own entry either.
+ * @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'v' | 'p'> & {unmutated: string[]}}
+ */
 export const marathiTransforms = /* @__PURE__ */ (() => ({
     language: 'mr',
     conditions: {
@@ -144,15 +174,13 @@ export const marathiTransforms = /* @__PURE__ */ (() => ({
     transforms: Object.fromEntries([
         ...marathiEndings.map((ending) => [`-${ending}`, {
             name: `-${ending}`,
-            rules: [
-                ...marathiEndingRules(ending),
-                ...(marathiParticiples.includes(ending) ? [marathiParticiple(ending)] : []),
-            ],
+            rules: [...marathiEndingRules(ending), ...marathiVerbRules(ending)],
         }]),
-        ...marathiParticiples.filter((ending) => !marathiEndings.includes(ending))
-            .map((ending) => [`-${ending}`, {name: `-${ending}`, rules: [marathiParticiple(ending)]}]),
+        ...[...marathiVerbEndings, ...marathiPastEndings].filter((ending) => !marathiEndings.includes(ending))
+            .map((ending) => [`-${ending}`, {name: `-${ending}`, rules: marathiVerbRules(ending)}]),
         ...['ही', 'च'].map((particle) => [`-${particle}`, {name: `-${particle}`, rules: [marathiParticle(particle)]}]),
     ]),
+    unmutated: ['नेते', 'नेता', 'चाहते', 'चाहता', 'सांगली', 'सलून'],
 }))();
 
 /**

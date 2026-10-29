@@ -270,7 +270,8 @@ function isMarkedStep(d, language) {
  * a noun гарантир). Mongolian case, plural and possessive endings reach nominal words and forms, adverbs and
  * postpositions among them (өнөөдрийн → өнөөдөр, дээрээс → дээр), verb endings the verbs (хийнэ → хийх, not хий "air").
  * Marathi case endings reach nominal words and forms, adverbs and postpositions among them (आजच्या → आज), the verbal
- * noun's endings the verbs (करण्यासाठी → करणे, not करणी). Tamil, Telugu and Kannada case endings and the plural reach
+ * noun's endings and the verb endings the verbs (करण्यासाठी → करणे, not करणी; बसला → बसणे, and बस "bus" only as the
+ * dative's noun). Tamil, Telugu and Kannada case endings and the plural reach
  * nominal words and forms (மரத்தில் → மரம்; అంశాలకు → అంశాలు, a form of అంశం; ಮರದಲ್ಲಿ → ಮರ); Telugu's dative of a place
  * word in -అ only the adverbs, postpositions and suffixes (ఇక్కడికి → ఇక్కడ, లోపలికి → లోపల).
  * @type {Map<string, Record<string, string[]>>}

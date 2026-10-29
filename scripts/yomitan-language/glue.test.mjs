@@ -339,6 +339,56 @@ test('marathi participles in -त and -ताना come off verb stems for the 
     assert.ok(queriedWhole('mr', 'करतानाही').has('करणे'));
 });
 
+test('marathi present, past and conjunctive endings come off verb stems for the infinitive and reach verbs only', () => {
+    /** @param {string} text @param {string} lemma @param {string} rule */
+    const verb = (text, lemma, rule) => {
+        const found = candidates('mr', text).filter((c) => c.o === text && c.d === lemma);
+        assert.ok(found.length > 0, `${text} → ${lemma}`);
+        assert.ok(found.every((c) => c.u && JSON.stringify(c.g) === JSON.stringify(['v'])), text);
+        assert.equal(JSON.stringify(found[0].r), JSON.stringify([[rule]]), text);
+    };
+    verb('येतो', 'येणे', '-तो');
+    verb('दिसते', 'दिसणे', '-ते');
+    verb('पाहता', 'पाहणे', '-ता');
+    verb('सांगतात', 'सांगणे', '-तात');
+    verb('बसला', 'बसणे', '-ला');
+    verb('पडली', 'पडणे', '-ली');
+    verb('ठेवले', 'ठेवणे', '-ले');
+    verb('भेटलो', 'भेटणे', '-लो');
+    verb('वाढल्या', 'वाढणे', '-ल्या');
+    verb('पाहिलात', 'पाहणे', '-लात');
+    verb('पडलेला', 'पडणे', '-लेला');
+    verb('लागलेली', 'लागणे', '-लेली');
+    verb('असलेले', 'असणे', '-लेले');
+    verb('असलेल्या', 'असणे', '-लेल्या');
+    verb('दिसून', 'दिसणे', '-ून');
+    verb('घेऊन', 'घेणे', '-ऊन');
+    // The past stems: -ा-, -ि- (the older -विले too), -ित- and -त-.
+    verb('मिळाला', 'मिळणे', '-ला');
+    verb('म्हणाले', 'म्हणणे', '-ले');
+    verb('पाहिले', 'पाहणे', '-ले');
+    verb('पाठविले', 'पाठवणे', '-ले');
+    verb('सांगितले', 'सांगणे', '-ले');
+    verb('घेतला', 'घेणे', '-ला');
+    verb('घेतलेल्या', 'घेणे', '-लेल्या');
+    // The noun's dative keeps its own rule: बसला is also बस, which the verb rules do not reach.
+    const bus = candidates('mr', 'बसला').filter((c) => c.o === 'बसला' && c.d === 'बस');
+    assert.ok(bus.length > 0 && bus.every((c) => c.g.includes('n') && !c.g.includes('v')));
+    // Nouns and a name the endings would read as a verb's form are left as written: नेते "leaders" is no नेणे.
+    for (const [text, wrong] of [['नेते', 'नेणे'], ['नेता', 'नेणे'], ['चाहते', 'चाहणे'], ['सांगली', 'सांगणे'], ['सलून', 'सलणे']]) {
+        assert.ok(!queriedWhole('mr', text).has(wrong), text);
+        assert.deepEqual([...queriedWhole('mr', text)], [text], text);
+    }
+    // The second person singular is left out, as news has no such word: करतोस and बसलास find no verb.
+    assert.ok(!queriedWhole('mr', 'करतोस').has('करणे'));
+    assert.ok(!queriedWhole('mr', 'बसलास').has('बसणे'));
+    // Two characters stay before the stem: दिला is no द + -िला.
+    assert.ok(!queriedWhole('mr', 'दिला').has('दणे'));
+    // A particle may follow: मिळालाच → मिळाला → मिळणे.
+    const got = candidates('mr', 'मिळालाच').find((c) => c.o === 'मिळालाच' && c.d === 'मिळणे');
+    assert.equal(JSON.stringify(got.r), JSON.stringify([['-ला', '-च']]));
+});
+
 test('marathi particles come off any word, and an ending may follow them', () => {
     const also = candidates('mr', 'आजही').find((c) => c.o === 'आजही' && c.d === 'आज');
     assert.ok(also && also.u && !also.g);
@@ -369,6 +419,8 @@ test('marathi endings and processors stay out of hindi', () => {
     assert.ok(!queriedWhole('hi', 'ब\u0901क').has('ब\u0945\u0902क'));
     assert.ok(!queriedWhole('hi', 'ज\u093Cमीन').has('जमीन'));
     assert.ok(!queriedWhole('hi', 'करताना').has('करणे'));
+    assert.ok(!queriedWhole('hi', 'सांगितले').has('सांगणे'));
+    assert.ok(!queriedWhole('hi', 'घेऊन').has('घेणे'));
 });
 
 test('tamil endings come off oblique stems and reach nominal entries by their tags', () => {
