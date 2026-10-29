@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic translation of values/inflections_bg.xml. -->
+<resources>
+    <!-- definite -->
+    <string name="inflection_bg_definite_label">المعرفة</string>
+    <string name="inflection_bg_definite">أداة التعريف: -ът -ят -а -я، -та -то -те (градът، учителя، книгата، селото، книгите)</string>
+    <!-- plural -->
+    <string name="inflection_bg_plural_label">الجمع</string>
+    <string name="inflection_bg_plural">الجمع: -и -ове -ища -а -та -ия (студенти، книги، градове، пътища، села، морета، събития)</string>
+    <!-- feminine -->
+    <string name="inflection_bg_feminine_label">المؤنث</string>
+    <string name="inflection_bg_feminine">صيغة المؤنث للصفة: -а (нова، умна من умен، добра من добър، българска)</string>
+    <!-- neuter -->
+    <string name="inflection_bg_neuter_label">المحايد</string>
+    <string name="inflection_bg_neuter">صيغة المحايد للصفة: -о (ново، умно من умен، добро من добър، българско، синьо)</string>
+    <!-- present -->
+    <string name="inflection_bg_present_label">الحاضر</string>
+    <string name="inflection_bg_present">الزمن الحاضر (гарантира، гарантират من гарантирам؛ четеш، четат من чета؛ говори من говоря)</string>
+    <!-- past -->
+    <string name="inflection_bg_past_label">الماضي</string>
+    <string name="inflection_bg_past">الأوريست أو الماضي الناقص (чаках، чакаше من чакам؛ четох، четеше من чета؛ говорих من говоря)</string>
+    <!-- past participle -->
+    <string name="inflection_bg_past_participle_label">الصفة الفعلية الماضية</string>
+    <string name="inflection_bg_past_participle">اسم الفاعل الماضي -л (гарантирал، изминала من измина، говорили من говоря)</string>
+    <!-- passive participle -->
+    <string name="inflection_bg_passive_participle_label">اسم المفعول</string>
+    <string name="inflection_bg_passive_participle">اسم المفعول الماضي -н (гарантиран، гарантирана من гарантирам؛ говорено من говоря)</string>
+    <!-- imperative -->
+    <string name="inflection_bg_imperative_label">صيغة الأمر</string>
+    <string name="inflection_bg_imperative">صيغة الأمر -ай -айте (чакай، чакайте من чакам؛ стреляй من стрелям)</string>
+</resources>

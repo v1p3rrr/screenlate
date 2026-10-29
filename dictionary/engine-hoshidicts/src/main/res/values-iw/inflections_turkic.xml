@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">עבר אווידנציאלי</string>
     <string name="inflection_turkic_necessity_label">חובה</string>
     <string name="inflection_turkic_participle_label">בינוני</string>
+    <string name="inflection_turkic_dative_locative_label">יחסת הנמען והמקום</string>
+    <string name="inflection_turkic_comitative_label">יחסת הליווי</string>
+    <string name="inflection_turkic_privative_label">יחסת החסר</string>
+    <string name="inflection_turkic_reflexive_possessive_label">קניין חוזר</string>
+    <string name="inflection_turkic_present_future_label">הווה-עתיד</string>
+    <string name="inflection_turkic_imperfect_participle_label">בינוני לא מושלם</string>
+    <string name="inflection_turkic_imperfective_converb_label">קונוורב לא מושלם</string>
+    <string name="inflection_turkic_perfective_converb_label">קונוורב מושלם</string>
+    <string name="inflection_turkic_when_label">כאשר</string>
+    <string name="inflection_turkic_as_soon_as_label">ברגע ש־</string>
 </resources>

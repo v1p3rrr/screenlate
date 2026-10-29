@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Persian translation of values/inflections_bg.xml. -->
+<resources>
+    <!-- definite -->
+    <string name="inflection_bg_definite_label">معرفه</string>
+    <string name="inflection_bg_definite">حرف تعریف معرفه: -ът -ят -а -я، -та -то -те (градът، учителя، книгата، селото، книгите)</string>
+    <!-- plural -->
+    <string name="inflection_bg_plural_label">جمع</string>
+    <string name="inflection_bg_plural">جمع: -и -ове -ища -а -та -ия (студенти، книги، градове، пътища، села، морета، събития)</string>
+    <!-- feminine -->
+    <string name="inflection_bg_feminine_label">مؤنث</string>
+    <string name="inflection_bg_feminine">صورت مؤنث صفت: -а (нова، умна از умен، добра از добър، българска)</string>
+    <!-- neuter -->
+    <string name="inflection_bg_neuter_label">خنثی</string>
+    <string name="inflection_bg_neuter">صورت خنثای صفت: -о (ново، умно از умен، добро از добър، българско، синьо)</string>
+    <!-- present -->
+    <string name="inflection_bg_present_label">حال</string>
+    <string name="inflection_bg_present">زمان حال (гарантира، гарантират از гарантирам؛ четеш، четат از чета؛ говори از говоря)</string>
+    <!-- past -->
+    <string name="inflection_bg_past_label">گذشته</string>
+    <string name="inflection_bg_past">آئوریست یا گذشتهٔ استمراری (чаках، чакаше از чакам؛ четох، четеше از чета؛ говорих از говоря)</string>
+    <!-- past participle -->
+    <string name="inflection_bg_past_participle_label">وجه وصفی گذشته</string>
+    <string name="inflection_bg_past_participle">وجه وصفی گذشتهٔ معلوم -л (гарантирал، изминала از измина، говорили از говоря)</string>
+    <!-- passive participle -->
+    <string name="inflection_bg_passive_participle_label">وجه وصفی مجهول</string>
+    <string name="inflection_bg_passive_participle">وجه وصفی گذشتهٔ مجهول -н (гарантиран، гарантирана از гарантирам؛ говорено از говоря)</string>
+    <!-- imperative -->
+    <string name="inflection_bg_imperative_label">امری</string>
+    <string name="inflection_bg_imperative">وجه امری -ай -айте (чакай، чакайте از чакам؛ стреляй از стрелям)</string>
+</resources>

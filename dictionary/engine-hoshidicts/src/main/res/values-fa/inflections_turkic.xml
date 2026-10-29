@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">گذشتهٔ گواه‌نما</string>
     <string name="inflection_turkic_necessity_label">لزوم</string>
     <string name="inflection_turkic_participle_label">وجه وصفی</string>
+    <string name="inflection_turkic_dative_locative_label">حالت برایی-مکانی</string>
+    <string name="inflection_turkic_comitative_label">حالت همراهی</string>
+    <string name="inflection_turkic_privative_label">حالت فقدانی</string>
+    <string name="inflection_turkic_reflexive_possessive_label">ملکی بازتابی</string>
+    <string name="inflection_turkic_present_future_label">حال-آینده</string>
+    <string name="inflection_turkic_imperfect_participle_label">وجه وصفی ناتمام</string>
+    <string name="inflection_turkic_imperfective_converb_label">وجه قیدی ناتمام</string>
+    <string name="inflection_turkic_perfective_converb_label">وجه قیدی تمام</string>
+    <string name="inflection_turkic_when_label">وقتی</string>
+    <string name="inflection_turkic_as_soon_as_label">به محض اینکه</string>
 </resources>

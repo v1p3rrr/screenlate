@@ -51,4 +51,14 @@
     <string name="inflection_turkic_evidential_label">الماضي المنقول</string>
     <string name="inflection_turkic_necessity_label">الوجوب</string>
     <string name="inflection_turkic_participle_label">صفة فعلية</string>
+    <string name="inflection_turkic_dative_locative_label">حالة القابل والظرفية</string>
+    <string name="inflection_turkic_comitative_label">حالة المصاحبة</string>
+    <string name="inflection_turkic_privative_label">حالة الحرمان</string>
+    <string name="inflection_turkic_reflexive_possessive_label">الملكية الانعكاسية</string>
+    <string name="inflection_turkic_present_future_label">الحاضر والمستقبل</string>
+    <string name="inflection_turkic_imperfect_participle_label">الصفة الفعلية غير التامة</string>
+    <string name="inflection_turkic_imperfective_converb_label">صيغة الحال غير التامة</string>
+    <string name="inflection_turkic_perfective_converb_label">صيغة الحال التامة</string>
+    <string name="inflection_turkic_when_label">عندما</string>
+    <string name="inflection_turkic_as_soon_as_label">بمجرد أن</string>
 </resources>

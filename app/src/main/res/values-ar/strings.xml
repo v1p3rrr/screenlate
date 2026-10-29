@@ -555,6 +555,9 @@
     <string name="popup_font_script_only_et">للنص الإستوني فقط</string>
     <string name="popup_font_script_only_az">للنص الأذربيجاني فقط</string>
     <string name="popup_font_script_only_uz">للنص الأوزبكي فقط</string>
+    <string name="popup_font_script_only_bg">للنص البلغاري فقط</string>
+    <string name="popup_font_script_only_mk">للنص المقدوني فقط</string>
+    <string name="popup_font_script_only_mn">للنص المنغولي فقط</string>
     <string name="popup_font_system_zh">الخط الصيني في الهاتف</string>
     <string name="popup_font_system_ko">الخط الكوري في الهاتف</string>
     <string name="popup_font_script_only_zh">للنص الصيني فقط</string>

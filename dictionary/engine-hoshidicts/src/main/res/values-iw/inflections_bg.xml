@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hebrew translation of values/inflections_bg.xml. -->
+<resources>
+    <!-- definite -->
+    <string name="inflection_bg_definite_label">מיודע</string>
+    <string name="inflection_bg_definite">תווית היידוע: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <!-- plural -->
+    <string name="inflection_bg_plural_label">רבים</string>
+    <string name="inflection_bg_plural">רבים: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <!-- feminine -->
+    <string name="inflection_bg_feminine_label">נקבה</string>
+    <string name="inflection_bg_feminine">צורת הנקבה של שם תואר: -а (нова, умна מן умен, добра מן добър, българска)</string>
+    <!-- neuter -->
+    <string name="inflection_bg_neuter_label">סתמי</string>
+    <string name="inflection_bg_neuter">צורת הסתמי של שם תואר: -о (ново, умно מן умен, добро מן добър, българско, синьо)</string>
+    <!-- present -->
+    <string name="inflection_bg_present_label">זמן הווה</string>
+    <string name="inflection_bg_present">זמן הווה (гарантира, гарантират מן гарантирам; четеш, четат מן чета; говори מן говоря)</string>
+    <!-- past -->
+    <string name="inflection_bg_past_label">זמן עבר</string>
+    <string name="inflection_bg_past">אאוריסט או אימפרפקט (чаках, чакаше מן чакам; четох, четеше מן чета; говорих מן говоря)</string>
+    <!-- past participle -->
+    <string name="inflection_bg_past_participle_label">בינוני עבר</string>
+    <string name="inflection_bg_past_participle">בינוני פועל של עבר -л (гарантирал, изминала מן измина, говорили מן говоря)</string>
+    <!-- passive participle -->
+    <string name="inflection_bg_passive_participle_label">בינוני סביל</string>
+    <string name="inflection_bg_passive_participle">בינוני סביל של עבר -н (гарантиран, гарантирана מן гарантирам; говорено מן говоря)</string>
+    <!-- imperative -->
+    <string name="inflection_bg_imperative_label">ציווי</string>
+    <string name="inflection_bg_imperative">ציווי -ай -айте (чакай, чакайте מן чакам; стреляй מן стрелям)</string>
+</resources>
