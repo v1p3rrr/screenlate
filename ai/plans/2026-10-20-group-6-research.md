@@ -1419,7 +1419,13 @@ recommended option; what changing it takes is said).
     and 1,232 words; tt-en is the only English one). (b) Count only words in the language's script for every pair
     (tt-tr and tt-en fail; row "Gloss languages" wants an English dictionary, so tt-en would be kept by hand). (c) List
     all three as counted. Changing it is a line in the catalog script.
-30. Deferred for later (owner, 2026-10-29): not one to ask soon; the main session records it among the questions
+30. Answered (owner, 2026-10-29): (b), the report only; the renaming goes to the Backlog, to build if the fix does
+    not reach wty's releases. Checked before the answer: the source tables are right (ru.wiktionary's Tatar and
+    Bashkir китап: rows Им., Прит., Д., В., М., Исх., both numbers in every row). The error is wiktextract's
+    (`src/wiktextract/extractor/ru/tags.py`): "прит." maps to possessive; "Исх.", Bashkir's "местно-временной падеж",
+    Kyrgyz's "Дат.-н.", the possessive rows' "Принадлежность" and Kyrgyz's "2 веж." stay raw tags, so those rows carry
+    only a number (kaikki.org's tt, ba and ky китап/китеп). The report therefore goes to tatuylonen/wiktextract, filed
+    by the owner; the agent drafted it. Was deferred: not one to ask soon; the main session records it among the questions
     deferred for later and brings it back when its time comes (the Turkic dictionaries' tags worked on: block 6c, or
     Kyrgyz's tags). Form tags of Russian Wiktionary's Turkic tables. wty's tt-ru, ba-ru and the shipped
     ky-ru tag the genitive "singular possessive" and "plural possessive" (the Turkic grammars' Russian name for it,
@@ -1434,6 +1440,37 @@ recommended option; what changing it takes is said).
     rows only, → ablative plural; the mixed lone "plural" of ba-ru and ky-ru stays); the missing singulars are found
     through the ending rules. (b) The report only. (c) The renaming only. (d) Neither. Kyrgyz is built, so (a) and (c)
     change a shipped language.
+
+    The report draft shown to the owner on 2026-10-29 (to file at github.com/tatuylonen/wiktextract/issues from the
+    owner's account; not filed yet):
+
+    > **ru: case labels of Turkic declension tables get wrong or no tags (Прит., Исх., Дат.-н., местно-временной
+    > падеж, Принадлежность)**
+    >
+    > In Russian Wiktionary's noun tables for Turkic languages, several row labels are mapped to a wrong tag or kept
+    > only as raw tags, so the forms lose their case. Examples from kaikki.org/ruwiktionary:
+    >
+    > Tatar китап (Татарский):
+    > - китапның, китапларның (row Прит.) get tags singular/plural + possessive. In Russian grammars of Turkic
+    >   languages "притяжательный падеж" is the genitive case, so these should be genitive.
+    > - китаптан, китаплардан (row Исх.) get only singular/plural, raw_tags "Исх.". Expected: ablative (tags.py knows
+    >   "исх. п." but not "исх.").
+    > - китабым, китабы and the other rows under Принадлежность get only person and number, raw_tags
+    >   "Принадлежность". Expected: possessive.
+    >
+    > Bashkir китап (Башкирский): the same, and китапта, китаптарҙа keep raw_tags "местно-временной падеж" (expected:
+    > locative).
+    >
+    > Kyrgyz китеп (Киргизский): the same, and китепке, китептерге keep raw_tags "Дат.-н." (дательно-направительный,
+    > expected: dative); китебиңиз keeps "2 веж." (expected: second-person, formal).
+    >
+    > In src/wiktextract/extractor/ru/tags.py, GRAMMATICAL_TAGS maps "прит." to "possessive". Since "прит." also
+    > abbreviates possessive pronouns elsewhere, mapping it to genitive only inside declension tables (or for Turkic
+    > language codes) may be safest. Adding "исх.", "местно-временной падеж", "дат.-н.", "принадлежность" and
+    > "2 веж." would cover the rest.
+    >
+    > Downstream, wiktionary-to-yomitan dictionaries (tt-ru, ba-ru, ky-ru) show the genitive as "singular
+    > possessive", which reads as a possessive suffix, and their ablative rows carry only a number.
 
 ## Work
 
@@ -1527,3 +1564,5 @@ the fallback reused); 6c about a session (group 4e's engine and wty's Tatar exis
   are kept as `scripts/yomitan-language/drafts/group-6-turkic.patch` with a README, and the measuring tools are in
   `scripts/yomitan-language/tools/` (`freq_list.py`, `fold_noise.py`, `coverage.mjs`), both at the owner's word.
 - 2026-10-29: question 28 settled by the owner's answer to question 1 of the folded-marks plan, (a) (main session).
+- 2026-10-29: question 30 answered (b) by the owner after a check of the source: the report goes to wiktextract, the
+  renaming to the Backlog (main session).

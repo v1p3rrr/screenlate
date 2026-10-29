@@ -283,7 +283,25 @@ the details.
     built (row "Cantonese frequency" changed); 26 (sentences across a recognition paragraph break) kept as is. To
     build: 20-23 and the folded plan's question 2; the owner asked for nothing new beyond them until the weekly limit
     resets.
+  - Answered the same day, to build after the weekly limit resets: group 4e's questions 23 (ending consonants by the
+    grammar) and 24 (dictionary form rows and verb chains first at the same length), each with a count first; 25-27
+    as bugs (the "without" rule, the pronouns' case forms, PanLex Title Case phrases); group 5e's question 27
+    (words.hk's frequency list for Cantonese, ticked, once checked to hold 我哋 佢哋 你哋 喺度 為咗). Group 6's
+    question 30: a report to wiktextract only (the agent drafts it, the owner files it); the renaming of the Turkic
+    Russian-Wiktionary tags goes to the Backlog, to build if the fix does not reach wty's releases.
+  - Before the full release of the languages branch, remind the owner of the five waiting Paddle models (Thai,
+    Devanagari, Arabic, Tamil, Telugu; `notes/hosting-files.md`); until then they stay unreleased (owner, 2026-10-29).
   - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
+- Backlog: composing the test model for all 62 languages (owner's question, 2026-10-29, made precise the same day): a
+  pass over the plans, the language rules, the code and the existing cases that writes the missing cases, not one that
+  runs them. It looks for each language's own points (script, rules, sources, the engines chosen) and for rules made for
+  a set of languages, and gives each point a case of the fitting kind: an emulator case, a check on corpus data, an
+  integration or a unit test. About 12 rule families, one session each, with a closing pass that merges the cases into
+  `test-model.md`; estimated for the owner at 15-25% of a weekly limit. Running the cases (the corpus checks above all)
+  is a separate task. Starts on the owner's command, after the limit resets.
+- Backlog: rename the Turkic form tags of Russian Wiktionary in our support classes (`formTagNames`: "singular/plural
+  possessive" → genitive, Tatar's lone ablative "plural" → ablative plural) if the wiktextract report's fix does not
+  reach wty's releases (group 6, question 30; owner, 2026-10-29).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
