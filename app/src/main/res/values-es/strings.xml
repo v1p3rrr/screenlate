@@ -548,6 +548,7 @@
     <string name="popup_font_script_only_mn">Solo para texto en mongol</string>
     <string name="popup_font_script_only_mr">Solo para texto en maratí</string>
     <string name="popup_font_script_only_ta">Solo para texto en tamil</string>
+    <string name="popup_font_script_only_te">Solo para texto en telugu</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto en chino</string>

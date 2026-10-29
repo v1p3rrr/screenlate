@@ -71,6 +71,15 @@ class FlagsTest {
     }
 
     @Test
+    fun `telugu shares india's flag with tamil and hindi`() {
+        val quick = listOf(Language.TAMIL, Language.TELUGU, Language.JAPANESE, Language.HINDI)
+        val state = LanguageProfilesState(quick, Language.TELUGU)
+        val flags = quick.map { Flags.of(state, it) }
+        assertThat(flags[1]).isEqualTo(Flags.drawable("in"))
+        assertThat(Flags.repeated(flags)).containsExactly(Flags.drawable("in"))
+    }
+
+    @Test
     fun `codes standing in for flags on e-ink are not counted`() {
         assertThat(Flags.repeated(listOf(null, null, Flags.drawable("jp")))).isEmpty()
     }

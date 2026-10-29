@@ -35,7 +35,7 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * with the default case pairs (Uzbek cases i and I as English does) for the app's own processors and endings;
  * Macedonian takes Bulgarian's (Cyrillic, capitalization only, without Bulgarian's own endings), as Wiktionary lists
  * its forms; Marathi takes Hindi's, as Bengali does; Tamil takes Kannada's (no text processors, no rules) for the app's
- * own processors and endings.
+ * own processors and endings, as Telugu does.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
@@ -51,6 +51,7 @@ const borrowed = {
     mk: {from: 'bg', iso639_3: 'mkd', name: 'Macedonian', exampleText: 'читам'},
     mr: {from: 'hi', iso639_3: 'mar', name: 'Marathi', exampleText: 'वाचण्यासाठी'},
     ta: {from: 'kn', iso639_3: 'tam', name: 'Tamil', exampleText: 'படிக்க'},
+    te: {from: 'kn', iso639_3: 'tel', name: 'Telugu', exampleText: 'చదవడానికి'},
 };
 
 /**
@@ -75,7 +76,8 @@ const borrowed = {
  * acute or grave, as Russian is, Bulgarian writes the pronoun ѝ as й and Macedonian its ѐ as the Latin è; Marathi text
  * is composed as Hindi's, may come in an old font's य़ for the य of a conjunct, with a nukta the headwords leave out, and
  * with अॅ, ऍ and ँ for the headwords' ॲ and ॅं; Tamil text is composed as Hindi's, writes the vowel sign ௌ and ெள for
- * each other, and ஸ்ரீ where the headwords write ஶ்ரீ. Processors
+ * each other, and ஸ்ரீ where the headwords write ஶ்ரீ; Telugu text is composed so too and may carry zero-width joiners
+ * and spaces and soft hyphens inside words. Processors
  * join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
@@ -104,6 +106,7 @@ const addedPreprocessors = {
     mk: ['removeRussianDiacritics', 'removeGraveStress', 'macedonianLatinGrave'],
     mr: ['composeCharacters', 'marathiLegacyYa', 'removeNukta', 'marathiCandra'],
     ta: ['composeCharacters', 'tamilAuSign', 'tamilShri'],
+    te: ['composeCharacters', 'removeZeroWidthCharacters'],
 };
 
 /**
@@ -123,7 +126,7 @@ const foldedMarkLanguages = [
  * Persian endings and verb prefixes, Hebrew prefixes, Kazakh, Kyrgyz, Azerbaijani and Uzbek endings, the Norwegian
  * genitive, Romanian article and agreement endings, Swahili verb prefixes, Welsh and Scottish Gaelic initial
  * mutations, Finnish clitics and possessive suffixes, Hungarian verb prefixes, Bulgarian articles and endings, Mongolian
- * endings, Marathi and Tamil endings and particles (Yomitan's Finnish, Hungarian, Bulgarian and Mongolian descriptors have text processors only).
+ * endings, Marathi, Tamil and Telugu endings and particles (Yomitan's Finnish, Hungarian, Bulgarian and Mongolian descriptors have text processors only).
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -145,6 +148,7 @@ const addedTransforms = {
     mn: 'mongolianTransforms',
     mr: 'marathiTransforms',
     ta: 'tamilTransforms',
+    te: 'teluguTransforms',
 };
 
 /**

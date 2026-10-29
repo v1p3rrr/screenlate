@@ -79,6 +79,14 @@ class BubbleGlyphTest {
     }
 
     @Test
+    fun `telugu shows its own syllable beside the tamil letter`() {
+        val quick = listOf(Language.TAMIL, Language.TELUGU)
+        assertThat(bubbleGlyph(Language.TELUGU, quick)).isEqualTo("తె")
+        assertThat(bubbleGlyph(Language.TAMIL, quick)).isEqualTo("த")
+        assertThat(Language.TELUGU.support.codeLabel).isEqualTo("TE")
+    }
+
+    @Test
     fun `a letter with marks counts as the letter without them`() {
         val quick = listOf(Language.CZECH, Language.WELSH)
         assertThat(bubbleGlyph(Language.CZECH, quick)).isEqualTo("CS")

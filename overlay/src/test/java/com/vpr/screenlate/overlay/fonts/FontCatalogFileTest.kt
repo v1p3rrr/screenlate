@@ -300,6 +300,16 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `telugu has a sans-serif and a serif, offered for telugu only`() {
+        val telugu = fonts.filter { Language.TELUGU.code in it.languages }
+        assertThat(telugu.map { it.family }).containsExactly("Anek Telugu", "Tiro Telugu")
+        for (font in telugu) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.TELUGU)
+        }
+        assertThat(fonts.filter { it.isOfferedFor(Language.TELUGU) }).containsExactlyElementsIn(telugu)
+    }
+
+    @Test
     fun `thai has looped and loopless fonts, offered for thai only`() {
         val thai = fonts.filter { Language.THAI.code in it.languages }
         assertThat(thai.map { it.family }).containsExactly("Sarabun", "Noto Sans Thai Looped", "Kanit", "Prompt")

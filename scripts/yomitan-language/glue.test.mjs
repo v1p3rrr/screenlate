@@ -411,6 +411,74 @@ test('tamil endings and processors stay out of other languages', () => {
     }
 });
 
+test('telugu endings come off direct and oblique stems and reach nominal entries by their tags', () => {
+    /** @param {string} text @param {string} lemma */
+    const nominal = (text, lemma) => {
+        const found = candidates('te', text).filter((c) => c.o === text && c.d === lemma);
+        assert.ok(found.length > 0, `${text} → ${lemma}`);
+        assert.ok(found.every((c) => c.u && c.g.includes('n') && c.g.includes('non-lemma') && !c.g.includes('v')), text);
+    };
+    nominal('రాష్ట్రంలో', 'రాష్ట్రం');
+    nominal('రోజుకు', 'రోజు');
+    nominal('ఊరికి', 'ఊరు');
+    nominal('కుమారుడిని', 'కుమారుడు');
+    nominal('మనిషికి', 'మనిషి');
+    nominal('పుస్తకాన్ని', 'పుస్తకం');
+    nominal('రాష్ట్రానికి', 'రాష్ట్రం');
+    nominal('ప్రత్యేకంగా', 'ప్రత్యేకం');
+    nominal('హైదరాబాద్నుంచి', 'హైదరాబాద్');
+    nominal('పిల్లలకు', 'పిల్లలు');
+    nominal('పిల్లలకు', 'పిల్ల');
+    nominal('చెట్ల', 'చెట్లు');
+    nominal('పుస్తకాలు', 'పుస్తకం');
+    nominal('అంశాలపై', 'అంశం');
+    const book = candidates('te', 'పుస్తకాన్ని').find((c) => c.o === 'పుస్తకాన్ని' && c.d === 'పుస్తకం');
+    assert.equal(JSON.stringify(book.r), JSON.stringify([['-ఆన్ని']]));
+    const children = candidates('te', 'పిల్లలకు').find((c) => c.o === 'పిల్లలకు' && c.d === 'పిల్లలు');
+    assert.equal(JSON.stringify(children.r), JSON.stringify([['-ల', '-కు']]));
+    // No rule follows a plural's: the oblique plural is not cut twice.
+    assert.ok(!queriedWhole('te', 'పిల్లలకు').has('పిల్'));
+    // Two characters stay at least: a bare consonant is one.
+    assert.ok(!queriedWhole('te', 'కలో').has('క'));
+    assert.ok(queriedWhole('te', 'కులో').has('కు'));
+    // The text itself stays typed.
+    assert.ok(!candidates('te', 'రాష్ట్రంలో').find((c) => c.d === 'రాష్ట్రంలో').u);
+});
+
+test('telugu particles come off any word, and an ending may come before them', () => {
+    const day = candidates('te', 'రోజే').find((c) => c.o === 'రోజే' && c.d === 'రోజు');
+    assert.ok(day && day.u && !day.g);
+    assert.ok(candidates('te', 'మీరూ').find((c) => c.o === 'మీరూ' && c.d === 'మీరు').u);
+    assert.ok(candidates('te', 'నిజమా').find((c) => c.o === 'నిజమా' && c.d === 'నిజము').u);
+    assert.ok(candidates('te', 'ఆయనే').find((c) => c.o === 'ఆయనే' && c.d === 'ఆయన').u);
+    const state = candidates('te', 'రాష్ట్రంలోనే').filter((c) => c.o === 'రాష్ట్రంలోనే' && c.d === 'రాష్ట్రం');
+    assert.ok(state.length > 0 && state.every((c) => c.g.includes('n')));
+    assert.ok(state.some((c) => JSON.stringify(c.r) === JSON.stringify([['-లో', '-నే']])));
+    const country = candidates('te', 'దేశంలోనూ').filter((c) => c.o === 'దేశంలోనూ' && c.d === 'దేశం');
+    assert.ok(country.some((c) => JSON.stringify(c.r) === JSON.stringify([['-లో', '-నూ']])));
+    const farmers = candidates('te', 'రైతులే').filter((c) => c.o === 'రైతులే' && c.d === 'రైతు');
+    assert.ok(farmers.length > 0 && farmers.every((c) => c.g.includes('n')));
+});
+
+test('telugu text loses the zero-width characters inside words, one that ends the text stays out of the match', () => {
+    assert.ok(queriedWhole('te', 'ఎన్\u200Cటీఆర్').has('ఎన్టీఆర్'));
+    assert.ok(queriedWhole('te', 'ఎన్\u200Dటీఆర్').has('ఎన్టీఆర్'));
+    assert.ok(queriedWhole('te', 'తెలు\u00ADగు').has('తెలుగు'));
+    assert.ok(queriedWhole('te', 'తెలు\u200Bగు').has('తెలుగు'));
+    const matches = candidates('te', 'తెలుగు\u200C').filter((c) => c.d === 'తెలుగు');
+    assert.deepEqual([...new Set(matches.map((c) => c.o))], ['తెలుగు']);
+    // A two-part vowel sign written as its parts is composed.
+    assert.ok(queriedWhole('te', 'క\u0C46\u0C56').has('కై'));
+});
+
+test('telugu endings and processors stay out of other languages', () => {
+    for (const language of ['ta', 'hi', 'mr', 'bn']) {
+        assert.ok(!queriedWhole(language, 'రాష్ట్రంలో').has('రాష్ట్రం'), language);
+        assert.ok(!queriedWhole(language, 'పిల్లలకు').has('పిల్లలు'), language);
+    }
+    assert.ok(!queriedWhole('ta', 'ఎన్\u200Cటీఆర్').has('ఎన్టీఆర్'));
+});
+
 test('georgian rules load, chain and match entries without a part of speech when three letters stay', () => {
     // Yomitan files its Georgian rules under kat, not ka.
     const book = candidates('ka', 'წიგნს').find((c) => c.d === 'წიგნი');

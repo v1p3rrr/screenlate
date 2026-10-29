@@ -270,8 +270,8 @@ function isMarkedStep(d, language) {
  * a noun гарантир). Mongolian case, plural and possessive endings reach nominal words and forms, adverbs and
  * postpositions among them (өнөөдрийн → өнөөдөр, дээрээс → дээр), verb endings the verbs (хийнэ → хийх, not хий "air").
  * Marathi case endings reach nominal words and forms, adverbs and postpositions among them (आजच्या → आज), the verbal
- * noun's endings the verbs (करण्यासाठी → करणे, not करणी). Tamil case endings and the plural reach nominal words and
- * forms (மரத்தில் → மரம்; அவர்களுக்கு → அவர்கள், a form of அவர்).
+ * noun's endings the verbs (करण्यासाठी → करणे, not करणी). Tamil and Telugu case endings and the plural reach nominal
+ * words and forms (மரத்தில் → மரம்; అంశాలకు → అంశాలు, a form of అంశం).
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
@@ -288,6 +288,10 @@ const taggedRules = new Map([
     ['mn', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'adv', 'postp', 'non-lemma'], v: ['v']}],
     ['mr', {n: ['n', 'name', 'adj', 'num', 'pron', 'adv', 'postp', 'non-lemma'], v: ['v']}],
     ['ta', {n: ['n', 'name', 'adj', 'num', 'pron', 'adv', 'postp', 'non-lemma']}],
+    ['te', {
+        n: ['n', 'name', 'adj', 'num', 'pron', 'adv', 'postp', 'non-lemma'],
+        s: ['n', 'name', 'adj', 'num', 'pron', 'adv', 'postp', 'non-lemma'],
+    }],
 ]);
 
 /**
@@ -327,7 +331,7 @@ function tagsOf(d, language) {
  * letters at least. Wiktionary's Finnish entries give none either; the app's clitic and possessive rules leave three
  * letters at least. Marathi's particles ही and च follow any word (आजही, गेलाच); the endings after them match by their
  * definition tags. So do Tamil's particles -உம், -ஏ, -ஓ and the consonant doubled before the next word (மரமும்,
- * சேவைத்).
+ * சேவைத்), and Telugu's -ఏ, -ఊ, -ఆ, -నే and -నూ (రోజే, లోనూ).
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
 const untypedRules = new Map([
@@ -346,6 +350,7 @@ const untypedRules = new Map([
     ['fi', {shortest: 3}],
     ['mr', {shortest: 2, conditions: ['p']}],
     ['ta', {shortest: 2, conditions: ['p']}],
+    ['te', {shortest: 2, conditions: ['p']}],
 ]);
 
 /**

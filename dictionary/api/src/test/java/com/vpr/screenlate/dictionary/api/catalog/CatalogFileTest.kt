@@ -554,6 +554,17 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `telugu offers its wiktionaries, transcription and tesseract fast ticked, tesseract best unticked, no frequency`() {
+        val telugu = catalog!!.entries.filter { it.isFor(Language.TELUGU) }
+        assertThat(telugu.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-te-en", "wiktionary-te-ru", "wiktionary-te-zh", "wiktionary-te-transcription", "tesseract-fast-tel",
+        )
+        // Paddle's Telugu model reads it far better and replaces the fast model once it is released.
+        assertThat(telugu.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-tel")
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.TELUGU) }).isEqualTo(telugu)
+    }
+
+    @Test
     fun `hungarian offers its wiktionaries, their word forms and frequencies, ticked, the forms mandatory, and the ocr models unticked`() {
         val hungarian = catalog!!.entries.filter { it.isFor(Language.HUNGARIAN) }
         assertThat(hungarian.filter { it.recommended }.map { it.id }).containsExactly(

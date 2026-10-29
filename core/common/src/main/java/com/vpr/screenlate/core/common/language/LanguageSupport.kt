@@ -537,6 +537,8 @@ enum class SearchResolution { WORD, LETTER }
  * without one is dropped at import, as Wiktionary's Bulgarian tables put it on positive forms.
  * @property droppedForms form headwords left out at import, as written: labels of Wiktionary's tables that its export
  * gives as forms of every tabled word (Marathi होकारार्थी "affirmative").
+ * @property endingReplacements word endings that running text writes as others (the Telugu -ము as -ం): a word is also
+ * found with its ending replaced, as written and with the [replacements] made.
  */
 data class HeadwordMarks(
     val marks: String,
@@ -551,6 +553,7 @@ data class HeadwordMarks(
     val letterBases: String = "",
     val comparativePrefixes: List<String> = emptyList(),
     val droppedForms: Set<String> = emptySet(),
+    val endingReplacements: Map<String, String> = emptyMap(),
 )
 
 /** The markers of [LanguageSupport.rightToLeftMarkers] every right-to-left language has. */
@@ -626,6 +629,7 @@ val Language.support: LanguageSupport
         Language.MONGOLIAN -> MongolianSupport
         Language.MARATHI -> MarathiSupport
         Language.TAMIL -> TamilSupport
+        Language.TELUGU -> TeluguSupport
     }
 
 /**

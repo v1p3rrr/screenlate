@@ -228,6 +228,10 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                     put("letter_bases", marks.letterBases)
                     put("comparative_prefixes", buildJsonArray { marks.comparativePrefixes.forEach { add(it) } })
                     put("dropped_forms", buildJsonArray { marks.droppedForms.forEach { add(it) } })
+                    put(
+                        "ending_replacements",
+                        buildJsonObject { marks.endingReplacements.forEach { (from, to) -> put(from, to) } },
+                    )
                     put("fold_marks", support.foldsMarks)
                 }
                 for (code in listOf(language.dictionaryCode) + Language.otherCodes(language)) put(code, entry)

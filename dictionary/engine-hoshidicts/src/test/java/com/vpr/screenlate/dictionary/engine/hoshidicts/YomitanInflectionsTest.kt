@@ -13,7 +13,7 @@ class YomitanInflectionsTest {
         val filtered = Language.entries.filter {
             it.support.inflectionRulesOnlyWithoutEntry || it.support.ruleChainsOnlyWithoutRow
         }
-        assertThat(filtered).containsAtLeast(Language.MARATHI, Language.TAMIL)
+        assertThat(filtered).containsAtLeast(Language.MARATHI, Language.TAMIL, Language.TELUGU)
         for (language in filtered) {
             assertWithMessage(language.name).that(YomitanInflections.names(language.dictionaryCode)).isNotEmpty()
         }
@@ -28,5 +28,10 @@ class YomitanInflectionsTest {
     fun `tamil endings and particles are listed as written, the doubled consonant not at all`() {
         assertThat(YomitanInflections.names("ta")).containsAtLeast("-இல்", "-கள்", "-உம்", "-அத்து")
         assertThat(YomitanInflections.names("ta")).doesNotContain("-க்")
+    }
+
+    @Test
+    fun `telugu endings and particles are listed as written, vowel signs by their letters`() {
+        assertThat(YomitanInflections.names("te")).containsAtLeast("-లో", "-ఆన్ని", "-ల", "-లు", "-నే", "-ఏ")
     }
 }

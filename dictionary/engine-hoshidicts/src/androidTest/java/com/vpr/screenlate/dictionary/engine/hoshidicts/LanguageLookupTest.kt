@@ -383,6 +383,42 @@ class LanguageLookupTest {
     }
 
     @Test
+    fun teluguEndingsAndParticlesFindNominalEntriesAndOlderSpellingsFindTheHeadwords() = runTest {
+        val imported = engine.import(teluguDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val telugu = LookupOptions(language = Language.TELUGU)
+        suspend fun first(text: String) = engine.lookup(text, telugu).first().term.expression
+        suspend fun whole(text: String) = engine.lookup(text, telugu).filter { it.matched == text }.map { it.term.expression }
+
+        // A case ending, and a particle after it.
+        val state = engine.lookup("రాష్ట్రంలో", telugu).first()
+        assertThat(state.term.expression).isEqualTo("రాష్ట్రం")
+        assertThat(state.trace.map { it.name }).containsExactly("-లో")
+        assertThat(whole("రాష్ట్రంలోనే")).containsExactly("రాష్ట్రం")
+        // -ాన్ని gives -ం, which finds a headword written with the older -ము.
+        val book = engine.lookup("పుస్తకాన్ని", telugu).first()
+        assertThat(book.term.expression).isEqualTo("పుస్తకము")
+        assertThat(book.trace.map { it.name }).containsExactly("-ఆన్ని")
+        assertThat(first("నిర్ణయం")).isEqualTo("నిర్ణయము")
+        // The arasunna and ఱ of older headwords, and a joiner in the text.
+        assertThat(first("వాడు")).isEqualTo("వాఁడు")
+        assertThat(first("రెక్క")).isEqualTo("ఱెక్క")
+        assertThat(first("రాష్ట్రం\u200Cలో")).isEqualTo("రాష్ట్రం")
+        // A plural written apart from its word, and a form with the wiki's namespace.
+        val daughters = engine.lookup("కుమార్తెలు", telugu).first()
+        assertThat(daughters.term.expression).isEqualTo("కుమార్తె")
+        assertThat(daughters.trace.map { it.name }).containsExactly("plural")
+        val people = engine.lookup("మనుషులు", telugu).first()
+        assertThat(people.term.expression).isEqualTo("మనిషి")
+        assertThat(people.trace.map { it.name }).containsExactly("plural")
+        // A particle after any word; case endings reach nominal words only: చదువు is a verb here.
+        assertThat(whole("రోజే")).containsExactly("రోజు")
+        assertThat(whole("చదువులో")).isEmpty()
+        // A word with an entry of its own shows no results of the rules.
+        assertThat(whole("రాజా")).containsExactly("రాజా")
+    }
+
+    @Test
     fun georgianRulesFindEntriesWithoutPartOfSpeechAndMtavruliHeadingsFindTheOrdinaryLetters() = runTest {
         val imported = engine.import(georgianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
@@ -2192,6 +2228,28 @@ class LanguageLookupTest {
               ["ஶ்ரீ","","n","",0,["Sri"],13,""],
               ["அடி","","v","",0,["to hit"],14,""],
               ["past of அடித்துவிடு (aṭittuviṭu)","","non-lemma","",0,[["அடி",["singular present perfect imperative"]]],15,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun teluguDictionary(): File = zip(
+        "te.zip",
+        "index.json" to """{"title":"Test Telugu","revision":"1","format":3,"sourceLanguage":"te"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["రాష్ట్రం","","n","",0,["state"],1,""],
+              ["పుస్తకము","","n","",0,["book"],2,""],
+              ["నిర్ణయము","","n","",0,["decision"],3,""],
+              ["వాఁడు","","pron","",0,["he"],4,""],
+              ["ఱెక్క","","n","",0,["wing"],5,""],
+              ["కుమార్తె","","n","",0,["daughter"],6,""],
+              ["కుమార్తె లు","","non-lemma","",0,[["కుమార్తె",["plural"]]],7,""],
+              ["మనిషి","","n","",0,["human"],8,""],
+              ["Main:మనుషులు","","non-lemma","",0,[["మనిషి",["plural"]]],9,""],
+              ["రోజు","","n","",0,["day"],10,""],
+              ["చదువు","","v","",0,["to read"],11,""],
+              ["రాజు","","n","",0,["king"],12,""],
+              ["రాజా","","n","",0,["raja"],13,""]
             ]
         """.trimIndent().toByteArray(),
     )

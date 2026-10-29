@@ -174,6 +174,17 @@ std::string join_marks(std::string_view text) {
   return out;
 }
 
+// [text] without the whitespace before a Telugu plural ending written apart from its word ("రోజు లు").
+std::string join_plural(std::string text) {
+  constexpr std::string_view kPlural = "లు";
+  if (!text.ends_with(kPlural)) return text;
+  size_t start = text.size() - kPlural.size();
+  while (start > 0 && is_space(text[start - 1])) start--;
+  if (start == 0 || start == text.size() - kPlural.size()) return text;
+  text.erase(start, text.size() - kPlural.size() - start);
+  return text;
+}
+
 std::string_view trimmed(std::string_view text) {
   while (!text.empty() && is_space(text.front())) text.remove_prefix(1);
   while (!text.empty() && is_space(text.back())) text.remove_suffix(1);
@@ -186,13 +197,16 @@ std::string_view trimmed(std::string_view text) {
 // ("orthography spelling գիւղ"), Tamil forms after a label and before their romanization ("past of அடித்துவிடு
 // (aṭittuviṭu)"; English rows "past of flytip" have no romanization and are left as they are), or an unfilled template
 // ("{{{3}}}ে"), which stands for no word. A Hebrew construct form written with the maqaf that joins it to the next word
-// ("כֶּלֶב־") stands for the word without it as well.
+// ("כֶּלֶב־") stands for the word without it as well. Telugu plurals are written with the ending apart ("కుమార్తె లు" for
+// కుమార్తెలు) and a few forms with the wiki's namespace ("Main:మనిషి").
 std::vector<std::string> form_headwords(const std::string& expression) {
   std::vector<std::string> out;
   if (expression.find("{{{") != std::string::npos) return out;
   std::string_view text = expression;
   constexpr std::string_view kSpellingLabel = "orthography spelling ";
   if (text.starts_with(kSpellingLabel)) text.remove_prefix(kSpellingLabel.size());
+  constexpr std::string_view kNamespace = "Main:";
+  if (text.starts_with(kNamespace) && text.size() > kNamespace.size()) text.remove_prefix(kNamespace.size());
   for (const std::string_view label : {std::string_view("past of "), std::string_view("future of ")}) {
     if (text.starts_with(label) && text.ends_with(')')) text.remove_prefix(label.size());
   }
@@ -221,7 +235,7 @@ std::vector<std::string> form_headwords(const std::string& expression) {
       i = next - 1;
     }
     const std::string_view part = trimmed(text.substr(0, cut));
-    if (!part.empty()) out.push_back(join_marks(part));
+    if (!part.empty()) out.push_back(join_plural(join_marks(part)));
     constexpr std::string_view kMaqaf = "־";  // U+05BE
     if (part.size() > kMaqaf.size() && part.ends_with(kMaqaf)) {
       out.push_back(join_marks(part.substr(0, part.size() - kMaqaf.size())));
@@ -737,7 +751,8 @@ MarkStripper::MarkStripper(const HeadwordMarks& marks)
       forms_in_script_(marks.forms_in_script),
       dropped_forms_(marks.dropped_forms),
       replacements_(marks.replacements.begin(), marks.replacements.end()),
-      further_replacements_(marks.further_replacements.begin(), marks.further_replacements.end()) {
+      further_replacements_(marks.further_replacements.begin(), marks.further_replacements.end()),
+      ending_replacements_(marks.ending_replacements.begin(), marks.ending_replacements.end()) {
   marks_.push_back({code_points(marks.marks), bases_});
   for (const auto& [mark, bases] : marks.mark_bases) marks_.push_back({code_points(mark), code_points(bases)});
   if (!marks.letter_marks.empty()) {
@@ -769,6 +784,12 @@ std::vector<std::string> MarkStripper::keys(std::string_view text) const {
     const std::string_view bare = plain.empty() ? text : std::string_view(plain);
     const std::string swapped = replaced(bare, replacements_);
     add(strip(swapped.empty() ? bare : std::string_view(swapped), letters_));
+  }
+  // With the ending replaced as well: నిర్ణయం for నిర్ణయము, and for the spellings above.
+  if (!ending_replacements_.empty()) {
+    const size_t count = out.size();
+    add(ending_replaced(text));
+    for (size_t i = 0; i < count; i++) add(ending_replaced(out[i]));
   }
   return out;
 }
@@ -813,6 +834,16 @@ std::string MarkStripper::replaced(std::string_view text, const Replacements& re
     }
   }
   return changed ? out : std::string();
+}
+
+std::string MarkStripper::ending_replaced(std::string_view text) const {
+  for (const auto& [from, to] : ending_replacements_) {
+    if (from.empty() || text.size() <= from.size() || !text.ends_with(from)) continue;
+    std::string out(text.substr(0, text.size() - from.size()));
+    out += to;
+    return out;
+  }
+  return {};
 }
 
 std::string MarkStripper::strip(std::string_view text) const { return strip(text, marks_); }

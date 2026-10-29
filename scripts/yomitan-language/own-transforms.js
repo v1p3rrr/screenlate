@@ -255,14 +255,16 @@ function tamilVowelEndingRules(ending, oblique, condition) {
 }
 
 /**
+ * A rule of the Tamil and Telugu endings: [cut] characters off the end of a word that matches [pattern], [direct] in
+ * their place.
  * @param {string} pattern the ending and what must stand before it
  * @param {number} cut how many characters come off the end
  * @param {string} direct what takes their place
- * @param {('n' | 'p')[]} conditionsIn
- * @param {('n' | 'p')[]} conditionsOut
- * @returns {import('language-transformer').SuffixRule<'n' | 'p'>}
+ * @param {('n' | 'p' | 's')[]} conditionsIn
+ * @param {('n' | 'p' | 's')[]} conditionsOut
+ * @returns {import('language-transformer').SuffixRule<'n' | 'p' | 's'>}
  */
-function tamilSuffix(pattern, cut, direct, conditionsIn, conditionsOut) {
+function stemSuffix(pattern, cut, direct, conditionsIn, conditionsOut) {
     return {
         type: 'suffix',
         isInflected: new RegExp(pattern + '$'),
@@ -287,24 +289,24 @@ export const tamilTransforms = /* @__PURE__ */ (() => ({
         }]),
         ...tamilVowelEndings.map((ending) => [`-${ending}`, {
             name: `-${ending}`,
-            rules: [tamilSuffix(`.${TAMIL_VOWEL}${ending}`, ending.length, '', ['p'], ['n'])],
+            rules: [stemSuffix(`.${TAMIL_VOWEL}${ending}`, ending.length, '', ['p'], ['n'])],
         }]),
         ['-கள்', {
             name: '-கள்',
             rules: [
-                tamilSuffix(`.${TAMIL_VOWEL}கள்`, 3, '', ['n', 'p'], ['n']),
-                tamilSuffix(`.${TAMIL_CONSONANT}${TAMIL_PULLI}கள்`, 3, '', ['n', 'p'], ['n']),
-                tamilSuffix(`.${TAMIL_VOWEL}க்கள்`, 5, '', ['n', 'p'], ['n']),
-                tamilSuffix('.ங்கள்', 5, 'ம்', ['n', 'p'], ['n']),
-                tamilSuffix('.ற்கள்', 5, 'ல்', ['n', 'p'], ['n']),
-                tamilSuffix('.ட்கள்', 5, 'ள்', ['n', 'p'], ['n']),
+                stemSuffix(`.${TAMIL_VOWEL}கள்`, 3, '', ['n', 'p'], ['n']),
+                stemSuffix(`.${TAMIL_CONSONANT}${TAMIL_PULLI}கள்`, 3, '', ['n', 'p'], ['n']),
+                stemSuffix(`.${TAMIL_VOWEL}க்கள்`, 5, '', ['n', 'p'], ['n']),
+                stemSuffix('.ங்கள்', 5, 'ம்', ['n', 'p'], ['n']),
+                stemSuffix('.ற்கள்', 5, 'ல்', ['n', 'p'], ['n']),
+                stemSuffix('.ட்கள்', 5, 'ள்', ['n', 'p'], ['n']),
             ],
         }],
-        ['-அ', {name: '-அ', rules: [tamilSuffix(`.{2}${TAMIL_CONSONANT}`, 0, 'ம்', ['p'], ['n'])]}],
-        ['-அத்து', {name: '-அத்து', rules: [tamilSuffix(`.${TAMIL_CONSONANT}த்து`, 4, 'ம்', ['p'], ['n'])]}],
+        ['-அ', {name: '-அ', rules: [stemSuffix(`.{2}${TAMIL_CONSONANT}`, 0, 'ம்', ['p'], ['n'])]}],
+        ['-அத்து', {name: '-அத்து', rules: [stemSuffix(`.${TAMIL_CONSONANT}த்து`, 4, 'ம்', ['p'], ['n'])]}],
         ...tamilAugmentEndings.map((ending) => [`-அ${ending}`, {
             name: `-அ${ending}`,
-            rules: [tamilSuffix(`.த${ending}`, ending.length, TAMIL_U, ['p'], ['n'])],
+            rules: [stemSuffix(`.த${ending}`, ending.length, TAMIL_U, ['p'], ['n'])],
         }]),
         ...tamilParticles.map((particle) => [tamilEndingName(particle), {
             name: tamilEndingName(particle),
@@ -313,7 +315,101 @@ export const tamilTransforms = /* @__PURE__ */ (() => ({
         ...tamilDoubledConsonants.map((consonant) => [`-${consonant}`, {
             name: `-${consonant}`,
             hidden: true,
-            rules: [tamilSuffix(`.{2}[^${TAMIL_PULLI}]${consonant}`, consonant.length, '', [], ['p'])],
+            rules: [stemSuffix(`.{2}[^${TAMIL_PULLI}]${consonant}`, consonant.length, '', [], ['p'])],
+        }]),
+    ]),
+}))();
+
+/**
+ * Telugu case endings, postpositions and particles written joined to a word, as the app's own rules: Wiktionary lists
+ * the plurals and few case forms. An ending comes off the direct form (రాష్ట్రంలో → రాష్ట్రం, రోజుకు → రోజు) or off the
+ * oblique -ఇ of a noun in -ఉ (ఊరికి → ఊరు, కుమారుడిని → కుమారుడు); a noun in -అం takes -ఆన్ని, -ఆనికి and -ఆన in place
+ * of its -ం (పుస్తకాన్ని → పుస్తకం). Before an ending the plural is in its oblique -ల, which is taken back to the stem
+ * and to the plural Wiktionary lists (పిల్లలకు → పిల్లలు, చెట్ల → చెట్లు); a plural in -ఆలు is a noun's in -అం
+ * (పుస్తకాలు → పుస్తకం); no rule follows a plural's. The emphatic -ఏ, -ఊ "also" and the question -ఆ take the place of a final -ఉ or -ఇ or follow the
+ * word (రోజే, మీరూ, నిజమా → నిజము), and -నే and -నూ follow an ending (రాష్ట్రంలోనే); an ending may come before them.
+ * Wiktionary's Telugu entries tag each definition with its part of speech, so the texts of the endings reach nominal
+ * words and forms, those of the particles any word (glue.js, `taggedRules`, `untypedRules`). Two characters stay at
+ * least. The endings are in NFC, as the composed text and the headwords.
+ */
+const teluguCaseEndings = [
+    'లోనుంచి', 'నుంచి', 'నుండి', 'గురించి', 'కోసం', 'వరకు', 'ద్వారా', 'కంటే', 'వల్ల', 'వలన', 'తోపాటు', 'లోని', 'లోకి',
+    'మీద', 'పైన', 'లో', 'తో', 'కి', 'కు', 'ని', 'ను', 'పై', 'గా', 'లా',
+];
+
+/** The endings that take the place of the -ం of a noun in -అం (పుస్తకాన్ని, రాష్ట్రానికి, సమయాన). */
+const teluguAmEndings = ['ాన్ని', 'ానికి', 'ాన'];
+
+/** The particles that take the place of a final -ఉ or -ఇ: the emphatic -ఏ, -ఊ "also", the question -ఆ. */
+const teluguParticles = ['ే', 'ూ', 'ా'];
+
+/** The particles after an ending: the emphatic -నే and -నూ "also" (లోనే, లోనూ). */
+const teluguEndingParticles = ['నే', 'నూ'];
+
+const TELUGU_CONSONANT = '[\u0C15-\u0C39]';
+const TELUGU_I = '\u0C3F';
+const TELUGU_U = '\u0C41';
+const TELUGU_ANUSVARA = '\u0C02';
+
+/** The independent vowels of the vowel signs that start endings, for the rules' names (-ఆన్ని for ాన్ని). */
+const TELUGU_VOWEL_LETTERS = {'\u0C3E': 'ఆ', '\u0C42': 'ఊ', '\u0C47': 'ఏ'};
+
+/**
+ * The name of an ending as grammars write it: one that starts with a vowel sign with the vowel's letter (-ఆన్ని).
+ * @param {string} ending
+ * @returns {string}
+ */
+function teluguEndingName(ending) {
+    const vowel = TELUGU_VOWEL_LETTERS[ending[0]];
+    return vowel ? `-${vowel}${ending.slice(1)}` : `-${ending}`;
+}
+
+/** @type {import('language-transformer').LanguageTransformDescriptor<'n' | 'p' | 's'>} */
+export const teluguTransforms = /* @__PURE__ */ (() => ({
+    language: 'te',
+    conditions: {
+        n: {name: 'Noun', isDictionaryForm: true},
+        p: {name: 'Word', isDictionaryForm: true},
+        s: {name: 'Singular noun', isDictionaryForm: true},
+    },
+    transforms: Object.fromEntries([
+        ...teluguCaseEndings.map((ending) => [`-${ending}`, {
+            name: `-${ending}`,
+            rules: [
+                stemSuffix(`.{2}${ending}`, ending.length, '', ['p'], ['n']),
+                stemSuffix(`.{2}${TELUGU_I}${ending}`, ending.length + 1, TELUGU_U, ['p'], ['n']),
+            ],
+        }]),
+        ...teluguAmEndings.map((ending) => [teluguEndingName(ending), {
+            name: teluguEndingName(ending),
+            rules: [stemSuffix(`.{2}${ending}`, ending.length, TELUGU_ANUSVARA, ['p'], ['n'])],
+        }]),
+        ['-లు', {
+            name: '-లు',
+            rules: [
+                stemSuffix('.{2}లు', 2, '', ['n', 'p'], ['s']),
+                stemSuffix('.{2}ాలు', 3, TELUGU_ANUSVARA, ['n', 'p'], ['s']),
+            ],
+        }],
+        ['-ల', {
+            name: '-ల',
+            rules: [
+                stemSuffix('.{2}ల', 1, '', ['n', 'p'], ['s']),
+                stemSuffix('.{2}ల', 1, 'లు', ['n', 'p'], ['s']),
+                stemSuffix('.{2}ాల', 2, TELUGU_ANUSVARA, ['n', 'p'], ['s']),
+            ],
+        }],
+        ...teluguEndingParticles.map((particle) => [`-${particle}`, {
+            name: `-${particle}`,
+            rules: [stemSuffix(`.{2}${particle}`, particle.length, '', ['p'], ['p'])],
+        }]),
+        ...teluguParticles.map((particle) => [teluguEndingName(particle), {
+            name: teluguEndingName(particle),
+            rules: [
+                stemSuffix(`.{2}${TELUGU_CONSONANT}${particle}`, 1, TELUGU_U, ['p'], ['p']),
+                stemSuffix(`.{2}${TELUGU_CONSONANT}${particle}`, 1, TELUGU_I, ['p'], ['p']),
+                stemSuffix(`.{2}${TELUGU_CONSONANT}${particle}`, 1, '', ['p'], ['p']),
+            ],
         }]),
     ]),
 }))();

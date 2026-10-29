@@ -49,6 +49,9 @@ struct HeadwordMarks {
   // Form headwords left out, as written: labels of Wiktionary's tables that its export gives as forms of every tabled
   // word (Marathi होकारार्थी "affirmative").
   std::vector<std::string> dropped_forms;
+  // Word endings that running text writes as others, each as UTF-8 text (the Telugu -ము as -ం): a word is also found
+  // with its ending replaced, as written and with the [replacements] made.
+  std::map<std::string, std::string> ending_replacements;
 };
 
 class MarkStripper {
@@ -59,7 +62,8 @@ class MarkStripper {
   std::string strip(std::string_view text) const;
 
   // The other spellings [text] is found under: without the marks ([strip]), with the replacements, and with both;
-  // then without the letters' marks as well, with the replacements made; each once, [text] itself left out.
+  // then without the letters' marks as well, with the replacements made; then each of those and [text] with the
+  // ending replaced; each once, [text] itself left out.
   std::vector<std::string> keys(std::string_view text) const;
 
   bool every_headword() const { return every_headword_; }
@@ -92,6 +96,9 @@ class MarkStripper {
   // [text] with [replacements] made; empty when none applies.
   static std::string replaced(std::string_view text, const Replacements& replacements);
 
+  // [text] with the first of [ending_replacements_] it ends with replaced; empty when it ends with none.
+  std::string ending_replaced(std::string_view text) const;
+
   // [text] without the marks of [sets] that follow one of their bases, composed again; empty when none is dropped.
   static std::string strip(std::string_view text, const std::vector<MarkSet>& sets);
 
@@ -107,6 +114,7 @@ class MarkStripper {
   std::vector<std::string> dropped_forms_;
   Replacements replacements_;
   Replacements further_replacements_;
+  Replacements ending_replacements_;
 };
 
 // [text] without the marks over or under its Latin and Cyrillic letters, those Unicode does not decompose (ø ł ı, ғ қ

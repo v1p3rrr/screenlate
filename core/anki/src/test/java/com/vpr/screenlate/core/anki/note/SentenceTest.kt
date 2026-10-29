@@ -419,6 +419,15 @@ class SentenceTest {
     }
 
     @Test
+    fun teluguSentencesEndAtThePeriodAndKeepAbbreviationsAndSyllableInitials() {
+        val telugu = "అతను వచ్చాడు. డా. రాజు చెప్పారు, “రేపు రా. తప్పకుండా.” తర్వాత వెళ్ళారు. కె. చంద్రశేఖర్ రావు నాయకుడు. ఎవరు? రా. ముగింపు."
+        assertThat(extract(telugu, "రాజు", Language.TELUGU).text)
+            .isEqualTo("డా. రాజు చెప్పారు, “రేపు రా. తప్పకుండా.” తర్వాత వెళ్ళారు.")
+        assertThat(extract(telugu, "చంద్రశేఖర్", Language.TELUGU).text).isEqualTo("కె. చంద్రశేఖర్ రావు నాయకుడు.")
+        assertThat(extract(telugu, "ముగింపు", Language.TELUGU).text).isEqualTo("ముగింపు.")
+    }
+
+    @Test
     fun bengaliSentencesEndAtTheDandaAndKeepQuotesAbbreviationsAndInitials() {
         val bengali = "সে বাড়ি গেল। ড. ইউনূস বললেন, “কাল এসো। অবশ্যই।” তারপর তাঁরা চলে গেলেন। শেষ।"
         assertThat(extract(bengali, "ইউনূস", Language.BENGALI).text)

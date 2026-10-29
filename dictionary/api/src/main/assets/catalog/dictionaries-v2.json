@@ -4521,6 +4521,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-tel",
+      "title": "Tesseract fast (tel)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "te",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/tel.traineddata",
+      "downloadSize": 2769654,
+      "sha256": "d10691fddd5b67802e1c12800ebb321d3b8bcd8d24a2ac3ff206f93188c04ab5",
+      "model": "tesseract-fast-tel",
+      "engine": "tesseract",
+      "file": "tessdata/tel.traineddata",
+      "version": "d10691fddd5b",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-tel",
+      "title": "Tesseract best (tel)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "te",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/tel.traineddata",
+      "downloadSize": 9098795,
+      "sha256": "81b0a1cfaf8bbf0f87da72b8c348264c6f24130766f5c4ade733fc20c05aaccc",
+      "model": "tesseract-best-tel",
+      "engine": "tesseract",
+      "file": "tessdata/tel.traineddata",
+      "version": "81b0a1cfaf8b",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -19974,6 +20008,84 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ta/wty-ta-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 205866,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-te-en",
+      "title": "Wiktionary (te–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-te-en",
+        "kty-te-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "te",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-te-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/te/en/wty-te-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1599514,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-te-ru",
+      "title": "Wiktionary (te–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-te-ru",
+        "kty-te-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "te",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-te-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/te/ru/wty-te-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 79444,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-te-zh",
+      "title": "Wiktionary (te–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-te-zh",
+        "kty-te-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "te",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-te-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/te/zh/wty-te-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 169304,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-te-transcription",
+      "title": "Wiktionary transcription (te)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-te-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "te",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-te-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/te/wty-te-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 88399,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

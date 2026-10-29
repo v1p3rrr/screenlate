@@ -25,7 +25,7 @@ LANGUAGES = {
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
     "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell", "hi": "hin", "bn": "ben", "ka": "kat", "hy": "hye",
     "th": "tha", "km": "khm", "ar": "ara", "he": "heb", "kk": "kaz", "ky": "kir", "sv": "swe", "no": "nor", "da": "dan", "ro": "ron", "la": "lat", "lt": "lit", "sk": "slk", "sl": "slv", "eo": "epo", "sq": "sqi", "sw": "swa", "cy": "cym", "ga": "gle", "gd": "gla", "fi": "fin", "hu": "hun", "et": "est", "az": "aze", "uz": "uzb",
-    "bg": "bul", "mk": "mkd", "mn": "mon", "mr": "mar", "ta": "tam",
+    "bg": "bul", "mk": "mkd", "mn": "mon", "mr": "mar", "ta": "tam", "te": "tel",
     # Serbian's in Cyrillic, which its text is by default.
     "hr": "hrv", "sr": "srp",
 }
@@ -36,11 +36,11 @@ LANGUAGES = {
 # fast model, 0.7% of the characters wrong against Paddle's 1.2% and ML Kit's 2.6%; Slovak's, 0.6% against ML Kit's
 # 2.4% and Paddle's 2.5% (Paddle reads ď ť ľ as d' t' l'); Esperanto's, 0.8% against ML Kit's 2.2% (Paddle, which
 # reads every hat letter wrong, is not offered for it); Tamil's fast model until Paddle's Tamil model is released (it
-# reads 23.6% of the characters wrong against Paddle's 1.1%, best the same); the other languages are read better by
-# Paddle or ML Kit, and paddle_models.py marks theirs.
+# reads 23.6% of the characters wrong against Paddle's 1.1%, best the same), and Telugu's (35.3% against Paddle's
+# 10.9%, best 34.0%); the other languages are read better by Paddle or ML Kit, and paddle_models.py marks theirs.
 RECOMMENDED = {
     "ka": "fast", "hy": "fast", "th": "fast", "km": "fast", "ar": "fast", "he": "fast", "lt": "fast", "sk": "fast",
-    "eo": "fast", "ta": "fast",
+    "eo": "fast", "ta": "fast", "te": "fast",
 }
 
 # Languages ML Kit reads whose comparison found several models more accurate than ML Kit: each is marked, and all
