@@ -140,6 +140,10 @@
     <string name="anki_marker_furigana_plain_zh">Pinyin als Text: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Satz mit Pinyin über den Schriftzeichen</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Satz mit Pinyin als Text</string>
+    <string name="anki_marker_furigana_yue">Jyutping über den Schriftzeichen</string>
+    <string name="anki_marker_furigana_plain_yue">Jyutping als Text: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Satz mit Jyutping über den Schriftzeichen</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Satz mit Jyutping als Text</string>
     <string name="anki_marker_furigana_ru">Wort mit Betonungszeichen</string>
     <string name="anki_marker_furigana_plain_ru">Wort mit Betonungszeichen, als Text</string>
     <string name="anki_marker_sentence_furigana_ru">Satz mit Betonungszeichen in Wörtern der Grundform</string>
@@ -289,6 +293,7 @@
     <string name="lookup_script_simplified">Vereinfacht</string>
     <string name="lookup_script_traditional">Traditionell</string>
     <string name="lookup_script_hint">Per Pinyin gefundene Wörter werden in diesen Schriftzeichen gezeigt. Zeichen, die in beiden Schriften gleich sind, erhalten die Formen dieser Schrift, wenn der Text nicht zeigt, welche es ist.</string>
+    <string name="lookup_script_hint_yue">Per Jyutping gefundene Wörter werden in diesen Schriftzeichen gezeigt. Zeichen, die in beiden Schriften gleich sind, erhalten die Formen dieser Schrift, wenn der Text nicht zeigt, welche es ist.</string>
     <string name="lookup_fixed_script">Alle Wörter in diesen Zeichen</string>
     <string name="lookup_fixed_script_hint">Text in der anderen Schrift wird auch in diesen Zeichen nachgeschlagen, und Wörter werden darin angezeigt, wenn ein Wörterbuch sie so schreibt.</string>
     <string name="problems_title">Braucht Aufmerksamkeit</string>
@@ -454,6 +459,7 @@
     <string name="popup_pitch_colors_hint">Wort und Lesung erhalten die Farbe ihres ersten Tonhöhenakzents, jeder Akzent seine eigene: Heiban blau, Atamadaka rot, Nakadaka orange, Odaka grün, Kifuku (Verben und i-Adjektive mit Tonhöhenabfall) lila. Erfordert ein Wörterbuch mit Tonhöhenakzenten.</string>
     <string name="popup_tone_colors">Tonfarben</string>
     <string name="popup_tone_colors_hint">Pinyin-Silben erhalten die Farbe ihres Tons: erster rot, zweiter orange, dritter grün, vierter blau, neutraler grau.</string>
+    <string name="popup_tone_colors_hint_yue">Jyutping-Silben erhalten die Farbe ihres Tons: erster rot, zweiter orange, dritter grün, vierter blau, fünfter violett, sechster türkis.</string>
     <string name="popup_font_title">Popup-Schrift</string>
     <string name="popup_font_hint">Für das Popup und die Suchseite.</string>
     <string name="popup_font_system">Japanische Schrift des Telefons</string>
@@ -549,6 +555,7 @@
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>
+    <string name="popup_font_script_only_yue">Nur für kantonesischen Text</string>
     <string name="popup_font_script_only_ko">Nur für koreanischen Text</string>
     <string name="popup_font_script_only_hint_any">Andere Schriften verwenden die Schrift des Telefons. Gilt für heruntergeladene und hinzugefügte Schriften.</string>
     <string name="popup_text_weight_info_languages">Macht dünne Schrift besser lesbar. Ist bei einer Sprache „Nur für … Text“ an oder die Schrift des Telefons gewählt, werden nur die Zeichen dieser Sprache kräftiger; ist es aus, der ganze Text.\n\nDie Schriftstärke nutzt die Schnitte der Schrift selbst. Eine Schrift mit nur einem Schnitt springt von normal direkt zu fett, daher sieht mittel wie normal aus.\n\nDie Buchstabendicke zieht eine feine Kontur um jeden Buchstaben: Sie wirkt mit jeder Schrift und kommt zur Schriftstärke hinzu.</string>

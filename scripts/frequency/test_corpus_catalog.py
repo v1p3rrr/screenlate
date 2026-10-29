@@ -19,6 +19,15 @@ class CheckTest(unittest.TestCase):
             catalog.check("ที่\t10\nการ\t11\n".encode("utf-8"))
 
 
+class WeightsCheckTest(unittest.TestCase):
+    def test_counts_lines_of_words_and_weights_in_any_order(self):
+        self.assertEqual(catalog.check("我\t10\n係\t20\n".encode("utf-8"), "weights"), 2)
+
+    def test_refuses_a_line_without_a_weight(self):
+        with self.assertRaises(ValueError):
+            catalog.check("我\t10\n係\n".encode("utf-8"), "weights")
+
+
 def archive(**files):
     """A gzipped tar archive of [files], path to text."""
     out = io.BytesIO()
@@ -138,6 +147,19 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(entry["downloadUrl"],
                          "https://downloads.wortschatz-leipzig.de/corpora/kaz_newscrawl_2016_100K.tar.gz")
         self.assertEqual(entry["license"], "CC BY")
+
+
+class WeightsEntryTest(unittest.TestCase):
+    def test_the_cantonese_entry_is_rime_cantonese_s_essay_at_a_pinned_commit(self):
+        data = "我\t10\n".encode("utf-8")
+        entry = catalog.entry("yue", catalog.CORPORA["yue"], data)
+        self.assertEqual(entry["id"], "corpus-yue")
+        self.assertEqual(entry["template"], "rime-cantonese")
+        self.assertEqual(entry["oldTitles"], ["rime-cantonese (yue)"])
+        self.assertIn(catalog.RIME_CANTONESE_COMMIT, entry["downloadUrl"])
+        self.assertTrue(entry["downloadUrl"].endswith("/essay-cantonese.txt"))
+        self.assertEqual(entry["license"], "CC BY 4.0")
+        self.assertEqual(catalog.CORPORA["yue"]["format"], "weights")
 
 
 class ReplaceTest(unittest.TestCase):

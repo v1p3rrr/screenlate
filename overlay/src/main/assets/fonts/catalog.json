@@ -331,6 +331,60 @@
       "homepage": "https://fonts.google.com/specimen/LXGW+WenKai+TC"
     },
     {
+      "id": "noto-sans-hk",
+      "family": "Noto Sans HK",
+      "languages": ["yue"],
+      "description": {
+        "en": "Clean sans-serif (hei) in every weight with the Traditional forms used in Hong Kong.",
+        "ru": "Аккуратный шрифт без засечек (хэй) во всех начертаниях, с традиционными формами, принятыми в Гонконге.",
+        "de": "Klare serifenlose Schrift (Hei) in allen Strichstärken mit den traditionellen Formen Hongkongs.",
+        "es": "Sin serifa (hei) limpia en todos los pesos, con las formas tradicionales usadas en Hong Kong.",
+        "fr": "Sans empattement (hei) nette dans toutes les graisses, aux formes traditionnelles en usage à Hong Kong.",
+        "it": "Senza grazie (hei) pulito in tutti i pesi, con le forme tradizionali in uso a Hong Kong.",
+        "ja": "すべてのウェイトがそろった端正な黒体（ゴシック）。香港で使われる繁体字の字形。",
+        "ko": "모든 굵기를 갖춘 깔끔한 흑체(산세리프)로, 홍콩에서 쓰는 번체 자형입니다.",
+        "pl": "Czysta czcionka bezszeryfowa (hei) we wszystkich grubościach, z tradycyjnymi formami używanymi w Hongkongu.",
+        "pt": "Sem serifa (hei) limpa em todos os pesos, com as formas tradicionais usadas em Hong Kong.",
+        "tr": "Her kalınlıkta sade tırnaksız (hei) yazı tipi, Hong Kong'da kullanılan geleneksel biçimlerle.",
+        "vi": "Kiểu không chân (hắc thể) gọn gàng với mọi độ đậm, theo dạng phồn thể dùng ở Hồng Kông.",
+        "zh": "各种字重齐全的简洁黑体，采用香港通行的繁体字形。",
+        "zh-Hant": "各種字重齊全的簡潔黑體，採用香港通行的繁體字形。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanshk/NotoSansHK%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 11.9,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Sans+HK"
+    },
+    {
+      "id": "noto-serif-hk",
+      "family": "Noto Serif HK",
+      "languages": ["yue"],
+      "description": {
+        "en": "Ming (serif) in every weight with Hong Kong forms, to match Noto Sans HK.",
+        "ru": "Мин (с засечками) во всех начертаниях, с гонконгскими формами, в пару к Noto Sans HK.",
+        "de": "Ming (mit Serifen) in allen Strichstärken mit den Formen Hongkongs, passend zu Noto Sans HK.",
+        "es": "Ming (con serifa) en todos los pesos, con las formas de Hong Kong, a juego con Noto Sans HK.",
+        "fr": "Ming (à empattements) dans toutes les graisses, aux formes de Hong Kong, assortie à Noto Sans HK.",
+        "it": "Ming (con grazie) in tutti i pesi, con le forme di Hong Kong, abbinato a Noto Sans HK.",
+        "ja": "香港の字形で、すべてのウェイトがそろった明朝体。Noto Sans HK と対になる。",
+        "ko": "홍콩 자형에 모든 굵기를 갖춘 명조체(세리프)로, Noto Sans HK와 짝을 이룹니다.",
+        "pl": "Ming (szeryfowa) we wszystkich grubościach, z formami hongkońskimi, do pary z Noto Sans HK.",
+        "pt": "Ming (com serifa) em todos os pesos, com as formas de Hong Kong, combinando com Noto Sans HK.",
+        "tr": "Her kalınlıkta, Hong Kong biçimli ming (tırnaklı) yazı tipi; Noto Sans HK ile uyumlu.",
+        "vi": "Kiểu Minh (có chân) với mọi độ đậm, theo dạng chữ Hồng Kông, đi cặp với Noto Sans HK.",
+        "zh": "各种字重齐全的明体（衬线），香港字形，与 Noto Sans HK 配套。",
+        "zh-Hant": "各種字重齊全的明體（襯線），香港字形，與 Noto Sans HK 配套。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifhk/NotoSerifHK%5Bwght%5D.ttf", "weight": "200 900"}
+      ],
+      "sizeMb": 16.8,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Serif+HK"
+    },
+    {
       "id": "noto-sans-kr",
       "family": "Noto Sans KR",
       "languages": ["ko"],

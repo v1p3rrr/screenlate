@@ -70,6 +70,42 @@ class CorpusCountsDictionaryTest {
         assertThat(CorpusCountsDictionary.title("th")).isEqualTo("Thai National Corpus (th)")
     }
 
+    @Test
+    fun `a weighted list comes heaviest first, the weights of a word listed twice added up`() {
+        val list = "你\t5\n我\t20\n係\t10\n你\t30\n\n"
+        assertThat(CorpusCountsDictionary.weightedWords(list.byteInputStream(), 10)).containsExactly("你", "我", "係").inOrder()
+        assertThat(CorpusCountsDictionary.weightedWords(list.byteInputStream(), 1)).containsExactly("你")
+    }
+
+    @Test(expected = IOException::class)
+    fun `a line without a weight is refused`() {
+        CorpusCountsDictionary.weightedWords("我\t20\n係\n".byteInputStream(), 10)
+    }
+
+    @Test
+    fun `the cantonese dictionary gives each word's hong kong, taiwan and simplified spellings its rank`() {
+        val source = folder.newFile().apply { writeText("爲\t1084\n衛生\t500\n我\t2000\n、\t9000\n") }
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "yue", "2026-08-13", output)).isEqualTo(3)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("rime-cantonese (yue)")
+            assertThat(index["attribution"]!!.jsonPrimitive.content).contains("CC BY 4.0")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            val ranks = bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } }
+            // The list writes OpenCC's 爲 and 衛, words.hk Hong Kong's 為 and 衞.
+            assertThat(ranks).containsAtLeast("我" to 1, "爲" to 2, "為" to 2, "为" to 2, "衛生" to 3, "衞生" to 3, "卫生" to 3)
+            assertThat(ranks.map { it.first }).containsNoDuplicates()
+            assertThat(ranks.map { it.first }).doesNotContain("、")
+        }
+    }
+
+    @Test
+    fun `other corpora give no other spellings`() {
+        assertThat(CorpusCountsDictionary.CORPORA.filterValues { it.otherSpellings }.keys).containsExactly("yue")
+    }
+
     /** A gzipped tar archive of [files] (path to text) in the ustar format, as the Leipzig archives are. */
     private fun tarGz(vararg files: Pair<String, String>): ByteArray {
         val tar = ByteArrayOutputStream()

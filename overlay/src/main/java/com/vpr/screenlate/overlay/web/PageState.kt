@@ -141,6 +141,7 @@ object PageState {
             "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
         )
         Language.CHINESE -> context.getString(R.string.overlay_character_pinyin).let { mapOf("onyomi" to it, "kunyomi" to it) }
+        Language.CANTONESE -> context.getString(R.string.overlay_character_jyutping).let { mapOf("onyomi" to it, "kunyomi" to it) }
         Language.KOREAN ->
             context.getString(R.string.overlay_character_korean_reading).let { mapOf("onyomi" to it, "kunyomi" to it) }
     }

@@ -47,7 +47,7 @@
  * Pitch accent colors (setAppearance's pronunciationColors): the word carries the type of its first accent in
  * dictionary order and each accent button its own (data-pitch-category: heiban, atamadaka, nakadaka, odaka, kifuku);
  * popup.css colors them while the root's data-pronunciation-colors is on. The same switch colors Chinese pinyin: each
- * syllable carries its tone (data-tone, 1 to 5) from HeadwordReading (reading.js).
+ * syllable carries its tone (data-tone, 1 to 5 for Chinese, 1 to 6 for Cantonese) from HeadwordReading (reading.js).
  *
  * Note buttons: ➕ adds (hold: with a picture); after adding, or for a duplicate that may not be added again, the
  * button becomes 📖, which opens the note in AnkiDroid (hold: add anyway). Holding 🔊 lists the audio sources.
@@ -1415,7 +1415,7 @@ const Popup = (() => {
      * dictionaries' styles; preload names a font to load before it is first needed, for the characters of preloadText
      * (a face limited to the language's script loads only for them). See setHeavierText for the weight.
      * definitionCopy is the mode of the copy button next to each dictionary's name ('all' or 'meanings'); empty hides it.
-     * pronunciationColors turns on the pitch accent colors, or the tone colors of Chinese.
+     * pronunciationColors turns on the pitch accent colors, or the tone colors of Chinese and Cantonese.
      */
     function setAppearance(appearance) {
         const root = document.documentElement;

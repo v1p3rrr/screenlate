@@ -142,6 +142,10 @@
     <string name="anki_marker_furigana_plain_zh">Pinyin en texte : 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Phrase avec le pinyin au-dessus des caractères</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Phrase avec le pinyin en texte</string>
+    <string name="anki_marker_furigana_yue">Jyutping au-dessus des caractères</string>
+    <string name="anki_marker_furigana_plain_yue">Jyutping en texte : 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Phrase avec le jyutping au-dessus des caractères</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Phrase avec le jyutping en texte</string>
     <string name="anki_marker_furigana_ru">Mot avec l’accent tonique marqué</string>
     <string name="anki_marker_furigana_plain_ru">Mot avec l’accent tonique marqué, en texte</string>
     <string name="anki_marker_sentence_furigana_ru">Phrase avec l’accent tonique marqué sur les mots sous leur forme de dictionnaire</string>
@@ -292,6 +296,7 @@
     <string name="lookup_script_simplified">Simplifiés</string>
     <string name="lookup_script_traditional">Traditionnels</string>
     <string name="lookup_script_hint">Les mots trouvés par le pinyin s’affichent dans ces caractères. Les caractères qui s’écrivent de la même façon dans les deux écritures prennent les formes de celle-ci quand le texte ne permet pas de savoir de laquelle il s’agit.</string>
+    <string name="lookup_script_hint_yue">Les mots trouvés par le jyutping s’affichent dans ces caractères. Les caractères qui s’écrivent de la même façon dans les deux écritures prennent les formes de celle-ci quand le texte ne montre pas laquelle il utilise.</string>
     <string name="lookup_fixed_script">Tous les mots dans ces caractères</string>
     <string name="lookup_fixed_script_hint">Le texte dans l’autre écriture est aussi cherché dans ces caractères, et les mots y sont affichés si un dictionnaire les écrit ainsi.</string>
     <string name="problems_title">À vérifier</string>
@@ -458,6 +463,7 @@
     <string name="popup_pitch_colors_hint">Le mot et sa lecture prennent la couleur de leur premier accent de hauteur, et chaque accent la sienne : heiban bleu, atamadaka rouge, nakadaka orange, odaka vert, kifuku (verbes et adjectifs en -i avec une descente) violet. Nécessite un dictionnaire d’accent de hauteur.</string>
     <string name="popup_tone_colors">Couleurs des tons</string>
     <string name="popup_tone_colors_hint">Les syllabes du pinyin prennent la couleur de leur ton : premier rouge, deuxième orange, troisième vert, quatrième bleu, neutre gris.</string>
+    <string name="popup_tone_colors_hint_yue">Les syllabes du jyutping prennent la couleur de leur ton : premier rouge, deuxième orange, troisième vert, quatrième bleu, cinquième violet, sixième turquoise.</string>
     <string name="popup_font_title">Police de la fenêtre contextuelle</string>
     <string name="popup_font_hint">Utilisée par la fenêtre contextuelle et la page de recherche.</string>
     <string name="popup_font_system">Police japonaise du téléphone</string>
@@ -553,6 +559,7 @@
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>
+    <string name="popup_font_script_only_yue">Seulement pour le texte cantonais</string>
     <string name="popup_font_script_only_ko">Seulement pour le texte coréen</string>
     <string name="popup_font_script_only_hint_any">Les autres écritures utilisent la police du téléphone. S’applique aux polices téléchargées et ajoutées.</string>
     <string name="popup_text_weight_info_languages">Rend un texte fin plus lisible. Avec « Seulement pour le texte … » activé pour une langue, ou avec la police du téléphone, seuls les caractères de cette langue s’épaississent ; sinon, tout le texte s’épaissit.\n\nLa graisse utilise les graisses propres à la police. Une police qui n’en a qu’une passe directement de normale à grasse, donc moyenne ressemble à normale.\n\nL’épaisseur des lettres trace un fin contour autour de chaque lettre : elle fonctionne avec toutes les polices et s’ajoute à la graisse.</string>

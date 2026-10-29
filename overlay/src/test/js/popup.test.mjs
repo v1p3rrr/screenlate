@@ -297,6 +297,17 @@ test('chinese headwords get a syllable above each character, marked with its ton
     assert.deepEqual(page.calls.at(-1), ['onKanji', '书']);
 });
 
+test('cantonese headwords get a jyutping syllable above each character, marked with its tone', () => {
+    Popup.render(state({
+        source: { text: '我哋', matched: 2, lang: 'yue-HK' },
+        results: [{ ...result('我哋', 'ngo5 dei6'), lang: 'yue-HK' }],
+    }));
+    const expression = content.querySelector('.expression');
+    assert.equal(content.querySelector('.entry').lang, 'yue-HK');
+    assert.deepEqual([...expression.querySelectorAll('ruby')].map(ruby => ruby.textContent), ['我ngo5', '哋dei6']);
+    assert.deepEqual([...expression.querySelectorAll('rt .syllable')].map(span => span.dataset.tone), ['5', '6']);
+});
+
 test("russian headwords show the stressed form in the word's place", () => {
     Popup.setAppearance({ lang: 'ru' });
     Popup.render(state({ source: { text: 'кошки', matched: 5 }, results: [result('кошка', 'ко́шка')] }));

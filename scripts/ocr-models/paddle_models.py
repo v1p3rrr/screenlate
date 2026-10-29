@@ -58,10 +58,11 @@ DETECTORS = {
 LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da", "ro", "la", "lt", "sk", "sl", "sq", "sw", "cy", "ga", "gd", "fi", "hu", "et"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,
-# which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian.
+# which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian. Cantonese
+# takes v6 unmarked: ML Kit's Chinese model made 8.3% of the characters wrong against its 18.4%.
 RECOGNIZERS = {
     "paddle-v6": {"source": "PP-OCRv6_small_rec", "template": "paddle-v6", "requires": "paddle-detector-v6",
-                  "languages": ["ja", "zh"] + LATIN + ["sr", "az", "uz"]},
+                  "languages": ["ja", "zh"] + LATIN + ["sr", "az", "uz", "yue"]},
     "paddle-latin": {"source": "latin_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
                      "languages": LATIN},
     "paddle-cyrillic": {"source": "cyrillic_PP-OCRv5_mobile_rec", "template": "paddle-v5",

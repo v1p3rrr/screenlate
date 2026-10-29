@@ -142,6 +142,10 @@
     <string name="anki_marker_furigana_plain_zh">פיניין כטקסט: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">משפט עם פיניין מעל התווים</string>
     <string name="anki_marker_sentence_furigana_plain_zh">משפט עם פיניין כטקסט</string>
+    <string name="anki_marker_furigana_yue">יוטפינג מעל התווים</string>
+    <string name="anki_marker_furigana_plain_yue">יוטפינג כטקסט: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">משפט עם יוטפינג מעל התווים</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">משפט עם יוטפינג כטקסט</string>
     <string name="anki_marker_furigana_ru">מילה עם סימן ההטעמה שלה</string>
     <string name="anki_marker_furigana_plain_ru">מילה עם סימן ההטעמה שלה, כטקסט</string>
     <string name="anki_marker_sentence_furigana_ru">משפט עם סימני הטעמה על מילים בצורתן המילונית</string>
@@ -292,6 +296,7 @@
     <string name="lookup_script_simplified">מפושט</string>
     <string name="lookup_script_traditional">מסורתי</string>
     <string name="lookup_script_hint">מילים שנמצאו לפי פיניין מוצגות בכתב הזה. תווים שנכתבים אותו דבר בשני הכתבים מקבלים את הצורות של הכתב הזה כשמהטקסט לא ברור באיזה כתב מדובר.</string>
+    <string name="lookup_script_hint_yue">מילים שנמצאו לפי יוטפינג מוצגות בתווים האלה. תווים שנכתבים אותו דבר בשתי השיטות מקבלים את צורות השיטה הזו כשהטקסט לא מראה באיזו מדובר.</string>
     <string name="lookup_fixed_script">כל המילים בכתב הזה</string>
     <string name="lookup_fixed_script_hint">טקסט בכתב האחר נבדק גם בכתב הזה, והמילים מוצגות בו כשהמילון מאיית אותן כך.</string>
     <string name="problems_title">דורש טיפול</string>
@@ -458,6 +463,7 @@
     <string name="popup_pitch_colors_hint">המילה והקריאה שלה נצבעות בצבע של הטעמת הגובה הראשונה שלה, וכל הטעמה בצבע משלה: הייבאן כחול, אטאמאדאקה אדום, נאקאדאקה כתום, אודאקה ירוק, קיפוקו (פעלים ושמות תואר מסוג i עם ירידת גובה) סגול. נדרש מילון הטעמת גובה.</string>
     <string name="popup_tone_colors">צבעי טונים</string>
     <string name="popup_tone_colors_hint">הברות פיניין נצבעות בצבע הטון שלהן: ראשון אדום, שני כתום, שלישי ירוק, רביעי כחול, ניטרלי אפור.</string>
+    <string name="popup_tone_colors_hint_yue">הברות יוטפינג נצבעות בצבע הטון שלהן: ראשון אדום, שני כתום, שלישי ירוק, רביעי כחול, חמישי סגול, שישי טורקיז.</string>
     <string name="popup_font_title">גופן החלון הקופץ</string>
     <string name="popup_font_hint">משמש את החלון הקופץ ואת דף החיפוש.</string>
     <string name="popup_font_system">הגופן היפני של הטלפון</string>
@@ -553,6 +559,7 @@
     <string name="popup_font_system_zh">הגופן הסיני של הטלפון</string>
     <string name="popup_font_system_ko">הגופן הקוריאני של הטלפון</string>
     <string name="popup_font_script_only_zh">רק לטקסט בסינית</string>
+    <string name="popup_font_script_only_yue">רק לטקסט בקנטונזית</string>
     <string name="popup_font_script_only_ko">רק לטקסט בקוריאנית</string>
     <string name="popup_font_script_only_hint_any">כתבים אחרים משתמשים בגופן של הטלפון. חל על גופנים שהורדו ושנוספו.</string>
     <string name="popup_text_weight_info_languages">מקל על קריאת טקסט דק. כשהמתג \"רק לטקסט ב…\" של שפה מופעל, או עם הגופן של הטלפון, רק האותיות של אותה שפה נעשות עבות יותר; כשהמתג כבוי, כל הטקסט נעשה עבה יותר.\n\nהמשקל משתמש במשקלים של הגופן עצמו. בגופן עם משקל אחד בלבד יש מעבר ישיר מרגיל למודגש, ולכן בינוני נראה כמו רגיל.\n\nעובי האותיות מוסיף קו מתאר דק סביב כל אות: זה עובד עם כל גופן ומתווסף למשקל.</string>

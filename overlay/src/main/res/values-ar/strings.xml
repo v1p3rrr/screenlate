@@ -50,6 +50,7 @@
     <string name="overlay_kanji_onyomi">أون</string>
     <string name="overlay_kanji_kunyomi">كون</string>
     <string name="overlay_character_pinyin">البينيين</string>
+    <string name="overlay_character_jyutping">اليوتبينغ</string>
     <string name="overlay_character_korean_reading">القراءة الكورية</string>
     <string name="overlay_kanji_strokes">عدد الضربات</string>
     <string name="overlay_kanji_grade">الصف الدراسي</string>

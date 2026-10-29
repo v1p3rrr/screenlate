@@ -172,6 +172,34 @@ test('a kangxi radical reads as its ideograph in chinese', () => {
     assert.ok(queried('zh', '\u2f47本').has('日本'));
 });
 
+test('cantonese text is looked up in the hong kong, taiwan and other forms of its variant characters', () => {
+    // words.hk spells 衞, 裏, 綫 and 温; CC-CEDICT 衛, 裡, 線 and 溫.
+    assert.ok(queried('yue', '衛生').has('衞生'));
+    assert.ok(queried('yue', '衞生').has('衛生'));
+    assert.ok(queried('yue', '屋裡').has('屋裏'));
+    assert.ok(queried('yue', '電線').has('電綫'));
+    assert.ok(queried('yue', '溫度').has('温度'));
+    assert.ok(queried('yue', '爲咗').has('為咗'));
+    // Every grouped character of a word takes the same form; the rest stay as written.
+    assert.ok(queried('yue', '衛生溫度').has('衞生温度'));
+    assert.ok(queried('yue', '衛生').has('衛生'));
+    // A kangxi radical reads as its ideograph, as in Chinese.
+    assert.ok(queried('yue', '\u2f47頭').has('日頭'));
+});
+
+test('cantonese keeps words that differ in one use as written', () => {
+    for (const [text, other] of [['着', '著'], ['只', '衹'], ['才', '纔'], ['台', '臺']]) {
+        assert.ok(!queried('yue', text).has(other), text);
+    }
+});
+
+test('cantonese variants stay out of chinese and japanese', () => {
+    for (const language of ['zh', 'ja']) {
+        if (!fs.existsSync(path.join(assets, `${language}.js`))) continue;
+        assert.ok(!queried(language, '衛生').has('衞生'), language);
+    }
+});
+
 test('turkish case pairs do not reach english', () => {
     assert.ok(!queried('en', 'IŞIK').has('ışık'));
     assert.ok(queried('en', 'IŞIK').has('işik'));

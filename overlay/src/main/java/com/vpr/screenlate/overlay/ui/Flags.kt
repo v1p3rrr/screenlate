@@ -72,6 +72,7 @@ object Flags {
         "bg" to R.drawable.flag_bg,
         "mk" to R.drawable.flag_mk,
         "mn" to R.drawable.flag_mn,
+        "hk" to R.drawable.flag_hk,
     )
 
     /** The flag of [country] (or of a language, `lang_la`); null for a country without one. */

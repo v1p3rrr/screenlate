@@ -102,10 +102,19 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili, estonian, azerbaijani, uzbek and mongolian have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh, kyrgyz, latin, esperanto, albanian, swahili, estonian, azerbaijani, uzbek, mongolian and cantonese have frequency dictionaries built from corpus counts, of PyThaiNLP, Leipzig and rime-cantonese`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et", "az", "uz", "mn").inOrder()
+            .containsExactly("th", "kk", "ky", "la", "eo", "sq", "sw", "et", "az", "uz", "mn", "yue").inOrder()
+        val cantonese = built.single { it.sourceLanguage == "yue" }
+        assertThat(cantonese.recommended).isTrue()
+        assertThat(cantonese.sha256).isEqualTo("d08836175f598219f43c2f2f9e12e12711212dbefe08d57b2eddb7a9d9f22a5d")
+        assertThat(cantonese.downloadUrl).isEqualTo(
+            "https://raw.githubusercontent.com/rime/rime-cantonese/259f0e48bba840c3a2e0d117539e96937f3d89bc/essay-cantonese.txt",
+        )
+        assertThat(cantonese.oldTitles).containsExactly(CorpusCountsDictionary.title("yue"))
+        assertThat(cantonese.displayTitle(Locale.ENGLISH)).isEqualTo("Word frequency (rime-cantonese)")
+        assertThat(cantonese.description(Locale.ENGLISH)).startsWith("How common Cantonese words are")
         val mongolian = built.single { it.sourceLanguage == "mn" }
         assertThat(mongolian.recommended).isTrue()
         assertThat(mongolian.sha256).isEqualTo("421ee074485df3a8de98a746e4d37f941d91d5212236d858e53fa0590480761e")
@@ -562,6 +571,21 @@ class CatalogFileTest {
         // Paddle's Kannada model misreads stacked consonants and is not offered.
         assertThat(kannada.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-kan")
         assertThat(catalog!!.entries.filter { it.isReadBy(Language.KANNADA) }).isEqualTo(kannada)
+    }
+
+    @Test
+    fun `cantonese offers words-hk and its characters ticked and marked non-commercial, rime-cantonese ticked, cc-canto, cc-cedict canto and paddle v6 unticked`() {
+        val cantonese = catalog!!.entries.filter { it.isFor(Language.CANTONESE) }
+        assertThat(cantonese.filter { it.recommended }.map { it.id }).containsExactly("corpus-yue", "wordshk", "wordshk-honzi")
+        // ML Kit's Chinese model reads Cantonese with fewer errors; Tesseract's Traditional Chinese model is not offered.
+        assertThat(cantonese.filterNot { it.recommended }.map { it.id })
+            .containsExactly("paddle-v6-yue", "paddle-detector-v6-yue", "cc-canto", "cc-cedict-canto")
+        assertThat(cantonese.filter { it.nonCommercial }.map { it.id }).containsExactly("wordshk", "wordshk-honzi")
+        assertThat(cantonese.filter { it.category == CatalogCategory.MAIN }.all { it.targetLanguage == "en" }).isTrue()
+        assertThat(cantonese.single { it.id == "wordshk-honzi" }.kind).isEqualTo(DictionaryKind.KANJI)
+        // Chinese's dictionaries give Mandarin readings; Cantonese lookups read only their own.
+        assertThat(catalog.entries.filter { it.isReadBy(Language.CANTONESE) }).isEqualTo(cantonese)
+        assertThat(catalog.entries.filter { it.isFor(Language.CHINESE) }.none { it.sourceLanguage == "yue" }).isTrue()
     }
 
     @Test

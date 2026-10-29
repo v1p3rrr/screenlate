@@ -27,7 +27,7 @@ class FieldTemplateTest {
     @Test
     fun offersFuriganaMarkersOnlyWhereReadingsGoOverOrIntoWords() {
         val offering = Language.entries.filter { FieldTemplate.markersFor(it).containsAll(FieldTemplate.FURIGANA_MARKERS) }
-        assertThat(offering).containsExactly(Language.JAPANESE, Language.CHINESE, Language.RUSSIAN)
+        assertThat(offering).containsExactly(Language.JAPANESE, Language.CHINESE, Language.CANTONESE, Language.RUSSIAN)
         for (language in Language.entries - offering) {
             assertThat(FieldTemplate.markersFor(language)).containsNoneIn(FieldTemplate.FURIGANA_MARKERS)
         }

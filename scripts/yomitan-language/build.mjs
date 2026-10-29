@@ -77,7 +77,8 @@ const borrowed = {
  * is composed as Hindi's, may come in an old font's य़ for the य of a conjunct, with a nukta the headwords leave out, and
  * with अॅ, ऍ and ँ for the headwords' ॲ and ॅं; Tamil text is composed as Hindi's, writes the vowel sign ௌ and ெள for
  * each other, and ஸ்ரீ where the headwords write ஶ்ரீ; Telugu and Kannada text is composed so too and may carry
- * zero-width joiners and spaces and soft hyphens inside words. Processors
+ * zero-width joiners and spaces and soft hyphens inside words; Cantonese text writes the variant characters of Hong
+ * Kong, Taiwan or OpenCC's standard (衞 衛, 裏 裡), each dictionary its own. Processors
  * join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
@@ -108,6 +109,7 @@ const addedPreprocessors = {
     ta: ['composeCharacters', 'tamilAuSign', 'tamilShri'],
     te: ['composeCharacters', 'removeZeroWidthCharacters'],
     kn: ['composeCharacters', 'removeZeroWidthCharacters'],
+    yue: ['cantoneseVariants'],
 };
 
 /**

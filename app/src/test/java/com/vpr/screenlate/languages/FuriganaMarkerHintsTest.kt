@@ -8,10 +8,10 @@ import org.junit.Test
 class FuriganaMarkerHintsTest {
 
     @Test
-    fun `chinese and russian explain every furigana marker and only those`() {
+    fun `chinese, cantonese and russian explain every furigana marker and only those`() {
         Language.entries.forEach { language ->
             val hints = language.furiganaMarkerHints
-            if (language == Language.CHINESE || language == Language.RUSSIAN) {
+            if (language == Language.CHINESE || language == Language.CANTONESE || language == Language.RUSSIAN) {
                 assertThat(hints.keys).containsExactlyElementsIn(FieldTemplate.FURIGANA_MARKERS)
                 assertThat(FieldTemplate.markersFor(language)).containsAtLeastElementsIn(hints.keys)
                 assertThat(hints.values.toSet()).hasSize(hints.size)

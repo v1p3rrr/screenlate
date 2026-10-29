@@ -58,7 +58,8 @@ class AudioPlayer @Inject constructor(
         stop()
         val tts = engine() ?: return false
         // Another language's voice would read the text wrongly or not at all.
-        if (tts.setLanguage(Locale.forLanguageTag(language.support.speechTag)) < TextToSpeech.LANG_AVAILABLE) {
+        val tags = listOf(language.support.speechTag) + language.support.otherSpeechTags
+        if (tags.none { tts.setLanguage(Locale.forLanguageTag(it)) >= TextToSpeech.LANG_AVAILABLE }) {
             Log.i(TAG, "No text-to-speech voice for ${language.code}")
             return false
         }

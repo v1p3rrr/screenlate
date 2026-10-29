@@ -138,6 +138,10 @@
     <string name="anki_marker_furigana_plain_zh">Pinyin dạng văn bản: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Câu có pinyin trên chữ Hán</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Câu có pinyin dạng văn bản</string>
+    <string name="anki_marker_furigana_yue">Việt bính trên chữ Hán</string>
+    <string name="anki_marker_furigana_plain_yue">Việt bính dạng văn bản: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Câu có Việt bính trên chữ Hán</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Câu có Việt bính dạng văn bản</string>
     <string name="anki_marker_furigana_ru">Từ có dấu trọng âm</string>
     <string name="anki_marker_furigana_plain_ru">Từ có dấu trọng âm, dạng văn bản</string>
     <string name="anki_marker_sentence_furigana_ru">Câu có dấu trọng âm ở các từ dạng từ điển</string>
@@ -286,6 +290,7 @@
     <string name="lookup_script_simplified">Giản thể</string>
     <string name="lookup_script_traditional">Phồn thể</string>
     <string name="lookup_script_hint">Từ tìm được bằng pinyin được hiện ở dạng chữ này. Chữ viết giống nhau ở cả hai dạng sẽ hiển thị theo hình chữ của dạng này khi văn bản không cho biết là dạng nào.</string>
+    <string name="lookup_script_hint_yue">Các từ tìm theo Việt bính được hiển thị bằng loại chữ này. Những chữ viết giống nhau ở cả hai loại sẽ lấy tự dạng của loại này khi văn bản không cho biết là loại nào.</string>
     <string name="lookup_fixed_script">Mọi từ theo dạng chữ này</string>
     <string name="lookup_fixed_script_hint">Văn bản ở dạng kia cũng được tra theo dạng chữ này, và từ được hiển thị theo dạng này nếu từ điển viết như vậy.</string>
     <string name="problems_title">Cần chú ý</string>
@@ -450,6 +455,7 @@
     <string name="popup_pitch_colors_hint">Từ và cách đọc mang màu của trọng âm cao độ đầu tiên, mỗi trọng âm có màu riêng: heiban xanh dương, atamadaka đỏ, nakadaka cam, odaka xanh lá, kifuku (động từ và tính từ đuôi i có chỗ hạ giọng) tím. Cần từ điển trọng âm cao độ.</string>
     <string name="popup_tone_colors">Màu thanh điệu</string>
     <string name="popup_tone_colors_hint">Âm tiết pinyin mang màu của thanh điệu: thanh 1 đỏ, thanh 2 cam, thanh 3 xanh lá, thanh 4 xanh dương, thanh nhẹ xám.</string>
+    <string name="popup_tone_colors_hint_yue">Âm tiết Việt bính mang màu của thanh điệu: thanh 1 đỏ, thanh 2 cam, thanh 3 xanh lá, thanh 4 xanh dương, thanh 5 tím, thanh 6 xanh ngọc.</string>
     <string name="popup_font_title">Phông chữ cửa sổ bật lên</string>
     <string name="popup_font_hint">Dùng cho cửa sổ bật lên và trang tìm kiếm.</string>
     <string name="popup_font_system">Phông chữ tiếng Nhật của điện thoại</string>
@@ -545,6 +551,7 @@
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>
+    <string name="popup_font_script_only_yue">Chỉ cho chữ tiếng Quảng Đông</string>
     <string name="popup_font_script_only_ko">Chỉ cho chữ tiếng Hàn</string>
     <string name="popup_font_script_only_hint_any">Các hệ chữ khác dùng phông của điện thoại. Áp dụng cho phông đã tải về hoặc đã thêm.</string>
     <string name="popup_text_weight_info_languages">Giúp chữ mảnh dễ đọc hơn. Khi bật công tắc “Chỉ cho chữ tiếng …” của một ngôn ngữ, hoặc khi dùng phông của điện thoại, chỉ các ký tự của ngôn ngữ đó đậm hơn; khi tắt, toàn bộ văn bản đều đậm hơn.\n\nĐộ đậm dùng các độ đậm có sẵn của phông. Phông chỉ có một độ đậm sẽ chuyển thẳng từ thường sang đậm, nên mức vừa trông giống thường.\n\nViền chữ vẽ một đường viền mảnh quanh mỗi chữ: dùng được với mọi phông và cộng thêm vào độ đậm.</string>

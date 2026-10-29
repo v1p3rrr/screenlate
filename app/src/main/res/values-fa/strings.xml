@@ -140,6 +140,10 @@
     <string name="anki_marker_furigana_plain_zh">پین‌یین به‌صورت متن: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">جمله با پین‌یین بالای نویسه‌ها</string>
     <string name="anki_marker_sentence_furigana_plain_zh">جمله با پین‌یین به‌صورت متن</string>
+    <string name="anki_marker_furigana_yue">یوتپینگ بالای نویسه‌ها</string>
+    <string name="anki_marker_furigana_plain_yue">یوتپینگ به‌صورت متن: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">جمله با یوتپینگ بالای نویسه‌ها</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">جمله با یوتپینگ به‌صورت متن</string>
     <string name="anki_marker_furigana_ru">واژه همراه با علامت تکیه</string>
     <string name="anki_marker_furigana_plain_ru">واژه همراه با علامت تکیه، به‌صورت متن</string>
     <string name="anki_marker_sentence_furigana_ru">جمله با علامت تکیه روی واژه‌هایی که در صورت واژه‌نامه‌ای هستند</string>
@@ -289,6 +293,7 @@
     <string name="lookup_script_simplified">ساده‌شده</string>
     <string name="lookup_script_traditional">سنتی</string>
     <string name="lookup_script_hint">واژه‌هایی که با پین‌یین پیدا می‌شوند، با این نویسه‌ها نشان داده می‌شوند. نویسه‌هایی که در هر دو خط یکسان نوشته می‌شوند، هر جا متن نشان ندهد کدام خط است، شکل‌های این خط را می‌گیرند.</string>
+    <string name="lookup_script_hint_yue">واژه‌هایی که با یوتپینگ پیدا شوند با این نویسه‌ها نشان داده می‌شوند. نویسه‌هایی که در هر دو خط یکسان نوشته می‌شوند، وقتی متن نشان ندهد کدام است، شکل این خط را می‌گیرند.</string>
     <string name="lookup_fixed_script">همه واژه‌ها با این نویسه‌ها</string>
     <string name="lookup_fixed_script_hint">متن به خط دیگر هم با این نویسه‌ها جستجو می‌شود، و هر جا واژه‌نامه واژه‌ها را این‌گونه بنویسد، با همین نویسه‌ها نشان داده می‌شوند.</string>
     <string name="problems_title">نیازمند توجه</string>
@@ -454,6 +459,7 @@
     <string name="popup_pitch_colors_hint">واژه و خوانش آن رنگ نخستین تکیه زیروبمی خود را می‌گیرند و هر تکیه رنگ خودش را: هیبان آبی، آتاماداکا قرمز، ناکاداکا نارنجی، اوداکا سبز، کیفوکو (فعل‌ها و صفت‌های نوع i با افت زیروبمی) بنفش. به یک واژه‌نامه تکیه زیروبمی نیاز دارد.</string>
     <string name="popup_tone_colors">رنگ‌های نواخت</string>
     <string name="popup_tone_colors_hint">هجاهای پین‌یین رنگ نواخت خود را می‌گیرند: اول قرمز، دوم نارنجی، سوم سبز، چهارم آبی، خنثی خاکستری.</string>
+    <string name="popup_tone_colors_hint_yue">هجاهای یوتپینگ رنگ نواخت خود را می‌گیرند: اول قرمز، دوم نارنجی، سوم سبز، چهارم آبی، پنجم بنفش، ششم فیروزه‌ای.</string>
     <string name="popup_font_title">قلم پنجره بازشو</string>
     <string name="popup_font_hint">در پنجره بازشو و صفحه جستجو استفاده می‌شود.</string>
     <string name="popup_font_system">قلم ژاپنی تلفن</string>
@@ -549,6 +555,7 @@
     <string name="popup_font_system_zh">قلم چینی تلفن</string>
     <string name="popup_font_system_ko">قلم کره‌ای تلفن</string>
     <string name="popup_font_script_only_zh">فقط برای متن چینی</string>
+    <string name="popup_font_script_only_yue">فقط برای متن کانتونی</string>
     <string name="popup_font_script_only_ko">فقط برای متن کره‌ای</string>
     <string name="popup_font_script_only_hint_any">خط‌های دیگر از قلم تلفن استفاده می‌کنند. برای قلم‌های بارگیری‌شده و افزوده‌شده اعمال می‌شود.</string>
     <string name="popup_text_weight_info_languages">خواندن متن نازک را آسان‌تر می‌کند. وقتی کلید «فقط برای متن …» یک زبان روشن است یا قلم تلفن استفاده می‌شود، فقط حروف همان زبان پررنگ‌تر می‌شوند؛ وقتی خاموش است، همه متن پررنگ‌تر می‌شود.\n\nوزن از وزن‌های خود قلم استفاده می‌کند. قلمی که فقط یک وزن دارد مستقیم از عادی به پررنگ می‌رود، بنابراین متوسط مانند عادی دیده می‌شود.\n\nضخامت حروف دور هر حرف خط نازکی می‌کشد: با هر قلمی کار می‌کند و به وزن اضافه می‌شود.</string>

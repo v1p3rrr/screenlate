@@ -16,7 +16,8 @@ import kotlinx.serialization.json.put
 /**
  * Builds a Yomitan frequency dictionary from a corpus' word counts where wordfreq has no list for the language:
  * PyThaiNLP's counts of the Thai National Corpus (`tnc_freq.txt`), one `word<TAB>count` line per word, the most frequent
- * first, as `scripts/frequency/corpus_catalog.py` checks; or a Leipzig Corpora Collection archive ([Format.LEIPZIG]).
+ * first, as `scripts/frequency/corpus_catalog.py` checks; a Leipzig Corpora Collection archive ([Format.LEIPZIG]); or
+ * rime-cantonese's weighted word list ([Format.WEIGHTS]).
  * Ranks follow the counts: 1 is the most frequent word. Tokens without a letter, or with a space (the corpus'
  * spelled-out letters "ห - ม - า"), are left out, and the spaces some tokens start with are dropped.
  */
@@ -31,15 +32,22 @@ object CorpusCountsDictionary {
          * `id<TAB>word<TAB>count` lines with the tokens as written: capitals, numbers and punctuation among them.
          */
         LEIPZIG,
+
+        /** `word<TAB>weight` lines in no order, as rime's essays give them (`essay-cantonese.txt`). */
+        WEIGHTS,
     }
 
-    /** A corpus whose counts the app builds a dictionary from. */
+    /**
+     * A corpus whose counts the app builds a dictionary from; with [otherSpellings], each word's other spellings
+     * ([LanguageSupport.frequencySpellings]) share its rank.
+     */
     class Corpus(
         val name: String,
         val author: String,
         val url: String,
         val attribution: String,
         val format: Format = Format.COUNTS,
+        val otherSpellings: Boolean = false,
     )
 
     /** The corpora by the language they are for. */
@@ -62,6 +70,16 @@ object CorpusCountsDictionary {
         "az" to leipzig("Azerbaijani", "aze_news_2020_30K", texts = "news of 2020"),
         "uz" to leipzig("Uzbek", "uzb_news_2020_30K", texts = "news of 2020"),
         "mn" to leipzig("Mongolian", "mon_news_2020_100K", texts = "news of 2020"),
+        // The list writes OpenCC's standard characters (爲, 衛), words.hk Hong Kong's (為, 衞).
+        "yue" to Corpus(
+            name = "rime-cantonese",
+            author = "rime-cantonese",
+            url = "https://github.com/rime/rime-cantonese",
+            attribution = "Word weights of rime-cantonese's essay (https://github.com/rime/rime-cantonese, " +
+                "essay-cantonese.txt), released under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).",
+            format = Format.WEIGHTS,
+            otherSpellings = true,
+        ),
     )
 
     /** The Leipzig archive [corpus] of [language]'s [texts]. */
@@ -80,13 +98,17 @@ object CorpusCountsDictionary {
         val corpus = CORPORA[language] ?: throw IOException("No corpus counts for $language")
         val locale = Locale.forLanguageTag(language)
         // Tokens without letters are dropped, so more words are read than needed.
+        val support = Language.ofDictionaries(language)?.support
         val words = source.inputStream().use { input ->
             when (corpus.format) {
                 Format.COUNTS -> words(input, size * 2)
-                Format.LEIPZIG -> leipzigWords(input, size * 2, Language.ofDictionaries(language)?.support, locale)
+                Format.LEIPZIG -> leipzigWords(input, size * 2, support, locale)
+                Format.WEIGHTS -> weightedWords(input, size * 2)
             }
         }
-        val rows = WordfreqDictionary.termMeta(words, size, locale)
+        val rows = WordfreqDictionary.termMeta(words, size, locale) { word ->
+            if (corpus.otherSpellings) support?.frequencySpellings(word).orEmpty() else emptyList()
+        }
         val ranked = rows.maxOfOrNull { it.second } ?: 0
         WordfreqDictionary.write(output, index(language, version, ranked, corpus), rows)
         return ranked
@@ -130,6 +152,24 @@ object CorpusCountsDictionary {
             }
         }
         return counts.entries.sortedByDescending { it.value }.take(limit).map { it.key }
+    }
+
+    /**
+     * The [limit] heaviest words of a weighted list ([Format.WEIGHTS]), the heaviest first and those of equal weight in
+     * the list's order; the weights of a word listed twice add up.
+     */
+    fun weightedWords(input: InputStream, limit: Int): List<String> {
+        val weights = LinkedHashMap<String, Long>()
+        input.bufferedReader().useLines { lines ->
+            for (line in lines) {
+                if (line.isBlank()) continue
+                val weight = line.substringAfter('\t', "").trim().toLongOrNull() ?: throw IOException("Not a list of word weights")
+                val word = line.substringBefore('\t').trim()
+                if (word.isEmpty() || word.any(Char::isWhitespace)) continue
+                weights[word] = (weights[word] ?: 0) + weight
+            }
+        }
+        return weights.entries.sortedByDescending { it.value }.take(limit).map { it.key }
     }
 
     /** The data of the first file of a tar stream whose path [wanted] accepts; null when there is none. */

@@ -16,6 +16,7 @@ export const SCRIPTS = {
     definitionJa: path.join(POPUP, 'definition-ja.js'),
     reading: path.join(POPUP, 'reading.js'),
     readingZh: path.join(POPUP, 'reading-zh.js'),
+    readingYue: path.join(POPUP, 'reading-yue.js'),
     readingRu: path.join(POPUP, 'reading-ru.js'),
     readingAr: path.join(POPUP, 'reading-ar.js'),
     readingFa: path.join(POPUP, 'reading-fa.js'),
@@ -50,13 +51,13 @@ export function renderPage() {
 
 /** The note builder with the renderer and the headword readings, on an empty page. */
 export function notePage() {
-    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingRu,
+    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingYue, SCRIPTS.readingRu,
         SCRIPTS.readingAr, SCRIPTS.readingFa] });
 }
 
-/** The headword readings with the Chinese, Russian, Arabic and Persian rules, on an empty page. */
+/** The headword readings with the Chinese, Cantonese, Russian, Arabic and Persian rules, on an empty page. */
 export function readingPage() {
-    return loadPage({ scripts: [SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingRu, SCRIPTS.readingAr, SCRIPTS.readingFa] });
+    return loadPage({ scripts: [SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingYue, SCRIPTS.readingRu, SCRIPTS.readingAr, SCRIPTS.readingFa] });
 }
 
 /** The definition copier with the renderer and the Japanese rules, on an empty page. */
@@ -68,5 +69,5 @@ export function definitionPage() {
 export function popupPage() {
     const html = readFileSync(path.join(POPUP, 'popup.html'), 'utf8').replace(/<script[^>]*><\/script>\s*/g, '');
     return loadPage({ html, scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.definition, SCRIPTS.definitionJa,
-        SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingRu, SCRIPTS.readingAr, SCRIPTS.readingFa, SCRIPTS.popup] });
+        SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingYue, SCRIPTS.readingRu, SCRIPTS.readingAr, SCRIPTS.readingFa, SCRIPTS.popup] });
 }

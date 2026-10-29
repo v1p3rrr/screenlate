@@ -80,6 +80,16 @@ class FlagsTest {
     }
 
     @Test
+    fun `cantonese has hong kong's flag, apart from chinese`() {
+        val quick = listOf(Language.CHINESE, Language.CANTONESE)
+        val state = LanguageProfilesState(quick, Language.CANTONESE)
+        val flags = quick.map { Flags.of(state, it) }
+        assertThat(flags[1]).isEqualTo(Flags.drawable("hk"))
+        assertThat(Flags.drawable("hk")).isNotNull()
+        assertThat(Flags.repeated(flags)).isEmpty()
+    }
+
+    @Test
     fun `telugu shares india's flag with tamil and hindi`() {
         val quick = listOf(Language.TAMIL, Language.TELUGU, Language.JAPANESE, Language.HINDI)
         val state = LanguageProfilesState(quick, Language.TELUGU)

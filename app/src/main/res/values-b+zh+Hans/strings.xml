@@ -138,6 +138,10 @@
     <string name="anki_marker_furigana_plain_zh">拼音（文本）：你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">汉字上方标注拼音的句子</string>
     <string name="anki_marker_sentence_furigana_plain_zh">以文本标注拼音的句子</string>
+    <string name="anki_marker_furigana_yue">汉字上方标注粤拼</string>
+    <string name="anki_marker_furigana_plain_yue">粤拼（文本）：你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">汉字上方标注粤拼的句子</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">以文本标注粤拼的句子</string>
     <string name="anki_marker_furigana_ru">带重音符号的单词</string>
     <string name="anki_marker_furigana_plain_ru">带重音符号的单词（文本）</string>
     <string name="anki_marker_sentence_furigana_ru">原形单词带重音符号的句子</string>
@@ -286,6 +290,7 @@
     <string name="lookup_script_simplified">简体</string>
     <string name="lookup_script_traditional">繁体</string>
     <string name="lookup_script_hint">按拼音找到的词以此写法显示。两种写法相同的字，在文本看不出是哪一种时，按此写法的字形显示。</string>
+    <string name="lookup_script_hint_yue">按粤拼找到的词以此写法显示。两种写法相同的字，在文本看不出是哪一种时，按此写法的字形显示。</string>
     <string name="lookup_fixed_script">所有词都用此写法</string>
     <string name="lookup_fixed_script_hint">另一种写法的文本也会用此写法查询；词典收有此写法时，词语以此写法显示。</string>
     <string name="problems_title">需要处理</string>
@@ -450,6 +455,7 @@
     <string name="popup_pitch_colors_hint">单词和读音显示为第一个音调的颜色，每个音调显示为其类型的颜色：平板型蓝色，头高型红色，中高型橙色，尾高型绿色，起伏型（有降调的动词和い形容词）紫色。需要音调词典。</string>
     <string name="popup_tone_colors">声调颜色</string>
     <string name="popup_tone_colors_hint">拼音音节按声调着色：第一声红色，第二声橙色，第三声绿色，第四声蓝色，轻声灰色。</string>
+    <string name="popup_tone_colors_hint_yue">粤拼音节按声调着色：第一声红色，第二声橙色，第三声绿色，第四声蓝色，第五声紫色，第六声青色。</string>
     <string name="popup_font_title">弹窗字体</string>
     <string name="popup_font_hint">用于弹窗和搜索页面。</string>
     <string name="popup_font_system">手机自带的日文字体</string>
@@ -545,6 +551,7 @@
     <string name="popup_font_system_zh">手机自带的中文字体</string>
     <string name="popup_font_system_ko">手机自带的韩文字体</string>
     <string name="popup_font_script_only_zh">仅用于中文文字</string>
+    <string name="popup_font_script_only_yue">仅用于粤语文字</string>
     <string name="popup_font_script_only_ko">仅用于韩文文字</string>
     <string name="popup_font_script_only_hint_any">其他书写系统使用手机字体。适用于下载或添加的字体。</string>
     <string name="popup_text_weight_info_languages">让纤细的文字更易读。某种语言开启“仅用于…文字”或使用手机字体时，只有该语言的字符变粗；关闭时，所有文字都会变粗。\n\n粗细使用字体自带的字重。只有一种字重的字体会从常规直接变为粗体，因此“中等”看起来与常规相同。\n\n文字描边会在每个字周围画一圈细轮廓：适用于任何字体，并叠加在粗细之上。</string>

@@ -50,6 +50,7 @@
     <string name="overlay_kanji_onyomi">음독</string>
     <string name="overlay_kanji_kunyomi">훈독</string>
     <string name="overlay_character_pinyin">병음</string>
+    <string name="overlay_character_jyutping">월어 병음</string>
     <string name="overlay_character_korean_reading">한자음</string>
     <string name="overlay_kanji_strokes">획수</string>
     <string name="overlay_kanji_grade">학년</string>

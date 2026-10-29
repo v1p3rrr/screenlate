@@ -194,6 +194,9 @@ interface LanguageSupport {
     /** BCP 47 tag of the text-to-speech voice: the language's code unless the voices know it by another. */
     val speechTag: String get() = language.code
 
+    /** Tags of voices to try in turn when the phone has none for [speechTag]: zh-HK for Cantonese. */
+    val otherSpeechTags: List<String> get() = emptyList()
+
     /**
      * What stands for the language where its flag or glyph cannot (e-ink, a glyph shaped like another quick language's):
      * its code in capitals, in Cyrillic for a Cyrillic-script language (РУ).
@@ -631,6 +634,7 @@ val Language.support: LanguageSupport
         Language.TAMIL -> TamilSupport
         Language.TELUGU -> TeluguSupport
         Language.KANNADA -> KannadaSupport
+        Language.CANTONESE -> CantoneseSupport
     }
 
 /**

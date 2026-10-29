@@ -53,6 +53,7 @@
     <string name="overlay_kanji_onyomi">On</string>
     <string name="overlay_kanji_kunyomi">Kun</string>
     <string name="overlay_character_pinyin">Pinyin</string>
+    <string name="overlay_character_jyutping">Jyutping</string>
     <string name="overlay_character_korean_reading">Korean reading</string>
     <string name="overlay_kanji_strokes">Strokes</string>
     <string name="overlay_kanji_grade">Grade</string>

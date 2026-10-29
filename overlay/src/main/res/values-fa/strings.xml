@@ -50,6 +50,7 @@
     <string name="overlay_kanji_onyomi">اون</string>
     <string name="overlay_kanji_kunyomi">کون</string>
     <string name="overlay_character_pinyin">پین‌یین</string>
+    <string name="overlay_character_jyutping">یوتپینگ</string>
     <string name="overlay_character_korean_reading">خوانش کره‌ای</string>
     <string name="overlay_kanji_strokes">خطوط</string>
     <string name="overlay_kanji_grade">پایه</string>

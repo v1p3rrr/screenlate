@@ -95,6 +95,14 @@ class BubbleGlyphTest {
     }
 
     @Test
+    fun `cantonese shows its own character beside chinese`() {
+        val quick = listOf(Language.CHINESE, Language.CANTONESE, Language.JAPANESE)
+        assertThat(bubbleGlyph(Language.CANTONESE, quick)).isEqualTo("粵")
+        assertThat(bubbleGlyph(Language.CHINESE, quick)).isEqualTo(Language.CHINESE.support.glyph)
+        assertThat(Language.CANTONESE.support.codeLabel).isEqualTo("YUE")
+    }
+
+    @Test
     fun `a letter with marks counts as the letter without them`() {
         val quick = listOf(Language.CZECH, Language.WELSH)
         assertThat(bubbleGlyph(Language.CZECH, quick)).isEqualTo("CS")

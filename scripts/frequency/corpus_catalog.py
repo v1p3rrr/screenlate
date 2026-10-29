@@ -5,7 +5,8 @@
 For languages wordfreq has no list for. Each entry points at one count list at a pinned commit, or at a Leipzig
 Corpora Collection archive (a fixed file), with its size and SHA-256; the app downloads it, checks it and builds the
 dictionary as CorpusCountsDictionary does. A list is `word<TAB>count` lines, the most frequent first; an archive holds
-`<corpus>-words.txt` with `id<TAB>word<TAB>count` lines somewhere in it; this script checks both. Entries of the
+`<corpus>-words.txt` with `id<TAB>word<TAB>count` lines somewhere in it; rime-cantonese's essay is `word<TAB>weight`
+lines in no order; this script checks each. Entries of the
 corpora's templates in dictionaries-v2.json are replaced and placed after the wordfreq entries; the template texts are
 kept as they are.
 """
@@ -18,6 +19,7 @@ import tarfile
 import urllib.request
 
 PYTHAINLP_COMMIT = "10c1e82db675344140ef514821bf3a40f9601c2b"
+RIME_CANTONESE_COMMIT = "259f0e48bba840c3a2e0d117539e96937f3d89bc"
 
 # Per language: the template of its texts, the title CorpusCountsDictionary gives the built dictionary, the list's
 # address and file name, its version (the date of the commit that last changed the list), license and homepage.
@@ -61,6 +63,16 @@ CORPORA["et"] = leipzig("est_news_2020_100K", "et", version="2020")
 CORPORA["az"] = leipzig("aze_news_2020_30K", "az", version="2020")
 CORPORA["uz"] = leipzig("uzb_news_2020_30K", "uz", version="2020")
 CORPORA["mn"] = leipzig("mon_news_2020_100K", "mn", version="2020")
+CORPORA["yue"] = {
+    "template": "rime-cantonese",
+    "title": "rime-cantonese (yue)",
+    "url": f"https://raw.githubusercontent.com/rime/rime-cantonese/{RIME_CANTONESE_COMMIT}/essay-cantonese.txt",
+    "file": "essay-cantonese.txt",
+    "format": "weights",
+    "version": "2026-08-13",
+    "license": "CC BY 4.0",
+    "homepage": "https://github.com/rime/rime-cantonese",
+}
 
 BUILD = "corpus-counts"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -84,6 +96,8 @@ def check(data, format="counts"):
     """The number of words [data] lists; raises ValueError unless it is a list of the [format]."""
     if format == "leipzig":
         return check_leipzig(data)
+    if format == "weights":
+        return check_weights(data)
     return check_counts(data)
 
 
@@ -112,6 +126,16 @@ def check_counts(data):
         if previous is not None and int(count) > previous:
             raise ValueError(f"line {number} is not sorted by count")
         previous = int(count)
+    return len(lines)
+
+
+def check_weights(data):
+    """The number of lines of [data]; raises ValueError unless every line is a word, a tab and a weight, in any order."""
+    lines = data.decode("utf-8").splitlines()
+    for number, line in enumerate(lines, 1):
+        word, tab, weight = line.partition("\t")
+        if not tab or not word.strip() or not weight.strip().isdigit():
+            raise ValueError(f"line {number} is not a word weight")
     return len(lines)
 
 

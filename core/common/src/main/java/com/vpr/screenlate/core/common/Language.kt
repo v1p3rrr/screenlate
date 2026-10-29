@@ -7,7 +7,8 @@ import java.util.Locale
  * Source language of the text being looked up. Every layer (OCR, lookup, rendering) takes it as a parameter. A
  * language is listed once it has a support class (`core.common.language.support`).
  *
- * @property code the language's own ISO 639-1 code: settings, routes, backups and recognition models go by it.
+ * @property code the language's own ISO 639-1 code, or its ISO 639-3 code where it has none (yue): settings, routes,
+ *   backups and recognition models go by it.
  * @property dictionaryCode the language's code in dictionaries, Yomitan and wordfreq: languages that read the same
  * dictionaries share it (Croatian and Serbian read the Serbo-Croatian ones, sh).
  */
@@ -73,6 +74,7 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     TAMIL("ta"),
     TELUGU("te"),
     KANNADA("kn"),
+    CANTONESE("yue"),
     ;
 
     companion object {

@@ -545,20 +545,20 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Filipino and Bengali have names of their own, only Filipino and Norwegian another voice tag`() {
+    fun `only Filipino and Bengali have names of their own, only Filipino, Norwegian and Cantonese another voice tag`() {
         val systemName = { support: LanguageSupport ->
             Locale.forLanguageTag(support.language.code).getDisplayLanguage(Locale.ENGLISH)
         }
         // Java says Bangla; Wiktionary and the translators say Bengali.
         assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO, Language.BENGALI)
-        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO, Language.NORWEGIAN)
+        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO, Language.NORWEGIAN, Language.CANTONESE)
     }
 
     @Test
-    fun `only Croatian and Serbian share their dictionaries and have other recordings, Norwegian more recording items, these three other locale codes`() {
+    fun `only Croatian and Serbian share their dictionaries, these and Cantonese have other recordings, Norwegian more recording items`() {
         assertThat(all.where { it.language.dictionaryCode != it.language.code }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.recordings("kuća", "") != listOf(RecordingTitle(it.language.dictionaryCode, "kuća")) })
-            .containsExactly(Language.CROATIAN, Language.SERBIAN)
+            .containsExactly(Language.CROATIAN, Language.SERBIAN, Language.CANTONESE)
         assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) }).containsExactly(Language.CROATIAN, Language.NORWEGIAN)
         assertThat(all.where { it.linguaLibreTitle("кућа") != "кућа" }).containsExactly(Language.SERBIAN)
         assertThat(all.where { it.translationTag("Kuća je velika.") != null }).containsExactly(Language.SERBIAN)
@@ -636,14 +636,14 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Chinese rewrites readings, searches by them and has two scripts`() {
+    fun `only Chinese rewrites readings, Chinese and Cantonese search by them and have two scripts`() {
         assertThat(all.where { it.displayReading("xíng (xing²)") != "xíng (xing²)" }).containsExactly(Language.CHINESE)
-        assertThat(all.where { it.normalizeReading("nǐ hǎo") != "nǐ hǎo" }).containsExactly(Language.CHINESE)
-        assertThat(all.where { it.readingSearch }).containsExactly(Language.CHINESE)
-        assertThat(all.where { it.readingKey("nihao") != null }).containsExactly(Language.CHINESE)
-        assertThat(all.where { it.scriptOf("图书馆") != null }).containsExactly(Language.CHINESE)
+        assertThat(all.where { it.normalizeReading("nǐ hǎo") != "nǐ hǎo" }).containsExactly(Language.CHINESE, Language.CANTONESE)
+        assertThat(all.where { it.readingSearch }).containsExactly(Language.CHINESE, Language.CANTONESE)
+        assertThat(all.where { it.readingKey("nihao") != null }).containsExactly(Language.CHINESE, Language.CANTONESE)
+        assertThat(all.where { it.scriptOf("图书馆") != null }).containsExactly(Language.CHINESE, Language.CANTONESE)
         assertThat(all.where { it.inScript(MappedText.identity("图书馆"), ChineseScripts.TRADITIONAL).isNotEmpty() })
-            .containsExactly(Language.CHINESE)
+            .containsExactly(Language.CHINESE, Language.CANTONESE)
         // A reading in parentheses that is no numbered pinyin stays.
         assertThat(ChineseSupport.displayReading("ok (formal)")).isEqualTo("ok (formal)")
     }
@@ -787,9 +787,9 @@ class LanguageRulesIsolationTest {
     @Test
     fun `scripts written without spaces shorten the text by letters`() {
         assertThat(all.where { it.searchResolution == SearchResolution.LETTER })
-            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN, Language.THAI, Language.KHMER)
+            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN, Language.THAI, Language.KHMER, Language.CANTONESE)
         assertThat(all.where { it.wordSeparator.isEmpty() })
-            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.THAI, Language.KHMER)
+            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.THAI, Language.KHMER, Language.CANTONESE)
     }
 
     @Test

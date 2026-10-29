@@ -254,6 +254,16 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `cantonese has the hong kong fonts, offered for cantonese only`() {
+        val cantonese = fonts.filter { Language.CANTONESE.code in it.languages }
+        assertThat(cantonese.map { it.family }).containsExactly("Noto Sans HK", "Noto Serif HK")
+        for (font in cantonese) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.CANTONESE)
+        }
+        assertThat(fonts.filter { it.isOfferedFor(Language.CANTONESE) }).containsExactlyElementsIn(cantonese)
+    }
+
+    @Test
     fun `korean has gothic and myeongjo fonts`() {
         val korean = fonts.filter { Language.KOREAN.code in it.languages }.map { it.family }
         assertThat(korean).containsExactly("Noto Sans KR", "Noto Serif KR", "Nanum Gothic", "Nanum Myeongjo")

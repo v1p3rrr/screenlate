@@ -142,6 +142,10 @@
     <string name="anki_marker_furigana_plain_zh">Pinyin como texto: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Frase com pinyin sobre os caracteres</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Frase com pinyin como texto</string>
+    <string name="anki_marker_furigana_yue">Jyutping sobre os caracteres</string>
+    <string name="anki_marker_furigana_plain_yue">Jyutping como texto: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Frase com jyutping sobre os caracteres</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Frase com jyutping como texto</string>
     <string name="anki_marker_furigana_ru">Palavra com o acento tônico marcado</string>
     <string name="anki_marker_furigana_plain_ru">Palavra com o acento tônico marcado, como texto</string>
     <string name="anki_marker_sentence_furigana_ru">Frase com o acento tônico marcado nas palavras na forma de dicionário</string>
@@ -292,6 +296,7 @@
     <string name="lookup_script_simplified">Simplificados</string>
     <string name="lookup_script_traditional">Tradicionais</string>
     <string name="lookup_script_hint">As palavras encontradas pelo pinyin são mostradas nestes caracteres. Caracteres escritos da mesma forma nas duas escritas assumem as formas desta quando o texto não mostra qual é.</string>
+    <string name="lookup_script_hint_yue">As palavras encontradas pelo jyutping aparecem nestes caracteres. Os caracteres escritos da mesma forma nas duas escritas assumem as formas desta quando o texto não mostra qual é.</string>
     <string name="lookup_fixed_script">Todas as palavras nestes caracteres</string>
     <string name="lookup_fixed_script_hint">O texto na outra escrita também é pesquisado nestes caracteres, e as palavras são mostradas neles se um dicionário as escreve assim.</string>
     <string name="problems_title">Requer atenção</string>
@@ -458,6 +463,7 @@
     <string name="popup_pitch_colors_hint">A palavra e a leitura ficam com a cor do primeiro acento tonal, e cada acento com a sua: heiban azul, atamadaka vermelho, nakadaka laranja, odaka verde, kifuku (verbos e adjetivos -i com descida) roxo. Requer um dicionário de acento tonal.</string>
     <string name="popup_tone_colors">Cores dos tons</string>
     <string name="popup_tone_colors_hint">As sílabas do pinyin assumem a cor do seu tom: primeiro vermelho, segundo laranja, terceiro verde, quarto azul, neutro cinza.</string>
+    <string name="popup_tone_colors_hint_yue">As sílabas do jyutping assumem a cor do seu tom: primeiro vermelho, segundo laranja, terceiro verde, quarto azul, quinto roxo, sexto turquesa.</string>
     <string name="popup_font_title">Fonte do pop-up</string>
     <string name="popup_font_hint">Usada pelo pop-up e pela página de pesquisa.</string>
     <string name="popup_font_system">Fonte japonesa do celular</string>
@@ -553,6 +559,7 @@
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
     <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>
+    <string name="popup_font_script_only_yue">Só para texto em cantonês</string>
     <string name="popup_font_script_only_ko">Só para texto em coreano</string>
     <string name="popup_font_script_only_hint_any">As outras escritas usam a fonte do celular. Vale para fontes baixadas e adicionadas.</string>
     <string name="popup_text_weight_info_languages">Deixa o texto fino mais fácil de ler. Com “Só para texto em …” ativado em um idioma, ou com a fonte do celular, só os caracteres desse idioma ficam mais grossos; com ele desativado, todo o texto.\n\nO peso usa os pesos da própria fonte. Uma fonte com um só peso passa direto de normal para negrito, então médio fica igual a normal.\n\nA espessura das letras desenha um contorno fino em volta de cada letra: funciona com qualquer fonte e se soma ao peso.</string>

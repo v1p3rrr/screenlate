@@ -39,6 +39,11 @@
     --tone-3-color: var(--tone-3-default);
     --tone-4-color: var(--tone-4-default);
     --tone-5-color: var(--tone-5-default);
+    /* Cantonese tones 5 and 6 (Jyutping); its tones 1 to 4 take Chinese's colors. */
+    --tone-yue-5-default: #8e24aa;
+    --tone-yue-6-default: #00838f;
+    --tone-yue-5-color: var(--tone-yue-5-default);
+    --tone-yue-6-color: var(--tone-yue-6-default);
     --matched-bg: rgba(124, 92, 255, 0.18);
     --border: rgba(124, 92, 255, 0.55);
     --divider: rgba(0, 0, 0, 0.08);
@@ -90,6 +95,8 @@
     --tone-3-default: #81d68a;
     --tone-4-default: #82b1ff;
     --tone-5-default: #a59eb0;
+    --tone-yue-5-default: #ce93d8;
+    --tone-yue-6-default: #80deea;
     --matched-bg: rgba(179, 161, 255, 0.25);
     --border: rgba(179, 161, 255, 0.5);
     --divider: rgba(255, 255, 255, 0.1);
@@ -706,6 +713,14 @@ button.frequency {
 
 :root[data-pronunciation-colors="true"] [data-tone="5"] {
     color: var(--tone-5-color);
+}
+
+:root[data-pronunciation-colors="true"] :lang(yue) [data-tone="5"] {
+    color: var(--tone-yue-5-color);
+}
+
+:root[data-pronunciation-colors="true"] :lang(yue) [data-tone="6"] {
+    color: var(--tone-yue-6-color);
 }
 
 .dictionary {

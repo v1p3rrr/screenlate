@@ -602,6 +602,14 @@ class SentenceTest {
     }
 
     @Test
+    fun cantoneseSentenceEndsAtChineseTerminatorsAndKeepsQuotedSpeech() {
+        val speech = "佢話：「我走先喇。」跟住就走咗。聽日見！"
+        assertThat(extract(speech, "跟住", Language.CANTONESE).text).isEqualTo("佢話：「我走先喇。」跟住就走咗。")
+        assertThat(extract(speech, "聽日", Language.CANTONESE).text).isEqualTo("聽日見！")
+        assertThat(extract("你食咗飯未？我食咗喇。", "食咗喇", Language.CANTONESE).text).isEqualTo("我食咗喇。")
+    }
+
+    @Test
     fun koreanSentenceEndsAtSpacedPeriodsButKeepsDecimalsAndQuotes() {
         val paragraph = "나는 학교에 갔다. 그리고 공부했다! 내일은?"
         assertThat(extract(paragraph, "공부", Language.KOREAN)).isEqualTo(Sentence("그리고 ", "공부", "했다!"))

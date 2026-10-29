@@ -54,6 +54,47 @@ test('a language without rules has no segments', () => {
     assert.equal(HeadwordReading.segments('', '猫', 'ねこ'), null);
 });
 
+const jyutping = reading => Array.from(HeadwordReading.syllables('yue', reading) ?? [], part => part.tone ? `${part.text}|${part.tone}` : part.text);
+const cantonese = (expression, reading, lang = 'yue-HK') => Array.from(HeadwordReading.segments(lang, expression, reading),
+    ([text, parts]) => parts ? `${text}[${parts.map(part => part.text).join('')}]` : text);
+
+test('jyutping splits into syllables with tones 1 to 6, spaced or not', () => {
+    assert.deepEqual(jyutping('nei5 hou2'), ['nei5|5', ' ', 'hou2|2']);
+    assert.deepEqual(jyutping('ngo5dei6'), ['ngo5|5', 'dei6|6']);
+    assert.deepEqual(jyutping('gwong2 dung1 waa2'), ['gwong2|2', ' ', 'dung1|1', ' ', 'waa2|2']);
+    // Syllabic nasals and the finals oe, eo and yu.
+    assert.deepEqual(jyutping('m4 goi1'), ['m4|4', ' ', 'goi1|1']);
+    assert.deepEqual(jyutping('ng5 zoek3 seoi2 jyu4'), ['ng5|5', ' ', 'zoek3|3', ' ', 'seoi2|2', ' ', 'jyu4|4']);
+});
+
+test('text that is no jyutping with tones gives nothing', () => {
+    assert.equal(HeadwordReading.syllables('yue', 'nei hou'), null);
+    assert.equal(HeadwordReading.syllables('yue', 'nei7'), null);
+    assert.equal(HeadwordReading.syllables('yue', 'nǐ hǎo'), null);
+    assert.equal(HeadwordReading.syllables('yue', 'ok1 k'), null);
+});
+
+test('each cantonese character gets its syllable, in either script', () => {
+    assert.deepEqual(cantonese('你好', 'nei5 hou2'), ['你[nei5]', '好[hou2]']);
+    assert.deepEqual(cantonese('我哋', 'ngo5dei6'), ['我[ngo5]', '哋[dei6]']);
+    assert.deepEqual(cantonese('广东话', 'gwong2 dung1 waa2', 'yue-Hans'), ['广[gwong2]', '东[dung1]', '话[waa2]']);
+});
+
+test('a cantonese word with letters or a reading that does not match gets one ruby', () => {
+    assert.deepEqual(cantonese('OK啦', 'ou1 kei1 laa1'), ['OK啦[ou1 kei1 laa1]']);
+    assert.deepEqual(cantonese('你好', 'nei5'), ['你好[nei5]']);
+    // A reading that is no jyutping still goes over the word as written; one without letters is left out.
+    assert.deepEqual(cantonese('卡拉OK', 'kaa1 laai1 ou kei'), ['卡拉OK[kaa1 laai1 ou kei]']);
+    assert.deepEqual(cantonese('你好', '你好'), ['你好']);
+    assert.deepEqual(cantonese('你好', ''), ['你好']);
+});
+
+test('cantonese and chinese rules stay with their languages', () => {
+    assert.deepEqual(Array.from(HeadwordReading.syllables('zh-Hant', 'nei5 hou2'), part => part.tone), [5, null, 5, null]);
+    assert.deepEqual(cantonese('你好', 'nǐ hǎo'), ['你好[nǐ hǎo]']);
+    for (const lang of ['ja', 'ko', 'vi']) assert.equal(HeadwordReading.syllables(lang, 'nei5 hou2'), null, lang);
+});
+
 const russian = (expression, reading) => Array.from(HeadwordReading.segments('ru', expression, reading),
     ([text, parts]) => parts ? `${text}[${parts.map(part => part.text).join('')}]` : text);
 

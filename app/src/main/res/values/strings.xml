@@ -144,6 +144,10 @@
     <string name="anki_marker_furigana_plain_zh">Pinyin as text: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Sentence with pinyin over the characters</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Sentence with pinyin as text</string>
+    <string name="anki_marker_furigana_yue">Jyutping over the characters</string>
+    <string name="anki_marker_furigana_plain_yue">Jyutping as text: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Sentence with Jyutping over the characters</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Sentence with Jyutping as text</string>
     <string name="anki_marker_furigana_ru">Word with its stress mark</string>
     <string name="anki_marker_furigana_plain_ru">Word with its stress mark, as text</string>
     <string name="anki_marker_sentence_furigana_ru">Sentence with stress marks on words in dictionary form</string>
@@ -293,6 +297,7 @@
     <string name="lookup_script_simplified">Simplified</string>
     <string name="lookup_script_traditional">Traditional</string>
     <string name="lookup_script_hint">Words found by pinyin are shown in these characters. Characters written alike in both scripts take this script’s shapes where the text does not show which one it is.</string>
+    <string name="lookup_script_hint_yue">Words found by Jyutping are shown in these characters. Characters written alike in both scripts take this script’s shapes where the text does not show which one it is.</string>
     <string name="lookup_fixed_script">All words in these characters</string>
     <string name="lookup_fixed_script_hint">Text in the other script is also looked up in these characters, and words are shown in them where a dictionary spells them so.</string>
     <string name="problems_title">Needs attention</string>
@@ -458,6 +463,7 @@
     <string name="popup_pitch_colors_hint">The word and its reading take the color of its first pitch accent, and each accent its own: heiban blue, atamadaka red, nakadaka orange, odaka green, kifuku (verbs and i-adjectives with a downstep) purple. Needs a pitch accent dictionary.</string>
     <string name="popup_tone_colors">Tone colors</string>
     <string name="popup_tone_colors_hint">Pinyin syllables take the color of their tone: first red, second orange, third green, fourth blue, neutral grey.</string>
+    <string name="popup_tone_colors_hint_yue">Jyutping syllables take the color of their tone: first red, second orange, third green, fourth blue, fifth purple, sixth teal.</string>
     <string name="popup_font_title">Popup font</string>
     <string name="popup_font_hint">Used by the popup and the search page.</string>
     <string name="popup_font_system">Phone\'s Japanese font</string>
@@ -553,6 +559,7 @@
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>
+    <string name="popup_font_script_only_yue">Only for Cantonese text</string>
     <string name="popup_font_script_only_ko">Only for Korean text</string>
     <string name="popup_font_script_only_hint_any">Other scripts use the phone’s font. Applies to downloaded and added fonts.</string>
     <string name="popup_text_weight_info_languages">Makes thin text easier to read. With a language\'s “Only for … text” switch on, or with the phone\'s font, only that language\'s letters get heavier; with it off, all text does.\n\nThe weight uses the font\'s own weights. A font with only one weight goes from normal straight to bold, so medium looks like normal.\n\nLetter thickness draws a thin outline around each letter: it works with any font and adds to the weight.</string>

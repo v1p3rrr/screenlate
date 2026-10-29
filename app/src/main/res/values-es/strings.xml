@@ -142,6 +142,10 @@
     <string name="anki_marker_furigana_plain_zh">Pinyin como texto: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Frase con pinyin sobre los caracteres</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Frase con pinyin como texto</string>
+    <string name="anki_marker_furigana_yue">Jyutping sobre los caracteres</string>
+    <string name="anki_marker_furigana_plain_yue">Jyutping como texto: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Frase con jyutping sobre los caracteres</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Frase con jyutping como texto</string>
     <string name="anki_marker_furigana_ru">Palabra con el acento marcado</string>
     <string name="anki_marker_furigana_plain_ru">Palabra con el acento marcado, como texto</string>
     <string name="anki_marker_sentence_furigana_ru">Frase con el acento marcado en las palabras en forma de diccionario</string>
@@ -292,6 +296,7 @@
     <string name="lookup_script_simplified">Simplificados</string>
     <string name="lookup_script_traditional">Tradicionales</string>
     <string name="lookup_script_hint">Las palabras halladas por pinyin se muestran en estos caracteres. Los caracteres que se escriben igual en ambas escrituras toman las formas de esta cuando el texto no muestra cuál es.</string>
+    <string name="lookup_script_hint_yue">Las palabras encontradas por jyutping se muestran en estos caracteres. Los caracteres que se escriben igual en ambos sistemas toman las formas de este cuando el texto no muestra cuál es.</string>
     <string name="lookup_fixed_script">Todas las palabras en estos caracteres</string>
     <string name="lookup_fixed_script_hint">El texto en la otra escritura también se busca en estos caracteres, y las palabras se muestran en ellos si un diccionario las escribe así.</string>
     <string name="problems_title">Requiere atención</string>
@@ -458,6 +463,7 @@
     <string name="popup_pitch_colors_hint">La palabra y su lectura toman el color de su primer acento tonal, y cada acento el suyo: heiban azul, atamadaka rojo, nakadaka naranja, odaka verde, kifuku (verbos y adjetivos -i con descenso) morado. Requiere un diccionario de acento tonal.</string>
     <string name="popup_tone_colors">Colores de los tonos</string>
     <string name="popup_tone_colors_hint">Las sílabas del pinyin toman el color de su tono: primero rojo, segundo naranja, tercero verde, cuarto azul, neutro gris.</string>
+    <string name="popup_tone_colors_hint_yue">Las sílabas del jyutping toman el color de su tono: primero rojo, segundo naranja, tercero verde, cuarto azul, quinto morado, sexto turquesa.</string>
     <string name="popup_font_title">Fuente de la ventana emergente</string>
     <string name="popup_font_hint">La usan la ventana emergente y la página de búsqueda.</string>
     <string name="popup_font_system">Fuente japonesa del teléfono</string>
@@ -553,6 +559,7 @@
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto en chino</string>
+    <string name="popup_font_script_only_yue">Solo para texto en cantonés</string>
     <string name="popup_font_script_only_ko">Solo para texto en coreano</string>
     <string name="popup_font_script_only_hint_any">Las demás escrituras usan la fuente del teléfono. Se aplica a las fuentes descargadas y añadidas.</string>
     <string name="popup_text_weight_info_languages">Hace más legible el texto fino. Con «Solo para texto en …» activado en un idioma, o con la fuente del teléfono, solo los caracteres de ese idioma se vuelven más gruesos; con el ajuste desactivado, todo el texto.\n\nEl peso usa los pesos propios de la fuente. Una fuente con un solo peso pasa de normal directamente a negrita, así que medio se ve igual que normal.\n\nEl grosor de las letras dibuja un contorno fino alrededor de cada letra: funciona con cualquier fuente y se suma al peso.</string>

@@ -145,6 +145,10 @@
     <string name="anki_marker_furigana_plain_zh">Пиньинь текстом: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Предложение с пиньинем над иероглифами</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Предложение с пиньинем текстом</string>
+    <string name="anki_marker_furigana_yue">Ютпхин над иероглифами</string>
+    <string name="anki_marker_furigana_plain_yue">Ютпхин текстом: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Предложение с ютпхином над иероглифами</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Предложение с ютпхином текстом</string>
     <string name="anki_marker_furigana_ru">Слово с ударением</string>
     <string name="anki_marker_furigana_plain_ru">Слово с ударением, текстом</string>
     <string name="anki_marker_sentence_furigana_ru">Предложение с ударениями в словах начальной формы</string>
@@ -296,6 +300,7 @@
     <string name="lookup_script_simplified">Упрощённые</string>
     <string name="lookup_script_traditional">Традиционные</string>
     <string name="lookup_script_hint">Слова, найденные по пиньиню, показываются в этих иероглифах. Иероглифы, которые одинаковы в обеих системах, получают начертание выбранной системы, если по тексту не видно, какая из них используется.</string>
+    <string name="lookup_script_hint_yue">Слова, найденные по ютпхину, показываются в этих иероглифах. Иероглифы, которые одинаковы в обеих системах, получают начертание выбранной системы, если по тексту не видно, какая из них используется.</string>
     <string name="lookup_fixed_script">Все слова в этих иероглифах</string>
     <string name="lookup_fixed_script_hint">Текст в другой системе ищется и в этих иероглифах, а слова показываются в них, если словарь их так пишет.</string>
     <string name="problems_title">Требует внимания</string>
@@ -463,6 +468,7 @@
     <string name="popup_pitch_colors_hint">Слово и чтение окрашиваются в цвет первого питч-акцента, а каждый акцент — в свой: хэйбан синий, атамадака красный, накадака оранжевый, одака зелёный, кифуку (глаголы и i-прилагательные с понижением) фиолетовый. Нужен словарь питч-акцента.</string>
     <string name="popup_tone_colors">Цвета тонов</string>
     <string name="popup_tone_colors_hint">Слоги пиньиня окрашиваются по тону: первый красный, второй оранжевый, третий зелёный, четвёртый синий, нейтральный серый.</string>
+    <string name="popup_tone_colors_hint_yue">Слоги ютпхина окрашиваются по тону: первый красный, второй оранжевый, третий зелёный, четвёртый синий, пятый фиолетовый, шестой бирюзовый.</string>
     <string name="popup_font_title">Шрифт попапа</string>
     <string name="popup_font_hint">Используется в попапе и на странице поиска.</string>
     <string name="popup_font_system">Японский шрифт телефона</string>
@@ -558,6 +564,7 @@
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>
+    <string name="popup_font_script_only_yue">Только для кантонского текста</string>
     <string name="popup_font_script_only_ko">Только для корейского текста</string>
     <string name="popup_font_script_only_hint_any">Для других письменностей используется шрифт телефона. Относится к скачанным и добавленным шрифтам.</string>
     <string name="popup_text_weight_info_languages">Делает тонкий текст разборчивее. Когда у языка включено «Только для … текста» или выбран шрифт телефона, толще становятся только символы этого языка; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. Шрифт с одним начертанием переходит с обычной жирности сразу на жирную, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>

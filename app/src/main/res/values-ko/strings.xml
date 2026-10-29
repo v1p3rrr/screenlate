@@ -138,6 +138,10 @@
     <string name="anki_marker_furigana_plain_zh">병음(텍스트): 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">한자 위에 병음을 단 문장</string>
     <string name="anki_marker_sentence_furigana_plain_zh">병음을 텍스트로 단 문장</string>
+    <string name="anki_marker_furigana_yue">한자 위에 월어 병음</string>
+    <string name="anki_marker_furigana_plain_yue">월어 병음(텍스트): 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">한자 위에 월어 병음을 단 문장</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">월어 병음을 텍스트로 단 문장</string>
     <string name="anki_marker_furigana_ru">강세 표시가 있는 단어</string>
     <string name="anki_marker_furigana_plain_ru">강세 표시가 있는 단어(텍스트)</string>
     <string name="anki_marker_sentence_furigana_ru">기본형 단어에 강세 표시가 있는 문장</string>
@@ -286,6 +290,7 @@
     <string name="lookup_script_simplified">간체자</string>
     <string name="lookup_script_traditional">번체자</string>
     <string name="lookup_script_hint">병음으로 찾은 단어는 이 표기로 표시합니다. 두 표기에서 같은 글자는 텍스트로 어느 쪽인지 알 수 없을 때 이 표기의 자형으로 표시합니다.</string>
+    <string name="lookup_script_hint_yue">월어 병음으로 찾은 단어는 이 글자로 표시됩니다. 두 체계에서 같게 쓰는 글자는 텍스트로 어느 쪽인지 알 수 없을 때 이 체계의 자형으로 표시됩니다.</string>
     <string name="lookup_fixed_script">모든 단어를 이 표기로</string>
     <string name="lookup_fixed_script_hint">다른 표기의 텍스트도 이 표기로 검색하며, 사전에 이 표기가 있으면 단어를 이 표기로 표시합니다.</string>
     <string name="problems_title">확인 필요</string>
@@ -450,6 +455,7 @@
     <string name="popup_pitch_colors_hint">단어와 읽기는 첫 고저 악센트의 색으로, 각 악센트는 자기 유형의 색으로 표시됩니다: 헤이반 파랑, 아타마다카 빨강, 나카다카 주황, 오다카 초록, 기후쿠(내려가는 곳이 있는 동사·い형용사) 보라. 고저 악센트 사전이 필요합니다.</string>
     <string name="popup_tone_colors">성조 색</string>
     <string name="popup_tone_colors_hint">병음 음절이 성조의 색으로 표시됩니다: 1성 빨강, 2성 주황, 3성 초록, 4성 파랑, 경성 회색.</string>
+    <string name="popup_tone_colors_hint_yue">월어 병음 음절이 성조의 색으로 표시됩니다: 1성 빨강, 2성 주황, 3성 초록, 4성 파랑, 5성 보라, 6성 청록.</string>
     <string name="popup_font_title">팝업 글꼴</string>
     <string name="popup_font_hint">팝업과 검색 페이지에서 사용됩니다.</string>
     <string name="popup_font_system">휴대폰의 일본어 글꼴</string>
@@ -545,6 +551,7 @@
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_yue">광둥어 텍스트에만 사용</string>
     <string name="popup_font_script_only_ko">한국어 텍스트에만 사용</string>
     <string name="popup_font_script_only_hint_any">다른 문자 체계에는 휴대폰 글꼴을 사용합니다. 다운로드하거나 추가한 글꼴에 적용됩니다.</string>
     <string name="popup_text_weight_info_languages">가는 글자를 읽기 쉽게 합니다. 언어의 ‘… 텍스트에만 사용’이 켜져 있거나 휴대폰 글꼴을 쓰면 그 언어의 문자만 굵어지고, 꺼져 있으면 모든 텍스트가 굵어집니다.\n\n굵기는 글꼴 자체의 굵기를 사용합니다. 굵기가 하나뿐인 글꼴은 보통에서 바로 굵게로 바뀌므로 중간은 보통과 같아 보입니다.\n\n글자 윤곽은 각 글자 둘레에 얇은 윤곽선을 그립니다. 어떤 글꼴에서나 작동하며 굵기에 더해집니다.</string>

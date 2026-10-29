@@ -61,6 +61,9 @@ class EntriesTest(unittest.TestCase):
         # Uzbek: v6 only, unmarked; no model makes a third fewer errors than ML Kit.
         uzbek = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == "uz"}
         self.assertEqual(uzbek, {"paddle-v6": False, "paddle-detector-v6": False})
+        # Cantonese: v6 only, unmarked; ML Kit's Chinese model reads it with fewer errors.
+        cantonese = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == "yue"}
+        self.assertEqual(cantonese, {"paddle-v6": False, "paddle-detector-v6": False})
         # Bulgarian, Macedonian and Mongolian: the Cyrillic v5 model, marked.
         for language in ("bg", "mk", "mn"):
             models = {e["model"]: e["recommended"] for e in built if e["sourceLanguage"] == language}

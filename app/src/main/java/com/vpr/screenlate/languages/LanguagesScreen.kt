@@ -283,7 +283,7 @@ private fun TurnedOnCard(
                     label = { stringResource(scriptName(it)) },
                     onSelect = onScript,
                 )
-                Hint(stringResource(R.string.lookup_script_hint))
+                Hint(stringResource(scriptHint(language)))
                 SwitchRow(
                     stringResource(R.string.lookup_fixed_script),
                     script.fixedScript,

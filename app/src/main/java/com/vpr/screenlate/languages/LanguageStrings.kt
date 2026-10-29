@@ -50,7 +50,7 @@ fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null
         kanjiCount = R.string.dictionaries_count_kanji,
     )
     Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.CZECH, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.VIETNAMESE, Language.RUSSIAN,
-    Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.ALBANIAN, Language.SWAHILI, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC, Language.FINNISH, Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK, Language.BULGARIAN, Language.MACEDONIAN, Language.MONGOLIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA, null,
+    Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.ALBANIAN, Language.SWAHILI, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC, Language.FINNISH, Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK, Language.BULGARIAN, Language.MACEDONIAN, Language.MONGOLIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA, Language.CANTONESE, null,
     -> DictionaryStrings(
         pitchKind = R.string.dictionaries_kind_pronunciation,
         pitchCount = R.string.dictionaries_count_transcriptions,
@@ -64,6 +64,7 @@ val Language.pronunciationColorStrings: PronunciationColorStrings?
     get() = when (this) {
         Language.JAPANESE -> PronunciationColorStrings(R.string.popup_pitch_colors, R.string.popup_pitch_colors_hint)
         Language.CHINESE -> PronunciationColorStrings(R.string.popup_tone_colors, R.string.popup_tone_colors_hint)
+        Language.CANTONESE -> PronunciationColorStrings(R.string.popup_tone_colors, R.string.popup_tone_colors_hint_yue)
         Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.CZECH, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.VIETNAMESE, Language.RUSSIAN,
         Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.ALBANIAN, Language.SWAHILI, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC, Language.FINNISH, Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK, Language.BULGARIAN, Language.MACEDONIAN, Language.MONGOLIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA -> null
     }
@@ -79,6 +80,12 @@ val Language.furiganaMarkerHints: Map<String, Int>
             "furigana-plain" to R.string.anki_marker_furigana_plain_zh,
             "sentence-furigana" to R.string.anki_marker_sentence_furigana_zh,
             "sentence-furigana-plain" to R.string.anki_marker_sentence_furigana_plain_zh,
+        )
+        Language.CANTONESE -> mapOf(
+            "furigana" to R.string.anki_marker_furigana_yue,
+            "furigana-plain" to R.string.anki_marker_furigana_plain_yue,
+            "sentence-furigana" to R.string.anki_marker_sentence_furigana_yue,
+            "sentence-furigana-plain" to R.string.anki_marker_sentence_furigana_plain_yue,
         )
         Language.RUSSIAN -> mapOf(
             "furigana" to R.string.anki_marker_furigana_ru,
@@ -100,7 +107,7 @@ val Language.characterEntryStrings: CharacterEntryStrings
     get() = when (this) {
         Language.JAPANESE -> CharacterEntryStrings(R.string.lookup_single_kanji, R.string.lookup_single_kanji_hint)
         Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.CZECH, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.VIETNAMESE, Language.RUSSIAN,
-        Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.ALBANIAN, Language.SWAHILI, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC, Language.FINNISH, Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK, Language.BULGARIAN, Language.MACEDONIAN, Language.MONGOLIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA ->
+        Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.HEBREW, Language.KAZAKH, Language.KYRGYZ, Language.SWEDISH, Language.NORWEGIAN, Language.DANISH, Language.ROMANIAN, Language.LATIN, Language.LITHUANIAN, Language.SLOVAK, Language.SLOVENIAN, Language.ESPERANTO, Language.ALBANIAN, Language.SWAHILI, Language.WELSH, Language.IRISH, Language.SCOTTISH_GAELIC, Language.FINNISH, Language.HUNGARIAN, Language.ESTONIAN, Language.AZERBAIJANI, Language.UZBEK, Language.BULGARIAN, Language.MACEDONIAN, Language.MONGOLIAN, Language.MARATHI, Language.TAMIL, Language.TELUGU, Language.KANNADA, Language.CANTONESE ->
             CharacterEntryStrings(R.string.lookup_single_characters, R.string.lookup_single_characters_hint)
     }
 
@@ -109,8 +116,15 @@ val Language.characterEntryStrings: CharacterEntryStrings
 fun scriptName(tag: String): Int = when (tag) {
     "zh-Hans" -> R.string.lookup_script_simplified
     "zh-Hant" -> R.string.lookup_script_traditional
+    "yue-Hans" -> R.string.lookup_script_simplified
+    "yue-HK" -> R.string.lookup_script_traditional
     else -> error("No name for the script $tag")
 }
+
+/** The hint under the choice of `LanguageSupport.scriptTags`: words found by their reading take the chosen script. */
+@StringRes
+fun scriptHint(language: Language): Int =
+    if (language == Language.CANTONESE) R.string.lookup_script_hint_yue else R.string.lookup_script_hint
 
 val Language.fontStrings: FontStrings
     get() = when (this) {
@@ -600,6 +614,14 @@ val Language.fontStrings: FontStrings
             scriptOnlyHint = R.string.popup_font_script_only_hint,
             systemMissing = null,
             catalogInfo = null,
+            weightInfo = R.string.popup_text_weight_info_languages,
+        )
+        Language.CANTONESE -> FontStrings(
+            system = R.string.popup_font_system_zh,
+            scriptOnly = R.string.popup_font_script_only_yue,
+            scriptOnlyHint = R.string.popup_font_script_only_hint,
+            systemMissing = null,
+            catalogInfo = R.string.popup_font_proprietary_zh,
             weightInfo = R.string.popup_text_weight_info_languages,
         )
     }

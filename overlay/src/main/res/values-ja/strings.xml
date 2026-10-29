@@ -50,6 +50,7 @@
     <string name="overlay_kanji_onyomi">音</string>
     <string name="overlay_kanji_kunyomi">訓</string>
     <string name="overlay_character_pinyin">ピンイン</string>
+    <string name="overlay_character_jyutping">粤拼</string>
     <string name="overlay_character_korean_reading">韓国語読み</string>
     <string name="overlay_kanji_strokes">画数</string>
     <string name="overlay_kanji_grade">学年</string>

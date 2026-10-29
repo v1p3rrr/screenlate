@@ -148,6 +148,10 @@
     <string name="anki_marker_furigana_plain_zh">البينيين كنص: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">الجملة مع البينيين فوق الرموز</string>
     <string name="anki_marker_sentence_furigana_plain_zh">الجملة مع البينيين كنص</string>
+    <string name="anki_marker_furigana_yue">اليوتبينغ فوق الرموز</string>
+    <string name="anki_marker_furigana_plain_yue">اليوتبينغ كنص: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">الجملة مع اليوتبينغ فوق الرموز</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">الجملة مع اليوتبينغ كنص</string>
     <string name="anki_marker_furigana_ru">الكلمة مع علامة النبر</string>
     <string name="anki_marker_furigana_plain_ru">الكلمة مع علامة النبر، كنص</string>
     <string name="anki_marker_sentence_furigana_ru">الجملة مع علامات النبر على الكلمات بصيغتها المعجمية</string>
@@ -301,6 +305,7 @@
     <string name="lookup_script_simplified">المبسّطة</string>
     <string name="lookup_script_traditional">التقليدية</string>
     <string name="lookup_script_hint">تُعرض الكلمات التي يُعثر عليها بالبينيين بهذه الرموز. والرموز التي تُكتب بالطريقة نفسها في الكتابتين تأخذ أشكال هذه الكتابة حين لا يُبيّن النص أيّهما هي.</string>
+    <string name="lookup_script_hint_yue">تُعرض الكلمات التي عُثر عليها باليوتبينغ بهذه الرموز. والرموز التي تُكتب بالشكل نفسه في النظامين تأخذ أشكال هذا النظام حين لا يُظهر النص أيهما هو.</string>
     <string name="lookup_fixed_script">كل الكلمات بهذه الرموز</string>
     <string name="lookup_fixed_script_hint">يُبحث عن النص المكتوب بالكتابة الأخرى بهذه الرموز أيضًا، وتُعرض الكلمات بها حيث يكتبها القاموس كذلك.</string>
     <string name="problems_title">يحتاج إلى انتباه</string>
@@ -470,6 +475,7 @@
     <string name="popup_pitch_colors_hint">تأخذ الكلمة وقراءتها لون نمط نبرها النغمي الأول، ويأخذ كل نمط لونه الخاص: heiban أزرق، وatamadaka أحمر، وnakadaka برتقالي، وodaka أخضر، وkifuku (الأفعال وصفات -i ذات الهبوط النغمي) بنفسجي. يتطلب قاموسًا للنبر النغمي.</string>
     <string name="popup_tone_colors">ألوان النغمات</string>
     <string name="popup_tone_colors_hint">تأخذ مقاطع البينيين لون نغمتها: الأولى حمراء، والثانية برتقالية، والثالثة خضراء، والرابعة زرقاء، والمحايدة رمادية.</string>
+    <string name="popup_tone_colors_hint_yue">تأخذ مقاطع اليوتبينغ لون نغمتها: الأولى حمراء، والثانية برتقالية، والثالثة خضراء، والرابعة زرقاء، والخامسة بنفسجية، والسادسة فيروزية.</string>
     <string name="popup_font_title">خط النافذة المنبثقة</string>
     <string name="popup_font_hint">تستخدمه النافذة المنبثقة وصفحة البحث.</string>
     <string name="popup_font_system">الخط الياباني في الهاتف</string>
@@ -565,6 +571,7 @@
     <string name="popup_font_system_zh">الخط الصيني في الهاتف</string>
     <string name="popup_font_system_ko">الخط الكوري في الهاتف</string>
     <string name="popup_font_script_only_zh">للنص الصيني فقط</string>
+    <string name="popup_font_script_only_yue">للنص الكانتوني فقط</string>
     <string name="popup_font_script_only_ko">للنص الكوري فقط</string>
     <string name="popup_font_script_only_hint_any">تستخدم الكتابات الأخرى خط الهاتف. ينطبق على الخطوط المُنزَّلة والمضافة.</string>
     <string name="popup_text_weight_info_languages">يجعل النص الرفيع أسهل في القراءة. عند تفعيل مفتاح «للنص … فقط» للغة ما أو عند استخدام خط الهاتف، يزداد وزن أحرف تلك اللغة وحدها، وعند إيقافه يشمل ذلك النص كله.\n\nيعتمد وزن الخط على الأوزان المتوفرة في الخط نفسه. والخط الذي له وزن واحد فقط ينتقل من العادي إلى العريض مباشرة، فيبدو المتوسط كالعادي.\n\nأما سُمك الحروف فيرسم حدًّا رفيعًا حول كل حرف: يعمل مع أي خط ويُضاف إلى الوزن.</string>

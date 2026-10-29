@@ -144,6 +144,10 @@
     <string name="anki_marker_furigana_plain_zh">Pinyin jako tekst: 你[nǐ] 好[hǎo]</string>
     <string name="anki_marker_sentence_furigana_zh">Zdanie z pinyinem nad znakami</string>
     <string name="anki_marker_sentence_furigana_plain_zh">Zdanie z pinyinem jako tekst</string>
+    <string name="anki_marker_furigana_yue">Jyutping nad znakami</string>
+    <string name="anki_marker_furigana_plain_yue">Jyutping jako tekst: 你[nei5] 好[hou2]</string>
+    <string name="anki_marker_sentence_furigana_yue">Zdanie z jyutpingiem nad znakami</string>
+    <string name="anki_marker_sentence_furigana_plain_yue">Zdanie z jyutpingiem jako tekst</string>
     <string name="anki_marker_furigana_ru">Słowo z zaznaczonym akcentem</string>
     <string name="anki_marker_furigana_plain_ru">Słowo z zaznaczonym akcentem, jako tekst</string>
     <string name="anki_marker_sentence_furigana_ru">Zdanie z akcentem zaznaczonym w słowach w formie podstawowej</string>
@@ -295,6 +299,7 @@
     <string name="lookup_script_simplified">Uproszczone</string>
     <string name="lookup_script_traditional">Tradycyjne</string>
     <string name="lookup_script_hint">Słowa znalezione przez pinyin są pokazywane w tych znakach. Znaki pisane tak samo w obu systemach przyjmują kształty tego systemu, gdy tekst nie pokazuje, który to jest.</string>
+    <string name="lookup_script_hint_yue">Słowa znalezione po jyutpingu są pokazywane tymi znakami. Znaki pisane tak samo w obu systemach przyjmują kształty tego systemu, gdy z tekstu nie widać, który to jest.</string>
     <string name="lookup_fixed_script">Wszystkie słowa w tych znakach</string>
     <string name="lookup_fixed_script_hint">Tekst w drugim systemie jest też wyszukiwany w tych znakach, a słowa są w nich pokazywane, jeśli słownik tak je zapisuje.</string>
     <string name="problems_title">Wymaga uwagi</string>
@@ -462,6 +467,7 @@
     <string name="popup_pitch_colors_hint">Słowo i jego czytanie mają kolor pierwszego akcentu tonicznego, a każdy akcent własny: heiban niebieski, atamadaka czerwony, nakadaka pomarańczowy, odaka zielony, kifuku (czasowniki i przymiotniki -i ze spadkiem) fioletowy. Wymaga słownika akcentu tonicznego.</string>
     <string name="popup_tone_colors">Kolory tonów</string>
     <string name="popup_tone_colors_hint">Sylaby pinyinu przyjmują kolor swojego tonu: pierwszy czerwony, drugi pomarańczowy, trzeci zielony, czwarty niebieski, neutralny szary.</string>
+    <string name="popup_tone_colors_hint_yue">Sylaby jyutpingu przyjmują kolor swojego tonu: pierwszy czerwony, drugi pomarańczowy, trzeci zielony, czwarty niebieski, piąty fioletowy, szósty turkusowy.</string>
     <string name="popup_font_title">Czcionka okienka</string>
     <string name="popup_font_hint">Używana przez okienko i stronę wyszukiwania.</string>
     <string name="popup_font_system">Japońska czcionka telefonu</string>
@@ -557,6 +563,7 @@
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>
+    <string name="popup_font_script_only_yue">Tylko dla tekstu kantońskiego</string>
     <string name="popup_font_script_only_ko">Tylko dla tekstu koreańskiego</string>
     <string name="popup_font_script_only_hint_any">Inne pisma używają czcionki telefonu. Dotyczy pobranych i dodanych czcionek.</string>
     <string name="popup_text_weight_info_languages">Ułatwia czytanie cienkiego tekstu. Gdy przy języku włączone jest „Tylko dla tekstu …” albo używasz czcionki telefonu, grubsze stają się tylko znaki tego języka; gdy jest wyłączone — cały tekst.\n\nGrubość korzysta z odmian samej czcionki. Czcionka z jedną odmianą przechodzi od razu z normalnej na grubą, więc średnia wygląda jak normalna.\n\nObrys liter rysuje cienki kontur wokół każdej litery: działa z każdą czcionką i dodaje się do grubości.</string>
