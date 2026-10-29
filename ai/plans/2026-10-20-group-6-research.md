@@ -1441,36 +1441,44 @@ recommended option; what changing it takes is said).
     through the ending rules. (b) The report only. (c) The renaming only. (d) Neither. Kyrgyz is built, so (a) and (c)
     change a shipped language.
 
-    The report draft shown to the owner on 2026-10-29 (to file at github.com/tatuylonen/wiktextract/issues from the
-    owner's account; not filed yet):
+    The report draft shown to the owner on 2026-10-29, rewritten the same day to state the problem first (to file at
+    github.com/tatuylonen/wiktextract/issues from the owner's account; not filed yet):
 
-    > **ru: case labels of Turkic declension tables get wrong or no tags (Прит., Исх., Дат.-н., местно-временной
-    > падеж, Принадлежность)**
+    > **ru: wrong or missing case tags in Turkic noun tables ("Прит." becomes possessive instead of genitive; "Исх.",
+    > "Дат.-н." and others are not translated)**
     >
-    > In Russian Wiktionary's noun tables for Turkic languages, several row labels are mapped to a wrong tag or kept
-    > only as raw tags, so the forms lose their case. Examples from kaikki.org/ruwiktionary:
+    > **Problem.** The Russian extractor turns the row labels of Russian Wiktionary's declension tables into tags with
+    > the table in `src/wiktextract/extractor/ru/tags.py`. For Turkic languages (Tatar, Bashkir, Kyrgyz and others)
+    > some of these labels are translated wrongly or not at all:
     >
-    > Tatar китап (Татарский):
-    > - китапның, китапларның (row Прит.) get tags singular/plural + possessive. In Russian grammars of Turkic
-    >   languages "притяжательный падеж" is the genitive case, so these should be genitive.
-    > - китаптан, китаплардан (row Исх.) get only singular/plural, raw_tags "Исх.". Expected: ablative (tags.py knows
-    >   "исх. п." but not "исх.").
-    > - китабым, китабы and the other rows under Принадлежность get only person and number, raw_tags
-    >   "Принадлежность". Expected: possessive.
+    > 1. "Прит." (притяжательный падеж) becomes `possessive`. In Russian grammars of Turkic languages this is the name
+    >    of the genitive case, so these forms should get `genitive`. The real possessive forms are a separate block of
+    >    the same table, "Принадлежность".
+    > 2. "Исх." (исходный падеж) is missing from the table; only "исх. п." is there. The ablative forms therefore get
+    >    no case tag, only a number, and the label stays in `raw_tags`.
+    > 3. The same happens to "местно-временной падеж" (the Bashkir locative), "Дат.-н." (the Kyrgyz dative,
+    >    дательно-направительный), "Принадлежность" (the possessive forms) and "2 веж." (second person, polite).
     >
-    > Bashkir китап (Башкирский): the same, and китапта, китаптарҙа keep raw_tags "местно-временной падеж" (expected:
-    > locative).
+    > The tables themselves are correct; only their labels are translated wrongly.
     >
-    > Kyrgyz китеп (Киргизский): the same, and китепке, китептерге keep raw_tags "Дат.-н." (дательно-направительный,
-    > expected: dative); китебиңиз keeps "2 веж." (expected: second-person, formal).
+    > **Examples** (kaikki.org/ruwiktionary):
     >
-    > In src/wiktextract/extractor/ru/tags.py, GRAMMATICAL_TAGS maps "прит." to "possessive". Since "прит." also
-    > abbreviates possessive pronouns elsewhere, mapping it to genitive only inside declension tables (or for Turkic
-    > language codes) may be safest. Adding "исх.", "местно-временной падеж", "дат.-н.", "принадлежность" and
-    > "2 веж." would cover the rest.
+    > | Word | Form | Row label | Tags now | Expected |
+    > |---|---|---|---|---|
+    > | Tatar китап | китапның | Прит. | singular, possessive | singular, genitive |
+    > | Tatar китап | китаптан | Исх. | singular (raw_tags: Исх.) | singular, ablative |
+    > | Tatar китап | китабым | Принадлежность | singular, first-person (raw_tags: Принадлежность) | singular, first-person, possessive |
+    > | Bashkir китап | китапта | местно-временной падеж | singular (raw_tags) | singular, locative |
+    > | Kyrgyz китеп | китепке | Дат.-н. | singular (raw_tags) | singular, dative |
+    > | Kyrgyz китеп | китебиңиз | 2 веж. | singular (raw_tags) | singular, second-person, formal |
     >
-    > Downstream, wiktionary-to-yomitan dictionaries (tt-ru, ba-ru, ky-ru) show the genitive as "singular
-    > possessive", which reads as a possessive suffix, and their ablative rows carry only a number.
+    > **Suggested fix.** In `tags.py`: map "прит." to `genitive` where it labels a row of a declension table (it also
+    > abbreviates possessive pronouns elsewhere, so a global change could be wrong there); add "исх.", "местно-временной
+    > падеж", "дат.-н.", "принадлежность" and "2 веж.".
+    >
+    > **Effect downstream.** Dictionaries built from this data (wiktionary-to-yomitan's tt-ru, ba-ru and ky-ru) show
+    > the genitive as "singular possessive", which readers take for a possessive suffix, and the ablative forms lose
+    > their case.
 
 ## Work
 
