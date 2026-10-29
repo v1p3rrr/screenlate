@@ -128,6 +128,33 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 - The emulator drifts: after ~1.5 h of scans with PaddleOCR memory held, captures went from 0.1 s to 0.4–2.9 s and
   ML Kit Japanese bands from 0.9 s to 3–5 s; a cold boot restored it. The table uses runs from healthy states only.
 
+## Scan and lookup times on the owner's phone (log of 2026-10-27 to 2026-10-29)
+
+Honor phone (arm64, Android 15), minified Dev builds `a16ceda7` and `9c26bae8`, engines "Both", from the app's own log
+export (`oem-background-limits.md`, the owner's phone section). 25 screen scans, about 155 lookups. Times from the
+capture start, as in the table above.
+
+| Scans | Capture | On-device draft | Cloud final |
+|---|---|---|---|
+| Japanese, portrait 1200x2664 (ML Kit) | 34–77 ms | band 0.17–0.38 s, whole screen 0.41–0.54 s | 0.65–1.10 s |
+| Japanese, landscape 2664x1200 (ML Kit) | 103–216 ms | whole screen 0.58–1.43 s | 0.87–1.68 s |
+| English, portrait (PaddleOCR v5 Latin) | 36–77 ms | band 0.51–1.19 s, median 0.73 | 0.75–1.55 s, median 0.94 |
+
+- PaddleOCR's draft came only 0.07–0.38 s before the cloud's text (once 0.64 s, with an empty draft), and five of the
+  15 English scans had no draft line at all (the cloud answered first); ML Kit's band came 0.46–0.85 s before it.
+  Paddle held up to 237 MB of large inputs after a scan (228–237 MB after five of the English ones, 47–68 MB after
+  the others) and freed them 11–16 s after the scan started, down to 15–18 MB.
+- Two scans on 2026-10-29 captured the display (105–133 ms): no app window under the bubble (the home screen or a
+  system panel). They worked as usual.
+- Lookups (`OverlayController.lookupResults`, the whole `lookup` call): Japanese median 17 ms, 90th percentile 165 ms,
+  five over 300 ms (328–795 ms), each with 7–32 entries, three of them started within 0.7 s of a new OCR text (a draft or the cloud's);
+  English median 7 ms, at most 200 ms. The emulator's NF2 runs saw 1–117 ms.
+- Photos with `a16ceda7` (tiles plus the overview): a 4064x3048 photo went to the cloud as 10 requests of 188–227 KB
+  (1500x1500, one 1125x1500), 0.65–1.17 s each, 7.4 s for the photo; read again 3 minutes later, all 10 requests (the Cyrillic model loaded just
+  before, so probably after a language change).
+  `9c26bae8` reads a photo whole in one request by default (camera plan, row "Photo reading"); the log has no photo
+  read by it.
+
 ## ML Kit
 
 - The Korean recognizer reads Hangul and Latin but not hanja: 大學校에서 歷史를 came out as 푸에서 끗을 (2026-10-15,
@@ -282,6 +309,9 @@ text of a line is kept in reading (logical) order, which each engine reaches its
   the system may kill the renderer while the popup is hidden. `onRenderProcessGone` then drops the WebView and the next
   scan recreates it; a renderer lost while shown is recreated at once and the popup closes. The search screen's page
   keeps the default priority.
+- On the owner's phone (log of 2026-10-27 to 2026-10-29) the system reclaimed the hidden renderer 8 times in two days
+  ("Lookup page renderer gone (crashed: false, shown: false)"), hours apart and never while shown; the next scans
+  showed entries as usual.
 - To simulate a reclaimed renderer: `adb shell ps -A | grep sandboxed_process` for the app's renderer PID, then
   `adb shell am crash <pid>`.
 

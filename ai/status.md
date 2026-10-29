@@ -2108,3 +2108,22 @@ session needs; the folded-marks plan's question 1 points to the new numbers. Not
 - For a local session: recognition on the emulator (ML Kit, Tesseract, cloud, Paddle on the research screens), voices,
   the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports, and the audio counts
   (Commons rate-limited the cloud session); the list is in the plan ("For the emulator session").
+
+## Cloud session 2026-10-29, the owner's phone log
+
+The owner's About → Logs export from the phone (Dev builds `a16ceda7` and `9c26bae8`, 2026-10-27 16:27 to 2026-10-29
+21:57; the file stays with the owner) was read on request. No crash and no kill by the phone maker. Findings, with
+the owner's answers:
+
+- Ten service stops on 2026-10-27 23:32–00:05 (process alive, still on the enabled list, back in 1–7 s): the owner
+  says the phone was probably connected to the PC; the shape of `uiautomator dump`. Not counted as a MagicOS stop
+  (`notes/oem-background-limits.md`, the owner's phone section, with the WebView update that ended the process
+  on 2026-10-28 and the service's return by itself).
+- For the main session (camera): the owner decided (camera plan, row "Bubble without text to read", changelog
+  2026-10-29) that a bubble held out over a photo still being recognized shows the loading state until the text
+  attaches or the recognition fails. Not built. CAM4's loading variant is unchecked.
+- One AnkiDroid query failed with `IllegalStateException` (a duplicate check most likely; it reads as no duplicates).
+  The owner: leave it (`notes/yomitan-behavior.md`, Anki duplicate options).
+- Phone times (scans, lookups up to 0.8 s for Japanese with many entries, PaddleOCR's draft only 0.07–0.38 s before
+  the cloud's text, the tiled photo's 10 requests in 7.4 s, 8 renderer losses while hidden) are in
+  `notes/ocr-engines.md`.

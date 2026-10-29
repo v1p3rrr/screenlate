@@ -347,3 +347,22 @@ after the stop; turning the service on removes it within 0.6 s.
 | Lighter scans by default there | "Reduce load on the device", or skipping the on-device whole-screen pass once the cloud answered | Small to medium, only if the engine tests point there |
 | ColorOS allowlist step | Background work on ColorOS points to the security app's allowlist (and a hint that sideloaded apps are restricted), if the user's test shows the allowlist helps | Small to medium; strings in 14 languages; the user's result (2026-10-28): the allowlist helps |
 | Request the accessibility button | The system shortcut would do something in Screenlate (open or scan) instead of turning the service off | Small to medium; a behavior choice for the owner; no help against a force-stop |
+
+## The owner's phone (Honor, MagicOS 9, Android 15): log of 2026-10-27 to 2026-10-29
+
+About → Logs export of the minified Dev builds `a16ceda7` and `9c26bae8` (saved 2026-10-29 21:57, read by a cloud
+session the same day; the file stays with the owner). Scan and lookup times from it are in `ocr-engines.md`.
+
+- Exit reasons at each process start: earlier processes ended while cached ("[TOO MANY EMPTY PROCS]", normal), by the
+  app's own installs (`PACKAGE_UPDATED`, "stop com.vpr.screenlate.debug due to installPackageLI"), and once by a
+  WebView update: `PACKAGE_UPDATED`, "stop com.google.android.webview due to installPackageLI", importance 125
+  (foreground service), 2026-10-28 04:30. Updating WebView ends every process that has it loaded, Screenlate's
+  included; the service connected in the new process 6 s later with nobody touching the phone (not a force-stop, so
+  the switch stays on).
+- The last process lived 36 h with the service on (2026-10-28 09:36 to the export): MagicOS ended nothing in that time.
+- Ten stops on 2026-10-27 between 23:32 and 00:05, the process alive and "on the enabled list: yes"; the service was
+  back in 1.1–2.2 s, once in 6.6 s (its "3 s after the stop" line says "running: no", so the banner was posted and
+  cancelled at the reconnect about 3.6 s later). Some came ~0.3 s after an app window came to the front, the others
+  with no window events. The owner: the phone was probably connected to the PC then. The shape is that of
+  `uiautomator dump` (UiAutomation pauses accessibility services; the emulator check above), so these are not counted
+  as MagicOS stops. A stop of this shape with no PC connected would be the first one from MagicOS.

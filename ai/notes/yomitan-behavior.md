@@ -76,6 +76,10 @@ Definitions inside an entry: frequency order → dictionary order → score → 
 - `duplicateScope`: `collection` | `deck` | `deck-root` (default `collection`)
 - `duplicateScopeCheckAllModels`: false
 - `duplicateBehavior`: `prevent` | `overwrite` | `new` (default `new`)
+- Screenlate, not Yomitan: a query AnkiDroid's provider throws for reads as an empty answer (`AnkiDroid.query`), so a
+  failed duplicate check shows the word as new. Seen once on the owner's phone (2026-10-27 23:45, `IllegalStateException`
+  0.4 s after a lookup, the next lookups fine; the message is redacted, so the cause is unknown: AnkiDroid throws it
+  for unconfigured storage and from many `check`/`error` calls). The owner (2026-10-29): leave it as it is.
 
 ## Structured content
 
