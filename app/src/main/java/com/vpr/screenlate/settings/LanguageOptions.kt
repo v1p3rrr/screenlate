@@ -14,6 +14,8 @@ object LanguageOptions {
         "en" to "GB", "ru" to "RU", "ja" to "JP", "de" to "DE", "fr" to "FR", "es" to "ES", "it" to "IT",
         "ko" to "KR", "zh" to "CN", "uk" to "UA", "pl" to "PL", "pt" to "BR", "nl" to "NL", "tr" to "TR",
         "vi" to "VN", "id" to "ID", "th" to "TH", "cs" to "CZ", "sv" to "SE", "fi" to "FI", "el" to "GR",
+        // The flags these languages have in the Languages screen; Android may report Hebrew by its old code iw.
+        "ar" to "SA", "fa" to "IR", "he" to "IL", "iw" to "IL",
     )
 
     /** The flag emoji for [locale], built from regional indicator letters. */

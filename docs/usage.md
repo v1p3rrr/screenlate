@@ -286,7 +286,7 @@ A translation is kept for 10 minutes, so adding a note after reading the transla
 
 - **Theme**: the system's, light or dark.
 - **Colors** (Android 12 and later): Screenlate's own violet colors with a pink accent on switches, sliders, checkboxes, progress and the main buttons (the default), or System: the colors the phone picks for apps, usually from the wallpaper.
-- **Language** of the interface: the system's, or English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean, Chinese (Simplified or Traditional). It can also be set in the system settings: Apps → Screenlate → Language. Translations were made with AI and have not been reviewed by native speakers; a note under the picker says so.
+- **Language** of the interface: the system's, or English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean, Chinese (Simplified or Traditional), Arabic, Persian, Hebrew; in the last three the screens are mirrored. It can also be set in the system settings: Apps → Screenlate → Language. Translations were made with AI and have not been reviewed by native speakers; a note under the picker says so.
 - **E-ink mode** (off by default): black and white, no animations, frames instead of translucent highlights, and a black bubble and aim; it overrides the theme. Turning it on offers a larger bubble and larger popup text; turning it off, with the switch or by restoring a backup, brings back the previous sizes, except those changed by hand in the meantime (sizes stored in the backup take precedence). On devices that look like e-ink readers the start screen offers the mode once, with a link to "App text only".
 
 ## Dictionaries

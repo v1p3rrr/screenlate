@@ -39,7 +39,7 @@ class TranslationsTest {
     )
 
     /** Translations whose screens are not checked yet: they ship, but the language settings do not offer them. */
-    private val unlisted = setOf("ar", "fa", "iw")
+    private val unlisted = emptySet<String>()
 
     private val androidNamespace = "http://schemas.android.com/apk/res/android"
 
@@ -129,6 +129,8 @@ class TranslationsTest {
             .map { it.name.removePrefix("values-") }
             .filter { it !in unlisted }
             .map { it.removePrefix("b+").replace('+', '-') }
+            // Hebrew's folder has Android's old code; the config names the language he, which resolves to it.
+            .map { if (it == "iw") "he" else it }
         assertWithMessage("locales_config.xml").that(listed).containsExactlyElementsIn(translated + "en")
     }
 
