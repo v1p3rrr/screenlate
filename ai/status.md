@@ -323,7 +323,11 @@ the details.
   is a separate task. Starts on the owner's command, after the limit resets.
 - Backlog: rename the Turkic form tags of Russian Wiktionary in our support classes (`formTagNames`: "singular/plural
   possessive" → genitive, Tatar's lone ablative "plural" → ablative plural) if the wiktextract report's fix does not
-  reach wty's releases (group 6, question 30; owner, 2026-10-29).
+  reach wty's releases (group 6, question 30; owner, 2026-10-29). Waiting for
+  https://github.com/tatuylonen/wiktextract/issues/1734: check it at the start of each session; once it is closed,
+  check that the next kaikki.org ruwiktionary dump and then wty's next release (tt-ru, ba-ru, ky-ru) carry genitive and
+  ablative. Only if wty's release still shows the old tags (an old dump, its own tag handling) does a report go to wty
+  too. No fix in time for the languages release → build the renaming (owner, 2026-10-29).
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
