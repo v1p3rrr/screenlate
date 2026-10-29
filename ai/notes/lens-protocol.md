@@ -84,6 +84,11 @@ Conclusion: downscaling to 1500 px costs nothing in quality; full resolution is 
 - `ReadingOrder` (core:ocr) sorts vertical columns right to left and joins a vertical paragraph whose last column runs
   to the bottom with the one starting right after it (same top margin and width, gap ≤ 1.5 columns). Horizontal
   paragraphs are left as they are.
+- Tamil (2026-10-29, `testdata/ocr/ta-anki.png`, 72 px Nirmala UI at 96 px pitch): five lines came as three
+  paragraphs, split after each line that ends with a period; four lines laid out again came as four, one per line,
+  though one of them ends with a word. The Bulgarian, Macedonian and Uzbek images of the same size and pitch came as
+  one paragraph. Under cloud recognition a Tamil sentence across a line end is cut there; Tesseract keeps one
+  paragraph.
 
 ## Translation (probe 2026-10-08, `testdata/ocr/x-thread.png`, from a desktop connection)
 

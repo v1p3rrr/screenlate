@@ -183,6 +183,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR52 | Uzbek recognition (`testdata/ocr/uz-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`: oʻ, gʻ and ʼ words, noun and verb endings, 2020-yil and BMT-da, «…» quotes; `uz-misread.png` prints ' for ʻ and ʼ and drops ʻ in Bolsa; `uz-cyrillic.png` is in the Cyrillic alphabet): cloud recognition reads the Latin lines and the Cyrillic; ML Kit may give ʻ as ' or ‘ or drop it, and such a word is still found (LK82); ML Kit reads no Cyrillic | F | U CatalogFileTest, M | 2026-10-28 |
 | OCR53 | Bulgarian and Mongolian recognition (`testdata/ocr/bg-sample.png` and `mn-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/arial.ttf`: Bulgarian articles, plurals, кнѝгата and the pronoun ѝ; Mongolian case and verb endings, ө and ү): cloud recognition reads every word and gives ѝ as й, which still finds ѝ (LK84); ML Kit reads no Cyrillic, so PaddleOCR v5's Cyrillic model is the main on-device model; PaddleOCR v5 alone reads every word, ѝ as и and кнѝгата as книгата (which still find ѝ and книга), and Mongolian Ө, ө and ү as the Cyrillic letters | F | U CatalogFileTest, M | 2026-10-29 |
 | OCR54 | Macedonian recognition on the device (`testdata/ocr/mk-sample.png`, Arial: ќ ѓ љ ј ѕ, сѐ and Ѝ; `mk-retry.png` prints Л for Љ in Лубица and capital Ѕ in Ѕвездите): PaddleOCR v5 reads ќ ѓ љ ј and Ѝ, gives capital Ѕ as Latin S, which the letter-for-letter fix turns into Ѕ, and ѕ inside a line as с, which the retry finds (LK85); cloud recognition reads every letter | F | U MacedonianSupportTest, MisreadMatchesTest, M | 2026-10-29 |
+| OCR55 | Tamil recognition on the device (`testdata/ocr/ta-sample.png`, see LK88): Tesseract tam fast reads the six lines; the non-joiner it writes after a pulli is gone from the recognized text (a tap on மரத்தில் finds மரம், which the joiner would stop), a tap on the last letter of a word that ends in a pulli selects that word; கௌரவம், which the model has no letter for, comes as கெளரவம் and finds கௌரவம் | F | U TamilSupportTest, OcrPageLanguageTest, M | 2026-10-29 |
 
 ### LK: lookup
 
@@ -273,6 +274,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK85 | Macedonian lookups (overlay over `testdata/ocr/mk-sample.png` and `mk-retry.png` with PaddleOCR v5 alone, then cloud recognition, and the Search screen): Куќата finds куќа, then кука through the folded marks; Ѓорѓи, ќе and Скопје find their entries; сè уште finds сѐ уште, then сѐ; Ѝ finds Ѝ and ѝ; ѕвездите read as свездите finds ѕвезда, the source chip On-device; Лубица finds Љубица through the retry, while лубов, a form of луб, finds луб and is not retried; with cloud recognition ѕвездите finds ѕвезда; in Search ѕвездите finds ѕвезда and typed свездите nothing (the retry is for OCR words only) | F | U MacedonianSupportTest, MisreadMatchesTest, I LanguageLookupTest, M | 2026-10-29 |
 | LK86 | Mongolian lookups (overlay over `testdata/ocr/mn-sample.png` with cloud recognition, and the Search screen): номуудаасаа finds ном ("ablative plural definite possessive"); уншаад finds унших, "perfective converb" first, then "imperfect participle « dative-locative"; Хуулийн finds хууль (genitive), асуудлыг асуудал (accusative), хугацаанд хугацаа (dative-locative), Өнөөдөр өнөөдөр; хүн shows хүн, then хун through the folded marks; in Search, хун shows хун (swan), then хүн, and хийнэ finds хийх (present-future) | F | U MongolianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
 | LK87 | Marathi lookups (Search screen, and the overlay over `testdata/ocr/mr-sample.png` from `scripts/text-image-wpf.ps1` (Nirmala UI, mr-IN): "शाळेत आज पाण्यात खेळ झाला.", "विद्यार्थ्यांना वाचण्यासाठी पुस्तके", "आतापर्यंत घरातही काम चालू आहे.", "शेतकऱ्यांना मोठ्या अडचणी आल्या.", ML Kit Devanagari): पाण्यात finds पाणी with the tag -त; घरातही finds घर (-त, -ही); विद्यार्थ्यांना विद्यार्थी; शेतकऱ्यांना शेतकरी; आतापर्यंत आता; वाचण्यासाठी the verb वाचणे; करत and करताना find the verb करणे through the participle (-त, -ताना), not कर (tax); दिसत finds दिसणे; विदय़ार्थी typed with U+095F finds विद्यार्थी; बँक finds बॅंक, ज़मीन जमीन, अॅ the letter ॲ (mr-en has no मोठा or ॲप); होकारार्थी finds nothing; in the overlay, the aimed word inside a conjunct (शाळेत aimed at ळे) is looked up from its start; the popup shows no reading line | F | U MarathiSupportTest, glue.test.mjs, I LanguageLookupTest, HoshidictsEngineTest, M | 2026-10-29 |
+| LK88 | Tamil lookups (Search screen, and the overlay over `testdata/ocr/ta-sample.png` from `scripts/text-image-wpf.ps1 -Font "Nirmala UI" -Culture ta-IN`: "மரத்தில் பறவைகள்", "நானும் மழையில்", "நகரத்தில் நடந்தேன்.", "மாவட்ட சேவைத் துறை", "கௌரவம் வழியில்", "மரங்களிலும் வெளியே", Tesseract tam fast): மரத்தில் finds மரம் with the tag -இல்; மரங்களிலும் மரம் (-கள், -இல், -உம்); நகரத்தில் நகரம்; மழையில் மழை; வழியில் வழி; நானும் நான் (-உம்); மாவட்ட மாவட்டம் (-அ); சேவைத் சேவை with no tag; வீட்டில் and அதற்கு find வீடு and அது as Wiktionary's forms; காலை shows காலை and its listed form of கால், no results of the rules; வௌியே finds வெளியே, கெளரவம் கௌரவம், ஸ்ரீ ஶ்ரீ; செய்துவிடு finds செய் (Wiktionary's "past of" row); in the overlay the words read by Tesseract find the same entries; the popup shows no reading line | F | U TamilSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
 
 ### POP: the popup
 
@@ -333,6 +335,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP53 | Region chips of another language's country: Wiktionary vi-en's o (aunt) shows «Центральный Вьетнам» in place of 🇧🇷🎯 with no tap note, 🇺🇸 stays a flag; the same tag inside a definition (lúa, sense 2) shows the label too and its tap opens nothing; Wiktionary pt-en keeps 🇧🇷 as a flag (ônibus); English «yea» shows «западное» in place of 🇩🇪⬅️ | F | U RegionChipsTest, P popup.test, M | 2026-10-29 |
 | POP54 | Arabic form tags: أكبر also finds كبير, its tag «элатив (أفعل)» in Russian and «اسم التفضيل» in Arabic; a verb form (أحسن) names non-past «المضارع» and the subjunctive «المنصوب» in Arabic; Vietnamese trải → giải shows «Северный Вьетнам», hôn → hun «Центральный Вьетнам» | F | U FormOfTagsTest, ArabicSupportTest, VietnameseSupportTest, M | 2026-10-29 |
 | POP55 | Marathi fonts: Popup settings → Text font for Marathi lists Mukta and Tiro Devanagari Marathi (not Hind or Tiro Devanagari Hindi); downloading Mukta there makes it installed for Hindi too (one file, listed under both); the sample text draws Marathi's own ल and श in a font that has them; Backup with Marathi alone turned on lists Mukta | F | U FontCatalogFileTest, BackupChoiceTest, M | 2026-10-29 |
+| POP56 | Tamil fonts: Popup settings → Text font for Tamil lists the phone's font, then Hind Madurai, Mukta Malar and Tiro Tamil (not Hindi's or Marathi's); a downloaded one draws the sample text; Backup with Tamil alone turned on lists it | F | U FontCatalogFileTest, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -378,6 +381,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD38 | Bulgarian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; the Test of вода finds a Lingua Libre recording, Wiktionary "No audio", and the phone's voice reads it (Google's Bulgarian voice) | F | U BulgarianSupportTest, M | 2026-10-29 |
 | AUD39 | Macedonian and Mongolian audio: both list Lingua Libre first, Wiktionary, then the phone's voice; the Macedonian Test of вода finds a Lingua Libre recording, Wiktionary "No audio" and the phone's voice "No voice installed"; the Mongolian Test of ус says "No audio" for both sources and "No voice installed"; with autoplay on, a lookup in either language shows "No text-to-speech voice for this language is installed." | F | U MacedonianSupportTest, MongolianSupportTest, M | 2026-10-29 |
 | AUD40 | Marathi audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with पाणी; with autoplay on and no Marathi voice installed, a lookup shows the no-voice notice | F | U MarathiSupportTest, M | 2026-10-29 |
+| AUD41 | Tamil audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; Test with தண்ணீர் | F | U TamilSupportTest, M | 2026-10-29 |
 
 ### ANK: Anki
 
@@ -428,6 +432,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK44 | An Uzbek Anki note (over `testdata/ocr/uz-anki.png`, one paragraph over several lines, ML Kit, cloud recognition where ML Kit misreads the word): for nok the sentence is "Bozordan olma, nok va h.k. oldik." (va h.k. holds before a lowercase word); for yashaydi "Prof. Karimov Toshkent sh. Navoiy ko'ch. 5-uyda yashaydi." (prof., sh. and ko'ch. hold); for daftarlar "Kitoblar, daftarlar va h.k." (va h.k. ends it before a capital) | F | U SentenceTest, UzbekSupportTest, M | 2026-10-28 |
 | ANK45 | Bulgarian and Macedonian Anki notes (over `testdata/ocr/bg-anki.png` and `mk-anki.png`, Arial, one paragraph over five and six lines, cloud recognition): the sentence keeps "г.", "пр. н. е.", "проф.", "ул." and "нпр." inside it, and "и т.н." or "итн." ends it before a capital ("Купихме ябълки, круши и т.н."; "Таа сака овошје, нпр. јаболка и круши итн."; "Проф. Иванов живее на ул. Шипка от 2020 г. насам."; "Во 44 г. пр. н. е. Цезар бил убиен."); PaddleOCR gives each line as a paragraph of its own, so its sentences end at the line ends | F | U SentenceTest, M | 2026-10-29 |
 | ANK46 | A Marathi Anki note (over `testdata/ocr/mr-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96`, one paragraph over four lines: "पु. ल. देशपांडे यांचा जन्म इ.स." / "1919 मध्ये झाला. डॉ. जोशी आणि" / "प्रा. पाटील आले. कोण आले? मी." / "तू कुठे होतास? तो आला। आता जा।", ML Kit Devanagari): the sentence keeps "डॉ.", "प्रा.", "इ.स." and the initials "पु. ल." inside it ("पु. ल. देशपांडे यांचा जन्म इ.स. 1919 मध्ये झाला."), and a one-syllable word of dialogue ends one ("कोण आले? मी. तू कुठे होतास?" gives "मी." for मी); a danda ends a sentence as a period does | F | U SentenceTest, MarathiSupportTest, M | 2026-10-29 |
+| ANK47 | A Tamil Anki note (over `testdata/ocr/ta-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture ta-IN`, four lines: "திரு. ராமன் 15 கி.மீ. நடந்தார்." / "க. சண்முகம் ஜன. 15 அன்று" / "வந்தார். யார் வந்தது?" / "நீ. இங்கே வா. அவர் சென்றார்."): under cloud recognition ராமன் gives "திரு. ராமன் 15 கி.மீ. நடந்தார்." (the title and the unit hold the sentence), நீ gives "நீ." and வா "இங்கே வா." (words of dialogue end sentences); under on-device recognition (Tesseract tam fast, one paragraph) வந்தார் gives "க. சண்முகம் ஜன. 15 அன்று வந்தார்." (a one-syllable initial and a month before a date, across the line end; cloud recognition makes a paragraph of each line of this image) | F | U SentenceTest, TamilSupportTest, M | 2026-10-29 |
 
 ### TR: sentence translation
 
@@ -539,6 +544,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG40 | Macedonian setup: the download screen ticks Wiktionary (mk–en) as the main dictionary, the word frequency (wordfreq) and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract mkd unticked; "Download (11 MB)", about 40 MB after import; the flag is North Macedonia's and the bubble shows М | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
 | LNG41 | Mongolian setup: the download screen ticks Wiktionary (mn–en) as the main dictionary, the Leipzig word frequency and the transcription; PaddleOCR v5's Cyrillic model is the main on-device model, Tesseract mon unticked; "Download (20 MB)", about 15 MB after import; the flag is Mongolia's and the bubble shows М | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
 | LNG42 | Marathi setup: Languages offers Marathi (मराठी) with India's flag; the download screen ticks Wiktionary (mr–en) and the transcription, lists no word frequency, and offers Tesseract mar fast and best unticked (the bundled Devanagari model reads it); the bubble shows म; with Hindi and Marathi both quick languages the bubble shows हि and म | F | U CatalogFileTest, BubbleGlyphTest, M | 2026-10-29 |
+| LNG43 | Tamil setup: Languages offers Tamil (தமிழ்) with India's flag; the download screen ticks Wiktionary ta–en, the transcription, wordfreq and Tesseract tam fast, and offers Tesseract tam best unticked; the bubble shows த; with Japanese, Hindi and Tamil quick the hold menu shows Japan's flag bare and puts HI and TA on the two India flags | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | 2026-10-29 |
 
 ### SET: settings, backup, appearance
 
@@ -693,6 +699,40 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/ta` (Tamil, before its commit), Pixel_10_Pro (API 37)
+
+Scope: LNG43, LK88, OCR55, ANK47, POP56 and AUD41, interface in Russian. Words in the Search screen sent with
+`am start -a android.intent.action.PROCESS_TEXT`; the overlay over `testdata/ocr/ta-sample.png` and `ta-anki.png`
+(`scripts/text-image-wpf.ps1`, Nirmala UI, ta-IN) with Tesseract tam fast, and with both engines for ANK47. Wiktionary
+ta-en, ta-ru and the transcription of 2026.10.22. Anki notes went to the emulator's local collection and were read
+from a pulled copy of it.
+
+Results: passed but for the parts named below; the six cases moved from N to F.
+- LNG43: Tamil (தமிழ்) with India's flag; the download screen ticks ta-en, the transcription, wordfreq and Tesseract
+  tam fast and offers tam best unticked; the bubble shows த; with Japanese, Hindi and Tamil quick the hold menu shows
+  Japan's flag bare and the two India flags with HI and TA. Not checked: ta-fr on the download screen (French is not
+  a chosen definitions language on the emulator).
+- LK88: all words as listed, in the Search screen and the overlay: மரத்தில் → மரம் (-இல்), மரங்களிலும் → மரம் (-கள்,
+  -இல், -உம்), நானும் → நான் (-உம்), மாவட்ட → மாவட்டம் (-அ), சேவைத் → சேவை with no tag, வீட்டில் and அதற்கு → வீடு
+  and அது as forms, காலை → காலை and the form of கால், வௌியே → வெளியே, கெளரவம் → கௌரவம், ஸ்ரீ → ஶ்ரீ, செய்துவிடு →
+  செய். Extra entries beside the right one: மழையில் also shows மழு, வௌியே also the form of வெளி.
+- OCR55: Tesseract read the six lines with no joiner left in the text (மரத்தில் finds மரம்); aimed at the last letter
+  of சேவைத் and of நடந்தேன் (→ நட), the overlay selects those words; கௌரவம் comes as கெளரவம் and finds கௌரவம்.
+- ANK47 (deck and note type Screenlate Test, Meaning {sentence}; duplicates set to "add new" for the run and back to
+  "prevent" after it): cloud recognition: ராமன் → "திரு. ராமன் 15 கி.மீ. நடந்தார்.", நீ → "நீ.", வா → "இங்கே வா.";
+  on-device recognition: வந்தார் (the note's word வா) → "க. சண்முகம் ஜன. 15 அன்று வந்தார்.".
+- Found in ANK47: cloud recognition grouped the lines of these Tamil images into small paragraphs: the first layout
+  (five lines) came as three, split after the lines that end with a period; the second (four lines) as four, one per
+  line. The app keeps the engine's paragraphs for horizontal text, so a sentence across a line end is cut there under
+  cloud recognition (வந்தார் gave "வந்தார்."). Tesseract tam fast keeps one paragraph but read திரு. as இரு. and
+  கி.மீ. as இ.மீ. in the first layout, so ராமன் gave "ராமன் 15 இ.மீ. நடந்தார்." (இரு is two syllables and no
+  abbreviation). The image was laid out again with the abbreviations inside lines.
+- POP56: Tamil lists the phone's font, then Hind Madurai, Mukta Malar and Tiro Tamil; Hind Madurai (0.3 MB) downloaded
+  and chosen draws the sample text; Backup with Tamil alone lists Hind Madurai among the fonts, beside those that
+  belong to no language.
+- AUD41: Wiktionary, Lingua Libre, then the phone's voice; Test with தண்ணீர்: Wiktionary one clip, Lingua Libre one
+  clip, the phone's voice there.
 
 ### 2026-10-29, `languages/mr` (Marathi, before its commit), Pixel_10_Pro (API 37)
 
