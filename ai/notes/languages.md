@@ -1940,6 +1940,24 @@ Cantonese, Kannada, Tamil, Telugu and Marathi: research, OCR measurements, decis
   Paddle's Kannada model is not offered.
 - Fonts: Anek Kannada and Tiro Kannada, for Kannada only. Audio: Lingua Libre first, Wiktionary, the voice.
 
+### Cantonese on `languages/yue` (2026-10-29)
+
+- Built on Chinese's pieces: CantoneseSupport delegates sentences, quotes, the lookup start and character entries to
+  ChineseSupport, uses `ChineseScripts` for the two scripts (tags `yue-Hans`, `yue-HK`, Traditional by default) and
+  `OcrScript.CHINESE`. Jyutping is its own (`CantoneseJyutping`: search keys, tone match, Yale for Wiktionary titles;
+  `reading-yue.js` for the page).
+- The bundle is Yomitan's Cantonese descriptor with the own `cantoneseVariants` processor (OpenCC's HKVariants and
+  TWVariants groups, Apache-2.0, without the pairs that are different words in some uses). Adding the processor to
+  `own-processors.js` renames minified identifiers in other bundles; their sizes and behavior stay the same.
+- Catalog: words.hk and its characters ticked and marked non-commercial (question 24 for the characters), CC-Canto
+  and CC-CEDICT Canto unticked, the rime-cantonese frequency list built on the phone (`corpus-counts`, format
+  `weights`, each word under its variant spellings too: question 25), ML Kit Chinese bundled, Paddle v6 unticked.
+- No Wiktionary pair: English Wiktionary files Cantonese words under Chinese (wty yue-en holds 7 words); no Russian
+  dictionary (the Chinese→Russian glossary has 103 of the 1,000 commonest Cantonese words).
+- Fonts: the system CJK face under `yue-HK` (Hong Kong forms), Noto Sans HK and Noto Serif HK to download. Audio:
+  Lingua Libre, Wiktionary (`Yue-<Yale>`, then `Zh-yue-<characters>`), the voice (`yue-HK`, then `zh-HK`). Tone
+  colors: six, 5 purple and 6 teal.
+
 ## Group 4d research (2026-10-19)
 
 Arabic (ar), Persian (fa), Hebrew (he): scripts written right to left with spaces between words. Urdu (ur), Egyptian

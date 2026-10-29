@@ -186,6 +186,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR55 | Tamil recognition on the device (`testdata/ocr/ta-sample.png`, see LK88): Tesseract tam fast reads the six lines; the non-joiner it writes after a pulli is gone from the recognized text (a tap on மரத்தில் finds மரம், which the joiner would stop), a tap on the last letter of a word that ends in a pulli selects that word; கௌரவம், which the model has no letter for, comes as கெளரவம் and finds கௌரவம் | F | U TamilSupportTest, OcrPageLanguageTest, M | 2026-10-29 |
 | OCR56 | Telugu recognition on the device (`testdata/ocr/te-sample.png`, see LK89): Tesseract tel fast reads the five lines; a tap on a word finds its entry, with no joiner left in the recognized text; a tap on the last letter of a word selects that word | F | U TeluguSupportTest, M | — |
 | OCR57 | Kannada recognition on the device (`testdata/ocr/kn-sample.png`, see LK90), engines set to the device: Tesseract kan fast reads the five lines; the bubble dragged onto each word finds its entry | F | U KannadaSupportTest, M | 2026-10-29 |
+| OCR58 | Cantonese recognition on the device (`testdata/ocr/yue-sample.png`, see LK91), engines set to the device: ML Kit Chinese reads the five lines; the bubble dragged onto each word finds its entry | F | U CantoneseSupportTest, M | 2026-10-29 |
 
 ### LK: lookup
 
@@ -279,6 +280,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK88 | Tamil lookups (Search screen, and the overlay over `testdata/ocr/ta-sample.png` from `scripts/text-image-wpf.ps1 -Font "Nirmala UI" -Culture ta-IN`: "மரத்தில் பறவைகள்", "நானும் மழையில்", "நகரத்தில் நடந்தேன்.", "மாவட்ட சேவைத் துறை", "கௌரவம் வழியில்", "மரங்களிலும் வெளியே", Tesseract tam fast): மரத்தில் finds மரம் with the tag -இல்; மரங்களிலும் மரம் (-கள், -இல், -உம்); நகரத்தில் நகரம்; மழையில் மழை; வழியில் வழி; நானும் நான் (-உம்); மாவட்ட மாவட்டம் (-அ); சேவைத் சேவை with no tag; வீட்டில் and அதற்கு find வீடு and அது as Wiktionary's forms; காலை shows காலை and its listed form of கால், no results of the rules; வௌியே finds வெளியே, கெளரவம் கௌரவம், ஸ்ரீ ஶ்ரீ; செய்துவிடு finds செய் (Wiktionary's "past of" row); in the overlay the words read by Tesseract find the same entries; the popup shows no reading line | F | U TamilSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-29 |
 | LK89 | Telugu lookups (Search screen, and the overlay over `testdata/ocr/te-sample.png` from `scripts/text-image-wpf.ps1 -Font "Nirmala UI" -Culture te-IN`: "రాష్ట్రంలో పిల్లలకు", "పుస్తకాన్ని చదివాను.", "విధానం రోజే మారింది.", "దేశంలోనూ రైతులే", "కుమార్తెలు మనుషులు", Tesseract tel fast): రాష్ట్రంలో finds రాష్ట్రము with the tag -లో; పిల్లలకు పిల్ల (-ల, -కు); పుస్తకాన్ని పుస్తకము (-ఆన్ని); విధానం విధానము and కోసం కోసము (the -ము key); రోజే రోజు (-ఏ); దేశంలోనూ దేశం (-లో, -నూ); రైతులే రైతు; కుమార్తెలు and మనుషులు find కుమార్తె and మనిషి as Wiktionary's plurals; చదివాను finds చదువు by its form row; జీవగర్ర and కత్తిమీదిసాము find జీవగఱ్ఱ and కత్తిమీఁదిసాము; in the overlay the words read by Tesseract find the same entries; the popup shows no reading line | F | U TeluguSupportTest, glue.test.mjs, I LanguageLookupTest, M | — |
 | LK90 | Kannada lookups (Search screen, and the overlay over `testdata/ocr/kn-sample.png` from `scripts/text-image-wpf.ps1 -Font "Nirmala UI" -Culture kn-IN`: "ಮರದಲ್ಲಿ ಮನೆಯಲ್ಲೂ ಹಣ", "ಕಾಡಿಗೆ ಮರಗಳಲ್ಲಿ ಊರಿನಲ್ಲಿ", "ಇದರಲ್ಲಿ ಮನಸ್ಸಿನಲ್ಲಿ ದೇಶದಲ್ಲಿ", "ಶಾಲೆಯಲ್ಲಿ ಪುಸ್ತಕಗಳನ್ನು ಓದು", "ಹೊರಡೋಣ ಕಾಡೂ ಸಭೆಗೆ"): ಮರದಲ್ಲಿ → ಮರ (-ಅಲ್ಲಿ); ಮನೆಯಲ್ಲೂ → ಮನೆ (-ಅಲ್ಲಿ, -ಊ); ಮರಗಳಲ್ಲಿ → ಮರ (-ಗಳ, -ಅಲ್ಲಿ); ಊರಿನಲ್ಲಿ → ಊರು, ಇದರಲ್ಲಿ → ಇದು, ಮನಸ್ಸಿನಲ್ಲಿ → ಮನಸ್ಸು, ದೇಶದಲ್ಲಿ → ದೇಶ, ಶಾಲೆಯಲ್ಲಿ → ಶಾಲೆ (-ಅಲ್ಲಿ); ಕಾಡೂ → ಕಾಡು (-ಊ); ಸಭೆಗೆ → ಸಭೆ (-ಗೆ); ಕಾಡಿಗೆ, ಮರಕ್ಕೆ and ಪುಸ್ತಕಗಳನ್ನು by their Wiktionary forms; ಹೊರಡೋಣ → ಹೊರಡು by its repaired form row; "ಯುನೈಟೆಡ್ ಕಿಂಗ್ಡಂ" → the headword written with ZWNJ | F | U KannadaSupportTest, glue, I LanguageLookupTest, M | 2026-10-29 |
+| LK91 | Cantonese lookups (Search screen, and the overlay over `testdata/ocr/yue-sample.png` from `scripts/text-image-wpf.ps1 -Font "Microsoft JhengHei" -Culture zh-HK`: "我哋今日去飲茶。", "衛生同衛星。", "溫度好高！", "爲咗搵嘢食，", "唔該借條電綫？"): 我哋 with Jyutping ngo5 dei6, one syllable over each character, the page tagged `yue-HK`; text in Taiwan's or OpenCC's forms finds words.hk's: 衛生 → 衞生, 衛星 → 衞星, 溫度 → 温度, 爲咗 → 為咗, 搵 → 揾, 電綫 → 電線; Search: "ngodei" and "ngo5 dei6" find 我哋, "nei hou" finds 你好, "si3" puts third-tone words first | F | U CantoneseSupportTest, CantoneseJyutpingTest, CantoneseVariantsTest, glue, page, I CantoneseLookupTest, M | 2026-10-29 |
 
 ### POP: the popup
 
@@ -342,6 +344,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP56 | Tamil fonts: Popup settings → Text font for Tamil lists the phone's font, then Hind Madurai, Mukta Malar and Tiro Tamil (not Hindi's or Marathi's); a downloaded one draws the sample text; Backup with Tamil alone turned on lists it | F | U FontCatalogFileTest, M | 2026-10-29 |
 | POP57 | Telugu fonts: Popup settings → Text font for Telugu lists the phone's font, then Anek Telugu and Tiro Telugu (not Tamil's or Hindi's); a downloaded one draws the sample text, three-consonant clusters (లక్ష్మి, సామర్థ్యం) included | F | U FontCatalogFileTest, M | 2026-10-29 |
 | POP58 | Kannada fonts: Popup settings → Text font for Kannada lists the phone's font, then Anek Kannada and Tiro Kannada (not Telugu's or Hindi's); a downloaded one draws the sample text, stacked consonants (ಲಕ್ಷ್ಮಿ, ಕ್ಷೇತ್ರ) included | F | U FontCatalogFileTest, M | 2026-10-29 |
+| POP59 | Cantonese fonts and tone colors: Popup settings → Text font for Cantonese lists the phone's font, then Noto Sans HK and Noto Serif HK (not Chinese's five); the headwords draw Hong Kong forms; Tone colors on: the hint names six tones, 我哋 shows ngo5 purple and dei6 teal, 飲茶 jam2 orange and caa4 blue | F | U FontCatalogFileTest, page, M | 2026-10-29 |
 
 ### AUD: audio
 
@@ -390,6 +393,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD41 | Tamil audio: Audio settings list Wiktionary first, Lingua Libre, then the phone's voice; Test with தண்ணீர் | F | U TamilSupportTest, M | 2026-10-29 |
 | AUD42 | Telugu audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with నీరు | F | U TeluguSupportTest, M | 2026-10-29 |
 | AUD43 | Kannada audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with ನೀರು | F | U KannadaSupportTest, M | 2026-10-29 |
+| AUD44 | Cantonese audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with 你好; 🔊 on 我哋 plays a recording; the voice reads the characters as Cantonese (`yue-HK`, or `zh-HK` where no Cantonese voice is installed) | F | U CantoneseSupportTest, M | 2026-10-29 |
 
 ### ANK: Anki
 
@@ -443,6 +447,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK47 | A Tamil Anki note (over `testdata/ocr/ta-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture ta-IN`, four lines: "திரு. ராமன் 15 கி.மீ. நடந்தார்." / "க. சண்முகம் ஜன. 15 அன்று" / "வந்தார். யார் வந்தது?" / "நீ. இங்கே வா. அவர் சென்றார்."): under cloud recognition ராமன் gives "திரு. ராமன் 15 கி.மீ. நடந்தார்." (the title and the unit hold the sentence), நீ gives "நீ." and வா "இங்கே வா." (words of dialogue end sentences); under on-device recognition (Tesseract tam fast, one paragraph) வந்தார் gives "க. சண்முகம் ஜன. 15 அன்று வந்தார்." (a one-syllable initial and a month before a date, across the line end; cloud recognition makes a paragraph of each line of this image) | F | U SentenceTest, TamilSupportTest, M | 2026-10-29 |
 | ANK48 | A Telugu Anki note (over `testdata/ocr/te-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture te-IN`, five lines: "డా. రాజు 15 కి.మీ." / "నడిచారు. కె. చంద్రశేఖర్" / "రావు నిన్న వచ్చారు." / "ఎవరు వచ్చారు? ఇక్కడికి" / "రా. ఆయన వెళ్ళారు."): under on-device recognition (Tesseract tel fast, one paragraph) రాజు gives "డా. రాజు 15 కి.మీ. నడిచారు." (the title and the unit hold the sentence) and నిన్న "కె. చంద్రశేఖర్ రావు నిన్న వచ్చారు." (a one-syllable initial across the line end); under cloud recognition రా gives "ఇక్కడికి రా." (రా ends the sentence; Tesseract tel fast drops that period) | F | U SentenceTest, TeluguSupportTest, M | 2026-10-29 |
 | ANK49 | A Kannada Anki note (over `testdata/ocr/kn-anki.png` from `scripts/text-image-wpf.ps1 -Pitch 96 -Font "Nirmala UI" -Culture kn-IN`, six lines: "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ." / "ನಡೆದರು. ಕೆ. ಶಿವರಾಮ್" / "ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." / "ಅ. 15 ರಂದು ಸಭೆ" / "ನಡೆಯಿತು. ಇಲ್ಲಿಗೆ" / "ಬಾ. ಅವನು ಹೋದನು."), Anki for Kannada: deck and note type Screenlate Test, Word {expression}, Meaning {sentence}: ನಡೆದರು gives "ಡಾ. ರಾಜು 15 ಕಿ.ಮೀ. ನಡೆದರು." (the title and the unit hold the sentence), ಮನೆಗೆ "ಕೆ. ಶಿವರಾಮ್ ನಿನ್ನೆ ಮನೆಗೆ ಬಂದರು." (a one-syllable initial across the line end), ಸಭೆ "ಅ. 15 ರಂದು ಸಭೆ ನಡೆಯಿತು." (the month before a number), ಬಾ "ಇಲ್ಲಿಗೆ ಬಾ." | F | U SentenceTest, KannadaSupportTest, M | 2026-10-29 |
+| ANK50 | A Cantonese Anki note (over `testdata/ocr/yue-sample.png`, see LK91), Anki for Cantonese: deck and note type Screenlate Test, Word {furigana-plain}, Meaning {sentence}: the + menu lists the furigana markers with Jyutping hints; 衞生 gives Word "衞[wai6] 生[sang1]" and Meaning the recognized "衛生同衛星。"; 揾嘢 gives Word "揾[wan2] 嘢[je5]" and Meaning the recognized line 4, joined with "唔該借條電綫？" where the engine keeps the two lines in one paragraph (a comma does not end the sentence; the lines join without a space) | F | U SentenceTest, FieldTemplateTest, FuriganaMarkerHintsTest, M | 2026-10-29 |
 
 ### TR: sentence translation
 
@@ -557,6 +562,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG43 | Tamil setup: Languages offers Tamil (தமிழ்) with India's flag; the download screen ticks Wiktionary ta–en, the transcription, wordfreq and Tesseract tam fast, and offers Tesseract tam best unticked; the bubble shows த; with Japanese, Hindi and Tamil quick the hold menu shows Japan's flag bare and puts HI and TA on the two India flags | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | 2026-10-29 |
 | LNG44 | Telugu setup: Languages offers Telugu (తెలుగు) with India's flag; the download screen ticks Wiktionary te–en, te–ru, te–zh, the transcription and Tesseract tel fast, and offers Tesseract tel best unticked; the bubble shows తె; with Tamil and Telugu quick the hold menu puts TA and TE on the two India flags | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | — |
 | LNG45 | Kannada setup: Languages offers Kannada with India's flag; the download screen ticks Wiktionary kn–en, the transcription and Tesseract kan fast (the main model), and offers Tesseract kan best unticked; the language becomes active and ready | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | 2026-10-29 |
+| LNG46 | Cantonese setup: Languages offers Cantonese with Hong Kong's flag; the download screen ticks words.hk, its characters and the rime-cantonese frequency list, offers CC-Canto, CC-CEDICT Canto and PaddleOCR v6 unticked; ML Kit Chinese needs no download; the language becomes active and ready; the docked bubble shows 粵 | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | 2026-10-29 |
 
 ### SET: settings, backup, appearance
 
@@ -711,6 +717,42 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-29, `languages/yue` (Cantonese, before its commit), Pixel_10_Pro (API 37)
+
+Scope: LNG46, LK91, OCR58, POP59, AUD44 and ANK50, interface in Russian. Words in the Search screen sent with
+`am start -a android.intent.action.PROCESS_TEXT`; the overlay over `testdata/ocr/yue-sample.png`
+(`scripts/text-image-wpf.ps1`, Microsoft JhengHei, zh-HK) with the engines set to the device (ML Kit Chinese), set
+back to both afterwards. words.hk and its characters of 2026-10-28, the rime-cantonese list built on the phone. Anki
+for Cantonese: deck and note type Screenlate Test, Word {furigana-plain}, Meaning {sentence}; real taps on the add
+button. The engine's instrumented tests: 81 passed.
+
+Results: all six passed and moved from N to F, OCR58 and ANK50 with ML Kit's misreadings below.
+- LNG46: Cantonese with Hong Kong's flag under "Не включены"; the download screen ticks Words.hk (14 MB, its
+  non-commercial license shown), Words.hk Honzi (421 kB) and the rime-cantonese frequency list (3.4 MB), offers
+  CC-Canto (1.8 MB), CC-CEDICT Canto (6.3 MB) and PaddleOCR v6 unticked; 18 MB to download, about 44 MB after the
+  import, then "Активный · Готово"; the script setting shows Traditional with the Jyutping hint; the docked bubble
+  shows 粵 and the hold menu the JP, IN and HK flags.
+- LK91: every word as listed in the case. 我哋 shows ngo5 over 我 and dei6 over 哋, the page tagged `yue-HK`.
+  Frequency ranks: 衞生 13810, 温度 4648, 衞星 6522, 揾 81, 飲茶 7392; 我哋, 為咗 and 電線 have none (the list
+  lacks 我哋 and 為咗, which the input method composes from parts, and ranks 電線 beyond its first 100,000 words).
+- OCR58: ML Kit read all five lines as 4 paragraphs; 今日, 衛生 (→ 衞生), 我哋, 飲茶, 溫度
+  (→ 温度), 高, 好, 爲 (→ 為), 搵嘢 (→ 揾嘢), 唔該 and 電綫 (→ 電線) found their entries. In this font ML Kit read
+  the second 衛 (of 衛星) as 偉, 咗 as 吃 and 嘢 as 嘢野, and dropped the comma of line 4.
+- POP59: the phone's Chinese font, Noto Sans HK (11.9 MB) and Noto Serif HK (16.8 MB), with "Только для
+  кантонского текста"; Noto Sans HK downloaded and chosen draws the headwords (`yue-HK`), then deleted. Tone colors:
+  the hint names six tones; ngo5 purple, dei6 teal, jam2 orange, caa4 blue.
+- AUD44: Lingua Libre, Wiktionary, then the phone's voice; Test with 你好: a Lingua Libre recording, Wiktionary's
+  Yue-nei5hou2.ogg and Zh-yue-你好.opus, and the phone's voice (a voice was found: no "No text-to-speech voice"
+  line). 我哋 played Lingua Libre's recording.
+- ANK50: the + menu shows {furigana} "Ютпхин над иероглифами" and {furigana-plain} "Ютпхин текстом: 你[nei5]
+  好[hou2]". 衞生 gave Word "衞[wai6] 生[sang1]" and Meaning "衛生同偉星。"; 揾嘢 gave "揾[wan2] 嘢[je5]" and
+  "爲吃搵嘢野食": the sentences are ML Kit's text (see OCR58), and line 5 came as another paragraph, so the sentence
+  of line 4 stops there.
+- Driving the overlay: after the popup is closed through `popup-eval.mjs`, dragging the floating bubble moves it
+  without a lookup (its scan is gone); a tap on the floating bubble scans again. The home screen showed "Плавающая
+  кнопка не отображается: система остановила службу" for a moment once while the service was running; it changed to
+  "Плавающая кнопка на экране" before the screen settled.
 
 ### 2026-10-29, `languages/kn` `ec6c47e0` (the main session's recheck before the merge), Pixel_10_Pro (API 37)
 
