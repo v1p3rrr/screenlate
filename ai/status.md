@@ -1,5 +1,61 @@
 # Status
 
+## Development status audit (2026-11-02)
+
+The owner requested an overview of completed work and everything still open. This was a read-only development
+audit: no application changes, builds, device operations or new review runs. Remote refs were refreshed. Sources:
+`origin/languages/main` at `d8fdfc5a`, `origin/main` at `a1055501`, their plans and test log, and the additional
+phone-log note `9658bda2` on `origin/cloud/group-6-research-2026-10-29` (not merged into the integration branch).
+This audit records evidence and existing decisions; it does not change the implementation order or approve work.
+
+- Latest release tag: v0.2.3. The integration branch implements 62 source languages, through group 5e, camera/photo
+  lookup, the settings rework, shared flag badges and the 17 interface locales. Group 5e is merged; its final
+  follow-ups are separate from the group's initial implementation. The recorded Cantonese merge checks include
+  2,048 unit tests, lint, page/glue/catalog/Python checks, 60 reproducible bundles and 81 engine instrumented tests.
+  Later follow-ups have their own narrower checks; these counts are not a new final regression run.
+- Already approved, still to build: group 4e questions 23-27 (Kazakh/Kyrgyz suffix consonants and result ordering,
+  the "without" rule, pronoun cases and PanLex Title Case filtering); group 5e questions 27-28 (words.hk frequency
+  and measured Marathi irregular past stems); folded-marks question 3 (measure headword filtering for Hungarian,
+  Tamil and Telugu before enabling it where justified). They were deferred until the weekly limit reset.
+- Additional approved camera work is recorded only on `9658bda2`: a bubble held out over a photo being recognized
+  shows the loading state until text attaches or recognition fails. Not built; CAM4's loading variant is unchecked.
+- Open defects/investigations: delayed popup rendering (measure the whole path on the phone), PaddleOCR paragraph
+  lines and overlapping Russian boxes, the duplicate button opening an empty AnkiDroid browser, English language
+  names on the first start under a Russian interface, and the false Home service-stopped card after a quick rebind.
+  The Anki browser defect is distinct from the single failed duplicate query the owner chose to leave in the
+  phone-log session. An Uzbek Lingua Libre apostrophe mismatch is also recorded in the earlier summary.
+- Release dependencies: decide stable hosting for converted dictionaries; catch up the private archive and show
+  the duplicate list before deletion; publish the five waiting Paddle models only on the owner's chosen date
+  (Thai, Devanagari, Arabic, Tamil, Telugu). `notes/hosting-files.md` is the inventory. Some dictionaries remain
+  unbuilt, including Mueller and the OpenRussian morphology dictionary.
+- Validation still needed: final regression on the chosen release build, outstanding new cases (including
+  LK92-LK94, DIC51-DIC52, LNG48 and the remaining LNG47 screens), phone-only camera/overlay behavior, popup and
+  scan performance, release/R8 and upgrade checks. The complete 62-language test-model composition is itself a
+  separate backlog task; writing its missing cases and executing them are separate jobs.
+- New language work waits for the owner's command: group 6's seven languages (Catalan, Galician, Icelandic,
+  Afrikaans, Tatar, Bashkir, Sanskrit) are researched, not implemented; group 5f (Yiddish, Egyptian Arabic,
+  Assyrian Neo-Aramaic, Urdu) remains listed in the language plan, without an implementation in `Language`.
+- Larger deferred work: the module review (the existing 18-module progress table is empty), the later repeated
+  full review, a separate translation review per locale (including Arabic/Persian/Hebrew catalog and font texts),
+  network audit/offline mode, local audio collections, sending text to other apps, and additional interface locales.
+  Beta packaging and update feeds are planned before the full language release; no release is authorized here.
+- Upstream follow-up: wiktextract issue 1734 and propagation through kaikki/wty. Its current online state could
+  not be verified in this audit. The existing fallback decision remains: rename the affected Turkic form tags
+  locally if corrected releases do not arrive in time.
+
+Corrections to stale open-item lists below:
+
+- DIC24 and DIC25 have successful device runs in `test-model.md` (2026-10-22; DIC24 also on main 2026-10-28).
+- The bubble glyph, docked hold menu, RTL interface release, converter rebuilds, flag badges, Marathi regular verb
+  endings, Tamil/Telugu word forms and Uzbek/Azerbaijani forms-headword filtering are implemented. Earlier "to
+  build" or "open question" wording is historical; use later progress entries and the decisions.
+- The phone's regular Dev-build log was already read on `9658bda2`; it reports no application crash or vendor kill
+  in that interval. This does not establish that the separate temporary diagnostics branch has been exported and
+  cleaned up. Its export/removal state still needs confirmation.
+- The old root checkout is now 538 commits behind `origin/languages/main`, not the 340 recorded below. Its local
+  `languages/ocr-engines` status and the local `languages/main` ref are stale. The main worktree was fast-forwarded
+  to the fetched `origin/main` before this documentation update; no feature branches were merged or deleted.
+
 ## Start here: open items of all work (2026-10-29)
 
 A session that opens this file in another checkout may read an older copy: the current one is on `languages/main`
