@@ -116,6 +116,20 @@ which edge swipes the system takes from them. Measured on the emulator (Pixel_10
 - Recognized text and looked-up words must never be added to timing logs. One-shot local OCR fixtures, CPU profiles
   and media used for this diagnosis stay in ignored `testdata/local-research/popup-bugs-2026-11-02/`.
 
+### Search input latency (2026-11-03)
+
+Typing `いつまでも` with the phone's Japanese romaji keyboard ran `PageState.build` on the main thread: a sampled
+method trace measured up to 54.239 ms per state, 260.396 ms over eight preparations. `YomitanSorter.sort` also ran
+there (up to 22.366 ms). Search now runs lookup preparation and sorting on `Dispatchers.Default`, as well as the
+page JSON construction; native engine work keeps its own IO dispatcher. Link and theme updates check that their
+results are still current after background preparation. The search's existing 150 ms debounce is unchanged.
+
+The repeated keyboard test kept the whole query and showed its matching article. The new trace observed
+`PageState.build` on a worker and none on main. An earlier post-change capture had no search work because the phone
+had locked; it is not a passing result. The regression oracle is the real IME/Compose/WebView path and a sampled
+main-thread profile (LK95); a stand-in JVM dispatcher test would not exercise that input path. Do not use aggregate
+`gfxinfo` counts from different window lifetimes as a before/after comparison.
+
 - `scripts/debug-device.sh show <file> default|swipe` opens the debug image viewer with the system bars hidden in the
   given behavior (`MainActivity.debugFullscreen`, debug builds only).
 - `adb shell dumpsys window windows | grep ty=ACCESSIBILITY_OVERLAY` shows the overlay windows' positions and sizes;

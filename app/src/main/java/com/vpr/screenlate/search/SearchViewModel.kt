@@ -25,6 +25,7 @@ import com.vpr.screenlate.overlay.install.LanguageInstallation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +36,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 
 /**
@@ -90,15 +92,15 @@ class SearchViewModel @Inject constructor(
         language: Language = this.language.value,
         primaryReading: String? = null,
         status: InstallationStatus? = null,
-    ): SearchResults {
+    ): SearchResults = withContext(Dispatchers.Default) {
         val trimmed = text.trim()
         val readiness = status ?: installation.current(language)
-        if (!readiness.dictionaryReady) return SearchResults(trimmed, language, emptyList(), noTermDictionary = null, installation = readiness)
+        if (!readiness.dictionaryReady) return@withContext SearchResults(trimmed, language, emptyList(), noTermDictionary = null, installation = readiness)
         val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, language, primaryReading = primaryReading) }
-        if (found.isNotEmpty()) return SearchResults(trimmed, language, found, noTermDictionary = null)
+        if (found.isNotEmpty()) return@withContext SearchResults(trimmed, language, found, noTermDictionary = null)
         val kanji = orElse(null) { lookup.characterEntry(trimmed, language) }
         val noTermDictionary = orElse(null) { lookup.noTermDictionary(language) }
-        return SearchResults(trimmed, language, found, noTermDictionary = noTermDictionary, kanji = kanji)
+        SearchResults(trimmed, language, found, noTermDictionary = noTermDictionary, kanji = kanji)
     }
 
     suspend fun kanji(character: String): KanjiResult =

@@ -207,6 +207,16 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 - `CropEditor` removes its window through a main-thread Handler on coroutine cancellation (`View.post` never runs on
   a view that was not attached); `CropEditorTest` records windows through a `WindowManager` proxy.
 
+## Vertical continuation with unequal ink widths (2026-11-03)
+
+The phone's final cloud result split `…夢を壊したく` and `ないけど` into adjacent paragraphs. The kanji column's
+box was about 73 px wide, the kana column's 51 px, outside ReadingOrder's 0.75 size ratio, although both had a
+vertical character advance of about 54 px. Comparing ink width alone therefore cut the negative ending. Text size
+now takes the smaller of column width and height per code point; geometric gap and margin checks remain in force.
+The original screenshot's separate cloud response had closer widths and did not reproduce it; use the live-scan
+geometry in ReadingOrderTest instead. Unit tests, a native engine test and a phone scan retain all of
+`壊したくない`; the separate balloon below remains separate. The response itself stays in ignored test data.
+
 ## Right-to-left lines (2026-10-20)
 
 Every engine gives words with boxes; `OcrLine.rightToLeft` tells `TextLayout` to share a word's box among its

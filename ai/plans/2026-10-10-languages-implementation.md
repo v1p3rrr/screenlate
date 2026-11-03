@@ -261,6 +261,17 @@ Requests 1–19 are in the previous plan. New ones:
     screenshots, which another font or engine misreads differently. Answers of the same evening: decision row "Marks
     folded in the lookup"; built as a step of its own after group 5c's Uzbek and before group 5d.
 
+80. (2026-11-02 to 2026-11-03) Phone bug report, build `0.2.3-4a637b67-min`: missing glyphs in Japanese
+    phonetic transcriptions with Klee One selected only for Japanese, no custom CSS; a manga lookup highlights
+    `壊したく` without `ない` in the next column; the attached video shows delayed popup display. Diagnose and fix
+    the defects. The owner connected the phone for reproduction and emphasized the popup delay as the priority.
+    The source screenshot's cloud recognition was explicitly approved for the local diagnosis. Original media,
+    captured responses, phone fonts and logs remain in ignored `testdata/local-research/popup-bugs-2026-11-02/`.
+
+81. (2026-11-03) Search typing lag: entering Japanese text such as `いつまでも` visibly delays the characters
+    appearing in the input and then the results. Finish the phone checks of request 80 first, then reproduce and
+    measure input handling, lookup and rendering separately; determine whether it shares the popup bottleneck.
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -502,7 +513,9 @@ Decided when the first language or group 1 is ready, before it is merged into th
 - Popup delay check (owner, 2026-10-28): on the phone the popup comes noticeably late after the aim reaches a word,
   and it does not look like the debounce but like slowness. Measure the path from the aim's stop to the drawn popup
   (hit test, lookup, page render, window show) on the phone and the emulator from the app's log timings, compare with
-  earlier releases, and remove what is slow.
+  earlier releases, and remove what is slow. Investigated and optimized on the phone on 2026-11-03 (request 80):
+  batch dictionary-chip placement, skip offscreen entry layout and reset scrolling before replacing the DOM.
+  Measured limits and the regression checks are in `notes/overlay-system-ui.md`, POP61 and LK95.
 - More interface languages (owner, 2026-10-28): choose, among the languages the app reads, the most widely used ones
   that would be worth translating the interface into later (the interface has 14 locales now). Researched on
   2026-10-29 (cloud session): the ranked list with reasons is in `notes/translations.md`, "Candidate interface
@@ -1429,6 +1442,13 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-11-03: recorded the phone's transcription, vertical negative-ending and popup-delay reports (request 80),
+  the exact font scope and the phone reproduction. The existing popup-delay backlog item remains in scope.
+- 2026-11-03: recorded search typing lag (request 81), to investigate after completing request 80's current phone checks.
+- 2026-11-03: requests 80-81: fixed phonetic glyph fallback, vertical continuation across narrower kana columns,
+  excessive page layout and main-thread search preparation. Phone checks and profiles are recorded in POP60-POP62,
+  LK95 and the rendering notes. Temporary diagnostics are removed from the source; final build checks follow.
 
 - 2026-10-14: request 31: release APKs of `languages/main` (0e24b51, built locally with `-Pscreenlate.splitAbis`)
   against v0.2.3: arm64-v8a 50.6 MB (48.4, +2.2), armeabi-v7a 45.4 MB (43.6, +1.9), x86_64 51.4 MB (49.1, +2.3),

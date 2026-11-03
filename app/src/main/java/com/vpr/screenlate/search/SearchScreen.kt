@@ -64,8 +64,10 @@ import com.vpr.screenlate.overlay.web.noResultsText
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.LocalEInk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
@@ -119,9 +121,10 @@ fun SearchScreen(
                     val shown = viewModel.results.value
                     scope.launch {
                         val found = viewModel.search(query, primaryReading = primaryReading)
+                        val state = state(context, currentTheme, found)
                         // A new search text replaced the page meanwhile; this lookup belonged to the old one.
                         if (viewModel.results.value !== shown) return@launch
-                        holder.page.push(state(context, currentTheme, found))
+                        holder.page.push(state)
                         holder.notes.onResultsShown(found.results.firstOrNull()?.term?.let { it.expression to it.reading })
                     }
                 }
@@ -206,7 +209,9 @@ fun SearchScreen(
         if (theme == styledTheme) return@LaunchedEffect
         styledTheme = theme
         val current = results ?: return@LaunchedEffect
-        page.update(state(context, theme, current))
+        val state = state(context, theme, current)
+        if (viewModel.results.value !== current) return@LaunchedEffect
+        page.update(state)
     }
 
     Scaffold(
@@ -294,17 +299,21 @@ private fun EmptySearch() {
     }
 }
 
-private fun state(context: android.content.Context, theme: PageTheme, results: SearchResults): String = PageState.build(
-    context = context,
-    theme = theme,
-    text = results.text,
-    matched = PageState.matchedLength(results.results, results.kanji),
-    results = results.results,
-    message = when {
-        results.installation != null -> results.installation.message(context)
-        results.results.isNotEmpty() || results.kanji != null -> null
-        else -> context.getString(noResultsText(results.noTermDictionary))
-    },
-    kanji = results.kanji,
-    language = results.language,
-)
+/** Large result JSON is prepared away from the thread that handles typing and composition. */
+private suspend fun state(context: android.content.Context, theme: PageTheme, results: SearchResults): String =
+    withContext(Dispatchers.Default) {
+        PageState.build(
+            context = context,
+            theme = theme,
+            text = results.text,
+            matched = PageState.matchedLength(results.results, results.kanji),
+            results = results.results,
+            message = when {
+                results.installation != null -> results.installation.message(context)
+                results.results.isNotEmpty() || results.kanji != null -> null
+                else -> context.getString(noResultsText(results.noTermDictionary))
+            },
+            kanji = results.kanji,
+            language = results.language,
+        )
+    }
