@@ -45,6 +45,35 @@ class ReadingOrderTest {
     }
 
     @Test
+    fun `a manga's negative ending continues in the shorter next column`() {
+        // Cloud response for the reported screen, with an unrelated balloon below the two columns.
+        val layout = layout(
+            OcrParagraph(listOf(line("･･･夢を壊したく", Box(999f, 572f, 1045f, 940f)))),
+            OcrParagraph(listOf(line("ないけど", Box(921f, 573f, 972f, 780f)))),
+            OcrParagraph(listOf(line("なや", Box(929f, 953f, 990f, 1098f)))),
+        )
+        val paragraph = layout.paragraphs.first { it.joinToString("") { character -> character.text }.contains("壊") }
+        val start = TextPosition(paragraph.first().paragraphIndex, paragraph.indexOfFirst { it.text == "壊" })
+
+        assertThat(layout.textFrom(start, 20)).isEqualTo("壊したくないけど")
+        assertThat(layout.boxesFor(start, "壊したくない".length)).hasSize(2)
+        assertThat(layout.readingParagraphs).hasSize(2)
+    }
+
+    @Test
+    fun `narrow kana continue a wider kanji column at the same character advance`() {
+        // Final cloud geometry from the live scan: kana have narrower ink boxes than the adjacent kanji.
+        val layout = layout(
+            OcrParagraph(listOf(line("ないけど", Box(956.79f, 1394.16f, 1008.28f, 1610.83f)))),
+            OcrParagraph(listOf(line("…夢を壊したく", Box(1016.47f, 1394.16f, 1089.94f, 1774.68f)))),
+            OcrParagraph(listOf(line("やめとき", Box(1014f, 1834.61f, 1086.39f, 2048.18f)))),
+        )
+
+        assertThat(layout.textAt(1050f, 1595f, length = 20)).isEqualTo("壊したくないけど")
+        assertThat(layout.readingParagraphs).hasSize(2)
+    }
+
+    @Test
     fun `horizontal paragraphs stay apart`() {
         // A post's header and its text: Lens groups wrapped horizontal lines itself, its paragraphs are separate things.
         val layout = layout(
