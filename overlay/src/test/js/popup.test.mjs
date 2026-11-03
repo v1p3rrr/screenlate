@@ -821,6 +821,23 @@ test('distinct transcriptions show like accents and open their dictionaries in t
     assert.equal(again.querySelector('.pitch-more').textContent, '+2');
 });
 
+test('phonetic transcriptions keep their font when the page uses another script font', () => {
+    const style = page.document.createElement('style');
+    style.textContent = readFileSync(new URL('../../main/assets/popup/popup.css', import.meta.url), 'utf8');
+    page.document.head.append(style);
+    Popup.setAppearance({ lang: 'ja', fontFamily: '"Script font", sans-serif' });
+    const entry = result('壊す', 'こわす');
+    const ipa = '[ko̞β̞a̠sɨ]';
+    entry.term.pitches = [{ dictionary: 'IPA', transcriptions: [ipa] }];
+
+    Popup.render(state({ results: [entry] }));
+
+    const transcription = content.querySelector('.transcription');
+    assert.equal(transcription.textContent, ipa);
+    assert.match(page.window.getComputedStyle(transcription).fontFamily, /Screenlate Phonetic/);
+    assert.equal(page.document.documentElement.style.getPropertyValue('--font-family'), '"Script font", sans-serif');
+});
+
 const ENGLISH_REGIONS = [{ id: 'us', codes: ['us'] }, { id: 'uk', codes: ['uk', 'gb'] }, { id: 'other', codes: [] }];
 
 function transcribed(transcriptions, transcriptionRegions) {

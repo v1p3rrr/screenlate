@@ -1,3 +1,10 @@
+/* Some system UI fonts omit IPA letters and combining marks; Android's Roboto contains them. */
+@font-face {
+    font-family: "Screenlate Phonetic";
+    src: local("NotoSans-Regular"), local("Noto Sans Regular"), local("Roboto-Regular"), local("Roboto Regular");
+    font-display: swap;
+}
+
 :root {
     /* Slightly off white with the card's violet border, so the popup stands out on white pages. */
     --bg: #f8f6fd;
@@ -648,6 +655,7 @@ button.frequency {
 }
 
 .transcription {
+    font-family: "Screenlate Phonetic", sans-serif;
     font-size: 1.05em;
 }
 

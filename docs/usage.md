@@ -178,6 +178,8 @@ When something breaks outside Screenlate (AnkiDroid removed or its permission re
 - Hold text in an entry to select it, drag the handles to widen the selection, and tap Copy above it; furigana are left out. Back or a tap outside the popup ends the selection.
 - The copy button in an entry's header copies the word. With definition copying on (Popup settings), a copy button next to each dictionary's name copies that dictionary's definitions for the entry, without the word.
 
+Phonetic transcriptions use a system font with phonetic symbols, independently of the selected popup text font.
+
 Text selected in any app can also be looked up through the "Look up in Screenlate" entry of the selection menu, and the Search screen accepts typed text.
 
 In Chinese, the Search screen also finds words by pinyin typed in Latin letters, with or without tones: "nihao", "ni hao", "ni3hao3" and "nǐhǎo" all find 你好, and ü can be typed as v. Typed tones and an apostrophe between syllables (xi'an) rank the words that have them first; otherwise the frequency dictionary decides. Words are shown in the script chosen on the Languages screen. A dictionary imported by an earlier version must be imported again for this.

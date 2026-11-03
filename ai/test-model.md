@@ -349,6 +349,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP58 | Kannada fonts: Popup settings → Text font for Kannada lists the phone's font, then Anek Kannada and Tiro Kannada (not Telugu's or Hindi's); a downloaded one draws the sample text, stacked consonants (ಲಕ್ಷ್ಮಿ, ಕ್ಷೇತ್ರ) included | F | U FontCatalogFileTest, M | 2026-10-29 |
 | POP59 | Cantonese fonts and tone colors: Popup settings → Text font for Cantonese lists the phone's font, then Noto Sans HK and Noto Serif HK (not Chinese's five); the headwords draw Hong Kong forms; Tone colors on: the hint names six tones, 我哋 shows ngo5 purple and dei6 teal, 飲茶 jam2 orange and caa4 blue | F | U FontCatalogFileTest, page, M | 2026-10-29 |
 
+| POP60 | Phonetic transcriptions keep IPA combining marks and letters (Japanese 壊す, `[ko̞β̞a̠sɨ]`) on a phone whose default UI font lacks them; changing the popup's script font, including Klee One only for Japanese, leaves the transcription readable and the Japanese text in the chosen font | N | P `phonetic transcriptions keep their font…`, M | 2026-11-03 (phone: equivalent custom CSS with local Roboto, same installed build) |
+
 ### AUD: audio
 
 | ID | Check | Cat | Cov | Checked |
