@@ -53,6 +53,15 @@ Findings from the emulator (Android 17, WebView/Chrome), 2026-09-27.
 
 ## Checking
 
+- Phone report, 2026-11-03: the default sans face `HONORSansVFNormal.ttf` lacks U+031E, U+0320 and U+0268,
+  which Japanese Wiktionary uses in `[ko̞β̞a̠sɨ]`. In the phone's WebView these show as crossed boxes even with
+  Klee One limited to Japanese and no custom CSS. The same phone's `Roboto-Regular.ttf` has all three; declaring
+  a face through `local("Roboto-Regular")` and applying it only to `.transcription` removes the boxes on the same
+  installed build. The page now uses `Screenlate Phonetic` for transcription buttons, resolved from local Noto Sans
+  or Roboto names, independently of the script font. No font file is bundled or downloaded by this rule. The
+  regression page test keeps the original IPA text and checks that changing the page font does not replace the
+  transcription's face. Local before/after captures and glyph coverage probes stay under ignored test data.
+
 - `scripts/popup-eval.mjs` evaluates JavaScript in the page of a debug build. Glyph comparisons: draw 直 on a canvas (`ctx.lang` set) with each font and hash the alpha channel; equal hashes mean equal forms.
 - Chrome on a fresh emulator asks to accept its terms; use the app's own page instead.
 - Any page in a plain WebView: the OCR harness's test APK (`experiments/ocr-compare`) has `PageActivity`, which opens

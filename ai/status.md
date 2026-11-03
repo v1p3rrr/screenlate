@@ -1,5 +1,40 @@
 # Status
 
+## Phone lookup fixes and search input (2026-11-03)
+
+Source: `codex/popup-diagnostics-2026-11-02` in `.worktrees/camera`, based on `languages/main` `d8fdfc5a`.
+Application fixes are committed through `7430d083`; requests 80-81 of the language plan record the scope.
+The development audit of 2026-11-02 below is preserved; its popup-delay investigation is handled by this work.
+
+- IPA (`5a4cb3d6`): a dedicated local system phonetic face keeps IPA letters and combining marks readable when the
+  default UI font lacks them. Klee One remains selected only for Japanese. The final phone check uses the bundled
+  CSS with the custom CSS field restored to its originally empty value.
+- Vertical continuation (`8b886cad`): the live cloud result gave a 73 px kanji column and a 51 px kana column at the
+  same approximately 54 px character advance. ReadingOrder now compares text size using advance as well as ink
+  width. The phone scan highlights all of `壊したくない` and shows its negative ending; the lower balloon stays apart.
+- Popup rendering (`9bb7e33e`): dictionary-chip style reads are batched before mutations, offscreen entries skip
+  layout, and new lookups reset scrolling before replacing their old content. A 32-entry page repeatedly hit the
+  600 ms visual fallback before; optimized visual callbacks were observed at about 0.38-0.57 s, small entries at
+  54-180 ms. The original recording's highlight-to-popup delay is about 1.4 s. These are different stages, not an
+  assertion that cloud recognition or every large lookup is instant. Back restored 1800 px exactly; focus and a
+  selection reached the last of 32 entries.
+- Search input (`7430d083`): real keyboard input of `いつまでも` found main-thread JSON preparation up to 54.239 ms
+  and sorting up to 22.366 ms. Search preparation and page JSON now run on workers. The repeated phone profile
+  observed the page build on a worker and none on main, with the complete query and its matching article visible.
+  The existing 150 ms results debounce is unchanged.
+- Checks passed: 157 page tests; full-project JVM run, 2054 tests with no failures or errors (4 skipped), including
+  203 OCR and 272 overlay tests; the isolated native negative-ending lookup test on the phone; app lint and the
+  final minified arm64 build. The installed non-debuggable build was checked again for IPA, the negative form and
+  real keyboard input of the complete `いつまでも` query.
+- Cleanup: temporary source probes are removed; temporary phone OCR fixtures, recordings, method traces and the
+  DevTools forwarding port are removed. The test package is uninstalled, the emulator is shut down and its own
+  lock is removed. `stay_on_while_plugged_in` is restored to its original 0. Raw captures, logs and profiling tools
+  remain only in ignored local test data.
+- Installed: `0.2.3-7430d083-min`, package `com.vpr.screenlate.debug`, matching the original signing certificate,
+  without `DEBUGGABLE`. APK (23,057,283 bytes) and R8 mapping are in ignored
+  `testdata/local-research/popup-bugs-2026-11-02/screenlate-dev-7430d083-min.*`. Code is pushed to
+  `origin/languages/main` and `origin/codex/popup-diagnostics-2026-11-02`; changed AI records are copied to `main`.
+
 ## Development status audit (2026-11-02)
 
 The owner requested an overview of completed work and everything still open. This was a read-only development

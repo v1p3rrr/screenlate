@@ -284,6 +284,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK92 | Telugu place words from their dative: in the Search screen ఇక్కడికి, అక్కడికి, ఎక్కడికి and కిందికి find ఇక్కడ, అక్కడ, ఎక్కడ and కింద with the rule -కి; వారికి and మందికి show no noun వార ("week") or మంద ("herd") from that rule | N | U glue `telugu endings come off direct and oblique stems…`, M | |
 | LK93 | Marathi verb forms (Search screen, wty-mr-en): येतो → येणे (-तो), सांगतात → सांगणे (-तात), बसला → बसणे (-ला) and the noun बस only with the dative, मिळाला → मिळणे, पाहिले → पाहणे, सांगितले → सांगणे, घेतला and घेतलेल्या → घेणे, असलेल्या → असणे (-लेल्या), दिसून → दिसणे (-ून), घेऊन → घेणे (-ऊन), मिळालाच → मिळणे (-ला, -च); the rule names show in the popup in English and Russian; नेते, नेता, चाहते and सांगली show no verb; करतोस and बसलास find no verb (left out) | N | U glue `marathi present, past and conjunctive endings…`, M | |
 | LK94 | Word forms count their headwords as entries in Uzbek and Azerbaijani (Russian chosen; uz–ru with the Uzbek word forms, az–ru with the Azerbaijani ones, both imported with this version): davom, Davom and давом show no davo "my" from the rules; kitoblarimizda still finds kitob, boʻlsa boʻlmoq; yazı and YAZI show nothing from the rules, kitablarımızda finds kitab and yazdı yazmaq; word forms imported by an older version still look up as before, and updating the item adds the list | N | U RuleOnlyResultsTest, UzbekSupportTest, AzerbaijaniSupportTest, LanguageRulesIsolationTest, I LanguageLookupTest, M | |
+| LK95 | Type いつまでも with the Japanese romaji keyboard while intermediate searches run: every character remains in the field and the final article matches the whole query; sorting and page-state serialization run on workers, not on the input thread; a newer search wins over an older link or theme preparation | F | M (same-device method profile and keyboard input) | 2026-11-03 |
 
 ### POP: the popup
 
@@ -348,6 +349,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP57 | Telugu fonts: Popup settings → Text font for Telugu lists the phone's font, then Anek Telugu and Tiro Telugu (not Tamil's or Hindi's); a downloaded one draws the sample text, three-consonant clusters (లక్ష్మి, సామర్థ్యం) included | F | U FontCatalogFileTest, M | 2026-10-29 |
 | POP58 | Kannada fonts: Popup settings → Text font for Kannada lists the phone's font, then Anek Kannada and Tiro Kannada (not Telugu's or Hindi's); a downloaded one draws the sample text, stacked consonants (ಲಕ್ಷ್ಮಿ, ಕ್ಷೇತ್ರ) included | F | U FontCatalogFileTest, M | 2026-10-29 |
 | POP59 | Cantonese fonts and tone colors: Popup settings → Text font for Cantonese lists the phone's font, then Noto Sans HK and Noto Serif HK (not Chinese's five); the headwords draw Hong Kong forms; Tone colors on: the hint names six tones, 我哋 shows ngo5 purple and dei6 teal, 飲茶 jam2 orange and caa4 blue | F | U FontCatalogFileTest, page, M | 2026-10-29 |
+| POP60 | Phonetic transcriptions keep IPA combining marks and letters (Japanese 壊す, `[ko̞β̞a̠sɨ]`) on a phone whose default UI font lacks them; changing the popup's script font, including Klee One only for Japanese, leaves the transcription readable and the Japanese text in the chosen font | F | P `phonetic transcriptions keep their font…`, M | 2026-11-03 (phone, bundled CSS, custom CSS empty) |
+| POP61 | A large lookup (32 entries with structured definitions) renders without recalculating styles after each dictionary chip or resetting scroll after replacement; offscreen entries remain scrollable and focusable; a definition link and Back restore a nonzero scroll offset; copying a selection still includes its text across entries | F | P `dictionary chips in many definitions…`, `a new lookup resets scrolling…`, M | 2026-11-03 (phone: offset 1800 restored exactly, last entry focus and selection checked) |
+| POP62 | Vertical manga columns with narrower kana continue the preceding wider kanji column at the same character advance: 壊したくない spans both columns and shows the negative ending; unrelated text below stays separate | F | U ReadingOrderTest, I HoshidictsEngineTest.keepsTheNegativeEndingOfAnUndesiredAction, M | 2026-11-03 (phone scan and isolated engine test) |
 
 ### AUD: audio
 
@@ -724,6 +728,33 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-03, `codex/popup-diagnostics-2026-11-02` through `7430d083`, phone (Android 15)
+
+Scope: requests 80-81, POP60-POP62 and LK95. Starting app `0.2.3-4a637b67-min`, Klee One only for Japanese,
+no custom CSS. Final app `0.2.3-7430d083-min`, debug-signed Dev package, release optimization and packaging,
+not debuggable, installed over the starting app with its data retained.
+
+- POP60: missing IPA glyphs reproduced; equivalent local Roboto CSS proved the font cause, then the bundled fix
+  was checked with custom CSS empty. Klee One remains selected. N → F.
+- POP62: the original screenshot's cloud geometry passed, but the live scan's narrower kana column made the new
+  ReadingOrder test red (`壊したく` without `ない`). The corrected size estimate passes all 203 OCR tests, an
+  isolated native lookup test and the phone scan: both columns highlight `壊したくない`, its negative ending shows,
+  and the lower text stays separate. F.
+- POP61: the 32-entry page repeatedly reached the 600 ms visual fallback. Profiles, chip-placement and scroll-reset
+  red/green page tests guided the layout changes. Optimized callbacks were observed around 0.38-0.57 s for large
+  results and 54-180 ms for small ones; the supplied video's roughly 1.4 s is highlight-to-popup, a broader interval.
+  Back restored 1800 px exactly, focus reached the last of 32 copy buttons and selection included the last entry.
+  No clipboard or Anki notes were written by those checks. N → F.
+- LK95: `いつまでも` typed using the existing Japanese romaji keyboard. The original sampled method trace showed
+  JSON work on main up to 54.239 ms and sorting up to 22.366 ms. The repeated trace observed page JSON on a worker,
+  none on main. The final non-debuggable APK was typed into again and showed the complete query's article. F.
+- Full-project `testDebugUnitTest`: 2054 tests, 0 failures/errors, 4 skipped. Page tests: 157/157. Native engine:
+  `keepsTheNegativeEndingOfAnUndesiredAction` passes on the phone in its own test package, then uninstalled. App lint
+  and `assembleRelease` pass. This is a focused phone regression, not a new full 62-language device run.
+- Temporary source probes, phone fixtures, recordings, traces and the DevTools forward were removed. Custom CSS
+  is empty, the USB stay-awake setting is restored to 0; the emulator and its own lock are gone. Original media,
+  captures, scripts, APKs and mapping remain in ignored local test data.
 
 ### 2026-10-29, `languages/yue` (Cantonese, before its commit), Pixel_10_Pro (API 37)
 
