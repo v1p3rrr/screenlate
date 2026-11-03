@@ -1448,7 +1448,8 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-11-03: recorded search typing lag (request 81), to investigate after completing request 80's current phone checks.
 - 2026-11-03: requests 80-81: fixed phonetic glyph fallback, vertical continuation across narrower kana columns,
   excessive page layout and main-thread search preparation. Phone checks and profiles are recorded in POP60-POP62,
-  LK95 and the rendering notes. Temporary diagnostics are removed from the source; final build checks follow.
+  LK95 and the rendering notes. Temporary diagnostics are removed. Full JVM run: 2054 tests, 4 skipped, no errors;
+  page tests 157/157, app lint and the minified release pass. `0.2.3-7430d083-min` is installed and checked on the phone.
 
 - 2026-10-14: request 31: release APKs of `languages/main` (0e24b51, built locally with `-Pscreenlate.splitAbis`)
   against v0.2.3: arm64-v8a 50.6 MB (48.4, +2.2), armeabi-v7a 45.4 MB (43.6, +1.9), x86_64 51.4 MB (49.1, +2.3),
