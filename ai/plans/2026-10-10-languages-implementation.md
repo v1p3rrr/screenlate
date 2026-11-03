@@ -272,6 +272,10 @@ Requests 1–19 are in the previous plan. New ones:
     appearing in the input and then the results. Finish the phone checks of request 80 first, then reproduce and
     measure input handling, lookup and rendering separately; determine whether it shares the popup bottleneck.
 
+82. (2026-11-03) Pick and complete the easiest remaining tasks one at a time. First: group 4e question 27,
+    the already approved PanLex Title Case filter, with tests and all four local archives rebuilt from the pinned
+    snapshot. No new hosting or release decision.
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -1450,6 +1454,9 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   excessive page layout and main-thread search preparation. Phone checks and profiles are recorded in POP60-POP62,
   LK95 and the rendering notes. Temporary diagnostics are removed. Full JVM run: 2054 tests, 4 skipped, no errors;
   page tests 157/157, app lint and the minified release pass. `0.2.3-7430d083-min` is installed and checked on the phone.
+- 2026-11-03: request 82: completed group 4e question 27. PanLex keeps names with a capitalized translation across
+  all meanings, before the display limit; 15 converter tests pass. Four archives rebuilt: kk-ru drops 10 entries,
+  ky-ru 29, both English pairs unchanged. Every retained translation matches the previous converter.
 
 - 2026-10-14: request 31: release APKs of `languages/main` (0e24b51, built locally with `-Pscreenlate.splitAbis`)
   against v0.2.3: arm64-v8a 50.6 MB (48.4, +2.2), armeabi-v7a 45.4 MB (43.6, +1.9), x86_64 51.4 MB (49.1, +2.3),

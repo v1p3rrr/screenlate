@@ -170,7 +170,9 @@ files of the PanLex database (the 2024-03-01 snapshot, CC0 1.0, as mirrored in t
 `cointegrated/panlex-meanings` at the revision named in the script) into a Kazakh or Kyrgyz dictionary: one
 definition per headword, its translations comma-separated with the ones most sources give first. Headwords outside
 the language's alphabet, time zones, words with a capital after a lowercase letter (interface strings), loose word
-groups, long lists and translations in another script are left out.
+groups, long lists and translations in another script are left out. Phrases of two or more words starting with
+capitals are also left out when all their translations are lowercase; translations from every retained meaning are
+checked before the ten-translation display limit, so names with a capitalized translation stay.
 `python scripts/monwn/monwn_yomitan.py <wn-data-mon.tsv> <WNdb-3.0.tar.gz> <out.zip>` converts the Mongolian Wordnet
 (MonWN, CC BY-SA 4.0, at the commit named in the script) with the English lemmas of the Princeton WordNet 3.0 synsets
 its words belong to into a Mongolian-English dictionary: one row per headword and part of speech, the part of speech

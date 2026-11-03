@@ -11,7 +11,8 @@ order of the meanings that support them, most first.
 Left out, as a sample of the Kazakh and Kyrgyz files showed them to be mostly noise: headwords with letters outside
 the language's alphabet (Kazakh words filed as Kyrgyz) or with Latin letters (codes, software names); time zones
 (Малайзия уақыты, Иркутск жайкы убактысы, translated as the place alone) and words with a capital after a lowercase
-letter (interface strings such as ЖыйынтыкДиаграм); meanings shared by many headwords (loose thesaurus groups: one
+letter (interface strings such as ЖыйынтыкДиаграм); phrases of two or more capitalized words with only lowercase
+translations (interface labels such as Менин Музыкам); meanings shared by many headwords (loose thesaurus groups: one
 Russian word for sixteen Kyrgyz ones) or by many translations (lists: the cities of Russia under Russia);
 translations in another script. Other capitalized headwords stay: places, names and terms (Оңтүстік-шығыс Азия,
 Ысыккөл областы). Russian stress marks are kept in the shown spelling and ignored when translations are compared.
@@ -125,7 +126,8 @@ def join(headwords, translations):
     """Headword → its translations, the ones more meanings support first, each spelled as shown.
 
     [headwords] and [translations] map meanings to expressions. A translation spelled with stress marks is shown so;
-    translations that differ only in them count as one.
+    translations that differ only in them count as one. Title Case interface phrases are dropped only after all
+    meanings are joined, before the display limit, so a name with any capitalized translation stays.
     """
     support = collections.defaultdict(collections.Counter)
     order = collections.defaultdict(dict)
@@ -148,7 +150,14 @@ def join(headwords, translations):
     return {
         word: [shown[key] for key in sorted(counts, key=lambda k: (-counts[k], order[word][k]))][:MAX_TRANSLATIONS]
         for word, counts in support.items()
+        if not (is_title_case_phrase(word) and all(key.islower() for key in counts))
     }
+
+
+def is_title_case_phrase(text):
+    """Whether at least two whitespace-separated words each start with a capital letter."""
+    words = text.split()
+    return len(words) >= 2 and all(word[0].isupper() for word in words)
 
 
 def build(entries, source, target):

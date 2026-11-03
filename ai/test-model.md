@@ -521,6 +521,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC51 | The Tamil word forms item: with Russian chosen and Wiktionary (ta–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the ta-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words (மரங்களை); with ta-en ticked the item is gone | N | U CatalogFileTest, LanguageSetupTest, M | |
 | DIC52 | The Telugu word forms item: as DIC51 with te–en (a verb form found through the item) | N | U CatalogFileTest, LanguageSetupTest, M | |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
+| DIC53 | PanLex Title Case filter: Менин Музыкам and Тапшырма Жургузуучу with only lowercase translations are absent; names with a capitalized translation in any retained meaning remain, even beyond the ten displayed translations; non-Title-Case headwords remain. The casing rule also drops Аллаһ Тағала → бог and Солтүстік Шотландия → гэльский. Four pinned-snapshot archives keep all remaining translations and their order | O | U test_panlex_yomitan.py, local archive comparison | 2026-11-03 |
 
 ### LNG: languages
 
@@ -728,6 +729,16 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-03, `codex/panlex-title-case-2026-11-03`, converter and four local archives
+
+Scope: group 4e question 27, DIC53. The new filter tests failed against the previous converter, then all 15 PanLex
+tests passed. Source snapshot `0422f0e60f39`: the four inputs matched their exact sizes and LFS SHA-256 or Git blob
+SHA-1. Compared the old and new joins on those inputs: kk-ru 18,519 → 18,509, ky-ru 7,123 → 7,094; kk-en 17,645
+and ky-en 7,431 unchanged. No new headwords; every retained translation and its order is identical. All four ZIPs
+passed CRC, language-pair metadata and bank counts; repeated writes produced identical bytes. The 39 removals were
+reviewed, including the two non-interface cases of the agreed casing criterion. DIC53 recorded as O. No Android
+code or archive schema changed; the device-import checks of DIC28/DIC35 were not rerun. No phone data changed.
 
 ### 2026-11-03, `codex/popup-diagnostics-2026-11-02` through `7430d083`, phone (Android 15)
 

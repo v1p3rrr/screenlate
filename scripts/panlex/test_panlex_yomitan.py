@@ -118,6 +118,54 @@ class PanLexTest(unittest.TestCase):
         entries, _ = self.entries("rus")
         self.assertEqual(len(entries["сөз"].split(", ")), converter.MAX_TRANSLATIONS)
 
+    def test_title_case_interface_phrases_with_only_lowercase_translations_are_dropped(self):
+        headwords = {
+            1: ["Тапшырма Жургузуучу"],
+            2: ["Менин Музыкам"],
+            3: ["Қауіпсіз Жөнелтушілер Тізімі"],
+        }
+        translations = {1: ["средство запуска задач"], 2: ["моя музыка"], 3: ["список надежных отправителей"]}
+        self.assertEqual(converter.join(headwords, translations), {})
+
+    def test_names_and_non_title_case_headwords_keep_their_translations(self):
+        headwords = {1: ["Жаңы Зеландия"], 2: ["Иран риалы"], 3: ["Бишкек"], 4: ["билим берүү"]}
+        translations = {1: ["Новая Зеландия"], 2: ["иранский риал"], 3: ["город"], 4: ["education"]}
+        self.assertEqual(converter.join(headwords, translations), {
+            "Жаңы Зеландия": ["Новая Зеландия"], "Иран риалы": ["иранский риал"],
+            "Бишкек": ["город"], "билим берүү": ["education"],
+        })
+
+    def test_title_case_filter_uses_casing_rather_than_guessing_the_meaning(self):
+        headwords = {1: ["Аллаһ Тағала"], 2: ["Солтүстік Шотландия"]}
+        translations = {1: ["бог"], 2: ["гэльский"]}
+        self.assertEqual(converter.join(headwords, translations), {})
+
+    def test_title_case_filter_considers_translations_from_every_meaning(self):
+        headwords = {1: ["Жаңы Зеландия"], 2: ["Жаңы Зеландия"], 3: ["Менин Музыкам"]}
+        translations = {1: ["острова"], 2: ["New Zealand"], 3: ["my music"]}
+        self.assertEqual(converter.join(headwords, translations), {"Жаңы Зеландия": ["острова", "New Zealand"]})
+
+    def test_a_capitalized_translation_beyond_the_display_limit_still_keeps_a_name(self):
+        targets = [f"translation{number}" for number in range(converter.MAX_TRANSLATIONS)] + ["New Zealand"]
+        self.assertIn("Жаңы Зеландия", converter.join({1: ["Жаңы Зеландия"]}, {1: targets}))
+
+    def test_conversion_filters_interface_phrases_but_keeps_names_in_the_archive(self):
+        (self.folder / "kir.tsv").write_text(tsv([
+            ("Менин Музыкам", 1, "kir-000"), ("Жаңы Зеландия", 2, "kir-000"),
+        ]), encoding="utf-8")
+        (self.folder / "rus.tsv").write_text(tsv([
+            ("моя" + STRESS + " музыка", 1, "rus-000"), ("Новая Зеландия", 2, "rus-000"),
+        ]), encoding="utf-8")
+
+        entries, files = self.entries("rus")
+
+        self.assertEqual(entries, {"Жаңы Зеландия": "Новая Зеландия"})
+        archive = self.folder / "filtered.zip"
+        converter.write_zip(files, archive)
+        with zipfile.ZipFile(archive) as contents:
+            self.assertIsNone(contents.testzip())
+            self.assertEqual(len(json.loads(contents.read("term_bank_1.json"))), 1)
+
     def test_the_index_names_the_pair_the_snapshot_and_its_license(self):
         _, files = self.entries("rus")
         index = files["index.json"]
