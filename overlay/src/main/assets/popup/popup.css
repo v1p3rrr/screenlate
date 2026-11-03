@@ -386,6 +386,14 @@ a {
 
 .entry {
     padding: 10px 0 8px;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+}
+
+/* Restored scroll offsets need real heights; selections may span entries outside the viewport. */
+.content.restore-scroll .entry,
+.copying .entry {
+    content-visibility: visible;
 }
 
 .entry + .entry {
