@@ -69,6 +69,22 @@ class HoshidictsEngineTest {
     }
 
     @Test
+    fun keepsTheNegativeEndingOfAnUndesiredAction() = runTest {
+        val archive = zip(
+            "negative-desire.zip",
+            "index.json" to """{"title":"Negative desire","revision":"1","format":3,"sourceLanguage":"ja"}""".toByteArray(),
+            "term_bank_1.json" to """[["壊す","こわす","","v5",0,["to break"],1,""]]""".toByteArray(),
+        )
+        val imported = engine.import(archive, File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+
+        val found = engine.lookup("壊したくないけど").first()
+
+        assertThat(found.term.expression).isEqualTo("壊す")
+        assertThat(found.matched).isEqualTo("壊したくない")
+    }
+
+    @Test
     fun followsFormOfEntriesToTheirLemmas() = runTest {
         val forms = engine.import(formOfDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(forms.directory)))

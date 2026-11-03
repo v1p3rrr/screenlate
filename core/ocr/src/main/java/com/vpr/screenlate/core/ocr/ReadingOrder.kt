@@ -62,7 +62,8 @@ internal object ReadingOrder {
         val first = next.lines.firstOrNull() ?: return null
         if (!last.vertical || !(paragraph.lines + next.lines).all { it.runs(vertical = true) }) return null
         val size = last.box.width
-        if (size <= 0f || first.box.width !in size * MIN_SIZE_RATIO..size / MIN_SIZE_RATIO) return null
+        val textSize = last.textSize()
+        if (size <= 0f || textSize <= 0f || first.textSize() !in textSize * MIN_SIZE_RATIO..textSize / MIN_SIZE_RATIO) return null
         val gap = last.box.left - first.box.right
         val margin = paragraph.lines.minOf { it.box.top }
         val end = (paragraph.lines + next.lines).maxOf { it.box.bottom }
@@ -77,7 +78,13 @@ internal object ReadingOrder {
     private fun OcrLine.runs(vertical: Boolean): Boolean =
         this.vertical == vertical || words.sumOf { it.text.codePointCount(0, it.text.length) } <= 1
 
-    /** Columns of one text differ in width by less than this. */
+    /** Ink widths differ between kana and kanji; the vertical character advance bounds the font size too. */
+    private fun OcrLine.textSize(): Float {
+        val characters = words.sumOf { it.text.codePointCount(0, it.text.length) }
+        return if (characters > 0) minOf(box.width, box.height / characters) else box.width
+    }
+
+    /** Character sizes of one text differ by less than this. */
     private const val MIN_SIZE_RATIO = 0.75f
 
     /** Gap between the columns, in column widths. */
