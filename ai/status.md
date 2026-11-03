@@ -1,5 +1,25 @@
 # Status
 
+## Small backlog task completed: PanLex Title Case filter (2026-11-03)
+
+The owner asked to finish an easy remaining task, one at a time. Group 4e question 27 is implemented on
+`codex/panlex-title-case-2026-11-03` in `.worktrees/camera`, starting from `languages/main` `b01469fc`.
+Questions 23-26 remain implementation work; question 27 is no longer pending in older lists below.
+
+- `join` drops phrases of at least two words starting with capitals only when every retained translation is
+  lowercase, across every meaning and before the ten-translation display limit. Names with a capitalized
+  translation stay. The agreed rule is casing-based and also drops Аллаһ Тағала → бог and Солтүстік Шотландия →
+  гэльский; no semantic exception was added.
+- Fifteen converter tests pass, including end-to-end ZIP output, stress marks, mixed meanings and a capitalized
+  translation beyond the display limit. New filter cases were red before the implementation.
+- All four archives rebuilt from pinned snapshot `0422f0e60f39`, with source sizes and SHA-256/Git hashes checked.
+  kk-ru: 18,519 → 18,509 headwords; ky-ru: 7,123 → 7,094. kk-en stays 17,645 and ky-en 7,431. Every retained
+  translation and its order matches the previous converter; ZIP CRC, language pairs, bank counts and byte
+  reproducibility pass. All 39 removed entries were reviewed.
+- Archives: ignored `testdata/local-research/panlex-title-case-2026-11-03/converted/`, with the source metadata and
+  comparison report beside them. Hosting is still postponed, no upload is approved, and the private archive was
+  not refreshed. `notes/hosting-files.md` records the exact sizes. No Android app code or phone data changed.
+
 ## Phone lookup fixes and search input (2026-11-03)
 
 Source: `codex/popup-diagnostics-2026-11-02` in `.worktrees/camera`, based on `languages/main` `d8fdfc5a`.

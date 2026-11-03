@@ -2403,7 +2403,13 @@ brackets where they matter.
   are compared.
 - One definition per headword, the translations comma-separated in the order of the number of meanings that give
   them, at most 10; no tags, so the verb chains reach these entries (алды → алуу "держать, брать").
-- Headwords: kk-ru 18,519 (295 KB), kk-en 17,645 (291 KB), ky-ru 7,123 (130 KB), ky-en 7,431 (128 KB) since the
+- Since 2026-11-03 (group 4e question 27), `join` also drops phrases whose two or more whitespace-separated words
+  each start with a capital when every translation is lowercase. It checks all retained meanings before the ten
+  shown translations. Counts after that filter: kk-ru 18,509 (302,222 bytes), ky-ru 7,094 (133,051 bytes); kk-en
+  17,645 (298,193 bytes) and ky-en 7,431 (131,623 bytes) unchanged. Every retained translation and its order matches
+  the previous converter. The rule is based on casing, not semantics: it also removes `Аллаһ Тағала` → бог and
+  `Солтүстік Шотландия` → гэльский, as its condition says. The four archives were rebuilt locally, not hosted.
+- Before the Title Case filter: kk-ru 18,519 (295 KB), kk-en 17,645 (291 KB), ky-ru 7,123 (130 KB), ky-en 7,431 (128 KB) since the
   capitalized ones stay (before: 16,374, 13,835, 5,729, 6,357). Of the 2,000
   most frequent Kyrgyz word forms of the Leipzig news sample, 371 (ru) and 406 (en) are headwords as written.
 - Quality: Kazakh is cleaner than Kyrgyz. Kyrgyz keeps strays (элүүнчү → fortieth, кыргыз → Uzbekistan, ушул →
