@@ -170,6 +170,7 @@ const Popup = (() => {
 
     function drawResults(state) {
         drawnKey = resultsKey(state);
+        content.classList.remove('restore-scroll');
         hideInfo();
         // A menu belongs to the buttons of the entries it was opened from.
         closeMenu();
@@ -186,7 +187,7 @@ const Popup = (() => {
         results.forEach((result, index) => fragment.append(entry(result, index, state.labels || {})));
         content.replaceChildren(fragment);
         // Layout is known only once the entries are in the document.
-        content.querySelectorAll('.definition > .dictionary-name').forEach(placeDictionaryName);
+        placeDictionaryNames();
         placeInlineOcrWarning(state);
         drawTranslation(state);
     }
@@ -925,20 +926,24 @@ const Popup = (() => {
      * and inline wrappers of blocks, so a list that opens the definition keeps its marker in front of the chip
      * instead of under it. The chip stays outside inline elements that start with text, such as a tag.
      */
-    function placeDictionaryName(name) {
-        let container = name.parentElement;
-        const copy = name.nextElementSibling?.classList.contains('copy-definition') ? name.nextElementSibling : null;
-        name.remove();
-        copy?.remove();
-        for (;;) {
-            const first = firstVisibleChild(container);
-            if (opensBlock(first)) {
-                container = first;
-                continue;
+    function placeDictionaryNames() {
+        // Read every destination before moving anything: alternating mutations and computed styles makes the browser
+        // recalculate styles for the whole result set once per dictionary, delaying the popup's first frame.
+        const placements = Array.from(content.querySelectorAll('.definition > .dictionary-name'), name => {
+            let container = name.parentElement;
+            const copy = name.nextElementSibling?.classList.contains('copy-definition') ? name.nextElementSibling : null;
+            for (;;) {
+                const first = firstVisibleChild(container, name, copy);
+                if (opensBlock(first)) {
+                    container = first;
+                    continue;
+                }
+                return { name, copy, container, first };
             }
+        });
+        for (const { name, copy, container, first } of placements) {
             container.insertBefore(name, first);
             if (copy) name.after(copy);
-            return;
         }
     }
 
@@ -949,8 +954,9 @@ const Popup = (() => {
         return INLINE_DISPLAYS.has(display) && opensBlock(firstVisibleChild(node));
     }
 
-    function firstVisibleChild(node) {
+    function firstVisibleChild(node, ...ignored) {
         for (const child of node.childNodes) {
+            if (ignored.includes(child)) continue;
             if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) return child;
             if (child.nodeType !== Node.ELEMENT_NODE || child.tagName === 'STYLE' || child.tagName === 'SCRIPT') continue;
             if (getComputedStyle(child).display !== 'none') return child;
@@ -996,8 +1002,9 @@ const Popup = (() => {
         if (!options?.continued || !same) translation = null;
         history.length = 0;
         current = state;
-        draw(state);
+        // Reset the old, already laid-out view; writing after replacement forces layout before script marking.
         content.scrollTop = 0;
+        draw(state);
     }
 
     /** Development aid (scripts/popup-eval.mjs): redraws the current results and returns the time with layout. */
@@ -1033,8 +1040,8 @@ const Popup = (() => {
     function push(state) {
         if (current) history.push({ state: current, scroll: content.scrollTop });
         current = state;
-        draw(state);
         content.scrollTop = 0;
+        draw(state);
     }
 
     /** Drawing again loses the note buttons' states, so the app is told to mark them anew. */
@@ -1043,6 +1050,8 @@ const Popup = (() => {
         if (!previous) return;
         current = previous.state;
         draw(previous.state);
+        // Offscreen entries normally skip layout; a saved offset belongs to their actual heights.
+        content.classList.toggle('restore-scroll', previous.scroll > 0);
         content.scrollTop = previous.scroll;
         ScreenlateBridge.onViewRestored();
     }

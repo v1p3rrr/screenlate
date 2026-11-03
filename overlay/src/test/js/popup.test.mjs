@@ -614,6 +614,54 @@ test('the dictionary chip goes after a list marker and before tags, never inside
     assert.equal(tagged.nextElementSibling.nextElementSibling.className, 'tags');
 });
 
+test('dictionary chips in many definitions are placed without alternating style reads and DOM writes', () => {
+    const mutations = new page.window.MutationObserver(() => {});
+    mutations.observe(content, { childList: true, subtree: true });
+    const computed = page.window.getComputedStyle;
+    let read = false;
+    let invalidatedReads = 0;
+    page.window.getComputedStyle = node => {
+        if (node.isConnected && node.closest('.definition')) {
+            if (mutations.takeRecords().length && read) invalidatedReads++;
+            read = true;
+        }
+        return computed.call(page.window, node);
+    };
+    try {
+        Popup.render(state({ results: Array.from({ length: 12 }, (_, i) => result(`word${i}`, '', 'meaning')) }));
+        assert.equal(content.querySelectorAll('.definition-body > .dictionary-name').length, 12);
+        assert.equal(invalidatedReads, 0);
+    } finally {
+        mutations.disconnect();
+        page.window.getComputedStyle = computed;
+    }
+});
+
+test('a new lookup resets scrolling before replacing the laid-out entries', () => {
+    Popup.render(state());
+    content.scrollTop = 300;
+    const mutations = new page.window.MutationObserver(() => {});
+    mutations.observe(content, { childList: true, subtree: true });
+    const scroll = Object.getOwnPropertyDescriptor(page.window.Element.prototype, 'scrollTop');
+    let writesAfterReplacement = 0;
+    Object.defineProperty(content, 'scrollTop', {
+        configurable: true,
+        get() { return scroll.get.call(this); },
+        set(value) {
+            if (mutations.takeRecords().length) writesAfterReplacement++;
+            scroll.set.call(this, value);
+        },
+    });
+    try {
+        Popup.render(state({ results: [result('犬', 'いぬ')] }));
+        assert.equal(content.scrollTop, 0);
+        assert.equal(writesAfterReplacement, 0);
+    } finally {
+        mutations.disconnect();
+        delete content.scrollTop;
+    }
+});
+
 test('a cloud recognition failure shows ⚠, which opens its reason in the panel', () => {
     const failed = { ocrError: 'Cloud recognition did not answer.', labels: { ...labels, ocrError: 'Cloud recognition' } };
     Popup.render(state());
