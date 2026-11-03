@@ -61,4 +61,5 @@
     <string name="inflection_turkic_perfective_converb_label">perfektives Konverb</string>
     <string name="inflection_turkic_when_label">wenn</string>
     <string name="inflection_turkic_as_soon_as_label">sobald</string>
+    <string name="inflection_turkic_without_label">ohne</string>
 </resources>

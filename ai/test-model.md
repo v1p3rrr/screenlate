@@ -285,6 +285,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK93 | Marathi verb forms (Search screen, wty-mr-en): येतो → येणे (-तो), सांगतात → सांगणे (-तात), बसला → बसणे (-ला) and the noun बस only with the dative, मिळाला → मिळणे, पाहिले → पाहणे, सांगितले → सांगणे, घेतला and घेतलेल्या → घेणे, असलेल्या → असणे (-लेल्या), दिसून → दिसणे (-ून), घेऊन → घेणे (-ऊन), मिळालाच → मिळणे (-ला, -च); the rule names show in the popup in English and Russian; नेते, नेता, चाहते and सांगली show no verb; करतोस and बसलास find no verb (left out) | N | U glue `marathi present, past and conjunctive endings…`, M | |
 | LK94 | Word forms count their headwords as entries in Uzbek and Azerbaijani (Russian chosen; uz–ru with the Uzbek word forms, az–ru with the Azerbaijani ones, both imported with this version): davom, Davom and давом show no davo "my" from the rules; kitoblarimizda still finds kitob, boʻlsa boʻlmoq; yazı and YAZI show nothing from the rules, kitablarımızda finds kitab and yazdı yazmaq; word forms imported by an older version still look up as before, and updating the item adds the list | N | U RuleOnlyResultsTest, UzbekSupportTest, AzerbaijaniSupportTest, LanguageRulesIsolationTest, I LanguageLookupTest, M | |
 | LK95 | Type いつまでも with the Japanese romaji keyboard while intermediate searches run: every character remains in the field and the final article matches the whole query; sorting and page-state serialization run on workers, not on the input thread; a newer search wins over an older link or theme preparation | F | M (same-device method profile and keyboard input) | 2026-11-03 |
+| LK96 | Kazakh кітапсыз → кітап and Kyrgyz үйсүз → үй show the separate without chain first and keep the polite second-person chain among the alternatives; кітаптарсыз → кітап through plural + without; үйсүздөргө → үй through without + plural + dative; the rule name follows every one of the 17 interface locales and its description lists the language's endings | F | U YomitanInflectionsTest, TranslationsTest, glue; I LanguageLookupTest, TurkicInflectionsLocaleTest | 2026-11-03 |
 
 ### POP: the popup
 
@@ -729,6 +730,17 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-03, `codex/turkic-without-2026-11-03`, without ending and isolated phone tests
+
+Scope: group 4e question 25, LK96. Two new language tests failed on the previous bundles; all 169 tests then passed
+with the pinned Yomitan checkout, none skipped. The full engine JVM suite passes (27 tests), plus four app translation
+checks. All 60 bundles rebuild byte-for-byte. Other bundles changed by minification were compared with their previous
+versions over 1,886 test strings, typed and OCR: 49,036 calls, no differences. Module lint passes. On the phone, the
+isolated library test package passes both native lookup cases (including the old Kazakh/Kyrgyz checks, primary and
+alternative chains and surrounding endings), and the new locale case checks 17 locales in both languages: three
+tests passed. The temporary package was uninstalled; no settings, dictionaries or data of the installed app changed.
+The installed app remains `0.2.3-7430d083-min`; this change is in the next build. LK96 recorded as F.
 
 ### 2026-11-03, `codex/panlex-title-case-2026-11-03`, converter and four local archives
 

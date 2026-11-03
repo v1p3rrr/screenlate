@@ -61,4 +61,5 @@
     <string name="inflection_turkic_perfective_converb_label">tamamlanmış zarf-fiil</string>
     <string name="inflection_turkic_when_label">-dığında</string>
     <string name="inflection_turkic_as_soon_as_label">-ır -maz</string>
+    <string name="inflection_turkic_without_label">-siz (yokluk)</string>
 </resources>

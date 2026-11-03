@@ -4,6 +4,8 @@
 <resources>
     <!-- question -->
     <string name="inflection_ky_question" translatable="false">-бы -би -бу -бү -пы -пи -пу -пү (барасыңбы)</string>
+    <!-- without -->
+    <string name="inflection_ky_without" translatable="false">-сыз -сиз -суз -сүз (мыйзамсыз, белгисиз)</string>
     <!-- plural -->
     <string name="inflection_ky_plural" translatable="false">-лар -лер -лор -лөр -дар -дер -дор -дөр -тар -тер -тор -төр (китептер)</string>
     <!-- possessive 1sg -->

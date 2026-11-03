@@ -1192,6 +1192,45 @@ test('every turkic rule has a shared name and a description of its endings, whic
     }
 });
 
+test('kazakh and kyrgyz without endings have their own chain beside the polite person ending', () => {
+    for (const [language, forms] of [
+        ['kk', [['заңсыз', 'заң'], ['белгісіз', 'белгі'], ['белгисиз', 'белги']]],
+        ['ky', [['мыйзамсыз', 'мыйзам'], ['белгисиз', 'белги'], ['аргасыз', 'арга'], ['суусуз', 'суу'], ['үйсүз', 'үй'], ['уйсуз', 'уй']]],
+    ]) {
+        for (const [text, word] of forms) {
+            const found = candidatesTo(language, text, word);
+            const chains = found.flatMap((c) => c.r.map((r) => [...r]));
+            assert.ok(chains.some((r) => r.length === 1 && r[0] === 'without'), `${language}: ${text}`);
+            assert.ok(chains.some((r) => r.length === 1 && r[0] === '2sg polite'), `${language}: ${text}`);
+            assert.ok(found.every((c) => c.u && c.g === undefined), `${language}: ${text}`);
+        }
+    }
+});
+
+test('without chains take outer noun endings and leave the noun endings of their base', () => {
+    for (const [language, text, word, chain] of [
+        ['kk', 'заңсыздар', 'заң', ['without', 'plural']],
+        ['kk', 'балаларсыз', 'бала', ['plural', 'without']],
+        ['kk', 'кітабымсыз', 'кітап', ['possessive 1sg', 'without']],
+        ['ky', 'мыйзамсызбы', 'мыйзам', ['without', 'question']],
+        ['ky', 'үйсүздөргө', 'үй', ['without', 'plural', 'dative']],
+        ['ky', 'китептерсиз', 'китеп', ['plural', 'without']],
+        ['ky', 'китебимсиз', 'китеп', ['possessive 1sg', 'without']],
+        ['ky', 'үйсүзмүн', 'үй', ['without', '1sg']],
+    ]) {
+        const found = candidatesTo(language, text, word);
+        const chains = found.flatMap((c) => c.r.map((r) => [...r]));
+        assert.ok(chains.some((r) => JSON.stringify(r) === JSON.stringify(chain)), `${language}: ${text}`);
+    }
+    for (const language of ['kk', 'ky']) {
+        assert.ok(!candidates(language, 'асыз').some((c) => c.d === 'а' && c.r.some((r) => r.includes('without'))));
+    }
+    assert.ok(!candidates('ky', 'мыйзамсыздык').some((c) => c.d === 'мыйзам' && c.r.some((r) => r.includes('without'))));
+    for (const language of ['ru', 'uk', 'tr', 'az', 'uz', 'en']) {
+        assert.ok(!candidates(language, 'мыйзамсыз').some((c) => c.r.some((r) => r.includes('without'))), language);
+    }
+});
+
 test('kazakh and kyrgyz rules stay out of other languages', () => {
     for (const language of ['ru', 'uk', 'tr', 'en']) {
         assert.ok(!queried(language, 'кітаптарымызда').has('кітап'), language);

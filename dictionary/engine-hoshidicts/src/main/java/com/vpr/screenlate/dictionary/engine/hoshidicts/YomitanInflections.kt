@@ -731,6 +731,7 @@ internal object YomitanInflections {
         ),
         "kk" to mapOf(
             "plural" to Strings(R.string.inflection_turkic_plural_label, R.string.inflection_kk_plural),
+            "without" to Strings(R.string.inflection_turkic_without_label, R.string.inflection_kk_without),
             "possessive 1sg" to Strings(R.string.inflection_turkic_possessive_1sg_label, R.string.inflection_kk_possessive_1sg),
             "possessive 2sg" to Strings(R.string.inflection_turkic_possessive_2sg_label, R.string.inflection_kk_possessive_2sg),
             "possessive 2sg polite" to Strings(R.string.inflection_turkic_possessive_2sg_polite_label, R.string.inflection_kk_possessive_2sg_polite),
@@ -773,6 +774,7 @@ internal object YomitanInflections {
         ),
         "ky" to mapOf(
             "question" to Strings(R.string.inflection_turkic_question_label, R.string.inflection_ky_question),
+            "without" to Strings(R.string.inflection_turkic_without_label, R.string.inflection_ky_without),
             "plural" to Strings(R.string.inflection_turkic_plural_label, R.string.inflection_ky_plural),
             "possessive 1sg" to Strings(R.string.inflection_turkic_possessive_1sg_label, R.string.inflection_ky_possessive_1sg),
             "possessive 2sg" to Strings(R.string.inflection_turkic_possessive_2sg_label, R.string.inflection_ky_possessive_2sg),

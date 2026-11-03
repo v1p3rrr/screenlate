@@ -826,6 +826,8 @@ const turkicSlots = {
     case: {conditionsIn: ['q', 'cs'], conditionsOut: ['px', 'pl', 'pt', 'n']},
     possessive: {conditionsIn: ['q', 'cs', 'px'], conditionsOut: ['pl', 'pt', 'n']},
     plural: {conditionsIn: ['q', 'cs', 'px', 'pl'], conditionsOut: ['pt', 'n']},
+    // A derived nominal can take outer noun endings, and its base can already have plural or possessive endings.
+    without: {conditionsIn: ['q', 'cs', 'px', 'pl', 'pt'], conditionsOut: ['px', 'pl', 'n']},
     verbalNoun: {conditionsIn: ['q', 'cs', 'px', 'pl', 'pt'], conditionsOut: ['v']},
     participle: {conditionsIn: ['q', 'cs', 'px', 'pl', 'pt'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
     past: {conditionsIn: ['q', 'pc'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
@@ -1040,6 +1042,7 @@ export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
     },
     transforms: [
         {id: 'plural', name: 'plural', example: 'кітаптар', endings: {plural: 'лар лер дар дер тар тер'}},
+        {id: 'without', name: 'without', example: 'заңсыз, белгісіз', endings: {without: 'сыз сіз'}},
         {id: 'possessive 1sg', name: 'my', example: 'кітабым', endings: {possessive: 'ым ім м'}},
         {id: 'possessive 2sg', name: 'your', example: 'кітабың', endings: {possessive: 'ың ің ң'}},
         {id: 'possessive 2sg polite', name: 'your (polite)', example: 'кітабыңыз', endings: {possessive: 'ыңыз іңіз ңыз ңіз'}},
@@ -1110,6 +1113,7 @@ export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
     },
     transforms: [
         {id: 'question', name: 'question', example: 'барасыңбы', endings: {question: 'бы би бу бү пы пи пу пү'}},
+        {id: 'without', name: 'without', example: 'мыйзамсыз, белгисиз', endings: {without: 'сыз сиз суз сүз'}},
         {id: 'plural', name: 'plural', example: 'китептер', endings: {plural: 'лар лер лор лөр дар дер дор дөр тар тер тор төр'}},
         {id: 'possessive 1sg', name: 'my', example: 'китебим', endings: {possessive: 'ым им ум үм м'}},
         {id: 'possessive 2sg', name: 'your', example: 'китебиң', endings: {possessive: 'ың иң уң үң ң'}},

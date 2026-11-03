@@ -9,6 +9,16 @@ import org.junit.Test
 class YomitanInflectionsTest {
 
     @Test
+    fun `without is a separate rule in kazakh and kyrgyz`() {
+        for (code in listOf("kk", "ky")) {
+            assertThat(YomitanInflections.names(code)).containsAtLeast("without", "2sg polite")
+        }
+        for (code in listOf("az", "uz", "mn", "tr", "ru", "en")) {
+            assertThat(YomitanInflections.names(code)).doesNotContain("without")
+        }
+    }
+
+    @Test
     fun `languages whose rules give way to entries or rows have their rule ids`() {
         val filtered = Language.entries.filter {
             it.support.inflectionRulesOnlyWithoutEntry || it.support.ruleChainsOnlyWithoutRow

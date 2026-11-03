@@ -1,5 +1,23 @@
 # Status
 
+## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
+
+The owner requested the next easy task with verification (language-plan request 83). Group 4e question 25 is built
+on `codex/turkic-without-2026-11-03` in `.worktrees/camera`, based on `languages/main` `7234e2c7`. Questions 23, 24
+and 26 remain implementation work; questions 25 and 27 in older pending lists below are complete.
+
+- The separate `without` rule covers Kazakh -сыз/-сіз and Kyrgyz -сыз/-сиз/-суз/-сүз, including OCR twins. It can
+  follow plural or possessive endings and take outer noun endings; the existing minimum stem checks remain.
+- The single-ending result shows the correct name first, with the polite second-person chain still available.
+  Labels are translated in all 17 locales; each language has its own generated ending description.
+- Checks passed: 169 language tests (none skipped), 27 engine JVM tests, four app translation checks, module lint;
+  all 60 bundles rebuild byte-for-byte. The other changed bundles give identical output on 49,036 candidate calls.
+- Three isolated phone tests pass: native Kazakh and Kyrgyz lookup, old cases included, primary and alternative
+  chains, surrounding endings, and Android resources in all 17 locales. LK96 and the rule inventory record coverage.
+- Temporary test package uninstalled. No installed-app data or settings changed; the phone still has
+  `0.2.3-7430d083-min`. Logs and comparison tools are in the worktree's ignored
+  `testdata/local-research/turkic-without-2026-11-03/`. This is code for the next app build, not a new release.
+
 ## Small backlog task completed: PanLex Title Case filter (2026-11-03)
 
 The owner asked to finish an easy remaining task, one at a time. Group 4e question 27 is implemented on

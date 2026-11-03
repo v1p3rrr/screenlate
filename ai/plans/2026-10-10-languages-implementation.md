@@ -276,6 +276,9 @@ Requests 1–19 are in the previous plan. New ones:
     the already approved PanLex Title Case filter, with tests and all four local archives rebuilt from the pinned
     snapshot. No new hosting or release decision.
 
+83. (2026-11-03) Complete the next easy remaining task with verification. Selected group 4e question 25:
+    the already approved "without" ending in Kazakh and Kyrgyz, with localized names and chain tests.
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -1446,6 +1449,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-11-03: request 83: group 4e question 25 built. A separate localized `without` chain in Kazakh and Kyrgyz,
+  the polite chain retained; 169 language tests, 27 engine JVM tests, four translation checks, lint and three phone
+  tests pass. All 60 bundles rebuilt reproducibly; other languages' candidate output is unchanged.
 
 - 2026-11-03: recorded the phone's transcription, vertical negative-ending and popup-delay reports (request 80),
   the exact font scope and the phone reproduction. The existing popup-delay backlog item remains in scope.

@@ -61,4 +61,5 @@
     <string name="inflection_turkic_perfective_converb_label">деепричастие совершенного вида</string>
     <string name="inflection_turkic_when_label">когда</string>
     <string name="inflection_turkic_as_soon_as_label">как только</string>
+    <string name="inflection_turkic_without_label">без</string>
 </resources>

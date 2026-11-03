@@ -61,4 +61,5 @@
     <string name="inflection_turkic_perfective_converb_label">وجه قیدی تمام</string>
     <string name="inflection_turkic_when_label">وقتی</string>
     <string name="inflection_turkic_as_soon_as_label">به محض اینکه</string>
+    <string name="inflection_turkic_without_label">بدون</string>
 </resources>

@@ -693,6 +693,15 @@ class LanguageLookupTest {
         assertThat(first("шаhар").term.expression).isEqualTo("шаһар")
         // A suffix entry from its hyphen.
         assertThat(first("-ға дейін").term.expression).isEqualTo("-ға")
+        val withoutBook = first("кітапсыз")
+        assertThat(withoutBook.term.expression).isEqualTo("кітап")
+        assertThat(withoutBook.trace.map { it.name }).containsExactly("without")
+        assertThat((listOf(withoutBook.trace) + withoutBook.otherTraces).map { chain -> chain.map { it.name } })
+            .containsAtLeast(listOf("without"), listOf("2sg polite"))
+        val withoutBooks = first("кітаптарсыз")
+        assertThat(withoutBooks.term.expression).isEqualTo("кітап")
+        assertThat((listOf(withoutBooks.trace) + withoutBooks.otherTraces).map { chain -> chain.map { it.name } })
+            .contains(listOf("plural", "without"))
     }
 
     /**
@@ -746,6 +755,15 @@ class LanguageLookupTest {
         assertThat(all("кол")).containsExactly("кол", "көл").inOrder()
         assertThat(all("көл")).containsExactly("көл")
         assertThat(first("Куз").term.expression).isEqualTo("күз")
+        val withoutHouse = first("үйсүз")
+        assertThat(withoutHouse.term.expression).isEqualTo("үй")
+        assertThat(withoutHouse.trace.map { it.name }).containsExactly("without")
+        assertThat((listOf(withoutHouse.trace) + withoutHouse.otherTraces).map { chain -> chain.map { it.name } })
+            .containsAtLeast(listOf("without"), listOf("2sg polite"))
+        val homeless = first("үйсүздөргө")
+        assertThat(homeless.term.expression).isEqualTo("үй")
+        assertThat((listOf(homeless.trace) + homeless.otherTraces).map { chain -> chain.map { it.name } })
+            .contains(listOf("without", "plural", "dative"))
     }
 
     /** Rows as Wiktionary's Kyrgyz exports write them: one headword as a noun and a verb, two words that differ in ө. */

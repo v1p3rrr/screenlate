@@ -61,4 +61,5 @@
     <string name="inflection_turkic_perfective_converb_label">完成副动词</string>
     <string name="inflection_turkic_when_label">当……时</string>
     <string name="inflection_turkic_as_soon_as_label">一……就</string>
+    <string name="inflection_turkic_without_label">无</string>
 </resources>

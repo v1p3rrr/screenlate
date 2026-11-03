@@ -61,4 +61,5 @@
     <string name="inflection_turkic_perfective_converb_label">converbe perfectif</string>
     <string name="inflection_turkic_when_label">quand</string>
     <string name="inflection_turkic_as_soon_as_label">dès que</string>
+    <string name="inflection_turkic_without_label">sans</string>
 </resources>

@@ -61,4 +61,5 @@
     <string name="inflection_turkic_perfective_converb_label">完了副動詞</string>
     <string name="inflection_turkic_when_label">〜とき</string>
     <string name="inflection_turkic_as_soon_as_label">〜するとすぐ</string>
+    <string name="inflection_turkic_without_label">～なし</string>
 </resources>

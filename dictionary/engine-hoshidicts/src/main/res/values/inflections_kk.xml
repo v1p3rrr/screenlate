@@ -4,6 +4,8 @@
 <resources>
     <!-- plural -->
     <string name="inflection_kk_plural" translatable="false">-лар -лер -дар -дер -тар -тер (кітаптар)</string>
+    <!-- without -->
+    <string name="inflection_kk_without" translatable="false">-сыз -сіз (заңсыз, белгісіз)</string>
     <!-- possessive 1sg -->
     <string name="inflection_kk_possessive_1sg" translatable="false">-ым -ім -м (кітабым)</string>
     <!-- possessive 2sg -->
