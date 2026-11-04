@@ -25,8 +25,13 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   the prototype lost useful forms; Kazakh ownership paths stay. On the top 30,000 forms, readings change for
   218 kk forms (8,047 tokens) and 117 ky (7,832); the plan records the coverage loss, review and modeling limits.
   All 171 language tests pass; 87,076 calls in other changed bundles are identical. Native cases added, rerun pending.
+- Group 4e question 24 measured but deferred for new question 28: the original unconditional dictionary-form
+  preference would move frequent Kyrgyz бизге/бизде/бизди/бизден from биз to мен. The broad verb preference also
+  promotes valid noun forms' wrong verb readings, so its conditional benefit is not established. The proposed
+  change is dictionary-form priority in Kazakh only; it needs the owner's confirmation because the table says
+  both languages. No sorter code changed; continue with the remaining independent tasks.
 - Public test dictionaries, audit reports and run logs are under the worktree's ignored
-  `testdata/local-research/backlog-2026-11-04/`. Next: result ordering at the same chain length.
+  `testdata/local-research/backlog-2026-11-04/`. Next: measured Marathi irregular stems.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 

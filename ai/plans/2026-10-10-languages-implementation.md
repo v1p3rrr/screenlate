@@ -1456,6 +1456,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 ## Changelog
 
+- 2026-11-04: request 84: group 4e question 24 measured; new regressions require a change to its binding
+  dictionary-row decision. Question 28 of that plan records the evidence and narrower proposal. Deferred pending
+  the owner; no sorter code changed. Continue with Marathi.
+
 - 2026-11-04: request 84: group 4e question 23 measured and implemented. Prototype useful losses preserved;
   171 language tests and other-bundle comparison pass. Native rerun pending; question 24 is next.
 
