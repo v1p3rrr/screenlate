@@ -525,11 +525,11 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC48 | The PaddleOCR text detector is named "PaddleOCR v6 text detector" (v5 the same) in the task cards, the "Waiting (N): …" list and the notification, in every locale, with no comma in it | N | U CatalogFileTest, M | 2026-10-29 (English: v5 in the damaged-models card, the task card and the notification) |
 | DIC49 | Mongolian's frequency dictionary: the download screen ticks "Word frequency (Leipzig Corpora Collection)" (19 MB, CC BY), its description naming news texts; it builds on the device from Leipzig's `mon_news_2020_100K` and the frequency chip shows on Mongolian entries (хүн 11, ном 637) | F | U CorpusCountsDictionaryTest, CatalogFileTest, M | 2026-10-29 |
 | DIC50 | Rebuilt FreeDict de-ru, it-ru and es-ru: a definition over 120 characters follows its sense's translations as plain text (de Aas); es-ru's ano reads «(Química) Se usa …» below its translation and año keeps its definition; it-ru's oleandro has no «( tassonomia)»; OpenRussian ru-en's говорить reads «speak, talk» | F | U test_freedict_yomitan.py, test_openrussian_yomitan.py, M | 2026-10-29 |
-| DIC51 | The Tamil word forms item: with Russian chosen and Wiktionary (ta–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the ta-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words (மரங்களை); with ta-en ticked the item is gone | N | U CatalogFileTest, LanguageSetupTest, M | |
-| DIC52 | The Telugu word forms item: as DIC51 with te–en (a verb form found through the item) | N | U CatalogFileTest, LanguageSetupTest, M | |
+| DIC51 | The Tamil word forms item: with Russian chosen and Wiktionary (ta–en) unticked, the download screen lists "Word forms (Wiktionary)" under Word forms, fixed and mandatory; it imports the ta-en archive without definitions (import time and installed size recorded in the run log), and Russian entries are found for inflected words (மரங்களை); with ta-en ticked the item is gone | N | U CatalogFileTest, LanguageSetupTest; I RealDictionaryImportTest; M | 2026-11-04 (full native import/lookup; UI pending) |
+| DIC52 | The Telugu word forms item: as DIC51 with te–en (a verb form found through the item) | N | U CatalogFileTest, LanguageSetupTest; I RealDictionaryImportTest; M | 2026-11-04 (full native import/lookup; UI pending) |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 | DIC53 | PanLex Title Case filter: Менин Музыкам and Тапшырма Жургузуучу with only lowercase translations are absent; names with a capitalized translation in any retained meaning remain, even beyond the ten displayed translations; non-Title-Case headwords remain. The casing rule also drops Аллаһ Тағала → бог and Солтүстік Шотландия → гэльский. Four pinned-snapshot archives keep all remaining translations and their order | O | U test_panlex_yomitan.py, local archive comparison | 2026-11-03 |
-| DIC54 | Cantonese offers Word frequency (words.hk) ticked alongside rime-cantonese, marked non-commercial and translated in all 17 locales; its upstream archive has 34,933 words and ranks for 我哋/佢哋/你哋/喺度/為咗; download/import shows those ranks in the popup | N | U CatalogFileTest, LanguageSetupTest; local ZIP audit; M | 2026-11-04 (catalog/archive; device pending) |
+| DIC54 | Cantonese offers Word frequency (words.hk) ticked alongside rime-cantonese, marked non-commercial and translated in all 17 locales; its upstream archive has 34,933 words and ranks for 我哋/佢哋/你哋/喺度/為咗; download/import shows those ranks in the popup | N | U CatalogFileTest, LanguageSetupTest; I RealDictionaryImportTest; local ZIP audit; M | 2026-11-04 (full native import/five ranks; UI pending) |
 
 ### LNG: languages
 
@@ -583,7 +583,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG46 | Cantonese setup: Languages offers Cantonese with Hong Kong's flag; the download screen ticks words.hk, its characters and the rime-cantonese frequency list, offers CC-Canto, CC-CEDICT Canto and PaddleOCR v6 unticked; ML Kit Chinese needs no download; the language becomes active and ready; the docked bubble shows 粵 | F | U CatalogFileTest, BubbleGlyphTest, FlagsTest, M | 2026-10-29 |
 | LNG47 | Code badges on shared flags in the app (defaults: Hindi, Marathi, Tamil, Telugu and Kannada show India's flag): Home's quick flags, the Languages screen's turned-on and not turned-on cards, a leftover card under "Turned off" (24 dp, the badge clear of the line below), the language chips on the Dictionaries screen, the recognition model list, the camera's chip and language menu, the photo screen's chip and the photo history (16 dp), the download screen's title and the first-run list show HI, MR, TA, TE or KN on the flag's lower edge, also with one India language turned on; Japanese, Cantonese and Uzbek never; the flag dialog: with English set to Great Britain, Welsh's Great Britain option carries the code; e-ink shows the codes alone with no badge; TalkBack does not read the badge | N | U FlagsTest, M | 2026-10-29 (Home, Languages turned on, leftovers, chips, model list, camera, photo, history) |
 | LNG48 | Home and word forms: a word forms language with its whole Wiktionary installed and enabled (Tamil with ta–en and ta–ru) shows no "Requires attention" for word forms; with ta–ru alone and no word forms item the card asks for them, and turning Tamil on from its leftover card opens the download screen with the item | N | U LanguageInstallationTest, LanguageSetupTest, M | |
-| LNG49 | First activity creation with Russian resources and a stale English process default names Cantonese Кантонский before initial composition; framework configuration stays Russian | N | I StartupLocaleTest (isolated verification package only) | 2026-11-04 (phone, red/green) |
+| LNG49 | First activity creation with Russian resources and a stale English process default names Cantonese Кантонский before initial composition; framework configuration stays Russian | F | I StartupLocaleTest (isolated verification package only) | 2026-11-04 (phone, red/green) |
 
 ### SET: settings, backup, appearance
 
@@ -737,6 +737,27 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 - A network voice of the system text-to-speech (the emulator's Google TTS offers local voices only).
 
 ## Run log
+
+### 2026-11-04, request 87: isolated UI diagnosis and full dictionary imports
+
+- LNG49: StartupLocaleTest failed with an English language name before the activity-locale fix and passed afterward
+  on the phone. Isolated application/test APK assembly and app lint pass.
+- ServiceRebindTest: 12 off/on cycles with a 100 ms gap and a 350 ms post-bind observation all pass, including the
+  final false running state. The exact original accessibility settings are restored and asserted in finally.
+  This checks the real service callbacks but does not reproduce or close the Home composition defect.
+- DIC51/52 native full-archive portion: Tamil forms import 1,948 ms / 3,922,331 bytes; Telugu 496 ms / 1,178,576
+  bytes. மரங்களை → மரம் and ఆలోచిస్తాడు → ఆలోచించు carry a listed-form trace and only the Russian glossary.
+  DIC54 native portion: all 34,933 frequency rows import; five agreed words return ranks 279/391/1110/870/1172.
+  RealDictionaryImportTest passes in 3.257 s. Download UI, mandatory item states and popup appearance remain open.
+- StartupUiTest: first probe found no Compose hierarchy while locked; the final test explicitly skips on keyguard
+  and polls for asynchronous content. The locked-screen run reports assumption skip (-4), not acceptance success.
+  Remaining visual checks cannot run until unlock; neither emulator starts.
+- Official AnkiDroid parallel A 2.25.3 was installed only for a separate local collection. Lock prevented setup;
+  no collection was read or changed. Inspection of the installed version's upstream source confirms the deep
+  link preserves the deck filter, but does not substitute for the existing-note/task reproduction.
+- Cleanup: verification app, verification tests, native library test app and AnkiDroid parallel A all uninstalled;
+  native archive staging was inside the library test app's external files and removed with it. Owner's existing
+  Screenlate/release/debug and AnkiDroid packages are preserved; accessibility settings restored, no force-stop.
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
