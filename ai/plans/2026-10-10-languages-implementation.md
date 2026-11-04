@@ -1456,6 +1456,9 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 ## Changelog
 
+- 2026-11-04: request 84: group 4e question 23 measured and implemented. Prototype useful losses preserved;
+  171 language tests and other-bundle comparison pass. Native rerun pending; question 24 is next.
+
 - 2026-11-04: request 84: group 5e question 27 built. The verified 34,933-word words.hk frequency archive is
   recommended and marked non-commercial in the catalog, with all 17 locales. Catalog/API/setup tests pass;
   the Android download/import check remains pending.

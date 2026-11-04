@@ -857,6 +857,8 @@ const turkicSlots = {
  *   the stem may have ended in (Kazakh оқиды from оқы- and the present mark -й)
  * @property {(stem: string) => string[]} dictionaryForms a verb stem's dictionary forms
  * @property {Record<string, Record<string, string>>} [pronounCases] whole-word case forms, by rule and pronoun
+ * @property {{voiceless: string, pluralL: string, pluralD: string, unrestricted: string[], additional?: Record<string, string>}} [consonantHarmony]
+ *   preceding sounds of alternating endings; rule families whose measured losses exceed the gain stay unrestricted
  * @property {(TurkicTransform | {persons: string[][]})[]} transforms rules, and rows of person endings (`turkicPersons`)
  *   in their place; plain data, so that bundles of other languages drop the tables
  */
@@ -880,6 +882,7 @@ const turkicSlots = {
  * @returns {import('language-transformer').LanguageTransformDescriptor<TurkicCondition> & {sharedLabels: string}}
  */
 function turkicTransforms(grammar) {
+    const list = grammar.transforms.flatMap((item) => ('persons' in item ? turkicPersons(item.persons) : [item]));
     const vowels = new Set(grammar.vowels);
     const linking = new Set([...grammar.linkingVowels].flatMap((c) => [c, grammar.twins[c] ?? c]));
     const vowelClass = `[${grammar.vowels}]`;
@@ -893,6 +896,35 @@ function turkicTransforms(grammar) {
     };
     /** [ending] and, when it has letters of the language's own, the spelling with their Russian twins. */
     const spellings = (ending) => [...new Set([ending, [...ending].map((c) => grammar.twins[c] ?? c).join('')])];
+    const boundaries = new Map();
+    if (grammar.consonantHarmony) {
+        const {voiceless, pluralL, pluralD} = grammar.consonantHarmony;
+        const voiced = [...grammar.vowels + grammar.consonants].filter((c) => !voiceless.includes(c) && !'ьъ'.includes(c)).join('');
+        for (const {id, endings} of list) {
+            if (grammar.consonantHarmony.unrestricted.includes(id)) continue;
+            for (const [slot, value] of Object.entries(endings)) {
+                const variants = new Set(value.split(' ').map((s) => s.split(/[/>]/)[0]));
+                for (const ending of variants) {
+                    const first = ending[0];
+                    const tail = ending.slice(1);
+                    const has = (letter) => variants.has(letter + tail);
+                    let allowed = '';
+                    if (first === 'л' && has('д')) allowed = grammar.vowels + pluralL;
+                    else if (first === 'д' && has('л')) allowed = pluralD;
+                    else if ((first === 'т' && has('д')) || (first === 'к' && has('г')) ||
+                        (first === 'қ' && has('ғ')) || (first === 'п' && has('б'))) allowed = voiceless;
+                    else if ((first === 'д' && has('т')) || (first === 'г' && has('к')) ||
+                        (first === 'ғ' && has('қ')) || (first === 'б' && has('п') && !has('м'))) allowed = voiced;
+                    if (!allowed) continue;
+                    allowed += grammar.consonantHarmony.additional?.[ending] ?? '';
+                    const letters = [...new Set(spellings(allowed).join(''))].join('');
+                    for (const spelling of spellings(ending)) {
+                        boundaries.set(`${slot}:${spelling}`, new RegExp(`[${letters}][ьъ]?$`));
+                    }
+                }
+            }
+        }
+    }
     /**
      * @param {string} ending
      * @param {string} slot
@@ -903,13 +935,16 @@ function turkicTransforms(grammar) {
     const rule = (ending, slot, before, restore = (stem) => stem) => {
         const {conditionsIn, conditionsOut, reads = '', leaves = ''} = turkicSlots[slot];
         const length = ending.length + reads.length;
+        const boundary = boundaries.get(`${slot}:${ending}`);
         return {
             type: 'suffix',
             isInflected: new RegExp(before + ending + reads + '$'),
             deinflected: '',
             // A stem too short is no text, which the engine leaves out.
             deinflect: (text) => {
-                const stem = restore(text.slice(0, -length));
+                const rawStem = text.slice(0, -length);
+                if (boundary && !boundary.test(rawStem)) return '';
+                const stem = restore(rawStem);
                 return isStem(stem) ? stem + leaves : '';
             },
             conditionsIn,
@@ -955,7 +990,6 @@ function turkicTransforms(grammar) {
     };
     /** @type {Record<string, {name: string, description?: string, hidden?: boolean, rules: import('language-transformer').Rule<TurkicCondition>[]}>} */
     const transforms = {};
-    const list = grammar.transforms.flatMap((item) => ('persons' in item ? turkicPersons(item.persons) : [item]));
     for (const {id, name, example, endings, afterNegation = []} of list) {
         const rules = Object.entries(endings).flatMap(([slot, list]) => list.split(' ').flatMap((ending) => rulesOf(ending, slot)));
         for (const ending of afterNegation) {
@@ -1034,6 +1068,11 @@ function turkicPersons(persons) {
 /** Kazakh: two-way vowel harmony (-лар, -лер), the letters ә ғ қ ң ө ұ ү һ і. */
 export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
     language: 'kk',
+    consonantHarmony: {
+        voiceless: 'пфкқтсшщхцчһбвгд', pluralL: 'йру', pluralD: 'лмнңжз', unrestricted: ['causative'],
+        // Preserve the existing paths through the ownership endings -нікі/-дікі/-тікі (менікі, біздікі).
+        additional: {'кі': 'і'},
+    },
     // Missing in wty-kk-ru 2026.10.22; ол's other case forms are already present in both gloss languages.
     pronounCases: {
         genitive: {'бұл': 'мұның бұның', 'сол': 'соның'},
@@ -1114,6 +1153,7 @@ export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
 /** Kyrgyz: four-way vowel harmony (-лар, -лер, -лор, -лөр), the letters ң ө ү, the question particle joined. */
 export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
     language: 'ky',
+    consonantHarmony: {voiceless: 'пфктсшщхцч', pluralL: 'йр', pluralD: 'лмнңбвгджз', unrestricted: ['causative', 'ablative']},
     pronounCases: {
         genitive: {'ал': 'анын', 'бул': 'мунун', 'ошол': 'ошонун'},
         dative: {'ал': 'ага', 'бул': 'буга', 'ошол': 'ошого'},

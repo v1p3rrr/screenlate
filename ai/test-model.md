@@ -287,6 +287,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK95 | Type いつまでも with the Japanese romaji keyboard while intermediate searches run: every character remains in the field and the final article matches the whole query; sorting and page-state serialization run on workers, not on the input thread; a newer search wins over an older link or theme preparation | F | M (same-device method profile and keyboard input) | 2026-11-03 |
 | LK96 | Kazakh кітапсыз → кітап and Kyrgyz үйсүз → үй show the separate without chain first and keep the polite second-person chain among the alternatives; кітаптарсыз → кітап through plural + without; үйсүздөргө → үй through without + plural + dative; the rule name follows every one of the 17 interface locales and its description lists the language's endings | F | U YomitanInflectionsTest, TranslationsTest, glue; I LanguageLookupTest, TurkicInflectionsLocaleTest | 2026-11-03 |
 | LK97 | Kyrgyz аны/анын/ага/анда/андан → ал, муну/мунун/буга/мында/мындан → бул, ошону/ошонун/ошого/ошондо/ошондон → ошол with the correct case name; Kazakh missing Russian-dictionary cases reach бұл/сол/ол; regular suffixes on the six pronouns stay excluded, a longer word ending in one of these forms gets no whole-word rule | N | U glue; I LanguageLookupTest | 2026-11-04 (JS; Android pending) |
+| LK98 | Kazakh/Kyrgyz endings with alternating initial consonants fit the preceding stem: кітапта/қалада, китепте/балада, үйге/үйгө, correct л/д/т plurals; borrowed final stops and soft signs work; карата/айта/жарадар have no full-word false noun ending. Causatives, Kyrgyz мурунтан/кечээтен and Kazakh менікі keep their useful readings | N | U glue; corpus comparison; I LanguageLookupTest | 2026-11-04 (JS/corpus; Android pending) |
 
 ### POP: the popup
 
@@ -732,6 +733,15 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, suffix consonants
+
+Scope: group 4e question 23, LK98. The corpus comparison and its limits are recorded in that plan: 30,000 forms
+per language, prototype useful losses identified, then causatives, Kyrgyz temporal ablatives and Kazakh ownership
+paths preserved. Final changed readings: 218 kk forms / 8,047 tokens and 117 ky / 7,832. All 171 language tests pass;
+87,076 calls in other changed bundles match the previous version. The old Kyrgyz question fixture китепби was
+corrected to китеппи and the incompatible form is now a negative check. Native assertions added, Android rerun
+pending. LK98 stays N.
 
 ### 2026-11-04, `codex/backlog-2026-11-04`, words.hk frequency catalog entry
 

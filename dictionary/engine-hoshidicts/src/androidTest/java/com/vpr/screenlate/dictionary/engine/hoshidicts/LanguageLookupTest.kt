@@ -710,6 +710,8 @@ class LanguageLookupTest {
             val result = engine.lookup(form, kazakh).first { it.term.expression == pronoun && it.matched == form }
             assertThat(result.trace.map { it.name }).containsExactly(case)
         }
+        assertThat(engine.lookup("айта", kazakh).filter { it.matched == "айта" }.map { it.term.expression })
+            .doesNotContain("ай")
     }
 
     /**
@@ -735,7 +737,8 @@ class LanguageLookupTest {
               ["бару","","v","",0,["to go"],12,""],
               ["ол","","n","",0,["he, she, it"],13,""],
               ["бұл","","pron","",0,["this"],14,""],
-              ["сол","","pron","",0,["that"],15,""]
+              ["сол","","pron","",0,["that"],15,""],
+              ["ай","","n","",0,["moon"],16,""]
             ]
         """.trimIndent().toByteArray(),
     )
@@ -786,6 +789,10 @@ class LanguageLookupTest {
             val result = engine.lookup(form, kyrgyz).first { it.term.expression == pronoun && it.matched == form }
             assertThat(result.trace.map { it.name }).containsExactly(case)
         }
+        for ((form, wrong) in listOf("карата" to "кара", "айта" to "ай", "жарадар" to "жара")) {
+            assertThat(engine.lookup(form, kyrgyz).filter { it.matched == form }.map { it.term.expression })
+                .doesNotContain(wrong)
+        }
     }
 
     /** Rows as Wiktionary's Kyrgyz exports write them: one headword as a noun and a verb, two words that differ in ө. */
@@ -804,7 +811,10 @@ class LanguageLookupTest {
               ["күз","","n","",0,["autumn"],8,""],
               ["ал","","n","",0,["he, she, it"],9,""],
               ["бул","","pron","",0,["this"],10,""],
-              ["ошол","","pron","",0,["that"],11,""]
+              ["ошол","","pron","",0,["that"],11,""],
+              ["кара","","adj","",0,["black"],12,""],
+              ["ай","","n","",0,["moon"],13,""],
+              ["жара","","n","",0,["wound"],14,""]
             ]
         """.trimIndent().toByteArray(),
     )

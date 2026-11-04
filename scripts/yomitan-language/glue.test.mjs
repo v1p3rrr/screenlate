@@ -1174,6 +1174,39 @@ test('kazakh and kyrgyz noun endings skip the pronouns whose case forms change t
     assert.ok(candidatesTo('kk', 'өзі', 'өз').some((c) => c.u));
 });
 
+test('kazakh and kyrgyz alternating consonants follow the stem sound and keep measured lexical exceptions', () => {
+    for (const [language, text, stem, rule] of [
+        ['kk', 'кітапта', 'кітап', 'locative'], ['kk', 'қалада', 'қала', 'locative'],
+        ['kk', 'мектепке', 'мектеп', 'dative'], ['kk', 'үйге', 'үй', 'dative'],
+        ['kk', 'адамға', 'адам', 'dative'], ['kk', 'ұлдар', 'ұл', 'plural'],
+        ['kk', 'қыздар', 'қыз', 'plural'], ['kk', 'таулар', 'тау', 'plural'],
+        ['kk', 'үйлер', 'үй', 'plural'], ['kk', 'кітаптар', 'кітап', 'plural'],
+        ['kk', 'клубтар', 'клуб', 'plural'], ['kk', 'геологтар', 'геолог', 'plural'],
+        ['kk', 'апрельдер', 'апрель', 'plural'],
+        ['kk', 'менікі', 'мен', 'attributive'],
+        ['ky', 'китепте', 'китеп', 'locative'], ['ky', 'балада', 'бала', 'locative'],
+        ['ky', 'үйгө', 'үй', 'dative'], ['ky', 'көлдөр', 'көл', 'plural'],
+        ['ky', 'шаарлар', 'шаар', 'plural'], ['ky', 'тоолор', 'тоо', 'plural'],
+        ['ky', 'китептер', 'китеп', 'plural'], ['ky', 'мурунтан', 'мурун', 'ablative'],
+        ['ky', 'кечээтен', 'кечээ', 'ablative'],
+    ]) {
+        assert.ok(candidatesTo(language, text, stem).some((c) => c.u && c.r.some((r) => r.includes(rule))), text);
+    }
+    for (const [language, text, stem] of [
+        ['kk', 'айта', 'ай'], ['kk', 'қаладар', 'қала'], ['kk', 'кітаплар', 'кітап'],
+        ['kk', 'жарты', 'жар'], ['ky', 'карата', 'кара'], ['ky', 'айта', 'ай'],
+        ['ky', 'жарадар', 'жара'], ['ky', 'китепби', 'китеп'], ['ky', 'китепда', 'китеп'],
+    ]) {
+        assert.ok(!candidates(language, text).some((c) => c.o === text && c.d === stem && c.u), text);
+    }
+    for (const [language, text, stem] of [
+        ['kk', 'келтірген', 'келу'], ['kk', 'өлтірген', 'өлу'],
+        ['ky', 'келтирген', 'келүү'], ['ky', 'өлтүргөн', 'өлүү'],
+    ]) {
+        assert.ok(isVerbThrough(candidatesTo(language, text, stem), ['causative', 'past participle']), text);
+    }
+});
+
 test('explicit pronoun cases reach their pronouns but never undo a regular ending on them', () => {
     for (const [language, descriptor] of [['kk', kazakhTransforms], ['ky', kyrgyzTransforms]]) {
         const cases = language === 'ky' ? {
@@ -2343,8 +2376,8 @@ test('uzbek noun endings come off in the order of the grammar and match entries 
     // Predicates and the question particle: talabaman, kitobmi.
     assert.ok(chains('talabaman', 'talaba').includes('1sg'));
     assert.ok(chains('kitobmi', 'kitob').includes('question'));
-    // The particle follows a noun in Kyrgyz and Azerbaijani as well: китепби, kitabmı.
-    assert.ok(queried('ky', 'китепби').has('китеп'));
+    // The particle follows a noun in Kyrgyz and Azerbaijani as well: китеппи, kitabmı.
+    assert.ok(queried('ky', 'китеппи').has('китеп'));
     assert.ok(queried('az', 'kitabmı').has('kitab'));
     // A stem keeps three letters: uy-da is left to Wiktionary's rows.
     assert.ok(!queried('uz', 'uyda').has('uy'));

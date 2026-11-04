@@ -20,8 +20,13 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   34,933 unique words; all five agreed examples have ranks (我哋 279, 佢哋 391, 你哋 1110, 喺度 870, 為咗 1172).
   CRC, metadata and SHA-256 checked. Eleven catalog JS tests, all 376 dictionary API JVM tests and 33 app checks
   (setup, catalog items/order and translations) pass. Device download/import remains a manual check.
+- Group 4e question 23 measured and implemented. Alternating initial consonants follow the stem, with each
+  language's plural classes and Russian twins. Causatives and Kyrgyz temporal ablatives stay unrestricted after
+  the prototype lost useful forms; Kazakh ownership paths stay. On the top 30,000 forms, readings change for
+  218 kk forms (8,047 tokens) and 117 ky (7,832); the plan records the coverage loss, review and modeling limits.
+  All 171 language tests pass; 87,076 calls in other changed bundles are identical. Native cases added, rerun pending.
 - Public test dictionaries, audit reports and run logs are under the worktree's ignored
-  `testdata/local-research/backlog-2026-11-04/`. Next: the measured consonant-ending restrictions.
+  `testdata/local-research/backlog-2026-11-04/`. Next: result ordering at the same chain length.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 
