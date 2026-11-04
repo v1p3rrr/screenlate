@@ -50,7 +50,18 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   spelling, now all 298; 12 gained, none lost. Two live searches confirm both spellings. The failing AudioFinder
   reproduction is green; all 175 Anki tests and common tests (575 total, three existing skips) pass, as do both lints.
 - One final API 37 software/acceleration-off retry exits with 0x40000015 before ADB attaches. Device acceptance is
-  still pending. Next: the remaining Home/locale/Anki/OCR reports, with a reproducible loop required before fixes.
+  still pending.
+- PaddleOCR line splitting/overlap fix implemented after failing geometry and paragraph tests: horizontal fragments
+  join before cropping, contained islands are not read twice, nearby rows form paragraphs. Detached tall compact
+  shapes stay separate from labels; long vertical crops keep their existing boundaries after their merge prototype
+  showed mixed quality. The Russian page has 18 content rows and six paragraphs rather than 38 fragments.
+- Geometry replay: 86 saved pages / 2,277 regions → 2,010 crops. Paired host recognition: 44 cases / 38 unique
+  screenshots, 18 improved and 26 unchanged, none worse; normalized-character errors 1,337 → 495 over 16,056
+  truth characters (case totals include the two saved Russian/Ukrainian output sets). Native Android rerun pending.
+- Remaining device-dependent investigations: first-start language names, Home service-state card after rebind,
+  and AnkiDroid browser retaining a deck filter. No speculative fix applied without a failing Android loop. The
+  public AnkiDroid source confirms that the current browser link uses the right search parameter but retains deck
+  selection; this is not proof against the installed version. Group 4e sorting question 28 is awaiting the owner.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 

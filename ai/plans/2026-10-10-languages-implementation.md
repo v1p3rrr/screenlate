@@ -1985,3 +1985,19 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   spellings, mixed variants, missing-mark negatives and speaker names tested. Two live Commons searches return
   bag‘ishlamoq and boʻlmoq in 0.43 s each. All Anki and common JVM tests and lint pass; no audio or app data on
   the owner's phone changed.
+
+- 2026-11-04 (request 84): PaddleOCR line/paragraph report implemented after red/green replay of the actual
+  38-region Russian page. `PaddleLines` combines same-baseline horizontal fragments before recognition and
+  suppresses contained islands; small letters between fragments remain, detached taller compact symbols do not
+  join a text label. Group crops keep the largest fragment's baseline. Long vertical crops stay separate after a
+  merge prototype lost a character on the light vertical test; their existing ReadingOrder path remains.
+  `PaddleParagraphs` groups similarly sized, aligned nearby horizontal rows; columns and blank gaps stay separate.
+  Vertical continuation and the other engines retain their paths. Technical thresholds are measured implementation
+  details completing the already approved fix, not a new behavior choice.
+- Final host measurement: 86 recorded pages / 2,277 detector regions → 2,010 crops. Quality replay covers all changed
+  content cases and controls: 44 cases over 38 unique screenshots; 18 better, 26 equal, zero worse; normalized
+  alphanumeric edit errors 1,337 → 495 over 16,056 truth characters. These totals include the separate saved ru/uk
+  runs. The Cyrillic Russian light/dark pages have 18 text crops each (35/51 before), errors 38/171 → 0/0. The
+  38-region light fixture, status bar included, becomes 19 crops and seven paragraphs (six text blocks and clock).
+  Unit/lint/assembly checks pass. This is paired ONNX Runtime recognition of old/new axis-aligned crop geometry,
+  not a full MNN/Android rerun or device performance claim. Device acceptance remains pending.

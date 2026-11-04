@@ -144,6 +144,6 @@ internal object TextDetection {
             val area = region.widened(distance)
             lines += DetectedLine(area, area.bounds().within(image), score)
         }
-        return lines.sortedWith(compareBy({ it.box.top }, { it.box.left }))
+        return PaddleLines.combine(lines, image)
     }
 }
