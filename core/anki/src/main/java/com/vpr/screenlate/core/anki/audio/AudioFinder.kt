@@ -318,8 +318,9 @@ class AudioFinder internal constructor(
             AudioSourceType.LINGUA_LIBRE -> {
                 val title = language.support.linguaLibreTitle(term.nfc())
                 val items = language.support.linguaLibreItems
-                val files = commonsFiles(AudioPages.linguaLibreSearch(title, items, marks, language.caseLocale), deadline)
-                candidates(AudioPages.linguaLibre(files, title, items, marks, reading.nfc()))
+                val variants = language.support.linguaLibreCharacterVariants
+                val files = commonsFiles(AudioPages.linguaLibreSearch(title, items, marks, language.caseLocale, variants), deadline)
+                candidates(AudioPages.linguaLibre(files, title, items, marks, reading.nfc(), variants))
             }
             AudioSourceType.WIKTIONARY -> {
                 val files = coroutineScope {

@@ -30,6 +30,9 @@ object UzbekSupport : SpacedLanguageSupport() {
     /** Lingua Libre has recordings of a few hundred words; Wiktionary of a few dozen. */
     override val defaultAudioSources = listOf("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
 
+    /** Some recordings write the turned comma as the left single quotation mark. */
+    override val linguaLibreCharacterVariants = listOf("ʻ‘")
+
     /** English quotes mostly, «…» too. */
     override val quotePairs = super.quotePairs + ('«' to '»')
 

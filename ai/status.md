@@ -44,7 +44,13 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
 - Approved photo-loading bubble state implemented: only a shown photo without committed text and its own running
   recognition wait with the existing spinner. Progress keeps the generation, text attaches, failure clears loading;
   no screen reads or new recognition. Photo/overlay/camera tests, full debug assembly and lint pass. CAM50 visual
-  acceptance remains pending on a device. Next: the remaining reported defects, starting with Uzbek audio titles.
+  acceptance remains pending on a device.
+- Uzbek Lingua Libre apostrophe mismatch fixed: the per-language two-character group matches normative ʻ and title ‘
+  in one query and in speaker extraction. Public Commons listing: 298 files, formerly 286 matched their dictionary
+  spelling, now all 298; 12 gained, none lost. Two live searches confirm both spellings. The failing AudioFinder
+  reproduction is green; all 175 Anki tests and common tests (575 total, three existing skips) pass, as do both lints.
+- One final API 37 software/acceleration-off retry exits with 0x40000015 before ADB attaches. Device acceptance is
+  still pending. Next: the remaining Home/locale/Anki/OCR reports, with a reproducible loop required before fixes.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 

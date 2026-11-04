@@ -27,6 +27,41 @@ class AudioPagesTest {
     """
 
     @Test
+    fun `all measured Uzbek curly apostrophes match without losing the normative titles`() {
+        val variants = com.vpr.screenlate.core.common.language.UzbekSupport.linguaLibreCharacterVariants
+        val titles = listOf(
+            "File:LL-Q9264 (uzb)-Mirishkorlik-bag‘ishlamoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-cho‘kelmoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-cho‘milmoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-cho‘qilmoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-cho‘tegmoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-cho‘tkalamoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-cho‘tkamoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-chulg‘amoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-do‘ng‘llamoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-g‘ajimoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-g‘amlamoq.wav",
+            "File:LL-Q9264 (uzb)-Mirishkorlik-g‘o‘daymoq.wav",
+        )
+        for (title in titles) {
+            val term = title.substringAfter("Mirishkorlik-").removeSuffix(".wav").replace('‘', 'ʻ')
+            val query = AudioPages.linguaLibreSearch(term, listOf("Q9264"), variants = variants)
+            assertThat(query).doesNotContain("intitle:\"")
+            val expression = Regex(query.substringAfter("intitle:/").substringBeforeLast('/'))
+            assertThat(expression.matches(title.removePrefix("File:"))).isTrue()
+            assertThat(expression.matches(title.removePrefix("File:").replace('‘', 'ʻ'))).isTrue()
+            assertThat(expression.matches(title.removePrefix("File:").replace("‘", ""))).isFalse()
+            assertThat(AudioPages.linguaLibreSpeaker(title, term, variants = variants)).isEqualTo("Mirishkorlik")
+        }
+        val multi = "File:LL-Q9264 (uzb)-Speaker-aylanib-o‘rgilmoq.wav"
+        assertThat(AudioPages.linguaLibreSpeaker(multi, "aylanib-oʻrgilmoq", variants = variants)).isEqualTo("Speaker")
+        // The distinct modifier apostrophe is not folded into the turned comma; other languages stay exact.
+        val query = AudioPages.linguaLibreSearch("maʼnaviy", listOf("Q9264"), variants = variants)
+        assertThat(query).contains("maʼnaviy")
+        assertThat(AudioPages.linguaLibreSearch("soʻz", listOf("Q1860"))).doesNotContain("[ʻ‘]")
+    }
+
+    @Test
     fun `languagepod rows match word and kana`() {
         val html = "<div>header</div>" +
             languagePodRow("https://cdn.example/626.mp3", "食べる", "たべる") +

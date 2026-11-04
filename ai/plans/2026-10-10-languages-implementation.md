@@ -1974,3 +1974,14 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-29: questions 88-100 answered or decided with the owner: 91, 92 (tab «Rechercher») and 98 by the owner;
   88, 93 and 100 as bugs; 89, 90 and 94-97 as details of rules already chosen; 99 goes with the translation review,
   added to the Backlog (owner: per-locale review agents, later).
+
+- 2026-11-04 (request 84): Uzbek Lingua Libre title mismatch fixed after a failing AudioFinder request test.
+  `linguaLibreCharacterVariants` is empty in every support except Uzbek's `ʻ‘`; audio query and speaker-title
+  matching require one character from that group, never omit it. The plain-title narrowing is skipped only when
+  the searched term contains a variant character, as the index cannot be narrowed to one spelling. One query,
+  no extra requests and no change to Wiktionary. The distinct ʼ remains distinct. Current public Commons listing
+  is 298 files: 12 curly-apostrophe titles gain a match, all 286 old matches stay (the earlier “14 titles” note
+  counted 14 curly-apostrophe characters in 12 titles). Red/green AudioFinder regression, all 12 real title
+  spellings, mixed variants, missing-mark negatives and speaker names tested. Two live Commons searches return
+  bag‘ishlamoq and boʻlmoq in 0.43 s each. All Anki and common JVM tests and lint pass; no audio or app data on
+  the owner's phone changed.

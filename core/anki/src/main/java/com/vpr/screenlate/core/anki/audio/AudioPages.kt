@@ -67,13 +67,17 @@ internal object AudioPages {
      * letter of a script without case stays as it is. With [marks], every letter may carry any of them, as titles that
      * write the word vowelled do (`Ar-كِتَابٌ.oga` for كتاب).
      */
-    private fun luceneTerm(term: String, marks: String, locale: Locale): String = buildString {
+    private fun luceneTerm(term: String, marks: String, locale: Locale, variants: List<String> = emptyList()): String = buildString {
         val anyMarks = if (marks.isEmpty()) "" else "[$marks]*"
         val letters = withoutMarks(term, marks)
         if (letters.isEmpty()) return@buildString
         val first = letters.substring(0, letters.offsetByCodePoints(0, 1))
         append(letterCases(first, locale)).append(anyMarks)
-        letters.substring(first.length).forEach { if (it in REGEX_SPECIAL) append('\\'); append(it); append(anyMarks) }
+        letters.substring(first.length).forEach { letter ->
+            val group = variants.firstOrNull { letter in it }
+            append(if (group == null) luceneEscape(letter.toString()) else "[${luceneEscape(group)}]")
+            append(anyMarks)
+        }
     }
 
     /** [letter] for a Lucene regular expression in each of its cases (`[bB]`), or escaped when it has one. */
@@ -86,9 +90,14 @@ internal object AudioPages {
     }
 
     /** [term] as a group of a Kotlin regular expression, every letter followed by any of [marks]. */
-    private fun titleTerm(term: String, marks: String): String {
+    private fun titleTerm(term: String, marks: String, variants: List<String> = emptyList()): String {
         val anyMarks = if (marks.isEmpty()) "" else marks.asIterable().joinToString("", "[", "]*") { "\\x{%x}".format(it.code) }
-        return withoutMarks(term, marks).map { Regex.escape(it.toString()) + anyMarks }.joinToString("", "(", ")")
+        return withoutMarks(term, marks).map { letter ->
+            val group = variants.firstOrNull { letter in it }
+            val pattern = if (group == null) Regex.escape(letter.toString())
+                else group.map { "\\x{%x}".format(it.code) }.joinToString("", "[", "]")
+            pattern + anyMarks
+        }.joinToString("", "(", ")")
     }
 
     private fun withoutMarks(term: String, marks: String) = if (marks.isEmpty()) term else term.filterNot { it in marks }
@@ -121,10 +130,11 @@ internal object AudioPages {
         wikidataIds: List<String>,
         marks: String = "",
         locale: Locale = Locale.ROOT,
+        variants: List<String> = emptyList(),
     ): String {
         val item = wikidataIds.singleOrNull() ?: wikidataIds.joinToString("|", "(", ")")
-        val narrowed = if (marks.isEmpty()) titleWord(term) else ""
-        return narrowed + """intitle:/LL-$item \([a-z]{3}\)-.*-${luceneTerm(term, marks, locale)}\.wav/"""
+        val narrowed = if (marks.isEmpty() && variants.none { group -> term.any { it in group } }) titleWord(term) else ""
+        return narrowed + """intitle:/LL-$item \([a-z]{3}\)-.*-${luceneTerm(term, marks, locale, variants)}\.wav/"""
     }
 
     /**
@@ -183,9 +193,9 @@ internal object AudioPages {
     }
 
     /** The speaker in a Lingua Libre file title (`File:LL-Q1860 (eng)-Speaker-cat.wav`, `…-Speaker-Cat.wav`). */
-    fun linguaLibreSpeaker(title: String, term: String, marks: String = ""): String {
+    fun linguaLibreSpeaker(title: String, term: String, marks: String = "", variants: List<String> = emptyList()): String {
         val rest = title.substringAfter(")-", "")
-        val word = linguaLibreWord(rest, term, marks)
+        val word = linguaLibreWord(rest, term, marks, variants)
         return if (word != null) rest.dropLast(word.length + ".wav".length + 1) else rest.substringBeforeLast('-', "")
     }
 
@@ -193,8 +203,8 @@ internal object AudioPages {
      * The word a Lingua Libre title ends with (`Speaker-كِتَاب.wav`) when it is [term], with or without [marks], in
      * either case (`Speaker-Uisge.wav`).
      */
-    private fun linguaLibreWord(rest: String, term: String, marks: String): String? =
-        Regex("-${titleTerm(term, marks)}\\.wav$", RegexOption.IGNORE_CASE).find(rest)?.groupValues?.get(1)
+    private fun linguaLibreWord(rest: String, term: String, marks: String, variants: List<String>): String? =
+        Regex("-${titleTerm(term, marks, variants)}\\.wav$", RegexOption.IGNORE_CASE).find(rest)?.groupValues?.get(1)
 
     /**
      * Lingua Libre recordings (title to URL) with their speakers, those closest to [term] read as [reading] first
@@ -209,18 +219,19 @@ internal object AudioPages {
         wikidataIds: List<String> = emptyList(),
         marks: String = "",
         reading: String = "",
+        variants: List<String> = emptyList(),
     ): List<Found> {
         fun rank(title: String): Int {
-            val word = linguaLibreWord(title.substringAfter(")-", ""), term, marks).orEmpty()
+            val word = linguaLibreWord(title.substringAfter(")-", ""), term, marks, variants).orEmpty()
             return recordingRank(word, term, reading, marks)
         }
         val order = compareBy<Pair<String, String>> { (title, _) -> rank(title) }
             .thenBy { (title, _) -> languageIndex(title, wikidataIds) }
-            .thenBy { (title, _) -> '-' in linguaLibreSpeaker(title, term, marks) }
+            .thenBy { (title, _) -> '-' in linguaLibreSpeaker(title, term, marks, variants) }
         return files
             .filter { (title, _) -> wikidataIds.isEmpty() || languageIndex(title, wikidataIds) < wikidataIds.size }
             .sortedWith(order)
-            .map { (title, url) -> Found(url, linguaLibreSpeaker(title, term, marks), rank(title)) }
+            .map { (title, url) -> Found(url, linguaLibreSpeaker(title, term, marks, variants), rank(title)) }
     }
 
     /** Where the item a Lingua Libre title names is in [wikidataIds]; after them all for another. */

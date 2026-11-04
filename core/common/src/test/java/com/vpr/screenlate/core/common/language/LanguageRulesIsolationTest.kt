@@ -566,6 +566,7 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.CROATIAN, Language.SERBIAN, Language.CANTONESE)
         assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) }).containsExactly(Language.CROATIAN, Language.NORWEGIAN)
         assertThat(all.where { it.linguaLibreTitle("кућа") != "кућа" }).containsExactly(Language.SERBIAN)
+        assertThat(all.where { it.linguaLibreCharacterVariants.isNotEmpty() }).containsExactly(Language.UZBEK)
         assertThat(all.where { it.translationTag("Kuća je velika.") != null }).containsExactly(Language.SERBIAN)
         assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.frequencySpellings("п'ять").isNotEmpty() }).containsExactly(Language.UKRAINIAN)

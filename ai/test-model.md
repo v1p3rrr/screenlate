@@ -737,6 +737,18 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-11-04, sequential backlog: Uzbek audio title spelling
+
+- AudioFinder regression fails before the fix (NoSuchElementException: no recording of bagʻishlamoq when
+  Commons files bag‘ishlamoq), passes after it. Actual query regex evaluated at the mock HTTP seam.
+- All 175 core:anki tests pass; core:common 575 total, 572 passed and three existing platform skips; both lints pass.
+  AudioPages replays every one of the 12 measured title mismatches and normative versions, missing-character
+  negatives, distinct ʼ, other-language isolation and a hyphenated term's speaker extraction.
+- Independent replay of public Commons allpages gives 286 → 298 of 298 matches, zero lost. Live queries return
+  the curly-spelled bag‘ishlamoq and normative boʻlmoq in ~0.43 s each. No phone operation or audio played.
+- Ignored evidence: backlog-2026-11-04/uz-audio-red.log, uz-audio-green.log, uz-audio-checks.log,
+  uz-commons-titles.json, uz-commons-live-search.json, uz-audio-coverage.json.
+
 ### 2026-11-04, sequential backlog: photo recognition loading
 
 - Approved camera decision from 2026-10-29 (`9658bda2`) implemented. CAM50 added; older CAM4 checks still refer

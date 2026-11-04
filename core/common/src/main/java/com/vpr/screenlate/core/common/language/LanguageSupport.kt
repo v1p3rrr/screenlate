@@ -148,6 +148,9 @@ interface LanguageSupport {
     /** The spelling Lingua Libre's recordings of [term] are titled by: the word itself. */
     fun linguaLibreTitle(term: String): String = term
 
+    /** Groups of interchangeable characters in Lingua Libre titles; each character must still be present. */
+    val linguaLibreCharacterVariants: List<String> get() = emptyList()
+
     /**
      * Vowel marks recording titles may write where the word has none (`Ar-كِتَابٌ.oga` for كتاب). Titles that differ
      * from the word only by them are found too; those with the word itself come first, then those with its vowelled

@@ -275,6 +275,31 @@ class AudioFinderTest {
     }
 
     @Test
+    fun `uzbek lingua libre titles retain both spellings of the turned comma`() = runBlocking<Unit> {
+        var term = "bagʻishlamoq"
+        var title = "File:LL-Q9264 (uzb)-Mirishkorlik-bag‘ishlamoq.wav"
+        routes["/w/api.php"] = {
+            val search = requests.last().url.queryParameter("srsearch")
+            if (search != null) {
+                // These queries use the common subset of Lucene and Kotlin regular expressions.
+                val expression = search.substringAfter("intitle:/").substringBeforeLast('/')
+                val found = if (Regex(expression).matches(title.removePrefix("File:")))
+                    """{"title":"$title"}""" else ""
+                text("""{"query":{"search":[$found]}}""", "application/json")
+            } else {
+                text("""{"query":{"pages":{"1":{"title":"$title","imageinfo":[{"url":"https://upload.example/uz.wav"}]}}}}""",
+                    "application/json")
+            }
+        }
+        val source = listOf(AudioSource(AudioSourceType.LINGUA_LIBRE))
+        assertThat(finder.candidates(term, "", Language.UZBEK, source).single().name).isEqualTo("Mirishkorlik")
+        term = "boʻlmoq"
+        title = "File:LL-Q9264 (uzb)-Mirishkorlik-boʻlmoq.wav"
+        assertThat(finder.candidates(term, "", Language.UZBEK, source).single().name).isEqualTo("Mirishkorlik")
+        assertThat(requests.count { it.url.queryParameter("list") == "search" }).isEqualTo(2)
+    }
+
+    @Test
     fun `lingua libre recordings come from commons with speakers`() = runBlocking<Unit> {
         val title = "File:LL-Q5287 (jpn)-Speaker1-猫.wav"
         routes["/w/api.php"] = {
