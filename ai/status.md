@@ -15,8 +15,13 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
 - Native test cases are added and the test APK builds. ADB sees no phone. API 37's emulator exits during startup
   with WHPX; a software-graphics retry also exits, and the API 30 fallback exits with 0xc0000005. The Android rerun
   is pending; continue independent backlog work instead of waiting. No device app or owner data changed.
+- Group 5e question 27 built: `wordshk-frequency` follows `corpus-yue` in the catalog, recommended and marked
+  non-commercial, with titles and descriptions in all 17 interface locales. Static upstream archive: 458,065 bytes,
+  34,933 unique words; all five agreed examples have ranks (我哋 279, 佢哋 391, 你哋 1110, 喺度 870, 為咗 1172).
+  CRC, metadata and SHA-256 checked. Eleven catalog JS tests, all 376 dictionary API JVM tests and 33 app checks
+  (setup, catalog items/order and translations) pass. Device download/import remains a manual check.
 - Public test dictionaries, audit reports and run logs are under the worktree's ignored
-  `testdata/local-research/backlog-2026-11-04/`. Next: the agreed words.hk frequency dictionary.
+  `testdata/local-research/backlog-2026-11-04/`. Next: the measured consonant-ending restrictions.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 

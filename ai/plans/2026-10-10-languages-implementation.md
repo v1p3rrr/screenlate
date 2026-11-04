@@ -1456,6 +1456,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 ## Changelog
 
+- 2026-11-04: request 84: group 5e question 27 built. The verified 34,933-word words.hk frequency archive is
+  recommended and marked non-commercial in the catalog, with all 17 locales. Catalog/API/setup tests pass;
+  the Android download/import check remains pending.
+
 - 2026-11-04: request 84 started. Group 4e question 26 implemented with explicit whole-word pronoun cases;
   170 language tests, unchanged other-language candidates, engine tests and lint pass. Native rerun pending
   because the phone is disconnected and the emulators fail to start. Continue with the next independent task.

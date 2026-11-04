@@ -6,6 +6,12 @@ the terms of the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version. See LICENSE.
 
+Words.hk Frequency (https://github.com/MarvNC/wordshk-yomitan), converted by Marv
+from Words.hk and its contributors (https://words.hk/).
+  Optional downloadable Cantonese frequency data; words.hk Non-Commercial
+  Open Data License 1.0: https://words.hk/base/hoifong/.
+  The data is not bundled with the application.
+
 Third-party code
 ----------------
 

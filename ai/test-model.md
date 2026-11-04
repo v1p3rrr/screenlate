@@ -524,6 +524,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC52 | The Telugu word forms item: as DIC51 with te–en (a verb form found through the item) | N | U CatalogFileTest, LanguageSetupTest, M | |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 | DIC53 | PanLex Title Case filter: Менин Музыкам and Тапшырма Жургузуучу with only lowercase translations are absent; names with a capitalized translation in any retained meaning remain, even beyond the ten displayed translations; non-Title-Case headwords remain. The casing rule also drops Аллаһ Тағала → бог and Солтүстік Шотландия → гэльский. Four pinned-snapshot archives keep all remaining translations and their order | O | U test_panlex_yomitan.py, local archive comparison | 2026-11-03 |
+| DIC54 | Cantonese offers Word frequency (words.hk) ticked alongside rime-cantonese, marked non-commercial and translated in all 17 locales; its upstream archive has 34,933 words and ranks for 我哋/佢哋/你哋/喺度/為咗; download/import shows those ranks in the popup | N | U CatalogFileTest, LanguageSetupTest; local ZIP audit; M | 2026-11-04 (catalog/archive; device pending) |
 
 ### LNG: languages
 
@@ -731,6 +732,15 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, words.hk frequency catalog entry
+
+Scope: group 5e question 27, DIC54. The public upstream ZIP passes CRC, has the expected index title/revision,
+34,933 unique frequency rows, 458,065 bytes and all five agreed example words with positive ranks. SHA-256 is
+recorded in the catalog and plan. All 11 catalog generator tests, 376 dictionary API JVM tests and 33 app checks
+(setup, catalog order/items, translations) pass. New title and description maps have all 17 locales; recommended
+and non-commercial flags and language isolation are checked. No archive schema or importer changed. DIC54 stays N
+for the Android download/import check while no device is available.
 
 ### 2026-11-04, `codex/backlog-2026-11-04`, explicit pronoun cases
 

@@ -580,16 +580,39 @@ class CatalogFileTest {
     @Test
     fun `cantonese offers words-hk and its characters ticked and marked non-commercial, rime-cantonese ticked, cc-canto, cc-cedict canto and paddle v6 unticked`() {
         val cantonese = catalog!!.entries.filter { it.isFor(Language.CANTONESE) }
-        assertThat(cantonese.filter { it.recommended }.map { it.id }).containsExactly("corpus-yue", "wordshk", "wordshk-honzi")
+        assertThat(cantonese.filter { it.recommended }.map { it.id })
+            .containsExactly("corpus-yue", "wordshk-frequency", "wordshk", "wordshk-honzi")
         // ML Kit's Chinese model reads Cantonese with fewer errors; Tesseract's Traditional Chinese model is not offered.
         assertThat(cantonese.filterNot { it.recommended }.map { it.id })
             .containsExactly("paddle-v6-yue", "paddle-detector-v6-yue", "cc-canto", "cc-cedict-canto")
-        assertThat(cantonese.filter { it.nonCommercial }.map { it.id }).containsExactly("wordshk", "wordshk-honzi")
+        assertThat(cantonese.filter { it.nonCommercial }.map { it.id })
+            .containsExactly("wordshk", "wordshk-honzi", "wordshk-frequency")
         assertThat(cantonese.filter { it.category == CatalogCategory.MAIN }.all { it.targetLanguage == "en" }).isTrue()
         assertThat(cantonese.single { it.id == "wordshk-honzi" }.kind).isEqualTo(DictionaryKind.KANJI)
         // Chinese's dictionaries give Mandarin readings; Cantonese lookups read only their own.
         assertThat(catalog.entries.filter { it.isReadBy(Language.CANTONESE) }).isEqualTo(cantonese)
         assertThat(catalog.entries.filter { it.isFor(Language.CHINESE) }.none { it.sourceLanguage == "yue" }).isTrue()
+    }
+
+    @Test
+    fun `words-hk frequency supplements rime, is non-commercial and translated in all 17 interface locales`() {
+        val entry = catalog!!.entries.single { it.id == "wordshk-frequency" }
+        assertThat(entry.kind).isEqualTo(DictionaryKind.FREQUENCY)
+        assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
+        assertThat(entry.targetLanguage).isNull()
+        assertThat(entry.installedTitle).isEqualTo("Words.hk Frequency")
+        assertThat(entry.downloadSize).isEqualTo(458065L)
+        assertThat(entry.sha256).isEqualTo("727cfbcf4e93de69014fdf842424964556eaf7d9d1f8b905fcdcc6c90d8012b9")
+        assertThat(entry.recommended).isTrue()
+        assertThat(entry.nonCommercial).isTrue()
+        assertThat(entry.license).isEqualTo("words.hk Non-Commercial Open Data License 1.0")
+        assertThat(entry.sourceLanguage).isEqualTo("yue")
+        assertThat(entry.isFor(Language.CHINESE)).isFalse()
+        for (tag in listOf("en", "ru", "de", "es", "fr", "it", "ja", "ko", "pl", "pt", "tr", "vi", "zh", "zh-Hant", "ar", "fa", "he")) {
+            assertThat(entry.titles).containsKey(tag)
+            assertThat(entry.description).containsKey(tag)
+            assertThat(entry.displayTitle(Locale.forLanguageTag(tag))).contains("words.hk")
+        }
     }
 
     @Test
