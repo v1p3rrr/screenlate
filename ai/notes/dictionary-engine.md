@@ -290,3 +290,14 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   dictionaries: bilinguals have 53–100% foreign letters in their definitions, Japanese monolinguals up to 26% Latin
   (デジタル大辞泉 opens with loanwords and their etymologies; at the former 15% it was taken for ja → en), with Android's `TextClassifier`
   naming Latin and Cyrillic languages. Installed dictionaries were sampled once through lookups of ~80 common words.
+
+## Optional form-row tie preference (2026-11-04)
+
+LanguageSupport.preferDictionaryForms is enabled only by KazakhSupport (owner's group 4e question 28).
+HoshidictsEngine sends it through JNI CandidateLookupOptions. It breaks ties after matched length, preprocessing,
+respelled keys and shortest chain length, before exact lemma/frequency. Apply it when choosing the best match of
+one lemma, choosing that lemma's primary chain and sorting results before maxResults. The final YomitanSorter
+uses the same place. Prefer a chain containing a dictionary form step only at the shortest length; longer
+alternative chains never outrank a shorter own chain. Keep all alternatives. Kyrgyz stays unchanged. Native test
+uses a high-score noun versus a low-score form lemma with maxResults=1, verifies the form chain is primary and
+checks the Kyrgyz plural-row regression; all 53 language tests passed on the phone.

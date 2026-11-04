@@ -1748,3 +1748,7 @@ download screen).
 - 2026-11-04: Uzbek Lingua Libre character variants `ʻ‘` are scoped to its support and the Lingua Libre search/
   speaker parser. Core isolation and AudioFinder/AudioPages tests cover them; Wiktionary and other languages
   retain literal matching. See audio-sources.md for the 298-title replay and live search checks.
+
+- 2026-11-04: Kazakh-only preferDictionaryForms policy breaks equal-shortest-chain ties in the native engine and
+  final sorter. Other languages, including Kyrgyz, keep their order. YomitanSorterTest checks every language;
+  LanguageLookupTest verifies the native limit, primary and alternative chains and the Kyrgyz counterexample.

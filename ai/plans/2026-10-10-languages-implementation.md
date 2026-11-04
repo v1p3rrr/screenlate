@@ -2001,3 +2001,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   38-region light fixture, status bar included, becomes 19 crops and seven paragraphs (six text blocks and clock).
   Unit/lint/assembly checks pass. This is paired ONNX Runtime recognition of old/new axis-aligned crop geometry,
   not a full MNN/Android rerun or device performance claim. Device acceptance remains pending.
+
+- 2026-11-04 (request 85): owner accepted group 4e question 28, dictionary-form priority only in Kazakh, keeping Kyrgyz unchanged, and offered the phone for verification. Resume implementation and device tests after request 84; no release or Anki collection changes requested.
