@@ -22,6 +22,7 @@ import com.vpr.screenlate.audio.LocalNetworkAskEffect
 import com.vpr.screenlate.camera.ShareImageActivity
 import com.vpr.screenlate.camera.SharedImages
 import com.vpr.screenlate.camera.isAnotherAppsContent
+import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.languages.LocalFlagCodes
 import com.vpr.screenlate.navigation.LanguagePageRequest
 import com.vpr.screenlate.navigation.ScreenlateNavHost
@@ -80,6 +81,7 @@ class MainActivity : ComponentActivity() {
         // The splash screen stays until the settings are read: an e-ink screen would flash a frame in the colour theme.
         installSplashScreen().setKeepOnScreenCondition { viewModel.theme.value == null || viewModel.firstRun.value == null }
         super.onCreate(savedInstanceState)
+        AppLanguage.followConfiguration(resources.configuration)
         enableEdgeToEdge()
         if (savedInstanceState == null) handleOpenRequest(intent)
         debugFullscreen()

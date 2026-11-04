@@ -2465,3 +2465,20 @@ date); unbuilt dictionaries including Mueller/OpenRussian morphology; final rele
 test-model coverage for all 62 source languages; per-locale translation review and RTL catalog/font descriptions;
 full module review; groups 6/5f, beta/update packaging, network/offline audit, local audio and deferred features.
 These are not all phone checks and were not started as part of the current native-verification block.
+
+## UI defects and remaining acceptance resumed (2026-11-04)
+
+Owner request 87: finish the three reported bugs in order, then the remaining UI checks; the phone is connected.
+Use a separate verification application and test package, keep an inventory of created artifacts, and remove those
+packages/files at the end. Owner app/collection data stays untouched. Start with a stale process-default locale
+versus Russian activity resources on a first activity launch. A guarded StartupLocaleTest is being prepared;
+it runs only against com.vpr.screenlate.verification. No production locale change applied before reproduction.
+
+- First defect fixed: MainActivity follows its resource configuration after super.onCreate and before UI/view-model
+  composition. StartupLocaleTest reproduces the stale English default at onActivityPreCreated, observes the initial
+  language name at onActivityPostCreated, and requires Russian resources. It failed with Cantonese before the fix
+  and passes with Кантонский afterward on the phone. The earlier pre-launch-only simulation was green because the
+  Android framework refreshed the default before onCreate; keep the callback seam. Isolated app/test builds and
+  app lint pass. Next: service-state card; phone is locked, unlock question pending for visible UI checks.
+- Created phone packages for this task: com.vpr.screenlate.verification and .verification.test, user 0 only. They
+  must be uninstalled at the end. Owner packages com.vpr.screenlate and .debug were present before the task and stay.
