@@ -339,6 +339,25 @@ test('marathi participles in -त and -ताना come off verb stems for the 
     assert.ok(queriedWhole('mr', 'करतानाही').has('करणे'));
 });
 
+test('marathi irregular past stems reach their verbs as whole words under past endings only', () => {
+    for (const [text, lemma, ending] of [
+        ['आली', 'येणे', '-ली'], ['आल्या', 'येणे', '-ल्या'], ['आलेल्या', 'येणे', '-लेल्या'],
+        ['झाला', 'होणे', '-ला'], ['झाले', 'होणे', '-ले'], ['झालेल्या', 'होणे', '-लेल्या'],
+        ['केली', 'करणे', '-ली'], ['केलेल्या', 'करणे', '-लेल्या'],
+        ['गेली', 'जाणे', '-ली'], ['गेलेल्या', 'जाणे', '-लेल्या'],
+        ['दिली', 'देणे', '-ली'], ['दिलेल्या', 'देणे', '-लेल्या'],
+    ]) {
+        assert.ok(candidatesTo('mr', text, lemma).some((c) => c.u && c.g.includes('v') &&
+            c.r.some((r) => r.length === 1 && r[0] === ending)), text);
+        assert.ok(!candidates('mr', 'परत' + text).some((c) => c.d === lemma), text);
+    }
+    assert.ok(candidatesTo('mr', 'आलीच', 'येणे').some((c) => c.r.some((r) => r.join() === '-ली,-च')));
+    assert.ok(!candidates('mr', 'आतो').some((c) => c.d === 'येणे'));
+    for (const language of ['hi', 'bn', 'kn', 'ta', 'te']) {
+        assert.ok(!candidates(language, 'आली').some((c) => c.d === 'येणे'), language);
+    }
+});
+
 test('marathi present, past and conjunctive endings come off verb stems for the infinitive and reach verbs only', () => {
     /** @param {string} text @param {string} lemma @param {string} rule */
     const verb = (text, lemma, rule) => {

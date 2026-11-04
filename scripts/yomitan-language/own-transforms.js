@@ -79,9 +79,12 @@ const marathiPastEndings = ['लेल्या', 'लेला', 'लेली'
 /**
  * What a past stem adds to the verb's: nothing (बसला → बसणे), -ा- (मिळाला, म्हणाले → म्हणणे), -ि- (पाहिला → पाहणे,
  * the older पाठविला → पाठवणे), -ित- (सांगितला → सांगणे) or -त- (घेतला → घेणे). The irregular pasts (केला, गेला, आला,
- * झाला, दिला) are Wiktionary's forms.
+ * झाला, दिला) have explicit whole-word rules below for the forms Wiktionary does not list.
  */
 const marathiPastStems = ['', 'ा', 'ि', 'ित', 'त'];
+
+/** Whole irregular past stems; only the past and perfect participle endings use these. */
+const marathiIrregularPastStems = [['आ', 'येणे'], ['झा', 'होणे'], ['के', 'करणे'], ['गे', 'जाणे'], ['दि', 'देणे']];
 
 /**
  * Oblique stems and their direct forms: the stem as it is (नदीला → नदी), -्या for -ा and -ी (मुलग्याला → मुलगा,
@@ -126,11 +129,11 @@ function marathiEndingRules(ending) {
 /**
  * The rules that take [ending] off a verb's stem, or off each past stem ([marathiPastStems]); none for a nominal one.
  * @param {string} ending
- * @returns {import('language-transformer').SuffixRule<'v' | 'p'>[]}
+ * @returns {import('language-transformer').Rule<'v' | 'p'>[]}
  */
 function marathiVerbRules(ending) {
     const stems = marathiPastEndings.includes(ending) ? marathiPastStems : marathiVerbEndings.includes(ending) ? [''] : [];
-    return stems.map((stem) => {
+    const rules = stems.map((stem) => {
         const cut = stem.length + ending.length;
         return {
             type: 'suffix',
@@ -141,6 +144,18 @@ function marathiVerbRules(ending) {
             conditionsOut: ['v'],
         };
     });
+    if (marathiPastEndings.includes(ending)) {
+        for (const [stem, lemma] of marathiIrregularPastStems) {
+            rules.push({
+                type: 'wholeWord',
+                isInflected: new RegExp('^' + stem + ending + '$'),
+                deinflect: () => lemma,
+                conditionsIn: ['p'],
+                conditionsOut: ['v'],
+            });
+        }
+    }
+    return rules;
 }
 
 /**

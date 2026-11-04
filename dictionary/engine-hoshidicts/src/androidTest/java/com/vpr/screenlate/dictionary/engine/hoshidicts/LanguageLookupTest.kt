@@ -342,6 +342,13 @@ class LanguageLookupTest {
         assertThat(first("मोठ\u095F\u093E")).isEqualTo("मोठा")
         assertThat(first("फ\u093Cोन")).isEqualTo("फोन")
         assertThat(first("अॅप")).isEqualTo("ॲप")
+        for ((form, lemma) in listOf(
+            "आली" to "येणे", "आल्या" to "येणे", "झालेल्या" to "होणे",
+            "केलेल्या" to "करणे", "गेलेल्या" to "जाणे", "दिलेल्या" to "देणे", "आलीच" to "येणे",
+        )) {
+            assertThat(whole(form)).containsExactly(lemma)
+        }
+        assertThat(whole("परतआली")).doesNotContain("येणे")
     }
 
     @Test
@@ -2361,7 +2368,11 @@ class LanguageLookupTest {
               ["मोठा","","adj","",0,["big"],11,""],
               ["मोठ्या","","non-lemma","",0,[["मोठा",["oblique"]]],12,""],
               ["फोन","","n masc","",0,["phone"],13,""],
-              ["ॲप","","n neut","",0,["app"],14,""]
+              ["ॲप","","n neut","",0,["app"],14,""],
+              ["येणे","","v vi","",0,["to come"],15,""],
+              ["होणे","","v vi","",0,["to become"],16,""],
+              ["जाणे","","v vi","",0,["to go"],17,""],
+              ["देणे","","v vt","",0,["to give"],18,""]
             ]
         """.trimIndent().toByteArray(),
     )

@@ -30,8 +30,12 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   promotes valid noun forms' wrong verb readings, so its conditional benefit is not established. The proposed
   change is dictionary-form priority in Kazakh only; it needs the owner's confirmation because the table says
   both languages. No sorter code changed; continue with the remaining independent tasks.
+- Group 5e question 28 measured and built: all five agreed Marathi irregular stems pass the coverage review.
+  Thirty-six forms / 9,502 news tokens gain a verb reading; 23 already listed forms stay protected. Exact whole
+  words under past/perfect-participle endings only, existing labels and particles reused. All 172 language tests,
+  engine JVM tests, lint and test-APK build pass; other changed bundles match in 39,960 calls. Native rerun pending.
 - Public test dictionaries, audit reports and run logs are under the worktree's ignored
-  `testdata/local-research/backlog-2026-11-04/`. Next: measured Marathi irregular stems.
+  `testdata/local-research/backlog-2026-11-04/`. Next: the Hungarian, Tamil and Telugu headword-list measurement.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 
