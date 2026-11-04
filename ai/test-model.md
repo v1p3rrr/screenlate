@@ -288,6 +288,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK96 | Kazakh кітапсыз → кітап and Kyrgyz үйсүз → үй show the separate without chain first and keep the polite second-person chain among the alternatives; кітаптарсыз → кітап through plural + without; үйсүздөргө → үй through without + plural + dative; the rule name follows every one of the 17 interface locales and its description lists the language's endings | F | U YomitanInflectionsTest, TranslationsTest, glue; I LanguageLookupTest, TurkicInflectionsLocaleTest | 2026-11-03 |
 | LK97 | Kyrgyz аны/анын/ага/анда/андан → ал, муну/мунун/буга/мында/мындан → бул, ошону/ошонун/ошого/ошондо/ошондон → ошол with the correct case name; Kazakh missing Russian-dictionary cases reach бұл/сол/ол; regular suffixes on the six pronouns stay excluded, a longer word ending in one of these forms gets no whole-word rule | N | U glue; I LanguageLookupTest | 2026-11-04 (JS; Android pending) |
 | LK98 | Kazakh/Kyrgyz endings with alternating initial consonants fit the preceding stem: кітапта/қалада, китепте/балада, үйге/үйгө, correct л/д/т plurals; borrowed final stops and soft signs work; карата/айта/жарадар have no full-word false noun ending. Causatives, Kyrgyz мурунтан/кечээтен and Kazakh менікі keep their useful readings | N | U glue; corpus comparison; I LanguageLookupTest | 2026-11-04 (JS/corpus; Android pending) |
+| LK99 | Marathi आली/आल्या/आलेल्या → येणे, झालेल्या → होणे, केलेल्या → करणे, गेलेल्या → जाणे, दिलेल्या → देणे under the named ending; आलीच keeps its particle chain. A prefixed longer word gets no short irregular reading, other tenses/languages stay unaffected, and existing entries/forms keep suppressing rule-only results | N | U glue; corpus measurement; I LanguageLookupTest | 2026-11-04 (JS/corpus; Android pending) |
+| LK100 | Hungarian felett gets no eszik through an English forms-only dictionary; Tamil இந்திய gets no இந்தியம் and Telugu పట్ల no పట్టు. Unlisted forms still reach their roots; free form rows stay; removing an old forms import's headword list preserves its previous behavior until that import is updated | N | U LanguageRulesIsolationTest, RuleOnlyResultsTest; news measurement; I LanguageLookupTest | 2026-11-04 (JVM/corpus; Android pending) |
 
 ### POP: the popup
 
@@ -676,6 +678,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM47 | A recognized photo with no text → the bubble over it says "No text found in the photo." | F | M | 2026-10-27 (API 37) |
 | CAM48 | A photo in a language other than the active one: the grey ➕ → "Open Anki settings" opens the Anki settings of the photo's language, the installation link of a photo whose dictionaries are missing opens its dictionaries; on the Camera page, the "Can't recognize <language>" dialog opens the dictionaries of that language; another such request while that page is open replaces it with the new language | F | M | 2026-10-27 (API 37; the popup's dictionaries link through the app intent; the Camera dialog with a dictionary folder moved aside) |
 | CAM49 | Whole photo of an imported long image (a side over 16383 px) → the note's picture is scaled to 16383 px, not an empty file | N | U WebpSizeTest; I WebpLimitTest | 2026-10-27 (API 37, instrumented only) |
+| CAM50 | Hold the bubble out over a photo without stored text while recognition runs: the normal loading indicator stays through progress, text attaches when ready, failure stops loading; another photo's work, live preview and dialogs show no loading; no screenshot, app text or new photo OCR starts from the gesture; a recognized photo keeps its stored text during another attempt | N | U CameraLookupTest, CameraViewModelTest, LookupSourcesTest, SourceChangeTest, ScreenReadsTest; M | Unit checks only; device pending |
 | CAM50 | An image over 100 MB from the picker or the share sheet → "The image is larger than 100 MB."; the current photo stays, no copy is left | N | U PhotoImportsTest, CameraViewModelTest; M | 2026-10-27 (API 37, the picker) |
 | CAM51 | The Camera tab's language turned off in the language settings → the chip shows the active language; turned on again → the Camera tab's own language returns; a language chosen on the chip meanwhile stays | N | U CameraPreferencesTest; M | 2026-10-27 (API 37) |
 | CAM52 | Add to Anki with Whole photo of a photo over 4 MP → the note's picture is about 4 MP and upright; a frame under 4 MP keeps the original pixels | N | U FittedSizeTest; I PhotoImageTest; M | 2026-10-27 (API 37, Whole photo) |
@@ -733,6 +736,33 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, sequential backlog: photo recognition loading
+
+- Approved camera decision from 2026-10-29 (`9658bda2`) implemented. CAM50 added; older CAM4 checks still refer
+  to live/loading/unrecognized photos, not the new running-recognition spinner.
+- `:core:photos:testDebugUnitTest`, `:overlay:testDebugUnitTest`, camera app unit tests,
+  `:app:assembleDebug` and the three module lints pass. Counts: {'core/photos': {'tests': 113, 'failures': 0, 'errors': 0, 'skipped': 0}, 'overlay': {'tests': 273, 'failures': 0, 'errors': 0, 'skipped': 0}, 'app': {'tests': 83, 'failures': 0, 'errors': 0, 'skipped': 0}}.
+- New regression coverage: source generation start/progress/failure, completed-text attachment, no screen capture
+  or app-text fallback, own versus another photo's work, dialogs, retry and stored text during another attempt.
+- Android visual run pending: ADB still has no devices; local API 37/API 30 emulators exit at startup. No owner
+  app data changed or new APK installed. Build/run output is in ignored backlog-2026-11-04/photo-loading-gradle.log.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, Hungarian/Tamil/Telugu word-forms headwords
+
+Scope: folded-marks question 3, LK100. Three news corpora and actual ru + en-forms-only dictionary pairs measured;
+all three meet the agreed criterion even under the conservative useful-loss upper bound. Figures, examples, sources
+and model limitations are in that plan. Full common JVM suite: 575; engine: 27; no failures or errors.
+Both module lints and the test-APK build pass. A three-language native scenario checks suppressed wrong readings,
+unlisted inflected words and compatibility without a headword list; Android rerun pending. LK100 stays N.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, Marathi irregular past stems
+
+Scope: group 5e question 28, LK99. On the top 30,000 Devanagari news forms (1,056,363 tokens), the five exact
+irregular stems add 36 forms / 9,502 tokens after the existing entries/form-row filter; the report's whole added
+list was reviewed, all valid past/perfect-participle forms. Another 23 existing forms stay protected. All 172
+language tests pass and 39,960 calls in other changed bundles are identical. Engine JVM tests, lint and test-APK
+build pass. Native assertions added; LK99 stays N for the Android rerun while no device is available.
 
 ### 2026-11-04, `codex/backlog-2026-11-04`, suffix consonants
 

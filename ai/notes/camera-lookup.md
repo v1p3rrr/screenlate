@@ -373,3 +373,14 @@ At each checkpoint, update the plan's Resume / handoff and `ai/status.md`: exact
 uncommitted files/work, test commands/results, blockers and the next concrete action. Update this note when new
 architectural facts are discovered. Commit and push coherent milestones. When paused by the owner, stop after the
 current coherent milestone and leave an explicit paused marker; do not start the next milestone.
+
+## Held-out bubble during photo recognition (2026-11-04)
+
+`LookupSource.NoText.recognizing` distinguishes pending OCR from a live preview or idle/unreadable photo.
+CameraViewModel observes CameraRecognition.state and passes only Running work whose documentId matches the shown
+photo; hidden, busy, obscured and unlaid-out photos remain plain NoText. CameraLookup prefers committed text even
+while a new attempt runs. Starting/stopping the flag makes a new source generation, progress does not. SourceChange
+WAIT prevents docking under the finger and shows the existing loading animation; completion ATTACH replaces it,
+failure CLOSE clears it. No screen capture/app-text/cloud preparation is permitted in either NoText state.
+Unit coverage includes failure, retry, mismatched work, dialogs, committed text and closed presentations. CAM50 is
+still awaiting visual acceptance on a device.

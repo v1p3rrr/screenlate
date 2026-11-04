@@ -25,8 +25,26 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   the prototype lost useful forms; Kazakh ownership paths stay. On the top 30,000 forms, readings change for
   218 kk forms (8,047 tokens) and 117 ky (7,832); the plan records the coverage loss, review and modeling limits.
   All 171 language tests pass; 87,076 calls in other changed bundles are identical. Native cases added, rerun pending.
+- Group 4e question 24 measured but deferred for new question 28: the original unconditional dictionary-form
+  preference would move frequent Kyrgyz бизге/бизде/бизди/бизден from биз to мен. The broad verb preference also
+  promotes valid noun forms' wrong verb readings, so its conditional benefit is not established. The proposed
+  change is dictionary-form priority in Kazakh only; it needs the owner's confirmation because the table says
+  both languages. No sorter code changed; continue with the remaining independent tasks.
+- Group 5e question 28 measured and built: all five agreed Marathi irregular stems pass the coverage review.
+  Thirty-six forms / 9,502 news tokens gain a verb reading; 23 already listed forms stay protected. Exact whole
+  words under past/perfect-participle endings only, existing labels and particles reused. All 172 language tests,
+  engine JVM tests, lint and test-APK build pass; other changed bundles match in 39,960 calls. Native rerun pending.
+- Folded-marks question 3 measured and enabled in Hungarian, Tamil and Telugu. Three actual Russian + English
+  forms-only dictionary pairs: affected tokens 1,793 / 4,150 / 606; the conservative known-wrong lower bounds
+  (1,136 / 2,204 / 356) exceed even the useful-loss upper bounds (657 / 1,946 / 250). The plan records useful
+  losses, source corpora and modeling limits. Common and engine JVM suites, lints and test-APK build pass.
+  Added native import/filter/old-import checks; Android rerun pending.
 - Public test dictionaries, audit reports and run logs are under the worktree's ignored
-  `testdata/local-research/backlog-2026-11-04/`. Next: result ordering at the same chain length.
+  `testdata/local-research/backlog-2026-11-04/`.
+- Approved photo-loading bubble state implemented: only a shown photo without committed text and its own running
+  recognition wait with the existing spinner. Progress keeps the generation, text attaches, failure clears loading;
+  no screen reads or new recognition. Photo/overlay/camera tests, full debug assembly and lint pass. CAM50 visual
+  acceptance remains pending on a device. Next: the remaining reported defects, starting with Uzbek audio titles.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 

@@ -177,8 +177,8 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
      rule's).
    Asked with these numbers on 2026-10-29; the owner chose (a) for both languages.
 
-3. **The headword list in Hungarian, Tamil and Telugu. Answered (owner, 2026-10-29): measure first, after the weekly
-   limit resets.** Every word forms import now keeps its dictionary's headwords (`headwords.bin`), but only Uzbek
+3. **The headword list in Hungarian, Tamil and Telugu. Answered (owner, 2026-10-29): measure first; measured and
+   enabled in all three on 2026-11-04, native rerun pending.** Every word forms import now keeps its dictionary's headwords (`headwords.bin`), but only Uzbek
    and Azerbaijani count them as entries in the rule filter (`LanguageSupport.formsHeadwordsCountAsEntries`).
    Hungarian, Tamil and Telugu filter rule results the same way (`inflectionRulesOnlyWithoutEntry`), so counting the
    list would hide their rule results for a word the English dictionary has and the gloss language's lacks. As for
@@ -188,6 +188,37 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    Azerbaijani only; (c) switch on all three now.
 
 ## Progress
+
+- 2026-11-04: question 3 measured and built. The same candidate/dictionary model as the earlier measurement,
+  with the real gloss-language dictionaries rather than an English stand-in: wty hu/ta/te-ru plus the en form
+  rows only, revision 2026.10.22. The English headword list is matched as the native list is (raw headwords
+  reached by a free candidate); definition tags, free form rows and existing rule-result filtering retained.
+  Russian articles' full matching meanings were checked before classifying a reading, not just the last row.
+  News lists: hun_newscrawl_2011_100K, tam_news_2020_100K and tel_news_2020_100K, 30,000 word forms each.
+
+  | Language | News tokens | Affected forms / tokens | Definitely wrong tokens, at least | Potentially useful tokens, at most |
+  |---|---:|---:|---:|---:|
+  | Hungarian | 1,320,875 | 42 / 1,793 | 1,136 | 657 |
+  | Tamil | 1,014,350 | 40 / 4,150 | 2,204 | 1,946 |
+  | Telugu | 866,571 | 14 / 606 | 356 | 250 |
+
+  Conservative comparison: count only the following clear wrong readings as wrong and every other affected
+  token as potentially useful. Hungarian megjelent → jelent (752; its real form row leads to megjelenik,
+  not the Russian dictionary's jelent "report/mean"), előre → őröl "grind" (248), felett → eszik "eat" (136).
+  Tamil இந்திய "Indian" → இந்தியம் "indium" (1,002), ஒரே "only one" → ஒரு whose only matching Russian meaning
+  is "hour" (640), பெரும் "large" → பெரு "Peru" (313), விட "than" → விஷம் "poison" (249). Telugu పట్ల "with
+  regard to" → పట్టు "silk" (239), సత్తా → సత్తు "tin" (53), పక్కా → పక్క "page" (39), పట్టా → పట్టు "silk" (25).
+  Every language passes the owner's criterion even if all other affected tokens are useful.
+  Useful decompositions do disappear: Hungarian megtanultam → tanul (12), Tamil நாங்கள் → நாம் "we" (515),
+  நாளில் → நாள் "day" (406), Telugu ఒకటిగా → ఒకటి "one" (15). The filter remains the agreed tradeoff; it adds
+  no missing translation. Counts are weighted affected words, not individual result rows or measured JNI output.
+
+  Set `formsHeadwordsCountAsEntries` in HungarianSupport, TamilSupport and TeluguSupport. Imports made before
+  the headword list keep their previous behavior until updated. The all-language policy-isolation test passes;
+  the full common and engine JVM suites and both module lints pass. A native three-language import/filter/legacy
+  scenario is added and the test APK builds; rerun pending with no connected phone and failed emulator startups.
+  Sources, raw reports and the conservative classification stay in ignored
+  `testdata/local-research/backlog-2026-11-04/`; the private archive was not refreshed.
 
 - 2026-10-29: branch `languages/marks` from `languages/uz` 81654777; plan written; data check started.
 - 2026-10-29: the fold in the engine (`folded`, `MarkStripper::folded_keys`, `fold_marks` in the marks JSON, nb and nn
@@ -201,6 +232,9 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
   pinguino); the first-run list not checked. Run log 2026-10-29, `languages/marks`.
 
 ## Changelog
+
+- 2026-11-04: question 3 measured on actual Russian dictionaries and English word forms, then enabled in all three
+  languages by the already agreed criterion. Useful losses and the conservative bounds recorded; native rerun pending.
 
 - 2026-10-29: plan written (autonomous mode).
 - 2026-10-29: data check filled in, question 1 (extra results) added, the nb/nn keying, the flag sizes and the Hungarian

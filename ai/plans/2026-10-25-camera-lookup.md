@@ -154,7 +154,7 @@ The feature provides a persistent photograph that the existing floating bubble i
 | First recognition | Start automatically after a successful capture. Language/settings changes still require explicit recognition. |
 | Recognition lifetime | Continue an already started attempt through tab changes and backgrounding, saving the result to the same document. Process restart never automatically restarts recognition. |
 | Bubble actions | A tap briefly highlights text. Pull-out, tap, movement and docking never start photo OCR. |
-| Bubble without text to read | On the Camera page with the live camera, a photo still loading, a photo not recognized yet or unreadable stored text: pull-out and tap show nothing (no popup, no message). |
+| Bubble without text to read | On the Camera page with the live camera, a photo still loading, a photo not recognized yet or unreadable stored text: pull-out and tap show nothing (no popup, no message). While the photo is being recognized, a bubble held out shows the loading state the screen scan shows, until the photo's text attaches under it (which it already does, `SourceChange.ATTACH`) or the recognition fails (owner, 2026-10-29; was: no sign while waiting). |
 | Bubble glyph over a photo | While a recognized photo is the lookup source, the bubble shows the photo's recognition language; the active language again once the photo is left. |
 | Bubble menu over a photo | The language chips are hidden; copying stays. Open app is not shown while any Screenlate window is in front (owner, 2026-10-27; was: Open app stays); a menu left without items does not open. The photo's language is changed on the Camera page. |
 | Leaving the photo | The bubble docks when the photo it was out over stops being the lookup source (another page, another app, the live camera). Pulled out over the live camera it shows nothing; the preview is never scanned (owner, 2026-10-25). |
@@ -413,3 +413,11 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
 - 2026-10-26: owner reworded the Save automatically hint for imports: "Each new photo, taken or imported, goes to
   history right away." in all 14 locales.
 - 2026-10-27: owner's feedback on the phone build: photos read by tiles are slow (a 12 MP photo is 9 tiles and the overview, 10 requests two at a time). Decided: rows "Photo reading" (was "Cloud photo OCR") and "Camera settings: recognition"; "Bubble menu over a photo" changed (Open app hidden in the app). Found the same day, fixed without a decision: the popup shows the previous word for a moment when it opens on a new one (the window became visible before the page drew the new state; screen scans too); with Both, a photo tile waited for the device result after the cloud answered.
+
+- 2026-11-04: implemented the owner's 2026-10-29 loading-state decision (also recorded on `9658bda2`).
+  CameraLookup publishes a running-photo flag only without committed readable text, and CameraViewModel observes
+  recognition progress. LookupSources gives starting/stopping work a new generation; progress alone keeps it.
+  The held-out bubble closes the old scan and waits, without screen reads; completed text attaches through the
+  existing path, failure clears the spinner. Existing recognized text stays available during another attempt.
+  Tests cover source generations, transitions, no-screen-read isolation and view-model work/photo matching.
+  Device visual acceptance remains pending because ADB has no device and both local emulators exit at startup.
