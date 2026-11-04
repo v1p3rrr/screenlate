@@ -11,6 +11,25 @@ class SourceChangeTest {
     private val current: LookupSource get() = sources.source.value
 
     @Test
+    fun waitingForPhotoClosesOldScansAndAttachesFinishedText() {
+        val screen = current
+        val camera = sources.present()
+        camera.showNothing(recognizing = true)
+        val waiting = current
+        assertThat(sourceChange(screen, waiting)).isEqualTo(SourceChange.WAIT)
+        camera.showNothing(recognizing = true)
+        assertThat(sourceChange(waiting, current)).isEqualTo(SourceChange.NONE)
+        camera.showPhoto(1, 1, recognition(), viewport())
+        assertThat(sourceChange(waiting, current)).isEqualTo(SourceChange.ATTACH)
+        val recognized = current
+        camera.showNothing(recognizing = true)
+        val secondWait = current
+        assertThat(sourceChange(recognized, secondWait)).isEqualTo(SourceChange.WAIT)
+        camera.showNothing()
+        assertThat(sourceChange(secondWait, current)).isEqualTo(SourceChange.CLOSE)
+    }
+
+    @Test
     fun theSameSourceChangesNothing() {
         val screen = current
         assertThat(sourceChange(screen, current)).isEqualTo(SourceChange.NONE)

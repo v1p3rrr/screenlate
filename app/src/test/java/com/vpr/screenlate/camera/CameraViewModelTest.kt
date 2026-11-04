@@ -3,6 +3,8 @@ package com.vpr.screenlate.camera
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelStore
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.photos.CameraPreferences
 import com.vpr.screenlate.core.photos.InvalidPhotoException
 import com.vpr.screenlate.core.photos.LookupSource
@@ -10,7 +12,11 @@ import com.vpr.screenlate.core.photos.LookupSources
 import com.vpr.screenlate.core.photos.PhotoDocument
 import com.vpr.screenlate.core.photos.PhotoDocuments
 import com.vpr.screenlate.core.photos.PhotoRecognition
+import com.vpr.screenlate.core.photos.PhotoOcrSettings
+import com.vpr.screenlate.core.photos.PhotoText
+import com.vpr.screenlate.core.photos.PhotoWork
 import com.vpr.screenlate.core.photos.PhotoTooLargeException
+import com.vpr.screenlate.overlay.install.InstallationStatus
 import java.io.File
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
@@ -53,6 +59,39 @@ class CameraViewModelTest {
         override fun recognize(document: PhotoDocument, byTiles: Boolean) { recognitionCalls++ }
         override fun retry(document: PhotoDocument) {}
         override fun dismissBlock() {}
+    }
+
+    @Test
+    fun shownPhotoWaitsOnlyForItsOwnRunningRecognitionAndStopsAfterFailure() = runTest {
+        documents.current.value = photo(text = PhotoText.None)
+        advanceUntilIdle()
+        model.onForeground()
+        model.showPhoto(1, viewport())
+        val ready = CameraRecognitionState(Language.JAPANESE, listOf(Language.JAPANESE),
+            PhotoOcrSettings(OcrEngines.CLOUD),
+            InstallationStatus(Language.JAPANESE, emptySet(), true, false, emptyList(), 0), null)
+        recognition.state.value = ready.copy(work = PhotoWork.Running(2, "other", 0, 1))
+        runCurrent()
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isFalse()
+        recognition.state.value = ready.copy(work = PhotoWork.Running(1, "current", 0, 1))
+        runCurrent()
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isTrue()
+        model.setObscured(true)
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isFalse()
+        model.setObscured(false)
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isTrue()
+        recognition.state.value = ready.copy(work = PhotoWork.Failed(1,
+            com.vpr.screenlate.core.photos.FailureCause.NETWORK))
+        runCurrent()
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isFalse()
+        recognition.state.value = ready.copy(work = PhotoWork.Running(1, "retry", 0, 1))
+        runCurrent()
+        documents.current.value = photo()
+        runCurrent()
+        assertThat(sources.source.value).isInstanceOf(LookupSource.Photo::class.java)
+        model.onBackground()
+        assertThat(sources.source.value).isInstanceOf(LookupSource.Screen::class.java)
+        assertThat(recognitionCalls).isEqualTo(0)
     }
 
     private val exportIds = mutableListOf<Long>()

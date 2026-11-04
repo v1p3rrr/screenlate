@@ -998,7 +998,10 @@ class OverlayController(
         when (source) {
             is LookupSource.Screen -> scanScreen(source.generation, flashLines)
             is LookupSource.Photo -> attachPhoto(source, flashLines)
-            is LookupSource.NoText -> Log.d(TAG, "Nothing to read on the Camera page")
+            is LookupSource.NoText -> {
+                bubbleView.loading = source.recognizing
+                Log.d(TAG, "Nothing to read on the Camera page")
+            }
         }
     }
 
@@ -1257,9 +1260,11 @@ class OverlayController(
                 Log.d(TAG, "Photo left: bubble docked")
                 dock()
             }
-            SourceChange.CLOSE -> {
+            SourceChange.CLOSE, SourceChange.WAIT -> {
+                if (source is LookupSource.NoText && source.recognizing) dockOnRelease = false
                 closeScan()
                 scanSource = source
+                bubbleView.loading = source is LookupSource.NoText && source.recognizing
                 updateAimVisuals()
             }
             SourceChange.ATTACH -> {

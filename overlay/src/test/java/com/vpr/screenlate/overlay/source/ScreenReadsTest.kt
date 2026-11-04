@@ -27,7 +27,9 @@ class ScreenReadsTest {
 
     @Test
     fun theCameraPageWithoutTextReadsNothingFromTheScreen() = runTest {
-        sources.present()
+        val camera = sources.present()
+        assertNothingIsRead()
+        camera.showNothing(recognizing = true)
         assertNothingIsRead()
     }
 

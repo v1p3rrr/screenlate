@@ -10,6 +10,25 @@ class LookupSourcesTest {
     private val recognition = TestPhotos.recognition()
 
     @Test
+    fun `recognition starts and stops make new generations but progress does not`() {
+        val page = sources.present()
+        val idle = sources.source.value
+        page.showNothing(recognizing = true)
+        val waiting = sources.source.value as LookupSource.NoText
+        assertThat(waiting.recognizing).isTrue()
+        assertThat(waiting.generation).isGreaterThan(idle.generation)
+        page.showNothing(recognizing = true)
+        assertThat(sources.source.value).isSameInstanceAs(waiting)
+        page.showNothing()
+        val stopped = sources.source.value as LookupSource.NoText
+        assertThat(stopped.recognizing).isFalse()
+        assertThat(stopped.generation).isGreaterThan(waiting.generation)
+        page.close()
+        page.showNothing(recognizing = true)
+        assertThat(sources.source.value).isInstanceOf(LookupSource.Screen::class.java)
+    }
+
+    @Test
     fun `the screen is the source until the Camera page presents`() {
         assertThat(sources.source.value).isInstanceOf(LookupSource.Screen::class.java)
         sources.present()

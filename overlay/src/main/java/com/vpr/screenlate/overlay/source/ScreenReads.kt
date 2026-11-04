@@ -68,12 +68,16 @@ internal enum class SourceChange {
     /** The old source's scan is dropped; the new one has nothing open on it until the next scan. */
     CLOSE,
 
+    /** The old scan closes and the held-out bubble waits for the photo's text. */
+    WAIT,
+
     /** The old source's scan is dropped and the photo's stored text takes its place, without recognition. */
     ATTACH,
 }
 
 internal fun sourceChange(open: LookupSource, next: LookupSource): SourceChange = when {
     open.generation == next.generation -> if (open == next) SourceChange.NONE else SourceChange.MOVED
+    next is LookupSource.NoText && next.recognizing -> SourceChange.WAIT
     open is LookupSource.Photo && next !is LookupSource.Photo -> SourceChange.DOCK
     next is LookupSource.Photo -> SourceChange.ATTACH
     else -> SourceChange.CLOSE

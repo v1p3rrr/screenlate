@@ -22,9 +22,9 @@ sealed interface LookupSource {
 
     /**
      * The Camera page shows nothing to read: the live camera, a photo loading, one not recognized yet or with
-     * unreadable text. Nothing is scanned.
+     * unreadable text. Nothing is scanned. [recognizing] keeps the held-out bubble loading while photo OCR runs.
      */
-    data class NoText(override val generation: Long) : LookupSource
+    data class NoText(override val generation: Long, val recognizing: Boolean = false) : LookupSource
 
     /** A recognized photo shown by the Camera page; its stored [recognition] is the text, placed by [viewport]. */
     data class Photo(
@@ -59,8 +59,10 @@ class LookupSources @Inject constructor() {
 
     /** What the Camera page shows; calls after [close], or once a newer presentation started, change nothing. */
     inner class Presentation internal constructor() {
-        fun showNothing() = update { current ->
-            if (current is LookupSource.NoText) current else LookupSource.NoText(++generation)
+        /** No readable text, optionally waiting for the photo's running recognition. */
+        fun showNothing(recognizing: Boolean = false) = update { current ->
+            if (current is LookupSource.NoText && current.recognizing == recognizing) current
+            else LookupSource.NoText(++generation, recognizing)
         }
 
         /** The photo [documentId] at [revision] with its [recognition], placed by [viewport]. */

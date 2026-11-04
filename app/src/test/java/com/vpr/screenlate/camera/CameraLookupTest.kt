@@ -32,6 +32,24 @@ internal fun viewport() = PhotoViewport.fit(4000, 3000, Box(20f, 100f, 1020f, 85
 
 class CameraLookupTest {
     @Test
+    fun runningRecognitionWaitsUntilTextAttachesOrTheWorkStops() {
+        val sources = LookupSources()
+        val page = CameraLookup(sources)
+        page.onForeground()
+        page.show(CameraView.Photo(photo(text = PhotoText.None), viewport(), recognizing = true))
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isTrue()
+        page.show(CameraView.Photo(photo(text = PhotoText.None), viewport()))
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isFalse()
+        page.show(CameraView.Photo(photo(text = PhotoText.Unreadable), viewport(), recognizing = true))
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isTrue()
+        page.show(CameraView.Photo(photo(), viewport(), recognizing = true))
+        // Existing stored text remains readable during another recognition.
+        assertThat(sources.source.value).isInstanceOf(LookupSource.Photo::class.java)
+        page.show(CameraView.Nothing)
+        assertThat((sources.source.value as LookupSource.NoText).recognizing).isFalse()
+    }
+
+    @Test
     fun backgroundPageCannotTakeTheScreenSource() {
         val sources = LookupSources()
         val page = CameraLookup(sources)

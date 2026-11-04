@@ -40,7 +40,11 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   losses, source corpora and modeling limits. Common and engine JVM suites, lints and test-APK build pass.
   Added native import/filter/old-import checks; Android rerun pending.
 - Public test dictionaries, audit reports and run logs are under the worktree's ignored
-  `testdata/local-research/backlog-2026-11-04/`. Next: the approved photo-loading bubble state.
+  `testdata/local-research/backlog-2026-11-04/`.
+- Approved photo-loading bubble state implemented: only a shown photo without committed text and its own running
+  recognition wait with the existing spinner. Progress keeps the generation, text attaches, failure clears loading;
+  no screen reads or new recognition. Photo/overlay/camera tests, full debug assembly and lint pass. CAM50 visual
+  acceptance remains pending on a device. Next: the remaining reported defects, starting with Uzbek audio titles.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 

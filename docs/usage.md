@@ -49,7 +49,8 @@ After an app restart, interrupted work waits for this explicit retry; it never r
 Pan with one finger and pinch to zoom up to 8× the fitted size. Returning to the photograph fits it again. Pull the
 bubble over it to look up stored text; the glyph and dictionary follow the photo's recognition language. A tap briefly
 highlights recognized text. Moving, zooming and bubble gestures reuse saved coordinates without recognizing again;
-the popup follows its word as the photograph moves.
+the popup follows its word as the photograph moves. While a photograph without stored text is being recognized,
+a bubble held out over it shows the loading indicator until the text is ready or recognition fails.
 The bubble reads only the photograph while this viewer is open; bars and empty margins are outside it. It never scans
 the live preview, dialogs or an unrecognized photograph. Leaving the viewer docks the bubble (while you drag it, when
 you lift the finger) and other pages retain ordinary screen lookup. The accessibility service is needed for the bubble,

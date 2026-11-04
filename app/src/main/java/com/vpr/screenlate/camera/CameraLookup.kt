@@ -11,7 +11,7 @@ sealed interface CameraView {
     data object Nothing : CameraView
 
     /** [document] drawn where [viewport] says. */
-    data class Photo(val document: PhotoDocument, val viewport: PhotoViewport) : CameraView
+    data class Photo(val document: PhotoDocument, val viewport: PhotoViewport, val recognizing: Boolean = false) : CameraView
 }
 
 /**
@@ -43,7 +43,7 @@ class CameraLookup(private val sources: LookupSources) {
         val photo = view as? CameraView.Photo
         val text = photo?.document?.text as? PhotoText.Recognized
         if (photo == null || text == null) {
-            presentation.showNothing()
+            presentation.showNothing(recognizing = photo?.recognizing == true)
         } else {
             presentation.showPhoto(photo.document.id, photo.document.revision, text.recognition, photo.viewport)
         }

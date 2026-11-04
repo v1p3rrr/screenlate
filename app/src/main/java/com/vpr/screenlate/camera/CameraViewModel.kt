@@ -14,6 +14,7 @@ import com.vpr.screenlate.core.photos.PhotoHistory
 import com.vpr.screenlate.core.photos.PhotoImports
 import com.vpr.screenlate.core.photos.PhotoTooLargeException
 import com.vpr.screenlate.core.photos.PhotoViewport
+import com.vpr.screenlate.core.photos.PhotoWork
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
 import javax.inject.Inject
@@ -101,6 +102,9 @@ class CameraViewModel @Inject constructor(
 
     init {
         observePhoto()
+        viewModelScope.launch {
+            recognition.state.collect { publish() }
+        }
         viewModelScope.launch {
             // A picker result can arrive before the photo is loaded, in a page recreated after the process died.
             merge(picked.receiveAsFlow(), shared.requests).collect { uri ->
@@ -353,7 +357,8 @@ class CameraViewModel @Inject constructor(
         val view = viewport?.takeIf { it.first == photo?.id }?.second
         lookup.show(
             if (current.loaded && !current.live && !current.busy && !obscured && photo != null && view != null) {
-                CameraView.Photo(photo, view)
+                val work = recognition.state.value?.work
+                CameraView.Photo(photo, view, recognizing = work is PhotoWork.Running && work.documentId == photo.id)
             } else {
                 CameraView.Nothing
             },
