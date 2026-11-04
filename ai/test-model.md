@@ -286,6 +286,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK94 | Word forms count their headwords as entries in Uzbek and Azerbaijani (Russian chosen; uz–ru with the Uzbek word forms, az–ru with the Azerbaijani ones, both imported with this version): davom, Davom and давом show no davo "my" from the rules; kitoblarimizda still finds kitob, boʻlsa boʻlmoq; yazı and YAZI show nothing from the rules, kitablarımızda finds kitab and yazdı yazmaq; word forms imported by an older version still look up as before, and updating the item adds the list | N | U RuleOnlyResultsTest, UzbekSupportTest, AzerbaijaniSupportTest, LanguageRulesIsolationTest, I LanguageLookupTest, M | |
 | LK95 | Type いつまでも with the Japanese romaji keyboard while intermediate searches run: every character remains in the field and the final article matches the whole query; sorting and page-state serialization run on workers, not on the input thread; a newer search wins over an older link or theme preparation | F | M (same-device method profile and keyboard input) | 2026-11-03 |
 | LK96 | Kazakh кітапсыз → кітап and Kyrgyz үйсүз → үй show the separate without chain first and keep the polite second-person chain among the alternatives; кітаптарсыз → кітап through plural + without; үйсүздөргө → үй through without + plural + dative; the rule name follows every one of the 17 interface locales and its description lists the language's endings | F | U YomitanInflectionsTest, TranslationsTest, glue; I LanguageLookupTest, TurkicInflectionsLocaleTest | 2026-11-03 |
+| LK97 | Kyrgyz аны/анын/ага/анда/андан → ал, муну/мунун/буга/мында/мындан → бул, ошону/ошонун/ошого/ошондо/ошондон → ошол with the correct case name; Kazakh missing Russian-dictionary cases reach бұл/сол/ол; regular suffixes on the six pronouns stay excluded, a longer word ending in one of these forms gets no whole-word rule | N | U glue; I LanguageLookupTest | 2026-11-04 (JS; Android pending) |
+| LK98 | Kazakh/Kyrgyz endings with alternating initial consonants fit the preceding stem: кітапта/қалада, китепте/балада, үйге/үйгө, correct л/д/т plurals; borrowed final stops and soft signs work; карата/айта/жарадар have no full-word false noun ending. Causatives, Kyrgyz мурунтан/кечээтен and Kazakh менікі keep their useful readings | N | U glue; corpus comparison; I LanguageLookupTest | 2026-11-04 (JS/corpus; Android pending) |
 
 ### POP: the popup
 
@@ -523,6 +525,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC52 | The Telugu word forms item: as DIC51 with te–en (a verb form found through the item) | N | U CatalogFileTest, LanguageSetupTest, M | |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 | DIC53 | PanLex Title Case filter: Менин Музыкам and Тапшырма Жургузуучу with only lowercase translations are absent; names with a capitalized translation in any retained meaning remain, even beyond the ten displayed translations; non-Title-Case headwords remain. The casing rule also drops Аллаһ Тағала → бог and Солтүстік Шотландия → гэльский. Four pinned-snapshot archives keep all remaining translations and their order | O | U test_panlex_yomitan.py, local archive comparison | 2026-11-03 |
+| DIC54 | Cantonese offers Word frequency (words.hk) ticked alongside rime-cantonese, marked non-commercial and translated in all 17 locales; its upstream archive has 34,933 words and ranks for 我哋/佢哋/你哋/喺度/為咗; download/import shows those ranks in the popup | N | U CatalogFileTest, LanguageSetupTest; local ZIP audit; M | 2026-11-04 (catalog/archive; device pending) |
 
 ### LNG: languages
 
@@ -730,6 +733,33 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, suffix consonants
+
+Scope: group 4e question 23, LK98. The corpus comparison and its limits are recorded in that plan: 30,000 forms
+per language, prototype useful losses identified, then causatives, Kyrgyz temporal ablatives and Kazakh ownership
+paths preserved. Final changed readings: 218 kk forms / 8,047 tokens and 117 ky / 7,832. All 171 language tests pass;
+87,076 calls in other changed bundles match the previous version. The old Kyrgyz question fixture китепби was
+corrected to китеппи and the incompatible form is now a negative check. Native assertions added, Android rerun
+pending. LK98 stays N.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, words.hk frequency catalog entry
+
+Scope: group 5e question 27, DIC54. The public upstream ZIP passes CRC, has the expected index title/revision,
+34,933 unique frequency rows, 458,065 bytes and all five agreed example words with positive ranks. SHA-256 is
+recorded in the catalog and plan. All 11 catalog generator tests, 376 dictionary API JVM tests and 33 app checks
+(setup, catalog order/items, translations) pass. New title and description maps have all 17 locales; recommended
+and non-commercial flags and language isolation are checked. No archive schema or importer changed. DIC54 stays N
+for the Android download/import check while no device is available.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, explicit pronoun cases
+
+Scope: group 4e question 26, LK97. The new whole-word case test failed before the rebuilt scripts; 170/170 language
+tests then passed. All four public wty pairs audited at revision 2026.10.22. The other 58 scripts give identical
+candidates in 222,952 calls over 1,922 strings, ordinary text and true OCR (the fourth argument). Engine JVM tests,
+lint and the test-APK build pass. The expanded native test is not run yet: no phone over ADB; the API 37 emulator
+exits at WHPX startup, also with software graphics, and API 30 with acceleration off exits with 0xc0000005. LK97
+stays N until the device run. No installed app or owner data changed.
 
 ### 2026-11-03, `codex/turkic-without-2026-11-03`, without ending and isolated phone tests
 
