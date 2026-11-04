@@ -178,7 +178,7 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
    Asked with these numbers on 2026-10-29; the owner chose (a) for both languages.
 
 3. **The headword list in Hungarian, Tamil and Telugu. Answered (owner, 2026-10-29): measure first; measured and
-   enabled in all three on 2026-11-04, native rerun pending.** Every word forms import now keeps its dictionary's headwords (`headwords.bin`), but only Uzbek
+   enabled in all three on 2026-11-04; native phone rerun passed.** Every word forms import now keeps its dictionary's headwords (`headwords.bin`), but only Uzbek
    and Azerbaijani count them as entries in the rule filter (`LanguageSupport.formsHeadwordsCountAsEntries`).
    Hungarian, Tamil and Telugu filter rule results the same way (`inflectionRulesOnlyWithoutEntry`), so counting the
    list would hide their rule results for a word the English dictionary has and the gloss language's lacks. As for
@@ -250,3 +250,5 @@ Mongolian is under it; its growth of 42% comes from ө and ү, letters of their 
   upper bound 12,415 wrong, 312 right); the rule filter's form-row bug found; to be asked on the owner's return.
 - 2026-10-29: question 2 answered (a) for Uzbek and Azerbaijani, after the measurement (owner).
 - 2026-10-29: question 3 (the headword list in Hungarian, Tamil and Telugu) answered (a) by the owner: measure first, after the weekly limit resets (main session).
+
+- 2026-11-04: the three-language import/filter/legacy check passed on the phone in the final 53/53 LanguageLookupTest run. Corrected the Hungarian minimum-stem control and supplied the Telugu plural form row needed by the fixture; app filter logic unchanged.
