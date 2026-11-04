@@ -271,3 +271,9 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   (`setup-gradle@v6` has no `allow-checksums` input) and turns off setup-gradle's own validation.
 - The model converter is the pip package `mnn` of the same version (`mnnconvert`); it pip-installs a logging SDK on
   start. Paddle archives: `scripts/ocr-models/paddle_models.py` (see `docs/development.md`).
+
+- Phone fixture transfer (2026-11-04): `adb exec-in run-as <test-package> dd of=files/<file>` can lose the final
+  partial 512-byte block at EOF on this host. Send input padded to 512 bytes, use `dd bs=512 count=<blocks>`, then
+  `run-as <test-package> truncate -s <true-bytes> files/<file>` and compare SHA-256. This transferred the local MNN
+  fixtures without granting storage access or staging them in the owner's shared files. Use only the isolated
+  test package; uninstalling it removes its fixtures.

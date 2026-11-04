@@ -2003,3 +2003,9 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   not a full MNN/Android rerun or device performance claim. Device acceptance remains pending.
 
 - 2026-11-04 (request 85): owner accepted group 4e question 28, dictionary-form priority only in Kazakh, keeping Kyrgyz unchanged, and offered the phone for verification. Resume implementation and device tests after request 84; no release or Anki collection changes requested.
+
+- 2026-11-04 (request 85 follow-up): full MNN phone replay now passes for both Russian light/dark fixtures after
+  correcting oriented-fragment comparison and paragraph size/spacing. All 537 normalized characters match, six
+  paragraphs each; 215 JVM tests, lint, full app and test APK build pass, host controls remain unchanged. No main
+  app or owner collection changes. Owner remarked that many checks remain; keep verification focused and report
+  the completed block clearly rather than opening another broad regression.

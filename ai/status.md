@@ -56,7 +56,8 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   showed mixed quality. The Russian page has 18 content rows and six paragraphs rather than 38 fragments.
 - Geometry replay: 86 saved pages / 2,277 regions → 2,010 crops. Paired host recognition: 44 cases / 38 unique
   screenshots, 18 improved and 26 unchanged, none worse; normalized-character errors 1,337 → 495 over 16,056
-  truth characters (case totals include the two saved Russian/Ukrainian output sets). Native Android rerun pending.
+  truth characters (case totals include the two saved Russian/Ukrainian output sets). The two Russian fixtures
+  now pass the full Android/MNN replay below; broader manual popup checks remain.
 - Remaining device-dependent investigations: first-start language names, Home service-state card after rebind,
   and AnkiDroid browser retaining a deck filter. No speculative fix applied without a failing Android loop. The
   public AnkiDroid source confirms that the current browser link uses the right search parameter but retains deck
@@ -2417,4 +2418,20 @@ session needs; the folded-marks plan's question 1 points to the new numbers. Not
   existing valid megtartottam → tartottam → tart pattern; Telugu needs the dictionary's పట్లు → పట్టు form row to
   reproduce the old false reading. No engine/filter change was needed for either fixture.
 - JVM checks and dictionary lints pass. Only the isolated engine test package was installed; the owner's app and
-  Anki collection are unchanged. Next: a full MNN PaddleOCR device replay in an isolated OCR test package.
+  Anki collection are unchanged.
+
+## PaddleOCR device verification completed (2026-11-04)
+
+- The real MNN/Android pipeline revealed geometry differences the axis-aligned host replay could not catch.
+  Paragraph text size now uses median character height; vertical spacing uses row centres and text heights rather
+  than overlapping axis-aligned crop edges. The size ratio allows the measured crop padding variation.
+- Fragment comparison uses the larger fragment's baseline and repeats merging until stable. This joins the dark
+  page's short word between two longer pieces without widening the allowed raw gap. New unit cases cover actual
+  oriented regions, input-order symmetry, stable repeated combination and tilted/padded paragraph rows.
+- Opt-in PaddlePageRegressionTest passes on the phone, through real bitmap processing and MNN: both generated
+  Russian light/dark pages have 18 content rows in six paragraphs and exactly the 537 normalized truth characters
+  (SHA-256 equality). The final test uses the app's four CPU threads; a two-thread run also passed.
+- All 215 OCR JVM tests, lint, test APK and full debug assembly pass. The 44 host controls / 38 unique screenshots
+  still give 18 improvements, 26 equal, no loss (1,337 → 495 errors). No temporary debug probes remain.
+- The owner's app was not replaced; these were isolated engine and OCR test packages. Main app UI checks, including
+  the photo-loading animation and frequency catalog import, stay separate from the completed native regressions.

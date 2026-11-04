@@ -323,3 +323,21 @@ include both saved ru/uk result sets: 18 improve, 26 equal, none worse. Error to
 Vertical Japanese is compared within each truth column, since global top-to-bottom concatenation is incorrect.
 Russian dark/light content: 51/35 crops → 18/18, 171/38 errors → 0/0. Initial icon-label and vertical-merge regressions
 were caught, narrowed away and locked down by tests. No device timing claim. OCR59 records pending device acceptance.
+
+### Phone MNN follow-up (2026-11-04)
+
+The actual Android bitmap shader and native MNN detector produced slightly tilted regions even on generated text.
+A long line's axis-aligned bounding height then overstated its font size and its overlap with the next row.
+PaddleParagraphs now estimates size by median character-box height (word-box fallback), compares row centres with
+those heights and tolerates the measured padded-crop size variation (minimum ratio 0.7). A large row may only be
+assembled after a first fragment merge: PaddleLines compares against the larger region's baseline and iterates
+until the count stabilizes. Each successful iteration reduces count, so this terminates; already combined input
+stays unchanged. New unit data is the measured oriented dark-page fragments and tilted/padded row boxes.
+
+Opt-in PaddlePageRegressionTest, target com.vpr.screenlate.core.ocr.test, replays ru-page-light/dark with cached v5
+MNN detector/Cyrillic recognizer models from the existing comparison. Put detector.mnn, recognizer.mnn, dict.txt
+and both images in that package's files/paddle-regression, then run with -e paddleRegression run. No screen capture,
+cloud request or owner app access occurs. Both pages pass on the phone: [3,3,4,3,3,2] content rows per paragraph and
+SHA-256 equality of all 537 normalized alphanumeric truth characters. Two CPU threads passed, then the test was
+set to the production four and passed again. Host controls rerun after the fix: same 44/38 cases, 18 better and
+26 equal, no regression. Full debug assembly, 215 JVM tests and lint pass. Broader manual popup behavior is separate.

@@ -50,6 +50,20 @@ class PaddleLinesTest {
         assertThat(joined.area.alongX).isWithin(0.00001f).of(direction.alongX)
         assertThat(joined.area.length).isWithin(0.001f).of(175f)
         assertThat(joined.area.thickness).isWithin(0.001f).of(20f)
+        val wide = OrientedBox(10f, 10f, 1f, 0f, 300f, 40f)
+        val glyph = OrientedBox(315f, 17f, 0.99875027f, 0.04997917f, 20f, 25f)
+        val parts = listOf(DetectedLine(wide, wide.bounds(), 0.9f), DetectedLine(glyph, glyph.bounds(), 0.9f))
+        assertThat(PaddleLines.combine(parts, bounds)).hasSize(1)
+        assertThat(PaddleLines.combine(parts.reversed(), bounds)).hasSize(1)
+        val fragmented = listOf(
+            OrientedBox(570.29645f, 1217.6942f, 0.99993557f, -0.01135181f, 180.2033f, 46.85991f),
+            OrientedBox(529.451f, 1228.2992f, 1f, 0f, 21.098091f, 30.412727f),
+            OrientedBox(44.63363f, 1222.1473f, 1f, 0f, 209.39941f, 44.048588f),
+            OrientedBox(268.71317f, 1224.2079f, 0.99992764f, -0.012035557f, 238.10802f, 42.475204f),
+        ).map { DetectedLine(it, it.bounds(), 0.9f) }
+        val combined = PaddleLines.combine(fragmented, bounds)
+        assertThat(combined).hasSize(1)
+        assertThat(PaddleLines.combine(combined, bounds)).containsExactlyElementsIn(combined)
     }
 
     @Test

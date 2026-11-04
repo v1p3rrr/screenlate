@@ -187,7 +187,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR56 | Telugu recognition on the device (`testdata/ocr/te-sample.png`, see LK89): Tesseract tel fast reads the five lines; a tap on a word finds its entry, with no joiner left in the recognized text; a tap on the last letter of a word selects that word | F | U TeluguSupportTest, M | — |
 | OCR57 | Kannada recognition on the device (`testdata/ocr/kn-sample.png`, see LK90), engines set to the device: Tesseract kan fast reads the five lines; the bubble dragged onto each word finds its entry | F | U KannadaSupportTest, M | 2026-10-29 |
 | OCR58 | Cantonese recognition on the device (`testdata/ocr/yue-sample.png`, see LK91), engines set to the device: ML Kit Chinese reads the five lines; the bubble dragged onto each word finds its entry | F | U CantoneseSupportTest, M | 2026-10-29 |
-| OCR59 | PaddleOCR v5 Russian light/dark comparison pages: split overlapping detector regions yield one crop per printed row, with no repeated islands or missing short letters; wrapped rows form the six content paragraphs; icon/label crops and separate columns stay separate; vertical crops and their continuation remain valid | N | U PaddleLinesTest, PaddleParagraphsTest, TextDetectionTest; host geometry/recognition replay; M | Host only; Android pending |
+| OCR59 | PaddleOCR v5 Russian light/dark comparison pages: split overlapping detector regions yield one crop per printed row, with no repeated islands or missing short letters; wrapped rows form the six content paragraphs; icon/label crops and separate columns stay separate; vertical crops and their continuation remain valid | N | U PaddleLinesTest, PaddleParagraphsTest, TextDetectionTest; I PaddlePageRegressionTest; host replay; M | 2026-11-04 (phone MNN; manual popup pending) |
 
 ### LK: lookup
 
@@ -738,6 +738,21 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, request 85: full PaddleOCR phone replay
+
+- New opt-in PaddlePageRegressionTest runs the actual MNN models, Bitmap crop/scale and production pipeline in the
+  library test package; target is itself. Both generated Russian light/dark pages pass: 18 content rows, six
+  paragraphs, 537 normalized truth characters and matching SHA-256. Final four-thread run passes (10.353 s for the
+  whole two-page test, including loading); a prior two-thread run passes too. This is not a scan latency benchmark.
+- Real oriented geometry first exposed a split heading, then a short dark-page fragment. Fixes: larger-region
+  comparison baseline and repeated combination until stable; character-based font size and centre-based row gap
+  with crop padding tolerance. Regressions cover measured numeric geometry and contain no recognized text.
+- 215 OCR JVM tests, lint, native test APK and full debug assembly pass. All 44 host cases retained as controls:
+  18 improved, 26 equal, none worse; 1,337 → 495 errors over 16,056 normalized truth characters.
+- Five local fixture files were transferred into the isolated OCR test package and verified by SHA-256. Logs:
+  backlog-2026-11-04/phone-paddle-final.log and paddle-device-checks.log. Temporary probes removed.
+- Owner's installed app, accessibility settings and Anki collection unchanged. OCR59 manual popup check remains.
 
 ### 2026-11-04, request 85: Kazakh form priority and native backlog verification
 

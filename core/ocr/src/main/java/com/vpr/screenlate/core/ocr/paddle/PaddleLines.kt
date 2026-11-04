@@ -6,6 +6,15 @@ import kotlin.math.abs
 /** Combines detector fragments before their pixels are cropped and recognized. */
 internal object PaddleLines {
     fun combine(lines: List<DetectedLine>, bounds: Box): List<DetectedLine> {
+        var current = lines
+        while (true) {
+            val combined = combineOnce(current, bounds)
+            if (combined.size == current.size) return combined
+            current = combined
+        }
+    }
+
+    private fun combineOnce(lines: List<DetectedLine>, bounds: Box): List<DetectedLine> {
         val distinct = withoutContained(lines)
         val groups = IntArray(distinct.size) { it }
         fun root(value: Int): Int {
@@ -40,8 +49,8 @@ internal object PaddleLines {
         // Long columns already have their own reading-order path. Combining their crops did not improve accuracy.
         if (first.thickness >= PaddlePipeline.VERTICAL_RATIO * first.length ||
             second.thickness >= PaddlePipeline.VERTICAL_RATIO * second.length) return false
-        val a = first
-        val b = second
+        val a = if (first.size() >= second.size()) first else second
+        val b = if (a === first) second else first
         // Two single glyphs have no reliable reading direction; they may belong to adjacent vertical columns.
         if (maxOf(a.length / a.thickness, b.length / b.thickness) < PaddlePipeline.VERTICAL_RATIO) return false
         if (a.alongX * b.alongX + a.alongY * b.alongY < MIN_DIRECTION) return false
