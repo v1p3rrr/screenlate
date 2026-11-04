@@ -1744,3 +1744,7 @@ initials), POP56 (the Tamil fonts), AUD41 (Tamil audio sources), LNG43 (the Tami
 endings, particles, older spellings and the plural rows written apart), OCR56 (Telugu by Tesseract), ANK48 (Telugu
 abbreviations and syllable initials), POP57 (the Telugu fonts), AUD42 (Telugu audio sources), LNG44 (the Telugu
 download screen).
+
+- 2026-11-04: Uzbek Lingua Libre character variants `ʻ‘` are scoped to its support and the Lingua Libre search/
+  speaker parser. Core isolation and AudioFinder/AudioPages tests cover them; Wiktionary and other languages
+  retain literal matching. See audio-sources.md for the 298-title replay and live search checks.

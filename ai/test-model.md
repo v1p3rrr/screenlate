@@ -187,6 +187,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR56 | Telugu recognition on the device (`testdata/ocr/te-sample.png`, see LK89): Tesseract tel fast reads the five lines; a tap on a word finds its entry, with no joiner left in the recognized text; a tap on the last letter of a word selects that word | F | U TeluguSupportTest, M | — |
 | OCR57 | Kannada recognition on the device (`testdata/ocr/kn-sample.png`, see LK90), engines set to the device: Tesseract kan fast reads the five lines; the bubble dragged onto each word finds its entry | F | U KannadaSupportTest, M | 2026-10-29 |
 | OCR58 | Cantonese recognition on the device (`testdata/ocr/yue-sample.png`, see LK91), engines set to the device: ML Kit Chinese reads the five lines; the bubble dragged onto each word finds its entry | F | U CantoneseSupportTest, M | 2026-10-29 |
+| OCR59 | PaddleOCR v5 Russian light/dark comparison pages: split overlapping detector regions yield one crop per printed row, with no repeated islands or missing short letters; wrapped rows form the six content paragraphs; icon/label crops and separate columns stay separate; vertical crops and their continuation remain valid | N | U PaddleLinesTest, PaddleParagraphsTest, TextDetectionTest; host geometry/recognition replay; M | Host only; Android pending |
 
 ### LK: lookup
 
@@ -736,6 +737,33 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, sequential backlog: PaddleOCR fragments and paragraphs
+
+- The 38-region Russian light-page fixture is red before combining (expected 19 including clock, got 38), green
+  afterward; paragraph fixture is separately red at 19 one-line paragraphs and green at 1/3/3/4/3/3/2 rows.
+- 214 core:ocr JVM tests, module lint and full debug assembly pass. Cases include contained islands, duplicates,
+  a short detached letter, icon/label alignment, horizontal gutters, slanted baselines, vertical crops, wrapped rows,
+  blank gaps, font changes, separate columns and right-aligned rows. OCR59 added, device run still pending.
+- Actual Kotlin geometry replay: 86 recorded pages / 2,277 boxes → 2,010 crops. Paired host recognition: 44 cases /
+  38 unique screenshots, 18 better / 26 equal / zero worse; errors 1,337 → 495 over 16,056 normalized alphanumeric
+  truth characters. The case totals include the separate saved ru/uk output sets. Russian dark/light: 18 text crops
+  each, errors 171/38 → 0/0. Vertical Japanese scored per column. Other engines were not changed.
+- Limits: ONNX Runtime 1.31.1, axis-aligned replay of saved boxes with the cached v5 models; this does not execute
+  Android's MNN or bitmap shader. Full engine/device run and manual sentence lookup stay open. No app was installed.
+- Evidence: ignored backlog-2026-11-04/paddle-*; temporary JVM replay source enabled only by its local init script.
+
+### 2026-11-04, sequential backlog: Uzbek audio title spelling
+
+- AudioFinder regression fails before the fix (NoSuchElementException: no recording of bagʻishlamoq when
+  Commons files bag‘ishlamoq), passes after it. Actual query regex evaluated at the mock HTTP seam.
+- All 175 core:anki tests pass; core:common 575 total, 572 passed and three existing platform skips; both lints pass.
+  AudioPages replays every one of the 12 measured title mismatches and normative versions, missing-character
+  negatives, distinct ʼ, other-language isolation and a hyphenated term's speaker extraction.
+- Independent replay of public Commons allpages gives 286 → 298 of 298 matches, zero lost. Live queries return
+  the curly-spelled bag‘ishlamoq and normative boʻlmoq in ~0.43 s each. No phone operation or audio played.
+- Ignored evidence: backlog-2026-11-04/uz-audio-red.log, uz-audio-green.log, uz-audio-checks.log,
+  uz-commons-titles.json, uz-commons-live-search.json, uz-audio-coverage.json.
 
 ### 2026-11-04, sequential backlog: photo recognition loading
 

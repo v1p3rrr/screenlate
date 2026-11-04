@@ -86,3 +86,18 @@ French Paris recordings carry two conventions: `Fr-fr-paris-guenon.ogg` (57 file
 and `Fr-Paris--dioxyde.ogg` (7,886 files, two hyphens; many place names, also words such as dioxyde, attovolt). The
 second is not searched yet. Listing it as a code would need the search to take a longer code's case as written
 (`Paris-`): longer codes are matched case-sensitively there, while `wiktionaryFiles` ignores case.
+
+## Uzbek title apostrophe variants (2026-11-04)
+
+Commons `allpages`, namespace 6, prefix `LL-Q9264`, limit 500 returns 298 titles with no continuation.
+Twelve titles contain 14 ‘ characters instead of the dictionary's ʻ (for example bag‘ishlamoq, cho‘milmoq,
+g‘o‘daymoq). Most marked titles already use the normative ʻ and cannot be converted wholesale to ‘.
+UzbekSupport.linguaLibreCharacterVariants lists only `ʻ‘`; AudioPages uses a required character class in the
+Lucene query and the local speaker-title expression. It skips the plain title-word prefilter only for terms
+containing a variant; the language item's regex prefix still applies. Existing ʼ spellings such as maʼnaviy
+are not made interchangeable. AudioFinder makes one Commons search. No Wiktionary behavior changes.
+
+Coverage replay of all 298 titles: 286 → 298 matches, none lost. Two live searches (bagʻishlamoq and boʻlmoq)
+return the expected source titles in 0.43 s each. Unit tests replay the actual search query at the HTTP seam,
+all 12 mismatching titles and the normative variants, missing-character negatives and multiword/hyphen speaker
+extraction. Source listing, live replies and reports are under ignored backlog-2026-11-04/uz-*.

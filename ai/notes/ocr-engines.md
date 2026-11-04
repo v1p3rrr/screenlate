@@ -151,7 +151,7 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 - ML Kit leaves a line-final hyphen out of the line's last element ("impor" / "tant", emulator, LK30) but keeps it
   in the line's text; `withLineEndHyphen` puts it back after the word (box to the line's end), so the lookup joins
   the word (MlKitLineEndHyphenTest, German). Lens keeps the hyphen but gives the word no separator ("impor-tant");
-  `withLineEndSeparators` puts the language's separator there. PaddleOCR lines are paragraphs of their own, so its
+  `withLineEndSeparators` puts the language's separator there. Before 2026-11-04, PaddleOCR lines were paragraphs of their own, so its
   halves are looked up apart.
 - Lens can also give an unhyphenated line's last word no separator: on `testdata/ocr/ga-anki.png` (Segoe UI,
   2026-10-28) "Cheannaigh sí" ending a line and "torthaí" starting the next came as "sítorthaí", with Irish and
@@ -299,3 +299,27 @@ text of a line is kept in reading (logical) order, which each engine reaches its
 
 - The full-screen highlight layer used to stay composited while docked (~43 MB of graphics buffers). `LayerView` now
   goes `GONE` one second after it has nothing to draw, which takes its window off the screen.
+
+## PaddleOCR fragments and paragraphs (2026-11-04)
+
+TextDetection now passes its raw widened regions through PaddleLines before PaddlePipeline crops/reads them.
+Geometric containment suppresses duplicate islands. Compatible horizontal fragments share a baseline and text
+size, with at most half a line thickness between widened boxes. Compact detached shapes taller than the text
+stay separate (otherwise the home/settings icon became part of a label). A combined crop keeps the largest
+fragment's direction; taking the hull's new direction was unnecessary. Long vertical regions do not merge: a
+prototype gave mixed quality. Tiny contained islands can still be suppressed. No character/text equality or
+language-specific exception is used.
+
+PaddleParagraphs groups nearby aligned horizontal rows of similar height. Large gaps, different text sizes and
+separate columns do not join. It preserves words and their character boxes. Vertical paragraphs continue through
+the existing ReadingOrder logic. The six-block Russian light fixture goes from 38 raw regions to 19 crops,
+including the clock; six content paragraphs plus clock. Unit fixtures contain only geometry, no recognized text.
+
+Measurements under ignored backlog-2026-11-04/: 86 saved pages, 2,277 input boxes → 2,010 crops. Pairwise recognition
+uses ONNX Runtime 1.31.1 with the public cached v5 models, the app's normalization/width padding, old/new box crops,
+and alphanumeric edit distance against the generated truth. Bounding-box replay approximates oriented crops by
+axis-aligned rectangles; a real Android/MNN full scan remains necessary. The 44 cases / 38 distinct screenshots
+include both saved ru/uk result sets: 18 improve, 26 equal, none worse. Error total 1,337 → 495 / 16,056 characters.
+Vertical Japanese is compared within each truth column, since global top-to-bottom concatenation is incorrect.
+Russian dark/light content: 51/35 crops → 18/18, 171/38 errors → 0/0. Initial icon-label and vertical-merge regressions
+were caught, narrowed away and locked down by tests. No device timing claim. OCR59 records pending device acceptance.

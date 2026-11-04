@@ -100,3 +100,14 @@ Own heuristic (not Yomitan code; Yomitan has no such mode). `definition.js` hold
 - Bilingual text without numbers (Warodai, Kenrowa): one sense per glossary item, or per 〈…〉 label line (Kenrowa); Japanese-led lines are examples (`日本語∥перевод`, Warodai's `…を食べている питаться`). Bilingual = Latin/Cyrillic/Greek letters outnumber the looked-up language's letters (kanji and kana for Japanese) 2:1.
 - Examples inside a sense line (大辞泉/広辞苑: `…食物にいう。宇津保物語「かの―・べ…」`): cut after the last 。 before the first quote containing ―, ━, ～ or 〜.
 - Chinese and Korean dictionaries were not sampled; with no rules of their own they get glossary lists and numbered lines only.
+
+## Empty AnkiDroid browser: investigation checkpoint (2026-11-04)
+
+Screenlate's browser link uses the documented `anki://x-callback-url/browser?search=nid:...` route. Reviewing
+AnkiDroid's current main IntentHandler confirms the `search` parameter and routes it with allDecks=false:
+https://github.com/ankidroid/Anki-Android/blob/main/AnkiDroid/src/main/java/com/ichi2/anki/IntentHandler.kt
+This is consistent with earlier emulator observations of an old deck filter, but is not a reproduction against
+the installed AnkiDroid version. Do not conclude that a newly added note is delayed, change the owner collection,
+or add intent/collection workarounds from this source inspection alone. A failing case must compare an existing
+local test note outside the selected deck, an existing browser task and a freshly added local test note. The owner
+collection remains off limits. Both local emulators exit before ADB, so this device loop remains pending.
