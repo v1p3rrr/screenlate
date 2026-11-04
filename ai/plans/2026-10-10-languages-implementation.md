@@ -2009,3 +2009,14 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   paragraphs each; 215 JVM tests, lint, full app and test APK build pass, host controls remain unchanged. No main
   app or owner collection changes. Owner remarked that many checks remain; keep verification focused and report
   the completed block clearly rather than opening another broad regression.
+
+- 2026-11-04 (request 87): owner requested the three remaining bugs in sequence and the UI checks, with cleanup
+  of agent-created phone artifacts afterward. First-start language names fixed and verified by StartupLocaleTest
+  on the phone, red before/green after. Activity resource locale now sets the process default before composition.
+  Uses only com.vpr.screenlate.verification; owner app and Anki data unchanged. Remaining two defects still open.
+
+- 2026-11-04 (request 87 checkpoint): isolated service survives 12 quick rebinds with exact system-settings
+  restoration; the Home symptom remains unreproduced. Full real Tamil/Telugu forms and words.hk frequency
+  imports/lookups pass on the phone. UI composition and isolated AnkiDroid setup are blocked by secure keyguard;
+  the explicit UI test skips rather than reporting acceptance. All task-created phone packages and staged
+  archives removed. Two defects and visual checks remain open; owner apps and collection unchanged.

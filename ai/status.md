@@ -2465,3 +2465,42 @@ date); unbuilt dictionaries including Mueller/OpenRussian morphology; final rele
 test-model coverage for all 62 source languages; per-locale translation review and RTL catalog/font descriptions;
 full module review; groups 6/5f, beta/update packaging, network/offline audit, local audio and deferred features.
 These are not all phone checks and were not started as part of the current native-verification block.
+
+## UI defects and remaining acceptance resumed (2026-11-04)
+
+Owner request 87: finish the three reported bugs in order, then the remaining UI checks; the phone is connected.
+Use a separate verification application and test package, keep an inventory of created artifacts, and remove those
+packages/files at the end. Owner app/collection data stays untouched. Start with a stale process-default locale
+versus Russian activity resources on a first activity launch. A guarded StartupLocaleTest is being prepared;
+it runs only against com.vpr.screenlate.verification. No production locale change applied before reproduction.
+
+- First defect fixed: MainActivity follows its resource configuration after super.onCreate and before UI/view-model
+  composition. StartupLocaleTest reproduces the stale English default at onActivityPreCreated, observes the initial
+  language name at onActivityPostCreated, and requires Russian resources. It failed with Cantonese before the fix
+  and passes with Кантонский afterward on the phone. The earlier pre-launch-only simulation was green because the
+  Android framework refreshed the default before onCreate; keep the callback seam. Isolated app/test builds and
+  app lint pass. Next: service-state card; phone is locked, unlock question pending for visible UI checks.
+- Created phone packages for this task: com.vpr.screenlate.verification and .verification.test, user 0 only. They
+  must be uninstalled at the end. Owner packages com.vpr.screenlate and .debug were present before the task and stay.
+- ServiceRebindTest exercised 12 quick off/on cycles of the isolated verification service on the phone. Running
+  returned after every cycle and the final stopped state was correct. The exact accessibility settings were
+  restored in finally and checked. This does not reproduce or close the reported Home card defect; no timing or
+  service-lifecycle workaround has been applied. Home composition still needs an unlocked screen.
+- RealDictionaryImportTest passed on the phone with the complete public archives: Tamil forms-only import
+  1,948 ms / 3,922,331 bytes and Telugu 496 ms / 1,178,576 bytes. மரங்களை → மரம் and ఆలోచిస్తాడు → ఆలోచించు
+  return the Russian dictionaries' definitions through listed forms. The full words.hk archive imports all
+  34,933 frequency rows and returns each of the five agreed ranks. This closes the native full-archive portion,
+  not catalog/download/layout acceptance. The library test package and its staged archives were uninstalled.
+- AnkiDroid's installed version is 2.25.3. Its tagged IntentHandler passes allDecks=false; SearchRequest combines
+  the query and the retained deck filter with AND, so adding deck:* to the query cannot remove that filter.
+  Official parallel A 2.25.3 was installed as com.ichi2.anki.a (absent before this task), for a separate local
+  collection only; remove it at cleanup. No collection has been created or accessed yet. Never route an
+  unqualified Anki intent or provider request to the owner's installed collection during this investigation.
+- The phone remains securely locked. A first-run Compose probe found no rendered hierarchy; this is not a UI
+  acceptance pass or evidence of an app regression. StartupUiTest now explicitly requires an unlocked screen
+  and waits for asynchronous content. Unlock reminder sent; native checks continued independently.
+- Cleanup completed while waiting for unlock: verification app/test, parallel AnkiDroid A and the native library
+  test package are absent. Native staged archives were in the test package's own external files. Only the two
+  pre-existing Screenlate packages remain. Accessibility settings were restored exactly; no owner app update,
+  collection access, force-stop or shared-storage fixture was performed. Resume the two defects and visual UI
+  checks on an unlocked phone; temporary verification packages will need reinstalling.

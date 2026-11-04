@@ -111,3 +111,11 @@ the installed AnkiDroid version. Do not conclude that a newly added note is dela
 or add intent/collection workarounds from this source inspection alone. A failing case must compare an existing
 local test note outside the selected deck, an existing browser task and a freshly added local test note. The owner
 collection remains off limits. Both local emulators exit before ADB, so this device loop remains pending.
+
+Checked against installed version 2.25.3 on 2026-11-04: the tagged IntentHandler also sets allDecks=false, and
+browser/search/SearchRequest combines the parsed query and selected deck with AND. A query containing deck:*
+cannot override the selected deck. CardBrowser itself is not exported; its exported system context-menu alias
+is disabled by default. Do not implement an explicit activity launch that merely fails with SecurityException,
+or depend on enabling that alias in the owner's Anki installation. An official parallel A package
+(com.ichi2.anki.a) was installed temporarily for isolation; a securely locked phone still blocks its initial UI
+setup and the faithful browser reproduction. The owner's collection was not read or changed.
