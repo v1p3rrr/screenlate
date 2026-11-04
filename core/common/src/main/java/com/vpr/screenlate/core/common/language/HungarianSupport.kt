@@ -36,6 +36,9 @@ object HungarianSupport : SpacedLanguageSupport() {
     /** The prefix rule would put tart (meg-) beside megtart, and vesz (be-, through its noun vétel) beside bevétel. */
     override val inflectionRulesOnlyWithoutEntry = true
 
+    /** The measured headword list removes more wrong readings than useful prefix decompositions. */
+    override val formsHeadwordsCountAsEntries = true
+
     /** Wiktionary's verb forms say both definite and object-definite for the definite conjugation; nouns have neither. */
     override val formTagAliases = mapOf("definite" to "object-definite", "indefinite" to "object-indefinite")
 

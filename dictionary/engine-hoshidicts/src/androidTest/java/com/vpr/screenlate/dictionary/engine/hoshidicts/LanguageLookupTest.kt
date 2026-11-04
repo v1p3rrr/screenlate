@@ -1883,6 +1883,64 @@ class LanguageLookupTest {
         assertThat(all("davom")).containsExactly("davo")
     }
 
+    @Test
+    fun measuredHungarianTamilAndTeluguHeadwordsSuppressRulesButKeepUnlistedForms() = runTest {
+        data class Case(
+            val language: Language,
+            val word: String,
+            val wrong: String,
+            val unlisted: String,
+            val lemma: String,
+            val englishRows: String,
+            val russianRows: String,
+        )
+        val cases = listOf(
+            Case(Language.HUNGARIAN, "felett", "eszik", "megad", "ad", """
+                [["felett","","postp","",0,["above"],1,""],
+                 ["ett","","non-lemma","",0,[["eszik",["past"]]],2,""]]
+            """, """
+                [["eszik","","v","",0,["есть"],1,""],
+                 ["ad","","v","",0,["давать"],2,""]]
+            """),
+            Case(Language.TAMIL, "இந்திய", "இந்தியம்", "மரங்களில்", "மரம்", """
+                [["இந்திய","","adj","",0,["Indian"],1,""],
+                 ["மரம்","","n","",0,["tree"],2,""],
+                 ["மரங்கள்","","non-lemma","",0,[["மரம்",["plural"]]],3,""]]
+            """, """
+                [["இந்தியம்","","n","",0,["индий"],1,""],
+                 ["மரம்","","n","",0,["дерево"],2,""]]
+            """),
+            Case(Language.TELUGU, "పట్ల", "పట్టు", "చెట్లలో", "చెట్టు", """
+                [["పట్ల","","postp","",0,["with regard to"],1,""],
+                 ["చెట్టు","","n","",0,["tree"],2,""],
+                 ["చెట్లు","","non-lemma","",0,[["చెట్టు",["plural"]]],3,""]]
+            """, """
+                [["పట్టు","","n","",0,["шёлк"],1,""],
+                 ["చెట్టు","","n","",0,["дерево"],2,""]]
+            """),
+        )
+        for (case in cases) {
+            val code = case.language.dictionaryCode
+            fun dictionary(target: String, rows: String) = zip(
+                "$code-$target.zip",
+                "index.json" to """{"title":"Headword test $code-$target","revision":"1","format":3,"sourceLanguage":"$code"}""".toByteArray(),
+                "term_bank_1.json" to rows.trimIndent().toByteArray(),
+            )
+            val forms = engine.import(dictionary("en", case.englishRows), File(root, "$code-forms"), formsOnly = true)
+            val russian = engine.import(dictionary("ru", case.russianRows), File(root, "$code-ru"))
+            val dictionaries = DictionarySet(terms = listOf(russian.directory, forms.directory))
+            val options = LookupOptions(language = case.language)
+            suspend fun whole(word: String) = engine.lookup(word, options).filter { it.matched == word }
+                .map { it.term.expression }.distinct()
+            engine.load(dictionaries)
+            assertThat(whole(case.word)).isEmpty()
+            assertThat(whole(case.unlisted)).containsExactly(case.lemma)
+            assertThat(File(forms.directory, HEADWORD_LIST).delete()).isTrue()
+            engine.load(dictionaries)
+            assertThat(whole(case.word)).contains(case.wrong)
+        }
+    }
+
     /** A dictionary of a gloss language without forms and without davom, uyga and boʻlsa, as uz–ru. */
     private fun uzbekRussianDictionary(): File = zip(
         "uz-ru.zip",

@@ -38,6 +38,9 @@ object TamilSupport : DravidianSupport() {
     /** Wiktionary lists the forms of its tabled nouns and verbs; the app's endings are for the words it gives none of. */
     override val inflectionRulesOnlyWithoutEntry = true
 
+    /** The measured headword list removes more wrong readings than useful nominal decompositions. */
+    override val formsHeadwordsCountAsEntries = true
+
     /**
      * "திரு." திருவாளர், "திருமதி." and "செல்வி.", "மரு." மருத்துவர், "கி.மு." and "கி.பி." (and "பொ.ஊ.", "பொ.ஊ.மு."), "அண்."
      * அண்ணளவாக, "கி.மீ.", "மி.மீ.", "செ.மீ.", "கி.கி.", "ரூ." ரூபாய், "எண்." and "ப." பக்கம், "எ.கா." எடுத்துக்காட்டு, "இரா." and

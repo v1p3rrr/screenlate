@@ -34,8 +34,13 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   Thirty-six forms / 9,502 news tokens gain a verb reading; 23 already listed forms stay protected. Exact whole
   words under past/perfect-participle endings only, existing labels and particles reused. All 172 language tests,
   engine JVM tests, lint and test-APK build pass; other changed bundles match in 39,960 calls. Native rerun pending.
+- Folded-marks question 3 measured and enabled in Hungarian, Tamil and Telugu. Three actual Russian + English
+  forms-only dictionary pairs: affected tokens 1,793 / 4,150 / 606; the conservative known-wrong lower bounds
+  (1,136 / 2,204 / 356) exceed even the useful-loss upper bounds (657 / 1,946 / 250). The plan records useful
+  losses, source corpora and modeling limits. Common and engine JVM suites, lints and test-APK build pass.
+  Added native import/filter/old-import checks; Android rerun pending.
 - Public test dictionaries, audit reports and run logs are under the worktree's ignored
-  `testdata/local-research/backlog-2026-11-04/`. Next: the Hungarian, Tamil and Telugu headword-list measurement.
+  `testdata/local-research/backlog-2026-11-04/`. Next: the approved photo-loading bubble state.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 

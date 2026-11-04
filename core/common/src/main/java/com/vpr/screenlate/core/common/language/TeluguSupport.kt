@@ -50,6 +50,9 @@ object TeluguSupport : DravidianSupport() {
     /** Wiktionary lists the plurals and a few tables; the app's endings are for the words it gives no forms of. */
     override val inflectionRulesOnlyWithoutEntry = true
 
+    /** The measured headword list removes more wrong readings than useful nominal decompositions. */
+    override val formsHeadwordsCountAsEntries = true
+
     /**
      * "డా." డాక్టర్, "ప్రొ." ప్రొఫెసర్, "శ్రీ.", "క్రీ.పూ." and "క్రీ.శ." (and "సా.శ.", "సా.శ.పూ."), "కి.మీ.", "చ.కి.మీ.",
      * "కి.గ్రా.", "సెం.మీ.", "రూ." రూపాయలు, "నం." and "నెం." నంబరు, "సం." సంవత్సరం, "ఉదా." ఉదాహరణ, "పు." పుట; and the names of

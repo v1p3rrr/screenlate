@@ -289,6 +289,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK97 | Kyrgyz аны/анын/ага/анда/андан → ал, муну/мунун/буга/мында/мындан → бул, ошону/ошонун/ошого/ошондо/ошондон → ошол with the correct case name; Kazakh missing Russian-dictionary cases reach бұл/сол/ол; regular suffixes on the six pronouns stay excluded, a longer word ending in one of these forms gets no whole-word rule | N | U glue; I LanguageLookupTest | 2026-11-04 (JS; Android pending) |
 | LK98 | Kazakh/Kyrgyz endings with alternating initial consonants fit the preceding stem: кітапта/қалада, китепте/балада, үйге/үйгө, correct л/д/т plurals; borrowed final stops and soft signs work; карата/айта/жарадар have no full-word false noun ending. Causatives, Kyrgyz мурунтан/кечээтен and Kazakh менікі keep their useful readings | N | U glue; corpus comparison; I LanguageLookupTest | 2026-11-04 (JS/corpus; Android pending) |
 | LK99 | Marathi आली/आल्या/आलेल्या → येणे, झालेल्या → होणे, केलेल्या → करणे, गेलेल्या → जाणे, दिलेल्या → देणे under the named ending; आलीच keeps its particle chain. A prefixed longer word gets no short irregular reading, other tenses/languages stay unaffected, and existing entries/forms keep suppressing rule-only results | N | U glue; corpus measurement; I LanguageLookupTest | 2026-11-04 (JS/corpus; Android pending) |
+| LK100 | Hungarian felett gets no eszik through an English forms-only dictionary; Tamil இந்திய gets no இந்தியம் and Telugu పట్ల no పట్టు. Unlisted forms still reach their roots; free form rows stay; removing an old forms import's headword list preserves its previous behavior until that import is updated | N | U LanguageRulesIsolationTest, RuleOnlyResultsTest; news measurement; I LanguageLookupTest | 2026-11-04 (JVM/corpus; Android pending) |
 
 ### POP: the popup
 
@@ -734,6 +735,14 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, Hungarian/Tamil/Telugu word-forms headwords
+
+Scope: folded-marks question 3, LK100. Three news corpora and actual ru + en-forms-only dictionary pairs measured;
+all three meet the agreed criterion even under the conservative useful-loss upper bound. Figures, examples, sources
+and model limitations are in that plan. Full common JVM suite: 575; engine: 27; no failures or errors.
+Both module lints and the test-APK build pass. A three-language native scenario checks suppressed wrong readings,
+unlisted inflected words and compatibility without a headword list; Android rerun pending. LK100 stays N.
 
 ### 2026-11-04, `codex/backlog-2026-11-04`, Marathi irregular past stems
 

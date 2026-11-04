@@ -1456,6 +1456,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 ## Changelog
 
+- 2026-11-04: request 84: folded-marks question 3 measured on actual ru + en forms-only pairs; the agreed
+  conservative comparison supports the headword list in Hungarian, Tamil and Telugu. Enabled and covered by
+  JVM tests and lints; native checks added, Android rerun pending.
+
 - 2026-11-04: request 84: group 5e question 28 measured and built. All five irregular Marathi past stems have
   useful new forms; 172 language tests, other-bundle comparison, engine checks and lint pass. Native rerun pending.
 
