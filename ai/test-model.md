@@ -187,7 +187,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR56 | Telugu recognition on the device (`testdata/ocr/te-sample.png`, see LK89): Tesseract tel fast reads the five lines; a tap on a word finds its entry, with no joiner left in the recognized text; a tap on the last letter of a word selects that word | F | U TeluguSupportTest, M | — |
 | OCR57 | Kannada recognition on the device (`testdata/ocr/kn-sample.png`, see LK90), engines set to the device: Tesseract kan fast reads the five lines; the bubble dragged onto each word finds its entry | F | U KannadaSupportTest, M | 2026-10-29 |
 | OCR58 | Cantonese recognition on the device (`testdata/ocr/yue-sample.png`, see LK91), engines set to the device: ML Kit Chinese reads the five lines; the bubble dragged onto each word finds its entry | F | U CantoneseSupportTest, M | 2026-10-29 |
-| OCR59 | PaddleOCR v5 Russian light/dark comparison pages: split overlapping detector regions yield one crop per printed row, with no repeated islands or missing short letters; wrapped rows form the six content paragraphs; icon/label crops and separate columns stay separate; vertical crops and their continuation remain valid | N | U PaddleLinesTest, PaddleParagraphsTest, TextDetectionTest; host geometry/recognition replay; M | Host only; Android pending |
+| OCR59 | PaddleOCR v5 Russian light/dark comparison pages: split overlapping detector regions yield one crop per printed row, with no repeated islands or missing short letters; wrapped rows form the six content paragraphs; icon/label crops and separate columns stay separate; vertical crops and their continuation remain valid | N | U PaddleLinesTest, PaddleParagraphsTest, TextDetectionTest; I PaddlePageRegressionTest; host replay; M | 2026-11-04 (phone MNN; manual popup pending) |
 
 ### LK: lookup
 
@@ -680,7 +680,7 @@ Recognition-dependent cases await phase 1.3. Phase 1.2 supplies capture, a fit v
 | CAM47 | A recognized photo with no text → the bubble over it says "No text found in the photo." | F | M | 2026-10-27 (API 37) |
 | CAM48 | A photo in a language other than the active one: the grey ➕ → "Open Anki settings" opens the Anki settings of the photo's language, the installation link of a photo whose dictionaries are missing opens its dictionaries; on the Camera page, the "Can't recognize <language>" dialog opens the dictionaries of that language; another such request while that page is open replaces it with the new language | F | M | 2026-10-27 (API 37; the popup's dictionaries link through the app intent; the Camera dialog with a dictionary folder moved aside) |
 | CAM49 | Whole photo of an imported long image (a side over 16383 px) → the note's picture is scaled to 16383 px, not an empty file | N | U WebpSizeTest; I WebpLimitTest | 2026-10-27 (API 37, instrumented only) |
-| CAM50 | Hold the bubble out over a photo without stored text while recognition runs: the normal loading indicator stays through progress, text attaches when ready, failure stops loading; another photo's work, live preview and dialogs show no loading; no screenshot, app text or new photo OCR starts from the gesture; a recognized photo keeps its stored text during another attempt | N | U CameraLookupTest, CameraViewModelTest, LookupSourcesTest, SourceChangeTest, ScreenReadsTest; M | Unit checks only; device pending |
+| CAM59 | Hold the bubble out over a photo without stored text while recognition runs: the normal loading indicator stays through progress, text attaches when ready, failure stops loading; another photo's work, live preview and dialogs show no loading; no screenshot, app text or new photo OCR starts from the gesture; a recognized photo keeps its stored text during another attempt | N | U CameraLookupTest, CameraViewModelTest, LookupSourcesTest, SourceChangeTest, ScreenReadsTest; M | Unit checks only; device pending |
 | CAM50 | An image over 100 MB from the picker or the share sheet → "The image is larger than 100 MB."; the current photo stays, no copy is left | N | U PhotoImportsTest, CameraViewModelTest; M | 2026-10-27 (API 37, the picker) |
 | CAM51 | The Camera tab's language turned off in the language settings → the chip shows the active language; turned on again → the Camera tab's own language returns; a language chosen on the chip meanwhile stays | N | U CameraPreferencesTest; M | 2026-10-27 (API 37) |
 | CAM52 | Add to Anki with Whole photo of a photo over 4 MP → the note's picture is about 4 MP and upright; a frame under 4 MP keeps the original pixels | N | U FittedSizeTest; I PhotoImageTest; M | 2026-10-27 (API 37, Whole photo) |
@@ -739,6 +739,21 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-11-04, request 85: full PaddleOCR phone replay
+
+- New opt-in PaddlePageRegressionTest runs the actual MNN models, Bitmap crop/scale and production pipeline in the
+  library test package; target is itself. Both generated Russian light/dark pages pass: 18 content rows, six
+  paragraphs, 537 normalized truth characters and matching SHA-256. Final four-thread run passes (10.353 s for the
+  whole two-page test, including loading); a prior two-thread run passes too. This is not a scan latency benchmark.
+- Real oriented geometry first exposed a split heading, then a short dark-page fragment. Fixes: larger-region
+  comparison baseline and repeated combination until stable; character-based font size and centre-based row gap
+  with crop padding tolerance. Regressions cover measured numeric geometry and contain no recognized text.
+- 215 OCR JVM tests, lint, native test APK and full debug assembly pass. All 44 host cases retained as controls:
+  18 improved, 26 equal, none worse; 1,337 → 495 errors over 16,056 normalized truth characters.
+- Five local fixture files were transferred into the isolated OCR test package and verified by SHA-256. Logs:
+  backlog-2026-11-04/phone-paddle-final.log and paddle-device-checks.log. Temporary probes removed.
+- Owner's installed app, accessibility settings and Anki collection unchanged. OCR59 manual popup check remains.
+
 ### 2026-11-04, request 85: Kazakh form priority and native backlog verification
 
 - Owner accepted dictionary-form priority only in Kazakh. Native choice of a term's match, equal-length chains and
@@ -778,7 +793,7 @@ Newest first: date, build, scope, results, cases moved from N, findings.
 
 ### 2026-11-04, sequential backlog: photo recognition loading
 
-- Approved camera decision from 2026-10-29 (`9658bda2`) implemented. CAM50 added; older CAM4 checks still refer
+- Approved camera decision from 2026-10-29 (`9658bda2`) implemented. CAM59 added; older CAM4 checks still refer
   to live/loading/unrecognized photos, not the new running-recognition spinner.
 - `:core:photos:testDebugUnitTest`, `:overlay:testDebugUnitTest`, camera app unit tests,
   `:app:assembleDebug` and the three module lints pass. Counts: {'core/photos': {'tests': 113, 'failures': 0, 'errors': 0, 'skipped': 0}, 'overlay': {'tests': 273, 'failures': 0, 'errors': 0, 'skipped': 0}, 'app': {'tests': 83, 'failures': 0, 'errors': 0, 'skipped': 0}}.

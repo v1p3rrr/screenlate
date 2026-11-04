@@ -42,7 +42,7 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   `testdata/local-research/backlog-2026-11-04/`.
 - Approved photo-loading bubble state implemented: only a shown photo without committed text and its own running
   recognition wait with the existing spinner. Progress keeps the generation, text attaches, failure clears loading;
-  no screen reads or new recognition. Photo/overlay/camera tests, full debug assembly and lint pass. CAM50 visual
+  no screen reads or new recognition. Photo/overlay/camera tests, full debug assembly and lint pass. CAM59 visual
   acceptance remains pending on a device.
 - Uzbek Lingua Libre apostrophe mismatch fixed: the per-language two-character group matches normative ʻ and title ‘
   in one query and in speaker extraction. Public Commons listing: 298 files, formerly 286 matched their dictionary
@@ -56,7 +56,8 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   showed mixed quality. The Russian page has 18 content rows and six paragraphs rather than 38 fragments.
 - Geometry replay: 86 saved pages / 2,277 regions → 2,010 crops. Paired host recognition: 44 cases / 38 unique
   screenshots, 18 improved and 26 unchanged, none worse; normalized-character errors 1,337 → 495 over 16,056
-  truth characters (case totals include the two saved Russian/Ukrainian output sets). Native Android rerun pending.
+  truth characters (case totals include the two saved Russian/Ukrainian output sets). The two Russian fixtures
+  now pass the full Android/MNN replay below; broader manual popup checks remain.
 - Remaining device-dependent investigations: first-start language names, Home service-state card after rebind,
   and AnkiDroid browser retaining a deck filter. No speculative fix applied without a failing Android loop. The
   public AnkiDroid source confirms that the current browser link uses the right search parameter but retains deck
@@ -2417,4 +2418,50 @@ session needs; the folded-marks plan's question 1 points to the new numbers. Not
   existing valid megtartottam → tartottam → tart pattern; Telugu needs the dictionary's పట్లు → పట్టు form row to
   reproduce the old false reading. No engine/filter change was needed for either fixture.
 - JVM checks and dictionary lints pass. Only the isolated engine test package was installed; the owner's app and
-  Anki collection are unchanged. Next: a full MNN PaddleOCR device replay in an isolated OCR test package.
+  Anki collection are unchanged.
+
+## PaddleOCR device verification completed (2026-11-04)
+
+- The real MNN/Android pipeline revealed geometry differences the axis-aligned host replay could not catch.
+  Paragraph text size now uses median character height; vertical spacing uses row centres and text heights rather
+  than overlapping axis-aligned crop edges. The size ratio allows the measured crop padding variation.
+- Fragment comparison uses the larger fragment's baseline and repeats merging until stable. This joins the dark
+  page's short word between two longer pieces without widening the allowed raw gap. New unit cases cover actual
+  oriented regions, input-order symmetry, stable repeated combination and tilted/padded paragraph rows.
+- Opt-in PaddlePageRegressionTest passes on the phone, through real bitmap processing and MNN: both generated
+  Russian light/dark pages have 18 content rows in six paragraphs and exactly the 537 normalized truth characters
+  (SHA-256 equality). The final test uses the app's four CPU threads; a two-thread run also passed.
+- All 215 OCR JVM tests, lint, test APK and full debug assembly pass. The 44 host controls / 38 unique screenshots
+  still give 18 improvements, 26 equal, no loss (1,337 → 495 errors). No temporary debug probes remain.
+- The owner's app was not replaced; these were isolated engine and OCR test packages. Main app UI checks, including
+  the photo-loading animation and frequency catalog import, stay separate from the completed native regressions.
+
+## Remaining verification inventory (2026-11-04, owner's status question)
+
+Current implementation block has passed its automated checks and real-device native regressions (53 language tests,
+full MNN replay of two Russian pages with exact normalized text). Do not treat the old unrun-native lists as current.
+The installed owner app is still the earlier minified build; only isolated test APKs were used in this session.
+
+Current UI follow-ups: CAM59 photo-recognition spinner; DIC54 words.hk catalog download/import and five ranks;
+DIC51/52 real Tamil/Telugu forms imports and LNG48 Home attention states; remaining LNG47 first-run/disabled-language/
+flag-picker views; OCR59 actual popup hit/highlight/sentence smoke check after the completed pipeline replay.
+These can run on an emulator. A small representative Uzbek-audio playback smoke is optional after HTTP tests and
+live Commons checks, not a blocker requiring another full audio regression.
+
+Physical-only acceptance: camera sharpness/focus/flash/capture delay and repeated-capture memory/drag on hardware;
+phone gallery picker/share integration; final-build overlay/keyboard/insets, background service and latency/memory
+baselines. Hardware-camera checks need the owner's physical assistance. Existing popup/search delay fixes were
+already tested on the phone on 2026-11-03; only a final-build performance smoke remains.
+
+Three separate unfixed defects: first-start English language names under Russian UI; false Home stopped-service
+card after quick rebind; empty AnkiDroid browser with a retained deck/task filter. The Anki loop needs an emulator
+or isolated test collection and must never use the owner's collection. No faithful failing Android loop is recorded
+for the first two yet. The phone is available; emulator launch still exits with 0x40000015, including with
+-crash-report-mode never. Most UI checks do not inherently require a phone, but emulator execution is unavailable now.
+
+Further development/release work remains as the 2026-11-02 audit records: stable hosting of converted dictionaries;
+private-archive catch-up and duplicate inventory; five waiting Paddle models (publish only on the owner's chosen
+date); unbuilt dictionaries including Mueller/OpenRussian morphology; final release/R8/upgrade/backup regression;
+test-model coverage for all 62 source languages; per-locale translation review and RTL catalog/font descriptions;
+full module review; groups 6/5f, beta/update packaging, network/offline audit, local audio and deferred features.
+These are not all phone checks and were not started as part of the current native-verification block.

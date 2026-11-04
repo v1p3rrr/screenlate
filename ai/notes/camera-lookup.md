@@ -382,5 +382,5 @@ photo; hidden, busy, obscured and unlaid-out photos remain plain NoText. CameraL
 while a new attempt runs. Starting/stopping the flag makes a new source generation, progress does not. SourceChange
 WAIT prevents docking under the finger and shows the existing loading animation; completion ATTACH replaces it,
 failure CLOSE clears it. No screen capture/app-text/cloud preparation is permitted in either NoText state.
-Unit coverage includes failure, retry, mismatched work, dialogs, committed text and closed presentations. CAM50 is
+Unit coverage includes failure, retry, mismatched work, dialogs, committed text and closed presentations. CAM59 is
 still awaiting visual acceptance on a device.
