@@ -21,6 +21,7 @@ object KazakhSupport : TurkicCyrillicSupport() {
     override val audioTestWord = "кітап"
     override val pronunciationSample = "күн → [kʰʏn]"
     override val flagCountries = listOf("kz")
+    override val preferDictionaryForms = true
     override val fontLetters = "аәбвгғдеёжзийкқлмнңоөпрстуұүфхһцчшщъыіьэюя"
 
     /** Kazakh letters by the Russian ones that stand for them where a keyboard or OCR lacks them. */

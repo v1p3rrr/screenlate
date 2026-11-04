@@ -137,7 +137,18 @@ size_t shortest(const std::vector<Chain>& chains) {
 }
 
 // Whether [a] is a better match of its headword than [b]: Yomitan's order before frequencies.
-bool better(const Match& a, const Match& b) {
+bool has_form(const Chain& chain) {
+  return std::any_of(chain.begin(), chain.end(), [](const ChainStep& step) { return step.form; });
+}
+
+bool shortest_has_form(const std::vector<Chain>& chains) {
+  const size_t length = shortest(chains);
+  return std::any_of(chains.begin(), chains.end(), [&](const Chain& chain) {
+    return chain.size() == length && has_form(chain);
+  });
+}
+
+bool better(const Match& a, const Match& b, bool prefer_dictionary_forms) {
   const size_t length_a = length_of(a.matched);
   const size_t length_b = length_of(b.matched);
   if (length_a != length_b) return length_a > length_b;
@@ -146,6 +157,11 @@ bool better(const Match& a, const Match& b) {
   const size_t chain_a = shortest(a.chains);
   const size_t chain_b = shortest(b.chains);
   if (chain_a != chain_b) return chain_a < chain_b;
+  if (prefer_dictionary_forms) {
+    const bool form_a = shortest_has_form(a.chains);
+    const bool form_b = shortest_has_form(b.chains);
+    if (form_a != form_b) return form_a;
+  }
   const bool exact_a = a.term.expression == a.deinflected;
   const bool exact_b = b.term.expression == b.deinflected;
   return exact_a && !exact_b;
@@ -304,7 +320,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
   for (auto& [key, group] : by_term) {
     Match* best = group.front();
     for (Match* match : group) {
-      if (better(*match, *best)) best = match;
+      if (better(*match, *best, options.prefer_dictionary_forms)) best = match;
     }
     CandidateResult result{best->matched, best->deinflected, {}, best->steps, std::move(best->term), best->respelled};
     for (const Match* match : group) {
@@ -316,7 +332,10 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
       }
     }
     std::stable_sort(result.chains.begin(), result.chains.end(),
-                     [](const auto& a, const auto& b) { return a.size() < b.size(); });
+                     [&](const auto& a, const auto& b) {
+                       if (a.size() != b.size()) return a.size() < b.size();
+                       return options.prefer_dictionary_forms && has_form(a) && !has_form(b);
+                     });
     results.push_back(std::move(result));
   }
 
@@ -334,6 +353,11 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     const size_t chain_a = shortest(a.chains);
     const size_t chain_b = shortest(b.chains);
     if (chain_a != chain_b) return chain_a < chain_b;
+    if (options.prefer_dictionary_forms) {
+      const bool form_a = shortest_has_form(a.chains);
+      const bool form_b = shortest_has_form(b.chains);
+      if (form_a != form_b) return form_a;
+    }
     const bool exact_a = a.term.expression == a.deinflected;
     const bool exact_b = b.term.expression == b.deinflected;
     if (exact_a != exact_b) return exact_a;

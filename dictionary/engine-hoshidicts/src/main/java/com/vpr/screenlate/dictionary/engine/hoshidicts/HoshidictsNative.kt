@@ -71,6 +71,7 @@ internal object HoshidictsNative {
         frequencyDescending: Boolean,
         primaryReading: ByteArray?,
         fromOcr: Boolean,
+        preferDictionaryForms: Boolean,
     ): ByteArray
 
     external fun styles(handle: Long): ByteArray

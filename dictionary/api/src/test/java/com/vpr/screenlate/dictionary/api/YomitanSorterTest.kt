@@ -1,6 +1,8 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.model.FrequencyGroup
 import com.vpr.screenlate.dictionary.api.model.FrequencyValue
 import com.vpr.screenlate.dictionary.api.model.Glossary
@@ -11,6 +13,31 @@ import org.junit.Test
 
 class YomitanSorterTest {
     private val options = LookupOptions(frequencyDictionary = "Freq", frequencyOrder = FrequencyOrder.ASCENDING)
+
+    @Test
+    fun dictionaryFormsBreakEqualChainTiesOnlyForKazakh() {
+        val rule = result("ал", matched = "алды", trace = 1, frequency = 1)
+        val form = result("алу", matched = "алды", trace = 1, frequency = 900)
+            .copy(trace = listOf(Transform("past", form = true)))
+        for (language in Language.entries) {
+            val sorted = YomitanSorter.sort(listOf(rule, form), options.copy(language = language), emptyList())
+            assertThat(sorted.first()).isEqualTo(if (language == Language.KAZAKH) form else rule)
+            assertThat(language.support.preferDictionaryForms).isEqualTo(language == Language.KAZAKH)
+        }
+    }
+
+    @Test
+    fun formPreferencePreservesMatchSpellingAndChainLengthPriorities() {
+        val form = result("алу", matched = "алды", trace = 1).copy(trace = listOf(Transform("past", form = true)))
+        val plain = result("алды", matched = "алды")
+        val longer = result("алдыға", matched = "алдыға", trace = 2)
+        val written = result("ал", matched = "алды", trace = 1)
+        val kazakh = options.copy(language = Language.KAZAKH)
+        assertThat(YomitanSorter.sort(listOf(form, plain, longer), kazakh, emptyList()))
+            .containsExactly(longer, plain, form).inOrder()
+        assertThat(YomitanSorter.sort(listOf(form.copy(respelled = true), written), kazakh, emptyList()).first()).isEqualTo(written)
+        assertThat(YomitanSorter.sort(listOf(form.copy(preprocessorSteps = 1), written), kazakh, emptyList()).first()).isEqualTo(written)
+    }
 
     @Test
     fun longerMatchWins() {

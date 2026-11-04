@@ -126,6 +126,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             frequencyDescending = options.frequencyOrder == FrequencyOrder.DESCENDING,
             primaryReading = options.primaryReading?.encodeToByteArray(),
             fromOcr = options.fromOcr,
+            preferDictionaryForms = language.support.preferDictionaryForms,
         )
         val support = language.support
         val lookup = json.decodeFromString<NativeLanguageLookup>(raw.decodeToString())

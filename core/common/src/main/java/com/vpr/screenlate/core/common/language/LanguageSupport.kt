@@ -423,6 +423,9 @@ interface LanguageSupport {
      */
     val ruleChainsOnlyWithoutRow: Boolean get() = false
 
+    /** Prefer dictionary form rows over generated endings when the matched length and shortest chain length tie. */
+    val preferDictionaryForms: Boolean get() = false
+
     /**
      * Tags of the dictionaries' form-of entries that stand for one of the language's inflection rules, with that rule's
      * id: Wiktionary's Welsh `soft` and French-edition `lenition` rows are soft mutations, which the rules undo too. A

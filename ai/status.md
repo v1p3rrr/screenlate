@@ -25,11 +25,10 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
   the prototype lost useful forms; Kazakh ownership paths stay. On the top 30,000 forms, readings change for
   218 kk forms (8,047 tokens) and 117 ky (7,832); the plan records the coverage loss, review and modeling limits.
   All 171 language tests pass; 87,076 calls in other changed bundles are identical. Native cases added, rerun pending.
-- Group 4e question 24 measured but deferred for new question 28: the original unconditional dictionary-form
-  preference would move frequent Kyrgyz бизге/бизде/бизди/бизден from биз to мен. The broad verb preference also
-  promotes valid noun forms' wrong verb readings, so its conditional benefit is not established. The proposed
-  change is dictionary-form priority in Kazakh only; it needs the owner's confirmation because the table says
-  both languages. No sorter code changed; continue with the remaining independent tasks.
+- Group 4e question 28 accepted and built (request 85): Kazakh dictionary form rows win ties at the same shortest
+  chain length; Kyrgyz and broad verb priority stay unchanged. LanguageSupport owns the policy; native best-match,
+  chain and pre-limit result order and the final Kotlin sorter apply it consistently. New all-language JVM checks
+  and a native maxResults=1/alternative-chain fixture pass. All 53 LanguageLookupTest cases pass on the phone.
 - Group 5e question 28 measured and built: all five agreed Marathi irregular stems pass the coverage review.
   Thirty-six forms / 9,502 news tokens gain a verb reading; 23 already listed forms stay protected. Exact whole
   words under past/perfect-participle endings only, existing labels and particles reused. All 172 language tests,
@@ -61,7 +60,7 @@ Owner request 84 authorizes the remaining listed tasks in sequence. Branch `code
 - Remaining device-dependent investigations: first-start language names, Home service-state card after rebind,
   and AnkiDroid browser retaining a deck filter. No speculative fix applied without a failing Android loop. The
   public AnkiDroid source confirms that the current browser link uses the right search parameter but retains deck
-  selection; this is not proof against the installed version. Group 4e sorting question 28 is awaiting the owner.
+  selection; this is not proof against the installed version. Group 4e sorting question 28 was accepted and implemented below.
 
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 
@@ -2407,3 +2406,15 @@ session needs; the folded-marks plan's question 1 points to the new numbers. Not
 - For a local session: recognition on the emulator (ML Kit, Tesseract, cloud, Paddle on the research screens), voices,
   the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports, and the audio counts
   (Commons rate-limited the cloud session); the list is in the plan ("For the emulator session").
+
+## Phone verification resumed (2026-11-04, request 85)
+
+- Phone now connects. A sandboxed ADB invocation saw a v39 server conflict; the authorized full-access v41 client
+  starts and sees the phone. Use an explicit serial while local emulator attempts exist.
+- LanguageLookupTest passes all 53 cases on the phone: new pronouns, suffix consonants, Marathi irregular stems,
+  the three forms-only headword filters and Kazakh-only form priority, plus earlier native regressions.
+- Two incomplete test fixtures corrected: Hungarian megad cannot remove a prefix to the too-short ad, so use the
+  existing valid megtartottam → tartottam → tart pattern; Telugu needs the dictionary's పట్లు → పట్టు form row to
+  reproduce the old false reading. No engine/filter change was needed for either fixture.
+- JVM checks and dictionary lints pass. Only the isolated engine test package was installed; the owner's app and
+  Anki collection are unchanged. Next: a full MNN PaddleOCR device replay in an isolated OCR test package.

@@ -36,6 +36,34 @@ class LanguageLookupTest {
     }
 
     @Test
+    fun dictionaryFormPriorityIsKazakhOnlyAndRunsBeforeTheNativeLimit() = runTest {
+        val kk = engine.import(zip("kk-order.zip",
+            "index.json" to """{"title":"Kazakh order","revision":"1","format":3,"sourceLanguage":"kk"}""".toByteArray(),
+            "term_bank_1.json" to """[
+                ["ал","","n","",100,["noun"],1,""],
+                ["алу","","v","",0,["verb"],2,""],
+                ["алды","","non-lemma","",0,[["алу",["past"]]],3,""]
+            ]""".toByteArray()), File(root, "kk-order"))
+        engine.load(DictionarySet(terms = listOf(kk.directory)))
+        val kazakh = LookupOptions(language = Language.KAZAKH)
+        val all = engine.lookup("алды", kazakh).filter { it.matched == "алды" }
+        assertThat(all.first().term.expression).isEqualTo("алу")
+        assertThat(all.first().trace.single().form).isTrue()
+        assertThat(all.first().otherTraces.any { chain -> chain.none { it.form } }).isTrue()
+        assertThat(engine.lookup("алды", kazakh.copy(maxResults = 1)).single().term.expression).isEqualTo("алу")
+        val ky = engine.import(zip("ky-order.zip",
+            "index.json" to """{"title":"Kyrgyz order","revision":"1","format":3,"sourceLanguage":"ky"}""".toByteArray(),
+            "term_bank_1.json" to """[
+                ["биз","","pron","",100,["we"],1,""],
+                ["мен","","pron","",0,["I"],2,""],
+                ["бизге","","non-lemma","",0,[["мен",["plural"]]],3,""]
+            ]""".toByteArray()), File(root, "ky-order"))
+        engine.load(DictionarySet(terms = listOf(ky.directory)))
+        val kyrgyz = LookupOptions(language = Language.KYRGYZ, maxResults = 1)
+        assertThat(engine.lookup("бизге", kyrgyz).single().term.expression).isEqualTo("биз")
+    }
+
+    @Test
     fun deinflectsFollowsFormsAndFindsPhrases() = runTest {
         val imported = engine.import(englishDictionary(), File(root, "out"))
         assertThat(File(imported.directory, FORM_OF_TABLE).isFile).isTrue()
@@ -1895,12 +1923,13 @@ class LanguageLookupTest {
             val russianRows: String,
         )
         val cases = listOf(
-            Case(Language.HUNGARIAN, "felett", "eszik", "megad", "ad", """
+            Case(Language.HUNGARIAN, "felett", "eszik", "megtartottam", "tart", """
                 [["felett","","postp","",0,["above"],1,""],
-                 ["ett","","non-lemma","",0,[["eszik",["past"]]],2,""]]
+                 ["ett","","non-lemma","",0,[["eszik",["past"]]],2,""],
+                 ["tartottam","","non-lemma","",0,[["tart",["past"]]],3,""]]
             """, """
                 [["eszik","","v","",0,["есть"],1,""],
-                 ["ad","","v","",0,["давать"],2,""]]
+                 ["tart","","v","",0,["держать"],2,""]]
             """),
             Case(Language.TAMIL, "இந்திய", "இந்தியம்", "மரங்களில்", "மரம்", """
                 [["இந்திய","","adj","",0,["Indian"],1,""],
@@ -1913,7 +1942,8 @@ class LanguageLookupTest {
             Case(Language.TELUGU, "పట్ల", "పట్టు", "చెట్లలో", "చెట్టు", """
                 [["పట్ల","","postp","",0,["with regard to"],1,""],
                  ["చెట్టు","","n","",0,["tree"],2,""],
-                 ["చెట్లు","","non-lemma","",0,[["చెట్టు",["plural"]]],3,""]]
+                 ["చెట్లు","","non-lemma","",0,[["చెట్టు",["plural"]]],3,""],
+                 ["పట్లు","","non-lemma","",0,[["పట్టు",["plural"]]],4,""]]
             """, """
                 [["పట్టు","","n","",0,["шёлк"],1,""],
                  ["చెట్టు","","n","",0,["дерево"],2,""]]

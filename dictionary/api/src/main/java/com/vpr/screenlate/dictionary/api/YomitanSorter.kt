@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.vpr.screenlate.dictionary.api.model.LookupResult
+import com.vpr.screenlate.core.common.language.support
 
 /**
  * Orders lookup results the way Yomitan does:
@@ -41,6 +42,7 @@ object YomitanSorter {
             .thenBy { it.preprocessorSteps }
             .thenBy { it.respelled }
             .thenBy { it.trace.size }
+            .thenByDescending { options.language.support.preferDictionaryForms && it.trace.any { step -> step.form } }
             .thenByDescending { it.term.expression == it.deinflected }
             .thenComparator { a, b -> compareFrequency(frequency(a), frequency(b), descending) }
             .thenBy { dictionaryIndex(it) }

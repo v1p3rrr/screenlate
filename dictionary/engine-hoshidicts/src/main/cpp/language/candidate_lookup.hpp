@@ -40,6 +40,7 @@ struct CandidateLookupOptions {
   int max_results = 16;
   std::optional<std::string> frequency_dictionary;
   bool frequency_descending = false;
+  bool prefer_dictionary_forms = false;
   std::optional<std::string> primary_reading;
 };
 

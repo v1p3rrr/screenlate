@@ -478,7 +478,7 @@ JNIEXPORT void JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_Hosh
 JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_HoshidictsNative_lookupLanguage(
     JNIEnv* env, jobject, jlong handle, jbyteArray language, jbyteArray text, jbyteArray resolution, jint max_results,
     jint scan_length, jbyteArray frequency_dictionary, jboolean frequency_descending, jbyteArray primary_reading,
-    jboolean from_ocr) {
+    jboolean from_ocr, jboolean prefer_dictionary_forms) {
   try {
     Session* s = session(handle);
     const std::string code = to_string(env, language);
@@ -494,6 +494,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
     options.max_results = max_results;
     options.frequency_dictionary = to_optional_string(env, frequency_dictionary);
     options.frequency_descending = frequency_descending == JNI_TRUE;
+    options.prefer_dictionary_forms = prefer_dictionary_forms == JNI_TRUE;
     options.primary_reading = to_optional_string(env, primary_reading);
     std::vector<const screenlate_language::FormOfTable*> tables;
     for (const auto& table : s->form_of_tables) tables.push_back(table.get());
