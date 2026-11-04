@@ -286,6 +286,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK94 | Word forms count their headwords as entries in Uzbek and Azerbaijani (Russian chosen; uz–ru with the Uzbek word forms, az–ru with the Azerbaijani ones, both imported with this version): davom, Davom and давом show no davo "my" from the rules; kitoblarimizda still finds kitob, boʻlsa boʻlmoq; yazı and YAZI show nothing from the rules, kitablarımızda finds kitab and yazdı yazmaq; word forms imported by an older version still look up as before, and updating the item adds the list | N | U RuleOnlyResultsTest, UzbekSupportTest, AzerbaijaniSupportTest, LanguageRulesIsolationTest, I LanguageLookupTest, M | |
 | LK95 | Type いつまでも with the Japanese romaji keyboard while intermediate searches run: every character remains in the field and the final article matches the whole query; sorting and page-state serialization run on workers, not on the input thread; a newer search wins over an older link or theme preparation | F | M (same-device method profile and keyboard input) | 2026-11-03 |
 | LK96 | Kazakh кітапсыз → кітап and Kyrgyz үйсүз → үй show the separate without chain first and keep the polite second-person chain among the alternatives; кітаптарсыз → кітап through plural + without; үйсүздөргө → үй through without + plural + dative; the rule name follows every one of the 17 interface locales and its description lists the language's endings | F | U YomitanInflectionsTest, TranslationsTest, glue; I LanguageLookupTest, TurkicInflectionsLocaleTest | 2026-11-03 |
+| LK97 | Kyrgyz аны/анын/ага/анда/андан → ал, муну/мунун/буга/мында/мындан → бул, ошону/ошонун/ошого/ошондо/ошондон → ошол with the correct case name; Kazakh missing Russian-dictionary cases reach бұл/сол/ол; regular suffixes on the six pronouns stay excluded, a longer word ending in one of these forms gets no whole-word rule | N | U glue; I LanguageLookupTest | 2026-11-04 (JS; Android pending) |
 
 ### POP: the popup
 
@@ -730,6 +731,15 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-11-04, `codex/backlog-2026-11-04`, explicit pronoun cases
+
+Scope: group 4e question 26, LK97. The new whole-word case test failed before the rebuilt scripts; 170/170 language
+tests then passed. All four public wty pairs audited at revision 2026.10.22. The other 58 scripts give identical
+candidates in 222,952 calls over 1,922 strings, ordinary text and true OCR (the fourth argument). Engine JVM tests,
+lint and the test-APK build pass. The expanded native test is not run yet: no phone over ADB; the API 37 emulator
+exits at WHPX startup, also with software graphics, and API 30 with acceleration off exits with 0xc0000005. LK97
+stays N until the device run. No installed app or owner data changed.
 
 ### 2026-11-03, `codex/turkic-without-2026-11-03`, without ending and isolated phone tests
 

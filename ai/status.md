@@ -1,5 +1,23 @@
 # Status
 
+## Sequential backlog work (2026-11-04)
+
+Owner request 84 authorizes the remaining listed tasks in sequence. Branch `codex/backlog-2026-11-04` in
+`.worktrees/camera`, based on `languages/main` `a184cadf`. Existing decisions still bind.
+
+- Group 4e question 26 implemented: 15 whole-word Kyrgyz case forms and 19 Kazakh forms missing from the Russian
+  dictionary. The English Kazakh dictionary already covers them; ол's other forms, present in both pairs, get no
+  extra rule. Public wty pairs were audited at revision 2026.10.22. Kyrgyz English already has анын; the other
+  basic forms are missing. Case names reuse the existing localized strings.
+- A separate condition admits only the explicit pronoun forms; regular endings still cannot reach the six
+  irregular pronouns. All 170 language tests pass; 222,952 candidate calls on the other 58 bundles are unchanged
+  (ordinary text and OCR passed as the fourth argument). Engine JVM tests and lint pass.
+- Native test cases are added and the test APK builds. ADB sees no phone. API 37's emulator exits during startup
+  with WHPX; a software-graphics retry also exits, and the API 30 fallback exits with 0xc0000005. The Android rerun
+  is pending; continue independent backlog work instead of waiting. No device app or owner data changed.
+- Public test dictionaries, audit reports and run logs are under the worktree's ignored
+  `testdata/local-research/backlog-2026-11-04/`. Next: the agreed words.hk frequency dictionary.
+
 ## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
 
 The owner requested the next easy task with verification (language-plan request 83). Group 4e question 25 is built

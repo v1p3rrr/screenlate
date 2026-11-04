@@ -279,6 +279,12 @@ Requests 1–19 are in the previous plan. New ones:
 83. (2026-11-03) Complete the next easy remaining task with verification. Selected group 4e question 25:
     the already approved "without" ending in Kazakh and Kyrgyz, with localized names and chain tests.
 
+84. (2026-11-04) Finish the remaining tasks from the development overview in sequence, with verification and a
+    commit for each coherent task. Start with group 4e question 26, then group 5e question 27, the measured ending
+    and ordering changes, Marathi stems, the three-language headword measurement and the approved photo-loading
+    behavior. Continue with the listed defects and pending checks. Existing decisions remain binding; unresolved
+    hosting, release and other substantial choices wait for the owner.
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -1449,6 +1455,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-11-04: request 84 started. Group 4e question 26 implemented with explicit whole-word pronoun cases;
+  170 language tests, unchanged other-language candidates, engine tests and lint pass. Native rerun pending
+  because the phone is disconnected and the emulators fail to start. Continue with the next independent task.
 
 - 2026-11-03: request 83: group 4e question 25 built. A separate localized `without` chain in Kazakh and Kyrgyz,
   the polite chain retained; 169 language tests, 27 engine JVM tests, four translation checks, lint and three phone

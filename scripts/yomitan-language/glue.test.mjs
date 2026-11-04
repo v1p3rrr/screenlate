@@ -1174,6 +1174,40 @@ test('kazakh and kyrgyz noun endings skip the pronouns whose case forms change t
     assert.ok(candidatesTo('kk', 'өзі', 'өз').some((c) => c.u));
 });
 
+test('explicit pronoun cases reach their pronouns but never undo a regular ending on them', () => {
+    for (const [language, descriptor] of [['kk', kazakhTransforms], ['ky', kyrgyzTransforms]]) {
+        const cases = language === 'ky' ? {
+            genitive: {'ал': 'анын', 'бул': 'мунун', 'ошол': 'ошонун'},
+            dative: {'ал': 'ага', 'бул': 'буга', 'ошол': 'ошого'},
+            accusative: {'ал': 'аны', 'бул': 'муну', 'ошол': 'ошону'},
+            locative: {'ал': 'анда', 'бул': 'мында', 'ошол': 'ошондо'},
+            ablative: {'ал': 'андан', 'бул': 'мындан', 'ошол': 'ошондон'},
+        } : {
+            genitive: {'бұл': 'мұның бұның', 'сол': 'соның'},
+            dative: {'бұл': 'бұған', 'сол': 'соған'},
+            accusative: {'бұл': 'мұны бұны', 'сол': 'соны'},
+            locative: {'бұл': 'мұнда бұнда', 'сол': 'сонда'},
+            ablative: {'ол': 'одан', 'бұл': 'мұнан бұдан', 'сол': 'содан сонан'},
+            instrumental: {'бұл': 'мұнымен бұнымен', 'сол': 'сонымен'},
+        };
+        for (const [rule, pronouns] of Object.entries(cases)) {
+            for (const [pronoun, forms] of Object.entries(pronouns)) {
+                for (const form of forms.split(' ')) {
+                    assert.ok(candidatesTo(language, form, pronoun).some((c) => c.u &&
+                        c.r.some((r) => r.length === 1 && r[0] === rule)), `${language}: ${form}`);
+                    assert.ok(!candidates(language, 'ж' + form).some((c) => c.d === pronoun && c.u), form);
+                }
+            }
+        }
+        assert.ok(Object.values(descriptor.transforms).some((t) => t.rules.some((r) => r.type === 'wholeWord')));
+    }
+    assert.ok(candidatesTo('ky', 'Аны', 'ал').some((c) => c.u));
+    assert.ok(candidatesTo('kk', 'мунан', 'бұл').some((c) => c.u));
+    for (const language of ['ru', 'uk', 'az', 'uz', 'tr', 'en']) {
+        assert.ok(!candidates(language, 'мындан').some((c) => c.d === 'бул' && c.u), language);
+    }
+});
+
 test('every turkic rule has a shared name and a description of its endings, which the app strings are generated from', () => {
     const res = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values');
     const labels = fs.readFileSync(path.join(res, 'inflections_turkic.xml'), 'utf8');

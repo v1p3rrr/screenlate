@@ -807,7 +807,7 @@ const TURKIC_VERB = /* @__PURE__ */ String.fromCharCode(0xe000);
 /** Ends a text whose rest ends in the present tense mark, its person ending taken off. */
 const TURKIC_PRESENT = /* @__PURE__ */ String.fromCharCode(0xe001);
 
-/** @typedef {'n' | 'v' | 'q' | 'cs' | 'px' | 'pl' | 'pt' | 'cv' | 'im' | 'pc' | 'pr' | 'vt' | 'vn' | 'vv'} TurkicCondition */
+/** @typedef {'n' | 'v' | 'q' | 'cs' | 'px' | 'pl' | 'pt' | 'cv' | 'im' | 'pc' | 'pr' | 'vt' | 'vn' | 'vv' | 'pn'} TurkicCondition */
 
 /**
  * What each kind of ending applies after and leaves, and the mark the text it reads (`reads`) or leaves (`leaves`)
@@ -856,6 +856,7 @@ const turkicSlots = {
  * @property {Record<string, string[]>} contracted endings written together with a stem's last vowel, with the vowels
  *   the stem may have ended in (Kazakh оқиды from оқы- and the present mark -й)
  * @property {(stem: string) => string[]} dictionaryForms a verb stem's dictionary forms
+ * @property {Record<string, Record<string, string>>} [pronounCases] whole-word case forms, by rule and pronoun
  * @property {(TurkicTransform | {persons: string[][]})[]} transforms rules, and rows of person endings (`turkicPersons`)
  *   in their place; plain data, so that bundles of other languages drop the tables
  */
@@ -964,6 +965,19 @@ function turkicTransforms(grammar) {
             .map((item) => item.split(/[/>]/)[0]))];
         transforms[id] = {name, description: `${listed.map((e) => '-' + e).join(' ')} (${example})`, rules};
     }
+    for (const [id, pronouns] of Object.entries(grammar.pronounCases ?? {})) {
+        for (const [pronoun, forms] of Object.entries(pronouns)) {
+            for (const form of forms.split(' ').flatMap(spellings)) {
+                transforms[id].rules.push({
+                    type: 'wholeWord',
+                    isInflected: new RegExp(`^${form}$`),
+                    deinflect: () => pronoun,
+                    conditionsIn: ['q'],
+                    conditionsOut: ['pn'],
+                });
+            }
+        }
+    }
     // As many rules as a stem has dictionary forms at most; each gives one, or no text.
     transforms['dictionary form'] = {
         name: 'dictionary form',
@@ -982,6 +996,7 @@ function turkicTransforms(grammar) {
         sharedLabels: 'turkic',
         conditions: {
             n: {name: 'Nominal', isDictionaryForm: true},
+            ...(grammar.pronounCases ? {pn: {name: 'Pronoun case form', isDictionaryForm: true}} : {}),
             v: {name: 'Verb', isDictionaryForm: true},
             q: {name: 'Before the question particle', isDictionaryForm: false},
             cs: {name: 'Before a case ending', isDictionaryForm: false},
@@ -1019,6 +1034,15 @@ function turkicPersons(persons) {
 /** Kazakh: two-way vowel harmony (-лар, -лер), the letters ә ғ қ ң ө ұ ү һ і. */
 export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
     language: 'kk',
+    // Missing in wty-kk-ru 2026.10.22; ол's other case forms are already present in both gloss languages.
+    pronounCases: {
+        genitive: {'бұл': 'мұның бұның', 'сол': 'соның'},
+        dative: {'бұл': 'бұған', 'сол': 'соған'},
+        accusative: {'бұл': 'мұны бұны', 'сол': 'соны'},
+        locative: {'бұл': 'мұнда бұнда', 'сол': 'сонда'},
+        ablative: {'ол': 'одан', 'бұл': 'мұнан бұдан', 'сол': 'содан сонан'},
+        instrumental: {'бұл': 'мұнымен бұнымен', 'сол': 'сонымен'},
+    },
     vowels: 'аәеиоөұүыіэюяуё',
     linkingVowels: 'ыі',
     // у takes a linking vowel as a consonant does (оқуы, тауым).
@@ -1090,6 +1114,13 @@ export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
 /** Kyrgyz: four-way vowel harmony (-лар, -лер, -лор, -лөр), the letters ң ө ү, the question particle joined. */
 export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
     language: 'ky',
+    pronounCases: {
+        genitive: {'ал': 'анын', 'бул': 'мунун', 'ошол': 'ошонун'},
+        dative: {'ал': 'ага', 'бул': 'буга', 'ошол': 'ошого'},
+        accusative: {'ал': 'аны', 'бул': 'муну', 'ошол': 'ошону'},
+        locative: {'ал': 'анда', 'бул': 'мында', 'ошол': 'ошондо'},
+        ablative: {'ал': 'андан', 'бул': 'мындан', 'ошол': 'ошондон'},
+    },
     vowels: 'аеиоөуүыэюяё',
     linkingVowels: 'ыиуү',
     consonants: 'бвгджзйклмнңпрстфхцчшщъь',

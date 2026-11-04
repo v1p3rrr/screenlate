@@ -184,7 +184,7 @@ function candidates(text, language, searchResolution, fromOcr = false) {
                 x.inflectionRules.filter((rule) => !hidden.has(rule)) :
                 x.inflectionRules)),
             u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) ||
-                (isUntypedRule(d, language) && !skippedByNominalRules.get(language)?.has(d.deinflectedText.toLowerCase())) ||
+                isUntypedRule(d, language) ||
                 tags.length > 0,
             ...(tags.length > 0 ? {g: tags} : {}),
             ...(tags.length > 0 && freeFormLemmas.has(language) ? {f: true} : {}),
@@ -347,8 +347,8 @@ const untypedRules = new Map([
     ['ar', {shortest: 2, conditions: ['n']}],
     ['fa', {shortest: 2}],
     ['he', {shortest: 2}],
-    ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
-    ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
+    ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv', 'pn']}],
+    ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv', 'pn']}],
     ['az', {shortest: 3, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['uz', {shortest: 3, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
     ['cy', {shortest: 2}],
@@ -366,7 +366,8 @@ const untypedRules = new Map([
  * case forms change their stem (Kyrgyz ал → аны, анын, ага; Kazakh ол → оны, оған): a regular ending on them never
  * makes their own form, and the word is mostly a verb's (алды "took" is алуу's past, not ал with the accusative).
  * Kazakh бул is бұл as OCR and keyboards write it, under which the import keys бұл too. Their other senses go with
- * them (Kazakh сол "left": солға shows сол over its own letters, without the dative).
+ * them (Kazakh сол "left": солға shows сол over its own letters, without the dative). Explicit whole-word case
+ * rules have their own `pn` condition and are allowed by isUntypedRule.
  * @type {Map<string, Set<string>>}
  */
 const skippedByNominalRules = new Map([
@@ -385,7 +386,8 @@ function isUntypedRule(d, language) {
     if (!rule.conditions) { return true; }
     const flags = translator._multiLanguageTransformer._languageTransformers.get(language)?._conditionTypeToConditionFlagsMap;
     const allowed = rule.conditions.reduce((all, name) => all | (flags?.get(name) ?? 0), 0);
-    return (d.conditions & ~allowed) === 0;
+    const skipped = skippedByNominalRules.get(language)?.has(d.deinflectedText.toLowerCase());
+    return (d.conditions & ~allowed) === 0 && (!skipped || d.conditions === flags?.get('pn'));
 }
 
 /**

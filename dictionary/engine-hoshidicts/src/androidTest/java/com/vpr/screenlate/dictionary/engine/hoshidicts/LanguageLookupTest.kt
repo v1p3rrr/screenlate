@@ -702,6 +702,14 @@ class LanguageLookupTest {
         assertThat(withoutBooks.term.expression).isEqualTo("кітап")
         assertThat((listOf(withoutBooks.trace) + withoutBooks.otherTraces).map { chain -> chain.map { it.name } })
             .contains(listOf("plural", "without"))
+        for ((form, pronoun, case) in listOf(
+            Triple("одан", "ол", "ablative"), Triple("мұның", "бұл", "genitive"),
+            Triple("бұған", "бұл", "dative"), Triple("мұны", "бұл", "accusative"),
+            Triple("мұнда", "бұл", "locative"), Triple("сонымен", "сол", "instrumental"),
+        )) {
+            val result = engine.lookup(form, kazakh).first { it.term.expression == pronoun && it.matched == form }
+            assertThat(result.trace.map { it.name }).containsExactly(case)
+        }
     }
 
     /**
@@ -724,7 +732,10 @@ class LanguageLookupTest {
               ["Қазақстан","","name","",0,["Kazakhstan"],9,""],
               ["-ға","","suffix","",0,["to (dative)"],10,""],
               ["шаһар","","n","",0,["city"],11,""],
-              ["бару","","v","",0,["to go"],12,""]
+              ["бару","","v","",0,["to go"],12,""],
+              ["ол","","n","",0,["he, she, it"],13,""],
+              ["бұл","","pron","",0,["this"],14,""],
+              ["сол","","pron","",0,["that"],15,""]
             ]
         """.trimIndent().toByteArray(),
     )
@@ -764,6 +775,17 @@ class LanguageLookupTest {
         assertThat(homeless.term.expression).isEqualTo("үй")
         assertThat((listOf(homeless.trace) + homeless.otherTraces).map { chain -> chain.map { it.name } })
             .contains(listOf("without", "plural", "dative"))
+        for ((form, pronoun, case) in listOf(
+            Triple("аны", "ал", "accusative"), Triple("анын", "ал", "genitive"),
+            Triple("ага", "ал", "dative"), Triple("анда", "ал", "locative"), Triple("андан", "ал", "ablative"),
+            Triple("муну", "бул", "accusative"), Triple("мунун", "бул", "genitive"),
+            Triple("буга", "бул", "dative"), Triple("мында", "бул", "locative"), Triple("мындан", "бул", "ablative"),
+            Triple("ошону", "ошол", "accusative"), Triple("ошонун", "ошол", "genitive"),
+            Triple("ошого", "ошол", "dative"), Triple("ошондо", "ошол", "locative"), Triple("ошондон", "ошол", "ablative"),
+        )) {
+            val result = engine.lookup(form, kyrgyz).first { it.term.expression == pronoun && it.matched == form }
+            assertThat(result.trace.map { it.name }).containsExactly(case)
+        }
     }
 
     /** Rows as Wiktionary's Kyrgyz exports write them: one headword as a noun and a verb, two words that differ in ө. */
@@ -779,7 +801,10 @@ class LanguageLookupTest {
               ["баруу","","v","",0,["to go"],5,""],
               ["кол","","n","",0,["hand"],6,""],
               ["көл","","n","",0,["lake"],7,""],
-              ["күз","","n","",0,["autumn"],8,""]
+              ["күз","","n","",0,["autumn"],8,""],
+              ["ал","","n","",0,["he, she, it"],9,""],
+              ["бул","","pron","",0,["this"],10,""],
+              ["ошол","","pron","",0,["that"],11,""]
             ]
         """.trimIndent().toByteArray(),
     )
