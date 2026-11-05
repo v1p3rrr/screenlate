@@ -1,5 +1,21 @@
 # Status
 
+## Shared fixes ported from languages/main (2026-11-06)
+
+The owner authorized cherry-picking suitable shared fixes into `main` without an emulator rerun. Four commits were
+ported: debug text-selection label `d7686d69` → `17cfe8d9`, narrow-kana vertical continuation `8b886cad` →
+`6d9633bc`, popup rendering optimization `9bb7e33e` → `117631d3`, and stale accessibility disconnect handling
+`0d2362b4` → `90a8e550`. Only documentation conflicts needed resolution; applicable production code and tests were
+retained. `ServiceRebindTest.kt` was not added because that test file does not exist on this branch.
+
+Four commits were deliberately not ported because their code conflicts with the newer language implementation:
+dictionary-registration Cancel hiding `f5c4b4bc`, missing-dictionary Home behavior `8a07f59e`, the phonetic font
+`5a4cb3d6`, and Search result preparation `7430d083`. Three other candidates were already present under different
+hashes; the camera/language/RTL commit was out of scope. No branch rename, push, release, or device test was done.
+
+Verification passed: `assembleDebug testDebugUnitTest lintDebug` (506 tasks, existing warnings only) and all 109
+page-script tests. The four code commits remain local ahead of `origin/main`.
+
 ## Sequential backlog work (2026-11-04)
 
 Owner request 84 authorizes the remaining listed tasks in sequence. Branch `codex/backlog-2026-11-04` in
