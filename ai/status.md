@@ -1,5 +1,18 @@
 # Status
 
+## Default branch, model downloads and catalog compatibility (2026-11-06)
+
+- The former Japanese-only `main` is now `japanese/main`; the multi-language line from `languages/main` is the new
+  default `main`. CI push triggers include both `main` and `japanese/main` in the respective workflows.
+- The legacy catalog generator now excludes OCR-model entries, which have no `kind` or `installedTitle` in format 2.
+  The regenerated format 1 catalog has 41 Japanese dictionary entries. Its current parser checks pass 43/43, and the
+  old Japanese parser accepts the new file with its three catalog tests passing.
+- The regular `ocr-models-1` release description lists all 12 uploaded archives, including the five new recognizers.
+  An opt-in instrumentation acceptance used the app's real catalog, import queue and model store to download and
+  install Devanagari, Thai, Arabic, Tamil, Telugu and their shared detector. It passed on the API 30 emulator,
+  including SHA-256 installation checks, versions and file integrity. The temporary test and debug entry-point
+  methods were removed; the source and successful log remain in ignored `testdata/local-research/release-audit-2026-11-06/`.
+
 ## Release preparation: models, dictionaries and bubble gestures (2026-11-06)
 
 - The real catalog audit covers all 62 language profiles with at least one main term dictionary from its publisher,

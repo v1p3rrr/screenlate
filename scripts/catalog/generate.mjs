@@ -360,7 +360,7 @@ export function fill(text, locale, source, target) {
  */
 export function legacy(document) {
   const dictionaries = document.dictionaries
-    .filter((e) => e.sourceLanguage === 'ja' && (e.category ?? 'MAIN') !== 'GLOSSARY' && e.template !== TEMPLATE_TRANSCRIPTION)
+    .filter((e) => e.sourceLanguage === 'ja' && e.kind && (e.category ?? 'MAIN') !== 'GLOSSARY' && e.template !== TEMPLATE_TRANSCRIPTION)
     .map((e) => {
       const template = e.template && document.templates[e.template];
       const description = template

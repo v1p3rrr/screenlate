@@ -194,7 +194,8 @@ test('the format 1 copy has the Japanese main dictionaries with filled texts and
     [TEMPLATE_TRANSCRIPTION]: { title: {}, description: { en: '{source}' } },
   };
   const document = rebuild({ format: 2, templates, dictionaries: manual }, wiktionaryEntries(archives(listing), manual, words));
-  const old = legacy(document);
+  const model = { id: 'paddle-v6-ja', category: 'OCR_MODEL', sourceLanguage: 'ja', downloadUrl: 'https://x/model.zip' };
+  const old = legacy({ ...document, dictionaries: [...document.dictionaries, model] });
   assert.equal(old.format, 1);
   assert.deepEqual(old.dictionaries.map((e) => e.id), ['jitendex', 'wiktionary-ja-en', 'wiktionary-ja-ru']);
   const wiktionary = old.dictionaries[1];

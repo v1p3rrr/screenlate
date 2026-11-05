@@ -2026,3 +2026,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-11-06: owner authorized fast-forwarding `languages/main` through `2e7463c5` and building the usual local
   minified ARM64 Dev update. The branch is pushed; APK signature/package/version compatibility was checked. No phone
   installation or new product decision. Build details and hashes are in `ai/status.md`.
+
+- 2026-11-06: owner authorized the branch switch and CI changes, and explicitly chose `japanese/main` after Git's
+  namespace made `main/japanese` incompatible with the new `main`. The multi-language line is the default `main`;
+  push CI runs on both long-lived lines. The owner also approved updating the existing `ocr-models-1` description.
+  Legacy catalog generation now excludes OCR models, restoring compatibility with the old Japanese client. Real
+  app download/install checks passed for all five new recognizers and their shared detector. Module review remains
+  skipped by the owner; beta and the final 1.0.0 release still require separate authorization.

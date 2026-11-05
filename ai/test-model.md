@@ -4065,3 +4065,14 @@ Observations, not changed:
   sequence on `/dev/input/event2` verified double tap: `overlay_aim_mode` persisted as `BUBBLE_CENTER` and the bubble
   showed its center dot. `OverlayController.toggleAimMode` now also retargets the active lookup immediately.
 - Overlay JVM tests and `assembleDebug` pass after the fixes.
+
+## Release model downloads and legacy catalog, API 30 emulator (2026-11-06)
+
+- An opt-in local instrumentation acceptance exercised the app's singleton catalog, `DictionaryImports`/WorkManager
+  and `OcrModelStore`, rather than downloading archives with a host tool. After deleting the previous copies it
+  downloaded and installed the Devanagari, Thai, Arabic, Tamil and Telugu recognizers plus `paddle-detector-v5`.
+  Both runs passed; the retained final run took 16.943 s and checked catalog versions, SHA-256-gated installation,
+  unpacking and `OcrModelStore.verify`. The test package and temporary source hooks were removed afterwards.
+- The regenerated format 1 catalog contains 41 dictionary entries and no OCR models. The current `CatalogFileTest`
+  passes 43/43; the old Japanese branch's three catalog tests also pass against this file. The generator regression
+  test covers an OCR entry without legacy `kind` and `installedTitle` fields.
