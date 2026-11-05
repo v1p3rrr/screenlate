@@ -1,5 +1,16 @@
 # Status
 
+## Local phone update build (2026-11-06)
+
+- Owner authorized fast-forwarding `languages/main` through `2e7463c5`; it is pushed to origin. This includes the
+  Home rebind fix and all earlier backlog changes, without merging into `main`.
+- Built the local minified ARM64 update from that commit: `0.2.3-2e7463c5-min`, package
+  `com.vpr.screenlate.debug`, version code 203 (same as the previous Dev build), non-debuggable, 23,073,283 bytes.
+  SHA-256: `7bcfe2a130088bcd8ed45c1777700f2a5124e79af64de33249d91075d0e7d43e`.
+- APK and R8 mapping are in ignored `testdata/local-research/builds/screenlate-dev-2e7463c5-min.*`.
+  Its signing certificate exactly matches `screenlate-dev-7430d083-min.apk`, so it can update that package without
+  uninstalling or clearing data. Nothing was installed on the phone.
+
 ## Device acceptance and regression (2026-11-05)
 
 Continuation of `codex/backlog-2026-11-04` in `.worktrees/camera`; no merge or owner-phone release is authorized.

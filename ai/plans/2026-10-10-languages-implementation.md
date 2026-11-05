@@ -2022,3 +2022,7 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   archives removed. Two defects and visual checks remain open; owner apps and collection unchanged.
 
 - 2026-11-05 (request 87 follow-up): the isolated AnkiDroid 2.25.3 fixture reproduces an existing note hidden by the retained Default deck filter. Its public browser deep link always keeps that filter; CardBrowser is not exported, so Screenlate cannot request an all-decks search directly. The owner chose to leave the current behavior unchanged rather than add a hint or an in-app duplicate list. Record the upstream limitation; no production Anki change is authorized.
+
+- 2026-11-06: owner authorized fast-forwarding `languages/main` through `2e7463c5` and building the usual local
+  minified ARM64 Dev update. The branch is pushed; APK signature/package/version compatibility was checked. No phone
+  installation or new product decision. Build details and hashes are in `ai/status.md`.
