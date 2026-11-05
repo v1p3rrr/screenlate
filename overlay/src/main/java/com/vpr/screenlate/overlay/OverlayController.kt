@@ -361,14 +361,15 @@ class OverlayController(
 
     /**
      * Rotation or a resized window closes the popup and docks the bubble (the dock keeps its side and relative
-     * height); other changes such as the system theme only redraw the popup.
+     * height); other changes such as the system theme only redraw the popup. While touched, the bubble stays under
+     * the finger and the current gesture finishes normally.
      */
     fun onConfigurationChanged() {
         val screen = screenBounds()
         val resized = screen != lastScreen
         lastScreen = screen
         if (!attached) return
-        if (resized) dock() else refreshPopup()
+        if (resized && !touching) dock() else refreshPopup()
     }
 
     /**
@@ -816,6 +817,8 @@ class OverlayController(
         settings = settings.copy(aimMode = next)
         haptic()
         updateAimVisuals()
+        val (x, y) = aimPoint()
+        onAim(x, y, moving = true)
         scope.launch { overlaySettings.setAimMode(next) }
     }
 

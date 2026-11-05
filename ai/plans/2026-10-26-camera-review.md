@@ -619,12 +619,15 @@ Test cases CAM50–CAM55 added to `ai/test-model.md`. Docs updated (`docs/usage.
 
 Defects in code the feature did not change, noted for a later full review; not fixed now.
 
-- A double tap on the bubble switches the aim mode but keeps the aim point of the old mode, so lookups go on at the
-  old point until the bubble moves (`OverlayController.toggleAimMode`). The photo's moves keep that point too.
-- A screen size change during a touch docks the bubble under the finger (`onConfigurationChanged` calls `dock()`),
-  as area 3's finding 1 did before its fix.
-- The Search page and the selection menu's search open the Anki settings and the dictionaries of the active language,
-  not of the language being searched (`SearchScreen`, `ProcessTextActivity`); the requests can now carry a language.
+- Fixed 2026-11-06: a double tap on the bubble switched the aim mode but kept the aim point of the old mode, so
+  lookups went on at the old point until the bubble moved (`OverlayController.toggleAimMode`). It now retargets
+  immediately; checked on the API 30 emulator.
+- Fixed 2026-11-06: a screen size change during a touch docked the bubble under the finger
+  (`onConfigurationChanged` called `dock()`), as area 3's finding 1 did before its fix. The touch now finishes without
+  the forced dock; checked on the API 30 emulator.
+- Not a defect under the approved active-profile behavior: the Search page and the selection menu's search open the
+  Anki settings and the dictionaries of the active language, not of the language being searched (`SearchScreen`,
+  `ProcessTextActivity`).
 
 ## Questions for the owner
 

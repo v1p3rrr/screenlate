@@ -43,6 +43,16 @@ SOURCES = {
                                    "92f0b7785e64fc9090106a241cf4c1eb97472824558272751b88a2a4476d3a08"),
     "el_PP-OCRv5_mobile_rec": ("8152b89d2ee0e1d4c92decab75fe75e5e3d836b6",
                                "2acf17fcaea2bc81b878e311e6263b8885f48bb03796f75f9f30ed3242bbaa6d"),
+    "devanagari_PP-OCRv5_mobile_rec": ("251aec19e36739540d35e2cc943f6aa7503b98e5",
+                                       "cb789212ce96c69d3e74728ae4309d179281d68cb3945d0616b67cafab41c986"),
+    "th_PP-OCRv5_mobile_rec": ("1d4adbbafb1034a2fd6618498575b81ea7b69f69",
+                               "27618be66018f8598ac0a526a593f9f1cebf794e7eded93428e8fb016e537f5f"),
+    "arabic_PP-OCRv5_mobile_rec": ("14aaedcd75825982689ecf5cd64ab33ee083215a",
+                                   "799113ebf267fbe742deb99eb36e8d42c9ddc5291ceacf92add41b4d52a59110"),
+    "ta_PP-OCRv5_mobile_rec": ("0db89798af0d5218fad9ea7ace0557526e9077f1",
+                               "c6d2b682d2a0ea4cb1fccdba295976f93fd439964d16cdc666cadef531accbee"),
+    "te_PP-OCRv5_mobile_rec": ("f1197c83430241c58c64b0952b3a80366d04eeba",
+                               "8238bfc46d4cffe720ed6706e3842802467343497428693ff2bfb4e6b3caa36b"),
 }
 
 DETECTORS = {
@@ -71,6 +81,16 @@ RECOGNIZERS = {
                       "requires": "paddle-detector-v5", "languages": ["ko"]},
     "paddle-el": {"source": "el_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
                   "languages": ["el"]},
+    "paddle-devanagari": {"source": "devanagari_PP-OCRv5_mobile_rec", "template": "paddle-v5",
+                          "requires": "paddle-detector-v5", "languages": ["hi", "mr"]},
+    "paddle-thai": {"source": "th_PP-OCRv5_mobile_rec", "template": "paddle-v5",
+                    "requires": "paddle-detector-v5", "languages": ["th"]},
+    "paddle-arabic": {"source": "arabic_PP-OCRv5_mobile_rec", "template": "paddle-v5",
+                      "requires": "paddle-detector-v5", "languages": ["ar", "fa"]},
+    "paddle-tamil": {"source": "ta_PP-OCRv5_mobile_rec", "template": "paddle-v5",
+                     "requires": "paddle-detector-v5", "languages": ["ta"]},
+    "paddle-telugu": {"source": "te_PP-OCRv5_mobile_rec", "template": "paddle-v5",
+                      "requires": "paddle-detector-v5", "languages": ["te"]},
 }
 
 # The recommendation rule over the clean and hard screens (ai/notes/ocr-engines.md); ko and vi keep ML Kit, and the
@@ -87,6 +107,7 @@ RECOGNIZERS = {
 # Uzbek: ML Kit 2.72% (0.6% with the apostrophes counted as one), none a third fewer, so none is marked.
 # Bulgarian, Macedonian, Mongolian (which ML Kit does not read): the Cyrillic v5 model, 6, 25 and 0 characters wrong
 # over the four screens against Tesseract fast's 104, 115 and 174; the eslav model, which lacks ѝ, is not offered.
+# Hindi and Marathi keep ML Kit; the other newly released models replace the interim Tesseract or cloud-only choice.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",
@@ -94,7 +115,8 @@ RECOMMENDED = {
     "hr": "paddle-v6", "sr": "paddle-cyrillic", "kk": "paddle-cyrillic",
     "ky": "paddle-cyrillic", "sv": "paddle-latin", "no": "paddle-v6", "da": "paddle-latin", "ro": "paddle-latin",
     "la": "paddle-v6", "sl": "paddle-latin", "sq": "paddle-latin", "et": "paddle-v6", "az": "paddle-v6",
-    "bg": "paddle-cyrillic", "mk": "paddle-cyrillic", "mn": "paddle-cyrillic",
+    "bg": "paddle-cyrillic", "mk": "paddle-cyrillic", "mn": "paddle-cyrillic", "th": "paddle-thai",
+    "ar": "paddle-arabic", "fa": "paddle-arabic", "ta": "paddle-tamil", "te": "paddle-telugu",
 }
 
 # Languages ML Kit reads whose comparison found several models more accurate than ML Kit: each is marked, Tesseract's

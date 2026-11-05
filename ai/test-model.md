@@ -4055,3 +4055,13 @@ Observations, not changed:
 - English phrasal verbs with a preposition ("looked for") find only the verb when the dictionary gives the phrase no
   part of speech (wty-en-ru); phrases with an adverb particle are found since 2026-10-15 (LK12). Asked in the plan.
 - Deleting a downloaded or added popup font does not ask first, unlike a dictionary; asked in the plan (now asks, POP18).
+
+## Bubble gesture follow-ups, API 30 emulator (2026-11-06)
+
+- Reproduced the camera review's resize defect before the fix: a 1080→900 px screen-size change during a held touch
+  docked the floating bubble. After the fix the bubble stayed under the finger in the current aim mode; size and touch
+  were restored afterwards.
+- ADB's separate `input` processes were slower than the 300 ms double-tap timeout on this emulator. A binary evdev
+  sequence on `/dev/input/event2` verified double tap: `overlay_aim_mode` persisted as `BUBBLE_CENTER` and the bubble
+  showed its center dot. `OverlayController.toggleAimMode` now also retargets the active lookup immediately.
+- Overlay JVM tests and `assembleDebug` pass after the fixes.
