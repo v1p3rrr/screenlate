@@ -1,5 +1,34 @@
 # Status
 
+## Device acceptance and regression (2026-11-05)
+
+Continuation of `codex/backlog-2026-11-04` in `.worktrees/camera`; no merge or owner-phone release is authorized.
+
+- Home no longer reports a requested running service as stopped while Android is rebinding it. `HomeStatusDeviceTest`
+  passed 12 phone rebind cycles without a false stopped card. Fix committed separately as `0d2362b4`; the phone
+  remains on `0.2.3-7430d083-min`, and its original accessibility settings were restored.
+- LNG49 passed on the phone: a Russian first launch names the languages in Russian from initial composition.
+  ANK37/ANK38 manual acceptance confirmed that the note-id browser deep link opens the right note but retains
+  AnkiDroid's previously selected deck filter. The owner chose to preserve that behavior; no production change.
+- DIC51/DIC52 and LNG48 passed on the emulator: Tamil/Telugu forms remain mandatory until the full English
+  dictionary is selected, full native archives import and look up inflected forms, and Home/leftover-card navigation
+  follows the same requirement. These cases moved from N to F.
+- DIC54's archive download, CRC/import and all five agreed frequency ranks pass (34,933 rows). Its download/popup UI
+  remains unverified. OCR59 has geometry, host replay and phone MNN evidence (18 content rows, six paragraphs), but
+  its manual popup check remains open. Both are blocked by the fresh API 37 image's WebView freeze described below.
+- CAM59 has a successful phone loading scenario and all three emulator loading scenarios: running OCR, already
+  committed text and network failure. The spinner starts/stops correctly, old text does not replace current state,
+  and failure clears loading. The full physical-device acceptance case remains partial, not complete.
+- LNG47's remaining reachable first-run and setup-title screens passed for HI/MR/TA/TE/KN, with screenshots reviewed.
+  Welsh has only `gb-wls`, so the old Great Britain flag-dialog subcheck is not applicable; `FlagsTest` covers the
+  hypothetical coded flag. E-ink and TalkBack portions remain unverified.
+- Final root `assembleDebug testDebugUnitTest lintDebug` passed (602 tasks): 2,078 JVM tests, no failures/errors,
+  four skipped. Page scripts passed 157/157. Logs: `final-gradle.log`, `final-page-tests.log` and the named device
+  logs under ignored `testdata/local-research/backlog-2026-11-04/`.
+- Remaining from this backlog are the WebView-dependent DIC54 UI and OCR59 popup checks, full CAM59 device
+  acceptance, and LNG47's e-ink/TalkBack portions. The fresh API 37 WebView 149.0.5875.69 freezes screenshots/first
+  rendering even in system Chrome; this is recorded in `notes/build-environment.md`, not treated as an app regression.
+
 ## Sequential backlog work (2026-11-04)
 
 Owner request 84 authorizes the remaining listed tasks in sequence. Branch `codex/backlog-2026-11-04` in

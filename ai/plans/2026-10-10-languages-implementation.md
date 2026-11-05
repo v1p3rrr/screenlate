@@ -2020,3 +2020,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   imports/lookups pass on the phone. UI composition and isolated AnkiDroid setup are blocked by secure keyguard;
   the explicit UI test skips rather than reporting acceptance. All task-created phone packages and staged
   archives removed. Two defects and visual checks remain open; owner apps and collection unchanged.
+
+- 2026-11-05 (request 87 follow-up): the isolated AnkiDroid 2.25.3 fixture reproduces an existing note hidden by the retained Default deck filter. Its public browser deep link always keeps that filter; CardBrowser is not exported, so Screenlate cannot request an all-decks search directly. The owner chose to leave the current behavior unchanged rather than add a hint or an in-app duplicate list. Record the upstream limitation; no production Anki change is authorized.

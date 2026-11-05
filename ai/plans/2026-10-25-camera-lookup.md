@@ -80,6 +80,10 @@ Read this section, `ai/status.md`, the decision table below, and the notes named
   sharing them to the app"; CAM42–CAM46).
 - Next concrete action: every phase is done. Left before any merge: the physical-device checks below on the owner's
   phone (with the picker and a share from the phone's gallery added to them); merging is the owner's decision.
+- 2026-11-05 CAM59 follow-up on `codex/backlog-2026-11-04`: the successful loading scenario passed on the phone;
+  running OCR, committed text and network failure all passed on the emulator through `PhotoLoadingUiTest`.
+  The spinner attaches/clears as specified and stale text does not overwrite current state. Full CAM59 physical-device
+  acceptance remains open; no product decision changed and no new APK was installed for the owner.
 - Physical sharpness, focus, flash, capture delay and repeated-capture/memory/drag baselines still need a phone;
   emulator evidence does not establish them. Phase 1 is accepted on emulators only; record these phone checks
   before any merge.
@@ -421,3 +425,5 @@ Commit and push each coherent milestone to `features/camera-lookup`. Record evid
   existing path, failure clears the spinner. Existing recognized text stays available during another attempt.
   Tests cover source generations, transitions, no-screen-read isolation and view-model work/photo matching.
   Device visual acceptance remains pending because ADB has no device and both local emulators exit at startup.
+- 2026-11-05: CAM59 is partially accepted: the successful scenario passed on the phone and all three loading scenarios
+  passed on the emulator. Full physical-device acceptance remains open. No product decision changed.

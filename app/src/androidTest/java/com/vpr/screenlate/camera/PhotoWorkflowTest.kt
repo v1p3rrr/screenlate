@@ -59,7 +59,7 @@ class PhotoWorkflowTest {
         }
         val recognized = (stored.text as PhotoText.Recognized).recognition
         assertThat(recognized.failed).isEmpty()
-        assertThat(recognized.tiles).hasSize(4)
+        assertThat(recognized.tiles.count { !photo.isOverview(it.tile, recognized.settings) }).isEqualTo(4)
         assertThat(recognized.language).isEqualTo(Language.JAPANESE)
         assertThat(recognized.page.width to recognized.page.height).isEqualTo(2800 to 2400)
         assertThat(recognized.page.text.contains("日本語")).isTrue()

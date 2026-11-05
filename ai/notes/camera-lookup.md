@@ -383,4 +383,5 @@ while a new attempt runs. Starting/stopping the flag makes a new source generati
 WAIT prevents docking under the finger and shows the existing loading animation; completion ATTACH replaces it,
 failure CLOSE clears it. No screen capture/app-text/cloud preparation is permitted in either NoText state.
 Unit coverage includes failure, retry, mismatched work, dialogs, committed text and closed presentations. CAM59 is
-still awaiting visual acceptance on a device.
+partially accepted: the successful loading scenario passed on the phone, and `PhotoLoadingUiTest` passed running
+OCR, committed-text and network-failure scenarios on the emulator. Full physical-device acceptance remains open.

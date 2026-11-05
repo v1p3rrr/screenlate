@@ -102,6 +102,38 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   the same way) and shut it down with `adb shell reboot -p`: killing the process is a power cut for its file systems.
   Check `dumpsys package <pkg>` (versionName, lastUpdateTime) before relying on a state from an earlier run.
 - Start the AVD with `-crash-report-mode never` (e.g. `emulator -avd Pixel_10_Pro -no-snapshot-save -no-boot-anim -crash-report-mode never`), in the background from the session so it can be stopped by its own task. After any emulator crash, the next start shows a crash-report consent dialog that blocks the boot; it looks like a new crash at boot.
+- Startup recovery (2026-11-04): the GUI launcher exited before ADB on all tried images. The direct headless
+  backend boots both `Screenlate_API30_x86` and `Screenlate_API30_glide` with the same no-snapshot-save,
+  no-boot-anim and crash-report-mode flags. Set the child process's PATH to include `D:/Android/Sdk/emulator`,
+  `emulator/lib64`, `emulator/lib64/gles_swiftshader` and `emulator/lib64/vulkan`, then launch
+  `D:/Android/Sdk/emulator/qemu/windows-x86_64/qemu-system-x86_64-headless.exe` with `-no-window` as well.
+  Without those library paths the direct executable exits with 0xc0000135 (missing DLL). Use Start-Process with
+  -WindowStyle Hidden and redirected stdout/stderr. Both API 30 AVDs are x86 (with ARMv7 translation), not x86_64.
+- The original Pixel_10_Pro data overlay is genuinely corrupt: direct startup reports `qcow2: Image is corrupt;
+  cannot be opened read/write`. SDK qemu-img 2.12 `check` and `check -r all` fail with `Not enough space` despite
+  sufficient host disk space; conversion reports an unaligned L2 offset in L1 index 0. Do not repeatedly boot it,
+  wipe it, or clear the corrupt flag. A full 16,227,500,032-byte copy and its initial backing image are saved in
+  `.worktrees/camera/testdata/local-research/backlog-2026-11-04/avd-backup/`; SHA-256 was verified before the repair
+  attempt (CB0063E23FA3C941DFD95C610B039419DFA821907781056335FE3F74E6CCAA7E). Preserve that backup.
+- API 37 testing now uses a separate clean data disk, preserving the original data overlay. Copy the valid small
+  original `userdata-qemu.img` (not its corrupt .qcow2 overlay) to the ignored run directory as
+  `api37-fresh/userdata.img`, only if that destination does not yet exist. Start the direct headless backend with
+  `-avd Pixel_10_Pro -data <absolute run dir>/api37-fresh/userdata.img -cache <absolute run dir>/api37-fresh/cache.img
+  -no-snapshot -no-boot-anim -crash-report-mode never -no-window`, using the PATH above. It completed boot in
+  88,910 ms; wait until ADB says device and sys.boot_completed is 1 (the console can report boot before ADB is ready).
+  The original populated /data is not mounted by this run. The fresh disk is retained for continued tests. Stop
+  with `adb -s <serial> shell reboot -p`. Always select the serial explicitly; do not touch a connected phone.
+- Isolated verification builds use the ignored init script
+  `testdata/local-research/backlog-2026-11-04/verification.gradle`: it selects x86_64 and changes the application ID
+  to `com.vpr.screenlate.verification`, so the owner's app is neither replaced nor force-stopped. A later ordinary
+  `assembleDebug` overwrites `app-debug.apk` with the normal package; do not install that output as the verification
+  app without rebuilding with the init script.
+- The fresh API 37 image has Android System WebView 149.0.5875.69 (590706904). `UiAutomation.takeScreenshot()` or
+  the first WebView render can deadlock, including in system Chrome; root rollback and WebView DevTools did not help.
+  See `dic54-first-failure.log` and `ocr59-browser-deadlock.log`. Do not repeat WebView acceptance on this image.
+  The Compose test rule is also incompatible with Android 17 (`RootViewPicker` cannot use the changed
+  `WindowManagerGlobal`). Working app UI tests instead use `ActivityScenario`, UiAutomation and real injected touches.
+  For deterministic Compose scrolling, stop the pointer for 350 ms before UP; a fast release flings past target rows.
 - Builds from a branch without the latest release tag get a lower version code (the code is derived from tags): installing over a newer release needs `adb install -r -d`. No app logic reads the version code.
 - `adb`: `D:\Android\Sdk\platform-tools\adb.exe`. In Git Bash set `MSYS_NO_PATHCONV=1`, otherwise device paths like `/sdcard/...` get rewritten to Windows paths.
 - `scripts/debug-device.sh` wraps the routine: `install` (installs the debug APK and enables the accessibility service, retrying because the system drops the service shortly after a package update), `images` (copies `testdata/ocr/*` into the app's internal files via `run-as`), `show <file> [default|swipe]` (opens the debug full-screen image viewer; with a mode the system bars are hidden as in fullscreen apps, see `overlay-system-ui.md`), `shot <out.png>`.

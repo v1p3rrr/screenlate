@@ -14,6 +14,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.ocr.OcrEngines
+import com.vpr.screenlate.core.photos.PhotoOcrSettings
+import com.vpr.screenlate.core.photos.PhotoWork
 import dagger.hilt.android.EntryPointAccessors
 import java.io.File
 import kotlinx.coroutines.flow.first
@@ -43,7 +46,7 @@ class PhotoRegressionFixtureTest {
     fun configureAcceptanceFixture(): Unit = runBlocking {
         val args = InstrumentationRegistry.getArguments()
         val stage = args.getString("photoRegression")
-        assumeTrue("Explicit emulator-only fixture required", stage in listOf("prepare", "configure", "firstRun", "unrecognized", "unreadable", "restore") &&
+        assumeTrue("Explicit emulator-only fixture required", stage in listOf("prepare", "configure", "firstRun", "unrecognized", "recognize", "unreadable", "restore") &&
             (Build.HARDWARE == "ranchu" || Build.HARDWARE == "goldfish"))
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val access = EntryPointAccessors.fromApplication(context.applicationContext, PhotoTestAccess::class.java)
@@ -110,6 +113,16 @@ class PhotoRegressionFixtureTest {
                         val file = documents.newCaptureFile()
                         file.outputStream().use { image.copyTo(it) }
                         documents.replaceCurrent(file)
+                    }
+                }
+                "recognize" -> {
+                    val photo = requireNotNull(access.documents().current.first())
+                    check(photo.rawWidth == 2800 && photo.rawHeight == 2400) { "Owned generated page required" }
+                    val engines = OcrEngines.valueOf(args.getString("photoEngines") ?: "DEVICE")
+                    val settings = PhotoOcrSettings(engines, if (engines == OcrEngines.CLOUD) null else "mlkit", tiled = true)
+                    access.jobs().recognize(photo, Language.JAPANESE, settings)
+                    kotlinx.coroutines.withTimeout(10_000) {
+                        access.jobs().work.first { it is PhotoWork.Running && it.documentId == photo.id && it.total == 4 }
                     }
                 }
                 "unreadable" -> {
