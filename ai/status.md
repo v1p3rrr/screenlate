@@ -1,5 +1,12 @@
 # Status
 
+## Log sharing caption removed (2026-11-06)
+
+The owner reported that Telegram shows the log filename both on the attachment and as an extra message caption.
+`LogExport.shareIntent` no longer sets `Intent.EXTRA_SUBJECT`; the `EXTRA_STREAM` attachment and its filename are
+unchanged. The same fix is applied on `main` and `languages/main`. App JVM tests and app lint pass on both branches.
+A messenger share check on the phone remains pending.
+
 ## Local phone update build (2026-11-06)
 
 - Owner authorized fast-forwarding `languages/main` through `2e7463c5`; it is pushed to origin. This includes the
