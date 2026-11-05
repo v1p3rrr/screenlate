@@ -62,6 +62,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     @Inject lateinit var sentenceTranslation: SentenceTranslation
 
     private val scope = MainScope()
+    private var connection = 0
     private var controller: OverlayController? = null
     private var languageResources: AppLanguageResources? = null
     private val systemPackages = HashMap<String, Boolean>()
@@ -77,7 +78,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.i(TAG, "Service connected")
-        OverlayServiceStatus.setRunning(true)
+        connection = OverlayServiceStatus.connected()
         ServiceOffNotification.cancel(this)
         scope.launch {
             overlaySettings.settings.map { it.keepAlive }.distinctUntilChanged().collect {
@@ -179,7 +180,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
             },
             RECHECK_MS,
         )
-        OverlayServiceStatus.setRunning(false)
+        OverlayServiceStatus.disconnected(connection)
         BubbleKeepAliveService.keepAlive(this, false)
         handler.removeCallbacksAndMessages(null)
         controller?.stop()

@@ -28,9 +28,15 @@ object OverlayServiceStatus {
     internal var connections = 0
         private set
 
-    internal fun setRunning(value: Boolean) {
-        if (value) connections++
-        _running.value = value
+    internal fun connected(): Int {
+        connections++
+        _running.value = true
+        return connections
+    }
+
+    /** A late stop of an old connection must not hide the connection that replaced it. */
+    internal fun disconnected(connection: Int) {
+        if (connection == connections) _running.value = false
     }
 
     fun isEnabled(context: Context): Boolean {
