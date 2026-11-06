@@ -2033,3 +2033,9 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   Legacy catalog generation now excludes OCR models, restoring compatibility with the old Japanese client. Real
   app download/install checks passed for all five new recognizers and their shared detector. Module review remains
   skipped by the owner; beta and the final 1.0.0 release still require separate authorization.
+
+- 2026-11-06: owner requested another local release-type Dev update, functionally equivalent to releasing the current
+  code, and asked whether anything except testing still blocks the release. Built the minified ARM64 package from
+  `d5ddb876` with the established Dev identity and verified its version, non-debuggable manifest, ABI and matching
+  signing certificate. No beta, tag, version change or stable release was authorized; final packaging and release
+  notes remain release-time work.

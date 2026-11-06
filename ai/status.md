@@ -1,5 +1,16 @@
 # Status
 
+## Release-type local phone update from the new main (2026-11-06)
+
+- Built the minified ARM64 release variant from `main`/`languages/main` `d5ddb876`, with the established Dev package,
+  label, icon and debug signing. Version `0.2.3-d5ddb876-min`, package `com.vpr.screenlate.debug`, version code 203;
+  the manifest has no debuggable flag and the APK contains only `arm64-v8a` native libraries.
+- APK size: 23,072,079 bytes. SHA-256: `75bef73a5911384c68761d988b45456b6a5f2ff22fe17f042a04adb05e948142`.
+  Its signing certificate exactly matches `screenlate-dev-2e7463c5-min.apk`, so it updates the owner's installed Dev
+  package without uninstalling or clearing data. Nothing was installed on the phone.
+- APK, R8 mapping, init script and build log are in ignored `testdata/local-research/builds/` under the
+  `screenlate-dev-d5ddb876-min` and `dev-release-d5ddb876` names. This is not a published beta or stable release.
+
 ## Default branch, model downloads and catalog compatibility (2026-11-06)
 
 - The former Japanese-only `main` is now `japanese/main`; the multi-language line from `languages/main` is the new
