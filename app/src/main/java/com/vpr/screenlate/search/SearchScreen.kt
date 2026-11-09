@@ -125,7 +125,7 @@ fun SearchScreen(
                         // A new search text replaced the page meanwhile; this lookup belonged to the old one.
                         if (viewModel.results.value !== shown) return@launch
                         holder.page.push(state)
-                        holder.notes.onResultsShown(found.results.firstOrNull()?.term?.let { it.expression to it.reading })
+                        holder.notes.onResultsShown(found.results)
                     }
                 }
 
@@ -140,6 +140,7 @@ fun SearchScreen(
                     scope.launch {
                         val result = viewModel.kanji(character)
                         if (viewModel.results.value !== shown) return@launch
+                        holder.notes.onResultsHidden()
                         holder.page.push(
                             PageState.kanji(context, currentTheme, result, noKanji, viewModel.language.value),
                         )
@@ -164,6 +165,7 @@ fun SearchScreen(
             player = viewModel.audioPlayer,
             lookup = viewModel.dictionaryLookup,
             language = { viewModel.language.value },
+            isShowing = { page.container.isShown },
             // The search text is the sentence; there is no screenshot.
             noteSource = {
                 val query = viewModel.query.value.trim()
@@ -201,7 +203,7 @@ fun SearchScreen(
         if (current.language != language) return@LaunchedEffect
         holder.notes.refreshActions()
         page.render(state(context, currentTheme, current))
-        holder.notes.onResultsShown(current.results.firstOrNull()?.term?.let { it.expression to it.reading })
+        holder.notes.onResultsShown(current.results)
     }
     // A theme change restyles the page and keeps the view shown, e.g. a kanji opened from the results.
     var styledTheme by remember { mutableStateOf(theme) }

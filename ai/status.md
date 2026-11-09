@@ -1,5 +1,14 @@
 # Status
 
+## Cancel audio requests when their popup word goes away (2026-11-10)
+
+- The popup cancels pending playback and its queued audio toasts when the word or view changes or closes. The
+  player checks the request after volume and voice initialization and again before a prepared recording starts.
+- Holding the audio button only lists available candidates. An empty list shows its message in the menu. The toast
+  comes from playback, which can also be requested by autoplay.
+- All 739 app, overlay and Anki JVM tests passed, including 11 playback lifecycle regressions. All 162 page tests
+  passed, including the hold and short-tap cases. App and overlay lint passed. Emulator checks were waived.
+
 ## Popup audio menu and local Dev update (2026-11-10)
 
 - A repeated hold reuses the recording list for the word the popup still shows. Moving to another word, navigating

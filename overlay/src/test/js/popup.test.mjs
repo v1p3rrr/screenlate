@@ -1135,6 +1135,29 @@ function holdAudio(index = 0) {
     return { view, request };
 }
 
+test('holding and releasing audio only opens the menu, even if no sources have a recording', () => {
+    Popup.setActions({ anki: false, audio: true, ankiProblem: null });
+    Popup.render(state({ labels: { ...labels, audioNone: 'No audio found' } }));
+    const before = page.calls.length;
+    const { request } = holdAudio();
+    Popup.showAudioMenu(request, [], true);
+    Popup.showAudioMenu(request, [], false);
+    const item = page.document.querySelector('.menu .menu-item');
+    assert.equal(item.textContent, 'No audio found');
+    assert.equal(item.disabled, true);
+    item.click();
+    assert.deepEqual(page.calls.slice(before).map(([method]) => method), ['onAudioMenu']);
+});
+
+test('a short audio tap requests playback without opening the source list', () => {
+    Popup.setActions({ anki: false, audio: true, ankiProblem: null });
+    Popup.render(state());
+    const before = page.calls.length;
+    tap(content.querySelector('.action-play'));
+    assert.deepEqual(page.calls.slice(before), [['onPlayAudio', 0, '猫', 'ねこ']]);
+    assert.equal(page.document.querySelector('.menu'), null);
+});
+
 test('audio clips do not reopen a menu that was closed while they loaded', () => {
     Popup.setActions({ anki: false, audio: true, ankiProblem: null });
     Popup.render(state());

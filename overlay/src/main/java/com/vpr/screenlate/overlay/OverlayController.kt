@@ -233,6 +233,7 @@ class OverlayController(
         player = anki.player,
         lookup = lookup,
         language = { language },
+        isShowing = { popup.isShowing },
         noteSource = ::noteSource,
         translation = translation,
         cropEditor = CropEditor(service, windowManager),
@@ -1464,7 +1465,7 @@ class OverlayController(
             popupNotes.refreshActions()
             val state = popupStateOffMain(view)
             popup.show(state, anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
-            popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
+            popupNotes.onResultsShown(results, position)
         }
     }
 
@@ -1529,7 +1530,7 @@ class OverlayController(
             // A lookup of another word replaced the popup meanwhile; the link belonged to the old one.
             if (shownLookup !== shown) return@launch
             popup.push(state)
-            popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
+            popupNotes.onResultsShown(results)
         }
     }
 
@@ -1550,6 +1551,7 @@ class OverlayController(
         val anchor = Box.fromCenter(x, y, 1f, 1f)
         val view = LookupView("", 0, emptyList(), message)
         shownLookup = null
+        popupNotes.onResultsHidden()
         val page = if (installation || ocrModels) {
             PageState.build(service, pageTheme(), "", 0, emptyList(), message, installation = installation, ocrModels = ocrModels, language = language)
         } else {
@@ -1847,6 +1849,7 @@ class OverlayController(
                     KanjiResult(character)
                 }
                 if (shownLookup !== shown) return@launch
+                popupNotes.onResultsHidden()
                 popup.push(PageState.kanji(service, pageTheme(), result, service.getString(R.string.overlay_no_kanji), language))
             }
         }

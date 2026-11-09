@@ -26,7 +26,9 @@ import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import com.vpr.screenlate.overlay.ui.CropEditor
@@ -104,6 +106,7 @@ fun interface NoteSource {
  * Words added during one scan remember their notes until [onClosed], so their button opens the note instead of
  * adding it again.
  *
+ * @param isShowing whether the lookup view is visible for audio playback and feedback.
  * @param noteSource called when ➕ is pressed; describes where the shown word came from.
  * @param translation fills `{sentence-translation}`.
  * @param onAnkiOpened called after a note was opened in AnkiDroid, e.g. to dock the bubble.
@@ -122,6 +125,7 @@ class PopupNotes(
     private val lookup: DictionaryLookup,
     /** The open scan's language. */
     private val language: () -> Language,
+    isShowing: () -> Boolean,
     private val noteSource: () -> NoteSource,
     private val translation: SentenceTranslation,
     private val cropEditor: CropEditor?,
@@ -136,6 +140,8 @@ class PopupNotes(
     private var autoPlayJob: Job? = null
     private var pendingAutoPlay: Pair<String, String>? = null
     private val audioMenu = PopupAudioMenu(scope, ::loadAudioMenu, page::showAudioMenu)
+    private var audioToast: Toast? = null
+    private val audioPlayback = PopupAudioPlayback(scope, isShowing, ::currentTerms, player::play, ::setAudioFailure)
 
     private val scanNotes = ScanNotes()
 
@@ -178,7 +184,9 @@ class PopupNotes(
     private suspend fun ankiStatus(): AnkiStatus = statusCache.get(language(), notes::status)
 
     /** Called after a view with results is shown: schedules the duplicate check and auto-play. */
-    fun onResultsShown(firstTerm: Pair<String, String>?) {
+    fun onResultsShown(results: List<LookupResult>, position: TextPosition? = null) {
+        val firstTerm = results.firstOrNull()?.term?.let { it.expression to it.reading }
+        audioPlayback.onResultsShown(results, position)
         openableNotes.clear()
         duplicateJob?.cancel()
         duplicateJob = scope.launch {
@@ -198,9 +206,8 @@ class PopupNotes(
 
     /** The earlier view is back: its entries are marked again, without auto-play. */
     override fun onViewRestored() {
+        onResultsHidden()
         openableNotes.clear()
-        audioMenu.clear()
-        duplicateJob?.cancel()
         duplicateJob = scope.launch { markNotes() }
     }
 
@@ -209,6 +216,7 @@ class PopupNotes(
         duplicateJob?.cancel()
         autoPlayJob?.cancel()
         audioMenu.clear()
+        audioPlayback.onResultsHidden()
         pendingAutoPlay = null
     }
 
@@ -429,39 +437,29 @@ class PopupNotes(
 
     override fun onPlayClip(request: Int, clipId: String) {
         val (term, candidate) = audioMenu.choose(request, clipId) ?: return
-        val scan = scanNotes.scan
-        scope.launch {
+        audioPlayback.request(term, rememberClip = { chosenClips[term] = it }) {
             if (candidate.isSpeech) {
-                if (scan != scanNotes.scan) return@launch
-                if (!player.play(Pronunciation.Speech.of(term.first, term.second, candidate.language))) {
-                    toast(context.getString(R.string.audio_no_voice))
-                }
-                return@launch
+                Pronunciation.Speech.of(term.first, term.second, candidate.language)
+            } else {
+                audio.download(candidate, term.first, term.second)?.let { Pronunciation.Clip(it) }
             }
-            val clip = audio.download(candidate, term.first, term.second)
-            if (scan != scanNotes.scan) return@launch
-            if (clip == null) {
-                toast(context.getString(R.string.audio_not_found))
-                return@launch
-            }
-            chosenClips[term] = clip
-            player.play(Pronunciation.Clip(clip))
         }
     }
 
     /** Plays the clip chosen for this term in the menu, or the first one the sources have. */
-    fun play(expression: String, reading: String) {
-        scope.launch {
-            val pronunciation = chosenClips[expression to reading]?.let { Pronunciation.Clip(it) }
-                ?: audio.pronunciation(expression, reading, language())
-            if (pronunciation == null) {
-                toast(context.getString(R.string.audio_not_found))
-                return@launch
-            }
-            if (!player.play(pronunciation) && pronunciation is Pronunciation.Speech) {
-                toast(context.getString(R.string.audio_no_voice))
-            }
+    private fun play(expression: String, reading: String) = audioPlayback.request(expression to reading) {
+        chosenClips[expression to reading]?.let { Pronunciation.Clip(it) }
+            ?: audio.pronunciation(expression, reading, language())
+    }
+
+    private fun setAudioFailure(failure: PopupAudioPlayback.Failure?) {
+        audioToast?.cancel()
+        val message = when (failure) {
+            PopupAudioPlayback.Failure.NO_AUDIO -> R.string.audio_not_found
+            PopupAudioPlayback.Failure.NO_VOICE -> R.string.audio_no_voice
+            null -> null
         }
+        audioToast = message?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).also(Toast::show) }
     }
 
     fun release() {

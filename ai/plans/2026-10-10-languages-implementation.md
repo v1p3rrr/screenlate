@@ -1453,6 +1453,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 ## Changelog
 
+- 2026-11-10: The owner reported late audio failure toasts after changing words or closing the popup and asked to
+  guard delayed playback as well. The hold path was checked separately from playback requests. Add automated
+  regression coverage for the playback lifecycle and the hold gesture. The owner waived emulator checks.
+
 - 2026-11-10: The owner requested that repeated holds on the popup's audio button reuse the loaded list for the
   current word. Changing words or closing the popup starts a fresh search. The owner will check the minified Dev
   update on the phone after automated verification.

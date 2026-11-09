@@ -25,12 +25,13 @@ class AudioPlayer @Inject constructor(
     private var speech: TextToSpeech? = null
     private var speechStarted: CompletableDeferred<Boolean>? = null
 
-    /** False when nothing could be played, e.g. the system has no text-to-speech voice for the language. */
-    suspend fun play(pronunciation: Pronunciation): Boolean {
+    /** [canStart] is checked after asynchronous preparation. False if playback could not be submitted. */
+    suspend fun play(pronunciation: Pronunciation, canStart: () -> Boolean = { true }): Boolean {
         val volume = settings.volume().coerceIn(0, 100) / 100f
+        if (!canStart()) return false
         return when (pronunciation) {
-            is Pronunciation.Clip -> playClip(pronunciation.clip, volume)
-            is Pronunciation.Speech -> speak(pronunciation.text, pronunciation.language, volume)
+            is Pronunciation.Clip -> playClip(pronunciation.clip, volume, canStart)
+            is Pronunciation.Speech -> speak(pronunciation.text, pronunciation.language, volume, canStart)
         }
     }
 
@@ -40,23 +41,33 @@ class AudioPlayer @Inject constructor(
         speech?.stop()
     }
 
-    private fun playClip(clip: AudioClip, volume: Float): Boolean {
+    private fun playClip(clip: AudioClip, volume: Float, canStart: () -> Boolean): Boolean {
         stop()
         return runCatching {
             player = MediaPlayer().apply {
                 setAudioAttributes(ATTRIBUTES)
                 setDataSource(clip.file.absolutePath)
                 setVolume(volume, volume)
-                setOnPreparedListener { it.start() }
+                setOnPreparedListener { prepared ->
+                    if (player !== prepared) return@setOnPreparedListener
+                    prepared.setOnPreparedListener(null)
+                    if (canStart()) {
+                        prepared.start()
+                    } else {
+                        player = null
+                        prepared.release()
+                    }
+                }
                 setOnCompletionListener { it.reset() }
                 prepareAsync()
             }
         }.onFailure { Log.w(TAG, "Cannot play an audio clip", it.redacted()) }.isSuccess
     }
 
-    private suspend fun speak(text: String, language: Language, volume: Float): Boolean {
+    private suspend fun speak(text: String, language: Language, volume: Float, canStart: () -> Boolean): Boolean {
         stop()
         val tts = engine() ?: return false
+        if (!canStart()) return false
         // Another language's voice would read the text wrongly or not at all.
         val tags = listOf(language.support.speechTag) + language.support.otherSpeechTags
         if (tags.none { tts.setLanguage(Locale.forLanguageTag(it)) >= TextToSpeech.LANG_AVAILABLE }) {
