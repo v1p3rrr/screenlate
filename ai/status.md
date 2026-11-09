@@ -1,5 +1,10 @@
 # Status
 
+## README screenshots (2026-11-10)
+
+- Added full-resolution WebP screenshots of English phrasal-verb lookup and Japanese lookup on a photographed book
+  page. Both appear at the top of the README with alternative text and dictionary credits.
+
 ## Release documentation (2026-11-09)
 
 - Updated the README for the multilingual main branch, with all 62 lookup languages and 17 interface languages,

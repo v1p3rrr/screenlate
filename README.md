@@ -5,6 +5,13 @@
 A pop-up dictionary for Android with lookup in 62 languages. Pull the bubble out from the edge of the screen and point it at a word to look it up in a browser, game, manga reader or paused video. You can also take a photo or open a saved image and look up words directly on it.
 
 <p>
+  <img src="docs/images/english-lookup.webp" width="360" alt="Screenlate looks up the English phrasal verb crack down in an e-book">
+  <img src="docs/images/camera-lookup.webp" width="360" alt="Screenlate recognizes vertical Japanese text on a photographed book page and shows a dictionary entry">
+</p>
+
+<sub>The English lookup uses Wiktionary data via Kaikki. The camera lookup uses the Kolobok 400k dictionary.</sub>
+
+<p>
   <img src="docs/images/popup.webp" width="240" alt="An entry for an inflected verb over a web page">
   <img src="docs/images/vertical.webp" width="240" alt="An entry next to vertical text">
   <img src="docs/images/dictionaries.webp" width="240" alt="The dictionary list and the download catalog">
@@ -13,7 +20,7 @@ A pop-up dictionary for Android with lookup in 62 languages. Pull the bubble out
   <img src="docs/images/landscape.webp" width="728" alt="An entry beside a game dialogue in landscape">
 </p>
 
-<sub>Japanese lookup examples use entries from Jitendex (CC BY-SA 4.0), frequencies from Jiten and pitch accents from Kanjium.</sub>
+<sub>These Japanese lookup examples use entries from Jitendex (CC BY-SA 4.0), frequencies from Jiten and pitch accents from Kanjium.</sub>
 
 ## Features
 
