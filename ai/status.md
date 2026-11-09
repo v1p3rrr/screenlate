@@ -1,5 +1,16 @@
 # Status
 
+## Popup audio menu and local Dev update (2026-11-10)
+
+- A repeated hold reuses the recording list for the word the popup still shows. Moving to another word, navigating
+  the popup or closing it starts a fresh list. A request number ties each answer and selected clip to its menu.
+- The regression reproduced the loading state on a second hold before the fix. After the fix, all 280 overlay
+  and 175 Anki JVM tests, 160 page tests, and overlay and app lint passed. The owner will check AUD45 on the phone.
+- Built the minified ARM64 Dev APK from `3397056e`. Version `0.2.3-3397056e-min` (203), package
+  `com.vpr.screenlate.debug`, 23,074,823 bytes. SHA-256 `c8b1dd8336608adc3411ebdca8727e31f4e27b4d1088dda165cca70d71ea2820`.
+  The certificate matches the previous local Dev APK. Verified the manifest, bundled popup script and retained R8
+  bridge method. The APK, R8 mapping, init script and log are in ignored `testdata/local-research/builds/`.
+
 ## Stable release decision (2026-11-10)
 
 - The owner used the minified Dev build with no major concerns and chose to go directly to stable `1.0.0`.
