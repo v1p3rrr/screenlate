@@ -1,5 +1,12 @@
 # Status
 
+## Stable release decision (2026-11-10)
+
+- The owner used the minified Dev build with no major concerns and chose to go directly to stable `1.0.0`.
+- The tag-driven release workflow already supports publication. A manual version override was discussed for
+  rehearsing a production-signed upgrade from `0.2.3` and is optional.
+- Publication is deferred until the owner gives a separate command. The versioned release notes are ready in `main`.
+
 ## Release readiness check (2026-11-10)
 
 - Simplified the interface-language bullet in the publication notes. The agreed release version is `1.0.0`

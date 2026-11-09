@@ -329,9 +329,9 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Releases | No releases of new languages along the way: every language is built first, then one big release; testing in the meantime on debug builds (owner, 2026-10-10) |
 | Beta label | None: with a small audience a label would never come off (owner, 2026-10-10) |
 | Pronunciation dictionaries | Wiktionary IPA dictionaries are named for users: the category "Pronunciation", the item "Transcription (Wiktionary)" with an ⓘ example (`water → /ˈwɔːtər/`), never "IPA". One item per language, not per gloss language (the transcription is the same in every edition): the edition with the most entries. Ticked by default for every language except Chinese (30 MB, pinyin is already in its main dictionaries) (owner, 2026-10-10; changes the "Turning on a language" row, which had IPA unticked) |
-| Scope of the big release | Groups 1–4: the release waits until every batch of group 4 is done, then a code review of all modules, then the owner's own use of the build, then the beta (row "Beta builds"). Group 4 is built in batches by script in the order 4a–4e, each its own branch and emulator checks (owner, 2026-10-16, question 30; was: groups 1–3 at least, group 4 if easy) |
-| Beta builds | A separate app next to the regular one: package `com.vpr.screenlate.beta`, named "Screenlate Beta", the icon with a "BETA" ribbon at the bottom; its own dictionaries, settings, bubble and accessibility service. Tags `v1.0.0-beta.N` publish GitHub prereleases, which the regular build's update check and the README's latest-release link never see. A beta build's update check offers newer betas only and says nothing when the final release is out. Published when the owner says, after everything above (owner, 2026-10-16) |
-| Version of the big release | 1.0.0; betas 1.0.0-beta.N (owner, 2026-10-16) |
+| Scope of the big release | The multilingual `main` includes groups 1–4 and the later languages already merged. The owner skipped the full module review (2026-11-06) and used the minified Dev build with no major concerns (2026-11-10). Publication waits for the owner's explicit command. |
+| Beta builds | Release `1.0.0` directly as stable after the owner's use of the minified Dev build (owner, 2026-11-10). |
+| Version of the big release | 1.0.0 (owner, 2026-10-16). |
 | Build of groups 1-3 | Before group 4: the OCR engines plan with Paddle, then groups 1-3 merged into `languages/main` with their emulator checks, then a debug build ("Screenlate Dev", next to the regular app with its own data) for the owner's phone, sent as an APK file. Not published; the code review of all modules comes after it (owner, 2026-10-17, request 66) |
 | Postponed items | The open items (bundled Japanese dictionaries, hosting) are decided when the first language or group 1 is ready, before it is merged (owner, 2026-10-10) |
 | First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09). Changed 2026-10-15: on `languages/main` Japanese goes to its download screen too (row "Bundled Japanese dictionaries") |
@@ -1434,14 +1434,11 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 ## The big release
 
-- Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
-  asked from the owner.
-- Before it, in this order: every batch of group 4 merged; the code review of all modules (one run per module, see
-  `notes/module-map.md`) with its fixes; the owner uses the build for a while; then, when the owner says, betas
-  (row "Beta builds"): the build type or flavor for `com.vpr.screenlate.beta` with its name and icon, `release.yml`
-  publishing `vX.Y.Z-beta.N` tags as prereleases, the beta build's update feed listing releases and taking the
-  newest prerelease, version codes for beta tags. Then an upgrade test from the last release on the phone and the
-  catalog regenerated (wty is rebuilt weekly).
+- The multilingual branch is `main`. The README, NOTICE and `v1.0.0` release notes are in the tree. The catalog's
+  current upstream archive paths and download sizes were checked on 2026-11-10.
+- The owner used a local minified Dev build and chose a direct stable release. After the remaining release checks
+  and the owner's explicit command, push `v1.0.0` on the chosen commit. The release workflow signs the APKs and
+  publishes the GitHub release. A rehearsal build with the new version and production signature is optional.
 
 ## Risks
 
@@ -1455,6 +1452,9 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-11-10: The owner used the minified Dev build with no major concerns and chose a direct stable `1.0.0`
+  release. Updated the scope and beta decisions. The owner deferred publication until a later explicit command.
 
 - 2026-11-04: request 84: folded-marks question 3 measured on actual ru + en forms-only pairs; the agreed
   conservative comparison supports the headword list in Hungarian, Tamil and Telugu. Enabled and covered by
