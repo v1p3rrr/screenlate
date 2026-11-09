@@ -8,6 +8,11 @@
   comes from playback, which can also be requested by autoplay.
 - All 739 app, overlay and Anki JVM tests passed, including 11 playback lifecycle regressions. All 162 page tests
   passed, including the hold and short-tap cases. App and overlay lint passed. Emulator checks were waived.
+- Built the local minified ARM64 Dev APK from `112158a4` for the owner's phone check. Version `0.2.3-112158a4-min`
+  (203), package `com.vpr.screenlate.debug`, 23,073,187 bytes. SHA-256
+  `211be1a0f06f21c2e1a94f42a0feec5725cfa0405bd6c8d99e2d21d8dc448ea0`. The signing certificate matches the prior Dev
+  build. Checked the manifest, bundled popup script and playback methods in the R8 mapping. The APK, mapping,
+  init script and build log are in ignored `testdata/local-research/builds/`.
 
 ## Popup audio menu and local Dev update (2026-11-10)
 
