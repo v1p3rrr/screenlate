@@ -4,7 +4,8 @@
 
 - Simplified the interface-language bullet in the publication notes. The agreed release version is `1.0.0`
   (languages plan, decision table), so the notes now use the filename the release workflow will read.
-- Placed the English and camera screenshots after the first two Japanese examples at the same 240 px display width.
+- Placed the English and camera screenshots after the first two Japanese examples. The five portrait screenshots
+  use a common 419 px display height to align their edges while preserving their original aspect ratios.
 - GitHub reports `main` as default and `v0.2.3` as the latest app release. All four signing secret names are present.
   The newest completed CI run at the time of the audit passed. The release workflow has not yet built the multilingual app.
 - All 633 distinct wty archive paths in the catalog are present upstream with matching download sizes. All 172

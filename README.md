@@ -5,13 +5,13 @@
 A pop-up dictionary for Android with lookup in 62 languages. Pull the bubble out from the edge of the screen and point it at a word to look it up in a browser, game, manga reader or paused video. You can also take a photo or open a saved image and look up words directly on it.
 
 <p>
-  <img src="docs/images/popup.webp" width="240" alt="An entry for an inflected verb over a web page">
-  <img src="docs/images/vertical.webp" width="240" alt="An entry next to vertical text">
-  <img src="docs/images/english-lookup.webp" width="240" alt="Screenlate looks up the English phrasal verb crack down in an e-book">
+  <img src="docs/images/popup.webp" height="419" alt="An entry for an inflected verb over a web page">
+  <img src="docs/images/vertical.webp" height="419" alt="An entry next to vertical text">
+  <img src="docs/images/english-lookup.webp" height="419" alt="Screenlate looks up the English phrasal verb crack down in an e-book">
 </p>
 <p>
-  <img src="docs/images/camera-lookup.webp" width="240" alt="Screenlate recognizes vertical Japanese text on a photographed book page and shows a dictionary entry">
-  <img src="docs/images/dictionaries.webp" width="240" alt="The dictionary list and the download catalog">
+  <img src="docs/images/camera-lookup.webp" height="419" alt="Screenlate recognizes vertical Japanese text on a photographed book page and shows a dictionary entry">
+  <img src="docs/images/dictionaries.webp" height="419" alt="The dictionary list and the download catalog">
 </p>
 <p>
   <img src="docs/images/landscape.webp" width="728" alt="An entry beside a game dialogue in landscape">
