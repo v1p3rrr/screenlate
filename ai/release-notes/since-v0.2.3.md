@@ -1,6 +1,6 @@
 # Changes since v0.2.3
 
-This inventory compares the `v0.2.3` tag with the multilingual `main` at `42f9760e`. The condensed publication text is in [`.github/release-notes/next.md`](../../.github/release-notes/next.md). The release workflow reads a file named after the release tag once the version is chosen.
+This inventory compares the `v0.2.3` tag with the multilingual `main` at `42f9760e`. The condensed publication text is in [`.github/release-notes/v1.0.0.md`](../../.github/release-notes/v1.0.0.md).
 
 ## Languages and setup
 

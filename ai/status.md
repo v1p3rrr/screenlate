@@ -1,5 +1,23 @@
 # Status
 
+## Release readiness check (2026-11-10)
+
+- Simplified the interface-language bullet in the publication notes. The agreed release version is `1.0.0`
+  (languages plan, decision table), so the notes now use the filename the release workflow will read.
+- Placed the English and camera screenshots after the first two Japanese examples at the same 240 px display width.
+- GitHub reports `main` as default and `v0.2.3` as the latest app release. All four signing secret names are present.
+  The newest completed CI run at the time of the audit passed. The release workflow has not yet built the multilingual app.
+- All 633 distinct wty archive paths in the catalog are present upstream with matching download sizes. All 172
+  Paddle catalog entries match the 12 assets of `ocr-models-1` by filename, size and SHA-256.
+- wiktextract issue #1734 is open. The current Kyrgyz–Russian archive still labels genitives `singular possessive`
+  and `plural possessive`; the Kazakh–Russian archive still labels a sampled ablative plural `plural`. The agreed
+  local fallback for unambiguous tags is pending (group 6 plan, question 30). Ambiguous `plural` labels need the
+  context of the form to identify the case.
+- The stable release still needs a `1.0.0` APK with the production package and signing certificate, and release
+  authorization before creating the tag. A manual branch run builds artifacts with the preceding stable version.
+  The separate beta flavor, feed and tag workflow are still pending if a beta is requested. The optional converted
+  dictionaries and private archive remain separate from the verified catalog. No release or build was started.
+
 ## README screenshots (2026-11-10)
 
 - Added full-resolution WebP screenshots of English phrasal-verb lookup and Japanese lookup on a photographed book
@@ -11,8 +29,7 @@
   photo lookup, the recognition model choices and dictionary setup.
 - Aligned the Persian, Tamil and Telugu recognition descriptions in the usage guide with the current model catalog.
 - Compared the multilingual main at `42f9760e` with `v0.2.3`. The [change inventory](release-notes/since-v0.2.3.md)
-  and the [condensed notes](../.github/release-notes/next.md) are ready for review. The version is pending, so the
-  notes use an unversioned draft filename.
+  and the [condensed notes](../.github/release-notes/v1.0.0.md) were drafted for review.
 
 ## Release-type local phone update from the new main (2026-11-06)
 
