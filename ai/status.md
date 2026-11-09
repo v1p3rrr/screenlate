@@ -1,5 +1,14 @@
 # Status
 
+## Release documentation (2026-11-09)
+
+- Updated the README for the multilingual main branch, with all 62 lookup languages and 17 interface languages,
+  photo lookup, the recognition model choices and dictionary setup.
+- Aligned the Persian, Tamil and Telugu recognition descriptions in the usage guide with the current model catalog.
+- Compared the multilingual main at `42f9760e` with `v0.2.3`. The [change inventory](release-notes/since-v0.2.3.md)
+  and the [condensed notes](../.github/release-notes/next.md) are ready for review. The version is pending, so the
+  notes use an unversioned draft filename.
+
 ## Release-type local phone update from the new main (2026-11-06)
 
 - Built the minified ARM64 release variant from `main`/`languages/main` `d5ddb876`, with the established Dev package,
