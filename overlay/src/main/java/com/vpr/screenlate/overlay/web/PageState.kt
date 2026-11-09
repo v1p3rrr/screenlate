@@ -7,6 +7,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.languageName
+import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.R
@@ -49,6 +50,7 @@ object PageState {
         installation: Boolean = false,
         ocrModels: Boolean = false,
         language: Language,
+        wordPosition: TextPosition? = null,
     ): String = json.encodeToString(
         StateDto(
             theme = theme.css,
@@ -57,7 +59,10 @@ object PageState {
             engine = engine,
             ocrError = ocrError,
             hideSource = hideSource,
-            source = SourceDto(text, matched, results.firstOrNull()?.lang ?: kanji?.lang),
+            source = SourceDto(
+                text, matched, results.firstOrNull()?.lang ?: kanji?.lang,
+                wordPosition?.let { "${it.paragraphIndex}:${it.offset}" },
+            ),
             results = results,
             kanji = kanji,
             message = message.takeIf { kanji == null },
@@ -189,5 +194,5 @@ object PageState {
 
     /** @property lang the script of [text] where the language has several, as the results' `lang`. */
     @Serializable
-    private data class SourceDto(val text: String, val matched: Int, val lang: String? = null)
+    private data class SourceDto(val text: String, val matched: Int, val lang: String? = null, val position: String? = null)
 }

@@ -86,11 +86,11 @@ class LookupPage(
 
         fun onPlayAudio(index: Int, expression: String, reading: String)
 
-        /** 🔊 was held: the page waits for [showAudioMenu]. */
-        fun onAudioMenu(index: Int, expression: String, reading: String)
+        /** 🔊 was held: the page waits for [showAudioMenu] with this request number. */
+        fun onAudioMenu(view: Int, request: Int, expression: String, reading: String)
 
         /** A clip from the audio menu was chosen. */
-        fun onPlayClip(index: Int, clipId: String)
+        fun onPlayClip(request: Int, clipId: String)
 
         /** The button under an unavailable ➕ asks for the Anki settings, where the problem is explained. */
         fun onOpenApp()
@@ -198,8 +198,8 @@ class LookupPage(
     fun setNoteConfig(config: JsonElement) = setPersistent("noteConfig", "Popup.setNoteConfig($config)")
 
     /** Fills the menu opened by holding 🔊 (see `Popup.showAudioMenu`); [items] is a JSON array. */
-    fun showAudioMenu(index: Int, items: JsonElement, loading: Boolean) =
-        run("Popup.showAudioMenu($index, $items, $loading)")
+    fun showAudioMenu(request: Int, items: JsonElement, loading: Boolean) =
+        run("Popup.showAudioMenu($request, $items, $loading)")
 
     /** Sets ➕ button states by entry index (see `Popup.setNoteStates`). */
     fun setNoteStates(states: Map<Int, String>) {
@@ -388,11 +388,11 @@ class LookupPage(
             post { noteActions?.onPlayAudio(index, expression, reading) }
 
         @JavascriptInterface
-        fun onAudioMenu(index: Int, expression: String, reading: String) =
-            post { noteActions?.onAudioMenu(index, expression, reading) }
+        fun onAudioMenu(view: Int, request: Int, expression: String, reading: String) =
+            post { noteActions?.onAudioMenu(view, request, expression, reading) }
 
         @JavascriptInterface
-        fun onPlayClip(index: Int, clipId: String) = post { noteActions?.onPlayClip(index, clipId) }
+        fun onPlayClip(request: Int, clipId: String) = post { noteActions?.onPlayClip(request, clipId) }
 
         @JavascriptInterface
         fun onOpenApp() = post { noteActions?.onOpenApp() }

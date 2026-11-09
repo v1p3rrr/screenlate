@@ -1703,7 +1703,7 @@ class OverlayController(
         return withContext(Dispatchers.Default) {
             PageState.build(
                 service, theme, view.text, view.matched, view.results, view.message, pending, engine, hideSource, ocrError,
-                noteWait, view.kanji, sentenceOf(view)?.text.orEmpty(), language = language,
+                noteWait, view.kanji, sentenceOf(view)?.text.orEmpty(), language = language, wordPosition = view.start,
             )
         }
     }
@@ -1761,6 +1761,7 @@ class OverlayController(
             kanji = view.kanji,
             sentence = sentenceOf(view)?.text.orEmpty(),
             language = language,
+            wordPosition = view.start,
         )
     }
 

@@ -135,15 +135,14 @@ class PopupNotes(
     private var lastAutoPlayed: Pair<String, String>? = null
     private var autoPlayJob: Job? = null
     private var pendingAutoPlay: Pair<String, String>? = null
-    private var audioMenuJob: Job? = null
+    private val audioMenu = PopupAudioMenu(scope, ::loadAudioMenu, page::showAudioMenu)
 
     private val scanNotes = ScanNotes()
 
     /** Notes that the 📖 buttons of the current view open, by entry index. */
     private val openableNotes = mutableMapOf<Int, List<Long>>()
 
-    /** Clips offered by the last audio menu, and the clip chosen for each term; the choice goes into `{audio}`. */
-    private var menuCandidates: List<AudioCandidate> = emptyList()
+    /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
 
     init {
@@ -200,7 +199,7 @@ class PopupNotes(
     /** The earlier view is back: its entries are marked again, without auto-play. */
     override fun onViewRestored() {
         openableNotes.clear()
-        audioMenuJob?.cancel()
+        audioMenu.clear()
         duplicateJob?.cancel()
         duplicateJob = scope.launch { markNotes() }
     }
@@ -209,7 +208,7 @@ class PopupNotes(
     fun onResultsHidden() {
         duplicateJob?.cancel()
         autoPlayJob?.cancel()
-        audioMenuJob?.cancel()
+        audioMenu.clear()
         pendingAutoPlay = null
     }
 
@@ -239,7 +238,6 @@ class PopupNotes(
         scanNotes.close()
         openableNotes.clear()
         chosenClips.clear()
-        menuCandidates = emptyList()
     }
 
     /** Words added during this scan get 📖; duplicates get 📖 or a mark, depending on the duplicate behavior. */
@@ -410,38 +408,32 @@ class PopupNotes(
 
     override fun onNoteWaiting() = toast(context.getString(R.string.overlay_note_wait))
 
-    override fun onAudioMenu(index: Int, expression: String, reading: String) {
-        audioMenuJob?.cancel()
-        page.showAudioMenu(index, buildJsonArray { }, loading = true)
-        audioMenuJob = scope.launch {
-            val candidates = audio.candidates(expression, reading, language())
-            menuCandidates = candidates
-            val sources = audioSettings.current(language()).sources
-            val items = buildJsonArray {
-                for (candidate in candidates) {
-                    add(
-                        buildJsonObject {
-                            put("id", candidate.id)
-                            put("label", candidate.name.ifEmpty { sourceLabel(candidate, sources.size) })
-                            put("detail", if (candidate.name.isEmpty()) hostOf(candidate.url) else sourceLabel(candidate, sources.size))
-                        },
-                    )
-                }
+    override fun onAudioMenu(view: Int, request: Int, expression: String, reading: String) =
+        audioMenu.open(view, request, expression, reading, language())
+
+    private suspend fun loadAudioMenu(expression: String, reading: String, language: Language): PopupAudioMenu.Clips {
+        val sources = audioSettings.current(language).sources
+        val candidates = audio.candidates(expression, reading, language, sources)
+        val items = buildJsonArray {
+            for (candidate in candidates) {
+                add(buildJsonObject {
+                    val source = sourceLabel(candidate, sources.size)
+                    put("id", candidate.id)
+                    put("label", candidate.name.ifEmpty { source })
+                    put("detail", if (candidate.name.isEmpty()) hostOf(candidate.url) else source)
+                })
             }
-            page.showAudioMenu(index, items, loading = false)
         }
+        return PopupAudioMenu.Clips(candidates, items)
     }
 
-    override fun onPlayClip(index: Int, clipId: String) {
-        val candidate = menuCandidates.firstOrNull { it.id == clipId } ?: return
+    override fun onPlayClip(request: Int, clipId: String) {
+        val (term, candidate) = audioMenu.choose(request, clipId) ?: return
         val scan = scanNotes.scan
-        val clipLanguage = language()
         scope.launch {
-            val terms = currentTerms() ?: return@launch
-            val term = terms.getOrNull(index) ?: return@launch
             if (candidate.isSpeech) {
                 if (scan != scanNotes.scan) return@launch
-                if (!player.play(Pronunciation.Speech.of(term.first, term.second, clipLanguage))) {
+                if (!player.play(Pronunciation.Speech.of(term.first, term.second, candidate.language))) {
                     toast(context.getString(R.string.audio_no_voice))
                 }
                 return@launch

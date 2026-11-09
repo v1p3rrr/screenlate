@@ -9,8 +9,8 @@
  *   noteWait: boolean,             ➕ waits for the final text: it is grey, and a tap asks the app for a hint
  *   engine: string,                OCR engine label, empty to hide
  *   ocrError: string,              why cloud recognition failed, empty without a failure; ⚠ opens it in the panel
- *   source: { text, matched, lang }, lookup text, the length of its matched prefix (code points) and, for a language
- *                                  written in several scripts, the tag of the text's script (as each result's lang)
+ *   source: { text, matched, lang, position }, lookup text, its matched prefix length (code points), script tag
+ *                                             for languages with several scripts, and word position in the scan
  *   results: [LookupResult],       see dictionary.api.model.LookupResult
  *   kanji: KanjiResult,            a kanji entry shown instead of results: a tapped headword kanji, or the first
  *                                  character when no word was found
@@ -104,6 +104,9 @@ const Popup = (() => {
     let rightToLeft = false;
     let noteConfig = { markers: null, frequencyModes: {} };
     let menu = null;
+    let audioView = 0;
+    let audioRequests = 0;
+    let pendingAudio = null;
     /** Whether the translation button shows. */
     let translationEnabled = false;
     /** The first view's translation: null, or { request, state: 'loading' | 'done' | 'error', text, service, error }. */
@@ -511,7 +514,7 @@ const Popup = (() => {
             const play = iconButton('play', ICONS.audio, labelOf('playAudio'));
             play.dataset.index = String(index);
             onTapOrHold(play, held => {
-                if (held) ScreenlateBridge.onAudioMenu(index, expression, reading);
+                if (held) requestAudioMenu(play, expression, reading);
                 else ScreenlateBridge.onPlayAudio(index, expression, reading);
             });
             container.append(play);
@@ -602,17 +605,16 @@ const Popup = (() => {
         const below = rect.bottom + 4 + height <= window.innerHeight;
         menu.style.top = `${Math.max(4, below ? rect.bottom + 4 : rect.top - 4 - height)}px`;
         menu.style.left = `${Math.max(4, Math.min(rect.right - width, window.innerWidth - width - 4))}px`;
-        menu.dataset.anchor = anchor.dataset.index || '';
-        menu.dataset.kind = anchor.classList.contains('action-play') ? 'audio' : 'note';
     }
 
     function closeMenu() {
         if (menu) menu.remove();
         menu = null;
+        pendingAudio = null;
     }
 
     document.addEventListener('pointerdown', event => {
-        if (menu && !menu.contains(event.target)) closeMenu();
+        if ((menu || pendingAudio) && !menu?.contains(event.target)) closeMenu();
     }, true);
 
     // region Selection
@@ -669,24 +671,26 @@ const Popup = (() => {
 
     // endregion
 
-    /**
-     * Audio clips of entry [index] for the menu opened by holding 🔊. items: [{ id, label, detail }];
-     * loading: true while sources are still being asked.
-     */
-    function showAudioMenu(index, items, loading) {
-        const button = content.querySelector(`.action-play[data-index="${index}"]`);
-        if (!button) return;
-        // The clips fill the menu that is waiting for them; once it was closed, they are not shown.
-        const waiting = menu && menu.dataset.kind === 'audio' && menu.dataset.anchor === String(index);
-        if (!loading && !waiting) return;
+    function requestAudioMenu(button, expression, reading) {
+        if (!content.contains(button)) return;
+        const request = ++audioRequests;
+        pendingAudio = { request, button };
+        ScreenlateBridge.onAudioMenu(audioView, request, expression, reading);
+    }
+
+    /** Shows the answer for the current hold. A cached list arrives without a loading answer first. */
+    function showAudioMenu(request, items, loading) {
+        const pending = pendingAudio;
+        if (pending?.request !== request) return;
         const rows = (items || []).map(item => ({
             label: item.label,
             detail: item.detail,
-            action: () => ScreenlateBridge.onPlayClip(index, item.id),
+            action: () => ScreenlateBridge.onPlayClip(request, item.id),
         }));
         if (loading) rows.push({ label: labelOf('audioLoading'), disabled: true });
         else if (!rows.length) rows.push({ label: labelOf('audioNone'), disabled: true });
-        showMenu(button, rows);
+        showMenu(pending.button, rows);
+        if (loading) pendingAudio = pending;
     }
 
     // endregion
@@ -1214,11 +1218,19 @@ const Popup = (() => {
         drawResults(state);
     }
 
+    function audioWordKey(state) {
+        const source = state?.source;
+        const word = Array.from(source?.text || '').slice(0, source?.matched || 0).join('');
+        const term = state?.results?.[0]?.term;
+        return JSON.stringify([source?.position, source?.lang, word, term?.expression, term?.reading]);
+    }
+
     /** { continued }: the popup stayed open, so a new scan result of the same word and sentence keeps the translation. */
     function render(state, options) {
         const first = history.length ? history[0].state : current;
         const same = state.sentence && state.sentence === first?.sentence && termsKey(state) === termsKey(first);
         if (!options?.continued || !same) translation = null;
+        if (!options?.continued || history.length || audioWordKey(state) !== audioWordKey(current)) audioView++;
         history.length = 0;
         current = state;
         // Reset the old, already laid-out view; writing after replacement forces layout before script marking.
@@ -1251,6 +1263,10 @@ const Popup = (() => {
         }
         // Another word under the aim has another sentence; refined text around the same word keeps the translation.
         if (termsKey(state) !== termsKey(current)) translation = null;
+        if (audioWordKey(state) !== audioWordKey(current)) {
+            audioView++;
+            closeMenu();
+        }
         current = state;
         drawHeader(state);
         if (resultsKey(state) !== drawnKey) drawResults(state);
@@ -1258,6 +1274,7 @@ const Popup = (() => {
 
     function push(state) {
         if (current) history.push({ state: current, scroll: content.scrollTop });
+        audioView++;
         current = state;
         content.scrollTop = 0;
         draw(state);
@@ -1267,6 +1284,7 @@ const Popup = (() => {
     function back() {
         const previous = history.pop();
         if (!previous) return;
+        audioView++;
         current = previous.state;
         draw(previous.state);
         // Offscreen entries normally skip layout; a saved offset belongs to their actual heights.

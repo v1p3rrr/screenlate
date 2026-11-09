@@ -1453,6 +1453,10 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 ## Changelog
 
+- 2026-11-10: The owner requested that repeated holds on the popup's audio button reuse the loaded list for the
+  current word. Changing words or closing the popup starts a fresh search. The owner will check the minified Dev
+  update on the phone after automated verification.
+
 - 2026-11-10: The owner used the minified Dev build with no major concerns and chose a direct stable `1.0.0`
   release. Updated the scope and beta decisions. The owner deferred publication until a later explicit command.
 

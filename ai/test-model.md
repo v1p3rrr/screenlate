@@ -408,6 +408,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD42 | Telugu audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with నీరు | F | U TeluguSupportTest, M | 2026-10-29 |
 | AUD43 | Kannada audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with ನೀರು | F | U KannadaSupportTest, M | 2026-10-29 |
 | AUD44 | Cantonese audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; Test with 你好; 🔊 on 我哋 plays a recording; the voice reads the characters as Cantonese (`yue-HK`, or `zh-HK` where no Cantonese voice is installed) | F | U CantoneseSupportTest, M | 2026-10-29 |
+| AUD45 | Hold 🔊, play one recording, then hold again on the same word. The list reopens without a loading message. Moving to another word and back, or closing and reopening the popup, fetches a new list. | N | U PopupAudioMenuTest, JS popup.test.mjs, M | |
 
 ### ANK: Anki
 

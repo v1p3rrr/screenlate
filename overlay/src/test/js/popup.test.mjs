@@ -1118,29 +1118,95 @@ test('inside the app the system toolbar copies, so no Copy button appears', () =
     assert.equal(page.document.querySelector('.selection-copy').hidden, true);
 });
 
+function holdAudio(index = 0) {
+    const button = content.querySelector(`.action-play[data-index="${index}"]`);
+    const setTimeout = page.window.setTimeout;
+    page.window.setTimeout = callback => {
+        callback();
+        return 0;
+    };
+    try {
+        tap(button);
+    } finally {
+        page.window.setTimeout = setTimeout;
+    }
+    const [method, view, request] = page.calls.at(-1);
+    assert.equal(method, 'onAudioMenu');
+    return { view, request };
+}
+
 test('audio clips do not reopen a menu that was closed while they loaded', () => {
     Popup.setActions({ anki: false, audio: true, ankiProblem: null });
     Popup.render(state());
-    Popup.showAudioMenu(0, [], true);
+    const { request } = holdAudio();
+    Popup.showAudioMenu(request, [], true);
     assert.ok(page.document.querySelector('.menu'));
     press(page.document.body, 'pointerdown');
     assert.equal(page.document.querySelector('.menu'), null);
-    Popup.showAudioMenu(0, [{ id: 'a', label: 'Clip' }], false);
+    Popup.showAudioMenu(request, [{ id: 'a', label: 'Clip' }], false);
     assert.equal(page.document.querySelector('.menu'), null);
 });
 
 test('audio clips fill the menu waiting for them, and a new view closes it', () => {
     Popup.setActions({ anki: false, audio: true, ankiProblem: null });
     Popup.render(state());
-    Popup.showAudioMenu(1, [], true);
-    Popup.showAudioMenu(1, [{ id: 'a', label: 'Clip' }], false);
+    const { request } = holdAudio(1);
+    Popup.showAudioMenu(request, [], true);
+    Popup.showAudioMenu(request, [{ id: 'a', label: 'Clip' }], false);
     const item = page.document.querySelector('.menu .menu-item');
     assert.equal(item.textContent, 'Clip');
     item.click();
-    assert.deepEqual(page.calls.at(-1), ['onPlayClip', 1, 'a']);
-    Popup.showAudioMenu(1, [], true);
+    assert.deepEqual(page.calls.at(-1), ['onPlayClip', request, 'a']);
+    Popup.showAudioMenu(holdAudio(1).request, [], true);
     Popup.update(state({ results: [result('犬', 'いぬ')] }));
     assert.equal(page.document.querySelector('.menu'), null);
+});
+
+test('a cached audio list opens directly and only answers the latest hold', () => {
+    Popup.setActions({ anki: false, audio: true, ankiProblem: null });
+    Popup.render(state());
+    const first = holdAudio();
+    Popup.showAudioMenu(first.request, [], true);
+    const second = holdAudio();
+    assert.equal(second.view, first.view);
+    Popup.showAudioMenu(first.request, [{ id: 'old', label: 'Old' }], false);
+    assert.equal(page.document.querySelector('.menu'), null);
+    Popup.showAudioMenu(second.request, [{ id: 'a', label: 'Clip' }], false);
+    const item = page.document.querySelector('.menu .menu-item');
+    assert.equal(item.textContent, 'Clip');
+    item.click();
+    assert.deepEqual(page.calls.at(-1), ['onPlayClip', second.request, 'a']);
+});
+
+test('audio keeps the same word through a redraw and starts over after moving or reopening', () => {
+    Popup.setActions({ anki: false, audio: true, ankiProblem: null });
+    const cat = state({ source: { text: '猫が好き', matched: 1, position: '0:0' } });
+    Popup.render(cat);
+    const first = holdAudio();
+    Popup.update({ ...cat, theme: 'light' });
+    Popup.render({ ...cat, source: { ...cat.source, text: '猫が大好き' } }, { continued: true });
+    assert.equal(holdAudio().view, first.view);
+
+    const otherCat = { ...cat, source: { ...cat.source, position: '0:4' } };
+    Popup.render(otherCat, { continued: true });
+    assert.notEqual(holdAudio().view, first.view);
+    Popup.render(cat, { continued: true });
+    const returned = holdAudio();
+    assert.notEqual(returned.view, first.view);
+
+    Popup.render(cat, { continued: false });
+    assert.notEqual(holdAudio().view, returned.view);
+});
+
+test('following a dictionary link and going back each start a new audio view', () => {
+    Popup.setActions({ anki: false, audio: true, ankiProblem: null });
+    Popup.render(state());
+    const first = holdAudio();
+    Popup.push(state({ results: [result('犬', 'いぬ')] }));
+    const linked = holdAudio();
+    page.document.getElementById('back').click();
+    const returned = holdAudio();
+    assert.equal(new Set([first.view, linked.view, returned.view]).size, 3);
 });
 
 test('changing the entry buttons keeps the note states', () => {
