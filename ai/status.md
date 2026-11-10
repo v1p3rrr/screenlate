@@ -7,6 +7,11 @@
   published the approved notes, four APKs and the source archive.
 - Downloaded and verified the checksums, manifests and native ABIs of all four APKs. They use package
   `com.vpr.screenlate`, version `1.0.0` (10000), Android 11 minimum and the same signing certificate as `v0.2.3`.
+- The [instrumented run](https://github.com/v1p3rrr/screenlate/actions/runs/42878032360) succeeded on API 34.
+  The downloaded XML contains 200 cases. Of these, 185 passed and 15 stopped on `AssumptionViolatedException`.
+  The XML labels those as failures, while the runner treats them as skips. Fourteen require an isolated test package,
+  explicit fixture arguments or staged data. The live camera case requires the `CAMERA` permission. Both
+  AnkiDroid round-trip tests passed. The downloaded report is in ignored `testdata/local-research/release-v1.0.0/`.
 - The owner accepted the audio fix on the phone before publication. The Turkic form-tag follow-up waits for
   [wiktextract #1734](https://github.com/tatuylonen/wiktextract/issues/1734) to close.
 
