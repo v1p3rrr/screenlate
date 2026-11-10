@@ -1,5 +1,15 @@
 # Status
 
+## Screenlate v1.0.0 released (2026-11-10)
+
+- Stable [v1.0.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.0.0) is the latest app release. The tag
+  points to `f688e41b`. The [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/42878032434)
+  published the approved notes, four APKs and the source archive.
+- Downloaded and verified the checksums, manifests and native ABIs of all four APKs. They use package
+  `com.vpr.screenlate`, version `1.0.0` (10000), Android 11 minimum and the same signing certificate as `v0.2.3`.
+- The owner accepted the audio fix on the phone before publication. The Turkic form-tag follow-up waits for
+  [wiktextract #1734](https://github.com/tatuylonen/wiktextract/issues/1734) to close.
+
 ## Stable release authorization (2026-11-10)
 
 - The owner confirmed audio works on the phone in the minified Dev build `0.2.3-112158a4-min` and authorized the
