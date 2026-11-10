@@ -329,7 +329,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Releases | No releases of new languages along the way: every language is built first, then one big release; testing in the meantime on debug builds (owner, 2026-10-10) |
 | Beta label | None: with a small audience a label would never come off (owner, 2026-10-10) |
 | Pronunciation dictionaries | Wiktionary IPA dictionaries are named for users: the category "Pronunciation", the item "Transcription (Wiktionary)" with an ⓘ example (`water → /ˈwɔːtər/`), never "IPA". One item per language, not per gloss language (the transcription is the same in every edition): the edition with the most entries. Ticked by default for every language except Chinese (30 MB, pinyin is already in its main dictionaries) (owner, 2026-10-10; changes the "Turning on a language" row, which had IPA unticked) |
-| Scope of the big release | The multilingual `main` includes groups 1–4 and the later languages already merged. The owner skipped the full module review (2026-11-06) and used the minified Dev build with no major concerns (2026-11-10). Publication waits for the owner's explicit command. |
+| Scope of the big release | The multilingual `main` includes groups 1–4 and the later languages already merged. The owner skipped the full module review (2026-11-06), checked audio in the minified Dev build on the phone and authorized stable publication (2026-11-10). Turkic form-tag follow-up waits for the upstream issue to close. |
 | Beta builds | Release `1.0.0` directly as stable after the owner's use of the minified Dev build (owner, 2026-11-10). |
 | Version of the big release | 1.0.0 (owner, 2026-10-16). |
 | Build of groups 1-3 | Before group 4: the OCR engines plan with Paddle, then groups 1-3 merged into `languages/main` with their emulator checks, then a debug build ("Screenlate Dev", next to the regular app with its own data) for the owner's phone, sent as an APK file. Not published; the code review of all modules comes after it (owner, 2026-10-17, request 66) |
@@ -1436,9 +1436,9 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 
 - The multilingual branch is `main`. The README, NOTICE and `v1.0.0` release notes are in the tree. The catalog's
   current upstream archive paths and download sizes were checked on 2026-11-10.
-- The owner used a local minified Dev build and chose a direct stable release. After the remaining release checks
-  and the owner's explicit command, push `v1.0.0` on the chosen commit. The release workflow signs the APKs and
-  publishes the GitHub release. A rehearsal build with the new version and production signature is optional.
+- The owner used a local minified Dev build, checked audio on the phone and authorized the direct stable release
+  on 2026-11-10. The `v1.0.0` tag on `main` starts the workflow that signs the APKs and publishes the GitHub release.
+- Follow up on the Turkic form tags after wiktextract issue #1734 closes (group 6 plan, question 30).
 
 ## Risks
 
@@ -1452,6 +1452,9 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-11-10: The owner confirmed audio works on the phone in the minified Dev build and authorized publishing
+  stable `1.0.0`. The owner deferred the Turkic form-tag work until the upstream issue closes.
 
 - 2026-11-10: The owner reported late audio failure toasts after changing words or closing the popup and asked to
   guard delayed playback as well. The hold path was checked separately from playback requests. Add automated

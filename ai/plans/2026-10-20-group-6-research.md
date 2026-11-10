@@ -1441,6 +1441,9 @@ recommended option; what changing it takes is said).
     through the ending rules. (b) The report only. (c) The renaming only. (d) Neither. Kyrgyz is built, so (a) and (c)
     change a shipped language.
 
+    Follow-up (owner, 2026-11-10): Release stable `1.0.0` and revisit the form tags after wiktextract issue #1734
+    closes. Check the updated kaikki and wty data then. This supersedes the pre-release local fallback.
+
     The report draft shown to the owner on 2026-10-29, rewritten the same day to state the problem first and again
     after a check of the tables of 21 Turkic languages (new: Yakut "Ср." as neuter and its untranslated cases,
     Kumyk "Осн." and "Н.", the possessor labels of Uzbek and Khakas, label cells read as forms in Khakas, Altai and
@@ -1563,6 +1566,8 @@ the fallback reused); 6c about a session (group 4e's engine and wty's Tatar exis
   2026-10-29).
 
 ## Changelog
+
+- 2026-11-10: The owner deferred the question 30 form-tag follow-up until wiktextract issue #1734 closes.
 
 - 2026-10-20: plan written (request 70 of the languages plan).
 - 2026-10-21: the owner answered the questions: 3 (a); 4 (a) only after a check of its false hits; 5 and 14 (a), the

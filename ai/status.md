@@ -1,5 +1,12 @@
 # Status
 
+## Stable release authorization (2026-11-10)
+
+- The owner confirmed audio works on the phone in the minified Dev build `0.2.3-112158a4-min` and authorized the
+  stable `1.0.0` release from `main`. CI passed on `fb013a68` before the release documentation update.
+- The owner deferred the Turkic form-tag fix until [wiktextract #1734](https://github.com/tatuylonen/wiktextract/issues/1734)
+  closes. The issue is open at release time. The release uses the current upstream dictionaries.
+
 ## Cancel audio requests when their popup word goes away (2026-11-10)
 
 - The popup cancels pending playback and its queued audio toasts when the word or view changes or closes. The
@@ -30,7 +37,7 @@
 - The owner used the minified Dev build with no major concerns and chose to go directly to stable `1.0.0`.
 - The tag-driven release workflow already supports publication. A manual version override was discussed for
   rehearsing a production-signed upgrade from `0.2.3` and is optional.
-- Publication is deferred until the owner gives a separate command. The versioned release notes are ready in `main`.
+- The owner initially deferred publication. The versioned release notes are ready in `main`.
 
 ## Release readiness check (2026-11-10)
 
@@ -672,13 +679,10 @@ the details.
   integration or a unit test. About 12 rule families, one session each, with a closing pass that merges the cases into
   `test-model.md`; estimated for the owner at 15-25% of a weekly limit. Running the cases (the corpus checks above all)
   is a separate task. Starts on the owner's command, after the limit resets.
-- Backlog: rename the Turkic form tags of Russian Wiktionary in our support classes (`formTagNames`: "singular/plural
-  possessive" → genitive, Tatar's lone ablative "plural" → ablative plural) if the wiktextract report's fix does not
-  reach wty's releases (group 6, question 30; owner, 2026-10-29). Waiting for
-  https://github.com/tatuylonen/wiktextract/issues/1734: check it at the start of each session; once it is closed,
-  check that the next kaikki.org ruwiktionary dump and then wty's next release (tt-ru, ba-ru, ky-ru) carry genitive and
-  ablative. Only if wty's release still shows the old tags (an old dump, its own tag handling) does a report go to wty
-  too. No fix in time for the languages release → build the renaming (owner, 2026-10-29).
+- Backlog: revisit the Turkic form tags of Russian Wiktionary when
+  https://github.com/tatuylonen/wiktextract/issues/1734 closes (group 6, question 30; owner, 2026-11-10). Check that the
+  next kaikki.org ruwiktionary dump and wty's next release (tt-ru, ba-ru, ky-ru) carry genitive and ablative. If wty
+  still shows the old tags after its input is corrected, follow up with wty.
 - Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
   far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
   and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
