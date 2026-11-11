@@ -1,5 +1,14 @@
 # Status
 
+## Screenlate v1.0.1 released (2026-11-11)
+
+- Stable [v1.0.1](https://github.com/v1p3rrr/screenlate/releases/tag/v1.0.1) is the latest app release. The annotated
+  tag points to `3a83d7ca`; the [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/43074715579)
+  completed successfully and published the release with the production signing key.
+- The release contains the short approved English note about dictionary lookup for words split at a hyphenated line
+  break. Four APKs (`arm64-v8a`, `armeabi-v7a`, `x86_64`, universal) and the full source archive are uploaded.
+  The `releases/latest` API already points to v1.0.1, so the in-app update feed sees it.
+
 ## Local Dev update for hyphenated line ends (2026-11-11)
 
 - Built the local minified ARM64 release variant from `ee0d57cd`: version `1.0.0-ee0d57cd-min` (10000), package
