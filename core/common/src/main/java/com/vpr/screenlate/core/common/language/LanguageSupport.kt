@@ -336,6 +336,9 @@ interface LanguageSupport {
     /** Other spellings of [text] that are looked up as well; the original is always looked up. */
     fun spellingVariants(text: MappedText): List<MappedText>
 
+    /** The confirmed [variant] of [text] when it repairs a hyphenated line end; null when it does not. */
+    fun hyphenBreakVariant(text: String, variant: String): String? = null
+
     /** Converts a transliteration in Latin letters into the language's script; null if there is nothing to convert. */
     fun fromLatin(text: MappedText): MappedText?
 

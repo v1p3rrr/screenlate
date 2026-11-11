@@ -423,7 +423,7 @@ internal fun LookupResult.withSortFrequencyFirst(dictionary: String?): LookupRes
 internal fun LookupResult.inSource(source: String, variant: MappedText): LookupResult {
     if (variant.text == source) return this
     val length = variant.sourceLength(matched.length.coerceAtMost(variant.text.length))
-    return copy(matched = source.substring(0, length), preprocessorSteps = preprocessorSteps + 1)
+    return copy(matched = source.substring(0, length), variantMatched = matched, preprocessorSteps = preprocessorSteps + 1)
 }
 
 /**

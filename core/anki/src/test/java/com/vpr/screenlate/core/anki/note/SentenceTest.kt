@@ -5,8 +5,12 @@ import com.vpr.screenlate.core.common.Language
 import org.junit.Test
 
 class SentenceTest {
-    private fun extract(paragraph: String, word: String, language: Language = Language.JAPANESE): Sentence =
-        Sentence.extract(paragraph, paragraph.indexOf(word), word.length, language)
+    private fun extract(
+        paragraph: String,
+        word: String,
+        language: Language = Language.JAPANESE,
+        variantMatched: String? = null,
+    ): Sentence = Sentence.extract(paragraph, paragraph.indexOf(word), word.length, language, variantMatched)
 
     @Test
     fun cutsAtTerminators() {
@@ -368,6 +372,43 @@ class SentenceTest {
         val paragraph = "Шёл дождь. В 1999 г. он сказал: «Я приду. Обязательно». Потом ушёл."
         assertThat(extract(paragraph, "сказал", Language.RUSSIAN).text)
             .isEqualTo("В 1999 г. он сказал: «Я приду. Обязательно».")
+    }
+
+    @Test
+    fun confirmedHyphenBreakVariantsRepairTheSentenceBody() {
+        val russian = "Они закон- чили работу."
+        val joined = extract(russian, "закон- чили", Language.RUSSIAN, "закончили")
+        assertThat(joined).isEqualTo(Sentence("Они ", "закончили", " работу."))
+        assertThat(joined.text).isEqualTo("Они закончили работу.")
+
+        val uppercase = "ВЫ ЕЁ ЗАКОН- ЧИЛИ, ДА?"
+        assertThat(extract(uppercase, "ЗАКОН- ЧИЛИ", Language.RUSSIAN, "ЗАКОНЧИЛИ").text)
+            .isEqualTo("ВЫ ЕЁ ЗАКОНЧИЛИ, ДА?")
+
+        // A dictionary-confirmed hyphenated word keeps its hyphen when the line break goes away.
+        assertThat(extract("Он еле- еле шёл.", "еле- еле", Language.RUSSIAN, "еле-еле").text)
+            .isEqualTo("Он еле-еле шёл.")
+        assertThat(extract("A well- known place.", "well- known", Language.ENGLISH, "well-known").text)
+            .isEqualTo("A well-known place.")
+        assertThat(extract("The Max- Planck Institute.", "Max- Planck", Language.ENGLISH, "Max-Planck").text)
+            .isEqualTo("The Max-Planck Institute.")
+    }
+
+    @Test
+    fun unconfirmedHyphenBreaksStayAsWritten() {
+        val russian = "Они закон- чили работу."
+        assertThat(extract(russian, "закон- чили", Language.RUSSIAN).text).isEqualTo(russian)
+        assertThat(extract(russian, "закон- чили", Language.RUSSIAN, "закон").text).isEqualTo(russian)
+        assertThat(extract("Haus- und Gartenarbeit.", "und", Language.GERMAN).text)
+            .isEqualTo("Haus- und Gartenarbeit.")
+        assertThat(extract("this - that", "this", Language.ENGLISH, "this").text).isEqualTo("this - that")
+        assertThat(extract("COVID-19- Impfung.", "Impfung", Language.GERMAN, "Impfung").text)
+            .isEqualTo("COVID-19- Impfung.")
+        // Scripts without the line-end hyphen rule never rewrite a sentence this way.
+        assertThat(extract("impor- tant", "impor- tant", Language.JAPANESE, "important").text)
+            .isEqualTo("impor- tant")
+        assertThat(extract("impor- tant", "impor- tant", Language.CHINESE, "important").text)
+            .isEqualTo("impor- tant")
     }
 
     @Test

@@ -1,5 +1,18 @@
 # Status
 
+## Dictionary-confirmed repair of hyphenated line ends (2026-11-11)
+
+- The owner's screenshots showed uppercase Russian `ЗАКОН- ЧИЛИ` finding only `закон`, while the sentence kept the
+  break. The existing spelling rule tried a joined variant only before a lowercase second half, and sentence extraction
+  always used the source text rather than the variant found by the dictionary.
+- Spaced-language lookup now also tries a joined word when uppercase letters surround the break. `LookupResult` keeps
+  the matched spelling outside the page JSON, and `OverlayController` passes the first result's spelling to
+  `Sentence.extract`. Only an exact joined or hyphen-kept variant replaces the sentence body; prefixes, dashes, numbers,
+  mixed-case names and unconfirmed text stay unchanged.
+- Unit cases cover lowercase and uppercase Russian, English joined and hyphen-kept words, `Max-Planck`, German
+  `Haus- und Gartenarbeit`, digit compounds and non-spaced languages. Targeted common, Anki, dictionary API and overlay
+  tests passed, followed by the full `assembleDebug testDebugUnitTest`. No emulator or phone run was needed or done.
+
 ## Screenlate v1.0.0 released (2026-11-10)
 
 - Stable [v1.0.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.0.0) is the latest app release. The tag

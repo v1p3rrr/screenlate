@@ -423,7 +423,9 @@ class LanguageRulesIsolationTest {
             support.spellingVariants(MappedText.identity(text)).map { it.text }
         for (support in spaced) {
             assertThat(variants(support, "impor- tant thing")).containsExactly("important thing", "impor-tant thing")
-            // A capital after the break keeps the hyphen only (Max-Planck).
+            // An uppercase word is tried joined as well; its dictionary entry decides which spelling the sentence uses.
+            assertThat(variants(support, "ЗАКОН- ЧИЛИ")).containsExactly("ЗАКОНЧИЛИ", "ЗАКОН-ЧИЛИ")
+            // A capital after the break of a mixed-case word keeps the hyphen only (Max-Planck).
             assertThat(variants(support, "Max- Planck")).containsExactly("Max-Planck")
             // A dash between words and a hyphen inside a word are no breaks.
             assertThat(variants(support, "this - that")).isEmpty()
@@ -436,10 +438,23 @@ class LanguageRulesIsolationTest {
         // The joined word maps back over both halves and the break.
         val joined = EnglishSupport.spellingVariants(MappedText.identity("impor- tant"))[0]
         assertThat(joined.sourceLength("important".length)).isEqualTo("impor- tant".length)
+        for (support in spaced) {
+            assertThat(support.hyphenBreakVariant("impor- tant", "important")).isEqualTo("important")
+            assertThat(support.hyphenBreakVariant("ЗАКОН- ЧИЛИ", "ЗАКОНЧИЛИ")).isEqualTo("ЗАКОНЧИЛИ")
+            assertThat(support.hyphenBreakVariant("well- known", "well-known")).isEqualTo("well-known")
+            assertThat(support.hyphenBreakVariant("Max- Planck", "Max-Planck")).isEqualTo("Max-Planck")
+            // Only an exact variant can repair the sentence; prefixes, dashes and digit compounds cannot.
+            assertThat(support.hyphenBreakVariant("закон- чили", "закон")).isNull()
+            assertThat(support.hyphenBreakVariant("well-known", "well-known")).isNull()
+            assertThat(support.hyphenBreakVariant("this - that", "this that")).isNull()
+            assertThat(support.hyphenBreakVariant("COVID-19- Impfung", "COVID-19Impfung")).isNull()
+        }
         // Scripts without spaces have no line-end hyphens to join.
         assertThat(ChineseSupport.spellingVariants(MappedText.identity("impor- tant"))).isEmpty()
         assertThat(KoreanSupport.spellingVariants(MappedText.identity("impor- tant"))).isEmpty()
         assertThat(all.filterNot { it in spaced }.where { it.earlierStartOffset("impor- ") > 0 }).isEmpty()
+        assertThat(all.filterNot { it in spaced }.where { it.hyphenBreakVariant("impor- tant", "important") != null })
+            .isEmpty()
     }
 
     @Test

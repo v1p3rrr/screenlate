@@ -19,9 +19,10 @@ data class Sentence(val prefix: String, val body: String, val suffix: String) {
          * paragraph: then the nearest terminator outside the quotes that do close ends the sentence. ” and ’ right
          * after a terminator stay with it even where the language pairs its quotes otherwise (English quotes in German).
          * A character that both opens and closes (“ in Esperanto, which writes “…” and „…“) closes the innermost quote
-         * when it is that quote's closing character and opens one otherwise.
+         * when it is that quote's closing character and opens one otherwise. A dictionary-confirmed [variantMatched]
+         * repairs a hyphenated line end in the body only; an unconfirmed break stays as written.
          */
-        fun extract(paragraph: String, start: Int, length: Int, language: Language): Sentence {
+        fun extract(paragraph: String, start: Int, length: Int, language: Language, variantMatched: String? = null): Sentence {
             val safeStart = start.coerceIn(0, paragraph.length)
             val end = (safeStart + length).coerceIn(safeStart, paragraph.length)
             val support = language.support
@@ -66,11 +67,13 @@ data class Sentence(val prefix: String, val body: String, val suffix: String) {
                 while (to < paragraph.length && paragraph[to] in quotes) to++
             }
             while (to < paragraph.length && paragraph[to].let { it in closing || it in terminators || it in CLOSING_ONLY }) to++
-            return Sentence(
+            val sentence = Sentence(
                 prefix = paragraph.substring(from, safeStart).trimStart(),
                 body = paragraph.substring(safeStart, end),
                 suffix = paragraph.substring(end, to).trimEnd(),
             )
+            val repairedBody = variantMatched?.let { support.hyphenBreakVariant(sentence.body, it) }
+            return if (repairedBody == null) sentence else sentence.copy(body = repairedBody)
         }
     }
 

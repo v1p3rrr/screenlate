@@ -52,6 +52,19 @@ class LookupVariantsTest {
         val found = LookupVariants.of(text, LookupSettings(), EnglishSupport)
         assertThat(found.map { it.text }).containsExactly(text, "important thing", "impor-tant thing").inOrder()
         val result = LookupResult(matched = "important", deinflected = "important", term = TermEntry("important", ""))
-        assertThat(result.inSource(text, found[1]).matched).isEqualTo("impor- tant")
+        val mapped = result.inSource(text, found[1])
+        assertThat(mapped.matched).isEqualTo("impor- tant")
+        assertThat(mapped.variantMatched).isEqualTo("important")
+    }
+
+    @Test
+    fun `an uppercase word hyphenated at a line end is looked up joined and with its hyphen`() {
+        val text = "ЗАКОН- ЧИЛИ, ДА?"
+        val found = LookupVariants.of(text, LookupSettings(), com.vpr.screenlate.core.common.language.RussianSupport)
+        assertThat(found.map { it.text }).containsExactly(text, "ЗАКОНЧИЛИ, ДА?", "ЗАКОН-ЧИЛИ, ДА?").inOrder()
+        val result = LookupResult(matched = "ЗАКОНЧИЛИ", deinflected = "закончить", term = TermEntry("закончить", ""))
+        val mapped = result.inSource(text, found[1])
+        assertThat(mapped.matched).isEqualTo("ЗАКОН- ЧИЛИ")
+        assertThat(mapped.variantMatched).isEqualTo("ЗАКОНЧИЛИ")
     }
 }

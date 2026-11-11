@@ -240,9 +240,10 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * A word hyphenated at a line end, the line's separator after the hyphen ("impor- tant"): tried joined
-     * ("important") when the second half starts in lowercase, and with the hyphen kept ("well- known" as
-     * "well-known"). Halves that are words of their own ("Haus- und Gartenarbeit") find nothing joined and keep the
-     * results of the text as written. A soft hyphen between letters is left out (Kan\u00ADnada as Kannada).
+     * ("important") when the second half starts in lowercase or both letters around the break are uppercase, and with
+     * the hyphen kept ("well- known" as "well-known"). Halves that are words of their own ("Haus- und Gartenarbeit")
+     * find nothing joined and keep the results of the text as written. A soft hyphen between letters is left out
+     * (Kan\u00ADnada as Kannada).
      */
     override fun spellingVariants(text: MappedText): List<MappedText> {
         val unbroken = text.replace(SOFT_HYPHEN_INSIDE, "")
@@ -252,6 +253,11 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             emptyList()
         }
         return (joined + unbroken).filter { it.text != text.text }.distinctBy { it.text }
+    }
+
+    override fun hyphenBreakVariant(text: String, variant: String): String? {
+        if (!HYPHEN_BREAK.containsMatchIn(text)) return null
+        return spellingVariants(MappedText.identity(text)).firstOrNull { it.text == variant }?.text
     }
 
     override fun fromLatin(text: MappedText): MappedText? = null
@@ -435,7 +441,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         /** A hyphen, the Unicode hyphen and the soft hyphen, which marks a break inside a word. */
         const val HYPHENS = "-‐\u00AD"
         val HYPHEN_BREAK = Regex("(?<=\\p{L})[\\-‐\u00AD]\\s+(?=\\p{L})")
-        val HYPHEN_JOINED = Regex("(?<=\\p{L})[\\-‐\u00AD]\\s+(?=\\p{Ll})")
+        val HYPHEN_JOINED = Regex("(?<=\\p{L})[\\-‐\u00AD]\\s+(?=\\p{Ll})|(?<=\\p{Lu})[\\-‐\u00AD]\\s+(?=\\p{Lu})")
         val HYPHEN_KEPT = Regex("(?<=\\p{L})([\\-‐])\\s+(?=\\p{L})")
     }
 }

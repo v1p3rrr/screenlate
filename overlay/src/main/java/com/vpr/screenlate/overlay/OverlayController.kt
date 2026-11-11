@@ -1630,13 +1630,13 @@ class OverlayController(
     private fun sentenceOf(view: LookupView): Sentence? {
         val layout = view.layout ?: return null
         val position = view.start ?: return null
-        return sentenceAt(layout, position, view.matched.coerceAtLeast(1))
+        return sentenceAt(layout, position, view.matched.coerceAtLeast(1), view.results.firstOrNull()?.variantMatched)
     }
 
-    private fun sentenceAt(layout: TextLayout, position: TextPosition, matched: Int): Sentence {
+    private fun sentenceAt(layout: TextLayout, position: TextPosition, matched: Int, variantMatched: String? = null): Sentence {
         val (paragraph, index) = layout.paragraphText(position)
         val length = layout.textFrom(position, matched).length
-        return Sentence.extract(paragraph, index, length, language)
+        return Sentence.extract(paragraph, index, length, language, variantMatched)
     }
 
     /**

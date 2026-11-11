@@ -8,6 +8,8 @@ import kotlinx.serialization.Transient
  * holds the definitions of every enabled dictionary in priority order.
  *
  * @property matched prefix of the lookup string that produced this term, as it appeared in the source text.
+ * @property variantMatched the matched prefix before a spelling variant was mapped back to the source; used to repair
+ *   a confirmed hyphenated line end in the sentence. Not sent to the lookup page.
  * @property deinflected dictionary form the matched text was reduced to.
  * @property trace deinflection steps from [matched] to [deinflected], outermost first.
  * @property otherTraces further chains of steps that lead to the same term (Yomitan lists every one), the shorter
@@ -38,6 +40,7 @@ data class LookupResult(
     val start: Int = 0,
     val compound: List<String> = emptyList(),
     val fallbackLanguage: String? = null,
+    @Transient val variantMatched: String? = null,
 )
 
 /**
