@@ -1,5 +1,16 @@
 # Status
 
+## Local Dev update for hyphenated line ends (2026-11-11)
+
+- Built the local minified ARM64 release variant from `ee0d57cd`: version `1.0.0-ee0d57cd-min` (10000), package
+  `com.vpr.screenlate.debug`, label `Screenlate Dev`, debug-signed and non-debuggable. The APK contains only
+  `arm64-v8a` native libraries and passed the ZIP integrity check.
+- APK size: 23,075,879 bytes. SHA-256: `44173b7c79fe605f74ef3500c1dbb27275ad498ff84696823652dbb13cb3f7cb`.
+  Its signing certificate exactly matches `screenlate-dev-112158a4-min.apk`, so it updates the owner's installed Dev
+  package without uninstalling or clearing data. Nothing was installed on the phone.
+- APK, R8 mapping, init script and build log are in ignored `testdata/local-research/builds/` under the
+  `screenlate-dev-ee0d57cd-min` and `dev-release-ee0d57cd` names.
+
 ## Dictionary-confirmed repair of hyphenated line ends (2026-11-11)
 
 - The owner's screenshots showed uppercase Russian `ЗАКОН- ЧИЛИ` finding only `закон`, while the sentence kept the
