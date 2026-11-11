@@ -1,5 +1,13 @@
 # Status
 
+## Android 7 support planned for the future (2026-11-12)
+
+- The owner requested future support for Android 7.0/7.1 (API 24–25), not Android 6 or older. The current app remains
+  Android 11+ until the work is implemented and verified.
+- The [Android 7 support plan](plans/2026-11-12-android-7-support.md) records one shared application, the current
+  AccessibilityService capture on API 30+, a MediaProjection backend on API 24–29, the compatibility audit, validation
+  requirements and the constraint that APK size must not grow noticeably. No implementation has started.
+
 ## Screenlate v1.0.1 released (2026-11-11)
 
 - Stable [v1.0.1](https://github.com/v1p3rrr/screenlate/releases/tag/v1.0.1) is the latest app release. The annotated
