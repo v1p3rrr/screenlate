@@ -109,6 +109,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.aboutlibraries.compose.m3)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.webkit)
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)

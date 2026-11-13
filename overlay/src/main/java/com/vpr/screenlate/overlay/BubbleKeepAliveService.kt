@@ -47,9 +47,11 @@ class BubbleKeepAliveService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun notification(): Notification {
-        getSystemService(NotificationManager::class.java).createNotificationChannel(
-            NotificationChannel(CHANNEL_ID, getString(R.string.overlay_keep_alive_channel), NotificationManager.IMPORTANCE_MIN),
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getSystemService(NotificationManager::class.java).createNotificationChannel(
+                NotificationChannel(CHANNEL_ID, getString(R.string.overlay_keep_alive_channel), NotificationManager.IMPORTANCE_MIN),
+            )
+        }
         val open = packageManager.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_IMMUTABLE)
         }
@@ -85,7 +87,11 @@ class BubbleKeepAliveService : Service() {
                 return
             }
             try {
-                context.startForegroundService(intent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
             } catch (e: RuntimeException) {
                 Log.w(TAG, "Could not start the keep-alive service", e)
             }

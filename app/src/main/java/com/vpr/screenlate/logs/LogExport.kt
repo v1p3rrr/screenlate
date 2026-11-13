@@ -8,12 +8,13 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import androidx.core.content.pm.PackageInfoCompat
 import com.vpr.screenlate.core.common.log.AppLog
 import com.vpr.screenlate.core.common.log.Log
 import java.io.File
 import java.io.IOException
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -40,7 +41,7 @@ object LogExport {
             deleteRecursively()
             mkdirs()
         }
-        val stamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss", Locale.US))
+        val stamp = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(Date())
         val file = File(directory, "screenlate-log-$stamp.txt")
         Log.i(TAG, "Log exported")
         file.outputStream().buffered().use { out ->
@@ -62,25 +63,33 @@ object LogExport {
         val file = write(context)
         return withContext(Dispatchers.IO) {
             val folder = "${Environment.DIRECTORY_DOWNLOADS}/$DOWNLOADS_FOLDER"
-            val resolver = context.contentResolver
-            val values = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, file.name)
-                put(MediaStore.Downloads.MIME_TYPE, "text/plain")
-                put(MediaStore.Downloads.RELATIVE_PATH, folder)
-                put(MediaStore.Downloads.IS_PENDING, 1)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val resolver = context.contentResolver
+                val values = ContentValues().apply {
+                    put(MediaStore.Downloads.DISPLAY_NAME, file.name)
+                    put(MediaStore.Downloads.MIME_TYPE, "text/plain")
+                    put(MediaStore.Downloads.RELATIVE_PATH, folder)
+                    put(MediaStore.Downloads.IS_PENDING, 1)
+                }
+                val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                    ?: throw IOException("Downloads refused a new file")
+                try {
+                    val output = resolver.openOutputStream(uri) ?: throw IOException("Cannot write to Downloads")
+                    output.use { out -> file.inputStream().use { it.copyTo(out) } }
+                    resolver.update(uri, ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) }, null, null)
+                } catch (e: Exception) {
+                    // Any failure (also a refused write) removes the pending entry, which would otherwise linger.
+                    resolver.delete(uri, null, null)
+                    throw e
+                }
+                SavedLog(uri, "$folder/${file.name}")
+            } else {
+                val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), DOWNLOADS_FOLDER).apply { mkdirs() }
+                val dest = File(dir, file.name)
+                file.copyTo(dest, overwrite = true)
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.logs", dest)
+                SavedLog(uri, dest.absolutePath)
             }
-            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
-                ?: throw IOException("Downloads refused a new file")
-            try {
-                val output = resolver.openOutputStream(uri) ?: throw IOException("Cannot write to Downloads")
-                output.use { out -> file.inputStream().use { it.copyTo(out) } }
-                resolver.update(uri, ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) }, null, null)
-            } catch (e: Exception) {
-                // Any failure (also a refused write) removes the pending entry, which would otherwise linger.
-                resolver.delete(uri, null, null)
-                throw e
-            }
-            SavedLog(uri, "$folder/${file.name}")
         }
     }
 
@@ -99,8 +108,9 @@ object LogExport {
 
     internal fun header(context: Context): String {
         val info = context.packageManager.getPackageInfo(context.packageName, 0)
+        val versionCode = PackageInfoCompat.getLongVersionCode(info)
         return buildString {
-            appendLine("Screenlate ${info.versionName} (${info.longVersionCode}), ${context.packageName}")
+            appendLine("Screenlate ${info.versionName} ($versionCode), ${context.packageName}")
             appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL} (${Build.DEVICE})")
             appendLine("Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), ${Build.SUPPORTED_ABIS.joinToString()}")
             appendLine("Locale: ${Locale.getDefault().toLanguageTag()}")

@@ -342,6 +342,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">הגדרות שמע</string>
     <string name="problems_dismiss">סגירה</string>
+    <string name="problems_outdated_webview_title">WebView מיושן (%1$s)</string>
+    <string name="problems_outdated_webview_text">רכיב Android System WebView במכשיר מיושן. אם החלון הקופץ של המילון אינו מוצג כראוי, יש לעדכן את Android System WebView או את Google Chrome מחנות האפליקציות.</string>
     <string name="anki_problem_title">הגדרת Anki</string>
     <string name="anki_problem_fix_model">יש לבחור שוב את סוג הרשומה.</string>
     <string name="anki_problem_fix_deck">יש לבחור שוב את החפיסה.</string>

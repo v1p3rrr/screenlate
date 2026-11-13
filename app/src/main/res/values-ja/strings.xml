@@ -334,6 +334,8 @@
     <string name="problems_audio_source_line">• %1$s：%2$s</string>
     <string name="problems_open_audio">音声の設定</string>
     <string name="problems_dismiss">閉じる</string>
+    <string name="problems_outdated_webview_title">古い WebView (%1$s)</string>
+    <string name="problems_outdated_webview_text">端末の Android System WebView が古くなっています。辞書のポップアップが正しく表示されない場合は、アプリストアで Android System WebView または Google Chrome を更新してください。</string>
     <string name="anki_problem_title">Anki の設定</string>
     <string name="anki_problem_fix_model">ノートタイプを選び直してください。</string>
     <string name="anki_problem_fix_deck">デッキを選び直してください。</string>

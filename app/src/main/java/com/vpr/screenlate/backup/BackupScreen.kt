@@ -55,8 +55,9 @@ import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import com.vpr.screenlate.yomitan.YomitanImportCard
 import java.text.DateFormat
-import java.time.LocalDate
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import kotlin.math.roundToInt
 
 private val BACKUP_TYPES = arrayOf("application/zip", "application/octet-stream", "*/*")
@@ -179,7 +180,8 @@ fun BackupScreen(
             onChange = viewModel::changeCreateDraft,
             onNext = {
                 viewModel.acceptCreateChoice()
-                createPicker.launch("screenlate-backup-${LocalDate.now()}.zip")
+                val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+                createPicker.launch("screenlate-backup-$today.zip")
             },
             onDismiss = viewModel::closeCreateChoice,
         )

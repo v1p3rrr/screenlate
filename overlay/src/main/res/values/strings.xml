@@ -80,6 +80,8 @@
     <string name="overlay_keep_alive_channel">Service running</string>
     <string name="overlay_keep_alive_title">Screenlate is ready</string>
     <string name="overlay_keep_alive_text">Keeping the bubble available in the background</string>
+    <string name="overlay_capture_channel">Screen capture</string>
+    <string name="overlay_capture_notification_title">Screen capture active</string>
     <string name="overlay_service_off_channel">Service turned off</string>
     <string name="overlay_service_off_title">Screenlate service is off</string>
     <string name="overlay_service_off_text">The bubble is gone because the Screenlate accessibility service was turned off. Tap to turn it on again.</string>

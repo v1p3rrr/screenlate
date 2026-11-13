@@ -76,6 +76,8 @@
     <string name="overlay_keep_alive_channel">Usługa działa</string>
     <string name="overlay_keep_alive_title">Screenlate jest gotowy</string>
     <string name="overlay_keep_alive_text">Dymek pozostaje dostępny w tle</string>
+    <string name="overlay_capture_channel">Przechwytywanie ekranu</string>
+    <string name="overlay_capture_notification_title">Przechwytywanie ekranu aktywne</string>
     <string name="overlay_service_off_channel">Usługa wyłączona</string>
     <string name="overlay_service_off_title">Usługa Screenlate jest wyłączona</string>
     <string name="overlay_service_off_text">Dymek zniknął, ponieważ usługa ułatwień dostępu Screenlate została wyłączona. Dotknij, aby włączyć ją ponownie.</string>

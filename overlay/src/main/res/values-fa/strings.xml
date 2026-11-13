@@ -76,6 +76,8 @@
     <string name="overlay_keep_alive_channel">سرویس در حال اجرا</string>
     <string name="overlay_keep_alive_title">Screenlate آماده است</string>
     <string name="overlay_keep_alive_text">حباب در پس‌زمینه در دسترس نگه داشته می‌شود</string>
+    <string name="overlay_capture_channel">ضبط صفحه</string>
+    <string name="overlay_capture_notification_title">ضبط صفحه فعال است</string>
     <string name="overlay_service_off_channel">خاموش شدن سرویس</string>
     <string name="overlay_service_off_title">سرویس Screenlate خاموش است</string>
     <string name="overlay_service_off_text">حباب ناپدید شده است، چون سرویس دسترس‌پذیری Screenlate خاموش شد. برای روشن کردن دوباره، ضربه بزنید.</string>

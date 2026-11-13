@@ -334,6 +334,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Cài đặt âm thanh</string>
     <string name="problems_dismiss">Bỏ qua</string>
+    <string name="problems_outdated_webview_title">WebView đã cũ (%1$s)</string>
+    <string name="problems_outdated_webview_text">Android System WebView trên thiết bị đã cũ. Nếu cửa sổ bật lên của từ điển hiển thị không đúng, hãy cập nhật Android System WebView hoặc Google Chrome trong cửa hàng ứng dụng.</string>
     <string name="anki_problem_title">Thiết lập Anki</string>
     <string name="anki_problem_fix_model">Hãy chọn lại loại ghi chú.</string>
     <string name="anki_problem_fix_deck">Hãy chọn lại bộ thẻ.</string>

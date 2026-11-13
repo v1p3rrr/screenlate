@@ -1,12 +1,32 @@
 # Status
 
-## Android 7 support planned for the future (2026-11-12)
+## Work in progress (2026-11-14): Android 7.0–7.1 (API 24–25) support
 
-- The owner requested future support for Android 7.0/7.1 (API 24–25), not Android 6 or older. The current app remains
-  Android 11+ until the work is implemented and verified.
-- The [Android 7 support plan](plans/2026-11-12-android-7-support.md) records one shared application, the current
-  AccessibilityService capture on API 30+, a MediaProjection backend on API 24–29, the compatibility audit, validation
-  requirements and the constraint that APK size must not grow noticeably. No implementation has started.
+Branch `features/android-7-support` (worktree `.worktrees/lang`).
+MinSdk lowered from 30 to 24 (targetSdk/compileSdk stay 37).
+- Architecture: single universal package, no desugar_jdk_libs (zero APK size bloat).
+- Screen capture:
+  - API 30+: untouched modern capture (`AccessibilityService.takeScreenshot()` and `takeScreenshotOfWindow()` on API 34+).
+  - API 24–29: `LegacyMediaProjectionCapturer` using `VirtualDisplay` + `ImageReader` (RGBA_8888, stride alignment handling).
+  - Background permission lifecycle: transparent `MediaProjectionConsentActivity` + lightweight FGS `MediaProjectionService` with quiet channel notification.
+- UI & Overlay compatibility:
+  - Overlay remains `TYPE_ACCESSIBILITY_OVERLAY` (API 24+), zero `SYSTEM_ALERT_WINDOW` needed.
+  - `WindowMetricsCompat` provides unified bounds/insets fallback for API 24–37.
+  - Guarded insets, display cutouts, notification channels, package signatures, and system gesture exclusion rects.
+- Storage & Media:
+  - Private external storage fallback (`getExternalFilesDir`) for photo gallery and log export on API < 29, MediaStore Scoped Storage on API 29+. Zero `WRITE_EXTERNAL_STORAGE` permission needed.
+- Time & Formatting:
+  - Replaced all `java.time` usages in logging and backup with `SimpleDateFormat` / `System.currentTimeMillis()`.
+- WebView:
+  - Polyfill for `Element.prototype.replaceChildren` in `popup.js` for WebViews < Chrome 86.
+  - Home card warning `OutdatedWebView` for WebView < 80 via `WebViewCompat`.
+- Adaptive launcher icons:
+  - Moved adaptive icons to `mipmap-anydpi-v26/` with `<layer-list>` fallback in `mipmap-anydpi/`. Updated `scripts/icon/icon.py`.
+- Translations:
+  - All new string keys added across all 17 supported locales. `TranslationsTest` passed.
+- Full verification:
+  - `assembleDebug testDebugUnitTest` passed across all modules (all 463 tasks).
+  - Page tests (`npm --prefix scripts/page-tests test`, 139 tests) passed.
 
 ## Screenlate v1.0.1 released (2026-11-11)
 

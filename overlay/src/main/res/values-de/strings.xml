@@ -76,6 +76,8 @@
     <string name="overlay_keep_alive_channel">Dienst aktiv</string>
     <string name="overlay_keep_alive_title">Screenlate ist bereit</string>
     <string name="overlay_keep_alive_text">Die Blase bleibt im Hintergrund verfügbar</string>
+    <string name="overlay_capture_channel">Bildschirmaufnahme</string>
+    <string name="overlay_capture_notification_title">Bildschirmaufnahme aktiv</string>
     <string name="overlay_service_off_channel">Bedienungshilfe ausgeschaltet</string>
     <string name="overlay_service_off_title">Screenlate-Bedienungshilfe ist aus</string>
     <string name="overlay_service_off_text">Die Blase ist verschwunden, weil die Bedienungshilfe von Screenlate ausgeschaltet wurde. Tippe, um sie wieder einzuschalten.</string>

@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.os.Build
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.vpr.screenlate.overlay.settings.DockSide
@@ -145,8 +146,10 @@ class BubbleView(context: Context) : View(context) {
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         // The docked bubble sits in the edge area that gesture navigation uses for Back.
-        exclusionRect.set(0, 0, width, height)
-        systemGestureExclusionRects = exclusionRects
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            exclusionRect.set(0, 0, width, height)
+            systemGestureExclusionRects = exclusionRects
+        }
     }
 
     override fun onDraw(canvas: Canvas) {

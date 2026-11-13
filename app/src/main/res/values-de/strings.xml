@@ -338,6 +338,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Audioeinstellungen</string>
     <string name="problems_dismiss">Ausblenden</string>
+    <string name="problems_outdated_webview_title">Veraltetes WebView (%1$s)</string>
+    <string name="problems_outdated_webview_text">Das Android System WebView des Geräts ist veraltet. Wenn die Wörterbuch-Popups nicht korrekt angezeigt werden, aktualisiere Android System WebView oder Google Chrome im App Store.</string>
     <string name="anki_problem_title">Anki-Einrichtung</string>
     <string name="anki_problem_fix_model">Wähle den Notiztyp erneut.</string>
     <string name="anki_problem_fix_deck">Wähle den Stapel erneut.</string>

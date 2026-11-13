@@ -338,6 +338,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Ses ayarları</string>
     <string name="problems_dismiss">Kapat</string>
+    <string name="problems_outdated_webview_title">Eski WebView (%1$s)</string>
+    <string name="problems_outdated_webview_text">Cihazdaki Android System WebView eski. Sözlük açılır penceresi düzgün görüntülenmiyorsa uygulama mağazasından Android System WebView veya Google Chrome\'u güncelleyin.</string>
     <string name="anki_problem_title">Anki kurulumu</string>
     <string name="anki_problem_fix_model">Not türünü yeniden seçin.</string>
     <string name="anki_problem_fix_deck">Desteyi yeniden seçin.</string>

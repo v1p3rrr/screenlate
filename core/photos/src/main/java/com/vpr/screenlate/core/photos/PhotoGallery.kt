@@ -2,7 +2,9 @@ package com.vpr.screenlate.core.photos
 
 import android.content.ContentValues
 import android.content.Context
+import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import dagger.Binds
@@ -10,10 +12,13 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.Dispatchers
@@ -36,23 +41,37 @@ class PhotoGallery @Inject constructor(
         val resolver = context.contentResolver
         val mime = image.mimeType()
         val extension = when (mime) { "image/png" -> "png"; "image/webp" -> "webp"; "image/heif" -> "heic"; else -> "jpg" }
-        val name = "Screenlate_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS")) + ".$extension"
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, name)
-            put(MediaStore.Images.Media.MIME_TYPE, mime)
-            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Screenlate")
-            put(MediaStore.Images.Media.IS_PENDING, 1)
-        }
-        publishImage(object : ImagePublication<Uri> {
-            override fun create() = resolver.insert(MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values)
-                ?: throw IOException("Cannot create gallery image")
-            override fun open(item: Uri) = resolver.openOutputStream(item) ?: throw IOException("Cannot write gallery image")
-            override fun publish(item: Uri) {
-                val ready = ContentValues().apply { put(MediaStore.Images.Media.IS_PENDING, 0) }
-                if (resolver.update(item, ready, null, null) != 1) throw IOException("Cannot publish gallery image")
+        val name = "Screenlate_" + SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(Date()) + ".$extension"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, name)
+                put(MediaStore.Images.Media.MIME_TYPE, mime)
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Screenlate")
+                put(MediaStore.Images.Media.IS_PENDING, 1)
             }
-            override fun remove(item: Uri) { resolver.delete(item, null, null) }
-        }, image::copyTo)
+            publishImage(object : ImagePublication<Uri> {
+                override fun create() = resolver.insert(MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values)
+                    ?: throw IOException("Cannot create gallery image")
+                override fun open(item: Uri) = resolver.openOutputStream(item) ?: throw IOException("Cannot write gallery image")
+                override fun publish(item: Uri) {
+                    val ready = ContentValues().apply { put(MediaStore.Images.Media.IS_PENDING, 0) }
+                    if (resolver.update(item, ready, null, null) != 1) throw IOException("Cannot publish gallery image")
+                }
+                override fun remove(item: Uri) { resolver.delete(item, null, null) }
+            }, image::copyTo)
+        } else {
+            val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Screenlate").apply { mkdirs() }
+            val file = File(dir, name)
+            publishImage(object : ImagePublication<File> {
+                override fun create() = file
+                override fun open(item: File) = FileOutputStream(item)
+                override fun publish(item: File) {
+                    MediaScannerConnection.scanFile(context, arrayOf(item.absolutePath), arrayOf(mime), null)
+                }
+                override fun remove(item: File) { item.delete() }
+            }, image::copyTo)
+            Uri.fromFile(file)
+        }
     }
 }
 

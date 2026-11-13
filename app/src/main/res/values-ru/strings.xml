@@ -347,6 +347,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Настройки аудио</string>
     <string name="problems_dismiss">Скрыть</string>
+    <string name="problems_outdated_webview_title">Устаревший WebView (%1$s)</string>
+    <string name="problems_outdated_webview_text">Компонент Android System WebView на устройстве устарел. Если всплывающее окно словаря отображается некорректно, обновите Android System WebView или Google Chrome в магазине приложений.</string>
     <string name="anki_problem_title">Настройка Anki</string>
     <string name="anki_problem_fix_model">Выберите тип записи заново.</string>
     <string name="anki_problem_fix_deck">Выберите колоду заново.</string>

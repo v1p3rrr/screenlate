@@ -1,5 +1,13 @@
 'use strict';
 
+// Polyfill for Element.prototype.replaceChildren on older WebViews (prior to Chrome 86)
+if (!Element.prototype.replaceChildren) {
+    Element.prototype.replaceChildren = function (...nodes) {
+        while (this.firstChild) this.removeChild(this.firstChild);
+        this.append(...nodes);
+    };
+}
+
 /*
  * Popup page. Kotlin drives it through Popup.render / update / push / setStyles with JSON states:
  *

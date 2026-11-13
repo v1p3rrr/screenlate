@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.content.pm.PackageInfoCompat
 import com.vpr.screenlate.BuildConfig
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
@@ -82,7 +83,7 @@ class AppUpdates @Inject constructor(
     val supported: Boolean get() = !BuildConfig.DEBUG
 
     private val installedCode: Long
-        get() = context.packageManager.getPackageInfo(context.packageName, 0).longVersionCode
+        get() = PackageInfoCompat.getLongVersionCode(context.packageManager.getPackageInfo(context.packageName, 0))
 
     /** The automatic check when the app opens: at most once a day, and only when announcements are on. */
     suspend fun checkIfDue() {
@@ -211,12 +212,25 @@ class AppUpdates @Inject constructor(
     /** A newer version of this app signed with the same certificates. */
     private fun verify(file: File): Boolean = runCatching {
         val packageManager = context.packageManager
-        val flags = PackageManager.GET_SIGNING_CERTIFICATES
-        val archive = packageManager.getPackageArchiveInfo(file.path, flags) ?: return false
-        val installed = packageManager.getPackageInfo(context.packageName, flags)
-        archive.packageName == context.packageName &&
-            archive.longVersionCode > installed.longVersionCode &&
-            archive.signingInfo?.apkContentsSigners?.toSet() == installed.signingInfo?.apkContentsSigners?.toSet()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val flags = PackageManager.GET_SIGNING_CERTIFICATES
+            val archive = packageManager.getPackageArchiveInfo(file.path, flags) ?: return false
+            val installed = packageManager.getPackageInfo(context.packageName, flags)
+            archive.packageName == context.packageName &&
+                PackageInfoCompat.getLongVersionCode(archive) > PackageInfoCompat.getLongVersionCode(installed) &&
+                archive.signingInfo?.apkContentsSigners?.toSet() == installed.signingInfo?.apkContentsSigners?.toSet()
+        } else {
+            @Suppress("DEPRECATION")
+            val flags = PackageManager.GET_SIGNATURES
+            @Suppress("DEPRECATION")
+            val archive = packageManager.getPackageArchiveInfo(file.path, flags) ?: return false
+            @Suppress("DEPRECATION")
+            val installed = packageManager.getPackageInfo(context.packageName, flags)
+            @Suppress("DEPRECATION")
+            archive.packageName == context.packageName &&
+                PackageInfoCompat.getLongVersionCode(archive) > PackageInfoCompat.getLongVersionCode(installed) &&
+                archive.signatures?.toSet() == installed.signatures?.toSet()
+        }
     }.getOrDefault(false)
 
     private fun install(file: File) {

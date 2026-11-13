@@ -76,6 +76,8 @@
     <string name="overlay_keep_alive_channel">השירות פועל</string>
     <string name="overlay_keep_alive_title">Screenlate מוכנה</string>
     <string name="overlay_keep_alive_text">הבועה נשארת זמינה ברקע</string>
+    <string name="overlay_capture_channel">לכידת מסך</string>
+    <string name="overlay_capture_notification_title">לכידת מסך פעילה</string>
     <string name="overlay_service_off_channel">השירות כבוי</string>
     <string name="overlay_service_off_title">השירות של Screenlate כבוי</string>
     <string name="overlay_service_off_text">הבועה נעלמה כי שירות הנגישות של Screenlate כובה. אפשר להקיש כאן כדי להפעיל אותו שוב.</string>

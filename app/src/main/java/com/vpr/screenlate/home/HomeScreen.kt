@@ -381,6 +381,16 @@ private fun ProblemsCard(
                                 }
                             }
                         }
+                        is HomeProblem.OutdatedWebView -> {
+                            Text(
+                                stringResource(R.string.problems_outdated_webview_title, problem.version),
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                            Text(
+                                stringResource(R.string.problems_outdated_webview_text),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
                     }
                 }
             }

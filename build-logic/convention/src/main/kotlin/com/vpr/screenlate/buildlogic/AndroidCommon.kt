@@ -7,7 +7,7 @@ import org.gradle.kotlin.dsl.dependencies
 
 object ScreenlateSdk {
     const val COMPILE = 37
-    const val MIN = 30
+    const val MIN = 24
     const val TARGET = 37
 
     /** Used to build native code and to strip native libraries when packaging. */

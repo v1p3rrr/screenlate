@@ -43,7 +43,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
     suspend fun edit(image: NoteImage, focus: Box?): Bitmap? {
         cancel()
         val request = generation
-        val bounds = windowManager.maximumWindowMetrics.bounds
+        val bounds = WindowMetricsCompat.screenBounds(windowManager)
         val preview = image.preview(bounds.width(), bounds.height())
         // A scan can close while the preview is decoded. It must not open an editor afterwards.
         if (request != generation) return null
@@ -98,8 +98,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                     if (width <= 0 || height <= 0 || bar.top <= 0) return@addOnLayoutChangeListener
                     val padding = 16 * density
-                    val top = windowManager.maximumWindowMetrics.windowInsets
-                        .getInsetsIgnoringVisibility(WindowInsets.Type.statusBars()).top + padding
+                    val top = WindowMetricsCompat.statusBarHeight(context, windowManager) + padding
                     val area = Box(
                         padding,
                         top,
@@ -171,8 +170,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
     }
 
     private fun navigationBarHeight(): Int {
-        val insets = windowManager.maximumWindowMetrics.windowInsets
-        return insets.getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars()).bottom
+        return WindowMetricsCompat.navigationBarHeight(context, windowManager)
     }
 
     private companion object {

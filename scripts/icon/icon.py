@@ -174,6 +174,14 @@ def adaptive():
             '</adaptive-icon>\n')
 
 
+def legacy():
+    return ('<?xml version="1.0" encoding="utf-8"?>\n' + HEADER +
+            '<layer-list xmlns:android="http://schemas.android.com/apk/res/android">\n'
+            '    <item android:drawable="@drawable/ic_launcher_background" />\n'
+            '    <item android:drawable="@drawable/ic_launcher_foreground" />\n'
+            '</layer-list>\n')
+
+
 def design_svg(items, background, mono=False, viewport=108):
     """Reference SVG straight from the design shapes, holes as SVG masks (independent of the path operations)."""
     body, n = "", 0
@@ -218,8 +226,10 @@ def main():
         "app/src/main/res/drawable/ic_launcher_monochrome.xml": vector(flatten(RELEASE, mono=True), 108, 108),
         "app/src/debug/res/drawable/ic_launcher_foreground.xml": vector(flatten(DEBUG), 108, 108),
         "app/src/debug/res/drawable/ic_launcher_monochrome.xml": vector(flatten(DEBUG, mono=True), 108, 108),
-        "app/src/main/res/mipmap-anydpi/ic_launcher.xml": adaptive(),
-        "app/src/main/res/mipmap-anydpi/ic_launcher_round.xml": adaptive(),
+        "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml": adaptive(),
+        "app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml": adaptive(),
+        "app/src/main/res/mipmap-anydpi/ic_launcher.xml": legacy(),
+        "app/src/main/res/mipmap-anydpi/ic_launcher_round.xml": legacy(),
         "overlay/src/main/res/drawable/ic_tile_bubble.xml": vector(small, 24, 24),
         "dictionary/api/src/main/res/drawable/ic_dictionary_import.xml": vector(small, 24, 24),
         "docs/images/icon.svg": readme_svg(flatten(RELEASE)),

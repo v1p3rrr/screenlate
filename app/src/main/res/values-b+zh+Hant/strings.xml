@@ -334,6 +334,8 @@
     <string name="problems_audio_source_line">• %1$s：%2$s</string>
     <string name="problems_open_audio">音訊設定</string>
     <string name="problems_dismiss">忽略</string>
+    <string name="problems_outdated_webview_title">WebView 版本過舊 (%1$s)</string>
+    <string name="problems_outdated_webview_text">裝置的 Android System WebView 版本過舊。如果詞典彈出視窗無法正常顯示，請在應用程式商店中更新 Android System WebView 或 Google Chrome。</string>
     <string name="anki_problem_title">Anki 設定</string>
     <string name="anki_problem_fix_model">請重新選擇筆記類型。</string>
     <string name="anki_problem_fix_deck">請重新選擇牌組。</string>

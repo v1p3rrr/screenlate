@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
-import java.time.ZoneOffset
+import java.util.TimeZone
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -19,7 +19,7 @@ class LogFileTest {
         directory,
         maxFileBytes,
         clock = { 1_761_120_000_123 },
-        zone = ZoneOffset.UTC,
+        timeZone = TimeZone.getTimeZone("UTC"),
         processId = 4321,
         flushMs = 60_000,
         crashFlushMs = 60_000,

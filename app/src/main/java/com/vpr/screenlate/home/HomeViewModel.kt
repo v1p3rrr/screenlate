@@ -1,7 +1,10 @@
 package com.vpr.screenlate.home
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.webkit.WebViewCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.AnkiProblem
 import com.vpr.screenlate.core.anki.AnkiStatus
@@ -144,11 +147,15 @@ sealed interface HomeProblem {
 
     /** The audio sources of one language that failed recently; [language] names it while several are turned on. */
     data class AudioSources(val failures: List<AudioSourceFailure>, val language: Language? = null) : HomeProblem
+
+    /** An outdated system WebView (Chrome < 80); the popup dictionary needs modern web features. */
+    data class OutdatedWebView(val version: String) : HomeProblem
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    @param:ApplicationContext private val context: Context,
     private val repository: DictionaryRepository,
     private val imports: DictionaryImports,
     private val repair: DictionaryRepair,
@@ -295,6 +302,9 @@ class HomeViewModel @Inject constructor(
             }
             val order = listOf(languages.active) + (languages.turnedOn - languages.active)
             found += audioFailureCards(audio.recentFailures(), order.map { it to audioSettings.current(it).sources }, languages.several)
+            checkWebViewVersion(context)?.let {
+                found += HomeProblem.OutdatedWebView(it)
+            }
             checked.value = found
         }
     }
@@ -373,3 +383,14 @@ class HomeViewModel @Inject constructor(
 
 private fun ankiSummary(settings: AnkiSettings): AnkiSummary? =
     if (settings.configured) AnkiSummary(settings.deckName.orEmpty(), settings.modelName.orEmpty()) else null
+
+internal fun checkWebViewVersion(context: Context): String? {
+    val info = try {
+        WebViewCompat.getCurrentWebViewPackage(context)
+    } catch (_: Exception) {
+        null
+    } ?: return null
+    val version = info.versionName ?: return null
+    val major = version.split('.').firstOrNull()?.toIntOrNull() ?: return null
+    return if (major < 80) version else null
+}

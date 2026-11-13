@@ -76,6 +76,8 @@
     <string name="overlay_keep_alive_channel">服務執行中</string>
     <string name="overlay_keep_alive_title">Screenlate 已就緒</string>
     <string name="overlay_keep_alive_text">在背景保持懸浮球可用</string>
+    <string name="overlay_capture_channel">螢幕截圖</string>
+    <string name="overlay_capture_notification_title">螢幕截圖已啟用</string>
     <string name="overlay_service_off_channel">服務已關閉</string>
     <string name="overlay_service_off_title">Screenlate 服務已關閉</string>
     <string name="overlay_service_off_text">Screenlate 的無障礙服務已被關閉，因此懸浮球消失了。輕觸即可重新開啟。</string>

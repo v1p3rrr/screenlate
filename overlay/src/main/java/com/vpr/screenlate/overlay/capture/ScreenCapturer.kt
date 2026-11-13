@@ -29,20 +29,39 @@ sealed class CaptureException(message: String) : Exception(message) {
     class Failed(code: Int) : CaptureException("Screenshot failed with code $code")
 }
 
+interface ScreenCapturer {
+    /** [withoutOverlays] runs the display capture, which shows every window, with the app's overlays hidden. */
+    suspend fun capture(
+        pointX: Int,
+        pointY: Int,
+        withoutOverlays: suspend (displayCapture: suspend () -> CapturedScreen) -> CapturedScreen,
+    ): CapturedScreen
+
+    companion object {
+        fun create(service: AccessibilityService, executor: Executor): ScreenCapturer =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                ModernAccessibilityCapturer(service, executor)
+            } else {
+                LegacyMediaProjectionCapturer(service, executor)
+            }
+    }
+}
+
 /**
- * Takes screenshots through the accessibility service. The system calls back on [executor], where the screenshot is
- * copied into a bitmap; a thread other than the main one keeps the copy from holding up the overlay.
+ * Takes screenshots through the accessibility service on API 30+. The system calls back on [executor], where the
+ * screenshot is copied into a bitmap; a thread other than the main one keeps the copy from holding up the overlay.
  *
  * On API 34+ only the app window under the given point is captured, so our own overlays never appear in the image.
  * Older versions, and the fallback when no window is found or its capture fails, capture the whole display; the
  * caller hides the overlays around that capture (see [capture]).
  */
-class ScreenCapturer(
+@RequiresApi(Build.VERSION_CODES.R)
+class ModernAccessibilityCapturer(
     private val service: AccessibilityService,
     private val executor: Executor,
-) {
-    /** [withoutOverlays] runs the display capture, which shows every window, with the app's overlays hidden. */
-    suspend fun capture(
+) : ScreenCapturer {
+
+    override suspend fun capture(
         pointX: Int,
         pointY: Int,
         withoutOverlays: suspend (displayCapture: suspend () -> CapturedScreen) -> CapturedScreen,

@@ -338,6 +338,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">تنظیمات صوت</string>
     <string name="problems_dismiss">رد کردن</string>
+    <string name="problems_outdated_webview_title">نسخه قدیمی WebView (%1$s)</string>
+    <string name="problems_outdated_webview_text">نسخه Android System WebView دستگاه قدیمی است. اگر پنجره فرهنگ لغت به درستی نمایش داده نمی‌شود، Android System WebView یا Google Chrome را از فروشگاه برنامه به‌روزرسانی کنید.</string>
     <string name="anki_problem_title">راه‌اندازی Anki</string>
     <string name="anki_problem_fix_model">نوع یادداشت را دوباره انتخاب کنید.</string>
     <string name="anki_problem_fix_deck">دسته را دوباره انتخاب کنید.</string>

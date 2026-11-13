@@ -346,6 +346,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Ustawienia dźwięku</string>
     <string name="problems_dismiss">Ukryj</string>
+    <string name="problems_outdated_webview_title">Nieaktualny WebView (%1$s)</string>
+    <string name="problems_outdated_webview_text">Komponent Android System WebView na urządzeniu jest nieaktualny. Jeśli okienko słownika nie wyświetla się poprawnie, zaktualizuj Android System WebView lub Google Chrome w sklepie z aplikacjami.</string>
     <string name="anki_problem_title">Konfiguracja Anki</string>
     <string name="anki_problem_fix_model">Wybierz typ notatki ponownie.</string>
     <string name="anki_problem_fix_deck">Wybierz talię ponownie.</string>

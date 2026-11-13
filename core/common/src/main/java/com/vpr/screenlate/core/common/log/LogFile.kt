@@ -4,10 +4,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -22,7 +22,7 @@ class LogFile(
     private val directory: File,
     private val maxFileBytes: Long = DEFAULT_MAX_FILE_BYTES,
     private val clock: () -> Long = System::currentTimeMillis,
-    private val zone: ZoneId = ZoneId.systemDefault(),
+    private val timeZone: TimeZone = TimeZone.getDefault(),
     private val processId: Int = android.os.Process.myPid(),
     private val flushMs: Long = FLUSH_MS,
     private val crashFlushMs: Long = CRASH_FLUSH_MS,
@@ -40,7 +40,11 @@ class LogFile(
     }
     private var output: OutputStream? = null
     private var size = 0L
-    private val time = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+    private val timeFormat = object : ThreadLocal<SimpleDateFormat>() {
+        override fun initialValue() = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).apply {
+            timeZone = this@LogFile.timeZone
+        }
+    }
 
     /** Queues a line; [error]'s stack trace follows it as logcat prints one. */
     fun append(level: Char, tag: String, message: String, error: Throwable? = null) {
@@ -76,7 +80,7 @@ class LogFile(
     }
 
     internal fun format(level: Char, tag: String, message: String, error: Throwable?): String {
-        val stamp = time.format(Instant.ofEpochMilli(clock()).atZone(zone))
+        val stamp = timeFormat.get()!!.format(Date(clock()))
         val prefix = String.format(Locale.US, "%s %5d %5d %c %s: ", stamp, processId, android.os.Process.myTid(), level, tag)
         val body = if (error == null) message else message + "\n" + error.stackTraceToString().trimEnd()
         return buildString { body.lineSequence().forEach { append(prefix).append(it).append('\n') } }

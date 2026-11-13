@@ -76,6 +76,8 @@
     <string name="overlay_keep_alive_channel">الخدمة قيد التشغيل</string>
     <string name="overlay_keep_alive_title">Screenlate جاهز</string>
     <string name="overlay_keep_alive_text">إبقاء الفقاعة متاحة في الخلفية</string>
+    <string name="overlay_capture_channel">التقاط الشاشة</string>
+    <string name="overlay_capture_notification_title">التقاط الشاشة نشط</string>
     <string name="overlay_service_off_channel">توقف الخدمة</string>
     <string name="overlay_service_off_title">خدمة Screenlate متوقفة</string>
     <string name="overlay_service_off_text">اختفت الفقاعة لأن خدمة سهولة الاستخدام في Screenlate أُوقفت. انقر لتفعيلها من جديد.</string>

@@ -39,15 +39,17 @@ internal object ServiceOffNotification {
     fun show(context: Context): Boolean {
         if (!allowed(context)) return false
         val manager = NotificationManagerCompat.from(context)
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            context.getString(R.string.overlay_service_off_channel),
-            NotificationManager.IMPORTANCE_HIGH,
-        ).apply {
-            setSound(null, null)
-            enableVibration(false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                context.getString(R.string.overlay_service_off_channel),
+                NotificationManager.IMPORTANCE_HIGH,
+            ).apply {
+                setSound(null, null)
+                enableVibration(false)
+            }
+            context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
-        context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val open = PendingIntent.getActivity(
             context,
             0,

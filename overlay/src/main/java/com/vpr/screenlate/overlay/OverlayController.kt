@@ -71,6 +71,7 @@ import com.vpr.screenlate.overlay.anki.ScreenNoteImage
 import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
+import com.vpr.screenlate.overlay.capture.MediaProjectionHolder
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
 import com.vpr.screenlate.overlay.capture.SharedScreenshot
 import com.vpr.screenlate.overlay.fonts.PageAppearance
@@ -100,6 +101,7 @@ import com.vpr.screenlate.overlay.ui.Flags
 import com.vpr.screenlate.overlay.ui.DockPlacement
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
+import com.vpr.screenlate.overlay.ui.WindowMetricsCompat
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import com.vpr.screenlate.overlay.web.PageState
@@ -211,7 +213,7 @@ class OverlayController(
     private val popup = PopupController(service, windowManager, PopupCallbacks())
     private val bubbleMenu = BubbleMenu(service, windowManager)
     // The screenshot callback copies the image into a bitmap, which should not hold up the main thread.
-    private val capturer = ScreenCapturer(service, Dispatchers.Default.asExecutor())
+    private val capturer = ScreenCapturer.create(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
     private val screenReads = ScreenReads({ lookupSources.source.value }, ControllerScreenReader())
     /** The language switched to last; the next scan takes it, by a tap or when the bubble leaves the dock. */
@@ -357,6 +359,9 @@ class OverlayController(
         popupNotes.release()
         mainHandler.removeCallbacksAndMessages(null)
         detachWindows()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            MediaProjectionHolder.stop(service)
+        }
         popup.release()
     }
 
@@ -457,6 +462,9 @@ class OverlayController(
             OverlayWindows.Entry(popup::attach, popup::detach),
             OverlayWindows.Entry({ OverlayWindows.add(windowManager, bubbleView, bubbleParams) }, { windowManager.removeView(bubbleView) }),
         )
+        if (attached && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            scope.launch { MediaProjectionHolder.getOrCreate(service) }
+        }
     }
 
     private fun detachWindows() {
@@ -469,6 +477,9 @@ class OverlayController(
         popup.detach()
         windowManager.removeView(layerView)
         attached = false
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            MediaProjectionHolder.stop(service)
+        }
     }
 
     private fun resizeBubble(size: Int) {
@@ -479,54 +490,83 @@ class OverlayController(
     }
 
     private fun screenBounds(): Box {
-        val bounds = windowManager.maximumWindowMetrics.bounds
+        val bounds = WindowMetricsCompat.screenBounds(windowManager)
         return Box(0f, 0f, bounds.width().toFloat(), bounds.height().toFloat())
     }
 
     /** The screen for the dock: system bars, gesture areas and an open keyboard. */
     private fun dockScreen(): DockPlacement.Screen {
-        val metrics = windowManager.maximumWindowMetrics
-        val bounds = metrics.bounds
-        // Only the current metrics tell where a keyboard is.
-        val current = windowManager.currentWindowMetrics.windowInsets
-        val gestures = metrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.mandatorySystemGestures())
-        val keyboard = current.getInsets(WindowInsets.Type.ime()).bottom
-        val bars = current.getInsets(WindowInsets.Type.systemBars())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val metrics = windowManager.maximumWindowMetrics
+            val bounds = metrics.bounds
+            // Only the current metrics tell where a keyboard is.
+            val current = windowManager.currentWindowMetrics.windowInsets
+            val gestures = metrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.mandatorySystemGestures())
+            val keyboard = current.getInsets(WindowInsets.Type.ime()).bottom
+            val bars = current.getInsets(WindowInsets.Type.systemBars())
+            return DockPlacement.Screen(
+                width = bounds.width().toFloat(),
+                height = bounds.height().toFloat(),
+                usable = usableBounds(metrics),
+                gestures = Box(
+                    gestures.left.toFloat(),
+                    gestures.top.toFloat(),
+                    (bounds.width() - gestures.right).toFloat(),
+                    (bounds.height() - gestures.bottom).toFloat(),
+                ),
+                keyboardTop = if (current.isVisible(WindowInsets.Type.ime()) && keyboard > 0) {
+                    (bounds.height() - keyboard).toFloat()
+                } else {
+                    null
+                },
+                shownBars = buildSet {
+                    if (bars.left > 0) add(DockSide.LEFT)
+                    if (bars.top > 0) add(DockSide.TOP)
+                    if (bars.right > 0) add(DockSide.RIGHT)
+                    if (bars.bottom > 0) add(DockSide.BOTTOM)
+                },
+            )
+        }
+        val bounds = WindowMetricsCompat.screenBounds(windowManager)
+        val statusBar = WindowMetricsCompat.statusBarHeight(service, windowManager)
+        val navBar = WindowMetricsCompat.navigationBarHeight(service, windowManager)
+        val usable = usableBounds()
         return DockPlacement.Screen(
             width = bounds.width().toFloat(),
             height = bounds.height().toFloat(),
-            usable = usableBounds(metrics),
-            gestures = Box(
-                gestures.left.toFloat(),
-                gestures.top.toFloat(),
-                (bounds.width() - gestures.right).toFloat(),
-                (bounds.height() - gestures.bottom).toFloat(),
-            ),
-            keyboardTop = if (current.isVisible(WindowInsets.Type.ime()) && keyboard > 0) {
-                (bounds.height() - keyboard).toFloat()
-            } else {
-                null
-            },
+            usable = usable,
+            gestures = usable,
+            keyboardTop = null,
             shownBars = buildSet {
-                if (bars.left > 0) add(DockSide.LEFT)
-                if (bars.top > 0) add(DockSide.TOP)
-                if (bars.right > 0) add(DockSide.RIGHT)
-                if (bars.bottom > 0) add(DockSide.BOTTOM)
+                if (statusBar > 0) add(DockSide.TOP)
+                if (navBar > 0) add(DockSide.BOTTOM)
             },
         )
     }
 
     /** Screen area not covered by system bars or the display cutout. */
-    private fun usableBounds(metrics: WindowMetrics = windowManager.maximumWindowMetrics): Box {
-        val insets = metrics.windowInsets.getInsetsIgnoringVisibility(
-            WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout(),
-        )
-        val bounds = metrics.bounds
+    private fun usableBounds(metrics: WindowMetrics? = null): Box {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val m = metrics ?: windowManager.maximumWindowMetrics
+            val insets = m.windowInsets.getInsetsIgnoringVisibility(
+                WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout(),
+            )
+            val bounds = m.bounds
+            return Box(
+                insets.left.toFloat(),
+                insets.top.toFloat(),
+                (bounds.width() - insets.right).toFloat(),
+                (bounds.height() - insets.bottom).toFloat(),
+            )
+        }
+        val bounds = WindowMetricsCompat.screenBounds(windowManager)
+        val statusBar = WindowMetricsCompat.statusBarHeight(service, windowManager)
+        val navBar = WindowMetricsCompat.navigationBarHeight(service, windowManager)
         return Box(
-            insets.left.toFloat(),
-            insets.top.toFloat(),
-            (bounds.width() - insets.right).toFloat(),
-            (bounds.height() - insets.bottom).toFloat(),
+            0f,
+            statusBar.toFloat(),
+            bounds.width().toFloat(),
+            (bounds.height() - navBar).toFloat(),
         )
     }
 

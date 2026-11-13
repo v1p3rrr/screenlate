@@ -342,6 +342,8 @@
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Audio settings</string>
     <string name="problems_dismiss">Dismiss</string>
+    <string name="problems_outdated_webview_title">Outdated WebView (%1$s)</string>
+    <string name="problems_outdated_webview_text">The device\'s Android System WebView is outdated. If dictionary popups do not display correctly, update Android System WebView or Google Chrome in the app store.</string>
     <string name="anki_problem_title">Anki setup</string>
     <string name="anki_problem_fix_model">Choose the note type again.</string>
     <string name="anki_problem_fix_deck">Choose the deck again.</string>
