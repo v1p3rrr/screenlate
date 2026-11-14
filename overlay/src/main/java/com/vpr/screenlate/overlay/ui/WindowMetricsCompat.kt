@@ -46,7 +46,13 @@ object WindowMetricsCompat {
         return if (isLandscape && !isTablet) {
             val navWidth = resourceDimension(resources, "navigation_bar_width")
                 .takeIf { it > 0 } ?: resourceDimension(resources, "navigation_bar_height")
-            Rect(0, top, navWidth, 0)
+            @Suppress("DEPRECATION")
+            val rotation = runCatching { windowManager.defaultDisplay.rotation }.getOrDefault(android.view.Surface.ROTATION_0)
+            if (rotation == android.view.Surface.ROTATION_270) {
+                Rect(navWidth, top, 0, 0)
+            } else {
+                Rect(0, top, navWidth, 0)
+            }
         } else {
             val navHeight = resourceDimension(resources, "navigation_bar_height")
             Rect(0, top, 0, navHeight)

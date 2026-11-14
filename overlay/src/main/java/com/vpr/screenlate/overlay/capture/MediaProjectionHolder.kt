@@ -11,12 +11,14 @@ import com.vpr.screenlate.core.common.log.Log
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Manages the lifetime of [MediaProjection] for screen capture on Android 7.0–10 (API 24–29).
  */
 object MediaProjectionHolder {
     private const val TAG = "MediaProjection"
+    private const val CONSENT_TIMEOUT_MS = 30_000L
     private val mutex = Mutex()
     private var projection: MediaProjection? = null
     private var pendingConsent: CompletableDeferred<Pair<Int, Intent>?>? = null
@@ -78,7 +80,13 @@ object MediaProjectionHolder {
         val intent = Intent(context, MediaProjectionConsentActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
-        return deferred.await()
+        return try {
+            withTimeoutOrNull(CONSENT_TIMEOUT_MS) { deferred.await() }
+        } finally {
+            if (pendingConsent === deferred) {
+                pendingConsent = null
+            }
+        }
     }
 
     fun stop(context: Context) {
