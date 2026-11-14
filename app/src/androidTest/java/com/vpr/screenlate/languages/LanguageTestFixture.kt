@@ -92,6 +92,7 @@ internal class LanguageTestFixture : AutoCloseable {
         })
 
     fun search(): SearchViewModel {
+        val appSettings = AppSettingsRepository(preferences)
         val audioSettings = AudioSettingsRepository(preferences)
         val translationSettings = TranslationSettingsRepository(preferences)
         val lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences)) { imports }
@@ -99,7 +100,7 @@ internal class LanguageTestFixture : AutoCloseable {
             lookup, AnkiDroid(context), AnkiNotes(ReadOnlyAnki(), ankiSettings), AudioFinder(context, client, audioSettings),
             audioSettings, AudioPlayer(context, audioSettings),
             SentenceTranslation(SentenceTranslator(context, client, translationSettings), translationSettings),
-            AppSettingsRepository(preferences), PageAppearance(PopupAppearanceRepository(preferences), PopupFonts(context, client)), profiles,
+            appSettings, PageAppearance(PopupAppearanceRepository(preferences), PopupFonts(context, client), appSettings, context), profiles,
             LanguageInstallation(repository, imports, catalog, bundled, models, DeviceOcr(MlKitOcrEngine(), emptySet(), models, CatalogLanguageModels(catalog), OcrModelChoices(preferences)), OverlaySettingsRepository(preferences)),
         ).also { viewModels.put("search", it) }
     }

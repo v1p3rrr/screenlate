@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.ocr.mlkit
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.os.Build
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -122,7 +123,8 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     /** Symbol boxes checked against the pixels, see [SymbolLag]. */
     private fun aligned(image: Bitmap, rect: Rect, symbols: List<Box>, vertical: Boolean): List<Box> {
         val area = Rect(rect)
-        if (symbols.size < 3 || image.config == Bitmap.Config.HARDWARE) return symbols
+        if (symbols.size < 3) return symbols
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && image.config == Bitmap.Config.HARDWARE) return symbols
         if (!area.intersect(0, 0, image.width, image.height)) return symbols
         val pixels = IntArray(area.width() * area.height())
         image.getPixels(pixels, 0, area.width(), area.left, area.top, area.width(), area.height())
