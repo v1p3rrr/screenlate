@@ -9,6 +9,13 @@
   the remaining device and performance checks are pending.
 - Open color findings: some custom seeds have insufficient contrast, and wallpaper colors apply only to the
   Compose theme. The usage guide and the feature scenarios in the test model still need updates.
+- Verified merge `c0a82d90`: 2,129 JVM tests passed and four were skipped, and 164 page tests passed.
+  The x86_64 debug APK installed and launched on API 24. The home screen reported WebView 69, and the
+  Appearance page saved the Emerald preset and restored Violet. The full capture and lookup flows remain open.
+- Built the minified ARM64 APK from `c0a82d90`, package `com.vpr.screenlate.debug`, version
+  `1.0.1-c0a82d90-min` (10001), minSdk 24. It is 23,205,071 bytes, and the signature matches the previous
+  local Dev APK. The APK, R8 mapping and build log are in ignored `testdata/local-research/builds/`.
+  APK SHA-256: `09cf49640581695bb3a5b95667d3071e29bdf3cab1eec07a8ed20234e3887103`.
 
 ## Color scheme customization and verification (2026-11-14)
 
