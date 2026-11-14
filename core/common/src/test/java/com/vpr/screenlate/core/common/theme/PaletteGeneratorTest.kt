@@ -41,6 +41,36 @@ class PaletteGeneratorTest {
     }
 
     @Test
+    fun rgbToHsvRoundtrip() {
+        val testColors = intArrayOf(
+            0xFFFF0000.toInt(), // Red
+            0xFF00FF00.toInt(), // Green
+            0xFF0000FF.toInt(), // Blue
+            0xFFFFFFFF.toInt(), // White
+            0xFF000000.toInt(), // Black
+            0xFF808080.toInt(), // Gray
+            0xFF7C5CFF.toInt(), // Violet
+            0xFF00FFFF.toInt(), // Cyan
+            0xFFFF00FF.toInt(), // Magenta
+            0xFFFFFF00.toInt(), // Yellow
+            0xFFEA580C.toInt(), // Sunset
+        )
+
+        for (color in testColors) {
+            val hsv = ColorMath.rgbToHsv(color)
+            val recovered = ColorMath.hsvToRgb(hsv[0], hsv[1], hsv[2])
+
+            val rDiff = abs(ColorMath.red(color) - ColorMath.red(recovered))
+            val gDiff = abs(ColorMath.green(color) - ColorMath.green(recovered))
+            val bDiff = abs(ColorMath.blue(color) - ColorMath.blue(recovered))
+
+            assertTrue("HSV Red diff $rDiff too large for color ${ColorMath.toHex(color)}", rDiff <= 1)
+            assertTrue("HSV Green diff $gDiff too large for color ${ColorMath.toHex(color)}", gDiff <= 1)
+            assertTrue("HSV Blue diff $bDiff too large for color ${ColorMath.toHex(color)}", bDiff <= 1)
+        }
+    }
+
+    @Test
     fun luminanceValues() {
         assertEquals(0.0f, ColorMath.luminance(0xFF000000.toInt()), 0.001f)
         assertEquals(1.0f, ColorMath.luminance(0xFFFFFFFF.toInt()), 0.001f)

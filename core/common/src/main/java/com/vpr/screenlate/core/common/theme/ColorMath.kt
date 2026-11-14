@@ -101,6 +101,72 @@ object ColorMath {
     }
 
     /**
+     * Converts a 32-bit ARGB color integer into HSV components.
+     *
+     * @param outHsv optional 3-element float array for receiving `[hue, saturation, value]`.
+     * @return float array with `hue` in `[0f, 360f)`, `saturation` in `[0f, 1f]`, and `value` in `[0f, 1f]`.
+     */
+    fun rgbToHsv(color: Int, outHsv: FloatArray = FloatArray(3)): FloatArray {
+        val r = red(color) / 255f
+        val g = green(color) / 255f
+        val b = blue(color) / 255f
+
+        val max = maxOf(r, maxOf(g, b))
+        val min = minOf(r, minOf(g, b))
+        val delta = max - min
+
+        val rawH: Float = when {
+            delta == 0f -> 0f
+            max == r -> 60f * (((g - b) / delta).rem(6f))
+            max == g -> 60f * (((b - r) / delta) + 2f)
+            else -> 60f * (((r - g) / delta) + 4f)
+        }
+        val h = if (rawH < 0f) rawH + 360f else rawH
+
+        val s = if (max == 0f) 0f else delta / max
+        val v = max
+
+        outHsv[0] = (h % 360f + 360f) % 360f
+        outHsv[1] = s.coerceIn(0f, 1f)
+        outHsv[2] = v.coerceIn(0f, 1f)
+        return outHsv
+    }
+
+    /**
+     * Converts HSV color components into a 32-bit ARGB color integer.
+     *
+     * @param hue in `[0f, 360f)`.
+     * @param saturation in `[0f, 1f]`.
+     * @param value in `[0f, 1f]`.
+     * @param alpha in `0..255`.
+     */
+    fun hsvToRgb(hue: Float, saturation: Float, value: Float, alpha: Int = 0xFF): Int {
+        val h = (hue % 360f + 360f) % 360f
+        val s = saturation.coerceIn(0f, 1f)
+        val v = value.coerceIn(0f, 1f)
+
+        val c = v * s
+        val x = c * (1f - abs((h / 60f).rem(2f) - 1f))
+        val m = v - c
+
+        val (rPrime, gPrime, bPrime) = when ((h / 60f).toInt()) {
+            0 -> Triple(c, x, 0f)
+            1 -> Triple(x, c, 0f)
+            2 -> Triple(0f, c, x)
+            3 -> Triple(0f, x, c)
+            4 -> Triple(x, 0f, c)
+            else -> Triple(c, 0f, x)
+        }
+
+        val r = ((rPrime + m) * 255f).roundToInt().coerceIn(0, 255)
+        val g = ((gPrime + m) * 255f).roundToInt().coerceIn(0, 255)
+        val b = ((bPrime + m) * 255f).roundToInt().coerceIn(0, 255)
+        val a = alpha.coerceIn(0, 255)
+
+        return (a shl 24) or (r shl 16) or (g shl 8) or b
+    }
+
+    /**
      * Perceptual / photometric luminance using ITU-R BT.709 coefficients:
      * `0.2126 * R + 0.7152 * G + 0.0722 * B`.
      *

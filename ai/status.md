@@ -10,10 +10,10 @@
   - Independent bubble color selection in "Bubble settings" with "Use app theme color" toggle.
   - Compose theme integration supporting dynamic palette with e-ink override.
   - Popup WebView CSS dynamic bridge (`--accent`, `--matched-bg`, `--chip-bg`, `--border`) in `popup.js`.
-  - Settings UI: `AppColorsSection` redesign with `ColorPaletteSelector` (preset chips + wallpaper option on Android 12+ + custom color swatch) and `ColorPickerDialog` (HSL sliders + HEX field + live contrast preview).
+  - Settings UI: `AppColorsSection` with `ColorPaletteSelector`, dedicated synchronized `BubbleColorSection` in both Appearance settings and Bubble settings, and redesigned `ColorPickerDialog` with an interactive 2D saturation/brightness gradient canvas (finger drag), rainbow hue spectrum bar, and HEX field.
   - Complete translations across all 16 project locales (`TranslationsTest` passing).
   - All test suites passing: `./gradlew testDebugUnitTest` and `npm --prefix scripts/page-tests test` (163/163 JS tests).
-  - Verified on emulator (`Screenlate_API30_x86`): preset switching, custom color selection (`#00BCD4`), and independent bubble color (`Sunset`).
+  - Verified on emulator (`Screenlate_API30_x86`): preset switching, 2D gradient color picker canvas touch interaction, and synchronized bubble color setting across screens.
   - UI screenshots captured and presented to the owner.
 
 ## Android 7 support planned for the future (2026-11-12)
