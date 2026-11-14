@@ -355,7 +355,7 @@
     <string name="problems_open_audio">إعدادات الصوت</string>
     <string name="problems_dismiss">تجاهل</string>
     <string name="problems_outdated_webview_title">WebView قديم (%1$s)</string>
-    <string name="problems_outdated_webview_text">إصدار Android System WebView على الجهاز قديم. إذا كانت النافذة المنبثقة للقاموس لا تظهر بشكل صحيح، فيرجى تحديث Android System WebView أو Google Chrome من مت متجر التطبيقات.</string>
+    <string name="problems_outdated_webview_text">إصدار Android System WebView على الجهاز قديم. إذا كانت النافذة المنبثقة للقاموس لا تظهر بشكل صحيح، فيرجى تحديث Android System WebView أو Google Chrome من متجر التطبيقات.</string>
     <string name="anki_problem_title">إعداد Anki</string>
     <string name="anki_problem_fix_model">اختر نوع الملاحظة من جديد.</string>
     <string name="anki_problem_fix_deck">اختر الرزمة من جديد.</string>

@@ -155,7 +155,7 @@ sealed interface HomeProblem {
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+    @ApplicationContext private val context: Context,
     private val repository: DictionaryRepository,
     private val imports: DictionaryImports,
     private val repair: DictionaryRepair,

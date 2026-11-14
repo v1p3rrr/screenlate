@@ -359,9 +359,6 @@ class OverlayController(
         popupNotes.release()
         mainHandler.removeCallbacksAndMessages(null)
         detachWindows()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            MediaProjectionHolder.stop(service)
-        }
         popup.release()
     }
 
@@ -525,9 +522,7 @@ class OverlayController(
             )
         }
         val bounds = WindowMetricsCompat.screenBounds(windowManager)
-        val statusBar = WindowMetricsCompat.statusBarHeight(service, windowManager)
-        val navBar = WindowMetricsCompat.navigationBarHeight(service, windowManager)
-        val usable = legacyUsableBounds(bounds, statusBar, navBar)
+        val usable = usableBounds()
         return DockPlacement.Screen(
             width = bounds.width().toFloat(),
             height = bounds.height().toFloat(),
@@ -535,20 +530,21 @@ class OverlayController(
             gestures = usable,
             keyboardTop = null,
             shownBars = buildSet {
-                if (statusBar > 0) add(DockSide.TOP)
-                if (navBar > 0) add(DockSide.BOTTOM)
+                if (usable.top > 0) add(DockSide.TOP)
+                if (bounds.height() - usable.bottom > 0) add(DockSide.BOTTOM)
+                if (bounds.width() - usable.right > 0) add(DockSide.RIGHT)
             },
         )
     }
 
     /** Screen area not covered by system bars or the display cutout. */
     private fun usableBounds(metrics: WindowMetrics? = null): Box {
+        val bounds = WindowMetricsCompat.screenBounds(windowManager)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val m = metrics ?: windowManager.maximumWindowMetrics
             val insets = m.windowInsets.getInsetsIgnoringVisibility(
                 WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout(),
             )
-            val bounds = m.bounds
             return Box(
                 insets.left.toFloat(),
                 insets.top.toFloat(),
@@ -556,19 +552,14 @@ class OverlayController(
                 (bounds.height() - insets.bottom).toFloat(),
             )
         }
-        val bounds = WindowMetricsCompat.screenBounds(windowManager)
-        val statusBar = WindowMetricsCompat.statusBarHeight(service, windowManager)
-        val navBar = WindowMetricsCompat.navigationBarHeight(service, windowManager)
-        return legacyUsableBounds(bounds, statusBar, navBar)
-    }
-
-    private fun legacyUsableBounds(bounds: android.graphics.Rect, statusBar: Int, navBar: Int): Box =
-        Box(
-            0f,
-            statusBar.toFloat(),
-            bounds.width().toFloat(),
-            (bounds.height() - navBar).toFloat(),
+        val insets = WindowMetricsCompat.systemBarInsets(service, windowManager)
+        return Box(
+            insets.left.toFloat(),
+            insets.top.toFloat(),
+            (bounds.width() - insets.right).toFloat(),
+            (bounds.height() - insets.bottom).toFloat(),
         )
+    }
 
     // endregion
 

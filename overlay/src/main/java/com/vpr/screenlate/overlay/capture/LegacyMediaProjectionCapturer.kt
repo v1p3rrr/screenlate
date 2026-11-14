@@ -11,9 +11,9 @@ import android.media.ImageReader
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.DisplayMetrics
 import android.view.WindowManager
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.overlay.ui.WindowMetricsCompat
 import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -45,12 +45,10 @@ class LegacyMediaProjectionCapturer(
             ?: throw CaptureException.ConsentDenied()
 
         val windowManager = service.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val metrics = DisplayMetrics()
-        @Suppress("DEPRECATION")
-        windowManager.defaultDisplay.getRealMetrics(metrics)
-        val width = metrics.widthPixels
-        val height = metrics.heightPixels
-        val density = metrics.densityDpi
+        val bounds = WindowMetricsCompat.screenBounds(windowManager)
+        val width = bounds.width()
+        val height = bounds.height()
+        val density = service.resources.displayMetrics.densityDpi
 
         val imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2)
         var virtualDisplay: VirtualDisplay? = null

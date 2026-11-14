@@ -1,9 +1,14 @@
 package com.vpr.screenlate.overlay.ui
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Build
 import android.util.DisplayMetrics
+import android.view.KeyCharacterMap
+import android.view.KeyEvent
+import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
 
@@ -21,23 +26,40 @@ object WindowMetricsCompat {
         return Rect(0, 0, metrics.widthPixels, metrics.heightPixels)
     }
 
-    fun statusBarHeight(context: Context, windowManager: WindowManager): Int {
+    fun systemBarInsets(context: Context, windowManager: WindowManager): Rect {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return windowManager.maximumWindowMetrics.windowInsets
-                .getInsetsIgnoringVisibility(WindowInsets.Type.statusBars()).top
+            val insets = windowManager.maximumWindowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
+            return Rect(insets.left, insets.top, insets.right, insets.bottom)
         }
-        return resourceDimension(context.resources, "status_bar_height")
+        val resources = context.resources
+        val top = resourceDimension(resources, "status_bar_height")
+        val viewConfig = runCatching { ViewConfiguration.get(context) }.getOrNull()
+        val hasHardwareKeys = viewConfig?.hasPermanentMenuKey() == true ||
+            (KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK) && KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME))
+        if (hasHardwareKeys) {
+            return Rect(0, top, 0, 0)
+        }
+        val config = resources.configuration
+        val isLandscape = config?.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val isTablet = (config?.smallestScreenWidthDp ?: 0) >= 600
+        return if (isLandscape && !isTablet) {
+            val navWidth = resourceDimension(resources, "navigation_bar_width")
+                .takeIf { it > 0 } ?: resourceDimension(resources, "navigation_bar_height")
+            Rect(0, top, navWidth, 0)
+        } else {
+            val navHeight = resourceDimension(resources, "navigation_bar_height")
+            Rect(0, top, 0, navHeight)
+        }
     }
 
-    fun navigationBarHeight(context: Context, windowManager: WindowManager): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return windowManager.maximumWindowMetrics.windowInsets
-                .getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars()).bottom
-        }
-        return resourceDimension(context.resources, "navigation_bar_height")
-    }
+    fun statusBarHeight(context: Context, windowManager: WindowManager): Int =
+        systemBarInsets(context, windowManager).top
 
-    internal fun resourceDimension(resources: android.content.res.Resources?, name: String): Int {
+    fun navigationBarHeight(context: Context, windowManager: WindowManager): Int =
+        systemBarInsets(context, windowManager).bottom
+
+    internal fun resourceDimension(resources: Resources?, name: String): Int {
         val resId = resources?.getIdentifier(name, "dimen", "android") ?: 0
         return if (resId > 0) resources?.getDimensionPixelSize(resId) ?: 0 else 0
     }
