@@ -147,10 +147,41 @@ class PaletteGeneratorTest {
         assertEquals(0xFFFF78CD.toInt(), palette.darkAccent.fill)
         assertEquals(0xFF3E0029.toInt(), palette.darkAccent.onFill)
 
-        assertEquals("#7C5CFF", palette.popupAccent)
-        assertEquals("rgba(124, 92, 255, 0.18)", palette.popupMatchedBg)
-        assertEquals("rgba(124, 92, 255, 0.55)", palette.popupBorder)
+        assertEquals("#7C5CFF", ColorMath.toHex(palette.seedColor))
+        assertTrue(popupContrast(palette.popupAccentLight, 0xFFF8F6FD.toInt()) >= 4.5f)
     }
+
+    @Test
+    fun customColorsKeepPopupAndComposeTextReadable() {
+        val seeds = listOf(0xFFFFFFFF, 0xFFFF4800, 0xFF000000, 0xFFFDE047, 0xFF67E8F9).map { it.toInt() }
+        for (seed in seeds) {
+            val palette = PaletteGenerator.generate(AppPaletteConfig(customSeedColor = seed))
+            for (scheme in listOf(palette.lightScheme, palette.darkScheme)) {
+                assertTrue(ColorMath.contrastRatio(scheme.primary, scheme.onPrimary) >= 4.5f)
+                assertTrue(ColorMath.contrastRatio(scheme.primaryContainer, scheme.onPrimaryContainer) >= 4.5f)
+                assertTrue(ColorMath.contrastRatio(scheme.secondaryContainer, scheme.onSecondaryContainer) >= 4.5f)
+                assertTrue(ColorMath.contrastRatio(scheme.tertiaryContainer, scheme.onTertiaryContainer) >= 4.5f)
+            }
+            assertTrue(popupContrast(palette.popupAccentLight, 0xFFF8F6FD.toInt()) >= 4.5f)
+            assertTrue(popupContrast(palette.popupAccentLight, palette.lightScheme.surfaceContainerHigh) >= 4.5f)
+            assertTrue(popupContrast(palette.popupAccentDark, 0xFF1F1D24.toInt()) >= 4.5f)
+            assertTrue(popupContrast(palette.popupAccentDark, palette.darkScheme.surfaceContainerHigh) >= 4.5f)
+        }
+    }
+
+    @Test
+    fun wallpaperAccentOnlyOverridesSystemSelection() {
+        val system = AppPaletteConfig(useSystemWallpaper = true)
+        val accent = 0xFF38875D.toInt()
+        assertEquals(accent, system.withWallpaperColor(accent).effectiveSeed)
+        assertEquals(accent, PaletteGenerator.generate(system.withWallpaperColor(accent)).seedColor)
+        assertEquals(system, system.withWallpaperColor(null))
+        val custom = AppPaletteConfig(customSeedColor = 0xFFFF4800.toInt())
+        assertEquals(custom, custom.withWallpaperColor(accent))
+    }
+
+    private fun popupContrast(accent: String, background: Int): Float =
+        ColorMath.contrastRatio(accent.removePrefix("#").toInt(16), background)
 
     @Test
     fun allEightPresetsGenerateContrastCompliantPalettes() {
@@ -167,7 +198,7 @@ class PaletteGeneratorTest {
             )
             assertTrue(
                 "Light onPrimary contrast $lightPrimaryContrast too low for ${preset.id}",
-                lightPrimaryContrast >= 3.0f,
+                lightPrimaryContrast >= 4.5f,
             )
 
             val darkPrimaryContrast = ColorMath.contrastRatio(
@@ -176,7 +207,7 @@ class PaletteGeneratorTest {
             )
             assertTrue(
                 "Dark onPrimary contrast $darkPrimaryContrast too low for ${preset.id}",
-                darkPrimaryContrast >= 3.0f,
+                darkPrimaryContrast >= 4.5f,
             )
 
             // Surface and onSurface contrast
@@ -249,9 +280,9 @@ class PaletteGeneratorTest {
             assertNotNull(palette.darkScheme)
             assertNotNull(palette.lightAccent)
             assertNotNull(palette.darkAccent)
-            assertNotNull(palette.popupAccent)
-            assertNotNull(palette.popupMatchedBg)
-            assertNotNull(palette.popupBorder)
+            assertNotNull(palette.popupAccentLight)
+            assertNotNull(palette.popupMatchedBgLight)
+            assertNotNull(palette.popupBorderLight)
         }
     }
 

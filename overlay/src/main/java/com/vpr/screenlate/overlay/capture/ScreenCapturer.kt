@@ -40,7 +40,10 @@ interface ScreenCapturer {
 
     companion object {
         fun create(service: AccessibilityService, executor: Executor): ScreenCapturer =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            create(service, executor, Build.VERSION.SDK_INT)
+
+        internal fun create(service: AccessibilityService, executor: Executor, sdk: Int): ScreenCapturer =
+            if (sdk >= Build.VERSION_CODES.R) {
                 ModernAccessibilityCapturer(service, executor)
             } else {
                 LegacyMediaProjectionCapturer(service)

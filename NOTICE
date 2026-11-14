@@ -38,6 +38,9 @@ hoshidicts (https://github.com/Manhhao/hoshidicts), GPL-3.0.
   - xxHash, BSD 2-Clause License, Copyright (c) 2012-2021 Yann Collet
   - kanji-processor, MIT License, Copyright (c) 2024-2025 Lyroxide, Yomitan Authors
 
+Acorn (https://github.com/acornjs/acorn), MIT License.
+Used only by the page syntax tests; not included in the app.
+
 QuickJS-ng (https://github.com/quickjs-ng/quickjs), MIT License,
 Copyright (c) 2017-2026 Fabrice Bellard, Copyright (c) 2017-2024 Charlie Gordon,
 Copyright (c) 2023-2026 Ben Noordhuis, Copyright (c) 2023-2026 Saúl Ibarra Corretgé.

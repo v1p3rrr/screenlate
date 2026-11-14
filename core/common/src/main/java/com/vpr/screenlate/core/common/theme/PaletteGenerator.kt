@@ -151,26 +151,26 @@ object PaletteGenerator {
         fun tone(hue: Float, sat: Float, lightness: Float): Int =
             ColorMath.hslToRgb(hue, sat, lightness)
 
-        fun bestContrast(bg: Int, dark: Int = CHARCOAL, light: Int = WHITE): Int {
-            val dC = ColorMath.contrastRatio(dark, bg)
-            val lC = ColorMath.contrastRatio(light, bg)
-            return if (lC >= 4.5f) light else if (dC >= 4.5f) dark else if (lC >= dC) light else dark
+        fun onColor(preferred: Int, background: Int): Int {
+            val black = 0xFF000000.toInt()
+            val endpoint = if (ColorMath.contrastRatio(WHITE, background) >= ColorMath.TEXT_CONTRAST) WHITE else black
+            return ColorMath.readableForeground(preferred, background, endpoint)
         }
 
         // --- Light Scheme ---
         val primaryLight = tone(h, primarySat, 0.46f)
-        val onPrimaryLight = bestContrast(primaryLight)
+        val onPrimaryLight = onColor(WHITE, primaryLight)
         val primaryContainerLight = tone(h, primarySat * 0.65f, 0.92f)
         val onPrimaryContainerLight = tone(h, primarySat, 0.24f)
         val inversePrimaryLight = tone(h, primarySat, 0.82f)
 
         val secondaryLight = tone(h, secondarySat, 0.42f)
-        val onSecondaryLight = bestContrast(secondaryLight)
+        val onSecondaryLight = onColor(WHITE, secondaryLight)
         val secondaryContainerLight = tone(h, primarySat * 0.55f, 0.86f)
         val onSecondaryContainerLight = tone(h, secondarySat, 0.28f)
 
         val tertiaryLight = tone(accentH, tertiarySat, 0.42f)
-        val onTertiaryLight = bestContrast(tertiaryLight)
+        val onTertiaryLight = onColor(WHITE, tertiaryLight)
         val tertiaryContainerLight = tone(accentH, tertiarySat * 0.55f, 0.92f)
         val onTertiaryContainerLight = tone(accentH, tertiarySat, 0.25f)
 
@@ -195,22 +195,22 @@ object PaletteGenerator {
             primary = primaryLight,
             onPrimary = onPrimaryLight,
             primaryContainer = primaryContainerLight,
-            onPrimaryContainer = onPrimaryContainerLight,
+            onPrimaryContainer = onColor(onPrimaryContainerLight, primaryContainerLight),
             inversePrimary = inversePrimaryLight,
             secondary = secondaryLight,
             onSecondary = onSecondaryLight,
             secondaryContainer = secondaryContainerLight,
-            onSecondaryContainer = onSecondaryContainerLight,
+            onSecondaryContainer = onColor(onSecondaryContainerLight, secondaryContainerLight),
             tertiary = tertiaryLight,
             onTertiary = onTertiaryLight,
             tertiaryContainer = tertiaryContainerLight,
-            onTertiaryContainer = onTertiaryContainerLight,
+            onTertiaryContainer = onColor(onTertiaryContainerLight, tertiaryContainerLight),
             background = backgroundLight,
             onBackground = onBackgroundLight,
             surface = surfaceLight,
             onSurface = onSurfaceLight,
             surfaceVariant = surfaceVariantLight,
-            onSurfaceVariant = onSurfaceVariantLight,
+            onSurfaceVariant = onColor(onSurfaceVariantLight, surfaceVariantLight),
             inverseSurface = inverseSurfaceLight,
             inverseOnSurface = inverseOnSurfaceLight,
             error = 0xFFBA1A1A.toInt(),
@@ -262,24 +262,24 @@ object PaletteGenerator {
 
         val darkScheme = SchemeColors(
             primary = primaryDark,
-            onPrimary = onPrimaryDark,
+            onPrimary = onColor(onPrimaryDark, primaryDark),
             primaryContainer = primaryContainerDark,
-            onPrimaryContainer = onPrimaryContainerDark,
+            onPrimaryContainer = onColor(onPrimaryContainerDark, primaryContainerDark),
             inversePrimary = inversePrimaryDark,
             secondary = secondaryDark,
-            onSecondary = onSecondaryDark,
+            onSecondary = onColor(onSecondaryDark, secondaryDark),
             secondaryContainer = secondaryContainerDark,
-            onSecondaryContainer = onSecondaryContainerDark,
+            onSecondaryContainer = onColor(onSecondaryContainerDark, secondaryContainerDark),
             tertiary = tertiaryDark,
-            onTertiary = onTertiaryDark,
+            onTertiary = onColor(onTertiaryDark, tertiaryDark),
             tertiaryContainer = tertiaryContainerDark,
-            onTertiaryContainer = onTertiaryContainerDark,
+            onTertiaryContainer = onColor(onTertiaryContainerDark, tertiaryContainerDark),
             background = backgroundDark,
             onBackground = onBackgroundDark,
             surface = surfaceDark,
             onSurface = onSurfaceDark,
             surfaceVariant = surfaceVariantDark,
-            onSurfaceVariant = onSurfaceVariantDark,
+            onSurfaceVariant = onColor(onSurfaceVariantDark, surfaceVariantDark),
             inverseSurface = inverseSurfaceDark,
             inverseOnSurface = inverseOnSurfaceDark,
             error = 0xFFFFB4AB.toInt(),
@@ -299,12 +299,12 @@ object PaletteGenerator {
         val fillLight = tone(accentH, tertiarySat, 0.88f)
         val lineLight = tone(accentH, tertiarySat * 0.8f, 0.52f)
         val onFillLight = tone(accentH, tertiarySat, 0.15f)
-        val lightAccent = AccentColors(fill = fillLight, onFill = onFillLight, line = lineLight)
+        val lightAccent = AccentColors(fill = fillLight, onFill = onColor(onFillLight, fillLight), line = lineLight)
 
         val fillDark = tone(accentH, tertiarySat, 0.72f)
         val lineDark = fillDark
         val onFillDark = tone(accentH, tertiarySat, 0.12f)
-        val darkAccent = AccentColors(fill = fillDark, onFill = onFillDark, line = lineDark)
+        val darkAccent = AccentColors(fill = fillDark, onFill = onColor(onFillDark, fillDark), line = lineDark)
 
         return ThemePalette(
             seedColor = seedColor,

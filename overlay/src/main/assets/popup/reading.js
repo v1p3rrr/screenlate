@@ -33,19 +33,23 @@ const HeadwordReading = (() => {
     }
 
     function segments(lang, expression, reading) {
-        return rulesOf(lang)?.segments(expression, reading || '') ?? null;
+        const rules = rulesOf(lang);
+        return rules ? rules.segments(expression, reading || '') || null : null;
     }
 
     function syllables(lang, reading) {
-        return rulesOf(lang)?.syllables(reading || '') ?? null;
+        const rules = rulesOf(lang);
+        return rules ? rules.syllables(reading || '') || null : null;
     }
 
     function sentenceSegments(lang, text, expression, reading) {
-        return rulesOf(lang)?.sentenceSegments?.(text || '', expression || '', reading || '') ?? null;
+        const rules = rulesOf(lang);
+        return rules && rules.sentenceSegments ? rules.sentenceSegments(text || '', expression || '', reading || '') || null : null;
     }
 
     function after(lang, expression, reading) {
-        return rulesOf(lang)?.after?.(expression || '', reading || '') || null;
+        const rules = rulesOf(lang);
+        return rules && rules.after ? rules.after(expression || '', reading || '') || null : null;
     }
 
     return { addLanguage, after, segments, sentenceSegments, syllables };

@@ -7,6 +7,10 @@
 3. If the switch in the accessibility settings is greyed out after installing from an APK file: App info → ⋮ → Allow restricted settings.
 4. On devices with aggressive battery management, allow Screenlate to run in the background, or the system may stop the service. Settings → Background work shows whether battery optimization is on for Screenlate, asks the system to turn it off, and opens the manufacturer's startup settings on phones that have them.
 
+On Android 7–10, the first screen scan asks for Android's screen-capture permission. If you cancel, starting a new
+scan asks again. The notification stays while the capture session is active. Android 11 and later use the accessibility
+service for screen capture.
+
 ## Navigation and camera
 
 The bottom bar opens Home, Search, Camera and Settings. Switching tabs keeps each tab's open page and search text.
@@ -316,7 +320,11 @@ A translation is kept for 10 minutes, so adding a note after reading the transla
 ## Appearance
 
 - **Theme**: the system's, light or dark.
-- **Colors** (Android 12 and later): Screenlate's own violet colors with a pink accent on switches, sliders, checkboxes, progress and the main buttons (the default), or System: the colors the phone picks for apps, usually from the wallpaper.
+- **Colors**: choose one of eight presets or **Custom** to pick a shade or enter a six-digit HEX color.
+  The app, dictionary popup and floating bubble use the chosen palette. On Android 12 and later, **System**
+  uses the colors supplied by Android.
+- **Bubble color**: turn off **Use app theme color** to choose a separate color for the bubble. This setting
+  appears in both Appearance and Bubble settings.
 - **Language** of the interface: the system's, or English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean, Chinese (Simplified or Traditional), Arabic, Persian, Hebrew; in the last three the screens are mirrored. It can also be set in the system settings: Apps → Screenlate → Language. Translations were made with AI and have not been reviewed by native speakers; a note under the picker says so.
 - **E-ink mode** (off by default): black and white, no animations, frames instead of translucent highlights, and a black bubble and aim; it overrides the theme. Turning it on offers a larger bubble and larger popup text; turning it off, with the switch or by restoring a backup, brings back the previous sizes, except those changed by hand in the meantime (sizes stored in the backup take precedence). On devices that look like e-ink readers the start screen offers the mode once, with a link to "App text only".
 

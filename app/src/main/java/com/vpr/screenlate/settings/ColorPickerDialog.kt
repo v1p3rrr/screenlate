@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -203,24 +204,7 @@ private fun SaturationValueBox(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
-            .pointerInput(Unit) {
-                awaitEachGesture {
-                    val down = awaitFirstDown()
-                    val s = (down.position.x / size.width).coerceIn(0f, 1f)
-                    val v = (1f - down.position.y / size.height).coerceIn(0f, 1f)
-                    onColorChanged(s, v)
-
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        val change = event.changes.firstOrNull() ?: break
-                        if (!change.pressed) break
-                        change.consume()
-                        val newS = (change.position.x / size.width).coerceIn(0f, 1f)
-                        val newV = (1f - change.position.y / size.height).coerceIn(0f, 1f)
-                        onColorChanged(newS, newV)
-                    }
-                }
-            }
+            .colorDrag { x, y -> onColorChanged(x, 1f - y) }
             .drawBehind {
                 // 1. Horizontal gradient: White -> Pure Hue Color
                 drawRect(
@@ -290,22 +274,7 @@ private fun HueBar(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
-            .pointerInput(Unit) {
-                awaitEachGesture {
-                    val down = awaitFirstDown()
-                    val h = (down.position.x / size.width).coerceIn(0f, 1f) * 360f
-                    onHueChanged(h.coerceIn(0f, 360f))
-
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        val change = event.changes.firstOrNull() ?: break
-                        if (!change.pressed) break
-                        change.consume()
-                        val newH = (change.position.x / size.width).coerceIn(0f, 1f) * 360f
-                        onHueChanged(newH.coerceIn(0f, 360f))
-                    }
-                }
-            }
+            .colorDrag { x, _ -> onHueChanged(x * 360f) }
             .drawBehind {
                 drawRect(
                     brush = Brush.horizontalGradient(rainbowColors),
@@ -334,4 +303,27 @@ private fun HueBar(
                 )
             },
     )
+}
+
+@Composable
+private fun Modifier.colorDrag(onChange: (Float, Float) -> Unit): Modifier {
+    val callback by rememberUpdatedState(onChange)
+    return pointerInput(Unit) {
+        awaitEachGesture {
+            val down = awaitFirstDown()
+            fun update(position: Offset) {
+                callback(
+                    (position.x / size.width).coerceIn(0f, 1f),
+                    (position.y / size.height).coerceIn(0f, 1f),
+                )
+            }
+            update(down.position)
+            while (true) {
+                val change = awaitPointerEvent().changes.firstOrNull { it.id == down.id } ?: break
+                if (!change.pressed || change.isConsumed) break
+                change.consume()
+                update(change.position)
+            }
+        }
+    }
 }

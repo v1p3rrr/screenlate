@@ -135,12 +135,11 @@ const Popup = (() => {
             return;
         }
         if (!appearanceColors) return;
-        const accent = (theme === 'dark') ? appearanceColors.accentDark : appearanceColors.accentLight;
-        if (accent) root.style.setProperty('--accent', accent);
-        if (appearanceColors.matchedBg) root.style.setProperty('--matched-bg', appearanceColors.matchedBg);
-        if (appearanceColors.border) root.style.setProperty('--border', appearanceColors.border);
-        const chipBg = (theme === 'dark') ? appearanceColors.chipBgDark : appearanceColors.chipBgLight;
-        if (chipBg) root.style.setProperty('--chip-bg', chipBg);
+        const colors = theme === 'dark' ? appearanceColors.dark : appearanceColors.light;
+        for (const [property, value] of Object.entries(colors)) {
+            if (value) root.style.setProperty(property, value);
+            else root.style.removeProperty(property);
+        }
     }
     let translationRequests = 0;
 
@@ -185,16 +184,17 @@ const Popup = (() => {
         engine.hidden = !state.engine;
         engine.textContent = state.engine || '';
         ocrErrorButton.hidden = !state.ocrError;
-        ocrErrorButton.title = state.labels?.ocrError || '';
+        ocrErrorButton.title = (state.labels && state.labels.ocrError) || '';
         placeInlineOcrWarning(state);
         drawTranslation(state);
 
         source.replaceChildren();
-        setLang(source, state.source?.lang);
+        const sourceInfo = state.source || {};
+        setLang(source, sourceInfo.lang);
         setDirection(source, state.rightToLeft ? 'rtl' : '');
-        const text = state.source?.text || '';
+        const text = sourceInfo.text || '';
         const chars = Array.from(text);
-        const matched = Math.min(state.source?.matched || 0, chars.length);
+        const matched = Math.min(sourceInfo.matched || 0, chars.length);
         if (matched > 0) source.append(element('span', 'matched', chars.slice(0, matched).join('')));
         source.append(document.createTextNode(chars.slice(matched).join('')));
     }
@@ -210,7 +210,7 @@ const Popup = (() => {
             state.installation,
             state.ocrModels,
             state.source,
-            state.kanji?.character,
+            (state.kanji && state.kanji.character),
             state.compound,
             (state.results || []).map(r => [r.term.expression, r.term.reading]),
         ]);
@@ -225,9 +225,9 @@ const Popup = (() => {
 
     function termsKey(state) {
         return JSON.stringify([
-            state?.message,
-            state?.kanji?.character,
-            (state?.results || []).map(r => [r.term.expression, r.term.reading]),
+            (state && state.message),
+            (state && state.kanji && state.kanji.character),
+            ((state && state.results) || []).map(r => [r.term.expression, r.term.reading]),
         ]);
     }
 
@@ -243,12 +243,12 @@ const Popup = (() => {
         }
         const results = state.results || [];
         if (state.message || results.length === 0) {
-            content.replaceChildren(element('div', 'message', state.message || state.labels?.noResults || ''));
+            content.replaceChildren(element('div', 'message', state.message || (state.labels && state.labels.noResults) || ''));
             if (state.installation) {
-                content.append(messageLink(state.labels?.installation || 'Installation status', 'screenlate://installation'));
+                content.append(messageLink((state.labels && state.labels.installation) || 'Installation status', 'screenlate://installation'));
             }
             if (state.ocrModels) {
-                content.append(messageLink(state.labels?.ocrModels || 'On-device model', 'screenlate://ocr-models'));
+                content.append(messageLink((state.labels && state.labels.ocrModels) || 'On-device model', 'screenlate://ocr-models'));
             }
             return;
         }
@@ -264,7 +264,8 @@ const Popup = (() => {
     }
 
     function tagNote(chip) {
-        return tagNotes.get(chip.dataset.dictionary)?.notes.get(chip.dataset.tag) || '';
+        const dictionary = tagNotes.get(chip.dataset.dictionary);
+        return (dictionary && dictionary.notes.get(chip.dataset.tag)) || '';
     }
 
     /** A dictionary's tag; a region chip of another language's region shows the label the app gives it. */
@@ -277,7 +278,8 @@ const Popup = (() => {
     }
 
     function markTag(chip) {
-        chip.textContent = tagNotes.get(chip.dataset.dictionary)?.labels.get(chip.dataset.tag) || chip.dataset.tag;
+        const dictionary = tagNotes.get(chip.dataset.dictionary);
+        chip.textContent = (dictionary && dictionary.labels.get(chip.dataset.tag)) || chip.dataset.tag;
         chip.classList.toggle('described', Boolean(tagNote(chip)));
     }
 
@@ -292,7 +294,8 @@ const Popup = (() => {
 
     /** A labelled tag loses its title, the tag's name in the dictionary's language, as a labelled chip has no note. */
     function markContentTag(tag) {
-        const label = tagNotes.get(tag.dataset.dictionary)?.labels.get(tag.dataset.tag);
+        const dictionary = tagNotes.get(tag.dataset.dictionary);
+        const label = dictionary && dictionary.labels.get(tag.dataset.tag);
         if (!label) return;
         tag.textContent = label;
         tag.removeAttribute('title');
@@ -304,13 +307,13 @@ const Popup = (() => {
      */
     function explainTag(event) {
         const target = event.target instanceof Element ? event.target : event.target.parentElement;
-        const chip = target?.closest('.tag');
+        const chip = target && target.closest('.tag');
         if (chip && content.contains(chip)) {
             const note = tagNote(chip);
             if (note) showInfo(chip.textContent, note);
             return;
         }
-        const titled = target?.closest('.definition-body [title]');
+        const titled = target && target.closest('.definition-body [title]');
         if (!titled || titled.closest('a, summary, button, .gloss-image-link, .dictionary-name')) return;
         const title = titled.title.trim();
         const text = titled.textContent.trim();
@@ -318,7 +321,7 @@ const Popup = (() => {
     }
 
     function showOcrError() {
-        if (current?.ocrError) showInfo(current.labels?.ocrError || '', current.ocrError);
+        if (current && current.ocrError) showInfo((current.labels && current.labels.ocrError) || '', current.ocrError);
     }
 
     /** Without the header, ⚠ goes to the first entry's buttons, before ✕. */
@@ -327,11 +330,11 @@ const Popup = (() => {
         const inline = content.querySelector('.entry-actions > .ocr-warning');
         const wanted = Boolean(state.ocrError) && compact(state) && actions;
         if (!wanted) {
-            inline?.remove();
+            if (inline) inline.remove();
             return;
         }
         if (inline) return;
-        const button = iconButton('ocr-warning', ICONS.warning, state.labels?.ocrError || '');
+        const button = iconButton('ocr-warning', ICONS.warning, (state.labels && state.labels.ocrError) || '');
         button.classList.add('ocr-warning');
         button.addEventListener('click', showOcrError);
         actions.prepend(button);
@@ -356,7 +359,7 @@ const Popup = (() => {
     function drawTranslation(state) {
         const shown = translatable(state);
         const pressed = String(shown && translation !== null);
-        const label = state?.labels?.translate || 'Translate';
+        const label = (state && state.labels && state.labels.translate) || 'Translate';
         translateButton.hidden = !shown || compact(state);
         translateButton.setAttribute('aria-pressed', pressed);
         translateButton.setAttribute('aria-label', label);
@@ -374,7 +377,7 @@ const Popup = (() => {
         translationBox.dataset.state = translation.state;
         if (translation.state === 'loading') {
             const loading = element('div', 'translation-loading');
-            loading.append(element('div', 'spinner'), element('span', null, state.labels?.translating || ''));
+            loading.append(element('div', 'spinner'), element('span', null, (state.labels && state.labels.translating) || ''));
             translationBox.replaceChildren(loading);
             return;
         }
@@ -398,7 +401,7 @@ const Popup = (() => {
         const actions = content.querySelector('.entry .entry-actions');
         let inline = content.querySelector('.entry-actions > .action-translate');
         if (!shown || !compact(state) || !actions) {
-            inline?.remove();
+            if (inline) inline.remove();
             return;
         }
         if (!inline) {
@@ -424,7 +427,7 @@ const Popup = (() => {
 
     /** { enabled }: whether the translation button shows. */
     function setTranslation(config) {
-        translationEnabled = Boolean(config?.enabled);
+        translationEnabled = Boolean(config && config.enabled);
         if (!translationEnabled) translation = null;
         if (current) drawTranslation(current);
     }
@@ -435,9 +438,9 @@ const Popup = (() => {
      */
     function showTranslation(request, result) {
         if (translation === null || translation.request !== request) return;
-        translation = result?.error
+        translation = result && result.error
             ? { request, state: 'error', error: result.error }
-            : { request, state: 'done', text: result?.text || '', service: result?.service || '', sentence: result?.sentence || '' };
+            : { request, state: 'done', text: (result && result.text) || '', service: (result && result.service) || '', sentence: (result && result.sentence) || '' };
         if (history.length === 0) drawTranslation(current);
     }
 
@@ -558,7 +561,7 @@ const Popup = (() => {
             const add = iconButton('add', ICONS.add, labelOf('addNote'));
             add.dataset.index = String(index);
             const addNote = (withScreenshot, force) => {
-                if (current?.noteWait) {
+                if (current && current.noteWait) {
                     ScreenlateBridge.onNoteWaiting();
                     return;
                 }
@@ -604,7 +607,7 @@ const Popup = (() => {
     }
 
     function noteContext() {
-        return { styles, frequencyModes: noteConfig.frequencyModes || {}, query: current?.source?.text || '' };
+        return { styles, frequencyModes: noteConfig.frequencyModes || {}, query: (current && current.source && current.source.text) || '' };
     }
 
     // region Menu
@@ -644,7 +647,7 @@ const Popup = (() => {
     }
 
     document.addEventListener('pointerdown', event => {
-        if ((menu || pendingAudio) && !menu?.contains(event.target)) closeMenu();
+        if ((menu || pendingAudio) && (!menu || !menu.contains(event.target))) closeMenu();
     }, true);
 
     // region Selection
@@ -658,7 +661,8 @@ const Popup = (() => {
     selectionCopy.addEventListener('click', () => {
         const text = selectedText(true);
         if (text) ScreenlateBridge.onCopy(text);
-        window.getSelection()?.removeAllRanges();
+        const selection = window.getSelection();
+        if (selection) selection.removeAllRanges();
         selectionCopy.hidden = true;
     });
     document.addEventListener('selectionchange', placeSelectionCopy);
@@ -711,7 +715,7 @@ const Popup = (() => {
     /** Shows the answer for the current hold. A cached list arrives without a loading answer first. */
     function showAudioMenu(request, items, loading) {
         const pending = pendingAudio;
-        if (pending?.request !== request) return;
+        if (!pending || pending.request !== request) return;
         const rows = (items || []).map(item => ({
             label: item.label,
             detail: item.detail,
@@ -726,7 +730,7 @@ const Popup = (() => {
     // endregion
 
     function labelOf(key) {
-        return current?.labels?.[key] || key;
+        return (current && current.labels && current.labels[key]) || key;
     }
 
     function iconButton(kind, svg, label) {
@@ -803,7 +807,7 @@ const Popup = (() => {
             }
             const stats = element('div', 'kanji-stats');
             for (const key of KANJI_STATS) {
-                const value = entry.stats?.[key];
+                const value = entry.stats && entry.stats[key];
                 if (!value) continue;
                 const chip = element('span', 'frequency');
                 chip.append(element('span', 'frequency-dictionary', labels[`stat_${key}`] || key));
@@ -949,7 +953,7 @@ const Popup = (() => {
      * counts occurrences. A dictionary may give several, e.g. one for the word written in kana (marked ㋕).
      */
     function frequencyValues(group) {
-        const occurrences = noteConfig.frequencyModes?.[group.dictionary] === 'occurrence-based';
+        const occurrences = (noteConfig.frequencyModes || {})[group.dictionary] === 'occurrence-based';
         return (group.values || [])
             .map(value => ({ text: value.displayValue || String(value.value), number: frequencyNumber(value) }))
             .sort((a, b) => {
@@ -1068,7 +1072,7 @@ const Popup = (() => {
             (group.transcriptions || []).forEach((ipa, i) => {
                 if (!transcriptions.has(ipa)) transcriptions.set(ipa, { ipa, regions: [], dictionaries: [] });
                 const item = transcriptions.get(ipa);
-                for (const region of group.transcriptionRegions?.[i] || []) {
+                for (const region of (group.transcriptionRegions && group.transcriptionRegions[i]) || []) {
                     if (!item.regions.includes(region)) item.regions.push(region);
                 }
                 if (!item.dictionaries.includes(group.dictionary)) item.dictionaries.push(group.dictionary);
@@ -1184,7 +1188,8 @@ const Popup = (() => {
         // recalculate styles for the whole result set once per dictionary, delaying the popup's first frame.
         const placements = Array.from(content.querySelectorAll('.definition > .dictionary-name'), name => {
             let container = name.parentElement;
-            const copy = name.nextElementSibling?.classList.contains('copy-definition') ? name.nextElementSibling : null;
+            const next = name.nextElementSibling;
+            const copy = next && next.classList.contains('copy-definition') ? next : null;
             for (;;) {
                 const first = firstVisibleChild(container, name, copy);
                 if (opensBlock(first)) {
@@ -1201,7 +1206,7 @@ const Popup = (() => {
     }
 
     function opensBlock(node) {
-        if (node?.nodeType !== Node.ELEMENT_NODE) return false;
+        if (!node || node.nodeType !== Node.ELEMENT_NODE) return false;
         const display = getComputedStyle(node).display;
         if (BLOCK_DISPLAYS.has(display)) return true;
         return INLINE_DISPLAYS.has(display) && opensBlock(firstVisibleChild(node));
@@ -1249,18 +1254,18 @@ const Popup = (() => {
     }
 
     function audioWordKey(state) {
-        const source = state?.source;
-        const word = Array.from(source?.text || '').slice(0, source?.matched || 0).join('');
-        const term = state?.results?.[0]?.term;
-        return JSON.stringify([source?.position, source?.lang, word, term?.expression, term?.reading]);
+        const source = (state && state.source) || {};
+        const word = Array.from(source.text || '').slice(0, source.matched || 0).join('');
+        const term = (((state && state.results) || [])[0] || {}).term || {};
+        return JSON.stringify([source.position, source.lang, word, term.expression, term.reading]);
     }
 
     /** { continued }: the popup stayed open, so a new scan result of the same word and sentence keeps the translation. */
     function render(state, options) {
         const first = history.length ? history[0].state : current;
-        const same = state.sentence && state.sentence === first?.sentence && termsKey(state) === termsKey(first);
-        if (!options?.continued || !same) translation = null;
-        if (!options?.continued || history.length || audioWordKey(state) !== audioWordKey(current)) audioView++;
+        const same = state.sentence && first && state.sentence === first.sentence && termsKey(state) === termsKey(first);
+        if ((!options || !options.continued) || !same) translation = null;
+        if ((!options || !options.continued) || history.length || audioWordKey(state) !== audioWordKey(current)) audioView++;
         history.length = 0;
         current = state;
         // Reset the old, already laid-out view; writing after replacement forces layout before script marking.
@@ -1446,7 +1451,9 @@ const Popup = (() => {
         const value = text.data;
         const fragment = document.createDocumentFragment();
         let last = 0;
-        for (const match of value.matchAll(scriptRuns.runs)) {
+        const runs = scriptRuns.runs;
+        runs.lastIndex = 0;
+        for (let match = runs.exec(value); match; match = runs.exec(value)) {
             if (match.index > last) fragment.append(value.slice(last, match.index));
             fragment.append(element('span', heavier ? 'script-run heavier' : 'script-run', match[0]));
             last = match.index + match[0].length;
@@ -1461,7 +1468,7 @@ const Popup = (() => {
             parents.add(span.parentNode);
             span.replaceWith(...span.childNodes);
         });
-        parents.forEach(parent => parent?.normalize());
+        parents.forEach(parent => { if (parent) parent.normalize(); });
     }
 
     // endregion
@@ -1484,16 +1491,20 @@ const Popup = (() => {
         if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));
         customCss.textContent = appearance.customCss || '';
         setHeavierText(appearance);
-        if (appearance.accent || appearance.accentLight) {
-            appearanceColors = {
-                accentLight: appearance.accentLight || appearance.accent,
-                accentDark: appearance.accentDark || appearance.accent,
-                matchedBg: appearance.matchedBg,
-                border: appearance.border,
-                chipBgLight: appearance.chipBgLight,
-                chipBgDark: appearance.chipBgDark,
-            };
-        }
+        appearanceColors = {
+            light: {
+                '--accent': appearance.accentLight,
+                '--matched-bg': appearance.matchedBgLight,
+                '--border': appearance.borderLight,
+                '--chip-bg': appearance.chipBgLight,
+            },
+            dark: {
+                '--accent': appearance.accentDark,
+                '--matched-bg': appearance.matchedBgDark,
+                '--border': appearance.borderDark,
+                '--chip-bg': appearance.chipBgDark,
+            },
+        };
         applyColors();
         if (appearance.preload && document.fonts) {
             const font = `1em "${appearance.preload.replace(/"/g, '\\"')}"`;
@@ -1542,12 +1553,12 @@ const Popup = (() => {
 
     /** Values of [markers] for every entry in the current view, for the duplicate check. */
     function allNoteData(markers) {
-        return (current?.results || []).map(result => NoteData.build(result, noteContext(), markers).values);
+        return ((current && current.results) || []).map(result => NoteData.build(result, noteContext(), markers).values);
     }
 
     /** Terms of the current view as [expression, reading] pairs. */
     function terms() {
-        return (current?.results || []).map(result => [result.term.expression, result.term.reading || '']);
+        return ((current && current.results) || []).map(result => [result.term.expression, result.term.reading || '']);
     }
 
     // endregion

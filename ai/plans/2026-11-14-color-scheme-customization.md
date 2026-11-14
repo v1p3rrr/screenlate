@@ -181,3 +181,7 @@ flowchart TD
 4. **Independent Bubble Color:** Turning off "Use app theme color" allows setting the bubble to emerald green while the app remains violet.
 5. **E-Ink Compatibility:** Toggling E-Ink mode completely overrides any chosen color theme, keeping the UI strictly black and white.
 6. **Backward Compatibility:** All code compiles and runs with zero crashes on API 24 (Android 7.0) and API 35 (Android 15).
+
+## Changelog
+
+- 2026-11-14: Addressed integration review findings. Applied the system palette to the bubble and popup, added contrast checks for light and dark palettes, and shared gesture handling in the color picker.

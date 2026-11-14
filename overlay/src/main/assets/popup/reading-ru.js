@@ -26,7 +26,7 @@ HeadwordReading.addLanguage('ru', (() => {
         let index = 0;
         let result = '';
         for (const character of reading.normalize('NFD')) {
-            result += STRESS_MARK.test(character) ? character : (letters[index++] ?? character);
+            result += STRESS_MARK.test(character) ? character : (letters[index++] || character);
         }
         return result.normalize('NFC');
     }

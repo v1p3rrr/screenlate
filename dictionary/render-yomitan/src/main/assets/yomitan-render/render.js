@@ -188,14 +188,14 @@ window.YomitanRender = (() => {
             event.preventDefault();
             event.stopPropagation();
             if (external) {
-                options.onExternalLink?.(href);
+                if (options.onExternalLink) options.onExternalLink(href);
                 return;
             }
             const queryStart = href.indexOf('?');
             if (queryStart < 0) return;
             const params = new URLSearchParams(href.slice(queryStart + 1));
             const query = params.get('query');
-            if (query) options.onLookup?.(query, params.get('primary_reading'));
+            if (query && options.onLookup) options.onLookup(query, params.get('primary_reading'));
         });
     }
 

@@ -164,7 +164,10 @@ const NoteData = (() => {
                 return placeholder;
             },
         };
-        const styleOf = dictionary => (context.styles || []).find(style => style.dictionary === dictionary)?.css || '';
+        const styleOf = dictionary => {
+            const style = (context.styles || []).find(entry => entry.dictionary === dictionary);
+            return (style && style.css) || '';
+        };
 
         function formatItem(dictionary, item) {
             if (typeof item === 'string') return escapeHtml(item).replace(/\n/g, '<br>');
@@ -339,8 +342,8 @@ const NoteData = (() => {
                     .map(([text, ruby]) => escapeHtml(ruby || text)).join('')
                 : ''),
             conjugation: () => escapeHtml((result.trace || []).map(step => step.name).join(' « ')),
-            dictionary: () => escapeHtml(glossaries[0]?.dictionary || ''),
-            'dictionary-alias': () => escapeHtml(glossaries[0]?.dictionary || ''),
+            dictionary: () => escapeHtml((glossaries[0] && glossaries[0].dictionary) || ''),
+            'dictionary-alias': () => escapeHtml((glossaries[0] && glossaries[0].dictionary) || ''),
             frequencies: () => frequencyList(term, null),
             'frequency-harmonic-rank': () => {
                 const value = harmonic(frequencyNumbers(term, modes, 'rank-based', null));
@@ -364,7 +367,7 @@ const NoteData = (() => {
             },
             'phonetic-transcriptions': () => {
                 const items = (term.pitches || []).flatMap(group => (group.transcriptions || [])
-                    .map((ipa, i) => ({ ipa, tags: group.transcriptionTags?.[i] || [] })));
+                    .map((ipa, i) => ({ ipa, tags: (group.transcriptionTags && group.transcriptionTags[i]) || [] })));
                 return items.length
                     ? `<ul>${items.map(({ ipa, tags }) => `<li class="pronunciation" data-pronunciation-type="phonetic-transcription">${transcriptionTagList(tags)}${escapeHtml(ipa)}</li>`).join('')}</ul>`
                     : '';

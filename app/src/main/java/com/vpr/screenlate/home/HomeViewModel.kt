@@ -386,7 +386,8 @@ private fun ankiSummary(settings: AnkiSettings): AnkiSummary? =
 
 internal fun isOutdatedWebViewVersion(versionName: String?): Boolean {
     val major = versionName?.split('.')?.firstOrNull()?.toIntOrNull() ?: return false
-    return major < 80
+    // Older WebViews lack syntax used by the shared dictionary renderer.
+    return major < 69
 }
 
 internal fun checkWebViewVersion(context: Context): String? {

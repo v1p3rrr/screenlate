@@ -64,25 +64,24 @@ data class ThemePalette(
     val bubbleForegroundColor: Int,
     val isBubbleLight: Boolean,
 ) {
-    /** Primary brand color in `#RRGGBB` format for popup CSS `--accent` in light mode. */
-    val popupAccentLight: String
-        get() = ColorMath.toHex(seedColor)
+    private val lightPopupAccent = readablePopupAccent(
+        seedColor, 0xFFF8F6FD.toInt(), lightScheme.surfaceContainerHigh, 0xFF000000.toInt(),
+    )
+    private val darkPopupAccent = readablePopupAccent(
+        darkScheme.primary, 0xFF1F1D24.toInt(), darkScheme.surfaceContainerHigh, PaletteGenerator.WHITE,
+    )
 
-    /** High-contrast brand color in `#RRGGBB` format for popup CSS `--accent` in dark mode. */
-    val popupAccentDark: String
-        get() = ColorMath.toHex(darkScheme.primary)
+    val popupAccentLight: String get() = ColorMath.toHex(lightPopupAccent)
+    val popupAccentDark: String get() = ColorMath.toHex(darkPopupAccent)
+    val popupMatchedBgLight: String get() = ColorMath.toRgbaString(lightPopupAccent, 0.18f)
+    val popupMatchedBgDark: String get() = ColorMath.toRgbaString(darkPopupAccent, 0.18f)
+    val popupBorderLight: String get() = ColorMath.toRgbaString(lightPopupAccent, 0.55f)
+    val popupBorderDark: String get() = ColorMath.toRgbaString(darkPopupAccent, 0.55f)
 
-    /** Primary brand color in `#RRGGBB` format for popup CSS `--accent` (light mode default). */
-    val popupAccent: String
-        get() = popupAccentLight
-
-    /** Matched text background in `rgba(r, g, b, 0.18)` format for popup CSS `--matched-bg`. */
-    val popupMatchedBg: String
-        get() = ColorMath.toRgbaString(seedColor, 0.18f)
-
-    /** Border color in `rgba(r, g, b, 0.55)` format for popup CSS `--border`. */
-    val popupBorder: String
-        get() = ColorMath.toRgbaString(seedColor, 0.55f)
+    private fun readablePopupAccent(seed: Int, background: Int, chip: Int, endpoint: Int): Int {
+        val readable = ColorMath.readableForeground(seed, background, endpoint)
+        return ColorMath.readableForeground(readable, chip, endpoint)
+    }
 
     /** Light chip background in `#RRGGBB` format for popup CSS `--chip-bg` in light mode. */
     val popupChipBgLight: String

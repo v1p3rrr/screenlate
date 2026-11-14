@@ -3,6 +3,7 @@
 Status: In progress on branch `features/android-7-support`. Architecture, legacy screen capture backend (MediaProjection), WindowMetricsCompat, storage fallbacks, date/time desugaring replacement, WebView polyfill & warning card, adaptive icon fallbacks, and all 17 locale translations are implemented and verified via unit tests (`assembleDebug testDebugUnitTest` and page tests pass).
 
 ## Changelog
+- 2026-11-14: Addressed integration review findings. Keyed each capture consent request, confined its lifecycle to the main thread, and released overlays and pending frames on cancellation. Updated the popup scripts for stock WebView 69 and added syntax and consent regression tests.
 - 2026-11-14: Lowered minSdk to 24. Implemented `LegacyMediaProjectionCapturer`, `MediaProjectionHolder`, `MediaProjectionConsentActivity`, `MediaProjectionService`. Added `WindowMetricsCompat`. Guarded API 26-30 calls in `BubbleKeepAliveService`, `ServiceOffNotification`, `PhotoGallery`, `LogExport`, `AppLogs`, `AppUpdates`. Replaced `java.time` with `SimpleDateFormat`. Added `replaceChildren` polyfill in `popup.js` and `OutdatedWebView` warning in `HomeViewModel`. Added `mipmap-anydpi-v26/` and updated `scripts/icon/icon.py`. Updated strings across all 17 locales. All unit and page tests passing.
 - 2026-11-12: Initial plan created.
 

@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import androidx.annotation.MainThread
 import androidx.core.app.NotificationCompat
 import com.vpr.screenlate.overlay.R
 import kotlinx.coroutines.CompletableDeferred
@@ -27,17 +28,12 @@ class MediaProjectionService : Service() {
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
-        startedDeferred?.complete(Unit)
-        startedDeferred = null
+        val start = startedDeferred
+        if (start == null) stopSelf(startId) else start.complete(true)
         return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
-
-    override fun onDestroy() {
-        startedDeferred = null
-        super.onDestroy()
-    }
 
     private fun createNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -63,26 +59,29 @@ class MediaProjectionService : Service() {
     companion object {
         private const val CHANNEL_ID = "screenlate_capture"
         private const val NOTIFICATION_ID = 101
-        private var startedDeferred: CompletableDeferred<Unit>? = null
+        private const val START_TIMEOUT_MS = 5000L
+        private var startedDeferred: CompletableDeferred<Boolean>? = null
 
-        suspend fun start(context: Context) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val deferred = CompletableDeferred<Unit>()
-                startedDeferred = deferred
-                val intent = Intent(context, MediaProjectionService::class.java)
-                context.startForegroundService(intent)
-                withTimeoutOrNull(2000L) { deferred.await() }
-            } else {
-                val intent = Intent(context, MediaProjectionService::class.java)
+        @MainThread
+        suspend fun start(context: Context): Boolean {
+            val deferred = CompletableDeferred<Boolean>()
+            startedDeferred = deferred
+            val intent = Intent(context, MediaProjectionService::class.java)
+            return try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(intent)
                 } else {
                     context.startService(intent)
                 }
+                withTimeoutOrNull(START_TIMEOUT_MS) { deferred.await() } == true
+            } finally {
+                if (startedDeferred === deferred) startedDeferred = null
             }
         }
 
+        @MainThread
         fun stop(context: Context) {
+            startedDeferred?.complete(false)
             startedDeferred = null
             context.stopService(Intent(context, MediaProjectionService::class.java))
         }

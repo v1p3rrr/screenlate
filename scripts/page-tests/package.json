@@ -7,6 +7,7 @@
     "test": "node --test \"../../overlay/src/test/js/*.test.mjs\" \"../../dictionary/render-yomitan/src/test/js/*.test.mjs\""
   },
   "devDependencies": {
+    "acorn": "^8.19.0",
     "jsdom": "^26.1.0"
   }
 }

@@ -51,13 +51,15 @@ HeadwordReading.addLanguage('zh', (() => {
                 if (!best[end] || split.length < best[end].length) best[end] = split;
             }
         }
-        return best[plain.length]?.map(([start, end]) => {
+        const segments = best[plain.length];
+        if (!segments) return null;
+        return segments.map(([start, end]) => {
             const piece = run.slice(start, end);
             return {
                 text: piece.map(letter => letter.character).join(''),
-                tone: piece.find(letter => letter.tone)?.tone || NEUTRAL,
+                tone: (piece.find(letter => letter.tone) || {}).tone || NEUTRAL,
             };
-        }) ?? null;
+        });
     }
 
     function syllables(reading) {

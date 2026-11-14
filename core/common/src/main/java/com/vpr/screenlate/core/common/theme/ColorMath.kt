@@ -207,6 +207,28 @@ object ColorMath {
         return (lighter + 0.05f) / (darker + 0.05f)
     }
 
+    /** Keeps the preferred foreground when it meets 4.5:1, otherwise adjusts it toward [endpoint]. */
+    internal fun readableForeground(preferred: Int, background: Int, endpoint: Int): Int {
+        if (contrastRatio(preferred, background) >= TEXT_CONTRAST) return preferred
+        var low = 0
+        var high = 256
+        fun mix(step: Int): Int {
+            fun channel(from: Int, to: Int): Int = (from * (256 - step) + to * step) / 256
+            return (0xFF shl 24) or
+                (channel(red(preferred), red(endpoint)) shl 16) or
+                (channel(green(preferred), green(endpoint)) shl 8) or
+                channel(blue(preferred), blue(endpoint))
+        }
+        while (low + 1 < high) {
+            val middle = (low + high) / 2
+            if (contrastRatio(mix(middle), background) >= TEXT_CONTRAST) high = middle else low = middle
+        }
+        return mix(high)
+    }
+
+    internal const val TEXT_CONTRAST = 4.5f
+
+
     /**
      * Returns true if the color has high luminance (> [threshold]).
      *

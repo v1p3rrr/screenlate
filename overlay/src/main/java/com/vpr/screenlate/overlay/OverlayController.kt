@@ -40,6 +40,8 @@ import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.common.settings.isDark
 import com.vpr.screenlate.core.common.theme.AppPaletteConfig
+import com.vpr.screenlate.core.common.theme.wallpaperAccents
+import com.vpr.screenlate.core.common.theme.withWallpaperColor
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.core.ocr.LensPausedException
 import com.vpr.screenlate.core.ocr.NoDeviceOcrException
@@ -323,18 +325,13 @@ class OverlayController(
         lastScreen = screenBounds()
         bubbleView.setOnTouchListener(BubbleTouchListener())
         showGlyph()
-        val initialPalette = appSettings.cachedPaletteConfig ?: AppPaletteConfig()
+        val initialPalette = (appSettings.cachedPaletteConfig ?: AppPaletteConfig()).withWallpaperColor(service)
         val initialOverlay = overlaySettings.cachedSettings ?: OverlaySettings()
         bubbleView.bubbleColor = if (initialOverlay.bubbleUseAppColor) initialPalette.effectiveSeed else initialOverlay.bubbleCustomColor
         scope.launch {
-            combine(overlaySettings.settings, appSettings.paletteConfig) { overlay, palette ->
-                val seed = if (overlay.bubbleUseAppColor) {
-                    palette.effectiveSeed
-                } else {
-                    overlay.bubbleCustomColor
-                }
-                bubbleView.bubbleColor = seed
-            }.collect()
+            combine(overlaySettings.settings, appSettings.paletteConfig, wallpaperAccents(service)) { overlay, palette, wallpaperAccent ->
+                if (overlay.bubbleUseAppColor) palette.withWallpaperColor(wallpaperAccent).effectiveSeed else overlay.bubbleCustomColor
+            }.distinctUntilChanged().collect { bubbleView.bubbleColor = it }
         }
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { lookupSources.source.collect(::onLookupSource) }
@@ -1109,7 +1106,10 @@ class OverlayController(
             if (captured == null) {
                 val read = appTextRead.await()
                 if (read == null) {
-                    if (captureError !is CaptureException.ConsentDenied) {
+                    if (captureError is CaptureException.ConsentDenied) {
+                        ocrFinal = true
+                        bubbleView.loading = false
+                    } else {
                         showScanError(
                             if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
                         )
@@ -1267,8 +1267,8 @@ class OverlayController(
             val (cx, cy) = bubbleCenter()
             return capturer.capture(cx.roundToInt(), cy.roundToInt()) { displayCapture ->
                 setOverlaysAlpha(0f)
-                delay(HIDE_FRAME_MS)
                 try {
+                    delay(HIDE_FRAME_MS)
                     displayCapture()
                 } finally {
                     setOverlaysAlpha(1f)

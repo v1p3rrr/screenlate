@@ -175,7 +175,7 @@ const DefinitionCopy = (() => {
         }
         if (node.type === 'structured-content') return write(node.content, out, skip);
         if (node.type === 'text') return write(node.text, out, skip);
-        if (node.type === 'image' || SKIPPED_TAGS.has(node.tag) || skip?.(node)) return;
+        if (node.type === 'image' || SKIPPED_TAGS.has(node.tag) || (skip && skip(node))) return;
         if (node.tag === 'br') {
             out.push('\n');
             return;
@@ -190,14 +190,14 @@ const DefinitionCopy = (() => {
         write(node.content, out, skip);
         if (block) out.push('\n');
         // Tags stand apart on the page.
-        if (node.data?.class === 'tag') out.push(' ');
+        if ((node.data && node.data.class) === 'tag') out.push(' ');
     }
 
     function writeList(list, out, skip) {
         let number = 0;
         out.push('\n');
         for (const child of asArray(list.content)) {
-            if (child && typeof child === 'object' && child.tag === 'li' && !skip?.(child)) {
+            if (child && typeof child === 'object' && child.tag === 'li' && (!skip || !skip(child))) {
                 number += 1;
                 out.push('\n', marker(list, child, number));
                 write(child.content, out, skip);
@@ -211,7 +211,9 @@ const DefinitionCopy = (() => {
 
     /** The list marker as the page draws it: a quoted list-style-type ("① "), a number, or a bullet. */
     function marker(list, item, number) {
-        const style = String(item.style?.listStyleType ?? list.style?.listStyleType ?? '').trim();
+        const itemStyle = item.style && item.style.listStyleType;
+        const listStyle = list.style && list.style.listStyleType;
+        const style = String(itemStyle != null ? itemStyle : listStyle != null ? listStyle : '').trim();
         const quoted = /^(["'])(.*)\1$/.exec(style);
         if (quoted) return quoted[2].trim() ? `${quoted[2].trim()} ` : '';
         if (style === 'none') return '';
@@ -230,7 +232,7 @@ const DefinitionCopy = (() => {
 
     function plainString(item) {
         if (typeof item === 'string') return item;
-        if (item && typeof item === 'object' && item.type === 'text') return String(item.text ?? '');
+        if (item && typeof item === 'object' && item.type === 'text') return String(item.text == null ? '' : item.text);
         return null;
     }
 
@@ -293,11 +295,11 @@ const DefinitionCopy = (() => {
                 line = line.slice(number[0].length);
             } else if (state.numbered && !state.started) {
                 return;
-            } else if (!state.numbered && index === 0 && lines.length > 1 && rules.headword?.test(line)) {
+            } else if (!state.numbered && index === 0 && lines.length > 1 && rules.headword && rules.headword.test(line)) {
                 return;
-            } else if (rules.subMarker?.test(line)) {
+            } else if (rules.subMarker && rules.subMarker.test(line)) {
                 state.extra = false;
-            } else if (state.bilingual && !state.numbered && rules.senseLabel?.test(line)) {
+            } else if (state.bilingual && !state.numbered && rules.senseLabel && rules.senseLabel.test(line)) {
                 state.extra = false;
                 startsNew = true;
             } else if (state.extra || isExtra(line, state.bilingual, rules)) {
@@ -317,8 +319,9 @@ const DefinitionCopy = (() => {
 
     function isExtra(line, bilingual, rules) {
         // An example and its translation around a double bar: 日本人は米を食べている∥Японцы едят рис.
-        if (rules.extraStart?.test(line) || line.includes('∥')) return true;
-        return Boolean(bilingual ? rules.sourceStart?.test(line) : rules.noteStart?.test(line));
+        if ((rules.extraStart && rules.extraStart.test(line)) || line.includes('∥')) return true;
+        const start = bilingual ? rules.sourceStart : rules.noteStart;
+        return Boolean(start && start.test(line));
     }
 
     /**
@@ -332,7 +335,7 @@ const DefinitionCopy = (() => {
         text = text.replace(BULLET, '');
         if (rules.bullet) text = text.replace(rules.bullet, '');
         if (rules.subMarker) text = text.replace(rules.subMarker, '');
-        const example = rules.example?.exec(text);
+        const example = rules.example && rules.example.exec(text);
         if (example) {
             const end = text.lastIndexOf(rules.sentenceEnd, example.index);
             text = end >= 0 ? text.slice(0, end + rules.sentenceEnd.length) : text.replace(rules.examples, '');
@@ -360,7 +363,7 @@ const DefinitionCopy = (() => {
             return;
         }
         if (rules.meaningNames.has(data.name)) {
-            found.push(oneLine(textOf(node.content, child => rules.readingNames.has(child.data?.name))));
+            found.push(oneLine(textOf(node.content, child => rules.readingNames.has(child.data ? child.data.name : undefined))));
             return;
         }
         markedMeanings(node.content, found, rules);

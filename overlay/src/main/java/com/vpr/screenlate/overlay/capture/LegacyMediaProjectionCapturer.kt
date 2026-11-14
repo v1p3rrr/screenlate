@@ -8,13 +8,13 @@ import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.Image
 import android.media.ImageReader
+import android.media.projection.MediaProjection
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.WindowManager
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.overlay.ui.WindowMetricsCompat
-import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -32,24 +32,28 @@ class LegacyMediaProjectionCapturer(
         pointY: Int,
         withoutOverlays: suspend (displayCapture: suspend () -> CapturedScreen) -> CapturedScreen,
     ): CapturedScreen {
+        val projection = MediaProjectionHolder.getOrCreate(service) ?: throw CaptureException.ConsentDenied()
         val started = SystemClock.elapsedRealtime()
-        return withoutOverlays { captureDisplay() }.also { log("display", it, started) }
+        return withoutOverlays { captureDisplay(projection) }.also { log("display", it, started) }
     }
 
     private fun log(kind: String, shot: CapturedScreen, started: Long) {
         Log.d(TAG, "Captured the $kind, ${shot.bitmap.width}x${shot.bitmap.height}, in ${SystemClock.elapsedRealtime() - started} ms")
     }
 
-    private suspend fun captureDisplay(): CapturedScreen = withContext(Dispatchers.Default) {
-        val projection = MediaProjectionHolder.getOrCreate(service)
-            ?: throw CaptureException.ConsentDenied()
-
+    private suspend fun captureDisplay(projection: MediaProjection): CapturedScreen {
         val windowManager = service.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val bounds = WindowMetricsCompat.screenBounds(windowManager)
         val width = bounds.width()
         val height = bounds.height()
         val density = service.resources.displayMetrics.densityDpi
 
+        return withContext(Dispatchers.Default) {
+            readDisplay(projection, width, height, density)
+        }
+    }
+
+    private suspend fun readDisplay(projection: MediaProjection, width: Int, height: Int, density: Int): CapturedScreen {
         val imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2)
         var virtualDisplay: VirtualDisplay? = null
         try {
@@ -62,13 +66,17 @@ class LegacyMediaProjectionCapturer(
                 imageReader.surface,
                 null,
                 null,
-            )
+            ) ?: throw CaptureException.Failed(-1)
 
             val image = withTimeoutOrNull(CAPTURE_TIMEOUT_MS) {
                 waitForImage(imageReader)
             } ?: throw CaptureException.Failed(-1)
             val bitmap = imageToBitmap(image, width, height)
-            CapturedScreen(bitmap, 0, 0)
+            return CapturedScreen(bitmap, 0, 0)
+        } catch (_: SecurityException) {
+            throw CaptureException.Failed(-1)
+        } catch (_: IllegalStateException) {
+            throw CaptureException.Failed(-1)
         } finally {
             virtualDisplay?.release()
             imageReader.close()
@@ -78,16 +86,15 @@ class LegacyMediaProjectionCapturer(
     private suspend fun waitForImage(imageReader: ImageReader): Image =
         suspendCancellableCoroutine { continuation ->
             val handler = Handler(Looper.getMainLooper())
-            var resumed = false
             val listener = ImageReader.OnImageAvailableListener { reader ->
-                val img = try {
+                val image = try {
                     reader.acquireLatestImage()
-                } catch (_: Exception) {
+                } catch (_: IllegalStateException) {
                     null
                 }
-                if (img != null && !resumed) {
-                    resumed = true
-                    continuation.resume(img)
+                if (image != null) {
+                    reader.setOnImageAvailableListener(null, null)
+                    continuation.resume(image) { _, undelivered, _ -> undelivered.close() }
                 }
             }
             imageReader.setOnImageAvailableListener(listener, handler)

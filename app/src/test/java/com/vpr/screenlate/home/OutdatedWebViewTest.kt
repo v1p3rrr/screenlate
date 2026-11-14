@@ -7,14 +7,13 @@ class OutdatedWebViewTest {
 
     @Test
     fun `versions below 80 are flagged as outdated`() {
-        assertThat(isOutdatedWebViewVersion("69.0.3497.100")).isTrue()
+        assertThat(isOutdatedWebViewVersion("68.0.3440.91")).isTrue()
         assertThat(isOutdatedWebViewVersion("53.0.2785.124")).isTrue()
-        assertThat(isOutdatedWebViewVersion("79.0.3945.136")).isTrue()
     }
 
     @Test
     fun `versions 80 and newer are not flagged`() {
-        assertThat(isOutdatedWebViewVersion("80.0.3987.162")).isFalse()
+        assertThat(isOutdatedWebViewVersion("69.0.3497.100")).isFalse()
         assertThat(isOutdatedWebViewVersion("120.0.6099.144")).isFalse()
     }
 

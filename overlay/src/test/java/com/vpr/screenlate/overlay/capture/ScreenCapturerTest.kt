@@ -18,11 +18,13 @@ class ScreenCapturerTest {
         Unsafe::class.java.getDeclaredField("theUnsafe").apply { isAccessible = true }.get(null) as Unsafe
 
     @Test
-    fun `capturer factory creates capturer instance`() {
+    fun `capturer factory uses accessibility screenshots starting at API 30`() {
         val service = unsafe().allocateInstance(StubAccessibilityService::class.java) as AccessibilityService
         val executor = Executor { it.run() }
-        val capturer = ScreenCapturer.create(service, executor)
-        assertThat(capturer).isNotNull()
+        assertThat(ScreenCapturer.create(service, executor, 24)).isInstanceOf(LegacyMediaProjectionCapturer::class.java)
+        assertThat(ScreenCapturer.create(service, executor, 29)).isInstanceOf(LegacyMediaProjectionCapturer::class.java)
+        assertThat(ScreenCapturer.create(service, executor, 30)).isInstanceOf(ModernAccessibilityCapturer::class.java)
+        assertThat(ScreenCapturer.create(service, executor, 34)).isInstanceOf(ModernAccessibilityCapturer::class.java)
     }
 
     @Test

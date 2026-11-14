@@ -1,13 +1,17 @@
 package com.vpr.screenlate.overlay.fonts
 
+import android.content.Context
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.theme.AppPaletteConfig
 import com.vpr.screenlate.core.common.theme.PaletteGenerator
+import com.vpr.screenlate.core.common.theme.wallpaperAccents
+import com.vpr.screenlate.core.common.theme.withWallpaperColor
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +33,7 @@ class PageAppearance @Inject constructor(
     private val settings: PopupAppearanceRepository,
     private val fonts: PopupFonts,
     private val appSettings: AppSettingsRepository,
+    @ApplicationContext private val context: Context,
 ) {
     fun json(language: Language): Flow<JsonObject> {
         val support = language.support
@@ -39,8 +44,9 @@ class PageAppearance @Inject constructor(
             fonts.installed,
             weights,
             appSettings.paletteConfig,
-        ) { appearance, installed, systemWeights, paletteConfig ->
-            build(support, appearance, installed, systemWeights, paletteConfig)
+            wallpaperAccents(context),
+        ) { appearance, installed, systemWeights, paletteConfig, wallpaperAccent ->
+            build(support, appearance, installed, systemWeights, paletteConfig.withWallpaperColor(wallpaperAccent))
         }.distinctUntilChanged()
     }
 
@@ -77,11 +83,12 @@ class PageAppearance @Inject constructor(
                 put("customCss", customCss)
                 put("definitionCopy", if (appearance.copyDefinitions) appearance.copyMode.id else "")
                 put("pronunciationColors", appearance.pronunciationColors)
-                put("accent", palette.popupAccentLight)
                 put("accentLight", palette.popupAccentLight)
                 put("accentDark", palette.popupAccentDark)
-                put("matchedBg", palette.popupMatchedBg)
-                put("border", palette.popupBorder)
+                put("matchedBgLight", palette.popupMatchedBgLight)
+                put("matchedBgDark", palette.popupMatchedBgDark)
+                put("borderLight", palette.popupBorderLight)
+                put("borderDark", palette.popupBorderDark)
                 put("chipBgLight", palette.popupChipBgLight)
                 put("chipBgDark", palette.popupChipBgDark)
                 if (chosen != null) {

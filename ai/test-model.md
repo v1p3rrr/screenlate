@@ -34,7 +34,7 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   overlay tests; `Screenlate_API30_x86` or `Screenlate_API30_glide` for the Compose UI tests of `app` (Espresso's input
   injector fails on API 37) and for the pull-out glide on old Android; `Screenlate_API24` (API 24, Android 7.0, x86_64, 1080×1920)
   for legacy Android 7.0–10 verification, MediaProjection screen capture and outdated WebView compatibility checks.
-  The API 30 and API 24 WebViews cannot run the modern popup page without an updated WebView package from Google Play.
+  Use the stock Chrome-backed WebView 69 on API 24 for the dictionary popup compatibility check.
 - Start: `emulator -avd Pixel_10_Pro -no-snapshot-save -no-boot-anim -crash-report-mode never`. Without
   `-crash-report-mode never` an earlier emulator crash leaves a consent dialog that blocks the boot on the desktop
   (it looks like a crash at boot: the log ends with the old crash's annotations).
@@ -126,6 +126,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB19 | The docked glyph is the own name's first letter: German D, Russian Р, Czech Č, Japanese あ. Quick languages English and Spanish → the bubble shows EN, after a switch ES; Russian with Polish → РУ and PL; Kazakh with Kyrgyz → Қ and К; adding or removing a star updates the glyph at once; with the e-ink theme the menu's codes are РУ, PL | F | U BubbleGlyphTest, M | 2026-10-29 |
 | BUB20 | The debug build's selection menu item reads "Look up in Screenlate Dev" (in Russian "Найти в Screenlate Dev"), the release build's "Look up in Screenlate", so the two installed side by side can be told apart | N | U TranslationsTest, M | 2026-10-29 (English only; Russian by TranslationsTest) |
 | BUB21 | Quick languages Hindi, Marathi and Japanese → in the hold menu the two India flags carry HI and MR on a small rounded badge over the flag's lower edge, in the menu's colors, the flag visible above it; Japan's flag has none; turn Marathi off → Hindi keeps its badge (a language that is not turned on shows India's flag too); Cantonese (Hong Kong) has none; e-ink shows the codes alone as before; TalkBack reads the names | F | U FlagsTest, M | 2026-10-29 |
+| BUB22 | API 24–29: pull out the bubble with screen recognition enabled. Cancel the capture dialog, check that the spinner stops, then retry and grant access. Wait past the timeout in a fresh request, retry, and check that the old dialog closes and cannot complete the new request. Stop the capture session from system UI and verify that the next scan requests access again. | N | U CaptureConsentTest, M | |
+| BUB23 | API 24, stock WebView 69: capture synthetic Japanese text from an image and check that its fixture dictionary definition and matched word render. Rotate the display and scan again. On API 30+, run the same lookup using accessibility screenshots without a capture-consent dialog. | N | U ScreenCapturerTest, I LookupPageTest, P webview-syntax.test.mjs, M | |
 
 ### OCR: text sources and recognition
 
@@ -615,6 +617,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | SET20 | Appearance → Language lists العربية 🇸🇦, فارسی 🇮🇷 and עברית 🇮🇱 among the 17 and shows the one in use; Hebrew is stored as he and loads `values-iw` (`get-app-locales` → `[he]`); Persian's Lookup settings (جستجو در واژه‌نامه‌ها) are told from its Search tab (جستجو) | F | U TranslationsTest, LanguageOptionsTest, M | 2026-10-29 |
 | SET21 | Audio follows the active language switched from the bubble menu while the page is open: sources and the test word become the new language's (Bulgarian вода, Mongolian ус); a word typed by hand stays; a language picked on the page's language card stays shown when the active one changes | F | U TestWordAfterTest, M | 2026-10-29 |
 | SET22 | Lists joined in the interface take the language's mark: a dictionary card's counts (Jitendex: terms, media files) read «435448، …» in Arabic, «435448、…» in Japanese, «, » in Russian and French; the French Search tab reads «Rechercher», the Lookup settings «Recherche» | F | M | 2026-10-29 |
+| SET23 | Pick a preset and a custom HEX color, then check Compose, the bubble and the dictionary popup in both themes. Verify readable text with white and vivid orange custom seeds. On Android 12+ select System colors and check the same UI against the platform palette. | N | U PaletteGeneratorTest, P popup.test.mjs, M | |
+| SET24 | Set a separate bubble color in either of its two settings pages and verify the other page shows it. Re-enable sync, then enable and disable e-ink mode. E-ink uses monochrome controls, bubble and popup, and leaving it restores the chosen palettes. | N | U BubbleColorSettingsTest, P popup.test.mjs, M | |
 
 ### UPD: About, logs, updates
 
