@@ -24,21 +24,15 @@ class MediaProjectionConsentActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE) {
-            if (resultCode == RESULT_OK && data != null) {
-                MediaProjectionHolder.pendingConsent?.complete(resultCode to data)
-            } else {
-                MediaProjectionHolder.pendingConsent?.complete(null)
-            }
-            MediaProjectionHolder.pendingConsent = null
+            MediaProjectionHolder.onConsentResult(resultCode, data)
             finish()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isFinishing && MediaProjectionHolder.pendingConsent?.isActive == true) {
-            MediaProjectionHolder.pendingConsent?.complete(null)
-            MediaProjectionHolder.pendingConsent = null
+        if (isFinishing) {
+            MediaProjectionHolder.onConsentCancelled()
         }
     }
 

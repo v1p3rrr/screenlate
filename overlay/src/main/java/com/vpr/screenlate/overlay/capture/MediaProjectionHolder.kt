@@ -1,5 +1,6 @@
 package com.vpr.screenlate.overlay.capture
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.media.projection.MediaProjection
@@ -18,7 +19,25 @@ object MediaProjectionHolder {
     private const val TAG = "MediaProjection"
     private val mutex = Mutex()
     private var projection: MediaProjection? = null
-    internal var pendingConsent: CompletableDeferred<Pair<Int, Intent>?>? = null
+    private var pendingConsent: CompletableDeferred<Pair<Int, Intent>?>? = null
+
+    fun onConsentResult(resultCode: Int, data: Intent?) {
+        val deferred = pendingConsent
+        pendingConsent = null
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            deferred?.complete(resultCode to data)
+        } else {
+            deferred?.complete(null)
+        }
+    }
+
+    fun onConsentCancelled() {
+        val deferred = pendingConsent
+        if (deferred?.isActive == true) {
+            deferred.complete(null)
+            pendingConsent = null
+        }
+    }
 
     /**
      * Obtains or reuses an active [MediaProjection] token.

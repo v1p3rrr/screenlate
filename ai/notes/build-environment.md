@@ -91,6 +91,15 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   app-data.tar`, grant `com.ichi2.anki.permission.READ_WRITE_DATABASE` and `POST_NOTIFICATIONS` again and put the
   service setting back. Under Git Bash set `MSYS_NO_PATHCONV=1` and give host paths as `D:/...`.
 
+- Emulator AVD `Screenlate_API24` (added 2026-11-14 for Android 7.0/API 24 testing): 1080×1920, density 420 (x86_64),
+  Google APIs system image (`system-images;android-24;google_apis;x86_64`).
+  - Created via `avdmanager create avd -n Screenlate_API24 -k "system-images;android-24;google_apis;x86_64" -d pixel`.
+  - Start command: `D:\Android\Sdk\emulator\emulator.exe -avd Screenlate_API24 -no-snapshot-save -no-boot-anim -crash-report-mode never`.
+  - Snapshot saved: `api24_tested` (`adb -s emulator-5554 emu avd snapshot save api24_tested`).
+  - Shut down gracefully with `adb -s emulator-5554 emu kill` or `adb -s emulator-5554 shell reboot -p`.
+  - Used to verify legacy Android 7.0–10 behavior: `LegacyMediaProjectionCapturer`, absence of modern APIs
+    (`NotificationChannel`, `setRendererPriorityPolicy`, `java.util.Base64`), and TLS certificate handling (Let's Encrypt ISRG Root X1 via `network_security_config.xml`).
+  - Bundled WebView in this image is Chromium 69 (`69.0.3497.100`), which triggers the `OutdatedWebView` banner on Home.
 - Emulator AVD `Pixel_10_Pro`: 1280×2856, density 480 (3.0), Android 17 (API 37.2), Play Store image with 16 KB pages. Native libraries (hoshidicts) must be 16 KB aligned: use NDK r28+ or the equivalent linker flags.
 - `Pixel_10_Pro` has no quick-boot snapshot since 2026-10-15: saving one (`adb emu avd snapshot save default_boot`)
   hung in its textures step (window not responding, no CPU or disk activity; the log showed the fallback to system

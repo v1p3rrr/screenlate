@@ -14,18 +14,17 @@ import android.os.SystemClock
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import com.vpr.screenlate.core.common.log.Log
-import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Screen capture backend for Android 7.0–10 (API 24–29) using MediaProjection, VirtualDisplay, and ImageReader.
  */
 class LegacyMediaProjectionCapturer(
     private val service: AccessibilityService,
-    @Suppress("unused") private val executor: Executor,
 ) : ScreenCapturer {
 
     override suspend fun capture(
@@ -43,7 +42,7 @@ class LegacyMediaProjectionCapturer(
 
     private suspend fun captureDisplay(): CapturedScreen = withContext(Dispatchers.Default) {
         val projection = MediaProjectionHolder.getOrCreate(service)
-            ?: throw CaptureException.Failed(-1)
+            ?: throw CaptureException.ConsentDenied()
 
         val windowManager = service.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val metrics = DisplayMetrics()
@@ -67,7 +66,9 @@ class LegacyMediaProjectionCapturer(
                 null,
             )
 
-            val image = waitForImage(imageReader)
+            val image = withTimeoutOrNull(CAPTURE_TIMEOUT_MS) {
+                waitForImage(imageReader)
+            } ?: throw CaptureException.Failed(-1)
             val bitmap = imageToBitmap(image, width, height)
             CapturedScreen(bitmap, 0, 0)
         } finally {
@@ -122,5 +123,6 @@ class LegacyMediaProjectionCapturer(
 
     private companion object {
         const val TAG = "LegacyMediaProjectionCapturer"
+        const val CAPTURE_TIMEOUT_MS = 2500L
     }
 }

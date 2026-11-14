@@ -26,8 +26,7 @@ object WindowMetricsCompat {
             return windowManager.maximumWindowMetrics.windowInsets
                 .getInsetsIgnoringVisibility(WindowInsets.Type.statusBars()).top
         }
-        val resId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resId > 0) context.resources.getDimensionPixelSize(resId) else 0
+        return resourceDimension(context.resources, "status_bar_height")
     }
 
     fun navigationBarHeight(context: Context, windowManager: WindowManager): Int {
@@ -35,7 +34,11 @@ object WindowMetricsCompat {
             return windowManager.maximumWindowMetrics.windowInsets
                 .getInsetsIgnoringVisibility(WindowInsets.Type.navigationBars()).bottom
         }
-        val resId = context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resId > 0) context.resources.getDimensionPixelSize(resId) else 0
+        return resourceDimension(context.resources, "navigation_bar_height")
+    }
+
+    internal fun resourceDimension(resources: android.content.res.Resources?, name: String): Int {
+        val resId = resources?.getIdentifier(name, "dimen", "android") ?: 0
+        return if (resId > 0) resources?.getDimensionPixelSize(resId) ?: 0 else 0
     }
 }

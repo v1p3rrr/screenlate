@@ -212,25 +212,25 @@ class AppUpdates @Inject constructor(
     /** A newer version of this app signed with the same certificates. */
     private fun verify(file: File): Boolean = runCatching {
         val packageManager = context.packageManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        val (archive, installed, sameSignatures) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val flags = PackageManager.GET_SIGNING_CERTIFICATES
-            val archive = packageManager.getPackageArchiveInfo(file.path, flags) ?: return false
-            val installed = packageManager.getPackageInfo(context.packageName, flags)
-            archive.packageName == context.packageName &&
-                PackageInfoCompat.getLongVersionCode(archive) > PackageInfoCompat.getLongVersionCode(installed) &&
-                archive.signingInfo?.apkContentsSigners?.toSet() == installed.signingInfo?.apkContentsSigners?.toSet()
+            val arch = packageManager.getPackageArchiveInfo(file.path, flags) ?: return false
+            val inst = packageManager.getPackageInfo(context.packageName, flags)
+            Triple(arch, inst, arch.signingInfo?.apkContentsSigners?.toSet() == inst.signingInfo?.apkContentsSigners?.toSet())
         } else {
             @Suppress("DEPRECATION")
             val flags = PackageManager.GET_SIGNATURES
             @Suppress("DEPRECATION")
-            val archive = packageManager.getPackageArchiveInfo(file.path, flags) ?: return false
+            val arch = packageManager.getPackageArchiveInfo(file.path, flags) ?: return false
             @Suppress("DEPRECATION")
-            val installed = packageManager.getPackageInfo(context.packageName, flags)
+            val inst = packageManager.getPackageInfo(context.packageName, flags)
             @Suppress("DEPRECATION")
-            archive.packageName == context.packageName &&
-                PackageInfoCompat.getLongVersionCode(archive) > PackageInfoCompat.getLongVersionCode(installed) &&
-                archive.signatures?.toSet() == installed.signatures?.toSet()
+            val matches = arch.signatures?.toSet() == inst.signatures?.toSet()
+            Triple(arch, inst, matches)
         }
+        archive.packageName == context.packageName &&
+            PackageInfoCompat.getLongVersionCode(archive) > PackageInfoCompat.getLongVersionCode(installed) &&
+            sameSignatures
     }.getOrDefault(false)
 
     private fun install(file: File) {

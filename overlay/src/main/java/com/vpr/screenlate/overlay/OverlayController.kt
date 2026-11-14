@@ -462,9 +462,6 @@ class OverlayController(
             OverlayWindows.Entry(popup::attach, popup::detach),
             OverlayWindows.Entry({ OverlayWindows.add(windowManager, bubbleView, bubbleParams) }, { windowManager.removeView(bubbleView) }),
         )
-        if (attached && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            scope.launch { MediaProjectionHolder.getOrCreate(service) }
-        }
     }
 
     private fun detachWindows() {
@@ -530,7 +527,7 @@ class OverlayController(
         val bounds = WindowMetricsCompat.screenBounds(windowManager)
         val statusBar = WindowMetricsCompat.statusBarHeight(service, windowManager)
         val navBar = WindowMetricsCompat.navigationBarHeight(service, windowManager)
-        val usable = usableBounds()
+        val usable = legacyUsableBounds(bounds, statusBar, navBar)
         return DockPlacement.Screen(
             width = bounds.width().toFloat(),
             height = bounds.height().toFloat(),
@@ -562,13 +559,16 @@ class OverlayController(
         val bounds = WindowMetricsCompat.screenBounds(windowManager)
         val statusBar = WindowMetricsCompat.statusBarHeight(service, windowManager)
         val navBar = WindowMetricsCompat.navigationBarHeight(service, windowManager)
-        return Box(
+        return legacyUsableBounds(bounds, statusBar, navBar)
+    }
+
+    private fun legacyUsableBounds(bounds: android.graphics.Rect, statusBar: Int, navBar: Int): Box =
+        Box(
             0f,
             statusBar.toFloat(),
             bounds.width().toFloat(),
             (bounds.height() - navBar).toFloat(),
         )
-    }
 
     // endregion
 
@@ -1101,9 +1101,11 @@ class OverlayController(
             if (captured == null) {
                 val read = appTextRead.await()
                 if (read == null) {
-                    showScanError(
-                        if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
-                    )
+                    if (captureError !is CaptureException.ConsentDenied) {
+                        showScanError(
+                            if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
+                        )
+                    }
                 }
                 return@launch
             }

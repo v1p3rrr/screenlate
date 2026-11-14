@@ -1456,3 +1456,21 @@ test('without the header the translation button sits first in the first entry, b
     assert.equal(content.querySelector('.action-translate'), null);
     assert.equal(page.document.getElementById('translation').hidden, true);
 });
+
+test('replaceChildren polyfill replaces all children with new nodes or text', () => {
+    const parent = page.document.createElement('div');
+    const old1 = page.document.createElement('span');
+    const old2 = page.document.createElement('span');
+    parent.append(old1, old2);
+    assert.equal(parent.childNodes.length, 2);
+
+    const newChild = page.document.createElement('b');
+    newChild.textContent = 'text';
+    parent.replaceChildren(newChild, 'literal');
+    assert.equal(parent.childNodes.length, 2);
+    assert.equal(parent.firstChild.textContent, 'text');
+    assert.equal(parent.lastChild.textContent, 'literal');
+
+    parent.replaceChildren();
+    assert.equal(parent.childNodes.length, 0);
+});

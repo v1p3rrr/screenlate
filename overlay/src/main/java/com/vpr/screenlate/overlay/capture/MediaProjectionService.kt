@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.vpr.screenlate.overlay.R
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Foreground service required on Android 10 (API 29) to host MediaProjection.
@@ -25,10 +27,17 @@ class MediaProjectionService : Service() {
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
+        startedDeferred?.complete(Unit)
+        startedDeferred = null
         return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onDestroy() {
+        startedDeferred = null
+        super.onDestroy()
+    }
 
     private fun createNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -54,17 +63,27 @@ class MediaProjectionService : Service() {
     companion object {
         private const val CHANNEL_ID = "screenlate_capture"
         private const val NOTIFICATION_ID = 101
+        private var startedDeferred: CompletableDeferred<Unit>? = null
 
-        fun start(context: Context) {
-            val intent = Intent(context, MediaProjectionService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        suspend fun start(context: Context) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val deferred = CompletableDeferred<Unit>()
+                startedDeferred = deferred
+                val intent = Intent(context, MediaProjectionService::class.java)
                 context.startForegroundService(intent)
+                withTimeoutOrNull(2000L) { deferred.await() }
             } else {
-                context.startService(intent)
+                val intent = Intent(context, MediaProjectionService::class.java)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
             }
         }
 
         fun stop(context: Context) {
+            startedDeferred = null
             context.stopService(Intent(context, MediaProjectionService::class.java))
         }
     }

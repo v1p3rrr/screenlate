@@ -384,6 +384,11 @@ class HomeViewModel @Inject constructor(
 private fun ankiSummary(settings: AnkiSettings): AnkiSummary? =
     if (settings.configured) AnkiSummary(settings.deckName.orEmpty(), settings.modelName.orEmpty()) else null
 
+internal fun isOutdatedWebViewVersion(versionName: String?): Boolean {
+    val major = versionName?.split('.')?.firstOrNull()?.toIntOrNull() ?: return false
+    return major < 80
+}
+
 internal fun checkWebViewVersion(context: Context): String? {
     val info = try {
         WebViewCompat.getCurrentWebViewPackage(context)
@@ -391,6 +396,5 @@ internal fun checkWebViewVersion(context: Context): String? {
         null
     } ?: return null
     val version = info.versionName ?: return null
-    val major = version.split('.').firstOrNull()?.toIntOrNull() ?: return null
-    return if (major < 80) version else null
+    return if (isOutdatedWebViewVersion(version)) version else null
 }

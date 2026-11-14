@@ -32,7 +32,9 @@ A case marked I and M has its logic in the test and keeps a short look on the em
 
 - AVDs: `Pixel_10_Pro` (API 37, x86_64, 1280×2856) for manual checks, the WebView tests and the engine, registry and
   overlay tests; `Screenlate_API30_x86` or `Screenlate_API30_glide` for the Compose UI tests of `app` (Espresso's input
-  injector fails on API 37) and for the pull-out glide on old Android. The API 30 WebView cannot run the popup page.
+  injector fails on API 37) and for the pull-out glide on old Android; `Screenlate_API24` (API 24, Android 7.0, x86_64, 1080×1920)
+  for legacy Android 7.0–10 verification, MediaProjection screen capture and outdated WebView compatibility checks.
+  The API 30 and API 24 WebViews cannot run the modern popup page without an updated WebView package from Google Play.
 - Start: `emulator -avd Pixel_10_Pro -no-snapshot-save -no-boot-anim -crash-report-mode never`. Without
   `-crash-report-mode never` an earlier emulator crash leaves a consent dialog that blocks the boot on the desktop
   (it looks like a crash at boot: the log ends with the old crash's annotations).

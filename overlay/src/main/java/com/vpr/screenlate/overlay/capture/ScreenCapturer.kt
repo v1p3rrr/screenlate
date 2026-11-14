@@ -27,6 +27,7 @@ class CapturedScreen(val bitmap: Bitmap, val left: Int, val top: Int)
 sealed class CaptureException(message: String) : Exception(message) {
     class SecureWindow : CaptureException("The app blocks screenshots")
     class Failed(code: Int) : CaptureException("Screenshot failed with code $code")
+    class ConsentDenied : CaptureException("Screenshot consent was not granted")
 }
 
 interface ScreenCapturer {
@@ -42,7 +43,7 @@ interface ScreenCapturer {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 ModernAccessibilityCapturer(service, executor)
             } else {
-                LegacyMediaProjectionCapturer(service, executor)
+                LegacyMediaProjectionCapturer(service)
             }
     }
 }
