@@ -12,6 +12,11 @@ from Words.hk and its contributors (https://words.hk/).
   Open Data License 1.0: https://words.hk/base/hoifong/.
   The data is not bundled with the application.
 
+ISRG Root X1 (https://letsencrypt.org/certificates/),
+Internet Security Research Group.
+  Root certificate bundled in app/src/main/res/raw/isrgrootx1.der for TLS
+  compatibility with Let's Encrypt on Android 7.0.
+
 Third-party code
 ----------------
 

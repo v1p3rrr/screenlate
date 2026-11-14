@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -142,13 +143,17 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     /** Package of the app in the foreground; see [ForegroundWindow.pick]. */
     private fun foregroundAppPackage(): String? = ForegroundWindow
-        .pick(windows.map { ForegroundWindow.Window(it, it.type, it.isFocused, it.layer, it.isInPictureInPictureMode) })
+        .pick(windows.map {
+            val inPip = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) it.isInPictureInPictureMode else false
+            ForegroundWindow.Window(it, it.type, it.isFocused, it.layer, inPip)
+        })
         ?.root
         ?.packageName
         ?.toString()
 
     /** Windows that open and close are kept for the log of a stop; moved and resized ones are not. */
     private fun noteWindowsChange(event: AccessibilityEvent) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
         val now = SystemClock.elapsedRealtime()
         val changes = event.windowChanges
         if (changes and AccessibilityEvent.WINDOWS_CHANGE_ADDED != 0) {

@@ -5,7 +5,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.FilterInputStream
 import java.io.InputStream
-import java.util.Base64
+import com.vpr.screenlate.core.common.Base64Compat
 import java.util.zip.CRC32
 import java.util.zip.Deflater
 import java.util.zip.ZipEntry
@@ -272,14 +272,14 @@ class YomitanBackup private constructor(
                 var escaped = false
                 for (i in start + 1 until end - 1) if (row.array[i] == BACKSLASH) escaped = true
                 if (escaped) {
-                    string(Field.CONTENT)?.let { Base64.getMimeDecoder().decode(it) }
+                    string(Field.CONTENT)?.let { Base64Compat.decodeMime(it) }
                 } else {
-                    Base64.getMimeDecoder().decode(row.array.copyOfRange(start + 1, end - 1))
+                    Base64Compat.decodeMime(row.array.copyOfRange(start + 1, end - 1))
                 }
             }
             OBJECT_START -> runCatching {
                 json.parseToJsonElement(row.decode(start, end)).jsonObject["data"]?.jsonPrimitive?.contentOrNull
-            }.getOrNull()?.let { Base64.getMimeDecoder().decode(it) }
+            }.getOrNull()?.let { Base64Compat.decodeMime(it) }
             else -> null
         }
     }

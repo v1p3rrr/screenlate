@@ -601,14 +601,16 @@ class DictionaryImportWorker @AssistedInject constructor(
         shownImportName(inputData.getString(KEY_NAME).orEmpty(), inputData.getString(KEY_ENTRY_ID), catalogEntries)
 
     private fun foregroundInfo(name: String, cancellable: Boolean = true): ForegroundInfo {
-        val manager = applicationContext.getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(
-            NotificationChannel(
-                CHANNEL_ID,
-                applicationContext.getString(R.string.dictionary_import_channel),
-                NotificationManager.IMPORTANCE_LOW,
-            ),
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val manager = applicationContext.getSystemService(NotificationManager::class.java)
+            manager?.createNotificationChannel(
+                NotificationChannel(
+                    CHANNEL_ID,
+                    applicationContext.getString(R.string.dictionary_import_channel),
+                    NotificationManager.IMPORTANCE_LOW,
+                ),
+            )
+        }
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_dictionary_import)
             .setContentTitle(applicationContext.getString(R.string.dictionary_import_notification))
@@ -622,7 +624,11 @@ class DictionaryImportWorker @AssistedInject constructor(
             .build()
         // One notification per chain: two tasks run at a time.
         val chain = tags.tagValue(DictionaryImports.CHAIN_TAG_PREFIX)?.toIntOrNull() ?: 0
-        return ForegroundInfo(NOTIFICATION_ID + chain, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ForegroundInfo(NOTIFICATION_ID + chain, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            ForegroundInfo(NOTIFICATION_ID + chain, notification)
+        }
     }
 
     companion object {

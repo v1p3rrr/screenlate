@@ -13,9 +13,11 @@ class MediaProjectionConsentActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val manager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-        @Suppress("DEPRECATION")
-        startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CODE)
+        if (savedInstanceState == null) {
+            val manager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+            @Suppress("DEPRECATION")
+            startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CODE)
+        }
     }
 
     @Deprecated("Deprecated in Java")
@@ -34,7 +36,7 @@ class MediaProjectionConsentActivity : Activity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (MediaProjectionHolder.pendingConsent?.isActive == true) {
+        if (isFinishing && MediaProjectionHolder.pendingConsent?.isActive == true) {
             MediaProjectionHolder.pendingConsent?.complete(null)
             MediaProjectionHolder.pendingConsent = null
         }

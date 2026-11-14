@@ -8,25 +8,32 @@ MinSdk lowered from 30 to 24 (targetSdk/compileSdk stay 37).
 - Screen capture:
   - API 30+: untouched modern capture (`AccessibilityService.takeScreenshot()` and `takeScreenshotOfWindow()` on API 34+).
   - API 24–29: `LegacyMediaProjectionCapturer` using `VirtualDisplay` + `ImageReader` (RGBA_8888, stride alignment handling).
-  - Background permission lifecycle: transparent `MediaProjectionConsentActivity` + lightweight FGS `MediaProjectionService` with quiet channel notification.
+  - Background permission lifecycle: transparent `MediaProjectionConsentActivity` + lightweight FGS `MediaProjectionService` with quiet channel notification. Fixed `android:noHistory="true"` gotcha that broke `onActivityResult` callbacks from the system consent dialog.
 - UI & Overlay compatibility:
-  - Overlay remains `TYPE_ACCESSIBILITY_OVERLAY` (API 24+), zero `SYSTEM_ALERT_WINDOW` needed.
+  - Overlay remains `TYPE_ACCESSIBILITY_OVERLAY` (API 24+), zero `SYSTEM_ALERT_WINDOW` needed. Verified live on Android 7.0 AVD: floating bubble attaches, docks, and responds to touch gestures.
   - `WindowMetricsCompat` provides unified bounds/insets fallback for API 24–37.
   - Guarded insets, display cutouts, notification channels, package signatures, and system gesture exclusion rects.
+- Runtime SDK Differences fixed on Android 7.0 AVD:
+  - `NotificationChannel` guard on API < 26 in `DictionaryImportWorker`.
+  - `setRendererPriorityPolicy` guard on API < 26 in `LookupPage`.
+  - `AccessibilityEvent.windowChanges` guard on API < 28 and `isInPictureInPictureMode` guard on API < 26 in `ScreenlateAccessibilityService`.
+  - `Base64Compat` created in `core:common`: replaces `java.util.Base64` (added in API 26) with `android.util.Base64` on Android and `java.util.Base64` in desktop JVM unit tests.
+  - TLS/SSL Let's Encrypt support: bundled `ISRG Root X1` in `app/src/main/res/raw/isrgrootx1.der` and added to `network_security_config.xml` to fix `CertPathValidatorException` on Android 7.0.
 - Storage & Media:
   - Private external storage fallback (`getExternalFilesDir`) for photo gallery and log export on API < 29, MediaStore Scoped Storage on API 29+. Zero `WRITE_EXTERNAL_STORAGE` permission needed.
 - Time & Formatting:
   - Replaced all `java.time` usages in logging and backup with `SimpleDateFormat` / `System.currentTimeMillis()`.
 - WebView:
   - Polyfill for `Element.prototype.replaceChildren` in `popup.js` for WebViews < Chrome 86.
-  - Home card warning `OutdatedWebView` for WebView < 80 via `WebViewCompat`.
+  - Home card warning `OutdatedWebView` for WebView < 80 via `WebViewCompat`. Verified live on Android 7.0 AVD showing warning card for stock WebView 69.
 - Adaptive launcher icons:
   - Moved adaptive icons to `mipmap-anydpi-v26/` with `<layer-list>` fallback in `mipmap-anydpi/`. Updated `scripts/icon/icon.py`.
 - Translations:
   - All new string keys added across all 17 supported locales. `TranslationsTest` passed.
 - Full verification:
-  - `assembleDebug testDebugUnitTest` passed across all modules (all 463 tasks).
-  - Page tests (`npm --prefix scripts/page-tests test`, 139 tests) passed.
+  - Live smoke-tested on real `Screenlate_API24` emulator (Android 7.0, API 24, x86_64).
+  - All unit tests passed across all modules (`testDebugUnitTest`).
+  - Page tests (`npm --prefix scripts/page-tests test`, 162 tests) passed.
 
 ## Screenlate v1.0.1 released (2026-11-11)
 

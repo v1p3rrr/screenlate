@@ -2,5 +2,10 @@
 <!-- Plain HTTP is allowed so that audio sources can be servers on the local network, as on the desktop.
      Every built-in address of the app is https. -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true" />
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="@raw/isrgrootx1" />
+        </trust-anchors>
+    </base-config>
 </network-security-config>

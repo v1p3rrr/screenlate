@@ -80,7 +80,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
 import java.io.IOException
-import java.util.Base64
+import com.vpr.screenlate.core.common.Base64Compat
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -701,14 +701,14 @@ class DictionaryImports @Inject constructor(
 
         /** [ends] ([ENDED]) with the end of the task [id] recorded and those of tasks not [unfinished] dropped. */
         fun recordedEnds(ends: Set<String>, id: UUID, output: Data, unfinished: Set<String>): Set<String> =
-            unfinishedEnds(ends, unfinished - id.toString()) + "$id=${Base64.getEncoder().encodeToString(output.toByteArray())}"
+            unfinishedEnds(ends, unfinished - id.toString()) + "$id=${Base64Compat.encodeToString(output.toByteArray())}"
 
         /** The entries of [ends] ([ENDED]) of the [unfinished] tasks. */
         fun unfinishedEnds(ends: Set<String>, unfinished: Set<String>): Set<String> = ends.filterTo(hashSetOf()) { endId(it) in unfinished }
 
         /** The output [ends] ([ENDED]) holds for the task [id]; null when none, or when it does not parse. */
         fun endIn(ends: Set<String>, id: UUID): Data? = ends.firstOrNull { endId(it) == id.toString() }?.let { entry ->
-            runCatching { Data.fromByteArray(Base64.getDecoder().decode(entry.substringAfter('='))) }.getOrNull()
+            runCatching { Data.fromByteArray(Base64Compat.decode(entry.substringAfter('='))) }.getOrNull()
         }
 
         private fun endId(entry: String): String = entry.substringBefore('=')

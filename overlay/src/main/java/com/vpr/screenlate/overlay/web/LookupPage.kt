@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.ViewGroup
@@ -149,7 +150,9 @@ class LookupPage(
         settings.allowFileAccess = false
         settings.allowContentAccess = false
         webViewClient = PageClient()
-        if (reclaimable) setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, true)
+        if (reclaimable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, true)
+        }
         addJavascriptInterface(Bridge(), "ScreenlateBridge")
         loadUrl(PAGE_URL)
         container.addView(this, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))

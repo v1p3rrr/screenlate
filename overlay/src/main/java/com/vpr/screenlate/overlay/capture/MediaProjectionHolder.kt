@@ -27,7 +27,10 @@ object MediaProjectionHolder {
     suspend fun getOrCreate(context: Context): MediaProjection? = mutex.withLock {
         projection?.let { return it }
 
-        val result = requestConsent(context) ?: return null
+        Log.i(TAG, "Requesting MediaProjection consent via MediaProjectionConsentActivity")
+        val result = requestConsent(context)
+        Log.i(TAG, "MediaProjection consent result: $result")
+        if (result == null) return null
         val (resultCode, data) = result
 
         // On API 29, a mediaProjection foreground service MUST be active before calling getMediaProjection.
