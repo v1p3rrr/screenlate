@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.vpr.screenlate.core.common.theme.AppPaletteConfig
+import com.vpr.screenlate.core.common.theme.ColorPreset
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -29,17 +31,79 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[THEME_MODE] = mode.name }
     }
 
-    private val readAppColors: (Preferences) -> AppColors = { prefs ->
-        prefs[APP_COLORS]?.let { stored -> AppColors.entries.firstOrNull { it.name == stored } } ?: AppColors.SCREENLATE
+    private val readPaletteConfig: (Preferences) -> AppPaletteConfig = { prefs ->
+        val mode = prefs[APP_COLOR_MODE]
+        when (mode) {
+            "SYSTEM" -> AppPaletteConfig(useSystemWallpaper = true)
+            "CUSTOM" -> {
+                val custom = prefs[APP_COLOR_CUSTOM]
+                if (custom != null) {
+                    AppPaletteConfig(useSystemWallpaper = false, preset = null, customSeedColor = custom)
+                } else {
+                    AppPaletteConfig(useSystemWallpaper = false, preset = ColorPreset.VIOLET)
+                }
+            }
+            "PRESET" -> {
+                val preset = ColorPreset.fromId(prefs[APP_COLOR_PRESET]) ?: ColorPreset.VIOLET
+                AppPaletteConfig(useSystemWallpaper = false, preset = preset)
+            }
+            else -> {
+                val legacy = prefs[APP_COLORS]?.let { stored -> AppColors.entries.firstOrNull { it.name == stored } }
+                if (legacy == AppColors.SYSTEM) {
+                    AppPaletteConfig(useSystemWallpaper = true)
+                } else {
+                    AppPaletteConfig(useSystemWallpaper = false, preset = ColorPreset.VIOLET)
+                }
+            }
+        }
     }
 
-    val appColors: Flow<AppColors> = dataStore.data.map { readAppColors(it) }
+    val paletteConfig: Flow<AppPaletteConfig> = dataStore.data.map { readPaletteConfig(it) }
+
+    /** [paletteConfig] as last read, for a screen's first frame; null before the first read. */
+    val cachedPaletteConfig: AppPaletteConfig? get() = dataStore.cached(readPaletteConfig)
+
+    suspend fun setPaletteConfig(config: AppPaletteConfig) {
+        dataStore.edit { prefs ->
+            when {
+                config.useSystemWallpaper -> {
+                    prefs[APP_COLOR_MODE] = "SYSTEM"
+                    prefs.remove(APP_COLOR_PRESET)
+                    prefs.remove(APP_COLOR_CUSTOM)
+                    prefs[APP_COLORS] = AppColors.SYSTEM.name
+                }
+                config.customSeedColor != null -> {
+                    prefs[APP_COLOR_MODE] = "CUSTOM"
+                    prefs[APP_COLOR_CUSTOM] = config.customSeedColor
+                    prefs.remove(APP_COLOR_PRESET)
+                    prefs[APP_COLORS] = AppColors.SCREENLATE.name
+                }
+                else -> {
+                    prefs[APP_COLOR_MODE] = "PRESET"
+                    prefs[APP_COLOR_PRESET] = (config.preset ?: ColorPreset.VIOLET).id
+                    prefs.remove(APP_COLOR_CUSTOM)
+                    prefs[APP_COLORS] = AppColors.SCREENLATE.name
+                }
+            }
+        }
+    }
+
+    private val readAppColors: (Preferences) -> AppColors = { prefs ->
+        if (readPaletteConfig(prefs).useSystemWallpaper) AppColors.SYSTEM else AppColors.SCREENLATE
+    }
+
+    val appColors: Flow<AppColors> = paletteConfig.map { if (it.useSystemWallpaper) AppColors.SYSTEM else AppColors.SCREENLATE }
 
     /** [appColors] as last read, for a screen's first frame; null before the first read. */
-    val cachedAppColors: AppColors? get() = dataStore.cached(readAppColors)
+    val cachedAppColors: AppColors? get() = cachedPaletteConfig?.let { if (it.useSystemWallpaper) AppColors.SYSTEM else AppColors.SCREENLATE }
 
     suspend fun setAppColors(colors: AppColors) {
-        dataStore.edit { it[APP_COLORS] = colors.name }
+        setPaletteConfig(
+            when (colors) {
+                AppColors.SYSTEM -> AppPaletteConfig(useSystemWallpaper = true)
+                AppColors.SCREENLATE -> AppPaletteConfig(useSystemWallpaper = false, preset = ColorPreset.VIOLET)
+            }
+        )
     }
 
     /**
@@ -124,6 +188,9 @@ class AppSettingsRepository @Inject constructor(
     private companion object {
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val APP_COLORS = stringPreferencesKey("theme_colors")
+        val APP_COLOR_MODE = stringPreferencesKey("theme_color_mode")
+        val APP_COLOR_PRESET = stringPreferencesKey("theme_color_preset")
+        val APP_COLOR_CUSTOM = intPreferencesKey("theme_color_custom")
         val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")
         val BACKGROUND_TIP_SEEN = booleanPreferencesKey("background_tip_seen")
         val ACCESSIBILITY_AGREED = booleanPreferencesKey("accessibility_agreed")
