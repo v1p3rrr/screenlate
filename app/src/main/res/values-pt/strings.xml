@@ -343,7 +343,7 @@
     <string name="problems_open_audio">Configurações de áudio</string>
     <string name="problems_dismiss">Dispensar</string>
     <string name="problems_outdated_webview_title">WebView desatualizado (%1$s)</string>
-    <string name="problems_outdated_webview_text">O Android System WebView do celular está desatualizado. Se a janela do dicionário não for exibida corretamente, atualize o Android System WebView ou o Google Chrome na loja de apps.</string>
+    <string name="problems_outdated_webview_text">O Android System WebView do celular está desatualizado. Se o pop-up do dicionário não for exibido corretamente, atualize o Android System WebView ou o Google Chrome na loja de apps.</string>
     <string name="anki_problem_title">Configuração do Anki</string>
     <string name="anki_problem_fix_model">Escolha o tipo de nota de novo.</string>
     <string name="anki_problem_fix_deck">Escolha o baralho de novo.</string>
