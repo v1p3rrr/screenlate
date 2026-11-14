@@ -530,6 +530,7 @@ class OverlayController(
             gestures = usable,
             keyboardTop = null,
             shownBars = buildSet {
+                if (usable.left > 0) add(DockSide.LEFT)
                 if (usable.top > 0) add(DockSide.TOP)
                 if (bounds.height() - usable.bottom > 0) add(DockSide.BOTTOM)
                 if (bounds.width() - usable.right > 0) add(DockSide.RIGHT)
