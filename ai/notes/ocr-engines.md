@@ -341,3 +341,9 @@ cloud request or owner app access occurs. Both pages pass on the phone: [3,3,4,3
 SHA-256 equality of all 537 normalized alphanumeric truth characters. Two CPU threads passed, then the test was
 set to the production four and passed again. Host controls rerun after the fix: same 44/38 cases, 18 better and
 26 equal, no regression. Full debug assembly, 215 JVM tests and lint pass. Broader manual popup behavior is separate.
+
+## Android 7 OCR verification (2026-11-15)
+
+On API 24, ML Kit returned text from MediaProjection but symbol alignment threw `NoSuchFieldError` for
+`Bitmap.Config.HARDWARE` on words with at least three symbols. The bitmap-config check now runs from API 26.
+The end-to-end capture, OCR and popup check passed with a synthetic Japanese image on API 24.

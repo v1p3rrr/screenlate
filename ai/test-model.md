@@ -126,8 +126,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | BUB19 | The docked glyph is the own name's first letter: German D, Russian Р, Czech Č, Japanese あ. Quick languages English and Spanish → the bubble shows EN, after a switch ES; Russian with Polish → РУ and PL; Kazakh with Kyrgyz → Қ and К; adding or removing a star updates the glyph at once; with the e-ink theme the menu's codes are РУ, PL | F | U BubbleGlyphTest, M | 2026-10-29 |
 | BUB20 | The debug build's selection menu item reads "Look up in Screenlate Dev" (in Russian "Найти в Screenlate Dev"), the release build's "Look up in Screenlate", so the two installed side by side can be told apart | N | U TranslationsTest, M | 2026-10-29 (English only; Russian by TranslationsTest) |
 | BUB21 | Quick languages Hindi, Marathi and Japanese → in the hold menu the two India flags carry HI and MR on a small rounded badge over the flag's lower edge, in the menu's colors, the flag visible above it; Japan's flag has none; turn Marathi off → Hindi keeps its badge (a language that is not turned on shows India's flag too); Cantonese (Hong Kong) has none; e-ink shows the codes alone as before; TalkBack reads the names | F | U FlagsTest, M | 2026-10-29 |
-| BUB22 | API 24–29: pull out the bubble with screen recognition enabled. Cancel the capture dialog, check that the spinner stops, then retry and grant access. Wait past the timeout in a fresh request, retry, and check that the old dialog closes and cannot complete the new request. Stop the capture session from system UI and verify that the next scan requests access again. | N | U CaptureConsentTest, M | |
-| BUB23 | API 24, stock WebView 69: capture synthetic Japanese text from an image and check that its fixture dictionary definition and matched word render. Rotate the display and scan again. On API 30+, run the same lookup using accessibility screenshots without a capture-consent dialog. | N | U ScreenCapturerTest, I LookupPageTest, P webview-syntax.test.mjs, M | |
+| BUB22 | API 24–29: pull out the bubble with screen recognition enabled. Cancel the capture dialog, check that the spinner stops, then retry and grant access. Wait past the timeout in a fresh request, retry, and check that the old dialog closes and cannot complete the new request. Stop the capture session from system UI and verify that the next scan requests access again. | F | U CaptureConsentTest, M | 2026-11-15 (API 24, service shutdown) |
+| BUB23 | API 24, stock WebView 69: capture synthetic Japanese text from an image and check that its fixture dictionary definition and matched word render. Rotate the display and scan again. On API 30+, run the same lookup using accessibility screenshots without a capture-consent dialog. | N | U ScreenCapturerTest, I LookupPageTest, P webview-syntax.test.mjs, M | 2026-11-15 (API 24) |
 
 ### OCR: text sources and recognition
 
@@ -745,6 +745,18 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 - A network voice of the system text-to-speech (the emulator's Google TTS offers local voices only).
 
 ## Run log
+
+### 2026-11-15, Android 7 capture and dictionary popup
+
+- BUB22: refused consent, granted a subsequent request, stopped the service and observed projection release,
+  let the next consent expire after 30 seconds, and opened and cancelled a fresh request on API 24.
+  `CaptureConsentTest` also rejects stale grants and dismissals.
+- BUB23: the legacy backend captured 1080 x 1920 in 229 ms on the granted run and 1920 x 1080 in 121 ms
+  after rotation. Japanese ML Kit produced a final result, and the fixture definition and match highlight
+  rendered in WebView 69. All five `LookupPageTest` cases passed there.
+- JVM and page tests passed with four JVM skips. Custom-seed contrast and the Light, Dark and E-Ink CSS
+  switch were covered by automation.
+
 
 ### 2026-11-05, remaining phone/emulator acceptance and final regression
 

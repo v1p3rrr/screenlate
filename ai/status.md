@@ -1,5 +1,23 @@
 # Status
 
+## Dev review fixes and Android 7 verification (2026-11-15)
+
+- Fixed the capture consent lifecycle, old WebView syntax and text formatting, and the API 26 bitmap-config
+  check in ML Kit symbol alignment. System accent colors now reach the bubble and dictionary popup. Added
+  contrast checks for custom palettes, shared the color picker's drag handling, and updated the usage guide.
+- On the API 24 emulator, denial returned to the viewer, an unanswered consent closed after 30 seconds,
+  and a new scan opened a fresh request. After granting access, MediaProjection and on-device ML Kit read
+  a synthetic image. The dictionary popup rendered the fixture definition and matched highlight in stock
+  WebView 69. Rotation produced a new 1920 x 1080 screenshot. The five real-WebView tests passed on API 24.
+- JVM tests: 2,133 passed, four skipped. Page tests: 176 passed. Coverage on API 30+ in this run is
+  limited to backend selection and JVM/page tests. The API 30 emulator is x86-only, and the API 37 image did
+  not boot in the available environment. Physical Android 7 hardware and a full performance regression remain open.
+- Local minified ARM64 Dev APK from `3609bd97`, package `com.vpr.screenlate.debug`, version
+  `1.0.1-3609bd97-min` (10001), minSdk 24. The ZIP and signature passed verification, and the
+  certificate matches the previous local Dev build. Size 23,203,355 bytes, SHA-256
+  `55a16929227bd604230fd92e0b306db4ce6f6573332b908150adf2645e1857b6`.
+  APK, mapping and log are under ignored `testdata/local-research/builds/`.
+
 ## Android 7 and color customization Dev integration (2026-11-14)
 
 - Reviewed both branches against their plans and project standards, using `95d8b88b` as the baseline.
