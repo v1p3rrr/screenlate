@@ -1474,3 +1474,34 @@ test('replaceChildren polyfill replaces all children with new nodes or text', ()
     parent.replaceChildren();
     assert.equal(parent.childNodes.length, 0);
 });
+
+test('dynamic theme colors are injected via setAppearance and adapt to theme modes', () => {
+    Popup.render(state({ theme: 'light' }));
+    const root = page.document.documentElement;
+
+    Popup.setAppearance({
+        accentLight: '#0284c7',
+        accentDark: '#7dd3fc',
+        matchedBg: 'rgba(2, 132, 199, 0.18)',
+        border: 'rgba(2, 132, 199, 0.55)',
+        chipBgLight: '#e0f2fe',
+        chipBgDark: '#0c4a6e',
+    });
+
+    assert.equal(root.style.getPropertyValue('--accent'), '#0284c7');
+    assert.equal(root.style.getPropertyValue('--matched-bg'), 'rgba(2, 132, 199, 0.18)');
+    assert.equal(root.style.getPropertyValue('--border'), 'rgba(2, 132, 199, 0.55)');
+    assert.equal(root.style.getPropertyValue('--chip-bg'), '#e0f2fe');
+
+    // In dark theme, accent switches to high-contrast tone and chip-bg switches to dark container
+    Popup.update(state({ theme: 'dark' }));
+    assert.equal(root.style.getPropertyValue('--accent'), '#7dd3fc');
+    assert.equal(root.style.getPropertyValue('--chip-bg'), '#0c4a6e');
+
+    // In eink theme, custom styles are removed so eink CSS takes full precedence
+    Popup.update(state({ theme: 'eink' }));
+    assert.equal(root.style.getPropertyValue('--accent'), '');
+    assert.equal(root.style.getPropertyValue('--matched-bg'), '');
+    assert.equal(root.style.getPropertyValue('--chip-bg'), '');
+    assert.equal(root.style.getPropertyValue('--border'), '');
+});

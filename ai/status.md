@@ -1,5 +1,32 @@
 # Status
 
+## Android 7 and color customization Dev integration (2026-11-14)
+
+- Reviewed both branches against their plans and project standards, using `95d8b88b` as the baseline.
+  Merged `features/color-scheme-customization` into `features/android-7-support` for the local Dev build.
+- Open Android 7 findings: stock WebView cannot parse the popup scripts, capture consent can leave the spinner
+  running or resolve a later request after a timeout, and session state crosses threads. Lifecycle tests and
+  the remaining device and performance checks are pending.
+- Open color findings: some custom seeds have insufficient contrast, and wallpaper colors apply only to the
+  Compose theme. The usage guide and the feature scenarios in the test model still need updates.
+
+## Color scheme customization and verification (2026-11-14)
+
+- Implemented the full "Color Scheme Customization" feature on branch `features/color-scheme-customization`:
+  - Pure Kotlin palette math engine (`ColorMath`, `PaletteGenerator`, `AppPaletteConfig`, `ColorPreset`) in `core:common`, compatible with Android 7.0+ (API 24+) to Android 15 (API 35).
+  - 8 curated presets (`Violet`, `Ocean`, `Emerald`, `Amber`, `Coral`, `Sunset`, `Lavender`, `Teal`) with dynamic 45-60° hue shift for controls.
+  - DataStore persistence in `AppSettingsRepository` and `OverlaySettingsRepository` with snapshot backup & restore.
+  - Floating bubble contrast engine: automatic luminance calculation with inverted charcoal (`#1C1B20`) glyph/ring/dot for light backgrounds (> 0.60) and white for dark.
+  - Independent bubble color selection in "Bubble settings" with "Use app theme color" toggle.
+  - Compose theme integration supporting dynamic palette with e-ink override.
+  - Popup WebView CSS dynamic bridge (`--accent`, `--matched-bg`, `--chip-bg`, `--border`) in `popup.js`.
+  - Settings UI: `AppColorsSection` with `ColorPaletteSelector`, dedicated synchronized `BubbleColorSection` in both Appearance settings and Bubble settings, and redesigned `ColorPickerDialog` with an interactive 2D saturation/brightness gradient canvas (finger drag), rainbow hue spectrum bar, and HEX field.
+  - Complete translations across all 16 project locales (`TranslationsTest` passing).
+  - All test suites passing: `./gradlew testDebugUnitTest` and `npm --prefix scripts/page-tests test` (163/163 JS tests).
+  - Verified on emulator (`Screenlate_API30_x86`): preset switching, 2D gradient color picker canvas touch interaction, and synchronized bubble color setting across screens.
+  - UI screenshots captured and presented to the owner.
+  - Completed two-axis code review (Standards & Spec): added adaptive high-contrast Tone 80 accent in popup dark theme, synchronized custom selection in `ColorPaletteSelector`, ensured bubble color resets with Appearance section, declared `AppPaletteConfig` in `compose-stability.conf`, and pruned unused strings. All 163 JS page tests and Gradle unit tests passing.
+
 ## Work in progress (2026-11-14): Android 7.0–7.1 (API 24–25) support
 
 Branch `features/android-7-support` (worktree `.worktrees/lang`).

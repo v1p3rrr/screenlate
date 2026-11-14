@@ -16,11 +16,14 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.common.settings.isDark
+import com.vpr.screenlate.core.common.theme.AppPaletteConfig
+import com.vpr.screenlate.core.common.theme.PaletteGenerator
 
 /** Black and white with one light grey for containers: e-ink screens show few shades and ghost on subtle ones. */
 private val EInkColorScheme = lightColorScheme(
@@ -59,8 +62,9 @@ private val EInkColorScheme = lightColorScheme(
 val LocalEInk = staticCompositionLocalOf { false }
 
 /**
- * @param systemColors the colors the phone picks (Android 12+, usually from the wallpaper) instead of Screenlate's own.
- * @param eInk e-ink mode: overrides [themeMode] and [systemColors], and turns off ripples.
+ * @param paletteConfig the color palette configuration (preset, custom color, or system wallpaper).
+ * @param systemColors legacy parameter for system wallpaper colors (Android 12+).
+ * @param eInk e-ink mode: overrides [themeMode] and [paletteConfig], and turns off ripples.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,27 +72,30 @@ fun ScreenlateTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
     eInk: Boolean = false,
     systemColors: Boolean = false,
+    paletteConfig: AppPaletteConfig = AppPaletteConfig(useSystemWallpaper = systemColors),
     content: @Composable () -> Unit,
 ) {
     val darkTheme = themeMode.isDark(isSystemInDarkTheme())
-    var system = false
+    val useSystem = (paletteConfig.useSystemWallpaper || systemColors) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val generatedPalette = remember(paletteConfig) {
+        PaletteGenerator.generate(paletteConfig)
+    }
+
     val colorScheme = when {
         eInk -> EInkColorScheme
-        systemColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            system = true
+        useSystem -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> ScreenlateDark
-        else -> ScreenlateLight
+        darkTheme -> generatedPalette.darkScheme.toColorScheme(isDark = true)
+        else -> generatedPalette.lightScheme.toColorScheme(isDark = false)
     }
     val accent = when {
         eInk -> Accent(fill = Color.Black, onFill = Color.White, line = Color.Black)
-        // The system's scheme keeps its own primary color on the controls, as before.
-        system ->
+        useSystem ->
             Accent(fill = colorScheme.primary, onFill = colorScheme.onPrimary, line = colorScheme.primary)
-        darkTheme -> Accent(fill = AccentDark, onFill = OnAccent, line = AccentDark)
-        else -> Accent(fill = AccentLightFill, onFill = OnAccent, line = AccentLightLine)
+        darkTheme -> generatedPalette.darkAccent.toAccent()
+        else -> generatedPalette.lightAccent.toAccent()
     }
     SystemBarIcons(dark = darkTheme && !eInk)
     // One composition path for both modes: switching must keep the screens and their state.

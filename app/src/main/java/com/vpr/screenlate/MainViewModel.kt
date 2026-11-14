@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.common.settings.AppColors
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.ThemeMode
+import com.vpr.screenlate.core.common.theme.AppPaletteConfig
 import com.vpr.screenlate.overlay.ui.FlagCodes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class MainViewModel @Inject constructor(
 
     /** Null until the settings are read, so no frame is drawn in a theme the user did not choose. */
     val theme: StateFlow<AppTheme?> =
-        combine(settings.themeMode, settings.eInk, settings.appColors, ::AppTheme)
+        combine(settings.themeMode, settings.eInk, settings.paletteConfig, ::AppTheme)
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     /** Whether to start on the first run's language question; null until the app has decided it. */
@@ -44,6 +45,11 @@ class MainViewModel @Inject constructor(
     }
 }
 
-data class AppTheme(val mode: ThemeMode, val eInk: Boolean, val colors: AppColors) {
-    val systemColors: Boolean get() = colors == AppColors.SYSTEM
+data class AppTheme(
+    val mode: ThemeMode,
+    val eInk: Boolean,
+    val paletteConfig: AppPaletteConfig,
+) {
+    val colors: AppColors get() = if (paletteConfig.useSystemWallpaper) AppColors.SYSTEM else AppColors.SCREENLATE
+    val systemColors: Boolean get() = paletteConfig.useSystemWallpaper
 }

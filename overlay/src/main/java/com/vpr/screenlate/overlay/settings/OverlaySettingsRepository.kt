@@ -98,11 +98,14 @@ data class OverlaySettings(
     val keepAlive: Boolean = false,
     val hideAfterAdd: Boolean = false,
     val hideOffWord: Boolean = false,
+    val bubbleUseAppColor: Boolean = true,
+    val bubbleCustomColor: Int = DEFAULT_BUBBLE_COLOR,
 ) {
     companion object {
         const val DEFAULT_BUBBLE_DP = 48
         const val MIN_BUBBLE_DP = 36
         const val MAX_BUBBLE_DP = 64
+        const val DEFAULT_BUBBLE_COLOR = 0xFF7C5CFF.toInt()
     }
 }
 
@@ -142,6 +145,8 @@ class OverlaySettingsRepository @Inject constructor(
             keepAlive = prefs[KEEP_ALIVE] ?: defaults.keepAlive,
             hideAfterAdd = prefs[HIDE_AFTER_ADD] ?: defaults.hideAfterAdd,
             hideOffWord = prefs[HIDE_OFF_WORD] ?: defaults.hideOffWord,
+            bubbleUseAppColor = prefs[BUBBLE_USE_APP_COLOR] ?: defaults.bubbleUseAppColor,
+            bubbleCustomColor = prefs[BUBBLE_CUSTOM_COLOR] ?: defaults.bubbleCustomColor,
         )
     }
 
@@ -232,6 +237,14 @@ class OverlaySettingsRepository @Inject constructor(
         }
     }
 
+    suspend fun setBubbleUseAppColor(useApp: Boolean) {
+        dataStore.edit { it[BUBBLE_USE_APP_COLOR] = useApp }
+    }
+
+    suspend fun setBubbleCustomColor(color: Int) {
+        dataStore.edit { it[BUBBLE_CUSTOM_COLOR] = color }
+    }
+
     private companion object {
         val BUBBLE_VISIBLE = booleanPreferencesKey("overlay_bubble_visible")
         val DOCK_SIDE = stringPreferencesKey("overlay_dock_side")
@@ -251,5 +264,7 @@ class OverlaySettingsRepository @Inject constructor(
         val KEEP_ALIVE = booleanPreferencesKey("overlay_keep_alive")
         val HIDE_AFTER_ADD = booleanPreferencesKey("popup_hide_after_add")
         val HIDE_OFF_WORD = booleanPreferencesKey("popup_hide_off_word")
+        val BUBBLE_USE_APP_COLOR = booleanPreferencesKey("overlay_bubble_use_app_color")
+        val BUBBLE_CUSTOM_COLOR = intPreferencesKey("overlay_bubble_custom_color")
     }
 }
