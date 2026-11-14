@@ -113,6 +113,26 @@ const Popup = (() => {
     let translation = null;
     /** The translation the block was last built for. */
     let drawnTranslation = null;
+    /** Dynamic theme colors injected via setAppearance. */
+    let appearanceColors = null;
+
+    function applyColors() {
+        const root = document.documentElement;
+        const theme = root.dataset.theme;
+        if (theme === 'eink') {
+            root.style.removeProperty('--accent');
+            root.style.removeProperty('--matched-bg');
+            root.style.removeProperty('--chip-bg');
+            root.style.removeProperty('--border');
+            return;
+        }
+        if (!appearanceColors) return;
+        if (appearanceColors.accent) root.style.setProperty('--accent', appearanceColors.accent);
+        if (appearanceColors.matchedBg) root.style.setProperty('--matched-bg', appearanceColors.matchedBg);
+        if (appearanceColors.border) root.style.setProperty('--border', appearanceColors.border);
+        const chipBg = (theme === 'dark') ? appearanceColors.chipBgDark : appearanceColors.chipBgLight;
+        if (chipBg) root.style.setProperty('--chip-bg', chipBg);
+    }
     let translationRequests = 0;
 
     document.getElementById('close').addEventListener('click', () => ScreenlateBridge.onClose());
@@ -150,6 +170,7 @@ const Popup = (() => {
         document.documentElement.dataset.theme = state.theme || 'light';
         document.documentElement.dataset.compact = String(compact(state));
         document.documentElement.dataset.noteWait = String(Boolean(state.noteWait));
+        applyColors();
         backButton.hidden = history.length === 0;
         spinner.hidden = !state.pending;
         engine.hidden = !state.engine;
@@ -1454,6 +1475,16 @@ const Popup = (() => {
         if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));
         customCss.textContent = appearance.customCss || '';
         setHeavierText(appearance);
+        if (appearance.accent) {
+            appearanceColors = {
+                accent: appearance.accent,
+                matchedBg: appearance.matchedBg,
+                border: appearance.border,
+                chipBgLight: appearance.chipBgLight,
+                chipBgDark: appearance.chipBgDark,
+            };
+        }
+        applyColors();
         if (appearance.preload && document.fonts) {
             const font = `1em "${appearance.preload.replace(/"/g, '\\"')}"`;
             document.fonts.load(font, appearance.preloadText || undefined).catch(() => {});

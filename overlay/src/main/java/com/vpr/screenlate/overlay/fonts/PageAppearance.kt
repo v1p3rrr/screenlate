@@ -3,6 +3,9 @@ package com.vpr.screenlate.overlay.fonts
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.common.theme.AppPaletteConfig
+import com.vpr.screenlate.core.common.theme.PaletteGenerator
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
 import javax.inject.Inject
@@ -25,13 +28,19 @@ import kotlinx.serialization.json.put
 class PageAppearance @Inject constructor(
     private val settings: PopupAppearanceRepository,
     private val fonts: PopupFonts,
+    private val appSettings: AppSettingsRepository,
 ) {
     fun json(language: Language): Flow<JsonObject> {
         val support = language.support
         // The phone's font files are read once, off the main thread.
         val weights = flow { emit(SystemFontFiles.weights(support)) }.flowOn(Dispatchers.IO)
-        return combine(settings.appearance(language), fonts.installed, weights) { appearance, installed, systemWeights ->
-            build(support, appearance, installed, systemWeights)
+        return combine(
+            settings.appearance(language),
+            fonts.installed,
+            weights,
+            appSettings.paletteConfig,
+        ) { appearance, installed, systemWeights, paletteConfig ->
+            build(support, appearance, installed, systemWeights, paletteConfig)
         }.distinctUntilChanged()
     }
 
@@ -48,12 +57,14 @@ class PageAppearance @Inject constructor(
             appearance: PopupAppearance,
             installed: List<InstalledFont>,
             weights: PageFonts.SystemWeights = PageFonts.SystemWeights(),
+            paletteConfig: AppPaletteConfig = AppPaletteConfig(),
         ): JsonObject {
             val chosen = installed.firstOrNull { it.id == appearance.fontId }
             val allText = chosen != null && appearance.fontForAllText
             val family = PageFonts.fontFamily(chosen)
             val css = appearance.customCss
             val customCss = if (css.isBlank()) "" else CssCheck.withFallback(css, CssCheck.analyze(css).fontFamilies, family)
+            val palette = PaletteGenerator.generate(paletteConfig)
             return buildJsonObject {
                 put("lang", support.languageTag)
                 put("fontFaces", PageFonts.fontFaces(support.systemFonts, installed, chosen, scriptOnly = !allText, weights))
@@ -66,6 +77,11 @@ class PageAppearance @Inject constructor(
                 put("customCss", customCss)
                 put("definitionCopy", if (appearance.copyDefinitions) appearance.copyMode.id else "")
                 put("pronunciationColors", appearance.pronunciationColors)
+                put("accent", palette.popupAccent)
+                put("matchedBg", palette.popupMatchedBg)
+                put("border", palette.popupBorder)
+                put("chipBgLight", palette.popupChipBgLight)
+                put("chipBgDark", palette.popupChipBgDark)
                 if (chosen != null) {
                     put("preload", PageFonts.CHOSEN)
                     put("preloadText", support.fontSample)
