@@ -1,5 +1,11 @@
 # Status
 
+## Cobalt blue and Graphite presets (2026-11-15)
+
+- Added Cobalt blue and Graphite to the existing eight presets in the app and bubble color selectors.
+  Both labels are localized in all 17 locales. Existing presets keep their saved IDs and colors.
+- The palette tests include both new presets in light and dark mode, and storage tests verify their IDs.
+
 ## Adjacent control accent hues (2026-11-15)
 
 - Generated palettes now shift the accent hue by 15° and keep neutral seeds neutral. The Violet preset keeps

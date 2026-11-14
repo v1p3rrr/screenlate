@@ -23,6 +23,8 @@
     <string name="color_preset_sunset">Закат</string>
     <string name="color_preset_lavender">Лавандовый</string>
     <string name="color_preset_teal">Морская волна</string>
+    <string name="color_preset_cobalt">Кобальтовый синий</string>
+    <string name="color_preset_graphite">Графитовый</string>
     <string name="color_custom">Свой цвет</string>
     <string name="color_picker_title">Выбор цвета</string>
     <string name="color_picker_hex">HEX</string>

@@ -23,6 +23,8 @@
     <string name="color_preset_sunset">선셋</string>
     <string name="color_preset_lavender">라벤더</string>
     <string name="color_preset_teal">틸</string>
+    <string name="color_preset_cobalt">코발트 블루</string>
+    <string name="color_preset_graphite">흑연색</string>
     <string name="color_custom">사용자 지정</string>
     <string name="color_picker_title">사용자 지정 색상</string>
     <string name="color_picker_hex">HEX</string>

@@ -26,6 +26,8 @@
     <string name="color_preset_sunset">Sunset</string>
     <string name="color_preset_lavender">Lavender</string>
     <string name="color_preset_teal">Teal</string>
+    <string name="color_preset_cobalt">Cobalt blue</string>
+    <string name="color_preset_graphite">Graphite</string>
     <string name="color_custom">Custom</string>
     <string name="color_picker_title">Custom color</string>
     <string name="color_picker_hex">HEX</string>

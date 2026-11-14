@@ -182,7 +182,7 @@ class PaletteGeneratorTest {
         ColorMath.contrastRatio(accent.removePrefix("#").toInt(16), background)
 
     @Test
-    fun allEightPresetsGenerateContrastCompliantPalettes() {
+    fun allPresetsGenerateContrastCompliantPalettes() {
         for (preset in ColorPreset.entries) {
             val config = AppPaletteConfig(preset = preset)
             val palette = PaletteGenerator.generate(config)

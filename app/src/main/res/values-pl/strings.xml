@@ -23,6 +23,8 @@
     <string name="color_preset_sunset">Zachód słońca</string>
     <string name="color_preset_lavender">Lawendowy</string>
     <string name="color_preset_teal">Morski</string>
+    <string name="color_preset_cobalt">Kobaltowy</string>
+    <string name="color_preset_graphite">Grafitowy</string>
     <string name="color_custom">Własny</string>
     <string name="color_picker_title">Własny kolor</string>
     <string name="color_picker_hex">HEX</string>

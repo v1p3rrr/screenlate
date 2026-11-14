@@ -23,6 +23,8 @@
     <string name="color_preset_sunset">Hoàng hôn</string>
     <string name="color_preset_lavender">Oải hương</string>
     <string name="color_preset_teal">Xanh mòng két</string>
+    <string name="color_preset_cobalt">Xanh coban</string>
+    <string name="color_preset_graphite">Xám than chì</string>
     <string name="color_custom">Tùy chỉnh</string>
     <string name="color_picker_title">Màu tùy chỉnh</string>
     <string name="color_picker_hex">HEX</string>

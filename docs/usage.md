@@ -320,7 +320,7 @@ A translation is kept for 10 minutes, so adding a note after reading the transla
 ## Appearance
 
 - **Theme**: the system's, light or dark.
-- **Colors**: choose one of eight presets or **Custom** to pick a shade or enter a six-digit HEX color.
+- **Colors**: choose one of ten presets or **Custom** to pick a shade or enter a six-digit HEX color.
   The app, dictionary popup and floating bubble use the chosen palette. Controls use a nearby accent
   shade in generated palettes, and Violet keeps its original pink accents. On Android 12 and later,
   **System** uses the colors supplied by Android.

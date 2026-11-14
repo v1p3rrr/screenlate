@@ -50,6 +50,21 @@ class AppSettingsPaletteTest {
     }
 
     @Test
+    fun `new presets round trip through stored IDs`() = runTest {
+        val store = MemoryDataStore()
+        val writer = AppSettingsRepository(store)
+        val key = stringPreferencesKey("theme_color_preset")
+        val presets = mapOf(ColorPreset.COBALT to "cobalt", ColorPreset.GRAPHITE to "graphite")
+        for ((preset, id) in presets) {
+            writer.setPaletteConfig(AppPaletteConfig(preset = preset))
+            assertThat(store.data.first()[key]).isEqualTo(id)
+            val reloaded = AppSettingsRepository(store).paletteConfig.first()
+            assertThat(reloaded.preset).isEqualTo(preset)
+            assertThat(reloaded.effectiveSeed).isEqualTo(preset.seedColor)
+        }
+    }
+
+    @Test
     fun `setting custom color updates palette config`() = runTest {
         val repository = AppSettingsRepository(MemoryDataStore())
         val customColor = 0xFF123456.toInt()

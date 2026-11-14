@@ -39,10 +39,12 @@ fun ColorPreset.displayNameRes(): Int = when (this) {
     ColorPreset.SUNSET -> R.string.color_preset_sunset
     ColorPreset.LAVENDER -> R.string.color_preset_lavender
     ColorPreset.TEAL -> R.string.color_preset_teal
+    ColorPreset.COBALT -> R.string.color_preset_cobalt
+    ColorPreset.GRAPHITE -> R.string.color_preset_graphite
 }
 
 /**
- * Row of circular color swatches: the 8 curated presets, optional system wallpaper chip (Android 12+),
+ * Wrapping row of circular color swatches: the presets, optional system wallpaper chip (Android 12+),
  * and a custom color button that opens [ColorPickerDialog].
  */
 @Composable
@@ -66,7 +68,6 @@ fun ColorPaletteSelector(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        // 8 Presets
         ColorPreset.entries.forEach { preset ->
             val isPresetSelected = !isSystemSelected && !effectiveCustomSelected && (
                 if (selectedPreset != null) selectedPreset == preset

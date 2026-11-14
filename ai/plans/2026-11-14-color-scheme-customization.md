@@ -21,7 +21,7 @@ The goal is to allow users to customize their color scheme across:
 
 | Question | Options Considered | Decision | Rationale |
 |---|---|---|---|
-| **Theme Color Picker UI** | A. Presets + Custom Color Picker (Recommended)<br>B. Presets only<br>C. Custom picker only | **A. Presets + Custom Color Picker** | Offers instant, beautiful one-tap options (8 curated palettes) while giving power users freedom to pick any custom HEX/HSV color. |
+| **Theme Color Picker UI** | A. Presets + Custom Color Picker (Recommended)<br>B. Presets only<br>C. Custom picker only | **A. Presets + Custom Color Picker** | Offers instant, beautiful one-tap options (10 curated palettes) while giving power users freedom to pick any custom HEX/HSV color. |
 | **Bubble Color Coupling** | A. Synced by default with override in Bubble Settings (Recommended)<br>B. Strictly unified (no separate bubble setting)<br>C. Completely separate settings | **A. Synced by default with override** | Most users want a unified aesthetic, but users who want high bubble visibility on arbitrary wallpapers can customize the bubble independently. |
 | **Bubble Color Placement** | A. Dedicated card under "Colors" in Appearance + in Bubble Settings (Recommended)<br>B. Only in Bubble Settings<br>C. Inside the main Colors card | **A. Dedicated card in Appearance & Bubble Settings** | Settings are fully synchronized via `OverlaySettingsRepository`; users can configure bubble color right alongside app theme or inside bubble settings. |
 | **Custom Color Picker Format** | A. 2D Saturation-Value gradient canvas + rainbow Hue bar + HEX field (Recommended)<br>B. Color wheel<br>C. 1D sliders | **A. 2D Gradient Canvas + Hue Bar + HEX** | Provides an intuitive, interactive 2D color canvas where users drag their finger to visually pick shades and tones, combined with a rainbow hue slider and hex input. |
@@ -48,7 +48,9 @@ enum class ColorPreset(val id: String, val seedColor: Int) {
     CORAL("coral", 0xFFE11D48.toInt()),
     SUNSET("sunset", 0xFFEA580C.toInt()),
     LAVENDER("lavender", 0xFF8B5CF6.toInt()),
-    TEAL("teal", 0xFF0D9488.toInt());
+    TEAL("teal", 0xFF0D9488.toInt()),
+    COBALT("cobalt", 0xFF3455DB.toInt()),
+    GRAPHITE("graphite", 0xFF475569.toInt());
 }
 
 /** Configuration of the active color scheme. */
@@ -145,7 +147,7 @@ flowchart TD
 
 ### Phase 5: Settings UI & Color Picker Component [COMPLETED]
 - Redesign `AppColorsSection.kt` in `app/src/main/java/com/vpr/screenlate/settings/`:
-  - Swatch row/grid displaying all 8 `ColorPreset` circular chips with checkmarks.
+  - Swatch row/grid displaying all 10 `ColorPreset` circular chips with checkmarks.
   - If Android 12+ (API 31+): include "System / Wallpaper" chip.
   - "Custom" chip with a color wheel/palette icon.
   - `ColorPickerDialog`: Compose dialog with interactive Hue/Saturation/Lightness sliders + HEX input field with live preview.
@@ -175,7 +177,7 @@ flowchart TD
 
 ## 5. Verification & Acceptance Criteria
 
-1. **Preset Switching:** Selecting any of the 8 presets instantly updates App UI, Floating Bubble, and Popup match highlights without activity recreation flicker.
+1. **Preset Switching:** Selecting any of the 10 presets instantly updates App UI, Floating Bubble, and Popup match highlights without activity recreation flicker.
 2. **Custom Color Picker:** Entering any valid hex (e.g. `#FF5722`) generates readable, contrast-compliant Light and Dark themes.
 3. **Contrast Inversion in Bubble:** Choosing pastel yellow (`#FDE047`) or light cyan (`#67E8F9`) turns the bubble ring, aim dot, loading arc, and glyph to dark charcoal; choosing navy (`#1E3A8A`) keeps them crisp white.
 4. **Independent Bubble Color:** Turning off "Use app theme color" allows setting the bubble to emerald green while the app remains violet.
@@ -183,6 +185,8 @@ flowchart TD
 6. **Backward Compatibility:** All code compiles and runs with zero crashes on API 24 (Android 7.0) and API 35 (Android 15).
 
 ## Changelog
+
+- 2026-11-15: The owner chose to retain all eight presets and add Cobalt blue (`#3455DB`) and Graphite (`#475569`).
 
 - 2026-11-15: The owner requested adjacent accent hues for presets and custom colors and retained the
   original Violet preset. Generated accents shift 15° and black, white and gray seeds stay neutral.

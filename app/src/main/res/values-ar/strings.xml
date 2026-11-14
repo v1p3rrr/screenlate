@@ -23,6 +23,8 @@
     <string name="color_preset_sunset">غروب</string>
     <string name="color_preset_lavender">خزامى</string>
     <string name="color_preset_teal">تركواز</string>
+    <string name="color_preset_cobalt">أزرق كوبالت</string>
+    <string name="color_preset_graphite">رمادي غرافيتي</string>
     <string name="color_custom">مخصّص</string>
     <string name="color_picker_title">لون مخصّص</string>
     <string name="color_picker_hex">HEX</string>

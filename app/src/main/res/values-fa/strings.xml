@@ -23,6 +23,8 @@
     <string name="color_preset_sunset">غروب</string>
     <string name="color_preset_lavender">اسطوخودوس</string>
     <string name="color_preset_teal">فیروزه‌ای</string>
+    <string name="color_preset_cobalt">آبی کبالت</string>
+    <string name="color_preset_graphite">خاکستری گرافیتی</string>
     <string name="color_custom">سفارشی</string>
     <string name="color_picker_title">رنگ سفارشی</string>
     <string name="color_picker_hex">HEX</string>
