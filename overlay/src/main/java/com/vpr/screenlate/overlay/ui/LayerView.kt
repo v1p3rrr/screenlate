@@ -28,13 +28,27 @@ class LayerView(context: Context) : View(context) {
         strokeWidth = 1.5f * density
         color = Color.WHITE
     }
-    private val wordPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = WORD_COLOR }
+    private val wordPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = (AIM_COLOR and 0x00FFFFFF) or (WORD_ALPHA shl 24)
+    }
     private val allLinesPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = ALL_LINES_COLOR }
     private val rect = RectF()
     private val endFlash = Runnable {
         allLineBoxes = emptyList()
         contentChanged()
     }
+
+    /** Primary theme color used for the aim dot and the translucent word highlight box. */
+    var primaryColor: Int = AIM_COLOR
+        set(value) {
+            if (field == value) return
+            field = value
+            if (!eInk) {
+                aimPaint.color = value
+                wordPaint.color = (value and 0x00FFFFFF) or (WORD_ALPHA shl 24)
+                invalidate()
+            }
+        }
 
     /**
      * Black frames instead of translucent fills, and the flash of all lines ends at once instead of fading: e-ink screens
@@ -44,8 +58,8 @@ class LayerView(context: Context) : View(context) {
         set(value) {
             if (field == value) return
             field = value
-            aimPaint.color = if (value) Color.BLACK else AIM_COLOR
-            wordPaint.set(if (value) frame(E_INK_WORD_STROKE_DP) else fill(WORD_COLOR))
+            aimPaint.color = if (value) Color.BLACK else primaryColor
+            wordPaint.set(if (value) frame(E_INK_WORD_STROKE_DP) else fill((primaryColor and 0x00FFFFFF) or (WORD_ALPHA shl 24)))
             allLinesPaint.set(if (value) frame(E_INK_LINES_STROKE_DP) else fill(ALL_LINES_COLOR))
             invalidate()
         }
@@ -173,7 +187,7 @@ class LayerView(context: Context) : View(context) {
 
     private companion object {
         const val AIM_COLOR = 0xFF7C5CFF.toInt()
-        const val WORD_COLOR = 0x557C5CFF
+        const val WORD_ALPHA = 0x55
         const val ALL_LINES_COLOR = 0xFFFFC83D.toInt()
         const val ALL_LINES_ALPHA = 90
         const val AIM_RADIUS_DP = 5f

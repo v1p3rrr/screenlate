@@ -62,6 +62,10 @@
     <string name="overlay_open_note">AnkiDroid’de aç (yine de eklemek için basılı tutun)</string>
     <string name="overlay_add_anyway">Yine de ekle</string>
     <string name="overlay_add_anyway_picture">Yine de ekle, görselle</string>
+    <string name="overlay_open_in_anki">AnkiDroid’de aç</string>
+    <string name="overlay_add_with_picture">Görselle ekle</string>
+    <string name="overlay_update_note">Notu güncelle (menü için basılı tutun)</string>
+    <string name="overlay_update_picture">Görselle güncelle</string>
     <string name="overlay_audio_loading">Ses aranıyor…</string>
     <string name="overlay_open_app">Anki ayarlarını aç</string>
     <string name="audio_no_voice">Bu dil için yüklü metin okuma sesi yok.</string>

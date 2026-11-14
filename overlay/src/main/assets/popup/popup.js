@@ -94,6 +94,8 @@ const Popup = (() => {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
         open: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 6.5C10.3 5.2 8 4.5 5 4.5H3.5v13H5c3 0 5.3.7 7 2 1.7-1.3 4-2 7-2h1.5v-13H19c-3 0-5.3.7-7 2zM12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+        openAdd: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M11.5 7C10 5.8 7.8 5.2 5 5.2H3.5v12.5H5c2.7 0 4.8.7 6.5 1.8 1.7-1.1 3.8-1.8 6.5-1.8h1.5v-6M11.5 7v12.5M11.5 7c1.2-.7 2.6-1.1 4-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M19 2v5M16.5 4.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        openUpdate: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M11.5 7C10 5.8 7.8 5.2 5 5.2H3.5v12.5H5c2.7 0 4.8.7 6.5 1.8 1.7-1.1 3.8-1.8 6.5-1.8h1.5v-6M11.5 7v12.5M11.5 7c1.2-.7 2.6-1.1 4-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M16.5 4.5a3 3 0 1 1 .9 2.1M17 7.2h2.5V4.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         close: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         puzzle: '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M10 3.5a2 2 0 0 1 4 0V5h4a1 1 0 0 1 1 1v4h-1.5a2 2 0 0 0 0 4H19v4a1 1 0 0 1-1 1h-4v-1.5a2 2 0 0 0-4 0V19H6a1 1 0 0 1-1-1v-4h1.5a2 2 0 0 0 0-4H5V6a1 1 0 0 1 1-1h4z" fill="currentColor"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
@@ -132,6 +134,8 @@ const Popup = (() => {
             root.style.removeProperty('--matched-bg');
             root.style.removeProperty('--chip-bg');
             root.style.removeProperty('--border');
+            root.style.removeProperty('--dictionary-bg');
+            root.style.removeProperty('--dictionary-fg');
             return;
         }
         if (!appearanceColors) return;
@@ -583,6 +587,29 @@ const Popup = (() => {
                     }
                     return;
                 }
+                if (state === 'duplicate_new') {
+                    if (!held) {
+                        addNote(false, false);
+                    } else {
+                        showMenu(add, [
+                            { label: labelOf('openInAnki'), action: () => ScreenlateBridge.onOpenNote(index) },
+                            { label: labelOf('addWithPicture'), action: () => addNote(true, false) },
+                        ]);
+                    }
+                    return;
+                }
+                if (state === 'duplicate_overwrite') {
+                    if (!held) {
+                        addNote(false, false);
+                    } else {
+                        showMenu(add, [
+                            { label: labelOf('openInAnki'), action: () => ScreenlateBridge.onOpenNote(index) },
+                            { label: labelOf('updateWithPicture'), action: () => addNote(true, false) },
+                            { label: labelOf('addAnyway'), action: () => addNote(false, true) },
+                        ]);
+                    }
+                    return;
+                }
                 addNote(held, false);
             });
             container.append(add);
@@ -765,12 +792,17 @@ const Popup = (() => {
         if (state) button.dataset.state = state;
         else delete button.dataset.state;
         if (!button.classList.contains('action-add')) return;
-        const open = state === 'added' || state === 'open';
-        const kind = open ? 'open' : 'add';
+        const kind = (state === 'added' || state === 'open') ? 'open'
+            : state === 'duplicate_new' ? 'openAdd'
+            : state === 'duplicate_overwrite' ? 'openUpdate'
+            : 'add';
         if (button.dataset.icon !== kind) {
             button.dataset.icon = kind;
-            button.innerHTML = open ? ICONS.open : ICONS.add;
-            button.setAttribute('aria-label', labelOf(open ? 'openNote' : 'addNote'));
+            button.innerHTML = ICONS[kind];
+            const labelKey = kind === 'open' ? 'openNote'
+                : kind === 'openUpdate' ? 'updateNote'
+                : 'addNote';
+            button.setAttribute('aria-label', labelOf(labelKey));
         }
     }
 
@@ -1497,12 +1529,16 @@ const Popup = (() => {
                 '--matched-bg': appearance.matchedBgLight,
                 '--border': appearance.borderLight,
                 '--chip-bg': appearance.chipBgLight,
+                '--dictionary-bg': appearance.dictionaryBgLight,
+                '--dictionary-fg': appearance.dictionaryFgLight,
             },
             dark: {
                 '--accent': appearance.accentDark,
                 '--matched-bg': appearance.matchedBgDark,
                 '--border': appearance.borderDark,
                 '--chip-bg': appearance.chipBgDark,
+                '--dictionary-bg': appearance.dictionaryBgDark,
+                '--dictionary-fg': appearance.dictionaryFgDark,
             },
         };
         applyColors();

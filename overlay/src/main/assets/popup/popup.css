@@ -459,13 +459,15 @@ a {
 }
 
 .action-add[data-state="added"],
-.action-add[data-state="open"] {
+.action-add[data-state="open"],
+.action-add[data-state="duplicate_new"],
+.action-add[data-state="duplicate_overwrite"] {
     color: var(--frequency-fg);
     background: var(--frequency-bg);
 }
 
 .action-add.unavailable,
-:root[data-note-wait="true"] .action-add:not([data-state="added"]):not([data-state="open"]) {
+:root[data-note-wait="true"] .action-add:not([data-state="added"]):not([data-state="open"]):not([data-state="duplicate_new"]):not([data-state="duplicate_overwrite"]) {
     color: var(--muted);
     opacity: 0.5;
 }

@@ -3,7 +3,20 @@ import { readFileSync } from 'node:fs';
 import { beforeEach, test } from 'node:test';
 import { popupPage } from '../../../../scripts/page-tests/harness.mjs';
 
-const labels = { close: 'Close', copy: 'Copy', addNote: 'Add', openNote: 'Open note', openApp: 'Open settings', noResults: 'Nothing' };
+const labels = {
+    close: 'Close',
+    copy: 'Copy',
+    addNote: 'Add',
+    openNote: 'Open note',
+    openInAnki: 'Open in AnkiDroid',
+    openApp: 'Open settings',
+    noResults: 'Nothing',
+    addAnyway: 'Add anyway',
+    addAnywayWithPicture: 'Add anyway, with a picture',
+    addWithPicture: 'Add with picture',
+    updateNote: 'Update note',
+    updateWithPicture: 'Update with picture',
+};
 
 function result(expression, reading, text = 'meaning') {
     return {
@@ -34,6 +47,18 @@ const press = (button, type) => button.dispatchEvent(new page.window.Event(type,
 const tap = button => {
     press(button, 'pointerdown');
     press(button, 'pointerup');
+};
+const hold = button => {
+    const setTimeout = page.window.setTimeout;
+    page.window.setTimeout = callback => {
+        callback();
+        return 0;
+    };
+    try {
+        tap(button);
+    } finally {
+        page.window.setTimeout = setTimeout;
+    }
 };
 
 test('the page reports that it is ready', () => {
@@ -180,6 +205,53 @@ test('added notes show the open button', () => {
     assert.equal(second.dataset.icon, 'add');
     tap(first);
     assert.deepEqual(page.calls.at(-1), ['onOpenNote', 0]);
+});
+
+test('duplicate notes with NEW and OVERWRITE behavior show openAdd and openUpdate icons', () => {
+    Popup.setActions({ anki: true, audio: false, ankiProblem: null });
+    Popup.render(state());
+    Popup.setNoteStates({ 0: 'duplicate_new', 1: 'duplicate_overwrite' });
+    const [first, second] = content.querySelectorAll('.action-add');
+
+    // duplicate_new shows openAdd icon
+    assert.equal(first.dataset.icon, 'openAdd');
+    assert.equal(first.getAttribute('aria-label'), 'Add');
+    // Tap adds directly
+    tap(first);
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[1], 0);
+
+    // Reset state after tap to test hold
+    Popup.setNoteStates({ 0: 'duplicate_new', 1: 'duplicate_overwrite' });
+
+    // Holding duplicate_new opens menu with Open in AnkiDroid and Add with picture
+    hold(first);
+    const menu = page.document.querySelector('.menu');
+    assert.ok(menu);
+    const items = Array.from(menu.querySelectorAll('.menu-label')).map(item => item.textContent);
+    assert.deepEqual(items, ['Open in AnkiDroid', 'Add with picture']);
+    menu.querySelectorAll('.menu-item')[0].click();
+    assert.deepEqual(page.calls.at(-1), ['onOpenNote', 0]);
+
+    // duplicate_overwrite shows openUpdate icon
+    assert.equal(second.dataset.icon, 'openUpdate');
+    assert.equal(second.getAttribute('aria-label'), 'Update note');
+    // Tap updates directly
+    tap(second);
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[1], 1);
+
+    // Reset state after tap to test hold
+    Popup.setNoteStates({ 1: 'duplicate_overwrite' });
+
+    // Holding duplicate_overwrite opens menu with Open in AnkiDroid, Update with picture, Add anyway
+    hold(second);
+    const updateMenu = page.document.querySelector('.menu');
+    assert.ok(updateMenu);
+    const updateItems = Array.from(updateMenu.querySelectorAll('.menu-label')).map(item => item.textContent);
+    assert.deepEqual(updateItems, ['Open in AnkiDroid', 'Update with picture', 'Add anyway']);
+    updateMenu.querySelectorAll('.menu-item')[0].click();
+    assert.deepEqual(page.calls.at(-1), ['onOpenNote', 1]);
 });
 
 test('a broken Anki setup shows a grey button with the reason', () => {
@@ -1488,12 +1560,18 @@ test('dynamic theme colors are injected via setAppearance and adapt to theme mod
         borderDark: 'rgba(125, 211, 252, 0.55)',
         chipBgLight: '#e0f2fe',
         chipBgDark: '#0c4a6e',
+        dictionaryBgLight: '#bae6fd',
+        dictionaryFgLight: '#0369a1',
+        dictionaryBgDark: '#075985',
+        dictionaryFgDark: '#e0f2fe',
     });
 
     assert.equal(root.style.getPropertyValue('--accent'), '#0284c7');
     assert.equal(root.style.getPropertyValue('--matched-bg'), 'rgba(2, 132, 199, 0.18)');
     assert.equal(root.style.getPropertyValue('--border'), 'rgba(2, 132, 199, 0.55)');
     assert.equal(root.style.getPropertyValue('--chip-bg'), '#e0f2fe');
+    assert.equal(root.style.getPropertyValue('--dictionary-bg'), '#bae6fd');
+    assert.equal(root.style.getPropertyValue('--dictionary-fg'), '#0369a1');
 
     // In dark theme, accent switches to high-contrast tone and chip-bg switches to dark container
     Popup.update(state({ theme: 'dark' }));
@@ -1501,6 +1579,8 @@ test('dynamic theme colors are injected via setAppearance and adapt to theme mod
     assert.equal(root.style.getPropertyValue('--matched-bg'), 'rgba(125, 211, 252, 0.18)');
     assert.equal(root.style.getPropertyValue('--border'), 'rgba(125, 211, 252, 0.55)');
     assert.equal(root.style.getPropertyValue('--chip-bg'), '#0c4a6e');
+    assert.equal(root.style.getPropertyValue('--dictionary-bg'), '#075985');
+    assert.equal(root.style.getPropertyValue('--dictionary-fg'), '#e0f2fe');
 
     // In eink theme, custom styles are removed so eink CSS takes full precedence
     Popup.update(state({ theme: 'eink' }));
@@ -1508,4 +1588,6 @@ test('dynamic theme colors are injected via setAppearance and adapt to theme mod
     assert.equal(root.style.getPropertyValue('--matched-bg'), '');
     assert.equal(root.style.getPropertyValue('--chip-bg'), '');
     assert.equal(root.style.getPropertyValue('--border'), '');
+    assert.equal(root.style.getPropertyValue('--dictionary-bg'), '');
+    assert.equal(root.style.getPropertyValue('--dictionary-fg'), '');
 });

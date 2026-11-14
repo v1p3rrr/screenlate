@@ -1,5 +1,17 @@
 # Status
 
+## Anki duplicate icons and color harmonization (2026-11-15)
+
+- Added dedicated icons for Anki duplicate behavior:
+  - `DuplicateBehavior.NEW` displays a book with a small plus (`📖⁺`), tapping adds a new note, and holding opens a menu to view the card in AnkiDroid or add with a picture.
+  - `DuplicateBehavior.OVERWRITE` displays a book with refresh arrows (`📖↻`), tapping updates the note, and holding opens a menu with options to view in AnkiDroid, update with picture, or force add a new card.
+  - Duplicate cards in both modes receive the green highlight styling and preserve note IDs for AnkiDroid navigation.
+  - Menu options localized in all 17 locales with full TranslationsTest coverage.
+- Harmonized theme colors across overlay and popup:
+  - `LayerView` now dynamically binds `primaryColor` to the app theme seed, recoloring the aim dot and word highlight box to match the active theme.
+  - Dictionary name tags (`.dictionary-name`) in popup CSS now dynamically bind to theme container and on-container colors in light and dark modes instead of static violet.
+  - Adjusted preset seeds: Cobalt blue to `#4169E1` (Royal Blue), Lavender to `#9333EA` (Purple/Lilac), and Teal to `#0097A7` (Cyan) to eliminate hue collisions with neighboring presets.
+
 ## Cobalt blue and Graphite presets (2026-11-15)
 
 - Added Cobalt blue and Graphite to the existing eight presets in the app and bubble color selectors.

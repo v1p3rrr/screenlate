@@ -62,6 +62,10 @@
     <string name="overlay_open_note">在 AnkiDroid 中打开（长按仍然添加）</string>
     <string name="overlay_add_anyway">仍然添加</string>
     <string name="overlay_add_anyway_picture">仍然添加并附带图片</string>
+    <string name="overlay_open_in_anki">在 AnkiDroid 中打开</string>
+    <string name="overlay_add_with_picture">附带图片添加</string>
+    <string name="overlay_update_note">更新笔记（长按显示菜单）</string>
+    <string name="overlay_update_picture">附带图片更新</string>
     <string name="overlay_audio_loading">正在查找音频…</string>
     <string name="overlay_open_app">打开 Anki 设置</string>
     <string name="audio_no_voice">未安装此语言的文字转语音数据。</string>

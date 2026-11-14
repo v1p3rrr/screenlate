@@ -62,6 +62,10 @@
     <string name="overlay_open_note">باز کردن در AnkiDroid (برای افزودن در هر صورت، نگه دارید)</string>
     <string name="overlay_add_anyway">افزودن در هر صورت</string>
     <string name="overlay_add_anyway_picture">افزودن در هر صورت، همراه با تصویر</string>
+    <string name="overlay_open_in_anki">باز کردن در AnkiDroid</string>
+    <string name="overlay_add_with_picture">افزودن با تصویر</string>
+    <string name="overlay_update_note">به‌روزرسانی یادداشت (برای منو نگه دارید)</string>
+    <string name="overlay_update_picture">به‌روزرسانی با تصویر</string>
     <string name="overlay_audio_loading">در حال جستجوی صوت…</string>
     <string name="overlay_open_app">باز کردن تنظیمات Anki</string>
     <string name="audio_no_voice">هیچ صدای تبدیل متن به گفتار برای این زبان نصب نشده است.</string>

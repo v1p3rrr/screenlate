@@ -277,11 +277,11 @@ class PopupNotes(
                     emptyList()
                 }
                 if (ids.isEmpty()) return@forEachIndexed
-                if (settings.duplicateBehavior == DuplicateBehavior.PREVENT) {
-                    openableNotes[index] = ids
-                    states[index] = "open"
-                } else {
-                    states[index] = "duplicate"
+                openableNotes[index] = ids
+                when (settings.duplicateBehavior) {
+                    DuplicateBehavior.PREVENT -> states[index] = "open"
+                    DuplicateBehavior.NEW -> states[index] = "duplicate_new"
+                    DuplicateBehavior.OVERWRITE -> states[index] = "duplicate_overwrite"
                 }
             }
         }

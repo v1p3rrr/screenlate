@@ -91,6 +91,10 @@ class PageAppearance @Inject constructor(
                 put("borderDark", palette.popupBorderDark)
                 put("chipBgLight", palette.popupChipBgLight)
                 put("chipBgDark", palette.popupChipBgDark)
+                put("dictionaryBgLight", palette.popupDictionaryBgLight)
+                put("dictionaryFgLight", palette.popupDictionaryFgLight)
+                put("dictionaryBgDark", palette.popupDictionaryBgDark)
+                put("dictionaryFgDark", palette.popupDictionaryFgDark)
                 if (chosen != null) {
                     put("preload", PageFonts.CHOSEN)
                     put("preloadText", support.fontSample)

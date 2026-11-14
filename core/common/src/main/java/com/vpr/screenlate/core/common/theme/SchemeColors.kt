@@ -90,4 +90,20 @@ data class ThemePalette(
     /** Dark chip background in `#RRGGBB` format for popup CSS `--chip-bg` in dark mode. */
     val popupChipBgDark: String
         get() = ColorMath.toHex(darkScheme.surfaceContainerHigh)
+
+    /** Light dictionary name chip background in `#RRGGBB` format for popup CSS `--dictionary-bg`. */
+    val popupDictionaryBgLight: String
+        get() = ColorMath.toHex(lightScheme.primaryContainer)
+
+    /** Light dictionary name chip foreground in `#RRGGBB` format for popup CSS `--dictionary-fg`. */
+    val popupDictionaryFgLight: String
+        get() = ColorMath.toHex(lightScheme.onPrimaryContainer)
+
+    /** Dark dictionary name chip background in `#RRGGBB` format for popup CSS `--dictionary-bg`. */
+    val popupDictionaryBgDark: String
+        get() = ColorMath.toHex(darkScheme.primaryContainer)
+
+    /** Dark dictionary name chip foreground in `#RRGGBB` format for popup CSS `--dictionary-fg`. */
+    val popupDictionaryFgDark: String
+        get() = ColorMath.toHex(darkScheme.onPrimaryContainer)
 }

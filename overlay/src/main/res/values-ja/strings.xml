@@ -62,6 +62,10 @@
     <string name="overlay_open_note">AnkiDroid で開く（長押しでそれでも追加）</string>
     <string name="overlay_add_anyway">それでも追加</string>
     <string name="overlay_add_anyway_picture">それでも画像付きで追加</string>
+    <string name="overlay_open_in_anki">AnkiDroid で開く</string>
+    <string name="overlay_add_with_picture">画像付きで追加</string>
+    <string name="overlay_update_note">ノートを更新（長押しでメニュー）</string>
+    <string name="overlay_update_picture">画像付きで更新</string>
     <string name="overlay_audio_loading">音声を探しています…</string>
     <string name="overlay_open_app">Anki の設定を開く</string>
     <string name="audio_no_voice">この言語の読み上げ音声がインストールされていません。</string>

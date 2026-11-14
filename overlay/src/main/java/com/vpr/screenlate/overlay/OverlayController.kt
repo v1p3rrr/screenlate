@@ -328,9 +328,12 @@ class OverlayController(
         val initialPalette = (appSettings.cachedPaletteConfig ?: AppPaletteConfig()).withWallpaperColor(service)
         val initialOverlay = overlaySettings.cachedSettings ?: OverlaySettings()
         bubbleView.bubbleColor = if (initialOverlay.bubbleUseAppColor) initialPalette.effectiveSeed else initialOverlay.bubbleCustomColor
+        layerView.primaryColor = initialPalette.effectiveSeed
         scope.launch {
             combine(overlaySettings.settings, appSettings.paletteConfig, wallpaperAccents(service)) { overlay, palette, wallpaperAccent ->
-                if (overlay.bubbleUseAppColor) palette.withWallpaperColor(wallpaperAccent).effectiveSeed else overlay.bubbleCustomColor
+                val themeSeed = palette.withWallpaperColor(wallpaperAccent).effectiveSeed
+                layerView.primaryColor = themeSeed
+                if (overlay.bubbleUseAppColor) themeSeed else overlay.bubbleCustomColor
             }.distinctUntilChanged().collect { bubbleView.bubbleColor = it }
         }
         scope.launch { overlaySettings.settings.collect(::applySettings) }

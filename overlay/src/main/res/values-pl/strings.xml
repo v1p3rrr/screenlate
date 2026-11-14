@@ -62,6 +62,10 @@
     <string name="overlay_open_note">Otwórz w AnkiDroid (przytrzymaj, aby dodać mimo to)</string>
     <string name="overlay_add_anyway">Dodaj mimo to</string>
     <string name="overlay_add_anyway_picture">Dodaj mimo to, z obrazem</string>
+    <string name="overlay_open_in_anki">Otwórz w AnkiDroid</string>
+    <string name="overlay_add_with_picture">Dodaj z obrazem</string>
+    <string name="overlay_update_note">Zaktualizuj notatkę (przytrzymaj, aby otworzyć menu)</string>
+    <string name="overlay_update_picture">Zaktualizuj z obrazem</string>
     <string name="overlay_audio_loading">Szukanie dźwięku…</string>
     <string name="overlay_open_app">Otwórz ustawienia Anki</string>
     <string name="audio_no_voice">Nie zainstalowano głosu syntezy mowy dla tego języka.</string>

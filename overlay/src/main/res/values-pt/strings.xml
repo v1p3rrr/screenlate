@@ -62,6 +62,10 @@
     <string name="overlay_open_note">Abrir no AnkiDroid (segure para adicionar mesmo assim)</string>
     <string name="overlay_add_anyway">Adicionar mesmo assim</string>
     <string name="overlay_add_anyway_picture">Adicionar mesmo assim, com uma imagem</string>
+    <string name="overlay_open_in_anki">Abrir no AnkiDroid</string>
+    <string name="overlay_add_with_picture">Adicionar com imagem</string>
+    <string name="overlay_update_note">Atualizar nota (segure para o menu)</string>
+    <string name="overlay_update_picture">Atualizar com imagem</string>
     <string name="overlay_audio_loading">Procurando áudio…</string>
     <string name="overlay_open_app">Abrir configurações do Anki</string>
     <string name="audio_no_voice">Nenhuma voz de conversão de texto em voz está instalada para este idioma.</string>

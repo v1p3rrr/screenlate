@@ -62,6 +62,10 @@
     <string name="overlay_open_note">Mở trong AnkiDroid (giữ để vẫn thêm)</string>
     <string name="overlay_add_anyway">Vẫn thêm</string>
     <string name="overlay_add_anyway_picture">Vẫn thêm, kèm ảnh</string>
+    <string name="overlay_open_in_anki">Mở trong AnkiDroid</string>
+    <string name="overlay_add_with_picture">Thêm kèm ảnh</string>
+    <string name="overlay_update_note">Cập nhật ghi chú (giữ để mở menu)</string>
+    <string name="overlay_update_picture">Cập nhật kèm ảnh</string>
     <string name="overlay_audio_loading">Đang tìm âm thanh…</string>
     <string name="overlay_open_app">Mở cài đặt Anki</string>
     <string name="audio_no_voice">Chưa cài giọng đọc văn bản cho ngôn ngữ này.</string>

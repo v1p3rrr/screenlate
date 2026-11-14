@@ -186,6 +186,10 @@ flowchart TD
 
 ## Changelog
 
+- 2026-11-15: Adjusted preset seeds: Cobalt blue to `#4169E1` (Royal Blue), Lavender to `#9333EA` (Purple/Lilac),
+  and Teal to `#0097A7` (Cyan). Linked LayerView aim dot and word highlight to the dynamic theme color,
+  and bound popup dictionary tags to dynamic container colors.
+
 - 2026-11-15: The owner chose to retain all eight presets and add Cobalt blue (`#3455DB`) and Graphite (`#475569`).
 
 - 2026-11-15: The owner requested adjacent accent hues for presets and custom colors and retained the
