@@ -5,6 +5,10 @@
 - Generated palettes now shift the accent hue by 15° and keep neutral seeds neutral. The Violet preset keeps
   its original pink colors. Slider and radio accents use lightness to maintain contrast against their surfaces.
 - JVM palette tests cover all presets, 216 custom colors around the hue wheel, custom violet, and neutral seeds.
+  The full JVM suite passed 2,135 tests with four skipped. No emulator check was requested for this change.
+- Minified ARM64 Dev APK from `b50f43d7`: version `1.0.1-b50f43d7-min`, 23,203,379 bytes, signed
+  with the existing Dev certificate. SHA-256 `b1b1fb00ac05bdae7f2ae4dd3c49f6d53ab3dfc06e01f59351f53ad87e5558e1`.
+  The APK, mapping and log are under ignored `testdata/local-research/builds/`.
 
 ## Dev review fixes and Android 7 verification (2026-11-15)
 
