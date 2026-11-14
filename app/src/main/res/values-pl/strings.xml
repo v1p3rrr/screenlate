@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Ciemny</string>
     <string name="settings_colors_title">Kolory</string>
     <string name="settings_colors_system">Systemowe</string>
-    <string name="settings_colors_hint">Screenlate: własna fioletowa paleta aplikacji. Systemowe: kolory dobierane przez telefon, zwykle do tapety.</string>
+    <string name="settings_colors_hint">Screenlate: wybierz schemat kolorów dla aplikacji i dymka. Systemowe: kolory dobierane przez telefon, zwykle do tapety.</string>
+    <string name="color_preset_violet">Fioletowy</string>
+    <string name="color_preset_ocean">Oceaniczny</string>
+    <string name="color_preset_emerald">Szmaragdowy</string>
+    <string name="color_preset_amber">Bursztynowy</string>
+    <string name="color_preset_coral">Koralowy</string>
+    <string name="color_preset_sunset">Zachód słońca</string>
+    <string name="color_preset_lavender">Lawendowy</string>
+    <string name="color_preset_teal">Morski</string>
+    <string name="color_custom">Własny</string>
+    <string name="color_picker_title">Własny kolor</string>
+    <string name="color_picker_hue">Odcień</string>
+    <string name="color_picker_saturation">Nasycenie</string>
+    <string name="color_picker_lightness">Jasność</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Kolor dymka</string>
+    <string name="bubble_color_use_app">Używaj koloru motywu aplikacji</string>
+    <string name="bubble_color_use_app_hint">Synchronizuj kolor dymka ze schematem kolorów aplikacji.</string>
 
     <string name="action_back">Wstecz</string>
     <string name="ocr_test_title">Test OCR</string>

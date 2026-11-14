@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">ダーク</string>
     <string name="settings_colors_title">カラー</string>
     <string name="settings_colors_system">システム</string>
-    <string name="settings_colors_hint">Screenlate：アプリ独自の紫の配色。システム：スマートフォンが選ぶ色（通常は壁紙に合わせた色）。</string>
+    <string name="settings_colors_hint">Screenlate：アプリとバブルのカラースキームを選択します。システム：スマートフォンが選ぶ色（通常は壁紙に合わせた色）。</string>
+    <string name="color_preset_violet">バイオレット</string>
+    <string name="color_preset_ocean">オーシャン</string>
+    <string name="color_preset_emerald">エメラルド</string>
+    <string name="color_preset_amber">アンバー</string>
+    <string name="color_preset_coral">コーラル</string>
+    <string name="color_preset_sunset">サンセット</string>
+    <string name="color_preset_lavender">ラベンダー</string>
+    <string name="color_preset_teal">ティール</string>
+    <string name="color_custom">カスタム</string>
+    <string name="color_picker_title">カスタムカラー</string>
+    <string name="color_picker_hue">色相</string>
+    <string name="color_picker_saturation">彩度</string>
+    <string name="color_picker_lightness">輝度</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">バブルの色</string>
+    <string name="bubble_color_use_app">アプリのテーマカラーを使用</string>
+    <string name="bubble_color_use_app_hint">バブルの色をアプリのカラースキームと同期します。</string>
 
     <string name="action_back">戻る</string>
     <string name="ocr_test_title">OCR テスト</string>

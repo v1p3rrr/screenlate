@@ -34,6 +34,7 @@ import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
+import com.vpr.screenlate.settings.ColorPaletteSelector
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.Hint
@@ -72,6 +73,10 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
     fun setBubbleSize(dp: Int) = launch { repository.setBubbleSize(dp) }
 
     fun setKeepAlive(enabled: Boolean) = launch { repository.setKeepAlive(enabled) }
+
+    fun setBubbleUseAppColor(useApp: Boolean) = launch { repository.setBubbleUseAppColor(useApp) }
+
+    fun setBubbleCustomColor(color: Int) = launch { repository.setBubbleCustomColor(color) }
 
     private fun launch(block: suspend () -> Unit) {
         viewModelScope.launch { block() }
@@ -159,6 +164,24 @@ fun BubbleSettingsScreen(
                     BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
                     SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
                     SwitchRow(stringResource(R.string.bubble_haptics), settings.haptics, viewModel::setHaptics)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Text(stringResource(R.string.bubble_color_title), style = MaterialTheme.typography.titleMedium)
+                    SwitchRow(
+                        label = stringResource(R.string.bubble_color_use_app),
+                        checked = settings.bubbleUseAppColor,
+                        onChange = viewModel::setBubbleUseAppColor,
+                        hint = stringResource(R.string.bubble_color_use_app_hint),
+                    )
+                    if (!settings.bubbleUseAppColor) {
+                        ColorPaletteSelector(
+                            selectedColor = settings.bubbleCustomColor,
+                            isSystemSelected = false,
+                            showSystemOption = false,
+                            onSelectPreset = { preset -> viewModel.setBubbleCustomColor(preset.primarySeed) },
+                            onSelectCustom = { color -> viewModel.setBubbleCustomColor(color) },
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     NavigationRow(
                         stringResource(R.string.bubble_hidden_apps),

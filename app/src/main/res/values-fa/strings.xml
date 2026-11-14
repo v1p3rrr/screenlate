@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">تیره</string>
     <string name="settings_colors_title">رنگ‌ها</string>
     <string name="settings_colors_system">سیستم</string>
-    <string name="settings_colors_hint">Screenlate: پالت بنفش خود برنامه. سیستم: رنگ‌هایی که تلفن انتخاب می‌کند، معمولاً هماهنگ با کاغذدیواری.</string>
+    <string name="settings_colors_hint">Screenlate: طرح رنگ برنامه و حباب را انتخاب کنید. سیستم: رنگ‌هایی که تلفن انتخاب می‌کند، معمولاً هماهنگ با کاغذدیواری.</string>
+    <string name="color_preset_violet">بنفش</string>
+    <string name="color_preset_ocean">اقیانوسی</string>
+    <string name="color_preset_emerald">زمردی</string>
+    <string name="color_preset_amber">کهربایی</string>
+    <string name="color_preset_coral">مرجانی</string>
+    <string name="color_preset_sunset">غروب</string>
+    <string name="color_preset_lavender">اسطوخودوس</string>
+    <string name="color_preset_teal">فیروزه‌ای</string>
+    <string name="color_custom">سفارشی</string>
+    <string name="color_picker_title">رنگ سفارشی</string>
+    <string name="color_picker_hue">فام</string>
+    <string name="color_picker_saturation">اشباع</string>
+    <string name="color_picker_lightness">روشنایی</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">رنگ حباب</string>
+    <string name="bubble_color_use_app">استفاده از رنگ نمایه برنامه</string>
+    <string name="bubble_color_use_app_hint">همگام‌سازی رنگ حباب با طرح رنگ برنامه.</string>
 
     <string name="action_back">برگشت</string>
     <string name="ocr_test_title">آزمایش OCR</string>

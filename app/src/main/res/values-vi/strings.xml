@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Tối</string>
     <string name="settings_colors_title">Màu sắc</string>
     <string name="settings_colors_system">Hệ thống</string>
-    <string name="settings_colors_hint">Screenlate: bảng màu tím riêng của ứng dụng. Hệ thống: màu do điện thoại chọn, thường theo hình nền.</string>
+    <string name="settings_colors_hint">Screenlate: chọn phối màu cho ứng dụng và bong bóng. Hệ thống: màu do điện thoại chọn, thường theo hình nền.</string>
+    <string name="color_preset_violet">Tím</string>
+    <string name="color_preset_ocean">Đại dương</string>
+    <string name="color_preset_emerald">Ngọc lục bảo</string>
+    <string name="color_preset_amber">Hổ phách</string>
+    <string name="color_preset_coral">San hô</string>
+    <string name="color_preset_sunset">Hoàng hôn</string>
+    <string name="color_preset_lavender">Oải hương</string>
+    <string name="color_preset_teal">Xanh mòng két</string>
+    <string name="color_custom">Tùy chỉnh</string>
+    <string name="color_picker_title">Màu tùy chỉnh</string>
+    <string name="color_picker_hue">Sắc độ</string>
+    <string name="color_picker_saturation">Độ bão hòa</string>
+    <string name="color_picker_lightness">Độ sáng</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Màu bong bóng</string>
+    <string name="bubble_color_use_app">Dùng màu chủ đề của ứng dụng</string>
+    <string name="bubble_color_use_app_hint">Đồng bộ hóa màu bong bóng với phối màu của ứng dụng.</string>
 
     <string name="action_back">Quay lại</string>
     <string name="ocr_test_title">Thử OCR</string>

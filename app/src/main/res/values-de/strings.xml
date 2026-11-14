@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Dunkel</string>
     <string name="settings_colors_title">Farben</string>
     <string name="settings_colors_system">System</string>
-    <string name="settings_colors_hint">Screenlate: die eigene violette Farbpalette der App. System: vom Telefon gewählte Farben, meist passend zum Hintergrundbild.</string>
+    <string name="settings_colors_hint">Screenlate: Farbschema für die App und die Blase wählen. System: vom Telefon gewählte Farben, meist passend zum Hintergrundbild.</string>
+    <string name="color_preset_violet">Violett</string>
+    <string name="color_preset_ocean">Ozean</string>
+    <string name="color_preset_emerald">Smaragd</string>
+    <string name="color_preset_amber">Bernstein</string>
+    <string name="color_preset_coral">Koralle</string>
+    <string name="color_preset_sunset">Sonnenuntergang</string>
+    <string name="color_preset_lavender">Lavendel</string>
+    <string name="color_preset_teal">Blaugrün</string>
+    <string name="color_custom">Benutzerdefiniert</string>
+    <string name="color_picker_title">Eigene Farbe</string>
+    <string name="color_picker_hue">Farbton</string>
+    <string name="color_picker_saturation">Sättigung</string>
+    <string name="color_picker_lightness">Helligkeit</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Farbe der Blase</string>
+    <string name="bubble_color_use_app">Farbe des App-Designs verwenden</string>
+    <string name="bubble_color_use_app_hint">Farbe der Blase mit dem Farbschema der App synchronisieren.</string>
 
     <string name="action_back">Zurück</string>
     <string name="ocr_test_title">OCR-Test</string>

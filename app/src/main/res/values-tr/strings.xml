@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Koyu</string>
     <string name="settings_colors_title">Renkler</string>
     <string name="settings_colors_system">Sistem</string>
-    <string name="settings_colors_hint">Screenlate: uygulamanın kendi mor renk paleti. Sistem: telefonun seçtiği renkler, genellikle duvar kâğıdına göre.</string>
+    <string name="settings_colors_hint">Screenlate: uygulama ve baloncuk için bir renk düzeni seçin. Sistem: telefonun seçtiği renkler, genellikle duvar kâğıdına göre.</string>
+    <string name="color_preset_violet">Menekşe</string>
+    <string name="color_preset_ocean">Okyanus</string>
+    <string name="color_preset_emerald">Zümrüt</string>
+    <string name="color_preset_amber">Kehribar</string>
+    <string name="color_preset_coral">Mercan</string>
+    <string name="color_preset_sunset">Gün batımı</string>
+    <string name="color_preset_lavender">Lavanta</string>
+    <string name="color_preset_teal">Camgöbeği</string>
+    <string name="color_custom">Özel</string>
+    <string name="color_picker_title">Özel renk</string>
+    <string name="color_picker_hue">Ton</string>
+    <string name="color_picker_saturation">Doygunluk</string>
+    <string name="color_picker_lightness">Açıklık</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Baloncuk rengi</string>
+    <string name="bubble_color_use_app">Uygulama tema rengini kullan</string>
+    <string name="bubble_color_use_app_hint">Baloncuk rengini uygulamanın renk düzeniyle eşitleyin.</string>
 
     <string name="action_back">Geri</string>
     <string name="ocr_test_title">OCR testi</string>

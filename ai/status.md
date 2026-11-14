@@ -1,5 +1,21 @@
 # Status
 
+## Color scheme customization and verification (2026-11-14)
+
+- Implemented the full "Color Scheme Customization" feature on branch `features/color-scheme-customization`:
+  - Pure Kotlin palette math engine (`ColorMath`, `PaletteGenerator`, `AppPaletteConfig`, `ColorPreset`) in `core:common`, compatible with Android 7.0+ (API 24+) to Android 15 (API 35).
+  - 8 curated presets (`Violet`, `Ocean`, `Emerald`, `Amber`, `Coral`, `Sunset`, `Lavender`, `Teal`) with dynamic 45-60° hue shift for controls.
+  - DataStore persistence in `AppSettingsRepository` and `OverlaySettingsRepository` with snapshot backup & restore.
+  - Floating bubble contrast engine: automatic luminance calculation with inverted charcoal (`#1C1B20`) glyph/ring/dot for light backgrounds (> 0.60) and white for dark.
+  - Independent bubble color selection in "Bubble settings" with "Use app theme color" toggle.
+  - Compose theme integration supporting dynamic palette with e-ink override.
+  - Popup WebView CSS dynamic bridge (`--accent`, `--matched-bg`, `--chip-bg`, `--border`) in `popup.js`.
+  - Settings UI: `AppColorsSection` redesign with `ColorPaletteSelector` (preset chips + wallpaper option on Android 12+ + custom color swatch) and `ColorPickerDialog` (HSL sliders + HEX field + live contrast preview).
+  - Complete translations across all 16 project locales (`TranslationsTest` passing).
+  - All test suites passing: `./gradlew testDebugUnitTest` and `npm --prefix scripts/page-tests test` (163/163 JS tests).
+  - Verified on emulator (`Screenlate_API30_x86`): preset switching, custom color selection (`#00BCD4`), and independent bubble color (`Sunset`).
+  - UI screenshots captured and presented to the owner.
+
 ## Android 7 support planned for the future (2026-11-12)
 
 - The owner requested future support for Android 7.0/7.1 (API 24–25), not Android 6 or older. The current app remains

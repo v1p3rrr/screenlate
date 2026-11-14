@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Тёмная</string>
     <string name="settings_colors_title">Цвета</string>
     <string name="settings_colors_system">Системные</string>
-    <string name="settings_colors_hint">Screenlate — собственная фиолетовая палитра приложения. Системные — цвета, которые выбирает телефон, обычно под обои.</string>
+    <string name="settings_colors_hint">Screenlate — цветовая схема для приложения и плавающей кнопки. Системные — цвета, которые выбирает телефон, обычно под обои.</string>
+    <string name="color_preset_violet">Фиолетовый</string>
+    <string name="color_preset_ocean">Океан</string>
+    <string name="color_preset_emerald">Изумрудный</string>
+    <string name="color_preset_amber">Янтарный</string>
+    <string name="color_preset_coral">Коралловый</string>
+    <string name="color_preset_sunset">Закат</string>
+    <string name="color_preset_lavender">Лавандовый</string>
+    <string name="color_preset_teal">Морская волна</string>
+    <string name="color_custom">Свой цвет</string>
+    <string name="color_picker_title">Выбор цвета</string>
+    <string name="color_picker_hue">Оттенок</string>
+    <string name="color_picker_saturation">Насыщенность</string>
+    <string name="color_picker_lightness">Яркость</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Цвет кнопки</string>
+    <string name="bubble_color_use_app">Использовать цвет темы приложения</string>
+    <string name="bubble_color_use_app_hint">Синхронизировать цвет кнопки с цветовой схемой приложения.</string>
 
     <string name="action_back">Назад</string>
     <string name="ocr_test_title">Проверка OCR</string>

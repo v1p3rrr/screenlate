@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Escuro</string>
     <string name="settings_colors_title">Cores</string>
     <string name="settings_colors_system">Sistema</string>
-    <string name="settings_colors_hint">Screenlate: a paleta violeta própria do app. Sistema: cores escolhidas pelo celular, geralmente de acordo com o papel de parede.</string>
+    <string name="settings_colors_hint">Screenlate: escolha um esquema de cores para o app e a bolha. Sistema: cores escolhidas pelo celular, geralmente de acordo com o papel de parede.</string>
+    <string name="color_preset_violet">Violeta</string>
+    <string name="color_preset_ocean">Oceano</string>
+    <string name="color_preset_emerald">Esmeralda</string>
+    <string name="color_preset_amber">Âmbar</string>
+    <string name="color_preset_coral">Coral</string>
+    <string name="color_preset_sunset">Pôr do sol</string>
+    <string name="color_preset_lavender">Lavanda</string>
+    <string name="color_preset_teal">Verde-azulado</string>
+    <string name="color_custom">Personalizado</string>
+    <string name="color_picker_title">Cor personalizada</string>
+    <string name="color_picker_hue">Matiz</string>
+    <string name="color_picker_saturation">Saturação</string>
+    <string name="color_picker_lightness">Luminosidade</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Cor da bolha</string>
+    <string name="bubble_color_use_app">Usar cor do tema do app</string>
+    <string name="bubble_color_use_app_hint">Sincronizar a cor da bolha com o esquema de cores do app.</string>
 
     <string name="action_back">Voltar</string>
     <string name="ocr_test_title">Teste de OCR</string>

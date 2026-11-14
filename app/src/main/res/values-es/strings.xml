@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Oscuro</string>
     <string name="settings_colors_title">Colores</string>
     <string name="settings_colors_system">Sistema</string>
-    <string name="settings_colors_hint">Screenlate: la paleta violeta propia de la app. Sistema: colores elegidos por el teléfono, normalmente según el fondo de pantalla.</string>
+    <string name="settings_colors_hint">Screenlate: elige un esquema de colores para la app y la burbuja. Sistema: colores elegidos por el teléfono, normalmente según el fondo de pantalla.</string>
+    <string name="color_preset_violet">Violeta</string>
+    <string name="color_preset_ocean">Océano</string>
+    <string name="color_preset_emerald">Esmeralda</string>
+    <string name="color_preset_amber">Ámbar</string>
+    <string name="color_preset_coral">Coral</string>
+    <string name="color_preset_sunset">Atardecer</string>
+    <string name="color_preset_lavender">Lavanda</string>
+    <string name="color_preset_teal">Turquesa</string>
+    <string name="color_custom">Personalizado</string>
+    <string name="color_picker_title">Color personalizado</string>
+    <string name="color_picker_hue">Tono</string>
+    <string name="color_picker_saturation">Saturación</string>
+    <string name="color_picker_lightness">Luminosidad</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Color de la burbuja</string>
+    <string name="bubble_color_use_app">Usar color del tema de la app</string>
+    <string name="bubble_color_use_app_hint">Sincronizar el color de la burbuja con el esquema de colores de la app.</string>
 
     <string name="action_back">Atrás</string>
     <string name="ocr_test_title">Prueba de OCR</string>

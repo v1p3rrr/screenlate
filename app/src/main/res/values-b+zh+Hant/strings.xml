@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">深色</string>
     <string name="settings_colors_title">色彩</string>
     <string name="settings_colors_system">跟隨系統</string>
-    <string name="settings_colors_hint">Screenlate：應用程式內建的紫色配色。系統：由手機選擇的色彩，通常與桌布相配。</string>
+    <string name="settings_colors_hint">Screenlate：為應用程式與懸浮球選擇色彩配置。系統：由手機選擇的色彩，通常與桌布相配。</string>
+    <string name="color_preset_violet">紫羅蘭</string>
+    <string name="color_preset_ocean">海洋</string>
+    <string name="color_preset_emerald">祖母綠</string>
+    <string name="color_preset_amber">琥珀</string>
+    <string name="color_preset_coral">珊瑚</string>
+    <string name="color_preset_sunset">日落</string>
+    <string name="color_preset_lavender">薰衣草</string>
+    <string name="color_preset_teal">藍綠</string>
+    <string name="color_custom">自訂</string>
+    <string name="color_picker_title">自訂色彩</string>
+    <string name="color_picker_hue">色相</string>
+    <string name="color_picker_saturation">飽和度</string>
+    <string name="color_picker_lightness">亮度</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">懸浮球色彩</string>
+    <string name="bubble_color_use_app">使用應用程式主題色彩</string>
+    <string name="bubble_color_use_app_hint">將懸浮球色彩與應用程式的色彩配置同步。</string>
 
     <string name="action_back">返回</string>
     <string name="ocr_test_title">OCR 測試</string>

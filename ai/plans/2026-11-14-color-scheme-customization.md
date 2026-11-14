@@ -141,25 +141,32 @@ flowchart TD
 - Verify with `scripts/page-tests`:
   - Run `npm test` to ensure no regressions in popup rendering and state handling.
 
-### Phase 5: Settings UI & Color Picker Component
+### Phase 5: Settings UI & Color Picker Component [COMPLETED]
 - Redesign `AppColorsSection.kt` in `app/src/main/java/com/vpr/screenlate/settings/`:
   - Swatch row/grid displaying all 8 `ColorPreset` circular chips with checkmarks.
   - If Android 12+ (API 31+): include "System / Wallpaper" chip.
   - "Custom" chip with a color wheel/palette icon.
-  - `ColorPickerDialog`: Compose dialog with interactive Hue/Saturation sliders + HEX input field with live preview.
+  - `ColorPickerDialog`: Compose dialog with interactive Hue/Saturation/Lightness sliders + HEX input field with live preview.
 - Update `BubbleSettingsScreen.kt`:
   - Add "Bubble color" section:
     - Switch: "Use app theme color" (default `true`).
     - When switched off: expand color swatches + custom picker for the bubble.
+- Unit tests added: `AppColorsViewModelTest.kt`, `BubbleSettingsViewModelTest.kt`.
 
-### Phase 6: Translations, Page Tests & Verification
-- Add localized strings across all 14 project locales (`values/`, `values-ru/`, etc.):
-  - `settings_colors_title`, `settings_colors_custom`, preset names, `bubble_color_use_app`, etc.
+### Phase 6: Translations, Page Tests & Verification [COMPLETED]
+- Add localized strings across all 16 project locales (`values/`, `values-ru/`, `values-de/`, `values-es/`, `values-fr/`, `values-it/`, `values-ja/`, `values-ko/`, `values-pl/`, `values-pt/`, `values-tr/`, `values-vi/`, `values-b+zh+Hans/`, `values-b+zh+Hant/`, `values-ar/`, `values-fa/`, `values-iw/`):
+  - Verified with `TranslationsTest` passing.
 - Run test suites:
-  - `./gradlew testDebugUnitTest`
-  - `npm --prefix scripts/page-tests test`
+  - `./gradlew testDebugUnitTest` (all unit tests passed across all modules).
+  - `npm --prefix scripts/page-tests test` (163/163 JS tests passed).
 - Build verification:
-  - `./gradlew assembleDebug`
+  - `./gradlew assembleDebug` (passed).
+- Emulator Verification & Screenshots (per owner request):
+  - Emulator `Screenlate_API30_x86` run with debug APK installed.
+  - Verified preset switching (`Violet`, `Emerald`, `Amber`).
+  - Verified custom color picker dialog with interactive sliders and hex input (`#00BCD4`).
+  - Verified floating bubble sync switch and independent color selection (`Sunset`).
+  - Captured screenshots saved in artifacts directory.
 - Independent review check: Ensure no commit touches Android 7 worktree branches so this branch can be merged cleanly to `main`.
 
 ---

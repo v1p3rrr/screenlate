@@ -14,7 +14,24 @@
     <string name="settings_theme_dark">Sombre</string>
     <string name="settings_colors_title">Couleurs</string>
     <string name="settings_colors_system">Système</string>
-    <string name="settings_colors_hint">Screenlate : la palette violette propre à l’appli. Système : couleurs choisies par le téléphone, généralement d’après le fond d’écran.</string>
+    <string name="settings_colors_hint">Screenlate : choisissez un jeu de couleurs pour l’appli et la bulle. Système : couleurs choisies par le téléphone, généralement d’après le fond d’écran.</string>
+    <string name="color_preset_violet">Violet</string>
+    <string name="color_preset_ocean">Océan</string>
+    <string name="color_preset_emerald">Émeraude</string>
+    <string name="color_preset_amber">Ambre</string>
+    <string name="color_preset_coral">Corail</string>
+    <string name="color_preset_sunset">Coucher de soleil</string>
+    <string name="color_preset_lavender">Lavande</string>
+    <string name="color_preset_teal">Sarcelle</string>
+    <string name="color_custom">Personnalisé</string>
+    <string name="color_picker_title">Couleur personnalisée</string>
+    <string name="color_picker_hue">Teinte</string>
+    <string name="color_picker_saturation">Saturation</string>
+    <string name="color_picker_lightness">Luminosité</string>
+    <string name="color_picker_hex">HEX</string>
+    <string name="bubble_color_title">Couleur de la bulle</string>
+    <string name="bubble_color_use_app">Utiliser la couleur du thème de l’appli</string>
+    <string name="bubble_color_use_app_hint">Synchroniser la couleur de la bulle avec le jeu de couleurs de l’appli.</string>
 
     <string name="action_back">Retour</string>
     <string name="ocr_test_title">Test OCR</string>
