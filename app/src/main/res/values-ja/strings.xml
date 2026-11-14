@@ -25,9 +25,6 @@
     <string name="color_preset_teal">ティール</string>
     <string name="color_custom">カスタム</string>
     <string name="color_picker_title">カスタムカラー</string>
-    <string name="color_picker_hue">色相</string>
-    <string name="color_picker_saturation">彩度</string>
-    <string name="color_picker_lightness">輝度</string>
     <string name="color_picker_hex">HEX</string>
     <string name="bubble_color_title">バブルの色</string>
     <string name="bubble_color_use_app">アプリのテーマカラーを使用</string>

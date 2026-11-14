@@ -50,14 +50,16 @@ fun ColorPaletteSelector(
     selectedColor: Int?,
     isSystemSelected: Boolean = false,
     showSystemOption: Boolean = false,
+    selectedPreset: ColorPreset? = null,
+    isCustomSelected: Boolean? = null,
     onSelectPreset: (ColorPreset) -> Unit,
     onSelectSystem: (() -> Unit)? = null,
     onSelectCustom: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showCustomPicker by remember { mutableStateOf(false) }
-    val isCustomSelected = !isSystemSelected && selectedColor != null &&
-        ColorPreset.entries.none { it.primarySeed == selectedColor }
+    val effectiveCustomSelected = isCustomSelected ?: (!isSystemSelected && selectedColor != null &&
+        ColorPreset.entries.none { it.primarySeed == selectedColor })
 
     FlowRow(
         modifier = modifier.fillMaxWidth(),
@@ -66,7 +68,10 @@ fun ColorPaletteSelector(
     ) {
         // 8 Presets
         ColorPreset.entries.forEach { preset ->
-            val isPresetSelected = !isSystemSelected && selectedColor == preset.primarySeed
+            val isPresetSelected = !isSystemSelected && !effectiveCustomSelected && (
+                if (selectedPreset != null) selectedPreset == preset
+                else selectedColor == preset.primarySeed
+            )
             val isLight = remember(preset.primarySeed) { ColorMath.isLightColor(preset.primarySeed) }
             val checkTint = if (isLight) Color(0xFF1C1B20) else Color.White
             val name = stringResource(preset.displayNameRes())
@@ -136,13 +141,13 @@ fun ColorPaletteSelector(
 
         // Custom color option
         val customDesc = stringResource(R.string.color_custom)
-        val customBgColor = if (isCustomSelected) {
-            Color(selectedColor!!)
+        val customBgColor = if (effectiveCustomSelected && selectedColor != null) {
+            Color(selectedColor)
         } else {
             MaterialTheme.colorScheme.surfaceVariant
         }
-        val customIconTint = if (isCustomSelected) {
-            val isLight = remember(selectedColor) { ColorMath.isLightColor(selectedColor!!) }
+        val customIconTint = if (effectiveCustomSelected && selectedColor != null) {
+            val isLight = remember(selectedColor) { ColorMath.isLightColor(selectedColor) }
             if (isLight) Color(0xFF1C1B20) else Color.White
         } else {
             MaterialTheme.colorScheme.onSurfaceVariant
@@ -154,14 +159,14 @@ fun ColorPaletteSelector(
                 .clip(CircleShape)
                 .background(customBgColor)
                 .border(
-                    width = if (isCustomSelected) 2.5.dp else 1.dp,
-                    color = if (isCustomSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outlineVariant,
+                    width = if (effectiveCustomSelected) 2.5.dp else 1.dp,
+                    color = if (effectiveCustomSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outlineVariant,
                     shape = CircleShape,
                 )
                 .clickable { showCustomPicker = true }
                 .semantics {
                     this.contentDescription = customDesc
-                    this.selected = isCustomSelected
+                    this.selected = effectiveCustomSelected
                 },
             contentAlignment = Alignment.Center,
         ) {
@@ -175,8 +180,8 @@ fun ColorPaletteSelector(
     }
 
     if (showCustomPicker) {
-        val initialColor = if (isCustomSelected) {
-            selectedColor!!
+        val initialColor = if (effectiveCustomSelected && selectedColor != null) {
+            selectedColor
         } else {
             selectedColor ?: ColorPreset.VIOLET.primarySeed
         }

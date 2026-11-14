@@ -25,9 +25,6 @@
     <string name="color_preset_teal">Verde-azulado</string>
     <string name="color_custom">Personalizado</string>
     <string name="color_picker_title">Cor personalizada</string>
-    <string name="color_picker_hue">Matiz</string>
-    <string name="color_picker_saturation">Saturação</string>
-    <string name="color_picker_lightness">Luminosidade</string>
     <string name="color_picker_hex">HEX</string>
     <string name="bubble_color_title">Cor da bolha</string>
     <string name="bubble_color_use_app">Usar cor do tema do app</string>

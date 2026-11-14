@@ -127,7 +127,8 @@ const Popup = (() => {
             return;
         }
         if (!appearanceColors) return;
-        if (appearanceColors.accent) root.style.setProperty('--accent', appearanceColors.accent);
+        const accent = (theme === 'dark') ? appearanceColors.accentDark : appearanceColors.accentLight;
+        if (accent) root.style.setProperty('--accent', accent);
         if (appearanceColors.matchedBg) root.style.setProperty('--matched-bg', appearanceColors.matchedBg);
         if (appearanceColors.border) root.style.setProperty('--border', appearanceColors.border);
         const chipBg = (theme === 'dark') ? appearanceColors.chipBgDark : appearanceColors.chipBgLight;
@@ -1475,9 +1476,10 @@ const Popup = (() => {
         if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));
         customCss.textContent = appearance.customCss || '';
         setHeavierText(appearance);
-        if (appearance.accent) {
+        if (appearance.accent || appearance.accentLight) {
             appearanceColors = {
-                accent: appearance.accent,
+                accentLight: appearance.accentLight || appearance.accent,
+                accentDark: appearance.accentDark || appearance.accent,
                 matchedBg: appearance.matchedBg,
                 border: appearance.border,
                 chipBgLight: appearance.chipBgLight,

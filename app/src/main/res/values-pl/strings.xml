@@ -25,9 +25,6 @@
     <string name="color_preset_teal">Morski</string>
     <string name="color_custom">Własny</string>
     <string name="color_picker_title">Własny kolor</string>
-    <string name="color_picker_hue">Odcień</string>
-    <string name="color_picker_saturation">Nasycenie</string>
-    <string name="color_picker_lightness">Jasność</string>
     <string name="color_picker_hex">HEX</string>
     <string name="bubble_color_title">Kolor dymka</string>
     <string name="bubble_color_use_app">Używaj koloru motywu aplikacji</string>

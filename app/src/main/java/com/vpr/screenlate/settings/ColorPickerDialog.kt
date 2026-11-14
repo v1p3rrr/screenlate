@@ -131,7 +131,7 @@ fun ColorPickerDialog(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = if (isLight) "Aa" else "Aa",
+                            text = "Aa",
                             color = contentColor,
                             style = MaterialTheme.typography.titleMedium,
                         )

@@ -64,9 +64,17 @@ data class ThemePalette(
     val bubbleForegroundColor: Int,
     val isBubbleLight: Boolean,
 ) {
-    /** Primary brand color in `#RRGGBB` format for popup CSS `--accent`. */
-    val popupAccent: String
+    /** Primary brand color in `#RRGGBB` format for popup CSS `--accent` in light mode. */
+    val popupAccentLight: String
         get() = ColorMath.toHex(seedColor)
+
+    /** High-contrast brand color in `#RRGGBB` format for popup CSS `--accent` in dark mode. */
+    val popupAccentDark: String
+        get() = ColorMath.toHex(darkScheme.primary)
+
+    /** Primary brand color in `#RRGGBB` format for popup CSS `--accent` (light mode default). */
+    val popupAccent: String
+        get() = popupAccentLight
 
     /** Matched text background in `rgba(r, g, b, 0.18)` format for popup CSS `--matched-bg`. */
     val popupMatchedBg: String

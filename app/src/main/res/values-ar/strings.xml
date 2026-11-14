@@ -25,9 +25,6 @@
     <string name="color_preset_teal">تركواز</string>
     <string name="color_custom">مخصّص</string>
     <string name="color_picker_title">لون مخصّص</string>
-    <string name="color_picker_hue">درجة اللون</string>
-    <string name="color_picker_saturation">التشبّع</string>
-    <string name="color_picker_lightness">الإضاءة</string>
     <string name="color_picker_hex">HEX</string>
     <string name="bubble_color_title">لون الفقاعة</string>
     <string name="bubble_color_use_app">استخدام لون سمة التطبيق</string>

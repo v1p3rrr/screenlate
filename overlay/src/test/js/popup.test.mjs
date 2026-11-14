@@ -1462,7 +1462,8 @@ test('dynamic theme colors are injected via setAppearance and adapt to theme mod
     const root = page.document.documentElement;
 
     Popup.setAppearance({
-        accent: '#0284c7',
+        accentLight: '#0284c7',
+        accentDark: '#7dd3fc',
         matchedBg: 'rgba(2, 132, 199, 0.18)',
         border: 'rgba(2, 132, 199, 0.55)',
         chipBgLight: '#e0f2fe',
@@ -1474,9 +1475,9 @@ test('dynamic theme colors are injected via setAppearance and adapt to theme mod
     assert.equal(root.style.getPropertyValue('--border'), 'rgba(2, 132, 199, 0.55)');
     assert.equal(root.style.getPropertyValue('--chip-bg'), '#e0f2fe');
 
-    // In dark theme, chip-bg switches to dark container
+    // In dark theme, accent switches to high-contrast tone and chip-bg switches to dark container
     Popup.update(state({ theme: 'dark' }));
-    assert.equal(root.style.getPropertyValue('--accent'), '#0284c7');
+    assert.equal(root.style.getPropertyValue('--accent'), '#7dd3fc');
     assert.equal(root.style.getPropertyValue('--chip-bg'), '#0c4a6e');
 
     // In eink theme, custom styles are removed so eink CSS takes full precedence

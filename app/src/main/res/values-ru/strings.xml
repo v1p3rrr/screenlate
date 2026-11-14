@@ -25,9 +25,6 @@
     <string name="color_preset_teal">Морская волна</string>
     <string name="color_custom">Свой цвет</string>
     <string name="color_picker_title">Выбор цвета</string>
-    <string name="color_picker_hue">Оттенок</string>
-    <string name="color_picker_saturation">Насыщенность</string>
-    <string name="color_picker_lightness">Яркость</string>
     <string name="color_picker_hex">HEX</string>
     <string name="bubble_color_title">Цвет кнопки</string>
     <string name="bubble_color_use_app">Использовать цвет темы приложения</string>

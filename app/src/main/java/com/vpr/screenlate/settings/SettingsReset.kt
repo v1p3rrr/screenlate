@@ -41,7 +41,14 @@ class SettingsReset @Inject constructor(
         // E-ink mode goes off the way its switch turns it off: the sizes it made larger come back.
         if (SettingsSection.APPEARANCE in sections) eInkSizes.restore()
         dataStore.edit { prefs ->
-            prefs.asMap().keys.filter { SettingsKeys.resets(it.name, sections, everything, language) }.forEach { prefs.remove(it) }
+            val bubbleColorKeys = if (SettingsSection.APPEARANCE in sections) {
+                setOf("overlay_bubble_use_app_color", "overlay_bubble_custom_color")
+            } else {
+                emptySet()
+            }
+            prefs.asMap().keys
+                .filter { it.name in bubbleColorKeys || SettingsKeys.resets(it.name, sections, everything, language) }
+                .forEach { prefs.remove(it) }
         }
         // The shared audio settings are stored with Japanese's sources, which stay when another language is reset.
         if (SettingsSection.AUDIO in sections && language != null && language != Language.JAPANESE) audioSettings.resetShared()

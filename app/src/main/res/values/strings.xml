@@ -28,9 +28,6 @@
     <string name="color_preset_teal">Teal</string>
     <string name="color_custom">Custom</string>
     <string name="color_picker_title">Custom color</string>
-    <string name="color_picker_hue">Hue</string>
-    <string name="color_picker_saturation">Saturation</string>
-    <string name="color_picker_lightness">Lightness</string>
     <string name="color_picker_hex">HEX</string>
     <string name="bubble_color_title">Bubble color</string>
     <string name="bubble_color_use_app">Use app theme color</string>

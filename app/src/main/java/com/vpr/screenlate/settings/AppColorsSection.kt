@@ -56,6 +56,8 @@ fun AppColorsSection(viewModel: AppColorsViewModel = hiltViewModel()) {
             selectedColor = if (config.useSystemWallpaper) null else config.effectiveSeed,
             isSystemSelected = config.useSystemWallpaper,
             showSystemOption = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+            selectedPreset = config.preset,
+            isCustomSelected = config.customSeedColor != null,
             onSelectPreset = { preset ->
                 viewModel.setPaletteConfig(AppPaletteConfig(useSystemWallpaper = false, preset = preset))
             },
