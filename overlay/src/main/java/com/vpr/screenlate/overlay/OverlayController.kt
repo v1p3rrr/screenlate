@@ -39,6 +39,7 @@ import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.common.settings.isDark
+import com.vpr.screenlate.core.common.theme.AppPaletteConfig
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.core.ocr.LensPausedException
 import com.vpr.screenlate.core.ocr.NoDeviceOcrException
@@ -123,6 +124,8 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -318,6 +321,19 @@ class OverlayController(
         lastScreen = screenBounds()
         bubbleView.setOnTouchListener(BubbleTouchListener())
         showGlyph()
+        val initialPalette = appSettings.cachedPaletteConfig ?: AppPaletteConfig()
+        val initialOverlay = overlaySettings.cachedSettings ?: OverlaySettings()
+        bubbleView.bubbleColor = if (initialOverlay.bubbleUseAppColor) initialPalette.effectiveSeed else initialOverlay.bubbleCustomColor
+        scope.launch {
+            combine(overlaySettings.settings, appSettings.paletteConfig) { overlay, palette ->
+                val seed = if (overlay.bubbleUseAppColor) {
+                    palette.effectiveSeed
+                } else {
+                    overlay.bubbleCustomColor
+                }
+                bubbleView.bubbleColor = seed
+            }.collect()
+        }
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { lookupSources.source.collect(::onLookupSource) }
         scope.launch { profiles.active.collect(::onActiveLanguage) }

@@ -12,7 +12,7 @@ class SettingsKeysTest {
         SettingsSection.BUBBLE to listOf(
             "overlay_bubble_visible", "overlay_dock_side", "overlay_dock_y", "overlay_aim_mode", "overlay_highlight_word",
             "overlay_haptics", "overlay_hidden_packages", "overlay_bubble_size_dp", "overlay_dock_top_bottom",
-            "e_ink_bubble_before", "e_ink_bubble_after",
+            "e_ink_bubble_before", "e_ink_bubble_after", "overlay_bubble_use_app_color", "overlay_bubble_custom_color",
         ),
         SettingsSection.RECOGNITION to listOf(
             "overlay_text_source", "overlay_small_text", "overlay_ocr_engines", "overlay_ocr_saving", "ocr_model", "ocr_model_en",
@@ -33,7 +33,9 @@ class SettingsKeysTest {
         SettingsSection.TRANSLATION to listOf(
             "translation_button", "translation_anki", "translation_services", "translation_language", "translation_favorites",
         ),
-        SettingsSection.APPEARANCE to listOf("theme_mode", "theme_colors", "e_ink"),
+        SettingsSection.APPEARANCE to listOf(
+            "theme_mode", "theme_colors", "theme_color_mode", "theme_color_preset", "theme_color_custom", "e_ink",
+        ),
     )
     private val globalOnly = listOf(
         "update_announce", "update_announced_tag", "e_ink_hint_seen", "background_tip_seen", "notification_permission_asked",

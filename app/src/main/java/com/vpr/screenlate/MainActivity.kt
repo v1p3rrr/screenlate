@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
             ScreenlateTheme(
                 themeMode = theme.mode,
                 eInk = theme.eInk,
-                systemColors = theme.systemColors,
+                paletteConfig = theme.paletteConfig,
             ) {
                 CompositionLocalProvider(LocalFlagCodes provides flagCodes) {
                     LocalNetworkAskEffect()

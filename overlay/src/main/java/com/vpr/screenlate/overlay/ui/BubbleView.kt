@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.view.View
 import android.view.animation.LinearInterpolator
+import com.vpr.screenlate.core.common.theme.PaletteGenerator
 import com.vpr.screenlate.overlay.settings.DockSide
 import java.util.Locale
 
@@ -68,18 +69,44 @@ class BubbleView(context: Context) : View(context) {
             invalidate()
         }
 
+    /** The color of the floating bubble disc. Always combines with 45% alpha ([BUBBLE_COLOR]). */
+    var bubbleColor: Int = BUBBLE_COLOR
+        set(value) {
+            val colorWithAlpha = PaletteGenerator.bubbleColor(value)
+            if (field == colorWithAlpha) return
+            field = colorWithAlpha
+            if (!eInk) {
+                fill.color = colorWithAlpha
+                updateForegroundPaints()
+                invalidate()
+            }
+        }
+
     /** Solid black and a still loading arc: e-ink screens show translucency poorly and refresh on every frame. */
     var eInk: Boolean = false
         set(value) {
             if (field == value) return
             field = value
-            fill.color = if (value) Color.BLACK else BUBBLE_COLOR
+            fill.color = if (value) Color.BLACK else bubbleColor
+            updateForegroundPaints()
             alpha = restingAlpha()
             if (loading) {
                 if (value) spinner.cancel() else spinner.start()
             }
             invalidate()
         }
+
+    private fun updateForegroundPaints() {
+        val fgColor = if (eInk) {
+            Color.WHITE
+        } else {
+            PaletteGenerator.bubbleForegroundColor(bubbleColor)
+        }
+        ring.color = fgColor
+        dot.color = fgColor
+        arc.color = fgColor
+        glyphPaint.color = fgColor
+    }
 
     /** The alpha when the bubble is shown (it is 0 while a screenshot is taken on older Android versions). */
     fun restingAlpha(): Float = if (docked && !eInk) DOCKED_ALPHA else 1f

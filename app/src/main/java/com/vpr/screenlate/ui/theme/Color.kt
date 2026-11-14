@@ -1,8 +1,11 @@
 package com.vpr.screenlate.ui.theme
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
+import com.vpr.screenlate.core.common.theme.AccentColors
+import com.vpr.screenlate.core.common.theme.SchemeColors
 
 // Generated with Material's color utilities (tonal spot, standard contrast) from the bubble's violet #7C5CFF:
 // primary at chroma 40, neutrals tinted violet, tertiary from the pink accent. The secondary containers are
@@ -85,3 +88,83 @@ internal val AccentLightFill = Color(0xFFFFC7EC)
 internal val AccentLightLine = Color(0xFFC34799)
 internal val AccentDark = Color(0xFFFF78CD)
 internal val OnAccent = Color(0xFF3E0029)
+
+/** Converts [SchemeColors] into a Compose Material 3 [ColorScheme]. */
+internal fun SchemeColors.toColorScheme(isDark: Boolean): ColorScheme = if (isDark) {
+    darkColorScheme(
+        primary = Color(primary),
+        onPrimary = Color(onPrimary),
+        primaryContainer = Color(primaryContainer),
+        onPrimaryContainer = Color(onPrimaryContainer),
+        inversePrimary = Color(inversePrimary),
+        secondary = Color(secondary),
+        onSecondary = Color(onSecondary),
+        secondaryContainer = Color(secondaryContainer),
+        onSecondaryContainer = Color(onSecondaryContainer),
+        tertiary = Color(tertiary),
+        onTertiary = Color(onTertiary),
+        tertiaryContainer = Color(tertiaryContainer),
+        onTertiaryContainer = Color(onTertiaryContainer),
+        background = Color(background),
+        onBackground = Color(onBackground),
+        surface = Color(surface),
+        onSurface = Color(onSurface),
+        surfaceVariant = Color(surfaceVariant),
+        onSurfaceVariant = Color(onSurfaceVariant),
+        inverseSurface = Color(inverseSurface),
+        inverseOnSurface = Color(inverseOnSurface),
+        error = Color(error),
+        onError = Color(onError),
+        errorContainer = Color(errorContainer),
+        onErrorContainer = Color(onErrorContainer),
+        outline = Color(outline),
+        outlineVariant = Color(outlineVariant),
+        surfaceContainerLowest = Color(surfaceContainerLowest),
+        surfaceContainerLow = Color(surfaceContainerLow),
+        surfaceContainer = Color(surfaceContainer),
+        surfaceContainerHigh = Color(surfaceContainerHigh),
+        surfaceContainerHighest = Color(surfaceContainerHighest),
+    )
+} else {
+    lightColorScheme(
+        primary = Color(primary),
+        onPrimary = Color(onPrimary),
+        primaryContainer = Color(primaryContainer),
+        onPrimaryContainer = Color(onPrimaryContainer),
+        inversePrimary = Color(inversePrimary),
+        secondary = Color(secondary),
+        onSecondary = Color(onSecondary),
+        secondaryContainer = Color(secondaryContainer),
+        onSecondaryContainer = Color(onSecondaryContainer),
+        tertiary = Color(tertiary),
+        onTertiary = Color(onTertiary),
+        tertiaryContainer = Color(tertiaryContainer),
+        onTertiaryContainer = Color(onTertiaryContainer),
+        background = Color(background),
+        onBackground = Color(onBackground),
+        surface = Color(surface),
+        onSurface = Color(onSurface),
+        surfaceVariant = Color(surfaceVariant),
+        onSurfaceVariant = Color(onSurfaceVariant),
+        inverseSurface = Color(inverseSurface),
+        inverseOnSurface = Color(inverseOnSurface),
+        error = Color(error),
+        onError = Color(onError),
+        errorContainer = Color(errorContainer),
+        onErrorContainer = Color(onErrorContainer),
+        outline = Color(outline),
+        outlineVariant = Color(outlineVariant),
+        surfaceContainerLowest = Color(surfaceContainerLowest),
+        surfaceContainerLow = Color(surfaceContainerLow),
+        surfaceContainer = Color(surfaceContainer),
+        surfaceContainerHigh = Color(surfaceContainerHigh),
+        surfaceContainerHighest = Color(surfaceContainerHighest),
+    )
+}
+
+/** Converts [AccentColors] into a Compose [Accent]. */
+internal fun AccentColors.toAccent(): Accent = Accent(
+    fill = Color(fill),
+    onFill = Color(onFill),
+    line = Color(line),
+)

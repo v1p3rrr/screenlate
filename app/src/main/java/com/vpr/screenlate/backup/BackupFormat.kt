@@ -131,6 +131,9 @@ object BackupPreferences {
     private val general = setOf(
         "theme_mode",
         "theme_colors",
+        "theme_color_mode",
+        "theme_color_preset",
+        "theme_color_custom",
         E_INK,
         "update_announce",
         LanguageProfiles.TURNED_ON.name,
