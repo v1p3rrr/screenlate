@@ -142,10 +142,8 @@ class PaletteGeneratorTest {
         assertEquals(0xFFCABEFF.toInt(), palette.darkScheme.primary)
         assertEquals(0xFF322666.toInt(), palette.darkScheme.onPrimary)
 
-        assertEquals(0xFFFFC7EC.toInt(), palette.lightAccent.fill)
-        assertEquals(0xFFC34799.toInt(), palette.lightAccent.line)
-        assertEquals(0xFFFF78CD.toInt(), palette.darkAccent.fill)
-        assertEquals(0xFF3E0029.toInt(), palette.darkAccent.onFill)
+        assertEquals(AccentColors(0xFFFFC7EC.toInt(), 0xFF3E0029.toInt(), 0xFFC34799.toInt()), palette.lightAccent)
+        assertEquals(AccentColors(0xFFFF78CD.toInt(), 0xFF3E0029.toInt(), 0xFFFF78CD.toInt()), palette.darkAccent)
 
         assertEquals("#7C5CFF", ColorMath.toHex(palette.seedColor))
         assertTrue(popupContrast(palette.popupAccentLight, 0xFFF8F6FD.toInt()) >= 4.5f)
@@ -247,15 +245,42 @@ class PaletteGeneratorTest {
                 "Dark accent contrast $darkAccentContrast too low for ${preset.id}",
                 darkAccentContrast >= 4.5f,
             )
+        }
+    }
 
-            // Verify accent hue is shifted
-            val primaryHsl = ColorMath.rgbToHsl(preset.seedColor)
-            val accentHsl = ColorMath.rgbToHsl(palette.lightAccent.fill)
-            val hueDifference = abs(primaryHsl[0] - accentHsl[0]).let { if (it > 180f) 360f - it else it }
-            assertTrue(
-                "Accent hue shift too small (${hueDifference}°) for ${preset.id}",
-                hueDifference > 20f,
-            )
+    @Test
+    fun generatedAccentsStayNearTheSeedAndKeepControlsVisible() {
+        val presets = ColorPreset.entries.filterNot { it == ColorPreset.VIOLET }.map { AppPaletteConfig(preset = it) }
+        val customViolet = AppPaletteConfig(customSeedColor = ColorPreset.VIOLET.seedColor)
+        val custom = (0 until 360 step 5).flatMap { hue ->
+            listOf(0.2f, 0.5f, 0.8f).map { tone ->
+                AppPaletteConfig(customSeedColor = ColorMath.hslToRgb(hue.toFloat(), 0.8f, tone))
+            }
+        }
+        for (config in presets + custom + customViolet) {
+            val palette = PaletteGenerator.generate(config)
+            val seed = ColorMath.toHex(palette.seedColor)
+            for ((accent, scheme) in listOf(palette.lightAccent to palette.lightScheme, palette.darkAccent to palette.darkScheme)) {
+                for (color in listOf(accent.fill, accent.line, scheme.tertiary)) {
+                    val difference = abs(ColorMath.rgbToHsl(color)[0] - ColorMath.rgbToHsl(palette.seedColor)[0])
+                    val distance = minOf(difference, 360f - difference)
+                    assertTrue("$seed: accent " + ColorMath.toHex(color) + " is $distance degrees away", distance in 10f..22f)
+                }
+                assertTrue("$seed: label contrast", ColorMath.contrastRatio(accent.onFill, accent.fill) >= 4.5f)
+                assertTrue("$seed: control on surface", ColorMath.contrastRatio(accent.line, scheme.surface) >= 3f)
+                assertTrue("$seed: control on surface variant", ColorMath.contrastRatio(accent.line, scheme.surfaceVariant) >= 3f)
+            }
+        }
+    }
+
+    @Test
+    fun neutralCustomColorsHaveNeutralAccents() {
+        for (seed in listOf("#000000", "#808080", "#FFFFFF")) {
+            val palette = PaletteGenerator.generate(AppPaletteConfig(customSeedColor = ColorMath.parseColor(seed)))
+            for (accent in listOf(palette.lightAccent, palette.darkAccent)) {
+                assertEquals(0f, ColorMath.rgbToHsl(accent.fill)[1], 0f)
+                assertEquals(0f, ColorMath.rgbToHsl(accent.line)[1], 0f)
+            }
         }
     }
 

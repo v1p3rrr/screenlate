@@ -17,6 +17,10 @@ object PaletteGenerator {
     /** Pure white tone used on dark backgrounds and standard bubble glyphs. */
     const val WHITE = 0xFFFFFFFF.toInt()
 
+    private const val ACCENT_HUE_SHIFT = 15f
+    private const val CONTROL_CONTRAST = 3f
+    private const val BLACK = 0xFF000000.toInt()
+
     private val CanonicalVioletLight = SchemeColors(
         primary = 0xFF605597.toInt(),
         onPrimary = 0xFFFFFFFF.toInt(),
@@ -104,20 +108,18 @@ object PaletteGenerator {
      */
     fun generate(config: AppPaletteConfig): ThemePalette {
         val seed = config.effectiveSeed
-        val accentShift = config.preset?.accentShift ?: 55f
         val isCanonicalViolet = config.customSeedColor == null &&
             (config.preset == ColorPreset.VIOLET || config.preset == null)
-        return generate(seed, accentShift, isCanonicalViolet)
+        return generate(seed, isCanonicalViolet)
     }
 
     /**
-     * Generates a complete theme palette for a given [seedColor] and [accentShift] in degrees.
+     * Generates a complete theme palette for the given [seedColor].
      *
      * @param isCanonicalViolet if true, uses the hand-crafted classic Screenlate palette for violet #7C5CFF.
      */
     fun generate(
         seedColor: Int,
-        accentShift: Float = 55f,
         isCanonicalViolet: Boolean = false,
     ): ThemePalette {
         val isLight = isBubbleLight(seedColor)
@@ -140,11 +142,11 @@ object PaletteGenerator {
         val hsl = ColorMath.rgbToHsl(seedColor)
         val h = hsl[0]
         val s = hsl[1]
-        val accentH = ColorMath.shiftHue(h, accentShift)
+        val accentH = ColorMath.shiftHue(h, ACCENT_HUE_SHIFT)
 
         val primarySat = s.coerceIn(0.35f, 0.85f)
         val secondarySat = (primarySat * 0.35f).coerceIn(0.08f, 0.25f)
-        val tertiarySat = s.coerceIn(0.45f, 0.90f)
+        val tertiarySat = s.coerceAtMost(0.80f)
         val neutralSat = (primarySat * 0.12f).coerceIn(0.03f, 0.08f)
         val neutralVariantSat = (primarySat * 0.22f).coerceIn(0.06f, 0.14f)
 
@@ -152,8 +154,7 @@ object PaletteGenerator {
             ColorMath.hslToRgb(hue, sat, lightness)
 
         fun onColor(preferred: Int, background: Int): Int {
-            val black = 0xFF000000.toInt()
-            val endpoint = if (ColorMath.contrastRatio(WHITE, background) >= ColorMath.TEXT_CONTRAST) WHITE else black
+            val endpoint = if (ColorMath.contrastRatio(WHITE, background) >= ColorMath.TEXT_CONTRAST) WHITE else BLACK
             return ColorMath.readableForeground(preferred, background, endpoint)
         }
 
@@ -297,12 +298,14 @@ object PaletteGenerator {
 
         // --- Accents ---
         val fillLight = tone(accentH, tertiarySat, 0.88f)
-        val lineLight = tone(accentH, tertiarySat * 0.8f, 0.52f)
+        val lineLight = ColorMath.readableForeground(
+            tone(accentH, tertiarySat * 0.8f, 0.52f), surfaceVariantLight, BLACK, CONTROL_CONTRAST,
+        )
         val onFillLight = tone(accentH, tertiarySat, 0.15f)
         val lightAccent = AccentColors(fill = fillLight, onFill = onColor(onFillLight, fillLight), line = lineLight)
 
         val fillDark = tone(accentH, tertiarySat, 0.72f)
-        val lineDark = fillDark
+        val lineDark = ColorMath.readableForeground(fillDark, surfaceVariantDark, WHITE, CONTROL_CONTRAST)
         val onFillDark = tone(accentH, tertiarySat, 0.12f)
         val darkAccent = AccentColors(fill = fillDark, onFill = onColor(onFillDark, fillDark), line = lineDark)
 

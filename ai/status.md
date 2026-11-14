@@ -1,5 +1,11 @@
 # Status
 
+## Adjacent control accent hues (2026-11-15)
+
+- Generated palettes now shift the accent hue by 15° and keep neutral seeds neutral. The Violet preset keeps
+  its original pink colors. Slider and radio accents use lightness to maintain contrast against their surfaces.
+- JVM palette tests cover all presets, 216 custom colors around the hue wheel, custom violet, and neutral seeds.
+
 ## Dev review fixes and Android 7 verification (2026-11-15)
 
 - Fixed the capture consent lifecycle, old WebView syntax and text formatting, and the API 26 bitmap-config

@@ -25,7 +25,7 @@ The goal is to allow users to customize their color scheme across:
 | **Bubble Color Coupling** | A. Synced by default with override in Bubble Settings (Recommended)<br>B. Strictly unified (no separate bubble setting)<br>C. Completely separate settings | **A. Synced by default with override** | Most users want a unified aesthetic, but users who want high bubble visibility on arbitrary wallpapers can customize the bubble independently. |
 | **Bubble Color Placement** | A. Dedicated card under "Colors" in Appearance + in Bubble Settings (Recommended)<br>B. Only in Bubble Settings<br>C. Inside the main Colors card | **A. Dedicated card in Appearance & Bubble Settings** | Settings are fully synchronized via `OverlaySettingsRepository`; users can configure bubble color right alongside app theme or inside bubble settings. |
 | **Custom Color Picker Format** | A. 2D Saturation-Value gradient canvas + rainbow Hue bar + HEX field (Recommended)<br>B. Color wheel<br>C. 1D sliders | **A. 2D Gradient Canvas + Hue Bar + HEX** | Provides an intuitive, interactive 2D color canvas where users drag their finger to visually pick shades and tones, combined with a rainbow hue slider and hex input. |
-| **Accent Color Generation** | A. Harmonious hue shift (~45–60°) (Recommended)<br>B. Monochromatic M3 tonal palette<br>C. Keep pink accent `#FF78CD` always | **A. Harmonious hue shift** | Keeps Screenlate's signature playful, high-contrast look (switches, sliders, buttons pop against the primary color) across any chosen seed color. |
+| **Accent Color Generation** | Adjacent hue, monochromatic palette, or the original pink accent for every palette | Shift generated accents 15° around the hue wheel. Keep the original pink accent in the default Violet preset. | Use lightness for control contrast and keep generated accents close to the seed. |
 | **Popup WebView Integration** | A. Dynamically inject CSS variables (Recommended)<br>B. Keep popup static violet | **A. Dynamically inject CSS variables** | Search match highlights (`--matched-bg`) and action accents in the dictionary popup seamlessly match the active app and bubble theme. |
 | **Android 7+ Compatibility** | A. Pure Kotlin color math (HSL/HCT) (Recommended)<br>B. Rely on API 31+ Monet / DynamicColors | **A. Pure Kotlin color math** | Zero API-level dependencies; runs seamlessly on Android 7.0 (API 24) up to Android 15, as well as desktop JVM unit tests. |
 | **E-Ink Mode Priority** | A. E-ink strictly overrides colors (Recommended)<br>B. Color themes apply to e-ink | **A. E-ink strictly overrides** | E-ink screens cannot render color tones cleanly without ghosting; black & white mode remains supreme when enabled. |
@@ -40,15 +40,15 @@ The goal is to allow users to customize their color scheme across:
 package com.vpr.screenlate.core.common.theme
 
 /** Supported preset palettes with curated seed colors and harmonious accents. */
-enum class ColorPreset(val id: String, val seedColor: Int, val accentShift: Float = 55f) {
-    VIOLET("violet", 0xFF7C5CFF.toInt(), accentShift = 55f),     // Classic Screenlate violet + pink
-    OCEAN("ocean", 0xFF0284C7.toInt(), accentShift = 50f),       // Sky blue + cyan/amber
-    EMERALD("emerald", 0xFF059669.toInt(), accentShift = 45f),   // Deep emerald + lime gold
-    AMBER("amber", 0xFFD97706.toInt(), accentShift = 60f),       // Golden amber + warm bronze
-    CORAL("coral", 0xFFE11D48.toInt(), accentShift = 45f),       // Vivid coral red + peach
-    SUNSET("sunset", 0xFFEA580C.toInt(), accentShift = 50f),     // Vibrant orange + magenta
-    LAVENDER("lavender", 0xFF8B5CF6.toInt(), accentShift = 45f), // Soft purple + berry
-    TEAL("teal", 0xFF0D9488.toInt(), accentShift = 50f);        // Teal + coral
+enum class ColorPreset(val id: String, val seedColor: Int) {
+    VIOLET("violet", 0xFF7C5CFF.toInt()),
+    OCEAN("ocean", 0xFF0284C7.toInt()),
+    EMERALD("emerald", 0xFF059669.toInt()),
+    AMBER("amber", 0xFFD97706.toInt()),
+    CORAL("coral", 0xFFE11D48.toInt()),
+    SUNSET("sunset", 0xFFEA580C.toInt()),
+    LAVENDER("lavender", 0xFF8B5CF6.toInt()),
+    TEAL("teal", 0xFF0D9488.toInt());
 }
 
 /** Configuration of the active color scheme. */
@@ -183,5 +183,8 @@ flowchart TD
 6. **Backward Compatibility:** All code compiles and runs with zero crashes on API 24 (Android 7.0) and API 35 (Android 15).
 
 ## Changelog
+
+- 2026-11-15: The owner requested adjacent accent hues for presets and custom colors and retained the
+  original Violet preset. Generated accents shift 15° and black, white and gray seeds stay neutral.
 
 - 2026-11-14: Addressed integration review findings. Applied the system palette to the bubble and popup, added contrast checks for light and dark palettes, and shared gesture handling in the color picker.
