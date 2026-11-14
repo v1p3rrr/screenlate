@@ -15,6 +15,7 @@
   - All test suites passing: `./gradlew testDebugUnitTest` and `npm --prefix scripts/page-tests test` (163/163 JS tests).
   - Verified on emulator (`Screenlate_API30_x86`): preset switching, 2D gradient color picker canvas touch interaction, and synchronized bubble color setting across screens.
   - UI screenshots captured and presented to the owner.
+  - Completed two-axis code review (Standards & Spec): added adaptive high-contrast Tone 80 accent in popup dark theme, synchronized custom selection in `ColorPaletteSelector`, ensured bubble color resets with Appearance section, declared `AppPaletteConfig` in `compose-stability.conf`, and pruned unused strings. All 163 JS page tests and Gradle unit tests passing.
 
 ## Android 7 support planned for the future (2026-11-12)
 
