@@ -167,16 +167,16 @@ fun RecognitionSettingsScreen(
                         )
                     },
                     onSelect = viewModel::setSmallText,
-                    enabled = recognizes && settings.ocrEngines != OcrEngines.DEVICE && !offlineMode,
+                    enabled = recognizes && settings.effectiveOcrEngines(offlineMode) != OcrEngines.DEVICE,
                 )
                 SwitchRow(
                     stringResource(R.string.bubble_ocr_saving),
                     settings.ocrSaving,
                     viewModel::setOcrSaving,
                     hint = stringResource(R.string.bubble_ocr_saving_hint),
-                    enabled = recognizes && settings.ocrEngines == OcrEngines.BOTH && !offlineMode,
+                    enabled = recognizes && settings.effectiveOcrEngines(offlineMode) == OcrEngines.BOTH,
                 )
-                OcrModelRows(enabled = recognizes && (offlineMode || settings.ocrEngines != OcrEngines.CLOUD), openLanguage = ocrModels)
+                OcrModelRows(enabled = recognizes && settings.effectiveOcrEngines(offlineMode) != OcrEngines.CLOUD, openLanguage = ocrModels)
             }
             SectionCard(
                 stringResource(R.string.recognition_app_text_title),
