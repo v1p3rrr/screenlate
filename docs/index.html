@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Screenlate — Pop-up Japanese Dictionary for Android</title>
+  <meta name="description" content="Screenlate is a pop-up Japanese dictionary for Android. Look up words over any app with screen OCR, Yomitan dictionaries, and instant AnkiDroid card export." />
+  <meta name="keywords" content="Screenlate, Android dictionary, Japanese dictionary, Yomitan Android, AnkiDroid, OCR dictionary, pop-up dictionary" />
+  <link rel="canonical" href="https://v1p3rrr.github.io/screenlate/" />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://v1p3rrr.github.io/screenlate/" />
+  <meta property="og:title" content="Screenlate — Pop-up Japanese Dictionary for Android" />
+  <meta property="og:description" content="Look up words over any app with screen OCR, Yomitan dictionaries, and instant AnkiDroid card export." />
+  <meta property="og:image" content="https://v1p3rrr.github.io/screenlate/images/popup.webp" />
+
+  <link rel="icon" type="image/svg+xml" href="images/icon.svg" />
+  <meta name="google-site-verification" content="google53c98c0e16303226" />
+
+  <style>
+    :root {
+      --bg: #0d0e12;
+      --surface: #15161e;
+      --surface-hover: #1c1d28;
+      --border: #262738;
+      --accent: #8b6fff;
+      --accent-hover: #a389ff;
+      --accent-glow: rgba(139, 111, 255, 0.18);
+      --text: #f0f0f5;
+      --text-muted: #9596a8;
+      --code-bg: #1d1e29;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background-color: rgba(13, 14, 18, 0.88);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--accent-hover);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 5vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 40%, #a389ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 36px;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+      border-color: #3e4056;
+      transform: translateY(-1px);
+    }
+
+    /* Screenshots gallery */
+    .screenshots {
+      margin: 40px 0 80px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .screenshot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .screenshot-card:hover {
+      transform: translateY(-3px);
+      border-color: #42445e;
+    }
+
+    .screenshot-card img {
+      width: 100%;
+      height: auto;
+      border-radius: calc(var(--radius-lg) - 4px);
+      object-fit: cover;
+    }
+
+    .screenshot-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* Features Grid */
+    .features {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-title h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Installation */
+    .install-section {
+      padding: 60px 0 80px;
+      border-top: 1px solid var(--border);
+    }
+
+    .install-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .install-steps {
+      list-style: none;
+      counter-reset: step-counter;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .install-steps li {
+      position: relative;
+      padding-left: 44px;
+      color: var(--text-muted);
+    }
+
+    .install-steps li strong {
+      color: var(--text);
+    }
+
+    .install-steps li::before {
+      content: counter(step-counter);
+      counter-increment: step-counter;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding: 50px 0 30px;
+      }
+      .nav-links {
+        display: none;
+      }
+      .install-box {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="./" class="brand">
+        <img src="images/icon.svg" alt="Screenlate logo" />
+        <span>Screenlate</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/v1p3rrr/screenlate/blob/main/docs/usage.md">User Guide</a>
+        <a href="https://github.com/v1p3rrr/screenlate" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="container">
+    <section class="hero">
+      <div class="badge">
+        <span>Android 11+</span> &bull; <span>Open Source (GPL-3.0)</span> &bull; <span>Yomitan & AnkiDroid</span>
+      </div>
+      <h1>Pop-up Japanese Dictionary for Android</h1>
+      <p>
+        Look up words over any app without switching screens. Pull the floating bubble out from the edge of the display, point it at a word, and Yomitan entries appear instantly over browser pages, games, manga, or video.
+      </p>
+      <div class="cta-group">
+        <a href="https://github.com/v1p3rrr/screenlate/releases/latest" class="btn btn-primary" target="_blank" rel="noopener">
+          Download APK (Releases)
+        </a>
+        <a href="https://github.com/v1p3rrr/screenlate" class="btn btn-secondary" target="_blank" rel="noopener">
+          View on GitHub
+        </a>
+      </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section class="screenshots" id="screenshots">
+      <div class="gallery-grid">
+        <div class="screenshot-card">
+          <img src="images/popup.webp" alt="Screenlate dictionary entry for an inflected verb over a web page" loading="lazy" />
+          <p>Dictionary entry over a browser</p>
+        </div>
+        <div class="screenshot-card">
+          <img src="images/vertical.webp" alt="Screenlate entry next to vertical Japanese text" loading="lazy" />
+          <p>Vertical and horizontal text</p>
+        </div>
+        <div class="screenshot-card">
+          <img src="images/dictionaries.webp" alt="Dictionary list and download catalog in Screenlate" loading="lazy" />
+          <p>Built-in dictionary catalog</p>
+        </div>
+        <div class="screenshot-card">
+          <img src="images/landscape.webp" alt="Screenlate entry beside a game dialogue in landscape mode" loading="lazy" />
+          <p>Landscape mode in games</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+      <div class="section-title">
+        <h2>Features</h2>
+        <p>Built for fluid Japanese reading and sentence mining on mobile</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Works Over Any App</h3>
+          <p>Horizontal and vertical text, portrait and landscape. The popup positions itself dynamically where space allows and never covers the word you are looking up.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Full Yomitan Dictionaries</h3>
+          <p>Rich entries with examples, pitch accent graphs, frequency lists, kanji breakdowns, and grammatical inflections with clear explanations.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Screen Text & OCR</h3>
+          <p>Recognizes screen text using cloud recognition with an instant on-device draft, or extracts text directly from apps via accessibility for 100% offline accuracy.</p>
+        </div>
+        <div class="feature-card">
+          <h3>1-Tap Anki Cards</h3>
+          <p>Seamless export through AnkiDroid: customizable note types, field templates, duplicate detection, native pronunciation audio, and automatic screenshot attachments.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Audio & Pronunciation</h3>
+          <p>Native pronunciation audio from the same community sources as Yomitan, or phone text-to-speech fallback.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Private & Open Source</h3>
+          <p>No user accounts, no analytics, and no advertisements. Lookups and on-device recognition work completely offline.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Install -->
+    <section class="install-section" id="install">
+      <div class="section-title">
+        <h2>How to Install</h2>
+        <p>Get started with Screenlate on your Android phone</p>
+      </div>
+      <div class="install-box">
+        <ol class="install-steps">
+          <li>
+            <strong>Download the APK:</strong> Get the latest version from <a href="https://github.com/v1p3rrr/screenlate/releases/latest" target="_blank" rel="noopener">GitHub Releases</a>. <code>arm64-v8a</code> fits modern smartphones. (You can also track updates with Obtainium).
+          </li>
+          <li>
+            <strong>Enable Accessibility Service:</strong> Open Screenlate and grant the accessibility service permission to allow the floating bubble and screen scanning.
+          </li>
+          <li>
+            <strong>Ready to read:</strong> JMdict, KANJIDIC, frequency lists, and pitch accents are bundled. Additional dictionaries (like Jitendex) can be downloaded in one tap from the in-app catalog.
+          </li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="https://github.com/v1p3rrr/screenlate" target="_blank" rel="noopener">GitHub Repository</a>
+        <a href="https://github.com/v1p3rrr/screenlate/releases/latest" target="_blank" rel="noopener">Releases</a>
+        <a href="https://github.com/v1p3rrr/screenlate/blob/main/docs/usage.md">Usage Guide</a>
+        <a href="https://github.com/v1p3rrr/screenlate/blob/main/LICENSE">GPL-3.0 License</a>
+      </div>
+      <p>&copy; 2026 Screenlate. Free and open-source software under GPL-3.0.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
