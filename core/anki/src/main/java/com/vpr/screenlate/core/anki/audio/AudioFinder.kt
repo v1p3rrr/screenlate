@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.network.LocalNetwork
 import com.vpr.screenlate.core.common.network.OfflineModeException
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
@@ -128,10 +129,21 @@ class AudioFinder internal constructor(
     private val failures = ConcurrentHashMap<Pair<AudioSource, Language>, AudioSourceFailure>()
     private val json = Json { ignoreUnknownKeys = true }
 
+    private fun isLocal(source: AudioSource): Boolean =
+        source.type == AudioSourceType.URL && LocalNetwork.isLoopbackUrl(source.url)
+
     /** The first clip of the sources in priority order, for notes; text-to-speech is skipped. */
-    suspend fun find(term: String, reading: String, language: Language): AudioClip? = withContext(Dispatchers.IO) {
+    suspend fun find(term: String, reading: String, language: Language): AudioClip? =
+        find(term, reading, language, settings.current(language).sources)
+
+    /** The first clip of [sources] in priority order, for notes; text-to-speech is skipped. */
+    suspend fun find(
+        term: String,
+        reading: String,
+        language: Language,
+        sources: List<AudioSource>,
+    ): AudioClip? = withContext(Dispatchers.IO) {
         val profile = settings.current(language)
-        val sources = profile.sources
         val regions = AudioRegion.ordered(profile.regions, language.support.audioRegions)
         // Other sources may have the clip, or no longer have it.
         val key = ClipKey(sources, regions, language, term, reading)
@@ -176,7 +188,8 @@ class AudioFinder internal constructor(
 
     /**
      * What to play: a clip of the sources, or text-to-speech when it is the first source or no source has a clip.
-     * In Forced Offline Mode, remote network requests are skipped: plays cached clip if present, else falls back to text-to-speech.
+     * In Forced Offline Mode, remote network requests are skipped: plays cached clip if present, or queries local loopback
+     * endpoints, else falls back to text-to-speech.
      */
     suspend fun pronunciation(term: String, reading: String, language: Language): Pronunciation? {
         val sources = settings.current(language).sources
@@ -184,6 +197,10 @@ class AudioFinder internal constructor(
         if (sources.firstOrNull()?.type == AudioSourceType.TEXT_TO_SPEECH) return speech
         if (isOffline()) {
             cachedClip(term, reading, language)?.let { return Pronunciation.Clip(it) }
+            val localSources = sources.filter(::isLocal)
+            if (localSources.isNotEmpty()) {
+                find(term, reading, language, localSources)?.let { return Pronunciation.Clip(it) }
+            }
             return speech
         }
         find(term, reading, language)?.let { return Pronunciation.Clip(it) }
@@ -231,6 +248,15 @@ class AudioFinder internal constructor(
             if (cached != null) {
                 val candidateSource = AudioSource(AudioSourceType.URL, cached.url)
                 result.add(AudioCandidate("offline:0", 0, candidateSource, cached.url, cached.file.name, language))
+            }
+            val localAsked = asked.filter { isLocal(it.value) }
+            if (localAsked.isNotEmpty()) {
+                val regions = AudioRegion.ordered(profile.regions, language.support.audioRegions)
+                val localTasks = localAsked.map { (index, source) ->
+                    async { candidatesOrNull(index, source, term, reading, language, regions) }
+                }
+                val localClips = localTasks.flatMap { it.await().orEmpty() }.sortedBy { it.rank }
+                result.addAll(localClips)
             }
             for ((index, source) in asked) {
                 if (source.type == AudioSourceType.TEXT_TO_SPEECH) {

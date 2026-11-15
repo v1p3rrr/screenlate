@@ -11,15 +11,21 @@ object LocalNetwork {
     /** Whether [url] (a URL or a URL template) points to a device on the local network. */
     fun isLocalUrl(url: String): Boolean = HOST.find(url.trim())?.groupValues?.get(1)?.let(::isLocalHost) == true
 
+    /** Whether [url] (a URL or a URL template) points to a loopback address on the device itself. */
+    fun isLoopbackUrl(url: String): Boolean = HOST.find(url.trim())?.groupValues?.get(1)?.let(::isLoopbackHost) == true
+
+    private fun normalizeHost(host: String): String =
+        host.trim().removePrefix("[").removeSuffix("]").trimEnd('.').lowercase()
+
     /** Whether [host] is a loopback address: localhost, 127.0.0.1, ::1, or Android emulator's 10.0.2.2. */
     fun isLoopbackHost(host: String): Boolean {
-        val name = host.trim().removePrefix("[").removeSuffix("]").trimEnd('.').lowercase()
+        val name = normalizeHost(host)
         return name == "localhost" || name == "127.0.0.1" || name == "::1" || name == "10.0.2.2" || name.startsWith("127.")
     }
 
     /** Whether [host] is a private or link-local address, or a name that only resolves on the local network. */
     fun isLocalHost(host: String): Boolean {
-        val name = host.trim().removePrefix("[").removeSuffix("]").trimEnd('.').lowercase()
+        val name = normalizeHost(host)
         if (name.isEmpty() || name == "localhost") return false
         (ipv4(name) ?: mappedIpv4(name))?.let { (a, b) ->
             return a == 10 || (a == 172 && b in 16..31) || (a == 192 && b == 168) || (a == 169 && b == 254)

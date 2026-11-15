@@ -650,11 +650,22 @@ class AudioFinderTest {
         var offline = true
         val offlineFinder = AudioFinder(folder.newFolder("offline"), client, settings, isOffline = { offline })
         routes["/a.mp3"] = { audio() }
-        sources(AudioSource(AudioSourceType.URL, server.url("/a.mp3").toString()))
+        sources(AudioSource(AudioSourceType.URL, "https://remote.audio.org/a.mp3"))
 
         val pronunciation = offlineFinder.pronunciation("猫", "ねこ", Language.JAPANESE)
         assertThat(pronunciation).isEqualTo(Pronunciation.Speech("ねこ", Language.JAPANESE))
         assertThat(requests).isEmpty()
+    }
+
+    @Test
+    fun `offline mode queries local loopback sources and plays their clips`() = runBlocking<Unit> {
+        val offlineFinder = AudioFinder(folder.newFolder("offline_local"), client, settings, isOffline = { true })
+        routes["/a.mp3"] = { audio() }
+        sources(AudioSource(AudioSourceType.URL, server.url("/a.mp3").toString()))
+
+        val pronunciation = offlineFinder.pronunciation("猫", "ねこ", Language.JAPANESE)
+        assertThat(pronunciation).isInstanceOf(Pronunciation.Clip::class.java)
+        assertThat(requests).isNotEmpty()
     }
 
     @Test

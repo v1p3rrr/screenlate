@@ -124,7 +124,7 @@ object PaletteGenerator {
     ): ThemePalette {
         val isLight = isBubbleLight(seedColor)
         val fgColor = if (isLight) CHARCOAL else WHITE
-        val bColor = bubbleColor(seedColor)
+        val bubbleDiscColor = bubbleColor(seedColor)
 
         if (isCanonicalViolet && (seedColor and 0x00FFFFFF) == (ColorPreset.VIOLET.seedColor and 0x00FFFFFF)) {
             return ThemePalette(
@@ -133,14 +133,14 @@ object PaletteGenerator {
                 darkScheme = CanonicalVioletDark,
                 lightAccent = CanonicalVioletLightAccent,
                 darkAccent = CanonicalVioletDarkAccent,
-                bubbleColor = bColor,
+                bubbleColor = bubbleDiscColor,
                 bubbleForegroundColor = fgColor,
                 isBubbleLight = isLight,
             )
         }
 
         if (ColorMath.isAchromatic(seedColor)) {
-            return generateMonochrome(seedColor, isLight, fgColor, bColor)
+            return generateMonochrome(seedColor)
         }
 
         val hsl = ColorMath.rgbToHsl(seedColor)
@@ -319,7 +319,7 @@ object PaletteGenerator {
             darkScheme = darkScheme,
             lightAccent = lightAccent,
             darkAccent = darkAccent,
-            bubbleColor = bColor,
+            bubbleColor = bubbleDiscColor,
             bubbleForegroundColor = fgColor,
             isBubbleLight = isLight,
         )
@@ -329,12 +329,10 @@ object PaletteGenerator {
      * Generates a pure monochrome (achromatic) palette for black, white, and neutral gray seeds.
      * Guarantees zero hue distortion (R == G == B) across all scheme surfaces, containers, and accents.
      */
-    private fun generateMonochrome(
-        seedColor: Int,
-        isLight: Boolean,
-        fgColor: Int,
-        bColor: Int,
-    ): ThemePalette {
+    private fun generateMonochrome(seedColor: Int): ThemePalette {
+        val isLight = isBubbleLight(seedColor)
+        val fgColor = if (isLight) CHARCOAL else WHITE
+        val bubbleDiscColor = bubbleColor(seedColor)
         fun tone(lightness: Float): Int = ColorMath.hslToRgb(0f, 0f, lightness)
 
         // --- Light Scheme (Clean minimalist white/gray/charcoal) ---
@@ -490,7 +488,7 @@ object PaletteGenerator {
             darkScheme = darkScheme,
             lightAccent = lightAccent,
             darkAccent = darkAccent,
-            bubbleColor = bColor,
+            bubbleColor = bubbleDiscColor,
             bubbleForegroundColor = fgColor,
             isBubbleLight = isLight,
         )

@@ -25,6 +25,12 @@ class AudioErrorTest {
     }
 
     @Test
+    fun `a list that is not a list names the parse error`() {
+        val error = AudioError.of(NotAudioListException(IllegalArgumentException()))
+        assertThat(error).isEqualTo(AudioError(AudioError.Kind.NOT_A_LIST, "IllegalArgumentException"))
+    }
+
+    @Test
     fun `offline mode error gets its kind and empty type`() {
         assertThat(AudioError.of(OfflineModeException())).isEqualTo(AudioError(AudioError.Kind.OFFLINE_MODE, ""))
     }
