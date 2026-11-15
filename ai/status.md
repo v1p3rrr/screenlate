@@ -11,6 +11,7 @@
   - `LayerView` now dynamically binds `primaryColor` to the app theme seed, recoloring the aim dot and word highlight box to match the active theme.
   - Dictionary name tags (`.dictionary-name`) in popup CSS now dynamically bind to theme container and on-container colors in light and dark modes instead of static violet.
   - Adjusted preset seeds: Cobalt blue to `#4169E1` (Royal Blue), Lavender to `#9333EA` (Purple/Lilac), and Teal to `#0097A7` (Cyan) to eliminate hue collisions with neighboring presets.
+- Minified ARM64 Dev APK from `f09afda6`: version `1.0.1-f09afda6-min` (10001), 23,214,679 bytes, signed with the local debug key. SHA-256 `91c100e42565361f60ac4d70db9ab6c5e9bb99ae86a81378dc8515a15dbb4b30`. The APK, mapping and log are under ignored `testdata/local-research/builds/`.
 
 ## Cobalt blue and Graphite presets (2026-11-15)
 
