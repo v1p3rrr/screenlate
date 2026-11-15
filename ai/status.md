@@ -1,5 +1,16 @@
 # Status
 
+## Dynamic OCR engine hints and Forced Offline Mode plan (2026-11-15)
+
+- Added dynamic descriptive hints under OCR engine selection (`BOTH`, `CLOUD`, `DEVICE`) in `RecognitionSettingsScreen`:
+  - `BOTH`: explains instant on-device draft + high-accuracy cloud text, with offline fallback if the network drops.
+  - `CLOUD`: explains highest accuracy, device storage/battery savings, and internet requirement.
+  - `DEVICE`: explains complete privacy, zero mobile data, offline operation, and slightly lower accuracy on complex fonts.
+  - Added localized strings across all 17 supported locales; verified with `TranslationsTest` passing.
+- Created architectural plan for Forced Offline Mode (`ai/plans/2026-11-15-forced-offline-mode.md`):
+  - Confirmed decisions: toggle in App Settings only, hide popup translation button when offline, lock OCR engine selector to "Device" when offline, automatically fall back to on-device TTS for pronunciation when audio is not cached.
+  - Fail-safe network interceptor (`OfflineInterceptor`) to guarantee zero socket/network leakage.
+
 ## Anki screenshot by default setting and card reorganization (2026-11-15)
 
 - Added `screenshotByDefault` setting in `AnkiSettings` and reorganized note creation controls in `AnkiSettingsScreen`:
