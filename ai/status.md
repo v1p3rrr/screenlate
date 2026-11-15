@@ -1,5 +1,19 @@
 # Status
 
+## Anki screenshot by default setting and card reorganization (2026-11-15)
+
+- Added `screenshotByDefault` setting in `AnkiSettings` and reorganized note creation controls in `AnkiSettingsScreen`:
+  - Combined screenshot behavior and duplicate handling into a unified "Adding notes" section placed above the note type and deck configuration ("Card"), so users do not have to scroll past extensive field templates.
+  - Added "Screenshot by default" switch with localized hints explaining tap vs hold actions.
+  - In `popup.js`, when `screenshotByDefault` is active:
+    - Tap captures a screenshot area; hold adds note directly without picture.
+    - For `DuplicateBehavior.NEW`, tap adds with picture; hold opens menu with "Open in AnkiDroid" and "Add without picture".
+    - For `DuplicateBehavior.OVERWRITE`, tap updates with picture; hold opens 4-item menu: "Open in AnkiDroid", "Update without picture", "Add anyway", and "Add anyway, with a picture".
+    - Button aria-label dynamically reflects default action (`addNoteScreenshot` vs `addNote`).
+  - Added localized strings for all new options across all 17 supported locales; verified with `TranslationsTest`.
+  - All 178 page tests and 278 Gradle unit test tasks passed.
+  - Minified ARM64 Dev APK from `486cf819`: version `1.0.1-486cf819-min` (10001), 23,224,515 bytes, signed with the local debug key. SHA-256 `3f7a5f9ccf32d76ae259d296dd88a3c8dbc57f761ff148d1bcfd20cb86d5af3c`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+
 ## Anki duplicate icons and color harmonization (2026-11-15)
 
 - Added dedicated icons for Anki duplicate behavior:
