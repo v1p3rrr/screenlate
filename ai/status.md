@@ -12,6 +12,7 @@
   - Added global Offline Mode switch at the top of App Settings with `ic_cloud_off` icon.
   - Added localized strings for `settings_offline_mode` and `settings_offline_mode_hint` across all 17 supported locales.
   - Verified with `TranslationsTest`, full unit test suite (`./gradlew testDebugUnitTest`), and all 139 page tests passing. Built debug APK.
+  - Minified ARM64 Dev APK from `4d283d36`: version `1.0.1-4d283d36-min` (10001), 23,238,359 bytes, signed with the local debug key. SHA-256 `78bf33d2e6a3699cfc882d3a9f064ff69123f8f739f1c095c46b9f23e28b1b26`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
 ## Dynamic OCR engine hints and Forced Offline Mode plan (2026-11-15)
 
