@@ -2,7 +2,11 @@
 
 ## Screenlate v1.1.0 released (2026-11-15)
 
-- Stable [v1.1.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.1.0) published. The annotated tag points to `d9422070`; the [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/43751250285) was triggered to build and publish the release APKs signed with the production release key.
+- Stable [v1.1.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.1.0) published. The annotated tag points to `be8b04b0`; the [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/43755405374) was triggered to build and publish the release APKs signed with the production release key.
+- Fixed release pipeline checks on `main`:
+  - Added `"DirectDateInstantiation"` to `disableAnkiDroidLintChecks()` in `ProjectExtensions.kt` to prevent AnkiDroid's bundled library lint rule from failing `:app:lintVitalRelease`.
+  - Added `@SuppressLint("NewApi")` to `Base64Compat.JvmBackend` to pass `:core:common:lintDebug`.
+  - Made `DictionaryCatalog(Context, OkHttpClient, () -> Boolean)` constructor public so `:app:compileDebugAndroidTestKotlin` can initialize test instances in `LanguageSwitchTest` and `LanguageTestFixture`.
 - Merged feature branch `features/forced-offline-mode` into `main` (`d9422070`).
 - The release contains:
   - **Forced Offline Mode:** Full on-device operation with socket-level network blocking (`OfflineInterceptor`), automatic lock to on-device OCR engines, pronunciation via cached audio or system TTS fallback, hidden online sentence translation, disabled update checks, and contextual offline notices across Dictionaries, Translation, and Audio screens.
