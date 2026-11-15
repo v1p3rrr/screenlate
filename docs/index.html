@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Screenlate — Pop-up Japanese Dictionary for Android</title>
-  <meta name="description" content="Screenlate is a pop-up Japanese dictionary for Android. Look up words over any app with screen OCR, Yomitan dictionaries, and instant AnkiDroid card export." />
-  <meta name="keywords" content="Screenlate, Android dictionary, Japanese dictionary, Yomitan Android, AnkiDroid, OCR dictionary, pop-up dictionary" />
+  <title>Screenlate — Pop-up Dictionary for Android (62 Languages)</title>
+  <meta name="description" content="Screenlate is a pop-up dictionary for Android supporting 62 languages. Look up words over any app with screen & camera OCR, Yomitan dictionaries, and instant AnkiDroid card export." />
+  <meta name="keywords" content="Screenlate, Android dictionary, Yomitan Android, multilingual dictionary, Japanese dictionary, Chinese dictionary, English dictionary, AnkiDroid, OCR dictionary, pop-up dictionary, language learning" />
   <link rel="canonical" href="https://v1p3rrr.github.io/screenlate/" />
   
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://v1p3rrr.github.io/screenlate/" />
-  <meta property="og:title" content="Screenlate — Pop-up Japanese Dictionary for Android" />
-  <meta property="og:description" content="Look up words over any app with screen OCR, Yomitan dictionaries, and instant AnkiDroid card export." />
+  <meta property="og:title" content="Screenlate — Pop-up Dictionary for Android (62 Languages)" />
+  <meta property="og:description" content="Look up words over any app in 62 languages with screen and camera OCR, Yomitan dictionaries, and instant AnkiDroid card export." />
   <meta property="og:image" content="https://v1p3rrr.github.io/screenlate/images/popup.webp" />
 
   <link rel="icon" type="image/svg+xml" href="images/icon.svg" />
@@ -145,7 +145,7 @@
     .hero p {
       font-size: clamp(1.05rem, 2vw, 1.3rem);
       color: var(--text-muted);
-      max-width: 720px;
+      max-width: 760px;
       margin: 0 auto 36px;
     }
 
@@ -200,7 +200,7 @@
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
     }
 
@@ -279,6 +279,100 @@
       color: var(--text-muted);
       font-size: 0.95rem;
       line-height: 1.6;
+    }
+
+    /* Languages Section */
+    .languages-section {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .languages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .languages-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .languages-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .languages-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .lang-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .lang-tag {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .lang-tag.highlight {
+      background: rgba(139, 111, 255, 0.12);
+      border-color: rgba(139, 111, 255, 0.35);
+      color: var(--accent-hover);
+    }
+
+    .lang-meta {
+      font-size: 0.85rem !important;
+      color: var(--text-muted);
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .profile-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .profile-features li {
+      position: relative;
+      padding-left: 20px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .profile-features li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+      top: 1px;
+    }
+
+    .profile-features li strong {
+      color: var(--text);
     }
 
     /* Installation */
@@ -372,6 +466,7 @@
       </a>
       <nav class="nav-links">
         <a href="#features">Features</a>
+        <a href="#languages">Languages</a>
         <a href="#screenshots">Screenshots</a>
         <a href="#install">Install</a>
         <a href="https://github.com/v1p3rrr/screenlate/blob/main/docs/usage.md">User Guide</a>
@@ -384,11 +479,11 @@
   <main class="container">
     <section class="hero">
       <div class="badge">
-        <span>Android 11+</span> &bull; <span>Open Source (GPL-3.0)</span> &bull; <span>Yomitan & AnkiDroid</span>
+        <span>Android 7.0+</span> &bull; <span>62 Languages</span> &bull; <span>Open Source (GPL-3.0)</span> &bull; <span>Yomitan & AnkiDroid</span>
       </div>
-      <h1>Pop-up Japanese Dictionary for Android</h1>
+      <h1>Pop-up Dictionary for Android</h1>
       <p>
-        Look up words over any app without switching screens. Pull the floating bubble out from the edge of the display, point it at a word, and Yomitan entries appear instantly over browser pages, games, manga, or video.
+        Look up words over any app without switching screens. Pull the floating bubble out from the edge of the display, point it at a word, and rich dictionary entries appear instantly over browser pages, games, e-books, manga, or video across 62 languages. You can also take photos or scan saved images.
       </p>
       <div class="cta-group">
         <a href="https://github.com/v1p3rrr/screenlate/releases/latest" class="btn btn-primary" target="_blank" rel="noopener">
@@ -404,16 +499,24 @@
     <section class="screenshots" id="screenshots">
       <div class="gallery-grid">
         <div class="screenshot-card">
-          <img src="images/popup.webp" alt="Screenlate dictionary entry for an inflected verb over a web page" loading="lazy" />
+          <img src="images/popup.webp" alt="Screenlate dictionary entry for an inflected Japanese verb over a web page" loading="lazy" />
           <p>Dictionary entry over a browser</p>
         </div>
         <div class="screenshot-card">
-          <img src="images/vertical.webp" alt="Screenlate entry next to vertical Japanese text" loading="lazy" />
-          <p>Vertical and horizontal text</p>
+          <img src="images/english-lookup.webp" alt="Screenlate looks up the English phrasal verb crack down in an e-book" loading="lazy" />
+          <p>English & European languages</p>
         </div>
         <div class="screenshot-card">
-          <img src="images/dictionaries.webp" alt="Dictionary list and download catalog in Screenlate" loading="lazy" />
-          <p>Built-in dictionary catalog</p>
+          <img src="images/camera-lookup.webp" alt="Screenlate recognizes vertical text on a photographed book page" loading="lazy" />
+          <p>Camera & photo lookup</p>
+        </div>
+        <div class="screenshot-card">
+          <img src="images/vertical.webp" alt="Screenlate entry next to vertical Japanese text" loading="lazy" />
+          <p>Vertical & horizontal text</p>
+        </div>
+        <div class="screenshot-card">
+          <img src="images/dictionaries.webp" alt="Dictionary list and download catalog across 62 languages in Screenlate" loading="lazy" />
+          <p>Built-in 62-language catalog</p>
         </div>
         <div class="screenshot-card">
           <img src="images/landscape.webp" alt="Screenlate entry beside a game dialogue in landscape mode" loading="lazy" />
@@ -426,7 +529,7 @@
     <section class="features" id="features">
       <div class="section-title">
         <h2>Features</h2>
-        <p>Built for fluid Japanese reading and sentence mining on mobile</p>
+        <p>Built for fluid reading, language learning, and sentence mining on mobile</p>
       </div>
       <div class="features-grid">
         <div class="feature-card">
@@ -434,24 +537,117 @@
           <p>Horizontal and vertical text, portrait and landscape. The popup positions itself dynamically where space allows and never covers the word you are looking up.</p>
         </div>
         <div class="feature-card">
-          <h3>Full Yomitan Dictionaries</h3>
-          <p>Rich entries with examples, pitch accent graphs, frequency lists, kanji breakdowns, and grammatical inflections with clear explanations.</p>
+          <h3>62 Languages & Yomitan Dictionaries</h3>
+          <p>Full dictionary support across 62 languages. Structured definitions, examples, images, inflections, pitch accent graphs, Chinese Pinyin and Cantonese Jyutping with tone marks, frequency lists, and character breakdowns.</p>
         </div>
         <div class="feature-card">
-          <h3>Screen Text & OCR</h3>
-          <p>Recognizes screen text using cloud recognition with an instant on-device draft, or extracts text directly from apps via accessibility for 100% offline accuracy.</p>
+          <h3>Screen & Camera OCR</h3>
+          <p>Recognize text on screen with cloud recognition, instant on-device drafts, or offline on-device models (ML Kit, PaddleOCR, Tesseract). Snap a photo with the built-in camera or open saved images to pan, zoom, and look up text.</p>
         </div>
         <div class="feature-card">
           <h3>1-Tap Anki Cards</h3>
-          <p>Seamless export through AnkiDroid: customizable note types, field templates, duplicate detection, native pronunciation audio, and automatic screenshot attachments.</p>
+          <p>Seamless export through AnkiDroid: customizable note types, field templates, duplicate detection and updates, pronunciation audio, screen captures, or photo crops.</p>
         </div>
         <div class="feature-card">
           <h3>Audio & Pronunciation</h3>
-          <p>Native pronunciation audio from the same community sources as Yomitan, or phone text-to-speech fallback.</p>
+          <p>Native pronunciation audio from Yomitan community sources, custom local audio endpoints, or system text-to-speech (TTS) fallback.</p>
         </div>
         <div class="feature-card">
-          <h3>Private & Open Source</h3>
-          <p>No user accounts, no analytics, and no advertisements. Lookups and on-device recognition work completely offline.</p>
+          <h3>Private, Offline & Customizable</h3>
+          <p>Forced Offline Mode for complete privacy. Customizable color themes (Material You, presets, custom palette), font adjustments, e-ink high contrast mode, and zero ads, trackers, or accounts.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Languages -->
+    <section class="languages-section" id="languages">
+      <div class="section-title">
+        <h2>Supported Languages</h2>
+        <p>Comprehensive lookup across 62 languages and an interface translated into 17</p>
+      </div>
+      <div class="languages-grid">
+        <div class="languages-card">
+          <h3>62 Dictionary Lookup Languages</h3>
+          <p>Download bilingual and monolingual dictionaries directly from the built-in catalog, or import your own Yomitan <code>.zip</code> archives:</p>
+          <div class="lang-tags">
+            <span class="lang-tag highlight">Japanese</span>
+            <span class="lang-tag highlight">English</span>
+            <span class="lang-tag highlight">Chinese (Simplified & Traditional)</span>
+            <span class="lang-tag highlight">Cantonese</span>
+            <span class="lang-tag highlight">Korean</span>
+            <span class="lang-tag highlight">Spanish</span>
+            <span class="lang-tag highlight">French</span>
+            <span class="lang-tag highlight">German</span>
+            <span class="lang-tag highlight">Russian</span>
+            <span class="lang-tag highlight">Italian</span>
+            <span class="lang-tag highlight">Portuguese</span>
+            <span class="lang-tag highlight">Arabic</span>
+            <span class="lang-tag">Albanian</span>
+            <span class="lang-tag">Armenian</span>
+            <span class="lang-tag">Azerbaijani</span>
+            <span class="lang-tag">Belarusian</span>
+            <span class="lang-tag">Bengali</span>
+            <span class="lang-tag">Bulgarian</span>
+            <span class="lang-tag">Croatian</span>
+            <span class="lang-tag">Czech</span>
+            <span class="lang-tag">Danish</span>
+            <span class="lang-tag">Dutch</span>
+            <span class="lang-tag">Esperanto</span>
+            <span class="lang-tag">Estonian</span>
+            <span class="lang-tag">Filipino</span>
+            <span class="lang-tag">Finnish</span>
+            <span class="lang-tag">Georgian</span>
+            <span class="lang-tag">Greek</span>
+            <span class="lang-tag">Hebrew</span>
+            <span class="lang-tag">Hindi</span>
+            <span class="lang-tag">Hungarian</span>
+            <span class="lang-tag">Indonesian</span>
+            <span class="lang-tag">Irish</span>
+            <span class="lang-tag">Kannada</span>
+            <span class="lang-tag">Kazakh</span>
+            <span class="lang-tag">Khmer</span>
+            <span class="lang-tag">Kyrgyz</span>
+            <span class="lang-tag">Latin</span>
+            <span class="lang-tag">Latvian</span>
+            <span class="lang-tag">Lithuanian</span>
+            <span class="lang-tag">Macedonian</span>
+            <span class="lang-tag">Malay</span>
+            <span class="lang-tag">Marathi</span>
+            <span class="lang-tag">Mongolian</span>
+            <span class="lang-tag">Norwegian</span>
+            <span class="lang-tag">Persian</span>
+            <span class="lang-tag">Polish</span>
+            <span class="lang-tag">Romanian</span>
+            <span class="lang-tag">Scottish Gaelic</span>
+            <span class="lang-tag">Serbian</span>
+            <span class="lang-tag">Slovak</span>
+            <span class="lang-tag">Slovenian</span>
+            <span class="lang-tag">Swahili</span>
+            <span class="lang-tag">Swedish</span>
+            <span class="lang-tag">Tamil</span>
+            <span class="lang-tag">Telugu</span>
+            <span class="lang-tag">Thai</span>
+            <span class="lang-tag">Turkish</span>
+            <span class="lang-tag">Ukrainian</span>
+            <span class="lang-tag">Uzbek</span>
+            <span class="lang-tag">Vietnamese</span>
+            <span class="lang-tag">Welsh</span>
+          </div>
+          <p class="lang-meta">
+            Includes Kaikki (Wiktionary), Jitendex, JMdict, KANJIDIC, frequency rankings, character breakdowns, and pronunciation datasets.
+          </p>
+        </div>
+        <div class="languages-card">
+          <h3>Independent Language Profiles</h3>
+          <p>
+            Switch between favorite languages instantly from Home or the floating bubble's hold menu. Each language maintains its own independent settings:
+          </p>
+          <ul class="profile-features">
+            <li><strong>Separate Dictionaries:</strong> Configure active dictionaries, priority order, and definition languages per profile.</li>
+            <li><strong>Tailored OCR Engines:</strong> Choose optimal recognition models (ML Kit, PaddleOCR, Tesseract) and script directions for each language.</li>
+            <li><strong>Dedicated Anki Templates:</strong> Map cards to language-specific Anki note types, decks, and field templates.</li>
+            <li><strong>Interface in 17 Languages:</strong> Complete UI translation into English, Russian, Japanese, Chinese, Spanish, German, French, and 10 more languages.</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -460,18 +656,18 @@
     <section class="install-section" id="install">
       <div class="section-title">
         <h2>How to Install</h2>
-        <p>Get started with Screenlate on your Android phone</p>
+        <p>Get started with Screenlate on your Android phone or tablet</p>
       </div>
       <div class="install-box">
         <ol class="install-steps">
           <li>
-            <strong>Download the APK:</strong> Get the latest version from <a href="https://github.com/v1p3rrr/screenlate/releases/latest" target="_blank" rel="noopener">GitHub Releases</a>. <code>arm64-v8a</code> fits modern smartphones. (You can also track updates with Obtainium).
+            <strong>Download the APK:</strong> Get the latest version from <a href="https://github.com/v1p3rrr/screenlate/releases/latest" target="_blank" rel="noopener">GitHub Releases</a>. <code>arm64-v8a</code> fits modern smartphones; <code>armeabi-v7a</code>, <code>x86_64</code>, and <code>universal</code> are also available (Android 7.0+ supported; can also be tracked via Obtainium).
           </li>
           <li>
             <strong>Enable Accessibility Service:</strong> Open Screenlate and grant the accessibility service permission to allow the floating bubble and screen scanning.
           </li>
           <li>
-            <strong>Ready to read:</strong> JMdict, KANJIDIC, frequency lists, and pitch accents are bundled. Additional dictionaries (like Jitendex) can be downloaded in one tap from the in-app catalog.
+            <strong>Choose your languages & dictionaries:</strong> Pick your target languages and download dictionaries in one tap from the built-in catalog, or import your existing Yomitan <code>.zip</code> collections.
           </li>
         </ol>
       </div>

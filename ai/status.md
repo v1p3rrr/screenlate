@@ -17,6 +17,7 @@
     - Added `assembleDebugAndroidTest` to CI's Gradle step to guarantee instrumented test code is always compiled in CI.
     - Added `scripts/verify-release.sh` and `scripts/verify-release.ps1` for local pre-release verification (runs `assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest :app:lintVitalRelease :build-logic:convention:test` + page script tests).
     - Updated `AGENTS.md`, `docs/development.md`, and `ai/notes/build-environment.md` with the full test and lint commands.
+  - **GitHub Pages landing page:** Updated `docs/index.html` to reflect multilingual lookup across 62 languages and 17 interface languages, camera and photo lookup, expanded gallery with English and camera examples, and Android 7.0+ support.
 - Merged feature branch `features/forced-offline-mode` into `main` (`d9422070`).
 - The release contains:
   - **Forced Offline Mode:** Full on-device operation with socket-level network blocking (`OfflineInterceptor`), automatic lock to on-device OCR engines, pronunciation via cached audio or system TTS fallback, hidden online sentence translation, disabled update checks, and contextual offline notices across Dictionaries, Translation, and Audio screens.
