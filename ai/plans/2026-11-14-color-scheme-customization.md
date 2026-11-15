@@ -1,7 +1,7 @@
 # Color Scheme Customization Plan
 
 **Date:** 2026-11-14  
-**Branch:** `features/color-scheme-customization` (branched from `origin/main` at `95d8b88bf`)  
+**Status:** Implemented, verified with JVM/page tests, and merged into `features/android-7-support`.  
 **Target:** Android 7.0 (API 24) to Android 15 (API 35+)
 
 ---

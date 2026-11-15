@@ -1,6 +1,6 @@
 # Android 7 support (2026-11-12)
 
-Status: In progress on branch `features/android-7-support`. Architecture, legacy screen capture backend (MediaProjection), WindowMetricsCompat, storage fallbacks, date/time desugaring replacement, WebView polyfill & warning card, adaptive icon fallbacks, and all 17 locale translations are implemented and verified via unit tests (`assembleDebug testDebugUnitTest` and page tests pass).
+Status: Implemented and verified on `features/android-7-support`. Architecture, legacy screen capture backend (MediaProjection), WindowMetricsCompat, storage fallbacks, date/time desugaring replacement, WebView polyfill & warning card, adaptive icon fallbacks, and all 17 locale translations are implemented and verified via unit tests (`assembleDebug testDebugUnitTest` and page tests pass). Verified on API 24 emulator.
 
 ## Changelog
 - 2026-11-14: Addressed integration review findings. Keyed each capture consent request, confined its lifecycle to the main thread, and released overlays and pending frames on cancellation. Updated the popup scripts for stock WebView 69 and added syntax and consent regression tests.
