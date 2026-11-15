@@ -1,5 +1,12 @@
 # Status
 
+## Anki duplicate icon refinement (2026-11-15)
+
+- Refined `openAdd` and `openUpdate` SVG book icons in `popup.js`:
+  - Unified book geometry with the standard `open` book (`M12 6.5...`), trimming the top-right page (`v-6` instead of `v-13`) to carve space for badges.
+  - In `openUpdate`, positioned the refresh arrow at the top pointing right (`M19.4 .7 21 2.3l-1.6 1.6`) with a horizontal entry (`h2`) and a lighter 1.5px stroke.
+  - Verified with all 178 page tests passing.
+
 ## Forced Offline Mode implementation (2026-11-15)
 
 - Implemented app-wide Forced Offline Mode (`offlineMode`) on branch `features/forced-offline-mode`:
