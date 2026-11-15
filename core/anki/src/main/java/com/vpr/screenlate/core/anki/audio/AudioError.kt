@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.anki.audio
 
+import com.vpr.screenlate.core.common.network.OfflineModeException
 import java.io.IOException
 import java.io.InterruptedIOException
 import java.net.ConnectException
@@ -8,10 +9,11 @@ import javax.net.ssl.SSLException
 
 /** Why an audio source request failed, without URLs or terms; [type] is the error type or the HTTP status. */
 data class AudioError(val kind: Kind, val type: String) {
-    enum class Kind { HTTP_STATUS, NOT_FOUND, REFUSED, TIMEOUT, SECURE_CONNECTION, NOT_A_LIST, SOURCE_LIST, OTHER }
+    enum class Kind { HTTP_STATUS, NOT_FOUND, REFUSED, TIMEOUT, SECURE_CONNECTION, NOT_A_LIST, SOURCE_LIST, OTHER, OFFLINE_MODE }
 
     companion object {
         fun of(error: Throwable): AudioError {
+            if (error is OfflineModeException) return AudioError(Kind.OFFLINE_MODE, "")
             if (error is HttpStatusException) return AudioError(Kind.HTTP_STATUS, "HTTP ${error.code}")
             if (error is CommonsErrorException) return AudioError(Kind.HTTP_STATUS, error.code)
             val kind = when (error) {

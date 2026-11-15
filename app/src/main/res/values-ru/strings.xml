@@ -195,6 +195,7 @@
     <string name="search_hint">Слово или текст</string>
     <string name="process_text_label">Найти в Screenlate</string>
     <string name="dictionaries_check_updates">Проверить обновления</string>
+    <string name="dictionaries_check_updates_offline">Проверка обновлений недоступна в принудительном офлайн-режиме.</string>
     <string name="dictionaries_checking_updates">Проверка обновлений…</string>
     <string name="dictionaries_up_to_date">Все словари актуальны.</string>
     <string name="dictionaries_update">Обновить</string>
@@ -437,6 +438,7 @@
     <string name="audio_error_source_list">URL возвращает список источников аудио, а не аудиофайл: выберите «Свой URL (JSON)»</string>
     <string name="audio_error_other">Запрос не удался</string>
     <string name="audio_error_local_network">Нет доступа к локальной сети</string>
+    <string name="audio_error_offline_mode">Включён принудительный офлайн-режим</string>
     <string name="audio_local_network_allow">Разрешить доступ к локальной сети</string>
     <string name="audio_test_none">Нет аудио</string>
     <string name="audio_test_running">Запрос к источнику…</string>
@@ -652,6 +654,7 @@
     <string name="update_available_title">Вышел Screenlate %1$s</string>
     <string name="update_whats_new">Что нового</string>
     <string name="update_check">Проверить обновления</string>
+    <string name="update_check_offline">Проверка обновлений недоступна в принудительном офлайн-режиме.</string>
     <string name="update_install">Обновить</string>
     <string name="update_retry">Попробовать ещё раз</string>
     <string name="update_skip">Пропустить эту версию</string>
@@ -672,6 +675,7 @@
     <string name="popup_css_short">Применяется после стилей словарей</string>
     <string name="translation_title">Перевод</string>
     <string name="translation_sentence_title">Перевод предложения</string>
+    <string name="translation_offline_notice">Включён принудительный офлайн-режим. Перевод предложений отключён.</string>
     <string name="translation_hint">Предложение вокруг слова переводит бесплатный онлайн-сервис. Перевод машинный и может быть неточным, а предложение отправляется на сервер сервиса.</string>
     <string name="translation_info">Сервисы используются без аккаунта: Bing (сайт Microsoft Translator), Google Переводчик и переводчик, встроенный в Microsoft Edge. Лимиты они не публикуют; если сервис отклоняет запрос, используется следующий. Первый за час запрос к Bing выполняется примерно на секунду дольше: сначала с сайта Bing загружается ключ.</string>
     <string name="translation_button">Кнопка перевода</string>

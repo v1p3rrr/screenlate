@@ -192,6 +192,7 @@
     <string name="search_hint">Mot ou texte</string>
     <string name="process_text_label">Chercher dans Screenlate</string>
     <string name="dictionaries_check_updates">Rechercher des mises à jour</string>
+    <string name="dictionaries_check_updates_offline">Impossible de rechercher des mises à jour en mode hors ligne forcé.</string>
     <string name="dictionaries_checking_updates">Recherche de mises à jour…</string>
     <string name="dictionaries_up_to_date">Tous les dictionnaires sont à jour.</string>
     <string name="dictionaries_update">Mettre à jour</string>
@@ -432,6 +433,7 @@
     <string name="audio_error_source_list">L’URL renvoie une liste de sources audio, pas un fichier audio : choisissez « URL personnalisée (JSON) »</string>
     <string name="audio_error_other">La requête a échoué</string>
     <string name="audio_error_local_network">Pas d’accès au réseau local</string>
+    <string name="audio_error_offline_mode">Le mode hors ligne forcé est actif</string>
     <string name="audio_local_network_allow">Autoriser l’accès au réseau local</string>
     <string name="audio_test_none">Pas d’audio</string>
     <string name="audio_test_running">Interrogation de la source…</string>
@@ -647,6 +649,7 @@
     <string name="update_available_title">Screenlate %1$s est disponible</string>
     <string name="update_whats_new">Nouveautés</string>
     <string name="update_check">Rechercher des mises à jour</string>
+    <string name="update_check_offline">Impossible de rechercher des mises à jour en mode hors ligne forcé.</string>
     <string name="update_install">Mettre à jour</string>
     <string name="update_retry">Réessayer</string>
     <string name="update_skip">Ignorer cette version</string>
@@ -667,6 +670,7 @@
     <string name="popup_css_short">Appliqué après les styles des dictionnaires</string>
     <string name="translation_title">Traduction</string>
     <string name="translation_sentence_title">Traduction de la phrase</string>
+    <string name="translation_offline_notice">Le mode hors ligne forcé est actif. La traduction de phrases est désactivée.</string>
     <string name="translation_hint">Un service en ligne gratuit traduit la phrase autour du mot. La traduction est automatique et peut être inexacte, et la phrase est envoyée au serveur du service.</string>
     <string name="translation_info">Les services sont utilisés sans compte : Bing (le site de Microsoft Translator), Google Traduction et le traducteur intégré à Microsoft Edge. Ils ne publient pas leurs limites ; si un service rejette une requête, le suivant est utilisé. La première requête à Bing dans l’heure prend environ une seconde de plus, car une clé est d’abord chargée depuis le site de Bing.</string>
     <string name="translation_button">Bouton de traduction</string>

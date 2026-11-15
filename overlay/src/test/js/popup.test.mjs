@@ -1518,6 +1518,29 @@ test('a new scan result with the same word and sentence keeps the translation wh
     assert.equal(box.hidden, true);
 });
 
+test('a continued render with the same word preserves scroll position', () => {
+    Popup.render(state({ results: [result('猫', 'ねこ'), result('猫背', 'ねこぜ')] }));
+    page.document.getElementById('content').scrollTop = 120;
+
+    Popup.render(state({ results: [result('猫', 'ねこ'), result('猫背', 'ねこぜ')], engine: 'Lens' }), { continued: true });
+    assert.equal(page.document.getElementById('content').scrollTop, 120);
+
+    Popup.render(state({ results: [result('犬', 'いぬ')] }), { continued: true });
+    assert.equal(page.document.getElementById('content').scrollTop, 0);
+});
+
+test('a continued render with the same word preserves a pushed link view', () => {
+    Popup.render(state({ results: [result('猫', 'ねこ')] }));
+    Popup.push(state({ kanji: { character: '猫', entries: [] } }));
+    assert.match(page.document.getElementById('content').textContent, /猫/);
+
+    Popup.render(state({ results: [result('猫', 'ねこ')], engine: 'Lens', pending: false }), { continued: true });
+    assert.match(page.document.getElementById('content').textContent, /猫/);
+
+    page.document.getElementById('back').click();
+    assert.match(page.document.getElementById('content').textContent, /ねこ/);
+});
+
 test('a popup opened again starts without the translation, also for the same sentence', () => {
     const sentence = '猫が好きです。';
     Popup.setTranslation({ enabled: true });

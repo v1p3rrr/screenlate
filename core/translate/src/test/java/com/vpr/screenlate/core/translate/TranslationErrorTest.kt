@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.translate
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.network.OfflineModeException
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -16,6 +17,7 @@ class TranslationErrorTest {
 
     @Test
     fun `network errors get their kind`() {
+        assertThat(kind(OfflineModeException())).isEqualTo(TranslationError.Kind.OFFLINE_MODE)
         assertThat(kind(UnknownHostException())).isEqualTo(TranslationError.Kind.OFFLINE)
         assertThat(kind(ConnectException())).isEqualTo(TranslationError.Kind.OFFLINE)
         assertThat(kind(SocketTimeoutException())).isEqualTo(TranslationError.Kind.TIMEOUT)

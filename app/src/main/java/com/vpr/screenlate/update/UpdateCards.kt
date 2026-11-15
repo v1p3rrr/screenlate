@@ -77,12 +77,16 @@ fun AboutUpdateCard(viewModel: UpdateViewModel, currentVersion: String) {
         } else if (state is UpdateState.Failed) {
             ErrorText(errorText((state as UpdateState.Failed).error))
         }
+        val offline by viewModel.offlineMode.collectAsStateWithLifecycle()
         if (release == null || state is UpdateState.Available) {
             OutlinedButton(
                 onClick = viewModel::check,
-                enabled = state != UpdateState.Checking,
+                enabled = !offline && state != UpdateState.Checking,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text(stringResource(R.string.update_check), textAlign = TextAlign.Center) }
+            if (offline) {
+                Hint(stringResource(R.string.update_check_offline))
+            }
         }
         settings?.let {
             SwitchRow(

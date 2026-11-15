@@ -81,6 +81,7 @@ class SentenceTranslation @Inject constructor(
         /** Why one service gave no translation. */
         fun errorText(context: Context, error: TranslationError): String = when (error.kind) {
             TranslationError.Kind.OFFLINE -> context.getString(R.string.translation_error_offline)
+            TranslationError.Kind.OFFLINE_MODE -> context.getString(R.string.translation_error_offline_mode)
             TranslationError.Kind.TIMEOUT -> context.getString(R.string.translation_error_timeout)
             TranslationError.Kind.CERTIFICATE_DATE -> context.getString(R.string.translation_error_clock)
             TranslationError.Kind.SECURE_CONNECTION -> context.getString(R.string.translation_error_secure)

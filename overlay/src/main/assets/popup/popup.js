@@ -1301,14 +1301,36 @@ const Popup = (() => {
     /** { continued }: the popup stayed open, so a new scan result of the same word and sentence keeps the translation. */
     function render(state, options) {
         const first = history.length ? history[0].state : current;
-        const same = state.sentence && first && state.sentence === first.sentence && termsKey(state) === termsKey(first);
+        const sameTerms = options && options.continued && first && termsKey(state) === termsKey(first);
+        const same = sameTerms && state.sentence && first && state.sentence === first.sentence;
         if ((!options || !options.continued) || !same) translation = null;
         if ((!options || !options.continued) || history.length || audioWordKey(state) !== audioWordKey(current)) audioView++;
+
+        if (sameTerms && history.length) {
+            // A pushed view stays on top; update its root state and propagate header status.
+            const { theme, pending, noteWait, engine, ocrError } = state;
+            const status = { theme, pending, noteWait, engine, ocrError };
+            history[0].state = state;
+            for (let i = 1; i < history.length; i++) history[i].state = { ...history[i].state, ...status };
+            current = { ...current, ...status };
+            drawHeader(current);
+            return;
+        }
+
+        const savedScroll = sameTerms ? content.scrollTop : 0;
         history.length = 0;
         current = state;
+        if (sameTerms && resultsKey(state) === drawnKey) {
+            drawHeader(state);
+            return;
+        }
         // Reset the old, already laid-out view; writing after replacement forces layout before script marking.
         content.scrollTop = 0;
         draw(state);
+        if (savedScroll > 0) {
+            content.classList.toggle('restore-scroll', true);
+            content.scrollTop = savedScroll;
+        }
     }
 
     /** Development aid (scripts/popup-eval.mjs): redraws the current results and returns the time with layout. */

@@ -3,6 +3,7 @@ package com.vpr.screenlate.update
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,9 +18,12 @@ import kotlinx.coroutines.launch
 class UpdateViewModel @Inject constructor(
     private val updates: AppUpdates,
     private val settingsRepository: UpdateSettingsRepository,
+    private val appSettings: AppSettingsRepository,
 ) : ViewModel() {
     val supported: Boolean get() = updates.supported
     val state: StateFlow<UpdateState> = updates.state
+    val offlineMode: StateFlow<Boolean> =
+        appSettings.offlineMode.stateIn(viewModelScope, SharingStarted.Eagerly, appSettings.cachedOfflineMode ?: false)
     val settings: StateFlow<UpdateSettings?> =
         settingsRepository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, settingsRepository.cachedSettings)
 

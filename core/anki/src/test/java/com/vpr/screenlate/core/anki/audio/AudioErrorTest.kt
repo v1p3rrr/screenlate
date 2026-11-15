@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.anki.audio
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.network.OfflineModeException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -24,8 +25,7 @@ class AudioErrorTest {
     }
 
     @Test
-    fun `a list that is not a list names the parse error`() {
-        val error = AudioError.of(NotAudioListException(IllegalArgumentException()))
-        assertThat(error).isEqualTo(AudioError(AudioError.Kind.NOT_A_LIST, "IllegalArgumentException"))
+    fun `offline mode error gets its kind and empty type`() {
+        assertThat(AudioError.of(OfflineModeException())).isEqualTo(AudioError(AudioError.Kind.OFFLINE_MODE, ""))
     }
 }

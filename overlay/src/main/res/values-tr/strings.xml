@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">Çevrilecek cümle yok.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Ağ bağlantısı yok.</string>
+    <string name="translation_error_offline_mode">Zorunlu çevrimdışı mod etkin.</string>
     <string name="translation_error_timeout">İstek zaman aşımına uğradı.</string>
     <string name="translation_error_clock">Sunucunun sertifikası cihazın tarihinde geçerli değil: tarih ve saati kontrol edin.</string>
     <string name="translation_error_secure">Güvenli bağlantı başarısız (sertifika veya TLS).</string>

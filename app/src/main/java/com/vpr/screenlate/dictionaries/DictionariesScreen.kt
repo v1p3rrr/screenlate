@@ -58,6 +58,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import com.vpr.screenlate.ui.components.Hint
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -163,10 +164,13 @@ fun DictionariesScreen(
             }
             OutlinedButton(
                 onClick = viewModel::checkUpdates,
-                enabled = updateCheck?.updates != null || updateCheck == null,
+                enabled = !state.offlineMode && (updateCheck?.updates != null || updateCheck == null),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.dictionaries_check_updates), textAlign = TextAlign.Center)
+            }
+            if (state.offlineMode) {
+                Hint(stringResource(R.string.dictionaries_check_updates_offline))
             }
             updateCheck?.let { check ->
                 UpdatesCard(

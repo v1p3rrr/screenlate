@@ -188,6 +188,7 @@
     <string name="search_hint">단어 또는 텍스트</string>
     <string name="process_text_label">Screenlate에서 찾기</string>
     <string name="dictionaries_check_updates">업데이트 확인</string>
+    <string name="dictionaries_check_updates_offline">강제 오프라인 모드에서는 업데이트를 확인할 수 없습니다.</string>
     <string name="dictionaries_checking_updates">업데이트 확인 중…</string>
     <string name="dictionaries_up_to_date">모든 사전이 최신 상태입니다.</string>
     <string name="dictionaries_update">업데이트</string>
@@ -424,6 +425,7 @@
     <string name="audio_error_source_list">URL이 오디오 파일이 아니라 오디오 소스 목록을 반환합니다. ‘사용자 지정 URL(JSON)’을 선택하세요</string>
     <string name="audio_error_other">요청이 실패했습니다</string>
     <string name="audio_error_local_network">로컬 네트워크에 접근할 수 없습니다</string>
+    <string name="audio_error_offline_mode">강제 오프라인 모드가 활성화되어 있습니다</string>
     <string name="audio_local_network_allow">로컬 네트워크 접근 허용</string>
     <string name="audio_test_none">오디오 없음</string>
     <string name="audio_test_running">소스에 요청 중…</string>
@@ -639,6 +641,7 @@
     <string name="update_available_title">Screenlate %1$s 사용 가능</string>
     <string name="update_whats_new">새로운 기능</string>
     <string name="update_check">업데이트 확인</string>
+    <string name="update_check_offline">강제 오프라인 모드에서는 업데이트를 확인할 수 없습니다.</string>
     <string name="update_install">업데이트</string>
     <string name="update_retry">다시 시도</string>
     <string name="update_skip">이 버전 건너뛰기</string>
@@ -659,6 +662,7 @@
     <string name="popup_css_short">사전 스타일 다음에 적용</string>
     <string name="translation_title">번역</string>
     <string name="translation_sentence_title">문장 번역</string>
+    <string name="translation_offline_notice">강제 오프라인 모드가 활성화되어 있습니다. 문장 번역이 비활성화되었습니다.</string>
     <string name="translation_hint">단어가 들어 있는 문장을 무료 온라인 서비스가 번역합니다. 기계 번역이라 부정확할 수 있으며, 문장은 서비스의 서버로 전송됩니다.</string>
     <string name="translation_info">서비스는 계정 없이 사용합니다: Bing(Microsoft Translator 웹사이트), Google 번역, Microsoft Edge에 내장된 번역기. 이 서비스들은 한도를 공개하지 않으며, 한 서비스가 요청을 거부하면 다음 서비스를 사용합니다. 한 시간 중 Bing에 보내는 첫 요청은 먼저 웹사이트에서 키를 불러오므로 약 1초 더 걸립니다.</string>
     <string name="translation_button">번역 버튼</string>

@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">Não há frase para traduzir.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Não há conexão de rede.</string>
+    <string name="translation_error_offline_mode">O modo offline forçado está ativo.</string>
     <string name="translation_error_timeout">O tempo limite da solicitação expirou.</string>
     <string name="translation_error_clock">O certificado do servidor não é válido para a data do dispositivo: verifique a data e a hora.</string>
     <string name="translation_error_secure">Falha na conexão segura (certificado ou TLS).</string>

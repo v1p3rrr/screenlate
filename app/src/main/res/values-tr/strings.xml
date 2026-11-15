@@ -190,6 +190,7 @@
     <string name="search_hint">Kelime veya metin</string>
     <string name="process_text_label">Screenlate’te ara</string>
     <string name="dictionaries_check_updates">Güncellemeleri denetle</string>
+    <string name="dictionaries_check_updates_offline">Zorunlu çevrimdışı modda güncellemeler denetlenemez.</string>
     <string name="dictionaries_checking_updates">Güncellemeler denetleniyor…</string>
     <string name="dictionaries_up_to_date">Tüm sözlükler güncel.</string>
     <string name="dictionaries_update">Güncelle</string>
@@ -428,6 +429,7 @@
     <string name="audio_error_source_list">URL bir ses dosyası değil, ses kaynağı listesi döndürüyor: “Özel URL (JSON)” seçeneğini seçin</string>
     <string name="audio_error_other">İstek başarısız oldu</string>
     <string name="audio_error_local_network">Yerel ağa erişim yok</string>
+    <string name="audio_error_offline_mode">Zorunlu çevrimdışı mod etkin</string>
     <string name="audio_local_network_allow">Yerel ağ erişimine izin ver</string>
     <string name="audio_test_none">Ses yok</string>
     <string name="audio_test_running">Kaynak sorgulanıyor…</string>
@@ -643,6 +645,7 @@
     <string name="update_available_title">Screenlate %1$s çıktı</string>
     <string name="update_whats_new">Yenilikler</string>
     <string name="update_check">Güncellemeleri denetle</string>
+    <string name="update_check_offline">Zorunlu çevrimdışı modda güncellemeler denetlenemez.</string>
     <string name="update_install">Güncelle</string>
     <string name="update_retry">Yeniden dene</string>
     <string name="update_skip">Bu sürümü atla</string>
@@ -663,6 +666,7 @@
     <string name="popup_css_short">Sözlük stillerinden sonra uygulanır</string>
     <string name="translation_title">Çeviri</string>
     <string name="translation_sentence_title">Cümle çevirisi</string>
+    <string name="translation_offline_notice">Zorunlu çevrimdışı mod etkin. Cümle çevirisi devre dışı bırakıldı.</string>
     <string name="translation_hint">Kelimenin geçtiği cümleyi ücretsiz bir çevrimiçi hizmet çevirir. Çeviri makine çevirisidir ve hatalı olabilir; cümle, hizmetin sunucusuna gönderilir.</string>
     <string name="translation_info">Hizmetler hesap olmadan kullanılır: Bing (Microsoft Translator sitesi), Google Çeviri ve Microsoft Edge’e yerleşik çevirmen. Sınırlarını yayımlamazlar; bir hizmet isteği reddederse sıradaki kullanılır. Bing’e bir saat içindeki ilk istek yaklaşık bir saniye daha uzun sürer, çünkü önce Bing sitesinden bir anahtar yüklenir.</string>
     <string name="translation_button">Çeviri düğmesi</string>

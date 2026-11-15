@@ -188,6 +188,7 @@
     <string name="search_hint">单词或文本</string>
     <string name="process_text_label">在 Screenlate 中查词</string>
     <string name="dictionaries_check_updates">检查更新</string>
+    <string name="dictionaries_check_updates_offline">在强制离线模式下无法检查更新。</string>
     <string name="dictionaries_checking_updates">正在检查更新…</string>
     <string name="dictionaries_up_to_date">所有词典均为最新。</string>
     <string name="dictionaries_update">更新</string>
@@ -424,6 +425,7 @@
     <string name="audio_error_source_list">URL 返回的是音频来源列表而不是音频文件：请选择“自定义 URL（JSON）”</string>
     <string name="audio_error_other">请求失败</string>
     <string name="audio_error_local_network">无法访问本地网络</string>
+    <string name="audio_error_offline_mode">强制离线模式已启用</string>
     <string name="audio_local_network_allow">允许访问本地网络</string>
     <string name="audio_test_none">无音频</string>
     <string name="audio_test_running">正在查询来源…</string>
@@ -639,6 +641,7 @@
     <string name="update_available_title">Screenlate %1$s 已发布</string>
     <string name="update_whats_new">新功能</string>
     <string name="update_check">检查更新</string>
+    <string name="update_check_offline">在强制离线模式下无法检查更新。</string>
     <string name="update_install">更新</string>
     <string name="update_retry">重试</string>
     <string name="update_skip">跳过此版本</string>
@@ -659,6 +662,7 @@
     <string name="popup_css_short">在词典样式之后应用</string>
     <string name="translation_title">翻译</string>
     <string name="translation_sentence_title">句子翻译</string>
+    <string name="translation_offline_notice">强制离线模式已启用。句子翻译已禁用。</string>
     <string name="translation_hint">由免费的在线服务翻译单词所在的句子。译文为机器翻译，可能不准确，句子会发送到该服务的服务器。</string>
     <string name="translation_info">这些服务无需账号即可使用：Bing（Microsoft Translator 网站）、Google 翻译和 Microsoft Edge 内置的翻译器。它们没有公布使用限制；某个服务拒绝请求时，改用下一个。每小时第一次请求 Bing 会多花约一秒，因为要先从 Bing 网站加载密钥。</string>
     <string name="translation_button">翻译按钮</string>

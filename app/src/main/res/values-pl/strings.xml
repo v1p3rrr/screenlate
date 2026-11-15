@@ -194,6 +194,7 @@
     <string name="search_hint">Słowo lub tekst</string>
     <string name="process_text_label">Wyszukaj w Screenlate</string>
     <string name="dictionaries_check_updates">Sprawdź aktualizacje</string>
+    <string name="dictionaries_check_updates_offline">Nie można sprawdzić dostępności aktualizacji w wymuszonym trybie offline.</string>
     <string name="dictionaries_checking_updates">Sprawdzanie aktualizacji…</string>
     <string name="dictionaries_up_to_date">Wszystkie słowniki są aktualne.</string>
     <string name="dictionaries_update">Aktualizuj</string>
@@ -436,6 +437,7 @@
     <string name="audio_error_source_list">URL zwraca listę źródeł dźwięku, a nie plik dźwiękowy: wybierz „Własny URL (JSON)”</string>
     <string name="audio_error_other">Żądanie nie powiodło się</string>
     <string name="audio_error_local_network">Brak dostępu do sieci lokalnej</string>
+    <string name="audio_error_offline_mode">Wymuszony tryb offline jest aktywny</string>
     <string name="audio_local_network_allow">Zezwól na dostęp do sieci lokalnej</string>
     <string name="audio_test_none">Brak dźwięku</string>
     <string name="audio_test_running">Odpytywanie źródła…</string>
@@ -651,6 +653,7 @@
     <string name="update_available_title">Dostępny jest Screenlate %1$s</string>
     <string name="update_whats_new">Co nowego</string>
     <string name="update_check">Sprawdź aktualizacje</string>
+    <string name="update_check_offline">Nie można sprawdzić dostępności aktualizacji w wymuszonym trybie offline.</string>
     <string name="update_install">Aktualizuj</string>
     <string name="update_retry">Spróbuj ponownie</string>
     <string name="update_skip">Pomiń tę wersję</string>
@@ -671,6 +674,7 @@
     <string name="popup_css_short">Stosowany po stylach słowników</string>
     <string name="translation_title">Tłumaczenie</string>
     <string name="translation_sentence_title">Tłumaczenie zdania</string>
+    <string name="translation_offline_notice">Wymuszony tryb offline jest aktywny. Tłumaczenie zdań jest wyłączone.</string>
     <string name="translation_hint">Darmowa usługa online tłumaczy zdanie, w którym jest słowo. Tłumaczenie jest maszynowe i może być niedokładne, a zdanie trafia na serwer usługi.</string>
     <string name="translation_info">Usługi działają bez konta: Bing (strona Microsoft Translator), Tłumacz Google i tłumacz wbudowany w Microsoft Edge. Nie publikują swoich limitów; gdy usługa odrzuci żądanie, używana jest następna. Pierwsze w danej godzinie żądanie do Binga trwa około sekundy dłużej, bo najpierw pobierany jest klucz ze strony Binga.</string>
     <string name="translation_button">Przycisk tłumaczenia</string>

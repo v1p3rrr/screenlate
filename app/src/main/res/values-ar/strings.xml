@@ -198,6 +198,7 @@
     <string name="search_hint">كلمة أو نص</string>
     <string name="process_text_label">البحث في Screenlate</string>
     <string name="dictionaries_check_updates">البحث عن تحديثات</string>
+    <string name="dictionaries_check_updates_offline">لا يمكن التحقق من وجود تحديثات في وضع عدم الاتصال الإجباري.</string>
     <string name="dictionaries_checking_updates">جارٍ البحث عن تحديثات…</string>
     <string name="dictionaries_up_to_date">كل القواميس محدّثة.</string>
     <string name="dictionaries_update">تحديث</string>
@@ -444,6 +445,7 @@
     <string name="audio_error_source_list">يُرجع عنوان URL قائمة مصادر صوت لا ملفًا صوتيًا: اختر «عنوان URL مخصّص (JSON)»</string>
     <string name="audio_error_other">تعذّر الطلب</string>
     <string name="audio_error_local_network">لا يوجد وصول إلى الشبكة المحلية</string>
+    <string name="audio_error_offline_mode">وضع عدم الاتصال الإجباري مفعّل</string>
     <string name="audio_local_network_allow">السماح بالوصول إلى الشبكة المحلية</string>
     <string name="audio_test_none">لا يوجد صوت</string>
     <string name="audio_test_running">جارٍ الاستعلام من المصدر…</string>
@@ -659,6 +661,7 @@
     <string name="update_available_title">يتوفر Screenlate %1$s</string>
     <string name="update_whats_new">ما الجديد</string>
     <string name="update_check">البحث عن تحديثات</string>
+    <string name="update_check_offline">لا يمكن التحقق من وجود تحديثات في وضع عدم الاتصال الإجباري.</string>
     <string name="update_install">تحديث</string>
     <string name="update_retry">إعادة المحاولة</string>
     <string name="update_skip">تخطي هذا الإصدار</string>
@@ -679,6 +682,7 @@
     <string name="popup_css_short">يُطبَّق بعد أنماط القواميس</string>
     <string name="translation_title">الترجمة</string>
     <string name="translation_sentence_title">ترجمة الجملة</string>
+    <string name="translation_offline_notice">وضع عدم الاتصال الإجباري مفعّل. ترجمة الجمل معطّلة.</string>
     <string name="translation_hint">تترجم خدمة مجانية عبر الإنترنت الجملة المحيطة بالكلمة. الترجمة آلية وقد تكون غير دقيقة، وتُرسَل الجملة إلى خادم الخدمة.</string>
     <string name="translation_info">تُستخدم الخدمات دون حساب: Bing (موقع Microsoft Translator)، وGoogle Translate، والمترجم المدمج في Microsoft Edge. ولا تنشر هذه الخدمات حدودها، وعندما ترفض خدمة طلبًا تُستخدم الخدمة التالية. يستغرق أول طلب إلى Bing في كل ساعة نحو ثانية إضافية، لأن مفتاحًا يُحمَّل أولًا من موقع Bing.</string>
     <string name="translation_button">زر الترجمة</string>

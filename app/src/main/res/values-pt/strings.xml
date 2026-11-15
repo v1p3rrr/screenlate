@@ -192,6 +192,7 @@
     <string name="search_hint">Palavra ou texto</string>
     <string name="process_text_label">Pesquisar no Screenlate</string>
     <string name="dictionaries_check_updates">Verificar atualizações</string>
+    <string name="dictionaries_check_updates_offline">Não é possível verificar atualizações no modo offline forçado.</string>
     <string name="dictionaries_checking_updates">Verificando atualizações…</string>
     <string name="dictionaries_up_to_date">Todos os dicionários estão atualizados.</string>
     <string name="dictionaries_update">Atualizar</string>
@@ -432,6 +433,7 @@
     <string name="audio_error_source_list">A URL retorna uma lista de fontes de áudio, não um arquivo de áudio: escolha “URL personalizada (JSON)”</string>
     <string name="audio_error_other">A solicitação falhou</string>
     <string name="audio_error_local_network">Sem acesso à rede local</string>
+    <string name="audio_error_offline_mode">O modo offline forçado está ativo</string>
     <string name="audio_local_network_allow">Permitir acesso à rede local</string>
     <string name="audio_test_none">Sem áudio</string>
     <string name="audio_test_running">Consultando a fonte…</string>
@@ -647,6 +649,7 @@
     <string name="update_available_title">Screenlate %1$s disponível</string>
     <string name="update_whats_new">Novidades</string>
     <string name="update_check">Verificar atualizações</string>
+    <string name="update_check_offline">Não é possível verificar atualizações no modo offline forçado.</string>
     <string name="update_install">Atualizar</string>
     <string name="update_retry">Tentar de novo</string>
     <string name="update_skip">Pular esta versão</string>
@@ -667,6 +670,7 @@
     <string name="popup_css_short">Aplicado depois dos estilos dos dicionários</string>
     <string name="translation_title">Tradução</string>
     <string name="translation_sentence_title">Tradução da frase</string>
+    <string name="translation_offline_notice">O modo offline forçado está ativo. A tradução de frases está desativada.</string>
     <string name="translation_hint">Um serviço on-line gratuito traduz a frase em que a palavra está. A tradução é automática e pode ser imprecisa, e a frase é enviada ao servidor do serviço.</string>
     <string name="translation_info">Os serviços são usados sem conta: Bing (o site do Microsoft Translator), Google Tradutor e o tradutor embutido no Microsoft Edge. Eles não publicam seus limites; quando um serviço recusa uma solicitação, o próximo é usado. A primeira solicitação ao Bing em uma hora leva cerca de um segundo a mais, porque antes é carregada uma chave do site do Bing.</string>
     <string name="translation_button">Botão de tradução</string>

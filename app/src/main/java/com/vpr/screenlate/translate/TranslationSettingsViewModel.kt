@@ -3,6 +3,7 @@ package com.vpr.screenlate.translate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.translate.SentenceTranslator
 import com.vpr.screenlate.core.translate.ServiceChoice
@@ -34,8 +35,12 @@ class TranslationSettingsViewModel @Inject constructor(
     private val repository: TranslationSettingsRepository,
     private val translator: SentenceTranslator,
     private val settingsReset: SettingsReset,
+    private val appSettings: AppSettingsRepository,
     profiles: LanguageProfiles,
 ) : ViewModel() {
+    val offlineMode: StateFlow<Boolean> =
+        appSettings.offlineMode.stateIn(viewModelScope, SharingStarted.Eagerly, appSettings.cachedOfflineMode ?: false)
+
     /** The language translated from: the active one. */
     val language: StateFlow<Language> =
         profiles.active.stateIn(viewModelScope, SharingStarted.Eagerly, profiles.cachedState?.active ?: Language.JAPANESE)

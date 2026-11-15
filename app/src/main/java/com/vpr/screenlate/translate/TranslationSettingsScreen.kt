@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -73,6 +75,29 @@ fun TranslationSettingsScreen(onBack: () -> Unit, viewModel: TranslationSettings
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             val current = settings ?: return@Column
+            val offline by viewModel.offlineMode.collectAsStateWithLifecycle()
+            if (offline) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_cloud_off),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(
+                            text = stringResource(R.string.translation_offline_notice),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            }
             SentenceCard(current, viewModel)
             ServicesCard(current, viewModel)
             LanguageCard(current, viewModel)

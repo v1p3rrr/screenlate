@@ -13,9 +13,13 @@ import com.vpr.screenlate.core.anki.audio.AudioSource
  */
 @Composable
 fun audioErrorText(error: AudioError, source: AudioSource): String {
+    if (error.kind == AudioError.Kind.OFFLINE_MODE) {
+        return stringResource(R.string.audio_error_offline_mode)
+    }
     val phrase = when {
         localNetworkMissing(LocalContext.current, source.url) -> R.string.audio_error_local_network
         else -> when (error.kind) {
+            AudioError.Kind.OFFLINE_MODE -> R.string.audio_error_offline_mode
             AudioError.Kind.HTTP_STATUS -> R.string.audio_error_http
             AudioError.Kind.NOT_FOUND -> R.string.audio_error_not_found
             AudioError.Kind.REFUSED -> R.string.audio_error_refused

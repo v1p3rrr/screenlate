@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">جمله‌ای برای ترجمه وجود ندارد.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">اتصال شبکه وجود ندارد.</string>
+    <string name="translation_error_offline_mode">حالت آفلاین اجباری فعال است.</string>
     <string name="translation_error_timeout">مهلت درخواست به پایان رسید.</string>
     <string name="translation_error_clock">گواهی سرور برای تاریخ دستگاه معتبر نیست: تاریخ و ساعت را بررسی کنید.</string>
     <string name="translation_error_secure">اتصال امن برقرار نشد (گواهی یا TLS).</string>

@@ -98,6 +98,7 @@
     <string name="translation_no_sentence">Нет предложения для перевода.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Нет подключения к сети.</string>
+    <string name="translation_error_offline_mode">Включён принудительный офлайн-режим.</string>
     <string name="translation_error_timeout">Время ожидания ответа истекло.</string>
     <string name="translation_error_clock">Сертификат сервера не действует на дату устройства: проверьте дату и время.</string>
     <string name="translation_error_secure">Не удалось установить защищённое соединение (сертификат или TLS).</string>

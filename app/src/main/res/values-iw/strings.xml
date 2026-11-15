@@ -192,6 +192,7 @@
     <string name="search_hint">מילה או טקסט</string>
     <string name="process_text_label">חיפוש ב-Screenlate</string>
     <string name="dictionaries_check_updates">בדיקת עדכונים</string>
+    <string name="dictionaries_check_updates_offline">לא ניתן לבדוק עדכונים במצב לא מקוון מאולץ.</string>
     <string name="dictionaries_checking_updates">בדיקת עדכונים…</string>
     <string name="dictionaries_up_to_date">כל המילונים מעודכנים.</string>
     <string name="dictionaries_update">עדכון</string>
@@ -432,6 +433,7 @@
     <string name="audio_error_source_list">כתובת ה-URL מחזירה רשימת מקורות שמע ולא קובץ שמע: יש לבחור \"URL מותאם אישית (JSON)\"</string>
     <string name="audio_error_other">הבקשה נכשלה</string>
     <string name="audio_error_local_network">אין גישה לרשת המקומית</string>
+    <string name="audio_error_offline_mode">מצב לא מקوון מאולץ פעיל</string>
     <string name="audio_local_network_allow">מתן גישה לרשת המקומית</string>
     <string name="audio_test_none">אין שמע</string>
     <string name="audio_test_running">פנייה למקור…</string>
@@ -647,6 +649,7 @@
     <string name="update_available_title">Screenlate %1$s זמינה</string>
     <string name="update_whats_new">מה חדש</string>
     <string name="update_check">בדיקת עדכונים</string>
+    <string name="update_check_offline">לא ניתן לבדוק עדכונים במצב לא מקוון מאולץ.</string>
     <string name="update_install">עדכון</string>
     <string name="update_retry">ניסיון נוסף</string>
     <string name="update_skip">דילוג על הגרסה הזו</string>
@@ -667,6 +670,7 @@
     <string name="popup_css_short">מוחל אחרי הסגנונות של המילונים</string>
     <string name="translation_title">תרגום</string>
     <string name="translation_sentence_title">תרגום משפטים</string>
+    <string name="translation_offline_notice">מצב לא מקוון מאולץ פעיל. תרגום משפטים מושבת.</string>
     <string name="translation_hint">שירות מקוון חינמי מתרגם את המשפט שסביב המילה. התרגום הוא תרגום מכונה ועלול להיות לא מדויק, והמשפט נשלח לשרת של השירות.</string>
     <string name="translation_info">נעשה שימוש בשירותים ללא חשבון: Bing (האתר של Microsoft Translator), Google Translate והמתרגם המובנה ב-Microsoft Edge. הם לא מפרסמים את המגבלות שלהם; כששירות דוחה בקשה, נעשה שימוש בשירות הבא. הבקשה הראשונה ל-Bing בכל שעה אורכת בערך שנייה יותר, כי קודם נטען מפתח מהאתר של Bing.</string>
     <string name="translation_button">לחצן תרגום</string>

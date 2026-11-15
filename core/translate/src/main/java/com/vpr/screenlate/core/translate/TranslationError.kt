@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.translate
 
+import com.vpr.screenlate.core.common.network.OfflineModeException
 import java.io.IOException
 import java.io.InterruptedIOException
 import java.net.ConnectException
@@ -29,6 +30,9 @@ data class TranslationError(val kind: Kind, val code: Int = 0, val detail: Strin
     enum class Kind {
         /** The host could not be found or reached. */
         OFFLINE,
+
+        /** Outbound requests are blocked because Forced Offline Mode is active. */
+        OFFLINE_MODE,
 
         /** No answer in time. */
         TIMEOUT,
@@ -75,6 +79,7 @@ data class TranslationError(val kind: Kind, val code: Int = 0, val detail: Strin
     companion object {
         fun of(error: Throwable): TranslationError = when (error) {
             is TranslationException -> error.error
+            is OfflineModeException -> TranslationError(Kind.OFFLINE_MODE)
             is UnknownHostException, is ConnectException, is NoRouteToHostException -> TranslationError(Kind.OFFLINE)
             is InterruptedIOException -> TranslationError(Kind.TIMEOUT)
             is SSLException -> dateProblem(error)?.let { TranslationError(Kind.CERTIFICATE_DATE, detail = it) }

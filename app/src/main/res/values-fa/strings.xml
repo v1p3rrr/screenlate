@@ -190,6 +190,7 @@
     <string name="search_hint">واژه یا متن</string>
     <string name="process_text_label">جستجو در Screenlate</string>
     <string name="dictionaries_check_updates">بررسی به‌روزرسانی‌ها</string>
+    <string name="dictionaries_check_updates_offline">بررسی به‌روزرسانی‌ها در حالت آفلاین اجباری امکان‌پذیر نیست.</string>
     <string name="dictionaries_checking_updates">در حال بررسی به‌روزرسانی‌ها…</string>
     <string name="dictionaries_up_to_date">همه واژه‌نامه‌ها به‌روز هستند.</string>
     <string name="dictionaries_update">به‌روزرسانی</string>
@@ -428,6 +429,7 @@
     <string name="audio_error_source_list">این URL فهرست منابع صوتی برمی‌گرداند، نه فایل صوتی: «URL سفارشی (JSON)» را انتخاب کنید</string>
     <string name="audio_error_other">درخواست ناموفق بود</string>
     <string name="audio_error_local_network">دسترسی به شبکه محلی وجود ندارد</string>
+    <string name="audio_error_offline_mode">حالت آفلاین اجباری فعال است</string>
     <string name="audio_local_network_allow">اجازه دسترسی به شبکه محلی</string>
     <string name="audio_test_none">بدون صوت</string>
     <string name="audio_test_running">در حال پرس‌وجو از منبع…</string>
@@ -643,6 +645,7 @@
     <string name="update_available_title">Screenlate %1$s در دسترس است</string>
     <string name="update_whats_new">تازه‌ها</string>
     <string name="update_check">بررسی به‌روزرسانی‌ها</string>
+    <string name="update_check_offline">بررسی به‌روزرسانی‌ها در حالت آفلاین اجباری امکان‌پذیر نیست.</string>
     <string name="update_install">به‌روزرسانی</string>
     <string name="update_retry">امتحان دوباره</string>
     <string name="update_skip">رد شدن از این نسخه</string>
@@ -663,6 +666,7 @@
     <string name="popup_css_short">پس از سبک‌های واژه‌نامه‌ها اعمال می‌شود</string>
     <string name="translation_title">ترجمه</string>
     <string name="translation_sentence_title">ترجمه جمله</string>
+    <string name="translation_offline_notice">حالت آفلاین اجباری فعال است. ترجمه جمله غیرفعال است.</string>
     <string name="translation_hint">یک سرویس آنلاین رایگان جمله اطراف واژه را ترجمه می‌کند. ترجمه ماشینی است و ممکن است نادقیق باشد، و جمله به سرور سرویس فرستاده می‌شود.</string>
     <string name="translation_info">این سرویس‌ها بدون حساب کاربری استفاده می‌شوند: Bing (وب‌سایت Microsoft Translator)، Google Translate و مترجم داخلی Microsoft Edge. این سرویس‌ها محدودیت‌های خود را منتشر نمی‌کنند؛ وقتی سرویسی درخواستی را رد کند، سرویس بعدی استفاده می‌شود. نخستین درخواست Bing در هر ساعت حدود یک ثانیه بیشتر طول می‌کشد، چون ابتدا کلیدی از وب‌سایت Bing بار می‌شود.</string>
     <string name="translation_button">دکمه ترجمه</string>

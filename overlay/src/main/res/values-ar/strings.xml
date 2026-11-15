@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">لا توجد جملة لترجمتها.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">لا يتوفر اتصال بالشبكة.</string>
+    <string name="translation_error_offline_mode">وضع عدم الاتصال الإجباري مفعّل.</string>
     <string name="translation_error_timeout">انتهت مهلة الطلب.</string>
     <string name="translation_error_clock">شهادة الخادم غير صالحة بحسب تاريخ الجهاز: تحقق من التاريخ والوقت.</string>
     <string name="translation_error_secure">تعذّر الاتصال الآمن (الشهادة أو TLS).</string>

@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">אין משפט לתרגום.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">אין חיבור לרשת.</string>
+    <string name="translation_error_offline_mode">מצב לא מקוון מאולץ פעיל.</string>
     <string name="translation_error_timeout">תם הזמן הקצוב לבקשה.</string>
     <string name="translation_error_clock">אישור האבטחה של השרת לא תקף לפי התאריך במכשיר: יש לבדוק את התאריך והשעה.</string>
     <string name="translation_error_secure">החיבור המאובטח נכשל (אישור אבטחה או TLS).</string>

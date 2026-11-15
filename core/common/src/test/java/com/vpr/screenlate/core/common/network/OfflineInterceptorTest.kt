@@ -37,16 +37,28 @@ class OfflineInterceptorTest {
     }
 
     @Test
-    fun `requests throw OfflineModeException when offline mode is true`() {
+    fun `requests throw OfflineModeException when offline mode is true for external hosts`() {
         var offline = true
         val client = OkHttpClient.Builder()
             .addInterceptor(OfflineInterceptor { offline })
             .build()
 
         val exception = assertThrows(OfflineModeException::class.java) {
-            client.newCall(Request.Builder().url(server.url("/test")).build()).execute()
+            client.newCall(Request.Builder().url("https://example.com/test").build()).execute()
         }
         assertThat(exception.message).contains("Forced Offline Mode")
-        assertThat(server.requestCount).isEqualTo(0)
+    }
+
+    @Test
+    fun `requests to localhost or loopback proceed even when offline mode is true`() {
+        server.enqueue(MockResponse.Builder().code(200).body("local").build())
+        var offline = true
+        val client = OkHttpClient.Builder()
+            .addInterceptor(OfflineInterceptor { offline })
+            .build()
+
+        val response = client.newCall(Request.Builder().url(server.url("/local")).build()).execute()
+        assertThat(response.isSuccessful).isTrue()
+        assertThat(response.body.string()).isEqualTo("local")
     }
 }

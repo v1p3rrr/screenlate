@@ -15,9 +15,10 @@ class OfflineModeException(
  */
 class OfflineInterceptor(private val isOffline: () -> Boolean) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        if (isOffline()) {
+        val request = chain.request()
+        if (isOffline() && !LocalNetwork.isLoopbackHost(request.url.host)) {
             throw OfflineModeException()
         }
-        return chain.proceed(chain.request())
+        return chain.proceed(request)
     }
 }

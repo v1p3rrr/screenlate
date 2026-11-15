@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">Es gibt keinen Satz zum Übersetzen.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Keine Netzwerkverbindung.</string>
+    <string name="translation_error_offline_mode">Erzwungener Offline-Modus ist aktiv.</string>
     <string name="translation_error_timeout">Zeitüberschreitung der Anfrage.</string>
     <string name="translation_error_clock">Das Zertifikat des Servers gilt nicht für das Datum des Geräts: Prüfe Datum und Uhrzeit.</string>
     <string name="translation_error_secure">Sichere Verbindung fehlgeschlagen (Zertifikat oder TLS).</string>

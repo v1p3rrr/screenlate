@@ -188,6 +188,7 @@
     <string name="search_hint">単語または文章</string>
     <string name="process_text_label">Screenlate で調べる</string>
     <string name="dictionaries_check_updates">更新を確認</string>
+    <string name="dictionaries_check_updates_offline">強制オフラインモード中は更新を確認できません。</string>
     <string name="dictionaries_checking_updates">更新を確認中…</string>
     <string name="dictionaries_up_to_date">すべての辞書が最新です。</string>
     <string name="dictionaries_update">更新</string>
@@ -424,6 +425,7 @@
     <string name="audio_error_source_list">URL が音声ファイルではなく音声ソースのリストを返します。「カスタム URL（JSON）」を選んでください</string>
     <string name="audio_error_other">リクエストに失敗しました</string>
     <string name="audio_error_local_network">ローカルネットワークへのアクセス権がありません</string>
+    <string name="audio_error_offline_mode">強制オフラインモードが有効です</string>
     <string name="audio_local_network_allow">ローカルネットワークへのアクセスを許可</string>
     <string name="audio_test_none">音声なし</string>
     <string name="audio_test_running">ソースに問い合わせ中…</string>
@@ -639,6 +641,7 @@
     <string name="update_available_title">Screenlate %1$s が利用できます</string>
     <string name="update_whats_new">新機能</string>
     <string name="update_check">アップデートを確認</string>
+    <string name="update_check_offline">強制オフラインモード中は更新を確認できません。</string>
     <string name="update_install">アップデート</string>
     <string name="update_retry">再試行</string>
     <string name="update_skip">このバージョンをスキップ</string>
@@ -659,6 +662,7 @@
     <string name="popup_css_short">辞書のスタイルのあとに適用</string>
     <string name="translation_title">翻訳</string>
     <string name="translation_sentence_title">文の翻訳</string>
+    <string name="translation_offline_notice">強制オフラインモードが有効です。文の翻訳は無効になっています。</string>
     <string name="translation_hint">単語を含む文を無料のオンラインサービスが翻訳します。機械翻訳のため不正確な場合があり、文はサービスのサーバーに送信されます。</string>
     <string name="translation_info">サービスはアカウントなしで利用します：Bing（Microsoft Translator のサイト）、Google 翻訳、Microsoft Edge に組み込まれた翻訳機能。各サービスは制限を公開していません。サービスがリクエストを拒否した場合は、次のサービスが使われます。1 時間のうち最初の Bing へのリクエストは、先に Bing のサイトからキーを読み込むため約 1 秒長くかかります。</string>
     <string name="translation_button">翻訳ボタン</string>

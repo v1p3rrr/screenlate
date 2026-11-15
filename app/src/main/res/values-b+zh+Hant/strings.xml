@@ -188,6 +188,7 @@
     <string name="search_hint">單字或文字</string>
     <string name="process_text_label">在 Screenlate 中查詞</string>
     <string name="dictionaries_check_updates">檢查更新</string>
+    <string name="dictionaries_check_updates_offline">在強制離線模式下無法檢查更新。</string>
     <string name="dictionaries_checking_updates">正在檢查更新…</string>
     <string name="dictionaries_up_to_date">所有詞典均為最新。</string>
     <string name="dictionaries_update">更新</string>
@@ -424,6 +425,7 @@
     <string name="audio_error_source_list">URL 回傳的是音訊來源清單而非音訊檔案：請選擇「自訂 URL（JSON）」</string>
     <string name="audio_error_other">請求失敗</string>
     <string name="audio_error_local_network">無法存取區域網路</string>
+    <string name="audio_error_offline_mode">強制離線模式已啟用</string>
     <string name="audio_local_network_allow">允許存取區域網路</string>
     <string name="audio_test_none">無音訊</string>
     <string name="audio_test_running">正在查詢來源…</string>
@@ -639,6 +641,7 @@
     <string name="update_available_title">Screenlate %1$s 已釋出</string>
     <string name="update_whats_new">新功能</string>
     <string name="update_check">檢查更新</string>
+    <string name="update_check_offline">在強制離線模式下無法檢查更新。</string>
     <string name="update_install">更新</string>
     <string name="update_retry">重試</string>
     <string name="update_skip">跳過此版本</string>
@@ -659,6 +662,7 @@
     <string name="popup_css_short">在詞典樣式之後套用</string>
     <string name="translation_title">翻譯</string>
     <string name="translation_sentence_title">句子翻譯</string>
+    <string name="translation_offline_notice">強制離線模式已啟用。句子翻譯已停用。</string>
     <string name="translation_hint">由免費的線上服務翻譯單字所在的句子。譯文為機器翻譯，可能不準確，句子會傳送到該服務的伺服器。</string>
     <string name="translation_info">這些服務不需帳號即可使用：Bing（Microsoft Translator 網站）、Google 翻譯和 Microsoft Edge 內建的翻譯工具。它們沒有公布使用限制；某個服務拒絕請求時，改用下一個。每小時第一次請求 Bing 會多花約一秒，因為要先從 Bing 網站載入金鑰。</string>
     <string name="translation_button">翻譯按鈕</string>

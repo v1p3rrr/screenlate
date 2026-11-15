@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">Nie ma zdania do przetłumaczenia.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Brak połączenia z siecią.</string>
+    <string name="translation_error_offline_mode">Wymuszony tryb offline jest aktywny.</string>
     <string name="translation_error_timeout">Przekroczono limit czasu żądania.</string>
     <string name="translation_error_clock">Certyfikat serwera nie jest ważny dla daty urządzenia: sprawdź datę i godzinę.</string>
     <string name="translation_error_secure">Bezpieczne połączenie nie powiodło się (certyfikat lub TLS).</string>

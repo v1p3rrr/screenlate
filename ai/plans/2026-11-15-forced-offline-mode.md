@@ -41,6 +41,11 @@ Provide a user-controlled, fail-safe **"Forced Offline Mode"** (`offlineMode`):
 | **4. Audio / Pronunciation Fallback** | A. Automatically fall back to system TTS if voice is installed (Recommended)<br>B. Play only disk cache; use TTS only if manually added to sources | **A. Automatically fall back to system TTS** | Matches the owner's choice. Ensures users still hear word pronunciations offline whenever system speech synthesis is available. |
 | **5. Network Security Layer** | A. OkHttpClient `OfflineInterceptor` (Recommended)<br>B. Per-service manual if-checks | **A. OkHttpClient `OfflineInterceptor`** | Absolute fail-safe guarantee: all HTTP calls pass through the shared `OkHttpClient` singleton; throwing `OfflineModeException` ensures zero packet leakage. |
 | **6. Dictionary Catalog Behavior** | A. Show offline notice + allow local .zip import (Recommended)<br>B. Hide dictionary download screen completely | **A. Show offline notice + allow local .zip import** | Users can still install dictionaries anytime from local storage via SAF. |
+| **7. Audio Test in Offline Mode & Localhost** | A. Allow loopback/localhost in `OfflineInterceptor` and show clear "Forced Offline Mode is active" error (Recommended) | **A. Allow loopback/localhost in `OfflineInterceptor` and show clear "Forced Offline Mode is active" error** | Loopback (`localhost`, `127.0.0.1`, `::1`, `10.0.2.2`) is strictly local on-device traffic. External sources show an explicit offline error instead of obfuscated class names `(oz3)`. |
+| **8. Dictionaries Update Check in Offline Mode** | A. Disable button with explanatory caption (Owner's choice)<br>B. Show status in card | **A. Disable button with explanatory caption** | Matches owner's choice: disables the "Check for updates" button when forced offline mode is active, showing a clear hint. |
+| **9. App Updates Check in Offline Mode** | A. Disable button with explanatory caption (Owner's choice)<br>B. Show error under button | **A. Disable button with explanatory caption** | Matches owner's choice: disables the "Check for updates" button in About when forced offline mode is active, showing a clear hint. |
+| **10. Translation Settings in Offline Mode** | A. Informational banner at top + "Forced Offline Mode is active" in test results (Recommended)<br>B. Only error in test | **A. Informational banner at top + "Forced Offline Mode is active" in test results** | Matches owner's choice: adds an offline banner at top of Translation screen and maps `OfflineModeException` to a readable offline status. |
+| **11. Popup Scroll on Draft -> Final** | A. Preserve scroll position if the term/reading remains identical (Recommended)<br>B. Reset scroll | **A. Preserve scroll position if the term/reading remains identical** | Fixes jarring reset to top when scrolling definitions in draft while the final whole-screen OCR pass finishes. |
 
 ---
 
@@ -155,3 +160,20 @@ fun isOnline(): Boolean {
 - [x] Verify with `TranslationsTest` and full JVM test suite (`./gradlew testDebugUnitTest`).
 - [x] Verify page tests (`npm --prefix scripts/page-tests test`).
 - [x] Build and verify debug APK (`assembleDebug`).
+
+### Phase 6: Post-Build Refinements & Feedback Fixes
+- [ ] Allow loopback/localhost (`localhost`, `127.0.0.1`, `::1`, `10.0.2.2`) in `OfflineInterceptor`.
+- [ ] Map `OfflineModeException` in `AudioErrorText.kt` / `AudioError` to a readable "Forced Offline Mode is active" message without obfuscated exception names.
+- [ ] Disable "Check for updates" in `DictionariesScreen.kt` when offline mode is active, with explanatory caption.
+- [ ] Disable "Check for updates" in `AboutUpdateCard` when offline mode is active, with explanatory caption.
+- [ ] Add offline banner in `TranslationSettingsScreen.kt` and map `OfflineModeException` in `TranslationError.kt` to an explicit offline mode error message.
+- [ ] Preserve popup scroll position in `popup.js` on `Popup.render` when `options.continued` is true and `termsKey(state)` remains identical.
+- [ ] Add localized string resources across all 17 locales.
+- [ ] Unit tests for all updated components (`OfflineInterceptorTest`, `AudioErrorTest`, `TranslationErrorTest`, `popup-eval`/page tests).
+- [ ] Verify test suite and build updated Dev APK.
+
+---
+
+## 5. Changelog
+- **2026-11-15:** Initial plan created and approved. Phases 1-5 implemented and verified.
+- **2026-11-15 (Post-Dev Build):** Added Phase 6 based on device feedback (questions 7-11 settled with owner): localhost exception for custom audio sources, audio test error formatting, disabled update buttons in dictionaries and about with hints, translation screen offline banner and test mapping, and popup scroll preservation between draft and final passes.

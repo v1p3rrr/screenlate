@@ -97,6 +97,7 @@
     <string name="translation_no_sentence">Không có câu nào để dịch.</string>
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Không có kết nối mạng.</string>
+    <string name="translation_error_offline_mode">Chế độ ngoại tuyến bắt buộc đang bật.</string>
     <string name="translation_error_timeout">Yêu cầu đã hết thời gian chờ.</string>
     <string name="translation_error_clock">Chứng chỉ của máy chủ không hợp lệ với ngày trên thiết bị: hãy kiểm tra ngày và giờ.</string>
     <string name="translation_error_secure">Kết nối bảo mật thất bại (chứng chỉ hoặc TLS).</string>

@@ -190,6 +190,7 @@
     <string name="search_hint">Wort oder Text</string>
     <string name="process_text_label">In Screenlate nachschlagen</string>
     <string name="dictionaries_check_updates">Nach Updates suchen</string>
+    <string name="dictionaries_check_updates_offline">Im erzwungenen Offline-Modus kann nicht nach Updates gesucht werden.</string>
     <string name="dictionaries_checking_updates">Suche nach Updates…</string>
     <string name="dictionaries_up_to_date">Alle Wörterbücher sind aktuell.</string>
     <string name="dictionaries_update">Aktualisieren</string>
@@ -428,6 +429,7 @@
     <string name="audio_error_source_list">Die URL liefert eine Liste von Audioquellen statt einer Audiodatei: Wähle „Eigene URL (JSON)“</string>
     <string name="audio_error_other">Die Anfrage ist fehlgeschlagen</string>
     <string name="audio_error_local_network">Kein Zugriff auf das lokale Netzwerk</string>
+    <string name="audio_error_offline_mode">Erzwungener Offline-Modus ist aktiv</string>
     <string name="audio_local_network_allow">Zugriff auf das lokale Netzwerk erlauben</string>
     <string name="audio_test_none">Kein Audio</string>
     <string name="audio_test_running">Quelle wird abgefragt…</string>
@@ -643,6 +645,7 @@
     <string name="update_available_title">Screenlate %1$s ist verfügbar</string>
     <string name="update_whats_new">Neuerungen</string>
     <string name="update_check">Nach Updates suchen</string>
+    <string name="update_check_offline">Im erzwungenen Offline-Modus kann nicht nach Updates gesucht werden.</string>
     <string name="update_install">Aktualisieren</string>
     <string name="update_retry">Erneut versuchen</string>
     <string name="update_skip">Diese Version überspringen</string>
@@ -663,6 +666,7 @@
     <string name="popup_css_short">Wird nach den Stilen der Wörterbücher angewendet</string>
     <string name="translation_title">Übersetzung</string>
     <string name="translation_sentence_title">Satzübersetzung</string>
+    <string name="translation_offline_notice">Erzwungener Offline-Modus ist aktiv. Satzübersetzung ist deaktiviert.</string>
     <string name="translation_hint">Ein kostenloser Onlinedienst übersetzt den Satz um das Wort. Die Übersetzung ist maschinell und kann ungenau sein, und der Satz wird an den Server des Dienstes gesendet.</string>
     <string name="translation_info">Die Dienste werden ohne Konto genutzt: Bing (die Website von Microsoft Translator), Google Übersetzer und der in Microsoft Edge eingebaute Übersetzer. Sie veröffentlichen ihre Limits nicht; lehnt ein Dienst eine Anfrage ab, wird der nächste verwendet. Die erste Anfrage an Bing in einer Stunde dauert etwa eine Sekunde länger, weil zuerst ein Schlüssel von der Bing-Website geladen wird.</string>
     <string name="translation_button">Übersetzungsschaltfläche</string>
