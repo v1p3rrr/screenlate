@@ -1,5 +1,17 @@
 # Status
 
+## Screenlate v1.1.0 released (2026-11-15)
+
+- Stable [v1.1.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.1.0) published. The annotated tag points to `d9422070`; the [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/43751250285) was triggered to build and publish the release APKs signed with the production release key.
+- Merged feature branch `features/forced-offline-mode` into `main` (`d9422070`).
+- The release contains:
+  - **Forced Offline Mode:** Full on-device operation with socket-level network blocking (`OfflineInterceptor`), automatic lock to on-device OCR engines, pronunciation via cached audio or system TTS fallback, hidden online sentence translation, disabled update checks, and contextual offline notices across Dictionaries, Translation, and Audio screens.
+  - **Color Themes:** Customizable color palettes for the app and floating bubble (presets, system wallpaper Material You colors, or 2D gradient custom picker dialog with achromatic pure monochrome support for black/white/grays). Dynamic palette variables injected into popup WebView CSS.
+  - **Android 7.0+ Support:** Full compatibility backported to Android 7.0 (Nougat, API 24), including legacy `MediaProjection` capture consent, ISRG Root X1 TLS backport, vector drawables, and WebView compatibility.
+  - **Popup & Anki:** Preserved scroll position during refined scan of the current word, duplicate note actions in the popup (`openAdd`, `openUpdate`), and "Screenshot by default" setting for notes.
+  - **Home Screen:** Dynamic languages card button label showing "Manage dictionaries" when idle and "Installation status" during active tasks.
+- Four APKs (`arm64-v8a`, `armeabi-v7a`, `x86_64`, universal) and full source archive are generated for Android 7.0 or newer.
+
 ## Forced offline feedback and popup scroll preservation (2026-11-15)
 
 - Refined Forced Offline Mode UX and fixed draft promotion popup scroll jump:
