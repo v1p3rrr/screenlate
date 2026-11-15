@@ -1,5 +1,6 @@
 package com.vpr.screenlate.overlay.capture
 
+import android.annotation.SuppressLint
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityService.ScreenshotResult
 import android.accessibilityservice.AccessibilityService.TakeScreenshotCallback
@@ -42,6 +43,7 @@ interface ScreenCapturer {
         fun create(service: AccessibilityService, executor: Executor): ScreenCapturer =
             create(service, executor, Build.VERSION.SDK_INT)
 
+        @SuppressLint("NewApi")
         internal fun create(service: AccessibilityService, executor: Executor, sdk: Int): ScreenCapturer =
             if (sdk >= Build.VERSION_CODES.R) {
                 ModernAccessibilityCapturer(service, executor)

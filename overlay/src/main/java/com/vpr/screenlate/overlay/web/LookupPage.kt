@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.web
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.annotation.RequiresApi
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Build
@@ -339,6 +340,7 @@ class LookupPage(
         }
 
         // A crashed or killed renderer must not take the app or the accessibility service down with it.
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
             val shown = view.isShown
             Log.w(TAG, "Lookup page renderer gone (crashed: ${detail.didCrash()}, shown: $shown)")

@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, japanese/main]
+    branches: [main, japanese/main, 'features/**', 'languages/**']
   pull_request:
   workflow_dispatch:
 
@@ -31,8 +31,8 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Build, unit tests and lint
-        run: ./gradlew assembleDebug testDebugUnitTest lintDebug :build-logic:convention:test
+      - name: Build, unit tests, lint and assemble test APKs
+        run: ./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest :build-logic:convention:test
 
       - uses: actions/setup-node@v7
         with:

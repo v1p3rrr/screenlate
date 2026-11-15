@@ -4,6 +4,8 @@ import android.graphics.Typeface
 import android.graphics.fonts.Font
 import android.graphics.fonts.FontFamily
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
@@ -106,7 +108,8 @@ class PopupAppearanceViewModel @Inject constructor(
     val systemFontMissing: StateFlow<Boolean> = shown.language
         .map { language ->
             cache.systemFontMissing[language] ?: withContext(Dispatchers.IO) {
-                language.support.systemFonts.sans.isNotEmpty() && systemFont(language) == null
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    language.support.systemFonts.sans.isNotEmpty() && systemFont(language) == null
             }.also { cache.systemFontMissing[language] = it }
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, cache.systemFontMissing[shown.language.value] ?: false)
@@ -250,6 +253,10 @@ class PopupAppearanceViewModel @Inject constructor(
     /** [typeface] for [font] (the phone's for [language] when null) at [weight], built once while the app runs. */
     private fun cachedTypeface(language: Language, font: InstalledFont?, weight: Int): Typeface? {
         val key = key(language, font, weight)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            val file = font?.files?.firstOrNull()?.let(fonts::file) ?: return null
+            return cache.byKey[key] ?: runCatching { Typeface.createFromFile(file) }.getOrNull()?.also { cache.byKey[key] = it }
+        }
         return cache.byKey[key] ?: typeface(sources(language, font), weight)?.also { cache.byKey[key] = it }
     }
 
@@ -260,9 +267,11 @@ class PopupAppearanceViewModel @Inject constructor(
     }
 
     /** A font file and the CSS weight the page declares for it. */
+    @RequiresApi(Build.VERSION_CODES.Q)
     private class Source(val weight: String, val builder: () -> Font.Builder)
 
     /** The files of [font], or of the phone's sans-serif font for [language] when null (the page's default). */
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun sources(language: Language, font: InstalledFont?): List<Source> {
         if (font != null) return font.files.map { file -> Source(file.weight) { Font.Builder(fonts.file(file)) } }
         val system = systemFont(language) ?: return emptyList()
@@ -274,6 +283,7 @@ class PopupAppearanceViewModel @Inject constructor(
      * [sources] as one family for [weight]: a variable font is set to it within its range, and a file with one weight
      * keeps its own. Files that cannot be read (such as web fonts) are left out; null if none can.
      */
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun typeface(sources: List<Source>, weight: Int): Typeface? {
         val loaded = sources.mapNotNull { source ->
             runCatching {
@@ -324,6 +334,7 @@ class PopupAppearanceViewModel @Inject constructor(
          * The phone's sans-serif font the page names for [language]; null when the page keeps the phone's default font
          * for it (Latin script) or the phone has none.
          */
+        @RequiresApi(Build.VERSION_CODES.Q)
         private fun systemFont(language: Language): Font? =
             language.support.takeIf { it.systemFonts.sans.isNotEmpty() }?.let { SystemFontFiles.find(it) }
 

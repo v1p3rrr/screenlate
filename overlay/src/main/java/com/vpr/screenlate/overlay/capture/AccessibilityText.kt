@@ -3,6 +3,7 @@ package com.vpr.screenlate.overlay.capture
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.graphics.RectF
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.accessibility.AccessibilityNodeInfo
@@ -80,6 +81,10 @@ class AccessibilityText(private val service: AccessibilityService) {
     }
 
     private fun paragraph(node: AccessibilityNodeInfo, text: String, screen: Rect, separator: String): OcrParagraph? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            stats.withoutPositions++
+            return null
+        }
         if (AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_KEY !in node.availableExtraData) {
             stats.withoutPositions++
             return null

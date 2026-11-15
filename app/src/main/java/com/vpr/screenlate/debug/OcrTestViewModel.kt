@@ -2,9 +2,12 @@ package com.vpr.screenlate.debug
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.SystemClock
+import java.io.IOException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
@@ -97,12 +100,26 @@ class OcrTestViewModel @Inject constructor(
     }
 
     /** A camera photo is scaled down to about screen size: at full size it does not fit in memory or on a canvas. */
-    private fun decode(uri: Uri): Bitmap =
-        ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri)) { decoder, info, _ ->
+    private fun decode(uri: Uri): Bitmap {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+            val longest = maxOf(bounds.outWidth, bounds.outHeight)
+            val sample = if (longest > MAX_SIDE) (longest + MAX_SIDE - 1) / MAX_SIDE else 1
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = sample
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+            }
+            return context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
+                ?.copy(Bitmap.Config.ARGB_8888, false)
+                ?: throw IOException("Cannot decode image")
+        }
+        return ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri)) { decoder, info, _ ->
             decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
             val longest = maxOf(info.size.width, info.size.height)
             if (longest > MAX_SIDE) decoder.setTargetSampleSize((longest + MAX_SIDE - 1) / MAX_SIDE)
         }.copy(Bitmap.Config.ARGB_8888, false)
+    }
 
     private companion object {
         const val MAX_SIDE = 4096

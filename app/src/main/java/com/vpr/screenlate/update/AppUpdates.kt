@@ -117,7 +117,17 @@ class AppUpdates @Inject constructor(
     suspend fun setAnnounced(release: Release) = settings.setAnnounced(release.tag)
 
     /** Whether Android lets Screenlate install APKs; otherwise the user allows it in the system settings first. */
-    fun canInstall(): Boolean = context.packageManager.canRequestPackageInstalls()
+    fun canInstall(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.packageManager.canRequestPackageInstalls()
+        } else {
+            @Suppress("DEPRECATION")
+            android.provider.Settings.Secure.getInt(
+                context.contentResolver,
+                android.provider.Settings.Secure.INSTALL_NON_MARKET_APPS,
+                0,
+            ) == 1
+        }
 
     /** Downloads and installs [release]; progress and errors go to [state]. A check running meanwhile is waited for. */
     fun update(release: Release) {

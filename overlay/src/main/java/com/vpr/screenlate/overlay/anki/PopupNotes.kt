@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.anki
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.widget.Toast
 import androidx.core.graphics.scale
 import com.vpr.screenlate.core.anki.AddResult
@@ -517,7 +518,13 @@ class PopupNotes(
         val fitted = if (width == bitmap.width && height == bitmap.height) bitmap else bitmap.scale(width, height)
         try {
             File(anki.mediaDirectory(), "screenshot_${System.currentTimeMillis()}.webp").also { file ->
-                val written = file.outputStream().use { fitted.compress(Bitmap.CompressFormat.WEBP_LOSSY, SCREENSHOT_QUALITY, it) }
+                val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    Bitmap.CompressFormat.WEBP_LOSSY
+                } else {
+                    @Suppress("DEPRECATION")
+                    Bitmap.CompressFormat.WEBP
+                }
+                val written = file.outputStream().use { fitted.compress(format, SCREENSHOT_QUALITY, it) }
                 if (!written) {
                     file.delete()
                     throw IOException(context.getString(R.string.anki_picture_failed))

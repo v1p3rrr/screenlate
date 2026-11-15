@@ -4,6 +4,8 @@ import android.graphics.fonts.Font
 import android.graphics.fonts.FontStyle
 import android.graphics.fonts.SystemFonts
 import android.icu.util.ULocale
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
@@ -20,34 +22,42 @@ object SystemFontFiles {
      * The font the page's `local()` names for [support] resolve to, the sans-serif one unless [serif]. Without one, the
      * regular font declared for the language, which the browser falls back to; null if the phone has none.
      */
-    fun find(support: LanguageSupport, serif: Boolean = false): Font? = runCatching {
-        val fonts = languageFonts(support.languageTag)
-        named(fonts, support, serif)
-            ?: fonts.filter { isSerif(it) == serif }.minByOrNull { abs(it.style.weight - FontStyle.FONT_WEIGHT_NORMAL) }
-    }.getOrNull()
+    fun find(support: LanguageSupport, serif: Boolean = false): Font? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
+        return runCatching {
+            val fonts = languageFonts(support.languageTag)
+            named(fonts, support, serif)
+                ?: fonts.filter { isSerif(it) == serif }.minByOrNull { abs(it.style.weight - FontStyle.FONT_WEIGHT_NORMAL) }
+        }.getOrNull()
+    }
 
     /**
      * The weight ranges of the language's sans-serif and serif faces where they are variable fonts. Only a file the
      * `local()` names resolve to counts: a range declared for a font that has one weight would keep the browser from
      * making it bold. Reads files once.
      */
-    fun weights(support: LanguageSupport): PageFonts.SystemWeights = weights.getOrPut(support.languageTag) {
-        runCatching {
-            val fonts = languageFonts(support.languageTag)
-            PageFonts.SystemWeights(
-                sans = named(fonts, support, serif = false)?.let(::weightRange),
-                serif = named(fonts, support, serif = true)?.let(::weightRange),
-            )
-        }.getOrDefault(PageFonts.SystemWeights())
+    fun weights(support: LanguageSupport): PageFonts.SystemWeights {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return PageFonts.SystemWeights()
+        return weights.getOrPut(support.languageTag) {
+            runCatching {
+                val fonts = languageFonts(support.languageTag)
+                PageFonts.SystemWeights(
+                    sans = named(fonts, support, serif = false)?.let(::weightRange),
+                    serif = named(fonts, support, serif = true)?.let(::weightRange),
+                )
+            }.getOrDefault(PageFonts.SystemWeights())
+        }
     }
 
     /** The range of [font]'s weight axis as CSS `font-weight`; null for a font with one weight. */
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun weightRange(font: Font): String? = runCatching { FontFiles.describe(font.buffer, font.ttcIndex)?.weightRange }.getOrNull()
 
     /**
      * The fonts Android declares for the language, or for its script alone: `fonts.xml` lists the Devanagari ones for
      * `und-Deva`, not for Hindi.
      */
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun languageFonts(languageTag: String): List<Font> {
         val language = Locale.forLanguageTag(languageTag).language
         val script = ULocale.addLikelySubtags(ULocale.forLanguageTag(languageTag)).script
@@ -61,6 +71,7 @@ object SystemFontFiles {
     }
 
     /** The first of [fonts] whose full or PostScript name is one of the page's `local()` names (case-insensitive). */
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun named(fonts: List<Font>, support: LanguageSupport, serif: Boolean): Font? {
         val names = (if (serif) support.systemFonts.serif else support.systemFonts.sans).map { it.lowercase() }.toSet()
         return fonts.firstOrNull { font ->
@@ -68,6 +79,7 @@ object SystemFontFiles {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun isSerif(font: Font): Boolean = font.file?.name?.contains("Serif") == true
 
     /** How a locale without a language reads: Java writes `und` as an empty language. */

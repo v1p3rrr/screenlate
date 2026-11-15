@@ -10,8 +10,8 @@
 
 ```
 git submodule update --init --recursive
-./gradlew assembleDebug
-./gradlew testDebugUnitTest
+./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest :build-logic:convention:test
+npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test
 ```
 
 Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build; they are named "Screenlate Dev", also in the text selection menu ("Look up in Screenlate Dev", `app/src/debug/res`). `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.

@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.languages
 
 import android.content.Context
+import android.os.Build
 import android.view.textclassifier.TextClassificationManager
 import android.view.textclassifier.TextLanguage
 import com.vpr.screenlate.core.common.languageCode
@@ -31,6 +32,7 @@ class DictionaryLanguageDetector @Inject constructor(@ApplicationContext private
 
     /** The language of [text] when the system's detector is confident about it. */
     private fun identify(text: String): String? = runCatching {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@runCatching null
         val classifier = context.getSystemService(TextClassificationManager::class.java)?.textClassifier
             ?: return@runCatching null
         val result = classifier.detectLanguage(TextLanguage.Request.Builder(text).build())

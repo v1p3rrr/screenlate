@@ -1,6 +1,7 @@
 package com.vpr.screenlate.update
 
 import android.content.Intent
+import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
@@ -144,7 +145,15 @@ private fun UpdateProgress(release: Release, state: UpdateState, viewModel: Upda
                 Hint(stringResource(R.string.update_allow_installs_hint))
                 OutlinedButton(
                     onClick = {
-                        val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, "package:${context.packageName}".toUri())
+                        val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES
+                        } else {
+                            Settings.ACTION_SECURITY_SETTINGS
+                        }
+                        val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            "package:${context.packageName}".toUri()
+                        } else null
+                        val intent = if (uri != null) Intent(action, uri) else Intent(action)
                         runCatching { context.startActivity(intent) }
                     },
                     modifier = Modifier.fillMaxWidth(),

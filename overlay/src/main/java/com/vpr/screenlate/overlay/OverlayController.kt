@@ -1874,11 +1874,19 @@ class OverlayController(
      */
     private fun haptic() {
         val vibrator = vibrator?.takeIf { settings.haptics } ?: return
-        val click = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            vibrator.vibrate(click, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_MEDIA))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val click = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                vibrator.vibrate(click, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_MEDIA))
+            } else {
+                vibrator.vibrate(click)
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
-            vibrator.vibrate(click)
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(20)
         }
     }
 
