@@ -328,4 +328,64 @@ class PaletteGeneratorTest {
         assertEquals("rgba(0, 0, 0, 1)", ColorMath.toRgbaString(0xFF000000.toInt(), 1f))
         assertEquals("rgba(255, 255, 255, 0)", ColorMath.toRgbaString(0xFFFFFFFF.toInt(), 0f))
     }
+
+    @Test
+    fun monochromeBlackWhiteAndGrayPalettes() {
+        val seeds = intArrayOf(
+            0xFF000000.toInt(), // Pure black
+            0xFFFFFFFF.toInt(), // Pure white
+            0xFF808080.toInt(), // Mid gray
+            0xFF1A1A1A.toInt(), // Near black
+            0xFFF5F5F5.toInt(), // Near white
+            0xFF4A4A4A.toInt(), // Dark gray
+        )
+        for (seed in seeds) {
+            assertTrue("Seed ${ColorMath.toHex(seed)} should be achromatic", ColorMath.isAchromatic(seed))
+            val palette = PaletteGenerator.generate(seed)
+
+            // Accents must have R == G == B (zero hue/saturation, no red/brown)
+            val lightFill = palette.lightAccent.fill
+            assertEquals(ColorMath.red(lightFill), ColorMath.green(lightFill))
+            assertEquals(ColorMath.green(lightFill), ColorMath.blue(lightFill))
+
+            val darkFill = palette.darkAccent.fill
+            assertEquals(ColorMath.red(darkFill), ColorMath.green(darkFill))
+            assertEquals(ColorMath.green(darkFill), ColorMath.blue(darkFill))
+
+            val lightLine = palette.lightAccent.line
+            assertEquals(ColorMath.red(lightLine), ColorMath.green(lightLine))
+            assertEquals(ColorMath.green(lightLine), ColorMath.blue(lightLine))
+
+            val darkLine = palette.darkAccent.line
+            assertEquals(ColorMath.red(darkLine), ColorMath.green(darkLine))
+            assertEquals(ColorMath.green(darkLine), ColorMath.blue(darkLine))
+
+            // Primary, secondary, tertiary colors must be pure monochrome
+            for (scheme in listOf(palette.lightScheme, palette.darkScheme)) {
+                assertEquals(ColorMath.red(scheme.primary), ColorMath.green(scheme.primary))
+                assertEquals(ColorMath.green(scheme.primary), ColorMath.blue(scheme.primary))
+
+                assertEquals(ColorMath.red(scheme.primaryContainer), ColorMath.green(scheme.primaryContainer))
+                assertEquals(ColorMath.green(scheme.primaryContainer), ColorMath.blue(scheme.primaryContainer))
+
+                assertEquals(ColorMath.red(scheme.secondary), ColorMath.green(scheme.secondary))
+                assertEquals(ColorMath.green(scheme.secondary), ColorMath.blue(scheme.secondary))
+
+                assertEquals(ColorMath.red(scheme.secondaryContainer), ColorMath.green(scheme.secondaryContainer))
+                assertEquals(ColorMath.green(scheme.secondaryContainer), ColorMath.blue(scheme.secondaryContainer))
+
+                assertEquals(ColorMath.red(scheme.tertiary), ColorMath.green(scheme.tertiary))
+                assertEquals(ColorMath.green(scheme.tertiary), ColorMath.blue(scheme.tertiary))
+
+                assertEquals(ColorMath.red(scheme.tertiaryContainer), ColorMath.green(scheme.tertiaryContainer))
+                assertEquals(ColorMath.green(scheme.tertiaryContainer), ColorMath.blue(scheme.tertiaryContainer))
+
+                // Contrast checks
+                assertTrue(ColorMath.contrastRatio(scheme.primary, scheme.onPrimary) >= 4.5f)
+                assertTrue(ColorMath.contrastRatio(scheme.primaryContainer, scheme.onPrimaryContainer) >= 4.5f)
+                assertTrue(ColorMath.contrastRatio(scheme.secondaryContainer, scheme.onSecondaryContainer) >= 4.5f)
+                assertTrue(ColorMath.contrastRatio(scheme.tertiaryContainer, scheme.onTertiaryContainer) >= 4.5f)
+            }
+        }
+    }
 }

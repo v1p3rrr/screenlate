@@ -243,6 +243,21 @@ object ColorMath {
     fun isLightColor(color: Int, threshold: Float = 0.60f): Boolean = luminance(color) > threshold
 
     /**
+     * Returns true if [color] is achromatic (black, white, or neutral gray with minimal chroma).
+     */
+    fun isAchromatic(color: Int): Boolean {
+        val r = red(color)
+        val g = green(color)
+        val b = blue(color)
+        val max = maxOf(r, maxOf(g, b))
+        val min = minOf(r, minOf(g, b))
+        if (max - min <= 18) return true
+        if (max <= 15 || min >= 245) return true
+        val hsl = rgbToHsl(color)
+        return hsl[1] < 0.08f || hsl[2] < 0.04f || hsl[2] > 0.97f
+    }
+
+    /**
      * Rotates a hue value by [degrees] along the color circle [0f, 360f).
      */
     fun shiftHue(hue: Float, degrees: Float): Float = ((hue + degrees) % 360f + 360f) % 360f

@@ -139,6 +139,10 @@ object PaletteGenerator {
             )
         }
 
+        if (ColorMath.isAchromatic(seedColor)) {
+            return generateMonochrome(seedColor, isLight, fgColor, bColor)
+        }
+
         val hsl = ColorMath.rgbToHsl(seedColor)
         val h = hsl[0]
         val s = hsl[1]
@@ -308,6 +312,177 @@ object PaletteGenerator {
         val lineDark = ColorMath.readableForeground(fillDark, surfaceVariantDark, WHITE, CONTROL_CONTRAST)
         val onFillDark = tone(accentH, tertiarySat, 0.12f)
         val darkAccent = AccentColors(fill = fillDark, onFill = onColor(onFillDark, fillDark), line = lineDark)
+
+        return ThemePalette(
+            seedColor = seedColor,
+            lightScheme = lightScheme,
+            darkScheme = darkScheme,
+            lightAccent = lightAccent,
+            darkAccent = darkAccent,
+            bubbleColor = bColor,
+            bubbleForegroundColor = fgColor,
+            isBubbleLight = isLight,
+        )
+    }
+
+    /**
+     * Generates a pure monochrome (achromatic) palette for black, white, and neutral gray seeds.
+     * Guarantees zero hue distortion (R == G == B) across all scheme surfaces, containers, and accents.
+     */
+    private fun generateMonochrome(
+        seedColor: Int,
+        isLight: Boolean,
+        fgColor: Int,
+        bColor: Int,
+    ): ThemePalette {
+        fun tone(lightness: Float): Int = ColorMath.hslToRgb(0f, 0f, lightness)
+
+        // --- Light Scheme (Clean minimalist white/gray/charcoal) ---
+        val primaryLight = tone(0.18f)
+        val onPrimaryLight = WHITE
+        val primaryContainerLight = tone(0.90f)
+        val onPrimaryContainerLight = tone(0.12f)
+
+        val secondaryLight = tone(0.38f)
+        val onSecondaryLight = WHITE
+        val secondaryContainerLight = tone(0.93f)
+        val onSecondaryContainerLight = tone(0.16f)
+
+        val tertiaryLight = tone(0.45f)
+        val onTertiaryLight = WHITE
+        val tertiaryContainerLight = tone(0.94f)
+        val onTertiaryContainerLight = tone(0.20f)
+
+        val backgroundLight = tone(0.99f)
+        val onBackgroundLight = CHARCOAL
+        val surfaceLight = backgroundLight
+        val onSurfaceLight = CHARCOAL
+        val surfaceVariantLight = tone(0.91f)
+        val onSurfaceVariantLight = tone(0.28f)
+        val inverseSurfaceLight = tone(0.18f)
+        val inverseOnSurfaceLight = tone(0.95f)
+
+        val outlineLight = tone(0.50f)
+        val outlineVariantLight = tone(0.80f)
+        val surfaceContainerLowestLight = WHITE
+        val surfaceContainerLowLight = tone(0.97f)
+        val surfaceContainerMidLight = tone(0.94f)
+        val surfaceContainerHighLight = tone(0.92f)
+        val surfaceContainerHighestLight = tone(0.89f)
+
+        val lightScheme = SchemeColors(
+            primary = primaryLight,
+            onPrimary = onPrimaryLight,
+            primaryContainer = primaryContainerLight,
+            onPrimaryContainer = onPrimaryContainerLight,
+            inversePrimary = tone(0.82f),
+            secondary = secondaryLight,
+            onSecondary = onSecondaryLight,
+            secondaryContainer = secondaryContainerLight,
+            onSecondaryContainer = onSecondaryContainerLight,
+            tertiary = tertiaryLight,
+            onTertiary = onTertiaryLight,
+            tertiaryContainer = tertiaryContainerLight,
+            onTertiaryContainer = onTertiaryContainerLight,
+            background = backgroundLight,
+            onBackground = onBackgroundLight,
+            surface = surfaceLight,
+            onSurface = onSurfaceLight,
+            surfaceVariant = surfaceVariantLight,
+            onSurfaceVariant = onSurfaceVariantLight,
+            inverseSurface = inverseSurfaceLight,
+            inverseOnSurface = inverseOnSurfaceLight,
+            error = 0xFFBA1A1A.toInt(),
+            onError = WHITE,
+            errorContainer = 0xFFFFDAD6.toInt(),
+            onErrorContainer = 0xFF93000A.toInt(),
+            outline = outlineLight,
+            outlineVariant = outlineVariantLight,
+            surfaceContainerLowest = surfaceContainerLowestLight,
+            surfaceContainerLow = surfaceContainerLowLight,
+            surfaceContainer = surfaceContainerMidLight,
+            surfaceContainerHigh = surfaceContainerHighLight,
+            surfaceContainerHighest = surfaceContainerHighestLight,
+        )
+
+        // --- Dark Scheme (Sleek deep-dark/charcoal/silver) ---
+        val primaryDark = tone(0.92f)
+        val onPrimaryDark = tone(0.10f)
+        val primaryContainerDark = tone(0.28f)
+        val onPrimaryContainerDark = tone(0.92f)
+
+        val secondaryDark = tone(0.80f)
+        val onSecondaryDark = tone(0.14f)
+        val secondaryContainerDark = tone(0.25f)
+        val onSecondaryContainerDark = tone(0.90f)
+
+        val tertiaryDark = tone(0.76f)
+        val onTertiaryDark = tone(0.16f)
+        val tertiaryContainerDark = tone(0.24f)
+        val onTertiaryContainerDark = tone(0.88f)
+
+        val backgroundDark = tone(0.07f)
+        val onBackgroundDark = tone(0.90f)
+        val surfaceDark = backgroundDark
+        val onSurfaceDark = onBackgroundDark
+        val surfaceVariantDark = tone(0.16f)
+        val onSurfaceVariantDark = tone(0.78f)
+        val inverseSurfaceDark = tone(0.90f)
+        val inverseOnSurfaceDark = tone(0.18f)
+
+        val outlineDark = tone(0.55f)
+        val outlineVariantDark = tone(0.24f)
+        val surfaceContainerLowestDark = tone(0.04f)
+        val surfaceContainerLowDark = tone(0.09f)
+        val surfaceContainerMidDark = tone(0.12f)
+        val surfaceContainerHighDark = tone(0.16f)
+        val surfaceContainerHighestDark = tone(0.20f)
+
+        val darkScheme = SchemeColors(
+            primary = primaryDark,
+            onPrimary = onPrimaryDark,
+            primaryContainer = primaryContainerDark,
+            onPrimaryContainer = onPrimaryContainerDark,
+            inversePrimary = tone(0.40f),
+            secondary = secondaryDark,
+            onSecondary = onSecondaryDark,
+            secondaryContainer = secondaryContainerDark,
+            onSecondaryContainer = onSecondaryContainerDark,
+            tertiary = tertiaryDark,
+            onTertiary = onTertiaryDark,
+            tertiaryContainer = tertiaryContainerDark,
+            onTertiaryContainer = onTertiaryContainerDark,
+            background = backgroundDark,
+            onBackground = onBackgroundDark,
+            surface = surfaceDark,
+            onSurface = onSurfaceDark,
+            surfaceVariant = surfaceVariantDark,
+            onSurfaceVariant = onSurfaceVariantDark,
+            inverseSurface = inverseSurfaceDark,
+            inverseOnSurface = inverseOnSurfaceDark,
+            error = 0xFFFFB4AB.toInt(),
+            onError = 0xFF690005.toInt(),
+            errorContainer = 0xFF93000A.toInt(),
+            onErrorContainer = 0xFFFFDAD6.toInt(),
+            outline = outlineDark,
+            outlineVariant = outlineVariantDark,
+            surfaceContainerLowest = surfaceContainerLowestDark,
+            surfaceContainerLow = surfaceContainerLowDark,
+            surfaceContainer = surfaceContainerMidDark,
+            surfaceContainerHigh = surfaceContainerHighDark,
+            surfaceContainerHighest = surfaceContainerHighestDark,
+        )
+
+        // --- Accents (Clean high-contrast monochrome, zero red/brown) ---
+        val fillLight = tone(0.18f)
+        val onFillLight = WHITE
+        val lineLight = tone(0.20f)
+        val lightAccent = AccentColors(fill = fillLight, onFill = onFillLight, line = lineLight)
+
+        val fillDark = tone(0.90f)
+        val onFillDark = tone(0.12f)
+        val lineDark = tone(0.90f)
+        val darkAccent = AccentColors(fill = fillDark, onFill = onFillDark, line = lineDark)
 
         return ThemePalette(
             seedColor = seedColor,
