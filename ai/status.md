@@ -6,6 +6,8 @@
   - Allowed localhost and loopback hosts (`localhost`, `127.0.0.1`, `::1`, `10.0.2.2`) through `OfflineInterceptor` so local custom audio endpoints continue working in offline mode.
   - Added dedicated `AudioError.Kind.OFFLINE_MODE` and `TranslationError.Kind.OFFLINE_MODE`, replacing obfuscated R8 class names with clear messages ("Forced Offline Mode is active" / "Включён принудительный офлайн-режим").
   - Added persistent informational banner in Translation settings screen when Forced Offline Mode is active.
+  - Added informational banner `OfflineNoticeCard` in Audio settings screen when Forced Offline Mode is active, explaining that online audio sources are disabled and text-to-speech (TTS) or cached clips are used for pronunciation (even if TTS is not listed in sources). Added localized strings for `audio_offline_notice` across all 17 locales.
+  - Deduplicated `OfflineNoticeCard` component across Dictionaries, Translation, and Audio settings screens.
   - Disabled "Check for updates" buttons with explanatory hints in both Dictionaries screen and About screen when offline.
   - Moved Forced Offline Mode switch in App Settings to sit cleanly between Backup and About, separated by subtle dividers.
   - In `PopupController` and `popup.js`, tracked word screen anchor bounds (`IoU >= 0.4`) and passed `refined: Boolean`: moving the aim point to another instance of the same word resets scroll to 0, while a refined whole-screen scan arriving for the current aimed word preserves scroll position and pushed link views.
