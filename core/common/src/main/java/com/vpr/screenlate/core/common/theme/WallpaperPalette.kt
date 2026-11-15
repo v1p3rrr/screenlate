@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.flowOf
 fun AppPaletteConfig.withWallpaperColor(context: Context): AppPaletteConfig =
     withWallpaperColor(context.wallpaperAccent())
 
+/** Resolves the palette config with the user's wallpaper accent color, or keeps the existing config. */
 fun AppPaletteConfig.withWallpaperColor(accent: Int?): AppPaletteConfig =
     if (useSystemWallpaper && accent != null) copy(preset = null, customSeedColor = accent) else this
 

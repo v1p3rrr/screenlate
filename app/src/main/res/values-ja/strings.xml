@@ -179,6 +179,7 @@
     <string name="anki_behavior_new">新しく追加</string>
 
     <string name="audio_title">音声</string>
+    <string name="audio_offline_notice">強制オフラインモードが有効です。オンラインの音声ソースは無効になっています。ソース一覧に追加されていない場合でもテキスト読み上げ（TTS）が使用され、キャッシュされた音声も再生されます。</string>
     <string name="audio_playback">再生</string>
     <string name="audio_auto_play">音声の自動再生</string>
     <string name="audio_sources_hint">上から順に試し、最初に音声が見つかったものを再生してノートに入れます。ソースをタップすると編集できます。</string>

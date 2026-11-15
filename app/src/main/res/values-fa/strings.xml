@@ -181,6 +181,7 @@
     <string name="anki_behavior_new">افزودن یادداشت جدید</string>
 
     <string name="audio_title">صوت</string>
+    <string name="audio_offline_notice">حالت آفلاین اجباری فعال است. منابع صوتی آنلاین غیرفعال هستند؛ از تبدیل متن به گفتار (TTS، حتی اگر به منابع اضافه نشده باشد) و فایل‌های صوتی ذخیره‌شده برای تلفظ استفاده می‌شود.</string>
     <string name="audio_playback">پخش</string>
     <string name="audio_auto_play">پخش خودکار صوت</string>
     <string name="audio_sources_hint">منابع از بالا به پایین امتحان می‌شوند؛ اولین منبعی که صوت داشته باشد پخش می‌شود و در یادداشت‌ها قرار می‌گیرد. برای ویرایش یک منبع، روی آن ضربه بزنید.</string>

@@ -183,6 +183,7 @@
     <string name="anki_behavior_new">Añadir igualmente</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_offline_notice">El modo sin conexión forzado está activo. Las fuentes de audio en línea están desactivadas; se utiliza la síntesis de voz (TTS) para la pronunciación (incluso si no está añadida a las fuentes) y el audio en caché.</string>
     <string name="audio_playback">Reproducción</string>
     <string name="audio_auto_play">Reproducir audio automáticamente</string>
     <string name="audio_sources_hint">Las fuentes se prueban de arriba abajo; la primera que tiene audio se reproduce y va a las notas. Toca una fuente para editarla.</string>

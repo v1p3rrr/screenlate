@@ -186,6 +186,7 @@
     <string name="anki_behavior_new">Добавить новую</string>
 
     <string name="audio_title">Аудио</string>
+    <string name="audio_offline_notice">Включён принудительный офлайн-режим. Сетевые источники звука отключены; для произношения используется синтез речи (TTS), даже если он не добавлен в список источников, и сохранённые аудиозаписи.</string>
     <string name="audio_playback">Воспроизведение</string>
     <string name="audio_auto_play">Автовоспроизведение аудио</string>
     <string name="audio_sources_hint">Источники перебираются сверху вниз; воспроизводится и попадает в карточки первое найденное аудио. Нажмите на источник, чтобы изменить его.</string>

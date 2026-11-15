@@ -15,6 +15,7 @@ import com.vpr.screenlate.core.anki.audio.Pronunciation
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -63,10 +64,14 @@ class AudioSettingsViewModel @Inject constructor(
     private val finder: AudioFinder,
     private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
+    private val appSettings: AppSettingsRepository,
     dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
     savedState: SavedStateHandle,
 ) : ViewModel() {
+    val offlineMode: StateFlow<Boolean> =
+        appSettings.offlineMode.stateIn(viewModelScope, SharingStarted.Eagerly, appSettings.cachedOfflineMode ?: false)
+
     val shown = ShownLanguage(profiles, viewModelScope)
 
     val settings: StateFlow<AudioSettings?> = shown.language

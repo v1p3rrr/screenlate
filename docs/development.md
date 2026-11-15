@@ -210,7 +210,7 @@ them.
 ## Tests
 
 - `./gradlew testDebugUnitTest`: JVM unit tests of every module.
-- `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`, `reading.js`) in a simulated DOM.
+- `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`, `reading.js`) in a simulated DOM and the Android 7 WebView syntax baseline.
 - `node --test scripts/catalog/generate.test.mjs`: the catalog generator, against a recorded listing.
 - `node --test scripts/yomitan-language/glue.test.mjs`: the committed language bundles, called as the engine calls them
   (Turkish case pairs).

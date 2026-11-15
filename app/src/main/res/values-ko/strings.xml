@@ -179,6 +179,7 @@
     <string name="anki_behavior_new">새로 추가</string>
 
     <string name="audio_title">오디오</string>
+    <string name="audio_offline_notice">강제 오프라인 모드가 활성화되어 있습니다. 온라인 오디오 소스가 비활성화되었습니다. 소스 목록에 추가되지 않았더라도 텍스트 음성 변환(TTS) 및 캐시된 오디오가 발음에 사용됩니다.</string>
     <string name="audio_playback">재생</string>
     <string name="audio_auto_play">오디오 자동 재생</string>
     <string name="audio_sources_hint">위에서부터 차례로 시도하며, 오디오가 있는 첫 번째 소스를 재생하고 노트에 넣습니다. 소스를 탭하면 편집할 수 있습니다.</string>

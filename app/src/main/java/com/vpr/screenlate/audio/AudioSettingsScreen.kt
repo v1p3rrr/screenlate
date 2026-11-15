@@ -18,6 +18,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.languages.LanguageCard
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
+import com.vpr.screenlate.ui.components.OfflineNoticeCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.formContent
 
@@ -26,6 +27,7 @@ import com.vpr.screenlate.ui.components.formContent
 fun AudioSettingsScreen(onBack: () -> Unit, viewModel: AudioSettingsViewModel = hiltViewModel()) {
     val profiles by viewModel.shown.profiles.collectAsStateWithLifecycle()
     val shown by viewModel.shown.language.collectAsStateWithLifecycle()
+    val offline by viewModel.offlineMode.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
 
     SettingsScaffold(
@@ -41,6 +43,9 @@ fun AudioSettingsScreen(onBack: () -> Unit, viewModel: AudioSettingsViewModel = 
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            if (offline) {
+                OfflineNoticeCard(stringResource(R.string.audio_offline_notice))
+            }
             if (profiles.several) {
                 LanguageCard(profiles, shown, { language ->
                     focusManager.clearFocus()

@@ -152,10 +152,15 @@ class AudioFinder internal constructor(
             if (kept != null && kept.fresh()) return@withContext kept.value
             clipCache.remove(key)
         }
+        if (isOffline()) {
+            cachedClip(term, reading, language)?.let { return@withContext it }
+        }
         var failed = false
         val started = clock()
         var position = 0
-        val asked = sources.withIndex().filter { it.value.type != AudioSourceType.TEXT_TO_SPEECH }
+        val effectiveSources = if (isOffline()) sources.filter(::isLocal) else sources
+        val asked = effectiveSources.withIndex().filter { it.value.type != AudioSourceType.TEXT_TO_SPEECH }
+        if (asked.isEmpty()) return@withContext null
         val best = coroutineScope {
             val answers = asked.map { (index, source) -> async { firstClip(index, source, term, reading, language, regions) } }
             var best: Ranked? = null
@@ -207,6 +212,9 @@ class AudioFinder internal constructor(
         return speech.takeIf { sources.any { it.type == AudioSourceType.TEXT_TO_SPEECH } }
     }
 
+    private fun termKey(term: String, reading: String): String =
+        sha256("$term\n$reading".toByteArray()).take(16)
+
     private fun cachedClip(term: String, reading: String, language: Language): AudioClip? {
         synchronized(clipCache) {
             val entry = clipCache.entries.firstOrNull { (key, kept) ->
@@ -215,7 +223,7 @@ class AudioFinder internal constructor(
             if (entry?.value?.value != null) return entry.value.value
         }
         if (!directory.exists()) return null
-        val prefix = "${sha256("$term\n$reading".toByteArray()).take(16)}_"
+        val prefix = "${termKey(term, reading)}_"
         val diskFile = directory.listFiles()?.firstOrNull { it.name.startsWith(prefix) && !it.name.endsWith(".meta") && it.length() > 0 }
         if (diskFile != null) {
             val metaFile = File(directory, "${diskFile.nameWithoutExtension}.meta")
@@ -473,6 +481,23 @@ class AudioFinder internal constructor(
     private suspend fun download(url: String, term: String, reading: String, deadline: Deadline, listIsError: Boolean): AudioClip? {
         val key = "$term\n$reading\n$url"
         downloads[key]?.let { kept -> if (kept.fresh() && kept.value.file.exists()) return kept.value }
+        val termKey = termKey(term, reading)
+        val urlKey = sha256(url.toByteArray()).take(8)
+        if (isOffline()) {
+            val diskFile = directory.listFiles()?.firstOrNull {
+                it.name.startsWith("${termKey}_$urlKey.") && !it.name.endsWith(".meta") && it.length() > 0
+            } ?: if (url.isEmpty()) directory.listFiles()?.firstOrNull {
+                it.name.startsWith("${termKey}_") && !it.name.endsWith(".meta") && it.length() > 0
+            } else null
+            if (diskFile != null) {
+                val extension = diskFile.extension.ifEmpty { "mp3" }
+                val clip = AudioClip(diskFile, url, extension)
+                downloads.values.removeAll { !it.fresh() }
+                downloads[key] = Kept(clip, clock())
+                return clip
+            }
+            if (!LocalNetwork.isLoopbackUrl(url)) return null
+        }
         val clip = execute(request(url).build(), deadline) { response ->
             if (response.code >= 500) throw HttpStatusException(response.code)
             if (!response.isSuccessful) return@execute null
@@ -490,8 +515,6 @@ class AudioFinder internal constructor(
             val extension = extensionFor(contentType, url)
             // The system clears the cache directory when storage runs low, also while the app runs.
             directory.mkdirs()
-            val termKey = sha256("$term\n$reading".toByteArray()).take(16)
-            val urlKey = sha256(url.toByteArray()).take(8)
             val file = File(directory, "${termKey}_$urlKey.$extension")
             file.writeBytes(bytes)
             File(directory, "${termKey}_$urlKey.meta").writeText(url)

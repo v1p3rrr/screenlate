@@ -77,26 +77,9 @@ fun TranslationSettingsScreen(onBack: () -> Unit, viewModel: TranslationSettings
             val current = settings ?: return@Column
             val offline by viewModel.offlineMode.collectAsStateWithLifecycle()
             if (offline) {
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_cloud_off),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                        Text(
-                            text = stringResource(R.string.translation_offline_notice),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-                }
+                com.vpr.screenlate.ui.components.OfflineNoticeCard(
+                    message = stringResource(R.string.translation_offline_notice),
+                )
             }
             SentenceCard(current, viewModel)
             ServicesCard(current, viewModel)

@@ -181,6 +181,7 @@
     <string name="anki_behavior_new">Trotzdem hinzufügen</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_offline_notice">Erzwungener Offline-Modus ist aktiv. Online-Audioquellen sind deaktiviert; für die Aussprache wird Text-to-Speech (TTS) verwendet (auch wenn nicht in den Quellen hinzugefügt) sowie zwischengespeicherte Audiodateien.</string>
     <string name="audio_playback">Wiedergabe</string>
     <string name="audio_auto_play">Audio automatisch abspielen</string>
     <string name="audio_sources_hint">Quellen werden von oben nach unten probiert; die erste mit Audio wird abgespielt und kommt in die Notizen. Tippe auf eine Quelle, um sie zu bearbeiten.</string>

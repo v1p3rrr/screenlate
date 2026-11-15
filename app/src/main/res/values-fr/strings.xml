@@ -183,6 +183,7 @@
     <string name="anki_behavior_new">Ajouter quand même</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_offline_notice">Le mode hors ligne forcé est actif. Les sources audio en ligne sont désactivées ; la synthèse vocale (TTS) est utilisée pour la prononciation (même si elle n’est pas ajoutée aux sources), ainsi que les audios en cache.</string>
     <string name="audio_playback">Lecture</string>
     <string name="audio_auto_play">Lecture automatique de l’audio</string>
     <string name="audio_sources_hint">Les sources sont essayées de haut en bas ; la première qui a de l’audio est lue et va dans les notes. Touchez une source pour la modifier.</string>

@@ -179,6 +179,7 @@
     <string name="anki_behavior_new">仍然新增</string>
 
     <string name="audio_title">音訊</string>
+    <string name="audio_offline_notice">強制離線模式已啟用。線上音訊來源已停用；發音將使用文字轉語音（TTS，即使未新增至來源清單中），以及已快取的音訊。</string>
     <string name="audio_playback">播放</string>
     <string name="audio_auto_play">自動播放音訊</string>
     <string name="audio_sources_hint">從上到下依次嘗試；第一個有音訊的來源會被播放並寫入筆記。輕觸來源可進行編輯。</string>

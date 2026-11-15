@@ -282,28 +282,10 @@ fun DictionariesScreen(
 
             SectionTitle(stringResource(R.string.dictionaries_catalog), anchors.at(1))
             if (state.offlineMode) {
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_cloud_off),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                        Text(
-                            text = stringResource(R.string.dictionaries_catalog_offline_notice),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-                }
+                com.vpr.screenlate.ui.components.OfflineNoticeCard(
+                    message = stringResource(R.string.dictionaries_catalog_offline_notice),
+                    modifier = Modifier.padding(vertical = 4.dp),
+                )
             }
             // Takes the item instead of capturing it, so the cards whose item did not change skip a progress update.
             val download = { item: CatalogItem ->

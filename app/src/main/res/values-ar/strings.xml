@@ -189,6 +189,7 @@
     <string name="anki_behavior_new">إضافة جديدة</string>
 
     <string name="audio_title">الصوت</string>
+    <string name="audio_offline_notice">وضع عدم الاتصال الإجباري مفعّل. تم تعطيل مصادر الصوت عبر الإنترنت؛ يتم استخدام تحويل النص إلى كلام (TTS) للنطق (حتى لو لم تتم إضافته إلى المصادر) والصوت المخزن مؤقتًا.</string>
     <string name="audio_playback">التشغيل</string>
     <string name="audio_auto_play">تشغيل الصوت تلقائيًا</string>
     <string name="audio_sources_hint">تُجرَّب المصادر من الأعلى إلى الأسفل، ويُشغَّل الصوت من أول مصدر يتوفر فيه ويُضاف إلى الملاحظات. انقر على مصدر لتعديله.</string>

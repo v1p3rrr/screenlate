@@ -185,6 +185,7 @@
     <string name="anki_behavior_new">Dodaj mimo to</string>
 
     <string name="audio_title">Dźwięk</string>
+    <string name="audio_offline_notice">Wymuszony tryb offline jest aktywny. Źródła audio online są wyłączone; do wymowy używany jest syntezator mowy (TTS, nawet jeśli nie dodano go do listy źródeł) oraz zapisany dźwięk.</string>
     <string name="audio_playback">Odtwarzanie</string>
     <string name="audio_auto_play">Automatyczne odtwarzanie dźwięku</string>
     <string name="audio_sources_hint">Źródła są sprawdzane od góry do dołu; pierwsze z nagraniem jest odtwarzane i trafia do notatek. Dotknij źródła, aby je edytować.</string>

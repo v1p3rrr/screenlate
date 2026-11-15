@@ -185,6 +185,7 @@
     <string name="anki_behavior_new">Add new</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_offline_notice">Forced Offline Mode is active. Online audio sources are disabled; text-to-speech (TTS) is used for pronunciation (even if not added to sources), along with cached audio.</string>
     <string name="audio_playback">Playback</string>
     <string name="audio_auto_play">Autoplay audio</string>
     <string name="audio_sources_hint">Tried from top to bottom; the first one with audio plays and goes into notes. Tap a source to edit it.</string>

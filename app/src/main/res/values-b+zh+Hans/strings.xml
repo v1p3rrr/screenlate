@@ -179,6 +179,7 @@
     <string name="anki_behavior_new">仍然添加</string>
 
     <string name="audio_title">音频</string>
+    <string name="audio_offline_notice">强制离线模式已启用。在线音频源已禁用；发音将使用文字转语音（TTS，即使未添加到源列表中），以及已缓存的音频。</string>
     <string name="audio_playback">播放</string>
     <string name="audio_auto_play">自动播放音频</string>
     <string name="audio_sources_hint">从上到下依次尝试；第一个有音频的来源会被播放并写入笔记。点按来源可进行编辑。</string>

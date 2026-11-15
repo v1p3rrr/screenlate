@@ -183,6 +183,7 @@
     <string name="anki_behavior_new">Aggiungi comunque</string>
 
     <string name="audio_title">Audio</string>
+    <string name="audio_offline_notice">La modalità offline forzata è attiva. Le sorgenti audio online sono disattivate; per la pronuncia viene utilizzata la sintesi vocale (TTS, anche se non aggiunta alle sorgenti) e l’audio memorizzato nella cache.</string>
     <string name="audio_playback">Riproduzione</string>
     <string name="audio_auto_play">Riproduzione automatica dell’audio</string>
     <string name="audio_sources_hint">Le fonti vengono provate dall’alto in basso; la prima con un audio viene riprodotta e finisce nelle note. Tocca una fonte per modificarla.</string>

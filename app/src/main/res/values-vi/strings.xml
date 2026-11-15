@@ -179,6 +179,7 @@
     <string name="anki_behavior_new">Vẫn thêm mới</string>
 
     <string name="audio_title">Âm thanh</string>
+    <string name="audio_offline_notice">Chế độ ngoại tuyến bắt buộc đang bật. Các nguồn âm thanh trực tuyến bị tắt; phát âm sẽ sử dụng chuyển văn bản thành giọng nói (TTS, ngay cả khi chưa thêm vào danh sách nguồn) và âm thanh đã lưu trong bộ nhớ đệm.</string>
     <string name="audio_playback">Phát</string>
     <string name="audio_auto_play">Tự động phát âm thanh</string>
     <string name="audio_sources_hint">Các nguồn được thử lần lượt từ trên xuống; nguồn đầu tiên có âm thanh sẽ được phát và đưa vào ghi chú. Chạm vào một nguồn để sửa.</string>

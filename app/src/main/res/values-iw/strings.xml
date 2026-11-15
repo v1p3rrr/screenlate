@@ -183,6 +183,7 @@
     <string name="anki_behavior_new">הוספת רשומה חדשה</string>
 
     <string name="audio_title">שמע</string>
+    <string name="audio_offline_notice">מצב לא מקוון מאולץ פעיל. מקורות שמע מקוונים מושבתים; נעשה שימוש בהקראת טקסט (TTS) להגייה (גם אם לא נוספה למקורות) וכן בשמע שנשמר במטמון.</string>
     <string name="audio_playback">השמעה</string>
     <string name="audio_auto_play">השמעת שמע אוטומטית</string>
     <string name="audio_sources_hint">המקורות נבדקים מלמעלה למטה; השמע מהמקור הראשון שיש בו שמע מושמע ונכנס לרשומות. כדי לערוך מקור, יש להקיש עליו.</string>

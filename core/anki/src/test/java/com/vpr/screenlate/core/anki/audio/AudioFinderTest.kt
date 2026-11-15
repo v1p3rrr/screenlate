@@ -705,4 +705,39 @@ class AudioFinderTest {
         assertThat(retrieved.file.name).isEqualTo(clip!!.file.name)
         assertThat(requests).isEmpty()
     }
+
+    @Test
+    fun `offline mode returns cached clip for find and downloads cached candidate`() = runBlocking<Unit> {
+        val cacheDir = folder.newFolder("note_offline_cache")
+        routes["/a.mp3"] = { audio() }
+        sources(AudioSource(AudioSourceType.URL, server.url("/a.mp3").toString()))
+
+        val onlineFinder = AudioFinder(cacheDir, client, settings, isOffline = { false })
+        val clip = onlineFinder.find("猫", "ねこ", Language.JAPANESE)
+        assertThat(clip).isNotNull()
+        requests.clear()
+
+        val offlineFinder = AudioFinder(cacheDir, client, settings, isOffline = { true })
+        val found = offlineFinder.find("猫", "ねこ", Language.JAPANESE)
+        assertThat(found).isNotNull()
+        assertThat(found!!.file.name).isEqualTo(clip!!.file.name)
+        assertThat(requests).isEmpty()
+
+        val candidates = offlineFinder.candidates("猫", "ねこ", Language.JAPANESE)
+        assertThat(candidates).isNotEmpty()
+        val downloaded = offlineFinder.download(candidates.first(), "猫", "ねこ")
+        assertThat(downloaded).isNotNull()
+        assertThat(downloaded!!.file.name).isEqualTo(clip.file.name)
+        assertThat(requests).isEmpty()
+    }
+
+    @Test
+    fun `offline mode find returns null without network requests when not cached`() = runBlocking<Unit> {
+        val offlineFinder = AudioFinder(folder.newFolder("note_empty_offline"), client, settings, isOffline = { true })
+        sources(AudioSource(AudioSourceType.URL, "https://remote.audio.org/a.mp3"))
+
+        val found = offlineFinder.find("猫", "ねこ", Language.JAPANESE)
+        assertThat(found).isNull()
+        assertThat(requests).isEmpty()
+    }
 }
