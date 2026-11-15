@@ -352,7 +352,7 @@ private data class CatalogDocument(
  * versions fetch.
  */
 @Singleton
-class DictionaryCatalog internal constructor(
+class DictionaryCatalog constructor(
     @ApplicationContext private val context: Context,
     private val httpClient: OkHttpClient,
     private val isOffline: () -> Boolean = { false },

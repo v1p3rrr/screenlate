@@ -19,6 +19,7 @@ fun Project.disableAnkiDroidLintChecks() {
     extensions.getByType<CommonExtension>().lint.disable += listOf(
         "DuplicateCrowdInStrings",
         "DirectSystemCurrentTimeMillisUsage",
+        "DirectDateInstantiation",
     )
 }
 

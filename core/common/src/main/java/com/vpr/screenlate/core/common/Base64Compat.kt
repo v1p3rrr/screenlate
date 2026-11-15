@@ -1,5 +1,7 @@
 package com.vpr.screenlate.core.common
 
+import android.annotation.SuppressLint
+
 /**
  * Base64 encoder and decoder compatible with Android 7.0 (API 24) where [java.util.Base64] is missing,
  * and with JVM unit tests where [android.util.Base64] is not mocked.
@@ -39,6 +41,7 @@ object Base64Compat {
             android.util.Base64.decode(string, android.util.Base64.DEFAULT)
     }
 
+    @SuppressLint("NewApi")
     private object JvmBackend : Backend {
         override fun encodeToString(bytes: ByteArray): String =
             java.util.Base64.getEncoder().encodeToString(bytes)
