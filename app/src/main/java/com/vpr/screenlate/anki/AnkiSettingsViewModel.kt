@@ -304,6 +304,8 @@ class AnkiSettingsViewModel @Inject constructor(
 
     fun setTags(tags: String) = updateSettings { it.copy(tags = tags) }
 
+    fun setScreenshotByDefault(enabled: Boolean) = updateSettings { it.copy(screenshotByDefault = enabled) }
+
     fun setDuplicateCheck(enabled: Boolean) = updateSettings { it.copy(duplicateCheck = enabled) }
 
     fun setDuplicateScope(scope: DuplicateScope) = updateSettings { it.copy(duplicateScope = scope) }

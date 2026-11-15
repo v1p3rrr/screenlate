@@ -111,6 +111,7 @@ data class AnkiSettings(
     val duplicateScope: DuplicateScope = DuplicateScope.COLLECTION,
     val duplicateAllModels: Boolean = false,
     val duplicateBehavior: DuplicateBehavior = DuplicateBehavior.PREVENT,
+    val screenshotByDefault: Boolean = false,
 ) {
     val configured: Boolean get() = deckId != null && modelId != null && fields.values.any { it.isNotBlank() }
 

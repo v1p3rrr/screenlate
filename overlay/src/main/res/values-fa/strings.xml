@@ -31,6 +31,7 @@
     <string name="overlay_no_dictionaries">واژه‌نامه‌ها در حال نصب هستند. کمی بعد دوباره امتحان کنید.</string>
     <string name="overlay_no_dictionaries_on">هیچ واژه‌نامه دارای تعریفی روشن نیست. در بخش «واژه‌نامه‌ها» در Screenlate یکی را روشن یا اضافه کنید.</string>
     <string name="overlay_add_note">افزودن به Anki (برای افزودن تصویر، نگه دارید)</string>
+    <string name="overlay_add_note_screenshot">افزودن به Anki با تصویر (برای افزودن بدون تصویر، نگه دارید)</string>
     <string name="overlay_note_wait">متن هنوز در حال اصلاح است؛ صبر کنید تا نشانگر بارگذاری ناپدید شود.</string>
     <string name="overlay_play_audio">پخش صوت (برای انتخاب، نگه دارید)</string>
     <string name="anki_error">یادداشت اضافه نشد: %1$s</string>
@@ -64,8 +65,10 @@
     <string name="overlay_add_anyway_picture">افزودن در هر صورت، همراه با تصویر</string>
     <string name="overlay_open_in_anki">باز کردن در AnkiDroid</string>
     <string name="overlay_add_with_picture">افزودن با تصویر</string>
+    <string name="overlay_add_without_picture">افزودن بدون تصویر</string>
     <string name="overlay_update_note">به‌روزرسانی یادداشت (برای منو نگه دارید)</string>
     <string name="overlay_update_picture">به‌روزرسانی با تصویر</string>
+    <string name="overlay_update_without_picture">به‌روزرسانی بدون تصویر</string>
     <string name="overlay_audio_loading">در حال جستجوی صوت…</string>
     <string name="overlay_open_app">باز کردن تنظیمات Anki</string>
     <string name="audio_no_voice">هیچ صدای تبدیل متن به گفتار برای این زبان نصب نشده است.</string>

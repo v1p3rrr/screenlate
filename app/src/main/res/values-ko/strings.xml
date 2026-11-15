@@ -162,6 +162,10 @@
     <string name="anki_marker_furigana_plain_ru">강세 표시가 있는 단어(텍스트)</string>
     <string name="anki_marker_sentence_furigana_ru">기본형 단어에 강세 표시가 있는 문장</string>
     <string name="anki_marker_sentence_furigana_plain_ru">기본형 단어에 강세 표시가 있는 문장(텍스트)</string>
+    <string name="anki_adding">노트 추가</string>
+    <string name="anki_screenshot_by_default">기본적으로 스크린샷 포함</string>
+    <string name="anki_screenshot_by_default_hint">탭하면 스크린샷 영역을 선택하고, 길게 누르면 이미지 없이 추가합니다.</string>
+
     <string name="anki_duplicates">중복</string>
     <string name="anki_duplicate_check">중복 확인</string>
     <string name="anki_duplicate_scope">검색 범위</string>

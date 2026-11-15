@@ -288,6 +288,49 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
             }
         }
     }
+    SectionCard(title = stringResource(R.string.anki_adding)) {
+        SwitchRow(
+            label = stringResource(R.string.anki_screenshot_by_default),
+            checked = settings.screenshotByDefault,
+            onChange = viewModel::setScreenshotByDefault,
+            hint = stringResource(R.string.anki_screenshot_by_default_hint),
+        )
+        SwitchRow(stringResource(R.string.anki_duplicate_check), settings.duplicateCheck, viewModel::setDuplicateCheck)
+        if (settings.duplicateCheck) {
+            Text(stringResource(R.string.anki_duplicate_scope), style = MaterialTheme.typography.labelLarge)
+            Segments(
+                options = DuplicateScope.entries,
+                selected = settings.duplicateScope,
+                label = {
+                    stringResource(
+                        when (it) {
+                            DuplicateScope.COLLECTION -> R.string.anki_scope_collection
+                            DuplicateScope.DECK -> R.string.anki_scope_deck
+                            DuplicateScope.DECK_ROOT -> R.string.anki_scope_deck_root
+                        },
+                    )
+                },
+                onSelect = viewModel::setDuplicateScope,
+            )
+            SwitchRow(stringResource(R.string.anki_duplicate_all_models), settings.duplicateAllModels, viewModel::setDuplicateAllModels)
+            Text(stringResource(R.string.anki_duplicate_behavior), style = MaterialTheme.typography.labelLarge)
+            Segments(
+                options = DuplicateBehavior.entries,
+                selected = settings.duplicateBehavior,
+                label = {
+                    stringResource(
+                        when (it) {
+                            DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
+                            DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
+                            DuplicateBehavior.NEW -> R.string.anki_behavior_new
+                        },
+                    )
+                },
+                onSelect = viewModel::setDuplicateBehavior,
+            )
+        }
+    }
+
     SectionCard(title = stringResource(R.string.anki_note)) {
         val translation by viewModel.translationInNotes.collectAsStateWithLifecycle()
         translation?.let { on ->
@@ -350,43 +393,6 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     )
                 }
             }
-        }
-    }
-
-    SectionCard(title = stringResource(R.string.anki_duplicates)) {
-        SwitchRow(stringResource(R.string.anki_duplicate_check), settings.duplicateCheck, viewModel::setDuplicateCheck)
-        if (settings.duplicateCheck) {
-            Text(stringResource(R.string.anki_duplicate_scope), style = MaterialTheme.typography.labelLarge)
-            Segments(
-                options = DuplicateScope.entries,
-                selected = settings.duplicateScope,
-                label = {
-                    stringResource(
-                        when (it) {
-                            DuplicateScope.COLLECTION -> R.string.anki_scope_collection
-                            DuplicateScope.DECK -> R.string.anki_scope_deck
-                            DuplicateScope.DECK_ROOT -> R.string.anki_scope_deck_root
-                        },
-                    )
-                },
-                onSelect = viewModel::setDuplicateScope,
-            )
-            SwitchRow(stringResource(R.string.anki_duplicate_all_models), settings.duplicateAllModels, viewModel::setDuplicateAllModels)
-            Text(stringResource(R.string.anki_duplicate_behavior), style = MaterialTheme.typography.labelLarge)
-            Segments(
-                options = DuplicateBehavior.entries,
-                selected = settings.duplicateBehavior,
-                label = {
-                    stringResource(
-                        when (it) {
-                            DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
-                            DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
-                            DuplicateBehavior.NEW -> R.string.anki_behavior_new
-                        },
-                    )
-                },
-                onSelect = viewModel::setDuplicateBehavior,
-            )
         }
     }
 }

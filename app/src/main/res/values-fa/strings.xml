@@ -164,6 +164,10 @@
     <string name="anki_marker_furigana_plain_ru">واژه همراه با علامت تکیه، به‌صورت متن</string>
     <string name="anki_marker_sentence_furigana_ru">جمله با علامت تکیه روی واژه‌هایی که در صورت واژه‌نامه‌ای هستند</string>
     <string name="anki_marker_sentence_furigana_plain_ru">جمله با علامت تکیه روی واژه‌هایی که در صورت واژه‌نامه‌ای هستند، به‌صورت متن</string>
+    <string name="anki_adding">افزودن یادداشت‌ها</string>
+    <string name="anki_screenshot_by_default">اسکرین‌شات به‌طور پیش‌فرض</string>
+    <string name="anki_screenshot_by_default_hint">با ضربه زدن، ناحیه اسکرین‌شات انتخاب می‌شود؛ با نگه داشتن، بدون تصویر اضافه می‌شود.</string>
+
     <string name="anki_duplicates">موارد تکراری</string>
     <string name="anki_duplicate_check">بررسی موارد تکراری</string>
     <string name="anki_duplicate_scope">جستجو در</string>

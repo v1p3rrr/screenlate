@@ -164,6 +164,10 @@
     <string name="anki_marker_furigana_plain_ru">Vurgu işaretli kelime, metin olarak</string>
     <string name="anki_marker_sentence_furigana_ru">Sözlük biçimindeki kelimelerde vurgu işaretli cümle</string>
     <string name="anki_marker_sentence_furigana_plain_ru">Sözlük biçimindeki kelimelerde vurgu işaretli cümle, metin olarak</string>
+    <string name="anki_adding">Not ekleme</string>
+    <string name="anki_screenshot_by_default">Varsayılan olarak ekran görüntüsü</string>
+    <string name="anki_screenshot_by_default_hint">Dokunma ekran görüntüsü alanını seçer; basılı tutma görsel olmadan ekler.</string>
+
     <string name="anki_duplicates">Yinelenenler</string>
     <string name="anki_duplicate_check">Yinelenenleri denetle</string>
     <string name="anki_duplicate_scope">Aranacak yer</string>

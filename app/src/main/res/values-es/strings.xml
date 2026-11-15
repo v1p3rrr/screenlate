@@ -166,6 +166,10 @@
     <string name="anki_marker_furigana_plain_ru">Palabra con el acento marcado, como texto</string>
     <string name="anki_marker_sentence_furigana_ru">Frase con el acento marcado en las palabras en forma de diccionario</string>
     <string name="anki_marker_sentence_furigana_plain_ru">Frase con el acento marcado en las palabras en forma de diccionario, como texto</string>
+    <string name="anki_adding">Añadir notas</string>
+    <string name="anki_screenshot_by_default">Captura de pantalla por defecto</string>
+    <string name="anki_screenshot_by_default_hint">Tocar selecciona un área de captura; mantener pulsado añade sin imagen.</string>
+
     <string name="anki_duplicates">Duplicados</string>
     <string name="anki_duplicate_check">Buscar duplicados</string>
     <string name="anki_duplicate_scope">Buscar en</string>

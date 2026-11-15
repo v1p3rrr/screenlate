@@ -164,6 +164,10 @@
     <string name="anki_marker_furigana_plain_ru">Wort mit Betonungszeichen, als Text</string>
     <string name="anki_marker_sentence_furigana_ru">Satz mit Betonungszeichen in Wörtern der Grundform</string>
     <string name="anki_marker_sentence_furigana_plain_ru">Satz mit Betonungszeichen in Wörtern der Grundform, als Text</string>
+    <string name="anki_adding">Notizen hinzufügen</string>
+    <string name="anki_screenshot_by_default">Standardmäßig mit Screenshot</string>
+    <string name="anki_screenshot_by_default_hint">Tippen wählt einen Screenshot-Bereich aus; Halten fügt ohne Bild hinzu.</string>
+
     <string name="anki_duplicates">Duplikate</string>
     <string name="anki_duplicate_check">Auf Duplikate prüfen</string>
     <string name="anki_duplicate_scope">Suchen in</string>

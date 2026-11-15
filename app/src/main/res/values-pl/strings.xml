@@ -168,6 +168,10 @@
     <string name="anki_marker_furigana_plain_ru">Słowo z zaznaczonym akcentem, jako tekst</string>
     <string name="anki_marker_sentence_furigana_ru">Zdanie z akcentem zaznaczonym w słowach w formie podstawowej</string>
     <string name="anki_marker_sentence_furigana_plain_ru">Zdanie z akcentem zaznaczonym w słowach w formie podstawowej, jako tekst</string>
+    <string name="anki_adding">Dodawanie notatek</string>
+    <string name="anki_screenshot_by_default">Domyślnie zrzut ekranu</string>
+    <string name="anki_screenshot_by_default_hint">Dotknięcie wybiera obszar zrzutu ekranu; przytrzymanie dodaje bez obrazu.</string>
+
     <string name="anki_duplicates">Duplikaty</string>
     <string name="anki_duplicate_check">Sprawdzaj duplikaty</string>
     <string name="anki_duplicate_scope">Szukaj w</string>

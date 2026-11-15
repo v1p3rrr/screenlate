@@ -245,8 +245,18 @@ class AnkiNotesTest {
         assertThat(loaded.deckId).isEqualTo(5L)
         assertThat(loaded.fields).containsExactly("Word", "{expression}")
         assertThat(loaded.duplicateScope).isEqualTo(DuplicateScope.COLLECTION)
+        assertThat(loaded.screenshotByDefault).isFalse()
         assertThat(loaded.overwriteModes).containsExactly("Word", OverwriteMode.COALESCE)
         assertThat(loaded.savedTemplates.getValue("Old").overwriteModes).containsExactly("A", OverwriteMode.APPEND)
+    }
+
+    @Test
+    fun `screenshot by default setting persists`() = runBlocking<Unit> {
+        val store = MemoryDataStore()
+        val repo = AnkiSettingsRepository(store)
+        repo.update(Language.JAPANESE) { it.copy(screenshotByDefault = true) }
+        val loaded = repo.current(Language.JAPANESE)
+        assertThat(loaded.screenshotByDefault).isTrue()
     }
 
     @Test

@@ -31,6 +31,7 @@
     <string name="overlay_no_dictionaries">המילונים בתהליך התקנה. יש לנסות שוב בעוד רגע.</string>
     <string name="overlay_no_dictionaries_on">אין מילון מופעל עם פירושים. אפשר להפעיל או להוסיף מילון בקטע \"מילונים\" ב-Screenlate.</string>
     <string name="overlay_add_note">הוספה ל-Anki (לחיצה ארוכה להוספה עם תמונה)</string>
+    <string name="overlay_add_note_screenshot">הוספה ל-Anki עם תמונה (לחיצה ארוכה להוספה ללא תמונה)</string>
     <string name="overlay_note_wait">הטקסט עדיין בתהליך שיפור; יש לחכות עד שמחוון הטעינה ייעלם.</string>
     <string name="overlay_play_audio">השמעת שמע (לחיצה ארוכה לבחירה)</string>
     <string name="anki_error">לא ניתן היה להוסיף את הרשומה: %1$s</string>
@@ -64,8 +65,10 @@
     <string name="overlay_add_anyway_picture">הוספה בכל זאת, עם תמונה</string>
     <string name="overlay_open_in_anki">פתיחה ב-AnkiDroid</string>
     <string name="overlay_add_with_picture">הוספה עם תמונה</string>
+    <string name="overlay_add_without_picture">הוספה ללא תמונה</string>
     <string name="overlay_update_note">עדכון פתק (לחיצה ארוכה לתפריט)</string>
     <string name="overlay_update_picture">עדכון עם תמונה</string>
+    <string name="overlay_update_without_picture">עדכון ללא תמונה</string>
     <string name="overlay_audio_loading">חיפוש שמע…</string>
     <string name="overlay_open_app">פתיחת הגדרות Anki</string>
     <string name="audio_no_voice">לא מותקן קול של המרת טקסט לדיבור לשפה הזו.</string>

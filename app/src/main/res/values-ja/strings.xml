@@ -162,6 +162,10 @@
     <string name="anki_marker_furigana_plain_ru">強勢記号付きの単語（テキスト）</string>
     <string name="anki_marker_sentence_furigana_ru">辞書形の単語に強勢記号を付けた文</string>
     <string name="anki_marker_sentence_furigana_plain_ru">辞書形の単語に強勢記号を付けた文（テキスト）</string>
+    <string name="anki_adding">ノートの追加</string>
+    <string name="anki_screenshot_by_default">デフォルトでスクリーンショット</string>
+    <string name="anki_screenshot_by_default_hint">タップでスクリーンショット範囲を選択、長押しで画像なしで追加します。</string>
+
     <string name="anki_duplicates">重複</string>
     <string name="anki_duplicate_check">重複をチェック</string>
     <string name="anki_duplicate_scope">検索範囲</string>

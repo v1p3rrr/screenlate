@@ -86,6 +86,7 @@ object PageState {
     private fun labels(context: Context): Map<String, String> = mapOf(
         "noResults" to context.getString(R.string.overlay_no_results),
         "addNote" to context.getString(R.string.overlay_add_note),
+        "addNoteScreenshot" to context.getString(R.string.overlay_add_note_screenshot),
         "noteWait" to context.getString(R.string.overlay_note_wait),
         "playAudio" to context.getString(R.string.overlay_play_audio),
         "copy" to context.getString(R.string.overlay_copy),
@@ -97,8 +98,10 @@ object PageState {
         "addAnyway" to context.getString(R.string.overlay_add_anyway),
         "addAnywayWithPicture" to context.getString(R.string.overlay_add_anyway_picture),
         "addWithPicture" to context.getString(R.string.overlay_add_with_picture),
+        "addWithoutPicture" to context.getString(R.string.overlay_add_without_picture),
         "updateNote" to context.getString(R.string.overlay_update_note),
         "updateWithPicture" to context.getString(R.string.overlay_update_picture),
+        "updateWithoutPicture" to context.getString(R.string.overlay_update_without_picture),
         "audioLoading" to context.getString(R.string.overlay_audio_loading),
         "audioNone" to context.getString(R.string.audio_not_found),
         "close" to context.getString(R.string.overlay_close),

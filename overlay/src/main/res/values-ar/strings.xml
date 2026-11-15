@@ -31,6 +31,7 @@
     <string name="overlay_no_dictionaries">جارٍ تثبيت القواميس. أعد المحاولة بعد قليل.</string>
     <string name="overlay_no_dictionaries_on">لا يوجد قاموس مفعّل يحتوي على تعريفات. فعّل قاموسًا أو أضف واحدًا من «القواميس» في Screenlate.</string>
     <string name="overlay_add_note">الإضافة إلى Anki (انقر مع الاستمرار لإرفاق صورة)</string>
+    <string name="overlay_add_note_screenshot">الإضافة إلى Anki مع صورة (انقر مع الاستمرار للإضافة بدون صورة)</string>
     <string name="overlay_note_wait">لا يزال النص قيد التحسين، فانتظر حتى يختفي مؤشر التحميل.</string>
     <string name="overlay_play_audio">تشغيل الصوت (انقر مع الاستمرار للاختيار)</string>
     <string name="anki_error">تعذّرت إضافة الملاحظة: %1$s</string>
@@ -64,8 +65,10 @@
     <string name="overlay_add_anyway_picture">الإضافة على أي حال، مع صورة</string>
     <string name="overlay_open_in_anki">فتح في AnkiDroid</string>
     <string name="overlay_add_with_picture">إضافة مع صورة</string>
+    <string name="overlay_add_without_picture">إضافة بدون صورة</string>
     <string name="overlay_update_note">تحديث الملاحظة (انقر مع الاستمرار للقائمة)</string>
     <string name="overlay_update_picture">تحديث مع صورة</string>
+    <string name="overlay_update_without_picture">تحديث بدون صورة</string>
     <string name="overlay_audio_loading">جارٍ البحث عن صوت…</string>
     <string name="overlay_open_app">فتح إعدادات Anki</string>
     <string name="audio_no_voice">لم يُثبَّت صوت لتحويل النص إلى كلام لهذه اللغة.</string>

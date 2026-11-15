@@ -165,6 +165,7 @@ class PopupNotes(
         // The frequency modes also order each dictionary's frequency values in the popup, with or without Anki, and the
         // audio regions order the transcriptions.
         val regions = AudioRegion.ordered(audioSettings.current(language()).regions, language().support.audioRegions)
+        val ankiSettings = notes.settings(language())
         val config = buildJsonObject {
             put("markers", if (ankiReady) buildJsonArray { notes.usedMarkers(language()).forEach { add(JsonPrimitive(it)) } } else JsonNull)
             put("frequencyModes", buildJsonObject { lookup.frequencyModes().forEach { (title, mode) -> put(title, mode) } })
@@ -176,6 +177,7 @@ class PopupNotes(
                     })
                 }
             })
+            put("screenshotByDefault", JsonPrimitive(ankiSettings.screenshotByDefault))
         }
         page.setNoteConfig(config)
     }

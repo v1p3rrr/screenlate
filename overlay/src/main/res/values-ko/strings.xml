@@ -31,6 +31,7 @@
     <string name="overlay_no_dictionaries">사전을 아직 설치하는 중입니다. 잠시 후 다시 시도하세요.</string>
     <string name="overlay_no_dictionaries_on">뜻풀이가 있는 사전이 켜져 있지 않습니다. Screenlate의 사전에서 켜거나 추가하세요.</string>
     <string name="overlay_add_note">Anki에 추가(길게 누르면 이미지 포함)</string>
+    <string name="overlay_add_note_screenshot">이미지 포함하여 Anki에 추가(길게 누르면 이미지 제외)</string>
     <string name="overlay_note_wait">텍스트가 확정될 때까지 기다려 주세요(로딩 표시가 사라질 때까지).</string>
     <string name="overlay_play_audio">오디오 재생(길게 눌러 선택)</string>
     <string name="anki_error">노트를 추가하지 못했습니다: %1$s</string>
@@ -64,8 +65,10 @@
     <string name="overlay_add_anyway_picture">그래도 이미지와 함께 추가</string>
     <string name="overlay_open_in_anki">AnkiDroid에서 열기</string>
     <string name="overlay_add_with_picture">이미지 포함하여 추가</string>
+    <string name="overlay_add_without_picture">이미지 없이 추가</string>
     <string name="overlay_update_note">노트 업데이트(길게 누르면 메뉴)</string>
     <string name="overlay_update_picture">이미지 포함하여 업데이트</string>
+    <string name="overlay_update_without_picture">이미지 없이 업데이트</string>
     <string name="overlay_audio_loading">오디오를 찾는 중…</string>
     <string name="overlay_open_app">Anki 설정 열기</string>
     <string name="audio_no_voice">이 언어의 TTS 음성이 설치되어 있지 않습니다.</string>

@@ -31,6 +31,7 @@
     <string name="overlay_no_dictionaries">辞書をインストール中です。少し待ってからもう一度お試しください。</string>
     <string name="overlay_no_dictionaries_on">定義のある辞書が有効になっていません。Screenlate の「辞書」で有効にするか追加してください。</string>
     <string name="overlay_add_note">Anki に追加（長押しで画像付き）</string>
+    <string name="overlay_add_note_screenshot">画像付きで Anki に追加（長押しで画像なし）</string>
     <string name="overlay_note_wait">テキストが確定するまでお待ちください（読み込み表示が消えるまで）。</string>
     <string name="overlay_play_audio">音声を再生（長押しで選択）</string>
     <string name="anki_error">ノートを追加できませんでした：%1$s</string>
@@ -64,8 +65,10 @@
     <string name="overlay_add_anyway_picture">それでも画像付きで追加</string>
     <string name="overlay_open_in_anki">AnkiDroid で開く</string>
     <string name="overlay_add_with_picture">画像付きで追加</string>
+    <string name="overlay_add_without_picture">画像なしで追加</string>
     <string name="overlay_update_note">ノートを更新（長押しでメニュー）</string>
     <string name="overlay_update_picture">画像付きで更新</string>
+    <string name="overlay_update_without_picture">画像なしで更新</string>
     <string name="overlay_audio_loading">音声を探しています…</string>
     <string name="overlay_open_app">Anki の設定を開く</string>
     <string name="audio_no_voice">この言語の読み上げ音声がインストールされていません。</string>

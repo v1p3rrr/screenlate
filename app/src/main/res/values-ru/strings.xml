@@ -169,6 +169,10 @@
     <string name="anki_marker_furigana_plain_ru">Слово с ударением, текстом</string>
     <string name="anki_marker_sentence_furigana_ru">Предложение с ударениями в словах начальной формы</string>
     <string name="anki_marker_sentence_furigana_plain_ru">Предложение с ударениями в словах начальной формы, текстом</string>
+    <string name="anki_adding">Добавление карточек</string>
+    <string name="anki_screenshot_by_default">Скриншот по умолчанию</string>
+    <string name="anki_screenshot_by_default_hint">По нажатию открывается выбор области для скриншота, по удержанию карточка добавляется без картинки.</string>
+
     <string name="anki_duplicates">Дубли</string>
     <string name="anki_duplicate_check">Проверять дубли</string>
     <string name="anki_duplicate_scope">Искать в</string>

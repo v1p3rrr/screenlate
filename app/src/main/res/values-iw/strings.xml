@@ -166,6 +166,10 @@
     <string name="anki_marker_furigana_plain_ru">מילה עם סימן ההטעמה שלה, כטקסט</string>
     <string name="anki_marker_sentence_furigana_ru">משפט עם סימני הטעמה על מילים בצורתן המילונית</string>
     <string name="anki_marker_sentence_furigana_plain_ru">משפט עם סימני הטעמה על מילים בצורתן המילונית, כטקסט</string>
+    <string name="anki_adding">הוספת פתקים</string>
+    <string name="anki_screenshot_by_default">צילום מסך כברירת מחדל</string>
+    <string name="anki_screenshot_by_default_hint">הקשה בוחרת אזור לצילום מסך; לחיצה ארוכה מוסיפה ללא תמונה.</string>
+
     <string name="anki_duplicates">כפילויות</string>
     <string name="anki_duplicate_check">בדיקת כפילויות</string>
     <string name="anki_duplicate_scope">תחום החיפוש</string>

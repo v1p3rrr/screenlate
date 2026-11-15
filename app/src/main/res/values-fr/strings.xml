@@ -166,6 +166,10 @@
     <string name="anki_marker_furigana_plain_ru">Mot avec l’accent tonique marqué, en texte</string>
     <string name="anki_marker_sentence_furigana_ru">Phrase avec l’accent tonique marqué sur les mots sous leur forme de dictionnaire</string>
     <string name="anki_marker_sentence_furigana_plain_ru">Phrase avec l’accent tonique marqué sur les mots sous leur forme de dictionnaire, en texte</string>
+    <string name="anki_adding">Ajout de notes</string>
+    <string name="anki_screenshot_by_default">Capture d’écran par défaut</string>
+    <string name="anki_screenshot_by_default_hint">Appuyer sélectionne une zone de capture ; maintenir ajoute sans image.</string>
+
     <string name="anki_duplicates">Doublons</string>
     <string name="anki_duplicate_check">Rechercher les doublons</string>
     <string name="anki_duplicate_scope">Chercher dans</string>

@@ -7,6 +7,7 @@ const labels = {
     close: 'Close',
     copy: 'Copy',
     addNote: 'Add',
+    addNoteScreenshot: 'Add with picture',
     openNote: 'Open note',
     openInAnki: 'Open in AnkiDroid',
     openApp: 'Open settings',
@@ -14,8 +15,10 @@ const labels = {
     addAnyway: 'Add anyway',
     addAnywayWithPicture: 'Add anyway, with a picture',
     addWithPicture: 'Add with picture',
+    addWithoutPicture: 'Add without picture',
     updateNote: 'Update note',
     updateWithPicture: 'Update with picture',
+    updateWithoutPicture: 'Update without picture',
 };
 
 function result(expression, reading, text = 'meaning') {
@@ -244,14 +247,76 @@ test('duplicate notes with NEW and OVERWRITE behavior show openAdd and openUpdat
     // Reset state after tap to test hold
     Popup.setNoteStates({ 1: 'duplicate_overwrite' });
 
-    // Holding duplicate_overwrite opens menu with Open in AnkiDroid, Update with picture, Add anyway
+    // Holding duplicate_overwrite opens menu with Open in AnkiDroid, Update with picture, Add anyway, Add anyway with picture
     hold(second);
     const updateMenu = page.document.querySelector('.menu');
     assert.ok(updateMenu);
     const updateItems = Array.from(updateMenu.querySelectorAll('.menu-label')).map(item => item.textContent);
-    assert.deepEqual(updateItems, ['Open in AnkiDroid', 'Update with picture', 'Add anyway']);
+    assert.deepEqual(updateItems, ['Open in AnkiDroid', 'Update with picture', 'Add anyway', 'Add anyway, with a picture']);
     updateMenu.querySelectorAll('.menu-item')[0].click();
     assert.deepEqual(page.calls.at(-1), ['onOpenNote', 1]);
+});
+
+test('when screenshotByDefault is true, tap adds with picture and hold adds without picture', () => {
+    Popup.setActions({ anki: true, audio: false, ankiProblem: null });
+    Popup.setNoteConfig({ screenshotByDefault: true });
+    Popup.render(state());
+    const [first, second] = content.querySelectorAll('.action-add');
+
+    assert.equal(first.getAttribute('aria-label'), 'Add with picture');
+
+    // Fresh note: tap adds with picture
+    tap(first);
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[1], 0);
+    assert.equal(page.calls.at(-1)[3], true); // withScreenshot = true
+    assert.equal(page.calls.at(-1)[4], false); // force = false
+
+    // Fresh note: hold adds without picture
+    Popup.setNoteStates({ 0: null });
+    hold(first);
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[1], 0);
+    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
+    assert.equal(page.calls.at(-1)[4], false); // force = false
+
+    // Duplicate NEW: tap adds with picture, hold opens menu with Add without picture
+    Popup.setNoteStates({ 0: 'duplicate_new' });
+    tap(first);
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[3], true); // withScreenshot = true
+
+    Popup.setNoteStates({ 0: 'duplicate_new' });
+    hold(first);
+    const menu = page.document.querySelector('.menu');
+    assert.ok(menu);
+    const items = Array.from(menu.querySelectorAll('.menu-label')).map(item => item.textContent);
+    assert.deepEqual(items, ['Open in AnkiDroid', 'Add without picture']);
+    menu.querySelectorAll('.menu-item')[1].click(); // Add without picture
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
+
+    // Duplicate OVERWRITE: tap updates with picture, hold opens 4-item menu
+    Popup.setNoteStates({ 1: 'duplicate_overwrite' });
+    tap(second);
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[1], 1);
+    assert.equal(page.calls.at(-1)[3], true); // withScreenshot = true
+
+    Popup.setNoteStates({ 1: 'duplicate_overwrite' });
+    hold(second);
+    const updateMenu = page.document.querySelector('.menu');
+    assert.ok(updateMenu);
+    const updateItems = Array.from(updateMenu.querySelectorAll('.menu-label')).map(item => item.textContent);
+    assert.deepEqual(updateItems, ['Open in AnkiDroid', 'Update without picture', 'Add anyway', 'Add anyway, with a picture']);
+    updateMenu.querySelectorAll('.menu-item')[1].click(); // Update without picture
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[1], 1);
+    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
+    assert.equal(page.calls.at(-1)[4], false); // force = false
+
+    // Clean up config
+    Popup.setNoteConfig({ screenshotByDefault: false });
 });
 
 test('a broken Anki setup shows a grey button with the reason', () => {

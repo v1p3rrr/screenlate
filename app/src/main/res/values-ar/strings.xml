@@ -172,6 +172,10 @@
     <string name="anki_marker_furigana_plain_ru">الكلمة مع علامة النبر، كنص</string>
     <string name="anki_marker_sentence_furigana_ru">الجملة مع علامات النبر على الكلمات بصيغتها المعجمية</string>
     <string name="anki_marker_sentence_furigana_plain_ru">الجملة مع علامات النبر على الكلمات بصيغتها المعجمية، كنص</string>
+    <string name="anki_adding">إضافة الملاحظات</string>
+    <string name="anki_screenshot_by_default">لقطة شاشة بشكل افتراضي</string>
+    <string name="anki_screenshot_by_default_hint">النقر يحدد منطقة لقطة الشاشة؛ النقر مع الاستمرار يضيف بدون صورة.</string>
+
     <string name="anki_duplicates">التكرار</string>
     <string name="anki_duplicate_check">التحقق من التكرار</string>
     <string name="anki_duplicate_scope">البحث في</string>

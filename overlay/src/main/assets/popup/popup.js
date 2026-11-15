@@ -112,7 +112,7 @@ const Popup = (() => {
     let actions = { anki: false, audio: false };
     /** The drawn entries' language is written right to left (state.rightToLeft). */
     let rightToLeft = false;
-    let noteConfig = { markers: null, frequencyModes: {} };
+    let noteConfig = { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false };
     let menu = null;
     let audioView = 0;
     let audioRequests = 0;
@@ -562,7 +562,7 @@ const Popup = (() => {
             add.addEventListener('click', () => toggleNoteProblem(container));
             container.append(add);
         } else if (actions.anki) {
-            const add = iconButton('add', ICONS.add, labelOf('addNote'));
+            const add = iconButton('add', ICONS.add, labelOf(noteConfig.screenshotByDefault ? 'addNoteScreenshot' : 'addNote'));
             add.dataset.index = String(index);
             const addNote = (withScreenshot, force) => {
                 if (current && current.noteWait) {
@@ -576,6 +576,7 @@ const Popup = (() => {
             onTapOrHold(add, held => {
                 const state = add.dataset.state;
                 if (state === 'busy') return;
+                const screenshotByDefault = Boolean(noteConfig.screenshotByDefault);
                 if (state === 'added' || state === 'open') {
                     if (!held) {
                         ScreenlateBridge.onOpenNote(index);
@@ -589,28 +590,33 @@ const Popup = (() => {
                 }
                 if (state === 'duplicate_new') {
                     if (!held) {
-                        addNote(false, false);
+                        addNote(screenshotByDefault, false);
                     } else {
                         showMenu(add, [
                             { label: labelOf('openInAnki'), action: () => ScreenlateBridge.onOpenNote(index) },
-                            { label: labelOf('addWithPicture'), action: () => addNote(true, false) },
+                            screenshotByDefault
+                                ? { label: labelOf('addWithoutPicture'), action: () => addNote(false, false) }
+                                : { label: labelOf('addWithPicture'), action: () => addNote(true, false) },
                         ]);
                     }
                     return;
                 }
                 if (state === 'duplicate_overwrite') {
                     if (!held) {
-                        addNote(false, false);
+                        addNote(screenshotByDefault, false);
                     } else {
                         showMenu(add, [
                             { label: labelOf('openInAnki'), action: () => ScreenlateBridge.onOpenNote(index) },
-                            { label: labelOf('updateWithPicture'), action: () => addNote(true, false) },
+                            screenshotByDefault
+                                ? { label: labelOf('updateWithoutPicture'), action: () => addNote(false, false) }
+                                : { label: labelOf('updateWithPicture'), action: () => addNote(true, false) },
                             { label: labelOf('addAnyway'), action: () => addNote(false, true) },
+                            { label: labelOf('addAnywayWithPicture'), action: () => addNote(true, true) },
                         ]);
                     }
                     return;
                 }
-                addNote(held, false);
+                addNote(screenshotByDefault ? !held : held, false);
             });
             container.append(add);
         }
@@ -801,7 +807,7 @@ const Popup = (() => {
             button.innerHTML = ICONS[kind];
             const labelKey = kind === 'open' ? 'openNote'
                 : kind === 'openUpdate' ? 'updateNote'
-                : 'addNote';
+                : (noteConfig.screenshotByDefault ? 'addNoteScreenshot' : 'addNote');
             button.setAttribute('aria-label', labelOf(labelKey));
         }
     }
@@ -1584,7 +1590,15 @@ const Popup = (() => {
      * 'occurrence-based' }, regions: [{ id, codes: [code] }] }.
      */
     function setNoteConfig(config) {
-        noteConfig = config || { markers: null, frequencyModes: {} };
+        noteConfig = config || { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false };
+        const buttons = document.querySelectorAll('.action-add');
+        for (let i = 0; i < buttons.length; i++) {
+            const button = buttons[i];
+            const icon = button.dataset.icon || 'add';
+            if (icon === 'add' || icon === 'openAdd') {
+                button.setAttribute('aria-label', labelOf(noteConfig.screenshotByDefault ? 'addNoteScreenshot' : 'addNote'));
+            }
+        }
     }
 
     /** Values of [markers] for every entry in the current view, for the duplicate check. */

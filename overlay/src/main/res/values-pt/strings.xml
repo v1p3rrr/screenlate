@@ -31,6 +31,7 @@
     <string name="overlay_no_dictionaries">Os dicionários ainda estão sendo instalados. Tente de novo em instantes.</string>
     <string name="overlay_no_dictionaries_on">Nenhum dicionário com definições está ativado. Ative ou adicione um em Dicionários, no Screenlate.</string>
     <string name="overlay_add_note">Adicionar ao Anki (segure para uma imagem)</string>
+    <string name="overlay_add_note_screenshot">Adicionar ao Anki com imagem (segure para adicionar sem imagem)</string>
     <string name="overlay_note_wait">O texto ainda está sendo refinado; aguarde até o indicador de carregamento sumir.</string>
     <string name="overlay_play_audio">Tocar áudio (segure para escolher)</string>
     <string name="anki_error">Não foi possível adicionar a nota: %1$s</string>
@@ -64,8 +65,10 @@
     <string name="overlay_add_anyway_picture">Adicionar mesmo assim, com uma imagem</string>
     <string name="overlay_open_in_anki">Abrir no AnkiDroid</string>
     <string name="overlay_add_with_picture">Adicionar com imagem</string>
+    <string name="overlay_add_without_picture">Adicionar sem imagem</string>
     <string name="overlay_update_note">Atualizar nota (segure para o menu)</string>
     <string name="overlay_update_picture">Atualizar com imagem</string>
+    <string name="overlay_update_without_picture">Atualizar sem imagem</string>
     <string name="overlay_audio_loading">Procurando áudio…</string>
     <string name="overlay_open_app">Abrir configurações do Anki</string>
     <string name="audio_no_voice">Nenhuma voz de conversão de texto em voz está instalada para este idioma.</string>

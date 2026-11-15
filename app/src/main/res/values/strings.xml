@@ -168,6 +168,10 @@
     <string name="anki_marker_furigana_plain_ru">Word with its stress mark, as text</string>
     <string name="anki_marker_sentence_furigana_ru">Sentence with stress marks on words in dictionary form</string>
     <string name="anki_marker_sentence_furigana_plain_ru">Sentence with stress marks on words in dictionary form, as text</string>
+    <string name="anki_adding">Adding notes</string>
+    <string name="anki_screenshot_by_default">Screenshot by default</string>
+    <string name="anki_screenshot_by_default_hint">Tap captures a screenshot area; hold adds without picture.</string>
+
     <string name="anki_duplicates">Duplicates</string>
     <string name="anki_duplicate_check">Check for duplicates</string>
     <string name="anki_duplicate_scope">Search in</string>

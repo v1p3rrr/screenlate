@@ -31,6 +31,7 @@
     <string name="overlay_no_dictionaries">Słowniki wciąż się instalują. Spróbuj ponownie za chwilę.</string>
     <string name="overlay_no_dictionaries_on">Żaden słownik z definicjami nie jest włączony. Włącz któryś albo dodaj nowy w sekcji Słowniki w Screenlate.</string>
     <string name="overlay_add_note">Dodaj do Anki (przytrzymaj, aby dodać obraz)</string>
+    <string name="overlay_add_note_screenshot">Dodaj do Anki z obrazem (przytrzymaj, aby dodać bez obrazu)</string>
     <string name="overlay_note_wait">Tekst jest jeszcze doprecyzowywany; poczekaj, aż zniknie wskaźnik ładowania.</string>
     <string name="overlay_play_audio">Odtwórz dźwięk (przytrzymaj, aby wybrać)</string>
     <string name="anki_error">Nie udało się dodać notatki: %1$s</string>
@@ -64,8 +65,10 @@
     <string name="overlay_add_anyway_picture">Dodaj mimo to, z obrazem</string>
     <string name="overlay_open_in_anki">Otwórz w AnkiDroid</string>
     <string name="overlay_add_with_picture">Dodaj z obrazem</string>
+    <string name="overlay_add_without_picture">Dodaj bez obrazu</string>
     <string name="overlay_update_note">Zaktualizuj notatkę (przytrzymaj, aby otworzyć menu)</string>
     <string name="overlay_update_picture">Zaktualizuj z obrazem</string>
+    <string name="overlay_update_without_picture">Zaktualizuj bez obrazu</string>
     <string name="overlay_audio_loading">Szukanie dźwięku…</string>
     <string name="overlay_open_app">Otwórz ustawienia Anki</string>
     <string name="audio_no_voice">Nie zainstalowano głosu syntezy mowy dla tego języka.</string>

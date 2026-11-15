@@ -162,6 +162,10 @@
     <string name="anki_marker_furigana_plain_ru">带重音符号的单词（文本）</string>
     <string name="anki_marker_sentence_furigana_ru">原形单词带重音符号的句子</string>
     <string name="anki_marker_sentence_furigana_plain_ru">原形单词带重音符号的句子（文本）</string>
+    <string name="anki_adding">添加卡片</string>
+    <string name="anki_screenshot_by_default">默认附带截图</string>
+    <string name="anki_screenshot_by_default_hint">轻触选择截图区域；长按添加不附带图片。</string>
+
     <string name="anki_duplicates">重复</string>
     <string name="anki_duplicate_check">检查重复</string>
     <string name="anki_duplicate_scope">查找范围</string>
