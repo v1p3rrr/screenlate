@@ -4,6 +4,7 @@ import android.content.Context
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.translate.SentenceTranslator
 import com.vpr.screenlate.core.translate.TranslationError
 import com.vpr.screenlate.core.translate.TranslationResult
@@ -21,13 +22,14 @@ import kotlinx.serialization.json.put
 class SentenceTranslation @Inject constructor(
     val translator: SentenceTranslator,
     val settings: TranslationSettingsRepository,
+    private val appSettings: AppSettingsRepository,
 ) {
     /**
      * The translation for a note: the one the popup shows, or a new one. Null when notes get none (the switch is off)
      * or no service translated. The caller limits the wait ([NOTE_WAIT_MS]).
      */
     suspend fun forNote(sentence: String, language: Language): String? = try {
-        if (sentence.isBlank() || !settings.current().ankiField) {
+        if (sentence.isBlank() || !settings.current().ankiField || appSettings.cachedOfflineMode == true) {
             null
         } else {
             (translator.translate(sentence, language) as? TranslationResult.Success)?.text

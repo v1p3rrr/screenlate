@@ -267,6 +267,8 @@
     <string name="anki_overwrite_prepend">הוספה בהתחלה</string>
     <string name="audio_volume">עוצמת קול: %1$d%%</string>
     <string name="settings_title">הגדרות</string>
+    <string name="settings_offline_mode">מצב לא מקוון מאולץ</string>
+    <string name="settings_offline_mode_hint">משבית את כל בקשות הרשת, חוסך בנתונים סלולריים ומאלץ זיהוי ושמע במכשיר בלבד.</string>
     <string name="settings_bubble_summary">נקודת כיוון, צד, גודל, אפליקציות מוסתרות</string>
     <string name="lookup_title">חיפוש במילון</string>
     <string name="settings_lookup_summary">אורך סריקה, תוצאות, רומאג׳י, התווים שבמילה</string>

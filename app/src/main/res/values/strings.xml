@@ -269,6 +269,8 @@
     <string name="anki_overwrite_prepend">prepend</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Settings</string>
+    <string name="settings_offline_mode">Forced Offline Mode</string>
+    <string name="settings_offline_mode_hint">Disables all network requests, saves mobile data, and forces on-device recognition and audio.</string>
     <string name="settings_bubble_summary">Aim, dock, size, hidden apps</string>
     <string name="lookup_title">Lookup</string>
     <string name="settings_lookup_summary">Scan length, results, romaji, characters of the word</string>

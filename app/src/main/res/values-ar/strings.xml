@@ -273,6 +273,8 @@
     <string name="anki_overwrite_prepend">الإضافة إلى البداية</string>
     <string name="audio_volume">مستوى الصوت: %1$d%%</string>
     <string name="settings_title">الإعدادات</string>
+    <string name="settings_offline_mode">وضع عدم الاتصال الإجباري</string>
+    <string name="settings_offline_mode_hint">يعطّل جميع طلبات الشبكة، ويوفر بيانات الجوال، ويفرض استخدام التعرف والصوت على الجهاز فقط.</string>
     <string name="settings_bubble_summary">التصويب، والجانب، والحجم، والتطبيقات المخفية</string>
     <string name="lookup_title">البحث في القواميس</string>
     <string name="settings_lookup_summary">طول المسح، والنتائج، والروماجي، ورموز الكلمة</string>

@@ -10,6 +10,7 @@ import androidx.core.content.pm.PackageInfoCompat
 import com.vpr.screenlate.BuildConfig
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.IOException
@@ -72,6 +73,7 @@ class AppUpdates @Inject constructor(
     @ApplicationContext private val context: Context,
     private val client: OkHttpClient,
     private val settings: UpdateSettingsRepository,
+    private val appSettings: AppSettingsRepository,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var job: Job? = null
@@ -88,7 +90,7 @@ class AppUpdates @Inject constructor(
     /** The automatic check when the app opens: at most once a day, and only when announcements are on. */
     suspend fun checkIfDue() {
         val current = settings.current()
-        if (!supported || !current.announce || System.currentTimeMillis() - current.lastCheck < CHECK_INTERVAL_MS) return
+        if (appSettings.cachedOfflineMode == true || !supported || !current.announce || System.currentTimeMillis() - current.lastCheck < CHECK_INTERVAL_MS) return
         settings.setLastCheck(System.currentTimeMillis())
         check()
     }
@@ -99,7 +101,7 @@ class AppUpdates @Inject constructor(
      * joined.
      */
     suspend fun check(): UpdateState {
-        if (!supported || job?.isActive == true || state.value is UpdateState.Installing) return state.value
+        if (appSettings.cachedOfflineMode == true || !supported || job?.isActive == true || state.value is UpdateState.Installing) return state.value
         val running = checkJob?.takeIf { it.isActive } ?: scope.async {
             mutableState.value = UpdateState.Checking
             val next = runCatching { fetchLatest() }

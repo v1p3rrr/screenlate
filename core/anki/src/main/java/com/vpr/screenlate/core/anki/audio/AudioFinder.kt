@@ -5,7 +5,9 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.network.OfflineModeException
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.InterruptedIOException
@@ -101,13 +103,20 @@ class AudioFinder internal constructor(
     private val settings: AudioSettingsRepository,
     private val sourceTimeoutMs: Long = SOURCE_TIMEOUT_MS,
     private val clock: () -> Long = System::currentTimeMillis,
+    private val isOffline: () -> Boolean = { false },
 ) {
     @Inject
     constructor(
         @ApplicationContext context: Context,
         httpClient: OkHttpClient,
         settings: AudioSettingsRepository,
-    ) : this(File(context.cacheDir, "audio"), httpClient, settings)
+        appSettings: AppSettingsRepository,
+    ) : this(
+        File(context.cacheDir, "audio"),
+        httpClient,
+        settings,
+        isOffline = { appSettings.cachedOfflineMode == true },
+    )
 
     /**
      * Every request opens its own connection: some mobile networks freeze a connection to foreign hosting after its
@@ -167,13 +176,27 @@ class AudioFinder internal constructor(
 
     /**
      * What to play: a clip of the sources, or text-to-speech when it is the first source or no source has a clip.
+     * In Forced Offline Mode, remote network requests are skipped: plays cached clip if present, else falls back to text-to-speech.
      */
     suspend fun pronunciation(term: String, reading: String, language: Language): Pronunciation? {
         val sources = settings.current(language).sources
         val speech = Pronunciation.Speech.of(term, reading, language)
         if (sources.firstOrNull()?.type == AudioSourceType.TEXT_TO_SPEECH) return speech
+        if (isOffline()) {
+            cachedClip(term, reading, language)?.let { return Pronunciation.Clip(it) }
+            return speech
+        }
         find(term, reading, language)?.let { return Pronunciation.Clip(it) }
         return speech.takeIf { sources.any { it.type == AudioSourceType.TEXT_TO_SPEECH } }
+    }
+
+    private fun cachedClip(term: String, reading: String, language: Language): AudioClip? {
+        synchronized(clipCache) {
+            val entry = clipCache.entries.firstOrNull { (key, kept) ->
+                key.term == term && key.reading == reading && key.language == language && kept.fresh() && kept.value != null
+            }
+            return entry?.value?.value
+        }
     }
 
     /**
@@ -187,6 +210,15 @@ class AudioFinder internal constructor(
         language: Language,
         sources: List<AudioSource>? = null,
     ): List<AudioCandidate> = withContext(Dispatchers.IO) {
+        if (isOffline()) {
+            val speechCandidate = AudioCandidate("0:0", 0, AudioSource(AudioSourceType.TEXT_TO_SPEECH), "", "", language)
+            val cached = cachedClip(term, reading, language)
+            return@withContext if (cached != null) {
+                listOf(AudioCandidate("0:1", 0, AudioSource(AudioSourceType.URL, cached.url), cached.url, cached.file.name, language), speechCandidate)
+            } else {
+                listOf(speechCandidate)
+            }
+        }
         val profile = settings.current(language)
         val regions = AudioRegion.ordered(profile.regions, language.support.audioRegions)
         val asked = (sources ?: profile.sources).withIndex()
@@ -274,8 +306,8 @@ class AudioFinder internal constructor(
 
     private fun note(source: AudioSource, language: Language, error: Throwable) {
         Log.i(TAG, "Audio source ${source.type} failed", error.redacted())
-        // Without a network every source fails; that is not a setup problem.
-        if (error is UnknownHostException) return
+        // Without a network or in offline mode every source fails; that is not a setup problem.
+        if (error is UnknownHostException || error is OfflineModeException) return
         failures[source to language] = AudioSourceFailure(source, AudioError.of(error), language)
     }
 

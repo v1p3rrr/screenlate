@@ -24,6 +24,7 @@ import androidx.work.WorkRequest
 import androidx.work.await
 import androidx.work.workDataOf
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.dictionary.api.catalog.ASSET_URL_PREFIX
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ARCHIVE
@@ -150,6 +151,7 @@ class DictionaryImports @Inject constructor(
     @ApplicationContext private val context: Context,
     private val storage: DictionaryStorage,
     private val preferences: DataStore<Preferences>,
+    private val appSettings: AppSettingsRepository? = null,
 ) {
     private val workManager get() = WorkManager.getInstance(context)
 
@@ -204,7 +206,13 @@ class DictionaryImports @Inject constructor(
         trySend(manager.activeNetwork?.let(manager::getNetworkCapabilities)?.downloadsCanRun() == true)
         manager.registerDefaultNetworkCallback(callback)
         awaitClose { manager.unregisterNetworkCallback(callback) }
-    }.distinctUntilChanged()
+    }.distinctUntilChanged().let { baseOnline ->
+        if (appSettings != null) {
+            combine(baseOnline, appSettings.offlineMode) { net, offline -> net && !offline }
+        } else {
+            baseOnline
+        }
+    }
 
     private fun NetworkCapabilities.downloadsCanRun(): Boolean =
         hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
@@ -213,10 +221,12 @@ class DictionaryImports @Inject constructor(
      * Whether the network is gone ([online]) now or within [settleMs]: a download that breaks off as the network goes
      * may fail a moment before the system notices.
      */
-    internal suspend fun networkLost(settleMs: Long): Boolean = withTimeoutOrNull(settleMs) { online.first { !it } } != null
+    internal suspend fun networkLost(settleMs: Long): Boolean =
+        appSettings?.cachedOfflineMode == true || withTimeoutOrNull(settleMs) { online.first { !it } } != null
 
     /** Waits up to [timeoutMs] for a network ([online]); returns whether one came. */
-    internal suspend fun awaitNetwork(timeoutMs: Long): Boolean = withTimeoutOrNull(timeoutMs) { online.first { it } } != null
+    internal suspend fun awaitNetwork(timeoutMs: Long): Boolean =
+        appSettings?.cachedOfflineMode != true && withTimeoutOrNull(timeoutMs) { online.first { it } } != null
 
     /**
      * Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to

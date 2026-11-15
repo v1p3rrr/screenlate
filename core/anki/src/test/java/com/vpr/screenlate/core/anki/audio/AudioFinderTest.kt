@@ -644,4 +644,34 @@ class AudioFinderTest {
         routes.remove("/word")
         assertThat(finder.test(source, "犬", "いぬ", Language.JAPANESE).getOrThrow()).isEmpty()
     }
+
+    @Test
+    fun `offline mode falls back immediately to text-to-speech without network requests`() = runBlocking<Unit> {
+        var offline = true
+        val offlineFinder = AudioFinder(folder.newFolder("offline"), client, settings, isOffline = { offline })
+        routes["/a.mp3"] = { audio() }
+        sources(AudioSource(AudioSourceType.URL, server.url("/a.mp3").toString()))
+
+        val pronunciation = offlineFinder.pronunciation("猫", "ねこ", Language.JAPANESE)
+        assertThat(pronunciation).isEqualTo(Pronunciation.Speech("ねこ", Language.JAPANESE))
+        assertThat(requests).isEmpty()
+    }
+
+    @Test
+    fun `offline mode plays cached clip if present`() = runBlocking<Unit> {
+        var offline = false
+        val offlineFinder = AudioFinder(folder.newFolder("offline_cache"), client, settings, isOffline = { offline })
+        routes["/a.mp3"] = { audio() }
+        sources(AudioSource(AudioSourceType.URL, server.url("/a.mp3").toString()))
+
+        val clip = offlineFinder.find("猫", "ねこ", Language.JAPANESE)
+        assertThat(clip).isNotNull()
+        assertThat(requests).isNotEmpty()
+        requests.clear()
+
+        offline = true
+        val pronunciation = offlineFinder.pronunciation("猫", "ねこ", Language.JAPANESE)
+        assertThat(pronunciation).isEqualTo(Pronunciation.Clip(clip!!))
+        assertThat(requests).isEmpty()
+    }
 }

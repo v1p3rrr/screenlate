@@ -97,9 +97,9 @@ internal class LanguageTestFixture : AutoCloseable {
         val translationSettings = TranslationSettingsRepository(preferences)
         val lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences)) { imports }
         return SearchViewModel(
-            lookup, AnkiDroid(context), AnkiNotes(ReadOnlyAnki(), ankiSettings), AudioFinder(context, client, audioSettings),
+            lookup, AnkiDroid(context), AnkiNotes(ReadOnlyAnki(), ankiSettings), AudioFinder(context, client, audioSettings, appSettings),
             audioSettings, AudioPlayer(context, audioSettings),
-            SentenceTranslation(SentenceTranslator(context, client, translationSettings), translationSettings),
+            SentenceTranslation(SentenceTranslator(context, client, translationSettings), translationSettings, appSettings),
             appSettings, PageAppearance(PopupAppearanceRepository(preferences), PopupFonts(context, client), appSettings, context), profiles,
             LanguageInstallation(repository, imports, catalog, bundled, models, DeviceOcr(MlKitOcrEngine(), emptySet(), models, CatalogLanguageModels(catalog), OcrModelChoices(preferences)), OverlaySettingsRepository(preferences)),
         ).also { viewModels.put("search", it) }

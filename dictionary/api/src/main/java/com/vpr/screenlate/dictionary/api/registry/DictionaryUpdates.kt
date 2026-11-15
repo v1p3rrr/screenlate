@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.registry
 
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.catalog.outdatedCopies
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,7 @@ class DictionaryUpdates @Inject constructor(
     private val repository: DictionaryRepository,
     private val httpClient: OkHttpClient,
     private val catalog: DictionaryCatalog,
+    private val appSettings: AppSettingsRepository,
 ) {
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -38,20 +40,23 @@ class DictionaryUpdates @Inject constructor(
      * Updates for every updatable dictionary and the current builds for old copies the catalog knows
      * ([outdatedCopies]); dictionaries whose index cannot be read are skipped.
      */
-    suspend fun check(): List<DictionaryUpdate> = coroutineScope {
-        val dictionaries = repository.getAll()
-        val updatable = dictionaries.filter { it.updatesItself }
-        val outdated = outdatedCopies(withContext(Dispatchers.IO) { catalog.local() }, dictionaries)
-        val updates = updatable.map { dictionary ->
-            async { check(dictionary, dictionary.indexUrl.orEmpty(), dictionary.downloadUrl, outdated = false) }
+    suspend fun check(): List<DictionaryUpdate> {
+        if (appSettings.cachedOfflineMode == true) return emptyList()
+        return coroutineScope {
+            val dictionaries = repository.getAll()
+            val updatable = dictionaries.filter { it.updatesItself }
+            val outdated = outdatedCopies(withContext(Dispatchers.IO) { catalog.local() }, dictionaries)
+            val updates = updatable.map { dictionary ->
+                async { check(dictionary, dictionary.indexUrl.orEmpty(), dictionary.downloadUrl, outdated = false) }
+            }
+            val replacements = outdated.map { (dictionary, entry) ->
+                async { check(dictionary, entry.indexUrl.orEmpty(), entry.downloadUrl, outdated = true) }
+            }
+            (updates + replacements)
+                .awaitAll()
+                .filterNotNull()
+                .also { Log.i(TAG, "Checked ${updatable.size} dictionaries and ${outdated.size} old copies, ${it.size} updates") }
         }
-        val replacements = outdated.map { (dictionary, entry) ->
-            async { check(dictionary, entry.indexUrl.orEmpty(), entry.downloadUrl, outdated = true) }
-        }
-        (updates + replacements)
-            .awaitAll()
-            .filterNotNull()
-            .also { Log.i(TAG, "Checked ${updatable.size} dictionaries and ${outdated.size} old copies, ${it.size} updates") }
     }
 
     private suspend fun check(

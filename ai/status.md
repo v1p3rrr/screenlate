@@ -1,5 +1,18 @@
 # Status
 
+## Forced Offline Mode implementation (2026-11-15)
+
+- Implemented app-wide Forced Offline Mode (`offlineMode`) on branch `features/forced-offline-mode`:
+  - Added `offlineMode` preference in `AppSettingsRepository` with instant synchronous cache access.
+  - Implemented fail-safe `OfflineInterceptor` throwing `OfflineModeException` on any outbound network request through the shared `@Singleton OkHttpClient`.
+  - Network status and imports online state immediately reflect offline status, silencing background dictionary downloads, app updates, and font downloads.
+  - OCR automatically coerced to `OcrEngines.DEVICE`; cloud recognition requests skipped; engine selector locked with explanatory hint `bubble_ocr_engines_offline_locked`.
+  - Sentence translation button completely hidden in popup and skipped for Anki note creation.
+  - Audio pronunciations bypass remote sources, playing disk cache or falling back immediately to on-device `TextToSpeech`.
+  - Added global Offline Mode switch at the top of App Settings with `ic_cloud_off` icon.
+  - Added localized strings for `settings_offline_mode` and `settings_offline_mode_hint` across all 17 supported locales.
+  - Verified with `TranslationsTest`, full unit test suite (`./gradlew testDebugUnitTest`), and all 139 page tests passing. Built debug APK.
+
 ## Dynamic OCR engine hints and Forced Offline Mode plan (2026-11-15)
 
 - Added dynamic descriptive hints under OCR engine selection (`BOTH`, `CLOUD`, `DEVICE`) in `RecognitionSettingsScreen`:

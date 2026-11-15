@@ -267,6 +267,8 @@
     <string name="anki_overwrite_prepend">ajouter au début</string>
     <string name="audio_volume">Volume : %1$d %%</string>
     <string name="settings_title">Paramètres</string>
+    <string name="settings_offline_mode">Mode hors ligne forcé</string>
+    <string name="settings_offline_mode_hint">Désactive toutes les requêtes réseau, économise les données mobiles et force la reconnaissance et l’audio sur l’appareil.</string>
     <string name="settings_bubble_summary">Visée, côté, taille, applis masquées</string>
     <string name="lookup_title">Recherche</string>
     <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, caractères du mot</string>

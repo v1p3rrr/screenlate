@@ -359,7 +359,9 @@ class OverlayController(
         // A model chosen in the settings, or one installed or deleted, is loaded before the next scan needs it.
         scope.launch { scanLanguage.flatMapLatest { ocr.deviceModelChanges(it) }.collect { if (onDeviceLoaded) ocr.warmUp(language) } }
         scope.launch {
-            translation.settings.settings.map { it.button }.distinctUntilChanged().collect { popup.page.setTranslation(it) }
+            combine(translation.settings.settings.map { it.button }, appSettings.offlineMode) { button, offline ->
+                button && !offline
+            }.distinctUntilChanged().collect { popup.page.setTranslation(it) }
         }
         scope.launch {
             appSettings.themeMode.collect {

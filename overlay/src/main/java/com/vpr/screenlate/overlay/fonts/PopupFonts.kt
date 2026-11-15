@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.IOException
@@ -59,6 +60,7 @@ sealed interface FontImport {
 class PopupFonts @Inject constructor(
     @ApplicationContext private val context: Context,
     private val client: OkHttpClient,
+    private val appSettings: AppSettingsRepository? = null,
 ) {
     private val directory = File(context.filesDir, PageFonts.DIRECTORY)
     private val index = File(directory, FontBackup.INDEX)
@@ -81,6 +83,10 @@ class PopupFonts @Inject constructor(
     }
 
     fun download(font: CatalogFont) {
+        if (appSettings?.cachedOfflineMode == true) {
+            mutableDownloads.update { it + (font.id to FontDownload.Failed) }
+            return
+        }
         if (mutableDownloads.value[font.id] is FontDownload.Running) return
         mutableDownloads.update { it + (font.id to FontDownload.Running(0f)) }
         scope.launch {

@@ -1,7 +1,7 @@
 # Forced Offline Mode Plan
 
 **Date:** 2026-11-15  
-**Status:** In Progress / Plan Created  
+**Status:** Completed  
 **Target:** Android 7.0 (API 24) to Android 15 (API 35+)
 
 ---
@@ -126,37 +126,36 @@ fun isOnline(): Boolean {
 ## 4. Implementation Phases
 
 ### Phase 1: Core Settings & Fail-Safe Network Interceptor
-- [ ] Add `OFFLINE_MODE` key and accessors to `AppSettingsRepository` (`core:common`).
-- [ ] Implement `OfflineModeException` and `OfflineInterceptor` in `core:common:network`.
-- [ ] Integrate `OfflineInterceptor` into `NetworkModule.kt`.
-- [ ] Connect `AppSettingsRepository.cachedOfflineMode` to `NetworkStatus.isOnline()`.
-- [ ] Unit tests for `OfflineInterceptor` and `NetworkStatus`.
+- [x] Add `OFFLINE_MODE` key and accessors to `AppSettingsRepository` (`core:common`).
+- [x] Implement `OfflineModeException` and `OfflineInterceptor` in `core:common:network`.
+- [x] Integrate `OfflineInterceptor` into `NetworkModule.kt`.
+- [x] Connect `AppSettingsRepository.cachedOfflineMode` to `NetworkStatus.isOnline()`.
+- [x] Unit tests for `OfflineInterceptor` and `NetworkStatus`.
 
 ### Phase 2: OCR & Camera Adaptation
-- [ ] Update `OverlayController.kt` to force `OcrEngines.DEVICE` when offline mode is active.
-- [ ] Verify popup OCR source chip displays "On-device" cleanly (`EngineLabel.DEVICE` / `EngineLabel.DEVICE_OFFLINE`) without error icons.
-- [ ] Update `RecognitionSettingsScreen.kt` to disable/lock the engine selector when offline mode is active.
-- [ ] Update `CameraRecognition.kt` to coerce camera OCR engines to on-device when offline.
+- [x] Update `OverlayController.kt` to force `OcrEngines.DEVICE` when offline mode is active.
+- [x] Verify popup OCR source chip displays "On-device" cleanly (`EngineLabel.DEVICE` / `EngineLabel.DEVICE_OFFLINE`) without error icons.
+- [x] Update `RecognitionSettingsScreen.kt` to disable/lock the engine selector when offline mode is active.
+- [x] Update `CameraRecognition.kt` to coerce camera OCR engines to on-device when offline.
 
 ### Phase 3: Audio & Translation Adaptation
-- [ ] Update `AudioFinder.kt` to bypass remote network requests when offline and fall back immediately to local cache -> `TextToSpeech`.
-- [ ] Update `PageState.kt` and `popup.js` to hide the sentence translate button when `state.offline` is true.
-- [ ] Update `SentenceTranslation.kt` to skip translation requests for Anki notes when offline.
-- [ ] Page script tests in `scripts/page-tests/` for popup button visibility.
+- [x] Update `AudioFinder.kt` to bypass remote network requests when offline and fall back immediately to local cache -> `TextToSpeech`.
+- [x] Update `PageState.kt` and `popup.js` to hide the sentence translate button when `state.offline` is true.
+- [x] Update `SentenceTranslation.kt` to skip translation requests for Anki notes when offline.
+- [x] Page script tests in `scripts/page-tests/` for popup button visibility.
 
 ### Phase 4: Dictionaries, Fonts & Update Checks
-- [ ] Guard `DictionaryUpdates.kt` background work against offline mode.
-- [ ] Update `DictionaryCatalog.kt` to avoid remote fetch attempts when offline and rely on bundled/cached assets.
-- [ ] Guard `PopupFonts.kt` against downloading external fonts when offline.
-- [ ] Guard `AppUpdates.kt` against remote GitHub checks when offline.
+- [x] Guard `DictionaryUpdates.kt` background work against offline mode.
+- [x] Update `DictionaryCatalog.kt` to avoid remote fetch attempts when offline and rely on bundled/cached assets.
+- [x] Guard `PopupFonts.kt` against downloading external fonts when offline.
+- [x] Guard `AppUpdates.kt` against remote GitHub checks when offline.
 
 ### Phase 5: UI, 17 Locales & Verification
-- [ ] Add Offline Mode switch card/row in Settings.
-- [ ] Add localized string resources across all 17 locales (`values/`, `values-ru/`, `values-de/`, etc.):
+- [x] Add Offline Mode switch card/row in Settings.
+- [x] Add localized string resources across all 17 locales (`values/`, `values-ru/`, `values-de/`, etc.):
   - `settings_offline_mode`
   - `settings_offline_mode_hint`
   - `bubble_ocr_engines_offline_locked`
-  - `catalog_offline_notice`
-- [ ] Verify with `TranslationsTest` and full JVM test suite (`./gradlew testDebugUnitTest`).
-- [ ] Verify page tests (`npm --prefix scripts/page-tests test`).
-- [ ] Build and verify on device / emulator.
+- [x] Verify with `TranslationsTest` and full JVM test suite (`./gradlew testDebugUnitTest`).
+- [x] Verify page tests (`npm --prefix scripts/page-tests test`).
+- [x] Build and verify debug APK (`assembleDebug`).

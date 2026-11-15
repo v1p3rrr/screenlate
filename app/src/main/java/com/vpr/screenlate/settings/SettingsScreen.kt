@@ -12,8 +12,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import com.vpr.screenlate.background.BackgroundTipViewModel
 import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.home.HomeViewModel
 import com.vpr.screenlate.ui.components.SettingsScaffold
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** Destinations of the settings list. */
 enum class SettingsPage {
@@ -43,11 +46,13 @@ enum class SettingsPage {
 fun SettingsScreen(
     onOpen: (SettingsPage) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     tip: BackgroundTipViewModel = hiltViewModel(),
 ) {
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     val anki by viewModel.anki.collectAsStateWithLifecycle()
     val backgroundBadge = rememberBackgroundTipBadge(tip)
+    val offlineMode by settingsViewModel.offlineMode.collectAsStateWithLifecycle()
     SettingsScaffold(stringResource(R.string.settings_title), onBack = null, actions = { ResetAllButton() }) { padding ->
         Column(
             modifier = Modifier
@@ -56,6 +61,14 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 8.dp),
         ) {
+            SettingsSwitchEntry(
+                icon = R.drawable.ic_cloud_off,
+                title = stringResource(R.string.settings_offline_mode),
+                summary = stringResource(R.string.settings_offline_mode_hint),
+                checked = offlineMode,
+                onCheckedChange = { settingsViewModel.setOfflineMode(it) },
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
             SettingsEntry(R.drawable.ic_touch_app, stringResource(R.string.bubble_title), stringResource(R.string.settings_bubble_summary)) {
                 onOpen(SettingsPage.BUBBLE)
             }
@@ -146,6 +159,43 @@ private fun SettingsEntry(
             painterResource(R.drawable.ic_chevron_right),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun SettingsSwitchEntry(
+    @DrawableRes icon: Int,
+    title: String,
+    summary: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCheckedChange(!checked) }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+    ) {
+        Icon(
+            painterResource(icon),
+            contentDescription = null,
+            tint = if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(24.dp),
+        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp, end = 8.dp),
+        ) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(summary, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = AccentDefaults.switchColors(),
         )
     }
 }

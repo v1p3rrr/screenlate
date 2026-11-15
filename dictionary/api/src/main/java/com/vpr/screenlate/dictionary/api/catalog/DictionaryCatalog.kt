@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.isFormsOnly
@@ -354,6 +355,7 @@ private data class CatalogDocument(
 class DictionaryCatalog @Inject constructor(
     @ApplicationContext private val context: Context,
     private val httpClient: OkHttpClient,
+    private val appSettings: AppSettingsRepository? = null,
 ) {
     private val cacheFile = File(context.filesDir, "catalog-v2.json")
 
@@ -391,16 +393,19 @@ class DictionaryCatalog @Inject constructor(
     private fun cached(): Catalog? =
         runCatching { if (cacheFile.exists()) parse(cacheFile.readText(), measuredSizes) else null }.getOrNull()
 
-    private fun fetch(): Catalog? = runCatching {
-        httpClient.newCall(Request.Builder().url(REMOTE_URL).build()).execute().use { response ->
-            if (!response.isSuccessful) return null
-            val text = response.body.string()
-            parse(text, measuredSizes)?.also {
-                cacheFile.writeText(text)
-                File(context.filesDir, FORMAT_1_CACHE).delete()
+    private fun fetch(): Catalog? {
+        if (appSettings?.cachedOfflineMode == true) return null
+        return runCatching {
+            httpClient.newCall(Request.Builder().url(REMOTE_URL).build()).execute().use { response ->
+                if (!response.isSuccessful) return null
+                val text = response.body.string()
+                parse(text, measuredSizes)?.also {
+                    cacheFile.writeText(text)
+                    File(context.filesDir, FORMAT_1_CACHE).delete()
+                }
             }
-        }
-    }.onFailure { Log.i(TAG, "Catalog fetch failed: ${it.message}") }.getOrNull()
+        }.onFailure { Log.i(TAG, "Catalog fetch failed: ${it.message}") }.getOrNull()
+    }
 
     internal companion object {
         private val json = Json { ignoreUnknownKeys = true }

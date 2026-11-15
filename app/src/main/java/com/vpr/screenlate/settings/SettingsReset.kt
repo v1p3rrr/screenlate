@@ -71,6 +71,7 @@ object SettingsKeys {
         "background_tip_seen",
         "notification_permission_asked",
         "accessibility_agreed",
+        "offline_mode",
     ) + BackupChoiceStore.KEYS
 
     /**

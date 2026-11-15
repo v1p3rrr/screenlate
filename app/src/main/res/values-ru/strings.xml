@@ -270,6 +270,8 @@
     <string name="anki_overwrite_prepend">дописать в начало</string>
     <string name="audio_volume">Громкость: %1$d%%</string>
     <string name="settings_title">Настройки</string>
+    <string name="settings_offline_mode">Принудительный оффлайн-режим</string>
+    <string name="settings_offline_mode_hint">Отключает все сетевые запросы, экономит трафик и принудительно переключает распознавание и озвучку на устройство.</string>
     <string name="settings_bubble_summary">Прицел, сторона, размер, скрытие в приложениях</string>
     <string name="lookup_title">Поиск</string>
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, иероглифы слова</string>

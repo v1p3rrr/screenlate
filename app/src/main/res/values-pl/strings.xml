@@ -269,6 +269,8 @@
     <string name="anki_overwrite_prepend">dopisz na początku</string>
     <string name="audio_volume">Głośność: %1$d%%</string>
     <string name="settings_title">Ustawienia</string>
+    <string name="settings_offline_mode">Wymuszony tryb offline</string>
+    <string name="settings_offline_mode_hint">Wyłącza wszystkie żądania sieciowe, oszczędza dane komórkowe i wymusza rozpoznawanie oraz dźwięk na urządzeniu.</string>
     <string name="settings_bubble_summary">Celownik, strona, rozmiar, ukryte aplikacje</string>
     <string name="lookup_title">Wyszukiwanie</string>
     <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, znaki słowa</string>

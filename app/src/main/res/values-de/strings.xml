@@ -265,6 +265,8 @@
     <string name="anki_overwrite_prepend">voranstellen</string>
     <string name="audio_volume">Lautstärke: %1$d %%</string>
     <string name="settings_title">Einstellungen</string>
+    <string name="settings_offline_mode">Erzwungener Offline-Modus</string>
+    <string name="settings_offline_mode_hint">Deaktiviert alle Netzwerkanfragen, spart mobile Daten und erzwingt Erkennung und Audio auf dem Gerät.</string>
     <string name="settings_bubble_summary">Zielpunkt, Seite, Größe, ausgeblendete Apps</string>
     <string name="lookup_title">Nachschlagen</string>
     <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Schriftzeichen des Wortes</string>
