@@ -162,18 +162,20 @@ fun isOnline(): Boolean {
 - [x] Build and verify debug APK (`assembleDebug`).
 
 ### Phase 6: Post-Build Refinements & Feedback Fixes
-- [ ] Allow loopback/localhost (`localhost`, `127.0.0.1`, `::1`, `10.0.2.2`) in `OfflineInterceptor`.
-- [ ] Map `OfflineModeException` in `AudioErrorText.kt` / `AudioError` to a readable "Forced Offline Mode is active" message without obfuscated exception names.
-- [ ] Disable "Check for updates" in `DictionariesScreen.kt` when offline mode is active, with explanatory caption.
-- [ ] Disable "Check for updates" in `AboutUpdateCard` when offline mode is active, with explanatory caption.
-- [ ] Add offline banner in `TranslationSettingsScreen.kt` and map `OfflineModeException` in `TranslationError.kt` to an explicit offline mode error message.
-- [ ] Preserve popup scroll position in `popup.js` on `Popup.render` when `options.continued` is true and `termsKey(state)` remains identical.
-- [ ] Add localized string resources across all 17 locales.
-- [ ] Unit tests for all updated components (`OfflineInterceptorTest`, `AudioErrorTest`, `TranslationErrorTest`, `popup-eval`/page tests).
-- [ ] Verify test suite and build updated Dev APK.
+- [x] Allow loopback/localhost (`localhost`, `127.0.0.1`, `::1`, `10.0.2.2`) in `OfflineInterceptor`.
+- [x] Map `OfflineModeException` in `AudioErrorText.kt` / `AudioError` to a readable "Forced Offline Mode is active" message without obfuscated exception names.
+- [x] Disable "Check for updates" in `DictionariesScreen.kt` when offline mode is active, with explanatory caption.
+- [x] Disable "Check for updates" in `AboutUpdateCard` when offline mode is active, with explanatory caption.
+- [x] Add offline banner in `TranslationSettingsScreen.kt` and map `OfflineModeException` in `TranslationError.kt` to an explicit offline mode error message.
+- [x] Preserve popup scroll position in `popup.js` only upon refined scan of the same word (`refined: Boolean` via `PopupController` word anchor overlap `IoU >= 0.4`); reset scroll when moving aim to another instance of the same word.
+- [x] Move Forced Offline Mode switch in `SettingsScreen.kt` between Backup and About.
+- [x] Add localized string resources across all 17 locales.
+- [x] Unit tests for all updated components (`OfflineInterceptorTest`, `AudioErrorTest`, `TranslationErrorTest`, `popup-eval`/page tests).
+- [x] Verify test suite and build updated Dev APK.
 
 ---
 
 ## 5. Changelog
 - **2026-11-15:** Initial plan created and approved. Phases 1-5 implemented and verified.
 - **2026-11-15 (Post-Dev Build):** Added Phase 6 based on device feedback (questions 7-11 settled with owner): localhost exception for custom audio sources, audio test error formatting, disabled update buttons in dictionaries and about with hints, translation screen offline banner and test mapping, and popup scroll preservation between draft and final passes.
+- **2026-11-15 (Refinements):** Moved Offline Mode switch between Backup and About. Gated popup scroll preservation to refined anchor matches (`refined: Boolean`) so moving aim to duplicate words resets scroll to 0.

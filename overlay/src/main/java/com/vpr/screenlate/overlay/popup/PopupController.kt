@@ -27,6 +27,7 @@ class PopupController(
     private val params = OverlayWindows.popupParams()
     private var attached = false
     private var visible = false
+    private var lastWord: Box? = null
 
     /** Counts [show] and [hide] calls, so a view drawn late does not change a newer one. */
     private var generation = 0
@@ -69,6 +70,7 @@ class PopupController(
         attached = false
         visible = false
         bounds = null
+        lastWord = null
         generation++
         concealed = false
         placing = false
@@ -81,6 +83,8 @@ class PopupController(
         val placed = place(word, bubble, screen, maxWidth)
         bounds = placed
         val continued = visible
+        val refined = visible && lastWord?.let { isSameWord(it, word) } == true
+        lastWord = word
         visible = true
         val shown = ++generation
         if (continued) {
@@ -92,7 +96,7 @@ class PopupController(
             windowManager.updateViewLayout(page.container, params)
             page.container.visibility = View.VISIBLE
         }
-        page.render(state, continued)
+        page.render(state, continued, refined)
         page.whenDrawn { if (shown == generation) onDrawn() }
     }
 
@@ -136,6 +140,14 @@ class PopupController(
         params.height = placed.height.roundToInt()
     }
 
+    /** Two detections are the same word on the screen when their bounding boxes heavily overlap (IoU >= 0.4). */
+    private fun isSameWord(a: Box, b: Box): Boolean {
+        val intersection = a.intersection(b) ?: return false
+        val intersectionArea = intersection.width * intersection.height
+        val unionArea = (a.width * a.height) + (b.width * b.height) - intersectionArea
+        return unionArea > 0f && (intersectionArea / unionArea) >= 0.4f
+    }
+
     /** Re-renders the current view in place, if the popup is showing. */
     fun update(state: String) {
         if (visible) page.update(state)
@@ -161,6 +173,7 @@ class PopupController(
         if (!visible) return
         visible = false
         bounds = null
+        lastWord = null
         generation++
         concealed = false
         placing = false

@@ -162,9 +162,10 @@ class LookupPage(
      * Shows [state] (JSON from [PageState]), replacing the current view and its back stack.
      *
      * @param continued the popup stayed open, so a new scan result of the same word and sentence keeps the translation.
+     * @param refined the word under the aim point is the same occurrence on the screen (e.g. draft promotion).
      */
-    fun render(state: String, continued: Boolean = false) =
-        run("Popup.render($state, {continued: $continued})", replacesView = true)
+    fun render(state: String, continued: Boolean = false, refined: Boolean = false) =
+        run("Popup.render($state, {continued: $continued, refined: $refined})", replacesView = true)
 
     /** Re-renders the current view in place (theme, OCR status). */
     fun update(state: String) = run("Popup.update($state)")

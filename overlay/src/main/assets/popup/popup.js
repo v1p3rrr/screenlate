@@ -1298,15 +1298,16 @@ const Popup = (() => {
         return JSON.stringify([source.position, source.lang, word, term.expression, term.reading]);
     }
 
-    /** { continued }: the popup stayed open, so a new scan result of the same word and sentence keeps the translation. */
+    /** { continued, refined }: continued if popup stayed open; refined if the aimed word is the same occurrence. */
     function render(state, options) {
         const first = history.length ? history[0].state : current;
         const sameTerms = options && options.continued && first && termsKey(state) === termsKey(first);
+        const preserveScroll = Boolean(options && options.refined && sameTerms);
         const same = sameTerms && state.sentence && first && state.sentence === first.sentence;
         if ((!options || !options.continued) || !same) translation = null;
         if ((!options || !options.continued) || history.length || audioWordKey(state) !== audioWordKey(current)) audioView++;
 
-        if (sameTerms && history.length) {
+        if (preserveScroll && history.length) {
             // A pushed view stays on top; update its root state and propagate header status.
             const { theme, pending, noteWait, engine, ocrError } = state;
             const status = { theme, pending, noteWait, engine, ocrError };
@@ -1317,10 +1318,10 @@ const Popup = (() => {
             return;
         }
 
-        const savedScroll = sameTerms ? content.scrollTop : 0;
+        const savedScroll = preserveScroll ? content.scrollTop : 0;
         history.length = 0;
         current = state;
-        if (sameTerms && resultsKey(state) === drawnKey) {
+        if (preserveScroll && resultsKey(state) === drawnKey) {
             drawHeader(state);
             return;
         }

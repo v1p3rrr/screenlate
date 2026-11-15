@@ -61,14 +61,6 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 8.dp),
         ) {
-            SettingsSwitchEntry(
-                icon = R.drawable.ic_cloud_off,
-                title = stringResource(R.string.settings_offline_mode),
-                summary = stringResource(R.string.settings_offline_mode_hint),
-                checked = offlineMode,
-                onCheckedChange = { settingsViewModel.setOfflineMode(it) },
-            )
-            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
             SettingsEntry(R.drawable.ic_touch_app, stringResource(R.string.bubble_title), stringResource(R.string.settings_bubble_summary)) {
                 onOpen(SettingsPage.BUBBLE)
             }
@@ -117,6 +109,15 @@ fun SettingsScreen(
             SettingsEntry(R.drawable.ic_backup, stringResource(R.string.backup_title), stringResource(R.string.settings_backup_summary)) {
                 onOpen(SettingsPage.BACKUP)
             }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+            SettingsSwitchEntry(
+                icon = R.drawable.ic_cloud_off,
+                title = stringResource(R.string.settings_offline_mode),
+                summary = stringResource(R.string.settings_offline_mode_hint),
+                checked = offlineMode,
+                onCheckedChange = { settingsViewModel.setOfflineMode(it) },
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
             SettingsEntry(R.drawable.ic_info, stringResource(R.string.about_title), stringResource(R.string.settings_about_summary)) {
                 onOpen(SettingsPage.ABOUT)
             }

@@ -1518,23 +1518,30 @@ test('a new scan result with the same word and sentence keeps the translation wh
     assert.equal(box.hidden, true);
 });
 
-test('a continued render with the same word preserves scroll position', () => {
+test('a continued render with the same word preserves scroll position only when refined', () => {
     Popup.render(state({ results: [result('猫', 'ねこ'), result('猫背', 'ねこぜ')] }));
     page.document.getElementById('content').scrollTop = 120;
 
-    Popup.render(state({ results: [result('猫', 'ねこ'), result('猫背', 'ねこぜ')], engine: 'Lens' }), { continued: true });
+    // Moving aim to another instance of the same word (refined = false) resets scroll to 0.
+    Popup.render(state({ results: [result('猫', 'ねこ'), result('猫背', 'ねこぜ')] }), { continued: true, refined: false });
+    assert.equal(page.document.getElementById('content').scrollTop, 0);
+
+    // Refined scan of the same word (e.g. draft promotion, refined = true) preserves scroll.
+    page.document.getElementById('content').scrollTop = 120;
+    Popup.render(state({ results: [result('猫', 'ねこ'), result('猫背', 'ねこぜ')], engine: 'Lens' }), { continued: true, refined: true });
     assert.equal(page.document.getElementById('content').scrollTop, 120);
 
-    Popup.render(state({ results: [result('犬', 'いぬ')] }), { continued: true });
+    Popup.render(state({ results: [result('犬', 'いぬ')] }), { continued: true, refined: true });
     assert.equal(page.document.getElementById('content').scrollTop, 0);
 });
 
-test('a continued render with the same word preserves a pushed link view', () => {
+test('a continued render with the same word preserves a pushed link view only when refined', () => {
     Popup.render(state({ results: [result('猫', 'ねこ')] }));
     Popup.push(state({ kanji: { character: '猫', entries: [] } }));
     assert.match(page.document.getElementById('content').textContent, /猫/);
 
-    Popup.render(state({ results: [result('猫', 'ねこ')], engine: 'Lens', pending: false }), { continued: true });
+    // Draft promotion (refined = true) keeps the pushed link view.
+    Popup.render(state({ results: [result('猫', 'ねこ')], engine: 'Lens', pending: false }), { continued: true, refined: true });
     assert.match(page.document.getElementById('content').textContent, /猫/);
 
     page.document.getElementById('back').click();
