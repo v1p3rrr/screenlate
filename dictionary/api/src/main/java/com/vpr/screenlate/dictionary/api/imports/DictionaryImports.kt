@@ -148,7 +148,7 @@ fun shownImportName(name: String, entryId: String?, entries: List<CatalogEntry>,
  * download that stalls does not hold up all the others; their import steps run one at a time ([importing]).
  */
 @Singleton
-class DictionaryImports internal constructor(
+class DictionaryImports constructor(
     @ApplicationContext private val context: Context,
     private val storage: DictionaryStorage,
     private val preferences: DataStore<Preferences>,

@@ -57,7 +57,7 @@ sealed interface FontImport {
  * list of installed fonts (kept in `fonts/fonts.json` next to the files).
  */
 @Singleton
-class PopupFonts internal constructor(
+class PopupFonts constructor(
     @ApplicationContext private val context: Context,
     private val client: OkHttpClient,
     private val isOffline: () -> Boolean = { false },

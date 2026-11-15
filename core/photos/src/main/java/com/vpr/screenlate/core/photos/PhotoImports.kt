@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.ColorSpace
 import android.graphics.ImageDecoder
+import android.os.Build
 import androidx.core.net.toUri
 import dagger.Binds
 import dagger.Module
@@ -104,6 +105,38 @@ internal object PlatformImageFormats : ImageFormats {
     }
 
     override fun convert(file: File): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(file.path, bounds)
+            if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return false
+            val pixels = bounds.outWidth.toLong() * bounds.outHeight
+            var sample = 1
+            if (pixels > MAX_PIXELS) {
+                while (pixels / (sample.toLong() * sample) > MAX_PIXELS) sample *= 2
+            }
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = sample
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+            }
+            val decoded = BitmapFactory.decodeFile(file.path, options) ?: return false
+            val bitmap = if (decoded.config == Bitmap.Config.ARGB_8888) {
+                decoded
+            } else {
+                decoded.copy(Bitmap.Config.ARGB_8888, false).also { decoded.recycle() } ?: return false
+            }
+            val temp = File(file.path + ".png")
+            try {
+                val written = temp.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                if (!written || !temp.renameTo(file)) throw IOException("Cannot store the converted image")
+            } catch (e: Exception) {
+                temp.delete()
+                throw e
+            } finally {
+                bitmap.recycle()
+            }
+            return true
+        }
+
         val decoded = try {
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(file)) { decoder, info, _ ->
                 decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
