@@ -274,6 +274,14 @@ class OverlayController(
     /** Counts scans; a note compares it to tell whether the scan it was started in is still open. */
     private var scanId = 0
 
+    private var offlineMode: Boolean = appSettings.cachedOfflineMode ?: false
+
+    private val effectiveOcrEngines: OcrEngines
+        get() = if (offlineMode) OcrEngines.DEVICE else settings.ocrEngines
+
+    private fun effectiveOcrEngines(newSettings: OverlaySettings): OcrEngines =
+        if (offlineMode) OcrEngines.DEVICE else newSettings.ocrEngines
+
     private var layout: TextLayout? = null
     private var ocrFinal = false
     private var ocrEngine: OcrEngineType? = null
@@ -367,6 +375,12 @@ class OverlayController(
                 refreshPopup()
             }
         }
+        scope.launch {
+            appSettings.offlineMode.collect {
+                offlineMode = it
+                applySettings(settings)
+            }
+        }
     }
 
     fun stop() {
@@ -440,7 +454,7 @@ class OverlayController(
     private fun applySettings(new: OverlaySettings) {
         val previous = settings
         settings = new
-        loadOnDevice(new.textSource != TextSource.APP_TEXT_ONLY && new.ocrEngines != OcrEngines.CLOUD)
+        loadOnDevice(new.textSource != TextSource.APP_TEXT_ONLY && effectiveOcrEngines(new) != OcrEngines.CLOUD)
         val show = shouldShowBubble()
         val size = (new.bubbleSizeDp * density).roundToInt()
         if (size != bubbleSize) resizeBubble(size)
@@ -1035,7 +1049,7 @@ class OverlayController(
      * for the screen: a photo's text is stored.
      */
     private fun prepareScan() {
-        if (settings.textSource != TextSource.APP_TEXT_ONLY && settings.ocrEngines != OcrEngines.DEVICE) screenReads.prepareCloud()
+        if (settings.textSource != TextSource.APP_TEXT_ONLY && effectiveOcrEngines != OcrEngines.DEVICE) screenReads.prepareCloud()
     }
 
     /** Reads the lookup source of this moment: the screen, a photo's stored text, or nothing on the Camera page. */
@@ -1150,7 +1164,7 @@ class OverlayController(
                                     error is OfflineException && !deviceReads ->
                                         service.getString(R.string.overlay_error_offline_no_device)
                                     error is OfflineException -> service.getString(R.string.overlay_error_offline)
-                                    settings.ocrEngines == OcrEngines.CLOUD || !deviceReads -> cloudErrorReason(error)
+                                    effectiveOcrEngines == OcrEngines.CLOUD || !deviceReads -> cloudErrorReason(error)
                                     else -> service.getString(R.string.overlay_error_ocr)
                                 },
                             )
@@ -1193,9 +1207,9 @@ class OverlayController(
         onPage(page = page, final = true, lensError = null, flashLines = flashLines)
     }
 
-    private fun ocrOptions() = OcrOptions(settings.ocrEngines, deferWholeImage = settings.ocrSaving)
+    private fun ocrOptions() = OcrOptions(effectiveOcrEngines, deferWholeImage = settings.ocrSaving)
 
-    private fun smallText() = ocrBoostMode(settings.smallText, settings.ocrEngines, settings.textSource)
+    private fun smallText() = ocrBoostMode(settings.smallText, effectiveOcrEngines, settings.textSource)
 
     /** The aim's row in [captured], so the on-device draft reads the text there first. */
     private fun scanFocus(captured: CapturedScreen): Float? {
@@ -1767,7 +1781,7 @@ class OverlayController(
     private fun engineLabel(): String {
         val engine = aimedEngine()
         val keptBesideCloud = keptWord() != null && ocrEngine == OcrEngineType.LENS
-        val engines = (scanSource as? LookupSource.Photo)?.recognition?.settings?.engines ?: settings.ocrEngines
+        val engines = (scanSource as? LookupSource.Photo)?.recognition?.settings?.engines ?: effectiveOcrEngines
         return when (engineLabelOf(engine, ocrFinal, engines, ocrOffline, keptBesideCloud)) {
             EngineLabel.NONE -> ""
             EngineLabel.LENS -> service.getString(R.string.overlay_engine_lens)
@@ -1823,7 +1837,7 @@ class OverlayController(
     /** Why cloud recognition failed for this scan, for the ⚠ next to the engine label; empty when it did not. */
     private fun ocrErrorText(): String {
         val error = lensError ?: return ""
-        if (settings.ocrEngines == OcrEngines.DEVICE) return ""
+        if (effectiveOcrEngines == OcrEngines.DEVICE) return ""
         // A word read from the app's own text does not depend on recognition.
         if (aimedEngine() == OcrEngineType.ACCESSIBILITY) return ""
         return "${cloudErrorReason(error)} ${service.getString(R.string.overlay_ocr_error_fallback)}"

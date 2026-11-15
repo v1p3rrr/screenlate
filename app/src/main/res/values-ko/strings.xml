@@ -241,6 +241,7 @@
     <string name="bubble_ocr_engines_hint_both">기기 내 즉각적인 초안과 클라우드의 높은 정확도. 네트워크가 끊겨도 오프라인으로 작동합니다.</string>
     <string name="bubble_ocr_engines_hint_cloud">가장 높은 정확도. 기기 저장 공간과 배터리를 절약하지만 인터넷 연결이 필요합니다.</string>
     <string name="bubble_ocr_engines_hint_device">완전한 개인정보 보호. 인터넷 없이 작동하며 모바일 데이터를 사용하지 않습니다. 복잡한 글꼴에서는 정확도가 다소 떨어질 수 있습니다.</string>
+    <string name="bubble_ocr_engines_offline_locked">강제 오프라인 모드가 활성화되어 있습니다. 인식은 기기 내에서만 작동합니다.</string>
     <string name="bubble_ocr_engines_info">둘 다: 기기 내 인식과 클라우드 인식이 동시에 시작됩니다. 기기가 먼저 조준점 주변 글자를 인식하므로 단어를 거의 바로 사용할 수 있고, 더 정확한 클라우드 결과가 도착하면 그것으로 바뀝니다. 네트워크 연결이 없거나 클라우드 오류가 발생하면 기기의 결과가 유지됩니다.\n\n클라우드: 네트워크 연결이 없으면 아무것도 인식되지 않으며, 서버가 응답한 후에야 단어를 사용할 수 있습니다.\n\n기기: 오프라인에서 동작하지만 세로쓰기와 만화 인식 정확도가 낮고, OCR 부스트를 사용할 수 없습니다.</string>
     <string name="bubble_ocr_saving">기기 부하 줄이기</string>
     <string name="bubble_ocr_saving_hint">기기의 전체 화면 인식은 클라우드 인식이 3초 안에 응답하지 않을 때만 시작됩니다. 부하와 배터리 사용이 줄어들며, 조준점에서 먼 단어는 늦게 사용할 수 있습니다. 속도가 더 중요하면 꺼 두세요.</string>

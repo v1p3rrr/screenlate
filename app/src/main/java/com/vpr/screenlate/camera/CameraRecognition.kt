@@ -3,6 +3,7 @@ package com.vpr.screenlate.camera
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.PhotoTiles
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
@@ -118,6 +119,7 @@ class CameraRecognitionController @Inject constructor(
     settings: OverlaySettingsRepository,
     device: DeviceOcr,
     private val jobs: PhotoRecognitionJobs,
+    appSettings: AppSettingsRepository,
 ) : CameraRecognition {
     // Reading readiness or a setting can fail; Recognize then does nothing instead of ending the app.
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default + CoroutineExceptionHandler { _, e ->
@@ -133,7 +135,9 @@ class CameraRecognitionController @Inject constructor(
                 statuses.mapNotNull { status -> status.gap()?.let { status.language to it } }.toMap()
             }
         }
-        val engines = combine(settings.settings, preferences.highAccuracy) { current, tiled -> current.ocrEngines to tiled }
+        val engines = combine(settings.settings, preferences.highAccuracy, appSettings.offlineMode) { current, tiled, offline ->
+            (if (offline) OcrEngines.DEVICE else current.ocrEngines) to tiled
+        }
         combine(engines, device.activeUpdates(language.selected), installation.observe(language.selected, imageSource = true),
             jobs.work, gaps) { (ocrEngines, tiled), model, status, work, gapsByLanguage ->
             CameraRecognitionState(language.selected, language.enabled,

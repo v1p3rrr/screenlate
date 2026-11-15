@@ -241,6 +241,7 @@
     <string name="bubble_ocr_engines_hint_both">端末上の即時ドラフトとクラウドからの高精度な認識。接続が切れてもオフラインで動作します。</string>
     <string name="bubble_ocr_engines_hint_cloud">最も高い精度。端末のストレージとバッテリーを節約しますが、インターネット接続が必要です。</string>
     <string name="bubble_ocr_engines_hint_device">完全なプライバシー。インターネットなしで動作し、モバイル通信量を消費しません。複雑なフォントでは精度がやや落ちる場合があります。</string>
+    <string name="bubble_ocr_engines_offline_locked">強制オフラインモードが有効です。認識は端末上でのみ動作します。</string>
     <string name="bubble_ocr_engines_info">両方：端末上の認識とクラウド認識を同時に開始します。端末が先に照準のまわりの文字を認識するため、語はほぼすぐに使えます。より正確なクラウドの結果が届くと、それに置き換わります。ネットワーク接続がない場合やクラウドでエラーが起きた場合は、端末の結果が残ります。\n\nクラウド：ネットワーク接続がないと何も認識されません。語はサーバーの応答後に使えるようになります。\n\n端末：オフラインで動作しますが、縦書きやマンガの認識精度は下がります。OCR ブーストは使えません。</string>
     <string name="bubble_ocr_saving">端末の負荷を減らす</string>
     <string name="bubble_ocr_saving_hint">端末による画面全体の認識は、クラウド認識が 3 秒以内に応答しなかった場合にのみ開始します。負荷とバッテリー消費を抑えられますが、照準から離れた語は使えるようになるまで時間がかかります。速度を優先する場合はオフのままにしてください。</string>

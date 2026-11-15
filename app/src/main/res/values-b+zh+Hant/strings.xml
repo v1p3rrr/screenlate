@@ -241,6 +241,7 @@
     <string name="bubble_ocr_engines_hint_both">裝置端即時草稿與雲端高精準度辨識。斷網時可離線運作。</string>
     <string name="bubble_ocr_engines_hint_cloud">最高精準度。節省裝置儲存空間與電池電量，但需要網路連線。</string>
     <string name="bubble_ocr_engines_hint_device">完全保護隱私。無需網路即可使用，不消耗行動數據。在複雜字型上精準度可能稍低。</string>
+    <string name="bubble_ocr_engines_offline_locked">強制離線模式已啟用。辨識僅在裝置端運作。</string>
     <string name="bubble_ocr_engines_info">兩者：裝置端辨識和雲端辨識同時開始。裝置先辨識瞄準點周圍的文字，因此詞語幾乎立即可用；更準確的雲端結果到達後會取代它。沒有網路連線或雲端出錯時，保留裝置的結果。\n\n雲端：沒有網路連線時無法辨識任何內容；詞語只有在伺服器回應後才可用。\n\n裝置：可離線使用，但對直排文字和漫畫的辨識準確度較低；OCR 增強無法使用。</string>
     <string name="bubble_ocr_saving">減輕裝置負載</string>
     <string name="bubble_ocr_saving_hint">僅當雲端辨識 3 秒內未回應時，才開始在裝置上辨識整個螢幕。可降低負載和耗電；遠離瞄準點的詞會較晚可用。如果更看重速度，請保持關閉。</string>

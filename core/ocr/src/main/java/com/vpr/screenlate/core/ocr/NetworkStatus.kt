@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -12,12 +13,17 @@ import javax.inject.Singleton
 @Singleton
 class NetworkStatus @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val appSettings: AppSettingsRepository,
 ) {
     /**
      * Whether the app has a network with internet access. Android also answers "no network" when the system blocks
      * the app's traffic (per-app network switches, background data restrictions, Data Saver), so the log says why.
      */
     fun isOnline(): Boolean {
+        if (appSettings.cachedOfflineMode == true) {
+            Log.i(TAG, "Offline: Forced Offline Mode is active")
+            return false
+        }
         val manager = context.getSystemService(ConnectivityManager::class.java) ?: return false
         val capabilities = manager.activeNetwork?.let(manager::getNetworkCapabilities)
         if (capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true) return true

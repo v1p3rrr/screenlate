@@ -185,6 +185,16 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[ACCESSIBILITY_AGREED] = true }
     }
 
+    /** Whether Forced Offline Mode is active, blocking all outbound network traffic and using on-device fallbacks. */
+    val offlineMode: Flow<Boolean> = dataStore.data.map { it[OFFLINE_MODE] ?: false }
+
+    /** [offlineMode] as last read; null before the first read. */
+    val cachedOfflineMode: Boolean? get() = dataStore.cached { it[OFFLINE_MODE] ?: false }
+
+    suspend fun setOfflineMode(enabled: Boolean) {
+        dataStore.edit { it[OFFLINE_MODE] = enabled }
+    }
+
     private companion object {
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val APP_COLORS = stringPreferencesKey("theme_colors")
@@ -194,6 +204,7 @@ class AppSettingsRepository @Inject constructor(
         val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")
         val BACKGROUND_TIP_SEEN = booleanPreferencesKey("background_tip_seen")
         val ACCESSIBILITY_AGREED = booleanPreferencesKey("accessibility_agreed")
+        val OFFLINE_MODE = booleanPreferencesKey("offline_mode")
         val E_INK = booleanPreferencesKey("e_ink")
         val E_INK_HINT_SEEN = booleanPreferencesKey("e_ink_hint_seen")
         val E_INK_BUBBLE_BEFORE = intPreferencesKey("e_ink_bubble_before")

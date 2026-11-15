@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.languages.OcrModelRows
 import com.vpr.screenlate.overlay.settings.OverlaySettings
@@ -49,10 +50,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class RecognitionSettingsViewModel @Inject constructor(private val repository: OverlaySettingsRepository) : ViewModel() {
+class RecognitionSettingsViewModel @Inject constructor(
+    private val repository: OverlaySettingsRepository,
+    private val appSettings: AppSettingsRepository,
+) : ViewModel() {
     /** Starts from the settings as last read; null only before the first read, so the page never shows the defaults first. */
     val settings: StateFlow<OverlaySettings?> =
         repository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), repository.cachedSettings)
+
+    val offlineMode: StateFlow<Boolean> =
+        appSettings.offlineMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), appSettings.cachedOfflineMode ?: false)
 
     fun setOcrEngines(engines: OcrEngines) = launch { repository.setOcrEngines(engines) }
 
@@ -83,6 +90,7 @@ fun RecognitionSettingsScreen(
     viewModel: RecognitionSettingsViewModel = hiltViewModel(),
 ) {
     val stored by viewModel.settings.collectAsStateWithLifecycle()
+    val offlineMode by viewModel.offlineMode.collectAsStateWithLifecycle()
     val recognizes = stored?.textSource != TextSource.APP_TEXT_ONLY
     var confirmAppTextOnly by remember { mutableStateOf(false) }
     val scroll = rememberScrollState()
@@ -115,7 +123,7 @@ fun RecognitionSettingsScreen(
                 )
                 Segments(
                     options = OcrEngines.entries,
-                    selected = settings.ocrEngines,
+                    selected = if (offlineMode) OcrEngines.DEVICE else settings.ocrEngines,
                     label = {
                         stringResource(
                             when (it) {
@@ -126,16 +134,20 @@ fun RecognitionSettingsScreen(
                         )
                     },
                     onSelect = viewModel::setOcrEngines,
-                    enabled = recognizes,
+                    enabled = recognizes && !offlineMode,
                 )
                 Hint(
-                    stringResource(
-                        when (settings.ocrEngines) {
-                            OcrEngines.BOTH -> R.string.bubble_ocr_engines_hint_both
-                            OcrEngines.CLOUD -> R.string.bubble_ocr_engines_hint_cloud
-                            OcrEngines.DEVICE -> R.string.bubble_ocr_engines_hint_device
-                        },
-                    ),
+                    if (offlineMode) {
+                        stringResource(R.string.bubble_ocr_engines_offline_locked)
+                    } else {
+                        stringResource(
+                            when (settings.ocrEngines) {
+                                OcrEngines.BOTH -> R.string.bubble_ocr_engines_hint_both
+                                OcrEngines.CLOUD -> R.string.bubble_ocr_engines_hint_cloud
+                                OcrEngines.DEVICE -> R.string.bubble_ocr_engines_hint_device
+                            },
+                        )
+                    },
                 )
                 LabelWithInfo(
                     stringResource(R.string.bubble_small_text),
@@ -155,16 +167,16 @@ fun RecognitionSettingsScreen(
                         )
                     },
                     onSelect = viewModel::setSmallText,
-                    enabled = recognizes && settings.ocrEngines != OcrEngines.DEVICE,
+                    enabled = recognizes && settings.ocrEngines != OcrEngines.DEVICE && !offlineMode,
                 )
                 SwitchRow(
                     stringResource(R.string.bubble_ocr_saving),
                     settings.ocrSaving,
                     viewModel::setOcrSaving,
                     hint = stringResource(R.string.bubble_ocr_saving_hint),
-                    enabled = recognizes && settings.ocrEngines == OcrEngines.BOTH,
+                    enabled = recognizes && settings.ocrEngines == OcrEngines.BOTH && !offlineMode,
                 )
-                OcrModelRows(enabled = recognizes && settings.ocrEngines != OcrEngines.CLOUD, openLanguage = ocrModels)
+                OcrModelRows(enabled = recognizes && (offlineMode || settings.ocrEngines != OcrEngines.CLOUD), openLanguage = ocrModels)
             }
             SectionCard(
                 stringResource(R.string.recognition_app_text_title),

@@ -12,4 +12,5 @@ dependencies {
     api(libs.okhttp)
     implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.icu4j)
+    testImplementation(libs.mockwebserver)
 }
