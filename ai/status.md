@@ -9,8 +9,9 @@
   - Disabled "Check for updates" buttons with explanatory hints in both Dictionaries screen and About screen when offline.
   - Moved Forced Offline Mode switch in App Settings to sit cleanly between Backup and About, separated by subtle dividers.
   - In `PopupController` and `popup.js`, tracked word screen anchor bounds (`IoU >= 0.4`) and passed `refined: Boolean`: moving the aim point to another instance of the same word resets scroll to 0, while a refined whole-screen scan arriving for the current aimed word preserves scroll position and pushed link views.
+  - Implemented pure monochrome palette generation in `PaletteGenerator` and neutral color detection in `ColorMath.isAchromatic`: seeds of black (`#000000`), white (`#FFFFFF`) or neutral grays generate clean grayscale surfaces and high-contrast charcoal/silver controls without unwanted reddish-brown tint.
   - Added localized strings for all new options across all 17 supported locales; verified with `TranslationsTest` and all 180 page tests passing.
-- Minified ARM64 Dev APK from `a90c6308`: version `1.0.1-a90c6308-min` (10001), 23,250,279 bytes, signed with the local debug key. SHA-256 `4faae0931987ff2781dbdf1d3ad5af7c8484881ed6e3a2ee3058729328658393`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+- Minified ARM64 Dev APK from `312b2153`: version `1.0.1-312b2153-min` (10001), 23,253,399 bytes, signed with the local debug key. SHA-256 `d98e665486614bd295d7195698c59d0591b02c9d50e784c25a73f0685f65f368`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
 ## Anki duplicate icon refinement (2026-11-15)
 
