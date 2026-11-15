@@ -13,7 +13,7 @@
   - In `PopupController` and `popup.js`, tracked word screen anchor bounds (`IoU >= 0.4`) and passed `refined: Boolean`: moving the aim point to another instance of the same word resets scroll to 0, while a refined whole-screen scan arriving for the current aimed word preserves scroll position and pushed link views.
   - Implemented pure monochrome palette generation in `PaletteGenerator` and neutral color detection in `ColorMath.isAchromatic`: seeds of black (`#000000`), white (`#FFFFFF`) or neutral grays generate clean grayscale surfaces and high-contrast charcoal/silver controls without unwanted reddish-brown tint.
   - Added localized strings for all new options across all 17 supported locales; verified with `TranslationsTest` and all 180 page tests passing.
-- Minified ARM64 Dev APK from `312b2153`: version `1.0.1-312b2153-min` (10001), 23,253,399 bytes, signed with the local debug key. SHA-256 `d98e665486614bd295d7195698c59d0591b02c9d50e784c25a73f0685f65f368`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+- Minified ARM64 Dev APK from `f1d57c1b`: version `1.0.1-f1d57c1b-min` (10001), 23,259,423 bytes, signed with the local debug key. SHA-256 `074dbdec40e4b21f3ed40b3e3a34e1dfdb587f96fd7d256afc6621c66aade9fe`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
 ## Anki duplicate icon refinement (2026-11-15)
 
