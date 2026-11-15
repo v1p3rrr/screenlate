@@ -6,6 +6,7 @@
   - Unified book geometry with the standard `open` book (`M12 6.5...`), trimming the top-right page (`v-6` instead of `v-13`) to carve space for badges.
   - In `openUpdate`, positioned the refresh arrow at the top pointing right (`M19.4 .7 21 2.3l-1.6 1.6`) with a horizontal entry (`h2`) and a lighter 1.5px stroke.
   - Verified with all 178 page tests passing.
+- Minified ARM64 Dev APK from `116f4a11`: version `1.0.1-116f4a11-min` (10001), 23,243,907 bytes, signed with the local debug key. SHA-256 `75dbdc57e8441011c743b4d10232581901ba5d70b56f39ccf85a20b6fa5833d4`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
 ## Forced Offline Mode implementation (2026-11-15)
 
