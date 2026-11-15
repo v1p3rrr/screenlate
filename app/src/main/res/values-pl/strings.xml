@@ -244,7 +244,9 @@
     <string name="bubble_ocr_engines_both">Oba</string>
     <string name="bubble_ocr_engines_cloud">Chmura</string>
     <string name="bubble_ocr_engines_device">Urządzenie</string>
-    <string name="bubble_ocr_engines_hint">Zalecane: Oba. Wyłączaj jeden silnik tylko na słabych lub mocno obciążonych urządzeniach. Rozpoznawanie w chmurze zużywa dane komórkowe (około 0,1–0,4 MB na skan), rozpoznawanie na urządzeniu nie.</string>
+    <string name="bubble_ocr_engines_hint_both">Błyskawiczny szkic na urządzeniu i najwyższa dokładność z chmury. Działa offline w przypadku utraty połączenia.</string>
+    <string name="bubble_ocr_engines_hint_cloud">Najwyższa dokładność. Oszczędza pamięć i baterię urządzenia, ale wymaga połączenia z internetem.</string>
+    <string name="bubble_ocr_engines_hint_device">Pełna prywatność. Działa bez internetu i nie zużywa danych komórkowych. Może być nieco mniej dokładny przy skomplikowanych czcionkach.</string>
     <string name="bubble_ocr_engines_info">Oba: rozpoznawanie na urządzeniu i w chmurze startują jednocześnie. Urządzenie najpierw rozpoznaje tekst wokół celownika, więc słowa są dostępne niemal od razu; dokładniejszy wynik z chmury zastępuje go, gdy nadejdzie. Bez połączenia z siecią lub przy błędzie chmury zostaje wynik urządzenia.\n\nChmura: bez połączenia z siecią nic nie jest rozpoznawane; słowa są dostępne dopiero po odpowiedzi serwera.\n\nUrządzenie: działa offline, ale mniej dokładnie rozpoznaje tekst pionowy i mangę; wzmocnienie OCR jest niedostępne.</string>
     <string name="bubble_ocr_saving">Zmniejsz obciążenie urządzenia</string>
     <string name="bubble_ocr_saving_hint">Rozpoznawanie całego ekranu na urządzeniu startuje tylko wtedy, gdy rozpoznawanie w chmurze nie odpowie w ciągu 3 s. Zmniejsza obciążenie i zużycie baterii; słowa z dala od celownika są dostępne później. Zostaw wyłączone, jeśli ważniejsza jest szybkość.</string>

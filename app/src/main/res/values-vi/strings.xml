@@ -238,7 +238,9 @@
     <string name="bubble_ocr_engines_both">Cả hai</string>
     <string name="bubble_ocr_engines_cloud">Đám mây</string>
     <string name="bubble_ocr_engines_device">Thiết bị</string>
-    <string name="bubble_ocr_engines_hint">Khuyến nghị: Cả hai. Chỉ tắt một công cụ trên thiết bị cấu hình thấp hoặc đang chịu tải nặng. Nhận dạng đám mây dùng dữ liệu di động (khoảng 0,1–0,4 MB mỗi lần quét); nhận dạng trên thiết bị thì không.</string>
+    <string name="bubble_ocr_engines_hint_both">Bản nháp tức thì trên thiết bị và độ chính xác tối đa từ đám mây. Hoạt động ngoại tuyến nếu mất mạng.</string>
+    <string name="bubble_ocr_engines_hint_cloud">Độ chính xác cao nhất. Tiết kiệm bộ nhớ và pin của thiết bị, nhưng cần có kết nối mạng.</string>
+    <string name="bubble_ocr_engines_hint_device">Hoàn toàn riêng tư. Hoạt động không cần mạng và không tốn dữ liệu di động. Có thể kém chính xác hơn một chút với phông chữ phức tạp.</string>
     <string name="bubble_ocr_engines_info">Cả hai: nhận dạng trên thiết bị và trên đám mây bắt đầu cùng lúc. Nhận dạng trên thiết bị đọc chữ quanh điểm ngắm trước, nên có thể tra từ gần như ngay lập tức; kết quả chính xác hơn của nhận dạng đám mây sẽ thay thế khi nhận được. Khi không có kết nối mạng hoặc đám mây gặp lỗi, kết quả của thiết bị được giữ lại.\n\nĐám mây: không có kết nối mạng thì không nhận dạng được gì; chỉ tra được từ sau khi máy chủ phản hồi.\n\nThiết bị: hoạt động ngoại tuyến nhưng nhận dạng chữ dọc và manga kém chính xác hơn; không dùng được tăng cường OCR.</string>
     <string name="bubble_ocr_saving">Giảm tải cho thiết bị</string>
     <string name="bubble_ocr_saving_hint">Nhận dạng toàn màn hình trên thiết bị chỉ bắt đầu nếu nhận dạng đám mây chưa phản hồi sau 3 giây. Giảm tải và mức tiêu thụ pin; các từ ở xa điểm ngắm sẽ tra được muộn hơn. Hãy để tắt nếu tốc độ quan trọng hơn.</string>

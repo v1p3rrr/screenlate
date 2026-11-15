@@ -128,7 +128,15 @@ fun RecognitionSettingsScreen(
                     onSelect = viewModel::setOcrEngines,
                     enabled = recognizes,
                 )
-                Hint(stringResource(R.string.bubble_ocr_engines_hint))
+                Hint(
+                    stringResource(
+                        when (settings.ocrEngines) {
+                            OcrEngines.BOTH -> R.string.bubble_ocr_engines_hint_both
+                            OcrEngines.CLOUD -> R.string.bubble_ocr_engines_hint_cloud
+                            OcrEngines.DEVICE -> R.string.bubble_ocr_engines_hint_device
+                        },
+                    ),
+                )
                 LabelWithInfo(
                     stringResource(R.string.bubble_small_text),
                     stringResource(R.string.bubble_small_text_hint),

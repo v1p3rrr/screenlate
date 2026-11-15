@@ -244,7 +244,9 @@
     <string name="bubble_ocr_engines_both">Both</string>
     <string name="bubble_ocr_engines_cloud">Cloud</string>
     <string name="bubble_ocr_engines_device">Device</string>
-    <string name="bubble_ocr_engines_hint">Recommended: Both. Turn one engine off only on low-end or heavily loaded devices. Cloud recognition uses mobile data (about 0.1–0.4 MB per scan); on-device recognition does not.</string>
+    <string name="bubble_ocr_engines_hint_both">Instant on-device draft and high-accuracy cloud text. Works offline if the network drops.</string>
+    <string name="bubble_ocr_engines_hint_cloud">Highest accuracy. Saves device storage and battery, but requires an internet connection.</string>
+    <string name="bubble_ocr_engines_hint_device">Complete privacy. Works without internet and uses no mobile data. May be slightly less accurate on complex fonts.</string>
     <string name="bubble_ocr_engines_info">Both: on-device and cloud recognition start at the same time. On-device recognition reads the text around the aim first, so words are available almost immediately; the more accurate cloud result replaces it when it arrives. Without a network connection or on a cloud error, the on-device result is kept.\n\nCloud: nothing is recognized without a network connection; words are available only after the server responds.\n\nDevice: works offline, but recognizes vertical text and manga less accurately; OCR boost is unavailable.</string>
     <string name="bubble_ocr_saving">Reduce load on the device</string>
     <string name="bubble_ocr_saving_hint">On-device recognition of the whole screen starts only if cloud recognition has not responded within 3 s. Reduces load and battery use; words away from the aim become available later. Keep off when speed matters more.</string>

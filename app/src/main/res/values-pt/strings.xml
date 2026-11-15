@@ -242,7 +242,9 @@
     <string name="bubble_ocr_engines_both">Ambos</string>
     <string name="bubble_ocr_engines_cloud">Nuvem</string>
     <string name="bubble_ocr_engines_device">Dispositivo</string>
-    <string name="bubble_ocr_engines_hint">Recomendado: Ambos. Desative um mecanismo só em dispositivos de entrada ou muito sobrecarregados. O reconhecimento na nuvem usa dados móveis (cerca de 0,1–0,4 MB por varredura); o do dispositivo, não.</string>
+    <string name="bubble_ocr_engines_hint_both">Rascunho instantâneo no dispositivo e máxima precisão da nuvem. Funciona offline se a rede cair.</string>
+    <string name="bubble_ocr_engines_hint_cloud">Maior precisão. Economiza armazenamento e bateria do dispositivo, mas requer conexão com a internet.</string>
+    <string name="bubble_ocr_engines_hint_device">Privacidade total. Funciona sem internet e não consome dados móveis. Pode ser ligeiramente menos preciso em fontes complexas.</string>
     <string name="bubble_ocr_engines_info">Ambos: o reconhecimento começa ao mesmo tempo no dispositivo e na nuvem. O dispositivo reconhece primeiro o texto ao redor do ponto de mira, então as palavras ficam disponíveis quase na hora; o resultado da nuvem, mais preciso, o substitui quando chega. Sem conexão de rede ou em caso de erro da nuvem, o resultado do dispositivo é mantido.\n\nNuvem: sem conexão de rede nada é reconhecido; as palavras só ficam disponíveis depois da resposta do servidor.\n\nDispositivo: funciona offline, mas reconhece com menos precisão texto vertical e mangá; o reforço de OCR não fica disponível.</string>
     <string name="bubble_ocr_saving">Reduzir a carga no dispositivo</string>
     <string name="bubble_ocr_saving_hint">O reconhecimento da tela inteira no dispositivo só começa se o reconhecimento na nuvem não responder em 3 s. Reduz a carga e o consumo de bateria; palavras longe do ponto de mira ficam disponíveis mais tarde. Deixe desativado se a velocidade for mais importante.</string>

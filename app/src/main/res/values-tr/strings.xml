@@ -240,7 +240,9 @@
     <string name="bubble_ocr_engines_both">İkisi de</string>
     <string name="bubble_ocr_engines_cloud">Bulut</string>
     <string name="bubble_ocr_engines_device">Cihaz</string>
-    <string name="bubble_ocr_engines_hint">Önerilen: İkisi de. Bir motoru yalnızca düşük donanımlı veya yoğun yüklü cihazlarda kapatın. Bulut tanıma mobil veri kullanır (tarama başına yaklaşık 0,1–0,4 MB); cihazda tanıma kullanmaz.</string>
+    <string name="bubble_ocr_engines_hint_both">Cihazda anında taslak ve buluttan en yüksek doğruluk. Bağlantı kesilirse çevrimdışı çalışır.</string>
+    <string name="bubble_ocr_engines_hint_cloud">En yüksek doğruluk. Cihaz hafızasından ve şarjından tasarruf sağlar, ancak internet bağlantısı gerektirir.</string>
+    <string name="bubble_ocr_engines_hint_device">Tam gizlilik. İnternet olmadan çalışır ve mobil veri tüketmez. Karmaşık yazı tiplerinde biraz daha az doğru olabilir.</string>
     <string name="bubble_ocr_engines_info">İkisi de: cihazda tanıma ve bulut tanıma aynı anda başlar. Cihazda tanıma önce nişanın çevresindeki metni okur, böylece kelimeler neredeyse hemen kullanılabilir; daha doğru bulut sonucu geldiğinde onun yerini alır. Ağ bağlantısı yoksa veya bulut tanıma hata verirse cihazdaki sonuç korunur.\n\nBulut: ağ bağlantısı olmadan hiçbir şey tanınmaz; kelimeler ancak sunucu yanıt verdikten sonra kullanılabilir.\n\nCihaz: çevrimdışı çalışır, ancak dikey metni ve mangayı daha az doğru tanır; OCR güçlendirme kullanılamaz.</string>
     <string name="bubble_ocr_saving">Cihaz yükünü azalt</string>
     <string name="bubble_ocr_saving_hint">Tüm ekranın cihazda tanınması yalnızca bulut tanıma 3 sn içinde yanıt vermezse başlar. Yükü ve pil tüketimini azaltır; nişandan uzak kelimeler daha geç kullanılabilir. Hız daha önemliyse kapalı bırakın.</string>

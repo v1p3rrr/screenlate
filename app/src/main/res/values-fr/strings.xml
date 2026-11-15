@@ -242,7 +242,9 @@
     <string name="bubble_ocr_engines_both">Les deux</string>
     <string name="bubble_ocr_engines_cloud">Cloud</string>
     <string name="bubble_ocr_engines_device">Appareil</string>
-    <string name="bubble_ocr_engines_hint">Recommandé : « Les deux ». Ne désactivez un moteur que sur les appareils peu puissants ou très sollicités. La reconnaissance dans le cloud utilise des données mobiles (environ 0,1–0,4 Mo par analyse) ; celle sur l’appareil non.</string>
+    <string name="bubble_ocr_engines_hint_both">Brouillon instantané sur l’appareil et précision maximale dans le cloud. Fonctionne hors ligne en cas de perte de connexion.</string>
+    <string name="bubble_ocr_engines_hint_cloud">Précision maximale. Économise le stockage et la batterie de l’appareil, mais nécessite une connexion Internet.</string>
+    <string name="bubble_ocr_engines_hint_device">Confidentialité totale. Fonctionne sans Internet et ne consomme pas de données. Peut être un peu moins précis sur les polices complexes.</string>
     <string name="bubble_ocr_engines_info">Les deux : la reconnaissance sur l’appareil et celle dans le cloud démarrent en même temps. L’appareil reconnaît d’abord le texte autour du point de visée, les mots sont donc disponibles presque immédiatement ; le résultat du cloud, plus précis, le remplace dès son arrivée. Sans connexion réseau ou en cas d’erreur du cloud, le résultat de l’appareil est conservé.\n\nCloud : rien n’est reconnu sans connexion réseau ; les mots ne sont disponibles qu’après la réponse du serveur.\n\nAppareil : fonctionne hors ligne, mais reconnaît moins précisément le texte vertical et les mangas ; le renfort OCR n’est pas disponible.</string>
     <string name="bubble_ocr_saving">Réduire la charge de l’appareil</string>
     <string name="bubble_ocr_saving_hint">La reconnaissance de tout l’écran sur l’appareil ne démarre que si la reconnaissance dans le cloud n’a pas répondu en 3 s. Réduit la charge et la consommation de batterie ; les mots éloignés du point de visée sont disponibles plus tard. Laissez désactivé si la vitesse est prioritaire.</string>
