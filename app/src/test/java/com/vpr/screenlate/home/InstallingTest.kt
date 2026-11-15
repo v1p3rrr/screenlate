@@ -1,6 +1,7 @@
 package com.vpr.screenlate.home
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -10,6 +11,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.overlay.install.InstallationStatus
+import com.vpr.screenlate.overlay.R as OverlayR
 import java.util.UUID
 import org.junit.Test
 
@@ -46,5 +48,19 @@ class InstallingTest {
         assertThat(installsDictionaries(listOf(task("paddle-v6", SOURCE_MODEL)))).isFalse()
         assertThat(installsDictionaries(listOf(task("paddle-v6", SOURCE_MODEL), task("jitendex", SOURCE_URL)))).isTrue()
         assertThat(installsDictionaries(listOf(task("jitendex", SOURCE_URL, ImportTask.State.SUCCEEDED)))).isFalse()
+    }
+
+    @Test
+    fun `installation button label reflects active installation or dictionary management`() {
+        val idleStatus = status(emptySet(), emptyList())
+        assertThat(installationButtonLabel(idleStatus)).isEqualTo(R.string.home_dictionaries_open)
+
+        val runningStatus = status(emptySet(), listOf(task("jitendex", SOURCE_URL)))
+        assertThat(installationButtonLabel(runningStatus)).isEqualTo(OverlayR.string.installation_open)
+
+        val failedStatus = InstallationStatus(
+            Language.JAPANESE, emptySet(), deviceReady = false, requiresDevice = false, tasks = emptyList(), failures = 1,
+        )
+        assertThat(installationButtonLabel(failedStatus)).isEqualTo(OverlayR.string.installation_open)
     }
 }

@@ -201,7 +201,7 @@ private fun LanguagesCard(
                 installProgress(status.tasks, catalogEntries)?.let { InstallProgressLine(it) }
             }
             if (status.failures > 0) Text(stringResource(OverlayR.string.installation_errors, status.failures), color = MaterialTheme.colorScheme.error)
-            TextButton(onClick = onOpenInstallation) { Text(stringResource(OverlayR.string.installation_open)) }
+            TextButton(onClick = onOpenInstallation) { Text(stringResource(installationButtonLabel(status))) }
         }
         if (languages.several && languages.quick.size == 1) Hint(stringResource(R.string.home_languages_star_hint))
         OutlinedButton(onClick = onOpenLanguages, modifier = Modifier.fillMaxWidth()) {
@@ -209,6 +209,11 @@ private fun LanguagesCard(
         }
     }
 }
+
+/** Label for the button opening dictionary management or active installation status. */
+internal fun installationButtonLabel(status: InstallationStatus): Int =
+    if (status.tasks.isNotEmpty() || status.failures > 0) OverlayR.string.installation_open
+    else R.string.home_dictionaries_open
 
 /** What the home screen tells about the bubble. A service the phone stopped wins over the user's own hiding. */
 internal enum class BubbleState { SHOWN, HIDDEN, STOPPED }
