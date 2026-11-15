@@ -57,11 +57,18 @@ sealed interface FontImport {
  * list of installed fonts (kept in `fonts/fonts.json` next to the files).
  */
 @Singleton
-class PopupFonts @Inject constructor(
+class PopupFonts internal constructor(
     @ApplicationContext private val context: Context,
     private val client: OkHttpClient,
-    private val appSettings: AppSettingsRepository? = null,
+    private val isOffline: () -> Boolean = { false },
 ) {
+    @Inject
+    constructor(
+        @ApplicationContext context: Context,
+        client: OkHttpClient,
+        appSettings: AppSettingsRepository,
+    ) : this(context, client, isOffline = { appSettings.cachedOfflineMode == true })
+
     private val directory = File(context.filesDir, PageFonts.DIRECTORY)
     private val index = File(directory, FontBackup.INDEX)
     private val json = Json { ignoreUnknownKeys = true }
@@ -83,7 +90,7 @@ class PopupFonts @Inject constructor(
     }
 
     fun download(font: CatalogFont) {
-        if (appSettings?.cachedOfflineMode == true) {
+        if (isOffline()) {
             mutableDownloads.update { it + (font.id to FontDownload.Failed) }
             return
         }

@@ -265,6 +265,7 @@
     <string name="settings_title">설정</string>
     <string name="settings_offline_mode">강제 오프라인 모드</string>
     <string name="settings_offline_mode_hint">모든 네트워크 요청을 비활성화하고 모바일 데이터를 절약하며 기기 내 인식 및 오디오를 강제합니다.</string>
+    <string name="dictionaries_catalog_offline_notice">강제 오프라인 모드가 켜져 있습니다. 카탈로그 다운로드는 비활성화되지만 로컬 사전 파일을 가져올 수 있습니다.</string>
     <string name="settings_bubble_summary">조준점, 가장자리, 크기, 숨길 앱</string>
     <string name="lookup_title">검색</string>
     <string name="settings_lookup_summary">스캔 길이, 결과, 로마자, 단어의 한자</string>

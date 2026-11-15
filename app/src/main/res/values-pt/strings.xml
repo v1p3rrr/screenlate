@@ -269,6 +269,7 @@
     <string name="settings_title">Configurações</string>
     <string name="settings_offline_mode">Modo offline forçado</string>
     <string name="settings_offline_mode_hint">Desativa todas as solicitações de rede, economiza dados móveis e força o reconhecimento e áudio no dispositivo.</string>
+    <string name="dictionaries_catalog_offline_notice">O modo offline forçado está ativo. O download do catálogo está desativado, mas você ainda pode importar arquivos de dicionário locais.</string>
     <string name="settings_bubble_summary">Mira, lado, tamanho, apps ocultos</string>
     <string name="lookup_title">Pesquisa</string>
     <string name="settings_lookup_summary">Alcance da varredura, resultados, romaji, caracteres da palavra</string>

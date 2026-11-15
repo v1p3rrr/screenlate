@@ -277,6 +277,30 @@ fun DictionariesScreen(
             if (state.others.isNotEmpty()) OtherLanguagesCard(state.others, onOpenLanguages)
 
             SectionTitle(stringResource(R.string.dictionaries_catalog), anchors.at(1))
+            if (state.offlineMode) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_cloud_off),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(
+                            text = stringResource(R.string.dictionaries_catalog_offline_notice),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            }
             // Takes the item instead of capturing it, so the cards whose item did not change skip a progress update.
             val download = { item: CatalogItem ->
                 askNotifications()
@@ -288,6 +312,7 @@ fun DictionariesScreen(
                 CatalogCard(
                     item,
                     noNetwork = item.task?.let { it.id in state.waitingForNetwork } == true,
+                    offline = state.offlineMode,
                     onDownload = download,
                     onCancel = viewModel::cancel,
                 )
@@ -870,7 +895,13 @@ private fun ErrorCard(
 }
 
 @Composable
-private fun CatalogCard(item: CatalogItem, noNetwork: Boolean, onDownload: (CatalogItem) -> Unit, onCancel: (ImportTask) -> Unit) {
+private fun CatalogCard(
+    item: CatalogItem,
+    noNetwork: Boolean,
+    offline: Boolean = false,
+    onDownload: (CatalogItem) -> Unit,
+    onCancel: (ImportTask) -> Unit,
+) {
     val entry = item.entry
     val task = item.task
     // The ring replaces Download at the tap, before the queued task shows up, so a double tap cannot queue it twice.
@@ -929,6 +960,7 @@ private fun CatalogCard(item: CatalogItem, noNetwork: Boolean, onDownload: (Cata
                 else -> TooltipIconButton(
                     if (item.outdated != null) R.drawable.ic_update else R.drawable.ic_download,
                     stringResource(if (item.outdated != null) R.string.dictionaries_update else R.string.dictionaries_download),
+                    enabled = !offline,
                     onClick = {
                         cancelFrom = SystemClock.uptimeMillis() + CANCEL_GUARD_MS
                         requested = true

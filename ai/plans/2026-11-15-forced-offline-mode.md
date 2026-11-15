@@ -105,13 +105,9 @@ fun isOnline(): Boolean {
 
 ### 3.5 Sentence Translation (`overlay` & `popup.js`)
 
-- In `PageState.kt` / `LookupPage.kt`:
-  - Include `offline: Boolean` in the JSON state sent to `popup.js`.
-- In `popup.js`:
-  ```javascript
-  translateButton.hidden = !shown || compact(state) || state.offline;
-  ```
-- In `SentenceTranslation.kt` / `PopupNotes.kt`:
+- In `OverlayController.kt`:
+  - Combines translation button setting with `offlineMode`: `combine(translation.settings.settings.map { it.button }, appSettings.offlineMode) { button, offline -> button && !offline }.collect { popup.page.setTranslation(it) }`, suppressing the translation button via the existing `Popup.setTranslation` mechanism.
+- In `SentenceTranslation.kt`:
   - `forNote()` returns `null` immediately without network calls when offline mode is active.
 
 ### 3.6 Dictionaries, Fonts & App Updates
@@ -140,9 +136,9 @@ fun isOnline(): Boolean {
 
 ### Phase 3: Audio & Translation Adaptation
 - [x] Update `AudioFinder.kt` to bypass remote network requests when offline and fall back immediately to local cache -> `TextToSpeech`.
-- [x] Update `PageState.kt` and `popup.js` to hide the sentence translate button when `state.offline` is true.
+- [x] Suppress sentence translation button in `OverlayController` via `popup.page.setTranslation(button && !offline)` when offline.
 - [x] Update `SentenceTranslation.kt` to skip translation requests for Anki notes when offline.
-- [x] Page script tests in `scripts/page-tests/` for popup button visibility.
+- [x] Unit tests in `AudioFinderTest` for offline disk cache persistence and TTS fallback.
 
 ### Phase 4: Dictionaries, Fonts & Update Checks
 - [x] Guard `DictionaryUpdates.kt` background work against offline mode.

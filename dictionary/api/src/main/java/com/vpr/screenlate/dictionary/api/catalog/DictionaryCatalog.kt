@@ -352,11 +352,18 @@ private data class CatalogDocument(
  * versions fetch.
  */
 @Singleton
-class DictionaryCatalog @Inject constructor(
+class DictionaryCatalog internal constructor(
     @ApplicationContext private val context: Context,
     private val httpClient: OkHttpClient,
-    private val appSettings: AppSettingsRepository? = null,
+    private val isOffline: () -> Boolean = { false },
 ) {
+    @Inject
+    constructor(
+        @ApplicationContext context: Context,
+        httpClient: OkHttpClient,
+        appSettings: AppSettingsRepository,
+    ) : this(context, httpClient, isOffline = { appSettings.cachedOfflineMode == true })
+
     private val cacheFile = File(context.filesDir, "catalog-v2.json")
 
     private val measuredSizes: Map<String, MeasuredSize> by lazy {
@@ -394,7 +401,7 @@ class DictionaryCatalog @Inject constructor(
         runCatching { if (cacheFile.exists()) parse(cacheFile.readText(), measuredSizes) else null }.getOrNull()
 
     private fun fetch(): Catalog? {
-        if (appSettings?.cachedOfflineMode == true) return null
+        if (isOffline()) return null
         return runCatching {
             httpClient.newCall(Request.Builder().url(REMOTE_URL).build()).execute().use { response ->
                 if (!response.isSuccessful) return null

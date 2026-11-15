@@ -101,6 +101,9 @@ data class OverlaySettings(
     val bubbleUseAppColor: Boolean = true,
     val bubbleCustomColor: Int = DEFAULT_BUBBLE_COLOR,
 ) {
+    /** Effective OCR engines to use, coercing to [OcrEngines.DEVICE] when [offline] is true. */
+    fun effectiveOcrEngines(offline: Boolean): OcrEngines = if (offline) OcrEngines.DEVICE else ocrEngines
+
     companion object {
         const val DEFAULT_BUBBLE_DP = 48
         const val MIN_BUBBLE_DP = 36

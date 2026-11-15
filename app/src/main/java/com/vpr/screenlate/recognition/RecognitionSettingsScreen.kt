@@ -123,7 +123,7 @@ fun RecognitionSettingsScreen(
                 )
                 Segments(
                     options = OcrEngines.entries,
-                    selected = if (offlineMode) OcrEngines.DEVICE else settings.ocrEngines,
+                    selected = settings.effectiveOcrEngines(offlineMode),
                     label = {
                         stringResource(
                             when (it) {

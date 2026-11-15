@@ -136,7 +136,7 @@ class CameraRecognitionController @Inject constructor(
             }
         }
         val engines = combine(settings.settings, preferences.highAccuracy, appSettings.offlineMode) { current, tiled, offline ->
-            (if (offline) OcrEngines.DEVICE else current.ocrEngines) to tiled
+            current.effectiveOcrEngines(offline) to tiled
         }
         combine(engines, device.activeUpdates(language.selected), installation.observe(language.selected, imageSource = true),
             jobs.work, gaps) { (ocrEngines, tiled), model, status, work, gapsByLanguage ->

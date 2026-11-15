@@ -277,10 +277,7 @@ class OverlayController(
     private var offlineMode: Boolean = appSettings.cachedOfflineMode ?: false
 
     private val effectiveOcrEngines: OcrEngines
-        get() = if (offlineMode) OcrEngines.DEVICE else settings.ocrEngines
-
-    private fun effectiveOcrEngines(newSettings: OverlaySettings): OcrEngines =
-        if (offlineMode) OcrEngines.DEVICE else newSettings.ocrEngines
+        get() = settings.effectiveOcrEngines(offlineMode)
 
     private var layout: TextLayout? = null
     private var ocrFinal = false
@@ -456,7 +453,7 @@ class OverlayController(
     private fun applySettings(new: OverlaySettings) {
         val previous = settings
         settings = new
-        loadOnDevice(new.textSource != TextSource.APP_TEXT_ONLY && effectiveOcrEngines(new) != OcrEngines.CLOUD)
+        loadOnDevice(new.textSource != TextSource.APP_TEXT_ONLY && new.effectiveOcrEngines(offlineMode) != OcrEngines.CLOUD)
         val show = shouldShowBubble()
         val size = (new.bubbleSizeDp * density).roundToInt()
         if (size != bubbleSize) resizeBubble(size)

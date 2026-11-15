@@ -195,8 +195,21 @@ class AudioFinder internal constructor(
             val entry = clipCache.entries.firstOrNull { (key, kept) ->
                 key.term == term && key.reading == reading && key.language == language && kept.fresh() && kept.value != null
             }
-            return entry?.value?.value
+            if (entry?.value?.value != null) return entry.value.value
         }
+        if (!directory.exists()) return null
+        val prefix = "${sha256("$term\n$reading".toByteArray()).take(16)}_"
+        val diskFile = directory.listFiles()?.firstOrNull { it.name.startsWith(prefix) && !it.name.endsWith(".meta") && it.length() > 0 }
+        if (diskFile != null) {
+            val metaFile = File(directory, "${diskFile.nameWithoutExtension}.meta")
+            val url = if (metaFile.exists()) metaFile.readText() else ""
+            val clip = AudioClip(diskFile, url, diskFile.extension.ifEmpty { "mp3" })
+            synchronized(clipCache) {
+                clipCache[ClipKey(emptyList(), emptyList(), language, term, reading)] = Kept(clip, clock())
+            }
+            return clip
+        }
+        return null
     }
 
     /**
@@ -211,13 +224,20 @@ class AudioFinder internal constructor(
         sources: List<AudioSource>? = null,
     ): List<AudioCandidate> = withContext(Dispatchers.IO) {
         if (isOffline()) {
-            val speechCandidate = AudioCandidate("0:0", 0, AudioSource(AudioSourceType.TEXT_TO_SPEECH), "", "", language)
             val cached = cachedClip(term, reading, language)
-            return@withContext if (cached != null) {
-                listOf(AudioCandidate("0:1", 0, AudioSource(AudioSourceType.URL, cached.url), cached.url, cached.file.name, language), speechCandidate)
-            } else {
-                listOf(speechCandidate)
+            val profile = settings.current(language)
+            val asked = (sources ?: profile.sources).withIndex()
+            val result = mutableListOf<AudioCandidate>()
+            if (cached != null) {
+                val candidateSource = AudioSource(AudioSourceType.URL, cached.url)
+                result.add(AudioCandidate("offline:0", 0, candidateSource, cached.url, cached.file.name, language))
             }
+            for ((index, source) in asked) {
+                if (source.type == AudioSourceType.TEXT_TO_SPEECH) {
+                    result.add(AudioCandidate("$index:0", index, source, "", "", language))
+                }
+            }
+            return@withContext result
         }
         val profile = settings.current(language)
         val regions = AudioRegion.ordered(profile.regions, language.support.audioRegions)
@@ -444,8 +464,11 @@ class AudioFinder internal constructor(
             val extension = extensionFor(contentType, url)
             // The system clears the cache directory when storage runs low, also while the app runs.
             directory.mkdirs()
-            val file = File(directory, "${sha256(key.toByteArray()).take(16)}.$extension")
+            val termKey = sha256("$term\n$reading".toByteArray()).take(16)
+            val urlKey = sha256(url.toByteArray()).take(8)
+            val file = File(directory, "${termKey}_$urlKey.$extension")
             file.writeBytes(bytes)
+            File(directory, "${termKey}_$urlKey.meta").writeText(url)
             AudioClip(file, url, extension)
         }
         if (clip != null) {

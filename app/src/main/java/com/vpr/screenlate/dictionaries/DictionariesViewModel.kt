@@ -8,6 +8,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
@@ -199,6 +200,7 @@ data class DictionariesState(
     /** The recognition models in [others], by language code. */
     val otherModels: Map<String, List<LeftoverModel>> = emptyMap(),
     val profiles: LanguageProfilesState = LanguageProfilesState.DEFAULT,
+    val offlineMode: Boolean = false,
     val loaded: Boolean = false,
 ) {
     /** The turned-on languages, for which the last dictionary with definitions stays on. */
@@ -244,6 +246,7 @@ class DictionariesViewModel @Inject constructor(
     private val catalog: DictionaryCatalog,
     private val profiles: LanguageProfiles,
     private val store: OcrModelStore,
+    private val appSettings: AppSettingsRepository,
     savedState: SavedStateHandle,
 ) : ViewModel() {
     private val shownLanguage = ShownLanguage(profiles, viewModelScope)
@@ -257,7 +260,7 @@ class DictionariesViewModel @Inject constructor(
 
     val state: StateFlow<DictionariesState> = combine(
         repository.dictionaries,
-        combine(imports.tasks, imports.online, ::Pair),
+        combine(imports.tasks, imports.online, appSettings.offlineMode, ::Triple),
         catalog.entries(),
         combine(sortDictionaryIds(), profiles.state, shownLanguage.language, ::Triple),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
@@ -269,7 +272,7 @@ class DictionariesViewModel @Inject constructor(
                 )
             }
             .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes, it.otherModels) } ?: FileChecks()) },
-    ) { dictionaries, (tasks, online), entries, (sortIds, profileState, shown), checks ->
+    ) { dictionaries, (tasks, online, offlineMode), entries, (sortIds, profileState, shown), checks ->
         val items = catalogItems(entries, dictionaries, tasks)
         val shownDictionaries = dictionaries.filter { it.isReadBy(shown) }
         DictionariesState(
@@ -282,6 +285,7 @@ class DictionariesViewModel @Inject constructor(
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             taskNames = tasks.associate { it.id to it.shownName(entries) },
             waitingForNetwork = waitingForNetwork(tasks, online),
+            offlineMode = offlineMode,
             catalog = groupCatalog(items.filter { !it.entry.isModel && it.entry.isReadBy(shown) }, shown),
             sortDictionaryId = sortDictionaryId(shownDictionaries.filter { it.id !in checks.withoutFiles }, sortIds[shown]),
             links = dictionaries.associate { dictionary ->

@@ -265,6 +265,7 @@
     <string name="settings_title">設定</string>
     <string name="settings_offline_mode">強制オフラインモード</string>
     <string name="settings_offline_mode_hint">すべてのネットワークリクエストを無効化し、通信量を節約して、端末上での認識と音声再生を強制します。</string>
+    <string name="dictionaries_catalog_offline_notice">強制オフラインモードが有効です。カタログからのダウンロードは無効ですが、ローカルの辞書ファイルをインポートできます。</string>
     <string name="settings_bubble_summary">照準、寄せる側、サイズ、非表示のアプリ</string>
     <string name="lookup_title">検索</string>
     <string name="settings_lookup_summary">スキャン長、結果、ローマ字、語の漢字</string>

@@ -267,6 +267,7 @@
     <string name="settings_title">تنظیمات</string>
     <string name="settings_offline_mode">حالت آفلاین اجباری</string>
     <string name="settings_offline_mode_hint">همه درخواست‌های شبکه را غیرفعال می‌کند، مصرف داده تلفن همراه را کاهش می‌دهد و تشخیص و صدا را به دستگاه محدود می‌کند.</string>
+    <string name="dictionaries_catalog_offline_notice">حالت آفلاین اجباری فعال است. بارگیری از فهرست غیرفعال است، اما همچنان می‌توانید پرونده‌های فرهنگ لغت محلی را وارد کنید.</string>
     <string name="settings_bubble_summary">نقطه هدف، لبه، اندازه، پنهان شدن در برنامه‌ها</string>
     <string name="lookup_title">جستجو در واژه‌نامه‌ها</string>
     <string name="settings_lookup_summary">طول اسکن، نتایج، روماجی، نویسه‌های واژه</string>

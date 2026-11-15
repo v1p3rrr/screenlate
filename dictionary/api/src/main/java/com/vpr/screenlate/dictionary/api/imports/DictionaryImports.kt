@@ -73,6 +73,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
@@ -147,12 +148,26 @@ fun shownImportName(name: String, entryId: String?, entries: List<CatalogEntry>,
  * download that stalls does not hold up all the others; their import steps run one at a time ([importing]).
  */
 @Singleton
-class DictionaryImports @Inject constructor(
+class DictionaryImports internal constructor(
     @ApplicationContext private val context: Context,
     private val storage: DictionaryStorage,
     private val preferences: DataStore<Preferences>,
-    private val appSettings: AppSettingsRepository? = null,
+    private val offlineModeFlow: Flow<Boolean> = flowOf(false),
+    private val isOffline: () -> Boolean = { false },
 ) {
+    @Inject
+    constructor(
+        @ApplicationContext context: Context,
+        storage: DictionaryStorage,
+        preferences: DataStore<Preferences>,
+        appSettings: AppSettingsRepository,
+    ) : this(
+        context,
+        storage,
+        preferences,
+        offlineModeFlow = appSettings.offlineMode,
+        isOffline = { appSettings.cachedOfflineMode == true },
+    )
     private val workManager get() = WorkManager.getInstance(context)
 
     /** The queue position of the last enqueued import; see [ORDER_TAG_PREFIX]. */
@@ -207,11 +222,7 @@ class DictionaryImports @Inject constructor(
         manager.registerDefaultNetworkCallback(callback)
         awaitClose { manager.unregisterNetworkCallback(callback) }
     }.distinctUntilChanged().let { baseOnline ->
-        if (appSettings != null) {
-            combine(baseOnline, appSettings.offlineMode) { net, offline -> net && !offline }
-        } else {
-            baseOnline
-        }
+        combine(baseOnline, offlineModeFlow) { net, offline -> net && !offline }
     }
 
     private fun NetworkCapabilities.downloadsCanRun(): Boolean =
@@ -222,11 +233,11 @@ class DictionaryImports @Inject constructor(
      * may fail a moment before the system notices.
      */
     internal suspend fun networkLost(settleMs: Long): Boolean =
-        appSettings?.cachedOfflineMode == true || withTimeoutOrNull(settleMs) { online.first { !it } } != null
+        isOffline() || withTimeoutOrNull(settleMs) { online.first { !it } } != null
 
     /** Waits up to [timeoutMs] for a network ([online]); returns whether one came. */
     internal suspend fun awaitNetwork(timeoutMs: Long): Boolean =
-        appSettings?.cachedOfflineMode != true && withTimeoutOrNull(timeoutMs) { online.first { it } } != null
+        !isOffline() && withTimeoutOrNull(timeoutMs) { online.first { it } } != null
 
     /**
      * Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to

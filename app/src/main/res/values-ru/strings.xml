@@ -245,10 +245,10 @@
     <string name="bubble_ocr_engines_both">Оба</string>
     <string name="bubble_ocr_engines_cloud">Облако</string>
     <string name="bubble_ocr_engines_device">Устройство</string>
-    <string name="bubble_ocr_engines_hint_both">Мгновенный черновик на устройстве и максимальная точность из облака. При потере связи работает оффлайн.</string>
+    <string name="bubble_ocr_engines_hint_both">Мгновенный черновик на устройстве и максимальная точность из облака. При потере связи работает офлайн.</string>
     <string name="bubble_ocr_engines_hint_cloud">Самое точное распознавание. Экономит память устройства и заряд батареи, но требует интернет.</string>
     <string name="bubble_ocr_engines_hint_device">Полная приватность, работает без интернета и не расходует трафик. Может быть чуть менее точным на сложных шрифтах.</string>
-    <string name="bubble_ocr_engines_offline_locked">Включен оффлайн-режим. Распознавание работает только на устройстве.</string>
+    <string name="bubble_ocr_engines_offline_locked">Включен офлайн-режим. Распознавание работает только на устройстве.</string>
     <string name="bubble_ocr_engines_info">Оба: распознавание на устройстве и в облаке запускаются одновременно. Устройство сначала распознаёт текст вокруг прицела, поэтому слова доступны почти сразу; более точный результат облака заменяет его, когда приходит. Без сети или при ошибке облака сохраняется результат устройства.\n\nОблако: без сети ничего не распознаётся; слова доступны только после ответа сервера.\n\nУстройство: работает без сети, но хуже распознаёт вертикальный текст и мангу; усиление OCR недоступно.</string>
     <string name="bubble_ocr_saving">Меньше нагружать устройство</string>
     <string name="bubble_ocr_saving_hint">Распознавание всего экрана на устройстве запускается, только если облако не ответило за 3 с. Снижает нагрузку и расход заряда; слова вдали от прицела становятся доступны позже. Если важнее скорость, оставьте выключенным.</string>
@@ -270,8 +270,9 @@
     <string name="anki_overwrite_prepend">дописать в начало</string>
     <string name="audio_volume">Громкость: %1$d%%</string>
     <string name="settings_title">Настройки</string>
-    <string name="settings_offline_mode">Принудительный оффлайн-режим</string>
+    <string name="settings_offline_mode">Принудительный офлайн-режим</string>
     <string name="settings_offline_mode_hint">Отключает все сетевые запросы, экономит трафик и принудительно переключает распознавание и озвучку на устройство.</string>
+    <string name="dictionaries_catalog_offline_notice">Включен принудительный офлайн-режим. Загрузка из каталога отключена, но вы можете импортировать локальные файлы словарей.</string>
     <string name="settings_bubble_summary">Прицел, сторона, размер, скрытие в приложениях</string>
     <string name="lookup_title">Поиск</string>
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, иероглифы слова</string>

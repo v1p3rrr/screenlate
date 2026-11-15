@@ -267,6 +267,7 @@
     <string name="settings_title">Ayarlar</string>
     <string name="settings_offline_mode">Zorunlu çevrimdışı mod</string>
     <string name="settings_offline_mode_hint">Tüm ağ isteklerini devre dışı bırakır, mobil veriden tasarruf sağlar ve tanıma ile sesi cihaz üzerinde çalışmaya zorlar.</string>
+    <string name="dictionaries_catalog_offline_notice">Zorunlu çevrimdışı mod etkin. Katalogdan indirme devre dışı bırakıldı, ancak yerel sözlük dosyalarını içe aktarmaya devam edebilirsiniz.</string>
     <string name="settings_bubble_summary">Nişan, taraf, boyut, gizli uygulamalar</string>
     <string name="lookup_title">Arama</string>
     <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin karakterleri</string>

@@ -674,4 +674,24 @@ class AudioFinderTest {
         assertThat(pronunciation).isEqualTo(Pronunciation.Clip(clip!!))
         assertThat(requests).isEmpty()
     }
+
+    @Test
+    fun `offline mode finds clip from disk cache across restarts`() = runBlocking<Unit> {
+        val cacheDir = folder.newFolder("restart_cache")
+        routes["/a.mp3"] = { audio() }
+        sources(AudioSource(AudioSourceType.URL, server.url("/a.mp3").toString()))
+
+        val onlineFinder = AudioFinder(cacheDir, client, settings, isOffline = { false })
+        val clip = onlineFinder.find("猫", "ねこ", Language.JAPANESE)
+        assertThat(clip).isNotNull()
+        assertThat(requests).isNotEmpty()
+        requests.clear()
+
+        val restartedOfflineFinder = AudioFinder(cacheDir, client, settings, isOffline = { true })
+        val pronunciation = restartedOfflineFinder.pronunciation("猫", "ねこ", Language.JAPANESE)
+        assertThat(pronunciation).isInstanceOf(Pronunciation.Clip::class.java)
+        val retrieved = (pronunciation as Pronunciation.Clip).clip
+        assertThat(retrieved.file.name).isEqualTo(clip!!.file.name)
+        assertThat(requests).isEmpty()
+    }
 }

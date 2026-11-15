@@ -265,6 +265,7 @@
     <string name="settings_title">設定</string>
     <string name="settings_offline_mode">強制離線模式</string>
     <string name="settings_offline_mode_hint">停用所有網路請求，節省行動數據，並強制在裝置端進行辨識與發音。</string>
+    <string name="dictionaries_catalog_offline_notice">強制離線模式已啟用。已停用從目錄下載，但您仍可以匯入本機詞典檔案。</string>
     <string name="settings_bubble_summary">瞄準、停靠邊、大小、隱藏的應用程式</string>
     <string name="lookup_title">查詞</string>
     <string name="settings_lookup_summary">掃描長度、結果、羅馬字、詞中的漢字</string>
