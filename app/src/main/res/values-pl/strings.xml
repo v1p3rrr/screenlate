@@ -157,6 +157,13 @@
     <string name="anki_behavior_prevent">Zablokuj</string>
     <string name="anki_behavior_overwrite">Nadpisz</string>
     <string name="anki_behavior_new">Dodaj mimo to</string>
+    <string name="anki_behavior_append">Dopisz</string>
+    <string name="anki_behavior_prevent_hint">Jeśli notatka istnieje, proponowane jest otwarcie jej w AnkiDroid zamiast dodawania.</string>
+    <string name="anki_behavior_overwrite_hint">Pola istniejącej notatki są zastępowane nowymi wartościami.</string>
+    <string name="anki_behavior_append_hint">Dopisuje nowe zdania i zrzuty ekranu do istniejącej notatki na potrzeby zmiany scen.</string>
+    <string name="anki_behavior_new_hint">Dodaje nową notatkę, nawet jeśli istnieje już identyczna.</string>
+    <string name="anki_duplicate_deck_only">Modyfikuj tylko w bieżącej talii</string>
+    <string name="anki_duplicate_deck_only_hint">Jeśli duplikat znajduje się w innej talii, nie zmieniaj go, lecz utwórz nową notatkę w bieżącej.</string>
 
     <string name="audio_title">Dźwięk</string>
     <string name="audio_auto_play">Automatyczne odtwarzanie dźwięku</string>
@@ -239,6 +246,12 @@
     <string name="anki_overwrite_skip">zachowaj</string>
     <string name="anki_overwrite_append">dopisz na końcu</string>
     <string name="anki_overwrite_prepend">dopisz na początku</string>
+    <string name="anki_mode_coalesce">Zachowaj</string>
+    <string name="anki_mode_coalesce_new">Wybierz nową</string>
+    <string name="anki_mode_overwrite">Zastąp</string>
+    <string name="anki_mode_skip">Nie zmieniaj</string>
+    <string name="anki_mode_append">Dopisz na końcu</string>
+    <string name="anki_mode_prepend">Dopisz na początku</string>
     <string name="audio_volume">Głośność: %1$d%%</string>
     <string name="settings_title">Ustawienia</string>
     <string name="settings_bubble_summary">Celownik, strona, źródło tekstu, ukryte aplikacje</string>

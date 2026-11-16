@@ -151,6 +151,13 @@
     <string name="anki_behavior_prevent">Chặn</string>
     <string name="anki_behavior_overwrite">Ghi đè</string>
     <string name="anki_behavior_new">Vẫn thêm mới</string>
+    <string name="anki_behavior_append">Thêm vào cuối</string>
+    <string name="anki_behavior_prevent_hint">Nếu ghi chú đã tồn tại, sẽ mở trong AnkiDroid thay vì thêm mới.</string>
+    <string name="anki_behavior_overwrite_hint">Các trường của ghi chú hiện tại được thay thế bằng giá trị mới.</string>
+    <string name="anki_behavior_append_hint">Nối thêm câu ví dụ và ảnh chụp màn hình mới vào ghi chú hiện có để chuyển đổi cảnh.</string>
+    <string name="anki_behavior_new_hint">Vẫn thêm ghi chú mới ngay cả khi đã có ghi chú giống hệt.</string>
+    <string name="anki_duplicate_deck_only">Chỉ sửa đổi trong bộ thẻ hiện tại</string>
+    <string name="anki_duplicate_deck_only_hint">Nếu phát hiện trùng lặp ở bộ thẻ khác, giữ nguyên và tạo ghi chú mới trong bộ thẻ hiện tại.</string>
 
     <string name="audio_title">Âm thanh</string>
     <string name="audio_auto_play">Tự động phát âm thanh</string>
@@ -233,6 +240,12 @@
     <string name="anki_overwrite_skip">giữ nguyên</string>
     <string name="anki_overwrite_append">thêm vào cuối</string>
     <string name="anki_overwrite_prepend">thêm vào đầu</string>
+    <string name="anki_mode_coalesce">Giữ lại</string>
+    <string name="anki_mode_coalesce_new">Ưu tiên giá trị mới</string>
+    <string name="anki_mode_overwrite">Thay thế</string>
+    <string name="anki_mode_skip">Không đổi</string>
+    <string name="anki_mode_append">Thêm vào cuối</string>
+    <string name="anki_mode_prepend">Thêm vào đầu</string>
     <string name="audio_volume">Âm lượng: %1$d%%</string>
     <string name="settings_title">Cài đặt</string>
     <string name="settings_bubble_summary">Điểm ngắm, cạnh màn hình, nguồn văn bản, ứng dụng ẩn</string>

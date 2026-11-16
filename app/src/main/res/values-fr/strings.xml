@@ -155,6 +155,13 @@
     <string name="anki_behavior_prevent">Empêcher</string>
     <string name="anki_behavior_overwrite">Écraser</string>
     <string name="anki_behavior_new">Ajouter quand même</string>
+    <string name="anki_behavior_append">Ajouter à la fin</string>
+    <string name="anki_behavior_prevent_hint">Si la note existe, l’ouverture dans AnkiDroid est proposée au lieu de l’ajout.</string>
+    <string name="anki_behavior_overwrite_hint">Les champs de la note existante sont remplacés par les nouvelles valeurs.</string>
+    <string name="anki_behavior_append_hint">Ajoute de nouvelles phrases et captures à la note existante pour alterner les scènes.</string>
+    <string name="anki_behavior_new_hint">Une nouvelle note est ajoutée même si une identique existe déjà.</string>
+    <string name="anki_duplicate_deck_only">Modifier uniquement dans le paquet actuel</string>
+    <string name="anki_duplicate_deck_only_hint">Si un doublon se trouve dans un autre paquet, ne pas le modifier et créer une nouvelle note dans le paquet actuel.</string>
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Lecture automatique de l’audio</string>
@@ -237,6 +244,12 @@
     <string name="anki_overwrite_skip">garder</string>
     <string name="anki_overwrite_append">ajouter à la fin</string>
     <string name="anki_overwrite_prepend">ajouter au début</string>
+    <string name="anki_mode_coalesce">Conserver</string>
+    <string name="anki_mode_coalesce_new">Prendre le nouveau</string>
+    <string name="anki_mode_overwrite">Remplacer</string>
+    <string name="anki_mode_skip">Ne pas modifier</string>
+    <string name="anki_mode_append">Ajouter à la fin</string>
+    <string name="anki_mode_prepend">Ajouter au début</string>
     <string name="audio_volume">Volume : %1$d %%</string>
     <string name="settings_title">Paramètres</string>
     <string name="settings_bubble_summary">Visée, côté, source du texte, applis masquées</string>

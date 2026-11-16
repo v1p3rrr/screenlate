@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
+import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.core.common.Language
 import java.io.File
@@ -203,14 +204,33 @@ class AnkiNotes @Inject constructor(
             val names = fieldNames(modelId)
             val fields = names.map { name -> FieldTemplate.render(settings.fields[name].orEmpty(), values) }
             val tags = settings.tags.split(' ', ',').filter { it.isNotBlank() }.toSet()
-            val overwrite = existing.firstOrNull { it.modelId == modelId }
-                ?.takeIf { settings.duplicateBehavior == DuplicateBehavior.OVERWRITE }
-            if (overwrite != null) {
-                val merged = names.mapIndexed { index, name ->
-                    val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE
-                    mode.apply(overwrite.fields.getOrElse(index) { "" }, fields[index])
+            val isUpdatingDuplicate = settings.duplicateBehavior in setOf(DuplicateBehavior.OVERWRITE, DuplicateBehavior.APPEND)
+            val matchingModelNotes = existing.filter { it.modelId == modelId }
+            val targetDecks = targetDeckIds(settings, deckId)
+
+            val inDeckNote = matchingModelNotes.filter { note -> note.deckIds.isEmpty() || note.deckIds.any { it in targetDecks } }
+                .maxByOrNull { it.id }
+
+            val targetNote = when {
+                !isUpdatingDuplicate -> null
+                inDeckNote != null -> inDeckNote
+                settings.duplicateScope == DuplicateScope.COLLECTION && !settings.duplicateScopeDeckOnly -> {
+                    matchingModelNotes.maxByOrNull { it.id }
                 }
-                if (anki.updateNote(overwrite.id, merged, tags)) AddResult.Updated(overwrite.id) else AddResult.Rejected
+                else -> null
+            }
+
+            if (targetNote != null) {
+                val merged = names.mapIndexed { index, name ->
+                    val defaultMode = if (settings.duplicateBehavior == DuplicateBehavior.APPEND) {
+                        suggestedAppendMode(settings.fields[name].orEmpty())
+                    } else {
+                        OverwriteMode.COALESCE
+                    }
+                    val mode = settings.overwriteModes[name] ?: defaultMode
+                    mode.apply(targetNote.fields.getOrElse(index) { "" }, fields[index])
+                }
+                if (anki.updateNote(targetNote.id, merged, tags)) AddResult.Updated(targetNote.id) else AddResult.Rejected
             } else {
                 anki.addNote(modelId, deckId, fields, tags)?.let { AddResult.Added(it) } ?: AddResult.Rejected
             }
@@ -218,6 +238,14 @@ class AnkiNotes @Inject constructor(
             if (it is CancellationException) throw it
             AddResult.Failed(it.message ?: it.javaClass.simpleName)
         }
+    }
+
+    private suspend fun targetDeckIds(settings: AnkiSettings, deckId: Long): Set<Long> {
+        if (settings.duplicateScope != DuplicateScope.DECK_ROOT) return setOf(deckId)
+        val decks = anki.decks()
+        val deckName = decks.firstOrNull { it.id == deckId }?.name ?: return setOf(deckId)
+        val root = deckName.substringBefore(DECK_SEPARATOR)
+        return decks.filter { it.name == root || it.name.startsWith(root + DECK_SEPARATOR) }.mapTo(mutableSetOf()) { it.id }
     }
 
     private suspend fun duplicates(settings: AnkiSettings, values: Map<String, String>): List<ExistingNote> {
@@ -242,5 +270,24 @@ class AnkiNotes @Inject constructor(
     /** Forgets cached note type fields, e.g. after the user edited the note type. */
     fun invalidate() {
         synchronized(fieldCache) { fieldCache.clear() }
+    }
+
+    companion object {
+        const val DECK_SEPARATOR = "::"
+
+        private val CONTEXT_MARKERS = setOf(
+            "sentence",
+            "sentence-furigana",
+            "sentence-furigana-plain",
+            "sentence-translation",
+            "cloze-body",
+            "screenshot",
+            "audio",
+        )
+
+        fun suggestedAppendMode(template: String): OverwriteMode {
+            val markers = FieldTemplate.markersIn(template)
+            return if (markers.any { it in CONTEXT_MARKERS }) OverwriteMode.APPEND else OverwriteMode.COALESCE
+        }
     }
 }

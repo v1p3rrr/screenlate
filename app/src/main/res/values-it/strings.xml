@@ -155,6 +155,13 @@
     <string name="anki_behavior_prevent">Impedisci</string>
     <string name="anki_behavior_overwrite">Sovrascrivi</string>
     <string name="anki_behavior_new">Aggiungi comunque</string>
+    <string name="anki_behavior_append">Accoda</string>
+    <string name="anki_behavior_prevent_hint">Se la nota esiste, viene proposto di aprirla in AnkiDroid anziché aggiungerla.</string>
+    <string name="anki_behavior_overwrite_hint">I campi della nota existente vengono sostituiti con i nuovi valori.</string>
+    <string name="anki_behavior_append_hint">Aggiunge nuove frasi e screenshot alla nota esistente per alternare le scene.</string>
+    <string name="anki_behavior_new_hint">Viene aggiunta una nuova nota anche se ne esiste già una identica.</string>
+    <string name="anki_duplicate_deck_only">Modifica solo nel mazzo corrente</string>
+    <string name="anki_duplicate_deck_only_hint">Se un duplicato è in un altro mazzo, non modificarlo e crea una nuova nota nel mazzo corrente.</string>
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Riproduzione automatica dell’audio</string>
@@ -237,6 +244,12 @@
     <string name="anki_overwrite_skip">mantieni</string>
     <string name="anki_overwrite_append">aggiungi in fondo</string>
     <string name="anki_overwrite_prepend">aggiungi all’inizio</string>
+    <string name="anki_mode_coalesce">Mantieni</string>
+    <string name="anki_mode_coalesce_new">Prendi nuovo</string>
+    <string name="anki_mode_overwrite">Sostituisci</string>
+    <string name="anki_mode_skip">Non modificare</string>
+    <string name="anki_mode_append">Accoda</string>
+    <string name="anki_mode_prepend">Aggiungi all’inizio</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Impostazioni</string>
     <string name="settings_bubble_summary">Mira, lato, fonte del testo, app nascoste</string>

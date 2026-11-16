@@ -151,6 +151,13 @@
     <string name="anki_behavior_prevent">追加しない</string>
     <string name="anki_behavior_overwrite">上書き</string>
     <string name="anki_behavior_new">新しく追加</string>
+    <string name="anki_behavior_append">追記</string>
+    <string name="anki_behavior_prevent_hint">ノートが既に存在する場合、追加せずAnkiDroidで開きます。</string>
+    <string name="anki_behavior_overwrite_hint">既存ノートの各項目を新しい値で置き換えます。</string>
+    <string name="anki_behavior_append_hint">シーン切り替え用に例文や画像を既存ノートに追記します。</string>
+    <string name="anki_behavior_new_hint">同一の語句が存在する場合でも新規ノートを追加します。</string>
+    <string name="anki_duplicate_deck_only">現在のデッキ内のみ変更</string>
+    <string name="anki_duplicate_deck_only_hint">重複が他のデッキにある場合は変更せず、現在のデッキに新規作成します。</string>
 
     <string name="audio_title">音声</string>
     <string name="audio_auto_play">音声の自動再生</string>
@@ -233,6 +240,12 @@
     <string name="anki_overwrite_skip">残す</string>
     <string name="anki_overwrite_append">末尾に追加</string>
     <string name="anki_overwrite_prepend">先頭に追加</string>
+    <string name="anki_mode_coalesce">保持</string>
+    <string name="anki_mode_coalesce_new">新しい値を優先</string>
+    <string name="anki_mode_overwrite">置換</string>
+    <string name="anki_mode_skip">変更しない</string>
+    <string name="anki_mode_append">追記</string>
+    <string name="anki_mode_prepend">先頭に追加</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">設定</string>
     <string name="settings_bubble_summary">照準、寄せる側、テキストの取得元、非表示のアプリ</string>

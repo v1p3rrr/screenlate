@@ -153,6 +153,13 @@
     <string name="anki_behavior_prevent">Verhindern</string>
     <string name="anki_behavior_overwrite">Überschreiben</string>
     <string name="anki_behavior_new">Trotzdem hinzufügen</string>
+    <string name="anki_behavior_append">Anhängen</string>
+    <string name="anki_behavior_prevent_hint">Wenn die Notiz existiert, wird das Öffnen in AnkiDroid statt des Hinzufügens angeboten.</string>
+    <string name="anki_behavior_overwrite_hint">Vorhandene Notizfelder werden durch neue Werte ersetzt.</string>
+    <string name="anki_behavior_append_hint">Fügt neue Beispielsätze und Screenshots an die vorhandene Notiz an.</string>
+    <string name="anki_behavior_new_hint">Fügt eine neue Notiz hinzu, auch wenn bereits eine identische existiert.</string>
+    <string name="anki_duplicate_deck_only">Nur im aktuellen Stapel ändern</string>
+    <string name="anki_duplicate_deck_only_hint">Wenn ein Duplikat in einem anderen Stapel liegt, diesen nicht ändern, sondern eine neue Notiz im aktuellen Stapel erstellen.</string>
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Audio automatisch abspielen</string>
@@ -235,6 +242,12 @@
     <string name="anki_overwrite_skip">behalten</string>
     <string name="anki_overwrite_append">anhängen</string>
     <string name="anki_overwrite_prepend">voranstellen</string>
+    <string name="anki_mode_coalesce">Behalten</string>
+    <string name="anki_mode_coalesce_new">Neues bevorzugen</string>
+    <string name="anki_mode_overwrite">Ersetzen</string>
+    <string name="anki_mode_skip">Nicht ändern</string>
+    <string name="anki_mode_append">Anhängen</string>
+    <string name="anki_mode_prepend">Voranstellen</string>
     <string name="audio_volume">Lautstärke: %1$d %%</string>
     <string name="settings_title">Einstellungen</string>
     <string name="settings_bubble_summary">Zielpunkt, Seite, Textquelle, ausgeblendete Apps</string>

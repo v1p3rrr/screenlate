@@ -156,7 +156,14 @@
     <string name="anki_duplicate_behavior">When a duplicate exists</string>
     <string name="anki_behavior_prevent">Prevent</string>
     <string name="anki_behavior_overwrite">Overwrite</string>
+    <string name="anki_behavior_append">Append</string>
     <string name="anki_behavior_new">Add new</string>
+    <string name="anki_behavior_prevent_hint">If the note exists, opening it in AnkiDroid is offered instead of adding.</string>
+    <string name="anki_behavior_overwrite_hint">Existing note fields are replaced with new values.</string>
+    <string name="anki_behavior_append_hint">Appends new sentences and screenshots to the existing note for scene switching.</string>
+    <string name="anki_behavior_new_hint">A new note is added even if an identical one exists.</string>
+    <string name="anki_duplicate_deck_only">Modify notes in current deck only</string>
+    <string name="anki_duplicate_deck_only_hint">If a duplicate exists in another deck, keep it unchanged and add a new note to the current deck.</string>
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Autoplay audio</string>
@@ -239,6 +246,12 @@
     <string name="anki_overwrite_skip">keep</string>
     <string name="anki_overwrite_append">append</string>
     <string name="anki_overwrite_prepend">prepend</string>
+    <string name="anki_mode_coalesce">Keep</string>
+    <string name="anki_mode_coalesce_new">Take new</string>
+    <string name="anki_mode_overwrite">Replace</string>
+    <string name="anki_mode_skip">Skip</string>
+    <string name="anki_mode_append">Append</string>
+    <string name="anki_mode_prepend">Prepend</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Settings</string>
     <string name="settings_bubble_summary">Aim, dock, text source, hidden apps</string>

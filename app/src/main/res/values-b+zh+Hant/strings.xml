@@ -151,6 +151,13 @@
     <string name="anki_behavior_prevent">阻止</string>
     <string name="anki_behavior_overwrite">覆蓋</string>
     <string name="anki_behavior_new">仍然新增</string>
+    <string name="anki_behavior_append">追加</string>
+    <string name="anki_behavior_prevent_hint">如果筆記已存在，則阻止新增並在AnkiDroid中開啟。</string>
+    <string name="anki_behavior_overwrite_hint">用新值替換現有筆記的欄位。</string>
+    <string name="anki_behavior_append_hint">將新的例句和螢幕截圖追加到現有卡片（用於場景切換）。</string>
+    <string name="anki_behavior_new_hint">即使存在相同筆記也仍然新增新卡片。</string>
+    <string name="anki_duplicate_deck_only">僅在當前牌組中修改</string>
+    <string name="anki_duplicate_deck_only_hint">如果重複項位於其他牌組，則不作修改，而在當前牌組建立新卡片。</string>
 
     <string name="audio_title">音訊</string>
     <string name="audio_auto_play">自動播放音訊</string>
@@ -233,6 +240,12 @@
     <string name="anki_overwrite_skip">保留</string>
     <string name="anki_overwrite_append">追加到末尾</string>
     <string name="anki_overwrite_prepend">新增到開頭</string>
+    <string name="anki_mode_coalesce">保留</string>
+    <string name="anki_mode_coalesce_new">優先新值</string>
+    <string name="anki_mode_overwrite">替換</string>
+    <string name="anki_mode_skip">不修改</string>
+    <string name="anki_mode_append">追加</string>
+    <string name="anki_mode_prepend">前置</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">設定</string>
     <string name="settings_bubble_summary">瞄準、停靠邊、文字來源、隱藏的應用程式</string>

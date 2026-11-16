@@ -156,8 +156,15 @@
     <string name="anki_duplicate_all_models">Во всех типах записей</string>
     <string name="anki_duplicate_behavior">Если дубль найден</string>
     <string name="anki_behavior_prevent">Запретить</string>
-    <string name="anki_behavior_overwrite">Перезаписать</string>
-    <string name="anki_behavior_new">Добавить новую</string>
+    <string name="anki_behavior_overwrite">Заменить</string>
+    <string name="anki_behavior_append">Дополнить</string>
+    <string name="anki_behavior_new">Создать</string>
+    <string name="anki_behavior_prevent_hint">Если карточка существует, добавление блокируется, а кнопка открывает её в AnkiDroid.</string>
+    <string name="anki_behavior_overwrite_hint">Поля существующей карточки заменяются новыми значениями.</string>
+    <string name="anki_behavior_append_hint">Дописывает новые предложения и скриншоты к карточке (для смены сцен Senren).</string>
+    <string name="anki_behavior_new_hint">Всегда создаётся новая карточка, даже если слово уже есть.</string>
+    <string name="anki_duplicate_deck_only">Изменять только в текущей колоде</string>
+    <string name="anki_duplicate_deck_only_hint">Если дубликат найден в другой колоде, не менять его, а создать новую карточку в текущей.</string>
 
     <string name="audio_title">Аудио</string>
     <string name="audio_auto_play">Автовоспроизведение аудио</string>
@@ -240,6 +247,12 @@
     <string name="anki_overwrite_skip">не менять</string>
     <string name="anki_overwrite_append">дописать в конец</string>
     <string name="anki_overwrite_prepend">дописать в начало</string>
+    <string name="anki_mode_coalesce">Сохранять</string>
+    <string name="anki_mode_coalesce_new">Брать новое</string>
+    <string name="anki_mode_overwrite">Заменять</string>
+    <string name="anki_mode_skip">Не менять</string>
+    <string name="anki_mode_append">Дополнять</string>
+    <string name="anki_mode_prepend">В начало</string>
     <string name="audio_volume">Громкость: %1$d%%</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_bubble_summary">Прицел, сторона, источник текста, скрытие в приложениях</string>

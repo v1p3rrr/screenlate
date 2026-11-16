@@ -38,6 +38,9 @@ enum class DuplicateBehavior {
     /** The existing note's fields are replaced. */
     OVERWRITE,
 
+    /** Context fields (sentences, media) are appended to the existing note for scene switching. */
+    APPEND,
+
     /** Another note is added anyway. */
     NEW,
 }
@@ -61,8 +64,27 @@ enum class OverwriteMode {
         COALESCE_NEW -> new.ifEmpty { existing }
         OVERWRITE -> new
         SKIP -> existing
-        APPEND -> existing + new
-        PREPEND -> new + existing
+        APPEND -> merge(existing, new, prepend = false)
+        PREPEND -> merge(existing, new, prepend = true)
+    }
+
+    private fun merge(existing: String, new: String, prepend: Boolean): String {
+        if (existing.isEmpty()) return new
+        if (new.isEmpty()) return existing
+        if (isMediaOrGroup(existing) || isMediaOrGroup(new)) {
+            if (existing.contains(new)) return existing
+            return if (prepend) new + existing else existing + new
+        }
+        val segments = existing.split("<br>")
+        if (segments.any { it.trim() == new.trim() }) return existing
+        return if (prepend) "$new<br>$existing" else "$existing<br>$new"
+    }
+
+    private fun isMediaOrGroup(text: String): Boolean {
+        val trimmed = text.trim()
+        return (trimmed.startsWith("<img") && trimmed.endsWith(">")) ||
+            (trimmed.startsWith("[sound:") && trimmed.endsWith("]")) ||
+            (trimmed.startsWith("<span class=\"group\"") && trimmed.endsWith("</span>"))
     }
 }
 
@@ -109,6 +131,7 @@ data class AnkiSettings(
     val tags: String = DEFAULT_TAGS,
     val duplicateCheck: Boolean = true,
     val duplicateScope: DuplicateScope = DuplicateScope.COLLECTION,
+    val duplicateScopeDeckOnly: Boolean = true,
     val duplicateAllModels: Boolean = false,
     val duplicateBehavior: DuplicateBehavior = DuplicateBehavior.PREVENT,
 ) {

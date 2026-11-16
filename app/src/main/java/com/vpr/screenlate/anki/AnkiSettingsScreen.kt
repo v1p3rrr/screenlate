@@ -2,6 +2,7 @@ package com.vpr.screenlate.anki
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -343,21 +346,18 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
             OutlinedButton(onClick = viewModel::suggestTemplates, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.anki_suggest_templates), textAlign = TextAlign.Center)
             }
-            val overwrite = settings.duplicateCheck && settings.duplicateBehavior == DuplicateBehavior.OVERWRITE
+            val allowsOverwrite = settings.duplicateCheck &&
+                (settings.duplicateBehavior == DuplicateBehavior.OVERWRITE || settings.duplicateBehavior == DuplicateBehavior.APPEND)
             state.fieldNames.forEach { field ->
                 TemplateField(
                     field = field,
                     template = settings.fields[field].orEmpty(),
                     markers = state.markers,
                     hints = state.language.furiganaMarkerHints,
+                    overwriteMode = if (allowsOverwrite) settings.overwriteModes[field] ?: OverwriteMode.COALESCE else null,
+                    onOverwriteModeSelect = if (allowsOverwrite) { mode -> viewModel.setOverwriteMode(field, mode) } else null,
                     onChange = { viewModel.setFieldTemplate(field, it) },
                 )
-                if (overwrite) {
-                    OverwriteModePicker(
-                        mode = settings.overwriteModes[field] ?: OverwriteMode.COALESCE,
-                        onSelect = { viewModel.setOverwriteMode(field, it) },
-                    )
-                }
             }
         }
     }
@@ -390,31 +390,84 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                         when (it) {
                             DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
                             DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
+                            DuplicateBehavior.APPEND -> R.string.anki_behavior_append
                             DuplicateBehavior.NEW -> R.string.anki_behavior_new
                         },
                     )
                 },
                 onSelect = viewModel::setDuplicateBehavior,
             )
+            val behaviorHint = when (settings.duplicateBehavior) {
+                DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent_hint
+                DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite_hint
+                DuplicateBehavior.APPEND -> R.string.anki_behavior_append_hint
+                DuplicateBehavior.NEW -> R.string.anki_behavior_new_hint
+            }
+            Text(
+                stringResource(behaviorHint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (settings.duplicateScope == DuplicateScope.COLLECTION &&
+                (settings.duplicateBehavior == DuplicateBehavior.OVERWRITE || settings.duplicateBehavior == DuplicateBehavior.APPEND)
+            ) {
+                SwitchRow(
+                    label = stringResource(R.string.anki_duplicate_deck_only),
+                    checked = settings.duplicateScopeDeckOnly,
+                    onChange = viewModel::setDuplicateScopeDeckOnly,
+                    hint = stringResource(R.string.anki_duplicate_deck_only_hint),
+                )
+            }
         }
     }
 }
 
-/** How this field changes when a duplicate overwrites an existing note. */
+/** How this field changes when a duplicate overwrites or appends to an existing note. */
 @Composable
-private fun OverwriteModePicker(mode: OverwriteMode, onSelect: (OverwriteMode) -> Unit) {
+private fun OverwriteModeBadge(mode: OverwriteMode, onSelect: (OverwriteMode) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     Box {
-        TextButton(onClick = { expanded = true }) {
-            Text(
-                stringResource(R.string.anki_overwrite_mode, stringResource(overwriteModeLabel(mode))),
-                style = MaterialTheme.typography.bodySmall,
-            )
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.clickable { expanded = true },
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = "${overwriteModeIcon(mode)} ${stringResource(overwriteModeShortLabel(mode))}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = "▾",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             OverwriteMode.entries.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(stringResource(overwriteModeLabel(option))) },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(overwriteModeIcon(option), style = MaterialTheme.typography.bodyMedium)
+                                Text(stringResource(overwriteModeShortLabel(option)), style = MaterialTheme.typography.bodyMedium)
+                            }
+                            Text(
+                                stringResource(overwriteModeDescription(option)),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    },
                     onClick = {
                         expanded = false
                         onSelect(option)
@@ -425,7 +478,25 @@ private fun OverwriteModePicker(mode: OverwriteMode, onSelect: (OverwriteMode) -
     }
 }
 
-private fun overwriteModeLabel(mode: OverwriteMode): Int = when (mode) {
+private fun overwriteModeIcon(mode: OverwriteMode): String = when (mode) {
+    OverwriteMode.COALESCE -> "🛡️"
+    OverwriteMode.COALESCE_NEW -> "🆕"
+    OverwriteMode.OVERWRITE -> "🔄"
+    OverwriteMode.SKIP -> "🚫"
+    OverwriteMode.APPEND -> "➕"
+    OverwriteMode.PREPEND -> "⬇️"
+}
+
+private fun overwriteModeShortLabel(mode: OverwriteMode): Int = when (mode) {
+    OverwriteMode.COALESCE -> R.string.anki_mode_coalesce
+    OverwriteMode.COALESCE_NEW -> R.string.anki_mode_coalesce_new
+    OverwriteMode.OVERWRITE -> R.string.anki_mode_overwrite
+    OverwriteMode.SKIP -> R.string.anki_mode_skip
+    OverwriteMode.APPEND -> R.string.anki_mode_append
+    OverwriteMode.PREPEND -> R.string.anki_mode_prepend
+}
+
+private fun overwriteModeDescription(mode: OverwriteMode): Int = when (mode) {
     OverwriteMode.COALESCE -> R.string.anki_overwrite_coalesce
     OverwriteMode.COALESCE_NEW -> R.string.anki_overwrite_coalesce_new
     OverwriteMode.OVERWRITE -> R.string.anki_overwrite_overwrite
@@ -469,6 +540,8 @@ internal fun TemplateField(
     template: String,
     markers: List<String>,
     hints: Map<String, Int> = emptyMap(),
+    overwriteMode: OverwriteMode? = null,
+    onOverwriteModeSelect: ((OverwriteMode) -> Unit)? = null,
     onChange: (String) -> Unit,
 ) {
     var text by remember(field) { mutableStateOf(template) }
@@ -479,46 +552,58 @@ internal fun TemplateField(
     LaunchedEffect(template, focused) {
         if (!focused && template != text) text = template
     }
-    OutlinedTextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onChange(it)
-        },
-        label = { Text(field) },
-        textStyle = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-        modifier = Modifier
-            .fillMaxWidth()
-            .onFocusChanged { focused = it.isFocused },
-        trailingIcon = {
-            Box {
-                TooltipIconButton(R.drawable.ic_add, stringResource(R.string.anki_insert_marker), onClick = { menu = true })
-                DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                    markers.forEach { marker ->
-                        DropdownMenuItem(
-                            text = {
-                                Column {
-                                    Text("{$marker}", fontFamily = FontFamily.Monospace)
-                                    hints[marker]?.let { hint ->
-                                        Text(
-                                            stringResource(hint),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(field, style = MaterialTheme.typography.labelLarge)
+            if (overwriteMode != null && onOverwriteModeSelect != null) {
+                OverwriteModeBadge(mode = overwriteMode, onSelect = onOverwriteModeSelect)
+            }
+        }
+        OutlinedTextField(
+            value = text,
+            onValueChange = {
+                text = it
+                onChange(it)
+            },
+            placeholder = { Text(field) },
+            textStyle = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { focused = it.isFocused },
+            trailingIcon = {
+                Box {
+                    TooltipIconButton(R.drawable.ic_add, stringResource(R.string.anki_insert_marker), onClick = { menu = true })
+                    DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                        markers.forEach { marker ->
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text("{$marker}", fontFamily = FontFamily.Monospace)
+                                        hints[marker]?.let { hint ->
+                                            Text(
+                                                stringResource(hint),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
                                     }
-                                }
-                            },
-                            onClick = {
-                                menu = false
-                                text += "{$marker}"
-                                onChange(text)
-                            },
-                        )
+                                },
+                                onClick = {
+                                    menu = false
+                                    text += "{$marker}"
+                                    onChange(text)
+                                },
+                            )
+                        }
                     }
                 }
-            }
-        },
-    )
+            },
+        )
+    }
 }
 
 @Composable

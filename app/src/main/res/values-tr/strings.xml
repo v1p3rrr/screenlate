@@ -153,6 +153,13 @@
     <string name="anki_behavior_prevent">Engelle</string>
     <string name="anki_behavior_overwrite">Üzerine yaz</string>
     <string name="anki_behavior_new">Yine de ekle</string>
+    <string name="anki_behavior_append">Sona ekle</string>
+    <string name="anki_behavior_prevent_hint">Not zaten varsa eklemek yerine AnkiDroid’de açılması önerilir.</string>
+    <string name="anki_behavior_overwrite_hint">Mevcut not alanları yeni değerlerle değiştirilir.</string>
+    <string name="anki_behavior_append_hint">Sahne geçişleri için mevcut nota yeni cümleler ve ekran görüntüleri ekler.</string>
+    <string name="anki_behavior_new_hint">Aynısı olsa bile yeni bir not eklenir.</string>
+    <string name="anki_duplicate_deck_only">Yalnızca mevcut destede değiştir</string>
+    <string name="anki_duplicate_deck_only_hint">Başka bir destede kopya varsa onu değiştirmeyin, geçerli destede yeni bir not oluşturun.</string>
 
     <string name="audio_title">Ses</string>
     <string name="audio_auto_play">Sesi otomatik çal</string>
@@ -235,6 +242,12 @@
     <string name="anki_overwrite_skip">koru</string>
     <string name="anki_overwrite_append">sona ekle</string>
     <string name="anki_overwrite_prepend">başa ekle</string>
+    <string name="anki_mode_coalesce">Koru</string>
+    <string name="anki_mode_coalesce_new">Yeniyi al</string>
+    <string name="anki_mode_overwrite">Değiştir</string>
+    <string name="anki_mode_skip">Değiştirme</string>
+    <string name="anki_mode_append">Sona ekle</string>
+    <string name="anki_mode_prepend">Başa ekle</string>
     <string name="audio_volume">Ses düzeyi: %%%1$d</string>
     <string name="settings_title">Ayarlar</string>
     <string name="settings_bubble_summary">Nişan, taraf, metin kaynağı, gizli uygulamalar</string>

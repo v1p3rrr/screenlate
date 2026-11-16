@@ -1,17 +1,1350 @@
 # Status
 
-## Session (2026-10-26): local dictionary research
+## Senren scene switching, field appending and deck-scoped duplicate updates (2026-11-16)
 
-Completed a static comparison of dictionary import, lookup and Japanese rules without running builds, engines,
-tests or benchmarks. The owner requested that external-project research reports stay local rather than be
-committed. The detailed report is kept under ignored `testdata/local-research/`; findings were delivered in chat.
-Application code and device state were not changed.
+- Implemented Senren (洗練) scene switching support, field appending, and safe deck-scoped duplicate resolution:
+  - Added `DuplicateBehavior.APPEND` ("Дополнить") as a first-class duplicate handling mode alongside `PREVENT`, `OVERWRITE`, and `NEW`.
+  - In `OverwriteMode.apply`, implemented automatic `<br>` separator for text fields while concatenating media tags (`<img>`, `[sound:...]`) and scene groups directly without extra line breaks. Added idempotency guard (`split("<br>").any { it.trim() == new.trim() }`) to prevent repeating identical sentences on accidental repeated taps.
+  - Added target deck scoping (`duplicateScopeDeckOnly` toggle, enabled by default): when searching collection-wide (`duplicateScope == COLLECTION`), note updates and appends are confined to cards within the active target deck. If a duplicate exists only in an external deck, a new note is safely created in the target deck rather than mutating foreign cards.
+  - Prioritized in-deck duplicate notes and resolved ties by newest note ID (`maxByOrNull { it.id }`), fixing Yomitan's upstream bug of overwriting the oldest card across arbitrary decks.
+  - Added compact field header badge button (`[ ➕ Дополнять ▾ ]`) next to field names in `TemplateField`, conserving vertical space without redundant subtitle rows.
+  - Added localized strings across all 14 supported locales; verified with `TranslationsTest`, unit tests, and all 139 page tests passing.
 
-## Session instructions (2026-10-25)
+- Refined Forced Offline Mode UX and fixed draft promotion popup scroll jump:
+  - Allowed localhost and loopback hosts (`localhost`, `127.0.0.1`, `::1`, `10.0.2.2`) through `OfflineInterceptor` so local custom audio endpoints continue working in offline mode.
+  - Added dedicated `AudioError.Kind.OFFLINE_MODE` and `TranslationError.Kind.OFFLINE_MODE`, replacing obfuscated R8 class names with clear messages ("Forced Offline Mode is active" / "Включён принудительный офлайн-режим").
+  - Added persistent informational banner in Translation settings screen when Forced Offline Mode is active.
+  - Added informational banner `OfflineNoticeCard` in Audio settings screen when Forced Offline Mode is active, explaining that online audio sources are disabled and text-to-speech (TTS) or cached clips are used for pronunciation (even if TTS is not listed in sources). Added localized strings for `audio_offline_notice` across all 17 locales.
+  - Deduplicated `OfflineNoticeCard` component across Dictionaries, Translation, and Audio settings screens.
+  - Disabled "Check for updates" buttons with explanatory hints in both Dictionaries screen and About screen when offline.
+  - Moved Forced Offline Mode switch in App Settings to sit cleanly between Backup and About, separated by subtle dividers.
+  - In `PopupController` and `popup.js`, tracked word screen anchor bounds (`IoU >= 0.4`) and passed `refined: Boolean`: moving the aim point to another instance of the same word resets scroll to 0, while a refined whole-screen scan arriving for the current aimed word preserves scroll position and pushed link views.
+  - Implemented pure monochrome palette generation in `PaletteGenerator` and neutral color detection in `ColorMath.isAchromatic`: seeds of black (`#000000`), white (`#FFFFFF`) or neutral grays generate clean grayscale surfaces and high-contrast charcoal/silver controls without unwanted reddish-brown tint.
+  - Added localized strings for all new options across all 17 supported locales; verified with `TranslationsTest` and all 180 page tests passing.
+- Minified ARM64 Dev APK from `f1d57c1b`: version `1.0.1-f1d57c1b-min` (10001), 23,259,423 bytes, signed with the local debug key. SHA-256 `074dbdec40e4b21f3ed40b3e3a34e1dfdb587f96fd7d256afc6621c66aade9fe`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
-The owner approved reading the local Claude memory index at session start from `AGENTS.md`.
-Linked notes are read only when relevant to the task; a missing index leaves the project instructions in effect.
-The memory files stay local.
+## Anki duplicate icon refinement (2026-11-15)
+
+- Refined `openAdd` and `openUpdate` SVG book icons in `popup.js`:
+  - Unified book geometry with the standard `open` book (`M12 6.5...`), trimming the top-right page (`v-6` instead of `v-13`) to carve space for badges.
+  - In `openUpdate`, positioned the refresh arrow at the top pointing right (`M19.4 .7 21 2.3l-1.6 1.6`) with a horizontal entry (`h2`) and a lighter 1.5px stroke.
+  - Verified with all 178 page tests passing.
+- Minified ARM64 Dev APK from `116f4a11`: version `1.0.1-116f4a11-min` (10001), 23,243,907 bytes, signed with the local debug key. SHA-256 `75dbdc57e8441011c743b4d10232581901ba5d70b56f39ccf85a20b6fa5833d4`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+
+## Forced Offline Mode implementation (2026-11-15)
+
+- Implemented app-wide Forced Offline Mode (`offlineMode`) on branch `features/forced-offline-mode`:
+  - Added `offlineMode` preference in `AppSettingsRepository` with instant synchronous cache access.
+  - Implemented fail-safe `OfflineInterceptor` throwing `OfflineModeException` on any outbound network request through the shared `@Singleton OkHttpClient`.
+  - Network status and imports online state immediately reflect offline status, silencing background dictionary downloads, app updates, and font downloads.
+  - OCR automatically coerced to `OcrEngines.DEVICE`; cloud recognition requests skipped; engine selector locked with explanatory hint `bubble_ocr_engines_offline_locked`.
+  - Sentence translation button completely hidden in popup and skipped for Anki note creation.
+  - Audio pronunciations bypass remote sources, playing disk cache or falling back immediately to on-device `TextToSpeech`.
+  - Added global Offline Mode switch at the top of App Settings with `ic_cloud_off` icon.
+  - Added localized strings for `settings_offline_mode` and `settings_offline_mode_hint` across all 17 supported locales.
+  - Verified with `TranslationsTest`, full unit test suite (`./gradlew testDebugUnitTest`), and all 139 page tests passing. Built debug APK.
+  - Minified ARM64 Dev APK from `4d283d36`: version `1.0.1-4d283d36-min` (10001), 23,238,359 bytes, signed with the local debug key. SHA-256 `78bf33d2e6a3699cfc882d3a9f064ff69123f8f739f1c095c46b9f23e28b1b26`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+
+## Dynamic OCR engine hints and Forced Offline Mode plan (2026-11-15)
+
+- Added dynamic descriptive hints under OCR engine selection (`BOTH`, `CLOUD`, `DEVICE`) in `RecognitionSettingsScreen`:
+  - `BOTH`: explains instant on-device draft + high-accuracy cloud text, with offline fallback if the network drops.
+  - `CLOUD`: explains highest accuracy, device storage/battery savings, and internet requirement.
+  - `DEVICE`: explains complete privacy, zero mobile data, offline operation, and slightly lower accuracy on complex fonts.
+  - Added localized strings across all 17 supported locales; verified with `TranslationsTest` passing.
+- Created architectural plan for Forced Offline Mode (`ai/plans/2026-11-15-forced-offline-mode.md`):
+  - Confirmed decisions: toggle in App Settings only, hide popup translation button when offline, lock OCR engine selector to "Device" when offline, automatically fall back to on-device TTS for pronunciation when audio is not cached.
+  - Fail-safe network interceptor (`OfflineInterceptor`) to guarantee zero socket/network leakage.
+
+## Anki screenshot by default setting and card reorganization (2026-11-15)
+
+- Added `screenshotByDefault` setting in `AnkiSettings` and reorganized note creation controls in `AnkiSettingsScreen`:
+  - Combined screenshot behavior and duplicate handling into a unified "Adding notes" section placed above the note type and deck configuration ("Card"), so users do not have to scroll past extensive field templates.
+  - Added "Screenshot by default" switch with localized hints explaining tap vs hold actions.
+  - In `popup.js`, when `screenshotByDefault` is active:
+    - Tap captures a screenshot area; hold adds note directly without picture.
+    - For `DuplicateBehavior.NEW`, tap adds with picture; hold opens menu with "Open in AnkiDroid" and "Add without picture".
+    - For `DuplicateBehavior.OVERWRITE`, tap updates with picture; hold opens 4-item menu: "Open in AnkiDroid", "Update without picture", "Add anyway", and "Add anyway, with a picture".
+    - Button aria-label dynamically reflects default action (`addNoteScreenshot` vs `addNote`).
+  - Added localized strings for all new options across all 17 supported locales; verified with `TranslationsTest`.
+  - All 178 page tests and 278 Gradle unit test tasks passed.
+  - Minified ARM64 Dev APK from `486cf819`: version `1.0.1-486cf819-min` (10001), 23,224,515 bytes, signed with the local debug key. SHA-256 `3f7a5f9ccf32d76ae259d296dd88a3c8dbc57f761ff148d1bcfd20cb86d5af3c`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+
+## Anki duplicate icons and color harmonization (2026-11-15)
+
+- Added dedicated icons for Anki duplicate behavior:
+  - `DuplicateBehavior.NEW` displays a book with a small plus (`📖⁺`), tapping adds a new note, and holding opens a menu to view the card in AnkiDroid or add with a picture.
+  - `DuplicateBehavior.OVERWRITE` displays a book with refresh arrows (`📖↻`), tapping updates the note, and holding opens a menu with options to view in AnkiDroid, update with picture, or force add a new card.
+  - Duplicate cards in both modes receive the green highlight styling and preserve note IDs for AnkiDroid navigation.
+  - Menu options localized in all 17 locales with full TranslationsTest coverage.
+- Harmonized theme colors across overlay and popup:
+  - `LayerView` now dynamically binds `primaryColor` to the app theme seed, recoloring the aim dot and word highlight box to match the active theme.
+  - Dictionary name tags (`.dictionary-name`) in popup CSS now dynamically bind to theme container and on-container colors in light and dark modes instead of static violet.
+  - Adjusted preset seeds: Cobalt blue to `#4169E1` (Royal Blue), Lavender to `#9333EA` (Purple/Lilac), and Teal to `#0097A7` (Cyan) to eliminate hue collisions with neighboring presets.
+- Minified ARM64 Dev APK from `f09afda6`: version `1.0.1-f09afda6-min` (10001), 23,214,679 bytes, signed with the local debug key. SHA-256 `91c100e42565361f60ac4d70db9ab6c5e9bb99ae86a81378dc8515a15dbb4b30`. The APK, mapping and log are under ignored `testdata/local-research/builds/`.
+
+## Cobalt blue and Graphite presets (2026-11-15)
+
+- Added Cobalt blue and Graphite to the existing eight presets in the app and bubble color selectors.
+  Both labels are localized in all 17 locales. Existing presets keep their saved IDs and colors.
+- The palette tests include both new presets in light and dark mode, and storage tests verify their IDs.
+
+## Adjacent control accent hues (2026-11-15)
+
+- Generated palettes now shift the accent hue by 15° and keep neutral seeds neutral. The Violet preset keeps
+  its original pink colors. Slider and radio accents use lightness to maintain contrast against their surfaces.
+- JVM palette tests cover all presets, 216 custom colors around the hue wheel, custom violet, and neutral seeds.
+  The full JVM suite passed 2,135 tests with four skipped. No emulator check was requested for this change.
+- Minified ARM64 Dev APK from `b50f43d7`: version `1.0.1-b50f43d7-min`, 23,203,379 bytes, signed
+  with the existing Dev certificate. SHA-256 `b1b1fb00ac05bdae7f2ae4dd3c49f6d53ab3dfc06e01f59351f53ad87e5558e1`.
+  The APK, mapping and log are under ignored `testdata/local-research/builds/`.
+
+## Dev review fixes and Android 7 verification (2026-11-15)
+
+- Fixed the capture consent lifecycle, old WebView syntax and text formatting, and the API 26 bitmap-config
+  check in ML Kit symbol alignment. System accent colors now reach the bubble and dictionary popup. Added
+  contrast checks for custom palettes, shared the color picker's drag handling, and updated the usage guide.
+- On the API 24 emulator, denial returned to the viewer, an unanswered consent closed after 30 seconds,
+  and a new scan opened a fresh request. After granting access, MediaProjection and on-device ML Kit read
+  a synthetic image. The dictionary popup rendered the fixture definition and matched highlight in stock
+  WebView 69. Rotation produced a new 1920 x 1080 screenshot. The five real-WebView tests passed on API 24.
+- JVM tests: 2,133 passed, four skipped. Page tests: 176 passed. Coverage on API 30+ in this run is
+  limited to backend selection and JVM/page tests. The API 30 emulator is x86-only, and the API 37 image did
+  not boot in the available environment. Physical Android 7 hardware and a full performance regression remain open.
+- Local minified ARM64 Dev APK from `3609bd97`, package `com.vpr.screenlate.debug`, version
+  `1.0.1-3609bd97-min` (10001), minSdk 24. The ZIP and signature passed verification, and the
+  certificate matches the previous local Dev build. Size 23,203,355 bytes, SHA-256
+  `55a16929227bd604230fd92e0b306db4ce6f6573332b908150adf2645e1857b6`.
+  APK, mapping and log are under ignored `testdata/local-research/builds/`.
+
+## Android 7 and color customization Dev integration (2026-11-14)
+
+- Reviewed both branches against their plans and project standards, using `95d8b88b` as the baseline.
+  Merged `features/color-scheme-customization` into `features/android-7-support` for the local Dev build.
+- Open Android 7 findings: stock WebView cannot parse the popup scripts, capture consent can leave the spinner
+  running or resolve a later request after a timeout, and session state crosses threads. Lifecycle tests and
+  the remaining device and performance checks are pending.
+- Open color findings: some custom seeds have insufficient contrast, and wallpaper colors apply only to the
+  Compose theme. The usage guide and the feature scenarios in the test model still need updates.
+- Verified merge `c0a82d90`: 2,129 JVM tests passed and four were skipped, and 164 page tests passed.
+  The x86_64 debug APK installed and launched on API 24. The home screen reported WebView 69, and the
+  Appearance page saved the Emerald preset and restored Violet. The full capture and lookup flows remain open.
+- Built the minified ARM64 APK from `c0a82d90`, package `com.vpr.screenlate.debug`, version
+  `1.0.1-c0a82d90-min` (10001), minSdk 24. It is 23,205,071 bytes, and the signature matches the previous
+  local Dev APK. The APK, R8 mapping and build log are in ignored `testdata/local-research/builds/`.
+  APK SHA-256: `09cf49640581695bb3a5b95667d3071e29bdf3cab1eec07a8ed20234e3887103`.
+
+## Color scheme customization and verification (2026-11-14)
+
+- Implemented the full "Color Scheme Customization" feature on branch `features/color-scheme-customization`:
+  - Pure Kotlin palette math engine (`ColorMath`, `PaletteGenerator`, `AppPaletteConfig`, `ColorPreset`) in `core:common`, compatible with Android 7.0+ (API 24+) to Android 15 (API 35).
+  - 8 curated presets (`Violet`, `Ocean`, `Emerald`, `Amber`, `Coral`, `Sunset`, `Lavender`, `Teal`) with dynamic 45-60° hue shift for controls.
+  - DataStore persistence in `AppSettingsRepository` and `OverlaySettingsRepository` with snapshot backup & restore.
+  - Floating bubble contrast engine: automatic luminance calculation with inverted charcoal (`#1C1B20`) glyph/ring/dot for light backgrounds (> 0.60) and white for dark.
+  - Independent bubble color selection in "Bubble settings" with "Use app theme color" toggle.
+  - Compose theme integration supporting dynamic palette with e-ink override.
+  - Popup WebView CSS dynamic bridge (`--accent`, `--matched-bg`, `--chip-bg`, `--border`) in `popup.js`.
+  - Settings UI: `AppColorsSection` with `ColorPaletteSelector`, dedicated synchronized `BubbleColorSection` in both Appearance settings and Bubble settings, and redesigned `ColorPickerDialog` with an interactive 2D saturation/brightness gradient canvas (finger drag), rainbow hue spectrum bar, and HEX field.
+  - Complete translations across all 16 project locales (`TranslationsTest` passing).
+  - All test suites passing: `./gradlew testDebugUnitTest` and `npm --prefix scripts/page-tests test` (163/163 JS tests).
+  - Verified on emulator (`Screenlate_API30_x86`): preset switching, 2D gradient color picker canvas touch interaction, and synchronized bubble color setting across screens.
+  - UI screenshots captured and presented to the owner.
+  - Completed two-axis code review (Standards & Spec): added adaptive high-contrast Tone 80 accent in popup dark theme, synchronized custom selection in `ColorPaletteSelector`, ensured bubble color resets with Appearance section, declared `AppPaletteConfig` in `compose-stability.conf`, and pruned unused strings. All 163 JS page tests and Gradle unit tests passing.
+
+## Work in progress (2026-11-14): Android 7.0–7.1 (API 24–25) support
+
+Branch `features/android-7-support` (worktree `.worktrees/lang`).
+MinSdk lowered from 30 to 24 (targetSdk/compileSdk stay 37).
+- Architecture: single universal package, no desugar_jdk_libs (zero APK size bloat).
+- Screen capture:
+  - API 30+: untouched modern capture (`AccessibilityService.takeScreenshot()` and `takeScreenshotOfWindow()` on API 34+).
+  - API 24–29: `LegacyMediaProjectionCapturer` using `VirtualDisplay` + `ImageReader` (RGBA_8888, stride alignment handling).
+  - Background permission lifecycle: transparent `MediaProjectionConsentActivity` + lightweight FGS `MediaProjectionService` with quiet channel notification. Fixed `android:noHistory="true"` gotcha that broke `onActivityResult` callbacks from the system consent dialog.
+- UI & Overlay compatibility:
+  - Overlay remains `TYPE_ACCESSIBILITY_OVERLAY` (API 24+), zero `SYSTEM_ALERT_WINDOW` needed. Verified live on Android 7.0 AVD: floating bubble attaches, docks, and responds to touch gestures.
+  - `WindowMetricsCompat` provides unified bounds/insets fallback for API 24–37.
+  - Guarded insets, display cutouts, notification channels, package signatures, and system gesture exclusion rects.
+- Runtime SDK Differences fixed on Android 7.0 AVD:
+  - `NotificationChannel` guard on API < 26 in `DictionaryImportWorker`.
+  - `setRendererPriorityPolicy` guard on API < 26 in `LookupPage`.
+  - `AccessibilityEvent.windowChanges` guard on API < 28 and `isInPictureInPictureMode` guard on API < 26 in `ScreenlateAccessibilityService`.
+  - `Base64Compat` created in `core:common`: replaces `java.util.Base64` (added in API 26) with `android.util.Base64` on Android and `java.util.Base64` in desktop JVM unit tests.
+  - TLS/SSL Let's Encrypt support: bundled `ISRG Root X1` in `app/src/main/res/raw/isrgrootx1.der` and added to `network_security_config.xml` to fix `CertPathValidatorException` on Android 7.0.
+- Storage & Media:
+  - Private external storage fallback (`getExternalFilesDir`) for photo gallery and log export on API < 29, MediaStore Scoped Storage on API 29+. Zero `WRITE_EXTERNAL_STORAGE` permission needed.
+- Time & Formatting:
+  - Replaced all `java.time` usages in logging and backup with `SimpleDateFormat` / `System.currentTimeMillis()`.
+- WebView:
+  - Polyfill for `Element.prototype.replaceChildren` in `popup.js` for WebViews < Chrome 86.
+  - Home card warning `OutdatedWebView` for WebView < 80 via `WebViewCompat`. Verified live on Android 7.0 AVD showing warning card for stock WebView 69.
+- Adaptive launcher icons:
+  - Moved adaptive icons to `mipmap-anydpi-v26/` with `<layer-list>` fallback in `mipmap-anydpi/`. Updated `scripts/icon/icon.py`.
+- Translations:
+  - All new string keys added across all 17 supported locales. `TranslationsTest` passed.
+- Full verification:
+  - Live smoke-tested on real `Screenlate_API24` emulator (Android 7.0, API 24, x86_64).
+  - All unit tests passed across all modules (`testDebugUnitTest`).
+  - Page tests (`npm --prefix scripts/page-tests test`, 162 tests) passed.
+
+## Screenlate v1.0.1 released (2026-11-11)
+
+- Stable [v1.0.1](https://github.com/v1p3rrr/screenlate/releases/tag/v1.0.1) is the latest app release. The annotated
+  tag points to `3a83d7ca`; the [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/43074715579)
+  completed successfully and published the release with the production signing key.
+- The release contains the short approved English note about dictionary lookup for words split at a hyphenated line
+  break. Four APKs (`arm64-v8a`, `armeabi-v7a`, `x86_64`, universal) and the full source archive are uploaded.
+  The `releases/latest` API already points to v1.0.1, so the in-app update feed sees it.
+
+## Local Dev update for hyphenated line ends (2026-11-11)
+
+- Built the local minified ARM64 release variant from `ee0d57cd`: version `1.0.0-ee0d57cd-min` (10000), package
+  `com.vpr.screenlate.debug`, label `Screenlate Dev`, debug-signed and non-debuggable. The APK contains only
+  `arm64-v8a` native libraries and passed the ZIP integrity check.
+- APK size: 23,075,879 bytes. SHA-256: `44173b7c79fe605f74ef3500c1dbb27275ad498ff84696823652dbb13cb3f7cb`.
+  Its signing certificate exactly matches `screenlate-dev-112158a4-min.apk`, so it updates the owner's installed Dev
+  package without uninstalling or clearing data. Nothing was installed on the phone.
+- APK, R8 mapping, init script and build log are in ignored `testdata/local-research/builds/` under the
+  `screenlate-dev-ee0d57cd-min` and `dev-release-ee0d57cd` names.
+
+## Dictionary-confirmed repair of hyphenated line ends (2026-11-11)
+
+- The owner's screenshots showed uppercase Russian `ЗАКОН- ЧИЛИ` finding only `закон`, while the sentence kept the
+  break. The existing spelling rule tried a joined variant only before a lowercase second half, and sentence extraction
+  always used the source text rather than the variant found by the dictionary.
+- Spaced-language lookup now also tries a joined word when uppercase letters surround the break. `LookupResult` keeps
+  the matched spelling outside the page JSON, and `OverlayController` passes the first result's spelling to
+  `Sentence.extract`. Only an exact joined or hyphen-kept variant replaces the sentence body; prefixes, dashes, numbers,
+  mixed-case names and unconfirmed text stay unchanged.
+- Unit cases cover lowercase and uppercase Russian, English joined and hyphen-kept words, `Max-Planck`, German
+  `Haus- und Gartenarbeit`, digit compounds and non-spaced languages. Targeted common, Anki, dictionary API and overlay
+  tests passed, followed by the full `assembleDebug testDebugUnitTest`. No emulator or phone run was needed or done.
+
+## Screenlate v1.0.0 released (2026-11-10)
+
+- Stable [v1.0.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.0.0) is the latest app release. The tag
+  points to `f688e41b`. The [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/42878032434)
+  published the approved notes, four APKs and the source archive.
+- Downloaded and verified the checksums, manifests and native ABIs of all four APKs. They use package
+  `com.vpr.screenlate`, version `1.0.0` (10000), Android 11 minimum and the same signing certificate as `v0.2.3`.
+- The [instrumented run](https://github.com/v1p3rrr/screenlate/actions/runs/42878032360) succeeded on API 34.
+  The downloaded XML contains 200 cases. Of these, 185 passed and 15 stopped on `AssumptionViolatedException`.
+  The XML labels those as failures, while the runner treats them as skips. Fourteen require an isolated test package,
+  explicit fixture arguments or staged data. The live camera case requires the `CAMERA` permission. Both
+  AnkiDroid round-trip tests passed. The downloaded report is in ignored `testdata/local-research/release-v1.0.0/`.
+- The owner accepted the audio fix on the phone before publication. The Turkic form-tag follow-up waits for
+  [wiktextract #1734](https://github.com/tatuylonen/wiktextract/issues/1734) to close.
+
+## Stable release authorization (2026-11-10)
+
+- The owner confirmed audio works on the phone in the minified Dev build `0.2.3-112158a4-min` and authorized the
+  stable `1.0.0` release from `main`. CI passed on `fb013a68` before the release documentation update.
+- The owner deferred the Turkic form-tag fix until [wiktextract #1734](https://github.com/tatuylonen/wiktextract/issues/1734)
+  closes. The issue is open at release time. The release uses the current upstream dictionaries.
+
+## Cancel audio requests when their popup word goes away (2026-11-10)
+
+- The popup cancels pending playback and its queued audio toasts when the word or view changes or closes. The
+  player checks the request after volume and voice initialization and again before a prepared recording starts.
+- Holding the audio button only lists available candidates. An empty list shows its message in the menu. The toast
+  comes from playback, which can also be requested by autoplay.
+- All 739 app, overlay and Anki JVM tests passed, including 11 playback lifecycle regressions. All 162 page tests
+  passed, including the hold and short-tap cases. App and overlay lint passed. Emulator checks were waived.
+- Built the local minified ARM64 Dev APK from `112158a4` for the owner's phone check. Version `0.2.3-112158a4-min`
+  (203), package `com.vpr.screenlate.debug`, 23,073,187 bytes. SHA-256
+  `211be1a0f06f21c2e1a94f42a0feec5725cfa0405bd6c8d99e2d21d8dc448ea0`. The signing certificate matches the prior Dev
+  build. Checked the manifest, bundled popup script and playback methods in the R8 mapping. The APK, mapping,
+  init script and build log are in ignored `testdata/local-research/builds/`.
+
+## Popup audio menu and local Dev update (2026-11-10)
+
+- A repeated hold reuses the recording list for the word the popup still shows. Moving to another word, navigating
+  the popup or closing it starts a fresh list. A request number ties each answer and selected clip to its menu.
+- The regression reproduced the loading state on a second hold before the fix. After the fix, all 280 overlay
+  and 175 Anki JVM tests, 160 page tests, and overlay and app lint passed. The owner will check AUD45 on the phone.
+- Built the minified ARM64 Dev APK from `3397056e`. Version `0.2.3-3397056e-min` (203), package
+  `com.vpr.screenlate.debug`, 23,074,823 bytes. SHA-256 `c8b1dd8336608adc3411ebdca8727e31f4e27b4d1088dda165cca70d71ea2820`.
+  The certificate matches the previous local Dev APK. Verified the manifest, bundled popup script and retained R8
+  bridge method. The APK, R8 mapping, init script and log are in ignored `testdata/local-research/builds/`.
+
+## Stable release decision (2026-11-10)
+
+- The owner used the minified Dev build with no major concerns and chose to go directly to stable `1.0.0`.
+- The tag-driven release workflow already supports publication. A manual version override was discussed for
+  rehearsing a production-signed upgrade from `0.2.3` and is optional.
+- The owner initially deferred publication. The versioned release notes are ready in `main`.
+
+## Release readiness check (2026-11-10)
+
+- Simplified the interface-language bullet in the publication notes. The agreed release version is `1.0.0`
+  (languages plan, decision table), so the notes now use the filename the release workflow will read.
+- Placed the English and camera screenshots after the first two Japanese examples. The five portrait screenshots
+  use a common 419 px display height to align their edges while preserving their original aspect ratios.
+- GitHub reports `main` as default and `v0.2.3` as the latest app release. All four signing secret names are present.
+  The newest completed CI run at the time of the audit passed. The release workflow has not yet built the multilingual app.
+- All 633 distinct wty archive paths in the catalog are present upstream with matching download sizes. All 172
+  Paddle catalog entries match the 12 assets of `ocr-models-1` by filename, size and SHA-256.
+- wiktextract issue #1734 is open. The current Kyrgyz–Russian archive still labels genitives `singular possessive`
+  and `plural possessive`; the Kazakh–Russian archive still labels a sampled ablative plural `plural`. The agreed
+  local fallback for unambiguous tags is pending (group 6 plan, question 30). Ambiguous `plural` labels need the
+  context of the form to identify the case.
+- The stable release still needs a `1.0.0` APK with the production package and signing certificate, and release
+  authorization before creating the tag. A manual branch run builds artifacts with the preceding stable version.
+  The separate beta flavor, feed and tag workflow are still pending if a beta is requested. The optional converted
+  dictionaries and private archive remain separate from the verified catalog. No release or build was started.
+
+## README screenshots (2026-11-10)
+
+- Added full-resolution WebP screenshots of English phrasal-verb lookup and Japanese lookup on a photographed book
+  page. Both appear at the top of the README with alternative text and dictionary credits.
+
+## Release documentation (2026-11-09)
+
+- Updated the README for the multilingual main branch, with all 62 lookup languages and 17 interface languages,
+  photo lookup, the recognition model choices and dictionary setup.
+- Aligned the Persian, Tamil and Telugu recognition descriptions in the usage guide with the current model catalog.
+- Compared the multilingual main at `42f9760e` with `v0.2.3`. The [change inventory](release-notes/since-v0.2.3.md)
+  and the [condensed notes](../.github/release-notes/v1.0.0.md) were drafted for review.
+
+## Release-type local phone update from the new main (2026-11-06)
+
+- Built the minified ARM64 release variant from `main`/`languages/main` `d5ddb876`, with the established Dev package,
+  label, icon and debug signing. Version `0.2.3-d5ddb876-min`, package `com.vpr.screenlate.debug`, version code 203;
+  the manifest has no debuggable flag and the APK contains only `arm64-v8a` native libraries.
+- APK size: 23,072,079 bytes. SHA-256: `75bef73a5911384c68761d988b45456b6a5f2ff22fe17f042a04adb05e948142`.
+  Its signing certificate exactly matches `screenlate-dev-2e7463c5-min.apk`, so it updates the owner's installed Dev
+  package without uninstalling or clearing data. Nothing was installed on the phone.
+- APK, R8 mapping, init script and build log are in ignored `testdata/local-research/builds/` under the
+  `screenlate-dev-d5ddb876-min` and `dev-release-d5ddb876` names. This is not a published beta or stable release.
+
+## Default branch, model downloads and catalog compatibility (2026-11-06)
+
+- The former Japanese-only `main` is now `japanese/main`; the multi-language line from `languages/main` is the new
+  default `main`. CI push triggers include both `main` and `japanese/main` in the respective workflows.
+- The legacy catalog generator now excludes OCR-model entries, which have no `kind` or `installedTitle` in format 2.
+  The regenerated format 1 catalog has 41 Japanese dictionary entries. Its current parser checks pass 43/43, and the
+  old Japanese parser accepts the new file with its three catalog tests passing.
+- The regular `ocr-models-1` release description lists all 12 uploaded archives, including the five new recognizers.
+  An opt-in instrumentation acceptance used the app's real catalog, import queue and model store to download and
+  install Devanagari, Thai, Arabic, Tamil, Telugu and their shared detector. It passed on the API 30 emulator,
+  including SHA-256 installation checks, versions and file integrity. The temporary test and debug entry-point
+  methods were removed; the source and successful log remain in ignored `testdata/local-research/release-audit-2026-11-06/`.
+
+## Release preparation: models, dictionaries and bubble gestures (2026-11-06)
+
+- The real catalog audit covers all 62 language profiles with at least one main term dictionary from its publisher,
+  without our hosting (`hr`/`sr` correctly share `sh`). No language needs a self-hosted dictionary for basic lookup.
+- Five Paddle recognizers (Devanagari, Thai, Arabic, Tamil and Telugu) are now generated by
+  `scripts/ocr-models/paddle_models.py` and listed in the catalog. Their archives are uploaded to the existing regular
+  release `ocr-models-1` (12 assets total), with sizes and SHA-256 verified through GitHub and a repeated download.
+  The six model-generator tests, app JVM tests and app lint pass. Exact sizes and hashes are in
+  `notes/hosting-files.md`.
+- Two defects from the camera review are fixed in `OverlayController`: double tap now retargets the active lookup
+  immediately after changing aim mode, and a resize during a touch no longer docks the bubble under the finger.
+  Verified on the isolated API 30 emulator: the center-dot mode and persisted setting changed on double tap; during
+  1080→900 px resize the floating bubble stayed under the finger. Screen size was restored afterwards.
+- `assembleDebug` and overlay JVM tests pass after the gesture fixes. The camera review's third old item about Search
+  is not a defect under the approved active-profile behavior.
+
+## Log sharing caption removed (2026-11-06)
+
+The owner reported that Telegram shows the log filename both on the attachment and as an extra message caption.
+`LogExport.shareIntent` no longer sets `Intent.EXTRA_SUBJECT`; the `EXTRA_STREAM` attachment and its filename are
+unchanged. The same fix is applied on `main` and `languages/main`. App JVM tests and app lint pass on both branches.
+A messenger share check on the phone remains pending.
+
+## Local phone update build (2026-11-06)
+
+- Owner authorized fast-forwarding `languages/main` through `2e7463c5`; it is pushed to origin. This includes the
+  Home rebind fix and all earlier backlog changes, without merging into `main`.
+- Built the local minified ARM64 update from that commit: `0.2.3-2e7463c5-min`, package
+  `com.vpr.screenlate.debug`, version code 203 (same as the previous Dev build), non-debuggable, 23,073,283 bytes.
+  SHA-256: `7bcfe2a130088bcd8ed45c1777700f2a5124e79af64de33249d91075d0e7d43e`.
+- APK and R8 mapping are in ignored `testdata/local-research/builds/screenlate-dev-2e7463c5-min.*`.
+  Its signing certificate exactly matches `screenlate-dev-7430d083-min.apk`, so it can update that package without
+  uninstalling or clearing data. Nothing was installed on the phone.
+
+## Device acceptance and regression (2026-11-05)
+
+Continuation of `codex/backlog-2026-11-04` in `.worktrees/camera`; no merge or owner-phone release is authorized.
+
+- Home no longer reports a requested running service as stopped while Android is rebinding it. `HomeStatusDeviceTest`
+  passed 12 phone rebind cycles without a false stopped card. Fix committed separately as `0d2362b4`; the phone
+  remains on `0.2.3-7430d083-min`, and its original accessibility settings were restored.
+- LNG49 passed on the phone: a Russian first launch names the languages in Russian from initial composition.
+  ANK37/ANK38 manual acceptance confirmed that the note-id browser deep link opens the right note but retains
+  AnkiDroid's previously selected deck filter. The owner chose to preserve that behavior; no production change.
+- DIC51/DIC52 and LNG48 passed on the emulator: Tamil/Telugu forms remain mandatory until the full English
+  dictionary is selected, full native archives import and look up inflected forms, and Home/leftover-card navigation
+  follows the same requirement. These cases moved from N to F.
+- DIC54's archive download, CRC/import and all five agreed frequency ranks pass (34,933 rows). Its download/popup UI
+  remains unverified. OCR59 has geometry, host replay and phone MNN evidence (18 content rows, six paragraphs), but
+  its manual popup check remains open. Both are blocked by the fresh API 37 image's WebView freeze described below.
+- CAM59 has a successful phone loading scenario and all three emulator loading scenarios: running OCR, already
+  committed text and network failure. The spinner starts/stops correctly, old text does not replace current state,
+  and failure clears loading. The full physical-device acceptance case remains partial, not complete.
+- LNG47's remaining reachable first-run and setup-title screens passed for HI/MR/TA/TE/KN, with screenshots reviewed.
+  Welsh has only `gb-wls`, so the old Great Britain flag-dialog subcheck is not applicable; `FlagsTest` covers the
+  hypothetical coded flag. E-ink and TalkBack portions remain unverified.
+- Final root `assembleDebug testDebugUnitTest lintDebug` passed (602 tasks): 2,078 JVM tests, no failures/errors,
+  four skipped. Page scripts passed 157/157. Logs: `final-gradle.log`, `final-page-tests.log` and the named device
+  logs under ignored `testdata/local-research/backlog-2026-11-04/`.
+- Remaining from this backlog are the WebView-dependent DIC54 UI and OCR59 popup checks, full CAM59 device
+  acceptance, and LNG47's e-ink/TalkBack portions. The fresh API 37 WebView 149.0.5875.69 freezes screenshots/first
+  rendering even in system Chrome; this is recorded in `notes/build-environment.md`, not treated as an app regression.
+
+## Sequential backlog work (2026-11-04)
+
+Owner request 84 authorizes the remaining listed tasks in sequence. Branch `codex/backlog-2026-11-04` in
+`.worktrees/camera`, based on `languages/main` `a184cadf`. Existing decisions still bind.
+
+- Group 4e question 26 implemented: 15 whole-word Kyrgyz case forms and 19 Kazakh forms missing from the Russian
+  dictionary. The English Kazakh dictionary already covers them; ол's other forms, present in both pairs, get no
+  extra rule. Public wty pairs were audited at revision 2026.10.22. Kyrgyz English already has анын; the other
+  basic forms are missing. Case names reuse the existing localized strings.
+- A separate condition admits only the explicit pronoun forms; regular endings still cannot reach the six
+  irregular pronouns. All 170 language tests pass; 222,952 candidate calls on the other 58 bundles are unchanged
+  (ordinary text and OCR passed as the fourth argument). Engine JVM tests and lint pass.
+- Native test cases are added and the test APK builds. ADB sees no phone. API 37's emulator exits during startup
+  with WHPX; a software-graphics retry also exits, and the API 30 fallback exits with 0xc0000005. The Android rerun
+  is pending; continue independent backlog work instead of waiting. No device app or owner data changed.
+- Group 5e question 27 built: `wordshk-frequency` follows `corpus-yue` in the catalog, recommended and marked
+  non-commercial, with titles and descriptions in all 17 interface locales. Static upstream archive: 458,065 bytes,
+  34,933 unique words; all five agreed examples have ranks (我哋 279, 佢哋 391, 你哋 1110, 喺度 870, 為咗 1172).
+  CRC, metadata and SHA-256 checked. Eleven catalog JS tests, all 376 dictionary API JVM tests and 33 app checks
+  (setup, catalog items/order and translations) pass. Device download/import remains a manual check.
+- Group 4e question 23 measured and implemented. Alternating initial consonants follow the stem, with each
+  language's plural classes and Russian twins. Causatives and Kyrgyz temporal ablatives stay unrestricted after
+  the prototype lost useful forms; Kazakh ownership paths stay. On the top 30,000 forms, readings change for
+  218 kk forms (8,047 tokens) and 117 ky (7,832); the plan records the coverage loss, review and modeling limits.
+  All 171 language tests pass; 87,076 calls in other changed bundles are identical. Native cases added, rerun pending.
+- Group 4e question 28 accepted and built (request 85): Kazakh dictionary form rows win ties at the same shortest
+  chain length; Kyrgyz and broad verb priority stay unchanged. LanguageSupport owns the policy; native best-match,
+  chain and pre-limit result order and the final Kotlin sorter apply it consistently. New all-language JVM checks
+  and a native maxResults=1/alternative-chain fixture pass. All 53 LanguageLookupTest cases pass on the phone.
+- Group 5e question 28 measured and built: all five agreed Marathi irregular stems pass the coverage review.
+  Thirty-six forms / 9,502 news tokens gain a verb reading; 23 already listed forms stay protected. Exact whole
+  words under past/perfect-participle endings only, existing labels and particles reused. All 172 language tests,
+  engine JVM tests, lint and test-APK build pass; other changed bundles match in 39,960 calls. Native rerun pending.
+- Folded-marks question 3 measured and enabled in Hungarian, Tamil and Telugu. Three actual Russian + English
+  forms-only dictionary pairs: affected tokens 1,793 / 4,150 / 606; the conservative known-wrong lower bounds
+  (1,136 / 2,204 / 356) exceed even the useful-loss upper bounds (657 / 1,946 / 250). The plan records useful
+  losses, source corpora and modeling limits. Common and engine JVM suites, lints and test-APK build pass.
+  Added native import/filter/old-import checks; Android rerun pending.
+- Public test dictionaries, audit reports and run logs are under the worktree's ignored
+  `testdata/local-research/backlog-2026-11-04/`.
+- Approved photo-loading bubble state implemented: only a shown photo without committed text and its own running
+  recognition wait with the existing spinner. Progress keeps the generation, text attaches, failure clears loading;
+  no screen reads or new recognition. Photo/overlay/camera tests, full debug assembly and lint pass. CAM59 visual
+  acceptance remains pending on a device.
+- Uzbek Lingua Libre apostrophe mismatch fixed: the per-language two-character group matches normative ʻ and title ‘
+  in one query and in speaker extraction. Public Commons listing: 298 files, formerly 286 matched their dictionary
+  spelling, now all 298; 12 gained, none lost. Two live searches confirm both spellings. The failing AudioFinder
+  reproduction is green; all 175 Anki tests and common tests (575 total, three existing skips) pass, as do both lints.
+- One final API 37 software/acceleration-off retry exits with 0x40000015 before ADB attaches. Device acceptance is
+  still pending.
+- PaddleOCR line splitting/overlap fix implemented after failing geometry and paragraph tests: horizontal fragments
+  join before cropping, contained islands are not read twice, nearby rows form paragraphs. Detached tall compact
+  shapes stay separate from labels; long vertical crops keep their existing boundaries after their merge prototype
+  showed mixed quality. The Russian page has 18 content rows and six paragraphs rather than 38 fragments.
+- Geometry replay: 86 saved pages / 2,277 regions → 2,010 crops. Paired host recognition: 44 cases / 38 unique
+  screenshots, 18 improved and 26 unchanged, none worse; normalized-character errors 1,337 → 495 over 16,056
+  truth characters (case totals include the two saved Russian/Ukrainian output sets). The two Russian fixtures
+  now pass the full Android/MNN replay below; broader manual popup checks remain.
+- Remaining device-dependent investigations: first-start language names, Home service-state card after rebind,
+  and AnkiDroid browser retaining a deck filter. No speculative fix applied without a failing Android loop. The
+  public AnkiDroid source confirms that the current browser link uses the right search parameter but retains deck
+  selection; this is not proof against the installed version. Group 4e sorting question 28 was accepted and implemented below.
+
+## Small backlog task completed: Kazakh and Kyrgyz without ending (2026-11-03)
+
+The owner requested the next easy task with verification (language-plan request 83). Group 4e question 25 is built
+on `codex/turkic-without-2026-11-03` in `.worktrees/camera`, based on `languages/main` `7234e2c7`. Questions 23, 24
+and 26 remain implementation work; questions 25 and 27 in older pending lists below are complete.
+
+- The separate `without` rule covers Kazakh -сыз/-сіз and Kyrgyz -сыз/-сиз/-суз/-сүз, including OCR twins. It can
+  follow plural or possessive endings and take outer noun endings; the existing minimum stem checks remain.
+- The single-ending result shows the correct name first, with the polite second-person chain still available.
+  Labels are translated in all 17 locales; each language has its own generated ending description.
+- Checks passed: 169 language tests (none skipped), 27 engine JVM tests, four app translation checks, module lint;
+  all 60 bundles rebuild byte-for-byte. The other changed bundles give identical output on 49,036 candidate calls.
+- Three isolated phone tests pass: native Kazakh and Kyrgyz lookup, old cases included, primary and alternative
+  chains, surrounding endings, and Android resources in all 17 locales. LK96 and the rule inventory record coverage.
+- Temporary test package uninstalled. No installed-app data or settings changed; the phone still has
+  `0.2.3-7430d083-min`. Logs and comparison tools are in the worktree's ignored
+  `testdata/local-research/turkic-without-2026-11-03/`. This is code for the next app build, not a new release.
+
+## Small backlog task completed: PanLex Title Case filter (2026-11-03)
+
+The owner asked to finish an easy remaining task, one at a time. Group 4e question 27 is implemented on
+`codex/panlex-title-case-2026-11-03` in `.worktrees/camera`, starting from `languages/main` `b01469fc`.
+Questions 23-26 remain implementation work; question 27 is no longer pending in older lists below.
+
+- `join` drops phrases of at least two words starting with capitals only when every retained translation is
+  lowercase, across every meaning and before the ten-translation display limit. Names with a capitalized
+  translation stay. The agreed rule is casing-based and also drops Аллаһ Тағала → бог and Солтүстік Шотландия →
+  гэльский; no semantic exception was added.
+- Fifteen converter tests pass, including end-to-end ZIP output, stress marks, mixed meanings and a capitalized
+  translation beyond the display limit. New filter cases were red before the implementation.
+- All four archives rebuilt from pinned snapshot `0422f0e60f39`, with source sizes and SHA-256/Git hashes checked.
+  kk-ru: 18,519 → 18,509 headwords; ky-ru: 7,123 → 7,094. kk-en stays 17,645 and ky-en 7,431. Every retained
+  translation and its order matches the previous converter; ZIP CRC, language pairs, bank counts and byte
+  reproducibility pass. All 39 removed entries were reviewed.
+- Archives: ignored `testdata/local-research/panlex-title-case-2026-11-03/converted/`, with the source metadata and
+  comparison report beside them. Hosting is still postponed, no upload is approved, and the private archive was
+  not refreshed. `notes/hosting-files.md` records the exact sizes. No Android app code or phone data changed.
+
+## Phone lookup fixes and search input (2026-11-03)
+
+Source: `codex/popup-diagnostics-2026-11-02` in `.worktrees/camera`, based on `languages/main` `d8fdfc5a`.
+Application fixes are committed through `7430d083`; requests 80-81 of the language plan record the scope.
+The development audit of 2026-11-02 below is preserved; its popup-delay investigation is handled by this work.
+
+- IPA (`5a4cb3d6`): a dedicated local system phonetic face keeps IPA letters and combining marks readable when the
+  default UI font lacks them. Klee One remains selected only for Japanese. The final phone check uses the bundled
+  CSS with the custom CSS field restored to its originally empty value.
+- Vertical continuation (`8b886cad`): the live cloud result gave a 73 px kanji column and a 51 px kana column at the
+  same approximately 54 px character advance. ReadingOrder now compares text size using advance as well as ink
+  width. The phone scan highlights all of `壊したくない` and shows its negative ending; the lower balloon stays apart.
+- Popup rendering (`9bb7e33e`): dictionary-chip style reads are batched before mutations, offscreen entries skip
+  layout, and new lookups reset scrolling before replacing their old content. A 32-entry page repeatedly hit the
+  600 ms visual fallback before; optimized visual callbacks were observed at about 0.38-0.57 s, small entries at
+  54-180 ms. The original recording's highlight-to-popup delay is about 1.4 s. These are different stages, not an
+  assertion that cloud recognition or every large lookup is instant. Back restored 1800 px exactly; focus and a
+  selection reached the last of 32 entries.
+- Search input (`7430d083`): real keyboard input of `いつまでも` found main-thread JSON preparation up to 54.239 ms
+  and sorting up to 22.366 ms. Search preparation and page JSON now run on workers. The repeated phone profile
+  observed the page build on a worker and none on main, with the complete query and its matching article visible.
+  The existing 150 ms results debounce is unchanged.
+- Checks passed: 157 page tests; full-project JVM run, 2054 tests with no failures or errors (4 skipped), including
+  203 OCR and 272 overlay tests; the isolated native negative-ending lookup test on the phone; app lint and the
+  final minified arm64 build. The installed non-debuggable build was checked again for IPA, the negative form and
+  real keyboard input of the complete `いつまでも` query.
+- Cleanup: temporary source probes are removed; temporary phone OCR fixtures, recordings, method traces and the
+  DevTools forwarding port are removed. The test package is uninstalled, the emulator is shut down and its own
+  lock is removed. `stay_on_while_plugged_in` is restored to its original 0. Raw captures, logs and profiling tools
+  remain only in ignored local test data.
+- Installed: `0.2.3-7430d083-min`, package `com.vpr.screenlate.debug`, matching the original signing certificate,
+  without `DEBUGGABLE`. APK (23,057,283 bytes) and R8 mapping are in ignored
+  `testdata/local-research/popup-bugs-2026-11-02/screenlate-dev-7430d083-min.*`. Code is pushed to
+  `origin/languages/main` and `origin/codex/popup-diagnostics-2026-11-02`; changed AI records are copied to `main`.
+
+## Development status audit (2026-11-02)
+
+The owner requested an overview of completed work and everything still open. This was a read-only development
+audit: no application changes, builds, device operations or new review runs. Remote refs were refreshed. Sources:
+`origin/languages/main` at `d8fdfc5a`, `origin/main` at `a1055501`, their plans and test log, and the additional
+phone-log note `9658bda2` on `origin/cloud/group-6-research-2026-10-29` (not merged into the integration branch).
+This audit records evidence and existing decisions; it does not change the implementation order or approve work.
+
+- Latest release tag: v0.2.3. The integration branch implements 62 source languages, through group 5e, camera/photo
+  lookup, the settings rework, shared flag badges and the 17 interface locales. Group 5e is merged; its final
+  follow-ups are separate from the group's initial implementation. The recorded Cantonese merge checks include
+  2,048 unit tests, lint, page/glue/catalog/Python checks, 60 reproducible bundles and 81 engine instrumented tests.
+  Later follow-ups have their own narrower checks; these counts are not a new final regression run.
+- Already approved, still to build: group 4e questions 23-27 (Kazakh/Kyrgyz suffix consonants and result ordering,
+  the "without" rule, pronoun cases and PanLex Title Case filtering); group 5e questions 27-28 (words.hk frequency
+  and measured Marathi irregular past stems); folded-marks question 3 (measure headword filtering for Hungarian,
+  Tamil and Telugu before enabling it where justified). They were deferred until the weekly limit reset.
+- Additional approved camera work is recorded only on `9658bda2`: a bubble held out over a photo being recognized
+  shows the loading state until text attaches or recognition fails. Not built; CAM4's loading variant is unchecked.
+- Open defects/investigations: delayed popup rendering (measure the whole path on the phone), PaddleOCR paragraph
+  lines and overlapping Russian boxes, the duplicate button opening an empty AnkiDroid browser, English language
+  names on the first start under a Russian interface, and the false Home service-stopped card after a quick rebind.
+  The Anki browser defect is distinct from the single failed duplicate query the owner chose to leave in the
+  phone-log session. An Uzbek Lingua Libre apostrophe mismatch is also recorded in the earlier summary.
+- Release dependencies: decide stable hosting for converted dictionaries; catch up the private archive and show
+  the duplicate list before deletion; publish the five waiting Paddle models only on the owner's chosen date
+  (Thai, Devanagari, Arabic, Tamil, Telugu). `notes/hosting-files.md` is the inventory. Some dictionaries remain
+  unbuilt, including Mueller and the OpenRussian morphology dictionary.
+- Validation still needed: final regression on the chosen release build, outstanding new cases (including
+  LK92-LK94, DIC51-DIC52, LNG48 and the remaining LNG47 screens), phone-only camera/overlay behavior, popup and
+  scan performance, release/R8 and upgrade checks. The complete 62-language test-model composition is itself a
+  separate backlog task; writing its missing cases and executing them are separate jobs.
+- New language work waits for the owner's command: group 6's seven languages (Catalan, Galician, Icelandic,
+  Afrikaans, Tatar, Bashkir, Sanskrit) are researched, not implemented; group 5f (Yiddish, Egyptian Arabic,
+  Assyrian Neo-Aramaic, Urdu) remains listed in the language plan, without an implementation in `Language`.
+- Larger deferred work: the module review (the existing 18-module progress table is empty), the later repeated
+  full review, a separate translation review per locale (including Arabic/Persian/Hebrew catalog and font texts),
+  network audit/offline mode, local audio collections, sending text to other apps, and additional interface locales.
+  Beta packaging and update feeds are planned before the full language release; no release is authorized here.
+- Upstream follow-up: wiktextract issue 1734 and propagation through kaikki/wty. Its current online state could
+  not be verified in this audit. The existing fallback decision remains: rename the affected Turkic form tags
+  locally if corrected releases do not arrive in time.
+
+Corrections to stale open-item lists below:
+
+- DIC24 and DIC25 have successful device runs in `test-model.md` (2026-10-22; DIC24 also on main 2026-10-28).
+- The bubble glyph, docked hold menu, RTL interface release, converter rebuilds, flag badges, Marathi regular verb
+  endings, Tamil/Telugu word forms and Uzbek/Azerbaijani forms-headword filtering are implemented. Earlier "to
+  build" or "open question" wording is historical; use later progress entries and the decisions.
+- The phone's regular Dev-build log was already read on `9658bda2`; it reports no application crash or vendor kill
+  in that interval. This does not establish that the separate temporary diagnostics branch has been exported and
+  cleaned up. Its export/removal state still needs confirmation.
+- The old root checkout is now 538 commits behind `origin/languages/main`, not the 340 recorded below. Its local
+  `languages/ocr-engines` status and the local `languages/main` ref are stale. The main worktree was fast-forwarded
+  to the fetched `origin/main` before this documentation update; no feature branches were merged or deleted.
+
+## Start here: open items of all work (2026-10-29)
+
+A session that opens this file in another checkout may read an older copy: the current one is on `languages/main`
+(`git show origin/languages/main:ai/status.md`), and `main`'s `ai/` is a copy of it. The sections below this one hold
+the details.
+
+### Branches and checkouts
+
+- `origin/languages/main` is the integration line. Since 2026-10-28 it holds the camera feature, its review and the
+  follow-ups from the phone build (a fast-forward to `features/camera-followups`, which started from
+  `features/camera-lookup` `be79b43c`). Both feature branches are merged; deleting them is the owner's decision.
+  Since the night of 2026-10-28 it also holds the settings rework and the docked bubble's hold menu (a fast-forward to
+  `features/settings-rework` `9c26bae8`, worktree `.worktrees/camera`).
+- The main checkout `D:/Documents/ClaudeProjects/Screenlate` is on `languages/ocr-engines`, 340 commits behind
+  `languages/main`, with the local commit `db08588a` not pushed; its `ai/status.md` is old. The `.worktrees/lang`
+  checkout of `languages/main` is up to date (`9c26bae8`).
+- `languages/main` has, through the camera branch, the two small commits of `main` and `languages/ocr-engines`: the
+  `AGENTS.md` step that reads the local memory index (`9bf66117`) and the `/testdata/local-research/` ignore rule
+  (`db08588a`, on `main` as `6dd947ca`). The status entry of the second: a static comparison of
+  dictionary import, lookup and Japanese rules (2026-10-26), kept only in the main checkout's
+  `testdata/local-research/`.
+- `git worktree list` shows about fifteen old worktrees (detached ones in `.claude/worktrees/` and in Claude's temp
+  folders); cleaning them up is the owner's decision.
+- `main` CI passes again (every run since 2026-10-22).
+
+### Camera feature (on `languages/main`)
+
+- Phone checks the emulator cannot do: sharpness, focus, flash, capture delay, memory over repeated captures, the
+  photo picker and a share from the phone's gallery, a second import after a restart from the recent apps. The e-ink
+  history button has not been checked by hand.
+- Speed to recheck: on 2026-10-27 the emulator ran about three times slower than the day before (ML Kit's band 3-4 s
+  instead of 1.1 s, so the device draft never came before the cloud result; bubble drag frames 113 ms median instead
+  of 30-34 ms). The screen OCR path had not changed. Recheck NF1 and NF3 on the phone or after a host restart.
+- Not run on a device: a tap on a Latin word or a number inside an Arabic line read by cloud recognition (no
+  character boxes); only `TextLayoutTest` covers it, and the change applies to screen scans in right-to-left
+  languages too. CAM33 (zoom kept when the status strip changes height) has only its unit test.
+- The owner's phone runs the diagnostics build `0.2.3-2a65358f` (2026-10-19; the latest diagnostics build is
+  `9937cc41`). The owner got `screenlate-dev-a16ceda7-arm64-min.apk` (same package and debug key, so it installs over
+  it and keeps the data); whether it is installed is not known. Installing it ends the diagnostics recording, so the
+  diagnostics export comes first if those days are wanted. On the night of 2026-10-28 the owner also got
+  `screenlate-dev-fe1afd9a-min.apk` and then `screenlate-dev-9c26bae8-min.apk` (settings rework, the docked hold menu,
+  the catalog layout), and on 2026-10-29 evening `screenlate-dev-4a637b67-min.apk` (`languages/main` `4a637b67`, 22 MB,
+  mapping in the main checkout's `testdata/local-research/builds/`), which bring the bug badge back (the init script adds `src/debug/res` to the release source set).
+  They are release-type builds: not debuggable (no WebView DevTools, no `debug_image` or `debug_fullscreen` extras), Check
+  for updates active. Recipe and R8 mapping: `notes/build-environment.md`, the main checkout's
+  `testdata/local-research/builds/`.
+- Possible defects the review left, each judged rare or harmless (reasons under "Findings" in
+  `plans/2026-10-26-camera-review.md`):
+  - process death between a recognition's last tile and its commit: Retry is not offered; a new recognition
+    recovers;
+  - a camera error after binding (disabled by a policy, a fatal device error) leaves a black preview instead of
+    "Camera unavailable"; leaving and returning to the tab recreates the camera;
+  - a dismissed first permission request counts as blocked: the page offers the system settings instead of asking
+    again;
+  - a history photo whose opening ends while the app is paused opens, but the history page stays on top;
+  - a failed history read looks like an empty history;
+  - with automatic saving, Save to history is enabled for a moment after a capture;
+  - Camera settings: a close that arrives while the app is paused is dropped (the limit is stored, the page stays);
+  - the crop editor's 48 dp margin around a photo frame is approximate (more for a tall photo);
+  - photo recognition: a device fallback tile next to a cloud tile can keep both readings of a line (only when the
+    cloud fails for some tiles); a word of one repeated glyph across a seam can lose one or two repeats; an engine
+    line holding two rows would join every line of the other tile it shares a word with (no engine is known to do
+    it); NFD text with a box per code point loses its boxes (not seen); a joined line whose tile parts disagree takes
+    the language's direction (a Hebrew sign in a photo set to English whose part in one tile holds only a number);
+  - efficiency: each tile re-encodes the attempt so far, collectors of the current photo re-read it on each row
+    change, `PhotoEntity.imageBytes` is written and never read, renames have no directory fsync.
+- Seen in older code outside the feature, left for the full review:
+  - a double tap on the bubble switches the aim mode but keeps the old mode's aim point until the bubble moves
+    (`OverlayController.toggleAimMode`); the photo's moves keep it too;
+  - a screen size change during a touch docks the bubble under the finger (`onConfigurationChanged` calls `dock()`);
+  - the Search page and the selection menu's search open the Anki settings and the dictionaries of the active
+    language, not of the searched one (`SearchScreen`, `ProcessTextActivity`);
+  - a screen scan's popup stays after a tab change inside the app (a scan is a snapshot).
+
+### Emulators (2026-10-29: both shut down)
+
+- 2026-10-29 evening: API 37 (emulator-5554) ran the debug app of `combine-cloud` with the evening's work (interface
+  Russian through the per-app setting; Japanese, Hindi and Cantonese quick, Cantonese active; Tamil, Telugu, Kannada,
+  Marathi, Uzbek and Azerbaijani on; one Kannada camera photo in the history) and was shut down; the lock
+  `.worktrees/emulator.lock` is free.
+- 2026-10-29: the main session last ran API 37 with the debug app of `combine-cloud` `19801288` (the app's language
+  Russian through the per-app setting; Azerbaijani and Uzbek turned on, Uzbek active) and shut it down; the lock
+  `.worktrees/emulator.lock` is free. The notes below are
+  of 2026-10-28.
+- API 37 (`Pixel_10_Pro`): the debug app of the settings rework (`0.2.3-9c26bae8` built before its commit, x86_64
+  only; the app's language back to the system's), Slovenian active, Korean unstarred, the photo language Japanese, no current photo and
+  an empty photo history; `/sdcard/Pictures/market-4000.jpg` (4000 × 3000, English) for photo cases. The updates of
+  YouTube, YouTube Music, Maps, Gmail, Photos and the Google app were uninstalled to free about 1 GB (`/data` 1.6 GB free); the Play Store brings them back, and installs fail again when
+  space runs out. The local AnkiDroid deck "Default" holds test notes. `/sdcard/AnkiDroid-owner-backup` (1.1 GB,
+  the same as `testdata/anki-backup/`) stays until the owner decides.
+- API 30 (`Screenlate_API30_glide`): the debug app of `a16ceda7` at its first run.
+
+### Host
+
+- Nothing left outside the project: the owner deleted `D:/tmp_apk` and `D:/tmp_sl` (2026-10-28). Scratch paths go
+  inside the project from now on (`notes/build-environment.md`).
+
+### Outside the camera feature
+
+- Release from `main` ("Release from `main`" below): the fixes are ported on `claude/port-fixes-to-main-3e7385`
+  (2026-10-28 night). A separate review found one bug, which `languages/main` had too: the start-up clean-up deleted
+  the old `cache/dictionary-downloads/` outright, so a file or collection import queued by an older version failed
+  after the update. It also found two smaller issues:
+  - WorkManager's exponential backoff grew with every network stop, so after a few losses the next run waited long;
+  - the clean-up and the download loop's choice between a lost network and a break-off had no tests.
+  The port session fixed all three in one round, and the same fixes for `languages/main` are merged from
+  `claude/download-fixes-lang`: the old cache folder keeps the files a queued import reads, and a download whose
+  network went waits in its run with WorkManager's least linear backoff. The emulator checks of the downloads passed
+  on both branches, and the port is merged into `main` (`b61b7a24`, 2026-10-28 morning). Next: the checks listed
+  below and the release notes. The version number is asked at release time.
+- Seen on the emulator by group 5a (2026-10-28): while the NFC HAL crash-loops, the system rebinds Screenlate's
+  accessibility service about every 10 s, and Home keeps showing "The bubble is not shown: the system stopped the
+  service" while the service runs. Not checked yet: whether the card should ignore a rebind that follows within
+  seconds.
+- The ColorOS report ("User report (2026-10-20)", `notes/oem-background-limits.md`): settled on 2026-10-28, adding
+  Screenlate to the security app's allowlist stopped the switch-offs; Background work now says so on every phone
+  (settings rework).
+- The temporary diagnostics build: waiting for the owner's export after a few days of use; then the branch is removed.
+- Languages ("Work in progress (2026-10-22, night)" and "(2026-10-19)" below): open questions 69 (pre-connect) and
+  72-76 and those the block sessions added to their plans; not checked on a device: the Kazakh pronoun skip, the
+  Russian label of the -ыш rule, the other three PanLex archives; from the checks: the timing run's row "Default OCR
+  engines", the speed marks in words and the Both-mode hint; DIC24 (resume after Clear cache) and DIC25 not run; the
+  owner re-imports the Russian dictionaries (the stress-mark rule changes them at import).
+- Group 5a (`plans/2026-10-19-group-5a.md`), resumed 2026-10-28. Merged into `languages/main`:
+  - the four answers of 2026-10-22 (`languages/5a-answers`, 9a401674);
+  - Esperanto (`languages/eo`, cc6e26cf);
+  - Albanian (`languages/sq`, 33dab0fb);
+  - Swahili (`languages/sw`, rebased as 7e27b4fe), the group's last language.
+  The group is done (Basque and Maltese stay unbuilt, as the plan decided); group 5b follows. Question 30 is answered
+  (b) and built (merged 2026-10-29): in recognized text a " after a full stop closes the quote open, a " at a
+  word's start with none open is the language's opening quote, and a " that ends a word closes the quote open.
+  The plan's questions 28-34 were answered by the owner on 2026-10-28; none is open.
+- Group 5b (`plans/2026-10-19-group-5b.md`), built overnight 2026-10-28 one branch per language for the main session
+  to check and merge: Welsh (`languages/cy`), Irish (`languages/ga`) and Scottish Gaelic (`languages/gd`, `ad94d287`)
+  merged; the group is done. Technical choices changed while building are marked provisional in the plan's rows and
+  changelog. Cloud recognition's missing line-end space: screens now put the language's separator after every line
+  end without one, except Korean's unhyphenated ones (merged 2026-10-29).
+- Text rules answered on 2026-10-28 evening, built on `claude/text-rules-1028` and merged into `languages/main`
+  (`14c9b591`, 2026-10-29, together with the app fixes): the screen line-end separator (group 5b follow-up), straight quotes after a
+  full stop (5a question 30), the
+  Czech era parted from a word ML Kit glues to it ("n.l.a" → "n.l. a", languages plan question 80), Thai sara am in
+  two parts read as one only in recognized text (4c question 15). Checked on the emulator (ANK34, ANK36, ANK38, run
+  log 2026-10-29). The instrumented `LanguageLookupTest` (its Thai case changed) passed after the merge (2026-10-29).
+- Group 5c (`plans/2026-10-19-group-5c.md`), built overnight 2026-10-28 one branch per language for the main session
+  to check and merge, in the order Finnish (`languages/fi`), Hungarian (`languages/hu`), Estonian (`languages/et`),
+  Azerbaijani (`languages/az`, rebased by the main session as `17336e2e`), Uzbek (`languages/uz`, `81654777`): all
+  merged into `languages/main` by 2026-10-29 01:10. The Finnish branch carries the shared pieces: the "Word forms" item (the English dictionary's
+  forms without its definitions, listed while the whole English dictionary is not ticked), the colon endings, the
+  hyphen-ending scope per language and the translated cases and moods of form rows. Hungarian adds the verb prefix
+  rule, ő ű tried for ö ü ú in words from recognition, the hyphen endings after numbers and capitals, the word forms
+  item, a language's own names for form tags (Hungarian definite = the definite conjugation). Estonian adds the
+  whole-word rule pole, polnud, poleks, poldud, polevat → olema (after the word's own entry), õ tried for ö in words
+  from recognition, the Leipzig news frequency and PaddleOCR v6 marked. Azerbaijani adds the Turkic ending rules
+  with a copula slot and k/q restored from y/ğ (a stem of three letters at least), the Turkish case pairs, ə and ı
+  tried for e and i in words from recognition, rule results only without an entry, şəh. and küç. holding the
+  sentence, and 14 more form tags. Uzbek adds the same rules without harmony (k/q restored from g/gʻ), the
+  question particle after nouns (shared), the typed apostrophes written as ʻ and ʼ, headwords also found without
+  the ʻ of oʻ and gʻ, Cyrillic text looked up in Latin letters, rule results only without an entry, and the form
+  tags habitual and intentive. Finnish, Hungarian, Estonian, Azerbaijani and Uzbek checked on the emulator (run
+  logs 2026-10-28 and 2026-10-29). The owner answered questions 13-16: Finnish rule results show after the entries, a result a
+  form row also reaches keeps the row's chain only (13 (b), built on `languages/uz`); 14-16 as built. Open for the
+  owner: question 17 (ə and ı tried for e and i after recognition), question 18 (Azerbaijani rule results beside an
+  entry) and question 19 (the same for Uzbek), provisional and built. The next step, the languages plan's "Marks folded in the lookup" and
+  "Language flags in more places", was built on `languages/marks` and merged into `languages/main` (`a6fe33ca`,
+  2026-10-29; `plans/2026-10-29-folded-marks-and-flags.md`): every Latin- and Cyrillic-script
+  language but Vietnamese keys headwords and form rows also without marks (the Hungarian and Estonian misread variants
+  removed; Norwegian marks now also reach nb and nn dictionaries), text from recognition is also looked up folded, and
+  flags stand in the language chips, the OCR model list, the download screen's title, the turned-off languages' cards
+  and the first-run list. Checked on the emulator (run log 2026-10-29, `languages/marks`; the first-run list not).
+  Open for the owner: the plan's question 1 (extra results through the fold: a third or more of running text in
+  Italian, Portuguese, Spanish, Irish and French gets one or two below the words as written; Irish was looked up as
+  written by group 5b's question 11; the folded keys also grow a dictionary's index, by up to 79% of its rows in
+  Hungarian, 76% in Turkish, 72% in Czech) and question 2 (the word forms import without the dictionary's
+  headwords: Davom
+  finds davo "my" with uz–ru alone). Follow-up: 14 of Lingua Libre's Uzbek titles write ‘ for ʻ, so those
+  recordings are not found. With uz–ru and the word forms alone, Davom finds davo with "my": the forms dictionary
+  brings forms, not headwords, so the rule-only filter does not know davom (the import could keep the lemmas).
+  Seen while checking Hungarian, older than the group and left for later: after the service was turned off and on
+  within a second, Home said "the system stopped the service" while the bubble worked; right after the interface
+  language went from Russian back to System, the language chips of the Anki and Audio settings stayed Russian until
+  the screen was opened again.
+- Group 5d (`plans/2026-10-19-group-5d.md`), built on 2026-10-29 while the owner was away on `languages/5d`
+  (rebased on `languages/main` `9cf24772`) and merged into `languages/main` (`f14819a5`, a fast-forward; the main
+  session's check: every bundle rebuilt to the same sizes, the same suites pass): Bulgarian,
+  Macedonian and Mongolian with their support classes, bundles and ending lists (Bulgarian 9 rules for words without
+  an entry, Mongolian 25 in every vowel-harmony variant with the Turkic names, Macedonian on the Bulgarian bundle
+  without its endings), catalog entries (Wiktionary, wordfreq for bg and mk, Leipzig's Mongolian news built on the
+  phone, PaddleOCR's Cyrillic model recommended, Tesseract unticked), flags, bubble letters Б, М, М with the codes БГ,
+  МК, МН, fonts (Sofia Sans for Bulgarian only; Montserrat and Commissioner, which draw the Bulgarian letter forms in
+  Bulgarian text), the import cleanup of Wiktionary's export faults for every language, the Macedonian fixes after
+  recognition and the retry for recognized words (Л → Љ, then С → Ѕ), strings in the 17 locales. Checked on the
+  emulator (run log 2026-10-29, `languages/5d`); left out there and run afterwards (below): ANK45 (the Anki sentences), Bulgarian and Mongolian with
+  on-device recognition, Montserrat under Macedonian. After the rebase the Bulgarian and Mongolian descriptors were
+  marked pure for the bundle check (bg.js 86 to 58 KB), every bundle was rebuilt and the new strings got Arabic,
+  Persian and Hebrew; unit tests (1,945, four skipped), lint, page (146), glue and mutation (146, one skipped),
+  catalog and Python tests pass, the engine's instrumented tests 72 of 72. Open for the owner: the plan's questions 17
+  (Mongolian о and у find ө and ү through the folded marks, provisional), 18 (С → Ѕ in the Macedonian retry,
+  provisional) and 19 (hosting the Mongolian WordNet dictionary, parked); Macedonian is past the folding plan's
+  threshold (10.3% of typed words get an extra result: и → ѝ, се → сѐ), one more line under its question 1.
+  Two import rules apply to every language's Wiktionary import, not only these three: a row that repeats an earlier
+  one word for word is kept once (a set of 64-bit row hashes over all term banks of the archive: by estimate, not
+  measured, some 40 bytes of native memory a row during the import, tens of MB for a million rows), and a form-of item whose form is a lone ending of its lemma (at
+  most three letters, fewer than the lemma's, another first letter, only number and definiteness tags) is left out;
+  a gender after a lemma's name ("куќа f") is dropped too. Fixed after the merge (main session): the Audio settings'
+  test word follows the shown language also when the active one changes elsewhere, as from the bubble menu (SET21,
+  `testWordAfter`); the Slovak import row of `notes/language-rules.md`'s Engine table is whole again.
+  The three checks left out ran on `languages/main` `ff87b33c` (run log 2026-10-29, `ff87b33c`), all passed:
+  PaddleOCR v5 alone reads the Bulgarian and Mongolian samples (ѝ as и, кнѝгата as книгата, which still find ѝ and
+  книга; ө and ү right) and its words look up as with cloud recognition; Montserrat under
+  Macedonian draws the Russian letter forms; the Bulgarian and Macedonian Anki sentences keep г., пр. н. е., проф.,
+  ул. and нпр. and end after и т.н. / итн. before a capital (ANK45 now F; PaddleOCR's one-line paragraphs cut them
+  at the line ends).
+- Wikipedia as a corpus (owner's remark, 2026-10-28 night): some small Wikipedia editions were written largely by
+  non-speakers (Scots in 2020; Greenlandic, machine-translated, closed in 2025; neither is in the app). Checked with a
+  few web searches, not a full audit, as the owner asked. Wikipedia text gives the frequency dictionary of Latin (Esperanto's and
+  Swahili's moved to Leipzig's web and news texts) and the mutation exception lists of Welsh and Scottish Gaelic; groups 5c and 5d use Leipzig
+  news corpora (Estonian, Azerbaijani, Uzbek, Mongolian), and group 6's research names Bashkir's Wikipedia as its only
+  Leipzig corpus. Found: Uzbek Wikipedia had machine-translation trouble after 2022 (the app uses Uzbek news, so
+  nothing changes), and a 2026 study (arXiv 2608.21821, a username heuristic) counts 41.5% of the Swahili articles it
+  sampled as bot- or translation-made, the highest of its editions. At the owner's word the Swahili frequency
+  dictionary now comes from Leipzig's Swahili news (`swa_news_2020_30K`, missed before, as only the 100K names were
+  tried): the Wikipedia's top words carry the stubs about languages and places (`notes/languages.md`, Swahili).
+  Nothing was found for the others, Scottish Gaelic included; the Gaelic exception list's seven words are common
+  Gaelic words.
+- Decided and built on 2026-10-28 night and 2026-10-29 (main session):
+  - the bubble glyph is the first letter of the language's own name, and quick languages whose letters look alike
+    show their codes, Cyrillic ones in Cyrillic (`8f51b2db`; languages plan row "Bubble glyph"); BUB19 passed on the
+    emulator (run log 2026-10-29);
+  - Esperanto's frequency dictionary comes from Leipzig's web texts of 2012 (`cb3c1d7e`; DIC39 due again);
+  - language flags in more places are decided (languages plan row "Language flags in more places"), built and merged;
+  - the language chain stops after group 5d; groups 5e and 6 start only at the owner's word (5e: given on 2026-10-29,
+    its session started that afternoon; one language a branch, each merged before the next starts: Marathi
+    `languages/mr` `0a6364c7` is merged, with the language-coded flags in the bubble menu and the fonts and backup
+    files shared by Hindi and Marathi; the main session's recheck: 1,974 unit tests, lint, page, glue, catalog and
+    Python tests, every bundle rebuilt byte for byte; the session's own device run and engine tests 73 of 73 are in
+    the run log; Tamil `languages/ta` `7520bf41` is merged, with `DravidianSupport` for what Tamil, Telugu and
+    Kannada share and a soft hyphen inside a word read in every spaced language; the main session's recheck: 1,992
+    unit tests, lint, page (148), glue (155), catalog (11) and Python (86) tests, all 57 bundles rebuilt byte for
+    byte; the session's device run and engine tests 74 of 74 are in the run log; Telugu `languages/te` `b0bfb95f` is
+    merged, with the word-end import key (`HeadwordMarks.endingReplacements`, Telugu -ము as -ం); the main session's
+    recheck: 2,007 unit tests, lint, page (148), glue (159), catalog (11) and Python (86) tests, all 58 bundles
+    rebuilt byte for byte; the session's device run and engine tests 75 of 75 are in the run log; Kannada
+    `languages/kn` `ec6c47e0` is merged; the main session's recheck: 2,023 unit tests, lint, page (148), glue (163),
+    catalog (11) and Python (86) tests, all 59 bundles rebuilt byte for byte, and the device cases the branch's run
+    did not reach (Anki sentences, audio, fonts); the session's engine tests 76 of 76 are in the run log; Cantonese
+    `languages/yue` `4f787dde` is merged, with Jyutping search and readings, the Hong Kong and Taiwan variant
+    characters in lookup and frequency, tones 5 and 6 colored and the zh-HK voice when the phone has no yue-HK one;
+    the main session's recheck: 2,048 unit tests, lint, page (154), glue (166), catalog (11) and Python (89) tests,
+    all 60 bundles rebuilt byte for byte; the session's device run and engine tests 81 of 81 are in the run log; the
+    group is done). Group 5d (Bulgarian,
+    Mongolian, Macedonian) is merged into `languages/main` (bullet above);
+  - a cloud session did five backlog tasks (section "Cloud session 2026-10-29"): `cloud/backlog-2026-10-29` (interface
+    translation check, candidate interface languages, smaller language bundles, converter data) is merged into
+    `languages/main` (`3e82e306`; every bundle rebuilt from the merged sources, the 5c, marks and az/uz bundles shrank
+    by 25-28 KB too; 1,909 unit tests, lint, the engine's instrumented tests 68 of 68 with the text rules' Thai case).
+    Strings added after `772bbad7` did not go through the translation check. The right-to-left strings had their
+    mirrored screens checked on 2026-10-29 and are merged into `languages/main` (section below).
+  - a second cloud session rechecked group 6's research against `languages/main` (section "Cloud session 2026-10-29,
+    group 6"): branch `cloud/group-6-research-2026-10-29` (plan, notes, a draft patch and three measuring tools; no
+    app code); the owner answered its questions 27 and 29, left 28 to the main session and deferred 30 for later.
+  - the main session on 2026-10-29 afternoon (merged into `languages/main`): the owner's answers on folding, word
+    forms, Anki wording, the French tab and the right-to-left release recorded (`66a27013`); a wty region chip of
+    another country (🇧🇷🎯) shows its direction in the interface language, also inside a definition; Arabic elative,
+    non-past, subjunctive and Vietnamese Northern and Southern form tags named; lists built in the app joined with
+    the interface language's separator (`Lists.kt`); the French Search tab reads "Rechercher". The FreeDict converter
+    keeps Spanish subject labels in parentheses and the text of cut links (its residue rule had dropped 3,869 of the
+    10,093 Spanish definitions); FreeDict de, en, es, fr, it, pl, zh → ru and OpenRussian ru-en rebuilt, checked entry
+    by entry and on the emulator, the private archive's copies and manifest rows replaced. POP53, POP54, SET22 and
+    DIC50 passed (run log 2026-10-29, `combine-cloud`; POP53's en-en part not run). The group 6 recheck is merged
+    (`52af6f7d`); its question 28 is settled by the folded plan's question 1 (a).
+  - `notes/hosting-files.md` lists every file to host with source, license, size, status and plan rows; the plans
+    and docs it contradicted are fixed (`ocr-models-1` is a regular release never marked latest, wordfreq lists are
+    built on the phone, PanLex uses the pinned CC0 dump). Open there: whether the archive's copies of the catalog's
+    files are ever served from our hosting.
+  - Answered by the owner on 2026-10-29 after the measurement: the folded plan's question 2 (a), a headword list in
+    the word forms import for Uzbek and Azerbaijani (Uzbek: 1,445 wrong results removed, no right one), to build;
+    group 5c's questions 18 and 19 (a), as built. Found while
+    measuring: the rule filter (`RuleOnlyResults.throughAny`) takes a form row whose tag is named as a rule (uz
+    dative, genitive, accusative, locative; az plural, converb) for a rule's result and drops it beside an entry
+    (75 Uzbek tokens, 693 Azerbaijani: deyil → demək); a plain bug, fixed apart from the question (form-of steps
+    marked by the native lookup, `notes/language-rules.md` bug 48; engine instrumented tests 72 of 72, LK82's
+    kengligiga → kenglik on the emulator).
+  - Group 5e's questions answered on 2026-10-29: 18, 19 and 24 as built; 21 widened (a language whose flag another
+    language also shows carries its code badge wherever its flag is shown); 22 and 23 a "Word forms" item for Tamil
+    and Telugu; 20 the present, past and -ून Marathi endings that pass a check of right against wrong results; 25 as
+    built (row "Cantonese frequency" changed); 26 (sentences across a recognition paragraph break) kept as is. To
+    build: 20-23 and the folded plan's question 2; the owner asked for nothing new beyond them until the weekly limit
+    resets.
+  - Answered the same day, to build after the weekly limit resets: group 4e's questions 23 (ending consonants by the
+    grammar) and 24 (dictionary form rows and verb chains first at the same length), each with a count first; 25-27
+    as bugs (the "without" rule, the pronouns' case forms, PanLex Title Case phrases); group 5e's question 27
+    (words.hk's frequency list for Cantonese, ticked, once checked to hold 我哋 佢哋 你哋 喺度 為咗); the folded plan's question 3 (the headword list in Hungarian, Tamil and Telugu: measure first) and group 5e's question 28 (a short list of irregular Marathi past stems, each kept by a count). Group 6's
+    question 30: a report to wiktextract only (the agent drafts it, the owner files it); the renaming of the Turkic
+    Russian-Wiktionary tags goes to the Backlog, to build if the fix does not reach wty's releases.
+  - Built on 2026-10-29 evening (main session and four subagents, `combine-cloud`): the "Word forms" item for Tamil
+    and Telugu (ta-en, te-en; mandatory unless the whole dictionary is ticked) and Telugu place words found from their
+    dative (`1027f4a4`); Marathi present, past, perfect participle and -ून/-ऊन verb endings, each kept where its right
+    results outnumber the wrong ones, with नेते, नेता, चाहते, चाहता, सांगली and सलून left as written (`69e62589`; the
+    irregular आली, आल्या and their participles still find nothing, as no list of irregular stems is built); a headword
+    list in every word forms import, counted as entries by the Uzbek and Azerbaijani rule filter (`d8a69c1c`; Hungarian,
+    Tamil and Telugu could take it with one line each, a question for the owner; word forms imported earlier work as
+    before until updated); the code badge on every flag another language shows, wherever the flag is drawn (`3a8e0195`,
+    checked on the emulator by its agent except the first run, the not turned-on list and the flag dialog); Home's word
+    forms status counts the whole dictionary they are cut from, as turning a language on did (a plain bug, seen on the
+    emulator with ta-en installed). Engine instrumented `LanguageLookupTest` 51 of 51; cases LK92-94, DIC51-52 and
+    LNG47-48 added, BUB21 changed. The wiktextract report draft was widened after a check of 21 Turkic languages'
+    tables (group 6 plan, question 30) and filed from the owner's account as
+    https://github.com/tatuylonen/wiktextract/issues/1734.
+  - Found on the emulator, to look into after the weekly limit resets: the first screen after the app is installed or
+    updated names languages in English under a Russian interface (Home's "Cantonese"); reopening the app gives
+    "Кантонский". `Language.displayName` reads `Locale.getDefault()`, which seems not yet to carry the per-app locale
+    on that first start.
+  - Child sessions at the end of 2026-10-29 (owner: archive those with no planned work): archived group 5c research,
+    group 5e research, the app and download fixes and the OCR text rules (their branches are in `languages/main`);
+    group 5a and 5d research could not be archived while a Remote Control client holds them (the owner archives them
+    from the sidebar); group 5b research shares its worktree with the private dictionary copies and stays with it.
+    Kept for planned work: group 5e (Cantonese frequency, irregular Marathi pasts, the Tamil and Telugu headword
+    measurement), group 4e research (its questions 23-27), the port to main, the private dictionary copies (hosting),
+    the emulator checks and the diagnostics build (its export).
+  - Before the full release of the languages branch, remind the owner of the five waiting Paddle models (Thai,
+    Devanagari, Arabic, Tamil, Telugu; `notes/hosting-files.md`); until then they stay unreleased (owner, 2026-10-29).
+  - The translation review by separate agents waits for the owner's command (languages plan, Backlog).
+- Backlog: composing the test model for all 62 languages (owner's question, 2026-10-29, made precise the same day): a
+  pass over the plans, the language rules, the code and the existing cases that writes the missing cases, not one that
+  runs them. It looks for each language's own points (script, rules, sources, the engines chosen) and for rules made for
+  a set of languages, and gives each point a case of the fitting kind: an emulator case, a check on corpus data, an
+  integration or a unit test. About 12 rule families, one session each, with a closing pass that merges the cases into
+  `test-model.md`; estimated for the owner at 15-25% of a weekly limit. Running the cases (the corpus checks above all)
+  is a separate task. Starts on the owner's command, after the limit resets.
+- Backlog: revisit the Turkic form tags of Russian Wiktionary when
+  https://github.com/tatuylonen/wiktextract/issues/1734 closes (group 6, question 30; owner, 2026-11-10). Check that the
+  next kaikki.org ruwiktionary dump and wty's next release (tt-ru, ba-ru, ky-ru) carry genitive and ablative. If wty
+  still shows the old tags after its input is corrected, follow up with wty.
+- Backlog: the network audit with an offline mode (request 54), sending text to AI and translator apps (request 47,
+  far). The bubble menu on the docked bubble (request 75) is done (settings rework below). The full code review per module (`notes/module-map.md`)
+  and `plans/2026-10-15-full-code-review.md` start only on the owner's command.
+- Phone-only cases: "Not on the emulator" in `ai/test-model.md`.
+
+## Right-to-left interface languages (2026-10-29, merged into `languages/main`)
+
+`cloud/rtl-strings-2026-10-29` (Arabic, Persian and Hebrew strings) merged onto `languages/main` `3e82e306`; the 26
+strings added since the cloud branch started (the debug app's text action, two font notes, 16 form-of tags, 7 Turkic
+inflection labels) translated into the three. Checked on the emulator in the three locales (run log 2026-10-29,
+SET18-SET20) and fixed: the back arrow and chevrons mirror (`autoMirrored`, also the volume, lookup and dictionaries
+icons), expand arrows use their own icon, the bubble's side segments keep screen order, menu paths in the three
+scripts take ←, Persian Lookup is told from Search, and text not in the interface language keeps its direction
+(`ownDirection`; a catalog description falling back to English names the languages in English). Released,
+provisionally: `locales_config.xml` lists ar, fa and he (17 languages), `unlisted` is empty. Unit tests 1,915 (four
+skipped), lint and page tests (146) passed.
+
+- Provisional, for the owner (languages plan questions 94-100): ← in menu paths, the side segments, the mirrored icon
+  set, Persian Lookup's name, the release with the flags SA, IR, IL, English catalog texts.
+- Open: question 93 (Arabic form tags); lists joined with ", " in code (question 100); catalog and font texts in the
+  three (question 99); Wiktionary has no ar, fa or he gloss edition.
+
+## App fixes from the owner's answers of 2026-10-28 evening (2026-10-29, merged into `languages/main`)
+
+Built on `claude/app-fixes-1028` and merged into `languages/main` (`14c9b591`); the network timing also on `main`
+(`f4b33207`, from `claude/network-timing-main`). Plan: questions 72 (2), 77, 81-85 of the languages plan, question
+16 of the group 4c plan.
+- Downloads: a lost network gets 3 s to show (was 2 s) and the run waits 15 s for it (was 30 s).
+- The debug build's selection menu item is "Look up in Screenlate Dev" (`app/src/debug/res`, 14 locales).
+- The text detectors are one item, "PaddleOCR v6 text detector" (v5 the same), in every locale.
+- The import notification hides Cancel while a dictionary is registered (`DictionaryRepository.import`'s
+  `onRegister`); the task card's Cancel stays and still comes too late there.
+- Home's "Download again" card stays hidden while the dictionary's download waits or runs, also after the app is
+  left and opened again (it was not fixed before: the set was per ViewModel).
+- Every Tesseract model of every language says it misreads busy screens; `LanguageSupport.tesseractMisreadsBusyScreens`
+  and its Thai and Khmer overrides were removed after the merge with the OCR text rules.
+- The download screen's size after import: measured sizes (`catalog/installed-sizes.json`, 137 entries, written by
+  `scripts/catalog/installed_sizes.py`), else shares per kind; the free space check takes a quarter more or a share
+  above the largest measured. Chinese's defaults read 69 MB, as their import takes (43 MB with the old ×3). Refresh the
+  file after new catalog dictionaries are imported on an emulator.
+- DIC9 no longer expects a spinner.
+- Checked on the emulator (run log 2026-10-29): BUB20, DIC11, DIC47 (one archive), DIC48, LNG17, LNG37; the
+  instrumented `DictionaryRepositoryTest` 18 of 18. Not tried: a task with several archives (Cancel back for the next).
+- `AudioFinderTest > a source that does not answer in time is skipped` failed once under load (a wall-clock bound),
+  passed on the rerun.
+
+## Settings rework and the docked bubble's menu (2026-10-28 night, merged into `languages/main`)
+
+Plan `plans/2026-10-28-settings-rework.md` (decisions, the owner's later catalog messages, deferred questions).
+
+- Done: Text recognition page (engines, OCR boost, reduce load, on-device models, app text, OCR test; About lost its
+  Tools card); Bubble keeps its own settings and a row to the hidden apps page with their count; Anki and Audio are
+  two pages with their own resets; Background work ends with the allowlist note; the dictionary catalog is collapsed
+  by groups with English, the language itself and the interface language on top, the other translation languages in
+  "Other languages" and the frequency, pitch and kanji groups under "Supplementary dictionaries", headings without
+  arrows; holding the docked bubble opens the hold menu (flags and Open Screenlate, no copy items).
+- Fixed on the way: catalog and language setup headings showed lowercase language names in Russian (a capitalizing
+  helper shadowed by an import, `notes/build-environment.md`); the Audio hint's "Auto play".
+- Checked on Pixel_10_Pro (run log of 2026-10-28 night). Not reached there: the e-ink hint's link to App text (shows
+  only on e-ink models), the overlay's models link, Home's failed-audio link, an uninstalled hidden app in the count,
+  the hold menu's flags (one quick language) and other dock sides.
+- The questions deferred overnight (layout of Text recognition and Audio, the catalog's heading name, the order and
+  default state of its top groups) were answered on 2026-10-28 evening (plan, "Questions answered").
+
+## Camera follow-ups from the phone build (2026-10-27 to 2026-10-28, merged into `languages/main`)
+
+The owner's feedback on the phone build, worked in the coordinating session's worktree `.worktrees/camera` on
+`features/camera-followups` (from `features/camera-lookup` `be79b43c`). Decisions in the camera plan (rows "Photo
+reading", "Camera settings: recognition", "Bubble menu over a photo"; changelog 2026-10-27):
+
+- A photo is read whole once by default, scaled to 1500 px; High accuracy (Camera settings, a "Recognition" group
+  first, with an Engines row that opens Bubble → Screen recognition) reads by tiles plus the overview as before;
+  Recognize more accurately, first in ⋮, reads a large photo read whole by tiles once. Stored recognitions carry the
+  mode (`RecognitionCodec` version 4; older ones read as tiled). A photo read whole is pending while High accuracy is
+  on; a tiled one is not while it is off.
+- With Both, a photo tile is read by the cloud alone and by the device only when the cloud fails (it waited for the
+  device before).
+- The popup no longer shows the previous word for a moment: a popup opened again stays transparent until the new view
+  is drawn (`LookupPage.whenDrawn`), and an open one moves to the new word only then. Screen scans too.
+- The bubble's hold menu has no Open Screenlate while Screenlate is in front; a menu without items does not open.
+- New cases: BUB17, POP39, CAM56–CAM58; CAM7 and CAM55 reworded.
+
+Checked on API 37 on 2026-10-28 (run log in `ai/test-model.md`): POP39 frame by frame, BUB17, CAM7 and CAM56–CAM58
+pass. Not seen on the emulator: BUB17's vibration (the AVD records none) and CAM58 for a photo up to 1500 px (unit
+test only). The phone keeps its own checks (above, "Camera feature").
+
+## Camera code review (2026-10-26 to 2026-10-27, done)
+
+Plan: `ai/plans/2026-10-26-camera-review.md` (its "Current position" is the place to continue from). Checkout:
+`C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`, branch `features/camera-lookup`. Areas 1–3 are reviewed
+(runs 1–4) and pushed. Area 4 (photo recognition in `core:ocr`): runs 1–4 are recorded and fixed, committed in
+`a16ceda7` and pushed. The owner answered questions 1–8 on 2026-10-27; the work from the answers (the plan's "Work from the
+owner's answers") is done with unit tests and checked on the API 37 emulator: the overview pass, the 4 MP picture,
+`{document-title}`, the popup's follow (cheap: no redraw of its own), the 100 MB message and the camera language's
+return. Run 2 covered that work too. The final E regression on API 37, the instrumented tests on API 37 and API 30
+and a manual CI run passed (run log in `ai/test-model.md`, 2026-10-27). That day the emulator ran about three times
+slower (ML Kit's band 3–4 s, so the device draft never came before the cloud; drag frames 113 ms median): recheck NF1
+and NF3. The owner got a minified arm64 Dev build of `a16ceda7` (20.6 MB, debug-signed; R8 mapping in
+`testdata/local-research/builds/`). The emulator lock is released.
+
+## Camera photo lookup (2026-10-25)
+
+Every phase is complete: phase 3 (images from the phone) after phase 2 (internal photo history), phase 1.5 (emulator
+acceptance) and the restyle after the owner's chosen design; all on `features/camera-lookup`, rebased onto
+`languages/main` at `073c50a4`. Checkout: `C:/Users/vpr/.codex/worktrees/camera-lookup/Screenlate`. Latest commit:
+"Import images from the photo picker and the share sheet" (find the hash with `git log -1`).
+
+Images from the phone: the round button left of the shutter, ⋮ Import from gallery over a photo and over the live
+camera, and a button on the camera-access page open the system photo picker for one image; "Share → Screenlate" for
+an image opens the Camera tab with it (during the first run it waits until the Camera tab is opened). The image
+becomes the current photo and is recognized at once; automatic saving applies; an unsaved current photo gets the
+three-button question after the pick. JPEG, PNG, WebP and HEIF are kept as they came, other formats become a PNG.
+1652 JVM tests pass; `PhotoImportDeviceTest` 3/3 on API 37; the flows checked by hand on API 37 and API 30
+(CAM42–CAM46). Found and fixed: a share without a read grant did nothing (now "The image could not be opened."); any
+app could share a link to the app's own files (lint), now only another app's `content:` link is taken.
+Not checked by hand: no second import after a restart from the recent apps.
+
+History: manual Save to history in ⋮ or Save automatically after each capture; a grid page newest first with date and
+language flag, tap to open with the stored text, long press to select and delete; ✕ closes a photo, asking about one
+outside the history with manual saving; the latest thumbnail right of the shutter; Camera settings (from ⋮ and
+Settings, before Appearance) with the switch, photo and MB limits (0 = none, a question before lowering below the
+history), usage and Clear history. Owner's change at the end: a photo that leaves the history is deleted, the one open
+on the Camera tab included. 1636 JVM tests pass; checked on API 37 by hand and API 30 by `UnsavedPhotoDialogTest`
+(CAM34–CAM41). Two bugs found and fixed on the emulator (the question's Save on the history page did nothing; a
+deleted photo's thumbnail decode). Not checked by hand: the e-ink history button.
+
+Restyle (design A with the owner's changes): a status strip above the photo with the language chip, the warning,
+Recognize, the status line and progress; the chip's dropdown with flags, "Active", missing dictionary or model and
+Manage languages, also floating over the live camera; Save to gallery always in ⋮; the 4:3 live preview at its viewer
+size with a blurred live fill around it (black on e-ink); the ring shutter and the zoom pill; the permission view with
+an icon and title. Checked on API 37 by hand and on API 30 by instrumented tests; CAM27–CAM32 moved to F, CAM33 (zoom
+kept when the strip changes height) has only its unit test so far.
+
+Phase 1.5 ran the remaining CAM/NAV cases on API 37 and API 30 and found two bugs, both fixed: highlight margins
+bled over the toolbar above a zoomed photo (highlights are now clipped to the photo's visible part), and a pull-out
+right after tapping the Camera tab scanned the previous page (the page now becomes the source from its start, not
+when resumed). CAM3, CAM4, CAM6, CAM7 and NAV3 moved to F. Ordinary screen regressions pass: pull-out/OCR draft and
+cloud final, moving without rescans, Anki add/duplicate/picture/audio/translation, audio list, the translation
+button, logs without terms, the home languages card. Root checks: 1586 JVM tests, 0 failures, 5 skipped; no new lint
+findings. Evidence in the `ai/test-model.md` run log. Physical sharpness/focus/flash/delay/memory checks remain.
+
+The "Open Screenlate" second-screen fix is in `languages/main` (`073c50a4`); `main`'s `ai/` copy is not updated.
+Decided: the Search tab no longer opens the keyboard by itself (it covered the bottom bar).
+
+Phase 1.4 adds retained original-image leases, source-specific NoteImage adapters, fitted photo crop coordinates,
+original-pixel/EXIF crop decoding and explicit gallery export with pending-write rollback. Notes pin source text and
+language; a closed scan cannot open a late editor after preview decoding. Screen placement/ownership stays covered.
+Gallery copies original bytes without OCR data and remains independent of private-photo deletion. All new strings
+are translated in 14 locales; no new backup integration or broad storage permission.
+
+Required checks pass: root debug assembly/JVM tests/lint, 1585 tests with no failures, and 146 page tests. On both
+API 30 and API 37: original-photo/MediaStore tests 3/3, crop editor/screen regression tests 8/8. Actual API 37 popup→
+photo crop→local Anki succeeded with a generated Japanese sentence and a 1541×1257 original-pixel attachment while
+app active language was Slovenian. The temporary Japanese Anki settings were restored. Gallery success, byte identity
+and survival after private deletion were verified. No owner's collection, account, sync or AnkiWeb operation.
+
+Next: the physical-device checks on the phone (sharpness, focus, flash, capture delay, memory, and now the picker and
+a share from the phone's gallery); merging is the owner's decision. No merge of the camera branch into either main
+branch. Emulators, test APKs and the shared lock are cleaned up; API 37 has no current photo, automatic saving off and
+no limits; API 30 has the universal debug APK at its original unanswered first run.
+
+## Release from `main`: open items (2026-10-23, updated 2026-10-28; owner: come back to it later)
+
+No release is planned yet (`plans/2026-10-15-main-fixes-and-backups.md`, decision "Release"). Before one, from the
+check of `main` at `fee4c9fb` against v0.2.3:
+
+- Ported to `main` on `claude/port-fixes-to-main-3e7385` (from `main` 2df1e55c; merged into `main` as `b61b7a24` on 2026-10-28), one commit each:
+  the own input merger (`e16394c6`: a download queued after a stopped one fetched the stopped dictionary), partial
+  downloads in `no_backup` (`16225ee0`), the wait for a network instead of stopping, with the "Waiting for a network"
+  labels of `fa1b0863` (`fd5e8dd0`, adapted to `main`'s single chain and its retry count: a lost network counts no
+  retry, ends are recorded so a dropped result is not run again), the app opened with the launcher's intent
+  (`5f4a75d6`), the audio clip directory made again after a cache clear (`ca52b3da`), the popup hidden until its new
+  view is drawn (`bc6d36de`, without the camera's `move`), no Open Screenlate in the hold menu over the app
+  (`a597e88f`, without the photo part), the downloadable popup fonts named in NOTICE (from `c08f5f64`), and ignore
+  rules for JVM replay logs, Python bytecode and `testdata/apk/`. Checked: unit tests 622, page tests 107, lint; on
+  the emulator DIC23, DIC24, DIC29, DIC31, BUB16 (the hold menu path), BUB17 and POP39 (`test-model.md`, run of
+  2026-10-28).
+- Left on `languages/main`: every language-specific fix (they fix code `main` does not have), the camera's fixes
+  (its review found nothing outside the camera code that `main` has: the WebP side limit only matters for photos, the
+  first-run page requests and the language of the pages the app opens have no counterpart), the two import chains
+  and the shared waiting card (`4c1df97e`, `c38082a8`: a feature; `main`'s catalog card already keeps a download from
+  being queued twice), the localized catalog titles (`9aec26d9`: `main` has none), the reset button's removal and
+  the interrupted reset message (`17a01c5a`, `5c0e041c`), the Search tab without the keyboard (`290217bb`: `main` has
+  no tabs). The neutral "characters of the word" wording (`c08f5f64`) stays out: `main` is Japanese only.
+- Fix round after the review of the port (2026-10-28 night, `72ad5f68`, `0bf33bd9` and `d1f8ee9f` on the same
+  branch; the parts `languages/main` has the code for on `claude/download-fixes-lang`):
+  - The first import of a process deleted the whole cache folder older versions kept archives in, so a picked file or
+    collection copy queued there before an update was missing when its import ran. The folder now follows the
+    downloads folder's rules (kept while a queued import names the file; with the archives in use unknown, kept for
+    six hours) and goes once it is empty (`StorageCleanUpTest`).
+  - WorkManager counts every run, also those it stops for a lost network, and its exponential backoff grew with each:
+    after seven lost networks a download waited about half an hour for its next run, and a break-off after that an
+    hour for its retry. On `main` a download that broke off waits 30 s, 1 and 2 minutes in its run (shown as
+    retrying) and continues; `languages/main` already queues its retries anew (`requeue`). On both, a download whose
+    network went keeps waiting in its run and tries again every 30 s instead of a retry result, and downloads have
+    the least linear backoff (10 s a run), which only applies after a stop. The choice between a lost network and a
+    break-off is `failedRead`, with tests.
+  - Checks: `main` unit tests 629, page tests 107, lint; `languages/main` unit tests 1750, lint. On the emulator
+    (`test-model.md`, 2026-10-28 morning), all passed: DIC24 as an update from `main` 2df1e55c with a file import
+    queued behind a download (it installed, the emptied old folder went with the next process) and Clear cache with a
+    download waiting for a network; DIC29 on both branches; DIC31 on `main` with the retries waiting in the run.
+- Answered (owner, 2026-10-28 evening): `am instrument` force-stops its target, so the app module's instrumented
+  tests (`OpenAppTest`) run only against a build installed under its own package (as `com.vpr.screenlate.debugmain`
+  was), never against the `languages/main` app whose service is on. `OpenAppTest` on `main` was checked by hand.
+- Not checked yet: `OpenAppTest` on `main` (it was run on `languages/main`), the E cases on `main`'s final build
+  (each change was checked alone when built), the upgrade from
+  the v0.2.3 release (last run 2026-10-14, on the language branch), a release build with R8 (CI builds debug only),
+  the own log, the service-off notification and the overlay crash fix on a real phone (the owner's diagnostics build
+  predates them; the ColorOS user gets the CI debug build `fee4c9f`). The crash fix and the delayed notification were
+  checked on the emulator on `languages/main` with the commits cherry-picked, not on a `main` build.
+- To weigh: the "Screenlate service is off" notification also comes when the user turns the service off, as the app
+  cannot tell the two apart; the code review of the new code (`plans/2026-10-15-full-code-review.md`, which covers
+  `main`'s changes) has not started and says no releases; the ColorOS user's logs may call for an allowlist hint.
+- Release notes draft: drop the romaji item (`94f5ed9e` was reverted by `ce6e7c81`, owner's choice of 2026-10-15);
+  add the ported fixes above.
+  The version number is asked at release time.
+
+## User report (2026-10-20): the bubble disappears on a ColorOS phone
+
+A user of v0.2.3 sent a screen recording: the bubble and popup vanish 2–3 s after most scans and the accessibility
+switch goes off by itself; once it came back by itself. Analysis, ranked causes (a crash during recognition, or a
+force-stop by the phone's background manager), the questions and log steps for the user and the app-side options are in
+`ai/notes/oem-background-limits.md`. The user's first log (Android 16) covers only a fresh process: no crash on record
+and, if saved right after a disappearance, no force-stop either, so ColorOS turning the service off without a force-stop
+is now a candidate too. The 2026-10-22 logs settle the scan-time case: the system unbinds the service ~1.2 s after the
+finger leaves the floating bubble, the process lives on (no crash, no kill); one later stop was a force-stop. Which
+ColorOS component does it is not in the app's log; experiments for the user are in the note. An r/Oppo thread (seen by
+the owner) reports ColorOS 16 builds turning off every downloaded app's service and an update resetting app permissions;
+the user is asked to test with a second app's service on. Web reports (in the note) say ColorOS 16 restricts the
+accessibility services of apps installed outside a store and that its security app's allowlist may help; the user is
+asked about both. Outcome (relayed by the owner, 2026-10-28): the user added Screenlate to the allowlist, and the
+service is no longer turned off. Built on `claude/competent-rhodes-6bde05` (owner's choices, regular builds) and merged into `main`
+(687f7029) and `languages/main` on 2026-10-22: the app's own log file (request 71 of the languages plan: 8 MB,
+`noBackupFilesDir/logs`, exported before the logcat part, exit reasons at each start), a stop report in the log and a
+"Screenlate service is off" notification at every stop. Test model UPD4-UPD7, all passed on the emulators on 2026-10-22
+(run log); the check added naming of system packages hidden from the app.
+
+The overlay crash when the service comes back (languages plan, request 78; fixed on `claude/jolly-cray-bc8ce9` from
+`main`, for the coordinating session to merge into `main` and `languages/main`): the system takes the service's window
+token at unbind before the service hears of it, and the controller's first settings could arrive in between and add
+the overlay with the dead token (`BadTokenException`). `OverlayWindows.add` catches that exception only and logs it;
+the overlay adds its windows whole or not at all, the bubble menu and crop editor skip theirs. Reproduced and checked
+with jdb on the emulator (UPD8, `OverlayWindowsTest`); build, unit tests, lint and 107 page tests pass on the branch.
+It plays no part in the user's ColorOS logs (no crash there; `notes/oem-background-limits.md`).
+
+The "Screenlate service is off" notification (owner, 2026-10-22; same branch): posted with the check 3 s after a
+stop, and only when the service has not connected again since (`StopFollowUp`, a count of connections in
+`OverlayServiceStatus`), so `uiautomator dump`, which pauses the service for about 1.5 s, no longer flashes a banner.
+The stop report and the 3 s line stay; with notifications off, a log line. UPD6 changed, UPD9 new; both passed
+on the emulator on 2026-10-22 (run log), as did 615 unit tests, lint and 107 page tests.
+
+## Work in progress (2026-10-22, night): the build chain
+
+Day of 2026-10-22. wty's release 2026.10.22 fixed both reports (contractions back, Tatar added) and reverses every
+alt-of row (languages plan, requests 73 and 77, question 87: misspelling redirects shown as they are); the follow-up
+session of request 77 waits as a card for the owner. Disk D: ran full (0 bytes; the project itself holds a few tens of
+GB, the rest is outside it): with the owner's leave the build folders of 13 idle worktrees were deleted (17 GB free;
+`elegant-carson`'s build kept some files Windows refused to delete); groups 5a and 4e were paused and resumed. Group 5a's
+chain (sv, no, da, ro, la, lt on `languages/lt`, checked on the emulator) and group 4e's follow-ups with its wty recheck
+(`languages/kk-followups`) are merged into `languages/main`; build, unit tests, lint, 145 page tests and the glue tests
+pass on the merge. 4e's new device cases are LK61-LK63 (LK63, one-letter words, checked on `f7161a80` the same day). Every language bundle was
+rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue change; `notes/build-environment.md`).
+5a's wty recheck is merged as well (no behavior change). Slovak (`languages/sk`, with the Czech dictionaries as its
+fallback) is merged too: build, unit tests, lint, 146 page tests and 64 glue tests pass on the merge, its eight cases
+passed on the emulator, the owner answered its questions 24-26 as built; its run found an overlay crash when the
+service comes back (languages plan, request 78). 5a's device checks are done (no recommendation changes). Slovenian
+(`languages/sl`, below) is merged: build, unit tests, lint, 146 page tests and 67 glue tests pass on the merge, its
+six cases passed on the emulator; the owner answered 5a's questions 21-23 and 27 (all built in the later run). The
+chain pauses here (owner, to keep the week's usage limit): Esperanto, Albanian,
+Swahili, groups 5b-5e and group 6 run later. Group 4e's answers to its questions 16 and 18-22 (`languages/kk-answers`)
+are merged; their four cases passed on the emulator. The ColorOS branch is merged into main and languages/main (owner).
+
+The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
+block at a time, each checked and merged into `languages/main` by the coordinating session before the next starts, every
+block verified on the emulator and by tests. Group 4c (question 9's line under the Thai and Khmer Tesseract models, with
+the measurements first) resumed after an API error stopped it at 00:23; then the fixes for questions 67 and 71 (download
+stopped for a lost network, Home's audio-failure card), group 4e's follow-ups, 5a-5e and group 6. The emulator is shared
+through `.worktrees/emulator.lock` in the root checkout. Group 4c's part is merged (`languages/km-answers`, 814490c6;
+build, unit tests, lint and 145 page tests pass on the merge); its questions 15 (Thai ํา from Tesseract) and 16 (the
+same line in other languages) wait for the morning. The fixes for questions 67 and 71 are merged
+(`claude/download-audio-fixes-a83144`): a download whose network goes waits for it and resumes, a task that ended never
+runs again, Home's audio cards are per lookup language, and a plain bug found on the way is fixed (WorkManager's input
+merger gave a download queued after a stopped one that one's URL; `OwnInputMerger`); DIC29-DIC31 and AUD18 passed on the
+emulator, build, 1,317 unit tests, lint and 145 page tests pass on the merge; questions 77 and 78 come from it. Left by
+that session: `D:/tmp_sl` (84 MB of APK scratch outside the project, for the owner to delete), and its worktree needs
+`git submodule deinit --all -f` before removal. Group 4e's follow-ups (`languages/kk-followups`, uncommitted code for
+questions 14 and 15) have waited since 01:46 for the owner's answer to a built-in browser prompt (web.archive.org, the
+PanLex license recheck); the session cannot be stopped from here, so the blocks wait for the morning (one block at a
+time, request 72). Meanwhile the checks session runs the open emulator checks of request 74 (a) and the download fix's
+unchecked cases on `languages/checks-2`. The open checks are done and merged (`languages/checks-2`, run log 2026-10-22):
+ANK14's Chinese part, LK40, DIC9, DIC20-DIC22, DIC24, DIC25, DIC28 and others passed; fixed on the way: the Czech era's
+l over any word split of the OCR engines (the audit's fix did not hold on the device; LK54 for Arabic ک ی passed),
+transcription tags of large dictionaries in a mapped file (wty-zh-ipa ran out of memory and installed without tags;
+DIC32), the interrupted reset's message, five Turkic labels. Questions 79-86 come from it. Its worktree
+`.worktrees/checks2` needs its submodules deinitialized before removal. Morning: the owner ruled that a waiting session
+never holds the chain; group 5a's build started at once (request 72).
+
+Group 4e's follow-ups (Kazakh, Kyrgyz; `languages/kk-followups` from 11dd9eb8, for the coordinating session to merge):
+every engine measured on the emulator (cloud, PaddleOCR Cyrillic, Tesseract kaz/kir fast and best; numbers in the
+group 4e plan, "Measurements"); question 14 (a) built (later parts of a hyphenated word looked up with the hyphen
+first; a lookup from a hyphen keeps only suffix entries spanning the part) and question 15 (b) built (keyed words
+after the written ones, at lengths nothing matches exactly as written), both guards provisional. The rules checked on
+Leipzig's news found three ending gaps, fixed: Kazakh у takes a linking vowel (болуы, оқуым), -нша/-ндай and Kyrgyz
+-нча/-ндай after a possessive, the converb тауып. Questions 16 and 18 counted, not built; new open questions 19
+(initials), 20 (verbs tagged as nouns in wty) and 21 (Kyrgyz -ыш). PanLex's license page changed from CC0 to CC BY-NC-SA 4.0
+between 2025-05 and 2026-06; the 2024 dump the converter uses stays CC0. Build, unit tests, lint, 145 page tests, glue tests and LK51-LK53, LK61, LK62, DIC28
+on the emulator pass. Rechecked against wty 2026.10.22 (alt-of rows reversed): counts redone, nothing in the device
+cases changes; the filter for Arabic-script, romanized and Yañalif rows kept provisionally (open question 22), and
+one-letter words no longer show an Arabic letter's entry (tag `Cyrillic` added; core:common and dictionary:api unit
+tests pass; device case LK63 passes on the merge `f7161a80`).
+
+Group 4e's answers (`languages/kk-answers` from f2b9cd74, for the coordinating session to merge): the owner's answers
+to questions 16, 18, 19 and 21 built. Kazakh and Kyrgyz noun endings skip the six pronouns whose case forms change
+their stem (алды finds алуу); PanLex keeps capitalized headwords without time zones and interface strings (kk-ru
+18,519 headwords, ky-ru 7,123); a single capital letter with a period before a capitalized word holds the sentence in
+every spaced language (К. Бакиев, A. Smetona; settles group 5a's item on initials); the Kyrgyz verbal noun in -ыш
+(болушу finds болуу), named in all 14 locales; question 22's filter is final, 20 needs nothing. Every language bundle
+rebuilt (only the glue change, and the rule in ky.js). The wider checks asked by the owner (noun endings and the -ыш
+rule on Leipzig's 30,000 top forms, the PanLex recount) are in the group 4e plan, "Measurements"; no plain bug; new
+questions 23-27 (ending consonants, verb forms behind a noun at equal chain length, -сыз "without", the pronouns'
+case forms, PanLex Title Case strings). Build, 1,416 unit tests, lint, 145 page tests, 65 glue tests and the PanLex
+tests pass. On the emulator: Kyrgyz алды finds алуу without ал, бизге finds биз, болушу finds
+болуу and иш only иш; a Kyrgyz note for келди keeps "Президент К. Бакиев Ошко келди."; the rebuilt PanLex ky-ru
+imports and shows "Иран риалы". Not checked on a device: the Kazakh pronoun skip, the Russian label of the -ыш rule,
+the other three PanLex archives.
+
+Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
+owner's account; wty fixed both the same day in its release 2026.10.22 (request 73); the completeness check of every
+session (request 74, `lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug;
+request 75 (the bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the
+phone: both diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
+
+Group 5a (plan `2026-10-19-group-5a.md`, "Progress" and "Measurements"): built language by language in the plan's
+order, one branch each. Swedish on `languages/sv`: code, catalog, bundle, docs and tests; its rules checked on Leipzig
+text (st. moved to the abbreviations that end nothing, osv., m.m. and etc. end a sentence only before a capital); the
+engine measurements and its emulator cases wait for the emulator lock. Norwegian on `languages/no` (from
+`languages/sv`): the same parts plus the genitive -s matched by definition tags and the catalog read from wty's nb, no
+and nn folders (plan questions 14 and 15, decided provisionally); its emulator cases wait as well. Danish on
+`languages/da` (from `languages/no`): the same parts, »…« and “…” as its quote pairs; its emulator cases wait too.
+Romanian on `languages/ro` (from `languages/da`): the cedilla processor, keys without marks, a new word after a
+pronoun joined with a hyphen, the app's article and agreement endings applied only where the text has no entry
+(an engine filter), Cyrillic headwords left out; plan questions 16 and 17 decided provisionally; its emulator cases
+wait as well.
+Latin on `languages/la` (from `languages/ro`): lemma names without macrons, u read as v, the enclitics as rules
+with the same entry filter, praenomina held only when capitalized, the classical and ecclesiastical pronunciations
+as audio regions, Latin's own flag, and a letter check for catalog fonts across languages; plan questions 18-20
+decided provisionally; its emulator cases wait as well.
+Lithuanian on `languages/lt` (from `languages/la`): forms keyed without stress, every headword also without the
+marks of its letters (one `HeadwordMarks` with per-mark bases and a letters' level, in Kotlin and the native
+import), the OCR letter fix Ü ü é ị → Ū ū ė į, abbreviations and paired letters from the corpus, Tesseract fast as
+the more accurate model; no new plan questions; its emulator cases wait as well.
+Slovak on `languages/sk` (from `languages/main` with Lithuanian merged): every headword also keyed without
+the acute, caron, circumflex and diaeresis; Czech as a fallback language (the first one: Czech's results show,
+named "Czech" after the word, only when Slovak's dictionaries find nothing; Czech's main dictionaries offered
+unticked on Slovak's download screen and counted as Slovak's on the Dictionaries screen, in kept files and backups);
+abbreviations, paired letters and ordinals from the corpus; Tesseract fast as the more accurate model; plan
+questions 24-26 decided provisionally. Its emulator cases (LK64, LK65, OCR40, POP37, AUD25, ANK29, DIC34, LNG24)
+passed on 2026-10-22 after two fixes: form rows keyed without marks count as respelled (robit showed urobiť first),
+and deleting Czech's files while Slovak is on keeps the Czech definitions Slovak reads.
+
+Slovenian on `languages/sl` (from `languages/main` at `9736102b`): forms keyed without the tonemic marks of
+Wiktionary's Slovenian forms (the macron added; ł and ə read as l and e) and every headword also without the caron
+(the native letters' key now made after the replacements); abbreviations, paired letters t i, ordinals, »…« and „…“
+from the corpus; PaddleOCR v5 Latin as the more accurate model; plan question 27 (FreeDict slv-eng) deferred.
+
+The owner's answers of 2026-10-22 on `languages/5a-answers` (2026-10-28, from `languages/main` 913c5e29): a scan
+length of 24 for Swedish, Danish and Norwegian; quotes that OCR writes in ASCII written as the language's (>> << as
+» «, a " after ! or ? as the open quote's closer; OCR pages only); a Latin frequency dictionary built on the device
+from Leipzig's Latin Wikipedia, words counted without vowel lengths; the FreeDict converter reads older headers and
+slv-eng is converted (listed once hosted).
+
+Esperanto on `languages/eo` (2026-10-28, rebased onto `languages/main` 9a401674): every headword keyed without the hats
+(cu finds ĉu, si shows si, then ŝi), the x-system read in any text (cxu), the letters engines give for the hat
+letters fixed in OCR text (š → ŝ, ǔ → ŭ, the capitals too: plan question 29, decided provisionally), the
+abbreviations and quotes from the corpus (“ closes „…“ and opens “…”: `Sentence.extract` now keeps a stack of open
+quotes), Esperanto's own flag, Tesseract fast as the more accurate model, no PaddleOCR; ESPDIC converted, listed
+once hosted; a frequency dictionary built on the device from Leipzig's Esperanto web texts of 2012 (question 28; Wikipedia
+until 2026-10-29, when the owner chose the web corpus). Checked on the emulator; plan question 30 (straight quotes after a full stop in OCR text) is open.
+
+Albanian on `languages/sq` (2026-10-28, rebased onto `languages/main` at `d5bd5919`): Yomitan's 94 Albanian rules and our 18
+endings, which are fallback rules (looked up by rank only when nothing else finds an entry; the engine's candidate
+lookup takes the rank and a headword-only flag from the glue); the elisions s' ç' t' m'; abbreviations and quotes
+from the corpus; ě read as ë in OCR text; Leipzig's Albanian news counts as the frequency dictionary; PaddleOCR v5
+Latin as the more accurate model. Plan questions 31 (t' and m') and 32 (the frequency dictionary) decided
+provisionally. Checked on the emulator; the Lingua Libre recordings of AUD28 are left for a run when Wikimedia
+answers (HTTP 503 throughout).
+
+Swahili (`languages/sw`, 2026-10-28, merged into `languages/main` as `7e27b4fe`): 21 verb prefix rules of our own
+(subject, tense, object, relative and the negative, peeled from the outside in; the stem looked up with ku- and with
+a hyphen; a one-syllable verb keeps its ku-, so Angela is not read as a-nge-la), applied only to verbs and only to
+words without an entry of their own, in a bundle built from Czech's descriptor; the rule names as labels in all 14
+locales; abbreviations (Bw., Bi., tar., k.m., n.k.), no ordinal period and “…” from the corpus; the apostrophe of ng'
+kept inside the word; Leipzig's Swahili Wikipedia counts as the frequency dictionary; ML Kit alone recommended;
+Tanzania's flag; Wiktionary first among the audio sources. Plan questions 33 (the frequency dictionary) and 34 (the
+prefixes beyond the plan's row) decided provisionally. Checked on the emulator; AUD29's recordings are left for a run
+when Wikimedia answers (HTTP 503 again), and ANK36's quoted sentence waits on question 30.
+
+Welsh (`languages/cy`, 2026-10-28, on `languages/main` `b883ed27`): our own mutation rules (soft, nasal, aspirate, h
+before a vowel; one per word, two letters of the radical kept, any part of speech) with their names in all 14
+locales; 94 common words left as written (mae, ar, dŵr), chosen with `mutation-exceptions.mjs` on Leipzig's Welsh
+Wikipedia; the dictionaries' mutation rows shown under the rules' names, chains of two mutations and single-letter
+lemmas dropped; words without the circumflex find the marked headword when nothing matches as written (ty → tŷ,
+twr → twr); the lookup knows whether its text was recognized, and ý û read as ŷ ŵ only then (the piece group 5c's
+Hungarian reuses); the apostrophes of mae'r kept inside the word; abbreviations; Tesseract cym fast and accurate and
+PaddleOCR v5 and v6 marked more accurate; the Welsh flag; fonts with ŵ ŷ; Wiktionary first, titles without the
+circumflex. Checked on the emulator (LNG29, OCR45, LK75, POP43, AUD30, ANK37). Left as limits: the French edition's
+rows that name another word (nghath shows cathod first), dwr finds twr.
+
+Irish (`languages/ga`, 2026-10-28, on `languages/main` `e3776224`): our own mutation rules in place of Yomitan's
+noun eclipsis (lenition, eclipsis, t and h before a vowel, the lowercase prefix before a capital: nGaillimh, tSín,
+hÉireann; one per word, any part of speech), the build failing when Yomitan's Irish rules change; their names in all
+14 locales; 10 common words left as written (chun, thar, cheana), chosen on Leipzig's Irish news corpus; the
+dictionaries' mutation rows under the rules' names, the French edition's radical rows ignored; d', m', b' elided as
+French l'; Gaelic type's dotted consonants read with h (ḃean → bhean); both apostrophes; abbreviations; Tesseract gle
+and PaddleOCR v5 and v6 listed, none marked; Ireland's flag; Lingua Libre first. Checked on the emulator (LNG30,
+OCR46, LK76, POP44, AUD31, ANK38). Found there, open for the owner: cloud recognition can give a line's last word
+no space ("Cheannaigh sítorthaí" in a note), for any language; the plan's follow-up and `notes/ocr-engines.md`.
+
+Scottish Gaelic (`languages/gd`, 2026-10-28, merged into `languages/main` as `ad94d287`): our own mutation rules (lenition with
+t-s for s after the article, eclipsis as n- before a vowel, t and h before a vowel, each prefix taken off only with its
+hyphen; one per word) named as Wiktionary's Gaelic rows name them, in all 14 locales; 7 common words left as written
+(bhathar, chan, the), chosen on the article text of a Gaelic Wikipedia dump, as Leipzig has no Gaelic corpus; the
+dictionaries' mutation rows under the rules' names, the radical rows ignored; the acute read as the grave in any text
+(mór → mòr); words without the grave find the marked headword when nothing matches as written (bith → bìth, bata
+stays bata); dh', m', d', b', th', bh' elided (th'ann → ann); both apostrophes; abbreviations (m.e., Urr., msaa.
+only before a lowercase word); Tesseract gla listed unmarked, PaddleOCR v5 and v6 marked more accurate; Scotland's
+flag; the Russian name «Шотландский гэльский»; Lingua Libre first. Checked on the emulator (LNG31, OCR47, LK77,
+POP45, AUD32, ANK39). Seen there: ML Kit reads the capital I of Iain as l, a look-alike of every Latin language.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
@@ -47,9 +1380,8 @@ fixes, the scan changes and the language rules audit) was reviewed and merged in
   Clear cache not run), DIC25 not run yet.
 
 Still to do from the checks: the timing run's row "Default OCR engines", the speed marks in words and the Both-mode
-hint; fast-forward `languages/main` through the stack. `main` CI has failed since 2026-10-15 on lint `RestrictedApi`
-(`Data.Builder.put`, `Result.Retry` in the import worker); the language branch no longer has that code, so it ends
-with the next release from it.
+hint; fast-forward `languages/main` through the stack. `main` CI failed from 2026-10-15 on lint `RestrictedApi`
+(`Data.Builder.put`, `Result.Retry` in the import worker); it passes again (every run since 2026-10-22).
 
 TEMPORARY diagnostics build (open item, remove after the analysis): branch `claude/diagnostics-build-9fbbc9`
 (session "Temporary diagnostics build: logs and metrics", `notes/diagnostics.md` on that branch) records timings,
@@ -61,15 +1393,226 @@ commit `9937cc4` with `languages/ocr-engines` at `fa1b086`), uses the phone for 
 the phone; ask whether a normal build should delete leftover `no_backup/diagnostics` files).
 
 Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`, "Group 4a research"), questions
-41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. It starts after the OCR
-engines plan is done.
+41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. Started on 2026-10-19 (the
+OCR plan's timing items wait for the phone). Done on chained branches and fast-forwarded into `languages/main`: the
+shared pieces, nl, cs, id, ms, tl (LK31-LK35), the "Compound:" line, Serbo-Croatian (first as two script entries,
+then at the owner's request as two languages, Croatian and Serbian, on `languages/sr`: LK36), uk and be (LK37, LK38; Belarusian takes Ukrainian's stress mark and
+apostrophe processors), el (LK39; every headword keyed without its tonos at import, wordfreq's final σ as ς, Latin
+look-alikes in Greek words; `paddle-el` uploaded to the `ocr-models-1` release). Found with Greek: the Lingua Libre
+search took only the ISO 639-3 code, and Greek recordings also carry `gre` and `mis`; it takes any code now, for every
+language. Group 4a is done. Croatian and Serbian: Serbian reads both scripts (look-alikes fixed per line; the voice
+gets Latin words in Cyrillic; translation as sr-Latn), Croatian audio tries Hr- recordings, then Serbian ones; the
+Commons search now drops matches inside titles. Questions 65-66 are answered: look-alikes by the line, Latin words in
+capitals kept outside headings in capitals; no ML Kit for Serbian. Left: the owner re-imports the Russian dictionaries (the stress-mark rule changes them at import). The emulator's /data has 465 MB
+free with the storage thresholds lowered (`sys_storage_threshold_percentage` 1, `sys_storage_threshold_max_bytes`
+100 MB); deleting the two settings puts it into low storage until some language's files go.
+
+Small limits of the language rules review (owner: which are worth fixing), on `languages/sr`: fixed ML Kit's
+line-end hyphen (put back into the line's last word; checked by an instrumented test on the emulator), Roman ordinals
+before a lowercase word, `{phonetic-transcriptions}` tags as Yomitan writes them, and the compound split (fewest
+parts, then the longest shortest part; row "German compounds" changed by the owner after a check on 20,000 headwords,
+see the plan's changelog). The rest stays, with reasons, in `notes/language-rules.md`. New cases LK40, LK41, ANK15,
+ANK16 (N, not run on the emulator yet). The owner does not want a new phone build for now. Running in separate
+sessions since 2026-10-19: "Private copies of every catalog dictionary" and "Group 4b: Hindi, Georgian, Armenian,
+Bengali" (research and questions first, then the build).
+
+Group 5 (owner, 2026-10-19; the plan's Stage F and rows "Group 5", "Group 5 research", "Group 5 release"): six
+blocks, researched in parallel sessions started on 2026-10-19, each writing `plans/2026-10-19-group-5x.md` on its own
+branch: 5a Latin, 5b Celtic, 5c long suffix chains, 5d Cyrillic, 5e other scripts; 5f right to left starts after
+group 4d's research. Groups 4d (Arabic, Persian, Hebrew) and 4e (Kazakh, Kyrgyz) are researched in sessions of their
+own too. Their branches are merged into `languages/main` by this session when they report. Group 4c (Thai, Khmer, Lao) is researched
+(`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
+9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); Thai and
+Khmer are built in the overnight queue (below). Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
+research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
+OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; it is built fourth
+in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic; Breton researched and dropped) is
+researched (`notes/languages.md`, "Group 5b research"; `plans/2026-10-19-group-5b.md`) and all its questions are
+answered: own initial-mutation rule with the mutation's name and a short list of common words it leaves alone (mae
+stays mae), Irish and Gaelic elisions as French, regional flags, the Russian Gaelic name, no frequency dictionaries,
+bubble letters Ŵ Á Ò, branches Welsh, Irish, Gaelic; recognition measured on the emulator (ML Kit stays main; ML
+Kit never reads Welsh ŵ ŷ, so the lookup tries ý as ŷ and û as ŵ for OCR words only, which needs the lookup to know
+a word's source, a piece shared with 5c's Hungarian ő ű; Welsh and Gaelic words typed without marks also find the
+marked headwords when they find nothing, in any text). Not started: its order is the owner's call. The research
+downloads (wty files, kaikki's Breton extracts, corpora, Tesseract models) were in the session scratchpad only and are
+removed; the measurement scripts are in the shared session notes (`group-5b-scripts`).
+Group 5c (Finnish, Estonian, Hungarian, Azerbaijani, Uzbek) is researched (`notes/languages.md`, "Group 5c research";
+`plans/2026-10-19-group-5c.md`) and all its questions are answered: all five, branches in the order Finnish, Hungarian,
+Estonian, Azerbaijani, Uzbek; own ending lists for all five; the compound split for Finnish, Estonian and Hungarian; a
+"Word forms" item from the English dictionary when English is not chosen; Hungarian ö ü also matching ő ű for words from
+any recognition, cloud included, not for app text (the same source piece as Welsh); Uzbek o g matching oʻ gʻ in any
+text; Uzbek Cyrillic transliterated to Latin; Leipzig frequency lists for Estonian, Azerbaijani and Uzbek; scan length
+24 for Finnish; bubble letters Ä Õ Ő Ə Oʻ; recognition measured on the emulator (ML Kit main; Paddle v6 marked more
+accurate for Estonian and Azerbaijani; Google's engine has no Azerbaijani or Uzbek voice). Not started: its order is the
+owner's call. The measurement scripts are in the shared session notes (`group-5c-scripts`).
+
+Group 6 (request 70: Catalan, Galician, Icelandic, Afrikaans, Tatar, Bashkir, Sanskrit) is researched by an
+autonomous session (`notes/languages.md`, "Group 6 research"; `plans/2026-10-20-group-6-research.md`): four proposed
+blocks (6a Catalan, Galician; 6b Icelandic, Afrikaans; 6c Tatar, Bashkir after group 4e; 6d Sanskrit), 26 questions,
+10 deferred (among them Galician's fallback language and enclitic rule, Tatar's missing wty dictionary, Sanskrit
+sandhi and Monier-Williams's license) and 16 decided provisionally, to be asked when the owner is back. Recognition
+was measured on the PC only (Paddle); ML Kit, Tesseract and cloud wait for the emulator. Not started. On 2026-10-29
+morning the owner gave the research to the cloud session to bring up to date (`cloud/group-6-research-2026-10-29`,
+research only; plan changelog).
+
+Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
+Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
+test-model cases run on the emulator) and merged into `languages/main` before the next starts: 4b (Bengali, Georgian,
+Armenian), 4c (Thai, Khmer), 4d (Arabic, Persian, Hebrew), 4e (Kazakh, Kyrgyz, after its research). The research
+sessions of 5a-5e finish their plans without the answers. Open questions go into each plan file under "Questions for
+the owner (overnight)", marked deferred (the part waits) or decided provisionally (with what was implemented), to be
+asked when the owner is back. Sessions share the emulator through a lock folder, `.worktrees/emulator.lock` in the
+root checkout (git-ignored). This session checks hourly after the usage limit resets and restarts stopped sessions.
+
+Overnight progress (2026-10-20, 03:30): group 4b is done (Georgian and Armenian built, LK42-LK45 passed on the
+emulator, no open questions). The research of 5a-5e is done and merged; each plan file lists its open questions
+under "Questions for the owner (overnight)". Group 4d has its build plan (`plans/2026-10-19-group-4d.md`), 4e its
+plan from the research. Group 4c builds Thai and Khmer now; 4d and 4e follow in turn.
+
+Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
+Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
+passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
+entries without a part of speech, form rows with template leftovers cleaned at import for every language, all bundles
+rebuilt. Both are fast-forwarded into `languages/main`. Georgian is built on `languages/ka` (Yomitan's rules, filed
+under `kat`, now loaded and matched to untyped entries; decapitalize for Mtavruli; scan length 24) and Armenian on
+`languages/hy` (marks inside words, the ligature և, classical spellings, sentences at ։ and the colon); unit, glue,
+page and catalog tests pass, and the emulator checks LK44 and LK45 passed. Both are merged into `languages/main`;
+group 4c (Thai, Khmer) builds next.
+
+Group 4c (th, km; `plans/2026-10-19-group-4c.md`; Lao deferred): Thai is done on `languages/th`. Words come from
+Android's ICU segmenter (earlier starts two ICU words back, shorter matches only at ICU boundaries), sentences end at
+a space between Thai letters, Tesseract `tha` only (the Thai Paddle model waits for the upload), Tesseract clusters
+joined by gap, the app's own text processors for sara am, tone-mark order and the spaces around ๆ, a frequency
+dictionary built from the Thai National Corpus counts, Noto Serif Thai by `local()` and four downloadable fonts.
+LK46 passed on the emulator after one fix (a space after ๆ was taken into the match). Test screens for scripts with
+stacked marks are drawn by `scripts/TextImage.java` (Pillow does not shape them). Overnight questions 10 (a space
+beside any ฯ holds) and 11 (ๆ and a space never end a sentence) are in the plan, implemented as recommended.
+
+Khmer is done on `languages/km` (2026-10-20): the same segmentation with the coeng holding the next consonant, ៗ
+with the word before and zero-width spaces passed over; sentences end at ។ ៕; own text processors for zero-width
+spaces and subscript TA read as DA, TA headwords keyed under DA at import; Tesseract `khm` fast with a space gap of
+0.15 of the line height; Noto Serif Khmer by `local()`, Kantumruy Pro and Hanuman downloadable. LK47 passed on the
+emulator after one fix: ICU joins some phrases into one word (ក្រុងភ្នំពេញ), so the lookup of Thai and Khmer now also
+starts inside the aimed word when nothing found reaches the aimed letter (overnight question 12, provisional).
+The owner answered questions 10-14 on 2026-10-20. 10-12 were measured on text with known boundaries (ORCHID, the
+Asian Language Treebank's Thai and Khmer): the implemented variants had the fewest errors and stay. 14: Commons has
+Lingua Libre and Wiktionary recordings for every language (Khmer 13 and 9), so no source is skipped. 13: sessions may
+delete, on the emulator, the dictionaries of languages already checked. The
+emulator's `/data` has about 390 MB free: a full debug build no longer installs, an x86_64-only copy does
+(`notes/build-environment.md`).
+
+2026-10-22, on `languages/km-answers`: question 9 is built (under the Tesseract models of Thai and Khmer, in the
+model dialog and on the download screen: "Often misreads text on busy screens; cloud recognition is more accurate.",
+all 14 locales; LNG17 passed on the emulator). Every engine of both languages was measured again on the emulator
+(the errors match 2026-10-16/17) and each rule's premise counted on ALT, ORCHID, wty and the engines' output (plan,
+"Measurements"): every rule holds except that Thai ํา is a Tesseract misreading nobody types (question 15: OCR-only
+once groups 5b and 5c bring the word's source to the lookup). Question 16: the same line in the other languages where
+Tesseract is the main on-device model, as Tesseract misreads busy screens in every language.
+
+Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
+`languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
+the FreeDict, OpenRussian, Mueller and Unihan sources with our conversions, and the OCR models (also for those
+languages): 1,083 files, 2.4 GiB, checked against their hosts' hashes where published, in a git-ignored folder on the
+owner's computer with the refresh script `mirror/mirror.mjs` inside it (`notes/dictionary-archive.md`). Nothing from
+it is committed or uploaded.
+
+Group 4d (Arabic, Persian, Hebrew) is researched (`notes/languages.md`, "Group 4d research") and its questions 69-86
+answered (`plans/2026-10-19-group-4d.md`): Urdu later, on its own (block 5f); right-to-left interface languages in
+the backlog; the popup keeps its layout with right-to-left text in place; a `dir="rtl"` span around the markers of
+right-to-left text in the Anki field templates, put there by "Suggest templates" and the marker picker, never in the
+first field; broad Arabic spellings; own Persian ending and Hebrew prefix rules;
+scan length 24. Persian has no on-device model until the Paddle upload (Tesseract `fas` is unusable). Plain fixes
+found on the way, among them two audio bugs for every language (a Commons error answer cached as no recording, a
+redirect's target dropped) and the glue's transform key, which leaves Georgian without deinflection. To measure on
+the emulator first: the Arabic bundle in QuickJS, `local()` font names, Google's Hebrew voice, the ar-en import. The
+implementation plan is in the plan's "Work" (Arabic with the shared pieces, then Persian, then Hebrew); the build
+follows group 4c in the overnight queue.
+
+Arabic is done on `languages/ar` (2026-10-20) with the shared right-to-left pieces: `LanguageSupport.rightToLeft`,
+reading order for Paddle (digits, Latin runs, mirrored brackets), cloud recognition (Latin runs of Hebrew and Persian
+lines by their boxes), app text (paragraph direction) and Tesseract; marks without a share of a word box; the popup's
+`dir` on the source, headwords and glossary blocks, the vowelled headword (`reading-ar.js`); the Anki span in field
+templates; audio titles with vowel marks ranked (word as written, vowelled reading, the rest) and a Commons error
+answer failing the source. Arabic itself: Yomitan's rules with its hamza processors replaced by import keys (hamza
+alefs, final ى and ة), noun rules for untyped entries, form-of cleanup (template names, romanized forms), 50 rule
+names in 14 locales, wordfreq, Tesseract `ara`, Noto Naskh Arabic by `local()`, Noto Sans Arabic and Amiri
+downloadable, flag sa, bubble ض, scan length 24. LK48, POP26, AUD13, ANK17 and OCR29 passed on the emulator after
+three fixes (Tesseract word boxes over earlier words, transcriptions out of the dictionary's order in languages
+without audio regions, the Naskh `local()` names). Overnight question 2 (Arabic homographs through form rows: ذهبت
+shows ذَهَب, gold, before ذَهَبَ, to go) was answered by the owner: as Yomitan does, kept.
+
+Persian is done on `languages/fa` (2026-10-20): `PersianSupport` (؟ ends a sentence, abbreviations ص. ج. ر.ک. ق.م.,
+the non-joiner and vowel marks inside words, a separate می/نمی and ها/های/تر/ترین tried joined to their word, OCR
+words in Persian letters, import keys without the non-joiner and with ي ك ى ۀ as ی ک ی ه, Cyrillic Tajik form rows
+dropped, audio with Arabic-letter titles, wordfreq spellings without the non-joiner); the bundle's own processors and
+32 own rules (enclitics, plurals, comparatives, verb prefixes) matching entries without a part of speech, each with a
+name and a description in 14 locales (overnight question 1, answered "names and descriptions"; the generator now
+takes the app's own rules); the Latin reading after the word (`reading-fa.js`); wty fa-en, ru, fr, pl, zh, the
+transcriptions and wordfreq `small_fa`; Vazirmatn; flag ir, bubble پ; cloud recognition only. Coverage: 11,017 of
+wordfreq's 20,000 commonest words are entries as they are, 15,033 with the rules, the word itself first in all
+11,017. LK49, POP27, AUD14, ANK18 and OCR30 passed on the emulator. Found: hoshidicts keeps a headword's JSON escapes
+(`\u200C`) as written, so a dictionary that writes them escaped imports but finds nothing (wty and Yomitan exports
+write the characters; a follow-up, `notes/dictionary-engine.md`). Overnight questions 3 (order of transcriptions) and
+4 (colloquial endings) are decided provisionally. Hebrew follows.
+
+Hebrew is done on `languages/he` (2026-10-20): `HebrewSupport` (vowel points and cantillation dropped in the text and
+in import keys, the geresh, the gershayim, ASCII quotes between letters and the maqaf inside words, „…” quotes in
+sentences, Modern Israeli transcriptions first, pointed recording titles, wordfreq's ASCII quotes as ״ ׳); the
+bundle's own processors and eight prefix rules (ו ש כש ב כ ל מ ה, in the grammar's order, three letters at most)
+matching entries without a part of speech, each with a name and a description in 14 locales; wty he-en, ru, es, ja,
+pl, zh, the transcriptions and wordfreq `large_he`; Tesseract heb (fast recommended, best offered); Heebo and Frank
+Ruhl Libre; flag il, bubble א; scan length 24. Coverage: 10,911 of wordfreq's 20,000 commonest words are entries as
+they are, 17,552 with the rules, the word itself first in all 10,911. LK50, POP28, AUD15, ANK19 and OCR31 passed on
+the emulator after three fixes: transcriptions written `//a/ [b]/` split in two (all languages), cloud recognition's
+right-to-left lines that come in neither order put in the order of their boxes, and Hebrew's `{reading}` (the word
+itself) in the right-to-left span. Overnight questions 5 (Modern Israeli transcriptions first) and 6 (form tags beside
+a plain word, שלום "singular construct") are decided provisionally. Group 4d is done; 4e (Kazakh, Kyrgyz) follows.
+
+The owner's answers to overnight questions 3-6 are built on `languages/fa-he-followups` (2026-10-20, from
+`languages/main` while 4e builds there; main merges it): Iranian Persian transcriptions first (🇮🇷, 🇮🇷TE, "Iran…"
+tags), the rest behind "+N"; Hebrew as built; the engine leaves out the tags of a form whose lemma is the headword
+the text is itself, in every language (kuća, שלום; kućama and pointed שְׁלוֹם keep theirs); the spoken Persian
+endings measured on wordfreq's words with hand judgments (numbers in `notes/language-rules.md`, "Owner decisions"):
+-مون, -تون, -شون and the ordinal -مین → -م after a number added, the copula -ه, the object marker -و/-رو, the
+plural -ا and -ین left out. Question 7 (the plural -ا also read as the adverb ending -اً) is decided provisionally:
+left out. The hoshidicts JSON-escape follow-up is a separate task of main's.
+
+Kazakh is done on `languages/kk` (2026-10-20, group 4e, `plans/2026-10-19-group-4e.md`): the app's own Turkic
+ending rules for Kazakh and Kyrgyz (`own-transforms.js`, noun and verb slots, verb endings only on entries tagged
+as verbs, the endings in д and т only after a consonant), headwords keyed with the Kazakh letters as their Russian
+twins ("он" finds он, оң, өң; "оң" only оң; Қазакстан, which keeps some letters and loses others, is looked up
+again keyed), Latin i I ə h read as і І ә һ in any text, the parts of a hyphenated word in every spaced language
+(the first part's words stay out when the whole word covers the aim), endings after digits and abbreviations with
+their hyphen (1990-ға → -ға), Leipzig's news word list built on the phone as the frequency list; six Wiktionary
+pairs, the transcriptions, PaddleOCR's Cyrillic model recommended and Tesseract kaz offered; PT Serif and PT Sans
+among the fonts; flag kz, bubble Қ. LK51, LK52, OCR32, POP29, AUD16, ANK20, DIC26 and LNG15 passed on the
+emulator after two fixes. Overnight question 14 (particles after a hyphen: сондай-ақ shows ақ, not -ақ) is
+deferred.
+
+Kyrgyz is done on the same branch (2026-10-20): `KyrgyzSupport` on the shared Turkic base (headwords keyed with ң ө ү
+as н о у, the barred o ɵ read as ө in OCR results only, abbreviations ж. жж. к. кк. б.а. мис. обл. түн. түш. and
+the spaced ж. б. and б. з. ч. ending no sentence before a lowercase word, проф. ending none), the four-way harmony
+endings with the question particle (барасыңбы → баруу), Wiktionary ky-en and ky-ru, the transcription, Leipzig's
+Kyrgyz news list, PaddleOCR recommended and Tesseract kir offered; flag kg, bubble Ң. LK53, OCR33, POP30, AUD17,
+ANK21, DIC27 and LNG16 passed on the emulator with no fixes. Overnight questions 15 (Түштук finds түшүү through a
+twin-spelled ending, and the keyed lookup is not tried) and 16 (алды shows the pronoun ал with a noun ending first)
+are deferred.
+
+The PanLex converter is done on the same branch (2026-10-20): `scripts/panlex/panlex_yomitan.py` joins two files of
+the CC0 mirror `cointegrated/panlex-meanings` (2024-03-01 dump, pinned revision) on their meaning and writes one
+definition per headword, translations comma-separated by support, at most ten; headwords outside the lowercase
+alphabet, loose groups, lists and other-script translations are left out (kk-ru 16,374 headwords, kk-en 13,835,
+ky-ru 5,729, ky-en 6,357). DIC28 passed on the emulator. The archives are not hosted or in the catalog: hosting and
+the license check (the live site says CC BY-NC-SA 4.0; since settled: the pinned CC0 dump, group 4e row "PanLex")
+come first, then the catalog entries with Kyrgyz PanLex ticked
+and a NOTICE entry. Overnight questions 17 (entry layout) and 18 (names left out) are decided provisionally.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
 `languages/ocr-engines` (pushed) holds the whole group 1-3 stack plus ML Kit Latin, Tesseract, the model choice per
 language and Paddle on MNN; its CI run (workflow_dispatch) gives the owner's "Screenlate Dev" APK (artifact
-`screenlate-debug-<sha7>`). The Paddle model archives are on the prerelease `ocr-models-1`. Next: docs (`usage.md`,
+`screenlate-debug-<sha7>`). The Paddle model archives are on `ocr-models-1` (a regular release since 2026-10-19, never marked latest). Next: docs (`usage.md`,
 `architecture.md`), the remaining test-model cases, the emulator checks of groups 1-3 and the OCR cases, a phone timing
 run, then fast-forward `languages/main`; the module code review comes after the owner has tried the build. The
 comparison session (`languages/ocr-compare`, `.worktrees/lang`) is finished. Leftovers to clean when done: the
@@ -165,7 +1708,7 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
 - v0.2.3 is released (2026-10-11, tag on main 3f2123c): 0.2.2 plus the bubble glide fix, checked by the owner on
   the phone. `languages/main` has the same fix.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
-  `scripts/frequency/`).
+  `scripts/frequency/`). Superseded on 2026-10-14: they are built on the phone, nothing hosted.
 - The findings from all three delegated reviews against `2215893` are fixed on `languages/main`; see the
   "language isolation review fixes", "follow-up language review fixes" and "language installation readiness" entries.
   Request 27 is also built: explicit active-language readiness on Home, queue links in Search/popup and a scan gate
@@ -271,6 +1814,19 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
 - [ ] Phase 8 — languages beyond Japanese: stage A and group 1 (English, Chinese, Korean) built, stages C to E open
 
 ## Log
+
+### 2026-10-26 ("Open Screenlate" started a second main screen; `claude/nifty-faraday-59a7fb` from languages/main)
+
+- Bug seen during the camera-lookup acceptance, older than it: after the selection menu's search opened the app
+  (`ProcessTextActivity.openApp`), the bubble's "Open Screenlate" and the launcher icon started a second MainActivity
+  on top; Back showed the first copy. Cause: the search started MainActivity with an explicit intent, which became the
+  task's root intent; a launcher-style start into that task with a different intent filter adds a new instance
+  (`ActivityStarter.complyActivityFlags`). Also, `CLEAR_TOP` without `SINGLE_TOP` recreated MainActivity, so its
+  `onNewIntent` handling never ran.
+- `OverlayIntents.openScreen`: the launch intent with `NEW_TASK | CLEAR_TOP | SINGLE_TOP`; the search, the overlay's
+  Anki-settings button, the installation link and the OCR models link use it. `openApp` adds `SINGLE_TOP` for a task
+  started by another intent. Manifest unchanged.
+- `OpenAppTest` (app, instrumented, 4 cases) and test-model case BUB16; run log 2026-10-26. Checked on Pixel_10_Pro.
 
 ### 2026-10-13 to 2026-10-15 (group 1: Languages screen, Chinese, Korean; languages/main, languages/zh, languages/ko)
 
@@ -1163,3 +2719,177 @@ pillow; a Yomitan checkout at the pinned commit for the language bundles.
   `CLAUDE.md`); committed on both branches.
 - The AVD `Screenlate_API30` is locked by a qemu process that cannot be killed (PID 70992 this session); a fresh AVD
   `Screenlate_API30_glide` (pixel_4, google_apis x86) replaced it for this check. A reboot of the PC frees the lock.
+
+## Cloud session 2026-10-29
+
+Five backlog tasks, done in a claude.ai cloud session (no Android SDK, no emulator, no `testdata/`) from
+`languages/main` `772bbad7`. Branches for the coordinating session to review, build and merge:
+
+- `cloud/backlog-2026-10-29` (tasks 1-4, tip: the commit that adds this section);
+- `cloud/rtl-strings-2026-10-29` (task 5, cut from task 4's tip `c028ebed`, tip `e0251129`); it waits for the emulator
+  check of the mirrored screens.
+
+Per task:
+
+1. Smaller language bundles: the descriptors of `own-transforms.js` built by calls are wrapped in pure IIFEs, so 16
+   bundles lost 21-28 KB each (412 KB in all, sizes in the commit message); `build.mjs` fails when either file of
+   the app's own leaves code in a bundle that imports nothing from it. The old and new bundles give the same
+   candidates for every quoted text of `glue.test.mjs` (76,160 calls); the inflection generator writes the same files.
+2. Converter data: FreeDict definitions over 120 characters follow the translations; it-ru loses "( approfondimento)"
+   and the same links "( tassonomia)", "( citazioni)"; OpenRussian drops "gapirish" through `STRAY_WORDS`;
+   Vietnamese `Central` alone reads Central Vietnam (`LanguageSupport.formTagNames`, 14 locales). To rebuild: the
+   FreeDict conversions the owner keeps and OpenRussian ru-en (ru-de and wty need nothing). wty's tag table gives
+   "Central" a Brazilian flag chip on 294 vi-en definitions (question 88).
+3. Candidate interface languages: ranked list in `notes/translations.md` ("Candidate interface languages"):
+   Indonesian, Thai, Ukrainian first, then Arabic and Persian (strings done), Hindi, Bengali, Uzbek, Urdu, Hebrew.
+4. Interface translation check: 579 changes over the 13 translations, one commit per locale, plus the English fix
+   (two popup messages pointed to the Bubble settings for Engines and App text only, now on Text recognition; "1
+   dictionaries", "1 audio sources"; "auto-play") carried into every locale. Terms per locale in
+   `notes/translations.md` ("Shared terms per locale"). Reviewed per locale by subagents against the conventions
+   note; every proposal read before it was applied.
+5. Right-to-left strings: `values-ar`, `values-fa`, `values-iw` for all 31 string files (2,014 strings and 13
+   plurals each); the language settings read a hand-written `res/xml/locales_config.xml` without them
+   (`generateLocaleConfig` off, `android:localeConfig` in the manifest), kept in step by `TranslationsTest`
+   (`unlisted`). A phone set to one of the three already shows it, so the branch stays unmerged until the check.
+
+Tests run here: `node --test` glue and mutation exceptions 124 pass (1 skipped without `YOMITAN`; 117 of 117 with
+it), page tests 146 pass, `python -m pytest -q scripts` 67 pass, catalog generator 11 pass. Without an SDK, Gradle did
+not run (no `lintDebug`, no `testDebugUnitTest`): plain JVM tests were compiled with kotlinc 2.2.20 against stub
+`android` classes and pass: `TranslationsTest` (both branches), `FormOfTagsTest` 19, the `core:common` language tests
+417 of 419 (the Thai and Khmer "without the phone's ICU" cases fail only because the run supplies ICU through a
+shim). Not compiled: `HoshidictsEngine.kt` (one changed call). The coordinating session builds and tests locally.
+
+Open for the owner: questions 88-92 of `plans/2026-10-10-languages-implementation.md` (the vi Brazilian-flag chip,
+Vietnamese North/South, FreeDict's length rule, Russian «карточка», French «Recherche»), and 93-94 on the
+right-to-left branch (Arabic form tags named as other languages' categories, arrows in right-to-left menu paths).
+
+## Cloud session 2026-10-29, group 6
+
+Research only, in a claude.ai cloud session (no SDK, no emulator, no `testdata/`), from `languages/main` `23448dd3` on
+`cloud/group-6-research-2026-10-29`, for the coordinating session to review and merge. The group 6 plan
+(`plans/2026-10-20-group-6-research.md`) has a new section "Recheck against languages/main", recheck notes on its 26
+questions and new deferred questions 27-30; `notes/languages.md` ("Group 6 research", recheck) has the facts a later
+session needs; the folded-marks plan's question 1 points to the new numbers. Nothing of the app changed.
+
+- What changed for group 6: the fold settles questions 9 and 11 (Icelandic and Afrikaans without marks) and the bubble
+  glyph row question 19 (C, G, Í, A, Т, Б, सं; codes ТТ, БА in Cyrillic); group 4e's Turkic engine, 5a's fallback, 5d's
+  import cleanup and `misreadSpellings`, region flags and the font catalog's letter check are built, so 6a-6d need
+  less new code. Tatar is in wty since 2026.10.22 (tt-ru 11,817 words; tt-tr is Latin-script, question 29).
+- Measured: the fold's extra results (Galician 26.0% of running text typed, Catalan 18.7%, Icelandic 9.6%, Afrikaans
+  8.4%, past the provisional threshold; Tatar and Bashkir under it), lookup coverage on today's dictionaries (Catalan
+  96.1% of the top 5,000, Galician 74.9% and 93.1% with the Spanish fallback, Icelandic 84.4%, Afrikaans 46.6% and
+  71.1% with Dutch), and Tatar and Bashkir with scratch ending tables in the built engine (83.1% and 75.0% of tokens,
+  37 and 38 of 40 samples right; three engine limits found).
+- Found: wty's Russian-edition Turkic tables tag the genitive "possessive" and lose some cases, in Kyrgyz (built) as
+  well (question 30); the fold's tables lack Җ җ (a plain fix with Tatar).
+- The owner's answers (2026-10-29, in the plan): 27 with a rule of the owner's own (beside a word's own entry, verb-ending
+  results shown, noun-ending results only where the noun can take that ending; the agent's reading is to be
+  confirmed at implementation); 29 (a), tt-tr left out of the catalog.
+- For the main session, at the owner's word: question 28 (the fold's extra results in ca, gl, is, af) is yours to
+  settle, together with question 1 of `plans/2026-10-29-folded-marks-and-flags.md`; question 30 (Russian Wiktionary's
+  Turkic form tags in tt-ru, ba-ru and the shipped ky-ru; a report to wty would be an outward-facing step) goes into
+  the questions deferred for later, not to be asked soon. Questions 10 and 21 still wait for the emulator run.
+- Added at the owner's word: `scripts/yomitan-language/drafts/group-6-turkic.patch` with its README (draft Tatar and
+  Bashkir tables and two engine changes for block 6c; not built, the bundles are unchanged) and the measuring tools
+  `scripts/yomitan-language/tools/freq_list.py`, `fold_noise.py`, `coverage.mjs` (checked here: they give the
+  plan's numbers again).
+- For a local session: recognition on the emulator (ML Kit, Tesseract, cloud, Paddle on the research screens), voices,
+  the Vedic signs in the fonts, Gboard's Tatar and Bashkir layouts, index growth on real imports, and the audio counts
+  (Commons rate-limited the cloud session); the list is in the plan ("For the emulator session").
+
+## Phone verification resumed (2026-11-04, request 85)
+
+- Phone now connects. A sandboxed ADB invocation saw a v39 server conflict; the authorized full-access v41 client
+  starts and sees the phone. Use an explicit serial while local emulator attempts exist.
+- LanguageLookupTest passes all 53 cases on the phone: new pronouns, suffix consonants, Marathi irregular stems,
+  the three forms-only headword filters and Kazakh-only form priority, plus earlier native regressions.
+- Two incomplete test fixtures corrected: Hungarian megad cannot remove a prefix to the too-short ad, so use the
+  existing valid megtartottam → tartottam → tart pattern; Telugu needs the dictionary's పట్లు → పట్టు form row to
+  reproduce the old false reading. No engine/filter change was needed for either fixture.
+- JVM checks and dictionary lints pass. Only the isolated engine test package was installed; the owner's app and
+  Anki collection are unchanged.
+
+## PaddleOCR device verification completed (2026-11-04)
+
+- The real MNN/Android pipeline revealed geometry differences the axis-aligned host replay could not catch.
+  Paragraph text size now uses median character height; vertical spacing uses row centres and text heights rather
+  than overlapping axis-aligned crop edges. The size ratio allows the measured crop padding variation.
+- Fragment comparison uses the larger fragment's baseline and repeats merging until stable. This joins the dark
+  page's short word between two longer pieces without widening the allowed raw gap. New unit cases cover actual
+  oriented regions, input-order symmetry, stable repeated combination and tilted/padded paragraph rows.
+- Opt-in PaddlePageRegressionTest passes on the phone, through real bitmap processing and MNN: both generated
+  Russian light/dark pages have 18 content rows in six paragraphs and exactly the 537 normalized truth characters
+  (SHA-256 equality). The final test uses the app's four CPU threads; a two-thread run also passed.
+- All 215 OCR JVM tests, lint, test APK and full debug assembly pass. The 44 host controls / 38 unique screenshots
+  still give 18 improvements, 26 equal, no loss (1,337 → 495 errors). No temporary debug probes remain.
+- The owner's app was not replaced; these were isolated engine and OCR test packages. Main app UI checks, including
+  the photo-loading animation and frequency catalog import, stay separate from the completed native regressions.
+
+## Remaining verification inventory (2026-11-04, owner's status question)
+
+Current implementation block has passed its automated checks and real-device native regressions (53 language tests,
+full MNN replay of two Russian pages with exact normalized text). Do not treat the old unrun-native lists as current.
+The installed owner app is still the earlier minified build; only isolated test APKs were used in this session.
+
+Current UI follow-ups: CAM59 photo-recognition spinner; DIC54 words.hk catalog download/import and five ranks;
+DIC51/52 real Tamil/Telugu forms imports and LNG48 Home attention states; remaining LNG47 first-run/disabled-language/
+flag-picker views; OCR59 actual popup hit/highlight/sentence smoke check after the completed pipeline replay.
+These can run on an emulator. A small representative Uzbek-audio playback smoke is optional after HTTP tests and
+live Commons checks, not a blocker requiring another full audio regression.
+
+Physical-only acceptance: camera sharpness/focus/flash/capture delay and repeated-capture memory/drag on hardware;
+phone gallery picker/share integration; final-build overlay/keyboard/insets, background service and latency/memory
+baselines. Hardware-camera checks need the owner's physical assistance. Existing popup/search delay fixes were
+already tested on the phone on 2026-11-03; only a final-build performance smoke remains.
+
+Three separate unfixed defects: first-start English language names under Russian UI; false Home stopped-service
+card after quick rebind; empty AnkiDroid browser with a retained deck/task filter. The Anki loop needs an emulator
+or isolated test collection and must never use the owner's collection. No faithful failing Android loop is recorded
+for the first two yet. The phone is available; emulator launch still exits with 0x40000015, including with
+-crash-report-mode never. Most UI checks do not inherently require a phone, but emulator execution is unavailable now.
+
+Further development/release work remains as the 2026-11-02 audit records: stable hosting of converted dictionaries;
+private-archive catch-up and duplicate inventory; five waiting Paddle models (publish only on the owner's chosen
+date); unbuilt dictionaries including Mueller/OpenRussian morphology; final release/R8/upgrade/backup regression;
+test-model coverage for all 62 source languages; per-locale translation review and RTL catalog/font descriptions;
+full module review; groups 6/5f, beta/update packaging, network/offline audit, local audio and deferred features.
+These are not all phone checks and were not started as part of the current native-verification block.
+
+## UI defects and remaining acceptance resumed (2026-11-04)
+
+Owner request 87: finish the three reported bugs in order, then the remaining UI checks; the phone is connected.
+Use a separate verification application and test package, keep an inventory of created artifacts, and remove those
+packages/files at the end. Owner app/collection data stays untouched. Start with a stale process-default locale
+versus Russian activity resources on a first activity launch. A guarded StartupLocaleTest is being prepared;
+it runs only against com.vpr.screenlate.verification. No production locale change applied before reproduction.
+
+- First defect fixed: MainActivity follows its resource configuration after super.onCreate and before UI/view-model
+  composition. StartupLocaleTest reproduces the stale English default at onActivityPreCreated, observes the initial
+  language name at onActivityPostCreated, and requires Russian resources. It failed with Cantonese before the fix
+  and passes with Кантонский afterward on the phone. The earlier pre-launch-only simulation was green because the
+  Android framework refreshed the default before onCreate; keep the callback seam. Isolated app/test builds and
+  app lint pass. Next: service-state card; phone is locked, unlock question pending for visible UI checks.
+- Created phone packages for this task: com.vpr.screenlate.verification and .verification.test, user 0 only. They
+  must be uninstalled at the end. Owner packages com.vpr.screenlate and .debug were present before the task and stay.
+- ServiceRebindTest exercised 12 quick off/on cycles of the isolated verification service on the phone. Running
+  returned after every cycle and the final stopped state was correct. The exact accessibility settings were
+  restored in finally and checked. This does not reproduce or close the reported Home card defect; no timing or
+  service-lifecycle workaround has been applied. Home composition still needs an unlocked screen.
+- RealDictionaryImportTest passed on the phone with the complete public archives: Tamil forms-only import
+  1,948 ms / 3,922,331 bytes and Telugu 496 ms / 1,178,576 bytes. மரங்களை → மரம் and ఆలోచిస్తాడు → ఆలోచించు
+  return the Russian dictionaries' definitions through listed forms. The full words.hk archive imports all
+  34,933 frequency rows and returns each of the five agreed ranks. This closes the native full-archive portion,
+  not catalog/download/layout acceptance. The library test package and its staged archives were uninstalled.
+- AnkiDroid's installed version is 2.25.3. Its tagged IntentHandler passes allDecks=false; SearchRequest combines
+  the query and the retained deck filter with AND, so adding deck:* to the query cannot remove that filter.
+  Official parallel A 2.25.3 was installed as com.ichi2.anki.a (absent before this task), for a separate local
+  collection only; remove it at cleanup. No collection has been created or accessed yet. Never route an
+  unqualified Anki intent or provider request to the owner's installed collection during this investigation.
+- The phone remains securely locked. A first-run Compose probe found no rendered hierarchy; this is not a UI
+  acceptance pass or evidence of an app regression. StartupUiTest now explicitly requires an unlocked screen
+  and waits for asynchronous content. Unlock reminder sent; native checks continued independently.
+- Cleanup completed while waiting for unlock: verification app/test, parallel AnkiDroid A and the native library
+  test package are absent. Native staged archives were in the test package's own external files. Only the two
+  pre-existing Screenlate packages remain. Accessibility settings were restored exactly; no owner app update,
+  collection access, force-stop or shared-storage fixture was performed. Resume the two defects and visual UI
+  checks on an unlocked phone; temporary verification packages will need reinstalling.
