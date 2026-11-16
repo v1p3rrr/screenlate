@@ -12,6 +12,12 @@ plugins {
     alias(libs.plugins.aboutlibraries)
 }
 
+aboutLibraries {
+    collect {
+        configPath.set(file("config/aboutlibraries"))
+    }
+}
+
 // Release signing is optional: create keystore.properties (see README) to enable it.
 val keystoreProperties = Properties().apply {
     val file = rootProject.file("keystore.properties")

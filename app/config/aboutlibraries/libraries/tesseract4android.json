@@ -1,0 +1,14 @@
+{
+  "uniqueId": "cz.adaptech.tesseract4android:tesseract4android-openmp",
+  "name": "Tesseract4Android",
+  "description": "Tesseract OCR Android library with OpenMP support",
+  "website": "https://github.com/adaptech-cz/Tesseract4Android",
+  "developers": [
+    {
+      "name": "Adaptech s.r.o., Robert Pösel"
+    }
+  ],
+  "licenses": [
+    "Apache-2.0"
+  ]
+}
