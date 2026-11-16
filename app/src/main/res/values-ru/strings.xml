@@ -180,6 +180,7 @@
     <string name="anki_scope_deck">Колоде</string>
     <string name="anki_scope_deck_root">Корне колоды</string>
     <string name="anki_duplicate_all_models">Во всех типах записей</string>
+    <string name="anki_duplicate_all_models_hint">Ищет совпадение слова по первому полю во всех типах заметок AnkiDroid, а не только в текущем.</string>
     <string name="anki_duplicate_behavior">Если дубль найден</string>
     <string name="anki_behavior_prevent">Запретить</string>
     <string name="anki_behavior_overwrite">Заменить</string>
@@ -187,7 +188,7 @@
     <string name="anki_behavior_new">Создать</string>
     <string name="anki_behavior_prevent_hint">Если карточка существует, добавление блокируется, а кнопка открывает её в AnkiDroid.</string>
     <string name="anki_behavior_overwrite_hint">Поля существующей карточки заменяются новыми значениями.</string>
-    <string name="anki_behavior_append_hint">Дописывает новые предложения и скриншоты к карточке (для смены сцен Senren).</string>
+    <string name="anki_behavior_append_hint">Дописывает новые предложения и скриншоты к карточке для смены сцен.</string>
     <string name="anki_behavior_new_hint">Всегда создаётся новая карточка, даже если слово уже есть.</string>
     <string name="anki_duplicate_deck_only">Изменять только в текущей колоде</string>
     <string name="anki_duplicate_deck_only_hint">Если дубликат найден в другой колоде, не менять его, а создать новую карточку в текущей.</string>

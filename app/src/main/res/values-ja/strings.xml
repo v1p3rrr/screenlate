@@ -173,6 +173,7 @@
     <string name="anki_scope_deck">デッキ</string>
     <string name="anki_scope_deck_root">最上位のデッキ</string>
     <string name="anki_duplicate_all_models">すべてのノートタイプをチェック</string>
+    <string name="anki_duplicate_all_models_hint">現在のノートタイプだけでなく、AnkiDroid内のすべてのノートタイプで先頭フィールドの一致を検索します。</string>
     <string name="anki_duplicate_behavior">重複がある場合</string>
     <string name="anki_behavior_prevent">追加しない</string>
     <string name="anki_behavior_overwrite">上書き</string>

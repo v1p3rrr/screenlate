@@ -177,6 +177,7 @@
     <string name="anki_scope_deck">Paquet</string>
     <string name="anki_scope_deck_root">Paquet racine</string>
     <string name="anki_duplicate_all_models">Vérifier tous les types de notes</string>
+    <string name="anki_duplicate_all_models_hint">Recherche les mots correspondants selon le premier champ dans tous les types de note d\'AnkiDroid, pas seulement l\'actuel.</string>
     <string name="anki_duplicate_behavior">Si un doublon existe</string>
     <string name="anki_behavior_prevent">Empêcher</string>
     <string name="anki_behavior_overwrite">Écraser</string>

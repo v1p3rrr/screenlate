@@ -314,7 +314,7 @@ class AnkiSettingsViewModel @Inject constructor(
 
     fun setDuplicateBehavior(behavior: DuplicateBehavior) = updateSettings { settings ->
         val updatedModes = if (behavior == DuplicateBehavior.APPEND && settings.overwriteModes.isEmpty()) {
-            settings.fields.mapValues { (_, template) -> AnkiNotes.suggestedAppendMode(template) }
+            settings.fields.mapValues { (field, template) -> AnkiNotes.suggestedAppendMode(field, template) }
         } else {
             settings.overwriteModes
         }

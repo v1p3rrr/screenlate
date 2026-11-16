@@ -183,6 +183,7 @@
     <string name="anki_scope_deck">الرزمة</string>
     <string name="anki_scope_deck_root">الرزمة الأم</string>
     <string name="anki_duplicate_all_models">التحقق في كل أنواع الملاحظات</string>
+    <string name="anki_duplicate_all_models_hint">البحث عن الكلمات المتطابقة بالحقل الأول عبر جميع أنواع ملاحظات AnkiDroid، وليس الحالية فقط.</string>
     <string name="anki_duplicate_behavior">عند وجود ملاحظة مكرّرة</string>
     <string name="anki_behavior_prevent">منع</string>
     <string name="anki_behavior_overwrite">الكتابة فوقها</string>

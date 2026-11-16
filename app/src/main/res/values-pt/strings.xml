@@ -177,6 +177,7 @@
     <string name="anki_scope_deck">Baralho</string>
     <string name="anki_scope_deck_root">Baralho raiz</string>
     <string name="anki_duplicate_all_models">Verificar todos os tipos de nota</string>
+    <string name="anki_duplicate_all_models_hint">Procura palavras correspondentes pelo primeiro campo em todos os tipos de nota do AnkiDroid, não apenas no atual.</string>
     <string name="anki_duplicate_behavior">Quando houver duplicata</string>
     <string name="anki_behavior_prevent">Impedir</string>
     <string name="anki_behavior_overwrite">Sobrescrever</string>

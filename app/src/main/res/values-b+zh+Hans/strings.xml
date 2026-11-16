@@ -173,6 +173,7 @@
     <string name="anki_scope_deck">牌组</string>
     <string name="anki_scope_deck_root">根牌组</string>
     <string name="anki_duplicate_all_models">检查所有笔记类型</string>
+    <string name="anki_duplicate_all_models_hint">在 AnkiDroid 的所有笔记类型中按首字段搜索匹配的词，而不仅是当前类型。</string>
     <string name="anki_duplicate_behavior">存在重复时</string>
     <string name="anki_behavior_prevent">阻止</string>
     <string name="anki_behavior_overwrite">覆盖</string>

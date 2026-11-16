@@ -316,18 +316,40 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                 },
                 onSelect = viewModel::setDuplicateScope,
             )
-            SwitchRow(stringResource(R.string.anki_duplicate_all_models), settings.duplicateAllModels, viewModel::setDuplicateAllModels)
-            Text(stringResource(R.string.anki_duplicate_behavior), style = MaterialTheme.typography.labelLarge)
-            Segments(
+            SwitchRow(
+                label = stringResource(R.string.anki_duplicate_all_models),
+                checked = settings.duplicateAllModels,
+                onChange = viewModel::setDuplicateAllModels,
+                hint = stringResource(R.string.anki_duplicate_all_models_hint),
+            )
+            Picker(
+                label = stringResource(R.string.anki_duplicate_behavior),
+                value = stringResource(
+                    when (settings.duplicateBehavior) {
+                        DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
+                        DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
+                        DuplicateBehavior.APPEND -> R.string.anki_behavior_append
+                        DuplicateBehavior.NEW -> R.string.anki_behavior_new
+                    },
+                ),
                 options = DuplicateBehavior.entries,
-                selected = settings.duplicateBehavior,
-                label = {
+                name = {
                     stringResource(
                         when (it) {
                             DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
                             DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
                             DuplicateBehavior.APPEND -> R.string.anki_behavior_append
                             DuplicateBehavior.NEW -> R.string.anki_behavior_new
+                        },
+                    )
+                },
+                description = {
+                    stringResource(
+                        when (it) {
+                            DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent_hint
+                            DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite_hint
+                            DuplicateBehavior.APPEND -> R.string.anki_behavior_append_hint
+                            DuplicateBehavior.NEW -> R.string.anki_behavior_new_hint
                         },
                     )
                 },
@@ -411,7 +433,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     hints = state.language.furiganaMarkerHints,
                     overwriteMode = if (allowsOverwrite) {
                         settings.overwriteModes[field] ?: if (settings.duplicateBehavior == DuplicateBehavior.APPEND) {
-                            AnkiNotes.suggestedAppendMode(template)
+                            AnkiNotes.suggestedAppendMode(field, template)
                         } else {
                             OverwriteMode.COALESCE
                         }
@@ -442,30 +464,39 @@ private fun OverwriteModeBadge(mode: OverwriteMode, onSelect: (OverwriteMode) ->
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
+                Icon(
+                    painter = painterResource(overwriteModeIcon(mode)),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 Text(
-                    text = "${overwriteModeIcon(mode)} ${stringResource(overwriteModeShortLabel(mode))}",
+                    text = stringResource(overwriteModeShortLabel(mode)),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Text(
-                    text = "▾",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Icon(
+                    painter = painterResource(R.drawable.ic_expand_more),
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             OverwriteMode.entries.forEach { option ->
                 DropdownMenuItem(
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(overwriteModeIcon(option)),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    },
                     text = {
                         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(overwriteModeIcon(option), style = MaterialTheme.typography.bodyMedium)
-                                Text(stringResource(overwriteModeShortLabel(option)), style = MaterialTheme.typography.bodyMedium)
-                            }
+                            Text(stringResource(overwriteModeShortLabel(option)), style = MaterialTheme.typography.bodyMedium)
                             Text(
                                 stringResource(overwriteModeDescription(option)),
                                 style = MaterialTheme.typography.bodySmall,
@@ -483,13 +514,13 @@ private fun OverwriteModeBadge(mode: OverwriteMode, onSelect: (OverwriteMode) ->
     }
 }
 
-private fun overwriteModeIcon(mode: OverwriteMode): String = when (mode) {
-    OverwriteMode.COALESCE -> "🛡️"
-    OverwriteMode.COALESCE_NEW -> "🆕"
-    OverwriteMode.OVERWRITE -> "🔄"
-    OverwriteMode.SKIP -> "🚫"
-    OverwriteMode.APPEND -> "➕"
-    OverwriteMode.PREPEND -> "⬇️"
+private fun overwriteModeIcon(mode: OverwriteMode): Int = when (mode) {
+    OverwriteMode.COALESCE -> R.drawable.ic_shield
+    OverwriteMode.COALESCE_NEW -> R.drawable.ic_new_label
+    OverwriteMode.OVERWRITE -> R.drawable.ic_update
+    OverwriteMode.SKIP -> R.drawable.ic_block
+    OverwriteMode.APPEND -> R.drawable.ic_add
+    OverwriteMode.PREPEND -> R.drawable.ic_arrow_downward
 }
 
 private fun overwriteModeShortLabel(mode: OverwriteMode): Int = when (mode) {
@@ -511,22 +542,54 @@ private fun overwriteModeDescription(mode: OverwriteMode): Int = when (mode) {
 }
 
 @Composable
-private fun <T> Picker(label: String, value: String?, options: List<T>, name: (T) -> String, onSelect: (T) -> Unit) {
+private fun <T> Picker(
+    label: String,
+    value: String?,
+    options: List<T>,
+    name: @Composable (T) -> String,
+    description: (@Composable (T) -> String)? = null,
+    onSelect: (T) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge)
         Box {
             OutlinedButton(onClick = { expanded = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    value ?: stringResource(R.string.anki_choose),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        value ?: stringResource(R.string.anki_choose),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false),
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.ic_expand_more),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
             }
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(name(option)) },
+                        text = {
+                            if (description != null) {
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Text(name(option), style = MaterialTheme.typography.bodyMedium)
+                                    Text(
+                                        description(option),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            } else {
+                                Text(name(option))
+                            }
+                        },
                         onClick = {
                             expanded = false
                             onSelect(option)

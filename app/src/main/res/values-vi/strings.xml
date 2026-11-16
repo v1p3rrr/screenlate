@@ -173,6 +173,7 @@
     <string name="anki_scope_deck">Bộ thẻ</string>
     <string name="anki_scope_deck_root">Bộ thẻ gốc</string>
     <string name="anki_duplicate_all_models">Kiểm tra mọi loại ghi chú</string>
+    <string name="anki_duplicate_all_models_hint">Tìm kiếm từ khớp theo trường đầu tiên trong tất cả các loại ghi chú của AnkiDroid, không chỉ loại hiện tại.</string>
     <string name="anki_duplicate_behavior">Khi có bản trùng</string>
     <string name="anki_behavior_prevent">Chặn</string>
     <string name="anki_behavior_overwrite">Ghi đè</string>

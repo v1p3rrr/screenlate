@@ -175,6 +175,7 @@
     <string name="anki_scope_deck">Deste</string>
     <string name="anki_scope_deck_root">Kök deste</string>
     <string name="anki_duplicate_all_models">Tüm not türlerini denetle</string>
+    <string name="anki_duplicate_all_models_hint">Eşleşen kelimeleri yalnızca geçerli olanında değil, AnkiDroid\'deki tüm not türlerinde ilk alana göre arar.</string>
     <string name="anki_duplicate_behavior">Yinelenen varsa</string>
     <string name="anki_behavior_prevent">Engelle</string>
     <string name="anki_behavior_overwrite">Üzerine yaz</string>

@@ -175,6 +175,7 @@
     <string name="anki_scope_deck">دسته</string>
     <string name="anki_scope_deck_root">ریشه دسته</string>
     <string name="anki_duplicate_all_models">بررسی همه انواع یادداشت</string>
+    <string name="anki_duplicate_all_models_hint">کلمات منطبق را بر اساس فیلد اول در تمام انواع یادداشت‌های AnkiDroid جستجو می‌کند، نه فقط یادداشت فعلی.</string>
     <string name="anki_duplicate_behavior">وقتی مورد تکراری وجود دارد</string>
     <string name="anki_behavior_prevent">جلوگیری</string>
     <string name="anki_behavior_overwrite">بازنویسی</string>

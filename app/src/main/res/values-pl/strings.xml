@@ -179,6 +179,7 @@
     <string name="anki_scope_deck">Talia</string>
     <string name="anki_scope_deck_root">Talia nadrzędna</string>
     <string name="anki_duplicate_all_models">Sprawdzaj wszystkie typy notatek</string>
+    <string name="anki_duplicate_all_models_hint">Szuka pasujących słów według pierwszego pola we wszystkich typach notatek w AnkiDroid, nie tylko w bieżącym.</string>
     <string name="anki_duplicate_behavior">Gdy istnieje duplikat</string>
     <string name="anki_behavior_prevent">Zablokuj</string>
     <string name="anki_behavior_overwrite">Nadpisz</string>

@@ -177,6 +177,7 @@
     <string name="anki_scope_deck">Mazzo</string>
     <string name="anki_scope_deck_root">Mazzo radice</string>
     <string name="anki_duplicate_all_models">Controlla tutti i tipi di nota</string>
+    <string name="anki_duplicate_all_models_hint">Cerca le parole corrispondenti tramite il primo campo in tutti i tipi di nota di AnkiDroid, non solo in quello corrente.</string>
     <string name="anki_duplicate_behavior">Se esiste un duplicato</string>
     <string name="anki_behavior_prevent">Impedisci</string>
     <string name="anki_behavior_overwrite">Sovrascrivi</string>

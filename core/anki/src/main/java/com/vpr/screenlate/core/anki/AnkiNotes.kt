@@ -223,7 +223,7 @@ class AnkiNotes @Inject constructor(
             if (targetNote != null) {
                 val merged = names.mapIndexed { index, name ->
                     val defaultMode = if (settings.duplicateBehavior == DuplicateBehavior.APPEND) {
-                        suggestedAppendMode(settings.fields[name].orEmpty())
+                        suggestedAppendMode(name, settings.fields[name].orEmpty())
                     } else {
                         OverwriteMode.COALESCE
                     }
@@ -275,19 +275,40 @@ class AnkiNotes @Inject constructor(
     companion object {
         const val DECK_SEPARATOR = "::"
 
-        private val CONTEXT_MARKERS = setOf(
+        private val SWITCH_FIELD_NAMES = setOf(
+            "sentencecard",
+            "audiocard",
+            "iswordandsentencecard",
+            "isclickcard",
+            "issentencecard",
+            "isaudiocard",
+        )
+
+        private val SCENE_MARKERS = setOf(
             "sentence",
             "sentence-furigana",
             "sentence-furigana-plain",
             "sentence-translation",
             "cloze-body",
             "screenshot",
-            "audio",
         )
 
-        fun suggestedAppendMode(template: String): OverwriteMode {
+        private fun isSceneField(clean: String): Boolean =
+            clean.contains("sentence") ||
+            clean.contains("screenshot") ||
+            clean.contains("picture") ||
+            clean.contains("image") ||
+            clean.contains("scene") ||
+            clean.contains("context")
+
+        fun suggestedAppendMode(field: String, template: String): OverwriteMode {
+            val clean = field.lowercase().replace(Regex("[^a-z0-9]"), "")
+            if (SWITCH_FIELD_NAMES.contains(clean)) return OverwriteMode.COALESCE
+            if (isSceneField(clean)) return OverwriteMode.APPEND
             val markers = FieldTemplate.markersIn(template)
-            return if (markers.any { it in CONTEXT_MARKERS }) OverwriteMode.APPEND else OverwriteMode.COALESCE
+            return if (markers.any { it in SCENE_MARKERS }) OverwriteMode.APPEND else OverwriteMode.COALESCE
         }
+
+        fun suggestedAppendMode(template: String): OverwriteMode = suggestedAppendMode("", template)
     }
 }

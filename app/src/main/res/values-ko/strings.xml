@@ -173,6 +173,7 @@
     <string name="anki_scope_deck">덱</string>
     <string name="anki_scope_deck_root">최상위 덱</string>
     <string name="anki_duplicate_all_models">모든 노트 유형 확인</string>
+    <string name="anki_duplicate_all_models_hint">현재 노트 유형뿐만 아니라 AnkiDroid의 모든 노트 유형에서 첫 번째 필드로 일치하는 단어를 검색합니다.</string>
     <string name="anki_duplicate_behavior">중복이 있을 때</string>
     <string name="anki_behavior_prevent">막기</string>
     <string name="anki_behavior_overwrite">덮어쓰기</string>

@@ -177,6 +177,7 @@
     <string name="anki_scope_deck">החפיסה</string>
     <string name="anki_scope_deck_root">שורש החפיסה</string>
     <string name="anki_duplicate_all_models">בדיקה בכל סוגי הרשומות</string>
+    <string name="anki_duplicate_all_models_hint">מחפש מילים תואמות לפי השדה הראשון בכל סוגי הרשומות ב-AnkiDroid, לא רק בסוג הנוכחי.</string>
     <string name="anki_duplicate_behavior">כשקיימת כפילות</string>
     <string name="anki_behavior_prevent">מניעה</string>
     <string name="anki_behavior_overwrite">דריסה</string>

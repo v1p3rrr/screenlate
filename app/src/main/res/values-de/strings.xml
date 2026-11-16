@@ -175,6 +175,7 @@
     <string name="anki_scope_deck">Stapel</string>
     <string name="anki_scope_deck_root">Oberster Stapel</string>
     <string name="anki_duplicate_all_models">Alle Notiztypen prüfen</string>
+    <string name="anki_duplicate_all_models_hint">Sucht anhand des ersten Feldes über alle Notiztypen in AnkiDroid nach übereinstimmenden Wörtern, nicht nur im aktuellen.</string>
     <string name="anki_duplicate_behavior">Wenn ein Duplikat existiert</string>
     <string name="anki_behavior_prevent">Verhindern</string>
     <string name="anki_behavior_overwrite">Überschreiben</string>

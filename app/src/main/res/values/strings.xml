@@ -179,6 +179,7 @@
     <string name="anki_scope_deck">Deck</string>
     <string name="anki_scope_deck_root">Deck root</string>
     <string name="anki_duplicate_all_models">Check all note types</string>
+    <string name="anki_duplicate_all_models_hint">Checks matching words by the first field across every note type in AnkiDroid, not only the current one.</string>
     <string name="anki_duplicate_behavior">When a duplicate exists</string>
     <string name="anki_behavior_prevent">Prevent</string>
     <string name="anki_behavior_overwrite">Overwrite</string>
