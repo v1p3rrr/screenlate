@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">Mostra una bolla fluttuante che legge il testo sullo schermo e cerca le parole nei tuoi dizionari. Screenlate fa screenshot solo quando trascini fuori la bolla o la tocchi, e li invia a un servizio di riconoscimento del testo nel cloud.</string>
     <string name="overlay_tile_label">Bolla di Screenlate</string>
     <string name="overlay_engine_draft">Bozza sul dispositivo</string>

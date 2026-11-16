@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">تعرض فقاعة عائمة تقرأ النص على الشاشة وتبحث عن الكلمات في قواميسك. لا يلتقط Screenlate لقطات الشاشة إلا عندما تسحب الفقاعة من الحافة أو تنقر عليها، ويرسلها إلى خدمة سحابية للتعرّف على النص.</string>
     <string name="overlay_tile_label">فقاعة Screenlate</string>
     <string name="overlay_engine_draft">مسودة داخل الجهاز</string>

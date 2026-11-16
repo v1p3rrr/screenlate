@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">حباب شناوری نشان می‌دهد که متن روی صفحه را می‌خواند و واژه‌ها را در واژه‌نامه‌های شما جستجو می‌کند. Screenlate فقط وقتی حباب را بیرون می‌کشید یا روی آن ضربه می‌زنید نماگرفت می‌گیرد و آن را به یک سرویس تشخیص ابری متن می‌فرستد.</string>
     <string name="overlay_tile_label">حباب Screenlate</string>
     <string name="overlay_engine_draft">پیش‌نویس روی دستگاه</string>

@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">Ekrandaki metni okuyan ve kelimeleri sözlüklerinizde arayan yüzen bir baloncuk gösterir. Screenlate yalnızca baloncuğu çektiğinizde veya ona dokunduğunuzda ekran görüntüsü alır ve bunları bir bulut metin tanıma hizmetine gönderir.</string>
     <string name="overlay_tile_label">Screenlate baloncuğu</string>
     <string name="overlay_engine_draft">Cihazda ön tanıma</string>

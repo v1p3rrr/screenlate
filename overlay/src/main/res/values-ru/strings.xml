@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">Показывает плавающую кнопку, которая распознаёт текст на экране и ищет слова в ваших словарях. Screenlate делает скриншот, только когда вы вытягиваете кнопку или нажимаете на неё, и отправляет его в облачный сервис распознавания текста.</string>
     <string name="overlay_tile_label">Кнопка Screenlate</string>
 

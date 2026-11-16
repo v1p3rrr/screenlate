@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">顯示一個懸浮球，用於讀取螢幕上的文字並在詞典中查詞。Screenlate 僅在你拖出或輕觸懸浮球時截圖，並將截圖傳送到雲端文字辨識服務。</string>
     <string name="overlay_tile_label">Screenlate 懸浮球</string>
     <string name="overlay_engine_draft">裝置端初步辨識</string>

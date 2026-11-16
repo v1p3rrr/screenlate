@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">Hiển thị một bong bóng nổi đọc văn bản trên màn hình và tra từ trong các từ điển của bạn. Screenlate chỉ chụp màn hình khi bạn kéo bong bóng ra hoặc chạm vào nó, và gửi ảnh chụp đến một dịch vụ nhận dạng văn bản trên đám mây.</string>
     <string name="overlay_tile_label">Bong bóng Screenlate</string>
     <string name="overlay_engine_draft">Bản nháp trên thiết bị</string>

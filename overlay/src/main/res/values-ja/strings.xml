@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">画面上の文字を読み取り、辞書で語を調べるフローティングバブルを表示します。Screenlate がスクリーンショットを撮るのは、バブルを引き出したときかタップしたときだけで、それをクラウドの文字認識サービスに送信します。</string>
     <string name="overlay_tile_label">Screenlate バブル</string>
     <string name="overlay_engine_draft">端末で仮認識</string>

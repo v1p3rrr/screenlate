@@ -70,14 +70,4 @@ object GoogleDomains {
         Language.ESPERANTO,
         Language.KHMER -> "www.google.com"
     }
-
-    /**
-     * Builds the Google Images URL for [expression] in [language].
-     */
-    fun imagesUrl(language: Language, expression: String): String {
-        val dom = domain(language)
-        val encoded = java.net.URLEncoder.encode(expression, "UTF-8").replace("+", "%20")
-        val hlParam = if (dom == "www.google.com" && language != Language.ENGLISH) "&hl=${language.code}" else ""
-        return "https://$dom/search?q=$encoded&tbm=isch$hlParam"
-    }
 }

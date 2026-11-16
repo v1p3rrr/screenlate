@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">Affiche une bulle flottante qui lit le texte à l’écran et cherche les mots dans vos dictionnaires. Screenlate ne prend des captures d’écran que lorsque vous sortez la bulle ou la touchez, et les envoie à un service de reconnaissance de texte dans le cloud.</string>
     <string name="overlay_tile_label">Bulle Screenlate</string>
     <string name="overlay_engine_draft">Brouillon sur l’appareil</string>

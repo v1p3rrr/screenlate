@@ -1781,3 +1781,27 @@ test('non-japanese entries only show Google Images with regional domain', () => 
     extBtn.click();
     assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://www.google.ru/search?q=%D0%BA%D0%BE%D1%82&tbm=isch']);
 });
+
+test('fallback language entry in japanese lookup excludes japanese-specific links', () => {
+    Popup.setAppearance({
+        externalLinks: {
+            googleImages: true,
+            jpdb: true,
+            nadeshiko: true,
+            immersionKit: true,
+            googleDomain: 'www.google.co.jp',
+            hasJapaneseLinks: true,
+        },
+    });
+    Popup.render(state({
+        results: [{
+            term: { expression: 'cat', reading: '', glossaries: [] },
+            fallbackLanguage: 'en',
+        }],
+    }));
+    const firstEntry = content.querySelector('.entry');
+    assert.equal(firstEntry.querySelector('.entry-external-links'), null);
+    const extBtn = firstEntry.querySelector('.entry-actions .action-external');
+    assert.ok(extBtn);
+    assert.equal(extBtn.dataset.external, 'google-images');
+});

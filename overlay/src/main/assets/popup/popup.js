@@ -102,10 +102,10 @@ const Popup = (() => {
         warning: '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3.5 2.5 20h19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.3" r="1.1" fill="currentColor"/></svg>',
         // Material Icons "translate" (Apache 2.0, see NOTICE).
         translate: '<svg viewBox="0 0 24 24" width="17" height="17"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/></svg>',
-        googleImages: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 16l-5-5-5 5-2-2-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        jpdb: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.5" y="3.5" width="19" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 8v5a2 2 0 0 1-2 2M13.5 8h3a2 2 0 0 1 0 4h-3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        nadeshiko: '<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.7" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6.3" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
-        immersionKit: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor"/></svg>',
+        googleImages: '<svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 16l-5-5-5 5-2-2-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        jpdb: '<svg viewBox="0 0 24 24" width="18" height="18"><rect x="2.5" y="3.5" width="19" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 8v5a2 2 0 0 1-2 2M13.5 8h3a2 2 0 0 1 0 4h-3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        nadeshiko: '<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.7" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6.3" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+        immersionKit: '<svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor"/></svg>',
     };
 
     const history = [];
@@ -555,9 +555,10 @@ const Popup = (() => {
     }
 
     function entryExternalLinks(result) {
+        const entryLang = result.fallbackLanguage || result.lang;
         const hasJp = externalLinks.hasJapaneseLinks;
-        const isJapanese = result.lang
-            ? result.lang === 'ja'
+        const isJapanese = entryLang
+            ? entryLang === 'ja'
             : (hasJp !== undefined ? Boolean(hasJp) : (document.documentElement.lang || 'ja') === 'ja');
         const expr = encodeURIComponent(result.term.expression);
         const links = [];

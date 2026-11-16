@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">מציג בועה צפה שקוראת טקסט על המסך ומחפשת מילים במילונים שלך. Screenlate מצלמת את המסך רק במשיכת הבועה החוצה או בהקשה עליה, ושולחת את הצילומים לשירות זיהוי טקסט בענן.</string>
     <string name="overlay_tile_label">בועת Screenlate</string>
     <string name="overlay_engine_draft">טיוטה מהמכשיר</string>

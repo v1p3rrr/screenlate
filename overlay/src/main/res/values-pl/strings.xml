@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">Wyświetla pływający dymek, który czyta tekst na ekranie i wyszukuje słowa w twoich słownikach. Screenlate robi zrzuty ekranu tylko wtedy, gdy wyciągniesz dymek lub go dotkniesz, i wysyła je do usługi rozpoznawania tekstu w chmurze.</string>
     <string name="overlay_tile_label">Dymek Screenlate</string>
     <string name="overlay_engine_draft">Wstępnie na urządzeniu</string>

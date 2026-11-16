@@ -1,4 +1,4 @@
-﻿<resources>
+<resources>
     <string name="overlay_service_description">Mostra uma bolha flutuante que lê o texto na tela e pesquisa as palavras nos seus dicionários. O Screenlate só faz capturas de tela quando você puxa a bolha ou toca nela, e as envia para um serviço de reconhecimento de texto na nuvem.</string>
     <string name="overlay_tile_label">Bolha do Screenlate</string>
     <string name="overlay_engine_draft">Rascunho no dispositivo</string>
