@@ -1,5 +1,17 @@
 # Status
 
+## About screen icon, license audit, and notice wrapping (2026-11-17)
+
+- Added app icon to the About screen next to the app title in `SectionCard` (36.dp with 8.dp rounded corners, using `LocalDensity` for pixel scaling, aligned `Alignment.CenterVertically` with 12.dp spacing).
+- Refactored `SectionCard` to support optional `leadingContent` with a unified title renderer, eliminating duplicate conditionals and redundant `Row` wrapping.
+- Wrapped third-party notices (`NOTICE.txt`) in `LicenseScreens.kt` by removing horizontal scroll so that long text wraps to screen width and only scrolls vertically.
+- Audited licenses across data and libraries:
+  - Fixed missing license metadata in AboutLibraries for `cz.adaptech.tesseract4android:tesseract4android-openmp` via custom configuration (`app/config/aboutlibraries/libraries/tesseract4android.json`) declaring Apache-2.0.
+  - Specified `LGPL-3.0-or-later` for `com.github.ankidroid:Anki-Android` (`app/config/aboutlibraries/libraries/ankidroid.json`) in AboutLibraries.
+  - Moved Words.hk frequency from `NOTICE` top section to Third-party data (unbundled).
+  - Updated status for JMdict, Jiten, and Kanjium in `ai/notes/references.md` from bundled to catalog download.
+- Conducted two-axis code review (Standards & Spec), addressed findings, and verified with all unit tests and 180 page tests passing.
+
 ## Senren scene switching, field appending and deck-scoped duplicate updates (2026-11-16)
 
 - Implemented Senren (洗練) scene switching support, field appending, and safe deck-scoped duplicate resolution:
