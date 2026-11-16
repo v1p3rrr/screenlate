@@ -615,6 +615,15 @@
     <string name="reset_section_language">Les paramètres communs à toutes les langues et ceux de la langue affichée sur la page sont réinitialisés ; les autres langues gardent les leurs.</string>
     <string name="popup_settings_title">Fenêtre contextuelle</string>
     <string name="popup_content_title">Éléments de la fenêtre contextuelle</string>
+    <string name="popup_external_links_title">Liens externes</string>
+    <string name="popup_external_google_images">Google Images</string>
+    <string name="popup_external_google_images_hint">Recherche d\'images dans le navigateur.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">Entrée de dictionnaire sur jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">Exemples de phrases sur nadeshiko.co.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">Phrases d\'anime sur immersionkit.com.</string>
     <string name="popup_auto_hide_title">Masquage automatique</string>
     <string name="popup_hide_after_add">Après l’ajout à Anki</string>
     <string name="popup_hide_after_add_hint">La fenêtre contextuelle se ferme dès que ➕ a ajouté le mot.</string>

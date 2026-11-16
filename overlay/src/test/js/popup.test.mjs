@@ -1686,3 +1686,89 @@ test('dynamic theme colors are injected via setAppearance and adapt to theme mod
     assert.equal(root.style.getPropertyValue('--dictionary-bg'), '');
     assert.equal(root.style.getPropertyValue('--dictionary-fg'), '');
 });
+
+test('a single external link is placed inline in entry-actions and opens browser', () => {
+    Popup.setAppearance({
+        externalLinks: {
+            googleImages: true,
+            jpdb: false,
+            nadeshiko: false,
+            immersionKit: false,
+            googleDomain: 'www.google.co.jp',
+        },
+    });
+    Popup.render(state());
+    const firstEntry = content.querySelector('.entry');
+    const actions = firstEntry.querySelector('.entry-actions');
+    const extBtn = actions.querySelector('.action-external');
+    assert.ok(extBtn);
+    assert.equal(extBtn.dataset.external, 'google-images');
+    assert.equal(firstEntry.querySelector('.entry-external-links'), null);
+
+    extBtn.click();
+    const lastCall = page.calls.at(-1);
+    assert.equal(lastCall[0], 'onOpenUrl');
+    assert.equal(lastCall[1], 'https://www.google.co.jp/search?q=%E7%8C%AB&tbm=isch');
+});
+
+test('multiple external links form a second row under actions and trigger URLs', () => {
+    Popup.setAppearance({
+        externalLinks: {
+            googleImages: true,
+            jpdb: true,
+            nadeshiko: true,
+            immersionKit: true,
+            googleDomain: 'www.google.co.jp',
+        },
+    });
+    Popup.render(state());
+    const firstEntry = content.querySelector('.entry');
+    const extRow = firstEntry.querySelector('.entry-external-links');
+    assert.ok(extRow);
+    const buttons = extRow.querySelectorAll('.action-external');
+    assert.equal(buttons.length, 4);
+    assert.equal(buttons[0].dataset.external, 'google-images');
+    assert.equal(buttons[1].dataset.external, 'jpdb');
+    assert.equal(buttons[2].dataset.external, 'nadeshiko');
+    assert.equal(buttons[3].dataset.external, 'immersion-kit');
+
+    // Click JPDB
+    buttons[1].click();
+    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://jpdb.io/search?q=%E7%8C%AB']);
+
+    // Click Nadeshiko
+    buttons[2].click();
+    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://nadeshiko.co/search/sentence?query=%E7%8C%AB']);
+
+    // Click Immersion Kit
+    buttons[3].click();
+    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://immersionkit.com/dictionary?keyword=%E7%8C%AB']);
+});
+
+test('non-japanese entries only show Google Images with regional domain', () => {
+    Popup.setAppearance({
+        externalLinks: {
+            googleImages: true,
+            jpdb: true,
+            nadeshiko: true,
+            immersionKit: true,
+            googleDomain: 'www.google.ru',
+        },
+    });
+    Popup.render(state({
+        lang: 'ru',
+        results: [{
+            term: { expression: 'кот', reading: 'кот', glossaries: [] },
+            lang: 'ru',
+        }],
+    }));
+    const firstEntry = content.querySelector('.entry');
+    // Since only Google Images applies to Russian, it's 1 link -> inline in entry-actions
+    assert.equal(firstEntry.querySelector('.entry-external-links'), null);
+    const extBtn = firstEntry.querySelector('.entry-actions .action-external');
+    assert.ok(extBtn);
+    assert.equal(extBtn.dataset.external, 'google-images');
+
+    extBtn.click();
+    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://www.google.ru/search?q=%D0%BA%D0%BE%D1%82&tbm=isch']);
+});

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.languages.PronunciationColorStrings
 import com.vpr.screenlate.languages.pronunciationColorStrings
 import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
@@ -55,9 +56,46 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
                 // With several languages the pronunciation colors are in the language's card.
                 val pronunciation = if (profiles.several) null else shown.pronunciationColorStrings
                 PopupContentCard(current, stored.showSourceText, translation?.button, pronunciation, viewModel)
+                ExternalLinksCard(current, shown == Language.JAPANESE, viewModel)
                 AutoHideCard(stored, viewModel)
             }
             PopupTextSections(viewModel)
+        }
+    }
+}
+
+@Composable
+private fun ExternalLinksCard(
+    appearance: PopupAppearance,
+    isJapanese: Boolean,
+    viewModel: PopupAppearanceViewModel,
+) {
+    SectionCard(title = stringResource(R.string.popup_external_links_title)) {
+        SwitchRow(
+            label = stringResource(R.string.popup_external_google_images),
+            checked = appearance.externalGoogleImages,
+            onChange = viewModel::setExternalGoogleImages,
+            hint = stringResource(R.string.popup_external_google_images_hint),
+        )
+        if (isJapanese) {
+            SwitchRow(
+                label = stringResource(R.string.popup_external_jpdb),
+                checked = appearance.externalJpdb,
+                onChange = viewModel::setExternalJpdb,
+                hint = stringResource(R.string.popup_external_jpdb_hint),
+            )
+            SwitchRow(
+                label = stringResource(R.string.popup_external_nadeshiko),
+                checked = appearance.externalNadeshiko,
+                onChange = viewModel::setExternalNadeshiko,
+                hint = stringResource(R.string.popup_external_nadeshiko_hint),
+            )
+            SwitchRow(
+                label = stringResource(R.string.popup_external_immersion_kit),
+                checked = appearance.externalImmersionKit,
+                onChange = viewModel::setExternalImmersionKit,
+                hint = stringResource(R.string.popup_external_immersion_kit_hint),
+            )
         }
     }
 }

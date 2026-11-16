@@ -64,4 +64,24 @@ class PopupAppearanceRepositoryTest {
         assertThat(store.state.value.asMap().keys.map { it.name })
             .containsExactly("popup_font", "popup_custom_css", "popup_custom_css_en")
     }
+
+    @Test
+    fun `external links are off by default and can be toggled`() = runTest {
+        val initial = repository.appearance(Language.JAPANESE).first()
+        assertThat(initial.externalGoogleImages).isFalse()
+        assertThat(initial.externalJpdb).isFalse()
+        assertThat(initial.externalNadeshiko).isFalse()
+        assertThat(initial.externalImmersionKit).isFalse()
+
+        repository.setExternalGoogleImages(true)
+        repository.setExternalJpdb(true)
+        repository.setExternalNadeshiko(true)
+        repository.setExternalImmersionKit(true)
+
+        val updated = repository.appearance(Language.JAPANESE).first()
+        assertThat(updated.externalGoogleImages).isTrue()
+        assertThat(updated.externalJpdb).isTrue()
+        assertThat(updated.externalNadeshiko).isTrue()
+        assertThat(updated.externalImmersionKit).isTrue()
+    }
 }

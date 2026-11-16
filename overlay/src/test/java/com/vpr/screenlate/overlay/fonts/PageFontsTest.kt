@@ -185,4 +185,22 @@ class PageFontsTest {
         assertThat(DefinitionCopyMode.of("unknown")).isEqualTo(DefinitionCopyMode.ALL)
         assertThat(DefinitionCopyMode.of(null)).isEqualTo(DefinitionCopyMode.ALL)
     }
+
+    @Test
+    fun `external links are passed to appearance json`() {
+        val appearance = PopupAppearance(
+            externalGoogleImages = true,
+            externalJpdb = true,
+            externalNadeshiko = false,
+            externalImmersionKit = true,
+        )
+        val json = PageAppearance.build(JapaneseSupport, appearance, emptyList())
+        val links = json["externalLinks"] as? kotlinx.serialization.json.JsonObject
+        assertThat(links).isNotNull()
+        assertThat(links?.get("googleImages")?.jsonPrimitive?.boolean).isTrue()
+        assertThat(links?.get("jpdb")?.jsonPrimitive?.boolean).isTrue()
+        assertThat(links?.get("nadeshiko")?.jsonPrimitive?.boolean).isFalse()
+        assertThat(links?.get("immersionKit")?.jsonPrimitive?.boolean).isTrue()
+        assertThat(links?.get("googleDomain")?.jsonPrimitive?.content).isEqualTo("www.google.co.jp")
+    }
 }

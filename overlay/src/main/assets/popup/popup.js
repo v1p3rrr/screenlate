@@ -102,6 +102,10 @@ const Popup = (() => {
         warning: '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3.5 2.5 20h19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.3" r="1.1" fill="currentColor"/></svg>',
         // Material Icons "translate" (Apache 2.0, see NOTICE).
         translate: '<svg viewBox="0 0 24 24" width="17" height="17"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/></svg>',
+        googleImages: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 16l-5-5-5 5-2-2-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        jpdb: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.5" y="3.5" width="19" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 8v5a2 2 0 0 1-2 2M13.5 8h3a2 2 0 0 1 0 4h-3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        nadeshiko: '<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.7" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6.3" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+        immersionKit: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor"/></svg>',
     };
 
     const history = [];
@@ -125,6 +129,13 @@ const Popup = (() => {
     let drawnTranslation = null;
     /** Dynamic theme colors injected via setAppearance. */
     let appearanceColors = null;
+    let externalLinks = {
+        googleImages: false,
+        jpdb: false,
+        nadeshiko: false,
+        immersionKit: false,
+        googleDomain: 'www.google.com',
+    };
 
     function applyColors() {
         const root = document.documentElement;
@@ -495,10 +506,22 @@ const Popup = (() => {
         if (result.fallbackLanguage) {
             head.append(element('span', 'tag fallback-language', labels[`language_${result.fallbackLanguage}`] || result.fallbackLanguage));
         }
+        const links = entryExternalLinks(result);
         const details = entryInfo(result, labels);
         if (details) head.append(details);
-        const buttons = actionButtons(result, index);
+        const buttons = actionButtons(result, index, links.length === 1 ? links[0] : null);
         if (buttons) head.append(buttons);
+        if (links.length > 1) {
+            const extRow = element('div', 'entry-external-links');
+            for (const link of links) {
+                const ext = iconButton(link.id, link.icon, link.label);
+                ext.classList.add('action-external');
+                ext.dataset.external = link.id;
+                ext.addEventListener('click', () => ScreenlateBridge.onOpenUrl(link.url));
+                extRow.append(ext);
+            }
+            head.append(extRow);
+        }
         article.append(head);
 
         const glossary = element('div', 'yomitan-glossary');
@@ -535,7 +558,51 @@ const Popup = (() => {
         });
     }
 
-    function actionButtons(result, index) {
+    function entryExternalLinks(result) {
+        const lang = result.lang || document.documentElement.lang || 'ja';
+        const isJapanese = lang === 'ja';
+        const expr = encodeURIComponent(result.term.expression);
+        const links = [];
+        if (externalLinks.googleImages) {
+            const dom = isJapanese ? 'www.google.co.jp' : (externalLinks.googleDomain || 'www.google.com');
+            const hl = (dom === 'www.google.com' && lang !== 'en') ? `&hl=${encodeURIComponent(lang)}` : '';
+            links.push({
+                id: 'google-images',
+                icon: ICONS.googleImages,
+                label: labelOf('externalGoogleImages') || 'Google Images',
+                url: `https://${dom}/search?q=${expr}&tbm=isch${hl}`,
+            });
+        }
+        if (isJapanese) {
+            if (externalLinks.jpdb) {
+                links.push({
+                    id: 'jpdb',
+                    icon: ICONS.jpdb,
+                    label: labelOf('externalJpdb') || 'JPDB',
+                    url: `https://jpdb.io/search?q=${expr}`,
+                });
+            }
+            if (externalLinks.nadeshiko) {
+                links.push({
+                    id: 'nadeshiko',
+                    icon: ICONS.nadeshiko,
+                    label: labelOf('externalNadeshiko') || 'Nadeshiko',
+                    url: `https://nadeshiko.co/search/sentence?query=${expr}`,
+                });
+            }
+            if (externalLinks.immersionKit) {
+                links.push({
+                    id: 'immersion-kit',
+                    icon: ICONS.immersionKit,
+                    label: labelOf('externalImmersionKit') || 'Immersion Kit',
+                    url: `https://immersionkit.com/dictionary?keyword=${expr}`,
+                });
+            }
+        }
+        return links;
+    }
+
+    function actionButtons(result, index, singleLink) {
         const container = element('div', 'entry-actions');
         if (index === 0 && document.documentElement.dataset.compact === 'true') {
             const close = iconButton('close', ICONS.close, labelOf('close'));
@@ -619,6 +686,13 @@ const Popup = (() => {
                 addNote(screenshotByDefault ? !held : held, false);
             });
             container.append(add);
+        }
+        if (singleLink) {
+            const ext = iconButton(singleLink.id, singleLink.icon, singleLink.label);
+            ext.classList.add('action-external');
+            ext.dataset.external = singleLink.id;
+            ext.addEventListener('click', () => ScreenlateBridge.onOpenUrl(singleLink.url));
+            container.append(ext);
         }
         return container;
     }
@@ -1574,6 +1648,11 @@ const Popup = (() => {
         if (appearance.preload && document.fonts) {
             const font = `1em "${appearance.preload.replace(/"/g, '\\"')}"`;
             document.fonts.load(font, appearance.preloadText || undefined).catch(() => {});
+        }
+        if (appearance.externalLinks) {
+            const changed = JSON.stringify(appearance.externalLinks) !== JSON.stringify(externalLinks);
+            externalLinks = Object.assign(externalLinks, appearance.externalLinks);
+            if (changed && current) render(current);
         }
     }
 

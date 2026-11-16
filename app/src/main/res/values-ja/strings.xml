@@ -607,6 +607,15 @@
     <string name="reset_section_language">すべての言語で共通の設定と、ページに表示中の言語の設定がリセットされます。ほかの言語の設定はそのままです。</string>
     <string name="popup_settings_title">ポップアップ</string>
     <string name="popup_content_title">ポップアップの要素</string>
+    <string name="popup_external_links_title">外部リンク</string>
+    <string name="popup_external_google_images">Google 画像検索</string>
+    <string name="popup_external_google_images_hint">ブラウザで画像検索を開きます。</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">jpdb.io の辞書ページを開きます。</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">nadeshiko.co で例文を検索します。</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">immersionkit.com でアニメ例文を検索します。</string>
     <string name="popup_auto_hide_title">自動で閉じる</string>
     <string name="popup_hide_after_add">Anki に追加したあと</string>
     <string name="popup_hide_after_add_hint">➕ で単語を追加すると、すぐにポップアップが閉じます。</string>

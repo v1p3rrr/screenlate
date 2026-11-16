@@ -615,6 +615,15 @@
     <string name="reset_section_language">Se restablecen los ajustes comunes a todos los idiomas y los del idioma que muestra la página; los demás idiomas conservan los suyos.</string>
     <string name="popup_settings_title">Ventana emergente</string>
     <string name="popup_content_title">Elementos de la ventana emergente</string>
+    <string name="popup_external_links_title">Enlaces externos</string>
+    <string name="popup_external_google_images">Google Imágenes</string>
+    <string name="popup_external_google_images_hint">Búsqueda de imágenes en el navegador.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">Entrada del diccionario en jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">Búsqueda de oraciones en nadeshiko.co.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">Oraciones de anime en immersionkit.com.</string>
     <string name="popup_auto_hide_title">Ocultación automática</string>
     <string name="popup_hide_after_add">Tras añadir a Anki</string>
     <string name="popup_hide_after_add_hint">La ventana emergente se cierra en cuanto ➕ añade la palabra.</string>

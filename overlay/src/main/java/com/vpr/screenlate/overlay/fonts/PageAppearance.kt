@@ -4,6 +4,7 @@ import android.content.Context
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.network.GoogleDomains
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.theme.AppPaletteConfig
 import com.vpr.screenlate.core.common.theme.PaletteGenerator
@@ -83,6 +84,16 @@ class PageAppearance @Inject constructor(
                 put("customCss", customCss)
                 put("definitionCopy", if (appearance.copyDefinitions) appearance.copyMode.id else "")
                 put("pronunciationColors", appearance.pronunciationColors)
+                put(
+                    "externalLinks",
+                    buildJsonObject {
+                        put("googleImages", appearance.externalGoogleImages)
+                        put("jpdb", appearance.externalJpdb)
+                        put("nadeshiko", appearance.externalNadeshiko)
+                        put("immersionKit", appearance.externalImmersionKit)
+                        put("googleDomain", GoogleDomains.domain(support.language))
+                    },
+                )
                 put("accentLight", palette.popupAccentLight)
                 put("accentDark", palette.popupAccentDark)
                 put("matchedBgLight", palette.popupMatchedBgLight)

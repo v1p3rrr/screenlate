@@ -620,6 +620,15 @@
     <string name="reset_section_language">Сбрасываются общие для всех языков настройки и настройки языка, показанного на странице; у других языков они остаются.</string>
     <string name="popup_settings_title">Попап</string>
     <string name="popup_content_title">Элементы попапа</string>
+    <string name="popup_external_links_title">Внешние ссылки</string>
+    <string name="popup_external_google_images">Google Картинки</string>
+    <string name="popup_external_google_images_hint">Поиск картинок в браузере.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">Словарная карточка на jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">Поиск предложений на nadeshiko.co.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">Примеры из аниме на immersionkit.com.</string>
     <string name="popup_auto_hide_title">Автоскрытие</string>
     <string name="popup_hide_after_add">После добавления в Anki</string>
     <string name="popup_hide_after_add_hint">Попап закрывается, как только ➕ добавит слово.</string>

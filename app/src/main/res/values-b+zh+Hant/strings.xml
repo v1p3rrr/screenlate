@@ -607,6 +607,15 @@
     <string name="reset_section_language">所有語言共用的設定和頁面上顯示的語言的設定將被重設；其他語言的設定保持不變。</string>
     <string name="popup_settings_title">彈出視窗</string>
     <string name="popup_content_title">彈出視窗元素</string>
+    <string name="popup_external_links_title">外部連結</string>
+    <string name="popup_external_google_images">Google 圖片</string>
+    <string name="popup_external_google_images_hint">在瀏覽器中開啟圖片搜尋。</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">在 jpdb.io 檢視詞條。</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">在 nadeshiko.co 搜尋例句。</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">在 immersionkit.com 搜尋動畫例句。</string>
     <string name="popup_auto_hide_title">自動隱藏</string>
     <string name="popup_hide_after_add">新增到 Anki 後</string>
     <string name="popup_hide_after_add_hint">➕ 新增該詞後，彈出視窗會立即關閉。</string>

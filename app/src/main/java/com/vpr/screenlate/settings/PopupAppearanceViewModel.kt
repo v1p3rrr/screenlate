@@ -175,6 +175,14 @@ class PopupAppearanceViewModel @Inject constructor(
 
     fun setCopyMode(mode: DefinitionCopyMode) = launch { repository.setCopyMode(mode) }
 
+    fun setExternalGoogleImages(enabled: Boolean) = launch { repository.setExternalGoogleImages(enabled) }
+
+    fun setExternalJpdb(enabled: Boolean) = launch { repository.setExternalJpdb(enabled) }
+
+    fun setExternalNadeshiko(enabled: Boolean) = launch { repository.setExternalNadeshiko(enabled) }
+
+    fun setExternalImmersionKit(enabled: Boolean) = launch { repository.setExternalImmersionKit(enabled) }
+
     fun setShowSourceText(enabled: Boolean) = launch { overlaySettings.setShowSourceText(enabled) }
 
     fun setHideAfterAdd(enabled: Boolean) = launch { overlaySettings.setHideAfterAdd(enabled) }

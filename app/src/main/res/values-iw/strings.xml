@@ -602,6 +602,15 @@
     <string name="reset_section_language">ההגדרות המשותפות לכל השפות וההגדרות של השפה שמוצגת בדף יאופסו; שפות אחרות שומרות על ההגדרות שלהן.</string>
     <string name="popup_settings_title">חלון קופץ</string>
     <string name="popup_content_title">רכיבי החלון הקופץ</string>
+    <string name="popup_external_links_title">קישורים חיצוניים</string>
+    <string name="popup_external_google_images">תמונות Google</string>
+    <string name="popup_external_google_images_hint">חיפوش תמונות בדפדפן.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">ערך מילוני ב-jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">חיפوش משפטים ב-nadeshiko.co.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">משפטים מאנימה ב-immersionkit.com.</string>
     <string name="popup_auto_hide_title">הסתרה אוטומטית</string>
     <string name="popup_hide_after_add">אחרי הוספה ל-Anki</string>
     <string name="popup_hide_after_add_hint">החלון הקופץ נסגר אחרי שהמילה נוספה באמצעות ➕.</string>

@@ -598,6 +598,15 @@
     <string name="reset_section_language">تنظیمات مشترک همه زبان‌ها و تنظیمات زبانی که در صفحه نشان داده می‌شود بازنشانی می‌شوند؛ زبان‌های دیگر تنظیمات خود را نگه می‌دارند.</string>
     <string name="popup_settings_title">پنجره بازشو</string>
     <string name="popup_content_title">اجزای پنجره بازشو</string>
+    <string name="popup_external_links_title">پیوندهای بیرونی</string>
+    <string name="popup_external_google_images">تصاویر Google</string>
+    <string name="popup_external_google_images_hint">جستجوی تصاویر در مرورگر.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">مدخل واژه‌نامه در jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">جستجوی جملات در nadeshiko.co.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">جملات انیمه در immersionkit.com.</string>
     <string name="popup_auto_hide_title">پنهان شدن خودکار</string>
     <string name="popup_hide_after_add">پس از افزودن به Anki</string>
     <string name="popup_hide_after_add_hint">پنجره بازشو پس از اینکه ➕ واژه را اضافه کرد بسته می‌شود.</string>

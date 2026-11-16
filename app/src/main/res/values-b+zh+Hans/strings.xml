@@ -607,6 +607,15 @@
     <string name="reset_section_language">所有语言共用的设置和页面上显示的语言的设置将被重置；其他语言的设置保持不变。</string>
     <string name="popup_settings_title">弹窗</string>
     <string name="popup_content_title">弹窗元素</string>
+    <string name="popup_external_links_title">外部链接</string>
+    <string name="popup_external_google_images">Google 图片</string>
+    <string name="popup_external_google_images_hint">在浏览器中进行图片搜索。</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">在 jpdb.io 查看词条。</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">在 nadeshiko.co 搜索例句。</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">在 immersionkit.com 搜索动漫例句。</string>
     <string name="popup_auto_hide_title">自动隐藏</string>
     <string name="popup_hide_after_add">添加到 Anki 后</string>
     <string name="popup_hide_after_add_hint">➕ 添加该词后，弹窗立即关闭。</string>

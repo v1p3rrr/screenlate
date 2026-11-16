@@ -611,6 +611,15 @@
     <string name="reset_section_language">Zurückgesetzt werden die Einstellungen, die alle Sprachen teilen, und die der auf der Seite gezeigten Sprache; andere Sprachen behalten ihre.</string>
     <string name="popup_settings_title">Popup</string>
     <string name="popup_content_title">Popup-Elemente</string>
+    <string name="popup_external_links_title">Externe Links</string>
+    <string name="popup_external_google_images">Google Bilder</string>
+    <string name="popup_external_google_images_hint">Bildersuche im Browser öffnen.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">Wörterbucheintrag auf jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">Beispielsätze auf nadeshiko.co suchen.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">Anime-Sätze auf immersionkit.com suchen.</string>
     <string name="popup_auto_hide_title">Automatisches Ausblenden</string>
     <string name="popup_hide_after_add">Nach dem Hinzufügen zu Anki</string>
     <string name="popup_hide_after_add_hint">Das Popup schließt sich, sobald ➕ das Wort hinzugefügt hat.</string>

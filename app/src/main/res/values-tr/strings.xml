@@ -611,6 +611,15 @@
     <string name="reset_section_language">Tüm dillerin ortak ayarları ve sayfada gösterilen dilin ayarları sıfırlanır; diğer diller kendi ayarlarını korur.</string>
     <string name="popup_settings_title">Açılır pencere</string>
     <string name="popup_content_title">Açılır pencere öğeleri</string>
+    <string name="popup_external_links_title">Dış bağlantılar</string>
+    <string name="popup_external_google_images">Google Görseller</string>
+    <string name="popup_external_google_images_hint">Tarayıcıda görsel araması.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">jpdb.io sözlük girişi.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">nadeshiko.co sitesinde örnek cümle araması.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">immersionkit.com sitesinde anime cümleleri.</string>
     <string name="popup_auto_hide_title">Otomatik gizleme</string>
     <string name="popup_hide_after_add">Anki’ye ekledikten sonra</string>
     <string name="popup_hide_after_add_hint">➕ kelimeyi ekler eklemez açılır pencere kapanır.</string>

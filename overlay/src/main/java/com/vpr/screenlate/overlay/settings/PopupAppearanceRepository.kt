@@ -44,6 +44,10 @@ data class PopupAppearance(
     val copyDefinitions: Boolean = false,
     val copyMode: DefinitionCopyMode = DefinitionCopyMode.ALL,
     val pronunciationColors: Boolean = false,
+    val externalGoogleImages: Boolean = false,
+    val externalJpdb: Boolean = false,
+    val externalNadeshiko: Boolean = false,
+    val externalImmersionKit: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_FONT_SIZE = 15
@@ -96,6 +100,10 @@ class PopupAppearanceRepository @Inject constructor(
             copyDefinitions = prefs[COPY_DEFINITIONS] ?: false,
             copyMode = DefinitionCopyMode.of(prefs[COPY_MODE]),
             pronunciationColors = prefs[pronunciationColorsKey(language)] ?: false,
+            externalGoogleImages = prefs[EXTERNAL_GOOGLE_IMAGES] ?: false,
+            externalJpdb = prefs[EXTERNAL_JPDB] ?: false,
+            externalNadeshiko = prefs[EXTERNAL_NADESHIKO] ?: false,
+            externalImmersionKit = prefs[EXTERNAL_IMMERSION_KIT] ?: false,
         )
 
     /** The page's appearance for text in [language]. */
@@ -141,6 +149,22 @@ class PopupAppearanceRepository @Inject constructor(
         dataStore.edit { it[pronunciationColorsKey(language)] = enabled }
     }
 
+    suspend fun setExternalGoogleImages(enabled: Boolean) {
+        dataStore.edit { it[EXTERNAL_GOOGLE_IMAGES] = enabled }
+    }
+
+    suspend fun setExternalJpdb(enabled: Boolean) {
+        dataStore.edit { it[EXTERNAL_JPDB] = enabled }
+    }
+
+    suspend fun setExternalNadeshiko(enabled: Boolean) {
+        dataStore.edit { it[EXTERNAL_NADESHIKO] = enabled }
+    }
+
+    suspend fun setExternalImmersionKit(enabled: Boolean) {
+        dataStore.edit { it[EXTERNAL_IMMERSION_KIT] = enabled }
+    }
+
     suspend fun setCustomCss(language: Language, css: String) {
         // Empty is the default: a reset's pending save then leaves no key behind.
         val key = customCssKey(language)
@@ -162,5 +186,9 @@ class PopupAppearanceRepository @Inject constructor(
         val LETTER_THICKNESS = intPreferencesKey("popup_letter_thickness")
         val COPY_DEFINITIONS = booleanPreferencesKey("popup_copy_definitions")
         val COPY_MODE = stringPreferencesKey("popup_copy_mode")
+        val EXTERNAL_GOOGLE_IMAGES = booleanPreferencesKey("popup_external_google_images")
+        val EXTERNAL_JPDB = booleanPreferencesKey("popup_external_jpdb")
+        val EXTERNAL_NADESHIKO = booleanPreferencesKey("popup_external_nadeshiko")
+        val EXTERNAL_IMMERSION_KIT = booleanPreferencesKey("popup_external_immersion_kit")
     }
 }

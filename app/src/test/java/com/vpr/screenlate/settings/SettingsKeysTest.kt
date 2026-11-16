@@ -29,6 +29,7 @@ class SettingsKeysTest {
             "popup_custom_css", "popup_copy_definitions", "popup_copy_mode", "overlay_show_source_text", "e_ink_font_before",
             "e_ink_font_after", "popup_hide_after_add", "popup_hide_off_word", "popup_font_en", "popup_font_all_text_en",
             "popup_custom_css_en", "popup_pronunciation_colors", "popup_pronunciation_colors_en",
+            "popup_external_google_images", "popup_external_jpdb", "popup_external_nadeshiko", "popup_external_immersion_kit",
         ),
         SettingsSection.TRANSLATION to listOf(
             "translation_button", "translation_anki", "translation_services", "translation_language", "translation_favorites",

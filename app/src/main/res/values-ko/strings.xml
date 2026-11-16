@@ -607,6 +607,15 @@
     <string name="reset_section_language">모든 언어에 공통인 설정과 페이지에 표시된 언어의 설정이 초기화됩니다. 다른 언어의 설정은 그대로 유지됩니다.</string>
     <string name="popup_settings_title">팝업</string>
     <string name="popup_content_title">팝업 요소</string>
+    <string name="popup_external_links_title">외부 링크</string>
+    <string name="popup_external_google_images">Google 이미지</string>
+    <string name="popup_external_google_images_hint">브라우저에서 이미지 검색 열기.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">jpdb.io 사전 항목 열기.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">nadeshiko.co에서 예문 검색.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">immersionkit.com에서 애니메이션 예문 검색.</string>
     <string name="popup_auto_hide_title">자동 숨기기</string>
     <string name="popup_hide_after_add">Anki에 추가한 후</string>
     <string name="popup_hide_after_add_hint">➕로 단어를 추가하면 바로 팝업이 닫힙니다.</string>

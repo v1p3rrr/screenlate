@@ -627,6 +627,15 @@
     <string name="reset_section_language">يُعاد ضبط الإعدادات المشتركة بين كل اللغات وإعدادات اللغة المعروضة في الصفحة، وتحتفظ اللغات الأخرى بإعداداتها.</string>
     <string name="popup_settings_title">النافذة المنبثقة</string>
     <string name="popup_content_title">عناصر النافذة المنبثقة</string>
+    <string name="popup_external_links_title">روابط خارجية</string>
+    <string name="popup_external_google_images">صور Google</string>
+    <string name="popup_external_google_images_hint">البحث عن الصور في المتصفح.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">مُدخل القاموس في jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">البحث عن جمل في nadeshiko.co.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">جمل الأنمي في immersionkit.com.</string>
     <string name="popup_auto_hide_title">الإخفاء التلقائي</string>
     <string name="popup_hide_after_add">بعد الإضافة إلى Anki</string>
     <string name="popup_hide_after_add_hint">تُغلق النافذة المنبثقة بعد أن يضيف ➕ الكلمة.</string>

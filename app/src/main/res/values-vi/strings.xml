@@ -607,6 +607,15 @@
     <string name="reset_section_language">Các cài đặt dùng chung cho mọi ngôn ngữ và cài đặt của ngôn ngữ đang hiển thị trên trang sẽ được đặt lại; các ngôn ngữ khác giữ nguyên cài đặt của mình.</string>
     <string name="popup_settings_title">Cửa sổ bật lên</string>
     <string name="popup_content_title">Thành phần cửa sổ bật lên</string>
+    <string name="popup_external_links_title">Liên kết ngoài</string>
+    <string name="popup_external_google_images">Google Hình ảnh</string>
+    <string name="popup_external_google_images_hint">Tìm kiếm hình ảnh trong trình duyệt.</string>
+    <string name="popup_external_jpdb">JPDB</string>
+    <string name="popup_external_jpdb_hint">Mục từ điển trên jpdb.io.</string>
+    <string name="popup_external_nadeshiko">Nadeshiko</string>
+    <string name="popup_external_nadeshiko_hint">Tìm câu ví dụ trên nadeshiko.co.</string>
+    <string name="popup_external_immersion_kit">Immersion Kit</string>
+    <string name="popup_external_immersion_kit_hint">Ví dụ từ anime trên immersionkit.com.</string>
     <string name="popup_auto_hide_title">Tự động ẩn</string>
     <string name="popup_hide_after_add">Sau khi thêm vào Anki</string>
     <string name="popup_hide_after_add_hint">Cửa sổ bật lên đóng lại ngay khi ➕ đã thêm từ.</string>
