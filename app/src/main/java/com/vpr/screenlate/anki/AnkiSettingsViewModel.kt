@@ -312,7 +312,16 @@ class AnkiSettingsViewModel @Inject constructor(
 
     fun setDuplicateAllModels(enabled: Boolean) = updateSettings { it.copy(duplicateAllModels = enabled) }
 
-    fun setDuplicateBehavior(behavior: DuplicateBehavior) = updateSettings { it.copy(duplicateBehavior = behavior) }
+    fun setDuplicateBehavior(behavior: DuplicateBehavior) = updateSettings { settings ->
+        val updatedModes = if (behavior == DuplicateBehavior.APPEND && settings.overwriteModes.isEmpty()) {
+            settings.fields.mapValues { (_, template) -> AnkiNotes.suggestedAppendMode(template) }
+        } else {
+            settings.overwriteModes
+        }
+        settings.copy(duplicateBehavior = behavior, overwriteModes = updatedModes)
+    }
+
+    fun setDuplicateScopeDeckOnly(enabled: Boolean) = updateSettings { it.copy(duplicateScopeDeckOnly = enabled) }
 
     private fun updateSettings(transform: (AnkiSettings) -> AnkiSettings) {
         val language = shown.language.value

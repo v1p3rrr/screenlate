@@ -284,10 +284,63 @@ class AnkiNotesTest {
                 overwriteModes = mapOf("Meaning" to OverwriteMode.APPEND, "Sentence" to OverwriteMode.OVERWRITE),
             )
         }
-        anki.existing += ExistingNote(7, MODEL, listOf("猫", "old ", "a sentence", "<img src=\"x.png\">"))
+        anki.existing += ExistingNote(7, MODEL, listOf("猫", "old", "a sentence", "<img src=\"x.png\">"))
         assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Updated(7))
         // Word and Picture use the default COALESCE: the existing values stay.
-        assertThat(anki.updated.single().second).containsExactly("猫", "old cat", "", "<img src=\"x.png\">").inOrder()
+        assertThat(anki.updated.single().second).containsExactly("猫", "old<br>cat", "", "<img src=\"x.png\">").inOrder()
+    }
+
+    @Test
+    fun `append behavior merges context fields and preserves vocabulary fields`() = runBlocking<Unit> {
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND) }
+        val screenshot = folder.newFile("shot2.png")
+        anki.existing += ExistingNote(8, MODEL, listOf("猫", "definition 1", "Sentence 1.", "<img src=\"shot1.png\">"), setOf(DECK))
+        val appendRequest = NoteRequest(
+            mapOf("expression" to "猫", "glossary" to "definition 2", "sentence" to "Sentence 2."),
+            screenshot = screenshot,
+        )
+        assertThat(notes.add(Language.JAPANESE, appendRequest)).isEqualTo(AddResult.Updated(8))
+        // Vocabulary fields (Word, Meaning) preserve existing; context fields (Sentence, Picture) append.
+        assertThat(anki.updated.single().second).containsExactly(
+            "猫",
+            "definition 1",
+            "Sentence 1.<br>Sentence 2.",
+            "<img src=\"shot1.png\"><img src=\"shot2.png\">",
+        ).inOrder()
+    }
+
+    @Test
+    fun `duplicate in another deck creates a new note in target deck when deck-only is enabled`() = runBlocking<Unit> {
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND, duplicateScopeDeckOnly = true) }
+        val otherDeck = 99L
+        anki.existing += ExistingNote(15, MODEL, listOf("猫", "other def", "other sentence", ""), setOf(otherDeck))
+        val result = notes.add(Language.JAPANESE, request)
+        assertThat(result).isEqualTo(AddResult.Added(101))
+        assertThat(anki.updated).isEmpty()
+        assertThat(anki.added).hasSize(1)
+    }
+
+    @Test
+    fun `duplicate in another deck is updated when deck-only is disabled`() = runBlocking<Unit> {
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE, duplicateScopeDeckOnly = false) }
+        val otherDeck = 99L
+        anki.existing += ExistingNote(15, MODEL, listOf("猫", "other def", "other sentence", ""), setOf(otherDeck))
+        val result = notes.add(Language.JAPANESE, request)
+        assertThat(result).isEqualTo(AddResult.Updated(15))
+        assertThat(anki.updated).hasSize(1)
+    }
+
+    @Test
+    fun `prioritizes duplicate in target deck and picks newest note`() = runBlocking<Unit> {
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND) }
+        val otherDeck = 99L
+        anki.existing += ExistingNote(10, MODEL, listOf("猫", "old other", "", ""), setOf(otherDeck))
+        anki.existing += ExistingNote(20, MODEL, listOf("猫", "first in deck", "", ""), setOf(DECK))
+        anki.existing += ExistingNote(30, MODEL, listOf("猫", "newest in deck", "", ""), setOf(DECK))
+
+        val result = notes.add(Language.JAPANESE, request)
+        assertThat(result).isEqualTo(AddResult.Updated(30))
+        assertThat(anki.updated.single().first).isEqualTo(30L)
     }
 
     @Test

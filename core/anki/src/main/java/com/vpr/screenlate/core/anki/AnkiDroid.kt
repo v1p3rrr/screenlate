@@ -25,7 +25,12 @@ data class AnkiDeck(val id: Long, val name: String)
 data class AnkiModel(val id: Long, val name: String)
 
 /** A note found by the duplicate check. */
-data class ExistingNote(val id: Long, val modelId: Long, val fields: List<String>)
+data class ExistingNote(
+    val id: Long,
+    val modelId: Long,
+    val fields: List<String>,
+    val deckIds: Set<Long> = emptySet(),
+)
 
 /**
  * Access to AnkiDroid through its content provider API. All calls block on IPC and run on [Dispatchers.IO].
@@ -75,11 +80,13 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
         deckId: Long,
     ): List<ExistingNote> = query {
         val candidates = modelIds.flatMap { modelId ->
-            api.findDuplicateNotes(modelId, firstField).orEmpty().map { ExistingNote(it.id, modelId, it.fields.toList()) }
+            api.findDuplicateNotes(modelId, firstField).orEmpty().map {
+                ExistingNote(it.id, modelId, it.fields.toList(), noteDecks(it.id))
+            }
         }
         if (candidates.isEmpty() || scope == DuplicateScope.COLLECTION) return@query candidates
         val decks = scopeDecks(scope, deckId)
-        candidates.filter { note -> noteDecks(note.id).any { it in decks } }
+        candidates.filter { note -> note.deckIds.any { it in decks } }
     }
 
     /**

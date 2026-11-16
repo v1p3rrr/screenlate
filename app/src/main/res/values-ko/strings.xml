@@ -177,6 +177,13 @@
     <string name="anki_behavior_prevent">막기</string>
     <string name="anki_behavior_overwrite">덮어쓰기</string>
     <string name="anki_behavior_new">새로 추가</string>
+    <string name="anki_behavior_append">뒤에 추가</string>
+    <string name="anki_behavior_prevent_hint">노트가 이미 존재하는 경우 추가하지 않고 AnkiDroid에서 엽니다.</string>
+    <string name="anki_behavior_overwrite_hint">기존 노트의 필드를 새 값으로 교체합니다.</string>
+    <string name="anki_behavior_append_hint">장면 전환을 위해 기존 노트에 새 예문과 스크린샷을 추가합니다.</string>
+    <string name="anki_behavior_new_hint">동일한 노트가 있어도 새 노트를 추가합니다.</string>
+    <string name="anki_duplicate_deck_only">현재 덱에서만 수정</string>
+    <string name="anki_duplicate_deck_only_hint">다른 덱에 중복 항목이 있는 경우 변경하지 않고 현재 덱에 새로 만듭니다.</string>
 
     <string name="audio_title">오디오</string>
     <string name="audio_offline_notice">강제 오프라인 모드가 활성화되어 있습니다. 온라인 오디오 소스가 비활성화되었습니다. 소스 목록에 추가되지 않았더라도 텍스트 음성 변환(TTS) 및 캐시된 오디오가 발음에 사용됩니다.</string>
@@ -263,6 +270,12 @@
     <string name="anki_overwrite_skip">유지</string>
     <string name="anki_overwrite_append">뒤에 추가</string>
     <string name="anki_overwrite_prepend">앞에 추가</string>
+    <string name="anki_mode_coalesce">유지</string>
+    <string name="anki_mode_coalesce_new">새 값 우선</string>
+    <string name="anki_mode_overwrite">교체</string>
+    <string name="anki_mode_skip">변경 안 함</string>
+    <string name="anki_mode_append">뒤에 추가</string>
+    <string name="anki_mode_prepend">앞에 추가</string>
     <string name="audio_volume">볼륨: %1$d%%</string>
     <string name="settings_title">설정</string>
     <string name="settings_offline_mode">강제 오프라인 모드</string>

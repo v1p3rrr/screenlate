@@ -176,7 +176,14 @@
     <string name="anki_duplicate_behavior">存在重复时</string>
     <string name="anki_behavior_prevent">阻止</string>
     <string name="anki_behavior_overwrite">覆盖</string>
+    <string name="anki_behavior_append">追加</string>
     <string name="anki_behavior_new">仍然添加</string>
+    <string name="anki_behavior_prevent_hint">如果笔记已存在，则阻止添加并在AnkiDroid中打开。</string>
+    <string name="anki_behavior_overwrite_hint">用新值替换现有笔记的字段。</string>
+    <string name="anki_behavior_append_hint">将新的例句和截图追加到现有卡片（用于场景切换）。</string>
+    <string name="anki_behavior_new_hint">即使存在相同笔记也仍然添加新卡片。</string>
+    <string name="anki_duplicate_deck_only">仅在当前牌组中修改</string>
+    <string name="anki_duplicate_deck_only_hint">如果重复项位于其他牌组，则不作修改，而在当前牌组创建新卡片。</string>
 
     <string name="audio_title">音频</string>
     <string name="audio_offline_notice">强制离线模式已启用。在线音频源已禁用；发音将使用文字转语音（TTS，即使未添加到源列表中），以及已缓存的音频。</string>
@@ -263,6 +270,12 @@
     <string name="anki_overwrite_skip">保留</string>
     <string name="anki_overwrite_append">追加到末尾</string>
     <string name="anki_overwrite_prepend">添加到开头</string>
+    <string name="anki_mode_coalesce">保留</string>
+    <string name="anki_mode_coalesce_new">优先新值</string>
+    <string name="anki_mode_overwrite">替换</string>
+    <string name="anki_mode_skip">不修改</string>
+    <string name="anki_mode_append">追加</string>
+    <string name="anki_mode_prepend">前置</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">设置</string>
     <string name="settings_offline_mode">强制离线模式</string>

@@ -181,6 +181,13 @@
     <string name="anki_behavior_prevent">Impedir</string>
     <string name="anki_behavior_overwrite">Sobrescrever</string>
     <string name="anki_behavior_new">Adicionar mesmo assim</string>
+    <string name="anki_behavior_append">Adicionar ao final</string>
+    <string name="anki_behavior_prevent_hint">Se a nota existir, a abertura no AnkiDroid é oferecida em vez de adicionar.</string>
+    <string name="anki_behavior_overwrite_hint">Os campos da nota existente são substituídos pelos novos valores.</string>
+    <string name="anki_behavior_append_hint">Adiciona novas frases e capturas de tela à nota existente para troca de cenas.</string>
+    <string name="anki_behavior_new_hint">Uma nova nota é adicionada mesmo que já exista uma idêntica.</string>
+    <string name="anki_duplicate_deck_only">Modificar apenas no baralho atual</string>
+    <string name="anki_duplicate_deck_only_hint">Se um duplicado estiver em outro baralho, não o altere e crie uma nova nota no baralho atual.</string>
 
     <string name="audio_title">Áudio</string>
     <string name="audio_offline_notice">O modo offline forçado está ativo. As fontes de áudio online estão desativadas; a síntese de voz (TTS) é usada para pronúncia (mesmo que não esteja adicionada às fontes), além do áudio em cache.</string>
@@ -267,6 +274,12 @@
     <string name="anki_overwrite_skip">manter</string>
     <string name="anki_overwrite_append">adicionar ao final</string>
     <string name="anki_overwrite_prepend">adicionar ao início</string>
+    <string name="anki_mode_coalesce">Manter</string>
+    <string name="anki_mode_coalesce_new">Usar novo</string>
+    <string name="anki_mode_overwrite">Substituir</string>
+    <string name="anki_mode_skip">Não alterar</string>
+    <string name="anki_mode_append">Adicionar ao final</string>
+    <string name="anki_mode_prepend">Adicionar ao início</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Configurações</string>
     <string name="settings_offline_mode">Modo offline forçado</string>

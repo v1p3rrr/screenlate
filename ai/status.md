@@ -1,5 +1,15 @@
 # Status
 
+## Senren scene switching, field appending and deck-scoped duplicate updates (2026-11-16)
+
+- Implemented Senren (洗練) scene switching support, field appending, and safe deck-scoped duplicate resolution:
+  - Added `DuplicateBehavior.APPEND` ("Дополнить") as a first-class duplicate handling mode alongside `PREVENT`, `OVERWRITE`, and `NEW`.
+  - In `OverwriteMode.apply`, implemented automatic `<br>` separator for text fields while concatenating media tags (`<img>`, `[sound:...]`) and scene groups directly without extra line breaks. Added idempotency guard (`split("<br>").any { it.trim() == new.trim() }`) to prevent repeating identical sentences on accidental repeated taps.
+  - Added target deck scoping (`duplicateScopeDeckOnly` toggle, enabled by default): when searching collection-wide (`duplicateScope == COLLECTION`), note updates and appends are confined to cards within the active target deck. If a duplicate exists only in an external deck, a new note is safely created in the target deck rather than mutating foreign cards.
+  - Prioritized in-deck duplicate notes and resolved ties by newest note ID (`maxByOrNull { it.id }`), fixing Yomitan's upstream bug of overwriting the oldest card across arbitrary decks.
+  - Added compact field header badge button (`[ ➕ Дополнять ▾ ]`) next to field names in `TemplateField`, conserving vertical space without redundant subtitle rows.
+  - Added localized strings across all 14 supported locales; verified with `TranslationsTest`, unit tests, and all 139 page tests passing.
+
 ## Screenlate v1.1.0 released and pipeline resilience hardened (2026-11-15)
 
 - Stable [v1.1.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.1.0) published. The annotated tag points to `be8b04b0`; the [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/43755405374) was triggered to build and publish the release APKs signed with the production release key.
@@ -42,6 +52,7 @@
   - Implemented pure monochrome palette generation in `PaletteGenerator` and neutral color detection in `ColorMath.isAchromatic`: seeds of black (`#000000`), white (`#FFFFFF`) or neutral grays generate clean grayscale surfaces and high-contrast charcoal/silver controls without unwanted reddish-brown tint.
   - Added localized strings for all new options across all 17 supported locales; verified with `TranslationsTest` and all 180 page tests passing.
 - Minified ARM64 Dev APK from `f1d57c1b`: version `1.0.1-f1d57c1b-min` (10001), 23,259,423 bytes, signed with the local debug key. SHA-256 `074dbdec40e4b21f3ed40b3e3a34e1dfdb587f96fd7d256afc6621c66aade9fe`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+
 
 ## Anki duplicate icon refinement (2026-11-15)
 
