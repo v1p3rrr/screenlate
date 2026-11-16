@@ -20,6 +20,8 @@
     - Routed language capability checks through `LanguageSupport.hasJapaneseExternalLinks`.
     - Added fallback language scoping (`result.fallbackLanguage`) so non-Japanese dictionary results in Japanese lookup do not display Japanese-specific links.
     - Deduplicated action button DOM construction in `popup.js`.
+- Minified ARM64 Dev APK from `773efde3` (on `main`): version `1.1.0-773efde3-min` (10100), 23,317,067 bytes, signed with the local debug key. SHA-256 `54c9b4efb99fd5bedabe800fd0d4b3aac1677edf625edcd4d4821f1a44e48acd`.
+  - The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
 ## About screen icon, license audit, and notice wrapping (2026-11-17)
 
