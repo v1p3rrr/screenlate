@@ -37,6 +37,9 @@ interface LanguageSupport {
     /** On-device recognizer to use. */
     val ocrScript: OcrScript
 
+    /** Whether the language supports Japanese-specific external search tools (JPDB, Nadeshiko, Immersion Kit). */
+    val hasJapaneseExternalLinks: Boolean get() = false
+
     /**
      * A word as OCR read it, with letters that engines take from another script written in the language's own; one
      * character for one, so character boxes stay valid. In a Cyrillic or Greek language, Latin look-alikes in a word

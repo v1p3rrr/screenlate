@@ -202,5 +202,6 @@ class PageFontsTest {
         assertThat(links?.get("nadeshiko")?.jsonPrimitive?.boolean).isFalse()
         assertThat(links?.get("immersionKit")?.jsonPrimitive?.boolean).isTrue()
         assertThat(links?.get("googleDomain")?.jsonPrimitive?.content).isEqualTo("www.google.co.jp")
+        assertThat(links?.get("hasJapaneseLinks")?.jsonPrimitive?.boolean).isTrue()
     }
 }

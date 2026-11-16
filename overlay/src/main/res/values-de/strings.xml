@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="overlay_service_description">Zeigt eine schwebende Blase, die Text auf dem Bildschirm liest und Wörter in deinen Wörterbüchern nachschlägt. Screenlate nimmt Screenshots nur auf, wenn du die Blase herausziehst oder antippst, und sendet sie an einen Cloud-Dienst zur Texterkennung.</string>
     <string name="overlay_tile_label">Screenlate-Blase</string>
     <string name="overlay_engine_draft">Entwurf auf dem Gerät</string>
@@ -111,4 +111,5 @@
     <string name="translation_error_bad_answer">Die Antwort konnte nicht gelesen werden.</string>
     <string name="translation_error_other">Unbekannter Fehler.</string>
     <string name="crop_whole_photo">Ganzes Foto</string>
+    <string name="overlay_external_google_images">Google Bilder</string>
 </resources>

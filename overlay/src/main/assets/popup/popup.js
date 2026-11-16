@@ -514,11 +514,7 @@ const Popup = (() => {
         if (links.length > 1) {
             const extRow = element('div', 'entry-external-links');
             for (const link of links) {
-                const ext = iconButton(link.id, link.icon, link.label);
-                ext.classList.add('action-external');
-                ext.dataset.external = link.id;
-                ext.addEventListener('click', () => ScreenlateBridge.onOpenUrl(link.url));
-                extRow.append(ext);
+                extRow.append(makeExternalLinkButton(link));
             }
             head.append(extRow);
         }
@@ -559,17 +555,20 @@ const Popup = (() => {
     }
 
     function entryExternalLinks(result) {
-        const lang = result.lang || document.documentElement.lang || 'ja';
-        const isJapanese = lang === 'ja';
+        const hasJp = externalLinks.hasJapaneseLinks;
+        const isJapanese = result.lang
+            ? result.lang === 'ja'
+            : (hasJp !== undefined ? Boolean(hasJp) : (document.documentElement.lang || 'ja') === 'ja');
         const expr = encodeURIComponent(result.term.expression);
         const links = [];
         if (externalLinks.googleImages) {
-            const dom = isJapanese ? 'www.google.co.jp' : (externalLinks.googleDomain || 'www.google.com');
-            const hl = (dom === 'www.google.com' && lang !== 'en') ? `&hl=${encodeURIComponent(lang)}` : '';
+            const dom = externalLinks.googleDomain || 'www.google.com';
+            const lang = result.lang || document.documentElement.lang || '';
+            const hl = (dom === 'www.google.com' && lang && lang !== 'en') ? `&hl=${encodeURIComponent(lang)}` : '';
             links.push({
                 id: 'google-images',
                 icon: ICONS.googleImages,
-                label: labelOf('externalGoogleImages') || 'Google Images',
+                label: labelOf('externalGoogleImages', 'Google Images'),
                 url: `https://${dom}/search?q=${expr}&tbm=isch${hl}`,
             });
         }
@@ -578,7 +577,7 @@ const Popup = (() => {
                 links.push({
                     id: 'jpdb',
                     icon: ICONS.jpdb,
-                    label: labelOf('externalJpdb') || 'JPDB',
+                    label: labelOf('externalJpdb', 'JPDB'),
                     url: `https://jpdb.io/search?q=${expr}`,
                 });
             }
@@ -586,7 +585,7 @@ const Popup = (() => {
                 links.push({
                     id: 'nadeshiko',
                     icon: ICONS.nadeshiko,
-                    label: labelOf('externalNadeshiko') || 'Nadeshiko',
+                    label: labelOf('externalNadeshiko', 'Nadeshiko'),
                     url: `https://nadeshiko.co/search/sentence?query=${expr}`,
                 });
             }
@@ -594,12 +593,20 @@ const Popup = (() => {
                 links.push({
                     id: 'immersion-kit',
                     icon: ICONS.immersionKit,
-                    label: labelOf('externalImmersionKit') || 'Immersion Kit',
+                    label: labelOf('externalImmersionKit', 'Immersion Kit'),
                     url: `https://immersionkit.com/dictionary?keyword=${expr}`,
                 });
             }
         }
         return links;
+    }
+
+    function makeExternalLinkButton(link) {
+        const ext = iconButton(link.id, link.icon, link.label);
+        ext.classList.add('action-external');
+        ext.dataset.external = link.id;
+        ext.addEventListener('click', () => ScreenlateBridge.onOpenUrl(link.url));
+        return ext;
     }
 
     function actionButtons(result, index, singleLink) {
@@ -688,11 +695,7 @@ const Popup = (() => {
             container.append(add);
         }
         if (singleLink) {
-            const ext = iconButton(singleLink.id, singleLink.icon, singleLink.label);
-            ext.classList.add('action-external');
-            ext.dataset.external = singleLink.id;
-            ext.addEventListener('click', () => ScreenlateBridge.onOpenUrl(singleLink.url));
-            container.append(ext);
+            container.append(makeExternalLinkButton(singleLink));
         }
         return container;
     }
@@ -836,8 +839,8 @@ const Popup = (() => {
 
     // endregion
 
-    function labelOf(key) {
-        return (current && current.labels && current.labels[key]) || key;
+    function labelOf(key, fallback) {
+        return (current && current.labels && current.labels[key]) || fallback || key;
     }
 
     function iconButton(kind, svg, label) {

@@ -92,6 +92,7 @@ class PageAppearance @Inject constructor(
                         put("nadeshiko", appearance.externalNadeshiko)
                         put("immersionKit", appearance.externalImmersionKit)
                         put("googleDomain", GoogleDomains.domain(support.language))
+                        put("hasJapaneseLinks", support.hasJapaneseExternalLinks)
                     },
                 )
                 put("accentLight", palette.popupAccentLight)

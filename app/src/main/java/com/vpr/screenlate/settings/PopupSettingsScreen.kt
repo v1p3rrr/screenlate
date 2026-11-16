@@ -15,6 +15,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.languages.PronunciationColorStrings
 import com.vpr.screenlate.languages.pronunciationColorStrings
 import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
@@ -56,7 +57,7 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
                 // With several languages the pronunciation colors are in the language's card.
                 val pronunciation = if (profiles.several) null else shown.pronunciationColorStrings
                 PopupContentCard(current, stored.showSourceText, translation?.button, pronunciation, viewModel)
-                ExternalLinksCard(current, shown == Language.JAPANESE, viewModel)
+                ExternalLinksCard(current, shown.support.hasJapaneseExternalLinks, viewModel)
                 AutoHideCard(stored, viewModel)
             }
             PopupTextSections(viewModel)
@@ -67,7 +68,7 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
 @Composable
 private fun ExternalLinksCard(
     appearance: PopupAppearance,
-    isJapanese: Boolean,
+    hasJapaneseLinks: Boolean,
     viewModel: PopupAppearanceViewModel,
 ) {
     SectionCard(title = stringResource(R.string.popup_external_links_title)) {
@@ -77,7 +78,7 @@ private fun ExternalLinksCard(
             onChange = viewModel::setExternalGoogleImages,
             hint = stringResource(R.string.popup_external_google_images_hint),
         )
-        if (isJapanese) {
+        if (hasJapaneseLinks) {
             SwitchRow(
                 label = stringResource(R.string.popup_external_jpdb),
                 checked = appearance.externalJpdb,

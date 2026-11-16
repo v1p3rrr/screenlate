@@ -113,6 +113,10 @@ object PageState {
         "translating" to context.getString(R.string.overlay_translating),
         "installation" to context.getString(R.string.installation_open),
         "ocrModels" to context.getString(R.string.overlay_open_ocr_models),
+        "externalGoogleImages" to context.getString(R.string.overlay_external_google_images),
+        "externalJpdb" to context.getString(R.string.overlay_external_jpdb),
+        "externalNadeshiko" to context.getString(R.string.overlay_external_nadeshiko),
+        "externalImmersionKit" to context.getString(R.string.overlay_external_immersion_kit),
     )
 
     /** The names of the languages whose dictionaries gave entries of [results] (`LookupResult.fallbackLanguage`). */

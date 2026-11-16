@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="overlay_service_description">Muestra una burbuja flotante que lee el texto de la pantalla y busca palabras en tus diccionarios. Screenlate solo hace capturas de pantalla cuando sacas la burbuja o la tocas, y las envía a un servicio de reconocimiento de texto en la nube.</string>
     <string name="overlay_tile_label">Burbuja de Screenlate</string>
     <string name="overlay_engine_draft">Borrador en el dispositivo</string>
@@ -111,4 +111,5 @@
     <string name="translation_error_bad_answer">No se pudo leer la respuesta.</string>
     <string name="translation_error_other">Error desconocido.</string>
     <string name="crop_whole_photo">Foto completa</string>
+    <string name="overlay_external_google_images">Google Imágenes</string>
 </resources>

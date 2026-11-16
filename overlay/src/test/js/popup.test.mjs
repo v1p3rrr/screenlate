@@ -19,6 +19,10 @@ const labels = {
     updateNote: 'Update note',
     updateWithPicture: 'Update with picture',
     updateWithoutPicture: 'Update without picture',
+    externalGoogleImages: 'Google Images',
+    externalJpdb: 'JPDB',
+    externalNadeshiko: 'Nadeshiko',
+    externalImmersionKit: 'Immersion Kit',
 };
 
 function result(expression, reading, text = 'meaning') {
@@ -1703,6 +1707,7 @@ test('a single external link is placed inline in entry-actions and opens browser
     const extBtn = actions.querySelector('.action-external');
     assert.ok(extBtn);
     assert.equal(extBtn.dataset.external, 'google-images');
+    assert.equal(extBtn.getAttribute('aria-label'), 'Google Images');
     assert.equal(firstEntry.querySelector('.entry-external-links'), null);
 
     extBtn.click();
@@ -1728,9 +1733,13 @@ test('multiple external links form a second row under actions and trigger URLs',
     const buttons = extRow.querySelectorAll('.action-external');
     assert.equal(buttons.length, 4);
     assert.equal(buttons[0].dataset.external, 'google-images');
+    assert.equal(buttons[0].getAttribute('aria-label'), 'Google Images');
     assert.equal(buttons[1].dataset.external, 'jpdb');
+    assert.equal(buttons[1].getAttribute('aria-label'), 'JPDB');
     assert.equal(buttons[2].dataset.external, 'nadeshiko');
+    assert.equal(buttons[2].getAttribute('aria-label'), 'Nadeshiko');
     assert.equal(buttons[3].dataset.external, 'immersion-kit');
+    assert.equal(buttons[3].getAttribute('aria-label'), 'Immersion Kit');
 
     // Click JPDB
     buttons[1].click();

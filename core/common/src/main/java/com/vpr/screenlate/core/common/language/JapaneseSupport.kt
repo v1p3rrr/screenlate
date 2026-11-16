@@ -10,6 +10,7 @@ object JapaneseSupport : LanguageSupport {
     override val flagCountries = listOf("jp")
     override val searchResolution = SearchResolution.LETTER
     override val hasCharacterEntries = true
+    override val hasJapaneseExternalLinks = true
     override val convertsLatin = true
     override val furiganaMarkers = true
     override val sentenceTerminators = setOf('。', '！', '？', '!', '?', '．', '…', '\n')

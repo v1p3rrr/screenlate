@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="overlay_service_description">화면의 텍스트를 읽고 사전에서 단어를 찾아 주는 플로팅 버블을 표시합니다. Screenlate는 버블을 끌어내거나 탭할 때만 스크린샷을 찍으며, 이를 클라우드 텍스트 인식 서비스로 보냅니다.</string>
     <string name="overlay_tile_label">Screenlate 버블</string>
     <string name="overlay_engine_draft">기기에서 임시 인식</string>
@@ -111,4 +111,5 @@
     <string name="translation_error_bad_answer">응답을 읽을 수 없습니다.</string>
     <string name="translation_error_other">알 수 없는 오류입니다.</string>
     <string name="crop_whole_photo">사진 전체</string>
+    <string name="overlay_external_google_images">Google 이미지</string>
 </resources>
