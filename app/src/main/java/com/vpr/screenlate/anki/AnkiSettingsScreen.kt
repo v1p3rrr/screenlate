@@ -55,6 +55,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiCheck
 import com.vpr.screenlate.core.anki.AnkiDroid
+import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.AnkiProblem
 import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.CheckOutcome
@@ -567,7 +568,7 @@ internal fun TemplateField(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                field,
+                text = field,
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.weight(1f, fill = false),
             )

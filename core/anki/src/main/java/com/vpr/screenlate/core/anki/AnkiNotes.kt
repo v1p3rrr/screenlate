@@ -208,7 +208,7 @@ class AnkiNotes @Inject constructor(
             val matchingModelNotes = existing.filter { it.modelId == modelId }
             val targetDecks = targetDeckIds(settings, deckId)
 
-            val inDeckNote = matchingModelNotes.filter { note -> note.deckIds.isEmpty() || note.deckIds.any { it in targetDecks } }
+            val inDeckNote = matchingModelNotes.filter { note -> note.deckIds.any { it in targetDecks } }
                 .maxByOrNull { it.id }
 
             val targetNote = when {

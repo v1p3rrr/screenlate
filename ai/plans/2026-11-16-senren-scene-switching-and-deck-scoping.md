@@ -176,23 +176,18 @@ Add localized keys across all 17 supported languages:
 
 ## 6. Execution Phases
 
-- [ ] **Phase 1: `core:anki` Models & Logic**
+- [x] **Phase 1: `core:anki` Models & Logic**
   - Add `DuplicateBehavior.APPEND` and `duplicateScopeDeckOnly` to `AnkiSettings`.
   - Update `OverwriteMode.apply` with `<br>` separator and segment idempotency.
   - Add `deckIds` to `ExistingNote` and populate in `AnkiDroid.findDuplicates`.
   - Implement target-deck-scoped resolution in `AnkiNotes.add`.
   - Add unit tests in `AnkiNotesTest`.
-- [ ] **Phase 2: UI in `app` & Strings**
+- [x] **Phase 2: UI in `app` & Strings**
   - Add strings to `values/strings.xml` and `values-ru/strings.xml` (and other 15 locales).
   - Update `AnkiSettingsScreen.kt` with 4-way `DuplicateBehavior` selector and `duplicateScopeDeckOnly` switch.
   - Integrate `OverwriteModePicker` badge button directly into `TemplateField` header row.
   - Update `AnkiSettingsViewModel.kt` to auto-populate suggested append modes.
-- [ ] **Phase 3: Integration, Regression Tests & Verification**
-  - Verify `PopupNotes.kt` with new `DuplicateBehavior.APPEND`.
-  - Run full test suite (`testDebugUnitTest`, `TranslationsTest`, page script tests).
-  - Update `ai/status.md` and docs.
-  - Update `AnkiSettingsViewModel.kt` to auto-populate suggested append modes and separators.
-- [ ] **Phase 3: Integration, Regression Tests & Verification**
+- [x] **Phase 3: Integration, Regression Tests & Verification**
   - Verify `PopupNotes.kt` with new `DuplicateBehavior.APPEND`.
   - Run full test suite (`testDebugUnitTest`, `TranslationsTest`, page script tests).
   - Update `ai/status.md` and docs.
