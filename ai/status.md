@@ -1,5 +1,26 @@
 # Status
 
+## External links in popup (2026-11-17)
+
+- Implemented configurable external link buttons for popup word entries on branch `features/external-links`:
+  - **Supported Services:**
+    - Japanese: Google Images (`www.google.co.jp`), JPDB (`jpdb.io`), Nadeshiko (`nadeshiko.co`), and Immersion Kit (`immersionkit.com`). Jisho excluded per design.
+    - Other languages: exclusively Google Images mapped to language-specific regional domains via `GoogleDomains` (e.g. `www.google.ru`, `www.google.de`, `www.google.fr`, `www.google.com`).
+  - **Adaptive Layout:**
+    - Single active external link: placed inline within `.entry-actions` next to core actions (Copy, Audio, Anki); wraps cleanly below the headword if horizontal space is constrained.
+    - Multiple active external links: automatically rendered in a dedicated second row (`.entry-external-links`) aligned right beneath the actions, preventing headword and badge clipping.
+  - **Popup Settings Screen:** Added "External links" (`popup_external_links_title`) section in `PopupSettingsScreen`, showing all 4 switches when viewing Japanese, and only Google Images for other language profiles. All links are disabled by default.
+  - **Vectors & Theme:** Crisp monochrome SVG vector icons (18×18 px) adapting dynamically to active theme colors (`--muted` / `--accent`).
+  - **Localization & Tests:**
+    - Localized strings across all 17 supported project locales; verified with `TranslationsTest`.
+    - Unit tests in `GoogleDomainsTest`, `PopupAppearanceRepositoryTest`, `PageFontsTest`, and `SettingsKeysTest`.
+    - All 184 JS page tests in `overlay/src/test/js/popup.test.mjs` passing. Full test suites passing in `:core:common`, `:overlay`, and `:app`.
+  - **Code Review & Refinements:**
+    - Added localized overlay action labels (`overlay_external_*`) across all 17 locales and plumbed through `PageState.labels()`.
+    - Routed language capability checks through `LanguageSupport.hasJapaneseExternalLinks`.
+    - Added fallback language scoping (`result.fallbackLanguage`) so non-Japanese dictionary results in Japanese lookup do not display Japanese-specific links.
+    - Deduplicated action button DOM construction in `popup.js`.
+
 ## About screen icon, license audit, and notice wrapping (2026-11-17)
 
 - Added app icon to the About screen next to the app title in `SectionCard` (36.dp with 8.dp rounded corners, using `LocalDensity` for pixel scaling, aligned `Alignment.CenterVertically` with 12.dp spacing).
@@ -10,7 +31,7 @@
   - Specified `LGPL-3.0-or-later` for `com.github.ankidroid:Anki-Android` (`app/config/aboutlibraries/libraries/ankidroid.json`) in AboutLibraries.
   - Moved Words.hk frequency from `NOTICE` top section to Third-party data (unbundled).
   - Updated status for JMdict, Jiten, and Kanjium in `ai/notes/references.md` from bundled to catalog download.
-- Conducted two-axis code review (Standards & Spec), addressed findings, and verified with all unit tests and 180 page tests passing.
+  - Conducted two-axis code review (Standards & Spec), addressed findings, and verified with all unit tests and 180 page tests passing.
 
 ## Senren scene switching, field appending and deck-scoped duplicate updates (2026-11-16)
 
