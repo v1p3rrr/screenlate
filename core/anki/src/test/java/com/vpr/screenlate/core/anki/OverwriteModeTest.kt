@@ -36,6 +36,11 @@ class OverwriteModeTest {
         assertThat(OverwriteMode.APPEND.apply(existing, "  Second sentence.  ")).isEqualTo(existing)
         assertThat(OverwriteMode.APPEND.apply(existing, "Third sentence."))
             .isEqualTo("First sentence.<br>Second sentence.<br>Third sentence.")
+
+        // Recognizes XHTML br tags (<br/>, <br />) for idempotency
+        val xhtmlExisting = "First sentence.<br/>Second sentence.<br />Third sentence."
+        assertThat(OverwriteMode.APPEND.apply(xhtmlExisting, "Second sentence.")).isEqualTo(xhtmlExisting)
+        assertThat(OverwriteMode.APPEND.apply(xhtmlExisting, "Third sentence.")).isEqualTo(xhtmlExisting)
     }
 
     @Test
@@ -48,9 +53,10 @@ class OverwriteModeTest {
         val audio2 = "[sound:2.mp3]"
         assertThat(OverwriteMode.APPEND.apply(audio1, audio2)).isEqualTo("[sound:1.mp3][sound:2.mp3]")
 
-        val group1 = "<span class=\"group\"></span>"
-        val group2 = "<span class=\"group\"></span>"
-        assertThat(OverwriteMode.APPEND.apply(group1, group2)).isEqualTo(group1) // identical group not repeated
+        val group1 = "<span class=\"group\">Scene 1</span>"
+        val group2 = "<span class=\"group\">Scene 2</span>"
+        assertThat(OverwriteMode.APPEND.apply(group1, group2)).isEqualTo("<span class=\"group\">Scene 1</span><span class=\"group\">Scene 2</span>")
+        assertThat(OverwriteMode.APPEND.apply(group1, group1)).isEqualTo(group1) // identical group not repeated
     }
 
     @Test

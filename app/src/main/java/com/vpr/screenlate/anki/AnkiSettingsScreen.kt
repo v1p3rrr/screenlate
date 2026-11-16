@@ -59,6 +59,7 @@ import com.vpr.screenlate.audio.AudioSettingsSection
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiCheck
 import com.vpr.screenlate.core.anki.AnkiDroid
+import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.AnkiProblem
 import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.CheckOutcome
@@ -349,12 +350,18 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
             val allowsOverwrite = settings.duplicateCheck &&
                 (settings.duplicateBehavior == DuplicateBehavior.OVERWRITE || settings.duplicateBehavior == DuplicateBehavior.APPEND)
             state.fieldNames.forEach { field ->
+                val defaultMode = if (settings.duplicateBehavior == DuplicateBehavior.APPEND) {
+                    AnkiNotes.suggestedAppendMode(settings.fields[field].orEmpty())
+                } else {
+                    OverwriteMode.COALESCE
+                }
+                val currentMode = settings.overwriteModes[field] ?: defaultMode
                 TemplateField(
                     field = field,
                     template = settings.fields[field].orEmpty(),
                     markers = state.markers,
                     hints = state.language.furiganaMarkerHints,
-                    overwriteMode = if (allowsOverwrite) settings.overwriteModes[field] ?: OverwriteMode.COALESCE else null,
+                    overwriteMode = if (allowsOverwrite) currentMode else null,
                     onOverwriteModeSelect = if (allowsOverwrite) { mode -> viewModel.setOverwriteMode(field, mode) } else null,
                     onChange = { viewModel.setFieldTemplate(field, it) },
                 )
@@ -558,7 +565,11 @@ internal fun TemplateField(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(field, style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = field,
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.weight(1f, fill = false),
+            )
             if (overwriteMode != null && onOverwriteModeSelect != null) {
                 OverwriteModeBadge(mode = overwriteMode, onSelect = onOverwriteModeSelect)
             }

@@ -75,7 +75,7 @@ enum class OverwriteMode {
             if (existing.contains(new)) return existing
             return if (prepend) new + existing else existing + new
         }
-        val segments = existing.split("<br>")
+        val segments = existing.split(BR_REGEX)
         if (segments.any { it.trim() == new.trim() }) return existing
         return if (prepend) "$new<br>$existing" else "$existing<br>$new"
     }
@@ -85,6 +85,10 @@ enum class OverwriteMode {
         return (trimmed.startsWith("<img") && trimmed.endsWith(">")) ||
             (trimmed.startsWith("[sound:") && trimmed.endsWith("]")) ||
             (trimmed.startsWith("<span class=\"group\"") && trimmed.endsWith("</span>"))
+    }
+
+    companion object {
+        private val BR_REGEX = Regex("""<br\s*/?>""", RegexOption.IGNORE_CASE)
     }
 }
 
@@ -115,8 +119,10 @@ data class NoteTemplate(
  * Note export settings. Field templates are keyed by field name and use `{marker}` placeholders
  * (see `FieldTemplate`); fields without a template stay empty.
  *
- * @property overwriteModes per field, used by [DuplicateBehavior.OVERWRITE]; missing fields use [OverwriteMode.COALESCE].
+ * @property overwriteModes per field, used by [DuplicateBehavior.OVERWRITE] and [DuplicateBehavior.APPEND];
+ * missing fields use [OverwriteMode.COALESCE] (or [DuplicateBehavior.APPEND] default heuristic).
  * @property savedTemplates templates of note types used before, by note type name.
+ * @property duplicateScopeDeckOnly when [duplicateScope] is [DuplicateScope.COLLECTION], only update duplicates in the target deck.
  * @property duplicateAllModels search every note type, not just [modelId].
  */
 @Serializable

@@ -9,8 +9,16 @@
   - Prioritized in-deck duplicate notes and resolved ties by newest note ID (`maxByOrNull { it.id }`), fixing Yomitan's upstream bug of overwriting the oldest card across arbitrary decks.
   - Added compact field header badge button (`[ ➕ Дополнять ▾ ]`) next to field names in `TemplateField`, conserving vertical space without redundant subtitle rows.
   - Added localized strings across all 14 supported locales; verified with `TranslationsTest`, unit tests, and all 139 page tests passing.
+- Code review and verification fixes:
+  - Made `OverwriteModeBadge` reflect `AnkiNotes.suggestedAppendMode` for uncustomized fields when `DuplicateBehavior.APPEND` is selected, keeping UI and backend defaults in sync.
+  - Added `Modifier.weight(1f, fill = false)` to `Text(field)` in `TemplateField` so long field labels cannot push the overwrite badge off screen.
+  - Hardened in-deck candidate scoping in `AnkiNotes.kt` to require notes to explicitly match target decks (`note.deckIds.any { it in targetDecks }`), ensuring notes with unknown decks create new cards in the target deck when `duplicateScopeDeckOnly` is enabled.
+  - Enhanced `OverwriteMode.merge` idempotency check with `Regex("""<br\s*/?>""", RegexOption.IGNORE_CASE)` to match XHTML line break variants (`<br/>`, `<br />`).
+  - Updated KDoc in `AnkiSettings.kt` for `overwriteModes` and `duplicateScopeDeckOnly`.
+  - Added unit tests for unknown deck notes and XHTML line-break idempotency; verified with `./gradlew testDebugUnitTest` and all 139 page tests passing.
+- Minified ARM64 Dev APK from `d3a537e8`: version `0.2.3-d3a537e8-min` (203), 19,044,265 bytes, signed with the local debug key. SHA-256 `617c6e3ec66eb455b5d27a4ff79e51e0c9499fd7890ab8b76fdee8d84166394b`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
-- Refined Forced Offline Mode UX and fixed draft promotion popup scroll jump:
+## Forced Offline Mode UX refinement (2026-11-15)
   - Allowed localhost and loopback hosts (`localhost`, `127.0.0.1`, `::1`, `10.0.2.2`) through `OfflineInterceptor` so local custom audio endpoints continue working in offline mode.
   - Added dedicated `AudioError.Kind.OFFLINE_MODE` and `TranslationError.Kind.OFFLINE_MODE`, replacing obfuscated R8 class names with clear messages ("Forced Offline Mode is active" / "Включён принудительный офлайн-режим").
   - Added persistent informational banner in Translation settings screen when Forced Offline Mode is active.

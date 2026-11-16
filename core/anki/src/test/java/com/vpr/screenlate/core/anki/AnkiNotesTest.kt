@@ -274,7 +274,7 @@ class AnkiNotesTest {
                 overwriteModes = mapOf("Meaning" to OverwriteMode.APPEND, "Sentence" to OverwriteMode.OVERWRITE),
             )
         }
-        anki.existing += ExistingNote(7, MODEL, listOf("猫", "old", "a sentence", "<img src=\"x.png\">"))
+        anki.existing += ExistingNote(7, MODEL, listOf("猫", "old", "a sentence", "<img src=\"x.png\">"), setOf(DECK))
         assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Updated(7))
         // Word and Picture use the default COALESCE: the existing values stay.
         assertThat(anki.updated.single().second).containsExactly("猫", "old<br>cat", "", "<img src=\"x.png\">").inOrder()
@@ -304,6 +304,16 @@ class AnkiNotesTest {
         configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND, duplicateScopeDeckOnly = true) }
         val otherDeck = 99L
         anki.existing += ExistingNote(15, MODEL, listOf("猫", "other def", "other sentence", ""), setOf(otherDeck))
+        val result = notes.add(Language.JAPANESE, request)
+        assertThat(result).isEqualTo(AddResult.Added(101))
+        assertThat(anki.updated).isEmpty()
+        assertThat(anki.added).hasSize(1)
+    }
+
+    @Test
+    fun `duplicate with unknown deck creates new note in target deck when deck-only is enabled`() = runBlocking<Unit> {
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND, duplicateScopeDeckOnly = true) }
+        anki.existing += ExistingNote(16, MODEL, listOf("猫", "unknown def", "unknown sentence", "")) // empty deckIds
         val result = notes.add(Language.JAPANESE, request)
         assertThat(result).isEqualTo(AddResult.Added(101))
         assertThat(anki.updated).isEmpty()
