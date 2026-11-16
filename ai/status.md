@@ -16,7 +16,13 @@
   - Enhanced `OverwriteMode.merge` idempotency check with `Regex("""<br\s*/?>""", RegexOption.IGNORE_CASE)` to match XHTML line break variants (`<br/>`, `<br />`).
   - Updated KDoc in `AnkiSettings.kt` for `overwriteModes` and `duplicateScopeDeckOnly`.
   - Added unit tests for unknown deck notes and XHTML line-break idempotency; verified with `./gradlew testDebugUnitTest` and all 139 page tests passing.
-- Minified ARM64 Dev APK from `229c72e3` (on `main`): version `1.1.0-229c72e3-min` (10100), 23,281,623 bytes, signed with the local debug key. SHA-256 `18f82e444a834813108f337d2f78e8f559a1ab689f958b25c51612eea2022f42`. Includes all Senren scene switching, field appending, deck-scoped duplicate updates, Forced Offline Mode, and RTL translation completions. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+- Minified ARM64 Dev APK from `909c98c6` (on `main`): version `1.1.0-909c98c6-min` (10100), 23,288,395 bytes, signed with the local debug key. SHA-256 `756f026b9d4cb95f814e9fc199e2cbed5ec8bf7327a323934538e59c9ec98931`.
+  - Replaced cramped 4-segment row for duplicate behavior with a dropdown `Picker` displaying full option names and descriptions without clipping.
+  - Added hint for `anki_duplicate_all_models` across all 17 locales explaining first-field searching across note types.
+  - Fixed field append heuristics in `AnkiNotes.suggestedAppendMode`: word pronunciation fields (`WordAudio`, `expressionAudio`) correctly default to `COALESCE` (Keep), while sentence fields (`SentenceAudio`, `SentenceFurigana`, `SentenceTranslation`) and media context fields default to `APPEND`. Card generation switches (`SentenceCard`, etc.) default to `COALESCE`.
+  - Replaced emoji icons in `OverwriteModeBadge` with Material Design vector drawables (`ic_add`, `ic_arrow_downward`, `ic_shield`, `ic_new_label`, `ic_update`, `ic_block`).
+  - Removed Senren mention from Russian `anki_behavior_append_hint` string.
+  - The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
 ## Screenlate v1.1.0 released and pipeline resilience hardened (2026-11-15)
 
