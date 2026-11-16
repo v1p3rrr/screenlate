@@ -16,9 +16,8 @@
   - Enhanced `OverwriteMode.merge` idempotency check with `Regex("""<br\s*/?>""", RegexOption.IGNORE_CASE)` to match XHTML line break variants (`<br/>`, `<br />`).
   - Updated KDoc in `AnkiSettings.kt` for `overwriteModes` and `duplicateScopeDeckOnly`.
   - Added unit tests for unknown deck notes and XHTML line-break idempotency; verified with `./gradlew testDebugUnitTest` and all 139 page tests passing.
-- Minified ARM64 Dev APK from `d3a537e8`: version `0.2.3-d3a537e8-min` (203), 19,044,265 bytes, signed with the local debug key. SHA-256 `617c6e3ec66eb455b5d27a4ff79e51e0c9499fd7890ab8b76fdee8d84166394b`. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
+- Minified ARM64 Dev APK from `229c72e3` (on `main`): version `1.1.0-229c72e3-min` (10100), 23,281,623 bytes, signed with the local debug key. SHA-256 `18f82e444a834813108f337d2f78e8f559a1ab689f958b25c51612eea2022f42`. Includes all Senren scene switching, field appending, deck-scoped duplicate updates, Forced Offline Mode, and RTL translation completions. The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
-<<<<<<< HEAD
 ## Screenlate v1.1.0 released and pipeline resilience hardened (2026-11-15)
 
 - Stable [v1.1.0](https://github.com/v1p3rrr/screenlate/releases/tag/v1.1.0) published. The annotated tag points to `be8b04b0`; the [release workflow](https://github.com/v1p3rrr/screenlate/actions/runs/43755405374) was triggered to build and publish the release APKs signed with the production release key.
