@@ -9,13 +9,13 @@
 | Yomitan | github.com/yomidevs/yomitan (GPL-3.0) | Lookup and sort rules: see `yomitan-behavior.md` |
 | AnkiDroid API | github.com/ankidroid/Anki-Android `api/` (LGPL-3.0), JitPack `com.github.ankidroid:Anki-Android:api-v1.1.0` | Permission `com.ichi2.anki.permission.READ_WRITE_DATABASE`, `<queries>` for `com.ichi2.anki` |
 | Jitendex | jitendex.org, `indexUrl` https://jitendex.org/static/yomitan.json (CC BY-SA 4.0) | Catalog download (bundled in v0.1.0 only) |
-| JMdict (English) | github.com/yomidevs/jmdict-yomitan (data CC BY-SA 4.0 under the EDRDG licence, converter MIT) | Bundled |
+| JMdict (English) | github.com/yomidevs/jmdict-yomitan (data CC BY-SA 4.0 under the EDRDG licence, converter MIT) | Catalog download (bundled in v0.1.0 only) |
 | Warodai | github.com/WarodaiProject/warodai-source (CC BY-NC-ND 3.0), no official Yomitan build | Not in the catalog; file import only |
 | Kenrowa | Kenkyusha 和露辞典 (commercial) | Not in the catalog; file import only |
 | Kolobok 400k (ja-ru) | ganqqwerty.github.io/jp-ru-kolobok-dictionary, `indexUrl` https://ganqqwerty.github.io/jp-ru-kolobok-dictionary/yomitan.json (CC BY-SA 4.0) | Catalog download |
-| Jiten frequency dictionaries | jiten.moe/frequency-dictionaries (CC BY-SA 4.0) | Global list bundled, used for sorting |
+| Jiten frequency dictionaries | jiten.moe/frequency-dictionaries (CC BY-SA 4.0) | Catalog download (bundled in v0.1.0 only) |
 | JPDB v2.2 frequency | github.com/Kuuuube/yomitan-dictionaries (no license) | Not bundled; importable by the user |
-| Kanjium pitch accents | Yomitan-format pitch dictionary (CC BY-SA 4.0) | Bundled |
+| Kanjium pitch accents | Yomitan-format pitch dictionary (CC BY-SA 4.0) | Catalog download (bundled in v0.1.0 only) |
 | Yomitan API | github.com/yomidevs/yomitan-api | Desktop-only native messaging bridge; not usable on Android |
 | Paddle Arabic recognizer | huggingface.co/PaddlePaddle/arabic_PP-OCRv5_mobile_rec_onnx at 14aaedcd (Apache-2.0) | Arabic, Persian and Urdu letters, no ZWNJ, no Hebrew; converted for the comparison, waits for the Paddle upload; `languages.md`, "Group 4d research" |
 | Arabic, Persian, Hebrew fonts | Google Fonts (OFL): Noto Sans Arabic, Amiri, Vazirmatn, Heebo, Frank Ruhl Libre; Noto Nastaliq Urdu for Urdu later | Row "Fonts" of `plans/2026-10-19-group-4d.md` |

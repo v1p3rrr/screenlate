@@ -2,6 +2,7 @@ package com.vpr.screenlate.settings
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -25,10 +28,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,6 +69,13 @@ fun AboutScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
+    val appIcon = remember(context) {
+        runCatching {
+            val drawable = context.packageManager.getApplicationIcon(context.packageName)
+            val sizePx = (36 * context.resources.displayMetrics.density).toInt().coerceAtLeast(1)
+            drawable.toBitmap(sizePx, sizePx).asImageBitmap()
+        }.getOrNull()
+    }
     var sharing by remember { mutableStateOf(false) }
     var savedLog by remember { mutableStateOf<SavedLog?>(null) }
     var saveFailed by remember { mutableStateOf(false) }
@@ -78,7 +91,20 @@ fun AboutScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            SectionCard(title = stringResource(R.string.app_title)) {
+            SectionCard(
+                title = stringResource(R.string.app_title),
+                leadingContent = appIcon?.let { icon ->
+                    {
+                        Image(
+                            bitmap = icon,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                        )
+                    }
+                },
+            ) {
                 Text(stringResource(R.string.about_version, versionName(context)))
                 Text(stringResource(R.string.about_description))
                 Hint(stringResource(R.string.about_author))

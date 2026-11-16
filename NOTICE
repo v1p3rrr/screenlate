@@ -6,12 +6,6 @@ the terms of the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version. See LICENSE.
 
-Words.hk Frequency (https://github.com/MarvNC/wordshk-yomitan), converted by Marv
-from Words.hk and its contributors (https://words.hk/).
-  Optional downloadable Cantonese frequency data; words.hk Non-Commercial
-  Open Data License 1.0: https://words.hk/base/hoifong/.
-  The data is not bundled with the application.
-
 ISRG Root X1 (https://letsencrypt.org/certificates/),
 Internet Security Research Group.
   Root certificate bundled in app/src/main/res/raw/isrgrootx1.der for TLS
@@ -127,7 +121,10 @@ scripts/hanja/unihan_hanja.py and installed with Korean, is derived from the Uni
 (https://www.unicode.org/reports/tr38/), Copyright © 1991-2026 Unicode, Inc., Unicode License V3.
 
 Dictionaries offered for download are not part of the APK; each one carries its own license and
-attribution, shown in the app under Dictionaries. The frequency dictionaries that the app builds on the device
+attribution, shown in the app under Dictionaries. Optional Cantonese dictionaries from Words.hk
+(https://words.hk/), converted by Marv (https://github.com/MarvNC/wordshk-yomitan), are under the
+words.hk Non-Commercial Open Data License 1.0 (https://words.hk/base/hoifong/); they are not bundled
+with the application. The frequency dictionaries that the app builds on the device
 (and scripts/frequency on a computer) use the word lists of wordfreq (https://github.com/rspeer/wordfreq) by
 Robyn Speer, data licensed CC BY-SA 4.0, which come from Wikipedia, OpenSubtitles, SUBTLEX, Google Books Ngrams
 and other sources; each built dictionary names them all and is shared under CC BY-SA 4.0. For Thai, which wordfreq

@@ -24,6 +24,7 @@ fun SectionCard(
     title: String,
     modifier: Modifier = Modifier,
     info: String? = null,
+    leadingContent: (@Composable () -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(modifier = modifier.fillMaxWidth()) {
@@ -31,10 +32,20 @@ fun SectionCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            if (info == null) {
+            if (leadingContent == null && info == null) {
                 Text(title, style = MaterialTheme.typography.titleMedium)
             } else {
-                LabelWithInfo(title, info, style = MaterialTheme.typography.titleMedium)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    leadingContent?.invoke()
+                    if (info == null) {
+                        Text(title, style = MaterialTheme.typography.titleMedium)
+                    } else {
+                        LabelWithInfo(title, info, style = MaterialTheme.typography.titleMedium)
+                    }
+                }
             }
             content()
         }

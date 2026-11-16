@@ -1,6 +1,5 @@
 package com.vpr.screenlate.settings
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -41,7 +40,6 @@ fun NoticesScreen(onBack: () -> Unit) {
         }.also { noticeText = it }
     }
     SettingsScaffold(stringResource(R.string.about_notices), onBack) { padding ->
-        // NOTICE keeps its own line breaks; long lines scroll sideways instead of wrapping mid-list.
         Text(
             text,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
@@ -49,7 +47,6 @@ fun NoticesScreen(onBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .horizontalScroll(rememberScrollState())
                 .padding(16.dp),
         )
     }
