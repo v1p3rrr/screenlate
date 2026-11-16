@@ -982,4 +982,18 @@
         <item quantity="two">%1$d מתוך %2$d אזורים</item>
         <item quantity="other">%1$d מתוך %2$d אזורים</item>
     </plurals>
+
+    <string name="anki_behavior_append">הוספה</string>
+    <string name="anki_behavior_prevent_hint">אם הרשומה קיימת, מוצע לפתוח אותה ב-AnkiDroid במקום להוסיף.</string>
+    <string name="anki_behavior_overwrite_hint">שדות הרשומה הקיימת יוחלפו בערכים חדשים.</string>
+    <string name="anki_behavior_append_hint">מוסיף משפטים וצילומי מסך חדשים לרשומה הקיימת להחלפת סצנות.</string>
+    <string name="anki_behavior_new_hint">נוספת רשומה חדשה גם אם קיימת רשומה זהה.</string>
+    <string name="anki_duplicate_deck_only">שינוי בחבילה הנוכחית בלבד</string>
+    <string name="anki_duplicate_deck_only_hint">אם הכפילות נמצאת בחבילה אחרת, היא לא תשונה, וייווצר כרטיס חדש בחבילה הנוכחית.</string>
+    <string name="anki_mode_coalesce">שמירה</string>
+    <string name="anki_mode_coalesce_new">שימוש בחדש</string>
+    <string name="anki_mode_overwrite">החלפה</string>
+    <string name="anki_mode_skip">דילוג</string>
+    <string name="anki_mode_append">הוספה</string>
+    <string name="anki_mode_prepend">הוספה להתחלה</string>
 </resources>

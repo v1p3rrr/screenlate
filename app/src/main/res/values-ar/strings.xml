@@ -186,7 +186,14 @@
     <string name="anki_duplicate_behavior">عند وجود ملاحظة مكرّرة</string>
     <string name="anki_behavior_prevent">منع</string>
     <string name="anki_behavior_overwrite">الكتابة فوقها</string>
+    <string name="anki_behavior_append">إلحاق</string>
     <string name="anki_behavior_new">إضافة جديدة</string>
+    <string name="anki_behavior_prevent_hint">إذا كانت الملاحظة موجودة، يُعرض فتحها في AnkiDroid بدلاً من إضافتها.</string>
+    <string name="anki_behavior_overwrite_hint">تُستبدل حقول الملاحظة الموجودة بالقيم الجديدة.</string>
+    <string name="anki_behavior_append_hint">إلحاق الجمل ولقطات الشاشة الجديدة بالملاحظة الحالية لتبديل المشاهد.</string>
+    <string name="anki_behavior_new_hint">تُضاف ملاحظة جديدة حتى وإن كانت متطابقة مع ملاحظة موجودة.</string>
+    <string name="anki_duplicate_deck_only">التعديل في الرزمة الحالية فقط</string>
+    <string name="anki_duplicate_deck_only_hint">إذا وُجدت الملاحظة المكررة في رزمة أخرى، لا تُعدَّل، بل تُنشأ ملاحظة جديدة في الرزمة الحالية.</string>
 
     <string name="audio_title">الصوت</string>
     <string name="audio_offline_notice">وضع عدم الاتصال الإجباري مفعّل. تم تعطيل مصادر الصوت عبر الإنترنت؛ يتم استخدام تحويل النص إلى كلام (TTS) للنطق (حتى لو لم تتم إضافته إلى المصادر) والصوت المخزن مؤقتًا.</string>
@@ -273,6 +280,12 @@
     <string name="anki_overwrite_skip">الإبقاء</string>
     <string name="anki_overwrite_append">الإلحاق بالنهاية</string>
     <string name="anki_overwrite_prepend">الإضافة إلى البداية</string>
+    <string name="anki_mode_coalesce">إبقاء</string>
+    <string name="anki_mode_coalesce_new">أخذ الجديد</string>
+    <string name="anki_mode_overwrite">استبدال</string>
+    <string name="anki_mode_skip">تخطي</string>
+    <string name="anki_mode_append">إلحاق</string>
+    <string name="anki_mode_prepend">إضافة للبداية</string>
     <string name="audio_volume">مستوى الصوت: %1$d%%</string>
     <string name="settings_title">الإعدادات</string>
     <string name="settings_offline_mode">وضع عدم الاتصال الإجباري</string>

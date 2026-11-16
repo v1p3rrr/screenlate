@@ -969,4 +969,18 @@
         <item quantity="one">%1$d از %2$d ناحیه</item>
         <item quantity="other">%1$d از %2$d ناحیه</item>
     </plurals>
+
+    <string name="anki_behavior_append">افزودن</string>
+    <string name="anki_behavior_prevent_hint">اگر یادداشت وجود دارد، باز کردن آن در AnkiDroid به جای افزودن پیشنهاد می‌شود.</string>
+    <string name="anki_behavior_overwrite_hint">فیلدهای یادداشت موجود با مقادیر جدید جایگزین می‌شوند.</string>
+    <string name="anki_behavior_append_hint">جملات و تصاویر جدید را برای تغییر صحنه به یادداشت موجود اضافه می‌کند.</string>
+    <string name="anki_behavior_new_hint">حتی در صورت وجود یادداشت یکسان، یک یادداشت جدید اضافه می‌شود.</string>
+    <string name="anki_duplicate_deck_only">تغییر فقط در دسته فعلی</string>
+    <string name="anki_duplicate_deck_only_hint">اگر مورد تکراری در دسته دیگری باشد، تغییر داده نمی‌شود و یک کارت جدید در دسته فعلی ایجاد می‌شود.</string>
+    <string name="anki_mode_coalesce">حفظ</string>
+    <string name="anki_mode_coalesce_new">گرفتن جدید</string>
+    <string name="anki_mode_overwrite">جایگزینی</string>
+    <string name="anki_mode_skip">رد شدن</string>
+    <string name="anki_mode_append">افزودن</string>
+    <string name="anki_mode_prepend">افزودن به ابتدا</string>
 </resources>
