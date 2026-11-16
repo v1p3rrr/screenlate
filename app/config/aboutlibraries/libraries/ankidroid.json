@@ -1,0 +1,14 @@
+{
+  "uniqueId": "com.github.ankidroid:Anki-Android",
+  "name": "AnkiDroid API",
+  "description": "AnkiDroid API library for Android",
+  "website": "https://github.com/ankidroid/Anki-Android/tree/master/api",
+  "developers": [
+    {
+      "name": "AnkiDroid contributors"
+    }
+  ],
+  "licenses": [
+    "LGPL-3.0-or-later"
+  ]
+}

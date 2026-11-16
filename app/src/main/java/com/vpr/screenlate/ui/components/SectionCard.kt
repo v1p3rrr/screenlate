@@ -18,7 +18,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.vpr.screenlate.R
 
-/** A card with a [title]; [info] adds an ⓘ next to it with a longer explanation. */
+/**
+ * A card with a [title]; [info] adds an ⓘ next to it with a longer explanation,
+ * and optional [leadingContent] is placed before the title.
+ */
 @Composable
 fun SectionCard(
     title: String,
@@ -32,19 +35,22 @@ fun SectionCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            if (leadingContent == null && info == null) {
-                Text(title, style = MaterialTheme.typography.titleMedium)
+            val titleContent = @Composable {
+                if (info == null) {
+                    Text(title, style = MaterialTheme.typography.titleMedium)
+                } else {
+                    LabelWithInfo(title, info, style = MaterialTheme.typography.titleMedium)
+                }
+            }
+            if (leadingContent == null) {
+                titleContent()
             } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    leadingContent?.invoke()
-                    if (info == null) {
-                        Text(title, style = MaterialTheme.typography.titleMedium)
-                    } else {
-                        LabelWithInfo(title, info, style = MaterialTheme.typography.titleMedium)
-                    }
+                    leadingContent()
+                    titleContent()
                 }
             }
             content()

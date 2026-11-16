@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,12 +68,13 @@ fun AboutScreen(
     updates: UpdateViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
-    val appIcon = remember(context) {
+    val appIcon = remember(context, density) {
         runCatching {
             val drawable = context.packageManager.getApplicationIcon(context.packageName)
-            val sizePx = (36 * context.resources.displayMetrics.density).toInt().coerceAtLeast(1)
+            val sizePx = with(density) { AppIconSize.roundToPx() }
             drawable.toBitmap(sizePx, sizePx).asImageBitmap()
         }.getOrNull()
     }
@@ -99,8 +101,8 @@ fun AboutScreen(
                             bitmap = icon,
                             contentDescription = null,
                             modifier = Modifier
-                                .size(36.dp)
-                                .clip(RoundedCornerShape(8.dp)),
+                                .size(AppIconSize)
+                                .clip(RoundedCornerShape(AppIconCornerRadius)),
                         )
                     }
                 },
@@ -227,3 +229,6 @@ fun versionName(context: Context): String =
 fun openUrl(context: Context, url: String) {
     runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
 }
+
+private val AppIconSize = 36.dp
+private val AppIconCornerRadius = 8.dp
