@@ -171,6 +171,8 @@
     <string name="anki_adding">Dodawanie notatek</string>
     <string name="anki_screenshot_by_default">Domyślnie zrzut ekranu</string>
     <string name="anki_screenshot_by_default_hint">Dotknięcie wybiera obszar zrzutu ekranu; przytrzymanie dodaje bez obrazu.</string>
+    <string name="anki_remember_crop_area">Zapamiętuj obszar zrzutu</string>
+    <string name="anki_remember_crop_area_hint">Używa ostatnio zatwierdzonego obszaru ekranu zamiast automatycznego zaznaczania tekstu wokół słowa.</string>
 
     <string name="anki_duplicates">Duplikaty</string>
     <string name="anki_duplicate_check">Sprawdzaj duplikaty</string>
@@ -640,6 +642,8 @@
     <string name="popup_hide_after_add_hint">Okienko zamyka się, gdy tylko ➕ doda słowo.</string>
     <string name="popup_hide_off_word">Gdy celownik opuści słowo</string>
     <string name="popup_hide_off_word_hint">Gdy przesuwasz dymek, okienko zamyka się, kiedy celownik odsunie się od słowa o kilka milimetrów tam, gdzie nie ma tekstu.</string>
+    <string name="popup_hide_outside_tap">Po dotknięciu poza okienkiem</string>
+    <string name="popup_hide_outside_tap_hint">Dotknięcie poza okienkiem zamyka je bez przekazywania dotyku do aplikacji pod spodem.</string>
     <string name="popup_copy_switch">Przycisk kopiowania przy nazwach słowników</string>
     <string name="popup_copy_switch_hint">W okienku i wyszukiwaniu przycisk przy nazwie każdego słownika kopiuje jego definicje z hasła.</string>
     <string name="popup_copy_mode_all">Wszystko</string>

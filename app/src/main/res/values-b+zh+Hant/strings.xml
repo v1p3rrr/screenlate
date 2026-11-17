@@ -165,6 +165,8 @@
     <string name="anki_adding">新增卡片</string>
     <string name="anki_screenshot_by_default">預設附帶螢幕截圖</string>
     <string name="anki_screenshot_by_default_hint">輕觸選取截圖區域；長按新增不附帶圖片。</string>
+    <string name="anki_remember_crop_area">記住螢幕截圖區域</string>
+    <string name="anki_remember_crop_area_hint">重複使用上次確認的螢幕裁切區域，而不再自動框選單字周圍的文字。</string>
 
     <string name="anki_duplicates">重複</string>
     <string name="anki_duplicate_check">檢查重複</string>
@@ -628,6 +630,8 @@
     <string name="popup_hide_after_add_hint">➕ 新增該詞後，彈出視窗會立即關閉。</string>
     <string name="popup_hide_off_word">瞄準點離開詞語時</string>
     <string name="popup_hide_off_word_hint">移動懸浮球時，若瞄準點離開詞語幾公釐、移到沒有文字的地方，彈出視窗就會關閉。</string>
+    <string name="popup_hide_outside_tap">輕觸彈出視窗外部時</string>
+    <string name="popup_hide_outside_tap_hint">輕觸彈出視窗外區域會關閉視窗，且不會將輕觸傳遞給下方的應用程式。</string>
     <string name="popup_copy_switch">詞典名稱旁的複製按鈕</string>
     <string name="popup_copy_switch_hint">在彈出視窗和搜尋中，每個詞典名稱旁的按鈕會複製該詞典的釋義。</string>
     <string name="popup_copy_mode_all">全部</string>

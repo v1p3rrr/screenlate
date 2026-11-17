@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.vpr.screenlate.backup.BackupChoiceStore
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.preferenceKey
 import com.vpr.screenlate.core.ocr.model.OcrModelChoices
@@ -97,6 +98,13 @@ object SettingsKeys {
     /** The bubble's stored keys that the Text recognition page sets. */
     private val recognitionKeys = setOf("overlay_text_source", "overlay_small_text", "overlay_ocr_engines", "overlay_ocr_saving")
 
+    /** Shared screenshot crop memory keys belonging to the Anki settings page. */
+    private val sharedAnkiKeys = setOf(
+        CropAreaRepository.REMEMBER_AREA_KEY,
+        CropAreaRepository.PORTRAIT_KEY,
+        CropAreaRepository.LANDSCAPE_KEY,
+    )
+
     /** Per-language keys set on the Languages screen, which has no reset of its own: only the full reset clears them. */
     private val languagesScreen = setOf("language_script", "language_fixed_script")
 
@@ -115,7 +123,7 @@ object SettingsKeys {
         key in recognitionKeys || key.startsWith(OcrModelChoices.KEY) -> SettingsSection.RECOGNITION
         key.startsWith("overlay_") -> SettingsSection.BUBBLE
         key.startsWith("lookup_") -> SettingsSection.LOOKUP
-        languageOf(key) != null && key.startsWith("anki_settings") -> SettingsSection.ANKI
+        key in sharedAnkiKeys || (languageOf(key) != null && key.startsWith("anki_settings")) -> SettingsSection.ANKI
         key.startsWith("audio_") -> SettingsSection.AUDIO
         key.startsWith("popup_") -> SettingsSection.POPUP
         key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> SettingsSection.TRANSLATION

@@ -26,6 +26,7 @@ import com.vpr.screenlate.core.anki.audio.AudioFinder
 import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.note.Sentence
+import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.geometry.Box
@@ -169,6 +170,7 @@ class OverlayController(
         val audio: AudioFinder,
         val audioSettings: AudioSettingsRepository,
         val player: AudioPlayer,
+        val cropAreaSettings: CropAreaRepository,
     )
 
     private enum class State { DOCKED, DRAGGING, FLOATING }
@@ -244,6 +246,7 @@ class OverlayController(
         noteSource = ::noteSource,
         translation = translation,
         cropEditor = CropEditor(service, windowManager),
+        cropAreaSettings = anki.cropAreaSettings,
         onAnkiOpened = { dock() },
         onNoteAdded = {
             if (settings.hideAfterAdd) {
@@ -332,8 +335,11 @@ class OverlayController(
         showGlyph()
         val initialPalette = (appSettings.cachedPaletteConfig ?: AppPaletteConfig()).withWallpaperColor(service)
         val initialOverlay = overlaySettings.cachedSettings ?: OverlaySettings()
-        bubbleView.bubbleColor = if (initialOverlay.bubbleUseAppColor) initialPalette.effectiveSeed else initialOverlay.bubbleCustomColor
+        val initialBubbleColor = if (initialOverlay.bubbleUseAppColor) initialPalette.effectiveSeed else initialOverlay.bubbleCustomColor
+        bubbleView.bubbleColor = initialBubbleColor
         layerView.primaryColor = initialPalette.effectiveSeed
+        layerView.aimColor = initialBubbleColor
+        popup.hideOnOutsideTap = initialOverlay.hideOnOutsideTap
         scope.launch {
             combine(overlaySettings.settings, appSettings.paletteConfig, wallpaperAccents(service)) { overlay, palette, wallpaperAccent ->
                 val themeSeed = palette.withWallpaperColor(wallpaperAccent).effectiveSeed
@@ -341,6 +347,7 @@ class OverlayController(
                 themeSeed to bubbleColor
             }.distinctUntilChanged().collect { (themeSeed, bubbleColor) ->
                 layerView.primaryColor = themeSeed
+                layerView.aimColor = bubbleColor
                 bubbleView.bubbleColor = bubbleColor
             }
         }
@@ -456,6 +463,7 @@ class OverlayController(
     private fun applySettings(new: OverlaySettings) {
         val previous = settings
         settings = new
+        popup.hideOnOutsideTap = new.hideOnOutsideTap
         loadOnDevice(new.textSource != TextSource.APP_TEXT_ONLY && new.effectiveOcrEngines(offlineMode) != OcrEngines.CLOUD)
         val show = shouldShowBubble()
         val size = (new.bubbleSizeDp * density).roundToInt()

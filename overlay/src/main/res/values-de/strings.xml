@@ -111,5 +111,6 @@
     <string name="translation_error_bad_answer">Die Antwort konnte nicht gelesen werden.</string>
     <string name="translation_error_other">Unbekannter Fehler.</string>
     <string name="crop_whole_photo">Ganzes Foto</string>
+    <string name="crop_remember_area">Bereich merken</string>
     <string name="overlay_external_google_images">Google Bilder</string>
 </resources>

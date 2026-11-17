@@ -111,5 +111,6 @@
     <string name="translation_error_bad_answer">Yanıt okunamadı.</string>
     <string name="translation_error_other">Bilinmeyen hata.</string>
     <string name="crop_whole_photo">Fotoğrafın tamamı</string>
+    <string name="crop_remember_area">Alanı hatırla</string>
     <string name="overlay_external_google_images">Google Görseller</string>
 </resources>

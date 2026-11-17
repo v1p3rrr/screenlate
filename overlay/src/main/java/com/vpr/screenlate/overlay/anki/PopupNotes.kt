@@ -21,6 +21,7 @@ import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.note.Sentence
+import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
@@ -41,6 +42,8 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
@@ -130,6 +133,7 @@ class PopupNotes(
     private val noteSource: () -> NoteSource,
     private val translation: SentenceTranslation,
     private val cropEditor: CropEditor?,
+    private val cropAreaSettings: CropAreaRepository? = null,
     private val onAnkiOpened: () -> Unit,
     private val onNoteAdded: () -> Unit,
     private val onOpenAnkiSettings: () -> Unit,
@@ -327,8 +331,21 @@ class PopupNotes(
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
                 if (context.image != null && cropEditor != null) {
+                    val rememberControl = if (!context.image.fit && cropAreaSettings != null) {
+                        val imageBounds = context.image.bounds
+                        val cropSettings = cropAreaSettings.current()
+                        CropEditor.RememberControl(
+                            initial = cropSettings.rememberArea,
+                            remembered = cropSettings.cropFor(imageBounds),
+                            updates = cropAreaSettings.settings.map { it.rememberArea }.distinctUntilChanged(),
+                            onChange = { enabled -> scope.launch { cropAreaSettings.setRememberArea(enabled) } },
+                            onConfirm = { selection -> cropAreaSettings.saveCrop(selection, imageBounds) },
+                        )
+                    } else {
+                        null
+                    }
                     // Cancelling the editor cancels the note.
-                    picture = cropEditor.edit(context.image, context.focus)
+                    picture = cropEditor.edit(context.image, context.focus, rememberControl)
                         ?: run {
                             showState(scan, index, noteTerm, "", null)
                             return@launch

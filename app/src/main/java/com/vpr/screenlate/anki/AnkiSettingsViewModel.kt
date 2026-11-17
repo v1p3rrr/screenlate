@@ -13,6 +13,7 @@ import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
+import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.NoteTemplate
@@ -76,6 +77,7 @@ class AnkiSettingsViewModel @Inject constructor(
     private val settingsReset: SettingsReset,
     private val cache: AnkiConnectionCache,
     private val translationSettings: TranslationSettingsRepository,
+    private val cropAreaSettings: CropAreaRepository,
     dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
     savedState: SavedStateHandle,
@@ -86,6 +88,10 @@ class AnkiSettingsViewModel @Inject constructor(
     /** Whether notes get `{sentence-translation}`; the Translation page has this switch too. */
     val translationInNotes: StateFlow<Boolean?> = translationSettings.settings.map { it.ankiField }
         .stateIn(viewModelScope, SharingStarted.Eagerly, translationSettings.cachedSettings?.ankiField)
+
+    /** Whether screenshot cropping remembers the last confirmed region; synchronized with the crop editor toggle. */
+    val rememberCropArea: StateFlow<Boolean?> = cropAreaSettings.settings.map { it.rememberArea }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, cropAreaSettings.cachedSettings?.rememberArea)
 
     // Opens with AnkiDroid's last answer, or the first time with the saved setup laid out as if AnkiDroid answered;
     // either way the screen keeps its layout when the answer comes.
@@ -222,6 +228,10 @@ class AnkiSettingsViewModel @Inject constructor(
 
     fun setTranslationInNotes(enabled: Boolean) {
         viewModelScope.launch { translationSettings.setAnkiField(enabled) }
+    }
+
+    fun setRememberCropArea(enabled: Boolean) {
+        viewModelScope.launch { cropAreaSettings.setRememberArea(enabled) }
     }
 
     fun selectDeck(deck: AnkiDeck) {

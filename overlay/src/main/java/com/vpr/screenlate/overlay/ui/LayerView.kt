@@ -9,6 +9,7 @@ import android.graphics.RectF
 import android.view.View
 import androidx.core.graphics.withSave
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.theme.PaletteGenerator
 
 /**
  * Full-screen, non-touchable layer drawn in screen coordinates: the aim dot, the highlight of the word under the aim
@@ -38,14 +39,25 @@ class LayerView(context: Context) : View(context) {
         contentChanged()
     }
 
-    /** Primary theme color used for the aim dot and the translucent word highlight box. */
+    /** Primary theme color used for the translucent word highlight box. */
     var primaryColor: Int = AIM_COLOR
         set(value) {
             if (field == value) return
             field = value
             if (!eInk) {
-                aimPaint.color = value
                 wordPaint.color = (value and 0x00FFFFFF) or (WORD_ALPHA shl 24)
+                invalidate()
+            }
+        }
+
+    /** Fill color for the aim dot, matching the bubble; its outline inverts on light colors. */
+    var aimColor: Int = AIM_COLOR
+        set(value) {
+            val opaque = opaqueColor(value)
+            if (field == opaque) return
+            field = opaque
+            if (!eInk) {
+                applyAimColors()
                 invalidate()
             }
         }
@@ -58,11 +70,17 @@ class LayerView(context: Context) : View(context) {
         set(value) {
             if (field == value) return
             field = value
-            aimPaint.color = if (value) Color.BLACK else primaryColor
+            applyAimColors()
             wordPaint.set(if (value) frame(E_INK_WORD_STROKE_DP) else fill((primaryColor and 0x00FFFFFF) or (WORD_ALPHA shl 24)))
             allLinesPaint.set(if (value) frame(E_INK_LINES_STROKE_DP) else fill(ALL_LINES_COLOR))
             invalidate()
         }
+
+    private fun applyAimColors() {
+        val (fillColor, outlineColor) = aimColors(aimColor, eInk)
+        aimPaint.color = fillColor
+        aimOutline.color = outlineColor
+    }
 
     /** The highlights, with their margins, are cut to this part of the screen, such as a photo's viewer; null: none. */
     var clip: Box? = null
@@ -185,7 +203,7 @@ class LayerView(context: Context) : View(context) {
         canvas.drawRoundRect(rect, corner, corner, paint)
     }
 
-    private companion object {
+    internal companion object {
         const val AIM_COLOR = 0xFF7C5CFF.toInt()
         const val WORD_ALPHA = 0x55
         const val ALL_LINES_COLOR = 0xFFFFC83D.toInt()
@@ -195,5 +213,15 @@ class LayerView(context: Context) : View(context) {
         const val HIDE_DELAY_MS = 1000L
         const val E_INK_WORD_STROKE_DP = 2.5f
         const val E_INK_LINES_STROKE_DP = 1f
+        private const val BLACK = 0xFF000000.toInt()
+
+        fun opaqueColor(color: Int): Int = (color and 0x00FFFFFF) or BLACK
+
+        /** Fill and outline colors for the aim dot: black with a white ring on e-ink, else opaque [seed] with a contrasting ring. */
+        fun aimColors(seed: Int, eInk: Boolean): Pair<Int, Int> {
+            if (eInk) return BLACK to PaletteGenerator.WHITE
+            val opaque = opaqueColor(seed)
+            return opaque to PaletteGenerator.bubbleForegroundColor(opaque)
+        }
     }
 }

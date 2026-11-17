@@ -167,6 +167,8 @@
     <string name="anki_adding">Notizen hinzufügen</string>
     <string name="anki_screenshot_by_default">Standardmäßig mit Screenshot</string>
     <string name="anki_screenshot_by_default_hint">Tippen wählt einen Screenshot-Bereich aus; Halten fügt ohne Bild hinzu.</string>
+    <string name="anki_remember_crop_area">Screenshot-Bereich merken</string>
+    <string name="anki_remember_crop_area_hint">Verwendet den zuletzt bestätigten Bildschirmausschnitt statt des Bereichs um den Text.</string>
 
     <string name="anki_duplicates">Duplikate</string>
     <string name="anki_duplicate_check">Auf Duplikate prüfen</string>
@@ -632,6 +634,8 @@
     <string name="popup_hide_after_add_hint">Das Popup schließt sich, sobald ➕ das Wort hinzugefügt hat.</string>
     <string name="popup_hide_off_word">Wenn der Zielpunkt das Wort verlässt</string>
     <string name="popup_hide_off_word_hint">Während du die Blase bewegst, schließt sich das Popup, sobald der Zielpunkt einige Millimeter vom Wort entfernt ist, wo kein Text steht.</string>
+    <string name="popup_hide_outside_tap">Bei Tippen außerhalb</string>
+    <string name="popup_hide_outside_tap_hint">Ein Tippen außerhalb des Popups schließt es, ohne die Berührung an die App darunter weiterzugeben.</string>
     <string name="popup_copy_switch">Schaltfläche „Kopieren“ neben Wörterbuchnamen</string>
     <string name="popup_copy_switch_hint">Im Popup und in der Suche kopiert eine Schaltfläche neben dem Namen jedes Wörterbuchs dessen Definitionen für den Eintrag.</string>
     <string name="popup_copy_mode_all">Alles</string>

@@ -169,6 +169,8 @@
     <string name="anki_adding">Adição de notas</string>
     <string name="anki_screenshot_by_default">Captura de tela por padrão</string>
     <string name="anki_screenshot_by_default_hint">Toque para selecionar uma área da captura; segure para adicionar sem imagem.</string>
+    <string name="anki_remember_crop_area">Lembrar área da captura</string>
+    <string name="anki_remember_crop_area_hint">Reutiliza a última área de tela confirmada em vez de selecionar a região ao redor do texto.</string>
 
     <string name="anki_duplicates">Duplicatas</string>
     <string name="anki_duplicate_check">Verificar duplicatas</string>
@@ -636,6 +638,8 @@
     <string name="popup_hide_after_add_hint">O pop-up fecha assim que ➕ adiciona a palavra.</string>
     <string name="popup_hide_off_word">Quando o ponto de mira sai da palavra</string>
     <string name="popup_hide_off_word_hint">Enquanto você move a bolha, o pop-up fecha quando o ponto de mira se afasta alguns milímetros da palavra, para uma área sem texto.</string>
+    <string name="popup_hide_outside_tap">Ao tocar fora</string>
+    <string name="popup_hide_outside_tap_hint">Tocar fora do pop-up fecha a janela sem repassar o toque para o app abaixo.</string>
     <string name="popup_copy_switch">Botão de copiar junto aos nomes dos dicionários</string>
     <string name="popup_copy_switch_hint">No pop-up e na pesquisa, um botão junto ao nome de cada dicionário copia as definições da entrada nesse dicionário.</string>
     <string name="popup_copy_mode_all">Tudo</string>

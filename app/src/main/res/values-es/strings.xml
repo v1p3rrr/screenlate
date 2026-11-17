@@ -169,6 +169,8 @@
     <string name="anki_adding">Añadir notas</string>
     <string name="anki_screenshot_by_default">Captura de pantalla por defecto</string>
     <string name="anki_screenshot_by_default_hint">Tocar selecciona un área de captura; mantener pulsado añade sin imagen.</string>
+    <string name="anki_remember_crop_area">Recordar área de captura</string>
+    <string name="anki_remember_crop_area_hint">Reutiliza la última área de pantalla confirmada en lugar de seleccionar la zona alrededor del texto.</string>
 
     <string name="anki_duplicates">Duplicados</string>
     <string name="anki_duplicate_check">Buscar duplicados</string>
@@ -636,6 +638,8 @@
     <string name="popup_hide_after_add_hint">La ventana emergente se cierra en cuanto ➕ añade la palabra.</string>
     <string name="popup_hide_off_word">Cuando el punto de mira deja la palabra</string>
     <string name="popup_hide_off_word_hint">Mientras mueves la burbuja, la ventana emergente se cierra cuando el punto de mira se aleja unos milímetros de la palabra hacia una zona sin texto.</string>
+    <string name="popup_hide_outside_tap">Al tocar fuera</string>
+    <string name="popup_hide_outside_tap_hint">Tocar fuera de la ventana emergente la cierra sin pasar el toque a la aplicación de abajo.</string>
     <string name="popup_copy_switch">Botón de copiar junto a los nombres de diccionarios</string>
     <string name="popup_copy_switch_hint">En la ventana emergente y en la búsqueda, un botón junto al nombre de cada diccionario copia sus definiciones de la entrada.</string>
     <string name="popup_copy_mode_all">Todo</string>

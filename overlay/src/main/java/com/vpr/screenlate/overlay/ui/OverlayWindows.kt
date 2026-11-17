@@ -60,6 +60,17 @@ object OverlayWindows {
     )
 
     /**
+     * Full-screen transparent backdrop placed behind the popup when outside-tap dismissal is enabled. Starts hidden
+     * and untouchable so touches pass through whenever the popup is closed or the option is off.
+     */
+    fun outsideCatcherParams(): LayoutParams = base(
+        LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_NOT_TOUCHABLE,
+    ).apply {
+        width = 1
+        height = 1
+    }
+
+    /**
      * The held bubble's menu: focused, for Back, and touch modal, so every touch on the screen reaches it and one
      * outside closes it; no keyboard of its own. Hardware drawn for its shadow.
      */

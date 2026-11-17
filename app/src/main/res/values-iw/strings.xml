@@ -169,6 +169,8 @@
     <string name="anki_adding">הוספת פתקים</string>
     <string name="anki_screenshot_by_default">צילום מסך כברירת מחדל</string>
     <string name="anki_screenshot_by_default_hint">הקשה בוחרת אזור לצילום מסך; לחיצה ארוכה מוסיפה ללא תמונה.</string>
+    <string name="anki_remember_crop_area">זכירת אזור צילום המסך</string>
+    <string name="anki_remember_crop_area_hint">משתמש באזור המסך האחרון שאושר במקום לבחור את האזור שסביב הטקסט.</string>
 
     <string name="anki_duplicates">כפילויות</string>
     <string name="anki_duplicate_check">בדיקת כפילויות</string>
@@ -625,6 +627,8 @@
     <string name="popup_hide_after_add_hint">החלון הקופץ נסגר אחרי שהמילה נוספה באמצעות ➕.</string>
     <string name="popup_hide_off_word">כשנקודת הכיוון עוזבת את המילה</string>
     <string name="popup_hide_off_word_hint">בזמן הזזת הבועה, החלון הקופץ נסגר כשנקודת הכיוון מתרחקת כמה מילימטרים מהמילה, למקום שאין בו טקסט.</string>
+    <string name="popup_hide_outside_tap">בלחיצה מחוץ לחלון</string>
+    <string name="popup_hide_outside_tap_hint">לחיצה מחוץ לחלון הקופץ סוגרת אותו מבלי להעביר את הנגיעה לאפליקציה שמתחתיו.</string>
     <string name="popup_copy_switch">לחצן העתקה ליד שמות המילונים</string>
     <string name="popup_copy_switch_hint">בחלון הקופץ ובחיפוש, לחצן ליד השם של כל מילון מעתיק את הפירושים שלו לערך.</string>
     <string name="popup_copy_mode_all">הכול</string>

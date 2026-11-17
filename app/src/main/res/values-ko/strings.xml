@@ -165,6 +165,8 @@
     <string name="anki_adding">노트 추가</string>
     <string name="anki_screenshot_by_default">기본적으로 스크린샷 포함</string>
     <string name="anki_screenshot_by_default_hint">탭하면 스크린샷 영역을 선택하고, 길게 누르면 이미지 없이 추가합니다.</string>
+    <string name="anki_remember_crop_area">스크린샷 영역 기억</string>
+    <string name="anki_remember_crop_area_hint">단어 주변 텍스트 영역 대신 마지막으로 확정한 화면 영역을 다시 사용합니다.</string>
 
     <string name="anki_duplicates">중복</string>
     <string name="anki_duplicate_check">중복 확인</string>
@@ -628,6 +630,8 @@
     <string name="popup_hide_after_add_hint">➕로 단어를 추가하면 바로 팝업이 닫힙니다.</string>
     <string name="popup_hide_off_word">조준점이 단어를 벗어나면</string>
     <string name="popup_hide_off_word_hint">버블을 움직이는 동안 조준점이 단어에서 몇 밀리미터 떨어져 텍스트가 없는 곳에 가면 팝업이 닫힙니다.</string>
+    <string name="popup_hide_outside_tap">팝업 밖을 탭할 때</string>
+    <string name="popup_hide_outside_tap_hint">팝업 바깥을 탭하면 팝업이 닫히며 아래 앱으로 터치가 전달되지 않습니다.</string>
     <string name="popup_copy_switch">사전 이름 옆 복사 버튼</string>
     <string name="popup_copy_switch_hint">팝업과 검색에서 각 사전 이름 옆의 버튼이 그 사전의 뜻풀이를 복사합니다.</string>
     <string name="popup_copy_mode_all">전체</string>

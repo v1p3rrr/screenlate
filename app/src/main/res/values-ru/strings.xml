@@ -172,6 +172,8 @@
     <string name="anki_adding">Добавление карточек</string>
     <string name="anki_screenshot_by_default">Скриншот по умолчанию</string>
     <string name="anki_screenshot_by_default_hint">По нажатию открывается выбор области для скриншота, по удержанию карточка добавляется без картинки.</string>
+    <string name="anki_remember_crop_area">Запоминать область скриншота</string>
+    <string name="anki_remember_crop_area_hint">Использует последнюю выбранную область экрана вместо автоматического выделения зоны вокруг текста.</string>
 
     <string name="anki_duplicates">Дубли</string>
     <string name="anki_duplicate_check">Проверять дубли</string>
@@ -641,6 +643,8 @@
     <string name="popup_hide_after_add_hint">Попап закрывается, как только ➕ добавит слово.</string>
     <string name="popup_hide_off_word">Когда прицел ушёл со слова</string>
     <string name="popup_hide_off_word_hint">Пока вы двигаете кнопку, попап закрывается, когда прицел отходит от слова на несколько миллиметров туда, где нет текста.</string>
+    <string name="popup_hide_outside_tap">По нажатию вне попапа</string>
+    <string name="popup_hide_outside_tap_hint">Нажатие вне окна попапа закрывает его и не передаётся приложению под ним.</string>
     <string name="popup_copy_switch">Кнопка копирования у названий словарей</string>
     <string name="popup_copy_switch_hint">В попапе и поиске кнопка у названия каждого словаря копирует его определения из статьи.</string>
     <string name="popup_copy_mode_all">Всё</string>

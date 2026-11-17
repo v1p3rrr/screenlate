@@ -111,5 +111,6 @@
     <string name="translation_error_bad_answer">تعذّرت قراءة الرد.</string>
     <string name="translation_error_other">خطأ غير معروف.</string>
     <string name="crop_whole_photo">الصورة كاملة</string>
+    <string name="crop_remember_area">تذكّر المنطقة</string>
     <string name="overlay_external_google_images">صور Google</string>
 </resources>

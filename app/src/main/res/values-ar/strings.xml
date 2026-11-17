@@ -175,6 +175,8 @@
     <string name="anki_adding">إضافة الملاحظات</string>
     <string name="anki_screenshot_by_default">لقطة شاشة بشكل افتراضي</string>
     <string name="anki_screenshot_by_default_hint">النقر يحدد منطقة لقطة الشاشة؛ النقر مع الاستمرار يضيف بدون صورة.</string>
+    <string name="anki_remember_crop_area">تذكّر منطقة لقطة الشاشة</string>
+    <string name="anki_remember_crop_area_hint">يعيد استخدام آخر منطقة قصّ مؤكدة للشاشة بدلاً من تحديد النص حول الكلمة.</string>
 
     <string name="anki_duplicates">التكرار</string>
     <string name="anki_duplicate_check">التحقق من التكرار</string>
@@ -648,6 +650,8 @@
     <string name="popup_hide_after_add_hint">تُغلق النافذة المنبثقة بعد أن يضيف ➕ الكلمة.</string>
     <string name="popup_hide_off_word">عندما تغادر نقطة التصويب الكلمة</string>
     <string name="popup_hide_off_word_hint">أثناء تحريك الفقاعة، تُغلق النافذة المنبثقة عندما تبتعد نقطة التصويب بضعة مليمترات عن الكلمة إلى موضع لا نص فيه.</string>
+    <string name="popup_hide_outside_tap">عند النقر خارج النافذة</string>
+    <string name="popup_hide_outside_tap_hint">النقر خارج النافذة المنبثقة يغلقها دون تمرير اللمس إلى التطبيق أسفلها.</string>
     <string name="popup_copy_switch">زر النسخ بجوار أسماء القواميس</string>
     <string name="popup_copy_switch_hint">في النافذة المنبثقة والبحث، ينسخ زرٌّ بجوار اسم كل قاموس تعريفاته للمدخل.</string>
     <string name="popup_copy_mode_all">كل شيء</string>

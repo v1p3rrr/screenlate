@@ -191,6 +191,8 @@ class PopupAppearanceViewModel @Inject constructor(
 
     fun setHideOffWord(enabled: Boolean) = launch { overlaySettings.setHideOffWord(enabled) }
 
+    fun setHideOnOutsideTap(enabled: Boolean) = launch { overlaySettings.setHideOnOutsideTap(enabled) }
+
     fun download(font: CatalogFont) = fonts.download(font)
 
     /** Deletes [font]; a language that used it goes back to the phone's font. */

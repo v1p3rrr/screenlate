@@ -111,5 +111,6 @@
     <string name="translation_error_bad_answer">応答を読み取れませんでした。</string>
     <string name="translation_error_other">不明なエラーです。</string>
     <string name="crop_whole_photo">写真全体</string>
+    <string name="crop_remember_area">範囲を記憶</string>
     <string name="overlay_external_google_images">Google 画像検索</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.vpr.screenlate.overlay.popup
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import com.vpr.screenlate.core.common.geometry.Box
@@ -12,7 +14,9 @@ import kotlin.math.roundToInt
  * The popup window: a pre-warmed [LookupPage] placed next to the word under the aim.
  *
  * The window stays attached while the overlay is shown and is hidden instead of removed, so it keeps its place in the
- * window stack: [attach] it before the bubble and the bubble always stays on top.
+ * window stack: [attach] it before the bubble and the bubble always stays on top. When [hideOnOutsideTap] is enabled,
+ * a transparent full-screen backdrop sits immediately below the popup while it is visible to catch and consume taps
+ * outside the popup without interfering with the bubble above.
  *
  * The page keeps the last frame of the view it showed until a new one is drawn, so a new view must not appear before
  * that: a popup opened again stays transparent and untouchable until then, and an open one moves to the new word then.
@@ -20,14 +24,50 @@ import kotlin.math.roundToInt
 class PopupController(
     context: Context,
     private val windowManager: WindowManager,
-    callbacks: LookupPage.Callbacks,
+    private val callbacks: LookupPage.Callbacks,
 ) {
     private val density = context.resources.displayMetrics.density
     private val edgeMargin = EDGE_MARGIN_DP * density
     private val params = OverlayWindows.popupParams()
+    private val catcherParams = OverlayWindows.outsideCatcherParams()
     private var attached = false
     private var visible = false
     private var lastWord: Box? = null
+    private var outsidePressed = false
+    private var catcherActive = false
+
+    /** When true, tapping anywhere outside the visible popup closes it and consumes that touch. */
+    var hideOnOutsideTap: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            updateOutsideCatcher()
+        }
+
+    /**
+     * Transparent touch catcher below the popup window. Closes on non-cancelled tap so system edge gestures (Back,
+     * Home) that cancel the touch do not falsely dismiss the popup.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private val outsideCatcher = View(context).apply {
+        visibility = View.GONE
+        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        setOnTouchListener { _, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> outsidePressed = true
+                MotionEvent.ACTION_UP -> {
+                    val tapped = outsidePressed
+                    outsidePressed = false
+                    if (tapped && visible && hideOnOutsideTap) {
+                        hide()
+                        callbacks.onClose()
+                    }
+                }
+                MotionEvent.ACTION_CANCEL -> outsidePressed = false
+            }
+            true
+        }
+    }
 
     /** Counts [show] and [hide] calls, so a view drawn late does not change a newer one. */
     private var generation = 0
@@ -55,18 +95,31 @@ class PopupController(
 
     val isShowing: Boolean get() = visible
 
-    /** Adds the hidden window; false when the system no longer takes the service's windows ([OverlayWindows.add]). */
+    /** Adds the hidden backdrop and popup windows; false when the system no longer takes the service's windows ([OverlayWindows.add]). */
     fun attach(): Boolean {
         if (attached) return true
         setHiddenParams()
+        setCatcherHiddenParams()
+        outsideCatcher.visibility = View.GONE
         page.container.visibility = View.GONE
-        attached = OverlayWindows.add(windowManager, page.container, params)
+        catcherActive = false
+        attached = OverlayWindows.addAll(
+            OverlayWindows.Entry(
+                { OverlayWindows.add(windowManager, outsideCatcher, catcherParams) },
+                { windowManager.removeView(outsideCatcher) },
+            ),
+            OverlayWindows.Entry(
+                { OverlayWindows.add(windowManager, page.container, params) },
+                { windowManager.removeView(page.container) },
+            ),
+        )
         return attached
     }
 
     fun detach() {
         if (!attached) return
         windowManager.removeView(page.container)
+        windowManager.removeView(outsideCatcher)
         attached = false
         visible = false
         bounds = null
@@ -74,6 +127,8 @@ class PopupController(
         generation++
         concealed = false
         placing = false
+        outsidePressed = false
+        catcherActive = false
         applyAlpha()
     }
 
@@ -111,6 +166,7 @@ class PopupController(
         if (listOf(params.flags, params.x, params.y, params.width, params.height) != old) {
             windowManager.updateViewLayout(page.container, params)
         }
+        updateOutsideCatcher()
     }
 
     /**
@@ -177,12 +233,14 @@ class PopupController(
         generation++
         concealed = false
         placing = false
+        outsidePressed = false
         applyAlpha()
         page.container.visibility = View.GONE
         if (attached) {
             setHiddenParams()
             windowManager.updateViewLayout(page.container, params)
         }
+        updateOutsideCatcher()
     }
 
     fun release() {
@@ -202,12 +260,38 @@ class PopupController(
         if (attached) windowManager.updateViewLayout(page.container, params)
     }
 
+    /** Activates the full-screen outside-tap backdrop only while the popup is visible and the option is enabled. */
+    private fun updateOutsideCatcher() {
+        val active = attached && visible && !concealed && hideOnOutsideTap
+        if (active == catcherActive) return
+        catcherActive = active
+        if (active) {
+            catcherParams.flags = catcherParams.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
+            catcherParams.width = WindowManager.LayoutParams.MATCH_PARENT
+            catcherParams.height = WindowManager.LayoutParams.MATCH_PARENT
+            outsideCatcher.visibility = View.VISIBLE
+            windowManager.updateViewLayout(outsideCatcher, catcherParams)
+        } else {
+            outsidePressed = false
+            outsideCatcher.visibility = View.GONE
+            setCatcherHiddenParams()
+            if (attached) windowManager.updateViewLayout(outsideCatcher, catcherParams)
+        }
+    }
+
     /** A hidden window must not take touches meant for the app below. */
     private fun setHiddenParams() {
         params.flags = params.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         params.width = 1
         params.height = 1
+    }
+
+    private fun setCatcherHiddenParams() {
+        catcherParams.flags = catcherParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        catcherParams.width = 1
+        catcherParams.height = 1
     }
 
     private companion object {

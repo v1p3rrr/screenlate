@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.vpr.screenlate.core.anki.audio.SharedAudioSettings
+import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.OcrModelChoices
@@ -164,7 +165,7 @@ object BackupPreferences {
         key.startsWith("overlay_") || key.startsWith(OcrModelChoices.KEY) -> BackupSection.BUBBLE
         key.startsWith("lookup_") -> BackupSection.LOOKUP
         key.startsWith("popup_") -> BackupSection.POPUP
-        key.startsWith("anki_settings") && SettingsKeys.languageOf(key) != null -> BackupSection.ANKI
+        key == CropAreaRepository.REMEMBER_AREA_KEY || (key.startsWith("anki_settings") && SettingsKeys.languageOf(key) != null) -> BackupSection.ANKI
         key.startsWith("audio_") -> BackupSection.AUDIO
         key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> BackupSection.TRANSLATION
         else -> null

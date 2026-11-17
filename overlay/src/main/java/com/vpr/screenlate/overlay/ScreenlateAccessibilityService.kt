@@ -15,6 +15,7 @@ import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioFinder
 import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
@@ -62,6 +63,8 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     @Inject lateinit var audioPlayer: AudioPlayer
 
+    @Inject lateinit var cropAreaSettings: CropAreaRepository
+
     @Inject lateinit var pageAppearance: PageAppearance
 
     @Inject lateinit var sentenceTranslation: SentenceTranslation
@@ -103,7 +106,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
             appSettings = appSettings,
             lookup = dictionaryLookup,
             pageAppearance = pageAppearance,
-            anki = OverlayController.AnkiServices(ankiDroid, ankiNotes, audioFinder, audioSettings, audioPlayer),
+            anki = OverlayController.AnkiServices(ankiDroid, ankiNotes, audioFinder, audioSettings, audioPlayer, cropAreaSettings),
             translation = sentenceTranslation,
             profiles = languageProfiles,
             installation = languageInstallation,

@@ -169,6 +169,8 @@
     <string name="anki_adding">Ajout de notes</string>
     <string name="anki_screenshot_by_default">Capture d’écran par défaut</string>
     <string name="anki_screenshot_by_default_hint">Appuyer sélectionne une zone de capture ; maintenir ajoute sans image.</string>
+    <string name="anki_remember_crop_area">Mémoriser la zone de capture</string>
+    <string name="anki_remember_crop_area_hint">Réutilise la dernière zone d’écran confirmée au lieu de sélectionner le texte autour du mot.</string>
 
     <string name="anki_duplicates">Doublons</string>
     <string name="anki_duplicate_check">Rechercher les doublons</string>
@@ -636,6 +638,8 @@
     <string name="popup_hide_after_add_hint">La fenêtre contextuelle se ferme dès que ➕ a ajouté le mot.</string>
     <string name="popup_hide_off_word">Quand le point de visée quitte le mot</string>
     <string name="popup_hide_off_word_hint">Pendant que vous déplacez la bulle, la fenêtre contextuelle se ferme quand le point de visée s’éloigne du mot de quelques millimètres, là où il n’y a pas de texte.</string>
+    <string name="popup_hide_outside_tap">En touchant à l’extérieur</string>
+    <string name="popup_hide_outside_tap_hint">Toucher en dehors de la fenêtre contextuelle la ferme sans transmettre l’appui à l’appli en dessous.</string>
     <string name="popup_copy_switch">Bouton de copie près des noms de dictionnaires</string>
     <string name="popup_copy_switch_hint">Dans la fenêtre contextuelle et la recherche, un bouton près du nom de chaque dictionnaire copie ses définitions pour l’entrée.</string>
     <string name="popup_copy_mode_all">Tout</string>

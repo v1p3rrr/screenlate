@@ -299,6 +299,15 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
             onChange = viewModel::setScreenshotByDefault,
             hint = stringResource(R.string.anki_screenshot_by_default_hint),
         )
+        val rememberCropArea by viewModel.rememberCropArea.collectAsStateWithLifecycle()
+        rememberCropArea?.let { on ->
+            SwitchRow(
+                label = stringResource(R.string.anki_remember_crop_area),
+                checked = on,
+                onChange = viewModel::setRememberCropArea,
+                hint = stringResource(R.string.anki_remember_crop_area_hint),
+            )
+        }
         SwitchRow(stringResource(R.string.anki_duplicate_check), settings.duplicateCheck, viewModel::setDuplicateCheck)
         if (settings.duplicateCheck) {
             Text(stringResource(R.string.anki_duplicate_scope), style = MaterialTheme.typography.labelLarge)

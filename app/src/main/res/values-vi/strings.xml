@@ -165,6 +165,8 @@
     <string name="anki_adding">Thêm thẻ</string>
     <string name="anki_screenshot_by_default">Mặc định chụp màn hình</string>
     <string name="anki_screenshot_by_default_hint">Chạm để chọn vùng chụp màn hình; giữ để thêm không kèm ảnh.</string>
+    <string name="anki_remember_crop_area">Nhớ vùng chụp màn hình</string>
+    <string name="anki_remember_crop_area_hint">Dùng lại vùng màn hình đã xác nhận gần nhất thay vì tự chọn vùng quanh văn bản.</string>
 
     <string name="anki_duplicates">Trùng lặp</string>
     <string name="anki_duplicate_check">Kiểm tra trùng lặp</string>
@@ -628,6 +630,8 @@
     <string name="popup_hide_after_add_hint">Cửa sổ bật lên đóng lại ngay khi ➕ đã thêm từ.</string>
     <string name="popup_hide_off_word">Khi điểm ngắm rời khỏi từ</string>
     <string name="popup_hide_off_word_hint">Trong lúc bạn di chuyển bong bóng, cửa sổ bật lên đóng lại khi điểm ngắm rời từ vài milimét sang chỗ không có chữ.</string>
+    <string name="popup_hide_outside_tap">Khi chạm ra ngoài</string>
+    <string name="popup_hide_outside_tap_hint">Chạm bên ngoài cửa sổ bật lên sẽ đóng nó lại mà không truyền thao tác chạm xuống ứng dụng bên dưới.</string>
     <string name="popup_copy_switch">Nút sao chép cạnh tên từ điển</string>
     <string name="popup_copy_switch_hint">Trong cửa sổ bật lên và tìm kiếm, nút cạnh tên mỗi từ điển sẽ sao chép định nghĩa của từ điển đó cho mục từ.</string>
     <string name="popup_copy_mode_all">Tất cả</string>

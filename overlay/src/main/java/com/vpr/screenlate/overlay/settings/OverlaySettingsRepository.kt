@@ -75,6 +75,7 @@ enum class SmallTextMode {
  * @property dockTopBottom the bubble may also dock at the top and bottom edges.
  * @property hideAfterAdd the popup closes once ➕ has added the shown word to Anki.
  * @property hideOffWord the popup closes when the moving aim leaves the word for a place without text.
+ * @property hideOnOutsideTap the popup closes when the screen outside it is tapped, consuming that touch.
  * @property hiddenPackages apps in which the bubble is hidden.
  * @property showSourceText the popup starts with the recognized text; off, it starts with the first entry.
  * @property ocrSaving the device reads the whole screen only when cloud recognition is late or fails.
@@ -98,6 +99,7 @@ data class OverlaySettings(
     val keepAlive: Boolean = false,
     val hideAfterAdd: Boolean = false,
     val hideOffWord: Boolean = false,
+    val hideOnOutsideTap: Boolean = false,
     val bubbleUseAppColor: Boolean = true,
     val bubbleCustomColor: Int = DEFAULT_BUBBLE_COLOR,
 ) {
@@ -148,6 +150,7 @@ class OverlaySettingsRepository @Inject constructor(
             keepAlive = prefs[KEEP_ALIVE] ?: defaults.keepAlive,
             hideAfterAdd = prefs[HIDE_AFTER_ADD] ?: defaults.hideAfterAdd,
             hideOffWord = prefs[HIDE_OFF_WORD] ?: defaults.hideOffWord,
+            hideOnOutsideTap = prefs[HIDE_ON_OUTSIDE_TAP] ?: defaults.hideOnOutsideTap,
             bubbleUseAppColor = prefs[BUBBLE_USE_APP_COLOR] ?: defaults.bubbleUseAppColor,
             bubbleCustomColor = prefs[BUBBLE_CUSTOM_COLOR] ?: defaults.bubbleCustomColor,
         )
@@ -187,6 +190,10 @@ class OverlaySettingsRepository @Inject constructor(
 
     suspend fun setHideOffWord(enabled: Boolean) {
         dataStore.edit { it[HIDE_OFF_WORD] = enabled }
+    }
+
+    suspend fun setHideOnOutsideTap(enabled: Boolean) {
+        dataStore.edit { it[HIDE_ON_OUTSIDE_TAP] = enabled }
     }
 
     suspend fun setAimMode(mode: AimMode) {
@@ -267,6 +274,7 @@ class OverlaySettingsRepository @Inject constructor(
         val KEEP_ALIVE = booleanPreferencesKey("overlay_keep_alive")
         val HIDE_AFTER_ADD = booleanPreferencesKey("popup_hide_after_add")
         val HIDE_OFF_WORD = booleanPreferencesKey("popup_hide_off_word")
+        val HIDE_ON_OUTSIDE_TAP = booleanPreferencesKey("popup_hide_outside_tap")
         val BUBBLE_USE_APP_COLOR = booleanPreferencesKey("overlay_bubble_use_app_color")
         val BUBBLE_CUSTOM_COLOR = intPreferencesKey("overlay_bubble_custom_color")
     }

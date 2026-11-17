@@ -4,10 +4,12 @@ import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Switch
 import android.widget.TextView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.anki.settings.NormalizedCrop
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.anki.NoteImage
@@ -20,6 +22,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -168,6 +171,49 @@ class CropEditorTest {
             assertThat(selection.right).isWithin(0.5f).of(expected.right)
             assertThat(selection.bottom).isWithin(0.5f).of(expected.bottom)
         }
+    }
+
+    @Test
+    fun rememberToggleSyncsAndSavesOnConfirmWithoutMovingCurrentFrame() = runBlocking(Dispatchers.Main) {
+        val state = MutableStateFlow(false)
+        var confirmed: Box? = null
+        val focus = Box(4f, 6f, 24f, 20f)
+        val remembered = NormalizedCrop(0.5f, 0.5f, 1f, 1f)
+        val rememberControl = CropEditor.RememberControl(
+            initial = false,
+            remembered = remembered,
+            updates = state,
+            onChange = { state.value = it },
+            onConfirm = { confirmed = it },
+        )
+        val picture = async(start = CoroutineStart.UNDISPATCHED) {
+            editor.edit(source, focus, rememberControl)
+        }
+        val toggle = findSwitch(shown.single())!!
+        assertThat(toggle.isChecked).isFalse()
+        toggle.performClick()
+        assertThat(state.value).isTrue()
+        button(shown.single(), R.string.crop_add).performClick()
+        picture.await()!!.recycle()
+
+        // Toggling ON did not jump the current frame to remembered; it kept focus and confirmed it.
+        assertThat(confirmed).isNotNull()
+        assertThat(confirmed!!.left).isWithin(0.5f).of(focus.left)
+        assertThat(confirmed!!.right).isWithin(0.5f).of(focus.right)
+    }
+
+    @Test
+    fun noRememberToggleWhenControlIsNull() = runBlocking(Dispatchers.Main) {
+        val picture = async(start = CoroutineStart.UNDISPATCHED) { editor.edit(source, null, remember = null) }
+        assertThat(findSwitch(shown.single())).isNull()
+        button(shown.single(), R.string.crop_cancel).performClick()
+        assertThat(picture.await()).isNull()
+    }
+
+    private fun findSwitch(root: View): Switch? = when (root) {
+        is Switch -> root
+        is ViewGroup -> (0 until root.childCount).firstNotNullOfOrNull { findSwitch(root.getChildAt(it)) }
+        else -> null
     }
 
     private fun button(root: View, text: Int): TextView {

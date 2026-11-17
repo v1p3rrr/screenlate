@@ -22,12 +22,14 @@ class SettingsKeysTest {
             "lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji", "lookup_scan_length_en",
             "lookup_single_kanji_en",
         ),
-        SettingsSection.ANKI to listOf("anki_settings", "anki_settings_en"),
+        SettingsSection.ANKI to listOf(
+            "anki_settings", "anki_settings_en", "anki_remember_crop_area", "anki_crop_portrait", "anki_crop_landscape",
+        ),
         SettingsSection.AUDIO to listOf("audio_settings", "audio_sources_chosen", "audio_settings_en"),
         SettingsSection.POPUP to listOf(
             "popup_font", "popup_font_all_text", "popup_font_size", "popup_text_weight", "popup_letter_thickness",
             "popup_custom_css", "popup_copy_definitions", "popup_copy_mode", "overlay_show_source_text", "e_ink_font_before",
-            "e_ink_font_after", "popup_hide_after_add", "popup_hide_off_word", "popup_font_en", "popup_font_all_text_en",
+            "e_ink_font_after", "popup_hide_after_add", "popup_hide_off_word", "popup_hide_outside_tap", "popup_font_en", "popup_font_all_text_en",
             "popup_custom_css_en", "popup_pronunciation_colors", "popup_pronunciation_colors_en",
             "popup_external_google_images", "popup_external_jpdb", "popup_external_nadeshiko", "popup_external_immersion_kit",
         ),
@@ -118,5 +120,14 @@ class SettingsKeysTest {
             assertThat(BackupPreferences.sectionOf(key)).isEqualTo(BackupSection.GENERAL)
         }
         assertThat(SettingsKeys.onLanguagesScreen("language_active")).isFalse()
+    }
+
+    @Test
+    fun `crop area memory toggle is backed up while device coordinates are only reset`() {
+        assertThat(BackupPreferences.sectionOf("anki_remember_crop_area")).isEqualTo(BackupSection.ANKI)
+        assertThat(BackupPreferences.sectionOf("anki_crop_portrait")).isNull()
+        assertThat(BackupPreferences.sectionOf("anki_crop_landscape")).isNull()
+        assertThat(BackupPreferences.sectionOf("popup_hide_outside_tap")).isEqualTo(BackupSection.POPUP)
+        assertThat(SettingsKeys.languageOf("anki_remember_crop_area")).isNull()
     }
 }

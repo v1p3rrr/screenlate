@@ -167,6 +167,8 @@
     <string name="anki_adding">افزودن یادداشت‌ها</string>
     <string name="anki_screenshot_by_default">اسکرین‌شات به‌طور پیش‌فرض</string>
     <string name="anki_screenshot_by_default_hint">با ضربه زدن، ناحیه اسکرین‌شات انتخاب می‌شود؛ با نگه داشتن، بدون تصویر اضافه می‌شود.</string>
+    <string name="anki_remember_crop_area">به‌خاطر سپردن ناحیه نماگرفت</string>
+    <string name="anki_remember_crop_area_hint">به‌جای انتخاب محدوده اطراف متن، آخرین ناحیه تأییدشده صفحه را دوباره استفاده می‌کند.</string>
 
     <string name="anki_duplicates">موارد تکراری</string>
     <string name="anki_duplicate_check">بررسی موارد تکراری</string>
@@ -621,6 +623,8 @@
     <string name="popup_hide_after_add_hint">پنجره بازشو پس از اینکه ➕ واژه را اضافه کرد بسته می‌شود.</string>
     <string name="popup_hide_off_word">وقتی نقطه هدف از واژه خارج می‌شود</string>
     <string name="popup_hide_off_word_hint">هنگام جابه‌جا کردن حباب، وقتی نقطه هدف چند میلی‌متر از واژه دور شود و به جایی برسد که متنی نیست، پنجره بازشو بسته می‌شود.</string>
+    <string name="popup_hide_outside_tap">با لمس بیرون از پنجره</string>
+    <string name="popup_hide_outside_tap_hint">لمس بیرون از پنجره بازشو آن را می‌بندد و لمس به برنامه زیرین منتقل نمی‌شود.</string>
     <string name="popup_copy_switch">دکمه کپی کنار نام واژه‌نامه‌ها</string>
     <string name="popup_copy_switch_hint">در پنجره بازشو و جستجو، دکمه‌ای کنار نام هر واژه‌نامه تعریف‌های آن واژه‌نامه را برای مدخل کپی می‌کند.</string>
     <string name="popup_copy_mode_all">همه چیز</string>

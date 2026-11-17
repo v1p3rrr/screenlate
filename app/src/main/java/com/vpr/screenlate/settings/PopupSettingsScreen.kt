@@ -80,6 +80,12 @@ private fun AutoHideCard(settings: OverlaySettings, viewModel: PopupAppearanceVi
             onChange = viewModel::setHideOffWord,
             hint = stringResource(R.string.popup_hide_off_word_hint),
         )
+        SwitchRow(
+            label = stringResource(R.string.popup_hide_outside_tap),
+            checked = settings.hideOnOutsideTap,
+            onChange = viewModel::setHideOnOutsideTap,
+            hint = stringResource(R.string.popup_hide_outside_tap_hint),
+        )
     }
 }
 

@@ -111,5 +111,6 @@
     <string name="translation_error_bad_answer">Không đọc được phản hồi.</string>
     <string name="translation_error_other">Lỗi không xác định.</string>
     <string name="crop_whole_photo">Toàn bộ ảnh</string>
+    <string name="crop_remember_area">Nhớ vùng</string>
     <string name="overlay_external_google_images">Google Hình ảnh</string>
 </resources>

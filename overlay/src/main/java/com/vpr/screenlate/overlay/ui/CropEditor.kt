@@ -1,6 +1,8 @@
 package com.vpr.screenlate.overlay.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.RectF
@@ -9,24 +11,47 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
 import android.view.View
-import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
+import com.vpr.screenlate.core.anki.settings.NormalizedCrop
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.anki.NoteImage
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 /**
  * Full-screen editor for the picture attached to an Anki note: an owned image with a crop frame that starts
- * around the paragraph of the looked-up word, and buttons for switching between the frame and the whole image, cancel
- * and add.
+ * around the paragraph of the looked-up word (or the last remembered screen area when enabled), and buttons for
+ * switching between the frame and the whole image, cancel and add.
  */
 class CropEditor(private val context: Context, private val windowManager: WindowManager) {
+    /**
+     * Synchronized "Remember area" toggle for screen screenshots.
+     *
+     * @property initial toggle state when the editor opens.
+     * @property remembered normalized crop to prefill when [initial] is true, or null.
+     * @property updates live toggle updates from settings for two-way sync while the editor is open.
+     * @property onChange called immediately when the user flips the toggle in the editor.
+     * @property onConfirm called with the confirmed selection in image coordinates when the toggle is on.
+     */
+    class RememberControl(
+        val initial: Boolean,
+        val remembered: NormalizedCrop?,
+        val updates: Flow<Boolean>,
+        val onChange: (Boolean) -> Unit,
+        val onConfirm: suspend (Box) -> Unit,
+    )
+
     private var open: Session? = null
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -39,91 +64,143 @@ class CropEditor(private val context: Context, private val windowManager: Window
      * as if cancelled.
      *
      * @param focus initial frame in [image]'s coordinates; the whole image when null.
+     * @param remember optional synchronized "Remember area" control (used for screen screenshots, null for photos).
      */
-    suspend fun edit(image: NoteImage, focus: Box?): Bitmap? {
+    suspend fun edit(image: NoteImage, focus: Box?, remember: RememberControl? = null): Bitmap? {
         cancel()
         val request = generation
         val bounds = WindowMetricsCompat.screenBounds(windowManager)
         val preview = image.preview(bounds.width(), bounds.height())
         // A scan can close while the preview is decoded. It must not open an editor afterwards.
         if (request != generation) return null
-        val selection = select(image, preview, focus) ?: return null
-        return image.crop(selection)
+        val (selection, shouldRemember) = select(image, preview, focus, remember) ?: return null
+        val cropped = image.crop(selection)
+        if (shouldRemember) remember?.onConfirm?.invoke(selection)
+        return cropped
     }
 
-    /** The frame the user added, in [image]'s coordinates; null when cancelled. */
-    private suspend fun select(image: NoteImage, preview: Bitmap, focus: Box?): Box? =
-        suspendCancellableCoroutine { continuation ->
-            val cropView = CropView(context, preview)
-            val initial = focus?.intersection(image.bounds) ?: image.bounds
-            // The frame to return to from the whole image: the paragraph, or the middle of the image.
-            var frame = if (focus == null) image.bounds.insetQuarter() else initial
-            var whole = focus == null
-            // Known once the editor is laid out; the frame and Add wait for it.
-            var placement: CropPlacement? = null
-            lateinit var session: Session
-            val density = context.resources.displayMetrics.density
-            val bar = LinearLayout(context).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER
-                val padding = (12 * density).toInt()
-                setPadding(padding, padding, padding, padding + navigationBarHeight())
-                val wholeLabel = if (image.fit) R.string.crop_whole_photo else R.string.crop_whole_screen
-                addView(button(if (whole) R.string.crop_frame else wholeLabel, primary = false) {
-                    val shown = placement ?: return@button
-                    if (whole) {
-                        cropView.setFrame(shown.toScreen(frame).toRect())
-                    } else {
-                        frame = shown.toSource(cropView.frame.toBox())
-                        cropView.selectAll()
-                    }
-                    whole = !whole
-                    setText(if (whole) R.string.crop_frame else wholeLabel)
-                })
-                addView(button(R.string.crop_cancel, primary = false) { session.finish(null) })
-                addView(button(R.string.crop_add, primary = true) {
-                    if (session.isOpen) placement?.let { session.finish(it.toSource(cropView.frame.toBox())) }
-                })
-            }
-            val root = FrameLayout(context).apply {
-                addView(cropView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-                addView(
-                    bar,
-                    FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.WRAP_CONTENT,
-                        Gravity.BOTTOM,
-                    ),
+    /** The frame the user added and whether to remember it, in [image]'s coordinates; null when cancelled. */
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private suspend fun select(
+        image: NoteImage,
+        preview: Bitmap,
+        focus: Box?,
+        remember: RememberControl?,
+    ): Pair<Box, Boolean>? = coroutineScope {
+        var toggleSync: Job? = null
+        try {
+            suspendCancellableCoroutine { continuation ->
+                val cropView = CropView(context, preview)
+                val initialState = CropInitialState.resolve(
+                    imageBounds = image.bounds,
+                    focus = focus,
+                    remembered = remember?.takeIf { it.initial }?.remembered,
                 )
-                addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                    if (width <= 0 || height <= 0 || bar.top <= 0) return@addOnLayoutChangeListener
-                    val padding = 16 * density
-                    val top = WindowMetricsCompat.statusBarHeight(context, windowManager) + padding
-                    val area = Box(
-                        padding,
-                        top,
-                        (width - padding).coerceAtLeast(padding + 1),
-                        (bar.top - padding).coerceAtLeast(top + 1),
+                val initial = initialState.initial
+                // The frame to return to from the whole image: the paragraph, remembered frame, or middle of the image.
+                var frame = initialState.frame
+                var whole = initialState.whole
+                var rememberChecked = remember?.initial ?: false
+                // Known once the editor is laid out; the frame and Add wait for it.
+                var placement: CropPlacement? = null
+                lateinit var session: Session
+                val density = context.resources.displayMetrics.density
+                val buttonsRow = LinearLayout(context).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
                     )
-                    val next = CropPlacement.of(image.bounds, area, image.fit)
-                    if (next != placement) {
-                        val selected = placement?.toSource(cropView.frame.toBox()) ?: if (whole) image.bounds else initial
-                        placement = next
-                        cropView.place(next.shown.toRect())
-                        cropView.setFrame(next.toScreen(selected).toRect())
+                    val wholeLabel = if (image.fit) R.string.crop_whole_photo else R.string.crop_whole_screen
+                    addView(button(if (whole) R.string.crop_frame else wholeLabel, primary = false) {
+                        val shown = placement ?: return@button
+                        if (whole) {
+                            cropView.setFrame(shown.toScreen(frame).toRect())
+                        } else {
+                            frame = shown.toSource(cropView.frame.toBox())
+                            cropView.selectAll()
+                        }
+                        whole = !whole
+                        setText(if (whole) R.string.crop_frame else wholeLabel)
+                    })
+                    addView(button(R.string.crop_cancel, primary = false) { session.finish(null) })
+                    addView(button(R.string.crop_add, primary = true) {
+                        if (session.isOpen) {
+                            placement?.let { session.finish(it.toSource(cropView.frame.toBox()) to rememberChecked) }
+                        }
+                    })
+                }
+                val bar = LinearLayout(context).apply {
+                    orientation = LinearLayout.VERTICAL
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    val padding = (12 * density).toInt()
+                    setPadding(padding, padding, padding, padding + navigationBarHeight())
+                    if (remember != null) {
+                        val (pill, toggle) = rememberPill(rememberChecked) { isChecked ->
+                            rememberChecked = isChecked
+                            remember.onChange(isChecked)
+                        }
+                        addView(pill)
+                        toggleSync = launch(Dispatchers.Main.immediate) {
+                            var skippedInitial = false
+                            remember.updates.collect { value ->
+                                if (!skippedInitial && value == remember.initial) {
+                                    skippedInitial = true
+                                    return@collect
+                                }
+                                skippedInitial = true
+                                rememberChecked = value
+                                toggle.sync(value)
+                            }
+                        }
+                    }
+                    addView(buttonsRow)
+                }
+                val root = FrameLayout(context).apply {
+                    addView(cropView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+                    addView(
+                        bar,
+                        FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.MATCH_PARENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            Gravity.BOTTOM,
+                        ),
+                    )
+                    addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+                        if (width <= 0 || height <= 0 || bar.top <= 0) return@addOnLayoutChangeListener
+                        val padding = 16 * density
+                        val top = WindowMetricsCompat.statusBarHeight(context, windowManager) + padding
+                        val area = Box(
+                            padding,
+                            top,
+                            (width - padding).coerceAtLeast(padding + 1),
+                            (bar.top - padding).coerceAtLeast(top + 1),
+                        )
+                        val next = CropPlacement.of(image.bounds, area, image.fit)
+                        if (next != placement) {
+                            val selected = placement?.toSource(cropView.frame.toBox()) ?: if (whole) image.bounds else initial
+                            placement = next
+                            cropView.place(next.shown.toRect())
+                            cropView.setFrame(next.toScreen(selected).toRect())
+                        }
                     }
                 }
+                session = Session(root, continuation) { toggleSync?.cancel() }
+                if (!OverlayWindows.add(windowManager, root, OverlayWindows.editorParams())) {
+                    // The service is being unbound: as if the user cancelled.
+                    toggleSync?.cancel()
+                    continuation.resume(null)
+                    return@suspendCancellableCoroutine
+                }
+                open = session
+                // Cancellation may come from any thread; the window is removed on the main one.
+                continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }
             }
-            session = Session(root, continuation)
-            if (!OverlayWindows.add(windowManager, root, OverlayWindows.editorParams())) {
-                // The service is being unbound: as if the user cancelled.
-                continuation.resume(null)
-                return@suspendCancellableCoroutine
-            }
-            open = session
-            // Cancellation may come from any thread; the window is removed on the main one.
-            continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }
+        } finally {
+            toggleSync?.cancel()
         }
+    }
 
     /** Closes the open editor as if the user cancelled, and keeps one whose preview is still decoded from opening. */
     fun cancel() {
@@ -131,20 +208,84 @@ class CropEditor(private val context: Context, private val windowManager: Window
         open?.finish(null)
     }
 
-    private inner class Session(private val root: View, private val continuation: CancellableContinuation<Box?>) {
+    private inner class Session(
+        private val root: View,
+        private val continuation: CancellableContinuation<Pair<Box, Boolean>?>,
+        private val onClose: () -> Unit,
+    ) {
         val isOpen: Boolean get() = open === this
 
-        fun finish(result: Box?) {
+        fun finish(result: Pair<Box, Boolean>?) {
             if (!isOpen) return
             open = null
+            onClose()
             windowManager.removeView(root)
             if (continuation.isActive) continuation.resume(result)
         }
     }
 
+    private class SyncableToggle(private val update: (Boolean) -> Unit) {
+        fun sync(value: Boolean) = update(value)
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun rememberPill(initial: Boolean, onUserChange: (Boolean) -> Unit): Pair<View, SyncableToggle> {
+        val density = context.resources.displayMetrics.density
+        var syncing = false
+        val labelText = context.getString(R.string.crop_remember_area)
+        val label = TextView(context).apply {
+            text = labelText
+            textSize = 14f
+            maxLines = 2
+            setTextColor(Color.rgb(0xEC, 0xE8, 0xF2))
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ).apply { marginEnd = (10 * density).toInt() }
+        }
+        val states = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
+        val toggle = Switch(context).apply {
+            isChecked = initial
+            isFocusable = false
+            contentDescription = labelText
+            thumbTintList = ColorStateList(states, intArrayOf(Color.WHITE, Color.rgb(0xD0, 0xCC, 0xD8)))
+            trackTintList = ColorStateList(states, intArrayOf(ACCENT, Color.argb(180, 0x6B, 0x67, 0x74)))
+            setOnCheckedChangeListener { _, isChecked ->
+                if (!syncing) onUserChange(isChecked)
+            }
+        }
+        val pill = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            val horizontal = (14 * density).toInt()
+            val vertical = (6 * density).toInt()
+            setPadding(horizontal, vertical, horizontal, vertical)
+            minimumHeight = (40 * density).toInt()
+            background = GradientDrawable().apply {
+                cornerRadius = 20 * density
+                setColor(Color.argb(200, 0x2E, 0x2B, 0x35))
+            }
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ).apply { bottomMargin = (8 * density).toInt() }
+            addView(label)
+            addView(toggle)
+            setOnClickListener { toggle.toggle() }
+        }
+        val syncable = SyncableToggle { value ->
+            if (toggle.isChecked != value) {
+                syncing = true
+                toggle.isChecked = value
+                syncing = false
+            }
+        }
+        return pill to syncable
+    }
+
     private fun RectF.toBox() = Box(left, top, right, bottom)
     private fun Box.toRect() = RectF(left, top, right, bottom)
-    private fun Box.insetQuarter() = Box(left + width / 4, top + height / 4, right - width / 4, bottom - height / 4)
 
     private fun button(text: Int, primary: Boolean, onClick: TextView.() -> Unit): TextView {
         val density = context.resources.displayMetrics.density
@@ -175,5 +316,41 @@ class CropEditor(private val context: Context, private val windowManager: Window
 
     private companion object {
         val ACCENT = Color.rgb(0x7C, 0x5C, 0xFF)
+    }
+}
+
+/**
+ * Initial crop frame state when [CropEditor] opens.
+ *
+ * @property initial frame shown on screen first.
+ * @property frame frame restored when switching back from the whole image.
+ * @property whole whether the whole image is selected initially (so the toggle button offers "Frame").
+ */
+internal data class CropInitialState(
+    val initial: Box,
+    val frame: Box,
+    val whole: Boolean,
+) {
+    companion object {
+        fun resolve(imageBounds: Box, focus: Box?, remembered: NormalizedCrop?): CropInitialState {
+            val clippedFocus = focus?.intersection(imageBounds)
+            val fallbackFrame = clippedFocus ?: imageBounds.insetQuarter()
+            if (remembered != null && remembered.isValid) {
+                if (remembered.isWhole) {
+                    return CropInitialState(initial = imageBounds, frame = fallbackFrame, whole = true)
+                }
+                val rememberedBox = remembered.toBox(imageBounds).intersection(imageBounds)
+                if (rememberedBox != null) {
+                    return CropInitialState(initial = rememberedBox, frame = rememberedBox, whole = false)
+                }
+            }
+            return CropInitialState(
+                initial = clippedFocus ?: imageBounds,
+                frame = fallbackFrame,
+                whole = clippedFocus == null,
+            )
+        }
+
+        private fun Box.insetQuarter() = Box(left + width / 4, top + height / 4, right - width / 4, bottom - height / 4)
     }
 }

@@ -171,6 +171,8 @@
     <string name="anki_adding">Adding notes</string>
     <string name="anki_screenshot_by_default">Screenshot by default</string>
     <string name="anki_screenshot_by_default_hint">Tap captures a screenshot area; hold adds without picture.</string>
+    <string name="anki_remember_crop_area">Remember screenshot area</string>
+    <string name="anki_remember_crop_area_hint">Reuses the last confirmed screen crop area instead of selecting the text around the word.</string>
 
     <string name="anki_duplicates">Duplicates</string>
     <string name="anki_duplicate_check">Check for duplicates</string>
@@ -636,6 +638,8 @@
     <string name="popup_hide_after_add_hint">The popup closes once ➕ has added the word.</string>
     <string name="popup_hide_off_word">When the aim leaves the word</string>
     <string name="popup_hide_off_word_hint">While you move the bubble, the popup closes once the aim is a few millimeters away from the word, where there is no text.</string>
+    <string name="popup_hide_outside_tap">On tap outside</string>
+    <string name="popup_hide_outside_tap_hint">Tapping outside the popup closes it without passing the touch to the app below.</string>
     <string name="popup_copy_switch">Copy button next to dictionary names</string>
     <string name="popup_copy_switch_hint">In the popup and search, a button next to each dictionary’s name copies its definitions for the entry.</string>
     <string name="popup_copy_mode_all">Everything</string>

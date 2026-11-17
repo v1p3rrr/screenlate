@@ -165,6 +165,8 @@
     <string name="anki_adding">ノートの追加</string>
     <string name="anki_screenshot_by_default">デフォルトでスクリーンショット</string>
     <string name="anki_screenshot_by_default_hint">タップでスクリーンショット範囲を選択、長押しで画像なしで追加します。</string>
+    <string name="anki_remember_crop_area">スクリーンショット範囲を記憶</string>
+    <string name="anki_remember_crop_area_hint">語句の周囲のテキストではなく、前回確定した画面範囲を再利用します。</string>
 
     <string name="anki_duplicates">重複</string>
     <string name="anki_duplicate_check">重複をチェック</string>
@@ -628,6 +630,8 @@
     <string name="popup_hide_after_add_hint">➕ で単語を追加すると、すぐにポップアップが閉じます。</string>
     <string name="popup_hide_off_word">照準が単語から離れたとき</string>
     <string name="popup_hide_off_word_hint">バブルを動かしている間、照準が単語から数ミリ離れてテキストのない場所に来ると、ポップアップが閉じます。</string>
+    <string name="popup_hide_outside_tap">ポップアップ外をタップしたとき</string>
+    <string name="popup_hide_outside_tap_hint">ポップアップの外をタップすると閉じ、下のアプリにはタップが伝わりません。</string>
     <string name="popup_copy_switch">辞書名の横のコピーボタン</string>
     <string name="popup_copy_switch_hint">ポップアップと検索で、各辞書名の横のボタンがその辞書の定義をコピーします。</string>
     <string name="popup_copy_mode_all">すべて</string>

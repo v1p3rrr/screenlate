@@ -167,6 +167,8 @@
     <string name="anki_adding">Not ekleme</string>
     <string name="anki_screenshot_by_default">Varsayılan olarak ekran görüntüsü</string>
     <string name="anki_screenshot_by_default_hint">Dokunma ekran görüntüsü alanını seçer; basılı tutma görsel olmadan ekler.</string>
+    <string name="anki_remember_crop_area">Ekran görüntüsü alanını hatırla</string>
+    <string name="anki_remember_crop_area_hint">Kelimenin çevresindeki metin yerine son onaylanan ekran kırpma alanını yeniden kullanır.</string>
 
     <string name="anki_duplicates">Yinelenenler</string>
     <string name="anki_duplicate_check">Yinelenenleri denetle</string>
@@ -632,6 +634,8 @@
     <string name="popup_hide_after_add_hint">➕ kelimeyi ekler eklemez açılır pencere kapanır.</string>
     <string name="popup_hide_off_word">Nişan noktası kelimeden ayrılınca</string>
     <string name="popup_hide_off_word_hint">Baloncuğu hareket ettirirken nişan noktası kelimeden birkaç milimetre uzaklaşıp metin olmayan bir yere gelince açılır pencere kapanır.</string>
+    <string name="popup_hide_outside_tap">Dışarıya dokunulduğunda</string>
+    <string name="popup_hide_outside_tap_hint">Açılır pencerenin dışına dokunmak pencereyi kapatır ve dokunuşu alttaki uygulamaya iletmez.</string>
     <string name="popup_copy_switch">Sözlük adlarının yanında kopyalama düğmesi</string>
     <string name="popup_copy_switch_hint">Açılır pencerede ve aramada her sözlük adının yanındaki düğme, o sözlüğün maddedeki tanımlarını kopyalar.</string>
     <string name="popup_copy_mode_all">Tümü</string>
