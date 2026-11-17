@@ -203,6 +203,44 @@ class CropEditorTest {
     }
 
     @Test
+    fun rememberedAreaOpensPrefilledAndTurningOffSuppressesConfirmSave() = runBlocking(Dispatchers.Main) {
+        val state = MutableStateFlow(true)
+        var confirmed: Box? = null
+        var croppedBox: Box? = null
+        val tracking = object : NoteImage by source {
+            override suspend fun crop(selection: Box): Bitmap {
+                croppedBox = selection
+                return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            }
+        }
+        val focus = Box(2f, 2f, 10f, 10f)
+        val remembered = NormalizedCrop(0.5f, 0.5f, 1f, 1f) // Box(20, 15, 40, 30) on 40x30 source
+        val rememberControl = CropEditor.RememberControl(
+            initial = true,
+            remembered = remembered,
+            updates = state,
+            onChange = { state.value = it },
+            onConfirm = { confirmed = it },
+        )
+        val picture = async(start = CoroutineStart.UNDISPATCHED) {
+            editor.edit(tracking, focus, rememberControl)
+        }
+        val toggle = findSwitch(shown.single())!!
+        assertThat(toggle.isChecked).isTrue()
+        // Turning off keeps the prefilled remembered frame for this crop, but skips saving on Add.
+        toggle.performClick()
+        assertThat(state.value).isFalse()
+
+        button(shown.single(), R.string.crop_add).performClick()
+        picture.await()!!.recycle()
+
+        val used = checkNotNull(croppedBox)
+        assertThat(used.left).isWithin(0.5f).of(20f)
+        assertThat(used.top).isWithin(0.5f).of(15f)
+        assertThat(confirmed).isNull()
+    }
+
+    @Test
     fun externalSettingsUpdateSyncsSwitchIntoOpenEditor() = runBlocking(Dispatchers.Main) {
         val state = MutableStateFlow(false)
         var confirmed: Box? = null

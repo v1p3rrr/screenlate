@@ -18,9 +18,12 @@ import android.widget.Switch
 import android.widget.TextView
 import com.vpr.screenlate.core.anki.settings.NormalizedCrop
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.anki.NoteImage
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,11 +84,15 @@ class CropEditor(private val context: Context, private val windowManager: Window
         if (request != generation) return null
         val selection = select(image, preview, focus, remember) ?: return null
         val cropped = image.crop(selection.box)
-        try {
-            if (selection.remember) remember?.onConfirm?.invoke(selection.box)
-        } catch (e: Throwable) {
-            cropped.recycle()
-            throw e
+        if (selection.remember) {
+            try {
+                remember?.onConfirm?.invoke(selection.box)
+            } catch (e: CancellationException) {
+                cropped.recycle()
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Saving screenshot crop area failed", e.redacted())
+            }
         }
         return cropped
     }
@@ -264,6 +271,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
         val pill = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             val horizontal = (14 * density).toInt()
             val vertical = (6 * density).toInt()
             setPadding(horizontal, vertical, horizontal, vertical)
@@ -321,6 +329,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
     }
 
     private companion object {
+        const val TAG = "CropEditor"
         val ACCENT = Color.rgb(0x7C, 0x5C, 0xFF)
     }
 }
@@ -345,6 +354,7 @@ internal class ToggleSync(
         private set
 
     private var pendingLocal: Boolean? = null
+    private var latestExternal: Boolean? = null
     private var updatesJob: Job? = null
     private var writeJob: Job? = null
 
@@ -355,6 +365,7 @@ internal class ToggleSync(
             updates.collect { external ->
                 if (pendingLocal != null) {
                     skippedInitial = true
+                    latestExternal = external
                     return@collect
                 }
                 if (!skippedInitial && external == initial) {
@@ -373,20 +384,33 @@ internal class ToggleSync(
     fun setLocal(newValue: Boolean) {
         value = newValue
         pendingLocal = newValue
+        latestExternal = null
         if (writeJob?.isActive == true) return
         writeJob = scope.launch(dispatcher) {
             try {
                 while (true) {
                     val target = pendingLocal ?: break
+                    latestExternal = null
                     withContext(NonCancellable) { persist(target) }
                     if (pendingLocal == target) {
                         pendingLocal = null
+                        val external = latestExternal
+                        latestExternal = null
+                        if (updatesJob != null && external != null && external != value) {
+                            value = external
+                            onExternalValue(external)
+                        }
                         break
                     }
                 }
-            } catch (e: Throwable) {
+            } catch (e: CancellationException) {
                 pendingLocal = null
+                latestExternal = null
                 throw e
+            } catch (e: Exception) {
+                pendingLocal = null
+                latestExternal = null
+                Log.w("CropEditor", "Persisting crop memory toggle failed", e.redacted())
             }
         }
     }

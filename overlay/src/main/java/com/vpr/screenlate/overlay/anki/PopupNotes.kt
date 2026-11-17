@@ -331,9 +331,11 @@ class PopupNotes(
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
                 if (context.image != null && cropEditor != null) {
-                    val rememberControl = if (!context.image.fit && cropAreaSettings != null) {
+                    val rememberControl = if (context.image is ScreenNoteImage && cropAreaSettings != null) {
                         val imageBounds = context.image.bounds
                         val cropSettings = cropAreaSettings.current()
+                        // The scan may have closed while reading preferences; do not open an editor afterwards.
+                        if (scan != scanNotes.scan) return@launch
                         CropEditor.RememberControl(
                             initial = cropSettings.rememberArea,
                             remembered = cropSettings.cropFor(imageBounds),

@@ -77,7 +77,11 @@ data class CropAreaSettings(
     val landscape: NormalizedCrop? = null,
 ) {
     /** The remembered crop matching [bounds]'s orientation; null if none has been saved for that orientation. */
-    fun cropFor(bounds: Box): NormalizedCrop? = if (bounds.width > bounds.height) landscape else portrait
+    fun cropFor(bounds: Box): NormalizedCrop? = if (isLandscape(bounds)) landscape else portrait
+
+    companion object {
+        internal fun isLandscape(bounds: Box): Boolean = bounds.width > bounds.height
+    }
 }
 
 /** Persists the shared screenshot crop memory toggle and per-orientation last crop rectangles. */
@@ -112,7 +116,7 @@ class CropAreaRepository @Inject constructor(
     /** Saves [selection] normalized against [bounds] under its orientation bucket (landscape or portrait). */
     suspend fun saveCrop(selection: Box, bounds: Box) {
         val normalized = NormalizedCrop.fromBox(selection, bounds) ?: return
-        val key = if (bounds.width > bounds.height) LANDSCAPE else PORTRAIT
+        val key = if (CropAreaSettings.isLandscape(bounds)) LANDSCAPE else PORTRAIT
         dataStore.edit { it[key] = json.encodeToString(normalized) }
     }
 

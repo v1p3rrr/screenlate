@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.PowerManager
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -31,6 +32,7 @@ class PopupController(
     private val callbacks: LookupPage.Callbacks,
 ) {
     private val density = context.resources.displayMetrics.density
+    private val powerManager = context.getSystemService(PowerManager::class.java)
     private val edgeMargin = EDGE_MARGIN_DP * density
     private val params = OverlayWindows.popupParams()
     private val catcherParams = OverlayWindows.outsideCatcherParams()
@@ -159,6 +161,7 @@ class PopupController(
             setBounds(placed)
             windowManager.updateViewLayout(page.container, params)
             page.container.visibility = View.VISIBLE
+            updateScreenOffReceiver()
         }
         page.render(state, continued, refined)
         page.whenDrawn { if (shown == generation) onDrawn() }
@@ -279,7 +282,12 @@ class PopupController(
 
     /** Activates the full-screen outside-tap backdrop only while the popup is visible and the option is enabled. */
     private fun updateOutsideCatcher() {
+        updateScreenOffReceiver()
         val active = isCatcherActive()
+        if (active && powerManager?.isInteractive == false) {
+            dismissFromOutside()
+            return
+        }
         if (active == catcherActive) return
         catcherActive = active
         if (active) {
@@ -288,14 +296,16 @@ class PopupController(
             catcherParams.height = WindowManager.LayoutParams.MATCH_PARENT
             outsideCatcher.visibility = View.VISIBLE
             windowManager.updateViewLayout(outsideCatcher, catcherParams)
-            registerScreenOff()
         } else {
-            unregisterScreenOff()
             outsideTap.reset()
             outsideCatcher.visibility = View.GONE
             hideParams(catcherParams)
             if (attached) windowManager.updateViewLayout(outsideCatcher, catcherParams)
         }
+    }
+
+    private fun updateScreenOffReceiver() {
+        if (attached && visible && hideOnOutsideTap) registerScreenOff() else unregisterScreenOff()
     }
 
     private fun registerScreenOff() {

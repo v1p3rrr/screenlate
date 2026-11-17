@@ -128,4 +128,70 @@ class CropToggleSyncTest {
         runCurrent()
         assertThat(uiCallbacks).isEmpty()
     }
+
+    @Test
+    fun `concurrent external write arriving during local persist is reconciled`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val settings = MutableStateFlow(false)
+        val writeGate = CompletableDeferred<Unit>()
+        val uiCallbacks = mutableListOf<Boolean>()
+        val sync = ToggleSync(
+            initial = false,
+            updates = settings,
+            persist = { target ->
+                settings.value = target
+                writeGate.await()
+            },
+            onExternalValue = { uiCallbacks += it },
+            scope = this,
+            dispatcher = dispatcher,
+        )
+        sync.start()
+        runCurrent()
+
+        sync.setLocal(true)
+        runCurrent()
+        // An external write commits after our local write reached DataStore, before persist() returns.
+        settings.value = false
+        runCurrent()
+        assertThat(uiCallbacks).isEmpty()
+
+        writeGate.complete(Unit)
+        advanceUntilIdle()
+        runCurrent()
+
+        assertThat(sync.value).isFalse()
+        assertThat(uiCallbacks).containsExactly(false)
+        sync.stop()
+    }
+
+    @Test
+    fun `persistence failure does not cancel scope or block subsequent external updates`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val settings = MutableStateFlow(false)
+        val uiCallbacks = mutableListOf<Boolean>()
+        val sync = ToggleSync(
+            initial = false,
+            updates = settings,
+            persist = { throw java.io.IOException("disk full") },
+            onExternalValue = { uiCallbacks += it },
+            scope = this,
+            dispatcher = dispatcher,
+        )
+        sync.start()
+        runCurrent()
+
+        sync.setLocal(true)
+        advanceUntilIdle()
+        runCurrent()
+
+        // The scope stayed alive and subsequent external changes still propagate.
+        settings.value = true
+        runCurrent()
+        settings.value = false
+        runCurrent()
+        assertThat(sync.value).isFalse()
+        assertThat(uiCallbacks).containsExactly(false)
+        sync.stop()
+    }
 }
