@@ -920,6 +920,7 @@
     <string name="camera_retry_failed">ניסיון חוזר לאזורים החסרים</string>
     <string name="camera_recognition_failed">לא ניתן היה לזהות את התמונה. הטקסט שנשמר קודם לא נמחק.</string>
     <string name="camera_more_actions">פעולות נוספות</string>
+    <string name="camera_rotate">סיבוב ב-90°</string>
     <string name="camera_photo_description">תמונה</string>
     <string name="camera_export">שמירה בגלריה</string>
     <string name="camera_import">ייבוא מהגלריה</string>

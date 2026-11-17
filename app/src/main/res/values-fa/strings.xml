@@ -912,6 +912,7 @@
     <string name="camera_retry_failed">تلاش دوباره برای نواحی باقی‌مانده</string>
     <string name="camera_recognition_failed">عکس تشخیص داده نشد. متن ذخیره‌شده حفظ می‌شود.</string>
     <string name="camera_more_actions">گزینه‌های بیشتر</string>
+    <string name="camera_rotate">چرخش ۹۰°</string>
     <string name="camera_photo_description">عکس</string>
     <string name="camera_export">ذخیره در گالری</string>
     <string name="camera_import">وارد کردن از گالری</string>

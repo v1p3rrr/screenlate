@@ -917,6 +917,7 @@
     <string name="camera_retry_failed">未処理の領域を再試行</string>
     <string name="camera_recognition_failed">写真を認識できませんでした。保存済みのテキストは保持されます。</string>
     <string name="camera_more_actions">その他の操作</string>
+    <string name="camera_rotate">90° 回転</string>
     <string name="camera_photo_description">写真</string>
     <string name="camera_export">ギャラリーに保存</string>
     <string name="camera_import">ギャラリーから読み込む</string>

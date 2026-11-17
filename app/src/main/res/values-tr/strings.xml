@@ -925,6 +925,7 @@
     <string name="camera_retry_failed">Eksik bölgeleri yeniden dene</string>
     <string name="camera_recognition_failed">Fotoğraf tanınamadı. Kayıtlı metin korunur.</string>
     <string name="camera_more_actions">Diğer işlemler</string>
+    <string name="camera_rotate">90° döndür</string>
     <string name="camera_photo_description">Fotoğraf</string>
     <string name="camera_export">Galeriye kaydet</string>
     <string name="camera_import">Galeriden içe aktar</string>

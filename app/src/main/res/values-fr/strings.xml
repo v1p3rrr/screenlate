@@ -933,6 +933,7 @@
     <string name="camera_retry_failed">Réessayer les régions manquantes</string>
     <string name="camera_recognition_failed">La photo n’a pas pu être reconnue. Le texte enregistré est conservé.</string>
     <string name="camera_more_actions">Autres actions</string>
+    <string name="camera_rotate">Pivoter de 90°</string>
     <string name="camera_photo_description">Photo</string>
     <string name="camera_export">Enregistrer dans la galerie</string>
     <string name="camera_import">Importer depuis la galerie</string>

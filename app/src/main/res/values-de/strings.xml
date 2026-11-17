@@ -925,6 +925,7 @@
     <string name="camera_retry_failed">Fehlende Bereiche erneut erkennen</string>
     <string name="camera_recognition_failed">Das Foto konnte nicht erkannt werden. Gespeicherter Text bleibt erhalten.</string>
     <string name="camera_more_actions">Weitere Aktionen</string>
+    <string name="camera_rotate">Um 90° drehen</string>
     <string name="camera_photo_description">Foto</string>
     <string name="camera_export">In Galerie speichern</string>
     <string name="camera_import">Aus Galerie importieren</string>

@@ -957,6 +957,7 @@
     <string name="camera_retry_failed">إعادة محاولة المناطق الناقصة</string>
     <string name="camera_recognition_failed">تعذّر التعرّف على الصورة. يُحتفظ بالنص المخزّن.</string>
     <string name="camera_more_actions">إجراءات أخرى</string>
+    <string name="camera_rotate">تدوير 90°</string>
     <string name="camera_photo_description">الصورة</string>
     <string name="camera_export">الحفظ في المعرض</string>
     <string name="camera_import">الاستيراد من المعرض</string>

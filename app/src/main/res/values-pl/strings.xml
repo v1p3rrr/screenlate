@@ -941,6 +941,7 @@
     <string name="camera_retry_failed">Rozpoznaj brakujące obszary</string>
     <string name="camera_recognition_failed">Nie udało się rozpoznać zdjęcia. Zapisany tekst jest zachowany.</string>
     <string name="camera_more_actions">Więcej działań</string>
+    <string name="camera_rotate">Obróć o 90°</string>
     <string name="camera_photo_description">Zdjęcie</string>
     <string name="camera_export">Zapisz w galerii</string>
     <string name="camera_import">Importuj z galerii</string>

@@ -933,6 +933,7 @@
     <string name="camera_retry_failed">Tentar de novo as regiões pendentes</string>
     <string name="camera_recognition_failed">Não foi possível reconhecer a foto. O texto salvo foi mantido.</string>
     <string name="camera_more_actions">Mais ações</string>
+    <string name="camera_rotate">Girar 90°</string>
     <string name="camera_photo_description">Foto</string>
     <string name="camera_export">Salvar na galeria</string>
     <string name="camera_import">Importar da galeria</string>
