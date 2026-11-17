@@ -21,12 +21,16 @@ import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.anki.NoteImage
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
 /**
@@ -41,16 +45,18 @@ class CropEditor(private val context: Context, private val windowManager: Window
      * @property initial toggle state when the editor opens.
      * @property remembered normalized crop to prefill when [initial] is true, or null.
      * @property updates live toggle updates from settings for two-way sync while the editor is open.
-     * @property onChange called immediately when the user flips the toggle in the editor.
-     * @property onConfirm called with the confirmed selection in image coordinates when the toggle is on.
+     * @property onChange persists the toggle state immediately when the user flips it in the editor.
+     * @property onConfirm persists the confirmed selection in image coordinates when the toggle is on.
      */
     class RememberControl(
         val initial: Boolean,
         val remembered: NormalizedCrop?,
         val updates: Flow<Boolean>,
-        val onChange: (Boolean) -> Unit,
+        val onChange: suspend (Boolean) -> Unit,
         val onConfirm: suspend (Box) -> Unit,
     )
+
+    private class Selection(val box: Box, val remember: Boolean)
 
     private var open: Session? = null
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -73,21 +79,25 @@ class CropEditor(private val context: Context, private val windowManager: Window
         val preview = image.preview(bounds.width(), bounds.height())
         // A scan can close while the preview is decoded. It must not open an editor afterwards.
         if (request != generation) return null
-        val (selection, shouldRemember) = select(image, preview, focus, remember) ?: return null
-        val cropped = image.crop(selection)
-        if (shouldRemember) remember?.onConfirm?.invoke(selection)
+        val selection = select(image, preview, focus, remember) ?: return null
+        val cropped = image.crop(selection.box)
+        try {
+            if (selection.remember) remember?.onConfirm?.invoke(selection.box)
+        } catch (e: Throwable) {
+            cropped.recycle()
+            throw e
+        }
         return cropped
     }
 
     /** The frame the user added and whether to remember it, in [image]'s coordinates; null when cancelled. */
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private suspend fun select(
         image: NoteImage,
         preview: Bitmap,
         focus: Box?,
         remember: RememberControl?,
-    ): Pair<Box, Boolean>? = coroutineScope {
-        var toggleSync: Job? = null
+    ): Selection? = coroutineScope {
+        var toggleSync: ToggleSync? = null
         try {
             suspendCancellableCoroutine { continuation ->
                 val cropView = CropView(context, preview)
@@ -100,7 +110,6 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 // The frame to return to from the whole image: the paragraph, remembered frame, or middle of the image.
                 var frame = initialState.frame
                 var whole = initialState.whole
-                var rememberChecked = remember?.initial ?: false
                 // Known once the editor is laid out; the frame and Add wait for it.
                 var placement: CropPlacement? = null
                 lateinit var session: Session
@@ -127,7 +136,8 @@ class CropEditor(private val context: Context, private val windowManager: Window
                     addView(button(R.string.crop_cancel, primary = false) { session.finish(null) })
                     addView(button(R.string.crop_add, primary = true) {
                         if (session.isOpen) {
-                            placement?.let { session.finish(it.toSource(cropView.frame.toBox()) to rememberChecked) }
+                            val shouldRemember = toggleSync?.value ?: false
+                            placement?.let { session.finish(Selection(it.toSource(cropView.frame.toBox()), shouldRemember)) }
                         }
                     })
                 }
@@ -137,23 +147,21 @@ class CropEditor(private val context: Context, private val windowManager: Window
                     val padding = (12 * density).toInt()
                     setPadding(padding, padding, padding, padding + navigationBarHeight())
                     if (remember != null) {
-                        val (pill, toggle) = rememberPill(rememberChecked) { isChecked ->
-                            rememberChecked = isChecked
-                            remember.onChange(isChecked)
+                        lateinit var sync: ToggleSync
+                        val (pill, setCheckedUi) = rememberPill(remember.initial) { isChecked ->
+                            sync.setLocal(isChecked)
                         }
+                        sync = ToggleSync(
+                            initial = remember.initial,
+                            updates = remember.updates,
+                            persist = remember.onChange,
+                            onExternalValue = setCheckedUi,
+                            scope = this@coroutineScope,
+                            dispatcher = Dispatchers.Main.immediate,
+                        )
+                        toggleSync = sync
+                        sync.start()
                         addView(pill)
-                        toggleSync = launch(Dispatchers.Main.immediate) {
-                            var skippedInitial = false
-                            remember.updates.collect { value ->
-                                if (!skippedInitial && value == remember.initial) {
-                                    skippedInitial = true
-                                    return@collect
-                                }
-                                skippedInitial = true
-                                rememberChecked = value
-                                toggle.sync(value)
-                            }
-                        }
                     }
                     addView(buttonsRow)
                 }
@@ -186,10 +194,10 @@ class CropEditor(private val context: Context, private val windowManager: Window
                         }
                     }
                 }
-                session = Session(root, continuation) { toggleSync?.cancel() }
+                session = Session(root, continuation) { toggleSync?.stop() }
                 if (!OverlayWindows.add(windowManager, root, OverlayWindows.editorParams())) {
                     // The service is being unbound: as if the user cancelled.
-                    toggleSync?.cancel()
+                    toggleSync?.stop()
                     continuation.resume(null)
                     return@suspendCancellableCoroutine
                 }
@@ -198,7 +206,7 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }
             }
         } finally {
-            toggleSync?.cancel()
+            toggleSync?.stop()
         }
     }
 
@@ -210,12 +218,12 @@ class CropEditor(private val context: Context, private val windowManager: Window
 
     private inner class Session(
         private val root: View,
-        private val continuation: CancellableContinuation<Pair<Box, Boolean>?>,
+        private val continuation: CancellableContinuation<Selection?>,
         private val onClose: () -> Unit,
     ) {
         val isOpen: Boolean get() = open === this
 
-        fun finish(result: Pair<Box, Boolean>?) {
+        fun finish(result: Selection?) {
             if (!isOpen) return
             open = null
             onClose()
@@ -224,12 +232,8 @@ class CropEditor(private val context: Context, private val windowManager: Window
         }
     }
 
-    private class SyncableToggle(private val update: (Boolean) -> Unit) {
-        fun sync(value: Boolean) = update(value)
-    }
-
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun rememberPill(initial: Boolean, onUserChange: (Boolean) -> Unit): Pair<View, SyncableToggle> {
+    private fun rememberPill(initial: Boolean, onUserChange: (Boolean) -> Unit): Pair<View, (Boolean) -> Unit> {
         val density = context.resources.displayMetrics.density
         var syncing = false
         val labelText = context.getString(R.string.crop_remember_area)
@@ -239,9 +243,11 @@ class CropEditor(private val context: Context, private val windowManager: Window
             maxLines = 2
             setTextColor(Color.rgb(0xEC, 0xE8, 0xF2))
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            // Weight 1 with WRAP_CONTENT keeps the pill compact while allowing long labels to wrap instead of clipping the switch.
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f,
             ).apply { marginEnd = (10 * density).toInt() }
         }
         val states = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
@@ -274,14 +280,14 @@ class CropEditor(private val context: Context, private val windowManager: Window
             addView(toggle)
             setOnClickListener { toggle.toggle() }
         }
-        val syncable = SyncableToggle { value ->
+        val setCheckedUi: (Boolean) -> Unit = { value ->
             if (toggle.isChecked != value) {
                 syncing = true
                 toggle.isChecked = value
                 syncing = false
             }
         }
-        return pill to syncable
+        return pill to setCheckedUi
     }
 
     private fun RectF.toBox() = Box(left, top, right, bottom)
@@ -316,6 +322,79 @@ class CropEditor(private val context: Context, private val windowManager: Window
 
     private companion object {
         val ACCENT = Color.rgb(0x7C, 0x5C, 0xFF)
+    }
+}
+
+/**
+ * Coordinates two-way synchronization between the in-editor toggle and settings without echoing stale writes back on
+ * rapid flips.
+ *
+ * Local flips serialize through a single write loop and suppress incoming [updates] while a local write is in flight,
+ * preventing an earlier write's emission from bouncing the toggle back. Once settled, external changes from [updates]
+ * flow through to [onExternalValue].
+ */
+internal class ToggleSync(
+    private val initial: Boolean,
+    private val updates: Flow<Boolean>,
+    private val persist: suspend (Boolean) -> Unit,
+    private val onExternalValue: (Boolean) -> Unit,
+    private val scope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher,
+) {
+    var value: Boolean = initial
+        private set
+
+    private var pendingLocal: Boolean? = null
+    private var updatesJob: Job? = null
+    private var writeJob: Job? = null
+
+    fun start() {
+        if (updatesJob != null) return
+        updatesJob = scope.launch(dispatcher) {
+            var skippedInitial = false
+            updates.collect { external ->
+                if (pendingLocal != null) {
+                    skippedInitial = true
+                    return@collect
+                }
+                if (!skippedInitial && external == initial) {
+                    skippedInitial = true
+                    return@collect
+                }
+                skippedInitial = true
+                if (value != external) {
+                    value = external
+                    onExternalValue(external)
+                }
+            }
+        }
+    }
+
+    fun setLocal(newValue: Boolean) {
+        value = newValue
+        pendingLocal = newValue
+        if (writeJob?.isActive == true) return
+        writeJob = scope.launch(dispatcher) {
+            try {
+                while (true) {
+                    val target = pendingLocal ?: break
+                    withContext(NonCancellable) { persist(target) }
+                    if (pendingLocal == target) {
+                        pendingLocal = null
+                        break
+                    }
+                }
+            } catch (e: Throwable) {
+                pendingLocal = null
+                throw e
+            }
+        }
+    }
+
+    /** Stops observing external updates; an in-flight local write finishes under [NonCancellable]. */
+    fun stop() {
+        updatesJob?.cancel()
+        updatesJob = null
     }
 }
 

@@ -197,9 +197,39 @@ class CropEditorTest {
         picture.await()!!.recycle()
 
         // Toggling ON did not jump the current frame to remembered; it kept focus and confirmed it.
-        assertThat(confirmed).isNotNull()
-        assertThat(confirmed!!.left).isWithin(0.5f).of(focus.left)
-        assertThat(confirmed!!.right).isWithin(0.5f).of(focus.right)
+        val saved = checkNotNull(confirmed)
+        assertThat(saved.left).isWithin(0.5f).of(focus.left)
+        assertThat(saved.right).isWithin(0.5f).of(focus.right)
+    }
+
+    @Test
+    fun externalSettingsUpdateSyncsSwitchIntoOpenEditor() = runBlocking(Dispatchers.Main) {
+        val state = MutableStateFlow(false)
+        var confirmed: Box? = null
+        val focus = Box(4f, 6f, 24f, 20f)
+        val rememberControl = CropEditor.RememberControl(
+            initial = false,
+            remembered = NormalizedCrop(0.5f, 0.5f, 1f, 1f),
+            updates = state,
+            onChange = { state.value = it },
+            onConfirm = { confirmed = it },
+        )
+        val picture = async(start = CoroutineStart.UNDISPATCHED) {
+            editor.edit(source, focus, rememberControl)
+        }
+        val toggle = findSwitch(shown.single())!!
+        assertThat(toggle.isChecked).isFalse()
+
+        state.value = true
+        kotlinx.coroutines.yield()
+        assertThat(toggle.isChecked).isTrue()
+
+        button(shown.single(), R.string.crop_add).performClick()
+        picture.await()!!.recycle()
+
+        val saved = checkNotNull(confirmed)
+        assertThat(saved.left).isWithin(0.5f).of(focus.left)
+        assertThat(saved.right).isWithin(0.5f).of(focus.right)
     }
 
     @Test

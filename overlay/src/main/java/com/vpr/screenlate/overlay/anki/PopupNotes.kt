@@ -338,7 +338,7 @@ class PopupNotes(
                             initial = cropSettings.rememberArea,
                             remembered = cropSettings.cropFor(imageBounds),
                             updates = cropAreaSettings.settings.map { it.rememberArea }.distinctUntilChanged(),
-                            onChange = { enabled -> scope.launch { cropAreaSettings.setRememberArea(enabled) } },
+                            onChange = cropAreaSettings::setRememberArea,
                             onConfirm = { selection -> cropAreaSettings.saveCrop(selection, imageBounds) },
                         )
                     } else {
