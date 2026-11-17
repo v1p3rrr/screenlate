@@ -105,7 +105,7 @@ const Popup = (() => {
         googleImages: '<svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 16l-5-5-5 5-2-2-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         jpdb: '<svg viewBox="0 0 24 24" width="18" height="18"><rect x="2.5" y="3.5" width="19" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 8v5a2 2 0 0 1-2 2M13.5 8h3a2 2 0 0 1 0 4h-3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         nadeshiko: '<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.7" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6.3" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
-        immersionKit: '<svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor"/></svg>',
+        immersionKit: '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M11 6.5C6.5 6.5 3.5 10 3.5 14.5C3.5 18.5 7 21.5 11.5 21.5C16 21.5 19.5 18.5 19.5 14.5C19.5 10.5 16.5 6.5 11.5 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 6.5C11 4.5 11.5 3 13 2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12.5 5C15.5 4 19 6 20 9.5C20.5 12 18.5 14 16.5 13.5C14.5 13 13 10 12.5 5Z" fill="currentColor"/><circle cx="8" cy="12" r="0.9" fill="currentColor"/><circle cx="7" cy="14" r="0.9" fill="currentColor"/><circle cx="9" cy="14.5" r="0.9" fill="currentColor"/></svg>',
     };
 
     const history = [];
@@ -507,17 +507,10 @@ const Popup = (() => {
             head.append(element('span', 'tag fallback-language', labels[`language_${result.fallbackLanguage}`] || result.fallbackLanguage));
         }
         const links = entryExternalLinks(result);
-        const details = entryInfo(result, labels);
+        const details = entryInfo(result, labels, links.length > 1 ? links : null);
         if (details) head.append(details);
         const buttons = actionButtons(result, index, links.length === 1 ? links[0] : null);
         if (buttons) head.append(buttons);
-        if (links.length > 1) {
-            const extRow = element('div', 'entry-external-links');
-            for (const link of links) {
-                extRow.append(makeExternalLinkButton(link));
-            }
-            head.append(extRow);
-        }
         article.append(head);
 
         const glossary = element('div', 'yomitan-glossary');
@@ -595,7 +588,7 @@ const Popup = (() => {
                     id: 'immersion-kit',
                     icon: ICONS.immersionKit,
                     label: labelOf('externalImmersionKit', 'Immersion Kit'),
-                    url: `https://immersionkit.com/dictionary?keyword=${expr}`,
+                    url: `https://www.immersionkit.com/dictionary?keyword=${expr}`,
                 });
             }
         }
@@ -954,7 +947,7 @@ const Popup = (() => {
      * chains, values, accents or transcriptions (up to [SHOWN_TRANSCRIPTIONS] of these, then "Show all"), "−" hides
      * them again.
      */
-    function entryInfo(result, labels) {
+    function entryInfo(result, labels, externalLinks) {
         const row = element('div', 'entry-info');
         const chains = [result.trace, ...(result.otherTraces || [])]
             .map(trace => (trace || []).filter(step => step.name))
@@ -1010,6 +1003,13 @@ const Popup = (() => {
         } else if (transcriptions.length) {
             const shown = transcriptions.length > SHOWN_ACCENTS ? 1 : transcriptions.length;
             row.append(collapsible(transcriptions.slice(0, shown), transcriptions, transcriptions.length - shown, 'pitch-more'));
+        }
+        if (externalLinks && externalLinks.length > 0) {
+            const extRow = element('span', 'entry-external-links');
+            for (const link of externalLinks) {
+                extRow.append(makeExternalLinkButton(link));
+            }
+            row.append(extRow);
         }
         return row.childNodes.length ? row : null;
     }

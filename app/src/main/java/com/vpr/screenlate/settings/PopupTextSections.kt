@@ -106,6 +106,9 @@ fun PopupTextSections(viewModel: PopupAppearanceViewModel = hiltViewModel()) {
                 PronunciationColorsRow(it, current, viewModel)
                 HorizontalDivider()
             }
+            ExternalLinksRows(current, shown.support.hasJapaneseExternalLinks, viewModel)
+            HorizontalDivider()
+            Text(stringResource(R.string.popup_font_title), style = MaterialTheme.typography.labelLarge)
             FontChoice(current, installed, shown, viewModel)
             FontSources(installed, shown, viewModel)
             HorizontalDivider()
@@ -114,6 +117,9 @@ fun PopupTextSections(viewModel: PopupAppearanceViewModel = hiltViewModel()) {
     } else {
         SectionCard(title = stringResource(R.string.popup_font_title)) {
             Hint(stringResource(R.string.popup_font_hint))
+            ExternalLinksRows(current, shown.support.hasJapaneseExternalLinks, viewModel)
+            HorizontalDivider()
+            Text(stringResource(R.string.popup_font_title), style = MaterialTheme.typography.labelLarge)
             FontChoice(current, installed, shown, viewModel)
             TextSizes(current, shown.fontStrings.weightInfo, viewModel)
             Preview(previewTypeface, current, shown)
@@ -123,6 +129,41 @@ fun PopupTextSections(viewModel: PopupAppearanceViewModel = hiltViewModel()) {
         SectionCard(title = stringResource(R.string.popup_css_title)) {
             CssRows(current.customCss, installed, shown, viewModel)
         }
+    }
+}
+
+@Composable
+private fun ExternalLinksRows(
+    appearance: PopupAppearance,
+    hasJapaneseLinks: Boolean,
+    viewModel: PopupAppearanceViewModel,
+) {
+    Text(stringResource(R.string.popup_external_links_title), style = MaterialTheme.typography.labelLarge)
+    SwitchRow(
+        label = stringResource(R.string.popup_external_google_images),
+        checked = appearance.externalGoogleImages,
+        onChange = viewModel::setExternalGoogleImages,
+        hint = stringResource(R.string.popup_external_google_images_hint),
+    )
+    if (hasJapaneseLinks) {
+        SwitchRow(
+            label = stringResource(R.string.popup_external_jpdb),
+            checked = appearance.externalJpdb,
+            onChange = viewModel::setExternalJpdb,
+            hint = stringResource(R.string.popup_external_jpdb_hint),
+        )
+        SwitchRow(
+            label = stringResource(R.string.popup_external_nadeshiko),
+            checked = appearance.externalNadeshiko,
+            onChange = viewModel::setExternalNadeshiko,
+            hint = stringResource(R.string.popup_external_nadeshiko_hint),
+        )
+        SwitchRow(
+            label = stringResource(R.string.popup_external_immersion_kit),
+            checked = appearance.externalImmersionKit,
+            onChange = viewModel::setExternalImmersionKit,
+            hint = stringResource(R.string.popup_external_immersion_kit_hint),
+        )
     }
 }
 

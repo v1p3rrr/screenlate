@@ -31,9 +31,10 @@ In language mining (especially Japanese study with Anki and tools like Senren・
 | **Supported services (JA)** | **Google Images, JPDB, Nadeshiko, Immersion Kit** | Matches Senren without Jisho (user requirement). Covers visual, dictionary/SRS, and media context. |
 | **Supported services (Non-JA)** | **Google Images only** (with language-specific regional domain) | User requirement; external Japanese services are irrelevant for other languages, while image search is universally valuable. |
 | **Link activation default** | **All disabled by default (`false`)** | Preserves existing compact popup layout for users who do not need web redirects. |
-| **Settings UI placement** | **Dedicated "External links" card in `PopupSettingsScreen`** | Grouped logically with popup content options (source text, translation button, definition copying). Dynamically shows 4 switches for Japanese, 1 for other languages. |
+| **Settings UI placement** | **Inside language card/section above fonts (`PopupTextSections.kt`)** | Moved into language section right above `FontChoice`. Shows all 4 toggles for Japanese, only Google Images for others. Includes section header and divider. |
 | **Popup layout (1 link)** | **Inline inside `.entry-actions`** | Takes only one extra button slot (~28px); wraps cleanly if word is very long. |
-| **Popup layout (>1 links)** | **Dedicated second row (`.entry-external-links`)** | User decision: prevents horizontal overcrowding and headword truncation. |
+| **Popup layout (>1 links)** | **Inside `.entry-info` row following frequency and reading chips** | Flow immediately after chips left-to-right. Eliminates detached floating row under actions. |
+| **Anki `COALESCE_NEW` icon** | **Material Design `auto_awesome` (sparkle / star vector)** | Crisp, unambiguous vector icon replacing distorted micro-text `ic_new_label`. |
 | **Browser interaction** | **System default browser via `ScreenlateBridge.onOpenUrl`** | Uses established `ACTION_VIEW` intent in `OverlayController.kt`, automatically docking the overlay on click. |
 | **Icon visual style** | **Monochrome SVG vectors (18×18 px in 28×28 px touch target)** | Consistent with `copy`, `audio`, and `add` icons; reacts to active theme colors (`--muted` / `--accent`). |
 
@@ -47,7 +48,7 @@ In language mining (especially Japanese study with Anki and tools like Senren・
 | **Google Images** | Other languages | `https://{domain}/search?q={word}&tbm=isch` | Regional ccTLD (e.g. `google.ru`, `google.de`, `google.fr`, `google.com`) |
 | **JPDB** | Japanese (`ja`) | `https://jpdb.io/search?q={word}` | Headword expression query |
 | **Nadeshiko** | Japanese (`ja`) | `https://nadeshiko.co/search/sentence?query={word}` | Sentence search query |
-| **Immersion Kit** | Japanese (`ja`) | `https://immersionkit.com/dictionary?keyword={word}` | Anime sentence search query |
+| **Immersion Kit** | Japanese (`ja`) | `https://www.immersionkit.com/dictionary?keyword={word}` | Anime sentence search query (requires `www.` to avoid query-stripping redirect) |
 
 ---
 
@@ -145,9 +146,24 @@ In `PageAppearance.build`:
    - `PageAppearanceTest`: Verify `externalLinks` JSON payload structure.
 2. **Page Script Tests (`scripts/page-tests` / `popup.test.mjs`):**
    - Single link enabled: verified appended into `.entry-actions`.
-   - Multiple links enabled: verified rendered in `.entry-external-links` secondary row.
+   - Multiple links enabled: verified rendered in `.entry-info` following chips.
    - Language filtering: non-JA entry with all 4 enabled only displays Google Images.
    - Click action: verify click dispatches `ScreenlateBridge.onOpenUrl` with correctly encoded URL.
 3. **Gradle Suite & Lint:**
    - `./gradlew testDebugUnitTest lintDebug assembleDebug`
    - `TranslationsTest` passing across all 17 locales.
+
+---
+
+## 6. Changelog
+
+- **2026-11-17:**
+  - Removed `ExternalLinksCard` from `PopupSettingsScreen.kt`.
+  - Moved external links switches into `LanguageCard` / font card in `PopupTextSections.kt` directly above `FontChoice`.
+  - Added sub-headers: "Внешние ссылки" (`popup_external_links_title`) and "Шрифт" (`popup_font_title`) separated by dividers.
+  - Multiple external links in `popup.js` moved from detached row into `.entry-info` immediately following frequency and pitch chips left-to-right.
+  - Single external link remains in `.entry-actions` next to Copy/Audio/Anki.
+  - Replaced distorted `ic_new_label.xml` (micro-text NEW) with Material Design `auto_awesome` vector for `OverwriteMode.COALESCE_NEW`.
+  - Replaced generic play button icon for Immersion Kit with brand yuzu citrus fruit SVG vector matching official website logo.
+  - Fixed Immersion Kit search URL to include `www.` (`https://www.immersionkit.com/dictionary?keyword={word}`), preventing apex redirect from stripping query parameters.
+

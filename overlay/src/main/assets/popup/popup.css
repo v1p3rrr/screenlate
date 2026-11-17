@@ -417,11 +417,15 @@ a {
 }
 
 .entry-external-links {
-    order: 2;
-    flex-basis: 100%;
-    display: flex;
-    justify-content: flex-end;
+    display: inline-flex;
+    align-items: center;
     gap: 2px;
+}
+
+.entry-info .entry-external-links .icon-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
 }
 
 .entry-info {

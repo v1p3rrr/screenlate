@@ -1716,7 +1716,7 @@ test('a single external link is placed inline in entry-actions and opens browser
     assert.equal(lastCall[1], 'https://www.google.co.jp/search?q=%E7%8C%AB&tbm=isch');
 });
 
-test('multiple external links form a second row under actions and trigger URLs', () => {
+test('multiple external links are placed inside entry-info and trigger URLs', () => {
     Popup.setAppearance({
         externalLinks: {
             googleImages: true,
@@ -1730,6 +1730,7 @@ test('multiple external links form a second row under actions and trigger URLs',
     const firstEntry = content.querySelector('.entry');
     const extRow = firstEntry.querySelector('.entry-external-links');
     assert.ok(extRow);
+    assert.equal(extRow.parentElement.classList.contains('entry-info'), true);
     const buttons = extRow.querySelectorAll('.action-external');
     assert.equal(buttons.length, 4);
     assert.equal(buttons[0].dataset.external, 'google-images');
@@ -1751,7 +1752,7 @@ test('multiple external links form a second row under actions and trigger URLs',
 
     // Click Immersion Kit
     buttons[3].click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://immersionkit.com/dictionary?keyword=%E7%8C%AB']);
+    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://www.immersionkit.com/dictionary?keyword=%E7%8C%AB']);
 });
 
 test('non-japanese entries only show Google Images with regional domain', () => {
