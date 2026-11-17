@@ -929,6 +929,7 @@
     <string name="camera_retry_failed">Retry missing regions</string>
     <string name="camera_recognition_failed">The photo could not be recognized. The stored text is kept.</string>
     <string name="camera_more_actions">More actions</string>
+    <string name="camera_rotate">Rotate 90°</string>
     <string name="camera_photo_description">Photo</string>
     <string name="camera_export">Save to gallery</string>
     <string name="camera_import">Import from gallery</string>

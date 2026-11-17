@@ -53,16 +53,16 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
     val fit = area?.takeIf { it.width > 0f && it.height > 0f }?.let {
         PhotoViewport.fit(document.width, document.height, it)
     }
-    var moved by remember(document.id) { mutableStateOf<PhotoViewport?>(null) }
+    var moved by remember(document.id, document.orientation) { mutableStateOf<PhotoViewport?>(null) }
     // The status strip above may change height; the photo keeps its zoom and center instead of fitting again.
     val viewport = fit?.let { moved?.resized(it.area) } ?: fit
     val sample = fit?.let { displaySampleSize(it.scale) }
-    var bitmap by remember(document.id, sample) { mutableStateOf<Bitmap?>(null) }
-    var failed by remember(document.id, sample) { mutableStateOf(false) }
-    var detail by remember(document.id) { mutableStateOf<PhotoDetail?>(null) }
+    var bitmap by remember(document.id, document.orientation, sample) { mutableStateOf<Bitmap?>(null) }
+    var failed by remember(document.id, document.orientation, sample) { mutableStateOf(false) }
+    var detail by remember(document.id, document.orientation) { mutableStateOf<PhotoDetail?>(null) }
     val detailSample = viewport?.let { displaySampleSize(it.scale) }
     val detailRegion = if (detailSample != null && sample != null && detailSample < sample) visibleRawRegion(document, viewport) else null
-    LaunchedEffect(document.id, sample) {
+    LaunchedEffect(document.id, document.orientation, sample) {
         if (sample == null) return@LaunchedEffect
         var decoded: Bitmap? = null
         var published = false
@@ -79,7 +79,7 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
             if (!published) decoded?.recycle()
         }
     }
-    LaunchedEffect(document.id, detailRegion, detailSample) {
+    LaunchedEffect(document.id, document.orientation, detailRegion, detailSample) {
         if (detailRegion == null || detailSample == null) { detail = null; return@LaunchedEffect }
         delay(150)
         var decoded: PhotoDetail? = null
@@ -93,7 +93,7 @@ internal fun PhotoViewer(document: PhotoDocument, onViewport: (Long, PhotoViewpo
         catch (_: java.io.IOException) { /* The fitted image remains usable while a detail patch fails. */ }
         finally { if (!published) decoded?.bitmap?.recycle() }
     }
-    LaunchedEffect(document.id, viewport, bitmap) {
+    LaunchedEffect(document.id, document.orientation, viewport, bitmap) {
         onViewport(document.id, viewport.takeIf { bitmap != null })
     }
     DisposableEffect(document.id) {

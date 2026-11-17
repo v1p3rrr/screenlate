@@ -120,6 +120,13 @@ abstract class PhotoDao {
         "AND id IN (SELECT photoId FROM current_photo)")
     abstract suspend fun setAttempt(id: Long, expected: Int, file: String): Int
 
+    /** Rotates the photo, clearing any recognition and attempt; the count of rows changed. */
+    @Query(
+        "UPDATE photos SET orientation = :orientation, recognitionFile = NULL, " +
+            "recognitionRevision = recognitionRevision + 1, attemptFile = NULL WHERE id = :id",
+    )
+    abstract suspend fun rotate(id: Long, orientation: Int): Int
+
     @Query("DELETE FROM current_photo")
     abstract suspend fun clearCurrent()
 
@@ -148,6 +155,7 @@ internal interface PhotoIndex {
     /** False when the photo is gone or has another recognition than [expected] by now. */
     suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int, language: String): Boolean
     suspend fun setAttempt(id: Long, expected: Int, file: String): Boolean
+    suspend fun rotate(id: Long, orientation: Int): Boolean
 
     /** False when the photo is gone or already in the history. */
     suspend fun save(id: Long, at: Long, language: String?): Boolean
@@ -167,6 +175,7 @@ internal class RoomPhotoIndex(private val dao: PhotoDao) : PhotoIndex {
     override suspend fun setRecognition(id: Long, expected: Int, file: String, revision: Int, language: String) =
         dao.setRecognition(id, expected, file, revision, language) == 1
     override suspend fun setAttempt(id: Long, expected: Int, file: String) = dao.setAttempt(id, expected, file) == 1
+    override suspend fun rotate(id: Long, orientation: Int) = dao.rotate(id, orientation) == 1
     override suspend fun save(id: Long, at: Long, language: String?) = dao.save(id, at, language) == 1
     override suspend fun clearCurrent() = dao.clearCurrent()
     override suspend fun delete(id: Long) = dao.delete(id)

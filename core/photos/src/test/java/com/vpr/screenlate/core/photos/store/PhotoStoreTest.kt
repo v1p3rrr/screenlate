@@ -225,6 +225,50 @@ class PhotoStoreTest {
     }
 
     @Test
+    fun `rotating a photo 90 degrees clockwise updates orientation and clears recognition`() = runTest {
+        val store = store()
+        val photo = store.replaceCurrent(store.capture("4000x3000:1"))
+        assertThat(photo.orientation).isEqualTo(PhotoOrientation.NORMAL)
+        assertThat(photo.width).isEqualTo(4000)
+        assertThat(photo.height).isEqualTo(3000)
+
+        val recognition = TestPhotos.recognition()
+        val recognized = store.commitRecognition(photo.id, basedOn = 0, recognition)!!
+        assertThat(recognized.text).isInstanceOf(PhotoText.Recognized::class.java)
+
+        val rotated = store.rotate(photo.id)!!
+        assertThat(rotated.orientation).isEqualTo(PhotoOrientation.ROTATE_90)
+        assertThat(rotated.width).isEqualTo(3000)
+        assertThat(rotated.height).isEqualTo(4000)
+        assertThat(rotated.text).isEqualTo(PhotoText.None)
+        assertThat(rotated.revision).isEqualTo(2)
+
+        val rotatedAgain = store.rotate(photo.id)!!
+        assertThat(rotatedAgain.orientation).isEqualTo(PhotoOrientation.ROTATE_180)
+        assertThat(rotatedAgain.width).isEqualTo(4000)
+        assertThat(rotatedAgain.height).isEqualTo(3000)
+    }
+
+    @Test
+    fun `rotating a saved photo updates its thumbnail`() = runTest {
+        var thumbCalls = 0
+        thumbnails = ThumbnailMaker {
+            thumbCalls++
+            "thumb-$thumbCalls".toByteArray()
+        }
+        val store = store()
+        val photo = store.replaceCurrent(store.capture("4000x3000:1"))
+        store.save(photo.id, HistoryLimits(10, 100))
+        assertThat(thumbCalls).isEqualTo(1)
+
+        val rotated = store.rotate(photo.id)!!
+        assertThat(rotated.saved).isTrue()
+        assertThat(thumbCalls).isEqualTo(2)
+        val thumbFile = File(rotated.image.parentFile, "thumbnail")
+        assertThat(thumbFile.readText()).isEqualTo("thumb-2")
+    }
+
+    @Test
     fun `a capture that is no image leaves the current photo`() = runTest {
         val store = store()
         val current = store.replaceCurrent(store.capture())
@@ -664,6 +708,19 @@ internal class FakePhotoIndex : PhotoIndex {
         rows.value += id to row.copy(attemptFile = file)
         onWrite()
         // A suspending Room call that changed the row still throws when its caller was cancelled meanwhile.
+        currentCoroutineContext().ensureActive()
+        return true
+    }
+
+    override suspend fun rotate(id: Long, orientation: Int): Boolean {
+        val row = rows.value[id] ?: return false
+        rows.value += id to row.copy(
+            orientation = orientation,
+            recognitionFile = null,
+            recognitionRevision = row.recognitionRevision + 1,
+            attemptFile = null,
+        )
+        onWrite()
         currentCoroutineContext().ensureActive()
         return true
     }

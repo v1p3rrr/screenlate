@@ -80,6 +80,16 @@ class PhotoRecognitionJobs internal constructor(
         }
     }
 
+    /** Cancels recognition for [documentId], or any current job when none is given. */
+    @Synchronized
+    fun cancel(documentId: Long? = null) {
+        if (documentId == null || target == documentId) {
+            job?.cancel()
+            target = null
+            mutableWork.value = null
+        }
+    }
+
     /** Recognizes the whole photo with [settings], replacing the text it has by the time the attempt starts. */
     @Synchronized
     fun recognize(document: PhotoDocument, language: Language, settings: PhotoOcrSettings) = start(document, language, settings, null)

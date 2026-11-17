@@ -942,6 +942,7 @@
     <string name="camera_retry_failed">Повторить недостающие</string>
     <string name="camera_recognition_failed">Не удалось распознать фото. Сохранённый текст остаётся.</string>
     <string name="camera_more_actions">Другие действия</string>
+    <string name="camera_rotate">Повернуть на 90°</string>
     <string name="camera_photo_description">Фото</string>
     <string name="camera_export">Сохранить в галерею</string>
     <string name="camera_import">Импорт из галереи</string>

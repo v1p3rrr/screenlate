@@ -1,5 +1,15 @@
 # Status
 
+## Camera photo rotation (2026-11-17)
+
+- Added single-tap 90-degree clockwise rotation (↻) for captured and imported camera photos:
+  - **Orientation Model:** Added `PhotoOrientation.rotateClockwise()` supporting all 8 EXIF orientation states with cyclical 360° rotation.
+  - **Storage & Atomicity:** Implemented `PhotoDocuments.rotate(documentId)` in `PhotoStore` and `PhotoDao`. Updates orientation in Room, increments `recognitionRevision`, resets recognition state to `PhotoText.None`, and regenerates the thumbnail bitmap atomically. Handled Windows atomic rename overwrite semantics in `writeAtomically`.
+  - **Recognition Lifecycle:** Added active recognition cancellation (`PhotoRecognitionJobs.cancel` and `CameraRecognition.cancel`) to prevent stale in-flight OCR results from overwriting newly rotated images.
+  - **UI & Controls:** Added overflow menu item "Rotate 90°" / "Повернуть на 90°" (`camera_rotate`) using `ic_rotate_right` vector drawable as the first item under the three-dot overflow menu in `CameraScreen`.
+  - **Viewer Invalidation:** Updated `PhotoViewer` remember keys to include `document.orientation`, ensuring immediate viewport refit and redraw when rotation occurs.
+  - **Tests:** Added unit tests in `PhotoOrientationTest`, `PhotoStoreTest`, and `CameraViewModelTest`; verified full suite with `./gradlew testDebugUnitTest` and all 184 page tests passing.
+
 ## External links in popup (2026-11-17)
 
 - Implemented configurable external link buttons for popup word entries on branch `features/external-links`:

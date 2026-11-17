@@ -56,4 +56,34 @@ class PhotoOrientationTest {
         assertThat(PhotoOrientation.ROTATE_90.swapsAxes).isTrue()
         assertThat(PhotoOrientation.FLIP_VERTICAL.swapsAxes).isFalse()
     }
+
+    @Test
+    fun `rotating clockwise cycles four times back to the original orientation`() {
+        for (orientation in PhotoOrientation.entries) {
+            var current = orientation
+            repeat(4) { current = current.rotateClockwise() }
+            assertThat(current).isEqualTo(orientation)
+        }
+        assertThat(PhotoOrientation.NORMAL.rotateClockwise()).isEqualTo(PhotoOrientation.ROTATE_90)
+        assertThat(PhotoOrientation.ROTATE_90.rotateClockwise()).isEqualTo(PhotoOrientation.ROTATE_180)
+        assertThat(PhotoOrientation.ROTATE_180.rotateClockwise()).isEqualTo(PhotoOrientation.ROTATE_270)
+        assertThat(PhotoOrientation.ROTATE_270.rotateClockwise()).isEqualTo(PhotoOrientation.NORMAL)
+    }
+
+    @Test
+    fun `rotating clockwise maps oriented points as a 90 degree clockwise turn`() {
+        for (orientation in PhotoOrientation.entries) {
+            val rotated = orientation.rotateClockwise()
+            val origWidth = if (orientation.swapsAxes) height else width
+            val origHeight = if (orientation.swapsAxes) width else height
+            for ((x, y) in listOf(0f to 0f, 10f to 20f, 399f to 1f, 123.5f to 299f)) {
+                val (ox, oy) = orientation.toOriented(x, y, width, height)
+                val expectedTurnX = origHeight - oy
+                val expectedTurnY = ox
+                val (rx, ry) = rotated.toOriented(x, y, width, height)
+                assertThat(rx).isEqualTo(expectedTurnX)
+                assertThat(ry).isEqualTo(expectedTurnY)
+            }
+        }
+    }
 }

@@ -229,6 +229,41 @@ class PhotoStore internal constructor(
         documentOf(row.copy(recognitionFile = name, recognitionRevision = revision, attemptFile = null), PhotoText.Recognized(recognition))
     }
 
+    override suspend fun rotate(documentId: Long): PhotoDocument? = locked {
+        val row = index.get(documentId) ?: return@locked null
+        val orientation = PhotoOrientation.fromExif(row.orientation).rotateClockwise()
+        val directory = File(root, row.directory)
+        if (!stored { index.rotate(documentId, orientation.exif) }) return@locked null
+        row.recognitionFile?.let { File(directory, it).delete() }
+        row.attemptFile?.let { File(directory, it).delete() }
+        val updated = row.copy(
+            orientation = orientation.exif,
+            recognitionFile = null,
+            recognitionRevision = row.recognitionRevision + 1,
+            attemptFile = null,
+        )
+        val image = imageOf(row)
+        try {
+            ExifInterface(image.path).apply {
+                setAttribute(ExifInterface.TAG_ORIENTATION, orientation.exif.toString())
+                saveAttributes()
+            }
+        } catch (_: Exception) {
+            // Non-JPEG/PNG or unwriteable EXIF: the database orientation remains authoritative.
+        }
+        if (row.saved) {
+            val thumbnail = File(directory, THUMBNAIL)
+            try {
+                writeAtomically(thumbnail, thumbnails.thumbnail(documentOf(updated, PhotoText.None)))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Regenerating thumbnail for photo ${row.id} failed: " + e.javaClass.simpleName)
+            }
+        }
+        documentOf(updated, PhotoText.None)
+    }
+
     override val entries: Flow<List<HistoryEntry>> = index.observeHistory()
         .distinctUntilChanged()
         .map { rows -> rows.map(::entryOf) }
@@ -464,7 +499,10 @@ class PhotoStore internal constructor(
                     out.write(bytes)
                     out.fd.sync()
                 }
-                if (!temp.renameTo(file)) throw IOException("Cannot store " + file.name)
+                if (!temp.renameTo(file)) {
+                    file.delete()
+                    if (!temp.renameTo(file)) throw IOException("Cannot store " + file.name)
+                }
             } catch (e: Exception) {
                 temp.delete()
                 throw e

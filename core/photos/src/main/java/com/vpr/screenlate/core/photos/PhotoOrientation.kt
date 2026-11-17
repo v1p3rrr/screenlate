@@ -22,6 +22,18 @@ enum class PhotoOrientation(val exif: Int) {
     /** The upright image is the stored one turned a quarter: its width is the stored height. */
     val swapsAxes: Boolean get() = exif >= TRANSPOSE.exif
 
+    /** The orientation of the photo turned 90° clockwise. */
+    fun rotateClockwise(): PhotoOrientation = when (this) {
+        NORMAL -> ROTATE_90
+        ROTATE_90 -> ROTATE_180
+        ROTATE_180 -> ROTATE_270
+        ROTATE_270 -> NORMAL
+        FLIP_HORIZONTAL -> TRANSVERSE
+        TRANSVERSE -> FLIP_VERTICAL
+        FLIP_VERTICAL -> TRANSPOSE
+        TRANSPOSE -> FLIP_HORIZONTAL
+    }
+
     /** The point ([x], [y]) of a stored [rawWidth] × [rawHeight] image on the upright photo. */
     fun toOriented(x: Float, y: Float, rawWidth: Int, rawHeight: Int): Pair<Float, Float> {
         val w = rawWidth.toFloat()

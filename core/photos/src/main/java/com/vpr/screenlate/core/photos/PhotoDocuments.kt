@@ -37,4 +37,10 @@ interface PhotoDocuments {
      * got another text meanwhile.
      */
     suspend fun commitRecognition(documentId: Long, basedOn: Int, recognition: PhotoRecognition): PhotoDocument?
+
+    /**
+     * Rotates photo [documentId] 90° clockwise. Clears any stored recognition or progress, increments the revision,
+     * updates its thumbnail if saved, and returns the updated photo; null if the photo is gone.
+     */
+    suspend fun rotate(documentId: Long): PhotoDocument?
 }

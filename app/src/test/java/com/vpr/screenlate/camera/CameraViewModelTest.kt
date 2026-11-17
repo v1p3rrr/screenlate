@@ -52,6 +52,7 @@ class CameraViewModelTest {
     private lateinit var history: FakeHistory
     private lateinit var preferences: CameraPreferences
     private var recognitionCalls = 0
+    private var cancelCalls = 0
     private val recognition = object : CameraRecognition {
         override val state = MutableStateFlow<CameraRecognitionState?>(null)
         override val blocked = MutableStateFlow<CameraReadinessBlock?>(null)
@@ -59,6 +60,7 @@ class CameraViewModelTest {
         override fun recognize(document: PhotoDocument, byTiles: Boolean) { recognitionCalls++ }
         override fun retry(document: PhotoDocument) {}
         override fun dismissBlock() {}
+        override fun cancel() { cancelCalls++ }
     }
 
     @Test
@@ -140,6 +142,22 @@ class CameraViewModelTest {
         model.exportPhoto()
         advanceUntilIdle()
         assertThat(model.events.first()).isEqualTo(CameraEvent.EXPORTED)
+    }
+
+    @Test
+    fun `rotating photo invokes rotate, cancels recognition and resets viewport`() = runTest {
+        documents.current.value = photo(id = 1, orientation = com.vpr.screenlate.core.photos.PhotoOrientation.NORMAL)
+        advanceUntilIdle()
+        model.showPhoto(1, viewport())
+        assertThat(model.state.value.photo?.orientation).isEqualTo(com.vpr.screenlate.core.photos.PhotoOrientation.NORMAL)
+
+        model.rotatePhoto()
+        advanceUntilIdle()
+
+        assertThat(documents.rotated).isEqualTo(1)
+        assertThat(cancelCalls).isEqualTo(1)
+        assertThat(model.state.value.photo?.orientation).isEqualTo(com.vpr.screenlate.core.photos.PhotoOrientation.ROTATE_90)
+        assertThat(model.state.value.photo?.text).isEqualTo(PhotoText.None)
     }
 
     private val imported = mutableListOf<Pair<String, File>>()
@@ -591,6 +609,16 @@ class CameraViewModelTest {
         override suspend fun clearCurrent() {
             if (deleteFails) throw IOException("test")
             current.value = null
+        }
+        var rotated = 0
+        override suspend fun rotate(documentId: Long): PhotoDocument? {
+            rotated++
+            val cur = current.value?.takeIf { it.id == documentId } ?: return null
+            return cur.copy(
+                orientation = cur.orientation.rotateClockwise(),
+                revision = cur.revision + 1,
+                text = PhotoText.None,
+            ).also { current.value = it }
         }
         override suspend fun commitRecognition(documentId: Long, basedOn: Int, recognition: PhotoRecognition): PhotoDocument? =
             error("Not used by capture")

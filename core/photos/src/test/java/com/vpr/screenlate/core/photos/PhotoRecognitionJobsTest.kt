@@ -410,5 +410,6 @@ class PhotoRecognitionJobsTest {
         override suspend fun replaceCurrent(capture: File): PhotoDocument = error("Not used")
         override suspend fun discard(capture: File): Unit = error("Not used")
         override suspend fun clearCurrent(): Unit = error("Not used")
+        override suspend fun rotate(documentId: Long): PhotoDocument? = error("Not used")
     }
 }

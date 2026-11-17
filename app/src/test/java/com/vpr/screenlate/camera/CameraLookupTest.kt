@@ -17,8 +17,12 @@ import com.vpr.screenlate.core.photos.PhotoViewport
 import java.io.File
 import org.junit.Test
 
-internal fun photo(id: Long = 1, text: PhotoText = recognizedText()) = PhotoDocument(
-    id, File("photo-" + id), 4000, 3000, PhotoOrientation.NORMAL, 0, 1, text,
+internal fun photo(
+    id: Long = 1,
+    text: PhotoText = recognizedText(),
+    orientation: PhotoOrientation = PhotoOrientation.NORMAL,
+) = PhotoDocument(
+    id, File("photo-" + id), 4000, 3000, orientation, 0, 1, text,
 )
 
 private fun recognizedText() = PhotoText.Recognized(

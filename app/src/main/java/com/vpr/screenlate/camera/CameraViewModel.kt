@@ -351,6 +351,27 @@ class CameraViewModel @Inject constructor(
         }
     }
 
+    fun rotatePhoto() {
+        val photo = state.value.photo ?: return
+        if (state.value.busy) return
+        mutableState.value = state.value.copy(busy = true)
+        publish()
+        recognition.cancel()
+        viewModelScope.launch {
+            try {
+                documents.rotate(photo.id)
+                viewport = null
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Rotating photo failed: " + e.javaClass.simpleName)
+            } finally {
+                mutableState.value = state.value.copy(busy = false)
+                publish()
+            }
+        }
+    }
+
     private fun publish() {
         val current = state.value
         val photo = current.photo

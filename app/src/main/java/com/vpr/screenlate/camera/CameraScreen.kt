@@ -174,6 +174,8 @@ fun CameraScreen(
             if (flashAvailable) add(CameraAction(flash.icon, stringResource(flash.label), !state.busy) { viewModel.session.flash.value = flash.next })
         } else if (photo != null) {
             add(CameraAction(R.drawable.ic_photo_camera, stringResource(R.string.camera_new_photo), !state.busy, run = viewModel::newPhoto))
+            add(CameraAction(R.drawable.ic_rotate_right, stringResource(R.string.camera_rotate), !state.busy, inMenu = true,
+                run = viewModel::rotatePhoto))
             // A photo read whole once more, by tiles; not while it is being recognized.
             if (recognition?.canReadByTiles(photo) == true && !working) {
                 add(CameraAction(R.drawable.ic_zoom_in, stringResource(R.string.camera_recognize_accurately), !state.busy, inMenu = true) {

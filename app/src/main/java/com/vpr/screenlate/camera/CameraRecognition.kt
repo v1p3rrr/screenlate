@@ -108,6 +108,7 @@ interface CameraRecognition {
     fun recognize(document: PhotoDocument, byTiles: Boolean = false)
     fun retry(document: PhotoDocument)
     fun dismissBlock()
+    fun cancel()
 }
 
 /** App settings/readiness adapter; storage and work stay independent of overlay and navigation. */
@@ -184,6 +185,12 @@ class CameraRecognitionController @Inject constructor(
     }
 
     override fun dismissBlock() { mutableBlock.value = null }
+
+    @Synchronized
+    override fun cancel() {
+        action?.cancel()
+        jobs.cancel()
+    }
 }
 
 @Module

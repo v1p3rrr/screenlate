@@ -41,6 +41,7 @@ internal class CurrentPhoto : PhotoDocuments {
     override suspend fun replaceCurrent(capture: File): PhotoDocument = error("Not used")
     override suspend fun discard(capture: File) = error("Not used")
     override suspend fun clearCurrent() = error("Not used")
+    override suspend fun rotate(documentId: Long): PhotoDocument? = error("Not used")
     override suspend fun commitRecognition(documentId: Long, basedOn: Int, recognition: PhotoRecognition): PhotoDocument? =
         error("Not used")
     override suspend fun saveAttempt(documentId: Long, attempt: PhotoAttempt, replace: Boolean): Boolean = error("Not used")
