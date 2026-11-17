@@ -17,15 +17,16 @@
     - Japanese: Google Images (`www.google.co.jp`), JPDB (`jpdb.io`), Nadeshiko (`nadeshiko.co`), and Immersion Kit (`www.immersionkit.com`). Jisho excluded per design.
     - Other languages: exclusively Google Images mapped to language-specific regional domains via `GoogleDomains` (e.g. `www.google.ru`, `www.google.de`, `www.google.fr`, `www.google.com`).
   - **Adaptive Layout:**
-    - Single active external link: placed inline within `.entry-actions` next to core actions (Copy, Audio, Anki); wraps cleanly below the headword if horizontal space is constrained.
-    - Multiple active external links: relocated into the metadata row `.entry-info` immediately following frequency and pitch/reading chips (left-to-right), rather than hanging as a detached secondary row.
+    - Single active external link: placed on the left of `.entry-actions` before Copy/Audio/Anki; wraps cleanly below the headword if horizontal space is constrained.
+    - Multiple active external links: placed inside `.entry-info` immediately after frequency and pitch/transcription chips as an atomic non-shrinking group (`flex-shrink: 0`) so they follow the chips on the same line when they all fit, or wrap together onto the next row between the chips and the first dictionary name when they don't.
   - **Popup Settings Screen:** Relocated "External links" (`popup_external_links_title`) into the language card right above fonts (`FontChoice`), showing all 4 switches when viewing Japanese and only Google Images for other languages. Added explicit "Fonts" subtitle (`popup_font_title`) with divider above font settings. All links are disabled by default.
   - **Icons & Brand Design:**
     - Replaced Immersion Kit video-play icon with custom yuzu/lemon vector matching the site's brand favicon.
     - Replaced Anki `OverwriteMode.COALESCE_NEW` micro-text icon `ic_new_label.xml` with standard Material Design `auto_awesome` vector.
-    - Crisp monochrome SVG vector icons (18×18 px in actions, 28×28 px touch-friendly in metadata row) adapting dynamically to active theme colors (`--muted` / `--accent`).
+    - Sized multiple external link buttons in `.entry-info` (`1.6rem × 1.4rem`, `4px` radius, `1.05rem` SVG) to match `.copy-definition`, while single-link buttons in `.entry-actions` keep the standard action button size.
   - **Bug Fixes:**
     - Fixed Immersion Kit URL dropping query parameter by pointing directly to `https://www.immersionkit.com/dictionary?keyword=${expr}` (bypassing apex domain redirect).
+    - Added missing `camera_rotate` translations across all 15 non-EN/RU locales so `TranslationsTest` passes cleanly.
   - **Localization & Tests:**
     - Localized strings across all 17 supported project locales; verified with `TranslationsTest`.
     - Unit tests in `GoogleDomainsTest`, `PopupAppearanceRepositoryTest`, `PageFontsTest`, and `SettingsKeysTest`.
@@ -35,7 +36,7 @@
     - Routed language capability checks through `LanguageSupport.hasJapaneseExternalLinks`.
     - Added fallback language scoping (`result.fallbackLanguage`) so non-Japanese dictionary results in Japanese lookup do not display Japanese-specific links.
     - Deduplicated action button DOM construction in `popup.js`.
-- Minified ARM64 Dev APK from `c129a5e7` (on `main` & `features/external-links`): version `1.1.0-c129a5e7-min` (10100), 23,319,295 bytes, signed with the local debug key. SHA-256 `9629e7fc90194ab3fcb6b5ebb638128ec30cd070944ba15dca84dedb3469ca9d`.
+- Minified ARM64 Dev APK from `86d146ed` (on `main` & `features/external-links`): version `1.1.0-86d146ed-min` (10100), 23,319,831 bytes, signed with the local debug key. SHA-256 `0893c51e56217d66779be8a70707ab3b936d8acd8d8b669420b77593e200b2c4`.
   - The APK, mapping and init script are under ignored `testdata/local-research/builds/`.
 
 ## About screen icon, license audit, and notice wrapping (2026-11-17)
