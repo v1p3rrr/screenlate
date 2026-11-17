@@ -610,6 +610,9 @@ const Popup = (() => {
             close.addEventListener('click', () => ScreenlateBridge.onClose());
             container.append(close);
         }
+        if (singleLink) {
+            container.append(makeExternalLinkButton(singleLink));
+        }
         const copy = iconButton('copy', ICONS.copy, labelOf('copy'));
         copy.addEventListener('click', () => ScreenlateBridge.onCopy(result.term.expression));
         container.append(copy);
@@ -687,9 +690,6 @@ const Popup = (() => {
                 addNote(screenshotByDefault ? !held : held, false);
             });
             container.append(add);
-        }
-        if (singleLink) {
-            container.append(makeExternalLinkButton(singleLink));
         }
         return container;
     }

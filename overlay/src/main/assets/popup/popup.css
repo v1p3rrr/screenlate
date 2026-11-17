@@ -420,12 +420,18 @@ a {
     display: inline-flex;
     align-items: center;
     gap: 2px;
+    flex-shrink: 0;
 }
 
 .entry-info .entry-external-links .icon-button {
-    width: 28px;
-    height: 28px;
-    border-radius: 14px;
+    width: 1.6rem;
+    height: 1.4rem;
+    border-radius: 4px;
+}
+
+.entry-info .entry-external-links .icon-button svg {
+    width: 1.05rem;
+    height: 1.05rem;
 }
 
 .entry-info {

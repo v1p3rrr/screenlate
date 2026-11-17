@@ -1691,7 +1691,8 @@ test('dynamic theme colors are injected via setAppearance and adapt to theme mod
     assert.equal(root.style.getPropertyValue('--dictionary-fg'), '');
 });
 
-test('a single external link is placed inline in entry-actions and opens browser', () => {
+test('a single external link is placed on the left of entry-actions and opens browser', () => {
+    Popup.setActions({ anki: true, audio: true });
     Popup.setAppearance({
         externalLinks: {
             googleImages: true,
@@ -1706,6 +1707,8 @@ test('a single external link is placed inline in entry-actions and opens browser
     const actions = firstEntry.querySelector('.entry-actions');
     const extBtn = actions.querySelector('.action-external');
     assert.ok(extBtn);
+    assert.equal(extBtn, actions.firstElementChild);
+    assert.equal(extBtn.nextElementSibling, actions.querySelector('.action-copy'));
     assert.equal(extBtn.dataset.external, 'google-images');
     assert.equal(extBtn.getAttribute('aria-label'), 'Google Images');
     assert.equal(firstEntry.querySelector('.entry-external-links'), null);
