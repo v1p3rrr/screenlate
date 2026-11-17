@@ -50,21 +50,58 @@ test('meanings of JMdict-based dictionaries are their glossary lists', () => {
     assert.equal(meanings(glossary([jitendexLike])), '1. есть; кушать\n2. зарабатывать на жизнь');
 });
 
-test('everything keeps markers, examples and tags as text, and formatting as html', () => {
+test('everything keeps markers, examples and tags as clean text and portable html without layout divs', () => {
     const { text, html } = DefinitionCopy.copy([glossary([jitendexLike])], 'all');
     assert.match(text, /^сущ\. нар\.\n/);
-    assert.match(text, /①\n• есть\n• кушать\n/);
+    assert.match(text, /① есть\nкушать\n/);
     assert.match(text, /もっと果を食べる/);
     assert.doesNotMatch(text, /くだ/);
-    assert.match(html, /<li[^>]*>есть<\/li>/);
-    assert.match(html, /<ruby>果<rt>くだ<\/rt><\/ruby>/);
+    assert.doesNotMatch(html, /<div/);
+    assert.doesNotMatch(html, /<rt>/);
+    assert.match(html, /<i>сущ\.<\/i> <i>нар\.<\/i><br><b>①<\/b> есть<br>кушать/);
+    assert.match(html, /もっと果を食べる/);
+    assert.match(html, /<a href="https:\/\/example\.org">JMdict<\/a>/);
+    assert.doesNotMatch(html, /href="\?query=/);
 });
 
-test('pictures are left out of the html', () => {
+test('html mode copies raw dictionary html as plain text for Anki without images', () => {
+    const { text, html } = DefinitionCopy.copy([glossary([jitendexLike])], 'html');
+    assert.equal(html, '');
+    assert.match(text, /<div[^>]*data-sc-content="sense-group"/);
+    assert.match(text, /<li[^>]*>есть<\/li>/);
+    assert.match(text, /<ruby>果<rt>くだ<\/rt><\/ruby>/);
+});
+
+test('inline divs and reference labels do not cause stray line breaks or glued words', () => {
+    const entry = sc([
+        { tag: 'div', style: { display: 'inline' }, content: 'one ' },
+        { tag: 'div', style: { display: 'inline-block' }, content: 'two' },
+        {
+            tag: 'div', data: { content: 'xref-content' }, content: [
+                { tag: 'span', data: { content: 'reference-label' }, content: 'См. также' },
+                { tag: 'a', href: '?query=猫', content: '猫' },
+            ],
+        },
+        {
+            tag: 'table', content: [
+                { tag: 'tr', content: [{ tag: 'th', content: 'A' }, { tag: 'td', content: 'B' }] },
+                { tag: 'tr', content: [{ tag: 'th', content: 'C' }, { tag: 'td', content: 'D' }] },
+            ],
+        },
+    ]);
+    const { text, html } = DefinitionCopy.copy([glossary([entry])], 'all');
+    assert.equal(text, 'one two\nСм. также 猫\nA B\nC D');
+    assert.equal(html, 'one two<br>См. также 猫<br>A B<br>C D');
+});
+
+test('pictures are left out of both clean html and raw html mode', () => {
     const picture = glossary([sc([{ tag: 'img', path: 'img/cat.png', width: 1, height: 1 }, 'кошка'])]);
-    const { text, html } = DefinitionCopy.copy([picture], 'all');
-    assert.equal(text, 'кошка');
-    assert.doesNotMatch(html, /<img/);
+    const all = DefinitionCopy.copy([picture], 'all');
+    assert.equal(all.text, 'кошка');
+    assert.doesNotMatch(all.html, /<img/);
+    const raw = DefinitionCopy.copy([picture], 'html');
+    assert.equal(raw.html, '');
+    assert.doesNotMatch(raw.text, /<img/);
 });
 
 test('several glossaries are numbered with their tags; text glossaries are escaped', () => {

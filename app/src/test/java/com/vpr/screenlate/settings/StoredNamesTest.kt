@@ -42,6 +42,6 @@ class StoredNamesTest {
             "JAPANESE_POD_101", "LANGUAGE_POD_101", "JISHO", "LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH", "URL", "CUSTOM_JSON",
         )
         // The copy mode is stored by its page id.
-        assertThat(DefinitionCopyMode.entries.map { it.id }).containsAtLeast("all", "meanings")
+        assertThat(DefinitionCopyMode.entries.map { it.id }).containsAtLeast("all", "meanings", "html")
     }
 }

@@ -186,12 +186,10 @@
     <string name="anki_duplicate_all_models_hint">البحث عن الكلمات المتطابقة بالحقل الأول عبر جميع أنواع ملاحظات AnkiDroid، وليس الحالية فقط.</string>
     <string name="anki_duplicate_behavior">عند وجود ملاحظة مكرّرة</string>
     <string name="anki_behavior_prevent">منع</string>
-    <string name="anki_behavior_overwrite">الكتابة فوقها</string>
-    <string name="anki_behavior_append">إلحاق</string>
+    <string name="anki_behavior_overwrite">تحديث</string>
     <string name="anki_behavior_new">إضافة جديدة</string>
     <string name="anki_behavior_prevent_hint">إذا كانت الملاحظة موجودة، يُعرض فتحها في AnkiDroid بدلاً من إضافتها.</string>
-    <string name="anki_behavior_overwrite_hint">تُستبدل حقول الملاحظة الموجودة بالقيم الجديدة.</string>
-    <string name="anki_behavior_append_hint">إلحاق الجمل ولقطات الشاشة الجديدة بالملاحظة الحالية لتبديل المشاهد.</string>
+    <string name="anki_behavior_overwrite_hint">تُحدَّث حقول البطاقة الموجودة وفق القاعدة المختارة لكل حقل أدناه.</string>
     <string name="anki_behavior_new_hint">تُضاف ملاحظة جديدة حتى وإن كانت متطابقة مع ملاحظة موجودة.</string>
     <string name="anki_duplicate_deck_only">التعديل في الرزمة الحالية فقط</string>
     <string name="anki_duplicate_deck_only_hint">إذا وُجدت الملاحظة المكررة في رزمة أخرى، لا تُعدَّل، بل تُنشأ ملاحظة جديدة في الرزمة الحالية.</string>
@@ -274,6 +272,11 @@
     <string name="settings_language_translations">الترجمات مُعدّة بالذكاء الاصطناعي ولم يراجعها متحدثون أصليون. التصحيحات مُرحَّب بها على GitHub.</string>
     <string name="action_clear">مسح</string>
     <string name="anki_suggest_templates">ملء القوالب المقترحة</string>
+    <string name="anki_suggest_confirm_title">استبدال قوالب الحقول؟</string>
+    <string name="anki_suggest_confirm_text">بعض الحقول تحتوي بالفعل على قوالب. هل تريد ملء الفارغة فقط أم استبدال الكل؟</string>
+    <string name="anki_suggest_confirm_all_text">جميع الحقول تحتوي بالفعل على قوالب. هل تريد استبدالها بالقوالب المقترحة؟</string>
+    <string name="anki_suggest_empty">الفارغة فقط</string>
+    <string name="anki_suggest_replace_all">استبدال الكل</string>
     <string name="anki_overwrite_mode">عند الكتابة فوق الملاحظة: %1$s</string>
     <string name="anki_overwrite_coalesce">الإبقاء على القيمة الحالية ما لم تكن فارغة</string>
     <string name="anki_overwrite_coalesce_new">أخذ القيمة الجديدة ما لم تكن فارغة</string>
@@ -428,6 +431,10 @@
     <string name="anki_check_not_checked">%1$s: لم يُتحقَّق منه</string>
     <string name="audio_sources">المصادر</string>
     <string name="audio_reset_sources">استعادة المصادر الافتراضية</string>
+    <string name="audio_reset_sources_title">إعادة ضبط مصادر الصوت؟</string>
+    <string name="audio_reset_sources_text">استعادة قائمة المصادر الافتراضية لهذه اللغة؟ ستُفقد الروابط المخصّصة وترتيب المصادر.</string>
+    <string name="audio_delete_source_title">حذف مصدر الصوت؟</string>
+    <string name="audio_delete_source_text">حذف «%1$s»؟ لن يُحفظ رابطه.</string>
     <string name="audio_regions">المناطق</string>
     <string name="audio_regions_hint">تأتي أولًا تسجيلات Wiktionary ونسخه الصوتية من المناطق الأعلى في القائمة.</string>
     <string name="audio_region_us">الولايات المتحدة</string>
@@ -647,6 +654,8 @@
     <string name="popup_copy_mode_meanings">المعاني فقط</string>
     <string name="popup_copy_mode_all_hint">كل ما يعرضه القاموس. تتلقاه التطبيقات التي تدعم التنسيق منسّقًا، وتتلقاه غيرها نصًا عاديًا.</string>
     <string name="popup_copy_mode_meanings_hint">المعاني المرقّمة نصًا عاديًا، دون الأمثلة والحواشي والإحالات. لا يُضمن ذلك مع كل قاموس: فحين يتعذّر الفصل بين المعاني يُنسخ النص كله.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">شيفرة HTML الأصلية للقاموس كنص عادي، للصقها مباشرة في حقول بطاقات Anki.</string>
     <string name="popup_css_title">CSS مخصّص</string>
     <string name="popup_css_hint">يُطبَّق على النافذة المنبثقة وصفحة البحث بعد أنماط القواميس، مثل CSS المخصّص للنافذة المنبثقة في Yomitan. تستخدم المداخل أسماء الفئات (class) المستخدمة في Yomitan، وتتبع ألوان الوسوم متغيرات Yomitan (--tag-frequency-background-color وغيرها). وإذا لم يكن الخط موجودًا في الهاتف يُستخدم خط النافذة المنبثقة بدلًا منه.</string>
     <string name="css_problem_unclosed_comment">السطر %1$d: تعليق غير مغلق (لا يوجد */)، ويُتجاهَل كل ما بعده</string>

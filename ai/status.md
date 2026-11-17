@@ -1,5 +1,19 @@
 # Status
 
+## Definition copy, Anki duplicate merge, and confirmation dialogs (2026-11-17)
+
+- **Definition copy (`definition.js`, `popup.css`, `PopupAppearanceRepository`, `PopupSettingsScreen`):**
+  - Fixed `ALL` mode plain text (`allText`): keeps list markers inline with nested content (no orphan `①` line breaks), respects inline `display` on `div`s, and separates `reference-label` from adjacent links.
+  - Replaced raw Yomitan `<div>`-soup in `ALL` mode clipboard HTML (`cleanHtml`) with clean portable semantic HTML (flattened layout divs, stripped `<rt>`/`<rp>` so Android `Html.fromHtml()` does not mash readings into kanji, real `<b>`/`<i>`/`<a>`/`<br>`/`<ul>`/`<ol>`, external HTTP links kept, internal `?query=` links unwrapped, table rows rendered cleanly).
+  - Added 3rd copy mode `DefinitionCopyMode.HTML` (`"html"`), copying raw dictionary HTML (without app-internal `<img>`s) as plain text (`ClipData.newPlainText`) for direct pasting into Anki card fields.
+- **Anki duplicate behavior simplification (`AnkiSettings`, `AnkiNotes`, `PopupNotes`, `AnkiSettingsScreen`, `AnkiSettingsViewModel`):**
+  - Merged redundant `DuplicateBehavior.APPEND` into `DuplicateBehavior.OVERWRITE` ("Update" / "Обновить"), matching Yomitan's 3-option model (`PREVENT`, `OVERWRITE`, `NEW`) with per-field `OverwriteMode` badges defaulting to `COALESCE`.
+  - Added `DuplicateBehaviorSerializer` mapping legacy `"APPEND"` to `OVERWRITE` (and unknown values to `PREVENT`) for seamless backward compatibility.
+- **Confirmation dialogs for destructive/overwrite settings actions:**
+  - `AnkiSettingsScreen`: "Fill in suggested templates" now asks when any field is already filled, offering "Fill empty only" (`suggestEmptyTemplates`), "Replace all" (`suggestTemplates`), or "Cancel" (or "Replace all" / "Cancel" when no empty fields remain), and clears focus first.
+  - `AudioSettingsCards`: "Reset sources" is disabled when already matching defaults and shows a confirmation dialog when modified; deleting a custom URL audio source (`source.type.hasUrl && source.url.isNotBlank()`) asks confirmation via `ConfirmDelete`.
+- **Localization & verification:** Updated all 17 locales, verified with `TranslationsTest`, `StoredNamesTest`, `:core:anki:testDebugUnitTest`, `:overlay:testDebugUnitTest`, `:app:testDebugUnitTest`, `:app:lintDebug`, `:overlay:lintDebug`, and all 186 JS page tests passing.
+
 ## Camera photo rotation (2026-11-17)
 
 - Added single-tap 90-degree clockwise rotation (↻) for captured and imported camera photos:

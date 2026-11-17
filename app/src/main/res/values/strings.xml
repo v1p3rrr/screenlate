@@ -182,12 +182,10 @@
     <string name="anki_duplicate_all_models_hint">Checks matching words by the first field across every note type in AnkiDroid, not only the current one.</string>
     <string name="anki_duplicate_behavior">When a duplicate exists</string>
     <string name="anki_behavior_prevent">Prevent</string>
-    <string name="anki_behavior_overwrite">Overwrite</string>
-    <string name="anki_behavior_append">Append</string>
+    <string name="anki_behavior_overwrite">Update</string>
     <string name="anki_behavior_new">Add new</string>
     <string name="anki_behavior_prevent_hint">If the note exists, opening it in AnkiDroid is offered instead of adding.</string>
-    <string name="anki_behavior_overwrite_hint">Existing note fields are replaced with new values.</string>
-    <string name="anki_behavior_append_hint">Appends new sentences and screenshots to the existing note for scene switching.</string>
+    <string name="anki_behavior_overwrite_hint">Existing note fields are updated according to each field\'s rule below.</string>
     <string name="anki_behavior_new_hint">A new note is added even if an identical one exists.</string>
     <string name="anki_duplicate_deck_only">Modify notes in current deck only</string>
     <string name="anki_duplicate_deck_only_hint">If a duplicate exists in another deck, keep it unchanged and add a new note to the current deck.</string>
@@ -270,6 +268,11 @@
     <string name="settings_language_translations">Translations were made with AI and have not been reviewed by native speakers. Corrections are welcome on GitHub.</string>
     <string name="action_clear">Clear</string>
     <string name="anki_suggest_templates">Fill in suggested templates</string>
+    <string name="anki_suggest_confirm_title">Replace field templates?</string>
+    <string name="anki_suggest_confirm_text">Some fields already have templates. Fill only the empty ones, or replace all of them?</string>
+    <string name="anki_suggest_confirm_all_text">All fields already have templates. Replace them with the suggested ones?</string>
+    <string name="anki_suggest_empty">Fill empty only</string>
+    <string name="anki_suggest_replace_all">Replace all</string>
     <string name="anki_overwrite_mode">When overwriting: %1$s</string>
     <string name="anki_overwrite_coalesce">keep the existing value unless empty</string>
     <string name="anki_overwrite_coalesce_new">take the new value unless empty</string>
@@ -416,6 +419,10 @@
     <string name="anki_check_not_checked">%1$s: not checked</string>
     <string name="audio_sources">Sources</string>
     <string name="audio_reset_sources">Restore the default sources</string>
+    <string name="audio_reset_sources_title">Reset audio sources?</string>
+    <string name="audio_reset_sources_text">Replace the source list with the default sources for this language? Custom URLs and source order will be lost.</string>
+    <string name="audio_delete_source_title">Delete audio source?</string>
+    <string name="audio_delete_source_text">Delete \"%1$s\"? Its URL will not be saved.</string>
     <string name="audio_regions">Regions</string>
     <string name="audio_regions_hint">Wiktionary recordings and transcriptions from the regions higher in the list come first.</string>
     <string name="audio_region_us">United States</string>
@@ -635,6 +642,8 @@
     <string name="popup_copy_mode_meanings">Only meanings</string>
     <string name="popup_copy_mode_all_hint">Everything the dictionary shows. Apps that support formatting get it formatted, others get plain text.</string>
     <string name="popup_copy_mode_meanings_hint">The numbered meanings as plain text, without examples, notes and references. Not guaranteed for every dictionary: where the meanings cannot be told apart, the whole text is copied.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">Raw dictionary HTML as plain text, for pasting directly into Anki card fields.</string>
     <string name="popup_css_title">Custom CSS</string>
     <string name="popup_css_hint">Applied to the popup and the search page after the dictionaries\' styles, like Yomitan\'s custom popup CSS. Entries use Yomitan\'s class names, and tag colors follow Yomitan\'s variables (--tag-frequency-background-color and others). A font the phone lacks falls back to the popup font.</string>
     <string name="css_problem_unclosed_comment">Line %1$d: a comment is not closed (no */), everything after it is ignored</string>

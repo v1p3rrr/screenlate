@@ -178,7 +178,7 @@
     <string name="anki_duplicate_all_models_hint">کلمات منطبق را بر اساس فیلد اول در تمام انواع یادداشت‌های AnkiDroid جستجو می‌کند، نه فقط یادداشت فعلی.</string>
     <string name="anki_duplicate_behavior">وقتی مورد تکراری وجود دارد</string>
     <string name="anki_behavior_prevent">جلوگیری</string>
-    <string name="anki_behavior_overwrite">بازنویسی</string>
+    <string name="anki_behavior_overwrite">به‌روزرسانی</string>
     <string name="anki_behavior_new">افزودن یادداشت جدید</string>
 
     <string name="audio_title">صوت</string>
@@ -259,6 +259,11 @@
     <string name="settings_language_translations">ترجمه‌ها با هوش مصنوعی انجام شده‌اند و گویشوران بومی آن‌ها را بازبینی نکرده‌اند. اصلاحات در GitHub پذیرفته می‌شوند.</string>
     <string name="action_clear">پاک کردن</string>
     <string name="anki_suggest_templates">پر کردن الگوهای پیشنهادی</string>
+    <string name="anki_suggest_confirm_title">جایگزینی الگوهای فیلد؟</string>
+    <string name="anki_suggest_confirm_text">برخی فیلدها از قبل الگو دارند. فقط فیلدهای خالی پر شوند یا همه جایگزین شوند؟</string>
+    <string name="anki_suggest_confirm_all_text">همهٔ فیلدها از قبل الگو دارند. با الگوهای پیشنهادی جایگزین شوند؟</string>
+    <string name="anki_suggest_empty">فقط خالی‌ها</string>
+    <string name="anki_suggest_replace_all">جایگزینی همه</string>
     <string name="anki_overwrite_mode">هنگام بازنویسی: %1$s</string>
     <string name="anki_overwrite_coalesce">حفظ مقدار موجود، مگر اینکه خالی باشد</string>
     <string name="anki_overwrite_coalesce_new">استفاده از مقدار جدید، مگر اینکه خالی باشد</string>
@@ -399,6 +404,10 @@
     <string name="anki_check_not_checked">%1$s: بررسی نشد</string>
     <string name="audio_sources">منابع</string>
     <string name="audio_reset_sources">بازگرداندن منابع پیش‌فرض</string>
+    <string name="audio_reset_sources_title">بازنشانی منابع صوتی؟</string>
+    <string name="audio_reset_sources_text">فهرست منابع به منابع پیش‌فرض این زبان برگردانده شود؟ نشانی‌های سفارشی و ترتیب منابع از دست می‌روند.</string>
+    <string name="audio_delete_source_title">حذف منبع صوتی؟</string>
+    <string name="audio_delete_source_text">«%1$s» حذف شود؟ نشانی آن ذخیره نخواهد شد.</string>
     <string name="audio_regions">مناطق</string>
     <string name="audio_regions_hint">ضبط‌ها و آوانویسی‌های Wiktionary از مناطقی که در فهرست بالاترند، اول می‌آیند.</string>
     <string name="audio_region_us">ایالات متحده</string>
@@ -618,6 +627,8 @@
     <string name="popup_copy_mode_meanings">فقط معناها</string>
     <string name="popup_copy_mode_all_hint">هر چه واژه‌نامه نشان می‌دهد. برنامه‌هایی که از قالب‌بندی پشتیبانی می‌کنند آن را قالب‌بندی‌شده دریافت می‌کنند و بقیه به‌صورت متن ساده.</string>
     <string name="popup_copy_mode_meanings_hint">معناهای شماره‌دار به‌صورت متن ساده، بدون مثال‌ها، توضیحات و ارجاع‌ها. برای همه واژه‌نامه‌ها تضمین نمی‌شود: هر جا معناها از هم قابل تشخیص نباشند، کل متن کپی می‌شود.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">کد HTML خام واژه‌نامه به‌صورت متن ساده، برای جای‌گذاری مستقیم در فیلدهای کارت Anki.</string>
     <string name="popup_css_title">CSS سفارشی</string>
     <string name="popup_css_hint">پس از سبک‌های واژه‌نامه‌ها روی پنجره بازشو و صفحه جستجو اعمال می‌شود، مانند CSS سفارشی پنجره بازشو در Yomitan. مدخل‌ها از نام‌های کلاس Yomitan استفاده می‌کنند و رنگ برچسب‌ها از متغیرهای Yomitan پیروی می‌کند (--tag-frequency-background-color و غیره). قلمی که در تلفن نیست، با قلم پنجره بازشو جایگزین می‌شود.</string>
     <string name="css_problem_unclosed_comment">خط %1$d: یک توضیح بسته نشده است (*/ ندارد)، هر چه پس از آن بیاید نادیده گرفته می‌شود</string>
@@ -981,10 +992,8 @@
         <item quantity="other">%1$d از %2$d ناحیه</item>
     </plurals>
 
-    <string name="anki_behavior_append">افزودن</string>
     <string name="anki_behavior_prevent_hint">اگر یادداشت وجود دارد، باز کردن آن در AnkiDroid به جای افزودن پیشنهاد می‌شود.</string>
-    <string name="anki_behavior_overwrite_hint">فیلدهای یادداشت موجود با مقادیر جدید جایگزین می‌شوند.</string>
-    <string name="anki_behavior_append_hint">جملات و تصاویر جدید را برای تغییر صحنه به یادداشت موجود اضافه می‌کند.</string>
+    <string name="anki_behavior_overwrite_hint">فیلدهای یادداشت موجود بر اساس قاعدهٔ انتخاب‌شده برای هر فیلد در پایین به‌روزرسانی می‌شوند.</string>
     <string name="anki_behavior_new_hint">حتی در صورت وجود یادداشت یکسان، یک یادداشت جدید اضافه می‌شود.</string>
     <string name="anki_duplicate_deck_only">تغییر فقط در دسته فعلی</string>
     <string name="anki_duplicate_deck_only_hint">اگر مورد تکراری در دسته دیگری باشد، تغییر داده نمی‌شود و یک کارت جدید در دسته فعلی ایجاد می‌شود.</string>

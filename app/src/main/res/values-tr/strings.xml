@@ -178,12 +178,10 @@
     <string name="anki_duplicate_all_models_hint">Eşleşen kelimeleri yalnızca geçerli olanında değil, AnkiDroid\'deki tüm not türlerinde ilk alana göre arar.</string>
     <string name="anki_duplicate_behavior">Yinelenen varsa</string>
     <string name="anki_behavior_prevent">Engelle</string>
-    <string name="anki_behavior_overwrite">Üzerine yaz</string>
+    <string name="anki_behavior_overwrite">Güncelle</string>
     <string name="anki_behavior_new">Yine de ekle</string>
-    <string name="anki_behavior_append">Sona ekle</string>
     <string name="anki_behavior_prevent_hint">Not zaten varsa eklemek yerine AnkiDroid’de açılması önerilir.</string>
-    <string name="anki_behavior_overwrite_hint">Mevcut not alanları yeni değerlerle değiştirilir.</string>
-    <string name="anki_behavior_append_hint">Sahne geçişleri için mevcut nota yeni cümleler ve ekran görüntüleri ekler.</string>
+    <string name="anki_behavior_overwrite_hint">Mevcut notun alanları aşağıda her alan için seçilen kurala göre güncellenir.</string>
     <string name="anki_behavior_new_hint">Aynısı olsa bile yeni bir not eklenir.</string>
     <string name="anki_duplicate_deck_only">Yalnızca mevcut destede değiştir</string>
     <string name="anki_duplicate_deck_only_hint">Başka bir destede kopya varsa onu değiştirmeyin, geçerli destede yeni bir not oluşturun.</string>
@@ -266,6 +264,11 @@
     <string name="settings_language_translations">Çeviriler yapay zekâ ile yapıldı ve anadili konuşurlarınca gözden geçirilmedi. Düzeltmeler GitHub’da memnuniyetle karşılanır.</string>
     <string name="action_clear">Temizle</string>
     <string name="anki_suggest_templates">Önerilen şablonlarla doldur</string>
+    <string name="anki_suggest_confirm_title">Alan şablonları değiştirilsin mi?</string>
+    <string name="anki_suggest_confirm_text">Bazı alanlarda zaten şablon var. Yalnızca boş olanlar mı doldurulsun, yoksa tümü mü değiştirilsin?</string>
+    <string name="anki_suggest_confirm_all_text">Tüm alanlarda zaten şablon var. Önerilen şablonlarla değiştirilsin mi?</string>
+    <string name="anki_suggest_empty">Yalnızca boşlar</string>
+    <string name="anki_suggest_replace_all">Tümünü değiştir</string>
     <string name="anki_overwrite_mode">Üzerine yazarken: %1$s</string>
     <string name="anki_overwrite_coalesce">boş değilse mevcut değeri koru</string>
     <string name="anki_overwrite_coalesce_new">boş değilse yeni değeri al</string>
@@ -412,6 +415,10 @@
     <string name="anki_check_not_checked">%1$s: kontrol edilmedi</string>
     <string name="audio_sources">Kaynaklar</string>
     <string name="audio_reset_sources">Varsayılan kaynakları geri yükle</string>
+    <string name="audio_reset_sources_title">Ses kaynakları sıfırlansın mı?</string>
+    <string name="audio_reset_sources_text">Bu dilin varsayılan ses kaynaklarına dönülsün mü? Özel URL\'ler ve kaynak sırası kaybolacaktır.</string>
+    <string name="audio_delete_source_title">Ses kaynağı silinsin mi?</string>
+    <string name="audio_delete_source_text">“%1$s” silinsin mi? Adresi kaydedilmeyecek.</string>
     <string name="audio_regions">Bölgeler</string>
     <string name="audio_regions_hint">Listede daha yukarıdaki bölgelerin Wiktionary kayıtları ve fonetik yazımları önce gelir.</string>
     <string name="audio_region_us">ABD</string>
@@ -631,6 +638,8 @@
     <string name="popup_copy_mode_meanings">Yalnızca anlamlar</string>
     <string name="popup_copy_mode_all_hint">Sözlüğün gösterdiği her şey. Biçimlendirmeyi destekleyen uygulamalar biçimli, diğerleri düz metin olarak alır.</string>
     <string name="popup_copy_mode_meanings_hint">Numaralı anlamlar düz metin olarak; örnekler, notlar ve göndermeler olmadan. Her sözlükte garanti edilmez: anlamlar ayırt edilemezse metnin tamamı kopyalanır.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">Doğrudan Anki kart alanlarına yapıştırmak için sözlüğün ham HTML kodunu düz metin olarak kopyalar.</string>
     <string name="popup_css_title">Özel CSS</string>
     <string name="popup_css_hint">Yomitan’ın özel açılır pencere CSS’i gibi, sözlük stillerinden sonra açılır pencereye ve arama sayfasına uygulanır. Maddeler Yomitan’ın sınıf adlarını kullanır, etiket renkleri Yomitan’ın değişkenlerini izler (--tag-frequency-background-color ve diğerleri). Telefonda olmayan bir yazı tipinin yerine açılır pencere yazı tipi kullanılır.</string>
     <string name="css_problem_unclosed_comment">Satır %1$d: bir yorum kapatılmamış (*/ yok), sonrasındaki her şey yok sayılır</string>

@@ -1,7 +1,10 @@
 package com.vpr.screenlate.core.anki
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.anki.settings.AnkiSettings
+import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
+import kotlinx.serialization.json.Json
 import org.junit.Test
 
 class OverwriteModeTest {
@@ -69,35 +72,12 @@ class OverwriteModeTest {
     }
 
     @Test
-    fun `suggestedAppendMode distinguishes word vs sentence fields and switches`() {
-        // Word pronunciation audio is kept (COALESCE), sentence context audio is appended (APPEND)
-        assertThat(AnkiNotes.suggestedAppendMode("WordAudio", "{audio}")).isEqualTo(OverwriteMode.COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("expressionAudio", "{audio}")).isEqualTo(OverwriteMode.COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("SentenceAudio", "")).isEqualTo(OverwriteMode.APPEND)
-        assertThat(AnkiNotes.suggestedAppendMode("SentenceAudio", "{audio}")).isEqualTo(OverwriteMode.APPEND)
+    fun `legacy APPEND duplicate behavior deserializes to OVERWRITE`() {
+        val json = Json { ignoreUnknownKeys = true }
+        val migrated = json.decodeFromString<AnkiSettings>("""{"duplicateBehavior":"APPEND"}""")
+        assertThat(migrated.duplicateBehavior).isEqualTo(DuplicateBehavior.OVERWRITE)
 
-        // Sentence & media context fields append
-        assertThat(AnkiNotes.suggestedAppendMode("Sentence", """<span class="group">{cloze-body}</span>"""))
-            .isEqualTo(OverwriteMode.APPEND)
-        assertThat(AnkiNotes.suggestedAppendMode("SentenceFurigana", "{sentence-furigana}"))
-            .isEqualTo(OverwriteMode.APPEND)
-        assertThat(AnkiNotes.suggestedAppendMode("SentenceTranslation", "{sentence-translation}"))
-            .isEqualTo(OverwriteMode.APPEND)
-        assertThat(AnkiNotes.suggestedAppendMode("Picture", "{screenshot}")).isEqualTo(OverwriteMode.APPEND)
-        assertThat(AnkiNotes.suggestedAppendMode("Screenshot", "{screenshot}")).isEqualTo(OverwriteMode.APPEND)
-
-        // Card generation switches stay kept (COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("SentenceCard", "")).isEqualTo(OverwriteMode.COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("isSentenceCard", "")).isEqualTo(OverwriteMode.COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("AudioCard", "")).isEqualTo(OverwriteMode.COALESCE)
-
-        // Word fields stay kept (COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("Word", "{expression}")).isEqualTo(OverwriteMode.COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("Reading", "{reading}")).isEqualTo(OverwriteMode.COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("Glossary", "{glossary}")).isEqualTo(OverwriteMode.COALESCE)
-        assertThat(AnkiNotes.suggestedAppendMode("PitchAccents", "{pitch-accents}")).isEqualTo(OverwriteMode.COALESCE)
-
-        // Custom field with scene marker gets APPEND
-        assertThat(AnkiNotes.suggestedAppendMode("CustomField", "{sentence}")).isEqualTo(OverwriteMode.APPEND)
+        val unknown = json.decodeFromString<AnkiSettings>("""{"duplicateBehavior":"FUTURE_MODE"}""")
+        assertThat(unknown.duplicateBehavior).isEqualTo(DuplicateBehavior.PREVENT)
     }
 }

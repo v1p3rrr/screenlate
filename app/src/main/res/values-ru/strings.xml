@@ -183,12 +183,10 @@
     <string name="anki_duplicate_all_models_hint">Ищет совпадение слова по первому полю во всех типах заметок AnkiDroid, а не только в текущем.</string>
     <string name="anki_duplicate_behavior">Если дубль найден</string>
     <string name="anki_behavior_prevent">Запретить</string>
-    <string name="anki_behavior_overwrite">Заменить</string>
-    <string name="anki_behavior_append">Дополнить</string>
+    <string name="anki_behavior_overwrite">Обновить</string>
     <string name="anki_behavior_new">Создать</string>
     <string name="anki_behavior_prevent_hint">Если карточка существует, добавление блокируется, а кнопка открывает её в AnkiDroid.</string>
-    <string name="anki_behavior_overwrite_hint">Поля существующей карточки заменяются новыми значениями.</string>
-    <string name="anki_behavior_append_hint">Дописывает новые предложения и скриншоты к карточке для смены сцен.</string>
+    <string name="anki_behavior_overwrite_hint">Поля существующей карточки обновляются по правилам, выбранным для каждого поля ниже.</string>
     <string name="anki_behavior_new_hint">Всегда создаётся новая карточка, даже если слово уже есть.</string>
     <string name="anki_duplicate_deck_only">Изменять только в текущей колоде</string>
     <string name="anki_duplicate_deck_only_hint">Если дубликат найден в другой колоде, не менять его, а создать новую карточку в текущей.</string>
@@ -271,6 +269,11 @@
     <string name="settings_language_translations">Переводы сделаны с помощью ИИ и не проверены носителями языка. Исправления приветствуются на GitHub.</string>
     <string name="action_clear">Очистить</string>
     <string name="anki_suggest_templates">Подставить рекомендуемые шаблоны</string>
+    <string name="anki_suggest_confirm_title">Заменить шаблоны полей?</string>
+    <string name="anki_suggest_confirm_text">Некоторые поля уже заполнены. Заполнить только пустые или заменить все?</string>
+    <string name="anki_suggest_confirm_all_text">Все поля уже заполнены. Заменить их рекомендуемыми шаблонами?</string>
+    <string name="anki_suggest_empty">Только пустые</string>
+    <string name="anki_suggest_replace_all">Заменить все</string>
     <string name="anki_overwrite_mode">При перезаписи: %1$s</string>
     <string name="anki_overwrite_coalesce">оставить старое, если не пусто</string>
     <string name="anki_overwrite_coalesce_new">взять новое, если не пусто</string>
@@ -421,6 +424,10 @@
     <string name="anki_check_not_checked">%1$s: без проверки</string>
     <string name="audio_sources">Источники</string>
     <string name="audio_reset_sources">Вернуть источники по умолчанию</string>
+    <string name="audio_reset_sources_title">Сбросить источники аудио?</string>
+    <string name="audio_reset_sources_text">Вернуть стандартный список источников для этого языка? Пользовательские ссылки и порядок источников будут потеряны.</string>
+    <string name="audio_delete_source_title">Удалить источник аудио?</string>
+    <string name="audio_delete_source_text">Удалить источник «%1$s»? Его адрес не сохранится.</string>
     <string name="audio_regions">Регионы</string>
     <string name="audio_regions_hint">Записи Wiktionary и транскрипции из регионов выше в списке идут первыми.</string>
     <string name="audio_region_us">США</string>
@@ -640,6 +647,8 @@
     <string name="popup_copy_mode_meanings">Только значения</string>
     <string name="popup_copy_mode_all_hint">Всё, что показывает словарь. Приложения с поддержкой форматирования получат его с оформлением, остальные — обычным текстом.</string>
     <string name="popup_copy_mode_meanings_hint">Пронумерованные значения обычным текстом, без примеров, пометок и ссылок. Не гарантируется для всех словарей: если значения не удаётся выделить, копируется весь текст.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">Исходный HTML-код словаря обычным текстом — для вставки прямо в поля карточек Anki.</string>
     <string name="popup_css_title">Свой CSS</string>
     <string name="popup_css_hint">Применяется к попапу и странице поиска после стилей словарей, как Custom popup CSS в Yomitan. Статьи используют классы Yomitan, цвета тегов — переменные Yomitan (--tag-frequency-background-color и другие). Шрифт, которого нет на телефоне, заменяется шрифтом попапа.</string>
     <string name="css_problem_unclosed_comment">Строка %1$d: комментарий не закрыт (нет */), всё после него игнорируется</string>

@@ -176,12 +176,10 @@
     <string name="anki_duplicate_all_models_hint">在 AnkiDroid 的所有笔记类型中按首字段搜索匹配的词，而不仅是当前类型。</string>
     <string name="anki_duplicate_behavior">存在重复时</string>
     <string name="anki_behavior_prevent">阻止</string>
-    <string name="anki_behavior_overwrite">覆盖</string>
-    <string name="anki_behavior_append">追加</string>
+    <string name="anki_behavior_overwrite">更新</string>
     <string name="anki_behavior_new">仍然添加</string>
     <string name="anki_behavior_prevent_hint">如果笔记已存在，则阻止添加并在AnkiDroid中打开。</string>
-    <string name="anki_behavior_overwrite_hint">用新值替换现有笔记的字段。</string>
-    <string name="anki_behavior_append_hint">将新的例句和截图追加到现有卡片（用于场景切换）。</string>
+    <string name="anki_behavior_overwrite_hint">根据下方为每个字段选择的规则更新已有笔记的字段。</string>
     <string name="anki_behavior_new_hint">即使存在相同笔记也仍然添加新卡片。</string>
     <string name="anki_duplicate_deck_only">仅在当前牌组中修改</string>
     <string name="anki_duplicate_deck_only_hint">如果重复项位于其他牌组，则不作修改，而在当前牌组创建新卡片。</string>
@@ -264,6 +262,11 @@
     <string name="settings_language_translations">翻译由 AI 完成，未经母语者审校。欢迎在 GitHub 上提出修正。</string>
     <string name="action_clear">清除</string>
     <string name="anki_suggest_templates">填入推荐模板</string>
+    <string name="anki_suggest_confirm_title">替换字段模板？</string>
+    <string name="anki_suggest_confirm_text">部分字段已有模板。仅填充空字段，还是全部替换？</string>
+    <string name="anki_suggest_confirm_all_text">所有字段都已有模板。要用推荐模板替换它们吗？</string>
+    <string name="anki_suggest_empty">仅填充空字段</string>
+    <string name="anki_suggest_replace_all">全部替换</string>
     <string name="anki_overwrite_mode">覆盖时：%1$s</string>
     <string name="anki_overwrite_coalesce">保留现有值，除非为空</string>
     <string name="anki_overwrite_coalesce_new">采用新值，除非为空</string>
@@ -408,6 +411,10 @@
     <string name="anki_check_not_checked">%1$s：未检查</string>
     <string name="audio_sources">来源</string>
     <string name="audio_reset_sources">恢复默认来源</string>
+    <string name="audio_reset_sources_title">重置音频来源？</string>
+    <string name="audio_reset_sources_text">恢复此语言的默认音频来源列表？自定义 URL 和来源顺序将会丢失。</string>
+    <string name="audio_delete_source_title">删除音频来源？</string>
+    <string name="audio_delete_source_text">删除“%1$s”？其 URL 不会被保留。</string>
     <string name="audio_regions">地区</string>
     <string name="audio_regions_hint">列表中靠前地区的 Wiktionary 录音和音标优先。</string>
     <string name="audio_region_us">美国</string>
@@ -627,6 +634,8 @@
     <string name="popup_copy_mode_meanings">仅释义</string>
     <string name="popup_copy_mode_all_hint">词典显示的全部内容。支持格式的应用会得到带格式的内容，其他应用得到纯文本。</string>
     <string name="popup_copy_mode_meanings_hint">以纯文本复制编号释义，不含例句、注释和参见。并非对所有词典都有效：无法区分释义时复制全文。</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">以纯文本形式复制词典的原始 HTML 代码，便于直接粘贴到 Anki 卡片字段中。</string>
     <string name="popup_css_title">自定义 CSS</string>
     <string name="popup_css_hint">与 Yomitan 的弹窗自定义 CSS 一样，在词典样式之后应用于弹窗和搜索页面。词条使用 Yomitan 的类名，标签颜色遵循 Yomitan 的变量（--tag-frequency-background-color 等）。手机上没有的字体会改用弹窗字体。</string>
     <string name="css_problem_unclosed_comment">第 %1$d 行：注释未闭合（缺少 */），其后的内容全部被忽略</string>

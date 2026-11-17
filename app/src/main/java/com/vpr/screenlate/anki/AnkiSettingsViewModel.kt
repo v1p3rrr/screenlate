@@ -296,6 +296,20 @@ class AnkiSettingsViewModel @Inject constructor(
         }
     }
 
+    /** Fills only empty field templates of the current note type with the suggested ones. */
+    fun suggestEmptyTemplates() {
+        val fields = connection.value.fieldNames
+        val language = shown.language.value
+        updateSettings { settings ->
+            val suggested = FieldTemplate.guess(settings.modelName.orEmpty(), fields, language)
+            settings.copy(
+                fields = fields.associateWith { field ->
+                    settings.fields[field]?.takeIf { it.isNotBlank() } ?: suggested[field].orEmpty()
+                },
+            )
+        }
+    }
+
     fun setFieldTemplate(field: String, template: String) =
         updateSettings { it.copy(fields = it.fields + (field to template)) }
 
@@ -312,14 +326,7 @@ class AnkiSettingsViewModel @Inject constructor(
 
     fun setDuplicateAllModels(enabled: Boolean) = updateSettings { it.copy(duplicateAllModels = enabled) }
 
-    fun setDuplicateBehavior(behavior: DuplicateBehavior) = updateSettings { settings ->
-        val updatedModes = if (behavior == DuplicateBehavior.APPEND && settings.overwriteModes.isEmpty()) {
-            settings.fields.mapValues { (field, template) -> AnkiNotes.suggestedAppendMode(field, template) }
-        } else {
-            settings.overwriteModes
-        }
-        settings.copy(duplicateBehavior = behavior, overwriteModes = updatedModes)
-    }
+    fun setDuplicateBehavior(behavior: DuplicateBehavior) = updateSettings { it.copy(duplicateBehavior = behavior) }
 
     fun setDuplicateScopeDeckOnly(enabled: Boolean) = updateSettings { it.copy(duplicateScopeDeckOnly = enabled) }
 

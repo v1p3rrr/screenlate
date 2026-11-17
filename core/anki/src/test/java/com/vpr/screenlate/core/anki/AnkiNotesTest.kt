@@ -291,8 +291,13 @@ class AnkiNotesTest {
     }
 
     @Test
-    fun `append behavior merges context fields and preserves vocabulary fields`() = runBlocking<Unit> {
-        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND) }
+    fun `overwrite with append modes merges context fields and preserves vocabulary fields`() = runBlocking<Unit> {
+        configure {
+            it.copy(
+                duplicateBehavior = DuplicateBehavior.OVERWRITE,
+                overwriteModes = mapOf("Sentence" to OverwriteMode.APPEND, "Picture" to OverwriteMode.APPEND),
+            )
+        }
         val screenshot = folder.newFile("shot2.png")
         anki.existing += ExistingNote(8, MODEL, listOf("猫", "definition 1", "Sentence 1.", "<img src=\"shot1.png\">"), setOf(DECK))
         val appendRequest = NoteRequest(
@@ -311,7 +316,7 @@ class AnkiNotesTest {
 
     @Test
     fun `duplicate in another deck creates a new note in target deck when deck-only is enabled`() = runBlocking<Unit> {
-        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND, duplicateScopeDeckOnly = true) }
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE, duplicateScopeDeckOnly = true) }
         val otherDeck = 99L
         anki.existing += ExistingNote(15, MODEL, listOf("猫", "other def", "other sentence", ""), setOf(otherDeck))
         val result = notes.add(Language.JAPANESE, request)
@@ -322,7 +327,7 @@ class AnkiNotesTest {
 
     @Test
     fun `duplicate with unknown deck creates new note in target deck when deck-only is enabled`() = runBlocking<Unit> {
-        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND, duplicateScopeDeckOnly = true) }
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE, duplicateScopeDeckOnly = true) }
         anki.existing += ExistingNote(16, MODEL, listOf("猫", "unknown def", "unknown sentence", "")) // empty deckIds
         val result = notes.add(Language.JAPANESE, request)
         assertThat(result).isEqualTo(AddResult.Added(101))
@@ -342,7 +347,7 @@ class AnkiNotesTest {
 
     @Test
     fun `prioritizes duplicate in target deck and picks newest note`() = runBlocking<Unit> {
-        configure { it.copy(duplicateBehavior = DuplicateBehavior.APPEND) }
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE) }
         val otherDeck = 99L
         anki.existing += ExistingNote(10, MODEL, listOf("猫", "old other", "", ""), setOf(otherDeck))
         anki.existing += ExistingNote(20, MODEL, listOf("猫", "first in deck", "", ""), setOf(DECK))

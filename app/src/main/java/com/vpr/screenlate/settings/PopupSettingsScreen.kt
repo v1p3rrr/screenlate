@@ -121,6 +121,7 @@ private fun PopupContentCard(
                     when (it) {
                         DefinitionCopyMode.ALL -> R.string.popup_copy_mode_all
                         DefinitionCopyMode.MEANINGS -> R.string.popup_copy_mode_meanings
+                        DefinitionCopyMode.HTML -> R.string.popup_copy_mode_html
                     },
                 )
             },
@@ -132,6 +133,7 @@ private fun PopupContentCard(
                 when (appearance.copyMode) {
                     DefinitionCopyMode.ALL -> R.string.popup_copy_mode_all_hint
                     DefinitionCopyMode.MEANINGS -> R.string.popup_copy_mode_meanings_hint
+                    DefinitionCopyMode.HTML -> R.string.popup_copy_mode_html_hint
                 },
             ),
         )

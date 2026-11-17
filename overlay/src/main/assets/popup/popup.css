@@ -805,7 +805,8 @@ button.frequency {
 }
 
 :root[data-definition-copy="all"] .copy-definition,
-:root[data-definition-copy="meanings"] .copy-definition {
+:root[data-definition-copy="meanings"] .copy-definition,
+:root[data-definition-copy="html"] .copy-definition {
     display: inline-flex;
     align-items: center;
     justify-content: center;

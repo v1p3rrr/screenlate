@@ -176,12 +176,10 @@
     <string name="anki_duplicate_all_models_hint">現在のノートタイプだけでなく、AnkiDroid内のすべてのノートタイプで先頭フィールドの一致を検索します。</string>
     <string name="anki_duplicate_behavior">重複がある場合</string>
     <string name="anki_behavior_prevent">追加しない</string>
-    <string name="anki_behavior_overwrite">上書き</string>
+    <string name="anki_behavior_overwrite">更新</string>
     <string name="anki_behavior_new">新しく追加</string>
-    <string name="anki_behavior_append">追記</string>
     <string name="anki_behavior_prevent_hint">ノートが既に存在する場合、追加せずAnkiDroidで開きます。</string>
-    <string name="anki_behavior_overwrite_hint">既存ノートの各項目を新しい値で置き換えます。</string>
-    <string name="anki_behavior_append_hint">シーン切り替え用に例文や画像を既存ノートに追記します。</string>
+    <string name="anki_behavior_overwrite_hint">既存のノートの各フィールドを、下で設定したルールに従って更新します。</string>
     <string name="anki_behavior_new_hint">同一の語句が存在する場合でも新規ノートを追加します。</string>
     <string name="anki_duplicate_deck_only">現在のデッキ内のみ変更</string>
     <string name="anki_duplicate_deck_only_hint">重複が他のデッキにある場合は変更せず、現在のデッキに新規作成します。</string>
@@ -264,6 +262,11 @@
     <string name="settings_language_translations">翻訳は AI で作成されたもので、ネイティブスピーカーによる確認は受けていません。修正の提案は GitHub で受け付けています。</string>
     <string name="action_clear">クリア</string>
     <string name="anki_suggest_templates">おすすめのテンプレートを入力</string>
+    <string name="anki_suggest_confirm_title">フィールドテンプレートを置き換えますか？</string>
+    <string name="anki_suggest_confirm_text">すでに入力されているフィールドがあります。空のフィールドのみ入力するか、すべて置き換えますか？</string>
+    <string name="anki_suggest_confirm_all_text">すべてのフィールドにテンプレートが設定されています。おすすめのテンプレートで置き換えますか？</string>
+    <string name="anki_suggest_empty">空のフィールドのみ</string>
+    <string name="anki_suggest_replace_all">すべて置き換え</string>
     <string name="anki_overwrite_mode">上書き時：%1$s</string>
     <string name="anki_overwrite_coalesce">空でなければ既存の値を残す</string>
     <string name="anki_overwrite_coalesce_new">空でなければ新しい値を使う</string>
@@ -408,6 +411,10 @@
     <string name="anki_check_not_checked">%1$s：未確認</string>
     <string name="audio_sources">ソース</string>
     <string name="audio_reset_sources">ソースを初期値に戻す</string>
+    <string name="audio_reset_sources_title">音声ソースをリセットしますか？</string>
+    <string name="audio_reset_sources_text">この言語の初期設定の音声ソースに戻しますか？カスタム URL や並び順は失われます。</string>
+    <string name="audio_delete_source_title">音声ソースを削除しますか？</string>
+    <string name="audio_delete_source_text">「%1$s」を削除しますか？URL は保存されません。</string>
     <string name="audio_regions">地域</string>
     <string name="audio_regions_hint">リストの上にある地域の Wiktionary の録音と発音記号が先に来ます。</string>
     <string name="audio_region_us">アメリカ</string>
@@ -627,6 +634,8 @@
     <string name="popup_copy_mode_meanings">語義のみ</string>
     <string name="popup_copy_mode_all_hint">辞書に表示されるすべて。書式に対応したアプリには書式付きで、それ以外にはプレーンテキストで渡されます。</string>
     <string name="popup_copy_mode_meanings_hint">番号付きの語義をプレーンテキストで。用例・注記・参照は除きます。すべての辞書で保証されるわけではなく、語義を区別できない場合は全文をコピーします。</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">辞書の HTML コードをそのままプレーンテキストでコピーします。Anki のフィールドへの直接貼り付け向けです。</string>
     <string name="popup_css_title">カスタム CSS</string>
     <string name="popup_css_hint">Yomitan のポップアップ用カスタム CSS と同様に、辞書のスタイルのあとでポップアップと検索ページに適用されます。項目は Yomitan のクラス名を使い、タグの色は Yomitan の変数（--tag-frequency-background-color など）に従います。端末にないフォントはポップアップのフォントで代替されます。</string>
     <string name="css_problem_unclosed_comment">%1$d 行目：コメントが閉じられていません（*/ がありません）。以降はすべて無視されます</string>

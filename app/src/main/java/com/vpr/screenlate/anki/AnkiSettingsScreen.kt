@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -55,7 +56,6 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiCheck
 import com.vpr.screenlate.core.anki.AnkiDroid
-import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.AnkiProblem
 import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.CheckOutcome
@@ -328,7 +328,6 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     when (settings.duplicateBehavior) {
                         DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
                         DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
-                        DuplicateBehavior.APPEND -> R.string.anki_behavior_append
                         DuplicateBehavior.NEW -> R.string.anki_behavior_new
                     },
                 ),
@@ -338,7 +337,6 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                         when (it) {
                             DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
                             DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
-                            DuplicateBehavior.APPEND -> R.string.anki_behavior_append
                             DuplicateBehavior.NEW -> R.string.anki_behavior_new
                         },
                     )
@@ -348,7 +346,6 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                         when (it) {
                             DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent_hint
                             DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite_hint
-                            DuplicateBehavior.APPEND -> R.string.anki_behavior_append_hint
                             DuplicateBehavior.NEW -> R.string.anki_behavior_new_hint
                         },
                     )
@@ -358,7 +355,6 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
             val behaviorHint = when (settings.duplicateBehavior) {
                 DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent_hint
                 DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite_hint
-                DuplicateBehavior.APPEND -> R.string.anki_behavior_append_hint
                 DuplicateBehavior.NEW -> R.string.anki_behavior_new_hint
             }
             Text(
@@ -367,7 +363,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (settings.duplicateScope == DuplicateScope.COLLECTION &&
-                (settings.duplicateBehavior == DuplicateBehavior.OVERWRITE || settings.duplicateBehavior == DuplicateBehavior.APPEND)
+                settings.duplicateBehavior == DuplicateBehavior.OVERWRITE
             ) {
                 SwitchRow(
                     label = stringResource(R.string.anki_duplicate_deck_only),
@@ -412,6 +408,8 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
     }
 
     if (state.fieldNames.isNotEmpty()) {
+        var confirmingSuggest by remember { mutableStateOf(false) }
+        val focusManager = LocalFocusManager.current
         SectionCard(title = stringResource(R.string.anki_fields)) {
             val hint = stringResource(R.string.anki_fields_hint)
             val rightToLeftHint = stringResource(R.string.anki_fields_hint_rtl)
@@ -419,11 +417,20 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                 stringResource(R.string.anki_fields_how),
                 if (state.language.support.rightToLeft) "$hint\n\n$rightToLeftHint" else hint,
             )
-            OutlinedButton(onClick = viewModel::suggestTemplates, modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                onClick = {
+                    focusManager.clearFocus()
+                    if (state.fieldNames.any { !settings.fields[it].isNullOrBlank() }) {
+                        confirmingSuggest = true
+                    } else {
+                        viewModel.suggestTemplates()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
                 Text(stringResource(R.string.anki_suggest_templates), textAlign = TextAlign.Center)
             }
-            val allowsOverwrite = settings.duplicateCheck &&
-                (settings.duplicateBehavior == DuplicateBehavior.OVERWRITE || settings.duplicateBehavior == DuplicateBehavior.APPEND)
+            val allowsOverwrite = settings.duplicateCheck && settings.duplicateBehavior == DuplicateBehavior.OVERWRITE
             state.fieldNames.forEach { field ->
                 val template = settings.fields[field].orEmpty()
                 TemplateField(
@@ -431,13 +438,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     template = template,
                     markers = state.markers,
                     hints = state.language.furiganaMarkerHints,
-                    overwriteMode = if (allowsOverwrite) {
-                        settings.overwriteModes[field] ?: if (settings.duplicateBehavior == DuplicateBehavior.APPEND) {
-                            AnkiNotes.suggestedAppendMode(field, template)
-                        } else {
-                            OverwriteMode.COALESCE
-                        }
-                    } else null,
+                    overwriteMode = if (allowsOverwrite) settings.overwriteModes[field] ?: OverwriteMode.COALESCE else null,
                     onOverwriteModeSelect = if (allowsOverwrite) { mode -> viewModel.setOverwriteMode(field, mode) } else null,
                     addMarker = { text, marker ->
                         FieldTemplate.withMarker(text, marker, state.language, firstField = field == state.fieldNames.first())
@@ -445,6 +446,42 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     onChange = { viewModel.setFieldTemplate(field, it) },
                 )
             }
+        }
+        if (confirmingSuggest) {
+            val hasEmpty = state.fieldNames.any { settings.fields[it].isNullOrBlank() }
+            AlertDialog(
+                onDismissRequest = { confirmingSuggest = false },
+                title = { Text(stringResource(R.string.anki_suggest_confirm_title)) },
+                text = {
+                    Text(
+                        stringResource(
+                            if (hasEmpty) R.string.anki_suggest_confirm_text else R.string.anki_suggest_confirm_all_text,
+                        ),
+                    )
+                },
+                confirmButton = {
+                    if (hasEmpty) {
+                        TextButton(onClick = {
+                            confirmingSuggest = false
+                            viewModel.suggestEmptyTemplates()
+                        }) { Text(stringResource(R.string.anki_suggest_empty)) }
+                    } else {
+                        TextButton(onClick = {
+                            confirmingSuggest = false
+                            viewModel.suggestTemplates()
+                        }) { Text(stringResource(R.string.anki_suggest_replace_all)) }
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { confirmingSuggest = false }) { Text(stringResource(R.string.action_cancel)) }
+                    if (hasEmpty) {
+                        TextButton(onClick = {
+                            confirmingSuggest = false
+                            viewModel.suggestTemplates()
+                        }) { Text(stringResource(R.string.anki_suggest_replace_all)) }
+                    }
+                },
+            )
         }
     }
 }

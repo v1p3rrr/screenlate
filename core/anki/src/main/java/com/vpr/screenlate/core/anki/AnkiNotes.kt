@@ -204,7 +204,7 @@ class AnkiNotes @Inject constructor(
             val names = fieldNames(modelId)
             val fields = names.map { name -> FieldTemplate.render(settings.fields[name].orEmpty(), values) }
             val tags = settings.tags.split(' ', ',').filter { it.isNotBlank() }.toSet()
-            val isUpdatingDuplicate = settings.duplicateBehavior in setOf(DuplicateBehavior.OVERWRITE, DuplicateBehavior.APPEND)
+            val isUpdatingDuplicate = settings.duplicateBehavior == DuplicateBehavior.OVERWRITE
             val matchingModelNotes = existing.filter { it.modelId == modelId }
             val targetDecks = targetDeckIds(settings, deckId)
 
@@ -222,12 +222,7 @@ class AnkiNotes @Inject constructor(
 
             if (targetNote != null) {
                 val merged = names.mapIndexed { index, name ->
-                    val defaultMode = if (settings.duplicateBehavior == DuplicateBehavior.APPEND) {
-                        suggestedAppendMode(name, settings.fields[name].orEmpty())
-                    } else {
-                        OverwriteMode.COALESCE
-                    }
-                    val mode = settings.overwriteModes[name] ?: defaultMode
+                    val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE
                     mode.apply(targetNote.fields.getOrElse(index) { "" }, fields[index])
                 }
                 if (anki.updateNote(targetNote.id, merged, tags)) AddResult.Updated(targetNote.id) else AddResult.Rejected
@@ -274,41 +269,5 @@ class AnkiNotes @Inject constructor(
 
     companion object {
         const val DECK_SEPARATOR = "::"
-
-        private val SWITCH_FIELD_NAMES = setOf(
-            "sentencecard",
-            "audiocard",
-            "iswordandsentencecard",
-            "isclickcard",
-            "issentencecard",
-            "isaudiocard",
-        )
-
-        private val SCENE_MARKERS = setOf(
-            "sentence",
-            "sentence-furigana",
-            "sentence-furigana-plain",
-            "sentence-translation",
-            "cloze-body",
-            "screenshot",
-        )
-
-        private fun isSceneField(clean: String): Boolean =
-            clean.contains("sentence") ||
-            clean.contains("screenshot") ||
-            clean.contains("picture") ||
-            clean.contains("image") ||
-            clean.contains("scene") ||
-            clean.contains("context")
-
-        fun suggestedAppendMode(field: String, template: String): OverwriteMode {
-            val clean = field.lowercase().replace(Regex("[^a-z0-9]"), "")
-            if (SWITCH_FIELD_NAMES.contains(clean)) return OverwriteMode.COALESCE
-            if (isSceneField(clean)) return OverwriteMode.APPEND
-            val markers = FieldTemplate.markersIn(template)
-            return if (markers.any { it in SCENE_MARKERS }) OverwriteMode.APPEND else OverwriteMode.COALESCE
-        }
-
-        fun suggestedAppendMode(template: String): OverwriteMode = suggestedAppendMode("", template)
     }
 }

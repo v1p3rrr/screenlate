@@ -76,6 +76,9 @@ enum class DefinitionCopyMode(val id: String) {
 
     /** The numbered meanings as plain text, without examples, notes and references where they can be told apart. */
     MEANINGS("meanings"),
+
+    /** Raw dictionary HTML copied as plain text for pasting directly into Anki fields. */
+    HTML("html"),
     ;
 
     companion object {

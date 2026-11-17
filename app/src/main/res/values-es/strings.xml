@@ -180,12 +180,10 @@
     <string name="anki_duplicate_all_models_hint">Busca palabras coincidentes por el primer campo en todos los tipos de nota de AnkiDroid, no solo en el actual.</string>
     <string name="anki_duplicate_behavior">Si existe un duplicado</string>
     <string name="anki_behavior_prevent">Impedir</string>
-    <string name="anki_behavior_overwrite">Sobrescribir</string>
+    <string name="anki_behavior_overwrite">Actualizar</string>
     <string name="anki_behavior_new">Añadir igualmente</string>
-    <string name="anki_behavior_append">Añadir al final</string>
     <string name="anki_behavior_prevent_hint">Si la nota ya existe, se ofrece abrirla en AnkiDroid en lugar de añadirla.</string>
-    <string name="anki_behavior_overwrite_hint">Los campos de la nota existente se sustituyen por los nuevos valores.</string>
-    <string name="anki_behavior_append_hint">Añade nuevas frases y capturas a la nota existente para cambiar de escena.</string>
+    <string name="anki_behavior_overwrite_hint">Los campos de la nota existente se actualizan según la regla elegida para cada campo.</string>
     <string name="anki_behavior_new_hint">Se añade una nueva nota aunque ya exista una idéntica.</string>
     <string name="anki_duplicate_deck_only">Modificar solo en el mazo actual</string>
     <string name="anki_duplicate_deck_only_hint">Si el duplicado está en otro mazo, no se modifica y se crea una nota nueva en el mazo actual.</string>
@@ -268,6 +266,11 @@
     <string name="settings_language_translations">Las traducciones se hicieron con IA y no han sido revisadas por hablantes nativos. Las correcciones son bienvenidas en GitHub.</string>
     <string name="action_clear">Borrar</string>
     <string name="anki_suggest_templates">Rellenar con las plantillas sugeridas</string>
+    <string name="anki_suggest_confirm_title">¿Reemplazar plantillas de campo?</string>
+    <string name="anki_suggest_confirm_text">Algunos campos ya tienen plantillas. ¿Rellenar solo los vacíos o reemplazar todos?</string>
+    <string name="anki_suggest_confirm_all_text">Todos los campos ya tienen plantillas. ¿Reemplazarlos con las plantillas sugeridas?</string>
+    <string name="anki_suggest_empty">Solo vacíos</string>
+    <string name="anki_suggest_replace_all">Reemplazar todo</string>
     <string name="anki_overwrite_mode">Al sobrescribir: %1$s</string>
     <string name="anki_overwrite_coalesce">mantener el valor existente salvo que esté vacío</string>
     <string name="anki_overwrite_coalesce_new">tomar el valor nuevo salvo que esté vacío</string>
@@ -416,6 +419,10 @@
     <string name="anki_check_not_checked">%1$s: sin comprobar</string>
     <string name="audio_sources">Fuentes</string>
     <string name="audio_reset_sources">Restaurar las fuentes predeterminadas</string>
+    <string name="audio_reset_sources_title">¿Restablecer fuentes de audio?</string>
+    <string name="audio_reset_sources_text">¿Restablecer la lista a las fuentes predeterminadas de este idioma? Se perderán las URL personalizadas y el orden.</string>
+    <string name="audio_delete_source_title">¿Eliminar fuente de audio?</string>
+    <string name="audio_delete_source_text">¿Eliminar «%1$s»? Su URL no se conservará.</string>
     <string name="audio_regions">Regiones</string>
     <string name="audio_regions_hint">Las grabaciones de Wiktionary y las transcripciones de las regiones más arriba en la lista van primero.</string>
     <string name="audio_region_us">Estados Unidos</string>
@@ -635,6 +642,8 @@
     <string name="popup_copy_mode_meanings">Solo acepciones</string>
     <string name="popup_copy_mode_all_hint">Todo lo que muestra el diccionario. Las apps que admiten formato lo reciben con formato; las demás, como texto sin formato.</string>
     <string name="popup_copy_mode_meanings_hint">Las acepciones numeradas como texto sin formato, sin ejemplos, notas ni referencias. No está garantizado en todos los diccionarios: si no se pueden distinguir las acepciones, se copia todo el texto.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">HTML sin procesar del diccionario como texto plano, para pegar directamente en los campos de Anki.</string>
     <string name="popup_css_title">CSS personalizado</string>
     <string name="popup_css_hint">Se aplica a la ventana emergente y a la página de búsqueda después de los estilos de los diccionarios, como el CSS personalizado de la ventana emergente de Yomitan. Las entradas usan los nombres de clase de Yomitan, y los colores de las etiquetas siguen las variables de Yomitan (--tag-frequency-background-color y otras). Una fuente que el teléfono no tiene se sustituye por la de la ventana emergente.</string>
     <string name="css_problem_unclosed_comment">Línea %1$d: un comentario no está cerrado (falta */), todo lo que sigue se ignora</string>

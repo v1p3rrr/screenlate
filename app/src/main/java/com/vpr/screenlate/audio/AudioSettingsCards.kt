@@ -45,6 +45,7 @@ import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.ui.components.ConfirmDelete
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
@@ -64,6 +65,8 @@ fun AudioSettingsCards(language: Language, viewModel: AudioSettingsViewModel) {
     val transcriptions by viewModel.hasTranscriptions.collectAsStateWithLifecycle()
     val audio = settings ?: return
     var editing by remember { mutableStateOf<Pair<Int?, AudioSource>?>(null) }
+    var confirmingReset by remember { mutableStateOf(false) }
+    var confirmingDelete by remember { mutableStateOf<Pair<Int, AudioSource>?>(null) }
 
     SectionCard(title = stringResource(R.string.audio_playback)) {
         SwitchRow(stringResource(R.string.audio_auto_play), audio.autoPlay, viewModel::setAutoPlay)
@@ -78,7 +81,10 @@ fun AudioSettingsCards(language: Language, viewModel: AudioSettingsViewModel) {
                 isLast = index == audio.sources.lastIndex,
                 onMove = { viewModel.move(index, it) },
                 onEdit = { editing = index to source },
-                onDelete = { viewModel.remove(index) },
+                onDelete = {
+                    if (source.type.hasUrl && source.url.isNotBlank()) confirmingDelete = index to source
+                    else viewModel.remove(index)
+                },
             )
         }
         OutlinedButton(
@@ -86,7 +92,11 @@ fun AudioSettingsCards(language: Language, viewModel: AudioSettingsViewModel) {
             onClick = { editing = null to AudioSource(AudioSettings.defaultSources(language).firstOrNull()?.type ?: AudioSourceType.URL) },
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.audio_add_source), textAlign = TextAlign.Center) }
-        TextButton(onClick = viewModel::resetSources) { Text(stringResource(R.string.audio_reset_sources)) }
+        val isDefaultSources = audio.sources == AudioSettings.defaultSources(language)
+        TextButton(
+            onClick = { confirmingReset = true },
+            enabled = !isDefaultSources,
+        ) { Text(stringResource(R.string.audio_reset_sources)) }
     }
     val regions = AudioRegion.ordered(audio.regions, language.support.audioRegions)
     if (regions.isNotEmpty() && regionsUsed(audio.sources, transcriptions)) {
@@ -113,6 +123,28 @@ fun AudioSettingsCards(language: Language, viewModel: AudioSettingsViewModel) {
                 editing = null
                 viewModel.clearDialogTest()
             },
+        )
+    }
+    if (confirmingReset) {
+        AlertDialog(
+            onDismissRequest = { confirmingReset = false },
+            title = { Text(stringResource(R.string.audio_reset_sources_title)) },
+            text = { Text(stringResource(R.string.audio_reset_sources_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmingReset = false
+                    viewModel.resetSources()
+                }) { Text(stringResource(R.string.action_reset)) }
+            },
+            dismissButton = { TextButton(onClick = { confirmingReset = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
+    }
+    confirmingDelete?.let { (index, source) ->
+        ConfirmDelete(
+            title = stringResource(R.string.audio_delete_source_title),
+            text = stringResource(R.string.audio_delete_source_text, source.url),
+            onDelete = { viewModel.remove(index) },
+            onDismiss = { confirmingDelete = null },
         )
     }
 }

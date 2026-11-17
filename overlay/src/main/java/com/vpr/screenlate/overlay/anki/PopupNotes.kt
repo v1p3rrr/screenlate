@@ -284,7 +284,7 @@ class PopupNotes(
                 when (settings.duplicateBehavior) {
                     DuplicateBehavior.PREVENT -> states[index] = "open"
                     DuplicateBehavior.NEW -> states[index] = "duplicate_new"
-                    DuplicateBehavior.OVERWRITE, DuplicateBehavior.APPEND -> states[index] = "duplicate_overwrite"
+                    DuplicateBehavior.OVERWRITE -> states[index] = "duplicate_overwrite"
                 }
             }
         }

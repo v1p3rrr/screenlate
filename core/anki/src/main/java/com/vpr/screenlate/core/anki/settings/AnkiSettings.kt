@@ -31,18 +31,32 @@ enum class DuplicateScope {
 }
 
 /** What happens when the note being added already exists, as in Yomitan. */
+@Serializable(with = DuplicateBehaviorSerializer::class)
 enum class DuplicateBehavior {
     /** The ➕ button becomes 📖, which opens the existing note; holding it adds anyway. */
     PREVENT,
 
-    /** The existing note's fields are replaced. */
+    /** The existing note's fields are updated according to each field's [OverwriteMode]. */
     OVERWRITE,
-
-    /** Context fields (sentences, media) are appended to the existing note for scene switching. */
-    APPEND,
 
     /** Another note is added anyway. */
     NEW,
+}
+
+/**
+ * Stores [DuplicateBehavior] by name, mapping the legacy `APPEND` mode to [DuplicateBehavior.OVERWRITE] and unknown
+ * values to [DuplicateBehavior.PREVENT].
+ */
+internal object DuplicateBehaviorSerializer : KSerializer<DuplicateBehavior> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("com.vpr.screenlate.core.anki.settings.DuplicateBehavior", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: DuplicateBehavior) = encoder.encodeString(value.name)
+
+    override fun deserialize(decoder: Decoder): DuplicateBehavior = when (val name = decoder.decodeString()) {
+        "APPEND" -> DuplicateBehavior.OVERWRITE
+        else -> DuplicateBehavior.entries.firstOrNull { it.name == name } ?: DuplicateBehavior.PREVENT
+    }
 }
 
 /** How a field of an existing note changes when a duplicate overwrites it (Yomitan's per-field overwrite modes). */
@@ -119,8 +133,7 @@ data class NoteTemplate(
  * Note export settings. Field templates are keyed by field name and use `{marker}` placeholders
  * (see `FieldTemplate`); fields without a template stay empty.
  *
- * @property overwriteModes per field, used by [DuplicateBehavior.OVERWRITE] and [DuplicateBehavior.APPEND];
- * missing fields use [OverwriteMode.COALESCE] (or [DuplicateBehavior.APPEND] default heuristic).
+ * @property overwriteModes per field, used by [DuplicateBehavior.OVERWRITE]; missing fields use [OverwriteMode.COALESCE].
  * @property savedTemplates templates of note types used before, by note type name.
  * @property duplicateScopeDeckOnly when [duplicateScope] is [DuplicateScope.COLLECTION], only update duplicates in the target deck.
  * @property duplicateAllModels search every note type, not just [modelId].

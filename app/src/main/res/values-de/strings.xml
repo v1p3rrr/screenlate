@@ -178,12 +178,10 @@
     <string name="anki_duplicate_all_models_hint">Sucht anhand des ersten Feldes über alle Notiztypen in AnkiDroid nach übereinstimmenden Wörtern, nicht nur im aktuellen.</string>
     <string name="anki_duplicate_behavior">Wenn ein Duplikat existiert</string>
     <string name="anki_behavior_prevent">Verhindern</string>
-    <string name="anki_behavior_overwrite">Überschreiben</string>
+    <string name="anki_behavior_overwrite">Aktualisieren</string>
     <string name="anki_behavior_new">Trotzdem hinzufügen</string>
-    <string name="anki_behavior_append">Anhängen</string>
     <string name="anki_behavior_prevent_hint">Wenn die Notiz existiert, wird das Öffnen in AnkiDroid statt des Hinzufügens angeboten.</string>
-    <string name="anki_behavior_overwrite_hint">Vorhandene Notizfelder werden durch neue Werte ersetzt.</string>
-    <string name="anki_behavior_append_hint">Fügt neue Beispielsätze und Screenshots an die vorhandene Notiz an.</string>
+    <string name="anki_behavior_overwrite_hint">Felder der vorhandenen Notiz werden nach der unten gewählten Regel je Feld aktualisiert.</string>
     <string name="anki_behavior_new_hint">Fügt eine neue Notiz hinzu, auch wenn bereits eine identische existiert.</string>
     <string name="anki_duplicate_deck_only">Nur im aktuellen Stapel ändern</string>
     <string name="anki_duplicate_deck_only_hint">Wenn ein Duplikat in einem anderen Stapel liegt, diesen nicht ändern, sondern eine neue Notiz im aktuellen Stapel erstellen.</string>
@@ -266,6 +264,11 @@
     <string name="settings_language_translations">Die Übersetzungen wurden mit KI erstellt und nicht von Muttersprachlern geprüft. Korrekturen sind auf GitHub willkommen.</string>
     <string name="action_clear">Leeren</string>
     <string name="anki_suggest_templates">Vorgeschlagene Vorlagen einsetzen</string>
+    <string name="anki_suggest_confirm_title">Feldvorlagen ersetzen?</string>
+    <string name="anki_suggest_confirm_text">Einige Felder enthalten bereits Vorlagen. Nur leere Felder ausfüllen oder alle ersetzen?</string>
+    <string name="anki_suggest_confirm_all_text">Alle Felder enthalten bereits Vorlagen. Durch die vorgeschlagenen Vorlagen ersetzen?</string>
+    <string name="anki_suggest_empty">Nur leere</string>
+    <string name="anki_suggest_replace_all">Alle ersetzen</string>
     <string name="anki_overwrite_mode">Beim Überschreiben: %1$s</string>
     <string name="anki_overwrite_coalesce">vorhandenen Wert behalten, außer er ist leer</string>
     <string name="anki_overwrite_coalesce_new">neuen Wert nehmen, außer er ist leer</string>
@@ -412,6 +415,10 @@
     <string name="anki_check_not_checked">%1$s: nicht geprüft</string>
     <string name="audio_sources">Quellen</string>
     <string name="audio_reset_sources">Standardquellen wiederherstellen</string>
+    <string name="audio_reset_sources_title">Audioquellen zurücksetzen?</string>
+    <string name="audio_reset_sources_text">Die Quellenliste auf die Standardquellen dieser Sprache zurücksetzen? Eigene URLs und die Reihenfolge gehen verloren.</string>
+    <string name="audio_delete_source_title">Audioquelle löschen?</string>
+    <string name="audio_delete_source_text">„%1$s“ löschen? Die URL geht dabei verloren.</string>
     <string name="audio_regions">Regionen</string>
     <string name="audio_regions_hint">Wiktionary-Aufnahmen und Lautschriften aus Regionen weiter oben in der Liste kommen zuerst.</string>
     <string name="audio_region_us">USA</string>
@@ -631,6 +638,8 @@
     <string name="popup_copy_mode_meanings">Nur Bedeutungen</string>
     <string name="popup_copy_mode_all_hint">Alles, was das Wörterbuch zeigt. Apps mit Formatierung erhalten es formatiert, andere als reinen Text.</string>
     <string name="popup_copy_mode_meanings_hint">Die nummerierten Bedeutungen als reiner Text, ohne Beispiele, Hinweise und Verweise. Nicht bei jedem Wörterbuch garantiert: Lassen sich die Bedeutungen nicht voneinander trennen, wird der ganze Text kopiert.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">Rohes Wörterbuch-HTML als Klartext zum direkten Einfügen in Anki-Kartenfelder.</string>
     <string name="popup_css_title">Eigenes CSS</string>
     <string name="popup_css_hint">Wird nach den Stilen der Wörterbücher auf das Popup und die Suchseite angewendet, wie das eigene Popup-CSS von Yomitan. Einträge nutzen die Klassennamen von Yomitan, und Tag-Farben folgen den Variablen von Yomitan (--tag-frequency-background-color und andere). Eine Schrift, die das Telefon nicht hat, wird durch die Popup-Schrift ersetzt.</string>
     <string name="css_problem_unclosed_comment">Zeile %1$d: Ein Kommentar ist nicht geschlossen (kein */), alles danach wird ignoriert</string>

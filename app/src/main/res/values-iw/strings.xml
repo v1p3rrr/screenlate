@@ -180,7 +180,7 @@
     <string name="anki_duplicate_all_models_hint">מחפש מילים תואמות לפי השדה הראשון בכל סוגי הרשומות ב-AnkiDroid, לא רק בסוג הנוכחי.</string>
     <string name="anki_duplicate_behavior">כשקיימת כפילות</string>
     <string name="anki_behavior_prevent">מניעה</string>
-    <string name="anki_behavior_overwrite">דריסה</string>
+    <string name="anki_behavior_overwrite">עדכון</string>
     <string name="anki_behavior_new">הוספת רשומה חדשה</string>
 
     <string name="audio_title">שמע</string>
@@ -261,6 +261,11 @@
     <string name="settings_language_translations">התרגומים נעשו באמצעות בינה מלאכותית ולא נבדקו על ידי דוברים ילידיים. תיקונים יתקבלו בברכה ב-GitHub.</string>
     <string name="action_clear">ניקוי</string>
     <string name="anki_suggest_templates">מילוי תבניות מוצעות</string>
+    <string name="anki_suggest_confirm_title">להחליף את תבניות השדות?</string>
+    <string name="anki_suggest_confirm_text">לחלק מהשדות כבר יש תבניות. למלא רק את השדות הריקים או להחליף את כולם?</string>
+    <string name="anki_suggest_confirm_all_text">לכל השדות כבר יש תבניות. להחליף אותן בתבניות המוצעות?</string>
+    <string name="anki_suggest_empty">ריקים בלבד</string>
+    <string name="anki_suggest_replace_all">החלפת הכול</string>
     <string name="anki_overwrite_mode">בדריסה: %1$s</string>
     <string name="anki_overwrite_coalesce">שמירת הערך הקיים אם אינו ריק</string>
     <string name="anki_overwrite_coalesce_new">לקיחת הערך החדש אם אינו ריק</string>
@@ -403,6 +408,10 @@
     <string name="anki_check_not_checked">%1$s: לא נבדק</string>
     <string name="audio_sources">מקורות</string>
     <string name="audio_reset_sources">שחזור מקורות ברירת המחדל</string>
+    <string name="audio_reset_sources_title">לאפס את מקורות השמע?</string>
+    <string name="audio_reset_sources_text">להחזיר את רשימת המקורות לברירת המחדל של שפה זו? כתובות מותאמות וסדר המקורות יאבדו.</string>
+    <string name="audio_delete_source_title">למחוק את מקור השמע?</string>
+    <string name="audio_delete_source_text">למחוק את \"%1$s\"? הכתובת שלו לא תישמר.</string>
     <string name="audio_regions">אזורים</string>
     <string name="audio_regions_hint">הקלטות ותעתיקים מ-Wiktionary מהאזורים שגבוהים יותר ברשימה מופיעים ראשונים.</string>
     <string name="audio_region_us">ארצות הברית</string>
@@ -622,6 +631,8 @@
     <string name="popup_copy_mode_meanings">רק משמעויות</string>
     <string name="popup_copy_mode_all_hint">כל מה שהמילון מציג. אפליקציות שתומכות בעיצוב מקבלות טקסט מעוצב, ואחרות מקבלות טקסט פשוט.</string>
     <string name="popup_copy_mode_meanings_hint">המשמעויות הממוספרות כטקסט פשוט, בלי דוגמאות, הערות והפניות. לא מובטח בכל מילון: כשאי אפשר להבחין בין המשמעויות, כל הטקסט מועתק.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">קוד HTML גולמי של המילון כטקסט רגיל, להדבקה ישירה בשדות כרטיסי Anki.</string>
     <string name="popup_css_title">CSS מותאם אישית</string>
     <string name="popup_css_hint">מוחל על החלון הקופץ ועל דף החיפוש אחרי הסגנונות של המילונים, כמו ה-CSS המותאם אישית לחלון הקופץ ב-Yomitan. הערכים משתמשים בשמות המחלקות של Yomitan, וצבעי התגיות נקבעים לפי המשתנים של Yomitan (--tag-frequency-background-color ואחרים). גופן שאין בטלפון מוחלף בגופן של החלון הקופץ.</string>
     <string name="css_problem_unclosed_comment">שורה %1$d: הערה לא נסגרה (אין */), כל מה שאחריה לא נלקח בחשבון</string>
@@ -994,10 +1005,8 @@
         <item quantity="other">%1$d מתוך %2$d אזורים</item>
     </plurals>
 
-    <string name="anki_behavior_append">הוספה</string>
     <string name="anki_behavior_prevent_hint">אם הרשומה קיימת, מוצע לפתוח אותה ב-AnkiDroid במקום להוסיף.</string>
-    <string name="anki_behavior_overwrite_hint">שדות הרשומה הקיימת יוחלפו בערכים חדשים.</string>
-    <string name="anki_behavior_append_hint">מוסיף משפטים וצילומי מסך חדשים לרשומה הקיימת להחלפת סצנות.</string>
+    <string name="anki_behavior_overwrite_hint">שדות הרשומה הקיימת מתעדכנים לפי הכלל שנבחר לכל שדה למטה.</string>
     <string name="anki_behavior_new_hint">נוספת רשומה חדשה גם אם קיימת רשומה זהה.</string>
     <string name="anki_duplicate_deck_only">שינוי בחבילה הנוכחית בלבד</string>
     <string name="anki_duplicate_deck_only_hint">אם הכפילות נמצאת בחבילה אחרת, היא לא תשונה, וייווצר כרטיס חדש בחבילה הנוכחית.</string>

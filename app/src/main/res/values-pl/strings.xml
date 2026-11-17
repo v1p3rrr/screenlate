@@ -182,12 +182,10 @@
     <string name="anki_duplicate_all_models_hint">Szuka pasujących słów według pierwszego pola we wszystkich typach notatek w AnkiDroid, nie tylko w bieżącym.</string>
     <string name="anki_duplicate_behavior">Gdy istnieje duplikat</string>
     <string name="anki_behavior_prevent">Zablokuj</string>
-    <string name="anki_behavior_overwrite">Nadpisz</string>
+    <string name="anki_behavior_overwrite">Aktualizuj</string>
     <string name="anki_behavior_new">Dodaj mimo to</string>
-    <string name="anki_behavior_append">Dopisz</string>
     <string name="anki_behavior_prevent_hint">Jeśli notatka istnieje, proponowane jest otwarcie jej w AnkiDroid zamiast dodawania.</string>
-    <string name="anki_behavior_overwrite_hint">Pola istniejącej notatki są zastępowane nowymi wartościami.</string>
-    <string name="anki_behavior_append_hint">Dopisuje nowe zdania i zrzuty ekranu do istniejącej notatki na potrzeby zmiany scen.</string>
+    <string name="anki_behavior_overwrite_hint">Pola istniejącej notatki są aktualizowane według reguły wybranej dla każdego pola poniżej.</string>
     <string name="anki_behavior_new_hint">Dodaje nową notatkę, nawet jeśli istnieje już identyczna.</string>
     <string name="anki_duplicate_deck_only">Modyfikuj tylko w bieżącej talii</string>
     <string name="anki_duplicate_deck_only_hint">Jeśli duplikat znajduje się w innej talii, nie zmieniaj go, lecz utwórz nową notatkę w bieżącej.</string>
@@ -270,6 +268,11 @@
     <string name="settings_language_translations">Tłumaczenia zostały wykonane przy pomocy AI i nie zostały sprawdzone przez rodzimych użytkowników języka. Poprawki są mile widziane na GitHubie.</string>
     <string name="action_clear">Wyczyść</string>
     <string name="anki_suggest_templates">Wypełnij sugerowanymi szablonami</string>
+    <string name="anki_suggest_confirm_title">Zastąpić szablony pól?</string>
+    <string name="anki_suggest_confirm_text">Niektóre pola są już wypełnione. Wypełnić tylko puste czy zastąpić wszystkie?</string>
+    <string name="anki_suggest_confirm_all_text">Wszystkie pola są już wypełnione. Zastąpić je sugerowanymi szablonami?</string>
+    <string name="anki_suggest_empty">Tylko puste</string>
+    <string name="anki_suggest_replace_all">Zastąp wszystkie</string>
     <string name="anki_overwrite_mode">Przy nadpisywaniu: %1$s</string>
     <string name="anki_overwrite_coalesce">zachowaj istniejącą wartość, chyba że jest pusta</string>
     <string name="anki_overwrite_coalesce_new">użyj nowej wartości, chyba że jest pusta</string>
@@ -420,6 +423,10 @@
     <string name="anki_check_not_checked">%1$s: nie sprawdzono</string>
     <string name="audio_sources">Źródła</string>
     <string name="audio_reset_sources">Przywróć domyślne źródła</string>
+    <string name="audio_reset_sources_title">Zresetować źródła dźwięku?</string>
+    <string name="audio_reset_sources_text">Przywrócić domyślną listę źródeł dla tego języka? Własne adresy URL i kolejność zostaną utracone.</string>
+    <string name="audio_delete_source_title">Usunąć źródło dźwięku?</string>
+    <string name="audio_delete_source_text">Usunąć „%1$s”? Jego adres URL nie zostanie zachowany.</string>
     <string name="audio_regions">Regiony</string>
     <string name="audio_regions_hint">Nagrania z Wiktionary i transkrypcje: najpierw te z regionów wyżej na liście.</string>
     <string name="audio_region_us">Stany Zjednoczone</string>
@@ -639,6 +646,8 @@
     <string name="popup_copy_mode_meanings">Tylko znaczenia</string>
     <string name="popup_copy_mode_all_hint">Wszystko, co pokazuje słownik. Aplikacje obsługujące formatowanie dostają je sformatowane, pozostałe jako zwykły tekst.</string>
     <string name="popup_copy_mode_meanings_hint">Ponumerowane znaczenia jako zwykły tekst, bez przykładów, uwag i odsyłaczy. Nie jest to gwarantowane dla każdego słownika: jeśli znaczeń nie da się wyodrębnić, kopiowany jest cały tekst.</string>
+    <string name="popup_copy_mode_html">HTML</string>
+    <string name="popup_copy_mode_html_hint">Surowy kod HTML słownika jako zwykły tekst, do bezpośredniego wklejania w pola kart Anki.</string>
     <string name="popup_css_title">Własny CSS</string>
     <string name="popup_css_hint">Stosowany do okienka i strony wyszukiwania po stylach słowników, jak własny CSS okienka w Yomitan. Hasła używają nazw klas Yomitan, a kolory tagów wynikają ze zmiennych Yomitan (--tag-frequency-background-color i innych). Czcionka, której telefon nie ma, jest zastępowana czcionką okienka.</string>
     <string name="css_problem_unclosed_comment">Wiersz %1$d: komentarz nie jest zamknięty (brak */), wszystko dalej jest pomijane</string>

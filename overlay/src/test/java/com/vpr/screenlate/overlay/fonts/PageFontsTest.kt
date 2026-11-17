@@ -180,8 +180,10 @@ class PageFontsTest {
         assertThat(mode(PopupAppearance())).isEmpty()
         assertThat(mode(PopupAppearance(copyDefinitions = true))).isEqualTo("all")
         assertThat(mode(PopupAppearance(copyDefinitions = true, copyMode = DefinitionCopyMode.MEANINGS))).isEqualTo("meanings")
+        assertThat(mode(PopupAppearance(copyDefinitions = true, copyMode = DefinitionCopyMode.HTML))).isEqualTo("html")
         assertThat(mode(PopupAppearance(copyMode = DefinitionCopyMode.MEANINGS))).isEmpty()
         assertThat(DefinitionCopyMode.of("meanings")).isEqualTo(DefinitionCopyMode.MEANINGS)
+        assertThat(DefinitionCopyMode.of("html")).isEqualTo(DefinitionCopyMode.HTML)
         assertThat(DefinitionCopyMode.of("unknown")).isEqualTo(DefinitionCopyMode.ALL)
         assertThat(DefinitionCopyMode.of(null)).isEqualTo(DefinitionCopyMode.ALL)
     }

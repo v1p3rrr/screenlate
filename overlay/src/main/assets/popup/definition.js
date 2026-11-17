@@ -4,10 +4,11 @@
  *
  * Public API (DefinitionCopy):
  *   copy(glossaries, mode, lang)  { text, html }; glossaries are those of one dictionary ({ content, definitionTags }).
- *                                 'all': everything the dictionary shows, as markup with inline styles (html) and as
+ *                                 'all': everything the dictionary shows, as clean portable markup (html) and as
  *                                 plain text for apps without formatting. 'meanings': the meanings alone as plain
- *                                 text, numbered when there are several; html is empty. lang, the page's language
- *                                 tag, picks the markup rules of that language's dictionaries.
+ *                                 text, numbered when there are several; html is empty. 'html': raw dictionary HTML
+ *                                 as plain text (html is empty) for pasting directly into Anki fields. lang, the
+ *                                 page's language tag, picks the markup rules of that language's dictionaries.
  *   addLanguage(tag, rules)       registers the markup rules of a language's dictionaries (fields of NO_RULES); each
  *                                 language has them in a script of its own, such as definition-ja.js.
  *
@@ -23,8 +24,14 @@ const DefinitionCopy = (() => {
         'div', 'p', 'li', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'details', 'summary', 'blockquote',
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
     ]);
+    const INLINE_DISPLAYS = new Set(['inline', 'inline-block', 'inline-flex', 'inline-grid', 'inline-table', 'contents']);
     const SKIPPED_TAGS = new Set(['img', 'rt', 'rp', 'svg', 'style', 'script']);
     const BULLET_STYLES = new Set(['disc', 'circle', 'square']);
+    const CLEAN_INLINE_TAGS = {
+        b: 'b', strong: 'b', i: 'i', em: 'i', u: 'u', ins: 'u', s: 's', del: 's', sub: 'sub', sup: 'sup',
+    };
+    const HTTP_URL = /^https?:\/\//i;
+    const LINE_BREAK = '\n';
 
     /** A number that opens a meaning: "1 ", "1.", "1)", "(1)", "①", "㊀". */
     const MARKER = /^\s*(?:\d{1,2}(?:[.)．）]\s*|\s+)|[(（]\d{1,2}[)）]\s*|[①-⑳㉑-㉟㊱-㊿❶-❿➀-➉㊀-㊉]\s*)/;
@@ -85,13 +92,16 @@ const DefinitionCopy = (() => {
     }
 
     function copy(glossaries, mode, lang) {
+        if (mode === 'html') {
+            return { text: rawHtml(glossaries), html: '' };
+        }
         const whole = allText(glossaries);
         if (mode === 'meanings') {
             const rules = rulesOf(lang);
             const found = glossaries.flatMap(glossary => meaningsOf(items(glossary), rules));
             return { text: found.length ? numbered(found) : whole, html: '' };
         }
-        return { text: whole, html: allHtml(glossaries) };
+        return { text: whole, html: cleanHtml(glossaries) };
     }
 
     function items(glossary) {
@@ -125,17 +135,17 @@ const DefinitionCopy = (() => {
         return numbered(parts.filter(part => part.trim()));
     }
 
-    function allHtml(glossaries) {
+    function rawHtml(glossaries) {
         const parts = glossaries.map(glossary => {
             const tags = tagsOf(glossary);
-            const formatted = items(glossary).map(item => itemHtml(item, glossary.dictionary)).filter(Boolean);
+            const formatted = items(glossary).map(item => rawItemHtml(item, glossary.dictionary)).filter(Boolean);
             const body = formatted.length > 1 ? `<ul>${formatted.map(f => `<li>${f}</li>`).join('')}</ul>` : formatted.join('');
             return (tags.length ? `<i>(${escapeHtml(tags.join(', '))})</i> ` : '') + body;
         });
         return parts.length > 1 ? `<ol>${parts.map(part => `<li>${part}</li>`).join('')}</ol>` : parts[0] || '';
     }
 
-    function itemHtml(item, dictionary) {
+    function rawItemHtml(item, dictionary) {
         const text = plainString(item);
         if (text !== null) return escapeHtml(text).replace(/\n/g, '<br>');
         if (!anki) return escapeHtml(textOf(item)).replace(/\n/g, '<br>');
@@ -148,6 +158,209 @@ const DefinitionCopy = (() => {
         return container.innerHTML;
     }
 
+    /** Portable semantic HTML without layout divs, ruby readings or dead internal links. */
+    function cleanHtml(glossaries) {
+        const parts = glossaries.map(glossary => {
+            const tags = tagsOf(glossary);
+            const formatted = items(glossary).map(item => cleanItemHtml(item)).filter(Boolean);
+            const body = formatted.length > 1 ? `<ul>${formatted.map(f => `<li>${f}</li>`).join('')}</ul>` : formatted.join('');
+            return (tags.length ? `<i>(${escapeHtml(tags.join(', '))})</i> ` : '') + body;
+        }).filter(Boolean);
+        return parts.length > 1 ? `<ol>${parts.map(part => `<li>${part}</li>`).join('')}</ol>` : parts[0] || '';
+    }
+
+    function cleanItemHtml(item) {
+        const text = plainString(item);
+        if (text !== null) return escapeHtml(text).replace(/\n/g, '<br>');
+        return cleanFragment(item, { afterMarker: false, inMarkedItem: false });
+    }
+
+    function cleanFragment(node, ctx) {
+        const tokens = [];
+        writeCleanHtml(node, tokens, ctx);
+        return joinCleanTokens(tokens);
+    }
+
+    function joinCleanTokens(tokens) {
+        const lines = [];
+        let current = '';
+        for (const token of tokens) {
+            if (token === LINE_BREAK) {
+                const trimmed = current.trim();
+                if (trimmed) lines.push(trimmed);
+                current = '';
+            } else {
+                current += token;
+            }
+        }
+        const trimmed = current.trim();
+        if (trimmed) lines.push(trimmed);
+        return lines.join('<br>');
+    }
+
+    function hasCustomMarker(list) {
+        if (list.style && list.style.listStyleType) return true;
+        return asArray(list.content).some(child => child && typeof child === 'object' && child.style && child.style.listStyleType);
+    }
+
+    function wrapInlineStyle(html, node) {
+        if (!html) return '';
+        let out = html;
+        const style = node.style || {};
+        const weight = style.fontWeight;
+        const isBold = weight === 'bold' || weight === 'bolder' || (Number(weight) >= 600);
+        const isItalic = style.fontStyle === 'italic' || style.fontStyle === 'oblique';
+        const deco = String(style.textDecorationLine || style.textDecoration || '');
+        if (deco.includes('line-through')) out = `<s>${out}</s>`;
+        if (deco.includes('underline')) out = `<u>${out}</u>`;
+        if (isItalic) out = `<i>${out}</i>`;
+        if (isBold) out = `<b>${out}</b>`;
+        return out;
+    }
+
+    function writeCleanHtml(node, tokens, ctx) {
+        if (node === null || node === undefined) return;
+        if (typeof node === 'string') {
+            const parts = node.split('\n');
+            parts.forEach((part, index) => {
+                if (index > 0) emitCleanBreak(tokens, ctx);
+                const collapsed = part.replace(/[ \t\u00a0]+/g, ' ');
+                if (collapsed) {
+                    tokens.push(escapeHtml(collapsed));
+                    if (collapsed.trim()) ctx.afterMarker = false;
+                }
+            });
+            return;
+        }
+        if (Array.isArray(node)) {
+            node.forEach(child => writeCleanHtml(child, tokens, ctx));
+            return;
+        }
+        if (typeof node !== 'object') {
+            const s = String(node);
+            tokens.push(escapeHtml(s));
+            if (s.trim()) ctx.afterMarker = false;
+            return;
+        }
+        if (node.type === 'structured-content') return writeCleanHtml(node.content, tokens, ctx);
+        if (node.type === 'text') return writeCleanHtml(node.text, tokens, ctx);
+        if (node.type === 'image' || SKIPPED_TAGS.has(node.tag)) return;
+        if (node.tag === 'br') {
+            emitCleanBreak(tokens, ctx);
+            return;
+        }
+        if (node.tag === 'ul' || node.tag === 'ol') {
+            writeCleanList(node, tokens, ctx);
+            return;
+        }
+        if (node.tag === 'tr') {
+            emitCleanBreak(tokens, ctx);
+            const cells = [];
+            for (const cell of asArray(node.content)) {
+                const cellHtml = cleanFragment(cell, { afterMarker: false, inMarkedItem: false });
+                if (cellHtml) cells.push(cellHtml);
+            }
+            if (cells.length) {
+                tokens.push(cells.join(' '));
+                ctx.afterMarker = false;
+            }
+            emitCleanBreak(tokens, ctx);
+            return;
+        }
+        if (node.tag === 'a') {
+            const inner = cleanFragment(node.content, { afterMarker: false, inMarkedItem: false });
+            if (!inner) return;
+            if (node.href && HTTP_URL.test(node.href)) {
+                tokens.push(`<a href="${escapeHtml(node.href)}">${inner}</a>`);
+            } else {
+                tokens.push(inner);
+            }
+            ctx.afterMarker = false;
+            return;
+        }
+        const inlineTag = CLEAN_INLINE_TAGS[node.tag];
+        if (inlineTag) {
+            const inner = cleanFragment(node.content, { afterMarker: false, inMarkedItem: false });
+            if (inner) {
+                tokens.push(`<${inlineTag}>${inner}</${inlineTag}>`);
+                ctx.afterMarker = false;
+            }
+            return;
+        }
+        if (node.tag === 'span') {
+            const isTag = (node.data && node.data.class) === 'tag';
+            const isRefLabel = (node.data && node.data.content) === 'reference-label';
+            const inner = cleanFragment(node.content, { afterMarker: false, inMarkedItem: false });
+            if (!inner) return;
+            const styled = isTag ? `<i>${inner}</i>` : wrapInlineStyle(inner, node);
+            tokens.push(styled);
+            if (isTag || isRefLabel) tokens.push(' ');
+            ctx.afterMarker = false;
+            return;
+        }
+        const block = BLOCK_TAGS.has(node.tag) && !isInlineDisplay(node);
+        if (block) emitCleanBreak(tokens, ctx);
+        writeCleanHtml(node.content, tokens, ctx);
+        if (block) emitCleanBreak(tokens, ctx);
+    }
+
+    function emitCleanBreak(tokens, ctx) {
+        if (ctx.afterMarker) return;
+        tokens.push(LINE_BREAK);
+    }
+
+    function writeCleanList(list, tokens, ctx) {
+        const isNestedGlossary = ctx.inMarkedItem && (list.data && list.data.content) === 'glossary';
+        const custom = hasCustomMarker(list);
+        if (!custom && !isNestedGlossary && !ctx.inMarkedItem) {
+            const listTag = list.tag === 'ol' ? 'ol' : 'ul';
+            const entries = [];
+            for (const child of asArray(list.content)) {
+                if (child && typeof child === 'object' && child.tag === 'li') {
+                    const inner = cleanFragment(child.content, { afterMarker: false, inMarkedItem: false });
+                    if (inner) entries.push(`<li>${inner}</li>`);
+                } else {
+                    const inner = cleanFragment(child, { afterMarker: false, inMarkedItem: false });
+                    if (inner) entries.push(`<li>${inner}</li>`);
+                }
+            }
+            if (entries.length) {
+                emitCleanBreak(tokens, ctx);
+                tokens.push(`<${listTag}>${entries.join('')}</${listTag}>`);
+                ctx.afterMarker = false;
+                emitCleanBreak(tokens, ctx);
+            }
+            return;
+        }
+        let number = 0;
+        emitCleanBreak(tokens, ctx);
+        for (const child of asArray(list.content)) {
+            if (child && typeof child === 'object' && child.tag === 'li') {
+                number += 1;
+                const m = isNestedGlossary ? '' : marker(list, child, number);
+                emitCleanBreak(tokens, ctx);
+                const prevMarked = ctx.inMarkedItem;
+                if (m) {
+                    tokens.push(`<b>${escapeHtml(m.trim())}</b> `);
+                    ctx.afterMarker = true;
+                    ctx.inMarkedItem = true;
+                }
+                writeCleanHtml(child.content, tokens, ctx);
+                ctx.inMarkedItem = prevMarked;
+                ctx.afterMarker = false;
+                emitCleanBreak(tokens, ctx);
+            } else {
+                writeCleanHtml(child, tokens, ctx);
+            }
+        }
+        emitCleanBreak(tokens, ctx);
+    }
+
+    function isInlineDisplay(node) {
+        const display = node && node.style && node.style.display;
+        return Boolean(display && INLINE_DISPLAYS.has(String(display).trim().toLowerCase()));
+    }
+
     function escapeHtml(text) {
         return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
@@ -155,58 +368,78 @@ const DefinitionCopy = (() => {
     /** The text of a glossary item or structured-content node: blocks and list items on lines of their own. */
     function textOf(node, skip = null) {
         const out = [];
-        write(node, out, skip);
+        write(node, out, skip, { afterMarker: false, inMarkedItem: false });
         return out.join('').split('\n').map(line => line.replace(/[ \t\u00a0]+/g, ' ').trim()).filter(Boolean).join('\n');
     }
 
-    function write(node, out, skip) {
+    function emitTextBreak(out, ctx) {
+        if (ctx.afterMarker) return;
+        out.push('\n');
+    }
+
+    function write(node, out, skip, ctx) {
         if (node === null || node === undefined) return;
         if (typeof node === 'string') {
             out.push(node);
+            if (node.trim()) ctx.afterMarker = false;
             return;
         }
         if (Array.isArray(node)) {
-            node.forEach(child => write(child, out, skip));
+            node.forEach(child => write(child, out, skip, ctx));
             return;
         }
         if (typeof node !== 'object') {
-            out.push(String(node));
+            const s = String(node);
+            out.push(s);
+            if (s.trim()) ctx.afterMarker = false;
             return;
         }
-        if (node.type === 'structured-content') return write(node.content, out, skip);
-        if (node.type === 'text') return write(node.text, out, skip);
+        if (node.type === 'structured-content') return write(node.content, out, skip, ctx);
+        if (node.type === 'text') return write(node.text, out, skip, ctx);
         if (node.type === 'image' || SKIPPED_TAGS.has(node.tag) || (skip && skip(node))) return;
         if (node.tag === 'br') {
-            out.push('\n');
+            emitTextBreak(out, ctx);
             return;
         }
         if (node.tag === 'ul' || node.tag === 'ol') {
-            writeList(node, out, skip);
+            writeList(node, out, skip, ctx);
             return;
         }
-        const block = BLOCK_TAGS.has(node.tag);
-        if (block) out.push('\n');
+        const block = BLOCK_TAGS.has(node.tag) && !isInlineDisplay(node);
+        if (block) emitTextBreak(out, ctx);
         if (node.tag === 'td' || node.tag === 'th') out.push(' ');
-        write(node.content, out, skip);
-        if (block) out.push('\n');
-        // Tags stand apart on the page.
-        if ((node.data && node.data.class) === 'tag') out.push(' ');
+        write(node.content, out, skip, ctx);
+        if (block) emitTextBreak(out, ctx);
+        // Tags and reference labels stand apart on the page.
+        if ((node.data && node.data.class) === 'tag' || (node.data && node.data.content) === 'reference-label') {
+            out.push(' ');
+        }
     }
 
-    function writeList(list, out, skip) {
+    function writeList(list, out, skip, ctx) {
+        const isNestedGlossary = ctx.inMarkedItem && (list.data && list.data.content) === 'glossary';
         let number = 0;
-        out.push('\n');
+        emitTextBreak(out, ctx);
         for (const child of asArray(list.content)) {
             if (child && typeof child === 'object' && child.tag === 'li' && (!skip || !skip(child))) {
                 number += 1;
-                out.push('\n', marker(list, child, number));
-                write(child.content, out, skip);
-                out.push('\n');
+                const m = isNestedGlossary ? '' : marker(list, child, number);
+                emitTextBreak(out, ctx);
+                const prevMarked = ctx.inMarkedItem;
+                if (m) {
+                    out.push(m);
+                    ctx.afterMarker = true;
+                    ctx.inMarkedItem = true;
+                }
+                write(child.content, out, skip, ctx);
+                ctx.inMarkedItem = prevMarked;
+                ctx.afterMarker = false;
+                emitTextBreak(out, ctx);
             } else {
-                write(child, out, skip);
+                write(child, out, skip, ctx);
             }
         }
-        out.push('\n');
+        emitTextBreak(out, ctx);
     }
 
     /** The list marker as the page draws it: a quoted list-style-type ("① "), a number, or a bullet. */
