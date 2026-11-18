@@ -187,7 +187,7 @@ This supersedes the assistant's earlier separate-recordings explanation. C remai
 
 ## Stable editor snapshots, refresh and resource bounds (owner discussion, 2026-11-18)
 
-This records requirements, alternatives and a proposed design. The owner answered the four behavior questions: first display through editor opening, append-only Refresh preserving edits, and proposed silence exclusions with optional listening are accepted. Cap behavior requires further analysis; numeric defaults remain pending. It is not an implementation plan.
+This records requirements, alternatives and a proposed design. The owner answered the four behavior questions: first display through editor opening, append-only Refresh preserving edits, and proposed silence exclusions with optional listening are accepted. The owner subsequently selected the cap behavior and prohibited joining across missing history; numeric defaults remain pending. It is not an implementation plan.
 
 ### Owner's proposed interaction and identified hazards
 
@@ -238,7 +238,7 @@ Silence analysis should operate only on the selected original source range, with
 
 1. Accepted: first editor display includes available audio through editor opening, with the scan marker. If retention has already hit a limit or contains a discontinuity, disclose that availability instead of promising missing audio.
 2. Accepted: Refresh preserves the old source and edits and appends newer audio on the right within the retention limit. It does not replace the draft with a sliding recent window.
-3. Unresolved: the owner requested analysis rather than accepting a cap action. Freezing the protected source while the ring continues remains a recommendation; stopping all capture is an alternative, not a decision.
+3. Accepted after analysis: retain the protected source and continue the global ring. Refresh exposes all remaining retained continuation through the cap and explains that nothing further can be added to this fragment, including from the newer ring. Repeated Refresh repeats the explanation without changing the source or duplicating audio.
 4. Accepted: the silence button proposes exclusion ranges for review/confirmation. Listening is optional; the user can accept or adjust suggestions without playing the clip.
 
 Numeric W/E/byte limits, any duration setting, silence threshold/minimum, gestures, placement and detailed context/export policies are intentionally not chosen here. They require owner choices and measurements before an implementation plan.
@@ -257,14 +257,24 @@ The accepted append-preserving Refresh makes silently sliding/deleting the old d
 
 There is no bounded-storage design that preserves all old context and arbitrary new audio indefinitely. A separate continuation cap preserves the full interval during the supported wait, then must give up retaining some future data, discard old data with the owner's action, or end capture. Disk changes capacity and failure modes, not this tradeoff.
 
-Recommended automatic action remains: preserve the protected audio and all edits, stop extending that protected context, continue the bounded global ring, and expose the protected end/limit status. A failed Refresh is non-destructive. This is not a product decision yet.
+Accepted after analysis: preserve the protected audio and all edits, stop extending that protected context, and continue the bounded global ring. On Refresh, first expose all retained continuation not yet displayed, through the cap; then explain that this fragment cannot receive further audio. Repeated Refresh repeats the explanation without appending duplicates. A failed Refresh remains non-destructive.
 
-The first cap hit does not necessarily imply lost continuation: the global ring may temporarily still contain the following interval. Actual availability must be checked by session/frame ranges. After a long wait, the ring holds recent audio and the protected context holds older audio, with a missing middle. Do not claim no gap just because both old and new fragments exist.
+Reaching the cap does not necessarily mean later samples are absent from the global ring. The owner nevertheless selected a strict per-fragment cap: do not extend the old fragment from that newer ring after the cap. After a long wait, available old and recent recordings may also have a missing middle; never treat them as contiguous.
 
-Possible explicit recovery, requiring owner choice: retain the older chosen fragment and allow adding the currently available recent audio even when a missing interval lies between them. Show the missing interval as unavailable, not as silence; require an explicit decision to omit it before exporting across it. This could support a long manually paused player, but could omit actual speech if the source played during the gap. It is not reliable automatic recovery and must not be the default Refresh behavior.
+Rejected by the owner: joining protected old audio to recent ring audio across missing history, even with confirmation. When continuity is lost, preserve/export the old available fragment or begin a separate context from recent history. Do not offer a gap-confirmation workflow to bypass this rule. This concerns unavailable samples, not intentional exclusions of actual recorded audio such as a player pause.
 
 Another possible recovery is an explicit discard of unneeded protected original audio to free its byte budget before adding further audio. Dropping original audio may remove the ability to expand boundaries or undo destructive discard; it cannot be silently coupled to ordinary non-destructive trimming. Starting a new context from the recent ring is simpler but requires deliberate replacement if the current draft has edits. Neither recovery is chosen here.
 
 Do not automatically clear the buffer, remove the old beginning, switch to unbounded disk storage, or remove silence as a way of making space. A separate low-resource/capture/export error still needs honest handling of what survives; bounded allocations cannot promise survival of arbitrary system process death.
 
-Two follow-up questions were sent after this analysis: (1) freeze protected extension while the base ring continues versus stop all capture, and (2) permit an explicitly confirmed omitted missing interval versus disallow export across missing history. Both remain pending. Ordinary protected-context quota exhaustion is distinct from an actual recorder/resource failure; the latter may require stopping capture regardless of normal cap policy.
+Two follow-up questions were answered after this analysis: (1) preserve the protected source, expose its remaining retained continuation on Refresh and then repeat the cap explanation on further Refresh while the base ring continues; (2) disallow joining/export across missing history. These behavior choices are settled. Ordinary protected-context quota exhaustion is distinct from an actual recorder/resource failure; the latter may require stopping capture regardless of normal cap policy.
+## Accepted cap interaction and continuity rule (2026-11-18)
+
+- Global capture/ring retention continues independently when the current protected fragment reaches its continuation limit.
+- Keep both the already displayed source and the continuation retained up to the limit. Reaching the limit must not discard continuation merely because the user has not yet pressed Refresh.
+- On Refresh after that limit, append all not-yet-displayed retained continuation through the protected endpoint, preserve every edit, and show a short factual explanation that further continuation cannot be added to this fragment. Later samples in the global ring do not provide a bypass.
+- Further Refresh presses leave the fragment unchanged and repeat the explanation (a toast was suggested by the owner; exact presentation/text remains to be specified).
+- Do not join across a missing recording interval, even after confirmation. Keep the old fragment usable, or begin work separately from fresh ring history. Intentional manual/automatic exclusions of recorded audio remain supported; they are not missing history.
+- The proposed explicit gap-confirmation recovery is rejected. No implicit reset of continuation allowance, sliding of old source, removal of edits, or automatic clearing of the global ring.
+
+Accepted earlier: initial editor display through opening with a scan marker; Refresh appends rather than replaces; silence assistance suggests exclusion ranges; listening is optional. Numeric ring/continuation/byte limits, storage format, and remaining UX/attachment choices still require decisions before an implementation plan. No app implementation was requested by these replies.
