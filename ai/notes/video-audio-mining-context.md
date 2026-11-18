@@ -417,7 +417,7 @@ The eight foundational behavior questions are now settled. Outstanding owner cho
 
 ## UI, settings and remaining behavior questions sent (2026-11-18)
 
-The owner explicitly requested all remaining questions, including editor layout, settings placement and whether individual settings are needed. The previous deferral of UX questions no longer applies. Thirty-two questions were sent in eight batches of up to four. They are pending, not new defaults; recommendations below are only the first options presented. Do not write the implementation plan before collecting applicable owner decisions.
+The owner explicitly requested all remaining questions, including editor layout, settings placement and whether individual settings are needed. The previous deferral of UX questions no longer applies. Thirty-two questions were sent in eight batches of up to four and answered on 2026-11-19. The following numbered list is the historical question inventory; the accepted outcomes and clarifications below supersede its recommended first options. Do not write the implementation plan before collecting applicable owner decisions.
 
 1. Settings location: shared Recording sentences card on Audio (recommended), a new top-level page, or Anki.
 2. Manual mode control: bubble hold menu plus settings (recommended), menu only, or settings only.
@@ -459,3 +459,91 @@ The owner may answer in multiple batches; update the outcomes rather than assumi
 For all-source capture, one viable proposed path is TextToSpeech.synthesizeToFile into an app-private temporary file, then playback through Screenlate's own MediaPlayer/AudioTrack so the capture's excluded UID covers the audible output. File synthesis does not use the live speak playback path. This is an engineering inference from the APIs and still needs a saved-capture test on actual engines/devices, plus preview focus checks.
 
 The File overload exists since API 21, fitting app minSdk 24. It is asynchronous; SUCCESS only accepts the queued request. Play only after onDone and a current operation/utterance identity check. Handle onError/onStop, cancellation/word/language/voice changes, callback threads, file write failures, empty results, temporary-file cleanup and bounded cache/queue. During active capture do not silently fall back to live speak on a synthesis error, because that may violate the accepted own-sound exclusion requirement. [TextToSpeech.synthesizeToFile](https://developer.android.com/reference/android/speech/tts/TextToSpeech#synthesizeToFile(java.lang.CharSequence,%20android.os.Bundle,%20java.io.File,%20java.lang.String)), [UtteranceProgressListener](https://developer.android.com/reference/android/speech/tts/UtteranceProgressListener), [TextToSpeech.stop](https://developer.android.com/reference/android/speech/tts/TextToSpeech#stop()).
+## Accepted UI/settings answers and clarifications (2026-11-19)
+
+These explicit owner answers supersede conflicting recommendations in the 32-question inventory. This remains design documentation, not an implementation plan.
+
+| Topic | Accepted outcome |
+|---|---|
+| Settings location | A shared Recording sentences card on Audio, outside language-specific pronunciation sources. |
+| Mode controls | Bubble hold menu and recording-settings card share one live state. |
+| Bubble indicator | A static red dot as in the earlier design; no blinking or distracting animation. E-ink follows existing monochrome accessibility rules. |
+| Retention controls | Three values next to each other in recording settings; not hidden in a separate Limits dialog. |
+| Initial durations | After clarification, preliminary H/R/E = 5/5/2 minutes. Validate memory/IO and enforce byte/resource limits as well as duration; these values are not performance evidence. |
+| Language scope | Recording/retention/silence parameters are global; Anki fields remain in their normal language profiles. |
+| Storage | Bounded private temporary files plus small working RAM, provisionally accepted subject to engineering/performance review; owner authorized correction if substantial drawbacks justify it. |
+| Quality | Mono, moderate speech-oriented quality; select codec/rate using compatibility checks, with no codec/bitrate or gain controls in the product. |
+| Default attachment | Add an Audio by default switch, initially allowing audio during enabled recording. Duplicate the same setting immediately below Screenshot by default in Anki and in recording settings. Normal Add follows defaults; screenshot stage, if requested, precedes audio. |
+| Long-press attachment choice | With recording enabled, long-press Add opens a screenshot/audio/both chooser. With recording disabled, retain existing screenshot long-press. No separate new one-card audio action required beyond that chooser. |
+| Missing destination | Without a used sentence-audio marker, ordinary Add stays unchanged and no audio editor opens; show field-setup hint near recording settings. |
+| Editor presentation | Start inside the popup presentation, replacing/hiding dictionary content; provide expansion into a wide movable/collapsible floating panel. It is one editor/context. |
+| Dictionary visibility | Hide dictionary definitions during audio editing and return on cancellation. This is not deletion of the scan context. |
+| First selection | A small approximate range near the scan marker, expandable by the user. Exact placement/duration remains a UI detail to review against the mockup, not automatic phrase recognition. |
+| Timeline gestures | Tap seeks, dragging the waveform background pans a zoomed view, pinch/button zoom, separate boundary handles. Dragging the playhead moves the playhead, not the viewport. |
+| Internal cuts | One original waveform with outer phrase boundaries plus shaded excluded intervals and their handles. |
+| Original/result preview | Main playback uses result; a switch permits comparison with the original selection. |
+| Omit audio | A secondary Without audio button next to Add and Cancel. |
+| Outside touches | Pass to underlying player; keep editor open. |
+| Rotation | Preserve edits and re-layout without granting new time. |
+| Discard confirmation | Ask only when boundaries/cuts have changed; unchanged cancellation is immediate. |
+| Silence action | Search immediately with remembered parameters; nearby icon edits them. |
+| Silence parameters | Minimum 1.5 seconds, preserve 150 ms at each edge, proposals only. |
+| Silence scope/confidence | Analyze only within current outer phrase boundaries. Do not propose cuts if quiet/non-quiet audio cannot be separated with useful confidence; apparently silent audio remains saveable after warning. |
+| Visible status | Compact new-audio availability and remaining editor allowance; technical detail under info. |
+| Existing field migration | No automatic migration offer. New note-type inference includes `{sentence-audio}`; existing saved mappings are changed manually through normal Anki settings. |
+| Fill action | Use the existing Fill suggested templates dialog with Fill empty only / Replace all. This already exists in current code; extend its suggestions to the new marker rather than duplicate the feature. |
+| Existing duplicate Keep audio | Before audio editing, explain that current field policy would keep existing audio; allow proceeding without editing or changing the field setting. Do not silently override the policy. |
+| Anki configuration changes | Relevant destination changes during editing cancel and reset the pending note; do not freeze an old deck/model/template and save there afterward. The precise invalidating preference set must distinguish such changes from later-operation defaults/retention updates. |
+| Full service shutdown | Stop capture when the bubble/accessibility service is fully disabled; preserve available current audio under context-end rules. Docking is not full service shutdown. |
+| Crash/restart | No draft recovery for v1; clear abandoned temporary sessions on restart. Capture is not auto-resumed. |
+| Active limit changes | Existing contexts retain admitted limits; new values apply to later contexts. Warn/inform on the settings change. |
+| Quiet selection | Warn but permit listen/save or explicit omission. Do not treat low amplitude as proof of capture refusal. |
+| Preview loudness | Play captured audio at unity gain; user adjusts phone media volume. Do not reuse the pronunciation-volume multiplier, add an editor gain slider, or normalize automatically. |
+
+Further accepted clarifications (2026-11-19):
+
+- Without audio while updating a note preserves any existing sentence recording. It means omit changing sentence audio, not clear it via an empty Replace value. Represent intentional omission separately from a requested but failed attachment.
+- Allow any selected clip within retained history, including the full history; no smaller independent output-duration cap. Still preflight/limit export workspace and handle storage/codec/Anki errors explicitly.
+
+### Confirmed existing implementation of Fill empty only
+
+`app/.../anki/AnkiSettingsScreen.kt` already offers Fill empty only when applicable and Replace all in the confirmation dialog. `AnkiSettingsViewModel.suggestEmptyTemplates()` preserves nonblank templates and fills empty ones. This is not new app work. Updating `FieldTemplate.guess`/presets for `{sentence-audio}` will make this existing action useful for old mappings without automatic migration.
+
+### File-backed history review and recommendation
+
+Keep the provisionally accepted file-backed design. No verified evidence in this review justifies reversing it, but actual Android measurements remain required. One continuous fixed-format PCM stream can be divided into immutable frame-aligned files without creating audible joins. Do not independently encode every temporary piece to AAC: codec priming/padding creates avoidable boundary complications. Final export streams kept PCM ranges through one encoder/container and uses cumulative kept-frame timestamps, so excluded intervals truly disappear from output time.
+
+Real drawbacks: continuous flash writes/energy, storage stalls, partial writes/full disk, file ownership races and more cleanup paths than RAM. Use a bounded capture-to-writer queue; a sustained stall must become an explicit failure/stop, not unbounded RAM or silent dropped frames. Seal/validate complete frames before publication, append by stable session/frame coordinates, and delete files only after ring/draft/preview/export ownership is released. Refresh of an unfinished file tail needs an immutable complete-frame prefix, not a moving file length. Preview seeks must invalidate queued old audio.
+
+Arithmetic for preliminary 5/5/2: at mono PCM16 48 kHz, up to twelve protected minutes are 69.12 MB; a later non-overlapping five-minute ring adds 28.8 MB, totaling 97.92 MB raw disk retention, before encoded export/metadata. At 44.1 kHz the same seventeen-minute upper sum is 89.964 MB. These are disk bytes for a file-backed design, not a required equivalent RAM allocation. Small read/write/preview/waveform buffers still need explicit RAM and queue limits. Logical writes continue at 345.6 MB/hour for 48 kHz mono even though retained size is bounded. No CPU/battery claim was measured.
+
+Do not assume every device accepts 24/48 kHz. Verify actual AudioRecord initialization/rate and encoder capabilities; keeping one supported rate through capture/PCM/preview/encoder avoids a custom resampler. If lower-rate conversion is later justified, resampling state must span chunk boundaries; dropping samples is not acceptable. [AudioRecord](https://developer.android.com/reference/android/media/AudioRecord), [FileChannel](https://developer.android.com/reference/java/nio/channels/FileChannel), [AudioTrack](https://developer.android.com/reference/android/media/AudioTrack), [MediaCodec](https://developer.android.com/reference/android/media/MediaCodec), [MediaMuxer](https://developer.android.com/reference/android/media/MediaMuxer), [AudioCapabilities](https://developer.android.com/reference/android/media/MediaCodecInfo.AudioCapabilities), [AAC priming](https://developer.apple.com/documentation/quicktime-file-format/appendix_g_audio_priming_handling_encoder_delay_in_aac).
+
+### Parallel additional audit: implementation invariants and newly found risks
+
+The owner explicitly requested parallel independent analysis while the mockup was prepared. The design and resource audits identified the following additions; they do not add unapproved features:
+
+- Freeze entry/word/sentence/language/source identity when Add or long-press Add is activated, before the attachment chooser. Aim movement, refined results or a later scan must not redirect the chooser to another entry. The chooser and screenshot-only action do not start E.
+- Save exports the displayed selected revision, not an unseen newly captured tail. Serialize/coalesce Refresh, preserve frame identities across partial-tail publication and reject stale waveform/silence/export results.
+- One E grant belongs to a scan context even if the first editor is cancelled. Reused last-confirmed edits must not be replaced by an abandoned edit; preview/pan/zoom alone should not trigger dirty-discard confirmation.
+- The existing popup outside catcher, lookup pushes/auto-hide and rotation-driven `onClosed` are incompatible with several accepted editor behaviors. Add an explicit editor lifecycle state so background dictionary updates do not replace the editor, outside touches pass correctly, expansion is presentation-only, and rotation preserves the operation.
+- On API 29, legacy screenshots and audio both involve MediaProjection. Coordinate ownership; do not let one holder revoke the other's session. Modern accessibility screenshots should keep their existing capture path.
+- Anki save is not atomic: current update may commit fields then fail tags. A blind retry of Append can append the same audio twice. Track stage/operation/target identity and reconcile partial or uncertain success; never promise that cancellation rolls back a committed external write. Imported media followed by failed note creation can leave Anki-owned media; do not delete unrelated collection files.
+- Empty edited output, seeking inside an excluded interval, original/output time mapping, overlapping cuts, rapid dragging and undo after Refresh need explicit correct behavior. Silence classification must abstain on unusable/indistinguishable signal.
+- Use long frame counters and monotonic clocks: bounded disk retention does not prevent a continuously running Int frame counter overflowing after hours.
+- Backup/reset/restore while capture/preview/export is active must not recreate an invalid session, unexpectedly alter admitted limits, or delete leased files. Runtime recording/PCM/drafts are not settings backup data.
+- Concurrent Dev/release installs and another screen recorder are compatibility cases; package-specific files/URI authorities/notifications must not collide, and one revoked session must show the actual state. The scope of sibling-build own-sound exclusion needs test/spec clarification, not silent promises.
+- Bound file descriptors, waveform-resolution levels, read-ahead caches, undo metadata, pending work and export/retry artifacts in addition to PCM bytes. Never send full PCM through the WebView bridge or decode the full history for every redraw.
+- Inventory and clean every temporary type: PCM, waveform, file-synthesized TTS, final encoded output and retry staging. Use neutral IDs, no text/audio contents or term-bearing filenames/logs, and exclude temporary recordings from backups.
+
+Measurements before acceptance: synthetic ramp/impulse preservation across file/Refresh boundaries, injected short/zero/failed writes and slow storage, near-full disk during largest allowed export, preview versus decoded output order/duration, stereo-to-mono cancellation/clipping/quiet-syllable fixtures, seek/Refresh response, scan/audio marker offset, OCR latency under capture/export load, long-session budgets, descriptor stability, actual power/thermal comparisons and accessibility/e-ink/large-font/17-locale layout. Thresholds require measurements, not invented percentages. Use supported tracing/power tools; Battery Historian is no longer actively maintained. [Power profiling](https://developer.android.com/topic/performance/power/setup-battery-historian), [system tracing](https://developer.android.com/topic/performance/tracing).
+
+Potential later improvements, not v1 requirements: loop/cut-neighborhood listening, quiet-interval navigation, reversible zero-crossing snap, proven output reuse across several notes and source-compatibility help. Gain/normalization, background ASR/subtitle tracking, auto player control, standalone sharing and crash recovery remain outside the accepted scope.
+
+### Mockup and remaining detail review
+
+A local in-chat interactive mockup was created at `C:/Users/vpr/.codex/visualizations/2026/11/18/01a1ef6c-c252-7673-bd2b-cf18f181effc/screenlate-audio-editor.html`. It has Editor / Audio / Anki views, compact-to-wide expansion, movable/collapsible editor, waveform/playhead/range handles, excluded ranges, silence proposals, append-only Refresh, synchronized default switches and the existing empty/all template-fill dialog. Playback only demonstrates the caret; no real audio or Anki write occurs. The illustration uses sample ranges, not an approved exact initial-selection formula.
+
+Browser QA at viewport widths 320/360/736 checked no horizontal product overflow, selection-preserving Refresh, playhead movement without panning, cut handles, linked switches and template-fill actions; no runtime exceptions remained. This checks the conversation mockup only, not Android overlay behavior or recording performance.
+
+Remaining UI details for feedback after viewing: exact initial look-back/look-ahead span; whether untouched suggested selection end should follow Refresh (manually edited boundaries remain fixed); and the precise select/create/resize/delete interaction for inner cuts. The mockup demonstrates explicit cut creation/selection/handle adjustment/removal. Before an implementation plan, reconcile these details and the precise invalidating-Anki-settings/service-shutdown paths with owner choices, rather than converting prototype conveniences into hidden defaults.

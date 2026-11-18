@@ -1,5 +1,12 @@
 # Status
 
+## Audio UI answers, mockup and parallel audits (2026-11-19)
+
+- Recorded the owner's answers to all 32 UI/settings questions and four clarifications in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md): preliminary 5/5/2, adjacent controls on Audio, static red bubble dot, shared default switch on Audio/Anki, long-press attachment chooser, nested/expandable editor, playhead/pan distinction, silence 1.5 s/150 ms, no old-field migration, Anki-change cancellation and unity-gain/system-volume preview.
+- Confirmed the existing Fill templates action already supports empty-only/all replacement. Owner also chose preserving existing sentence audio for Without audio updates and allowing full retained selections with export-workspace checks.
+- Created and browser-checked the in-chat editor/settings mockup; no Android implementation or device measurements. At the owner's explicit parallel request, audited extra design/NFR issues, including partial Anki success/retry, stable chooser targets, API29 projection sharing, popup lifecycle overrides, file ownership, quotas, output fidelity and stress testing.
+- File-backed PCM remains provisionally recommended; actual IO/power/seek/OCR measurements and a few exact UI/lifecycle details remain before an implementation plan. No app code, device or Anki collection changes.
+
 ## Remaining audio UI/settings questions sent (2026-11-18)
 
 - Owner requested the rest of the UI/settings and behavior choices. Sent 32 questions in eight batches covering activation/placement, retention controls and preliminary values, storage/quality, editor flow/layout/gestures, cuts/preview/silence, Anki setup/duplicates and lifecycle/recovery. Full question inventory and pending status are in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md); first options are recommendations, not approvals.
