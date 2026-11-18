@@ -608,3 +608,13 @@ The owner tried the interactive mockup and approved the remaining layout/interac
 The accepted mockup's fixed selected range remains fixed on Refresh; new source becomes available on the right for deliberate selection. Internal exclusion creation/selection/handle editing/removal follows the demonstrated interaction for the later implementation specification. Numeric source ranges in the illustration are examples.
 
 Changelog: all four follow-up topics resolved or explicitly scoped out; overall mockup approved after user interaction. General Anki uncertainty is tracked separately; the new audio-specific preservation and eligibility rules above remain binding. Application code was not changed.
+## Playhead and overview interaction refinement (2026-11-19)
+
+Owner feedback on the tested mockup supersedes the filled lower seek-bar presentation:
+
+- Represent the playback position by its thin vertical line and a draggable dot attached directly below it. No filled horizontal progress/seek track. When panning moves the position outside the visible waveform window, both line and dot disappear rather than pinning a misleading thumb to the viewport edge. Dragging the dot seeks without panning the window.
+- The full-history overview supports both tap-to-reposition and continuous dragging of the viewport window. Grabbing inside the current window preserves the grab offset; it must not jump to center before dragging. This is intended for the actual app, not only the mockup.
+- Time labels under the detailed waveform describe the visible window bounds relative to scan acquisition, not an independent slider scale. The mockup makes that relation explicit.
+- Clarified the duplicated default-attachment switch to name the audio editor by default and distinguish ordinary Add from audio selection in the long-press menu when disabled. It still requires active capture and an eligible scan context; no behavior change to the accepted attachment pipeline.
+
+The interactive mockup was updated. Browser checks confirmed dot/line geometry alignment, no filled seek track, no jump on overview-window grab, actual viewport drag, offscreen hiding of both position marks, unchanged selected ranges on Refresh, synchronized switches and layout down to 320 pixels without horizontal product overflow. No runtime exceptions. This verifies the mockup, not Android overlay/recording behavior. Canonical preliminary durations remain 5/5/2; trial values changed while exploring the mockup do not silently change the agreed defaults.

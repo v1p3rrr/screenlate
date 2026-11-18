@@ -1,5 +1,10 @@
 # Status
 
+## Audio playhead and overview mockup refined (2026-11-19)
+
+- Replaced the filled seek bar with a dot attached to the playback-position line; both hide when outside the visible waveform. Added continuous overview-window dragging with no grab jump; tap navigation remains. Clarified relative visible-window times and the default-editor switch's ordinary-Add versus long-press meaning in both settings copies.
+- Recorded accepted behavior and targeted browser checks in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md). Canonical preliminary limits remain 5/5/2; no Android implementation changes.
+
 ## Audio mockup approved with small settings edits (2026-11-19)
 
 - Owner tested and approved the in-chat editor/settings mockup. Removed the static Anki field row from Audio recording settings and clarified the shared recorded-sentence/default-attachment switch title and hint in both copies.
