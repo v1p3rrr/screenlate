@@ -184,3 +184,70 @@ Keep capture, source history available to the draft, the user's selected ranges,
 For a completed utterance, select and confirm the existing range. For an unfinished utterance, retain the old part and wait for later samples, preserving access to source playback controls; then select/confirm the complete range. For a manually paused source, the same timeline includes the wait. Removing that internal wait remains a separate reversible edit; continuous capture does not identify its exact boundaries. Natural pauses inside the utterance remain untouched unless explicitly edited. Buffer/protected-history budgets still need decisions and cannot imply unlimited retention.
 
 This supersedes the assistant's earlier separate-recordings explanation. C remains the preferred direction under discussion; recording continuity is an explicit owner constraint. UX, retention, internal-gap assistance and final attachment behavior are not approved by this clarification. Auto-pause/resume remains outside scope.
+
+## Stable editor snapshots, refresh and resource bounds (owner discussion, 2026-11-18)
+
+This records requirements, alternatives and a proposed design. Four behavior questions have been sent to the owner; answers and numeric defaults remain pending. It is not an implementation plan.
+
+### Owner's proposed interaction and identified hazards
+
+- The owner proposed a fixed waveform snapshot plus explicit Refresh, while global capture continues. Initial display might end at scan acquisition or later; Refresh exposes newly recorded audio. A player may already have been paused for five seconds before the scan marker. The marker is not a pause timestamp.
+- Required editing capabilities: preview, seek/scrub by tap or drag, phrase start/end handles, multiple internal exclusions (including three separate pauses), and Save. Exact gestures/layout remain for UX discussion.
+- Requested automatic silence assistance: either reversible immediate exclusions or proposed ranges for review; a minimum silence duration is needed so short pauses are not indiscriminately cut. Neither minimum duration nor algorithm/threshold is chosen. Natural pauses can exceed any simple threshold.
+- Five minutes is an example, not an approved default. A shorter or configurable history makes rollover more visible. The waveform must not drift while editing, and previously visible/selected audio must not silently disappear or cause an unexplained error.
+- The owner considered suspending the global ring limit while a popup is open, a fixed protected snapshot plus a continuing ring, capped extension (example: five initial plus five further minutes), and RAM or files. Unlimited growth while an unattended popup stays open for hours is unacceptable.
+- A scan or Refresh must not reset or empty the global rolling history. Closing a popup and scanning again must still give the configured recent history if capture remained available.
+- Refresh must address overlap, duplicates, overwrite and gaps. The owner requested explicit handling of memory/storage exhaustion, capture termination and other edge cases, preferring preservation/explanation over a crash or silent damage.
+
+### Recommended bounded-history model, subject to owner confirmation
+
+Keep one recorder and two retention purposes. The global ring always retains at most W of recent audio. A single protected scan context retains its initial history ending at scan acquisition plus a bounded continuation E, so its maximum source span is W + E. The editor displays a fixed view of this protected source; Refresh reveals later retained frames without moving old frame identities or existing edits. Continuation data must be retained continuously, even before the editor opens and between Refresh actions; copying solely on Refresh would lose data once the global ring rolls over.
+
+Start protection at scan acquisition (recommendation, not a new implicit default), not at delayed popup display. Do not create another full copy per word lookup. Protect the scan's initial window and continuation; keep the global ring independent and never reset it when scanning, opening/closing an editor, refreshing, or saving. Closing the context releases its protection; any in-flight export needs a bounded ownership hold on the selected source, not a dangling reference. Exact context replacement/cancellation and repeated-note attachment policies still need the later plan.
+
+Use capture session identity and absolute frame positions for source intervals; use the acquisition marker for navigation. Refresh appends only the not-yet-visible range from the same session. It preserves existing start/end, exclusions, playhead and viewport unless the owner later chooses different selection behavior. It must not rescale the whole waveform automatically and make it appear to drift. Check for a full contiguous source interval before claiming continuation. Known missing samples or a capture restart are discontinuities, not recorded silence. Do not silently join across them or insert fabricated silence.
+
+The bounded continuation cap applies to protected context, not the recorder. Recommended cap behavior: freeze the protected source at its retained end, keep it available for editing/export, keep the independent W ring running, and visibly explain that this context cannot extend further. Do not discard its beginning or clear all audio automatically. A later request cannot reconstruct an overwritten gap. Any action to replace the draft with recent history or explicitly use disjoint available fragments must disclose the loss and preserve edits until the user chooses.
+
+The E allowance is measured from scan acquisition/capture progress, not reset by Refresh. Repeated Refresh must not buy unlimited additional protection. Removing the popup, changing words, or starting repeated scans must not accumulate unbounded protected contexts or undo/export references. While editing is inactive, a cap hit still becomes visible on next interaction; notification/UI details remain open.
+
+RAM chunk sharing can let the ring and protected source refer to the same sealed PCM blocks; evicting a ring reference does not invalidate a protected reference. This is a possible implementation seam, not a selected technology. No shared audio block may be mutated while held by an editor/export. Budget the union of retained audio, partial/read buffers, waveform caches, pending refresh, export/encoder workspace and bounded undo. Repeated Refresh must not copy the entire recording or leave an old full snapshot retained behind every edit.
+
+Illustrative arithmetic only: 48 kHz mono 16-bit PCM, W = five minutes and W + E = ten minutes, gives up to 28.8 MB for an independent full ring plus 57.6 MB for a non-overlapping full protected source: 86.4 MB of raw audio before auxiliary buffers, waveform and existing app memory. Sharing reduces overlapping storage, not this worst case after the protected source freezes and the ring moves on. Stereo doubles raw audio. This is not a safe default justified merely by arithmetic; resource and device measurements must choose limits/format. A time limit and a hard byte budget are both needed.
+
+For short bounded history, RAM avoids capture-file writes and orphan cleanup. Bounded private file chunks could reduce RAM if measured budgets require it; they still need duration/byte limits, checked write failures, startup cleanup and export accounting. A file is not a reason to permit unlimited capture retention. Do not silently switch storage strategies when resources run out.
+
+### Non-destructive editing proposal
+
+Maintain an outer retained interval plus zero or more internal exclusion intervals in original frame coordinates. Exclusions remain visible/editable on the fixed source waveform; output preview and export skip them. Moving an exclusion must not shift the source coordinates of later exclusions. Normalize overlaps and clamp to the current outer selection. Undo should store edits/ranges, not PCM copies.
+
+Silence analysis should operate only on the selected original source range, with a minimum duration, threshold and edge padding to be chosen. It cannot distinguish a dramatic speech pause from stopped playback, and paused playback may contain music instead of silence. The recommended interaction is proposed ranges with preview/confirmation; reversible immediate exclusion is the alternative posed to the owner. Keep automatic suggestions distinguishable from existing manual edits and reject stale results after a refresh/selection/source revision. Preserve low-volume speech and half-word joins; do not promise a threshold can infer sentence boundaries. Further audio is not automatically analyzed or deleted without a defined user action.
+
+### Edge cases that must enter implementation acceptance
+
+- Ring rollover while popup/editor is open, before first editor open, during Refresh and during export; one-minute histories and long reading times; scan followed by later speech and another scan.
+- Unattended popup for hours; cap hit between Refresh presses; repeated refresh/scans/word changes; multiple Add actions and bounded exports; edits never overwritten by cap or by another draft.
+- Refresh with overlap, exact shared boundary, no new frames, source gap or new capture session; late async results and user cancellation; continuous timeline and frame identities remain correct.
+- Natural long/short pauses, music during player pause, quiet syllables, interrupted word, several exclusions, overlapping exclusions, exclusion outside changed outer bounds, undo/redo and preview/export agreement.
+- Seek/scrub near a cut or waveform edge, zoomed editor after refresh, preview during active capture, and exclusion of Screenlate's own preview/pronunciation from captured source.
+- Allocation/resource cap, unavailable export workspace, audio-read failure, projection revoked, source policy refusal or silence, source/routing/format change, device sleep, source change, process death and restart. Distinguish known recording failure from authentic silent samples.
+- Export disk full/write error, cancellation, encoder failure, duplicate taps, note-provider failure and retry. Do not report an attached clip before successful media transfer; retain an editable draft on recoverable export failure within its budget, clean partial files, and avoid duplicate notes/attachments on retry.
+- System/capture stop should preserve already retained valid audio where process survival permits and expose the cause. Process death cannot preserve RAM audio or guarantee a last-moment callback; any stronger recovery requires an explicit disk-storage decision.
+
+### Behavior questions currently pending
+
+1. First editor snapshot through editor opening (recommended) or only through scan acquisition.
+2. Refresh preserves the old source/edits and appends within cap (recommended), or replaces it with the latest ring window after confirmation if edited.
+3. Protected-context cap freezes that source while global ring continues (recommended), or stops all capture with explanation.
+4. Silence button proposes exclusions for review (recommended), or applies reversible exclusions immediately.
+
+Numeric W/E/byte limits, any duration setting, silence threshold/minimum, gestures, placement and detailed context/export policies are intentionally not chosen here. They require owner choices and measurements before an implementation plan.
+### Resource and failure verification against Android sources (2026-11-18)
+
+- `AudioRecord.read` can return short/zero reads and errors, including `ERROR_DEAD_OBJECT` requiring recreation; that error may follow a final successful read. `getMinBufferSize` is an initialization minimum, not a loss-free capture guarantee. Timestamp frame counters reset after stop/start. Use capture session identity plus frame positions, and do not claim every possible overrun is perfectly observable. [AudioRecord](https://developer.android.com/reference/android/media/AudioRecord).
+- `AudioTimestamp` maps capture frames to a consistent clock. A capture timestamp is neither a player position nor a subtitle boundary; wall-clock adjustments must not move saved markers. [AudioTimestamp](https://developer.android.com/reference/android/media/AudioTimestamp).
+- Since API 34, running-low/critical/moderate and moderate/complete trim-memory levels are no longer delivered; `onLowMemory` is also never called. Waiting for these callbacks before bounding the feature is not a viable protection strategy. Own duration/byte/workspace quotas are required; they limit this feature's allocations, not every possible process failure. Do not promise that arbitrary OOM or a process kill can always be caught gracefully. [ComponentCallbacks2](https://developer.android.com/reference/android/content/ComponentCallbacks2).
+- Private app storage requires no general storage permission; cache can be reclaimed. Free-space checks do not guarantee later writes or encoding will succeed. Any file-backed variant needs checked I/O, quotas and partial-file/startup cleanup; RAM capture still needs export disk-error handling. [App-specific storage](https://developer.android.com/training/data-storage/app-specific).
+- Projection revocation stops delivery; handle `onStop` instead of continuing to collect apparent silence. Keep known missing source intervals distinct from actual recorded silent PCM. [Playback capture](https://developer.android.com/media/platform/av-capture).
+
+Additional verification deductions: Refresh should capture a fixed source endpoint/revision and validate capacity/continuity before changing the draft. A failed update preserves the prior audio and edits. Error state should say what remains available, whether the global recorder continues, and whether a new start/consent is needed. In-flight export gets an immutable selection/source hold with bounded workspace; no full-audio copies per undo operation. Logging continues to exclude recognized text and note contents.
