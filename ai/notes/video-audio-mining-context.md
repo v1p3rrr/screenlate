@@ -187,7 +187,7 @@ This supersedes the assistant's earlier separate-recordings explanation. C remai
 
 ## Stable editor snapshots, refresh and resource bounds (owner discussion, 2026-11-18)
 
-This records requirements, alternatives and a proposed design. Four behavior questions have been sent to the owner; answers and numeric defaults remain pending. It is not an implementation plan.
+This records requirements, alternatives and a proposed design. The owner answered the four behavior questions: first display through editor opening, append-only Refresh preserving edits, and proposed silence exclusions with optional listening are accepted. Cap behavior requires further analysis; numeric defaults remain pending. It is not an implementation plan.
 
 ### Owner's proposed interaction and identified hazards
 
@@ -221,7 +221,7 @@ For short bounded history, RAM avoids capture-file writes and orphan cleanup. Bo
 
 Maintain an outer retained interval plus zero or more internal exclusion intervals in original frame coordinates. Exclusions remain visible/editable on the fixed source waveform; output preview and export skip them. Moving an exclusion must not shift the source coordinates of later exclusions. Normalize overlaps and clamp to the current outer selection. Undo should store edits/ranges, not PCM copies.
 
-Silence analysis should operate only on the selected original source range, with a minimum duration, threshold and edge padding to be chosen. It cannot distinguish a dramatic speech pause from stopped playback, and paused playback may contain music instead of silence. The recommended interaction is proposed ranges with preview/confirmation; reversible immediate exclusion is the alternative posed to the owner. Keep automatic suggestions distinguishable from existing manual edits and reject stale results after a refresh/selection/source revision. Preserve low-volume speech and half-word joins; do not promise a threshold can infer sentence boundaries. Further audio is not automatically analyzed or deleted without a defined user action.
+Silence analysis should operate only on the selected original source range, with a minimum duration, threshold and edge padding to be chosen. It cannot distinguish a dramatic speech pause from stopped playback, and paused playback may contain music instead of silence. The owner selected proposed exclusion ranges for review/confirmation, with listening explicitly optional; do not force playback before accepting suggestions or saving. Keep automatic suggestions distinguishable from existing manual edits and reject stale results after a refresh/selection/source revision. Preserve low-volume speech and half-word joins; do not promise a threshold can infer sentence boundaries. Further audio is not automatically analyzed or deleted without a defined user action.
 
 ### Edge cases that must enter implementation acceptance
 
@@ -234,12 +234,12 @@ Silence analysis should operate only on the selected original source range, with
 - Export disk full/write error, cancellation, encoder failure, duplicate taps, note-provider failure and retry. Do not report an attached clip before successful media transfer; retain an editable draft on recoverable export failure within its budget, clean partial files, and avoid duplicate notes/attachments on retry.
 - System/capture stop should preserve already retained valid audio where process survival permits and expose the cause. Process death cannot preserve RAM audio or guarantee a last-moment callback; any stronger recovery requires an explicit disk-storage decision.
 
-### Behavior questions currently pending
+### Owner answers to the behavior questions (2026-11-18)
 
-1. First editor snapshot through editor opening (recommended) or only through scan acquisition.
-2. Refresh preserves the old source/edits and appends within cap (recommended), or replaces it with the latest ring window after confirmation if edited.
-3. Protected-context cap freezes that source while global ring continues (recommended), or stops all capture with explanation.
-4. Silence button proposes exclusions for review (recommended), or applies reversible exclusions immediately.
+1. Accepted: first editor display includes available audio through editor opening, with the scan marker. If retention has already hit a limit or contains a discontinuity, disclose that availability instead of promising missing audio.
+2. Accepted: Refresh preserves the old source and edits and appends newer audio on the right within the retention limit. It does not replace the draft with a sliding recent window.
+3. Unresolved: the owner requested analysis rather than accepting a cap action. Freezing the protected source while the ring continues remains a recommendation; stopping all capture is an alternative, not a decision.
+4. Accepted: the silence button proposes exclusion ranges for review/confirmation. Listening is optional; the user can accept or adjust suggestions without playing the clip.
 
 Numeric W/E/byte limits, any duration setting, silence threshold/minimum, gestures, placement and detailed context/export policies are intentionally not chosen here. They require owner choices and measurements before an implementation plan.
 ### Resource and failure verification against Android sources (2026-11-18)
@@ -251,3 +251,20 @@ Numeric W/E/byte limits, any duration setting, silence threshold/minimum, gestur
 - Projection revocation stops delivery; handle `onStop` instead of continuing to collect apparent silence. Keep known missing source intervals distinct from actual recorded silent PCM. [Playback capture](https://developer.android.com/media/platform/av-capture).
 
 Additional verification deductions: Refresh should capture a fixed source endpoint/revision and validate capacity/continuity before changing the draft. A failed update preserves the prior audio and edits. Error state should say what remains available, whether the global recorder continues, and whether a new start/consent is needed. In-flight export gets an immutable selection/source hold with bounded workspace; no full-audio copies per undo operation. Logging continues to exclude recognized text and note contents.
+## Retention-cap tradeoffs after owner answers (2026-11-18)
+
+The accepted append-preserving Refresh makes silently sliding/deleting the old draft incompatible with owner decisions. An unattended popup must not stop unrelated future capture merely because its old context reached a retention cap unless the owner explicitly chooses that behavior. Hard resource limits and capture failures are different states: a protected-context quota can freeze extension while capture remains healthy; a recorder failure can require stopping/restarting capture.
+
+There is no bounded-storage design that preserves all old context and arbitrary new audio indefinitely. A separate continuation cap preserves the full interval during the supported wait, then must give up retaining some future data, discard old data with the owner's action, or end capture. Disk changes capacity and failure modes, not this tradeoff.
+
+Recommended automatic action remains: preserve the protected audio and all edits, stop extending that protected context, continue the bounded global ring, and expose the protected end/limit status. A failed Refresh is non-destructive. This is not a product decision yet.
+
+The first cap hit does not necessarily imply lost continuation: the global ring may temporarily still contain the following interval. Actual availability must be checked by session/frame ranges. After a long wait, the ring holds recent audio and the protected context holds older audio, with a missing middle. Do not claim no gap just because both old and new fragments exist.
+
+Possible explicit recovery, requiring owner choice: retain the older chosen fragment and allow adding the currently available recent audio even when a missing interval lies between them. Show the missing interval as unavailable, not as silence; require an explicit decision to omit it before exporting across it. This could support a long manually paused player, but could omit actual speech if the source played during the gap. It is not reliable automatic recovery and must not be the default Refresh behavior.
+
+Another possible recovery is an explicit discard of unneeded protected original audio to free its byte budget before adding further audio. Dropping original audio may remove the ability to expand boundaries or undo destructive discard; it cannot be silently coupled to ordinary non-destructive trimming. Starting a new context from the recent ring is simpler but requires deliberate replacement if the current draft has edits. Neither recovery is chosen here.
+
+Do not automatically clear the buffer, remove the old beginning, switch to unbounded disk storage, or remove silence as a way of making space. A separate low-resource/capture/export error still needs honest handling of what survives; bounded allocations cannot promise survival of arbitrary system process death.
+
+Two follow-up questions were sent after this analysis: (1) freeze protected extension while the base ring continues versus stop all capture, and (2) permit an explicitly confirmed omitted missing interval versus disallow export across missing history. Both remain pending. Ordinary protected-context quota exhaustion is distinct from an actual recorder/resource failure; the latter may require stopping capture regardless of normal cap policy.

@@ -3,7 +3,7 @@
 ## Audio editor refresh and bounded retention discussed (2026-11-18)
 
 - Recorded the owner's fixed-waveform/Refresh proposal, preview/scrub and multiple internal cuts, optional silence assistance, ring rollover, unattended growth, RAM/disk alternatives and failure handling in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).
-- Proposed an independent bounded global ring plus protected scan history with capped continuation, explicit refresh preserving edits, reversible original-coordinate cuts and proactive byte/time budgets. Five minutes and five additional minutes are examples, not defaults. Four behavior questions are pending; no implementation plan or new UI/default decisions approved.
+- Proposed an independent bounded global ring plus protected scan history with capped continuation, explicit refresh preserving edits, reversible original-coordinate cuts and proactive byte/time budgets. Five minutes and five additional minutes are examples, not defaults. Owner accepted first display through editor opening with a scan marker, Refresh appending while preserving edits, and proposed silence exclusions with optional listening. Cap behavior remains open: the owner requested further analysis. No implementation plan or numeric defaults approved.
 
 ## Audio buffer and continuation scenarios clarified (2026-11-18)
 
