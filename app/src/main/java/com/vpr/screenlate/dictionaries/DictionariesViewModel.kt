@@ -14,6 +14,7 @@ import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.FrequencySort
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
@@ -416,6 +417,13 @@ class DictionariesViewModel @Inject constructor(
         }
     }
 
+    fun setSortMode(id: Long) {
+        val language = shownLanguage.language.value
+        viewModelScope.launch {
+            repository.setSortDictionary(language, id)
+        }
+    }
+
     private fun sortDictionaryIds(): Flow<Map<Language, Long?>> =
         combine(Language.entries.map { language -> repository.sortDictionaryId(language).map { language to it } }) { it.toMap() }
 
@@ -517,6 +525,8 @@ internal fun reordered(all: List<DictionaryEntity>, ordered: List<DictionaryEnti
  */
 internal fun sortDictionaryId(dictionaries: List<DictionaryEntity>, stored: Long?): Long? {
     val frequencies = dictionaries.filter { it.enabled && it.frequencyCount > 0 }
+    val rankBased = frequencies.filter { it.frequencyMode != "occurrence-based" }
+    if (FrequencySort.isAggregateId(stored) && rankBased.size >= 2) return stored
     return (frequencies.firstOrNull { it.id == stored } ?: frequencies.firstOrNull())?.id
 }
 

@@ -66,6 +66,7 @@ data class TermEntry(
     val glossaries: List<Glossary> = emptyList(),
     val frequencies: List<FrequencyGroup> = emptyList(),
     val pitches: List<PitchGroup> = emptyList(),
+    val alternativeExpressions: List<String> = emptyList(),
 )
 
 /**

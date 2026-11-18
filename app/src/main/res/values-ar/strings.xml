@@ -513,7 +513,6 @@
     <string name="yomitan_summary_audio_off">الصوت متوقف في Yomitan، ولم تُضبط أي مصادر</string>
     <string name="yomitan_summary_audio_unknown">مصادر صوت غير مدعومة: %1$s</string>
     <string name="yomitan_summary_lookup">طول المسح %1$s، والمداخل لكل بحث %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">لا تُستورد استبدالات النص (عدد القواعد: %1$d): فالأرقام المكتوبة بأعداد الكانجي و々 وッ وعلامات الترقيم تُعالَج تلقائيًا</string>
     <string name="yomitan_collection_not_collection">هذا الملف ليس مجموعة قواميس مُصدَّرة من Yomitan.</string>
     <string name="yomitan_collection_failed">تعذّر بدء الاستيراد: تعذّرت قراءة الملف أو نسخه.</string>
     <string name="yomitan_collection_choose">القواميس في الملف</string>
@@ -1058,4 +1057,20 @@
         <item quantity="many">%1$d من %2$d منطقة</item>
         <item quantity="other">%1$d من %2$d منطقة</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">المتوسط التوافقي</string>
+    <string name="dictionaries_sort_average">المتوسط الحسابي</string>
+    <string name="dictionaries_sort_aggregate_hint">يدمج قواميس التكرار المعتمدة على الترتيب ويعرض القيمة المجمّعة أولًا في النافذة المنبثقة.</string>
+    <string name="lookup_merge_variants">دمج صيغ الكتابة المتعددة</string>
+    <string name="lookup_merge_variants_hint">يدمج المداخل ذات القراءة والتعريفات المتطابقة ويعرض الكتابات البديلة بجانب الكلمة.</string>
+    <string name="lookup_text_replacements">استبدالات النص</string>
+    <string name="lookup_text_replacements_hint">استبدال أو إزالة أجزاء من النص قبل البحث في القواميس.</string>
+    <string name="lookup_text_replacements_count">القواعد النشطة: %1$d من %2$d</string>
+    <string name="lookup_text_replacements_empty">لا توجد قواعد بعد.</string>
+    <string name="lookup_text_replacement_add">إضافة قاعدة</string>
+    <string name="lookup_text_replacement_edit">تعديل القاعدة</string>
+    <string name="lookup_text_replacement_find">بحث عن</string>
+    <string name="lookup_text_replacement_replace">استبدال بـ</string>
+    <string name="lookup_text_replacement_regex">تعبير نمطي</string>
+    <string name="lookup_text_replacement_ignore_case">تجاهل حالة الأحرف</string>
+    <string name="yomitan_summary_replacements_imported">قواعد استبدال النص المستوردة: %1$d</string>
 </resources>

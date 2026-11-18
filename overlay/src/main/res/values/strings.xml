@@ -121,4 +121,6 @@
     <string name="overlay_external_jpdb" translatable="false">JPDB</string>
     <string name="overlay_external_nadeshiko" translatable="false">Nadeshiko</string>
     <string name="overlay_external_immersion_kit" translatable="false">Immersion Kit</string>
+    <string name="overlay_freq_harmonic">Harm</string>
+    <string name="overlay_freq_average">Avg</string>
 </resources>

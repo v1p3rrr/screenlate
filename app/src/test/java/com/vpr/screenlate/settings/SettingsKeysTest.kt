@@ -19,8 +19,9 @@ class SettingsKeysTest {
         ),
         SettingsSection.BACKGROUND to listOf("overlay_keep_alive"),
         SettingsSection.LOOKUP to listOf(
-            "lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji", "lookup_scan_length_en",
-            "lookup_single_kanji_en",
+            "lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji",
+            "lookup_merge_variants", "lookup_text_replacements",
+            "lookup_scan_length_en", "lookup_single_kanji_en", "lookup_merge_variants_en", "lookup_text_replacements_en",
         ),
         SettingsSection.ANKI to listOf(
             "anki_settings", "anki_settings_en", "anki_remember_crop_area", "anki_crop_portrait", "anki_crop_landscape",
@@ -32,6 +33,7 @@ class SettingsKeysTest {
             "e_ink_font_after", "popup_hide_after_add", "popup_hide_off_word", "popup_hide_outside_tap", "popup_font_en", "popup_font_all_text_en",
             "popup_custom_css_en", "popup_pronunciation_colors", "popup_pronunciation_colors_en",
             "popup_external_google_images", "popup_external_jpdb", "popup_external_nadeshiko", "popup_external_immersion_kit",
+            "popup_collapsed_dictionaries",
         ),
         SettingsSection.TRANSLATION to listOf(
             "translation_button", "translation_anki", "translation_services", "translation_language", "translation_favorites",
@@ -105,9 +107,15 @@ class SettingsKeysTest {
         fun cleared(language: Language) =
             lookup.filter { SettingsKeys.resets(it, setOf(SettingsSection.LOOKUP), everything = false, language = language) }
         assertThat(cleared(Language.ENGLISH))
-            .containsExactly("lookup_max_results", "lookup_romaji", "lookup_scan_length_en", "lookup_single_kanji_en")
+            .containsExactly(
+                "lookup_max_results", "lookup_romaji", "lookup_scan_length_en", "lookup_single_kanji_en",
+                "lookup_merge_variants_en", "lookup_text_replacements_en",
+            )
         assertThat(cleared(Language.JAPANESE))
-            .containsExactly("lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji")
+            .containsExactly(
+                "lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji",
+                "lookup_merge_variants", "lookup_text_replacements",
+            )
         assertThat(cleared(Language.CHINESE)).containsExactly("lookup_max_results", "lookup_romaji")
     }
 

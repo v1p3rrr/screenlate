@@ -69,6 +69,9 @@ class LookupPage(
 
         /** The translation button asks to translate the shown word's sentence; the answer goes to [showTranslation] with [request]. */
         fun onTranslate(request: Int) {}
+
+        /** A dictionary header was tapped to collapse or expand its definitions. */
+        fun onToggleDictionary(dictionary: String, collapsed: Boolean) {}
     }
 
     /** The note and audio buttons of entries; entries are identified by their [index] in the current view. */
@@ -417,6 +420,10 @@ class LookupPage(
 
         @JavascriptInterface
         fun onCopyDefinition(text: String, html: String) = post { callbacks.onCopy(text, html.ifEmpty { null }) }
+
+        @JavascriptInterface
+        fun onToggleDictionary(dictionary: String, collapsed: Boolean) =
+            post { callbacks.onToggleDictionary(dictionary, collapsed) }
 
         private fun post(action: () -> Unit) {
             mainHandler.post(action)

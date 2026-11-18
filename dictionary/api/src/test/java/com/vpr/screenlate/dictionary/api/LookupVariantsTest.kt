@@ -7,6 +7,7 @@ import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
+import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import org.junit.Test
 
 class LookupVariantsTest {
@@ -66,5 +67,30 @@ class LookupVariantsTest {
         val mapped = result.inSource(text, found[1])
         assertThat(mapped.matched).isEqualTo("ЗАКОН- ЧИЛИ")
         assertThat(mapped.variantMatched).isEqualTo("ЗАКОНЧИЛИ")
+    }
+
+    @Test
+    fun `custom text replacements add a mapped variant and safely ignore invalid or disabled rules`() {
+        val rules = listOf(
+            TextReplacement(pattern = "★", replacement = "", regex = false, enabled = true),
+            TextReplacement(pattern = "[invalid(", replacement = "x", regex = true, enabled = true),
+            TextReplacement(pattern = "猫", replacement = "犬", regex = false, enabled = false),
+            TextReplacement(pattern = "([あ-ん])ー", replacement = "$1", regex = true, enabled = true),
+        )
+        val found = LookupVariants.of("猫★すーき", LookupSettings(textReplacements = rules), JapaneseSupport)
+        assertThat(found.map { it.text }).containsExactly("猫★すーき", "猫すき").inOrder()
+        val mapped = LookupResult(matched = "猫すき", deinflected = "猫すき", term = TermEntry("猫好き", "ねこすき"))
+            .inSource("猫★すーき", found[1])
+        assertThat(mapped.matched).isEqualTo("猫★すーき")
+        assertThat(mapped.preprocessorSteps).isEqualTo(1)
+    }
+
+    @Test
+    fun `literal replacement treats dollar signs as literal text and supports ignoreCase`() {
+        val rules = listOf(
+            TextReplacement(pattern = "USD", replacement = "$1", regex = false, ignoreCase = true, enabled = true),
+        )
+        val found = LookupVariants.of("usd", LookupSettings(textReplacements = rules), EnglishSupport)
+        assertThat(found.map { it.text }).containsExactly("usd", "$1").inOrder()
     }
 }

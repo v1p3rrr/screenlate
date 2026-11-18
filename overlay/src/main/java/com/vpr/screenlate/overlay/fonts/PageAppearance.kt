@@ -21,7 +21,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -50,6 +52,9 @@ class PageAppearance @Inject constructor(
             build(support, appearance, installed, systemWeights, paletteConfig.withWallpaperColor(wallpaperAccent))
         }.distinctUntilChanged()
     }
+
+    suspend fun setDictionaryCollapsed(dictionary: String, collapsed: Boolean) =
+        settings.setDictionaryCollapsed(dictionary, collapsed)
 
     companion object {
         /**
@@ -84,6 +89,10 @@ class PageAppearance @Inject constructor(
                 put("customCss", customCss)
                 put("definitionCopy", if (appearance.copyDefinitions) appearance.copyMode.id else "")
                 put("pronunciationColors", appearance.pronunciationColors)
+                put(
+                    "collapsedDictionaries",
+                    JsonArray(appearance.collapsedDictionaries.sorted().map(::JsonPrimitive)),
+                )
                 put(
                     "externalLinks",
                     buildJsonObject {

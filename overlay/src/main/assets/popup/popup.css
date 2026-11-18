@@ -584,6 +584,12 @@ a {
     color: var(--muted);
 }
 
+/* Alternative spellings of a merged entry (e.g. 観る・視る next to 見る). */
+.alt-expressions {
+    color: var(--muted);
+    font-size: 0.95em;
+}
+
 /* The name of the language whose dictionaries gave the entry (Czech for a Slovak word they lack). */
 .fallback-language {
     font-size: 0.8em;
@@ -777,17 +783,46 @@ button.frequency {
     margin-top: 8px;
 }
 
-/* Starts the first line of the first definition (see placeDictionaryName), so it takes no line of its own. */
+/* Starts the first line of the first definition (see placeDictionaryNames), so it takes no line of its own. */
 .dictionary-name {
     display: inline-block;
     margin: 0 6px 0 0;
     padding: 0 5px;
+    border: none;
     border-radius: 4px;
     background: var(--tag-dictionary-background-color, var(--dictionary-bg));
     color: var(--tag-text-color, var(--dictionary-fg));
+    font-family: inherit;
     font-size: 0.72em;
     font-weight: var(--bold-weight);
     line-height: 1.6;
+}
+
+button.dictionary-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 5px 0 3px;
+    vertical-align: baseline;
+    cursor: pointer;
+}
+
+.dictionary-chevron {
+    flex: none;
+    width: 0.95em;
+    height: 0.95em;
+    opacity: 0.75;
+    transition: transform 0.12s ease;
+}
+
+.dictionary.collapsed .dictionary-chevron {
+    transform: rotate(-90deg);
+}
+
+.dictionary.collapsed > .definitions,
+.dictionary.collapsed > .definition,
+.dictionary.collapsed > .copy-definition {
+    display: none;
 }
 
 /* Copies the dictionary's definitions; shown when definition copying is on. */

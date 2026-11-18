@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">کل عکس</string>
     <string name="crop_remember_area">حفظ ناحیه</string>
     <string name="overlay_external_google_images">تصاویر Google</string>
+    <string name="overlay_freq_harmonic">همساز</string>
+    <string name="overlay_freq_average">میانگین</string>
 </resources>

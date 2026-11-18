@@ -319,6 +319,8 @@ class AnkiNotesTest {
         configure { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE, duplicateScopeDeckOnly = true) }
         val otherDeck = 99L
         anki.existing += ExistingNote(15, MODEL, listOf("猫", "other def", "other sentence", ""), setOf(otherDeck))
+        // duplicateIds must match add(): foreign-deck duplicate is not an updatable target in OVERWRITE+deck-only mode.
+        assertThat(notes.duplicateIds(Language.JAPANESE, request.values)).isEmpty()
         val result = notes.add(Language.JAPANESE, request)
         assertThat(result).isEqualTo(AddResult.Added(101))
         assertThat(anki.updated).isEmpty()

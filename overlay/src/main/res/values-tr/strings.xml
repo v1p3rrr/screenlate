@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">Fotoğrafın tamamı</string>
     <string name="crop_remember_area">Alanı hatırla</string>
     <string name="overlay_external_google_images">Google Görseller</string>
+    <string name="overlay_freq_harmonic">Harm.</string>
+    <string name="overlay_freq_average">Ort.</string>
 </resources>

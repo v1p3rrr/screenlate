@@ -506,7 +506,6 @@
     <string name="yomitan_summary_audio_off">Аудио в Yomitan выключено; источники не заданы</string>
     <string name="yomitan_summary_audio_unknown">Неподдерживаемые источники аудио: %1$s</string>
     <string name="yomitan_summary_lookup">Длина скана %1$s, статей на поиск %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">Замены текста (правил: %1$d) не переносятся: цифры как кандзи, 々, ッ и знаки препинания учитываются автоматически</string>
     <string name="yomitan_collection_not_collection">Это не экспорт коллекции словарей Yomitan.</string>
     <string name="yomitan_collection_failed">Не удалось начать импорт: ошибка чтения или копирования файла.</string>
     <string name="yomitan_collection_choose">Словари в файле</string>
@@ -1033,4 +1032,20 @@
         <item quantity="many">%1$d из %2$d областей</item>
         <item quantity="other">%1$d из %2$d области</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">Гармоническое среднее</string>
+    <string name="dictionaries_sort_average">Среднее арифметическое</string>
+    <string name="dictionaries_sort_aggregate_hint">Объединяет частотные словари с рангом и показывает итоговое значение первым в попапе.</string>
+    <string name="lookup_merge_variants">Объединять варианты написания</string>
+    <string name="lookup_merge_variants_hint">Объединяет статьи с одинаковым чтением и определениями, показывая другие варианты написания рядом со словом.</string>
+    <string name="lookup_text_replacements">Замены текста</string>
+    <string name="lookup_text_replacements_hint">Замена или удаление фрагментов текста перед поиском в словарях.</string>
+    <string name="lookup_text_replacements_count">Активных правил: %1$d из %2$d</string>
+    <string name="lookup_text_replacements_empty">Правил пока нет.</string>
+    <string name="lookup_text_replacement_add">Добавить правило</string>
+    <string name="lookup_text_replacement_edit">Изменить правило</string>
+    <string name="lookup_text_replacement_find">Найти</string>
+    <string name="lookup_text_replacement_replace">Заменить на</string>
+    <string name="lookup_text_replacement_regex">Регулярное выражение</string>
+    <string name="lookup_text_replacement_ignore_case">Без учёта регистра</string>
+    <string name="yomitan_summary_replacements_imported">Импортировано правил замены текста: %1$d</string>
 </resources>

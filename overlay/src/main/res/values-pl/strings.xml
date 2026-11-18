@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">Całe zdjęcie</string>
     <string name="crop_remember_area">Zapamiętaj obszar</string>
     <string name="overlay_external_google_images">Grafika Google</string>
+    <string name="overlay_freq_harmonic">Harm.</string>
+    <string name="overlay_freq_average">Śr.</string>
 </resources>

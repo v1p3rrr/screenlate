@@ -331,31 +331,16 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                 onChange = viewModel::setDuplicateAllModels,
                 hint = stringResource(R.string.anki_duplicate_all_models_hint),
             )
-            Picker(
-                label = stringResource(R.string.anki_duplicate_behavior),
-                value = stringResource(
-                    when (settings.duplicateBehavior) {
-                        DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
-                        DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
-                        DuplicateBehavior.NEW -> R.string.anki_behavior_new
-                    },
-                ),
+            Text(stringResource(R.string.anki_duplicate_behavior), style = MaterialTheme.typography.labelLarge)
+            Segments(
                 options = DuplicateBehavior.entries,
-                name = {
+                selected = settings.duplicateBehavior,
+                label = {
                     stringResource(
                         when (it) {
                             DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent
                             DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite
                             DuplicateBehavior.NEW -> R.string.anki_behavior_new
-                        },
-                    )
-                },
-                description = {
-                    stringResource(
-                        when (it) {
-                            DuplicateBehavior.PREVENT -> R.string.anki_behavior_prevent_hint
-                            DuplicateBehavior.OVERWRITE -> R.string.anki_behavior_overwrite_hint
-                            DuplicateBehavior.NEW -> R.string.anki_behavior_new_hint
                         },
                     )
                 },

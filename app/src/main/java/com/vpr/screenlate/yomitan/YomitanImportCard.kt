@@ -248,8 +248,8 @@ private fun Summary(done: SettingsImportState.Done) {
                 outcome.maxResults?.toString() ?: "–",
             ),
         )
-        if (outcome.skippedReplacements > 0) {
-            SummaryLine(stringResource(R.string.yomitan_summary_replacements_skipped, outcome.skippedReplacements))
+        if (outcome.importedReplacements > 0) {
+            SummaryLine(stringResource(R.string.yomitan_summary_replacements_imported, outcome.importedReplacements))
         }
     }
 }

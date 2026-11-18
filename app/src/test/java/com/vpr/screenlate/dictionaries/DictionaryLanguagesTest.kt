@@ -93,5 +93,14 @@ class DictionaryLanguagesTest {
         assertThat(sortDictionaryId(list, stored = 4)).isEqualTo(2L)
         assertThat(sortDictionaryId(list, stored = 1)).isEqualTo(2L)
         assertThat(sortDictionaryId(listOf(dictionary(1, "en")), stored = 1)).isNull()
+
+        // Aggregate sort modes stay active when 2+ enabled rank-based frequency dictionaries exist.
+        assertThat(sortDictionaryId(list, stored = com.vpr.screenlate.dictionary.api.FrequencySort.HARMONIC_ID))
+            .isEqualTo(com.vpr.screenlate.dictionary.api.FrequencySort.HARMONIC_ID)
+        assertThat(sortDictionaryId(list, stored = com.vpr.screenlate.dictionary.api.FrequencySort.AVERAGE_ID))
+            .isEqualTo(com.vpr.screenlate.dictionary.api.FrequencySort.AVERAGE_ID)
+        val singleRank = listOf(dictionary(1, "en"), frequencies(2), frequencies(3).copy(frequencyMode = "occurrence-based"))
+        assertThat(sortDictionaryId(singleRank, stored = com.vpr.screenlate.dictionary.api.FrequencySort.HARMONIC_ID))
+            .isEqualTo(2L)
     }
 }

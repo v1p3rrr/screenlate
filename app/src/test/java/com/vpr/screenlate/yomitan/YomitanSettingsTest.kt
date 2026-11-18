@@ -170,4 +170,23 @@ class YomitanSettingsTest {
         assertThat(profile.anki?.main?.model).isNotEmpty()
         assertThat(profile.dictionaries).isNotEmpty()
     }
+
+    @Test
+    fun `reads text replacement rules from translation groups`() {
+        val json = """
+            {"options": {"profiles": [{"name": "JP", "options": {"translation": {"textReplacements": {"groups": [[
+              {"pattern": "ー+", "replacement": "", "ignoreCase": false},
+              {"pattern": "foo", "replacement": "bar", "ignoreCase": true}
+            ]]}}}}]}}
+        """.trimIndent()
+        val rules = YomitanSettings.parse(json).profiles.single().textReplacements
+        assertThat(rules).hasSize(2)
+        assertThat(rules[0].pattern).isEqualTo("ー+")
+        assertThat(rules[0].replacement).isEqualTo("")
+        assertThat(rules[0].regex).isTrue()
+        assertThat(rules[0].ignoreCase).isFalse()
+        assertThat(rules[1].pattern).isEqualTo("foo")
+        assertThat(rules[1].replacement).isEqualTo("bar")
+        assertThat(rules[1].ignoreCase).isTrue()
+    }
 }

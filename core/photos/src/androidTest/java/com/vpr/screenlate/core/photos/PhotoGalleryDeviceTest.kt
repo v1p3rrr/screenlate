@@ -38,6 +38,7 @@ class PhotoGalleryDeviceTest {
                     override suspend fun clearCurrent() = Unit
                     override suspend fun saveAttempt(documentId: Long, attempt: PhotoAttempt, replace: Boolean) = false
                     override suspend fun commitRecognition(documentId: Long, basedOn: Int, recognition: PhotoRecognition): PhotoDocument? = null
+                    override suspend fun rotate(documentId: Long): PhotoDocument? = null
                 })
                 val uri = gallery.saveImage(image)
                 try {

@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
+import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -26,14 +27,16 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
         val audio: Audio?,
         val scanLength: Int?,
         val maxResults: Int?,
-        /** Text replacement rules of the profile; not imported, Japanese lookups have the common ones built in. */
-        val replacementRules: Int,
+        /** Text replacement rules from `translation.textReplacements.groups`. */
+        val textReplacements: List<TextReplacement> = emptyList(),
         val fontSize: Int?,
         val fontFamily: String?,
         val customPopupCss: String?,
         /** Yomitan's language code of the profile (`general.language`); null in exports of older versions. */
         val language: String? = null,
-    )
+    ) {
+        val replacementRules: Int get() = textReplacements.size
+    }
 
     data class Dictionary(val name: String, val enabled: Boolean)
 
@@ -98,13 +101,28 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
                 audio = options.obj("audio")?.let(::audio),
                 scanLength = options.obj("scanning")?.int("length"),
                 maxResults = general?.int("maxResults"),
-                replacementRules = replacements?.array("groups").orEmpty().sumOf { (it as? JsonArray)?.size ?: 0 },
+                textReplacements = parseReplacements(replacements),
                 fontSize = general?.int("fontSize"),
                 fontFamily = general?.string("fontFamily")?.trim()?.takeIf { it.isNotEmpty() },
                 customPopupCss = general?.string("customPopupCss")?.takeIf { it.isNotBlank() },
                 language = general?.string("language")?.trim()?.takeIf { it.isNotEmpty() },
             )
         }
+
+        private fun parseReplacements(replacements: JsonObject?): List<TextReplacement> =
+            replacements?.array("groups").orEmpty().flatMap { group ->
+                (group as? JsonArray).orEmpty().mapNotNull { entry ->
+                    val obj = entry as? JsonObject ?: return@mapNotNull null
+                    val pattern = obj.string("pattern")?.takeIf { it.isNotEmpty() } ?: return@mapNotNull null
+                    TextReplacement(
+                        pattern = pattern,
+                        replacement = obj.string("replacement").orEmpty(),
+                        regex = true,
+                        ignoreCase = obj.boolean("ignoreCase") ?: false,
+                        enabled = true,
+                    )
+                }
+            }
 
         private fun anki(anki: JsonObject): Anki {
             // Yomitan 25+ has a list of card formats; older versions one "terms" format.

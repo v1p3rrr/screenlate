@@ -493,7 +493,6 @@
     <string name="yomitan_summary_audio_off">Yomitan에서 오디오가 꺼져 있어 소스를 설정하지 않았습니다</string>
     <string name="yomitan_summary_audio_unknown">지원하지 않는 오디오 소스: %1$s</string>
     <string name="yomitan_summary_lookup">스캔 길이 %1$s, 검색당 항목 수 %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">텍스트 치환(규칙 %1$d개)은 가져오지 않습니다. 한자로 쓴 숫자, 々, ッ, 문장 부호는 자동으로 처리됩니다</string>
     <string name="yomitan_collection_not_collection">이 파일은 Yomitan 사전 컬렉션 내보내기 파일이 아닙니다.</string>
     <string name="yomitan_collection_failed">가져오기를 시작하지 못했습니다. 파일을 읽거나 복사할 수 없습니다.</string>
     <string name="yomitan_collection_choose">파일 속 사전</string>
@@ -993,4 +992,20 @@
     <plurals name="camera_status_regions">
         <item quantity="other">%1$d/%2$d개 영역</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">조화 평균</string>
+    <string name="dictionaries_sort_average">산술 평균</string>
+    <string name="dictionaries_sort_aggregate_hint">순위 기반 빈도 사전을 합산해 계산된 값을 팝업에 먼저 표시합니다.</string>
+    <string name="lookup_merge_variants">표기 변형 병합</string>
+    <string name="lookup_merge_variants_hint">읽기와 뜻풀이가 같은 항목을 합쳐 다른 표기를 표제어 옆에 표시합니다.</string>
+    <string name="lookup_text_replacements">텍스트 치환</string>
+    <string name="lookup_text_replacements_hint">사전 검색 전에 텍스트를 치환하거나 제거합니다.</string>
+    <string name="lookup_text_replacements_count">활성 규칙: %1$d / %2$d</string>
+    <string name="lookup_text_replacements_empty">아직 규칙이 없습니다.</string>
+    <string name="lookup_text_replacement_add">규칙 추가</string>
+    <string name="lookup_text_replacement_edit">규칙 편집</string>
+    <string name="lookup_text_replacement_find">찾기</string>
+    <string name="lookup_text_replacement_replace">바꿀 내용</string>
+    <string name="lookup_text_replacement_regex">정규 표현식</string>
+    <string name="lookup_text_replacement_ignore_case">대소문자 구분 안 함</string>
+    <string name="yomitan_summary_replacements_imported">가져온 텍스트 치환 규칙: %1$d</string>
 </resources>

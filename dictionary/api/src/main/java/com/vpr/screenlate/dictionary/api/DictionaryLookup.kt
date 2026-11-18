@@ -72,7 +72,11 @@ class DictionaryLookup @Inject constructor(
         if (text.isBlank()) return emptyList()
         val settings = lookupSettings.current(language)
         val support = language.support
-        support.lookupStart(text.substring(aimedAt), latinAsNative = settings.romaji) ?: return emptyList()
+        val aimedSlice = text.substring(aimedAt)
+        val hasStart = support.lookupStart(aimedSlice, latinAsNative = settings.romaji) != null ||
+            LookupVariants.applyReplacements(MappedText.identity(aimedSlice), settings.textReplacements)
+                ?.let { support.lookupStart(it.text, latinAsNative = settings.romaji) != null } == true
+        if (!hasStart) return emptyList()
         return repository.withLookup(language) { prepared ->
             val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
             val options = prepared.options.copy(
@@ -82,24 +86,33 @@ class DictionaryLookup @Inject constructor(
                 language = language,
                 fromOcr = fromOcr,
             )
-            val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
+            val aggregateSort = FrequencySort.isAggregateTitle(options.frequencyDictionary)
+            val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size, aggregateSort))
             val script = settings.script?.takeIf { settings.fixedScript }
 
             // [part]: the entries of a compound's part.
             suspend fun shown(found: List<LookupResult>, start: LookupStart, part: Boolean = false): List<LookupResult> = YomitanSorter
-                .sort(found, options, prepared.termDictionaries)
+                .sort(found, options, prepared.termDictionaries, prepared.frequencyModes)
                 .let { if (part && support.capitalizedNouns) it.capitalizedFirst() else it }
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
                 .mapNotNull { it.shownBy(support) }
                 .mergeSameWords(prepared.termDictionaries, support)
                 .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
+                .let { if (settings.mergeVariants && support.hasCharacterEntries) it.mergeSpellingVariants(prepared.termDictionaries, support) else it }
                 .take(limit)
                 .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
                 .withTranscriptions(support)
 
             suspend fun from(source: String): List<LookupResult> {
-                val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
-                val written = LookupVariants.of(source, settings, support).flatMap { variant ->
+                val variants = LookupVariants.of(source, settings, support)
+                val start = support.lookupStart(source, latinAsNative = settings.romaji)
+                    ?: variants.firstNotNullOfOrNull { variant ->
+                        support.lookupStart(variant.text, latinAsNative = settings.romaji)?.let { found ->
+                            if (found is LookupStart.Whole) LookupStart.Whole(variant.sourceLength(found.length)) else found
+                        }
+                    }
+                    ?: return emptyList()
+                val written = variants.flatMap { variant ->
                     engine.lookup(variant.text, engineOptions).fromVariant(source, variant, support)
                 }.mapNotNull { it.shownBy(support) }
                 val candidates = preferringOwn(written, prepared.fallbackDictionaries, support.fallbackLanguage?.code) { found, kept ->
@@ -143,7 +156,7 @@ class DictionaryLookup @Inject constructor(
             val all = if (!extraEntries || !settings.singleKanji) {
                 results
             } else {
-                results + singleCharacterEntries(results, language, options, prepared.termDictionaries, script != null)
+                results + singleCharacterEntries(results, language, options, prepared.termDictionaries, prepared.frequencyModes, script != null)
             }
             val context = support.scriptOf(text)
             all.map { it.copy(lang = scriptTag(it.term.expression, context, settings, support)) }
@@ -195,7 +208,8 @@ class DictionaryLookup @Inject constructor(
             val words = readingWords(lists, settings.script, support).take(MAX_READING_WORDS)
             val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
             val options = prepared.options.copy(maxResults = limit, language = language)
-            val engineLimit = engineLimit(limit, prepared.termDictionaries.size)
+            val aggregateSort = FrequencySort.isAggregateTitle(options.frequencyDictionary)
+            val engineLimit = engineLimit(limit, prepared.termDictionaries.size, aggregateSort)
 
             suspend fun entriesOf(word: String): List<LookupResult> {
                 val engineOptions = options.copy(scanLength = word.codePointCount(0, word.length), maxResults = engineLimit)
@@ -210,10 +224,11 @@ class DictionaryLookup @Inject constructor(
                 entriesOf(word.spelling).ifEmpty { if (word.original != word.spelling) entriesOf(word.original) else emptyList() }
             }
             val script = settings.script
-            val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
+            val results = YomitanSorter.sort(found, options, prepared.termDictionaries, prepared.frequencyModes)
                 .sortedByDescending { support.readingMatch(query, it.term.reading) }
                 .mergeSameWords(prepared.termDictionaries, support)
                 .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
+                .let { if (settings.mergeVariants && support.hasCharacterEntries) it.mergeSpellingVariants(prepared.termDictionaries, support) else it }
                 .take(limit)
                 .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
                 .withTranscriptions(support)
@@ -243,6 +258,7 @@ class DictionaryLookup @Inject constructor(
         language: Language,
         options: LookupOptions,
         dictionaryOrder: List<String>,
+        frequencyModes: Map<String, String>,
         fixedScript: Boolean,
     ): List<LookupResult> {
         val result = results.maxByOrNull { it.matched.length } ?: return emptyList()
@@ -250,17 +266,18 @@ class DictionaryLookup @Inject constructor(
         val longest = if (respelled) result.term.expression else result.matched
         val shown = results.mapTo(mutableSetOf()) { it.term.expression to it.term.reading }
         val support = language.support
+        val aggregateSort = FrequencySort.isAggregateTitle(options.frequencyDictionary)
         return support.singleCharacterEntries(longest).flatMap { character ->
             val engineOptions = options.copy(
                 scanLength = 1,
                 primaryReading = null,
-                maxResults = engineLimit(options.maxResults, dictionaryOrder.size),
+                maxResults = engineLimit(options.maxResults, dictionaryOrder.size, aggregateSort),
             )
             val entries = engine.lookup(character, engineOptions)
                 .map { it.asShown(support) }
                 .filter { it.term.expression == character && it.deinflected == character }
                 .filter { shown.add(it.term.expression to it.term.reading) }
-            YomitanSorter.sort(entries, options, dictionaryOrder).take(options.maxResults)
+            YomitanSorter.sort(entries, options, dictionaryOrder, frequencyModes).take(options.maxResults)
         }
     }
 
@@ -320,6 +337,9 @@ class DictionaryLookup @Inject constructor(
             .mapNotNull { entity -> entity.frequencyMode?.let { entity.title to it } }
             .toMap()
     }
+
+    /** Active aggregate frequency sort mode (`"harmonic"` or `"average"`) for [language], or null. */
+    suspend fun sortFrequencyMode(language: Language): String? = repository.sortFrequencyMode(language)
 
     /** Whether lookups in [language] search any dictionary with definitions (enabled, for the language, with files). */
     suspend fun hasTermDictionaries(language: Language): Boolean = repository.hasTermDictionaries(language)
@@ -403,7 +423,8 @@ private const val TAG = "DictionaryLookup"
  * several dictionaries with definitions it returns every candidate and the cut comes after [YomitanSorter]. A lookup
  * rarely finds more than a few dozen candidates, and reading them all costs about as much as reading [limit].
  */
-internal fun engineLimit(limit: Int, termDictionaries: Int): Int = if (termDictionaries > 1) Int.MAX_VALUE else limit
+internal fun engineLimit(limit: Int, termDictionaries: Int, aggregateSort: Boolean = false): Int =
+    if (termDictionaries > 1 || aggregateSort) Int.MAX_VALUE else limit
 
 /** Scan length of [DictionaryLookup.lookupQuery]: the whole query in characters, within the setting's range. */
 internal fun queryScanLength(text: String): Int =
@@ -412,7 +433,9 @@ internal fun queryScanLength(text: String): Int =
 /** The popup shows the first frequency of an entry: the one the results are sorted by. */
 internal fun LookupResult.withSortFrequencyFirst(dictionary: String?): LookupResult {
     val frequencies = term.frequencies
-    if (dictionary == null || frequencies.size < 2 || frequencies.first().dictionary == dictionary) return this
+    if (dictionary == null || FrequencySort.isAggregateTitle(dictionary) || frequencies.size < 2 || frequencies.first().dictionary == dictionary) {
+        return this
+    }
     return copy(term = term.copy(frequencies = frequencies.sortedBy { it.dictionary != dictionary }))
 }
 

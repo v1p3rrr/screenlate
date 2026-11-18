@@ -493,7 +493,6 @@
     <string name="yomitan_summary_audio_off">Yomitan で音声がオフのため、ソースは設定されませんでした</string>
     <string name="yomitan_summary_audio_unknown">対応していない音声ソース：%1$s</string>
     <string name="yomitan_summary_lookup">スキャン長 %1$s、1 回の検索の項目数 %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">テキスト置換（%1$d 件のルール）はインポートしません。漢数字で書かれた数字、々、ッ、句読点は自動で処理されます</string>
     <string name="yomitan_collection_not_collection">このファイルは Yomitan の辞書コレクションのエクスポートではありません。</string>
     <string name="yomitan_collection_failed">インポートを開始できませんでした。ファイルを読み込めないか、コピーできませんでした。</string>
     <string name="yomitan_collection_choose">ファイル内の辞書</string>
@@ -993,4 +992,20 @@
     <plurals name="camera_status_regions">
         <item quantity="other">%1$d/%2$d 領域</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">調和平均</string>
+    <string name="dictionaries_sort_average">算術平均</string>
+    <string name="dictionaries_sort_aggregate_hint">順位ベースの頻度辞書を組み合わせ、計算値をポップアップの先頭に表示します。</string>
+    <string name="lookup_merge_variants">表記ゆれを統合</string>
+    <string name="lookup_merge_variants_hint">読みと定義が同じ見出しをまとめ、別の表記を見出し語の横に表示します。</string>
+    <string name="lookup_text_replacements">テキスト置換</string>
+    <string name="lookup_text_replacements_hint">辞書検索の前にテキストを置換または削除します。</string>
+    <string name="lookup_text_replacements_count">有効なルール：%1$d / %2$d</string>
+    <string name="lookup_text_replacements_empty">ルールはまだありません。</string>
+    <string name="lookup_text_replacement_add">ルールを追加</string>
+    <string name="lookup_text_replacement_edit">ルールを編集</string>
+    <string name="lookup_text_replacement_find">検索</string>
+    <string name="lookup_text_replacement_replace">置換後</string>
+    <string name="lookup_text_replacement_regex">正規表現</string>
+    <string name="lookup_text_replacement_ignore_case">大文字と小文字を区別しない</string>
+    <string name="yomitan_summary_replacements_imported">インポートしたテキスト置換ルール：%1$d</string>
 </resources>

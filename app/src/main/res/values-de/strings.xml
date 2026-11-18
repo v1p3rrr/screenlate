@@ -497,7 +497,6 @@
     <string name="yomitan_summary_audio_off">Audio ist in Yomitan aus; es wurden keine Quellen gesetzt</string>
     <string name="yomitan_summary_audio_unknown">Nicht unterstützte Audioquellen: %1$s</string>
     <string name="yomitan_summary_lookup">Scanlänge %1$s, Einträge pro Abfrage %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">Textersetzungen (%1$d Regeln) werden nicht importiert: Ziffern als Kanji-Zahlen, 々, ッ und Satzzeichen werden automatisch behandelt</string>
     <string name="yomitan_collection_not_collection">Diese Datei ist kein Export einer Yomitan-Wörterbuchsammlung.</string>
     <string name="yomitan_collection_failed">Der Import konnte nicht gestartet werden: Die Datei ließ sich nicht lesen oder kopieren.</string>
     <string name="yomitan_collection_choose">Wörterbücher in der Datei</string>
@@ -1006,4 +1005,20 @@
         <item quantity="one">%1$d von %2$d Bereich</item>
         <item quantity="other">%1$d von %2$d Bereichen</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">Harmonisches Mittel</string>
+    <string name="dictionaries_sort_average">Durchschnitt</string>
+    <string name="dictionaries_sort_aggregate_hint">Kombiniert rangbasierte Häufigkeitswörterbücher und zeigt den kombinierten Wert zuerst im Popup.</string>
+    <string name="lookup_merge_variants">Schreibvarianten zusammenführen</string>
+    <string name="lookup_merge_variants_hint">Fasst Einträge mit gleicher Lesung und Definition zusammen und zeigt alternative Schreibungen neben dem Stichwort.</string>
+    <string name="lookup_text_replacements">Textersetzungen</string>
+    <string name="lookup_text_replacements_hint">Text vor dem Nachschlagen ersetzen oder entfernen.</string>
+    <string name="lookup_text_replacements_count">Aktive Regeln: %1$d von %2$d</string>
+    <string name="lookup_text_replacements_empty">Noch keine Regeln.</string>
+    <string name="lookup_text_replacement_add">Regel hinzufügen</string>
+    <string name="lookup_text_replacement_edit">Regel bearbeiten</string>
+    <string name="lookup_text_replacement_find">Suchen</string>
+    <string name="lookup_text_replacement_replace">Ersetzen durch</string>
+    <string name="lookup_text_replacement_regex">Regulärer Ausdruck</string>
+    <string name="lookup_text_replacement_ignore_case">Groß-/Kleinschreibung ignorieren</string>
+    <string name="yomitan_summary_replacements_imported">Importierte Textersetzungsregeln: %1$d</string>
 </resources>

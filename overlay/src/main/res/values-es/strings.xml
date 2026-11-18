@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">Foto completa</string>
     <string name="crop_remember_area">Recordar área</string>
     <string name="overlay_external_google_images">Google Imágenes</string>
+    <string name="overlay_freq_harmonic">Arm.</string>
+    <string name="overlay_freq_average">Prom.</string>
 </resources>

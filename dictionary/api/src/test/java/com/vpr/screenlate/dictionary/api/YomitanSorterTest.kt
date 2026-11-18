@@ -110,6 +110,45 @@ class YomitanSorterTest {
             .containsExactly(kana, more, fewer, otherText, short).inOrder()
     }
 
+    @Test
+    fun harmonicAndAverageFrequencySortSkipOccurrenceDictionaries() {
+        fun multi(expression: String, jpdb: Int, bccwj: Int, occ: Int) = LookupResult(
+            matched = "x",
+            deinflected = "x",
+            term = TermEntry(
+                expression = expression,
+                reading = "x",
+                glossaries = listOf(Glossary("Dict", "[]")),
+                frequencies = listOf(
+                    FrequencyGroup("JPDB", listOf(FrequencyValue(jpdb))),
+                    FrequencyGroup("BCCWJ", listOf(FrequencyValue(bccwj))),
+                    FrequencyGroup("Occ", listOf(FrequencyValue(occ))),
+                ),
+            ),
+        )
+        // a: harmonic(100, 900) = 180, average(100, 900) = 500
+        // b: harmonic(300, 300) = 300, average(300, 300) = 300
+        val a = multi("a", 100, 900, 1)
+        val b = multi("b", 300, 300, 99999)
+        val modes = mapOf("JPDB" to "rank-based", "BCCWJ" to "rank-based", "Occ" to "occurrence-based")
+
+        val byHarmonic = YomitanSorter.sort(
+            listOf(b, a),
+            LookupOptions(frequencyDictionary = FrequencySort.HARMONIC_TITLE, frequencyOrder = FrequencyOrder.ASCENDING),
+            listOf("Dict"),
+            modes,
+        )
+        assertThat(byHarmonic).containsExactly(a, b).inOrder()
+
+        val byAverage = YomitanSorter.sort(
+            listOf(a, b),
+            LookupOptions(frequencyDictionary = FrequencySort.AVERAGE_TITLE, frequencyOrder = FrequencyOrder.ASCENDING),
+            listOf("Dict"),
+            modes,
+        )
+        assertThat(byAverage).containsExactly(b, a).inOrder()
+    }
+
     private fun sort(vararg results: LookupResult) = YomitanSorter.sort(results.toList(), options, listOf("Dict"))
 
     private fun result(

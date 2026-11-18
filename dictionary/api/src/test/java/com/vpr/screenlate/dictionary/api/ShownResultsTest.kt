@@ -229,4 +229,25 @@ class ShownResultsTest {
         assertThat(shown.single().matched).isEqualTo("1人")
         assertThat(shown.single().preprocessorSteps).isEqualTo(1)
     }
+
+    @Test
+    fun `mergeSpellingVariants combines entries with same reading and primary glossary`() {
+        val shared = """["to see"]"""
+        val different = """["to examine"]"""
+        fun entry(expression: String, reading: String, content: String) = LookupResult(
+            matched = "みる",
+            deinflected = "みる",
+            term = TermEntry(expression, reading, glossaries = listOf(Glossary("Jitendex", content))),
+        )
+        val merged = listOf(
+            entry("見る", "みる", shared),
+            entry("観る", "みる", shared),
+            entry("診る", "みる", different),
+            entry("みる", "", shared),
+        ).mergeSpellingVariants(listOf("Jitendex"), Language.JAPANESE.support)
+
+        assertThat(merged.map { it.term.expression }).containsExactly("見る", "診る").inOrder()
+        assertThat(merged[0].term.alternativeExpressions).containsExactly("観る", "みる").inOrder()
+        assertThat(merged[1].term.alternativeExpressions).isEmpty()
+    }
 }

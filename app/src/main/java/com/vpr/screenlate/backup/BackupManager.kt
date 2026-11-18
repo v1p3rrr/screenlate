@@ -17,6 +17,7 @@ import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
+import com.vpr.screenlate.dictionary.api.FrequencySort
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
@@ -198,7 +199,7 @@ class BackupManager @Inject constructor(
                 val chosen = Language.entries.filterTo(linkedSetOf()) { it.code in languages }
                 val installed = dictionaries.getAll().filter { it.sourceLanguage == null || it.sourceLanguage in languages }
                 val sortIds = chosen.associateWith { dictionaries.sortDictionaryId(it).first() }
-                fun title(id: Long?) = installed.firstOrNull { it.id == id }?.title
+                fun title(id: Long?) = FrequencySort.titleForId(id) ?: installed.firstOrNull { it.id == id }?.title
                 val withFiles = if (BackupSection.DICTIONARY_FILES in sections) {
                     installed.filter { it.title in dictionaryTitles && storage.hasFiles(it) }.map { it.id }.toSet()
                 } else {
@@ -418,7 +419,9 @@ class BackupManager @Inject constructor(
                 val entries = head.dictionaries.dictionaries.filter { it.sourceLanguage == null || it.sourceLanguage in languages }
                 val outcome = BackupDictionaries.applyList(installed, entries)
                 val sortIds = chosen.associateWith { language ->
-                    head.dictionaries.sortDictionary(language)?.let { BackupDictionaries.match(outcome.updated, it)?.id }
+                    head.dictionaries.sortDictionary(language)?.let {
+                        FrequencySort.idForTitle(it) ?: BackupDictionaries.match(outcome.updated, it)?.id
+                    }
                 }
                 val languages = profiles.current().turnedOn
                 val kept = keptTermDictionaries(installed, outcome.updated, languages, storage::hasFiles).mapTo(hashSetOf()) { it.id }

@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">כל התמונה</string>
     <string name="crop_remember_area">זכירת אזור</string>
     <string name="overlay_external_google_images">תמונות Google</string>
+    <string name="overlay_freq_harmonic">הרמ.</string>
+    <string name="overlay_freq_average">ממוצע</string>
 </resources>

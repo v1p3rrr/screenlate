@@ -12,6 +12,7 @@ import com.vpr.screenlate.dictionary.api.registry.decodeIndexText
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FormOfTags
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
+import com.vpr.screenlate.dictionary.api.FrequencySort
 import com.vpr.screenlate.dictionary.api.ImportedDictionary
 import com.vpr.screenlate.dictionary.api.LookupOptions
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
@@ -82,7 +83,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
 
     private suspend fun lookupNative(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
         val frequencyDictionary = options.frequencyDictionary
-            ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED }
+            ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED && !FrequencySort.isAggregateTitle(it) }
         val raw = HoshidictsNative.lookup(
             handle = handle,
             text = text.encodeToByteArray(),
@@ -110,7 +111,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             HoshidictsNative.loadLanguage(handle, code, script)
         }
         val frequencyDictionary = options.frequencyDictionary
-            ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED }
+            ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED && !FrequencySort.isAggregateTitle(it) }
         val resolution = when (options.searchResolution ?: language.support.searchResolution) {
             SearchResolution.WORD -> "word"
             SearchResolution.LETTER -> "letter"

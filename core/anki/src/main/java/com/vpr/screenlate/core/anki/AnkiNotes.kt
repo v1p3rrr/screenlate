@@ -162,7 +162,26 @@ class AnkiNotes @Inject constructor(
         if (!settings.configured || !settings.duplicateCheck || anki.availability() != AnkiAvailability.READY) {
             return emptyList()
         }
-        return duplicates(settings, values).map { it.id }
+        val existing = duplicates(settings, values)
+        if (settings.duplicateBehavior != DuplicateBehavior.OVERWRITE) return existing.map { it.id }
+        val target = resolveUpdateTarget(settings, existing) ?: return emptyList()
+        return listOf(target.id)
+    }
+
+    /** Picks the existing note that [DuplicateBehavior.OVERWRITE] would update, or null if a new note would be added. */
+    private suspend fun resolveUpdateTarget(settings: AnkiSettings, existing: List<ExistingNote>): ExistingNote? {
+        val modelId = settings.modelId ?: return null
+        val deckId = settings.deckId ?: return null
+        val matchingModelNotes = existing.filter { it.modelId == modelId }
+        val targetDecks = targetDeckIds(settings, deckId)
+        val inDeckNote = matchingModelNotes.filter { note -> note.deckIds.any { it in targetDecks } }
+            .maxByOrNull { it.id }
+        return when {
+            inDeckNote != null -> inDeckNote
+            settings.duplicateScope == DuplicateScope.COLLECTION && !settings.duplicateScopeDeckOnly ->
+                matchingModelNotes.maxByOrNull { it.id }
+            else -> null
+        }
     }
 
     /**
@@ -204,20 +223,10 @@ class AnkiNotes @Inject constructor(
             val names = fieldNames(modelId)
             val fields = names.map { name -> FieldTemplate.render(settings.fields[name].orEmpty(), values) }
             val tags = settings.tags.split(' ', ',').filter { it.isNotBlank() }.toSet()
-            val isUpdatingDuplicate = settings.duplicateBehavior == DuplicateBehavior.OVERWRITE
-            val matchingModelNotes = existing.filter { it.modelId == modelId }
-            val targetDecks = targetDeckIds(settings, deckId)
-
-            val inDeckNote = matchingModelNotes.filter { note -> note.deckIds.any { it in targetDecks } }
-                .maxByOrNull { it.id }
-
-            val targetNote = when {
-                !isUpdatingDuplicate -> null
-                inDeckNote != null -> inDeckNote
-                settings.duplicateScope == DuplicateScope.COLLECTION && !settings.duplicateScopeDeckOnly -> {
-                    matchingModelNotes.maxByOrNull { it.id }
-                }
-                else -> null
+            val targetNote = if (settings.duplicateBehavior == DuplicateBehavior.OVERWRITE) {
+                resolveUpdateTarget(settings, existing)
+            } else {
+                null
             }
 
             if (targetNote != null) {

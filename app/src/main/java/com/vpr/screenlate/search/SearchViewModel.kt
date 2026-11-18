@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 
@@ -63,7 +64,7 @@ class SearchViewModel @Inject constructor(
     val audioPlayer: AudioPlayer,
     val translation: SentenceTranslation,
     appSettings: AppSettingsRepository,
-    pageAppearance: PageAppearance,
+    private val pageAppearance: PageAppearance,
     profiles: LanguageProfiles,
     private val installation: LanguageInstallation,
 ) : ViewModel() {
@@ -109,6 +110,10 @@ class SearchViewModel @Inject constructor(
     suspend fun styles(language: Language): List<DictionaryStyle> = orElse(emptyList()) { lookup.styles(language) }
 
     suspend fun tagNotes(resources: Resources): List<DictionaryTagNotes> = orElse(emptyList()) { lookup.tagNotes(resources) }
+
+    fun setDictionaryCollapsed(dictionary: String, collapsed: Boolean) {
+        viewModelScope.launch { pageAppearance.setDictionaryCollapsed(dictionary, collapsed) }
+    }
 
     /** [fallback] when [block] fails; a cancellation is passed on, so a replaced search does not show as empty. */
     private inline fun <T> orElse(fallback: T, block: () -> T): T = try {

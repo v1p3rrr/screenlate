@@ -149,6 +149,9 @@ fun SearchScreen(
 
                 override fun media(dictionary: String, path: String): ByteArray? =
                     runBlocking { viewModel.dictionaryLookup.media(dictionary, path, viewModel.language.value) }
+
+                override fun onToggleDictionary(dictionary: String, collapsed: Boolean) =
+                    viewModel.setDictionaryCollapsed(dictionary, collapsed)
             },
             embedded = true,
         ).also { holder.page = it }

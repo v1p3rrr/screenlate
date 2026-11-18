@@ -490,7 +490,6 @@
     <string name="yomitan_summary_audio_off">השמע כבוי ב-Yomitan; לא הוגדרו מקורות</string>
     <string name="yomitan_summary_audio_unknown">מקורות שמע שאינם נתמכים: %1$s</string>
     <string name="yomitan_summary_lookup">אורך סריקה %1$s, ערכים בכל חיפוש %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">החלפות טקסט (כללים: %1$d) לא מיובאות: ספרות כמספרי קאנג׳י, 々, ッ ופיסוק מטופלים אוטומטית</string>
     <string name="yomitan_collection_not_collection">הקובץ הזה אינו ייצוא של אוסף מילונים מ-Yomitan.</string>
     <string name="yomitan_collection_failed">לא ניתן להתחיל את הייבוא: לא ניתן היה לקרוא או להעתיק את הקובץ.</string>
     <string name="yomitan_collection_choose">מילונים בקובץ</string>
@@ -1020,4 +1019,20 @@
     <string name="anki_mode_skip">דילוג</string>
     <string name="anki_mode_append">הוספה</string>
     <string name="anki_mode_prepend">הוספה להתחלה</string>
+    <string name="dictionaries_sort_harmonic">ממוצע הרמוני</string>
+    <string name="dictionaries_sort_average">ממוצע חשבוני</string>
+    <string name="dictionaries_sort_aggregate_hint">משלב מילוני תדירות מבוססי דירוג ומציג את הערך המשולב ראשון בחלון הקופץ.</string>
+    <string name="lookup_merge_variants">מיזוג גרסאות כתיב</string>
+    <string name="lookup_merge_variants_hint">מאחד ערכים בעלי קריאה ופירושים זהים ומציג כתיבים חלופיים לצד הערך.</string>
+    <string name="lookup_text_replacements">החלפות טקסט</string>
+    <string name="lookup_text_replacements_hint">החלפה או הסרה של טקסט לפני חיפוש במילונים.</string>
+    <string name="lookup_text_replacements_count">כללים פעילים: %1$d מתוך %2$d</string>
+    <string name="lookup_text_replacements_empty">אין עדיין כללים.</string>
+    <string name="lookup_text_replacement_add">הוספת כלל</string>
+    <string name="lookup_text_replacement_edit">עריכת כלל</string>
+    <string name="lookup_text_replacement_find">חיפוש</string>
+    <string name="lookup_text_replacement_replace">החלפה ב</string>
+    <string name="lookup_text_replacement_regex">ביטוי רגולרי</string>
+    <string name="lookup_text_replacement_ignore_case">התעלמות מאותיות גדולות וקטנות</string>
+    <string name="yomitan_summary_replacements_imported">כללי החלפת טקסט שיובאו: %1$d</string>
 </resources>

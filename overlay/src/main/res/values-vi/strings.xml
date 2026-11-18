@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">Toàn bộ ảnh</string>
     <string name="crop_remember_area">Nhớ vùng</string>
     <string name="overlay_external_google_images">Google Hình ảnh</string>
+    <string name="overlay_freq_harmonic">Đ.hòa</string>
+    <string name="overlay_freq_average">TB</string>
 </resources>

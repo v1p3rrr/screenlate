@@ -82,6 +82,42 @@ enum class FrequencyOrder {
     DISABLED,
 }
 
+/**
+ * Sentinel IDs and titles for aggregate frequency sorting (harmonic mean or arithmetic average across all enabled
+ * rank-based frequency dictionaries). Stored in the same `sort_dictionary_id` preference as real dictionary IDs
+ * (which are positive Room row IDs).
+ */
+object FrequencySort {
+    const val HARMONIC_ID = -1L
+    const val AVERAGE_ID = -2L
+    const val HARMONIC_TITLE = "__harmonic__"
+    const val AVERAGE_TITLE = "__average__"
+    const val HARMONIC_MODE = "harmonic"
+    const val AVERAGE_MODE = "average"
+
+    fun isAggregateId(id: Long?): Boolean = id == HARMONIC_ID || id == AVERAGE_ID
+
+    fun isAggregateTitle(title: String?): Boolean = title == HARMONIC_TITLE || title == AVERAGE_TITLE
+
+    fun titleForId(id: Long?): String? = when (id) {
+        HARMONIC_ID -> HARMONIC_TITLE
+        AVERAGE_ID -> AVERAGE_TITLE
+        else -> null
+    }
+
+    fun idForTitle(title: String?): Long? = when (title) {
+        HARMONIC_TITLE -> HARMONIC_ID
+        AVERAGE_TITLE -> AVERAGE_ID
+        else -> null
+    }
+
+    fun modeForId(id: Long?): String? = when (id) {
+        HARMONIC_ID -> HARMONIC_MODE
+        AVERAGE_ID -> AVERAGE_MODE
+        else -> null
+    }
+}
+
 /** Result of a successful import. [directory] is where the engine placed the converted dictionary. */
 data class ImportedDictionary(
     val directory: File,

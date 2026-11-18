@@ -66,6 +66,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.languageName
+import com.vpr.screenlate.dictionary.api.FrequencySort
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
@@ -242,6 +243,17 @@ fun DictionariesScreen(
             val allDictionaries = state.all
             state.installed.forEach { section ->
                 SubsectionTitle(stringResource(sectionLabel(section.kind, state.shown.code)))
+                if (section.kind == DictionaryKind.FREQUENCY) {
+                    val rankBasedCount = section.dictionaries.count {
+                        it.enabled && it.id !in state.withoutFiles && it.frequencyMode != "occurrence-based"
+                    }
+                    if (rankBasedCount >= 2) {
+                        AggregateFrequencySortCard(
+                            selectedId = state.sortDictionaryId,
+                            onSelect = viewModel::setSortMode,
+                        )
+                    }
+                }
                 ReorderableColumn(
                     items = section.dictionaries,
                     key = { it.id },
@@ -601,6 +613,47 @@ private fun LinkButtons(links: DictionaryLinks) {
 
 /** The "sort by this dictionary" radio of a frequency dictionary; equal choices let its card skip an update. */
 private data class SortChoice(val selected: Boolean, val onSelect: () -> Unit)
+
+/** Aggregate frequency sort choices (harmonic mean and average) shown when 2+ rank-based frequency dictionaries are on. */
+@Composable
+private fun AggregateFrequencySortCard(selectedId: Long?, onSelect: (Long) -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onSelect(FrequencySort.HARMONIC_ID) },
+            ) {
+                RadioButton(
+                    selected = selectedId == FrequencySort.HARMONIC_ID,
+                    onClick = { onSelect(FrequencySort.HARMONIC_ID) },
+                    colors = AccentDefaults.radioButtonColors(),
+                )
+                Text(stringResource(R.string.dictionaries_sort_harmonic), style = MaterialTheme.typography.bodyMedium)
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onSelect(FrequencySort.AVERAGE_ID) },
+            ) {
+                RadioButton(
+                    selected = selectedId == FrequencySort.AVERAGE_ID,
+                    onClick = { onSelect(FrequencySort.AVERAGE_ID) },
+                    colors = AccentDefaults.radioButtonColors(),
+                )
+                Text(stringResource(R.string.dictionaries_sort_average), style = MaterialTheme.typography.bodyMedium)
+            }
+            Text(
+                stringResource(R.string.dictionaries_sort_aggregate_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 12.dp, end = 4.dp, bottom = 4.dp),
+            )
+        }
+    }
+}
 
 @Composable
 private fun UpdatesCard(check: UpdateCheck, turnedOn: List<String>, onUpdate: (List<DictionaryUpdate>, List<ModelUpdate>) -> Unit) {

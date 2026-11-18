@@ -106,6 +106,7 @@ const Popup = (() => {
         jpdb: '<svg viewBox="0 0 24 24" width="18" height="18"><rect x="2.5" y="3.5" width="19" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 8v5a2 2 0 0 1-2 2M13.5 8h3a2 2 0 0 1 0 4h-3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         nadeshiko: '<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.7" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6.3" cy="10.1" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
         immersionKit: '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M11 6.5C6.5 6.5 3.5 10 3.5 14.5C3.5 18.5 7 21.5 11.5 21.5C16 21.5 19.5 18.5 19.5 14.5C19.5 10.5 16.5 6.5 11.5 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 6.5C11 4.5 11.5 3 13 2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12.5 5C15.5 4 19 6 20 9.5C20.5 12 18.5 14 16.5 13.5C14.5 13 13 10 12.5 5Z" fill="currentColor"/><circle cx="8" cy="12" r="0.9" fill="currentColor"/><circle cx="7" cy="14" r="0.9" fill="currentColor"/><circle cx="9" cy="14.5" r="0.9" fill="currentColor"/></svg>',
+        chevron: '<svg class="dictionary-chevron" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4.5 6l3.5 4 3.5-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     };
 
     const history = [];
@@ -116,7 +117,7 @@ const Popup = (() => {
     let actions = { anki: false, audio: false };
     /** The drawn entries' language is written right to left (state.rightToLeft). */
     let rightToLeft = false;
-    let noteConfig = { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false };
+    let noteConfig = { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '' };
     let menu = null;
     let audioView = 0;
     let audioRequests = 0;
@@ -136,6 +137,7 @@ const Popup = (() => {
         immersionKit: false,
         googleDomain: 'www.google.com',
     };
+    let collapsedDictionaries = new Set();
 
     function applyColors() {
         const root = document.documentElement;
@@ -227,7 +229,7 @@ const Popup = (() => {
             state.source,
             (state.kanji && state.kanji.character),
             state.compound,
-            (state.results || []).map(r => [r.term.expression, r.term.reading]),
+            (state.results || []).map(r => [r.term.expression, r.term.reading, r.term.alternativeExpressions || []]),
         ]);
     }
 
@@ -503,6 +505,12 @@ const Popup = (() => {
             reading.dir = 'ltr';
             head.append(reading);
         }
+        const alts = term.alternativeExpressions || [];
+        if (alts.length) {
+            const altSpan = element('span', 'alt-expressions', alts.join('・'));
+            if (rightToLeft) altSpan.dir = 'rtl';
+            head.append(altSpan);
+        }
         if (result.fallbackLanguage) {
             head.append(element('span', 'tag fallback-language', labels[`language_${result.fallbackLanguage}`] || result.fallbackLanguage));
         }
@@ -635,13 +643,20 @@ const Popup = (() => {
         } else if (actions.anki) {
             const add = iconButton('add', ICONS.add, labelOf(noteConfig.screenshotByDefault ? 'addNoteScreenshot' : 'addNote'));
             add.dataset.index = String(index);
+            // Tapping the button clears the WebView text selection before pointerup; capture it on press.
+            let pressedSelection = '';
+            add.addEventListener('pointerdown', () => {
+                pressedSelection = selectedText(true);
+            });
             const addNote = (withScreenshot, force) => {
                 if (current && current.noteWait) {
                     ScreenlateBridge.onNoteWaiting();
                     return;
                 }
                 setButtonState(add, 'busy');
-                const data = NoteData.build(result, noteContext(), noteConfig.markers);
+                const selection = selectedText(true) || pressedSelection;
+                pressedSelection = '';
+                const data = NoteData.build(result, noteContext(selection), noteConfig.markers);
                 ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force);
             };
             onTapOrHold(add, held => {
@@ -710,8 +725,13 @@ const Popup = (() => {
         head.after(box);
     }
 
-    function noteContext() {
-        return { styles, frequencyModes: noteConfig.frequencyModes || {}, query: (current && current.source && current.source.text) || '' };
+    function noteContext(selection = '') {
+        return {
+            styles,
+            frequencyModes: noteConfig.frequencyModes || {},
+            query: (current && current.source && current.source.text) || '',
+            selection,
+        };
     }
 
     // region Menu
@@ -960,14 +980,25 @@ const Popup = (() => {
             .map(group => ({ dictionary: group.dictionary, values: frequencyValues(group) }))
             .filter(group => group.values.length);
         if (frequencies.length) {
-            const first = frequencies[0];
-            const hidden = frequencies.reduce((count, group) => count + group.values.length, 0) - 1;
-            row.append(collapsible(
-                [frequencyChip(first.dictionary, first.values.slice(0, 1))],
-                frequencies.map((group, i) => frequencyChip(group.dictionary, group.values, i === 0)),
-                hidden,
-                'frequency-more',
-            ));
+            const aggregate = aggregateFrequency(result.term, labels);
+            if (aggregate) {
+                const total = frequencies.reduce((count, group) => count + group.values.length, 0);
+                row.append(collapsible(
+                    [aggregateFrequencyChip(aggregate.label, aggregate.value)],
+                    [aggregateFrequencyChip(aggregate.label, aggregate.value), ...frequencies.map(group => frequencyChip(group.dictionary, group.values, false))],
+                    total,
+                    'frequency-more',
+                ));
+            } else {
+                const first = frequencies[0];
+                const hidden = frequencies.reduce((count, group) => count + group.values.length, 0) - 1;
+                row.append(collapsible(
+                    [frequencyChip(first.dictionary, first.values.slice(0, 1))],
+                    frequencies.map((group, i) => frequencyChip(group.dictionary, group.values, i === 0)),
+                    hidden,
+                    'frequency-more',
+                ));
+            }
         }
 
         const accents = pitchAccents(result.term).map(pitch => {
@@ -1084,6 +1115,37 @@ const Popup = (() => {
         if (value.value > 0) return value.value;
         const digits = /^\d+/.exec(value.displayValue || '');
         return digits ? Number.parseInt(digits[0], 10) : 0;
+    }
+
+    /** Harmonic or arithmetic average rank across rank-based frequency dictionaries when that sort mode is active. */
+    function aggregateFrequency(term, labels) {
+        const mode = noteConfig.sortFrequencyMode;
+        if (mode !== 'harmonic' && mode !== 'average') return null;
+        const modes = noteConfig.frequencyModes || {};
+        const numbers = [];
+        for (const group of term.frequencies || []) {
+            if (modes[group.dictionary] === 'occurrence-based') continue;
+            const value = (group.values || [])[0];
+            if (!value) continue;
+            const display = /^\d+/.exec(value.displayValue || '');
+            const parsed = display ? Number.parseInt(display[0], 10) : 0;
+            if (parsed > 0) numbers.push(parsed);
+            else if (value.value > 0) numbers.push(value.value);
+        }
+        if (!numbers.length) return null;
+        const value = mode === 'harmonic'
+            ? Math.floor(numbers.length / numbers.reduce((sum, n) => sum + 1 / n, 0))
+            : Math.floor(numbers.reduce((sum, n) => sum + n, 0) / numbers.length);
+        const label = mode === 'harmonic'
+            ? (labels.freqHarmonic || 'Harm')
+            : (labels.freqAverage || 'Avg');
+        return { label, value };
+    }
+
+    function aggregateFrequencyChip(label, value) {
+        const chip = element('span', 'frequency frequency-aggregate');
+        chip.append(element('span', 'frequency-dictionary', label), element('span', 'frequency-value', String(value)));
+        return chip;
     }
 
     /**
@@ -1244,20 +1306,28 @@ const Popup = (() => {
     function dictionarySection(dictionary, glossaries) {
         const section = element('section', 'dictionary');
         section.dataset.dictionary = dictionary;
+        const collapsed = collapsedDictionaries.has(dictionary);
+        if (collapsed) section.classList.add('collapsed');
         // A chip in the first definition, as in Yomitan, instead of a line of its own; placed after drawing.
-        const name = element('span', 'dictionary-name', shortName(dictionary));
+        const name = element('button', 'dictionary-name');
+        name.type = 'button';
+        name.innerHTML = ICONS.chevron;
+        name.append(document.createTextNode(shortName(dictionary)));
         name.title = dictionary;
+        name.setAttribute('aria-expanded', String(!collapsed));
         // Placed into the first block, whose own direction its name would otherwise decide.
         if (rightToLeft) name.dir = 'auto';
+        name.addEventListener('click', () => toggleDictionary(dictionary));
         const copy = element('button', 'copy-definition');
         copy.type = 'button';
         copy.innerHTML = ICONS.copy;
         copy.setAttribute('aria-label', labelOf('copyDefinition'));
         copy.addEventListener('click', () => copyDefinition(glossaries));
+        if (collapsed) section.append(name, copy);
         const container = glossaries.length > 1 ? element('ol', 'definitions') : section;
         for (const glossary of glossaries) {
             const definition = glossaries.length > 1 ? element('li', 'definition') : element('div', 'definition');
-            if (glossary === glossaries[0]) definition.append(name, copy);
+            if (!collapsed && glossary === glossaries[0]) definition.append(name, copy);
             const tags = (glossary.definitionTags || '').split(' ').filter(Boolean);
             if (tags.length) {
                 const tagRow = element('span', 'tags');
@@ -1283,6 +1353,41 @@ const Popup = (() => {
         return section;
     }
 
+    function toggleDictionary(dictionary) {
+        const collapsed = !collapsedDictionaries.has(dictionary);
+        if (collapsed) collapsedDictionaries.add(dictionary);
+        else collapsedDictionaries.delete(dictionary);
+        syncDictionarySections(dictionary, collapsed);
+        ScreenlateBridge.onToggleDictionary(dictionary, collapsed);
+    }
+
+    function syncDictionarySections(dictionary, collapsed) {
+        const expandedNames = [];
+        content.querySelectorAll('section.dictionary[data-dictionary]').forEach(section => {
+            if (dictionary !== null && section.dataset.dictionary !== dictionary) return;
+            const shouldCollapse = dictionary !== null ? collapsed : collapsedDictionaries.has(section.dataset.dictionary);
+            const name = section.querySelector('.dictionary-name');
+            if (!name) return;
+            const copy = section.querySelector('.copy-definition');
+            section.classList.toggle('collapsed', shouldCollapse);
+            name.setAttribute('aria-expanded', String(!shouldCollapse));
+            if (shouldCollapse) {
+                if (name.parentElement !== section) {
+                    section.prepend(name);
+                    if (copy) name.after(copy);
+                }
+            } else if (name.parentElement === section) {
+                const firstDef = section.querySelector('.definition');
+                if (firstDef) {
+                    firstDef.prepend(name);
+                    if (copy) name.after(copy);
+                    expandedNames.push(name);
+                }
+            }
+        });
+        if (expandedNames.length) placeDictionaryNames(expandedNames);
+    }
+
     /** One dictionary's definitions, in the mode the settings chose; the button shows only when copying is on. */
     function copyDefinition(glossaries) {
         const mode = document.documentElement.dataset.definitionCopy;
@@ -1299,10 +1404,11 @@ const Popup = (() => {
      * and inline wrappers of blocks, so a list that opens the definition keeps its marker in front of the chip
      * instead of under it. The chip stays outside inline elements that start with text, such as a tag.
      */
-    function placeDictionaryNames() {
+    function placeDictionaryNames(names) {
         // Read every destination before moving anything: alternating mutations and computed styles makes the browser
         // recalculate styles for the whole result set once per dictionary, delaying the popup's first frame.
-        const placements = Array.from(content.querySelectorAll('.definition > .dictionary-name'), name => {
+        const targets = names || Array.from(content.querySelectorAll('.definition > .dictionary-name'));
+        const placements = targets.map(name => {
             let container = name.parentElement;
             const next = name.nextElementSibling;
             const copy = next && next.classList.contains('copy-definition') ? next : null;
@@ -1397,6 +1503,12 @@ const Popup = (() => {
         }
 
         const savedScroll = preserveScroll ? content.scrollTop : 0;
+        const savedStates = {};
+        if (sameTerms) {
+            content.querySelectorAll('.action-add[data-index][data-state]').forEach(button => {
+                savedStates[button.dataset.index] = button.dataset.state;
+            });
+        }
         history.length = 0;
         current = state;
         if (preserveScroll && resultsKey(state) === drawnKey) {
@@ -1406,6 +1518,7 @@ const Popup = (() => {
         // Reset the old, already laid-out view; writing after replacement forces layout before script marking.
         content.scrollTop = 0;
         draw(state);
+        if (sameTerms) setNoteStates(savedStates);
         if (savedScroll > 0) {
             content.classList.toggle('restore-scroll', true);
             content.scrollTop = savedScroll;
@@ -1658,6 +1771,13 @@ const Popup = (() => {
             externalLinks = Object.assign(externalLinks, appearance.externalLinks);
             if (changed && current) render(current);
         }
+        if (Array.isArray(appearance.collapsedDictionaries)) {
+            const next = new Set(appearance.collapsedDictionaries);
+            const changed = next.size !== collapsedDictionaries.size ||
+                Array.from(next).some(d => !collapsedDictionaries.has(d));
+            collapsedDictionaries = next;
+            if (changed && current) syncDictionarySections(null, false);
+        }
     }
 
     /** Page options: { embedded: true } drops the card frame and the close button (app screens). */
@@ -1696,7 +1816,18 @@ const Popup = (() => {
      * 'occurrence-based' }, regions: [{ id, codes: [code] }] }.
      */
     function setNoteConfig(config) {
-        noteConfig = config || { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false };
+        const prevSort = (noteConfig && noteConfig.sortFrequencyMode) || '';
+        noteConfig = config || { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '' };
+        const nextSort = noteConfig.sortFrequencyMode || '';
+        if (prevSort !== nextSort && current) {
+            const states = {};
+            content.querySelectorAll('.action-add[data-index][data-state]').forEach(button => {
+                states[button.dataset.index] = button.dataset.state;
+            });
+            drawResults(current);
+            setNoteStates(states);
+            return;
+        }
         const buttons = document.querySelectorAll('.action-add');
         for (let i = 0; i < buttons.length; i++) {
             const button = buttons[i];

@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">整張照片</string>
     <string name="crop_remember_area">記住區域</string>
     <string name="overlay_external_google_images">Google 圖片</string>
+    <string name="overlay_freq_harmonic">調和</string>
+    <string name="overlay_freq_average">平均</string>
 </resources>

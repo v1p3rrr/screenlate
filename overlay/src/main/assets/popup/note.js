@@ -377,6 +377,7 @@ const NoteData = (() => {
             'pitch-accent-graphs-jj': () => pitchList(term, 'graph-jj'),
             'pitch-accent-positions': () => pitchList(term, 'position'),
             'pitch-accent-categories': () => pitchCategories(term),
+            'popup-selection-text': () => escapeHtml(context.selection || '').replace(/\n/g, '<br>'),
             'search-query': () => escapeHtml(context.query || '').replace(/\n/g, '<br>'),
             tags: () => escapeHtml([...new Set(glossaries.flatMap(g => `${g.termTags || ''} ${g.definitionTags || ''}`.split(' ')).filter(Boolean))].join(', ')),
         };

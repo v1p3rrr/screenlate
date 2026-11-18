@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
+import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import com.vpr.screenlate.languages.ShownLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -36,6 +37,10 @@ class LookupSettingsViewModel @Inject constructor(
     fun setRomaji(enabled: Boolean) = launch { repository.setRomaji(enabled) }
 
     fun setSingleKanji(enabled: Boolean) = launch { repository.setSingleKanji(language(), enabled) }
+
+    fun setMergeVariants(enabled: Boolean) = launch { repository.setMergeVariants(language(), enabled) }
+
+    fun setTextReplacements(rules: List<TextReplacement>) = launch { repository.setTextReplacements(language(), rules) }
 
     private fun language(): Language = shown.language.value
 

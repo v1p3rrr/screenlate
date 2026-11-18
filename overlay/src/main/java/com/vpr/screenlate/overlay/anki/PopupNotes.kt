@@ -1,7 +1,9 @@
 package com.vpr.screenlate.overlay.anki
 
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.widget.Toast
 import androidx.core.graphics.scale
@@ -183,6 +185,7 @@ class PopupNotes(
                 }
             })
             put("screenshotByDefault", JsonPrimitive(ankiSettings.screenshotByDefault))
+            put("sortFrequencyMode", JsonPrimitive(lookup.sortFrequencyMode(language()).orEmpty()))
         }
         page.setNoteConfig(config)
     }
@@ -260,39 +263,47 @@ class PopupNotes(
         val settings = notes.settings(language())
         if (ankiStatus() != AnkiStatus.Ready) return
         val terms = currentTerms() ?: return
-        val states = mutableMapOf<Int, String>()
+        val known = mutableMapOf<Int, String>()
         terms.forEachIndexed { index, term ->
             scanNotes[term]?.let { ids ->
                 openableNotes[index] = ids
-                states[index] = "added"
+                known[index] = "added"
             }
         }
-        if (settings.duplicateCheck) {
-            val markers = notes.duplicateCheckMarkers(language())
-            val entries = evaluateJson<List<Map<String, String>>>(
-                "JSON.stringify(Popup.allNoteData(${Json.encodeToString(markers.toList())}))",
-            ).orEmpty()
-            entries.forEachIndexed { index, values ->
-                if (index in states) return@forEachIndexed
-                val ids = try {
-                    notes.duplicateIds(language(), values)
-                } catch (e: CancellationException) {
-                    // The view changed: its marks must not reach the next one.
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "Duplicate check failed", e.redacted())
-                    emptyList()
-                }
-                if (ids.isEmpty()) return@forEachIndexed
-                openableNotes[index] = ids
-                when (settings.duplicateBehavior) {
-                    DuplicateBehavior.PREVENT -> states[index] = "open"
-                    DuplicateBehavior.NEW -> states[index] = "duplicate_new"
-                    DuplicateBehavior.OVERWRITE -> states[index] = "duplicate_overwrite"
-                }
-            }
+        if (known.isNotEmpty()) page.setNoteStates(known)
+        if (!settings.duplicateCheck) {
+            val cleared = terms.indices.filter { it !in known }.associateWith { "" }
+            if (cleared.isNotEmpty()) page.setNoteStates(cleared)
+            return
         }
-        page.setNoteStates(states)
+        val markers = notes.duplicateCheckMarkers(language())
+        val entries = evaluateJson<List<Map<String, String>>>(
+            "JSON.stringify(Popup.allNoteData(${Json.encodeToString(markers.toList())}))",
+        ).orEmpty()
+        entries.forEachIndexed { index, values ->
+            if (index in known) return@forEachIndexed
+            val ids = try {
+                notes.duplicateIds(language(), values)
+            } catch (e: CancellationException) {
+                // The view changed: its marks must not reach the next one.
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Duplicate check failed", e.redacted())
+                emptyList()
+            }
+            if (ids.isEmpty()) {
+                openableNotes.remove(index)
+                page.setNoteStates(mapOf(index to ""))
+                return@forEachIndexed
+            }
+            openableNotes[index] = ids
+            val state = when (settings.duplicateBehavior) {
+                DuplicateBehavior.PREVENT -> "open"
+                DuplicateBehavior.NEW -> "duplicate_new"
+                DuplicateBehavior.OVERWRITE -> "duplicate_overwrite"
+            }
+            page.setNoteStates(mapOf(index to state))
+        }
     }
 
     private suspend fun currentTerms(): List<Pair<String, String>>? =
@@ -370,6 +381,12 @@ class PopupNotes(
                     }
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
+                if ("clipboard-text" in used) {
+                    readClipboardText()?.let { values["clipboard-text"] = escapeHtml(it).replace("\n", "<br>") }
+                }
+                if ("clipboard-image" in used) {
+                    readClipboardImage()?.let { values["clipboard-image"] = it }
+                }
                 for ((marker, tag) in noteLanguage.support.scriptMarkers) {
                     if (marker !in used) continue
                     values[marker] = escapeHtml(lookup.inScript(data.term.expression, data.term.reading, tag, noteLanguage))
@@ -505,6 +522,42 @@ class PopupNotes(
         return formatted["html"].orEmpty() to formatted["plain"].orEmpty()
     }
 
+    private fun readClipboardText(): String? = runCatching {
+        val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return null
+        val clip = clipboard.primaryClip ?: return null
+        if (clip.itemCount == 0) return null
+        val item = clip.getItemAt(0)
+        // Skip image-only content URIs so their raw URI string is not pasted as clipboard-text.
+        val uri = item.uri
+        if (item.text.isNullOrEmpty() && uri != null && context.contentResolver.getType(uri)?.startsWith("image/") == true) {
+            return null
+        }
+        item.coerceToText(context)?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+    }.getOrNull()
+
+    private suspend fun readClipboardImage(): String? {
+        val uri = runCatching {
+            val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return null
+            val clip = clipboard.primaryClip ?: return null
+            (0 until clip.itemCount).firstNotNullOfOrNull { i ->
+                clip.getItemAt(i).uri?.takeIf { context.contentResolver.getType(it)?.startsWith("image/") == true }
+            }
+        }.getOrNull() ?: return null
+        val bitmap = withContext(Dispatchers.IO) {
+            runCatching {
+                context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
+            }.getOrNull()
+        } ?: return null
+        var file: File? = null
+        return try {
+            file = saveScreenshot(bitmap)
+            anki.addMedia(file, "screenlate_clip_${System.currentTimeMillis()}", AnkiDroid.MediaKind.IMAGE)
+        } finally {
+            bitmap.recycle()
+            file?.delete()
+        }
+    }
+
     /** Copies glossary images into AnkiDroid and replaces their placeholders with the stored file names. */
     private suspend fun resolveGlossaryMedia(
         media: List<MediaRef>,
@@ -617,7 +670,7 @@ class PopupNotes(
 
     private companion object {
         const val TAG = "PopupNotes"
-        const val DUPLICATE_CHECK_DELAY_MS = 300L
+        const val DUPLICATE_CHECK_DELAY_MS = 100L
         const val ANKI_STATUS_TTL_MS = 5_000L
         const val AUTO_PLAY_DELAY_MS = 500L
         const val SCREENSHOT_QUALITY = 85

@@ -67,8 +67,8 @@ data class AnkiOutcome(
 
 data class AudioOutcome(val sources: Int, val unknown: List<String>, val disabledInYomitan: Boolean)
 
-/** @property skippedReplacements text replacement rules of the profile that were not imported. */
-data class LookupOutcome(val scanLength: Int?, val maxResults: Int?, val skippedReplacements: Int)
+/** @property importedReplacements number of text replacement rules imported from the profile. */
+data class LookupOutcome(val scanLength: Int?, val maxResults: Int?, val importedReplacements: Int)
 
 /**
  * @property cssLines lines of the imported custom popup CSS; 0 when the profile has none.
@@ -216,10 +216,13 @@ class YomitanSettingsImporter @Inject constructor(
     private suspend fun applyLookup(profile: YomitanSettings.Profile, language: Language): LookupOutcome {
         profile.scanLength?.let { lookupSettings.setScanLength(language, it) }
         profile.maxResults?.let { lookupSettings.setMaxResults(it.coerceAtLeast(1)) }
+        if (profile.textReplacements.isNotEmpty()) {
+            lookupSettings.setTextReplacements(language, profile.textReplacements)
+        }
         return LookupOutcome(
             scanLength = profile.scanLength?.coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH),
             maxResults = profile.maxResults,
-            skippedReplacements = profile.replacementRules,
+            importedReplacements = profile.textReplacements.size,
         )
     }
 }

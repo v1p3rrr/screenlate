@@ -486,7 +486,6 @@
     <string name="yomitan_summary_audio_off">صوت در Yomitan خاموش است؛ هیچ منبعی تنظیم نشد</string>
     <string name="yomitan_summary_audio_unknown">منابع صوتی پشتیبانی‌نشده: %1$s</string>
     <string name="yomitan_summary_lookup">طول اسکن %1$s، تعداد مدخل در هر جستجو %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">جایگزینی‌های متن (%1$d قاعده) وارد نمی‌شوند: رقم‌ها به‌صورت اعداد کانجی، 々، ッ و نشانه‌های نگارشی به‌طور خودکار پردازش می‌شوند</string>
     <string name="yomitan_collection_not_collection">این فایل، مجموعه واژه‌نامه صادرشده از Yomitan نیست.</string>
     <string name="yomitan_collection_failed">وارد کردن آغاز نشد: فایل خوانده یا کپی نشد.</string>
     <string name="yomitan_collection_choose">واژه‌نامه‌های درون فایل</string>
@@ -1007,4 +1006,20 @@
     <string name="anki_mode_skip">رد شدن</string>
     <string name="anki_mode_append">افزودن</string>
     <string name="anki_mode_prepend">افزودن به ابتدا</string>
+    <string name="dictionaries_sort_harmonic">میانگین همساز</string>
+    <string name="dictionaries_sort_average">میانگین حسابی</string>
+    <string name="dictionaries_sort_aggregate_hint">واژه‌نامه‌های بسامد مبتنی بر رتبه را ترکیب می‌کند و مقدار ترکیبی را اول در پنجره بازشو نشان می‌دهد.</string>
+    <string name="lookup_merge_variants">ادغام گونه‌های نوشتاری</string>
+    <string name="lookup_merge_variants_hint">مدخل‌های دارای خوانش و تعریف یکسان را ترکیب می‌کند و نوشتارهای جایگزین را کنار سرواژه نشان می‌دهد.</string>
+    <string name="lookup_text_replacements">جایگزینی‌های متن</string>
+    <string name="lookup_text_replacements_hint">جایگزینی یا حذف بخشی از متن پیش از جستجو در واژه‌نامه‌ها.</string>
+    <string name="lookup_text_replacements_count">قواعد فعال: %1$d از %2$d</string>
+    <string name="lookup_text_replacements_empty">هنوز قاعده‌ای وجود ندارد.</string>
+    <string name="lookup_text_replacement_add">افزودن قاعده</string>
+    <string name="lookup_text_replacement_edit">ویرایش قاعده</string>
+    <string name="lookup_text_replacement_find">جستجو</string>
+    <string name="lookup_text_replacement_replace">جایگزینی با</string>
+    <string name="lookup_text_replacement_regex">عبارت باقاعده</string>
+    <string name="lookup_text_replacement_ignore_case">نادیده گرفتن بزرگی و کوچکی حروف</string>
+    <string name="yomitan_summary_replacements_imported">قواعد جایگزینی متن واردشده: %1$d</string>
 </resources>

@@ -117,6 +117,8 @@ object PageState {
         "externalJpdb" to context.getString(R.string.overlay_external_jpdb),
         "externalNadeshiko" to context.getString(R.string.overlay_external_nadeshiko),
         "externalImmersionKit" to context.getString(R.string.overlay_external_immersion_kit),
+        "freqHarmonic" to context.getString(R.string.overlay_freq_harmonic),
+        "freqAverage" to context.getString(R.string.overlay_freq_average),
     )
 
     /** The names of the languages whose dictionaries gave entries of [results] (`LookupResult.fallbackLanguage`). */

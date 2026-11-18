@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.cached
 import com.vpr.screenlate.core.common.settings.preferenceKey
@@ -48,6 +49,7 @@ data class PopupAppearance(
     val externalJpdb: Boolean = false,
     val externalNadeshiko: Boolean = false,
     val externalImmersionKit: Boolean = false,
+    val collapsedDictionaries: Set<String> = emptySet(),
 ) {
     companion object {
         const val DEFAULT_FONT_SIZE = 15
@@ -107,6 +109,7 @@ class PopupAppearanceRepository @Inject constructor(
             externalJpdb = prefs[EXTERNAL_JPDB] ?: false,
             externalNadeshiko = prefs[EXTERNAL_NADESHIKO] ?: false,
             externalImmersionKit = prefs[EXTERNAL_IMMERSION_KIT] ?: false,
+            collapsedDictionaries = prefs[COLLAPSED_DICTIONARIES].orEmpty(),
         )
 
     /** The page's appearance for text in [language]. */
@@ -174,6 +177,14 @@ class PopupAppearanceRepository @Inject constructor(
         dataStore.edit { if (css.isEmpty()) it.remove(key) else it[key] = css }
     }
 
+    suspend fun setDictionaryCollapsed(dictionary: String, collapsed: Boolean) {
+        dataStore.edit { prefs ->
+            val current = prefs[COLLAPSED_DICTIONARIES].orEmpty()
+            val updated = if (collapsed) current + dictionary else current - dictionary
+            if (updated.isEmpty()) prefs.remove(COLLAPSED_DICTIONARIES) else prefs[COLLAPSED_DICTIONARIES] = updated
+        }
+    }
+
     private companion object {
         fun fontKey(language: Language) = stringPreferencesKey(language.preferenceKey("popup_font"))
 
@@ -193,5 +204,6 @@ class PopupAppearanceRepository @Inject constructor(
         val EXTERNAL_JPDB = booleanPreferencesKey("popup_external_jpdb")
         val EXTERNAL_NADESHIKO = booleanPreferencesKey("popup_external_nadeshiko")
         val EXTERNAL_IMMERSION_KIT = booleanPreferencesKey("popup_external_immersion_kit")
+        val COLLAPSED_DICTIONARIES = stringSetPreferencesKey("popup_collapsed_dictionaries")
     }
 }

@@ -501,7 +501,6 @@
     <string name="yomitan_summary_audio_off">O áudio está desativado no Yomitan; nenhuma fonte foi definida</string>
     <string name="yomitan_summary_audio_unknown">Fontes de áudio sem suporte: %1$s</string>
     <string name="yomitan_summary_lookup">Alcance da varredura %1$s, entradas por pesquisa %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">As substituições de texto (%1$d regras) não são importadas: dígitos como numerais kanji, 々, ッ e pontuação são tratados automaticamente</string>
     <string name="yomitan_collection_not_collection">Este arquivo não é uma exportação de coleção de dicionários do Yomitan.</string>
     <string name="yomitan_collection_failed">Não foi possível iniciar a importação: o arquivo não pôde ser lido nem copiado.</string>
     <string name="yomitan_collection_choose">Dicionários no arquivo</string>
@@ -1019,4 +1018,20 @@
         <item quantity="many">%1$d de %2$d regiões</item>
         <item quantity="other">%1$d de %2$d regiões</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">Média harmônica</string>
+    <string name="dictionaries_sort_average">Média aritmética</string>
+    <string name="dictionaries_sort_aggregate_hint">Combina dicionários de frequência baseados em posição e mostra o valor combinado primeiro no pop-up.</string>
+    <string name="lookup_merge_variants">Mesclar variantes de grafia</string>
+    <string name="lookup_merge_variants_hint">Combina entradas com a mesma leitura e definições, mostrando grafias alternativas ao lado da palavra.</string>
+    <string name="lookup_text_replacements">Substituições de texto</string>
+    <string name="lookup_text_replacements_hint">Substitui ou remove texto antes de pesquisar palavras.</string>
+    <string name="lookup_text_replacements_count">Regras ativas: %1$d de %2$d</string>
+    <string name="lookup_text_replacements_empty">Nenhuma regra ainda.</string>
+    <string name="lookup_text_replacement_add">Adicionar regra</string>
+    <string name="lookup_text_replacement_edit">Editar regra</string>
+    <string name="lookup_text_replacement_find">Localizar</string>
+    <string name="lookup_text_replacement_replace">Substituir por</string>
+    <string name="lookup_text_replacement_regex">Expressão regular</string>
+    <string name="lookup_text_replacement_ignore_case">Ignorar maiúsculas e minúsculas</string>
+    <string name="yomitan_summary_replacements_imported">Regras de substituição de texto importadas: %1$d</string>
 </resources>

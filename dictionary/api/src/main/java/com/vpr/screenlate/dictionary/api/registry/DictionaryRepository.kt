@@ -7,6 +7,7 @@ import com.vpr.screenlate.core.common.settings.preferenceKey
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
+import com.vpr.screenlate.dictionary.api.FrequencySort
 import com.vpr.screenlate.dictionary.api.LookupOptions
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.imports.ReadingIndexBanks
@@ -50,6 +51,8 @@ class DictionaryRepository @Inject constructor(
     private val mutex = Mutex()
     private var loadedLanguage: Language? = null
     private var sortDictionary: DictionaryEntity? = null
+    private var sortAggregateId: Long? = null
+    private var frequencyModes: Map<String, String> = emptyMap()
     private var termOrder: List<String> = emptyList()
     private var fallbackTitles: Set<String> = emptySet()
     private val changes = AtomicInteger()
@@ -346,11 +349,13 @@ class DictionaryRepository @Inject constructor(
 
     private suspend fun prepareLookupLocked(language: Language): PreparedLookup {
         if (loadedLanguage != language) load(language)
+        val aggregate = FrequencySort.titleForId(sortAggregateId)
         val sort = sortDictionary
         return PreparedLookup(
             options = LookupOptions(
-                frequencyDictionary = sort?.title,
+                frequencyDictionary = aggregate ?: sort?.title,
                 frequencyOrder = when {
+                    aggregate != null -> FrequencyOrder.ASCENDING
                     sort == null -> FrequencyOrder.DISABLED
                     sort.frequencyMode == "occurrence-based" -> FrequencyOrder.DESCENDING
                     else -> FrequencyOrder.ASCENDING
@@ -358,7 +363,18 @@ class DictionaryRepository @Inject constructor(
             ),
             termDictionaries = termOrder,
             fallbackDictionaries = fallbackTitles,
+            frequencyModes = frequencyModes,
         )
+    }
+
+    /** Active aggregate frequency sort mode (`"harmonic"` or `"average"`) for [language], or null when sorting by one dictionary. */
+    suspend fun sortFrequencyMode(language: Language): String? {
+        val chosen = preferences.data.first()[sortKey(language)]
+        val mode = FrequencySort.modeForId(chosen) ?: return null
+        val rankBasedCount = dao.getAll().count {
+            it.frequencyCount > 0 && it.frequencyMode != "occurrence-based" && usable(it, language)
+        }
+        return mode.takeIf { rankBasedCount >= 2 }
     }
 
     suspend fun setSortDictionary(language: Language, id: Long) = mutex.withLock {
@@ -366,10 +382,12 @@ class DictionaryRepository @Inject constructor(
         reloadLocked()
     }
 
-    /** As [setSortDictionary], unless another installed dictionary was chosen for [language]. */
+    /** As [setSortDictionary], unless another installed dictionary or aggregate sort was chosen for [language]. */
     suspend fun preferSortDictionary(language: Language, id: Long) = mutex.withLock {
         val chosen = preferences.data.first()[sortKey(language)]
-        if (chosen != null && chosen != id && dao.getAll().any { it.id == chosen }) return@withLock
+        if (chosen != null && chosen != id && (FrequencySort.isAggregateId(chosen) || dao.getAll().any { it.id == chosen })) {
+            return@withLock
+        }
         preferences.edit { it[sortKey(language)] = id }
         reloadLocked()
     }
@@ -469,7 +487,14 @@ class DictionaryRepository @Inject constructor(
         )
         val frequencies = enabled.filter { it.frequencyCount > 0 }
         val preferred = preferences.data.first()[sortKey(language)]
-        sortDictionary = frequencies.firstOrNull { it.id == preferred } ?: frequencies.firstOrNull()
+        val rankBased = frequencies.filter { it.frequencyMode != "occurrence-based" }
+        sortAggregateId = preferred?.takeIf { FrequencySort.isAggregateId(it) && rankBased.size >= 2 }
+        sortDictionary = if (sortAggregateId != null) {
+            null
+        } else {
+            frequencies.firstOrNull { it.id == preferred } ?: frequencies.firstOrNull()
+        }
+        frequencyModes = frequencies.mapNotNull { entity -> entity.frequencyMode?.let { entity.title to it } }.toMap()
         termOrder = terms.map { it.title }
         fallbackTitles = fallback.mapTo(HashSet()) { it.title }
         loadedLanguage = language
@@ -490,6 +515,7 @@ data class PreparedLookup(
     val options: LookupOptions,
     val termDictionaries: List<String>,
     val fallbackDictionaries: Set<String> = emptySet(),
+    val frequencyModes: Map<String, String> = emptyMap(),
 )
 
 private fun sortKey(language: Language) = longPreferencesKey(language.preferenceKey("sort_dictionary_id"))

@@ -79,6 +79,46 @@ internal fun List<LookupResult>.mergeSameWords(dictionaryOrder: List<String>, su
 }
 
 /**
+ * Merges entries with the same matched prefix, normalized reading and identical primary-dictionary glossary content
+ * into one entry (Yomitan's `merge` grouping mode). The highest-ranked entry stays primary; distinct expressions of
+ * merged entries are listed in [TermEntry.alternativeExpressions].
+ */
+internal fun List<LookupResult>.mergeSpellingVariants(
+    dictionaryOrder: List<String>,
+    support: LanguageSupport,
+): List<LookupResult> {
+    if (size < 2) return this
+    val rank = dictionaryOrder.withIndex().associate { it.value to it.index }
+    fun mergeKey(result: LookupResult): Triple<String, String, List<Pair<String, String>>>? {
+        val reading = support.normalizeReading(result.term.reading.ifEmpty { result.term.expression })
+        if (reading.isEmpty()) return null
+        val primary = result.term.glossaries.minByOrNull { rank[it.dictionary] ?: Int.MAX_VALUE }?.dictionary ?: return null
+        val primaryContents = result.term.glossaries
+            .filter { it.dictionary == primary }
+            .map { it.dictionary to it.content }
+        return Triple(result.matched, reading, primaryContents)
+    }
+    val merged = LinkedHashMap<Any, LookupResult>()
+    for ((index, result) in withIndex()) {
+        val key: Any = mergeKey(result) ?: index
+        val existing = merged[key]
+        if (existing == null) {
+            merged[key] = result
+        } else {
+            val alt = result.term.expression
+            val alts = if (alt != existing.term.expression && alt !in existing.term.alternativeExpressions) {
+                existing.term.alternativeExpressions + alt
+            } else {
+                existing.term.alternativeExpressions
+            }
+            val combined = existing.joined(result.term, dictionaryOrder)
+            merged[key] = combined.copy(term = combined.term.copy(alternativeExpressions = alts))
+        }
+    }
+    return merged.values.toList()
+}
+
+/**
  * With [LookupSettings.fixedScript][com.vpr.screenlate.dictionary.api.settings.LookupSettings.fixedScript]: a word
  * written in another script than [tag] gives way to the same word in [tag] where the lookup found that too (the text in
  * [tag] is looked up as well), which takes its place and its definitions. Words no dictionary spells in [tag] stay.

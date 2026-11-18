@@ -497,7 +497,6 @@
     <string name="yomitan_summary_audio_off">Yomitan’da ses kapalı; kaynak ayarlanmadı</string>
     <string name="yomitan_summary_audio_unknown">Desteklenmeyen ses kaynakları: %1$s</string>
     <string name="yomitan_summary_lookup">Tarama uzunluğu %1$s, arama başına madde %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">Metin değiştirmeleri (%1$d kural) içe aktarılmaz: kanji rakamları olarak sayılar, 々, ッ ve noktalama otomatik olarak işlenir</string>
     <string name="yomitan_collection_not_collection">Bu dosya bir Yomitan sözlük koleksiyonu dışa aktarımı değil.</string>
     <string name="yomitan_collection_failed">İçe aktarma başlatılamadı: dosya okunamadı veya kopyalanamadı.</string>
     <string name="yomitan_collection_choose">Dosyadaki sözlükler</string>
@@ -1006,4 +1005,20 @@
         <item quantity="one">%1$d/%2$d bölge</item>
         <item quantity="other">%1$d/%2$d bölge</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">Harmonik ortalama</string>
+    <string name="dictionaries_sort_average">Ortalama</string>
+    <string name="dictionaries_sort_aggregate_hint">Sıra tabanlı sıklık sözlüklerini birleştirir ve birleşik değeri açılır pencerede ilk sırada gösterir.</string>
+    <string name="lookup_merge_variants">Yazım varyantlarını birleştir</string>
+    <string name="lookup_merge_variants_hint">Aynı okunuş ve tanımlara sahip girdileri birleştirir, alternatif yazımları kelimenin yanında gösterir.</string>
+    <string name="lookup_text_replacements">Metin değiştirmeleri</string>
+    <string name="lookup_text_replacements_hint">Kelimeleri aramadan önce metni değiştirir veya kaldırır.</string>
+    <string name="lookup_text_replacements_count">Etkin kurallar: %1$d / %2$d</string>
+    <string name="lookup_text_replacements_empty">Henüz kural yok.</string>
+    <string name="lookup_text_replacement_add">Kural ekle</string>
+    <string name="lookup_text_replacement_edit">Kuralı düzenle</string>
+    <string name="lookup_text_replacement_find">Bul</string>
+    <string name="lookup_text_replacement_replace">Şununla değiştir</string>
+    <string name="lookup_text_replacement_regex">Düzenli ifade</string>
+    <string name="lookup_text_replacement_ignore_case">Büyük/küçük harf yoksay</string>
+    <string name="yomitan_summary_replacements_imported">İçe aktarılan metin değiştirme kuralları: %1$d</string>
 </resources>

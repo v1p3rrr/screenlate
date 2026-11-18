@@ -1946,6 +1946,10 @@ class OverlayController(
             val sentence = shownSentence()?.text
             scope.launch { popup.page.showTranslation(request, translation.forPopup(service, sentence, language)) }
         }
+
+        override fun onToggleDictionary(dictionary: String, collapsed: Boolean) {
+            scope.launch { pageAppearance.setDictionaryCollapsed(dictionary, collapsed) }
+        }
     }
 
     private companion object {

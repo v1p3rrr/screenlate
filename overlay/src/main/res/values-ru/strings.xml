@@ -114,4 +114,6 @@
     <string name="crop_whole_photo">Всё фото</string>
     <string name="crop_remember_area">Запоминать область</string>
     <string name="overlay_external_google_images">Google Картинки</string>
+    <string name="overlay_freq_harmonic">Гарм.</string>
+    <string name="overlay_freq_average">Сред.</string>
 </resources>

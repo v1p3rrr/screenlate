@@ -493,7 +493,6 @@
     <string name="yomitan_summary_audio_off">Âm thanh đang tắt trong Yomitan; không có nguồn nào được đặt</string>
     <string name="yomitan_summary_audio_unknown">Nguồn âm thanh không được hỗ trợ: %1$s</string>
     <string name="yomitan_summary_lookup">Độ dài quét %1$s, số mục mỗi lần tra %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">Thay thế văn bản (%1$d quy tắc) không được nhập: chữ số dạng số kanji, 々, ッ và dấu câu được xử lý tự động</string>
     <string name="yomitan_collection_not_collection">Tệp này không phải bản xuất bộ sưu tập từ điển của Yomitan.</string>
     <string name="yomitan_collection_failed">Không thể bắt đầu nhập: không đọc hoặc sao chép được tệp.</string>
     <string name="yomitan_collection_choose">Từ điển trong tệp</string>
@@ -993,4 +992,20 @@
     <plurals name="camera_status_regions">
         <item quantity="other">%1$d/%2$d vùng</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">Trung bình điều hòa</string>
+    <string name="dictionaries_sort_average">Trung bình cộng</string>
+    <string name="dictionaries_sort_aggregate_hint">Kết hợp các từ điển tần suất theo thứ hạng và hiển thị giá trị tổng hợp đầu tiên trong cửa sổ bật lên.</string>
+    <string name="lookup_merge_variants">Gộp các biến thể cách viết</string>
+    <string name="lookup_merge_variants_hint">Gộp các mục có cùng cách đọc và định nghĩa, hiển thị cách viết thay thế cạnh từ chính.</string>
+    <string name="lookup_text_replacements">Thay thế văn bản</string>
+    <string name="lookup_text_replacements_hint">Thay thế hoặc xóa văn bản trước khi tra từ.</string>
+    <string name="lookup_text_replacements_count">Quy tắc đang bật: %1$d / %2$d</string>
+    <string name="lookup_text_replacements_empty">Chưa có quy tắc nào.</string>
+    <string name="lookup_text_replacement_add">Thêm quy tắc</string>
+    <string name="lookup_text_replacement_edit">Sửa quy tắc</string>
+    <string name="lookup_text_replacement_find">Tìm</string>
+    <string name="lookup_text_replacement_replace">Thay bằng</string>
+    <string name="lookup_text_replacement_regex">Biểu thức chính quy</string>
+    <string name="lookup_text_replacement_ignore_case">Không phân biệt hoa thường</string>
+    <string name="yomitan_summary_replacements_imported">Quy tắc thay thế văn bản đã nhập: %1$d</string>
 </resources>

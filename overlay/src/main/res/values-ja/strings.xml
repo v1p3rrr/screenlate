@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">写真全体</string>
     <string name="crop_remember_area">範囲を記憶</string>
     <string name="overlay_external_google_images">Google 画像検索</string>
+    <string name="overlay_freq_harmonic">調和</string>
+    <string name="overlay_freq_average">平均</string>
 </resources>

@@ -1809,3 +1809,114 @@ test('fallback language entry in japanese lookup excludes japanese-specific link
     assert.ok(extBtn);
     assert.equal(extBtn.dataset.external, 'google-images');
 });
+
+test('tapping a dictionary chip collapses and expands all sections of that dictionary and persists', () => {
+    const first = result('猫', 'ねこ', 'cat');
+    first.term.glossaries.push({ dictionary: 'Other', content: JSON.stringify(['kitty']) });
+    const second = result('猫舌', 'ねこじた', 'cat tongue');
+    Popup.render(state({ results: [first, second] }));
+
+    const sections = () => Array.from(content.querySelectorAll('section.dictionary[data-dictionary="Dict [1]"]'));
+    assert.equal(sections().length, 2);
+    assert.equal(sections()[0].classList.contains('collapsed'), false);
+
+    sections()[0].querySelector('.dictionary-name').click();
+    assert.equal(sections()[0].classList.contains('collapsed'), true);
+    assert.equal(sections()[1].classList.contains('collapsed'), true);
+    assert.equal(sections()[0].querySelector('.dictionary-name').parentElement, sections()[0]);
+    assert.deepEqual(page.calls.at(-1), ['onToggleDictionary', 'Dict [1]', true]);
+
+    // Tapping again expands and moves the dictionary name back into the first definition.
+    sections()[0].querySelector('.dictionary-name').click();
+    assert.equal(sections()[0].classList.contains('collapsed'), false);
+    assert.equal(sections()[1].classList.contains('collapsed'), false);
+    assert.equal(sections()[0].querySelector('.dictionary-name').parentElement.className, 'definition-body');
+    assert.deepEqual(page.calls.at(-1), ['onToggleDictionary', 'Dict [1]', false]);
+
+    // setAppearance syncs collapsed dictionaries from persisted settings.
+    Popup.setAppearance({ collapsedDictionaries: ['Other'] });
+    const otherSection = content.querySelector('section.dictionary[data-dictionary="Other"]');
+    assert.equal(otherSection.classList.contains('collapsed'), true);
+    assert.equal(sections()[0].classList.contains('collapsed'), false);
+});
+
+test('harmonic and average frequency sort modes display the aggregate chip first and expand all dictionaries', () => {
+    const entry = result('猫', 'ねこ', 'cat');
+    entry.term.frequencies = [
+        { dictionary: 'JPDB', values: [{ value: 100, displayValue: '100' }] },
+        { dictionary: 'BCCWJ', values: [{ value: 300, displayValue: '300' }] },
+        { dictionary: 'OccDict', values: [{ value: 5000, displayValue: '5000' }] },
+    ];
+    Popup.setNoteConfig({
+        markers: null,
+        frequencyModes: { JPDB: 'rank-based', BCCWJ: 'rank-based', OccDict: 'occurrence-based' },
+        regions: [],
+        screenshotByDefault: false,
+        sortFrequencyMode: 'harmonic',
+    });
+    Popup.render(state({
+        results: [entry],
+        labels: { ...labels, freqHarmonic: 'Harm', freqAverage: 'Avg' },
+    }));
+    const chips = () => Array.from(content.querySelectorAll('.entry-info .frequency'));
+    assert.equal(chips().length, 1);
+    assert.equal(chips()[0].textContent, 'Harm150');
+    const more = content.querySelector('.frequency-more');
+    assert.equal(more.textContent, '+3');
+    more.click();
+    assert.equal(chips().length, 4);
+    assert.equal(chips()[0].textContent, 'Harm150');
+
+    // Switching to average updates live.
+    Popup.setNoteConfig({
+        markers: null,
+        frequencyModes: { JPDB: 'rank-based', BCCWJ: 'rank-based', OccDict: 'occurrence-based' },
+        regions: [],
+        screenshotByDefault: false,
+        sortFrequencyMode: 'average',
+    });
+    assert.equal(chips()[0].textContent, 'Avg200');
+});
+
+test('alternative expressions from merged variants render next to the headword', () => {
+    const entry = result('見る', 'みる', 'to see');
+    entry.term.alternativeExpressions = ['観る', '視る'];
+    Popup.render(state({ results: [entry] }));
+    const alt = content.querySelector('.entry-head .alt-expressions');
+    assert.ok(alt);
+    assert.equal(alt.textContent, '観る・視る');
+});
+
+test('note button states are preserved across continued refined renders of the same terms', () => {
+    Popup.setActions({ anki: true, audio: false });
+    Popup.render(state());
+    Popup.setNoteStates({ 0: 'duplicate_overwrite', 1: 'open' });
+    // Source text changes slightly on refinement, but terms stay identical.
+    Popup.render(state({ source: { text: '猫が好きだ', matched: 1 } }), { continued: true, refined: true });
+    const buttons = content.querySelectorAll('.action-add');
+    assert.equal(buttons[0].dataset.state, 'duplicate_overwrite');
+    assert.equal(buttons[1].dataset.state, 'open');
+});
+
+test('popup-selection-text is captured on pointerdown before tapping Anki add', () => {
+    Popup.setActions({ anki: true, audio: false });
+    Popup.setNoteConfig({ markers: ['expression', 'popup-selection-text'], frequencyModes: {}, regions: [], screenshotByDefault: false });
+    Popup.render(state());
+    const body = content.querySelector('.definition-body');
+    const range = page.document.createRange();
+    range.selectNodeContents(body);
+    const selection = page.window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    const add = content.querySelector('.action-add');
+    press(add, 'pointerdown');
+    // Simulate WebView clearing selection between pointerdown and pointerup.
+    selection.removeAllRanges();
+    press(add, 'pointerup');
+
+    const call = page.calls.find(c => c[0] === 'onAddNote');
+    assert.ok(call);
+    const payload = JSON.parse(call[2]);
+    assert.match(payload.values['popup-selection-text'], /meaning/);
+});

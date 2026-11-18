@@ -113,4 +113,6 @@
     <string name="crop_whole_photo">사진 전체</string>
     <string name="crop_remember_area">영역 기억</string>
     <string name="overlay_external_google_images">Google 이미지</string>
+    <string name="overlay_freq_harmonic">조화</string>
+    <string name="overlay_freq_average">평균</string>
 </resources>

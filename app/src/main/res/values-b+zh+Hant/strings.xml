@@ -493,7 +493,6 @@
     <string name="yomitan_summary_audio_off">Yomitan 中音訊已關閉；未設定任何來源</string>
     <string name="yomitan_summary_audio_unknown">不支援的音訊來源：%1$s</string>
     <string name="yomitan_summary_lookup">掃描長度 %1$s，每次查詞的詞條數 %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">文字替換（%1$d 條規則）不會匯入：漢字書寫的數字、々、ッ 和標點會自動處理</string>
     <string name="yomitan_collection_not_collection">此檔案不是 Yomitan 詞典合集的匯出檔案。</string>
     <string name="yomitan_collection_failed">無法開始匯入：無法讀取或複製該檔案。</string>
     <string name="yomitan_collection_choose">檔案中的詞典</string>
@@ -993,4 +992,20 @@
     <plurals name="camera_status_regions">
         <item quantity="other">%1$d/%2$d 個區域</item>
     </plurals>
+    <string name="dictionaries_sort_harmonic">調和平均數</string>
+    <string name="dictionaries_sort_average">算術平均數</string>
+    <string name="dictionaries_sort_aggregate_hint">合併按排名統計的詞頻詞典，並在彈出視窗中優先顯示合併結果。</string>
+    <string name="lookup_merge_variants">合併異形詞條</string>
+    <string name="lookup_merge_variants_hint">合併讀音和釋義相同的詞條，在詞頭旁顯示其他寫法。</string>
+    <string name="lookup_text_replacements">文字替換</string>
+    <string name="lookup_text_replacements_hint">查詞前替換或移除文字中的特定內容。</string>
+    <string name="lookup_text_replacements_count">已啟用規則：%1$d / %2$d</string>
+    <string name="lookup_text_replacements_empty">尚無規則。</string>
+    <string name="lookup_text_replacement_add">新增規則</string>
+    <string name="lookup_text_replacement_edit">編輯規則</string>
+    <string name="lookup_text_replacement_find">尋找</string>
+    <string name="lookup_text_replacement_replace">替換為</string>
+    <string name="lookup_text_replacement_regex">正規表示式</string>
+    <string name="lookup_text_replacement_ignore_case">忽略大小寫</string>
+    <string name="yomitan_summary_replacements_imported">已匯入文字替換規則：%1$d</string>
 </resources>

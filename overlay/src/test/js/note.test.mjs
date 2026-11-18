@@ -222,3 +222,9 @@ test('phonetic transcriptions list each one the dictionaries give, and pitch mar
     // A Japanese pitch dictionary has no transcriptions.
     assert.equal(NoteData.build(result, context).values['phonetic-transcriptions'], '');
 });
+
+test('popup-selection-text escapes html and converts line breaks', () => {
+    const built = NoteData.build(result, { ...context, selection: 'a < b\nsecond line' }, ['popup-selection-text']);
+    assert.equal(built.values['popup-selection-text'], 'a &lt; b<br>second line');
+    assert.equal(NoteData.build(result, context, ['popup-selection-text']).values['popup-selection-text'], '');
+});

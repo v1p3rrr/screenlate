@@ -1,30 +1,45 @@
 package com.vpr.screenlate.lookup
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
+import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import com.vpr.screenlate.languages.LanguageCard
 import com.vpr.screenlate.languages.characterEntryStrings
 import com.vpr.screenlate.settings.SectionResetButton
@@ -34,6 +49,7 @@ import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
+import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.formContent
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
@@ -49,12 +65,20 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
     val profiles by viewModel.shown.profiles.collectAsStateWithLifecycle()
     val shown by viewModel.shown.language.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
+    var showReplacements by remember { mutableStateOf(false) }
     SettingsScaffold(
         stringResource(R.string.lookup_title),
         onBack,
         actions = { SectionResetButton(SettingsSection.LOOKUP, shown, profiles.several) },
     ) { padding ->
         val settings = loaded ?: return@SettingsScaffold
+        if (showReplacements) {
+            TextReplacementsDialog(
+                rules = settings.textReplacements,
+                onUpdate = viewModel::setTextReplacements,
+                onDismiss = { showReplacements = false },
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,7 +88,7 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             val maxResults: @Composable ColumnScope.() -> Unit = { MaxResults(settings.maxResults, viewModel::setMaxResults) }
-            // Scan length and single character entries belong to the shown language; romaji and the result count are shared.
+            // Scan length, single character entries, merge variants and text replacements belong to the shown language.
             val ownRows: @Composable ColumnScope.() -> Unit = {
                 ScanLengthRow(settings.scanLength, viewModel::setScanLength)
             }
@@ -78,6 +102,12 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
                         viewModel::setSingleKanji,
                         hint = stringResource(strings.hint),
                     )
+                    SwitchRow(
+                        stringResource(R.string.lookup_merge_variants),
+                        settings.mergeVariants,
+                        viewModel::setMergeVariants,
+                        hint = stringResource(R.string.lookup_merge_variants_hint),
+                    )
                 }
                 if (support.convertsLatin) {
                     SwitchRow(
@@ -87,6 +117,10 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
                         hint = stringResource(R.string.lookup_romaji_hint),
                     )
                 }
+                TextReplacementsRow(
+                    rules = settings.textReplacements,
+                    onClick = { showReplacements = true },
+                )
             }
             if (profiles.several) {
                 SectionCard(title = stringResource(R.string.lookup_scanning)) { maxResults() }
@@ -151,3 +185,236 @@ private fun ScanLengthRow(length: Int, onChange: (Int) -> Unit) {
 }
 
 private const val SCAN_LENGTH_SLIDER_MAX = 40
+
+@Composable
+private fun TextReplacementsRow(rules: List<TextReplacement>, onClick: () -> Unit) {
+    val active = rules.count { it.enabled }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(stringResource(R.string.lookup_text_replacements), style = MaterialTheme.typography.bodyLarge)
+            Hint(
+                if (rules.isEmpty()) {
+                    stringResource(R.string.lookup_text_replacements_hint)
+                } else {
+                    stringResource(R.string.lookup_text_replacements_count, active, rules.size)
+                },
+            )
+        }
+        Icon(
+            painterResource(R.drawable.ic_chevron_right),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun TextReplacementsDialog(
+    rules: List<TextReplacement>,
+    onUpdate: (List<TextReplacement>) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var editingIndex by remember { mutableStateOf<Int?>(null) }
+    var adding by remember { mutableStateOf(false) }
+
+    if (adding || editingIndex != null) {
+        val current = editingIndex?.let { rules.getOrNull(it) }
+        EditReplacementDialog(
+            initial = current,
+            onSave = { updated ->
+                val idx = editingIndex
+                val next = if (idx != null && idx in rules.indices) {
+                    rules.toMutableList().apply { this[idx] = updated }
+                } else {
+                    rules + updated
+                }
+                onUpdate(next)
+                adding = false
+                editingIndex = null
+            },
+            onDismiss = {
+                adding = false
+                editingIndex = null
+            },
+        )
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.lookup_text_replacements)) },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 380.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Hint(stringResource(R.string.lookup_text_replacements_hint))
+                if (rules.isEmpty()) {
+                    Text(
+                        stringResource(R.string.lookup_text_replacements_empty),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    rules.forEachIndexed { index, rule ->
+                        if (index > 0) HorizontalDivider()
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { editingIndex = index }
+                                .padding(vertical = 4.dp),
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "${rule.pattern} → ${rule.replacement}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontFamily = FontFamily.Monospace,
+                                )
+                                val flags = buildList {
+                                    if (rule.regex) add(stringResource(R.string.lookup_text_replacement_regex))
+                                    if (rule.ignoreCase) add("Aa")
+                                }
+                                if (flags.isNotEmpty()) {
+                                    Text(
+                                        text = flags.joinToString(" · "),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                            Switch(
+                                checked = rule.enabled,
+                                onCheckedChange = { enabled ->
+                                    onUpdate(rules.toMutableList().apply { this[index] = rule.copy(enabled = enabled) })
+                                },
+                                colors = AccentDefaults.switchColors(),
+                            )
+                            TooltipIconButton(
+                                R.drawable.ic_delete,
+                                stringResource(R.string.action_delete),
+                                onClick = {
+                                    onUpdate(rules.toMutableList().apply { removeAt(index) })
+                                },
+                            )
+                        }
+                    }
+                }
+                OutlinedButton(
+                    onClick = { adding = true },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(stringResource(R.string.lookup_text_replacement_add))
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) }
+        },
+    )
+}
+
+@Composable
+private fun EditReplacementDialog(
+    initial: TextReplacement?,
+    onSave: (TextReplacement) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var pattern by remember(initial) { mutableStateOf(initial?.pattern.orEmpty()) }
+    var replacement by remember(initial) { mutableStateOf(initial?.replacement.orEmpty()) }
+    var regex by remember(initial) { mutableStateOf(initial?.regex ?: false) }
+    var ignoreCase by remember(initial) { mutableStateOf(initial?.ignoreCase ?: false) }
+    val regexError = remember(pattern, regex) {
+        if (!regex || pattern.isEmpty()) null else runCatching { Regex(pattern) }.exceptionOrNull()?.message
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                stringResource(
+                    if (initial == null) R.string.lookup_text_replacement_add else R.string.lookup_text_replacement_edit,
+                ),
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedTextField(
+                    value = pattern,
+                    onValueChange = { pattern = it },
+                    label = { Text(stringResource(R.string.lookup_text_replacement_find)) },
+                    isError = regexError != null,
+                    supportingText = regexError?.let { msg -> { Text(msg) } },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = replacement,
+                    onValueChange = { replacement = it },
+                    label = { Text(stringResource(R.string.lookup_text_replacement_replace)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { regex = !regex },
+                ) {
+                    Checkbox(
+                        checked = regex,
+                        onCheckedChange = { regex = it },
+                        colors = AccentDefaults.checkboxColors(),
+                    )
+                    Text(stringResource(R.string.lookup_text_replacement_regex), style = MaterialTheme.typography.bodyMedium)
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { ignoreCase = !ignoreCase },
+                ) {
+                    Checkbox(
+                        checked = ignoreCase,
+                        onCheckedChange = { ignoreCase = it },
+                        colors = AccentDefaults.checkboxColors(),
+                    )
+                    Text(stringResource(R.string.lookup_text_replacement_ignore_case), style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onSave(
+                        TextReplacement(
+                            pattern = pattern,
+                            replacement = replacement,
+                            regex = regex,
+                            ignoreCase = ignoreCase,
+                            enabled = initial?.enabled ?: true,
+                        ),
+                    )
+                },
+                enabled = pattern.isNotEmpty() && regexError == null,
+            ) {
+                Text(stringResource(R.string.action_save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
+}
