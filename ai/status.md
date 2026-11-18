@@ -1,9 +1,14 @@
 # Status
 
+## Audio mockup approved with small settings edits (2026-11-19)
+
+- Owner tested and approved the in-chat editor/settings mockup. Removed the static Anki field row from Audio recording settings and clarified the shared recorded-sentence/default-attachment switch title and hint in both copies.
+- Recorded mixed-field Without audio preservation, old-scan audio ineligibility until manual rescan, unified duplicate/attachment menu, and scope deferral of the shared Anki uncertainty issue in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md). No app implementation changes.
+
 ## Continued audio correctness analysis (2026-11-19)
 
 - Continued the owner-requested analysis after showing the mockup. Verified pinned Anki SDK can return null after note insertion, current fields/tags update is partial, and cancellation may lose a committed result; recorded truthful outcomes/readback/retry boundaries and event-order tests in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).
-- Recorded absolute-deadline/stale-timer, late-writer, context/first-editor, queued-scan and TTS start/stop invariants. Sent four narrow new product questions: unconfirmed add, mixed-field Without audio, capture started during an old scan, and existing duplicate long-press actions plus attachments. Answers pending.
+- Recorded absolute-deadline/stale-timer, late-writer, context/first-editor, queued-scan and TTS start/stop invariants. Resolved four follow-ups: general Anki uncertainty stays outside audio scope; Without audio preserves the entire existing mixed sentence-audio field with explanation; audio is unavailable on a pre-recording scan until manual rescan; one long-press menu preserves existing commands and attachment choices.
 - Documentation/source analysis only. No app, device or collection changes; no new plan/defaults chosen.
 
 ## Audio UI answers, mockup and parallel audits (2026-11-19)
