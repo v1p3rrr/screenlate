@@ -1,5 +1,12 @@
 # Status
 
+## Video audio mining context recovered (2026-11-18)
+
+- Owner requested the deferred sentence-audio recording variants, approval status and implementation context.
+- Consolidated the 2026-10-12 experimental branch (`origin/claude/gallant-hawking-pr16aj`, `a39dc968`), A-H concepts, C1-C4 editors, private sketch link, 2026-10-16 follow-up, current code seams and freshly verified Android requirements in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).
+- No recorded concept selection or implementation approval was found. The owner explored instant replay/manual trimming in detail; all defaults, UI, markers and scope remain proposals. Offline pronunciation packs are a separate backlog item.
+- Research/documentation only; no application code or device state changed. Historical CPU, battery, latency and audio-only lock/call claims remain unmeasured or device-specific. Current legacy MediaProjection code is for screenshots, not an implemented audio recorder.
+
 ## Yomitan parity features and Anki UX improvements (2026-11-18)
 
 - Implemented on branch `features/yomitan-features` and merged into `main` (`d2341119`):
