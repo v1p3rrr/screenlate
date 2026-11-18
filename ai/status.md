@@ -1,5 +1,10 @@
 # Status
 
+## Audio buffer and continuation scenarios clarified (2026-11-18)
+
+- Recorded the owner's completed visual-novel utterance and paused-video/mid-word continuation cases in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md), including natural speech pauses, missing subtitle timing, stale popup context, optional segmentation and deferred UX.
+- Revised recommendation: C with continuous retained audio, scan-time context, reversible ranges and editable continuation joins. VAD can suggest edits but cannot identify sentences or distinguish player pauses reliably. C remains tentative; no implementation or defaults approved. Automatic pause/resume and screenshot-history extensions are outside this discussion.
+
 ## Forced offline mode readiness and missing on-device OCR model handling (2026-11-18)
 
 - Fixed missing on-device OCR model detection and UX under Forced Offline Mode (`appSettings.offlineMode = true`):

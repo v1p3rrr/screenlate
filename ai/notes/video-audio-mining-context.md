@@ -137,3 +137,37 @@ Research only. No product decision, device experiment, or application change.
 - Earlier notes claim audio-only projection survives locking/calls and shows no green microphone dot. This verification does not establish those claims across Android releases or the owner's firmware. Treat them as implementation/device checks, not guarantees. The current screen-projection guide explicitly documents lock-screen termination.
 - CPU/battery estimates below one percent were never measured here. Bounded PCM size is calculable (48,000 frames/s * 2 bytes/sample * channels * seconds); actual load, wakeups, thermal effects, and system/OEM process survival require measurements.
 - Do not infer that all protected titles behave identically, that silence proves a particular refusal reason, or that projection consent can be silently restored after session/process termination.
+
+## Owner follow-up and revised recommendation (2026-11-18)
+
+This section records the owner's scenarios and a design recommendation, not an implementation plan or approved defaults. The owner tentatively favors C; UX is explicitly for later discussion.
+
+### Requirements and scope supplied by the owner
+
+- A spoken utterance can contain substantial natural pauses (example: 1.5 seconds). Speech-activity segments are not sentence boundaries. Splitting at every quiet interval can damage the intended clip.
+- Screenlate does not track every subtitle's appearance/disappearance. Without subtitle timing or audio/text alignment, the latest speech segment may belong to a different line. Background neural inference is not an assumed requirement.
+- Visual novel: lookup can start while a character is still speaking. For the initial scenario, the user requests the audio attachment after the utterance ends; the buffer must retain both earlier speech and speech produced after the scan. The source may not support rewinding. A later utterance may already be playing while the popup still shows the earlier line.
+- Video: the user may pause while subtitles are visible and speech is incomplete, including halfway through a word. After lookup, the audio workflow must support continuing playback manually and appending the missing sound. The wait while paused needs removal or an editable exclusion, with manual/optional automatic help still to be decided.
+- Utterances can be long or short. A fixed latest-short-fragment assumption is inadequate.
+- Automatic pause and resume are outside the currently discussed feature. Subtitle timing integrations, an own video player and screenshot-history extensions are separate future topics. The owner acknowledges that the visible picture can change while an earlier line stays selected; do not silently add screenshot-history scope.
+- Automatic grouping could be reconsidered with editable joining/selection, but it must also handle natural pauses and continuation interrupted mid-word.
+
+### Proposed core behavior
+
+Use C as the recommended basis: opt-in rolling audio history, a stable audio draft associated with the scanned context, adjustable start/end, preview and continuation. Keep the continuous original and represent edits as retained/excluded time ranges until final export. Natural pauses inside the chosen utterance remain intact. Nothing in a VAD result proves that it matches the OCR sentence.
+
+Associate a marker with the actual screenshot/text acquisition time, rather than only the later Add action or OCR completion. A marker is a navigation aid, not an inferred sentence start/end. At Add, retain history around that marker through the time of the action; allow navigation earlier/later so a subsequent utterance does not silently replace the selected context. Pending context must protect its required history before ring rollover; choose explicit buffer/draft budgets later and expose unavailable/expired history. Long reading time cannot imply unlimited memory or guaranteed recovery beyond the retained window.
+
+For a completed visual-novel utterance, the user selects one continuous range containing the utterance, including its natural internal pauses. Speech after scan acquisition is still available. Newer speech can be excluded by moving the end; speech segmentation is not required. If the beginning predates the retained history, the app cannot reconstruct it.
+
+For paused video, protect the initial audio, then permit one or more explicit continuation segments while the user operates the player. Preserve editable source ranges on both sides of every join, give preview around the join and allow continuation retry/removal without losing the original fragment. Known time deliberately outside both retained segments can be omitted exactly; pause onset and playback resume inside captured segments are not known merely from editor buttons. The user needs boundary adjustment or an editable internal exclusion to remove remaining wait.
+
+Quietness cannot distinguish a dramatic pause, a paused player and a gap with background music. Without player-state timing or subtitle/audio alignment, automatic detection can suggest ranges but cannot guarantee the correct cut. Even player-state events can lag actual audio, so retain adjustable edges. Reading playback state would be an additional integration/access decision, not a hidden dependency of basic recording.
+
+For a word interrupted halfway, preserve all available samples immediately before and after the interruption. A correct join should reconnect adjacent source audio; broad silence thresholds, obligatory padding or crossfades can delete or alter phonemes. Keep edits reversible, allow a short user-adjustable join gap, and do not claim to recover samples the source/capture did not produce or retained history lost. User seeking or source switching during continuation can create duplicates or missing speech; do not promise seamless automatic correction without timeline information.
+
+### Role of automation and remaining choices
+
+VAD or amplitude analysis may later supply visual hints, candidate edges, or navigation among speech regions. Selecting neighboring regions should retain the intervening natural pauses unless the user explicitly excludes them. Automatic transcript matching is separate future work; the current scan supplies too little temporal information for guaranteed automatic sentence selection. No ASR model is required for the proposed core.
+
+Still open for the later plan: retained history and protected-draft budgets; whether audio history is protected at scan start or a later explicit association; initial selection shown to the user; continuous draft extension versus explicit tail capture; manual join controls and optional quiet-edge suggestions; handling missing history/source changes; marker/attachment behavior and UI. Auto-pause/resume is already out of scope for this discussion. Ask the owner about actual behavior choices before writing an implementation plan; do not convert recommendations into settled defaults.
