@@ -278,3 +278,19 @@ Two follow-up questions were answered after this analysis: (1) preserve the prot
 - The proposed explicit gap-confirmation recovery is rejected. No implicit reset of continuation allowance, sliding of old source, removal of edits, or automatic clearing of the global ring.
 
 Accepted earlier: initial editor display through opening with a scan marker; Refresh appends rather than replaces; silence assistance suggests exclusion ranges; listening is optional. Numeric ring/continuation/byte limits, storage format, and remaining UX/attachment choices still require decisions before an implementation plan. No app implementation was requested by these replies.
+
+## Why history protection should precede card export (2026-11-18)
+
+Owner motivation: with a five-minute ring, four and a half minutes spent reading definitions or moving between words leaves only half a minute of pre-scan audio at export time. A desired one-minute utterance may already be partially overwritten. The owner prefers an anchor around pulling the bubble from the dock; anchoring every word hit risks repeated snapshots. The owner also asked whether export-time activation has other advantages. These are examples, not duration defaults.
+
+A time marker alone does not preserve samples. Export-time protection can only retain what still exists then; it cannot restore overwritten pre-scan speech. Given the accepted prohibition on joining across missing history, this is a real capability loss, not something a confirmation dialog can repair.
+
+Recommendation posed to the owner: while audio capture mode is enabled, protect initial history once per new screen scan (dock pull or explicit rescan), retain its bounded continuation, and reuse that audio context across all word hits/nested dictionary views belonging to the same scan. Create no audio snapshot per aim movement or individual definition. Ordinary background ring capture stays unchanged.
+
+Separate early retention from later work: pin/retain source at scan time, then open the editor/build the needed waveform/analyze silence/encode and transfer the selected clip only when the user enters the audio/card workflow. No full PCM copy, encoded file, ASR run, or extra capture session per word is implied by early protection. Sharing sealed source chunks is a possible implementation, still subject to resource limits.
+
+Protect for the scan/context lifetime, not merely while one popup window is visible. A transient popup hide while the same scan is still active must not drop the history or reset its allowance. Starting a genuinely new scan/context is a separate lifecycle action; old editable/in-flight export ownership and cancellation still need the later plan. Do not accumulate one protected history per visited word or rescan.
+
+Tradeoff: early protection retains otherwise unnecessary history during ordinary dictionary browsing and consumes the bounded continuation allowance while the owner reads. Opening export later does not reset the accepted per-fragment cap. The original history remains available after the cap, but later continuation is limited. Export-time activation avoids that extra retention when no card is made, at the cost of losing old speech after ring rollover. Early protection plus lazy editor/processing best preserves the owner's stated long-reading scenario.
+
+A single behavior question is pending: choose scan-time history protection with export-time editor/processing (recommended), or protect only at export and accept potential pre-scan audio loss. No protection trigger is silently marked approved by this note; the existing accepted display/Refresh/cap/gap/silence behaviors remain unchanged.
