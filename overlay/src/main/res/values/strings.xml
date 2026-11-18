@@ -16,6 +16,7 @@
     <string name="overlay_error_ocr">Text recognition failed.</string>
     <string name="overlay_error_offline">No network connection, and on-device recognition is turned off in the settings.</string>
     <string name="overlay_error_no_device_ocr">This language has no on-device model. Download one, or set Engines to Both or Cloud in the Text recognition settings.</string>
+    <string name="overlay_error_no_device_ocr_offline">This language has no on-device model, and Forced Offline Mode disables cloud recognition. Turn off Forced Offline Mode to download a model or use cloud recognition.</string>
     <string name="overlay_open_ocr_models">On-device model</string>
     <string name="overlay_error_offline_no_device">No network connection, and on-device recognition does not support this language.</string>
     <string name="overlay_ocr_error_title">Cloud recognition</string>

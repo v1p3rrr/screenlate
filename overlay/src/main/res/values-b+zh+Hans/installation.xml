@@ -6,6 +6,7 @@
     <string name="installation_open">安装状态</string>
     <string name="installation_device_ready">设备端识别：就绪</string>
     <string name="installation_device_missing">设备端识别：不可用；启用后可使用云端识别。</string>
+    <string name="installation_device_missing_offline">设备端识别：不可用；强制离线模式下已禁用云端识别。</string>
     <string name="installation_remaining">剩余安装项目：%1$d</string>
     <string name="installation_errors">安装失败的项目：%1$d</string>
 </resources>

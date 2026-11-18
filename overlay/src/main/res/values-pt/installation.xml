@@ -6,6 +6,7 @@
     <string name="installation_open">Estado da instalação</string>
     <string name="installation_device_ready">Reconhecimento no dispositivo: pronto</string>
     <string name="installation_device_missing">Reconhecimento no dispositivo: indisponível; o reconhecimento na nuvem pode ser usado se estiver ativado.</string>
+    <string name="installation_device_missing_offline">Reconhecimento no dispositivo: indisponível; o reconhecimento na nuvem está desativado no modo offline forçado.</string>
     <string name="installation_remaining">Instalações restantes: %1$d</string>
     <string name="installation_errors">Instalações com falha: %1$d</string>
 </resources>

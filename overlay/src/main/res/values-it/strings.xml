@@ -14,6 +14,7 @@
     <string name="overlay_error_ocr">Riconoscimento del testo non riuscito.</string>
     <string name="overlay_error_offline">Nessuna rete, e il riconoscimento sul dispositivo è disattivato nelle impostazioni.</string>
     <string name="overlay_error_no_device_ocr">Questa lingua non ha un modello sul dispositivo. Scaricane uno oppure, nelle impostazioni di Riconoscimento del testo, imposta “Motori” su “Entrambi” o “Cloud”.</string>
+    <string name="overlay_error_no_device_ocr_offline">Questa lingua non ha un modello sul dispositivo e la modalità offline forzata disabilita il riconoscimento nel cloud. Disattiva la modalità offline forzata per scaricare un modello o usare il riconoscimento nel cloud.</string>
     <string name="overlay_open_ocr_models">Modello sul dispositivo</string>
     <string name="overlay_error_offline_no_device">Nessuna connessione di rete, e il riconoscimento sul dispositivo non supporta questa lingua.</string>
     <string name="overlay_ocr_error_title">Riconoscimento nel cloud</string>

@@ -3,6 +3,7 @@ package com.vpr.screenlate.languages
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
@@ -17,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -30,6 +32,7 @@ class OcrModelsViewModel @Inject constructor(
     private val store: OcrModelStore,
     private val choices: OcrModelChoices,
     private val imports: DictionaryImports,
+    private val appSettings: AppSettingsRepository,
     mlKit: MlKitOcrEngine,
     engines: Set<@JvmSuppressWildcards ModelOcrEngine>,
 ) : ViewModel() {
@@ -50,6 +53,9 @@ class OcrModelsViewModel @Inject constructor(
     val profiles: StateFlow<LanguageProfilesState?> =
         languageProfiles.state.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
+    val offlineMode: StateFlow<Boolean> =
+        appSettings.offlineMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
     /** Makes [option] the model [language] reads with; only an installed one can be chosen. */
     fun choose(language: Language, option: OcrModelOption) {
         if (!option.installed) return
@@ -58,7 +64,10 @@ class OcrModelsViewModel @Inject constructor(
 
     /** Queues the model's download with the models it requires; it reads once chosen. */
     fun download(option: OcrModelOption) {
-        viewModelScope.launch { option.downloads.forEach { imports.downloadModel(it) } }
+        viewModelScope.launch {
+            if (appSettings.offlineMode.first()) return@launch
+            option.downloads.forEach { imports.downloadModel(it) }
+        }
     }
 
     /** Deletes the model, and the models it requires that no other installed model does; an active one stays. */

@@ -14,6 +14,7 @@
     <string name="overlay_error_ocr">تعذّر التعرّف على النص.</string>
     <string name="overlay_error_offline">لا يتوفر اتصال بالشبكة، والتعرّف داخل الجهاز متوقف في الإعدادات.</string>
     <string name="overlay_error_no_device_ocr">لا يوجد نموذج داخل الجهاز لهذه اللغة. نزّل نموذجًا، أو اضبط «المحرّكات» على «كلاهما» أو «السحابة» في إعدادات «التعرّف على النص».</string>
+    <string name="overlay_error_no_device_ocr_offline">لا يوجد نموذج داخل الجهاز لهذه اللغة، كما يعطّل وضع عدم الاتصال الإجباري التعرّف السحابي. أوقف وضع عدم الاتصال الإجباري لتنزيل نموذج أو استخدام التعرّف السحابي.</string>
     <string name="overlay_open_ocr_models">النموذج داخل الجهاز</string>
     <string name="overlay_error_offline_no_device">لا يتوفر اتصال بالشبكة، والتعرّف داخل الجهاز لا يدعم هذه اللغة.</string>
     <string name="overlay_ocr_error_title">التعرّف السحابي</string>

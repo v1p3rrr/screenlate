@@ -276,6 +276,7 @@ fun ScreenlateNavHost(
                     onOpenAudio = { language -> go(AudioRoute(language?.code)) },
                     onOpenAppText = { go(RecognitionRoute(showAppText = true)) },
                     onOpenLanguages = { go(LanguagesRoute) },
+                    onOpenOcrModels = { language -> go(RecognitionRoute(ocrModels = language.code)) },
                 )
             }
             composable<LanguagesRoute> {

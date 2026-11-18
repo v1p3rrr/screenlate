@@ -287,6 +287,7 @@
     <string name="settings_offline_mode">强制离线模式</string>
     <string name="settings_offline_mode_hint">禁用所有网络请求，节省移动流量，并强制在设备端进行识别和发音。</string>
     <string name="dictionaries_catalog_offline_notice">强制离线模式已启用。已禁用从目录下载，但您仍可以导入本地词典文件。</string>
+    <string name="ocr_models_offline_notice">强制离线模式已启用。已禁用下载设备端模型。</string>
     <string name="settings_bubble_summary">瞄准、停靠边、大小、隐藏的应用</string>
     <string name="lookup_title">查词</string>
     <string name="settings_lookup_summary">扫描长度、结果、罗马字、词中的汉字</string>

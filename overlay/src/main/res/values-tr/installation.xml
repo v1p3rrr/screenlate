@@ -6,6 +6,7 @@
     <string name="installation_open">Kurulum durumu</string>
     <string name="installation_device_ready">Cihazda tanıma: hazır</string>
     <string name="installation_device_missing">Cihazda tanıma: kullanılamıyor; etkinleştirildiğinde bulut tanıma kullanılabilir.</string>
+    <string name="installation_device_missing_offline">Cihazda tanıma: kullanılamıyor; zorunlu çevrimdışı modda bulut tanıma devre dışı.</string>
     <string name="installation_remaining">Kalan kurulumlar: %1$d</string>
     <string name="installation_errors">Başarısız kurulumlar: %1$d</string>
 </resources>

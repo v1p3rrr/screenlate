@@ -291,6 +291,7 @@
     <string name="settings_offline_mode">Modo sin conexión forzado</string>
     <string name="settings_offline_mode_hint">Desactiva todas las solicitudes de red, ahorra datos móviles y fuerza el reconocimiento y audio en el dispositivo.</string>
     <string name="dictionaries_catalog_offline_notice">El modo sin conexión forzado está activo. La descarga del catálogo está desactivada, pero aún puedes importar archivos de diccionario locales.</string>
+    <string name="ocr_models_offline_notice">El modo sin conexión forzado está activo. La descarga de modelos en el dispositivo está desactivada.</string>
     <string name="settings_bubble_summary">Punto de mira, lado, tamaño, apps ocultas</string>
     <string name="lookup_title">Búsqueda</string>
     <string name="settings_lookup_summary">Longitud de análisis, resultados, romaji, caracteres de la palabra</string>

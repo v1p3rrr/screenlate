@@ -176,7 +176,7 @@ fun RecognitionSettingsScreen(
                     hint = stringResource(R.string.bubble_ocr_saving_hint),
                     enabled = recognizes && settings.effectiveOcrEngines(offlineMode) == OcrEngines.BOTH,
                 )
-                OcrModelRows(enabled = recognizes && settings.effectiveOcrEngines(offlineMode) != OcrEngines.CLOUD, openLanguage = ocrModels)
+                OcrModelRows(enabled = (recognizes || ocrModels != null) && settings.effectiveOcrEngines(offlineMode) != OcrEngines.CLOUD, openLanguage = ocrModels)
             }
             SectionCard(
                 stringResource(R.string.recognition_app_text_title),

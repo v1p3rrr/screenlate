@@ -3,6 +3,7 @@ package com.vpr.screenlate.overlay.install
 import android.content.Context
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.hasCode
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
@@ -40,18 +41,21 @@ data class InstallationStatus(
     val requiresDevice: Boolean,
     val tasks: List<ImportTask>,
     val failures: Int,
+    val offlineMode: Boolean = false,
 ) {
     val dictionaryReady: Boolean get() = missing.none { it != CatalogCategory.OCR_MODEL }
     val scanReady: Boolean get() = missing.isEmpty() && (!requiresDevice || deviceReady)
 
     /** Only an on-device model keeps a scan from starting, with nothing downloading or failed. */
-    val needsDeviceModel: Boolean get() = missing.isEmpty() && requiresDevice && !deviceReady && failures == 0 && tasks.isEmpty()
+    val needsDeviceModel: Boolean
+        get() = dictionaryReady && (CatalogCategory.OCR_MODEL in missing || (requiresDevice && !deviceReady)) && failures == 0 && tasks.isEmpty()
 
     fun message(context: Context, scanning: Boolean = false): String = context.getString(
         when {
             (if (scanning) scanReady else dictionaryReady) -> R.string.installation_ready
             failures > 0 -> R.string.installation_failed
             tasks.isNotEmpty() -> R.string.installation_running
+            scanning && needsDeviceModel && offlineMode -> R.string.overlay_error_no_device_ocr_offline
             scanning && needsDeviceModel -> R.string.overlay_error_no_device_ocr
             else -> R.string.installation_missing
         },
@@ -68,6 +72,7 @@ class LanguageInstallation @Inject constructor(
     private val models: OcrModelStore,
     private val device: DeviceOcr,
     private val settings: OverlaySettingsRepository,
+    private val appSettings: AppSettingsRepository,
 ) {
     /**
      * What [language] still needs, updated as dictionaries, imports, models and settings change.
@@ -85,10 +90,20 @@ class LanguageInstallation @Inject constructor(
         imports.tasks,
         flow { emit(catalog.localCatalog()) }.flowOn(Dispatchers.IO),
         models.models,
-        settings.settings,
-    ) { dictionaries, tasks, catalog, models, settings ->
-        installationStatus(language, dictionaries, tasks, catalog, models, bundled.language, device.reads(language),
-            settings.copy(ocrEngines = engines ?: settings.ocrEngines), imageSource)
+        combine(settings.settings, appSettings.offlineMode, ::Pair),
+    ) { dictionaries, tasks, catalog, models, (settings, offline) ->
+        installationStatus(
+            language,
+            dictionaries,
+            tasks,
+            catalog,
+            models,
+            bundled.language,
+            device.reads(language),
+            settings.copy(ocrEngines = engines ?: settings.ocrEngines),
+            imageSource,
+            offlineMode = offline,
+        )
     }.distinctUntilChanged()
 
     suspend fun current(language: Language): InstallationStatus = observe(language).first()
@@ -104,6 +119,7 @@ internal fun installationStatus(
     deviceReady: Boolean,
     settings: OverlaySettings,
     imageSource: Boolean = false,
+    offlineMode: Boolean = false,
 ): InstallationStatus {
     val requiresImage = imageSource || settings.textSource != TextSource.APP_TEXT_ONLY
     val own = dictionaries.filter { it.isFor(language) }
@@ -131,9 +147,11 @@ internal fun installationStatus(
     }
     // A retry supersedes the older failed task of the same entry. Completed failures otherwise remain visible.
     val latest = relevant.groupBy { it.catalogEntry ?: it.name }.values.map { it.last() }
+    val effectiveEngines = settings.effectiveOcrEngines(offlineMode)
     return InstallationStatus(
         language, missing, deviceReady,
-        requiresImage && settings.ocrEngines == OcrEngines.DEVICE,
+        requiresImage && effectiveEngines == OcrEngines.DEVICE,
         relevant.filterNot { it.finished }, latest.count { it.state == ImportTask.State.FAILED },
+        offlineMode,
     )
 }

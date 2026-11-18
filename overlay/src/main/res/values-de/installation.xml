@@ -6,6 +6,7 @@
     <string name="installation_open">Installationsstatus</string>
     <string name="installation_device_ready">Erkennung auf dem Gerät: bereit</string>
     <string name="installation_device_missing">Erkennung auf dem Gerät: nicht verfügbar; Cloud-Erkennung kann verwendet werden, wenn sie aktiviert ist.</string>
+    <string name="installation_device_missing_offline">Erkennung auf dem Gerät: nicht verfügbar; die Cloud-Erkennung ist im erzwungenen Offline-Modus deaktiviert.</string>
     <string name="installation_remaining">Verbleibende Installationen: %1$d</string>
     <string name="installation_errors">Fehlgeschlagene Installationen: %1$d</string>
 </resources>

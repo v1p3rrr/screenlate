@@ -14,6 +14,7 @@
     <string name="overlay_error_ocr">Falló el reconocimiento de texto.</string>
     <string name="overlay_error_offline">No hay conexión de red y el reconocimiento en el dispositivo está desactivado en los ajustes.</string>
     <string name="overlay_error_no_device_ocr">Este idioma no tiene modelo en el dispositivo. Descarga uno o, en los ajustes de reconocimiento de texto, pon «Motores» en «Ambos» o «Nube».</string>
+    <string name="overlay_error_no_device_ocr_offline">Este idioma no tiene modelo en el dispositivo y el modo sin conexión forzado desactiva el reconocimiento en la nube. Desactiva el modo sin conexión forzado para descargar un modelo o usar el reconocimiento en la nube.</string>
     <string name="overlay_open_ocr_models">Modelo en el dispositivo</string>
     <string name="overlay_error_offline_no_device">No hay conexión de red y el reconocimiento en el dispositivo no admite este idioma.</string>
     <string name="overlay_ocr_error_title">Reconocimiento en la nube</string>

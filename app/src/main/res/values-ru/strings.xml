@@ -294,6 +294,7 @@
     <string name="settings_offline_mode">Принудительный офлайн-режим</string>
     <string name="settings_offline_mode_hint">Отключает все сетевые запросы, экономит трафик и принудительно переключает распознавание и озвучку на устройство.</string>
     <string name="dictionaries_catalog_offline_notice">Включен принудительный офлайн-режим. Загрузка из каталога отключена, но вы можете импортировать локальные файлы словарей.</string>
+    <string name="ocr_models_offline_notice">Включён принудительный офлайн-режим. Загрузка моделей на устройство отключена.</string>
     <string name="settings_bubble_summary">Прицел, сторона, размер, скрытие в приложениях</string>
     <string name="lookup_title">Поиск</string>
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, иероглифы слова</string>

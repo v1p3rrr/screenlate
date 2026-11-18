@@ -6,6 +6,7 @@
     <string name="installation_open">حالة التثبيت</string>
     <string name="installation_device_ready">التعرّف داخل الجهاز: جاهز</string>
     <string name="installation_device_missing">التعرّف داخل الجهاز: غير متاح، ويمكن استخدام التعرّف السحابي عند تفعيله.</string>
+    <string name="installation_device_missing_offline">التعرّف داخل الجهاز: غير متاح، والتعرّف السحابي معطّل في وضع عدم الاتصال الإجباري.</string>
     <string name="installation_remaining">عمليات التثبيت المتبقية: %1$d</string>
     <string name="installation_errors">عمليات التثبيت المتعذّرة: %1$d</string>
 </resources>

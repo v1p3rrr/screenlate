@@ -39,6 +39,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.InfoDialog
 import com.vpr.screenlate.ui.components.LabelWithInfo
+import com.vpr.screenlate.ui.components.OfflineNoticeCard
 import com.vpr.screenlate.ui.components.listSeparator
 import com.vpr.screenlate.ui.components.ownDirection
 
@@ -50,6 +51,7 @@ import com.vpr.screenlate.ui.components.ownDirection
 fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrModelsViewModel = hiltViewModel()) {
     val lists by viewModel.lists.collectAsStateWithLifecycle()
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
+    val offlineMode by viewModel.offlineMode.collectAsStateWithLifecycle()
     var opened by rememberSaveable { mutableStateOf(openLanguage) }
     LabelWithInfo(
         stringResource(R.string.ocr_models_heading),
@@ -81,6 +83,7 @@ fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrM
     if (enabled && shown != null) {
         OcrModelDialog(
             shown,
+            offlineMode = offlineMode,
             onChoose = { viewModel.choose(shown.language, it) },
             onDownload = viewModel::download,
             onDelete = viewModel::delete,
@@ -93,6 +96,7 @@ fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrM
 @Composable
 private fun OcrModelDialog(
     list: LanguageModelList,
+    offlineMode: Boolean,
     onChoose: (OcrModelOption) -> Unit,
     onDownload: (OcrModelOption) -> Unit,
     onDelete: (OcrModelOption) -> Unit,
@@ -100,9 +104,19 @@ private fun OcrModelDialog(
 ) {
     var deleting by remember { mutableStateOf<OcrModelOption?>(null) }
     InfoDialog(stringResource(R.string.ocr_models_dialog_title, list.language.displayName()), onDismiss) {
+        if (offlineMode && list.options.any { !it.installed }) {
+            OfflineNoticeCard(stringResource(R.string.ocr_models_offline_notice))
+        }
         if (list.options.isEmpty()) Text(stringResource(R.string.ocr_models_empty))
         list.options.forEach { option ->
-            OcrModelRow(list.language, option, onChoose = { onChoose(option) }, onDownload = { onDownload(option) }, onDelete = { deleting = option })
+            OcrModelRow(
+                list.language,
+                option,
+                offlineMode = offlineMode,
+                onChoose = { onChoose(option) },
+                onDownload = { onDownload(option) },
+                onDelete = { deleting = option },
+            )
         }
         if (list.options.isNotEmpty()) Hint(stringResource(R.string.ocr_models_dialog_hint))
     }
@@ -128,6 +142,7 @@ private fun OcrModelDialog(
 private fun OcrModelRow(
     language: Language,
     option: OcrModelOption,
+    offlineMode: Boolean,
     onChoose: () -> Unit,
     onDownload: () -> Unit,
     onDelete: () -> Unit,
@@ -168,7 +183,7 @@ private fun OcrModelRow(
                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
                 }
             }
-            !option.installed -> TextButton(onClick = onDownload) { Text(stringResource(R.string.dictionaries_download)) }
+            !option.installed -> TextButton(onClick = onDownload, enabled = !offlineMode) { Text(stringResource(R.string.dictionaries_download)) }
             option.deletion is ModelDeletion.Allowed -> TextButton(onClick = onDelete) { Text(stringResource(R.string.action_delete)) }
         }
     }

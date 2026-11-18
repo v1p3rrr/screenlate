@@ -6,6 +6,7 @@
     <string name="installation_open">Installation status</string>
     <string name="installation_device_ready">On-device recognition: ready</string>
     <string name="installation_device_missing">On-device recognition: unavailable; cloud recognition can be used when enabled.</string>
+    <string name="installation_device_missing_offline">On-device recognition: unavailable; cloud recognition is disabled in Forced Offline Mode.</string>
     <string name="installation_remaining">Remaining installations: %1$d</string>
     <string name="installation_errors">Failed installations: %1$d</string>
 </resources>

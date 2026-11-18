@@ -14,6 +14,7 @@
     <string name="overlay_error_ocr">تشخیص متن انجام نشد.</string>
     <string name="overlay_error_offline">اتصال شبکه وجود ندارد و تشخیص روی دستگاه در تنظیمات خاموش است.</string>
     <string name="overlay_error_no_device_ocr">این زبان مدل روی دستگاه ندارد. یک مدل بارگیری کنید یا در تنظیمات «تشخیص متن»، «موتورها» را روی «هر دو» یا «ابر» تنظیم کنید.</string>
+    <string name="overlay_error_no_device_ocr_offline">این زبان مدل روی دستگاه ندارد و حالت آفلاین اجباری تشخیص ابری را غیرفعال می‌کند. برای بارگیری مدل یا استفاده از تشخیص ابری، حالت آفلاین اجباری را خاموش کنید.</string>
     <string name="overlay_open_ocr_models">مدل روی دستگاه</string>
     <string name="overlay_error_offline_no_device">اتصال شبکه وجود ندارد و تشخیص روی دستگاه از این زبان پشتیبانی نمی‌کند.</string>
     <string name="overlay_ocr_error_title">تشخیص ابری</string>

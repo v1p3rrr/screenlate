@@ -6,6 +6,7 @@
     <string name="installation_open">Stan instalacji</string>
     <string name="installation_device_ready">Rozpoznawanie na urządzeniu: gotowe</string>
     <string name="installation_device_missing">Rozpoznawanie na urządzeniu: niedostępne; można korzystać z rozpoznawania w chmurze, jeśli jest włączone.</string>
+    <string name="installation_device_missing_offline">Rozpoznawanie na urządzeniu: niedostępne; rozpoznawanie w chmurze jest wyłączone w wymuszonym trybie offline.</string>
     <string name="installation_remaining">Pozostałe instalacje: %1$d</string>
     <string name="installation_errors">Nieudane instalacje: %1$d</string>
 </resources>

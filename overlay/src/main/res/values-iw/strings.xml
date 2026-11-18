@@ -14,6 +14,7 @@
     <string name="overlay_error_ocr">זיהוי הטקסט נכשל.</string>
     <string name="overlay_error_offline">אין חיבור לרשת, והזיהוי במכשיר מושבת בהגדרות.</string>
     <string name="overlay_error_no_device_ocr">לשפה הזו אין מודל במכשיר. אפשר להוריד מודל, או להגדיר את \"מנועים\" לערך \"שניהם\" או \"ענן\" בהגדרות זיהוי הטקסט.</string>
+    <string name="overlay_error_no_device_ocr_offline">לשפה הזו אין מודל במכשיר, ומצב לא מקוון מאולץ משבית את הזיהוי בענן. יש לכבות את המצב הלא מקוון המאולץ כדי להוריד מודל או להשתמש בזיהוי בענן.</string>
     <string name="overlay_open_ocr_models">מודל במכשיר</string>
     <string name="overlay_error_offline_no_device">אין חיבור לרשת, והזיהוי במכשיר לא תומך בשפה הזו.</string>
     <string name="overlay_ocr_error_title">זיהוי בענן</string>

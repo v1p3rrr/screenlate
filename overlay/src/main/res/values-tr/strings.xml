@@ -14,6 +14,7 @@
     <string name="overlay_error_ocr">Metin tanıma başarısız oldu.</string>
     <string name="overlay_error_offline">Ağ bağlantısı yok ve cihazda tanıma ayarlarda kapalı.</string>
     <string name="overlay_error_no_device_ocr">Bu dil için cihazda model yok. Bir model indirin veya metin tanıma ayarlarında “Motorlar” seçeneğini “İkisi de” ya da “Bulut” yapın.</string>
+    <string name="overlay_error_no_device_ocr_offline">Bu dil için cihazda model yok ve zorunlu çevrimdışı mod bulut tanımayı devre dışı bırakır. Model indirmek veya bulut tanımayı kullanmak için zorunlu çevrimdışı modu kapatın.</string>
     <string name="overlay_open_ocr_models">Cihazdaki model</string>
     <string name="overlay_error_offline_no_device">Ağ bağlantısı yok ve cihazda tanıma bu dili desteklemiyor.</string>
     <string name="overlay_ocr_error_title">Bulut tanıma</string>

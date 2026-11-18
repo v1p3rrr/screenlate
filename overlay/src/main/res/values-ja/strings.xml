@@ -14,6 +14,7 @@
     <string name="overlay_error_ocr">文字認識に失敗しました。</string>
     <string name="overlay_error_offline">ネットワークに接続されておらず、端末上の認識は設定でオフになっています。</string>
     <string name="overlay_error_no_device_ocr">この言語には端末上のモデルがありません。モデルをダウンロードするか、文字認識の設定で「エンジン」を「両方」か「クラウド」にしてください。</string>
+    <string name="overlay_error_no_device_ocr_offline">この言語には端末上のモデルがなく、強制オフラインモードによりクラウド認識が無効になっています。モデルをダウンロードするかクラウド認識を使うには、強制オフラインモードをオフにしてください。</string>
     <string name="overlay_open_ocr_models">端末上のモデル</string>
     <string name="overlay_error_offline_no_device">ネットワークに接続されておらず、端末上の認識はこの言語に対応していません。</string>
     <string name="overlay_ocr_error_title">クラウド認識</string>

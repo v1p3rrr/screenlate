@@ -6,6 +6,7 @@
     <string name="installation_open">מצב ההתקנה</string>
     <string name="installation_device_ready">זיהוי במכשיר: מוכן</string>
     <string name="installation_device_missing">זיהוי במכשיר: לא זמין; אפשר להשתמש בזיהוי בענן כשהוא מופעל.</string>
+    <string name="installation_device_missing_offline">זיהוי במכשיר: לא זמין; הזיהוי בענן מושבת במצב לא מקוון מאולץ.</string>
     <string name="installation_remaining">התקנות שנותרו: %1$d</string>
     <string name="installation_errors">התקנות שנכשלו: %1$d</string>
 </resources>

@@ -293,6 +293,7 @@
     <string name="settings_offline_mode">Wymuszony tryb offline</string>
     <string name="settings_offline_mode_hint">Wyłącza wszystkie żądania sieciowe, oszczędza dane komórkowe i wymusza rozpoznawanie oraz dźwięk na urządzeniu.</string>
     <string name="dictionaries_catalog_offline_notice">Wymuszony tryb offline jest aktywny. Pobieranie z katalogu jest wyłączone, ale nadal możesz importować lokalne pliki słowników.</string>
+    <string name="ocr_models_offline_notice">Wymuszony tryb offline jest aktywny. Pobieranie modeli na urządzenie jest wyłączone.</string>
     <string name="settings_bubble_summary">Celownik, strona, rozmiar, ukryte aplikacje</string>
     <string name="lookup_title">Wyszukiwanie</string>
     <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, znaki słowa</string>

@@ -6,6 +6,7 @@
     <string name="installation_open">État de l’installation</string>
     <string name="installation_device_ready">Reconnaissance sur l’appareil : prête</string>
     <string name="installation_device_missing">Reconnaissance sur l’appareil : indisponible ; la reconnaissance dans le cloud peut être utilisée si elle est activée.</string>
+    <string name="installation_device_missing_offline">Reconnaissance sur l’appareil : indisponible ; la reconnaissance dans le cloud est désactivée en mode hors ligne forcé.</string>
     <string name="installation_remaining">Installations restantes : %1$d</string>
     <string name="installation_errors">Installations échouées : %1$d</string>
 </resources>

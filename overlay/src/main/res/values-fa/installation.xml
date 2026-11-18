@@ -6,6 +6,7 @@
     <string name="installation_open">وضعیت نصب</string>
     <string name="installation_device_ready">تشخیص روی دستگاه: آماده</string>
     <string name="installation_device_missing">تشخیص روی دستگاه: در دسترس نیست؛ تشخیص ابری در صورت فعال بودن قابل استفاده است.</string>
+    <string name="installation_device_missing_offline">تشخیص روی دستگاه: در دسترس نیست؛ تشخیص ابری در حالت آفلاین اجباری غیرفعال است.</string>
     <string name="installation_remaining">نصب‌های باقی‌مانده: %1$d</string>
     <string name="installation_errors">نصب‌های ناموفق: %1$d</string>
 </resources>

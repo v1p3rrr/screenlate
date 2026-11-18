@@ -291,6 +291,7 @@
     <string name="settings_offline_mode">Mode hors ligne forcé</string>
     <string name="settings_offline_mode_hint">Désactive toutes les requêtes réseau, économise les données mobiles et force la reconnaissance et l’audio sur l’appareil.</string>
     <string name="dictionaries_catalog_offline_notice">Le mode hors ligne forcé est actif. Le téléchargement depuis le catalogue est désactivé, mais vous pouvez toujours importer des fichiers de dictionnaires locaux.</string>
+    <string name="ocr_models_offline_notice">Le mode hors ligne forcé est actif. Le téléchargement de modèles sur l’appareil est désactivé.</string>
     <string name="settings_bubble_summary">Visée, côté, taille, applis masquées</string>
     <string name="lookup_title">Recherche</string>
     <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, caractères du mot</string>

@@ -2,6 +2,7 @@ package com.vpr.screenlate.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -71,6 +73,7 @@ fun HomeScreen(
     onOpenAudio: (Language?) -> Unit,
     onOpenAppText: () -> Unit,
     onOpenLanguages: () -> Unit,
+    onOpenOcrModels: (Language) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
     updates: UpdateViewModel = hiltViewModel(),
 ) {
@@ -125,6 +128,7 @@ fun HomeScreen(
                 catalogEntries = catalogEntries,
                 onOpenInstallation = onOpenDictionaries,
                 onOpenLanguages = onOpenLanguages,
+                onOpenOcrModels = onOpenOcrModels,
             )
 
             SectionCard(title = stringResource(R.string.onboarding_service_title)) {
@@ -172,6 +176,7 @@ private fun LanguagesCard(
     catalogEntries: List<CatalogEntry>,
     onOpenInstallation: () -> Unit,
     onOpenLanguages: () -> Unit,
+    onOpenOcrModels: (Language) -> Unit,
 ) {
     val context = LocalContext.current
     SectionCard(title = stringResource(R.string.home_languages_title)) {
@@ -194,14 +199,32 @@ private fun LanguagesCard(
             )
         }
         installation?.takeIf { it.language == languages.active }?.let { status ->
-            Text(status.message(context, scanning = true))
-            Hint(stringResource(if (status.deviceReady) OverlayR.string.installation_device_ready else OverlayR.string.installation_device_missing))
+            Text(
+                status.message(context, scanning = true),
+                color = if (!status.scanReady && status.tasks.isEmpty()) MaterialTheme.colorScheme.error else Color.Unspecified,
+            )
+            Hint(
+                stringResource(
+                    when {
+                        status.deviceReady -> OverlayR.string.installation_device_ready
+                        status.offlineMode -> OverlayR.string.installation_device_missing_offline
+                        else -> OverlayR.string.installation_device_missing
+                    },
+                ),
+            )
             if (status.tasks.isNotEmpty()) {
                 Text(stringResource(OverlayR.string.installation_remaining, status.tasks.size))
                 installProgress(status.tasks, catalogEntries)?.let { InstallProgressLine(it) }
             }
             if (status.failures > 0) Text(stringResource(OverlayR.string.installation_errors, status.failures), color = MaterialTheme.colorScheme.error)
-            TextButton(onClick = onOpenInstallation) { Text(stringResource(installationButtonLabel(status))) }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(onClick = onOpenInstallation) { Text(stringResource(installationButtonLabel(status))) }
+                if (status.needsDeviceModel) {
+                    TextButton(onClick = { onOpenOcrModels(status.language) }) {
+                        Text(stringResource(OverlayR.string.overlay_open_ocr_models))
+                    }
+                }
+            }
         }
         if (languages.several && languages.quick.size == 1) Hint(stringResource(R.string.home_languages_star_hint))
         OutlinedButton(onClick = onOpenLanguages, modifier = Modifier.fillMaxWidth()) {

@@ -293,6 +293,7 @@
     <string name="settings_offline_mode">Forced Offline Mode</string>
     <string name="settings_offline_mode_hint">Disables all network requests, saves mobile data, and forces on-device recognition and audio.</string>
     <string name="dictionaries_catalog_offline_notice">Forced Offline Mode is active. Downloading from the catalog is disabled, but you can still import local dictionary files.</string>
+    <string name="ocr_models_offline_notice">Forced Offline Mode is active. Downloading on-device models is disabled.</string>
     <string name="settings_bubble_summary">Aim, dock, size, hidden apps</string>
     <string name="lookup_title">Lookup</string>
     <string name="settings_lookup_summary">Scan length, results, romaji, characters of the word</string>

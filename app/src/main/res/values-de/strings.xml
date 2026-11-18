@@ -289,6 +289,7 @@
     <string name="settings_offline_mode">Erzwungener Offline-Modus</string>
     <string name="settings_offline_mode_hint">Deaktiviert alle Netzwerkanfragen, spart mobile Daten und erzwingt Erkennung und Audio auf dem Gerät.</string>
     <string name="dictionaries_catalog_offline_notice">Erzwungener Offline-Modus ist aktiv. Das Herunterladen aus dem Katalog ist deaktiviert, lokale Wörterbuchdateien können weiterhin importiert werden.</string>
+    <string name="ocr_models_offline_notice">Erzwungener Offline-Modus ist aktiv. Das Herunterladen von Modellen für das Gerät ist deaktiviert.</string>
     <string name="settings_bubble_summary">Zielpunkt, Seite, Größe, ausgeblendete Apps</string>
     <string name="lookup_title">Nachschlagen</string>
     <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Schriftzeichen des Wortes</string>

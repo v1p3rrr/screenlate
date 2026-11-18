@@ -1088,6 +1088,15 @@ class OverlayController(
         scanJob = scope.launch {
             val ready = installation.current(language)
             if (!ready.scanReady) {
+                if (ready.needsDeviceModel && settings.textSource == TextSource.APP_TEXT) {
+                    val appPage = screenReads.readAppText(generation)
+                    if (!screenReads.isOpen(generation)) return@launch
+                    if (appPage != null && appPage.paragraphs.isNotEmpty()) {
+                        popup.page.prepare()
+                        onPage(page = appPage, final = true, lensError = null, flashLines = flashLines)
+                        return@launch
+                    }
+                }
                 ocrFinal = true
                 bubbleView.loading = false
                 showMessage(ready.message(service, scanning = true), installation = !ready.needsDeviceModel, ocrModels = ready.needsDeviceModel)
@@ -1164,7 +1173,13 @@ class OverlayController(
                             show(flash = false)
                         } else if (error is NoDeviceOcrException) {
                             ocrFinal = true
-                            showMessage(service.getString(R.string.overlay_error_no_device_ocr), ocrModels = true)
+                            showMessage(
+                                service.getString(
+                                    if (offlineMode) R.string.overlay_error_no_device_ocr_offline
+                                    else R.string.overlay_error_no_device_ocr,
+                                ),
+                                ocrModels = true,
+                            )
                         } else {
                             // Offline fails the scan only while the device does not recognize; a cloud-only scan says why
                             // the cloud failed.

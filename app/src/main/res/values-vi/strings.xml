@@ -287,6 +287,7 @@
     <string name="settings_offline_mode">Chế độ ngoại tuyến bắt buộc</string>
     <string name="settings_offline_mode_hint">Tắt mọi yêu cầu mạng, tiết kiệm dữ liệu di động và buộc nhận dạng cùng âm thanh chạy trên thiết bị.</string>
     <string name="dictionaries_catalog_offline_notice">Chế độ ngoại tuyến bắt buộc đang bật. Tải xuống từ danh mục bị tắt, nhưng bạn vẫn có thể nhập tệp từ điển cục bộ.</string>
+    <string name="ocr_models_offline_notice">Chế độ ngoại tuyến bắt buộc đang bật. Việc tải xuống mô hình trên thiết bị đã bị tắt.</string>
     <string name="settings_bubble_summary">Điểm ngắm, cạnh màn hình, kích thước, ứng dụng ẩn</string>
     <string name="lookup_title">Tra cứu</string>
     <string name="settings_lookup_summary">Độ dài quét, kết quả, romaji, chữ Hán của từ</string>

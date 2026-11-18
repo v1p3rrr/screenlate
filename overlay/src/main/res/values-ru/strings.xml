@@ -15,6 +15,7 @@
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>
     <string name="overlay_error_offline">Нет подключения к сети, а распознавание на устройстве выключено в настройках.</string>
     <string name="overlay_error_no_device_ocr">Для этого языка нет модели на устройстве. Скачайте её или в настройках распознавания текста выберите в пункте «Движки» значение «Оба» или «Облако».</string>
+    <string name="overlay_error_no_device_ocr_offline">Для этого языка нет модели на устройстве, а принудительный офлайн-режим отключает облачное распознавание. Отключите принудительный офлайн-режим, чтобы скачать модель или использовать облачное распознавание.</string>
     <string name="overlay_open_ocr_models">Модель на устройстве</string>
     <string name="overlay_error_offline_no_device">Нет подключения к сети, а распознавание на устройстве не поддерживает этот язык.</string>
     <string name="overlay_ocr_error_title">Облачное распознавание</string>

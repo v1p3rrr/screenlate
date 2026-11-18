@@ -1,5 +1,14 @@
 # Status
 
+## Forced offline mode readiness and missing on-device OCR model handling (2026-11-18)
+
+- Fixed missing on-device OCR model detection and UX under Forced Offline Mode (`appSettings.offlineMode = true`):
+  - **Readiness (`LanguageInstallation`, `LanguageTestFixture`):** Combined `AppSettingsRepository.offlineMode` into `LanguageInstallation.observe()`, applied `settings.effectiveOcrEngines(offlineMode)`, added `InstallationStatus.offlineMode`, generalized `needsDeviceModel` to also cover mandatory `CatalogCategory.OCR_MODEL` gaps when dictionaries are ready, and returned `overlay_error_no_device_ocr_offline` when scanning while offline without a local model (while `TextSource.APP_TEXT_ONLY` screen scans stay ready and Camera `imageSource = true` still blocks and flags the missing model).
+  - **Overlay scan (`OverlayController`):** Pre-scan check now blocks missing local models before taking a screenshot, while trying `screenReads.readAppText(generation)` first when `TextSource.APP_TEXT` is active so readable app text still works without an OCR model. Updated the `NoDeviceOcrException` fallback message for offline mode.
+  - **Home screen (`HomeScreen`, `ScreenlateNavHost`):** Highlights non-ready status in error color when idle, replaces the cloud hint with `installation_device_missing_offline` when offline, and adds a direct "On-device model" button opening `RecognitionRoute(ocrModels = language.code)` when `needsDeviceModel` is true.
+  - **On-device models dialog (`OcrModelsViewModel`, `OcrModelsSettings`, `RecognitionSettingsScreen`):** Observed `appSettings.offlineMode` to display `OfflineNoticeCard` (`ocr_models_offline_notice`) and disable model downloads (keeping switching/deleting installed models enabled, and guarding `download()` against offline mode). Allowed `RecognitionRoute(ocrModels = ...)` deep links to open even when `TextSource.APP_TEXT_ONLY` is selected.
+  - **Localization, docs & verification:** Added `overlay_error_no_device_ocr_offline`, `installation_device_missing_offline`, and `ocr_models_offline_notice` across all 17 locales, updated `docs/architecture.md`, and added unit tests in `LanguageInstallationTest`. Full `assembleDebug`, `testDebugUnitTest` (including `TranslationsTest`), `lintDebug`, `assembleDebugAndroidTest`, and `:build-logic:convention:test` passed.
+
 ## Video audio mining context recovered (2026-11-18)
 
 - Owner requested the deferred sentence-audio recording variants, approval status and implementation context.

@@ -101,7 +101,7 @@ internal class LanguageTestFixture : AutoCloseable {
             audioSettings, AudioPlayer(context, audioSettings),
             SentenceTranslation(SentenceTranslator(context, client, translationSettings), translationSettings, appSettings),
             appSettings, PageAppearance(PopupAppearanceRepository(preferences), PopupFonts(context, client), appSettings, context), profiles,
-            LanguageInstallation(repository, imports, catalog, bundled, models, DeviceOcr(MlKitOcrEngine(), emptySet(), models, CatalogLanguageModels(catalog), OcrModelChoices(preferences)), OverlaySettingsRepository(preferences)),
+            LanguageInstallation(repository, imports, catalog, bundled, models, DeviceOcr(MlKitOcrEngine(), emptySet(), models, CatalogLanguageModels(catalog), OcrModelChoices(preferences)), OverlaySettingsRepository(preferences), appSettings),
         ).also { viewModels.put("search", it) }
     }
 

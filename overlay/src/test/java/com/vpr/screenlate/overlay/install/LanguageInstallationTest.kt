@@ -35,7 +35,8 @@ class LanguageInstallationTest {
         dictionaries: List<DictionaryEntity> = emptyList(), tasks: List<ImportTask> = emptyList(),
         catalog: Catalog = Catalog(listOf(entry("English"))), models: List<InstalledOcrModel> = emptyList(),
         device: Boolean = true, settings: OverlaySettings = OverlaySettings(), imageSource: Boolean = false,
-    ) = installationStatus(Language.ENGLISH, dictionaries, tasks, catalog, models, Language.JAPANESE, device, settings, imageSource)
+        offlineMode: Boolean = false,
+    ) = installationStatus(Language.ENGLISH, dictionaries, tasks, catalog, models, Language.JAPANESE, device, settings, imageSource, offlineMode)
 
     @Test
     fun photoCannotUseAppTextOnlyToBypassItsRecognitionModelButCachedLookupStillWorks() {
@@ -127,10 +128,43 @@ class LanguageInstallationTest {
         val result = status(listOf(dictionary()), catalog = catalog)
         assertThat(result.dictionaryReady).isTrue()
         assertThat(result.scanReady).isFalse()
+        assertThat(result.needsDeviceModel).isTrue()
         // An older version keeps working until the newer one is installed.
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "1", "test", File("old")))).scanReady).isTrue()
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "2", "test", File("ready")))).scanReady).isTrue()
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("other", "2", "test", File("other")))).scanReady).isFalse()
+    }
+
+    @Test
+    fun `forced offline mode requires an on-device model even when cloud recognition is enabled`() {
+        val ready = listOf(dictionary())
+        val both = status(ready, device = false, settings = OverlaySettings(ocrEngines = OcrEngines.BOTH), offlineMode = true)
+        assertThat(both.scanReady).isFalse()
+        assertThat(both.needsDeviceModel).isTrue()
+        assertThat(both.requiresDevice).isTrue()
+        assertThat(both.offlineMode).isTrue()
+
+        val cloud = status(ready, device = false, settings = OverlaySettings(ocrEngines = OcrEngines.CLOUD), offlineMode = true)
+        assertThat(cloud.scanReady).isFalse()
+        assertThat(cloud.needsDeviceModel).isTrue()
+
+        val installed = status(ready, device = true, settings = OverlaySettings(ocrEngines = OcrEngines.BOTH), offlineMode = true)
+        assertThat(installed.scanReady).isTrue()
+        assertThat(installed.needsDeviceModel).isFalse()
+    }
+
+    @Test
+    fun `forced offline mode allows app-text-only screen scanning without a model but still blocks images`() {
+        val ready = listOf(dictionary())
+        val settings = OverlaySettings(textSource = TextSource.APP_TEXT_ONLY, ocrEngines = OcrEngines.BOTH)
+        val screen = status(ready, device = false, settings = settings, offlineMode = true)
+        assertThat(screen.scanReady).isTrue()
+        assertThat(screen.needsDeviceModel).isFalse()
+
+        val image = status(ready, device = false, settings = settings, imageSource = true, offlineMode = true)
+        assertThat(image.scanReady).isFalse()
+        assertThat(image.needsDeviceModel).isTrue()
+        assertThat(image.offlineMode).isTrue()
     }
 
     @Test
