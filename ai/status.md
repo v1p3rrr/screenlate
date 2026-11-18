@@ -1,5 +1,11 @@
 # Status
 
+## Continued audio correctness analysis (2026-11-19)
+
+- Continued the owner-requested analysis after showing the mockup. Verified pinned Anki SDK can return null after note insertion, current fields/tags update is partial, and cancellation may lose a committed result; recorded truthful outcomes/readback/retry boundaries and event-order tests in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).
+- Recorded absolute-deadline/stale-timer, late-writer, context/first-editor, queued-scan and TTS start/stop invariants. Sent four narrow new product questions: unconfirmed add, mixed-field Without audio, capture started during an old scan, and existing duplicate long-press actions plus attachments. Answers pending.
+- Documentation/source analysis only. No app, device or collection changes; no new plan/defaults chosen.
+
 ## Audio UI answers, mockup and parallel audits (2026-11-19)
 
 - Recorded the owner's answers to all 32 UI/settings questions and four clarifications in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md): preliminary 5/5/2, adjacent controls on Audio, static red bubble dot, shared default switch on Audio/Anki, long-press attachment chooser, nested/expandable editor, playhead/pan distinction, silence 1.5 s/150 ms, no old-field migration, Anki-change cancellation and unity-gain/system-volume preview.

@@ -547,3 +547,52 @@ A local in-chat interactive mockup was created at `C:/Users/vpr/.codex/visualiza
 Browser QA at viewport widths 320/360/736 checked no horizontal product overflow, selection-preserving Refresh, playhead movement without panning, cut handles, linked switches and template-fill actions; no runtime exceptions remained. This checks the conversation mockup only, not Android overlay behavior or recording performance.
 
 Remaining UI details for feedback after viewing: exact initial look-back/look-ahead span; whether untouched suggested selection end should follow Refresh (manually edited boundaries remain fixed); and the precise select/create/resize/delete interaction for inner cuts. The mockup demonstrates explicit cut creation/selection/handle adjustment/removal. Before an implementation plan, reconcile these details and the precise invalidating-Anki-settings/service-shutdown paths with owner choices, rather than converting prototype conveniences into hidden defaults.
+## Continued correctness audit: save boundaries and event order (2026-11-19)
+
+The owner asked to continue analysis after showing the mockup. Two independent focused audits checked Anki save/retry and the H/R/E transition model. No application, device or collection operations were performed.
+
+### Confirmed SDK behavior and safe retry boundary
+
+Pinned AddContentApi api-v1.1.0 inserts a note before querying its cards and moving them to the target deck. A null card cursor can return null after insertion, and post-insert exceptions are possible; returned note ID does not verify deck placement because per-card update counts are ignored. Current `AddResult.Rejected` wording claiming the note was not stored is therefore not generally established by this wrapper. Current `AnkiDroid.updateNote` also writes fields then tags with `&&`; false/exception can follow successful field/audio mutation. [Pinned API implementation](https://github.com/ankidroid/Anki-Android/blob/api-v1.1.0/api/src/main/java/com/ichi2/anki/api/AddContentApi.java#L84).
+
+The API has public note-by-ID readback, and FlashCardsContract exposes fields/tags/model/GUID and card/deck reads. Current AnkiBackend does not expose typed readback, and some wrapper errors become empty lists. Missing, no-access and query-failed must be distinct before a read is used to prove a write absent. Combined low-level fields/tags ContentValues may reduce partial steps, but is not a demonstrated transaction across media/note/deck. [FlashCardsContract](https://github.com/ankidroid/Anki-Android/blob/api-v1.1.0/api/src/main/java/com/ichi2/anki/FlashCardsContract.java).
+
+`withContext(IO)` can finish a blocking mutation and then discard its return when the caller is cancelled on return to the UI dispatcher. Record the observed external result inside a narrow completion boundary; cancellation/timeout is not rollback. [withContext](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/with-context.html).
+
+Required internal distinctions: no note write attempted; write in flight; known note ID with verified/partial/unverified fields/tags/deck; write outcome unconfirmed; readback conflict. Freeze the chosen target and rendered post-image once. A known partial update retries only the missing step after readback, not the whole duplicate lookup/media-copy/Append workflow. Exact markup append deduplication is useful but not an idempotency contract when filenames or rendered values change.
+
+For unknown NEW/forced creation, first-field duplicates or matching content do not prove which note belongs to this operation. No caller idempotency key was found. Do not promise exactly-once creation across a lost result/process death, auto-retry a possible insert, silently add hidden tags/fields to identify operations, or delete unrelated media. Explicit save-without-audio is a safe alternative before note mutation, not a general recovery after an uncertain commit. Partial success must be shown honestly; a completed external write cannot be undone by merely closing the editor or changing settings.
+
+Additional failure tests: media copied then note fails; SDK insert succeeds then card query returns null; fields succeed then tags fail; note ID returned with wrong/unverified deck; provider commits then throws; caller cancels after blocking write; readback unavailable versus absent; external edits between pre/post readback; repeated NEW with legitimate equal notes; stale UI acknowledgement; same operation with renamed media. Use fakes and local emulator collection only.
+
+### Event-order invariants derived from accepted stages
+
+Use separate capture-session, protected-context, editor-presentation and note-operation state. A protected context can be capped while global capture runs, or remain editable after capture stops. Keep retention cutoff distinct from last committed and last displayed frame endpoints.
+
+Use a consistent monotonic elapsed clock; elapsedRealtimeNanos and AudioTimestamp.TIMEBASE_BOOTTIME share sleep-inclusive time. Handler.postDelayed uses uptime and can run late after sleep. Timer callbacks update state/UI but do not authorize more recording. Normalize the absolute deadline before every editor-open, Refresh, publication, save or context-replacement transition. [SystemClock](https://developer.android.com/reference/android/os/SystemClock), [Handler](https://developer.android.com/reference/android/os/Handler#postDelayed(java.lang.Runnable,%20long)), [AudioTimestamp](https://developer.android.com/reference/android/media/AudioTimestamp).
+
+Concrete cases for the future state-machine tests:
+
+- Scan 00:00, R=5 min, cap callback late, editor ready 05:01: no E grant merely because the callback has not set a sealed flag.
+- First editor 00:10, E=2 min: end is 02:10, not the maximum of old R and new E. The separate stage grant is not an accumulation of unused R.
+- Editor requested 04:59 but actual first operable opening occurs 05:02: crop/preparation/request time does not reserve E retroactively.
+- Editor opened 04:59, old R timer fires 05:00: stale stage token cannot seal the new E stage, whose end is 06:59.
+- Pre-cutoff frames queued for writing can publish after the cutoff if valid; post-cutoff frames cannot enter that context. A late writer event is not permission for extra audio.
+- Permission loss/stop/disk failure during opening: service-running flag alone does not prove continuous source or available resources. Preserve the last valid prefix and the actual reason; no fabricated silence or new stage reset.
+- User requests a new scan, chooses Finish, old note save fails: keep the old retry state; do not execute a queued scan that destroys it. Queue intent rather than an old screenshot; acquisition and marker are created at actual execution time.
+- First editor cancelled, another word opens: original first-open deadline persists; abandoned edits do not replace last confirmed ranges.
+- Limits changed before first editor: the context uses all H/R/E admitted at its scan, not a newly read E. Default-attachment/appearance writes do not invalidate an unrelated note; destination changes do.
+- Save freezes shown edit revision A; later Refresh or silence completion cannot add unheard audio or alter A. Preview/pan/zoom alone are not dirty edits.
+- Stop/start consent races: at most one recorder generation; late success after Stop cannot resurrect capture. New session cannot attach to an old scan across unavailable history.
+- TTS STARTING/STOPPING barriers: do not restore live external-engine speak while capture may still be running; starting capture while an earlier live TTS utterance is audible needs exclusion/readiness handling.
+
+If editor-extension admission fails at first opening, preserve retained source and report unavailable continuation. Any permitted retry must retain the original first-open deadline and require complete still-available continuity; it must not count as a new opening or bypass an already terminal cap. Repeated queued scans need bounded arbitration, not several retained contexts. These are implementation constraints; any broader retry/continuation behavior requires an explicit product decision.
+
+### Four newly exposed product questions sent
+
+1. Unconfirmed Anki creation: read-only verification/open Anki and explicit duplicate-risk-confirmed repeat (recommended), or prohibit repeat until a result is established.
+2. `{sentence-audio}` mixed with text in one custom field: Without audio cannot generically replace only one old dynamic substring. Preserve that whole mixed field with explanation and update other fields (recommended), or ask on each such update whether to keep or replace it. This refines the accepted preserve-old-audio rule rather than silently clearing sound.
+3. Recording enabled/restarted while a scan already exists: require a new user-requested scan with explanation (recommended), or automatically rescan after successful capture start. Do not invent pre-start audio.
+4. New long-press attachment chooser versus existing added/duplicate commands: retain Open/Update/Add anyway plus attachment choice in one menu (recommended), or use command then attachment stages. Do not lose existing duplicate semantics.
+
+These four answers are pending. Remaining UI details from the previous review (initial short range formula, untouched end after Refresh, exact inner-cut creation) remain for feedback on the shown mockup. Optional extra features are not prerequisites; avoid further feature expansion until those decisions and technical acceptance are concrete.
