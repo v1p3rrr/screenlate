@@ -1,5 +1,25 @@
 # Status
 
+## Yomitan parity features and Anki UX improvements (2026-11-18)
+
+- Implemented on branch `features/yomitan-features` and merged into `main` (`d2341119`):
+  - **Anki UX fixes & markers (`AnkiSettingsScreen`, `AnkiNotes`, `PopupNotes`, `popup.js`, `note.js`):**
+    - Restored 3-button `Segments` row (`PREVENT` / `OVERWRITE` / `NEW`) for Anki duplicate behavior.
+    - Fixed `OVERWRITE` duplicate button icon mismatch: `AnkiNotes.duplicateIds()` shares `resolveUpdateTarget()` with `add()` so foreign-deck duplicates under `COLLECTION` + `duplicateScopeDeckOnly` show `+` instead of misleading `📖↻`; `PopupNotes.markNotes()` emits states progressively per entry (100 ms initial delay) while guarding in-flight `"busy"` entries via `addingEntries` and preserving `openableNotes` and button states across refined re-renders of the same word.
+    - Implemented `{popup-selection-text}` (captured on `pointerdown` of `.action-add` before WebView clears selection) and `{clipboard-text}` / `{clipboard-image}` (`primaryClip` read on Main for Android 7–8 compatibility, stream/MIME/downsampled bitmap decode on `Dispatchers.IO`).
+  - **Collapsible dictionaries in popup (`PopupAppearanceRepository`, `PageAppearance`, `LookupPage`, `OverlayController`, `SearchViewModel`, `SearchScreen`, `popup.js`, `popup.css`):**
+    - Made `.dictionary-name` a compact toggle button with a rotating chevron that collapses/expands all sections of that dictionary, hides definitions and `.copy-definition`, and persists `popup_collapsed_dictionaries` in DataStore (backed up and reset under Popup).
+  - **Harmonic / average frequency sorting & popup chip (`DictionaryEngine`, `DictionaryRepository`, `YomitanSorter`, `DictionaryLookup`, `BackupManager`, `DictionariesViewModel`, `DictionariesScreen`, `PopupNotes`, `PageState`, `popup.js`, `note.js`):**
+    - Added `FrequencySort` sentinel modes (`HARMONIC_ID`, `AVERAGE_ID`) inside the Frequency section of `DictionariesScreen` when 2+ rank-based frequency dictionaries are enabled, backed up and restored by sentinel title (`__harmonic__` / `__average__`).
+    - Sorts results by harmonic/arithmetic mean rank (skipping occurrence-based dictionaries) and shows the localized aggregate chip first in the popup (`Harm` / `Avg`, `Гарм.` / `Сред.`) via shared `NoteData.aggregateFrequency`, with `+N` expanding all individual frequency chips.
+  - **Custom text replacements & spelling-variant merging (`LookupSettings`, `LookupVariants`, `MappedText`, `ShownResults`, `DictionaryLookup`, `YomitanSettings`, `YomitanSettingsImporter`, `YomitanImportCard`, `LookupSettingsScreen`, `LookupSettingsViewModel`, `popup.js`, `popup.css`):**
+    - Added per-language `textReplacements` (`lookup_text_replacements`) with literal/regex/ignoreCase rules, guarded against ReDoS by both `BoundedCharSequence` (`MAX_REGEX_STEPS`) and a 50 ms wall-time daemon executor timeout (`TextReplacements`), compactly managed via a dialog with live async test preview in `LookupSettingsScreen`, and imported from Yomitan settings JSON (`translation.textReplacements.groups`).
+    - Added per-language `mergeVariants` (`lookup_merge_variants`, shown for `LanguageSupport.hasCharacterEntries` languages) combining entries sharing matched prefix, normalized reading, and primary-dictionary glossary content (deduplicating glossaries by `(dictionary, content)`), displaying alternative spellings beside the headword with language-appropriate separators.
+  - **Localization, docs & tests:** Updated all 17 locales in `app` and `overlay`, updated `docs/usage.md` and `docs/architecture.md`, and added Kotlin and jsdom tests (195 JS tests + full JVM unit tests, `lintDebug`, and `assembleDebugAndroidTest` passing).
+  - **Code review:** Completed three two-axis `/code-review` passes (Standards + Spec) until zero critical issues remained, fixing collapsed copy-button CSS specificity, variant glossary deduplication with differing `termTags`, pushed-view note state isolation, Android libcore regex timeout + async preview, Android 7–8 main-thread `ClipboardManager` acquisition, `openableNotes` preservation on refined renders, and `addingEntries` busy-state race.
+- Minified ARM64 Dev APK from `d2341119` (on `main`): package `com.vpr.screenlate.debug`, label `Screenlate Dev`, version `1.1.0-d2341119-min` (`10100`), `23,395,507` bytes, debug-signed. SHA-256 `a80cf2f46f9bda9c8c19eadf32e07af2581e43e927e9641967f715ebc1c3ade6`.
+  - APK, R8 mapping, and init script saved under ignored `testdata/local-research/builds/`.
+
 ## Bubble aim dot color, outside-tap popup dismissal, and screenshot crop memory (2026-11-17)
 
 - Implemented on branch `features/overlay-ux-fixes` and merged into `main` (`e1373f64`):
