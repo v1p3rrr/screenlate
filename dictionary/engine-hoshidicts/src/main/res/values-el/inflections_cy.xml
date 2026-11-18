@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">μαλακή μετάλλαξη</string>
+    <string name="inflection_cy_soft_mutation">μαλακή μετάλλαξη: b d g f dd l r αντί για p t c b/m d ll rh, σίγηση του g (ei gath από cath, dy wely από gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">ερρινική μετάλλαξη</string>
+    <string name="inflection_cy_nasal_mutation">ερρινική μετάλλαξη: mh nh ngh m n ng αντί για p t c b d g (fy nghath από cath, yng Nghymru από Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">δασυντική μετάλλαξη</string>
+    <string name="inflection_cy_aspirate_mutation">δασυντική μετάλλαξη: ph th ch αντί για p t c (ei chath από cath)</string>
+    <string name="inflection_cy_h_prothesis_label">πρόταξη h</string>
+    <string name="inflection_cy_h_prothesis">h πριν από φωνήεν (ei hysgol από ysgol)</string>
+</resources>

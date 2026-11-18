@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">deklinasi</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Menghapus akhiran deklinasi nomina dan adjektiva Georgia</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">nominatif</string>
+    <string name="inflection_ka_nounadjstemcompletion">Memulihkan akhiran nominatif -ი pada batang nomina/adjektiva berakhiran konsonan</string>
+    <string name="inflection_ka_vowelrestoration_label">vokal luluh</string>
+    <string name="inflection_ka_vowelrestoration">Memulihkan vokal yang luluh jika berlaku</string>
+</resources>

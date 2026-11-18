@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">множина</string>
+    <string name="inflection_es_plural">Форма множини іменника</string>
+    <string name="inflection_es_feminine_adjective_label">прикметник жін. роду</string>
+    <string name="inflection_es_feminine_adjective">форма жіночого роду прикметника</string>
+    <string name="inflection_es_present_indicative_label">теперішній дійсного</string>
+    <string name="inflection_es_present_indicative">Теперішній час дійсного способу дієслова</string>
+    <string name="inflection_es_preterite_label">претерит</string>
+    <string name="inflection_es_preterite">Претерит (минулий час) дієслова</string>
+    <string name="inflection_es_imperfect_label">імперфект</string>
+    <string name="inflection_es_imperfect">Імперфект дієслова</string>
+    <string name="inflection_es_progressive_label">тривалий час</string>
+    <string name="inflection_es_progressive">Тривала форма дієслова</string>
+    <string name="inflection_es_imperative_label">наказовий спосіб</string>
+    <string name="inflection_es_imperative">Наказовий спосіб дієслова</string>
+    <string name="inflection_es_conditional_label">умовний спосіб</string>
+    <string name="inflection_es_conditional">Умовний спосіб дієслова</string>
+    <string name="inflection_es_future_label">майбутній час</string>
+    <string name="inflection_es_future">Майбутній час дієслова</string>
+    <string name="inflection_es_present_subjunctive_label">теперішній кон’юнктива</string>
+    <string name="inflection_es_present_subjunctive">Теперішній час кон’юнктива дієслова</string>
+    <string name="inflection_es_imperfect_subjunctive_label">імперфект кон’юнктива</string>
+    <string name="inflection_es_imperfect_subjunctive">Імперфект кон’юнктива дієслова</string>
+    <string name="inflection_es_participle_label">дієприкметник</string>
+    <string name="inflection_es_participle">Дієприкметник</string>
+    <string name="inflection_es_reflexive_label">зворотна форма</string>
+    <string name="inflection_es_reflexive">Зворотна форма дієслова</string>
+    <string name="inflection_es_pronoun_substitution_label">заміна займенника</string>
+    <string name="inflection_es_pronoun_substitution">Замінений займенник зворотного дієслова</string>
+    <string name="inflection_es_pronominal_label">займенникова форма</string>
+    <string name="inflection_es_pronominal">Займенникова форма дієслова</string>
+</resources>

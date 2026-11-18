@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">leníció</string>
+    <string name="inflection_gd_lenition">leníció: bh ch dh fh gh mh ph sh th a b c d f g m p s t helyett, t-s az s helyett névelő után (a\' ghrian ← grian, an t-sràid ← sràid)</string>
+    <string name="inflection_gd_eclipsis_label">eklipszis</string>
+    <string name="inflection_gd_eclipsis">n- magánhangzó előtt (ar n-eilean ← eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">t-protézis</string>
+    <string name="inflection_gd_t_prothesis">t- magánhangzó előtt (an t-uisge ← uisge, an t-Eilean ← Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">h-protézis</string>
+    <string name="inflection_gd_h_prothesis">h- magánhangzó előtt (na h-Alba ← Alba, na h-òrain ← òrain)</string>
+</resources>

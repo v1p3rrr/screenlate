@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">mutație slabă</string>
+    <string name="inflection_cy_soft_mutation">mutație slabă: b d g f dd l r pentru p t c b/m d ll rh, căderea lui g (ei gath din cath, dy wely din gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">mutație nazală</string>
+    <string name="inflection_cy_nasal_mutation">mutație nazală: mh nh ngh m n ng pentru p t c b d g (fy nghath din cath, yng Nghymru din Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">mutație aspirată</string>
+    <string name="inflection_cy_aspirate_mutation">mutație aspirată: ph th ch pentru p t c (ei chath din cath)</string>
+    <string name="inflection_cy_h_prothesis_label">proteză cu h</string>
+    <string name="inflection_cy_h_prothesis">h înainte de vocală (ei hysgol din ysgol)</string>
+</resources>

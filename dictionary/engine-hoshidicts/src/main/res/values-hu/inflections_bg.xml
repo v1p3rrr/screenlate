@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">határozott</string>
+    <string name="inflection_bg_definite">határozott névelő: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">többes szám</string>
+    <string name="inflection_bg_plural">többes szám: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">nőnem</string>
+    <string name="inflection_bg_feminine">melléknév nőnemű alakja: -а (нова, умна ← умен, добра ← добър, българска)</string>
+    <string name="inflection_bg_neuter_label">semlegesnem</string>
+    <string name="inflection_bg_neuter">melléknév semlegesnemű alakja: -о (ново, умно ← умен, добро ← добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">jelen idő</string>
+    <string name="inflection_bg_present">jelen idő (гарантира, гарантират ← гарантирам; четеш, четат ← чета; говори ← говоря)</string>
+    <string name="inflection_bg_past_label">múlt idő</string>
+    <string name="inflection_bg_past">aorisztosz vagy imperfektum (чаках, чакаше ← чакам; четох, четеше ← чета; говорих ← говоря)</string>
+    <string name="inflection_bg_past_participle_label">múlt idejű melléknévi igenév</string>
+    <string name="inflection_bg_past_participle">múlt idejű cselekvő melléknévi igenév -л (гарантирал, изминала ← измина, говорили ← говоря)</string>
+    <string name="inflection_bg_passive_participle_label">szenvedő melléknévi igenév</string>
+    <string name="inflection_bg_passive_participle">múlt idejű szenvedő melléknévi igenév -н (гарантиран, гарантирана ← гарантирам; говорено ← говоря)</string>
+    <string name="inflection_bg_imperative_label">felszólító mód</string>
+    <string name="inflection_bg_imperative">felszólító mód -ай -айте (чакай, чакайте ← чакам; стреляй ← стрелям)</string>
+</resources>

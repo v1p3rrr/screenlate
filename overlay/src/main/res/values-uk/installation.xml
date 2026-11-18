@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">Готово</string>
+    <string name="installation_running">Триває встановлення мови. Сканування й пошук стануть доступними після готовності компонентів.</string>
+    <string name="installation_missing">Потрібні словники або моделі розпізнавання відсутні чи вимкнені. Відкрийте стан установлення, щоб завершити налаштування.</string>
+    <string name="installation_failed">Помилка встановлення мови. Відкрийте стан установлення для подробиць або повторної спроби.</string>
+    <string name="installation_open">Стан установлення</string>
+    <string name="installation_device_ready">Розпізнавання на пристрої: готово</string>
+    <string name="installation_device_missing">Розпізнавання на пристрої: недоступно (хмарне розпізнавання доступне, якщо ввімкнено)</string>
+    <string name="installation_remaining">Залишилося встановити: %1$d</string>
+    <string name="installation_errors">Помилок установлення: %1$d</string>
+    <string name="installation_device_missing_offline">Розпізнавання на пристрої: недоступне; хмарне розпізнавання вимкнено в примусовому офлайн-режимі.</string>
+</resources>

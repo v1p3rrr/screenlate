@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">tárgyeset</string>
+    <string name="inflection_eo_accusative">Szó tárgyesetű alakja</string>
+    <string name="inflection_eo_plural_label">többes szám</string>
+    <string name="inflection_eo_plural">Szó többes számú alakja</string>
+    <string name="inflection_eo_diminutive_label">kicsinyítő</string>
+    <string name="inflection_eo_diminutive">Főnév kicsinyítő alakja</string>
+    <string name="inflection_eo_directional_label">irányjelölő</string>
+    <string name="inflection_eo_directional">A tárgyesetű határozószó irányt jelöl\nkie: hol\nkien: hová</string>
+    <string name="inflection_eo_locational_label">helyjelölő</string>
+    <string name="inflection_eo_locational">A határozószóvá váló főnév helyet jelöl\nsurpinto: csúcs, hegy, tető\nsurpinte: a csúcson, a tetőn\nĉambro: szoba\nĉambre: a szobában</string>
+    <string name="inflection_eo_adjectival_label">melléknévi</string>
+    <string name="inflection_eo_adjectival">Főnév melléknévi alakja</string>
+    <string name="inflection_eo_adverbial_adj_adv">Melléknév határozói alakja</string>
+    <string name="inflection_eo_adverbial_v_adv">Ige határozói alakja</string>
+    <string name="inflection_eo_ejo_noun">Az adott dolognak szánt helyet jelölő képző\nkafo: kávé\nkafejo: kávézó</string>
+    <string name="inflection_eo_ejo_verb">Az adott cselekvésnek szánt helyet jelölő képző\nkuiri: főzni\nkuirejo: konyha</string>
+    <string name="inflection_eo_ujo_noun">Az adott dolog tárolására szolgáló edényt vagy dobozt jelölő képző\nabelo: méh\nabelujo: méhkas\n\nEgy népcsoport vagy személyek lakóhelyét jelölő képző\npatro: apa\npatrujo: haza\n\nVirágból vagy gyümölcsből az azt termő növényt vagy fát jelölő képző\npomo: alma\npomujo: almafa</string>
+    <string name="inflection_eo_ujo_adjective">Az adott tulajdonságú dolog tárolóját jelölő képző\nfrida: hideg\nfridujo: hűtőszekrény</string>
+    <string name="inflection_eo_ujo_verb">Az adott tevékenységhez használt edényt vagy tartályt jelölő képző\nlavi: mosni\nlavujo: mosdó, mosogató</string>
+    <string name="inflection_eo_ebla">Lehetőséget jelölő képző\nkompreni: érteni\nkomprenebla: érthető</string>
+    <string name="inflection_eo_ado">Cselekvésből az azt kifejező főnevet képző utótag\nvivi: élni\nvivado: élet\nspiri: lélegezni\nspirado: légzés</string>
+    <string name="inflection_eo_mal">Előképző, amely egy cselekvést, tulajdonságot, dolgot vagy irányt az ellentétére fordít</string>
+    <string name="inflection_eo_kun">Másokkal közösen végzett cselekvést jelölő előképző\nlabori: dolgozni\nkunlabori: együttműködni</string>
+    <string name="inflection_eo_ekster">„Kívül” jelentésű előképző\nlando: ország\neksterlando: külföld</string>
+    <string name="inflection_eo_ek">Cselekvés kezdetét jelölő előképző\nkanti: énekelni\nekkanti: énekelni kezdeni</string>
+    <string name="inflection_eo_us">Frissen vagy nemrégiben történt cselekvést jelölő előképző\nvekita: felébresztett\nĵusvekita: frissen felébresztett</string>
+    <string name="inflection_eo_el">Kifelé irányuló cselekvést jelölő előképző\ntiri: húzni\neltiri: kihúzni\n\nTeljes befejezettséget jelölő előképző\ntrinki: inni\neltrinki: kiinni, meginni az egészet\nlerni: tanulni\nellerni: alaposan megtanulni, elsajátítani\nuzi: használni\neluzi: elhasználni, elnyűni</string>
+    <string name="inflection_eo_dis">„Szétválás, szétszóródás” jelentésű előképző\nŝvebi: lebegni\ndisŝvebi: szétlebegni\nfali: esni\ndisfali: szétesni\ndoni: adni\ndisdoni: szétosztani\nsendo: küldemény\ndissendo: műsorszórás, közvetítés</string>
+    <string name="inflection_eo_for">„Messzire távolodás” jelentésű előképző\nflugi: repülni\nforflugi: elrepülni\n\n„Eltűnés, felemésztés” jelentésű előképző\nuzi: használni\nforuzi: teljesen felhasználni</string>
+    <string name="inflection_eo_mis">„Hibás, téves” jelentésű előképző\nkompreni: érteni\nmiskompreni: félreérteni\nparoli: beszélni\nmisparoli: elszólni magát</string>
+</resources>

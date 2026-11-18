@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">jamak</string>
+    <string name="inflection_la_plural">Deklinasi jamak</string>
+    <string name="inflection_la_feminine_label">feminin</string>
+    <string name="inflection_la_feminine">Bentuk adjektiva</string>
+    <string name="inflection_la_neuter_label">netral</string>
+    <string name="inflection_la_neuter">Bentuk adjektiva</string>
+    <string name="inflection_la_ablative_label">ablatif</string>
+    <string name="inflection_la_ablative">Kasus ablatif</string>
+    <string name="inflection_la_que">Enklitik “dan” (magisque dari magis)</string>
+    <string name="inflection_la_ne">Enklitik penanda tanya (videsne dari vides)</string>
+    <string name="inflection_la_ve">Enklitik “atau” (mortuusve dari mortuus)</string>
+</resources>

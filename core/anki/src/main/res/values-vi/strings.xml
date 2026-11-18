@@ -4,7 +4,7 @@
     <string name="audio_source_json">URL tùy chỉnh (JSON)</string>
 
     <string name="anki_problem_not_installed">AnkiDroid chưa được cài.</string>
-    <string name="anki_problem_no_permission">Screenlate đã mất quyền truy cập AnkiDroid.</string>
+    <string name="anki_problem_no_permission">Không có quyền truy cập AnkiDroid.</string>
     <string name="anki_problem_model_missing">Không tìm thấy loại ghi chú trong AnkiDroid.</string>
     <string name="anki_problem_deck_missing">Không tìm thấy bộ thẻ trong AnkiDroid.</string>
     <string name="anki_problem_fields_changed">Các trường của loại ghi chú đã thay đổi.</string>

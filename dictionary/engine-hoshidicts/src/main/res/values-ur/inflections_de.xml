@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_de_nominalization_label">اسمی سازی</string>
+    <string name="inflection_de_nominalization">فعل سے بنایا گیا اسم</string>
+    <string name="inflection_de_bar">فعل سے بنی -able جیسی صفت</string>
+    <string name="inflection_de_negative_label">منفی</string>
+    <string name="inflection_de_negative">نفی</string>
+    <string name="inflection_de_past_participle_label">ماضی کی فعلی صفت</string>
+    <string name="inflection_de_separated_prefix_label">جدا شدہ سابقہ</string>
+    <string name="inflection_de_zu_infinitive_label">zu-مصدر</string>
+    <string name="inflection_de_heit">1. صفت کو اسم میں بدلتا ہے اور عموماً صفتی مادے کی مجرد کیفیت ظاہر کرتا ہے۔ یہ اکثر انگریزی لاحقوں -ness، -th، -ty، -dom کے مماثل ہوتا ہے:\n	 schön (“خوبصورت”) + -heit → Schönheit (“خوبصورتی”)\n	 neu (“نیا”) + -heit → Neuheit (“جدت”)\n2. مادی اسماء کو مجرد اسماء میں بدلتا ہے:\n	 Kind (“بچہ”) + -heit → Kindheit (“بچپن”)\n	 Christ (“عیسائی”) + -heit → Christenheit (“عیسائی دنیا”)\n</string>
+</resources>

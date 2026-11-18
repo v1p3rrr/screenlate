@@ -65,6 +65,22 @@
 - Minified ARM64 Dev APK from `d2341119` (on `main`): package `com.vpr.screenlate.debug`, label `Screenlate Dev`, version `1.1.0-d2341119-min` (`10100`), `23,395,507` bytes, debug-signed. SHA-256 `a80cf2f46f9bda9c8c19eadf32e07af2581e43e927e9641967f715ebc1c3ade6`.
   - APK, R8 mapping, and init script saved under ignored `testdata/local-research/builds/`.
 
+## UI microcopy audit, segmented button fixes, and 10 new interface locales (2026-11-18)
+
+- **UI strings microcopy audit (`features/ui-strings-audit`, `41155f1d` & `88ed8bbc`):**
+  - Audited and refactored all UI string resources across English (`values/`) and all 16 existing translations (`ru, ja, de, es, fr, it, ko, pl, pt, tr, vi, b+zh+Hans, b+zh+Hant, ar, fa, iw`) into concise, impersonal, nominal technical UI microcopy.
+  - Preserved `?` on all 19 genuine confirmation dialogs (`AlertDialog` / `ConfirmDelete` + `eink_home_title`) while keeping non-dialog headers nominal.
+  - Verified against Kotlin/Compose call sites via a semantic fidelity audit and 17 independent native-language reviewers (one per locale).
+  - Audited all `Segments(...)` (`SingleChoiceSegmentedButtonRow`) controls after truncation appeared on `popup_copy_mode_meanings` ("Только значен...") and shortened long labels across locales (`popup_copy_mode_meanings` → "Meanings" / «Значения», `anki_scope_deck_root` → «Корневая» / "Stamm" / "Główna" / "Racine", `bubble_small_text_on_demand` → «По запросу», `bubble_aim_center` → "En el centro"); no layout redesign required.
+- **10 new interface locales (`features/more-locales`, `d0cab252`, `cd997e10`, `8e493b39`):**
+  - Added Indonesian (`values-in`, config `id`), Thai (`th`), Ukrainian (`uk`), Hindi (`hi`), Bengali (`bn`), Urdu (`ur`, RTL), Romanian (`ro`), Czech (`cs`), Hungarian (`hu`) and Greek (`el`), bringing interface coverage to **27 locales** (33 XML files, 2,187 keys each = 330 new XML files).
+  - Updated `app/src/main/res/xml/locales_config.xml`, `LanguageOptions.kt` (`FLAG_REGIONS` for `in`, `hi`, `bn`, `ur`, `ro`, `hu`), `LanguageOptionsTest.kt`, and `TranslationsTest.kt` (CLDR plural rules + `in` → `id` mapping).
+  - Translated all 10 locales via language-specific translators and reviewed each independently with a separate native-language reviewer subagent (including segmented button length checks, RTL conventions for `ur`, Greek `;` question marks for `el`, and kanji terms in `inflections_ja.xml`).
+  - Updated documentation and GitHub Pages (`README.md`, `docs/index.html`, `docs/usage.md`, `docs/architecture.md`, `AGENTS.md`, `ai/notes/translations.md`) for 27 interface languages and 4 RTL mirrored locales.
+  - Verified with full cross-locale integrity check (`27 locales × 33 XML files × 2,187 keys`, `0` count mismatches, `0` errors, `0` Google Lens mentions, `0` truncation warnings on 2/3/4-segment rows) and forced `:app:testDebugUnitTest --rerun` (`TranslationsTest`, `LanguageOptionsTest`).
+- Minified ARM64 Dev APK from `8e493b39` (on `features/more-locales`): package `com.vpr.screenlate.debug`, label `Screenlate Dev`, version `1.1.0-8e493b39-min` (`10100`), `25,016,339` bytes, debug-signed (matching prior Dev cert `3d48893b...`). SHA-256 `f518a2878ab70f1e32fc3c01c5967b57d3dc936fcb073add9c6e22c90312f960`.
+  - APK, R8 mapping, and init script saved under ignored `testdata/local-research/builds/`.
+
 ## Bubble aim dot color, outside-tap popup dismissal, and screenshot crop memory (2026-11-17)
 
 - Implemented on branch `features/overlay-ux-fixes` and merged into `main` (`e1373f64`):

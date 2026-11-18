@@ -36,6 +36,16 @@ class TranslationsTest {
         "ar" to setOf("zero", "one", "two", "few", "many", "other"),
         "fa" to setOf("one", "other"),
         "iw" to setOf("one", "two", "other"),
+        "in" to setOf("other"),
+        "th" to setOf("other"),
+        "uk" to setOf("one", "few", "many", "other"),
+        "hi" to setOf("one", "other"),
+        "bn" to setOf("one", "other"),
+        "ur" to setOf("one", "other"),
+        "ro" to setOf("one", "few", "other"),
+        "cs" to setOf("one", "few", "many", "other"),
+        "hu" to setOf("one", "other"),
+        "el" to setOf("one", "other"),
     )
 
     /** Translations whose screens are not checked yet: they ship, but the language settings do not offer them. */
@@ -129,8 +139,14 @@ class TranslationsTest {
             .map { it.name.removePrefix("values-") }
             .filter { it !in unlisted }
             .map { it.removePrefix("b+").replace('+', '-') }
-            // Hebrew's folder has Android's old code; the config names the language he, which resolves to it.
-            .map { if (it == "iw") "he" else it }
+            // Hebrew and Indonesian folders use Android's legacy codes (iw/in); the config names them he/id.
+            .map {
+                when (it) {
+                    "iw" -> "he"
+                    "in" -> "id"
+                    else -> it
+                }
+            }
         assertWithMessage("locales_config.xml").that(listed).containsExactlyElementsIn(translated + "en")
     }
 

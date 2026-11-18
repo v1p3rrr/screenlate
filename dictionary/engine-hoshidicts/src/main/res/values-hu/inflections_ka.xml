@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">névszóragozás</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Grúz főnévi és melléknévi esetragok leválasztása</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">alanyeset</string>
+    <string name="inflection_ka_nounadjstemcompletion">Az alanyeset -ი végződésének visszaállítása mássalhangzóra végződő főnévi/melléknévi töveknél</string>
+    <string name="inflection_ka_vowelrestoration_label">kiesett magánhangzó</string>
+    <string name="inflection_ka_vowelrestoration">Kiesett magánhangzók visszaállítása, ha szükséges</string>
+</resources>

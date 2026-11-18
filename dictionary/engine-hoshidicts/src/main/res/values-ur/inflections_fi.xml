@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">ملحقہ</string>
+    <string name="inflection_fi_clitic">ملحقہ: -kin، -kaan/-kään، -ko/-kö، -pa/-pä، -han/-hän (talo سے talokin، talossa سے talossakaan، onko سے onkohan)</string>
+    <string name="inflection_fi_possessive_label">ملکیتی</string>
+    <string name="inflection_fi_possessive">ملکیتی لاحقہ: -ni، -si، -mme، -nne، -nsa/-nsä، طویل مصوتہ اور -n (talossa سے talossani اور talossaan، talo سے taloni)</string>
+</resources>

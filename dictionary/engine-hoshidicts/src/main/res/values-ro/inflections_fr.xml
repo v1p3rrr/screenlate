@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">indicativ prezent</string>
+    <string name="inflection_fr_present_indicative">Forma de indicativ prezent a unui verb</string>
+    <string name="inflection_fr_imperfect_indicative_label">indicativ imperfect</string>
+    <string name="inflection_fr_imperfect_indicative">Forma de indicativ imperfect a unui verb</string>
+    <string name="inflection_fr_future_label">viitor</string>
+    <string name="inflection_fr_future">Forma de viitor a unui verb</string>
+    <string name="inflection_fr_imperative_present_label">imperativ prezent</string>
+    <string name="inflection_fr_imperative_present">Forma de imperativ a unui verb</string>
+    <string name="inflection_fr_conditional_label">condițional</string>
+    <string name="inflection_fr_conditional">Forma de condițional a unui verb</string>
+    <string name="inflection_fr_preterite_label">perfect simplu</string>
+    <string name="inflection_fr_preterite">Forma de perfect simplu (preterit) a unui verb</string>
+    <string name="inflection_fr_plural_label">plural</string>
+    <string name="inflection_fr_plural">Forma de plural a unui substantiv</string>
+    <string name="inflection_fr_present_participle_label">participiu prezent</string>
+    <string name="inflection_fr_present_participle">Forma de participiu prezent a unui verb</string>
+    <string name="inflection_fr_present_subjunctive_label">conjunctiv prezent</string>
+    <string name="inflection_fr_present_subjunctive">Forma de conjunctiv prezent a unui verb</string>
+</resources>

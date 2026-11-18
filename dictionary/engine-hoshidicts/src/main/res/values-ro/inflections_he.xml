@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">și</string>
+    <string name="inflection_he_v">și (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">care, că</string>
+    <string name="inflection_he_sh">că, care, cel ce (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">când</string>
+    <string name="inflection_he_ksh">când, pe când (כשהגעתי)</string>
+    <string name="inflection_he_b_label">în</string>
+    <string name="inflection_he_b">în, la, cu (בבית)</string>
+    <string name="inflection_he_k_label">ca</string>
+    <string name="inflection_he_k">ca, precum (כילד)</string>
+    <string name="inflection_he_l_label">la</string>
+    <string name="inflection_he_l">la, pentru (לבית)</string>
+    <string name="inflection_he_m_label">din</string>
+    <string name="inflection_he_m">din, de la, decât (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">art. hot.</string>
+    <string name="inflection_he_h">articol hotărât (הבית)</string>
+</resources>

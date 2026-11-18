@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">Převod textu na řeč</string>
+    <string name="audio_source_url">Vlastní URL</string>
+    <string name="audio_source_json">Vlastní URL (JSON)</string>
+    <string name="anki_problem_not_installed">AnkiDroid není nainstalován.</string>
+    <string name="anki_problem_no_permission">Chybí přístup k AnkiDroidu.</string>
+    <string name="anki_problem_model_missing">Typ poznámky nebyl v AnkiDroidu nalezen.</string>
+    <string name="anki_problem_deck_missing">Balíček nebyl v AnkiDroidu nalezen.</string>
+    <string name="anki_problem_fields_changed">Pole typu poznámky se změnila.</string>
+</resources>

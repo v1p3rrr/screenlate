@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">a</string>
+    <string name="inflection_he_v">a (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">že, který</string>
+    <string name="inflection_he_sh">že, který, jenž (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">když</string>
+    <string name="inflection_he_ksh">když, jakmile (כשהגעתי)</string>
+    <string name="inflection_he_b_label">v</string>
+    <string name="inflection_he_b">v, u, s (בבית)</string>
+    <string name="inflection_he_k_label">jako</string>
+    <string name="inflection_he_k">jako (כילד)</string>
+    <string name="inflection_he_l_label">k, pro</string>
+    <string name="inflection_he_l">k, do, pro (לבית)</string>
+    <string name="inflection_he_m_label">z, od</string>
+    <string name="inflection_he_m">z, od, než (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">určitý člen</string>
+    <string name="inflection_he_h">určitý člen (הבית)</string>
+</resources>

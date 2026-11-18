@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">přítomný indikativ</string>
+    <string name="inflection_fr_present_indicative">Přítomný indikativ slovesa</string>
+    <string name="inflection_fr_imperfect_indicative_label">imperfektum indikativu</string>
+    <string name="inflection_fr_imperfect_indicative">Imperfektum indikativu slovesa</string>
+    <string name="inflection_fr_future_label">budoucí čas</string>
+    <string name="inflection_fr_future">Budoucí čas slovesa</string>
+    <string name="inflection_fr_imperative_present_label">přítomný imperativ</string>
+    <string name="inflection_fr_imperative_present">Rozkazovací způsob slovesa</string>
+    <string name="inflection_fr_conditional_label">kondicionál</string>
+    <string name="inflection_fr_conditional">Podmiňovací způsob slovesa</string>
+    <string name="inflection_fr_preterite_label">préteritum</string>
+    <string name="inflection_fr_preterite">Préteritum (jednoduchý minulý čas) slovesa</string>
+    <string name="inflection_fr_plural_label">množné číslo</string>
+    <string name="inflection_fr_plural">Množné číslo podstatného jména</string>
+    <string name="inflection_fr_present_participle_label">příčestí přítomné</string>
+    <string name="inflection_fr_present_participle">Příčestí přítomné slovesa</string>
+    <string name="inflection_fr_present_subjunctive_label">přítomný konjunktiv</string>
+    <string name="inflection_fr_present_subjunctive">Přítomný konjunktiv slovesa</string>
+</resources>

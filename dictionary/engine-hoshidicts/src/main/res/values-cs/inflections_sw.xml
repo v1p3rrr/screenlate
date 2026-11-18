@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">zápor</string>
+    <string name="inflection_sw_negative">zápor: ha- před podmětem (hatukusoma, hakusoma), si- pro já a hu- pro ty (sikusoma, hukusoma), si- za podmětem před vztažnou částicí (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">já</string>
+    <string name="inflection_sw_i">podmět ni-: já (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">ty</string>
+    <string name="inflection_sw_you">podmět u-: ty nebo podstatné jméno tříd 3, 11 a 14 (unasoma; mti umeanguka, strom spadl)</string>
+    <string name="inflection_sw_he_she_label">on/ona</string>
+    <string name="inflection_sw_he_she">podmět a-: on nebo ona (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">my</string>
+    <string name="inflection_sw_we">podmět tu-: my (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">vy</string>
+    <string name="inflection_sw_you_pl">podmět m-: vy, množné číslo (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">oni</string>
+    <string name="inflection_sw_they">podmět wa-: oni (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">třída</string>
+    <string name="inflection_sw_class">podmět jmenné třídy: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (místa: kulikuwa, bylo)</string>
+    <string name="inflection_sw_past_label">minulý čas</string>
+    <string name="inflection_sw_past">minulý čas: li-, po záporu ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">přítomný čas</string>
+    <string name="inflection_sw_present">přítomný čas: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">budoucí čas</string>
+    <string name="inflection_sw_future">budoucí čas: ta-, před vztažnou částicí taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">perfektum</string>
+    <string name="inflection_sw_perfect">perfektum: me- (amesoma, přečetl)</string>
+    <string name="inflection_sw_not_yet_label">ještě ne</string>
+    <string name="inflection_sw_not_yet">ještě ne: ja- po záporu (hajasoma, ještě nečetl)</string>
+    <string name="inflection_sw_conditional_label">kondicionál</string>
+    <string name="inflection_sw_conditional">kondicionál: nge- a ngali- (angesoma, četl by; angalisoma, byl by četl)</string>
+    <string name="inflection_sw_when_label">když</string>
+    <string name="inflection_sw_when">ki-: když, zatímco nebo pokud (akisoma)</string>
+    <string name="inflection_sw_and_then_label">a pak</string>
+    <string name="inflection_sw_and_then">ka-: a pak, ve vyprávění (akasoma)</string>
+    <string name="inflection_sw_habitual_label">habituální</string>
+    <string name="inflection_sw_habitual">habituální: hu- (husoma, obvykle čte)</string>
+    <string name="inflection_sw_relative_label">vztažný</string>
+    <string name="inflection_sw_relative">vztažný: kdo, který, kde (aliyesoma, ten, kdo četl; kinachoitwa, co se nazývá; waishio, kteří žijí)</string>
+    <string name="inflection_sw_object_label">předmět</string>
+    <string name="inflection_sw_object">předmět: ni- mě, ku- tě, m- nebo mw- jej/ji, tu- nás, wa- je a předpony jmenných tříd ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">zvratný</string>
+    <string name="inflection_sw_reflexive">zvratné ji-: se, sebe (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">infinitiv</string>
+    <string name="inflection_sw_infinitive">infinitiv: ku- nebo kw- (kusoma, kwandika, kumpa)</string>
+</resources>

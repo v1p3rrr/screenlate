@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">และ</string>
+    <string name="inflection_he_v">และ (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">ที่/ว่า</string>
+    <string name="inflection_he_sh">ที่, ซึ่ง, ผู้ซึ่ง, ว่า (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">เมื่อ</string>
+    <string name="inflection_he_ksh">เมื่อ, ขณะที่ (כשהגעתי)</string>
+    <string name="inflection_he_b_label">ใน</string>
+    <string name="inflection_he_b">ใน, ที่, ด้วย (בבית)</string>
+    <string name="inflection_he_k_label">เหมือน</string>
+    <string name="inflection_he_k">เหมือน, ดัง (כילד)</string>
+    <string name="inflection_he_l_label">ไปยัง</string>
+    <string name="inflection_he_l">ไปยัง, แก่, เพื่อ (לבית)</string>
+    <string name="inflection_he_m_label">จาก</string>
+    <string name="inflection_he_m">จาก, กว่า (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">คำนำหน้านามชี้เฉพาะ</string>
+    <string name="inflection_he_h">คำนำหน้านามชี้เฉพาะ (הבית)</string>
+</resources>

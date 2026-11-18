@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">tagadó</string>
+    <string name="inflection_sw_negative">tagadás: ha- az alany előtt (hatukusoma, hakusoma), si- (én) és hu- (te) (sikusoma, hukusoma), si- az alany után vonatkozó elem előtt (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">én</string>
+    <string name="inflection_sw_i">ni- alanyjelölő: én (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">te</string>
+    <string name="inflection_sw_you">u- alanyjelölő: te, vagy a 3., 11. és 14. főnévosztály (unasoma; mti umeanguka, a fa kidőlt)</string>
+    <string name="inflection_sw_he_she_label">ő</string>
+    <string name="inflection_sw_he_she">a- alanyjelölő: ő (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">mi</string>
+    <string name="inflection_sw_we">tu- alanyjelölő: mi (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">ti</string>
+    <string name="inflection_sw_you_pl">m- alanyjelölő: ti (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">ők</string>
+    <string name="inflection_sw_they">wa- alanyjelölő: ők (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">osztály</string>
+    <string name="inflection_sw_class">főnévosztály alanya: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (helyek: kulikuwa, volt)</string>
+    <string name="inflection_sw_past_label">múlt idő</string>
+    <string name="inflection_sw_past">múlt idő: li-, illetve ku- tagadás után (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">jelen idő</string>
+    <string name="inflection_sw_present">jelen idő: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">jövő idő</string>
+    <string name="inflection_sw_future">jövő idő: ta-, illetve taka- vonatkozó elem előtt (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">befejezett</string>
+    <string name="inflection_sw_perfect">befejezett: me- (amesoma, elolvasta)</string>
+    <string name="inflection_sw_not_yet_label">még nem</string>
+    <string name="inflection_sw_not_yet">még nem: ja- tagadás után (hajasoma, még nem olvasta el)</string>
+    <string name="inflection_sw_conditional_label">feltételes</string>
+    <string name="inflection_sw_conditional">feltételes mód: nge- és ngali- (angesoma, olvasna; angalisoma, olvasott volna)</string>
+    <string name="inflection_sw_when_label">amikor</string>
+    <string name="inflection_sw_when">ki-: amikor, miközben vagy ha (akisoma)</string>
+    <string name="inflection_sw_and_then_label">majd</string>
+    <string name="inflection_sw_and_then">ka-: majd, azután elbeszélésben (akasoma)</string>
+    <string name="inflection_sw_habitual_label">szokásos</string>
+    <string name="inflection_sw_habitual">szokásos cselekvés: hu- (husoma, rendszerint olvas)</string>
+    <string name="inflection_sw_relative_label">vonatkozó</string>
+    <string name="inflection_sw_relative">vonatkozó: aki, amely, ahol (aliyesoma, aki olvasott; kinachoitwa, amelyet úgy hívnak; waishio, akik élnek)</string>
+    <string name="inflection_sw_object_label">tárgy</string>
+    <string name="inflection_sw_object">tárgyjelölő: ni- (engem), ku- (téged), m-/mw- (őt), tu- (minket), wa- (őket), valamint a ki- vi- li- ya- i- zi- u- pa- mu- főnévosztály-előtagok (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">visszaható</string>
+    <string name="inflection_sw_reflexive">visszaható ji-: önmagát (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">főnévi igenév</string>
+    <string name="inflection_sw_infinitive">főnévi igenév: ku- vagy kw- (kusoma, kwandika, kumpa)</string>
+</resources>

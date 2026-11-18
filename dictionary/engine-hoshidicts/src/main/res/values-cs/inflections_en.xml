@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">množné číslo</string>
+    <string name="inflection_en_plural">Množné číslo podstatného jména</string>
+    <string name="inflection_en_possessive_label">přivlastňovací</string>
+    <string name="inflection_en_possessive">Přivlastňovací tvar podstatného jména</string>
+    <string name="inflection_en_past_label">minulý čas</string>
+    <string name="inflection_en_past">Minulý čas prostý slovesa</string>
+    <string name="inflection_en_ing_label">ing</string>
+    <string name="inflection_en_ing">Příčestí přítomné slovesa</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">3. os. j. č. přít.</string>
+    <string name="inflection_en_3rd_pers_sing_pres">3. osoba jednotného čísla přítomného času slovesa</string>
+    <string name="inflection_en_interposed_object_label">vložený předmět</string>
+    <string name="inflection_en_interposed_object">Frázové sloveso s vloženým předmětem</string>
+    <string name="inflection_en_archaic_label">archaický</string>
+    <string name="inflection_en_archaic">Archaický tvar slova</string>
+    <string name="inflection_en_adverb_label">příslovce</string>
+    <string name="inflection_en_adverb">Příslovečný tvar přídavného jména</string>
+    <string name="inflection_en_comparative_label">2. stupeň</string>
+    <string name="inflection_en_comparative">2. stupeň přídavného jména</string>
+    <string name="inflection_en_superlative_label">3. stupeň</string>
+    <string name="inflection_en_superlative">3. stupeň přídavného jména</string>
+    <string name="inflection_en_dropped_g_label">vynechané g</string>
+    <string name="inflection_en_dropped_g">Vynechané g ve tvaru slovesa na -ing</string>
+    <string name="inflection_en_y">Přídavné jméno utvořené ze slovesa nebo podstatného jména</string>
+    <string name="inflection_en_un">Záporný tvar přídavného jména, příslovce nebo slovesa</string>
+    <string name="inflection_en_going_to_future_label">budoucí čas going-to</string>
+    <string name="inflection_en_going_to_future">Budoucí čas slovesa s vazbou going to</string>
+    <string name="inflection_en_will_future_label">budoucí čas will</string>
+    <string name="inflection_en_will_future">Budoucí čas slovesa s will</string>
+    <string name="inflection_en_imperative_negative_label">záporný imperativ</string>
+    <string name="inflection_en_imperative_negative">Záporný rozkazovací způsob slovesa</string>
+    <string name="inflection_en_able">Přídavné jméno utvořené ze slovesa</string>
+</resources>

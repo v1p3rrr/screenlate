@@ -4,8 +4,8 @@
     <string name="audio_source_json">Eigene URL (JSON)</string>
 
     <string name="anki_problem_not_installed">AnkiDroid ist nicht installiert.</string>
-    <string name="anki_problem_no_permission">Screenlate hat den Zugriff auf AnkiDroid verloren.</string>
-    <string name="anki_problem_model_missing">Der Notiztyp wurde in AnkiDroid nicht gefunden.</string>
-    <string name="anki_problem_deck_missing">Der Stapel wurde in AnkiDroid nicht gefunden.</string>
-    <string name="anki_problem_fields_changed">Die Felder des Notiztyps haben sich geändert.</string>
+    <string name="anki_problem_no_permission">Kein Zugriff auf AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Notiztyp in AnkiDroid nicht gefunden.</string>
+    <string name="anki_problem_deck_missing">Stapel in AnkiDroid nicht gefunden.</string>
+    <string name="anki_problem_fields_changed">Felder des Notiztyps geändert.</string>
 </resources>

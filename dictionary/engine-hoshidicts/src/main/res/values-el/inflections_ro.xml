@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">οριστικός</string>
+    <string name="inflection_ro_ul">οριστικό άρθρο (procesul από proces, consiliul από consiliu)</string>
+    <string name="inflection_ro_le_label">οριστικός</string>
+    <string name="inflection_ro_le">οριστικό άρθρο (fratele από frate, textele από texte)</string>
+    <string name="inflection_ro_a_label">οριστικός</string>
+    <string name="inflection_ro_a">οριστικό άρθρο θηλυκών ουσιαστικών (dezvoltarea από dezvoltare, comisia από comisie)</string>
+    <string name="inflection_ro_i_label">οριστικός πληθυντικός</string>
+    <string name="inflection_ro_i">οριστικό άρθρο αρσενικών πληθυντικών (pomii από pomi)</string>
+    <string name="inflection_ro_ului_label">οριστική γενική</string>
+    <string name="inflection_ro_ului">γενική και δοτική με οριστικό άρθρο (procesului από proces, fratelui από frate)</string>
+    <string name="inflection_ro_ei_label">οριστική γενική</string>
+    <string name="inflection_ro_ei">γενική και δοτική θηλυκών ουσιαστικών με οριστικό άρθρο (Moldovei από Moldova, comisiei από comisie)</string>
+    <string name="inflection_ro_ii_label">οριστική γενική</string>
+    <string name="inflection_ro_ii">γενική και δοτική θηλυκών ουσιαστικών σε -e με οριστικό άρθρο (lumii από lume, dezvoltării από dezvoltare)</string>
+    <string name="inflection_ro_lor_label">οριστική γενική πληθυντικού</string>
+    <string name="inflection_ro_lor">γενική και δοτική πληθυντικού με οριστικό άρθρο (caselor από case)</string>
+    <string name="inflection_ro_agreement_label">θηλυκό ή πληθυντικός</string>
+    <string name="inflection_ro_agreement">θηλυκό ή πληθυντικός μετοχής ή επιθέτου (aflată, aflate, aflați από aflat· pusă από pus)</string>
+</resources>

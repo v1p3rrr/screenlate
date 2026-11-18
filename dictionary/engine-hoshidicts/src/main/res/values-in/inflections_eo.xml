@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">akusatif</string>
+    <string name="inflection_eo_accusative">Bentuk akusatif dari kata</string>
+    <string name="inflection_eo_plural_label">jamak</string>
+    <string name="inflection_eo_plural">Bentuk jamak dari kata</string>
+    <string name="inflection_eo_diminutive_label">diminutif</string>
+    <string name="inflection_eo_diminutive">Bentuk diminutif nomina</string>
+    <string name="inflection_eo_directional_label">direksional</string>
+    <string name="inflection_eo_directional">Adverbia dalam kasus akusatif menunjukkan arah\nkie: di mana\nkien: ke mana</string>
+    <string name="inflection_eo_locational_label">lokasional</string>
+    <string name="inflection_eo_locational">Nomina yang menjadi adverbia menunjukkan lokasi\nsurpinto : puncak, ujung\nsurpinte: di puncak, di ujung\nĉambro : kamar\nĉambre: di kamar, di dalam kamar</string>
+    <string name="inflection_eo_adjectival_label">adjektival</string>
+    <string name="inflection_eo_adjectival">Bentuk adjektival nomina</string>
+    <string name="inflection_eo_adverbial_adj_adv">Bentuk adverbial adjektiva</string>
+    <string name="inflection_eo_adverbial_v_adv">Bentuk adverbial verba</string>
+    <string name="inflection_eo_ejo_noun">Akhiran yang mengubah kata menjadi tempat yang dirancang untuk benda tertentu\nkafo: kopi\nkafejo: kafe</string>
+    <string name="inflection_eo_ejo_verb">Akhiran yang mengubah kata menjadi tempat yang dirancang untuk tindakan tertentu\nkuiri: memasak\nkuirejo: dapur</string>
+    <string name="inflection_eo_ujo_noun">Akhiran yang mengubah kata menjadi kotak atau wadah untuk benda tertentu\nabelo: lebah\nabelujo: sarang lebah\n\nAkhiran yang mengubah kata menjadi tempat tinggal sekelompok orang\npatro: ayah\npatrujo: tanah air\n\nAkhiran yang mengubah bunga atau buah menjadi tumbuhan atau pohonnya\npomo: apel\npomujo: pohon apel</string>
+    <string name="inflection_eo_ujo_adjective">Akhiran yang mengubah kata sifat menjadi kotak atau wadah untuk jenis benda tertentu\nfrida: dingin\nfridujo: kulkas</string>
+    <string name="inflection_eo_ujo_verb">Akhiran yang mengubah tindakan menjadi kotak atau wadah untuk jenis aktivitas tertentu\nlavi: mencuci\nlavujo: wastafel</string>
+    <string name="inflection_eo_ebla">Akhiran yang menunjukkan kemungkinan\nkompreni: memahami\nkomprenebla: dapat dipahami</string>
+    <string name="inflection_eo_ado">Akhiran yang mengubah tindakan menjadi nomina yang menyatakan tindakan tersebut\nvivi: hidup\nvivado: kehidupan\nspiri: bernapas\nspirado: pernapasan</string>
+    <string name="inflection_eo_mal">Awalan yang mengubah tindakan, sifat, benda, atau arah menjadi lawan katanya</string>
+    <string name="inflection_eo_kun">Awalan yang berarti melakukan tindakan bersama orang lain\nlabori: bekerja\nkunlabori: bekerja sama</string>
+    <string name="inflection_eo_ekster">Awalan yang berarti “di luar”\nlando: negara\neksterlando: luar negeri</string>
+    <string name="inflection_eo_ek">Awalan yang berarti memulai tindakan\nkanti: bernyanyi\nekkanti: mulai bernyanyi</string>
+    <string name="inflection_eo_us">Awalan yang berarti sesuatu baru saja dilakukan\nvekita: terbangun\nĵusvekita: baru saja terbangun</string>
+    <string name="inflection_eo_el">Awalan yang berarti melakukan tindakan ke arah luar\ntiri: menarik\neltiri: mencabut, menarik keluar\n\nAwalan yang berarti melakukan tindakan sampai tuntas\ntrinki: minum\neltrinki: menghabiskan minuman\nlerni: belajar\nellerni: mempelajari sepenuhnya, menguasai\nuzi: memakai\neluzi: memakai hingga habis/aus</string>
+    <string name="inflection_eo_dis">Awalan yang berarti “pemisahan, terpisah, menyebar”\nŝvebi: melayang\ndisŝvebi: melayang berpencar\nfali: jatuh\ndisfali: runtuh berkeping-keping\ndoni: memberi\ndisdoni: membagikan, mendistribusikan\nsendo: kiriman\ndissendo: siaran</string>
+    <string name="inflection_eo_for">Awalan yang berarti “gerakan ke tempat jauh”\nflugi: terbang\nforflugi: terbang menjauh\n\nAwalan yang berarti “hilang/habis”\nuzi: memakai\nforuzi: menghabiskan (sampai tak tersisa)</string>
+    <string name="inflection_eo_mis">Awalan yang berarti “salah, keliru”\nkompreni: memahami\nmiskompreni: salah paham\nparoli: berbicara\nmisparoli: salah ucap</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">Szövegfelolvasás (TTS)</string>
+    <string name="audio_source_url">Egyéni URL</string>
+    <string name="audio_source_json">Egyéni URL (JSON)</string>
+    <string name="anki_problem_not_installed">Az AnkiDroid nincs telepítve.</string>
+    <string name="anki_problem_no_permission">Nincs hozzáférés az AnkiDroidhoz.</string>
+    <string name="anki_problem_model_missing">A jegyzettípus nem található az AnkiDroidban.</string>
+    <string name="anki_problem_deck_missing">A pakli nem található az AnkiDroidban.</string>
+    <string name="anki_problem_fields_changed">A jegyzettípus mezői megváltoztak.</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">การลดเสียงหนัก</string>
+    <string name="inflection_ga_lenition">การลดเสียงหนัก (lenition): bh ch dh fh gh mh ph sh th แทน b c d f g m p s t, ts แทน s หลังคำนำหน้านาม (an bhean จาก bean, an tsráid จาก sráid)</string>
+    <string name="inflection_ga_eclipsis_label">การบังเสียง</string>
+    <string name="inflection_ga_eclipsis">การบังเสียง (eclipsis): mb gc nd bhf ng bp dt แทน b c d f g p t, n- หน้าสระ (i nGaillimh จาก Gaillimh, ár n-athair จาก athair)</string>
+    <string name="inflection_ga_t_prothesis_label">การเติม t หน้าคำ</string>
+    <string name="inflection_ga_t_prothesis">เติม t หน้าสระ (an t-uisce จาก uisce, an tAontas จาก Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">การเติม h หน้าคำ</string>
+    <string name="inflection_ga_h_prothesis">เติม h หน้าสระ (na hÉireann จาก Éireann, a hathair จาก athair)</string>
+</resources>

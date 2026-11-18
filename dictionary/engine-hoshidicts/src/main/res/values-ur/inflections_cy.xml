@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">نرم تغیر</string>
+    <string name="inflection_cy_soft_mutation">نرم تغیر: p t c b/m d ll rh کے لیے b d g f dd l r، اور g حذف (cath سے ei gath، gwely سے dy wely)</string>
+    <string name="inflection_cy_nasal_mutation_label">غنہ تغیر</string>
+    <string name="inflection_cy_nasal_mutation">غنہ تغیر: p t c b d g کے لیے mh nh ngh m n ng (cath سے fy nghath، Cymru سے yng Nghymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">ہکاری تغیر</string>
+    <string name="inflection_cy_aspirate_mutation">ہکاری تغیر: p t c کے لیے ph th ch (cath سے ei chath)</string>
+    <string name="inflection_cy_h_prothesis_label">h-اضافہ</string>
+    <string name="inflection_cy_h_prothesis">مصوتے سے پہلے h (ysgol سے ei hysgol)</string>
+</resources>

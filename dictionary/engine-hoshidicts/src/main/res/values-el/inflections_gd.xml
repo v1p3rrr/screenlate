@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">αποδυνάμωση</string>
+    <string name="inflection_gd_lenition">αποδυνάμωση: bh ch dh fh gh mh ph sh th αντί για b c d f g m p s t, t-s αντί για s μετά το άρθρο (a\' ghrian από grian, an t-sràid από sràid)</string>
+    <string name="inflection_gd_eclipsis_label">έκλειψη</string>
+    <string name="inflection_gd_eclipsis">n- πριν από φωνήεν (ar n-eilean από eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">πρόταξη t</string>
+    <string name="inflection_gd_t_prothesis">t- πριν από φωνήεν (an t-uisge από uisge, an t-Eilean από Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">πρόταξη h</string>
+    <string name="inflection_gd_h_prothesis">h- πριν από φωνήεν (na h-Alba από Alba, na h-òrain από òrain)</string>
+</resources>

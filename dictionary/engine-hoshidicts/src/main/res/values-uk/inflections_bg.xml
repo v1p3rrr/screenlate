@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">означена форма</string>
+    <string name="inflection_bg_definite">означений артикль: -ът, -ят, -а, -я, -та, -то, -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">множина</string>
+    <string name="inflection_bg_plural">множина: -и, -ове, -ища, -а, -та, -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">жіночий рід</string>
+    <string name="inflection_bg_feminine">жіночий рід прикметника: -а (нова, умна від умен, добра від добър, българска)</string>
+    <string name="inflection_bg_neuter_label">середній рід</string>
+    <string name="inflection_bg_neuter">середній рід прикметника: -о (ново, умно від умен, добро від добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">теперішній час</string>
+    <string name="inflection_bg_present">теперішній час (гарантира, гарантират від гарантирам; четеш, четат від чета; говори від говоря)</string>
+    <string name="inflection_bg_past_label">минулий час</string>
+    <string name="inflection_bg_past">аорист або імперфект (чаках, чакаше від чакам; четох, четеше від чета; говорих від говоря)</string>
+    <string name="inflection_bg_past_participle_label">дієприкметник мин. часу</string>
+    <string name="inflection_bg_past_participle">активний дієприкметник минулого часу на -л (гарантирал, изминала від измина, говорили від говоря)</string>
+    <string name="inflection_bg_passive_participle_label">пасивний дієприкметник</string>
+    <string name="inflection_bg_passive_participle">пасивний дієприкметник минулого часу на -н (гарантиран, гарантирана від гарантирам; говорено від говоря)</string>
+    <string name="inflection_bg_imperative_label">наказовий спосіб</string>
+    <string name="inflection_bg_imperative">наказовий спосіб -ай, -айте (чакай, чакайте від чакам; стреляй від стрелям)</string>
+</resources>

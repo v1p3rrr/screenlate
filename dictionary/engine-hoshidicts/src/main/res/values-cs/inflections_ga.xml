@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">lenice</string>
+    <string name="inflection_ga_lenition">lenice: bh ch dh fh gh mh ph sh th za b c d f g m p s t, ts za s po členu (an bhean od bean, an tsráid od sráid)</string>
+    <string name="inflection_ga_eclipsis_label">eklipse</string>
+    <string name="inflection_ga_eclipsis">eklipse: mb gc nd bhf ng bp dt za b c d f g p t, n- před samohláskou (i nGaillimh od Gaillimh, ár n-athair od athair)</string>
+    <string name="inflection_ga_t_prothesis_label">proteze t-</string>
+    <string name="inflection_ga_t_prothesis">t před samohláskou (an t-uisce od uisce, an tAontas od Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">proteze h-</string>
+    <string name="inflection_ga_h_prothesis">h před samohláskou (na hÉireann od Éireann, a hathair od athair)</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_de_nominalization_label">főnevesítés</string>
+    <string name="inflection_de_nominalization">Igéből képzett főnév</string>
+    <string name="inflection_de_bar">Igéből képzett -ható/-hető jelentésű melléknév</string>
+    <string name="inflection_de_negative_label">tagadó</string>
+    <string name="inflection_de_negative">Tagadás</string>
+    <string name="inflection_de_past_participle_label">befejezett melléknévi igenév</string>
+    <string name="inflection_de_separated_prefix_label">elváló igekötő</string>
+    <string name="inflection_de_zu_infinitive_label">zu-s főnévi igenév</string>
+    <string name="inflection_de_heit">1. Melléknévből képez főnevet, és általában a melléknévi tő elvont tulajdonságát jelöli (gyakran a magyar -ság/-ség képzőnek felel meg):\n	 schön („szép”) + -heit → Schönheit („szépség”)\n	 neu („új”) + -heit → Neuheit („újdonság”)\n2. Konkrét főnevekből képez elvont főneveket:\n	 Kind („gyermek”) + -heit → Kindheit („gyermekkor”)\n	 Christ („keresztény”) + -heit → Christenheit („kereszténység”)\n</string>
+</resources>

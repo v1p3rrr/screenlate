@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">akuzativ</string>
+    <string name="inflection_eo_accusative">Akuzativní tvar slova</string>
+    <string name="inflection_eo_plural_label">množné číslo</string>
+    <string name="inflection_eo_plural">Množné číslo slova</string>
+    <string name="inflection_eo_diminutive_label">zdrobnělina</string>
+    <string name="inflection_eo_diminutive">Zdrobnělina podstatného jména</string>
+    <string name="inflection_eo_directional_label">směrový</string>
+    <string name="inflection_eo_directional">Příslovce v akuzativu označuje směr\nkie: kde\nkien: kam</string>
+    <string name="inflection_eo_locational_label">místní</string>
+    <string name="inflection_eo_locational">Podstatné jméno převedené na příslovce označuje místo\nsurpinto: vrchol, špička\nsurpinte: na vrcholu, na špičce\nĉambro: pokoj\nĉambre: v pokoji</string>
+    <string name="inflection_eo_adjectival_label">přídavný</string>
+    <string name="inflection_eo_adjectival">Přídavné jméno utvořené z podstatného jména</string>
+    <string name="inflection_eo_adverbial_adj_adv">Příslovečný tvar přídavného jména</string>
+    <string name="inflection_eo_adverbial_v_adv">Příslovečný tvar slovesa</string>
+    <string name="inflection_eo_ejo_noun">Přípona měnící slovo na místo určené pro danou věc\nkafo: káva\nkafejo: kavárna</string>
+    <string name="inflection_eo_ejo_verb">Přípona měnící slovo na místo určené pro danou činnost\nkuiri: vařit\nkuirejo: kuchyně</string>
+    <string name="inflection_eo_ujo_noun">Přípona měnící slovo na nádobu či schránku pro danou věc\nabelo: včela\nabelujo: úl\n\nPřípona měnící slovo na zemi nebo místo obývané určitou skupinou lidí\npatro: otec\npatrujo: vlast\n\nPřípona měnící květ či plod na rostlinu nebo strom, na kterém roste\npomo: jablko\npomujo: jabloň</string>
+    <string name="inflection_eo_ujo_adjective">Přípona měnící přídavné jméno na nádobu či zařízení s danou vlastností\nfrida: chladný\nfridujo: lednička</string>
+    <string name="inflection_eo_ujo_verb">Přípona měnící děj na nádobu či zařízení určené pro danou činnost\nlavi: mýt\nlavujo: umyvadlo, dřez</string>
+    <string name="inflection_eo_ebla">Přípona vyjadřující možnost\nkompreni: rozumět\nkomprenebla: srozumitelný</string>
+    <string name="inflection_eo_ado">Přípona měnící děj na podstatné jméno označující trvání či proces činnosti\nvivi: žít\nvivado: život\nspiri: dýchat\nspirado: dýchání</string>
+    <string name="inflection_eo_mal">Předpona měnící děj, vlastnost, věc či směr v jejich přesný opak</string>
+    <string name="inflection_eo_kun">Předpona s významem konat činnost společně s ostatními\nlabori: pracovat\nkunlabori: spolupracovat</string>
+    <string name="inflection_eo_ekster">Předpona s významem „vně“, „mimo“\nlando: země\neksterlando: cizina</string>
+    <string name="inflection_eo_ek">Předpona vyjadřující započetí děje\nkanti: zpívat\nekkanti: zazpívat, začít zpívat</string>
+    <string name="inflection_eo_us">Předpona vyjadřující, že se něco stalo právě nebo nedávno\nvekita: probuzený\nĵusvekita: právě probuzený</string>
+    <string name="inflection_eo_el">Předpona vyjadřující pohyb směrem ven\ntiri: táhnout\neltiri: vytáhnout\n\nPředpona vyjadřující dokončení děje až do konce\ntrinki: pít\neltrinki: vypít do dna\nlerni: učit se\nellerni: naučit se dokonale, zvládnout\nuzi: používat\neluzi: spotřebovat, opotřebovat</string>
+    <string name="inflection_eo_dis">Předpona vyjadřující „oddělení, rozptýlení, rozdělení“\nŝvebi: vznášet se\ndisŝvebi: rozptýlit se\nfali: padat\ndisfali: rozpadnout se\ndoni: dát\ndisdoni: rozdat, rozdělit\nsendo: zásilka\ndissendo: vysílání</string>
+    <string name="inflection_eo_for">Předpona vyjadřující „pohyb pryč, do dálky“\nflugi: letět\nforflugi: odletět\n\nPředpona vyjadřující „zmizení, úplné spotřebování“\nuzi: používat\nforuzi: zcela spotřebovat</string>
+    <string name="inflection_eo_mis">Předpona vyjadřující „chybně, nesprávně“\nkompreni: rozumět\nmiskompreni: neporozumět, špatně pochopit\nparoli: mluvit\nmisparoli: přeřeknout se</string>
+</resources>

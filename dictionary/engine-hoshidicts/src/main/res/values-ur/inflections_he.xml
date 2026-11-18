@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">اور</string>
+    <string name="inflection_he_v">اور (ואני، והבית)</string>
+    <string name="inflection_he_sh_label">کہ/جو</string>
+    <string name="inflection_he_sh">کہ، جو (שאמר، שבבית)</string>
+    <string name="inflection_he_ksh_label">جب</string>
+    <string name="inflection_he_ksh">جب، جیسے ہی (כשהגעתי)</string>
+    <string name="inflection_he_b_label">میں</string>
+    <string name="inflection_he_b">میں، پر، کے ساتھ (בבית)</string>
+    <string name="inflection_he_k_label">بطور/جیسے</string>
+    <string name="inflection_he_k">کی طرح، بطور (כילד)</string>
+    <string name="inflection_he_l_label">کو/کے لیے</string>
+    <string name="inflection_he_l">کو، کے لیے (לבית)</string>
+    <string name="inflection_he_m_label">سے</string>
+    <string name="inflection_he_m">سے، بنسبت (מירושלים، מהבית)</string>
+    <string name="inflection_he_h_label">معرفہ</string>
+    <string name="inflection_he_h">حرفِ تعریف (הבית)</string>
+</resources>

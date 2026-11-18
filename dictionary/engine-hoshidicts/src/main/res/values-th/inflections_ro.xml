@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">ชี้เฉพาะ</string>
+    <string name="inflection_ro_ul">คำนำหน้านามชี้เฉพาะ (procesul จาก proces, consiliul จาก consiliu)</string>
+    <string name="inflection_ro_le_label">ชี้เฉพาะ</string>
+    <string name="inflection_ro_le">คำนำหน้านามชี้เฉพาะ (fratele จาก frate, textele จาก texte)</string>
+    <string name="inflection_ro_a_label">ชี้เฉพาะ</string>
+    <string name="inflection_ro_a">คำนำหน้านามชี้เฉพาะของคำนามเพศหญิง (dezvoltarea จาก dezvoltare, comisia จาก comisie)</string>
+    <string name="inflection_ro_i_label">พหูพจน์ชี้เฉพาะ</string>
+    <string name="inflection_ro_i">คำนำหน้านามชี้เฉพาะของพหูพจน์เพศชาย (pomii จาก pomi)</string>
+    <string name="inflection_ro_ului_label">สัมพันธการกชี้เฉพาะ</string>
+    <string name="inflection_ro_ului">สัมพันธการกและสัมปทานการกพร้อมคำนำหน้านามชี้เฉพาะ (procesului จาก proces, fratelui จาก frate)</string>
+    <string name="inflection_ro_ei_label">สัมพันธการกชี้เฉพาะ</string>
+    <string name="inflection_ro_ei">สัมพันธการกและสัมปทานการกของคำนามเพศหญิงพร้อมคำนำหน้านามชี้เฉพาะ (Moldovei จาก Moldova, comisiei จาก comisie)</string>
+    <string name="inflection_ro_ii_label">สัมพันธการกชี้เฉพาะ</string>
+    <string name="inflection_ro_ii">สัมพันธการกและสัมปทานการกของคำนามเพศหญิงลงท้าย -e พร้อมคำนำหน้านามชี้เฉพาะ (lumii จาก lume, dezvoltării จาก dezvoltare)</string>
+    <string name="inflection_ro_lor_label">สัมพันธการกพหูพจน์ชี้เฉพาะ</string>
+    <string name="inflection_ro_lor">สัมพันธการกและสัมปทานการกพหูพจน์พร้อมคำนำหน้านามชี้เฉพาะ (caselor จาก case)</string>
+    <string name="inflection_ro_agreement_label">เพศหญิงหรือพหูพจน์</string>
+    <string name="inflection_ro_agreement">รูปเพศหญิงหรือพหูพจน์ของกริยาคุณศัพท์หรือคำคุณศัพท์ (aflată, aflate, aflați จาก aflat; pusă จาก pus)</string>
+</resources>

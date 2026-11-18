@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">बहुवचन</string>
+    <string name="inflection_en_plural">संज्ञा का बहुवचन रूप</string>
+    <string name="inflection_en_possessive_label">संबंधवाचक</string>
+    <string name="inflection_en_possessive">संज्ञा का संबंधवाचक रूप</string>
+    <string name="inflection_en_past_label">भूतकाल</string>
+    <string name="inflection_en_past">क्रिया का सामान्य भूतकाल</string>
+    <string name="inflection_en_ing_label">ing</string>
+    <string name="inflection_en_ing">क्रिया का वर्तमान कृदंत</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">अन्य पु. एकव. वर्तमान</string>
+    <string name="inflection_en_3rd_pers_sing_pres">क्रिया का अन्य पुरुष एकवचन वर्तमान काल</string>
+    <string name="inflection_en_interposed_object_label">मध्यवर्ती कर्म</string>
+    <string name="inflection_en_interposed_object">मध्य में कर्म सहित वाक्यांश क्रिया</string>
+    <string name="inflection_en_archaic_label">प्राचीन</string>
+    <string name="inflection_en_archaic">शब्द का प्राचीन रूप</string>
+    <string name="inflection_en_adverb_label">क्रिया-विशेषण</string>
+    <string name="inflection_en_adverb">विशेषण का क्रिया-विशेषण रूप</string>
+    <string name="inflection_en_comparative_label">उत्तरावस्था</string>
+    <string name="inflection_en_comparative">विशेषण का तुलनात्मक रूप</string>
+    <string name="inflection_en_superlative_label">उत्तमावस्था</string>
+    <string name="inflection_en_superlative">विशेषण का सर्वोच्च रूप</string>
+    <string name="inflection_en_dropped_g_label">लोपित g</string>
+    <string name="inflection_en_dropped_g">क्रिया के -ing रूप में लोपित g</string>
+    <string name="inflection_en_y">क्रिया या संज्ञा से बना विशेषण</string>
+    <string name="inflection_en_un">विशेषण, क्रिया-विशेषण या क्रिया का नकारात्मक रूप</string>
+    <string name="inflection_en_going_to_future_label">going-to भविष्य</string>
+    <string name="inflection_en_going_to_future">क्रिया का going-to भविष्य काल</string>
+    <string name="inflection_en_will_future_label">will भविष्य</string>
+    <string name="inflection_en_will_future">क्रिया का will भविष्य काल</string>
+    <string name="inflection_en_imperative_negative_label">नकारात्मक आज्ञार्थक</string>
+    <string name="inflection_en_imperative_negative">क्रिया का नकारात्मक आज्ञार्थक रूप</string>
+    <string name="inflection_en_able">क्रिया से बना विशेषण</string>
+</resources>

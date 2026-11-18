@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">क्लिटिक</string>
+    <string name="inflection_fi_clitic">आश्रित अव्यय (क्लिटिक): -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talo से talokin, talossa से talossakaan, onko से onkohan)</string>
+    <string name="inflection_fi_possessive_label">संबंधवाचक</string>
+    <string name="inflection_fi_possessive">संबंधवाचक प्रत्यय: -ni, -si, -mme, -nne, -nsa/-nsä, दीर्घ स्वर और -n (talossa से talossani व talossaan, talo से taloni)</string>
+</resources>

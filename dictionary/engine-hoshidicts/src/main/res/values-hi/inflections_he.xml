@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">और</string>
+    <string name="inflection_he_v">और (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">कि / जो</string>
+    <string name="inflection_he_sh">कि, जो, जिसने (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">जब</string>
+    <string name="inflection_he_ksh">जब, जैसे ही (כשהגעתי)</string>
+    <string name="inflection_he_b_label">में</string>
+    <string name="inflection_he_b">में, पर, साथ (בבית)</string>
+    <string name="inflection_he_k_label">जैसा</string>
+    <string name="inflection_he_k">जैसा, की तरह (כילד)</string>
+    <string name="inflection_he_l_label">को</string>
+    <string name="inflection_he_l">को, के लिए (לבית)</string>
+    <string name="inflection_he_m_label">से</string>
+    <string name="inflection_he_m">से, की तुलना में (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">निश्चित उपपद</string>
+    <string name="inflection_he_h">निश्चित उपपद (הבית)</string>
+</resources>

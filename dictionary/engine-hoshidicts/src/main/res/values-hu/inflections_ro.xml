@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">határozott</string>
+    <string name="inflection_ro_ul">határozott névelő (procesul ← proces, consiliul ← consiliu)</string>
+    <string name="inflection_ro_le_label">határozott</string>
+    <string name="inflection_ro_le">határozott névelő (fratele ← frate, textele ← texte)</string>
+    <string name="inflection_ro_a_label">határozott</string>
+    <string name="inflection_ro_a">nőnemű főnevek határozott névelője (dezvoltarea ← dezvoltare, comisia ← comisie)</string>
+    <string name="inflection_ro_i_label">határozott többes</string>
+    <string name="inflection_ro_i">hímnemű többes számú főnevek határozott névelője (pomii ← pomi)</string>
+    <string name="inflection_ro_ului_label">határozott birtokos</string>
+    <string name="inflection_ro_ului">birtokos és részes eset határozott névelővel (procesului ← proces, fratelui ← frate)</string>
+    <string name="inflection_ro_ei_label">határozott birtokos</string>
+    <string name="inflection_ro_ei">nőnemű főnevek birtokos és részes esete határozott névelővel (Moldovei ← Moldova, comisiei ← comisie)</string>
+    <string name="inflection_ro_ii_label">határozott birtokos</string>
+    <string name="inflection_ro_ii">-e végű nőnemű főnevek birtokos és részes esete határozott névelővel (lumii ← lume, dezvoltării ← dezvoltare)</string>
+    <string name="inflection_ro_lor_label">határozott többes birtokos</string>
+    <string name="inflection_ro_lor">többes számú birtokos és részes eset határozott névelővel (caselor ← case)</string>
+    <string name="inflection_ro_agreement_label">nőnem vagy többes</string>
+    <string name="inflection_ro_agreement">melléknévi igenév vagy melléknév nőnemű vagy többes számú alakja (aflată, aflate, aflați ← aflat; pusă ← pus)</string>
+</resources>

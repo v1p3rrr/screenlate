@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">تصریف</string>
+    <string name="inflection_ka_nounadjsuffixstripping">جارجیائی اسم اور صفت کے تصریفی لاحقے ہٹانا</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">حالتِ فاعلی</string>
+    <string name="inflection_ka_nounadjstemcompletion">حرفِ صحیح پر ختم ہونے والے اسم یا صفت کے مادے پر حالتِ فاعلی کا لاحقہ -ი بحال کرنا</string>
+    <string name="inflection_ka_vowelrestoration_label">محذوف مصوتہ</string>
+    <string name="inflection_ka_vowelrestoration">مناسب مقام پر حذف شدہ مصوتے بحال کرنا</string>
+</resources>

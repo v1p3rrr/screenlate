@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">พหูพจน์</string>
+    <string name="inflection_en_plural">รูปพหูพจน์ของคำนาม</string>
+    <string name="inflection_en_possessive_label">แสดงความเป็นเจ้าของ</string>
+    <string name="inflection_en_possessive">รูปแสดงความเป็นเจ้าของของคำนาม</string>
+    <string name="inflection_en_past_label">อดีตกาล</string>
+    <string name="inflection_en_past">อดีตกาลอย่างง่ายของคำกริยา</string>
+    <string name="inflection_en_ing_label">รูป -ing</string>
+    <string name="inflection_en_ing">กริยาคุณศัพท์ปัจจุบันของคำกริยา</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">บุรุษ 3 เอกพจน์ ปัจจุบัน</string>
+    <string name="inflection_en_3rd_pers_sing_pres">ปัจจุบันกาล บุรุษที่ 3 เอกพจน์ ของคำกริยา</string>
+    <string name="inflection_en_interposed_object_label">กรรมคั่นกลาง</string>
+    <string name="inflection_en_interposed_object">กริยาวลีที่มีกรรมคั่นกลาง</string>
+    <string name="inflection_en_archaic_label">โบราณ</string>
+    <string name="inflection_en_archaic">รูปโบราณของคำ</string>
+    <string name="inflection_en_adverb_label">คำวิเศษณ์</string>
+    <string name="inflection_en_adverb">รูปคำวิเศษณ์ของคำคุณศัพท์</string>
+    <string name="inflection_en_comparative_label">ขั้นกว่า</string>
+    <string name="inflection_en_comparative">รูปขั้นกว่าของคำคุณศัพท์</string>
+    <string name="inflection_en_superlative_label">ขั้นสุด</string>
+    <string name="inflection_en_superlative">รูปขั้นสุดของคำคุณศัพท์</string>
+    <string name="inflection_en_dropped_g_label">ละ g</string>
+    <string name="inflection_en_dropped_g">ละตัว g ในรูป -ing ของคำกริยา</string>
+    <string name="inflection_en_y">คำคุณศัพท์ที่สร้างจากคำกริยาหรือคำนาม</string>
+    <string name="inflection_en_un">รูปปฏิเสธของคำคุณศัพท์ คำวิเศษณ์ หรือคำกริยา</string>
+    <string name="inflection_en_going_to_future_label">อนาคต going-to</string>
+    <string name="inflection_en_going_to_future">อนาคตกาลรูป going-to ของคำกริยา</string>
+    <string name="inflection_en_will_future_label">อนาคต will</string>
+    <string name="inflection_en_will_future">อนาคตกาลรูป will ของคำกริยา</string>
+    <string name="inflection_en_imperative_negative_label">คำสั่งห้าม</string>
+    <string name="inflection_en_imperative_negative">รูปคำสั่งปฏิเสธของคำกริยา</string>
+    <string name="inflection_en_able">คำคุณศัพท์ที่สร้างจากคำกริยา</string>
+</resources>

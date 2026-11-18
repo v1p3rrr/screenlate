@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">กรรมการก</string>
+    <string name="inflection_eo_accusative">รูปกรรมการกของคำ</string>
+    <string name="inflection_eo_plural_label">พหูพจน์</string>
+    <string name="inflection_eo_plural">รูปพหูพจน์ของคำ</string>
+    <string name="inflection_eo_diminutive_label">รูปย่อขนาด</string>
+    <string name="inflection_eo_diminutive">รูปย่อขนาดของคำนาม</string>
+    <string name="inflection_eo_directional_label">บอกทิศทาง</string>
+    <string name="inflection_eo_directional">คำวิเศษณ์ในกรรมการกแสดงทิศทาง\nkie: ที่ไหน\nkien: ไปที่ไหน</string>
+    <string name="inflection_eo_locational_label">บอกตำแหน่ง</string>
+    <string name="inflection_eo_locational">คำนามที่เปลี่ยนเป็นคำวิเศษณ์แสดงตำแหน่ง\nsurpinto : ยอด, ปลาย\nsurpinte: ที่ยอด, ที่ปลาย\nĉambro : ห้อง\nĉambre: ในห้อง, ที่ห้อง</string>
+    <string name="inflection_eo_adjectival_label">เชิงคุณศัพท์</string>
+    <string name="inflection_eo_adjectival">รูปคุณศัพท์ของคำนาม</string>
+    <string name="inflection_eo_adverbial_adj_adv">รูปวิเศษณ์ของคำคุณศัพท์</string>
+    <string name="inflection_eo_adverbial_v_adv">รูปวิเศษณ์ของคำกริยา</string>
+    <string name="inflection_eo_ejo_noun">ปัจจัยที่เปลี่ยนคำให้เป็นสถานที่สำหรับสิ่งนั้นโดยเฉพาะ\nkafo: กาแฟ\nkafejo: ร้านกาแฟ</string>
+    <string name="inflection_eo_ejo_verb">ปัจจัยที่เปลี่ยนคำให้เป็นสถานที่สำหรับการกระทำนั้นโดยเฉพาะ\nkuiri: ทำอาหาร\nkuirejo: ห้องครัว</string>
+    <string name="inflection_eo_ujo_noun">ปัจจัยที่เปลี่ยนคำให้เป็นกล่องหรือภาชนะสำหรับสิ่งนั้น\nabelo: ผึ้ง\nabelujo: รังผึ้ง\n\nปัจจัยที่เปลี่ยนคำให้เป็นดินแดนหรือสถานที่ของกลุ่มคนนั้น\npatro: พ่อ\npatrujo: มาตุภูมิ\n\nปัจจัยที่เปลี่ยนดอกไม้หรือผลไม้ให้เป็นต้นไม้ที่ออกดอกหรือผลนั้น\npomo: แอปเปิล\npomujo: ต้นแอปเปิล</string>
+    <string name="inflection_eo_ujo_adjective">ปัจจัยที่เปลี่ยนคำขยายให้เป็นกล่องหรือภาชนะสำหรับลักษณะนั้น\nfrida: เย็น\nfridujo: ตู้เย็น</string>
+    <string name="inflection_eo_ujo_verb">ปัจจัยที่เปลี่ยนการกระทำให้เป็นกล่องหรือภาชนะสำหรับกิจกรรมนั้น\nlavi: ล้าง\nlavujo: อ่างล้างหน้า/อ่างล้างมือ</string>
+    <string name="inflection_eo_ebla">ปัจจัยที่แสดงความเป็นไปได้\nkompreni: เข้าใจ\nkomprenebla: เข้าใจได้</string>
+    <string name="inflection_eo_ado">ปัจจัยที่เปลี่ยนการกระทำให้เป็นคำนามแสดงกระบวนการหรือการกระทำนั้น\nvivi: มีชีวิตอยู่\nvivado: การใช้ชีวิต\nspiri: หายใจ\nspirado: การหายใจ</string>
+    <string name="inflection_eo_mal">อุปสรรคที่เปลี่ยนการกระทำ คำขยาย สิ่งของ หรือทิศทางเป็นความหมายตรงข้าม</string>
+    <string name="inflection_eo_kun">อุปสรรคหมายถึงทำกริยานั้นร่วมกับผู้อื่น\nlabori: ทำงาน\nkunlabori: ทำงานร่วมกัน</string>
+    <string name="inflection_eo_ekster">อุปสรรคหมายถึง “ภายนอก”\nlando: ประเทศ\neksterlando: ต่างประเทศ</string>
+    <string name="inflection_eo_ek">อุปสรรคหมายถึงเริ่มทำกริยานั้น\nkanti: ร้องเพลง\nekkanti: เริ่มร้องเพลง</string>
+    <string name="inflection_eo_us">อุปสรรคหมายถึงเพิ่งทำหรือเกิดขึ้นใหม่ ๆ\nvekita: ถูกปลุกแล้ว\nĵusvekita: เพิ่งถูกปลุก</string>
+    <string name="inflection_eo_el">อุปสรรคหมายถึงทำกริยานั้นในทิศทางออกข้างนอก\ntiri: ดึง\neltiri: ดึงออก\n\nอุปสรรคหมายถึงทำจนเสร็จสิ้นสมบูรณ์\ntrinki: ดื่ม\neltrinki: ดื่มจนหมด\nlerni: เรียน\nellerni: เรียนจนเชี่ยวชาญ\nuzi: ใช้\neluzi: ใช้จนหมดหรือเสื่อมสภาพ</string>
+    <string name="inflection_eo_dis">อุปสรรคหมายถึง “แยกออก กระจายออก”\nŝvebi: ลอย\ndisŝvebi: ลอยกระจายออก\nfali: ตก\ndisfali: แตกสลายเป็นชิ้น ๆ\ndoni: ให้\ndisdoni: แจกจ่าย\nsendo: สิ่งที่ส่ง\ndissendo: การแพร่ภาพกระจายเสียง</string>
+    <string name="inflection_eo_for">อุปสรรคหมายถึง “เคลื่อนที่ออกไปไกล”\nflugi: บิน\nforflugi: บินจากไป\n\nอุปสรรคหมายถึง “หายไป/หมดสิ้น”\nuzi: ใช้\nforuzi: ใช้จนหมดเกลี้ยง</string>
+    <string name="inflection_eo_mis">อุปสรรคหมายถึง “ผิดพลาด คลาดเคลื่อน”\nkompreni: เข้าใจ\nmiskompreni: เข้าใจผิด\nparoli: พูด\nmisparoli: พูดผิด</string>
+</resources>

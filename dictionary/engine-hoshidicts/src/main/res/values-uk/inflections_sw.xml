@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">заперечення</string>
+    <string name="inflection_sw_negative">заперечення: ha- перед підметом (hatukusoma, hakusoma), si- для «я» і hu- для «ти» (sikusoma, hukusoma), si- після підмета перед відносним показником (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">я</string>
+    <string name="inflection_sw_i">підмет ni-: я (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">ти</string>
+    <string name="inflection_sw_you">підмет u-: ти, або іменник класів 3, 11 і 14 (unasoma; mti umeanguka — дерево впало)</string>
+    <string name="inflection_sw_he_she_label">він/вона</string>
+    <string name="inflection_sw_he_she">підмет a-: він або вона (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">ми</string>
+    <string name="inflection_sw_we">підмет tu-: ми (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">ви (мн.)</string>
+    <string name="inflection_sw_you_pl">підмет m-: ви у множині (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">вони</string>
+    <string name="inflection_sw_they">підмет wa-: вони (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">клас</string>
+    <string name="inflection_sw_class">підмет іменного класу: ki-, vi- (kitabu kimeanguka), li-, ya- (jina, majina), i-, zi- (nyumba), ku-, pa-, mu- (місця: kulikuwa — було)</string>
+    <string name="inflection_sw_past_label">минулий час</string>
+    <string name="inflection_sw_past">минулий час: li- та ku- після заперечення (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">теперішній час</string>
+    <string name="inflection_sw_present">теперішній час: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">майбутній час</string>
+    <string name="inflection_sw_future">майбутній час: ta- та taka- перед відносним показником (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">перфект</string>
+    <string name="inflection_sw_perfect">перфект: me- (amesoma — прочитав)</string>
+    <string name="inflection_sw_not_yet_label">ще не</string>
+    <string name="inflection_sw_not_yet">ще не: ja- після заперечення (hajasoma — ще не прочитав)</string>
+    <string name="inflection_sw_conditional_label">умовний спосіб</string>
+    <string name="inflection_sw_conditional">умовний спосіб: nge- і ngali- (angesoma — читав би; angalisoma — прочитав би)</string>
+    <string name="inflection_sw_when_label">коли</string>
+    <string name="inflection_sw_when">ki-: коли, поки або якщо (akisoma)</string>
+    <string name="inflection_sw_and_then_label">а потім</string>
+    <string name="inflection_sw_and_then">ka-: і тоді, а потім у розповіді (akasoma)</string>
+    <string name="inflection_sw_habitual_label">звична дія</string>
+    <string name="inflection_sw_habitual">звична дія: hu- (husoma — зазвичай читає)</string>
+    <string name="inflection_sw_relative_label">відносна форма</string>
+    <string name="inflection_sw_relative">відносна форма: хто, який, де (aliyesoma — той, хто читав; kinachoitwa — те, що називається; waishio — ті, хто живе)</string>
+    <string name="inflection_sw_object_label">додаток</string>
+    <string name="inflection_sw_object">додаток: ni- (мене), ku- (тебе), m- або mw- (його/її), tu- (нас), wa- (їх), а також префікси іменних класів ki-, vi-, li-, ya-, i-, zi-, u-, pa-, mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">зворотна форма</string>
+    <string name="inflection_sw_reflexive">зворотний показник ji-: себе (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">інфінітив</string>
+    <string name="inflection_sw_infinitive">інфінітив: ku- або kw- (kusoma, kwandika, kumpa)</string>
+</resources>

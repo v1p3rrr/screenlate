@@ -1,12 +1,12 @@
 <resources>
     <string name="installation_ready">準備完了</string>
-    <string name="installation_running">言語をインストール中です。必要なコンポーネントの準備ができると、スキャンと検索を利用できます。</string>
-    <string name="installation_missing">必要な辞書または認識モデルがないか、無効になっています。インストール状況を開いて設定を完了してください。</string>
-    <string name="installation_failed">言語のインストールに失敗しました。インストール状況を開いてエラーを確認し、再試行してください。</string>
+    <string name="installation_running">言語をインストール中です。コンポーネントの準備が完了するとスキャンと検索が利用できるようになります。</string>
+    <string name="installation_missing">必要な辞書または認識モデルが不足しているか無効です。インストール状況を開いてセットアップを完了してください。</string>
+    <string name="installation_failed">言語のインストールに失敗しました。インストール状況を開いて詳細を確認するか再試行してください。</string>
     <string name="installation_open">インストール状況</string>
     <string name="installation_device_ready">端末上の認識：準備完了</string>
-    <string name="installation_device_missing">端末上の認識：利用不可。有効にするとクラウド認識を利用できます。</string>
-    <string name="installation_device_missing_offline">端末上の認識：利用不可。強制オフラインモードではクラウド認識が無効です。</string>
+    <string name="installation_device_missing">端末上の認識：利用不可（有効時はクラウド認識を利用可能）</string>
     <string name="installation_remaining">残りのインストール：%1$d</string>
     <string name="installation_errors">失敗したインストール：%1$d</string>
+    <string name="installation_device_missing_offline">端末上の認識：利用不可。強制オフラインモードではクラウド認識が無効です。</string>
 </resources>

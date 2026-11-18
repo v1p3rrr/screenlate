@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_et_negative_label">заперечна форма</string>
+    <string name="inflection_et_negative">заперечна форма дієслова olema: pole, polnud, poleks, poldud, polevat (pole від olema)</string>
+</resources>

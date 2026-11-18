@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">měkká mutace</string>
+    <string name="inflection_cy_soft_mutation">měkká mutace: b d g f dd l r za p t c b/m d ll rh, g odpadá (ei gath od cath, dy wely od gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">nosová mutace</string>
+    <string name="inflection_cy_nasal_mutation">nosová mutace: mh nh ngh m n ng za p t c b d g (fy nghath od cath, yng Nghymru od Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">přídechová mutace</string>
+    <string name="inflection_cy_aspirate_mutation">přídechová mutace: ph th ch za p t c (ei chath od cath)</string>
+    <string name="inflection_cy_h_prothesis_label">proteze h-</string>
+    <string name="inflection_cy_h_prothesis">h před samohláskou (ei hysgol od ysgol)</string>
+</resources>

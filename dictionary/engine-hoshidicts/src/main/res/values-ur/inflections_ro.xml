@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">معرفہ</string>
+    <string name="inflection_ro_ul">حرفِ تعریف (proces سے procesul، consiliu سے consiliul)</string>
+    <string name="inflection_ro_le_label">معرفہ</string>
+    <string name="inflection_ro_le">حرفِ تعریف (frate سے fratele، texte سے textele)</string>
+    <string name="inflection_ro_a_label">معرفہ</string>
+    <string name="inflection_ro_a">مؤنث اسماء کا حرفِ تعریف (dezvoltare سے dezvoltarea، comisie سے comisia)</string>
+    <string name="inflection_ro_i_label">جمع معرفہ</string>
+    <string name="inflection_ro_i">مذکر جمع کا حرفِ تعریف (pomi سے pomii)</string>
+    <string name="inflection_ro_ului_label">اضافی معرفہ</string>
+    <string name="inflection_ro_ului">حرفِ تعریف کے ساتھ اضافی اور مفعول لہ حالت (proces سے procesului، frate سے fratelui)</string>
+    <string name="inflection_ro_ei_label">اضافی معرفہ</string>
+    <string name="inflection_ro_ei">حرفِ تعریف کے ساتھ مؤنث اسماء کی اضافی اور مفعول لہ حالت (Moldova سے Moldovei، comisie سے comisiei)</string>
+    <string name="inflection_ro_ii_label">اضافی معرفہ</string>
+    <string name="inflection_ro_ii">حرفِ تعریف کے ساتھ -e پر ختم ہونے والے مؤنث اسماء کی اضافی اور مفعول لہ حالت (lume سے lumii، dezvoltare سے dezvoltării)</string>
+    <string name="inflection_ro_lor_label">جمع اضافی معرفہ</string>
+    <string name="inflection_ro_lor">حرفِ تعریف کے ساتھ جمع کی اضافی اور مفعول لہ حالت (case سے caselor)</string>
+    <string name="inflection_ro_agreement_label">مؤنث یا جمع</string>
+    <string name="inflection_ro_agreement">فعلی صفت یا صفت کی مؤنث یا جمع صورت (aflat سے aflată، aflate، aflați؛ pus سے pusă)</string>
+</resources>

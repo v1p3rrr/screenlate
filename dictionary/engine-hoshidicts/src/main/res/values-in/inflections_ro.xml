@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">definit</string>
+    <string name="inflection_ro_ul">artikel definit (procesul dari proces, consiliul dari consiliu)</string>
+    <string name="inflection_ro_le_label">definit</string>
+    <string name="inflection_ro_le">artikel definit (fratele dari frate, textele dari texte)</string>
+    <string name="inflection_ro_a_label">definit</string>
+    <string name="inflection_ro_a">artikel definit nomina feminin (dezvoltarea dari dezvoltare, comisia dari comisie)</string>
+    <string name="inflection_ro_i_label">jamak definit</string>
+    <string name="inflection_ro_i">artikel definit jamak maskulin (pomii dari pomi)</string>
+    <string name="inflection_ro_ului_label">genitif definit</string>
+    <string name="inflection_ro_ului">genitif dan datif dengan artikel definit (procesului dari proces, fratelui dari frate)</string>
+    <string name="inflection_ro_ei_label">genitif definit</string>
+    <string name="inflection_ro_ei">genitif dan datif nomina feminin dengan artikel definit (Moldovei dari Moldova, comisiei dari comisie)</string>
+    <string name="inflection_ro_ii_label">genitif definit</string>
+    <string name="inflection_ro_ii">genitif dan datif nomina feminin berakhiran -e dengan artikel definit (lumii dari lume, dezvoltării dari dezvoltare)</string>
+    <string name="inflection_ro_lor_label">genitif jamak definit</string>
+    <string name="inflection_ro_lor">genitif dan datif jamak dengan artikel definit (caselor dari case)</string>
+    <string name="inflection_ro_agreement_label">feminin atau jamak</string>
+    <string name="inflection_ro_agreement">bentuk feminin atau jamak partisip atau adjektiva (aflată, aflate, aflați dari aflat; pusă dari pus)</string>
+</resources>

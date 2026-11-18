@@ -1,12 +1,12 @@
 <resources>
     <string name="installation_ready">Bereit</string>
-    <string name="installation_running">Die Sprache wird installiert. Scannen und Nachschlagen sind verfügbar, sobald die erforderlichen Komponenten bereit sind.</string>
-    <string name="installation_missing">Erforderliche Wörterbücher oder Erkennungsmodelle fehlen oder sind deaktiviert. Öffne den Installationsstatus, um die Einrichtung abzuschließen.</string>
-    <string name="installation_failed">Die Installation der Sprache ist fehlgeschlagen. Öffne den Installationsstatus, um den Fehler zu sehen und es erneut zu versuchen.</string>
+    <string name="installation_running">Sprachinstallation läuft. Scannen und Nachschlagen sind verfügbar, sobald die Komponenten bereit sind.</string>
+    <string name="installation_missing">Erforderliche Wörterbücher oder Erkennungsmodelle fehlen oder sind deaktiviert. Installationsstatus öffnen, um die Einrichtung abzuschließen.</string>
+    <string name="installation_failed">Sprachinstallation fehlgeschlagen. Installationsstatus für Details oder einen erneuten Versuch öffnen.</string>
     <string name="installation_open">Installationsstatus</string>
     <string name="installation_device_ready">Erkennung auf dem Gerät: bereit</string>
-    <string name="installation_device_missing">Erkennung auf dem Gerät: nicht verfügbar; Cloud-Erkennung kann verwendet werden, wenn sie aktiviert ist.</string>
-    <string name="installation_device_missing_offline">Erkennung auf dem Gerät: nicht verfügbar; die Cloud-Erkennung ist im erzwungenen Offline-Modus deaktiviert.</string>
+    <string name="installation_device_missing">Erkennung auf dem Gerät: nicht verfügbar (Cloud-Erkennung bei Aktivierung verfügbar)</string>
     <string name="installation_remaining">Verbleibende Installationen: %1$d</string>
     <string name="installation_errors">Fehlgeschlagene Installationen: %1$d</string>
+    <string name="installation_device_missing_offline">Erkennung auf dem Gerät: nicht verfügbar; die Cloud-Erkennung ist im erzwungenen Offline-Modus deaktiviert.</string>
 </resources>

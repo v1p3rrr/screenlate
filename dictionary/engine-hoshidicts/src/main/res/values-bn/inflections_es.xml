@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">বহুবচন</string>
+    <string name="inflection_es_plural">বিশেষ্যের বহুবচন রূপ</string>
+    <string name="inflection_es_feminine_adjective_label">স্ত্রীলিঙ্গ বিশেষণ</string>
+    <string name="inflection_es_feminine_adjective">বিশেষণের স্ত্রীলিঙ্গ রূপ</string>
+    <string name="inflection_es_present_indicative_label">বর্তমান নির্দেশক</string>
+    <string name="inflection_es_present_indicative">ক্রিয়ার বর্তমান নির্দেশক রূপ</string>
+    <string name="inflection_es_preterite_label">সাধারণ অতীত</string>
+    <string name="inflection_es_preterite">ক্রিয়ার সাধারণ অতীত রূপ</string>
+    <string name="inflection_es_imperfect_label">অসম্পূর্ণ অতীত</string>
+    <string name="inflection_es_imperfect">ক্রিয়ার অসম্পূর্ণ অতীত রূপ</string>
+    <string name="inflection_es_progressive_label">ঘটমান</string>
+    <string name="inflection_es_progressive">ক্রিয়ার ঘটমান রূপ</string>
+    <string name="inflection_es_imperative_label">অনুজ্ঞা</string>
+    <string name="inflection_es_imperative">ক্রিয়ার অনুজ্ঞা রূপ</string>
+    <string name="inflection_es_conditional_label">সাপেক্ষ</string>
+    <string name="inflection_es_conditional">ক্রিয়ার সাপেক্ষ রূপ</string>
+    <string name="inflection_es_future_label">ভবিষ্যৎ</string>
+    <string name="inflection_es_future">ক্রিয়ার ভবিষ্যৎ রূপ</string>
+    <string name="inflection_es_present_subjunctive_label">বর্তমান সম্ভাবক</string>
+    <string name="inflection_es_present_subjunctive">ক্রিয়ার বর্তমান সম্ভাবক রূপ</string>
+    <string name="inflection_es_imperfect_subjunctive_label">অসম্পূর্ণ অতীত সম্ভাবক</string>
+    <string name="inflection_es_imperfect_subjunctive">ক্রিয়ার অসম্পূর্ণ অতীত সম্ভাবক রূপ</string>
+    <string name="inflection_es_participle_label">কৃদন্ত পদ</string>
+    <string name="inflection_es_participle">ক্রিয়ার কৃদন্ত রূপ</string>
+    <string name="inflection_es_reflexive_label">আত্মবাচক</string>
+    <string name="inflection_es_reflexive">ক্রিয়ার আত্মবাচক রূপ</string>
+    <string name="inflection_es_pronoun_substitution_label">সর্বনাম প্রতিস্থাপন</string>
+    <string name="inflection_es_pronoun_substitution">আত্মবাচক ক্রিয়ার প্রতিস্থাপিত সর্বনাম</string>
+    <string name="inflection_es_pronominal_label">সর্বনামযুক্ত</string>
+    <string name="inflection_es_pronominal">ক্রিয়ার সর্বনামযুক্ত রূপ</string>
+</resources>

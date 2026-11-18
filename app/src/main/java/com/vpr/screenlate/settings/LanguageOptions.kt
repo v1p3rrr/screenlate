@@ -13,8 +13,9 @@ object LanguageOptions {
     private val FLAG_REGIONS = mapOf(
         "en" to "GB", "ru" to "RU", "ja" to "JP", "de" to "DE", "fr" to "FR", "es" to "ES", "it" to "IT",
         "ko" to "KR", "zh" to "CN", "uk" to "UA", "pl" to "PL", "pt" to "BR", "nl" to "NL", "tr" to "TR",
-        "vi" to "VN", "id" to "ID", "th" to "TH", "cs" to "CZ", "sv" to "SE", "fi" to "FI", "el" to "GR",
-        // The flags these languages have in the Languages screen; Android may report Hebrew by its old code iw.
+        "vi" to "VN", "id" to "ID", "in" to "ID", "th" to "TH", "cs" to "CZ", "sv" to "SE", "fi" to "FI", "el" to "GR",
+        "hi" to "IN", "bn" to "BD", "ur" to "PK", "ro" to "RO", "hu" to "HU",
+        // The flags these languages have in the Languages screen; Android may report Hebrew/Indonesian by old codes iw/in.
         "ar" to "SA", "fa" to "IR", "he" to "IL", "iw" to "IL",
     )
 

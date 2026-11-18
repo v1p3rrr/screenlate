@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">معرفہ</string>
+    <string name="inflection_bg_definite">حرفِ تعریف: -ът -ят -а -я، -та -то -те (градът، учителя، книгата، селото، книгите)</string>
+    <string name="inflection_bg_plural_label">جمع</string>
+    <string name="inflection_bg_plural">جمع: -и -ове -ища -а -та -ия (студенти، книги، градове، пътища، села، морета، събития)</string>
+    <string name="inflection_bg_feminine_label">مؤنث</string>
+    <string name="inflection_bg_feminine">صفت کی مؤنث صورت: -а (нова، умна از умен، добра از добър، българска)</string>
+    <string name="inflection_bg_neuter_label">بے جنس</string>
+    <string name="inflection_bg_neuter">صفت کی بے جنس صورت: -о (ново، умно از умен، добро از добър، българско، синьо)</string>
+    <string name="inflection_bg_present_label">حال</string>
+    <string name="inflection_bg_present">زمانہ حال (гарантира، гарантират از гарантирам؛ четеш، четат از чета؛ говори از говоря)</string>
+    <string name="inflection_bg_past_label">ماضی</string>
+    <string name="inflection_bg_past">ماضی مطلق یا ناتمام (чаках، чакаше از чакам؛ четох، четеше از чета؛ говорих از говоря)</string>
+    <string name="inflection_bg_past_participle_label">اسمِ فاعلِ ماضی</string>
+    <string name="inflection_bg_past_participle">ماضی معروف فعلی صفت -л (гарантирал، изминала از измина، говорили از говоря)</string>
+    <string name="inflection_bg_passive_participle_label">اسمِ مفعول</string>
+    <string name="inflection_bg_passive_participle">ماضی مجہول فعلی صفت -н (гарантиран، гарантирана از гарантирам؛ говорено از говоря)</string>
+    <string name="inflection_bg_imperative_label">امر</string>
+    <string name="inflection_bg_imperative">فعلِ امر -ай -айте (чакай، чакайте از чакам؛ стреляй از стрелям)</string>
+</resources>

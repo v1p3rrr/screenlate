@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">знахідний відмінок</string>
+    <string name="inflection_eo_accusative">Форма знахідного відмінка слова</string>
+    <string name="inflection_eo_plural_label">множина</string>
+    <string name="inflection_eo_plural">Форма множини слова</string>
+    <string name="inflection_eo_diminutive_label">зменшувальна форма</string>
+    <string name="inflection_eo_diminutive">Зменшувальна форма іменника</string>
+    <string name="inflection_eo_directional_label">напрямкова форма</string>
+    <string name="inflection_eo_directional">Прислівник у знахідному відмінку позначає напрямок\nkie: де\nkien: куди</string>
+    <string name="inflection_eo_locational_label">форма місця</string>
+    <string name="inflection_eo_locational">Іменник у формі прислівника позначає місце\nsurpinto: вершина, верхівка\nsurpinte: на вершині, на верхівці\nĉambro: кімната\nĉambre: у кімнаті</string>
+    <string name="inflection_eo_adjectival_label">прикметникова форма</string>
+    <string name="inflection_eo_adjectival">Прикметникова форма іменника</string>
+    <string name="inflection_eo_adverbial_adj_adv">Прислівникова форма прикметника</string>
+    <string name="inflection_eo_adverbial_v_adv">Прислівникова форма дієслова</string>
+    <string name="inflection_eo_ejo_noun">Суфікс, що утворює назву місця, призначеного для цього предмета\nkafo: кава\nkafejo: кав’ярня</string>
+    <string name="inflection_eo_ejo_verb">Суфікс, що утворює назву місця, призначеного для цієї дії\nkuiri: готувати\nkuirejo: кухня</string>
+    <string name="inflection_eo_ujo_noun">Суфікс, що позначає посудину або вмістище для цього предмета\nabelo: бджола\nabelujo: вулик\n\nСуфікс, що позначає місце або країну проживання людей\npatro: батько\npatrujo: батьківщина\n\nСуфікс, що перетворює квітку або плід на рослину чи дерево\npomo: яблуко\npomujo: яблуня</string>
+    <string name="inflection_eo_ujo_adjective">Суфікс, що утворює назву вмістища або пристрою за ознакою\nfrida: холодний\nfridujo: холодильник</string>
+    <string name="inflection_eo_ujo_verb">Суфікс, що утворює назву посудини або вмістища для цієї дії\nlavi: мити\nlavujo: умивальник</string>
+    <string name="inflection_eo_ebla">Суфікс можливості\nkompreni: розуміти\nkomprenebla: зрозумілий</string>
+    <string name="inflection_eo_ado">Суфікс, що перетворює дію на тривалий процес або явище\nvivi: жити\nvivado: життя\nspiri: дихати\nspirado: дихання</string>
+    <string name="inflection_eo_mal">Префікс протилежного значення для дії, ознаки, предмета або напрямку</string>
+    <string name="inflection_eo_kun">Префікс спільної дії\nlabori: працювати\nkunlabori: співпрацювати</string>
+    <string name="inflection_eo_ekster">Префікс зі значенням «поза»\nlando: країна\neksterlando: закордон</string>
+    <string name="inflection_eo_ek">Префікс початку дії\nkanti: співати\nekkanti: заспівати</string>
+    <string name="inflection_eo_us">Префікс щойно або нещодавно виконаної дії\nvekita: розбуджений\nĵusvekita: щойно розбуджений</string>
+    <string name="inflection_eo_el">Префікс дії, спрямованої назовні\ntiri: тягнути\neltiri: витягнути\n\nПрефікс доведення дії до завершення\ntrinki: пити\neltrinki: випити до дна\nlerni: вчити\nellerni: вивчити повністю, опанувати\nuzi: використовувати\neluzi: витратити, зносити</string>
+    <string name="inflection_eo_dis">Префікс зі значенням розділення, розходження, поширення\nŝvebi: ширяти\ndisŝvebi: розлетітися\nfali: падати\ndisfali: розпастися\ndoni: давати\ndisdoni: роздати, розподілити\nsendo: надсилання\ndissendo: трансляція, розсилання</string>
+    <string name="inflection_eo_for">Префікс руху на велику відстань\nflugi: летіти\nforflugi: відлетіти\n\nПрефікс зникнення або повного витрачання\nuzi: використовувати\nforuzi: витратити повністю</string>
+    <string name="inflection_eo_mis">Префікс зі значенням «помилково, неправильно»\nkompreni: розуміти\nmiskompreni: неправильно зрозуміти\nparoli: говорити\nmisparoli: обмовитися</string>
+</resources>

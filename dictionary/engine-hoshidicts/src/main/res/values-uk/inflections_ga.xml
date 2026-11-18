@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">леніція</string>
+    <string name="inflection_ga_lenition">леніція: bh, ch, dh, fh, gh, mh, ph, sh, th замість b, c, d, f, g, m, p, s, t; ts замість s після артикля (an bhean від bean, an tsráid від sráid)</string>
+    <string name="inflection_ga_eclipsis_label">екліпсис</string>
+    <string name="inflection_ga_eclipsis">екліпсис: mb, gc, nd, bhf, ng, bp, dt замість b, c, d, f, g, p, t; n- перед голосним (i nGaillimh від Gaillimh, ár n-athair від athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t-протеза</string>
+    <string name="inflection_ga_t_prothesis">t перед голосним (an t-uisce від uisce, an tAontas від Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h-протеза</string>
+    <string name="inflection_ga_h_prothesis">h перед голосним (na hÉireann від Éireann, a hathair від athair)</string>
+</resources>

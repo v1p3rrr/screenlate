@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">মৃদুভবন</string>
+    <string name="inflection_ga_lenition">মৃদুভবন: b c d f g m p s t-এর স্থলে bh ch dh fh gh mh ph sh th, নির্দেশকের পর s-এর স্থলে ts (an bhean ← bean, an tsráid ← sráid)</string>
+    <string name="inflection_ga_eclipsis_label">ধ্বনিগ্রাস</string>
+    <string name="inflection_ga_eclipsis">ধ্বনিগ্রাস: b c d f g p t-এর স্থলে mb gc nd bhf ng bp dt, স্বরধ্বনির পূর্বে n- (i nGaillimh ← Gaillimh, ár n-athair ← athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t-আগম</string>
+    <string name="inflection_ga_t_prothesis">স্বরধ্বনির পূর্বে t আগম (an t-uisce ← uisce, an tAontas ← Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h-আগম</string>
+    <string name="inflection_ga_h_prothesis">স্বরধ্বনির পূর্বে h আগম (na hÉireann ← Éireann, a hathair ← athair)</string>
+</resources>

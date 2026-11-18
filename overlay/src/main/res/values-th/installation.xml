@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">พร้อมใช้งาน</string>
+    <string name="installation_running">กำลังติดตั้งภาษา การสแกนและการค้นหาจะใช้ได้เมื่อส่วนประกอบพร้อมใช้งาน</string>
+    <string name="installation_missing">พจนานุกรมหรือโมเดลการรู้จำที่จำเป็นขาดหายหรือถูกปิดอยู่ เปิด “สถานะการติดตั้ง” เพื่อตั้งค่าให้สมบูรณ์</string>
+    <string name="installation_failed">การติดตั้งภาษาล้มเหลว เปิด “สถานะการติดตั้ง” เพื่อดูรายละเอียดหรือลองอีกครั้ง</string>
+    <string name="installation_open">สถานะการติดตั้ง</string>
+    <string name="installation_device_ready">การรู้จำบนอุปกรณ์: พร้อมใช้งาน</string>
+    <string name="installation_device_missing">การรู้จำบนอุปกรณ์: ไม่พร้อมใช้งาน (ใช้การรู้จำบนคลาวด์ได้เมื่อเปิดใช้งาน)</string>
+    <string name="installation_remaining">การติดตั้งที่เหลือ: %1$d</string>
+    <string name="installation_errors">การติดตั้งที่ล้มเหลว: %1$d</string>
+    <string name="installation_device_missing_offline">การรู้จำบนอุปกรณ์: ไม่พร้อมใช้งาน การรู้จำบนคلاวด์ถูกปิดใช้งานในโหมดออฟไลน์บังคับ</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">κλίση</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Αφαίρεση κλιτικών καταλήξεων γεωργιανών ουσιαστικών και επιθέτων</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">ονομαστική</string>
+    <string name="inflection_ka_nounadjstemcompletion">Επαναφορά της κατάληξης ονομαστικής -ი για θέματα ουσιαστικών/επιθέτων που λήγουν σε σύμφωνο</string>
+    <string name="inflection_ka_vowelrestoration_label">αποβεβλημένο φωνήεν</string>
+    <string name="inflection_ka_vowelrestoration">Επαναφορά αποκομμένων φωνηέντων όπου ισχύει</string>
+</resources>

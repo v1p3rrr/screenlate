@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">hotărât</string>
+    <string name="inflection_bg_definite">articol hotărât: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">plural</string>
+    <string name="inflection_bg_plural">plural: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">feminin</string>
+    <string name="inflection_bg_feminine">femininul unui adjectiv: -а (нова, умна din умен, добра din добър, българска)</string>
+    <string name="inflection_bg_neuter_label">neutru</string>
+    <string name="inflection_bg_neuter">neutrul unui adjectiv: -о (ново, умно din умен, добро din добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">prezent</string>
+    <string name="inflection_bg_present">timpul prezent (гарантира, гарантират din гарантирам; четеш, четат din чета; говори din говоря)</string>
+    <string name="inflection_bg_past_label">trecut</string>
+    <string name="inflection_bg_past">aorist sau imperfect (чаках, чакаше din чакам; четох, четеше din чета; говорих din говоря)</string>
+    <string name="inflection_bg_past_participle_label">participiu trecut</string>
+    <string name="inflection_bg_past_participle">participiu activ trecut -л (гарантирал, изминала din измина, говорили din говоря)</string>
+    <string name="inflection_bg_passive_participle_label">participiu pasiv</string>
+    <string name="inflection_bg_passive_participle">participiu pasiv trecut -н (гарантиран, гарантирана din гарантирам; говорено din говоря)</string>
+    <string name="inflection_bg_imperative_label">imperativ</string>
+    <string name="inflection_bg_imperative">imperativ -ай -айте (чакай, чакайте din чакам; стреляй din стрелям)</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">वर्तमान निश्चयार्थक</string>
+    <string name="inflection_fr_present_indicative">क्रिया का वर्तमान निश्चयार्थक रूप</string>
+    <string name="inflection_fr_imperfect_indicative_label">अपूर्ण निश्चयार्थक</string>
+    <string name="inflection_fr_imperfect_indicative">क्रिया का अपूर्ण निश्चयार्थक रूप</string>
+    <string name="inflection_fr_future_label">भविष्य काल</string>
+    <string name="inflection_fr_future">क्रिया का भविष्य काल रूप</string>
+    <string name="inflection_fr_imperative_present_label">वर्तमान आज्ञार्थक</string>
+    <string name="inflection_fr_imperative_present">क्रिया का आज्ञार्थक रूप</string>
+    <string name="inflection_fr_conditional_label">हेतुहेतुमद्</string>
+    <string name="inflection_fr_conditional">क्रिया का हेतुहेतुमद् (सशर्त) रूप</string>
+    <string name="inflection_fr_preterite_label">सामान्य भूतकाल</string>
+    <string name="inflection_fr_preterite">क्रिया का सामान्य भूतकाल रूप</string>
+    <string name="inflection_fr_plural_label">बहुवचन</string>
+    <string name="inflection_fr_plural">संज्ञा का बहुवचन रूप</string>
+    <string name="inflection_fr_present_participle_label">वर्तमान कृदंत</string>
+    <string name="inflection_fr_present_participle">क्रिया का वर्तमान कृदंत रूप</string>
+    <string name="inflection_fr_present_subjunctive_label">वर्तमान संभावनार्थक</string>
+    <string name="inflection_fr_present_subjunctive">क्रिया का वर्तमान संभावनार्थक रूप</string>
+</resources>

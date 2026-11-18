@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">κλιτικό</string>
+    <string name="inflection_fi_clitic">κλιτικό: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin από talo, talossakaan από talossa, onkohan από onko)</string>
+    <string name="inflection_fi_possessive_label">κτητικός</string>
+    <string name="inflection_fi_possessive">κτητικό επίθημα: -ni, -si, -mme, -nne, -nsa/-nsä, μακρό φωνήεν και -n (talossani και talossaan από talossa, taloni από talo)</string>
+</resources>

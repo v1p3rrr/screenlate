@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">і</string>
+    <string name="inflection_he_v">і, та (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">що, який</string>
+    <string name="inflection_he_sh">що, який, хто (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">коли</string>
+    <string name="inflection_he_ksh">коли, поки (כשהגעתי)</string>
+    <string name="inflection_he_b_label">у, в</string>
+    <string name="inflection_he_b">у, в, на, з (בבית)</string>
+    <string name="inflection_he_k_label">як</string>
+    <string name="inflection_he_k">як, мов (כילד)</string>
+    <string name="inflection_he_l_label">до, для</string>
+    <string name="inflection_he_l">до, для (לבית)</string>
+    <string name="inflection_he_m_label">з, від</string>
+    <string name="inflection_he_m">з, від, ніж (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">артикль</string>
+    <string name="inflection_he_h">означений артикль (הבית)</string>
+</resources>

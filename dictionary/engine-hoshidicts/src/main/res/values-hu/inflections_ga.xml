@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">leníció</string>
+    <string name="inflection_ga_lenition">leníció: bh ch dh fh gh mh ph sh th a b c d f g m p s t helyett, ts az s helyett névelő után (an bhean ← bean, an tsráid ← sráid)</string>
+    <string name="inflection_ga_eclipsis_label">eklipszis</string>
+    <string name="inflection_ga_eclipsis">eklipszis: mb gc nd bhf ng bp dt a b c d f g p t helyett, n- magánhangzó előtt (i nGaillimh ← Gaillimh, ár n-athair ← athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t-protézis</string>
+    <string name="inflection_ga_t_prothesis">t magánhangzó előtt (an t-uisce ← uisce, an tAontas ← Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h-protézis</string>
+    <string name="inflection_ga_h_prothesis">h magánhangzó előtt (na hÉireann ← Éireann, a hathair ← athair)</string>
+</resources>

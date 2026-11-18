@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">και</string>
+    <string name="inflection_he_v">και (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">που/ότι</string>
+    <string name="inflection_he_sh">που, ότι, ο οποίος (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">όταν</string>
+    <string name="inflection_he_ksh">όταν, καθώς (כשהגעתי)</string>
+    <string name="inflection_he_b_label">σε</string>
+    <string name="inflection_he_b">σε, μέσα σε, με (בבית)</string>
+    <string name="inflection_he_k_label">σαν</string>
+    <string name="inflection_he_k">σαν, όπως (כילד)</string>
+    <string name="inflection_he_l_label">προς</string>
+    <string name="inflection_he_l">προς, για (לבית)</string>
+    <string name="inflection_he_m_label">από</string>
+    <string name="inflection_he_m">από, παρά (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">ο/η/το</string>
+    <string name="inflection_he_h">οριστικό άρθρο (הבית)</string>
+</resources>

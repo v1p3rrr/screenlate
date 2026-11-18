@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">Імпорт словників</string>
+    <string name="dictionary_import_notification">Імпортування словників</string>
+    <string name="dictionary_import_cancel">Скасувати</string>
+</resources>

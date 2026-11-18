@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">নির্দিষ্ট</string>
+    <string name="inflection_ro_ul">নির্দিষ্ট পদাশ্রিত নির্দেশক (procesul ← proces, consiliul ← consiliu)</string>
+    <string name="inflection_ro_le_label">নির্দিষ্ট</string>
+    <string name="inflection_ro_le">নির্দিষ্ট পদাশ্রিত নির্দেশক (fratele ← frate, textele ← texte)</string>
+    <string name="inflection_ro_a_label">নির্দিষ্ট</string>
+    <string name="inflection_ro_a">স্ত্রীলিঙ্গ বিশেষ্যের নির্দিষ্ট নির্দেশক (dezvoltarea ← dezvoltare, comisia ← comisie)</string>
+    <string name="inflection_ro_i_label">নির্দিষ্ট বহুবচন</string>
+    <string name="inflection_ro_i">পুংলিঙ্গ বহুবচনের নির্দিষ্ট নির্দেশক (pomii ← pomi)</string>
+    <string name="inflection_ro_ului_label">নির্দিষ্ট সম্বন্ধ</string>
+    <string name="inflection_ro_ului">নির্দিষ্ট নির্দেশকসহ সম্বন্ধ ও সম্প্রদান কারক (procesului ← proces, fratelui ← frate)</string>
+    <string name="inflection_ro_ei_label">নির্দিষ্ট সম্বন্ধ</string>
+    <string name="inflection_ro_ei">নির্দিষ্ট নির্দেশকসহ স্ত্রীলিঙ্গ বিশেষ্যের সম্বন্ধ ও সম্প্রদান কারক (Moldovei ← Moldova, comisiei ← comisie)</string>
+    <string name="inflection_ro_ii_label">নির্দিষ্ট সম্বন্ধ</string>
+    <string name="inflection_ro_ii">নির্দিষ্ট নির্দেশকসহ -e অন্ত স্ত্রীলিঙ্গ বিশেষ্যের সম্বন্ধ ও সম্প্রদান কারক (lumii ← lume, dezvoltării ← dezvoltare)</string>
+    <string name="inflection_ro_lor_label">নির্দিষ্ট সম্বন্ধ বহুবচন</string>
+    <string name="inflection_ro_lor">নির্দিষ্ট নির্দেশকসহ সম্বন্ধ ও সম্প্রদান বহুবচন (caselor ← case)</string>
+    <string name="inflection_ro_agreement_label">স্ত্রীলিঙ্গ বা বহুবচন</string>
+    <string name="inflection_ro_agreement">কৃদন্ত বা বিশেষণের স্ত্রীলিঙ্গ বা বহুবচন রূপ (aflată, aflate, aflați ← aflat; pusă ← pus)</string>
+</resources>

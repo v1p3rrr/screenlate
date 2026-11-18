@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">বর্তমান নির্দেশক</string>
+    <string name="inflection_fr_present_indicative">ক্রিয়ার বর্তমান নির্দেশক রূপ</string>
+    <string name="inflection_fr_imperfect_indicative_label">অসম্পূর্ণ অতীত নির্দেশক</string>
+    <string name="inflection_fr_imperfect_indicative">ক্রিয়ার অসম্পূর্ণ অতীত নির্দেশক রূপ</string>
+    <string name="inflection_fr_future_label">ভবিষ্যৎ</string>
+    <string name="inflection_fr_future">ক্রিয়ার ভবিষ্যৎ রূপ</string>
+    <string name="inflection_fr_imperative_present_label">বর্তমান অনুজ্ঞা</string>
+    <string name="inflection_fr_imperative_present">ক্রিয়ার অনুজ্ঞা রূপ</string>
+    <string name="inflection_fr_conditional_label">সাপেক্ষ</string>
+    <string name="inflection_fr_conditional">ক্রিয়ার সাপেক্ষ রূপ</string>
+    <string name="inflection_fr_preterite_label">সাধারণ অতীত</string>
+    <string name="inflection_fr_preterite">ক্রিয়ার সাধারণ অতীত রূপ</string>
+    <string name="inflection_fr_plural_label">বহুবচন</string>
+    <string name="inflection_fr_plural">বিশেষ্যের বহুবচন রূপ</string>
+    <string name="inflection_fr_present_participle_label">বর্তমান কৃদন্ত</string>
+    <string name="inflection_fr_present_participle">ক্রিয়ার বর্তমান কৃদন্ত রূপ</string>
+    <string name="inflection_fr_present_subjunctive_label">বর্তমান সম্ভাবক</string>
+    <string name="inflection_fr_present_subjunctive">ক্রিয়ার বর্তমান সম্ভাবক রূপ</string>
+</resources>

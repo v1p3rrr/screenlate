@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">клітика</string>
+    <string name="inflection_fi_clitic">клітика: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin від talo, talossakaan від talossa, onkohan від onko)</string>
+    <string name="inflection_fi_possessive_label">присвійна форма</string>
+    <string name="inflection_fi_possessive">присвійний суфікс: -ni, -si, -mme, -nne, -nsa/-nsä, довгий голосний і -n (talossani й talossaan від talossa, taloni від talo)</string>
+</resources>

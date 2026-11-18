@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">Sinteză vocală (TTS)</string>
+    <string name="audio_source_url">URL personalizat</string>
+    <string name="audio_source_json">URL personalizat (JSON)</string>
+    <string name="anki_problem_not_installed">AnkiDroid nu este instalat.</string>
+    <string name="anki_problem_no_permission">Nu există acces la AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Tipul de notă nu a fost găsit în AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Pachetul nu a fost găsit în AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Câmpurile tipului de notă s-au modificat.</string>
+</resources>

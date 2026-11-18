@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">többes szám</string>
+    <string name="inflection_en_plural">Főnév többes számú alakja</string>
+    <string name="inflection_en_possessive_label">birtokos</string>
+    <string name="inflection_en_possessive">Főnév birtokos alakja</string>
+    <string name="inflection_en_past_label">múlt idő</string>
+    <string name="inflection_en_past">Ige egyszerű múlt idejű alakja</string>
+    <string name="inflection_en_ing_label">-ing alak</string>
+    <string name="inflection_en_ing">Ige folyamatos melléknévi igeneve</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">E/3. jelen idő</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Ige egyes szám harmadik személyű jelen idejű alakja</string>
+    <string name="inflection_en_interposed_object_label">közbeékelt tárgy</string>
+    <string name="inflection_en_interposed_object">Többszavas ige közbeékelt tárggyal</string>
+    <string name="inflection_en_archaic_label">régies</string>
+    <string name="inflection_en_archaic">Szó régies alakja</string>
+    <string name="inflection_en_adverb_label">határozószó</string>
+    <string name="inflection_en_adverb">Melléknév határozószói alakja</string>
+    <string name="inflection_en_comparative_label">középfok</string>
+    <string name="inflection_en_comparative">Melléknév középfokú alakja</string>
+    <string name="inflection_en_superlative_label">felsőfok</string>
+    <string name="inflection_en_superlative">Melléknév felsőfokú alakja</string>
+    <string name="inflection_en_dropped_g_label">elhagyott g</string>
+    <string name="inflection_en_dropped_g">Elhagyott g az ige -ing alakjában</string>
+    <string name="inflection_en_y">Igéből vagy főnévből képzett melléknév</string>
+    <string name="inflection_en_un">Melléknév, határozószó vagy ige tagadó alakja</string>
+    <string name="inflection_en_going_to_future_label">going-to jövő idő</string>
+    <string name="inflection_en_going_to_future">Ige going-to jövő idejű alakja</string>
+    <string name="inflection_en_will_future_label">will jövő idő</string>
+    <string name="inflection_en_will_future">Ige will jövő idejű alakja</string>
+    <string name="inflection_en_imperative_negative_label">tiltó felszólító</string>
+    <string name="inflection_en_imperative_negative">Ige tagadó felszólító alakja</string>
+    <string name="inflection_en_able">Igéből képzett melléknév</string>
+</resources>

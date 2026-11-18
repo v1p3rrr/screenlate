@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">леніція</string>
+    <string name="inflection_gd_lenition">леніція: bh, ch, dh, fh, gh, mh, ph, sh, th замість b, c, d, f, g, m, p, s, t; t-s замість s після артикля (a\' ghrian від grian, an t-sràid від sràid)</string>
+    <string name="inflection_gd_eclipsis_label">екліпсис</string>
+    <string name="inflection_gd_eclipsis">n- перед голосним (ar n-eilean від eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">t-протеза</string>
+    <string name="inflection_gd_t_prothesis">t- перед голосним (an t-uisge від uisge, an t-Eilean від Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">h-протеза</string>
+    <string name="inflection_gd_h_prothesis">h- перед голосним (na h-Alba від Alba, na h-òrain від òrain)</string>
+</resources>

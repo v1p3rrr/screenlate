@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_hu_prefix_label">slovesná předpona</string>
+    <string name="inflection_hu_prefix">slovesná předpona: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- a další (megtartottam od tartottam)</string>
+</resources>

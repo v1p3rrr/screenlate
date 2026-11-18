@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">πληθυντικός</string>
+    <string name="inflection_la_plural">Κλίση πληθυντικού</string>
+    <string name="inflection_la_feminine_label">θηλυκό</string>
+    <string name="inflection_la_feminine">Τύπος επιθέτου</string>
+    <string name="inflection_la_neuter_label">ουδέτερο</string>
+    <string name="inflection_la_neuter">Τύπος επιθέτου</string>
+    <string name="inflection_la_ablative_label">αφαιρετική</string>
+    <string name="inflection_la_ablative">Αφαιρετική πτώση</string>
+    <string name="inflection_la_que">Εγκλιτικό «και» (magisque από magis)</string>
+    <string name="inflection_la_ne">Ερωτηματικό εγκλιτικό (videsne από vides)</string>
+    <string name="inflection_la_ve">Εγκλιτικό «ή» (mortuusve από mortuus)</string>
+</resources>

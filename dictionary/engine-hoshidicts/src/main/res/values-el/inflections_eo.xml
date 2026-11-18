@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">αιτιατική</string>
+    <string name="inflection_eo_accusative">Αιτιατική πτώση λέξης</string>
+    <string name="inflection_eo_plural_label">πληθυντικός</string>
+    <string name="inflection_eo_plural">Πληθυντικός αριθμός λέξης</string>
+    <string name="inflection_eo_diminutive_label">υποκοριστικός</string>
+    <string name="inflection_eo_diminutive">Υποκοριστικός τύπος ουσιαστικού</string>
+    <string name="inflection_eo_directional_label">κατευθυντικός</string>
+    <string name="inflection_eo_directional">Ένα επίρρημα σε αιτιατική δηλώνει κατεύθυνση\nkie: πού\nkien: προς τα πού</string>
+    <string name="inflection_eo_locational_label">τοπικός</string>
+    <string name="inflection_eo_locational">Ένα ουσιαστικό που γίνεται επίρρημα δηλώνει τόπο\nsurpinto: κορυφή, άκρη\nsurpinte: στην κορυφή, στην άκρη\nĉambro: δωμάτιο\nĉambre: στο δωμάτιο, μέσα στο δωμάτιο</string>
+    <string name="inflection_eo_adjectival_label">επιθετικός</string>
+    <string name="inflection_eo_adjectival">Επιθετικός τύπος ουσιαστικού</string>
+    <string name="inflection_eo_adverbial_adj_adv">Επιρρηματικός τύπος επιθέτου</string>
+    <string name="inflection_eo_adverbial_v_adv">Επιρρηματικός τύπος ρήματος</string>
+    <string name="inflection_eo_ejo_noun">Επίθημα που μετατρέπει μια λέξη σε χώρο προορισμένο για το συγκεκριμένο πράγμα\nkafo: καφές\nkafejo: καφετέρια</string>
+    <string name="inflection_eo_ejo_verb">Επίθημα που μετατρέπει μια λέξη σε χώρο προορισμένο για τη συγκεκριμένη ενέργεια\nkuiri: μαγειρεύω\nkuirejo: κουζίνα</string>
+    <string name="inflection_eo_ujo_noun">Επίθημα που μετατρέπει μια λέξη σε κουτί ή δοχείο για το συγκεκριμένο πράγμα\nabelo: μέλισσα\nabelujo: κυψέλη\n\nΕπίθημα που μετατρέπει μια λέξη σε τόπο όπου βρίσκεται μια ομάδα ανθρώπων\npatro: πατέρας\npatrujo: πατρίδα\n\nΕπίθημα που μετατρέπει ένα άνθος ή καρπό στο φυτό ή το δέντρο που τα παράγει\npomo: μήλο\npomujo: μηλιά</string>
+    <string name="inflection_eo_ujo_adjective">Επίθημα που μετατρέπει ένα περιγραφικό επίθετο σε κουτί ή δοχείο για το συγκεκριμένο είδος πράγματος\nfrida: κρύος\nfridujo: ψυγείο</string>
+    <string name="inflection_eo_ujo_verb">Επίθημα που μετατρέπει μια ενέργεια σε κουτί ή δοχείο για τη συγκεκριμένη δραστηριότητα\nlavi: πλένω\nlavujo: νιπτήρας</string>
+    <string name="inflection_eo_ebla">Επίθημα που δηλώνει δυνατότητα\nkompreni: καταλαβαίνω\nkomprenebla: κατανοητός</string>
+    <string name="inflection_eo_ado">Επίθημα που μετατρέπει μια ενέργεια σε ουσιαστικό που τη δηλώνει\nvivi: ζω\nvivado: ζωή\nspiri: αναπνέω\nspirado: αναπνοή</string>
+    <string name="inflection_eo_mal">Πρόθημα που μετατρέπει μια ενέργεια, ιδιότητα, πράγμα ή κατεύθυνση στην αντίθετη σημασία</string>
+    <string name="inflection_eo_kun">Πρόθημα που σημαίνει ότι η ενέργεια γίνεται μαζί με άλλους\nlabori: εργάζομαι\nkunlabori: συνεργάζομαι</string>
+    <string name="inflection_eo_ekster">Πρόθημα που σημαίνει «έξω από»\nlando: χώρα\neksterlando: εξωτερικό, ξένη χώρα</string>
+    <string name="inflection_eo_ek">Πρόθημα που δηλώνει έναρξη της ενέργειας\nkanti: τραγουδώ\nekkanti: αρχίζω να τραγουδώ</string>
+    <string name="inflection_eo_us">Πρόθημα που δηλώνει ότι κάτι έγινε μόλις ή πρόσφατα\nvekita: ξυπνημένος\nĵusvekita: μόλις/πρόσφατα ξυπνημένος</string>
+    <string name="inflection_eo_el">Πρόθημα που δηλώνει κίνηση ή ενέργεια προς τα έξω\ntiri: τραβώ\neltiri: τραβώ έξω, εξάγω\n\nΠρόθημα που δηλώνει ολοκλήρωση της ενέργειας μέχρι τέλους\ntrinki: πίνω\neltrinki: το πίνω όλο, αδειάζω\nlerni: μαθαίνω\nellerni: μαθαίνω πλήρως, κατέχω\nuzi: χρησιμοποιώ\neluzi: εξαντλώ, φθείρω</string>
+    <string name="inflection_eo_dis">Πρόθημα που σημαίνει «διαχωρισμός, διασπορά, εξάπλωση»\nŝvebi: αιωρούμαι\ndisŝvebi: αιωρούμαι χωριστά/διασκορπίζομαι\nfali: πέφτω\ndisfali: διαλύομαι, καταρρέω\ndoni: δίνω\ndisdoni: μοιράζω, διανέμω\nsendo: αποστολή\ndissendo: εκπομπή, μετάδοση</string>
+    <string name="inflection_eo_for">Πρόθημα που σημαίνει «κίνηση σε μεγάλη απόσταση»\nflugi: πετώ\nforflugi: πετώ μακριά\n\nΠρόθημα που σημαίνει «εξαφάνιση/εξάντληση»\nuzi: χρησιμοποιώ\nforuzi: καταναλώνω πλήρως (μέχρι να μη μείνει τίποτα)</string>
+    <string name="inflection_eo_mis">Πρόθημα που σημαίνει «λάθος, εσφαλμένα»\nkompreni: καταλαβαίνω\nmiskompreni: παρεξηγώ\nparoli: μιλώ\nmisparoli: κάνω σαρδάμ, μιλώ εσφαλμένα</string>
+</resources>

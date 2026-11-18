@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">تیار</string>
+    <string name="installation_running">زبان کی تنصیب جاری ہے۔ اجزا تیار ہونے پر اسکین اور تلاش دستیاب ہوں گے۔</string>
+    <string name="installation_missing">مطلوبہ لغات یا شناختی ماڈلز ناموجود یا غیر فعال ہیں۔ ترتیب مکمل کرنے کے لیے “تنصیب کی حالت” کھولیں۔</string>
+    <string name="installation_failed">زبان کی تنصیب ناکام۔ تفصیلات یا دوبارہ کوشش کے لیے “تنصیب کی حالت” کھولیں۔</string>
+    <string name="installation_open">تنصیب کی حالت</string>
+    <string name="installation_device_ready">ڈیوائس پر شناخت: تیار</string>
+    <string name="installation_device_missing">ڈیوائس پر شناخت: دستیاب نہیں (فعال ہونے پر کلاؤڈ شناخت دستیاب ہے)</string>
+    <string name="installation_remaining">باقی تنصیبات: %1$d</string>
+    <string name="installation_errors">ناکام تنصیبات: %1$d</string>
+    <string name="installation_device_missing_offline">ڈیوائس پر شناخت: دستیاب نہیں؛ لازمی آف لائن موڈ میں کلاؤڈ شناخت غیر فعال ہے۔</string>
+</resources>

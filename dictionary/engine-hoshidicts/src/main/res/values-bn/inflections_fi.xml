@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">আশ্রিত পদ</string>
+    <string name="inflection_fi_clitic">আশ্রিত পদ: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin ← talo, talossakaan ← talossa, onkohan ← onko)</string>
+    <string name="inflection_fi_possessive_label">অধিকারসূচক</string>
+    <string name="inflection_fi_possessive">অধিকারসূচক প্রত্যয়: -ni, -si, -mme, -nne, -nsa/-nsä, দীর্ঘ স্বর ও -n (talossani ও talossaan ← talossa, taloni ← talo)</string>
+</resources>

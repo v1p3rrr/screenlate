@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">Import slovníků</string>
+    <string name="dictionary_import_notification">Import slovníků</string>
+    <string name="dictionary_import_cancel">Zrušit</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">निश्चित</string>
+    <string name="inflection_ro_ul">निश्चित उपपद (proces से procesul, consiliu से consiliul)</string>
+    <string name="inflection_ro_le_label">निश्चित</string>
+    <string name="inflection_ro_le">निश्चित उपपद (frate से fratele, texte से textele)</string>
+    <string name="inflection_ro_a_label">निश्चित</string>
+    <string name="inflection_ro_a">स्त्रीलिंग संज्ञाओं का निश्चित उपपद (dezvoltare से dezvoltarea, comisie से comisia)</string>
+    <string name="inflection_ro_i_label">निश्चित बहुवचन</string>
+    <string name="inflection_ro_i">पुल्लिंग बहुवचन का निश्चित उपपद (pomi से pomii)</string>
+    <string name="inflection_ro_ului_label">निश्चित संबंध कारक</string>
+    <string name="inflection_ro_ului">निश्चित उपपद सहित संबंध और संप्रदान कारक (proces से procesului, frate से fratelui)</string>
+    <string name="inflection_ro_ei_label">निश्चित संबंध कारक</string>
+    <string name="inflection_ro_ei">निश्चित उपपद सहित स्त्रीलिंग संज्ञाओं का संबंध और संप्रदान कारक (Moldova से Moldovei, comisie से comisiei)</string>
+    <string name="inflection_ro_ii_label">निश्चित संबंध कारक</string>
+    <string name="inflection_ro_ii">निश्चित उपपद सहित -e में समाप्त स्त्रीलिंग संज्ञाओं का संबंध और संप्रदान कारक (lume से lumii, dezvoltare से dezvoltării)</string>
+    <string name="inflection_ro_lor_label">निश्चित संबंध बहुवचन</string>
+    <string name="inflection_ro_lor">निश्चित उपपद सहित संबंध और संप्रदान बहुवचन (case से caselor)</string>
+    <string name="inflection_ro_agreement_label">स्त्रीलिंग या बहुवचन</string>
+    <string name="inflection_ro_agreement">कृदंत या विशेषण का स्त्रीलिंग या बहुवचन रूप (aflat से aflată, aflate, aflați; pus से pusă)</string>
+</resources>

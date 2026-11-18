@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">Připraveno</string>
+    <string name="installation_running">Probíhá instalace jazyka. Skenování a vyhledávání budou dostupné po dokončení instalace komponent.</string>
+    <string name="installation_missing">Požadované slovníky nebo modely rozpoznávání chybí či jsou vypnuté. Otevřete stav instalace a dokončete nastavení.</string>
+    <string name="installation_failed">Instalace jazyka selhala. Otevřete stav instalace pro zobrazení podrobností nebo opakování.</string>
+    <string name="installation_open">Stav instalace</string>
+    <string name="installation_device_ready">Rozpoznávání v zařízení: připraveno</string>
+    <string name="installation_device_missing">Rozpoznávání v zařízení: nedostupné (cloudové rozpoznávání je k dispozici, pokud je zapnuto)</string>
+    <string name="installation_remaining">Zbývající instalace: %1$d</string>
+    <string name="installation_errors">Neúspěšné instalace: %1$d</string>
+    <string name="installation_device_missing_offline">Rozpoznávání v zařízení: nedostupné; rozpoznávání v cloudu je ve vynuceném offline režimu zakázáno.</string>
+</resources>

@@ -4,7 +4,7 @@
     <string name="audio_source_json">Свой URL (JSON)</string>
 
     <string name="anki_problem_not_installed">AnkiDroid не установлен.</string>
-    <string name="anki_problem_no_permission">У Screenlate больше нет доступа к AnkiDroid.</string>
+    <string name="anki_problem_no_permission">Нет доступа к AnkiDroid.</string>
     <string name="anki_problem_model_missing">Тип записи не найден в AnkiDroid.</string>
     <string name="anki_problem_deck_missing">Колода не найдена в AnkiDroid.</string>
     <string name="anki_problem_fields_changed">Поля типа записи изменились.</string>

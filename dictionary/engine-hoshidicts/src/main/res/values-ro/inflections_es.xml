@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">plural</string>
+    <string name="inflection_es_plural">Forma de plural a unui substantiv</string>
+    <string name="inflection_es_feminine_adjective_label">adjectiv feminin</string>
+    <string name="inflection_es_feminine_adjective">forma feminină a unui adjectiv</string>
+    <string name="inflection_es_present_indicative_label">indicativ prezent</string>
+    <string name="inflection_es_present_indicative">Forma de indicativ prezent a unui verb</string>
+    <string name="inflection_es_preterite_label">preterit</string>
+    <string name="inflection_es_preterite">Forma de preterit (trecut simplu) a unui verb</string>
+    <string name="inflection_es_imperfect_label">imperfect</string>
+    <string name="inflection_es_imperfect">Forma de imperfect a unui verb</string>
+    <string name="inflection_es_progressive_label">progresiv</string>
+    <string name="inflection_es_progressive">Forma progresivă a unui verb</string>
+    <string name="inflection_es_imperative_label">imperativ</string>
+    <string name="inflection_es_imperative">Forma de imperativ a unui verb</string>
+    <string name="inflection_es_conditional_label">condițional</string>
+    <string name="inflection_es_conditional">Forma de condițional a unui verb</string>
+    <string name="inflection_es_future_label">viitor</string>
+    <string name="inflection_es_future">Forma de viitor a unui verb</string>
+    <string name="inflection_es_present_subjunctive_label">conjunctiv prezent</string>
+    <string name="inflection_es_present_subjunctive">Forma de conjunctiv prezent a unui verb</string>
+    <string name="inflection_es_imperfect_subjunctive_label">conjunctiv imperfect</string>
+    <string name="inflection_es_imperfect_subjunctive">Forma de conjunctiv imperfect a unui verb</string>
+    <string name="inflection_es_participle_label">participiu</string>
+    <string name="inflection_es_participle">Forma de participiu a unui verb</string>
+    <string name="inflection_es_reflexive_label">reflexiv</string>
+    <string name="inflection_es_reflexive">Forma reflexivă a unui verb</string>
+    <string name="inflection_es_pronoun_substitution_label">substituție pronominală</string>
+    <string name="inflection_es_pronoun_substitution">Pronume substituit al unui verb reflexiv</string>
+    <string name="inflection_es_pronominal_label">pronominal</string>
+    <string name="inflection_es_pronominal">Forma pronominală a unui verb</string>
+</resources>

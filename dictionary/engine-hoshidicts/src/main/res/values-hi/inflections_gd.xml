@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">मृदुकरण</string>
+    <string name="inflection_gd_lenition">मृदुकरण (लेनिशन): b c d f g m p s t के लिए bh ch dh fh gh mh ph sh th, उपपद के बाद s के लिए t-s (grian से a\' ghrian, sràid से an t-sràid)</string>
+    <string name="inflection_gd_eclipsis_label">एक्लिप्सिस</string>
+    <string name="inflection_gd_eclipsis">स्वर से पहले n- (eilean से ar n-eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">t-आगम</string>
+    <string name="inflection_gd_t_prothesis">स्वर से पहले t- (uisge से an t-uisge, Eilean से an t-Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">h-आगम</string>
+    <string name="inflection_gd_h_prothesis">स्वर से पहले h- (Alba से na h-Alba, òrain से na h-òrain)</string>
+</resources>

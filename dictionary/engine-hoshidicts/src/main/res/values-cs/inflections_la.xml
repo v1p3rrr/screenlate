@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">množné číslo</string>
+    <string name="inflection_la_plural">Skloňování v množném čísle</string>
+    <string name="inflection_la_feminine_label">ženský rod</string>
+    <string name="inflection_la_feminine">Tvar přídavného jména</string>
+    <string name="inflection_la_neuter_label">střední rod</string>
+    <string name="inflection_la_neuter">Tvar přídavného jména</string>
+    <string name="inflection_la_ablative_label">ablativ</string>
+    <string name="inflection_la_ablative">Ablativ</string>
+    <string name="inflection_la_que">Enklitikon „a“ (magisque od magis)</string>
+    <string name="inflection_la_ne">Tázací enklitikon (videsne od vides)</string>
+    <string name="inflection_la_ve">Enklitikon „nebo“ (mortuusve od mortuus)</string>
+</resources>

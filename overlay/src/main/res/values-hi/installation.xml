@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">तैयार</string>
+    <string name="installation_running">भाषा इंस्टॉल हो रही है। घटक तैयार होने पर स्कैन और शब्दकोश खोज उपलब्ध होंगे।</string>
+    <string name="installation_missing">आवश्यक शब्दकोश या पहचान मॉडल अनुपलब्ध या अक्षम हैं। सेटअप पूरा करने के लिए इंस्टॉलेशन स्थिति खोलें।</string>
+    <string name="installation_failed">भाषा इंस्टॉलेशन विफल रहा। विवरण देखने या पुनः प्रयास करने के लिए इंस्टॉलेशन स्थिति खोलें।</string>
+    <string name="installation_open">इंस्टॉलेशन स्थिति</string>
+    <string name="installation_device_ready">डिवाइस पर पहचान: तैयार</string>
+    <string name="installation_device_missing">डिवाइस पर पहचान: अनुपलब्ध (सक्षम होने पर क्लाउड पहचान उपलब्ध है)</string>
+    <string name="installation_remaining">शेष इंस्टॉलेशन: %1$d</string>
+    <string name="installation_errors">विफल इंस्टॉलेशन: %1$d</string>
+    <string name="installation_device_missing_offline">डिवाइस पर पहचान: अनुपलब्ध; बाध्यकारी ऑफ़लाइन मोड में क्लाउड पहचान बंद है।</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">Синтез мовлення</string>
+    <string name="audio_source_url">Власний URL</string>
+    <string name="audio_source_json">Власний URL (JSON)</string>
+    <string name="anki_problem_not_installed">AnkiDroid не встановлено.</string>
+    <string name="anki_problem_no_permission">Немає доступу до AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Тип нотатки не знайдено в AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Колоду не знайдено в AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Поля типу нотатки змінилися.</string>
+</resources>

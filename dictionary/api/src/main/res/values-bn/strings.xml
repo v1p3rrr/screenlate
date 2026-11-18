@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">অভিধান আমদানি</string>
+    <string name="dictionary_import_notification">অভিধান আমদানি হচ্ছে</string>
+    <string name="dictionary_import_cancel">বাতিল</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">klitikum</string>
+    <string name="inflection_fi_clitic">klitikum: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin ← talo, talossakaan ← talossa, onkohan ← onko)</string>
+    <string name="inflection_fi_possessive_label">birtokos</string>
+    <string name="inflection_fi_possessive">birtokos személyjel: -ni, -si, -mme, -nne, -nsa/-nsä, hosszú magánhangzó + -n (talossani és talossaan ← talossa, taloni ← talo)</string>
+</resources>

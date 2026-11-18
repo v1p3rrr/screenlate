@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_hu_prefix_label">فعلی سابقہ</string>
+    <string name="inflection_hu_prefix">فعلی سابقہ: meg-، el-، ki-، be-، fel-، le-، át-، rá-، össze-، vissza- وغیرہ (tartottam سے megtartottam)</string>
+</resources>

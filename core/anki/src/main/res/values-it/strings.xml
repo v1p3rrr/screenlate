@@ -4,8 +4,8 @@
     <string name="audio_source_json">URL personalizzato (JSON)</string>
 
     <string name="anki_problem_not_installed">AnkiDroid non è installato.</string>
-    <string name="anki_problem_no_permission">Screenlate ha perso l’accesso ad AnkiDroid.</string>
-    <string name="anki_problem_model_missing">Il tipo di nota non è stato trovato in AnkiDroid.</string>
-    <string name="anki_problem_deck_missing">Il mazzo non è stato trovato in AnkiDroid.</string>
-    <string name="anki_problem_fields_changed">I campi del tipo di nota sono cambiati.</string>
+    <string name="anki_problem_no_permission">Nessun accesso ad AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Tipo di nota non trovato in AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Mazzo non trovato in AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Campi del tipo di nota modificati.</string>
 </resources>

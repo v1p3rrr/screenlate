@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">dan</string>
+    <string name="inflection_he_v">dan (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">bahwa, yang</string>
+    <string name="inflection_he_sh">bahwa, yang (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">ketika</string>
+    <string name="inflection_he_ksh">ketika, saat (כשהגעתי)</string>
+    <string name="inflection_he_b_label">di</string>
+    <string name="inflection_he_b">di, pada, dengan (בבית)</string>
+    <string name="inflection_he_k_label">seperti</string>
+    <string name="inflection_he_k">seperti, sebagai (כילד)</string>
+    <string name="inflection_he_l_label">ke, untuk</string>
+    <string name="inflection_he_l">ke, kepada, untuk (לבית)</string>
+    <string name="inflection_he_m_label">dari</string>
+    <string name="inflection_he_m">dari, daripada (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">definit</string>
+    <string name="inflection_he_h">artikel definit (הבית)</string>
+</resources>

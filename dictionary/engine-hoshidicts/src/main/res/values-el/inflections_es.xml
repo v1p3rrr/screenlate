@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">πληθυντικός</string>
+    <string name="inflection_es_plural">Πληθυντικός αριθμός ουσιαστικού</string>
+    <string name="inflection_es_feminine_adjective_label">θηλυκό επίθετο</string>
+    <string name="inflection_es_feminine_adjective">Θηλυκός τύπος επιθέτου</string>
+    <string name="inflection_es_present_indicative_label">ενεστώτας οριστικής</string>
+    <string name="inflection_es_present_indicative">Ενεστώτας οριστικής ρήματος</string>
+    <string name="inflection_es_preterite_label">απλός παρελθοντικός</string>
+    <string name="inflection_es_preterite">Απλός παρελθοντικός (αόριστος) ρήματος</string>
+    <string name="inflection_es_imperfect_label">παρατατικός</string>
+    <string name="inflection_es_imperfect">Παρατατικός ρήματος</string>
+    <string name="inflection_es_progressive_label">εξακολουθητικός</string>
+    <string name="inflection_es_progressive">Εξακολουθητικός τύπος ρήματος</string>
+    <string name="inflection_es_imperative_label">προστακτική</string>
+    <string name="inflection_es_imperative">Προστακτική ρήματος</string>
+    <string name="inflection_es_conditional_label">υποθετικός</string>
+    <string name="inflection_es_conditional">Υποθετικός τύπος ρήματος</string>
+    <string name="inflection_es_future_label">μέλλοντας</string>
+    <string name="inflection_es_future">Μέλλοντας ρήματος</string>
+    <string name="inflection_es_present_subjunctive_label">ενεστώτας υποτακτικής</string>
+    <string name="inflection_es_present_subjunctive">Ενεστώτας υποτακτικής ρήματος</string>
+    <string name="inflection_es_imperfect_subjunctive_label">παρατατικός υποτακτικής</string>
+    <string name="inflection_es_imperfect_subjunctive">Παρατατικός υποτακτικής ρήματος</string>
+    <string name="inflection_es_participle_label">μετοχή</string>
+    <string name="inflection_es_participle">Μετοχή ρήματος</string>
+    <string name="inflection_es_reflexive_label">αυτοπαθής</string>
+    <string name="inflection_es_reflexive">Αυτοπαθής τύπος ρήματος</string>
+    <string name="inflection_es_pronoun_substitution_label">αντικατάσταση αντωνυμίας</string>
+    <string name="inflection_es_pronoun_substitution">Αντικατεστημένη αντωνυμία αυτοπαθούς ρήματος</string>
+    <string name="inflection_es_pronominal_label">αντωνυμικός</string>
+    <string name="inflection_es_pronominal">Αντωνυμικός τύπος ρήματος</string>
+</resources>

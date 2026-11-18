@@ -37,6 +37,18 @@ class LanguageOptionsTest {
     }
 
     @Test
+    fun `added interface languages have flags and legacy indonesian code matches`() {
+        val tags = listOf("id", "th", "uk", "hi", "bn", "ur", "ro", "cs", "hu", "el")
+        val options = LanguageOptions.of(tags.map(Locale::forLanguageTag))
+        assertThat(options.associate { it.tag to it.flag }).containsExactly(
+            "id", "🇮🇩", "th", "🇹🇭", "uk", "🇺🇦", "hi", "🇮🇳", "bn", "🇧🇩",
+            "ur", "🇵🇰", "ro", "🇷🇴", "cs", "🇨🇿", "hu", "🇭🇺", "el", "🇬🇷",
+        )
+        assertThat(LanguageOptions.flag(Locale.forLanguageTag("in"))).isEqualTo("🇮🇩")
+        assertThat(LanguageOptions.selected(options, "in")?.tag).isEqualTo("id")
+    }
+
+    @Test
     fun `the current locale matches by language and script`() {
         val options = LanguageOptions.of(listOf("en", "pt", "zh-Hans", "zh-Hant").map(Locale::forLanguageTag))
         fun selected(tag: String) = LanguageOptions.selected(options, tag)?.tag

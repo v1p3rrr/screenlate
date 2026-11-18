@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">klitik</string>
+    <string name="inflection_fi_clitic">klitik: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin dari talo, talossakaan dari talossa, onkohan dari onko)</string>
+    <string name="inflection_fi_possessive_label">posesif</string>
+    <string name="inflection_fi_possessive">akhiran posesif: -ni, -si, -mme, -nne, -nsa/-nsä, vokal panjang dan -n (talossani dan talossaan dari talossa, taloni dari talo)</string>
+</resources>

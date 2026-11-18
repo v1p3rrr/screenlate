@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">plural</string>
+    <string name="inflection_en_plural">Forma de plural a unui substantiv</string>
+    <string name="inflection_en_possessive_label">posesiv</string>
+    <string name="inflection_en_possessive">Forma posesivă a unui substantiv</string>
+    <string name="inflection_en_past_label">trecut</string>
+    <string name="inflection_en_past">Trecutul simplu al unui verb</string>
+    <string name="inflection_en_ing_label">-ing</string>
+    <string name="inflection_en_ing">Participiul prezent al unui verb</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">pers. a III-a sg. prez.</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Prezentul unui verb, persoana a III-a singular</string>
+    <string name="inflection_en_interposed_object_label">complement interpus</string>
+    <string name="inflection_en_interposed_object">Verb frazal cu complement interpus</string>
+    <string name="inflection_en_archaic_label">arhaic</string>
+    <string name="inflection_en_archaic">Formă arhaică a unui cuvânt</string>
+    <string name="inflection_en_adverb_label">adverb</string>
+    <string name="inflection_en_adverb">Forma adverbială a unui adjectiv</string>
+    <string name="inflection_en_comparative_label">comparativ</string>
+    <string name="inflection_en_comparative">Forma comparativă a unui adjectiv</string>
+    <string name="inflection_en_superlative_label">superlativ</string>
+    <string name="inflection_en_superlative">Forma superlativă a unui adjectiv</string>
+    <string name="inflection_en_dropped_g_label">g omis</string>
+    <string name="inflection_en_dropped_g">Omiterea lui g în forma în -ing a unui verb</string>
+    <string name="inflection_en_y">Adjectiv format dintr-un verb sau substantiv</string>
+    <string name="inflection_en_un">Formă negativă a unui adjectiv, adverb sau verb</string>
+    <string name="inflection_en_going_to_future_label">viitor cu going to</string>
+    <string name="inflection_en_going_to_future">Viitorul unui verb format cu going to</string>
+    <string name="inflection_en_will_future_label">viitor cu will</string>
+    <string name="inflection_en_will_future">Viitorul unui verb format cu will</string>
+    <string name="inflection_en_imperative_negative_label">imperativ negativ</string>
+    <string name="inflection_en_imperative_negative">Forma de imperativ negativ a unui verb</string>
+    <string name="inflection_en_able">Adjectiv format dintr-un verb</string>
+</resources>

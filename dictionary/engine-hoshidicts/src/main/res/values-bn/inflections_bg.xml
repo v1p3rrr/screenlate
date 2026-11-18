@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">নির্দিষ্ট</string>
+    <string name="inflection_bg_definite">নির্দিষ্ট পদাশ্রিত নির্দেশক: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">বহুবচন</string>
+    <string name="inflection_bg_plural">বহুবচন: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">স্ত্রীলিঙ্গ</string>
+    <string name="inflection_bg_feminine">বিশেষণের স্ত্রীলিঙ্গ রূপ: -а (нова, умна ← умен, добра ← добър, българска)</string>
+    <string name="inflection_bg_neuter_label">ক্লীবলিঙ্গ</string>
+    <string name="inflection_bg_neuter">বিশেষণের ক্লীবলিঙ্গ রূপ: -о (ново, умно ← умен, добро ← добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">বর্তমান</string>
+    <string name="inflection_bg_present">বর্তমান কাল (гарантира, гарантират ← гарантирам; четеш, четат ← чета; говори ← говоря)</string>
+    <string name="inflection_bg_past_label">অতীত</string>
+    <string name="inflection_bg_past">অ্যাওরিস্ট বা অসম্পূর্ণ অতীত (чаках, чакаше ← чакам; четох, четеше ← чета; говорих ← говоря)</string>
+    <string name="inflection_bg_past_participle_label">অতীত কৃদন্ত</string>
+    <string name="inflection_bg_past_participle">অতীত কর্তৃবাচ্য কৃদন্ত -л (гарантирал, изминала ← измина, говорили ← говоря)</string>
+    <string name="inflection_bg_passive_participle_label">কর্মবাচ্য কৃদন্ত</string>
+    <string name="inflection_bg_passive_participle">অতীত কর্মবাচ্য কৃদন্ত -н (гарантиран, гарантирана ← гарантирам; говорено ← говоря)</string>
+    <string name="inflection_bg_imperative_label">অনুজ্ঞা</string>
+    <string name="inflection_bg_imperative">অনুজ্ঞা -ай -айте (чакай, чакайте ← чакам; стреляй ← стрелям)</string>
+</resources>

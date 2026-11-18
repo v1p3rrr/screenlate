@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">množné číslo</string>
+    <string name="inflection_es_plural">Množné číslo podstatného jména</string>
+    <string name="inflection_es_feminine_adjective_label">ženský rod přídavného jména</string>
+    <string name="inflection_es_feminine_adjective">ženský rod přídavného jména</string>
+    <string name="inflection_es_present_indicative_label">přítomný indikativ</string>
+    <string name="inflection_es_present_indicative">Přítomný indikativ slovesa</string>
+    <string name="inflection_es_preterite_label">préteritum</string>
+    <string name="inflection_es_preterite">Préteritum (jednoduchý minulý čas) slovesa</string>
+    <string name="inflection_es_imperfect_label">imperfektum</string>
+    <string name="inflection_es_imperfect">Imperfektum slovesa</string>
+    <string name="inflection_es_progressive_label">průběhový tvar</string>
+    <string name="inflection_es_progressive">Průběhový tvar slovesa</string>
+    <string name="inflection_es_imperative_label">imperativ</string>
+    <string name="inflection_es_imperative">Rozkazovací způsob slovesa</string>
+    <string name="inflection_es_conditional_label">kondicionál</string>
+    <string name="inflection_es_conditional">Podmiňovací způsob slovesa</string>
+    <string name="inflection_es_future_label">budoucí čas</string>
+    <string name="inflection_es_future">Budoucí čas slovesa</string>
+    <string name="inflection_es_present_subjunctive_label">přítomný konjunktiv</string>
+    <string name="inflection_es_present_subjunctive">Přítomný konjunktiv slovesa</string>
+    <string name="inflection_es_imperfect_subjunctive_label">imperfektum konjunktivu</string>
+    <string name="inflection_es_imperfect_subjunctive">Imperfektum konjunktivu slovesa</string>
+    <string name="inflection_es_participle_label">příčestí</string>
+    <string name="inflection_es_participle">Příčestí slovesa</string>
+    <string name="inflection_es_reflexive_label">zvratný</string>
+    <string name="inflection_es_reflexive">Zvratný tvar slovesa</string>
+    <string name="inflection_es_pronoun_substitution_label">náhrada zájmena</string>
+    <string name="inflection_es_pronoun_substitution">Nahrazené zájmeno zvratného slovesa</string>
+    <string name="inflection_es_pronominal_label">zájmenný</string>
+    <string name="inflection_es_pronominal">Zájmenný tvar slovesa</string>
+</resources>

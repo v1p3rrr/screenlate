@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">clitic</string>
+    <string name="inflection_fi_clitic">clitic: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin din talo, talossakaan din talossa, onkohan din onko)</string>
+    <string name="inflection_fi_possessive_label">posesiv</string>
+    <string name="inflection_fi_possessive">sufix posesiv: -ni, -si, -mme, -nne, -nsa/-nsä, vocală lungă și -n (talossani și talossaan din talossa, taloni din talo)</string>
+</resources>

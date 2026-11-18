@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">indikatif kini</string>
+    <string name="inflection_fr_present_indicative">Bentuk indikatif kini verba</string>
+    <string name="inflection_fr_imperfect_indicative_label">indikatif imperfek</string>
+    <string name="inflection_fr_imperfect_indicative">Bentuk indikatif imperfek verba</string>
+    <string name="inflection_fr_future_label">mendatang</string>
+    <string name="inflection_fr_future">Bentuk mendatang verba</string>
+    <string name="inflection_fr_imperative_present_label">imperatif kini</string>
+    <string name="inflection_fr_imperative_present">Bentuk imperatif verba</string>
+    <string name="inflection_fr_conditional_label">kondisional</string>
+    <string name="inflection_fr_conditional">Bentuk kondisional verba</string>
+    <string name="inflection_fr_preterite_label">preterit</string>
+    <string name="inflection_fr_preterite">Bentuk preterit (lampau sederhana) verba</string>
+    <string name="inflection_fr_plural_label">jamak</string>
+    <string name="inflection_fr_plural">Bentuk jamak nomina</string>
+    <string name="inflection_fr_present_participle_label">partisip kini</string>
+    <string name="inflection_fr_present_participle">Bentuk partisip kini verba</string>
+    <string name="inflection_fr_present_subjunctive_label">subjungtif kini</string>
+    <string name="inflection_fr_present_subjunctive">Bentuk subjungtif kini verba</string>
+</resources>

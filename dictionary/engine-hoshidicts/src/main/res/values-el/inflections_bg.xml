@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">οριστικός</string>
+    <string name="inflection_bg_definite">οριστικό άρθρο: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">πληθυντικός</string>
+    <string name="inflection_bg_plural">πληθυντικός: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">θηλυκό</string>
+    <string name="inflection_bg_feminine">θηλυκός τύπος επιθέτου: -а (нова, умна από умен, добра από добър, българска)</string>
+    <string name="inflection_bg_neuter_label">ουδέτερο</string>
+    <string name="inflection_bg_neuter">ουδέτερος τύπος επιθέτου: -о (ново, умно από умен, добро από добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">ενεστώτας</string>
+    <string name="inflection_bg_present">ενεστώτας (гарантира, гарантират από гарантирам· четеш, четат από чета· говори από говоря)</string>
+    <string name="inflection_bg_past_label">παρελθοντικός</string>
+    <string name="inflection_bg_past">αόριστος ή παρατατικός (чаках, чакаше από чакам· четох, четеше από чета· говорих από говоря)</string>
+    <string name="inflection_bg_past_participle_label">παρελθοντική μετοχή</string>
+    <string name="inflection_bg_past_participle">παρελθοντική ενεργητική μετοχή σε -л (гарантирал, изминала από измина, говорили από говоря)</string>
+    <string name="inflection_bg_passive_participle_label">παθητική μετοχή</string>
+    <string name="inflection_bg_passive_participle">παρελθοντική παθητική μετοχή σε -н (гарантиран, гарантирана από гарантирам· говорено από говоря)</string>
+    <string name="inflection_bg_imperative_label">προστακτική</string>
+    <string name="inflection_bg_imperative">προστακτική σε -ай -айте (чакай, чакайте από чакам· стреляй από стрелям)</string>
+</resources>

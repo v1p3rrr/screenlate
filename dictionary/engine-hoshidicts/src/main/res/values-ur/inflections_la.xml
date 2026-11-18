@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">جمع</string>
+    <string name="inflection_la_plural">جمع کی تصریف</string>
+    <string name="inflection_la_feminine_label">مؤنث</string>
+    <string name="inflection_la_feminine">صفت کی صورت</string>
+    <string name="inflection_la_neuter_label">بے جنس</string>
+    <string name="inflection_la_neuter">صفت کی صورت</string>
+    <string name="inflection_la_ablative_label">حالتِ مفعول منہ</string>
+    <string name="inflection_la_ablative">حالتِ مفعول منہ</string>
+    <string name="inflection_la_que">ملحقہ “اور” (magis سے magisque)</string>
+    <string name="inflection_la_ne">سوالیہ ملحقہ (vides سے videsne)</string>
+    <string name="inflection_la_ve">ملحقہ “یا” (mortuus سے mortuusve)</string>
+</resources>

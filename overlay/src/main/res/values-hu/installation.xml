@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">Kész</string>
+    <string name="installation_running">A nyelv telepítése folyamatban van. A beolvasás és a szótárazás az összetevők elkészülte után lesz elérhető.</string>
+    <string name="installation_missing">A szükséges szótárak vagy felismerési modellek hiányoznak, illetve le vannak tiltva. A beállítás a „Telepítési állapot” képernyőn fejezhető be.</string>
+    <string name="installation_failed">A nyelv telepítése sikertelen. Részletek és újrapróbálás a „Telepítési állapot” képernyőn.</string>
+    <string name="installation_open">Telepítési állapot</string>
+    <string name="installation_device_ready">Eszközön történő felismerés: kész</string>
+    <string name="installation_device_missing">Eszközön történő felismerés: nem érhető el (a felhőalapú felismerés engedélyezés esetén használható)</string>
+    <string name="installation_remaining">Hátralévő telepítések: %1$d</string>
+    <string name="installation_errors">Sikertelen telepítések: %1$d</string>
+    <string name="installation_device_missing_offline">Eszközön történő felismerés: nem érhető el; a felhőalapú felismerés kényszerített offline módban le van tiltva.</string>
+</resources>

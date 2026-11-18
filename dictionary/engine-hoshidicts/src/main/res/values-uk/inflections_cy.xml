@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">м’яка мутація</string>
+    <string name="inflection_cy_soft_mutation">м’яка мутація: b, d, g, f, dd, l, r замість p, t, c, b/m, d, ll, rh; випадання g (ei gath від cath, dy wely від gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">носова мутація</string>
+    <string name="inflection_cy_nasal_mutation">носова мутація: mh, nh, ngh, m, n, ng замість p, t, c, b, d, g (fy nghath від cath, yng Nghymru від Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">придихова мутація</string>
+    <string name="inflection_cy_aspirate_mutation">придихова мутація: ph, th, ch замість p, t, c (ei chath від cath)</string>
+    <string name="inflection_cy_h_prothesis_label">h-протеза</string>
+    <string name="inflection_cy_h_prothesis">h перед голосним (ei hysgol від ysgol)</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">ชี้เฉพาะ</string>
+    <string name="inflection_bg_definite">คำนำหน้านามชี้เฉพาะ: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">พหูพจน์</string>
+    <string name="inflection_bg_plural">พหูพจน์: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">เพศหญิง</string>
+    <string name="inflection_bg_feminine">รูปเพศหญิงของคำคุณศัพท์: -а (нова, умна จาก умен, добра จาก добър, българска)</string>
+    <string name="inflection_bg_neuter_label">เพศกลาง</string>
+    <string name="inflection_bg_neuter">รูปเพศกลางของคำคุณศัพท์: -о (ново, умно จาก умен, добро จาก добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">ปัจจุบันกาล</string>
+    <string name="inflection_bg_present">ปัจจุบันกาล (гарантира, гарантират จาก гарантирам; четеш, четат จาก чета; говори จาก говоря)</string>
+    <string name="inflection_bg_past_label">อดีตกาล</string>
+    <string name="inflection_bg_past">ออริสต์หรืออดีตไม่สมบูรณ์ (чаках, чакаше จาก чакам; четох, четеше จาก чета; говорих จาก говоря)</string>
+    <string name="inflection_bg_past_participle_label">กริยาคุณศัพท์อดีต</string>
+    <string name="inflection_bg_past_participle">กริยาคุณศัพท์อดีตกรรตุวาจก -л (гарантирал, изминала จาก измина, говорили จาก говоря)</string>
+    <string name="inflection_bg_passive_participle_label">กริยาคุณศัพท์กรรมวาจก</string>
+    <string name="inflection_bg_passive_participle">กริยาคุณศัพท์อดีตกรรมวาจก -н (гарантиран, гарантирана จาก гарантирам; говорено จาก говоря)</string>
+    <string name="inflection_bg_imperative_label">คำสั่ง</string>
+    <string name="inflection_bg_imperative">รูปคำสั่ง -ай -айте (чакай, чакайте จาก чакам; стреляй จาก стрелям)</string>
+</resources>

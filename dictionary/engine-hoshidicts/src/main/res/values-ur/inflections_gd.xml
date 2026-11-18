@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">تلیین</string>
+    <string name="inflection_gd_lenition">تلیین: b c d f g m p s t کے لیے bh ch dh fh gh mh ph sh th، حرفِ تعریف کے بعد s کے لیے t-s (grian سے a\' ghrian، sràid سے an t-sràid)</string>
+    <string name="inflection_gd_eclipsis_label">اخفا</string>
+    <string name="inflection_gd_eclipsis">مصوتے سے پہلے n- (eilean سے ar n-eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">t-اضافہ</string>
+    <string name="inflection_gd_t_prothesis">مصوتے سے پہلے t- (uisge سے an t-uisge، Eilean سے an t-Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">h-اضافہ</string>
+    <string name="inflection_gd_h_prothesis">مصوتے سے پہلے h- (Alba سے na h-Alba، òrain سے na h-òrain)</string>
+</resources>

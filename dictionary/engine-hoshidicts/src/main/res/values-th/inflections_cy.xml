@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">การกลายเสียงอ่อน</string>
+    <string name="inflection_cy_soft_mutation">การกลายเสียงอ่อน: b d g f dd l r แทน p t c b/m d ll rh และตัด g ออก (ei gath จาก cath, dy wely จาก gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">การกลายเสียงนาสิก</string>
+    <string name="inflection_cy_nasal_mutation">การกลายเสียงนาสิก: mh nh ngh m n ng แทน p t c b d g (fy nghath จาก cath, yng Nghymru จาก Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">การกลายเสียงธนิต</string>
+    <string name="inflection_cy_aspirate_mutation">การกลายเสียงธนิต: ph th ch แทน p t c (ei chath จาก cath)</string>
+    <string name="inflection_cy_h_prothesis_label">การเติม h หน้าคำ</string>
+    <string name="inflection_cy_h_prothesis">เติม h หน้าสระ (ei hysgol จาก ysgol)</string>
+</resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">negatif</string>
+    <string name="inflection_sw_negative">negatif: ha- sebelum subjek (hatukusoma, hakusoma), si- untuk aku dan hu- untuk kamu (sikusoma, hukusoma), si- setelah subjek sebelum relatif (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">aku</string>
+    <string name="inflection_sw_i">subjek ni-: aku (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">kamu</string>
+    <string name="inflection_sw_you">subjek u-: kamu, atau nomina kelas 3, 11, dan 14 (unasoma; mti umeanguka, pohon itu telah tumbang)</string>
+    <string name="inflection_sw_he_she_label">dia</string>
+    <string name="inflection_sw_he_she">subjek a-: dia (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">kami/kita</string>
+    <string name="inflection_sw_we">subjek tu-: kami/kita (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">kalian</string>
+    <string name="inflection_sw_you_pl">subjek m-: kalian (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">mereka</string>
+    <string name="inflection_sw_they">subjek wa-: mereka (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">kelas</string>
+    <string name="inflection_sw_class">subjek kelas nomina: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (tempat: kulikuwa, dahulu ada)</string>
+    <string name="inflection_sw_past_label">lampau</string>
+    <string name="inflection_sw_past">lampau: li-, dan ku- setelah negasi (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">kini</string>
+    <string name="inflection_sw_present">kini: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">mendatang</string>
+    <string name="inflection_sw_future">mendatang: ta-, dan taka- sebelum relatif (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">perfek</string>
+    <string name="inflection_sw_perfect">perfek: me- (amesoma, telah membaca)</string>
+    <string name="inflection_sw_not_yet_label">belum</string>
+    <string name="inflection_sw_not_yet">belum: ja- setelah negasi (hajasoma, belum membaca)</string>
+    <string name="inflection_sw_conditional_label">kondisional</string>
+    <string name="inflection_sw_conditional">kondisional: nge- dan ngali- (angesoma, akan membaca; angalisoma, tentu sudah membaca)</string>
+    <string name="inflection_sw_when_label">ketika</string>
+    <string name="inflection_sw_when">ki-: ketika, sambil, atau jika (akisoma)</string>
+    <string name="inflection_sw_and_then_label">lalu</string>
+    <string name="inflection_sw_and_then">ka-: lalu, dalam cerita (akasoma)</string>
+    <string name="inflection_sw_habitual_label">habitual</string>
+    <string name="inflection_sw_habitual">habitual: hu- (husoma, biasa membaca)</string>
+    <string name="inflection_sw_relative_label">relatif</string>
+    <string name="inflection_sw_relative">relatif: yang, tempat (aliyesoma, orang yang membaca; kinachoitwa, yang disebut; waishio, yang tinggal)</string>
+    <string name="inflection_sw_object_label">objek</string>
+    <string name="inflection_sw_object">objek: ni- aku, ku- kamu, m- atau mw- dia, tu- kami/kita, wa- mereka, serta awalan kelas nomina ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">refleksif</string>
+    <string name="inflection_sw_reflexive">refleksif ji-: diri sendiri (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">infinitif</string>
+    <string name="inflection_sw_infinitive">infinitif: ku- atau kw- (kusoma, kwandika, kumpa)</string>
+</resources>

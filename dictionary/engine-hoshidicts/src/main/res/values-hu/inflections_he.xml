@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">és</string>
+    <string name="inflection_he_v">és (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">hogy, aki</string>
+    <string name="inflection_he_sh">hogy, amely, aki (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">amikor</string>
+    <string name="inflection_he_ksh">amikor, amint (כשהגעתי)</string>
+    <string name="inflection_he_b_label">-ban/-ben</string>
+    <string name="inflection_he_b">-ban/-ben, -nál/-nél, -val/-vel (בבית)</string>
+    <string name="inflection_he_k_label">mint</string>
+    <string name="inflection_he_k">mint, akárcsak (כילד)</string>
+    <string name="inflection_he_l_label">-nak/-nek</string>
+    <string name="inflection_he_l">-nak/-nek, -hoz/-hez, -ért (לבית)</string>
+    <string name="inflection_he_m_label">-ból/-ből</string>
+    <string name="inflection_he_m">-ból/-ből, -tól/-től, -nál/-nél (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">a/az</string>
+    <string name="inflection_he_h">határozott névelő (הבית)</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">lenisi</string>
+    <string name="inflection_ga_lenition">lenisi: bh ch dh fh gh mh ph sh th untuk b c d f g m p s t, ts untuk s setelah artikel (an bhean dari bean, an tsráid dari sráid)</string>
+    <string name="inflection_ga_eclipsis_label">eklipsis</string>
+    <string name="inflection_ga_eclipsis">eklipsis: mb gc nd bhf ng bp dt untuk b c d f g p t, n- sebelum vokal (i nGaillimh dari Gaillimh, ár n-athair dari athair)</string>
+    <string name="inflection_ga_t_prothesis_label">protesis t</string>
+    <string name="inflection_ga_t_prothesis">t sebelum vokal (an t-uisce dari uisce, an tAontas dari Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">protesis h</string>
+    <string name="inflection_ga_h_prothesis">h sebelum vokal (na hÉireann dari Éireann, a hathair dari athair)</string>
+</resources>

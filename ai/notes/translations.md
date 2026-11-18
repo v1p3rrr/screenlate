@@ -1,15 +1,17 @@
 # Translations
 
-UI strings live in `values*/strings.xml` of `app`, `overlay`, `core/anki` and `dictionary/api`, and the Japanese
-inflection names and descriptions shown in the popup in `values*/inflections_ja.xml` of `dictionary/engine-hoshidicts`
-(GPL, from Yomitan through hoshidicts; `tools/generate_inflections.py` writes only the English file, translations are
-edited by hand). 17 locales: English (`values`), ru, de, es, fr, it, ja, ko, pl, pt, tr, vi, `b+zh+Hans`, `b+zh+Hant`,
-and since 2026-10-29 ar, fa and Hebrew as `iw`: Android's own resources use the old codes `iw` (and `in` for
-Indonesian), which every version resolves; `values-he` works only where the platform maps he to iw.
-`res/xml/locales_config.xml`, the list the language settings offer, is written by hand and names Hebrew `he`, which
-resolves to `values-iw` (checked on API 37: `set-app-locales --locales he` loads the Hebrew strings, and
-`get-app-locales` reports `[he]`). `TranslationsTest` checks that the list holds every translation (iw as he) except
-those in `unlisted`, which held ar, fa and iw until their screens were checked and is empty since.
+UI strings live in `values*/strings.xml` of `app`, `overlay`, `core/anki` and `dictionary/api`,
+`values*/installation.xml` of `overlay`, `values*/form_of_tags.xml` of `dictionary/api`, and 26
+`values*/inflections_*.xml` files of `dictionary/engine-hoshidicts` (33 XML files, 2,187 keys total;
+`inflections_ja.xml` is GPL from Yomitan through hoshidicts — `tools/generate_inflections.py` writes only the English
+file, translations are edited by hand). 27 locales: English (`values`), ru, de, es, fr, it, ja, ko, pl, pt, tr, vi,
+`b+zh+Hans`, `b+zh+Hant`, ar, fa, Hebrew as `iw` (added 2026-10-29), and since 2026-11-18 Indonesian as `in`, th, uk,
+hi, bn, ur (RTL), ro, cs, hu and el. Android's own resources use the legacy codes `iw` (Hebrew) and `in` (Indonesian),
+which every version resolves; `values-he` and `values-id` work only where the platform maps them.
+`res/xml/locales_config.xml`, the list the language settings offer, is written by hand and names Hebrew `he` and
+Indonesian `id`, which resolve to `values-iw` and `values-in` (checked on API 37: `set-app-locales --locales he` loads
+the Hebrew strings, and `get-app-locales` reports `[he]`). `TranslationsTest` checks that the list holds every
+translation (`iw` as `he`, `in` as `id`) except those in `unlisted` (currently empty).
 `TranslationsTest` finds every string file under `values/` of every module and checks that every key exists in every
 locale with the same format arguments, that plurals have the CLDR categories of their locale, and that apostrophes,
 quotes and line breaks are escaped.
@@ -26,9 +28,10 @@ Inflection terms per language follow the school grammar of Japanese taught in th
   line break.
 - `'` and `"` must be escaped (`\'`, `\"`); typographic quotes and apostrophes need no escape.
 - Lists the code joins (a dictionary's counts, language names in hints and summaries) take `list_separator`: «, » (written `,\u0020`, since aapt2 trims a plain trailing space and the test forbids quoting the string), «، » in Arabic and Persian, «、» in Japanese and both Chinese. Compose code calls `listSeparator()` (`ui/components/Lists.kt`); a CSS font list stays «, ».
-- Plural categories: ru/pl one, few, many, other; de/tr one, other; es/fr/it/pt one, many, other; ja/ko/vi/zh other;
-  ar zero, one, two, few, many, other; fa one, other; iw one, two, other (CLDR 42 dropped Hebrew many). Every item
-  carries the format argument (the test requires it), so Arabic one and two read «قاموس واحد (%1$d)», «قاموسان (%1$d)».
+- Plural categories: ru/pl/uk/cs one, few, many, other; de/tr/fa/hi/bn/ur/hu/el one, other; es/fr/it/pt one, many, other;
+  ro one, few, other; ja/ko/vi/zh/in/th other; ar zero, one, two, few, many, other; iw one, two, other (CLDR 42 dropped
+  Hebrew many). Every item carries the format argument (the test requires it), so Arabic one and two read
+  «قاموس واحد (%1$d)», «قاموسان (%1$d)».
 
 ## Conventions per language
 
@@ -159,7 +162,32 @@ settled in that audit, to reuse rather than reinvent:
   the service runs".
 - Dictionary languages: "Language of the words" / "Language of the definitions" («Язык слов» / «Язык толкований»).
 - A tone-only change to English may leave the other locales as they are when their wording is already neutral; a
-  change of meaning goes to all 14.
+  change of meaning goes to all locales.
+
+## Microcopy refactor, segmented button length audit, and 10 new locales (2026-11-18)
+
+- **Technical/nominal microcopy audit (`features/ui-strings-audit`):** Audited all UI strings across English and the 16
+  existing translations to replace conversational phrasing and FAQ headings with concise, impersonal, nominal UI
+  microcopy. Exactly 19 English keys retain `?` (genuine confirmation `AlertDialog`/`ConfirmDelete` prompts plus
+  `eink_home_title`); all non-dialog headers remain nominal. Verified via semantic fidelity check against Kotlin/Compose
+  call sites and 17 independent native-language reviewers (one per locale).
+- **Segmented button (`Segments`) length constraints:** Material `SingleChoiceSegmentedButtonRow` uses `maxLines = 1`
+  with ellipsis. Labels in 3-segment rows should stay concise (~≤ 12 chars in Latin/Cyrillic) so they do not clip on
+  normal phone widths (`popup_copy_mode_meanings` shortened from "Only meanings" / «Только значения» to "Meanings" /
+  «Значения»; `anki_scope_deck_root` shortened to «Корневая» / "Stamm" / "Główna" / "Racine"; `bubble_small_text_on_demand`
+  shortened in ru to «По запросу»). All 2-, 3-, and 4-segment groups pass length checks across all 27 locales.
+- **10 new interface locales (`features/more-locales`):** Added Indonesian (`values-in`, config `id`), Thai (`th`),
+  Ukrainian (`uk`), Hindi (`hi`), Bengali (`bn`), Urdu (`ur`, RTL), Romanian (`ro`), Czech (`cs`), Hungarian (`hu`) and
+  Greek (`el`) across all 33 XML files (2,187 keys each), with flag regions in `LanguageOptions.FLAG_REGIONS`
+  (`in→ID`, `hi→IN`, `bn→BD`, `ur→PK`, `ro→RO`, `hu→HU`), CLDR plural tables in `TranslationsTest`, and independent
+  native-language review per locale:
+  - `ur` (RTL): Nastaliq/Urdu script, Arabic comma `،\u0020`, `←` in Urdu-script menu paths, Urdu question mark `؟` in
+    the 19 confirmation dialogs, and standard Urdu UI terms (`ببل`, `پاپ اپ`, `کلاؤڈ شناخت`, `ڈیک`, `نوٹ`).
+  - `el`: Greek question mark `;` (never Latin `?`) in the 19 confirmation dialogs, `«»` quotes for UI references.
+  - `uk`: normative `рухома кнопка` (bubble), `спливне вікно` (popup), `хмарне розпізнавання` (cloud recognition), `«»`
+    quotes, 4 CLDR plural forms (`one`/`few`/`many`/`other`).
+  - `cs`, `hu`, `ro`, `in`, `th`, `hi`, `bn`: concise nominal/infinitive UI style matching native Android conventions,
+    kanji terms preserved in parentheses in `inflections_ja.xml`, and 0 Google Lens mentions in descriptive text.
 
 ## Tools used for the 2026-10-01 audit
 
@@ -169,7 +197,11 @@ values back with `xml.sax.saxutils.escape` plus the Android escapes above. The 2
 with new texts kept in Python dicts (`{key: {locale: text}}`) and `¶` standing for the literal `\n\n` paragraph break,
 so no backslashes pass through tool inputs.
 
-## Candidate interface languages (research, 2026-10-29)
+## Candidate interface languages (research, 2026-10-29; top 10 implemented 2026-11-18)
+
+Implemented from this list on 2026-11-18 (`features/more-locales`): **id (`values-in`), th, uk, hi, bn, ur, ro, hu, el, cs**
+(in addition to **ar, fa, he (`values-iw`)** added earlier on 2026-10-29). The remaining unimplemented candidates below
+are kept for reference.
 
 Which of the languages the app reads (`core.common.Language`, 52 now, and the planned groups 5c-5f and 6: az, uz, bg,
 mk, mn, yue, ta, te, kn, mr, ur, ca, gl, is, af, tt, ba, sa) are worth an interface translation after the 14 locales.

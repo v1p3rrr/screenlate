@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_de_nominalization_label">การสร้างคำนาม</string>
+    <string name="inflection_de_nominalization">คำนามที่สร้างจากคำกริยา</string>
+    <string name="inflection_de_bar">คำคุณศัพท์ความหมาย “สามารถ…ได้” จากคำกริยา</string>
+    <string name="inflection_de_negative_label">ปฏิเสธ</string>
+    <string name="inflection_de_negative">รูปปฏิเสธ</string>
+    <string name="inflection_de_past_participle_label">กริยาคุณศัพท์อดีต</string>
+    <string name="inflection_de_separated_prefix_label">อุปสรรคแยกส่วน</string>
+    <string name="inflection_de_zu_infinitive_label">รูปกริยากลางกับ zu</string>
+    <string name="inflection_de_heit">1. เปลี่ยนคำคุณศัพท์เป็นคำนาม โดยมักสื่อถึงคุณลักษณะเชิงนามธรรมของรากคำคุณศัพท์ เทียบเท่าปัจจัยภาษาอังกฤษ -ness, -th, -ty, -dom:\n	 schön (“สวยงาม”) + -heit → Schönheit (“ความงาม”)\n	 neu (“ใหม่”) + -heit → Neuheit (“ความแปลกใหม่”)\n2. เปลี่ยนคำนามรูปธรรมเป็นอาการนาม:\n	 Kind (“เด็ก”) + -heit → Kindheit (“วัยเด็ก”)\n	 Christ (“คริสต์ศาสนิกชน”) + -heit → Christenheit (“คริสต์ศาสนจักร”)\n</string>
+</resources>

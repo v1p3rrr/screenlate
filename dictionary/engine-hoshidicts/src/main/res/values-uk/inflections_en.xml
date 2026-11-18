@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">множина</string>
+    <string name="inflection_en_plural">Форма множини іменника</string>
+    <string name="inflection_en_possessive_label">присвійна форма</string>
+    <string name="inflection_en_possessive">Присвійна форма іменника</string>
+    <string name="inflection_en_past_label">минулий час</string>
+    <string name="inflection_en_past">Простий минулий час дієслова</string>
+    <string name="inflection_en_ing_label">-ing</string>
+    <string name="inflection_en_ing">Дієприкметник теперішнього часу</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">3-тя ос. одн. теп.</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Теперішній час дієслова, 3-тя особа однини</string>
+    <string name="inflection_en_interposed_object_label">вставлений додаток</string>
+    <string name="inflection_en_interposed_object">Фразове дієслово зі вставленим додатком</string>
+    <string name="inflection_en_archaic_label">архаїчна</string>
+    <string name="inflection_en_archaic">Архаїчна форма слова</string>
+    <string name="inflection_en_adverb_label">прислівник</string>
+    <string name="inflection_en_adverb">Прислівникова форма прикметника</string>
+    <string name="inflection_en_comparative_label">вищий ступінь</string>
+    <string name="inflection_en_comparative">Вищий ступінь порівняння прикметника</string>
+    <string name="inflection_en_superlative_label">найвищий ступінь</string>
+    <string name="inflection_en_superlative">Найвищий ступінь порівняння прикметника</string>
+    <string name="inflection_en_dropped_g_label">випущена g</string>
+    <string name="inflection_en_dropped_g">Випущена g у формі дієслова на -ing</string>
+    <string name="inflection_en_y">Прикметник, утворений від дієслова або іменника</string>
+    <string name="inflection_en_un">Заперечна форма прикметника, прислівника або дієслова</string>
+    <string name="inflection_en_going_to_future_label">майбутній із going to</string>
+    <string name="inflection_en_going_to_future">Майбутній час дієслова з конструкцією going to</string>
+    <string name="inflection_en_will_future_label">майбутній із will</string>
+    <string name="inflection_en_will_future">Майбутній час дієслова з will</string>
+    <string name="inflection_en_imperative_negative_label">заперечний наказовий</string>
+    <string name="inflection_en_imperative_negative">Заперечна форма наказового способу дієслова</string>
+    <string name="inflection_en_able">Прикметник, утворений від дієслова</string>
+</resources>

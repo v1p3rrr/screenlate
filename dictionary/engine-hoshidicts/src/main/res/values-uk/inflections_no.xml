@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_no_s_label">родовий відмінок</string>
+    <string name="inflection_no_s">родовий відмінок (dagens, Norges)</string>
+</resources>

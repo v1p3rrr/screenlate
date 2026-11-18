@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">শব্দরূপ</string>
+    <string name="inflection_ka_nounadjsuffixstripping">জর্জীয় বিশেষ্য ও বিশেষণের বিভক্তি অপসারণ</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">কর্তৃকারক</string>
+    <string name="inflection_ka_nounadjstemcompletion">ব্যঞ্জনান্ত বিশেষ্য/বিশেষণ মূলের কর্তৃকারক বিভক্তি -ი পুনরুদ্ধার</string>
+    <string name="inflection_ka_vowelrestoration_label">বিলুপ্ত স্বরধ্বনি</string>
+    <string name="inflection_ka_vowelrestoration">প্রযোজ্য ক্ষেত্রে বিলুপ্ত স্বরধ্বনি পুনরুদ্ধার</string>
+</resources>

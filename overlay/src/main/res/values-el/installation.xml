@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">Έτοιμο</string>
+    <string name="installation_running">Η εγκατάσταση γλώσσας βρίσκεται σε εξέλιξη. Η σάρωση και η εύρεση θα είναι διαθέσιμες μόλις ολοκληρωθεί η προετοιμασία των στοιχείων.</string>
+    <string name="installation_missing">Απαιτούμενα λεξικά ή μοντέλα αναγνώρισης λείπουν ή είναι ανενεργά. Ανοίξτε την κατάσταση εγκατάστασης για να ολοκληρώσετε τη ρύθμιση.</string>
+    <string name="installation_failed">Αποτυχία εγκατάστασης γλώσσας. Ανοίξτε την κατάσταση εγκατάστασης για λεπτομέρειες ή επανάληψη.</string>
+    <string name="installation_open">Κατάσταση εγκατάστασης</string>
+    <string name="installation_device_ready">Αναγνώριση στη συσκευή: έτοιμη</string>
+    <string name="installation_device_missing">Αναγνώριση στη συσκευή: μη διαθέσιμη (η αναγνώριση στο cloud είναι διαθέσιμη όταν είναι ενεργή)</string>
+    <string name="installation_remaining">Υπολειπόμενες εγκαταστάσεις: %1$d</string>
+    <string name="installation_errors">Αποτυχημένες εγκαταστάσεις: %1$d</string>
+    <string name="installation_device_missing_offline">Αναγνώριση στη συσκευή: μη διαθέσιμη· η αναγνώριση στο cloud είναι απενεργοποιημένη στην επιβεβλημένη λειτουργία εκτός σύνδεσης.</string>
+</resources>

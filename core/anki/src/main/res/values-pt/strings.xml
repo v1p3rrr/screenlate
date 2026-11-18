@@ -4,8 +4,8 @@
     <string name="audio_source_json">URL personalizada (JSON)</string>
 
     <string name="anki_problem_not_installed">O AnkiDroid não está instalado.</string>
-    <string name="anki_problem_no_permission">O Screenlate perdeu o acesso ao AnkiDroid.</string>
-    <string name="anki_problem_model_missing">O tipo de nota não foi encontrado no AnkiDroid.</string>
-    <string name="anki_problem_deck_missing">O baralho não foi encontrado no AnkiDroid.</string>
-    <string name="anki_problem_fields_changed">Os campos do tipo de nota mudaram.</string>
+    <string name="anki_problem_no_permission">Sem acesso ao AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Tipo de nota não encontrado no AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Baralho não encontrado no AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Campos do tipo de nota alterados.</string>
 </resources>

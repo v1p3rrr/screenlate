@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">कोमल परिवर्तन</string>
+    <string name="inflection_cy_soft_mutation">कोमल परिवर्तन: p t c b/m d ll rh के लिए b d g f dd l r, g का लोप (cath से ei gath, gwely से dy wely)</string>
+    <string name="inflection_cy_nasal_mutation_label">अनुनासिक परिवर्तन</string>
+    <string name="inflection_cy_nasal_mutation">अनुनासिक परिवर्तन: p t c b d g के लिए mh nh ngh m n ng (cath से fy nghath, Cymru से yng Nghymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">महाप्राण परिवर्तन</string>
+    <string name="inflection_cy_aspirate_mutation">महाप्राण परिवर्तन: p t c के लिए ph th ch (cath से ei chath)</string>
+    <string name="inflection_cy_h_prothesis_label">h-आगम</string>
+    <string name="inflection_cy_h_prothesis">स्वर से पहले h (ysgol से ei hysgol)</string>
+</resources>

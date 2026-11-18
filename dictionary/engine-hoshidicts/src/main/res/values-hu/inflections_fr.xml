@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">kijelentő jelen idő</string>
+    <string name="inflection_fr_present_indicative">Ige kijelentő módú jelen idejű alakja</string>
+    <string name="inflection_fr_imperfect_indicative_label">kijelentő folyamatos múlt</string>
+    <string name="inflection_fr_imperfect_indicative">Ige kijelentő módú folyamatos múlt idejű alakja</string>
+    <string name="inflection_fr_future_label">jövő idő</string>
+    <string name="inflection_fr_future">Ige jövő idejű alakja</string>
+    <string name="inflection_fr_imperative_present_label">felszólító jelen</string>
+    <string name="inflection_fr_imperative_present">Ige felszólító módú alakja</string>
+    <string name="inflection_fr_conditional_label">feltételes mód</string>
+    <string name="inflection_fr_conditional">Ige feltételes módú alakja</string>
+    <string name="inflection_fr_preterite_label">egyszerű múlt</string>
+    <string name="inflection_fr_preterite">Ige egyszerű múlt idejű alakja</string>
+    <string name="inflection_fr_plural_label">többes szám</string>
+    <string name="inflection_fr_plural">Főnév többes számú alakja</string>
+    <string name="inflection_fr_present_participle_label">folyamatos melléknévi igenév</string>
+    <string name="inflection_fr_present_participle">Ige folyamatos melléknévi igeneve</string>
+    <string name="inflection_fr_present_subjunctive_label">kötőmód jelen idő</string>
+    <string name="inflection_fr_present_subjunctive">Ige kötőmódú jelen idejű alakja</string>
+</resources>

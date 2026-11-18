@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">कर्म कारक</string>
+    <string name="inflection_eo_accusative">शब्द का कर्म कारक रूप</string>
+    <string name="inflection_eo_plural_label">बहुवचन</string>
+    <string name="inflection_eo_plural">शब्द का बहुवचन रूप</string>
+    <string name="inflection_eo_diminutive_label">अल्पार्थक</string>
+    <string name="inflection_eo_diminutive">संज्ञा का अल्पार्थक रूप</string>
+    <string name="inflection_eo_directional_label">दिशात्मक</string>
+    <string name="inflection_eo_directional">कर्म कारक में क्रिया-विशेषण दिशा दर्शाता है\nkie: कहाँ\nkien: किस ओर</string>
+    <string name="inflection_eo_locational_label">स्थानवाचक</string>
+    <string name="inflection_eo_locational">संज्ञा से बना क्रिया-विशेषण स्थान दर्शाता है\nsurpinto : शिखर, नोक, शीर्ष\nsurpinte: शिखर पर, शीर्ष पर\nĉambro : कमरा\nĉambre: कमरे में</string>
+    <string name="inflection_eo_adjectival_label">विशेषणात्मक</string>
+    <string name="inflection_eo_adjectival">संज्ञा का विशेषण रूप</string>
+    <string name="inflection_eo_adverbial_adj_adv">विशेषण का क्रिया-विशेषण रूप</string>
+    <string name="inflection_eo_adverbial_v_adv">क्रिया का क्रिया-विशेषण रूप</string>
+    <string name="inflection_eo_ejo_noun">प्रत्यय जो शब्द को उस विशिष्ट वस्तु के लिए बने स्थान में बदलता है\nkafo: कॉफ़ी\nkafejo: कैफ़े</string>
+    <string name="inflection_eo_ejo_verb">प्रत्यय जो शब्द को उस विशिष्ट क्रिया के लिए बने स्थान में बदलता है\nkuiri: पकाना\nkuirejo: रसोईघर</string>
+    <string name="inflection_eo_ujo_noun">प्रत्यय जो शब्द को उस विशिष्ट वस्तु के पात्र या डिब्बे में बदलता है\nabelo: मधुमक्खी\nabelujo: मधुमक्खी का छत्ता\n\nप्रत्यय जो शब्द को उस वर्ग के लोगों के निवास स्थान में बदलता है\npatro: पिता\npatrujo: पितृभूमि\n\nप्रत्यय जो फूल या फल को उसके पौधे या वृक्ष में बदलता है\npomo: सेब\npomujo: सेब का पेड़</string>
+    <string name="inflection_eo_ujo_adjective">प्रत्यय जो वर्णनात्मक शब्द को उस प्रकार की वस्तु के पात्र या उपकरण में बदलता है\nfrida: ठंडा\nfridujo: रेफ़्रिजरेटर</string>
+    <string name="inflection_eo_ujo_verb">प्रत्यय जो क्रिया को उस गतिविधि के पात्र या उपकरण में बदलता है\nlavi: धोना\nlavujo: सिंक</string>
+    <string name="inflection_eo_ebla">प्रत्यय जो संभावना दर्शाता है\nkompreni: समझना\nkomprenebla: समझने योग्य</string>
+    <string name="inflection_eo_ado">प्रत्यय जो क्रिया को उसका बोध कराने वाली संज्ञा में बदलता है\nvivi: जीना\nvivado: जीवन\nspiri: साँस लेना\nspirado: श्वसन</string>
+    <string name="inflection_eo_mal">उपसर्ग जो क्रिया, वर्णन, वस्तु या दिशा को उसके विपरीत अर्थ में बदलता है</string>
+    <string name="inflection_eo_kun">उपसर्ग जिसका अर्थ है दूसरों के साथ मिलकर कार्य करना\nlabori: काम करना\nkunlabori: सहयोग करना</string>
+    <string name="inflection_eo_ekster">उपसर्ग जिसका अर्थ है “के बाहर”\nlando: देश\neksterlando: विदेश</string>
+    <string name="inflection_eo_ek">उपसर्ग जिसका अर्थ है क्रिया आरंभ करना\nkanti: गाना\nekkanti: गाना शुरू करना</string>
+    <string name="inflection_eo_us">उपसर्ग जिसका अर्थ है हाल ही में या अभी-अभी किया गया\nvekita: जगा हुआ\nĵusvekita: अभी-अभी जगा हुआ</string>
+    <string name="inflection_eo_el">उपसर्ग जिसका अर्थ है बाहर की ओर क्रिया करना\ntiri: खींचना\neltiri: बाहर खींचना\n\nउपसर्ग जिसका अर्थ है क्रिया को पूर्णतः समाप्त करना\ntrinki: पीना\neltrinki: पूरा पी जाना\nlerni: सीखना\nellerni: पूरी तरह सीख लेना, निपुण होना\nuzi: उपयोग करना\neluzi: पूरा उपयोग कर डालना, घिस देना</string>
+    <string name="inflection_eo_dis">उपसर्ग जिसका अर्थ है “अलग होना, बिखरना, फैलना”\nŝvebi: तैरना\ndisŝvebi: अलग-अलग फैलना\nfali: गिरना\ndisfali: बिखर जाना\ndoni: देना\ndisdoni: बाँटना, वितरित करना\nsendo: भेजी गई वस्तु\ndissendo: प्रसारण</string>
+    <string name="inflection_eo_for">उपसर्ग जिसका अर्थ है “दूर चले जाना”\nflugi: उड़ना\nforflugi: उड़ जाना\n\nउपसर्ग जिसका अर्थ है “लुप्त होना/समाप्त होना”\nuzi: उपयोग करना\nforuzi: पूरी तरह खर्च कर डालना</string>
+    <string name="inflection_eo_mis">उपसर्ग जिसका अर्थ है “गलत, त्रुटिपूर्ण”\nkompreni: समझना\nmiskompreni: गलत समझना\nparoli: बोलना\nmisparoli: गलत बोलना</string>
+</resources>

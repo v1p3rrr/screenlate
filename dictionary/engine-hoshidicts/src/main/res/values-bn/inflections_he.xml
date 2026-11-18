@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_he_v_label">এবং</string>
+    <string name="inflection_he_v">এবং (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">যে</string>
+    <string name="inflection_he_sh">যে, যা, যিনি (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">যখন</string>
+    <string name="inflection_he_ksh">যখন, যেহেতু (כשהגעתי)</string>
+    <string name="inflection_he_b_label">ভেতরে</string>
+    <string name="inflection_he_b">ভেতরে, -এ, সাথে (בבית)</string>
+    <string name="inflection_he_k_label">মতো</string>
+    <string name="inflection_he_k">মতো, হিসেবে (כילד)</string>
+    <string name="inflection_he_l_label">প্রতি</string>
+    <string name="inflection_he_l">প্রতি, জন্য (לבית)</string>
+    <string name="inflection_he_m_label">থেকে</string>
+    <string name="inflection_he_m">থেকে, চেয়ে (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">নির্দিষ্ট</string>
+    <string name="inflection_he_h">নির্দিষ্ট পদাশ্রিত নির্দেশক (הבית)</string>
+</resources>

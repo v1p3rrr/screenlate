@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">การนำเข้าพจนานุกรม</string>
+    <string name="dictionary_import_notification">กำลังนำเข้าพจนานุกรม</string>
+    <string name="dictionary_import_cancel">ยกเลิก</string>
+</resources>

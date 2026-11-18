@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">jamak</string>
+    <string name="inflection_en_plural">Bentuk jamak nomina</string>
+    <string name="inflection_en_possessive_label">posesif</string>
+    <string name="inflection_en_possessive">Bentuk posesif nomina</string>
+    <string name="inflection_en_past_label">lampau</string>
+    <string name="inflection_en_past">Kala lampau sederhana verba</string>
+    <string name="inflection_en_ing_label">ing</string>
+    <string name="inflection_en_ing">Partisip kini verba</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">org. ke-3 tgl. kini</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Kala kini orang ketiga tunggal verba</string>
+    <string name="inflection_en_interposed_object_label">objek sisipan</string>
+    <string name="inflection_en_interposed_object">Verba frasal dengan objek di tengah</string>
+    <string name="inflection_en_archaic_label">arkais</string>
+    <string name="inflection_en_archaic">Bentuk arkais dari kata</string>
+    <string name="inflection_en_adverb_label">adverbia</string>
+    <string name="inflection_en_adverb">Bentuk adverbia dari adjektiva</string>
+    <string name="inflection_en_comparative_label">komparatif</string>
+    <string name="inflection_en_comparative">Bentuk komparatif adjektiva</string>
+    <string name="inflection_en_superlative_label">superlatif</string>
+    <string name="inflection_en_superlative">Bentuk superlatif adjektiva</string>
+    <string name="inflection_en_dropped_g_label">g luluh</string>
+    <string name="inflection_en_dropped_g">Huruf g yang luluh pada bentuk -ing verba</string>
+    <string name="inflection_en_y">Adjektiva yang dibentuk dari verba atau nomina</string>
+    <string name="inflection_en_un">Bentuk negatif adjektiva, adverbia, atau verba</string>
+    <string name="inflection_en_going_to_future_label">mendatang going-to</string>
+    <string name="inflection_en_going_to_future">Kala mendatang going-to verba</string>
+    <string name="inflection_en_will_future_label">mendatang will</string>
+    <string name="inflection_en_will_future">Kala mendatang will verba</string>
+    <string name="inflection_en_imperative_negative_label">imperatif negatif</string>
+    <string name="inflection_en_imperative_negative">Bentuk imperatif negatif verba</string>
+    <string name="inflection_en_able">Adjektiva yang dibentuk dari verba</string>
+</resources>

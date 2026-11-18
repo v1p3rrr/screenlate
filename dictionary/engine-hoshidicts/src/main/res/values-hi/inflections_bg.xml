@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">निश्चित</string>
+    <string name="inflection_bg_definite">निश्चित उपपद: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">बहुवचन</string>
+    <string name="inflection_bg_plural">बहुवचन: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">स्त्रीलिंग</string>
+    <string name="inflection_bg_feminine">विशेषण का स्त्रीलिंग रूप: -а (нова, умен से умна, добър से добра, българска)</string>
+    <string name="inflection_bg_neuter_label">नपुंसकलिंग</string>
+    <string name="inflection_bg_neuter">विशेषण का नपुंसकलिंग रूप: -о (ново, умен से умно, добър से добро, българско, синьо)</string>
+    <string name="inflection_bg_present_label">वर्तमान काल</string>
+    <string name="inflection_bg_present">वर्तमान काल (гарантирам से гарантира, гарантират; чета से четеш, четат; говоря से говори)</string>
+    <string name="inflection_bg_past_label">भूतकाल</string>
+    <string name="inflection_bg_past">सामान्य भूतकाल या अपूर्ण भूतकाल (чакам से чаках, чакаше; чета से четох, четеше; говоря से говорих)</string>
+    <string name="inflection_bg_past_participle_label">भूतकालिक कृदंत</string>
+    <string name="inflection_bg_past_participle">भूतकालिक कर्तृवाचक कृदंत -л (гарантирал, измина से изминала, говоря से говорили)</string>
+    <string name="inflection_bg_passive_participle_label">कर्मवाच्य कृदंत</string>
+    <string name="inflection_bg_passive_participle">भूतकालिक कर्मवाच्य कृदंत -н (гарантирам से гарантиран, гарантирана; говоря से говорено)</string>
+    <string name="inflection_bg_imperative_label">आज्ञार्थक</string>
+    <string name="inflection_bg_imperative">आज्ञार्थक -ай -айте (чакам से чакай, чакайте; стрелям से стреляй)</string>
+</resources>

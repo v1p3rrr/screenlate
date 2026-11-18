@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">नकारात्मक</string>
+    <string name="inflection_sw_negative">नकारात्मक: कर्ता से पहले ha- (hatukusoma, hakusoma), मैं के लिए si- और तुम के लिए hu- (sikusoma, hukusoma), संबंधवाचक से पहले कर्ता के बाद si- (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">मैं</string>
+    <string name="inflection_sw_i">कर्ता ni-: मैं (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">तुम</string>
+    <string name="inflection_sw_you">कर्ता u-: तुम, या वर्ग 3, 11 और 14 की संज्ञा (unasoma; mti umeanguka, पेड़ गिर गया है)</string>
+    <string name="inflection_sw_he_she_label">वह</string>
+    <string name="inflection_sw_he_she">कर्ता a-: वह (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">हम</string>
+    <string name="inflection_sw_we">कर्ता tu-: हम (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">तुम सब</string>
+    <string name="inflection_sw_you_pl">कर्ता m-: तुम, एक से अधिक (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">वे</string>
+    <string name="inflection_sw_they">कर्ता wa-: वे (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">संज्ञा वर्ग</string>
+    <string name="inflection_sw_class">संज्ञा वर्ग का कर्ता: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (स्थान: kulikuwa, वहाँ था)</string>
+    <string name="inflection_sw_past_label">भूतकाल</string>
+    <string name="inflection_sw_past">भूतकाल: li-, और निषेध के बाद ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">वर्तमान काल</string>
+    <string name="inflection_sw_present">वर्तमान काल: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">भविष्य काल</string>
+    <string name="inflection_sw_future">भविष्य काल: ta-, और संबंधवाचक से पहले taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">पूर्ण काल</string>
+    <string name="inflection_sw_perfect">पूर्ण काल: me- (amesoma, पढ़ चुका है)</string>
+    <string name="inflection_sw_not_yet_label">अभी तक नहीं</string>
+    <string name="inflection_sw_not_yet">अभी तक नहीं: निषेध के बाद ja- (hajasoma, अभी तक नहीं पढ़ा है)</string>
+    <string name="inflection_sw_conditional_label">हेतुहेतुमद्</string>
+    <string name="inflection_sw_conditional">सशर्त: nge- और ngali- (angesoma, पढ़ता; angalisoma, पढ़ा होता)</string>
+    <string name="inflection_sw_when_label">जब</string>
+    <string name="inflection_sw_when">ki-: जब, जबकि या यदि (akisoma)</string>
+    <string name="inflection_sw_and_then_label">और फिर</string>
+    <string name="inflection_sw_and_then">ka-: और फिर, कथा वर्णन में (akasoma)</string>
+    <string name="inflection_sw_habitual_label">अभ्यासवाचक</string>
+    <string name="inflection_sw_habitual">अभ्यासवाचक: hu- (husoma, नियमित रूप से पढ़ता है)</string>
+    <string name="inflection_sw_relative_label">संबंधवाचक</string>
+    <string name="inflection_sw_relative">संबंधवाचक: जो, जिसे, जहाँ (aliyesoma, जिसने पढ़ा; kinachoitwa, जिसे कहा जाता है; waishio, जो रहते हैं)</string>
+    <string name="inflection_sw_object_label">कर्म</string>
+    <string name="inflection_sw_object">कर्म: ni- मुझे, ku- तुम्हें, m- या mw- उसे, tu- हमें, wa- उन्हें, और संज्ञा वर्ग उपसर्ग ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">निजवाचक</string>
+    <string name="inflection_sw_reflexive">निजवाचक ji-: स्वयं को (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">इन्फ़िनिटिव</string>
+    <string name="inflection_sw_infinitive">इन्फ़िनिटिव: ku- या kw- (kusoma, kwandika, kumpa)</string>
+</resources>

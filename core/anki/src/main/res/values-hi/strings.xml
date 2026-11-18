@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">टेक्स्ट-टू-स्पीच</string>
+    <string name="audio_source_url">कस्टम URL</string>
+    <string name="audio_source_json">कस्टम URL (JSON)</string>
+    <string name="anki_problem_not_installed">AnkiDroid इंस्टॉल नहीं है।</string>
+    <string name="anki_problem_no_permission">AnkiDroid तक पहुँच नहीं है।</string>
+    <string name="anki_problem_model_missing">AnkiDroid में नोट प्रकार नहीं मिला।</string>
+    <string name="anki_problem_deck_missing">AnkiDroid में डेक नहीं मिला।</string>
+    <string name="anki_problem_fields_changed">नोट प्रकार के फ़ील्ड बदल गए हैं।</string>
+</resources>

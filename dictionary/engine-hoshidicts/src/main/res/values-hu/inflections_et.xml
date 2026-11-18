@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_et_negative_label">tagadó</string>
+    <string name="inflection_et_negative">az olema tagadó alakja: pole, polnud, poleks, poldud, polevat (pole ← olema)</string>
+</resources>

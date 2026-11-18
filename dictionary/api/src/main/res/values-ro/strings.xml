@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">Import dicționare</string>
+    <string name="dictionary_import_notification">Importare dicționare</string>
+    <string name="dictionary_import_cancel">Anulează</string>
+</resources>

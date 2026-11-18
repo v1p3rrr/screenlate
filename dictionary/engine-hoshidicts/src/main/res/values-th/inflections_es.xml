@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">พหูพจน์</string>
+    <string name="inflection_es_plural">รูปพหูพจน์ของคำนาม</string>
+    <string name="inflection_es_feminine_adjective_label">คุณศัพท์เพศหญิง</string>
+    <string name="inflection_es_feminine_adjective">รูปเพศหญิงของคำคุณศัพท์</string>
+    <string name="inflection_es_present_indicative_label">ปัจจุบันกาลบอกเล่า</string>
+    <string name="inflection_es_present_indicative">รูปปัจจุบันกาลบอกเล่าของคำกริยา</string>
+    <string name="inflection_es_preterite_label">อดีตสมบูรณ์อย่างง่าย</string>
+    <string name="inflection_es_preterite">รูปอดีตสมบูรณ์อย่างง่ายของคำกริยา</string>
+    <string name="inflection_es_imperfect_label">อดีตไม่สมบูรณ์</string>
+    <string name="inflection_es_imperfect">รูปอดีตไม่สมบูรณ์ของคำกริยา</string>
+    <string name="inflection_es_progressive_label">กำลังกระทำ</string>
+    <string name="inflection_es_progressive">รูปกำลังกระทำของคำกริยา</string>
+    <string name="inflection_es_imperative_label">คำสั่ง</string>
+    <string name="inflection_es_imperative">รูปคำสั่งของคำกริยา</string>
+    <string name="inflection_es_conditional_label">เงื่อนไข</string>
+    <string name="inflection_es_conditional">รูปเงื่อนไขของคำกริยา</string>
+    <string name="inflection_es_future_label">อนาคตกาล</string>
+    <string name="inflection_es_future">รูปอนาคตกาลของคำกริยา</string>
+    <string name="inflection_es_present_subjunctive_label">ปัจจุบันกาลมาลาสมมุติ</string>
+    <string name="inflection_es_present_subjunctive">รูปปัจจุบันกาลมาลาสมมุติของคำกริยา</string>
+    <string name="inflection_es_imperfect_subjunctive_label">อดีตไม่สมบูรณ์มาลาสมมุติ</string>
+    <string name="inflection_es_imperfect_subjunctive">รูปอดีตไม่สมบูรณ์มาลาสมมุติของคำกริยา</string>
+    <string name="inflection_es_participle_label">กริยาคุณศัพท์</string>
+    <string name="inflection_es_participle">รูปกริยาคุณศัพท์ของคำกริยา</string>
+    <string name="inflection_es_reflexive_label">สะท้อนกลับ</string>
+    <string name="inflection_es_reflexive">รูปสะท้อนกลับของคำกริยา</string>
+    <string name="inflection_es_pronoun_substitution_label">แทนที่สรรพนาม</string>
+    <string name="inflection_es_pronoun_substitution">สรรพนามที่แทนที่ในกริยาสะท้อนกลับ</string>
+    <string name="inflection_es_pronominal_label">กริยาพร้อมสรรพนาม</string>
+    <string name="inflection_es_pronominal">รูปกริยาพร้อมสรรพนามของคำกริยา</string>
+</resources>

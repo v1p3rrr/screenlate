@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">নেতিবাচক</string>
+    <string name="inflection_sw_negative">নেতিবাচক: কর্তার পূর্বে ha- (hatukusoma, hakusoma), আমি-র জন্য si- ও তুমি-র জন্য hu- (sikusoma, hukusoma), সাপেক্ষের পূর্বে কর্তার পর si- (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">আমি</string>
+    <string name="inflection_sw_i">কর্তা ni-: আমি (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">তুমি</string>
+    <string name="inflection_sw_you">কর্তা u-: তুমি, অথবা ৩, ১১ ও ১৪ শ্রেণির বিশেষ্য (unasoma; mti umeanguka, গাছটি পড়ে গেছে)</string>
+    <string name="inflection_sw_he_she_label">সে</string>
+    <string name="inflection_sw_he_she">কর্তা a-: সে (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">আমরা</string>
+    <string name="inflection_sw_we">কর্তা tu-: আমরা (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">তোমরা</string>
+    <string name="inflection_sw_you_pl">কর্তা m-: তোমরা, একাধিক ব্যক্তি (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">তারা</string>
+    <string name="inflection_sw_they">কর্তা wa-: তারা (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">শ্রেণি</string>
+    <string name="inflection_sw_class">বিশেষ্য শ্রেণির কর্তা: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (স্থান: kulikuwa, সেখানে ছিল)</string>
+    <string name="inflection_sw_past_label">অতীত</string>
+    <string name="inflection_sw_past">অতীত: li-, এবং নঞর্থকের পর ku- (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">বর্তমান</string>
+    <string name="inflection_sw_present">বর্তমান: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">ভবিষ্যৎ</string>
+    <string name="inflection_sw_future">ভবিষ্যৎ: ta-, এবং সাপেক্ষের পূর্বে taka- (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">পুরাঘটিত</string>
+    <string name="inflection_sw_perfect">পুরাঘটিত: me- (amesoma, পড়েছে)</string>
+    <string name="inflection_sw_not_yet_label">এখনো নয়</string>
+    <string name="inflection_sw_not_yet">এখনো নয়: নঞর্থকের পর ja- (hajasoma, এখনো পড়েনি)</string>
+    <string name="inflection_sw_conditional_label">সাপেক্ষ</string>
+    <string name="inflection_sw_conditional">সাপেক্ষ: nge- ও ngali- (angesoma, পড়ত; angalisoma, পড়ে থাকত)</string>
+    <string name="inflection_sw_when_label">যখন</string>
+    <string name="inflection_sw_when">ki-: যখন, করার সময় বা যদি (akisoma)</string>
+    <string name="inflection_sw_and_then_label">এবং তারপর</string>
+    <string name="inflection_sw_and_then">ka-: এবং তারপর, গল্পের ধারাবাহিকতায় (akasoma)</string>
+    <string name="inflection_sw_habitual_label">নিত্যবৃত্ত</string>
+    <string name="inflection_sw_habitual">নিত্যবৃত্ত: hu- (husoma, নিয়মিত পড়ে)</string>
+    <string name="inflection_sw_relative_label">সাপেক্ষবাচক</string>
+    <string name="inflection_sw_relative">সাপেক্ষবাচক: যে, যা, যেখানে (aliyesoma, যে পড়েছে; kinachoitwa, যাকে বলা হয়; waishio, যারা বাস করে)</string>
+    <string name="inflection_sw_object_label">কর্ম</string>
+    <string name="inflection_sw_object">কর্ম: ni- আমাকে, ku- তোমাকে, m- বা mw- তাকে, tu- আমাদের, wa- তাদের, এবং বিশেষ্য শ্রেণির উপসর্গ ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">আত্মবাচক</string>
+    <string name="inflection_sw_reflexive">আত্মবাচক ji-: নিজেকে (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">ইনফিনিটিভ</string>
+    <string name="inflection_sw_infinitive">ইনফিনিটিভ: ku- বা kw- (kusoma, kwandika, kumpa)</string>
+</resources>

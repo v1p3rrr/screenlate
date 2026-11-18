@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">शब्दकोश आयात</string>
+    <string name="dictionary_import_notification">शब्दकोश आयात हो रहे हैं</string>
+    <string name="dictionary_import_cancel">रद्द करें</string>
+</resources>

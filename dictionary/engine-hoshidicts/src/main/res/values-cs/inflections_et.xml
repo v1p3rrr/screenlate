@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_et_negative_label">zápor</string>
+    <string name="inflection_et_negative">zápor slovesa olema: pole, polnud, poleks, poldud, polevat (pole od olema)</string>
+</resources>

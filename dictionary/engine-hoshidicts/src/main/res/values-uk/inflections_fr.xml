@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">теперішній дійсного</string>
+    <string name="inflection_fr_present_indicative">Теперішній час дійсного способу дієслова</string>
+    <string name="inflection_fr_imperfect_indicative_label">імперфект дійсного</string>
+    <string name="inflection_fr_imperfect_indicative">Імперфект дійсного способу дієслова</string>
+    <string name="inflection_fr_future_label">майбутній час</string>
+    <string name="inflection_fr_future">Майбутній час дієслова</string>
+    <string name="inflection_fr_imperative_present_label">наказовий теперішній</string>
+    <string name="inflection_fr_imperative_present">Наказовий спосіб дієслова</string>
+    <string name="inflection_fr_conditional_label">умовний спосіб</string>
+    <string name="inflection_fr_conditional">Умовний спосіб дієслова</string>
+    <string name="inflection_fr_preterite_label">простий минулий</string>
+    <string name="inflection_fr_preterite">Простий минулий час (passé simple) дієслова</string>
+    <string name="inflection_fr_plural_label">множина</string>
+    <string name="inflection_fr_plural">Форма множини іменника</string>
+    <string name="inflection_fr_present_participle_label">дієприкметник теп. часу</string>
+    <string name="inflection_fr_present_participle">Дієприкметник теперішнього часу</string>
+    <string name="inflection_fr_present_subjunctive_label">теперішній кон’юнктива</string>
+    <string name="inflection_fr_present_subjunctive">Теперішній час кон’юнктива дієслова</string>
+</resources>

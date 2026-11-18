@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">lágy mutáció</string>
+    <string name="inflection_cy_soft_mutation">lágy mutáció: b d g f dd l r a p t c b/m d ll rh helyett, g kiesik (ei gath ← cath, dy wely ← gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">nazális mutáció</string>
+    <string name="inflection_cy_nasal_mutation">nazális mutáció: mh nh ngh m n ng a p t c b d g helyett (fy nghath ← cath, yng Nghymru ← Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">hehezetes mutáció</string>
+    <string name="inflection_cy_aspirate_mutation">hehezetes mutáció: ph th ch a p t c helyett (ei chath ← cath)</string>
+    <string name="inflection_cy_h_prothesis_label">h-protézis</string>
+    <string name="inflection_cy_h_prothesis">h magánhangzó előtt (ei hysgol ← ysgol)</string>
+</resources>

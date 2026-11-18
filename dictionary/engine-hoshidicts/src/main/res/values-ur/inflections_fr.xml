@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">حال اخباری</string>
+    <string name="inflection_fr_present_indicative">فعل کی حال اخباری صورت</string>
+    <string name="inflection_fr_imperfect_indicative_label">ماضی ناتمام اخباری</string>
+    <string name="inflection_fr_imperfect_indicative">فعل کی ماضی ناتمام اخباری صورت</string>
+    <string name="inflection_fr_future_label">مستقبل</string>
+    <string name="inflection_fr_future">فعل کی مستقبل صورت</string>
+    <string name="inflection_fr_imperative_present_label">امرِ حال</string>
+    <string name="inflection_fr_imperative_present">فعل کی امری صورت</string>
+    <string name="inflection_fr_conditional_label">شرطیہ</string>
+    <string name="inflection_fr_conditional">فعل کی شرطیہ صورت</string>
+    <string name="inflection_fr_preterite_label">ماضی مطلق</string>
+    <string name="inflection_fr_preterite">فعل کی ماضی مطلق (سادہ ماضی) صورت</string>
+    <string name="inflection_fr_plural_label">جمع</string>
+    <string name="inflection_fr_plural">اسم کی جمع صورت</string>
+    <string name="inflection_fr_present_participle_label">حالیہ فعلی صفت</string>
+    <string name="inflection_fr_present_participle">فعل کی حالیہ فعلی صفت</string>
+    <string name="inflection_fr_present_subjunctive_label">حال التزامی</string>
+    <string name="inflection_fr_present_subjunctive">فعل کی حال التزامی صورت</string>
+</resources>

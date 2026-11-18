@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">plural</string>
+    <string name="inflection_la_plural">Declinare la plural</string>
+    <string name="inflection_la_feminine_label">feminin</string>
+    <string name="inflection_la_feminine">Formă adjectivală</string>
+    <string name="inflection_la_neuter_label">neutru</string>
+    <string name="inflection_la_neuter">Formă adjectivală</string>
+    <string name="inflection_la_ablative_label">ablativ</string>
+    <string name="inflection_la_ablative">Cazul ablativ</string>
+    <string name="inflection_la_que">Enclitic „și” (magisque din magis)</string>
+    <string name="inflection_la_ne">Enclitic interogativ (videsne din vides)</string>
+    <string name="inflection_la_ve">Enclitic „sau” (mortuusve din mortuus)</string>
+</resources>

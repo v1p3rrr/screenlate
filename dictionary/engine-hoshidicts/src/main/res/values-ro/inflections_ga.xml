@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">leniție</string>
+    <string name="inflection_ga_lenition">leniție: bh ch dh fh gh mh ph sh th pentru b c d f g m p s t, ts pentru s după articol (an bhean din bean, an tsráid din sráid)</string>
+    <string name="inflection_ga_eclipsis_label">eclipsă</string>
+    <string name="inflection_ga_eclipsis">eclipsă: mb gc nd bhf ng bp dt pentru b c d f g p t, n- înainte de vocală (i nGaillimh din Gaillimh, ár n-athair din athair)</string>
+    <string name="inflection_ga_t_prothesis_label">proteză cu t</string>
+    <string name="inflection_ga_t_prothesis">t înainte de vocală (an t-uisce din uisce, an tAontas din Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">proteză cu h</string>
+    <string name="inflection_ga_h_prothesis">h înainte de vocală (na hÉireann din Éireann, a hathair din athair)</string>
+</resources>

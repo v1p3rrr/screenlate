@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">lenisi</string>
+    <string name="inflection_gd_lenition">lenisi: bh ch dh fh gh mh ph sh th untuk b c d f g m p s t, t-s untuk s setelah artikel (a\' ghrian dari grian, an t-sràid dari sràid)</string>
+    <string name="inflection_gd_eclipsis_label">eklipsis</string>
+    <string name="inflection_gd_eclipsis">n- sebelum vokal (ar n-eilean dari eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">protesis t</string>
+    <string name="inflection_gd_t_prothesis">t- sebelum vokal (an t-uisge dari uisge, an t-Eilean dari Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">protesis h</string>
+    <string name="inflection_gd_h_prothesis">h- sebelum vokal (na h-Alba dari Alba, na h-òrain dari òrain)</string>
+</resources>

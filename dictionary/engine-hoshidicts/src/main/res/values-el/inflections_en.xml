@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_en_plural_label">πληθυντικός</string>
+    <string name="inflection_en_plural">Πληθυντικός αριθμός ουσιαστικού</string>
+    <string name="inflection_en_possessive_label">κτητικός</string>
+    <string name="inflection_en_possessive">Κτητικός τύπος ουσιαστικού</string>
+    <string name="inflection_en_past_label">παρελθοντικός</string>
+    <string name="inflection_en_past">Απλός παρελθοντικός χρόνος (αόριστος) ρήματος</string>
+    <string name="inflection_en_ing_label">σε -ing</string>
+    <string name="inflection_en_ing">Ενεργητική μετοχή ενεστώτα ρήματος</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">γ’ εν. ενεστώτα</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Τρίτο πρόσωπο ενικού ενεστώτα ρήματος</string>
+    <string name="inflection_en_interposed_object_label">παρεμβαλλόμενο αντικείμενο</string>
+    <string name="inflection_en_interposed_object">Περιφραστικό ρήμα (phrasal verb) με παρεμβαλλόμενο αντικείμενο</string>
+    <string name="inflection_en_archaic_label">αρχαϊκός</string>
+    <string name="inflection_en_archaic">Αρχαϊκός τύπος λέξης</string>
+    <string name="inflection_en_adverb_label">επίρρημα</string>
+    <string name="inflection_en_adverb">Επιρρηματικός τύπος επιθέτου</string>
+    <string name="inflection_en_comparative_label">συγκριτικός</string>
+    <string name="inflection_en_comparative">Συγκριτικός βαθμός επιθέτου</string>
+    <string name="inflection_en_superlative_label">υπερθετικός</string>
+    <string name="inflection_en_superlative">Υπερθετικός βαθμός επιθέτου</string>
+    <string name="inflection_en_dropped_g_label">παράλειψη g</string>
+    <string name="inflection_en_dropped_g">Παράλειψη του g στον τύπο σε -ing ενός ρήματος</string>
+    <string name="inflection_en_y">Επίθετο που σχηματίζεται από ρήμα ή ουσιαστικό</string>
+    <string name="inflection_en_un">Αρνητικός τύπος επιθέτου, επιρρήματος ή ρήματος</string>
+    <string name="inflection_en_going_to_future_label">μέλλοντας με going to</string>
+    <string name="inflection_en_going_to_future">Μέλλοντας ρήματος με going to</string>
+    <string name="inflection_en_will_future_label">μέλλοντας με will</string>
+    <string name="inflection_en_will_future">Μέλλοντας ρήματος με will</string>
+    <string name="inflection_en_imperative_negative_label">αρνητική προστακτική</string>
+    <string name="inflection_en_imperative_negative">Αρνητική προστακτική ρήματος</string>
+    <string name="inflection_en_able">Επίθετο που σχηματίζεται από ρήμα</string>
+</resources>

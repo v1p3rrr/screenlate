@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">প্রস্তুত</string>
+    <string name="installation_running">ভাষা ইনস্টলেশন চলছে। উপাদানগুলো প্রস্তুত হলেই স্ক্যান ও শব্দ অনুসন্ধান চালু হবে।</string>
+    <string name="installation_missing">প্রয়োজনীয় অভিধান বা শনাক্তকরণ মডেল অনুপস্থিত বা নিষ্ক্রিয়। সেটআপ সম্পূর্ণ করতে ইনস্টলেশনের অবস্থা খুলুন।</string>
+    <string name="installation_failed">ভাষা ইনস্টলেশন ব্যর্থ হয়েছে। বিস্তারিত দেখতে বা পুনরায় চেষ্টা করতে ইনস্টলেশনের অবস্থা খুলুন।</string>
+    <string name="installation_open">ইনস্টলেশনের অবস্থা</string>
+    <string name="installation_device_ready">ডিভাইসে শনাক্তকরণ: প্রস্তুত</string>
+    <string name="installation_device_missing">ডিভাইসে শনাক্তকরণ: অনুপলব্ধ (সক্রিয় থাকলে ক্লাউড শনাক্তকরণ ব্যবহার করা যাবে)</string>
+    <string name="installation_remaining">বাকি ইনস্টলেশন: %1$d</string>
+    <string name="installation_errors">ব্যর্থ ইনস্টলেশন: %1$d</string>
+    <string name="installation_device_missing_offline">ডিভাইসে শনাক্তকরণ: অনুপলব্ধ; বাধ্যতামূলক অফলাইন মোডে ক্লাউড শনাক্তকরণ বন্ধ থাকে।</string>
+</resources>

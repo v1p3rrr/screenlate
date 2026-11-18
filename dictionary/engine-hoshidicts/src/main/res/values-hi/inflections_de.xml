@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_de_nominalization_label">संज्ञाकरण</string>
+    <string name="inflection_de_nominalization">क्रिया से बनी संज्ञा</string>
+    <string name="inflection_de_bar">क्रिया से बना -able अर्थ वाला विशेषण</string>
+    <string name="inflection_de_negative_label">नकारात्मक</string>
+    <string name="inflection_de_negative">निषेध</string>
+    <string name="inflection_de_past_participle_label">भूतकालिक कृदंत</string>
+    <string name="inflection_de_separated_prefix_label">पृथक उपसर्ग</string>
+    <string name="inflection_de_zu_infinitive_label">zu-इन्फ़िनिटिव</string>
+    <string name="inflection_de_heit">1. विशेषण को संज्ञा में बदलता है और प्रायः मूल विशेषण का अमूर्त गुण दर्शाता है (अंग्रेज़ी -ness, -th, -ty, -dom के समतुल्य):\n	 schön (“सुंदर”) + -heit → Schönheit (“सुंदरता”)\n	 neu (“नया”) + -heit → Neuheit (“नवीनता”)\n2. मूर्त संज्ञाओं को भाववाचक संज्ञाओं में बदलता है:\n	 Kind (“बच्चा”) + -heit → Kindheit (“बचपन”)\n	 Christ (“ईसाई”) + -heit → Christenheit (“ईसाई जगत”)\n</string>
+</resources>

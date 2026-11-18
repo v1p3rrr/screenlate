@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">určitý</string>
+    <string name="inflection_ro_ul">určitý člen (procesul od proces, consiliul od consiliu)</string>
+    <string name="inflection_ro_le_label">určitý</string>
+    <string name="inflection_ro_le">určitý člen (fratele od frate, textele od texte)</string>
+    <string name="inflection_ro_a_label">určitý</string>
+    <string name="inflection_ro_a">určitý člen ženských podstatných jmen (dezvoltarea od dezvoltare, comisia od comisie)</string>
+    <string name="inflection_ro_i_label">určitý mn. č.</string>
+    <string name="inflection_ro_i">určitý člen mužského množného čísla (pomii od pomi)</string>
+    <string name="inflection_ro_ului_label">určitý genitiv</string>
+    <string name="inflection_ro_ului">genitiv a dativ s určitým členem (procesului od proces, fratelui od frate)</string>
+    <string name="inflection_ro_ei_label">určitý genitiv</string>
+    <string name="inflection_ro_ei">genitiv a dativ ženských podstatných jmen s určitým členem (Moldovei od Moldova, comisiei od comisie)</string>
+    <string name="inflection_ro_ii_label">určitý genitiv</string>
+    <string name="inflection_ro_ii">genitiv a dativ ženských podstatných jmen na -e s určitým členem (lumii od lume, dezvoltării od dezvoltare)</string>
+    <string name="inflection_ro_lor_label">určitý genitiv mn. č.</string>
+    <string name="inflection_ro_lor">genitiv a dativ množného čísla s určitým členem (caselor od case)</string>
+    <string name="inflection_ro_agreement_label">ženský rod nebo mn. č.</string>
+    <string name="inflection_ro_agreement">ženský rod nebo množné číslo příčestí či přídavného jména (aflată, aflate, aflați od aflat; pusă od pus)</string>
+</resources>

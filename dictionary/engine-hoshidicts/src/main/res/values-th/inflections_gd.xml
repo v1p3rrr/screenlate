@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">การลดเสียงหนัก</string>
+    <string name="inflection_gd_lenition">การลดเสียงหนัก (lenition): bh ch dh fh gh mh ph sh th แทน b c d f g m p s t, t-s แทน s หลังคำนำหน้านาม (a\' ghrian จาก grian, an t-sràid จาก sràid)</string>
+    <string name="inflection_gd_eclipsis_label">การบังเสียง</string>
+    <string name="inflection_gd_eclipsis">เติม n- หน้าสระ (ar n-eilean จาก eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">การเติม t หน้าคำ</string>
+    <string name="inflection_gd_t_prothesis">เติม t- หน้าสระ (an t-uisge จาก uisge, an t-Eilean จาก Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">การเติม h หน้าคำ</string>
+    <string name="inflection_gd_h_prothesis">เติม h- หน้าสระ (na h-Alba จาก Alba, na h-òrain จาก òrain)</string>
+</resources>

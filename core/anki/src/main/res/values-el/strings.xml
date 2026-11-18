@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">Μετατροπή κειμένου σε ομιλία</string>
+    <string name="audio_source_url">Προσαρμοσμένο URL</string>
+    <string name="audio_source_json">Προσαρμοσμένο URL (JSON)</string>
+    <string name="anki_problem_not_installed">Το AnkiDroid δεν είναι εγκατεστημένο.</string>
+    <string name="anki_problem_no_permission">Χωρίς πρόσβαση στο AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Ο τύπος σημείωσης δεν βρέθηκε στο AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Η τράπουλα δεν βρέθηκε στο AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Τα πεδία του τύπου σημείωσης άλλαξαν.</string>
+</resources>

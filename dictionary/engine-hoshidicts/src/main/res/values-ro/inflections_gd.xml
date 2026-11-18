@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">leniție</string>
+    <string name="inflection_gd_lenition">leniție: bh ch dh fh gh mh ph sh th pentru b c d f g m p s t, t-s pentru s după articol (a\' ghrian din grian, an t-sràid din sràid)</string>
+    <string name="inflection_gd_eclipsis_label">eclipsă</string>
+    <string name="inflection_gd_eclipsis">n- înainte de vocală (ar n-eilean din eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">proteză cu t</string>
+    <string name="inflection_gd_t_prothesis">t- înainte de vocală (an t-uisge din uisge, an t-Eilean din Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">proteză cu h</string>
+    <string name="inflection_gd_h_prothesis">h- înainte de vocală (na h-Alba din Alba, na h-òrain din òrain)</string>
+</resources>

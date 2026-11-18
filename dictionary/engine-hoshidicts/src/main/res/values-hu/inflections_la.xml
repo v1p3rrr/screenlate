@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">többes szám</string>
+    <string name="inflection_la_plural">Többes számú ragozás</string>
+    <string name="inflection_la_feminine_label">nőnem</string>
+    <string name="inflection_la_feminine">Melléknévi alak</string>
+    <string name="inflection_la_neuter_label">semlegesnem</string>
+    <string name="inflection_la_neuter">Melléknévi alak</string>
+    <string name="inflection_la_ablative_label">ablativus</string>
+    <string name="inflection_la_ablative">Ablativus eset</string>
+    <string name="inflection_la_que">„És” jelentésű enklitikum (magisque ← magis)</string>
+    <string name="inflection_la_ne">Kérdő enklitikum (videsne ← vides)</string>
+    <string name="inflection_la_ve">„Vagy” jelentésű enklitikum (mortuusve ← mortuus)</string>
+</resources>

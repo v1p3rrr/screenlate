@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">αποδυνάμωση</string>
+    <string name="inflection_ga_lenition">αποδυνάμωση: bh ch dh fh gh mh ph sh th αντί για b c d f g m p s t, ts αντί για s μετά το άρθρο (an bhean από bean, an tsráid από sráid)</string>
+    <string name="inflection_ga_eclipsis_label">έκλειψη</string>
+    <string name="inflection_ga_eclipsis">έκλειψη: mb gc nd bhf ng bp dt αντί για b c d f g p t, n- πριν από φωνήεν (i nGaillimh από Gaillimh, ár n-athair από athair)</string>
+    <string name="inflection_ga_t_prothesis_label">πρόταξη t</string>
+    <string name="inflection_ga_t_prothesis">t πριν από φωνήεν (an t-uisce από uisce, an tAontas από Aontas)</string>
+    <string name="inflection_ga_h_prothesis_label">πρόταξη h</string>
+    <string name="inflection_ga_h_prothesis">h πριν από φωνήεν (na hÉireann από Éireann, a hathair από athair)</string>
+</resources>

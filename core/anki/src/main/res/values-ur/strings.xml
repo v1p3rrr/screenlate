@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">متن سے آواز (TTS)</string>
+    <string name="audio_source_url">حسبِ منشا URL</string>
+    <string name="audio_source_json">حسبِ منشا URL (JSON)</string>
+    <string name="anki_problem_not_installed">AnkiDroid انسٹال نہیں ہے۔</string>
+    <string name="anki_problem_no_permission">AnkiDroid تک رسائی نہیں ہے۔</string>
+    <string name="anki_problem_model_missing">نوٹ کی قسم AnkiDroid میں نہیں ملی۔</string>
+    <string name="anki_problem_deck_missing">ڈیک AnkiDroid میں نہیں ملا۔</string>
+    <string name="anki_problem_fields_changed">نوٹ کی قسم کی فیلڈز بدل گئی ہیں۔</string>
+</resources>

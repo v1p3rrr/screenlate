@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">कारक रूप</string>
+    <string name="inflection_ka_nounadjsuffixstripping">जॉर्जियाई संज्ञा और विशेषण के कारक प्रत्यय हटाएँ</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">कर्ता कारक</string>
+    <string name="inflection_ka_nounadjstemcompletion">व्यंजन-अंत संज्ञा/विशेषण मूल रूपों के लिए कर्ता कारक प्रत्यय -ი बहाल करें</string>
+    <string name="inflection_ka_vowelrestoration_label">लोपित स्वर</string>
+    <string name="inflection_ka_vowelrestoration">लागू होने पर लोपित स्वर बहाल करें</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">Pregătit</string>
+    <string name="installation_running">Instalarea limbii este în curs. Scanarea și consultarea vor fi disponibile când componentele sunt pregătite.</string>
+    <string name="installation_missing">Dicționarele sau modelele de recunoaștere necesare lipsesc ori sunt dezactivate. Deschideți starea instalării pentru a finaliza configurarea.</string>
+    <string name="installation_failed">Instalarea limbii a eșuat. Deschideți starea instalării pentru detalii sau reîncercare.</string>
+    <string name="installation_open">Stare instalare</string>
+    <string name="installation_device_ready">Recunoaștere pe dispozitiv: pregătită</string>
+    <string name="installation_device_missing">Recunoaștere pe dispozitiv: indisponibilă (recunoașterea în cloud este disponibilă dacă este activată)</string>
+    <string name="installation_remaining">Instalări rămase: %1$d</string>
+    <string name="installation_errors">Instalări eșuate: %1$d</string>
+    <string name="installation_device_missing_offline">Recunoaștere pe dispozitiv: indisponibilă; recunoașterea în cloud este dezactivată în modul offline forțat.</string>
+</resources>

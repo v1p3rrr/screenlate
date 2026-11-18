@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">lenice</string>
+    <string name="inflection_gd_lenition">lenice: bh ch dh fh gh mh ph sh th za b c d f g m p s t, t-s za s po členu (a\' ghrian od grian, an t-sràid od sràid)</string>
+    <string name="inflection_gd_eclipsis_label">eklipse</string>
+    <string name="inflection_gd_eclipsis">n- před samohláskou (ar n-eilean od eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">proteze t-</string>
+    <string name="inflection_gd_t_prothesis">t- před samohláskou (an t-uisge od uisge, an t-Eilean od Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">proteze h-</string>
+    <string name="inflection_gd_h_prothesis">h- před samohláskou (na h-Alba od Alba, na h-òrain od òrain)</string>
+</resources>

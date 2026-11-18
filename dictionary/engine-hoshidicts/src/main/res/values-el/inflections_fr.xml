@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">ενεστώτας οριστικής</string>
+    <string name="inflection_fr_present_indicative">Ενεστώτας οριστικής ρήματος</string>
+    <string name="inflection_fr_imperfect_indicative_label">παρατατικός οριστικής</string>
+    <string name="inflection_fr_imperfect_indicative">Παρατατικός οριστικής ρήματος</string>
+    <string name="inflection_fr_future_label">μέλλοντας</string>
+    <string name="inflection_fr_future">Μέλλοντας ρήματος</string>
+    <string name="inflection_fr_imperative_present_label">προστακτική ενεστώτα</string>
+    <string name="inflection_fr_imperative_present">Προστακτική ρήματος</string>
+    <string name="inflection_fr_conditional_label">υποθετικός</string>
+    <string name="inflection_fr_conditional">Υποθετικός τύπος ρήματος</string>
+    <string name="inflection_fr_preterite_label">απλός παρελθοντικός</string>
+    <string name="inflection_fr_preterite">Απλός παρελθοντικός (passé simple) ρήματος</string>
+    <string name="inflection_fr_plural_label">πληθυντικός</string>
+    <string name="inflection_fr_plural">Πληθυντικός αριθμός ουσιαστικού</string>
+    <string name="inflection_fr_present_participle_label">μετοχή ενεστώτα</string>
+    <string name="inflection_fr_present_participle">Μετοχή ενεστώτα ρήματος</string>
+    <string name="inflection_fr_present_subjunctive_label">ενεστώτας υποτακτικής</string>
+    <string name="inflection_fr_present_subjunctive">Ενεστώτας υποτακτικής ρήματος</string>
+</resources>

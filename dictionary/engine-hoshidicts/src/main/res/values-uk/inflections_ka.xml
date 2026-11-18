@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">відмінювання</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Відкидання відмінкових закінчень грузинських іменників і прикметників</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">називний відмінок</string>
+    <string name="inflection_ka_nounadjstemcompletion">Відновлення закінчення називного відмінка -ი для основ іменників і прикметників на приголосний</string>
+    <string name="inflection_ka_vowelrestoration_label">випадіння голосного</string>
+    <string name="inflection_ka_vowelrestoration">Відновлення голосних, що випали, за потреби</string>
+</resources>

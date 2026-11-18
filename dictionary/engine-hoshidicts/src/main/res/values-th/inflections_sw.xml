@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">ปฏิเสธ</string>
+    <string name="inflection_sw_negative">ปฏิเสธ: ha- หน้าประธาน (hatukusoma, hakusoma), si- สำหรับฉัน และ hu- สำหรับคุณ (sikusoma, hukusoma), si- หลังประธานก่อนรูปสัมพันธ์ (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">ฉัน</string>
+    <string name="inflection_sw_i">ประธาน ni-: ฉัน (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">คุณ</string>
+    <string name="inflection_sw_you">ประธาน u-: คุณ หรือคำนามหมวด 3, 11 และ 14 (unasoma; mti umeanguka, ต้นไม้ล้มลงแล้ว)</string>
+    <string name="inflection_sw_he_she_label">เขา/เธอ</string>
+    <string name="inflection_sw_he_she">ประธาน a-: เขาหรือเธอ (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">พวกเรา</string>
+    <string name="inflection_sw_we">ประธาน tu-: พวกเรา (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">พวกคุณ</string>
+    <string name="inflection_sw_you_pl">ประธาน m-: พวกคุณ (มากกว่าหนึ่งคน) (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">พวกเขา</string>
+    <string name="inflection_sw_they">ประธาน wa-: พวกเขา (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">หมวดนาม</string>
+    <string name="inflection_sw_class">ประธานของหมวดนาม: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (สถานที่: kulikuwa, เคยมี)</string>
+    <string name="inflection_sw_past_label">อดีตกาล</string>
+    <string name="inflection_sw_past">อดีตกาล: li-, และ ku- หลังรูปปฏิเสธ (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">ปัจจุบันกาล</string>
+    <string name="inflection_sw_present">ปัจจุบันกาล: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">อนาคตกาล</string>
+    <string name="inflection_sw_future">อนาคตกาล: ta-, และ taka- ก่อนรูปสัมพันธ์ (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">สมบูรณ์กาล</string>
+    <string name="inflection_sw_perfect">สมบูรณ์กาล: me- (amesoma, อ่านแล้ว)</string>
+    <string name="inflection_sw_not_yet_label">ยังไม่</string>
+    <string name="inflection_sw_not_yet">ยังไม่: ja- หลังรูปปฏิเสธ (hajasoma, ยังไม่ได้อ่าน)</string>
+    <string name="inflection_sw_conditional_label">เงื่อนไข</string>
+    <string name="inflection_sw_conditional">เงื่อนไข: nge- และ ngali- (angesoma, จะอ่าน; angalisoma, คงจะได้อ่านแล้ว)</string>
+    <string name="inflection_sw_when_label">เมื่อ</string>
+    <string name="inflection_sw_when">ki-: เมื่อ, ขณะที่ หรือ ถ้า (akisoma)</string>
+    <string name="inflection_sw_and_then_label">แล้วจึง</string>
+    <string name="inflection_sw_and_then">ka-: แล้วจึง ในการเล่าเรื่อง (akasoma)</string>
+    <string name="inflection_sw_habitual_label">เป็นนิสัย</string>
+    <string name="inflection_sw_habitual">เป็นนิสัย: hu- (husoma, อ่านเป็นประจำ)</string>
+    <string name="inflection_sw_relative_label">สัมพันธ์</string>
+    <string name="inflection_sw_relative">สัมพันธ์: ผู้ซึ่ง, ซึ่ง, ที่ซึ่ง (aliyesoma, ผู้ที่อ่าน; kinachoitwa, สิ่งที่เรียกว่า; waishio, ผู้ที่อาศัยอยู่)</string>
+    <string name="inflection_sw_object_label">กรรม</string>
+    <string name="inflection_sw_object">กรรม: ni- ฉัน, ku- คุณ, m- หรือ mw- เขา/เธอ, tu- พวกเรา, wa- พวกเขา และอุปสรรคหมวดนาม ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">สะท้อนกลับ</string>
+    <string name="inflection_sw_reflexive">สะท้อนกลับ ji-: ตนเอง (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">รูปกริยากลาง</string>
+    <string name="inflection_sw_infinitive">รูปกริยากลาง: ku- หรือ kw- (kusoma, kwandika, kumpa)</string>
+</resources>

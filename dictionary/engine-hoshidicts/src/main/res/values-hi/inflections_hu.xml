@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_hu_prefix_label">क्रिया उपसर्ग</string>
+    <string name="inflection_hu_prefix">क्रिया उपसर्ग: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- और अन्य (tartottam से megtartottam)</string>
+</resources>

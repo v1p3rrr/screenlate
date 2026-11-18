@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">declinare</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Elimină sufixele de declinare ale substantivelor și adjectivelor georgiene</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">nominativ</string>
+    <string name="inflection_ka_nounadjstemcompletion">Restabilește sufixul de nominativ -ი pentru temele consonantice de substantive/adjective</string>
+    <string name="inflection_ka_vowelrestoration_label">vocală sincopată</string>
+    <string name="inflection_ka_vowelrestoration">Restabilește vocalele sincopate, dacă este cazul</string>
+</resources>

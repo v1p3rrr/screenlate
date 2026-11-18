@@ -4,8 +4,8 @@
     <string name="audio_source_json">URL מותאם אישית (JSON)</string>
 
     <string name="anki_problem_not_installed">AnkiDroid לא מותקנת.</string>
-    <string name="anki_problem_no_permission">ל-Screenlate כבר אין גישה ל-AnkiDroid.</string>
+    <string name="anki_problem_no_permission">אין גישה ל-AnkiDroid.</string>
     <string name="anki_problem_model_missing">סוג הרשומה לא נמצא ב-AnkiDroid.</string>
     <string name="anki_problem_deck_missing">החפיסה לא נמצאה ב-AnkiDroid.</string>
-    <string name="anki_problem_fields_changed">השדות של סוג הרשומה השתנו.</string>
+    <string name="anki_problem_fields_changed">שדות סוג הרשומה השתנו.</string>
 </resources>

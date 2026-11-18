@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">hotărât</string>
+    <string name="inflection_ro_ul">articol hotărât (procesul din proces, consiliul din consiliu)</string>
+    <string name="inflection_ro_le_label">hotărât</string>
+    <string name="inflection_ro_le">articol hotărât (fratele din frate, textele din texte)</string>
+    <string name="inflection_ro_a_label">hotărât</string>
+    <string name="inflection_ro_a">articol hotărât al substantivelor feminine (dezvoltarea din dezvoltare, comisia din comisie)</string>
+    <string name="inflection_ro_i_label">plural hotărât</string>
+    <string name="inflection_ro_i">articol hotărât al pluralelor masculine (pomii din pomi)</string>
+    <string name="inflection_ro_ului_label">genitiv hotărât</string>
+    <string name="inflection_ro_ului">genitiv și dativ cu articol hotărât (procesului din proces, fratelui din frate)</string>
+    <string name="inflection_ro_ei_label">genitiv hotărât</string>
+    <string name="inflection_ro_ei">genitiv și dativ pentru substantivele feminine cu articol hotărât (Moldovei din Moldova, comisiei din comisie)</string>
+    <string name="inflection_ro_ii_label">genitiv hotărât</string>
+    <string name="inflection_ro_ii">genitiv și dativ pentru substantivele feminine în -e cu articol hotărât (lumii din lume, dezvoltării din dezvoltare)</string>
+    <string name="inflection_ro_lor_label">genitiv plural hotărât</string>
+    <string name="inflection_ro_lor">genitiv și dativ plural cu articol hotărât (caselor din case)</string>
+    <string name="inflection_ro_agreement_label">feminin sau plural</string>
+    <string name="inflection_ro_agreement">feminin sau plural al unui participiu ori adjectiv (aflată, aflate, aflați din aflat; pusă din pus)</string>
+</resources>

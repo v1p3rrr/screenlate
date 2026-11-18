@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">mutasi lunak</string>
+    <string name="inflection_cy_soft_mutation">mutasi lunak: b d g f dd l r untuk p t c b/m d ll rh, g luluh (ei gath dari cath, dy wely dari gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">mutasi sengau</string>
+    <string name="inflection_cy_nasal_mutation">mutasi sengau: mh nh ngh m n ng untuk p t c b d g (fy nghath dari cath, yng Nghymru dari Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">mutasi aspirat</string>
+    <string name="inflection_cy_aspirate_mutation">mutasi aspirat: ph th ch untuk p t c (ei chath dari cath)</string>
+    <string name="inflection_cy_h_prothesis_label">protesis h</string>
+    <string name="inflection_cy_h_prothesis">h sebelum vokal (ei hysgol dari ysgol)</string>
+</resources>

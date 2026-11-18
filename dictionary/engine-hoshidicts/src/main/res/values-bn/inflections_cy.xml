@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_cy_soft_mutation_label">মৃদু ধ্বনিপরিবর্তন</string>
+    <string name="inflection_cy_soft_mutation">মৃদু ধ্বনিপরিবর্তন: p t c b/m d ll rh-এর স্থলে b d g f dd l r, এবং g লোপ (ei gath ← cath, dy wely ← gwely)</string>
+    <string name="inflection_cy_nasal_mutation_label">নাসিক্য ধ্বনিপরিবর্তন</string>
+    <string name="inflection_cy_nasal_mutation">নাসিক্য ধ্বনিপরিবর্তন: p t c b d g-এর স্থলে mh nh ngh m n ng (fy nghath ← cath, yng Nghymru ← Cymru)</string>
+    <string name="inflection_cy_aspirate_mutation_label">মহাপ্রাণ ধ্বনিপরিবর্তন</string>
+    <string name="inflection_cy_aspirate_mutation">মহাপ্রাণ ধ্বনিপরিবর্তন: p t c-এর স্থলে ph th ch (ei chath ← cath)</string>
+    <string name="inflection_cy_h_prothesis_label">h-আগম</string>
+    <string name="inflection_cy_h_prothesis">স্বরধ্বনির পূর্বে h আগম (ei hysgol ← ysgol)</string>
+</resources>

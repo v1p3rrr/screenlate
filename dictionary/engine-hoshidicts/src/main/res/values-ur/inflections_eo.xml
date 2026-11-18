@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">حالتِ مفعولی</string>
+    <string name="inflection_eo_accusative">لفظ کی حالتِ مفعولی</string>
+    <string name="inflection_eo_plural_label">جمع</string>
+    <string name="inflection_eo_plural">لفظ کی جمع صورت</string>
+    <string name="inflection_eo_diminutive_label">تصغیر</string>
+    <string name="inflection_eo_diminutive">اسم کی تصغیری صورت</string>
+    <string name="inflection_eo_directional_label">سمتی</string>
+    <string name="inflection_eo_directional">حالتِ مفعولی میں متعلقِ فعل سمت ظاہر کرتا ہے\nkie: کہاں\nkien: کس طرف</string>
+    <string name="inflection_eo_locational_label">مکانی</string>
+    <string name="inflection_eo_locational">اسم کا متعلقِ فعل بننا مقام ظاہر کرتا ہے\nsurpinto: چوٹی، نوک، سرا\nsurpinte: چوٹی پر، سرے پر\nĉambro: کمرہ\nĉambre: کمرے میں</string>
+    <string name="inflection_eo_adjectival_label">صفاتی</string>
+    <string name="inflection_eo_adjectival">اسم کی صفاتی صورت</string>
+    <string name="inflection_eo_adverbial_adj_adv">صفت کی متعلقِ فعلی صورت</string>
+    <string name="inflection_eo_adverbial_v_adv">فعل کی متعلقِ فعلی صورت</string>
+    <string name="inflection_eo_ejo_noun">لاحقہ جو لفظ کو اس چیز کے لیے مخصوص جگہ بنا دیتا ہے\nkafo: کافی\nkafejo: کیفے</string>
+    <string name="inflection_eo_ejo_verb">لاحقہ جو لفظ کو اس عمل کے لیے مخصوص جگہ بنا دیتا ہے\nkuiri: پکانا\nkuirejo: باورچی خانہ</string>
+    <string name="inflection_eo_ujo_noun">لاحقہ جو لفظ کو اس چیز کا ڈبہ یا برتن بنا دیتا ہے\nabelo: شہد کی مکھی\nabelujo: شہد کا چھتہ\n\nلاحقہ جو لفظ کو ایسی جگہ بنا دیتا ہے جہاں اس نوع کے لوگ پائے جائیں\npatro: والد\npatrujo: مادرِ وطن\n\nلاحقہ جو پھول یا پھل کو اس کے پودے یا درخت میں بدل دیتا ہے\npomo: سیب\npomujo: سیب کا درخت</string>
+    <string name="inflection_eo_ujo_adjective">لاحقہ جو وصفی لفظ کو اس قسم کی چیز کے برتن یا خانے میں بدل دیتا ہے\nfrida: ٹھنڈا\nfridujo: ریفریجریٹر</string>
+    <string name="inflection_eo_ujo_verb">لاحقہ جو عمل کو اس سرگرمی کے برتن یا خانے میں بدل دیتا ہے\nlavi: دھونا\nlavujo: سنک</string>
+    <string name="inflection_eo_ebla">لاحقہ جو امکان ظاہر کرتا ہے\nkompreni: سمجھنا\nkomprenebla: قابلِ فہم</string>
+    <string name="inflection_eo_ado">لاحقہ جو عمل کو اس عمل کی نمائندگی کرنے والی شے میں بدل دیتا ہے\nvivi: جینا\nvivado: زندگی\nspiri: سانس لینا\nspirado: تنفس</string>
+    <string name="inflection_eo_mal">سابقہ جو کسی عمل، وصف، چیز یا سمت کو اس کے الٹ معنی میں بدل دیتا ہے</string>
+    <string name="inflection_eo_kun">سابقہ جس کا معنی دوسروں کے ساتھ مل کر عمل کرنا ہے\nlabori: کام کرنا\nkunlabori: تعاون کرنا</string>
+    <string name="inflection_eo_ekster">سابقہ جس کا معنی “سے باہر” ہے\nlando: ملک\neksterlando: بیرونی ملک</string>
+    <string name="inflection_eo_ek">سابقہ جو عمل کے آغاز کو ظاہر کرتا ہے\nkanti: گانا\nekkanti: گانا شروع کرنا</string>
+    <string name="inflection_eo_us">سابقہ جو کسی کام کے حال ہی میں ہونے کو ظاہر کرتا ہے\nvekita: جاگا ہوا\nĵusvekita: ابھی جاگا ہوا</string>
+    <string name="inflection_eo_el">سابقہ جس کا معنی باہر کی سمت عمل کرنا ہے\ntiri: کھینچنا\neltiri: باہر نکالنا\n\nسابقہ جس کا معنی عمل کو مکمل طور پر انجام دینا ہے\ntrinki: پینا\neltrinki: پورا پی جانا\nlerni: سیکھنا\nellerni: مکمل مہارت حاصل کرنا\nuzi: استعمال کرنا\neluzi: پورا خرچ کر دینا یا گھسا دینا</string>
+    <string name="inflection_eo_dis">سابقہ جس کا معنی “علیحدگی، بکھرنا، پھیلانا” ہے\nŝvebi: تیرنا\ndisŝvebi: الگ ہو کر پھیلنا\nfali: گرنا\ndisfali: ٹکڑے ہو کر گرنا\ndoni: دینا\ndisdoni: تقسیم کرنا\nsendo: ارسال\ndissendo: نشریات</string>
+    <string name="inflection_eo_for">سابقہ جس کا معنی “دور چلے جانا” ہے\nflugi: اڑنا\nforflugi: اڑ کر دور جانا\n\nسابقہ جس کا معنی “غائب ہونا یا ختم ہو جانا” ہے\nuzi: استعمال کرنا\nforuzi: مکمل ختم کر دینا</string>
+    <string name="inflection_eo_mis">سابقہ جس کا معنی “غلط، خطا” ہے\nkompreni: سمجھنا\nmiskompreni: غلط سمجھنا\nparoli: بولنا\nmisparoli: غلط بولنا</string>
+</resources>

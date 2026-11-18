@@ -43,9 +43,9 @@ A pop-up dictionary for Android with lookup in 62 languages. Pull the bubble out
 
 Available recognition models, definition languages and supplementary dictionaries vary by language.
 
-**Interface (17 languages)**
+**Interface (27 languages)**
 
-Arabic, Chinese (Simplified), Chinese (Traditional), English, French, German, Hebrew, Italian, Japanese, Korean, Persian, Polish, Portuguese (Brazil), Russian, Spanish, Turkish and Vietnamese.
+Arabic, Bengali, Chinese (Simplified), Chinese (Traditional), Czech, English, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Persian, Polish, Portuguese (Brazil), Romanian, Russian, Spanish, Thai, Turkish, Ukrainian, Urdu and Vietnamese.
 
 Translations of the interface were made with AI and have not been reviewed by native speakers. Corrections are welcome: open an issue or a pull request with the fixed `strings.xml`.
 

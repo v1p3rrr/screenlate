@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">बहुवचन</string>
+    <string name="inflection_la_plural">बहुवचन रूप</string>
+    <string name="inflection_la_feminine_label">स्त्रीलिंग</string>
+    <string name="inflection_la_feminine">विशेषण रूप</string>
+    <string name="inflection_la_neuter_label">नपुंसकलिंग</string>
+    <string name="inflection_la_neuter">विशेषण रूप</string>
+    <string name="inflection_la_ablative_label">अपादान कारक</string>
+    <string name="inflection_la_ablative">अपादान कारक</string>
+    <string name="inflection_la_que">आश्रित अव्यय “और” (magis से magisque)</string>
+    <string name="inflection_la_ne">प्रश्न पूछने वाला आश्रित अव्यय (vides से videsne)</string>
+    <string name="inflection_la_ve">आश्रित अव्यय “या” (mortuus से mortuusve)</string>
+</resources>

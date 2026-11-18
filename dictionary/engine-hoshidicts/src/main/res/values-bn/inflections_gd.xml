@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_gd_lenition_label">মৃদুভবন</string>
+    <string name="inflection_gd_lenition">মৃদুভবন: b c d f g m p s t-এর স্থলে bh ch dh fh gh mh ph sh th, নির্দেশকের পর s-এর স্থলে t-s (a\' ghrian ← grian, an t-sràid ← sràid)</string>
+    <string name="inflection_gd_eclipsis_label">ধ্বনিগ্রাস</string>
+    <string name="inflection_gd_eclipsis">স্বরধ্বনির পূর্বে n- (ar n-eilean ← eilean)</string>
+    <string name="inflection_gd_t_prothesis_label">t-আগম</string>
+    <string name="inflection_gd_t_prothesis">স্বরধ্বনির পূর্বে t- আগম (an t-uisge ← uisge, an t-Eilean ← Eilean)</string>
+    <string name="inflection_gd_h_prothesis_label">h-আগম</string>
+    <string name="inflection_gd_h_prothesis">স্বরধ্বনির পূর্বে h- আগম (na h-Alba ← Alba, na h-òrain ← òrain)</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fr_present_indicative_label">ปัจจุบันกาลบอกเล่า</string>
+    <string name="inflection_fr_present_indicative">รูปปัจจุบันกาลบอกเล่าของคำกริยา</string>
+    <string name="inflection_fr_imperfect_indicative_label">อดีตไม่สมบูรณ์บอกเล่า</string>
+    <string name="inflection_fr_imperfect_indicative">รูปอดีตไม่สมบูรณ์บอกเล่าของคำกริยา</string>
+    <string name="inflection_fr_future_label">อนาคตกาล</string>
+    <string name="inflection_fr_future">รูปอนาคตกาลของคำกริยา</string>
+    <string name="inflection_fr_imperative_present_label">คำสั่งปัจจุบัน</string>
+    <string name="inflection_fr_imperative_present">รูปคำสั่งของคำกริยา</string>
+    <string name="inflection_fr_conditional_label">เงื่อนไข</string>
+    <string name="inflection_fr_conditional">รูปเงื่อนไขของคำกริยา</string>
+    <string name="inflection_fr_preterite_label">อดีตสมบูรณ์อย่างง่าย</string>
+    <string name="inflection_fr_preterite">รูปอดีตสมบูรณ์อย่างง่ายของคำกริยา</string>
+    <string name="inflection_fr_plural_label">พหูพจน์</string>
+    <string name="inflection_fr_plural">รูปพหูพจน์ของคำนาม</string>
+    <string name="inflection_fr_present_participle_label">กริยาคุณศัพท์ปัจจุบัน</string>
+    <string name="inflection_fr_present_participle">รูปกริยาคุณศัพท์ปัจจุบันของคำกริยา</string>
+    <string name="inflection_fr_present_subjunctive_label">ปัจจุบันกาลมาลาสมมุติ</string>
+    <string name="inflection_fr_present_subjunctive">รูปปัจจุบันกาลมาลาสมมุติของคำกริยา</string>
+</resources>

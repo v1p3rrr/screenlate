@@ -4,8 +4,8 @@
     <string name="audio_source_json">사용자 지정 URL(JSON)</string>
 
     <string name="anki_problem_not_installed">AnkiDroid가 설치되어 있지 않습니다.</string>
-    <string name="anki_problem_no_permission">Screenlate가 AnkiDroid 접근 권한을 잃었습니다.</string>
+    <string name="anki_problem_no_permission">AnkiDroid 접근 권한이 없습니다.</string>
     <string name="anki_problem_model_missing">AnkiDroid에서 노트 유형을 찾을 수 없습니다.</string>
     <string name="anki_problem_deck_missing">AnkiDroid에서 덱을 찾을 수 없습니다.</string>
-    <string name="anki_problem_fields_changed">노트 유형의 필드가 바뀌었습니다.</string>
+    <string name="anki_problem_fields_changed">노트 유형의 필드가 변경되었습니다.</string>
 </resources>

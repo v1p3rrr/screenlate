@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">definit</string>
+    <string name="inflection_bg_definite">artikel definit: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">jamak</string>
+    <string name="inflection_bg_plural">jamak: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">feminin</string>
+    <string name="inflection_bg_feminine">bentuk feminin adjektiva: -а (нова, умна dari умен, добра dari добър, българска)</string>
+    <string name="inflection_bg_neuter_label">netral</string>
+    <string name="inflection_bg_neuter">bentuk netral adjektiva: -о (ново, умно dari умен, добро dari добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">kini</string>
+    <string name="inflection_bg_present">kala kini (гарантира, гарантират dari гарантирам; четеш, четат dari чета; говори dari говоря)</string>
+    <string name="inflection_bg_past_label">lampau</string>
+    <string name="inflection_bg_past">aorist atau imperfek (чаках, чакаше dari чакам; четох, четеше dari чета; говорих dari говоря)</string>
+    <string name="inflection_bg_past_participle_label">partisip lampau</string>
+    <string name="inflection_bg_past_participle">partisip aktif lampau -л (гарантирал, изминала dari измина, говорили dari говоря)</string>
+    <string name="inflection_bg_passive_participle_label">partisip pasif</string>
+    <string name="inflection_bg_passive_participle">partisip pasif lampau -н (гарантиран, гарантирана dari гарантирам; говорено dari говоря)</string>
+    <string name="inflection_bg_imperative_label">imperatif</string>
+    <string name="inflection_bg_imperative">imperatif -ай -айте (чакай, чакайте dari чакам; стреляй dari стрелям)</string>
+</resources>

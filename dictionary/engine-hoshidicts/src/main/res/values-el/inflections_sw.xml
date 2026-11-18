@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">αρνητικός</string>
+    <string name="inflection_sw_negative">άρνηση: ha- πριν από το υποκείμενο (hatukusoma, hakusoma), si- για «εγώ» και hu- για «εσύ» (sikusoma, hukusoma), si- μετά το υποκείμενο πριν από αναφορικό (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">εγώ</string>
+    <string name="inflection_sw_i">υποκείμενο ni-: εγώ (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">εσύ</string>
+    <string name="inflection_sw_you">υποκείμενο u-: εσύ, ή ουσιαστικό των τάξεων 3, 11 και 14 (unasoma· mti umeanguka, το δέντρο έπεσε)</string>
+    <string name="inflection_sw_he_she_label">αυτός/αυτή</string>
+    <string name="inflection_sw_he_she">υποκείμενο a-: αυτός ή αυτή (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">εμείς</string>
+    <string name="inflection_sw_we">υποκείμενο tu-: εμείς (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">εσείς</string>
+    <string name="inflection_sw_you_pl">υποκείμενο m-: εσείς, πληθυντικός (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">αυτοί/αυτές</string>
+    <string name="inflection_sw_they">υποκείμενο wa-: αυτοί/αυτές (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">τάξη</string>
+    <string name="inflection_sw_class">υποκείμενο ονοματικής τάξης: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (τόποι: kulikuwa, υπήρχε)</string>
+    <string name="inflection_sw_past_label">παρελθοντικός</string>
+    <string name="inflection_sw_past">παρελθόν: li-, και ku- μετά από άρνηση (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">ενεστώτας</string>
+    <string name="inflection_sw_present">ενεστώτας: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">μέλλοντας</string>
+    <string name="inflection_sw_future">μέλλοντας: ta-, και taka- πριν από αναφορικό (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">παρακείμενος</string>
+    <string name="inflection_sw_perfect">παρακείμενος: me- (amesoma, έχει διαβάσει)</string>
+    <string name="inflection_sw_not_yet_label">όχι ακόμα</string>
+    <string name="inflection_sw_not_yet">όχι ακόμα: ja- μετά από άρνηση (hajasoma, δεν έχει διαβάσει ακόμα)</string>
+    <string name="inflection_sw_conditional_label">υποθετικός</string>
+    <string name="inflection_sw_conditional">υποθετικός: nge- και ngali- (angesoma, θα διάβαζε· angalisoma, θα είχε διαβάσει)</string>
+    <string name="inflection_sw_when_label">όταν</string>
+    <string name="inflection_sw_when">ki-: όταν, ενώ ή αν (akisoma)</string>
+    <string name="inflection_sw_and_then_label">και μετά</string>
+    <string name="inflection_sw_and_then">ka-: και μετά, σε αφήγηση (akasoma)</string>
+    <string name="inflection_sw_habitual_label">συνηθειακός</string>
+    <string name="inflection_sw_habitual">συνηθειακός: hu- (husoma, διαβάζει συνήθως)</string>
+    <string name="inflection_sw_relative_label">αναφορικός</string>
+    <string name="inflection_sw_relative">αναφορικός: που, ο οποίος, όπου (aliyesoma, αυτός που διάβασε· kinachoitwa, το οποίο ονομάζεται· waishio, όσοι ζουν)</string>
+    <string name="inflection_sw_object_label">αντικείμενο</string>
+    <string name="inflection_sw_object">αντικείμενο: ni- εμένα, ku- εσένα, m- ή mw- αυτόν/αυτήν, tu- εμάς, wa- αυτούς, και τα προθήματα ονοματικών τάξεων ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">αυτοπαθής</string>
+    <string name="inflection_sw_reflexive">αυτοπαθές ji-: τον εαυτό του (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">απαρέμφατο</string>
+    <string name="inflection_sw_infinitive">απαρέμφατο: ku- ή kw- (kusoma, kwandika, kumpa)</string>
+</resources>

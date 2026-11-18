@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">جمع</string>
+    <string name="inflection_es_plural">اسم کی جمع صورت</string>
+    <string name="inflection_es_feminine_adjective_label">مؤنث صفت</string>
+    <string name="inflection_es_feminine_adjective">صفت کی مؤنث صورت</string>
+    <string name="inflection_es_present_indicative_label">حال اخباری</string>
+    <string name="inflection_es_present_indicative">فعل کی حال اخباری صورت</string>
+    <string name="inflection_es_preterite_label">ماضی مطلق</string>
+    <string name="inflection_es_preterite">فعل کی ماضی مطلق صورت</string>
+    <string name="inflection_es_imperfect_label">ماضی ناتمام</string>
+    <string name="inflection_es_imperfect">فعل کی ماضی ناتمام صورت</string>
+    <string name="inflection_es_progressive_label">جاری</string>
+    <string name="inflection_es_progressive">فعل کی جاری صورت</string>
+    <string name="inflection_es_imperative_label">امر</string>
+    <string name="inflection_es_imperative">فعل کی امری صورت</string>
+    <string name="inflection_es_conditional_label">شرطیہ</string>
+    <string name="inflection_es_conditional">فعل کی شرطیہ صورت</string>
+    <string name="inflection_es_future_label">مستقبل</string>
+    <string name="inflection_es_future">فعل کی مستقبل صورت</string>
+    <string name="inflection_es_present_subjunctive_label">حال التزامی</string>
+    <string name="inflection_es_present_subjunctive">فعل کی حال التزامی صورت</string>
+    <string name="inflection_es_imperfect_subjunctive_label">ماضی ناتمام التزامی</string>
+    <string name="inflection_es_imperfect_subjunctive">فعل کی ماضی ناتمام التزامی صورت</string>
+    <string name="inflection_es_participle_label">فعلی صفت</string>
+    <string name="inflection_es_participle">فعل کی فعلی صفت</string>
+    <string name="inflection_es_reflexive_label">انعکاسی</string>
+    <string name="inflection_es_reflexive">فعل کی انعکاسی صورت</string>
+    <string name="inflection_es_pronoun_substitution_label">ضمیر کی تبدیلی</string>
+    <string name="inflection_es_pronoun_substitution">انعکاسی فعل کی متبادل ضمیر</string>
+    <string name="inflection_es_pronominal_label">ضمیری</string>
+    <string name="inflection_es_pronominal">فعل کی ضمیری صورت</string>
+</resources>

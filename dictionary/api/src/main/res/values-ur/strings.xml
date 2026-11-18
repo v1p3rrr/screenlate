@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">لغات کی درآمد</string>
+    <string name="dictionary_import_notification">لغات درآمد ہو رہی ہیں</string>
+    <string name="dictionary_import_cancel">منسوخ</string>
+</resources>

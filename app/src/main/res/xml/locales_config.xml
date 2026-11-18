@@ -19,4 +19,14 @@
     <locale android:name="ar" />
     <locale android:name="fa" />
     <locale android:name="he" />
+    <locale android:name="id" />
+    <locale android:name="th" />
+    <locale android:name="uk" />
+    <locale android:name="hi" />
+    <locale android:name="bn" />
+    <locale android:name="ur" />
+    <locale android:name="ro" />
+    <locale android:name="cs" />
+    <locale android:name="hu" />
+    <locale android:name="el" />
 </locale-config>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="installation_ready">Siap</string>
+    <string name="installation_running">Pemasangan bahasa sedang berlangsung. Pemindaian dan pencarian kamus tersedia setelah komponen siap.</string>
+    <string name="installation_missing">Kamus atau model pengenalan yang diperlukan tidak ada atau dinonaktifkan. Buka status pemasangan untuk menyelesaikan penyiapan.</string>
+    <string name="installation_failed">Pemasangan bahasa gagal. Buka status pemasangan untuk detail atau mencoba lagi.</string>
+    <string name="installation_open">Status pemasangan</string>
+    <string name="installation_device_ready">Pengenalan di perangkat: siap</string>
+    <string name="installation_device_missing">Pengenalan di perangkat: tidak tersedia (pengenalan cloud tersedia jika diaktifkan)</string>
+    <string name="installation_remaining">Pemasangan tersisa: %1$d</string>
+    <string name="installation_errors">Pemasangan gagal: %1$d</string>
+    <string name="installation_device_missing_offline">Pengenalan di perangkat: tidak tersedia; pengenalan cloud dinonaktifkan dalam Mode Offline Paksa.</string>
+</resources>

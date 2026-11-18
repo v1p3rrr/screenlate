@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">acuzativ</string>
+    <string name="inflection_eo_accusative">Forma de acuzativ a unui cuvânt</string>
+    <string name="inflection_eo_plural_label">plural</string>
+    <string name="inflection_eo_plural">Forma de plural a unui cuvânt</string>
+    <string name="inflection_eo_diminutive_label">diminutiv</string>
+    <string name="inflection_eo_diminutive">Forma diminutivală a unui substantiv</string>
+    <string name="inflection_eo_directional_label">direcțional</string>
+    <string name="inflection_eo_directional">Un adverb la cazul acuzativ indică direcția\nkie: unde\nkien: încotro</string>
+    <string name="inflection_eo_locational_label">locativ</string>
+    <string name="inflection_eo_locational">Un substantiv devenit adverb indică locul\nsurpinto: vârf, culme\nsurpinte: în vârf, pe culme\nĉambro: cameră\nĉambre: în cameră</string>
+    <string name="inflection_eo_adjectival_label">adjectival</string>
+    <string name="inflection_eo_adjectival">Forma adjectivală a unui substantiv</string>
+    <string name="inflection_eo_adverbial_adj_adv">Forma adverbială a unui adjectiv</string>
+    <string name="inflection_eo_adverbial_v_adv">Forma adverbială a unui verb</string>
+    <string name="inflection_eo_ejo_noun">Sufix care transformă un cuvânt într-un loc destinat acelui lucru\nkafo: cafea\nkafejo: cafenea</string>
+    <string name="inflection_eo_ejo_verb">Sufix care transformă un cuvânt într-un loc destinat acelei acțiuni\nkuiri: a găti\nkuirejo: bucătărie</string>
+    <string name="inflection_eo_ujo_noun">Sufix care transformă un cuvânt într-un recipient pentru acel lucru\nabelo: albină\nabelujo: stup\n\nSufix care transformă un cuvânt într-un loc asociat unui grup de oameni\npatro: tată\npatrujo: patrie\n\nSufix care transformă o floare sau un fruct în planta ori arborele care îl produce\npomo: măr (fruct)\npomujo: măr (pom)</string>
+    <string name="inflection_eo_ujo_adjective">Sufix care transformă un adjectiv într-un recipient pentru acel tip de lucru\nfrida: rece\nfridujo: frigider</string>
+    <string name="inflection_eo_ujo_verb">Sufix care transformă o acțiune într-un recipient pentru acea activitate\nlavi: a spăla\nlavujo: chiuvetă</string>
+    <string name="inflection_eo_ebla">Sufix care indică posibilitatea\nkompreni: a înțelege\nkomprenebla: inteligibil</string>
+    <string name="inflection_eo_ado">Sufix care transformă o acțiune într-un substantiv care desemnează desfășurarea ei\nvivi: a trăi\nvivado: viață\nspiri: a respira\nspirado: respirație</string>
+    <string name="inflection_eo_mal">Prefix care transformă o acțiune, o însușire, un obiect sau o direcție în sensul opus</string>
+    <string name="inflection_eo_kun">Prefix cu sensul de a face acțiunea împreună cu alții\nlabori: a munci\nkunlabori: a colabora</string>
+    <string name="inflection_eo_ekster">Prefix cu sensul „în afara”\nlando: țară\neksterlando: străinătate</string>
+    <string name="inflection_eo_ek">Prefix care indică începutul acțiunii\nkanti: a cânta\nekkanti: a începe să cânte</string>
+    <string name="inflection_eo_us">Prefix care indică ceva făcut recent\nvekita: trezit\nĵusvekita: abia trezit</string>
+    <string name="inflection_eo_el">Prefix care indică desfășurarea acțiunii spre exterior\ntiri: a trage\neltiri: a scoate afară\n\nPrefix care indică ducerea acțiunii până la capăt\ntrinki: a bea\neltrinki: a bea tot\nlerni: a învăța\nellerni: a învăța temeinic, a stăpâni\nuzi: a folosi\neluzi: a consuma, a uza complet</string>
+    <string name="inflection_eo_dis">Prefix cu sensul „separare, împrăștiere”\nŝvebi: a pluti\ndisŝvebi: a se împrăștia plutind\nfali: a cădea\ndisfali: a se destrăma\ndoni: a da\ndisdoni: a distribui\nsendo: trimitere\ndissendo: difuzare</string>
+    <string name="inflection_eo_for">Prefix cu sensul „îndepărtare”\nflugi: a zbura\nforflugi: a zbura departe\n\nPrefix cu sensul „dispariție, epuizare”\nuzi: a folosi\nforuzi: a epuiza complet</string>
+    <string name="inflection_eo_mis">Prefix cu sensul „greșit, eronat”\nkompreni: a înțelege\nmiskompreni: a înțelege greșit\nparoli: a vorbi\nmisparoli: a se exprima greșit</string>
+</resources>

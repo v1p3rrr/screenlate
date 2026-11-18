@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">বহুবচন</string>
+    <string name="inflection_la_plural">বহুবচন শব্দরূপ</string>
+    <string name="inflection_la_feminine_label">স্ত্রীলিঙ্গ</string>
+    <string name="inflection_la_feminine">বিশেষণ রূপ</string>
+    <string name="inflection_la_neuter_label">ক্লীবলিঙ্গ</string>
+    <string name="inflection_la_neuter">বিশেষণ রূপ</string>
+    <string name="inflection_la_ablative_label">অপাদান কারক</string>
+    <string name="inflection_la_ablative">অপাদান কারক</string>
+    <string name="inflection_la_que">আশ্রিত অব্যয় “এবং” (magisque ← magis)</string>
+    <string name="inflection_la_ne">প্রশ্নবোধক আশ্রিত অব্যয় (videsne ← vides)</string>
+    <string name="inflection_la_ve">আশ্রিত অব্যয় “বা” (mortuusve ← mortuus)</string>
+</resources>

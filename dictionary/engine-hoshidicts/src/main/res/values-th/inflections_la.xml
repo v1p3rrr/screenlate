@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">พหูพจน์</string>
+    <string name="inflection_la_plural">การผันพหูพจน์</string>
+    <string name="inflection_la_feminine_label">เพศหญิง</string>
+    <string name="inflection_la_feminine">รูปคำคุณศัพท์</string>
+    <string name="inflection_la_neuter_label">เพศกลาง</string>
+    <string name="inflection_la_neuter">รูปคำคุณศัพท์</string>
+    <string name="inflection_la_ablative_label">อปาทานการก</string>
+    <string name="inflection_la_ablative">อปาทานการก</string>
+    <string name="inflection_la_que">คำเกาะ “และ” (magisque จาก magis)</string>
+    <string name="inflection_la_ne">คำเกาะแสดงคำถาม (videsne จาก vides)</string>
+    <string name="inflection_la_ve">คำเกาะ “หรือ” (mortuusve จาก mortuus)</string>
+</resources>

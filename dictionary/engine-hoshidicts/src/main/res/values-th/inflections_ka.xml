@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">การผันการก</string>
+    <string name="inflection_ka_nounadjsuffixstripping">ตัดปัจจัยผันการกของคำนามและคำคุณศัพท์ภาษาจอร์เจีย</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">ประธานการก</string>
+    <string name="inflection_ka_nounadjstemcompletion">คืนปัจจัยประธานการก -ი ให้รากคำนาม/คำคุณศัพท์ที่ลงท้ายด้วยพยัญชนะ</string>
+    <string name="inflection_ka_vowelrestoration_label">สระที่ถูกละ</string>
+    <string name="inflection_ka_vowelrestoration">คืนสระที่ถูกตัดออกหากมี</string>
+</resources>

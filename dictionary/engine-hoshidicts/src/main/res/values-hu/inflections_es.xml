@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">többes szám</string>
+    <string name="inflection_es_plural">Főnév többes számú alakja</string>
+    <string name="inflection_es_feminine_adjective_label">nőnemű melléknév</string>
+    <string name="inflection_es_feminine_adjective">Melléknév nőnemű alakja</string>
+    <string name="inflection_es_present_indicative_label">kijelentő jelen idő</string>
+    <string name="inflection_es_present_indicative">Ige kijelentő módú jelen idejű alakja</string>
+    <string name="inflection_es_preterite_label">egyszerű múlt</string>
+    <string name="inflection_es_preterite">Ige egyszerű múlt (preteritum) alakja</string>
+    <string name="inflection_es_imperfect_label">folyamatos múlt</string>
+    <string name="inflection_es_imperfect">Ige folyamatos múlt (imperfektum) alakja</string>
+    <string name="inflection_es_progressive_label">folyamatos</string>
+    <string name="inflection_es_progressive">Ige folyamatos alakja</string>
+    <string name="inflection_es_imperative_label">felszólító mód</string>
+    <string name="inflection_es_imperative">Ige felszólító módú alakja</string>
+    <string name="inflection_es_conditional_label">feltételes mód</string>
+    <string name="inflection_es_conditional">Ige feltételes módú alakja</string>
+    <string name="inflection_es_future_label">jövő idő</string>
+    <string name="inflection_es_future">Ige jövő idejű alakja</string>
+    <string name="inflection_es_present_subjunctive_label">kötőmód jelen idő</string>
+    <string name="inflection_es_present_subjunctive">Ige kötőmódú jelen idejű alakja</string>
+    <string name="inflection_es_imperfect_subjunctive_label">kötőmód múlt idő</string>
+    <string name="inflection_es_imperfect_subjunctive">Ige kötőmódú múlt idejű alakja</string>
+    <string name="inflection_es_participle_label">melléknévi igenév</string>
+    <string name="inflection_es_participle">Ige melléknévi igeneve</string>
+    <string name="inflection_es_reflexive_label">visszaható</string>
+    <string name="inflection_es_reflexive">Ige visszaható alakja</string>
+    <string name="inflection_es_pronoun_substitution_label">névmáshelyettesítés</string>
+    <string name="inflection_es_pronoun_substitution">Visszaható ige helyettesített névmása</string>
+    <string name="inflection_es_pronominal_label">névmási</string>
+    <string name="inflection_es_pronominal">Ige névmási alakja</string>
+</resources>

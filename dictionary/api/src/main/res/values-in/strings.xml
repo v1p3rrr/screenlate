@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">Impor kamus</string>
+    <string name="dictionary_import_notification">Mengimpor kamus</string>
+    <string name="dictionary_import_cancel">Batal</string>
+</resources>

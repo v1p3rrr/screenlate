@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_eo_accusative_label">কর্মকারক</string>
+    <string name="inflection_eo_accusative">শব্দের কর্মকারক রূপ</string>
+    <string name="inflection_eo_plural_label">বহুবচন</string>
+    <string name="inflection_eo_plural">শব্দের বহুবচন রূপ</string>
+    <string name="inflection_eo_diminutive_label">ক্ষুদ্রার্থক</string>
+    <string name="inflection_eo_diminutive">বিশেষ্যের ক্ষুদ্রার্থক রূপ</string>
+    <string name="inflection_eo_directional_label">দিকনির্দেশক</string>
+    <string name="inflection_eo_directional">কর্মকারকে ক্রিয়াবিশেষণ দিক নির্দেশ করে\nkie: কোথায়\nkien: কোন দিকে</string>
+    <string name="inflection_eo_locational_label">স্থানবাচক</string>
+    <string name="inflection_eo_locational">বিশেষ্য থেকে গঠিত ক্রিয়াবিশেষণ স্থান নির্দেশ করে\nsurpinto: চূড়া, শিখর\nsurpinte: চূড়ায়, শিখরে\nĉambro: কক্ষ\nĉambre: কক্ষে, কক্ষের ভেতরে</string>
+    <string name="inflection_eo_adjectival_label">বিশেষণীয়</string>
+    <string name="inflection_eo_adjectival">বিশেষ্যের বিশেষণ রূপ</string>
+    <string name="inflection_eo_adverbial_adj_adv">বিশেষণের ক্রিয়াবিশেষণ রূপ</string>
+    <string name="inflection_eo_adverbial_v_adv">ক্রিয়ার ক্রিয়াবিশেষণ রূপ</string>
+    <string name="inflection_eo_ejo_noun">যে প্রত্যয় কোনো শব্দকে সেই নির্দিষ্ট জিনিসের জন্য নির্ধারিত স্থানে রূপান্তর করে\nkafo: কফি\nkafejo: ক্যাফে</string>
+    <string name="inflection_eo_ejo_verb">যে প্রত্যয় কোনো শব্দকে সেই নির্দিষ্ট কাজের জন্য নির্ধারিত স্থানে রূপান্তর করে\nkuiri: রান্না করা\nkuirejo: রান্নাঘর</string>
+    <string name="inflection_eo_ujo_noun">যে প্রত্যয় কোনো শব্দকে সেই নির্দিষ্ট জিনিসের পাত্র বা আধারে রূপান্তর করে\nabelo: মৌমাছি\nabelujo: মৌচাক\n\nযে প্রত্যয় কোনো শব্দকে কোনো শ্রেণির মানুষের বাসস্থানে রূপান্তর করে\npatro: পিতা\npatrujo: পিতৃভূমি\n\nযে প্রত্যয় কোনো ফুল বা ফলকে সেই ফুল বা ফলের গাছে রূপান্তর করে\npomo: আপেল\npomujo: আপেল গাছ</string>
+    <string name="inflection_eo_ujo_adjective">যে প্রত্যয় কোনো বর্ণনামূলক শব্দকে সেই ধরনের জিনিসের পাত্র বা আধারে রূপান্তর করে\nfrida: ঠান্ডা\nfridujo: রেফ্রিজারেটর</string>
+    <string name="inflection_eo_ujo_verb">যে প্রত্যয় কোনো কাজকে সেই কাজের জন্য নির্ধারিত পাত্র বা আধারে রূপান্তর করে\nlavi: ধোয়া\nlavujo: সিঙ্ক</string>
+    <string name="inflection_eo_ebla">যে প্রত্যয় সম্ভাব্যতা প্রকাশ করে\nkompreni: বোঝা\nkomprenebla: বোধগম্য</string>
+    <string name="inflection_eo_ado">যে প্রত্যয় কোনো ক্রিয়াকে সেই ক্রিয়ার প্রক্রিয়া বা অবস্থা নির্দেশক বিশেষ্যে রূপান্তর করে\nvivi: বাঁচা\nvivado: জীবনযাপন\nspiri: শ্বাস নেওয়া\nspirado: শ্বসন</string>
+    <string name="inflection_eo_mal">যে উপসর্গ কোনো ক্রিয়া, বর্ণনা, বস্তু বা দিককে তার বিপরীত অর্থে রূপান্তর করে</string>
+    <string name="inflection_eo_kun">যে উপসর্গ অন্যদের সাথে একত্রে কাজ করা বোঝায়\nlabori: কাজ করা\nkunlabori: সহযোগিতা করা</string>
+    <string name="inflection_eo_ekster">“বাইরে” অর্থবোধক উপসর্গ\nlando: দেশ\neksterlando: বিদেশ</string>
+    <string name="inflection_eo_ek">কোনো কাজের সূচনা বোঝানো উপসর্গ\nkanti: গান গাওয়া\nekkanti: গান শুরু করা</string>
+    <string name="inflection_eo_us">কোনো কিছু সদ্য বা সম্প্রতি সম্পন্ন হয়েছে বোঝানো উপসর্গ\nvekita: জাগ্রত\nĵusvekita: সদ্য জাগ্রত</string>
+    <string name="inflection_eo_el">কোনো কাজ বাইরের দিকে করা বোঝানো উপসর্গ\ntiri: টানা\neltiri: টেনে বের করা\n\nকোনো কাজ সম্পূর্ণরূপে শেষ করা বোঝানো উপসর্গ\ntrinki: পান করা\neltrinki: সম্পূর্ণ পান করে ফেলা\nlerni: শেখা\nellerni: পুরোপুরি আয়ত্ত করা\nuzi: ব্যবহার করা\neluzi: নিঃশেষ করা</string>
+    <string name="inflection_eo_dis">“বিচ্ছেদ, আলাদা হওয়া, ছড়িয়ে পড়া” অর্থবোধক উপসর্গ\nŝvebi: ভাসা\ndisŝvebi: ছড়িয়ে ভাসা\nfali: পড়া\ndisfali: ভেঙে টুকরো হওয়া\ndoni: দেওয়া\ndisdoni: বিতরণ করা\nsendo: প্রেরিত বস্তু\ndissendo: সম্প্রচার</string>
+    <string name="inflection_eo_for">“দূরে চলে যাওয়া” অর্থবোধক উপসর্গ\nflugi: ওড়া\nforflugi: উড়ে যাওয়া\n\n“অদৃশ্য হওয়া/নিঃশেষ হওয়া” অর্থবোধক উপসর্গ\nuzi: ব্যবহার করা\nforuzi: সম্পূর্ণ শেষ করে ফেলা</string>
+    <string name="inflection_eo_mis">“ভুল, ভ্রান্ত” অর্থবোধক উপসর্গ\nkompreni: বোঝা\nmiskompreni: ভুল বোঝা\nparoli: কথা বলা\nmisparoli: ভুল বলা</string>
+</resources>

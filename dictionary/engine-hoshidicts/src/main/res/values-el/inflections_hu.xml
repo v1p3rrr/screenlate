@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_hu_prefix_label">ρηματικό πρόθημα</string>
+    <string name="inflection_hu_prefix">ρηματικό πρόθημα: meg-, el-, ki-, be-, fel-, le-, át-, rá-, össze-, vissza- και άλλα (megtartottam από tartottam)</string>
+</resources>

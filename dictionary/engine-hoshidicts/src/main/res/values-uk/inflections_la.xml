@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_la_plural_label">множина</string>
+    <string name="inflection_la_plural">Відмінювання у множині</string>
+    <string name="inflection_la_feminine_label">жіночий рід</string>
+    <string name="inflection_la_feminine">Форма прикметника</string>
+    <string name="inflection_la_neuter_label">середній рід</string>
+    <string name="inflection_la_neuter">Форма прикметника</string>
+    <string name="inflection_la_ablative_label">аблатив</string>
+    <string name="inflection_la_ablative">Відмінок аблатив</string>
+    <string name="inflection_la_que">Енклітика «і» (magisque від magis)</string>
+    <string name="inflection_la_ne">Питальна енклітика (videsne від vides)</string>
+    <string name="inflection_la_ve">Енклітика «або» (mortuusve від mortuus)</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dictionary_import_channel">Szótárimportálások</string>
+    <string name="dictionary_import_notification">Szótárak importálása</string>
+    <string name="dictionary_import_cancel">Mégse</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">คำเกาะ</string>
+    <string name="inflection_fi_clitic">คำเกาะ: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin จาก talo, talossakaan จาก talossa, onkohan จาก onko)</string>
+    <string name="inflection_fi_possessive_label">แสดงความเป็นเจ้าของ</string>
+    <string name="inflection_fi_possessive">ปัจจัยแสดงความเป็นเจ้าของ: -ni, -si, -mme, -nne, -nsa/-nsä, สระเสียงยาวและ -n (talossani และ talossaan จาก talossa, taloni จาก talo)</string>
+</resources>

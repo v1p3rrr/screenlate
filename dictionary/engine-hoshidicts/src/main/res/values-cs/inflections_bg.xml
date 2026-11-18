@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_bg_definite_label">určitý</string>
+    <string name="inflection_bg_definite">určitý člen: -ът -ят -а -я, -та -то -те (градът, учителя, книгата, селото, книгите)</string>
+    <string name="inflection_bg_plural_label">množné číslo</string>
+    <string name="inflection_bg_plural">množné číslo: -и -ове -ища -а -та -ия (студенти, книги, градове, пътища, села, морета, събития)</string>
+    <string name="inflection_bg_feminine_label">ženský rod</string>
+    <string name="inflection_bg_feminine">ženský rod přídavného jména: -а (нова, умна od умен, добра od добър, българска)</string>
+    <string name="inflection_bg_neuter_label">střední rod</string>
+    <string name="inflection_bg_neuter">střední rod přídavného jména: -о (ново, умно od умен, добро od добър, българско, синьо)</string>
+    <string name="inflection_bg_present_label">přítomný čas</string>
+    <string name="inflection_bg_present">přítomný čas (гарантира, гарантират od гарантирам; четеш, четат od чета; говори od говоря)</string>
+    <string name="inflection_bg_past_label">minulý čas</string>
+    <string name="inflection_bg_past">aorist nebo imperfektum (чаках, чакаше od чакам; четох, четеше od чета; говорих od говоря)</string>
+    <string name="inflection_bg_past_participle_label">příčestí minulé</string>
+    <string name="inflection_bg_past_participle">příčestí minulé činné -л (гарантирал, изминала od измина, говорили od говоря)</string>
+    <string name="inflection_bg_passive_participle_label">příčestí trpné</string>
+    <string name="inflection_bg_passive_participle">příčestí minulé trpné -н (гарантиран, гарантирана od гарантирам; говорено od говоря)</string>
+    <string name="inflection_bg_imperative_label">imperativ</string>
+    <string name="inflection_bg_imperative">imperativ -ай -айте (чакай, чакайте od чакам; стреляй od стрелям)</string>
+</resources>

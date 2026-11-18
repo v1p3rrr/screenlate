@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_fi_clitic_label">klitikon</string>
+    <string name="inflection_fi_clitic">klitikon: -kin, -kaan/-kään, -ko/-kö, -pa/-pä, -han/-hän (talokin od talo, talossakaan od talossa, onkohan od onko)</string>
+    <string name="inflection_fi_possessive_label">přivlastňovací</string>
+    <string name="inflection_fi_possessive">přivlastňovací přípona: -ni, -si, -mme, -nne, -nsa/-nsä, dlouhá samohláska a -n (talossani a talossaan od talossa, taloni od talo)</string>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_es_plural_label">बहुवचन</string>
+    <string name="inflection_es_plural">संज्ञा का बहुवचन रूप</string>
+    <string name="inflection_es_feminine_adjective_label">स्त्रीलिंग विशेषण</string>
+    <string name="inflection_es_feminine_adjective">विशेषण का स्त्रीलिंग रूप</string>
+    <string name="inflection_es_present_indicative_label">वर्तमान निश्चयार्थक</string>
+    <string name="inflection_es_present_indicative">क्रिया का वर्तमान निश्चयार्थक रूप</string>
+    <string name="inflection_es_preterite_label">सामान्य भूतकाल</string>
+    <string name="inflection_es_preterite">क्रिया का सामान्य भूतकाल रूप</string>
+    <string name="inflection_es_imperfect_label">अपूर्ण भूतकाल</string>
+    <string name="inflection_es_imperfect">क्रिया का अपूर्ण भूतकाल रूप</string>
+    <string name="inflection_es_progressive_label">सातत्यबोधक</string>
+    <string name="inflection_es_progressive">क्रिया का सातत्यबोधक (जारी) रूप</string>
+    <string name="inflection_es_imperative_label">आज्ञार्थक</string>
+    <string name="inflection_es_imperative">क्रिया का आज्ञार्थक रूप</string>
+    <string name="inflection_es_conditional_label">हेतुहेतुमद्</string>
+    <string name="inflection_es_conditional">क्रिया का हेतुहेतुमद् (सशर्त) रूप</string>
+    <string name="inflection_es_future_label">भविष्य काल</string>
+    <string name="inflection_es_future">क्रिया का भविष्य काल रूप</string>
+    <string name="inflection_es_present_subjunctive_label">वर्तमान संभावनार्थक</string>
+    <string name="inflection_es_present_subjunctive">क्रिया का वर्तमान संभावनार्थक रूप</string>
+    <string name="inflection_es_imperfect_subjunctive_label">अपूर्ण संभावनार्थक</string>
+    <string name="inflection_es_imperfect_subjunctive">क्रिया का अपूर्ण संभावनार्थक रूप</string>
+    <string name="inflection_es_participle_label">कृदंत</string>
+    <string name="inflection_es_participle">क्रिया का कृदंत रूप</string>
+    <string name="inflection_es_reflexive_label">निजवाचक</string>
+    <string name="inflection_es_reflexive">क्रिया का निजवाचक रूप</string>
+    <string name="inflection_es_pronoun_substitution_label">सर्वनाम प्रतिस्थापन</string>
+    <string name="inflection_es_pronoun_substitution">निजवाचक क्रिया का प्रतिस्थापित सर्वनाम</string>
+    <string name="inflection_es_pronominal_label">सर्वनामयुक्त</string>
+    <string name="inflection_es_pronominal">क्रिया का सर्वनामयुक्त रूप</string>
+</resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">negativ</string>
+    <string name="inflection_sw_negative">negativ: ha- înaintea subiectului (hatukusoma, hakusoma), si- pentru eu și hu- pentru tu (sikusoma, hukusoma), si- după subiect înainte de relativ (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">eu</string>
+    <string name="inflection_sw_i">subiect ni-: eu (ninasoma, nilisoma)</string>
+    <string name="inflection_sw_you_label">tu</string>
+    <string name="inflection_sw_you">subiect u-: tu sau un substantiv din clasele 3, 11 și 14 (unasoma; mti umeanguka, copacul a căzut)</string>
+    <string name="inflection_sw_he_she_label">el/ea</string>
+    <string name="inflection_sw_he_she">subiect a-: el sau ea (anasoma, alisoma)</string>
+    <string name="inflection_sw_we_label">noi</string>
+    <string name="inflection_sw_we">subiect tu-: noi (tunasoma, hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">voi</string>
+    <string name="inflection_sw_you_pl">subiect m-: voi, mai multe persoane (mnasoma, hamkusoma)</string>
+    <string name="inflection_sw_they_label">ei/ele</string>
+    <string name="inflection_sw_they">subiect wa-: ei/ele (wanasoma, hawakusoma)</string>
+    <string name="inflection_sw_class_label">clasă</string>
+    <string name="inflection_sw_class">subiect al unei clase nominale: ki- vi- (kitabu kimeanguka), li- ya- (jina, majina), i- zi- (nyumba), ku- pa- mu- (locuri: kulikuwa, a fost)</string>
+    <string name="inflection_sw_past_label">trecut</string>
+    <string name="inflection_sw_past">trecut: li-; ku- după negație (alisoma, hakusoma)</string>
+    <string name="inflection_sw_present_label">prezent</string>
+    <string name="inflection_sw_present">prezent: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">viitor</string>
+    <string name="inflection_sw_future">viitor: ta-; taka- înainte de relativ (atasoma, hatasoma, atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">perfect</string>
+    <string name="inflection_sw_perfect">perfect: me- (amesoma, a citit)</string>
+    <string name="inflection_sw_not_yet_label">încă nu</string>
+    <string name="inflection_sw_not_yet">încă nu: ja- după negație (hajasoma, încă nu a citit)</string>
+    <string name="inflection_sw_conditional_label">condițional</string>
+    <string name="inflection_sw_conditional">condițional: nge- și ngali- (angesoma, ar citi; angalisoma, ar fi citit)</string>
+    <string name="inflection_sw_when_label">când</string>
+    <string name="inflection_sw_when">ki-: când, în timp ce sau dacă (akisoma)</string>
+    <string name="inflection_sw_and_then_label">și apoi</string>
+    <string name="inflection_sw_and_then">ka-: și apoi, într-o narațiune (akasoma)</string>
+    <string name="inflection_sw_habitual_label">habitual</string>
+    <string name="inflection_sw_habitual">habitual: hu- (husoma, citește de obicei)</string>
+    <string name="inflection_sw_relative_label">relativ</string>
+    <string name="inflection_sw_relative">relativ: care, unde (aliyesoma, cel care a citit; kinachoitwa, care se numește; waishio, care trăiesc)</string>
+    <string name="inflection_sw_object_label">complement</string>
+    <string name="inflection_sw_object">complement: ni- pe mine, ku- pe tine, m- sau mw- pe el/ea, tu- pe noi, wa- pe ei/ele și prefixele de clasă nominală ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda, alimwona)</string>
+    <string name="inflection_sw_reflexive_label">reflexiv</string>
+    <string name="inflection_sw_reflexive">reflexiv ji-: pe sine (alijificha, kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">infinitiv</string>
+    <string name="inflection_sw_infinitive">infinitiv: ku- sau kw- (kusoma, kwandika, kumpa)</string>
+</resources>

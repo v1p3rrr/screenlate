@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">मृदुकरण</string>
+    <string name="inflection_ga_lenition">मृदुकरण (लेनिशन): b c d f g m p s t के लिए bh ch dh fh gh mh ph sh th, उपपद के बाद s के लिए ts (bean से an bhean, sráid से an tsráid)</string>
+    <string name="inflection_ga_eclipsis_label">एक्लिप्सिस</string>
+    <string name="inflection_ga_eclipsis">एक्लिप्सिस: b c d f g p t के लिए mb gc nd bhf ng bp dt, स्वर से पहले n- (Gaillimh से i nGaillimh, athair से ár n-athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t-आगम</string>
+    <string name="inflection_ga_t_prothesis">स्वर से पहले t (uisce से an t-uisce, Aontas से an tAontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h-आगम</string>
+    <string name="inflection_ga_h_prothesis">स्वर से पहले h (Éireann से na hÉireann, athair से a hathair)</string>
+</resources>

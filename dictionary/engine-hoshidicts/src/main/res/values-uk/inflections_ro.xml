@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ro_ul_label">означена форма</string>
+    <string name="inflection_ro_ul">означений артикль (procesul від proces, consiliul від consiliu)</string>
+    <string name="inflection_ro_le_label">означена форма</string>
+    <string name="inflection_ro_le">означений артикль (fratele від frate, textele від texte)</string>
+    <string name="inflection_ro_a_label">означена форма</string>
+    <string name="inflection_ro_a">означений артикль іменників жіночого роду (dezvoltarea від dezvoltare, comisia від comisie)</string>
+    <string name="inflection_ro_i_label">означена множина</string>
+    <string name="inflection_ro_i">означений артикль множини чоловічого роду (pomii від pomi)</string>
+    <string name="inflection_ro_ului_label">означений родовий</string>
+    <string name="inflection_ro_ului">родовий і давальний відмінки з означеним артиклем (procesului від proces, fratelui від frate)</string>
+    <string name="inflection_ro_ei_label">означений родовий</string>
+    <string name="inflection_ro_ei">родовий і давальний відмінки іменників жіночого роду з означеним артиклем (Moldovei від Moldova, comisiei від comisie)</string>
+    <string name="inflection_ro_ii_label">означений родовий</string>
+    <string name="inflection_ro_ii">родовий і давальний відмінки іменників жіночого роду на -e з означеним артиклем (lumii від lume, dezvoltării від dezvoltare)</string>
+    <string name="inflection_ro_lor_label">означений родовий мн.</string>
+    <string name="inflection_ro_lor">родовий і давальний відмінки множини з означеним артиклем (caselor від case)</string>
+    <string name="inflection_ro_agreement_label">жіночий рід або множина</string>
+    <string name="inflection_ro_agreement">жіночий рід або множина дієприкметника чи прикметника (aflată, aflate, aflați від aflat; pusă від pus)</string>
+</resources>

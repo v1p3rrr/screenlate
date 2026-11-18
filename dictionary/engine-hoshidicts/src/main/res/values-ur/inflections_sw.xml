@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_sw_negative_label">منفی</string>
+    <string name="inflection_sw_negative">نفی: فاعل سے پہلے ha- (hatukusoma، hakusoma)، “میں” کے لیے si- اور “تم” کے لیے hu- (sikusoma، hukusoma)، فاعل کے بعد موصول سے پہلے si- (isiyojulikana)</string>
+    <string name="inflection_sw_i_label">میں</string>
+    <string name="inflection_sw_i">فاعل ni-: میں (ninasoma، nilisoma)</string>
+    <string name="inflection_sw_you_label">تم</string>
+    <string name="inflection_sw_you">فاعل u-: تم، یا کلاس 3، 11 اور 14 کا اسم (unasoma؛ mti umeanguka، درخت گر گیا ہے)</string>
+    <string name="inflection_sw_he_she_label">وہ</string>
+    <string name="inflection_sw_he_she">فاعل a-: وہ (واحد) (anasoma، alisoma)</string>
+    <string name="inflection_sw_we_label">ہم</string>
+    <string name="inflection_sw_we">فاعل tu-: ہم (tunasoma، hatukusoma)</string>
+    <string name="inflection_sw_you_pl_label">تم (جمع)</string>
+    <string name="inflection_sw_you_pl">فاعل m-: تم، ایک سے زیادہ (mnasoma، hamkusoma)</string>
+    <string name="inflection_sw_they_label">وہ (جمع)</string>
+    <string name="inflection_sw_they">فاعل wa-: وہ (جمع) (wanasoma، hawakusoma)</string>
+    <string name="inflection_sw_class_label">اسمی کلاس</string>
+    <string name="inflection_sw_class">اسمی کلاس کا فاعل: ki- vi- (kitabu kimeanguka)، li- ya- (jina، majina)، i- zi- (nyumba)، ku- pa- mu- (مقامات: kulikuwa، وہاں تھا)</string>
+    <string name="inflection_sw_past_label">ماضی</string>
+    <string name="inflection_sw_past">ماضی: li-، اور نفی کے بعد ku- (alisoma، hakusoma)</string>
+    <string name="inflection_sw_present_label">حال</string>
+    <string name="inflection_sw_present">حال: na- (anasoma)</string>
+    <string name="inflection_sw_future_label">مستقبل</string>
+    <string name="inflection_sw_future">مستقبل: ta-، اور موصول سے پہلے taka- (atasoma، hatasoma، atakayesoma)</string>
+    <string name="inflection_sw_perfect_label">مکمل</string>
+    <string name="inflection_sw_perfect">مکمل: me- (amesoma، پڑھ چکا ہے)</string>
+    <string name="inflection_sw_not_yet_label">ابھی نہیں</string>
+    <string name="inflection_sw_not_yet">ابھی نہیں: نفی کے بعد ja- (hajasoma، ابھی نہیں پڑھا)</string>
+    <string name="inflection_sw_conditional_label">شرطیہ</string>
+    <string name="inflection_sw_conditional">شرطیہ: nge- اور ngali- (angesoma، پڑھتا؛ angalisoma، پڑھ چکا ہوتا)</string>
+    <string name="inflection_sw_when_label">جب</string>
+    <string name="inflection_sw_when">ki-: جب، دوران یا اگر (akisoma)</string>
+    <string name="inflection_sw_and_then_label">اور پھر</string>
+    <string name="inflection_sw_and_then">ka-: اور پھر، بیان میں (akasoma)</string>
+    <string name="inflection_sw_habitual_label">عادتی</string>
+    <string name="inflection_sw_habitual">عادتی: hu- (husoma، عموماً پڑھتا ہے)</string>
+    <string name="inflection_sw_relative_label">موصولی</string>
+    <string name="inflection_sw_relative">موصولی: جو، جہاں (aliyesoma، جس نے پڑھا؛ kinachoitwa، جو کہلاتا ہے؛ waishio، جو رہتے ہیں)</string>
+    <string name="inflection_sw_object_label">مفعول</string>
+    <string name="inflection_sw_object">مفعول: ni- مجھے، ku- تمہیں، m- یا mw- اسے، tu- ہمیں، wa- انہیں، اور اسمی کلاس کے سابقے ki- vi- li- ya- i- zi- u- pa- mu- (ninakupenda، alimwona)</string>
+    <string name="inflection_sw_reflexive_label">انعکاسی</string>
+    <string name="inflection_sw_reflexive">انعکاسی ji-: خود کو (alijificha، kujiunga)</string>
+    <string name="inflection_sw_infinitive_label">مصدر</string>
+    <string name="inflection_sw_infinitive">مصدر: ku- یا kw- (kusoma، kwandika، kumpa)</string>
+</resources>

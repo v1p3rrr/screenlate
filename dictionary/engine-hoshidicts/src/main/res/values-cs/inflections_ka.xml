@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">skloňování</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Odstranění pádových přípon gruzínských podstatných a přídavných jmen</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">nominativ</string>
+    <string name="inflection_ka_nounadjstemcompletion">Obnovení přípony nominativu -ი u kmenů podstatných a přídavných jmen zakončených souhláskou</string>
+    <string name="inflection_ka_vowelrestoration_label">vypuštěná samohláska</string>
+    <string name="inflection_ka_vowelrestoration">Obnovení vypuštěných samohlásek, je-li to třeba</string>
+</resources>

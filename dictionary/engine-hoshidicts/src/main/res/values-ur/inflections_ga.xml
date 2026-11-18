@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inflection_ga_lenition_label">تلیین</string>
+    <string name="inflection_ga_lenition">تلیین: b c d f g m p s t کے لیے bh ch dh fh gh mh ph sh th، حرفِ تعریف کے بعد s کے لیے ts (bean سے an bhean، sráid سے an tsráid)</string>
+    <string name="inflection_ga_eclipsis_label">اخفا</string>
+    <string name="inflection_ga_eclipsis">اخفا: b c d f g p t کے لیے mb gc nd bhf ng bp dt، مصوتے سے پہلے n- (Gaillimh سے i nGaillimh، athair سے ár n-athair)</string>
+    <string name="inflection_ga_t_prothesis_label">t-اضافہ</string>
+    <string name="inflection_ga_t_prothesis">مصوتے سے پہلے t (uisce سے an t-uisce، Aontas سے an tAontas)</string>
+    <string name="inflection_ga_h_prothesis_label">h-اضافہ</string>
+    <string name="inflection_ga_h_prothesis">مصوتے سے پہلے h (Éireann سے na hÉireann، athair سے a hathair)</string>
+</resources>

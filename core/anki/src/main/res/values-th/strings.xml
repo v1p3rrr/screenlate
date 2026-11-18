@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_source_tts">การอ่านออกเสียงข้อความ (TTS)</string>
+    <string name="audio_source_url">URL กำหนดเอง</string>
+    <string name="audio_source_json">URL กำหนดเอง (JSON)</string>
+    <string name="anki_problem_not_installed">ยังไม่ได้ติดตั้ง AnkiDroid</string>
+    <string name="anki_problem_no_permission">ไม่มีสิทธิ์เข้าถึง AnkiDroid</string>
+    <string name="anki_problem_model_missing">ไม่พบประเภทโน้ตใน AnkiDroid</string>
+    <string name="anki_problem_deck_missing">ไม่พบสำรับใน AnkiDroid</string>
+    <string name="anki_problem_fields_changed">ฟิลด์ของประเภทโน้ตเปลี่ยนแปลงไป</string>
+</resources>
