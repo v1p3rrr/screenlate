@@ -507,7 +507,10 @@ const Popup = (() => {
         }
         const alts = term.alternativeExpressions || [];
         if (alts.length) {
-            const altSpan = element('span', 'alt-expressions', alts.join('・'));
+            const sep = !lang || lang.startsWith('ja') ? '・'
+                : (lang.startsWith('zh') || lang.startsWith('yue')) ? '、'
+                : ' · ';
+            const altSpan = element('span', 'alt-expressions', alts.join(sep));
             if (rightToLeft) altSpan.dir = 'rtl';
             head.append(altSpan);
         }
@@ -1120,22 +1123,9 @@ const Popup = (() => {
     /** Harmonic or arithmetic average rank across rank-based frequency dictionaries when that sort mode is active. */
     function aggregateFrequency(term, labels) {
         const mode = noteConfig.sortFrequencyMode;
-        if (mode !== 'harmonic' && mode !== 'average') return null;
-        const modes = noteConfig.frequencyModes || {};
-        const numbers = [];
-        for (const group of term.frequencies || []) {
-            if (modes[group.dictionary] === 'occurrence-based') continue;
-            const value = (group.values || [])[0];
-            if (!value) continue;
-            const display = /^\d+/.exec(value.displayValue || '');
-            const parsed = display ? Number.parseInt(display[0], 10) : 0;
-            if (parsed > 0) numbers.push(parsed);
-            else if (value.value > 0) numbers.push(value.value);
-        }
-        if (!numbers.length) return null;
-        const value = mode === 'harmonic'
-            ? Math.floor(numbers.length / numbers.reduce((sum, n) => sum + 1 / n, 0))
-            : Math.floor(numbers.reduce((sum, n) => sum + n, 0) / numbers.length);
+        if (typeof NoteData === 'undefined' || typeof NoteData.aggregateFrequency !== 'function') return null;
+        const value = NoteData.aggregateFrequency(term, noteConfig.frequencyModes || {}, mode);
+        if (value === null) return null;
         const label = mode === 'harmonic'
             ? (labels.freqHarmonic || 'Harm')
             : (labels.freqAverage || 'Avg');
@@ -1503,12 +1493,8 @@ const Popup = (() => {
         }
 
         const savedScroll = preserveScroll ? content.scrollTop : 0;
-        const savedStates = {};
-        if (sameTerms) {
-            content.querySelectorAll('.action-add[data-index][data-state]').forEach(button => {
-                savedStates[button.dataset.index] = button.dataset.state;
-            });
-        }
+        const preserveStates = sameTerms && !history.length;
+        const savedStates = preserveStates ? captureNoteStates() : null;
         history.length = 0;
         current = state;
         if (preserveScroll && resultsKey(state) === drawnKey) {
@@ -1518,7 +1504,7 @@ const Popup = (() => {
         // Reset the old, already laid-out view; writing after replacement forces layout before script marking.
         content.scrollTop = 0;
         draw(state);
-        if (sameTerms) setNoteStates(savedStates);
+        if (savedStates) setNoteStates(savedStates);
         if (savedScroll > 0) {
             content.classList.toggle('restore-scroll', true);
             content.scrollTop = savedScroll;
@@ -1785,16 +1771,21 @@ const Popup = (() => {
         document.documentElement.dataset.embedded = String(Boolean(options.embedded));
     }
 
+    function captureNoteStates() {
+        const states = {};
+        content.querySelectorAll('.action-add[data-index][data-state]').forEach(button => {
+            states[button.dataset.index] = button.dataset.state;
+        });
+        return states;
+    }
+
     /** Which entry buttons to show: { anki: boolean, audio: boolean, ankiProblem: string | null }. */
     function setActions(newActions) {
         const changed = JSON.stringify(newActions) !== JSON.stringify(actions);
         actions = newActions;
         if (!changed || !current) return;
         // Drawing again resets the ➕ buttons; the states they had carry over.
-        const states = {};
-        content.querySelectorAll('.action-add[data-index][data-state]').forEach(button => {
-            states[button.dataset.index] = button.dataset.state;
-        });
+        const states = captureNoteStates();
         drawResults(current);
         setNoteStates(states);
     }
@@ -1820,10 +1811,7 @@ const Popup = (() => {
         noteConfig = config || { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '' };
         const nextSort = noteConfig.sortFrequencyMode || '';
         if (prevSort !== nextSort && current) {
-            const states = {};
-            content.querySelectorAll('.action-add[data-index][data-state]').forEach(button => {
-                states[button.dataset.index] = button.dataset.state;
-            });
+            const states = captureNoteStates();
             drawResults(current);
             setNoteStates(states);
             return;

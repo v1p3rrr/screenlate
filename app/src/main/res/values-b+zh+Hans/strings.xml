@@ -1008,4 +1008,5 @@
     <string name="lookup_text_replacement_regex">正则表达式</string>
     <string name="lookup_text_replacement_ignore_case">忽略大小写</string>
     <string name="yomitan_summary_replacements_imported">已导入文本替换规则：%1$d</string>
+    <string name="lookup_text_replacement_test">测试文本</string>
 </resources>

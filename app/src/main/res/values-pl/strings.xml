@@ -1047,4 +1047,5 @@
     <string name="lookup_text_replacement_regex">Wyrażenie regularne</string>
     <string name="lookup_text_replacement_ignore_case">Ignoruj wielkość liter</string>
     <string name="yomitan_summary_replacements_imported">Zaimportowane reguły zamiany tekstu: %1$d</string>
+    <string name="lookup_text_replacement_test">Tekst testowy</string>
 </resources>

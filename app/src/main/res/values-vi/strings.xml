@@ -1008,4 +1008,5 @@
     <string name="lookup_text_replacement_regex">Biểu thức chính quy</string>
     <string name="lookup_text_replacement_ignore_case">Không phân biệt hoa thường</string>
     <string name="yomitan_summary_replacements_imported">Quy tắc thay thế văn bản đã nhập: %1$d</string>
+    <string name="lookup_text_replacement_test">Văn bản thử nghiệm</string>
 </resources>

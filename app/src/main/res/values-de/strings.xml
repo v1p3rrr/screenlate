@@ -1021,4 +1021,5 @@
     <string name="lookup_text_replacement_regex">Regulärer Ausdruck</string>
     <string name="lookup_text_replacement_ignore_case">Groß-/Kleinschreibung ignorieren</string>
     <string name="yomitan_summary_replacements_imported">Importierte Textersetzungsregeln: %1$d</string>
+    <string name="lookup_text_replacement_test">Testtext</string>
 </resources>

@@ -111,7 +111,7 @@ internal fun List<LookupResult>.mergeSpellingVariants(
             } else {
                 existing.term.alternativeExpressions
             }
-            val combined = existing.joined(result.term, dictionaryOrder)
+            val combined = existing.joined(result.term, dictionaryOrder, dedupeByContent = true)
             merged[key] = combined.copy(term = combined.term.copy(alternativeExpressions = alts))
         }
     }
@@ -178,8 +178,17 @@ internal suspend fun spelling(
 }
 
 /** This result with [other]'s definitions, frequencies and pronunciations that it lacks. */
-private fun LookupResult.joined(other: TermEntry, dictionaryOrder: List<String>): LookupResult {
-    val glossaries = other.glossaries.filter { it !in term.glossaries }
+private fun LookupResult.joined(
+    other: TermEntry,
+    dictionaryOrder: List<String>,
+    dedupeByContent: Boolean = false,
+): LookupResult {
+    val existingKeys = if (dedupeByContent) term.glossaries.mapTo(HashSet()) { it.dictionary to it.content } else null
+    val glossaries = if (existingKeys != null) {
+        other.glossaries.filter { (it.dictionary to it.content) !in existingKeys }
+    } else {
+        other.glossaries.filter { it !in term.glossaries }
+    }
     val frequencies = other.frequencies.filter { new -> term.frequencies.none { it.dictionary == new.dictionary } }
     val pitches = other.pitches.filter { new -> term.pitches.none { it.dictionary == new.dictionary } }
     if (glossaries.isEmpty() && frequencies.isEmpty() && pitches.isEmpty()) return this

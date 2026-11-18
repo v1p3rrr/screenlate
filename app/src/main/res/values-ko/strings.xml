@@ -1008,4 +1008,5 @@
     <string name="lookup_text_replacement_regex">정규 표현식</string>
     <string name="lookup_text_replacement_ignore_case">대소문자 구분 안 함</string>
     <string name="yomitan_summary_replacements_imported">가져온 텍스트 치환 규칙: %1$d</string>
+    <string name="lookup_text_replacement_test">테스트 텍스트</string>
 </resources>

@@ -93,4 +93,11 @@ class LookupVariantsTest {
         val found = LookupVariants.of("usd", LookupSettings(textReplacements = rules), EnglishSupport)
         assertThat(found.map { it.text }).containsExactly("usd", "$1").inOrder()
     }
+
+    @Test
+    fun `catastrophic backtracking regex is aborted by step limit without hanging`() {
+        val evil = listOf(TextReplacement(pattern = "(a+)+$", replacement = "x", regex = true, enabled = true))
+        val text = "a".repeat(30) + "!"
+        assertThat(TextReplacements.apply(text, evil)).isEqualTo(text)
+    }
 }

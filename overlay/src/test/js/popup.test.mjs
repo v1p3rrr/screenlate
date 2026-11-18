@@ -1920,3 +1920,45 @@ test('popup-selection-text is captured on pointerdown before tapping Anki add', 
     const payload = JSON.parse(call[2]);
     assert.match(payload.values['popup-selection-text'], /meaning/);
 });
+
+test('collapsed dictionary hides its copy button even when definition copying is enabled', () => {
+    const style = page.document.createElement('style');
+    style.textContent = readFileSync(new URL('../../main/assets/popup/popup.css', import.meta.url), 'utf8');
+    page.document.head.append(style);
+    Popup.setAppearance({ definitionCopy: 'all' });
+    Popup.render(state());
+    const section = content.querySelector('section.dictionary');
+    const copy = section.querySelector('.copy-definition');
+    assert.equal(page.window.getComputedStyle(copy).display, 'inline-flex');
+    section.querySelector('.dictionary-name').click();
+    assert.equal(section.classList.contains('collapsed'), true);
+    assert.equal(page.window.getComputedStyle(copy).display, 'none');
+});
+
+test('pushed view note states do not leak onto root view on non-refined render', () => {
+    Popup.setActions({ anki: true, audio: false });
+    Popup.render(state());
+    Popup.push(state({ results: [result('犬', 'いぬ')] }));
+    Popup.setNoteStates({ 0: 'open' });
+    // Non-refined continued render replaces history with root terms; must not copy pushed view's "open" state.
+    Popup.render(state(), { continued: true, refined: false });
+    const button = content.querySelector('.action-add');
+    assert.equal(button.dataset.state, undefined);
+});
+
+test('alternative expressions use language-appropriate separators', () => {
+    const zh = result('頭髮', 'tóufa', 'hair');
+    zh.lang = 'zh-Hant';
+    zh.term.alternativeExpressions = ['头发', '頭髪'];
+    Popup.render(state({ results: [zh] }));
+    assert.equal(content.querySelector('.alt-expressions').textContent, '头发、頭髪');
+
+    const ko = result('사랑', '사랑', 'love');
+    ko.lang = 'ko';
+    ko.term.alternativeExpressions = ['사랑하다'];
+    Popup.render(state({ results: [ko] }));
+    assert.equal(content.querySelector('.alt-expressions').textContent, '사랑하다');
+    ko.term.alternativeExpressions = ['A', 'B'];
+    Popup.render(state({ results: [ko] }));
+    assert.equal(content.querySelector('.alt-expressions').textContent, 'A · B');
+});

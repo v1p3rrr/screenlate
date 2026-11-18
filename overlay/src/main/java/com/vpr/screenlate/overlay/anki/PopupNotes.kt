@@ -155,6 +155,9 @@ class PopupNotes(
     /** Notes that the 📖 buttons of the current view open, by entry index. */
     private val openableNotes = mutableMapOf<Int, List<Long>>()
 
+    /** `(expression, reading)` sequence last passed to [onResultsShown], to preserve [openableNotes] on refined redraws. */
+    private var lastShownTerms: List<Pair<String, String>>? = null
+
     /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
 
@@ -195,9 +198,11 @@ class PopupNotes(
 
     /** Called after a view with results is shown: schedules the duplicate check and auto-play. */
     fun onResultsShown(results: List<LookupResult>, position: TextPosition? = null) {
-        val firstTerm = results.firstOrNull()?.term?.let { it.expression to it.reading }
+        val terms = results.map { it.term.expression to it.term.reading }
+        val firstTerm = terms.firstOrNull()
         audioPlayback.onResultsShown(results, position)
-        openableNotes.clear()
+        if (terms != lastShownTerms) openableNotes.clear()
+        lastShownTerms = terms
         duplicateJob?.cancel()
         duplicateJob = scope.launch {
             delay(DUPLICATE_CHECK_DELAY_MS)
@@ -217,6 +222,7 @@ class PopupNotes(
     /** The earlier view is back: its entries are marked again, without auto-play. */
     override fun onViewRestored() {
         onResultsHidden()
+        lastShownTerms = null
         openableNotes.clear()
         duplicateJob = scope.launch { markNotes() }
     }
@@ -253,6 +259,7 @@ class PopupNotes(
         onResultsHidden()
         statusCache.clear()
         lastAutoPlayed = null
+        lastShownTerms = null
         scanNotes.close()
         openableNotes.clear()
         chosenClips.clear()
@@ -522,30 +529,38 @@ class PopupNotes(
         return formatted["html"].orEmpty() to formatted["plain"].orEmpty()
     }
 
-    private fun readClipboardText(): String? = runCatching {
-        val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return null
-        val clip = clipboard.primaryClip ?: return null
-        if (clip.itemCount == 0) return null
-        val item = clip.getItemAt(0)
-        // Skip image-only content URIs so their raw URI string is not pasted as clipboard-text.
-        val uri = item.uri
-        if (item.text.isNullOrEmpty() && uri != null && context.contentResolver.getType(uri)?.startsWith("image/") == true) {
-            return null
-        }
-        item.coerceToText(context)?.toString()?.trim()?.takeIf { it.isNotEmpty() }
-    }.getOrNull()
+    private suspend fun readClipboardText(): String? = withContext(Dispatchers.IO) {
+        runCatching {
+            val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return@withContext null
+            val clip = clipboard.primaryClip ?: return@withContext null
+            if (clip.itemCount == 0) return@withContext null
+            val item = clip.getItemAt(0)
+            // Skip image-only content URIs so their raw URI string is not pasted as clipboard-text.
+            val uri = item.uri
+            if (item.text.isNullOrEmpty() && uri != null && context.contentResolver.getType(uri)?.startsWith("image/") == true) {
+                return@withContext null
+            }
+            item.coerceToText(context)?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+        }.getOrNull()
+    }
 
     private suspend fun readClipboardImage(): String? {
-        val uri = runCatching {
-            val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return null
-            val clip = clipboard.primaryClip ?: return null
-            (0 until clip.itemCount).firstNotNullOfOrNull { i ->
-                clip.getItemAt(i).uri?.takeIf { context.contentResolver.getType(it)?.startsWith("image/") == true }
-            }
-        }.getOrNull() ?: return null
         val bitmap = withContext(Dispatchers.IO) {
             runCatching {
-                context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
+                val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return@withContext null
+                val clip = clipboard.primaryClip ?: return@withContext null
+                val uri = (0 until clip.itemCount).firstNotNullOfOrNull { i ->
+                    clip.getItemAt(i).uri?.takeIf { context.contentResolver.getType(it)?.startsWith("image/") == true }
+                } ?: return@withContext null
+                val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+                if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return@withContext null
+                var sampleSize = 1
+                while (maxOf(bounds.outWidth, bounds.outHeight) / (sampleSize * 2) >= MAX_CLIPBOARD_IMAGE_SIDE) {
+                    sampleSize *= 2
+                }
+                val decode = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+                context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, decode) }
             }.getOrNull()
         } ?: return null
         var file: File? = null
@@ -671,6 +686,7 @@ class PopupNotes(
     private companion object {
         const val TAG = "PopupNotes"
         const val DUPLICATE_CHECK_DELAY_MS = 100L
+        const val MAX_CLIPBOARD_IMAGE_SIDE = 1920
         const val ANKI_STATUS_TTL_MS = 5_000L
         const val AUTO_PLAY_DELAY_MS = 500L
         const val SCREENSHOT_QUALITY = 85

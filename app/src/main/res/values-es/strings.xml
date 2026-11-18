@@ -1034,4 +1034,5 @@
     <string name="lookup_text_replacement_regex">Expresión regular</string>
     <string name="lookup_text_replacement_ignore_case">Ignorar mayúsculas y minúsculas</string>
     <string name="yomitan_summary_replacements_imported">Reglas de reemplazo de texto importadas: %1$d</string>
+    <string name="lookup_text_replacement_test">Texto de prueba</string>
 </resources>

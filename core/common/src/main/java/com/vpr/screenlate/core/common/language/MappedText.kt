@@ -22,10 +22,12 @@ class MappedText(val text: String, private val sourceEnds: IntArray) {
 
     /**
      * Replaces every match of [regex] in [text]. [replacement] uses JavaScript syntax (`$1`, `$&`, `$<name>`,
-     * `$$`) as in Yomitan's text replacements. A replaced part maps to the whole match.
+     * `$$`) as in Yomitan's text replacements. A replaced part maps to the whole match. When [maxSteps] > 0, aborts
+     * with [RegexStepLimitException] if matching reads more than [maxSteps] characters (guards against ReDoS).
      */
-    fun replace(regex: Regex, replacement: String): MappedText {
-        val matcher = regex.toPattern().matcher(text)
+    fun replace(regex: Regex, replacement: String, maxSteps: Int = 0): MappedText {
+        val input: CharSequence = if (maxSteps > 0) BoundedCharSequence(text, maxSteps) else text
+        val matcher = regex.toPattern().matcher(input)
         val javaReplacement = javaReplacement(replacement)
         // The StringBuffer overload of appendReplacement exists on every API level; the StringBuilder one needs 34.
         val out = StringBuffer()
@@ -44,6 +46,27 @@ class MappedText(val text: String, private val sourceEnds: IntArray) {
             ends += i + 1
         }
         return then(MappedText(out.toString(), ends.toIntArray()))
+    }
+
+    /** Thrown when a user-supplied regex exceeds its character-access budget in [replace]. */
+    class RegexStepLimitException : RuntimeException()
+
+    private class BoundedCharSequence(
+        private val delegate: CharSequence,
+        private val maxSteps: Int,
+        private val counter: IntArray = IntArray(1),
+    ) : CharSequence {
+        override val length: Int get() = delegate.length
+
+        override fun get(index: Int): Char {
+            if (++counter[0] > maxSteps) throw RegexStepLimitException()
+            return delegate[index]
+        }
+
+        override fun subSequence(startIndex: Int, endIndex: Int): CharSequence =
+            BoundedCharSequence(delegate.subSequence(startIndex, endIndex), maxSteps, counter)
+
+        override fun toString(): String = delegate.toString()
     }
 
     override fun toString(): String = text

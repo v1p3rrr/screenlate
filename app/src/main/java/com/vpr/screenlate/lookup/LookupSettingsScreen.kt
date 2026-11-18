@@ -23,6 +23,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,14 +31,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.dictionary.api.TextReplacements
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import com.vpr.screenlate.languages.LanguageCard
@@ -222,6 +226,7 @@ private fun TextReplacementsDialog(
 ) {
     var editingIndex by remember { mutableStateOf<Int?>(null) }
     var adding by remember { mutableStateOf(false) }
+    var sample by remember { mutableStateOf("") }
 
     if (adding || editingIndex != null) {
         val current = editingIndex?.let { rules.getOrNull(it) }
@@ -274,11 +279,13 @@ private fun TextReplacementsDialog(
                                 .padding(vertical = 4.dp),
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "${rule.pattern} → ${rule.replacement}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontFamily = FontFamily.Monospace,
-                                )
+                                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                                    Text(
+                                        text = "${rule.pattern} → ${rule.replacement}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontFamily = FontFamily.Monospace,
+                                    )
+                                }
                                 val flags = buildList {
                                     if (rule.regex) add(stringResource(R.string.lookup_text_replacement_regex))
                                     if (rule.ignoreCase) add("Aa")
@@ -313,6 +320,25 @@ private fun TextReplacementsDialog(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(stringResource(R.string.lookup_text_replacement_add))
+                }
+                if (rules.isNotEmpty()) {
+                    HorizontalDivider()
+                    OutlinedTextField(
+                        value = sample,
+                        onValueChange = { sample = it },
+                        label = { Text(stringResource(R.string.lookup_text_replacement_test)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    if (sample.isNotEmpty()) {
+                        val preview = remember(sample, rules) { TextReplacements.apply(sample, rules) }
+                        Text(
+                            text = preview,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontFamily = FontFamily.Monospace,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
             }
         },

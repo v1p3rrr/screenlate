@@ -234,20 +234,22 @@ class ShownResultsTest {
     fun `mergeSpellingVariants combines entries with same reading and primary glossary`() {
         val shared = """["to see"]"""
         val different = """["to examine"]"""
-        fun entry(expression: String, reading: String, content: String) = LookupResult(
+        fun entry(expression: String, reading: String, content: String, termTags: String = "") = LookupResult(
             matched = "みる",
             deinflected = "みる",
-            term = TermEntry(expression, reading, glossaries = listOf(Glossary("Jitendex", content))),
+            term = TermEntry(expression, reading, glossaries = listOf(Glossary("Jitendex", content, termTags = termTags))),
         )
         val merged = listOf(
-            entry("見る", "みる", shared),
-            entry("観る", "みる", shared),
+            entry("見る", "みる", shared, termTags = "★"),
+            entry("観る", "みる", shared, termTags = "rK"),
             entry("診る", "みる", different),
             entry("みる", "", shared),
         ).mergeSpellingVariants(listOf("Jitendex"), Language.JAPANESE.support)
 
         assertThat(merged.map { it.term.expression }).containsExactly("見る", "診る").inOrder()
         assertThat(merged[0].term.alternativeExpressions).containsExactly("観る", "みる").inOrder()
+        // Identical glossary content must not be duplicated when termTags differ.
+        assertThat(merged[0].term.glossaries).hasSize(1)
         assertThat(merged[1].term.alternativeExpressions).isEmpty()
     }
 }

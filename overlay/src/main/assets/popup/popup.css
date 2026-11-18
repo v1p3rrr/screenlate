@@ -820,8 +820,7 @@ button.dictionary-name {
 }
 
 .dictionary.collapsed > .definitions,
-.dictionary.collapsed > .definition,
-.dictionary.collapsed > .copy-definition {
+.dictionary.collapsed > .definition {
     display: none;
 }
 
@@ -845,6 +844,10 @@ button.dictionary-name {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+:root .dictionary.collapsed > .copy-definition {
+    display: none;
 }
 
 .copy-definition:active {

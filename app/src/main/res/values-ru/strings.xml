@@ -1048,4 +1048,5 @@
     <string name="lookup_text_replacement_regex">Регулярное выражение</string>
     <string name="lookup_text_replacement_ignore_case">Без учёта регистра</string>
     <string name="yomitan_summary_replacements_imported">Импортировано правил замены текста: %1$d</string>
+    <string name="lookup_text_replacement_test">Проверить на тексте</string>
 </resources>

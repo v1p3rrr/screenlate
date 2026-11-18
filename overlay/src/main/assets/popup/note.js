@@ -259,6 +259,15 @@ const NoteData = (() => {
         return Math.floor(numbers.reduce((sum, n) => sum + n, 0) / numbers.length);
     }
 
+    /** Harmonic or arithmetic average rank across rank-based frequency dictionaries; null when none apply. */
+    function aggregateFrequency(term, modes, mode) {
+        if (mode !== 'harmonic' && mode !== 'average') return null;
+        const numbers = frequencyNumbers(term, modes || {}, 'rank-based', null);
+        if (!numbers.length) return null;
+        const value = mode === 'harmonic' ? harmonic(numbers) : average(numbers);
+        return value > 0 ? value : null;
+    }
+
     function frequencyList(term, dictionary) {
         const items = [];
         for (const group of term.frequencies || []) {
@@ -415,5 +424,5 @@ const NoteData = (() => {
         return { values, media, term: { expression: term.expression, reading: term.reading || '' } };
     }
 
-    return { build, sentenceFurigana, kebab };
+    return { build, sentenceFurigana, kebab, aggregateFrequency };
 })();

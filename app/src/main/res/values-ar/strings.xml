@@ -1073,4 +1073,5 @@
     <string name="lookup_text_replacement_regex">تعبير نمطي</string>
     <string name="lookup_text_replacement_ignore_case">تجاهل حالة الأحرف</string>
     <string name="yomitan_summary_replacements_imported">قواعد استبدال النص المستوردة: %1$d</string>
+    <string name="lookup_text_replacement_test">اختبار النص</string>
 </resources>

@@ -1025,4 +1025,5 @@
     <string name="lookup_text_replacement_regex">Regular expression</string>
     <string name="lookup_text_replacement_ignore_case">Ignore case</string>
     <string name="yomitan_summary_replacements_imported">Text replacement rules imported: %1$d</string>
+    <string name="lookup_text_replacement_test">Test text</string>
 </resources>

@@ -1022,4 +1022,5 @@
     <string name="lookup_text_replacement_regex">عبارت باقاعده</string>
     <string name="lookup_text_replacement_ignore_case">نادیده گرفتن بزرگی و کوچکی حروف</string>
     <string name="yomitan_summary_replacements_imported">قواعد جایگزینی متن واردشده: %1$d</string>
+    <string name="lookup_text_replacement_test">متن آزمایشی</string>
 </resources>

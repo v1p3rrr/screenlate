@@ -1021,4 +1021,5 @@
     <string name="lookup_text_replacement_regex">Düzenli ifade</string>
     <string name="lookup_text_replacement_ignore_case">Büyük/küçük harf yoksay</string>
     <string name="yomitan_summary_replacements_imported">İçe aktarılan metin değiştirme kuralları: %1$d</string>
+    <string name="lookup_text_replacement_test">Test metni</string>
 </resources>

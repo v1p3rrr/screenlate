@@ -368,13 +368,13 @@ class DictionaryRepository @Inject constructor(
     }
 
     /** Active aggregate frequency sort mode (`"harmonic"` or `"average"`) for [language], or null when sorting by one dictionary. */
-    suspend fun sortFrequencyMode(language: Language): String? {
+    suspend fun sortFrequencyMode(language: Language): String? = withContext(Dispatchers.IO) {
         val chosen = preferences.data.first()[sortKey(language)]
-        val mode = FrequencySort.modeForId(chosen) ?: return null
+        val mode = FrequencySort.modeForId(chosen) ?: return@withContext null
         val rankBasedCount = dao.getAll().count {
             it.frequencyCount > 0 && it.frequencyMode != "occurrence-based" && usable(it, language)
         }
-        return mode.takeIf { rankBasedCount >= 2 }
+        mode.takeIf { rankBasedCount >= 2 }
     }
 
     suspend fun setSortDictionary(language: Language, id: Long) = mutex.withLock {

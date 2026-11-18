@@ -1035,4 +1035,5 @@
     <string name="lookup_text_replacement_regex">ביטוי רגולרי</string>
     <string name="lookup_text_replacement_ignore_case">התעלמות מאותיות גדולות וקטנות</string>
     <string name="yomitan_summary_replacements_imported">כללי החלפת טקסט שיובאו: %1$d</string>
+    <string name="lookup_text_replacement_test">טקסט לבדיקה</string>
 </resources>
