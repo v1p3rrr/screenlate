@@ -54,7 +54,7 @@ class OcrModelsViewModel @Inject constructor(
         languageProfiles.state.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val offlineMode: StateFlow<Boolean> =
-        appSettings.offlineMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+        appSettings.offlineMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), appSettings.cachedOfflineMode ?: false)
 
     /** Makes [option] the model [language] reads with; only an installed one can be chosen. */
     fun choose(language: Language, option: OcrModelOption) {

@@ -48,19 +48,21 @@ data class InstallationStatus(
 
     /** Only an on-device model keeps a scan from starting, with nothing downloading or failed. */
     val needsDeviceModel: Boolean
-        get() = dictionaryReady && (CatalogCategory.OCR_MODEL in missing || (requiresDevice && !deviceReady)) && failures == 0 && tasks.isEmpty()
+        get() = missing.isEmpty() && requiresDevice && !deviceReady && failures == 0 && tasks.isEmpty()
 
-    fun message(context: Context, scanning: Boolean = false): String = context.getString(
-        when {
-            (if (scanning) scanReady else dictionaryReady) -> R.string.installation_ready
-            failures > 0 -> R.string.installation_failed
-            tasks.isNotEmpty() -> R.string.installation_running
-            scanning && needsDeviceModel && offlineMode -> R.string.overlay_error_no_device_ocr_offline
-            scanning && needsDeviceModel -> R.string.overlay_error_no_device_ocr
-            else -> R.string.installation_missing
-        },
-    )
+    internal fun messageRes(scanning: Boolean = false): Int = when {
+        (if (scanning) scanReady else dictionaryReady) -> R.string.installation_ready
+        failures > 0 -> R.string.installation_failed
+        tasks.isNotEmpty() -> R.string.installation_running
+        scanning && needsDeviceModel -> noDeviceOcrMessageRes(offlineMode)
+        else -> R.string.installation_missing
+    }
+
+    fun message(context: Context, scanning: Boolean = false): String = context.getString(messageRes(scanning))
 }
+
+internal fun noDeviceOcrMessageRes(offlineMode: Boolean): Int =
+    if (offlineMode) R.string.overlay_error_no_device_ocr_offline else R.string.overlay_error_no_device_ocr
 
 /** Shared by Home, Search and the overlay; reading readiness never starts downloads or recognition. */
 @Singleton

@@ -11,6 +11,7 @@ import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
+import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.TextSource
 import java.io.File
@@ -128,7 +129,6 @@ class LanguageInstallationTest {
         val result = status(listOf(dictionary()), catalog = catalog)
         assertThat(result.dictionaryReady).isTrue()
         assertThat(result.scanReady).isFalse()
-        assertThat(result.needsDeviceModel).isTrue()
         // An older version keeps working until the newer one is installed.
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "1", "test", File("old")))).scanReady).isTrue()
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "2", "test", File("ready")))).scanReady).isTrue()
@@ -143,6 +143,10 @@ class LanguageInstallationTest {
         assertThat(both.needsDeviceModel).isTrue()
         assertThat(both.requiresDevice).isTrue()
         assertThat(both.offlineMode).isTrue()
+        assertThat(both.messageRes(scanning = true)).isEqualTo(R.string.overlay_error_no_device_ocr_offline)
+
+        val onlineDeviceOnly = status(ready, device = false, settings = OverlaySettings(ocrEngines = OcrEngines.DEVICE), offlineMode = false)
+        assertThat(onlineDeviceOnly.messageRes(scanning = true)).isEqualTo(R.string.overlay_error_no_device_ocr)
 
         val cloud = status(ready, device = false, settings = OverlaySettings(ocrEngines = OcrEngines.CLOUD), offlineMode = true)
         assertThat(cloud.scanReady).isFalse()
@@ -151,6 +155,7 @@ class LanguageInstallationTest {
         val installed = status(ready, device = true, settings = OverlaySettings(ocrEngines = OcrEngines.BOTH), offlineMode = true)
         assertThat(installed.scanReady).isTrue()
         assertThat(installed.needsDeviceModel).isFalse()
+        assertThat(installed.messageRes(scanning = true)).isEqualTo(R.string.installation_ready)
     }
 
     @Test

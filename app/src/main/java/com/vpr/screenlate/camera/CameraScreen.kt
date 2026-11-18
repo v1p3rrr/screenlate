@@ -159,9 +159,16 @@ fun CameraScreen(
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.recognition.dismissBlock()
-                    if (blocked.status.requiresDevice && !blocked.status.deviceReady) onOpenModels(blocked.status.language)
+                    if (blocked.status.needsDeviceModel) onOpenModels(blocked.status.language)
                     else onOpenDictionaries(blocked.status.language)
-                }) { Text(stringResource(com.vpr.screenlate.overlay.R.string.installation_open)) }
+                }) {
+                    Text(
+                        stringResource(
+                            if (blocked.status.needsDeviceModel) com.vpr.screenlate.overlay.R.string.overlay_open_ocr_models
+                            else com.vpr.screenlate.overlay.R.string.installation_open,
+                        ),
+                    )
+                }
             },
             dismissButton = { TextButton(onClick = viewModel.recognition::dismissBlock) { Text(stringResource(R.string.action_close)) } },
         )

@@ -112,6 +112,7 @@ import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.web.PageTheme
 import com.vpr.screenlate.overlay.web.noResultsText
 import com.vpr.screenlate.overlay.install.LanguageInstallation
+import com.vpr.screenlate.overlay.install.noDeviceOcrMessageRes
 import java.io.IOException
 import java.net.SocketTimeoutException
 import kotlin.math.abs
@@ -317,6 +318,8 @@ class OverlayController(
     /** Expression and reading of the word the last vibration was for. */
     private var hapticWord: Pair<String, String>? = null
     private var screenshot: SharedScreenshot? = null
+    /** True when the current scan used app text without taking a screenshot, so Anki export captures on demand. */
+    private var screenshotSkipped = false
     private var onDeviceLoaded = false
     private var bandTimer: Job? = null
     private val bandJobs = mutableListOf<Job>()
@@ -1048,6 +1051,7 @@ class OverlayController(
         // A note still using the screenshot keeps it until it is done.
         screenshot?.release()
         screenshot = null
+        screenshotSkipped = false
         bubbleView.loading = false
         pendingSingleTap?.let(mainHandler::removeCallbacks)
         pendingSingleTap = null
@@ -1092,6 +1096,7 @@ class OverlayController(
                     val appPage = screenReads.readAppText(generation)
                     if (!screenReads.isOpen(generation)) return@launch
                     if (appPage != null && appPage.paragraphs.isNotEmpty()) {
+                        screenshotSkipped = true
                         popup.page.prepare()
                         onPage(page = appPage, final = true, lensError = null, flashLines = flashLines)
                         return@launch
@@ -1103,6 +1108,7 @@ class OverlayController(
                 return@launch
             }
             if (settings.textSource == TextSource.APP_TEXT_ONLY) {
+                screenshotSkipped = true
                 popup.page.prepare()
                 readAppTextOnly(generation, flashLines)
                 return@launch
@@ -1173,13 +1179,7 @@ class OverlayController(
                             show(flash = false)
                         } else if (error is NoDeviceOcrException) {
                             ocrFinal = true
-                            showMessage(
-                                service.getString(
-                                    if (offlineMode) R.string.overlay_error_no_device_ocr_offline
-                                    else R.string.overlay_error_no_device_ocr,
-                                ),
-                                ocrModels = true,
-                            )
+                            showMessage(service.getString(noDeviceOcrMessageRes(offlineMode)), ocrModels = true)
                         } else {
                             // Offline fails the scan only while the device does not recognize; a cloud-only scan says why
                             // the cloud failed.
@@ -1740,7 +1740,7 @@ class OverlayController(
         if (scan != scanId) return null
         val source = scanSource as? LookupSource.Screen ?: return null
         // Without recognition no screenshot is taken during the scan.
-        if (screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
+        if (screenshot == null && screenshotSkipped) {
             val captured = try {
                 screenReads.capture(source.generation)
             } catch (e: CaptureException) {

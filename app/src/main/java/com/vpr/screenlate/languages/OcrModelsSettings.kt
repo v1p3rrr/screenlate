@@ -48,7 +48,12 @@ import com.vpr.screenlate.ui.components.ownDirection
  * [openLanguage] (a language code) at first. Disabled rows stay visible while on-device recognition is off.
  */
 @Composable
-fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrModelsViewModel = hiltViewModel()) {
+fun OcrModelRows(
+    enabled: Boolean,
+    openLanguage: String? = null,
+    allowOpen: Boolean = enabled,
+    viewModel: OcrModelsViewModel = hiltViewModel(),
+) {
     val lists by viewModel.lists.collectAsStateWithLifecycle()
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
     val offlineMode by viewModel.offlineMode.collectAsStateWithLifecycle()
@@ -80,7 +85,7 @@ fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrM
         }
     }
     val shown = lists?.firstOrNull { it.language.code == opened }
-    if (enabled && shown != null) {
+    if ((enabled || allowOpen) && shown != null) {
         OcrModelDialog(
             shown,
             offlineMode = offlineMode,
