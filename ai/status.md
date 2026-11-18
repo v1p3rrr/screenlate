@@ -1,5 +1,16 @@
 # Status
 
+## Remaining audio UI/settings questions sent (2026-11-18)
+
+- Owner requested the rest of the UI/settings and behavior choices. Sent 32 questions in eight batches covering activation/placement, retention controls and preliminary values, storage/quality, editor flow/layout/gestures, cuts/preview/silence, Anki setup/duplicates and lifecycle/recovery. Full question inventory and pending status are in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md); first options are recommendations, not approvals.
+- Recorded a verified proposed synthesize-to-file/own-player path for excluding external TTS pronunciation from all-source capture. Needs device validation and normal async/error handling; no app code changed.
+
+## Whole audio-feature readiness audit (2026-11-18)
+
+- Owner requested remaining product/technical gaps beyond retention. Audited capture-source selection, preview/focus/TTS contamination, editor lifetime/reuse, marker/presets, cancel/partial Anki failure, duplicates, supported lookup sources, storage/format, settings/docs and device/acceptance coverage in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).
+- Owner answered all eight foundational questions: all eligible internal sound except Screenlate, explicit retry/save-without on Anki audio failure, last confirmed clip suggested for another word of the scan, one active editor before a new scan, separate `{sentence-audio}`, cancellation cancels the note, mode stop preserves current protected audio, and screen/app-text scans only. Deferred UX and technical measurements remain recorded. Verified Android primary sources and current Anki/crop/player code; no other defaults silently approved.
+- Documentation/research only; no application, device or Anki collection changes.
+
 ## Audio retention split into three stages (2026-11-18)
 
 - Owner accepted separate bounded pre-scan history, waiting history through first audio-editor opening, and a one-time editor continuation allowance. Screenshot cropping belongs to waiting and does not consume editor continuation. Recorded stages, cap handling/races and added acceptance cases in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).

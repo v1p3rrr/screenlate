@@ -1,10 +1,10 @@
 # Video audio mining: recovered context
 
-2026-11-18. Context recovery requested by the owner. Research only: no concept, default, UI placement or implementation is approved by this note.
+2026-11-18. Historical context, technical research and explicit owner decisions are recorded below. This is not an implementation plan; pending choices remain pending, and no application code has been changed.
 
 ## Finding and approval status
 
-The full early catalog was absent from the current `main` checkout. It survives in the local remote-tracking ref `origin/claude/gallant-hawking-pr16aj`, tip `a39dc968` (2026-10-12). Its `ai/experiments.md` explicitly says that nothing is scheduled or decided and that an experiment enters a plan only at the owner's instruction. The concepts and sketch README repeat that nothing is decided. No subsequent approval was found in the checked project plans, notes or available Git history.
+The full early catalog was absent from the current `main` checkout. It survives in the local remote-tracking ref `origin/claude/gallant-hawking-pr16aj`, tip `a39dc968` (2026-10-12). Its `ai/experiments.md` explicitly says that nothing is scheduled or decided and that an experiment enters a plan only at the owner's instruction. The concepts and sketch README repeat that nothing is decided. The initial archival audit found no later approval in the pre-existing project records. The owner subsequently accepted specific behaviors in this chat; those decisions are recorded in the later sections and supersede historical proposals where stated.
 
 The owner explored C (instant replay with manual trimming) in greater detail after H (automatic picking), asking about cost, optional activation, RAM versus files and background restrictions. This is evidence of interest, not a recorded selection. The 2026-10-16 research independently develops the rolling-buffer direction, but explicitly labels its technologies, defaults, UI and markers as proposals requiring later decisions. Do not turn either document into a binding decision table.
 
@@ -338,3 +338,124 @@ H/R/E are logical retention limits; the owner has not chosen their values, wheth
 - Stage-transition capacity failure, capture revocation concurrent with editor opening, stale async callbacks, protected-context replacement and bounded export holds do not mutate another draft or silently create a discontinuity.
 
 Changelog: owner accepted splitting the old shared post-scan allowance into R and one-time E, and starting E at first audio-editor opening. Earlier statements that opening export cannot provide a separate allowance are superseded by this explicit decision; the no-reset rule continues to apply to repeated actions and already sealed contexts.
+## Whole-feature readiness audit (2026-11-18)
+
+Owner requested an audit of what remains unexamined beyond the agreed capture/retention/Refresh mechanism. Existing decisions are not reopened. This section is a gap inventory with recommendations and pending questions, not an implementation plan or approval of defaults.
+
+### Newly identified product decisions
+
+1. Capture source: all eligible playback versus a fixed selected app. This must be decided before capture: mixed PCM has no separate app tracks for later removal. A fixed source cannot silently follow the foreground when an editor, permission activity or Screenlate itself opens; a shared browser UID does not identify a tab. Recommendation/question: fixed app chosen when recording begins; source changes are explicit.
+2. Anki media failure: the user may successfully edit audio but media transfer fails. Existing `AnkiNotes.add` copies each media item separately before adding/updating a note; null audio transfer can leave its marker empty. The new feature needs an explicit success/partial-failure policy and retry identity. Recommendation/question: report the failure and offer retry or explicit save without sentence audio, rather than imply full success.
+3. Several notes from one scan: shared source ownership does not determine whether the last confirmed trim/exclusions should be suggested for the next word. Recommendation/question: reuse the last confirmed edit as the next note's editable proposal, without retroactively updating earlier notes or renewing continuation. Different sentences on one screenshot must remain manually adjustable.
+4. New scan while an editor is open: the current crop workflow cancels on scan close (`PopupNotes.onClosed`). An audio workflow needs a defined single-editor/context replacement policy. Recommendation/question: finish or discard current editing before a new scan; retaining several editable contexts is a more expensive alternative.
+5. Template destination: `{audio}` currently means word pronunciation and preset `SentenceAudio` fields remain empty. Recommendation/question: add a separate `{sentence-audio}` marker, retain `{audio}`, and update presets/field inference only under a defined migration policy. Do not overwrite existing customized field mappings silently.
+6. Audio-editor cancellation: distinguish cancel whole note from explicitly omit audio. Recommendation/question: cancellation cancels note creation, consistent with current screenshot cancellation; saving without sentence audio is deliberate. Do not create a note early and leave it behind on cancel unless the owner selects that workflow.
+7. Explicit recording-mode stop: define whether current protected audio remains usable after capture stops. Recommendation/question: stop new capture but preserve the current protected context/edits until its completion. Any clear-all alternative needs a deliberate discard policy. Restart is a new capture session, not a continuation through missing audio.
+8. Lookup scope: screen scans have acquisition anchors, but typed search and an old photo do not inherently correspond to recent playback. Recommendation/question: first version only attaches recorded sentences to screen scans (including app-text-only); camera/search should not silently get unrelated recent audio. Optional manual association is separate scope.
+
+The owner answered both batches of four questions. The accepted outcomes below supersede conflicting recommendations in the eight-topic inventory, particularly the rejected fixed-app capture recommendation. Exact activation placement, gestures and other UI choices were previously deferred by the owner and remain for the later UX discussion.
+
+### Additional behavior needing specification during that discussion
+
+- Start/stop affordance, visible starting/running/stopped/error state, current selected source and available history length; first launch versus resumed app, bubble docking versus ending capture, and permission denied/revoked. Do not auto-start capture after boot or silently restore a dead projection.
+- Initial selected audio range: full history versus a region near the scan; first-time selection is not sentence detection. Seek/playhead behavior, zoom/fine boundary adjustment, loop or preview around cuts, undo/redo and handling the Back/outside-tap actions need concrete UX. Refresh already preserves source/edits and should preserve useful viewport context.
+- Silent-range proposal parameters: minimum duration, amplitude threshold, edge padding, analysis of the outer selection versus entire history, interaction with existing manual cuts, cancellation and stale results. Listening remains optional; no automatic sentence matching is promised.
+- Per-language Anki settings and marker availability, missing `SentenceAudio` field, legacy/custom presets and which templates opt into the editor. Recording mode should not unexpectedly block normal notes with no sentence-audio destination.
+- Duplicates: reuse existing Prevent/Update/New and per-field Keep/Replace/Append rules rather than silently introducing a second overwrite policy. If a field's Keep policy prevents the new recording from being used, the user needs an understandable result. Early duplicate checks can avoid unnecessary editing but final checks must handle changes/races.
+- Freeze note language, entry, sentence, source/scan identity, template/model/deck identity as appropriate to the workflow; decide what happens if settings, language or Anki note type changes while the editor is open. Never silently retarget a saved clip to a different word/note.
+- Rotation, display size/insets, PiP/split screen, keyboard and source-app switching; what keeps the current edit alive versus deliberately ends its context. Editors must allow the original player to remain operable for manual continuation. Existing auto-pause/resume exclusion remains binding.
+- Duration/resource settings and changes during capture: accepted contexts must not silently lose history after a setting is reduced. Defaults, ranges, whether limits are global, and backup/reset behavior need explicit specification. Numeric H/R/E and storage/encoding remain unchosen.
+
+### Engineering investigations and measurements
+
+- Storage/encoding: RAM versus bounded private chunks, channel count/rate/PCM representation, output codec/container/bitrate, practical max output clip, encoder delay and seam correctness. Verify saved clips in local emulator AnkiDroid and desktop Anki without syncing or touching the owner's collection. Maintain bounded source, waveform, edit-history and export ownership.
+- Preview: stop an earlier preview/pronunciation when appropriate, exclude Screenlate-generated sound from capture, avoid an accidental play/pause/resume side effect through audio focus. Current `AudioPlayer` handles pronunciation playback/TTS, not trimming, scrubbing or timeline preview; do not assume the entire editor player exists already.
+- Recording fidelity: low-volume speech, source mute/device volume, speaker/wired/Bluetooth and route changes; known capture errors versus genuine silence. Validate actual exported output and mid-word joins, not only the waveform or a recorder-running indicator.
+- Temporal alignment: the acquisition marker and audio frames need a consistent clock, measured capture latency and explicit session/frame identities. OCR completion is later than acquisition. A marker is still only a navigation aid; it does not identify subtitle boundaries.
+- Save orchestration: immutable selected output, duplicate taps, media success followed by note failure, note success followed by lost UI acknowledgement, retry without duplicate notes, stale callbacks, cleanup of partial generated files and safe lifetime of FileProvider access. Media/note calls are not a single transaction; never delete unrelated Anki media during cleanup.
+- Mode lifecycle: consent flow, another projection/screen recorder/cast, process restart, lock/unlock and API gating. If recording is unavailable, keep lookup and ordinary Anki export usable with an explicit audio state.
+- Resource measurements: capture-only steady state, no feature work while disabled, OCR/popup latency while capturing, worst protected-history/export memory, disk writes if used, CPU/battery/thermal effects during long operation. Include Tesseract/Paddle/image workloads; raw PCM arithmetic does not establish device safety.
+- Integration: choose a narrow recorder/history/editing API and module seam before implementing; preserve inward dependencies and existing language parameterization. Register new settings with backup/reset, translate UI in all 17 locales, update human docs/test model and add NOTICE entries for any new third-party code/data. Temporary recorded audio is not a settings backup artifact; cleanup/backup exclusions need explicit verification.
+
+### Verified platform concerns beyond retention
+
+UID and usage capture filters are applied during recording; matching and exclusion cannot be combined within the same dimension. For a selected external UID, an allowlist already leaves out Screenlate. For all eligible sources, excluding Screenlate's UID is a different configuration. Retrospective removal of another app from already mixed PCM is not supplied by this API. [Playback capture](https://developer.android.com/media/platform/av-capture), [configuration builder](https://developer.android.com/reference/android/media/AudioPlaybackCaptureConfiguration.Builder).
+
+Audio focus can pause/duck/fade existing playback; a preview player may manage focus automatically. This must be designed/tested even though explicit automatic player control is out of scope. Target API 35+ focus requests require the top app or a foreground service. [Audio focus](https://developer.android.com/media/optimize/audio-focus).
+
+External system TTS needs a specific contamination test: excluding Screenlate's UID alone does not prove that speech generated by an external engine is excluded. AOSP synthesizes/plays via the engine service and its AudioTrack path; full attribution across all engines/releases was not established here. [TextToSpeechService](https://android.googlesource.com/platform/frameworks/base/+/HEAD/core/java/android/speech/tts/TextToSpeechService.java), [Android 35 BlockingAudioTrack](https://android.googlesource.com/platform/prebuilts/fullsdk/sources/+/refs/heads/androidx-constraintlayout-release/android-35/android/speech/tts/BlockingAudioTrack.java).
+
+No universal route/mute transparency was established by the public guide; test device-volume zero, player mute, wired/Bluetooth changes and saved output. Another projection, system stop or locking can terminate a session; do not repeat older audio-only survival claims as guarantees. Playback capture requires API 29 despite app minSdk 24. [AudioRecord](https://developer.android.com/reference/android/media/AudioRecord), [projection callback](https://developer.android.com/reference/android/media/projection/MediaProjection.Callback#onStop()), [foreground-service requirements](https://developer.android.com/develop/background-work/services/fgs/service-types#media-projection).
+
+### Concrete code evidence checked
+
+- `core/anki/.../AnkiNotes.kt`: `NoteRequest` has screenshot and one pronunciation clip; media are copied individually before note add/update; existing field overwrite policy applies afterward.
+- `core/anki/.../note/NoteTypePresets.kt`: several `sentenceaudio` preset entries are empty.
+- `overlay/.../anki/PopupNotes.kt`: `onClosed` cancels the crop editor and clears scan note state; `onAddNote` performs screenshot editing before `notes.add`, with media cleanup in its finally block.
+- `core/anki/.../audio/AudioPlayer.kt`: current pronunciation player/Android TTS, with no waveform/seek/cut editor implementation.
+- `core/anki/.../AnkiDroid.kt`: FileProvider permission is granted around `addMediaFromUri` and revoked in finally; final media markup comes back separately from note creation.
+
+Priority for the next specification discussion: source scope and recorder lifetime; Anki destination/cancel/error policy; single editor/context replacement and reuse across notes; then concrete editor UX, measured resource/format choices and the compatibility/test matrix. No application code, device state or Anki collection changed during this audit.
+## Owner answers to the whole-feature audit (2026-11-18)
+
+| Topic | Accepted behavior |
+|---|---|
+| Capture scope | Capture all eligible internal playback except Screenlate-generated sound. Multiple apps may mix; do not restrict to a selected source app or require a source-change action merely because foreground changes. Android capture policies/usages still limit what is available. |
+| Audio media-transfer failure | Show the failure and offer retry or explicit save without recorded sentence audio. Do not silently create/update a supposedly complete note with missing sentence audio. Preserve the bounded draft for retry where possible. |
+| Several words of the same scan | Propose the last confirmed clip/edit of that scan for the next note, with adjustment before saving. Do not update earlier notes or grant another continuation allowance. |
+| New scan with open editor | Offer finishing or cancelling the current edit first; only one fragment is edited at a time. Do not accumulate parallel unfinished audio drafts. |
+| Anki marker | Add `{sentence-audio}` for recorded sentence sound. Existing `{audio}` retains word pronunciation. Existing custom field mappings are not automatically replaced by this decision. |
+| Cancel audio editor | Cancel note creation. Saving a note without sentence audio is a separate explicit action. |
+| Stop recording mode | Stop new capture, preserve the current protected fragment and its edits until the context completes, allowing edit/save. This does not authorize appending a restarted capture session through missing history. |
+| Initial lookup scope | Screen scans only, including app-text-only. Typed search and photo/camera lookup must not receive recent playback audio implicitly. |
+
+The fixed-app recommendation in the preceding audit is not selected. A source app change by itself must not silently stop/retarget all-app capture. The retained recording is a mixture of whatever eligible playback occurred during its interval; the scan marker remains a navigation aid, not evidence that the audio belongs to the visible text.
+
+For all-source capture, exclude the app's own preview and pronunciation at capture time. Local MediaPlayer playback and external TTS-engine output need separate verification; excluding only Screenlate UID is not proof that live engine TTS is excluded. Investigate synthesizing speech to a private file and playing it under Screenlate's own playback identity if needed to meet this requirement. This is an engineering investigation, not a changed product decision.
+
+The eight foundational behavior questions are now settled. Outstanding owner choices are the explicitly deferred activation/editor UX, exact limits/settings and template/preset setup details; engineering/compatibility measurements and tests remain as listed in the audit. No implementation plan has been written and no app changes are authorized by merely recording these answers.
+
+## UI, settings and remaining behavior questions sent (2026-11-18)
+
+The owner explicitly requested all remaining questions, including editor layout, settings placement and whether individual settings are needed. The previous deferral of UX questions no longer applies. Thirty-two questions were sent in eight batches of up to four. They are pending, not new defaults; recommendations below are only the first options presented. Do not write the implementation plan before collecting applicable owner decisions.
+
+1. Settings location: shared Recording sentences card on Audio (recommended), a new top-level page, or Anki.
+2. Manual mode control: bubble hold menu plus settings (recommended), menu only, or settings only.
+3. Bubble running indicator: small theme/e-ink-compatible mark (recommended), or only menu/system notification.
+4. Retention controls: H/R/E in an advanced Limits dialog (recommended), a profile selector, or only H configurable.
+5. Preliminary H/R/E: 2/5/2 minutes (recommended), 5/5/5, or 1/3/1; all subject to actual resource validation and hard byte caps.
+6. Parameter scope: global capture/retention/silence settings with existing language-specific Anki fields (recommended), or language-specific recording parameters.
+7. Storage preference: bounded private temporary files plus small working RAM (recommended for long histories), or RAM-only with stricter limits.
+8. Output quality: speech-oriented mono with technically verified encoding and no codec settings (recommended), preserve stereo, or expose mono/stereo.
+9. Note trigger: normal Add enters audio while mode is enabled and marker configured, long-press still crops screenshot first (recommended), or a separate Add with audio action.
+10. Missing marker: ordinary note flow with a settings hint (recommended), or prompt setup/explicit omission at first attempt.
+11. Editor layout: movable/collapsible wide floating panel (recommended), nested popup editor, or collapsible full-screen editor.
+12. Dictionary popup during editing: temporarily hide it (recommended), or keep both visible.
+13. First selection without a previous confirmed clip: short approximate range near scan (recommended), full source, or no initial selection. Exact short-range duration still depends on the answer and later UI specification.
+14. Timeline navigation: tap seeks, dragging pans zoomed waveform, pinch/button zoom, separate handles (recommended), or tap/drag scrubs with separate pan/zoom controls.
+15. Internal cuts: original fixed waveform plus shaded excluded intervals (recommended), or multiple kept segments.
+16. Listening: output by default plus original/result comparison (recommended), or result only.
+17. Explicit save without audio: secondary footer button (recommended), or overflow item.
+18. Touch outside panel: pass to source player and keep editor open (recommended), or pass and collapse editor while preserving draft.
+19. Rotation: preserve edits and re-layout without renewing clocks (recommended), or cancel note/editor with explanation.
+20. Cancel/Back with edits: confirm discard only when changed (recommended), or cancel directly.
+21. Silence action: run with remembered parameters plus nearby settings action (recommended), or show parameters every time.
+22. Preliminary silence minimum/padding: 1 s and 100 ms per edge (recommended), 1.5 s/150 ms, or 0.5 s/100 ms. These remain suggestions, not sentence detection or guaranteed safe automatic boundaries.
+23. Silence scope: current outer selected phrase only (recommended), or full retained history.
+24. Editor status: compact new-audio availability and remaining extension with details under info (recommended), or only basic status with times under info.
+25. Existing empty recognized SentenceAudio fields: offer opt-in filling only empty recognized mappings (recommended), or manual mapping only. Never replace customized mappings.
+26. Duplicate field Keep with existing audio: explain before editing and offer continue without editing/change the field setting (recommended), or allow editing with warning and honor unchanged field policy. No silent overwrite override.
+27. Settings/model/deck changed during editing: preserve operation's original configuration (recommended), or cancel and explain.
+28. Fully disabling bubble/accessibility service: stop capture as well (recommended), or keep independent recording with notification. Docking alone is a different action and does not stop the global ring.
+29. Process crash/restart: clean transient session/no recovery for v1 (recommended), or recover last saved draft from private files without auto-resuming capture.
+30. Duration changes while active: existing context keeps admitted limits, new values affect later contexts (recommended), or explicitly finish current context to apply now.
+31. Apparently silent selection: warn and allow listen/save/explicit omit (recommended), or prohibit silent audio export. Amplitude alone does not establish why it is silent.
+32. Preview volume: reuse existing Screenlate pronunciation volume (recommended), or provide remembered separate editor volume.
+
+The owner may answer in multiple batches; update the outcomes rather than assuming unanswered first options are approved. Dependencies such as RAM-only plus crash recovery or marker/layout choices may require a focused follow-up after answers. Exact visual constants, codec implementation, silence amplitude calibration and error plumbing should follow measured evidence and surrounding style; do not turn every internal choice into a new user-facing setting.
+
+### Verified TTS implementation path for accepted own-sound exclusion
+
+For all-source capture, one viable proposed path is TextToSpeech.synthesizeToFile into an app-private temporary file, then playback through Screenlate's own MediaPlayer/AudioTrack so the capture's excluded UID covers the audible output. File synthesis does not use the live speak playback path. This is an engineering inference from the APIs and still needs a saved-capture test on actual engines/devices, plus preview focus checks.
+
+The File overload exists since API 21, fitting app minSdk 24. It is asynchronous; SUCCESS only accepts the queued request. Play only after onDone and a current operation/utterance identity check. Handle onError/onStop, cancellation/word/language/voice changes, callback threads, file write failures, empty results, temporary-file cleanup and bounded cache/queue. During active capture do not silently fall back to live speak on a synthesis error, because that may violate the accepted own-sound exclusion requirement. [TextToSpeech.synthesizeToFile](https://developer.android.com/reference/android/speech/tts/TextToSpeech#synthesizeToFile(java.lang.CharSequence,%20android.os.Bundle,%20java.io.File,%20java.lang.String)), [UtteranceProgressListener](https://developer.android.com/reference/android/speech/tts/UtteranceProgressListener), [TextToSpeech.stop](https://developer.android.com/reference/android/speech/tts/TextToSpeech#stop()).
