@@ -294,3 +294,47 @@ Protect for the scan/context lifetime, not merely while one popup window is visi
 Tradeoff: early protection retains otherwise unnecessary history during ordinary dictionary browsing and consumes the bounded continuation allowance while the owner reads. Opening export later does not reset the accepted per-fragment cap. The original history remains available after the cap, but later continuation is limited. Export-time activation avoids that extra retention when no card is made, at the cost of losing old speech after ring rollover. Early protection plus lazy editor/processing best preserves the owner's stated long-reading scenario.
 
 Owner decision (2026-11-18): protect history and bounded continuation at each new scan while audio capture mode is enabled. Word-to-word movement reuses the same audio context and does not create another snapshot. Open the editor and perform requested processing only during the card/audio workflow. This protection trigger is settled; the earlier accepted display/Refresh/cap/gap/silence behaviors remain unchanged. Numeric retention/resource limits, storage format and remaining UX/attachment policies still require decisions before an implementation plan.
+
+## Accepted three-stage retention model (2026-11-18)
+
+Owner follow-up: consider separate bounded periods for pre-scan history, time spent reading definitions before export, and continuation after entering the audio workflow. Five minutes per period was illustrative, not an approved value. Account for a limit reached before export, while cropping a screenshot, or inside the audio editor; retain all earlier accepted Refresh, continuity and failure rules.
+
+The owner accepted separate waiting and editor-continuation allowances, with the latter granted once at the first opening of the audio editor. Screenshot cropping belongs to the earlier waiting stage and does not consume the editor allowance. This explicitly revises the earlier single post-scan allowance: it is one controlled stage transition, not an unlimited reset on every export/open/Refresh.
+
+### Stages and bounds
+
+- H: the available rolling history protected at a new scan, ending at the scan acquisition marker. Same-scan word lookups and transient popup hides reuse this history.
+- R: the bounded continuous interval retained from scan acquisition until the first audio-editor opening. It includes reading definitions, selecting words, note-workflow preparation and screenshot cropping. This is a continuous bridge from the scan, not a sliding latest-R window before export.
+- E: the separate bounded interval retained after the first audio-editor opening, while the user reviews/continues the source and refreshes. Grant it once per scan audio context, if the prior waiting stage has not already sealed the context at its limit.
+
+While stage R is active, its upper retention bound is scanTime + R. First audio-editor opening before that bound ends stage R and fixes the final bound at firstEditorOpenTime + E. Unused stage-R time is not another accumulating allowance; the accepted intent is a separate E for the editor. Reopening the editor, another word/note of the same scan, repeated Refresh, saving, or cancellation/re-entry does not grant E again or move its fixed deadline. Context replacement and in-flight export ownership still need the later implementation plan.
+
+For a single protected context, maximum retained source duration is H + R + E, while the actual waiting interval may be shorter than R. The global H ring remains independent. Bound total bytes and workspace too. This is one continuous recording with stage-dependent retention; it does not require three physical recordings or an audio join at the stage boundaries.
+
+### Limit handling at each stage
+
+- Before any scan: ordinary ring rollover is expected; only the most recent H is available when a scan begins. Do not promise earlier source audio.
+- Waiting-stage limit reached before the audio editor opens (including during screenshot cropping): seal and preserve the full protected source through that endpoint. Keep the global ring recording. Opening the editor later can still edit/export all retained source, but must not revive sealed continuation or obtain new late audio from the ring. This preserves the previously accepted terminal cap behavior and no-gap rule. Explain the limit when entering/refreshing as applicable.
+- Editor first opened while waiting retention is valid: show available source through opening with the scan marker, grant the single E, and keep the displayed source fixed between Refresh actions.
+- Editor-stage limit reached: retain all continuation through the final endpoint even if not yet visible. Next Refresh exposes the remaining retained audio and shows the agreed factual limit explanation. Further Refresh repeats the explanation without changes. Global capture continues.
+- A real capture interruption, resource failure, or missing source interval is not a fresh stage transition. Preserve valid retained data and existing edits, report the actual cause, and never join across missing data. A recorder failure may require stopping capture.
+
+Use a single atomic stage transition and a consistent capture clock so editor-open versus cap races cannot grant two allowances or produce different fragments. Validate continuity/capacity before committing the transition; if its required resources cannot be admitted, preserve the prior source/edits and explain the failed continuation. Timers/frame progress still count while the source is paused or quiet; silence is not evidence that retention can grow indefinitely.
+
+### Illustrative examples and resource implications
+
+Example only, H = R = E = five minutes: scan at 12:00 protects 11:55-12:00. First editor opening at 12:04:30 exposes protected audio through that time and permits continuation until 12:09:30. Four and a half minutes of reading/cropping have not reduced E. Opening the editor after the waiting cap at 12:05 instead permits editing the retained 11:55-12:05 source, with no revived continuation allowance. Saving/Refresh cannot restart either allowance.
+
+This model increases the worst-case retained duration versus the earlier two-part example. At 48 kHz mono 16-bit PCM, a fifteen-minute protected source is 86.4 MB; an independent non-overlapping five-minute ring adds 28.8 MB, totaling 115.2 MB of raw audio before waveform, export and other app memory. Chunk sharing reduces overlap, not that post-freeze worst case. These figures are arithmetic, not an approved format/default or proof that RAM is suitable. Active/in-flight exports require their own bounded accounting.
+
+H/R/E are logical retention limits; the owner has not chosen their values, whether to expose them separately, duration presets, byte quotas, storage backing, output format or exact editor gestures/layout. Do not silently introduce three settings or five-minute defaults. Storage/device measurements and owner choices remain prerequisites to an implementation plan.
+
+### Additional acceptance cases
+
+- First editor opening just before, at and after the waiting cap; cap reached while screenshot crop is open or editor initialization is pending.
+- Waiting 4.5 minutes with a five-minute illustrative R still leaves the full E when opened in time; repeated same-scan export/editor opening cannot renew E.
+- Waiting-stage limit, editor-stage limit and ordinary ring rollover leave different explicit states but preserve the same old-source/edits guarantees.
+- Cancel and reopen, note save and another note in the same scan, nested lookups and popup hiding do not create repeated continuation grants.
+- Stage-transition capacity failure, capture revocation concurrent with editor opening, stale async callbacks, protected-context replacement and bounded export holds do not mutate another draft or silently create a discontinuity.
+
+Changelog: owner accepted splitting the old shared post-scan allowance into R and one-time E, and starting E at first audio-editor opening. Earlier statements that opening export cannot provide a separate allowance are superseded by this explicit decision; the no-reset rule continues to apply to repeated actions and already sealed contexts.

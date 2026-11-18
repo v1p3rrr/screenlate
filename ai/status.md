@@ -1,5 +1,11 @@
 # Status
 
+## Audio retention split into three stages (2026-11-18)
+
+- Owner accepted separate bounded pre-scan history, waiting history through first audio-editor opening, and a one-time editor continuation allowance. Screenshot cropping belongs to waiting and does not consume editor continuation. Recorded stages, cap handling/races and added acceptance cases in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).
+- This revises the earlier shared post-scan allowance with one controlled stage transition. Repeated Refresh/editor opening/word changes do not renew it; an already capped context remains sealed. Existing stable editor, append-only Refresh, cap message, continuous global ring, optional listening and no joining across missing history remain binding.
+- Durations (including the illustrative five minutes per stage), byte budgets, storage/format and settings/UI are unchosen; no implementation plan or application changes.
+
 ## Audio editor refresh and bounded retention discussed (2026-11-18)
 
 - Recorded the owner's fixed-waveform/Refresh proposal, preview/scrub and multiple internal cuts, optional silence assistance, ring rollover, unattended growth, RAM/disk alternatives and failure handling in [notes/video-audio-mining-context.md](notes/video-audio-mining-context.md).
