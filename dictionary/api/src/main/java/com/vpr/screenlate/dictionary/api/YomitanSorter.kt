@@ -85,7 +85,7 @@ object YomitanSorter {
 
     private fun rankNumbers(frequencies: List<FrequencyGroup>, frequencyModes: Map<String, String>): List<Int> =
         frequencies.mapNotNull { group ->
-            if (frequencyModes[group.dictionary] == "occurrence-based") return@mapNotNull null
+            if (!FrequencySort.isRankBased(frequencyModes[group.dictionary])) return@mapNotNull null
             val first = group.values.firstOrNull() ?: return@mapNotNull null
             val parsed = LEADING_DIGITS.find(first.displayValue)?.value?.toIntOrNull() ?: 0
             when {

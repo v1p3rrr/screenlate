@@ -372,7 +372,7 @@ class DictionaryRepository @Inject constructor(
         val chosen = preferences.data.first()[sortKey(language)]
         val mode = FrequencySort.modeForId(chosen) ?: return@withContext null
         val rankBasedCount = dao.getAll().count {
-            it.frequencyCount > 0 && it.frequencyMode != "occurrence-based" && usable(it, language)
+            it.frequencyCount > 0 && FrequencySort.isRankBased(it.frequencyMode) && usable(it, language)
         }
         mode.takeIf { rankBasedCount >= 2 }
     }
@@ -487,7 +487,7 @@ class DictionaryRepository @Inject constructor(
         )
         val frequencies = enabled.filter { it.frequencyCount > 0 }
         val preferred = preferences.data.first()[sortKey(language)]
-        val rankBased = frequencies.filter { it.frequencyMode != "occurrence-based" }
+        val rankBased = frequencies.filter { FrequencySort.isRankBased(it.frequencyMode) }
         sortAggregateId = preferred?.takeIf { FrequencySort.isAggregateId(it) && rankBased.size >= 2 }
         sortDictionary = if (sortAggregateId != null) {
             null

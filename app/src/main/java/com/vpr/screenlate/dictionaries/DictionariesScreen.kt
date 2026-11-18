@@ -245,7 +245,7 @@ fun DictionariesScreen(
                 SubsectionTitle(stringResource(sectionLabel(section.kind, state.shown.code)))
                 if (section.kind == DictionaryKind.FREQUENCY) {
                     val rankBasedCount = section.dictionaries.count {
-                        it.enabled && it.id !in state.withoutFiles && it.frequencyMode != "occurrence-based"
+                        it.enabled && it.id !in state.withoutFiles && FrequencySort.isRankBased(it.frequencyMode)
                     }
                     if (rankBasedCount >= 2) {
                         AggregateFrequencySortCard(

@@ -525,7 +525,7 @@ internal fun reordered(all: List<DictionaryEntity>, ordered: List<DictionaryEnti
  */
 internal fun sortDictionaryId(dictionaries: List<DictionaryEntity>, stored: Long?): Long? {
     val frequencies = dictionaries.filter { it.enabled && it.frequencyCount > 0 }
-    val rankBased = frequencies.filter { it.frequencyMode != "occurrence-based" }
+    val rankBased = frequencies.filter { FrequencySort.isRankBased(it.frequencyMode) }
     if (FrequencySort.isAggregateId(stored) && rankBased.size >= 2) return stored
     return (frequencies.firstOrNull { it.id == stored } ?: frequencies.firstOrNull())?.id
 }

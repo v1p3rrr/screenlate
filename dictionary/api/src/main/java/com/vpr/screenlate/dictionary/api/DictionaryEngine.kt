@@ -116,6 +116,9 @@ object FrequencySort {
         AVERAGE_ID -> AVERAGE_MODE
         else -> null
     }
+
+    /** Whether a frequency dictionary with [frequencyMode] uses rank-based values eligible for aggregate sorting. */
+    fun isRankBased(frequencyMode: String?): Boolean = frequencyMode != "occurrence-based"
 }
 
 /** Result of a successful import. [directory] is where the engine placed the converted dictionary. */

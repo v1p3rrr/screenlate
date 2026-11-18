@@ -1,5 +1,6 @@
 package com.vpr.screenlate.overlay.anki
 
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
@@ -158,6 +159,9 @@ class PopupNotes(
     /** `(expression, reading)` sequence last passed to [onResultsShown], to preserve [openableNotes] on refined redraws. */
     private var lastShownTerms: List<Pair<String, String>>? = null
 
+    /** Entry indices currently being added/updated, so [markNotes] does not overwrite their `"busy"` button state. */
+    private val addingEntries = mutableSetOf<Int>()
+
     /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
 
@@ -201,7 +205,10 @@ class PopupNotes(
         val terms = results.map { it.term.expression to it.term.reading }
         val firstTerm = terms.firstOrNull()
         audioPlayback.onResultsShown(results, position)
-        if (terms != lastShownTerms) openableNotes.clear()
+        if (terms != lastShownTerms) {
+            openableNotes.clear()
+            addingEntries.clear()
+        }
         lastShownTerms = terms
         duplicateJob?.cancel()
         duplicateJob = scope.launch {
@@ -260,6 +267,7 @@ class PopupNotes(
         statusCache.clear()
         lastAutoPlayed = null
         lastShownTerms = null
+        addingEntries.clear()
         scanNotes.close()
         openableNotes.clear()
         chosenClips.clear()
@@ -279,7 +287,7 @@ class PopupNotes(
         }
         if (known.isNotEmpty()) page.setNoteStates(known)
         if (!settings.duplicateCheck) {
-            val cleared = terms.indices.filter { it !in known }.associateWith { "" }
+            val cleared = terms.indices.filter { it !in known && it !in addingEntries }.associateWith { "" }
             if (cleared.isNotEmpty()) page.setNoteStates(cleared)
             return
         }
@@ -288,7 +296,7 @@ class PopupNotes(
             "JSON.stringify(Popup.allNoteData(${Json.encodeToString(markers.toList())}))",
         ).orEmpty()
         entries.forEachIndexed { index, values ->
-            if (index in known) return@forEachIndexed
+            if (index in known || index in addingEntries) return@forEachIndexed
             val ids = try {
                 notes.duplicateIds(language(), values)
             } catch (e: CancellationException) {
@@ -298,6 +306,7 @@ class PopupNotes(
                 Log.w(TAG, "Duplicate check failed", e.redacted())
                 emptyList()
             }
+            if (index in addingEntries) return@forEachIndexed
             if (ids.isEmpty()) {
                 openableNotes.remove(index)
                 page.setNoteStates(mapOf(index to ""))
@@ -328,6 +337,7 @@ class PopupNotes(
         val scan = scanNotes.scan
         // The note keeps the language it was asked for, even if the scan closes before it is added.
         val noteLanguage = language()
+        addingEntries += index
         scope.launch {
             var image: NoteImage? = null
             var picture: Bitmap? = null
@@ -388,11 +398,15 @@ class PopupNotes(
                     }
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
-                if ("clipboard-text" in used) {
-                    readClipboardText()?.let { values["clipboard-text"] = escapeHtml(it).replace("\n", "<br>") }
-                }
-                if ("clipboard-image" in used) {
-                    readClipboardImage()?.let { values["clipboard-image"] = it }
+                if ("clipboard-text" in used || "clipboard-image" in used) {
+                    // ClipboardManager must be obtained on the main thread (Android 7-8 creates a Handler inside it).
+                    val clip = currentClip()
+                    if ("clipboard-text" in used) {
+                        readClipboardText(clip)?.let { values["clipboard-text"] = escapeHtml(it).replace("\n", "<br>") }
+                    }
+                    if ("clipboard-image" in used) {
+                        readClipboardImage(clip)?.let { values["clipboard-image"] = it }
+                    }
                 }
                 for ((marker, tag) in noteLanguage.support.scriptMarkers) {
                     if (marker !in used) continue
@@ -420,6 +434,7 @@ class PopupNotes(
                 toast(context.getString(R.string.anki_error, e.message ?: e.javaClass.simpleName))
                 "error"
             } finally {
+                addingEntries -= index
                 // A cancelled note does not wait for its translation.
                 translated?.cancel()
                 image?.close()
@@ -529,11 +544,13 @@ class PopupNotes(
         return formatted["html"].orEmpty() to formatted["plain"].orEmpty()
     }
 
-    private suspend fun readClipboardText(): String? = withContext(Dispatchers.IO) {
+    private fun currentClip(): ClipData? = runCatching {
+        context.getSystemService(ClipboardManager::class.java)?.primaryClip
+    }.getOrNull()
+
+    private suspend fun readClipboardText(clip: ClipData?): String? = withContext(Dispatchers.IO) {
         runCatching {
-            val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return@withContext null
-            val clip = clipboard.primaryClip ?: return@withContext null
-            if (clip.itemCount == 0) return@withContext null
+            if (clip == null || clip.itemCount == 0) return@withContext null
             val item = clip.getItemAt(0)
             // Skip image-only content URIs so their raw URI string is not pasted as clipboard-text.
             val uri = item.uri
@@ -544,11 +561,10 @@ class PopupNotes(
         }.getOrNull()
     }
 
-    private suspend fun readClipboardImage(): String? {
+    private suspend fun readClipboardImage(clip: ClipData?): String? {
+        if (clip == null || clip.itemCount == 0) return null
         val bitmap = withContext(Dispatchers.IO) {
             runCatching {
-                val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return@withContext null
-                val clip = clipboard.primaryClip ?: return@withContext null
                 val uri = (0 until clip.itemCount).firstNotNullOfOrNull { i ->
                     clip.getItemAt(i).uri?.takeIf { context.contentResolver.getType(it)?.startsWith("image/") == true }
                 } ?: return@withContext null

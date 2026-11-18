@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +57,8 @@ import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.formContent
 import com.vpr.screenlate.ui.theme.AccentDefaults
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private val MAX_RESULT_OPTIONS = listOf(16, 32, 64, 128, 0)
 
@@ -331,7 +334,9 @@ private fun TextReplacementsDialog(
                         modifier = Modifier.fillMaxWidth(),
                     )
                     if (sample.isNotEmpty()) {
-                        val preview = remember(sample, rules) { TextReplacements.apply(sample, rules) }
+                        val preview by produceState(initialValue = sample, key1 = sample, key2 = rules) {
+                            value = withContext(Dispatchers.Default) { TextReplacements.apply(sample.take(200), rules) }
+                        }
                         Text(
                             text = preview,
                             style = MaterialTheme.typography.bodyMedium,

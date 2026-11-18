@@ -74,7 +74,7 @@ class DictionaryLookup @Inject constructor(
         val support = language.support
         val aimedSlice = text.substring(aimedAt)
         val hasStart = support.lookupStart(aimedSlice, latinAsNative = settings.romaji) != null ||
-            LookupVariants.applyReplacements(MappedText.identity(aimedSlice), settings.textReplacements)
+            TextReplacements.applyMapped(MappedText.identity(aimedSlice), settings.textReplacements)
                 ?.let { support.lookupStart(it.text, latinAsNative = settings.romaji) != null } == true
         if (!hasStart) return emptyList()
         return repository.withLookup(language) { prepared ->

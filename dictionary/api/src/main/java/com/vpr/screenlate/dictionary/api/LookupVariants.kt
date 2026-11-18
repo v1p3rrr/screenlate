@@ -4,16 +4,31 @@ import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.TextReplacement
+import java.util.concurrent.Callable
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
-/** Applies user-defined [TextReplacement] rules safely with regex validation, step-limit and expansion guards. */
+/** Applies user-defined [TextReplacement] rules safely with regex validation, step-limit, timeout and expansion guards. */
 object TextReplacements {
+    private val regexExecutor = ThreadPoolExecutor(
+        0,
+        2,
+        30L,
+        TimeUnit.SECONDS,
+        SynchronousQueue(),
+    ) { runnable ->
+        Thread(runnable, "screenlate-regex").apply { isDaemon = true }
+    }
+
     /** Applies enabled [rules] in order to [text], returning the transformed string (or [text] if unchanged). */
     fun apply(text: String, rules: List<TextReplacement>): String =
         applyMapped(MappedText.identity(text), rules)?.text ?: text
 
     /**
      * Applies enabled [rules] in order to [input], preserving source-index mapping. Invalid regexes, bad replacement
-     * group references, ReDoS backtracking exceeding [MAX_REGEX_STEPS] and runaway expansions are safely skipped.
+     * group references, ReDoS backtracking (bounded both by [MAX_REGEX_STEPS] on JVM and by [REGEX_TIMEOUT_MS] wall
+     * time on Android's native ICU engine) and runaway expansions are safely skipped.
      */
     fun applyMapped(input: MappedText, rules: List<TextReplacement>): MappedText? {
         val active = rules.filter { it.enabled && it.pattern.isNotEmpty() }
@@ -23,10 +38,26 @@ object TextReplacements {
         for (rule in active) {
             val regex = compile(rule) ?: continue
             val replacement = if (rule.regex) rule.replacement else rule.replacement.replace("$", "$$")
-            val next = runCatching { current.replace(regex, replacement, MAX_REGEX_STEPS) }.getOrNull() ?: continue
+            val next = if (rule.regex) {
+                replaceWithTimeout(current, regex, replacement)
+            } else {
+                runCatching { current.replace(regex, replacement) }.getOrNull()
+            } ?: continue
             if (next.text.length <= maxLength) current = next
         }
         return current.takeIf { it.text != input.text }
+    }
+
+    private fun replaceWithTimeout(current: MappedText, regex: Regex, replacement: String): MappedText? {
+        val future = runCatching {
+            regexExecutor.submit(Callable { current.replace(regex, replacement, MAX_REGEX_STEPS) })
+        }.getOrNull() ?: return null
+        return try {
+            future.get(REGEX_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+        } catch (_: Exception) {
+            future.cancel(true)
+            null
+        }
     }
 
     private fun compile(rule: TextReplacement): Regex? = runCatching {
@@ -38,6 +69,7 @@ object TextReplacements {
     private const val MAX_EXPANSION_FACTOR = 4
     private const val MIN_EXPANSION_LIMIT = 512
     private const val MAX_REGEX_STEPS = 50_000
+    private const val REGEX_TIMEOUT_MS = 50L
 }
 
 /**
@@ -56,7 +88,4 @@ internal object LookupVariants {
         val all = if (settings.romaji) base.flatMap { listOfNotNull(it, support.fromLatin(it)) } else base
         return all.distinctBy { it.text }
     }
-
-    fun applyReplacements(input: MappedText, rules: List<TextReplacement>): MappedText? =
-        TextReplacements.applyMapped(input, rules)
 }
