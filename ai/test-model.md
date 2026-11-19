@@ -417,6 +417,91 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD45 | Hold 🔊, play one recording, then hold again on the same word. The list reopens without a loading message. Moving to another word and back, or closing and reopening the popup, fetches a new list. | N | U PopupAudioMenuTest, JS popup.test.mjs, M | |
 | AUD46 | A pending audio lookup or playback preparation cannot play or show a toast after the word or popup changes. An empty list after holding 🔊 shows its message in the menu without requesting playback. | N | U PopupAudioPlaybackTest, JS popup.test.mjs | |
 
+### REC: sentence audio recording
+
+Planned feature: [implementation plan](plans/2026-11-19-sentence-audio-recording.md). All cases below are **N**:
+neither implementation nor execution is claimed. Coverage entries describe the required future test layers;
+add concrete test-class names as they are implemented. A blank Checked cell means not run. D cases require
+a physical device and do not count as completed by an emulator run. After the first successful run, assign
+E/F/O and record the result in the run log. Existing AUD pronunciation and ANK cases remain independent.
+
+| ID | Check | Cat | Cov | Checked |
+|---|---|---|---|---|
+| REC1 | API24–28: recording is unavailable with explanation; lookup, word pronunciation and legacy screenshot consent/capture still work; no unsupported API class is initialized | N | U, M | |
+| REC2 | API29 and current target: request runtime audio permission and fresh projection consent, start the correctly typed foreground service in platform order, then capture eligible playback; audio-only recording produces no unnecessary video file | N | I, M | |
+| REC3 | Denied/permanently denied permission, cancelled/expired consent, background-start rejection and grant arriving after Stop leave honest stopped/error state; retry requires valid authorization and never resurrects an old generation | N | U, I, M | |
+| REC4 | Bubble hold menu and Audio mode switch reflect one actual state; static dot/notification match Starting/Running/Stopped/Failed; Stop works; rapid start/stop/retry cannot run two recorders | N | U, I, M | |
+| REC5 | Eligible playback from multiple apps is mixed as recorded; switching foreground app does not retarget/stop recording; source usages/policies and separate user profiles do not gain forbidden capture or microphone fallback | N | I, M, D | |
+| REC6 | Projection/system Stop, revoked permission, another recorder and recorder dead-object/read error stop actual capture, preserve validated source/edits and report cause; no synthetic silence is appended through the interruption | N | U, I, M, D | |
+| REC7 | Local pronunciation and editor preview are absent from saved capture while source playback remains audible; no pause/duck/resume of the source caused by Screenlate preview/focus behavior | N | I, M, D | |
+| REC8 | External TTS engine: private-file synthesis plus own-UID playback excludes pronunciation; pending live utterance at capture start, Stop barrier, cancelled/failed/empty synthesis, language/voice changes and late callbacks cannot leak live fallback or stale speech | N | U, I, D | |
+| REC9 | Speaker, wired/Bluetooth route changes, device volume zero, source mute, calls and lock: record actual output/session result; no claimed route transparency or lock survival without evidence, and no glued format/session change | N | D | |
+| REC10 | Docking preserves recording; full bubble/service shutdown stops it; disabling mode preserves current leased source/edits until context end; process restart never resumes capture or restores a draft | N | U, I, M, D | |
+| REC11 | With recording disabled there is no recorder, writer, timer loop or accumulating temporary work; existing audio and OCR behavior is unchanged | N | U, M | |
+| REC12 | At actual screenshot/app-text acquisition start pin available H and scan marker; slow draft/final OCR or a later Anki screenshot does not move it; failed/cancelled scan releases reservation, stale completion cannot rebind it and rollover cannot delete protected samples | N | U, I, M | |
+| REC13 | Same-scan word movement, nested lookup and transient popup hiding reuse the context without snapshot spam; typed search, camera/photos and a pre-recording scan cannot inherit ring audio | N | U, P, M | |
+| REC14 | Enable/restart capture on an existing popup: no sentence-audio action/default step even after changing words; only a manual rescan or dock/pull creates a newly eligible context | N | U, P, M | |
+| REC15 | Ring rollover before/after a scan retains latest H independently; scan, Refresh, save/cancel and context release do not reset the ring or erase the history needed by a subsequent scan | N | U | |
+| REC16 | Wait almost R reading definitions/cropping screenshot: original H remains intact and first editor receives its separate E; held screenshot/chooser/preparation does not start E | N | U, M | |
+| REC17 | Open editor just before, exactly at and just after R cutoff, including request before but readiness after cutoff and a late cap timer; only strictly in-time opening can transition to E | N | U | |
+| REC18 | Early editor opening replaces deadline with first-open + E rather than max(old R, new E) or unused-R addition; stale R timer cannot seal the new stage | N | U | |
+| REC19 | Cancel/reopen, next note/word in same scan, repeated Refresh, saving, expand/collapse and rotation never renew E; last confirmed edits differ from abandoned working edits | N | U, I, M | |
+| REC20 | R cap before editor retains complete prefix, including crop-time expiry; late editor can edit it but no E or fresh-ring bypass is granted | N | U, M | |
+| REC21 | E cap preserves unseen continuation; first Refresh appends all retained tail then explains cap; further Refresh repeats explanation without duplicate frames, selection movement or renewed allowance | N | U, P, M | |
+| REC22 | Long absence and new fresh ring cannot bridge a missing interval into old context, even by repeated open/retry; genuine recorded pauses and explicit internal cuts remain usable | N | U, M | |
+| REC23 | Changed H/R/E apply only to subsequent contexts; original admitted E remains after changing settings before editor opening; limits use absolute consistent elapsed time across delayed callbacks/sleep | N | U, I | |
+| REC24 | Stage admission failure/revocation during opening preserves valid prefix and edits; any permitted internal retry uses original first-open deadline and still-complete continuity, never a fresh E or reopened terminal cap | N | U | |
+| REC25 | Complete pre-cutoff frames written late remain eligible; post-cutoff frames do not; long-running 64-bit frame positions and old-generation callbacks cannot overflow/rebind a new context | N | U | |
+| REC26 | One editor only: new scan offers finish/discard; failed finish keeps current retry data; only actual later scan acquisition creates its marker, with bounded queued intent and no stale screenshot | N | U, I, M | |
+| REC27 | Short/zero/failed writes, partial final frames, recorder short reads and injected slow disk publish only validated complete frames; bounded writer queue fails explicitly rather than silently dropping sound or growing RAM | N | U, I | |
+| REC28 | Ring/context/preview/analysis/export leases share chunks; rollover/replacement/cancel cannot delete a live reader's file; last release cleans files and handles, including failure and stale callback paths | N | U, I | |
+| REC29 | Duration/byte/cache/workspace/queue/descriptor/metadata limits hold independently; new work is declined or capture/context is sealed honestly without deleting current edits; include chunk-boundary slack and disjoint ring + protected history | N | U, I, M | |
+| REC30 | Low disk at start, scan pin, R→E, writing, encoding, media transfer and retry: preserve validated prefix, report actual failure, offer applicable retry/Without audio; reserve race never becomes crash or silent note success | N | U, I, M | |
+| REC31 | Memory pressure drops rebuildable caches/optional work without full-history allocation; process death at each write/export stage loses transient session as agreed and startup clears every orphan class | N | U, I, M | |
+| REC32 | Missing/truncated private source chunk is detected; do not join later files through damage. Startup/reset/restore cleanup cannot remove leased PCM/waveform/TTS/export/retry artifacts behind active workers | N | U, I | |
+| REC33 | Private recordings, runtime flags and consent are excluded from backup; restored duration/default/silence settings validate safely; reset/restore does not revive a recorder or silently apply new limits to old context | N | U, I, M | |
+| REC34 | API29 screenshots and audio coordinate projection ownership in either start order and on revoke; API24–28 legacy screenshots and API30+ accessibility screenshots retain their original behavior | N | U, I, M | |
+| REC35 | Synthetic ramp/impulses across chunk, partial-tail publication and repeated Refresh have no lost/duplicated/reordered PCM frames; shown revision stays immutable while writer continues | N | U, I | |
+| REC36 | Negotiate real capture/preview/encoder rate and mono format; unsupported combinations fail cleanly; stereo downmix, anti-phase content, clipping, quiet syllables and any resampler retain verified speech fidelity | N | I, D | |
+| REC37 | Single encoder/muxer exports selected kept ranges with cumulative frame timestamps; decoded duration/order matches expected within documented encoder tolerance, EOS finalizes, no per-chunk codec seams | N | U, I | |
+| REC38 | Maximum admitted full-history selection exports without a separate shorter duration cap; preflight counts input leases plus output workspace; cancellation/encoder failure cleans only operation-owned artifacts | N | U, I, M | |
+| REC39 | Exported media plays in local emulator AnkiDroid and disposable desktop Anki test context; source frame order, mid-word continuation and output duration agree with preview | N | I, M | |
+| REC40 | First editor shows committed history through opening with scan marker and initial [scan−15 s, scan+5 s] intersected with availability; short history is not padded or shifted to fabricate a phrase | N | U, I, M | |
+| REC41 | Initial leading quiet >5 s shifts left boundary to 150 ms before distinguishable sound; exactly 5 s/below, all-quiet and uncertain signal stay unchanged; source remains available and later edits/Refresh are not auto-retrimmed | N | U, I | |
+| REC42 | Refresh appends right without moving existing boundaries/cuts/viewport reference or extending untouched initial selection; concurrent Refresh coalesces and stale waveform/analysis cannot replace another revision | N | U, P, I, M | |
+| REC43 | Next note from scan proposes last confirmed range/cuts, allows changes and leaves earlier note unchanged; cancelled changes never replace last confirmed proposal | N | U, P, M | |
+| REC44 | Waveform tap seeks, background drag pans, pinch/buttons zoom; handle gestures are distinct and constrained; playhead dot drag seeks without panning | N | U, I, M | |
+| REC45 | Playhead line and dot align; no filled seek track; both disappear when panned offscreen; detailed labels are viewport bounds relative to scan, not independent seek times | N | I, M | |
+| REC46 | Overview tap repositions visible window; drag continuously pans it, preserving initial grab offset without jump; limits/zoom/rapid drag keep viewport valid | N | U, I, M | |
+| REC47 | Outer handles and create/select/resize/delete multiple internal exclusions follow mockup; normalized overlapping/adjacent/clipped ranges and undo after Refresh preserve original coordinates | N | U, I, M | |
+| REC48 | Result preview skips cuts, Original plays selected original sound; time mapping/seek inside a cut and end-of-result behave deterministically; seek flushes stale queued audio, including rapid seek/toggle | N | U, I, M | |
+| REC49 | Preview has unity gain independent of pronunciation setting; phone media volume works; preview/word playback ownership and editor close cancel current output cleanly without controlling the source app | N | U, I, D | |
+| REC50 | Find silence uses current selection only, remembered 1.5 s minimum/150 ms edge padding; below/at/above thresholds, quiet syllables, several pauses in one sentence and partly existing manual cuts are handled reversibly | N | U, I, M | |
+| REC51 | Silence proposals require usable contrast, abstain for uniformly quiet/noisy/ambiguous sound and never force preview; stale proposals after edit/Refresh/context switch are rejected, manual cuts remain | N | U, I, M | |
+| REC52 | Apparently silent output warns but permits saving/Without audio; a genuinely empty kept result cannot export/add a zero-frame attachment and offers adjust/omit | N | U, I, M | |
+| REC53 | Compact popup editor hides definitions; expansion/move/collapse uses same operation. Outside taps reach player without dismissing editor; dictionary auto-hide/refined pushes do not replace it | N | U, I, M | |
+| REC54 | Back and Cancel cancel pending note in both sizes; boundary/cut changes require confirmation, preview/pan/zoom alone do not; cancelling restores valid dictionary context and creates no note | N | U, I, M | |
+| REC55 | Rotate while editing/previewing/cropping/refreshing: preserve valid draft/view/playhead and allowance identity, no ordinary popup-close destruction or renewed E; source controls/insets remain usable | N | U, I, M | |
+| REC56 | 320 dp width, portrait/landscape, large font, light/dark/e-ink, RTL and all declared locales: no clipped controls/horizontal product overflow, long text wraps, body scrolls and footer/Refresh remain accessible; labels/touch targets support accessibility | N | I, M, D | |
+| REC57 | Audio card is global/outside language sources; Anki/Audio default-editor copies stay synchronized, Anki copy follows screenshot default, no static field row; H/R/E adjacent with 30 s–10 min/30 s validation and next-scan hint | N | U, I, M | |
+| REC58 | Ordinary Add follows screenshot/audio defaults, screenshot crop precedes audio; hold combines attachments with Open/Update/Add anyway. No capture/preserved eligible context retains existing hold behavior; Stop still permits editing/saving current protected fragment without granting continuation | N | U, P, I, M | |
+| REC59 | Freeze target at Add/long-press before chooser; word movement, refined results, duplicate-state refresh and stale entry indexes cannot change pending word/sentence/language/scan or target | N | U, P, M | |
+| REC60 | `{sentence-audio}` and pronunciation `{audio}` independently populate new/updated notes, including both in one template; no marker used means no editor/encode/transfer and ordinary Add unchanged | N | U, P, I | |
+| REC61 | New note-type inference/presets recognize sentence audio; existing saved mappings remain untouched with no migration prompt; existing Fill empty only preserves custom fields, Replace all remains explicit | N | U, I, M | |
+| REC62 | Duplicate Prevent/Update/New and per-field Keep/Replace/Append remain correct; Keep of existing sentence audio warns before editor and offers skip or field-setting change without overriding user policy | N | U, P, I, M | |
+| REC63 | Without audio update preserves old sentence field; mixed text+sentence-audio field remains entirely unchanged with notice while other fields update. New note Without audio renders other markers normally | N | U, P, I | |
+| REC64 | Screenshot cancelled, audio cancelled or Back creates no note; Without audio deliberately continues other requested attachments. Cancel after edits confirms; screenshot and last confirmed audio leases are released at proper ownership boundary | N | U, I, M | |
+| REC65 | Failed requested audio encode/copy before note mutation offers retry/Without audio, retains bounded draft and never reports a successful note missing requested media; repeated retry/Save cannot duplicate concurrent transfers or notes | N | U, I, M | |
+| REC66 | Save freezes shown edit revision, not unseen tail; late Refresh/silence/export completion cannot replace saved range or another operation; file/grant stays alive for actual media transfer then releases | N | U, I | |
+| REC67 | Effective deck/model/field/template/tags/update-policy change cancels pending note and explains; appearance/default/retention change alone does not. External model deletion/Anki permission loss is explicit; no stale-target save | N | U, I, M | |
+| REC68 | General Anki book/open/duplicate behavior is preserved; no broad automatic retry or rollback/exactly-once claim after a note mutation attempt. Successful media copy followed by note failure never deletes unrelated Anki media | N | U, P, I | |
+| REC69 | Cleanup/log/privacy audit covers every PCM/waveform/TTS/encoded/retry class; neutral IDs, private provider access/grants, no recognized terms/note/audio content/content-bearing paths or URLs in logs/backups | N | U, I, M | |
+| REC70 | Default5/5/2 and maximum10/10/10 under repeated scans, notes, Refresh/undo and long unattended recording: unique bytes/queues/cache/FD/temp counts reach a bounded plateau, including disjoint ring after context seal | N | U, I, M, D | |
+| REC71 | Compare feature Off, capture-only, protected history, preview, silence analysis and maximum export: CPU/PSS/native/WebView memory, disk bytes/write rate, seek/Refresh latency, OCR/lookup latency and bubble frames meet recorded measured limits/baselines | N | M, D | |
+| REC72 | Long real-device sessions compare power/thermal behavior using repeatable source/build/route and supported tracing; observed restrictions/limits are recorded rather than inferred from emulator arithmetic or a foreground-service flag | N | D | |
+| REC73 | Real source scenarios: visual-novel/live video speech continues during definition reading; paused video resumes mid-word, Refresh appends and selected pause is removed without tearing speech; long reading preserves needed pre-scan minute | N | M, D | |
+| REC74 | Debug/release coexist with isolated session files/provider authorities/notifications; another installed build's sound is not incorrectly promised to share this package's own-UID exclusion | N | I, M | |
+
 ### ANK: Anki
 
 | ID | Check | Cat | Cov | Checked |
@@ -746,6 +831,9 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 - Restricted settings for an app installed from a file; the in-app update from GitHub (release builds).
 - Recognition quality on the owner's apps (manga readers, X, games) and cloud timings on a mobile network.
 - A network voice of the system text-to-speech (the emulator's Google TTS offers local voices only).
+- Sentence recording physical-device portions: REC5–10, REC36, REC49, REC56 and REC70–73. Actual source capture
+  policy, external TTS engines, routes/mute/lock/calls, power/thermal behavior and e-ink cannot be certified by
+  the mockup or emulator alone. See the REC table for expected results and the implementation plan for the gate.
 
 ## Run log
 

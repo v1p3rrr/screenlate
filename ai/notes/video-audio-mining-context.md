@@ -1,5 +1,10 @@
 # Video audio mining: recovered context
 
+**Implementation authority (2026-11-19):** [Sentence audio recording plan](../plans/2026-11-19-sentence-audio-recording.md).
+The owner requested the complete plan after approving the refined mockup. This note remains the chronological
+research/decision archive; historical pending questions and recommendations below are superseded by the plan's
+binding decision table. The plan links the approved mockup and the new unexecuted REC test cases.
+
 2026-11-18. Historical context, technical research and explicit owner decisions are recorded below. This is not an implementation plan; pending choices remain pending, and no application code has been changed.
 
 ## Finding and approval status
@@ -618,3 +623,15 @@ Owner feedback on the tested mockup supersedes the filled lower seek-bar present
 - Clarified the duplicated default-attachment switch to name the audio editor by default and distinguish ordinary Add from audio selection in the long-press menu when disabled. It still requires active capture and an eligible scan context; no behavior change to the accepted attachment pipeline.
 
 The interactive mockup was updated. Browser checks confirmed dot/line geometry alignment, no filled seek track, no jump on overview-window grab, actual viewport drag, offscreen hiding of both position marks, unchanged selected ranges on Refresh, synchronized switches and layout down to 320 pixels without horizontal product overflow. No runtime exceptions. This verifies the mockup, not Android overlay/recording behavior. Canonical preliminary durations remain 5/5/2; trial values changed while exploring the mockup do not silently change the agreed defaults.
+
+## Final plan clarifications (2026-11-19)
+
+- Initial selection is 15 seconds before the scan marker and 5 after, intersected with available shown audio.
+  If its leading confidently classified silence is longer than 5 seconds, shift the left boundary to 150 ms
+  before distinguishable sound. Do not shorten an entirely quiet or uncertain selection; retain all source.
+- H/R/E controls allow 30 seconds through 10 minutes in 30-second steps; defaults remain 5/5/2 minutes.
+- System Back acts as Cancel in both editor sizes, confirming only if boundaries/cuts changed.
+- Create independent `core:media`; UI and Anki orchestration use a small interface/local artifact contract.
+- No unanswered product choice blocks the implementation plan. Codec/rate and numeric engineering budgets
+  require the delegated feasibility/measurement gate, not invented performance promises. Implementation is
+  not started by this planning session. Current declared interface coverage is 27 locales.

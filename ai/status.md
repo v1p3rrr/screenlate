@@ -1,5 +1,22 @@
 # Status
 
+## Sentence audio implementation plan ready (2026-11-19)
+
+- Current plan: [plans/2026-11-19-sentence-audio-recording.md](plans/2026-11-19-sentence-audio-recording.md).
+  Consolidates the complete accepted behavior and tested mockup, H/R/E state/deadlines, file/resource contracts,
+  `core:media` boundaries, settings/Anki omission semantics, errors, seven implementation gates and validation.
+- Resolved final details: initial scan−15 s / scan+5 s range, >5 s leading-quiet refinement with 150 ms margin
+  and all-quiet preservation; 30 s–10 min/30 s duration controls; Back cancels both editor sizes; separate
+  `core:media`. Defaults stay 5/5/2. Product questions are settled; format and numeric resource budgets are
+  delegated to measured Phase 1, not claimed as tested. Localization targets all 27 current locales.
+- Added 74 **N, unexecuted** REC cases to [test-model.md](test-model.md#rec-sentence-audio-recording), covering
+  platform/capture, continuity/races, storage/faults, editor/UI, Anki/settings and physical-device endurance.
+  Linked the historical discussion to the authoritative plan. No application or device/collection changes.
+- Next implementation action, when requested: platform/format/resource feasibility gate; no production
+  implementation has started. The shared generic Anki uncertain-commit redesign remains outside this scope.
+- Planning checks: relative links resolve; REC1–74 are unique/contiguous; declared locale count is 27;
+  `git diff --check` passes. No application builds or device tests were run for this documentation-only change.
+
 ## Audio playhead and overview mockup refined (2026-11-19)
 
 - Replaced the filled seek bar with a dot attached to the playback-position line; both hide when outside the visible waveform. Added continuous overview-window dragging with no grab jump; tap navigation remains. Clarified relative visible-window times and the default-editor switch's ordinary-Add versus long-press meaning in both settings copies.
