@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Η υπηρεσία προσβασιμότητας εκτελείται στο παρασκήνιο</string>
     <string name="overlay_capture_channel">Καταγραφή οθόνης</string>
     <string name="overlay_capture_notification_title">Καταγραφή οθόνης ενεργή</string>
+    <string name="overlay_recording_notification_title">Εγγραφή ήχου προτάσεων</string>
+    <string name="overlay_recording_notification_stop">Διακοπή</string>
+    <string name="overlay_menu_recording_start">Έναρξη εγγραφής προτάσεων</string>
+    <string name="overlay_menu_recording_stop">Διακοπή εγγραφής προτάσεων</string>
     <string name="overlay_service_off_channel">Διακοπή υπηρεσίας</string>
     <string name="overlay_service_off_title">Η υπηρεσία του Screenlate σταμάτησε</string>
     <string name="overlay_service_off_text">Η υπηρεσία προσβασιμότητας του Screenlate σταμάτησε. Πατήστε για επανενεργοποίηση.</string>

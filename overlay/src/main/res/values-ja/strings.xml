@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">バックグラウンドでユーザー補助サービスを実行中</string>
     <string name="overlay_capture_channel">画面キャプチャ</string>
     <string name="overlay_capture_notification_title">画面キャプチャが有効です</string>
+    <string name="overlay_recording_notification_title">文の音声を録音中</string>
+    <string name="overlay_recording_notification_stop">停止</string>
+    <string name="overlay_menu_recording_start">文の録音を開始</string>
+    <string name="overlay_menu_recording_stop">文の録音を停止</string>
     <string name="overlay_service_off_channel">サービス停止</string>
     <string name="overlay_service_off_title">Screenlate サービス停止</string>
     <string name="overlay_service_off_text">Screenlate のユーザー補助サービスが停止しました。タップして再度有効にしてください。</string>

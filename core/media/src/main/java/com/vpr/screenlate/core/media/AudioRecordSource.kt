@@ -1,16 +1,21 @@
 package com.vpr.screenlate.core.media
 
 import android.annotation.SuppressLint
+import android.media.AudioAttributes
+import android.media.AudioFormat
+import android.media.AudioPlaybackCaptureConfiguration
 import android.media.AudioRecord
 import android.media.AudioTimestamp
+import android.media.projection.MediaProjection
 import android.os.Build
+import android.os.Process
 import androidx.annotation.RequiresApi
 
 /**
  * Concrete [AudioSource] wrapping [AudioRecord] configured with playback capture on API 29+.
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-internal class AudioRecordSource(
+class AudioRecordSource internal constructor(
     private val record: AudioRecord,
 ) : AudioSource {
     override val sampleRate: Int get() = record.sampleRate
@@ -61,5 +66,43 @@ internal class AudioRecordSource(
     override fun close() {
         stop()
         record.release()
+    }
+
+    companion object {
+        @SuppressLint("MissingPermission")
+        fun create(projection: MediaProjection, sampleRate: Int = 48000): AudioRecordSource? {
+            return try {
+                val config = AudioPlaybackCaptureConfiguration.Builder(projection)
+                    .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
+                    .addMatchingUsage(AudioAttributes.USAGE_GAME)
+                    .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
+                    .excludeUid(Process.myUid())
+                    .build()
+                val minBuffer = AudioRecord.getMinBufferSize(
+                    sampleRate,
+                    AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT,
+                )
+                if (minBuffer <= 0) return null
+                val record = AudioRecord.Builder()
+                    .setAudioPlaybackCaptureConfig(config)
+                    .setAudioFormat(
+                        AudioFormat.Builder()
+                            .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                            .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
+                            .setSampleRate(sampleRate)
+                            .build()
+                    )
+                    .setBufferSizeInBytes(maxOf(minBuffer * 2, sampleRate / 5 * 2))
+                    .build()
+                if (record.state != AudioRecord.STATE_INITIALIZED) {
+                    record.release()
+                    return null
+                }
+                AudioRecordSource(record)
+            } catch (_: Exception) {
+                null
+            }
+        }
     }
 }

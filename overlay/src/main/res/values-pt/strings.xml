@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Serviço de acessibilidade em execução em segundo plano</string>
     <string name="overlay_capture_channel">Captura de tela</string>
     <string name="overlay_capture_notification_title">Captura de tela ativa</string>
+    <string name="overlay_recording_notification_title">Gravando áudio das frases</string>
+    <string name="overlay_recording_notification_stop">Parar</string>
+    <string name="overlay_menu_recording_start">Iniciar gravação de frases</string>
+    <string name="overlay_menu_recording_stop">Parar gravação de frases</string>
     <string name="overlay_service_off_channel">Serviço parado</string>
     <string name="overlay_service_off_title">Serviço do Screenlate parado</string>
     <string name="overlay_service_off_text">O serviço de acessibilidade do Screenlate parou. Toque para reativar.</string>

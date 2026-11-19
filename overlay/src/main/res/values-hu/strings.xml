@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">A kisegítő szolgáltatás fut a háttérben</string>
     <string name="overlay_capture_channel">Képernyőfelvétel</string>
     <string name="overlay_capture_notification_title">Képernyőfelvétel aktív</string>
+    <string name="overlay_recording_notification_title">Mondathang rögzítése</string>
+    <string name="overlay_recording_notification_stop">Leállítás</string>
+    <string name="overlay_menu_recording_start">Mondatok rögzítésének indítása</string>
+    <string name="overlay_menu_recording_stop">Mondatok rögzítésének leállítása</string>
     <string name="overlay_service_off_channel">Leállított szolgáltatás</string>
     <string name="overlay_service_off_title">A Screenlate szolgáltatás leállt</string>
     <string name="overlay_service_off_text">A Screenlate kisegítő szolgáltatás leállt. Újbóli engedélyezés koppintással.</string>

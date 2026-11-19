@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Erişilebilirlik hizmeti arka planda çalışıyor</string>
     <string name="overlay_capture_channel">Ekran yakalama</string>
     <string name="overlay_capture_notification_title">Ekran yakalama etkin</string>
+    <string name="overlay_recording_notification_title">Cümle sesi kaydediliyor</string>
+    <string name="overlay_recording_notification_stop">Durdur</string>
+    <string name="overlay_menu_recording_start">Cümle kaydını başlat</string>
+    <string name="overlay_menu_recording_stop">Cümle kaydını durdur</string>
     <string name="overlay_service_off_channel">Hizmet durduruldu</string>
     <string name="overlay_service_off_title">Screenlate hizmeti durduruldu</string>
     <string name="overlay_service_off_text">Screenlate erişilebilirlik hizmeti durduruldu. Yeniden etkinleştirmek için dokunun.</string>

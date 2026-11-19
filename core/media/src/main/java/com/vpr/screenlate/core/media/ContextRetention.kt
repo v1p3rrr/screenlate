@@ -1,9 +1,9 @@
 package com.vpr.screenlate.core.media
 
-internal enum class RetentionStage { WAITING, EDITOR, SEALED, RELEASED }
-internal enum class RetentionEnd { WAITING_LIMIT, EDITOR_LIMIT, CAPTURE_STOPPED, RESOURCE_LIMIT }
+enum class RetentionStage { WAITING, EDITOR, SEALED, RELEASED }
+enum class RetentionEnd { WAITING_LIMIT, EDITOR_LIMIT, CAPTURE_STOPPED, RESOURCE_LIMIT }
 
-internal data class RetentionState(
+data class RetentionState(
     val stage: RetentionStage,
     val cutoffMillis: Long,
     val firstEditorMillis: Long?,

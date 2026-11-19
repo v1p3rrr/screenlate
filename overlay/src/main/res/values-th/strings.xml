@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">บริการการช่วยการเข้าถึงกำลังทำงานในพื้นหลัง</string>
     <string name="overlay_capture_channel">การจับภาพหน้าจอ</string>
     <string name="overlay_capture_notification_title">กำลังจับภาพหน้าจอ</string>
+    <string name="overlay_recording_notification_title">กำลังบันทึกเสียงประโยค</string>
+    <string name="overlay_recording_notification_stop">หยุด</string>
+    <string name="overlay_menu_recording_start">เริ่มบันทึกประโยค</string>
+    <string name="overlay_menu_recording_stop">หยุดบันทึกประโยค</string>
     <string name="overlay_service_off_channel">บริการหยุดทำงาน</string>
     <string name="overlay_service_off_title">บริการ Screenlate หยุดทำงาน</string>
     <string name="overlay_service_off_text">บริการการช่วยการเข้าถึงของ Screenlate หยุดทำงาน แตะเพื่อเปิดใช้งานใหม่</string>

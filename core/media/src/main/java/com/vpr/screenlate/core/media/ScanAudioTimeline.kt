@@ -2,9 +2,9 @@ package com.vpr.screenlate.core.media
 
 import java.util.UUID
 
-internal data class AudioContextId(val session: UUID, val scan: Long)
+data class AudioContextId(val session: UUID, val scan: Long)
 
-internal data class AudioTimelineView(
+data class AudioTimelineView(
     val contextId: AudioContextId,
     val scanFrame: Long,
     val source: AudioRange?,

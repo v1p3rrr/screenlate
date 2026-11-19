@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":core:photos"))
     implementation(project(":dictionary:api"))
     implementation(project(":core:anki"))
+    implementation(project(":core:media"))
     implementation(project(":core:translate"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)

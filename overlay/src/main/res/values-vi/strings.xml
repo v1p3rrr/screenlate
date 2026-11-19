@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Dịch vụ hỗ trợ tiếp cận đang chạy nền</string>
     <string name="overlay_capture_channel">Chụp ảnh màn hình</string>
     <string name="overlay_capture_notification_title">Đang chụp ảnh màn hình</string>
+    <string name="overlay_recording_notification_title">Đang ghi âm câu</string>
+    <string name="overlay_recording_notification_stop">Dừng</string>
+    <string name="overlay_menu_recording_start">Bắt đầu ghi âm câu</string>
+    <string name="overlay_menu_recording_stop">Dừng ghi âm câu</string>
     <string name="overlay_service_off_channel">Dịch vụ đã dừng</string>
     <string name="overlay_service_off_title">Dịch vụ Screenlate đã dừng</string>
     <string name="overlay_service_off_text">Dịch vụ hỗ trợ tiếp cận Screenlate đã dừng. Chạm để bật lại.</string>

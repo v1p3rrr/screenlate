@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">एक्सेसिबिलिटी सेवा बैकग्राउंड में चल रही है</string>
     <string name="overlay_capture_channel">स्क्रीन कैप्चर</string>
     <string name="overlay_capture_notification_title">स्क्रीन कैप्चर सक्रिय</string>
+    <string name="overlay_recording_notification_title">वाक्य का ऑडियो रिकॉर्ड हो रहा है</string>
+    <string name="overlay_recording_notification_stop">रोकें</string>
+    <string name="overlay_menu_recording_start">वाक्यों की रिकॉर्डिंग शुरू करें</string>
+    <string name="overlay_menu_recording_stop">वाक्यों की रिकॉर्डिंग रोकें</string>
     <string name="overlay_service_off_channel">सेवा बंद हुई</string>
     <string name="overlay_service_off_title">Screenlate सेवा बंद हुई</string>
     <string name="overlay_service_off_text">Screenlate एक्सेसिबिलिटी सेवा बंद हो गई है। पुनः सक्षम करने के लिए टैप करें।</string>

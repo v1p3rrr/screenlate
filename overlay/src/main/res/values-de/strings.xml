@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Bedienungshilfe läuft im Hintergrund</string>
     <string name="overlay_capture_channel">Bildschirmaufnahme</string>
     <string name="overlay_capture_notification_title">Bildschirmaufnahme aktiv</string>
+    <string name="overlay_recording_notification_title">Satz-Audio wird aufgenommen</string>
+    <string name="overlay_recording_notification_stop">Beenden</string>
+    <string name="overlay_menu_recording_start">Satzaufnahme starten</string>
+    <string name="overlay_menu_recording_stop">Satzaufnahme beenden</string>
     <string name="overlay_service_off_channel">Dienst gestoppt</string>
     <string name="overlay_service_off_title">Screenlate-Dienst gestoppt</string>
     <string name="overlay_service_off_text">Die Screenlate-Bedienungshilfe wurde gestoppt. Zum erneuten Aktivieren antippen.</string>

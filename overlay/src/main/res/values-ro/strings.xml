@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Serviciul de accesibilitate rulează în fundal</string>
     <string name="overlay_capture_channel">Captură ecran</string>
     <string name="overlay_capture_notification_title">Captură ecran activă</string>
+    <string name="overlay_recording_notification_title">Înregistrare audio a propozițiilor</string>
+    <string name="overlay_recording_notification_stop">Oprește</string>
+    <string name="overlay_menu_recording_start">Pornește înregistrarea propozițiilor</string>
+    <string name="overlay_menu_recording_stop">Oprește înregistrarea propozițiilor</string>
     <string name="overlay_service_off_channel">Serviciu oprit</string>
     <string name="overlay_service_off_title">Serviciul Screenlate a fost oprit</string>
     <string name="overlay_service_off_text">Serviciul de accesibilitate Screenlate s-a oprit. Atingeți pentru a-l reactiva.</string>

@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Usługa ułatwień dostępu działa w tle</string>
     <string name="overlay_capture_channel">Przechwytywanie ekranu</string>
     <string name="overlay_capture_notification_title">Przechwytywanie ekranu aktywne</string>
+    <string name="overlay_recording_notification_title">Nagrywanie dźwięku zdań</string>
+    <string name="overlay_recording_notification_stop">Zatrzymaj</string>
+    <string name="overlay_menu_recording_start">Rozpocznij nagrywanie zdań</string>
+    <string name="overlay_menu_recording_stop">Zatrzymaj nagrywanie zdań</string>
     <string name="overlay_service_off_channel">Usługa zatrzymana</string>
     <string name="overlay_service_off_title">Usługa Screenlate zatrzymana</string>
     <string name="overlay_service_off_text">Usługa ułatwień dostępu Screenlate została zatrzymana. Dotknij, aby włączyć ją ponownie.</string>

@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Služba usnadnění běží na pozadí</string>
     <string name="overlay_capture_channel">Zachytávání obrazovky</string>
     <string name="overlay_capture_notification_title">Zachytávání obrazovky je aktivní</string>
+    <string name="overlay_recording_notification_title">Nahrávání zvuku vět</string>
+    <string name="overlay_recording_notification_stop">Zastavit</string>
+    <string name="overlay_menu_recording_start">Spustit nahrávání vět</string>
+    <string name="overlay_menu_recording_stop">Zastavit nahrávání vět</string>
     <string name="overlay_service_off_channel">Zastavení služby</string>
     <string name="overlay_service_off_title">Služba Screenlate byla zastavena</string>
     <string name="overlay_service_off_text">Služba usnadnění Screenlate byla zastavena. Klepnutím ji znovu zapnete.</string>

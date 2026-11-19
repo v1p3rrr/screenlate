@@ -72,10 +72,15 @@ import com.vpr.screenlate.overlay.anki.NoteSource
 import com.vpr.screenlate.overlay.anki.PhotoNoteImage
 import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.anki.ScreenNoteImage
+import com.vpr.screenlate.core.media.AudioContextId
+import com.vpr.screenlate.core.media.AudioRecordSource
+import com.vpr.screenlate.core.media.RecordingSettingsRepository
+import com.vpr.screenlate.core.media.SentenceRecorder
 import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
 import com.vpr.screenlate.overlay.capture.MediaProjectionHolder
+import com.vpr.screenlate.overlay.capture.MediaProjectionService
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
 import com.vpr.screenlate.overlay.capture.SharedScreenshot
 import com.vpr.screenlate.overlay.fonts.PageAppearance
@@ -162,6 +167,8 @@ class OverlayController(
     private val lookupSources: LookupSources,
     private val photos: PhotoDocuments,
     private val stopDiagnostics: ServiceStopDiagnostics,
+    private val sentenceRecorder: SentenceRecorder? = null,
+    private val recordingSettings: RecordingSettingsRepository? = null,
     private val scope: CoroutineScope,
 ) {
     /** Anki and audio dependencies, grouped to keep the constructor short. */
@@ -224,6 +231,7 @@ class OverlayController(
     private val capturer = ScreenCapturer.create(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
     private val screenReads = ScreenReads({ lookupSources.source.value }, ControllerScreenReader())
+    private var currentScanAudioContextId: AudioContextId? = null
     /** The language switched to last; the next scan takes it, by a tap or when the bubble leaves the dock. */
     private var activeLanguage = profiles.cachedState?.active ?: Language.JAPANESE
     private var languages = profiles.cachedState ?: LanguageProfilesState.DEFAULT
@@ -343,6 +351,15 @@ class OverlayController(
         layerView.primaryColor = initialPalette.effectiveSeed
         layerView.aimColor = initialBubbleColor
         popup.hideOnOutsideTap = initialOverlay.hideOnOutsideTap
+        anki.player.isCaptureActive = { sentenceRecorder?.isRecording == true }
+        MediaProjectionService.stopRecordingAction = ::stopSentenceRecording
+        MediaProjectionHolder.onSystemStopped = {
+            if (sentenceRecorder?.isRecording == true) stopSentenceRecording()
+        }
+        sentenceRecorder?.setOnStoppedListener {
+            bubbleView.recording = false
+        }
+        bubbleView.recording = sentenceRecorder?.isRecording == true
         scope.launch {
             combine(overlaySettings.settings, appSettings.paletteConfig, wallpaperAccents(service)) { overlay, palette, wallpaperAccent ->
                 val themeSeed = palette.withWallpaperColor(wallpaperAccent).effectiveSeed
@@ -399,6 +416,8 @@ class OverlayController(
         scanJob?.cancel()
         lookupJob?.cancel()
         popupNotes.release()
+        currentScanAudioContextId?.let { sentenceRecorder?.releaseContext(it) }
+        currentScanAudioContextId = null
         mainHandler.removeCallbacksAndMessages(null)
         detachWindows()
         popup.release()
@@ -514,8 +533,48 @@ class OverlayController(
         popup.detach()
         windowManager.removeView(layerView)
         attached = false
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        if (sentenceRecorder?.isRecording == true) {
+            stopSentenceRecording()
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             MediaProjectionHolder.stop(service)
+        }
+    }
+
+    fun startSentenceRecording() {
+        if (Build.VERSION.SDK_INT < 29 || sentenceRecorder == null) return
+        if (sentenceRecorder.isRecording) return
+        currentScanAudioContextId?.let { sentenceRecorder.releaseContext(it) }
+        currentScanAudioContextId = null
+        scope.launch {
+            val projection = MediaProjectionHolder.getOrCreate(service, isRecording = true)
+            if (projection == null) {
+                Log.i(TAG, "Sentence recording consent cancelled or denied")
+                return@launch
+            }
+            val source = AudioRecordSource.create(projection)
+            if (source == null || !sentenceRecorder.start(source)) {
+                bubbleView.recording = false
+                MediaProjectionService.updateRecordingState(service, isRecording = false)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    MediaProjectionHolder.stop(service)
+                }
+                return@launch
+            }
+            bubbleView.recording = true
+            recordingSettings?.setRecordingEnabled(true)
+        }
+    }
+
+    fun stopSentenceRecording() {
+        if (sentenceRecorder == null) return
+        sentenceRecorder.stop()
+        bubbleView.recording = false
+        MediaProjectionService.updateRecordingState(service, isRecording = false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            MediaProjectionHolder.stop(service)
+        }
+        scope.launch {
+            recordingSettings?.setRecordingEnabled(false)
         }
     }
 
@@ -730,6 +789,10 @@ class OverlayController(
         resetScan()
         popup.hide()
         popupNotes.onClosed()
+        currentScanAudioContextId?.let {
+            sentenceRecorder?.releaseContext(it)
+            currentScanAudioContextId = null
+        }
         layerView.clearAll()
         bubbleView.showCenterDot = false
     }
@@ -849,6 +912,13 @@ class OverlayController(
             if (paragraph.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_paragraph)) { copyText(paragraph) })
             if (all.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_all)) { copyText(all) })
             if (!inApp) add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
+            if (Build.VERSION.SDK_INT >= 29 && scanSource !is LookupSource.Photo && sentenceRecorder != null) {
+                if (sentenceRecorder.isRecording) {
+                    add(BubbleMenu.Item(service.getString(R.string.overlay_menu_recording_stop), ::stopSentenceRecording))
+                } else {
+                    add(BubbleMenu.Item(service.getString(R.string.overlay_menu_recording_start), ::startSentenceRecording))
+                }
+            }
         }
         val locale = service.resources.configuration.locales[0]
         val shown = languages.quick.takeIf { it.size > 1 && scanSource !is LookupSource.Photo }.orEmpty()
@@ -1089,12 +1159,26 @@ class OverlayController(
         Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         loadDictionaryStyles()
         bubbleView.loading = true
+        currentScanAudioContextId?.let { oldId ->
+            sentenceRecorder?.releaseContext(oldId)
+            currentScanAudioContextId = null
+        }
+        val scanAudioContext = if (sentenceRecorder?.isRecording == true) {
+            sentenceRecorder.acquireScan(SystemClock.elapsedRealtime())
+        } else null
+        currentScanAudioContextId = scanAudioContext
         scanJob = scope.launch {
             val ready = installation.current(language)
             if (!ready.scanReady) {
                 if (ready.needsDeviceModel && settings.textSource == TextSource.APP_TEXT) {
                     val appPage = screenReads.readAppText(generation)
-                    if (!screenReads.isOpen(generation)) return@launch
+                    if (!screenReads.isOpen(generation)) {
+                        currentScanAudioContextId?.let {
+                            sentenceRecorder?.releaseContext(it)
+                            currentScanAudioContextId = null
+                        }
+                        return@launch
+                    }
                     if (appPage != null && appPage.paragraphs.isNotEmpty()) {
                         screenshotSkipped = true
                         popup.page.prepare()
@@ -1104,6 +1188,10 @@ class OverlayController(
                 }
                 ocrFinal = true
                 bubbleView.loading = false
+                currentScanAudioContextId?.let {
+                    sentenceRecorder?.releaseContext(it)
+                    currentScanAudioContextId = null
+                }
                 showMessage(ready.message(service, scanning = true), installation = !ready.needsDeviceModel, ocrModels = ready.needsDeviceModel)
                 return@launch
             }
@@ -1126,6 +1214,10 @@ class OverlayController(
                 null
             } catch (_: SourceChangedException) {
                 // The scan closes with the source change.
+                currentScanAudioContextId?.let {
+                    sentenceRecorder?.releaseContext(it)
+                    currentScanAudioContextId = null
+                }
                 return@launch
             }
             // Neither source waits for the other: whichever arrives is shown, merged with what the other has so far.
@@ -1377,6 +1469,10 @@ class OverlayController(
     /** Aims at the photo's stored text: no screenshot, app text or recognition, and in the photo's language. */
     private fun attachPhoto(source: LookupSource.Photo, flashLines: Boolean) {
         Log.d(TAG, "Photo text attached (${if (flashLines) "tap" else "pull-out"}, ${source.recognition.page.paragraphs.size} paragraphs)")
+        currentScanAudioContextId?.let {
+            sentenceRecorder?.releaseContext(it)
+            currentScanAudioContextId = null
+        }
         scanLanguage.value = source.recognition.language
         loadDictionaryStyles()
         scanJob = scope.launch {

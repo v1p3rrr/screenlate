@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">سرویس دسترس‌پذیری در پس‌زمینه در حال اجرا است</string>
     <string name="overlay_capture_channel">ضبط صفحه</string>
     <string name="overlay_capture_notification_title">ضبط صفحه فعال است</string>
+    <string name="overlay_recording_notification_title">ضبط صدای جمله‌ها</string>
+    <string name="overlay_recording_notification_stop">توقف</string>
+    <string name="overlay_menu_recording_start">شروع ضبط جمله‌ها</string>
+    <string name="overlay_menu_recording_stop">توقف ضبط جمله‌ها</string>
     <string name="overlay_service_off_channel">توقف سرویس</string>
     <string name="overlay_service_off_title">سرویس Screenlate متوقف شد</string>
     <string name="overlay_service_off_text">سرویس دسترس‌پذیری Screenlate متوقف شد. برای فعال‌سازی مجدد ضربه بزنید.</string>

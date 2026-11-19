@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">অ্যাক্সেসিবিলিটি পরিষেবা ব্যাকগ্রাউন্ডে চলছে</string>
     <string name="overlay_capture_channel">স্ক্রিন ক্যাপচার</string>
     <string name="overlay_capture_notification_title">স্ক্রিন ক্যাপচার সক্রিয়</string>
+    <string name="overlay_recording_notification_title">বাক্যের অডিও রেকর্ড করা হচ্ছে</string>
+    <string name="overlay_recording_notification_stop">থামান</string>
+    <string name="overlay_menu_recording_start">বাক্য রেকর্ড করা শুরু করুন</string>
+    <string name="overlay_menu_recording_stop">বাক্য রেকর্ড করা বন্ধ করুন</string>
     <string name="overlay_service_off_channel">পরিষেবা বন্ধ</string>
     <string name="overlay_service_off_title">Screenlate পরিষেবা বন্ধ হয়েছে</string>
     <string name="overlay_service_off_text">Screenlate অ্যাক্সেসিবিলিটি পরিষেবা বন্ধ হয়ে গেছে। পুনরায় চালু করতে ট্যাপ করুন।</string>

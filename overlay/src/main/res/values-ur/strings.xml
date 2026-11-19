@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">رسائی سروس پس منظر میں چل رہی ہے</string>
     <string name="overlay_capture_channel">اسکرین کیپچر</string>
     <string name="overlay_capture_notification_title">اسکرین کیپچر فعال</string>
+    <string name="overlay_recording_notification_title">جملوں کی آڈیو ریکارڈ ہو رہی ہے</string>
+    <string name="overlay_recording_notification_stop">روکیں</string>
+    <string name="overlay_menu_recording_start">جملوں کی ریکارڈنگ شروع کریں</string>
+    <string name="overlay_menu_recording_stop">جملوں کی ریکارڈنگ روکیں</string>
     <string name="overlay_service_off_channel">سروس بند</string>
     <string name="overlay_service_off_title">Screenlate سروس بند ہو گئی</string>
     <string name="overlay_service_off_text">Screenlate رسائی سروس بند ہو گئی۔ دوبارہ فعال کرنے کے لیے ٹیپ کریں۔</string>

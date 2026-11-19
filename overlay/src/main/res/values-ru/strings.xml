@@ -86,6 +86,10 @@
     <string name="overlay_keep_alive_text">Служба специальных возможностей работает в фоне</string>
     <string name="overlay_capture_channel">Захват экрана</string>
     <string name="overlay_capture_notification_title">Захват экрана активен</string>
+    <string name="overlay_recording_notification_title">Запись реплик</string>
+    <string name="overlay_recording_notification_stop">Остановить</string>
+    <string name="overlay_menu_recording_start">Запись реплик</string>
+    <string name="overlay_menu_recording_stop">Остановить запись реплик</string>
     <string name="overlay_service_off_channel">Служба остановлена</string>
     <string name="overlay_service_off_title">Служба Screenlate остановлена</string>
     <string name="overlay_service_off_text">Служба специальных возможностей Screenlate остановлена. Нажмите, чтобы включить её снова.</string>

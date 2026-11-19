@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Служба спеціальних можливостей працює у фоні</string>
     <string name="overlay_capture_channel">Захоплення екрана</string>
     <string name="overlay_capture_notification_title">Захоплення екрана активне</string>
+    <string name="overlay_recording_notification_title">Запис звуку речень</string>
+    <string name="overlay_recording_notification_stop">Зупинити</string>
+    <string name="overlay_menu_recording_start">Почати запис речень</string>
+    <string name="overlay_menu_recording_stop">Зупинити запис речень</string>
     <string name="overlay_service_off_channel">Службу зупинено</string>
     <string name="overlay_service_off_title">Службу Screenlate зупинено</string>
     <string name="overlay_service_off_text">Службу спеціальних можливостей Screenlate зупинено. Натисніть, щоб увімкнути знову.</string>

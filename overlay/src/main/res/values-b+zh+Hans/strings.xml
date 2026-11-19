@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">无障碍服务正在后台运行</string>
     <string name="overlay_capture_channel">屏幕截图</string>
     <string name="overlay_capture_notification_title">屏幕截图已启用</string>
+    <string name="overlay_recording_notification_title">正在录制句子音频</string>
+    <string name="overlay_recording_notification_stop">停止</string>
+    <string name="overlay_menu_recording_start">开始录制句子</string>
+    <string name="overlay_menu_recording_stop">停止录制句子</string>
     <string name="overlay_service_off_channel">服务已停止</string>
     <string name="overlay_service_off_title">Screenlate 服务已停止</string>
     <string name="overlay_service_off_text">Screenlate 无障碍服务已停止。点按重新启用。</string>

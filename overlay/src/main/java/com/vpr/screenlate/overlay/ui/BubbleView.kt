@@ -44,6 +44,12 @@ class BubbleView(context: Context) : View(context) {
         textAlign = Paint.Align.CENTER
         typeface = Typeface.DEFAULT_BOLD
     }
+    private val recordingDot = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = RECORDING_RED }
+    private val recordingDotStroke = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 1.2f * density
+        color = Color.WHITE
+    }
     private val arcBounds = RectF()
     private val discBounds = RectF()
     private var centerX = 0f
@@ -107,6 +113,8 @@ class BubbleView(context: Context) : View(context) {
         dot.color = fgColor
         arc.color = fgColor
         glyphPaint.color = fgColor
+        recordingDot.color = if (eInk) Color.WHITE else RECORDING_RED
+        recordingDotStroke.color = if (eInk) Color.BLACK else Color.WHITE
     }
 
     /** The alpha when the bubble is shown (it is 0 while a screenshot is taken on older Android versions). */
@@ -137,6 +145,14 @@ class BubbleView(context: Context) : View(context) {
 
     var showCenterDot: Boolean = false
         set(value) {
+            field = value
+            invalidate()
+        }
+
+    /** Static indicator dot showing that sentence audio recording is actively capturing. */
+    var recording: Boolean = false
+        set(value) {
+            if (field == value) return
             field = value
             invalidate()
         }
@@ -192,6 +208,7 @@ class BubbleView(context: Context) : View(context) {
         canvas.drawCircle(cx, cy, radius, ring)
         if (showCenterDot) canvas.drawCircle(cx, cy, 3.5f * density, dot)
         if (docked && glyph.isNotEmpty()) drawGlyph(canvas, part)
+        if (recording) drawRecordingDot(canvas, part, cx, cy, radius)
         if (loading) {
             val inset = radius - 6f * density
             arcBounds.set(cx - inset, cy - inset, cx + inset, cy + inset)
@@ -226,6 +243,26 @@ class BubbleView(context: Context) : View(context) {
         canvas.drawText(glyph, x, baseline, glyphPaint)
     }
 
+    private fun drawRecordingDot(canvas: Canvas, part: RectF, cx: Float, cy: Float, radius: Float) {
+        val dotRadius = 3.5f * density
+        val rx: Float
+        val ry: Float
+        if (docked) {
+            if (dockSide.horizontal) {
+                rx = part.centerX()
+                ry = if (dockSide == DockSide.TOP) part.bottom - 7f * density else part.top + 7f * density
+            } else {
+                rx = if (dockSide == DockSide.LEFT) part.right - 7f * density else part.left + 7f * density
+                ry = part.centerY() - 10f * density
+            }
+        } else {
+            rx = cx + radius * 0.55f
+            ry = cy - radius * 0.55f
+        }
+        canvas.drawCircle(rx, ry, dotRadius, recordingDot)
+        canvas.drawCircle(rx, ry, dotRadius, recordingDotStroke)
+    }
+
     override fun performClick(): Boolean = super.performClick()
 
     override fun onDetachedFromWindow() {
@@ -234,6 +271,7 @@ class BubbleView(context: Context) : View(context) {
     }
 
     companion object {
+        private const val RECORDING_RED = 0xFFE53935.toInt()
         private const val BUBBLE_COLOR = 0x737C5CFF
         private const val DOCKED_ALPHA = 0.55f
 

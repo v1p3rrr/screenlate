@@ -4,7 +4,7 @@ package com.vpr.screenlate.core.media
  * Audio input provider for the capture worker.
  * Concrete implementation wraps [android.media.AudioRecord]; fakes provide synthetic frames in tests.
  */
-internal interface AudioSource : AutoCloseable {
+interface AudioSource : AutoCloseable {
     val sampleRate: Int
     val channelCount: Int
 

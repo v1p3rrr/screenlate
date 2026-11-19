@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">Layanan aksesibilitas berjalan di latar belakang</string>
     <string name="overlay_capture_channel">Tangkapan layar</string>
     <string name="overlay_capture_notification_title">Tangkapan layar aktif</string>
+    <string name="overlay_recording_notification_title">Merekam audio kalimat</string>
+    <string name="overlay_recording_notification_stop">Berhenti</string>
+    <string name="overlay_menu_recording_start">Mulai merekam kalimat</string>
+    <string name="overlay_menu_recording_stop">Berhenti merekam kalimat</string>
     <string name="overlay_service_off_channel">Layanan berhenti</string>
     <string name="overlay_service_off_title">Layanan Screenlate berhenti</string>
     <string name="overlay_service_off_text">Layanan aksesibilitas Screenlate berhenti. Ketuk untuk mengaktifkan lagi.</string>

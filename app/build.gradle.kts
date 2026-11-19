@@ -96,6 +96,7 @@ dependencies {
     implementation(project(":core:ocr"))
     implementation(project(":core:photos"))
     implementation(project(":core:anki"))
+    implementation(project(":core:media"))
     implementation(project(":core:translate"))
     implementation(project(":dictionary:api"))
     implementation(project(":dictionary:engine-hoshidicts"))

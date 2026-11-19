@@ -22,9 +22,18 @@ internal object MediaProjectionHolder {
     private var projection: MediaProjection? = null
     private var generation = 0L
 
-    suspend fun getOrCreate(context: Context): MediaProjection? = withContext(Dispatchers.Main.immediate) {
+    val hasActiveProjection: Boolean get() = projection != null
+
+    var onSystemStopped: (() -> Unit)? = null
+
+    suspend fun getOrCreate(context: Context, isRecording: Boolean = false): MediaProjection? = withContext(Dispatchers.Main.immediate) {
         mutex.withLock {
-            projection?.let { return@withLock it }
+            projection?.let {
+                if (isRecording) {
+                    MediaProjectionService.updateRecordingState(context, isRecording = true)
+                }
+                return@withLock it
+            }
             val currentGeneration = generation
             val app = context.applicationContext
             val data = try {
@@ -37,7 +46,7 @@ internal object MediaProjectionHolder {
             if (generation != currentGeneration) return@withLock null
 
             try {
-                if (!MediaProjectionService.start(app)) throw CaptureException.Failed(-1)
+                if (!MediaProjectionService.start(app, isRecording)) throw CaptureException.Failed(-1)
                 if (generation != currentGeneration) return@withLock null
                 val manager = app.getSystemService(MediaProjectionManager::class.java)
                 val session = manager.getMediaProjection(android.app.Activity.RESULT_OK, data)
@@ -48,6 +57,7 @@ internal object MediaProjectionHolder {
                         Log.i(TAG, "MediaProjection stopped by system")
                         projection = null
                         MediaProjectionService.stop(app)
+                        onSystemStopped?.invoke()
                     }
                 }, Handler(Looper.getMainLooper()))
                 projection = session

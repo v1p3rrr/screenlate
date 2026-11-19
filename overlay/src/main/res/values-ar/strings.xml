@@ -85,6 +85,10 @@
     <string name="overlay_keep_alive_text">خدمة سهولة الاستخدام تعمل في الخلفية</string>
     <string name="overlay_capture_channel">التقاط الشاشة</string>
     <string name="overlay_capture_notification_title">التقاط الشاشة نشط</string>
+    <string name="overlay_recording_notification_title">تسجيل صوت الجمل</string>
+    <string name="overlay_recording_notification_stop">إيقاف</string>
+    <string name="overlay_menu_recording_start">بدء تسجيل الجمل</string>
+    <string name="overlay_menu_recording_stop">إيقاف تسجيل الجمل</string>
     <string name="overlay_service_off_channel">توقف الخدمة</string>
     <string name="overlay_service_off_title">توقفت خدمة Screenlate</string>
     <string name="overlay_service_off_text">توقّفت خدمة سهولة الاستخدام في Screenlate. انقر لإعادة التفعيل.</string>

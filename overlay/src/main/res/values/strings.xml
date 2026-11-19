@@ -89,6 +89,10 @@
     <string name="overlay_keep_alive_text">Accessibility service running in the background</string>
     <string name="overlay_capture_channel">Screen capture</string>
     <string name="overlay_capture_notification_title">Screen capture active</string>
+    <string name="overlay_recording_notification_title">Recording sentence audio</string>
+    <string name="overlay_recording_notification_stop">Stop</string>
+    <string name="overlay_menu_recording_start">Start recording sentences</string>
+    <string name="overlay_menu_recording_stop">Stop recording sentences</string>
     <string name="overlay_service_off_channel">Service stopped</string>
     <string name="overlay_service_off_title">Screenlate service stopped</string>
     <string name="overlay_service_off_text">The Screenlate accessibility service stopped. Tap to re-enable.</string>
