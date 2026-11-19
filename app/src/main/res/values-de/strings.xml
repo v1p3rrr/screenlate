@@ -1025,4 +1025,26 @@
     <string name="lookup_text_replacement_ignore_case">Groß-/Kleinschreibung ignorieren</string>
     <string name="yomitan_summary_replacements_imported">Importierte Textersetzungsregeln: %1$d</string>
     <string name="lookup_text_replacement_test">Testtext</string>
+    <string name="sentence_recording_card_title">Satzaufnahme</string>
+    <string name="sentence_recording_unsupported_hint">Die Satzaufnahme erfordert Android 10 oder neuer.</string>
+    <string name="sentence_recording_toggle">Medien-Audio aufnehmen</string>
+    <string name="sentence_recording_toggle_hint">Nimmt Medien-Audio im Hintergrund auf, um Satz-Audio mit Notizen zu speichern.</string>
+    <string name="sentence_audio_default_editor">Audio-Editor standardmäßig</string>
+    <string name="sentence_audio_default_editor_hint">Bei normalem Tippen auf „Hinzufügen“ öffnen. Wenn aus, Audio im Menü durch langes Drücken wählen. Erfordert Audioaufnahme.</string>
+    <string name="sentence_recording_limits_label">Dauerlimits</string>
+    <string name="sentence_recording_limits_hint">Gilt ab dem nächsten Scan.</string>
+    <string name="sentence_recording_limit_history">Verlauf vor dem Scan</string>
+    <string name="sentence_recording_limit_waiting">Zeit bis zum Editor</string>
+    <string name="sentence_recording_limit_editor">Fortsetzung im Editor</string>
+    <string name="sentence_recording_silence_params">Stille-Parameter</string>
+    <string name="sentence_recording_silence_title">Stille-Suche</string>
+    <string name="sentence_recording_min_pause">Mindestpause, s</string>
+    <string name="sentence_recording_edge_margin">Rand an jeder Seite, ms</string>
+    <string name="sentence_recording_info_title">Satzaufnahme</string>
+    <string name="sentence_recording_info_body">Der Audioverlauf ist beim Scannen geschützt. „Aktualisieren“ hängt die verbliebene Fortsetzung an, ohne Bearbeitungen zu ändern. Aufnahmelücken werden nie zusammengefügt.</string>
+    <string name="sentence_recording_missing_marker_hint">Keiner Ihrer Anki-Notiztypen enthält {sentence-audio}. Fügen Sie es in den Anki-Einstellungen hinzu, um Aufnahmen anzuhängen.</string>
+    <string name="anki_marker_sentence_audio">Satz-Audio aus der Wiedergabeaufnahme</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>

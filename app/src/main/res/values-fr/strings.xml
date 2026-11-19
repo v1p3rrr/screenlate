@@ -1038,4 +1038,26 @@
     <string name="lookup_text_replacement_ignore_case">Ignorer la casse</string>
     <string name="yomitan_summary_replacements_imported">Règles de remplacement de texte importées : %1$d</string>
     <string name="lookup_text_replacement_test">Texte de test</string>
+    <string name="sentence_recording_card_title">Enregistrement de phrases</string>
+    <string name="sentence_recording_unsupported_hint">L’enregistrement audio de phrases nécessite Android 10 ou une version ultérieure.</string>
+    <string name="sentence_recording_toggle">Enregistrer le son des médias</string>
+    <string name="sentence_recording_toggle_hint">Enregistre le son multimédia en arrière-plan pour joindre l’audio de phrases aux notes.</string>
+    <string name="sentence_audio_default_editor">Éditeur audio par défaut</string>
+    <string name="sentence_audio_default_editor_hint">Ouvrir d’un simple appui sur « Ajouter ». Si désactivé, choisir l’audio dans le menu d’appui long. Nécessite l’enregistrement audio.</string>
+    <string name="sentence_recording_limits_label">Limites de durée</string>
+    <string name="sentence_recording_limits_hint">S’appliquent à partir de la prochaine analyse.</string>
+    <string name="sentence_recording_limit_history">Historique avant l’analyse</string>
+    <string name="sentence_recording_limit_waiting">Délai avant ouverture de l’éditeur</string>
+    <string name="sentence_recording_limit_editor">Prolongation dans l’éditeur</string>
+    <string name="sentence_recording_silence_params">Paramètres de silence</string>
+    <string name="sentence_recording_silence_title">Recherche de silences</string>
+    <string name="sentence_recording_min_pause">Pause minimale, s</string>
+    <string name="sentence_recording_edge_margin">Marge à chaque extrémité, ms</string>
+    <string name="sentence_recording_info_title">Enregistrement de phrases</string>
+    <string name="sentence_recording_info_body">L’historique audio est protégé lors de l’analyse. « Actualiser » ajoute le prolongement conservé sans modifier les retouches. Les interruptions d’enregistrement ne sont jamais fusionnées.</string>
+    <string name="sentence_recording_missing_marker_hint">Aucun de vos types de note Anki n’inclut {sentence-audio}. Ajoutez-le dans les paramètres Anki pour joindre des enregistrements.</string>
+    <string name="anki_marker_sentence_audio">Audio de phrase issu de l’enregistrement de lecture</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>

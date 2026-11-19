@@ -1017,4 +1017,26 @@
     <string name="lookup_text_replacement_ignore_case">بڑے اور چھوٹے حروف نظر انداز کریں</string>
     <string name="yomitan_summary_replacements_imported">درآمد شدہ متن کی تبدیلی کے قواعد: %1$d</string>
     <string name="lookup_text_replacement_test">متن کا ٹیسٹ</string>
+    <string name="sentence_recording_card_title">جملے کی ریکارڈنگ</string>
+    <string name="sentence_recording_unsupported_hint">جملے کی آڈیو ریکارڈنگ کے لیے Android 10 یا اس سے جدید ورژن درکار ہے۔</string>
+    <string name="sentence_recording_toggle">پلے بیک آڈیو ریکارڈ کریں</string>
+    <string name="sentence_recording_toggle_hint">کارڈز کے ساتھ جملے کی آڈیو محفوظ کرنے کے لیے پس منظر میں میڈیا آڈیو ریکارڈ کرتا ہے۔</string>
+    <string name="sentence_audio_default_editor">بنیادی طور پر آڈیو ایڈیٹر</string>
+    <string name="sentence_audio_default_editor_hint">«شامل کریں» پر عام ٹیپ کرنے پر کھولیں۔ بند ہونے پر، دیر تک دبانے والے مینو سے آڈیو منتخب کریں۔ آڈیو ریکارڈنگ درکار ہے۔</string>
+    <string name="sentence_recording_limits_label">مدت کی حدیں</string>
+    <string name="sentence_recording_limits_hint">اگلے اسکین سے لاگو ہوں گی۔</string>
+    <string name="sentence_recording_limit_history">اسکین سے پہلے کی ہسٹری</string>
+    <string name="sentence_recording_limit_waiting">ایڈیٹر کھولنے سے پہلے کا وقت</string>
+    <string name="sentence_recording_limit_editor">ایڈیٹنگ کے دوران جاری رہنے کا وقت</string>
+    <string name="sentence_recording_silence_params">خاموشی کے پیرامیٹرز</string>
+    <string name="sentence_recording_silence_title">خاموشی کی تلاش</string>
+    <string name="sentence_recording_min_pause">کم از کم وقفہ، سیکنڈ</string>
+    <string name="sentence_recording_edge_margin">ہر کنارے پر مارجن، ملی سیکنڈ</string>
+    <string name="sentence_recording_info_title">جملے کی ریکارڈنگ</string>
+    <string name="sentence_recording_info_body">اسکین کے دوران آڈیو ہسٹری محفوظ رہتی ہے۔ «ریفریش» ترامیم کو تبدیل کیے بغیر باقی ماندہ آڈیو شامل کرتا ہے۔ ریکارڈنگ کے وقفے کبھی نہیں جوڑے جاتے۔</string>
+    <string name="sentence_recording_missing_marker_hint">آپ کی کسی بھی Anki نوٹ کی قسم میں {sentence-audio} شامل نہیں ہے۔ ریکارڈنگز منسلک کرنے کے لیے اسے Anki ترتیبات میں شامل کریں۔</string>
+    <string name="anki_marker_sentence_audio">پلے بیک ریکارڈنگ سے جملے کی آڈیو</string>
+    <string name="sentence_recording_duration_seconds">%1$d سیکنڈ</string>
+    <string name="sentence_recording_duration_minutes">%1$d منٹ</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d منٹ %2$d سیکنڈ</string>
 </resources>

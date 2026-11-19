@@ -21,6 +21,7 @@ data class NoteRequest(
     val values: Map<String, String>,
     val screenshot: File? = null,
     val audio: AudioClip? = null,
+    val sentenceAudio: File? = null,
 )
 
 sealed interface AddResult {
@@ -214,6 +215,10 @@ class AnkiNotes @Inject constructor(
                 val name = "screenlate_${request.audio.file.nameWithoutExtension}"
                 anki.addMedia(request.audio.file, name, AnkiDroid.MediaKind.AUDIO)?.let { values["audio"] = it }
             }
+            if (FieldTemplate.SENTENCE_AUDIO in used && request.sentenceAudio != null) {
+                val name = "screenlate_${request.sentenceAudio.nameWithoutExtension}"
+                anki.addMedia(request.sentenceAudio, name, AnkiDroid.MediaKind.AUDIO)?.let { values[FieldTemplate.SENTENCE_AUDIO] = it }
+            }
             // Known markers without a value (no sentence, no audio, a dictionary without an entry for this term)
             // must not leak into the card as literal text.
             for (marker in used) {
@@ -231,8 +236,14 @@ class AnkiNotes @Inject constructor(
 
             if (targetNote != null) {
                 val merged = names.mapIndexed { index, name ->
-                    val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE
-                    mode.apply(targetNote.fields.getOrElse(index) { "" }, fields[index])
+                    val template = settings.fields[name].orEmpty()
+                    // Without audio update: preserve existing sentence-audio field(s) rather than writing an empty Replace value.
+                    if (request.sentenceAudio == null && FieldTemplate.SENTENCE_AUDIO in FieldTemplate.markersIn(template)) {
+                        targetNote.fields.getOrElse(index) { "" }
+                    } else {
+                        val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE
+                        mode.apply(targetNote.fields.getOrElse(index) { "" }, fields[index])
+                    }
                 }
                 if (anki.updateNote(targetNote.id, merged, tags)) AddResult.Updated(targetNote.id) else AddResult.Rejected
             } else {

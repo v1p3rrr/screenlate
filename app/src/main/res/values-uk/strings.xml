@@ -1043,4 +1043,26 @@
     <string name="lookup_text_replacement_ignore_case">Без урахування регістру</string>
     <string name="yomitan_summary_replacements_imported">Імпортовано правил заміни тексту: %1$d</string>
     <string name="lookup_text_replacement_test">Перевірити на тексті</string>
+    <string name="sentence_recording_card_title">Запис реплік</string>
+    <string name="sentence_recording_unsupported_hint">Запис аудіо реплік вимагає Android 10 або новішої версії.</string>
+    <string name="sentence_recording_toggle">Запис звуку програм</string>
+    <string name="sentence_recording_toggle_hint">Записує відтворюваний звук у фоні для збереження аудіо реплік у картки.</string>
+    <string name="sentence_audio_default_editor">Аудіоредактор за замовчуванням</string>
+    <string name="sentence_audio_default_editor_hint">Відкривати за звичайного натискання на «Додати». Якщо вимкнено, звук можна вибрати в меню довгого натискання. Потрібен запис звуку.</string>
+    <string name="sentence_recording_limits_label">Обмеження тривалості</string>
+    <string name="sentence_recording_limits_hint">Застосовуються з наступного сканування.</string>
+    <string name="sentence_recording_limit_history">До сканування</string>
+    <string name="sentence_recording_limit_waiting">До відкриття редактора</string>
+    <string name="sentence_recording_limit_editor">У редакторі</string>
+    <string name="sentence_recording_silence_params">Параметри пауз</string>
+    <string name="sentence_recording_silence_title">Пошук тиші</string>
+    <string name="sentence_recording_min_pause">Мінімальна пауза, с</string>
+    <string name="sentence_recording_edge_margin">Запас з кожного боку, мс</string>
+    <string name="sentence_recording_info_title">Запис репліки</string>
+    <string name="sentence_recording_info_body">Історія звуку захищена під час сканування. «Оновити» додає збережене продовження, не змінюючи редагувань. Пропуски запису ніколи не з\'єднуються.</string>
+    <string name="sentence_recording_missing_marker_hint">Жоден із ваших типів карток Anki не містить {sentence-audio}. Додайте його в налаштуваннях Anki, щоб прикріплювати записи.</string>
+    <string name="anki_marker_sentence_audio">Аудіо репліки із запису звуку</string>
+    <string name="sentence_recording_duration_seconds">%1$d с</string>
+    <string name="sentence_recording_duration_minutes">%1$d хв</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d хв %2$d с</string>
 </resources>

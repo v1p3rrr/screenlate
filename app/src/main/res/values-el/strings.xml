@@ -1017,4 +1017,26 @@
     <string name="lookup_text_replacement_ignore_case">Χωρίς διάκριση πεζών/κεφαλαίων</string>
     <string name="yomitan_summary_replacements_imported">Εισαγόμενοι κανόνες αντικατάστασης κειμένου: %1$d</string>
     <string name="lookup_text_replacement_test">Δοκιμή κειμένου</string>
+    <string name="sentence_recording_card_title">Εγγραφή προτάσεων</string>
+    <string name="sentence_recording_unsupported_hint">Η εγγραφή ήχου προτάσεων απαιτεί Android 10 ή νεότερη έκδοση.</string>
+    <string name="sentence_recording_toggle">Εγγραφή ήχου αναπαραγωγής</string>
+    <string name="sentence_recording_toggle_hint">Καταγράφει ήχο πολυμέσων στο παρασκήνιο για αποθήκευση ήχου προτάσεων στις κάρτες.</string>
+    <string name="sentence_audio_default_editor">Πρόγραμμα επεξεργασίας ήχου από προεπιλογή</string>
+    <string name="sentence_audio_default_editor_hint">Άνοιγμα με κανονικό πάτημα στο «Προσθήκη». Όταν είναι ανενεργό, επιλέξτε ήχο από το μενού παρατεταμένου πατήματος. Απαιτείται εγγραφή ήχου.</string>
+    <string name="sentence_recording_limits_label">Όρια διάρκειας</string>
+    <string name="sentence_recording_limits_hint">Εφαρμόζονται από την επόμενη σάρωση.</string>
+    <string name="sentence_recording_limit_history">Ιστορικό πριν από τη σάρωση</string>
+    <string name="sentence_recording_limit_waiting">Χρόνος μέχρι το άνοιγμα του επεξεργαστή</string>
+    <string name="sentence_recording_limit_editor">Συνέχιση κατά την επεξεργασία</string>
+    <string name="sentence_recording_silence_params">Παράμετροι σιγής</string>
+    <string name="sentence_recording_silence_title">Αναζήτηση σιγής</string>
+    <string name="sentence_recording_min_pause">Ελάχιστη παύση, δευτ.</string>
+    <string name="sentence_recording_edge_margin">Περιθώριο σε κάθε άκρο, ms</string>
+    <string name="sentence_recording_info_title">Εγγραφή προτάσεων</string>
+    <string name="sentence_recording_info_body">Το ιστορικό ήχου προστατεύεται κατά τη σάρωση. Η «Ανανέωση» προσθέτει τη διατηρημένη συνέχεια χωρίς να τροποποιεί τις αλλαγές. Τα κενά εγγραφής δεν ενώνονται ποτέ.</string>
+    <string name="sentence_recording_missing_marker_hint">Κανένας από τους τύπους σημειώσεων Anki δεν περιλαμβάνει το {sentence-audio}. Προσθέστε το στις ρυθμίσεις Anki για επισύναψη εγγραφών.</string>
+    <string name="anki_marker_sentence_audio">Ήχος πρότασης από την εγγραφή αναπαραγωγής</string>
+    <string name="sentence_recording_duration_seconds">%1$d δευτ.</string>
+    <string name="sentence_recording_duration_minutes">%1$d λεπ.</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d λεπ. %2$d δευτ.</string>
 </resources>

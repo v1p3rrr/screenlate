@@ -1012,4 +1012,26 @@
     <string name="lookup_text_replacement_ignore_case">忽略大小写</string>
     <string name="yomitan_summary_replacements_imported">已导入文本替换规则：%1$d</string>
     <string name="lookup_text_replacement_test">测试文本</string>
+    <string name="sentence_recording_card_title">句子录音</string>
+    <string name="sentence_recording_unsupported_hint">句子音频录制需要 Android 10 或更高版本。</string>
+    <string name="sentence_recording_toggle">录制播放声音</string>
+    <string name="sentence_recording_toggle_hint">在后台捕获媒体声音，以便将句子音频保存到笔记中。</string>
+    <string name="sentence_audio_default_editor">默认打开音频编辑器</string>
+    <string name="sentence_audio_default_editor_hint">常规轻触“添加”时打开。关闭时可在长按菜单中选择音频。需要开启录音。</string>
+    <string name="sentence_recording_limits_label">时长限制</string>
+    <string name="sentence_recording_limits_hint">从下一次扫描开始生效。</string>
+    <string name="sentence_recording_limit_history">扫描前的历史声音</string>
+    <string name="sentence_recording_limit_waiting">打开编辑器前的等待时长</string>
+    <string name="sentence_recording_limit_editor">编辑期间的延续录音时长</string>
+    <string name="sentence_recording_silence_params">静音参数</string>
+    <string name="sentence_recording_silence_title">静音检测</string>
+    <string name="sentence_recording_min_pause">最小停顿，秒</string>
+    <string name="sentence_recording_edge_margin">边缘保留边距，毫秒</string>
+    <string name="sentence_recording_info_title">句子录音</string>
+    <string name="sentence_recording_info_body">扫描时会保护历史声音。“刷新”会在保留已有编辑的同时追加后续录音。录音间断不会被拼接。</string>
+    <string name="sentence_recording_missing_marker_hint">您的 Anki 笔记类型均不包含 {sentence-audio}。请在 Anki 设置中添加以附加录音。</string>
+    <string name="anki_marker_sentence_audio">来自播放录音的句子音频</string>
+    <string name="sentence_recording_duration_seconds">%1$d 秒</string>
+    <string name="sentence_recording_duration_minutes">%1$d 分钟</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d 分钟 %2$d 秒</string>
 </resources>

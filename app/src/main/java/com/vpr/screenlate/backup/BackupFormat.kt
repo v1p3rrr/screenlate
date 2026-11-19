@@ -166,7 +166,7 @@ object BackupPreferences {
         key.startsWith("lookup_") -> BackupSection.LOOKUP
         key.startsWith("popup_") -> BackupSection.POPUP
         key == CropAreaRepository.REMEMBER_AREA_KEY || (key.startsWith("anki_settings") && SettingsKeys.languageOf(key) != null) -> BackupSection.ANKI
-        key.startsWith("audio_") -> BackupSection.AUDIO
+        key.startsWith("audio_") || key.startsWith("sentence_") -> BackupSection.AUDIO
         key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> BackupSection.TRANSLATION
         else -> null
     }

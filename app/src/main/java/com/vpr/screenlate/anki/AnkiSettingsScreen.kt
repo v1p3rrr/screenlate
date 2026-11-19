@@ -1,5 +1,6 @@
 package com.vpr.screenlate.anki
 
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -299,6 +300,15 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
             onChange = viewModel::setScreenshotByDefault,
             hint = stringResource(R.string.anki_screenshot_by_default_hint),
         )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val defaultAudioEditor by viewModel.defaultAudioEditor.collectAsStateWithLifecycle()
+            SwitchRow(
+                label = stringResource(R.string.sentence_audio_default_editor),
+                checked = defaultAudioEditor,
+                onChange = viewModel::setDefaultAudioEditor,
+                hint = stringResource(R.string.sentence_audio_default_editor_hint),
+            )
+        }
         val rememberCropArea by viewModel.rememberCropArea.collectAsStateWithLifecycle()
         rememberCropArea?.let { on ->
             SwitchRow(

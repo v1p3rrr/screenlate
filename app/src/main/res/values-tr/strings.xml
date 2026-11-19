@@ -1025,4 +1025,26 @@
     <string name="lookup_text_replacement_ignore_case">Büyük/küçük harf yoksay</string>
     <string name="yomitan_summary_replacements_imported">İçe aktarılan metin değiştirme kuralları: %1$d</string>
     <string name="lookup_text_replacement_test">Test metni</string>
+    <string name="sentence_recording_card_title">Cümle kaydı</string>
+    <string name="sentence_recording_unsupported_hint">Cümle ses kaydı Android 10 veya üzerini gerektirir.</string>
+    <string name="sentence_recording_toggle">Oynatma sesini kaydet</string>
+    <string name="sentence_recording_toggle_hint">Cümle sesini notlara kaydetmek için arka planda medya sesini yakalar.</string>
+    <string name="sentence_audio_default_editor">Varsayılan olarak ses düzenleyici</string>
+    <string name="sentence_audio_default_editor_hint">«Ekle»ye normal dokunulduğunda açılır. Kapalıyken basılı tutma menüsünden sesi seçin. Ses kaydı gerektirir.</string>
+    <string name="sentence_recording_limits_label">Süre sınırları</string>
+    <string name="sentence_recording_limits_hint">Bir sonraki taramadan itibaren uygulanır.</string>
+    <string name="sentence_recording_limit_history">Taramadan önceki geçmiş</string>
+    <string name="sentence_recording_limit_waiting">Düzenleyiciyi açma süresi</string>
+    <string name="sentence_recording_limit_editor">Düzenleme sırasındaki devam</string>
+    <string name="sentence_recording_silence_params">Sessizlik parametreleri</string>
+    <string name="sentence_recording_silence_title">Sessizlik arama</string>
+    <string name="sentence_recording_min_pause">En kısa duraklama, sn</string>
+    <string name="sentence_recording_edge_margin">Her kenardaki pay, ms</string>
+    <string name="sentence_recording_info_title">Cümle kaydı</string>
+    <string name="sentence_recording_info_body">Tarama sırasında ses geçmişi korunur. «Yenile», düzenlemeleri değiştirmeden korunan devam kısmını ekler. Kayıt kesintileri asla birleştirilmez.</string>
+    <string name="sentence_recording_missing_marker_hint">Anki not türlerinizin hiçbiri {sentence-audio} içermiyor. Kayıtları eklemek için Anki ayarlarından ekleyin.</string>
+    <string name="anki_marker_sentence_audio">Oynatma kaydından cümle sesi</string>
+    <string name="sentence_recording_duration_seconds">%1$d sn</string>
+    <string name="sentence_recording_duration_minutes">%1$d dk</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d dk %2$d sn</string>
 </resources>

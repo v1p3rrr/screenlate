@@ -126,7 +126,7 @@ object SettingsKeys {
         key.startsWith("overlay_") -> SettingsSection.BUBBLE
         key.startsWith("lookup_") -> SettingsSection.LOOKUP
         key in sharedAnkiKeys || (languageOf(key) != null && key.startsWith("anki_settings")) -> SettingsSection.ANKI
-        key.startsWith("audio_") -> SettingsSection.AUDIO
+        key.startsWith("audio_") || key.startsWith("sentence_") -> SettingsSection.AUDIO
         key.startsWith("popup_") -> SettingsSection.POPUP
         key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> SettingsSection.TRANSLATION
         key == "theme_mode" || key.startsWith("theme_color") || key == "e_ink" -> SettingsSection.APPEARANCE

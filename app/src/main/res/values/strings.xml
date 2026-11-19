@@ -1029,4 +1029,26 @@
     <string name="lookup_text_replacement_ignore_case">Ignore case</string>
     <string name="yomitan_summary_replacements_imported">Text replacement rules imported: %1$d</string>
     <string name="lookup_text_replacement_test">Test text</string>
+    <string name="sentence_recording_card_title">Recording sentences</string>
+    <string name="sentence_recording_unsupported_hint">Sentence audio recording requires Android 10 or newer.</string>
+    <string name="sentence_recording_toggle">Record playback audio</string>
+    <string name="sentence_recording_toggle_hint">Captures media audio in the background for saving sentence audio with cards.</string>
+    <string name="sentence_audio_default_editor">Audio editor by default</string>
+    <string name="sentence_audio_default_editor_hint">Open on a normal tap of Add. When off, choose audio from the Add hold menu. Requires audio recording.</string>
+    <string name="sentence_recording_limits_label">Duration limits</string>
+    <string name="sentence_recording_limits_hint">Applied starting from the next scan.</string>
+    <string name="sentence_recording_limit_history">History before scan</string>
+    <string name="sentence_recording_limit_waiting">Time to open editor</string>
+    <string name="sentence_recording_limit_editor">Continuation while editing</string>
+    <string name="sentence_recording_silence_params">Silence parameters</string>
+    <string name="sentence_recording_silence_title">Silence search</string>
+    <string name="sentence_recording_min_pause">Minimum pause, s</string>
+    <string name="sentence_recording_edge_margin">Margin at each edge, ms</string>
+    <string name="sentence_recording_info_title">Sentence recording</string>
+    <string name="sentence_recording_info_body">Audio history is protected when scanning. Refresh appends retained continuation without altering edits. Recording gaps are never joined.</string>
+    <string name="sentence_recording_missing_marker_hint">None of your Anki note types include {sentence-audio}. Add it in Anki settings to attach recorded sentences.</string>
+    <string name="anki_marker_sentence_audio">Sentence audio from playback recording</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>

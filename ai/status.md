@@ -1,5 +1,22 @@
 # Status
 
+## Sentence audio: Overlay editor UI, Kotlin bridge, Anki export and settings integration (2026-11-19)
+
+- Completed on branch `codex/sentence-audio-recording`:
+  - **Phase 4 (Audio Preview):** `AudioPreviewPlayer` with `AndroidAudioTrackSink` supporting play, pause, seek, mode toggle (Result vs Original), and progress tracking with unit tests.
+  - **Phase 5 (Overlay Editor UI & Bridge):**
+    - `audio-editor.js` and `audio-editor.css` strictly adhering to Android 7 WebView syntax baseline (Chrome 53, ES2016).
+    - 10 new unit tests in `overlay/src/test/js/audio-editor.test.mjs`; all 206 page tests pass.
+    - Kotlin bridge in `LookupPage.kt`, `PopupController.kt`, `PopupNotes.kt`, and `AudioEditorController.kt` coordinating timeline updates, silence search, pause cuts, preview playback, outside-touch pass-through, and Opus export.
+  - **Phase 6 (Anki Pipeline, Presets and Settings):**
+    - Added `{sentence-audio}` marker to `FieldTemplate`, note presets and inference.
+    - Updated `AnkiNotes.add`: exports sentence audio media via `anki.addMedia` into `values["sentence-audio"] = "[sound:...]"`. When updating an existing note without sentence audio, fields containing `{sentence-audio}` retain the existing note's field value instead of being cleared or overwritten.
+    - Created `SentenceRecordingCard` on Audio settings screen: Android 10+ recording toggle, shared "Audio editor by default" switch, 3 adjacent H/R/E duration step controls (30s increments, 30s–10min), silence search parameters dialog, info dialog, and conditional missing-marker hint; on Android 7–9, displays Android 10+ requirement notice.
+    - Added shared "Audio editor by default" toggle in Anki settings immediately after "Screenshot by default".
+    - Added 22 localized strings across all 27 locales; verified with `TranslationsTest`.
+    - Added sentence recording preference keys to settings reset (`SettingsSection.AUDIO`) and backup preferences (`BackupSection.AUDIO`); verified with `SettingsKeysTest` and `BackupFormatTest`.
+  - **Verification:** All project unit tests pass (`./gradlew testDebugUnitTest :build-logic:convention:test`), all 206 page tests pass, `assembleDebug`, `lintDebug`, and `:app:lintVitalRelease` pass without errors.
+
 ## Sentence audio: API 29 verified, storage coordinator, silence detection and export (2026-11-19)
 
 - Continuing on `codex/sentence-audio-recording`.

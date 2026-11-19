@@ -20,6 +20,7 @@ export const SCRIPTS = {
     readingRu: path.join(POPUP, 'reading-ru.js'),
     readingAr: path.join(POPUP, 'reading-ar.js'),
     readingFa: path.join(POPUP, 'reading-fa.js'),
+    audioEditor: path.join(POPUP, 'audio-editor.js'),
     popup: path.join(POPUP, 'popup.js'),
 };
 
@@ -69,5 +70,5 @@ export function definitionPage() {
 export function popupPage() {
     const html = readFileSync(path.join(POPUP, 'popup.html'), 'utf8').replace(/<script[^>]*><\/script>\s*/g, '');
     return loadPage({ html, scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.definition, SCRIPTS.definitionJa,
-        SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingYue, SCRIPTS.readingRu, SCRIPTS.readingAr, SCRIPTS.readingFa, SCRIPTS.popup] });
+        SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingYue, SCRIPTS.readingRu, SCRIPTS.readingAr, SCRIPTS.readingFa, SCRIPTS.audioEditor, SCRIPTS.popup] });
 }

@@ -8,6 +8,7 @@
     <style id="font-faces"></style>
     <link rel="stylesheet" href="../yomitan-render/render.css">
     <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="audio-editor.css">
     <style id="dictionary-styles"></style>
     <style id="custom-css"></style>
 </head>
@@ -37,6 +38,117 @@
         </div>
         <div id="info-text" class="info-text"></div>
     </aside>
+    <section id="audio-editor" class="sl-editor" aria-label="Sentence audio editor" hidden>
+        <header class="sl-editor-head">
+            <div>
+                <div id="sl-editor-title" class="sl-title">Sentence audio</div>
+                <div id="sl-editor-subtitle" class="sl-secondary"></div>
+            </div>
+            <div class="sl-toolbar">
+                <button type="button" class="sl-icon" id="sl-action-info" aria-label="Recording information">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <button type="button" class="sl-icon" id="sl-action-collapse" aria-label="Collapse editor">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <button type="button" class="sl-icon" id="sl-action-expand" aria-label="Expand editor">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><polyline points="15 3 21 3 21 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9 21 3 21 3 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="3" x2="14" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="21" x2="10" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+        </header>
+        <div class="sl-editor-content">
+            <div class="sl-record-state">
+                <span class="sl-rec-dot sl-inline-dot"></span>
+                <span id="sl-record-label">Recording in progress</span>
+                <span class="sl-secondary sl-push" id="sl-remaining">Allowance: 2:00</span>
+            </div>
+            <div class="sl-overview-label">
+                <span>Retained <span id="sl-total">5:34</span></span>
+                <span class="sl-secondary">Marker — scan</span>
+            </div>
+            <svg id="sl-overview" class="sl-overview" height="34" role="img" aria-label="Full recorded audio and position of selected window"></svg>
+            <div class="sl-wave-wrap">
+                <svg id="sl-wave" class="sl-wave" height="112" role="img" aria-label="Detailed sound track"></svg>
+                <button type="button" id="sl-start" class="sl-boundary sl-start" aria-label="Start of sentence audio">❮</button>
+                <button type="button" id="sl-end" class="sl-boundary sl-end" aria-label="End of sentence audio">❯</button>
+                <div id="sl-cut-handles" class="sl-cut-handles"></div>
+                <input id="sl-playhead" class="sl-playhead" type="range" step="0.01" aria-label="Playhead position">
+            </div>
+            <div class="sl-time-labels" aria-label="Visible area bounds relative to scan">
+                <span id="sl-left-time">−0:20</span>
+                <span class="sl-marker-caption">From scan</span>
+                <span id="sl-right-time">+0:34</span>
+            </div>
+            <div class="sl-range-summary">
+                <span>Start <strong id="sl-start-label">−0:08</strong></span>
+                <span>End <strong id="sl-end-label">+0:14</strong></span>
+                <span class="sl-push">To card <strong id="sl-length-label">0:22</strong></span>
+            </div>
+            <div class="sl-controls-row">
+                <button type="button" class="sl-button sl-tonal" id="sl-action-play">
+                    <svg id="sl-play-icon" viewBox="0 0 24 24" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+                    <span id="sl-play-label">Listen</span>
+                </button>
+                <div class="sl-segments" aria-label="Listening mode">
+                    <button type="button" id="sl-mode-result" aria-pressed="true">Result</button>
+                    <button type="button" id="sl-mode-original" aria-pressed="false">Original</button>
+                </div>
+                <div class="sl-zoom-controls sl-push">
+                    <button type="button" class="sl-icon" id="sl-action-zoom-out" aria-label="Zoom out">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                    <button type="button" class="sl-icon" id="sl-action-zoom-in" aria-label="Zoom in">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sl-edit-tools">
+                <button type="button" class="sl-button sl-outlined" id="sl-action-cut">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8.12" y1="8.12" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <span>Cut</span>
+                </button>
+                <button type="button" class="sl-button sl-outlined" id="sl-action-silence">
+                    <span>Find silence</span>
+                </button>
+                <button type="button" class="sl-icon" id="sl-action-silence-settings" aria-label="Silence search parameters">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><line x1="4" y1="21" x2="4" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="4" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="21" x2="20" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="12" x2="20" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="14" x2="7" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="16" x2="23" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <button type="button" class="sl-icon sl-push" id="sl-action-undo" aria-label="Undo last edit" disabled>
+                    <svg viewBox="0 0 24 24" width="18" height="18"><polyline points="9 14 4 9 9 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 20v-7a4 4 0 0 0-4-4H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+            <div id="sl-cuts" class="sl-cuts" aria-label="Excluded intervals"></div>
+            <div id="sl-suggestions" class="sl-suggestions" hidden>
+                <span id="sl-suggestion-label">Found 2 pauses</span>
+                <button type="button" class="sl-link" id="sl-action-accept-silence">Apply</button>
+                <button type="button" class="sl-link" id="sl-action-reject-silence">Dismiss</button>
+            </div>
+        </div>
+        <div class="sl-refresh-row">
+            <span class="sl-secondary" id="sl-new">New sound: 0:00</span>
+            <button type="button" class="sl-button sl-outlined" id="sl-action-refresh">
+                <svg viewBox="0 0 24 24" width="16" height="16"><polyline points="23 4 23 10 17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="1 20 1 14 7 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Refresh</span>
+            </button>
+        </div>
+        <footer class="sl-editor-footer">
+            <button type="button" class="sl-button sl-text" id="sl-action-cancel">Cancel</button>
+            <button type="button" class="sl-button sl-outlined" id="sl-action-without">Without audio</button>
+            <button type="button" class="sl-button sl-filled" id="sl-action-add">Add</button>
+        </footer>
+    </section>
+    <button type="button" id="sl-editor-pill" class="sl-editor-pill" hidden>
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M2 10v3M6 6v11M10 3v18M14 8v7M18 5v13M22 10v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Sentence audio</span>
+        <svg viewBox="0 0 24 24" width="16" height="16"><polyline points="18 15 12 9 6 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+</div>
+<div id="sl-dialog-layer" class="sl-modal-layer" hidden>
+    <div class="sl-modal" role="dialog" aria-modal="true" aria-labelledby="sl-dialog-title">
+        <h3 id="sl-dialog-title"></h3>
+        <div id="sl-dialog-body" class="sl-dialog-body"></div>
+        <div id="sl-dialog-actions" class="sl-dialog-actions"></div>
+    </div>
 </div>
 <script src="../yomitan-render/render.js"></script>
 <script src="../yomitan-render/anki.js"></script>
@@ -49,6 +161,7 @@
 <script src="reading-ru.js"></script>
 <script src="reading-ar.js"></script>
 <script src="reading-fa.js"></script>
+<script src="audio-editor.js"></script>
 <script src="popup.js"></script>
 </body>
 </html>

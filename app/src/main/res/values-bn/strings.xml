@@ -1017,4 +1017,26 @@
     <string name="lookup_text_replacement_ignore_case">কেস উপেক্ষা করুন</string>
     <string name="yomitan_summary_replacements_imported">আমদানিকৃত টেক্সট প্রতিস্থাপন নিয়ম: %1$d</string>
     <string name="lookup_text_replacement_test">টেক্সট পরীক্ষা</string>
+    <string name="sentence_recording_card_title">বাক্য রেকর্ডিং</string>
+    <string name="sentence_recording_unsupported_hint">বাক্য অডিও রেকর্ডিংয়ের জন্য Android 10 বা তার পরবর্তী সংস্করণ প্রয়োজন।</string>
+    <string name="sentence_recording_toggle">প্লেব্যাক অডিও রেকর্ড করুন</string>
+    <string name="sentence_recording_toggle_hint">কার্ডের সাথে বাক্যের অডিও সংরক্ষণ করতে পটভূমিতে মিডিয়া অডিও ধারণ করে।</string>
+    <string name="sentence_audio_default_editor">ডিফল্টভাবে অডিও সম্পাদক</string>
+    <string name="sentence_audio_default_editor_hint">«যোগ করুন»-এ সাধারণ ট্যাপে খুলুন। বন্ধ থাকলে, চেপে ধরে রাখা মেনু থেকে অডিও বেছে নিন। অডিও রেকর্ডিং প্রয়োজন।</string>
+    <string name="sentence_recording_limits_label">স্থায়িত্বের সীমা</string>
+    <string name="sentence_recording_limits_hint">পরবর্তী স্ক্যান থেকে প্রযোজ্য হবে।</string>
+    <string name="sentence_recording_limit_history">স্ক্যানের পূর্বের ইতিহাস</string>
+    <string name="sentence_recording_limit_waiting">সম্পাদক খোলার পূর্বের সময়</string>
+    <string name="sentence_recording_limit_editor">সম্পাদনার সময় অতিরিক্ত স্থায়িত্ব</string>
+    <string name="sentence_recording_silence_params">নীরবতার পরামিতি</string>
+    <string name="sentence_recording_silence_title">নীরবতা অনুসন্ধান</string>
+    <string name="sentence_recording_min_pause">ন্যূনতম বিরতি, সেকেন্ড</string>
+    <string name="sentence_recording_edge_margin">প্রতিটি প্রান্তের মার্জিন, মিলিসেকেন্ড</string>
+    <string name="sentence_recording_info_title">বাক্য রেকর্ডিং</string>
+    <string name="sentence_recording_info_body">স্ক্যান করার সময় অডিও ইতিহাস সুরক্ষিত থাকে। «রিফ্রেশ» পূর্ববর্তী সম্পাদনা পরিবর্তন না করেই সংরক্ষিত অংশ যুক্ত করে। রেকর্ডিংয়ের ফাঁক কখনই জোড়া লাগানো হয় না।</string>
+    <string name="sentence_recording_missing_marker_hint">আপনার কোনো Anki নোটের প্রকারে {sentence-audio} নেই। রেকর্ডিং সংযুক্ত করতে Anki সেটিংসে এটি যোগ করুন।</string>
+    <string name="anki_marker_sentence_audio">প্লেব্যাক রেকর্ডিং থেকে বাক্যের অডিও</string>
+    <string name="sentence_recording_duration_seconds">%1$d সেকেন্ড</string>
+    <string name="sentence_recording_duration_minutes">%1$d মিনিট</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d মিনিট %2$d সেকেন্ড</string>
 </resources>

@@ -1043,4 +1043,26 @@
     <string name="lookup_text_replacement_ignore_case">Ignorovat velikost písmen</string>
     <string name="yomitan_summary_replacements_imported">Importovaná pravidla nahrazování textu: %1$d</string>
     <string name="lookup_text_replacement_test">Vyzkoušet na textu</string>
+    <string name="sentence_recording_card_title">Nahrávání vět</string>
+    <string name="sentence_recording_unsupported_hint">Nahrávání zvuku vět vyžaduje Android 10 nebo novější.</string>
+    <string name="sentence_recording_toggle">Nahrávat zvuk přehrávání</string>
+    <string name="sentence_recording_toggle_hint">Zaznamenává zvuk médií na pozadí pro uložení zvuku vět ke kartám.</string>
+    <string name="sentence_audio_default_editor">Editor zvuku ve výchozím nastavení</string>
+    <string name="sentence_audio_default_editor_hint">Otevřít běžným klepnutím na «Přidat». Při vypnutí vyberte zvuk v nabídce dlouhého stisku. Vyžaduje nahrávání zvuku.</string>
+    <string name="sentence_recording_limits_label">Limity trvání</string>
+    <string name="sentence_recording_limits_hint">Platí od příštího skenu.</string>
+    <string name="sentence_recording_limit_history">Historie před skenem</string>
+    <string name="sentence_recording_limit_waiting">Doba do otevření editoru</string>
+    <string name="sentence_recording_limit_editor">Pokračování během úprav</string>
+    <string name="sentence_recording_silence_params">Parametry ticha</string>
+    <string name="sentence_recording_silence_title">Hledání ticha</string>
+    <string name="sentence_recording_min_pause">Minimální pauza, s</string>
+    <string name="sentence_recording_edge_margin">Okraj na každé straně, ms</string>
+    <string name="sentence_recording_info_title">Nahrávání vět</string>
+    <string name="sentence_recording_info_body">Historie zvuku je při skenování chráněna. «Obnovit» připojí zachované pokračování beze změny úprav. Přerušení nahrávání se nikdy nespojují.</string>
+    <string name="sentence_recording_missing_marker_hint">Žádný z vašich typů poznámek Anki neobsahuje {sentence-audio}. Přidejte jej v nastavení Anki pro připojení nahrávek.</string>
+    <string name="anki_marker_sentence_audio">Zvuk věty z nahrávky přehrávání</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>

@@ -26,6 +26,7 @@ import com.vpr.screenlate.dictionary.api.registry.isFor
 import com.vpr.screenlate.languages.ShownLanguage
 import com.vpr.screenlate.settings.SettingsReset
 import com.vpr.screenlate.settings.SettingsSection
+import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -78,6 +79,7 @@ class AnkiSettingsViewModel @Inject constructor(
     private val cache: AnkiConnectionCache,
     private val translationSettings: TranslationSettingsRepository,
     private val cropAreaSettings: CropAreaRepository,
+    private val recordingSettings: RecordingSettingsRepository,
     dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
     savedState: SavedStateHandle,
@@ -92,6 +94,14 @@ class AnkiSettingsViewModel @Inject constructor(
     /** Whether screenshot cropping remembers the last confirmed region; synchronized with the crop editor toggle. */
     val rememberCropArea: StateFlow<Boolean?> = cropAreaSettings.settings.map { it.rememberArea }
         .stateIn(viewModelScope, SharingStarted.Eagerly, cropAreaSettings.cachedSettings?.rememberArea)
+
+    /** Whether the audio editor opens by default when adding notes. */
+    val defaultAudioEditor: StateFlow<Boolean> = recordingSettings.settings.map { it.defaultEditor }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, recordingSettings.cachedSettings.defaultEditor)
+
+    fun setDefaultAudioEditor(enabled: Boolean) {
+        viewModelScope.launch { recordingSettings.setDefaultEditor(enabled) }
+    }
 
     // Opens with AnkiDroid's last answer, or the first time with the saved setup laid out as if AnkiDroid answered;
     // either way the screen keeps its layout when the answer comes.

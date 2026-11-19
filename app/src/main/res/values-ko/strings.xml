@@ -1012,4 +1012,26 @@
     <string name="lookup_text_replacement_ignore_case">대소문자 구분 안 함</string>
     <string name="yomitan_summary_replacements_imported">가져온 텍스트 치환 규칙: %1$d</string>
     <string name="lookup_text_replacement_test">테스트 텍스트</string>
+    <string name="sentence_recording_card_title">문장 오디오 녹음</string>
+    <string name="sentence_recording_unsupported_hint">문장 오디오 녹음은 Android 10 이상이 필요합니다.</string>
+    <string name="sentence_recording_toggle">재생 오디오 녹음</string>
+    <string name="sentence_recording_toggle_hint">미디어 오디오를 백그라운드에서 녹음하여 노트에 문장 음성을 저장합니다.</string>
+    <string name="sentence_audio_default_editor">기본으로 오디오 편집기 열기</string>
+    <string name="sentence_audio_default_editor_hint">‘추가’를 누를 때 엽니다. 해제 시 길게 누르기 메뉴에서 오디오를 선택할 수 있습니다. 오디오 녹음이 필요합니다.</string>
+    <string name="sentence_recording_limits_label">길이 제한</string>
+    <string name="sentence_recording_limits_hint">다음 스캔부터 적용됩니다.</string>
+    <string name="sentence_recording_limit_history">스캔 전 기록</string>
+    <string name="sentence_recording_limit_waiting">편집기를 열기까지 대기 시간</string>
+    <string name="sentence_recording_limit_editor">편집 중 연장 허용 시간</string>
+    <string name="sentence_recording_silence_params">무음 파라미터</string>
+    <string name="sentence_recording_silence_title">무음 감지</string>
+    <string name="sentence_recording_min_pause">최소 멈춤 시간, 초</string>
+    <string name="sentence_recording_edge_margin">가장자리 여백, ms</string>
+    <string name="sentence_recording_info_title">문장 오디오 녹음</string>
+    <string name="sentence_recording_info_body">스캔 시 오디오 기록이 보호됩니다. ‘새로고침’은 편집 내용을 유지하며 보존된 이어짐을 추가합니다. 녹음 중단 구간은 연결되지 않습니다.</string>
+    <string name="sentence_recording_missing_marker_hint">Anki 노트 유형에 {sentence-audio}가 포함되어 있지 않습니다. 녹음본을 첨부하려면 Anki 설정에서 추가하세요.</string>
+    <string name="anki_marker_sentence_audio">재생 녹음에서 추출한 문장 오디오</string>
+    <string name="sentence_recording_duration_seconds">%1$d초</string>
+    <string name="sentence_recording_duration_minutes">%1$d분</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d분 %2$d초</string>
 </resources>

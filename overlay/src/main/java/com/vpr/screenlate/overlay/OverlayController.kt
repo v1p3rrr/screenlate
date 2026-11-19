@@ -240,6 +240,17 @@ class OverlayController(
     private val scanLanguage = MutableStateFlow(activeLanguage)
     private val language: Language get() = scanLanguage.value
 
+    private val audioEditorController: com.vpr.screenlate.overlay.anki.AudioEditorController? = sentenceRecorder?.let { recorder ->
+        com.vpr.screenlate.overlay.anki.AudioEditorController(
+            context = service,
+            scope = scope,
+            page = popup.page,
+            popupController = popup,
+            sentenceRecorder = recorder,
+            recordingSettings = recordingSettings,
+        )
+    }
+
     private val popupNotes = PopupNotes(
         context = service,
         scope = scope,
@@ -256,6 +267,7 @@ class OverlayController(
         translation = translation,
         cropEditor = CropEditor(service, windowManager),
         cropAreaSettings = anki.cropAreaSettings,
+        audioEditor = audioEditorController,
         onAnkiOpened = { dock() },
         onNoteAdded = {
             if (settings.hideAfterAdd) {
@@ -1793,7 +1805,13 @@ class OverlayController(
                 NoteContext(sentence, image, image?.let { focusIn(it.bounds, padding) }, documentTitle)
             } else {
                 val image = if (withScreenshot) notePicture(scan)?.let(::ScreenNoteImage) else null
-                NoteContext(sentence, image, image?.let { focusIn(it.bounds, FOCUS_PADDING_DP * density) }, documentTitle)
+                NoteContext(
+                    sentence = sentence,
+                    image = image,
+                    focus = image?.let { focusIn(it.bounds, FOCUS_PADDING_DP * density) },
+                    documentTitle = documentTitle,
+                    audioContextId = currentScanAudioContextId,
+                )
             }
         }
     }

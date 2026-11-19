@@ -188,7 +188,7 @@ class FieldTemplateTest {
         assertThat(templates["Glossary"]).isEqualTo("{glossary-no-dictionary}")
         assertThat(templates["Sentence"]).isEqualTo("{sentence}")
         assertThat(templates["Graph"]).isEqualTo("{pitch-accent-graphs}")
-        assertThat(templates["SentenceAudio"]).isEmpty()
+        assertThat(templates["SentenceAudio"]).isEqualTo("{sentence-audio}")
         // Without its fields the general rule applies.
         assertThat(FieldTemplate.guess("Mining", listOf("Word", "Glossary"), Language.JAPANESE)["Glossary"]).isEqualTo("{glossary}")
     }

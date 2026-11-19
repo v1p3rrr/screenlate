@@ -43,6 +43,19 @@ class PopupController(
     private var catcherActive = false
     private var screenOffRegistered = false
 
+    /** When true, the sentence audio editor is being interacted with; outside touches pass through to the app below. */
+    var isAudioEditorActive: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            updateOutsideCatcher()
+        }
+
+    private var normalBounds: Box? = null
+    private var lastScreen: Box? = null
+    private var isExpanded: Boolean = false
+    private var isCollapsed: Boolean = false
+
     /**
      * Overlays stay above the lock screen, where an active full-screen backdrop would swallow the first touch of the
      * unlock gesture. Closing on screen-off avoids blocking unlock or always-on display interactions.
@@ -145,6 +158,8 @@ class PopupController(
 
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
     fun show(state: String, word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
+        lastScreen = screen
+        resetAudioEditorPresentation()
         if (!attach()) return
         val placed = place(word, bubble, screen, maxWidth)
         bounds = placed
@@ -239,6 +254,7 @@ class PopupController(
 
     fun hide() {
         if (!visible) return
+        resetAudioEditorPresentation()
         visible = false
         bounds = null
         lastWord = null
@@ -277,8 +293,63 @@ class PopupController(
         callbacks.onClose()
     }
 
+    fun setAudioEditorExpanded(expanded: Boolean) {
+        if (!visible || isCollapsed) return
+        isExpanded = expanded
+        val screen = lastScreen ?: return
+        if (expanded) {
+            if (normalBounds == null) normalBounds = bounds
+            val wideWidth = minOf(screen.width - edgeMargin * 2, 720f * density)
+            val wideHeight = minOf(screen.height - edgeMargin * 2, 520f * density)
+            val x = screen.left + (screen.width - wideWidth) / 2f
+            val y = screen.top + (screen.height - wideHeight) / 2f
+            val wideBox = Box(x, y, x + wideWidth, y + wideHeight)
+            setBounds(wideBox)
+            windowManager.updateViewLayout(page.container, params)
+        } else {
+            val restored = normalBounds ?: return
+            setBounds(restored)
+            windowManager.updateViewLayout(page.container, params)
+        }
+    }
+
+    fun setAudioEditorCollapsed(collapsed: Boolean) {
+        if (!visible) return
+        isCollapsed = collapsed
+        val screen = lastScreen ?: return
+        if (collapsed) {
+            if (normalBounds == null) normalBounds = bounds
+            val pillWidth = 190f * density
+            val pillHeight = 48f * density
+            val x = screen.right - pillWidth - edgeMargin * 2
+            val y = screen.bottom - pillHeight - edgeMargin * 2
+            val pillBox = Box(x, y, x + pillWidth, y + pillHeight)
+            setBounds(pillBox)
+            windowManager.updateViewLayout(page.container, params)
+        } else {
+            if (isExpanded) {
+                setAudioEditorExpanded(true)
+            } else {
+                val restored = normalBounds ?: return
+                setBounds(restored)
+                windowManager.updateViewLayout(page.container, params)
+            }
+        }
+    }
+
+    fun resetAudioEditorPresentation() {
+        isAudioEditorActive = false
+        isExpanded = false
+        isCollapsed = false
+        normalBounds?.let {
+            setBounds(it)
+            normalBounds = null
+            if (visible && attached) windowManager.updateViewLayout(page.container, params)
+        }
+    }
+
     private fun isCatcherActive(): Boolean =
-        OutsideTapState.shouldCatch(attached, visible, concealed, hideOnOutsideTap)
+        !isAudioEditorActive && OutsideTapState.shouldCatch(attached, visible, concealed, hideOnOutsideTap)
 
     /** Activates the full-screen outside-tap backdrop only while the popup is visible and the option is enabled. */
     private fun updateOutsideCatcher() {

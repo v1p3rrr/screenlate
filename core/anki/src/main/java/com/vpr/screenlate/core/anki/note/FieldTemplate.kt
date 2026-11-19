@@ -59,8 +59,11 @@ object FieldTemplate {
     /** The sentence's machine translation, when one came; Yomitan has no such marker. */
     const val SENTENCE_TRANSLATION = "sentence-translation"
 
+    /** Recorded sentence playback audio. */
+    const val SENTENCE_AUDIO = "sentence-audio"
+
     /** Markers of this app beyond Yomitan's. */
-    val APP_MARKERS = listOf(SENTENCE_TRANSLATION)
+    val APP_MARKERS = listOf(SENTENCE_TRANSLATION, SENTENCE_AUDIO)
 
     /** Markers that exist only for some languages (Yomitan offers pitch accents for Japanese only). */
     private val LANGUAGE_MARKERS = Language.entries.flatMap { it.support.ankiMarkers }.distinct()
@@ -234,6 +237,7 @@ object FieldTemplate {
         "pitch-accent-graphs" to listOf("graph", "pitch-graph", "pitch-graphs"),
         // Only names with "sentence": a bare "Translation" may mean the word's, and "Meaning" is the glossary.
         SENTENCE_TRANSLATION to listOf("sentence-meaning", "sentence-english", "sentence-eng"),
+        SENTENCE_AUDIO to listOf("sentence-sound", "example-sentence-audio", "example-audio"),
     )
 }
 

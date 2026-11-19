@@ -1004,4 +1004,26 @@
     <string name="lookup_text_replacement_ignore_case">ไม่สนใจตัวพิมพ์เล็ก-ใหญ่</string>
     <string name="yomitan_summary_replacements_imported">นำเข้ากฎการแทนที่ข้อความแล้ว: %1$d</string>
     <string name="lookup_text_replacement_test">ทดสอบข้อความ</string>
+    <string name="sentence_recording_card_title">การบันทึกเสียงประโยค</string>
+    <string name="sentence_recording_unsupported_hint">การบันทึกเสียงประโยคต้องใช้ Android 10 ขึ้นไป</string>
+    <string name="sentence_recording_toggle">บันทึกเสียงที่เล่น</string>
+    <string name="sentence_recording_toggle_hint">บันทึกเสียงสื่อในพื้นหลังเพื่อบันทึกเสียงประโยคลงในการ์ด</string>
+    <string name="sentence_audio_default_editor">เปิดตัวแก้ไขเสียงเป็นค่าเริ่มต้น</string>
+    <string name="sentence_audio_default_editor_hint">เปิดเมื่อแตะ «เพิ่ม» ตามปกติ หากปิดอยู่ ให้เลือกเสียงจากเมนูกดค้าง ต้องเปิดการบันทึกเสียง</string>
+    <string name="sentence_recording_limits_label">ขีดจำกัดระยะเวลา</string>
+    <string name="sentence_recording_limits_hint">มีผลตั้งแต่การสแกนครั้งถัดไป</string>
+    <string name="sentence_recording_limit_history">ประวัติก่อนการสแกน</string>
+    <string name="sentence_recording_limit_waiting">เวลาก่อนเปิดตัวแก้ไข</string>
+    <string name="sentence_recording_limit_editor">บันทึกต่อขณะกำลังแก้ไข</string>
+    <string name="sentence_recording_silence_params">พารามิเตอร์ช่วงเงียบ</string>
+    <string name="sentence_recording_silence_title">ค้นหาช่วงเงียบ</string>
+    <string name="sentence_recording_min_pause">ช่วงหยุดขั้นต่ำ, วินาที</string>
+    <string name="sentence_recording_edge_margin">ระยะขอบแต่ละด้าน, มิลลิวินาที</string>
+    <string name="sentence_recording_info_title">การบันทึกเสียงประโยค</string>
+    <string name="sentence_recording_info_body">ประวัติเสียงจะได้รับการปกป้องเมื่อสแกน «รีเฟรช» จะเพิ่มส่วนต่อที่เก็บไว้โดยไม่เปลี่ยนการแก้ไข ช่วงที่ขาดหายไปจะไม่ถูกต่อเข้าด้วยกัน</string>
+    <string name="sentence_recording_missing_marker_hint">ไม่มีประเภทโน้ต Anki ใดที่มี {sentence-audio} เพิ่มในตั้งค่า Anki เพื่อแนบเสียงที่บันทึก</string>
+    <string name="anki_marker_sentence_audio">เสียงประโยคจากการบันทึกขณะเล่น</string>
+    <string name="sentence_recording_duration_seconds">%1$d วินาที</string>
+    <string name="sentence_recording_duration_minutes">%1$d นาที</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d นาที %2$d วินาที</string>
 </resources>

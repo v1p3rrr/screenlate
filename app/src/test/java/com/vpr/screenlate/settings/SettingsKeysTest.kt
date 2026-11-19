@@ -26,7 +26,12 @@ class SettingsKeysTest {
         SettingsSection.ANKI to listOf(
             "anki_settings", "anki_settings_en", "anki_remember_crop_area", "anki_crop_portrait", "anki_crop_landscape",
         ),
-        SettingsSection.AUDIO to listOf("audio_settings", "audio_sources_chosen", "audio_settings_en"),
+        SettingsSection.AUDIO to listOf(
+            "audio_settings", "audio_sources_chosen", "audio_settings_en",
+            "sentence_recording_enabled", "sentence_audio_default_editor",
+            "sentence_audio_history_millis", "sentence_audio_waiting_millis", "sentence_audio_editor_millis",
+            "sentence_audio_min_silence_millis", "sentence_audio_silence_margin_millis",
+        ),
         SettingsSection.POPUP to listOf(
             "popup_font", "popup_font_all_text", "popup_font_size", "popup_text_weight", "popup_letter_thickness",
             "popup_custom_css", "popup_copy_definitions", "popup_copy_mode", "overlay_show_source_text", "e_ink_font_before",

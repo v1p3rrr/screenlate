@@ -1030,4 +1030,26 @@
     <string name="lookup_text_replacement_ignore_case">Ignoră majusculele</string>
     <string name="yomitan_summary_replacements_imported">Reguli de înlocuire de text importate: %1$d</string>
     <string name="lookup_text_replacement_test">Testare text</string>
+    <string name="sentence_recording_card_title">Înregistrarea propozițiilor</string>
+    <string name="sentence_recording_unsupported_hint">Înregistrarea audio a propozițiilor necesită Android 10 sau o versiune ulterioară.</string>
+    <string name="sentence_recording_toggle">Înregistrează redarea audio</string>
+    <string name="sentence_recording_toggle_hint">Captează sunetul media în fundal pentru a salva audio-ul propozițiilor cu notițele.</string>
+    <string name="sentence_audio_default_editor">Editor audio în mod implicit</string>
+    <string name="sentence_audio_default_editor_hint">Se deschide la o atingere normală pe «Adaugă». Când este dezactivat, alege audio din meniul de apăsare lungă. Necesită înregistrare audio.</string>
+    <string name="sentence_recording_limits_label">Limite de durată</string>
+    <string name="sentence_recording_limits_hint">Se aplică începând cu următoarea scanare.</string>
+    <string name="sentence_recording_limit_history">Istoric înainte de scanare</string>
+    <string name="sentence_recording_limit_waiting">Timp până la deschiderea editorului</string>
+    <string name="sentence_recording_limit_editor">Continuare în timpul editării</string>
+    <string name="sentence_recording_silence_params">Parametri de liniște</string>
+    <string name="sentence_recording_silence_title">Căutare liniște</string>
+    <string name="sentence_recording_min_pause">Pauză minimă, s</string>
+    <string name="sentence_recording_edge_margin">Margine la fiecare capăt, ms</string>
+    <string name="sentence_recording_info_title">Înregistrarea propozițiilor</string>
+    <string name="sentence_recording_info_body">Istoricul audio este protejat în timpul scanării. «Reîmprospătează» adaugă continuarea păstrată fără a modifica editările. Pauzele de înregistrare nu sunt unite niciodată.</string>
+    <string name="sentence_recording_missing_marker_hint">Niciunul dintre tipurile tale de notițe Anki nu include {sentence-audio}. Adaugă-l în setările Anki pentru a atașa înregistrările.</string>
+    <string name="anki_marker_sentence_audio">Audio al propoziției din înregistrarea redării</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>

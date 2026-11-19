@@ -1026,4 +1026,26 @@
     <string name="lookup_text_replacement_ignore_case">نادیده گرفتن بزرگی و کوچکی حروف</string>
     <string name="yomitan_summary_replacements_imported">قواعد جایگزینی متن واردشده: %1$d</string>
     <string name="lookup_text_replacement_test">متن آزمایشی</string>
+    <string name="sentence_recording_card_title">ضبط جمله‌ها</string>
+    <string name="sentence_recording_unsupported_hint">ضبط صدای جمله به Android 10 یا بالاتر نیاز دارد.</string>
+    <string name="sentence_recording_toggle">ضبط صدای پخش</string>
+    <string name="sentence_recording_toggle_hint">صدای رسانه را در پس‌زمینه ضبط می‌کند تا صدای جمله به همراه کارت‌ها ذخیره شود.</string>
+    <string name="sentence_audio_default_editor">ویرایشگر صدا به‌طور پیش‌فرض</string>
+    <string name="sentence_audio_default_editor_hint">با ضربه عادی روی «افزودن» باز می‌شود. در صورت غیرفعال بودن، صدا را از منوی نگه‌داشتن انتخاب کنید. به ضبط صدا نیاز دارد.</string>
+    <string name="sentence_recording_limits_label">محدودیت‌های زمان</string>
+    <string name="sentence_recording_limits_hint">از اسکن بعدی اعمال می‌شود.</string>
+    <string name="sentence_recording_limit_history">تاریخچه قبل از اسکن</string>
+    <string name="sentence_recording_limit_waiting">زمان تا باز شدن ویرایشگر</string>
+    <string name="sentence_recording_limit_editor">ادامه در زمان ویرایش</string>
+    <string name="sentence_recording_silence_params">پارامترهای سکوت</string>
+    <string name="sentence_recording_silence_title">جستجوی سکوت</string>
+    <string name="sentence_recording_min_pause">حداقل مکث، ثانیه</string>
+    <string name="sentence_recording_edge_margin">حاشیه در هر لبه، میلی‌ثانیه</string>
+    <string name="sentence_recording_info_title">ضبط جمله</string>
+    <string name="sentence_recording_info_body">تاریخچه صدا هنگام اسکن محافظت می‌شود. «تازه‌سازی» ادامه نگه‌داشته‌شده را بدون تغییر ویرایش‌ها اضافه می‌کند. فاصله‌های ضبط هرگز به هم متصل نمی‌شوند.</string>
+    <string name="sentence_recording_missing_marker_hint">هیچ‌کدام از انواع یادداشت Anki شما شامل {sentence-audio} نیست. برای پیوست ضبط‌ها، آن را در تنظیمات Anki اضافه کنید.</string>
+    <string name="anki_marker_sentence_audio">صدای جمله از ضبط پخش</string>
+    <string name="sentence_recording_duration_seconds">%1$d ثانیه</string>
+    <string name="sentence_recording_duration_minutes">%1$d دقیقه</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d دقیقه %2$d ثانیه</string>
 </resources>

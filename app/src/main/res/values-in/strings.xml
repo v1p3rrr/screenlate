@@ -1004,4 +1004,26 @@
     <string name="lookup_text_replacement_ignore_case">Abaikan huruf besar/kecil</string>
     <string name="yomitan_summary_replacements_imported">Aturan penggantian teks diimpor: %1$d</string>
     <string name="lookup_text_replacement_test">Uji teks</string>
+    <string name="sentence_recording_card_title">Perekaman kalimat</string>
+    <string name="sentence_recording_unsupported_hint">Perekaman audio kalimat memerlukan Android 10 atau yang lebih baru.</string>
+    <string name="sentence_recording_toggle">Rekam audio pemutaran</string>
+    <string name="sentence_recording_toggle_hint">Merekam audio media di latar belakang untuk menyimpan audio kalimat bersama kartu.</string>
+    <string name="sentence_audio_default_editor">Editor audio secara default</string>
+    <string name="sentence_audio_default_editor_hint">Buka dengan ketukan biasa pada «Tambah». Jika nonaktif, pilih audio dari menu tekan lama. Memerlukan perekaman audio.</string>
+    <string name="sentence_recording_limits_label">Batas durasi</string>
+    <string name="sentence_recording_limits_hint">Diterapkan mulai pemindaian berikutnya.</string>
+    <string name="sentence_recording_limit_history">Riwayat sebelum pemindaian</string>
+    <string name="sentence_recording_limit_waiting">Waktu sebelum membuka editor</string>
+    <string name="sentence_recording_limit_editor">Kelanjutan saat mengedit</string>
+    <string name="sentence_recording_silence_params">Parameter keheningan</string>
+    <string name="sentence_recording_silence_title">Pencarian keheningan</string>
+    <string name="sentence_recording_min_pause">Jeda minimum, dtk</string>
+    <string name="sentence_recording_edge_margin">Batas di setiap tepi, md</string>
+    <string name="sentence_recording_info_title">Perekaman kalimat</string>
+    <string name="sentence_recording_info_body">Riwayat audio dilindungi saat memindai. «Segarkan» menambahkan kelanjutan yang disimpan tanpa mengubah editan. Jeda perekaman tidak pernah disambung.</string>
+    <string name="sentence_recording_missing_marker_hint">Tidak ada tipe catatan Anki Anda yang menyertakan {sentence-audio}. Tambahkan di pengaturan Anki untuk melampirkan rekaman.</string>
+    <string name="anki_marker_sentence_audio">Audio kalimat dari rekaman pemutaran</string>
+    <string name="sentence_recording_duration_seconds">%1$d dtk</string>
+    <string name="sentence_recording_duration_minutes">%1$d mnt</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d mnt %2$d dtk</string>
 </resources>

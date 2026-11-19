@@ -1012,4 +1012,26 @@
     <string name="lookup_text_replacement_ignore_case">Không phân biệt hoa thường</string>
     <string name="yomitan_summary_replacements_imported">Quy tắc thay thế văn bản đã nhập: %1$d</string>
     <string name="lookup_text_replacement_test">Văn bản thử nghiệm</string>
+    <string name="sentence_recording_card_title">Ghi âm câu</string>
+    <string name="sentence_recording_unsupported_hint">Ghi âm câu yêu cầu Android 10 trở lên.</string>
+    <string name="sentence_recording_toggle">Ghi âm phát lại</string>
+    <string name="sentence_recording_toggle_hint">Ghi lại âm thanh phát trong nền để lưu âm thanh câu vào ghi chú.</string>
+    <string name="sentence_audio_default_editor">Mặc định mở trình chỉnh sửa âm thanh</string>
+    <string name="sentence_audio_default_editor_hint">Mở khi chạm bình thường vào «Thêm». Khi tắt, chọn âm thanh từ menu nhấn giữ. Yêu cầu bật ghi âm.</string>
+    <string name="sentence_recording_limits_label">Giới hạn thời lượng</string>
+    <string name="sentence_recording_limits_hint">Áp dụng từ lần quét tiếp theo.</string>
+    <string name="sentence_recording_limit_history">Lịch sử trước khi quét</string>
+    <string name="sentence_recording_limit_waiting">Thời gian chờ mở trình chỉnh sửa</string>
+    <string name="sentence_recording_limit_editor">Phần tiếp tục khi đang chỉnh sửa</string>
+    <string name="sentence_recording_silence_params">Thông số khoảng lặng</string>
+    <string name="sentence_recording_silence_title">Tìm khoảng lặng</string>
+    <string name="sentence_recording_min_pause">Khoảng dừng tối thiểu, giây</string>
+    <string name="sentence_recording_edge_margin">Khoảng đệm mỗi rìa, ms</string>
+    <string name="sentence_recording_info_title">Ghi âm câu</string>
+    <string name="sentence_recording_info_body">Lịch sử âm thanh được bảo vệ khi quét. «Làm mới» sẽ thêm phần tiếp tục được giữ lại mà không làm mất chỉnh sửa. Khoảng ngắt ghi âm không bao giờ bị ghép nối.</string>
+    <string name="sentence_recording_missing_marker_hint">Không có loại ghi chú Anki nào chứa {sentence-audio}. Hãy thêm thẻ này trong cài đặt Anki để đính kèm bản ghi âm.</string>
+    <string name="anki_marker_sentence_audio">Âm thanh câu từ bản ghi phát lại</string>
+    <string name="sentence_recording_duration_seconds">%1$d giây</string>
+    <string name="sentence_recording_duration_minutes">%1$d phút</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d phút %2$d giây</string>
 </resources>

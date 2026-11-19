@@ -1017,4 +1017,26 @@
     <string name="lookup_text_replacement_ignore_case">Kis- és nagybetűk figyelmen kívül hagyása</string>
     <string name="yomitan_summary_replacements_imported">Importált szöveghelyettesítési szabályok: %1$d</string>
     <string name="lookup_text_replacement_test">Szöveg tesztelése</string>
+    <string name="sentence_recording_card_title">Mondatok felvétele</string>
+    <string name="sentence_recording_unsupported_hint">A mondatok hangfelvételéhez Android 10 vagy újabb verzió szükséges.</string>
+    <string name="sentence_recording_toggle">Lejátszott hang felvétele</string>
+    <string name="sentence_recording_toggle_hint">Médiahangot rögzít a háttérben a mondathangok kártyákhoz mentéséhez.</string>
+    <string name="sentence_audio_default_editor">Alapértelmezés szerint hangszerkesztő</string>
+    <string name="sentence_audio_default_editor_hint">Megnyitás a «Hozzáadás» normál megérintésekor. Ha ki van kapcsolva, válassza a hangot a hosszan nyomva tartás menüjéből. Hangfelvételt igényel.</string>
+    <string name="sentence_recording_limits_label">Időtartam-korlátok</string>
+    <string name="sentence_recording_limits_hint">A következő beolvasástól érvényes.</string>
+    <string name="sentence_recording_limit_history">Előzmények a beolvasás előtt</string>
+    <string name="sentence_recording_limit_waiting">Várakozási idő a szerkesztő megnyitásáig</string>
+    <string name="sentence_recording_limit_editor">Folytatás szerkesztés közben</string>
+    <string name="sentence_recording_silence_params">Csendparaméterek</string>
+    <string name="sentence_recording_silence_title">Csend keresése</string>
+    <string name="sentence_recording_min_pause">Minimális szünet, mp</string>
+    <string name="sentence_recording_edge_margin">Margó a széleken, ms</string>
+    <string name="sentence_recording_info_title">Mondatok felvétele</string>
+    <string name="sentence_recording_info_body">A hangelőzmények védve vannak a beolvasáskor. A «Frissítés» a szerkesztések módosítása nélkül fűzi hozzá a megőrzött folytatást. A felvételi hézagok soha nem kapcsolódnak össze.</string>
+    <string name="sentence_recording_missing_marker_hint">Az Anki-jegyzettípusok egyike sem tartalmazza a {sentence-audio} jelölőt. Adja hozzá az Anki beállításaiban a felvételek csatolásához.</string>
+    <string name="anki_marker_sentence_audio">Mondat hangja a lejátszási felvételből</string>
+    <string name="sentence_recording_duration_seconds">%1$d mp</string>
+    <string name="sentence_recording_duration_minutes">%1$d perc</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d perc %2$d mp</string>
 </resources>

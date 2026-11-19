@@ -1051,4 +1051,26 @@
     <string name="lookup_text_replacement_ignore_case">Ignoruj wielkość liter</string>
     <string name="yomitan_summary_replacements_imported">Zaimportowane reguły zamiany tekstu: %1$d</string>
     <string name="lookup_text_replacement_test">Tekst testowy</string>
+    <string name="sentence_recording_card_title">Nagrywanie zdań</string>
+    <string name="sentence_recording_unsupported_hint">Nagrywanie dźwięku zdań wymaga systemu Android 10 lub nowszego.</string>
+    <string name="sentence_recording_toggle">Nagraj dźwięk odtwarzania</string>
+    <string name="sentence_recording_toggle_hint">Przechwytuje dźwięk multimediów w tle, aby dołączać audio zdań do notatek.</string>
+    <string name="sentence_audio_default_editor">Domyślnie edytor audio</string>
+    <string name="sentence_audio_default_editor_hint">Otwieraj zwykłym stuknięciem w „Dodaj”. Gdy wyłączone, wybierz audio z menu przytrzymania. Wymaga nagrywania dźwięku.</string>
+    <string name="sentence_recording_limits_label">Limity czasu trwania</string>
+    <string name="sentence_recording_limits_hint">Obowiązują od następnego skanu.</string>
+    <string name="sentence_recording_limit_history">Historia przed skanem</string>
+    <string name="sentence_recording_limit_waiting">Czas do otwarcia edytora</string>
+    <string name="sentence_recording_limit_editor">Kontynuacja podczas edycji</string>
+    <string name="sentence_recording_silence_params">Parametry ciszy</string>
+    <string name="sentence_recording_silence_title">Wyszukiwanie ciszy</string>
+    <string name="sentence_recording_min_pause">Minimalna pauza, s</string>
+    <string name="sentence_recording_edge_margin">Margines na krawędziach, ms</string>
+    <string name="sentence_recording_info_title">Nagrywanie zdań</string>
+    <string name="sentence_recording_info_body">Historia dźwięku jest chroniona podczas skanowania. „Odśwież” dodaje zachowaną kontynuację bez zmiany edycji. Przerwy w nagraniu nigdy nie są łączone.</string>
+    <string name="sentence_recording_missing_marker_hint">Żaden z Twoich typów notatek Anki nie zawiera {sentence-audio}. Dodaj go w ustawieniach Anki, aby dołączać nagrania.</string>
+    <string name="anki_marker_sentence_audio">Audio zdania z nagrania odtwarzania</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>

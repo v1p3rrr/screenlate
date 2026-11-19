@@ -1,0 +1,461 @@
+/* Audio Editor Styles for Screenlate Popup */
+.sl-editor {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--fg);
+    overflow: hidden;
+    touch-action: auto;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.sl-editor[hidden] {
+    display: none !important;
+}
+
+.sl-editor-head {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--divider);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.sl-title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.sl-secondary {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.sl-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.sl-editor-content {
+    display: grid;
+    gap: 9px;
+    padding: 10px 14px 12px;
+    max-height: 380px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.sl-editor.sl-expanded .sl-editor-content {
+    max-height: 440px;
+}
+
+.sl-record-state {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    flex-wrap: wrap;
+}
+
+.sl-rec-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c93445;
+    flex: 0 0 8px;
+}
+
+.sl-inline-dot {
+    display: inline-block;
+}
+
+.sl-push {
+    margin-left: auto;
+}
+
+.sl-overview-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.sl-overview {
+    display: block;
+    width: 100%;
+    background: var(--chip-bg);
+    border-radius: 6px;
+    touch-action: none;
+    cursor: pointer;
+}
+
+.sl-wave-wrap {
+    position: relative;
+    height: 117px;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    touch-action: none;
+    overflow: hidden;
+}
+
+:root[data-theme="dark"] .sl-wave-wrap {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.sl-wave {
+    display: block;
+    width: 100%;
+    height: 112px;
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.sl-boundary {
+    position: absolute;
+    top: 4px;
+    bottom: 20px;
+    width: 20px;
+    padding: 0;
+    transform: translateX(-50%);
+    border: 0;
+    border-radius: 5px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 2;
+    touch-action: none;
+    cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sl-cut-handles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.sl-cut-edge {
+    position: absolute;
+    top: 26px;
+    height: 44px;
+    width: 18px;
+    transform: translateX(-50%);
+    border: 0;
+    border-radius: 4px;
+    padding: 0;
+    background: #b33b4a;
+    color: #ffffff;
+    z-index: 3;
+    touch-action: none;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+}
+
+.sl-playhead {
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    left: -7px;
+    bottom: 1px;
+    width: calc(100% + 14px);
+    margin: 0;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    touch-action: none;
+    z-index: 4;
+    cursor: pointer;
+}
+
+.sl-playhead::-webkit-slider-runnable-track {
+    height: 2px;
+    border: 0;
+    background: transparent;
+}
+
+.sl-playhead::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -6px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sl-playhead::-moz-range-track {
+    height: 2px;
+    border: 0;
+    background: transparent;
+}
+
+.sl-playhead::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.sl-time-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    margin-top: -6px;
+}
+
+.sl-range-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px 12px;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.sl-controls-row, .sl-edit-tools, .sl-refresh-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.sl-button, .sl-icon, .sl-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 0;
+    min-height: 33px;
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-weight: 500;
+    font-size: 12px;
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.sl-button:disabled, .sl-icon:disabled {
+    opacity: 0.38;
+    cursor: default;
+}
+
+.sl-icon {
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    padding: 6px;
+    border-radius: 50%;
+    color: var(--fg);
+}
+
+.sl-filled {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.sl-tonal {
+    background: var(--chip-bg);
+    color: var(--fg);
+}
+
+.sl-outlined {
+    border: 1px solid var(--border);
+    color: var(--fg);
+}
+
+.sl-text {
+    color: var(--accent);
+}
+
+.sl-segments {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    overflow: hidden;
+}
+
+.sl-segments button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 6px 9px;
+    cursor: pointer;
+}
+
+.sl-segments button[aria-pressed="true"] {
+    background: var(--chip-bg);
+    color: var(--fg);
+    font-weight: 500;
+}
+
+.sl-zoom-controls {
+    display: flex;
+    gap: 1px;
+}
+
+.sl-cuts {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.sl-cut-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 7px;
+    background: rgba(179, 59, 74, 0.16);
+    color: #b33b4a;
+}
+
+:root[data-theme="dark"] .sl-cut-chip {
+    background: rgba(255, 176, 185, 0.18);
+    color: #ffb0b9;
+}
+
+.sl-cut-chip button {
+    font-size: 11px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    padding: 4px 6px;
+    cursor: pointer;
+}
+
+.sl-suggestions {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 7px;
+    background: var(--chip-bg);
+    font-size: 12px;
+}
+
+.sl-link {
+    min-height: 26px;
+    padding: 2px 5px;
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.sl-refresh-row {
+    justify-content: space-between;
+    border-top: 1px solid var(--divider);
+    padding: 8px 14px;
+}
+
+.sl-editor-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 9px 14px 11px;
+    border-top: 1px solid var(--divider);
+}
+
+.sl-editor-pill {
+    position: absolute;
+    z-index: 10;
+    top: 8px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--accent);
+    color: #ffffff;
+    border: 0;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+.sl-editor-pill[hidden] {
+    display: none !important;
+}
+
+.sl-modal-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.sl-modal-layer[hidden] {
+    display: none !important;
+}
+
+.sl-modal {
+    width: 100%;
+    max-width: 360px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    display: grid;
+    gap: 14px;
+}
+
+.sl-dialog-body {
+    display: grid;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.sl-dialog-body label {
+    display: grid;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.sl-dialog-body input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+}
+
+.sl-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-wrap: wrap;
+}

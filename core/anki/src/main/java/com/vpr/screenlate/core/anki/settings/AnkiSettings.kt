@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.cached
 import com.vpr.screenlate.core.common.settings.preferenceKey
@@ -178,6 +179,14 @@ class AnkiSettingsRepository @Inject constructor(
         prefs[key(language)]?.let { runCatching { json.decodeFromString<AnkiSettings>(it) }.getOrNull() } ?: AnkiSettings()
 
     fun settings(language: Language): Flow<AnkiSettings> = dataStore.data.map { read(it, language) }
+
+    /** Whether any configured note type for any language uses [marker] in its field templates. */
+    fun hasMarker(marker: String): Flow<Boolean> = dataStore.data.map { prefs ->
+        Language.entries.any { lang ->
+            val settings = read(prefs, lang)
+            settings.configured && settings.fields.values.any { marker in FieldTemplate.markersIn(it) }
+        }
+    }
 
     /** The settings as last read, for a screen's first frame; null before the first read. */
     fun cachedSettings(language: Language): AnkiSettings? = dataStore.cached { read(it, language) }

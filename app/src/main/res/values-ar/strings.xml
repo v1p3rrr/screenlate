@@ -1077,4 +1077,26 @@
     <string name="lookup_text_replacement_ignore_case">تجاهل حالة الأحرف</string>
     <string name="yomitan_summary_replacements_imported">قواعد استبدال النص المستوردة: %1$d</string>
     <string name="lookup_text_replacement_test">اختبار النص</string>
+    <string name="sentence_recording_card_title">تسجيل الجمل</string>
+    <string name="sentence_recording_unsupported_hint">يتطلب تسجيل صوت الجمل نظام Android 10 أو أحدث.</string>
+    <string name="sentence_recording_toggle">تسجيل صوت التشغيل</string>
+    <string name="sentence_recording_toggle_hint">يلتقط صوت الوسائط في الخلفية لحفظ صوت الجمل مع البطاقات.</string>
+    <string name="sentence_audio_default_editor">محرر الصوت افتراضيًا</string>
+    <string name="sentence_audio_default_editor_hint">يفتح بالنقر العادي على «إضافة». عند التعطيل، اختر الصوت من قائمة الضغط المطول. يتطلب تسجيل الصوت.</string>
+    <string name="sentence_recording_limits_label">حدود المدة</string>
+    <string name="sentence_recording_limits_hint">تُطبّق بدءًا من الفحص التالي.</string>
+    <string name="sentence_recording_limit_history">السجل قبل الفحص</string>
+    <string name="sentence_recording_limit_waiting">الوقت قبل فتح المحرر</string>
+    <string name="sentence_recording_limit_editor">المتابعة أثناء التحرير</string>
+    <string name="sentence_recording_silence_params">معلمات الصمت</string>
+    <string name="sentence_recording_silence_title">البحث عن الصمت</string>
+    <string name="sentence_recording_min_pause">الحد الأدنى للتوقف، ث</string>
+    <string name="sentence_recording_edge_margin">الهامش عند كل طرف، م ث</string>
+    <string name="sentence_recording_info_title">تسجيل الجمل</string>
+    <string name="sentence_recording_info_body">سجل الصوت محمي أثناء الفحص. يؤدي «تحديث» إلى إلحاق المتابعة المحفوظة دون تغيير التعديلات. لا تُدمج انقطاعات التسجيل مطلقًا.</string>
+    <string name="sentence_recording_missing_marker_hint">لا يتضمن أي من أنواع بطاقات Anki لديك {sentence-audio}. أضفه في إعدادات Anki لإرفاق التسجيلات.</string>
+    <string name="anki_marker_sentence_audio">صوت الجملة من تسجيل التشغيل</string>
+    <string name="sentence_recording_duration_seconds">%1$d ث</string>
+    <string name="sentence_recording_duration_minutes">%1$d د</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d د %2$d ث</string>
 </resources>

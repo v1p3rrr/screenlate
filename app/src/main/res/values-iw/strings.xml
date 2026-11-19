@@ -1039,4 +1039,26 @@
     <string name="lookup_text_replacement_ignore_case">התעלמות מאותיות גדולות וקטנות</string>
     <string name="yomitan_summary_replacements_imported">כללי החלפת טקסט שיובאו: %1$d</string>
     <string name="lookup_text_replacement_test">טקסט לבדיקה</string>
+    <string name="sentence_recording_card_title">הקלטת משפטים</string>
+    <string name="sentence_recording_unsupported_hint">הקלטת שמע של משפטים דורשת Android 10 ומעלה.</string>
+    <string name="sentence_recording_toggle">הקלטת שמע מושמע</string>
+    <string name="sentence_recording_toggle_hint">לוכד את שמע המדיה ברקע לשמירת שמע המשפט עם הכרטיסיות.</string>
+    <string name="sentence_audio_default_editor">עורך שמע כברירת מחדל</string>
+    <string name="sentence_audio_default_editor_hint">נפתח בהקשה רגילה על «הוסף». כאשר כבוי, בחר שמע מתפריט לחיצה ארוכה. דורש הקלטת שמע.</string>
+    <string name="sentence_recording_limits_label">מגבלות משך זמן</string>
+    <string name="sentence_recording_limits_hint">מוחל מהסריקה הבאה.</string>
+    <string name="sentence_recording_limit_history">היסטוריה לפני הסריקה</string>
+    <string name="sentence_recording_limit_waiting">זמן עד לפתיחת העורך</string>
+    <string name="sentence_recording_limit_editor">המשך בזמן העריכה</string>
+    <string name="sentence_recording_silence_params">פרמטרי שקט</string>
+    <string name="sentence_recording_silence_title">חיפוש שקט</string>
+    <string name="sentence_recording_min_pause">הפסקה מזערית, שנ\'</string>
+    <string name="sentence_recording_edge_margin">שוליים בכל קצה, מ\"ש</string>
+    <string name="sentence_recording_info_title">הקלטת משפטים</string>
+    <string name="sentence_recording_info_body">היסטוריית השמע מוגנת בעת הסריקה. «רענן» מוסיף את ההמשך שנשמר מבלי לשנות עריכות קודמות. מקטעי שמע שנקטעו לעולם אינם מחוברים.</string>
+    <string name="sentence_recording_missing_marker_hint">אף אחד מסוגי הרשומות שלך ב-Anki אינו כולל {sentence-audio}. הוסף אותו בהגדרות Anki כדי לצרף הקלטות.</string>
+    <string name="anki_marker_sentence_audio">שמע משפט מהקלטת השמעה</string>
+    <string name="sentence_recording_duration_seconds">%1$d שנ\'</string>
+    <string name="sentence_recording_duration_minutes">%1$d דק\'</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d דק\' %2$d שנ\'</string>
 </resources>

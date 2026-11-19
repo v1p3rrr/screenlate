@@ -1012,4 +1012,26 @@
     <string name="lookup_text_replacement_ignore_case">大文字と小文字を区別しない</string>
     <string name="yomitan_summary_replacements_imported">インポートしたテキスト置換ルール：%1$d</string>
     <string name="lookup_text_replacement_test">テスト文字列</string>
+    <string name="sentence_recording_card_title">例文音声の録音</string>
+    <string name="sentence_recording_unsupported_hint">例文音声の録音には Android 10 以降が必要です。</string>
+    <string name="sentence_recording_toggle">再生音声を録音</string>
+    <string name="sentence_recording_toggle_hint">バックグラウンドでメディア音声を録音し、ノートに例文音声を保存します。</string>
+    <string name="sentence_audio_default_editor">デフォルトで音声エディタを開く</string>
+    <string name="sentence_audio_default_editor_hint">「追加」の通常のタップで開きます。オフの場合、長押しメニューから音声を選択できます。音声録音が必要です。</string>
+    <string name="sentence_recording_limits_label">時間制限</string>
+    <string name="sentence_recording_limits_hint">次回以降のスキャンから適用されます。</string>
+    <string name="sentence_recording_limit_history">スキャン前の履歴</string>
+    <string name="sentence_recording_limit_waiting">エディタを開くまでの待機時間</string>
+    <string name="sentence_recording_limit_editor">編集中に追加できる継続時間</string>
+    <string name="sentence_recording_silence_params">無音パラメータ</string>
+    <string name="sentence_recording_silence_title">無音の検出</string>
+    <string name="sentence_recording_min_pause">最小ポーズ長、秒</string>
+    <string name="sentence_recording_edge_margin">前後の余白、ミリ秒</string>
+    <string name="sentence_recording_info_title">例文音声の録音</string>
+    <string name="sentence_recording_info_body">スキャン時に音声履歴が保護されます。「更新」で編集内容を維持したまま保持された続きを追加します。途切れた録音区間が結合されることはありません。</string>
+    <string name="sentence_recording_missing_marker_hint">Anki ノートタイプに {sentence-audio} が含まれていません。録音した音声を追加するには Anki 設定で追加してください。</string>
+    <string name="anki_marker_sentence_audio">再生録音からの例文音声</string>
+    <string name="sentence_recording_duration_seconds">%1$d 秒</string>
+    <string name="sentence_recording_duration_minutes">%1$d 分</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d 分 %2$d 秒</string>
 </resources>

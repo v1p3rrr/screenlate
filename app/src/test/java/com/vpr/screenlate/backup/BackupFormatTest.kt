@@ -25,6 +25,7 @@ class BackupFormatTest {
         assertThat(BackupPreferences.sectionOf("overlay_show_source_text")).isEqualTo(BackupSection.POPUP)
         assertThat(BackupPreferences.sectionOf("anki_settings")).isEqualTo(BackupSection.ANKI)
         assertThat(BackupPreferences.sectionOf("audio_settings")).isEqualTo(BackupSection.AUDIO)
+        assertThat(BackupPreferences.sectionOf("sentence_recording_enabled")).isEqualTo(BackupSection.AUDIO)
         assertThat(BackupPreferences.sectionOf("translation_services")).isEqualTo(BackupSection.TRANSLATION)
         assertThat(BackupPreferences.sectionOf("translation_favorites")).isEqualTo(BackupSection.TRANSLATION)
         listOf(

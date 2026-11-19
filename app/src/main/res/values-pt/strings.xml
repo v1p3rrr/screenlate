@@ -1038,4 +1038,26 @@
     <string name="lookup_text_replacement_ignore_case">Ignorar maiúsculas e minúsculas</string>
     <string name="yomitan_summary_replacements_imported">Regras de substituição de texto importadas: %1$d</string>
     <string name="lookup_text_replacement_test">Texto de teste</string>
+    <string name="sentence_recording_card_title">Gravação de frases</string>
+    <string name="sentence_recording_unsupported_hint">A gravação de áudio de frases requer o Android 10 ou superior.</string>
+    <string name="sentence_recording_toggle">Gravar áudio da reprodução</string>
+    <string name="sentence_recording_toggle_hint">Captura áudio de mídia em segundo plano para salvar o áudio de frases nas notas.</string>
+    <string name="sentence_audio_default_editor">Editor de áudio por padrão</string>
+    <string name="sentence_audio_default_editor_hint">Abrir com um toque comum em «Adicionar». Quando desativado, escolha o áudio no menu de toque longo. Requer gravação de áudio.</string>
+    <string name="sentence_recording_limits_label">Limites de duração</string>
+    <string name="sentence_recording_limits_hint">Aplicados a partir da próxima varredura.</string>
+    <string name="sentence_recording_limit_history">Histórico antes da varredura</string>
+    <string name="sentence_recording_limit_waiting">Tempo até abrir o editor</string>
+    <string name="sentence_recording_limit_editor">Continuação durante a edição</string>
+    <string name="sentence_recording_silence_params">Parâmetros de silêncio</string>
+    <string name="sentence_recording_silence_title">Busca de silêncio</string>
+    <string name="sentence_recording_min_pause">Pausa mínima, s</string>
+    <string name="sentence_recording_edge_margin">Margem em cada borda, ms</string>
+    <string name="sentence_recording_info_title">Gravação de frases</string>
+    <string name="sentence_recording_info_body">O histórico de áudio é protegido durante a varredura. «Atualizar» adiciona a continuação retida sem alterar as edições. Lacunas de gravação nunca são unidas.</string>
+    <string name="sentence_recording_missing_marker_hint">Nenhum dos seus tipos de nota do Anki inclui {sentence-audio}. Adicione-o nas configurações do Anki para anexar gravações.</string>
+    <string name="anki_marker_sentence_audio">Áudio da frase gravado da reprodução</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>

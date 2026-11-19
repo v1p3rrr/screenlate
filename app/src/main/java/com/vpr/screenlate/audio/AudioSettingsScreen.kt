@@ -52,6 +52,7 @@ fun AudioSettingsScreen(onBack: () -> Unit, viewModel: AudioSettingsViewModel = 
                     viewModel.show(language)
                 }, hint = stringResource(R.string.audio_languages_hint))
             }
+            SentenceRecordingCard(viewModel)
             AudioSettingsCards(shown, viewModel)
         }
     }

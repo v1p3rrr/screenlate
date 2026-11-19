@@ -73,6 +73,7 @@ data class NoteContext(
     val image: NoteImage?,
     val focus: Box? = null,
     val documentTitle: String = "",
+    val audioContextId: com.vpr.screenlate.core.media.AudioContextId? = null,
 )
 
 /** The entry of [term] among the shown [terms]: [index] while it is still there, else where it moved; null when gone. */
@@ -137,6 +138,7 @@ class PopupNotes(
     private val translation: SentenceTranslation,
     private val cropEditor: CropEditor?,
     private val cropAreaSettings: CropAreaRepository? = null,
+    private val audioEditor: AudioEditorController? = null,
     private val onAnkiOpened: () -> Unit,
     private val onNoteAdded: () -> Unit,
     private val onOpenAnkiSettings: () -> Unit,
@@ -332,7 +334,7 @@ class PopupNotes(
         return runCatching { json.decodeFromString<T>(json.decodeFromString<String>(raw)) }.getOrNull()
     }
 
-    override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) {
+    override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean) {
         val source = noteSource()
         val scan = scanNotes.scan
         // The note keeps the language it was asked for, even if the scan closes before it is added.
@@ -341,6 +343,7 @@ class PopupNotes(
         scope.launch {
             var image: NoteImage? = null
             var picture: Bitmap? = null
+            var sentenceAudioFile: File? = null
             var term: Pair<String, String>? = null
             var opens: List<Long>? = null
             var screenshot: File? = null
@@ -416,13 +419,27 @@ class PopupNotes(
                     ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used, noteLanguage)
                 screenshot = picture?.let { saveScreenshot(it) }
+                if (withAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
+                    when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second)) {
+                        is AudioEditorResult.Cancelled -> {
+                            showState(scan, index, noteTerm, "", null)
+                            return@launch
+                        }
+                        is AudioEditorResult.WithoutAudio -> {
+                            sentenceAudioFile = null
+                        }
+                        is AudioEditorResult.WithAudio -> {
+                            sentenceAudioFile = audioResult.file
+                        }
+                    }
+                }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
-                val result = notes.add(noteLanguage, NoteRequest(values, screenshot, clip), force)
+                val result = notes.add(noteLanguage, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudioFile), force)
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(
                     TAG,
                     "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, " +
-                        "translation ${FieldTemplate.SENTENCE_TRANSLATION in values}, forced $force",
+                        "sentenceAudio ${sentenceAudioFile != null}, translation ${FieldTemplate.SENTENCE_TRANSLATION in values}, forced $force",
                 )
                 val (resultState, ids) = report(scan, noteTerm, result)
                 opens = ids
@@ -437,6 +454,7 @@ class PopupNotes(
                 addingEntries -= index
                 // A cancelled note does not wait for its translation.
                 translated?.cancel()
+                sentenceAudioFile?.delete()
                 image?.close()
                 picture?.recycle()
                 screenshot?.delete()

@@ -12,11 +12,16 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.audio.Pronunciation
+import com.vpr.screenlate.core.anki.note.FieldTemplate
+import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.media.RecordingLimits
+import com.vpr.screenlate.core.media.RecordingSettings
+import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
@@ -65,6 +70,8 @@ class AudioSettingsViewModel @Inject constructor(
     private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
     private val appSettings: AppSettingsRepository,
+    private val recordingSettings: RecordingSettingsRepository,
+    private val ankiSettings: AnkiSettingsRepository,
     dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
     savedState: SavedStateHandle,
@@ -77,6 +84,32 @@ class AudioSettingsViewModel @Inject constructor(
     val settings: StateFlow<AudioSettings?> = shown.language
         .flatMapLatest { repository.settings(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedSettings(shown.language.value))
+
+    val recordingSettingsState: StateFlow<RecordingSettings> = recordingSettings.settings
+        .stateIn(viewModelScope, SharingStarted.Eagerly, recordingSettings.cachedSettings)
+
+    val hasSentenceAudioMarker: StateFlow<Boolean> = ankiSettings.hasMarker(FieldTemplate.SENTENCE_AUDIO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun setRecordingEnabled(enabled: Boolean) {
+        viewModelScope.launch { recordingSettings.setRecordingEnabled(enabled) }
+    }
+
+    fun setDefaultAudioEditor(enabled: Boolean) {
+        viewModelScope.launch { recordingSettings.setDefaultEditor(enabled) }
+    }
+
+    fun setLimits(limits: RecordingLimits) {
+        viewModelScope.launch { recordingSettings.setLimits(limits) }
+    }
+
+    fun setMinSilenceMillis(millis: Long) {
+        viewModelScope.launch { recordingSettings.setMinSilenceMillis(millis) }
+    }
+
+    fun setSilenceMarginMillis(millis: Long) {
+        viewModelScope.launch { recordingSettings.setSilenceMarginMillis(millis) }
+    }
 
     /** Whether a transcription dictionary of the shown language is installed. */
     val hasTranscriptions: StateFlow<Boolean> = combine(shown.language, dictionaries.dictionaries) { language, installed ->

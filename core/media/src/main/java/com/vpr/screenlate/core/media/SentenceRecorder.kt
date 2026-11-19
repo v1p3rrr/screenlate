@@ -38,6 +38,7 @@ class SentenceRecorder internal constructor(
     )
 
     private var coordinator: PcmStorageCoordinator? = null
+    private var previewPlayer: AudioPreviewPlayer? = null
     private val _recordingState = MutableStateFlow<SentenceRecordingState>(SentenceRecordingState.Idle)
     val recordingState: StateFlow<SentenceRecordingState> = _recordingState.asStateFlow()
 
@@ -114,6 +115,91 @@ class SentenceRecorder internal constructor(
     }
 
     @Synchronized
+    fun waveformSummary(range: AudioRange, buckets: Int = 200): WaveformSummary? {
+        val snapshot = snapshot(range) ?: return null
+        return try {
+            snapshot.openStream().use { stream ->
+                WaveformSummary.compute(stream, range, buckets)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Waveform computation failed", e)
+            null
+        } finally {
+            snapshot.close()
+        }
+    }
+
+    @Synchronized
+    fun findSilence(
+        range: AudioRange,
+        sampleRate: Int = 48000,
+        minSilenceMillis: Long = SilenceDetector.DEFAULT_MIN_SILENCE_MILLIS,
+        edgePaddingMillis: Long = SilenceDetector.DEFAULT_EDGE_PADDING_MILLIS,
+    ): List<AudioRange> {
+        val snapshot = snapshot(range) ?: return emptyList()
+        return try {
+            snapshot.openStream().use { stream ->
+                SilenceDetector.findSilenceCuts(stream, range, sampleRate, minSilenceMillis, edgePaddingMillis)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Silence search failed", e)
+            emptyList()
+        } finally {
+            snapshot.close()
+        }
+    }
+
+    @Synchronized
+    fun initialSelection(view: AudioTimelineView, sampleRate: Int = 48000): AudioEdit? {
+        val source = view.source ?: return null
+        val initial = InitialSelection.suggest(view.scanFrame, source, sampleRate) ?: return null
+        val snapshot = snapshot(initial) ?: return AudioEdit(initial)
+        return try {
+            val quiet = snapshot.openStream().use { stream ->
+                SilenceDetector.detectLeadingQuiet(stream, initial, sampleRate)
+            }
+            val refined = InitialSelection.refine(initial, quiet, sampleRate)
+            AudioEdit(refined)
+        } catch (e: Exception) {
+            AudioEdit(initial)
+        } finally {
+            snapshot.close()
+        }
+    }
+
+    @Synchronized
+    fun startPreview(
+        edit: AudioEdit,
+        mode: PreviewMode = PreviewMode.RESULT,
+        startFrame: Long? = null,
+        onProgress: ((Long) -> Unit)? = null,
+        onComplete: (() -> Unit)? = null,
+    ) {
+        if (previewPlayer == null) {
+            previewPlayer = AudioPreviewPlayer(snapshotProvider = ::snapshot)
+        }
+        previewPlayer?.play(edit, mode, startFrame, onProgress, onComplete)
+    }
+
+    @Synchronized
+    fun pausePreview() {
+        previewPlayer?.pause()
+    }
+
+    @Synchronized
+    fun stopPreview() {
+        previewPlayer?.stop()
+    }
+
+    @Synchronized
+    fun seekPreview(frame: Long, edit: AudioEdit? = null, mode: PreviewMode = PreviewMode.RESULT) {
+        previewPlayer?.seek(frame, edit, mode)
+    }
+
+    val isPreviewPlaying: Boolean get() = previewPlayer?.isPlaying == true
+    val previewPosition: Long get() = previewPlayer?.currentFrame ?: 0L
+
+    @Synchronized
     fun export(
         edit: AudioEdit,
         outputFile: File,
@@ -139,6 +225,8 @@ class SentenceRecorder internal constructor(
     @Synchronized
     override fun close() {
         stop()
+        previewPlayer?.close()
+        previewPlayer = null
         coordinator?.close()
         coordinator = null
         _recordingState.value = SentenceRecordingState.Idle

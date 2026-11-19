@@ -390,6 +390,48 @@ class AnkiNotesTest {
         assertThat(notes.usedMarkers(Language.JAPANESE)).containsExactly("expression", "glossary", "sentence", "screenshot")
     }
 
+    @Test
+    fun `sentence audio adds media and populates sentence-audio marker`() = runBlocking<Unit> {
+        val audioFile = folder.newFile("phrase.opus")
+        anki.models[MODEL] = listOf("Word", "Meaning", "Sentence", "Picture", "SentenceAudio")
+        configure {
+            it.copy(
+                fields = it.fields + ("SentenceAudio" to "{sentence-audio}"),
+            )
+        }
+        val result = notes.add(
+            Language.JAPANESE,
+            request.copy(sentenceAudio = audioFile),
+        )
+        assertThat(result).isEqualTo(AddResult.Added(101))
+        assertThat(anki.media).contains(Pair("screenlate_phrase", AnkiDroid.MediaKind.AUDIO))
+        val addedFields = anki.added.single().first
+        assertThat(addedFields.last()).isEqualTo("[sound:phrase.opus]")
+    }
+
+    @Test
+    fun `updating note without sentence audio preserves existing sentence audio field`() = runBlocking<Unit> {
+        anki.models[MODEL] = listOf("Word", "Meaning", "Sentence", "Picture", "SentenceAudio")
+        configure {
+            it.copy(
+                duplicateBehavior = DuplicateBehavior.OVERWRITE,
+                overwriteModes = mapOf("Meaning" to OverwriteMode.OVERWRITE, "SentenceAudio" to OverwriteMode.OVERWRITE),
+                fields = it.fields + ("SentenceAudio" to "{sentence-audio}"),
+            )
+        }
+        anki.existing += ExistingNote(
+            id = 42L,
+            modelId = MODEL,
+            fields = listOf("猫", "old meaning", "", "", "[sound:existing_recorded.opus]"),
+            deckIds = setOf(DECK),
+        )
+        val result = notes.add(Language.JAPANESE, request.copy(sentenceAudio = null))
+        assertThat(result).isEqualTo(AddResult.Updated(42L))
+        val updatedFields = anki.updated.single().second
+        assertThat(updatedFields[1]).isEqualTo("cat")
+        assertThat(updatedFields[4]).isEqualTo("[sound:existing_recorded.opus]")
+    }
+
     private companion object {
         const val DECK = 1L
         const val MODEL = 1L

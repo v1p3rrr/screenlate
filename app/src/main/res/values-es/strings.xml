@@ -1038,4 +1038,26 @@
     <string name="lookup_text_replacement_ignore_case">Ignorar mayúsculas y minúsculas</string>
     <string name="yomitan_summary_replacements_imported">Reglas de reemplazo de texto importadas: %1$d</string>
     <string name="lookup_text_replacement_test">Texto de prueba</string>
+    <string name="sentence_recording_card_title">Grabación de frases</string>
+    <string name="sentence_recording_unsupported_hint">La grabación de audio de frases requiere Android 10 o posterior.</string>
+    <string name="sentence_recording_toggle">Grabar audio de reproducción</string>
+    <string name="sentence_recording_toggle_hint">Graba audio multimedia en segundo plano para guardar el audio de frases con las notas.</string>
+    <string name="sentence_audio_default_editor">Editor de audio de forma predeterminada</string>
+    <string name="sentence_audio_default_editor_hint">Abrir con un toque normal en «Añadir». Si está desactivado, elige el audio en el menú al mantener pulsado. Requiere grabación de audio.</string>
+    <string name="sentence_recording_limits_label">Límites de duración</string>
+    <string name="sentence_recording_limits_hint">Se aplican a partir del siguiente análisis.</string>
+    <string name="sentence_recording_limit_history">Historial antes del análisis</string>
+    <string name="sentence_recording_limit_waiting">Tiempo hasta abrir el editor</string>
+    <string name="sentence_recording_limit_editor">Continuación en el editor</string>
+    <string name="sentence_recording_silence_params">Parámetros de silencio</string>
+    <string name="sentence_recording_silence_title">Búsqueda de silencios</string>
+    <string name="sentence_recording_min_pause">Pausa mínima, s</string>
+    <string name="sentence_recording_edge_margin">Margen en cada extremo, ms</string>
+    <string name="sentence_recording_info_title">Grabación de frases</string>
+    <string name="sentence_recording_info_body">El historial de audio se protege al analizar. «Actualizar» añade la continuación conservada sin modificar las ediciones. Las pausas de grabación nunca se unen.</string>
+    <string name="sentence_recording_missing_marker_hint">Ninguno de tus tipos de nota de Anki incluye {sentence-audio}. Añádelo en los ajustes de Anki para adjuntar grabaciones.</string>
+    <string name="anki_marker_sentence_audio">Audio de frase de la grabación de reproducción</string>
+    <string name="sentence_recording_duration_seconds">%1$d s</string>
+    <string name="sentence_recording_duration_minutes">%1$d min</string>
+    <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
 </resources>
