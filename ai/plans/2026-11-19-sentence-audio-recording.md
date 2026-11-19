@@ -360,6 +360,10 @@ Final acceptance requires both user scenarios: (1) an utterance continues during
 
 ### Implementation progress
 
+- [Fresh-session handoff](../notes/sentence-audio-handoff.md) is the exact current resume point, including
+  incomplete API29/API37 tests and host-memory failure. Owner requests checking weekly usage and stopping
+  implementation immediately when remaining weekly usage is below 2%; do not spend reset credits.
+
 - Branch created from main; no merge to main. [Engineering measurements](../notes/sentence-audio-engineering.md)
   record the isolated API30 probe, AAC end-tail failure, Opus candidate and on-device PCM storage benchmark.
 - Registered independent `core:media`; implemented/tested pure deadline/edit/initial-selection models and
@@ -380,3 +384,4 @@ Final acceptance requires both user scenarios: (1) an utterance continues during
 - 2026-11-19: Created from the complete discussion and approved interactive design. Final owner answers: initial 15 s before / 5 s after, >5 s leading-quiet refinement with 150 ms lead-in and all-quiet preservation; duration range 30 s–10 min in 30 s steps; Back cancels in both editor sizes; independent `core:media`. Defaults remain 5/5/2. Current localization coverage is 27 locales.
 - 2026-11-19: Owner authorized implementation on a separate branch and clarified unsupported-device UI: on Android 7–9 show only availability text, hide recording settings and all recording activation/attachment affordances.
 - 2026-11-19: Added independent storage/state foundation and isolated API30 feasibility evidence; actual implementation and pending gates are distinguished above. Recorded and stopped the accidentally persistent source tone and added bounded test-source lifetime.
+- 2026-11-19: Prepared owner-requested handoff/prompt and the stop rule at less than 2% weekly usage remaining. API29/modern probe extensions build/lint; runtime validation remains pending due host resource/startup conditions, not established platform incompatibility.

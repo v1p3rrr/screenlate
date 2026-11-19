@@ -17,6 +17,12 @@ This writes a synthetic source of 480,123 frames, with a different tone in its f
 and decodes it without playback or projection. Inspect `fixture.properties` and `fixture-decoded.pcm` to
 check final partial-frame preservation. These fixtures never play sound on the host.
 
+For the API29 concurrent legacy-screenshot/playback test, launch Recorder with `--ez screenshot true`.
+It creates one shared projection virtual display, drains at most two in-memory images, stores only image
+counts/dimensions (no screenshot files), and captures audio through that same projection. Check
+`screenshotFrames > 0` together with non-silent external-tone capture. Normal runs create no virtual display.
+On API34+ consent requests the full-display configuration, matching all-eligible-source capture scope.
+
 The recorder writes only synthetic `capture.pcm`, `capture.m4a`, `decoded.pcm` and `result.properties` to its
 private files directory. Inspect with `adb -s <serial> shell run-as com.vpr.screenlate.audioprobe cat files/result.properties`.
 Check external-tone amplitude versus own-tone leakage, frame count, encoder EOS, decoded duration/quality,

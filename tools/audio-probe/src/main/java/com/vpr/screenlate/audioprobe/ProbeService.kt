@@ -9,11 +9,15 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.PixelFormat
+import android.hardware.display.DisplayManager
+import android.hardware.display.VirtualDisplay
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioPlaybackCaptureConfiguration
 import android.media.AudioRecord
 import android.media.AudioTimestamp
+import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.Handler
@@ -21,6 +25,8 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.Process
 import android.os.SystemClock
+import android.util.DisplayMetrics
+import android.view.WindowManager
 import java.io.File
 import java.util.Properties
 import kotlin.concurrent.thread
@@ -31,6 +37,8 @@ class ProbeService : Service() {
     private var worker: Thread? = null
     private var projection: MediaProjection? = null
     private var recorder: AudioRecord? = null
+    private var display: VirtualDisplay? = null
+    private var images: ImageReader? = null
 
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -51,6 +59,23 @@ class ProbeService : Service() {
             session.registerCallback(object : MediaProjection.Callback() {
                 override fun onStop() { running = false }
             }, Handler(Looper.getMainLooper()))
+            if (intent.getBooleanExtra("screenshot", false)) {
+                val dimensions = DisplayMetrics()
+                @Suppress("DEPRECATION")
+                getSystemService(WindowManager::class.java).defaultDisplay.getRealMetrics(dimensions)
+                val reader = ImageReader.newInstance(dimensions.widthPixels, dimensions.heightPixels, PixelFormat.RGBA_8888, 2)
+                images = reader
+                var frames = 0L
+                reader.setOnImageAvailableListener({ source ->
+                    source.acquireLatestImage()?.use { image ->
+                        metrics["screenshotFrames"] = (++frames).toString()
+                        metrics["screenshotWidth"] = image.width.toString()
+                        metrics["screenshotHeight"] = image.height.toString()
+                    }
+                }, Handler(Looper.getMainLooper()))
+                display = session.createVirtualDisplay("audio-probe", dimensions.widthPixels, dimensions.heightPixels,
+                    dimensions.densityDpi, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, reader.surface, null, null)
+            }
             val capture = AudioPlaybackCaptureConfiguration.Builder(session)
                 .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
                 .addMatchingUsage(AudioAttributes.USAGE_GAME)
@@ -128,6 +153,11 @@ class ProbeService : Service() {
     override fun onDestroy() {
         running = false
         runCatching { recorder?.stop() }
+        display?.release()
+        display = null
+        images?.setOnImageAvailableListener(null, null)
+        images?.close()
+        images = null
         projection?.stop()
         projection = null
         super.onDestroy()

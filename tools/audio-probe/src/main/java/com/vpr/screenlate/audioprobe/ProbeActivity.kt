@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.projection.MediaProjectionManager
+import android.media.projection.MediaProjectionConfig
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -42,8 +43,12 @@ class ProbeActivity : Activity() {
                 } else if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 1)
                 } else {
+                    val manager = getSystemService(MediaProjectionManager::class.java)
+                    val captureIntent = if (Build.VERSION.SDK_INT >= 34) {
+                        manager.createScreenCaptureIntent(MediaProjectionConfig.createConfigForDefaultDisplay())
+                    } else manager.createScreenCaptureIntent()
                     @Suppress("DEPRECATION")
-                    startActivityForResult(getSystemService(MediaProjectionManager::class.java).createScreenCaptureIntent(), 2)
+                    startActivityForResult(captureIntent, 2)
                 }
             }
         })
@@ -91,7 +96,8 @@ class ProbeActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 2 && resultCode == RESULT_OK && data != null && Build.VERSION.SDK_INT >= 29) {
             startForegroundService(Intent(this, ProbeService::class.java).putExtra("consent", data)
-                .putExtra("rate", intent.getIntExtra("rate", 48000)))
+                .putExtra("rate", intent.getIntExtra("rate", 48000))
+                .putExtra("screenshot", intent.getBooleanExtra("screenshot", false)))
         }
     }
 

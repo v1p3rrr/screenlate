@@ -1,5 +1,20 @@
 # Status
 
+## Sentence audio handoff checkpoint (2026-11-19)
+
+- Owner requested a fresh-session handoff and stopping implementation when account weekly remaining usage
+  falls below 2%. [Exact handoff](notes/sentence-audio-handoff.md) records branch, tested code, remaining work,
+  commands, environment and that usage rule; account identifiers/actual usage values stay out of the repo.
+- Branch `codex/sentence-audio-recording`: `51f0d44a` and `e2e92de6` are pushed. Latest probe adds optional
+  shared projection screenshot/audio capture and API34+ full-display consent; build/lint pass, runtime
+  API29/API37 checks are NOT completed. App recording UI/integration remains unimplemented.
+- API29 image installed and isolated AVD created. Launch hit host Windows commit-memory exhaustion;
+  API37 stayed offline, its owned PID 13292 was stopped for handoff. Original populated/corrupt AVD data is
+  untouched. No intentional tone remains running; pre-existing API24 emulator 5554 was left alone.
+- Resume from the handoff's next action after reading the binding plan. Do not restart the design or mark
+  whole phases complete. Latest core validation remains 44 JVM tests, module lint/Android-test assembly;
+  earlier full project checks and 195 page tests passed.
+
 ## Protected audio timelines and capture queue (2026-11-19)
 
 - Continuing on `codex/sentence-audio-recording`; first verified milestone `51f0d44a` is pushed to origin.
