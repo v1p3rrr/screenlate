@@ -367,6 +367,10 @@ Final acceptance requires both user scenarios: (1) an utterance continues during
   unresolved final codec choice. No app UI/control or Anki integration is connected yet.
 - Phase 1 remains open for the explicitly listed compatibility, timestamp, self-TTS, live-queue and final
   resource measurements. Phase 2 foundation work is partial; do not mark either whole phase complete.
+- Added protected scan timelines, fixed shown revisions/Refresh, integer frame clock and bounded reusable
+  capture-buffer queue. All 44 standalone JVM tests, module lint and Android-test assembly pass, including
+  combined real-file history/timeline and concurrent producer/writer tests. Live recorder dispatch and final
+  budget admission remain unconnected.
 - Test source tones now have a 30-second maximum following the owner's audible-emulator report; require
   host-silent runs for further sound-generating experiments and explicit cleanup.
 

@@ -55,8 +55,9 @@ the caller before it is dismissed.
 
 ## Recording foundation checks
 
-`core:media` has pure JVM tests for deadline ordering, source-frame edits, initial selection, PCM leases,
-rollover/quotas and failed writes. Run `./gradlew :core:media:testDebugUnitTest :core:media:lintDebug`.
+`core:media` has pure JVM tests for deadline ordering, frame clocks, scan timelines/Refresh, source-frame edits,
+initial selection, PCM leases, rollover/quotas/failed writes and concurrent bounded capture buffers.
+Run `./gradlew :core:media:testDebugUnitTest :core:media:lintDebug`.
 `PcmHistoryDeviceTest` runs in the library's independent test package and checks an accelerated synthetic
 storage workload, without opening the app or touching a collection. After building
 `:core:media:assembleDebugAndroidTest`, install its APK on an explicitly selected emulator and run

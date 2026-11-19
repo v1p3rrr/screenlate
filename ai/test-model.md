@@ -840,6 +840,12 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 ### 2026-11-19, sentence audio foundation, `codex/sentence-audio-recording`
 
+- Second milestone: 44 passing JVM tests, module lint and Android-test assembly. `PcmClockTest`,
+  `ScanAudioTimelineTest`, `ScanAudioHistoryTest` and `PcmBlockQueueTest` add exact frame-clock arithmetic,
+  fixed editor revisions/Refresh, real-file timeline/cap/ring interaction and concurrent bounded-buffer
+  producer/writer coverage. Live recorder, UI and final budgets remain pending; no additional REC rows
+  are promoted based on partial foundational coverage alone.
+
 - `ContextRetentionTest`, `AudioEditTest`, `InitialSelectionTest` and `PcmHistoryTest` cover the standalone
   foundation. REC17/REC18 move N→E with deterministic fake-time tests; other REC rows remain N because their
   full capture/UI/Anki/resource behavior is not implemented or verified yet.

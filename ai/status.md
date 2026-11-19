@@ -1,6 +1,19 @@
 # Status
 
-# Status
+## Protected audio timelines and capture queue (2026-11-19)
+
+- Continuing on `codex/sentence-audio-recording`; first verified milestone `51f0d44a` is pushed to origin.
+- Added integer frame-clock conversion, session/scan context IDs, fixed displayed revisions with explicit
+  Refresh, and bounded reusable PCM capture buffers. Overflow/discontinuity preserves the accepted prefix
+  and prohibits resuming across a gap; source/input arrays and active reader buffers are isolated.
+- 44 JVM tests pass, including combined timeline/actual-file retention across long reading and cap/ring
+  rollover, stale-session rejection and concurrent producer/writer frame checks. Module lint and Android-test
+  assembly pass. No app UI/recorder coordinator integration yet; phases remain partial.
+- Next platform work: Android10/API29 shared projection and current API37 audio-only capture. API29 image
+  installation is being prepared; all sound-generating test emulators use `-no-audio` and bounded sources.
+- Resume references: [plan](plans/2026-11-19-sentence-audio-recording.md),
+  [measurement/gate note](notes/sentence-audio-engineering.md). Existing unrelated submodule/untracked images
+  are untouched. App and Anki collection data are untouched.
 
 ## Sentence audio implementation started on a separate branch (2026-11-19)
 

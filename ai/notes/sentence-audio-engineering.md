@@ -110,14 +110,36 @@ Implemented and unit-tested: H/R/E deadline transitions (no timer-dependent admi
 immutable source-coordinate edits, normalized cuts and time mapping, initial selection/refinement,
 frame-aligned fixed-prefix file publication, independent snapshot/reader leases, ring/protected disjoint
 retention, byte/file quotas, truncated-source rejection and partial-write rollback with terminal writer failure.
-Fresh-directory validation prevents unaccounted abandoned files from bypassing the byte ledger. There are
-26 passing JVM tests plus the separate Android storage test. Full project assemble/unit/lint/androidTest
+Fresh-directory validation prevents unaccounted abandoned files from bypassing the byte ledger. The first
+milestone had 26 passing JVM tests plus the separate Android storage test. Full project assemble/unit/lint/androidTest
 assembly/convention tests/release vital lint passed; all 195 page tests passed. The optional probe variants
 also build/lint without errors (four development-only lint warnings: API annotation/constant, backup and icon).
 
+### Protected timeline and bounded capture buffers
+
+The next independent foundation adds `PcmClock`, `ScanAudioTimeline` and `PcmBlockQueue`; total **44 passing
+JVM tests**, module lint and instrumented-test assembly. This is not a connected Android recorder/editor.
+
+- Integer BOOTTIME→frame conversion avoids floating-point drift and intermediate multiplication overflow.
+  Actual timestamp-origin calibration remains a backend responsibility and a device gate.
+- Session/scan IDs reject old callbacks. Scan-time H/R/E admission, fixed displayed revisions, explicit
+  append-only Refresh, late pre-cutoff publication, stopped-source preservation and no new E on reopening
+  have deterministic tests. The old source and a later ring remain separate retained ranges.
+- Integrated tests drive that policy against real temporary PCM files through long reading, Refresh/cap,
+  disjoint ring retention and a subsequent scan, verifying sample bytes and cleanup rather than just metadata.
+- The capture-to-writer pool preallocates a bounded number of frame-aligned buffers. Reusing the producer's
+  input cannot mutate accepted data; a borrowed writer block cannot be recycled until returned. Overflow
+  or frame discontinuity seals producer input and leaves the accepted prefix drainable; it cannot silently
+  resume across dropped sound. Normal stop drains, cancellation closes, returned leases are idempotent.
+  Concurrent producer/writer tests check every frame with reused input buffers.
+
+Live capture must use these primitives through one serialized coordinator. A pool by itself does not prove
+AudioRecord scheduling/overrun behavior, dispatch readiness, actual timestamp accuracy, or final resource
+admission. Those remain explicit integration tests, not implied by the 44 unit tests.
+
 Still needed before feature acceptance/production UI: API29 shared legacy projection and current-API capture,
 external TTS exclusion, route/lock/call/revocation tests, actual sources, complete timestamp calibration,
-bounded capture queue and live coordinator, final format and numeric disk/RAM/workspace/cache budgets,
+live producer/coordinator integration with the bounded queue, final format and numeric disk/RAM/workspace/cache budgets,
 preview/encode integration and fidelity, near-full storage/pressure tests with other app work, and physical
 device power/thermal/OCR latency. The foundational module is not yet connected to app settings or the popup.
 

@@ -79,7 +79,8 @@ aimed-engine selection. Its tests live beside those modules; `ai/notes/camera-lo
 bounded PCM history, fixed-prefix snapshots and reader leases. Currently independent of app/overlay/Anki; do not
 claim the recording feature is enabled. Optional development-only `tools/audio-probe` has separate source/recorder
 application IDs and codec fixtures; it is conditionally included and excluded from app dependencies.
-Tests: `ContextRetentionTest`, `AudioEditTest`, `InitialSelectionTest`, `PcmHistoryTest`, instrumented
+Tests: `ContextRetentionTest`, `AudioEditTest`, `InitialSelectionTest`, `PcmHistoryTest`, `PcmClockTest`,
+`ScanAudioTimelineTest`, `ScanAudioHistoryTest`, `PcmBlockQueueTest`, instrumented
 `PcmHistoryDeviceTest`. Plan: `ai/plans/2026-11-19-sentence-audio-recording.md`; evidence/gate:
 `ai/notes/sentence-audio-engineering.md`. Later integration must cover capture/session ownership, screen anchors,
 popup editor, settings/backup, pronunciation/TTS exclusion and the separate Anki attachment contract.
