@@ -1,5 +1,22 @@
 # Status
 
+## Dictionary lookup fixes and nested definition tap-lookup (2026-11-20)
+
+- Implemented on branch `features/lookup-fixes-and-tap-definitions` and merged into `main` (`4b737002`):
+  - **Unambiguous reading-less entry merging (`ShownResults.kt`, `ShownResultsTest.kt`):**
+    - Reading-less dictionary entries (`reading.isEmpty()` or `reading == expression` on ideographic headwords, e.g. from `wty-ja-ja` or `JMnedict`) merge cleanly into entries with distinct readings when all other entries for that expression in the lookup results share an unambiguous reading (`感心` -> `かんしん`, `思想` -> `しそう`). If multiple readings exist (e.g. `つの` and `かど` for `角`), merging is skipped to prevent false conflation.
+  - **Harmonic & average frequency suppression for reading-less entries (`YomitanSorter.kt`, `popup.js`, `YomitanSorterTest.kt`, `popup.test.mjs`):**
+    - Suppressed aggregate (harmonic/arithmetic) frequency ranking on reading-less entries so reading-less duplicate cards cannot rank above full entries with readings. In `popup.js`, aggregate frequency chips are hidden on reading-less ideographic entries while preserved on kana-only and non-CJK entries.
+  - **Form-of reading filtering in deinflection (`form_of.cpp`):**
+    - When following `form_of` redirects (`item.lemma`): if the source query or deinflected form had a known reading (e.g. `それた` -> `それる`), filtered out candidate lemmas whose non-empty reading mismatches the source reading (e.g. discards `逸れる` with reading `はぐれる`, retaining `逸れる` read as `それる`).
+  - **Nested tap-lookup in definitions & examples (`popup.js`, `LookupPage.kt`, `OverlayController.kt`, `SearchScreen.kt`, `PopupAppearanceRepository.kt`, `PopupSettingsScreen.kt`):**
+    - Added single-tap word lookup within `.definition-body`, `.glossary`, and `.example-sentence` via `caretRangeFromPoint`.
+    - Differentiated tap lookups (`fromTap = true`) from explicit hyperlinks: empty lookups from taps silently do nothing and do not push disruptive error cards, while explicit links preserve the "No results found" card.
+    - Added a user toggle `tapLookup` in Popup settings ("Lookup on tap in definitions" / "Поиск по тапу в определениях"), with full translations across all 27 locales.
+  - **Code review:** Completed two full two-axis `/code-review` passes (Standards + Spec) until zero critical issues remained, fixing locale convention compliance (`de`, `ko`, `b+zh+Hant`), eliminating redundant regexes and magic numbers in JS, separating tap and link error suppression, and refining reading-less checks for empty readings across all languages.
+- Minified ARM64 Dev APK from `4b737002` (on `main`): package `com.vpr.screenlate.debug`, label `Screenlate Dev`, version `1.1.0-4b737002-min` (`10100`), `25,094,927` bytes, debug-signed. SHA-256 `DDF233BD48C0A68348DAA9A77948551C14C0D297F51F4A3A3DFD7D26D9478E7E`.
+  - APK, R8 mapping (`mapping.txt`), and init script saved under ignored `testdata/local-research/builds/`.
+
 ## Sentence audio implementation plan ready (2026-11-19)
 
 - Current plan: [plans/2026-11-19-sentence-audio-recording.md](plans/2026-11-19-sentence-audio-recording.md).
