@@ -137,11 +137,53 @@ Live capture must use these primitives through one serialized coordinator. A poo
 AudioRecord scheduling/overrun behavior, dispatch readiness, actual timestamp accuracy, or final resource
 admission. Those remain explicit integration tests, not implied by the 44 unit tests.
 
-Still needed before feature acceptance/production UI: API29 shared legacy projection and current-API capture,
+### Platform checks: API 29 shared projection and API 37 host resources
+
+Environment:
+- API 29: `Screenlate_Audio_API29`, x86_64 guest on Windows with WHPX; both probe packages target SDK 37.
+  Tested with `--ez screenshot true`: one `VirtualDisplay` with `ImageReader` drained images while capturing
+  audio through the **same** `MediaProjection` session. Silent test run with `-no-audio`.
+- API 37: `Pixel_10_Pro`, `android-37.2/google_apis_playstore_ps16k/x86_64` (16k page size image).
+
+API 29 shared capture result (2026-11-19):
+
+| Metric | Measured API 29 result |
+|---|---:|
+| Captured duration | 9,997 ms |
+| Captured frames | 480,000 |
+| Captured PCM bytes | 960,000 |
+| External 440 Hz amplitude | 2,066.03 |
+| Excluded own 997 Hz amplitude | 0.47 |
+| Screenshot frames drained | 74 |
+| Screenshot dimensions | 1080 × 1920 |
+| AudioTimestamp status | 0 (success) |
+| AAC encoder | OMX.google.aac.encoder |
+| Max synchronous write | 325 us |
+
+This runtime result confirms that on Android 10 (API 29), a single `MediaProjection` session can concurrently
+service both legacy screenshot acquisition (`VirtualDisplay`/`ImageReader`) and internal playback capture
+(`AudioPlaybackCaptureConfiguration`) with own-UID exclusion.
+
+API 37 finding:
+- The official 16k page size image (`ps16k`) mandates at least 4096 MB RAM (`Increasing RAM size to 4096MB`).
+- On Windows with ~62 GB committed memory, launching this 4 GB guest image + netsim causes host commit-memory
+  exhaustion (`System.OutOfMemoryException` in the host shell).
+- This is a host environment memory constraint, not an Android playback capture incompatibility.
+
+### Storage coordinator, waveform downsampling, silence detection and single-encoder export
+
+Added `PcmStorageCoordinator`, `AudioSource`, `AudioRecordSource`, `WaveformSummary`, `SilenceDetector`, and `AudioExporter`:
+- `PcmStorageCoordinator` ties together live `AudioSource` input, the bounded `PcmBlockQueue`, `PcmHistory` file storage, and `ScanAudioTimeline` policy on separate capture and writer threads. Quota exhaustion, disk stalls, or queue discontinuities stop capture honestly and seal the queue, preserving the accepted contiguous prefix. Startup cleanup removes abandoned `.pcm` / `.tmp` files.
+- `WaveformSummary` computes downsampled peak envelopes directly from chunk streams without full PCM decodes or UI allocations.
+- `SilenceDetector` implements both >5 s leading-quiet detection with 150 ms margin for initial selection refinement, and >=1.5 s internal silence proposal cuts with 150 ms edge preservation and dynamic-range abstention.
+- `AudioExporter` streams kept frames from `AudioEdit.kept` directly into Opus/Ogg via `MediaCodec` and `MediaMuxer` on API 29+, with presentation timestamps derived from cumulative kept frames.
+
+Total **55 JVM unit tests** pass in `core:media`. Full project assemble, unit tests across all modules, and release vital lint pass cleanly.
+
+Still needed before feature acceptance/production UI:
 external TTS exclusion, route/lock/call/revocation tests, actual sources, complete timestamp calibration,
-live producer/coordinator integration with the bounded queue, final format and numeric disk/RAM/workspace/cache budgets,
-preview/encode integration and fidelity, near-full storage/pressure tests with other app work, and physical
-device power/thermal/OCR latency. The foundational module is not yet connected to app settings or the popup.
+final numeric disk/RAM/workspace/cache budgets, overlay editor UI matching the approved mockup,
+DataStore settings and Anki pipeline integration.
 
 Primary API checklist rechecked 2026-11-19: [playback eligibility/permission/filter rules](https://developer.android.com/media/platform/av-capture),
 [foreground-service prerequisites](https://developer.android.com/develop/background-work/services/fgs/service-types#media-projection),

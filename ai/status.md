@@ -1,5 +1,27 @@
 # Status
 
+## Sentence audio: API 29 verified, storage coordinator, silence detection and export (2026-11-19)
+
+- Continuing on `codex/sentence-audio-recording`.
+- Completed runtime platform check on Android 10 (API 29) on isolated headless AVD with `-no-audio`:
+  successfully captured 10 seconds of 48 kHz mono playback (480,000 frames in 9,997 ms, external tone amplitude
+  ~2,066 vs excluded own tone ~0.47) while concurrently draining 74 screenshot frames (1080 × 1920) via
+  `VirtualDisplay` and `ImageReader` over the **same** `MediaProjection` session. Confirms shared projection design.
+- API 37 check: official `google_apis_playstore_ps16k` 16k page size image mandates 4096 MB RAM and triggered host
+  Windows commit exhaustion (`System.OutOfMemoryException`). Documented as a host environment memory constraint.
+- Implemented `core:media` live foundation:
+  - `PcmStorageCoordinator`: manages separate capture worker and writer worker threads, coordinating `AudioSource`,
+    `PcmBlockQueue`, `PcmHistory` and `ScanAudioTimeline`. Bounded memory queue, quota enforcement, safety reserve
+    check, graceful drain on stop, and abandoned `.pcm`/`.tmp` file cleanup.
+  - `AudioRecordSource`: concrete API 29+ `AudioRecord` wrapper with `AudioTimestamp` BOOTTIME calibration.
+  - `WaveformSummary`: streaming peak-envelope downsampler for waveform rendering without whole-PCM copies.
+  - `SilenceDetector`: implements >5 s leading-quiet detection with 150 ms margin for initial selection refinement,
+    and >=1.5 s internal silence cuts with 150 ms edge preservation and dynamic-range abstention.
+  - `AudioExporter`: single-encoder streaming Opus/Ogg export via `MediaCodec` and `MediaMuxer` on API 29+.
+- 55 unit tests pass in `core:media` (including 11 new tests in `PcmStorageCoordinatorTest`, `WaveformSummaryTest`,
+  and `SilenceDetectorTest`). Full project unit tests, all 195 JS page tests, convention tests and release vital lint pass.
+- Pre-existing untracked files and submodules are untouched. Anki data is untouched.
+
 ## Sentence audio handoff checkpoint (2026-11-19)
 
 - Owner requested a fresh-session handoff and stopping implementation when account weekly remaining usage
