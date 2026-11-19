@@ -82,6 +82,9 @@ const Popup = (() => {
     /** Characters of a headword that open their own entry when tapped (drawSegments). */
     const HAN_CHARACTER = /[\p{Script=Han}〇]/u;
     const HAN_PIECES = /([\p{Script=Han}〇])/u;
+    const CJK_CHAR = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/u;
+    const IDEOGRAPH_CHAR = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u;
+    const PUNCTUATION_OR_SPACE = /\s|[\n\r.,\/#!$%\^&\*;:{}=\-_`~()\[\]<>'"?？。、！!「」『』【】（）]/;
     /** Elements of a glossary that take the direction of their own first letter in a right-to-left language. */
     const TEXT_BLOCKS = 'div, p, li, dt, dd, td, th, summary';
     /** Pitch accents shown before "+N"; a word with more shows only its first. */
@@ -341,11 +344,11 @@ const Popup = (() => {
     function extractTapQuery(text, offset) {
         if (!text || offset < 0 || offset >= text.length) return '';
         const char = text[offset];
-        if (/\s|[\n\r.,\/#!$%\^&\*;:{}=\-_`~()\[\]<>'"?？。、！!「」『』【】（）]/.test(char)) {
+        if (PUNCTUATION_OR_SPACE.test(char)) {
             return '';
         }
         const isWordChar = /[\p{L}\p{N}]/u.test(char);
-        const isCjk = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/u.test(char);
+        const isCjk = CJK_CHAR.test(char);
         if (!isWordChar && !isCjk) return '';
 
         let start = offset;
@@ -355,10 +358,10 @@ const Popup = (() => {
             }
         }
         let end = start;
-        const maxEnd = Math.min(text.length, start + 32);
+        const maxEnd = Math.min(text.length, start + (isCjk ? 16 : 32));
         while (end < maxEnd) {
             const nextChar = text[end];
-            if (/\s|[\n\r.,\/#!$%\^&\*;:{}=\-_`~()\[\]<>'"?？。、！!「」『』【】（）]/.test(nextChar)) {
+            if (PUNCTUATION_OR_SPACE.test(nextChar)) {
                 if (end === start) return '';
                 break;
             }
@@ -1198,7 +1201,8 @@ const Popup = (() => {
     function aggregateFrequency(term, labels) {
         const mode = noteConfig.sortFrequencyMode;
         if (!mode) return null;
-        if (!term.reading || term.reading === term.expression) return null;
+        const hasIdeograph = IDEOGRAPH_CHAR.test(term.expression || '');
+        if ((!term.reading || term.reading === term.expression) && hasIdeograph) return null;
         if (typeof NoteData === 'undefined' || typeof NoteData.aggregateFrequency !== 'function') return null;
         const value = NoteData.aggregateFrequency(term, noteConfig.frequencyModes || {}, mode);
         if (value === null) return null;
@@ -1932,6 +1936,7 @@ const Popup = (() => {
         terms,
         showAudioMenu,
         measureRender,
+        extractTapQuery,
     };
 })();
 

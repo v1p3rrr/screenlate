@@ -1977,4 +1977,42 @@ test('reading-less entry does not show aggregate frequency chip', () => {
     withoutReading.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 996, displayValue: '996' }] }];
     Popup.render(state({ results: [withoutReading] }));
     assert.equal(content.querySelector('.frequency-aggregate'), null);
+
+    const kanaOnly = result('みる', 'みる');
+    kanaOnly.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 10, displayValue: '10' }] }];
+    Popup.render(state({ results: [kanaOnly] }));
+    assert.notEqual(content.querySelector('.frequency-aggregate'), null);
+
+    const nonCjk = result('test', 'test');
+    nonCjk.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 5, displayValue: '5' }] }];
+    Popup.render(state({ results: [nonCjk] }));
+    assert.notEqual(content.querySelector('.frequency-aggregate'), null);
+});
+
+test('extractTapQuery extracts words for CJK and non-CJK text', () => {
+    assert.equal(Popup.extractTapQuery('', 0), '');
+    assert.equal(Popup.extractTapQuery('hello', -1), '');
+    assert.equal(Popup.extractTapQuery('hello', 10), '');
+
+    // Punctuation and whitespace return empty
+    assert.equal(Popup.extractTapQuery('こんにちは。世界！', 5), ''); // 。
+    assert.equal(Popup.extractTapQuery('hello world', 5), ''); // space
+
+    // English word extraction finds word boundaries
+    const eng = 'The quick brown fox';
+    assert.equal(Popup.extractTapQuery(eng, 4), 'quick');
+    assert.equal(Popup.extractTapQuery(eng, 6), 'quick');
+    assert.equal(Popup.extractTapQuery(eng, 8), 'quick');
+
+    // CJK scan starts at tap offset and stops at punctuation
+    const ja = '立派ですぐれた行いなどを見て、深く感じ';
+    // Tap on '立' (offset 0)
+    assert.equal(Popup.extractTapQuery(ja, 0), '立派ですぐれた行いなどを見て');
+    // Tap on '行' (offset 7)
+    assert.equal(Popup.extractTapQuery(ja, 7), '行いなどを見て');
+
+    // CJK scan length capped at 16 characters
+    const longJa = 'あいうえおかきくけこさしすせそたちつてとなにぬねの'; // 25 kana
+    assert.equal(Popup.extractTapQuery(longJa, 0), 'あいうえおかきくけこさしすせそた');
+    assert.equal(Popup.extractTapQuery(longJa, 0).length, 16);
 });

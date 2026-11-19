@@ -63,6 +63,12 @@ internal fun LookupResult.withoutChainsThrough(tags: Set<String>): LookupResult?
 internal fun LookupResult.shownBy(support: LanguageSupport): LookupResult? =
     takeIf { support.showsHeadword(term.expression) }?.withoutChainsThrough(support.ignoredFormTags)
 
+internal fun LookupResult.isReadingless(): Boolean {
+    val reading = term.reading
+    if (reading.isNotEmpty() && reading != term.expression) return false
+    return term.expression.codePoints().anyMatch(Character::isIdeographic)
+}
+
 /**
  * Results of the same word (expression and reading, see [LanguageSupport.normalizeReading]) as one entry in the place
  * of the first: a respelled word ([asShown]) meets the dictionaries that list its spelling itself, spellings of the
@@ -70,15 +76,9 @@ internal fun LookupResult.shownBy(support: LanguageSupport): LookupResult? =
  * pronunciations of the later ones join it unless it has them already.
  */
 internal fun List<LookupResult>.mergeSameWords(dictionaryOrder: List<String>, support: LanguageSupport): List<LookupResult> {
-    fun isReadingless(result: LookupResult): Boolean {
-        val reading = result.term.reading
-        if (reading.isNotEmpty() && reading != result.term.expression) return false
-        return result.term.expression.codePoints().anyMatch(Character::isIdeographic)
-    }
-
     val unambiguousReadings = groupBy { it.term.expression }
         .mapValues { (_, results) ->
-            results.filterNot(::isReadingless)
+            results.filterNot { it.isReadingless() }
                 .map { support.normalizeReading(it.term.reading) }
                 .distinct()
         }
@@ -87,7 +87,7 @@ internal fun List<LookupResult>.mergeSameWords(dictionaryOrder: List<String>, su
 
     val merged = LinkedHashMap<Pair<String, String>, LookupResult>()
     for (result in this) {
-        val reading = if (!isReadingless(result)) {
+        val reading = if (!result.isReadingless()) {
             support.normalizeReading(result.term.reading)
         } else {
             unambiguousReadings[result.term.expression] ?: support.normalizeReading(result.term.reading)
@@ -95,7 +95,7 @@ internal fun List<LookupResult>.mergeSameWords(dictionaryOrder: List<String>, su
         val key = result.term.expression to reading
         val existing = merged[key]
         merged[key] = if (existing == null) {
-            if (isReadingless(result)) {
+            if (result.isReadingless()) {
                 unambiguousReadings[result.term.expression]?.let { targetReading ->
                     result.copy(term = result.term.copy(reading = targetReading))
                 } ?: result
