@@ -183,6 +183,8 @@ class PopupAppearanceViewModel @Inject constructor(
 
     fun setExternalImmersionKit(enabled: Boolean) = launch { repository.setExternalImmersionKit(enabled) }
 
+    fun setTapLookup(enabled: Boolean) = launch { repository.setTapLookup(enabled) }
+
     fun setShowSourceText(enabled: Boolean) = launch { overlaySettings.setShowSourceText(enabled) }
 
     fun setHideAfterAdd(enabled: Boolean) = launch { overlaySettings.setHideAfterAdd(enabled) }

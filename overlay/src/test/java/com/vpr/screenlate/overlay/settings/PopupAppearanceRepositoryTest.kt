@@ -84,4 +84,16 @@ class PopupAppearanceRepositoryTest {
         assertThat(updated.externalNadeshiko).isTrue()
         assertThat(updated.externalImmersionKit).isTrue()
     }
+
+    @Test
+    fun `tap lookup is on by default and can be toggled`() = runTest {
+        val initial = repository.appearance(Language.JAPANESE).first()
+        assertThat(initial.tapLookup).isTrue()
+
+        repository.setTapLookup(false)
+
+        val updated = repository.appearance(Language.JAPANESE).first()
+        assertThat(updated.tapLookup).isFalse()
+        assertThat(store.state.value.asMap().keys.map { it.name }).contains("popup_tap_lookup")
+    }
 }

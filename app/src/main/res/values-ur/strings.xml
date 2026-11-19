@@ -627,6 +627,8 @@
     <string name="popup_hide_off_word_hint">گھسیٹتے ہوئے جب نقطۂ نشانہ لفظ سے ہٹ کر خالی جگہ پر جائے تو پاپ اپ بند کر دیتا ہے۔</string>
     <string name="popup_hide_outside_tap">باہر ٹیپ کرنے پر</string>
     <string name="popup_hide_outside_tap_hint">پاپ اپ کے باہر ٹیپ کرنے سے یہ بند ہو جاتا ہے اور ٹچ نیچے کی ایپ تک نہیں جاتا۔</string>
+    <string name="popup_tap_lookup">تعریفات میں ٹیپ کرکے تلاش کریں</string>
+    <string name="popup_tap_lookup_hint">لغت کی تعریفات میں الفاظ یا حروف پر ٹیپ کرکے ان کی تلاش کھولیں۔</string>
     <string name="popup_copy_switch">لغات کے ناموں کے ساتھ کاپی بٹن</string>
     <string name="popup_copy_switch_hint">پاپ اپ اور “تلاش” میں ہر لغت کے عنوان کے ساتھ کاپی بٹن شامل کرتا ہے۔</string>
     <string name="popup_copy_mode_all">سب</string>

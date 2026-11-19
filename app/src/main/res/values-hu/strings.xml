@@ -627,6 +627,8 @@
     <string name="popup_hide_off_word_hint">Húzás közben bezárja a felugró ablakot, amint a célpont a szón kívüli üres területre kerül.</string>
     <string name="popup_hide_outside_tap">Kívülre koppintáskor</string>
     <string name="popup_hide_outside_tap_hint">A felugró ablakon kívüli koppintás bezárja azt anélkül, hogy az érintés átadódna az alatta lévő alkalmazásnak.</string>
+    <string name="popup_tap_lookup">Keresés koppintással a definíciókban</string>
+    <string name="popup_tap_lookup_hint">Koppintson a szavakra vagy karakterekre a definíciókban a keresésük megnyitásához.</string>
     <string name="popup_copy_switch">Másolás gomb a szótárnevek mellett</string>
     <string name="popup_copy_switch_hint">Másolás gombot helyez minden szótárfejléc mellé a felugró ablakban és a Keresésben.</string>
     <string name="popup_copy_mode_all">Minden</string>

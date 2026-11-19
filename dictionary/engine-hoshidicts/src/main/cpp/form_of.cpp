@@ -36,7 +36,42 @@ struct Source {
   std::string matched;
   std::vector<TransformGroup> trace;
   int preprocessor_steps = 0;
+  std::string reading;
 };
+
+bool is_kana_codepoint(uint32_t cp) {
+  return (cp >= 0x3040 && cp <= 0x309F) ||  // Hiragana
+         (cp >= 0x30A0 && cp <= 0x30FF) ||  // Katakana
+         (cp >= 0x31F0 && cp <= 0x31FF) ||  // Katakana Phonetic Extensions
+         (cp >= 0xFF65 && cp <= 0xFF9F);    // Halfwidth Katakana
+}
+
+bool is_all_kana(const std::string& text) {
+  if (text.empty()) return false;
+  auto it = text.begin();
+  auto end = text.end();
+  while (it < end) {
+    uint32_t cp = utf8::unchecked::next(it);
+    if (!is_kana_codepoint(cp)) return false;
+  }
+  return true;
+}
+
+uint32_t to_hiragana(uint32_t cp) {
+  if (cp >= 0x30A1 && cp <= 0x30F6) return cp - 0x60;
+  return cp;
+}
+
+std::string normalize_kana(const std::string& text) {
+  std::string result;
+  auto it = text.begin();
+  auto end = text.end();
+  while (it < end) {
+    uint32_t cp = utf8::unchecked::next(it);
+    utf8::unchecked::append(to_hiragana(cp), std::back_inserter(result));
+  }
+  return result;
+}
 
 }  // namespace
 
@@ -73,7 +108,15 @@ std::vector<LookupResult> follow_form_of(const DictionaryQuery& query, std::vect
     strip_term(results[i].term, items[i]);
     if (items[i].empty()) continue;
     any = true;
-    sources[i] = {results[i].matched, results[i].trace, results[i].preprocessor_steps};
+    std::string source_reading;
+    if (!results[i].term.reading.empty() && results[i].term.reading != results[i].term.expression) {
+      source_reading = results[i].term.reading;
+    } else if (is_all_kana(results[i].term.expression)) {
+      source_reading = results[i].term.expression;
+    } else if (is_all_kana(results[i].deinflected)) {
+      source_reading = results[i].deinflected;
+    }
+    sources[i] = {results[i].matched, results[i].trace, results[i].preprocessor_steps, std::move(source_reading)};
   }
   if (!any) return results;
 
@@ -100,6 +143,15 @@ std::vector<LookupResult> follow_form_of(const DictionaryQuery& query, std::vect
         found = lemmas.emplace(item.lemma, std::move(terms)).first;
       }
       for (const auto& term : found->second) {
+        if (!sources[i].reading.empty()) {
+          std::string term_reading = term.reading;
+          if (term_reading.empty() && is_all_kana(term.expression)) {
+            term_reading = term.expression;
+          }
+          if (!term_reading.empty() && normalize_kana(term_reading) != normalize_kana(sources[i].reading)) {
+            continue;
+          }
+        }
         LookupResult lemma{.matched = sources[i].matched,
                            .deinflected = item.lemma,
                            .trace = sources[i].trace,

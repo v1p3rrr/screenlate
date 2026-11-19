@@ -635,6 +635,8 @@
     <string name="popup_hide_off_word_hint">Закриває спливне вікно під час перетягування, щойно точка прицілу переходить на порожнє місце поза словом.</string>
     <string name="popup_hide_outside_tap">Після натискання зовні</string>
     <string name="popup_hide_outside_tap_hint">Натискання поза спливним вікном закриває його, не передаючи дотик застосунку під ним.</string>
+    <string name="popup_tap_lookup">Пошук за дотиком у визначеннях</string>
+    <string name="popup_tap_lookup_hint">Натискання на слова та ієрогліфи у визначеннях відкриває їхню картку.</string>
     <string name="popup_copy_switch">Кнопка копіювання біля назв словників</string>
     <string name="popup_copy_switch_hint">Додає кнопку копіювання біля заголовка кожного словника у спливному вікні й Пошуку.</string>
     <string name="popup_copy_mode_all">Усе</string>

@@ -635,6 +635,8 @@
     <string name="popup_hide_off_word_hint">Zavře vyskakovací okno během tažení, jakmile se zaměřovací bod přesune na prázdné místo mimo slovo.</string>
     <string name="popup_hide_outside_tap">Při klepnutí mimo okno</string>
     <string name="popup_hide_outside_tap_hint">Klepnutí mimo vyskakovací okno jej zavře, aniž by se dotyk předal aplikaci pod ním.</string>
+    <string name="popup_tap_lookup">Hledání klepnutím v definicích</string>
+    <string name="popup_tap_lookup_hint">Klepnutím na slova nebo znaky v definicích otevřete jejich vyhledávání.</string>
     <string name="popup_copy_switch">Tlačítko kopírování vedle názvů slovníků</string>
     <string name="popup_copy_switch_hint">Přidá tlačítko kopírování vedle každého záhlaví slovníku ve vyskakovacím okně a v sekci Hledat.</string>
     <string name="popup_copy_mode_all">Vše</string>

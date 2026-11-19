@@ -635,6 +635,8 @@
     <string name="popup_hide_off_word_hint">Schließt das Popup beim Ziehen, sobald der Zielpunkt auf eine freie Fläche abseits des Wortes wandert.</string>
     <string name="popup_hide_outside_tap">Bei Tippen außerhalb</string>
     <string name="popup_hide_outside_tap_hint">Ein Tippen außerhalb des Popups schließt es, ohne die Berührung an die App darunter weiterzugeben.</string>
+    <string name="popup_tap_lookup">Suche per Fingertipp in Definitionen</string>
+    <string name="popup_tap_lookup_hint">Tippen Sie auf Wörter oder Zeichen in Definitionen, um deren Nachschlagen zu öffnen.</string>
     <string name="popup_copy_switch">Kopier-Schaltfläche neben Wörterbuchnamen</string>
     <string name="popup_copy_switch_hint">Zeigt eine Kopier-Schaltfläche neben jeder Wörterbuch-Überschrift in Popup und Suche.</string>
     <string name="popup_copy_mode_all">Alles</string>

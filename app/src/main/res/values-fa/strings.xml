@@ -624,6 +624,8 @@
     <string name="popup_hide_off_word_hint">هنگام کشیدن حباب، با رفتن نقطه هدف روی فضای خالی دور از واژه، پنجره بازشو بسته می‌شود.</string>
     <string name="popup_hide_outside_tap">با لمس بیرون از پنجره</string>
     <string name="popup_hide_outside_tap_hint">لمس بیرون از پنجره بازشو آن را می‌بندد و لمس به برنامه زیرین منتقل نمی‌شود.</string>
+    <string name="popup_tap_lookup">جستجو با ضربه در تعاریف</string>
+    <string name="popup_tap_lookup_hint">برای باز کردن کارت واژگان یا نویسه‌ها در تعاریف روی آن‌ها ضربه بزنید.</string>
     <string name="popup_copy_switch">دکمه کپی کنار نام واژه‌نامه‌ها</string>
     <string name="popup_copy_switch_hint">دکمه کپی را کنار سربرگ هر واژه‌نامه در پنجره بازشو و بخش «جستجو» اضافه می‌کند.</string>
     <string name="popup_copy_mode_all">همه‌چیز</string>

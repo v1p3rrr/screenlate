@@ -1962,3 +1962,19 @@ test('alternative expressions use language-appropriate separators', () => {
     Popup.render(state({ results: [ko] }));
     assert.equal(content.querySelector('.alt-expressions').textContent, 'A · B');
 });
+
+test('reading-less entry does not show aggregate frequency chip', () => {
+    Popup.setNoteConfig({
+        sortFrequencyMode: 'harmonic',
+        frequencyModes: { Freq: 'rank-based' },
+    });
+    const withReading = result('感心', 'かんしん');
+    withReading.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 996, displayValue: '996' }] }];
+    Popup.render(state({ results: [withReading] }));
+    assert.notEqual(content.querySelector('.frequency-aggregate'), null);
+
+    const withoutReading = result('感心', '感心');
+    withoutReading.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 996, displayValue: '996' }] }];
+    Popup.render(state({ results: [withoutReading] }));
+    assert.equal(content.querySelector('.frequency-aggregate'), null);
+});

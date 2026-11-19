@@ -627,6 +627,8 @@
     <string name="popup_hide_off_word_hint">Κλείνει το αναδυόμενο παράθυρο κατά το σύρσιμο μόλις το σημείο στόχευσης μετακινηθεί σε κενό χώρο μακριά από τη λέξη.</string>
     <string name="popup_hide_outside_tap">Με πάτημα εκτός</string>
     <string name="popup_hide_outside_tap_hint">Το πάτημα εκτός του αναδυόμενου παραθύρου το κλείνει χωρίς να μεταβιβάζει το άγγιγμα στην από κάτω εφαρμογή.</string>
+    <string name="popup_tap_lookup">Αναζήτηση με πάτημα σε ορισμούς</string>
+    <string name="popup_tap_lookup_hint">Πατήστε λέξεις ή χαρακτήρες στους ορισμούς για να ανοίξετε την αναζήτησή τους.</string>
     <string name="popup_copy_switch">Κουμπί αντιγραφής δίπλα στα ονόματα λεξικών</string>
     <string name="popup_copy_switch_hint">Προσθέτει κουμπί αντιγραφής δίπλα σε κάθε κεφαλίδα λεξικού στο αναδυόμενο παράθυρο και στην Αναζήτηση.</string>
     <string name="popup_copy_mode_all">Όλα</string>

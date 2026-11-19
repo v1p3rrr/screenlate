@@ -639,6 +639,8 @@
     <string name="popup_hide_off_word_hint">Chiude il popup durante il trascinamento quando il punto di mira si sposta su uno spazio vuoto lontano dalla parola.</string>
     <string name="popup_hide_outside_tap">Al tocco esterno</string>
     <string name="popup_hide_outside_tap_hint">Toccare fuori dal popup lo chiude senza passare il tocco all’app sottostante.</string>
+    <string name="popup_tap_lookup">Ricerca al tocco nelle definizioni</string>
+    <string name="popup_tap_lookup_hint">Tocca parole o caratteri nelle definizioni per aprire la loro ricerca.</string>
     <string name="popup_copy_switch">Pulsante di copia accanto ai nomi dei dizionari</string>
     <string name="popup_copy_switch_hint">Aggiunge un pulsante di copia accanto all’intestazione di ogni dizionario nel popup e in Ricerca.</string>
     <string name="popup_copy_mode_all">Tutto</string>

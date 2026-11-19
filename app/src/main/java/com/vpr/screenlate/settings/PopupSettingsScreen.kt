@@ -114,6 +114,12 @@ private fun PopupContentCard(
         }
         if (pronunciation != null) PronunciationColorsRow(pronunciation, appearance, viewModel)
         SwitchRow(
+            label = stringResource(R.string.popup_tap_lookup),
+            checked = appearance.tapLookup,
+            onChange = viewModel::setTapLookup,
+            hint = stringResource(R.string.popup_tap_lookup_hint),
+        )
+        SwitchRow(
             label = stringResource(R.string.popup_copy_switch),
             checked = appearance.copyDefinitions,
             onChange = viewModel::setCopyDefinitions,

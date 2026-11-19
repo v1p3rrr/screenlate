@@ -70,10 +70,41 @@ internal fun LookupResult.shownBy(support: LanguageSupport): LookupResult? =
  * pronunciations of the later ones join it unless it has them already.
  */
 internal fun List<LookupResult>.mergeSameWords(dictionaryOrder: List<String>, support: LanguageSupport): List<LookupResult> {
+    fun isReadingless(result: LookupResult): Boolean {
+        val reading = result.term.reading
+        if (reading.isNotEmpty() && reading != result.term.expression) return false
+        return result.term.expression.codePoints().anyMatch(Character::isIdeographic)
+    }
+
+    val unambiguousReadings = groupBy { it.term.expression }
+        .mapValues { (_, results) ->
+            results.filterNot(::isReadingless)
+                .map { support.normalizeReading(it.term.reading) }
+                .distinct()
+        }
+        .filterValues { it.size == 1 }
+        .mapValues { it.value.first() }
+
     val merged = LinkedHashMap<Pair<String, String>, LookupResult>()
     for (result in this) {
-        val key = result.term.expression to support.normalizeReading(result.term.reading)
-        merged[key] = merged[key]?.joined(result.term, dictionaryOrder) ?: result
+        val reading = if (!isReadingless(result)) {
+            support.normalizeReading(result.term.reading)
+        } else {
+            unambiguousReadings[result.term.expression] ?: support.normalizeReading(result.term.reading)
+        }
+        val key = result.term.expression to reading
+        val existing = merged[key]
+        merged[key] = if (existing == null) {
+            if (isReadingless(result)) {
+                unambiguousReadings[result.term.expression]?.let { targetReading ->
+                    result.copy(term = result.term.copy(reading = targetReading))
+                } ?: result
+            } else {
+                result
+            }
+        } else {
+            existing.joined(result.term, dictionaryOrder)
+        }
     }
     return merged.values.toList()
 }
@@ -193,8 +224,14 @@ private fun LookupResult.joined(
     val pitches = other.pitches.filter { new -> term.pitches.none { it.dictionary == new.dictionary } }
     if (glossaries.isEmpty() && frequencies.isEmpty() && pitches.isEmpty()) return this
     val rank = dictionaryOrder.withIndex().associate { it.value to it.index }
+    val targetReading = if (term.reading.isEmpty() || term.reading == term.expression) {
+        other.reading.ifEmpty { term.reading }
+    } else {
+        term.reading
+    }
     return copy(
         term = term.copy(
+            reading = targetReading,
             glossaries = (term.glossaries + glossaries).sortedBy { rank[it.dictionary] ?: Int.MAX_VALUE },
             frequencies = term.frequencies + frequencies,
             pitches = term.pitches + pitches,

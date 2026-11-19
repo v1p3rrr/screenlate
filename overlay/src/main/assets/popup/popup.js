@@ -138,6 +138,7 @@ const Popup = (() => {
         googleDomain: 'www.google.com',
     };
     let collapsedDictionaries = new Set();
+    let tapLookupEnabled = true;
 
     function applyColors() {
         const root = document.documentElement;
@@ -167,7 +168,7 @@ const Popup = (() => {
     translateButton.innerHTML = ICONS.translate;
     translateButton.addEventListener('click', toggleTranslation);
     backButton.addEventListener('click', back);
-    content.addEventListener('click', explainTag);
+    content.addEventListener('click', onContentClick);
 
     const renderOptions = {
         mediaUrl: (dictionary, path) =>
@@ -335,6 +336,79 @@ const Popup = (() => {
         const title = titled.title.trim();
         const text = titled.textContent.trim();
         if (title && title !== text) showInfo(text || title, title);
+    }
+
+    function extractTapQuery(text, offset) {
+        if (!text || offset < 0 || offset >= text.length) return '';
+        const char = text[offset];
+        if (/\s|[\n\r.,\/#!$%\^&\*;:{}=\-_`~()\[\]<>'"?？。、！!「」『』【】（）]/.test(char)) {
+            return '';
+        }
+        const isWordChar = /[\p{L}\p{N}]/u.test(char);
+        const isCjk = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/u.test(char);
+        if (!isWordChar && !isCjk) return '';
+
+        let start = offset;
+        if (!isCjk) {
+            while (start > 0 && /[\p{L}\p{N}]/u.test(text[start - 1])) {
+                start--;
+            }
+        }
+        let end = start;
+        const maxEnd = Math.min(text.length, start + 32);
+        while (end < maxEnd) {
+            const nextChar = text[end];
+            if (/\s|[\n\r.,\/#!$%\^&\*;:{}=\-_`~()\[\]<>'"?？。、！!「」『』【】（）]/.test(nextChar)) {
+                if (end === start) return '';
+                break;
+            }
+            end++;
+        }
+        return text.slice(start, end).trim();
+    }
+
+    function onContentClick(event) {
+        const target = event.target instanceof Element ? event.target : event.target.parentElement;
+        if (!target) return;
+        if (target.closest('.tag') || target.closest('.definition-body [title]')) {
+            explainTag(event);
+            return;
+        }
+        if (!tapLookupEnabled) return;
+        if (target.closest('button, a, summary, input, select, textarea, .audio-button, .audio-menu, .copy-definition, .dictionary-name, .dictionary-toggle, .frequency')) {
+            return;
+        }
+        const defBody = target.closest('.definition-body, .glossary, .example-sentence');
+        if (!defBody || !content.contains(defBody)) return;
+
+        const selection = window.getSelection();
+        if (selection && !selection.isCollapsed && selection.toString().trim().length > 0) {
+            return;
+        }
+
+        let range = null;
+        if (document.caretRangeFromPoint) {
+            range = document.caretRangeFromPoint(event.clientX, event.clientY);
+        } else if (document.caretPositionFromPoint) {
+            const pos = document.caretPositionFromPoint(event.clientX, event.clientY);
+            if (pos && pos.offsetNode) {
+                range = document.createRange();
+                range.setStart(pos.offsetNode, pos.offset);
+                range.collapse(true);
+            }
+        }
+        if (!range || !range.startContainer) return;
+
+        const textNode = range.startContainer;
+        if (textNode.nodeType !== Node.TEXT_NODE) return;
+        const text = textNode.textContent || '';
+        const offset = range.startOffset;
+        if (offset < 0 || offset >= text.length) return;
+
+        const query = extractTapQuery(text, offset);
+        if (!query) return;
+
+        ScreenlateBridge.onLookup(query, '');
     }
 
     function showOcrError() {
@@ -1123,6 +1197,8 @@ const Popup = (() => {
     /** Harmonic or arithmetic average rank across rank-based frequency dictionaries when that sort mode is active. */
     function aggregateFrequency(term, labels) {
         const mode = noteConfig.sortFrequencyMode;
+        if (!mode) return null;
+        if (!term.reading || term.reading === term.expression) return null;
         if (typeof NoteData === 'undefined' || typeof NoteData.aggregateFrequency !== 'function') return null;
         const value = NoteData.aggregateFrequency(term, noteConfig.frequencyModes || {}, mode);
         if (value === null) return null;
@@ -1720,6 +1796,7 @@ const Popup = (() => {
      * pronunciationColors turns on the pitch accent colors, or the tone colors of Chinese and Cantonese.
      */
     function setAppearance(appearance) {
+        tapLookupEnabled = appearance.tapLookup !== false;
         const root = document.documentElement;
         root.lang = appearance.lang || '';
         root.dataset.definitionCopy = appearance.definitionCopy || '';

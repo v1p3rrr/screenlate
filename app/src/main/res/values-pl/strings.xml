@@ -643,6 +643,8 @@
     <string name="popup_hide_off_word_hint">Zamyka okienko podczas przeciągania dymka, gdy celownik przesunie się na pusty obszar poza słowem.</string>
     <string name="popup_hide_outside_tap">Po dotknięciu poza okienkiem</string>
     <string name="popup_hide_outside_tap_hint">Dotknięcie poza okienkiem zamyka je bez przekazywania dotyku do aplikacji pod spodem.</string>
+    <string name="popup_tap_lookup">Wyszukiwanie przez dotknięcie w definicjach</string>
+    <string name="popup_tap_lookup_hint">Dotknięcie słów lub znaków w definicjach otwiera ich kartę.</string>
     <string name="popup_copy_switch">Przycisk kopiowania przy nazwach słowników</string>
     <string name="popup_copy_switch_hint">Dodaje przycisk kopiowania przy nagłówku każdego słownika w okienku i wyszukiwarce.</string>
     <string name="popup_copy_mode_all">Wszystko</string>

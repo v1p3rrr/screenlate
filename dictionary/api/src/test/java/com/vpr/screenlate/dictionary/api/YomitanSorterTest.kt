@@ -149,6 +149,53 @@ class YomitanSorterTest {
         assertThat(byAverage).containsExactly(b, a).inOrder()
     }
 
+    @Test
+    fun readinglessEntryDoesNotReceiveAggregateHarmonicRankAndRanksBelowEntryWithReading() {
+        val withReading = result("感心", reading = "かんしん").copy(
+            term = TermEntry(
+                expression = "感心",
+                reading = "かんしん",
+                glossaries = listOf(Glossary("Dict", "[]")),
+                frequencies = listOf(
+                    FrequencyGroup("JPDB", listOf(FrequencyValue(2000))),
+                    FrequencyGroup("BCCWJ", listOf(FrequencyValue(2200))),
+                ),
+            ),
+        )
+        val withoutReading = result("感心", reading = "感心").copy(
+            term = TermEntry(
+                expression = "感心",
+                reading = "感心",
+                glossaries = listOf(Glossary("Dict", "[]")),
+                frequencies = listOf(
+                    FrequencyGroup("JPDB", listOf(FrequencyValue(100))),
+                ),
+            ),
+        )
+        val modes = mapOf("JPDB" to "rank-based", "BCCWJ" to "rank-based")
+
+        val sorted = YomitanSorter.sort(
+            listOf(withoutReading, withReading),
+            LookupOptions(frequencyDictionary = FrequencySort.HARMONIC_TITLE, frequencyOrder = FrequencyOrder.ASCENDING),
+            listOf("Dict"),
+            modes,
+        )
+        assertThat(sorted).containsExactly(withReading, withoutReading).inOrder()
+    }
+
+    @Test
+    fun entryWithReadingRanksAboveReadinglessEntryAtEqualFrequency() {
+        val withReading = result("感心", reading = "かんしん", frequency = 1000)
+        val withoutReading = result("感心", reading = "感心", frequency = 1000)
+
+        val sorted = YomitanSorter.sort(
+            listOf(withoutReading, withReading),
+            options,
+            listOf("Dict"),
+        )
+        assertThat(sorted).containsExactly(withReading, withoutReading).inOrder()
+    }
+
     private fun sort(vararg results: LookupResult) = YomitanSorter.sort(results.toList(), options, listOf("Dict"))
 
     private fun result(

@@ -639,6 +639,8 @@
     <string name="popup_hide_off_word_hint">Closes the popup while dragging once the aim point moves onto empty space away from the word.</string>
     <string name="popup_hide_outside_tap">On tap outside</string>
     <string name="popup_hide_outside_tap_hint">Tapping outside the popup closes it without passing the touch to the app below.</string>
+    <string name="popup_tap_lookup">Lookup on tap in definitions</string>
+    <string name="popup_tap_lookup_hint">Tap words or characters in dictionary definitions to open their lookup.</string>
     <string name="popup_copy_switch">Copy button beside dictionary names</string>
     <string name="popup_copy_switch_hint">Adds a copy button beside each dictionary header in the popup and Search.</string>
     <string name="popup_copy_mode_all">Everything</string>

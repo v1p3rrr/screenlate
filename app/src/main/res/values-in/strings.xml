@@ -623,6 +623,8 @@
     <string name="popup_hide_off_word_hint">Menutup pop-up saat gelembung diseret dan titik bidik berpindah ke ruang kosong di luar kata.</string>
     <string name="popup_hide_outside_tap">Saat mengetuk di luar</string>
     <string name="popup_hide_outside_tap_hint">Mengetuk di luar pop-up akan menutupnya tanpa meneruskan sentuhan ke aplikasi di bawahnya.</string>
+    <string name="popup_tap_lookup">Cari dengan ketukan di definisi</string>
+    <string name="popup_tap_lookup_hint">Ketuk kata atau karakter dalam definisi kamus untuk membuka pencarian.</string>
     <string name="popup_copy_switch">Tombol salin di samping nama kamus</string>
     <string name="popup_copy_switch_hint">Menambahkan tombol salin di samping tiap tajuk kamus pada pop-up dan Cari.</string>
     <string name="popup_copy_mode_all">Semua</string>

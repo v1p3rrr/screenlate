@@ -631,6 +631,8 @@
     <string name="popup_hide_off_word_hint">ドラッグ中に照準が語から離れた空白領域へ移動するとポップアップを閉じます。</string>
     <string name="popup_hide_outside_tap">ポップアップ外をタップしたとき</string>
     <string name="popup_hide_outside_tap_hint">ポップアップの外をタップすると閉じ、下のアプリにはタップが伝わりません。</string>
+    <string name="popup_tap_lookup">定義のタップ検索</string>
+    <string name="popup_tap_lookup_hint">辞書の定義内の単語や漢字をタップして検索を開きます。</string>
     <string name="popup_copy_switch">辞書名の横にコピーボタンを表示</string>
     <string name="popup_copy_switch_hint">ポップアップと「検索」の各辞書ヘッダー横にコピーボタンを表示します。</string>
     <string name="popup_copy_mode_all">すべて</string>

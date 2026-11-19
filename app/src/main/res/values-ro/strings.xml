@@ -631,6 +631,8 @@
     <string name="popup_hide_off_word_hint">Închide fereastra pop-up la tragere, când punctul de vizare ajunge într-un spațiu gol departe de cuvânt.</string>
     <string name="popup_hide_outside_tap">La atingere în exterior</string>
     <string name="popup_hide_outside_tap_hint">Atingerea în afara ferestrei pop-up o închide fără a transmite gestul aplicației de dedesubt.</string>
+    <string name="popup_tap_lookup">Căutare prin atingere în definiții</string>
+    <string name="popup_tap_lookup_hint">Atingeți cuvinte sau caractere din definiții pentru a le deschide căutarea.</string>
     <string name="popup_copy_switch">Buton de copiere lângă numele dicționarelor</string>
     <string name="popup_copy_switch_hint">Adaugă un buton de copiere lângă antetul fiecărui dicționar în fereastra pop-up și în Căutare.</string>
     <string name="popup_copy_mode_all">Tot</string>

@@ -50,6 +50,7 @@ data class PopupAppearance(
     val externalNadeshiko: Boolean = false,
     val externalImmersionKit: Boolean = false,
     val collapsedDictionaries: Set<String> = emptySet(),
+    val tapLookup: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_FONT_SIZE = 15
@@ -110,6 +111,7 @@ class PopupAppearanceRepository @Inject constructor(
             externalNadeshiko = prefs[EXTERNAL_NADESHIKO] ?: false,
             externalImmersionKit = prefs[EXTERNAL_IMMERSION_KIT] ?: false,
             collapsedDictionaries = prefs[COLLAPSED_DICTIONARIES].orEmpty(),
+            tapLookup = prefs[TAP_LOOKUP] ?: true,
         )
 
     /** The page's appearance for text in [language]. */
@@ -171,6 +173,10 @@ class PopupAppearanceRepository @Inject constructor(
         dataStore.edit { it[EXTERNAL_IMMERSION_KIT] = enabled }
     }
 
+    suspend fun setTapLookup(enabled: Boolean) {
+        dataStore.edit { it[TAP_LOOKUP] = enabled }
+    }
+
     suspend fun setCustomCss(language: Language, css: String) {
         // Empty is the default: a reset's pending save then leaves no key behind.
         val key = customCssKey(language)
@@ -205,5 +211,6 @@ class PopupAppearanceRepository @Inject constructor(
         val EXTERNAL_NADESHIKO = booleanPreferencesKey("popup_external_nadeshiko")
         val EXTERNAL_IMMERSION_KIT = booleanPreferencesKey("popup_external_immersion_kit")
         val COLLAPSED_DICTIONARIES = stringSetPreferencesKey("popup_collapsed_dictionaries")
+        val TAP_LOOKUP = booleanPreferencesKey("popup_tap_lookup")
     }
 }

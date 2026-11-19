@@ -651,6 +651,8 @@
     <string name="popup_hide_off_word_hint">إغلاق النافذة المنبثقة أثناء السحب بمجرد انتقال نقطة التصويب إلى مساحة فارغة بعيدًا عن الكلمة.</string>
     <string name="popup_hide_outside_tap">عند النقر خارج النافذة</string>
     <string name="popup_hide_outside_tap_hint">النقر خارج النافذة المنبثقة يغلقها دون تمرير اللمس إلى التطبيق أسفلها.</string>
+    <string name="popup_tap_lookup">البحث بالنقر في التعريفات</string>
+    <string name="popup_tap_lookup_hint">انقر على الكلمات أو الأحرف في التعريفات لفتح بطاقتها.</string>
     <string name="popup_copy_switch">زر نسخ بجانب أسماء القواميس</string>
     <string name="popup_copy_switch_hint">إضافة زر نسخ بجانب عنوان كل قاموس في النافذة المنبثقة والبحث.</string>
     <string name="popup_copy_mode_all">كل شيء</string>

@@ -644,6 +644,8 @@
     <string name="popup_hide_off_word_hint">Закрывает попап при перетаскивании, когда прицел смещается на пустую область вдали от слова.</string>
     <string name="popup_hide_outside_tap">По нажатию вне попапа</string>
     <string name="popup_hide_outside_tap_hint">Нажатие вне окна попапа закрывает его и не передаётся приложению под ним.</string>
+    <string name="popup_tap_lookup">Поиск по тапу в определениях</string>
+    <string name="popup_tap_lookup_hint">Нажатие на слова и иероглифы в определениях открывает их карточку.</string>
     <string name="popup_copy_switch">Кнопка копирования у названий словарей</string>
     <string name="popup_copy_switch_hint">Добавляет кнопку копирования рядом с заголовком каждого словаря в попапе и разделе «Поиск».</string>
     <string name="popup_copy_mode_all">Всё</string>

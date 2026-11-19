@@ -252,4 +252,30 @@ class ShownResultsTest {
         assertThat(merged[0].term.glossaries).hasSize(1)
         assertThat(merged[1].term.alternativeExpressions).isEmpty()
     }
+
+    @Test
+    fun `reading-less entry merges with entry having reading when reading is unambiguous`() {
+        val wty = result("感心", "感心", "wty-ja-ja")
+        val kolobok = result("感心", "かんしん", "Колобок 400k", frequency = 2105)
+
+        val merged = listOf(wty, kolobok).mergeSameWords(listOf("wty-ja-ja", "Колобок 400k"), Language.JAPANESE.support)
+
+        assertThat(merged).hasSize(1)
+        assertThat(merged[0].term.expression).isEqualTo("感心")
+        assertThat(merged[0].term.reading).isEqualTo("かんしん")
+        assertThat(merged[0].term.glossaries.map { it.dictionary }).containsExactly("wty-ja-ja", "Колобок 400k").inOrder()
+        assertThat(merged[0].term.frequencies).hasSize(1)
+    }
+
+    @Test
+    fun `reading-less entry does not merge when there are multiple distinct readings`() {
+        val readingless = result("角", "角", "wty-ja-ja")
+        val tsuno = result("角", "つの", "Колобок 400k")
+        val kado = result("角", "かど", "Колобок 400k")
+
+        val merged = listOf(readingless, tsuno, kado).mergeSameWords(listOf("wty-ja-ja", "Колобок 400k"), Language.JAPANESE.support)
+
+        assertThat(merged).hasSize(3)
+        assertThat(merged.map { it.term.reading }).containsExactly("角", "つの", "かど").inOrder()
+    }
 }

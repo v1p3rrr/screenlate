@@ -1616,9 +1616,9 @@ class OverlayController(
         scope.launch {
             val results = lookupResults(query, link = true, primaryReading = primaryReading)
             val kanji = if (results.isEmpty()) characterEntry(query) else null
+            if (results.isEmpty() && kanji == null) return@launch
             val matched = PageState.matchedLength(results, kanji)
-            val message = if (results.isEmpty() && kanji == null) noResultsMessage() else null
-            val state = popupStateOffMain(LookupView(query, matched, results, message, kanji = kanji))
+            val state = popupStateOffMain(LookupView(query, matched, results, null, kanji = kanji))
             // A lookup of another word replaced the popup meanwhile; the link belonged to the old one.
             if (shownLookup !== shown) return@launch
             popup.push(state)

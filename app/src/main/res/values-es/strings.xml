@@ -639,6 +639,8 @@
     <string name="popup_hide_off_word_hint">Cierra la ventana emergente al arrastrar cuando el punto de mira se mueve a un espacio vacío fuera de la palabra.</string>
     <string name="popup_hide_outside_tap">Al tocar fuera</string>
     <string name="popup_hide_outside_tap_hint">Tocar fuera de la ventana emergente la cierra sin pasar el toque a la aplicación de abajo.</string>
+    <string name="popup_tap_lookup">Búsqueda al tocar en definiciones</string>
+    <string name="popup_tap_lookup_hint">Toque palabras o caracteres en las definiciones para abrir su búsqueda.</string>
     <string name="popup_copy_switch">Botón de copiar junto al nombre del diccionario</string>
     <string name="popup_copy_switch_hint">Añade un botón de copiar junto a cada cabecera de diccionario en la ventana emergente y en «Buscar».</string>
     <string name="popup_copy_mode_all">Todo</string>

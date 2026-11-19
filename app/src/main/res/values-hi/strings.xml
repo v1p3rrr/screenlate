@@ -627,6 +627,8 @@
     <string name="popup_hide_off_word_hint">खींचते समय लक्ष्य बिंदु शब्द से हटकर खाली स्थान पर जाने पर पॉप-अप बंद करता है।</string>
     <string name="popup_hide_outside_tap">बाहर टैप करने पर</string>
     <string name="popup_hide_outside_tap_hint">पॉप-अप के बाहर टैप करने पर स्पर्श को नीचे के ऐप तक भेजे बिना पॉप-अप बंद करता है।</string>
+    <string name="popup_tap_lookup">परिभाषाओं में टैप करके खोजें</string>
+    <string name="popup_tap_lookup_hint">परिभाषाओं में शब्दों या वर्णों पर टैप करके उनकी खोज खोलें।</string>
     <string name="popup_copy_switch">शब्दकोश नामों के पास कॉपी बटन</string>
     <string name="popup_copy_switch_hint">पॉप-अप और खोज में प्रत्येक शब्दकोश शीर्षक के पास कॉपी बटन जोड़ता है।</string>
     <string name="popup_copy_mode_all">सब कुछ</string>

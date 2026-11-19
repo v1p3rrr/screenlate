@@ -89,6 +89,7 @@ class PageAppearance @Inject constructor(
                 put("customCss", customCss)
                 put("definitionCopy", if (appearance.copyDefinitions) appearance.copyMode.id else "")
                 put("pronunciationColors", appearance.pronunciationColors)
+                put("tapLookup", appearance.tapLookup)
                 put(
                     "collapsedDictionaries",
                     JsonArray(appearance.collapsedDictionaries.sorted().map(::JsonPrimitive)),

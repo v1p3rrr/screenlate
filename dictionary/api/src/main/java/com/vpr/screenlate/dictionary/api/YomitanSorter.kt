@@ -34,8 +34,15 @@ object YomitanSorter {
         val aggregate = FrequencySort.isAggregateTitle(frequencyDictionary)
         val descending = !aggregate && options.frequencyOrder == FrequencyOrder.DESCENDING
 
+        fun isReadingless(result: LookupResult): Boolean {
+            val reading = result.term.reading
+            if (reading.isNotEmpty() && reading != result.term.expression) return false
+            return result.term.expression.codePoints().anyMatch(Character::isIdeographic)
+        }
+
         fun frequency(result: LookupResult): Int? {
             if (frequencyDictionary == null) return null
+            if (aggregate && isReadingless(result)) return null
             if (frequencyDictionary == FrequencySort.HARMONIC_TITLE) {
                 return harmonicRank(result.term.frequencies, frequencyModes)
             }
@@ -60,6 +67,7 @@ object YomitanSorter {
             .thenByDescending { options.language.support.preferDictionaryForms && it.trace.any { step -> step.form } }
             .thenByDescending { it.term.expression == it.deinflected }
             .thenComparator { a, b -> compareFrequency(frequency(a), frequency(b), descending) }
+            .thenBy { isReadingless(it) }
             .thenBy { dictionaryIndex(it) }
             .thenByDescending { it.term.score }
             .thenByDescending { it.term.expression.length }

@@ -623,6 +623,8 @@
     <string name="popup_hide_off_word_hint">ปิดป๊อปอัประหว่างลากเมื่อจุดเล็งเลื่อนไปยังพื้นที่ว่างนอกคำ</string>
     <string name="popup_hide_outside_tap">เมื่อแตะนอกป๊อปอัป</string>
     <string name="popup_hide_outside_tap_hint">การแตะนอกป๊อปอัปจะปิดป๊อปอัปโดยไม่ส่งต่อการแตะไปยังแอปด้านล่าง</string>
+    <string name="popup_tap_lookup">ค้นหาด้วยการแตะในคำจำกัดความ</string>
+    <string name="popup_tap_lookup_hint">แตะคำหรือตัวอักษรในคำจำกัดความของพจนานุกรมเพื่อเปิดการค้นหา</string>
     <string name="popup_copy_switch">ปุ่มคัดลอกข้างชื่อพจนานุกรม</string>
     <string name="popup_copy_switch_hint">เพิ่มปุ่มคัดลอกข้างหัวข้อพจนานุกรมแต่ละเล่มในป๊อปอัปและหน้าค้นหา</string>
     <string name="popup_copy_mode_all">ทั้งหมด</string>

@@ -628,6 +628,8 @@
     <string name="popup_hide_off_word_hint">סוגר את החלון הקופץ בעת גרירה כשנקודת הכיוון עוברת לשטח ריק הרחק מהמילה.</string>
     <string name="popup_hide_outside_tap">בלחיצה מחוץ לחלון</string>
     <string name="popup_hide_outside_tap_hint">לחיצה מחוץ לחלון הקופץ סוגרת אותו מבלי להעביר את הנגיעה לאפליקציה שמתחתיו.</string>
+    <string name="popup_tap_lookup">חיפוש בהקשה בהגדרות</string>
+    <string name="popup_tap_lookup_hint">הקש על מילים או תווים בהגדרות המילון כדי לפתוח את החיפוש שלהם.</string>
     <string name="popup_copy_switch">לחצן העתקה לצד שמות המילונים</string>
     <string name="popup_copy_switch_hint">מוסיף לחצן העתקה לצד כותרת כל מילון בחלון הקופץ ובמסך \"חיפוש\".</string>
     <string name="popup_copy_mode_all">הכול</string>

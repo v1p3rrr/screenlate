@@ -635,6 +635,8 @@
     <string name="popup_hide_off_word_hint">Sürüklerken nişan noktası kelimeden uzaklaşıp boş alana geçtiğinde açılır pencereyi kapatır.</string>
     <string name="popup_hide_outside_tap">Dışarıya dokunulduğunda</string>
     <string name="popup_hide_outside_tap_hint">Açılır pencerenin dışına dokunmak pencereyi kapatır ve dokunuşu alttaki uygulamaya iletmez.</string>
+    <string name="popup_tap_lookup">Tanımlarda dokunarak arama</string>
+    <string name="popup_tap_lookup_hint">Tanımlardaki sözcüklere veya karakterlere dokunarak aramalarını açın.</string>
     <string name="popup_copy_switch">Sözlük adlarının yanında kopyalama düğmesi</string>
     <string name="popup_copy_switch_hint">Açılır pencerede ve Ara bölümünde her sözlük başlığının yanına kopyalama düğmesi ekler.</string>
     <string name="popup_copy_mode_all">Tümü</string>

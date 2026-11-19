@@ -631,6 +631,8 @@
     <string name="popup_hide_off_word_hint">拖动过程中瞄准点移至无文字空白处时关闭弹窗。</string>
     <string name="popup_hide_outside_tap">点击弹窗外部时</string>
     <string name="popup_hide_outside_tap_hint">点击弹窗外区域将关闭弹窗，且不会将点击传递到下方的应用。</string>
+    <string name="popup_tap_lookup">轻点释义查词</string>
+    <string name="popup_tap_lookup_hint">轻点词典释义中的词语或汉字以打开其词条。</string>
     <string name="popup_copy_switch">在词典名称旁显示复制按钮</string>
     <string name="popup_copy_switch_hint">在弹窗和搜索的每个词典标题旁添加复制按钮。</string>
     <string name="popup_copy_mode_all">全部</string>

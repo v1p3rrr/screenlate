@@ -631,6 +631,8 @@
     <string name="popup_hide_off_word_hint">Đóng cửa sổ bật lên khi kéo điểm ngắm sang vùng trống rời khỏi từ.</string>
     <string name="popup_hide_outside_tap">Khi chạm ra ngoài</string>
     <string name="popup_hide_outside_tap_hint">Chạm bên ngoài cửa sổ bật lên sẽ đóng nó lại mà không truyền thao tác chạm xuống ứng dụng bên dưới.</string>
+    <string name="popup_tap_lookup">Tra cứu khi chạm trong định nghĩa</string>
+    <string name="popup_tap_lookup_hint">Chạm vào từ hoặc ký tự trong định nghĩa từ điển để mở tra cứu.</string>
     <string name="popup_copy_switch">Nút sao chép cạnh tên từ điển</string>
     <string name="popup_copy_switch_hint">Thêm nút sao chép cạnh tiêu đề mỗi từ điển trong cửa sổ bật lên và Tìm kiếm.</string>
     <string name="popup_copy_mode_all">Tất cả</string>
