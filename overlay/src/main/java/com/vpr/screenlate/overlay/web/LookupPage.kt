@@ -51,7 +51,10 @@ class LookupPage(
         fun onClose()
 
         /** A link inside a glossary asks to look up [query], preferring terms read as [primaryReading]. */
-        fun onLookup(query: String, primaryReading: String?)
+        fun onLookup(query: String, primaryReading: String?): Unit = onLookup(query, primaryReading, fromTap = false)
+
+        /** A link or tap inside a glossary asks to look up [query], preferring terms read as [primaryReading]. */
+        fun onLookup(query: String, primaryReading: String?, fromTap: Boolean): Unit = onLookup(query, primaryReading)
 
         fun onOpenUrl(url: String)
 
@@ -376,8 +379,12 @@ class LookupPage(
         fun onClose() = post { callbacks.onClose() }
 
         @JavascriptInterface
-        fun onLookup(query: String, primaryReading: String) =
-            post { callbacks.onLookup(query, primaryReading.ifEmpty { null }) }
+        fun onLookup(query: String, primaryReading: String): Unit =
+            post { callbacks.onLookup(query, primaryReading.ifEmpty { null }, fromTap = false) }
+
+        @JavascriptInterface
+        fun onLookupTap(query: String): Unit =
+            post { callbacks.onLookup(query, null, fromTap = true) }
 
         @JavascriptInterface
         fun onOpenUrl(url: String) = post { callbacks.onOpenUrl(url) }

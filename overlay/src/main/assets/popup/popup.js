@@ -83,8 +83,11 @@ const Popup = (() => {
     const HAN_CHARACTER = /[\p{Script=Han}〇]/u;
     const HAN_PIECES = /([\p{Script=Han}〇])/u;
     const CJK_CHAR = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/u;
-    const IDEOGRAPH_CHAR = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u;
     const PUNCTUATION_OR_SPACE = /\s|[\n\r.,\/#!$%\^&\*;:{}=\-_`~()\[\]<>'"?？。、！!「」『』【】（）]/;
+    /** Maximum characters scanned forward from tap position for CJK scripts. */
+    const MAX_SCAN_CHARS_CJK = 16;
+    /** Maximum characters scanned forward from tap position for non-CJK scripts. */
+    const MAX_SCAN_CHARS_DEFAULT = 32;
     /** Elements of a glossary that take the direction of their own first letter in a right-to-left language. */
     const TEXT_BLOCKS = 'div, p, li, dt, dd, td, th, summary';
     /** Pitch accents shown before "+N"; a word with more shows only its first. */
@@ -358,7 +361,8 @@ const Popup = (() => {
             }
         }
         let end = start;
-        const maxEnd = Math.min(text.length, start + (isCjk ? 16 : 32));
+        const maxScan = isCjk ? MAX_SCAN_CHARS_CJK : MAX_SCAN_CHARS_DEFAULT;
+        const maxEnd = Math.min(text.length, start + maxScan);
         while (end < maxEnd) {
             const nextChar = text[end];
             if (PUNCTUATION_OR_SPACE.test(nextChar)) {
@@ -411,7 +415,11 @@ const Popup = (() => {
         const query = extractTapQuery(text, offset);
         if (!query) return;
 
-        ScreenlateBridge.onLookup(query, '');
+        if (typeof ScreenlateBridge.onLookupTap === 'function') {
+            ScreenlateBridge.onLookupTap(query);
+        } else {
+            ScreenlateBridge.onLookup(query, '');
+        }
     }
 
     function showOcrError() {
@@ -1201,7 +1209,7 @@ const Popup = (() => {
     function aggregateFrequency(term, labels) {
         const mode = noteConfig.sortFrequencyMode;
         if (!mode) return null;
-        const hasIdeograph = IDEOGRAPH_CHAR.test(term.expression || '');
+        const hasIdeograph = HAN_CHARACTER.test(term.expression || '');
         if ((!term.reading || term.reading === term.expression) && hasIdeograph) return null;
         if (typeof NoteData === 'undefined' || typeof NoteData.aggregateFrequency !== 'function') return null;
         const value = NoteData.aggregateFrequency(term, noteConfig.frequencyModes || {}, mode);

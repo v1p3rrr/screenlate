@@ -631,8 +631,8 @@
     <string name="popup_hide_off_word_hint">拖曳懸浮球時，瞄準點離開單字並移至空白處即關閉彈出視窗。</string>
     <string name="popup_hide_outside_tap">輕觸彈出視窗外部時</string>
     <string name="popup_hide_outside_tap_hint">輕觸彈出視窗外區域會關閉視窗，且不會將輕觸傳遞給下方的應用程式。</string>
-    <string name="popup_tap_lookup">輕點釋義查詞</string>
-    <string name="popup_tap_lookup_hint">輕點辭典釋義中的詞語或漢字以開啟其詞條。</string>
+    <string name="popup_tap_lookup">輕觸釋義查詞</string>
+    <string name="popup_tap_lookup_hint">輕觸詞典釋義中的詞語或漢字以開啟其詞條。</string>
     <string name="popup_copy_switch">詞典名稱旁的複製按鈕</string>
     <string name="popup_copy_switch_hint">在彈出視窗與搜尋的各詞典標題旁顯示複製按鈕。</string>
     <string name="popup_copy_mode_all">全部</string>

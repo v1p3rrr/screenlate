@@ -1610,15 +1610,16 @@ class OverlayController(
 
     private suspend fun noResultsMessage(): String = service.getString(noResultsText(lookup.noTermDictionary(language)))
 
-    /** Looks up a link target from inside the popup and shows it on top of the current view. */
-    private fun lookupLink(query: String, primaryReading: String?) {
+    /** Looks up a link target or tap query from inside the popup and shows it on top of the current view. */
+    private fun lookupLink(query: String, primaryReading: String?, fromTap: Boolean = false) {
         val shown = shownLookup
         scope.launch {
             val results = lookupResults(query, link = true, primaryReading = primaryReading)
             val kanji = if (results.isEmpty()) characterEntry(query) else null
-            if (results.isEmpty() && kanji == null) return@launch
+            if (fromTap && results.isEmpty() && kanji == null) return@launch
             val matched = PageState.matchedLength(results, kanji)
-            val state = popupStateOffMain(LookupView(query, matched, results, null, kanji = kanji))
+            val message = if (results.isEmpty() && kanji == null) noResultsMessage() else null
+            val state = popupStateOffMain(LookupView(query, matched, results, message, kanji = kanji))
             // A lookup of another word replaced the popup meanwhile; the link belonged to the old one.
             if (shownLookup !== shown) return@launch
             popup.push(state)
@@ -1918,7 +1919,8 @@ class OverlayController(
     private inner class PopupCallbacks : LookupPage.Callbacks {
         override fun onClose() = dismissPopup()
 
-        override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)
+        override fun onLookup(query: String, primaryReading: String?, fromTap: Boolean) =
+            lookupLink(query, primaryReading, fromTap = fromTap)
 
         override fun onOpenUrl(url: String) {
             if (url == OverlayIntents.INSTALLATION_URL) {

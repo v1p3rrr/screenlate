@@ -278,4 +278,17 @@ class ShownResultsTest {
         assertThat(merged).hasSize(3)
         assertThat(merged.map { it.term.reading }).containsExactly("角", "つの", "かど").inOrder()
     }
+
+    @Test
+    fun `reading-less entry with empty reading merges with entry having reading when reading is unambiguous`() {
+        val emptyReading = result("word", "", "English-Dict")
+        val withReading = result("word", "wɜːd", "IPA-Dict")
+
+        val merged = listOf(emptyReading, withReading).mergeSameWords(listOf("English-Dict", "IPA-Dict"), Language.ENGLISH.support)
+
+        assertThat(merged).hasSize(1)
+        assertThat(merged[0].term.expression).isEqualTo("word")
+        assertThat(merged[0].term.reading).isEqualTo("wɜːd")
+        assertThat(merged[0].term.glossaries.map { it.dictionary }).containsExactly("English-Dict", "IPA-Dict").inOrder()
+    }
 }

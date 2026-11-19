@@ -63,11 +63,15 @@ internal fun LookupResult.withoutChainsThrough(tags: Set<String>): LookupResult?
 internal fun LookupResult.shownBy(support: LanguageSupport): LookupResult? =
     takeIf { support.showsHeadword(term.expression) }?.withoutChainsThrough(support.ignoredFormTags)
 
-internal fun LookupResult.isReadingless(): Boolean {
-    val reading = term.reading
-    if (reading.isNotEmpty() && reading != term.expression) return false
-    return term.expression.codePoints().anyMatch(Character::isIdeographic)
+internal fun TermEntry.isReadingless(): Boolean {
+    if (reading.isEmpty()) return true
+    if (reading == expression) {
+        return expression.codePoints().anyMatch(Character::isIdeographic)
+    }
+    return false
 }
+
+internal fun LookupResult.isReadingless(): Boolean = term.isReadingless()
 
 /**
  * Results of the same word (expression and reading, see [LanguageSupport.normalizeReading]) as one entry in the place

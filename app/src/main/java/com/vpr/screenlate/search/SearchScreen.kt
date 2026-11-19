@@ -117,11 +117,11 @@ fun SearchScreen(
             object : LookupPage.Callbacks {
                 override fun onClose() = Unit
 
-                override fun onLookup(query: String, primaryReading: String?) {
+                override fun onLookup(query: String, primaryReading: String?, fromTap: Boolean) {
                     val shown = viewModel.results.value
                     scope.launch {
                         val found = viewModel.search(query, primaryReading = primaryReading)
-                        if (found.results.isEmpty() && found.kanji == null) return@launch
+                        if (fromTap && found.results.isEmpty() && found.kanji == null) return@launch
                         val state = state(context, currentTheme, found)
                         // A new search text replaced the page meanwhile; this lookup belonged to the old one.
                         if (viewModel.results.value !== shown) return@launch
