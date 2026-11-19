@@ -419,15 +419,16 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 ### REC: sentence audio recording
 
-Planned feature: [implementation plan](plans/2026-11-19-sentence-audio-recording.md). All cases below are **N**:
-neither implementation nor execution is claimed. Coverage entries describe the required future test layers;
-add concrete test-class names as they are implemented. A blank Checked cell means not run. D cases require
+Feature in progress: [implementation plan](plans/2026-11-19-sentence-audio-recording.md). Cases remain **N** until
+their whole stated behavior is verified; foundational test/probe results do not imply completed app integration.
+Coverage entries describe required test layers; add concrete class names as implemented. A blank Checked cell
+means the whole case has not run. Partial evidence is recorded in the run log/engineering note. D cases require
 a physical device and do not count as completed by an emulator run. After the first successful run, assign
 E/F/O and record the result in the run log. Existing AUD pronunciation and ANK cases remain independent.
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| REC1 | API24–28: recording is unavailable with explanation; lookup, word pronunciation and legacy screenshot consent/capture still work; no unsupported API class is initialized | N | U, M | |
+| REC1 | API24–28: recording section shows only Android 10+ availability text; no recording/default-editor/retention/silence controls, bubble start command or audio attachment choices. Every activation path is gated; lookup, pronunciation and legacy screenshot consent/capture still work; no unsupported API class initializes | N | U, M | |
 | REC2 | API29 and current target: request runtime audio permission and fresh projection consent, start the correctly typed foreground service in platform order, then capture eligible playback; audio-only recording produces no unnecessary video file | N | I, M | |
 | REC3 | Denied/permanently denied permission, cancelled/expired consent, background-start rejection and grant arriving after Stop leave honest stopped/error state; retry requires valid authorization and never resurrects an old generation | N | U, I, M | |
 | REC4 | Bubble hold menu and Audio mode switch reflect one actual state; static dot/notification match Starting/Running/Stopped/Failed; Stop works; rapid start/stop/retry cannot run two recorders | N | U, I, M | |
@@ -443,8 +444,8 @@ E/F/O and record the result in the run log. Existing AUD pronunciation and ANK c
 | REC14 | Enable/restart capture on an existing popup: no sentence-audio action/default step even after changing words; only a manual rescan or dock/pull creates a newly eligible context | N | U, P, M | |
 | REC15 | Ring rollover before/after a scan retains latest H independently; scan, Refresh, save/cancel and context release do not reset the ring or erase the history needed by a subsequent scan | N | U | |
 | REC16 | Wait almost R reading definitions/cropping screenshot: original H remains intact and first editor receives its separate E; held screenshot/chooser/preparation does not start E | N | U, M | |
-| REC17 | Open editor just before, exactly at and just after R cutoff, including request before but readiness after cutoff and a late cap timer; only strictly in-time opening can transition to E | N | U | |
-| REC18 | Early editor opening replaces deadline with first-open + E rather than max(old R, new E) or unused-R addition; stale R timer cannot seal the new stage | N | U | |
+| REC17 | Open editor just before, exactly at and just after R cutoff, including request before but readiness after cutoff and a late cap timer; only strictly in-time opening can transition to E | E | U ContextRetentionTest | 2026-11-19 |
+| REC18 | Early editor opening replaces deadline with first-open + E rather than max(old R, new E) or unused-R addition; stale R timer cannot seal the new stage | E | U ContextRetentionTest | 2026-11-19 |
 | REC19 | Cancel/reopen, next note/word in same scan, repeated Refresh, saving, expand/collapse and rotation never renew E; last confirmed edits differ from abandoned working edits | N | U, I, M | |
 | REC20 | R cap before editor retains complete prefix, including crop-time expiry; late editor can edit it but no E or fresh-ring bypass is granted | N | U, M | |
 | REC21 | E cap preserves unseen continuation; first Refresh appends all retained tail then explains cap; further Refresh repeats explanation without duplicate frames, selection movement or renewed allowance | N | U, P, M | |
@@ -836,6 +837,25 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
   the mockup or emulator alone. See the REC table for expected results and the implementation plan for the gate.
 
 ## Run log
+
+### 2026-11-19, sentence audio foundation, `codex/sentence-audio-recording`
+
+- `ContextRetentionTest`, `AudioEditTest`, `InitialSelectionTest` and `PcmHistoryTest` cover the standalone
+  foundation. REC17/REC18 move N→E with deterministic fake-time tests; other REC rows remain N because their
+  full capture/UI/Anki/resource behavior is not implemented or verified yet.
+- Isolated `PcmHistoryDeviceTest` passed on API30 (`com.vpr.screenlate.core.media.test`, not the service app):
+  simulated 30 minutes/172.8 MB of writes, 97.92 MB maximum retained/1,020 files, descriptors 52→52, final
+  cleanup zero. Wall time 1,016 ms, PSS samples 23,773→27,582 KiB. Not a 30-minute real-time/power/flash run.
+- Separate playback/source packages captured 10 s at 48/44.1 kHz with own-UID exclusion. Current AAC path
+  failed end-marker preservation; Opus candidate retained it with measured tail padding. No final codec or
+  physical-device claim. Detailed measurements/artifacts/gate: [engineering note](notes/sentence-audio-engineering.md).
+- Owner reported the source tone left audible: owned emulator shut down gracefully, source bounded to
+  30 seconds and restarted with `-no-audio`. Internal capture still succeeds (480,000 frames, external
+  amplitude 5,935.26, own amplitude 0.237); source removal/no live record client verified afterward.
+  No Screenlate/Anki user data was modified.
+- Checks: all 26 foundational JVM tests, module lint/instrumented assembly and Android storage test passed;
+  full project build/unit/lint/instrumented assembly/convention tests/release vital lint passed; 195 page
+  tests passed. Optional tool variants assemble/lint without errors. App recording controls remain unimplemented.
 
 ### 2026-11-15, Android 7 capture and dictionary popup
 

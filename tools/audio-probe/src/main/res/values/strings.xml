@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- This is an isolated English-only development tool, not product UI. -->
+    <string name="probe_name" translatable="false">Audio feasibility probe</string>
+    <string name="probe_source" translatable="false">Synthetic playback source: 440 Hz</string>
+    <string name="probe_description" translatable="false">Internal capture probe. Excludes this package’s 997 Hz tone. Results stay in private files.</string>
+    <string name="probe_start_source" translatable="false">Start source</string>
+    <string name="probe_capture" translatable="false">Capture 10 seconds</string>
+    <string name="probe_unavailable" translatable="false">Playback capture requires Android 10</string>
+    <string name="probe_stop" translatable="false">Stop</string>
+</resources>

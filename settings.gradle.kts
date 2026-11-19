@@ -38,8 +38,14 @@ include(":core:common")
 include(":core:ocr")
 include(":core:ocr-mnn")
 include(":core:photos")
+include(":core:media")
 include(":core:anki")
 include(":core:translate")
 include(":dictionary:api")
 include(":dictionary:engine-hoshidicts")
 include(":dictionary:render-yomitan")
+
+// Isolated playback/capture packages for the sentence-audio feasibility checks; never shipped with the app.
+if (providers.gradleProperty("screenlate.audioProbe").isPresent) {
+    include(":tools:audio-probe")
+}

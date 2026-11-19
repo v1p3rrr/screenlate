@@ -1,6 +1,6 @@
 # Plan: sentence audio recording (2026-11-19)
 
-Status: design agreed; implementation has not started. The owner requested this plan, not an application implementation in this session. Product choices below are binding. Change them only after owner confirmation and record the change here. Technical parameters explicitly delegated to measurements are not additional product choices.
+Status: implementation started on `codex/sentence-audio-recording` from `main` (`5c1e5cce`), authorized by the owner on 2026-11-19. Phase 1 feasibility work is in progress. Product choices below are binding. Change them only after owner confirmation and record the change here. Technical parameters explicitly delegated to measurements are not additional product choices.
 
 ## Read this first
 
@@ -25,6 +25,7 @@ Excluded from v1: microphone/fallback recording, ASR/LLMs, automatic sentence ma
 |---|---|
 | Audio source | All eligible internal playback except Screenlate's own preview/pronunciation. Other applications may mix; do not follow/restrict a selected foreground app. No microphone. |
 | Availability | Playback capture on API 29+. Keep app minSdk 24; unsupported versions retain existing screenshot/pronunciation behavior. Source policy/profile/usage restrictions remain real limitations. |
+| Android 7–9 UI | Recording sentences shows only an Android 10+ availability explanation. Hide recording toggles, durations, silence controls and the duplicate default-editor switch; omit recording commands/audio attachment options in bubble/Add menus. No activation entry point may start capture. Existing screenshots and word pronunciation remain available. |
 | Activation | Explicit user start/stop in the bubble hold menu and Audio settings, with one shared runtime state. No automatic start after boot/restart or restoration of expired projection consent. |
 | Indicator | Static red dot on the bubble, no blinking. Apply existing e-ink/monochrome conventions; use text/accessibility labels too. System recording notification exposes actual state and Stop. |
 | Scan anchor | Protect history once per new screen scan, including app-text-only. Anchor at actual acquisition, not OCR completion, popup opening, Add, or each word hit. |
@@ -357,7 +358,21 @@ Final acceptance requires both user scenarios: (1) an utterance continues during
 
 ## 12. Resume, open engineering work and changelog
 
-- Next action after an implementation instruction: Phase 1. No production implementation is completed by this planning task.
+### Implementation progress
+
+- Branch created from main; no merge to main. [Engineering measurements](../notes/sentence-audio-engineering.md)
+  record the isolated API30 probe, AAC end-tail failure, Opus candidate and on-device PCM storage benchmark.
+- Registered independent `core:media`; implemented/tested pure deadline/edit/initial-selection models and
+  bounded file storage with snapshot/reader ownership. This independent foundation does not require the
+  unresolved final codec choice. No app UI/control or Anki integration is connected yet.
+- Phase 1 remains open for the explicitly listed compatibility, timestamp, self-TTS, live-queue and final
+  resource measurements. Phase 2 foundation work is partial; do not mark either whole phase complete.
+- Test source tones now have a 30-second maximum following the owner's audible-emulator report; require
+  host-silent runs for further sound-generating experiments and explicit cleanup.
+
+- Current work: Phase 1 on `codex/sentence-audio-recording`; do not merge to main before required checks and owner direction for this feature branch.
 - No unanswered product question blocks this plan. Format/codec and numeric resource budgets are intentionally delegated measured engineering work, with a gate before broad implementation. A discovered incompatible behavior/default requires a focused owner question rather than a silent plan rewrite.
 - Read this plan's decisions before asking further questions. Keep earlier discussion as history, not a second source of pending requirements. Record each changed decision and measured gate outcome here; update the REC run log when tested.
 - 2026-11-19: Created from the complete discussion and approved interactive design. Final owner answers: initial 15 s before / 5 s after, >5 s leading-quiet refinement with 150 ms lead-in and all-quiet preservation; duration range 30 s–10 min in 30 s steps; Back cancels in both editor sizes; independent `core:media`. Defaults remain 5/5/2. Current localization coverage is 27 locales.
+- 2026-11-19: Owner authorized implementation on a separate branch and clarified unsupported-device UI: on Android 7–9 show only availability text, hide recording settings and all recording activation/attachment affordances.
+- 2026-11-19: Added independent storage/state foundation and isolated API30 feasibility evidence; actual implementation and pending gates are distinguished above. Recorded and stopped the accidentally persistent source tone and added bounded test-source lifetime.

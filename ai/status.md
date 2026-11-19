@@ -1,10 +1,33 @@
 # Status
 
+# Status
+
+## Sentence audio implementation started on a separate branch (2026-11-19)
+
+- Branch `codex/sentence-audio-recording` from `main` `5c1e5cce`; no app/UI/Anki integration yet.
+  [Current plan](plans/2026-11-19-sentence-audio-recording.md),
+  [engineering evidence and pending gate](notes/sentence-audio-engineering.md).
+- Added `core:media` deadline/edit/initial-selection models and bounded PCM file history with immutable
+  snapshot prefixes, independent reader leases, disjoint protected/ring retention, quotas and fault handling.
+- Isolated API30 playback probe confirms external playback capture/local own-UID exclusion at 48/44.1 kHz.
+  Current AAC probe loses its final partial block; Opus candidate preserves the end-marker but needs further
+  quality/compatibility checks. Neither final codec nor production resource constants are claimed selected.
+- Android storage test passed: accelerated 30-minute PCM writes, 97.92 MB maximum retained, 1,020 files,
+  descriptors 52→52, cleanup to zero. This is not a power/flash or whole-app OCR benchmark.
+- Owner clarified Android7–9 UI: only Android10+ availability text, no recording controls/activation/attachments.
+  Added to binding plan/REC1. Owner also reported the probe's audible tone: stopped owned emulator and
+  added a 30-second tone lifetime; further sound tests require a host-silent run and explicit cleanup.
+- Phase 1 and Phase 2 are partial; remaining gates and exact resume work are in the plan/engineering note.
+- Checks passed: 26 `core:media` JVM tests, its Android storage test, full `assembleDebug testDebugUnitTest
+  lintDebug assembleDebugAndroidTest :build-logic:convention:test :app:lintVitalRelease`, and all 195 page
+  tests. Updated probe APKs build/lint without errors. Repeated capture on API30 with `-no-audio` succeeds;
+  automatic source release verified. Current owned emulator is silent (`emulator-5556`).
+
 ## Dictionary lookup fixes and nested definition tap-lookup (2026-11-20)
 
 - Implemented on branch `features/lookup-fixes-and-tap-definitions` and merged into `main` (`e7287187`):
   - **Unambiguous reading-less entry merging (`ShownResults.kt`, `ShownResultsTest.kt`):**
-    - Reading-less dictionary entries (`reading.isEmpty()` or `reading == expression` on ideographic headwords, e.g. from `wty-ja-ja` or `JMnedict`) merge cleanly into entries with distinct readings when all other entries for that expression in the lookup results share an unambiguous reading (`感心` -> `かんしん`, `思想` -> `しそう`). If multiple readings exist (e.g. `つの` and `かど` for `角`), merging is skipped to prevent false conflation.
+    - Reading-less dictionary entries (`reading.isEmpty()` or `reading == expression` on ideographic headwords, e.g. from `wty-ja-ja` or `JMnedict`) merge cleanly into entries with distinct readings when all other entries for that expression in the lookup results share an unambiguous reading (`感心` -> `かんしん`, `思想` -> `しсоу`). If multiple readings exist (e.g. `つの` and `かど` for `角`), merging is skipped to prevent false conflation.
   - **Harmonic & average frequency suppression for reading-less entries (`YomitanSorter.kt`, `popup.js`, `YomitanSorterTest.kt`, `popup.test.mjs`):**
     - Suppressed aggregate (harmonic/arithmetic) frequency ranking on reading-less entries so reading-less duplicate cards cannot rank above full entries with readings. In `popup.js`, aggregate frequency chips are hidden on reading-less entries (`!term.reading` or `term.reading === term.expression && hasIdeograph`) while preserved on kana-only and non-CJK entries.
   - **Form-of reading filtering in deinflection (`form_of.cpp`, `HoshidictsEngineTest.kt`):**

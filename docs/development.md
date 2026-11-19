@@ -53,6 +53,24 @@ The photo history is tested in `PhotoStoreTest` (saving, order, limits, opening,
 v2→v3 migration and the upright thumbnail; `UnsavedPhotoDialogTest` (API 30) checks that the dialog's answer reaches
 the caller before it is dismissed.
 
+## Recording foundation checks
+
+`core:media` has pure JVM tests for deadline ordering, source-frame edits, initial selection, PCM leases,
+rollover/quotas and failed writes. Run `./gradlew :core:media:testDebugUnitTest :core:media:lintDebug`.
+`PcmHistoryDeviceTest` runs in the library's independent test package and checks an accelerated synthetic
+storage workload, without opening the app or touching a collection. After building
+`:core:media:assembleDebugAndroidTest`, install its APK on an explicitly selected emulator and run
+`adb -s <serial> shell am instrument -w -e class com.vpr.screenlate.core.media.PcmHistoryDeviceTest com.vpr.screenlate.core.media.test/androidx.test.runner.AndroidJUnitRunner`.
+Its private `pcm-benchmark.properties` records sizes/timing and before/after descriptor/PSS samples;
+the accelerated test does not establish physical-device flash or power behavior.
+
+The optional [playback feasibility tool](../tools/audio-probe/README.md) builds isolated recorder/source packages
+with `./gradlew -Pscreenlate.audioProbe=true :tools:audio-probe:assembleDebug`. In PowerShell quote the
+`'-Pscreenlate.audioProbe=true'` argument. This tool is excluded from ordinary builds and not shipped in the app.
+Use a host-silent emulator for sound-generating checks; its source stops within 30 seconds and must also be
+stopped explicitly after use. Codec-only fixtures do not play sound. Recording foundation work is not yet an
+enabled application feature.
+
 ## Dictionary catalog
 
 The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches

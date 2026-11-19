@@ -11,6 +11,7 @@ app ──► overlay, core:common, core:ocr, core:photos, core:anki, core:trans
 overlay ──► core:common, core:ocr, core:photos, core:anki, core:translate, dictionary:api
 core:ocr, core:anki, core:translate, dictionary:api ──api──► core:common
 core:photos ──api──► core:common, core:ocr          (camera)
+core:media                                         (independent recording foundation; not yet wired to UI)
 dictionary:engine-hoshidicts ──► dictionary:api          (GPL-3.0, JNI; submodules hoshidicts and QuickJS-ng (languages))
 dictionary:render-yomitan (assets only: render.js, anki.js, render.css; GPL-3.0) — loaded by overlay's popup.html
 build-logic (convention plugins) — used by every module
@@ -73,6 +74,15 @@ Each entry lists the code of the unit, then the integration path the review must
 Photo OCR adds `PhotoTiles`, `PhotoAssembly`, `BoxIndex`, `DeviceOcr.pin` and `CompositeOcr.recognizePhotoTile` to
 module 4. Per-word provenance crosses module 4's OcrWord/TextLayout, module 19's recognition codec and module 14's
 aimed-engine selection. Its tests live beside those modules; `ai/notes/camera-lookup.md` records the integration.
+
+20. **Sentence audio foundation** — `core/media`: frame ranges/edits, initial selection, absolute H/R/E deadline policy,
+bounded PCM history, fixed-prefix snapshots and reader leases. Currently independent of app/overlay/Anki; do not
+claim the recording feature is enabled. Optional development-only `tools/audio-probe` has separate source/recorder
+application IDs and codec fixtures; it is conditionally included and excluded from app dependencies.
+Tests: `ContextRetentionTest`, `AudioEditTest`, `InitialSelectionTest`, `PcmHistoryTest`, instrumented
+`PcmHistoryDeviceTest`. Plan: `ai/plans/2026-11-19-sentence-audio-recording.md`; evidence/gate:
+`ai/notes/sentence-audio-engineering.md`. Later integration must cover capture/session ownership, screen anchors,
+popup editor, settings/backup, pronunciation/TTS exclusion and the separate Anki attachment contract.
 
 Every tracked file outside `testdata/`, `ai/` and `docs/` belongs to one module above; `docs/` and `ai/notes/` are checked by the module whose behavior they describe.
 
