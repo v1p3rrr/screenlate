@@ -1115,133 +1115,133 @@ class OverlayController(
         scanJob = scope.launch {
             try {
                 val ready = installation.current(language)
-            if (!ready.scanReady) {
-                if (ready.needsDeviceModel && settings.textSource == TextSource.APP_TEXT) {
-                    val appPage = screenReads.readAppText(generation)
-                    if (!screenReads.isOpen(generation)) return@launch
-                    if (appPage != null && appPage.paragraphs.isNotEmpty()) {
-                        screenshotSkipped = true
-                        popup.page.prepare()
-                        onPage(page = appPage, final = true, lensError = null, flashLines = flashLines)
-                        return@launch
+                if (!ready.scanReady) {
+                    if (ready.needsDeviceModel && settings.textSource == TextSource.APP_TEXT) {
+                        val appPage = screenReads.readAppText(generation)
+                        if (!screenReads.isOpen(generation)) return@launch
+                        if (appPage != null && appPage.paragraphs.isNotEmpty()) {
+                            screenshotSkipped = true
+                            popup.page.prepare()
+                            onPage(page = appPage, final = true, lensError = null, flashLines = flashLines)
+                            return@launch
+                        }
                     }
+                    ocrFinal = true
+                    bubbleView.loading = false
+                    showMessage(ready.message(service, scanning = true), installation = !ready.needsDeviceModel, ocrModels = ready.needsDeviceModel)
+                    return@launch
                 }
-                ocrFinal = true
-                bubbleView.loading = false
-                showMessage(ready.message(service, scanning = true), installation = !ready.needsDeviceModel, ocrModels = ready.needsDeviceModel)
-                return@launch
-            }
-            if (settings.textSource == TextSource.APP_TEXT_ONLY) {
-                screenshotSkipped = true
-                popup.page.prepare()
-                readAppTextOnly(generation, flashLines)
-                return@launch
-            }
-            val started = SystemClock.elapsedRealtime()
-            // App text is exact and works in windows that forbid screenshots. It needs no screenshot, so it is read
-            // while the screen is captured and shown as soon as it is there. OCR still runs to add the text the app
-            // does not expose, such as text in images.
-            val appTextRead = async { if (settings.textSource != TextSource.SCREEN) screenReads.readAppText(generation) else null }
-            var captureError: CaptureException? = null
-            val captured = try {
-                screenReads.capture(generation)
-            } catch (e: CaptureException) {
-                captureError = e
-                null
-            } catch (_: SourceChangedException) {
-                // The scan closes with the source change.
-                return@launch
-            }
-            // Neither source waits for the other: whichever arrives is shown, merged with what the other has so far.
-            var appText: OcrPage? = null
-            var recognized: Recognized? = null
-            fun show(flash: Boolean) {
-                val ocrPage = recognized?.page
-                val page = if (ocrPage == null) appText ?: return else appText?.withMissingFrom(ocrPage) ?: ocrPage
-                onPage(
-                    page = page,
-                    final = recognized?.final ?: (captured == null),
-                    lensError = recognized?.lensError,
-                    flashLines = flash,
-                )
-            }
-            launch {
-                appText = appTextRead.await() ?: return@launch
-                show(flashLines)
-            }
-            if (captured == null) {
-                val read = appTextRead.await()
-                if (read == null) {
-                    if (captureError is CaptureException.ConsentDenied) {
-                        ocrFinal = true
-                        bubbleView.loading = false
-                    } else {
-                        showScanError(
-                            if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
-                        )
-                    }
+                if (settings.textSource == TextSource.APP_TEXT_ONLY) {
+                    screenshotSkipped = true
+                    popup.page.prepare()
+                    readAppTextOnly(generation, flashLines)
+                    return@launch
                 }
-                return@launch
-            }
-            // Kept for {screenshot} and small-text bands until the next scan or docking; recognition holds it as well.
-            val shot = SharedScreenshot(captured).also { screenshot = it }
-            shot.retain()
-            // A page the system reclaimed loads again while the screen is read. Creating it holds up the main thread
-            // for most of a second, so it waits until the recognition runs on its workers: before the capture it would
-            // delay the screenshot, right after it the recognition.
-            launch {
-                delay(PAGE_CREATION_DELAY_MS)
-                popup.page.prepare()
-            }
-            try {
-                ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.OCR)
-                ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) })
-                    .catch { error ->
-                        if (error is CancellationException) throw error
-                        bubbleView.loading = false
-                        recognized = Recognized(page = null, final = true, lensError = error)
-                        if (appTextRead.await() != null) {
-                            show(flash = false)
-                        } else if (error is NoDeviceOcrException) {
+                val started = SystemClock.elapsedRealtime()
+                // App text is exact and works in windows that forbid screenshots. It needs no screenshot, so it is read
+                // while the screen is captured and shown as soon as it is there. OCR still runs to add the text the app
+                // does not expose, such as text in images.
+                val appTextRead = async { if (settings.textSource != TextSource.SCREEN) screenReads.readAppText(generation) else null }
+                var captureError: CaptureException? = null
+                val captured = try {
+                    screenReads.capture(generation)
+                } catch (e: CaptureException) {
+                    captureError = e
+                    null
+                } catch (_: SourceChangedException) {
+                    // The scan closes with the source change.
+                    return@launch
+                }
+                // Neither source waits for the other: whichever arrives is shown, merged with what the other has so far.
+                var appText: OcrPage? = null
+                var recognized: Recognized? = null
+                fun show(flash: Boolean) {
+                    val ocrPage = recognized?.page
+                    val page = if (ocrPage == null) appText ?: return else appText?.withMissingFrom(ocrPage) ?: ocrPage
+                    onPage(
+                        page = page,
+                        final = recognized?.final ?: (captured == null),
+                        lensError = recognized?.lensError,
+                        flashLines = flash,
+                    )
+                }
+                launch {
+                    appText = appTextRead.await() ?: return@launch
+                    show(flashLines)
+                }
+                if (captured == null) {
+                    val read = appTextRead.await()
+                    if (read == null) {
+                        if (captureError is CaptureException.ConsentDenied) {
                             ocrFinal = true
-                            showMessage(service.getString(noDeviceOcrMessageRes(offlineMode)), ocrModels = true)
+                            bubbleView.loading = false
                         } else {
-                            // Offline fails the scan only while the device does not recognize; a cloud-only scan says why
-                            // the cloud failed.
-                            val deviceReads = ocr.deviceReads(language)
                             showScanError(
-                                when {
-                                    error is OfflineException && !deviceReads ->
-                                        service.getString(R.string.overlay_error_offline_no_device)
-                                    error is OfflineException -> service.getString(R.string.overlay_error_offline)
-                                    effectiveOcrEngines == OcrEngines.CLOUD || !deviceReads -> cloudErrorReason(error)
-                                    else -> service.getString(R.string.overlay_error_ocr)
-                                },
+                                if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
                             )
                         }
                     }
-                    .collect { update ->
-                        logUpdate(update, SystemClock.elapsedRealtime() - started)
-                        recognized = Recognized(
-                            page = update.page.offset(captured.left.toFloat(), captured.top.toFloat()),
-                            final = update is OcrUpdate.Final,
-                            lensError = (update as? OcrUpdate.Final)?.lensError,
-                        )
-                        // Around app text, the lines OCR adds (text in images) flash as well.
-                        show(flashLines)
-                    }
-            } finally {
-                shot.release()
-            }
-            if (!ocrFinal) {
-                // Recognition failed without a final page: nothing more will come, and what is shown stays.
-                ocrFinal = true
-                bubbleView.loading = false
-                refreshPopup()
-            }
-            if (smallText() == SmallTextMode.ALWAYS) {
-                ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(shot, it) }
-            }
+                    return@launch
+                }
+                // Kept for {screenshot} and small-text bands until the next scan or docking; recognition holds it as well.
+                val shot = SharedScreenshot(captured).also { screenshot = it }
+                shot.retain()
+                // A page the system reclaimed loads again while the screen is read. Creating it holds up the main thread
+                // for most of a second, so it waits until the recognition runs on its workers: before the capture it would
+                // delay the screenshot, right after it the recognition.
+                launch {
+                    delay(PAGE_CREATION_DELAY_MS)
+                    popup.page.prepare()
+                }
+                try {
+                    ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.OCR)
+                    ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) })
+                        .catch { error ->
+                            if (error is CancellationException) throw error
+                            bubbleView.loading = false
+                            recognized = Recognized(page = null, final = true, lensError = error)
+                            if (appTextRead.await() != null) {
+                                show(flash = false)
+                            } else if (error is NoDeviceOcrException) {
+                                ocrFinal = true
+                                showMessage(service.getString(noDeviceOcrMessageRes(offlineMode)), ocrModels = true)
+                            } else {
+                                // Offline fails the scan only while the device does not recognize; a cloud-only scan says why
+                                // the cloud failed.
+                                val deviceReads = ocr.deviceReads(language)
+                                showScanError(
+                                    when {
+                                        error is OfflineException && !deviceReads ->
+                                            service.getString(R.string.overlay_error_offline_no_device)
+                                        error is OfflineException -> service.getString(R.string.overlay_error_offline)
+                                        effectiveOcrEngines == OcrEngines.CLOUD || !deviceReads -> cloudErrorReason(error)
+                                        else -> service.getString(R.string.overlay_error_ocr)
+                                    },
+                                )
+                            }
+                        }
+                        .collect { update ->
+                            logUpdate(update, SystemClock.elapsedRealtime() - started)
+                            recognized = Recognized(
+                                page = update.page.offset(captured.left.toFloat(), captured.top.toFloat()),
+                                final = update is OcrUpdate.Final,
+                                lensError = (update as? OcrUpdate.Final)?.lensError,
+                            )
+                            // Around app text, the lines OCR adds (text in images) flash as well.
+                            show(flashLines)
+                        }
+                } finally {
+                    shot.release()
+                }
+                if (!ocrFinal) {
+                    // Recognition failed without a final page: nothing more will come, and what is shown stays.
+                    ocrFinal = true
+                    bubbleView.loading = false
+                    refreshPopup()
+                }
+                if (smallText() == SmallTextMode.ALWAYS) {
+                    ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(shot, it) }
+                }
         } finally {
             ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
         }
@@ -1410,21 +1410,21 @@ class OverlayController(
         scanJob = scope.launch {
             try {
                 val ready = installation.current(language)
-            // The stored text needs no recognition model, only the dictionaries.
-            if (!ready.dictionaryReady) {
-                ocrFinal = true
-                showMessage(ready.message(service), installation = true)
-                return@launch
+                // The stored text needs no recognition model, only the dictionaries.
+                if (!ready.dictionaryReady) {
+                    ocrFinal = true
+                    showMessage(ready.message(service), installation = true)
+                    return@launch
+                }
+                popup.page.prepare()
+                val key = source.documentId to source.revision
+                val layout = photoLayout?.takeIf { it.first == key }?.second
+                    ?: withContext(Dispatchers.Default) { TextLayout(source.recognition.page).also(TextLayout::prepare) }.also { photoLayout = key to it }
+                onLayout(layout, final = true, lensError = null, flashLines = flashLines)
+            } finally {
+                ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
             }
-            popup.page.prepare()
-            val key = source.documentId to source.revision
-            val layout = photoLayout?.takeIf { it.first == key }?.second
-                ?: withContext(Dispatchers.Default) { TextLayout(source.recognition.page).also(TextLayout::prepare) }.also { photoLayout = key to it }
-            onLayout(layout, final = true, lensError = null, flashLines = flashLines)
-        } finally {
-            ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
         }
-    }
 }
 
     /**

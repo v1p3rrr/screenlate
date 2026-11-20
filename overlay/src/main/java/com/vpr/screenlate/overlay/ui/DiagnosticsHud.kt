@@ -27,7 +27,6 @@ class DiagnosticsHud(
     private val onClose: (() -> Unit)? = null,
 ) {
     private var containerView: View? = null
-    private var layoutParams: WindowManager.LayoutParams? = null
     private val handler = Handler(Looper.getMainLooper())
     private var attached = false
 
@@ -108,7 +107,6 @@ class DiagnosticsHud(
             x = (16 * density).roundToInt()
             y = (96 * density).roundToInt()
         }
-        layoutParams = params
 
         container.setOnTouchListener(object : View.OnTouchListener {
             private var startX = 0
@@ -161,7 +159,6 @@ class DiagnosticsHud(
         containerView = null
         metricsText = null
         stateText = null
-        layoutParams = null
     }
 
     private fun updateMetrics() {

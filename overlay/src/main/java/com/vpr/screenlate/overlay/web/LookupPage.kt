@@ -26,10 +26,11 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import kotlin.coroutines.resume
 import com.vpr.screenlate.core.common.redacted
-import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * The lookup results page (`assets/popup/popup.html`) in a WebView, shared by the overlay popup and the search
@@ -218,13 +219,16 @@ class LookupPage(
 
     /** Fills the menu opened by holding the translation button; [items] is a list of services. */
     fun showTranslationMenu(request: Int, items: List<TranslationMenuItem>) {
-        val array = JSONArray()
-        for (item in items) {
-            array.put(JSONObject().apply {
-                put("id", item.id)
-                put("label", item.label)
-                if (item.detail != null) put("detail", item.detail)
-            })
+        val array = buildJsonArray {
+            for (item in items) {
+                add(
+                    buildJsonObject {
+                        put("id", item.id)
+                        put("label", item.label)
+                        if (item.detail != null) put("detail", item.detail)
+                    },
+                )
+            }
         }
         run("Popup.showTranslationMenu($request, $array)")
     }

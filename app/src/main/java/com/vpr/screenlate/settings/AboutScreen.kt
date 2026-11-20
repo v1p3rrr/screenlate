@@ -204,7 +204,7 @@ fun AboutScreen(
                     Hint(stringResource(R.string.about_diagnostics_hint))
 
                     val exitText = lastExit?.let { record ->
-                        val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                        val timeFormat = remember { SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) }
                         stringResource(
                             R.string.about_diagnostics_last_exit,
                             ExitReasons.describe(record) { timeFormat.format(Date(it)) },

@@ -93,14 +93,7 @@ fun SettingsScreen(
 
     SettingsScaffold(
         title = stringResource(R.string.settings_title),
-        onBack = if (searchActive) {
-            {
-                searchActive = false
-                searchQuery = ""
-            }
-        } else {
-            null
-        },
+        onBack = null,
         navigationIcon = if (searchActive) {
             {
                 TooltipIconButton(
