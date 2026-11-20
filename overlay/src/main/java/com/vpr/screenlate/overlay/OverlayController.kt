@@ -2001,8 +2001,12 @@ class OverlayController(
                 try {
                     val result = translation.forPopup(service, sentence, language, serviceChoice)
                     val text = (result["text"] as? JsonPrimitive)?.contentOrNull
-                    if (text != null && sentence != null && serviceChoice != null) {
-                        popupNotes.translationSession.setTranslation(sentence, text)
+                    if (text != null && sentence != null) {
+                        if (serviceChoice != null) {
+                            popupNotes.translationSession.setTranslation(sentence, text)
+                        } else {
+                            popupNotes.translationSession.clear()
+                        }
                     }
                     popup.page.showTranslation(request, result)
                 } finally {
@@ -2036,6 +2040,9 @@ class OverlayController(
                 it.name.equals(serviceId, ignoreCase = true)
             }
             popupNotes.translationSession.chosenService = serviceChoice
+            if (serviceChoice == null) {
+                popupNotes.translationSession.clear()
+            }
             translateSentence(request, serviceChoice)
         }
 

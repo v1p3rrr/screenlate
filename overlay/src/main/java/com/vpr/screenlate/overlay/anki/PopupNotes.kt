@@ -363,7 +363,7 @@ class PopupNotes(
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
-                    val cached = translationSession.getTranslation(sentence)
+                    val cached = translationSession.chosenService?.let { translationSession.getTranslation(sentence) }
                     translated = if (cached != null) {
                         CompletableDeferred(cached)
                     } else {

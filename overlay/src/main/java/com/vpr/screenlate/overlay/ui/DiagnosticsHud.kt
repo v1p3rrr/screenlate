@@ -167,7 +167,10 @@ class DiagnosticsHud(
     private fun updateMetrics() {
         val snapshot = ProcessDiagnostics.snapshot()
         metricsText?.text = "PSS: ${snapshot.totalPssMb} MB | Heap: ${snapshot.heapUsedMb}/${snapshot.heapMaxMb} MB"
-        val stateName = snapshot.state.name.lowercase().replaceFirstChar { it.uppercase() }
+        val stateName = when (snapshot.state) {
+            com.vpr.screenlate.core.common.diagnostics.OverlayLifecycleState.OCR -> "OCR"
+            else -> snapshot.state.name.lowercase().replaceFirstChar { it.uppercase() }
+        }
         stateText?.text = "CPU: ~${snapshot.cpuTimeMs} ms | State: $stateName"
     }
 

@@ -38,6 +38,7 @@ fun SettingsScaffold(
     onBack: (() -> Unit)?,
     actions: @Composable RowScope.() -> Unit = {},
     titleContent: (@Composable () -> Unit)? = null,
+    navigationIcon: (@Composable () -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -50,7 +51,13 @@ fun SettingsScaffold(
                         Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 },
-                navigationIcon = { if (onBack != null) BackButton(onBack) },
+                navigationIcon = {
+                    if (navigationIcon != null) {
+                        navigationIcon()
+                    } else if (onBack != null) {
+                        BackButton(onBack)
+                    }
+                },
                 actions = actions,
             )
         },

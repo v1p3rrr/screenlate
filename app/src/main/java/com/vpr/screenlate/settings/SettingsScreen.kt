@@ -49,6 +49,7 @@ import com.vpr.screenlate.background.BackgroundTipViewModel
 import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.home.HomeViewModel
 import com.vpr.screenlate.ui.components.SettingsScaffold
+import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** Destinations of the settings list. */
@@ -96,6 +97,20 @@ fun SettingsScreen(
             {
                 searchActive = false
                 searchQuery = ""
+            }
+        } else {
+            null
+        },
+        navigationIcon = if (searchActive) {
+            {
+                TooltipIconButton(
+                    icon = R.drawable.ic_arrow_back,
+                    tooltip = stringResource(R.string.search_back),
+                    onClick = {
+                        searchActive = false
+                        searchQuery = ""
+                    },
+                )
             }
         } else {
             null
@@ -306,8 +321,6 @@ private fun SearchResultEntry(
                     stringResource(it),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
