@@ -128,13 +128,17 @@ fun SettingsScreen(
         },
         actions = {
             if (searchActive) {
-                if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { searchQuery = "" }) {
-                        Icon(
-                            painterResource(R.drawable.ic_close),
-                            contentDescription = stringResource(R.string.search_clear),
-                        )
+                IconButton(onClick = {
+                    if (searchQuery.isNotEmpty()) {
+                        searchQuery = ""
+                    } else {
+                        searchActive = false
                     }
+                }) {
+                    Icon(
+                        painterResource(R.drawable.ic_close),
+                        contentDescription = stringResource(R.string.search_clear),
+                    )
                 }
             } else {
                 IconButton(onClick = { searchActive = true }) {

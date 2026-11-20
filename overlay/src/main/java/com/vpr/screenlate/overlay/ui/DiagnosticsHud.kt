@@ -166,14 +166,9 @@ class DiagnosticsHud(
 
     private fun updateMetrics() {
         val snapshot = ProcessDiagnostics.snapshot()
-        metricsText?.text = "PSS: ${snapshot.totalPssMb}MB | Heap: ${snapshot.heapUsedMb}/${snapshot.heapMaxMb}MB\nNative: ${snapshot.nativeAllocatedMb}MB | CPU: ${snapshot.cpuTimeMs / 1000}s"
-
-        val trimInfo = snapshot.lastTrim?.let {
-            val agoSec = ((System.currentTimeMillis() - it.timestamp) / 1000).coerceAtLeast(0)
-            " | Trim: ${ProcessDiagnostics.trimLevelName(it.level)} (${agoSec}s ago)"
-        } ?: ""
-
-        stateText?.text = "State: ${snapshot.state.name}$trimInfo"
+        metricsText?.text = "PSS: ${snapshot.totalPssMb} MB | Heap: ${snapshot.heapUsedMb}/${snapshot.heapMaxMb} MB"
+        val stateName = snapshot.state.name.lowercase().replaceFirstChar { it.uppercase() }
+        stateText?.text = "CPU: ~${snapshot.cpuTimeMs} ms | State: $stateName"
     }
 
     private companion object {

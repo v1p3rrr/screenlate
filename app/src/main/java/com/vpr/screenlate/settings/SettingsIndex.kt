@@ -15,7 +15,7 @@ import java.text.Normalizer
  * @param summaryRes Optional summary/hint string resource.
  * @param sectionRes The section title string resource (e.g. Bubble, Translation).
  * @param iconRes The icon of the section.
- * @param keywords Additional search terms in English or Russian.
+ * @param keywords Additional search terms in English.
  */
 data class SettingsIndexItem(
     val page: SettingsPage,

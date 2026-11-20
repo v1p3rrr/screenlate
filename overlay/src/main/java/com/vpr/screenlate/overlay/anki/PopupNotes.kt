@@ -171,14 +171,6 @@ class PopupNotes(
     /** Transient manual translation choices and cache for this popup session. */
     val translationSession = PopupTranslationSession()
 
-    var chosenTranslationService: TranslationService?
-        get() = translationSession.chosenService
-        set(value) { translationSession.chosenService = value }
-
-    fun setChosenTranslation(sentence: String, translation: String) {
-        translationSession.setTranslation(sentence, translation)
-    }
-
     init {
         page.noteActions = this
     }

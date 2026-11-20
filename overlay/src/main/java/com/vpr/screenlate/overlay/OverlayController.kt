@@ -1103,6 +1103,7 @@ class OverlayController(
             is LookupSource.NoText -> {
                 bubbleView.loading = source.recognizing
                 Log.d(TAG, "Nothing to read on the Camera page")
+                ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
             }
         }
     }
@@ -1112,7 +1113,8 @@ class OverlayController(
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
-            val ready = installation.current(language)
+            try {
+                val ready = installation.current(language)
             if (!ready.scanReady) {
                 if (ready.needsDeviceModel && settings.textSource == TextSource.APP_TEXT) {
                     val appPage = screenReads.readAppText(generation)
@@ -1240,8 +1242,11 @@ class OverlayController(
             if (smallText() == SmallTextMode.ALWAYS) {
                 ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(shot, it) }
             }
+        } finally {
+            ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
         }
     }
+}
 
     /** No screenshot and no recognition: only the app's own text, for weak devices and e-ink readers. */
     private suspend fun readAppTextOnly(generation: Long, flashLines: Boolean) {
@@ -1403,7 +1408,8 @@ class OverlayController(
         scanLanguage.value = source.recognition.language
         loadDictionaryStyles()
         scanJob = scope.launch {
-            val ready = installation.current(language)
+            try {
+                val ready = installation.current(language)
             // The stored text needs no recognition model, only the dictionaries.
             if (!ready.dictionaryReady) {
                 ocrFinal = true
@@ -1415,8 +1421,11 @@ class OverlayController(
             val layout = photoLayout?.takeIf { it.first == key }?.second
                 ?: withContext(Dispatchers.Default) { TextLayout(source.recognition.page).also(TextLayout::prepare) }.also { photoLayout = key to it }
             onLayout(layout, final = true, lensError = null, flashLines = flashLines)
+        } finally {
+            ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
         }
     }
+}
 
     /**
      * The photo moved under the bubble: the highlights and the popup follow it, and the aim, which stayed where it was
@@ -1992,8 +2001,8 @@ class OverlayController(
                 try {
                     val result = translation.forPopup(service, sentence, language, serviceChoice)
                     val text = (result["text"] as? JsonPrimitive)?.contentOrNull
-                    if (text != null && sentence != null) {
-                        popupNotes.setChosenTranslation(sentence, text)
+                    if (text != null && sentence != null && serviceChoice != null) {
+                        popupNotes.translationSession.setTranslation(sentence, text)
                     }
                     popup.page.showTranslation(request, result)
                 } finally {
@@ -2003,31 +2012,30 @@ class OverlayController(
         }
 
         override fun onTranslate(request: Int) {
-            translateSentence(request, popupNotes.chosenTranslationService)
+            translateSentence(request, popupNotes.translationSession.chosenService)
         }
 
         override fun onTranslationMenu(request: Int) {
-            val items = listOf(
-                LookupPage.TranslationMenuItem(
-                    "auto",
-                    service.getString(R.string.translation_service_auto),
-                    service.getString(R.string.translation_service_auto_detail),
-                ),
-                LookupPage.TranslationMenuItem("bing", TranslationService.BING.label),
-                LookupPage.TranslationMenuItem("google", TranslationService.GOOGLE.label),
-                LookupPage.TranslationMenuItem("edge", TranslationService.EDGE.label),
-            )
+            val items = buildList {
+                add(
+                    LookupPage.TranslationMenuItem(
+                        "auto",
+                        service.getString(R.string.translation_service_auto),
+                        service.getString(R.string.translation_service_auto_detail),
+                    ),
+                )
+                for (service in TranslationService.entries) {
+                    add(LookupPage.TranslationMenuItem(service.name.lowercase(), service.label))
+                }
+            }
             popup.page.showTranslationMenu(request, items)
         }
 
         override fun onSelectTranslationService(request: Int, serviceId: String) {
-            val serviceChoice = when (serviceId.lowercase()) {
-                "bing" -> TranslationService.BING
-                "google" -> TranslationService.GOOGLE
-                "edge" -> TranslationService.EDGE
-                else -> null
+            val serviceChoice = TranslationService.entries.firstOrNull {
+                it.name.equals(serviceId, ignoreCase = true)
             }
-            popupNotes.chosenTranslationService = serviceChoice
+            popupNotes.translationSession.chosenService = serviceChoice
             translateSentence(request, serviceChoice)
         }
 
