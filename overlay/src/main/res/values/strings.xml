@@ -126,4 +126,5 @@
     <string name="overlay_error_no_device_ocr_offline">This language has no on-device model, and Forced Offline Mode disables cloud recognition. Turn off Forced Offline Mode to download a model or use cloud recognition.</string>
     <string name="overlay_freq_harmonic">Harm</string>
     <string name="overlay_freq_average">Avg</string>
+    <string name="diagnostics_hud_header">Diagnostics</string>
 </resources>

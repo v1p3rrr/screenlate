@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">TB</string>
     <string name="translation_service_auto">Tự động (nối tầng)</string>
     <string name="translation_service_auto_detail">Dịch bằng tất cả các dịch vụ đã bật</string>
+    <string name="diagnostics_hud_header">Chẩn đoán</string>
 </resources>

@@ -14,6 +14,7 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.vpr.screenlate.core.common.diagnostics.ProcessDiagnostics
+import com.vpr.screenlate.overlay.R
 import kotlin.math.roundToInt
 
 /**
@@ -66,7 +67,7 @@ class DiagnosticsHud(
         }
 
         val title = TextView(context).apply {
-            text = "DIAGNOSTICS"
+            text = context.getString(R.string.diagnostics_hud_header)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
             setTextColor(0xFF999999.toInt())
             typeface = Typeface.DEFAULT_BOLD
@@ -122,7 +123,7 @@ class DiagnosticsHud(
                         startY = params.y
                         touchX = event.rawX
                         touchY = event.rawY
-                        return false // Allow child click if any, or drag on move
+                        return true
                     }
                     MotionEvent.ACTION_MOVE -> {
                         val dx = (event.rawX - touchX).toInt()
@@ -132,6 +133,9 @@ class DiagnosticsHud(
                         if (attached && containerView != null) {
                             runCatching { windowManager.updateViewLayout(container, params) }
                         }
+                        return true
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         return true
                     }
                 }

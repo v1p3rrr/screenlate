@@ -119,4 +119,5 @@
     <string name="overlay_error_no_device_ocr_offline">Для этого языка нет модели на устройстве, а принудительный офлайн-режим отключает облачное распознавание. Отключите принудительный офлайн-режим, чтобы скачать модель или использовать облачное распознавание.</string>
     <string name="overlay_freq_harmonic">Гарм.</string>
     <string name="overlay_freq_average">Сред.</string>
+    <string name="diagnostics_hud_header">Диагностика</string>
 </resources>

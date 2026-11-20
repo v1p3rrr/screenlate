@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Media</string>
     <string name="translation_service_auto">Automatico (cascata)</string>
     <string name="translation_service_auto_detail">Traduci con tutti i servizi abilitati</string>
+    <string name="diagnostics_hud_header">Diagnostica</string>
 </resources>

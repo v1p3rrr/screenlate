@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Ort.</string>
     <string name="translation_service_auto">Otomatik (basamaklı)</string>
     <string name="translation_service_auto_detail">Etkinleştirilmiş tüm hizmetlerle çevir</string>
+    <string name="diagnostics_hud_header">Tanılama</string>
 </resources>

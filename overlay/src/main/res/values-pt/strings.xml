@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Méd.</string>
     <string name="translation_service_auto">Automático (cascata)</string>
     <string name="translation_service_auto_detail">Traduzir com todos os serviços ativados</string>
+    <string name="diagnostics_hud_header">Diagnóstico</string>
 </resources>

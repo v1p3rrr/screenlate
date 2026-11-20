@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">เฉลี่ย</string>
     <string name="translation_service_auto">อัตโนมัติ (แบบลดหลั่น)</string>
     <string name="translation_service_auto_detail">แปลด้วยบริการทั้งหมดที่เปิดใช้งาน</string>
+    <string name="diagnostics_hud_header">การวินิจฉัย</string>
 </resources>

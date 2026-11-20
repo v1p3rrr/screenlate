@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">ממוצע</string>
     <string name="translation_service_auto">אוטומטי (מדורג)</string>
     <string name="translation_service_auto_detail">תרגום באמצעות כל השירותים המופעלים</string>
+    <string name="diagnostics_hud_header">אבחון</string>
 </resources>

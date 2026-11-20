@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Сер.</string>
     <string name="translation_service_auto">Автоматично (каскад)</string>
     <string name="translation_service_auto_detail">Переклад усіма увімкненими сервісами</string>
+    <string name="diagnostics_hud_header">Діагностика</string>
 </resources>

@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Moy.</string>
     <string name="translation_service_auto">Automatique (cascade)</string>
     <string name="translation_service_auto_detail">Traduire avec tous les services activés</string>
+    <string name="diagnostics_hud_header">Diagnostic</string>
 </resources>

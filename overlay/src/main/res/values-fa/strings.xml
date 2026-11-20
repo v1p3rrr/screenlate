@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">میانگین</string>
     <string name="translation_service_auto">خودکار (آبشاری)</string>
     <string name="translation_service_auto_detail">ترجمه با تمام سرویس‌های فعال</string>
+    <string name="diagnostics_hud_header">عیب‌یابی</string>
 </resources>

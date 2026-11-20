@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">গড়</string>
     <string name="translation_service_auto">স্বয়ংক্রিয় (ক্যাসকেড)</string>
     <string name="translation_service_auto_detail">সমস্ত সক্রিয় পরিষেবা দিয়ে অনুবাদ করুন</string>
+    <string name="diagnostics_hud_header">বিশ্লেষণ</string>
 </resources>

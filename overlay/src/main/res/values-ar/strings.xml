@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">متوسط</string>
     <string name="translation_service_auto">تلقائي (تسلسلي)</string>
     <string name="translation_service_auto_detail">الترجمة باستخدام جميع الخدمات الممكنة</string>
+    <string name="diagnostics_hud_header">التشخيص</string>
 </resources>

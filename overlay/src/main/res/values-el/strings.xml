@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Μ.Ο.</string>
     <string name="translation_service_auto">Αυτόματα (διαδοχικά)</string>
     <string name="translation_service_auto_detail">Μετάφραση με όλες τις ενεργοποιημένες υπηρεσίες</string>
+    <string name="diagnostics_hud_header">Διαγνωστικά</string>
 </resources>

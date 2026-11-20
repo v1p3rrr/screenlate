@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Prům.</string>
     <string name="translation_service_auto">Automaticky (kaskáda)</string>
     <string name="translation_service_auto_detail">Překládat všemi povolenými službami</string>
+    <string name="diagnostics_hud_header">Diagnostika</string>
 </resources>

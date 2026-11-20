@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Rata.</string>
     <string name="translation_service_auto">Otomatis (kaskade)</string>
     <string name="translation_service_auto_detail">Terjemahkan dengan semua layanan yang diaktifkan</string>
+    <string name="diagnostics_hud_header">Diagnostik</string>
 </resources>

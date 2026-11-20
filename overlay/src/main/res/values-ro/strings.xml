@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Med.</string>
     <string name="translation_service_auto">Automat (cascadă)</string>
     <string name="translation_service_auto_detail">Traduceți cu toate serviciile activate</string>
+    <string name="diagnostics_hud_header">Diagnostic</string>
 </resources>

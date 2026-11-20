@@ -199,56 +199,58 @@ fun AboutScreen(
                 }
                 if (saveFailed) Hint(stringResource(R.string.about_logs_save_failed))
             }
-            SectionCard(title = stringResource(R.string.about_diagnostics_title)) {
-                Hint(stringResource(R.string.about_diagnostics_hint))
+            if (viewModel.isDiagnosticsAvailable) {
+                SectionCard(title = stringResource(R.string.about_diagnostics_title)) {
+                    Hint(stringResource(R.string.about_diagnostics_hint))
 
-                val exitText = lastExit?.let { record ->
-                    val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                    stringResource(
-                        R.string.about_diagnostics_last_exit,
-                        ExitReasons.describe(record) { timeFormat.format(Date(it)) },
+                    val exitText = lastExit?.let { record ->
+                        val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                        stringResource(
+                            R.string.about_diagnostics_last_exit,
+                            ExitReasons.describe(record) { timeFormat.format(Date(it)) },
+                        )
+                    } ?: stringResource(R.string.about_diagnostics_no_exit)
+                    Text(exitText, style = MaterialTheme.typography.bodyMedium)
+
+                    val trimText = diagnostics.lastTrim?.let { trim ->
+                        val agoSec = ((System.currentTimeMillis() - trim.timestamp) / 1000).coerceAtLeast(0)
+                        val agoText = if (agoSec < 60) "${agoSec}s" else "${agoSec / 60}m"
+                        stringResource(
+                            R.string.about_diagnostics_memory_trim,
+                            ProcessDiagnostics.trimLevelName(trim.level),
+                            agoText,
+                        )
+                    } ?: stringResource(R.string.about_diagnostics_no_trim)
+                    Text(trimText, style = MaterialTheme.typography.bodyMedium)
+
+                    Text(
+                        stringResource(
+                            R.string.about_diagnostics_ram,
+                            diagnostics.totalPssMb,
+                            diagnostics.heapUsedMb,
+                            diagnostics.heapMaxMb,
+                            diagnostics.nativeAllocatedMb,
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
                     )
-                } ?: stringResource(R.string.about_diagnostics_no_exit)
-                Text(exitText, style = MaterialTheme.typography.bodyMedium)
 
-                val trimText = diagnostics.lastTrim?.let { trim ->
-                    val agoSec = ((System.currentTimeMillis() - trim.timestamp) / 1000).coerceAtLeast(0)
-                    val agoText = if (agoSec < 60) "${agoSec}s" else "${agoSec / 60}m"
-                    stringResource(
-                        R.string.about_diagnostics_memory_trim,
-                        ProcessDiagnostics.trimLevelName(trim.level),
-                        agoText,
+                    Text(
+                        stringResource(
+                            R.string.about_diagnostics_cpu,
+                            diagnostics.cpuTimeMs / 1000,
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
                     )
-                } ?: stringResource(R.string.about_diagnostics_no_trim)
-                Text(trimText, style = MaterialTheme.typography.bodyMedium)
 
-                Text(
-                    stringResource(
-                        R.string.about_diagnostics_ram,
-                        diagnostics.totalPssMb,
-                        diagnostics.heapUsedMb,
-                        diagnostics.heapMaxMb,
-                        diagnostics.nativeAllocatedMb,
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                    HorizontalDivider()
 
-                Text(
-                    stringResource(
-                        R.string.about_diagnostics_cpu,
-                        diagnostics.cpuTimeMs / 1000,
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-
-                HorizontalDivider()
-
-                SwitchRow(
-                    label = stringResource(R.string.diagnostics_hud_title),
-                    hint = stringResource(R.string.diagnostics_hud_summary),
-                    checked = hudEnabled,
-                    onChange = viewModel::setDiagnosticsHud,
-                )
+                    SwitchRow(
+                        label = stringResource(R.string.diagnostics_hud_title),
+                        hint = stringResource(R.string.diagnostics_hud_summary),
+                        checked = hudEnabled,
+                        onChange = viewModel::setDiagnosticsHud,
+                    )
+                }
             }
         }
     }

@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">اوسط</string>
     <string name="translation_service_auto">خودکار (کیسکیڈ)</string>
     <string name="translation_service_auto_detail">تمام فعال خدمات کے ساتھ ترجمہ کریں</string>
+    <string name="diagnostics_hud_header">تشخیص</string>
 </resources>

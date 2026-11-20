@@ -3,7 +3,9 @@ package com.vpr.screenlate.settings
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.vpr.screenlate.BuildConfig
 import com.vpr.screenlate.R
+import java.text.Normalizer
 
 /**
  * An item in the searchable settings index.
@@ -33,7 +35,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_visible_hint,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("пузырь", "плавающий", "floating", "bubble", "tile", "шторка"),
+            keywords = listOf("floating", "bubble", "tile"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BUBBLE,
@@ -41,14 +43,14 @@ object SettingsIndex {
             summaryRes = R.string.bubble_aim_hint,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("прицел", "палец", "центр", "aim", "finger", "center", "double tap", "двойной тап"),
+            keywords = listOf("aim", "finger", "center", "double tap"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BUBBLE,
             titleRes = R.string.bubble_dock_side,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("dock", "edge", "парковка", "край", "лево", "право", "left", "right"),
+            keywords = listOf("dock", "edge", "left", "right"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BUBBLE,
@@ -56,21 +58,21 @@ object SettingsIndex {
             summaryRes = R.string.bubble_dock_top_bottom_hint,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("верх", "низ", "top", "bottom", "gestures", "жесты", "край"),
+            keywords = listOf("top", "bottom", "gestures"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BUBBLE,
             titleRes = R.string.bubble_highlight,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("подсветка", "выделение", "highlight", "word"),
+            keywords = listOf("highlight", "word"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BUBBLE,
             titleRes = R.string.bubble_haptics,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("вибрация", "отклик", "vibration", "haptic"),
+            keywords = listOf("vibration", "haptic"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BUBBLE,
@@ -78,7 +80,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_color_use_app_hint,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("цвет", "color", "accent", "акцент", "theme", "тема"),
+            keywords = listOf("color", "accent", "theme"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BUBBLE,
@@ -86,7 +88,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_hidden_apps_hint,
             sectionRes = R.string.bubble_title,
             iconRes = R.drawable.ic_touch_app,
-            keywords = listOf("скрывать", "приложения", "черный список", "hidden", "apps", "blacklist"),
+            keywords = listOf("hidden", "apps", "blacklist"),
         ),
 
         // Recognition
@@ -96,7 +98,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_ocr_engines_info,
             sectionRes = R.string.recognition_title,
             iconRes = R.drawable.ic_document_scanner,
-            keywords = listOf("движок", "lens", "ml kit", "распознавание", "ocr", "engines", "cloud", "облако"),
+            keywords = listOf("lens", "ml kit", "ocr", "engines", "cloud"),
         ),
         SettingsIndexItem(
             page = SettingsPage.RECOGNITION,
@@ -104,7 +106,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_small_text_hint,
             sectionRes = R.string.recognition_title,
             iconRes = R.drawable.ic_document_scanner,
-            keywords = listOf("ускорение", "мелкий текст", "boost", "small text", "crops"),
+            keywords = listOf("boost", "small text", "crops"),
         ),
         SettingsIndexItem(
             page = SettingsPage.RECOGNITION,
@@ -112,7 +114,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_ocr_saving_hint,
             sectionRes = R.string.recognition_title,
             iconRes = R.drawable.ic_document_scanner,
-            keywords = listOf("экономия", "нагрузка", "saving", "cpu", "батарея", "delay"),
+            keywords = listOf("saving", "cpu", "delay"),
         ),
         SettingsIndexItem(
             page = SettingsPage.RECOGNITION,
@@ -120,7 +122,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_read_app_text_hint,
             sectionRes = R.string.recognition_title,
             iconRes = R.drawable.ic_document_scanner,
-            keywords = listOf("текст приложения", "accessibility", "app text", "спецвозможности"),
+            keywords = listOf("accessibility", "app text"),
         ),
         SettingsIndexItem(
             page = SettingsPage.RECOGNITION,
@@ -128,7 +130,7 @@ object SettingsIndex {
             summaryRes = R.string.bubble_app_text_only_hint,
             sectionRes = R.string.recognition_title,
             iconRes = R.drawable.ic_document_scanner,
-            keywords = listOf("без скриншотов", "только текст", "app text only", "e-ink", "без сети"),
+            keywords = listOf("app text only", "e-ink"),
         ),
 
         // Lookup
@@ -137,7 +139,7 @@ object SettingsIndex {
             titleRes = R.string.lookup_scanning,
             sectionRes = R.string.lookup_title,
             iconRes = R.drawable.ic_manage_search,
-            keywords = listOf("сканирование", "поиск", "длина", "max results", "результаты"),
+            keywords = listOf("max results"),
         ),
         SettingsIndexItem(
             page = SettingsPage.LOOKUP,
@@ -145,7 +147,7 @@ object SettingsIndex {
             summaryRes = R.string.lookup_merge_variants_hint,
             sectionRes = R.string.lookup_title,
             iconRes = R.drawable.ic_manage_search,
-            keywords = listOf("объединение", "варианты", "кандзи", "merge", "variants"),
+            keywords = listOf("merge", "variants"),
         ),
         SettingsIndexItem(
             page = SettingsPage.LOOKUP,
@@ -153,7 +155,7 @@ object SettingsIndex {
             summaryRes = R.string.lookup_romaji_hint,
             sectionRes = R.string.lookup_title,
             iconRes = R.drawable.ic_manage_search,
-            keywords = listOf("ромаджи", "romaji", "латиница", "конвертация"),
+            keywords = listOf("romaji"),
         ),
         SettingsIndexItem(
             page = SettingsPage.LOOKUP,
@@ -161,7 +163,7 @@ object SettingsIndex {
             summaryRes = R.string.lookup_text_replacements_hint,
             sectionRes = R.string.lookup_title,
             iconRes = R.drawable.ic_manage_search,
-            keywords = listOf("замены", "текст", "replacements", "правила"),
+            keywords = listOf("replacements"),
         ),
 
         // Dictionaries
@@ -171,21 +173,21 @@ object SettingsIndex {
             summaryRes = R.string.dictionaries_order_hint,
             sectionRes = R.string.home_dictionaries_title,
             iconRes = R.drawable.ic_library_books,
-            keywords = listOf("словари", "yomitan", "каталог", "порядок", "приоритет", "import", "импорт"),
+            keywords = listOf("yomitan", "import"),
         ),
         SettingsIndexItem(
             page = SettingsPage.DICTIONARIES,
             titleRes = R.string.dictionaries_import_file,
             sectionRes = R.string.home_dictionaries_title,
             iconRes = R.drawable.ic_library_books,
-            keywords = listOf("файл", "архив", "zip", "импорт словаря", "import"),
+            keywords = listOf("zip", "import"),
         ),
         SettingsIndexItem(
             page = SettingsPage.DICTIONARIES,
             titleRes = R.string.dictionaries_catalog,
             sectionRes = R.string.home_dictionaries_title,
             iconRes = R.drawable.ic_library_books,
-            keywords = listOf("загрузка", "скачать", "каталог", "jmdict", "колобок", "wiktionary"),
+            keywords = listOf("jmdict", "wiktionary"),
         ),
         SettingsIndexItem(
             page = SettingsPage.DICTIONARIES,
@@ -193,7 +195,7 @@ object SettingsIndex {
             summaryRes = R.string.dictionaries_sort_aggregate_hint,
             sectionRes = R.string.home_dictionaries_title,
             iconRes = R.drawable.ic_library_books,
-            keywords = listOf("гармоническая", "среднее", "частотность", "сортировка", "harmonic", "frequency"),
+            keywords = listOf("harmonic", "frequency"),
         ),
 
         // Anki
@@ -202,14 +204,14 @@ object SettingsIndex {
             titleRes = R.string.anki_deck,
             sectionRes = R.string.anki_title,
             iconRes = R.drawable.ic_style,
-            keywords = listOf("колода", "deck", "карточки", "anki", "ankidroid"),
+            keywords = listOf("deck", "anki", "ankidroid"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ANKI,
             titleRes = R.string.anki_model,
             sectionRes = R.string.anki_title,
             iconRes = R.drawable.ic_style,
-            keywords = listOf("тип записи", "модель", "note type", "model"),
+            keywords = listOf("note type", "model"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ANKI,
@@ -217,14 +219,14 @@ object SettingsIndex {
             summaryRes = R.string.anki_fields_hint,
             sectionRes = R.string.anki_title,
             iconRes = R.drawable.ic_style,
-            keywords = listOf("поля", "шаблоны", "маркеры", "fields", "expression", "reading", "glossary"),
+            keywords = listOf("fields", "expression", "reading", "glossary"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ANKI,
             titleRes = R.string.anki_tags,
             sectionRes = R.string.anki_title,
             iconRes = R.drawable.ic_style,
-            keywords = listOf("теги", "метки", "tags"),
+            keywords = listOf("tags"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ANKI,
@@ -232,7 +234,7 @@ object SettingsIndex {
             summaryRes = R.string.anki_screenshot_by_default_hint,
             sectionRes = R.string.anki_title,
             iconRes = R.drawable.ic_style,
-            keywords = listOf("скриншот", "снимок", "screenshot", "картинка", "обрезка"),
+            keywords = listOf("screenshot"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ANKI,
@@ -240,14 +242,14 @@ object SettingsIndex {
             summaryRes = R.string.anki_remember_crop_area_hint,
             sectionRes = R.string.anki_title,
             iconRes = R.drawable.ic_style,
-            keywords = listOf("запоминать область", "рамка", "crop", "area", "размер скриншота"),
+            keywords = listOf("crop", "area"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ANKI,
             titleRes = R.string.anki_duplicate_check,
             sectionRes = R.string.anki_title,
             iconRes = R.drawable.ic_style,
-            keywords = listOf("дубликаты", "проверка дубликатов", "duplicates", "overlap"),
+            keywords = listOf("duplicates", "overlap"),
         ),
 
         // Audio
@@ -256,21 +258,21 @@ object SettingsIndex {
             titleRes = R.string.audio_playback,
             sectionRes = R.string.audio_title,
             iconRes = R.drawable.ic_volume_up,
-            keywords = listOf("воспроизведение", "звук", "озвучка", "playback", "audio"),
+            keywords = listOf("playback", "audio"),
         ),
         SettingsIndexItem(
             page = SettingsPage.AUDIO,
             titleRes = R.string.audio_auto_play,
             sectionRes = R.string.audio_title,
             iconRes = R.drawable.ic_volume_up,
-            keywords = listOf("автовоспроизведение", "авто", "autoplay"),
+            keywords = listOf("autoplay"),
         ),
         SettingsIndexItem(
             page = SettingsPage.AUDIO,
             titleRes = R.string.audio_volume,
             sectionRes = R.string.audio_title,
             iconRes = R.drawable.ic_volume_up,
-            keywords = listOf("громкость", "volume", "sound"),
+            keywords = listOf("volume", "sound"),
         ),
         SettingsIndexItem(
             page = SettingsPage.AUDIO,
@@ -278,7 +280,7 @@ object SettingsIndex {
             summaryRes = R.string.audio_sources_hint,
             sectionRes = R.string.audio_title,
             iconRes = R.drawable.ic_volume_up,
-            keywords = listOf("источники аудио", "jpod", "forvo", "server", "tts", "произношение"),
+            keywords = listOf("jpod", "forvo", "server", "tts"),
         ),
         SettingsIndexItem(
             page = SettingsPage.AUDIO,
@@ -286,7 +288,7 @@ object SettingsIndex {
             summaryRes = R.string.audio_regions_hint,
             sectionRes = R.string.audio_title,
             iconRes = R.drawable.ic_volume_up,
-            keywords = listOf("диалекты", "регионы", "акценты", "regions", "accents"),
+            keywords = listOf("regions", "accents"),
         ),
 
         // Popup
@@ -296,7 +298,7 @@ object SettingsIndex {
             summaryRes = R.string.popup_tap_lookup_hint,
             sectionRes = R.string.popup_settings_title,
             iconRes = R.drawable.ic_web_asset,
-            keywords = listOf("тап", "определения", "кандзи", "вложенный поиск", "tap lookup", "definitions"),
+            keywords = listOf("tap lookup", "definitions"),
         ),
         SettingsIndexItem(
             page = SettingsPage.POPUP,
@@ -304,7 +306,7 @@ object SettingsIndex {
             summaryRes = R.string.popup_hide_outside_tap_hint,
             sectionRes = R.string.popup_settings_title,
             iconRes = R.drawable.ic_web_asset,
-            keywords = listOf("закрывать снаружи", "тап вне окна", "outside tap", "dismiss"),
+            keywords = listOf("outside tap", "dismiss"),
         ),
         SettingsIndexItem(
             page = SettingsPage.POPUP,
@@ -312,7 +314,7 @@ object SettingsIndex {
             summaryRes = R.string.popup_hide_after_add_hint,
             sectionRes = R.string.popup_settings_title,
             iconRes = R.drawable.ic_web_asset,
-            keywords = listOf("скрывать после добавления", "anki add", "hide after add"),
+            keywords = listOf("anki add", "hide after add"),
         ),
         SettingsIndexItem(
             page = SettingsPage.POPUP,
@@ -320,7 +322,7 @@ object SettingsIndex {
             summaryRes = R.string.popup_hide_off_word_hint,
             sectionRes = R.string.popup_settings_title,
             iconRes = R.drawable.ic_web_asset,
-            keywords = listOf("скрывать при уходе", "off word"),
+            keywords = listOf("off word"),
         ),
         SettingsIndexItem(
             page = SettingsPage.POPUP,
@@ -328,7 +330,7 @@ object SettingsIndex {
             summaryRes = R.string.popup_show_source_hint,
             sectionRes = R.string.popup_settings_title,
             iconRes = R.drawable.ic_web_asset,
-            keywords = listOf("исходный текст", "source text", "распознанная строка"),
+            keywords = listOf("source text"),
         ),
         SettingsIndexItem(
             page = SettingsPage.POPUP,
@@ -336,7 +338,7 @@ object SettingsIndex {
             summaryRes = R.string.popup_copy_switch_hint,
             sectionRes = R.string.popup_settings_title,
             iconRes = R.drawable.ic_web_asset,
-            keywords = listOf("копирование", "copy", "буфер обмена", "html"),
+            keywords = listOf("copy", "html"),
         ),
         SettingsIndexItem(
             page = SettingsPage.POPUP,
@@ -344,7 +346,7 @@ object SettingsIndex {
             summaryRes = R.string.popup_font_hint,
             sectionRes = R.string.popup_settings_title,
             iconRes = R.drawable.ic_web_asset,
-            keywords = listOf("шрифт", "масштаб", "тема попапа", "размер текста", "font", "scale", "css"),
+            keywords = listOf("font", "scale", "css"),
         ),
 
         // Translation
@@ -354,7 +356,7 @@ object SettingsIndex {
             summaryRes = R.string.translation_button_hint,
             sectionRes = R.string.translation_title,
             iconRes = R.drawable.ic_translate,
-            keywords = listOf("кнопка перевода", "переводчик", "translate button"),
+            keywords = listOf("translate button"),
         ),
         SettingsIndexItem(
             page = SettingsPage.TRANSLATION,
@@ -362,7 +364,7 @@ object SettingsIndex {
             summaryRes = R.string.translation_anki_hint,
             sectionRes = R.string.translation_title,
             iconRes = R.drawable.ic_translate,
-            keywords = listOf("перевод в anki", "sentence translation", "карточки"),
+            keywords = listOf("sentence translation"),
         ),
         SettingsIndexItem(
             page = SettingsPage.TRANSLATION,
@@ -370,22 +372,20 @@ object SettingsIndex {
             summaryRes = R.string.translation_services_hint,
             sectionRes = R.string.translation_title,
             iconRes = R.drawable.ic_translate,
-            keywords = listOf("сервисы", "bing", "google", "edge", "каскад", "приоритет"),
+            keywords = listOf("bing", "google", "edge"),
         ),
         SettingsIndexItem(
             page = SettingsPage.TRANSLATION,
             titleRes = R.string.translation_language_title,
             sectionRes = R.string.translation_title,
             iconRes = R.drawable.ic_translate,
-            keywords = listOf("язык перевода", "целевой язык", "target language"),
+            keywords = listOf("target language"),
         ),
         SettingsIndexItem(
             page = SettingsPage.TRANSLATION,
             titleRes = R.string.translation_test_title,
             sectionRes = R.string.translation_title,
-            iconRes = R.drawable.ic_translate,
-            keywords = listOf("тест перевода", "проверка скорости", "тест"),
-        ),
+            iconRes = R.drawable.ic_translate,        ),
 
         // Camera
         SettingsIndexItem(
@@ -394,7 +394,7 @@ object SettingsIndex {
             summaryRes = R.string.settings_camera_summary,
             sectionRes = R.string.camera_title,
             iconRes = R.drawable.ic_photo_camera,
-            keywords = listOf("камера", "фото", "снимки", "поворот", "галерея", "photo", "camera"),
+            keywords = listOf("photo", "camera"),
         ),
 
         // Appearance
@@ -403,7 +403,7 @@ object SettingsIndex {
             titleRes = R.string.settings_theme_title,
             sectionRes = R.string.appearance_title,
             iconRes = R.drawable.ic_palette,
-            keywords = listOf("тема", "светлая", "темная", "системная", "theme", "dark", "light"),
+            keywords = listOf("theme", "dark", "light"),
         ),
         SettingsIndexItem(
             page = SettingsPage.APPEARANCE,
@@ -411,7 +411,7 @@ object SettingsIndex {
             summaryRes = R.string.settings_colors_hint,
             sectionRes = R.string.appearance_title,
             iconRes = R.drawable.ic_palette,
-            keywords = listOf("палитра", "цвета", "акцент", "palette", "custom color"),
+            keywords = listOf("palette", "custom color"),
         ),
         SettingsIndexItem(
             page = SettingsPage.APPEARANCE,
@@ -419,14 +419,14 @@ object SettingsIndex {
             summaryRes = R.string.eink_hint,
             sectionRes = R.string.appearance_title,
             iconRes = R.drawable.ic_palette,
-            keywords = listOf("e-ink", "электронная бумага", "черно-белый", "контраст"),
+            keywords = listOf("e-ink"),
         ),
         SettingsIndexItem(
             page = SettingsPage.APPEARANCE,
             titleRes = R.string.settings_language,
             sectionRes = R.string.appearance_title,
             iconRes = R.drawable.ic_palette,
-            keywords = listOf("язык интерфейса", "интерфейс", "app language", "русский", "english"),
+            keywords = listOf("app language", "english"),
         ),
 
         // Background
@@ -435,7 +435,7 @@ object SettingsIndex {
             titleRes = R.string.background_battery_title,
             sectionRes = R.string.background_title,
             iconRes = R.drawable.ic_battery,
-            keywords = listOf("батарея", "оптимизация", "аккумулятор", "выгрузка", "battery", "dontkillmyapp"),
+            keywords = listOf("battery", "dontkillmyapp"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BACKGROUND,
@@ -443,7 +443,7 @@ object SettingsIndex {
             summaryRes = R.string.background_launch_text,
             sectionRes = R.string.background_title,
             iconRes = R.drawable.ic_battery,
-            keywords = listOf("автозапуск", "фоновая работа", "косвенный запуск", "auto-launch", "background"),
+            keywords = listOf("auto-launch", "background"),
         ),
         SettingsIndexItem(
             page = SettingsPage.BACKGROUND,
@@ -451,7 +451,7 @@ object SettingsIndex {
             summaryRes = R.string.background_allowlist_text,
             sectionRes = R.string.background_title,
             iconRes = R.drawable.ic_battery,
-            keywords = listOf("замочек", "недавние", "recents", "lock", "force-stop", "принудительная остановка"),
+            keywords = listOf("recents", "lock", "force-stop"),
         ),
 
         // Backup
@@ -461,7 +461,7 @@ object SettingsIndex {
             summaryRes = R.string.backup_create_hint,
             sectionRes = R.string.backup_title,
             iconRes = R.drawable.ic_backup,
-            keywords = listOf("резервная копия", "бэкап", "экспорт", "импорт", "backup", "export", "restore"),
+            keywords = listOf("backup", "export", "restore"),
         ),
 
         // About
@@ -470,7 +470,7 @@ object SettingsIndex {
             titleRes = R.string.about_title,
             sectionRes = R.string.about_title,
             iconRes = R.drawable.ic_info,
-            keywords = listOf("о приложении", "версия", "about", "version"),
+            keywords = listOf("about", "version"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ABOUT,
@@ -478,41 +478,51 @@ object SettingsIndex {
             summaryRes = R.string.about_logs_hint,
             sectionRes = R.string.about_title,
             iconRes = R.drawable.ic_info,
-            keywords = listOf("логи", "журнал", "ошибки", "экспорт логов", "logs"),
+            keywords = listOf("logs"),
         ),
         SettingsIndexItem(
             page = SettingsPage.ABOUT,
             titleRes = R.string.about_libraries,
             sectionRes = R.string.about_title,
             iconRes = R.drawable.ic_info,
-            keywords = listOf("лицензии", "библиотеки", "благодарности", "libraries", "notices", "licenses"),
+            keywords = listOf("libraries", "notices", "licenses"),
         ),
-        SettingsIndexItem(
-            page = SettingsPage.ABOUT,
-            titleRes = R.string.diagnostics_hud_title,
-            summaryRes = R.string.diagnostics_hud_summary,
-            sectionRes = R.string.about_title,
-            iconRes = R.drawable.ic_info,
-            keywords = listOf("диагностика", "память", "ram", "pss", "heap", "cpu", "hud", "оверлей", "нагрузка", "процессор"),
-        ),
-    )
+    ).let { list ->
+        if (BuildConfig.DEBUG) {
+            list + SettingsIndexItem(
+                page = SettingsPage.ABOUT,
+                titleRes = R.string.diagnostics_hud_title,
+                summaryRes = R.string.diagnostics_hud_summary,
+                sectionRes = R.string.about_title,
+                iconRes = R.drawable.ic_info,
+                keywords = listOf("ram", "pss", "heap", "cpu", "hud"),
+            )
+        } else {
+            list
+        }
+    }
+
+    private val DIACRITICS = "\\p{M}+".toRegex()
+
+    private fun String.normalizeForSearch(): String =
+        Normalizer.normalize(this, Normalizer.Form.NFD).replace(DIACRITICS, "").lowercase()
 
     /**
      * Filters indexed items against [query].
      * Query is split into tokens; an item matches if every query token appears in its title, summary,
-     * section title, or extra keywords.
+     * section title, or extra keywords (case-insensitive, diacritic-insensitive).
      */
     fun search(query: String, resolveString: (Int) -> String): List<SettingsIndexItem> {
         val trimmed = query.trim()
         if (trimmed.isEmpty()) return emptyList()
-        val tokens = trimmed.lowercase().split("\\s+".toRegex()).filter { it.isNotEmpty() }
+        val tokens = trimmed.normalizeForSearch().split("\\s+".toRegex()).filter { it.isNotEmpty() }
         if (tokens.isEmpty()) return emptyList()
 
         return items.filter { item ->
-            val title = resolveString(item.titleRes).lowercase()
-            val summary = item.summaryRes?.let { resolveString(it).lowercase() } ?: ""
-            val section = resolveString(item.sectionRes).lowercase()
-            val keywords = item.keywords.map { it.lowercase() }
+            val title = resolveString(item.titleRes).normalizeForSearch()
+            val summary = item.summaryRes?.let { resolveString(it).normalizeForSearch() } ?: ""
+            val section = resolveString(item.sectionRes).normalizeForSearch()
+            val keywords = item.keywords.map { it.normalizeForSearch() }
 
             tokens.all { token ->
                 title.contains(token) ||

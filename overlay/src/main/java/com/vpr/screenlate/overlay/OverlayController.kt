@@ -1985,12 +1985,11 @@ class OverlayController(
         override fun media(dictionary: String, path: String): ByteArray? =
             runBlocking { lookup.media(dictionary, path, language) }
 
-        override fun onTranslate(request: Int) {
+        private fun translateSentence(request: Int, serviceChoice: TranslationService?) {
             val sentence = shownSentence()?.text
             scope.launch {
                 ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.TRANSLATE)
                 try {
-                    val serviceChoice = popupNotes.chosenTranslationService
                     val result = translation.forPopup(service, sentence, language, serviceChoice)
                     val text = (result["text"] as? JsonPrimitive)?.contentOrNull
                     if (text != null && sentence != null) {
@@ -2003,6 +2002,10 @@ class OverlayController(
             }
         }
 
+        override fun onTranslate(request: Int) {
+            translateSentence(request, popupNotes.chosenTranslationService)
+        }
+
         override fun onTranslationMenu(request: Int) {
             val items = listOf(
                 LookupPage.TranslationMenuItem(
@@ -2010,9 +2013,9 @@ class OverlayController(
                     service.getString(R.string.translation_service_auto),
                     service.getString(R.string.translation_service_auto_detail),
                 ),
-                LookupPage.TranslationMenuItem("bing", TranslationService.BING.label, "Bing Translator"),
-                LookupPage.TranslationMenuItem("google", TranslationService.GOOGLE.label, "Google Translate"),
-                LookupPage.TranslationMenuItem("edge", TranslationService.EDGE.label, "Edge Translator"),
+                LookupPage.TranslationMenuItem("bing", TranslationService.BING.label),
+                LookupPage.TranslationMenuItem("google", TranslationService.GOOGLE.label),
+                LookupPage.TranslationMenuItem("edge", TranslationService.EDGE.label),
             )
             popup.page.showTranslationMenu(request, items)
         }
@@ -2025,20 +2028,7 @@ class OverlayController(
                 else -> null
             }
             popupNotes.chosenTranslationService = serviceChoice
-            val sentence = shownSentence()?.text
-            scope.launch {
-                ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.TRANSLATE)
-                try {
-                    val result = translation.forPopup(service, sentence, language, serviceChoice)
-                    val text = (result["text"] as? JsonPrimitive)?.contentOrNull
-                    if (text != null && sentence != null) {
-                        popupNotes.setChosenTranslation(sentence, text)
-                    }
-                    popup.page.showTranslation(request, result)
-                } finally {
-                    ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
-                }
-            }
+            translateSentence(request, serviceChoice)
         }
 
         override fun onToggleDictionary(dictionary: String, collapsed: Boolean) {

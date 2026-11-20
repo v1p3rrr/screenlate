@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Ø</string>
     <string name="translation_service_auto">Automatisch (Kaskade)</string>
     <string name="translation_service_auto_detail">Mit allen aktivierten Diensten übersetzen</string>
+    <string name="diagnostics_hud_header">Diagnose</string>
 </resources>

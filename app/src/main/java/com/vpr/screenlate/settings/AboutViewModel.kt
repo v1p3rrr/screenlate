@@ -39,6 +39,10 @@ class AboutViewModel @Inject constructor(
             repository.cachedDictionaries?.sortedBy { it.priority }.orEmpty(),
         )
 
+    val isDiagnosticsAvailable: Boolean =
+        (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0 ||
+            com.vpr.screenlate.BuildConfig.DEBUG
+
     val diagnosticsHudEnabled: StateFlow<Boolean> = overlaySettings.settings
         .map { it.diagnosticsHud }
         .stateIn(

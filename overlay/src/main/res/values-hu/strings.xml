@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Átl.</string>
     <string name="translation_service_auto">Automatikus (kaszkád)</string>
     <string name="translation_service_auto_detail">Fordítás az összes engedélyezett szolgáltatással</string>
+    <string name="diagnostics_hud_header">Diagnosztika</string>
 </resources>

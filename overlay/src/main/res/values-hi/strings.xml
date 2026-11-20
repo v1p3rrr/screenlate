@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">औसत</string>
     <string name="translation_service_auto">स्वचालित (कैस्केड)</string>
     <string name="translation_service_auto_detail">सभी सक्षम सेवाओं के साथ अनुवाद करें</string>
+    <string name="diagnostics_hud_header">निदान</string>
 </resources>

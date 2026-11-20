@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Śr.</string>
     <string name="translation_service_auto">Automatycznie (kaskada)</string>
     <string name="translation_service_auto_detail">Tłumacz wszystkimi włączonymi usługami</string>
+    <string name="diagnostics_hud_header">Diagnostyka</string>
 </resources>

@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">평균</string>
     <string name="translation_service_auto">자동 (연쇄)</string>
     <string name="translation_service_auto_detail">활성화된 모든 서비스로 번역</string>
+    <string name="diagnostics_hud_header">진단</string>
 </resources>

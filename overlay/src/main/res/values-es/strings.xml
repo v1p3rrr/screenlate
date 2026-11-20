@@ -118,4 +118,5 @@
     <string name="overlay_freq_average">Prom.</string>
     <string name="translation_service_auto">Automático (cascada)</string>
     <string name="translation_service_auto_detail">Traducir con todos los servicios habilitados</string>
+    <string name="diagnostics_hud_header">Diagnóstico</string>
 </resources>

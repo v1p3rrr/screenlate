@@ -42,6 +42,14 @@ class SettingsIndexTest {
     }
 
     @Test
+    fun `search is diacritic-insensitive`() {
+        val results = SettingsIndex.search("création") { id ->
+            if (id == com.vpr.screenlate.R.string.anki_deck) "Creation" else ""
+        }
+        assertThat(results.map { it.page }).contains(SettingsPage.ANKI)
+    }
+
+    @Test
     fun `blank or whitespace query returns empty list`() {
         assertThat(SettingsIndex.search("") { "mock" }).isEmpty()
         assertThat(SettingsIndex.search("   ") { "mock" }).isEmpty()
