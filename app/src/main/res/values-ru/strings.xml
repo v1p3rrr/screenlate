@@ -290,6 +290,11 @@
     <string name="anki_mode_append">Дополнять</string>
     <string name="anki_mode_prepend">В начало</string>
     <string name="audio_volume">Громкость: %1$d%%</string>
+    <string name="search_settings">Поиск настроек</string>
+    <string name="search_settings_empty">Ничего не найдено</string>
+    <string name="search_settings_empty_hint">Попробуйте другие слова или проверьте написание</string>
+    <string name="search_clear">Очистить</string>
+    <string name="search_back">Назад</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_offline_mode">Принудительный офлайн-режим</string>
     <string name="settings_offline_mode_hint">Блокирует все сетевые запросы; принудительно использует распознавание на устройстве и локальное аудио.</string>

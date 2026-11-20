@@ -289,6 +289,11 @@
     <string name="anki_mode_append">Append</string>
     <string name="anki_mode_prepend">Prepend</string>
     <string name="audio_volume">Volume: %1$d%%</string>
+    <string name="search_settings">Search settings</string>
+    <string name="search_settings_empty">No settings found</string>
+    <string name="search_settings_empty_hint">Try different keywords or check spelling</string>
+    <string name="search_clear">Clear</string>
+    <string name="search_back">Back</string>
     <string name="settings_title">Settings</string>
     <string name="settings_offline_mode">Forced Offline Mode</string>
     <string name="settings_offline_mode_hint">Blocks all network requests; forces on-device recognition and local audio.</string>
