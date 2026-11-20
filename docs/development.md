@@ -2,6 +2,21 @@
 
 [architecture.md](architecture.md) describes the modules and how a lookup flows through them. The development plan, decisions and working notes live in [ai/](../ai).
 
+## Background diagnostics
+
+Debuggable Dev builds append background-state events and resource samples to the normal persistent log. Samples run
+on a background thread once per minute and are coalesced around state changes; they use no wake lock or alarm.
+Logs contain process identifiers, service/window/scan state, screen and power state, main-process memory categories,
+CPU deltas, elapsed and awake intervals, and system memory availability. Separate renderer resources are not included.
+The short process-state summary is also attached to Android exit history on Android 11 and later. Exit RSS/PSS are
+last samples, not exact values at death. About selects the last main-process exit; the journal keeps isolated exits too.
+Release builds do not start the expanded monitor. Existing HUD/About polling is independent and unchanged.
+
+Run `:core:common:testDebugUnitTest :app:testDebugUnitTest :overlay:testDebugUnitTest` for attribution, interval and
+coalescing checks. `BackgroundDiagnosticsDeviceTest` runs in the independent `core:common` instrumentation package;
+it checks real process sampling/export and that a non-debuggable context cannot enable the monitor. It does not
+simulate a manufacturer's cleanup policy or require the user's app, accessibility settings or Anki collection.
+
 ## Building
 
 - JDK 17 or newer for Gradle (the daemon JVM is provisioned automatically).

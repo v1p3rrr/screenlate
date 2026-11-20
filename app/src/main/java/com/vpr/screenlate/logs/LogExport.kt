@@ -43,6 +43,7 @@ object LogExport {
         }
         val stamp = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(Date())
         val file = File(directory, "screenlate-log-$stamp.txt")
+        com.vpr.screenlate.core.common.diagnostics.BackgroundDiagnostics.sampleForExport()
         Log.i(TAG, "Log exported")
         file.outputStream().buffered().use { out ->
             out.write(header(context).toByteArray())

@@ -17,6 +17,7 @@ import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
+import com.vpr.screenlate.core.common.diagnostics.BackgroundDiagnostics
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
@@ -91,6 +92,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        BackgroundDiagnostics.update("accessibility_connected") { it.copy(serviceConnected = true) }
         Log.i(TAG, "Service connected")
         connection = OverlayServiceStatus.connected()
         ServiceOffNotification.cancel(this)
@@ -179,6 +181,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     override fun onInterrupt() = Unit
 
     override fun onDestroy() {
+        BackgroundDiagnostics.update("accessibility_destroyed") { it.copy(serviceConnected = false) }
         // Still on the list: the system unbound the service; off it: someone turned the switch off.
         Log.i(TAG, stopDiagnostics.report(SystemClock.elapsedRealtime(), OverlayServiceStatus.isEnabled(this)))
         val connectionsAtStop = OverlayServiceStatus.connections

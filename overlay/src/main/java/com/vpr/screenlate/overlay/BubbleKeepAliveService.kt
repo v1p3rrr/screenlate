@@ -11,6 +11,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.vpr.screenlate.core.common.diagnostics.BackgroundDiagnostics
 import com.vpr.screenlate.core.common.log.Log
 
 /**
@@ -31,10 +32,12 @@ class BubbleKeepAliveService : Service() {
             }
         } catch (e: RuntimeException) {
             // The system refuses a foreground service in some states; the bubble works without it.
+            BackgroundDiagnostics.event("foreground_start_refused_${e.javaClass.simpleName}")
             Log.w(TAG, "Could not keep the service in the foreground", e)
             stopSelf()
             return START_NOT_STICKY
         }
+        BackgroundDiagnostics.update("foreground_started") { it.copy(foregroundService = true) }
         if (!OverlayServiceStatus.isEnabled(this)) {
             // The system restarted this service after the process was killed, and the accessibility switch has been
             // turned off since. Stopped only after startForeground, which a foreground start must always reach.
@@ -42,6 +45,16 @@ class BubbleKeepAliveService : Service() {
             return START_NOT_STICKY
         }
         return START_STICKY
+    }
+
+    override fun onDestroy() {
+        BackgroundDiagnostics.update("foreground_destroyed") { it.copy(foregroundService = false) }
+        super.onDestroy()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        BackgroundDiagnostics.event("foreground_task_removed")
+        super.onTaskRemoved(rootIntent)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -81,6 +94,7 @@ class BubbleKeepAliveService : Service() {
 
         /** Starts or stops the notification; a start the system refuses is logged and left alone. */
         fun keepAlive(context: Context, enabled: Boolean) {
+            BackgroundDiagnostics.update("keep_alive_requested") { it.copy(keepAliveRequested = enabled) }
             val intent = Intent(context, BubbleKeepAliveService::class.java)
             if (!enabled) {
                 context.stopService(intent)
@@ -93,6 +107,7 @@ class BubbleKeepAliveService : Service() {
                     context.startService(intent)
                 }
             } catch (e: RuntimeException) {
+                BackgroundDiagnostics.event("keep_alive_start_refused_${e.javaClass.simpleName}")
                 Log.w(TAG, "Could not start the keep-alive service", e)
             }
         }

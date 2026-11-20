@@ -5,6 +5,7 @@ import android.content.res.Configuration as ResourcesConfiguration
 import android.content.res.Resources
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.vpr.screenlate.core.common.diagnostics.BackgroundDiagnostics
 import com.vpr.screenlate.core.common.diagnostics.ProcessDiagnostics
 import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
@@ -63,6 +64,7 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
         ProcessDiagnostics.recordTrimMemory(level)
+        BackgroundDiagnostics.event("trim_$level")
         Log.w(TAG, "onTrimMemory: ${ProcessDiagnostics.trimLevelName(level)} ($level)")
     }
 
@@ -70,6 +72,7 @@ class ScreenlateApplication : Application(), Configuration.Provider {
         // Before injection, so that lines logged while the graph is built reach the file too.
         AppLogs.install(this)
         super.onCreate()
+        BackgroundDiagnostics.install(this)
         MainScope().launch(Dispatchers.IO) {
             // Before anything writes the settings: an install without any is a first run.
             runCatching {

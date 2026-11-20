@@ -1,5 +1,20 @@
 # Status
 
+## Dev background diagnostics (2026-11-20)
+
+- Owner selected Dev-only expanded logs, state events plus background minute samples, and no application
+  optimizations in this change. [Binding scope and preliminary proposals](plans/2026-11-20-background-diagnostics.md).
+- Added service/foreground/window/scan/screen/power-state events and process resource snapshots, interval CPU/elapsed/
+  awake time, thread/descriptor counts and system memory state. No alarms, wake locks, recognized text or note data.
+  Short state summaries accompany Android 11+ historical exits. Normal export requests a fresh background snapshot.
+- Exit history retains main and external-process metadata; About selects the latest main-process exit. Memory is
+  labelled last sampled, and USER_REQUESTED is no longer indiscriminately labelled force-stop.
+- The sentence-recording stop crash has an exact mapping-based handoff in the plan and remains owned by that branch.
+  No OCR/model/WebView lifecycle, dictionary result, existing HUD/About sampling or audio behavior changed.
+- Verification: 1,245 JVM cases, zero failures/errors (four existing skips), affected-module debug lint, and one real
+  API 30 independent-package instrumentation test pass. Physical OEM cleanup/latency acceptance remains pending.
+- Implementation uses an isolated worktree from main; the sentence-audio checkout and its in-progress edits stay intact.
+
 ## Manual translation picker, settings search, and diagnostics (2026-11-20)
 
 - Implemented on branch `features/translation-picker-settings-search-diagnostics` and merged into `main` (`46fd825d`):

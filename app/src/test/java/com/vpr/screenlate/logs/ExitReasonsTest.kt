@@ -34,8 +34,8 @@ class ExitReasonsTest {
         val line = ExitReasons.describe(record(1, ApplicationExitInfo.REASON_USER_REQUESTED, "remove task")) { "at $it" }
 
         assertThat(line).isEqualTo(
-            "Process 4321 ended at 1: USER_REQUESTED (force-stop), status 0, importance 400 (cached), " +
-                "pss 120 MB, rss 250 MB, \"remove task\"",
+            "Process 4321 ended at 1: USER_REQUESTED, status 0, importance 400 (cached), " +
+                "last sampled pss 120 MB, rss 250 MB, \"remove task\"",
         )
     }
 
@@ -54,4 +54,28 @@ class ExitReasonsTest {
         assertThat(ExitReasons.reasonName(16)).isEqualTo("PACKAGE_UPDATED")
         assertThat(ExitReasons.reasonName(99)).isEqualTo("reason 99")
     }
+    @Test
+    fun `latest main exit is not masked by a later isolated renderer exit`() {
+        val main = record(100, ApplicationExitInfo.REASON_USER_REQUESTED).copy(processName = "com.vpr.screenlate.debug")
+        val renderer = record(110, ApplicationExitInfo.REASON_OTHER).copy(processName = "sandboxed_process0")
+        assertThat(ExitReasons.latestMainProcess(listOf(renderer, main), "com.vpr.screenlate.debug")).isEqualTo(main)
+        assertThat(ExitReasons.latestMainProcess(listOf(renderer), "com.vpr.screenlate.debug")).isNull()
+    }
+
+    @Test
+    fun `exit metadata identifies process and marks memory as last sampled`() {
+        val exit = record(100, ApplicationExitInfo.REASON_OTHER).copy(
+            processName = "sandboxed_process0", realUid = 99001, packageUid = 10123,
+        )
+        val line = ExitReasons.describe(exit) { "at $it" }
+        assertThat(line).contains("process sandboxed_process0")
+        assertThat(line).contains("uid 99001, package uid 10123")
+        assertThat(line).contains("last sampled")
+    }
+
+    @Test
+    fun `user requested reason does not assert every task removal is a force-stop`() {
+        assertThat(ExitReasons.reasonName(ApplicationExitInfo.REASON_USER_REQUESTED)).isEqualTo("USER_REQUESTED")
+    }
+
 }

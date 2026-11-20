@@ -18,6 +18,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.webkit.WebViewAssetLoader
+import com.vpr.screenlate.core.common.diagnostics.BackgroundDiagnostics
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.overlay.fonts.FontFiles
 import com.vpr.screenlate.overlay.fonts.PageFonts
@@ -161,6 +162,7 @@ class LookupPage(
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun createWebView(context: Context): WebView = WebView(context).apply {
+        if (reclaimable) BackgroundDiagnostics.update("popup_webview_created") { it.copy(webViewPresent = true) }
         setBackgroundColor(Color.TRANSPARENT)
         settings.javaScriptEnabled = true
         settings.allowFileAccess = false
@@ -299,6 +301,7 @@ class LookupPage(
     }
 
     fun destroy() {
+        if (reclaimable) BackgroundDiagnostics.update("popup_webview_destroyed") { it.copy(webViewPresent = false) }
         container.removeAllViews()
         webView?.destroy()
         webView = null
@@ -378,6 +381,11 @@ class LookupPage(
         override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
             val shown = view.isShown
             Log.w(TAG, "Lookup page renderer gone (crashed: ${detail.didCrash()}, shown: $shown)")
+            if (reclaimable) {
+                BackgroundDiagnostics.update("popup_renderer_gone_crashed_${detail.didCrash()}_shown_$shown") {
+                    it.copy(webViewPresent = false)
+                }
+            }
             container.removeView(view)
             view.destroy()
             pageReady = false

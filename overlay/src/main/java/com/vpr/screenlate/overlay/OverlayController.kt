@@ -32,6 +32,7 @@ import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.bubbleGlyph
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.diagnostics.BackgroundDiagnostics
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redactUrl
 import com.vpr.screenlate.core.common.redacted
@@ -479,6 +480,10 @@ class OverlayController(
     private fun applySettings(new: OverlaySettings) {
         val previous = settings
         settings = new
+        BackgroundDiagnostics.update("overlay_settings") {
+            it.copy(textSource = new.textSource.name, ocrMode = new.effectiveOcrEngines(offlineMode).name,
+                reduceOcrLoad = new.ocrSaving, hideOnOutsideTap = new.hideOnOutsideTap)
+        }
         popup.hideOnOutsideTap = new.hideOnOutsideTap
         if (new.diagnosticsHud != previous.diagnosticsHud) {
             if (new.diagnosticsHud) diagnosticsHud.show() else diagnosticsHud.hide()
@@ -721,6 +726,7 @@ class OverlayController(
     private fun dock(side: DockSide = settings.dockSide, atCurrentPlace: Boolean = false) {
         if (state != State.DOCKED) Log.d(TAG, "Bubble docked")
         state = State.DOCKED
+        BackgroundDiagnostics.update("bubble_docked") { it.copy(docked = true) }
         dockOnRelease = false
         closeScan()
         takeActiveLanguage()
@@ -780,6 +786,7 @@ class OverlayController(
     private fun startDrag(fromDock: Boolean) {
         if (fromDock) Log.d(TAG, "Bubble pulled out")
         state = State.DRAGGING
+        BackgroundDiagnostics.update("bubble_pulled_out") { it.copy(docked = false) }
         bubbleView.docked = false
         if (fromDock) {
             haptic()
@@ -1050,6 +1057,7 @@ class OverlayController(
     // region Scanning and lookup
 
     private fun resetScan() {
+        BackgroundDiagnostics.update("scan_closed") { it.copy(scanOpen = false) }
         ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
         scanId++
         scanJob?.cancel()
@@ -1093,6 +1101,7 @@ class OverlayController(
         // The old popup's word belongs to the old screen; ➕ there would take its sentence from the new scan.
         closePopup()
         resetScan()
+        BackgroundDiagnostics.update("scan_started") { it.copy(scanOpen = true, scanSequence = it.scanSequence + 1) }
         ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.SCANNING)
         takeActiveLanguage(warmUp = false)
         val source = lookupSources.source.value
@@ -1113,6 +1122,7 @@ class OverlayController(
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
+            BackgroundDiagnostics.update("recognition_started") { it.copy(recognitionJobs = it.recognitionJobs + 1) }
             try {
                 val ready = installation.current(language)
                 if (!ready.scanReady) {
@@ -1243,6 +1253,7 @@ class OverlayController(
                     ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(shot, it) }
                 }
         } finally {
+            BackgroundDiagnostics.update("recognition_finished") { it.copy(recognitionJobs = it.recognitionJobs - 1) }
             ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
         }
     }

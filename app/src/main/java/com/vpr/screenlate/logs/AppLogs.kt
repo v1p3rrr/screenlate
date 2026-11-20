@@ -1,6 +1,6 @@
 package com.vpr.screenlate.logs
 
-import android.app.ActivityManager
+import android.content.pm.ApplicationInfo
 import android.content.Context
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
@@ -21,7 +21,6 @@ object AppLogs {
     private const val TAG = "Screenlate"
     private const val DIRECTORY = "logs"
     private const val EXITS_SEEN = "exits-seen"
-    private const val MAX_EXITS = 16
 
     fun directory(context: Context): File = File(context.noBackupFilesDir, DIRECTORY)
 
@@ -35,24 +34,24 @@ object AppLogs {
         runCatching {
             val info = context.packageManager.getPackageInfo(context.packageName, 0)
             val versionCode = PackageInfoCompat.getLongVersionCode(info)
-            Log.i(TAG, "Process started: ${info.versionName} ($versionCode), Android ${Build.VERSION.RELEASE}")
+            Log.i(TAG, "Process started: ${info.versionName} ($versionCode), Android ${Build.VERSION.RELEASE}" +
+                if ((context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0)) {
+                    ", pid=${android.os.Process.myPid()} uid=${android.os.Process.myUid()} process=${context.applicationInfo.processName}"
+                } else "")
         }
         runCatching { logExits(context) }.onFailure { Log.w(TAG, "Cannot read the exit reasons: ${it.javaClass.simpleName}") }
     }
 
     private fun logExits(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
-        val manager = context.getSystemService(ActivityManager::class.java)
-        val records = manager.getHistoricalProcessExitReasons(context.packageName, 0, MAX_EXITS).map {
-            ExitRecord(it.timestamp, it.pid, it.reason, it.status, it.importance, it.pss, it.rss, it.description)
-        }
+        val records = ExitReasons.readRecords(context)
         val marker = File(directory(context), EXITS_SEEN)
         val seenUpTo = marker.takeIf { it.exists() }?.readText()?.trim()?.toLongOrNull() ?: 0L
         val exits = ExitReasons.newSince(records, seenUpTo)
         val time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).apply {
             timeZone = TimeZone.getDefault()
         }
-        exits.forEach { Log.i(TAG, ExitReasons.describe(it) { stamp -> time.format(Date(stamp)) }) }
+        exits.forEach { Log.i(TAG, ExitReasons.describe(it, detailed = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0)) { stamp -> time.format(Date(stamp)) }) }
         exits.lastOrNull()?.let {
             marker.parentFile?.mkdirs()
             marker.writeText(it.timestamp.toString())

@@ -459,3 +459,11 @@ A custom URL may point to a server on the home network over plain `http://`, as 
 - **"This app does not provide its text to accessibility services."** "App text only" is on, and the app under the aim shows its text as an image or does not provide it. Turn "App text only" off to recognize the screen.
 - **Kanji look Chinese.** The popup uses the phone's Japanese font; if the phone has none, the Popup settings offer to download Noto Sans JP.
 - **Text-to-speech says nothing.** No voice for the language is installed; install one in the system's text-to-speech settings. For some languages (Kazakh, Kyrgyz) the phone's engine has no voice: install a text-to-speech engine that has one and choose it there.
+
+## Diagnostic logs
+
+After the background service disappears, reopen Screenlate and use Settings → About → Save to Downloads or Share
+logs. The saved journal includes earlier process activity and Android's recorded exit reasons. Debuggable Dev builds
+also include service/window state and periodic resource samples; recognized text and note contents are excluded.
+Export soon after the incident because the journal and Android exit history have bounded retention. A process killed
+by the system may have no final callback, so the next launch supplies its historical exit record.

@@ -4187,3 +4187,17 @@ Observations, not changed:
 - The regenerated format 1 catalog contains 41 dictionary entries and no OCR models. The current `CatalogFileTest`
   passes 43/43; the old Japanese branch's three catalog tests also pass against this file. The generator regression
   test covers an OCR entry without legacy `kind` and `installedTitle` fields.
+
+## Background diagnostics verification (2026-11-20)
+
+| Case | Behavior | Category | Coverage | Checked |
+|---|---|---|---|---|
+| BGD1 | Latest main-process exit is selected over a later isolated-service exit; journal retains both | E | U ExitReasonsTest | 2026-11-20 |
+| BGD2 | Exit metadata identifies PID/process/UID and memory is labelled last sampled; USER_REQUESTED does not assert force-stop | E | U ExitReasonsTest | 2026-11-20 |
+| BGD3 | Event bursts share a sample budget; CPU intervals distinguish elapsed, awake and multicore process time | E | U BackgroundDiagnosticsTest | 2026-11-20 |
+| BGD4 | Dev monitor writes real process/resource/system state to the persistent journal; release context cannot enable it | E | I BackgroundDiagnosticsDeviceTest | 2026-11-20, API 30 |
+| BGD5 | Minute samples, screen-off/on, keep-alive and popup/catcher transitions remain available through ordinary export after natural process death | N | M,D | Not run end-to-end |
+| BGD6 | Existing HUD/recognition/WebView behavior and warm latency are preserved; monitor adds no alarm/wake lock | N | M,D | Physical latency/endurance pending |
+
+API 30 smoke used the independent core.common instrumentation package on a read-only emulator. It did not enable
+Screenlate accessibility, force-stop a package, access Anki or claim to reproduce OEM cleanup.

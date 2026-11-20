@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import com.vpr.screenlate.core.common.diagnostics.BackgroundDiagnostics
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import com.vpr.screenlate.overlay.web.LookupPage
@@ -123,6 +124,7 @@ class PopupController(
                 { windowManager.removeView(page.container) },
             ),
         )
+        BackgroundDiagnostics.update("popup_windows_attached") { it.copy(catcherAttached = attached, catcherFlags = catcherParams.flags) }
         return attached
     }
 
@@ -132,7 +134,11 @@ class PopupController(
         windowManager.removeView(page.container)
         windowManager.removeView(outsideCatcher)
         attached = false
+        BackgroundDiagnostics.update("popup_windows_detached") {
+            it.copy(catcherAttached = false, catcherActive = false, popupVisible = false)
+        }
         visible = false
+        BackgroundDiagnostics.update("popup_hidden") { it.copy(popupVisible = false) }
         bounds = null
         lastWord = null
         generation++
@@ -152,6 +158,7 @@ class PopupController(
         val refined = visible && lastWord?.let { isSameWord(it, word) } == true
         lastWord = word
         visible = true
+        BackgroundDiagnostics.update("popup_opened") { it.copy(popupVisible = true) }
         val shown = ++generation
         if (continued) {
             placing = true
@@ -301,6 +308,10 @@ class PopupController(
             outsideCatcher.visibility = View.GONE
             hideParams(catcherParams)
             if (attached) windowManager.updateViewLayout(outsideCatcher, catcherParams)
+        }
+        BackgroundDiagnostics.update("outside_catcher_changed") {
+            it.copy(catcherActive = active, catcherWidth = catcherParams.width,
+                catcherHeight = catcherParams.height, catcherFlags = catcherParams.flags)
         }
     }
 
