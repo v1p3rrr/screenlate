@@ -1,5 +1,20 @@
 # Status
 
+## Honor background force-stop investigation (2026-11-20)
+
+- Completed read-only analysis of the supplied 2,208,935-byte log, screenshots, the logged Git revisions and Android 15
+  primary sources. Full findings and source links: [OEM background limits](notes/oem-background-limits.md#honor-force-stop-investigation-2026-11-20).
+- Confirmed 15 explicit PowerGenie inactive-clean force-stops. First six exits have importance 200, later nine 125.
+  The new outside-tap window is a regression candidate, not a proven trigger; receiver/window lifecycle review found
+  no direct foreground-service or accessibility-disable regression. The OEM suffix is not a verified inactivity clock.
+- Found misleading latest-exit selection (isolated service cleanup 10 ms after the main exit), process-only HUD metrics,
+  stale exit memory samples, and an independent sentence-recording stop crash decoded using the matching R8 map.
+- Recorded UX-preserving measurement/idle candidates and discriminating A/B checks. No implementation plan, defaults,
+  model/WebView residency policy, application code, device settings or Anki data changed. The accidentally attached
+  APK was excluded at the owner's request. No claimed PowerGenie reproduction or tested fix; no device/build tests run.
+- Validation: parsed all 19,333 log lines, checked Git snapshots and R8 map IDs/line ranges, checked local Markdown links
+  and `git diff --check`. Unrelated in-progress sentence-audio/overlay changes stay outside this documentation commit.
+
 ## Sentence audio: Two-way settings recording control and Dev update build (2026-11-20)
 
 - Completed on branch `codex/sentence-audio-recording`:
