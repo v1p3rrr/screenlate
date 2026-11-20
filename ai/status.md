@@ -13,7 +13,11 @@
   No OCR/model/WebView lifecycle, dictionary result, existing HUD/About sampling or audio behavior changed.
 - Verification: 1,245 JVM cases, zero failures/errors (four existing skips), affected-module debug lint, and one real
   API 30 independent-package instrumentation test pass. Physical OEM cleanup/latency acceptance remains pending.
-- Implementation uses an isolated worktree from main; the sentence-audio checkout and its in-progress edits stay intact.
+- ARM64 Dev APK from e8124d7b is saved under original-checkout `testdata/local-research/builds/`, with matching
+  partitioned R8 mapping. Package/signature/debuggable/ABI checks pass; normal release vital lint and five real-WebView
+  tests pass. The page-only fixture omits unused MNN JNI due to an unrelated x86/elf_i386 native build failure.
+- Test packages and the owned emulator are cleaned up. Implementation uses an isolated worktree from main;
+  the sentence-audio checkout and its in-progress edits stay intact.
 
 ## Manual translation picker, settings search, and diagnostics (2026-11-20)
 

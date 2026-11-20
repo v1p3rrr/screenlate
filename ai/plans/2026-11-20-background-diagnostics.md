@@ -67,3 +67,28 @@ not contain core:media and does not implement the audio fix.
 - BackgroundDiagnosticsDeviceTest passes on API 30 in its independent instrumentation package; real process fields
   reach the bounded log and a release-context flag gate refuses startup. No owner app/Anki access or force-stop.
 - Physical-device natural-cleanup capture and warm-latency/endurance acceptance remain pending.
+
+## Dev artifact
+
+- Implementation commit: e8124d7b, pushed to origin/main without merging the sentence-audio branch.
+- APK: `testdata/local-research/builds/screenlate-dev-e8124d7b-min.apk` in the original checkout.
+  Package com.vpr.screenlate.debug, version 1.1.0-background-diagnostics-min (10100), ARM64 only, debuggable.
+- SHA-256: `662A7FD1078EC05BAE768BB1AD0A4D9AE447E078BEA2549DA3C0FD857E1D3696`.
+- Certificate SHA-256: `3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22`, matching earlier local Dev builds.
+- This R8 build emits a partitioned mapping archive, not mapping.txt. Preserve the original
+  `screenlate-dev-e8124d7b-min.mapping.prt` (21,260 class partitions plus metadata) for partition-aware retracing.
+  Archive SHA-256: `2E324C463F0C57FBEA08A6289396ECD82080383D790C6D5B231828114C3290E2`.
+- The app was not installed on the owner's phone. After a natural disappearance, reopen the app and export the
+  complete log promptly; the new launch appends the historical main-process exit and any available prior state summary.
+
+## Final verification and cleanup
+
+- The ARM64 Dev APK builds successfully with R8 and the expected Dev signing certificate/debuggable flag.
+- Normal release vital lint passes. Five existing real-WebView rendering/bridge/font tests pass on API 30.
+  This page-only fixture excludes MNN JNI, which it does not call: the optional 32-bit x86 native build fails with
+  incompatible elf_i386 objects in upstream MNN. ARM64 native assembly passed; no MNN source changes were made.
+- Independent test packages were uninstalled and the owned read-only, host-silent emulator was shut down.
+- Temporary source junctions used for native builds were removed; the source checkout's submodules and audio work
+  remain untouched. A future fresh worktree build requires the usual submodule initialization.
+- Physical-device cleanup selection, battery impact and warm-latency/endurance measurements remain acceptance work;
+  neither the emulator smoke nor added logs establish a fix for the proprietary PowerGenie selector.

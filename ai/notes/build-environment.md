@@ -314,3 +314,14 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `run-as <test-package> truncate -s <true-bytes> files/<file>` and compare SHA-256. This transferred the local MNN
   fixtures without granting storage access or staging them in the owner's shared files. Use only the isolated
   test package; uninstalling it removes its fixtures.
+
+## Diagnostic build artifacts (2026-11-20)
+
+The debuggable minified ARM64 build e8124d7b emitted `app/build/outputs/mapping/release/mapping.prt`, a partitioned
+R8 ZIP archive, rather than `mapping.txt`. Preserve that original archive next to the APK and use partition-aware
+retracing; concatenating class partitions is not an authoritative plain mapping. The saved APK/certificate/hash and
+mapping archive are listed in `ai/plans/2026-11-20-background-diagnostics.md`.
+
+The optional API 30 x86 WebView fixture hit upstream MNN objects incompatible with elf_i386 during linking. Its
+page-only tests do not invoke OCR and passed with `-x ':core:ocr-mnn:buildCMakeDebug[x86]'`. This exclusion applies
+only to that independent page fixture; the phone's ARM64 Dev APK includes successfully built native libraries.
