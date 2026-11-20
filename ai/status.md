@@ -1,5 +1,21 @@
 # Status
 
+## Manual translation picker, settings search, and diagnostics (2026-11-20)
+
+- Implemented on branch `features/translation-picker-settings-search-diagnostics` and merged into `main` (`46fd825d`):
+  - **Manual translation service picker (`popup.js`, `LookupPage.kt`, `OverlayController.kt`, `PopupNotes.kt`, `PopupTranslationSession.kt`, `SentenceTranslation.kt`):**
+    - Long-pressing either the header translation button or compact inline button in the lookup popup displays a menu with choices: Auto (cascade), Bing, Google, and Edge.
+    - Choosing a service translates the current sentence with that specific service immediately (`explicitService`), displaying the service label in the translation card.
+    - The chosen translation is session-scoped and seamlessly flows into Anki card export via `{sentence-translation}`. Selecting "Auto (cascade)" resets manual overrides and restores default automatic cascading. State clears automatically on popup dismissal or new scan.
+  - **Deep live settings search across all categories (`SettingsIndex.kt`, `SettingsScreen.kt`, `SettingsRows.kt`, `SettingsIndexTest.kt`):**
+    - Search action in the top app bar switches to an interactive search field with clear and back controls.
+    - Deep indexing covers all 13 settings sections with real-time multi-token keyword, title, summary, and section matching, normalized for case and diacritics.
+    - Clicking a search result navigates directly to the corresponding settings sub-screen (`onOpen(page)`). Summary text wraps naturally without truncation.
+  - **Memory, CPU, trim, and process exit diagnostics (`ProcessDiagnostics.kt`, `DiagnosticsHud.kt`, `AboutScreen.kt`, `AboutViewModel.kt`, `ExitReasons.kt`):**
+    - Real-time diagnostic tracking of PSS (Total/Dalvik/Native), Java Heap (used/max), Native Heap, CPU process time, `onTrimMemory` trim callbacks, and historical process exit reasons (`getHistoricalProcessExitReasons` / `REASON_USER_REQUESTED` force-stop) on API 30+.
+    - Draggable floating semi-transparent HUD overlay toggleable in `AboutScreen` (debug/dev builds only) showing live memory metrics, CPU time, and overlay lifecycle states (`Idle`, `Scanning`, `OCR`, `Lookup`, `Translate`). Includes a convenient `✕` dismiss button.
+  - **Code review:** Completed 4 iterative passes of two-axis code review (`/code-review`), finding and resolving all issues across standards (Kotlin formatting, diacritics, localized string cleanup, kotlinx JSON serialization, and `remember` in composables) and spec (accurate HUD lifecycle casing, session scoping, and cascade cache invalidation). All tests pass: 198 JS page tests, 100% Gradle unit tests, and lintDebug.
+
 ## Dictionary lookup fixes and nested definition tap-lookup (2026-11-20)
 
 - Implemented on branch `features/lookup-fixes-and-tap-definitions` and merged into `main` (`e7287187`):
