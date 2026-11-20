@@ -15,6 +15,8 @@
     - Real-time diagnostic tracking of PSS (Total/Dalvik/Native), Java Heap (used/max), Native Heap, CPU process time, `onTrimMemory` trim callbacks, and historical process exit reasons (`getHistoricalProcessExitReasons` / `REASON_USER_REQUESTED` force-stop) on API 30+.
     - Draggable floating semi-transparent HUD overlay toggleable in `AboutScreen` (debug/dev builds only) showing live memory metrics, CPU time, and overlay lifecycle states (`Idle`, `Scanning`, `OCR`, `Lookup`, `Translate`). Includes a convenient `✕` dismiss button.
   - **Code review:** Completed 4 iterative passes of two-axis code review (`/code-review`), finding and resolving all issues across standards (Kotlin formatting, diacritics, localized string cleanup, kotlinx JSON serialization, and `remember` in composables) and spec (accurate HUD lifecycle casing, session scoping, and cascade cache invalidation). All tests pass: 198 JS page tests, 100% Gradle unit tests, and lintDebug.
+- Minified ARM64 Dev APK from `8849e5f7` (on `main`): package `com.vpr.screenlate.debug`, label `Screenlate Dev`, version `1.1.0-8849e5f7-min` (`10100`), `32,572,738` bytes, debug-signed, `application-debuggable`. SHA-256 `C283E0E392A9F496B632C23A537061A3182E17D20CE3D3CFD8E7951C910B0302`.
+  - APK and R8 mapping (`screenlate-dev-8849e5f7-min.mapping.txt`) saved under ignored `testdata/local-research/builds/`.
 
 ## Dictionary lookup fixes and nested definition tap-lookup (2026-11-20)
 
