@@ -1978,6 +1978,16 @@ test('reading-less entry does not show aggregate frequency chip', () => {
     Popup.render(state({ results: [withoutReading] }));
     assert.equal(content.querySelector('.frequency-aggregate'), null);
 
+    const emptyReading = result('感心', '');
+    emptyReading.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 996, displayValue: '996' }] }];
+    Popup.render(state({ results: [emptyReading] }));
+    assert.equal(content.querySelector('.frequency-aggregate'), null);
+
+    const emptyReadingNonCjk = result('test', '');
+    emptyReadingNonCjk.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 5, displayValue: '5' }] }];
+    Popup.render(state({ results: [emptyReadingNonCjk] }));
+    assert.equal(content.querySelector('.frequency-aggregate'), null);
+
     const kanaOnly = result('みる', 'みる');
     kanaOnly.term.frequencies = [{ dictionary: 'Freq', values: [{ value: 10, displayValue: '10' }] }];
     Popup.render(state({ results: [kanaOnly] }));

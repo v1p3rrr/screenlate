@@ -228,7 +228,7 @@ private fun LookupResult.joined(
     val pitches = other.pitches.filter { new -> term.pitches.none { it.dictionary == new.dictionary } }
     if (glossaries.isEmpty() && frequencies.isEmpty() && pitches.isEmpty()) return this
     val rank = dictionaryOrder.withIndex().associate { it.value to it.index }
-    val targetReading = if (term.reading.isEmpty() || term.reading == term.expression) {
+    val targetReading = if (term.isReadingless()) {
         other.reading.ifEmpty { term.reading }
     } else {
         term.reading

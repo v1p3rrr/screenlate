@@ -1611,7 +1611,7 @@ class OverlayController(
     private suspend fun noResultsMessage(): String = service.getString(noResultsText(lookup.noTermDictionary(language)))
 
     /** Looks up a link target or tap query from inside the popup and shows it on top of the current view. */
-    private fun lookupLink(query: String, primaryReading: String?, fromTap: Boolean = false) {
+    private fun lookupPopupQuery(query: String, primaryReading: String?, fromTap: Boolean = false) {
         val shown = shownLookup
         scope.launch {
             val results = lookupResults(query, link = true, primaryReading = primaryReading)
@@ -1920,7 +1920,7 @@ class OverlayController(
         override fun onClose() = dismissPopup()
 
         override fun onLookup(query: String, primaryReading: String?, fromTap: Boolean) =
-            lookupLink(query, primaryReading, fromTap = fromTap)
+            lookupPopupQuery(query, primaryReading, fromTap = fromTap)
 
         override fun onOpenUrl(url: String) {
             if (url == OverlayIntents.INSTALLATION_URL) {

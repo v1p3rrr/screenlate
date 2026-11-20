@@ -121,6 +121,11 @@ class HoshidictsEngineTest {
         val lemma = mixed.single { it.term.expression == "書く" }
         assertThat(lemma.matched).isEqualTo("書")
         assertThat(lemma.trace.map { it.name }).containsExactly("stem")
+
+        // A form-of candidate filters out lemmas whose reading mismatches the source reading.
+        val deviated = engine.lookup("それた")
+        assertThat(deviated.map { it.term.reading }).contains("それる")
+        assertThat(deviated.map { it.term.reading }).doesNotContain("はぐれる")
     }
 
     @Test
@@ -218,7 +223,10 @@ class HoshidictsEngineTest {
               ["混ぜる","まぜる","","v1",0,["to mix"],8,""],
               ["混ぜない","","non-lemma","v",0,[["混ぜる",["imperfective negative"]]],9,""],
               ["書","しょ","","n",0,["writing",["書く",["stem"]]],10,""],
-              ["書く","かく","","v5",0,["to write"],11,""]
+              ["書く","かく","","v5",0,["to write"],11,""],
+              ["逸れる","それる","","v1",0,["to stray"],12,""],
+              ["逸れる","はぐれる","","v1",0,["to lose one's way"],13,""],
+              ["それた","","non-lemma","v",0,[["逸れる",["past"]]],14,""]
             ]
         """.trimIndent().toByteArray(),
     )

@@ -51,7 +51,7 @@ class LookupPage(
         fun onClose()
 
         /** A link inside a glossary asks to look up [query], preferring terms read as [primaryReading]. */
-        fun onLookup(query: String, primaryReading: String?): Unit = onLookup(query, primaryReading, fromTap = false)
+        fun onLookup(query: String, primaryReading: String?): Unit = Unit
 
         /** A link or tap inside a glossary asks to look up [query], preferring terms read as [primaryReading]. */
         fun onLookup(query: String, primaryReading: String?, fromTap: Boolean): Unit = onLookup(query, primaryReading)

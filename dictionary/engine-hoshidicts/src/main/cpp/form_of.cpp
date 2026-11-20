@@ -109,12 +109,12 @@ std::vector<LookupResult> follow_form_of(const DictionaryQuery& query, std::vect
     if (items[i].empty()) continue;
     any = true;
     std::string source_reading;
-    if (!results[i].term.reading.empty() && results[i].term.reading != results[i].term.expression) {
+    if (!results[i].deinflected.empty() && is_all_kana(results[i].deinflected)) {
+      source_reading = results[i].deinflected;
+    } else if (!results[i].term.reading.empty() && is_all_kana(results[i].term.reading)) {
       source_reading = results[i].term.reading;
     } else if (is_all_kana(results[i].term.expression)) {
       source_reading = results[i].term.expression;
-    } else if (is_all_kana(results[i].deinflected)) {
-      source_reading = results[i].deinflected;
     }
     sources[i] = {results[i].matched, results[i].trace, results[i].preprocessor_steps, std::move(source_reading)};
   }

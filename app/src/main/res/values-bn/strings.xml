@@ -628,7 +628,7 @@
     <string name="popup_hide_outside_tap">বাইরে ট্যাপ করলে</string>
     <string name="popup_hide_outside_tap_hint">পপ-আপের বাইরে ট্যাপ করলে নিচের অ্যাপে স্পর্শ না পাঠিয়েই এটি বন্ধ হয়।</string>
     <string name="popup_tap_lookup">সংজ্ঞায় ট্যাপ করে অনুসন্ধান</string>
-    <string name="popup_tap_lookup_hint">অভিধানের সংজ্ঞায় शब्द বা অক্ষরে ট্যাপ করে অনুসন্ধান খুলুন।</string>
+    <string name="popup_tap_lookup_hint">অভিধানের সংজ্ঞায় শব্দ বা অক্ষরে ট্যাপ করে অনুসন্ধান খুলুন।</string>
     <string name="popup_copy_switch">অভিধানের নামের পাশে কপি বোতাম</string>
     <string name="popup_copy_switch_hint">পপ-আপ ও খুঁজুন ট্যাবে প্রতিটি অভিধানের শিরোনামের পাশে একটি কপি বোতাম যোগ করে।</string>
     <string name="popup_copy_mode_all">সবকিছু</string>

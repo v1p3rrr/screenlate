@@ -1210,7 +1210,7 @@ const Popup = (() => {
         const mode = noteConfig.sortFrequencyMode;
         if (!mode) return null;
         const hasIdeograph = HAN_CHARACTER.test(term.expression || '');
-        if ((!term.reading || term.reading === term.expression) && hasIdeograph) return null;
+        if (!term.reading || (term.reading === term.expression && hasIdeograph)) return null;
         if (typeof NoteData === 'undefined' || typeof NoteData.aggregateFrequency !== 'function') return null;
         const value = NoteData.aggregateFrequency(term, noteConfig.frequencyModes || {}, mode);
         if (value === null) return null;
