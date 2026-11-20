@@ -53,11 +53,16 @@ The photo history is tested in `PhotoStoreTest` (saving, order, limits, opening,
 v2→v3 migration and the upright thumbnail; `UnsavedPhotoDialogTest` (API 30) checks that the dialog's answer reaches
 the caller before it is dismissed.
 
-## Recording foundation checks
+## Sentence audio recording checks
 
 `core:media` has pure JVM tests for deadline ordering, frame clocks, scan timelines/Refresh, source-frame edits,
-initial selection, PCM leases, rollover/quotas/failed writes and concurrent bounded capture buffers.
+initial selection, PCM leases, rollover/quotas/failed writes, concurrent bounded capture buffers, silence detection,
+waveform downsampling, preview player playback and seek, and Opus export.
 Run `./gradlew :core:media:testDebugUnitTest :core:media:lintDebug`.
+
+The overlay editor's JavaScript logic is tested via Node.js and jsdom:
+`npm --prefix scripts/page-tests test` runs all page test suites including `audio-editor.test.mjs`.
+
 `PcmHistoryDeviceTest` runs in the library's independent test package and checks an accelerated synthetic
 storage workload, without opening the app or touching a collection. After building
 `:core:media:assembleDebugAndroidTest`, install its APK on an explicitly selected emulator and run
@@ -69,8 +74,7 @@ The optional [playback feasibility tool](../tools/audio-probe/README.md) builds 
 with `./gradlew -Pscreenlate.audioProbe=true :tools:audio-probe:assembleDebug`. In PowerShell quote the
 `'-Pscreenlate.audioProbe=true'` argument. This tool is excluded from ordinary builds and not shipped in the app.
 Use a host-silent emulator for sound-generating checks; its source stops within 30 seconds and must also be
-stopped explicitly after use. Codec-only fixtures do not play sound. Recording foundation work is not yet an
-enabled application feature.
+stopped explicitly after use. Codec-only fixtures do not play sound.
 
 ## Dictionary catalog
 

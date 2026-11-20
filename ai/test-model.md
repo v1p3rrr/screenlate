@@ -838,6 +838,13 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 ## Run log
 
+### 2026-11-20, sentence audio full pipeline & review fixes, `codex/sentence-audio-recording`
+
+- Full pipeline milestone: preview player, overlay editor JS/bridge, Anki pipeline, audio/Anki settings, and 27-locale translations.
+- Review fixes: seeking while playing resumes playback seamlessly in `AudioPreviewPlayer`; Anki note creation strictly fails when requested sentence media export fails; timed wait/notify in `PcmBlockQueue` replaces busy-wait sleep; all 27 locales updated with missing strings; empty output export guarded with localized toast in `audio-editor.js`.
+- Automated test checks: all 300 unit tests across modules pass (`./gradlew testDebugUnitTest :build-logic:convention:test`), all 208 page tests pass (`npm --prefix scripts/page-tests test`), `assembleDebug`, `lintDebug`, and `:app:lintVitalRelease` pass without errors.
+- Documentation updated in `docs/architecture.md`, `docs/development.md`, and `docs/usage.md`.
+
 ### 2026-11-19, sentence audio foundation, `codex/sentence-audio-recording`
 
 - Second milestone: 44 passing JVM tests, module lint and Android-test assembly. `PcmClockTest`,

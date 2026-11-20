@@ -1,5 +1,20 @@
 # Status
 
+## Sentence audio: Code review fixes, docs, and validation (2026-11-20)
+
+- Completed on branch `codex/sentence-audio-recording`:
+  - Addressed code review feedback:
+    - `AudioPreviewPlayer`: Seeking during active playback now seamlessly resumes playback from the new frame position without requiring a manual pause/play toggle.
+    - `AnkiNotes`: Note creation halts and returns `AddResult.Failed` if sentence audio media export to AnkiDroid fails, eliminating silent card creation without requested audio.
+    - `PcmBlockQueue` / `PcmStorageCoordinator`: Replaced busy-wait sleep in the writer thread with timed wait/notify `poll(timeoutMillis)` in `PcmBlockQueue`.
+    - Localized all UI strings across all 27 locales (duration +/- step controls, empty export toast, export failure toast).
+    - `audio-editor.js` and `AudioEditorController.kt`: Dynamic label localization, empty export guard, and localized toast notifications on export errors.
+    - `LookupPage.kt`, `PopupNotes.kt`, `OverlayController.kt`: Shared `defaultEditor` preference correctly wired when `withAudio` is not explicitly set.
+  - **Phase 7 (Docs & Validation):**
+    - Updated `docs/architecture.md`, `docs/development.md`, and `docs/usage.md` with sentence audio recording, overlay editor, and Anki pipeline details.
+    - Updated `ai/test-model.md` run log and REC cases.
+    - Verified with full unit tests (`./gradlew testDebugUnitTest :build-logic:convention:test`), page tests (`npm --prefix scripts/page-tests test`: 208 tests passed), and lint checks (`./gradlew lintDebug :app:lintVitalRelease`).
+
 ## Sentence audio: Overlay editor UI, Kotlin bridge, Anki export and settings integration (2026-11-19)
 
 - Completed on branch `codex/sentence-audio-recording`:

@@ -367,7 +367,7 @@ A translation is kept for 10 minutes, so adding a note after reading the transla
 ## Anki
 
 1. Install AnkiDroid, open Settings → Anki in Screenlate and allow access to AnkiDroid.
-2. Choose a deck and a note type. Field templates are pre-filled: Senren, Lapis, Kiku, JP Mining Note, Kaishi 1.5k and the Basic Mining Deck get the templates their authors recommend (a picture field gets the screenshot, a sentence translation field the translation), other note types are filled from the field names (Word, Reading, Meaning, Picture and the like); adjust them with the + button, which inserts markers such as `{expression}`, `{reading}`, `{furigana}`, `{glossary}`, `{sentence}`, `{sentence-translation}`, `{cloze-body}`, `{popup-selection-text}`, `{clipboard-text}`, `{clipboard-image}`, `{audio}` and `{screenshot}`.
+2. Choose a deck and a note type. Field templates are pre-filled: Senren, Lapis, Kiku, JP Mining Note, Kaishi 1.5k and the Basic Mining Deck get the templates their authors recommend (a picture field gets the screenshot, a sentence translation field the translation), other note types are filled from the field names (Word, Reading, Meaning, Picture and the like); adjust them with the + button, which inserts markers such as `{expression}`, `{reading}`, `{furigana}`, `{glossary}`, `{sentence}`, `{sentence-translation}`, `{cloze-body}`, `{popup-selection-text}`, `{clipboard-text}`, `{clipboard-image}`, `{audio}`, `{sentence-audio}` and `{screenshot}`.
    - For Chinese, fields named Hanzi, Simplified, Traditional, Pinyin and English are recognized as well. `{expression-simplified}` and `{expression-traditional}` give the word in Simplified and in Traditional characters, whichever script the text was in; where a character has several forms (发: 發, 髮), the form a dictionary lists with the word's reading is used. `{furigana}` and `{sentence-furigana}` put each pinyin syllable over its character.
    - For Cantonese, fields named Hanzi, Cantonese, Characters, Simplified, Traditional, Jyutping and English are recognized. The script and furigana markers work as for Chinese, with Jyutping over the characters.
    - For Russian, `{furigana}` gives the word with its stress mark (ко́шка); `{sentence-furigana}` puts stress marks into the words written in their dictionary form and leaves inflected forms as written, since they may stress another syllable.
@@ -379,7 +379,17 @@ The AnkiDroid card at the top of the page says when AnkiDroid is missing or Scre
 
 ## Audio
 
-Settings → Audio holds auto play and volume, which every language shares, and the shown language's audio sources and regions, with a test of every source on a sample word. With several languages turned on, chips at the top pick the language. The start screen's link for a language's failed audio sources opens this page on that language.
+Settings → Audio holds auto play and volume, which every language shares, and the shown language's audio sources and regions, with a test of every source on a sample word. With several languages turned on, chips at the top pick the language. The start screen's link for a language's failed audio sources opens this page on that language. On Android 10 and newer, it also includes sentence audio recording configuration.
+
+### Sentence audio recording (Android 10+)
+
+On Android 10+ (API 29+), Screenlate can capture internal device playback from video players, audiobooks, or games and attach trimmed clips to Anki notes via the `{sentence-audio}` field marker. Screenlate's own audio playback (such as pronunciation samples or editor preview) is excluded from capture automatically. On Android 7–9, internal playback capture is unsupported by the platform, and the Audio settings screen shows an informational notice instead.
+
+- **Enable recording**: Starts capturing playback into a private rolling PCM buffer whenever the overlay bubble is active.
+- **Audio editor by default**: When enabled (also mirrored in Anki settings), tapping ➕ opens the waveform editor. When disabled, tapping ➕ creates the note immediately, and holding ➕ opens the editor.
+- **Buffer durations**: Configure pre-scan history (H), definition reading time (R), and post-scan extension time (E) in 30-second steps (from 30 seconds to 10 minutes).
+- **Silence search**: Set minimum pause duration, silence threshold, and margin padding for automatic pause detection.
+- **Overlay editor**: Allows zooming and panning through the waveform, dragging start and end handles, cutting silence or background intervals, previewing in Result or Original mode, and refreshing the timeline if playback continued while reading definitions. Notes can be saved with the edited audio clip or without audio.
 
 ### Audio sources
 
