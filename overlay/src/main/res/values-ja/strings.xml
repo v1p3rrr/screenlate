@@ -179,4 +179,6 @@
     <string name="overlay_update_with_picture_and_audio">画像と音声付きで更新</string>
     <string name="overlay_add_anyway_audio">とにかく音声付きで追加</string>
     <string name="overlay_add_anyway_picture_audio">とにかく画像と音声付きで追加</string>
+    <string name="audio_editor_empty_output">選択範囲が空です。選択範囲またはカットを調整してください。</string>
+    <string name="audio_editor_export_failed">音声をエクスポートできませんでした。再試行するか「音声なし」をタップしてください。</string>
 </resources>

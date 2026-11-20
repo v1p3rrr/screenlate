@@ -140,7 +140,7 @@ private fun DurationLimitRow(
         )
         TooltipIconButton(
             icon = R.drawable.ic_remove,
-            tooltip = "-",
+            tooltip = stringResource(R.string.sentence_recording_duration_decrease),
             onClick = { if (millis > minLimit) onChange(millis - step) },
             enabled = millis > minLimit,
         )
@@ -153,7 +153,7 @@ private fun DurationLimitRow(
         )
         TooltipIconButton(
             icon = R.drawable.ic_add,
-            tooltip = "+",
+            tooltip = stringResource(R.string.sentence_recording_duration_increase),
             onClick = { if (millis < maxLimit) onChange(millis + step) },
             enabled = millis < maxLimit,
         )

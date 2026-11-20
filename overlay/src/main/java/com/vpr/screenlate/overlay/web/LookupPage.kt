@@ -85,7 +85,7 @@ class LookupPage(
          * @param force add even if the note is a duplicate that the settings would prevent.
          * @param withAudio include recorded sentence audio if eligible.
          */
-        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean = true)
+        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean? = null)
 
         /** ➕ was tapped while it waits for the scan's final text. */
         fun onNoteWaiting()
@@ -429,7 +429,7 @@ class LookupPage(
 
         @JavascriptInterface
         fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) =
-            post { noteActions?.onAddNote(index, noteData, withScreenshot, force) }
+            post { noteActions?.onAddNote(index, noteData, withScreenshot, force, null) }
 
         @JavascriptInterface
         fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean) =

@@ -1099,4 +1099,6 @@
     <string name="sentence_recording_duration_seconds">%1$d ث</string>
     <string name="sentence_recording_duration_minutes">%1$d د</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d د %2$d ث</string>
+    <string name="sentence_recording_duration_decrease">تقليل المدة</string>
+    <string name="sentence_recording_duration_increase">زيادة المدة</string>
 </resources>

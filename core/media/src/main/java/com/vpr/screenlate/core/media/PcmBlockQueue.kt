@@ -8,6 +8,7 @@ internal enum class PcmQueueFailure { OVERFLOW, DISCONTINUITY }
  * Fixed PCM buffer pool for one capture producer and one writer. A failed offer is terminal: the capture
  * owner must stop reading, then drain the accepted prefix. Neither overflow nor a gap silently drops data.
  */
+@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : AutoCloseable {
     private val free = ArrayDeque<ByteArray>()
     private val ready = ArrayDeque<Pending>()
@@ -45,6 +46,7 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
         pcm.copyInto(bytes, endIndex = count)
         ready.addLast(Pending(bytes, firstFrame, count))
         nextFrame = end
+        (this as java.lang.Object).notifyAll()
         return true
     }
 
@@ -56,9 +58,24 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
         return Block(pending)
     }
 
+    @Synchronized
+    fun poll(timeoutMillis: Long): Block? {
+        if (closed) return null
+        if (ready.isEmpty() && !sealed && timeoutMillis > 0) {
+            runCatching { (this as java.lang.Object).wait(timeoutMillis) }
+        }
+        if (closed) return null
+        val pending = ready.pollFirst() ?: return null
+        borrowed++
+        return Block(pending)
+    }
+
     /** Normal stop disallows new blocks but leaves all accepted data drainable. */
     @Synchronized
-    fun seal() { sealed = true }
+    fun seal() {
+        sealed = true
+        (this as java.lang.Object).notifyAll()
+    }
 
     @Synchronized
     override fun close() {
@@ -67,6 +84,7 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
         sealed = true
         free.clear()
         ready.clear()
+        (this as java.lang.Object).notifyAll()
     }
 
     inner class Block internal constructor(pending: Pending) : AutoCloseable {

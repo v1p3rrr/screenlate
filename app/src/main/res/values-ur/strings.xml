@@ -1039,4 +1039,6 @@
     <string name="sentence_recording_duration_seconds">%1$d سیکنڈ</string>
     <string name="sentence_recording_duration_minutes">%1$d منٹ</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d منٹ %2$d سیکنڈ</string>
+    <string name="sentence_recording_duration_decrease">مدت کم کریں</string>
+    <string name="sentence_recording_duration_increase">مدت بڑھائیں</string>
 </resources>

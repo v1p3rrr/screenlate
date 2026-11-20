@@ -1034,4 +1034,6 @@
     <string name="sentence_recording_duration_seconds">%1$d giây</string>
     <string name="sentence_recording_duration_minutes">%1$d phút</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d phút %2$d giây</string>
+    <string name="sentence_recording_duration_decrease">Giảm thời lượng</string>
+    <string name="sentence_recording_duration_increase">Tăng thời lượng</string>
 </resources>

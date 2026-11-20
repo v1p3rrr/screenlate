@@ -1060,4 +1060,6 @@
     <string name="sentence_recording_duration_seconds">%1$d s</string>
     <string name="sentence_recording_duration_minutes">%1$d min</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d min %2$d s</string>
+    <string name="sentence_recording_duration_decrease">Disminuir duración</string>
+    <string name="sentence_recording_duration_increase">Aumentar duración</string>
 </resources>

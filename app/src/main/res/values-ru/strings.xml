@@ -1074,4 +1074,6 @@
     <string name="sentence_recording_duration_seconds">%1$d с</string>
     <string name="sentence_recording_duration_minutes">%1$d мин</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d мин %2$d с</string>
+    <string name="sentence_recording_duration_decrease">Уменьшить длительность</string>
+    <string name="sentence_recording_duration_increase">Увеличить длительность</string>
 </resources>

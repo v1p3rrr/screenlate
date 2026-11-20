@@ -1065,4 +1065,6 @@
     <string name="sentence_recording_duration_seconds">%1$d с</string>
     <string name="sentence_recording_duration_minutes">%1$d хв</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d хв %2$d с</string>
+    <string name="sentence_recording_duration_decrease">Зменшити тривалість</string>
+    <string name="sentence_recording_duration_increase">Збільшити тривалість</string>
 </resources>

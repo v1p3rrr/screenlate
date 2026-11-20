@@ -179,4 +179,6 @@
     <string name="overlay_update_with_picture_and_audio">Update with picture and audio</string>
     <string name="overlay_add_anyway_audio">Add anyway with audio</string>
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
+    <string name="audio_editor_empty_output">La plage sélectionnée est vide. Ajustez la sélection ou les coupures.</string>
+    <string name="audio_editor_export_failed">Échec de l’exportation de l’audio. Réessayez ou appuyez sur Sans audio.</string>
 </resources>

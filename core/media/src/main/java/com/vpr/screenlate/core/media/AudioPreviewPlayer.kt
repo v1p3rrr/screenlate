@@ -37,6 +37,11 @@ internal class AudioPreviewPlayer(
     private val _currentFrame = AtomicLong(0L)
     private val stopRequested = AtomicBoolean(false)
 
+    private var activeEdit: AudioEdit? = null
+    private var activeMode: PreviewMode = PreviewMode.RESULT
+    private var activeOnProgress: ((Long) -> Unit)? = null
+    private var activeOnComplete: (() -> Unit)? = null
+
     val isPlaying: Boolean get() = _isPlaying.get()
     val currentFrame: Long get() = _currentFrame.get()
 
@@ -53,6 +58,11 @@ internal class AudioPreviewPlayer(
         onComplete: (() -> Unit)? = null,
     ) {
         lock.withLock {
+            activeEdit = edit
+            activeMode = mode
+            activeOnProgress = onProgress
+            activeOnComplete = onComplete
+
             stopPlaybackLocked()
 
             val effectiveStart = resolveStartFrame(edit, mode, startFrame ?: _currentFrame.get())
@@ -96,9 +106,15 @@ internal class AudioPreviewPlayer(
     fun seek(frame: Long, edit: AudioEdit? = null, mode: PreviewMode = PreviewMode.RESULT) {
         lock.withLock {
             val wasPlaying = isPlaying
-            stopPlaybackLocked()
-            val target = if (edit != null) resolveStartFrame(edit, mode, frame) else frame
+            val effectiveEdit = edit ?: activeEdit
+            val effectiveMode = if (edit != null) mode else activeMode
+            val target = if (effectiveEdit != null) resolveStartFrame(effectiveEdit, effectiveMode, frame) else frame
             _currentFrame.set(target)
+            if (wasPlaying && effectiveEdit != null) {
+                play(effectiveEdit, effectiveMode, target, activeOnProgress, activeOnComplete)
+            } else {
+                stopPlaybackLocked()
+            }
         }
     }
 

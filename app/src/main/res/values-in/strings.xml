@@ -1026,4 +1026,6 @@
     <string name="sentence_recording_duration_seconds">%1$d dtk</string>
     <string name="sentence_recording_duration_minutes">%1$d mnt</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d mnt %2$d dtk</string>
+    <string name="sentence_recording_duration_decrease">Kurangi durasi</string>
+    <string name="sentence_recording_duration_increase">Tambah durasi</string>
 </resources>

@@ -1047,4 +1047,6 @@
     <string name="sentence_recording_duration_seconds">%1$d sn</string>
     <string name="sentence_recording_duration_minutes">%1$d dk</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d dk %2$d sn</string>
+    <string name="sentence_recording_duration_decrease">Süreyi azalt</string>
+    <string name="sentence_recording_duration_increase">Süreyi artır</string>
 </resources>

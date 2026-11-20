@@ -217,7 +217,9 @@ class AnkiNotes @Inject constructor(
             }
             if (FieldTemplate.SENTENCE_AUDIO in used && request.sentenceAudio != null) {
                 val name = "screenlate_${request.sentenceAudio.nameWithoutExtension}"
-                anki.addMedia(request.sentenceAudio, name, AnkiDroid.MediaKind.AUDIO)?.let { values[FieldTemplate.SENTENCE_AUDIO] = it }
+                val mediaRef = anki.addMedia(request.sentenceAudio, name, AnkiDroid.MediaKind.AUDIO)
+                    ?: return AddResult.Failed("Failed to export sentence audio to Anki")
+                values[FieldTemplate.SENTENCE_AUDIO] = mediaRef
             }
             // Known markers without a value (no sentence, no audio, a dictionary without an entry for this term)
             // must not leak into the card as literal text.

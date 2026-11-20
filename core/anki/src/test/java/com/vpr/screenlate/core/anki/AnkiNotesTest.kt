@@ -35,6 +35,7 @@ class AnkiNotesTest {
         var duplicateQuery: Triple<String, List<Long>, DuplicateScope>? = null
         var refuseNotes = false
         var cancelNotes = false
+        var refuseMedia = false
 
         override fun availability() = availability
 
@@ -69,7 +70,8 @@ class AnkiNotesTest {
             return existing.filter { it.fields.firstOrNull() == firstField && it.modelId in modelIds }
         }
 
-        override suspend fun addMedia(file: File, preferredName: String, kind: AnkiDroid.MediaKind): String {
+        override suspend fun addMedia(file: File, preferredName: String, kind: AnkiDroid.MediaKind): String? {
+            if (refuseMedia) return null
             media += preferredName to kind
             return if (kind == AnkiDroid.MediaKind.IMAGE) "<img src=\"${file.name}\">" else "[sound:${file.name}]"
         }
@@ -430,6 +432,19 @@ class AnkiNotesTest {
         val updatedFields = anki.updated.single().second
         assertThat(updatedFields[1]).isEqualTo("cat")
         assertThat(updatedFields[4]).isEqualTo("[sound:existing_recorded.opus]")
+    }
+
+    @Test
+    fun `sentence audio media export failure prevents note creation`() = runBlocking<Unit> {
+        anki.models[MODEL] = listOf("Word", "Meaning", "Sentence", "Picture", "SentenceAudio")
+        configure {
+            it.copy(fields = it.fields + ("SentenceAudio" to "{sentence-audio}"))
+        }
+        anki.refuseMedia = true
+        val tempAudio = folder.newFile("sample.opus")
+        val result = notes.add(Language.JAPANESE, request.copy(sentenceAudio = tempAudio))
+        assertThat(result).isInstanceOf(AddResult.Failed::class.java)
+        assertThat(anki.added).isEmpty()
     }
 
     private companion object {

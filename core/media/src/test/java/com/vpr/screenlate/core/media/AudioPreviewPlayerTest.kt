@@ -138,4 +138,28 @@ class AudioPreviewPlayerTest {
 
         history.close()
     }
+
+    @Test
+    fun `seek while playing restarts playback from target frame`() {
+        val history = PcmHistory(tempFolder.newFolder(), chunkFrames = 1000, maxBytes = 1_000_000, maxFiles = 100)
+        history.append(ByteArray(4000) { 1 })
+        history.retain(listOf(AudioRange(0, 2000)))
+
+        val sink = FakeAudioSink()
+        val player = AudioPreviewPlayer(
+            snapshotProvider = { range -> history.snapshot(range) },
+            sampleRate = 48000,
+            sinkFactory = { sink },
+        )
+
+        val edit = AudioEdit(selection = AudioRange(0, 2000))
+        val completeLatch = CountDownLatch(1)
+        player.play(edit, onComplete = { completeLatch.countDown() })
+        player.seek(1500, edit = edit)
+
+        assertTrue(completeLatch.await(3, TimeUnit.SECONDS))
+        assertEquals(2000L, player.currentFrame)
+
+        history.close()
+    }
 }

@@ -1034,4 +1034,6 @@
     <string name="sentence_recording_duration_seconds">%1$d 秒</string>
     <string name="sentence_recording_duration_minutes">%1$d 分</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d 分 %2$d 秒</string>
+    <string name="sentence_recording_duration_decrease">期間を短縮</string>
+    <string name="sentence_recording_duration_increase">期間を延長</string>
 </resources>

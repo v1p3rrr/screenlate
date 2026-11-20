@@ -268,6 +268,7 @@ class OverlayController(
         cropEditor = CropEditor(service, windowManager),
         cropAreaSettings = anki.cropAreaSettings,
         audioEditor = audioEditorController,
+        recordingSettings = recordingSettings,
         onAnkiOpened = { dock() },
         onNoteAdded = {
             if (settings.hideAfterAdd) {

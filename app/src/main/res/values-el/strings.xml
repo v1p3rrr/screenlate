@@ -1039,4 +1039,6 @@
     <string name="sentence_recording_duration_seconds">%1$d δευτ.</string>
     <string name="sentence_recording_duration_minutes">%1$d λεπ.</string>
     <string name="sentence_recording_duration_minutes_seconds">%1$d λεπ. %2$d δευτ.</string>
+    <string name="sentence_recording_duration_decrease">Μείωση διάρκειας</string>
+    <string name="sentence_recording_duration_increase">Αύξηση διάρκειας</string>
 </resources>

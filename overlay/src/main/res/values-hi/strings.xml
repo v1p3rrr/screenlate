@@ -179,4 +179,6 @@
     <string name="overlay_update_with_picture_and_audio">Update with picture and audio</string>
     <string name="overlay_add_anyway_audio">Add anyway with audio</string>
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
+    <string name="audio_editor_empty_output">चयनित दायरा खाली है। चयन या कट समायोजित करें।</string>
+    <string name="audio_editor_export_failed">ऑडियो क्लिप निर्यात विफल रहा। पुनः प्रयास करें या बिना ऑडियो पर टैप करें।</string>
 </resources>

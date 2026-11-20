@@ -28,6 +28,7 @@ import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
@@ -139,6 +140,7 @@ class PopupNotes(
     private val cropEditor: CropEditor?,
     private val cropAreaSettings: CropAreaRepository? = null,
     private val audioEditor: AudioEditorController? = null,
+    private val recordingSettings: RecordingSettingsRepository? = null,
     private val onAnkiOpened: () -> Unit,
     private val onNoteAdded: () -> Unit,
     private val onOpenAnkiSettings: () -> Unit,
@@ -334,7 +336,8 @@ class PopupNotes(
         return runCatching { json.decodeFromString<T>(json.decodeFromString<String>(raw)) }.getOrNull()
     }
 
-    override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean) {
+    override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean?) {
+        val effectiveWithAudio = withAudio ?: (recordingSettings?.cachedSettings?.defaultEditor ?: true)
         val source = noteSource()
         val scan = scanNotes.scan
         // The note keeps the language it was asked for, even if the scan closes before it is added.
@@ -419,7 +422,7 @@ class PopupNotes(
                     ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used, noteLanguage)
                 screenshot = picture?.let { saveScreenshot(it) }
-                if (withAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
+                if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
                     when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second)) {
                         is AudioEditorResult.Cancelled -> {
                             showState(scan, index, noteTerm, "", null)

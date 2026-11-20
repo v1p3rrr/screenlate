@@ -226,8 +226,15 @@ const AudioEditor = (() => {
                 labelOf('audio_editor_remaining', 'Allowance: %1$s').replace('%1$s', formatTime(state.remainingMillis / 1000));
         }
 
-        const totalEl = document.getElementById('sl-total');
-        if (totalEl) totalEl.textContent = formatTime(state.totalFrames / state.sampleRate);
+        const totalWrap = document.getElementById('sl-total-wrap');
+        const formattedTotal = formatTime(state.totalFrames / state.sampleRate);
+        if (totalWrap) {
+            totalWrap.innerHTML = labelOf('audio_editor_retained', 'Retained: %1$s')
+                .replace('%1$s', `<span id="sl-total">${formattedTotal}</span>`);
+        } else {
+            const totalEl = document.getElementById('sl-total');
+            if (totalEl) totalEl.textContent = formattedTotal;
+        }
 
         const startEl = document.getElementById('sl-start-label');
         if (startEl) startEl.textContent = relativeTime(state.a);
@@ -481,7 +488,45 @@ const AudioEditor = (() => {
         if (editor) editor.hidden = false;
         if (pill) pill.hidden = true;
 
+        applyStaticLabels();
         render();
+    }
+
+    function applyStaticLabels() {
+        const setAttr = (id, attr, val) => {
+            const el = document.getElementById(id);
+            if (el) el.setAttribute(attr, val);
+        };
+        const setText = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        };
+
+        setText('sl-editor-title', labelOf('audio_editor_title', 'Sentence audio'));
+        setText('sl-pill-title', labelOf('audio_editor_title', 'Sentence audio'));
+        setAttr('sl-action-collapse', 'aria-label', labelOf('audio_editor_collapse', 'Collapse editor'));
+        setAttr('sl-action-info', 'aria-label', labelOf('audio_editor_info_title', 'Sentence recording'));
+        setText('sl-marker-legend', labelOf('audio_editor_marker_legend', 'Marker — scan'));
+        setText('sl-from-scan', labelOf('audio_editor_from_scan', 'From scan'));
+        setText('sl-summary-start', labelOf('audio_editor_start', 'Start'));
+        setText('sl-summary-end', labelOf('audio_editor_end', 'End'));
+        setText('sl-summary-to-card', labelOf('audio_editor_to_card', 'To card'));
+        setText('sl-mode-result', labelOf('audio_editor_result', 'Result'));
+        setText('sl-mode-original', labelOf('audio_editor_original', 'Original'));
+        setAttr('sl-action-zoom-out', 'aria-label', labelOf('audio_editor_zoom_out', 'Zoom out'));
+        setAttr('sl-action-zoom-in', 'aria-label', labelOf('audio_editor_zoom_in', 'Zoom in'));
+        setText('sl-cut-label', labelOf('audio_editor_cut', 'Cut'));
+        setText('sl-silence-label', labelOf('audio_editor_find_silence', 'Find silence'));
+        setAttr('sl-action-silence-settings', 'aria-label', labelOf('audio_editor_silence_title', 'Silence search'));
+        setAttr('sl-action-undo', 'aria-label', labelOf('audio_editor_undo', 'Undo'));
+        setText('sl-action-accept-silence', labelOf('audio_editor_apply', 'Apply'));
+        setText('sl-action-reject-silence', labelOf('audio_editor_dismiss', 'Dismiss'));
+        setText('sl-refresh-label', labelOf('audio_editor_refresh', 'Refresh'));
+        setText('sl-action-cancel', labelOf('audio_editor_cancel', 'Cancel'));
+        setText('sl-action-without', labelOf('audio_editor_without', 'Without audio'));
+        setText('sl-action-add', labelOf('audio_editor_add', 'Add'));
+        setAttr('sl-start', 'aria-label', labelOf('audio_editor_start_handle', 'Start of saved audio'));
+        setAttr('sl-end', 'aria-label', labelOf('audio_editor_end_handle', 'End of saved audio'));
     }
 
     function updateTimeline(data) {
@@ -856,6 +901,15 @@ const AudioEditor = (() => {
         });
 
         bind('sl-action-add', 'click', () => {
+            if (outputLengthSeconds() <= 0) {
+                const toast = document.querySelector('.sl-toast');
+                if (toast) {
+                    toast.textContent = labelOf('audio_editor_empty_output', 'Selected range is empty. Adjust selection or cuts.');
+                    toast.hidden = false;
+                    setTimeout(() => { toast.hidden = true; }, 3000);
+                }
+                return;
+            }
             const resultEdit = {
                 selection: [state.a, state.b],
                 exclusions: normalizedCuts(),

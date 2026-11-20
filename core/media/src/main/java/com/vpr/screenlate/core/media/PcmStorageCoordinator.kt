@@ -82,7 +82,7 @@ internal class PcmStorageCoordinator(
 
         if (!audioSource.start()) {
             failure = PcmCoordinatorFailure.SOURCE_START_FAILED
-            state = PcmCoordinatorFailureState(failure!!)
+            state = pcmCoordinatorFailureState(failure!!)
             return false
         }
 
@@ -235,14 +235,9 @@ internal class PcmStorageCoordinator(
         audioTimeline: ScanAudioTimeline,
     ) {
         while (!pcmQueue.isDrained) {
-            val block = pcmQueue.poll()
+            val block = pcmQueue.poll(50L)
             if (block == null) {
                 if (pcmQueue.isDrained) break
-                try {
-                    Thread.sleep(10)
-                } catch (interrupted: InterruptedException) {
-                    break
-                }
                 continue
             }
 
@@ -313,7 +308,7 @@ internal class PcmStorageCoordinator(
             return count
         }
 
-        private fun PcmCoordinatorFailureState(reason: PcmCoordinatorFailure): PcmCoordinatorState =
+        private fun pcmCoordinatorFailureState(reason: PcmCoordinatorFailure): PcmCoordinatorState =
             PcmCoordinatorState.FAILED
     }
 }

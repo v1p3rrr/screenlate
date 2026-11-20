@@ -180,4 +180,6 @@
     <string name="overlay_update_with_picture_and_audio">Обновить с картинкой и аудио</string>
     <string name="overlay_add_anyway_audio">Добавить всё равно с аудио</string>
     <string name="overlay_add_anyway_picture_audio">Добавить всё равно с картинкой и аудио</string>
+    <string name="audio_editor_empty_output">Выделенный фрагмент пуст. Измените границы или вырезы.</string>
+    <string name="audio_editor_export_failed">Не удалось экспортировать аудио. Попробуйте снова или выберите «Без аудио».</string>
 </resources>

@@ -269,3 +269,59 @@ test('expand and collapse actions notify bridge and toggle presentation', () => 
     assert.equal(editor.hidden, false);
     assert.equal(pill.hidden, true);
 });
+
+test('editor applies localized labels to DOM elements', () => {
+    AudioEditor.open({
+        sampleRate: 48000,
+        totalFrames: 480000,
+        selection: [100000, 300000],
+        labels: {
+            audio_editor_title: 'Аудио предложения',
+            audio_editor_start: 'Начало',
+            audio_editor_end: 'Конец',
+            audio_editor_to_card: 'В карточку',
+            audio_editor_cut: 'Вырезать',
+            audio_editor_find_silence: 'Найти тишину',
+            audio_editor_refresh: 'Обновить',
+            audio_editor_cancel: 'Отмена',
+            audio_editor_without: 'Без аудио',
+            audio_editor_add: 'Добавить',
+        },
+    });
+
+    assert.equal(page.document.getElementById('sl-editor-title').textContent, 'Аудио предложения');
+    assert.equal(page.document.getElementById('sl-summary-start').textContent, 'Начало');
+    assert.equal(page.document.getElementById('sl-summary-end').textContent, 'Конец');
+    assert.equal(page.document.getElementById('sl-summary-to-card').textContent, 'В карточку');
+    assert.equal(page.document.getElementById('sl-cut-label').textContent, 'Вырезать');
+    assert.equal(page.document.getElementById('sl-silence-label').textContent, 'Найти тишину');
+    assert.equal(page.document.getElementById('sl-refresh-label').textContent, 'Обновить');
+    assert.equal(page.document.getElementById('sl-action-cancel').textContent, 'Отмена');
+    assert.equal(page.document.getElementById('sl-action-without').textContent, 'Без аудио');
+    assert.equal(page.document.getElementById('sl-action-add').textContent, 'Добавить');
+});
+
+test('add action prevents submission and shows toast when output duration is zero', () => {
+    let addCall = null;
+    page.window.ScreenlateBridge = {
+        onAudioAdd: json => { addCall = json; },
+    };
+
+    AudioEditor.open({
+        sampleRate: 48000,
+        totalFrames: 480000,
+        selection: [100000, 200000],
+        cuts: [[100000, 200000]], // Fully cut
+        labels: {
+            audio_editor_empty_output: 'Выделенный фрагмент пуст.',
+        },
+    });
+
+    const addBtn = page.document.getElementById('sl-action-add');
+    tap(addBtn);
+
+    assert.equal(addCall, null);
+    const toast = page.document.querySelector('.sl-toast');
+    assert.equal(toast.hidden, false);
+    assert.equal(toast.textContent, 'Выделенный фрагмент пуст.');
+});

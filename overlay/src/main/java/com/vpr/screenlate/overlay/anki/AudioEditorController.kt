@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.anki
 
 import android.content.Context
 import android.os.SystemClock
+import android.widget.Toast
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.media.AudioContextId
 import com.vpr.screenlate.core.media.AudioEdit
@@ -117,6 +118,34 @@ class AudioEditorController(
             put("audio_editor_info_title", context.getString(R.string.audio_editor_info_title))
             put("audio_editor_info_body", context.getString(R.string.audio_editor_info_body))
             put("audio_editor_understood", context.getString(R.string.audio_editor_understood))
+            put("audio_editor_title", context.getString(R.string.audio_editor_title))
+            put("audio_editor_retained", context.getString(R.string.audio_editor_retained))
+            put("audio_editor_marker_legend", context.getString(R.string.audio_editor_marker_legend))
+            put("audio_editor_from_scan", context.getString(R.string.audio_editor_from_scan))
+            put("audio_editor_start", context.getString(R.string.audio_editor_start))
+            put("audio_editor_end", context.getString(R.string.audio_editor_end))
+            put("audio_editor_to_card", context.getString(R.string.audio_editor_to_card))
+            put("audio_editor_result", context.getString(R.string.audio_editor_result))
+            put("audio_editor_original", context.getString(R.string.audio_editor_original))
+            put("audio_editor_cut", context.getString(R.string.audio_editor_cut))
+            put("audio_editor_find_silence", context.getString(R.string.audio_editor_find_silence))
+            put("audio_editor_undo", context.getString(R.string.audio_editor_undo))
+            put("audio_editor_refresh", context.getString(R.string.audio_editor_refresh))
+            put("audio_editor_without", context.getString(R.string.audio_editor_without))
+            put("audio_editor_add", context.getString(R.string.audio_editor_add))
+            put("audio_editor_apply", context.getString(R.string.audio_editor_apply))
+            put("audio_editor_dismiss", context.getString(R.string.audio_editor_dismiss))
+            put("audio_editor_collapse", context.getString(R.string.audio_editor_collapse))
+            put("audio_editor_zoom_in", context.getString(R.string.audio_editor_zoom_in))
+            put("audio_editor_zoom_out", context.getString(R.string.audio_editor_zoom_out))
+            put("audio_editor_remove_cut", context.getString(R.string.audio_editor_remove_cut))
+            put("audio_editor_select_cut", context.getString(R.string.audio_editor_select_cut))
+            put("audio_editor_cut_edge_start", context.getString(R.string.audio_editor_cut_edge_start))
+            put("audio_editor_cut_edge_end", context.getString(R.string.audio_editor_cut_edge_end))
+            put("audio_editor_start_handle", context.getString(R.string.audio_editor_start_handle))
+            put("audio_editor_end_handle", context.getString(R.string.audio_editor_end_handle))
+            put("audio_editor_empty_output", context.getString(R.string.audio_editor_empty_output))
+            put("audio_editor_export_failed", context.getString(R.string.audio_editor_export_failed))
         }
 
         val openPayload = buildJsonObject {
@@ -272,6 +301,12 @@ class AudioEditorController(
                 selection = AudioRange(editDto.selection[0], editDto.selection[1]),
                 exclusions = editDto.exclusions.filter { it.size >= 2 }.map { AudioRange(it[0], it[1]) },
             )
+            if (edit.outputFrames <= 0L) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, R.string.audio_editor_empty_output, Toast.LENGTH_SHORT).show()
+                }
+                return@launch
+            }
             val tempFile = File.createTempFile("screenlate_sentence_", ".opus", context.cacheDir)
             val exported = sentenceRecorder.export(edit, tempFile)
             withContext(Dispatchers.Main) {
@@ -279,7 +314,7 @@ class AudioEditorController(
                     finish(AudioEditorResult.WithAudio(tempFile))
                 } else {
                     tempFile.delete()
-                    finish(AudioEditorResult.WithoutAudio)
+                    Toast.makeText(context, R.string.audio_editor_export_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }
