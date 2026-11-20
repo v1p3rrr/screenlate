@@ -45,6 +45,8 @@ class DiagnosticsHud(
     @SuppressLint("ClickableViewAccessibility")
     fun show() {
         if (attached) return
+        val isDebuggable = (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (!isDebuggable) return
         val density = context.resources.displayMetrics.density
         val paddingHorizontal = (10 * density).roundToInt()
         val paddingVertical = (6 * density).roundToInt()
