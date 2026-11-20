@@ -20,9 +20,9 @@
     - Updated `docs/architecture.md`, `docs/development.md`, and `docs/usage.md` with sentence audio recording, overlay editor, and Anki pipeline details.
     - Updated `ai/test-model.md` run log and REC cases.
     - Verified with full unit tests (`./gradlew testDebugUnitTest :build-logic:convention:test`), page tests (`npm --prefix scripts/page-tests test`: 209 tests passed), and lint checks (`./gradlew lintDebug :app:lintVitalRelease`).
-  - **Dev APK builds (`377c2125`):**
+  - **Dev APK builds (`c7e9b08e`):**
+    - Minified ARM64 Dev APK: `testdata/local-research/builds/screenlate-dev-c7e9b08e-min.apk` (25,289,512 bytes, SHA-256 `6B4442B0932114705FA56A4BFB0FF1C3004AC610AC8EF33D2AE6CF19C8E2308F`), debug-signed with the standard Dev certificate (`3d48893b...`), identical to previous worktree Dev builds for direct update over the existing installation, with R8 mapping `screenlate-dev-c7e9b08e-min.mapping.txt`.
     - Unminified all-ABI debug APK: `app/build/outputs/apk/debug/app-debug.apk` (106,779,886 bytes, SHA-256 `EC6382C0B1C56E4716F63E5CAE3D89F0A8DEAED535FFC0E389E6F2A884D4101A`).
-    - Minified ARM64 Dev APK: `testdata/local-research/builds/screenlate-dev-377c2125-min.apk` (25,289,512 bytes, SHA-256 `224392761FC949F46E53ACD9509321C13BF4855C703F01942E25C8B7C810DF3F`), debug-signed, with R8 mapping `screenlate-dev-377c2125-min.mapping.txt`.
 
 ## Sentence audio: Overlay editor UI, Kotlin bridge, Anki export and settings integration (2026-11-19)
 
