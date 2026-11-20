@@ -1025,4 +1025,19 @@
     <string name="lookup_text_replacement_ignore_case">Büyük/küçük harf yoksay</string>
     <string name="yomitan_summary_replacements_imported">İçe aktarılan metin değiştirme kuralları: %1$d</string>
     <string name="lookup_text_replacement_test">Test metni</string>
+    <string name="search_settings">Ayarları ara</string>
+    <string name="search_settings_empty">Sonuç bulunamadı</string>
+    <string name="search_settings_empty_hint">Kategoriye veya ayar adına göre aramayı deneyin</string>
+    <string name="search_clear">Temizle</string>
+    <string name="search_back">Aramayı kapat</string>
+    <string name="about_diagnostics_title">Performans ve Tanılama</string>
+    <string name="about_diagnostics_hint">Arka planda sonlandırma nedenlerini belirlemek için belleği (PSS, Heap) ve sistem kapatma olaylarını izler.</string>
+    <string name="about_diagnostics_last_exit">Son sonlandırma: %1$s</string>
+    <string name="about_diagnostics_no_exit">Son sonlandırma: kayıt yok</string>
+    <string name="about_diagnostics_memory_trim">Bellek temizleme (Trim): %1$s (%2$s önce)</string>
+    <string name="about_diagnostics_no_trim">Bellek temizleme: kayıt yok</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">İşlem CPU süresi: %1$d sn</string>
+    <string name="diagnostics_hud_title">Kayan tanılama HUD</string>
+    <string name="diagnostics_hud_summary">Sürüklenebilir yer paylaşımında canlı belleği (PSS, Heap), CPU süresini ve hizmet durumunu gösterir.</string>
 </resources>

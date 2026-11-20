@@ -1017,4 +1017,19 @@
     <string name="lookup_text_replacement_ignore_case">केस अनदेखा करें</string>
     <string name="yomitan_summary_replacements_imported">आयातित टेक्स्ट प्रतिस्थापन नियम: %1$d</string>
     <string name="lookup_text_replacement_test">टेक्स्ट का परीक्षण</string>
+    <string name="search_settings">सेटिंग्स खोजें</string>
+    <string name="search_settings_empty">कुछ नहीं मिला</string>
+    <string name="search_settings_empty_hint">श्रेणी या सेटिंग नाम से खोजने का प्रयास करें</string>
+    <string name="search_clear">साफ़ करें</string>
+    <string name="search_back">खोज बंद करें</string>
+    <string name="about_diagnostics_title">प्रदर्शन और निदान</string>
+    <string name="about_diagnostics_hint">मेमोरी (PSS, Heap) और बैकग्राउंड समाप्ति के कारणों की पहचान करने के लिए सिस्टम प्रोसेस निकास घटनाओं की निगरानी करता है।</string>
+    <string name="about_diagnostics_last_exit">अंतिम निकास: %1$s</string>
+    <string name="about_diagnostics_no_exit">अंतिम निकास: कोई रिकॉर्ड नहीं</string>
+    <string name="about_diagnostics_memory_trim">मेमोरी ट्रिम: %1$s (%2$s पहले)</string>
+    <string name="about_diagnostics_no_trim">मेमोरी ट्रिम: कोई रिकॉर्ड नहीं</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">प्रोसेस सीपीयू समय: %1$d सेकंड</string>
+    <string name="diagnostics_hud_title">फ़्लोटिंग डायग्नोस्टिक्स HUD</string>
+    <string name="diagnostics_hud_summary">खींचने योग्य ओवरले में लाइव मेमोरी (PSS, Heap), CPU समय और सेवा स्थिति प्रदर्शित करता है।</string>
 </resources>

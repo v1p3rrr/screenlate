@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Αυτή η γλώσσα δεν διαθέτει μοντέλο στη συσκευή και η επιβεβλημένη λειτουργία εκτός σύνδεσης απενεργοποιεί την αναγνώριση στο cloud. Απενεργοποιήστε την επιβεβλημένη λειτουργία εκτός σύνδεσης για να κάνετε λήψη μοντέλου ή να χρησιμοποιήσετε αναγνώριση στο cloud.</string>
     <string name="overlay_freq_harmonic">Αρμ.</string>
     <string name="overlay_freq_average">Μ.Ο.</string>
+    <string name="translation_service_auto">Αυτόματα (διαδοχικά)</string>
+    <string name="translation_service_auto_detail">Μετάφραση με όλες τις ενεργοποιημένες υπηρεσίες</string>
 </resources>

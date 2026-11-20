@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">এই ভাষার জন্য কোনো অন-ডিভাইস মডেল নেই এবং বাধ্যতামূলক অফলাইন মোডে ক্লাউড শনাক্তকরণ বন্ধ থাকে। মডেল ডাউনলোড করতে বা ক্লাউড শনাক্তকরণ ব্যবহার করতে বাধ্যতামূলক অফলাইন মোড বন্ধ করুন।</string>
     <string name="overlay_freq_harmonic">হার্ম.</string>
     <string name="overlay_freq_average">গড়</string>
+    <string name="translation_service_auto">স্বয়ংক্রিয় (ক্যাসকেড)</string>
+    <string name="translation_service_auto_detail">সমস্ত সক্রিয় পরিষেবা দিয়ে অনুবাদ করুন</string>
 </resources>

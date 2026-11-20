@@ -1038,4 +1038,19 @@
     <string name="lookup_text_replacement_ignore_case">Ignora maiuscole/minuscole</string>
     <string name="yomitan_summary_replacements_imported">Regole di sostituzione di testo importate: %1$d</string>
     <string name="lookup_text_replacement_test">Testo di prova</string>
+    <string name="search_settings">Cerca impostazioni</string>
+    <string name="search_settings_empty">Nessun risultato</string>
+    <string name="search_settings_empty_hint">Prova a cercare per categoria o nome del parametro</string>
+    <string name="search_clear">Cancella</string>
+    <string name="search_back">Chiudi ricerca</string>
+    <string name="about_diagnostics_title">Prestazioni e diagnostica</string>
+    <string name="about_diagnostics_hint">Monitora la memoria (PSS, Heap) e le chiusure del processo da parte del sistema per identificare le cause di arresto in background.</string>
+    <string name="about_diagnostics_last_exit">Ultima chiusura: %1$s</string>
+    <string name="about_diagnostics_no_exit">Ultima chiusura: nessuna registrazione</string>
+    <string name="about_diagnostics_memory_trim">Pulizia memoria (Trim): %1$s (%2$s fa)</string>
+    <string name="about_diagnostics_no_trim">Pulizia memoria: nessuna registrazione</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Tempo CPU del processo: %1$d s</string>
+    <string name="diagnostics_hud_title">HUD diagnostico mobile</string>
+    <string name="diagnostics_hud_summary">Mostra memoria (PSS, Heap), tempo CPU e stato del servizio in una scheda trascinabile.</string>
 </resources>

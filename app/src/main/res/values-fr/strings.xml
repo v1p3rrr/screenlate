@@ -1038,4 +1038,19 @@
     <string name="lookup_text_replacement_ignore_case">Ignorer la casse</string>
     <string name="yomitan_summary_replacements_imported">Règles de remplacement de texte importées : %1$d</string>
     <string name="lookup_text_replacement_test">Texte de test</string>
+    <string name="search_settings">Rechercher des paramètres</string>
+    <string name="search_settings_empty">Aucun résultat</string>
+    <string name="search_settings_empty_hint">Essayez de chercher par catégorie ou nom de paramètre</string>
+    <string name="search_clear">Effacer</string>
+    <string name="search_back">Fermer la recherche</string>
+    <string name="about_diagnostics_title">Performances et diagnostic</string>
+    <string name="about_diagnostics_hint">Surveille la mémoire (PSS, Heap) et les arrêts de processus par le système pour identifier les causes d’arrêt en arrière-plan.</string>
+    <string name="about_diagnostics_last_exit">Dernier arrêt : %1$s</string>
+    <string name="about_diagnostics_no_exit">Dernier arrêt : aucun enregistrement</string>
+    <string name="about_diagnostics_memory_trim">Nettoyage mémoire (Trim) : %1$s (il y a %2$s)</string>
+    <string name="about_diagnostics_no_trim">Nettoyage mémoire : aucun enregistrement</string>
+    <string name="about_diagnostics_ram">RAM (PSS) : %1$d Mo (Heap %2$d/%3$d Mo, Native %4$d Mo)</string>
+    <string name="about_diagnostics_cpu">Temps CPU du processus : %1$d s</string>
+    <string name="diagnostics_hud_title">HUD de diagnostic flottant</string>
+    <string name="diagnostics_hud_summary">Affiche la mémoire (PSS, Heap), le temps CPU et l’état du service dans un volet déplaçable.</string>
 </resources>

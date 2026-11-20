@@ -1,9 +1,12 @@
 package com.vpr.screenlate.logs
 
+import android.app.ActivityManager
 import android.app.ApplicationExitInfo
+import android.content.Context
+import android.os.Build
 
 /** One past process exit as [ApplicationExitInfo] reports it; a plain class so the formatting is testable. */
-internal data class ExitRecord(
+data class ExitRecord(
     val timestamp: Long,
     val pid: Int,
     val reason: Int,
@@ -15,12 +18,32 @@ internal data class ExitRecord(
 )
 
 /** Turns the system's records of how earlier processes ended into log lines. */
-internal object ExitReasons {
+object ExitReasons {
     private const val MAX_DESCRIPTION = 200
 
     /** The exits after [seenUpTo], oldest first. */
     fun newSince(records: List<ExitRecord>, seenUpTo: Long): List<ExitRecord> =
         records.filter { it.timestamp > seenUpTo }.sortedBy { it.timestamp }
+
+    /** The most recent recorded process exit, or null if unsupported / none recorded. */
+    fun lastExit(context: Context): ExitRecord? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return null
+        val manager = context.getSystemService(ActivityManager::class.java) ?: return null
+        val records = runCatching {
+            manager.getHistoricalProcessExitReasons(context.packageName, 0, 1)
+        }.getOrNull() ?: return null
+        val first = records.firstOrNull() ?: return null
+        return ExitRecord(
+            timestamp = first.timestamp,
+            pid = first.pid,
+            reason = first.reason,
+            status = first.status,
+            importance = first.importance,
+            pssKb = first.pss,
+            rssKb = first.rss,
+            description = first.description,
+        )
+    }
 
     /**
      * A crash's description may quote the exception message, which may carry text, so it is left out; the crash line

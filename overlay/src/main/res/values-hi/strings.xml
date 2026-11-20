@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">इस भाषा के लिए डिवाइस पर कोई मॉडल नहीं है, और बाध्यकारी ऑफ़लाइन मोड क्लाउड पहचान को बंद रखता है। मॉडल डाउनलोड करने या क्लाउड पहचान का उपयोग करने के लिए बाध्यकारी ऑफ़लाइन मोड बंद करें।</string>
     <string name="overlay_freq_harmonic">हरा.</string>
     <string name="overlay_freq_average">औसत</string>
+    <string name="translation_service_auto">स्वचालित (कैस्केड)</string>
+    <string name="translation_service_auto_detail">सभी सक्षम सेवाओं के साथ अनुवाद करें</string>
 </resources>

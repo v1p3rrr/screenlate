@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Această limbă nu are un model pe dispozitiv, iar modul offline forțat dezactivează recunoașterea în cloud. Dezactivați modul offline forțat pentru a descărca un model sau a utiliza recunoașterea în cloud.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Med.</string>
+    <string name="translation_service_auto">Automat (cascadă)</string>
+    <string name="translation_service_auto_detail">Traduceți cu toate serviciile activate</string>
 </resources>

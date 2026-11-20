@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Für diese Sprache gibt es kein Modell auf dem Gerät, und der erzwungene Offline-Modus deaktiviert die Cloud-Erkennung. Deaktiviere den erzwungenen Offline-Modus, um ein Modell herunterzuladen oder die Cloud-Erkennung zu verwenden.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Ø</string>
+    <string name="translation_service_auto">Automatisch (Kaskade)</string>
+    <string name="translation_service_auto_detail">Mit allen aktivierten Diensten übersetzen</string>
 </resources>

@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Bahasa ini tidak memiliki model di perangkat, dan Mode Offline Paksa menonaktifkan pengenalan cloud. Matikan Mode Offline Paksa untuk mengunduh model atau gunakan pengenalan cloud.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Rata.</string>
+    <string name="translation_service_auto">Otomatis (kaskade)</string>
+    <string name="translation_service_auto_detail">Terjemahkan dengan semua layanan yang diaktifkan</string>
 </resources>

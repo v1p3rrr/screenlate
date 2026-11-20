@@ -1043,4 +1043,19 @@
     <string name="lookup_text_replacement_ignore_case">Ignorovat velikost písmen</string>
     <string name="yomitan_summary_replacements_imported">Importovaná pravidla nahrazování textu: %1$d</string>
     <string name="lookup_text_replacement_test">Vyzkoušet na textu</string>
+    <string name="search_settings">Hledat nastavení</string>
+    <string name="search_settings_empty">Nic nenalezeno</string>
+    <string name="search_settings_empty_hint">Zkuste hledat podle kategorie nebo názvu parametru</string>
+    <string name="search_clear">Vymazat</string>
+    <string name="search_back">Zavřít hledání</string>
+    <string name="about_diagnostics_title">Výkon a diagnostika</string>
+    <string name="about_diagnostics_hint">Sleduje paměť (PSS, Heap) a ukončení procesu systémem pro zjištění příčin ukončení na pozadí.</string>
+    <string name="about_diagnostics_last_exit">Poslední ukončení: %1$s</string>
+    <string name="about_diagnostics_no_exit">Poslední ukončení: žádné záznamy</string>
+    <string name="about_diagnostics_memory_trim">Uvolnění paměti (Trim): %1$s (před %2$s)</string>
+    <string name="about_diagnostics_no_trim">Uvolnění paměti: žádné záznamy</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Čas CPU procesu: %1$d s</string>
+    <string name="diagnostics_hud_title">Plovoucí diagnostický HUD</string>
+    <string name="diagnostics_hud_summary">Zobrazuje aktuální paměť (PSS, Heap), čas CPU a stav služby v přetahovatelném panelu.</string>
 </resources>

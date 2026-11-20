@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Questa lingua non ha un modello sul dispositivo e la modalità offline forzata disabilita il riconoscimento nel cloud. Disattiva la modalità offline forzata per scaricare un modello o usare il riconoscimento nel cloud.</string>
     <string name="overlay_freq_harmonic">Arm.</string>
     <string name="overlay_freq_average">Media</string>
+    <string name="translation_service_auto">Automatico (cascata)</string>
+    <string name="translation_service_auto_detail">Traduci con tutti i servizi abilitati</string>
 </resources>

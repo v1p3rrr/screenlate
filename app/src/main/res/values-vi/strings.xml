@@ -1012,4 +1012,19 @@
     <string name="lookup_text_replacement_ignore_case">Không phân biệt hoa thường</string>
     <string name="yomitan_summary_replacements_imported">Quy tắc thay thế văn bản đã nhập: %1$d</string>
     <string name="lookup_text_replacement_test">Văn bản thử nghiệm</string>
+    <string name="search_settings">Tìm kiếm cài đặt</string>
+    <string name="search_settings_empty">Không tìm thấy kết quả</string>
+    <string name="search_settings_empty_hint">Thử tìm kiếm theo danh mục hoặc tên cài đặt</string>
+    <string name="search_clear">Xóa</string>
+    <string name="search_back">Đóng tìm kiếm</string>
+    <string name="about_diagnostics_title">Hiệu năng và chẩn đoán</string>
+    <string name="about_diagnostics_hint">Theo dõi bộ nhớ (PSS, Heap) và các sự kiện kết thúc tiến trình của hệ thống để xác định nguyên nhân dừng trong nền.</string>
+    <string name="about_diagnostics_last_exit">Lần kết thúc gần nhất: %1$s</string>
+    <string name="about_diagnostics_no_exit">Lần kết thúc gần nhất: không có bản ghi</string>
+    <string name="about_diagnostics_memory_trim">Cắt giảm bộ nhớ (Trim): %1$s (%2$s trước)</string>
+    <string name="about_diagnostics_no_trim">Cắt giảm bộ nhớ: không có bản ghi</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Thời gian CPU tiến trình: %1$d giây</string>
+    <string name="diagnostics_hud_title">HUD chẩn đoán nổi</string>
+    <string name="diagnostics_hud_summary">Hiển thị bộ nhớ trực tiếp (PSS, Heap), thời gian CPU và trạng thái dịch vụ trong lớp phủ có thể kéo.</string>
 </resources>

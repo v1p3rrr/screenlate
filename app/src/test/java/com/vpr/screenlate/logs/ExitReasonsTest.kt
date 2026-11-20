@@ -50,6 +50,8 @@ class ExitReasonsTest {
     @Test
     fun `names reasons newer than the minimum SDK and unknown ones`() {
         assertThat(ExitReasons.reasonName(14)).isEqualTo("FREEZER")
+        assertThat(ExitReasons.reasonName(15)).isEqualTo("PACKAGE_STATE_CHANGE")
+        assertThat(ExitReasons.reasonName(16)).isEqualTo("PACKAGE_UPDATED")
         assertThat(ExitReasons.reasonName(99)).isEqualTo("reason 99")
     }
 }

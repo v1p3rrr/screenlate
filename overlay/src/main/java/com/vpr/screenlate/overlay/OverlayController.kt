@@ -35,6 +35,8 @@ import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redactUrl
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.diagnostics.OverlayLifecycleState
+import com.vpr.screenlate.core.common.diagnostics.ProcessDiagnostics
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
@@ -100,6 +102,7 @@ import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.BubbleWindowMover
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.CropFocus
+import com.vpr.screenlate.overlay.ui.DiagnosticsHud
 import com.vpr.screenlate.overlay.ui.FlagCodes
 import com.vpr.screenlate.overlay.ui.Flags
 import com.vpr.screenlate.overlay.ui.DockPlacement
@@ -265,6 +268,12 @@ class OverlayController(
         },
     )
 
+    private val diagnosticsHud = DiagnosticsHud(
+        context = service,
+        windowManager = windowManager,
+        onClose = { scope.launch { overlaySettings.setDiagnosticsHud(false) } },
+    )
+
     private var settings = OverlaySettings()
     private var lastScreen: Box? = null
     private var scanLength = LookupSettings.DEFAULT_SCAN_LENGTH
@@ -402,6 +411,7 @@ class OverlayController(
         scanJob?.cancel()
         lookupJob?.cancel()
         popupNotes.release()
+        diagnosticsHud.hide()
         mainHandler.removeCallbacksAndMessages(null)
         detachWindows()
         popup.release()
@@ -470,6 +480,9 @@ class OverlayController(
         val previous = settings
         settings = new
         popup.hideOnOutsideTap = new.hideOnOutsideTap
+        if (new.diagnosticsHud != previous.diagnosticsHud) {
+            if (new.diagnosticsHud) diagnosticsHud.show() else diagnosticsHud.hide()
+        }
         loadOnDevice(new.textSource != TextSource.APP_TEXT_ONLY && new.effectiveOcrEngines(offlineMode) != OcrEngines.CLOUD)
         val show = shouldShowBubble()
         val size = (new.bubbleSizeDp * density).roundToInt()
@@ -505,10 +518,14 @@ class OverlayController(
             OverlayWindows.Entry(popup::attach, popup::detach),
             OverlayWindows.Entry({ OverlayWindows.add(windowManager, bubbleView, bubbleParams) }, { windowManager.removeView(bubbleView) }),
         )
+        if (attached && settings.diagnosticsHud) {
+            diagnosticsHud.show()
+        }
     }
 
     private fun detachWindows() {
         if (!attached) return
+        diagnosticsHud.hide()
         bubbleMenu.dismiss()
         // A finger on the bubble gets no up or cancel once its window is gone.
         touching = false
@@ -1033,6 +1050,7 @@ class OverlayController(
     // region Scanning and lookup
 
     private fun resetScan() {
+        ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
         scanId++
         scanJob?.cancel()
         scanJob = null
@@ -1075,6 +1093,7 @@ class OverlayController(
         // The old popup's word belongs to the old screen; ➕ there would take its sentence from the new scan.
         closePopup()
         resetScan()
+        ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.SCANNING)
         takeActiveLanguage(warmUp = false)
         val source = lookupSources.source.value
         scanSource = source
@@ -1173,6 +1192,7 @@ class OverlayController(
                 popup.page.prepare()
             }
             try {
+                ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.OCR)
                 ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) })
                     .catch { error ->
                         if (error is CancellationException) throw error
@@ -1578,6 +1598,7 @@ class OverlayController(
         aimedCharAt: Int = aimedAt,
         fromOcr: Boolean = false,
     ): List<LookupResult> = try {
+        ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.LOOKUP)
         val started = System.currentTimeMillis()
         val results = if (link) {
             lookup.lookupQuery(text, language, primaryReading)
@@ -1599,6 +1620,8 @@ class OverlayController(
     } catch (e: Exception) {
         Log.w(TAG, "Lookup failed", e.redacted())
         emptyList()
+    } finally {
+        ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
     }
 
     /** The kanji entry shown when no word starts at [text]; null when there is none or the lookup failed. */
@@ -1965,13 +1988,18 @@ class OverlayController(
         override fun onTranslate(request: Int) {
             val sentence = shownSentence()?.text
             scope.launch {
-                val serviceChoice = popupNotes.chosenTranslationService
-                val result = translation.forPopup(service, sentence, language, serviceChoice)
-                val text = (result["text"] as? JsonPrimitive)?.contentOrNull
-                if (text != null && sentence != null) {
-                    popupNotes.setChosenTranslation(sentence, text)
+                ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.TRANSLATE)
+                try {
+                    val serviceChoice = popupNotes.chosenTranslationService
+                    val result = translation.forPopup(service, sentence, language, serviceChoice)
+                    val text = (result["text"] as? JsonPrimitive)?.contentOrNull
+                    if (text != null && sentence != null) {
+                        popupNotes.setChosenTranslation(sentence, text)
+                    }
+                    popup.page.showTranslation(request, result)
+                } finally {
+                    ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
                 }
-                popup.page.showTranslation(request, result)
             }
         }
 
@@ -1999,12 +2027,17 @@ class OverlayController(
             popupNotes.chosenTranslationService = serviceChoice
             val sentence = shownSentence()?.text
             scope.launch {
-                val result = translation.forPopup(service, sentence, language, serviceChoice)
-                val text = (result["text"] as? JsonPrimitive)?.contentOrNull
-                if (text != null && sentence != null) {
-                    popupNotes.setChosenTranslation(sentence, text)
+                ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.TRANSLATE)
+                try {
+                    val result = translation.forPopup(service, sentence, language, serviceChoice)
+                    val text = (result["text"] as? JsonPrimitive)?.contentOrNull
+                    if (text != null && sentence != null) {
+                        popupNotes.setChosenTranslation(sentence, text)
+                    }
+                    popup.page.showTranslation(request, result)
+                } finally {
+                    ProcessDiagnostics.setLifecycleState(OverlayLifecycleState.IDLE)
                 }
-                popup.page.showTranslation(request, result)
             }
         }
 

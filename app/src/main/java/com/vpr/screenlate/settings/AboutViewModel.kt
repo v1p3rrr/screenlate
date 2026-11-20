@@ -4,23 +4,32 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpr.screenlate.core.common.diagnostics.ProcessDiagnosticSnapshot
+import com.vpr.screenlate.core.common.diagnostics.ProcessDiagnostics
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.logs.ExitReasons
+import com.vpr.screenlate.logs.ExitRecord
 import com.vpr.screenlate.logs.LogExport
 import com.vpr.screenlate.logs.SavedLog
+import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /** Installed dictionaries for their attributions, and the log file for "Share logs". */
 @HiltViewModel
 class AboutViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     repository: DictionaryRepository,
+    private val overlaySettings: OverlaySettingsRepository,
 ) : ViewModel() {
     val dictionaries: StateFlow<List<DictionaryEntity>> = repository.dictionaries
         .map { list -> list.sortedBy { it.priority } }
@@ -29,6 +38,31 @@ class AboutViewModel @Inject constructor(
             SharingStarted.WhileSubscribed(5_000),
             repository.cachedDictionaries?.sortedBy { it.priority }.orEmpty(),
         )
+
+    val diagnosticsHudEnabled: StateFlow<Boolean> = overlaySettings.settings
+        .map { it.diagnosticsHud }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            overlaySettings.cachedSettings?.diagnosticsHud ?: false,
+        )
+
+    val lastExitRecord: StateFlow<ExitRecord?> = flow {
+        emit(ExitReasons.lastExit(context))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    val diagnosticsSnapshot: StateFlow<ProcessDiagnosticSnapshot> = flow {
+        while (true) {
+            emit(ProcessDiagnostics.snapshot())
+            delay(1000)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ProcessDiagnostics.snapshot())
+
+    fun setDiagnosticsHud(enabled: Boolean) {
+        viewModelScope.launch {
+            overlaySettings.setDiagnosticsHud(enabled)
+        }
+    }
 
     /** A share intent for a fresh log file. */
     suspend fun logShareIntent(): Intent = LogExport.shareIntent(context, LogExport.write(context))

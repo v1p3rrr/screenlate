@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">لا يوجد نموذج داخل الجهاز لهذه اللغة، كما يعطّل وضع عدم الاتصال الإجباري التعرّف السحابي. أوقف وضع عدم الاتصال الإجباري لتنزيل نموذج أو استخدام التعرّف السحابي.</string>
     <string name="overlay_freq_harmonic">توافقي</string>
     <string name="overlay_freq_average">متوسط</string>
+    <string name="translation_service_auto">تلقائي (تسلسلي)</string>
+    <string name="translation_service_auto_detail">الترجمة باستخدام جميع الخدمات الممكنة</string>
 </resources>

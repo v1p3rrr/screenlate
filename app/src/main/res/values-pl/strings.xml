@@ -1051,4 +1051,19 @@
     <string name="lookup_text_replacement_ignore_case">Ignoruj wielkość liter</string>
     <string name="yomitan_summary_replacements_imported">Zaimportowane reguły zamiany tekstu: %1$d</string>
     <string name="lookup_text_replacement_test">Tekst testowy</string>
+    <string name="search_settings">Szukaj ustawień</string>
+    <string name="search_settings_empty">Nic nie znaleziono</string>
+    <string name="search_settings_empty_hint">Spróbuj wyszukać według kategorii lub nazwy parametru</string>
+    <string name="search_clear">Wyczyść</string>
+    <string name="search_back">Zamknij wyszukiwanie</string>
+    <string name="about_diagnostics_title">Wydajność i diagnostyka</string>
+    <string name="about_diagnostics_hint">Monitoruje pamięć (PSS, Heap) i zdarzenia zakończenia procesu przez system, pomagając ustalić przyczyny wyłączania w tle.</string>
+    <string name="about_diagnostics_last_exit">Ostatnie zakończenie: %1$s</string>
+    <string name="about_diagnostics_no_exit">Ostatnie zakończenie: brak wpisów</string>
+    <string name="about_diagnostics_memory_trim">Czyszczenie pamięci (Trim): %1$s (%2$s temu)</string>
+    <string name="about_diagnostics_no_trim">Czyszczenie pamięci: brak wpisów</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Czas CPU procesu: %1$d s</string>
+    <string name="diagnostics_hud_title">Pływający HUD diagnostyczny</string>
+    <string name="diagnostics_hud_summary">Wyświetla pamięć (PSS, Heap), czas procesora i stan usługi w przeciąganym panelu.</string>
 </resources>

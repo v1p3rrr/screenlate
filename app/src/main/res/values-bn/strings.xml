@@ -1017,4 +1017,19 @@
     <string name="lookup_text_replacement_ignore_case">কেস উপেক্ষা করুন</string>
     <string name="yomitan_summary_replacements_imported">আমদানিকৃত টেক্সট প্রতিস্থাপন নিয়ম: %1$d</string>
     <string name="lookup_text_replacement_test">টেক্সট পরীক্ষা</string>
+    <string name="search_settings">সেটিংস অনুসন্ধান করুন</string>
+    <string name="search_settings_empty">কিছু পাওয়া যায়নি</string>
+    <string name="search_settings_empty_hint">বিভাগ বা সেটিং নাম অনুসারে অনুসন্ধান করার চেষ্টা করুন</string>
+    <string name="search_clear">মুছুন</string>
+    <string name="search_back">অনুসন্ধান বন্ধ করুন</string>
+    <string name="about_diagnostics_title">কর্মক্ষমতা এবং ডায়াগনস্টিকস</string>
+    <string name="about_diagnostics_hint">ব্যাকগ্রাউন্ড বন্ধ হওয়ার কারণ শনাক্ত করতে মেমরি (PSS, Heap) এবং প্রসেস শেষ হওয়ার ইভেন্ট পর্যবেক্ষণ করে।</string>
+    <string name="about_diagnostics_last_exit">সর্বশেষ প্রস্থান: %1$s</string>
+    <string name="about_diagnostics_no_exit">সর্বশেষ প্রস্থান: কোনো রেকর্ড নেই</string>
+    <string name="about_diagnostics_memory_trim">মেমরি ট্রিম: %1$s (%2$s আগে)</string>
+    <string name="about_diagnostics_no_trim">মেমরি ট্রিম: কোনো রেকর্ড নেই</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">প্রসেস সিপিইউ সময়: %1$d সেকেন্ড</string>
+    <string name="diagnostics_hud_title">ভাসমান ডায়াগনস্টিক HUD</string>
+    <string name="diagnostics_hud_summary">টেনে আনা যায় এমন ওভারলেতে রিয়েল-টাইম মেমরি (PSS, Heap), CPU সময় এবং পরিষেবার অবস্থা দেখায়।</string>
 </resources>

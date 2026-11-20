@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">ภาษานี้ไม่มีโมเดลบนอุปกรณ์ และโหมดออฟไลน์บังคับปิดใช้งานการรู้จำบนคลาวด์ โปรดปิดโหมดออฟไลน์บังคับเพื่อดาวน์โหลดโมเดลหรือใช้การรู้จำบนคลาวด์</string>
     <string name="overlay_freq_harmonic">ฮาร์ม.</string>
     <string name="overlay_freq_average">เฉลี่ย</string>
+    <string name="translation_service_auto">อัตโนมัติ (แบบลดหลั่น)</string>
+    <string name="translation_service_auto_detail">แปลด้วยบริการทั้งหมดที่เปิดใช้งาน</string>
 </resources>

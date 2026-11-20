@@ -1039,4 +1039,19 @@
     <string name="lookup_text_replacement_ignore_case">התעלמות מאותיות גדולות וקטנות</string>
     <string name="yomitan_summary_replacements_imported">כללי החלפת טקסט שיובאו: %1$d</string>
     <string name="lookup_text_replacement_test">טקסט לבדיקה</string>
+    <string name="search_settings">חיפוש הגדרות</string>
+    <string name="search_settings_empty">לא נמצאו תוצאות</string>
+    <string name="search_settings_empty_hint">נסה לחפש לפי קטגוריה או שם ההגדרה</string>
+    <string name="search_clear">נקה</string>
+    <string name="search_back">סגור חיפוש</string>
+    <string name="about_diagnostics_title">ביצועים ואבחון</string>
+    <string name="about_diagnostics_hint">מנטר זיכרון (PSS, Heap) ואירועי סיום תהליך על ידי המערכת לזיהוי סיבות סגירה ברקע.</string>
+    <string name="about_diagnostics_last_exit">סיום אחרון: %1$s</string>
+    <string name="about_diagnostics_no_exit">סיום אחרון: אין רשומות</string>
+    <string name="about_diagnostics_memory_trim">פינוי זיכרון (Trim): %1$s (לפני %2$s)</string>
+    <string name="about_diagnostics_no_trim">פינוי זיכרון: אין רשומות</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">זמן מעבד התהליך: %1$d שניות</string>
+    <string name="diagnostics_hud_title">לוח אבחון צף (HUD)</string>
+    <string name="diagnostics_hud_summary">מציג זיכרון בזמן אמת (PSS, Heap), זמן מעבד ומצב שירות בשכבה צפה הניתנת לגרירה.</string>
 </resources>

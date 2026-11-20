@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Este idioma no tiene modelo en el dispositivo y el modo sin conexión forzado desactiva el reconocimiento en la nube. Desactiva el modo sin conexión forzado para descargar un modelo o usar el reconocimiento en la nube.</string>
     <string name="overlay_freq_harmonic">Arm.</string>
     <string name="overlay_freq_average">Prom.</string>
+    <string name="translation_service_auto">Automático (cascada)</string>
+    <string name="translation_service_auto_detail">Traducir con todos los servicios habilitados</string>
 </resources>

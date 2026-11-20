@@ -762,6 +762,16 @@
     <string name="about_logs_saved">Сохранено: %1$s</string>
     <string name="about_logs_open">Открыть</string>
     <string name="about_logs_save_failed">Не удалось сохранить лог.</string>
+    <string name="about_diagnostics_title">Производительность и диагностика</string>
+    <string name="about_diagnostics_hint">Отслеживает использование памяти (PSS, Heap) и причины завершения процесса системой, помогая выявить отключение служб.</string>
+    <string name="about_diagnostics_last_exit">Последнее завершение: %1$s</string>
+    <string name="about_diagnostics_no_exit">Последнее завершение: нет записей</string>
+    <string name="about_diagnostics_memory_trim">Выгрузка памяти (Trim): %1$s (%2$s назад)</string>
+    <string name="about_diagnostics_no_trim">Выгрузка памяти (Trim): не фиксировалась</string>
+    <string name="about_diagnostics_ram">Память (PSS): %1$d МБ (Heap %2$d/%3$d МБ, Native %4$d МБ)</string>
+    <string name="about_diagnostics_cpu">Время CPU процесса: %1$d с</string>
+    <string name="diagnostics_hud_title">Плавающий оверлей диагностики</string>
+    <string name="diagnostics_hud_summary">Показывает оперативную память (PSS, Heap), время процессора и состояние сервиса в перетаскиваемой плашке.</string>
     <string name="background_title">Работа в фоне</string>
     <string name="background_summary">Оптимизация батареи, автозапуск, постоянное уведомление</string>
     <string name="background_intro">Android автоматически перезапускает службу специальных возможностей, если её не ограничивает энергосбережение. Оба параметра питания ниже относятся к системе; Screenlate лишь открывает их.</string>

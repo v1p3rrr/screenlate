@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Ten język nie ma modelu na urządzeniu, a wymuszony tryb offline wyłącza rozpoznawanie w chmurze. Wyłącz wymuszony tryb offline, aby pobrać model lub używać rozpoznawania w chmurze.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Śr.</string>
+    <string name="translation_service_auto">Automatycznie (kaskada)</string>
+    <string name="translation_service_auto_detail">Tłumacz wszystkimi włączonymi usługami</string>
 </resources>

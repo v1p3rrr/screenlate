@@ -1026,4 +1026,19 @@
     <string name="lookup_text_replacement_ignore_case">نادیده گرفتن بزرگی و کوچکی حروف</string>
     <string name="yomitan_summary_replacements_imported">قواعد جایگزینی متن واردشده: %1$d</string>
     <string name="lookup_text_replacement_test">متن آزمایشی</string>
+    <string name="search_settings">جستجوی تنظیمات</string>
+    <string name="search_settings_empty">موردی یافت نشد</string>
+    <string name="search_settings_empty_hint">جستجو بر اساس دسته‌بندی یا نام تنظیم را امتحان کنید</string>
+    <string name="search_clear">پاک کردن</string>
+    <string name="search_back">بستن جستجو</string>
+    <string name="about_diagnostics_title">عملکرد و عیب‌یابی</string>
+    <string name="about_diagnostics_hint">حافظه (PSS، Heap) و رویدادهای خروج پردازش توسط سیستم را برای تشخیص توقف‌های پس‌زمینه بررسی می‌کند.</string>
+    <string name="about_diagnostics_last_exit">آخرین خروج: %1$s</string>
+    <string name="about_diagnostics_no_exit">آخرین خروج: موردی ثبت نشده</string>
+    <string name="about_diagnostics_memory_trim">آزادسازی حافظه (Trim): %1$s (%2$s پیش)</string>
+    <string name="about_diagnostics_no_trim">آزادسازی حافظه: موردی ثبت نشده</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d مگابایت (Heap %2$d/%3$d مگابایت، Native %4$d مگابایت)</string>
+    <string name="about_diagnostics_cpu">زمان CPU پردازش: %1$d ثانیه</string>
+    <string name="diagnostics_hud_title">نمایشگر شناور عیب‌یابی (HUD)</string>
+    <string name="diagnostics_hud_summary">نمایش حافظه زنده (PSS، Heap)، زمان پردازنده و وضعیت سرویس در لایه شناور قابل جابجایی.</string>
 </resources>

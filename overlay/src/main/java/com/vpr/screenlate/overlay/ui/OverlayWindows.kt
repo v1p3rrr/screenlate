@@ -84,6 +84,14 @@ object OverlayWindows {
         height = LayoutParams.MATCH_PARENT
     }
 
+    /** Draggable floating diagnostics HUD overlay, touchable, without taking focus or outside touches. */
+    fun hudParams(): LayoutParams = base(
+        LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_NOT_TOUCH_MODAL,
+    ).apply {
+        width = LayoutParams.WRAP_CONTENT
+        height = LayoutParams.WRAP_CONTENT
+    }
+
     private fun base(flags: Int): LayoutParams = LayoutParams(
         LayoutParams.WRAP_CONTENT,
         LayoutParams.WRAP_CONTENT,

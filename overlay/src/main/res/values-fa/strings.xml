@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">این زبان مدل روی دستگاه ندارد و حالت آفلاین اجباری تشخیص ابری را غیرفعال می‌کند. برای بارگیری مدل یا استفاده از تشخیص ابری، حالت آفلاین اجباری را خاموش کنید.</string>
     <string name="overlay_freq_harmonic">همساز</string>
     <string name="overlay_freq_average">میانگین</string>
+    <string name="translation_service_auto">خودکار (آبشاری)</string>
+    <string name="translation_service_auto_detail">ترجمه با تمام سرویس‌های فعال</string>
 </resources>

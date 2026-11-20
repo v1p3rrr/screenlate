@@ -948,7 +948,7 @@ const Popup = (() => {
     }
 
     function requestTranslationMenu(button) {
-        if (!content.contains(button) && !header.contains(button)) return;
+        if (!document.contains(button)) return;
         const request = ++translationRequests;
         pendingTranslation = { request, button };
         ScreenlateBridge.onTranslationMenu(request);
@@ -988,7 +988,9 @@ const Popup = (() => {
     function onTapOrHold(button, action) {
         let timer = null;
         let held = false;
+        let pointerActive = false;
         button.addEventListener('pointerdown', () => {
+            pointerActive = true;
             held = false;
             timer = setTimeout(() => {
                 held = true;
@@ -999,10 +1001,14 @@ const Popup = (() => {
         button.addEventListener('pointerup', () => {
             cancel();
             if (!held) action(false);
+            setTimeout(() => { pointerActive = false; }, 0);
         });
-        button.addEventListener('pointerleave', cancel);
-        button.addEventListener('pointercancel', cancel);
+        button.addEventListener('pointerleave', () => { cancel(); pointerActive = false; });
+        button.addEventListener('pointercancel', () => { cancel(); pointerActive = false; });
         button.addEventListener('contextmenu', event => event.preventDefault());
+        button.addEventListener('click', () => {
+            if (!pointerActive && !held) action(false);
+        });
     }
 
     function setButtonState(button, state) {

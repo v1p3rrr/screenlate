@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Tento jazyk nemá model v zařízení a vynucený offline režim zakazuje rozpoznávání v cloudu. Chcete-li stáhnout model nebo použít rozpoznávání v cloudu, vypněte vynucený offline režim.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Prům.</string>
+    <string name="translation_service_auto">Automaticky (kaskáda)</string>
+    <string name="translation_service_auto_detail">Překládat všemi povolenými službami</string>
 </resources>

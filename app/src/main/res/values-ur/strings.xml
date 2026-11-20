@@ -1017,4 +1017,19 @@
     <string name="lookup_text_replacement_ignore_case">بڑے اور چھوٹے حروف نظر انداز کریں</string>
     <string name="yomitan_summary_replacements_imported">درآمد شدہ متن کی تبدیلی کے قواعد: %1$d</string>
     <string name="lookup_text_replacement_test">متن کا ٹیسٹ</string>
+    <string name="search_settings">ترتیبات تلاش کریں</string>
+    <string name="search_settings_empty">کچھ نہیں ملا</string>
+    <string name="search_settings_empty_hint">زمرہ یا ترتیب کے نام سے تلاش کرنے کی کوشش کریں</string>
+    <string name="search_clear">صاف کریں</string>
+    <string name="search_back">تلاش بند کریں</string>
+    <string name="about_diagnostics_title">کارکردگی اور تشخیص</string>
+    <string name="about_diagnostics_hint">میموری (PSS، Heap) اور پس منظر کے خاتمے کی وجوہات کی شناخت کے لیے سسٹم کے عمل کے اختتام کے واقعات کی نگرانی کرتا ہے۔</string>
+    <string name="about_diagnostics_last_exit">آخری اخراج: %1$s</string>
+    <string name="about_diagnostics_no_exit">آخری اخراج: کوئی ریکارڈ نہیں</string>
+    <string name="about_diagnostics_memory_trim">میموری ٹرم: %1$s (%2$s پہلے)</string>
+    <string name="about_diagnostics_no_trim">میموری ٹرم: کوئی ریکارڈ نہیں</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">عمل کا سی پی یو وقت: %1$d سیکنڈ</string>
+    <string name="diagnostics_hud_title">فلوٹنگ ڈائیگنوسٹکس HUD</string>
+    <string name="diagnostics_hud_summary">کھینچنے کے قابل اوورلے میں براہ راست میموری (PSS، Heap)، CPU وقت اور سروس کی حیثیت دکھاتا ہے۔</string>
 </resources>

@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Для цієї мови немає моделі на пристрої, а примусовий офлайн-режим вимикає хмарне розпізнавання. Вимкніть примусовий офлайн-режим, щоб завантажити модель або скористатися хмарним розпізнаванням.</string>
     <string name="overlay_freq_harmonic">Гарм.</string>
     <string name="overlay_freq_average">Сер.</string>
+    <string name="translation_service_auto">Автоматично (каскад)</string>
+    <string name="translation_service_auto_detail">Переклад усіма увімкненими сервісами</string>
 </resources>

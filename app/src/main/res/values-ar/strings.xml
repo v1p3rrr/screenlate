@@ -1077,4 +1077,19 @@
     <string name="lookup_text_replacement_ignore_case">تجاهل حالة الأحرف</string>
     <string name="yomitan_summary_replacements_imported">قواعد استبدال النص المستوردة: %1$d</string>
     <string name="lookup_text_replacement_test">اختبار النص</string>
+    <string name="search_settings">البحث في الإعدادات</string>
+    <string name="search_settings_empty">لم يتم العثور على نتائج</string>
+    <string name="search_settings_empty_hint">حاول البحث حسب الفئة أو اسم الإعداد</string>
+    <string name="search_clear">مسح</string>
+    <string name="search_back">إغلاق البحث</string>
+    <string name="about_diagnostics_title">الأداء والتشخيص</string>
+    <string name="about_diagnostics_hint">يراقب الذاكرة (PSS، Heap) وأسباب إنهاء النظام للعملية للمساعدة في تشخيص إيقاف الخلفية.</string>
+    <string name="about_diagnostics_last_exit">آخر إنهاء: %1$s</string>
+    <string name="about_diagnostics_no_exit">آخر إنهاء: لا توجد سجلات</string>
+    <string name="about_diagnostics_memory_trim">تفريغ الذاكرة (Trim): %1$s (منذ %2$s)</string>
+    <string name="about_diagnostics_no_trim">تفريغ الذاكرة: لا توجد سجلات</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d م.ب (Heap %2$d/%3$d م.ب، Native %4$d م.ب)</string>
+    <string name="about_diagnostics_cpu">وقت وحدة المعالجة المركزية للعملية: %1$d ثانية</string>
+    <string name="diagnostics_hud_title">شاشة تشخيص عائمة (HUD)</string>
+    <string name="diagnostics_hud_summary">يعرض الذاكرة المباشرة (PSS، Heap) ووقت المعالجة وحالة الخدمة في نافذة قابلة للسحب.</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.res.Configuration as ResourcesConfiguration
 import android.content.res.Resources
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.vpr.screenlate.core.common.diagnostics.ProcessDiagnostics
 import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.log.Log
@@ -57,6 +58,12 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     override fun onConfigurationChanged(newConfig: ResourcesConfiguration) {
         super.onConfigurationChanged(newConfig)
         AppLanguage.followConfiguration(newConfig)
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        ProcessDiagnostics.recordTrimMemory(level)
+        Log.w(TAG, "onTrimMemory: ${ProcessDiagnostics.trimLevelName(level)} ($level)")
     }
 
     override fun onCreate() {

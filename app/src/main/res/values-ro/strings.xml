@@ -1030,4 +1030,19 @@
     <string name="lookup_text_replacement_ignore_case">Ignoră majusculele</string>
     <string name="yomitan_summary_replacements_imported">Reguli de înlocuire de text importate: %1$d</string>
     <string name="lookup_text_replacement_test">Testare text</string>
+    <string name="search_settings">Căutare setări</string>
+    <string name="search_settings_empty">Nimic găsit</string>
+    <string name="search_settings_empty_hint">Încercați să căutați după categorie sau nume</string>
+    <string name="search_clear">Șterge</string>
+    <string name="search_back">Închide căutarea</string>
+    <string name="about_diagnostics_title">Performanță și diagnosticare</string>
+    <string name="about_diagnostics_hint">Monitorizează memoria (PSS, Heap) și evenimentele de ieșire ale procesului pentru a identifica cauzele opririi în fundal.</string>
+    <string name="about_diagnostics_last_exit">Ultima ieșire: %1$s</string>
+    <string name="about_diagnostics_no_exit">Ultima ieșire: nicio înregistrare</string>
+    <string name="about_diagnostics_memory_trim">Eliberare memorie (Trim): %1$s (acum %2$s)</string>
+    <string name="about_diagnostics_no_trim">Eliberare memorie: nicio înregistrare</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Timp CPU proces: %1$d s</string>
+    <string name="diagnostics_hud_title">HUD plutitor de diagnosticare</string>
+    <string name="diagnostics_hud_summary">Afișează memoria în timp real (PSS, Heap), timpul CPU și starea serviciului într-o suprapunere glisantă.</string>
 </resources>

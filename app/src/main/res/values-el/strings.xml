@@ -1017,4 +1017,19 @@
     <string name="lookup_text_replacement_ignore_case">Χωρίς διάκριση πεζών/κεφαλαίων</string>
     <string name="yomitan_summary_replacements_imported">Εισαγόμενοι κανόνες αντικατάστασης κειμένου: %1$d</string>
     <string name="lookup_text_replacement_test">Δοκιμή κειμένου</string>
+    <string name="search_settings">Αναζήτηση ρυθμίσεων</string>
+    <string name="search_settings_empty">Δεν βρέθηκε τίποτα</string>
+    <string name="search_settings_empty_hint">Δοκιμάστε αναζήτηση κατά κατηγορία ή όνομα ρύθμισης</string>
+    <string name="search_clear">Εκκαθάριση</string>
+    <string name="search_back">Κλείσιμο αναζήτησης</string>
+    <string name="about_diagnostics_title">Απόδοση &amp; Διαγνωστικά</string>
+    <string name="about_diagnostics_hint">Παρακολουθεί τη μνήμη (PSS, Heap) και τους τερματισμούς της διαδικασίας για τον εντοπισμό αιτιών τερματισμού στο παρασκήνιο.</string>
+    <string name="about_diagnostics_last_exit">Τελευταίος τερματισμός: %1$s</string>
+    <string name="about_diagnostics_no_exit">Τελευταίος τερματισμός: καμία εγγραφή</string>
+    <string name="about_diagnostics_memory_trim">Εκκαθάριση μνήμης (Trim): %1$s (πριν από %2$s)</string>
+    <string name="about_diagnostics_no_trim">Εκκαθάριση μνήμης: καμία εγγραφή</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Χρόνος CPU διαδικασίας: %1$d δευτ.</string>
+    <string name="diagnostics_hud_title">Αιωρούμενο διαγνωστικό HUD</string>
+    <string name="diagnostics_hud_summary">Εμφανίζει ζωντανή μνήμη (PSS, Heap), χρόνο CPU και κατάσταση υπηρεσίας σε ένα μεταφερόμενο πλαίσιο.</string>
 </resources>

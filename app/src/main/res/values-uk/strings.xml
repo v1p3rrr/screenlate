@@ -1043,4 +1043,19 @@
     <string name="lookup_text_replacement_ignore_case">Без урахування регістру</string>
     <string name="yomitan_summary_replacements_imported">Імпортовано правил заміни тексту: %1$d</string>
     <string name="lookup_text_replacement_test">Перевірити на тексті</string>
+    <string name="search_settings">Пошук налаштувань</string>
+    <string name="search_settings_empty">Нічого не знайдено</string>
+    <string name="search_settings_empty_hint">Спробуйте шукати за категорією або назвою параметра</string>
+    <string name="search_clear">Очистити</string>
+    <string name="search_back">Закрити пошук</string>
+    <string name="about_diagnostics_title">Продуктивність і діагностика</string>
+    <string name="about_diagnostics_hint">Відстежує використання пам’яті (PSS, Heap) та причини завершення процесу системою, допомагаючи виявити зупинку служб.</string>
+    <string name="about_diagnostics_last_exit">Останнє завершення: %1$s</string>
+    <string name="about_diagnostics_no_exit">Останнє завершення: немає записів</string>
+    <string name="about_diagnostics_memory_trim">Вивантаження пам’яті (Trim): %1$s (%2$s тому)</string>
+    <string name="about_diagnostics_no_trim">Вивантаження пам’яті: не фіксувалося</string>
+    <string name="about_diagnostics_ram">Пам’ять (PSS): %1$d МБ (Heap %2$d/%3$d МБ, Native %4$d МБ)</string>
+    <string name="about_diagnostics_cpu">Час CPU процесу: %1$d с</string>
+    <string name="diagnostics_hud_title">Плавучий оверлей діагностики</string>
+    <string name="diagnostics_hud_summary">Показує оперативну пам’ять (PSS, Heap), час процесора та стан сервісу у рухомій плашці.</string>
 </resources>

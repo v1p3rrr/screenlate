@@ -1004,4 +1004,19 @@
     <string name="lookup_text_replacement_ignore_case">Abaikan huruf besar/kecil</string>
     <string name="yomitan_summary_replacements_imported">Aturan penggantian teks diimpor: %1$d</string>
     <string name="lookup_text_replacement_test">Uji teks</string>
+    <string name="search_settings">Cari pengaturan</string>
+    <string name="search_settings_empty">Tidak ditemukan</string>
+    <string name="search_settings_empty_hint">Coba cari berdasarkan kategori atau nama pengaturan</string>
+    <string name="search_clear">Hapus</string>
+    <string name="search_back">Tutup pencarian</string>
+    <string name="about_diagnostics_title">Kinerja &amp; Diagnostik</string>
+    <string name="about_diagnostics_hint">Memantau memori (PSS, Heap) dan peristiwa penghentian proses oleh sistem untuk mengidentifikasi penyebab penghentian di latar belakang.</string>
+    <string name="about_diagnostics_last_exit">Penghentian terakhir: %1$s</string>
+    <string name="about_diagnostics_no_exit">Penghentian terakhir: tidak ada catatan</string>
+    <string name="about_diagnostics_memory_trim">Pembersihan memori (Trim): %1$s (%2$s yang lalu)</string>
+    <string name="about_diagnostics_no_trim">Pembersihan memori: tidak ada catatan</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Waktu CPU proses: %1$d dtk</string>
+    <string name="diagnostics_hud_title">HUD diagnostik mengambang</string>
+    <string name="diagnostics_hud_summary">Menampilkan memori langsung (PSS, Heap), waktu CPU, dan status layanan dalam hamparan yang dapat diseret.</string>
 </resources>

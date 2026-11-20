@@ -1038,4 +1038,19 @@
     <string name="lookup_text_replacement_ignore_case">Ignorar mayúsculas y minúsculas</string>
     <string name="yomitan_summary_replacements_imported">Reglas de reemplazo de texto importadas: %1$d</string>
     <string name="lookup_text_replacement_test">Texto de prueba</string>
+    <string name="search_settings">Buscar ajustes</string>
+    <string name="search_settings_empty">Sin resultados</string>
+    <string name="search_settings_empty_hint">Prueba buscando por categoría o nombre del parámetro</string>
+    <string name="search_clear">Borrar</string>
+    <string name="search_back">Cerrar búsqueda</string>
+    <string name="about_diagnostics_title">Rendimiento y diagnóstico</string>
+    <string name="about_diagnostics_hint">Monitorea la memoria (PSS, Heap) y los cierres del proceso por el sistema para identificar causas de finalización en segundo plano.</string>
+    <string name="about_diagnostics_last_exit">Último cierre: %1$s</string>
+    <string name="about_diagnostics_no_exit">Último cierre: sin registros</string>
+    <string name="about_diagnostics_memory_trim">Liberación de memoria (Trim): %1$s (hace %2$s)</string>
+    <string name="about_diagnostics_no_trim">Liberación de memoria: sin registros</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Tiempo de CPU del proceso: %1$d s</string>
+    <string name="diagnostics_hud_title">HUD flotante de diagnóstico</string>
+    <string name="diagnostics_hud_summary">Muestra memoria en vivo (PSS, Heap), tiempo de CPU y estado del servicio en una ventana flotante arrastrable.</string>
 </resources>

@@ -487,6 +487,14 @@ object SettingsIndex {
             iconRes = R.drawable.ic_info,
             keywords = listOf("лицензии", "библиотеки", "благодарности", "libraries", "notices", "licenses"),
         ),
+        SettingsIndexItem(
+            page = SettingsPage.ABOUT,
+            titleRes = R.string.diagnostics_hud_title,
+            summaryRes = R.string.diagnostics_hud_summary,
+            sectionRes = R.string.about_title,
+            iconRes = R.drawable.ic_info,
+            keywords = listOf("диагностика", "память", "ram", "pss", "heap", "cpu", "hud", "оверлей", "нагрузка", "процессор"),
+        ),
     )
 
     /**

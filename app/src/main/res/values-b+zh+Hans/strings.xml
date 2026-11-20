@@ -1012,4 +1012,19 @@
     <string name="lookup_text_replacement_ignore_case">忽略大小写</string>
     <string name="yomitan_summary_replacements_imported">已导入文本替换规则：%1$d</string>
     <string name="lookup_text_replacement_test">测试文本</string>
+    <string name="search_settings">搜索设置</string>
+    <string name="search_settings_empty">未找到结果</string>
+    <string name="search_settings_empty_hint">尝试按分类或设置名称搜索</string>
+    <string name="search_clear">清除</string>
+    <string name="search_back">关闭搜索</string>
+    <string name="about_diagnostics_title">性能与诊断</string>
+    <string name="about_diagnostics_hint">监视内存（PSS、Heap）及系统终止事件，帮助排查后台被杀原因。</string>
+    <string name="about_diagnostics_last_exit">上次退出：%1$s</string>
+    <string name="about_diagnostics_no_exit">上次退出：无记录</string>
+    <string name="about_diagnostics_memory_trim">内存清理（Trim）：%1$s（%2$s 前）</string>
+    <string name="about_diagnostics_no_trim">内存清理：无记录</string>
+    <string name="about_diagnostics_ram">RAM (PSS)：%1$d MB（Heap %2$d/%3$d MB，Native %4$d MB）</string>
+    <string name="about_diagnostics_cpu">进程 CPU 时间：%1$d 秒</string>
+    <string name="diagnostics_hud_title">悬浮诊断 HUD</string>
+    <string name="diagnostics_hud_summary">在可拖动的浮窗中显示实时内存（PSS、Heap）、CPU 时间和服务状态。</string>
 </resources>

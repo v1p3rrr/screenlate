@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Cette langue n’a pas de modèle sur l’appareil et le mode hors ligne forcé désactive la reconnaissance dans le cloud. Désactivez le mode hors ligne forcé pour télécharger un modèle ou utiliser la reconnaissance dans le cloud.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Moy.</string>
+    <string name="translation_service_auto">Automatique (cascade)</string>
+    <string name="translation_service_auto_detail">Traduire avec tous les services activés</string>
 </resources>

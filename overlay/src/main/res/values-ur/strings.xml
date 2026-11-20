@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">اس زبان کے لیے ڈیوائس پر کوئی ماڈل موجود نہیں ہے، اور لازمی آف لائن موڈ کلاؤڈ شناخت کو غیر فعال کر دیتا ہے۔ ماڈل ڈاؤن لوڈ کرنے یا کلاؤڈ شناخت استعمال کرنے کے لیے لازمی آف لائن موڈ بند کریں۔</string>
     <string name="overlay_freq_harmonic">ہارمونک</string>
     <string name="overlay_freq_average">اوسط</string>
+    <string name="translation_service_auto">خودکار (کیسکیڈ)</string>
+    <string name="translation_service_auto_detail">تمام فعال خدمات کے ساتھ ترجمہ کریں</string>
 </resources>

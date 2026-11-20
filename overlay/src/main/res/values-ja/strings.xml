@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">この言語には端末上のモデルがなく、強制オフラインモードによりクラウド認識が無効になっています。モデルをダウンロードするかクラウド認識を使うには、強制オフラインモードをオフにしてください。</string>
     <string name="overlay_freq_harmonic">調和</string>
     <string name="overlay_freq_average">平均</string>
+    <string name="translation_service_auto">自動（カスケード）</string>
+    <string name="translation_service_auto_detail">有効なすべてのサービスで翻訳</string>
 </resources>

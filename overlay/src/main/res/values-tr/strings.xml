@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Bu dil için cihazda model yok ve zorunlu çevrimdışı mod bulut tanımayı devre dışı bırakır. Model indirmek veya bulut tanımayı kullanmak için zorunlu çevrimdışı modu kapatın.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Ort.</string>
+    <string name="translation_service_auto">Otomatik (basamaklı)</string>
+    <string name="translation_service_auto_detail">Etkinleştirilmiş tüm hizmetlerle çevir</string>
 </resources>

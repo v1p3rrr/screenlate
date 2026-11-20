@@ -1025,4 +1025,19 @@
     <string name="lookup_text_replacement_ignore_case">Groß-/Kleinschreibung ignorieren</string>
     <string name="yomitan_summary_replacements_imported">Importierte Textersetzungsregeln: %1$d</string>
     <string name="lookup_text_replacement_test">Testtext</string>
+    <string name="search_settings">Einstellungen suchen</string>
+    <string name="search_settings_empty">Keine Treffer</string>
+    <string name="search_settings_empty_hint">Versuchen Sie es mit einer Kategorie oder einem Namen</string>
+    <string name="search_clear">Löschen</string>
+    <string name="search_back">Suche schließen</string>
+    <string name="about_diagnostics_title">Leistung &amp; Diagnose</string>
+    <string name="about_diagnostics_hint">Überwacht Speicher (PSS, Heap) und Systembeendigungen, um Ursachen für das Beenden im Hintergrund zu ermitteln.</string>
+    <string name="about_diagnostics_last_exit">Letztes Beenden: %1$s</string>
+    <string name="about_diagnostics_no_exit">Letztes Beenden: keine Einträge</string>
+    <string name="about_diagnostics_memory_trim">Speicherbereinigung (Trim): %1$s (vor %2$s)</string>
+    <string name="about_diagnostics_no_trim">Speicherbereinigung: keine Einträge</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Prozess-CPU-Zeit: %1$d s</string>
+    <string name="diagnostics_hud_title">Schwebendes Diagnose-HUD</string>
+    <string name="diagnostics_hud_summary">Zeigt Live-Speicher (PSS, Heap), CPU-Zeit und Servicestatus in einem ziehbaren Overlay an.</string>
 </resources>

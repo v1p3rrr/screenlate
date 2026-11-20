@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Este idioma não tem modelo no dispositivo e o modo offline forçado desativa o reconhecimento na nuvem. Desative o modo offline forçado para baixar um modelo ou usar o reconhecimento na nuvem.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Méd.</string>
+    <string name="translation_service_auto">Automático (cascata)</string>
+    <string name="translation_service_auto_detail">Traduzir com todos os serviços ativados</string>
 </resources>

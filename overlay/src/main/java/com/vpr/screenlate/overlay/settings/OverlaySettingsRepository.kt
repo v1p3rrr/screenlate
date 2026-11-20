@@ -102,6 +102,7 @@ data class OverlaySettings(
     val hideOnOutsideTap: Boolean = false,
     val bubbleUseAppColor: Boolean = true,
     val bubbleCustomColor: Int = DEFAULT_BUBBLE_COLOR,
+    val diagnosticsHud: Boolean = false,
 ) {
     /** Effective OCR engines to use, coercing to [OcrEngines.DEVICE] when [offline] is true. */
     fun effectiveOcrEngines(offline: Boolean): OcrEngines = if (offline) OcrEngines.DEVICE else ocrEngines
@@ -153,6 +154,7 @@ class OverlaySettingsRepository @Inject constructor(
             hideOnOutsideTap = prefs[HIDE_ON_OUTSIDE_TAP] ?: defaults.hideOnOutsideTap,
             bubbleUseAppColor = prefs[BUBBLE_USE_APP_COLOR] ?: defaults.bubbleUseAppColor,
             bubbleCustomColor = prefs[BUBBLE_CUSTOM_COLOR] ?: defaults.bubbleCustomColor,
+            diagnosticsHud = prefs[DIAGNOSTICS_HUD] ?: defaults.diagnosticsHud,
         )
     }
 
@@ -255,6 +257,10 @@ class OverlaySettingsRepository @Inject constructor(
         dataStore.edit { it[BUBBLE_CUSTOM_COLOR] = color }
     }
 
+    suspend fun setDiagnosticsHud(enabled: Boolean) {
+        dataStore.edit { it[DIAGNOSTICS_HUD] = enabled }
+    }
+
     private companion object {
         val BUBBLE_VISIBLE = booleanPreferencesKey("overlay_bubble_visible")
         val DOCK_SIDE = stringPreferencesKey("overlay_dock_side")
@@ -277,5 +283,6 @@ class OverlaySettingsRepository @Inject constructor(
         val HIDE_ON_OUTSIDE_TAP = booleanPreferencesKey("popup_hide_outside_tap")
         val BUBBLE_USE_APP_COLOR = booleanPreferencesKey("overlay_bubble_use_app_color")
         val BUBBLE_CUSTOM_COLOR = intPreferencesKey("overlay_bubble_custom_color")
+        val DIAGNOSTICS_HUD = booleanPreferencesKey("overlay_diagnostics_hud")
     }
 }

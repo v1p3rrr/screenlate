@@ -1012,4 +1012,19 @@
     <string name="lookup_text_replacement_ignore_case">大文字と小文字を区別しない</string>
     <string name="yomitan_summary_replacements_imported">インポートしたテキスト置換ルール：%1$d</string>
     <string name="lookup_text_replacement_test">テスト文字列</string>
+    <string name="search_settings">設定を検索</string>
+    <string name="search_settings_empty">見つかりません</string>
+    <string name="search_settings_empty_hint">カテゴリまたは項目名で検索してください</string>
+    <string name="search_clear">クリア</string>
+    <string name="search_back">検索を閉じる</string>
+    <string name="about_diagnostics_title">パフォーマンスと診断</string>
+    <string name="about_diagnostics_hint">メモリ（PSS、Heap）およびシステムによるプロセスの終了理由を監視し、バックグラウンドでの強制終了を特定します。</string>
+    <string name="about_diagnostics_last_exit">前回の終了：%1$s</string>
+    <string name="about_diagnostics_no_exit">前回の終了：記録なし</string>
+    <string name="about_diagnostics_memory_trim">メモリトリム：%1$s（%2$s 前）</string>
+    <string name="about_diagnostics_no_trim">メモリトリム：記録なし</string>
+    <string name="about_diagnostics_ram">RAM (PSS)：%1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">プロセス CPU 時間：%1$d 秒</string>
+    <string name="diagnostics_hud_title">フローティング診断 HUD</string>
+    <string name="diagnostics_hud_summary">リアルタイムのメモリ（PSS、Heap）、CPU 時間、サービス状態をドラッグ可能なオーバーレイに表示します。</string>
 </resources>

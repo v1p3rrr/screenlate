@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Ngôn ngữ này chưa có mô hình trên thiết bị và chế độ ngoại tuyến bắt buộc tắt nhận dạng đám mây. Hãy tắt chế độ ngoại tuyến bắt buộc để tải xuống mô hình hoặc dùng nhận dạng đám mây.</string>
     <string name="overlay_freq_harmonic">Đ.hòa</string>
     <string name="overlay_freq_average">TB</string>
+    <string name="translation_service_auto">Tự động (nối tầng)</string>
+    <string name="translation_service_auto_detail">Dịch bằng tất cả các dịch vụ đã bật</string>
 </resources>

@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">Ehhez a nyelvhez nincs modell az eszközön, a kényszerített offline mód pedig letiltja a felhőalapú felismerést. Kapcsolja ki a kényszerített offline módot modell letöltéséhez vagy a felhőalapú felismerés használatához.</string>
     <string name="overlay_freq_harmonic">Harm.</string>
     <string name="overlay_freq_average">Átl.</string>
+    <string name="translation_service_auto">Automatikus (kaszkád)</string>
+    <string name="translation_service_auto_detail">Fordítás az összes engedélyezett szolgáltatással</string>
 </resources>

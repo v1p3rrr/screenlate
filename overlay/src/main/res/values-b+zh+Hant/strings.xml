@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">此語言沒有裝置端模型，且強制離線模式已停用雲端辨識。請關閉強制離線模式以下載模型或使用雲端辨識。</string>
     <string name="overlay_freq_harmonic">調和</string>
     <string name="overlay_freq_average">平均</string>
+    <string name="translation_service_auto">自動（串聯）</string>
+    <string name="translation_service_auto_detail">使用所有已啟用的服務翻譯</string>
 </resources>

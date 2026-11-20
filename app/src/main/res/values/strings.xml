@@ -757,6 +757,16 @@
     <string name="about_logs_saved">Saved to %1$s</string>
     <string name="about_logs_open">Open</string>
     <string name="about_logs_save_failed">Failed to save log.</string>
+    <string name="about_diagnostics_title">Performance &amp; Diagnostics</string>
+    <string name="about_diagnostics_hint">Monitors memory (PSS, Heap) and process exit events from the system to identify background termination causes.</string>
+    <string name="about_diagnostics_last_exit">Last exit: %1$s</string>
+    <string name="about_diagnostics_no_exit">Last exit: none recorded</string>
+    <string name="about_diagnostics_memory_trim">Memory trim: %1$s (%2$s ago)</string>
+    <string name="about_diagnostics_no_trim">Memory trim: none recorded</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Process CPU time: %1$d s</string>
+    <string name="diagnostics_hud_title">Floating diagnostics HUD</string>
+    <string name="diagnostics_hud_summary">Shows live memory (PSS, Heap), CPU time, and service lifecycle state in a draggable overlay.</string>
     <string name="background_title">Background work</string>
     <string name="background_summary">Battery optimization, autostart, persistent notification</string>
     <string name="background_intro">Android automatically restarts the accessibility service unless restricted by power management. Both power settings below belong to the system; Screenlate only opens them.</string>

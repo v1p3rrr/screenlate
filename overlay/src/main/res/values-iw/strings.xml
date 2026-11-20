@@ -116,4 +116,6 @@
     <string name="overlay_error_no_device_ocr_offline">לשפה הזו אין מודל במכשיר, ומצב לא מקוון מאולץ משבית את הזיהוי בענן. יש לכבות את המצב הלא מקוון המאולץ כדי להוריד מודל או להשתמש בזיהוי בענן.</string>
     <string name="overlay_freq_harmonic">הרמ.</string>
     <string name="overlay_freq_average">ממוצע</string>
+    <string name="translation_service_auto">אוטומטי (מדורג)</string>
+    <string name="translation_service_auto_detail">תרגום באמצעות כל השירותים המופעלים</string>
 </resources>

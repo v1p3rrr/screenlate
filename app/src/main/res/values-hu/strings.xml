@@ -1017,4 +1017,19 @@
     <string name="lookup_text_replacement_ignore_case">Kis- és nagybetűk figyelmen kívül hagyása</string>
     <string name="yomitan_summary_replacements_imported">Importált szöveghelyettesítési szabályok: %1$d</string>
     <string name="lookup_text_replacement_test">Szöveg tesztelése</string>
+    <string name="search_settings">Beállítások keresése</string>
+    <string name="search_settings_empty">Nincs találat</string>
+    <string name="search_settings_empty_hint">Próbáljon kategória vagy név alapján keresni</string>
+    <string name="search_clear">Törlés</string>
+    <string name="search_back">Keresés bezárása</string>
+    <string name="about_diagnostics_title">Teljesítmény és diagnosztika</string>
+    <string name="about_diagnostics_hint">Figyeli a memóriát (PSS, Heap) és a rendszer általi leállításokat a háttérbeli leállások okainak feltárásához.</string>
+    <string name="about_diagnostics_last_exit">Utolsó leállás: %1$s</string>
+    <string name="about_diagnostics_no_exit">Utolsó leállás: nincs bejegyzés</string>
+    <string name="about_diagnostics_memory_trim">Memóriatakarítás (Trim): %1$s (%2$s ezelőtt)</string>
+    <string name="about_diagnostics_no_trim">Memóriatakarítás: nincs bejegyzés</string>
+    <string name="about_diagnostics_ram">RAM (PSS): %1$d MB (Heap %2$d/%3$d MB, Native %4$d MB)</string>
+    <string name="about_diagnostics_cpu">Folyamat CPU-idő: %1$d mp</string>
+    <string name="diagnostics_hud_title">Lebegő diagnosztikai HUD</string>
+    <string name="diagnostics_hud_summary">Valós idejű memóriát (PSS, Heap), CPU-időt és szolgáltatásállapotot jelenít meg egy áthelyezhető ablakban.</string>
 </resources>
