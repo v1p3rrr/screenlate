@@ -114,8 +114,11 @@ var AudioEditor = (() => {
 
     function getAmplitude(frame) {
         if (!state.overviewSummary || state.overviewSummary.length === 0) return 0.2;
-        const total = Math.max(1, state.totalFrames);
-        const index = Math.floor((frame / total) * state.overviewSummary.length);
+        const start = state.sourceStart !== undefined ? state.sourceStart : 0;
+        const end = state.sourceEnd !== undefined ? state.sourceEnd : state.totalFrames;
+        const span = Math.max(1, end - start);
+        const rel = clamp(frame - start, 0, span);
+        const index = Math.floor((rel / span) * state.overviewSummary.length);
         const clampedIndex = clamp(index, 0, state.overviewSummary.length - 1);
         return state.overviewSummary[clampedIndex] || 0.05;
     }
@@ -123,8 +126,10 @@ var AudioEditor = (() => {
     function drawWave(svg, overview) {
         const w = svg.clientWidth || (overview ? 340 : 340);
         const h = overview ? 34 : 112;
-        const from = overview ? 0 : state.view;
-        const span = overview ? Math.max(1, state.totalFrames) : Math.max(1, state.width);
+        const start = state.sourceStart !== undefined ? state.sourceStart : 0;
+        const end = state.sourceEnd !== undefined ? state.sourceEnd : state.totalFrames;
+        const from = overview ? start : state.view;
+        const span = overview ? Math.max(1, end - start) : Math.max(1, state.width);
         const x = f => ((f - from) / span) * w;
 
         svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
@@ -156,7 +161,7 @@ var AudioEditor = (() => {
                 html += `<rect x="${selLeft}" y="1" width="${selRight - selLeft}" height="32" fill="var(--chip-bg)" opacity="0.4"/>`;
             }
             const viewLeft = x(state.view);
-            const viewWidth = (state.width / Math.max(1, state.totalFrames)) * w;
+            const viewWidth = (state.width / Math.max(1, span)) * w;
             html += `<rect id="sl-overview-viewport" x="${viewLeft}" y="2" width="${Math.max(8, viewWidth)}" height="30" rx="3" fill="none" stroke="var(--accent)" stroke-width="2"/>`;
         }
 
@@ -227,7 +232,8 @@ var AudioEditor = (() => {
         }
 
         const totalWrap = document.getElementById('sl-total-wrap');
-        const formattedTotal = formatTime(state.totalFrames / state.sampleRate);
+        const retainedFrames = Math.max(0, (state.sourceEnd !== undefined ? state.sourceEnd : state.totalFrames) - (state.sourceStart || 0));
+        const formattedTotal = formatTime(retainedFrames / state.sampleRate);
         if (totalWrap) {
             totalWrap.innerHTML = labelOf('audio_editor_retained', 'Retained: %1$s')
                 .replace('%1$s', `<span id="sl-total">${formattedTotal}</span>`);
@@ -446,17 +452,19 @@ var AudioEditor = (() => {
         state.sampleRate = data.sampleRate || 48000;
         state.scanFrame = data.scanFrame || 0;
         state.totalFrames = data.totalFrames || 0;
-        state.sourceStart = data.sourceStart || 0;
-        state.sourceEnd = data.sourceEnd || data.totalFrames;
-        state.a = clamp(data.selection ? data.selection[0] : 0, 0, state.totalFrames);
-        state.b = clamp(data.selection ? data.selection[1] : state.totalFrames, state.a, state.totalFrames);
+        state.sourceStart = data.sourceStart !== undefined ? data.sourceStart : 0;
+        state.sourceEnd = data.sourceEnd !== undefined ? data.sourceEnd : data.totalFrames;
+        state.a = clamp(data.selection ? data.selection[0] : state.sourceStart, state.sourceStart, state.sourceEnd);
+        state.b = clamp(data.selection ? data.selection[1] : state.sourceEnd, state.a, state.sourceEnd);
         state.cuts = (data.cuts || []).map(c => [c[0], c[1]]);
         state.suggestions = [];
         state.cursor = state.a;
-        state.view = Math.max(0, state.a - state.sampleRate * 2);
-        state.width = Math.min(state.totalFrames, Math.max(state.sampleRate * 10, (state.b - state.a) + state.sampleRate * 4));
+        const span = Math.max(1, state.sourceEnd - state.sourceStart);
+        state.width = Math.min(span, Math.max(state.sampleRate * 10, (state.b - state.a) + state.sampleRate * 4));
+        state.view = clamp(state.a - state.sampleRate * 2, state.sourceStart, Math.max(state.sourceStart, state.sourceEnd - state.width));
         state.mode = data.mode || 'result';
         state.playing = false;
+        state.recording = Boolean(data.recording);
         state.expanded = Boolean(data.expanded);
         state.collapsed = false;
         state.limit = Boolean(data.limit);
@@ -619,6 +627,48 @@ var AudioEditor = (() => {
 
     // Attach DOM event listeners once DOM is ready
     function initListeners() {
+        // Window dragging by header
+        const editorHead = document.getElementById('sl-editor-head');
+        if (editorHead) {
+            let dragging = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            editorHead.addEventListener('pointerdown', e => {
+                if (e.target.closest('button') || e.target.closest('.sl-toolbar')) return;
+                dragging = true;
+                lastX = typeof e.screenX === 'number' && e.screenX !== 0 ? e.screenX : (e.clientX || 0);
+                lastY = typeof e.screenY === 'number' && e.screenY !== 0 ? e.screenY : (e.clientY || 0);
+                if (typeof editorHead.setPointerCapture === 'function') {
+                    try { editorHead.setPointerCapture(e.pointerId); } catch (_) {}
+                }
+            });
+
+            editorHead.addEventListener('pointermove', e => {
+                if (!dragging) return;
+                const currentX = typeof e.screenX === 'number' && e.screenX !== 0 ? e.screenX : (e.clientX || 0);
+                const currentY = typeof e.screenY === 'number' && e.screenY !== 0 ? e.screenY : (e.clientY || 0);
+                const dx = currentX - lastX;
+                const dy = currentY - lastY;
+                lastX = currentX;
+                lastY = currentY;
+                if ((dx !== 0 || dy !== 0) && window.ScreenlateBridge && window.ScreenlateBridge.onDragWindow) {
+                    ScreenlateBridge.onDragWindow(dx, dy);
+                }
+            });
+
+            const stopDrag = e => {
+                if (!dragging) return;
+                dragging = false;
+                if (typeof editorHead.releasePointerCapture === 'function') {
+                    try { editorHead.releasePointerCapture(e.pointerId); } catch (_) {}
+                }
+            };
+
+            editorHead.addEventListener('pointerup', stopDrag);
+            editorHead.addEventListener('pointercancel', stopDrag);
+        }
+
         // Start / End boundary handle dragging
         for (const [id, key] of [['sl-start', 'a'], ['sl-end', 'b']]) {
             const el = document.getElementById(id);

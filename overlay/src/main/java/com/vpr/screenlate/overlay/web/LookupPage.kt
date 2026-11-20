@@ -122,6 +122,7 @@ class LookupPage(
         fun onAudioWithout()
         fun onAudioAdd(editJson: String)
         fun onAudioChangeSettings()
+        fun onAudioDragWindow(dx: Float, dy: Float)
     }
 
     /** Receives the note and audio buttons; without it they do nothing. */
@@ -488,6 +489,12 @@ class LookupPage(
         @JavascriptInterface
         fun onAudioChangeSettings() = post {
             audioEditorActions?.onAudioChangeSettings()
+        }
+
+        @JavascriptInterface
+        fun onDragWindow(dx: Float, dy: Float) = post {
+            val density = container.resources.displayMetrics.density
+            audioEditorActions?.onAudioDragWindow(dx * density, dy * density)
         }
 
         @JavascriptInterface

@@ -71,6 +71,16 @@ class ScanAudioTimelineTest {
         assertThat(restarted.refresh(scan, 400_000, 400_000)).isNull()
     }
 
+    @Test fun stopWithEarlierTimestampClampsToLastSeenMillis() {
+        val timeline = ScanAudioTimeline(clock, RecordingLimits())
+        val scan = timeline.acquireScan(300_000, 0)!!
+        timeline.retainedRanges(350_000, 360_000)
+        timeline.stop(340_000)
+        val stopped = timeline.openEditor(scan, 360_000, 370_000)!!
+        assertThat(stopped.retention.reason).isEqualTo(RetentionEnd.CAPTURE_STOPPED)
+        assertThat(stopped.source?.endExclusive).isEqualTo(360_000)
+    }
+
     @Test fun replacingOrReleasingScanRejectsStaleEditorCallbacksWithoutResettingRing() {
         val timeline = ScanAudioTimeline(clock, RecordingLimits())
         val old = timeline.acquireScan(300_000, 0)!!

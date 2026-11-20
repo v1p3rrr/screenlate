@@ -151,7 +151,7 @@ internal class PcmStorageCoordinator(
     }
 
     @Synchronized
-    fun stop(stopMillis: Long = nowMillis()) {
+    fun stop(stopMillis: Long? = null) {
         if (state != PcmCoordinatorState.RUNNING && state != PcmCoordinatorState.FAILED) return
         val targetState = if (state == PcmCoordinatorState.FAILED) PcmCoordinatorState.FAILED else PcmCoordinatorState.STOPPED
         state = targetState
@@ -172,10 +172,11 @@ internal class PcmStorageCoordinator(
             }
         }
 
-        timeline?.stop(stopMillis)
+        val effectiveStopMillis = if (stopMillis != null) maxOf(stopMillis, nowMillis()) else nowMillis()
+        timeline?.stop(effectiveStopMillis)
         history?.let { h ->
             timeline?.let { t ->
-                h.retain(t.retainedRanges(h.committedEnd, stopMillis))
+                h.retain(t.retainedRanges(h.committedEnd, effectiveStopMillis))
             }
         }
     }

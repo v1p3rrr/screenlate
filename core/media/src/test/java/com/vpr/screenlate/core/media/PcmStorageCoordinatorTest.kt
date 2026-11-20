@@ -96,6 +96,61 @@ class PcmStorageCoordinatorTest {
     }
 
     @Test
+    fun stopCoordinatesWithWriterDrainWhenWriterAdvancesTime() {
+        val dir = temporary.newFolder()
+        val limits = RecordingLimits(historyMillis = 60_000, waitingMillis = 60_000, editorMillis = 60_000)
+        val config = PcmCoordinatorConfig(
+            sampleRate = 1000,
+            chunkFrames = 100,
+            blockFrames = 50,
+            queueCapacity = 20,
+            maxStorageBytes = 1_000_000,
+            maxStorageFiles = 100,
+            minFreeSpaceBytes = 1024,
+        )
+
+        val time = AtomicLong(10_000L)
+        val source = FakeAudioSource(sampleRate = 1000, blockFrames = 50)
+        val coordinator = PcmStorageCoordinator(
+            directory = dir,
+            limits = limits,
+            config = config,
+            nowMillis = { time.get() },
+            nowNanos = { time.get() * 1_000_000L },
+        )
+
+        try {
+            coordinator.start(source)
+            time.set(10_100L)
+            val scanId = checkNotNull(coordinator.acquireScan(10_100L))
+
+            // Emit frames that queue up
+            source.emitFrames(150)
+            waitForCondition { coordinator.committedEndFrame >= 50 }
+
+            // Simulate race: time moves forward while writer drains remaining queue blocks during stop
+            // When stop is called with an older timestamp (as was passed from SentenceRecorder before drain),
+            // the writer observes a later time, but stop coordinates without throwing IllegalArgumentException.
+            time.set(10_500L)
+            val staleStopMillis = 10_200L
+
+            coordinator.stop(staleStopMillis)
+
+            assertThat(coordinator.currentState).isEqualTo(PcmCoordinatorState.STOPPED)
+            assertThat(coordinator.committedEndFrame).isAtLeast(150L)
+
+            // The context is sealed, retaining the accepted prefix
+            val view = checkNotNull(coordinator.openEditor(scanId, 10_600L))
+            assertThat(view.retention.stage).isEqualTo(RetentionStage.SEALED)
+            assertThat(view.retention.reason).isEqualTo(RetentionEnd.CAPTURE_STOPPED)
+            assertThat(view.source).isNotNull()
+            assertThat(view.source?.endExclusive).isAtLeast(150L)
+        } finally {
+            coordinator.close()
+        }
+    }
+
+    @Test
     fun sourceStartFailureTransitionsToFailedState() {
         val dir = temporary.newFolder()
         val limits = RecordingLimits()

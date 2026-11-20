@@ -79,7 +79,7 @@ class SentenceRecorder internal constructor(
     fun stop() {
         val coord = coordinator ?: return
         if (!isRecording) return
-        coord.stop(SystemClock.elapsedRealtime())
+        coord.stop()
         _recordingState.value = SentenceRecordingState.Stopped(coord.currentState)
         Log.i(TAG, "Sentence audio recording stopped")
         onStoppedListener?.invoke()

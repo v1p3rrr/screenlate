@@ -256,6 +256,9 @@ class OverlayController(
             popupController = popup,
             sentenceRecorder = recorder,
             recordingSettings = recordingSettings,
+            onVisibilityChanged = { active ->
+                setBubbleVisible(!active)
+            },
             onOpenAnkiSettings = {
                 OverlayIntents.openAnkiSettings(service, language)
                 dock()
@@ -568,6 +571,19 @@ class OverlayController(
             stopSentenceRecording()
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             MediaProjectionHolder.stop(service)
+        }
+    }
+
+    private fun setBubbleVisible(visible: Boolean) {
+        if (!attached) return
+        if (visible) {
+            bubbleParams.flags = bubbleParams.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
+            bubbleView.visibility = View.VISIBLE
+            windowManager.updateViewLayout(bubbleView, bubbleParams)
+        } else {
+            bubbleParams.flags = bubbleParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            bubbleView.visibility = View.GONE
+            windowManager.updateViewLayout(bubbleView, bubbleParams)
         }
     }
 

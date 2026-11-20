@@ -59,6 +59,16 @@ class ContextRetentionTest {
         assertThat(context.current(400_000).reason).isEqualTo(RetentionEnd.WAITING_LIMIT)
     }
 
+    @Test fun stopWithEarlierTimestampClampsToLastSeenMillisWithoutThrowing() {
+        val context = ContextRetention(1000, RecordingLimits())
+        context.current(2000)
+        // Stop called with earlier timestamp (e.g. from race) clamps to last seen millis
+        context.stop(1500)
+        assertThat(context.current(2000).stage).isEqualTo(RetentionStage.SEALED)
+        assertThat(context.current(2000).reason).isEqualTo(RetentionEnd.CAPTURE_STOPPED)
+        assertThat(context.current(2000).cutoffMillis).isEqualTo(2000)
+    }
+
     @Test fun limitsAreFrozenAndReleasedContextCannotReopen() {
         val original = RecordingLimits()
         val context = ContextRetention(0, original)

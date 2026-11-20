@@ -42,9 +42,10 @@ internal class ContextRetention(scanMillis: Long, private val limits: RecordingL
 
     fun stop(nowMillis: Long, reason: RetentionEnd = RetentionEnd.CAPTURE_STOPPED) {
         require(reason == RetentionEnd.CAPTURE_STOPPED || reason == RetentionEnd.RESOURCE_LIMIT)
-        advance(nowMillis)
+        val effectiveMillis = maxOf(nowMillis, lastMillis)
+        advance(effectiveMillis)
         if (state.stage == RetentionStage.WAITING || state.stage == RetentionStage.EDITOR) {
-            state = state.copy(stage = RetentionStage.SEALED, cutoffMillis = nowMillis, reason = reason)
+            state = state.copy(stage = RetentionStage.SEALED, cutoffMillis = effectiveMillis, reason = reason)
         }
     }
 

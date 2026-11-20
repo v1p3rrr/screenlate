@@ -183,4 +183,26 @@ class PopupPlacementTest {
         assertThat(popup.height).isEqualTo(900f)
         assertThat(popup.bottom).isAtMost(1000f)
     }
+
+    @Test
+    fun `audio editor size in portrait provides ample vertical space and respects expanded state`() {
+        val normal = PopupPlacement.audioEditorSize(screen, maxWidth = 900f, expanded = false)
+        assertThat(normal.width).isEqualTo(850f)
+        assertThat(normal.height).isEqualTo(1900f * 0.65f)
+
+        val expanded = PopupPlacement.audioEditorSize(screen, maxWidth = 900f, expanded = true)
+        assertThat(expanded.width).isEqualTo(850f)
+        assertThat(expanded.height).isEqualTo(1900f * 0.88f)
+    }
+
+    @Test
+    fun `audio editor size in landscape expands to widescreen ratios`() {
+        val normal = PopupPlacement.audioEditorSize(landscape, maxWidth = 2000f, expanded = false)
+        assertThat(normal.width).isEqualTo(2340f * 0.75f)
+        assertThat(normal.height).isEqualTo(1000f * 0.90f)
+
+        val expanded = PopupPlacement.audioEditorSize(landscape, maxWidth = 2000f, expanded = true)
+        assertThat(expanded.width).isEqualTo(2000f)
+        assertThat(expanded.height).isEqualTo(1000f * 0.95f)
+    }
 }

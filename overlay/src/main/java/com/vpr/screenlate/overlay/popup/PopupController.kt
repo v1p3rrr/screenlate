@@ -53,6 +53,7 @@ class PopupController(
 
     private var normalBounds: Box? = null
     private var lastScreen: Box? = null
+    private var lastMaxWidth: Float = 0f
     private var isExpanded: Boolean = false
     private var isCollapsed: Boolean = false
 
@@ -159,6 +160,7 @@ class PopupController(
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
     fun show(state: String, word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
         lastScreen = screen
+        lastMaxWidth = maxWidth
         resetAudioEditorPresentation()
         if (!attach()) return
         val placed = place(word, bubble, screen, maxWidth)
@@ -202,6 +204,8 @@ class PopupController(
      */
     fun move(word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
         if (!visible) return
+        lastScreen = screen
+        lastMaxWidth = maxWidth
         val placed = place(word, bubble, screen, maxWidth)
         bounds = placed
         if (placing) return
@@ -293,22 +297,53 @@ class PopupController(
         callbacks.onClose()
     }
 
+    fun enterAudioEditor() {
+        isAudioEditorActive = true
+        if (!visible) return
+        if (normalBounds == null) normalBounds = bounds
+        val screen = lastScreen ?: return
+        val maxW = if (lastMaxWidth > 0f) lastMaxWidth else screen.width - edgeMargin * 2
+        val size = PopupPlacement.audioEditorSize(screen, maxW, expanded = false)
+        val x = screen.left + (screen.width - size.width) / 2f
+        val y = screen.top + (screen.height - size.height) / 2f
+        val editorBox = Box(x, y, x + size.width, y + size.height)
+        bounds = editorBox
+        setBounds(editorBox)
+        if (attached) {
+            windowManager.updateViewLayout(page.container, params)
+        }
+    }
+
+    fun dragBy(dx: Float, dy: Float) {
+        val current = bounds ?: return
+        val screen = lastScreen ?: return
+        val minLeft = screen.left + edgeMargin
+        val maxLeft = maxOf(minLeft, screen.right - edgeMargin - current.width)
+        val minTop = screen.top + edgeMargin
+        val maxTop = maxOf(minTop, screen.bottom - edgeMargin - current.height)
+        val newLeft = (current.left + dx).coerceIn(minLeft, maxLeft)
+        val newTop = (current.top + dy).coerceIn(minTop, maxTop)
+        val newBounds = Box(newLeft, newTop, newLeft + current.width, newTop + current.height)
+        bounds = newBounds
+        setBounds(newBounds)
+        if (visible && attached) {
+            windowManager.updateViewLayout(page.container, params)
+        }
+    }
+
     fun setAudioEditorExpanded(expanded: Boolean) {
         if (!visible || isCollapsed) return
         isExpanded = expanded
         val screen = lastScreen ?: return
-        if (expanded) {
-            if (normalBounds == null) normalBounds = bounds
-            val wideWidth = minOf(screen.width - edgeMargin * 2, 720f * density)
-            val wideHeight = minOf(screen.height - edgeMargin * 2, 520f * density)
-            val x = screen.left + (screen.width - wideWidth) / 2f
-            val y = screen.top + (screen.height - wideHeight) / 2f
-            val wideBox = Box(x, y, x + wideWidth, y + wideHeight)
-            setBounds(wideBox)
-            windowManager.updateViewLayout(page.container, params)
-        } else {
-            val restored = normalBounds ?: return
-            setBounds(restored)
+        if (normalBounds == null) normalBounds = bounds
+        val maxW = if (lastMaxWidth > 0f) lastMaxWidth else screen.width - edgeMargin * 2
+        val size = PopupPlacement.audioEditorSize(screen, maxW, expanded = expanded)
+        val x = screen.left + (screen.width - size.width) / 2f
+        val y = screen.top + (screen.height - size.height) / 2f
+        val wideBox = Box(x, y, x + size.width, y + size.height)
+        bounds = wideBox
+        setBounds(wideBox)
+        if (attached) {
             windowManager.updateViewLayout(page.container, params)
         }
     }
@@ -324,16 +359,11 @@ class PopupController(
             val x = screen.right - pillWidth - edgeMargin * 2
             val y = screen.bottom - pillHeight - edgeMargin * 2
             val pillBox = Box(x, y, x + pillWidth, y + pillHeight)
+            bounds = pillBox
             setBounds(pillBox)
-            windowManager.updateViewLayout(page.container, params)
+            if (attached) windowManager.updateViewLayout(page.container, params)
         } else {
-            if (isExpanded) {
-                setAudioEditorExpanded(true)
-            } else {
-                val restored = normalBounds ?: return
-                setBounds(restored)
-                windowManager.updateViewLayout(page.container, params)
-            }
+            setAudioEditorExpanded(isExpanded)
         }
     }
 
@@ -342,6 +372,7 @@ class PopupController(
         isExpanded = false
         isCollapsed = false
         normalBounds?.let {
+            bounds = it
             setBounds(it)
             normalBounds = null
             if (visible && attached) windowManager.updateViewLayout(page.container, params)

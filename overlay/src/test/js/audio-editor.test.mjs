@@ -325,3 +325,29 @@ test('add action prevents submission and shows toast when output duration is zer
     assert.equal(toast.hidden, false);
     assert.equal(toast.textContent, 'Выделенный фрагмент пуст.');
 });
+
+test('dragging editor header dispatches onDragWindow to bridge', () => {
+    const dragDeltas = [];
+    page.window.ScreenlateBridge = {
+        onDragWindow: (dx, dy) => { dragDeltas.push({ dx, dy }); },
+    };
+
+    AudioEditor.open({
+        sampleRate: 48000,
+        totalFrames: 480000,
+        selection: [100000, 200000],
+    });
+
+    const head = page.document.getElementById('sl-editor-head');
+    assert.ok(head, 'Header element must exist');
+
+    head.dispatchEvent(new page.window.MouseEvent('pointerdown', { bubbles: true, screenX: 100, screenY: 150 }));
+    head.dispatchEvent(new page.window.MouseEvent('pointermove', { bubbles: true, screenX: 120, screenY: 180 }));
+    head.dispatchEvent(new page.window.MouseEvent('pointermove', { bubbles: true, screenX: 115, screenY: 190 }));
+    head.dispatchEvent(new page.window.MouseEvent('pointerup', { bubbles: true, screenX: 115, screenY: 190 }));
+
+    assert.deepEqual(dragDeltas, [
+        { dx: 20, dy: 30 },
+        { dx: -5, dy: 10 },
+    ]);
+});

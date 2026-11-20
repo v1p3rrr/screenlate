@@ -51,6 +51,7 @@ class AudioEditorController(
     private val popupController: PopupController,
     private val sentenceRecorder: SentenceRecorder,
     private val recordingSettings: RecordingSettingsRepository? = null,
+    private val onVisibilityChanged: (Boolean) -> Unit = {},
     private val onOpenAnkiSettings: () -> Unit = {},
 ) : LookupPage.AudioEditorActions {
 
@@ -83,7 +84,8 @@ class AudioEditorController(
 
         activeContextId = audioContextId
         lastTimelineView = timelineView
-        popupController.isAudioEditorActive = true
+        popupController.enterAudioEditor()
+        onVisibilityChanged(true)
 
         val totalFrames = timelineView.source?.endExclusive ?: 0L
         val isLimitReached = timelineView.retention.stage == RetentionStage.SEALED || timelineView.retention.reason != null
@@ -341,6 +343,10 @@ class AudioEditorController(
         finish(AudioEditorResult.Cancelled)
     }
 
+    override fun onAudioDragWindow(dx: Float, dy: Float) {
+        popupController.dragBy(dx, dy)
+    }
+
     fun releaseContext(id: AudioContextId) {
         lastConfirmedEdits.remove(id)
     }
@@ -359,6 +365,7 @@ class AudioEditorController(
         activeContextId = null
         currentEdit = null
         lastTimelineView = null
+        onVisibilityChanged(false)
     }
 
     companion object {

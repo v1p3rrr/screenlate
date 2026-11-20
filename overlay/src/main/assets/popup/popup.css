@@ -229,6 +229,10 @@ a {
     border-bottom: 1px solid var(--divider);
 }
 
+.header[hidden] {
+    display: none !important;
+}
+
 :root[data-compact="true"] .header {
     display: none;
 }

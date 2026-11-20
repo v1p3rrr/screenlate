@@ -39,8 +39,11 @@
         <div id="info-text" class="info-text"></div>
     </aside>
     <section id="audio-editor" class="sl-editor" aria-label="Sentence audio editor" hidden>
-        <header class="sl-editor-head">
-            <div>
+        <header class="sl-editor-head" id="sl-editor-head">
+            <div class="sl-drag-handle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="9" cy="6" r="1.5" fill="currentColor"/><circle cx="15" cy="6" r="1.5" fill="currentColor"/><circle cx="9" cy="12" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="18" r="1.5" fill="currentColor"/><circle cx="15" cy="18" r="1.5" fill="currentColor"/></svg>
+            </div>
+            <div class="sl-head-titles">
                 <div id="sl-editor-title" class="sl-title">Sentence audio</div>
                 <div id="sl-editor-subtitle" class="sl-secondary"></div>
             </div>

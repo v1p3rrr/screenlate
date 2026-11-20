@@ -23,10 +23,12 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
     private var limits = limits
     private var context: Context? = null
     private var stoppedAtFrame: Long? = null
+    private var lastSeenMillis: Long = 0L
 
     fun updateLimits(limits: RecordingLimits) { this.limits = limits }
 
     fun acquireScan(nowMillis: Long, availableStartFrame: Long): AudioContextId? {
+        lastSeenMillis = maxOf(lastSeenMillis, nowMillis)
         if (stoppedAtFrame != null) return null
         val marker = clock.frameAtMillis(nowMillis)
         require(availableStartFrame in 0..marker)
@@ -41,6 +43,7 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
     /** Include the upcoming committed end when pruning before a write, so the ring keeps a fixed duration. */
     fun retainedRanges(committedEnd: Long, nowMillis: Long): List<AudioRange> {
         require(committedEnd >= 0)
+        lastSeenMillis = maxOf(lastSeenMillis, nowMillis)
         val end = minOf(committedEnd, stoppedAtFrame ?: committedEnd)
         val ring = AudioRange(maxOf(0, end - clock.framesForMillis(limits.historyMillis)), end)
         val protected = context?.let { ctx ->
@@ -51,6 +54,7 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
     }
 
     fun openEditor(id: AudioContextId, committedEnd: Long, nowMillis: Long, capacityAvailable: Boolean = true): AudioTimelineView? {
+        lastSeenMillis = maxOf(lastSeenMillis, nowMillis)
         val ctx = current(id) ?: return null
         if (!ctx.opened) {
             ctx.retention.editorReady(nowMillis, capacityAvailable)
@@ -62,6 +66,7 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
     }
 
     fun refresh(id: AudioContextId, committedEnd: Long, nowMillis: Long): AudioTimelineView? {
+        lastSeenMillis = maxOf(lastSeenMillis, nowMillis)
         val ctx = current(id) ?: return null
         check(ctx.opened)
         val end = availableEnd(ctx, committedEnd, nowMillis)
@@ -72,13 +77,17 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
         return view(ctx, committedEnd, nowMillis)
     }
 
-    fun view(id: AudioContextId, committedEnd: Long, nowMillis: Long): AudioTimelineView? =
-        current(id)?.let { view(it, committedEnd, nowMillis) }
+    fun view(id: AudioContextId, committedEnd: Long, nowMillis: Long): AudioTimelineView? {
+        lastSeenMillis = maxOf(lastSeenMillis, nowMillis)
+        return current(id)?.let { view(it, committedEnd, nowMillis) }
+    }
 
     fun stop(nowMillis: Long, reason: RetentionEnd = RetentionEnd.CAPTURE_STOPPED) {
         if (stoppedAtFrame != null) return
-        stoppedAtFrame = clock.frameAtMillis(nowMillis)
-        context?.retention?.stop(nowMillis, reason)
+        val effectiveMillis = maxOf(nowMillis, lastSeenMillis)
+        lastSeenMillis = effectiveMillis
+        stoppedAtFrame = clock.frameAtMillis(effectiveMillis)
+        context?.retention?.stop(effectiveMillis, reason)
     }
 
     fun releaseContext(id: AudioContextId) {
