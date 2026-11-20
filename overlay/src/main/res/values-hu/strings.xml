@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">A kijelölt tartomány üres. Módosítsa a kijelölést vagy a vágásokat.</string>
     <string name="audio_editor_export_failed">A hangklip exportálása nem sikerült. Próbálja újra, vagy koppintson a Hang nélkül lehetőségre.</string>
     <string name="audio_editor_duplicate_keep_warning">A meglévő mondathang megmaradt a frissítési szabályok szerint.</string>
+    <string name="audio_editor_quiet_warning">A felvett hang nagyon halk.</string>
+    <string name="audio_editor_active_scan_warning">A beolvasás előtt fejezze be vagy szakítsa meg a hangszerkesztést.</string>
+    <string name="audio_editor_duplicate_keep_title">Meglévő hang megőrizve</string>
+    <string name="audio_editor_duplicate_keep_body">Ez a jegyzet már tartalmazza a mondat hangját, amely a mezőfrissítési beállítások szerint megmarad.</string>
+    <string name="audio_editor_duplicate_keep_continue">Folytatás hang nélkül</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Beállítások módosítása</string>
 </resources>

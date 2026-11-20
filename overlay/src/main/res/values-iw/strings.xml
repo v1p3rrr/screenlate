@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">הטווח שנבחר ריק. נא להתאים את הבחירה או החיתוכים.</string>
     <string name="audio_editor_export_failed">ייצוא קטע השמע נכשל. נסה שוב או הקש על ללא שמע.</string>
     <string name="audio_editor_duplicate_keep_warning">שמע המשפט הקיים נשמר בהתאם למדיניות העדכון.</string>
+    <string name="audio_editor_quiet_warning">השמע המוקלט חלש מאוד.</string>
+    <string name="audio_editor_active_scan_warning">סיים או בטל את עריכת השמע לפני הסריקה.</string>
+    <string name="audio_editor_duplicate_keep_title">השמע הקיים נשמר</string>
+    <string name="audio_editor_duplicate_keep_body">ברשומה זו כבר יש שמע של משפט, שיישמר בהתאם להגדרות עדכון השדות שלך.</string>
+    <string name="audio_editor_duplicate_keep_continue">המשך ללא שמע</string>
+    <string name="audio_editor_duplicate_keep_change_settings">שנה הגדרות</string>
 </resources>

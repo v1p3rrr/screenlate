@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">النطاق المحدد فارغ. يرجى تعديل التحديد أو المقاطع.</string>
     <string name="audio_editor_export_failed">فشل تصدير مقطع الصوت. حاول مرة أخرى أو انقر على بدون صوت.</string>
     <string name="audio_editor_duplicate_keep_warning">تم الاحتفاظ بالصوت الحالي للجملة وفقًا لسياسة التحديث.</string>
+    <string name="audio_editor_quiet_warning">الصوت المسجل منخفض جدًا.</string>
+    <string name="audio_editor_active_scan_warning">قم بإنهاء تحرير الصوت أو إلغائه قبل المسح.</string>
+    <string name="audio_editor_duplicate_keep_title">تم الاحتفاظ بالصوت الحالي</string>
+    <string name="audio_editor_duplicate_keep_body">تحتوي هذه الملاحظة بالفعل على صوت الجملة، والذي سيتم الاحتفاظ به وفقًا لإعدادات تحديث الحقول.</string>
+    <string name="audio_editor_duplicate_keep_continue">المتابعة بدون صوت</string>
+    <string name="audio_editor_duplicate_keep_change_settings">تغيير الإعدادات</string>
 </resources>

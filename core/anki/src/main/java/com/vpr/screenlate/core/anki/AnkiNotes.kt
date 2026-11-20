@@ -13,6 +13,20 @@ import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 import javax.inject.Singleton
 
+sealed interface SentenceAudioAttachment {
+    /** Sentence audio was not requested for this note. */
+    data object None : SentenceAudioAttachment
+
+    /** Sentence audio was requested and successfully prepared in [file]. */
+    data class Attached(val file: File) : SentenceAudioAttachment
+
+    /** Sentence audio was intentionally omitted by the user or skipped by duplicate keep policy. */
+    data object Omitted : SentenceAudioAttachment
+
+    /** Sentence audio was requested but export or media preparation failed. */
+    data class Failed(val cause: Throwable? = null) : SentenceAudioAttachment
+}
+
 /**
  * Everything needed to fill one note. [values] holds the text markers; media markers (`{screenshot}`,
  * `{audio}`) are filled from the files after they are copied into AnkiDroid.
@@ -21,7 +35,7 @@ data class NoteRequest(
     val values: Map<String, String>,
     val screenshot: File? = null,
     val audio: AudioClip? = null,
-    val sentenceAudio: File? = null,
+    val sentenceAudio: SentenceAudioAttachment = SentenceAudioAttachment.None,
 )
 
 sealed interface AddResult {
@@ -241,9 +255,13 @@ class AnkiNotes @Inject constructor(
                 val name = "screenlate_${request.audio.file.nameWithoutExtension}"
                 anki.addMedia(request.audio.file, name, AnkiDroid.MediaKind.AUDIO)?.let { values["audio"] = it }
             }
-            if (FieldTemplate.SENTENCE_AUDIO in used && request.sentenceAudio != null) {
-                val name = "screenlate_${request.sentenceAudio.nameWithoutExtension}"
-                val mediaRef = anki.addMedia(request.sentenceAudio, name, AnkiDroid.MediaKind.AUDIO)
+            if (request.sentenceAudio is SentenceAudioAttachment.Failed) {
+                return AddResult.Failed("Failed to export sentence audio to Anki")
+            }
+            if (FieldTemplate.SENTENCE_AUDIO in used && request.sentenceAudio is SentenceAudioAttachment.Attached) {
+                val file = request.sentenceAudio.file
+                val name = "screenlate_${file.nameWithoutExtension}"
+                val mediaRef = anki.addMedia(file, name, AnkiDroid.MediaKind.AUDIO)
                     ?: return AddResult.Failed("Failed to export sentence audio to Anki")
                 values[FieldTemplate.SENTENCE_AUDIO] = mediaRef
             }
@@ -266,7 +284,7 @@ class AnkiNotes @Inject constructor(
                 val merged = names.mapIndexed { index, name ->
                     val template = settings.fields[name].orEmpty()
                     // Without audio update: preserve existing sentence-audio field(s) rather than writing an empty Replace value.
-                    if (request.sentenceAudio == null && FieldTemplate.SENTENCE_AUDIO in FieldTemplate.markersIn(template)) {
+                    if (request.sentenceAudio !is SentenceAudioAttachment.Attached && FieldTemplate.SENTENCE_AUDIO in FieldTemplate.markersIn(template)) {
                         targetNote.fields.getOrElse(index) { "" }
                     } else {
                         val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE

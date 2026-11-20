@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">選択範囲が空です。選択範囲またはカットを調整してください。</string>
     <string name="audio_editor_export_failed">音声をエクスポートできませんでした。再試行するか「音声なし」をタップしてください。</string>
     <string name="audio_editor_duplicate_keep_warning">既存の例文音声は更新ポリシーに従って保持されました。</string>
+    <string name="audio_editor_quiet_warning">録音された音声の音量が非常に小さいです。</string>
+    <string name="audio_editor_active_scan_warning">スキャンする前に音声の編集を完了またはキャンセルしてください。</string>
+    <string name="audio_editor_duplicate_keep_title">既存の音声を保持</string>
+    <string name="audio_editor_duplicate_keep_body">このノートには既に例文の音声があり、フィールド更新設定に従って保持されます。</string>
+    <string name="audio_editor_duplicate_keep_continue">音声なしで続行</string>
+    <string name="audio_editor_duplicate_keep_change_settings">設定を変更</string>
 </resources>

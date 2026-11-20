@@ -59,49 +59,47 @@ fun SentenceRecordingCard(viewModel: AudioSettingsViewModel) {
             info = stringResource(R.string.sentence_recording_info_body),
         )
 
-        if (recordingSettings.recordingEnabled) {
-            SwitchRow(
-                label = stringResource(R.string.sentence_audio_default_editor),
-                checked = recordingSettings.defaultEditor,
-                onChange = viewModel::setDefaultAudioEditor,
-                hint = stringResource(R.string.sentence_audio_default_editor_hint),
-            )
+        SwitchRow(
+            label = stringResource(R.string.sentence_audio_default_editor),
+            checked = recordingSettings.defaultEditor,
+            onChange = viewModel::setDefaultAudioEditor,
+            hint = stringResource(R.string.sentence_audio_default_editor_hint),
+        )
 
-            if (!hasSentenceAudioMarker) {
-                Hint(
-                    text = stringResource(R.string.sentence_recording_missing_marker_hint),
-                    modifier = Modifier.padding(vertical = 4.dp),
-                )
-            }
+        if (!hasSentenceAudioMarker) {
+            Hint(
+                text = stringResource(R.string.sentence_recording_missing_marker_hint),
+                modifier = Modifier.padding(vertical = 4.dp),
+            )
+        }
 
-            Text(
-                text = stringResource(R.string.sentence_recording_limits_label),
-                style = MaterialTheme.typography.labelLarge,
-            )
-            Hint(stringResource(R.string.sentence_recording_limits_hint))
+        Text(
+            text = stringResource(R.string.sentence_recording_limits_label),
+            style = MaterialTheme.typography.labelLarge,
+        )
+        Hint(stringResource(R.string.sentence_recording_limits_hint))
 
-            DurationLimitRow(
-                label = stringResource(R.string.sentence_recording_limit_history),
-                millis = recordingSettings.limits.historyMillis,
-                onChange = { viewModel.setLimits(recordingSettings.limits.copy(historyMillis = it)) },
-            )
-            DurationLimitRow(
-                label = stringResource(R.string.sentence_recording_limit_waiting),
-                millis = recordingSettings.limits.waitingMillis,
-                onChange = { viewModel.setLimits(recordingSettings.limits.copy(waitingMillis = it)) },
-            )
-            DurationLimitRow(
-                label = stringResource(R.string.sentence_recording_limit_editor),
-                millis = recordingSettings.limits.editorMillis,
-                onChange = { viewModel.setLimits(recordingSettings.limits.copy(editorMillis = it)) },
-            )
+        DurationLimitRow(
+            label = stringResource(R.string.sentence_recording_limit_history),
+            millis = recordingSettings.limits.historyMillis,
+            onChange = { viewModel.setLimits(recordingSettings.limits.copy(historyMillis = it)) },
+        )
+        DurationLimitRow(
+            label = stringResource(R.string.sentence_recording_limit_waiting),
+            millis = recordingSettings.limits.waitingMillis,
+            onChange = { viewModel.setLimits(recordingSettings.limits.copy(waitingMillis = it)) },
+        )
+        DurationLimitRow(
+            label = stringResource(R.string.sentence_recording_limit_editor),
+            millis = recordingSettings.limits.editorMillis,
+            onChange = { viewModel.setLimits(recordingSettings.limits.copy(editorMillis = it)) },
+        )
 
-            OutlinedButton(
-                onClick = { showSilenceDialog = true },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.sentence_recording_silence_params))
-            }
+        OutlinedButton(
+            onClick = { showSilenceDialog = true },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.sentence_recording_silence_params))
         }
     }
 

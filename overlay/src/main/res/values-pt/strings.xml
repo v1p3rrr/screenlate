@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">O intervalo selecionado está vazio. Ajuste a seleção ou os cortes.</string>
     <string name="audio_editor_export_failed">Falha ao exportar o áudio. Tente novamente ou toque em Sem áudio.</string>
     <string name="audio_editor_duplicate_keep_warning">O áudio da frase existente foi mantido de acordo com a política de atualização.</string>
+    <string name="audio_editor_quiet_warning">O áudio gravado está muito baixo.</string>
+    <string name="audio_editor_active_scan_warning">Conclua ou cancele a edição de áudio antes de digitalizar.</string>
+    <string name="audio_editor_duplicate_keep_title">Áudio existente mantido</string>
+    <string name="audio_editor_duplicate_keep_body">Esta nota já possui áudio da frase, que será mantido de acordo com as configurações de atualização de campos.</string>
+    <string name="audio_editor_duplicate_keep_continue">Continuar sem áudio</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Alterar configurações</string>
 </resources>

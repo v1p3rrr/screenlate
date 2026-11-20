@@ -199,25 +199,29 @@ class SentenceRecorder internal constructor(
     val isPreviewPlaying: Boolean get() = previewPlayer?.isPlaying == true
     val previewPosition: Long get() = previewPlayer?.currentFrame ?: 0L
 
+    data class ExportOutcome(
+        val isQuiet: Boolean,
+    )
+
     @Synchronized
     fun export(
         edit: AudioEdit,
         outputFile: File,
         sampleRate: Int = 48000,
-    ): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return false
-        val coord = coordinator ?: return false
-        val snapshot = runCatching { coord.snapshot(edit.selection) }.getOrNull() ?: return false
+    ): ExportOutcome? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
+        val coord = coordinator ?: return null
+        val snapshot = runCatching { coord.snapshot(edit.selection) }.getOrNull() ?: return null
         return try {
-            snapshot.openStream().use { rawStream ->
+            val result = snapshot.openStream().use { rawStream ->
                 val editStream = AudioEditInputStream(rawStream, edit)
                 AudioExporter.exportOpus(editStream, edit, sampleRate, outputFile)
             }
-            true
+            ExportOutcome(isQuiet = result.isQuiet)
         } catch (e: Exception) {
             Log.w(TAG, "Export failed", e)
             outputFile.delete()
-            false
+            null
         } finally {
             snapshot.close()
         }

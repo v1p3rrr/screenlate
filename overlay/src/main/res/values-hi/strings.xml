@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">चयनित दायरा खाली है। चयन या कट समायोजित करें।</string>
     <string name="audio_editor_export_failed">ऑडियो क्लिप निर्यात विफल रहा। पुनः प्रयास करें या बिना ऑडियो पर टैप करें।</string>
     <string name="audio_editor_duplicate_keep_warning">अपडेट नीति के अनुसार मौजूदा वाक्य ऑडियो को बनाए रखा गया है।</string>
+    <string name="audio_editor_quiet_warning">रिकॉर्ड किया गया ऑडियो बहुत धीमा है।</string>
+    <string name="audio_editor_active_scan_warning">स्कैन करने से पहले ऑडियो संपादन समाप्त या रद्द करें।</string>
+    <string name="audio_editor_duplicate_keep_title">मौजूदा ऑडियो रखा गया</string>
+    <string name="audio_editor_duplicate_keep_body">इस नोट में पहले से ही वाक्य ऑडियो है, जिसे आपकी फ़ील्ड अपडेट सेटिंग के अनुसार रखा जाएगा।</string>
+    <string name="audio_editor_duplicate_keep_continue">बिना ऑडियो के जारी रखें</string>
+    <string name="audio_editor_duplicate_keep_change_settings">सेटिंग्स बदलें</string>
 </resources>

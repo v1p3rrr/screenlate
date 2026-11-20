@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">L’intervallo selezionato è vuoto. Regola la selezione o i tagli.</string>
     <string name="audio_editor_export_failed">Esportazione audio non riuscita. Riprova o tocca Senza audio.</string>
     <string name="audio_editor_duplicate_keep_warning">L’audio della frase esistente è stato mantenuto in base ai criteri di aggiornamento.</string>
+    <string name="audio_editor_quiet_warning">L\'audio registrato è molto basso.</string>
+    <string name="audio_editor_active_scan_warning">Termina o annulla la modifica audio prima della scansione.</string>
+    <string name="audio_editor_duplicate_keep_title">Audio esistente mantenuto</string>
+    <string name="audio_editor_duplicate_keep_body">Questa nota contiene già un audio della frase, che verrà mantenuto secondo le impostazioni di aggiornamento dei campi.</string>
+    <string name="audio_editor_duplicate_keep_continue">Continua senza audio</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Modifica impostazioni</string>
 </resources>

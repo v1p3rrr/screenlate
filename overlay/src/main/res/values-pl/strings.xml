@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">Wybrany fragment jest pusty. Dostosuj zakres lub cięcia.</string>
     <string name="audio_editor_export_failed">Nie udało się wyeksportować nagrania. Spróbuj ponownie lub wybierz Bez dźwięku.</string>
     <string name="audio_editor_duplicate_keep_warning">Istniejące audio zdania zostało zachowane zgodnie z zasadami aktualizacji.</string>
+    <string name="audio_editor_quiet_warning">Nagrany dźwięk jest bardzo cichy.</string>
+    <string name="audio_editor_active_scan_warning">Zakończ lub anuluj edycję dźwięku przed skanowaniem.</string>
+    <string name="audio_editor_duplicate_keep_title">Zachowano istniejący dźwięk</string>
+    <string name="audio_editor_duplicate_keep_body">Ta notatka ma już dźwięk zdania, który zostanie zachowany zgodnie z ustawieniami aktualizacji pól.</string>
+    <string name="audio_editor_duplicate_keep_continue">Kontynuuj bez dźwięku</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Zmień ustawienia</string>
 </resources>

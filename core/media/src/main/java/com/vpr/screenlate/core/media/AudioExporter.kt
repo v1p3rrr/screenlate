@@ -20,6 +20,11 @@ internal object AudioExporter {
 
     private const val OPUS_MIME = "audio/opus"
     private const val DEFAULT_BITRATE = 32000
+    private const val QUIET_AMPLITUDE_THRESHOLD = 0.02f
+
+    data class ExportResult(
+        val isQuiet: Boolean,
+    )
 
     fun exportOpus(
         stream: InputStream,
@@ -27,7 +32,7 @@ internal object AudioExporter {
         sampleRate: Int,
         destination: File,
         bitRate: Int = DEFAULT_BITRATE,
-    ) {
+    ): ExportResult {
         require(edit.outputFrames > 0 && sampleRate > 0)
         val format = MediaFormat.createAudioFormat(OPUS_MIME, sampleRate, 1).apply {
             setInteger(MediaFormat.KEY_BIT_RATE, bitRate)
@@ -36,6 +41,7 @@ internal object AudioExporter {
         val muxer = MediaMuxer(destination.path, MediaMuxer.OutputFormat.MUXER_OUTPUT_OGG)
         var muxerStarted = false
         var trackIndex = -1
+        var maxAmplitude = 0f
 
         try {
             codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
@@ -65,6 +71,12 @@ internal object AudioExporter {
                         if (readCount > 0) {
                             inputBuffer.clear()
                             inputBuffer.put(buffer, 0, readCount)
+                            val samples = readCount / 2
+                            for (i in 0 until samples) {
+                                val s = ((buffer[i * 2].toInt() and 0xFF) or (buffer[i * 2 + 1].toInt() shl 8)).toShort()
+                                val norm = kotlin.math.abs(s.toInt()) / 32768f
+                                if (norm > maxAmplitude) maxAmplitude = norm
+                            }
                         }
 
                         val ptsUs = framesSubmitted * 1_000_000L / sampleRate
@@ -105,5 +117,6 @@ internal object AudioExporter {
             }
         }
         check(destination.length() > 0) { "Audio export produced an empty file" }
+        return ExportResult(isQuiet = maxAmplitude < QUIET_AMPLITUDE_THRESHOLD)
     }
 }

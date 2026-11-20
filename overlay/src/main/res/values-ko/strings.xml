@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">선택 영역이 비어 있습니다. 선택 범위나 잘라내기를 조정하세요.</string>
     <string name="audio_editor_export_failed">오디오를 내보내지 못했습니다. 다시 시도하거나 “오디오 없이”를 탭하세요.</string>
     <string name="audio_editor_duplicate_keep_warning">업데이트 정책에 따라 기존 문장 오디오가 유지되었습니다.</string>
+    <string name="audio_editor_quiet_warning">녹음된 오디오 볼륨이 매우 작습니다.</string>
+    <string name="audio_editor_active_scan_warning">스캔하기 전에 오디오 편집을 완료하거나 취소하세요.</string>
+    <string name="audio_editor_duplicate_keep_title">기존 오디오 유지됨</string>
+    <string name="audio_editor_duplicate_keep_body">이 노트에는 이미 문장 오디오가 있으며, 필드 업데이트 설정에 따라 유지됩니다.</string>
+    <string name="audio_editor_duplicate_keep_continue">오디오 없이 계속</string>
+    <string name="audio_editor_duplicate_keep_change_settings">설정 변경</string>
 </resources>

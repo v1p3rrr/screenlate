@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">La plage sélectionnée est vide. Ajustez la sélection ou les coupures.</string>
     <string name="audio_editor_export_failed">Échec de l’exportation de l’audio. Réessayez ou appuyez sur Sans audio.</string>
     <string name="audio_editor_duplicate_keep_warning">L’audio de phrase existant a été conservé conformément aux règles de mise à jour.</string>
+    <string name="audio_editor_quiet_warning">L\'audio enregistré est très faible.</string>
+    <string name="audio_editor_active_scan_warning">Terminez ou annulez l\'édition audio avant de numériser.</string>
+    <string name="audio_editor_duplicate_keep_title">Audio existant conservé</string>
+    <string name="audio_editor_duplicate_keep_body">Cette note contient déjà un audio de phrase, qui sera conservé selon vos paramètres de mise à jour des champs.</string>
+    <string name="audio_editor_duplicate_keep_continue">Continuer sans audio</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Modifier les paramètres</string>
 </resources>

@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">নির্বাচিত অংশ খালি। নির্বাচন বা ছাঁটাই সামঞ্জস্য করুন।</string>
     <string name="audio_editor_export_failed">অডিও ক্লিপ রপ্তানি ব্যর্থ হয়েছে। আবার চেষ্টা করুন বা অডিও ছাড়া ট্যাপ করুন।</string>
     <string name="audio_editor_duplicate_keep_warning">আপডেট নীতি অনুযায়ী বিদ্যমান বাক্য অডিও রাখা হয়েছে।</string>
+    <string name="audio_editor_quiet_warning">রেকর্ড করা অডিও খুব শান্ত।</string>
+    <string name="audio_editor_active_scan_warning">স্ক্যান করার আগে অডিও সম্পাদনা শেষ বা বাতিল করুন।</string>
+    <string name="audio_editor_duplicate_keep_title">বিদ্যমান অডিও রাখা হয়েছে</string>
+    <string name="audio_editor_duplicate_keep_body">এই নোটটিতে ইতিমধ্যে বাক্যের অডিও রয়েছে, যা আপনার ক্ষেত্র আপডেট সেটিংস অনুসারে রাখা হবে।</string>
+    <string name="audio_editor_duplicate_keep_continue">অডিও ছাড়াই চালিয়ে যান</string>
+    <string name="audio_editor_duplicate_keep_change_settings">সেটিংস পরিবর্তন করুন</string>
 </resources>

@@ -490,6 +490,34 @@ var AudioEditor = (() => {
 
         applyStaticLabels();
         render();
+
+        if (data.duplicateKeep) {
+            showDialog(
+                labelOf('audio_editor_duplicate_keep_title', 'Existing audio kept'),
+                `<p>${labelOf('audio_editor_duplicate_keep_body', 'This note already has sentence audio, which will be kept according to your field update settings.')}</p>`,
+                [
+                    {
+                        label: labelOf('audio_editor_duplicate_keep_change_settings', 'Change settings'),
+                        run: () => {
+                            close();
+                            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioChangeSettings) {
+                                ScreenlateBridge.onAudioChangeSettings();
+                            }
+                        }
+                    },
+                    {
+                        label: labelOf('audio_editor_duplicate_keep_continue', 'Continue without audio'),
+                        primary: true,
+                        run: () => {
+                            close();
+                            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioWithout) {
+                                ScreenlateBridge.onAudioWithout();
+                            }
+                        }
+                    }
+                ]
+            );
+        }
     }
 
     function applyStaticLabels() {

@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">Phạm vi đã chọn trống. Hãy điều chỉnh vùng chọn hoặc đoạn cắt.</string>
     <string name="audio_editor_export_failed">Không thể xuất đoạn âm thanh. Hãy thử lại hoặc chọn Không có âm thanh.</string>
     <string name="audio_editor_duplicate_keep_warning">Âm thanh câu hiện có được giữ lại theo chính sách cập nhật.</string>
+    <string name="audio_editor_quiet_warning">Âm thanh đã ghi rất nhỏ.</string>
+    <string name="audio_editor_active_scan_warning">Hoàn tất hoặc hủy chỉnh sửa âm thanh trước khi quét.</string>
+    <string name="audio_editor_duplicate_keep_title">Giữ lại âm thanh hiện có</string>
+    <string name="audio_editor_duplicate_keep_body">Ghi chú này đã có âm thanh câu, sẽ được giữ lại theo cài đặt cập nhật trường.</string>
+    <string name="audio_editor_duplicate_keep_continue">Tiếp tục không có âm thanh</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Thay đổi cài đặt</string>
 </resources>

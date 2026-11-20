@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">Το επιλεγμένο εύρος είναι κενό. Προσαρμόστε την επιλογή ή τις περικοπές.</string>
     <string name="audio_editor_export_failed">Η εξαγωγή του κλιπ ήχου απέτυχε. Δοκιμάστε ξανά ή πατήστε Χωρίς ήχο.</string>
     <string name="audio_editor_duplicate_keep_warning">Ο υπάρχων ήχος πρότασης διατηρήθηκε σύμφωνα με την πολιτική ενημέρωσης.</string>
+    <string name="audio_editor_quiet_warning">Ο εγγεγραμμένος ήχος είναι πολύ χαμηλός.</string>
+    <string name="audio_editor_active_scan_warning">Ολοκληρώστε ή ακυρώστε την επεξεργασία ήχου πριν από τη σάρωση.</string>
+    <string name="audio_editor_duplicate_keep_title">Διατηρήθηκε ο υπάρχων ήχος</string>
+    <string name="audio_editor_duplicate_keep_body">Αυτή η σημείωση έχει ήδη ήχο πρότασης, ο οποίος θα διατηρηθεί σύμφωνα με τις ρυθμίσεις ενημέρωσης πεδίων.</string>
+    <string name="audio_editor_duplicate_keep_continue">Συνέχεια χωρίς ήχο</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Αλλαγή ρυθμίσεων</string>
 </resources>

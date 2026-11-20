@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">ช่วงที่เลือกว่างเปล่า โปรดปรับการเลือกหรือการตัด</string>
     <string name="audio_editor_export_failed">ส่งออกคลิปเสียงไม่สำเร็จ โปรดลองอีกครั้งหรือแตะไม่มีเสียง</string>
     <string name="audio_editor_duplicate_keep_warning">เสียงประโยคที่มีอยู่ถูกเก็บไว้ตามนโยบายการอัปเดต</string>
+    <string name="audio_editor_quiet_warning">เสียงที่บันทึกไว้เบามาก</string>
+    <string name="audio_editor_active_scan_warning">เสร็จสิ้นหรือยกเลิกการแก้ไขเสียงก่อนสแกน</string>
+    <string name="audio_editor_duplicate_keep_title">คงเสียงเดิมไว้</string>
+    <string name="audio_editor_duplicate_keep_body">โน้ตนี้มีเสียงประโยคอยู่แล้ว ซึ่งจะถูกเก็บไว้ตามการตั้งค่าการอัปเดตฟิลด์ของคุณ</string>
+    <string name="audio_editor_duplicate_keep_continue">ดำเนินการต่อโดยไม่มีเสียง</string>
+    <string name="audio_editor_duplicate_keep_change_settings">เปลี่ยนการตั้งค่า</string>
 </resources>

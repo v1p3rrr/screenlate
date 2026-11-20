@@ -190,4 +190,10 @@
     <string name="audio_editor_empty_output">Selected range is empty. Adjust selection or cuts.</string>
     <string name="audio_editor_export_failed">Failed to export audio clip. Try again or tap Without audio.</string>
     <string name="audio_editor_duplicate_keep_warning">Existing sentence audio kept by update policy.</string>
+    <string name="audio_editor_quiet_warning">Recorded audio is very quiet.</string>
+    <string name="audio_editor_active_scan_warning">Finish or cancel audio editing before scanning.</string>
+    <string name="audio_editor_duplicate_keep_title">Existing audio kept</string>
+    <string name="audio_editor_duplicate_keep_body">This note already has sentence audio, which will be kept according to your field update settings.</string>
+    <string name="audio_editor_duplicate_keep_continue">Continue without audio</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Change settings</string>
 </resources>

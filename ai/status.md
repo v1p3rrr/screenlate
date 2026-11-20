@@ -3,17 +3,23 @@
 ## Sentence audio: Code review fixes, docs, and validation (2026-11-20)
 
 - Completed on branch `codex/sentence-audio-recording`:
-  - Addressed code review feedback:
+  - Addressed code review feedback (Standards and Spec):
     - `AudioPreviewPlayer`: Seeking during active playback now seamlessly resumes playback from the new frame position without requiring a manual pause/play toggle.
     - `AnkiNotes`: Note creation halts and returns `AddResult.Failed` if sentence audio media export to AnkiDroid fails, eliminating silent card creation without requested audio.
+    - `SentenceAudioAttachment`: Explicitly models `None`, `Attached(file)`, `Omitted`, and `Failed` intents in `NoteRequest`; updates preserve existing Anki fields when audio is omitted.
     - `PcmBlockQueue` / `PcmStorageCoordinator`: Replaced busy-wait sleep in the writer thread with timed wait/notify `poll(timeoutMillis)` in `PcmBlockQueue`.
-    - Localized all UI strings across all 27 locales (duration +/- step controls, empty export toast, export failure toast).
+    - `SentenceRecordingCard`: Default-editor switch, H/R/E limit controls, and silence search button remain visible and configurable on Android 10+ even when capture is currently stopped.
+    - Preserved fragment accessibility: Stopping capture does not remove access to the current scan's preserved audio fragment.
+    - Active audio editor scan guard: Warns the user with a localized toast if a new scan is triggered while the audio editor is open.
+    - Low-amplitude warning: `AudioExporter` calculates normalized peak amplitude and warns if audio is very quiet (< 0.02), while allowing save/preview/without audio.
+    - Duplicate Keep resolution: If duplicate update policy retains existing sentence audio, the audio editor explains before editing and offers "Continue without audio" or "Change settings" (which opens Anki settings and cancels the note).
+    - Localized all UI strings across all 27 locales (duration +/- step controls, empty export toast, export failure toast, quiet warning, duplicate keep dialog, active scan warning).
     - `audio-editor.js` and `AudioEditorController.kt`: Dynamic label localization, empty export guard, and localized toast notifications on export errors.
     - `LookupPage.kt`, `PopupNotes.kt`, `OverlayController.kt`: Shared `defaultEditor` preference correctly wired when `withAudio` is not explicitly set.
   - **Phase 7 (Docs & Validation):**
     - Updated `docs/architecture.md`, `docs/development.md`, and `docs/usage.md` with sentence audio recording, overlay editor, and Anki pipeline details.
     - Updated `ai/test-model.md` run log and REC cases.
-    - Verified with full unit tests (`./gradlew testDebugUnitTest :build-logic:convention:test`), page tests (`npm --prefix scripts/page-tests test`: 208 tests passed), and lint checks (`./gradlew lintDebug :app:lintVitalRelease`).
+    - Verified with full unit tests (`./gradlew testDebugUnitTest :build-logic:convention:test`), page tests (`npm --prefix scripts/page-tests test`: 209 tests passed), and lint checks (`./gradlew lintDebug :app:lintVitalRelease`).
 
 ## Sentence audio: Overlay editor UI, Kotlin bridge, Anki export and settings integration (2026-11-19)
 

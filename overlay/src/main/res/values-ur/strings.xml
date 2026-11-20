@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">منتخب کردہ حصہ خالی ہے۔ انتخاب یا کٹوتی کو ایڈجسٹ کریں۔</string>
     <string name="audio_editor_export_failed">آڈیو کلپ برآمد کرنے میں ناکامی۔ دوبارہ کوشش کریں یا بغیر آڈیو کے پر ٹیپ کریں۔</string>
     <string name="audio_editor_duplicate_keep_warning">اپ ڈیٹ کی پالیسی کے مطابق موجودہ جملے کا آڈیو برقرار رکھا گیا۔</string>
+    <string name="audio_editor_quiet_warning">ریکارڈ شدہ آڈیو بہت دھیمی ہے۔</string>
+    <string name="audio_editor_active_scan_warning">اسکین کرنے سے پہلے آڈیو ایڈیٹنگ ختم یا منسوخ کریں۔</string>
+    <string name="audio_editor_duplicate_keep_title">موجودہ آڈیو برقرار ہے</string>
+    <string name="audio_editor_duplicate_keep_body">اس نوٹ میں پہلے سے جملے کی آڈیو موجود ہے، جسے آپ کی فیلڈ اپ ڈیٹ ترتیبات کے مطابق رکھا جائے گا۔</string>
+    <string name="audio_editor_duplicate_keep_continue">آڈیو کے بغیر جاری رکھیں</string>
+    <string name="audio_editor_duplicate_keep_change_settings">ترتیبات تبدیل کریں</string>
 </resources>

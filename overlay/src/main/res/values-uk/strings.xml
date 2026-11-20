@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">Виділений фрагмент порожній. Змініть межі або вирізи.</string>
     <string name="audio_editor_export_failed">Не вдалося експортувати аудіо. Спробуйте знову або виберіть «Без аудіо».</string>
     <string name="audio_editor_duplicate_keep_warning">Наявне аудіо речення збережено згідно з правилами оновлення.</string>
+    <string name="audio_editor_quiet_warning">Записаний звук дуже тихий.</string>
+    <string name="audio_editor_active_scan_warning">Завершіть або скасуйте редагування аудіо перед новим розпізнаванням.</string>
+    <string name="audio_editor_duplicate_keep_title">Збереження аудіо</string>
+    <string name="audio_editor_duplicate_keep_body">Ця нотатка вже має аудіо речення, яке буде збережено згідно з налаштуваннями оновлення полів.</string>
+    <string name="audio_editor_duplicate_keep_continue">Продовжити без аудіо</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Змінити налаштування</string>
 </resources>

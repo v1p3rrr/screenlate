@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">محدوده انتخاب‌شده خالی است. انتخاب یا برش‌ها را تنظیم کنید.</string>
     <string name="audio_editor_export_failed">صادر کردن کلیپ صوتی ناموفق بود. دوباره امتحان کنید یا روی بدون صدا ضربه بزنید.</string>
     <string name="audio_editor_duplicate_keep_warning">صدای جمله موجود مطابق با خط‌مشی به‌روزرسانی حفظ شد.</string>
+    <string name="audio_editor_quiet_warning">صدای ضبط‌شده بسیار کم است.</string>
+    <string name="audio_editor_active_scan_warning">قبل از اسکن، ویرایش صدا را کامل یا لغو کنید.</string>
+    <string name="audio_editor_duplicate_keep_title">صدای موجود حفظ شد</string>
+    <string name="audio_editor_duplicate_keep_body">این یادداشت قبلاً دارای صدای جمله است که طبق تنظیمات به‌روزرسانی فیلدها حفظ خواهد شد.</string>
+    <string name="audio_editor_duplicate_keep_continue">ادامه بدون صدا</string>
+    <string name="audio_editor_duplicate_keep_change_settings">تغییر تنظیمات</string>
 </resources>

@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
+import com.vpr.screenlate.overlay.anki.AudioEditorController
 import com.vpr.screenlate.core.anki.audio.AudioFinder
 import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
@@ -247,14 +248,18 @@ class OverlayController(
     private val scanLanguage = MutableStateFlow(activeLanguage)
     private val language: Language get() = scanLanguage.value
 
-    private val audioEditorController: com.vpr.screenlate.overlay.anki.AudioEditorController? = sentenceRecorder?.let { recorder ->
-        com.vpr.screenlate.overlay.anki.AudioEditorController(
+    private val audioEditorController: AudioEditorController? = sentenceRecorder?.let { recorder ->
+        AudioEditorController(
             context = service,
             scope = scope,
             page = popup.page,
             popupController = popup,
             sentenceRecorder = recorder,
             recordingSettings = recordingSettings,
+            onOpenAnkiSettings = {
+                OverlayIntents.openAnkiSettings(service, language)
+                dock()
+            },
         )
     }
 
@@ -276,6 +281,7 @@ class OverlayController(
         cropAreaSettings = anki.cropAreaSettings,
         audioEditor = audioEditorController,
         recordingSettings = recordingSettings,
+        currentAudioContext = { currentScanAudioContextId },
         onAnkiOpened = { dock() },
         onNoteAdded = {
             if (settings.hideAfterAdd) {
@@ -1157,6 +1163,7 @@ class OverlayController(
     private fun startScan(flashLines: Boolean) {
         if (popup.isAudioEditorActive) {
             Log.d(TAG, "Ignoring scan request while audio editor is active")
+            Toast.makeText(service, R.string.audio_editor_active_scan_warning, Toast.LENGTH_SHORT).show()
             return
         }
         stopDiagnostics.scanStarted(SystemClock.elapsedRealtime())

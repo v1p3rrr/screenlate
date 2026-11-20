@@ -121,6 +121,7 @@ class LookupPage(
         fun onAudioCancel(dirty: Boolean)
         fun onAudioWithout()
         fun onAudioAdd(editJson: String)
+        fun onAudioChangeSettings()
     }
 
     /** Receives the note and audio buttons; without it they do nothing. */
@@ -238,23 +239,17 @@ class LookupPage(
         run("Popup.setNoteStates($json)")
     }
 
-    /** Opens the sentence audio editor with [dataJson] parameters. */
     fun openAudioEditor(dataJson: String) = run("AudioEditor.open($dataJson)")
 
-    /** Updates the audio timeline with new frames or status. */
     fun updateAudioTimeline(dataJson: String) = run("AudioEditor.updateTimeline($dataJson)")
 
-    /** Updates the current playback cursor position. */
     fun updateAudioCursor(frame: Long) = run("AudioEditor.updateCursor($frame)")
 
-    /** Sets the playing state and changes Listen/Pause button label. */
     fun setAudioPlaying(isPlaying: Boolean) = run("AudioEditor.setPlaying($isPlaying)")
 
-    /** Delivers silence proposals to the audio editor. */
     fun setAudioSilenceProposals(request: Int, proposalsJson: String) =
         run("AudioEditor.setSilenceProposals($request, $proposalsJson)")
 
-    /** Closes the audio editor and restores dictionary content. */
     fun closeAudioEditor() = run("AudioEditor.close()")
 
     /**
@@ -488,6 +483,11 @@ class LookupPage(
         @JavascriptInterface
         fun onAudioAdd(editJson: String) = post {
             audioEditorActions?.onAudioAdd(editJson)
+        }
+
+        @JavascriptInterface
+        fun onAudioChangeSettings() = post {
+            audioEditorActions?.onAudioChangeSettings()
         }
 
         @JavascriptInterface

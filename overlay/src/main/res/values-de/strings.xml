@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">Ausgewählter Bereich ist leer. Auswahl oder Zuschnitte anpassen.</string>
     <string name="audio_editor_export_failed">Audiodatei konnte nicht exportiert werden. Erneut versuchen oder „Ohne Audio“ wählen.</string>
     <string name="audio_editor_duplicate_keep_warning">Bestehendes Satz-Audio wurde gemäß den Aktualisierungsregeln beibehalten.</string>
+    <string name="audio_editor_quiet_warning">Das aufgenommene Audio ist sehr leise.</string>
+    <string name="audio_editor_active_scan_warning">Beenden oder verwerfen Sie die Audiobearbeitung vor dem Scannen.</string>
+    <string name="audio_editor_duplicate_keep_title">Bestehendes Audio behalten</string>
+    <string name="audio_editor_duplicate_keep_body">Diese Notiz enthält bereits ein Satz-Audio, das gemäß Ihren Feldaktualisierungseinstellungen beibehalten wird.</string>
+    <string name="audio_editor_duplicate_keep_continue">Ohne Audio fortfahren</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Einstellungen ändern</string>
 </resources>

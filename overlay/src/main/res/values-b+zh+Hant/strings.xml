@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">所選範圍為空。請調整選取範圍或剪裁。</string>
     <string name="audio_editor_export_failed">匯出音訊片段失敗。請重試或輕點「不含音訊」。</string>
     <string name="audio_editor_duplicate_keep_warning">已根據更新政策保留現有的句子音訊。</string>
+    <string name="audio_editor_quiet_warning">錄製的音訊音量極小。</string>
+    <string name="audio_editor_active_scan_warning">請在掃描前完成或取消音訊編輯。</string>
+    <string name="audio_editor_duplicate_keep_title">保留現有音訊</string>
+    <string name="audio_editor_duplicate_keep_body">此筆記已有例句音訊，將根據欄位更新設定予以保留。</string>
+    <string name="audio_editor_duplicate_keep_continue">不附帶音訊繼續</string>
+    <string name="audio_editor_duplicate_keep_change_settings">變更設定</string>
 </resources>

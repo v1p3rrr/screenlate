@@ -51,6 +51,7 @@ class AudioEditorController(
     private val popupController: PopupController,
     private val sentenceRecorder: SentenceRecorder,
     private val recordingSettings: RecordingSettingsRepository? = null,
+    private val onOpenAnkiSettings: () -> Unit = {},
 ) : LookupPage.AudioEditorActions {
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -75,6 +76,7 @@ class AudioEditorController(
         audioContextId: AudioContextId,
         term: String,
         reading: String,
+        duplicateKeep: Boolean = false,
     ): AudioEditorResult = withContext(Dispatchers.Main) {
         val timelineView = sentenceRecorder.openEditor(audioContextId)
             ?: return@withContext AudioEditorResult.WithoutAudio
@@ -151,9 +153,14 @@ class AudioEditorController(
             put("audio_editor_end_handle", context.getString(R.string.audio_editor_end_handle))
             put("audio_editor_empty_output", context.getString(R.string.audio_editor_empty_output))
             put("audio_editor_export_failed", context.getString(R.string.audio_editor_export_failed))
+            put("audio_editor_duplicate_keep_title", context.getString(R.string.audio_editor_duplicate_keep_title))
+            put("audio_editor_duplicate_keep_body", context.getString(R.string.audio_editor_duplicate_keep_body))
+            put("audio_editor_duplicate_keep_continue", context.getString(R.string.audio_editor_duplicate_keep_continue))
+            put("audio_editor_duplicate_keep_change_settings", context.getString(R.string.audio_editor_duplicate_keep_change_settings))
         }
 
         val openPayload = buildJsonObject {
+            put("duplicateKeep", duplicateKeep)
             put("sampleRate", sampleRate)
             put("totalFrames", totalFrames)
             put("scanFrame", timelineView.scanFrame)
@@ -313,9 +320,12 @@ class AudioEditorController(
                 return@launch
             }
             val tempFile = File.createTempFile("screenlate_sentence_", ".opus", context.cacheDir)
-            val exported = sentenceRecorder.export(edit, tempFile)
+            val exportOutcome = sentenceRecorder.export(edit, tempFile)
             withContext(Dispatchers.Main) {
-                if (exported) {
+                if (exportOutcome != null) {
+                    if (exportOutcome.isQuiet) {
+                        Toast.makeText(context, R.string.audio_editor_quiet_warning, Toast.LENGTH_SHORT).show()
+                    }
                     activeContextId?.let { lastConfirmedEdits[it] = edit }
                     finish(AudioEditorResult.WithAudio(tempFile))
                 } else {
@@ -324,6 +334,11 @@ class AudioEditorController(
                 }
             }
         }
+    }
+
+    override fun onAudioChangeSettings() {
+        onOpenAnkiSettings()
+        finish(AudioEditorResult.Cancelled)
     }
 
     fun releaseContext(id: AudioContextId) {

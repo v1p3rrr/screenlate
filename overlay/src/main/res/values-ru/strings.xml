@@ -183,4 +183,10 @@
     <string name="audio_editor_empty_output">Выделенный фрагмент пуст. Измените границы или вырезы.</string>
     <string name="audio_editor_export_failed">Не удалось экспортировать аудио. Попробуйте снова или выберите «Без аудио».</string>
     <string name="audio_editor_duplicate_keep_warning">Существующее аудио предложения сохранено настройками обновления.</string>
+    <string name="audio_editor_quiet_warning">Записанный звук очень тихий.</string>
+    <string name="audio_editor_active_scan_warning">Завершите или отмените редактирование аудио перед новым распознаванием.</string>
+    <string name="audio_editor_duplicate_keep_title">Сохранение аудио</string>
+    <string name="audio_editor_duplicate_keep_body">У этой заметки уже есть аудио предложения, которое будет сохранено согласно настройкам обновления полей.</string>
+    <string name="audio_editor_duplicate_keep_continue">Продолжить без аудио</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Изменить настройки</string>
 </resources>

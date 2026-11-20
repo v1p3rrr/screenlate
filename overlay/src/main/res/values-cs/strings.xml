@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">Vybraný rozsah je prázdný. Upravte výběr nebo výřezy.</string>
     <string name="audio_editor_export_failed">Export zvukového záznamu se nezdařil. Zkuste to znovu nebo klepněte na Bez zvuku.</string>
     <string name="audio_editor_duplicate_keep_warning">Stávající zvuk věty byl zachován podle pravidel aktualizace.</string>
+    <string name="audio_editor_quiet_warning">Nahraný zvuk je velmi tichý.</string>
+    <string name="audio_editor_active_scan_warning">Před skenováním dokončete nebo zrušte úpravu zvuku.</string>
+    <string name="audio_editor_duplicate_keep_title">Stávající zvuk zachován</string>
+    <string name="audio_editor_duplicate_keep_body">Tato poznámka již obsahuje zvuk věty, který bude zachován podle vašeho nastavení aktualizace polí.</string>
+    <string name="audio_editor_duplicate_keep_continue">Pokračovat bez zvuku</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Změnit nastavení</string>
 </resources>

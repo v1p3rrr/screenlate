@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">Intervalul selectat este gol. Ajustați selecția sau tăieturile.</string>
     <string name="audio_editor_export_failed">Exportul clipului audio a eșuat. Încercați din nou sau atingeți Fără audio.</string>
     <string name="audio_editor_duplicate_keep_warning">Sunetul propoziției existent a fost păstrat conform politicii de actualizare.</string>
+    <string name="audio_editor_quiet_warning">Sunetul înregistrat este foarte scăzut.</string>
+    <string name="audio_editor_active_scan_warning">Finalizați sau anulați editarea audio înainte de scanare.</string>
+    <string name="audio_editor_duplicate_keep_title">Audio existent păstrat</string>
+    <string name="audio_editor_duplicate_keep_body">Această notă conține deja audio pentru propoziție, care va fi păstrat conform setărilor de actualizare a câmpurilor.</string>
+    <string name="audio_editor_duplicate_keep_continue">Continuați fără audio</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Schimbă setările</string>
 </resources>

@@ -403,7 +403,7 @@ class AnkiNotesTest {
         }
         val result = notes.add(
             Language.JAPANESE,
-            request.copy(sentenceAudio = audioFile),
+            request.copy(sentenceAudio = SentenceAudioAttachment.Attached(audioFile)),
         )
         assertThat(result).isEqualTo(AddResult.Added(101))
         assertThat(anki.media).contains(Pair("screenlate_phrase", AnkiDroid.MediaKind.AUDIO))
@@ -427,7 +427,7 @@ class AnkiNotesTest {
             fields = listOf("猫", "old meaning", "", "", "[sound:existing_recorded.opus]"),
             deckIds = setOf(DECK),
         )
-        val result = notes.add(Language.JAPANESE, request.copy(sentenceAudio = null))
+        val result = notes.add(Language.JAPANESE, request.copy(sentenceAudio = SentenceAudioAttachment.Omitted))
         assertThat(result).isEqualTo(AddResult.Updated(42L))
         val updatedFields = anki.updated.single().second
         assertThat(updatedFields[1]).isEqualTo("cat")
@@ -442,7 +442,7 @@ class AnkiNotesTest {
         }
         anki.refuseMedia = true
         val tempAudio = folder.newFile("sample.opus")
-        val result = notes.add(Language.JAPANESE, request.copy(sentenceAudio = tempAudio))
+        val result = notes.add(Language.JAPANESE, request.copy(sentenceAudio = SentenceAudioAttachment.Attached(tempAudio)))
         assertThat(result).isInstanceOf(AddResult.Failed::class.java)
         assertThat(anki.added).isEmpty()
     }

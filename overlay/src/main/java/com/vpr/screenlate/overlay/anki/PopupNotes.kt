@@ -13,6 +13,7 @@ import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.NoteRequest
+import com.vpr.screenlate.core.anki.SentenceAudioAttachment
 import com.vpr.screenlate.core.anki.audio.AudioCandidate
 import com.vpr.screenlate.core.anki.audio.AudioClip
 import com.vpr.screenlate.core.anki.audio.AudioFinder
@@ -75,7 +76,7 @@ data class NoteContext(
     val image: NoteImage?,
     val focus: Box? = null,
     val documentTitle: String = "",
-    val audioContextId: com.vpr.screenlate.core.media.AudioContextId? = null,
+    val audioContextId: AudioContextId? = null,
 )
 
 /** The entry of [term] among the shown [terms]: [index] while it is still there, else where it moved; null when gone. */
@@ -142,6 +143,7 @@ class PopupNotes(
     private val cropAreaSettings: CropAreaRepository? = null,
     private val audioEditor: AudioEditorController? = null,
     private val recordingSettings: RecordingSettingsRepository? = null,
+    private val currentAudioContext: () -> AudioContextId? = { null },
     private val onAnkiOpened: () -> Unit,
     private val onNoteAdded: () -> Unit,
     private val onOpenAnkiSettings: () -> Unit,
@@ -198,8 +200,9 @@ class PopupNotes(
             })
             put("screenshotByDefault", JsonPrimitive(ankiSettings.screenshotByDefault))
             val recordingEnabled = recordingSettings?.cachedSettings?.recordingEnabled ?: false
+            val hasAudio = currentAudioContext() != null || recordingEnabled
             put("editorByDefault", JsonPrimitive(recordingSettings?.cachedSettings?.defaultEditor ?: false))
-            put("sentenceAudioEligible", JsonPrimitive(ankiReady && FieldTemplate.SENTENCE_AUDIO in notes.usedMarkers(language()) && recordingEnabled))
+            put("sentenceAudioEligible", JsonPrimitive(ankiReady && FieldTemplate.SENTENCE_AUDIO in notes.usedMarkers(language()) && hasAudio))
             put("sortFrequencyMode", JsonPrimitive(lookup.sortFrequencyMode(language()).orEmpty()))
         }
         page.setNoteConfig(config)
@@ -350,7 +353,7 @@ class PopupNotes(
         scope.launch {
             var image: NoteImage? = null
             var picture: Bitmap? = null
-            var sentenceAudioFile: File? = null
+            var sentenceAudio: SentenceAudioAttachment = SentenceAudioAttachment.None
             var term: Pair<String, String>? = null
             var opens: List<Long>? = null
             var screenshot: File? = null
@@ -427,31 +430,27 @@ class PopupNotes(
                 resolveGlossaryMedia(data.media, values, used, noteLanguage)
                 screenshot = picture?.let { saveScreenshot(it) }
                 if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
-                    if (notes.shouldSkipSentenceAudioForDuplicate(noteLanguage, values)) {
-                        toast(this@PopupNotes.context.getString(R.string.audio_editor_duplicate_keep_warning))
-                        sentenceAudioFile = null
-                    } else {
-                        when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second)) {
-                            is AudioEditorResult.Cancelled -> {
-                                showState(scan, index, noteTerm, "", null)
-                                return@launch
-                            }
-                            is AudioEditorResult.WithoutAudio -> {
-                                sentenceAudioFile = null
-                            }
-                            is AudioEditorResult.WithAudio -> {
-                                sentenceAudioFile = audioResult.file
-                            }
+                    val isDuplicateKeep = notes.shouldSkipSentenceAudioForDuplicate(noteLanguage, values)
+                    when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second, duplicateKeep = isDuplicateKeep)) {
+                        is AudioEditorResult.Cancelled -> {
+                            showState(scan, index, noteTerm, "", null)
+                            return@launch
+                        }
+                        is AudioEditorResult.WithoutAudio -> {
+                            sentenceAudio = SentenceAudioAttachment.Omitted
+                        }
+                        is AudioEditorResult.WithAudio -> {
+                            sentenceAudio = SentenceAudioAttachment.Attached(audioResult.file)
                         }
                     }
                 }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
-                val result = notes.add(noteLanguage, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudioFile), force)
+                val result = notes.add(noteLanguage, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudio), force)
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(
                     TAG,
                     "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, " +
-                        "sentenceAudio ${sentenceAudioFile != null}, translation ${FieldTemplate.SENTENCE_TRANSLATION in values}, forced $force",
+                        "sentenceAudio ${sentenceAudio is SentenceAudioAttachment.Attached}, translation ${FieldTemplate.SENTENCE_TRANSLATION in values}, forced $force",
                 )
                 val (resultState, ids) = report(scan, noteTerm, result)
                 opens = ids
@@ -466,7 +465,7 @@ class PopupNotes(
                 addingEntries -= index
                 // A cancelled note does not wait for its translation.
                 translated?.cancel()
-                sentenceAudioFile?.delete()
+                (sentenceAudio as? SentenceAudioAttachment.Attached)?.file?.delete()
                 image?.close()
                 picture?.recycle()
                 screenshot?.delete()

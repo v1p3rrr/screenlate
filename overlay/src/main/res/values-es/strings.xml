@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">El rango seleccionado está vacío. Ajusta la selección o los cortes.</string>
     <string name="audio_editor_export_failed">Error al exportar el audio. Inténtalo de nuevo o pulsa Sin audio.</string>
     <string name="audio_editor_duplicate_keep_warning">Se conservó el audio de frase existente según la política de actualización.</string>
+    <string name="audio_editor_quiet_warning">El audio grabado es muy bajo.</string>
+    <string name="audio_editor_active_scan_warning">Termina o cancela la edición de audio antes de escanear.</string>
+    <string name="audio_editor_duplicate_keep_title">Audio existente conservado</string>
+    <string name="audio_editor_duplicate_keep_body">Esta nota ya tiene audio de la frase, que se conservará según la configuración de actualización de campos.</string>
+    <string name="audio_editor_duplicate_keep_continue">Continuar sin audio</string>
+    <string name="audio_editor_duplicate_keep_change_settings">Cambiar configuración</string>
 </resources>

@@ -182,4 +182,10 @@
     <string name="audio_editor_empty_output">所选范围为空。请调整选区或裁剪。</string>
     <string name="audio_editor_export_failed">导出音频片段失败。请重试或点按“不带音频”。</string>
     <string name="audio_editor_duplicate_keep_warning">已根据更新策略保留现有的句子音频。</string>
+    <string name="audio_editor_quiet_warning">录制的音频音量极小。</string>
+    <string name="audio_editor_active_scan_warning">请在扫描前完成或取消音频编辑。</string>
+    <string name="audio_editor_duplicate_keep_title">保留现有音频</string>
+    <string name="audio_editor_duplicate_keep_body">此笔记已有例句音频，将根据字段更新设置予以保留。</string>
+    <string name="audio_editor_duplicate_keep_continue">不附带音频继续</string>
+    <string name="audio_editor_duplicate_keep_change_settings">更改设置</string>
 </resources>
