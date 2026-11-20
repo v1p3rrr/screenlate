@@ -453,6 +453,26 @@ class AnkiNotesTest {
     }
 
     @Test
+    fun `shouldSkipSentenceAudioForDuplicate returns true when all audio fields have keep mode with existing content`() = runBlocking {
+        anki.models[MODEL] = listOf("Word", "Meaning", "Sentence", "Picture", "SentenceAudio")
+        configure {
+            it.copy(
+                duplicateBehavior = DuplicateBehavior.OVERWRITE,
+                overwriteModes = mapOf("Meaning" to OverwriteMode.OVERWRITE, "SentenceAudio" to OverwriteMode.SKIP),
+                fields = it.fields + ("SentenceAudio" to "{sentence-audio}"),
+            )
+        }
+        anki.existing += ExistingNote(
+            id = 42L,
+            modelId = MODEL,
+            fields = listOf("猫", "old meaning", "", "", "[sound:existing.opus]"),
+            deckIds = setOf(DECK),
+        )
+        val shouldSkip = notes.shouldSkipSentenceAudioForDuplicate(Language.JAPANESE, mapOf("expression" to "猫"))
+        assertThat(shouldSkip).isTrue()
+    }
+
+    @Test
     fun `each language adds with its own settings`() = runBlocking {
         assertThat(notes.status(Language.ENGLISH)).isEqualTo(AnkiStatus.NotConfigured)
         configure()

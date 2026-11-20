@@ -14,11 +14,18 @@ const labels = {
     noResults: 'Nothing',
     addAnyway: 'Add anyway',
     addAnywayWithPicture: 'Add anyway, with a picture',
+    addAnywayWithAudio: 'Add anyway with audio',
+    addAnywayWithPictureAndAudio: 'Add anyway with picture and audio',
     addWithPicture: 'Add with picture',
     addWithoutPicture: 'Add without picture',
+    addWithAudio: 'Add with audio',
+    addWithPictureAndAudio: 'Add with picture and audio',
+    addWithoutAudio: 'Add without audio',
     updateNote: 'Update note',
     updateWithPicture: 'Update with picture',
     updateWithoutPicture: 'Update without picture',
+    updateWithAudio: 'Update with audio',
+    updateWithPictureAndAudio: 'Update with picture and audio',
     externalGoogleImages: 'Google Images',
     externalJpdb: 'JPDB',
     externalNadeshiko: 'Nadeshiko',
@@ -321,6 +328,29 @@ test('when screenshotByDefault is true, tap adds with picture and hold adds with
 
     // Clean up config
     Popup.setNoteConfig({ screenshotByDefault: false });
+});
+
+test('when sentenceAudioEligible is true, hold menu offers audio options', () => {
+    Popup.setActions({ anki: true, audio: false, ankiProblem: null });
+    Popup.setNoteConfig({ screenshotByDefault: false, sentenceAudioEligible: true });
+    Popup.render(state());
+    const [first] = content.querySelectorAll('.action-add');
+
+    hold(first);
+    const menu = page.document.querySelector('.menu');
+    assert.ok(menu);
+    const items = Array.from(menu.querySelectorAll('.menu-label')).map(item => item.textContent);
+    assert.deepEqual(items, ['Add with picture', 'Add with audio', 'Add without audio']);
+
+    menu.querySelectorAll('.menu-item')[1].click(); // Add with audio
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(page.calls.at(-1)[1], 0);
+    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
+    assert.equal(page.calls.at(-1)[4], false); // force = false
+    assert.equal(page.calls.at(-1)[5], true);  // withAudio = true
+
+    // Clean up config
+    Popup.setNoteConfig({ screenshotByDefault: false, sentenceAudioEligible: false });
 });
 
 test('a broken Anki setup shows a grey button with the reason', () => {

@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Trotzdem mit Bild und Audio hinzufügen</string>
     <string name="audio_editor_empty_output">Ausgewählter Bereich ist leer. Auswahl oder Zuschnitte anpassen.</string>
     <string name="audio_editor_export_failed">Audiodatei konnte nicht exportiert werden. Erneut versuchen oder „Ohne Audio“ wählen.</string>
+    <string name="audio_editor_duplicate_keep_warning">Bestehendes Satz-Audio wurde gemäß den Aktualisierungsregeln beibehalten.</string>
 </resources>

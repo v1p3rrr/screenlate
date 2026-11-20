@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">Intervalul selectat este gol. Ajustați selecția sau tăieturile.</string>
     <string name="audio_editor_export_failed">Exportul clipului audio a eșuat. Încercați din nou sau atingeți Fără audio.</string>
+    <string name="audio_editor_duplicate_keep_warning">Sunetul propoziției existent a fost păstrat conform politicii de actualizare.</string>
 </resources>

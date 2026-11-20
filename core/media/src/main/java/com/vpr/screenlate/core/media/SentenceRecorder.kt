@@ -209,8 +209,9 @@ class SentenceRecorder internal constructor(
         val coord = coordinator ?: return false
         val snapshot = runCatching { coord.snapshot(edit.selection) }.getOrNull() ?: return false
         return try {
-            snapshot.openStream().use { stream ->
-                AudioExporter.exportOpus(stream, edit, sampleRate, outputFile)
+            snapshot.openStream().use { rawStream ->
+                val editStream = AudioEditInputStream(rawStream, edit)
+                AudioExporter.exportOpus(editStream, edit, sampleRate, outputFile)
             }
             true
         } catch (e: Exception) {

@@ -28,6 +28,7 @@ import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.media.AudioContextId
 import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
@@ -196,6 +197,9 @@ class PopupNotes(
                 }
             })
             put("screenshotByDefault", JsonPrimitive(ankiSettings.screenshotByDefault))
+            val recordingEnabled = recordingSettings?.cachedSettings?.recordingEnabled ?: false
+            put("editorByDefault", JsonPrimitive(recordingSettings?.cachedSettings?.defaultEditor ?: false))
+            put("sentenceAudioEligible", JsonPrimitive(ankiReady && FieldTemplate.SENTENCE_AUDIO in notes.usedMarkers(language()) && recordingEnabled))
             put("sortFrequencyMode", JsonPrimitive(lookup.sortFrequencyMode(language()).orEmpty()))
         }
         page.setNoteConfig(config)
@@ -423,16 +427,21 @@ class PopupNotes(
                 resolveGlossaryMedia(data.media, values, used, noteLanguage)
                 screenshot = picture?.let { saveScreenshot(it) }
                 if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
-                    when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second)) {
-                        is AudioEditorResult.Cancelled -> {
-                            showState(scan, index, noteTerm, "", null)
-                            return@launch
-                        }
-                        is AudioEditorResult.WithoutAudio -> {
-                            sentenceAudioFile = null
-                        }
-                        is AudioEditorResult.WithAudio -> {
-                            sentenceAudioFile = audioResult.file
+                    if (notes.shouldSkipSentenceAudioForDuplicate(noteLanguage, values)) {
+                        toast(this@PopupNotes.context.getString(R.string.audio_editor_duplicate_keep_warning))
+                        sentenceAudioFile = null
+                    } else {
+                        when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second)) {
+                            is AudioEditorResult.Cancelled -> {
+                                showState(scan, index, noteTerm, "", null)
+                                return@launch
+                            }
+                            is AudioEditorResult.WithoutAudio -> {
+                                sentenceAudioFile = null
+                            }
+                            is AudioEditorResult.WithAudio -> {
+                                sentenceAudioFile = audioResult.file
+                            }
                         }
                     }
                 }
@@ -548,6 +557,10 @@ class PopupNotes(
         cropEditor?.cancel()
         onResultsHidden()
         page.noteActions = null
+    }
+
+    fun releaseAudioContext(id: AudioContextId) {
+        audioEditor?.releaseContext(id)
     }
 
     /**

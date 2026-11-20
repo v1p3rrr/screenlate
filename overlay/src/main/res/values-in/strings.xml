@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">Rentang yang dipilih kosong. Sesuaikan pilihan atau pemotongan.</string>
     <string name="audio_editor_export_failed">Gagal mengekspor klip audio. Coba lagi atau ketuk Tanpa audio.</string>
+    <string name="audio_editor_duplicate_keep_warning">Audio kalimat yang ada dipertahankan sesuai kebijakan pembaruan.</string>
 </resources>

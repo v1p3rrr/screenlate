@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">Vybraný rozsah je prázdný. Upravte výběr nebo výřezy.</string>
     <string name="audio_editor_export_failed">Export zvukového záznamu se nezdařil. Zkuste to znovu nebo klepněte na Bez zvuku.</string>
+    <string name="audio_editor_duplicate_keep_warning">Stávající zvuk věty byl zachován podle pravidel aktualizace.</string>
 </resources>

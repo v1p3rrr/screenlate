@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">所選範圍為空。請調整選取範圍或剪裁。</string>
     <string name="audio_editor_export_failed">匯出音訊片段失敗。請重試或輕點「不含音訊」。</string>
+    <string name="audio_editor_duplicate_keep_warning">已根據更新政策保留現有的句子音訊。</string>
 </resources>

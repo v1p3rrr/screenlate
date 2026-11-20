@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">منتخب کردہ حصہ خالی ہے۔ انتخاب یا کٹوتی کو ایڈجسٹ کریں۔</string>
     <string name="audio_editor_export_failed">آڈیو کلپ برآمد کرنے میں ناکامی۔ دوبارہ کوشش کریں یا بغیر آڈیو کے پر ٹیپ کریں۔</string>
+    <string name="audio_editor_duplicate_keep_warning">اپ ڈیٹ کی پالیسی کے مطابق موجودہ جملے کا آڈیو برقرار رکھا گیا۔</string>
 </resources>

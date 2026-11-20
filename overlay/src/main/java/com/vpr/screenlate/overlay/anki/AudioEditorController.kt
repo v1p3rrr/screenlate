@@ -54,6 +54,7 @@ class AudioEditorController(
 ) : LookupPage.AudioEditorActions {
 
     private val json = Json { ignoreUnknownKeys = true }
+    private val lastConfirmedEdits = mutableMapOf<AudioContextId, AudioEdit>()
     private var activeContextId: AudioContextId? = null
     private var activeContinuation: CancellableContinuation<AudioEditorResult>? = null
     private var currentEdit: AudioEdit? = null
@@ -87,11 +88,15 @@ class AudioEditorController(
         val remainingMillis = maxOf(0L, timelineView.retention.cutoffMillis - SystemClock.elapsedRealtime())
 
         val sampleRate = 48000
-        val initialEdit = sentenceRecorder.initialSelection(timelineView, sampleRate)
-            ?: AudioEdit(timelineView.source ?: AudioRange(0, totalFrames))
+        val sourceRange = timelineView.source ?: AudioRange(0, totalFrames)
+        val lastConfirmed = lastConfirmedEdits[audioContextId]
+        val initialEdit = if (lastConfirmed != null && sourceRange.intersect(lastConfirmed.selection) == lastConfirmed.selection) {
+            lastConfirmed
+        } else {
+            sentenceRecorder.initialSelection(timelineView, sampleRate) ?: AudioEdit(sourceRange)
+        }
         currentEdit = initialEdit
 
-        val sourceRange = timelineView.source ?: AudioRange(0, totalFrames)
         val summary = sentenceRecorder.waveformSummary(sourceRange, buckets = 200)
 
         val labels = buildJsonObject {
@@ -311,6 +316,7 @@ class AudioEditorController(
             val exported = sentenceRecorder.export(edit, tempFile)
             withContext(Dispatchers.Main) {
                 if (exported) {
+                    activeContextId?.let { lastConfirmedEdits[it] = edit }
                     finish(AudioEditorResult.WithAudio(tempFile))
                 } else {
                     tempFile.delete()
@@ -318,6 +324,10 @@ class AudioEditorController(
                 }
             }
         }
+    }
+
+    fun releaseContext(id: AudioContextId) {
+        lastConfirmedEdits.remove(id)
     }
 
     private fun finish(result: AudioEditorResult) {

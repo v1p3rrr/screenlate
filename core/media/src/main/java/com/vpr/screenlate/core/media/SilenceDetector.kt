@@ -49,21 +49,24 @@ internal object SilenceDetector {
         val cuts = mutableListOf<AudioRange>()
         var silenceStart: Long? = null
 
+        fun tryAddCut(start: Long, end: Long) {
+            val silenceDuration = end - start
+            if (silenceDuration >= minSilenceFrames) {
+                val cutStart = start + paddingFrames
+                val cutEnd = end - paddingFrames
+                if (cutEnd > cutStart) {
+                    cuts.add(AudioRange(range.start + cutStart, range.start + cutEnd))
+                }
+            }
+        }
+
         for (w in windows) {
             val isSilent = w.rms < threshold
             if (isSilent) {
                 if (silenceStart == null) silenceStart = w.startFrame
             } else {
                 if (silenceStart != null) {
-                    val silenceEnd = w.startFrame
-                    val silenceDuration = silenceEnd - silenceStart
-                    if (silenceDuration >= minSilenceFrames) {
-                        val cutStart = silenceStart + paddingFrames
-                        val cutEnd = silenceEnd - paddingFrames
-                        if (cutEnd > cutStart) {
-                            cuts.add(AudioRange(range.start + cutStart, range.start + cutEnd))
-                        }
-                    }
+                    tryAddCut(silenceStart, w.startFrame)
                     silenceStart = null
                 }
             }
@@ -71,15 +74,7 @@ internal object SilenceDetector {
 
         // Check trailing silence run through the end of the range
         if (silenceStart != null) {
-            val silenceEnd = range.frames
-            val silenceDuration = silenceEnd - silenceStart
-            if (silenceDuration >= minSilenceFrames) {
-                val cutStart = silenceStart + paddingFrames
-                val cutEnd = silenceEnd - paddingFrames
-                if (cutEnd > cutStart) {
-                    cuts.add(AudioRange(range.start + cutStart, range.start + cutEnd))
-                }
-            }
+            tryAddCut(silenceStart, range.frames)
         }
 
         return cuts

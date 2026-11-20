@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">Το επιλεγμένο εύρος είναι κενό. Προσαρμόστε την επιλογή ή τις περικοπές.</string>
     <string name="audio_editor_export_failed">Η εξαγωγή του κλιπ ήχου απέτυχε. Δοκιμάστε ξανά ή πατήστε Χωρίς ήχο.</string>
+    <string name="audio_editor_duplicate_keep_warning">Ο υπάρχων ήχος πρότασης διατηρήθηκε σύμφωνα με την πολιτική ενημέρωσης.</string>
 </resources>

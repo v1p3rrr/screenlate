@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">Виділений фрагмент порожній. Змініть межі або вирізи.</string>
     <string name="audio_editor_export_failed">Не вдалося експортувати аудіо. Спробуйте знову або виберіть «Без аудіо».</string>
+    <string name="audio_editor_duplicate_keep_warning">Наявне аудіо речення збережено згідно з правилами оновлення.</string>
 </resources>

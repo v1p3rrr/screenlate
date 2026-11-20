@@ -169,6 +169,32 @@ class AnkiNotes @Inject constructor(
         return listOf(target.id)
     }
 
+    /**
+     * Returns true if an existing duplicate note would be updated by [DuplicateBehavior.OVERWRITE] and
+     * all fields containing `{sentence-audio}` use [OverwriteMode.KEEP] with existing non-blank content.
+     */
+    suspend fun shouldSkipSentenceAudioForDuplicate(language: Language, values: Map<String, String>): Boolean {
+        val settings = settings(language)
+        if (!settings.configured || !settings.duplicateCheck || settings.duplicateBehavior != DuplicateBehavior.OVERWRITE) {
+            return false
+        }
+        val existing = duplicates(settings, values)
+        val target = resolveUpdateTarget(settings, existing) ?: return false
+        val modelId = settings.modelId ?: return false
+        val names = fieldNames(modelId)
+        val audioFieldIndices = names.mapIndexedNotNull { index, name ->
+            val template = settings.fields[name].orEmpty()
+            if (FieldTemplate.SENTENCE_AUDIO in FieldTemplate.markersIn(template)) index else null
+        }
+        if (audioFieldIndices.isEmpty()) return false
+        return audioFieldIndices.all { index ->
+            val name = names[index]
+            val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE
+            val existingValue = target.fields.getOrElse(index) { "" }
+            existingValue.isNotBlank() && (mode == OverwriteMode.SKIP || mode == OverwriteMode.COALESCE)
+        }
+    }
+
     /** Picks the existing note that [DuplicateBehavior.OVERWRITE] would update, or null if a new note would be added. */
     private suspend fun resolveUpdateTarget(settings: AnkiSettings, existing: List<ExistingNote>): ExistingNote? {
         val modelId = settings.modelId ?: return null

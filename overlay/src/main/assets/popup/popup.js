@@ -123,7 +123,7 @@ const Popup = (() => {
     let actions = { anki: false, audio: false };
     /** The drawn entries' language is written right to left (state.rightToLeft). */
     let rightToLeft = false;
-    let noteConfig = { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '' };
+    let noteConfig = { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '', editorByDefault: false, sentenceAudioEligible: false };
     let menu = null;
     let audioView = 0;
     let audioRequests = 0;
@@ -736,7 +736,7 @@ const Popup = (() => {
             add.addEventListener('pointerdown', () => {
                 pressedSelection = selectedText(true);
             });
-            const addNote = (withScreenshot, force) => {
+            const addNote = (withScreenshot, force, withAudio) => {
                 if (current && current.noteWait) {
                     ScreenlateBridge.onNoteWaiting();
                     return;
@@ -745,20 +745,32 @@ const Popup = (() => {
                 const selection = selectedText(true) || pressedSelection;
                 pressedSelection = '';
                 const data = NoteData.build(result, noteContext(selection), noteConfig.markers);
-                ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force);
+                if (typeof withAudio === 'boolean') {
+                    ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force, withAudio);
+                } else {
+                    ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force);
+                }
             };
             onTapOrHold(add, held => {
                 const state = add.dataset.state;
                 if (state === 'busy') return;
                 const screenshotByDefault = Boolean(noteConfig.screenshotByDefault);
+                const hasAudio = Boolean(noteConfig.sentenceAudioEligible);
                 if (state === 'added' || state === 'open') {
                     if (!held) {
                         ScreenlateBridge.onOpenNote(index);
                     } else {
-                        showMenu(add, [
+                        const items = [
                             { label: labelOf('addAnyway'), action: () => addNote(false, true) },
                             { label: labelOf('addAnywayWithPicture'), action: () => addNote(true, true) },
-                        ]);
+                        ];
+                        if (hasAudio) {
+                            items.push(
+                                { label: labelOf('addAnywayWithAudio'), action: () => addNote(false, true, true) },
+                                { label: labelOf('addAnywayWithPictureAndAudio'), action: () => addNote(true, true, true) },
+                            );
+                        }
+                        showMenu(add, items);
                     }
                     return;
                 }
@@ -766,12 +778,19 @@ const Popup = (() => {
                     if (!held) {
                         addNote(screenshotByDefault, false);
                     } else {
-                        showMenu(add, [
+                        const items = [
                             { label: labelOf('openInAnki'), action: () => ScreenlateBridge.onOpenNote(index) },
                             screenshotByDefault
                                 ? { label: labelOf('addWithoutPicture'), action: () => addNote(false, false) }
                                 : { label: labelOf('addWithPicture'), action: () => addNote(true, false) },
-                        ]);
+                        ];
+                        if (hasAudio) {
+                            items.push(
+                                { label: labelOf('addWithAudio'), action: () => addNote(screenshotByDefault, false, true) },
+                                { label: labelOf('addWithoutAudio'), action: () => addNote(screenshotByDefault, false, false) },
+                            );
+                        }
+                        showMenu(add, items);
                     }
                     return;
                 }
@@ -779,18 +798,48 @@ const Popup = (() => {
                     if (!held) {
                         addNote(screenshotByDefault, false);
                     } else {
-                        showMenu(add, [
+                        const items = [
                             { label: labelOf('openInAnki'), action: () => ScreenlateBridge.onOpenNote(index) },
                             screenshotByDefault
                                 ? { label: labelOf('updateWithoutPicture'), action: () => addNote(false, false) }
                                 : { label: labelOf('updateWithPicture'), action: () => addNote(true, false) },
+                        ];
+                        if (hasAudio) {
+                            items.push(
+                                { label: labelOf('updateWithAudio'), action: () => addNote(screenshotByDefault, false, true) },
+                                { label: labelOf('updateWithPictureAndAudio'), action: () => addNote(true, false, true) },
+                            );
+                        }
+                        items.push(
                             { label: labelOf('addAnyway'), action: () => addNote(false, true) },
                             { label: labelOf('addAnywayWithPicture'), action: () => addNote(true, true) },
-                        ]);
+                        );
+                        if (hasAudio) {
+                            items.push(
+                                { label: labelOf('addAnywayWithAudio'), action: () => addNote(false, true, true) },
+                                { label: labelOf('addAnywayWithPictureAndAudio'), action: () => addNote(true, true, true) },
+                            );
+                        }
+                        showMenu(add, items);
                     }
                     return;
                 }
-                addNote(screenshotByDefault ? !held : held, false);
+                if (!hasAudio) {
+                    addNote(screenshotByDefault ? !held : held, false);
+                    return;
+                }
+                if (!held) {
+                    addNote(screenshotByDefault, false);
+                } else {
+                    const items = [
+                        screenshotByDefault
+                            ? { label: labelOf('addWithoutPicture'), action: () => addNote(false, false) }
+                            : { label: labelOf('addWithPicture'), action: () => addNote(true, false) },
+                        { label: labelOf('addWithAudio'), action: () => addNote(screenshotByDefault, false, true) },
+                        { label: labelOf('addWithoutAudio'), action: () => addNote(screenshotByDefault, false, false) },
+                    ];
+                    showMenu(add, items);
+                }
             });
             container.append(add);
         }
@@ -1897,7 +1946,7 @@ const Popup = (() => {
      */
     function setNoteConfig(config) {
         const prevSort = (noteConfig && noteConfig.sortFrequencyMode) || '';
-        noteConfig = config || { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '' };
+        noteConfig = config || { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '', editorByDefault: false, sentenceAudioEligible: false };
         const nextSort = noteConfig.sortFrequencyMode || '';
         if (prevSort !== nextSort && current) {
             const states = captureNoteStates();

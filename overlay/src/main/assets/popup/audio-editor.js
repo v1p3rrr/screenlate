@@ -13,7 +13,7 @@
  * - Append-only Refresh preserving edits.
  * - Cancel with dirty confirmation.
  */
-const AudioEditor = (() => {
+var AudioEditor = (() => {
     const editor = document.getElementById('audio-editor');
     const pill = document.getElementById('sl-editor-pill');
     const dialogLayer = document.getElementById('sl-dialog-layer');

@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">নির্বাচিত অংশ খালি। নির্বাচন বা ছাঁটাই সামঞ্জস্য করুন।</string>
     <string name="audio_editor_export_failed">অডিও ক্লিপ রপ্তানি ব্যর্থ হয়েছে। আবার চেষ্টা করুন বা অডিও ছাড়া ট্যাপ করুন।</string>
+    <string name="audio_editor_duplicate_keep_warning">আপডেট নীতি অনুযায়ী বিদ্যমান বাক্য অডিও রাখা হয়েছে।</string>
 </resources>

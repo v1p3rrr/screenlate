@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">Seçilen aralık boş. Seçimi veya kesimleri ayarlayın.</string>
     <string name="audio_editor_export_failed">Ses klibi dışa aktarılamadı. Yeniden deneyin veya Sesi olmadan öğesine dokunun.</string>
+    <string name="audio_editor_duplicate_keep_warning">Mevcut cümle sesi güncelleme ilkesine göre korundu.</string>
 </resources>

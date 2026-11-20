@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">선택 영역이 비어 있습니다. 선택 범위나 잘라내기를 조정하세요.</string>
     <string name="audio_editor_export_failed">오디오를 내보내지 못했습니다. 다시 시도하거나 “오디오 없이”를 탭하세요.</string>
+    <string name="audio_editor_duplicate_keep_warning">업데이트 정책에 따라 기존 문장 오디오가 유지되었습니다.</string>
 </resources>

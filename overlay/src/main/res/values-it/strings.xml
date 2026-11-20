@@ -181,4 +181,5 @@
     <string name="overlay_add_anyway_picture_audio">Add anyway with picture and audio</string>
     <string name="audio_editor_empty_output">L’intervallo selezionato è vuoto. Regola la selezione o i tagli.</string>
     <string name="audio_editor_export_failed">Esportazione audio non riuscita. Riprova o tocca Senza audio.</string>
+    <string name="audio_editor_duplicate_keep_warning">L’audio della frase esistente è stato mantenuto in base ai criteri di aggiornamento.</string>
 </resources>
