@@ -1,5 +1,22 @@
 # Status
 
+## Sentence audio: Two-way settings recording control and Dev update build (2026-11-20)
+
+- Completed on branch `codex/sentence-audio-recording`:
+  - **Shared Runtime Recording Control:**
+    - Created `SentenceRecordingControl` bridge in `:overlay` connecting the UI/Settings layer to `OverlayController.startSentenceRecording()` and `stopSentenceRecording()`.
+    - `AudioSettingsViewModel` now observes `sentenceRecorder.recordingState` directly, exposing real-time `isRecording: StateFlow<Boolean>`.
+    - Toggling the recording switch in Audio Settings now initiates the actual Android `MediaProjection` consent flow via `ScreenlateAccessibilityService` and starts capture with the red dot indicator on the bubble, rather than merely writing a decoupled boolean to DataStore.
+    - If the Accessibility Service is stopped when toggling recording from Settings, the user is alerted with a localized warning toast (`R.string.home_bubble_stopped`).
+    - Added quick-navigation button from the `{sentence-audio}` missing-marker hint directly to Anki settings (`AnkiRoute`).
+  - **Verification:**
+    - Full project unit tests (`./gradlew testDebugUnitTest :build-logic:convention:test`) passed.
+    - Page tests (`npm --prefix scripts/page-tests test`): 211 tests passed.
+    - Translations test (`com.vpr.screenlate.TranslationsTest`) passed across all 27 locales.
+  - **Dev APK build (`11f7e14a`):**
+    - Minified ARM64 Dev APK: `testdata/local-research/builds/screenlate-dev-11f7e14a-min.apk` (25,289,416 bytes, SHA-256 `49EE24D28E8927E431AB27F28AB06E83204F1BB01D354C59658F8949CCF5A93A`), debug-signed with the standard Dev certificate (`3d48893b...`) allowing in-place update over existing install without data loss.
+    - R8 Mapping: `testdata/local-research/builds/screenlate-dev-11f7e14a-min.mapping.txt`.
+
 ## Sentence audio: Code review fixes, docs, and validation (2026-11-20)
 
 - Completed on branch `codex/sentence-audio-recording`:
