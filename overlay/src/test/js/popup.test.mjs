@@ -1448,6 +1448,51 @@ test('a tap asks for the translation, the answer fills the block and a second ta
     assert.equal(page.calls.filter(call => call[0] === 'onTranslate').length, 1);
 });
 
+function holdTranslate(button = page.document.getElementById('translate')) {
+    const setTimeout = page.window.setTimeout;
+    page.window.setTimeout = callback => {
+        callback();
+        return 0;
+    };
+    try {
+        tap(button);
+    } finally {
+        page.window.setTimeout = setTimeout;
+    }
+    const [method, request] = page.calls.at(-1);
+    assert.equal(method, 'onTranslationMenu');
+    return { request };
+}
+
+test('holding the translation button requests menu and selecting a service triggers translation', () => {
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels }));
+    const box = page.document.getElementById('translation');
+    const { request } = holdTranslate();
+    Popup.showTranslationMenu(request, [
+        { id: 'auto', label: 'Auto (cascade)' },
+        { id: 'bing', label: 'Bing' },
+        { id: 'google', label: 'Google' },
+    ]);
+    const items = page.document.querySelectorAll('.menu .menu-item');
+    assert.equal(items.length, 3);
+    assert.equal(items[1].textContent, 'Bing');
+
+    // Click Bing
+    items[1].click();
+    assert.equal(page.document.querySelector('.menu'), null);
+    const [method, newRequest, serviceId] = page.calls.at(-1);
+    assert.equal(method, 'onSelectTranslationService');
+    assert.equal(serviceId, 'bing');
+    assert.equal(box.hidden, false);
+    assert.equal(box.dataset.state, 'loading');
+
+    // Result arrives for new request
+    Popup.showTranslation(newRequest, { text: 'I like cats', service: 'Bing' });
+    assert.equal(box.dataset.state, 'done');
+    assert.equal(box.querySelector('.translation-service').textContent, 'Bing');
+});
+
 test('the copy button copies the sentence and the translation on two lines', () => {
     Popup.setTranslation({ enabled: true });
     Popup.render(state({ labels: { ...translateLabels, copyTranslation: 'Copy sentence and translation' } }));

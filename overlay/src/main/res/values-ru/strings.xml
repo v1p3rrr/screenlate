@@ -94,6 +94,8 @@
     <string name="overlay_compound">Составное слово: %1$s</string>
     <string name="translation_failed">Ошибка перевода предложения.</string>
     <string name="translation_failed_other">Ошибка перевода.</string>
+    <string name="translation_service_auto">Автоматически (каскад)</string>
+    <string name="translation_service_auto_detail">По очереди включённых сервисов</string>
     <string name="translation_none_enabled">Ни один сервис перевода не включён. Настройте сервисы в разделе «Перевод» настроек Screenlate.</string>
     <string name="translation_no_sentence">Нет предложения для перевода.</string>
     <string name="translation_service_error">%1$s: %2$s</string>

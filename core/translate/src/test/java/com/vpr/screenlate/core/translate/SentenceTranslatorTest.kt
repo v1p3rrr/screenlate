@@ -195,4 +195,11 @@ class SentenceTranslatorTest {
         val result = translator().translate("文", Language.JAPANESE)
         assertThat(result).isEqualTo(TranslationResult.Success("Google: 文", TranslationService.GOOGLE))
     }
+
+    @Test
+    fun `explicitService translates with the chosen service even if not first or disabled`() = runBlocking<Unit> {
+        val result = translator().translate("文", Language.JAPANESE, explicitService = TranslationService.GOOGLE)
+        assertThat(result).isEqualTo(TranslationResult.Success("Google: 文", TranslationService.GOOGLE))
+        assertThat(calls).containsExactly("GOOGLE ja>ru")
+    }
 }

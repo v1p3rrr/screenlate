@@ -71,10 +71,15 @@ class SentenceTranslator internal constructor(
     /** The language the settings list shows for "the interface language". */
     fun interfaceTarget(from: Language): TranslationLanguage = TranslationLanguages.defaultFor(interfaceLocale(), from)
 
-    suspend fun translate(text: String, from: Language): TranslationResult {
+    suspend fun translate(
+        text: String,
+        from: Language,
+        explicitService: TranslationService? = null,
+    ): TranslationResult {
         val current = settings.current()
         val target = target(current, from)
-        val key = Key(text, from, target.tag, current.enabledServices)
+        val services = if (explicitService != null) listOf(explicitService) else current.enabledServices
+        val key = Key(text, from, target.tag, services)
         val job = synchronized(this) {
             kept[key]?.takeIf { clock() - it.at < CACHE_MS }?.let { return it.result }
             running[key]?.takeIf { it.isActive } ?: scope.async {

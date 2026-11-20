@@ -128,6 +128,7 @@ const Popup = (() => {
     let audioView = 0;
     let audioRequests = 0;
     let pendingAudio = null;
+    let pendingTranslation = null;
     /** Whether the translation button shows. */
     let translationEnabled = false;
     /** The first view's translation: null, or { request, state: 'loading' | 'done' | 'error', text, service, error }. */
@@ -172,7 +173,10 @@ const Popup = (() => {
     ocrErrorButton.innerHTML = ICONS.warning;
     ocrErrorButton.addEventListener('click', showOcrError);
     translateButton.innerHTML = ICONS.translate;
-    translateButton.addEventListener('click', toggleTranslation);
+    onTapOrHold(translateButton, held => {
+        if (held) requestTranslationMenu(translateButton);
+        else toggleTranslation();
+    });
     backButton.addEventListener('click', back);
     content.addEventListener('click', onContentClick);
 
@@ -508,7 +512,10 @@ const Popup = (() => {
         }
         if (!inline) {
             inline = iconButton('translate', ICONS.translate, label);
-            inline.addEventListener('click', toggleTranslation);
+            onTapOrHold(inline, held => {
+                if (held) requestTranslationMenu(inline);
+                else toggleTranslation();
+            });
             actions.prepend(inline);
             orderInlineButtons(actions);
         }
@@ -856,10 +863,11 @@ const Popup = (() => {
         if (menu) menu.remove();
         menu = null;
         pendingAudio = null;
+        pendingTranslation = null;
     }
 
     document.addEventListener('pointerdown', event => {
-        if ((menu || pendingAudio) && (!menu || !menu.contains(event.target))) closeMenu();
+        if ((menu || pendingAudio || pendingTranslation) && (!menu || !menu.contains(event.target))) closeMenu();
     }, true);
 
     // region Selection
@@ -937,6 +945,30 @@ const Popup = (() => {
         else if (!rows.length) rows.push({ label: labelOf('audioNone'), disabled: true });
         showMenu(pending.button, rows);
         if (loading) pendingAudio = pending;
+    }
+
+    function requestTranslationMenu(button) {
+        if (!content.contains(button) && !header.contains(button)) return;
+        const request = ++translationRequests;
+        pendingTranslation = { request, button };
+        ScreenlateBridge.onTranslationMenu(request);
+    }
+
+    /** Shows the translation service options: [{ id, label, detail? }]. */
+    function showTranslationMenu(request, items) {
+        const pending = pendingTranslation;
+        if (!pending || pending.request !== request) return;
+        const rows = (items || []).map(item => ({
+            label: item.label,
+            detail: item.detail,
+            action: () => {
+                translationRequests += 1;
+                translation = { request: translationRequests, state: 'loading' };
+                drawTranslation(current);
+                ScreenlateBridge.onSelectTranslationService(translationRequests, item.id);
+            },
+        }));
+        showMenu(pending.button, rows);
     }
 
     // endregion
@@ -1943,6 +1975,7 @@ const Popup = (() => {
         allNoteData,
         terms,
         showAudioMenu,
+        showTranslationMenu,
         measureRender,
         extractTapQuery,
     };

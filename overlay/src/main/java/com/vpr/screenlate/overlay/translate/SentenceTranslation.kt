@@ -8,6 +8,7 @@ import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.translate.SentenceTranslator
 import com.vpr.screenlate.core.translate.TranslationError
 import com.vpr.screenlate.core.translate.TranslationResult
+import com.vpr.screenlate.core.translate.TranslationService
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.overlay.R
 import javax.inject.Inject
@@ -28,11 +29,11 @@ class SentenceTranslation @Inject constructor(
      * The translation for a note: the one the popup shows, or a new one. Null when notes get none (the switch is off)
      * or no service translated. The caller limits the wait ([NOTE_WAIT_MS]).
      */
-    suspend fun forNote(sentence: String, language: Language): String? = try {
+    suspend fun forNote(sentence: String, language: Language, explicitService: TranslationService? = null): String? = try {
         if (sentence.isBlank() || !settings.current().ankiField || appSettings.cachedOfflineMode == true) {
             null
         } else {
-            (translator.translate(sentence, language) as? TranslationResult.Success)?.text
+            (translator.translate(sentence, language, explicitService) as? TranslationResult.Success)?.text
         }
     } catch (e: CancellationException) {
         throw e
@@ -43,11 +44,16 @@ class SentenceTranslation @Inject constructor(
     }
 
     /** What the popup's block shows for [sentence]: `{text, service, sentence}` (the sentence for copying) or `{error}`. */
-    suspend fun forPopup(context: Context, sentence: String?, language: Language): JsonObject = try {
+    suspend fun forPopup(
+        context: Context,
+        sentence: String?,
+        language: Language,
+        explicitService: TranslationService? = null,
+    ): JsonObject = try {
         if (sentence.isNullOrBlank()) {
             errorAnswer(context.getString(R.string.translation_no_sentence))
         } else {
-            when (val result = translator.translate(sentence, language)) {
+            when (val result = translator.translate(sentence, language, explicitService)) {
                 is TranslationResult.Success -> buildJsonObject {
                     put("text", result.text)
                     put("service", result.service.label)

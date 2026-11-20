@@ -28,6 +28,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.coroutines.resume
 import com.vpr.screenlate.core.common.redacted
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * The lookup results page (`assets/popup/popup.html`) in a WebView, shared by the overlay popup and the search
@@ -72,6 +74,12 @@ class LookupPage(
 
         /** The translation button asks to translate the shown word's sentence; the answer goes to [showTranslation] with [request]. */
         fun onTranslate(request: Int) {}
+
+        /** The translation button was held: the page waits for [showTranslationMenu] with this request number. */
+        fun onTranslationMenu(request: Int) {}
+
+        /** A service was chosen from the translation menu. */
+        fun onSelectTranslationService(request: Int, serviceId: String) {}
 
         /** A dictionary header was tapped to collapse or expand its definitions. */
         fun onToggleDictionary(dictionary: String, collapsed: Boolean) {}
@@ -204,6 +212,22 @@ class LookupPage(
 
     /** The answer to [Callbacks.onTranslate]: `{text, service, sentence}` or `{error}`. */
     fun showTranslation(request: Int, result: JsonElement) = run("Popup.showTranslation($request, $result)")
+
+    /** Items for the translation menu shown when holding the translation button. */
+    data class TranslationMenuItem(val id: String, val label: String, val detail: String? = null)
+
+    /** Fills the menu opened by holding the translation button; [items] is a list of services. */
+    fun showTranslationMenu(request: Int, items: List<TranslationMenuItem>) {
+        val array = JSONArray()
+        for (item in items) {
+            array.put(JSONObject().apply {
+                put("id", item.id)
+                put("label", item.label)
+                if (item.detail != null) put("detail", item.detail)
+            })
+        }
+        run("Popup.showTranslationMenu($request, $array)")
+    }
 
     /** Markers used by the note fields and frequency dictionary modes (see `Popup.setNoteConfig`). */
     fun setNoteConfig(config: JsonElement) = setPersistent("noteConfig", "Popup.setNoteConfig($config)")
@@ -421,6 +445,13 @@ class LookupPage(
 
         @JavascriptInterface
         fun onTranslate(request: Int) = post { callbacks.onTranslate(request) }
+
+        @JavascriptInterface
+        fun onTranslationMenu(request: Int) = post { callbacks.onTranslationMenu(request) }
+
+        @JavascriptInterface
+        fun onSelectTranslationService(request: Int, serviceId: String) =
+            post { callbacks.onSelectTranslationService(request, serviceId) }
 
         @JavascriptInterface
         fun onCopy(text: String) = post { callbacks.onCopy(text) }

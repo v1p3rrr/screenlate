@@ -118,6 +118,7 @@ import java.net.SocketTimeoutException
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.roundToInt
+import com.vpr.screenlate.core.translate.TranslationService
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -140,6 +141,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -1961,7 +1964,48 @@ class OverlayController(
 
         override fun onTranslate(request: Int) {
             val sentence = shownSentence()?.text
-            scope.launch { popup.page.showTranslation(request, translation.forPopup(service, sentence, language)) }
+            scope.launch {
+                val serviceChoice = popupNotes.chosenTranslationService
+                val result = translation.forPopup(service, sentence, language, serviceChoice)
+                val text = (result["text"] as? JsonPrimitive)?.contentOrNull
+                if (text != null && sentence != null) {
+                    popupNotes.setChosenTranslation(sentence, text)
+                }
+                popup.page.showTranslation(request, result)
+            }
+        }
+
+        override fun onTranslationMenu(request: Int) {
+            val items = listOf(
+                LookupPage.TranslationMenuItem(
+                    "auto",
+                    service.getString(R.string.translation_service_auto),
+                    service.getString(R.string.translation_service_auto_detail),
+                ),
+                LookupPage.TranslationMenuItem("bing", TranslationService.BING.label, "Bing Translator"),
+                LookupPage.TranslationMenuItem("google", TranslationService.GOOGLE.label, "Google Translate"),
+                LookupPage.TranslationMenuItem("edge", TranslationService.EDGE.label, "Edge Translator"),
+            )
+            popup.page.showTranslationMenu(request, items)
+        }
+
+        override fun onSelectTranslationService(request: Int, serviceId: String) {
+            val serviceChoice = when (serviceId.lowercase()) {
+                "bing" -> TranslationService.BING
+                "google" -> TranslationService.GOOGLE
+                "edge" -> TranslationService.EDGE
+                else -> null
+            }
+            popupNotes.chosenTranslationService = serviceChoice
+            val sentence = shownSentence()?.text
+            scope.launch {
+                val result = translation.forPopup(service, sentence, language, serviceChoice)
+                val text = (result["text"] as? JsonPrimitive)?.contentOrNull
+                if (text != null && sentence != null) {
+                    popupNotes.setChosenTranslation(sentence, text)
+                }
+                popup.page.showTranslation(request, result)
+            }
         }
 
         override fun onToggleDictionary(dictionary: String, collapsed: Boolean) {

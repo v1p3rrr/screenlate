@@ -98,6 +98,8 @@
     <string name="overlay_compound">Compound: %1$s</string>
     <string name="translation_failed">Sentence translation failed.</string>
     <string name="translation_failed_other">Translation failed.</string>
+    <string name="translation_service_auto">Auto (cascade)</string>
+    <string name="translation_service_auto_detail">Uses enabled services in order</string>
     <string name="translation_none_enabled">No translation service is enabled. Configure services under Translation in Screenlate settings.</string>
     <string name="translation_no_sentence">No sentence to translate.</string>
     <string name="translation_service_error">%1$s: %2$s</string>

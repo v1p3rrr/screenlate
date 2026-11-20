@@ -27,6 +27,7 @@ import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.translate.TranslationService
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
@@ -39,6 +40,7 @@ import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.web.LookupPage
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Deferred
@@ -165,6 +167,14 @@ class PopupNotes(
     /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
 
+    /** The translation service manually chosen for this popup session. */
+    var chosenTranslationService: TranslationService? = null
+    private val chosenTranslations = mutableMapOf<String, String>()
+
+    fun setChosenTranslation(sentence: String, translation: String) {
+        chosenTranslations[sentence] = translation
+    }
+
     init {
         page.noteActions = this
     }
@@ -241,6 +251,8 @@ class PopupNotes(
         audioMenu.clear()
         audioPlayback.onResultsHidden()
         pendingAutoPlay = null
+        chosenTranslations.clear()
+        chosenTranslationService = null
     }
 
     /** The finger was lifted: a pending auto-play starts without waiting. */
@@ -271,6 +283,8 @@ class PopupNotes(
         scanNotes.close()
         openableNotes.clear()
         chosenClips.clear()
+        chosenTranslations.clear()
+        chosenTranslationService = null
     }
 
     /** Words added during this scan get 📖; duplicates get 📖 or a mark, depending on the duplicate behavior. */
@@ -355,7 +369,12 @@ class PopupNotes(
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
-                    translated = async { translation.forNote(sentence, noteLanguage) }
+                    val cached = chosenTranslations[sentence]
+                    translated = if (cached != null) {
+                        CompletableDeferred(cached)
+                    } else {
+                        async { translation.forNote(sentence, noteLanguage, chosenTranslationService) }
+                    }
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
                 if (context.image != null && cropEditor != null) {
