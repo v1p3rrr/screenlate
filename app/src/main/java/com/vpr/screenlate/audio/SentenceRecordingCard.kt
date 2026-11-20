@@ -1,6 +1,7 @@
 package com.vpr.screenlate.audio
 
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,7 +40,7 @@ import com.vpr.screenlate.ui.components.TooltipIconButton
  * On earlier Android versions, displays an explanation that the feature requires Android 10+.
  */
 @Composable
-fun SentenceRecordingCard(viewModel: AudioSettingsViewModel) {
+fun SentenceRecordingCard(viewModel: AudioSettingsViewModel, onOpenAnkiSettings: (() -> Unit)? = null) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
         SectionCard(title = stringResource(R.string.sentence_recording_card_title)) {
             Hint(stringResource(R.string.sentence_recording_unsupported_hint))
@@ -46,6 +48,8 @@ fun SentenceRecordingCard(viewModel: AudioSettingsViewModel) {
         return
     }
 
+    val context = LocalContext.current
+    val isRecording by viewModel.isRecording.collectAsStateWithLifecycle()
     val recordingSettings by viewModel.recordingSettingsState.collectAsStateWithLifecycle()
     val hasSentenceAudioMarker by viewModel.hasSentenceAudioMarker.collectAsStateWithLifecycle()
     var showSilenceDialog by remember { mutableStateOf(false) }
@@ -53,8 +57,12 @@ fun SentenceRecordingCard(viewModel: AudioSettingsViewModel) {
     SectionCard(title = stringResource(R.string.sentence_recording_card_title)) {
         SwitchRow(
             label = stringResource(R.string.sentence_recording_toggle),
-            checked = recordingSettings.recordingEnabled,
-            onChange = viewModel::setRecordingEnabled,
+            checked = isRecording,
+            onChange = { enabled ->
+                if (!viewModel.setRecordingEnabled(enabled) && enabled) {
+                    Toast.makeText(context, R.string.home_bubble_stopped, Toast.LENGTH_SHORT).show()
+                }
+            },
             hint = stringResource(R.string.sentence_recording_toggle_hint),
             info = stringResource(R.string.sentence_recording_info_body),
         )
@@ -71,6 +79,14 @@ fun SentenceRecordingCard(viewModel: AudioSettingsViewModel) {
                 text = stringResource(R.string.sentence_recording_missing_marker_hint),
                 modifier = Modifier.padding(vertical = 4.dp),
             )
+            if (onOpenAnkiSettings != null) {
+                TextButton(
+                    onClick = onOpenAnkiSettings,
+                    modifier = Modifier.align(Alignment.End),
+                ) {
+                    Text(stringResource(R.string.anki_title))
+                }
+            }
         }
 
         Text(

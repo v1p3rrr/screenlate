@@ -24,7 +24,11 @@ import com.vpr.screenlate.ui.components.formContent
 
 /** Auto play, volume, and the shown language's audio sources and regions, with their test. */
 @Composable
-fun AudioSettingsScreen(onBack: () -> Unit, viewModel: AudioSettingsViewModel = hiltViewModel()) {
+fun AudioSettingsScreen(
+    onBack: () -> Unit,
+    onOpenAnkiSettings: (() -> Unit)? = null,
+    viewModel: AudioSettingsViewModel = hiltViewModel(),
+) {
     val profiles by viewModel.shown.profiles.collectAsStateWithLifecycle()
     val shown by viewModel.shown.language.collectAsStateWithLifecycle()
     val offline by viewModel.offlineMode.collectAsStateWithLifecycle()
@@ -52,7 +56,7 @@ fun AudioSettingsScreen(onBack: () -> Unit, viewModel: AudioSettingsViewModel = 
                     viewModel.show(language)
                 }, hint = stringResource(R.string.audio_languages_hint))
             }
-            SentenceRecordingCard(viewModel)
+            SentenceRecordingCard(viewModel, onOpenAnkiSettings)
             AudioSettingsCards(shown, viewModel)
         }
     }

@@ -364,7 +364,7 @@ fun ScreenlateNavHost(
                 CameraSettingsScreen(onBack = back, onOpenEngines = { go(RecognitionRoute()) })
             }
             composable<AnkiRoute> { AnkiSettingsScreen(onBack = back) }
-            composable<AudioRoute> { AudioSettingsScreen(onBack = back) }
+            composable<AudioRoute> { AudioSettingsScreen(onBack = back, onOpenAnkiSettings = { go(AnkiRoute()) }) }
             composable<DictionariesRoute> {
                 DictionariesScreen(
                     onBack = back,

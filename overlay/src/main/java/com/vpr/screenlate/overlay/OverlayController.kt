@@ -379,6 +379,8 @@ class OverlayController(
         popup.hideOnOutsideTap = initialOverlay.hideOnOutsideTap
         anki.player.isCaptureActive = { sentenceRecorder?.isRecording == true }
         MediaProjectionService.stopRecordingAction = ::stopSentenceRecording
+        SentenceRecordingControl.startRecordingAction = ::startSentenceRecording
+        SentenceRecordingControl.stopRecordingAction = ::stopSentenceRecording
         MediaProjectionHolder.onSystemStopped = {
             if (sentenceRecorder?.isRecording == true) stopSentenceRecording()
         }
@@ -440,6 +442,8 @@ class OverlayController(
 
     fun stop() {
         MediaProjectionService.stopRecordingAction = null
+        SentenceRecordingControl.startRecordingAction = null
+        SentenceRecordingControl.stopRecordingAction = null
         MediaProjectionHolder.onSystemStopped = null
         scanJob?.cancel()
         lookupJob?.cancel()

@@ -22,10 +22,13 @@ import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.media.RecordingLimits
 import com.vpr.screenlate.core.media.RecordingSettings
 import com.vpr.screenlate.core.media.RecordingSettingsRepository
+import com.vpr.screenlate.core.media.SentenceRecorder
+import com.vpr.screenlate.core.media.SentenceRecordingState
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.languages.ShownLanguage
+import com.vpr.screenlate.overlay.SentenceRecordingControl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,6 +38,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -72,6 +76,7 @@ class AudioSettingsViewModel @Inject constructor(
     private val appSettings: AppSettingsRepository,
     private val recordingSettings: RecordingSettingsRepository,
     private val ankiSettings: AnkiSettingsRepository,
+    private val sentenceRecorder: SentenceRecorder,
     dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
     savedState: SavedStateHandle,
@@ -88,11 +93,19 @@ class AudioSettingsViewModel @Inject constructor(
     val recordingSettingsState: StateFlow<RecordingSettings> = recordingSettings.settings
         .stateIn(viewModelScope, SharingStarted.Eagerly, recordingSettings.cachedSettings)
 
+    val isRecording: StateFlow<Boolean> = sentenceRecorder.recordingState
+        .map { it is SentenceRecordingState.Recording }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, sentenceRecorder.isRecording)
+
     val hasSentenceAudioMarker: StateFlow<Boolean> = ankiSettings.hasMarker(FieldTemplate.SENTENCE_AUDIO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    fun setRecordingEnabled(enabled: Boolean) {
-        viewModelScope.launch { recordingSettings.setRecordingEnabled(enabled) }
+    fun setRecordingEnabled(enabled: Boolean): Boolean {
+        return if (enabled) {
+            SentenceRecordingControl.startRecording()
+        } else {
+            SentenceRecordingControl.stopRecording()
+        }
     }
 
     fun setDefaultAudioEditor(enabled: Boolean) {
