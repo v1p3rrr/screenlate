@@ -15,6 +15,29 @@
 - Validation: parsed all 19,333 log lines, checked Git snapshots and R8 map IDs/line ranges, checked local Markdown links
   and `git diff --check`. Unrelated in-progress sentence-audio/overlay changes stay outside this documentation commit.
 
+## Sentence audio: Stop time race fix, window sizing and drag handle (`ea86ccb3`) (2026-11-20)
+
+- Completed on branch `codex/sentence-audio-recording`:
+  - **Stop Time Race Fix (`IllegalArgumentException: Elapsed time must not move backwards`):**
+    - Fixed race in `PcmStorageCoordinator.stop()`: stop timestamp was captured before stopping audio source and draining writer thread; while writer drained queued blocks, it advanced `ContextRetention` with later timestamps, after which applying the stale stop timestamp caused `require(nowMillis >= lastMillis)` to throw.
+    - Updated `PcmStorageCoordinator.stop()` to coordinate the final stop timestamp after the writer finishes draining (`maxOf(stopMillis ?: nowMillis(), nowMillis())`), retaining the entire accepted audio prefix and maintaining retention rules.
+    - Added monotonicity guards in `ScanAudioTimeline.stop()` (`effectiveMillis = maxOf(nowMillis, lastSeenMillis)`) and `ContextRetention.stop()` (`effectiveMillis = maxOf(nowMillis, lastMillis)`).
+    - Simplified `SentenceRecorder.stop()` to invoke `coord.stop()` without passing pre-drain timestamps.
+    - Added unit test `stopCoordinatesWithWriterDrainWhenWriterAdvancesTime` in `PcmStorageCoordinatorTest`, reproducing the exact race and verifying clean shutdown and prefix retention.
+    - Added boundary regression tests in `ContextRetentionTest` and `ScanAudioTimelineTest`.
+  - **Overlay Editor Sizing and Window Dragging:**
+    - Fixed audio editor window sizing in `PopupPlacement.audioEditorSize()`: allocates comfortable 65% screen height in portrait (88% when expanded) and 90%/95% in landscape, replacing cramped 35% dictionary popup height.
+    - Added draggable window header with visual drag handle (`.sl-drag-handle`) and pointer capture in `audio-editor.js`, wired via `LookupPage.onDragWindow(dx, dy)` and `AudioEditorController.onAudioDragWindow` to `PopupController.dragBy(dx, dy)` bounded within screen margins.
+    - Hid dictionary header (`.header[hidden] { display: none !important; }`) when audio editor opens, regaining ~40px of vertical space.
+    - Hid floating bubble (`bubbleView.visibility = View.GONE` with `FLAG_NOT_TOUCHABLE`) while audio editor is active to prevent touch interception and accidental popup dismissals when nudging or dragging.
+    - Fixed timeline display relative to actual retained bounds `[sourceStart, sourceEnd]` rather than raw session duration.
+  - **Verification:**
+    - Full project unit tests (`./gradlew testDebugUnitTest :build-logic:convention:test`) passed.
+    - Page tests (`npm --prefix scripts/page-tests test`): all 212 tests passed.
+  - **Dev APK build (`ea86ccb3`):**
+    - Minified ARM64 Dev APK: `testdata/local-research/builds/screenlate-dev-ea86ccb3-min.apk` (25,291,428 bytes, SHA-256 `D830D5C7703EEAE9A1E0A3252042342B3C7BA48A8A7BB06C3A723B426BD99CB2`), debug-signed with standard certificate (`3d48893b...`) for seamless in-place update.
+    - R8 Mapping: `testdata/local-research/builds/screenlate-dev-ea86ccb3-min.mapping.txt`.
+
 ## Sentence audio: Two-way settings recording control and Dev update build (2026-11-20)
 
 - Completed on branch `codex/sentence-audio-recording`:
