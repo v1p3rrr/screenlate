@@ -47,6 +47,8 @@
 
 - 2026-11-21: Owner requested practical cleanup exclusions and confirmation of onset. Reopening the activity periodically is explicitly not an acceptable operating requirement. Primary-source check found no verified consumer per-app inactive-clean exemption beyond already configured controls; HONOR MDM persistent-app API needs enterprise/vendor authorization. Global component disabling is only an unapproved, device-specific experiment. No device settings changed.
 
+- 2026-11-21: Owner requested a closer code check of the first affected build. The exact installed range is c129a5e7..41155f1d; unconditional attachment of the new outside-tap window is a concrete candidate, not a proven OEM trigger. Audited conditional screen-off closure and editor-scoped crop synchronization. No runtime changes or revised experiment decisions. [Source audit](../notes/oem-background-limits.md#first-affected-build-source-audit-2026-11-21).
+
 ## Audio crash handoff
 
 The owner's log records a main-process CRASH at 2026-11-20 11:22:36.056, PID 27795. The Java exception is

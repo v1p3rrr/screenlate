@@ -1,5 +1,16 @@
 # Status
 
+## First affected build code audit (2026-11-21)
+
+- Rechecked the owner's exact installed transition: c129a5e7 (November 17 20:55) to 41155f1d (23:41), before the
+  first PowerGenie exit at November 18 02:01. [Source audit](notes/oem-background-limits.md#first-affected-build-source-audit-2026-11-21).
+- The added outside-tap window is the strongest code candidate: attached even with its setting off, retained hidden
+  on popup close. Related screen-off handling is conditional and closes only the popup, not either service.
+- Crop preference synchronization is editor-scoped; no added periodic idle work or direct service-policy change was
+  found. Neither static inspection nor chronology proves what the private OEM selector uses.
+- No runtime changes or new tests/builds. Any no-catcher experiment remains subject to the logs-only decision and
+  the owner's choice about temporary outside-tap dismissal loss; preserve models, WebView and warm responsiveness.
+
 ## PowerGenie exclusion feasibility and onset confirmation (2026-11-21)
 
 - Owner requires persistent operation without hourly activity reopening and without sacrificing functionality or warm

@@ -631,6 +631,45 @@ after the stop; turning the service on removes it within 0.6 s.
 | ColorOS allowlist step | Background work on ColorOS points to the security app's allowlist (and a hint that sideloaded apps are restricted), if the user's test shows the allowlist helps | Small to medium; strings in 14 languages; the user's result (2026-10-28): the allowlist helps |
 | Request the accessibility button | The system shortcut would do something in Screenlate (open or scan) instead of turning the service off | Small to medium; a behavior choice for the owner; no help against a force-stop |
 
+## First affected build source audit (2026-11-21)
+
+The owner asked whether the commits delivered with the first affected build could themselves provoke cleanup.
+The exported process-start records identify the immediate installed predecessor as `c129a5e7` (November 17
+20:55:34.152), followed by `41155f1d` (23:41:09.535). The older `773efde3` comparison remains useful, but
+`c129a5e7..41155f1d` is the narrower installed-build range. The predecessor ran for only about 2 h 46 min before
+replacement; this alone does not prove it would survive the same overnight workload.
+
+- **Primary code candidate: outside-tap window attachment.** `2d167b68` (22:52) adds a separate
+  `TYPE_ACCESSIBILITY_OVERLAY` view under the popup. `PopupController.attach()` adds it unconditionally, including
+  when `hideOnOutsideTap=false`. On normal hide it remains attached, `GONE`, 1x1, not touchable and not focusable;
+  only `detach()` removes it. This is a concrete change to the windows registered with the system, not evidence of
+  an active full-screen window at night. Whether the private OEM selector uses this difference is unknown.
+- **Related conditional behavior: screen-off dismissal.** `aadf0e64` (23:03) adds the screen-off receiver and
+  `e1373f64` (23:15) guards a screen-off/draw race with `PowerManager.isInteractive`. In the shipped result the
+  receiver exists only while the popup is visible and outside-tap dismissal is enabled. Its callback follows
+  `dismissFromOutside -> hide + onClose -> dismissPopup -> closePopup`; it does not dock the bubble, stop the
+  foreground service or disable accessibility. It is a separate possible trigger when that condition holds, but
+  the two monitored overnight exits had already docked/closed their scans long before the final screen-off.
+- **Lower-priority candidate: crop memory.** The same series adds settings reads/writes and `ToggleSync` while the
+  screenshot crop editor is open. Session close and the coroutine's `finally` stop the settings observer; an
+  accepted in-flight preference write is allowed to finish. No periodic idle task is introduced. A stalled write
+  cannot be excluded by static inspection, but no source path here explains a regular screen-off force-stop after
+  an hour, and the overnight main-process resource samples do not show a busy loop.
+- Aim-dot changes update paint colors on settings changes. Earlier commits in this range change definition-copy
+  formatting, duplicate handling and popup/settings layout. No added idle timer or keep-alive shutdown was found
+  in these changes. `41155f1d` itself audits strings and their references; it is not the commit that adds the window.
+- `BubbleKeepAliveService`, app/overlay manifests and accessibility-service XML are unchanged across the installed
+  builds. The accessibility-service Kotlin delta only supplies the crop settings repository. This excludes a
+  direct source change to those service policies, not indirect OEM responses to the new windows.
+
+Conclusion: do not claim there were no relevant code changes or that firmware alone caused the onset. Window
+attachment is the strongest source-level candidate in the narrow range, without proof of causation. A matched
+build that omits only the new catcher window/receiver would test the feature as a bundle; turning the existing
+setting off tests active handling but leaves the new hidden window. Any temporary loss of outside-tap dismissal
+needs the owner's choice under the existing logs-only decision. OCR models, WebView lifetime, lookup results and
+warm performance need not change for such an experiment. No application changes or device tests were made in
+this audit; reproducing the proprietary cleanup still requires the affected phone.
+
 ## PowerGenie exclusion options source check (2026-11-21)
 
 Scope: options for excluding an app from OEM `PowerGenie inactive clean` after the ordinary battery exemption,
