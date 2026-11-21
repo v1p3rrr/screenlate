@@ -7,6 +7,13 @@ owner and suspending facade with permanent regressions; B's software lifetime wo
 verified. Continue C's operation/revision protocol; physical gates remain. The checkpoint below is historical. Branch, privacy, safe test
 environment and weekly-limit instructions remain applicable. No product decision was changed.
 
+Latest editor checkpoint (2026-11-22): old shared editor continuation and primitive bridge are removed.
+AudioEditorOperation and PendingNoteController are connected to the actual pipeline, with current-edit
+commands, source revisions, one export, visible encode retry, target snapshot at native Add and confirmed-
+note-only selection reuse. Read the new engineering section and repair plan's resume paragraph. C remains
+partial: pre-chooser snapshot/Ready/rotation/crop/language/Back/new-scan arbitration are next; do not restore
+the old globals or interpret passing unit/codec fixtures as complete overlay acceptance.
+
 Previous core checkpoint (`341bd599`): 84 core tests (11 new), 212 page tests and isolated API30 Main-thread synthetic
 session test pass. Full project checks passed; the last retired-session no-op fix has focused core/overlay
 unit, core lint and test-APK checks. No actual playback/capture/Anki was exercised in this repair milestone.

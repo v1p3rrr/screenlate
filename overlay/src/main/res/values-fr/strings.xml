@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">Continuer sans audio</string>
     <string name="audio_editor_duplicate_keep_change_settings">Modifier les paramètres</string>
     <string name="audio_editor_preview_failed">Impossible de lire l’enregistrement. Réessayez.</string>
+    <string name="anki_operation_settings_changed">Les paramètres Anki ont changé. L’ajout de la carte a été annulé.</string>
 </resources>

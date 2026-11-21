@@ -23,6 +23,10 @@ var AudioEditor = (() => {
 
     const state = {
         isOpen: false,
+        operation: null,
+        sequence: 0,
+        sourceRevision: 0,
+        phase: "editing",
         sampleRate: 48000,
         scanFrame: 0,
         totalFrames: 0,
@@ -52,8 +56,50 @@ var AudioEditor = (() => {
     let initialBaseline = null;
     let restoreFocus = null;
     let silenceRequestCount = 0;
+    let lastSentEdit = null;
 
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+    function send(action, payload = {}) {
+        if (!state.isOpen || (!window.ScreenlateBridge || !window.ScreenlateBridge.onAudioEditorCommand)) return;
+        if (state.phase === 'exporting' && !['cancel', 'without', 'expand', 'collapse', 'drag'].includes(action)) return;
+        ScreenlateBridge.onAudioEditorCommand(JSON.stringify({
+            operation: state.operation, sequence: ++state.sequence, sourceRevision: state.sourceRevision,
+            action, selection: [Math.round(state.a), Math.round(state.b)],
+            exclusions: normalizedCuts().map(c => c.map(Math.round)),
+            cursor: Math.round(state.cursor), mode: state.mode, ...payload,
+        }));
+    }
+
+    function receive(data) {
+        if (!state.isOpen || data.operation !== state.operation) return;
+        if (data.closed) { close(); return; }
+        if (data.sequence !== undefined && data.sequence < state.sequence) return;
+        if (data.phase !== undefined) state.phase = data.phase;
+        if (data.timeline) {
+            if (data.timeline.sourceRevision < state.sourceRevision) return;
+            state.sourceRevision = data.timeline.sourceRevision;
+            updateTimeline(data.timeline);
+        }
+        if (data.cursor !== undefined) updateCursor(data.cursor);
+        if (data.playing !== undefined) setPlaying(data.playing);
+        if (data.proposals !== undefined) setSilenceProposals(data.request, data.proposals);
+        if (data.error) {
+            const toast = document.querySelector('.sl-toast');
+            if (toast) { toast.textContent = data.error; toast.hidden = false; }
+        }
+        updateBusy();
+    }
+
+    function updateBusy() {
+        const busy = state.phase === 'exporting';
+        for (const id of ['sl-action-add', 'sl-action-play', 'sl-action-refresh', 'sl-action-cut',
+            'sl-action-silence', 'sl-action-undo', 'sl-action-accept-silence']) {
+            const el = document.getElementById(id);
+            if (el) el.disabled = busy;
+        }
+        if (editor) editor.setAttribute('aria-busy', String(busy));
+    }
 
     function formatTime(seconds) {
         const total = Math.max(0, Math.round(seconds));
@@ -79,12 +125,12 @@ var AudioEditor = (() => {
             state.dirty = false;
             return;
         }
-        const aChanged = Math.abs(state.a - initialBaseline.a) > state.sampleRate * 0.1;
-        const bChanged = Math.abs(state.b - initialBaseline.b) > state.sampleRate * 0.1;
+        const aChanged = Math.round(state.a) !== Math.round(initialBaseline.a);
+        const bChanged = Math.round(state.b) !== Math.round(initialBaseline.b);
         const cutsChanged = state.cuts.length !== initialBaseline.cuts.length ||
             state.cuts.some((c, i) => {
                 const b = initialBaseline.cuts[i];
-                return !b || Math.abs(c[0] - b[0]) > state.sampleRate * 0.1 || Math.abs(c[1] - b[1]) > state.sampleRate * 0.1;
+                return !b || Math.round(c[0]) !== Math.round(b[0]) || Math.round(c[1]) !== Math.round(b[1]);
             });
         state.dirty = aChanged || bChanged || cutsChanged;
     }
@@ -200,6 +246,11 @@ var AudioEditor = (() => {
         if (!editor || !state.isOpen) return;
 
         checkDirty();
+        const editKey = JSON.stringify([Math.round(state.a), Math.round(state.b), normalizedCuts()]);
+        if (editKey !== lastSentEdit && state.phase !== 'exporting') {
+            lastSentEdit = editKey;
+            send('edit');
+        }
         state.width = clamp(state.width, state.sampleRate * 1, Math.max(state.sampleRate * 1, state.totalFrames));
         state.view = clamp(state.view, 0, Math.max(0, state.totalFrames - state.width));
 
@@ -414,9 +465,7 @@ var AudioEditor = (() => {
                         const edgeEl = document.getElementById('sl-edge-margin');
                         const minS = (minEl && parseFloat(minEl.value)) || 1.5;
                         const edgeMs = (edgeEl && parseInt(edgeEl.value, 10)) || 150;
-                        if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioSilenceSettingsChanged) {
-                            ScreenlateBridge.onAudioSilenceSettingsChanged(minS, edgeMs);
-                        }
+                        send('silenceSettings', { minPauseSeconds: minS, edgeMarginMillis: edgeMs });
                     }
                 }
             ]
@@ -449,6 +498,12 @@ var AudioEditor = (() => {
     // Public API
     function open(data) {
         state.isOpen = true;
+        state.operation = data.operation || null;
+        lastSentEdit = JSON.stringify([Math.round(data.selection ? data.selection[0] : 0), Math.round(data.selection ? data.selection[1] : 0), data.cuts || []]);
+        state.sequence = 0;
+        state.sourceRevision = data.sourceRevision || 0;
+        state.phase = "editing";
+        silenceRequestCount = 0;
         state.sampleRate = data.sampleRate || 48000;
         state.scanFrame = data.scanFrame || 0;
         state.totalFrames = data.totalFrames || 0;
@@ -497,6 +552,7 @@ var AudioEditor = (() => {
         if (pill) pill.hidden = true;
 
         applyStaticLabels();
+        updateBusy();
         render();
 
         if (data.duplicateKeep) {
@@ -507,20 +563,14 @@ var AudioEditor = (() => {
                     {
                         label: labelOf('audio_editor_duplicate_keep_change_settings', 'Change settings'),
                         run: () => {
-                            close();
-                            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioChangeSettings) {
-                                ScreenlateBridge.onAudioChangeSettings();
-                            }
+                            send('settings');
                         }
                     },
                     {
                         label: labelOf('audio_editor_duplicate_keep_continue', 'Continue without audio'),
                         primary: true,
                         run: () => {
-                            close();
-                            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioWithout) {
-                                ScreenlateBridge.onAudioWithout();
-                            }
+                            send('without');
                         }
                     }
                 ]
@@ -566,7 +616,9 @@ var AudioEditor = (() => {
     }
 
     function updateTimeline(data) {
-        state.totalFrames = data.totalFrames || state.totalFrames;
+        state.totalFrames = data.totalFrames !== undefined ? data.totalFrames : state.totalFrames;
+        state.sourceStart = data.sourceStart !== undefined ? data.sourceStart : state.sourceStart;
+        state.sourceEnd = data.sourceEnd !== undefined ? data.sourceEnd : state.sourceEnd;
         state.newFrames = data.newFrames !== undefined ? data.newFrames : state.newFrames;
         state.limit = Boolean(data.limit);
         state.remainingMillis = data.remainingMillis !== undefined ? data.remainingMillis : state.remainingMillis;
@@ -652,9 +704,7 @@ var AudioEditor = (() => {
                 const dy = currentY - lastY;
                 lastX = currentX;
                 lastY = currentY;
-                if ((dx !== 0 || dy !== 0) && window.ScreenlateBridge && window.ScreenlateBridge.onDragWindow) {
-                    ScreenlateBridge.onDragWindow(dx, dy);
-                }
+                if (dx !== 0 || dy !== 0) send('drag', { dx, dy });
             });
 
             const stopDrag = e => {
@@ -675,13 +725,14 @@ var AudioEditor = (() => {
             if (!el) continue;
             let active = false;
             el.addEventListener('pointerdown', e => {
+                if (state.phase === 'exporting') return;
                 e.stopPropagation();
                 remember();
                 active = true;
                 el.setPointerCapture(e.pointerId);
             });
             el.addEventListener('pointermove', e => {
-                if (!active) return;
+                if (!active || state.phase === 'exporting') return;
                 const waveSvg = document.getElementById('sl-wave');
                 const r = waveSvg.getBoundingClientRect();
                 const frac = clamp((e.clientX - r.left) / r.width, 0, 1);
@@ -697,6 +748,7 @@ var AudioEditor = (() => {
             el.addEventListener('pointerup', finish);
             el.addEventListener('pointercancel', finish);
             el.addEventListener('keydown', e => {
+                if (state.phase === 'exporting') return;
                 if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
                 e.preventDefault();
                 remember();
@@ -715,6 +767,7 @@ var AudioEditor = (() => {
         const cutHandles = document.getElementById('sl-cut-handles');
         if (cutHandles) {
             cutHandles.addEventListener('pointerdown', e => {
+                if (state.phase === 'exporting') return;
                 const edge = e.target.closest('[data-cut-edge]');
                 if (!edge || !state.cuts[state.activeCut]) return;
                 e.stopPropagation();
@@ -723,7 +776,7 @@ var AudioEditor = (() => {
                 edge.setPointerCapture(e.pointerId);
             });
             cutHandles.addEventListener('pointermove', e => {
-                if (!cutDrag) return;
+                if (!cutDrag || state.phase === 'exporting') return;
                 const c = state.cuts[cutDrag.index];
                 const waveSvg = document.getElementById('sl-wave');
                 const r = waveSvg.getBoundingClientRect();
@@ -783,9 +836,7 @@ var AudioEditor = (() => {
                     const r = waveSvg.getBoundingClientRect();
                     const frac = clamp((e.clientX - r.left) / r.width, 0, 1);
                     state.cursor = state.view + frac * state.width;
-                    if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioSeek) {
-                        ScreenlateBridge.onAudioSeek(state.cursor, state.mode);
-                    }
+                    send('seek');
                 }
                 points.delete(e.pointerId);
                 if (!points.size) gesture = null;
@@ -831,16 +882,18 @@ var AudioEditor = (() => {
         if (playhead) {
             playhead.addEventListener('input', e => {
                 state.cursor = parseFloat(e.target.value);
-                if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioSeek) {
-                    ScreenlateBridge.onAudioSeek(state.cursor, state.mode);
-                }
+                send('seek');
                 render();
             });
         }
 
         function bind(id, event, handler) {
             const el = typeof id === 'string' ? document.getElementById(id) : id;
-            if (el) el.addEventListener(event, handler);
+            const edits = ['sl-action-cut', 'sl-cuts', 'sl-action-undo', 'sl-action-accept-silence'];
+            if (el) el.addEventListener(event, e => {
+                if (state.phase === 'exporting' && edits.includes(id)) return;
+                handler(e);
+            });
         }
 
         // Buttons & controls
@@ -848,13 +901,9 @@ var AudioEditor = (() => {
             state.playing = !state.playing;
             if (state.playing) {
                 if (state.cursor < state.a || state.cursor >= state.b) state.cursor = state.a;
-                if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioPlay) {
-                    ScreenlateBridge.onAudioPlay(state.cursor, state.mode);
-                }
+                send('play');
             } else {
-                if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioPause) {
-                    ScreenlateBridge.onAudioPause();
-                }
+                send('pause');
             }
             render();
         });
@@ -893,9 +942,7 @@ var AudioEditor = (() => {
 
         bind('sl-action-silence', 'click', () => {
             silenceRequestCount++;
-            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioFindSilence) {
-                ScreenlateBridge.onAudioFindSilence(state.a, state.b, silenceRequestCount);
-            }
+            send('silence', { request: silenceRequestCount });
         });
 
         bind('sl-action-silence-settings', 'click', showSilenceSettings);
@@ -930,33 +977,25 @@ var AudioEditor = (() => {
         });
 
         bind('sl-action-refresh', 'click', () => {
-            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioRefresh) {
-                ScreenlateBridge.onAudioRefresh();
-            }
+            send('refresh');
         });
 
         bind('sl-action-expand', 'click', () => {
             state.expanded = !state.expanded;
             state.collapsed = false;
-            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioExpand) {
-                ScreenlateBridge.onAudioExpand(state.expanded);
-            }
+            send('expand', { expanded: state.expanded });
             render();
         });
 
         bind('sl-action-collapse', 'click', () => {
             state.collapsed = true;
-            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioCollapse) {
-                ScreenlateBridge.onAudioCollapse(true);
-            }
+            send('collapse', { collapsed: true });
             render();
         });
 
         bind('sl-editor-pill', 'click', () => {
             state.collapsed = false;
-            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioCollapse) {
-                ScreenlateBridge.onAudioCollapse(false);
-            }
+            send('collapse', { collapsed: false });
             render();
         });
 
@@ -964,21 +1003,16 @@ var AudioEditor = (() => {
 
         bind('sl-action-cancel', 'click', () => {
             confirmDiscard(() => {
-                close();
-                if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioCancel) {
-                    ScreenlateBridge.onAudioCancel(state.dirty);
-                }
+                send('cancel');
             });
         });
 
         bind('sl-action-without', 'click', () => {
-            close();
-            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioWithout) {
-                ScreenlateBridge.onAudioWithout();
-            }
+            send('without');
         });
 
         bind('sl-action-add', 'click', () => {
+            if (state.phase === 'exporting') return;
             if (outputLengthSeconds() <= 0) {
                 const toast = document.querySelector('.sl-toast');
                 if (toast) {
@@ -988,14 +1022,9 @@ var AudioEditor = (() => {
                 }
                 return;
             }
-            const resultEdit = {
-                selection: [state.a, state.b],
-                exclusions: normalizedCuts(),
-            };
-            close();
-            if (window.ScreenlateBridge && window.ScreenlateBridge.onAudioAdd) {
-                ScreenlateBridge.onAudioAdd(JSON.stringify(resultEdit));
-            }
+            send('save');
+            state.phase = 'exporting';
+            updateBusy();
         });
 
         // Delegate cut chip selection and removal
@@ -1021,6 +1050,7 @@ var AudioEditor = (() => {
 
     return {
         open,
+        receive,
         updateTimeline,
         updateCursor,
         setPlaying,

@@ -7,6 +7,52 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Editor operation redesign checkpoint — 2026-11-22
+
+The shared continuation and untagged callbacks were replaced, not wrapped. AudioEditorOperation owns one
+result, source/edit revisions, a cancellable work scope and a single encode attempt. PendingNoteController
+owns the real attachment pipeline until resource cleanup completes. Cancellation cannot hand the slot to
+a second note while old cleanup still runs. Ordinary non-audio note writes retain their dock behavior.
+
+Commands carry operation identity, sequence, source revision and a complete normalized edit snapshot.
+Kotlin validates and accepts the edit before Play/Seek/Save, and native replies cannot close or modify a
+different editor. Refresh publishes sourceStart/sourceEnd as well as totalFrames, retaining current edits.
+A Refresh/Save race returns current source state instead of leaving the page permanently Exporting.
+Encoding failure retains the visible editor. Temporary output cleanup runs off Main, including cancellation
+at dispatcher return boundaries. Remembered selection is promoted only after successful note creation/update.
+
+SentenceRecorder now validates the requested AudioContextId before snapshot-backed editor analysis,
+preview or export; identical coordinates in a different scan are rejected. NoteTarget captures effective
+Anki settings at native Add, validates before media and again before mutation, and supplies all marker/
+duplicate/template/write decisions. Preparation observes relevant configuration changes; once a note
+mutation is attempted its actual result is retained. Snapshot at original Add/hold before the attachment
+chooser, active-language changes and external model-change handling remain explicitly pending.
+
+Evidence:
+- Red JVM tests failed to compile before the new operation/target interfaces; red DOM tests reproduced
+  premature closure, absent current-edit commands and missing Refresh source bounds.
+- 5 AudioEditorOperation and 3 PendingNoteController cases cover double Save/Add, delayed export after
+  cancellation, cleanup ownership, retry, source revision rejection and ordinary versus audio dock behavior.
+- 3 new fake-Anki cases cover changed configuration before media, during media copy, and irrelevant
+  screenshot-default/name changes. No real Anki collection was mutated.
+- 98 core-media, 219 core-Anki and 338 overlay unit tests pass at this checkpoint; 215 page tests pass,
+  including the ES2019 compatibility check (optional chaining/nullish syntax was rejected and removed).
+- Initial required full project checks passed in 4m26s. Final checks after target/lifetime changes are
+  recorded in ignored editor-final-full.log (3m34s). Final affected unit/lint/APK/release-vital gates
+  pass after the last lifetime/cleanup changes (editor-final-owned.log, 42s).
+- API30 isolated overlay package: LookupPageTest#identifiedAudioCommandsReachMainAndAwaitMatchingNativeCompletion
+  and AudioEditorDeviceTest#exportOwnsItsEditAndOnlySuccessfulNoteConfirmationReusesIt pass (2 tests,
+  1.079s initial run). Final rerun adds OwnPlaybackDeviceTest: 3 tests pass in 1.285s, including
+  synchronous callback detachment before page destruction (no WebView resurrection). Actual WebView/Main/PCM/Opus
+  are used; this is not system capture or physical UI acceptance. The isolated test package was removed
+  and the owned headless, no-audio API30 emulator was shut down.
+- Logs: ignored testdata/local-research/audio-repair-2026-11-22/editor-*.log.
+
+Remaining C gates: Ready starts E only when operable; loading/unavailable/failure states; original
+pre-chooser snapshot; source lease/rehosting across rotation including pending crop; Back/dirty Cancel;
+active language; dictionary auto-hide/refined/nested updates; new-scan finish/cancel with acquisition-time
+marker. E still owns pre-note media-copy recovery. Numeric workspace/resource and physical gates remain.
+
 ## TTS and shared own-output ownership — 2026-11-22
 
 - `PlaybackCoordinator` in core:common serializes pronunciation/preview output ownership. Native release

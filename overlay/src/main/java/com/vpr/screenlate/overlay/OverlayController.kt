@@ -258,7 +258,6 @@ class OverlayController(
     private val audioEditorController: AudioEditorController? = sentenceRecorder?.let { recorder ->
         AudioEditorController(
             context = service,
-            scope = scope,
             page = popup.page,
             popupController = popup,
             sentenceRecorder = recorder,

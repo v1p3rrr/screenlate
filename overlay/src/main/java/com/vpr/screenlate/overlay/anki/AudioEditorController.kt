@@ -16,37 +16,48 @@ import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.popup.PopupController
 import com.vpr.screenlate.overlay.web.LookupPage
 import java.io.File
-import kotlin.coroutines.resume
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.CoroutineScope
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 sealed interface AudioEditorResult {
-    data class WithAudio(val file: File) : AudioEditorResult
+    data class WithAudio(val file: File, val contextId: AudioContextId, val edit: AudioEdit) : AudioEditorResult
     data object WithoutAudio : AudioEditorResult
     data object Cancelled : AudioEditorResult
 }
 
 @Serializable
-private data class AudioEditDto(
+private data class AudioEditorCommand(
+    val operation: String,
+    val sequence: Long,
+    val sourceRevision: Long,
+    val action: String,
     val selection: List<Long>,
     val exclusions: List<List<Long>> = emptyList(),
+    val cursor: Long = 0,
+    val mode: String = "result",
+    val request: Int = 0,
+    val minPauseSeconds: Float = 1.5f,
+    val edgeMarginMillis: Int = 150,
+    val expanded: Boolean = false,
+    val collapsed: Boolean = false,
+    val dx: Float = 0f,
+    val dy: Float = 0f,
 )
 
-/**
- * Coordinates the overlay Sentence Audio Editor with [SentenceRecorder] and [LookupPage].
- */
+/** Android adapter for one owned editor operation; every page command carries its identity and source revision. */
 class AudioEditorController(
     private val context: Context,
-    private val scope: CoroutineScope,
     private val page: LookupPage,
     private val popupController: PopupController,
     private val sentenceRecorder: SentenceRecorder,
@@ -54,346 +65,348 @@ class AudioEditorController(
     private val onVisibilityChanged: (Boolean) -> Unit = {},
     private val onOpenAnkiSettings: () -> Unit = {},
 ) : LookupPage.AudioEditorActions {
-
     private val json = Json { ignoreUnknownKeys = true }
-    private val lastConfirmedEdits = mutableMapOf<AudioContextId, AudioEdit>()
-    private var activeContextId: AudioContextId? = null
-    private var activeContinuation: CancellableContinuation<AudioEditorResult>? = null
-    private var currentEdit: AudioEdit? = null
-    private var lastTimelineView: AudioTimelineView? = null
+    private var retainedContextId: AudioContextId? = null
+    private var lastConfirmed: Pair<AudioContextId, AudioEdit>? = null
+    private var active: Session? = null
+    private var released = false
 
-    private var silenceMinSeconds: Float = 1.5f
-    private var silenceEdgeMarginMillis: Int = 150
-
-    init {
-        page.audioEditorActions = this
+    private class Session(val contextId: AudioContextId) {
+        val id = UUID.randomUUID().toString()
+        lateinit var operation: AudioEditorOperation
+        var refresh: Job? = null
+        var analysis: Job? = null
+        var playback: Job? = null
+        fun isReady() = this::operation.isInitialized
+        var playbackGeneration = 0L
     }
 
-    /**
-     * Opens the audio editor for [audioContextId] and suspends until the user confirms (Add),
-     * chooses Without audio, or cancels.
-     */
+    init { page.audioEditorActions = this }
+
     suspend fun edit(
         audioContextId: AudioContextId,
         term: String,
         reading: String,
         duplicateKeep: Boolean = false,
     ): AudioEditorResult = withContext(Dispatchers.Main) {
-        val timelineView = sentenceRecorder.openEditor(audioContextId)
-            ?: return@withContext AudioEditorResult.WithoutAudio
-
-        activeContextId = audioContextId
-        lastTimelineView = timelineView
-        popupController.enterAudioEditor()
-        onVisibilityChanged(true)
-
-        val totalFrames = timelineView.source?.endExclusive ?: 0L
-        val isLimitReached = timelineView.retention.stage == RetentionStage.SEALED || timelineView.retention.reason != null
-        val remainingMillis = maxOf(0L, timelineView.retention.cutoffMillis - SystemClock.elapsedRealtime())
-
-        val sampleRate = 48000
-        val sourceRange = timelineView.source ?: AudioRange(0, totalFrames)
-        val lastConfirmed = lastConfirmedEdits[audioContextId]
-        val initialEdit = if (lastConfirmed != null && sourceRange.intersect(lastConfirmed.selection) == lastConfirmed.selection) {
-            lastConfirmed
-        } else {
-            sentenceRecorder.initialSelection(timelineView, sampleRate) ?: AudioEdit(sourceRange)
-        }
-        currentEdit = initialEdit
-
-        val summary = sentenceRecorder.waveformSummary(sourceRange, buckets = 200)
-
-        val labels = buildJsonObject {
-            put("audio_editor_recording_active", context.getString(R.string.audio_editor_recording_active))
-            put("audio_editor_recording_stopped", context.getString(R.string.audio_editor_recording_stopped))
-            put("audio_editor_limit_reached", context.getString(R.string.audio_editor_limit_reached))
-            put("audio_editor_remaining", context.getString(R.string.audio_editor_remaining))
-            put("audio_editor_new_sound", context.getString(R.string.audio_editor_new_sound))
-            put("audio_editor_found_pauses", context.getString(R.string.audio_editor_found_pauses))
-            put("audio_editor_no_silence", context.getString(R.string.audio_editor_no_silence))
-            put("audio_editor_compact", context.getString(R.string.audio_editor_compact))
-            put("audio_editor_expand", context.getString(R.string.audio_editor_expand))
-            put("audio_editor_listen", context.getString(R.string.audio_editor_listen))
-            put("audio_editor_pause", context.getString(R.string.audio_editor_pause))
-            put("audio_editor_discard_title", context.getString(R.string.audio_editor_discard_title))
-            put("audio_editor_discard_message", context.getString(R.string.audio_editor_discard_message))
-            put("audio_editor_keep_editing", context.getString(R.string.audio_editor_keep_editing))
-            put("audio_editor_discard", context.getString(R.string.audio_editor_discard))
-            put("audio_editor_silence_title", context.getString(R.string.audio_editor_silence_title))
-            put("audio_editor_min_pause", context.getString(R.string.audio_editor_min_pause))
-            put("audio_editor_edge_margin", context.getString(R.string.audio_editor_edge_margin))
-            put("audio_editor_cancel", context.getString(R.string.audio_editor_cancel))
-            put("audio_editor_save", context.getString(R.string.audio_editor_save))
-            put("audio_editor_info_title", context.getString(R.string.audio_editor_info_title))
-            put("audio_editor_info_body", context.getString(R.string.audio_editor_info_body))
-            put("audio_editor_understood", context.getString(R.string.audio_editor_understood))
-            put("audio_editor_title", context.getString(R.string.audio_editor_title))
-            put("audio_editor_retained", context.getString(R.string.audio_editor_retained))
-            put("audio_editor_marker_legend", context.getString(R.string.audio_editor_marker_legend))
-            put("audio_editor_from_scan", context.getString(R.string.audio_editor_from_scan))
-            put("audio_editor_start", context.getString(R.string.audio_editor_start))
-            put("audio_editor_end", context.getString(R.string.audio_editor_end))
-            put("audio_editor_to_card", context.getString(R.string.audio_editor_to_card))
-            put("audio_editor_result", context.getString(R.string.audio_editor_result))
-            put("audio_editor_original", context.getString(R.string.audio_editor_original))
-            put("audio_editor_cut", context.getString(R.string.audio_editor_cut))
-            put("audio_editor_find_silence", context.getString(R.string.audio_editor_find_silence))
-            put("audio_editor_undo", context.getString(R.string.audio_editor_undo))
-            put("audio_editor_refresh", context.getString(R.string.audio_editor_refresh))
-            put("audio_editor_without", context.getString(R.string.audio_editor_without))
-            put("audio_editor_add", context.getString(R.string.audio_editor_add))
-            put("audio_editor_apply", context.getString(R.string.audio_editor_apply))
-            put("audio_editor_dismiss", context.getString(R.string.audio_editor_dismiss))
-            put("audio_editor_collapse", context.getString(R.string.audio_editor_collapse))
-            put("audio_editor_zoom_in", context.getString(R.string.audio_editor_zoom_in))
-            put("audio_editor_zoom_out", context.getString(R.string.audio_editor_zoom_out))
-            put("audio_editor_remove_cut", context.getString(R.string.audio_editor_remove_cut))
-            put("audio_editor_select_cut", context.getString(R.string.audio_editor_select_cut))
-            put("audio_editor_cut_edge_start", context.getString(R.string.audio_editor_cut_edge_start))
-            put("audio_editor_cut_edge_end", context.getString(R.string.audio_editor_cut_edge_end))
-            put("audio_editor_start_handle", context.getString(R.string.audio_editor_start_handle))
-            put("audio_editor_end_handle", context.getString(R.string.audio_editor_end_handle))
-            put("audio_editor_empty_output", context.getString(R.string.audio_editor_empty_output))
-            put("audio_editor_export_failed", context.getString(R.string.audio_editor_export_failed))
-            put("audio_editor_duplicate_keep_title", context.getString(R.string.audio_editor_duplicate_keep_title))
-            put("audio_editor_duplicate_keep_body", context.getString(R.string.audio_editor_duplicate_keep_body))
-            put("audio_editor_duplicate_keep_continue", context.getString(R.string.audio_editor_duplicate_keep_continue))
-            put("audio_editor_duplicate_keep_change_settings", context.getString(R.string.audio_editor_duplicate_keep_change_settings))
-        }
-
-        val openPayload = buildJsonObject {
-            put("duplicateKeep", duplicateKeep)
-            put("sampleRate", sampleRate)
-            put("totalFrames", totalFrames)
-            put("scanFrame", timelineView.scanFrame)
-            put("sourceStart", sourceRange.start)
-            put("sourceEnd", sourceRange.endExclusive)
-            put("selection", buildJsonArray {
-                add(kotlinx.serialization.json.JsonPrimitive(initialEdit.selection.start))
-                add(kotlinx.serialization.json.JsonPrimitive(initialEdit.selection.endExclusive))
-            })
-            put("cuts", buildJsonArray {
-                for (cut in initialEdit.exclusions) {
-                    add(buildJsonArray {
-                        add(kotlinx.serialization.json.JsonPrimitive(cut.start))
-                        add(kotlinx.serialization.json.JsonPrimitive(cut.endExclusive))
-                    })
-                }
-            })
-            put("mode", "result")
-            put("limit", isLimitReached)
-            put("remainingMillis", remainingMillis)
-            put("newFrames", timelineView.newFrames)
-            put("term", term)
-            put("reading", reading)
-            if (summary != null) {
-                put("overviewSummary", buildJsonArray {
-                    for (peak in summary.peaks) {
-                        add(kotlinx.serialization.json.JsonPrimitive(peak))
+        if (released || active != null) return@withContext AudioEditorResult.Cancelled
+        val session = Session(audioContextId)
+        retainedContextId = audioContextId
+        active = session
+        var delivered = false
+        try {
+            coroutineScope {
+                val timeline = sentenceRecorder.openEditor(audioContextId)
+                    ?: return@coroutineScope AudioEditorResult.Cancelled
+                val source = timeline.source ?: return@coroutineScope AudioEditorResult.Cancelled
+                val previous = lastConfirmed?.takeIf { it.first == audioContextId }?.second
+                val initial = previous?.takeIf { source.intersect(it.selection) == it.selection }
+                    ?: sentenceRecorder.initialSelection(timeline) ?: AudioEdit(source)
+                val summary = sentenceRecorder.waveformSummary(source, buckets = 200, contextId = audioContextId)
+                session.operation = AudioEditorOperation(this, source, initial, onChanged = {
+                    if (active === session) send(session) {
+                        put("phase", session.operation.phase.name.lowercase())
+                        if (session.operation.phase == AudioEditorOperation.Phase.FAILED) {
+                            put("error", context.getString(R.string.audio_editor_export_failed))
+                        }
                     }
+                }) { edit ->
+                    var file: File? = null
+                    var transferred = false
+                    try {
+                        val output = withContext(Dispatchers.IO) {
+                            File.createTempFile("screenlate_sentence_", ".opus", context.cacheDir).also { file = it }
+                        }
+                        withContext(Dispatchers.IO) {
+                            val outcome = sentenceRecorder.export(edit, output, contextId = audioContextId)
+                            if (outcome?.isQuiet == true) withContext(Dispatchers.Main) {
+                                if (active === session) Toast.makeText(context, R.string.audio_editor_quiet_warning, Toast.LENGTH_SHORT).show()
+                            }
+                            if (outcome == null) null else output
+                        }.also { transferred = it != null }
+                    } finally {
+                        if (!transferred) withContext(NonCancellable + Dispatchers.IO) { file?.delete() }
+                    }
+                }
+                popupController.enterAudioEditor()
+                onVisibilityChanged(true)
+                val labels = buildJsonObject {
+                    put("audio_editor_recording_active", context.getString(R.string.audio_editor_recording_active))
+                    put("audio_editor_recording_stopped", context.getString(R.string.audio_editor_recording_stopped))
+                    put("audio_editor_limit_reached", context.getString(R.string.audio_editor_limit_reached))
+                    put("audio_editor_remaining", context.getString(R.string.audio_editor_remaining))
+                    put("audio_editor_new_sound", context.getString(R.string.audio_editor_new_sound))
+                    put("audio_editor_found_pauses", context.getString(R.string.audio_editor_found_pauses))
+                    put("audio_editor_no_silence", context.getString(R.string.audio_editor_no_silence))
+                    put("audio_editor_compact", context.getString(R.string.audio_editor_compact))
+                    put("audio_editor_expand", context.getString(R.string.audio_editor_expand))
+                    put("audio_editor_listen", context.getString(R.string.audio_editor_listen))
+                    put("audio_editor_pause", context.getString(R.string.audio_editor_pause))
+                    put("audio_editor_discard_title", context.getString(R.string.audio_editor_discard_title))
+                    put("audio_editor_discard_message", context.getString(R.string.audio_editor_discard_message))
+                    put("audio_editor_keep_editing", context.getString(R.string.audio_editor_keep_editing))
+                    put("audio_editor_discard", context.getString(R.string.audio_editor_discard))
+                    put("audio_editor_silence_title", context.getString(R.string.audio_editor_silence_title))
+                    put("audio_editor_min_pause", context.getString(R.string.audio_editor_min_pause))
+                    put("audio_editor_edge_margin", context.getString(R.string.audio_editor_edge_margin))
+                    put("audio_editor_cancel", context.getString(R.string.audio_editor_cancel))
+                    put("audio_editor_save", context.getString(R.string.audio_editor_save))
+                    put("audio_editor_info_title", context.getString(R.string.audio_editor_info_title))
+                    put("audio_editor_info_body", context.getString(R.string.audio_editor_info_body))
+                    put("audio_editor_understood", context.getString(R.string.audio_editor_understood))
+                    put("audio_editor_title", context.getString(R.string.audio_editor_title))
+                    put("audio_editor_retained", context.getString(R.string.audio_editor_retained))
+                    put("audio_editor_marker_legend", context.getString(R.string.audio_editor_marker_legend))
+                    put("audio_editor_from_scan", context.getString(R.string.audio_editor_from_scan))
+                    put("audio_editor_start", context.getString(R.string.audio_editor_start))
+                    put("audio_editor_end", context.getString(R.string.audio_editor_end))
+                    put("audio_editor_to_card", context.getString(R.string.audio_editor_to_card))
+                    put("audio_editor_result", context.getString(R.string.audio_editor_result))
+                    put("audio_editor_original", context.getString(R.string.audio_editor_original))
+                    put("audio_editor_cut", context.getString(R.string.audio_editor_cut))
+                    put("audio_editor_find_silence", context.getString(R.string.audio_editor_find_silence))
+                    put("audio_editor_undo", context.getString(R.string.audio_editor_undo))
+                    put("audio_editor_refresh", context.getString(R.string.audio_editor_refresh))
+                    put("audio_editor_without", context.getString(R.string.audio_editor_without))
+                    put("audio_editor_add", context.getString(R.string.audio_editor_add))
+                    put("audio_editor_apply", context.getString(R.string.audio_editor_apply))
+                    put("audio_editor_dismiss", context.getString(R.string.audio_editor_dismiss))
+                    put("audio_editor_collapse", context.getString(R.string.audio_editor_collapse))
+                    put("audio_editor_zoom_in", context.getString(R.string.audio_editor_zoom_in))
+                    put("audio_editor_zoom_out", context.getString(R.string.audio_editor_zoom_out))
+                    put("audio_editor_remove_cut", context.getString(R.string.audio_editor_remove_cut))
+                    put("audio_editor_select_cut", context.getString(R.string.audio_editor_select_cut))
+                    put("audio_editor_cut_edge_start", context.getString(R.string.audio_editor_cut_edge_start))
+                    put("audio_editor_cut_edge_end", context.getString(R.string.audio_editor_cut_edge_end))
+                    put("audio_editor_start_handle", context.getString(R.string.audio_editor_start_handle))
+                    put("audio_editor_end_handle", context.getString(R.string.audio_editor_end_handle))
+                    put("audio_editor_empty_output", context.getString(R.string.audio_editor_empty_output))
+                    put("audio_editor_export_failed", context.getString(R.string.audio_editor_export_failed))
+                    put("audio_editor_duplicate_keep_title", context.getString(R.string.audio_editor_duplicate_keep_title))
+                    put("audio_editor_duplicate_keep_body", context.getString(R.string.audio_editor_duplicate_keep_body))
+                    put("audio_editor_duplicate_keep_continue", context.getString(R.string.audio_editor_duplicate_keep_continue))
+                    put("audio_editor_duplicate_keep_change_settings", context.getString(R.string.audio_editor_duplicate_keep_change_settings))
+                }
+
+                val openPayload = buildJsonObject {
+                    put("operation", session.id)
+                    put("sourceRevision", session.operation.sourceRevision)
+                    put("duplicateKeep", duplicateKeep)
+                    put("sampleRate", 48000)
+                    put("totalFrames", source.endExclusive)
+                    put("scanFrame", timeline.scanFrame)
+                    put("sourceStart", source.start)
+                    put("sourceEnd", source.endExclusive)
+                    put("selection", ranges(listOf(initial.selection)).first())
+                    put("cuts", ranges(initial.exclusions))
+                    put("mode", "result")
+                    put("recording", sentenceRecorder.isRecording)
+                    putRetention(timeline)
+                    put("term", term)
+                    put("reading", reading)
+                    summary?.let { put("overviewSummary", buildJsonArray { it.peaks.forEach { add(JsonPrimitive(it)) } }) }
+                    put("labels", labels)
+                }
+                page.openAudioEditor(openPayload.toString())
+                when (val result = session.operation.result.await()) {
+                    is AudioEditorOperation.Result.Audio -> {
+                        delivered = true
+                        AudioEditorResult.WithAudio(result.file, audioContextId, result.edit)
+                    }
+                    AudioEditorOperation.Result.WithoutAudio -> AudioEditorResult.WithoutAudio
+                    AudioEditorOperation.Result.Cancelled -> AudioEditorResult.Cancelled
+                }
+            }
+        } finally {
+            withContext(NonCancellable + Dispatchers.Main) {
+                if (session.isReady()) {
+                    session.operation.cancel()
+                    session.operation.awaitClosed()
+                    if (!delivered) {
+                        val orphan = (session.operation.result.await() as? AudioEditorOperation.Result.Audio)?.file
+                        withContext(Dispatchers.IO) { orphan?.delete() }
+                    }
+                }
+                if (active === session) {
+                    sentenceRecorder.stopPreview()
+                    if (!released) {
+                        send(session) { put("closed", true) }
+                        popupController.resetAudioEditorPresentation()
+                        onVisibilityChanged(false)
+                    }
+                    active = null
+                }
+            }
+        }
+    }
+
+    override fun onAudioEditorCommand(payload: String) {
+        val session = active ?: return
+        if (!session.isReady() || payload.length > 65_536) return
+        val command = runCatching { json.decodeFromString<AudioEditorCommand>(payload) }.getOrNull() ?: return
+        if (command.operation != session.id) return
+        val operation = session.operation
+        when (command.action) {
+            "expand" -> { popupController.setAudioEditorExpanded(command.expanded); return }
+            "collapse" -> { popupController.setAudioEditorCollapsed(command.collapsed); return }
+            "drag" -> {
+                if (command.dx.isFinite() && command.dy.isFinite()) {
+                    val density = context.resources.displayMetrics.density
+                    popupController.dragBy(command.dx * density, command.dy * density)
+                }
+                return
+            }
+        }
+        if (command.action in setOf("cancel", "without", "settings")) {
+            when (command.action) {
+                "cancel" -> operation.cancel()
+                "without" -> operation.withoutAudio()
+                "settings" -> { operation.cancel(); onOpenAnkiSettings() }
+            }
+            return
+        }
+        if (command.selection.size != 2 || command.exclusions.size > 256 || command.exclusions.any { it.size != 2 }) return
+        val edit = runCatching {
+            AudioEdit(AudioRange(command.selection[0], command.selection[1]),
+                command.exclusions.map { AudioRange(it[0], it[1]) })
+        }.getOrNull() ?: return
+        if (!operation.accept(command.sequence, command.sourceRevision, edit)) {
+            // Refresh may have published a new source while this command was in flight.
+            send(session) {
+                put("phase", operation.phase.name.lowercase())
+                put("timeline", buildJsonObject {
+                    put("sourceRevision", operation.sourceRevision)
+                    put("sourceStart", operation.source.start)
+                    put("sourceEnd", operation.source.endExclusive)
+                    put("totalFrames", operation.source.endExclusive)
                 })
             }
-            put("labels", labels)
+            return
         }
-
-        page.openAudioEditor(openPayload.toString())
-
-        suspendCancellableCoroutine<AudioEditorResult> { continuation ->
-            activeContinuation = continuation
-            continuation.invokeOnCancellation {
-                cleanup()
+        val revision = operation.editRevision
+        send(session) { put("sequence", command.sequence); put("editRevision", revision) }
+        val previewMode = if (command.mode == "original") PreviewMode.ORIGINAL else PreviewMode.RESULT
+        when (command.action) {
+            "edit" -> {
+                session.analysis?.cancel()
+                stopPlayback(session)
             }
-        }
-    }
-
-    override fun onAudioPlay(cursor: Long, mode: String) {
-        val edit = currentEdit ?: return
-        val previewMode = if (mode == "original") PreviewMode.ORIGINAL else PreviewMode.RESULT
-        scope.launch {
-            if (currentEdit !== edit) return@launch
-            page.setAudioPlaying(true)
-            sentenceRecorder.startPreview(
-                edit = edit,
-                mode = previewMode,
-                startFrame = cursor,
-                onProgress = { frame ->
-                    scope.launch(Dispatchers.Main) {
-                        if (currentEdit === edit) {
-                            page.updateAudioCursor(frame)
-                            page.setAudioPlaying(sentenceRecorder.isPreviewPlaying)
-                        }
+            "play", "seek" -> {
+                session.playback?.cancel()
+                val token = ++session.playbackGeneration
+                session.playback = operation.scope.launch {
+                    if (command.action == "seek" && !sentenceRecorder.isPreviewPlaying) return@launch
+                    sentenceRecorder.startPreview(edit, previewMode, command.cursor,
+                        onProgress = { frame -> if (active === session && session.playbackGeneration == token) send(session) { put("cursor", frame) } },
+                        onComplete = { playing(session, token, false) },
+                        onStopped = { playing(session, token, false) },
+                        onError = { failure ->
+                            playing(session, token, false)
+                            Log.w("AudioEditorController", "Audio preview failed: $failure")
+                            if (active === session && session.playbackGeneration == token) {
+                                Toast.makeText(context, R.string.audio_editor_preview_failed, Toast.LENGTH_SHORT).show()
+                            }
+                        }, contextId = session.contextId)
+                    playing(session, token, sentenceRecorder.isPreviewPlaying)
+                }
+            }
+            "pause" -> stopPlayback(session)
+            "save" -> {
+                session.analysis?.cancel()
+                session.refresh?.cancel()
+                stopPlayback(session)
+                operation.save()
+            }
+            "silence" -> {
+                session.analysis?.cancel()
+                session.analysis = operation.scope.launch {
+                    val settings = recordingSettings?.cachedSettings
+                    val cuts = sentenceRecorder.findSilence(edit.selection,
+                        minSilenceMillis = settings?.minSilenceMillis ?: 1500,
+                        edgePaddingMillis = settings?.silenceMarginMillis ?: 150,
+                        contextId = session.contextId)
+                    if (active === session && operation.editRevision == revision) send(session) {
+                        put("request", command.request); put("proposals", ranges(cuts))
                     }
-                },
-                onComplete = {
-                    scope.launch(Dispatchers.Main) { if (currentEdit === edit) page.setAudioPlaying(false) }
-                },
-                onStopped = {
-                    if (currentEdit === edit) page.setAudioPlaying(false)
-                },
-                onError = { failure ->
-                    scope.launch(Dispatchers.Main) {
-                        if (currentEdit === edit) {
-                            page.setAudioPlaying(false)
-                            Log.w(TAG, "Audio preview failed: $failure")
-                            Toast.makeText(context, R.string.audio_editor_preview_failed, Toast.LENGTH_SHORT).show()
-                        }
+                }
+            }
+            "silenceSettings" -> operation.scope.launch {
+                if (command.minPauseSeconds.isFinite() && command.minPauseSeconds in 0.1f..30f && command.edgeMarginMillis in 0..2000) {
+                    recordingSettings?.setMinSilenceMillis((command.minPauseSeconds * 1000).toLong())
+                    recordingSettings?.setSilenceMarginMillis(command.edgeMarginMillis.toLong())
+                }
+            }
+            "refresh" -> {
+                if (session.refresh?.isActive == true) return
+                session.refresh = operation.scope.launch {
+                    val view = sentenceRecorder.refresh(session.contextId) ?: return@launch
+                    val range = view.source ?: return@launch
+                    val summary = sentenceRecorder.waveformSummary(range, buckets = 200, contextId = session.contextId)
+                    if (active !== session || !operation.append(range)) return@launch
+                    send(session) {
+                        put("timeline", buildJsonObject {
+                            put("sourceRevision", operation.sourceRevision)
+                            put("totalFrames", range.endExclusive)
+                            put("sourceStart", range.start)
+                            put("sourceEnd", range.endExclusive)
+                            put("recording", sentenceRecorder.isRecording)
+                            putRetention(view)
+                            summary?.let { put("overviewSummary", buildJsonArray { it.peaks.forEach { add(JsonPrimitive(it)) } }) }
+                        })
                     }
-                },
-            )
-        }
-    }
-
-    override fun onAudioPause() {
-        val edit = currentEdit
-        scope.launch {
-            sentenceRecorder.pausePreview()
-            if (currentEdit === edit) page.setAudioPlaying(sentenceRecorder.isPreviewPlaying)
-        }
-    }
-
-    override fun onAudioSeek(cursor: Long, mode: String) {
-        val edit = currentEdit
-        val previewMode = if (mode == "original") PreviewMode.ORIGINAL else PreviewMode.RESULT
-        scope.launch { sentenceRecorder.seekPreview(cursor, edit, previewMode) }
-    }
-
-    override fun onAudioFindSilence(fromFrame: Long, toFrame: Long, request: Int) {
-        scope.launch(Dispatchers.Default) {
-            val cuts = sentenceRecorder.findSilence(
-                range = AudioRange(fromFrame, toFrame),
-                sampleRate = 48000,
-                minSilenceMillis = (silenceMinSeconds * 1000).toLong(),
-                edgePaddingMillis = silenceEdgeMarginMillis.toLong(),
-            )
-            val jsonArray = buildJsonArray {
-                for (cut in cuts) {
-                    add(buildJsonArray {
-                        add(kotlinx.serialization.json.JsonPrimitive(cut.start))
-                        add(kotlinx.serialization.json.JsonPrimitive(cut.endExclusive))
-                    })
-                }
-            }
-            withContext(Dispatchers.Main) {
-                page.setAudioSilenceProposals(request, jsonArray.toString())
-            }
-        }
-    }
-
-    override fun onAudioSilenceSettingsChanged(minPauseSeconds: Float, edgeMarginMillis: Int) {
-        silenceMinSeconds = minPauseSeconds
-        silenceEdgeMarginMillis = edgeMarginMillis
-    }
-
-    override fun onAudioRefresh() {
-        scope.launch {
-            val contextId = activeContextId ?: return@launch
-            val refreshedView = sentenceRecorder.refresh(contextId) ?: return@launch
-            lastTimelineView = refreshedView
-            val totalFrames = refreshedView.source?.endExclusive ?: 0L
-            val isLimitReached = refreshedView.retention.stage == RetentionStage.SEALED || refreshedView.retention.reason != null
-            val remainingMillis = maxOf(0L, refreshedView.retention.cutoffMillis - SystemClock.elapsedRealtime())
-            val sourceRange = refreshedView.source ?: AudioRange(0, totalFrames)
-            val summary = sentenceRecorder.waveformSummary(sourceRange, buckets = 200)
-
-            val updatePayload = buildJsonObject {
-                put("totalFrames", totalFrames)
-                put("newFrames", refreshedView.newFrames)
-                put("limit", isLimitReached)
-                put("remainingMillis", remainingMillis)
-                put("recording", sentenceRecorder.isRecording)
-                if (summary != null) {
-                    put("overviewSummary", buildJsonArray {
-                        for (peak in summary.peaks) {
-                            add(kotlinx.serialization.json.JsonPrimitive(peak))
-                        }
-                    })
-                }
-            }
-            page.updateAudioTimeline(updatePayload.toString())
-        }
-    }
-
-    override fun onAudioExpand(expanded: Boolean) {
-        popupController.setAudioEditorExpanded(expanded)
-    }
-
-    override fun onAudioCollapse(collapsed: Boolean) {
-        popupController.setAudioEditorCollapsed(collapsed)
-    }
-
-    override fun onAudioCancel(dirty: Boolean) {
-        finish(AudioEditorResult.Cancelled)
-    }
-
-    override fun onAudioWithout() {
-        finish(AudioEditorResult.WithoutAudio)
-    }
-
-    override fun onAudioAdd(editJson: String) {
-        scope.launch(Dispatchers.Default) {
-            val editDto = runCatching { json.decodeFromString<AudioEditDto>(editJson) }.getOrNull()
-            if (editDto == null || editDto.selection.size < 2) {
-                withContext(Dispatchers.Main) { finish(AudioEditorResult.WithoutAudio) }
-                return@launch
-            }
-            val edit = AudioEdit(
-                selection = AudioRange(editDto.selection[0], editDto.selection[1]),
-                exclusions = editDto.exclusions.filter { it.size >= 2 }.map { AudioRange(it[0], it[1]) },
-            )
-            if (edit.outputFrames <= 0L) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, R.string.audio_editor_empty_output, Toast.LENGTH_SHORT).show()
-                }
-                return@launch
-            }
-            val tempFile = File.createTempFile("screenlate_sentence_", ".opus", context.cacheDir)
-            val exportOutcome = sentenceRecorder.export(edit, tempFile)
-            withContext(Dispatchers.Main) {
-                if (exportOutcome != null) {
-                    if (exportOutcome.isQuiet) {
-                        Toast.makeText(context, R.string.audio_editor_quiet_warning, Toast.LENGTH_SHORT).show()
-                    }
-                    activeContextId?.let { lastConfirmedEdits[it] = edit }
-                    finish(AudioEditorResult.WithAudio(tempFile))
-                } else {
-                    tempFile.delete()
-                    Toast.makeText(context, R.string.audio_editor_export_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    override fun onAudioChangeSettings() {
-        onOpenAnkiSettings()
-        finish(AudioEditorResult.Cancelled)
-    }
-
-    override fun onAudioDragWindow(dx: Float, dy: Float) {
-        popupController.dragBy(dx, dy)
+    /** The note, rather than an abandoned export, confirms the reusable edit for this scan. */
+    fun confirm(result: AudioEditorResult.WithAudio) {
+        if (!released && retainedContextId == result.contextId) lastConfirmed = result.contextId to result.edit
     }
 
     fun releaseContext(id: AudioContextId) {
-        lastConfirmedEdits.remove(id)
+        if (retainedContextId == id) retainedContextId = null
+        if (lastConfirmed?.first == id) lastConfirmed = null
+        active?.takeIf { it.contextId == id }?.let { if (it.isReady()) it.operation.cancel() }
     }
 
-    private fun finish(result: AudioEditorResult) {
-        cleanup()
-        val cont = activeContinuation
-        activeContinuation = null
-        cont?.resume(result)
-    }
-
-    private fun cleanup() {
-        scope.launch { sentenceRecorder.stopPreview() }
-        page.closeAudioEditor()
+    /** Detach callbacks synchronously before the host destroys its WebView. Owned cleanup may finish later. */
+    fun release() {
+        if (released) return
+        released = true
+        page.audioEditorActions = null
+        active?.let { if (it.isReady()) it.operation.cancel() }
         popupController.resetAudioEditorPresentation()
-        activeContextId = null
-        currentEdit = null
-        lastTimelineView = null
         onVisibilityChanged(false)
+        retainedContextId = null
+        lastConfirmed = null
     }
 
-    companion object {
-        private const val TAG = "AudioEditorController"
+    private fun stopPlayback(session: Session) {
+        session.playback?.cancel()
+        val token = ++session.playbackGeneration
+        session.playback = session.operation.scope.launch {
+            sentenceRecorder.stopPreview()
+            playing(session, token, false)
+        }
+    }
+
+    private fun playing(session: Session, token: Long, playing: Boolean) {
+        if (active === session && session.playbackGeneration == token) send(session) { put("playing", playing) }
+    }
+
+    private fun send(session: Session, body: kotlinx.serialization.json.JsonObjectBuilder.() -> Unit) {
+        if (released || active !== session) return
+        page.audioEditorMessage(buildJsonObject { put("operation", session.id); body() }.toString())
+    }
+
+    private fun kotlinx.serialization.json.JsonObjectBuilder.putRetention(view: AudioTimelineView) {
+        put("newFrames", view.newFrames)
+        put("limit", view.retention.stage == RetentionStage.SEALED || view.retention.reason != null)
+        put("remainingMillis", maxOf(0L, view.retention.cutoffMillis - SystemClock.elapsedRealtime()))
+    }
+
+    private fun ranges(rows: List<AudioRange>) = buildJsonArray {
+        rows.forEach { range -> add(buildJsonArray { add(JsonPrimitive(range.start)); add(JsonPrimitive(range.endExclusive)) }) }
     }
 }

@@ -36,6 +36,7 @@ class AnkiNotesTest {
         var refuseNotes = false
         var cancelNotes = false
         var refuseMedia = false
+        var afterMedia: suspend () -> Unit = {}
 
         override fun availability() = availability
 
@@ -73,6 +74,7 @@ class AnkiNotesTest {
         override suspend fun addMedia(file: File, preferredName: String, kind: AnkiDroid.MediaKind): String? {
             if (refuseMedia) return null
             media += preferredName to kind
+            afterMedia()
             return if (kind == AnkiDroid.MediaKind.IMAGE) "<img src=\"${file.name}\">" else "[sound:${file.name}]"
         }
     }
@@ -106,6 +108,38 @@ class AnkiNotesTest {
     }
 
     private val request = NoteRequest(mapOf("expression" to "猫", "glossary" to "cat"))
+
+    @Test
+    fun `frozen target rejects changed export settings before copying media`() = runBlocking {
+        configure()
+        val target = notes.freezeTarget(Language.JAPANESE)
+        settings.update(Language.JAPANESE) { it.copy(tags = "changed") }
+        val result = notes.add(target, request.copy(screenshot = folder.newFile("capture.webp")))
+        assertThat(result).isEqualTo(AddResult.ConfigurationChanged)
+        assertThat(anki.media).isEmpty()
+        assertThat(anki.added).isEmpty()
+    }
+
+    @Test
+    fun `changed destination during media copy cannot mutate a note`() = runBlocking {
+        configure()
+        val target = notes.freezeTarget(Language.JAPANESE)
+        anki.afterMedia = { settings.update(Language.JAPANESE) { it.copy(deckId = DECK + 1) } }
+        assertThat(notes.add(target, request.copy(screenshot = folder.newFile("capture.webp"))))
+            .isEqualTo(AddResult.ConfigurationChanged)
+        assertThat(anki.added).isEmpty()
+        assertThat(anki.updated).isEmpty()
+    }
+
+    @Test
+    fun `default screenshot and remembered templates do not invalidate a frozen target`() = runBlocking {
+        configure()
+        val target = notes.freezeTarget(Language.JAPANESE)
+        settings.update(Language.JAPANESE) { it.copy(screenshotByDefault = !it.screenshotByDefault,
+            deckName = "Renamed", savedTemplates = emptyMap()) }
+        assertThat(notes.add(target, request)).isInstanceOf(AddResult.Added::class.java)
+        assertThat(anki.added).hasSize(1)
+    }
 
     @Test
     fun `status reports what broke`() = runBlocking<Unit> {

@@ -10,10 +10,84 @@ beforeEach(() => {
     AudioEditor = page.global('AudioEditor');
 });
 
+// Gesture assertions use semantic callbacks; the wire-level tests inspect envelopes directly.
+function bridge(actions) {
+    page.window.ScreenlateBridge = { onAudioEditorCommand: raw => {
+        const c = JSON.parse(raw);
+        const routes = {
+            play: () => actions.onAudioPlay?.(c.cursor, c.mode),
+            pause: () => actions.onAudioPause?.(),
+            seek: () => actions.onAudioSeek?.(c.cursor, c.mode),
+            save: () => actions.onAudioAdd?.(JSON.stringify({ selection: c.selection, exclusions: c.exclusions })),
+            without: () => actions.onAudioWithout?.(),
+            cancel: () => actions.onAudioCancel?.(AudioEditor.state.dirty),
+            silence: () => actions.onAudioFindSilence?.(...c.selection, c.request),
+            silenceSettings: () => actions.onAudioSilenceSettingsChanged?.(c.minPauseSeconds, c.edgeMarginMillis),
+            refresh: () => actions.onAudioRefresh?.(),
+            expand: () => actions.onAudioExpand?.(c.expanded),
+            collapse: () => actions.onAudioCollapse?.(c.collapsed),
+            drag: () => actions.onDragWindow?.(c.dx, c.dy),
+            settings: () => actions.onAudioChangeSettings?.(),
+        };
+        routes[c.action]?.();
+    } };
+}
+
 const tap = el => {
     if (!el) throw new Error('Cannot tap null element');
     el.dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
 };
+
+test('identified save keeps the editor open, prevents double submission and permits retry after failure', () => {
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: json => commands.push(JSON.parse(json)) };
+    AudioEditor.open({ operation: 'a', sourceRevision: 0, totalFrames: 480000, selection: [100000, 300000] });
+    const save = page.document.getElementById('sl-action-add');
+    tap(save);
+    tap(save);
+    assert.equal(page.document.getElementById('audio-editor').hidden, false);
+    assert.equal(commands.filter(c => c.action === 'save').length, 1);
+    const cutsBefore = AudioEditor.state.cuts.length;
+    tap(page.document.getElementById('sl-action-cut'));
+    assert.equal(AudioEditor.state.cuts.length, cutsBefore);
+    AudioEditor.receive({ operation: 'a', phase: 'failed', error: 'Export failed' });
+    assert.equal(save.disabled, false);
+    assert.equal(page.document.querySelector('.sl-toast').textContent, 'Export failed');
+    tap(save);
+    assert.equal(commands.filter(c => c.action === 'save').length, 2);
+    AudioEditor.receive({ operation: 'a', closed: true });
+    assert.equal(page.document.getElementById('audio-editor').hidden, true);
+});
+
+test('commands include current cuts for playback and delayed native results cannot mutate another editor', () => {
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: json => commands.push(JSON.parse(json)) };
+    AudioEditor.open({ operation: 'b', sourceRevision: 3, totalFrames: 480000, selection: [100000, 300000] });
+    tap(page.document.getElementById('sl-action-cut'));
+    tap(page.document.getElementById('sl-action-play'));
+    const play = commands.find(c => c.action === 'play');
+    assert.equal(play.operation, 'b');
+    assert.equal(play.sourceRevision, 3);
+    assert.ok(play.exclusions.length > 0);
+    AudioEditor.receive({ operation: 'a', closed: true, cursor: 123, phase: 'failed' });
+    assert.equal(AudioEditor.state.isOpen, true);
+    assert.notEqual(AudioEditor.state.cursor, 123);
+});
+
+test('refresh appends available source while keeping selection, cuts and viewport fixed', () => {
+    AudioEditor.open({ operation: 'c', sourceRevision: 0, totalFrames: 480000,
+        sourceStart: 10000, sourceEnd: 480000, selection: [100000, 300000], cuts: [[150000, 180000]] });
+    const view = AudioEditor.state.view;
+    AudioEditor.receive({ operation: 'c', timeline: { sourceRevision: 1, sourceStart: 10000,
+        sourceEnd: 600000, totalFrames: 600000 } });
+    assert.equal(AudioEditor.state.sourceEnd, 600000);
+    assert.equal(AudioEditor.state.sourceRevision, 1);
+    assert.equal(AudioEditor.state.b, 300000);
+    assert.deepEqual(Array.from(AudioEditor.state.cuts[0]), [150000, 180000]);
+    assert.equal(AudioEditor.state.view, view);
+    AudioEditor.receive({ operation: 'c', timeline: { sourceRevision: 0, sourceEnd: 480000 } });
+    assert.equal(AudioEditor.state.sourceEnd, 600000);
+});
 
 test('editor opens with initial range, displays subtitle, and hides dictionary content', () => {
     const content = page.document.getElementById('content');
@@ -42,11 +116,11 @@ test('editor opens with initial range, displays subtitle, and hides dictionary c
 test('playhead updates cursor, and play/pause invokes bridge callbacks', () => {
     let playCall = null;
     let pauseCalled = false;
-    page.window.ScreenlateBridge = {
+    bridge({
         onAudioPlay: (cursor, mode) => { playCall = { cursor, mode }; },
         onAudioPause: () => { pauseCalled = true; },
         onAudioSeek: (cursor, mode) => {},
-    };
+    });
 
     AudioEditor.open({
         sampleRate: 48000,
@@ -119,9 +193,9 @@ test('removing cut chip removes that cut and marks dirty', () => {
 
 test('silence proposals accept and reject', () => {
     let silenceReq = null;
-    page.window.ScreenlateBridge = {
+    bridge({
         onAudioFindSilence: (a, b, req) => { silenceReq = { a, b, req }; },
-    };
+    });
 
     AudioEditor.open({
         sampleRate: 48000,
@@ -155,9 +229,9 @@ test('silence proposals accept and reject', () => {
 
 test('clean cancel immediately cancels; dirty cancel prompts confirmation', () => {
     let cancelCall = null;
-    page.window.ScreenlateBridge = {
+    bridge({
         onAudioCancel: dirty => { cancelCall = dirty; },
-    };
+    });
 
     // Clean cancel
     AudioEditor.open({
@@ -168,6 +242,8 @@ test('clean cancel immediately cancels; dirty cancel prompts confirmation', () =
 
     tap(page.document.getElementById('sl-action-cancel'));
     assert.equal(cancelCall, false);
+    assert.equal(page.document.getElementById('audio-editor').hidden, false);
+    AudioEditor.receive({ operation: null, closed: true });
     assert.equal(page.document.getElementById('audio-editor').hidden, true);
     assert.equal(page.document.getElementById('content').hidden, false);
 
@@ -197,14 +273,14 @@ test('clean cancel immediately cancels; dirty cancel prompts confirmation', () =
     const dialogButtons2 = page.document.querySelectorAll('#sl-dialog-actions button');
     tap(dialogButtons2[1]); // Cancel note
     assert.equal(cancelCall, true);
-    assert.equal(page.document.getElementById('audio-editor').hidden, true);
+    assert.equal(page.document.getElementById('audio-editor').hidden, false);
 });
 
-test('add action passes serialized JSON with selection and exclusions to onAudioAdd', () => {
+test('add sends selection and exclusions and awaits native completion', () => {
     let addPayload = null;
-    page.window.ScreenlateBridge = {
+    bridge({
         onAudioAdd: json => { addPayload = JSON.parse(json); },
-    };
+    });
 
     AudioEditor.open({
         sampleRate: 48000,
@@ -218,14 +294,14 @@ test('add action passes serialized JSON with selection and exclusions to onAudio
         selection: [100000, 300000],
         exclusions: [[150000, 180000]],
     });
-    assert.equal(page.document.getElementById('audio-editor').hidden, true);
+    assert.equal(page.document.getElementById('audio-editor').hidden, false);
 });
 
-test('without action calls onAudioWithout and closes editor', () => {
+test('without action awaits native completion', () => {
     let withoutCalled = false;
-    page.window.ScreenlateBridge = {
+    bridge({
         onAudioWithout: () => { withoutCalled = true; },
-    };
+    });
 
     AudioEditor.open({
         sampleRate: 48000,
@@ -235,16 +311,16 @@ test('without action calls onAudioWithout and closes editor', () => {
 
     tap(page.document.getElementById('sl-action-without'));
     assert.equal(withoutCalled, true);
-    assert.equal(page.document.getElementById('audio-editor').hidden, true);
+    assert.equal(page.document.getElementById('audio-editor').hidden, false);
 });
 
 test('expand and collapse actions notify bridge and toggle presentation', () => {
     let expandCall = null;
     let collapseCall = null;
-    page.window.ScreenlateBridge = {
+    bridge({
         onAudioExpand: exp => { expandCall = exp; },
         onAudioCollapse: col => { collapseCall = col; },
-    };
+    });
 
     AudioEditor.open({
         sampleRate: 48000,
@@ -303,9 +379,9 @@ test('editor applies localized labels to DOM elements', () => {
 
 test('add action prevents submission and shows toast when output duration is zero', () => {
     let addCall = null;
-    page.window.ScreenlateBridge = {
+    bridge({
         onAudioAdd: json => { addCall = json; },
-    };
+    });
 
     AudioEditor.open({
         sampleRate: 48000,
@@ -328,9 +404,9 @@ test('add action prevents submission and shows toast when output duration is zer
 
 test('dragging editor header dispatches onDragWindow to bridge', () => {
     const dragDeltas = [];
-    page.window.ScreenlateBridge = {
+    bridge({
         onDragWindow: (dx, dy) => { dragDeltas.push({ dx, dy }); },
-    };
+    });
 
     AudioEditor.open({
         sampleRate: 48000,

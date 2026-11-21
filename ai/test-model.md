@@ -4318,3 +4318,20 @@ Observations, not changed:
 - The regenerated format 1 catalog contains 41 dictionary entries and no OCR models. The current `CatalogFileTest`
   passes 43/43; the old Japanese branch's three catalog tests also pass against this file. The generator regression
   test covers an OCR entry without legacy `kind` and `installedTitle` fields.
+
+## Sentence audio operation redesign, API30 (2026-11-22)
+
+- 5 editor-owner and 3 pending-note JVM regressions pass: double Save/Add, failed encode retry, delayed
+  old-export cleanup, immutable edit/source revisions, retained cleanup ownership and ordinary versus
+  audio context closure. Core media adds cross-scan read rejection; fake Anki adds 3 frozen-target cases.
+- 215 page tests pass, including identified current-edit commands, unresolved export remaining visible,
+  double-save prevention, failed retry, stale native-result rejection and Refresh source-bound extension.
+- Isolated API30 overlay tests pass for actual WebView/Main identified commands and the production
+  editor/PCM/Opus path with confirmed-note-only reuse (2 tests; initial run 1.079s). No capture or Anki data.
+- Final API30 rerun passes 3 tests in 1.285s, adding shared playback and teardown without WebView
+  resurrection. Full checks pass (3m34s), final affected checks pass (42s). Test package uninstalled and
+  owned headless/no-audio emulator powered off.
+- Partial evidence for REC59/64/65/66/67/80. Keep categories N: pre-chooser capture, rotation/crop,
+  Ready-clock admission, Back/scan arbitration, active-language changes and transfer recovery remain.
+- Required builds/checks, final native rerun and environment cleanup are recorded in the engineering
+  checkpoint and ignored local editor logs. Do not infer physical-device acceptance from these fixtures.

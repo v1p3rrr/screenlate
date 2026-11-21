@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">Continua senza audio</string>
     <string name="audio_editor_duplicate_keep_change_settings">Modifica impostazioni</string>
     <string name="audio_editor_preview_failed">Impossibile riprodurre la registrazione. Riprova.</string>
+    <string name="anki_operation_settings_changed">Le impostazioni di Anki sono cambiate. L’aggiunta della scheda è stata annullata.</string>
 </resources>

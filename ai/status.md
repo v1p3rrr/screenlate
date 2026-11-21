@@ -1,5 +1,33 @@
 # Status
 
+## Sentence audio: operation and editor ownership (2026-11-22)
+
+- Replaced AudioEditorController's shared context/edit/continuation with AudioEditorOperation: one result,
+  owned child work, immutable normalized edits, source/edit revisions, one export and explicit terminal
+  cleanup. Stale/cancelled exports cannot complete another editor; late files are removed off Main.
+- Replaced primitive audio bridge calls with identified JSON commands and matching native replies. Play,
+  Seek and Save atomically submit the current edit; append-only Refresh updates actual source bounds.
+  Export remains visible and blocks editing until success/failure; failed encoding supports retry,
+  Without audio and Cancel. Existing approved waveform, playhead and overview gestures remain.
+- PendingNoteController owns the real crop/audio/note pipeline. Repeated Add cannot open a concurrent
+  operation. Context closure cancels audio preparation while ordinary note writes keep their prior
+  behavior. A remembered edit is promoted only after Added/Updated, not after export alone.
+- Anki NoteTarget freezes effective configuration at the native Add request; duplicate policy, markers
+  and write use it. Relevant settings changes cancel preparation with a 27-locale notice; default
+  screenshot/remembered templates do not. A second check before note mutation prevents changed-target
+  writes, while an attempted mutation retains its actual acknowledgement. No owner collection accessed.
+- Regression evidence: 5 editor-owner tests, 3 pending-note tests, 3 new frozen-target Anki tests, one
+  cross-scan media regression, 215 page tests. Two isolated API30 tests cover real WebView/Main transport
+  and the production editor + real PCM/Opus export + confirmed-selection reuse. Full verification results
+  and native logs are recorded in sentence-audio-engineering.md. Final full checks pass (3m34s);
+  affected final unit/lint/APK/vital gates pass (42s). Three final API30 tests pass (1.285s), including
+  shared playback and teardown without WebView resurrection. Test package removed; owned AVD powered off.
+- C remains partial: original Add/hold snapshot before attachment chooser, operable-Ready admission,
+  rotation/pending-crop rehosting, active-language invalidation, Back/dirty cancellation and new-scan
+  arbitration are next. Anki media-copy recovery is still E; resource and physical acceptance gates remain.
+- Continue on codex/sentence-audio-recording; preserve unrelated submodule dirt and untracked photos.
+
+
 ## Sentence audio: TTS and shared playback ownership (2026-11-22)
 
 - Implemented shared `core:common` PlaybackCoordinator leases for pronunciation and sentence preview,

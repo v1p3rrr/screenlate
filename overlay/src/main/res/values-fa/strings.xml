@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">ادامه بدون صدا</string>
     <string name="audio_editor_duplicate_keep_change_settings">تغییر تنظیمات</string>
     <string name="audio_editor_preview_failed">پخش فایل ضبط‌شده ممکن نشد. دوباره تلاش کنید.</string>
+    <string name="anki_operation_settings_changed">تنظیمات Anki تغییر کرد. افزودن کارت لغو شد.</string>
 </resources>

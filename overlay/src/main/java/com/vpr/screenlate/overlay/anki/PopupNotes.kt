@@ -46,9 +46,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -168,6 +171,7 @@ class PopupNotes(
 
     /** Entry indices currently being added/updated, so [markNotes] does not overwrite their `"busy"` button state. */
     private val addingEntries = mutableSetOf<Int>()
+    private val pendingNote = PendingNoteController(scope)
 
     /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
@@ -278,6 +282,7 @@ class PopupNotes(
      * crop editor closes as if cancelled, so its note is not added.
      */
     fun onClosed() {
+        pendingNote.contextEnded()
         cropEditor?.cancel()
         onResultsHidden()
         statusCache.clear()
@@ -349,15 +354,18 @@ class PopupNotes(
     }
 
     override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean?) {
+        if (pendingNote.isActive) { onNoteWaiting(); return }
         val effectiveWithAudio = withAudio ?: (recordingSettings?.cachedSettings?.defaultEditor ?: true)
         val source = noteSource()
         val scan = scanNotes.scan
         // The note keeps the language it was asked for, even if the scan closes before it is added.
         val noteLanguage = language()
         addingEntries += index
-        scope.launch {
+        pendingNote.start {
             var image: NoteImage? = null
             var picture: Bitmap? = null
+            var configurationWatch: Job? = null
+            var confirmedAudio: AudioEditorResult.WithAudio? = null
             var sentenceAudio: SentenceAudioAttachment = SentenceAudioAttachment.None
             var term: Pair<String, String>? = null
             var opens: List<Long>? = null
@@ -367,9 +375,20 @@ class PopupNotes(
                 val data = json.decodeFromString<NoteDataDto>(noteData)
                 val noteTerm = data.term.expression to data.term.reading
                 term = noteTerm
-                val used = notes.usedMarkers(noteLanguage)
+                val target = notes.freezeTarget(noteLanguage)
+                val operation = this
+                configurationWatch = launch {
+                    notes.targetChanged(target).first { it }
+                    toast(context.getString(R.string.anki_operation_settings_changed))
+                    operation.cancel()
+                }
+                val used = target.markers
                 val context = source.context(withScreenshot && "screenshot" in used)
                 image = context.image
+                if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null) {
+                    requireContext()
+                    if (scan != scanNotes.scan) return@start
+                }
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
@@ -381,7 +400,7 @@ class PopupNotes(
                         val imageBounds = context.image.bounds
                         val cropSettings = cropAreaSettings.current()
                         // The scan may have closed while reading preferences; do not open an editor afterwards.
-                        if (scan != scanNotes.scan) return@launch
+                        if (scan != scanNotes.scan) return@start
                         CropEditor.RememberControl(
                             initial = cropSettings.rememberArea,
                             remembered = cropSettings.cropFor(imageBounds),
@@ -396,7 +415,7 @@ class PopupNotes(
                     picture = cropEditor.edit(context.image, context.focus, rememberControl)
                         ?: run {
                             showState(scan, index, noteTerm, "", null)
-                            return@launch
+                            return@start
                         }
                 }
                 // The crop is a bitmap of its own.
@@ -435,32 +454,40 @@ class PopupNotes(
                 resolveGlossaryMedia(data.media, values, used, noteLanguage)
                 screenshot = picture?.let { saveScreenshot(it) }
                 if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
-                    val isDuplicateKeep = notes.shouldSkipSentenceAudioForDuplicate(noteLanguage, values)
+                    val isDuplicateKeep = notes.shouldSkipSentenceAudioForDuplicate(target, values)
                     when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second, duplicateKeep = isDuplicateKeep)) {
                         is AudioEditorResult.Cancelled -> {
                             showState(scan, index, noteTerm, "", null)
-                            return@launch
+                            return@start
                         }
                         is AudioEditorResult.WithoutAudio -> {
                             sentenceAudio = SentenceAudioAttachment.Omitted
                         }
                         is AudioEditorResult.WithAudio -> {
+                            confirmedAudio = audioResult
                             sentenceAudio = SentenceAudioAttachment.Attached(audioResult.file)
                         }
                     }
                 }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
-                val result = notes.add(noteLanguage, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudio), force)
+                // Once a mutation is attempted, keep its actual result rather than cancelling its acknowledgement.
+                configurationWatch?.cancel()
+                attachmentsReady()
+                val result = notes.add(target, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudio), force)
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(
                     TAG,
                     "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, " +
                         "sentenceAudio ${sentenceAudio is SentenceAudioAttachment.Attached}, translation ${FieldTemplate.SENTENCE_TRANSLATION in values}, forced $force",
                 )
+                if (result is AddResult.Added || result is AddResult.Updated) confirmedAudio?.let { audioEditor?.confirm(it) }
                 val (resultState, ids) = report(scan, noteTerm, result)
                 opens = ids
                 resultState
             } catch (e: CancellationException) {
+                withContext(NonCancellable) {
+                    withTimeoutOrNull(1000) { showState(scan, index, term, "", null) }
+                }
                 throw e
             } catch (e: Exception) {
                 Log.w(TAG, "Adding a note failed", e.redacted())
@@ -468,6 +495,7 @@ class PopupNotes(
                 "error"
             } finally {
                 addingEntries -= index
+                configurationWatch?.cancel()
                 // A cancelled note does not wait for its translation.
                 translated?.cancel()
                 (sentenceAudio as? SentenceAudioAttachment.Attached)?.file?.delete()
@@ -558,6 +586,9 @@ class PopupNotes(
     }
 
     fun release() {
+        pendingNote.cancel()
+        scanNotes.close()
+        audioEditor?.release()
         cropEditor?.cancel()
         onResultsHidden()
         page.noteActions = null
@@ -682,6 +713,10 @@ class PopupNotes(
             is AddResult.Added -> remember(scan, term, listOf(result.noteId))
             is AddResult.Updated -> remember(scan, term, listOf(result.noteId))
             is AddResult.Duplicate -> "open" to result.noteIds
+            AddResult.ConfigurationChanged -> {
+                toast(context.getString(R.string.anki_operation_settings_changed))
+                "" to null
+            }
             AddResult.NotConfigured -> {
                 toast(context.getString(R.string.anki_not_configured))
                 "error" to null

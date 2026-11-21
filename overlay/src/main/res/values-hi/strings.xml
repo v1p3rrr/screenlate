@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">बिना ऑडियो के जारी रखें</string>
     <string name="audio_editor_duplicate_keep_change_settings">सेटिंग्स बदलें</string>
     <string name="audio_editor_preview_failed">रिकॉर्डिंग नहीं चलाई जा सकी। फिर से कोशिश करें।</string>
+    <string name="anki_operation_settings_changed">Anki की सेटिंग बदल गई हैं। कार्ड जोड़ना रद्द कर दिया गया।</string>
 </resources>

@@ -230,11 +230,15 @@ class SentenceRecorder internal constructor(
         Unit
     }
 
-    internal suspend fun snapshot(range: AudioRange): PcmHistory.Snapshot? {
+    internal suspend fun snapshot(range: AudioRange, contextId: AudioContextId? = null): PcmHistory.Snapshot? {
         var acquired: PcmHistory.Snapshot? = null
         try {
             return withContext(Dispatchers.IO) {
-                lifecycle.withLock { snapshotFrom(coordinator, range).also { acquired = it } }
+                lifecycle.withLock {
+                    val session = coordinator
+                    if (contextId != null && session?.view(contextId) == null) return@withLock null
+                    snapshotFrom(session, range).also { acquired = it }
+                }
             }
         } catch (cancelled: CancellationException) {
             withContext(NonCancellable + Dispatchers.IO) { acquired?.close() }
@@ -242,8 +246,8 @@ class SentenceRecorder internal constructor(
         }
     }
 
-    suspend fun waveformSummary(range: AudioRange, buckets: Int = 200): WaveformSummary? = withContext(Dispatchers.IO) {
-        val snapshot = snapshot(range) ?: return@withContext null
+    suspend fun waveformSummary(range: AudioRange, buckets: Int = 200, contextId: AudioContextId? = null): WaveformSummary? = withContext(Dispatchers.IO) {
+        val snapshot = snapshot(range, contextId) ?: return@withContext null
         snapshot.use { lease ->
             try { lease.openStream().use { WaveformSummary.compute(it, range, buckets) } }
             catch (e: Exception) { Log.w(TAG, "Waveform computation failed", e); null }
@@ -255,8 +259,9 @@ class SentenceRecorder internal constructor(
         sampleRate: Int = 48000,
         minSilenceMillis: Long = SilenceDetector.DEFAULT_MIN_SILENCE_MILLIS,
         edgePaddingMillis: Long = SilenceDetector.DEFAULT_EDGE_PADDING_MILLIS,
+        contextId: AudioContextId? = null,
     ): List<AudioRange> = withContext(Dispatchers.IO) {
-        val snapshot = snapshot(range) ?: return@withContext emptyList()
+        val snapshot = snapshot(range, contextId) ?: return@withContext emptyList()
         snapshot.use { lease ->
             try {
                 lease.openStream().use {
@@ -269,7 +274,7 @@ class SentenceRecorder internal constructor(
     suspend fun initialSelection(view: AudioTimelineView, sampleRate: Int = 48000): AudioEdit? = withContext(Dispatchers.IO) {
         val source = view.source ?: return@withContext null
         val initial = InitialSelection.suggest(view.scanFrame, source, sampleRate) ?: return@withContext null
-        val snapshot = snapshot(initial) ?: return@withContext AudioEdit(initial)
+        val snapshot = snapshot(initial, view.contextId) ?: return@withContext AudioEdit(initial)
         snapshot.use { lease ->
             try {
                 val quiet = lease.openStream().use { SilenceDetector.detectLeadingQuiet(it, initial, sampleRate) }
@@ -286,6 +291,7 @@ class SentenceRecorder internal constructor(
         onComplete: (() -> Unit)? = null,
         onError: ((PreviewFailure) -> Unit)? = null,
         onStopped: (() -> Unit)? = null,
+        contextId: AudioContextId? = null,
     ) {
         val request = previewRequest.incrementAndGet()
         var requestLease: PlaybackCoordinator.Lease? = null
@@ -311,6 +317,13 @@ class SentenceRecorder internal constructor(
                     }
                     installed = true
                     val session = coordinator
+                    if (contextId != null && session?.view(contextId) == null) {
+                        lease.close()
+                        previewCallbackExecutor.execute {
+                            if (previewRequest.get() == request) onError?.invoke(PreviewFailure.SOURCE_UNAVAILABLE)
+                        }
+                        return@withContext
+                    }
                     if (previewPlayer != null && previewSession !== session) {
                         previewPlayer?.close()
                         if (previewPlayer?.isReleased == false) {
@@ -384,9 +397,9 @@ class SentenceRecorder internal constructor(
 
     data class ExportOutcome(val isQuiet: Boolean)
 
-    suspend fun export(edit: AudioEdit, outputFile: File, sampleRate: Int = 48000): ExportOutcome? = withContext(Dispatchers.IO) {
+    suspend fun export(edit: AudioEdit, outputFile: File, sampleRate: Int = 48000, contextId: AudioContextId? = null): ExportOutcome? = withContext(Dispatchers.IO) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@withContext null
-        val snapshot = snapshot(edit.selection) ?: return@withContext null
+        val snapshot = snapshot(edit.selection, contextId) ?: return@withContext null
         snapshot.use { lease ->
             try {
                 val result = lease.openStream().use {

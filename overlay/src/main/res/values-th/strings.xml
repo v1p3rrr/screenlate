@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">ดำเนินการต่อโดยไม่มีเสียง</string>
     <string name="audio_editor_duplicate_keep_change_settings">เปลี่ยนการตั้งค่า</string>
     <string name="audio_editor_preview_failed">ไม่สามารถเล่นเสียงที่บันทึกได้ โปรดลองอีกครั้ง</string>
+    <string name="anki_operation_settings_changed">การตั้งค่า Anki เปลี่ยนไป การเพิ่มบัตรถูกยกเลิกแล้ว</string>
 </resources>

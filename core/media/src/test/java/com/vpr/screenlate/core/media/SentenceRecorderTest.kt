@@ -27,6 +27,30 @@ class SentenceRecorderTest {
     @get:Rule val temporary = TemporaryFolder()
 
     @Test
+    fun editorReadsCannotUseAnotherScanWithMatchingFramePositions() = runBlocking {
+        val time = AtomicLong(10_000L)
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() }, { time.get() * 1_000_000L })
+        val source = FakeAudioSource()
+        try {
+            recorder.start(source)
+            source.emitFrames(100)
+            val range = AudioRange(0, 100)
+            withTimeout(3000) {
+                while (recorder.waveformSummary(range) == null) delay(1)
+            }
+            time.set(10_100)
+            val old = checkNotNull(recorder.acquireScan())
+            recorder.openEditor(old)
+            val current = checkNotNull(recorder.acquireScan())
+            recorder.openEditor(current)
+            assertThat(recorder.snapshot(range, old)).isNull()
+            assertThat(recorder.waveformSummary(range, contextId = old)).isNull()
+            assertThat(recorder.waveformSummary(range, contextId = current)).isNotNull()
+        } finally { recorder.close() }
+    }
+
+    @Test
     fun previewAndPronunciationReplaceEachOtherWithoutRevivingAnOldSeek() = runBlocking {
         val playback = PlaybackCoordinator()
         val sinks = java.util.concurrent.CopyOnWriteArrayList<HeldSink>()

@@ -110,19 +110,7 @@ class LookupPage(
 
     /** Actions from the sentence audio editor overlay UI. */
     interface AudioEditorActions {
-        fun onAudioPlay(cursor: Long, mode: String)
-        fun onAudioPause()
-        fun onAudioSeek(cursor: Long, mode: String)
-        fun onAudioFindSilence(fromFrame: Long, toFrame: Long, request: Int)
-        fun onAudioSilenceSettingsChanged(minPauseSeconds: Float, edgeMarginMillis: Int)
-        fun onAudioRefresh()
-        fun onAudioExpand(expanded: Boolean)
-        fun onAudioCollapse(collapsed: Boolean)
-        fun onAudioCancel(dirty: Boolean)
-        fun onAudioWithout()
-        fun onAudioAdd(editJson: String)
-        fun onAudioChangeSettings()
-        fun onAudioDragWindow(dx: Float, dy: Float)
+        fun onAudioEditorCommand(payload: String)
     }
 
     /** Receives the note and audio buttons; without it they do nothing. */
@@ -242,16 +230,7 @@ class LookupPage(
 
     fun openAudioEditor(dataJson: String) = run("AudioEditor.open($dataJson)")
 
-    fun updateAudioTimeline(dataJson: String) = run("AudioEditor.updateTimeline($dataJson)")
-
-    fun updateAudioCursor(frame: Long) = run("AudioEditor.updateCursor($frame)")
-
-    fun setAudioPlaying(isPlaying: Boolean) = run("AudioEditor.setPlaying($isPlaying)")
-
-    fun setAudioSilenceProposals(request: Int, proposalsJson: String) =
-        run("AudioEditor.setSilenceProposals($request, $proposalsJson)")
-
-    fun closeAudioEditor() = run("AudioEditor.close()")
+    fun audioEditorMessage(dataJson: String) = run("AudioEditor.receive($dataJson)")
 
     /**
      * Calls [callback] once what the scripts run so far show is ready to be drawn, or after [DRAW_TIMEOUT_MS] at the
@@ -432,69 +411,8 @@ class LookupPage(
             post { noteActions?.onAddNote(index, noteData, withScreenshot, force, withAudio) }
 
         @JavascriptInterface
-        fun onAudioPlay(cursor: Double, mode: String) = post {
-            audioEditorActions?.onAudioPlay(cursor.toLong(), mode)
-        }
-
-        @JavascriptInterface
-        fun onAudioPause() = post {
-            audioEditorActions?.onAudioPause()
-        }
-
-        @JavascriptInterface
-        fun onAudioSeek(cursor: Double, mode: String) = post {
-            audioEditorActions?.onAudioSeek(cursor.toLong(), mode)
-        }
-
-        @JavascriptInterface
-        fun onAudioFindSilence(fromFrame: Double, toFrame: Double, request: Int) = post {
-            audioEditorActions?.onAudioFindSilence(fromFrame.toLong(), toFrame.toLong(), request)
-        }
-
-        @JavascriptInterface
-        fun onAudioSilenceSettingsChanged(minPauseSeconds: Double, edgeMarginMillis: Int) = post {
-            audioEditorActions?.onAudioSilenceSettingsChanged(minPauseSeconds.toFloat(), edgeMarginMillis)
-        }
-
-        @JavascriptInterface
-        fun onAudioRefresh() = post {
-            audioEditorActions?.onAudioRefresh()
-        }
-
-        @JavascriptInterface
-        fun onAudioExpand(expanded: Boolean) = post {
-            audioEditorActions?.onAudioExpand(expanded)
-        }
-
-        @JavascriptInterface
-        fun onAudioCollapse(collapsed: Boolean) = post {
-            audioEditorActions?.onAudioCollapse(collapsed)
-        }
-
-        @JavascriptInterface
-        fun onAudioCancel(dirty: Boolean) = post {
-            audioEditorActions?.onAudioCancel(dirty)
-        }
-
-        @JavascriptInterface
-        fun onAudioWithout() = post {
-            audioEditorActions?.onAudioWithout()
-        }
-
-        @JavascriptInterface
-        fun onAudioAdd(editJson: String) = post {
-            audioEditorActions?.onAudioAdd(editJson)
-        }
-
-        @JavascriptInterface
-        fun onAudioChangeSettings() = post {
-            audioEditorActions?.onAudioChangeSettings()
-        }
-
-        @JavascriptInterface
-        fun onDragWindow(dx: Float, dy: Float) = post {
-            val density = container.resources.displayMetrics.density
-            audioEditorActions?.onAudioDragWindow(dx * density, dy * density)
+        fun onAudioEditorCommand(payload: String) = post {
+            audioEditorActions?.onAudioEditorCommand(payload)
         }
 
         @JavascriptInterface

@@ -9,7 +9,11 @@ import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.core.common.Language
 import java.io.File
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,6 +50,8 @@ sealed interface AddResult {
     /** Blocked by the duplicate check with [DuplicateBehavior.PREVENT]; [noteIds] are the existing notes. */
     data class Duplicate(val noteIds: List<Long>) : AddResult
 
+    data object ConfigurationChanged : AddResult
+
     data object NotConfigured : AddResult
 
     data class Unavailable(val availability: AnkiAvailability) : AddResult
@@ -54,6 +60,11 @@ sealed interface AddResult {
     data object Rejected : AddResult
 
     data class Failed(val message: String) : AddResult
+}
+
+/** Effective destination and write policy captured before preparing a note's attachments. */
+class NoteTarget internal constructor(val language: Language, internal val settings: AnkiSettings) {
+    val markers: Set<String> = settings.fields.values.flatMapTo(mutableSetOf()) { FieldTemplate.markersIn(it) }
 }
 
 /** Something that broke in the Anki setup without the user changing Screenlate's settings. */
@@ -77,6 +88,18 @@ class AnkiNotes @Inject constructor(
     private val fieldCache = mutableMapOf<Long, List<String>>()
 
     suspend fun settings(language: Language): AnkiSettings = settingsRepository.current(language)
+
+    suspend fun freezeTarget(language: Language): NoteTarget = NoteTarget(language, settings(language).effective())
+
+    fun targetChanged(target: NoteTarget): Flow<Boolean> = settingsRepository.settings(target.language)
+        .map { it.effective() != target.settings }
+
+    private suspend fun isCurrent(target: NoteTarget): Boolean = settings(target.language).effective() == target.settings
+
+    private fun AnkiSettings.effective(): AnkiSettings = copy(
+        deckName = null, modelName = null, savedTemplates = emptyMap(), screenshotByDefault = false,
+        fields = fields.toMap(), overwriteModes = overwriteModes.toMap(),
+    )
 
     /** Whether notes can be added now: AnkiDroid is ready and [language]'s note type still exists. */
     suspend fun ready(language: Language): Boolean {
@@ -187,8 +210,11 @@ class AnkiNotes @Inject constructor(
      * Returns true if an existing duplicate note would be updated by [DuplicateBehavior.OVERWRITE] and
      * all fields containing `{sentence-audio}` use [OverwriteMode.KEEP] with existing non-blank content.
      */
-    suspend fun shouldSkipSentenceAudioForDuplicate(language: Language, values: Map<String, String>): Boolean {
-        val settings = settings(language)
+    suspend fun shouldSkipSentenceAudioForDuplicate(language: Language, values: Map<String, String>): Boolean =
+        shouldSkipSentenceAudioForDuplicate(freezeTarget(language), values)
+
+    suspend fun shouldSkipSentenceAudioForDuplicate(target: NoteTarget, values: Map<String, String>): Boolean {
+        val settings = target.settings
         if (!settings.configured || !settings.duplicateCheck || settings.duplicateBehavior != DuplicateBehavior.OVERWRITE) {
             return false
         }
@@ -230,10 +256,15 @@ class AnkiNotes @Inject constructor(
      *
      * @param force add a new note even if the settings prevent duplicates.
      */
-    suspend fun add(language: Language, request: NoteRequest, force: Boolean = false): AddResult {
+    suspend fun add(language: Language, request: NoteRequest, force: Boolean = false): AddResult =
+        add(freezeTarget(language), request, force)
+
+    suspend fun add(target: NoteTarget, request: NoteRequest, force: Boolean = false): AddResult {
+        currentCoroutineContext().ensureActive()
+        if (!isCurrent(target)) return AddResult.ConfigurationChanged
         val availability = anki.availability()
         if (availability != AnkiAvailability.READY) return AddResult.Unavailable(availability)
-        val settings = settings(language)
+        val settings = target.settings
         val modelId = settings.modelId
         val deckId = settings.deckId
         if (!settings.configured || modelId == null || deckId == null) return AddResult.NotConfigured
@@ -246,7 +277,7 @@ class AnkiNotes @Inject constructor(
             }
 
             val values = request.values.toMutableMap()
-            val used = usedMarkers(language)
+            val used = target.markers
             if ("screenshot" in used && request.screenshot != null) {
                 anki.addMedia(request.screenshot, "screenlate_${System.currentTimeMillis()}", AnkiDroid.MediaKind.IMAGE)
                     ?.let { values["screenshot"] = it }
@@ -280,6 +311,8 @@ class AnkiNotes @Inject constructor(
                 null
             }
 
+            if (!isCurrent(target)) return AddResult.ConfigurationChanged
+            currentCoroutineContext().ensureActive()
             if (targetNote != null) {
                 val merged = names.mapIndexed { index, name ->
                     val template = settings.fields[name].orEmpty()

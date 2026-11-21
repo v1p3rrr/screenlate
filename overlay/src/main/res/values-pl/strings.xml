@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">Kontynuuj bez dźwięku</string>
     <string name="audio_editor_duplicate_keep_change_settings">Zmień ustawienia</string>
     <string name="audio_editor_preview_failed">Nie udało się odtworzyć nagrania. Spróbuj ponownie.</string>
+    <string name="anki_operation_settings_changed">Ustawienia Anki zostały zmienione. Dodawanie karty zostało anulowane.</string>
 </resources>

@@ -322,3 +322,10 @@ keyPassword=...
 Both files are ignored by git. Write the path with forward slashes, also on Windows: a backslash in this file is an escape character, so a password should not contain one either.
 
 For releases from CI, the same values go into the repository secrets `SIGNING_KEYSTORE_BASE64` (the key file in Base64), `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD`. Without them the release workflow builds but does not publish. Keep a backup of the key file and its passwords: updates must be signed with the same key, or users have to uninstall the app first.
+
+Sentence-editor ownership regressions are in `AudioEditorOperationTest` and `PendingNoteControllerTest`;
+page protocol/gesture checks run with the other page-script tests. `AnkiNotesTest` covers frozen export
+targets with a fake backend. `AudioEditorDeviceTest` runs the production controller, WebView bridge, PCM
+storage and Opus export in the isolated overlay test package without a collection. The matching identified
+bridge/Main test is in `LookupPageTest`. These fixtures do not replace rotation, source-app and resource
+acceptance. Assemble the overlay test APK before running those classes explicitly on the selected device.

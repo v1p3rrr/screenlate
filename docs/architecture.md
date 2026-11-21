@@ -199,6 +199,14 @@ completion. MediaPlayer access stays on Main; bounded engine IPC and file work r
 utterance/preparation callbacks cannot restart sound or delete another operation's file. Downloaded
 pronunciation clips remain owned by their cache.
 
+The note attachment pipeline has one `PendingNoteController` owner. `AudioEditorOperation` owns each
+editor result, immutable accepted edits, source revisions, child work and export output. The page sends
+identified commands containing the edit snapshot; Kotlin validates it before playback or export. Matching
+native acknowledgements control closure, and encoding failure leaves the editor available for retry.
+Refresh extends source bounds without moving existing edits. A scan remembers the selection only after
+successful note creation or update. `NoteTarget` snapshots effective export settings when native note
+preparation starts and checks them again before mutation; preparation cancels on relevant settings changes.
+
 The overlay editor (`audio-editor.js`, `audio-editor.css`, coordinated by `AudioEditorController`) presents an
 interactive waveform with selection handles, manual cuts, leading-quiet detection and timeline refresh.
 `AudioPreviewPlayer` gives each playback run its own cancellation and output lifetime. Seek retires old

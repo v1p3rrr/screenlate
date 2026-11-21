@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">Ses olmadan devam et</string>
     <string name="audio_editor_duplicate_keep_change_settings">Ayarları değiştir</string>
     <string name="audio_editor_preview_failed">Kayıt oynatılamadı. Tekrar deneyin.</string>
+    <string name="anki_operation_settings_changed">Anki ayarları değişti. Kart ekleme iptal edildi.</string>
 </resources>

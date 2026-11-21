@@ -189,4 +189,5 @@
     <string name="audio_editor_duplicate_keep_continue">不附帶音訊繼續</string>
     <string name="audio_editor_duplicate_keep_change_settings">變更設定</string>
     <string name="audio_editor_preview_failed">無法播放錄音，請重試。</string>
+    <string name="anki_operation_settings_changed">Anki 設定已變更，已取消新增卡片。</string>
 </resources>

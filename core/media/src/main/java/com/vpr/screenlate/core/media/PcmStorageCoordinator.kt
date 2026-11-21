@@ -113,6 +113,10 @@ internal class PcmStorageCoordinator(
         timeline?.openEditor(id, committedEndFrame, processingTime(openMillis), directory.usableSpace >= config.minFreeSpaceBytes)
     }
 
+    fun view(id: AudioContextId): AudioTimelineView? = command {
+        timeline?.view(id, committedEndFrame, processingTime(null))
+    }
+
     fun refresh(id: AudioContextId, refreshMillis: Long = nowMillis()): AudioTimelineView? = command {
         timeline?.refresh(id, committedEndFrame, processingTime(refreshMillis))
     }

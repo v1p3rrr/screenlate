@@ -190,4 +190,5 @@
     <string name="audio_editor_duplicate_keep_continue">Продолжить без аудио</string>
     <string name="audio_editor_duplicate_keep_change_settings">Изменить настройки</string>
     <string name="audio_editor_preview_failed">Не удалось воспроизвести запись. Попробуйте ещё раз.</string>
+    <string name="anki_operation_settings_changed">Настройки Anki изменились. Добавление карточки отменено.</string>
 </resources>

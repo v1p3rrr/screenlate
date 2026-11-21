@@ -1,6 +1,7 @@
 package com.vpr.screenlate.overlay.web
 
 import android.content.Context
+import android.os.Looper
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
@@ -103,6 +104,33 @@ class LookupPageTest {
         deinflected = expression,
         term = TermEntry(expression, reading, glossaries = listOf(Glossary("Test [1]", "[\"$meaning\"]"))),
     )
+
+    @Test
+    fun identifiedAudioCommandsReachMainAndAwaitMatchingNativeCompletion() = onMain {
+        val commands = mutableListOf<String>()
+        page.audioEditorActions = object : LookupPage.AudioEditorActions {
+            override fun onAudioEditorCommand(payload: String) {
+                check(Looper.myLooper() === Looper.getMainLooper())
+                commands += payload
+            }
+        }
+        page.render(PageState.build(context, theme = PageTheme.DARK, text = "", matched = 0,
+            results = emptyList(), message = "-", language = Language.JAPANESE))
+        evaluate("typeof AudioEditor")
+        page.openAudioEditor("""{"operation":"fixture-a","sourceRevision":0,"totalFrames":480000,"selection":[48000,240000]}""")
+        awaitValue("AudioEditor.state.isOpen", "true")
+        evaluate("document.getElementById('sl-action-cut').click(); document.getElementById('sl-action-add').click(); true")
+        withTimeout(TIMEOUT_MS) { while (commands.none { it.contains("\"action\":\"save\"") }) delay(POLL_MS) }
+        assertThat(commands.last()).contains("\"operation\":\"fixture-a\"")
+        assertThat(commands.last()).doesNotContain("\"exclusions\":[]")
+        assertThat(evaluate("document.getElementById('audio-editor').hidden")).isEqualTo("false")
+        page.audioEditorMessage("""{"operation":"fixture-old","closed":true}""")
+        assertThat(evaluate("AudioEditor.state.isOpen")).isEqualTo("true")
+        page.audioEditorMessage("""{"operation":"fixture-a","phase":"failed","error":"Fixture export failure"}""")
+        awaitValue("document.getElementById('sl-action-add').disabled", "false")
+        page.audioEditorMessage("""{"operation":"fixture-a","closed":true}""")
+        awaitValue("AudioEditor.state.isOpen", "false")
+    }
 
     @Test
     fun rendersResultsWithTheLanguageAndFonts() = onMain {

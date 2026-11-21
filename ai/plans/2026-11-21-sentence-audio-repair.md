@@ -412,17 +412,22 @@ are investigated as findings, not converted into an invented new audio performan
 
 | Milestone | Status | Evidence |
 |---|---|---|
-| A regression baseline | Partial | Permanent core regressions landed with fixes; 97 core-media tests, 8 AudioPlayer, 4 playback-owner and 12 popup playback cases pass. DOM and full pending-note/fake-backend fixture remain for editor work. |
+| A regression baseline | Partial | Permanent core regressions landed with fixes; 98 core-media tests, 8 AudioPlayer, 4 playback-owner, 12 popup playback and 8 new editor/pending-operation cases pass; identified editor DOM regressions and frozen-target fake-backend cases are permanent. Full lifecycle fixtures remain. |
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
-| C pending operation/protocol | Pending | Current implementation remains at reviewed behavior. |
-| D editing/fidelity | Pending | Codec probe evidence is partial, not end-to-end acceptance. |
+| C pending operation/protocol | Partial | Replaced shared editor continuation with per-operation result/scope/edit/source revisions; one pending note pipeline, identified Main bridge, one export, retryable encode failure, append bounds, confirmed-edit promotion and frozen native-Add target are implemented. Two new isolated API30 bridge/controller/codec tests pass; final 3-test rerun includes shared playback and safe host teardown. Pre-chooser snapshot, Ready admission, rotation/crop rehosting, active-language invalidation and scan/Back arbitration remain. |
+| D editing/fidelity | Partial | Commands atomically submit accepted edits for playback/export and Refresh publishes appendable source bounds; remaining waveform/initial-selection/fidelity and scheduling work is pending. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-Next C's pending-note/editor identity and revision protocol. Physical checks remain in G.
-Complete editor-facing A fixtures when introducing C's operation interface; coalesce
-incoming preview/Refresh requests there, beyond the already bounded outgoing progress delivery.
+Next continue C's lifecycle work on the new owners: freeze note/context/target at the original Add or hold
+before the attachment chooser (currently the native Add request freezes the target); operable-Ready admission
+and revision handshakes; rotation/crop rehosting without renewed E; active-language invalidation; Back/dirty
+cancel and new-scan finish/cancel arbitration. Keep failed finish from executing the queued scan and acquire
+its marker only when it runs. Pre-note Anki media-copy retry remains E, not the now-retryable encoder failure.
+Incoming preview replacement and Refresh are bounded by owned jobs; detailed gesture coalescing and
+recording-tail availability updates remain D. Physical checks remain G.
+
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
 the two untracked `docs/images/photo_*2026-11-10*.jpg` files. Commit/push only this feature branch.
@@ -435,6 +440,12 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-22: Owner explicitly requested replacement rather than patches. Replaced the editor continuation
+  and untagged bridge with AudioEditorOperation, operation IDs, source/edit revisions and frozen command
+  snapshots; connected PendingNoteController to the real attachment pipeline. Added encode failure/retry,
+  late-output cleanup, cross-scan reads, confirmed-note-only edit reuse and frozen-target/config-change
+  regressions. Target is currently captured at native Add; pre-chooser capture and remaining lifecycle
+  gates are explicitly pending. Product decisions are unchanged.
 - 2026-11-22: Implemented shared own-output leases, capture-lifetime protection, TTS native stop barrier
   and operation-owned pronunciation cleanup. Original native WAV leak reproduced; permanent JVM/native
   regressions added, including drain/queued-feedback/short-speech and pending dictionary audio. Required
