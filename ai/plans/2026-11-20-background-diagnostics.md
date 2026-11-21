@@ -123,3 +123,25 @@ not contain core:media and does not implement the audio fix.
 - Normal release vital lint also passes after the follow-up. The independent test package was uninstalled, the owned
   read-only/silent emulator was shut down, and temporary native-source junctions were removed.
 - Matching partition-map SHA-256: `C1B7EE35D1D4243D5684CE566AD571D6CD2F218DF14A51BFB34347C8D4ED071F`.
+
+
+## Disabled outside-tap experiment artifact (2026-11-21)
+
+- Owner explicitly authorized this behavior experiment in addition to logs. Code: c834fd65, pushed to origin/main.
+- ARM64 minified Dev APK: `testdata/local-research/builds/screenlate-dev-c834fd65-outside-tap-min.apk` in this worktree.
+  Version 1.1.0-c834fd65-outside-tap-min (10100), com.vpr.screenlate.debug, debuggable, 32,588,514 bytes.
+- APK SHA-256: 8A45A7AEF4EE40FB5FB54304E35F6B405118EF7CD10551466899AE350A73FF13.
+- Original R8 partition archive: `screenlate-dev-c834fd65-outside-tap-min.mapping.prt` beside the APK.
+  SHA-256: 28E4931CA044FF732DCCE04A59E2D8E83D8B96CC350C43757555E81417E70DCB.
+- Dev signing certificate remains 3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22.
+- 330 overlay + 300 app JVM cases: zero failures/errors, one existing app skip. Overlay debug lint, final instrumented
+  test compilation and normal release vital lint pass. Three popup instrumentation cases pass on API 30; the exact
+  disabled-window regression first failed with expected=1/actual=2 before the fix. Real input/stacking smoke uses the
+  independent test package's application overlays; synthetic screenshot inspected. No OEM-selector result claimed.
+- Page-only x86 test fixture again excludes the unused upstream MNN JNI build task (previous elf_i386 issue); ARM64
+  application assembly includes native OCR and succeeds. No native source changes.
+- The initial packaging invocation hit PowerShell parsing of an unquoted dotted Gradle property; quoting the property
+  corrected the command and the final APK build passed. No application fix was needed for this tooling error.
+- Owner phone untouched; own independent test package uninstalled, owned read-only/silent emulator shut down, source
+  junctions removed. Leave On tap outside OFF and observe ordinary use/overnight; export the full journal after a
+  natural reset. Verify hideOnOutsideTap=false/catcherAttached=false for the interval. No periodic Activity launch.

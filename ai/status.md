@@ -15,7 +15,14 @@
 - Preferred later redesign candidate reuses the existing highlight layer as an active-only touch target, avoiding an
   extra window; a single popup/backdrop window is broader. ACTION_OUTSIDE would change the consume/cancel contract.
   No redesign, model unloading, resource tuning, audio-branch edits or phone-system changes were implemented.
-- Dev APK packaging and final app checks are in progress; retain the diagnostic journal for the natural-cleanup test.
+- Final checks: 630 JVM cases (629 pass, one existing skip), three popup device cases, overlay debug lint and normal
+  release vital lint pass. ARM64 minified Dev packaging succeeds, package/debuggable/ABI and signature verified.
+- Code c834fd65 is pushed to origin/main. APK: `testdata/local-research/builds/screenlate-dev-c834fd65-outside-tap-min.apk`,
+  version 1.1.0-c834fd65-outside-tap-min (10100), 32,588,514 bytes, same Dev certificate. Original partitioned R8 map
+  retained beside it. APK SHA-256: 8A45A7AEF4EE40FB5FB54304E35F6B405118EF7CD10551466899AE350A73FF13.
+- Owner phone not installed/modified. Own independent test package uninstalled, owned emulator stopped, temporary
+  source junctions removed. Existing setting is preserved: choose OFF for the experiment, use normally, export the
+  complete journal after a natural disappearance or the overnight observation. No hourly reopening required.
 
 ## First affected build code audit (2026-11-21)
 
