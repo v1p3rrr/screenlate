@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">このノートには既に例文の音声があり、フィールド更新設定に従って保持されます。</string>
     <string name="audio_editor_duplicate_keep_continue">音声なしで続行</string>
     <string name="audio_editor_duplicate_keep_change_settings">設定を変更</string>
+    <string name="audio_editor_preview_failed">録音を再生できませんでした。もう一度お試しください。</string>
 </resources>

@@ -7,6 +7,31 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Preview ownership and short native output — 2026-11-21
+
+- `AudioPreviewPlayer` owns a generation per request, cancellation/sink per run and one retiring slot.
+  Stop/pause/flush precede replacement; a blocked old read/output declines replacement instead of growing
+  workers/AudioTracks. Natural and error paths release output; failures are typed and delivered on Main.
+- Preview uses accepted-byte accounting and native played frames, not queued/read frames, for source-time
+  position. Output writes are nonblocking, no-progress waiting is finite (provisional 2 s), and the genuine
+  audible tail is drained before completion. Retirement waits retain the existing provisional 500 ms budget.
+- `AudioTrack` streaming may not start below its device-specific minimum. API30 reproduced OUTPUT_STALLED
+  for a short fixture after the 500 ms fixture succeeded. One bounded native buffer of trailing zero padding
+  fixes this; padding is transport-only and cursor/source/export frame counts exclude it. See
+  [AudioTrack play/start threshold](https://developer.android.com/reference/android/media/AudioTrack#play())
+  and [played-frame counter/reset contract](https://developer.android.com/reference/android/media/AudioTrack#getPlaybackHeadPosition()).
+- Head sampling uses a cancellable timed condition wait on the playback worker (up to 50 ms), without
+  periodic native Main messages. Outgoing progress coalesces to one latest pending update. A fake-clock
+  regression reproduced 1,000 queued progress tasks before the fix and verifies the bounded delivery afterward.
+- `SentenceRecorderDeviceTest` passed both methods on host-silent API30: production constructor/Main executor,
+  real AudioTrack and actual WebView callbacks at 24,000 / 240 / 1 source frames. Entire class: 2 tests,
+  1.705 s. Sources are synthetic silence; this is not speech fidelity, route, policy or capture compatibility.
+- Core media has 91 passing unit tests, including 12 preview tests. Full build/unit/lint/test-APK/convention/
+  release-vital checks pass; app localization validation includes the new message in all 27 locales.
+  Current logs: ignored `testdata/local-research/audio-review-2026-11-21/preview-*.log`.
+- Pending: consent purpose, TTS/own-playback arbitration, stopped owner retirement, C's edit/operation/view
+  protocol and incoming-command coalescing, and the remaining resource/device/codec acceptance matrix.
+
 ## Session ownership repair — 2026-11-21
 
 - `PcmStorageCoordinator` now has one background owner for control commands, clock advancement, PCM

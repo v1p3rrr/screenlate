@@ -196,4 +196,5 @@
     <string name="audio_editor_duplicate_keep_body">This note already has sentence audio, which will be kept according to your field update settings.</string>
     <string name="audio_editor_duplicate_keep_continue">Continue without audio</string>
     <string name="audio_editor_duplicate_keep_change_settings">Change settings</string>
+    <string name="audio_editor_preview_failed">Could not play the recording. Try again.</string>
 </resources>

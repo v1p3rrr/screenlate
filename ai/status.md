@@ -1,5 +1,25 @@
 # Status
 
+## Sentence audio: preview lifetime and Main callback repair (2026-11-21)
+
+- Replaced shared preview stop state with owned playback generations. One retiring run must release before
+  another sink opens; late source reads cannot revive output or clear a replacement's state. Facade retains
+  an unreleased player instead of creating another one around it. Natural/error/cancel paths release sinks.
+- Cursor uses native played frames, handles partial/failed/non-progressing writes, and drains the genuine
+  tail before completion. API30 exposed a real short-stream startup stall; bounded native-buffer tail padding
+  fixes it without changing logical source/edit/export frames. No gain or external audio-focus/player controls.
+- Production callbacks use Main and revalidate generation at delivery. Progress retains one latest pending
+  update rather than an event per frame report; no periodic native-position messages are posted to Main.
+  Preview error feedback is localized in all 27 locales; UI cannot overwrite an immediate error with Playing.
+- 91 core-media tests pass (7 additional preview cases); app/overlay unit tests and localization checks pass.
+  Full assemble/unit/lint/test-APK/convention/release-vital checks pass; focused core lint/tests/assembly also
+  pass after the final bounded native-wait adjustment. API30 `SentenceRecorderDeviceTest`: 2 tests pass,
+  including real AudioTrack + WebView at 24,000 / 240 / 1 source frames through the production facade.
+- Logs: ignored `testdata/local-research/audio-review-2026-11-21/preview-*.log`. Source is synthetic silent
+  PCM, not a real spoken utterance or AudioRecord capture. Consent-purpose/TTS work and C–G remain open.
+  Next fix screenshot-only versus recording consent, then TTS lifetime/own-playback arbitration and stopped
+  session retirement. C must also coalesce incoming Seek/Refresh jobs and validate operation/view revisions.
+
 ## Sentence audio: serialized recording-session foundation (2026-11-21)
 
 - Implemented on `codex/sentence-audio-recording`: one background owner now serializes recording commands,

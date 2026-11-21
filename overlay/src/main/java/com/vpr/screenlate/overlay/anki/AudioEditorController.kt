@@ -210,25 +210,41 @@ class AudioEditorController(
         val edit = currentEdit ?: return
         val previewMode = if (mode == "original") PreviewMode.ORIGINAL else PreviewMode.RESULT
         scope.launch {
+            if (currentEdit !== edit) return@launch
+            page.setAudioPlaying(true)
             sentenceRecorder.startPreview(
                 edit = edit,
                 mode = previewMode,
                 startFrame = cursor,
                 onProgress = { frame ->
-                    scope.launch(Dispatchers.Main) { if (currentEdit === edit) page.updateAudioCursor(frame) }
+                    scope.launch(Dispatchers.Main) {
+                        if (currentEdit === edit) {
+                            page.updateAudioCursor(frame)
+                            page.setAudioPlaying(sentenceRecorder.isPreviewPlaying)
+                        }
+                    }
                 },
                 onComplete = {
                     scope.launch(Dispatchers.Main) { if (currentEdit === edit) page.setAudioPlaying(false) }
                 },
+                onError = { failure ->
+                    scope.launch(Dispatchers.Main) {
+                        if (currentEdit === edit) {
+                            page.setAudioPlaying(false)
+                            Log.w(TAG, "Audio preview failed: $failure")
+                            Toast.makeText(context, R.string.audio_editor_preview_failed, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
             )
-            page.setAudioPlaying(true)
         }
     }
 
     override fun onAudioPause() {
+        val edit = currentEdit
         scope.launch {
             sentenceRecorder.pausePreview()
-            page.setAudioPlaying(false)
+            if (currentEdit === edit) page.setAudioPlaying(sentenceRecorder.isPreviewPlaying)
         }
     }
 

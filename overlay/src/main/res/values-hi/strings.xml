@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">इस नोट में पहले से ही वाक्य ऑडियो है, जिसे आपकी फ़ील्ड अपडेट सेटिंग के अनुसार रखा जाएगा।</string>
     <string name="audio_editor_duplicate_keep_continue">बिना ऑडियो के जारी रखें</string>
     <string name="audio_editor_duplicate_keep_change_settings">सेटिंग्स बदलें</string>
+    <string name="audio_editor_preview_failed">रिकॉर्डिंग नहीं चलाई जा सकी। फिर से कोशिश करें।</string>
 </resources>

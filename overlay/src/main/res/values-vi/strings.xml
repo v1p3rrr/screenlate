@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Ghi chú này đã có âm thanh câu, sẽ được giữ lại theo cài đặt cập nhật trường.</string>
     <string name="audio_editor_duplicate_keep_continue">Tiếp tục không có âm thanh</string>
     <string name="audio_editor_duplicate_keep_change_settings">Thay đổi cài đặt</string>
+    <string name="audio_editor_preview_failed">Không thể phát bản ghi âm. Hãy thử lại.</string>
 </resources>

@@ -62,11 +62,14 @@ Run `./gradlew :core:media:testDebugUnitTest :core:media:lintDebug`.
 
 `SentenceRecorderTest` and `PcmStorageCoordinatorTest` cover asynchronous failure publication, failed/cancelled
 startup, delayed and stuck Stop, concurrent Refresh/publication, cross-session snapshot lifetime and new-scan
-duration admission. Tests use synthetic sources and actual temporary PCM files. `SentenceRecorderDeviceTest`
-checks the suspending facade from Android Main while asserting source operations execute off Main; it has
-no microphone, projection, playback or collection access. Run it in the independent library test package:
+duration admission. `AudioPreviewPlayerTest` covers run retirement, exact seek/cut bytes, short/stalled
+writes, audible-frame drain, error cleanup and bounded/stale callback delivery. Tests use synthetic sources
+and actual temporary PCM files. `SentenceRecorderDeviceTest` checks the facade from Android Main and also
+plays silent PCM through real AudioTrack while calling an actual WebView from production preview callbacks.
+The preview fixtures include 500 ms, 5 ms and a single frame. No microphone, projection or collection is used.
+Run it on a host-silent emulator in the independent library test package:
 `adb -s <serial> shell am instrument -w -e class com.vpr.screenlate.core.media.SentenceRecorderDeviceTest com.vpr.screenlate.core.media.test/androidx.test.runner.AndroidJUnitRunner`.
-This does not replace real capture, WebView preview, codec or overlay gesture acceptance.
+This does not replace real-source capture, codec, route or complete overlay gesture acceptance.
 
 The overlay editor's JavaScript logic is tested via Node.js and jsdom:
 `npm --prefix scripts/page-tests test` runs all page test suites including `audio-editor.test.mjs`.

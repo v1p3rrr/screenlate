@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Ez a jegyzet már tartalmazza a mondat hangját, amely a mezőfrissítési beállítások szerint megmarad.</string>
     <string name="audio_editor_duplicate_keep_continue">Folytatás hang nélkül</string>
     <string name="audio_editor_duplicate_keep_change_settings">Beállítások módosítása</string>
+    <string name="audio_editor_preview_failed">A felvételt nem sikerült lejátszani. Próbálja újra.</string>
 </resources>

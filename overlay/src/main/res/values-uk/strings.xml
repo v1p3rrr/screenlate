@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Ця нотатка вже має аудіо речення, яке буде збережено згідно з налаштуваннями оновлення полів.</string>
     <string name="audio_editor_duplicate_keep_continue">Продовжити без аудіо</string>
     <string name="audio_editor_duplicate_keep_change_settings">Змінити налаштування</string>
+    <string name="audio_editor_preview_failed">Не вдалося відтворити запис. Спробуйте ще раз.</string>
 </resources>

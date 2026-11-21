@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Cette note contient déjà un audio de phrase, qui sera conservé selon vos paramètres de mise à jour des champs.</string>
     <string name="audio_editor_duplicate_keep_continue">Continuer sans audio</string>
     <string name="audio_editor_duplicate_keep_change_settings">Modifier les paramètres</string>
+    <string name="audio_editor_preview_failed">Impossible de lire l’enregistrement. Réessayez.</string>
 </resources>

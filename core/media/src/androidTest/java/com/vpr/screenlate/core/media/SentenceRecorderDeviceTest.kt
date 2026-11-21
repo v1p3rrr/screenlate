@@ -2,6 +2,10 @@ package com.vpr.screenlate.core.media
 
 import android.content.Context
 import android.os.Looper
+import android.os.SystemClock
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.annotation.SuppressLint
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
@@ -19,12 +23,66 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.CompletableDeferred
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Synthetic PCM only: no projection, microphone, playback or app collection is used. */
+/** Synthetic PCM; preview plays silence through AudioTrack. No projection, microphone or collection access. */
 @RunWith(AndroidJUnit4::class)
 class SentenceRecorderDeviceTest {
+    @Test
+    @SuppressLint("SetJavaScriptEnabled") // Local inline fixture only.
+    fun productionPreviewDeliversProgressAndCompletionToWebViewOnMain() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        for (frames in listOf(24_000, 240, 1)) {
+            val ready = CompletableDeferred<Unit>()
+            val result = CompletableDeferred<String>()
+            val page = withContext(Dispatchers.Main) {
+                WebView(context).apply {
+                    settings.javaScriptEnabled = true
+                    webViewClient = object : WebViewClient() {
+                        override fun onPageFinished(view: WebView, url: String?) { ready.complete(Unit) }
+                    }
+                    loadData("<html><body>Preview fixture</body></html>", "text/html", "UTF-8")
+                }
+            }
+            val store = object : DataStore<Preferences> {
+                override val data = MutableStateFlow(emptyPreferences())
+                override suspend fun updateData(transform: suspend (Preferences) -> Preferences): Preferences =
+                    transform(data.value).also { data.value = it }
+            }
+            // Uses the production constructor, real AudioTrack, and its production Main callback executor.
+            val recorder = SentenceRecorder(context, RecordingSettingsRepository(store))
+            val source = SilentSource(frames)
+            try {
+                withTimeout(10_000) { ready.await() }
+                recorder.start(source)
+                withTimeout(5000) {
+                    var available = false
+                    while (!available) {
+                        recorder.snapshot(AudioRange(0, frames.toLong()))?.use { available = true }
+                        if (!available) delay(1)
+                    }
+                }
+                recorder.startPreview(AudioEdit(AudioRange(0, frames.toLong())), onProgress = { frame ->
+                    if (Looper.myLooper() !== Looper.getMainLooper()) {
+                        result.completeExceptionally(AssertionError("Progress was not delivered on Main"))
+                    } else page.evaluateJavascript("window.previewFrame = $frame", null)
+                }, onComplete = {
+                    if (Looper.myLooper() !== Looper.getMainLooper()) {
+                        result.completeExceptionally(AssertionError("Completion was not delivered on Main"))
+                    } else page.evaluateJavascript("window.previewFrame") { result.complete(it) }
+                }, onError = { result.completeExceptionally(AssertionError("Preview failed for $frames frames: $it; position ${recorder.previewPosition}")) })
+                assertThat(withTimeout(10_000) { result.await() }).isEqualTo(frames.toString())
+                assertThat(recorder.isPreviewPlaying).isFalse()
+                assertThat(recorder.previewPosition).isEqualTo(frames.toLong())
+            } finally {
+                recorder.close()
+                withContext(Dispatchers.Main) { page.destroy() }
+            }
+        }
+    }
+
     @Test
     fun mainCallerCanRecordScanReadAndStopWithoutRunningSourceWorkOnMain() = runBlocking {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -92,5 +150,24 @@ class SentenceRecorderDeviceTest {
         override fun stop() { assertOffMain(); stopped.countDown() }
         override fun close() { assertOffMain(); released.set(true) }
         private fun assertOffMain() { check(Looper.myLooper() !== Looper.getMainLooper()) }
+    }
+
+    private class SilentSource(private val frames: Int) : AudioSource {
+        override val sampleRate = 48000
+        override val channelCount = 1
+        private var remaining = frames * 2
+        private val stopped = CountDownLatch(1)
+        private var origin = 0L
+        override fun start(): Boolean { origin = SystemClock.elapsedRealtimeNanos(); return true }
+        override fun timestampNanos(): Long = origin
+        override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+            if (remaining == 0) { stopped.await(); return -1 }
+            val count = minOf(length, remaining)
+            buffer.fill(0, offset, offset + count)
+            remaining -= count
+            return count
+        }
+        override fun stop() { stopped.countDown() }
+        override fun close() { stopped.countDown() }
     }
 }

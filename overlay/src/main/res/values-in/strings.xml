@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Catatan ini sudah memiliki audio kalimat, yang akan dipertahankan sesuai pengaturan pembaruan bidang Anda.</string>
     <string name="audio_editor_duplicate_keep_continue">Lanjutkan tanpa audio</string>
     <string name="audio_editor_duplicate_keep_change_settings">Ubah pengaturan</string>
+    <string name="audio_editor_preview_failed">Rekaman tidak dapat diputar. Coba lagi.</string>
 </resources>

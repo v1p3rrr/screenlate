@@ -847,6 +847,21 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 ## Run log
 
+### 2026-11-21, preview generations, native drain and Main delivery
+
+- `AudioPreviewPlayerTest`: 12 tests pass; complete core-media suite 91 tests. Seven new cases cover blocked
+  retirement/no replacement output, audible cursor/drain, partial write failure, stale dispatch, bounded latest
+  progress while UI dispatch is paused, stalled output and source failure cleanup. Seek now uses a gated old
+  sink and compares exact ramp bytes; the fixture retains source before appending across chunk boundaries.
+- API30, isolated `SentenceRecorderDeviceTest`: 2 tests pass in 1.705 s. Production facade/real AudioTrack
+  callbacks directly update an actual WebView on Main. 500 ms, 5 ms and one-frame silent fixtures complete at
+  the exact logical frame. The first native run reproduced OUTPUT_STALLED for a short underfilled stream;
+  bounded output-only padding fixes the native start threshold. No microphone/projection/Anki operation.
+- Full project assemble/unit/lint/test-APK/convention/release-vital checks pass; core focused checks pass
+  after the final native-wait change. Logs are ignored `testdata/local-research/audio-review-2026-11-21/preview-*.log`.
+- Partial REC48/49/78 evidence; rows remain N where editor/view identity, real routes/sources or other UI
+  parts are still outstanding. Consent, TTS and C–G acceptance are not implied by this preview check.
+
 ### 2026-11-21, sentence recording session ownership repair, `codex/sentence-audio-recording`
 
 - 84 `core:media` JVM tests pass (11 new regressions). `SentenceRecorderTest` covers failed/cancelled start,

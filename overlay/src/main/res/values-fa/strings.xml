@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">این یادداشت قبلاً دارای صدای جمله است که طبق تنظیمات به‌روزرسانی فیلدها حفظ خواهد شد.</string>
     <string name="audio_editor_duplicate_keep_continue">ادامه بدون صدا</string>
     <string name="audio_editor_duplicate_keep_change_settings">تغییر تنظیمات</string>
+    <string name="audio_editor_preview_failed">پخش فایل ضبط‌شده ممکن نشد. دوباره تلاش کنید.</string>
 </resources>

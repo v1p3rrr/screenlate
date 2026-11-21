@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Questa nota contiene già un audio della frase, che verrà mantenuto secondo le impostazioni di aggiornamento dei campi.</string>
     <string name="audio_editor_duplicate_keep_continue">Continua senza audio</string>
     <string name="audio_editor_duplicate_keep_change_settings">Modifica impostazioni</string>
+    <string name="audio_editor_preview_failed">Impossibile riprodurre la registrazione. Riprova.</string>
 </resources>

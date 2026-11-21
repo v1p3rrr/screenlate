@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">اس نوٹ میں پہلے سے جملے کی آڈیو موجود ہے، جسے آپ کی فیلڈ اپ ڈیٹ ترتیبات کے مطابق رکھا جائے گا۔</string>
     <string name="audio_editor_duplicate_keep_continue">آڈیو کے بغیر جاری رکھیں</string>
     <string name="audio_editor_duplicate_keep_change_settings">ترتیبات تبدیل کریں</string>
+    <string name="audio_editor_preview_failed">ریکارڈنگ نہیں چل سکی۔ دوبارہ کوشش کریں۔</string>
 </resources>

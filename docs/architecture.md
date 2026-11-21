@@ -181,7 +181,13 @@ limits; later scans use updated preferences. Sessions use separate private direc
 can outlive their original session. Abandoned PCM is cleared before the singleton's first capture, never
 by sweeping another live session on each restart. Source policies can restrict playback capture.
 
-The overlay editor (`audio-editor.js`, `audio-editor.css`, coordinated by `AudioEditorController`) presents an interactive waveform with draggable selection handles, manual silence cuts, automatic leading-quiet detection, and timeline refresh. Audio preview (`AudioPreviewPlayer`) supports seamless seeking and toggling between original and cut results. Once confirmed, `AudioExporter` streams retained PCM slices through a single `MediaCodec` Opus encoder into an Ogg/Opus container, which `AnkiNotes` exports to AnkiDroid as `[sound:...]` for `{sentence-audio}` field templates.
+The overlay editor (`audio-editor.js`, `audio-editor.css`, coordinated by `AudioEditorController`) presents an
+interactive waveform with selection handles, manual cuts, leading-quiet detection and timeline refresh.
+`AudioPreviewPlayer` gives each playback run its own cancellation and output lifetime. Seek retires old
+output before replacement; a stuck run prevents another output from opening. Cursor position follows played
+frames, and normal completion drains real source frames before releasing the sink. Progress is coalesced
+and callbacks are generation-checked on the Main executor. Once confirmed, `AudioExporter` streams retained
+PCM slices through one Opus encoder into Ogg, which `AnkiNotes` exports for `{sentence-audio}` templates.
 
 ## Sentence translation
 

@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">이 노트에는 이미 문장 오디오가 있으며, 필드 업데이트 설정에 따라 유지됩니다.</string>
     <string name="audio_editor_duplicate_keep_continue">오디오 없이 계속</string>
     <string name="audio_editor_duplicate_keep_change_settings">설정 변경</string>
+    <string name="audio_editor_preview_failed">녹음 파일을 재생할 수 없습니다. 다시 시도하세요.</string>
 </resources>

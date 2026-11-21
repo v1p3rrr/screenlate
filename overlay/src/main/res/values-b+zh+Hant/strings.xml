@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">此筆記已有例句音訊，將根據欄位更新設定予以保留。</string>
     <string name="audio_editor_duplicate_keep_continue">不附帶音訊繼續</string>
     <string name="audio_editor_duplicate_keep_change_settings">變更設定</string>
+    <string name="audio_editor_preview_failed">無法播放錄音，請重試。</string>
 </resources>

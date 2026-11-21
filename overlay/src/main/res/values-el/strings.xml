@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Αυτή η σημείωση έχει ήδη ήχο πρότασης, ο οποίος θα διατηρηθεί σύμφωνα με τις ρυθμίσεις ενημέρωσης πεδίων.</string>
     <string name="audio_editor_duplicate_keep_continue">Συνέχεια χωρίς ήχο</string>
     <string name="audio_editor_duplicate_keep_change_settings">Αλλαγή ρυθμίσεων</string>
+    <string name="audio_editor_preview_failed">Δεν ήταν δυνατή η αναπαραγωγή της εγγραφής. Δοκιμάστε ξανά.</string>
 </resources>

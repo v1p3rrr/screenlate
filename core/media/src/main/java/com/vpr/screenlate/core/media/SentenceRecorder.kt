@@ -3,11 +3,13 @@ package com.vpr.screenlate.core.media
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
+import androidx.core.content.ContextCompat
 import com.vpr.screenlate.core.common.log.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.IOException
 import java.util.UUID
+import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,12 +42,14 @@ class SentenceRecorder internal constructor(
     private val settingsRepository: RecordingSettingsRepository,
     private val nowMillis: () -> Long = { SystemClock.elapsedRealtime() },
     private val nowNanos: () -> Long = { SystemClock.elapsedRealtimeNanos() },
+    private val previewCallbackExecutor: Executor = Executor { it.run() },
 ) {
     @Inject
     constructor(
         @ApplicationContext context: Context,
         settingsRepository: RecordingSettingsRepository,
-    ) : this(File(context.noBackupFilesDir, "sentence_recording"), settingsRepository)
+    ) : this(File(context.noBackupFilesDir, "sentence_recording"), settingsRepository,
+        previewCallbackExecutor = ContextCompat.getMainExecutor(context))
 
     private val lifecycle = Mutex()
     private val previewCommands = Mutex()
@@ -54,6 +58,7 @@ class SentenceRecorder internal constructor(
     private var currentSource: AudioSource? = null
     private var abandonedCleaned = false
     @Volatile private var previewPlayer: AudioPreviewPlayer? = null
+    private var previewSession: PcmStorageCoordinator? = null
     private val _recordingState = MutableStateFlow<SentenceRecordingState>(SentenceRecordingState.Idle)
     val recordingState: StateFlow<SentenceRecordingState> = _recordingState.asStateFlow()
     val isRecording: Boolean get() = recordingState.value is SentenceRecordingState.Recording
@@ -242,14 +247,22 @@ class SentenceRecorder internal constructor(
         startFrame: Long? = null,
         onProgress: ((Long) -> Unit)? = null,
         onComplete: (() -> Unit)? = null,
+        onError: ((PreviewFailure) -> Unit)? = null,
     ) = previewCommands.withLock {
         withContext(Dispatchers.IO) {
-            previewPlayer?.close()
             val session = coordinator
-            AudioPreviewPlayer(snapshotProvider = { snapshotFrom(session, it) }).also {
-                previewPlayer = it
-                it.play(edit, mode, startFrame, onProgress, onComplete)
+            if (previewPlayer != null && previewSession !== session) {
+                previewPlayer?.close()
+                if (previewPlayer?.isReleased == false) {
+                    previewCallbackExecutor.execute { onError?.invoke(PreviewFailure.OUTPUT_BUSY) }
+                    return@withContext
+                }
+                previewPlayer = null
             }
+            val player = previewPlayer ?: AudioPreviewPlayer(
+                snapshotProvider = { snapshotFrom(session, it) }, callbackExecutor = previewCallbackExecutor,
+            ).also { previewPlayer = it; previewSession = session }
+            player.play(edit, mode, startFrame, onProgress, onComplete, onError)
             Unit
         }
     }
@@ -259,7 +272,10 @@ class SentenceRecorder internal constructor(
     }
 
     suspend fun stopPreview() = previewCommands.withLock {
-        withContext(NonCancellable + Dispatchers.IO) { previewPlayer?.close(); previewPlayer = null }
+        withContext(NonCancellable + Dispatchers.IO) {
+            previewPlayer?.close()
+            if (previewPlayer?.isReleased != false) { previewPlayer = null; previewSession = null }
+        }
     }
 
     suspend fun seekPreview(frame: Long, edit: AudioEdit? = null, mode: PreviewMode = PreviewMode.RESULT) =

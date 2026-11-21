@@ -412,16 +412,17 @@ are investigated as findings, not converted into an invented new audio performan
 
 | Milestone | Status | Evidence |
 |---|---|---|
-| A regression baseline | Partial | Permanent core regressions landed with their fixes; 84 core tests pass. DOM and full pending-note/fake-backend fixture remain for the editor work. |
-| B session/preview lifetime | Partial | Serialized session owner, suspending facade, observable failures, bounded Stop and per-session leases implemented. Preview run ownership, consent-purpose isolation and remaining physical integration gates are still open. |
+| A regression baseline | Partial | Permanent core regressions landed with fixes; 91 core tests pass. DOM and full pending-note/fake-backend fixture remain for editor work. |
+| B session/preview lifetime | Partial | Session ownership and preview generations/drain/bounded callbacks implemented. Production AudioTrack→Main→WebView test passes, including short streams. Consent purpose, TTS/own-playback ownership, stopped-session retirement and physical source/route gates remain. |
 | C pending operation/protocol | Pending | Current implementation remains at reviewed behavior. |
 | D editing/fidelity | Pending | Codec probe evidence is partial, not end-to-end acceptance. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-Next continue B: preview run ownership, outgoing WebView Android test, consent-purpose isolation and
-TTS lifetime/physical checks. Complete the editor-facing A fixtures when introducing C's operation interface.
+Next continue B: consent-purpose isolation, TTS/own-playback lifetime, stopped-session retirement and
+physical checks. Complete editor-facing A fixtures when introducing C's operation interface; coalesce
+incoming preview/Refresh requests there, beyond the already bounded outgoing progress delivery.
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
 the two untracked `docs/images/photo_*2026-11-10*.jpg` files. Commit/push only this feature branch.
@@ -434,6 +435,9 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-21: Reworked preview run lifetime, output drain/position and bounded generation-checked callbacks.
+  Added native short-stream transport padding after a reproduced API30 stall; 500 ms / 5 ms / one-frame
+  AudioTrack→Main→WebView fixtures pass. Added 27-locale preview error feedback. Product choices unchanged.
 - 2026-11-21: Owner authorized implementation. Added core regressions and the serialized session owner;
   capture/publication/metadata now have one order, public work suspends off Main, startup/cancellation/
   failure/Stop/restart preserve ownership. Added synthetic Android Main-thread test. Product decisions

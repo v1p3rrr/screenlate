@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">تحتوي هذه الملاحظة بالفعل على صوت الجملة، والذي سيتم الاحتفاظ به وفقًا لإعدادات تحديث الحقول.</string>
     <string name="audio_editor_duplicate_keep_continue">المتابعة بدون صوت</string>
     <string name="audio_editor_duplicate_keep_change_settings">تغيير الإعدادات</string>
+    <string name="audio_editor_preview_failed">تعذّر تشغيل التسجيل. حاول مرة أخرى.</string>
 </resources>

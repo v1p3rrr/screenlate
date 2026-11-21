@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">Bu notta zaten alan güncelleme ayarlarınıza göre korunacak olan cümle sesi var.</string>
     <string name="audio_editor_duplicate_keep_continue">Ses olmadan devam et</string>
     <string name="audio_editor_duplicate_keep_change_settings">Ayarları değiştir</string>
+    <string name="audio_editor_preview_failed">Kayıt oynatılamadı. Tekrar deneyin.</string>
 </resources>

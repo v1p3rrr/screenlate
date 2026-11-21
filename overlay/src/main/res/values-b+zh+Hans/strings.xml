@@ -188,4 +188,5 @@
     <string name="audio_editor_duplicate_keep_body">此笔记已有例句音频，将根据字段更新设置予以保留。</string>
     <string name="audio_editor_duplicate_keep_continue">不附带音频继续</string>
     <string name="audio_editor_duplicate_keep_change_settings">更改设置</string>
+    <string name="audio_editor_preview_failed">无法播放录音，请重试。</string>
 </resources>
