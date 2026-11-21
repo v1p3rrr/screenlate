@@ -76,6 +76,7 @@ import com.vpr.screenlate.overlay.anki.ScreenNoteImage
 import com.vpr.screenlate.core.media.AudioContextId
 import com.vpr.screenlate.core.media.AudioRecordSource
 import com.vpr.screenlate.core.media.RecordingSettingsRepository
+import com.vpr.screenlate.core.media.SentenceRecordingState
 import com.vpr.screenlate.core.media.SentenceRecorder
 import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
@@ -130,6 +131,8 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
@@ -233,10 +236,14 @@ class OverlayController(
     private val accessibilityText = AccessibilityText(service)
     private val screenReads = ScreenReads({ lookupSources.source.value }, ControllerScreenReader())
     private var currentScanAudioContextId: AudioContextId? = null
+    private var recordingStartJob: Job? = null
+    private var recordingStopJob: Job? = null
 
     private fun releaseCurrentScanAudioContext() {
         val id = currentScanAudioContextId ?: return
-        sentenceRecorder?.releaseContext(id)
+        scope.launch(start = CoroutineStart.UNDISPATCHED) {
+            withContext(NonCancellable) { sentenceRecorder?.releaseContext(id) }
+        }
         popupNotes.releaseAudioContext(id)
         currentScanAudioContextId = null
     }
@@ -380,15 +387,27 @@ class OverlayController(
         layerView.primaryColor = initialPalette.effectiveSeed
         layerView.aimColor = initialBubbleColor
         popup.hideOnOutsideTap = initialOverlay.hideOnOutsideTap
-        anki.player.isCaptureActive = { sentenceRecorder?.isRecording == true }
+        anki.player.isCaptureActive = { sentenceRecorder?.isCaptureActive == true || recordingStartJob?.isActive == true }
         MediaProjectionService.stopRecordingAction = ::stopSentenceRecording
         SentenceRecordingControl.startRecordingAction = ::startSentenceRecording
         SentenceRecordingControl.stopRecordingAction = ::stopSentenceRecording
         MediaProjectionHolder.onSystemStopped = {
             if (sentenceRecorder?.isRecording == true) stopSentenceRecording()
         }
-        sentenceRecorder?.setOnStoppedListener {
-            bubbleView.recording = false
+        scope.launch {
+            sentenceRecorder?.recordingState?.collectLatest { observed ->
+                val running = sentenceRecorder.isRecording
+                bubbleView.recording = running
+                if (MediaProjectionHolder.hasActiveProjection) {
+                    MediaProjectionService.updateRecordingState(service, isRecording = running)
+                }
+                if (observed is SentenceRecordingState.Failed) {
+                    recordingSettings?.setRecordingEnabled(false)
+                    if (sentenceRecorder.recordingState.value === observed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        MediaProjectionHolder.stop(service)
+                    }
+                }
+            }
         }
         bubbleView.recording = sentenceRecorder?.isRecording == true
         scope.launch {
@@ -444,6 +463,7 @@ class OverlayController(
     }
 
     fun stop() {
+        stopSentenceRecording()
         MediaProjectionService.stopRecordingAction = null
         SentenceRecordingControl.startRecordingAction = null
         SentenceRecordingControl.stopRecordingAction = null
@@ -567,7 +587,7 @@ class OverlayController(
         popup.detach()
         windowManager.removeView(layerView)
         attached = false
-        if (sentenceRecorder?.isRecording == true) {
+        if (sentenceRecorder?.isCaptureActive == true || recordingStartJob?.isActive == true) {
             stopSentenceRecording()
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             MediaProjectionHolder.stop(service)
@@ -589,16 +609,25 @@ class OverlayController(
 
     fun startSentenceRecording() {
         if (Build.VERSION.SDK_INT < 29 || sentenceRecorder == null) return
-        if (sentenceRecorder.isRecording) return
+        if (sentenceRecorder.isCaptureActive || recordingStartJob?.isActive == true || recordingStopJob?.isActive == true) return
         releaseCurrentScanAudioContext()
-        scope.launch {
+        recordingStartJob = scope.launch {
             val projection = MediaProjectionHolder.getOrCreate(service, isRecording = true)
             if (projection == null) {
                 Log.i(TAG, "Sentence recording consent cancelled or denied")
                 return@launch
             }
-            val source = AudioRecordSource.create(projection)
-            if (source == null || !sentenceRecorder.start(source)) {
+            anki.player.stop()
+            var created: AudioRecordSource? = null
+            val started = try {
+                withContext(Dispatchers.IO) { created = AudioRecordSource.create(projection) }
+                val source = created
+                created = null
+                source != null && sentenceRecorder.start(source)
+            } finally {
+                withContext(NonCancellable + Dispatchers.IO) { created?.close() }
+            }
+            if (!started) {
                 bubbleView.recording = false
                 MediaProjectionService.updateRecordingState(service, isRecording = false)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -606,21 +635,23 @@ class OverlayController(
                 }
                 return@launch
             }
-            bubbleView.recording = true
-            recordingSettings?.setRecordingEnabled(true)
+            recordingSettings?.setRecordingEnabled(sentenceRecorder.isRecording)
         }
     }
 
     fun stopSentenceRecording() {
-        if (sentenceRecorder == null) return
-        sentenceRecorder.stop()
-        bubbleView.recording = false
-        MediaProjectionService.updateRecordingState(service, isRecording = false)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            MediaProjectionHolder.stop(service)
-        }
-        scope.launch {
-            recordingSettings?.setRecordingEnabled(false)
+        if (sentenceRecorder == null || recordingStopJob?.isActive == true) return
+        recordingStartJob?.cancel()
+        recordingStartJob = null
+        recordingStopJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
+            withContext(NonCancellable) {
+                sentenceRecorder.stopPreview()
+                sentenceRecorder.stop()
+                bubbleView.recording = false
+                if (MediaProjectionHolder.hasActiveProjection) MediaProjectionService.updateRecordingState(service, isRecording = false)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) MediaProjectionHolder.stop(service)
+                recordingSettings?.setRecordingEnabled(false)
+            }
         }
     }
 
@@ -1208,11 +1239,12 @@ class OverlayController(
         loadDictionaryStyles()
         bubbleView.loading = true
         releaseCurrentScanAudioContext()
-        val scanAudioContext = if (sentenceRecorder?.isRecording == true) {
-            sentenceRecorder.acquireScan(SystemClock.elapsedRealtime())
-        } else null
-        currentScanAudioContextId = scanAudioContext
+        val scanMillis = SystemClock.elapsedRealtime()
         scanJob = scope.launch {
+            val scanAudioContext = if (sentenceRecorder?.isRecording == true) {
+                sentenceRecorder.acquireScan(scanMillis)
+            } else null
+            currentScanAudioContextId = scanAudioContext
             val ready = installation.current(language)
             if (!ready.scanReady) {
                 if (ready.needsDeviceModel && settings.textSource == TextSource.APP_TEXT) {

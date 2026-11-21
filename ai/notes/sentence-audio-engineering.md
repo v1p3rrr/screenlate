@@ -7,6 +7,31 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Session ownership repair — 2026-11-21
+
+- `PcmStorageCoordinator` now has one background owner for control commands, clock advancement, PCM
+  publication and timeline retention. Capture only supplies a bounded buffer pool. The command queue is
+  also bounded (32); production facade calls serialize lease/control admission rather than exposing it to UI.
+- `SentenceRecorder` is suspending; startup, source construction in overlay, stop, snapshot acquisition,
+  waveform/silence work and export no longer run or hold the facade monitor on Main. Capture state is
+  emitted by the actual session, including asynchronous read/writer failures, Starting and Stopping.
+- Sessions have independent neutral directories. One initial abandoned-PCM sweep precedes this singleton's
+  first capture; restart does not delete a live prior reader's files. Snapshot readers still own their leases.
+- Stop uses a dedicated bounded-lifetime attempt. After the provisional 2 s wait budget it reports
+  `SOURCE_STOP_FAILED`, keeps the valid source/context and refuses replacement input until the old source
+  really releases. This bounds caller waiting; it does not claim Android can forcibly terminate a stuck
+  native method. At most the retiring source/stop workers remain; no new source is layered over them.
+- Permanent regressions cover failed/cancelled startup, failure propagation, exact samples under concurrent
+  Refresh, previous-session readers, responsive/stuck/throwing Stop, preserved context on rejected restart,
+  next-scan H/R/E and abandoned-file cleanup. Red/green logs live under ignored
+  `testdata/local-research/audio-review-2026-11-21/repair-*.log`.
+- API30 isolated `SentenceRecorderDeviceTest` passed on a host-silent read-only emulator: Main caller starts,
+  scans, reads actual synthetic PCM files and stops; source methods assert off-Main. No projection, AudioRecord,
+  AudioTrack, audible output or collection was involved. The owned emulator was powered off afterward.
+- Remaining B gates: preview run ownership, real outgoing WebView thread test, API29 consent purpose,
+  complete TTS cleanup/self-exclusion and real-source/route/lifecycle checks. C–G and full resource/codec
+  acceptance remain open; this repair does not validate them implicitly.
+
 ## Reproducible harness
 
 `tools/audio-probe` is conditionally included with `-Pscreenlate.audioProbe=true`. It builds independent

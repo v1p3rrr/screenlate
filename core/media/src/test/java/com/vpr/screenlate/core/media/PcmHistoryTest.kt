@@ -47,6 +47,7 @@ class PcmHistoryTest {
         history.retain(listOf(AudioRange(0, 24)))
         history.append(pcm(0, 24))
         history.retain(listOf(AudioRange(0, 4), AudioRange(20, 24)))
+        assertThat(history.contiguousTailStart).isEqualTo(20L)
         assertThat(history.files).isEqualTo(2)
         assertThat(history.bytes).isEqualTo(16)
         assertThrows(EOFException::class.java) { history.snapshot(AudioRange(0, 24)) }

@@ -2,9 +2,17 @@
 
 Current resume override (2026-11-21): use the [repair execution plan](../plans/2026-11-21-sentence-audio-repair.md),
 [review](sentence-audio-review-2026-11-21.md) and latest status. The owner authorized selective redesign of
-session coordination and editor/pending-note ownership. Start at repair milestone A, then B; production
-fixes have not started. The unconnected-feature checkpoint below is historical. Branch, privacy, safe test
+session coordination and editor/pending-note ownership. Core A/B work now implements a serialized session
+owner and suspending facade with permanent regressions; continue B's preview, permission and TTS work,
+then C. Read the latest status for verification and remaining gates. The checkpoint below is historical. Branch, privacy, safe test
 environment and weekly-limit instructions remain applicable. No product decision was changed.
+
+Current core checkpoint: 84 core tests (11 new), 212 page tests and isolated API30 Main-thread synthetic
+session test pass. Full project checks passed; the last retired-session no-op fix has focused core/overlay
+unit, core lint and test-APK checks. No actual playback/capture/Anki was exercised in this repair milestone.
+Continue with preview run generations, real WebView callbacks, API29 consent purpose and TTS cleanup;
+also release stopped owner/ring storage after its final live context/reader. C must guard the now-suspending
+editor opening/Refresh/analysis paths with operation/revision identity before claiming UI acceptance.
 
 ## Resume contract
 

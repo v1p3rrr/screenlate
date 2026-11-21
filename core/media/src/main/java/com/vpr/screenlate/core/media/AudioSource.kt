@@ -23,6 +23,6 @@ interface AudioSource : AutoCloseable {
      */
     fun timestampNanos(): Long?
 
-    /** Stops audio capture. */
+    /** Stops audio capture and unblocks any pending [read]. */
     fun stop()
 }

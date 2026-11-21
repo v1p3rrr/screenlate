@@ -168,7 +168,18 @@ The page builds the dictionary markers of an entry (glossary HTML with scoped CS
 
 ## Sentence audio recording
 
-On Android 10+ (API 29+), `core:media` captures internal playback via `AudioRecord` and `AudioPlaybackCaptureConfiguration` while excluding Screenlate's own UID, so local pronunciations and preview playback are never recorded into clips. The capture coordinator (`PcmStorageCoordinator`) ingests audio on a worker thread into a bounded queue (`PcmBlockQueue`) and commits frame-aligned PCM chunks to private temporary storage (`PcmHistory`). Each scan anchors a protected audio timeline (`ScanAudioTimeline`) covering pre-scan history (H, default 5 s), definition reading time (R, default 5 s), and an extension window (E, default 2 s) when editing begins.
+On Android 10+ (API 29+), `core:media` captures eligible internal playback through `AudioRecord` and
+`AudioPlaybackCaptureConfiguration`, excluding Screenlate's UID. A capture worker feeds a bounded
+`PcmBlockQueue`; one session worker serializes commands, timeline transitions, PCM publication and retention
+in `PcmHistory`. The suspending `SentenceRecorder` interface keeps file work and platform/worker waits off
+Main. Its observable state includes startup, stopping and asynchronous failures. An unresponsive source
+prevents replacement capture until it releases; its valid stored prefix remains available.
+
+Each screen scan anchors a protected `ScanAudioTimeline`: pre-scan history H defaults to 5 minutes,
+waiting R to 5 minutes, and editor continuation E to 2 minutes. Existing contexts retain their admitted
+limits; later scans use updated preferences. Sessions use separate private directories, and leased snapshots
+can outlive their original session. Abandoned PCM is cleared before the singleton's first capture, never
+by sweeping another live session on each restart. Source policies can restrict playback capture.
 
 The overlay editor (`audio-editor.js`, `audio-editor.css`, coordinated by `AudioEditorController`) presents an interactive waveform with draggable selection handles, manual silence cuts, automatic leading-quiet detection, and timeline refresh. Audio preview (`AudioPreviewPlayer`) supports seamless seeking and toggling between original and cut results. Once confirmed, `AudioExporter` streams retained PCM slices through a single `MediaCodec` Opus encoder into an Ogg/Opus container, which `AnkiNotes` exports to AnkiDroid as `[sound:...]` for `{sentence-audio}` field templates.
 

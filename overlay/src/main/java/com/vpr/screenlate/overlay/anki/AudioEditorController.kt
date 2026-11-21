@@ -209,29 +209,33 @@ class AudioEditorController(
     override fun onAudioPlay(cursor: Long, mode: String) {
         val edit = currentEdit ?: return
         val previewMode = if (mode == "original") PreviewMode.ORIGINAL else PreviewMode.RESULT
-        sentenceRecorder.startPreview(
-            edit = edit,
-            mode = previewMode,
-            startFrame = cursor,
-            onProgress = { frame ->
-                page.updateAudioCursor(frame)
-            },
-            onComplete = {
-                page.setAudioPlaying(false)
-            },
-        )
-        page.setAudioPlaying(true)
+        scope.launch {
+            sentenceRecorder.startPreview(
+                edit = edit,
+                mode = previewMode,
+                startFrame = cursor,
+                onProgress = { frame ->
+                    scope.launch(Dispatchers.Main) { if (currentEdit === edit) page.updateAudioCursor(frame) }
+                },
+                onComplete = {
+                    scope.launch(Dispatchers.Main) { if (currentEdit === edit) page.setAudioPlaying(false) }
+                },
+            )
+            page.setAudioPlaying(true)
+        }
     }
 
     override fun onAudioPause() {
-        sentenceRecorder.pausePreview()
-        page.setAudioPlaying(false)
+        scope.launch {
+            sentenceRecorder.pausePreview()
+            page.setAudioPlaying(false)
+        }
     }
 
     override fun onAudioSeek(cursor: Long, mode: String) {
         val edit = currentEdit
         val previewMode = if (mode == "original") PreviewMode.ORIGINAL else PreviewMode.RESULT
-        sentenceRecorder.seekPreview(cursor, edit, previewMode)
+        scope.launch { sentenceRecorder.seekPreview(cursor, edit, previewMode) }
     }
 
     override fun onAudioFindSilence(fromFrame: Long, toFrame: Long, request: Int) {
@@ -262,30 +266,32 @@ class AudioEditorController(
     }
 
     override fun onAudioRefresh() {
-        val contextId = activeContextId ?: return
-        val refreshedView = sentenceRecorder.refresh(contextId) ?: return
-        lastTimelineView = refreshedView
-        val totalFrames = refreshedView.source?.endExclusive ?: 0L
-        val isLimitReached = refreshedView.retention.stage == RetentionStage.SEALED || refreshedView.retention.reason != null
-        val remainingMillis = maxOf(0L, refreshedView.retention.cutoffMillis - SystemClock.elapsedRealtime())
-        val sourceRange = refreshedView.source ?: AudioRange(0, totalFrames)
-        val summary = sentenceRecorder.waveformSummary(sourceRange, buckets = 200)
+        scope.launch {
+            val contextId = activeContextId ?: return@launch
+            val refreshedView = sentenceRecorder.refresh(contextId) ?: return@launch
+            lastTimelineView = refreshedView
+            val totalFrames = refreshedView.source?.endExclusive ?: 0L
+            val isLimitReached = refreshedView.retention.stage == RetentionStage.SEALED || refreshedView.retention.reason != null
+            val remainingMillis = maxOf(0L, refreshedView.retention.cutoffMillis - SystemClock.elapsedRealtime())
+            val sourceRange = refreshedView.source ?: AudioRange(0, totalFrames)
+            val summary = sentenceRecorder.waveformSummary(sourceRange, buckets = 200)
 
-        val updatePayload = buildJsonObject {
-            put("totalFrames", totalFrames)
-            put("newFrames", refreshedView.newFrames)
-            put("limit", isLimitReached)
-            put("remainingMillis", remainingMillis)
-            put("recording", sentenceRecorder.isRecording)
-            if (summary != null) {
-                put("overviewSummary", buildJsonArray {
-                    for (peak in summary.peaks) {
-                        add(kotlinx.serialization.json.JsonPrimitive(peak))
-                    }
-                })
+            val updatePayload = buildJsonObject {
+                put("totalFrames", totalFrames)
+                put("newFrames", refreshedView.newFrames)
+                put("limit", isLimitReached)
+                put("remainingMillis", remainingMillis)
+                put("recording", sentenceRecorder.isRecording)
+                if (summary != null) {
+                    put("overviewSummary", buildJsonArray {
+                        for (peak in summary.peaks) {
+                            add(kotlinx.serialization.json.JsonPrimitive(peak))
+                        }
+                    })
+                }
             }
+            page.updateAudioTimeline(updatePayload.toString())
         }
-        page.updateAudioTimeline(updatePayload.toString())
     }
 
     override fun onAudioExpand(expanded: Boolean) {
@@ -359,7 +365,7 @@ class AudioEditorController(
     }
 
     private fun cleanup() {
-        sentenceRecorder.stopPreview()
+        scope.launch { sentenceRecorder.stopPreview() }
         page.closeAudioEditor()
         popupController.resetAudioEditorPresentation()
         activeContextId = null

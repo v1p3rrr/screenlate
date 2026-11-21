@@ -2,314 +2,331 @@ package com.vpr.screenlate.core.media
 
 import java.io.File
 import java.io.IOException
-import java.util.UUID
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.FutureTask
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.atomic.AtomicBoolean
 
 enum class PcmCoordinatorFailure {
-    SOURCE_START_FAILED,
-    SOURCE_READ_FAILED,
-    QUEUE_OVERFLOW,
-    QUEUE_DISCONTINUITY,
-    STORAGE_QUOTA_EXCEEDED,
-    STORAGE_IO_ERROR,
+    SOURCE_START_FAILED, SOURCE_READ_FAILED, SOURCE_STOP_FAILED, QUEUE_OVERFLOW, QUEUE_DISCONTINUITY,
+    STORAGE_QUOTA_EXCEEDED, STORAGE_IO_ERROR,
 }
 
-enum class PcmCoordinatorState {
-    IDLE,
-    RUNNING,
-    STOPPED,
-    FAILED,
-    CLOSED,
-}
+enum class PcmCoordinatorState { IDLE, STARTING, RUNNING, STOPPING, STOPPED, FAILED, CLOSED }
 
 internal class PcmCoordinatorConfig(
     val sampleRate: Int = 48000,
-    val chunkFrames: Int = 48000, // 1 second of frames per file chunk
-    val blockFrames: Int = 4800,  // 100 ms per memory block
-    val queueCapacity: Int = 30,  // 3 seconds in memory queue
-    val maxStorageBytes: Long = 134_217_728L, // 128 MiB
+    val chunkFrames: Int = 48000,
+    val blockFrames: Int = 4800,
+    val queueCapacity: Int = 30,
+    val maxStorageBytes: Long = 134_217_728L,
     val maxStorageFiles: Int = 1500,
-    val minFreeSpaceBytes: Long = 52_428_800L, // 50 MiB safety reserve
+    val minFreeSpaceBytes: Long = 52_428_800L,
+    val stopTimeoutMillis: Long = 2000L,
 ) {
     init {
         require(sampleRate > 0 && chunkFrames > 0 && blockFrames > 0 && queueCapacity > 0)
         require(maxStorageBytes > 0 && maxStorageFiles > 0 && minFreeSpaceBytes >= 0)
+        require(stopTimeoutMillis > 0)
     }
 
-    val frameBytes: Int get() = 2 // Mono PCM16
-    val blockBytes: Int get() = blockFrames * frameBytes
-    val maxQueueBytes: Int get() = blockBytes * queueCapacity
+    val frameBytes: Int get() = 2
+    val blockBytes: Int get() = Math.multiplyExact(blockFrames, frameBytes)
+    val maxQueueBytes: Int get() = Math.multiplyExact(blockBytes, queueCapacity)
 }
 
 /**
- * Coordinates live PCM audio capture from [AudioSource], passing frames through
- * a bounded preallocated [PcmBlockQueue] to [PcmHistory], governed by [ScanAudioTimeline].
- *
- * All time parameters default to system monotonic time (elapsedRealtime).
+ * One worker owns timeline transitions, PCM publication and retention. Capture only fills a bounded pool.
+ * Blocking commands are internal: the public recorder dispatches them off Main. Snapshots outlive this owner.
  */
 internal class PcmStorageCoordinator(
     private val directory: File,
     private val limits: RecordingLimits,
     private val config: PcmCoordinatorConfig = PcmCoordinatorConfig(),
-    private val nowMillis: () -> Long = { System.currentTimeMillis() },
+    private val nowMillis: () -> Long = { System.nanoTime() / 1_000_000L },
     private val nowNanos: () -> Long = { System.nanoTime() },
+    private val onStateChanged: (PcmCoordinatorState, PcmCoordinatorFailure?) -> Unit = { _, _ -> },
 ) : AutoCloseable {
-
+    private val commands = ArrayBlockingQueue<FutureTask<*>>(32)
+    private val wake = java.lang.Object()
+    private val pendingFailure = AtomicReference<PcmCoordinatorFailure?>(null)
     private var source: AudioSource? = null
-    private var queue: PcmBlockQueue? = null
-    private var history: PcmHistory? = null
+    @Volatile private var queue: PcmBlockQueue? = null
+    @Volatile private var history: PcmHistory? = null
     private var timeline: ScanAudioTimeline? = null
-    private var clock: PcmClock? = null
-
     private var captureThread: Thread? = null
-    private var writerThread: Thread? = null
+    @Volatile private var captureFinished = true
+    @Volatile private var stopFinished = true
+    private var stoppingSource = false
+    private val stopFailed = AtomicBoolean(false)
+    private var closeRequested = false
+    private var lastProcessingMillis = 0L
+    @Volatile private var terminated = false
+    @Volatile private var status = Status(PcmCoordinatorState.IDLE)
+    private val owner = Thread(::runOwner, "pcm-session-owner").apply { isDaemon = true; start() }
 
-    @Volatile
-    private var state = PcmCoordinatorState.IDLE
-
-    @Volatile
-    private var failure: PcmCoordinatorFailure? = null
-
-    val currentState: PcmCoordinatorState get() = state
-    val failureReason: PcmCoordinatorFailure? get() = failure
+    val currentState: PcmCoordinatorState get() = status.state
+    val failureReason: PcmCoordinatorFailure? get() = status.failure
     val committedEndFrame: Long get() = history?.committedEnd ?: 0L
     val retainedBytes: Long get() = history?.bytes ?: 0L
     val retainedFiles: Int get() = history?.files ?: 0
+    val isReleased: Boolean get() = terminated
+    val hasActiveInput: Boolean get() = !captureFinished || !stopFinished
 
-    @Synchronized
-    fun start(audioSource: AudioSource): Boolean {
-        check(state == PcmCoordinatorState.IDLE) { "Coordinator cannot be started from state $state" }
-        cleanAbandonedFiles(directory)
-
-        if (!audioSource.start()) {
-            failure = PcmCoordinatorFailure.SOURCE_START_FAILED
-            state = pcmCoordinatorFailureState(failure!!)
-            return false
-        }
-
-        val origin = audioSource.timestampNanos() ?: nowNanos()
-        val pcmClock = PcmClock(config.sampleRate, origin)
-        val pcmHistory = PcmHistory(directory, config.chunkFrames, config.maxStorageBytes, config.maxStorageFiles)
-        val pcmQueue = PcmBlockQueue(config.blockBytes, config.queueCapacity, config.maxQueueBytes)
-        val audioTimeline = ScanAudioTimeline(pcmClock, limits)
-
+    fun start(audioSource: AudioSource): Boolean = command {
+        check(currentState == PcmCoordinatorState.IDLE)
         source = audioSource
-        clock = pcmClock
-        history = pcmHistory
-        queue = pcmQueue
-        timeline = audioTimeline
-        state = PcmCoordinatorState.RUNNING
-
-        val capture = Thread({ runCapture(audioSource, pcmQueue) }, "pcm-capture-worker")
-        val writer = Thread({ runWriter(pcmQueue, pcmHistory, audioTimeline) }, "pcm-writer-worker")
-
-        captureThread = capture
-        writerThread = writer
-
-        capture.start()
-        writer.start()
-        return true
-    }
-
-    @Synchronized
-    fun acquireScan(scanMillis: Long = nowMillis()): AudioContextId? {
-        if (state != PcmCoordinatorState.RUNNING) return null
-        val t = timeline ?: return null
-        val h = history ?: return null
-        val earliestAvailable = earliestAvailableFrame(h)
-        return t.acquireScan(scanMillis, earliestAvailable)
-    }
-
-    @Synchronized
-    fun openEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? {
-        val t = timeline ?: return null
-        val h = history ?: return null
-        val capacityOk = directory.usableSpace >= config.minFreeSpaceBytes
-        return t.openEditor(id, h.committedEnd, openMillis, capacityOk)
-    }
-
-    @Synchronized
-    fun refresh(id: AudioContextId, refreshMillis: Long = nowMillis()): AudioTimelineView? {
-        val t = timeline ?: return null
-        val h = history ?: return null
-        return t.refresh(id, h.committedEnd, refreshMillis)
-    }
-
-    @Synchronized
-    fun snapshot(range: AudioRange): PcmHistory.Snapshot {
-        val h = checkNotNull(history) { "History is not initialized" }
-        return h.snapshot(range)
-    }
-
-    @Synchronized
-    fun releaseContext(id: AudioContextId) {
-        val t = timeline ?: return
-        val h = history ?: return
-        t.releaseContext(id)
-        if (state == PcmCoordinatorState.STOPPED) {
-            h.retain(t.retainedRanges(h.committedEnd, nowMillis()))
-        }
-    }
-
-    @Synchronized
-    fun stop(stopMillis: Long? = null) {
-        if (state != PcmCoordinatorState.RUNNING && state != PcmCoordinatorState.FAILED) return
-        val targetState = if (state == PcmCoordinatorState.FAILED) PcmCoordinatorState.FAILED else PcmCoordinatorState.STOPPED
-        state = targetState
-
-        // Stop source and seal queue so writer drains accepted prefix
-        runCatching { source?.stop() }
-        queue?.seal()
-
-        // Wait for writer to finish writing accepted prefix
-        writerThread?.let {
-            if (Thread.currentThread() != it) {
-                runCatching { it.join(5000) }
+        publish(PcmCoordinatorState.STARTING)
+        try {
+            if (!audioSource.start()) {
+                failStartup()
+                return@command false
             }
-        }
-        captureThread?.let {
-            if (Thread.currentThread() != it) {
-                runCatching { it.join(2000) }
-            }
-        }
-
-        val effectiveStopMillis = if (stopMillis != null) maxOf(stopMillis, nowMillis()) else nowMillis()
-        timeline?.stop(effectiveStopMillis)
-        history?.let { h ->
-            timeline?.let { t ->
-                h.retain(t.retainedRanges(h.committedEnd, effectiveStopMillis))
-            }
+            val clock = PcmClock(config.sampleRate, audioSource.timestampNanos() ?: nowNanos())
+            history = PcmHistory(directory, config.chunkFrames, config.maxStorageBytes, config.maxStorageFiles)
+            queue = PcmBlockQueue(config.blockBytes, config.queueCapacity, config.maxQueueBytes)
+            timeline = ScanAudioTimeline(clock, limits)
+            publish(PcmCoordinatorState.RUNNING)
+            captureFinished = false
+            captureThread = Thread({ runCapture(audioSource, checkNotNull(queue)) }, "pcm-capture-worker")
+                .apply { isDaemon = true; start() }
+            true
+        } catch (_: Exception) {
+            failStartup()
+            false
         }
     }
 
-    @Synchronized
+    fun acquireScan(scanMillis: Long = nowMillis(), limits: RecordingLimits = this.limits): AudioContextId? = command {
+        if (currentState != PcmCoordinatorState.RUNNING) return@command null
+        val h = checkNotNull(history)
+        val t = checkNotNull(timeline)
+        t.updateLimits(limits)
+        t.acquireScan(scanMillis, h.contiguousTailStart)
+    }
+
+    fun openEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? = command {
+        timeline?.openEditor(id, committedEndFrame, processingTime(openMillis), directory.usableSpace >= config.minFreeSpaceBytes)
+    }
+
+    fun refresh(id: AudioContextId, refreshMillis: Long = nowMillis()): AudioTimelineView? = command {
+        timeline?.refresh(id, committedEndFrame, processingTime(refreshMillis))
+    }
+
+    fun snapshot(range: AudioRange): PcmHistory.Snapshot = command {
+        checkNotNull(history) { "History is not initialized" }.snapshot(range)
+    }
+
+    fun releaseContext(id: AudioContextId) = command {
+        timeline?.releaseContext(id)
+        retain(committedEndFrame)
+    }
+
+    fun stop(stopMillis: Long? = null) = command {
+        if (closeRequested) return@command
+        if (currentState != PcmCoordinatorState.RUNNING && currentState != PcmCoordinatorState.FAILED) return@command
+        if (currentState == PcmCoordinatorState.RUNNING) publish(PcmCoordinatorState.STOPPING)
+        stopInput()
+        drain()
+        timeline?.stop(processingTime(stopMillis), endReason())
+        retain(committedEndFrame)
+        if (failureReason == null) publish(PcmCoordinatorState.STOPPED)
+    }
+
     override fun close() {
-        if (state == PcmCoordinatorState.CLOSED) return
-        stop()
-        state = PcmCoordinatorState.CLOSED
-        runCatching { queue?.close() }
-        runCatching { history?.close() }
-        runCatching { source?.close() }
-        queue = null
-        history = null
-        source = null
-        timeline = null
-        clock = null
+        if (terminated) return
+        command {
+            if (terminated) return@command
+            if (!closeRequested) {
+                stop()
+                queue?.close()
+                history?.close()
+                timeline = null
+                closeRequested = true
+            }
+            finishCloseIfReady()
+        }
     }
 
     private fun runCapture(audioSource: AudioSource, pcmQueue: PcmBlockQueue) {
         val buffer = ByteArray(config.blockBytes)
-        var currentFrame = 0L
-
-        while (state == PcmCoordinatorState.RUNNING) {
-            val bytesRead = audioSource.read(buffer, 0, buffer.size)
-            if (bytesRead < 0) {
-                if (state == PcmCoordinatorState.RUNNING) {
-                    fail(PcmCoordinatorFailure.SOURCE_READ_FAILED)
+        var frame = 0L
+        try {
+            while (currentState == PcmCoordinatorState.RUNNING && pendingFailure.get() == null) {
+                val count = audioSource.read(buffer, 0, buffer.size)
+                if (currentState != PcmCoordinatorState.RUNNING) break
+                if (count < 0) {
+                    requestFailure(PcmCoordinatorFailure.SOURCE_READ_FAILED)
+                    break
                 }
-                break
-            }
-            if (bytesRead == 0) continue
-
-            // Ensure frame-aligned bytes
-            val validBytes = bytesRead - (bytesRead % config.frameBytes)
-            if (validBytes <= 0) continue
-
-            val frames = validBytes / config.frameBytes
-            val offered = pcmQueue.offer(currentFrame, buffer, validBytes)
-            if (!offered) {
-                val qFailure = pcmQueue.failure
-                val reason = when (qFailure) {
-                    PcmQueueFailure.DISCONTINUITY -> PcmCoordinatorFailure.QUEUE_DISCONTINUITY
-                    PcmQueueFailure.OVERFLOW, null -> PcmCoordinatorFailure.QUEUE_OVERFLOW
+                if (count == 0) continue
+                if (count > buffer.size || count % config.frameBytes != 0) {
+                    requestFailure(PcmCoordinatorFailure.QUEUE_DISCONTINUITY)
+                    break
                 }
-                fail(reason)
-                break
+                if (!pcmQueue.offer(frame, buffer, count)) {
+                    if (currentState == PcmCoordinatorState.RUNNING) {
+                        requestFailure(if (pcmQueue.failure == PcmQueueFailure.DISCONTINUITY)
+                            PcmCoordinatorFailure.QUEUE_DISCONTINUITY else PcmCoordinatorFailure.QUEUE_OVERFLOW)
+                    }
+                    break
+                }
+                frame = Math.addExact(frame, count / config.frameBytes.toLong())
+                signal()
             }
-            currentFrame = Math.addExact(currentFrame, frames.toLong())
+        } catch (_: Exception) {
+            if (currentState == PcmCoordinatorState.RUNNING) requestFailure(PcmCoordinatorFailure.SOURCE_READ_FAILED)
+        } finally {
+            pcmQueue.seal()
+            captureFinished = true
+            signal()
         }
-        pcmQueue.seal()
     }
 
-    private fun runWriter(
-        pcmQueue: PcmBlockQueue,
-        pcmHistory: PcmHistory,
-        audioTimeline: ScanAudioTimeline,
-    ) {
-        while (!pcmQueue.isDrained) {
-            val block = pcmQueue.poll(50L)
-            if (block == null) {
-                if (pcmQueue.isDrained) break
-                continue
-            }
-
-            block.use { b ->
-                val upcomingEnd = Math.addExact(pcmHistory.committedEnd, (b.count / config.frameBytes).toLong())
-                val now = nowMillis()
-
-                // Check disk space safety reserve before appending
-                if (directory.usableSpace < config.minFreeSpaceBytes) {
-                    fail(PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED)
-                    pcmQueue.seal()
-                    return
-                }
-
-                try {
-                    pcmHistory.retain(audioTimeline.retainedRanges(upcomingEnd, now))
-                    pcmHistory.append(b.bytes, b.count)
-                } catch (quota: HistoryQuotaException) {
-                    fail(PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED)
-                    pcmQueue.seal()
-                    return
-                } catch (io: IOException) {
-                    fail(PcmCoordinatorFailure.STORAGE_IO_ERROR)
-                    pcmQueue.seal()
-                    return
-                }
+    private fun runOwner() {
+        while (!terminated) {
+            pendingFailure.getAndSet(null)?.let(::fail)
+            val task = commands.poll()
+            task?.run()
+            releaseInputIfReady()
+            finishCloseIfReady()
+            if (terminated) break
+            val wrote = writeNext()
+            synchronized(wake) {
+                if (task == null && !wrote && commands.isEmpty() && pendingFailure.get() == null &&
+                    queue?.hasPending != true && !inputReadyToRelease() && !terminated) wake.wait()
             }
         }
+        while (true) (commands.poll() ?: break).run()
+    }
+
+    private fun writeNext(): Boolean {
+        val block = queue?.poll() ?: return false
+        block.use {
+            val h = checkNotNull(history)
+            try {
+                if (directory.usableSpace < config.minFreeSpaceBytes) throw HistoryQuotaException()
+                check(block.firstFrame == h.committedEnd) { "PCM publication is not contiguous" }
+                retain(Math.addExact(h.committedEnd, block.count / config.frameBytes.toLong()))
+                h.append(block.bytes, block.count)
+            } catch (_: HistoryQuotaException) {
+                fail(PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED)
+                queue?.close()
+            } catch (_: IOException) {
+                fail(PcmCoordinatorFailure.STORAGE_IO_ERROR)
+                queue?.close()
+            }
+        }
+        return true
+    }
+
+    private fun drain() { while (writeNext()) { /* Drain the accepted bounded queue. */ } }
+
+    private fun retain(end: Long) {
+        val t = timeline ?: return
+        history?.retain(t.retainedRanges(end, processingTime()))
+    }
+
+    private fun stopInput() {
+        queue?.seal()
+        val input = source
+        if (input != null && !stoppingSource) {
+            stoppingSource = true
+            stopFinished = false
+            Thread({
+                try { input.stop() }
+                catch (_: Exception) { stopFailed.set(true) }
+                finally { stopFinished = true; signal() }
+            }, "pcm-source-stop").apply { isDaemon = true; start() }
+        }
+        val deadline = System.nanoTime() + config.stopTimeoutMillis * 1_000_000L
+        synchronized(wake) {
+            while (!captureFinished || !stopFinished) {
+                val remaining = deadline - System.nanoTime()
+                if (remaining <= 0) break
+                wake.wait(remaining / 1_000_000L, (remaining % 1_000_000L).toInt())
+            }
+        }
+        if (!captureFinished || !stopFinished || stopFailed.get()) {
+            publish(PcmCoordinatorState.FAILED, PcmCoordinatorFailure.SOURCE_STOP_FAILED)
+        }
+        releaseInputIfReady()
+        pendingFailure.getAndSet(null)?.let { reason ->
+            if (failureReason == null) publish(PcmCoordinatorState.FAILED, reason)
+        }
+    }
+
+    private fun inputReadyToRelease() = stoppingSource && source != null && captureFinished && stopFinished
+
+    private fun releaseInputIfReady() {
+        if (!inputReadyToRelease()) return
+        runCatching { source?.close() }
+        source = null
+    }
+
+    private fun finishCloseIfReady() {
+        if (!closeRequested || !captureFinished || !stopFinished || terminated) return
+        releaseInputIfReady()
+        publish(PcmCoordinatorState.CLOSED)
+        synchronized(wake) { terminated = true; wake.notifyAll() }
+    }
+
+    private fun requestFailure(reason: PcmCoordinatorFailure) {
+        pendingFailure.compareAndSet(null, reason)
+        queue?.seal()
+        signal()
     }
 
     private fun fail(reason: PcmCoordinatorFailure) {
-        synchronized(this) {
-            if (state == PcmCoordinatorState.RUNNING) {
-                failure = reason
-                state = PcmCoordinatorState.FAILED
-                runCatching { source?.stop() }
-                queue?.seal()
-                val endReason = if (reason == PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED) {
-                    RetentionEnd.RESOURCE_LIMIT
-                } else {
-                    RetentionEnd.CAPTURE_STOPPED
-                }
-                timeline?.stop(nowMillis(), endReason)
-            }
-        }
+        if (currentState != PcmCoordinatorState.RUNNING && currentState != PcmCoordinatorState.STOPPING) return
+        publish(PcmCoordinatorState.FAILED, reason)
+        stopInput()
+        timeline?.stop(processingTime(), endReason())
     }
 
-    private fun earliestAvailableFrame(h: PcmHistory): Long {
-        val range = AudioRange(0, h.committedEnd)
-        return try {
-            h.snapshot(AudioRange(h.committedEnd - 1, h.committedEnd)).use {
-                maxOf(0L, h.committedEnd - (h.bytes / config.frameBytes))
-            }
-        } catch (_: Exception) {
-            0L
-        }
+    private fun failStartup() {
+        captureFinished = true
+        queue?.close()
+        history?.close()
+        runCatching { source?.close() }
+        source = null
+        publish(PcmCoordinatorState.FAILED, PcmCoordinatorFailure.SOURCE_START_FAILED)
     }
+
+    private fun endReason() = if (failureReason == PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED)
+        RetentionEnd.RESOURCE_LIMIT else RetentionEnd.CAPTURE_STOPPED
+
+    // Event timestamps remain source data; only the owner advances processing time.
+    private fun processingTime(eventMillis: Long? = null): Long {
+        lastProcessingMillis = maxOf(lastProcessingMillis, nowMillis(), eventMillis ?: 0L)
+        return lastProcessingMillis
+    }
+
+    private fun publish(state: PcmCoordinatorState, failure: PcmCoordinatorFailure? = status.failure) {
+        status = Status(state, failure)
+        onStateChanged(state, failure)
+    }
+
+    private fun signal() { synchronized(wake) { wake.notifyAll() } }
+
+    private fun <T> command(action: () -> T): T {
+        if (Thread.currentThread() === owner) return action()
+        val task = FutureTask(action)
+        synchronized(wake) {
+            // Retired state is immutable: commands can only return their closed result or reject it.
+            if (terminated) return action()
+            check(commands.offer(task)) { "Audio session command limit reached" }
+            wake.notifyAll()
+        }
+        return try { task.get() } catch (error: ExecutionException) { throw checkNotNull(error.cause) }
+    }
+
+    private data class Status(val state: PcmCoordinatorState, val failure: PcmCoordinatorFailure? = null)
 
     companion object {
-        fun cleanAbandonedFiles(directory: File): Int {
-            if (!directory.exists() || !directory.isDirectory) return 0
-            var count = 0
-            directory.listFiles()?.forEach { file ->
-                if (file.isFile && (file.name.endsWith(".pcm") || file.name.endsWith(".tmp"))) {
-                    if (file.delete()) count++
-                }
-            }
-            return count
-        }
-
-        private fun pcmCoordinatorFailureState(reason: PcmCoordinatorFailure): PcmCoordinatorState =
-            PcmCoordinatorState.FAILED
+        fun cleanAbandonedFiles(directory: File): Int = directory.listFiles()?.count { file ->
+            file.isFile && (file.name.endsWith(".pcm") || file.name.endsWith(".tmp")) && file.delete()
+        } ?: 0
     }
 }

@@ -1,5 +1,31 @@
 # Status
 
+## Sentence audio: serialized recording-session foundation (2026-11-21)
+
+- Implemented on `codex/sentence-audio-recording`: one background owner now serializes recording commands,
+  processing-clock advancement, timeline retention and PCM publication. Capture feeds a bounded pool;
+  control admission is bounded too. No independent writer mutates the scan timeline.
+- `SentenceRecorder` now suspends file/platform/worker work off Main and observes the backend's actual
+  Starting/Recording/Stopping/Stopped/Failed transitions. Overlay settings/bubble/notification observe that
+  state; async read failure cannot be overwritten by an unconditional successful-start dot.
+- Failed and cancelled startup release transferred input; cancelled lease/context delivery cleans up.
+  Stop exceptions and a provisional 2 s timeout report failure; another source is rejected until the old one
+  releases. A rejected restart preserves the existing context. Stop/Start operations are serialized in overlay.
+- Independent session directories and shared leases preserve old readers across restart. Initial abandoned
+  PCM cleanup does not sweep live previous sessions. Changed H/R/E apply to the next scan without restarting
+  capture; existing context limits remain frozen. Source creation, waveform/silence and encode work are off Main.
+- 84 core-media unit tests pass, including 11 new regression tests; 212 page tests pass. An independent
+  API30 `SentenceRecorderDeviceTest` passed from Android Main using real synthetic PCM files and off-Main
+  source assertions. No projection/playback/owner collection used; owned silent read-only AVD powered off.
+- Full project build/unit/lint/androidTest assembly/convention/release-vital checks passed during integration;
+  the final retired-session idempotence fix was rechecked with core/overlay unit tests, core lint and test-APK
+  assembly. Logs: ignored
+  `testdata/local-research/audio-review-2026-11-21/repair-*.log`.
+- A/B remain partial: next are preview-run ownership, real outbound WebView thread test, API29 consent-purpose
+  isolation and TTS cleanup/self-capture checks. Editor protocol/operation identity, Refresh bounds, Anki retry
+  and final resource/codec/physical-device acceptance are still open. No feature-complete claim or main merge.
+  Also retire stopped-session storage/workers after the final context/reader ends; capture itself already stops.
+
 ## Sentence audio repair plan (2026-11-21)
 
 - Owner authorized selective redesign in the review order. [Current execution plan](plans/2026-11-21-sentence-audio-repair.md)

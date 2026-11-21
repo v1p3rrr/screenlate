@@ -847,6 +847,22 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 ## Run log
 
+### 2026-11-21, sentence recording session ownership repair, `codex/sentence-audio-recording`
+
+- 84 `core:media` JVM tests pass (11 new regressions). `SentenceRecorderTest` covers failed/cancelled start,
+  public async failure state, previous-session readers, responsive/stuck Stop, preserved context on rejected
+  replacement, next-scan duration changes and initial orphan cleanup. `PcmStorageCoordinatorTest` controls
+  concurrent publication/Refresh, throwing Stop and retired-session idempotence; sample bytes and scan anchor are checked.
+- API30: independent `SentenceRecorderDeviceTest` passed, 1 test in 0.148 s. Android Main invokes the
+  suspending facade, scans, reads synthetic PCM and stops; fake source methods assert off-Main. No actual
+  capture, audio output, projection consent, Screenlate app instrumentation or Anki access. The read-only
+  `-no-window -no-audio` AVD was powered off; no lingering source tone was started.
+- All 212 page tests pass unchanged. Build/unit/lint/test-APK/convention/release-vital checks are recorded
+  in `testdata/local-research/audio-review-2026-11-21/repair-*.log`; see current status for final integration.
+- Partial evidence for REC23/27–29/31–32/35/75–80. REC75–82 remain N until their entire stated UI/platform/
+  note-operation behavior is executed. No real WebView callback, API29 permission or codec/source acceptance
+  is inferred from this synthetic session test. The broader repair plan remains open.
+
 ### 2026-11-20, sentence audio full pipeline & review fixes, `codex/sentence-audio-recording`
 
 - Full pipeline milestone: preview player, overlay editor JS/bridge, Anki pipeline, audio/Anki settings, and 27-locale translations.

@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.FutureTask
 
 class PcmStorageCoordinatorTest {
     @get:Rule val temporary = TemporaryFolder()
@@ -194,6 +196,92 @@ class PcmStorageCoordinatorTest {
         assertThat(File(dir, "abandoned1.pcm").exists()).isFalse()
         assertThat(File(dir, "abandoned2.tmp").exists()).isFalse()
         assertThat(File(dir, "keep_this.txt").exists()).isTrue()
+    }
+
+    @Test
+    fun refreshDuringPublicationPreservesTheContiguousSamples() {
+        val time = AtomicLong(10_000L)
+        val pauseClock = AtomicBoolean(false)
+        val sampled = CountDownLatch(1)
+        val release = CountDownLatch(1)
+        val refreshed = CountDownLatch(1)
+        val workerError = AtomicReference<Throwable?>()
+        val source = FakeAudioSource(blockFrames = 10)
+        val coordinator = PcmStorageCoordinator(
+            temporary.newFolder(), RecordingLimits(),
+            PcmCoordinatorConfig(sampleRate = 1000, chunkFrames = 100, blockFrames = 10, minFreeSpaceBytes = 0),
+            nowMillis = {
+                val value = time.get()
+                if (pauseClock.compareAndSet(true, false)) {
+                    Thread.currentThread().uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, error -> workerError.set(error) }
+                    sampled.countDown()
+                    check(release.await(3, TimeUnit.SECONDS))
+                }
+                value
+            },
+            nowNanos = { time.get() * 1_000_000L },
+        )
+        try {
+            coordinator.start(source)
+            val context = checkNotNull(coordinator.acquireScan(10_000))
+            coordinator.openEditor(context, 10_000)
+            time.set(10_010)
+            pauseClock.set(true)
+            source.emitFrames(10)
+            assertThat(sampled.await(3, TimeUnit.SECONDS)).isTrue()
+            time.set(10_020)
+            val refresh = FutureTask {
+                coordinator.refresh(context, 10_020).also { refreshed.countDown() }
+            }
+            Thread(refresh, "test-refresh-caller").apply { isDaemon = true; start() }
+            // The former independent writer allowed Refresh to finish while its timestamp was paused.
+            // A serialized owner may keep Refresh pending until publication completes.
+            refreshed.await(100, TimeUnit.MILLISECONDS)
+            release.countDown()
+            assertThat(refresh.get(3, TimeUnit.SECONDS)?.scanFrame).isEqualTo(0L)
+            assertThat(workerError.get()).isNull()
+            coordinator.snapshot(AudioRange(0, 10)).use { snapshot ->
+                assertThat(snapshot.openStream().use { it.readBytes() }).isEqualTo(source.expectedPcm(0, 10))
+            }
+            coordinator.stop()
+            assertThat(coordinator.failureReason).isNull()
+        } finally {
+            release.countDown()
+            coordinator.close()
+        }
+    }
+
+    @Test
+    fun throwingStopReportsFailureAndReleasesTheSource() {
+        val released = AtomicBoolean(false)
+        val source = object : AudioSource {
+            override val sampleRate = 48000
+            override val channelCount = 1
+            override fun start() = true
+            override fun read(buffer: ByteArray, offset: Int, length: Int): Int { Thread.sleep(1); return 0 }
+            override fun timestampNanos(): Long? = null
+            override fun stop() { throw IllegalStateException("Synthetic stop failure") }
+            override fun close() { released.set(true) }
+        }
+        val coordinator = PcmStorageCoordinator(temporary.newFolder(), RecordingLimits())
+        try {
+            coordinator.start(source)
+            coordinator.stop()
+            assertThat(coordinator.currentState).isEqualTo(PcmCoordinatorState.FAILED)
+            assertThat(released.get()).isTrue()
+        } finally {
+            coordinator.close()
+        }
+    }
+
+    @Test
+    fun closedSessionStopAndCloseAreIdempotent() {
+        val coordinator = PcmStorageCoordinator(temporary.newFolder(), RecordingLimits())
+        coordinator.start(FakeAudioSource(sampleRate = 48000))
+        coordinator.close()
+        coordinator.stop()
+        coordinator.close()
+        assertThat(coordinator.currentState).isEqualTo(PcmCoordinatorState.CLOSED)
     }
 
     private fun waitForCondition(timeoutMs: Long = 3000, condition: () -> Boolean) {

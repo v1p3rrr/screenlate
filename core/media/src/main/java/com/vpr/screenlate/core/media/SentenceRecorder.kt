@@ -6,238 +6,323 @@ import android.os.SystemClock
 import com.vpr.screenlate.core.common.log.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.io.IOException
+import java.util.UUID
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 sealed interface SentenceRecordingState {
     data object Idle : SentenceRecordingState
+    data object Starting : SentenceRecordingState
     data class Recording(val startTimeMillis: Long) : SentenceRecordingState
+    data object Stopping : SentenceRecordingState
     data class Stopped(val state: PcmCoordinatorState) : SentenceRecordingState
     data class Failed(val failure: PcmCoordinatorFailure) : SentenceRecordingState
 }
 
-/**
- * Public facade of `core:media` for coordinating sentence audio recording.
- */
+/** Owns recording sessions. File, platform and worker waits suspend callers instead of blocking Main. */
 @Singleton
 class SentenceRecorder internal constructor(
     private val storageDir: File,
     private val settingsRepository: RecordingSettingsRepository,
-) : AutoCloseable {
-
+    private val nowMillis: () -> Long = { SystemClock.elapsedRealtime() },
+    private val nowNanos: () -> Long = { SystemClock.elapsedRealtimeNanos() },
+) {
     @Inject
     constructor(
         @ApplicationContext context: Context,
         settingsRepository: RecordingSettingsRepository,
-    ) : this(
-        File(context.noBackupFilesDir, "sentence_recording").apply { mkdirs() },
-        settingsRepository,
-    )
+    ) : this(File(context.noBackupFilesDir, "sentence_recording"), settingsRepository)
 
-    private var coordinator: PcmStorageCoordinator? = null
-    private var previewPlayer: AudioPreviewPlayer? = null
+    private val lifecycle = Mutex()
+    private val previewCommands = Mutex()
+    private val generation = AtomicLong()
+    @Volatile private var coordinator: PcmStorageCoordinator? = null
+    private var currentSource: AudioSource? = null
+    private var abandonedCleaned = false
+    @Volatile private var previewPlayer: AudioPreviewPlayer? = null
     private val _recordingState = MutableStateFlow<SentenceRecordingState>(SentenceRecordingState.Idle)
     val recordingState: StateFlow<SentenceRecordingState> = _recordingState.asStateFlow()
-
-    val isRecording: Boolean get() = _recordingState.value is SentenceRecordingState.Recording
-
-    private var onStoppedListener: (() -> Unit)? = null
-
-    fun setOnStoppedListener(listener: (() -> Unit)?) {
-        onStoppedListener = listener
+    val isRecording: Boolean get() = recordingState.value is SentenceRecordingState.Recording
+    val isCaptureActive: Boolean get() = when (recordingState.value) {
+        SentenceRecordingState.Starting, is SentenceRecordingState.Recording, SentenceRecordingState.Stopping -> true
+        else -> false
     }
 
-    @Synchronized
-    fun start(source: AudioSource): Boolean {
-        if (isRecording) return true
-        coordinator?.close()
-        val limits = settingsRepository.cachedSettings.limits
-        val coord = PcmStorageCoordinator(
-            directory = storageDir,
-            limits = limits,
-            nowMillis = { SystemClock.elapsedRealtime() },
-            nowNanos = { SystemClock.elapsedRealtimeNanos() },
-        )
-        if (!coord.start(source)) {
-            val failure = coord.failureReason ?: PcmCoordinatorFailure.SOURCE_START_FAILED
-            Log.w(TAG, "Failed to start audio recording: $failure")
-            _recordingState.value = SentenceRecordingState.Failed(failure)
-            coord.close()
-            return false
-        }
-        coordinator = coord
-        val startTime = SystemClock.elapsedRealtime()
-        _recordingState.value = SentenceRecordingState.Recording(startTime)
-        Log.i(TAG, "Sentence audio recording started")
-        return true
-    }
-
-    @Synchronized
-    fun stop() {
-        val coord = coordinator ?: return
-        if (!isRecording) return
-        coord.stop()
-        _recordingState.value = SentenceRecordingState.Stopped(coord.currentState)
-        Log.i(TAG, "Sentence audio recording stopped")
-        onStoppedListener?.invoke()
-    }
-
-    @Synchronized
-    fun acquireScan(scanMillis: Long = SystemClock.elapsedRealtime()): AudioContextId? {
-        val coord = coordinator ?: return null
-        return coord.acquireScan(scanMillis)
-    }
-
-    @Synchronized
-    fun openEditor(id: AudioContextId, openMillis: Long = SystemClock.elapsedRealtime()): AudioTimelineView? {
-        val coord = coordinator ?: return null
-        return coord.openEditor(id, openMillis)
-    }
-
-    @Synchronized
-    fun refresh(id: AudioContextId, refreshMillis: Long = SystemClock.elapsedRealtime()): AudioTimelineView? {
-        val coord = coordinator ?: return null
-        return coord.refresh(id, refreshMillis)
-    }
-
-    @Synchronized
-    fun releaseContext(id: AudioContextId) {
-        coordinator?.releaseContext(id)
-    }
-
-    @Synchronized
-    internal fun snapshot(range: AudioRange): PcmHistory.Snapshot? {
-        val coord = coordinator ?: return null
-        return runCatching { coord.snapshot(range) }.getOrNull()
-    }
-
-    @Synchronized
-    fun waveformSummary(range: AudioRange, buckets: Int = 200): WaveformSummary? {
-        val snapshot = snapshot(range) ?: return null
-        return try {
-            snapshot.openStream().use { stream ->
-                WaveformSummary.compute(stream, range, buckets)
+    suspend fun start(source: AudioSource): Boolean {
+        var attempt: PcmStorageCoordinator? = null
+        var sourceReleased = false
+        try {
+            return withContext(Dispatchers.IO) {
+                lifecycle.withLock {
+                    currentCoroutineContext().ensureActive()
+                    if (isRecording) {
+                        if (source !== currentSource) {
+                            source.close()
+                            sourceReleased = true
+                        }
+                        return@withLock true
+                    }
+                    stopPreview()
+                    coordinator?.stop()
+                    if (coordinator?.hasActiveInput == true) {
+                        source.close()
+                        sourceReleased = true
+                        return@withLock false
+                    }
+                    coordinator?.close()
+                    if (coordinator?.isReleased == false) {
+                        source.close()
+                        sourceReleased = true
+                        return@withLock false
+                    }
+                    coordinator = null
+                    currentSource = null
+                    currentCoroutineContext().ensureActive()
+                    try {
+                        cleanupAbandonedSessions()
+                    } catch (error: IOException) {
+                        runCatching { source.close() }
+                        sourceReleased = true
+                        _recordingState.value = SentenceRecordingState.Failed(PcmCoordinatorFailure.STORAGE_IO_ERROR)
+                        Log.w(TAG, "Cannot prepare recording storage", error)
+                        return@withLock false
+                    }
+                    val token = generation.incrementAndGet()
+                    val session = PcmStorageCoordinator(
+                        directory = File(storageDir, UUID.randomUUID().toString()),
+                        limits = settingsRepository.settings.first().limits,
+                        config = PcmCoordinatorConfig(sampleRate = source.sampleRate),
+                        nowMillis = nowMillis,
+                        nowNanos = nowNanos,
+                        onStateChanged = { state, failure ->
+                            if (generation.get() == token) {
+                                _recordingState.value = when (state) {
+                                    PcmCoordinatorState.STARTING -> SentenceRecordingState.Starting
+                                    PcmCoordinatorState.RUNNING -> SentenceRecordingState.Recording(nowMillis())
+                                    PcmCoordinatorState.STOPPING -> SentenceRecordingState.Stopping
+                                    PcmCoordinatorState.STOPPED -> SentenceRecordingState.Stopped(state)
+                                    PcmCoordinatorState.FAILED -> SentenceRecordingState.Failed(checkNotNull(failure))
+                                    else -> _recordingState.value
+                                }
+                            }
+                        },
+                    )
+                    attempt = session
+                    coordinator = session
+                    currentSource = source
+                    val started = session.start(source)
+                    if (!started) {
+                        session.close()
+                        coordinator = null
+                        currentSource = null
+                    }
+                    started
+                }
             }
-        } catch (e: Exception) {
-            Log.w(TAG, "Waveform computation failed", e)
-            null
-        } finally {
-            snapshot.close()
+        } catch (cancelled: CancellationException) {
+            withContext(NonCancellable + Dispatchers.IO) {
+                lifecycle.withLock {
+                    val session = attempt
+                    if (session != null) {
+                        session.close()
+                        if (coordinator === session && session.isReleased) {
+                            coordinator = null
+                            currentSource = null
+                            generation.incrementAndGet()
+                            _recordingState.value = SentenceRecordingState.Stopped(PcmCoordinatorState.STOPPED)
+                        }
+                    } else if (!sourceReleased && source !== currentSource) source.close()
+                }
+            }
+            throw cancelled
         }
     }
 
-    @Synchronized
-    fun findSilence(
+    suspend fun stop() = withContext(NonCancellable + Dispatchers.IO) {
+        lifecycle.withLock { coordinator?.stop() }
+        Unit
+    }
+
+    suspend fun acquireScan(scanMillis: Long = nowMillis()): AudioContextId? {
+        var session: PcmStorageCoordinator? = null
+        var acquired: AudioContextId? = null
+        try {
+            return withContext(Dispatchers.IO) {
+                lifecycle.withLock {
+                    session = coordinator
+                    session?.acquireScan(scanMillis, settingsRepository.settings.first().limits).also { acquired = it }
+                }
+            }
+        } catch (cancelled: CancellationException) {
+            withContext(NonCancellable + Dispatchers.IO) {
+                lifecycle.withLock {
+                    acquired?.let { if (session === coordinator) session?.releaseContext(it) }
+                }
+            }
+            throw cancelled
+        }
+    }
+
+    suspend fun openEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? =
+        withContext(Dispatchers.IO) { lifecycle.withLock { coordinator?.openEditor(id, openMillis) } }
+
+    suspend fun refresh(id: AudioContextId, refreshMillis: Long = nowMillis()): AudioTimelineView? =
+        withContext(Dispatchers.IO) { lifecycle.withLock { coordinator?.refresh(id, refreshMillis) } }
+
+    suspend fun releaseContext(id: AudioContextId) = withContext(NonCancellable + Dispatchers.IO) {
+        lifecycle.withLock { coordinator?.releaseContext(id) }
+        Unit
+    }
+
+    internal suspend fun snapshot(range: AudioRange): PcmHistory.Snapshot? {
+        var acquired: PcmHistory.Snapshot? = null
+        try {
+            return withContext(Dispatchers.IO) {
+                lifecycle.withLock { snapshotFrom(coordinator, range).also { acquired = it } }
+            }
+        } catch (cancelled: CancellationException) {
+            withContext(NonCancellable + Dispatchers.IO) { acquired?.close() }
+            throw cancelled
+        }
+    }
+
+    suspend fun waveformSummary(range: AudioRange, buckets: Int = 200): WaveformSummary? = withContext(Dispatchers.IO) {
+        val snapshot = snapshot(range) ?: return@withContext null
+        snapshot.use { lease ->
+            try { lease.openStream().use { WaveformSummary.compute(it, range, buckets) } }
+            catch (e: Exception) { Log.w(TAG, "Waveform computation failed", e); null }
+        }
+    }
+
+    suspend fun findSilence(
         range: AudioRange,
         sampleRate: Int = 48000,
         minSilenceMillis: Long = SilenceDetector.DEFAULT_MIN_SILENCE_MILLIS,
         edgePaddingMillis: Long = SilenceDetector.DEFAULT_EDGE_PADDING_MILLIS,
-    ): List<AudioRange> {
-        val snapshot = snapshot(range) ?: return emptyList()
-        return try {
-            snapshot.openStream().use { stream ->
-                SilenceDetector.findSilenceCuts(stream, range, sampleRate, minSilenceMillis, edgePaddingMillis)
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Silence search failed", e)
-            emptyList()
-        } finally {
-            snapshot.close()
+    ): List<AudioRange> = withContext(Dispatchers.IO) {
+        val snapshot = snapshot(range) ?: return@withContext emptyList()
+        snapshot.use { lease ->
+            try {
+                lease.openStream().use {
+                    SilenceDetector.findSilenceCuts(it, range, sampleRate, minSilenceMillis, edgePaddingMillis)
+                }
+            } catch (e: Exception) { Log.w(TAG, "Silence search failed", e); emptyList() }
         }
     }
 
-    @Synchronized
-    fun initialSelection(view: AudioTimelineView, sampleRate: Int = 48000): AudioEdit? {
-        val source = view.source ?: return null
-        val initial = InitialSelection.suggest(view.scanFrame, source, sampleRate) ?: return null
-        val snapshot = snapshot(initial) ?: return AudioEdit(initial)
-        return try {
-            val quiet = snapshot.openStream().use { stream ->
-                SilenceDetector.detectLeadingQuiet(stream, initial, sampleRate)
-            }
-            val refined = InitialSelection.refine(initial, quiet, sampleRate)
-            AudioEdit(refined)
-        } catch (e: Exception) {
-            AudioEdit(initial)
-        } finally {
-            snapshot.close()
+    suspend fun initialSelection(view: AudioTimelineView, sampleRate: Int = 48000): AudioEdit? = withContext(Dispatchers.IO) {
+        val source = view.source ?: return@withContext null
+        val initial = InitialSelection.suggest(view.scanFrame, source, sampleRate) ?: return@withContext null
+        val snapshot = snapshot(initial) ?: return@withContext AudioEdit(initial)
+        snapshot.use { lease ->
+            try {
+                val quiet = lease.openStream().use { SilenceDetector.detectLeadingQuiet(it, initial, sampleRate) }
+                AudioEdit(InitialSelection.refine(initial, quiet, sampleRate))
+            } catch (_: Exception) { AudioEdit(initial) }
         }
     }
 
-    @Synchronized
-    fun startPreview(
+    suspend fun startPreview(
         edit: AudioEdit,
         mode: PreviewMode = PreviewMode.RESULT,
         startFrame: Long? = null,
         onProgress: ((Long) -> Unit)? = null,
         onComplete: (() -> Unit)? = null,
-    ) {
-        if (previewPlayer == null) {
-            previewPlayer = AudioPreviewPlayer(snapshotProvider = ::snapshot)
+    ) = previewCommands.withLock {
+        withContext(Dispatchers.IO) {
+            previewPlayer?.close()
+            val session = coordinator
+            AudioPreviewPlayer(snapshotProvider = { snapshotFrom(session, it) }).also {
+                previewPlayer = it
+                it.play(edit, mode, startFrame, onProgress, onComplete)
+            }
+            Unit
         }
-        previewPlayer?.play(edit, mode, startFrame, onProgress, onComplete)
     }
 
-    @Synchronized
-    fun pausePreview() {
-        previewPlayer?.pause()
+    suspend fun pausePreview() = previewCommands.withLock {
+        withContext(Dispatchers.IO) { previewPlayer?.pause(); Unit }
     }
 
-    @Synchronized
-    fun stopPreview() {
-        previewPlayer?.stop()
+    suspend fun stopPreview() = previewCommands.withLock {
+        withContext(NonCancellable + Dispatchers.IO) { previewPlayer?.close(); previewPlayer = null }
     }
 
-    @Synchronized
-    fun seekPreview(frame: Long, edit: AudioEdit? = null, mode: PreviewMode = PreviewMode.RESULT) {
-        previewPlayer?.seek(frame, edit, mode)
-    }
+    suspend fun seekPreview(frame: Long, edit: AudioEdit? = null, mode: PreviewMode = PreviewMode.RESULT) =
+        previewCommands.withLock { withContext(Dispatchers.IO) { previewPlayer?.seek(frame, edit, mode); Unit } }
 
     val isPreviewPlaying: Boolean get() = previewPlayer?.isPlaying == true
     val previewPosition: Long get() = previewPlayer?.currentFrame ?: 0L
 
-    data class ExportOutcome(
-        val isQuiet: Boolean,
-    )
+    data class ExportOutcome(val isQuiet: Boolean)
 
-    @Synchronized
-    fun export(
-        edit: AudioEdit,
-        outputFile: File,
-        sampleRate: Int = 48000,
-    ): ExportOutcome? {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
-        val coord = coordinator ?: return null
-        val snapshot = runCatching { coord.snapshot(edit.selection) }.getOrNull() ?: return null
-        return try {
-            val result = snapshot.openStream().use { rawStream ->
-                val editStream = AudioEditInputStream(rawStream, edit)
-                AudioExporter.exportOpus(editStream, edit, sampleRate, outputFile)
+    suspend fun export(edit: AudioEdit, outputFile: File, sampleRate: Int = 48000): ExportOutcome? = withContext(Dispatchers.IO) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@withContext null
+        val snapshot = snapshot(edit.selection) ?: return@withContext null
+        snapshot.use { lease ->
+            try {
+                val result = lease.openStream().use {
+                    AudioExporter.exportOpus(AudioEditInputStream(it, edit), edit, sampleRate, outputFile)
+                }
+                ExportOutcome(result.isQuiet)
+            } catch (e: Exception) {
+                Log.w(TAG, "Export failed", e)
+                outputFile.delete()
+                null
             }
-            ExportOutcome(isQuiet = result.isQuiet)
-        } catch (e: Exception) {
-            Log.w(TAG, "Export failed", e)
-            outputFile.delete()
-            null
-        } finally {
-            snapshot.close()
         }
     }
 
-    @Synchronized
-    override fun close() {
-        stop()
-        previewPlayer?.close()
-        previewPlayer = null
-        coordinator?.close()
-        coordinator = null
-        _recordingState.value = SentenceRecordingState.Idle
+    suspend fun close() = withContext(NonCancellable + Dispatchers.IO) {
+        lifecycle.withLock {
+            stopPreview()
+            coordinator?.close()
+            if (coordinator?.isReleased == false) return@withLock
+            coordinator = null
+            currentSource = null
+            generation.incrementAndGet()
+            _recordingState.value = SentenceRecordingState.Idle
+        }
     }
 
-    companion object {
-        private const val TAG = "SentenceRecorder"
+    private fun snapshotFrom(session: PcmStorageCoordinator?, range: AudioRange): PcmHistory.Snapshot? =
+        try { session?.snapshot(range) } catch (_: IllegalStateException) { null } catch (_: java.io.IOException) { null }
+
+    /** Runs once before this singleton owns any session; later starts must not sweep live prior leases. */
+    private fun cleanupAbandonedSessions() {
+        if (abandonedCleaned) return
+        if (!storageDir.isDirectory && !storageDir.mkdirs()) throw IOException("Cannot create recording directory")
+        val root = storageDir.canonicalFile
+        fun clear(directory: File) {
+            PcmStorageCoordinator.cleanAbandonedFiles(directory)
+            val remaining = directory.listFiles() ?: throw IOException("Cannot read recording directory")
+            if (remaining.any { it.isFile && (it.name.endsWith(".pcm") || it.name.endsWith(".tmp")) }) {
+                throw IOException("Cannot clear abandoned recording files")
+            }
+        }
+        clear(root)
+        for (child in root.listFiles() ?: throw IOException("Cannot read recording directory")) {
+            if (!child.isDirectory || child.canonicalFile.parentFile != root) continue
+            if (runCatching { UUID.fromString(child.name) }.isFailure) continue
+            clear(child)
+            child.delete() // Only empty session directories are removed; unrelated contents stay intact.
+        }
+        abandonedCleaned = true
     }
+
+    companion object { private const val TAG = "SentenceRecorder" }
 }

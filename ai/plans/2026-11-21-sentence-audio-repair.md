@@ -1,6 +1,6 @@
 # Plan: sentence audio integration repair (2026-11-21)
 
-Status: planned, implementation not started. The owner authorized selective redesign of recording-session
+Status: implementation in progress. The owner authorized selective redesign of recording-session
 coordination and editor/note-operation coordination, following the review order. Work stays on
 `codex/sentence-audio-recording`; no routine merge or push to main.
 
@@ -412,15 +412,17 @@ are investigated as findings, not converted into an invented new audio performan
 
 | Milestone | Status | Evidence |
 |---|---|---|
-| A regression baseline | Pending | Review-only fixtures exist under ignored `testdata/local-research/audio-review-2026-11-21/`; not yet permanent repair tests. |
-| B session/preview lifetime | Pending | Review reproduced defects; no fixes claimed. |
+| A regression baseline | Partial | Permanent core regressions landed with their fixes; 84 core tests pass. DOM and full pending-note/fake-backend fixture remain for the editor work. |
+| B session/preview lifetime | Partial | Serialized session owner, suspending facade, observable failures, bounded Stop and per-session leases implemented. Preview run ownership, consent-purpose isolation and remaining physical integration gates are still open. |
 | C pending operation/protocol | Pending | Current implementation remains at reviewed behavior. |
 | D editing/fidelity | Pending | Codec probe evidence is partial, not end-to-end acceptance. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-At the next implementation turn start with A, then B. Read this plan, original product decisions, review,
+Next continue B: preview run ownership, outgoing WebView Android test, consent-purpose isolation and
+TTS lifetime/physical checks. Complete the editor-facing A fixtures when introducing C's operation interface.
+Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
 the two untracked `docs/images/photo_*2026-11-10*.jpg` files. Commit/push only this feature branch.
 
@@ -432,6 +434,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-21: Owner authorized implementation. Added core regressions and the serialized session owner;
+  capture/publication/metadata now have one order, public work suspends off Main, startup/cancellation/
+  failure/Stop/restart preserve ownership. Added synthetic Android Main-thread test. Product decisions
+  unchanged; A/B remain partial and no editor/Anki or complete device acceptance is claimed.
 - 2026-11-21: Owner authorized selective redesign in the review order. Created this execution plan,
   inherited all existing product decisions and approved prototype behavior, mapped every review finding
   to repair work/tests and retained measured compatibility/resource gates. No new product choices or

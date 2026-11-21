@@ -51,6 +51,17 @@ internal class PcmHistory(
     val bytes: Long @Synchronized get() = storedBytes
     val files: Int @Synchronized get() = chunks.size
 
+    /** First frame of the newest contiguous span, excluding older protected spans across an evicted gap. */
+    val contiguousTailStart: Long
+        @Synchronized get() {
+            var start = end
+            for (chunk in chunks.asReversed()) {
+                if (chunk.range.endExclusive != start) break
+                start = chunk.start
+            }
+            return start
+        }
+
     @Synchronized
     fun append(pcm: ByteArray, count: Int = pcm.size) {
         check(!closed && !failed)

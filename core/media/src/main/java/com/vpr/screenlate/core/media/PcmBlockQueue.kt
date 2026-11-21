@@ -26,6 +26,7 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
     }
 
     val failure: PcmQueueFailure? @Synchronized get() = fault
+    val hasPending: Boolean @Synchronized get() = ready.isNotEmpty()
     val isDrained: Boolean @Synchronized get() = sealed && ready.isEmpty() && borrowed == 0
 
     @Synchronized
