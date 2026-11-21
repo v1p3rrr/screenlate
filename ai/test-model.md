@@ -847,6 +847,31 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 ## Run log
 
+### 2026-11-22, TTS lifetime and shared pronunciation/preview output
+
+- Native red: AudioPlayer from `4c256f1e` left its private synthesized WAV after Stop. The controlled
+  engine setup was fixed before counting that failure: earlier missing DEFAULT category/default voice
+  were fixture failures. Original code was built temporarily and current work restored in finally.
+- 8 AudioPlayer cases pass: file ownership on Stop/completion/error, cancelled/timed-out/empty synthesis,
+  stale preparation, declined shutdown/retry, cached-clip preservation and a very short completed voice.
+  Four PlaybackCoordinator cases cover replacement/late release, declined capture/output, nested holds
+  and cancellation during shutdown. Core-media suite is 97 tests, adding real-file/fake-sink mutual ownership,
+  stale seek, failed native Stop protection, post-input drain protection and queued stale Busy feedback.
+  Drain/queued-feedback cases were red before their fixes. All 12 popup playback cases pass; editor entry
+  cancels pending dictionary audio even while its window stays hosted. No note/duplicate job is cancelled.
+- API30 independent packages: AudioPlayerDeviceTest 1 test (0.466 s), SentenceRecorderDeviceTest 2 tests
+  (1.451 s), OwnPlaybackDeviceTest 1 test (0.261 s). Real synthesis transport/MediaPlayer removes its file
+  after Stop and waits for terminal callback after live PCM handoff. Real MediaPlayer/AudioTrack share
+  ownership without stopping synthetic capture; interruption callback runs on Main. Existing preview
+  callbacks still update an actual WebView on Main. Engine setting restored to its original null value.
+- Full assemble/unit/lint/test-APK/convention/release-vital checks pass in 2m29s; 212 page tests pass.
+  Final popup integration recheck (unit/lint/app/test-APK/release-vital) passes in 1m45s; the last short-voice
+  unit check passes. Logs: ignored `testdata/local-research/audio-repair-2026-11-22/tts-*.log`.
+- Partial REC7/8/28/31/48/78 evidence. Keep those rows N: the authored silent engine is in a separate
+  process of the test UID; natural voices, an external engine UID, actual source capture/routes and full
+  editor/view generations are not certified. No owner app/collection/sync or force-stop. Test packages are
+  uninstalled and the owned -no-audio/-read-only emulator powered off after the run.
+
 ### 2026-11-21, terminal recording-session retirement
 
 - Complete core-media suite: 94 tests pass. Three added facade cases retain exact ramp PCM through a live

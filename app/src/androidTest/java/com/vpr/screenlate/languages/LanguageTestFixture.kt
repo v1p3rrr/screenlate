@@ -18,6 +18,7 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
@@ -98,7 +99,7 @@ internal class LanguageTestFixture : AutoCloseable {
         val lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences)) { imports }
         return SearchViewModel(
             lookup, AnkiDroid(context), AnkiNotes(ReadOnlyAnki(), ankiSettings), AudioFinder(context, client, audioSettings, appSettings),
-            audioSettings, AudioPlayer(context, audioSettings),
+            audioSettings, AudioPlayer(context, audioSettings, PlaybackCoordinator()),
             SentenceTranslation(SentenceTranslator(context, client, translationSettings), translationSettings, appSettings),
             appSettings, PageAppearance(PopupAppearanceRepository(preferences), PopupFonts(context, client), appSettings, context), profiles,
             LanguageInstallation(repository, imports, catalog, bundled, models, DeviceOcr(MlKitOcrEngine(), emptySet(), models, CatalogLanguageModels(catalog), OcrModelChoices(preferences)), OverlaySettingsRepository(preferences), appSettings),

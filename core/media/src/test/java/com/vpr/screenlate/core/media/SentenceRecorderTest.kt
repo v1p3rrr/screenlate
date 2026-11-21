@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.media
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -20,9 +21,116 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import java.io.File
 import java.util.UUID
+import java.util.concurrent.Executor
 
 class SentenceRecorderTest {
     @get:Rule val temporary = TemporaryFolder()
+
+    @Test
+    fun previewAndPronunciationReplaceEachOtherWithoutRevivingAnOldSeek() = runBlocking {
+        val playback = PlaybackCoordinator()
+        val sinks = java.util.concurrent.CopyOnWriteArrayList<HeldSink>()
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
+            playback = playback, previewSinkFactory = { HeldSink().also { sinks += it } })
+        val source = FakeAudioSource(sampleRate = 48000, blockFrames = 4800)
+        try {
+            recorder.start(source)
+            source.emitFrames(4800)
+            withTimeout(3000) {
+                while (true) {
+                    val snapshot = recorder.snapshot(AudioRange(0, 4800))
+                    if (snapshot != null) { snapshot.close(); break }
+                    delay(1)
+                }
+            }
+            val interrupted = AtomicBoolean()
+            recorder.startPreview(AudioEdit(AudioRange(0, 4800)), onStopped = { interrupted.set(true) })
+            withTimeout(3000) { while (sinks.isEmpty()) delay(1) }
+            assertThat(sinks[0].started.await(3, TimeUnit.SECONDS)).isTrue()
+            var pronunciationStopped = false
+            val pronunciation = checkNotNull(playback.acquire { pronunciationStopped = true; true })
+            assertThat(recorder.isPreviewPlaying).isFalse()
+            assertThat(interrupted.get()).isTrue()
+            assertThat(sinks[0].closed.get()).isTrue()
+            recorder.seekPreview(100)
+            assertThat(sinks.size).isEqualTo(1)
+            assertThat(pronunciation.isCurrent).isTrue()
+            recorder.startPreview(AudioEdit(AudioRange(0, 4800)))
+            assertThat(pronunciationStopped).isTrue()
+            assertThat(pronunciation.isCurrent).isFalse()
+        } finally {
+            recorder.close()
+        }
+    }
+
+    private class HeldSink : AudioSink {
+        val started = CountDownLatch(1)
+        val closed = AtomicBoolean()
+        private val stopped = CountDownLatch(1)
+        override val playedFrames: Long get() = 0
+        override fun write(buffer: ByteArray, offset: Int, size: Int) = size
+        override fun awaitProgress(timeoutMillis: Long) { stopped.await(timeoutMillis, TimeUnit.MILLISECONDS) }
+        override fun finishInput() = true
+        override fun play() { started.countDown() }
+        override fun pause() { stopped.countDown() }
+        override fun stop() { stopped.countDown() }
+        override fun flush() = Unit
+        override fun close() { closed.set(true); stopped.countDown() }
+    }
+
+    @Test
+    fun privateSpeechProtectionCoversDrainingAfterNativeInputRelease() = runBlocking {
+        val playback = PlaybackCoordinator()
+        val inputClosed = AtomicBoolean()
+        val drainHeld = CountDownLatch(1)
+        val finishDrain = CountDownLatch(1)
+        val running = AtomicBoolean()
+        val source = object : AudioSource {
+            override val sampleRate = 1000
+            override val channelCount = 1
+            override fun start(): Boolean { running.set(true); return true }
+            override fun timestampNanos(): Long? = null
+            override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+                Thread.sleep(1)
+                return if (running.get()) 0 else -1
+            }
+            override fun stop() { running.set(false) }
+            override fun close() { inputClosed.set(true) }
+        }
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
+            nowMillis = {
+                if (inputClosed.get()) { drainHeld.countDown(); check(finishDrain.await(3, TimeUnit.SECONDS)) }
+                10_000L
+            }, nowNanos = { 10_000_000_000L }, playback = playback)
+        recorder.start(source)
+        val stopping = launch(Dispatchers.Default) { recorder.stop() }
+        try {
+            assertThat(drainHeld.await(3, TimeUnit.SECONDS)).isTrue()
+            assertThat(recorder.recordingState.value).isEqualTo(SentenceRecordingState.Stopping)
+            assertThat(playback.requiresPrivateSpeech).isTrue()
+        } finally {
+            finishDrain.countDown()
+            stopping.join()
+            recorder.close()
+        }
+        assertThat(playback.requiresPrivateSpeech).isFalse()
+    }
+
+    @Test
+    fun queuedBusyFeedbackFromAnOlderPreviewRequestIsDiscarded() = runBlocking {
+        val playback = PlaybackCoordinator()
+        playback.acquire { false }
+        val callbacks = ArrayDeque<Runnable>()
+        val feedback = mutableListOf<String>()
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
+            previewCallbackExecutor = Executor { callbacks += it }, playback = playback)
+        val edit = AudioEdit(AudioRange(0, 1))
+        recorder.startPreview(edit, onError = { feedback += "old" })
+        recorder.startPreview(edit, onError = { feedback += "current" })
+        while (callbacks.isNotEmpty()) callbacks.removeFirst().run()
+        assertThat(feedback).containsExactly("current")
+        recorder.close()
+    }
 
     @Test
     fun startStopLifecycle() = runTest {
@@ -290,6 +398,7 @@ class SentenceRecorderTest {
 
     @Test
     fun stuckStopReportsFailureAndRejectsAnotherSourceUntilReleased() = runBlocking {
+        val playback = PlaybackCoordinator()
         val release = CountDownLatch(1)
         val reading = AtomicBoolean(true)
         val emitted = AtomicBoolean(false)
@@ -311,7 +420,7 @@ class SentenceRecorderTest {
             override fun close() { reading.set(false) }
         }
         val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
-            { time.get() }, { time.get() * 1_000_000L })
+            { time.get() }, { time.get() * 1_000_000L }, playback = playback)
         recorder.start(source)
         withTimeout(3000) {
             var ready = false
@@ -329,12 +438,14 @@ class SentenceRecorderTest {
             stopped.get(3, TimeUnit.SECONDS)
             assertThat(recorder.recordingState.value).isInstanceOf(SentenceRecordingState.Failed::class.java)
             assertThat(recorder.isCaptureActive).isTrue()
+            assertThat(playback.requiresPrivateSpeech).isTrue()
             assertThat(recorder.start(FakeAudioSource())).isFalse()
             assertThat(recorder.refresh(context)?.source).isEqualTo(AudioRange(0, 100))
         } finally {
             release.countDown()
             stopped.get(3, TimeUnit.SECONDS)
             recorder.close()
+            assertThat(playback.requiresPrivateSpeech).isFalse()
         }
     }
 

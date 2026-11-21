@@ -7,6 +7,53 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## TTS and shared own-output ownership — 2026-11-22
+
+- `PlaybackCoordinator` in core:common serializes pronunciation/preview output ownership. Native release
+  is required before replacement; stale releases cannot clear another lease. Capture holds cover consent
+  and actual native input separately; terminal input release closes its hold even when UI state is Failed.
+  No focus, pause/duck/resume commands are issued to source apps. Preview interruption reports on Main,
+  rejecting a superseded preview request; full editor operation/view identity is still C.
+- AudioPlayer uses operation-owned jobs, file/output handles and cancellation gates. Private synthesis
+  never falls back to live speech. Failed/empty/timed-out synthesis, caller cancellation, interrupted/
+  completed/failed MediaPlayer preparation/playback and late callbacks release the correct owned file.
+  Downloaded clips remain owned by their cache. Startup cleanup runs once before an owned WAV is created.
+- AndroidSpeechOutput serializes native IPC on one daemon lane with at most two queued tasks. Cancelled
+  queued tasks are removed. Init and synthesis waits are each 5 s; Stop waits up to 2 s for IPC success
+  and an actual onStop/onDone/onError callback for submitted work. Timeout retains the pending stop,
+  blocks replacement and can observe a later acknowledgement; explicit failed IPC can be retried.
+  Input length follows TextToSpeech.getMaxSpeechInputLength. These transport bounds are not a complete
+  artifact-byte/descriptor/workspace policy; F still owns aggregate accounting and pressure measurements.
+- Native baseline: AudioPlayer from `4c256f1e` reproduced the private WAV leak after Stop. Its exact
+  source was temporarily built after saving this work, then current work restored in finally. No mutation
+  remains. Logs: ignored `testdata/local-research/audio-repair-2026-11-22/tts-native-red.log`.
+- The API30 x86 image has no installed engine. The independent library test APK supplies an authored
+  TextToSpeechService in its own process, with bounded silent PCM, a valid en-US voice and engine metadata.
+  It temporarily selects that engine and restores the previous setting in finally. DEFAULT category and a
+  valid default voice are necessary; initial fixture failures before those fixes were not leak reproductions.
+  Host launch is -no-window -no-audio -read-only; no tones, downloaded voice engine, app/collection access.
+- The fixture exercises real TextToSpeech synthesis transport and MediaPlayer. It does not certify natural
+  speech quality, an external engine UID's exclusion, physical audio routes or power/storage behavior.
+  Final verification results are tracked in status/test-model; do not infer those gates from a fake engine.
+  API contracts: [TextToSpeech](https://developer.android.com/reference/android/speech/tts/TextToSpeech),
+  [utterance callbacks](https://developer.android.com/reference/android/speech/tts/UtteranceProgressListener),
+  [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer).
+- Final software evidence: 97 core-media, 8 pronunciation and 4 shared-owner JVM tests pass; all 12 popup
+  playback tests pass. A paused post-input queue drain reproduced premature restoration of live speech;
+  capture protection now requires actual input release plus a terminal session transition. Queued Busy
+  feedback was also red when an older preview request could still update a newer request; delivery is tagged.
+- Editor entry cancels pending dictionary audio resolution/auto-play without cancelling note/duplicate work.
+  Its playback predicate excludes the hosted editor, so a late lookup/refinement cannot preempt preview.
+- Full required checks pass (2m29s), 212 page tests pass, and final popup/short-speech focused rechecks pass.
+  Initial integration failures were test-only annotation/constructor migrations, fixed before final checks.
+  Native API30 final logs: `tts-native-final.log` (TTS 1 test, 0.466 s), `tts-preview-final.log` (2 tests,
+  1.451 s), `tts-own-playback-final.log` (1 test, 0.261 s). The live marker is written after the engine has
+  handed off PCM; Stop awaits the real terminal callback. Shared output test checks interruption on Main.
+  These timings are fixture execution, not a claimed voice/route/endurance performance improvement.
+- Final TTS fixture setup preserves accessibility services with DONT_SUPPRESS_ACCESSIBILITY_SERVICES;
+  its test-APK/lint recheck passes (`tts-native-test-final-build.log`). Engine selection was restored to
+  null before removing the isolated packages and gracefully powering off the owned emulator.
+
 ## Terminal session storage lifetime — 2026-11-21
 
 - Facade-owned coordinators opt into retirement after terminal input state and final scan release. The

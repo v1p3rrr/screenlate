@@ -1,5 +1,34 @@
 # Status
 
+## Sentence audio: TTS and shared playback ownership (2026-11-22)
+
+- Implemented shared `core:common` PlaybackCoordinator leases for pronunciation and sentence preview,
+  without a reverse media/Anki dependency or external focus/player commands. Replacement invalidates old
+  work and waits for native shutdown; failed/busy output retains ownership and declines replacement/capture.
+- Capture protection starts before consent, transfers to actual input lifetime and survives failed Stop.
+  Removed the singleton callback that captured OverlayController. While protected, TTS renders privately
+  and plays at the configured volume once through Screenlate; there is no live-speak fallback.
+- AudioPlayer owns preparation/output/temp files through Stop, cancellation, completion/error and stale
+  callbacks. Initial cleanup removes only abandoned owned WAVs once. MediaPlayer stays on Main; engine IPC
+  uses one bounded native lane. Stop requires engine acknowledgement plus the utterance's terminal callback.
+- Regression evidence: original production AudioPlayer left a private WAV after Stop in the isolated API30
+  fixture (native red). The repaired fixture also passes the live-utterance barrier check.
+- Eight AudioPlayer and four coordinator JVM cases pass; core-media suite is 97 tests. New coverage includes
+  shared preview/pronunciation replacement, stale seek/queued busy feedback, queue-drain protection and
+  very short live speech completing before submission returns. All 12 popup playback tests pass, including
+  cancelled dictionary lookup while the window stays hosted by the editor. Editor entry cancels queued
+  auto-play/resolution and stops the current pronunciation before it can interfere with preview.
+- Full assemble/unit/lint/test-APK/convention/release-vital checks pass (2m29s), plus 212 page tests.
+  Final popup integration unit/lint/app/test-APK/release-vital recheck passes (1m45s); final pronunciation
+  unit recheck passes. API30 native: private TTS cleanup/live-stop barrier 1 test (0.466 s), existing real
+  preview/WebView/cleanup 2 tests (1.451 s), real MediaPlayer/AudioTrack mutual replacement 1 test (0.261 s).
+  Interruption delivery is checked on Main, capture survives the switches and the old engine setting is
+  restored. Logs: ignored `testdata/local-research/audio-repair-2026-11-22/tts-*.log`.
+- Next: C's pending-note/editor operation identity and revision protocol. Physical external-engine/UID,
+  route/mute/source policy, resources and C–G acceptance remain open. REC7/8/48/78 and the whole feature
+  are not certified by the isolated software fixtures. Temporary test packages are removed and the owned
+  host-silent emulator powered off after verification; no owner app/collection was opened.
+
 ## Sentence audio: terminal session retirement (2026-11-21)
 
 - Facade-owned sessions now retire their owner/queue/ring after Stop or failure once no scan context

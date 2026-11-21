@@ -82,6 +82,17 @@ Run `adb -s <serial> shell am instrument -w -e class com.vpr.screenlate.overlay.
 It uses system-dialog keyboard navigation when the old platform omits the permission window from the
 automation node tree. The test neither stores screenshot/audio contents nor uses a collection.
 
+`PlaybackCoordinatorTest` and `AudioPlayerTest` cover mutual output ownership, declined/cancelled capture,
+late preparation, cancelled/timed-out/empty synthesis and owned-file cleanup without deleting cached clips.
+The media facade tests replace preview with pronunciation ownership and reject stale seeks, and keep
+private-speech protection through failed Stop and final queue drain.
+
+On an isolated host-silent API29+ emulator, `AudioPlayerDeviceTest` in the independent `core:anki` test
+package uses a test-only TTS engine producing bounded silent PCM. It restores the previous engine setting
+in finally; never run that fixture on a personal device. `OwnPlaybackDeviceTest` in the overlay library
+test package switches real MediaPlayer/AudioTrack through both production facades with synthetic silence.
+These fixtures do not replace physical external-engine capture/route/voice-quality acceptance.
+
 The overlay editor's JavaScript logic is tested via Node.js and jsdom:
 `npm --prefix scripts/page-tests test` runs all page test suites including `audio-editor.test.mjs`.
 

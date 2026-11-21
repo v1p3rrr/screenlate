@@ -388,6 +388,10 @@ On Android 10+ (API 29+), Screenlate can capture internal device playback from v
 Recording asks for Android's audio permission and screen-capture consent. Screenshots alone do not need
 audio permission. Refusing audio permission leaves an existing screen-capture session available for screenshots.
 
+Pronunciation and sentence preview share one playback slot: starting either stops the preceding Screenlate
+sound. Internal capture continues during switching. While capture is starting, running or stopping,
+text-to-speech is rendered to a private file and played by Screenlate, keeping it out of the recording.
+
 - **Enable recording**: Starts capturing playback into a private rolling PCM buffer whenever the overlay bubble is active.
 - **Audio editor by default**: When enabled (also mirrored in Anki settings), tapping ➕ opens the waveform editor. When disabled, tapping ➕ creates the note immediately, and holding ➕ opens the editor.
 - **Buffer durations**: Configure pre-scan history (H), definition reading time (R), and post-scan extension time (E) in 30-second steps (from 30 seconds to 10 minutes).

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.SystemClock
 import androidx.core.content.ContextCompat
+import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import com.vpr.screenlate.core.common.log.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -43,22 +44,28 @@ class SentenceRecorder internal constructor(
     private val nowMillis: () -> Long = { SystemClock.elapsedRealtime() },
     private val nowNanos: () -> Long = { SystemClock.elapsedRealtimeNanos() },
     private val previewCallbackExecutor: Executor = Executor { it.run() },
+    private val playback: PlaybackCoordinator = PlaybackCoordinator(),
+    private val previewSinkFactory: (() -> AudioSink)? = null,
 ) {
     @Inject
     constructor(
         @ApplicationContext context: Context,
         settingsRepository: RecordingSettingsRepository,
+        playback: PlaybackCoordinator,
     ) : this(File(context.noBackupFilesDir, "sentence_recording"), settingsRepository,
-        previewCallbackExecutor = ContextCompat.getMainExecutor(context))
+        previewCallbackExecutor = ContextCompat.getMainExecutor(context), playback = playback)
 
     private val lifecycle = Mutex()
     private val previewCommands = Mutex()
+    private val previewRequest = AtomicLong()
     private val generation = AtomicLong()
     @Volatile private var coordinator: PcmStorageCoordinator? = null
     @Volatile private var currentSource: AudioSource? = null
     private var abandonedCleaned = false
     @Volatile private var previewPlayer: AudioPreviewPlayer? = null
     private var previewSession: PcmStorageCoordinator? = null
+    private var previewLease: PlaybackCoordinator.Lease? = null
+    private var previewStopped: (() -> Unit)? = null
     private val _recordingState = MutableStateFlow<SentenceRecordingState>(SentenceRecordingState.Idle)
     val recordingState: StateFlow<SentenceRecordingState> = _recordingState.asStateFlow()
     val isRecording: Boolean get() = recordingState.value is SentenceRecordingState.Recording
@@ -67,9 +74,15 @@ class SentenceRecorder internal constructor(
         else -> false
     }
 
+    suspend fun prepareCapture(): PlaybackCoordinator.CaptureLease? = playback.beginCapture().also {
+        if (it == null) _recordingState.value = SentenceRecordingState.Failed(PcmCoordinatorFailure.PLAYBACK_STOP_FAILED)
+    }
+
     suspend fun start(source: AudioSource): Boolean {
         var attempt: PcmStorageCoordinator? = null
         var sourceReleased = false
+        var captureLease: PlaybackCoordinator.CaptureLease? = null
+        var captureTransferred = false
         try {
             return withContext(Dispatchers.IO) {
                 lifecycle.withLock {
@@ -97,6 +110,13 @@ class SentenceRecorder internal constructor(
                     coordinator = null
                     currentSource = null
                     currentCoroutineContext().ensureActive()
+                    captureLease = prepareCapture()
+                    if (captureLease == null) {
+                        source.close()
+                        sourceReleased = true
+                        _recordingState.value = SentenceRecordingState.Failed(PcmCoordinatorFailure.PLAYBACK_STOP_FAILED)
+                        return@withLock false
+                    }
                     try {
                         cleanupAbandonedSessions()
                     } catch (error: IOException) {
@@ -107,6 +127,9 @@ class SentenceRecorder internal constructor(
                         return@withLock false
                     }
                     val token = generation.incrementAndGet()
+                    val sessionCapture = checkNotNull(captureLease)
+                    var inputReleased = false
+                    var terminal = false
                     val session = PcmStorageCoordinator(
                         directory = File(storageDir, UUID.randomUUID().toString()),
                         limits = settingsRepository.settings.first().limits,
@@ -114,6 +137,10 @@ class SentenceRecorder internal constructor(
                         nowMillis = nowMillis,
                         nowNanos = nowNanos,
                         retireWhenUnused = true,
+                        onInputReleased = {
+                            inputReleased = true
+                            if (terminal) sessionCapture.close()
+                        },
                         onStateChanged = { state, failure ->
                             if (generation.get() == token) {
                                 if (state == PcmCoordinatorState.CLOSED) currentSource = null
@@ -126,9 +153,15 @@ class SentenceRecorder internal constructor(
                                     else -> _recordingState.value
                                 }
                             }
+                            if (state == PcmCoordinatorState.STOPPED || state == PcmCoordinatorState.FAILED ||
+                                state == PcmCoordinatorState.CLOSED) {
+                                terminal = true
+                                if (inputReleased || state == PcmCoordinatorState.CLOSED) sessionCapture.close()
+                            }
                         },
                     )
                     attempt = session
+                    captureTransferred = true
                     coordinator = session
                     currentSource = source
                     val started = session.start(source)
@@ -156,6 +189,8 @@ class SentenceRecorder internal constructor(
                 }
             }
             throw cancelled
+        } finally {
+            if (!captureTransferred) captureLease?.close()
         }
     }
 
@@ -250,38 +285,99 @@ class SentenceRecorder internal constructor(
         onProgress: ((Long) -> Unit)? = null,
         onComplete: (() -> Unit)? = null,
         onError: ((PreviewFailure) -> Unit)? = null,
-    ) = previewCommands.withLock {
-        withContext(Dispatchers.IO) {
-            val session = coordinator
-            if (previewPlayer != null && previewSession !== session) {
-                previewPlayer?.close()
-                if (previewPlayer?.isReleased == false) {
-                    previewCallbackExecutor.execute { onError?.invoke(PreviewFailure.OUTPUT_BUSY) }
-                    return@withContext
-                }
-                previewPlayer = null
+        onStopped: (() -> Unit)? = null,
+    ) {
+        val request = previewRequest.incrementAndGet()
+        var requestLease: PlaybackCoordinator.Lease? = null
+        requestLease = playback.acquire { stopPreviewOwned(requestLease) }
+        val lease = requestLease ?: run {
+            previewCallbackExecutor.execute {
+                if (previewRequest.get() == request) runCatching { onError?.invoke(PreviewFailure.OUTPUT_BUSY) }
             }
-            val player = previewPlayer ?: AudioPreviewPlayer(
-                snapshotProvider = { snapshotFrom(session, it) }, callbackExecutor = previewCallbackExecutor,
-            ).also { previewPlayer = it; previewSession = session }
-            player.play(edit, mode, startFrame, onProgress, onComplete, onError)
-            Unit
+            return
+        }
+        var installed = false
+        try {
+            previewCommands.withLock {
+                val caller = currentCoroutineContext()
+                withContext(NonCancellable + Dispatchers.IO) {
+                    caller.ensureActive()
+                    if (!lease.isCurrent) return@withContext
+                    previewLease = lease
+                    previewStopped = {
+                        previewCallbackExecutor.execute {
+                            if (previewRequest.get() == request) runCatching { onStopped?.invoke() }
+                        }
+                    }
+                    installed = true
+                    val session = coordinator
+                    if (previewPlayer != null && previewSession !== session) {
+                        previewPlayer?.close()
+                        if (previewPlayer?.isReleased == false) {
+                            previewCallbackExecutor.execute {
+                                if (lease.isCurrent && previewRequest.get() == request) {
+                                    runCatching { onError?.invoke(PreviewFailure.OUTPUT_BUSY) }
+                                }
+                            }
+                            return@withContext
+                        }
+                        previewPlayer = null
+                    }
+                    val player = previewPlayer ?: AudioPreviewPlayer(
+                        snapshotProvider = { snapshotFrom(session, it) }, callbackExecutor = previewCallbackExecutor,
+                        sinkFactory = previewSinkFactory ?: { AndroidAudioTrackSink(48000) },
+                    ).also { previewPlayer = it; previewSession = session }
+                    player.play(edit, mode, startFrame,
+                        onProgress = { if (lease.isCurrent) onProgress?.invoke(it) },
+                        onComplete = { if (lease.isCurrent) { lease.close(); onComplete?.invoke() } },
+                        onError = {
+                            if (lease.isCurrent) {
+                                if (it != PreviewFailure.OUTPUT_BUSY) lease.close()
+                                onError?.invoke(it)
+                            }
+                        })
+                }
+            }
+        } catch (cancelled: CancellationException) {
+            withContext(NonCancellable) { stopPreviewOwned(lease) }
+            throw cancelled
+        } finally {
+            if (!installed) lease.close()
         }
     }
 
     suspend fun pausePreview() = previewCommands.withLock {
-        withContext(Dispatchers.IO) { previewPlayer?.pause(); Unit }
+        withContext(NonCancellable + Dispatchers.IO) {
+            previewPlayer?.pause()
+            previewStopped?.invoke()
+            previewStopped = null
+            if (previewPlayer?.isReleased != false) { previewLease?.close(); previewLease = null }
+        }
     }
 
-    suspend fun stopPreview() = previewCommands.withLock {
+    suspend fun stopPreview() { stopPreviewOwned(null) }
+
+    private suspend fun stopPreviewOwned(lease: PlaybackCoordinator.Lease?): Boolean = previewCommands.withLock {
         withContext(NonCancellable + Dispatchers.IO) {
+            if (lease != null && previewLease !== lease) return@withContext true
             previewPlayer?.close()
-            if (previewPlayer?.isReleased != false) { previewPlayer = null; previewSession = null }
+            previewStopped?.invoke()
+            previewStopped = null
+            if (previewPlayer?.isReleased == false) return@withContext false
+            previewPlayer = null
+            previewSession = null
+            previewLease?.close()
+            previewLease = null
+            true
         }
     }
 
     suspend fun seekPreview(frame: Long, edit: AudioEdit? = null, mode: PreviewMode = PreviewMode.RESULT) =
-        previewCommands.withLock { withContext(Dispatchers.IO) { previewPlayer?.seek(frame, edit, mode); Unit } }
+        previewCommands.withLock { withContext(Dispatchers.IO) {
+            if (previewPlayer?.isPlaying == true && previewLease?.isCurrent != true) return@withContext
+            previewPlayer?.seek(frame, edit, mode)
+            Unit
+        } }
 
     val isPreviewPlaying: Boolean get() = previewPlayer?.isPlaying == true
     val previewPosition: Long get() = previewPlayer?.currentFrame ?: 0L

@@ -1,172 +1,160 @@
 package com.vpr.screenlate.core.anki.audio
 
 import android.content.Context
-import android.media.AudioAttributes
-import android.media.MediaPlayer
-import android.os.Bundle
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
-import com.vpr.screenlate.core.common.Language
-import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
-import java.util.Locale
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
-/** Plays clips and speaks text at the configured volume; a new sound stops the previous one. Main thread only. */
+/** Owns pronunciation preparation, output and temporary files; shares output ownership with preview. */
 @Singleton
-class AudioPlayer @Inject constructor(
-    @ApplicationContext private val context: Context,
+class AudioPlayer internal constructor(
+    private val directory: File,
     private val settings: AudioSettingsRepository,
+    private val playback: PlaybackCoordinator,
+    private val speech: SpeechOutput,
+    private val outputFactory: () -> FileAudioOutput,
+    private val main: CoroutineDispatcher,
+    private val io: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    private var player: MediaPlayer? = null
-    private var speech: TextToSpeech? = null
-    private var speechStarted: CompletableDeferred<Boolean>? = null
-    var isCaptureActive: () -> Boolean = { false }
+    @Inject
+    constructor(@ApplicationContext context: Context, settings: AudioSettingsRepository, playback: PlaybackCoordinator) :
+        this(File(context.cacheDir, "tts_playback"), settings, playback, AndroidSpeechOutput(context),
+            ::AndroidFileAudioOutput, Dispatchers.Main.immediate)
 
-    /** [canStart] is checked after asynchronous preparation. False if playback could not be submitted. */
-    suspend fun play(pronunciation: Pronunciation, canStart: () -> Boolean = { true }): Boolean {
+    private val scope = CoroutineScope(SupervisorJob() + main)
+    private val cleanup = Mutex()
+    private var cleaned = false
+    private var active: Operation? = null
+
+    /** False if preparation, output ownership or private synthesis could not be submitted. */
+    suspend fun play(pronunciation: Pronunciation, canStart: () -> Boolean = { true }): Boolean = withContext(main) {
+        val op = Operation(canStart)
+        op.lease = playback.acquire { stopOperation(op) } ?: return@withContext false
+        active = op
+        var submitted = false
+        try {
+            val work = scope.async { prepareAndPlay(op, pronunciation) }
+            op.job = work
+            submitted = work.await()
+            submitted
+        } catch (cancelled: CancellationException) {
+            currentCoroutineContext().ensureActive()
+            false // Another Screenlate output cancelled this operation, not its caller.
+        } catch (error: Exception) {
+            Log.w(TAG, "Cannot prepare pronunciation", error.redacted())
+            false
+        } finally {
+            if (!submitted && !op.stopping) withContext(NonCancellable + main) { stopOperation(op) }
+        }
+    }
+
+    suspend fun stop(): Boolean = withContext(NonCancellable + main) { active?.let { stopOperation(it) } ?: true }
+
+    private suspend fun prepareAndPlay(op: Operation, pronunciation: Pronunciation): Boolean {
+        cleanup.withLock {
+            if (!cleaned) withContext(io) {
+                if (!directory.isDirectory && !directory.mkdirs()) error("Cannot create pronunciation directory")
+                val files = checkNotNull(directory.listFiles()) { "Cannot read pronunciation directory" }
+                files.filter { it.isFile && it.name.startsWith("tts_") && it.extension == "wav" }
+                    .forEach { check(!it.exists() || it.delete()) { "Cannot clean abandoned pronunciation" } }
+                cleaned = true
+            }
+        }
         val volume = settings.volume().coerceIn(0, 100) / 100f
-        if (!canStart()) return false
-        return when (pronunciation) {
-            is Pronunciation.Clip -> playClip(pronunciation.clip, volume, canStart)
-            is Pronunciation.Speech -> speak(pronunciation.text, pronunciation.language, volume, canStart)
-        }
-    }
-
-    fun stop() {
-        player?.release()
-        player = null
-        speech?.stop()
-    }
-
-    private fun playFile(
-        file: File,
-        volume: Float,
-        canStart: () -> Boolean,
-        deleteOnComplete: Boolean = false,
-    ): Boolean {
-        stop()
-        return runCatching {
-            player = MediaPlayer().apply {
-                setAudioAttributes(ATTRIBUTES)
-                setDataSource(file.absolutePath)
-                setVolume(volume, volume)
-                setOnPreparedListener { prepared ->
-                    if (player !== prepared) return@setOnPreparedListener
-                    prepared.setOnPreparedListener(null)
-                    if (canStart()) {
-                        prepared.start()
-                    } else {
-                        player = null
-                        prepared.release()
-                    }
+        if (!op.canPlay()) return false
+        if (pronunciation is Pronunciation.Clip) return playFile(op, pronunciation.clip.file, volume)
+        pronunciation as Pronunciation.Speech
+        op.speechPending = true
+        val prepared = withTimeoutOrNull(5000) { speech.prepare(pronunciation.language) { op.isCurrent() } } == true
+        if (!prepared || !op.canPlay()) return false
+        if (playback.requiresPrivateSpeech) {
+            withContext(io) {
+                synchronized(op) {
+                    if (!op.retired) op.file = File.createTempFile("tts_", ".wav", directory)
                 }
-                setOnCompletionListener {
-                    it.reset()
-                    if (deleteOnComplete) file.delete()
-                }
-                prepareAsync()
             }
-        }.onFailure { Log.w(TAG, "Cannot play an audio file", it.redacted()) }.isSuccess
+            val file = op.file ?: return false
+            val complete = withTimeoutOrNull(5000) { speech.synthesize(pronunciation.text, file) { op.isCurrent() } } == true
+            if (!complete || !op.canPlay() || !withContext(io) { file.isFile && file.length() > 0 }) return false
+            op.speechPending = false
+            return playFile(op, file, volume)
+        }
+        // Recheck in the native lane too: capture may begin after preparation.
+        return speech.speak(pronunciation.text, volume,
+            { op.isCurrent() && !playback.requiresPrivateSpeech }, { finish(op) })
     }
 
-    private fun playClip(clip: AudioClip, volume: Float, canStart: () -> Boolean): Boolean =
-        playFile(clip.file, volume, canStart)
-
-    private suspend fun speak(text: String, language: Language, volume: Float, canStart: () -> Boolean): Boolean {
-        stop()
-        val tts = engine() ?: return false
-        if (!canStart()) return false
-        // Another language's voice would read the text wrongly or not at all.
-        val tags = listOf(language.support.speechTag) + language.support.otherSpeechTags
-        if (tags.none { tts.setLanguage(Locale.forLanguageTag(it)) >= TextToSpeech.LANG_AVAILABLE }) {
-            Log.i(TAG, "No text-to-speech voice for ${language.code}")
-            return false
-        }
-        tts.setAudioAttributes(ATTRIBUTES)
-
-        if (isCaptureActive()) {
-            return speakToFile(tts, text, volume, canStart)
-        }
-
-        val params = Bundle().apply { putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, volume) }
-        return tts.speak(text, TextToSpeech.QUEUE_FLUSH, params, UTTERANCE) == TextToSpeech.SUCCESS
+    private fun playFile(op: Operation, file: File, volume: Float): Boolean {
+        if (!op.canPlay()) return false
+        val output = outputFactory().also { op.output = it }
+        output.prepare(file, volume, ready = {
+            if (op.canPlay()) {
+                try { output.start() } catch (_: Exception) { finish(op) }
+            } else finish(op)
+        }, finished = { finish(op) })
+        return true
     }
 
-    private suspend fun speakToFile(
-        tts: TextToSpeech,
-        text: String,
-        volume: Float,
-        canStart: () -> Boolean,
-    ): Boolean {
-        val tempDir = File(context.cacheDir, "tts_playback").apply { mkdirs() }
-        val tempFile = File.createTempFile("tts_", ".wav", tempDir)
-        val utteranceId = "tts_${UUID.randomUUID()}"
-        val deferred = CompletableDeferred<Boolean>()
-
-        val listener = object : UtteranceProgressListener() {
-            override fun onStart(utteranceIdParam: String?) {}
-            override fun onDone(utteranceIdParam: String?) {
-                if (utteranceIdParam == utteranceId) deferred.complete(true)
-            }
-            @Deprecated("Deprecated in Java")
-            override fun onError(utteranceIdParam: String?) {
-                if (utteranceIdParam == utteranceId) deferred.complete(false)
-            }
-            override fun onError(utteranceIdParam: String?, errorCode: Int) {
-                if (utteranceIdParam == utteranceId) deferred.complete(false)
-            }
-        }
-        tts.setOnUtteranceProgressListener(listener)
-
-        val params = Bundle().apply {
-            putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, volume)
-        }
-        val result = tts.synthesizeToFile(text, params, tempFile, utteranceId)
-        if (result != TextToSpeech.SUCCESS) {
-            tempFile.delete()
-            return false
-        }
-
-        val completed = withTimeoutOrNull(5000L) { deferred.await() } == true
-        if (!completed || !canStart() || !tempFile.exists() || tempFile.length() == 0L) {
-            tempFile.delete()
-            return false
-        }
-
-        return playFile(tempFile, volume, canStart, deleteOnComplete = true)
+    private fun finish(op: Operation) {
+        if (!op.finishQueued.compareAndSet(false, true)) return
+        scope.launch { if (active === op && !op.stopping) stopOperation(op, cancelPreparation = false) }
     }
 
-    /** The engine starts asynchronously on first use. */
-    private suspend fun engine(): TextToSpeech? {
-        val started = speechStarted ?: CompletableDeferred<Boolean>().also { deferred ->
-            speechStarted = deferred
-            speech = TextToSpeech(context) { status ->
-                if (status != TextToSpeech.SUCCESS) Log.w(TAG, "Text-to-speech is unavailable ($status)")
-                deferred.complete(status == TextToSpeech.SUCCESS)
+    private suspend fun stopOperation(op: Operation, cancelPreparation: Boolean = true): Boolean = withContext(NonCancellable + main) {
+        op.stopping = true
+        op.retired = true
+        if (cancelPreparation) op.job?.cancel()
+        op.close.withLock {
+            if (op.released) return@withLock true
+            if (op.speechPending && !speech.stop()) return@withLock false
+            op.speechPending = false
+            try { op.output?.close() } catch (_: Exception) { return@withLock false }
+            op.output = null
+            val removed = withContext(io) {
+                synchronized(op) { op.file?.let { !it.exists() || it.delete() } ?: true }
             }
+            if (!removed) return@withLock false
+            op.file = null
+            op.released = true
+            op.lease?.close()
+            if (active === op) active = null
+            true
         }
-        if (started.await()) return speech
-        // Try again next time, e.g. after the user installed an engine.
-        speech?.shutdown()
-        speech = null
-        speechStarted = null
-        return null
     }
 
-    private companion object {
-        const val TAG = "AudioPlayer"
-        const val UTTERANCE = "screenlate"
-        val ATTRIBUTES: AudioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-            .build()
+    private class Operation(val canStart: () -> Boolean) {
+        var lease: PlaybackCoordinator.Lease? = null
+        var job: Job? = null
+        var output: FileAudioOutput? = null
+        @Volatile var file: File? = null
+        @Volatile var retired = false
+        var stopping = false
+        var released = false
+        var speechPending = false
+        val close = Mutex()
+        val finishQueued = java.util.concurrent.atomic.AtomicBoolean()
+        fun isCurrent() = !retired && lease?.isCurrent == true
+        fun canPlay() = isCurrent() && canStart()
     }
+
+    private companion object { const val TAG = "AudioPlayer" }
 }

@@ -190,6 +190,15 @@ After capture stops, the current scan remains available until released. Without 
 worker and ring retire; snapshots/readers keep only their leased files until their own final release.
 The empty private session directory is removed after its final retained chunk is released.
 
+`core:common`'s `PlaybackCoordinator` gives pronunciation and sentence preview one output owner.
+Replacement invalidates pending work and awaits the previous native output's release; a busy output
+declines replacement. Capture holds start before consent and remain through native Stop and queued PCM
+drain. They require private TTS synthesis and Screenlate-UID playback, without live-engine fallback.
+`AudioPlayer` owns its preparation job, output and temporary WAV through interruption, cancellation and
+completion. MediaPlayer access stays on Main; bounded engine IPC and file work run off Main. Stale
+utterance/preparation callbacks cannot restart sound or delete another operation's file. Downloaded
+pronunciation clips remain owned by their cache.
+
 The overlay editor (`audio-editor.js`, `audio-editor.css`, coordinated by `AudioEditorController`) presents an
 interactive waveform with selection handles, manual cuts, leading-quiet detection and timeline refresh.
 `AudioPreviewPlayer` gives each playback run its own cancellation and output lifetime. Seek retires old

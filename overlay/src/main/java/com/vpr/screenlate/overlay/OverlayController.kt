@@ -263,9 +263,7 @@ class OverlayController(
             popupController = popup,
             sentenceRecorder = recorder,
             recordingSettings = recordingSettings,
-            onVisibilityChanged = { active ->
-                setBubbleVisible(!active)
-            },
+            onVisibilityChanged = ::onAudioEditorVisibilityChanged,
             onOpenAnkiSettings = {
                 OverlayIntents.openAnkiSettings(service, language)
                 dock()
@@ -284,7 +282,7 @@ class OverlayController(
         player = anki.player,
         lookup = lookup,
         language = { language },
-        isShowing = { popup.isShowing },
+        isShowing = { popup.isShowing && !popup.isAudioEditorActive },
         noteSource = ::noteSource,
         translation = translation,
         cropEditor = CropEditor(service, windowManager),
@@ -387,7 +385,6 @@ class OverlayController(
         layerView.primaryColor = initialPalette.effectiveSeed
         layerView.aimColor = initialBubbleColor
         popup.hideOnOutsideTap = initialOverlay.hideOnOutsideTap
-        anki.player.isCaptureActive = { sentenceRecorder?.isCaptureActive == true || recordingStartJob?.isActive == true }
         MediaProjectionService.stopRecordingAction = ::stopSentenceRecording
         SentenceRecordingControl.startRecordingAction = ::startSentenceRecording
         SentenceRecordingControl.stopRecordingAction = ::stopSentenceRecording
@@ -612,31 +609,41 @@ class OverlayController(
         if (sentenceRecorder.isCaptureActive || recordingStartJob?.isActive == true || recordingStopJob?.isActive == true) return
         releaseCurrentScanAudioContext()
         recordingStartJob = scope.launch {
-            val projection = MediaProjectionHolder.getOrCreate(service, isRecording = true)
-            if (projection == null) {
-                Log.i(TAG, "Sentence recording consent cancelled or denied")
-                return@launch
-            }
-            anki.player.stop()
-            var created: AudioRecordSource? = null
-            val started = try {
-                withContext(Dispatchers.IO) { created = AudioRecordSource.create(projection) }
-                val source = created
-                created = null
-                source != null && sentenceRecorder.start(source)
-            } finally {
-                withContext(NonCancellable + Dispatchers.IO) { created?.close() }
-            }
-            if (!started) {
-                bubbleView.recording = false
-                MediaProjectionService.updateRecordingState(service, isRecording = false)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    MediaProjectionHolder.stop(service)
+            val captureProtection = sentenceRecorder.prepareCapture() ?: return@launch
+            try {
+                val projection = MediaProjectionHolder.getOrCreate(service, isRecording = true)
+                if (projection == null) {
+                    Log.i(TAG, "Sentence recording consent cancelled or denied")
+                    return@launch
                 }
-                return@launch
-            }
-            recordingSettings?.setRecordingEnabled(sentenceRecorder.isRecording)
+                var created: AudioRecordSource? = null
+                val started = try {
+                    withContext(Dispatchers.IO) { created = AudioRecordSource.create(projection) }
+                    val source = created
+                    created = null
+                    source != null && sentenceRecorder.start(source)
+                } finally {
+                    withContext(NonCancellable + Dispatchers.IO) { created?.close() }
+                }
+                if (!started) {
+                    bubbleView.recording = false
+                    MediaProjectionService.updateRecordingState(service, isRecording = false)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        MediaProjectionHolder.stop(service)
+                    }
+                    return@launch
+                }
+                recordingSettings?.setRecordingEnabled(sentenceRecorder.isRecording)
+            } finally { captureProtection.close() }
         }
+    }
+
+    private fun onAudioEditorVisibilityChanged(active: Boolean) {
+        if (active) {
+            popupNotes.cancelPendingAudio()
+            scope.launch(start = CoroutineStart.UNDISPATCHED) { anki.player.stop() }
+        }
+        setBubbleVisible(!active)
     }
 
     fun stopSentenceRecording() {

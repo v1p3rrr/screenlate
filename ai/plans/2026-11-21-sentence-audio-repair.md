@@ -412,16 +412,16 @@ are investigated as findings, not converted into an invented new audio performan
 
 | Milestone | Status | Evidence |
 |---|---|---|
-| A regression baseline | Partial | Permanent core regressions landed with fixes; 94 core tests pass. DOM and full pending-note/fake-backend fixture remain for editor work. |
-| B session/preview lifetime | Partial | Session ownership, preview generations/drain/bounded callbacks, consent purpose and terminal-session retirement implemented. Production AudioTrack→Main→WebView, final-context cleanup and API29 permission/revocation tests pass. TTS/own-playback ownership and physical source/route gates remain. |
+| A regression baseline | Partial | Permanent core regressions landed with fixes; 97 core-media tests, 8 AudioPlayer, 4 playback-owner and 12 popup playback cases pass. DOM and full pending-note/fake-backend fixture remain for editor work. |
+| B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
 | C pending operation/protocol | Pending | Current implementation remains at reviewed behavior. |
 | D editing/fidelity | Pending | Codec probe evidence is partial, not end-to-end acceptance. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-Next continue B: TTS/own-playback lifetime and
-physical checks. Complete editor-facing A fixtures when introducing C's operation interface; coalesce
+Next C's pending-note/editor identity and revision protocol. Physical checks remain in G.
+Complete editor-facing A fixtures when introducing C's operation interface; coalesce
 incoming preview/Refresh requests there, beyond the already bounded outgoing progress delivery.
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
@@ -435,6 +435,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-22: Implemented shared own-output leases, capture-lifetime protection, TTS native stop barrier
+  and operation-owned pronunciation cleanup. Original native WAV leak reproduced; permanent JVM/native
+  regressions added, including drain/queued-feedback/short-speech and pending dictionary audio. Required
+  checks and final isolated native tests pass. Product defaults/behavior decisions unchanged.
 - 2026-11-21: Retired facade-owned terminal sessions after final scan release, preserving live PCM readers
   and deleting owned empty directories after final lease. Kept native input activity visible through failed
   Stop. Added three facade regressions and strengthened Android cleanup verification. Product choices unchanged.

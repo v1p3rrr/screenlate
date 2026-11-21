@@ -1,0 +1,81 @@
+package com.vpr.screenlate.core.anki.audio
+
+import android.content.Context
+import android.app.UiAutomation
+import android.os.Build
+import android.provider.Settings
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.filters.SdkSuppress
+import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
+import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import org.junit.Test
+import org.junit.runner.RunWith
+
+/** Real local TTS and MediaPlayer in the isolated library package; run on a host-silent emulator. */
+@RunWith(AndroidJUnit4::class)
+class AudioPlayerDeviceTest {
+    @Test
+    @SdkSuppress(minSdkVersion = 29)
+    fun stoppingSynthesizedPronunciationRemovesItsPrivateFile() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        check(Build.HARDWARE == "ranchu" || Build.HARDWARE == "goldfish") { "Requires an isolated emulator" }
+        val automation = InstrumentationRegistry.getInstrumentation()
+            .getUiAutomation(UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES)
+        val previousEngine = Settings.Secure.getString(context.contentResolver, "tts_default_synth")
+        fun setEngine(value: String?) {
+            automation.adoptShellPermissionIdentity("android.permission.WRITE_SECURE_SETTINGS")
+            try { check(Settings.Secure.putString(context.contentResolver, "tts_default_synth", value)) }
+            finally { automation.dropShellPermissionIdentity() }
+        }
+        setEngine(context.packageName)
+        val store = object : DataStore<Preferences> {
+            override val data = MutableStateFlow(emptyPreferences())
+            override suspend fun updateData(transform: suspend (Preferences) -> Preferences): Preferences =
+                transform(data.value).also { data.value = it }
+        }
+        val playback = PlaybackCoordinator()
+        val player = AudioPlayer(context, AudioSettingsRepository(store), playback)
+        val capture = checkNotNull(playback.beginCapture())
+        val directory = File(context.cacheDir, "tts_playback")
+        val liveReady = File(context.cacheDir, SilentTtsService.LIVE_READY)
+        try {
+            withContext(Dispatchers.Main) {
+                assertThat(player.play(Pronunciation.Speech(
+                    "Sample for the isolated playback test. ".repeat(5), Language.ENGLISH,
+                ))).isTrue()
+                assertThat(withContext(Dispatchers.IO) { directory.listFiles()?.any { it.length() > 44 } }).isTrue()
+                player.stop()
+            }
+            assertThat(withContext(Dispatchers.IO) { directory.listFiles()?.toList().orEmpty() }).isEmpty()
+            capture.close()
+            withContext(Dispatchers.IO) { liveReady.delete() }
+            assertThat(player.play(Pronunciation.Speech("Silent transition fixture", Language.ENGLISH))).isTrue()
+            withTimeout(5000) {
+                while (!withContext(Dispatchers.IO) { liveReady.exists() }) delay(1)
+            }
+            val nextCapture = checkNotNull(playback.beginCapture())
+            assertThat(playback.requiresPrivateSpeech).isTrue()
+            nextCapture.close()
+        } finally {
+            try { withContext(Dispatchers.Main) { player.stop() } }
+            finally {
+                capture.close()
+                setEngine(previousEngine)
+                withContext(Dispatchers.IO) { directory.listFiles()?.forEach { it.delete() }; directory.delete(); liveReady.delete() }
+            }
+        }
+    }
+}

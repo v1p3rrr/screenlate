@@ -227,6 +227,9 @@ class AudioEditorController(
                 onComplete = {
                     scope.launch(Dispatchers.Main) { if (currentEdit === edit) page.setAudioPlaying(false) }
                 },
+                onStopped = {
+                    if (currentEdit === edit) page.setAudioPlaying(false)
+                },
                 onError = { failure ->
                     scope.launch(Dispatchers.Main) {
                         if (currentEdit === edit) {

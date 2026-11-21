@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
@@ -52,7 +53,7 @@ class SentenceRecorderDeviceTest {
                     transform(data.value).also { data.value = it }
             }
             // Uses the production constructor, real AudioTrack, and its production Main callback executor.
-            val recorder = SentenceRecorder(context, RecordingSettingsRepository(store))
+            val recorder = SentenceRecorder(context, RecordingSettingsRepository(store), PlaybackCoordinator())
             val source = SilentSource(frames)
             try {
                 withTimeout(10_000) { ready.await() }

@@ -248,6 +248,11 @@ class PopupNotes(
     /** The popup went away without closing the scan, e.g. the aim moved to text without results. */
     fun onResultsHidden() {
         duplicateJob?.cancel()
+        cancelPendingAudio()
+    }
+
+    /** The dictionary may remain hosted while the audio editor replaces it. */
+    fun cancelPendingAudio() {
         autoPlayJob?.cancel()
         audioMenu.clear()
         audioPlayback.onResultsHidden()

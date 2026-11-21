@@ -1,16 +1,16 @@
 # Sentence audio implementation handoff — 2026-11-19
 
-Current resume override (2026-11-21): use the [repair execution plan](../plans/2026-11-21-sentence-audio-repair.md),
+Current resume override (2026-11-22): use the [repair execution plan](../plans/2026-11-21-sentence-audio-repair.md),
 [review](sentence-audio-review-2026-11-21.md) and latest status. The owner authorized selective redesign of
 session coordination and editor/pending-note ownership. Core A/B work now implements a serialized session
-owner and suspending facade with permanent regressions; continue B's preview, permission and TTS work,
-then C. Read the latest status for verification and remaining gates. The checkpoint below is historical. Branch, privacy, safe test
+owner and suspending facade with permanent regressions; B's software lifetime work is implemented and
+verified. Continue C's operation/revision protocol; physical gates remain. The checkpoint below is historical. Branch, privacy, safe test
 environment and weekly-limit instructions remain applicable. No product decision was changed.
 
 Previous core checkpoint (`341bd599`): 84 core tests (11 new), 212 page tests and isolated API30 Main-thread synthetic
 session test pass. Full project checks passed; the last retired-session no-op fix has focused core/overlay
 unit, core lint and test-APK checks. No actual playback/capture/Anki was exercised in this repair milestone.
-Current preview checkpoint: 91 core tests, full build/unit/lint/test-APK/convention/release-vital checks and
+Previous preview checkpoint: 91 core tests, full build/unit/lint/test-APK/convention/release-vital checks and
 two API30 device tests pass. Real AudioTrack + production Main callbacks + WebView handle 24,000 / 240 / 1
 silent source frames. Preview owns run cancellation/retirement/drain and bounds outgoing progress. See
 engineering evidence for the reproduced short-stream stall and transport-only padding.
@@ -24,8 +24,14 @@ Terminal-session retirement is implemented: facade-owned stopped/failed sessions
 after the last context; live leases survive and remove their files/directory on final release. 94 core tests
 pass. A still-stopping native input keeps isCaptureActive true even in Failed. Full required checks and
 212 page tests pass. The strengthened API30 Main cleanup and real preview tests pass (2 tests, 1.915 s);
-final test-APK/lint passes. See `retire-*.log` and status/test-model. Continue with TTS cleanup/own-playback
-arbitration. C must guard the now-suspending
+final test-APK/lint passes. See `retire-*.log` and status/test-model.
+TTS/shared-playback software repair is implemented with 8 pronunciation, 4 coordinator and 97 core-media
+JVM tests; 12 popup playback tests pass. Editor entry cancels pending dictionary audio and prevents a
+late lookup from stealing preview. Full required checks and 212 page tests pass, with final focused checks.
+Four native API30 tests pass (TTS cleanup/live-stop barrier; real preview/Main/WebView/cleanup; shared
+MediaPlayer/AudioTrack with Main interruption). See `audio-repair-2026-11-22/tts-*.log` and latest status.
+Continue C after the current checkpoint commit. The isolated silent TTS engine does not certify external
+engine UID, physical route or natural-voice quality. C must guard the now-suspending
 editor opening/Refresh/analysis paths with operation/revision identity before claiming UI acceptance.
 
 ## Resume contract

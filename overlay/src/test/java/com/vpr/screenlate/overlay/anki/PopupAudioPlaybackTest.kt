@@ -58,6 +58,25 @@ class PopupAudioPlaybackTest {
     }
 
     @Test
+    fun `audio editor entry drops delayed audio even when the popup window stays visible`() = runTest {
+        val view = View(this)
+        val reply = CompletableDeferred<Unit>()
+        view.show(cat)
+        view.playback.request(cat, rememberClip = { view.remembered += it }) {
+            withContext(NonCancellable) { reply.await() }
+            clip
+        }
+        runCurrent()
+        view.playback.onResultsHidden()
+        assertThat(view.visible).isTrue()
+        reply.complete(Unit)
+        advanceUntilIdle()
+        assertThat(view.prepared).isEmpty()
+        assertThat(view.remembered).isEmpty()
+        assertThat(view.failures).isEmpty()
+    }
+
+    @Test
     fun `a current missing recording shows a failure that is dismissed on leaving the word`() = runTest {
         val view = View(this)
         view.show(cat)

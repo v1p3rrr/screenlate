@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 enum class PcmCoordinatorFailure {
     SOURCE_START_FAILED, SOURCE_READ_FAILED, SOURCE_STOP_FAILED, QUEUE_OVERFLOW, QUEUE_DISCONTINUITY,
-    STORAGE_QUOTA_EXCEEDED, STORAGE_IO_ERROR,
+    STORAGE_QUOTA_EXCEEDED, STORAGE_IO_ERROR, PLAYBACK_STOP_FAILED,
 }
 
 enum class PcmCoordinatorState { IDLE, STARTING, RUNNING, STOPPING, STOPPED, FAILED, CLOSED }
@@ -47,6 +47,7 @@ internal class PcmStorageCoordinator(
     private val nowMillis: () -> Long = { System.nanoTime() / 1_000_000L },
     private val nowNanos: () -> Long = { System.nanoTime() },
     private val retireWhenUnused: Boolean = false,
+    private val onInputReleased: () -> Unit = {},
     private val onStateChanged: (PcmCoordinatorState, PcmCoordinatorFailure?) -> Unit = { _, _ -> },
 ) : AutoCloseable {
     private val commands = ArrayBlockingQueue<FutureTask<*>>(32)
@@ -266,6 +267,7 @@ internal class PcmStorageCoordinator(
         if (!inputReadyToRelease()) return
         runCatching { source?.close() }
         source = null
+        onInputReleased()
     }
 
     private fun finishCloseIfReady() {
