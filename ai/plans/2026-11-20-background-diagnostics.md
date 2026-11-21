@@ -32,7 +32,7 @@
 | Gate existing MNN intermediate-buffer trim by accepted safe idle | Actual allocation savings, next-scan timing | Models remain loaded; no loss of OCR quality; do not increase warm latency. |
 | Pause a hidden WebView instance without destroying it | Hidden-page CPU and paired resume timing | No global pauseTimers, no frozen Search, no lost DOM/history, no added opening delay. |
 | Control heavy result payload work | Candidate count, serialization/render timings and payload sizes | Same ordering, definitions and lookup results; no arbitrary candidate cap. |
-| Catcher A/B observation | Matched workloads, screen/power events and natural system exits | Setting-off tests active catcher only; window-presence test needs a build that never attaches it. No automatic rollback or behavior change. |
+| Catcher A/B observation | c834fd65 still killed after 71 min with catcher absent; fresh PID 28278 starts OFF throughout | Continued window presence is not necessary. Earlier startup attachment remains a limitation; next ordinary-use interval already starts without it. Redesign is not a proven cleanup fix. |
 
 ## Hypotheses and discriminating evidence
 
@@ -53,6 +53,8 @@
 - 2026-11-21: Owner authorized an optional-window test build and analysis of alternative implementations. Chose no catcher/receiver when the setting is off, with a window-group rebuild only on mode changes to preserve stacking and retained WebView/models. The logs-only scope now has this explicit exception; resource optimizations stay deferred. Regression goes red with two windows before the fix; three instrumentation cases, including real input/stacking, pass on API 30. Redesign candidates are recorded in OEM notes and remain unimplemented.
 
 - 2026-11-21: Owner supplied the 13:07 journal from logging-only 3a277a89, before the optional-window change. Two additional screen-off-adjacent PowerGenie exits include a 6.878-second process; first process never scanned/opened a popup and survived about 51 minutes after its hidden renderer disappeared. Preserve the distinction from the pending c834fd65 experiment. [Midday evidence](../notes/oem-background-limits.md#midday-follow-up-on-the-previous-diagnostic-build-2026-11-21). No runtime changes.
+
+- 2026-11-21 evening: Owner reports another kill on c834fd65. Confirmed catcher absent for 71 minutes before PowerGenie exit at 14:26:43; last screen-off was 11m30s earlier, so immediate adjacency is not universal. OEM suffix again aligns near activity pause; task-removal action is unknown (owner does not remember). Current 18:10 process starts with the feature OFF and no catcher from startup, so continue the existing observation. No new behavior decision, optimization or build. [Evidence](../notes/oem-background-limits.md#disabled-window-experiment-result-2026-11-21-evening).
 
 ## Audio crash handoff
 

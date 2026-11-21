@@ -842,3 +842,48 @@ The retained unique PowerGenie main exits now total 20: November 18 = 3, 19 = 6,
 exit of the preceding diagnostic process is PACKAGE_UPDATED and is not another cleanup. Next acceptance remains
 ordinary use of c834fd65 with On tap outside OFF and confirmation that catcherAttached=false for the interval.
 No runtime changes, further build, device/system operation or resource optimization follows from this log analysis.
+
+
+## Disabled-window experiment result (2026-11-21 evening)
+
+Source: owner's `screenlate-log-20261121-181022.txt`, 2,789,939 bytes / 20,433 lines. Header and main-process starts
+confirm 1.1.0-c834fd65-outside-tap-min. Counts use full-date journal entries, not the duplicate logcat section.
+This is the first physical-device observation of the optional-window removal change.
+
+- PID 19274 starts at 13:14:54.094 and is force-stopped at **14:26:43.317**. The 18:10:07 start/export discovers
+  this past exit; 18:10 is not the cleanup time. Description explicitly names system PID 2520,
+  `iAwareR[PowerGenie inactive clean] 4253781ms`, importance 125, last sampled RSS 326 MB, PSS unavailable (0).
+- The saved setting briefly enables the hidden catcher during startup. The owner then toggles it off/on/off;
+  the final `popup_windows_detached` at **13:15:41.939** records catcherAttached=false, catcherActive=false and
+  catcherSize=0x0. All subsequent state/sample records through the final sample at 14:25:44.417 retain absence and
+  hideOnOutsideTap=false. No scan/popup opens occur (scan=0, recognitionJobs=0).
+- Cleanup therefore still occurs after **71 min 1.378 s without the catcher**. The hypothesis that the catcher's
+  continued presence is required is falsified by this trace; removing the disabled window did not prevent cleanup.
+  Do not claim every possible earlier classification effect is excluded: it did exist briefly at startup.
+- Last recorded screen-off is **14:15:13.394**, **11 min 29.923 s** before death. Subsequent samples remain
+  non-interactive. Immediate screen-off adjacency is not universal; earlier 2-3-second cases must not become a
+  mandatory trigger claim. This exit happens while the screen is off, not in the recorded immediate transition.
+- Activity pause logs at 13:15:49.571, stop at 13:15:49.952, destroy at 13:15:50.463, and foreground_task_removed
+  at 13:15:50.489. The owner answered that they do not remember whether they swiped/cleared Recents. Record action
+  provenance as unknown; do not equate onTaskRemoved with a proven manual action. The service continues afterwards;
+  the callback's source only logs and calls super, with no stop request.
+- Subtracting 4253781 ms from the exit yields **13:15:49.536**, nominally 35 ms before the printed activity-pause
+  event and close to the same background transition. Event elapsed times show queued wall-log delays, so this is
+  approximate correlation, not millisecond proof of a private rule. It further supports an activity-background age
+  interpretation of this OEM suffix, not process age, last scan, window presence or continuous sleep duration.
+- Fourteen samples in the final 15 minutes: PSS 209-210 MB, native allocation 96 MB, system available 3997-4113 MB,
+  CPU core permille min/median/max 0/1/7 (median 0.1% of one core), 81 threads, 340 FDs. No measured escalation.
+  Last sample is 58.900 s before death, not exact-at-death telemetry. Foreground service, requested keep-alive,
+  accessibility and battery exemption remain true; backgroundRestricted/deviceIdle/powerSave and lowMemory are false.
+  Charging is true. Main-force-stop precedes WebView child cleanup by 25 ms; do not reverse their causal order.
+- Unique retained PowerGenie main exits now total 21: November 18=3, 19=6, 20=7, 21=5.
+
+The subsequent PID 28278 starts at 18:10:07.014 with the option already OFF. Its attachment at 18:10:14.128 has
+catcherAttached=false/0x0 and there is no catcher attachment anywhere in that new process through export at
+18:10:22.229. This naturally supplies the pending fresh-start-with-no-catcher observation; no additional APK or
+hourly reopening is needed. It has only seconds of observed lifetime in this export, so no endurance conclusion.
+
+The outside-tap redesign remains a separate proposal, not a demonstrated cleanup fix. Further app resource tuning
+is not justified by these measurements. App-only logs still cannot expose the private eligibility/allowlist rule.
+Read-only system-side inspection on the affected device is the next distinct source of evidence; no ADB device is
+currently connected. No runtime changes, new build, force-stop, package disable or system-setting mutation was made.

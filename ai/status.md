@@ -1,5 +1,20 @@
 # Status
 
+## Disabled-window physical result (2026-11-21 evening)
+
+- Owner's 18:10 export is c834fd65. [Experiment result](notes/oem-background-limits.md#disabled-window-experiment-result-2026-11-21-evening).
+- PID 19274 still receives PowerGenie inactive clean at 14:26:43.317, after the catcher had been absent for 71 minutes.
+  This rejects continued catcher presence as a necessary condition; removal did not prevent this cleanup. Catcher
+  existed briefly at startup, so the next process is the cleaner fresh-start control.
+- Last recorded screen-off is 14:15:13.394, 11m30s earlier, not 2-3 s. OEM duration instead points near the last
+  activity pause at 13:15:49. Activity task removal is recorded; owner does not remember the action, so provenance
+  stays unknown. Foreground service continues and source has no stop on task removal.
+- Final 15-minute main PSS 209-210 MB, low CPU, stable threads/FDs and about 4 GB available system RAM do not support
+  resource escalation. Standard exemption/actual FGS remain present. Total retained PowerGenie exits now 21.
+- Current PID 28278 at 18:10 starts with outside-tap already OFF and never attaches the catcher through export;
+  continued ordinary use supplies the clean-start observation without another build or periodic reopening.
+- No app/system changes or new builds. Phone ADB is disconnected; system-side read-only evidence remains unavailable.
+
 ## Midday previous-build log follow-up (2026-11-21)
 
 - Owner supplied the 13:07 export from 3a277a89 (logging-only), explicitly before optional-window removal; do not
