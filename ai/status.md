@@ -1,5 +1,17 @@
 # Status
 
+## Midday previous-build log follow-up (2026-11-21)
+
+- Owner supplied the 13:07 export from 3a277a89 (logging-only), explicitly before optional-window removal; do not
+  treat it as an experiment result. [Midday evidence](notes/oem-background-limits.md#midday-follow-up-on-the-previous-diagnostic-build-2026-11-21).
+- Two new PowerGenie exits: 12:11:26.077 and 12:59:15.889, 2.471/2.346 s after screen-off. Second process lived only
+  6.878 s, with no activity-start/resume event. An hour of current-process lifetime is not required.
+- First process made no scans or popup opens. Hidden catcher stayed attached; renderer disappeared without a reported
+  renderer crash at 11:20:30, WebView stayed absent, and main lived another 50 min 56 s. Active OCR/WebView is not
+  necessary for this incident. Final 15-minute main PSS 158-162 MB and low CPU do not support a resource escalation.
+- Retained PowerGenie total now 20; November 21 has four. Current prepared experiment remains c834fd65 with the setting
+  OFF. No application changes, rebuild, phone operations or optimizations from this analysis; physical result pending.
+
 ## Disabled outside-tap window experiment (2026-11-21)
 
 - Owner authorized a test build that either removes the disabled feature's window or disables the feature, plus

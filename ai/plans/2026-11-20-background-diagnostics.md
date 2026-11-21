@@ -52,6 +52,8 @@
 
 - 2026-11-21: Owner authorized an optional-window test build and analysis of alternative implementations. Chose no catcher/receiver when the setting is off, with a window-group rebuild only on mode changes to preserve stacking and retained WebView/models. The logs-only scope now has this explicit exception; resource optimizations stay deferred. Regression goes red with two windows before the fix; three instrumentation cases, including real input/stacking, pass on API 30. Redesign candidates are recorded in OEM notes and remain unimplemented.
 
+- 2026-11-21: Owner supplied the 13:07 journal from logging-only 3a277a89, before the optional-window change. Two additional screen-off-adjacent PowerGenie exits include a 6.878-second process; first process never scanned/opened a popup and survived about 51 minutes after its hidden renderer disappeared. Preserve the distinction from the pending c834fd65 experiment. [Midday evidence](../notes/oem-background-limits.md#midday-follow-up-on-the-previous-diagnostic-build-2026-11-21). No runtime changes.
+
 ## Audio crash handoff
 
 The owner's log records a main-process CRASH at 2026-11-20 11:22:36.056, PID 27795. The Java exception is

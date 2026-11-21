@@ -796,3 +796,49 @@ Potential redesigns, not implemented or accepted as a new behavior decision:
 No resource optimization, system-component disable, periodic Activity launch or claim of a PowerGenie fix is part
 of this experiment. Compare ordinary use with the outside-tap setting OFF and export the complete journal after any
 natural disappearance; the log must show hideOnOutsideTap=false and catcherAttached=false for the interval.
+
+
+## Midday follow-up on the previous diagnostic build (2026-11-21)
+
+The owner explicitly identifies `screenlate-log-20261121-130717.txt` as the previous logging-only build, not the
+optional-window experiment. Header confirms 1.1.0-3a277a89-min, 2,685,623 bytes / 20,356 lines. Do not count these
+observations as results of c834fd65 or of disabled-mode window removal. The outside-tap setting is still true.
+Only full-date persistent-journal entries were used for counts; the later logcat section duplicates some records.
+No raw journal, recognized text, terms or external navigation data is committed.
+
+| Main PID | Start | System exit | Time since start | Last screen-off | Screen-off to exit |
+|---|---|---|---|---|---|
+| 17640 | 11:02:37.619 | 12:11:26.077 | 68 min 48.458 s | 12:11:23.606 | 2.471 s |
+| 11344 | 12:59:09.011 | 12:59:15.889 | 6.878 s | 12:59:13.543 | 2.346 s |
+
+Both exits explicitly name `iAwareR[PowerGenie inactive clean]`, system PID 2520, importance 125 and suffix -1ms.
+The first follows activity pause at 11:06:18.193 by 65 min 7.884 s, and activity stop at 11:06:19.795 by
+65 min 6.282 s. The second process has no activity started/resumed events before death: accessibility/foreground
+service starts are recorded, but an ordinary activity visit is not. A new process therefore does not guarantee a
+new hour of grace. App-defined process age is not a necessary one-hour prerequisite. Package-level inactivity or
+OEM eligibility retained across service/process restarts remains plausible; these app logs do not expose that
+state or prove its exact timer. Screen-off proximity repeats, and the unavailable OEM suffix cannot supply an age.
+
+PID 17640 has scan=0, scanOpen=false, popup=false, catcherActive=false and recognitionJobs=0 throughout the retained
+process. Catcher attachment is true, hidden 1x1 after settings are applied. No dictionary-popup opening or active
+outside catcher is needed for this incident. This weakens an active catcher/screen-off dismissal path as a necessary
+trigger, without excluding the hidden attached window or ordinary OEM inactivity selection.
+
+At 11:20:30.137 LookupPage reports renderer gone with crashed=false/shown=false and removes/destroys that WebView;
+subsequent diagnostics show webView=false without a recreation event. The main process survives another
+50 min 55.940 s until its PowerGenie exit. Do not conflate this earlier renderer loss with the main-process death
+or assert the renderer's exact killer from didCrash=false. Active OCR/WebView work is not required for this exit.
+
+Nine samples in the final 15 minutes of PID 17640 show PSS 158-162 MB, native allocation 85 MB, system available
+3343-3892 MB, lowMemory=false, 81 threads, 316-324 FDs; CPU core permille min/median/max 0/0/16. Last sample at
+12:11:23.665: PSS 162 MB, native 85 MB, system available 3390 MB, CPU 13 permille (1.3% of one core for the sample
+interval). Service/keep-alive/actual foreground service, accessibility and battery exemption are present;
+backgroundRestricted/deviceIdle/powerSave are false. No measured main-process resource escalation precedes this exit.
+The brief PID 11344 has only its initial startup resource sample (59 MB PSS before overlay initialization); do not
+present it or exit RSS=0 as memory usage at death. Foreground service is explicitly started at 12:59:10.505.
+Its WebView child exits 16 ms after the main process, consistent with child cleanup rather than the earlier incident.
+
+The retained unique PowerGenie main exits now total 20: November 18 = 3, 19 = 6, 20 = 7, 21 = 4. The 11:02:33
+exit of the preceding diagnostic process is PACKAGE_UPDATED and is not another cleanup. Next acceptance remains
+ordinary use of c834fd65 with On tap outside OFF and confirmation that catcherAttached=false for the interval.
+No runtime changes, further build, device/system operation or resource optimization follows from this log analysis.
