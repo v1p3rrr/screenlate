@@ -71,6 +71,14 @@ Run it on a host-silent emulator in the independent library test package:
 `adb -s <serial> shell am instrument -w -e class com.vpr.screenlate.core.media.SentenceRecorderDeviceTest com.vpr.screenlate.core.media.test/androidx.test.runner.AndroidJUnitRunner`.
 This does not replace real-source capture, codec, route or complete overlay gesture acceptance.
 
+`CapturePermissionRequestTest` covers screenshot/audio consent purpose. On an API29 emulator, the isolated
+`CapturePermissionDeviceTest` exercises real system permission denial/retry, revocation during pending
+permission, screenshot frames and AudioRecord initialization. Install `com.vpr.screenlate.overlay.test`
+fresh without granting runtime permissions; the fixture requires RECORD_AUDIO to be denied initially.
+Run `adb -s <serial> shell am instrument -w -e class com.vpr.screenlate.overlay.capture.CapturePermissionDeviceTest com.vpr.screenlate.overlay.test/androidx.test.runner.AndroidJUnitRunner`.
+It uses system-dialog keyboard navigation when the old platform omits the permission window from the
+automation node tree. The test neither stores screenshot/audio contents nor uses a collection.
+
 The overlay editor's JavaScript logic is tested via Node.js and jsdom:
 `npm --prefix scripts/page-tests test` runs all page test suites including `audio-editor.test.mjs`.
 

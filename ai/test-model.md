@@ -847,6 +847,24 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 ## Run log
 
+### 2026-11-21, screenshot/audio permission isolation and consent revocation
+
+- Three `CapturePermissionRequestTest` cases pass: screenshot purpose across API24–37, runtime audio
+  before projection, unsupported recording below API29, and permission-only existing projection reuse.
+  The screenshot-purpose assertion was red before the captureAudio guard.
+- Isolated API29 `CapturePermissionDeviceTest` uses actual system dialogs and frames, rejects missing
+  initial denied permission, and covers denied audio with the screenshot projection retained, retry/grant,
+  AudioRecord initialization concurrent with a screenshot, and screenshots after recording is disabled.
+  Revocation during pending permission rejects the old request; immediate retry obtains a new session.
+- Restoring the former projection early return makes the native fixture red (no permission dialog);
+  it was removed before final checks. Revocation also reproduced early waiter notification and closing-host
+  reuse; production fixes preserve invalidation and consent-host identity. See final consent logs/engineering note.
+- Overlay JVM/lint, app assembly and library test-APK assembly pass. No owner app instrumentation, Anki,
+  saved image/audio content, host audio output or force-stop. REC2/3/6/82 remain N for the full stated scope.
+- Final API29 fixture passes in 3.527 s; fresh screenshot-first and audio-first projection start orders both
+  acquire frames during real AudioRecord initialization and after audio Stop. Owned host-silent AVD is
+  powered off after removing the isolated test package. Final logs: `consent-final-build.log`, `consent-device-final.log`.
+
 ### 2026-11-21, preview generations, native drain and Main delivery
 
 - `AudioPreviewPlayerTest`: 12 tests pass; complete core-media suite 91 tests. Seven new cases cover blocked

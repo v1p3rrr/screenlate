@@ -385,6 +385,9 @@ Settings → Audio holds auto play and volume, which every language shares, and 
 
 On Android 10+ (API 29+), Screenlate can capture internal device playback from video players, audiobooks, or games and attach trimmed clips to Anki notes via the `{sentence-audio}` field marker. Screenlate's own audio playback (such as pronunciation samples or editor preview) is excluded from capture automatically. On Android 7–9, internal playback capture is unsupported by the platform, and the Audio settings screen shows an informational notice instead.
 
+Recording asks for Android's audio permission and screen-capture consent. Screenshots alone do not need
+audio permission. Refusing audio permission leaves an existing screen-capture session available for screenshots.
+
 - **Enable recording**: Starts capturing playback into a private rolling PCM buffer whenever the overlay bubble is active.
 - **Audio editor by default**: When enabled (also mirrored in Anki settings), tapping ➕ opens the waveform editor. When disabled, tapping ➕ creates the note immediately, and holding ➕ opens the editor.
 - **Buffer durations**: Configure pre-scan history (H), definition reading time (R), and post-scan extension time (E) in 30-second steps (from 30 seconds to 10 minutes).

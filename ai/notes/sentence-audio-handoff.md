@@ -13,7 +13,14 @@ unit, core lint and test-APK checks. No actual playback/capture/Anki was exercis
 Current preview checkpoint: 91 core tests, full build/unit/lint/test-APK/convention/release-vital checks and
 two API30 device tests pass. Real AudioTrack + production Main callbacks + WebView handle 24,000 / 240 / 1
 silent source frames. Preview owns run cancellation/retirement/drain and bounds outgoing progress. See
-engineering evidence for the reproduced short-stream stall and transport-only padding. Continue with API29 consent purpose and TTS cleanup;
+engineering evidence for the reproduced short-stream stall and transport-only padding.
+Consent-purpose checkpoint: screenshot-only requests bypass audio permission; existing projection obtains
+missing audio permission without replacing screenshot capture. Stop clears the generation/session before
+waking waiters; independent ephemeral consent tasks prevent immediate retry from reusing a closing host.
+Three policy JVM tests and isolated API29 real permission/revocation/frame/AudioRecord initialization checks
+pass; see engineering evidence and ignored consent logs. Native fixture requires a freshly installed library
+test package with RECORD_AUDIO denied. This does not certify actual source audio or physical routes.
+Continue with TTS cleanup/own-playback arbitration;
 also release stopped owner/ring storage after its final live context/reader. C must guard the now-suspending
 editor opening/Refresh/analysis paths with operation/revision identity before claiming UI acceptance.
 

@@ -413,14 +413,14 @@ are investigated as findings, not converted into an invented new audio performan
 | Milestone | Status | Evidence |
 |---|---|---|
 | A regression baseline | Partial | Permanent core regressions landed with fixes; 91 core tests pass. DOM and full pending-note/fake-backend fixture remain for editor work. |
-| B session/preview lifetime | Partial | Session ownership and preview generations/drain/bounded callbacks implemented. Production AudioTrack→Main→WebView test passes, including short streams. Consent purpose, TTS/own-playback ownership, stopped-session retirement and physical source/route gates remain. |
+| B session/preview lifetime | Partial | Session ownership, preview generations/drain/bounded callbacks and consent purpose implemented. Production AudioTrack→Main→WebView and API29 permission/revocation tests pass. TTS/own-playback ownership, stopped-session retirement and physical source/route gates remain. |
 | C pending operation/protocol | Pending | Current implementation remains at reviewed behavior. |
 | D editing/fidelity | Pending | Codec probe evidence is partial, not end-to-end acceptance. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-Next continue B: consent-purpose isolation, TTS/own-playback lifetime, stopped-session retirement and
+Next continue B: TTS/own-playback lifetime, stopped-session retirement and
 physical checks. Complete editor-facing A fixtures when introducing C's operation interface; coalesce
 incoming preview/Refresh requests there, beyond the already bounded outgoing progress delivery.
 Read this plan, original product decisions, review,
@@ -435,6 +435,9 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-21: Isolated screenshot/audio permission purpose, preserved screenshot projection on denied
+  audio permission and fixed revocation/cancelled-host immediate retry. Added JVM policy and real API29
+  consent/frame/AudioRecord initialization regressions. Product choices unchanged; B remains partial.
 - 2026-11-21: Reworked preview run lifetime, output drain/position and bounded generation-checked callbacks.
   Added native short-stream transport padding after a reproduced API30 stall; 500 ms / 5 ms / one-frame
   AudioTrack→Main→WebView fixtures pass. Added 27-locale preview error feedback. Product choices unchanged.

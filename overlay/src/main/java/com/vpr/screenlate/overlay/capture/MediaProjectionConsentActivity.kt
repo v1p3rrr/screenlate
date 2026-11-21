@@ -19,6 +19,11 @@ class MediaProjectionConsentActivity : Activity() {
     }
     private val requestId: String?
         get() = intent.getStringExtra(EXTRA_REQUEST_ID)
+    private val request: CapturePermissionRequest
+        get() = CapturePermissionRequest(
+            captureAudio = intent.getBooleanExtra(EXTRA_CAPTURE_AUDIO, false),
+            requestProjection = intent.getBooleanExtra(EXTRA_REQUEST_PROJECTION, true),
+        )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +38,18 @@ class MediaProjectionConsentActivity : Activity() {
     }
 
     private fun checkPermissionsAndRequest() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_REQUEST_CODE)
-        } else {
-            requestMediaProjection()
+        val granted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        when (request.nextStep(Build.VERSION.SDK_INT, granted)) {
+            CapturePermissionStep.AUDIO_PERMISSION -> requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_REQUEST_CODE)
+            CapturePermissionStep.PROJECTION_CONSENT -> requestMediaProjection()
+            CapturePermissionStep.COMPLETE -> {
+                requestId?.let { MediaProjectionHolder.consent.complete(it, Intent()) }
+                finish()
+            }
+            CapturePermissionStep.UNSUPPORTED -> {
+                requestId?.let { MediaProjectionHolder.consent.complete(it, null) }
+                finish()
+            }
         }
     }
 
@@ -61,7 +72,7 @@ class MediaProjectionConsentActivity : Activity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requestMediaProjection()
+                checkPermissionsAndRequest()
             } else {
                 requestId?.let { MediaProjectionHolder.consent.complete(it, null) }
                 finish()
@@ -90,10 +101,15 @@ class MediaProjectionConsentActivity : Activity() {
         private const val REQUEST_CODE = 1001
         private const val PERMISSION_REQUEST_CODE = 1002
         private const val EXTRA_REQUEST_ID = "capture_request_id"
+        private const val EXTRA_CAPTURE_AUDIO = "capture_audio"
+        private const val EXTRA_REQUEST_PROJECTION = "request_projection"
 
-        fun intent(context: Context, requestId: String): Intent =
+        fun intent(context: Context, requestId: String, request: CapturePermissionRequest = CapturePermissionRequest()): Intent =
             Intent(context, MediaProjectionConsentActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                // A cancelled host may still be closing when the next request starts. Never reuse its task.
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
                 .putExtra(EXTRA_REQUEST_ID, requestId)
+                .putExtra(EXTRA_CAPTURE_AUDIO, request.captureAudio)
+                .putExtra(EXTRA_REQUEST_PROJECTION, request.requestProjection)
     }
 }

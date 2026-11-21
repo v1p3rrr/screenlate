@@ -1,5 +1,23 @@
 # Status
 
+## Sentence audio: isolated permissions and cancelled consent hosts (2026-11-21)
+
+- Screenshot-only capture no longer requests RECORD_AUDIO. Enabling recording with an existing projection
+  asks only for missing audio permission; denial preserves that projection and its screenshot consumer.
+  Permission-only results never enter getMediaProjection as if they contained a screen-capture token.
+- System/manual Stop invalidate and clear the session before waking suspended consent callers. The native
+  revocation scenario exposed the previous reentrant stale-session window. Each consent request now uses
+  an independent ephemeral task: an immediately retried request cannot reuse the cancelled host still closing.
+- Three new permission-policy JVM regressions pass; overlay unit/lint, app assembly and test-APK assembly
+  pass. The independent API29 device fixture executes actual system consent, denial/retry, revocation while
+  audio permission is pending, real screenshot frames and concurrent AudioRecord initialization. It saves
+  no image/audio content and uses no owner app or collection. See engineering/test-model for final run evidence.
+- The native regression is red with the former existing-projection early return restored, then green with
+  the repair. API29's permission window is intermittently absent from UiAutomation's node tree; the fixture
+  waits for the actual system activity and uses keyboard events with an explicit keyboard input source.
+- B remains partial: TTS cleanup/own-playback arbitration, stopped-session retirement and physical capture/
+  route checks remain, followed by C's operation/revision protocol. Other REC rows are not certified by this fix.
+
 ## Sentence audio: preview lifetime and Main callback repair (2026-11-21)
 
 - Replaced shared preview stop state with owned playback generations. One retiring run must release before

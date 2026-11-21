@@ -7,6 +7,34 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Capture permission purpose and immediate retry — 2026-11-21
+
+- `CapturePermissionRequest` separates audio permission from projection authorization. Screenshot-only
+  requests bypass RECORD_AUDIO, including API29; recording is unavailable below API29. Existing sessions
+  obtain only missing audio permission, and a permission-only completion is never interpreted as projection data.
+- Native API29 checks reproduced a reentrant stop-order defect: completing the consent before clearing
+  the active projection allowed the waiter to observe the stopped session. Invalidate/clear/stop the service
+  before resuming waiters on both manual and system Stop.
+- Immediate retry after revocation exposed a second issue: NEW_TASK could reuse the cancelled consent
+  host while it was still closing, without launching a new system dialog. Consent hosts now use independent
+  NEW_TASK | MULTIPLE_TASK tasks, still excluded from recents and without retained draft state.
+- Three JVM policy tests pass; overlay unit/lint, app and test-APK assembly pass. The isolated API29
+  `CapturePermissionDeviceTest` obtains actual frames, denies/retries runtime permission and exercises
+  revocation during pending permission. It starts real AudioRecord while capturing a frame, without reading
+  or retaining audio samples. This is not real-source capture/codec/route or physical-device acceptance.
+- The former existing-projection early return was restored temporarily: the native regression became red
+  because no runtime dialog appeared. The targeted mutation was removed before final verification.
+- API29 system dialogs are visible in screenshots/server accessibility state while sometimes absent from
+  UiAutomation's node tree. The permission adapter waits for the foreground GrantPermissionsActivity and
+  uses native Tab/Enter events with VIRTUAL_KEYBOARD/SOURCE_KEYBOARD and current uptime. Events with
+  the default unknown source were rejected. No coordinates, arbitrary source-app interaction or force-stop.
+- Logs: ignored `testdata/local-research/audio-review-2026-11-21/consent-*.log`. Install the isolated
+  `com.vpr.screenlate.overlay.test` package fresh for this fixture: its initial audio permission must be denied.
+  Preserve the owner app/collection. Keep REC2/3/6/82 N until all their platform/UI portions pass.
+- Final API29 fixture passes in 3.527 s, including fresh screenshot-first and audio-first projection
+  start orders, real frames during AudioRecord and after audio Stop, plus revocation/retry. Focused final
+  overlay JVM/lint, app and test-APK assembly pass (`consent-final-build.log`, `consent-device-final.log`).
+
 ## Preview ownership and short native output — 2026-11-21
 
 - `AudioPreviewPlayer` owns a generation per request, cancellation/sink per run and one retiring slot.

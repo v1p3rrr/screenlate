@@ -175,6 +175,11 @@ in `PcmHistory`. The suspending `SentenceRecorder` interface keeps file work and
 Main. Its observable state includes startup, stopping and asynchronous failures. An unresponsive source
 prevents replacement capture until it releases; its valid stored prefix remains available.
 
+The overlay owns projection consent separately from audio permission. Screenshot-only capture does not
+request RECORD_AUDIO. Recording can obtain missing audio permission while keeping an existing screenshot
+projection. System/manual Stop invalidate the session before resuming pending requests; each consent host
+has an independent ephemeral task so immediate retries cannot inherit a cancelled host or a stale token.
+
 Each screen scan anchors a protected `ScanAudioTimeline`: pre-scan history H defaults to 5 minutes,
 waiting R to 5 minutes, and editor continuation E to 2 minutes. Existing contexts retain their admitted
 limits; later scans use updated preferences. Sessions use separate private directories, and leased snapshots

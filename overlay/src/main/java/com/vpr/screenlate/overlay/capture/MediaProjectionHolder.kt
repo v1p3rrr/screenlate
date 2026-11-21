@@ -1,9 +1,12 @@
 package com.vpr.screenlate.overlay.capture
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.MainThread
@@ -28,23 +31,31 @@ internal object MediaProjectionHolder {
 
     suspend fun getOrCreate(context: Context, isRecording: Boolean = false): MediaProjection? = withContext(Dispatchers.Main.immediate) {
         mutex.withLock {
-            projection?.let {
-                if (isRecording) {
-                    MediaProjectionService.updateRecordingState(context, isRecording = true)
-                }
-                return@withLock it
-            }
             val currentGeneration = generation
             val app = context.applicationContext
-            val data = try {
-                consent.request(CONSENT_TIMEOUT_MS) { id ->
-                    app.startActivity(MediaProjectionConsentActivity.intent(app, id))
-                }
-            } catch (_: android.content.ActivityNotFoundException) {
-                throw CaptureException.Failed(-1)
-            } ?: return@withLock null
+            val existing = projection
+            val request = CapturePermissionRequest(captureAudio = isRecording, requestProjection = existing == null)
+            val audioGranted = app.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+            val step = request.nextStep(Build.VERSION.SDK_INT, audioGranted)
+            if (step == CapturePermissionStep.UNSUPPORTED) return@withLock null
+            val data = if (step != CapturePermissionStep.COMPLETE) {
+                try {
+                    consent.request(CONSENT_TIMEOUT_MS) { id ->
+                        app.startActivity(MediaProjectionConsentActivity.intent(app, id, request))
+                    }
+                } catch (_: android.content.ActivityNotFoundException) {
+                    throw CaptureException.Failed(-1)
+                } ?: return@withLock null
+            } else null
             if (generation != currentGeneration) return@withLock null
 
+            // A permission-only result is not a projection token. Reuse only the still-live session.
+            if (existing != null) {
+                if (projection !== existing) return@withLock null
+                if (isRecording) MediaProjectionService.updateRecordingState(app, isRecording = true)
+                return@withLock existing
+            }
+            if (data == null) return@withLock null
             try {
                 if (!MediaProjectionService.start(app, isRecording)) throw CaptureException.Failed(-1)
                 if (generation != currentGeneration) return@withLock null
@@ -55,8 +66,10 @@ internal object MediaProjectionHolder {
                     override fun onStop() {
                         if (projection !== session) return
                         Log.i(TAG, "MediaProjection stopped by system")
+                        generation++
                         projection = null
                         MediaProjectionService.stop(app)
+                        consent.cancel()
                         onSystemStopped?.invoke()
                     }
                 }, Handler(Looper.getMainLooper()))
@@ -75,10 +88,13 @@ internal object MediaProjectionHolder {
     @MainThread
     fun stop(context: Context) {
         generation++
-        consent.cancel()
         val session = projection
         projection = null
-        session?.stop()
-        MediaProjectionService.stop(context)
+        try {
+            session?.stop()
+        } finally {
+            MediaProjectionService.stop(context)
+            consent.cancel()
+        }
     }
 }
