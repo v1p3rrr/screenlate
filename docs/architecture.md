@@ -186,6 +186,10 @@ limits; later scans use updated preferences. Sessions use separate private direc
 can outlive their original session. Abandoned PCM is cleared before the singleton's first capture, never
 by sweeping another live session on each restart. Source policies can restrict playback capture.
 
+After capture stops, the current scan remains available until released. Without a live scan, the session
+worker and ring retire; snapshots/readers keep only their leased files until their own final release.
+The empty private session directory is removed after its final retained chunk is released.
+
 The overlay editor (`audio-editor.js`, `audio-editor.css`, coordinated by `AudioEditorController`) presents an
 interactive waveform with selection handles, manual cuts, leading-quiet detection and timeline refresh.
 `AudioPreviewPlayer` gives each playback run its own cancellation and output lifetime. Seek retires old

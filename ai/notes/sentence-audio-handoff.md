@@ -20,8 +20,12 @@ waking waiters; independent ephemeral consent tasks prevent immediate retry from
 Three policy JVM tests and isolated API29 real permission/revocation/frame/AudioRecord initialization checks
 pass; see engineering evidence and ignored consent logs. Native fixture requires a freshly installed library
 test package with RECORD_AUDIO denied. This does not certify actual source audio or physical routes.
-Continue with TTS cleanup/own-playback arbitration;
-also release stopped owner/ring storage after its final live context/reader. C must guard the now-suspending
+Terminal-session retirement is implemented: facade-owned stopped/failed sessions release their worker/ring
+after the last context; live leases survive and remove their files/directory on final release. 94 core tests
+pass. A still-stopping native input keeps isCaptureActive true even in Failed. Full required checks and
+212 page tests pass. The strengthened API30 Main cleanup and real preview tests pass (2 tests, 1.915 s);
+final test-APK/lint passes. See `retire-*.log` and status/test-model. Continue with TTS cleanup/own-playback
+arbitration. C must guard the now-suspending
 editor opening/Refresh/analysis paths with operation/revision identity before claiming UI acceptance.
 
 ## Resume contract

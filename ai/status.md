@@ -1,5 +1,23 @@
 # Status
 
+## Sentence audio: terminal session retirement (2026-11-21)
+
+- Facade-owned sessions now retire their owner/queue/ring after Stop or failure once no scan context
+  remains. A stopped live context stays editable until its matching release; foreign releases do nothing.
+  Existing snapshots/readers retain independent PCM leases after the worker retires. Final lease release
+  deletes PCM and the empty owned session directory; ordinary history fixtures keep their caller-owned root.
+- A failed but still-stopping native input keeps isCaptureActive true. Another source is still rejected until
+  actual release, and pronunciation must not choose live external TTS based only on the Failed UI state.
+- Three new facade regressions and the strengthened stuck-Stop assertion pass (94 core-media tests total).
+  Red evidence: idle stopped ring remained on disk; stuck native Stop incorrectly reported no active capture.
+  The Android Main fixture now requires automatic directory cleanup after release before explicit close.
+- Full assemble/unit/lint/test-APK/convention/release-vital checks pass (3m24s); 212 page tests pass.
+  API30 strengthened `SentenceRecorderDeviceTest`: both tests pass (1.915 s), including automatic storage
+  cleanup on final context release and real silent AudioTrack→Main→WebView preview. Final test-APK/lint
+  recheck passes. Logs: ignored `testdata/local-research/audio-review-2026-11-21/retire-*.log`.
+- TTS file/output ownership is the next B item. Then continue C's pending-note/editor identity, incoming
+  request coalescing and revision protocol. Resource accounting/physical/Anki acceptance remains open.
+
 ## Sentence audio: isolated permissions and cancelled consent hosts (2026-11-21)
 
 - Screenshot-only capture no longer requests RECORD_AUDIO. Enabling recording with an existing projection

@@ -25,6 +25,8 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
     private var stoppedAtFrame: Long? = null
     private var lastSeenMillis: Long = 0L
 
+    val hasContext: Boolean get() = context != null
+
     fun updateLimits(limits: RecordingLimits) { this.limits = limits }
 
     fun acquireScan(nowMillis: Long, availableStartFrame: Long): AudioContextId? {

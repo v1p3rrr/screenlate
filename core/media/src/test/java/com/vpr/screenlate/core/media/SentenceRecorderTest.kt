@@ -141,6 +141,89 @@ class SentenceRecorderTest {
     }
 
     @Test
+    fun stoppedSessionReleasesHistoryAfterItsLastReaderCloses() = runBlocking {
+        val root = temporary.newFolder()
+        val recorder = SentenceRecorder(root, RecordingSettingsRepository(MemoryDataStore()))
+        val source = FakeAudioSource()
+        try {
+            recorder.start(source)
+            source.emitFrames(100)
+            val snapshot = withTimeout(3000) {
+                var lease = recorder.snapshot(AudioRange(0, 100))
+                while (lease == null) {
+                    delay(1)
+                    lease = recorder.snapshot(AudioRange(0, 100))
+                }
+                lease
+            }
+            val reader = snapshot.openStream()
+            snapshot.close()
+            recorder.stop()
+            reader.use { assertThat(it.readBytes()).isEqualTo(source.expectedPcm(0, 100)) }
+            withTimeout(3000) {
+                while (root.listFiles()?.isNotEmpty() == true) delay(1)
+            }
+            assertThat(recorder.isCaptureActive).isFalse()
+            assertThat(recorder.recordingState.value).isInstanceOf(SentenceRecordingState.Stopped::class.java)
+        } finally {
+            recorder.close()
+        }
+    }
+
+    @Test
+    fun stoppedSessionKeepsItsScanUntilTheMatchingContextIsReleased() = runBlocking {
+        val root = temporary.newFolder()
+        val time = AtomicLong(10_000L)
+        val recorder = SentenceRecorder(root, RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() }, { time.get() * 1_000_000L })
+        val source = FakeAudioSource()
+        try {
+            recorder.start(source)
+            source.emitFrames(100)
+            withTimeout(3000) {
+                while (true) {
+                    val snapshot = recorder.snapshot(AudioRange(0, 100))
+                    if (snapshot != null) { snapshot.close(); break }
+                    delay(1)
+                }
+            }
+            time.set(10_100)
+            val context = checkNotNull(recorder.acquireScan())
+            recorder.stop()
+            assertThat(recorder.openEditor(context)?.source).isEqualTo(AudioRange(0, 100))
+            recorder.releaseContext(AudioContextId(UUID.randomUUID(), context.scan))
+            assertThat(recorder.refresh(context)?.source).isEqualTo(AudioRange(0, 100))
+            recorder.snapshot(AudioRange(0, 100))!!.use { snapshot ->
+                assertThat(snapshot.openStream().use { it.readBytes() }).isEqualTo(source.expectedPcm(0, 100))
+            }
+            recorder.releaseContext(context)
+            withTimeout(3000) {
+                while (root.listFiles()?.isNotEmpty() == true) delay(1)
+            }
+            assertThat(recorder.openEditor(context)).isNull()
+        } finally {
+            recorder.close()
+        }
+    }
+
+    @Test
+    fun failedCaptureWithoutAScanReleasesItsSessionDirectory() = runBlocking {
+        val root = temporary.newFolder()
+        val recorder = SentenceRecorder(root, RecordingSettingsRepository(MemoryDataStore()))
+        try {
+            recorder.start(FakeAudioSource(failOnRead = true))
+            withTimeout(3000) {
+                recorder.recordingState.first { it is SentenceRecordingState.Failed }
+                while (root.listFiles()?.isNotEmpty() == true) delay(1)
+            }
+            assertThat(recorder.recordingState.value)
+                .isEqualTo(SentenceRecordingState.Failed(PcmCoordinatorFailure.SOURCE_READ_FAILED))
+        } finally {
+            recorder.close()
+        }
+    }
+
+    @Test
     fun previousSessionSnapshotSurvivesRestart() = runBlocking {
         val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()))
         val source = FakeAudioSource()
@@ -245,6 +328,7 @@ class SentenceRecorderTest {
         try {
             stopped.get(3, TimeUnit.SECONDS)
             assertThat(recorder.recordingState.value).isInstanceOf(SentenceRecordingState.Failed::class.java)
+            assertThat(recorder.isCaptureActive).isTrue()
             assertThat(recorder.start(FakeAudioSource())).isFalse()
             assertThat(recorder.refresh(context)?.source).isEqualTo(AudioRange(0, 100))
         } finally {

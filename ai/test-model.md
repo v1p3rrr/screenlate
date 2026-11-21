@@ -847,6 +847,21 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 ## Run log
 
+### 2026-11-21, terminal recording-session retirement
+
+- Complete core-media suite: 94 tests pass. Three added facade cases retain exact ramp PCM through a live
+  reader after Stop, release storage only after the matching stopped scan ends, ignore a foreign release,
+  and clean an asynchronously failed session with no scan. The stopped-ring case was red before the fix.
+- The stuck-Stop assertion was red when Failed incorrectly implied no active native capture. It now stays
+  active until actual input release; replacement capture remains rejected and the protected scan survives.
+- Full assemble/unit/lint/test-APK/convention/release-vital checks pass in 3m24s; 212 page tests pass.
+  After strengthening Android cleanup, focused test-APK/core lint also passes. API30 independent
+  `SentenceRecorderDeviceTest`: 2 tests pass in 1.915 s, requiring automatic cleanup before explicit close
+  and preserving the real silent AudioTrack→Main→WebView fixtures. Partial REC23/35/77 evidence only.
+- Logs: ignored `testdata/local-research/audio-review-2026-11-21/retire-*.log`. No projection/AudioRecord/
+  source-app/collection access in these native retirement tests. The owned emulator uses no host audio;
+  isolated package is removed and the AVD powered off after the run. TTS and C–G gates remain open.
+
 ### 2026-11-21, screenshot/audio permission isolation and consent revocation
 
 - Three `CapturePermissionRequestTest` cases pass: screenshot purpose across API24–37, runtime audio

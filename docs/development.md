@@ -67,6 +67,9 @@ writes, audible-frame drain, error cleanup and bounded/stale callback delivery. 
 and actual temporary PCM files. `SentenceRecorderDeviceTest` checks the facade from Android Main and also
 plays silent PCM through real AudioTrack while calling an actual WebView from production preview callbacks.
 The preview fixtures include 500 ms, 5 ms and a single frame. No microphone, projection or collection is used.
+The Main-thread session case requires stopped history to disappear after final context release, before
+calling explicit close. JVM cases also retain an open reader across retirement and check exact PCM bytes,
+foreign context releases, empty failed sessions and failed native Stop activity.
 Run it on a host-silent emulator in the independent library test package:
 `adb -s <serial> shell am instrument -w -e class com.vpr.screenlate.core.media.SentenceRecorderDeviceTest com.vpr.screenlate.core.media.test/androidx.test.runner.AndroidJUnitRunner`.
 This does not replace real-source capture, codec, route or complete overlay gesture acceptance.

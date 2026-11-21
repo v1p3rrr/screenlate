@@ -7,6 +7,26 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Terminal session storage lifetime — 2026-11-21
+
+- Facade-owned coordinators opt into retirement after terminal input state and final scan release. The
+  owner closes ring/history/queue on its own thread and terminates once native capture/Stop actually end.
+  It does not run another blocking Stop attempt to retire an already terminal session. Raw coordinator
+  users retain their explicit AutoCloseable lifetime for storage/probe use.
+- PcmHistory notifies its owner once closed and all chunks are gone; only the coordinator deletes its
+  own empty session directory. Snapshot/read-stream leases remain valid independently; final reader close
+  releases their files even after owner termination. Source references are dropped on CLOSED.
+- Three facade tests cover idle stopped ring cleanup with a live reader, retained stopped scan/foreign
+  release/final release, and asynchronous failure without a scan. The first was red before retirement.
+  The stuck-Stop regression also failed before isCaptureActive included actual input lifetime, beyond
+  observable Failed. All 94 core-media tests pass. Full project checks pass in 3m24s, plus 212 page tests.
+  API30 `SentenceRecorderDeviceTest` passes both methods in 1.915 s; automatic directory cleanup is now
+  required before explicit close, alongside the existing real silent native preview/WebView fixture.
+  Final focused test-APK/lint check passes. Evidence: ignored `retire-full-checks.log`, `retire-page-tests.log`,
+  `retire-native-build.log` and `retire-device-final.log` in the review research directory.
+- Remaining resource-policy work includes complete artifact accounting/cleanup failure reporting and
+  real-device storage pressure/endurance; these changes do not establish final byte/time budgets.
+
 ## Capture permission purpose and immediate retry — 2026-11-21
 
 - `CapturePermissionRequest` separates audio permission from projection authorization. Screenshot-only

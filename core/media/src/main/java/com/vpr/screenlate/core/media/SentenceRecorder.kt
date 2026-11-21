@@ -55,14 +55,14 @@ class SentenceRecorder internal constructor(
     private val previewCommands = Mutex()
     private val generation = AtomicLong()
     @Volatile private var coordinator: PcmStorageCoordinator? = null
-    private var currentSource: AudioSource? = null
+    @Volatile private var currentSource: AudioSource? = null
     private var abandonedCleaned = false
     @Volatile private var previewPlayer: AudioPreviewPlayer? = null
     private var previewSession: PcmStorageCoordinator? = null
     private val _recordingState = MutableStateFlow<SentenceRecordingState>(SentenceRecordingState.Idle)
     val recordingState: StateFlow<SentenceRecordingState> = _recordingState.asStateFlow()
     val isRecording: Boolean get() = recordingState.value is SentenceRecordingState.Recording
-    val isCaptureActive: Boolean get() = when (recordingState.value) {
+    val isCaptureActive: Boolean get() = coordinator?.hasActiveInput == true || when (recordingState.value) {
         SentenceRecordingState.Starting, is SentenceRecordingState.Recording, SentenceRecordingState.Stopping -> true
         else -> false
     }
@@ -113,8 +113,10 @@ class SentenceRecorder internal constructor(
                         config = PcmCoordinatorConfig(sampleRate = source.sampleRate),
                         nowMillis = nowMillis,
                         nowNanos = nowNanos,
+                        retireWhenUnused = true,
                         onStateChanged = { state, failure ->
                             if (generation.get() == token) {
+                                if (state == PcmCoordinatorState.CLOSED) currentSource = null
                                 _recordingState.value = when (state) {
                                     PcmCoordinatorState.STARTING -> SentenceRecordingState.Starting
                                     PcmCoordinatorState.RUNNING -> SentenceRecordingState.Recording(nowMillis())

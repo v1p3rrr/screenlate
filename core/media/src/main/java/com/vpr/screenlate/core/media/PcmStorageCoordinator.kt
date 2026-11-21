@@ -46,6 +46,7 @@ internal class PcmStorageCoordinator(
     private val config: PcmCoordinatorConfig = PcmCoordinatorConfig(),
     private val nowMillis: () -> Long = { System.nanoTime() / 1_000_000L },
     private val nowNanos: () -> Long = { System.nanoTime() },
+    private val retireWhenUnused: Boolean = false,
     private val onStateChanged: (PcmCoordinatorState, PcmCoordinatorFailure?) -> Unit = { _, _ -> },
 ) : AutoCloseable {
     private val commands = ArrayBlockingQueue<FutureTask<*>>(32)
@@ -84,7 +85,8 @@ internal class PcmStorageCoordinator(
                 return@command false
             }
             val clock = PcmClock(config.sampleRate, audioSource.timestampNanos() ?: nowNanos())
-            history = PcmHistory(directory, config.chunkFrames, config.maxStorageBytes, config.maxStorageFiles)
+            history = PcmHistory(directory, config.chunkFrames, config.maxStorageBytes, config.maxStorageFiles,
+                onReleased = { directory.delete(); Unit })
             queue = PcmBlockQueue(config.blockBytes, config.queueCapacity, config.maxQueueBytes)
             timeline = ScanAudioTimeline(clock, limits)
             publish(PcmCoordinatorState.RUNNING)
@@ -190,6 +192,7 @@ internal class PcmStorageCoordinator(
             val task = commands.poll()
             task?.run()
             releaseInputIfReady()
+            retireIfUnused()
             finishCloseIfReady()
             if (terminated) break
             val wrote = writeNext()
@@ -270,6 +273,18 @@ internal class PcmStorageCoordinator(
         releaseInputIfReady()
         publish(PcmCoordinatorState.CLOSED)
         synchronized(wake) { terminated = true; wake.notifyAll() }
+    }
+
+    /** Facade-owned terminal sessions need no ring once their final scan is released; leases remain independent. */
+    private fun retireIfUnused() {
+        if (!retireWhenUnused || closeRequested || timeline?.hasContext == true) return
+        if (currentState != PcmCoordinatorState.STOPPED && currentState != PcmCoordinatorState.FAILED) return
+        queue?.close()
+        queue = null
+        history?.close()
+        history = null
+        timeline = null
+        closeRequested = true
     }
 
     private fun requestFailure(reason: PcmCoordinatorFailure) {

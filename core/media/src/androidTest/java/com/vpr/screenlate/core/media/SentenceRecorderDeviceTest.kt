@@ -116,7 +116,10 @@ class SentenceRecorderDeviceTest {
                     assertThat(bytes).isEqualTo(ByteArray(200) { it.toByte() })
                 }
                 recorder.releaseContext(scan)
-                recorder.close()
+                withTimeout(5000) {
+                    while (withContext(Dispatchers.IO) { directory.listFiles()?.isNotEmpty() == true }) delay(1)
+                }
+                assertThat(recorder.recordingState.value).isInstanceOf(SentenceRecordingState.Stopped::class.java)
             }
             assertThat(source.released.get()).isTrue()
         } finally {

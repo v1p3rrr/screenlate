@@ -32,11 +32,13 @@ internal class PcmHistory(
     private val maxBytes: Long,
     private val maxFiles: Int,
     private val writer: PcmWriter = FilePcmWriter,
+    private val onReleased: () -> Unit = {},
 ) : AutoCloseable {
     private val chunks = mutableListOf<Chunk>()
     private var active: Chunk? = null
     private var keep = emptyList<AudioRange>()
     private var closed = false
+    private var released = false
     private var failed = false
     private var storedBytes = 0L
     private var end = 0L
@@ -138,6 +140,10 @@ internal class PcmHistory(
                 storedBytes -= chunk.frames.toLong() * FRAME_BYTES
                 iterator.remove()
             }
+        }
+        if (closed && chunks.isEmpty() && !released) {
+            released = true
+            onReleased()
         }
     }
 
