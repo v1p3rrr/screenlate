@@ -630,3 +630,98 @@ after the stop; turning the service on removes it within 0.6 s.
 | Lighter scans by default there | "Reduce load on the device", or skipping the on-device whole-screen pass once the cloud answered | Small to medium, only if the engine tests point there |
 | ColorOS allowlist step | Background work on ColorOS points to the security app's allowlist (and a hint that sideloaded apps are restricted), if the user's test shows the allowlist helps | Small to medium; strings in 14 languages; the user's result (2026-10-28): the allowlist helps |
 | Request the accessibility button | The system shortcut would do something in Screenlate (open or scan) instead of turning the service off | Small to medium; a behavior choice for the owner; no help against a force-stop |
+
+## PowerGenie exclusion options source check (2026-11-21)
+
+Scope: options for excluding an app from OEM `PowerGenie inactive clean` after the ordinary battery exemption,
+manual App launch permissions and a working foreground service have already been verified. This source review
+did not change the phone, execute ADB commands, or establish an exemption on the owner's MagicOS 9 build.
+
+### Consumer settings: documented scope
+
+- HONOR's current support article documents manual App launch/background permission and exclusion from battery
+  optimization. It describes locking the app in Recents specifically as protection against the user's clear-all
+  operation. It does not promise that Recents locking exempts an app from every screen-off cleanup policy.
+  This is still a reasonable reversible per-app experiment if not already tested, with the same idle interval;
+  it must not be reported as a proven `inactive clean` exemption. [HONOR: An app running in the background
+  restarts when re-accessed](https://www.honor.com/uk/support/content/en-us00406916/).
+- HONOR advises ignoring a power-consumption alert instead of accepting the proposed closure. Its instructions
+  do not document a separate persistent PowerGenie exemption created by ignoring the alert. The same article
+  has a Phone Manager rule-refresh procedure: enable Smart tune-up, clear Phone Manager data, reconnect and
+  restart. This resets Phone Manager settings, so it is a separate broad troubleshooting operation, not a
+  harmless per-app whitelist toggle. Do not perform it without the owner's choice. [HONOR: Unable to receive
+  notifications from third-party apps](https://www.honor.com/global/support/content/en-us00685514/).
+- The reviewed official HONOR pages do not establish that older Huawei controls named Protected apps,
+  Lock screen cleanup, Close excessively power-intensive apps, or Power-intensive prompt exist with the same
+  semantics on Honor 90 / MagicOS 9. Do not transplant EMUI menu paths or infer that hiding a power alert
+  disables automatic inactive cleanup.
+
+### A supported vendor API exists, but belongs to certified enterprise management
+
+HONOR documents `DeviceApplicationManager.addPersistentApp(admin, packageNames)` as an always-running list;
+the page says listed apps cannot be stopped, requires an activated device administrator and
+`com.hihonor.permission.sec.MDM_APP_MANAGEMENT`, limits the cumulative list to ten non-system apps, and lists
+Magic UI 4.0+ support. Its corresponding remove/get methods manage the same list. This is stronger than the
+ordinary App launch controls. The reviewed page does not explicitly name the `inactive clean` branch, so an
+actual build would still need validation. [HONOR DeviceApplicationManager](https://developer.honor.com/cn/docs/11015/reference/com.hihonor.android.app.admin/DeviceApplicationManager).
+
+This is not an ordinary runtime permission. HONOR's integration guide requires a correct HONOR certificate
+inside the APK for the management API permissions, in addition to SDK integration and device-admin activation.
+Declaring the permission, enabling Accessibility, becoming a normal device administrator or using `pm grant`
+does not reproduce this certification process. [HONOR MDM development guide](https://developer.honor.com/cn/kitdoc/System/11015/guides/development_guide.md).
+
+The certificate application process is open to enterprise developer accounts, explicitly not personal accounts;
+it requires MDM API authorization and certificate review. The certificate introduction lists its scope as
+mainland China, HONOR phones/tablets/smart displays, Magic UI 5.0+. These constraints prevent presenting it as
+an available personal-user solution for an unverified global Honor 90 build. [HONOR certificate application](https://developer.honor.com/cn/kitdoc?category=System&docId=cert_apply.md&kitId=11015&navigation=guides),
+[HONOR certificate scope](https://developer.honor.com/cn/kitdoc/System/11015/guides/cert_introduction.md).
+
+HONOR's MagicOS 8.0 MDM API PDF separately states that
+`setSuperTrustListForHwSystemManger()` has **no keepalive function** and directs callers to `addPersistentApp()`
+for keepalive. A trust list, automatic battery exemption and the persistent-app list are therefore not
+interchangeable guarantees. This is vendor documentation for an older MagicOS release, not a runtime test of
+MagicOS 9. [HONOR MDM API PDF, section 3.11.2, printed page 333](https://contentplatform-drcn.hihonorcdn.com/developerPlatform/MagicOS_MDM%E8%83%BD%E5%8A%9BSDK_API%E6%8E%A5%E5%8F%A3/MagicOS_MDM%E8%83%BD%E5%8A%9BSDK_API%E6%8E%A5%E5%8F%A3.pdf).
+
+For historical comparison only: a Huawei staff reply in 2020 directed a developer asking for a PowerGenie
+whitelist without user interaction to App Launch settings. Huawei's newer MDM docs use `com.huawei.*`
+permissions. Neither proves that an undocumented Huawei shell command, setting, package name or whitelist is
+available on present HONOR firmware. [Huawei staff reply](https://consumer.huawei.com/en/community/details/topicId-68323/),
+[Huawei DeviceApplicationManager](https://developer.huawei.com/consumer/cn/doc/system-References/deviceapplicationmanager-api-0000001053201926/).
+
+### ADB: separate the AOSP exemption from OEM cleanup
+
+Android documents `isIgnoringBatteryOptimizations()` as a partial Doze/App Standby exemption; it permits
+network access and partial wake locks under those modes, with some other restrictions retained. It is not a
+contract to prevent all process termination. Adding an app already reporting `true` to `deviceidle whitelist`
+again does not provide evidence of a separate OEM PowerGenie exemption. No supported consumer per-app ADB
+command targeting HONOR `inactive clean` was established in the reviewed first-party sources.
+[Android: Optimize for Doze and App Standby](https://developer.android.com/training/monitoring-device-state/doze-standby#support_for_other_use_cases).
+
+`pm disable-user --user USER_ID PACKAGE` is a real AOSP command that changes an entire package's enabled state.
+`pm enable` restores explicitly enabled state; `pm default-state` restores default state. The package's previous
+user state must be recorded to choose the right rollback. These commands are not a per-app PowerGenie
+allowlist API, and their existence does not prove that a particular protected vendor package can be disabled.
+The same source says `pm grant` is for runtime permissions; it does not provide HONOR certification.
+[AOSP Android 15 PackageManagerShellCommand, help and enabled-state dispatch](https://github.com/aosp-mirror/platform_frameworks_base/blob/android15-release/services/core/java/com/android/server/pm/PackageManagerShellCommand.java#L4610).
+
+Only after identifying the actual OEM package and confirming its role on this phone could disabling it be
+considered as a reversible, whole-phone experiment. Do not assume the old Huawei package name
+`com.huawei.powergenie` exists, or that killing/disabling an APK stops policy code already executing in
+`system_server`. A policy caller shown as system PID is not enough to establish package ownership. Firmware
+may forbid the operation or reapply state; availability and persistence are unverified here.
+
+Disabling the genuine policy owner, if possible and effective, would remove its behavior for other apps as
+well. Increased background retention/energy use and changes to vendor battery features are plausible
+consequences, not measured facts for this firmware. It preserves Screenlate's own OCR/WebView behavior but
+cannot be advertised as having zero system-wide cost. Do not uninstall packages, clear their data, modify
+vendor databases/XML or disable broad phone-management/system services as a substitute for identifying the
+specific rule. A supported HONOR fix or certified exclusion remains preferable to an unverified global change.
+
+### Result
+
+The verified consumer permissions are necessary checks, but no additional supported consumer setting or
+per-app ADB exemption for this exact rule was found. The documented stronger per-app mechanism is HONOR's
+certified enterprise `addPersistentApp`, with account/region/certificate constraints. Recents locking is a
+low-cost candidate test whose screen-off scope is unproven; global package disabling is a conditional
+whole-device experiment after package identification, not an established fix for MagicOS 9. The proprietary
+`inactive clean` selection algorithm and its timer remain unverified by public first-party sources.

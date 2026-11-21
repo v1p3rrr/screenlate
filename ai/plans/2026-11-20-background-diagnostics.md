@@ -9,6 +9,7 @@
 | Sampling | State events plus one resource sample per minute on a background thread. No alarm, wake lock, network request or sleeping-device wakeup. Coalesce event samples. |
 | Privacy | No recognized text, lookup terms, sentence/note contents, app navigation URLs or third-party foreground app identities. Fixed labels, own process metadata and numeric measurements only. |
 | UX invariant | Keep OCR models and WebView; preserve OCR quality, dictionary results and warm opening latency. No System.gc(). |
+| Persistent operation | The owner rejects reopening the activity every hour as normal use; any exemption/fix must preserve functionality and responsiveness. |
 | Later idle work | Only docked, popup closed and no active scan, after at least 10-15 seconds of grace, or on explicit screen-off. Do not disrupt recording, notes or other legitimate work. |
 | Audio crash | Separate sentence-audio branch owns reproduction/fix; this task supplies exact crash evidence and a handoff. |
 | Workspace | Isolated worktree from main; do not modify the audio session's dirty checkout or merge its feature commits. |
@@ -43,6 +44,8 @@
 - 2026-11-20: Owner selected Dev-only expanded logs, state events plus minute samples, and logs-only implementation. All optimizations remain proposals. Existing models, WebView and runtime behavior are binding invariants.
 
 - 2026-11-21: The owner supplied a second log after overnight resets. Two diagnostic-build force-stops follow screen-off by 2.294/2.627 seconds, with stable memory/low CPU and actual keep-alive/exemption present. OEM duration starts near the last app activity pause plus 600-672 ms. Correct stale popup-close telemetry and add activity started/stopped events; all optimizations remain deferred. Full evidence: [OEM follow-up](../notes/oem-background-limits.md#honor-overnight-follow-up-2026-11-21).
+
+- 2026-11-21: Owner requested practical cleanup exclusions and confirmation of onset. Reopening the activity periodically is explicitly not an acceptable operating requirement. Primary-source check found no verified consumer per-app inactive-clean exemption beyond already configured controls; HONOR MDM persistent-app API needs enterprise/vendor authorization. Global component disabling is only an unapproved, device-specific experiment. No device settings changed.
 
 ## Audio crash handoff
 

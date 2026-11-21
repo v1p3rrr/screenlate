@@ -1,5 +1,23 @@
 # Status
 
+## PowerGenie exclusion feasibility and onset confirmation (2026-11-21)
+
+- Owner requires persistent operation without hourly activity reopening and without sacrificing functionality or warm
+  performance. [Primary-source option check](notes/oem-background-limits.md#powergenie-exclusion-options-source-check-2026-11-21).
+- The retained log confirms the first PowerGenie inactive-clean exit on November 18 at 02:01:07.930, build 41155f1d.
+  Counts by exit day: November 18 = 3, November 19 = 6, November 20 = 7, November 21 = 2. Before that, two main
+  processes ran 75.46 and 74.60 hours and ended with package updates. This supports the reported onset, not proof that
+  the contemporaneous catcher change caused it; other crash/task-removal exits existed earlier.
+- Official HONOR consumer controls include manual launch, battery exemption and Recents lock; the first two already
+  apply. Recents lock is explicitly documented against clear-all, not guaranteed inactive-clean exemption.
+- HONOR MDM addPersistentApp is a real vendor-authorized persistent whitelist, but needs security permission,
+  device-admin activation and HONOR certification; enterprise-account/mainland scope makes it unsuitable as an assumed
+  personal/global-phone solution. No verified ordinary per-app ADB whitelist for this selector was found.
+- Disabling an identified OEM component would be a separate, reversible-if-supported device-wide experiment, not a
+  proven per-app fix. Package identity, shell permission and efficacy on this firmware are unverified; no ADB device
+  is currently connected and no system changes were made. Recents-lock status was asked, not assumed.
+- Source/documentation analysis only; no application changes, new builds, Anki access or runtime optimizations.
+
 ## Overnight force-stop evidence and popup telemetry correction (2026-11-21)
 
 - Parsed the owner's new 2,523,077-byte log. [Detailed overnight findings](notes/oem-background-limits.md#honor-overnight-follow-up-2026-11-21).
