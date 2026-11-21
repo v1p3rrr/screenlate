@@ -1,6 +1,9 @@
 # Sentence audio: implementation measurements
 
 Implementation authority: [2026-11-19 plan](../plans/2026-11-19-sentence-audio-recording.md).
+Current repair execution: [2026-11-21 plan](../plans/2026-11-21-sentence-audio-repair.md), with product
+decisions inherited unchanged. Historical measurements below are evidence, not proof that reviewed
+production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 

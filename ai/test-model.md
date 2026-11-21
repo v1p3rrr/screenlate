@@ -419,7 +419,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 ### REC: sentence audio recording
 
-Feature in progress: [implementation plan](plans/2026-11-19-sentence-audio-recording.md). Cases remain **N** until
+Feature in progress: [product plan](plans/2026-11-19-sentence-audio-recording.md) and current
+[repair execution plan](plans/2026-11-21-sentence-audio-repair.md). Cases remain **N** until
 their whole stated behavior is verified; foundational test/probe results do not imply completed app integration.
 Coverage entries describe required test layers; add concrete class names as implemented. A blank Checked cell
 means the whole case has not run. Partial evidence is recorded in the run log/engineering note. D cases require
@@ -502,6 +503,14 @@ E/F/O and record the result in the run log. Existing AUD pronunciation and ANK c
 | REC72 | Long real-device sessions compare power/thermal behavior using repeatable source/build/route and supported tracing; observed restrictions/limits are recorded rather than inferred from emulator arithmetic or a foreground-service flag | N | D | |
 | REC73 | Real source scenarios: visual-novel/live video speech continues during definition reading; paused video resumes mid-word, Refresh appends and selected pause is removed without tearing speech; long reading preserves needed pre-scan minute | N | M, D | |
 | REC74 | Debug/release coexist with isolated session files/provider authorities/notifications; another installed build's sound is not incorrectly promised to share this package's own-UID exclusion | N | I, M | |
+| REC75 | Asynchronous source/writer failure reaches public recording state, settings/bubble/notification and permits a clean explicit restart; no false Recording after backend termination | N | U, I, M | |
+| REC76 | Controlled writer/Refresh/Stop interleavings cannot move processing time backwards or alter the original acquisition anchor; late frames retain the correct cutoff | N | U | |
+| REC77 | Failed startup closes source exactly once; new-session startup/cleanup cannot delete old live snapshot/preview/export files; release cleans the correct session only | N | U, I | |
+| REC78 | Real Android preview callbacks mutate WebView only on Main; stale play/view generations cannot update a rehosted editor, revive workers or leave two active sinks | N | U, I | |
+| REC79 | Current trim/cuts/seek/Save share an acknowledged edit revision; Refresh updates selectable source bounds without moving prior edits or duplicating samples | N | U, P, I, M | |
+| REC80 | Unresolved or failed export keeps coherent operation UI and bounded retry artifacts; export A completing after cancellation/new operation B cannot finish B or leak A | N | U, P, I | |
+| REC81 | Pre-note media-copy failure retains audio and other attachments for Retry/Without audio; repeated recovery is serialized and never automatically replays an already attempted note mutation | N | U, I, M | |
+| REC82 | API29 screenshot-only consent does not request/require RECORD_AUDIO; denied audio permission and recording disabled leave screenshots usable in both projection-consumer start orders | N | U, I, M | |
 
 ### ANK: Anki
 

@@ -1,6 +1,6 @@
 # Plan: sentence audio recording (2026-11-19)
 
-Status: implementation started on `codex/sentence-audio-recording` from `main` (`5c1e5cce`), authorized by the owner on 2026-11-19. Phase 1 feasibility work is in progress. Product choices below are binding. Change them only after owner confirmation and record the change here. Technical parameters explicitly delegated to measurements are not additional product choices.
+Status: binding product specification. Implementation started on `codex/sentence-audio-recording` from `main` (`5c1e5cce`), authorized by the owner on 2026-11-19. Following the integration review, the current execution sequence and resume point are in the [2026-11-21 repair plan](2026-11-21-sentence-audio-repair.md). Product choices below remain binding. Change them only after owner confirmation and record the change here. Technical parameters explicitly delegated to measurements are not additional product choices.
 
 ## Read this first
 
@@ -360,6 +360,10 @@ Final acceptance requires both user scenarios: (1) an utterance continues during
 
 ### Implementation progress
 
+The entries below are historical implementation checkpoints, not the current acceptance state. Read the
+[repair plan](2026-11-21-sentence-audio-repair.md) and [review](../notes/sentence-audio-review-2026-11-21.md)
+before resuming; the feature is now wired, but the review found unresolved integration failures.
+
 - [Fresh-session handoff](../notes/sentence-audio-handoff.md) is the exact current resume point, including
   incomplete API29/API37 tests and host-memory failure. Owner requests checking weekly usage and stopping
   implementation immediately when remaining weekly usage is below 2%; do not spend reset credits.
@@ -386,3 +390,4 @@ Final acceptance requires both user scenarios: (1) an utterance continues during
 - 2026-11-19: Added independent storage/state foundation and isolated API30 feasibility evidence; actual implementation and pending gates are distinguished above. Recorded and stopped the accidentally persistent source tone and added bounded test-source lifetime.
 - 2026-11-19: Prepared owner-requested handoff/prompt and the stop rule at less than 2% weekly usage remaining. API29/modern probe extensions build/lint; runtime validation remains pending due host resource/startup conditions, not established platform incompatibility.
 - 2026-11-19: Runtime verification on API 29 confirmed concurrent legacy screenshot (VirtualDisplay/ImageReader) and playback capture with own-UID exclusion over a single MediaProjection session. API 37 16k image mandates 4 GB RAM causing host Windows commit-charge exhaustion. Added PcmStorageCoordinator, AudioRecordSource, WaveformSummary, SilenceDetector and AudioExporter with 55 passing unit tests; full project tests, page tests and release vital lint pass.
+- 2026-11-21: Owner authorized selective session/editor-operation redesign after review. The new dated repair plan supersedes this document's execution sequence and historical resume point; all product decisions and the approved prototype remain unchanged.

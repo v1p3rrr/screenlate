@@ -1,5 +1,20 @@
 # Status
 
+## Sentence audio repair plan (2026-11-21)
+
+- Owner authorized selective redesign in the review order. [Current execution plan](plans/2026-11-21-sentence-audio-repair.md)
+  inherits every binding product decision and the approved prototype from the original plan; no new product
+  question blocks the work. The approved prototype hash was rechecked and matches the original plan.
+- Ordered milestones: regression foundation; session/preview lifetime and permission safety; pending-note/editor
+  operation protocol; editing/Refresh/sample fidelity; Anki pre-note retry/omission; settings/silence/full resource
+  accounting; device/endurance/regression acceptance. Every S1–S7/F1–F8 finding and additional gap has a gate.
+- Registered REC75–82 as N for review regressions; REC1–74 and prior results remain unchanged. Actual device,
+  codec/Anki playback and numeric resource-policy gates remain required, not assumed from green unit tests.
+- Planning only: no production fixes or new test execution claimed. Next implementation starts with A then B
+  on `codex/sentence-audio-recording`. Original plan/handoff now point to the current execution checkpoint.
+- Documentation validation: local Markdown file targets exist; all 15 primary review findings have repair
+  mappings; REC75–82 are unique and remain N; `git diff --check` passes. No device/Anki operations performed.
+
 ## Sentence audio branch audit (2026-11-21)
 
 - Reviewed `codex/sentence-audio-recording` at `cfc637fa`, scoped from rebased handoff `c82be1e5`

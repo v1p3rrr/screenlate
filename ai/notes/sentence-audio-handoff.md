@@ -1,5 +1,11 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Current resume override (2026-11-21): use the [repair execution plan](../plans/2026-11-21-sentence-audio-repair.md),
+[review](sentence-audio-review-2026-11-21.md) and latest status. The owner authorized selective redesign of
+session coordination and editor/pending-note ownership. Start at repair milestone A, then B; production
+fixes have not started. The unconnected-feature checkpoint below is historical. Branch, privacy, safe test
+environment and weekly-limit instructions remain applicable. No product decision was changed.
+
 ## Resume contract
 
 Continue the existing feature, not a new design discussion. Read root `AGENTS.md`, the owner's memory index,
