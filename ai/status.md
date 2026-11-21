@@ -13,6 +13,10 @@
   hiding and WebView retention were already correct. Added activity started/stopped/destroyed log events.
 - PopupDiagnosticsTest reproduces the stale log on API 30 before the fix and passes afterward while verifying GONE,
   attached window proxies and the same retained WebView. All application optimizations remain deferred.
+- 945 affected-module JVM cases and debug lint pass. New ARM64 Dev APK 1.1.0-3a277a89-min and its original R8 map
+  are saved in this worktree under testdata/local-research/builds; package/debuggable/ABI/signature checks pass.
+  Normal release vital lint passes; test package/emulator and temporary source junctions are cleaned up.
+  No owner app/device changes or claimed PowerGenie prevention; all runtime optimizations remain deferred.
 
 ## Dev background diagnostics (2026-11-20)
 

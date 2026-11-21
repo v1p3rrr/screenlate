@@ -94,3 +94,24 @@ not contain core:media and does not implement the audio fix.
   remain untouched. A future fresh worktree build requires the usual submodule initialization.
 - Physical-device cleanup selection, battery impact and warm-latency/endurance measurements remain acceptance work;
   neither the emulator smoke nor added logs establish a fix for the proprietary PowerGenie selector.
+
+## November 21 follow-up artifact and verification
+
+- Code/evidence commit: 3a277a89, pushed to origin/main. Expanded Dev logs now include activity started/stopped/destroyed,
+  and ordinary popup hide records the closed state without detaching windows or replacing the WebView.
+- 945 affected-module JVM cases pass, with three existing skips; core/common and overlay debug lint pass.
+- PopupDiagnosticsTest fails on API 30 before the fix and passes afterward. The test uses window-manager proxies
+  with a real retained WebView and distinguishes actual hidden UI from the stale diagnostic bit.
+- ARM64 Dev APK: `testdata/local-research/builds/screenlate-dev-3a277a89-min.apk` in this diagnostic worktree,
+  version 1.1.0-3a277a89-min (10100), same package and Dev certificate, debuggable.
+- APK SHA-256: `11067BC5AC3F0C247776D2962642693CB305A9220C520D712F4A8E0EEC5C778E`.
+  The matching original partitioned map is `screenlate-dev-3a277a89-min.mapping.prt` beside it.
+- Suggested observation, not an automated workaround: opening then leaving the main activity once partway through
+  an otherwise idle interval can test whether the cleanup age restarts there. Log actual stopped timestamps before
+  claiming a reset. This changes no OCR/catcher settings and does not justify periodically launching an activity.
+- All application resource/lifecycle optimizations remain deferred. The supplied traces support a candidate cleanup
+  selector; no change in this update is claimed to prevent the proprietary force-stop.
+
+- Normal release vital lint also passes after the follow-up. The independent test package was uninstalled, the owned
+  read-only/silent emulator was shut down, and temporary native-source junctions were removed.
+- Matching partition-map SHA-256: `C1B7EE35D1D4243D5684CE566AD571D6CD2F218DF14A51BFB34347C8D4ED071F`.
