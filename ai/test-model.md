@@ -4201,3 +4201,13 @@ Observations, not changed:
 
 API 30 smoke used the independent core.common instrumentation package on a read-only emulator. It did not enable
 Screenlate accessibility, force-stop a package, access Anki or claim to reproduce OEM cleanup.
+
+### 2026-11-21, popup diagnostic visibility regression
+
+| Case | Behavior | Category | Coverage | Checked |
+|---|---|---|---|---|
+| BGD7 | Ordinary popup hide records popup=false while window proxies stay attached and the same real WebView is retained | E | I PopupDiagnosticsTest | 2026-11-21, API 30 |
+
+The new overnight trace exposed a stale instrumentation bit, not a visible popup leak. The new test failed on the
+old implementation at its missing popup_hidden event, while actual GONE/same-WebView assertions passed, then passed
+after moving the diagnostic update into hide(). The independent page fixture omits unused MNN JNI as documented above.

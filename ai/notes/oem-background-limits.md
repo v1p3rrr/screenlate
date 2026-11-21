@@ -3,6 +3,72 @@
 What the system does to an accessibility service whose process dies, what phone makers add, and the first report from
 a ColorOS phone. Human docs stay generic (`docs/usage.md`, "Background work"); vendor names belong here.
 
+## Honor overnight follow-up (2026-11-21)
+
+The supplied `screenlate-log-20261121-103010.txt` (2,523,077 bytes, 20,008 lines, including the logcat tail) contains
+356 BackgroundDiagnostics lines; some in the logcat tail duplicate journal records. The owner reported repeated
+service resets overnight. Two main-process force-stops are captured on the new diagnostic build; a third historical
+record at November 20 23:11:16 belongs to the preceding `8849e5f7` build and has no new-monitor pre-exit history.
+The original log remains outside git. Values below use the full-date persistent-journal section to avoid duplicates.
+
+| Main PID | Exit on November 21 | Last screen-off | Delay from screen-off | Last main-process PSS | Available system memory |
+|---|---|---|---|---|---|
+| 22266 | 01:10:28.702 | 01:10:26.408 | 2.294 s | 242 MB | 3934 MB |
+| 32329 | 02:36:08.661 | 02:36:06.034 | 2.627 s | 200 MB | 4368 MB |
+
+Both exits explicitly report `USER_REQUESTED`, system PID 2520 and `PowerGenie inactive clean`, with importance 125.
+The isolated processes that exit 34-42 ms later are now positively identified as Google's WebView sandbox services
+by process name and separate real UID. They are consequences of the main-process stop, not competing explanations.
+No new Java/native crash is present for these two incidents.
+
+### Resource and service evidence immediately before the stops
+
+Across the final 15 minutes of PID 22266: PSS 237-242 MB, native allocation 96 MB, 78 threads and 330-332 descriptors.
+Across PID 32329's final 15 minutes: PSS 198-200 MB, native allocation 95 MB, 79-80 threads and 328-330 descriptors.
+Median CPU rate in each window is 4 process-core permille (about 0.4% of one core, not 4% and not whole-device CPU).
+There is no visible sustained high CPU load, growing native allocation or runaway thread/descriptor count in these
+windows. `systemLowMemory=false`, with roughly 3.9-4.5 GB available, argues against immediate memory pressure in the
+observed lead-up; the force-stop path itself is explicit. These are pre-exit samples, not exact death measurements.
+
+Both final samples have `service=true`, `keepAliveRequested=true`, `foregroundService=true`,
+`accessibilityEnabled=true`, `batteryExempt=true`, `backgroundRestricted=false`, `standbyBucket=5`,
+`powerSave=false`, `deviceIdle=false`, `charging=true`, `docked=true`, `scanOpen=false`, `recognitionJobs=0`.
+The keep-alive did start and the standard battery exemption applies to the actual Dev package. Android Doze is not
+reported active. These public flags do not expose HONOR's separate private allowlists or selector policy.
+
+### The OEM duration now has a concrete candidate reference
+
+For the 01:10:28.702 exit, subtracting the OEM suffix 4024290ms gives 00:03:24.412. The last app activity pause was
+00:03:23.812: a 600 ms difference. For the 02:36:08.661 exit, subtracting 3787314ms gives 01:33:01.347; the last activity
+pause was 01:33:00.675, a 672 ms difference. Later overlay activity did occur: the final scans started at 00:03:25.985
+and 01:33:04.286, and docking occurred at 00:03:31.512 and 01:33:51.167 respectively.
+
+This strengthens the hypothesis that the OEM's interval starts around the main activity becoming background,
+possibly its later stop/visibility transition, rather than around the last bubble interaction or screen-off.
+The measured durations are about 67.1 and 63.1 minutes. Multiple screen-off/on cycles occur during each interval;
+there is no basis to call either an uninterrupted hour of sleep. Both observed cleanups follow a later screen-off
+within about 2.5 seconds. In the second run, screen-off at 02:31:03 (58.03 minutes from the candidate reference)
+was survived, while screen-off at 02:36:06 (63.08 minutes) was not. The first run survived screen-off at 52.17 minutes
+and was stopped after screen-off at 67.03 minutes. A plausible selector is background age around an hour plus a
+screen-off trigger. Two traces support this
+pattern; they do not establish a universal timeout or prove the extra catcher irrelevant.
+
+The overnight trace also has repeated screen-on/off cycles, some roughly ten minutes apart and some with the screen
+on for about 12-14 seconds. The monitor sees display interactivity, not who or what caused it; do not label these as
+owner unlocks or identify another app from this data.
+
+### Telemetry correction
+
+`popup=true` in these traces and the persisted process-state summary is stale: the diagnostic close update was
+mistakenly placed in `detach()` but not ordinary `hide()`. The actual hide path still sets the popup container GONE,
+shrinks its window and hides/disables the catcher. `catcherActive=false` and catcher size 1x1 are consistent with that
+path, and docking closes the scan. The stale popup bit cannot be used as evidence of a visible popup or a window leak.
+The close update was moved to `hide()`. `PopupDiagnosticsTest` reproduces show -> hide with attached window proxies
+and a real WebView: before the fix the container is already GONE while the log still says popup=true; after the fix
+it logs popup=false with the same WebView retained. The test fails before the fix and passes after it on API 30.
+Activity-started/stopped/destroyed events were added to distinguish pause from the OEM duration's likely visibility reference.
+These are logging corrections only; retain the owner's decision to defer all runtime optimizations.
+
 ## Honor force-stop investigation (2026-11-20)
 
 Implementation follow-up: [background diagnostics and optimization proposals](../plans/2026-11-20-background-diagnostics.md).

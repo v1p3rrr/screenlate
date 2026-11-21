@@ -1,5 +1,19 @@
 # Status
 
+## Overnight force-stop evidence and popup telemetry correction (2026-11-21)
+
+- Parsed the owner's new 2,523,077-byte log. [Detailed overnight findings](notes/oem-background-limits.md#honor-overnight-follow-up-2026-11-21).
+- Two diagnostic-build main-process exits at 01:10:28.702 and 02:36:08.661 explicitly report PowerGenie inactive clean,
+  2.294/2.627 s after screen-off. Foreground service and standard battery exemption are present; recognition jobs are
+  zero and pre-exit CPU/memory are stable, with roughly 4 GB available system memory. WebView child identity is now explicit.
+- The OEM duration points to the last activity pause plus 600/672 ms. Survived screen-off at 58 minutes versus stopped
+  at 63 minutes strengthens an activity-background-age plus screen-off hypothesis; it does not establish the private rule.
+- Corrected an instrumentation bug: normal PopupController.hide() did not clear popupVisible; the update was misplaced
+  in detach(). The stale popup=true bit in the supplied trace must not be treated as a visible-window leak. Actual
+  hiding and WebView retention were already correct. Added activity started/stopped/destroyed log events.
+- PopupDiagnosticsTest reproduces the stale log on API 30 before the fix and passes afterward while verifying GONE,
+  attached window proxies and the same retained WebView. All application optimizations remain deferred.
+
 ## Dev background diagnostics (2026-11-20)
 
 - Owner selected Dev-only expanded logs, state events plus background minute samples, and no application

@@ -105,10 +105,10 @@ object BackgroundDiagnostics {
                     update("activity_paused") { it.copy(activityResumed = resumed > 0) }
                 }
                 override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
-                override fun onActivityStarted(activity: Activity) = Unit
-                override fun onActivityStopped(activity: Activity) = Unit
+                override fun onActivityStarted(activity: Activity) = event("activity_started")
+                override fun onActivityStopped(activity: Activity) = event("activity_stopped")
                 override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
-                override fun onActivityDestroyed(activity: Activity) = Unit
+                override fun onActivityDestroyed(activity: Activity) = event("activity_destroyed")
             })
             val filter = IntentFilter().apply {
                 addAction(Intent.ACTION_SCREEN_OFF)

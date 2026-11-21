@@ -138,7 +138,6 @@ class PopupController(
             it.copy(catcherAttached = false, catcherActive = false, popupVisible = false)
         }
         visible = false
-        BackgroundDiagnostics.update("popup_hidden") { it.copy(popupVisible = false) }
         bounds = null
         lastWord = null
         generation++
@@ -247,6 +246,7 @@ class PopupController(
     fun hide() {
         if (!visible) return
         visible = false
+        BackgroundDiagnostics.update("popup_hidden") { it.copy(popupVisible = false) }
         bounds = null
         lastWord = null
         generation++

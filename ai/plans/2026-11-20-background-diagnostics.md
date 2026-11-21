@@ -42,6 +42,8 @@
 
 - 2026-11-20: Owner selected Dev-only expanded logs, state events plus minute samples, and logs-only implementation. All optimizations remain proposals. Existing models, WebView and runtime behavior are binding invariants.
 
+- 2026-11-21: The owner supplied a second log after overnight resets. Two diagnostic-build force-stops follow screen-off by 2.294/2.627 seconds, with stable memory/low CPU and actual keep-alive/exemption present. OEM duration starts near the last app activity pause plus 600-672 ms. Correct stale popup-close telemetry and add activity started/stopped events; all optimizations remain deferred. Full evidence: [OEM follow-up](../notes/oem-background-limits.md#honor-overnight-follow-up-2026-11-21).
+
 ## Audio crash handoff
 
 The owner's log records a main-process CRASH at 2026-11-20 11:22:36.056, PID 27795. The Java exception is
