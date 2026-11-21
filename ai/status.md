@@ -1,5 +1,20 @@
 # Status
 
+## Historical baseline APK identification (2026-11-22)
+
+- Owner requested onset, last pre-onset Dev, a longer-lived older control, retained APKs and release suitability.
+  [Verified chronology/artifacts](notes/oem-background-limits.md#historical-apk-baselines-and-release-comparison-2026-11-22).
+- First explicit PowerGenie: 41155f1d, installed Nov 17 23:41, stopped Nov 18 02:01. Immediate predecessor c129a5e7
+  ran only 2h46m until update; ee0d57cd is the strong 75h27m multi-day baseline. 486cf819 ran 7h29m on Nov 15.
+  773efde3 had a CRASH and 229c72e3 REMOVE TASK/SIGNALED; do not call them free of all terminations.
+- Verified original ARM64 Dev APKs and same signing certificate; copies of c129a5e7/229c72e3/486cf819/ee0d57cd plus
+  inventory.json are prepared under ignored testdata/local-research/builds/baselines. c129a5e7 keeps numeric code
+  10100 and the same exported Room schemas; older strong baseline ee0d57cd is code 10000, requiring separate rollback
+  handling if selected. No installation/data reset or rebuild performed.
+- Latest published release verified as v1.1.0 (Nov 15), downloaded unchanged and digest/signature checked. It is a
+  separate com.vpr.screenlate package, so useful as secondary control with different data/OEM identity; old Dev is
+  the cleaner same-package comparison. No experiment choice imposed; runtime scope unchanged.
+
 ## Disabled-window physical result (2026-11-21 evening)
 
 - Owner's 18:10 export is c834fd65. [Experiment result](notes/oem-background-limits.md#disabled-window-experiment-result-2026-11-21-evening).

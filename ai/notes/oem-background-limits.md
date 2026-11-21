@@ -887,3 +887,83 @@ The outside-tap redesign remains a separate proposal, not a demonstrated cleanup
 is not justified by these measurements. App-only logs still cannot expose the private eligibility/allowlist rule.
 Read-only system-side inspection on the affected device is the next distinct source of evidence; no ADB device is
 currently connected. No runtime changes, new build, force-stop, package disable or system-setting mutation was made.
+
+
+## Historical APK baselines and release comparison (2026-11-22)
+
+The owner requested exact onset/build identification, an older Dev APK that previously survived, confirmation that
+it still exists, and whether the published release is a useful control for a phone-side policy change. No rollback,
+installation, data reset or new build is selected/performed in this inspection.
+
+Full-date persistent-journal starts were paired by PID with the first later exit timestamp, accepting legacy reason
+labels with parenthesized annotations. Do not confuse legacy USER_REQUESTED formatting with a PowerGenie description.
+
+| Version | Observed interval | Exit / interpretation |
+|---|---|---|
+| 1.1.0-41155f1d-min | Nov 17 23:41:09.535 to Nov 18 02:01:07.930 | First retained explicit PowerGenie inactive clean, after 2h20m; first affected build |
+| 1.1.0-c129a5e7-min | Nov 17 20:55:34.152 to 23:41:07.093 | PACKAGE_UPDATED after 2h45m33s; immediate predecessor, no retained PowerGenie, short observation |
+| 1.1.0-773efde3-min | Nov 17 07:56:54.826 to 16:34:45.961; then 16:34:47.510 to 20:55:30.876 | First run CRASH after 8h38m, second PACKAGE_UPDATED after 4h21m; no PowerGenie, not crash-free |
+| 1.1.0-229c72e3-min | Nov 16 10:26 to 11:16; Nov 16 22:09 to Nov 17 00:33 | REMOVE TASK and SIGNALED/status 9 respectively; not a proven uninterrupted stable baseline |
+| 1.0.1-486cf819-min | Nov 15 10:48:23.868 to 18:17:26.873 | PACKAGE_UPDATED after 7h29m; closer multi-hour control without retained PowerGenie |
+| 1.0.0-ee0d57cd-min | Nov 11 21:04:38.199 to Nov 15 00:32:05.212 | PACKAGE_UPDATED after 75h27m27s; strongest relatively recent multi-day Dev baseline |
+| 0.2.3-d5ddb876-min | Nov 6 22:32:16.365 to Nov 10 01:08:26.773 | PACKAGE_UPDATED after 74h36m10s; further historical control |
+
+Thus the first observed cleanup is on 41155f1d, not proof its source change caused it. The nearest predecessor is
+c129a5e7; the strongest measured multi-day predecessor is ee0d57cd. Earlier crashes/task removals/signals existed.
+There is no basis to call every version before November 18 immune to all termination.
+
+### Verified retained artifacts
+
+Read-only search stayed inside the Screenlate project and this worktree. aapt manifest inspection and apksigner
+verification succeed for all selected APKs. All historical Dev candidates are ARM64, package
+com.vpr.screenlate.debug, signed by the same Dev certificate
+3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22. They are minified archival Dev builds and are not
+marked application-debuggable; they predate the minute monitor but retain the persistent journal/exit-description
+export. AppLogs at c129a5e7 reads up to 16 historical exits on next start. Export promptly after a natural stop.
+
+Original files are in the main checkout's ignored testdata/local-research/builds, except ee0d57cd, found in its
+.worktrees/lang/testdata/local-research/builds. Matching c129a5e7 and ee0d57cd mapping.txt files also survive there.
+Verified copies of c129a5e7, 229c72e3, 486cf819 and ee0d57cd are prepared in this worktree's ignored
+`testdata/local-research/builds/baselines/`, with an inventory.json of actual manifest metadata and SHA-256 hashes.
+
+- c129a5e7: versionCode 10100, 23,319,295 bytes,
+  SHA-256 9629e7fc90194ab3fcb6b5ebb638128ec30cd070944ba15dca84dedb3469ca9d.
+- ee0d57cd: versionCode 10000, 23,075,879 bytes,
+  SHA-256 44173b7c79fe605f74ef3500c1dbb27275ad498ff84696823652dbb13cb3f7cb.
+- 229c72e3: versionCode 10100, SHA-256 18f82e444a834813108f337d2f78e8f559a1ab689f958b25c51612eea2022f42.
+- 486cf819: versionCode 10001; full metadata/hash in local inventory.
+- d5ddb876 and 112158a4 also exist and verify in the original archive, versionCode 203. No need to copy these older
+  candidates for the initial comparison.
+
+c129a5e7 has the same package, signing certificate and numeric versionCode as the current 10100 Dev, making it the
+least complicated first adjacent-build control. Static source/schema comparison found no exported Room schema
+change: photos v3 and dictionary registry v1 remain the same. This is a bounded compatibility check, not a test of
+all current data/preferences. ee0d57cd also has the same exported Room schemas; PhotoDatabase source differs only
+in later DAO rotation methods, but its lower APK versionCode is a separate rollback obstacle. Do not tell the owner
+to uninstall Dev/clear data to bypass it. If selected later, prepare a data-preserving installation path separately.
+No such action is needed merely to provide the original APK for identification.
+
+### Published release
+
+GitHub release list and remote tags were checked: latest is v1.1.0, published November 15 at 20:14:16 UTC
+(23:14 Moscow), source be8b04b0. This is before the first PowerGenie series, close enough to be a useful
+secondary control. It lacks subsequent external links, outside-tap/crop memory, newer duplicate handling/lookup
+refinements, manual translator selection, settings search and expanded diagnostics. The core app is present; it is
+not necessary to go back to v0.2.x just to test a published pre-onset release.
+[Release](https://github.com/v1p3rrr/screenlate/releases/tag/v1.1.0).
+
+The published ARM64 APK is downloaded unchanged into the same ignored baselines folder. Package com.vpr.screenlate,
+version 1.1.0/code 10100, 38,741,619 bytes, signature verification passes with release certificate
+20b7d9c9d1320be02226842591e05afa4e8486036c76304d5a56a7b8cb720343. Its SHA-256 matches GitHub's asset digest:
+f14d4abddeb22097039b1e66a420fededebc056c6e98587b79a99e762e1f8f0b.
+
+Release is a different installed package, with separate data, permissions, OEM history and battery/start settings;
+it is not an in-place Dev downgrade. If release survives, that alone cannot distinguish older source from a
+package-specific OEM state. A same-package old Dev is the stronger first source-version comparison. Test packages
+sequentially with only one overlay service enabled if the owner chooses to run this experiment.
+
+An unchanged older Dev now receiving the same explicit PowerGenie stop would strengthen a phone/OEM or retained
+package-state/settings explanation; it would not prove the entire phone changed or exclude common old app behavior.
+Survival of an older Dev through comparable idle/overnight use would strengthen a regression after that baseline.
+Match keep-alive and battery/start permissions; ordinary use/screen cycles, not elapsed time alone, affect comparison.
+These are suggested interpretations/options, not a newly accepted binding experiment plan. No owner-device operation.
