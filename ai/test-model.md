@@ -4206,8 +4206,22 @@ Screenlate accessibility, force-stop a package, access Anki or claim to reproduc
 
 | Case | Behavior | Category | Coverage | Checked |
 |---|---|---|---|---|
-| BGD7 | Ordinary popup hide records popup=false while window proxies stay attached and the same real WebView is retained | E | I PopupDiagnosticsTest | 2026-11-21, API 30 |
+| BGD7 | Ordinary popup hide records popup=false while the popup window stays attached and the same real WebView is retained | E | I PopupDiagnosticsTest | 2026-11-21, API 30 |
 
 The new overnight trace exposed a stale instrumentation bit, not a visible popup leak. The new test failed on the
 old implementation at its missing popup_hidden event, while actual GONE/same-WebView assertions passed, then passed
 after moving the diagnostic update into hide(). The independent page fixture omits unused MNN JNI as documented above.
+
+### 2026-11-21, optional outside-tap window lifecycle
+
+| Case | Behavior | Category | Coverage | Checked |
+|---|---|---|---|---|
+| BGD8 | Disabled mode attaches no catcher; off/on/off rebuild preserves the same WebView, removes the catcher and rejects stale draw activation; cancelled gestures do not dismiss | E | I PopupDiagnosticsTest | 2026-11-21, API 30 |
+| BGD9 | Real input passes through outside a disabled popup; enabled catcher consumes/dismisses, bubble remains above it, and disabling again restores pass-through | E | I PopupWindowLifecycleTest | 2026-11-21, API 30 |
+
+The disabled-window regression failed before the change (two registered window proxies instead of one) and passes
+with the conditional attachment. All three popup instrumentation cases pass. BGD9 uses real WindowManager windows
+and injected touchscreen input in the independent test package with its overlay app-op granted. It adapts window
+type to APPLICATION_OVERLAY because that package has no accessibility token; it verifies stacking/input/lifecycle,
+not accessibility binding or the proprietary OEM cleanup selector. The synthetic fixture screenshot was inspected.
+No owner app, Accessibility setting or Anki data was changed. Physical-device natural-cleanup acceptance is pending.

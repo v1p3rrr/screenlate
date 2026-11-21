@@ -4,7 +4,8 @@
 
 | Topic | Decision |
 |---|---|
-| Scope now | Add diagnostic logs; defer every application optimization, including changes to existing HUD/About polling. |
+| Scope now | Add diagnostic logs and the owner's November 21 outside-tap disabled-mode experiment; defer resource optimizations, including changes to existing HUD/About polling. |
+| Outside-tap experiment | When the existing option is off, do not add its catcher window or register its receiver. Keep the option available. Rebuild overlay window order only when switching the option; retain the WebView and loaded OCR models. |
 | Availability | Expanded monitoring only for debuggable Dev builds, including debug-signed minified builds explicitly marked debuggable. |
 | Sampling | State events plus one resource sample per minute on a background thread. No alarm, wake lock, network request or sleeping-device wakeup. Coalesce event samples. |
 | Privacy | No recognized text, lookup terms, sentence/note contents, app navigation URLs or third-party foreground app identities. Fixed labels, own process metadata and numeric measurements only. |
@@ -48,6 +49,8 @@
 - 2026-11-21: Owner requested practical cleanup exclusions and confirmation of onset. Reopening the activity periodically is explicitly not an acceptable operating requirement. Primary-source check found no verified consumer per-app inactive-clean exemption beyond already configured controls; HONOR MDM persistent-app API needs enterprise/vendor authorization. Global component disabling is only an unapproved, device-specific experiment. No device settings changed.
 
 - 2026-11-21: Owner requested a closer code check of the first affected build. The exact installed range is c129a5e7..41155f1d; unconditional attachment of the new outside-tap window is a concrete candidate, not a proven OEM trigger. Audited conditional screen-off closure and editor-scoped crop synchronization. No runtime changes or revised experiment decisions. [Source audit](../notes/oem-background-limits.md#first-affected-build-source-audit-2026-11-21).
+
+- 2026-11-21: Owner authorized an optional-window test build and analysis of alternative implementations. Chose no catcher/receiver when the setting is off, with a window-group rebuild only on mode changes to preserve stacking and retained WebView/models. The logs-only scope now has this explicit exception; resource optimizations stay deferred. Regression goes red with two windows before the fix; three instrumentation cases, including real input/stacking, pass on API 30. Redesign candidates are recorded in OEM notes and remain unimplemented.
 
 ## Audio crash handoff
 

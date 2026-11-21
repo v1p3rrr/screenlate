@@ -484,6 +484,13 @@ class OverlayController(
             it.copy(textSource = new.textSource.name, ocrMode = new.effectiveOcrEngines(offlineMode).name,
                 reduceOcrLoad = new.ocrSaving, hideOnOutsideTap = new.hideOnOutsideTap)
         }
+        if (popup.hideOnOutsideTap != new.hideOnOutsideTap && attached) {
+            // Rebuild only on a mode change to insert/remove the backdrop below the popup and bubble.
+            // Closing the scan retains the page and OCR models; ordinary popup opens keep their windows.
+            closeScan()
+            detachWindows()
+            state = State.DOCKED
+        }
         popup.hideOnOutsideTap = new.hideOnOutsideTap
         if (new.diagnosticsHud != previous.diagnosticsHud) {
             if (new.diagnosticsHud) diagnosticsHud.show() else diagnosticsHud.hide()

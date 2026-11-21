@@ -764,3 +764,35 @@ certified enterprise `addPersistentApp`, with account/region/certificate constra
 low-cost candidate test whose screen-off scope is unproven; global package disabling is a conditional
 whole-device experiment after package identification, not an established fix for MagicOS 9. The proprietary
 `inactive clean` selection algorithm and its timer remain unverified by public first-party sources.
+
+
+## Optional outside-tap window experiment (2026-11-21)
+
+The owner authorized either eliminating the window while the feature is off or temporarily disabling the feature,
+and requested redesign options. Implemented the first option: no backdrop View is created/added in disabled mode,
+no feature screen-off receiver is registered, and no retained 1x1 catcher remains. A setting change closes the scan,
+detaches the window group and rebuilds it in its existing bottom-to-top order; the lookup WebView and OCR models
+remain alive. The existing setting/default is preserved, so the owner must select OFF for the natural-cleanup test.
+Enabled mode otherwise retains its previous behavior, including retaining the hidden catcher between popups.
+Dev attachment records now distinguish absent (false, 0x0) from attached but hidden (true, 1x1).
+
+Potential redesigns, not implemented or accepted as a new behavior decision:
+
+1. Reuse the existing full-screen highlight layer under the popup as the touch target only while outside-tap
+   dismissal is active. This avoids an additional window even in enabled mode and preserves the current ability to
+   consume the tap. Coordinate the listener/flags with the popup's draw, conceal, hide, screen-off and screenshot
+   transitions; verify bubble, crop editor, menu, focus and cancelled edge gestures. This is the first candidate to
+   prototype if the optional-window experiment supports the hypothesis. Existing window count is preserved, but
+   changing touchability could still affect private policy, so do not promise an OEM exemption.
+2. Place popup content and an outside-touch area in one full-screen window. This also avoids a separate backdrop but
+   needs more changes to placement, selection/IME, clipping and transparency. It is a broader refactor, not the
+   current minimal diagnostic experiment.
+3. FLAG_WATCH_OUTSIDE_TOUCH on the ordinary non-touch-modal popup receives ACTION_OUTSIDE at the initial down only,
+   not the full gesture. It is not a drop-in replacement for consuming the outside tap and ignoring cancelled edge
+   gestures. Adopting pass-through behavior would change the owner's original touch-consumption decision and needs
+   a separate choice. [Android WindowManager flags](https://developer.android.com/reference/android/view/WindowManager.LayoutParams#FLAG_WATCH_OUTSIDE_TOUCH),
+   [Android ACTION_OUTSIDE](https://developer.android.com/reference/android/view/MotionEvent#ACTION_OUTSIDE).
+
+No resource optimization, system-component disable, periodic Activity launch or claim of a PowerGenie fix is part
+of this experiment. Compare ordinary use with the outside-tap setting OFF and export the complete journal after any
+natural disappearance; the log must show hideOnOutsideTap=false and catcherAttached=false for the interval.

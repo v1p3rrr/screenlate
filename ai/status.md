@@ -1,5 +1,22 @@
 # Status
 
+## Disabled outside-tap window experiment (2026-11-21)
+
+- Owner authorized a test build that either removes the disabled feature's window or disables the feature, plus
+  redesign analysis. Implemented no optional window/receiver while the existing setting is OFF; the option remains
+  available and its stored value is preserved. [Experiment and alternatives](notes/oem-background-limits.md#optional-outside-tap-window-experiment-2026-11-21).
+- Mode changes close the scan/dock and rebuild window order; the same WebView and OCR models remain loaded. Ordinary
+  popup opens keep the existing fast window path. Dev logs report absent catcher as false/0x0.
+- Regression fails on old code (two windows, expected one), passes after the change. 330 overlay JVM tests and overlay
+  debug lint pass. Three API 30 popup instrumentation cases pass, including real WindowManager/input pass-through,
+  consumed outside taps, bubble stacking and off/on/off lifecycle. Synthetic screenshot inspected.
+- A real-window test uses APPLICATION_OVERLAY in its independent package rather than an accessibility token; no
+  manufacturer selector/prevention claim. Natural overnight observation on the phone remains pending.
+- Preferred later redesign candidate reuses the existing highlight layer as an active-only touch target, avoiding an
+  extra window; a single popup/backdrop window is broader. ACTION_OUTSIDE would change the consume/cancel contract.
+  No redesign, model unloading, resource tuning, audio-branch edits or phone-system changes were implemented.
+- Dev APK packaging and final app checks are in progress; retain the diagnostic journal for the natural-cleanup test.
+
 ## First affected build code audit (2026-11-21)
 
 - Rechecked the owner's exact installed transition: c129a5e7 (November 17 20:55) to 41155f1d (23:41), before the

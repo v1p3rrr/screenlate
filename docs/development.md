@@ -12,6 +12,8 @@ The short process-state summary is also attached to Android exit history on Andr
 last samples, not exact values at death. About selects the last main-process exit; the journal keeps isolated exits too.
 Release builds do not start the expanded monitor. Existing HUD/About polling is independent and unchanged.
 
+With outside-tap dismissal disabled, the overlay does not attach its optional touch backdrop or register its screen-off receiver. A mode change closes the scan and rebuilds the window group to preserve popup/bubble order, keeping the same WebView and loaded recognition models. Dev logs report `catcherAttached=false` and size `0x0` when absent.
+
 Run `:core:common:testDebugUnitTest :app:testDebugUnitTest :overlay:testDebugUnitTest` for attribution, interval and
 coalescing checks. `BackgroundDiagnosticsDeviceTest` runs in the independent `core:common` instrumentation package;
 it checks real process sampling/export and that a non-debuggable context cannot enable the monitor. It does not

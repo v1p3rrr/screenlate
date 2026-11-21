@@ -42,6 +42,7 @@ class PopupController(
     private var lastWord: Box? = null
     private val outsideTap = OutsideTapState()
     private var catcherActive = false
+    private var catcherAttached = false
     private var screenOffRegistered = false
 
     /**
@@ -54,10 +55,14 @@ class PopupController(
         }
     }
 
-    /** When true, tapping anywhere outside the visible popup closes it and consumes that touch. */
+    /**
+     * Tapping outside the visible popup closes it and consumes the touch. Change while detached so the owner can
+     * rebuild window order below the bubble; disabled mode never adds a catcher window.
+     */
     var hideOnOutsideTap: Boolean = false
         set(value) {
             if (field == value) return
+            check(!attached) { "Change outside-tap mode before attaching popup windows" }
             field = value
             updateOutsideCatcher()
         }
@@ -66,8 +71,10 @@ class PopupController(
      * Transparent touch catcher below the popup window. Closes on non-cancelled tap so system edge gestures (Back,
      * Home) that cancel the touch do not falsely dismiss the popup.
      */
+    private val outsideCatcher by lazy(::createOutsideCatcher)
+
     @SuppressLint("ClickableViewAccessibility")
-    private val outsideCatcher = View(context).apply {
+    private fun createOutsideCatcher(): View = View(context).apply {
         visibility = View.GONE
         importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         setOnTouchListener { _, event ->
@@ -106,25 +113,32 @@ class PopupController(
 
     val isShowing: Boolean get() = visible
 
-    /** Adds the hidden backdrop and popup windows; false when the system no longer takes the service's windows ([OverlayWindows.add]). */
+    /** Adds the popup and, only when enabled, its backdrop; false when the service's window token is invalid. */
     fun attach(): Boolean {
         if (attached) return true
         hideParams(params)
         hideParams(catcherParams)
-        outsideCatcher.visibility = View.GONE
+        if (hideOnOutsideTap) outsideCatcher.visibility = View.GONE
         page.container.visibility = View.GONE
         catcherActive = false
-        attached = OverlayWindows.addAll(
-            OverlayWindows.Entry(
+        val windows = buildList {
+            if (hideOnOutsideTap) add(OverlayWindows.Entry(
                 { OverlayWindows.add(windowManager, outsideCatcher, catcherParams) },
                 { windowManager.removeView(outsideCatcher) },
-            ),
-            OverlayWindows.Entry(
+            ))
+            add(OverlayWindows.Entry(
                 { OverlayWindows.add(windowManager, page.container, params) },
                 { windowManager.removeView(page.container) },
-            ),
-        )
-        BackgroundDiagnostics.update("popup_windows_attached") { it.copy(catcherAttached = attached, catcherFlags = catcherParams.flags) }
+            ))
+        }
+        attached = OverlayWindows.addAll(*windows.toTypedArray())
+        catcherAttached = attached && hideOnOutsideTap
+        BackgroundDiagnostics.update("popup_windows_attached") {
+            it.copy(catcherAttached = catcherAttached, catcherActive = false,
+                catcherWidth = if (catcherAttached) catcherParams.width else 0,
+                catcherHeight = if (catcherAttached) catcherParams.height else 0,
+                catcherFlags = if (catcherAttached) catcherParams.flags else 0)
+        }
         return attached
     }
 
@@ -132,10 +146,12 @@ class PopupController(
         if (!attached) return
         unregisterScreenOff()
         windowManager.removeView(page.container)
-        windowManager.removeView(outsideCatcher)
+        if (catcherAttached) windowManager.removeView(outsideCatcher)
         attached = false
+        catcherAttached = false
         BackgroundDiagnostics.update("popup_windows_detached") {
-            it.copy(catcherAttached = false, catcherActive = false, popupVisible = false)
+            it.copy(catcherAttached = false, catcherActive = false, popupVisible = false,
+                catcherWidth = 0, catcherHeight = 0, catcherFlags = 0)
         }
         visible = false
         bounds = null
@@ -285,7 +301,7 @@ class PopupController(
     }
 
     private fun isCatcherActive(): Boolean =
-        OutsideTapState.shouldCatch(attached, visible, concealed, hideOnOutsideTap)
+        OutsideTapState.shouldCatch(attached && catcherAttached, visible, concealed, hideOnOutsideTap)
 
     /** Activates the full-screen outside-tap backdrop only while the popup is visible and the option is enabled. */
     private fun updateOutsideCatcher() {
