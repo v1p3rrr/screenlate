@@ -1,5 +1,26 @@
 # Status
 
+## Sentence audio branch audit (2026-11-21)
+
+- Reviewed `codex/sentence-audio-recording` at `cfc637fa`, scoped from rebased handoff `c82be1e5`
+  (same core/probe handoff content as `ba5bacd0`). [Full review](notes/sentence-audio-review-2026-11-21.md)
+  separates Standards/Spec, reproducible bugs, additional gaps and selective repair boundaries.
+- Stack/module direction is viable; full rewrite is not justified. Live-session ownership, thread/state
+  synchronization and JS/native editor operation/revision protocol need selective redesign. Important
+  current failures include preview/export divergence, inaccessible refreshed tail, stranded export errors,
+  stale note completions, configuration/rotation lifetime violations and missing media-copy recovery.
+- Confirmed three core defects with isolated regressions: asynchronous source failure leaves facade Recording,
+  failed startup does not close source, and Refresh/writer interleaving throws the monotonic-time exception.
+  Found direct playback-worker→WebView calls and Main-blocking IO/monitor ownership. See report for exact lines.
+- Existing scoped unit baseline passes; restored normal core tests rerun successfully; all 212 page tests pass.
+  Four review-only regressions fail as evidence (also reproducing near-total silence cuts over a louder signal),
+  stored under ignored `testdata/local-research/audio-review-2026-11-21/`.
+  No production code, device settings, playback or Anki collection changed. No implementation fixes claimed.
+- Final assessment distinguishes code to retain, coordination/playback/editor operation logic to redesign,
+  local adapter/settings fixes and a six-step repair order. Full source rewrite or UI framework migration is
+  not justified by the findings. Current standard `core:media` suite has 73 passing tests; review regressions
+  remain isolated evidence, not silently added failing tests in the normal source set.
+
 ## Honor background force-stop investigation (2026-11-20)
 
 - Completed read-only analysis of the supplied 2,208,935-byte log, screenshots, the logged Git revisions and Android 15
