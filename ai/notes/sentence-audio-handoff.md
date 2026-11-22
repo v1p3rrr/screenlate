@@ -1,5 +1,15 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Latest source-lifetime continuation (2026-11-22): Prepare reserves the original source before suspension;
+UI revocation and consumer retention are independent. Capture restart/Close preserve live old-session
+readers; new scans use a separate session and cannot replace a reserved same-session source. Pending-note
+retirement cleans pre-dispatch reservations/busy UI before queued scan intent. 103 core-media/348 overlay
+cases and affected unit/lint/app/test-APK/vital checks pass (4m38s). Isolated API30 passes 15 tests in
+2.198s, including original-editor export after restart. Package removed; owned silent headless AVD off.
+Continue D PCM/codec integrity and waveform/status detail. E must extend the source/draft through its
+new media-copy retry UI; current source work closes after successful encoding/explicit omission. Then
+F aggregate resources/settings and G actual service/source/device acceptance. Continue without yielding.
+
 Latest continuation (2026-11-22): navigation uses retained source coordinates and stale gesture guards;
 preview preparation is conflated with desired playback intent and native/page request guards. 101
 core-media, 347 overlay and 230 page tests pass; affected unit/lint/app/test-APK/vital checks pass.

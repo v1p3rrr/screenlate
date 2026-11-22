@@ -214,6 +214,10 @@ preview mailbox retains one preparing request and the latest replacement. Playba
 preparation; Pause, edits and cancellation invalidate pending native output and queued page progress.
 The page sends identified commands containing the edit snapshot; Kotlin validates it before playback or export. Matching
 native acknowledgements control closure, and encoding failure leaves the editor available for retry.
+Prepare reserves an audio context lease before attachment choice. Contexts stay bound to their original
+recording session, so restarting capture preserves an active editor without attaching new-session sound
+to it. UI ownership can end independently; the final consumer retires the stopped source. Pending-note
+retirement also releases resources reserved before its coroutine could start.
 Refresh extends source bounds without moving existing edits. A scan remembers the selection only after
 successful note creation or update. `NoteTarget` snapshots effective export settings before the attachment menu opens, when note
 preparation starts and checks them again before mutation; preparation cancels on relevant settings changes.

@@ -7,6 +7,32 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Pending source leases across capture restart — 2026-11-22
+
+SentenceRecorder binds a context to its original coordinator and exposes an idempotent suspending
+ContextLease. Acquisition is metadata-only, before Prepare can suspend or show attachment choice. UI
+ownership and active-reader ownership are distinct: stopping/restarting revokes future old-scan actions,
+but an already reserved note/editor can prepare/read/refresh/preview/export the stopped session. The
+new ring cannot provide its continuation or recording status. A replacement scan cannot invalidate a
+same-session reserved source. Revocation and reservation are atomic under a short metadata monitor;
+coordinator commands and IO never run under that monitor. Final release retires its original session.
+
+PendingNoteController has a retirement hook for resources reserved before its coroutine starts. Cleanup
+finishes before releasing the slot/queued scan, including cancellation before the body runs. Menu/busy
+cleanup moved to this hook too. Non-audio choices and completed encoding/omission release source work;
+E must retain the source/draft through its new retryable transfer stage when that stage is implemented.
+Restart clears the old scan's future eligibility without cancelling an already active editor, and config
+eligibility requires an actual supported screen context rather than the global recording preference.
+
+Current evidence: 103 core-media and 348 overlay cases pass. New facade tests verify old-session bytes
+after restart, new-session independence, rejected replacement while reserved, UI revocation, idempotent
+release, final directory cleanup and Close preserving a live reader. Pending-note tests cover cancellation
+before preparation dispatch with deferred resource cleanup and scan ordering. Affected unit/lint/app/
+test-APK/vital checks pass (source-lease-gates.log, 4m38s). Isolated API30 passes 15 tests in 2.198s;
+the production editor remains open across stop/restart and exports its original confirmed edit/context.
+Package removed; owned silent headless AVD powered off. F must include retained stopped-session ring/PCM in aggregate quotas;
+G still requires real service/source/gesture/physical checks.
+
 ## Source coordinates and preview request ownership — 2026-11-22
 
 Navigation uses the retained source start/span rather than the absolute cumulative frame count. Nonzero

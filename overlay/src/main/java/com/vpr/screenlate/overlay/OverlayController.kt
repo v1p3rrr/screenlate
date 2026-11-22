@@ -240,12 +240,12 @@ class OverlayController(
     private var recordingStartJob: Job? = null
     private var recordingStopJob: Job? = null
 
-    private fun releaseCurrentScanAudioContext() {
+    private fun releaseCurrentScanAudioContext(cancelActive: Boolean = true) {
         val id = currentScanAudioContextId ?: return
         scope.launch(start = CoroutineStart.UNDISPATCHED) {
             withContext(NonCancellable) { sentenceRecorder?.releaseContext(id) }
         }
-        popupNotes.releaseAudioContext(id)
+        popupNotes.releaseAudioContext(id, cancelActive)
         currentScanAudioContextId = null
     }
     /** The language switched to last; the next scan takes it, by a tap or when the bubble leaves the dock. */
@@ -615,7 +615,7 @@ class OverlayController(
     fun startSentenceRecording() {
         if (Build.VERSION.SDK_INT < 29 || sentenceRecorder == null) return
         if (sentenceRecorder.isCaptureActive || recordingStartJob?.isActive == true || recordingStopJob?.isActive == true) return
-        releaseCurrentScanAudioContext()
+        releaseCurrentScanAudioContext(cancelActive = false)
         recordingStartJob = scope.launch {
             val captureProtection = sentenceRecorder.prepareCapture() ?: return@launch
             try {
@@ -1867,7 +1867,7 @@ class OverlayController(
             if (layout == null || position == null) return null
             return CropFocus.of(layout.readingParagraphs[position.paragraphIndex].lines.map { it.box }, padding, image)
         }
-        return NoteSource { withScreenshot ->
+        val provider = NoteSource { withScreenshot ->
             if (photo != null) {
                 fun valid() = scan == scanId && lookupSources.source.value.generation == photo.generation
                 if (!valid()) throw CancellationException("Photo source changed")
@@ -1893,6 +1893,11 @@ class OverlayController(
                     audioContextId = audioContextId,
                 )
             }
+        }
+        return object : NoteSource {
+            override suspend fun context(screenshot: Boolean) = provider.context(screenshot)
+            override fun retainAudio(): SentenceRecorder.ContextLease? =
+                if (photo == null) audioContextId?.let { sentenceRecorder?.retainContext(it) } else null
         }
     }
 

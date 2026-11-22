@@ -1,5 +1,25 @@
 # Status
 
+## Sentence audio: active source leases across restart (2026-11-22)
+
+- Navigation/preview checkpoint ae7e4e8e is committed/pushed. Continue remaining D/E/F/G autonomously.
+- Prepare reserves a metadata-only source lease before attachment choice. Pending-note retirement owns
+  cleanup even when cancellation prevents the body from starting; it also retires the busy/menu UI then.
+- A stopped session with live consumers remains addressable by its context ID after capture restarts.
+  New scans use the new session. UI release/restart removes future old-scan eligibility without cancelling
+  its active editor; old source status cannot claim that new-session capture is continuation.
+- Replacement scans cannot invalidate a reserved same-session source. Context revocation/reservation uses
+  one short metadata monitor; worker/IO calls stay outside it. Final consumer release retires only its
+  original session. Recorder Close keeps live consumers, stops native input and revokes future acquisition.
+- Current evidence: 103 core-media and 348 overlay cases pass, including old-session byte identity,
+  new-session isolation, final cleanup/idempotent close and cancellation before Prepare starts. Affected
+  unit/lint/app/test-APK/vital checks pass (source-lease-gates.log, 4m38s). Isolated API30 passes 15 tests
+  in 2.198s, including export of the old editor after capture restart. Package removed, owned AVD powered off.
+- E must extend PCM/draft ownership through its future retryable media-transfer UI. Current lease closes
+  after successful file export/explicit omission, when the current editor has no remaining source work.
+- Next D: waveform detail/status scheduling and streaming PCM/codec integrity/deadlines. F must account
+  for retained stopped-session PCM as well as the new ring; G still supplies actual service/source/device gates.
+
 ## Sentence audio: source navigation and preview scheduling (2026-11-22)
 
 - Continue D/E/F/G autonomously on codex/sentence-audio-recording. Lifecycle checkpoint 7d3be01f is

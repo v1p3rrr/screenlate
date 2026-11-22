@@ -15,6 +15,24 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class PendingNoteControllerTest {
     @Test
+    fun `cancel before preparation starts releases its reserved source before a queued scan`() = runTest {
+        val pending = PendingNoteController(this)
+        val release = CompletableDeferred<Unit>()
+        var closes = 0
+        var scanned = false
+        pending.prepare("reserved", onRetired = { closes++; release.await() }) { error("Preparation was cancelled") }
+        pending.cancelThen(checkNotNull(pending.token)) { scanned = true }
+        runCurrent()
+        assertThat(closes).isEqualTo(1)
+        assertThat(pending.isActive).isTrue()
+        assertThat(scanned).isFalse()
+        release.complete(Unit)
+        runCurrent()
+        assertThat(pending.isActive).isFalse()
+        assertThat(scanned).isTrue()
+        assertThat(closes).isEqualTo(1)
+    }
+    @Test
     fun `finish then scan runs only after a successful note has released its resources`() = runTest {
         val pending = PendingNoteController(this)
         val done = CompletableDeferred<Unit>()

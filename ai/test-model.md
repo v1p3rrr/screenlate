@@ -4369,3 +4369,13 @@ Observations, not changed:
   nonzero-start WebView navigation and resize in three presentations, and the crop suite.
 - Package removed and owned silent headless AVD powered off. Partial REC44/46/48/55/78/79 evidence;
   keep N where real service/source/gesture/device behavior is still pending. No Anki data accessed.
+
+## Sentence active source retention across restart (2026-11-22)
+
+- 103 core-media and 348 overlay cases pass. New facade cases keep byte-exact old-session data through
+  capture restart/UI release/Close; final release retires only that source. Reserved same-session data
+  cannot be replaced, and pre-dispatch cancellation awaits source retirement before queued scan intent.
+- Affected unit/lint/app/test-APK/release-vital gate passes in 4m38s. Isolated API30 passes 15 tests in
+  2.198s, including the actual editor remaining open across restart and exporting its old context/edit.
+- Package removed; owned silent headless AVD powered off. Partial REC19/28/77 evidence. Keep N until
+  actual capture/service/resource and remaining clauses pass. No Anki collection accessed.

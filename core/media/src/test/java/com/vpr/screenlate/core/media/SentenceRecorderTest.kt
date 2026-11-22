@@ -27,6 +27,67 @@ class SentenceRecorderTest {
     @get:Rule val temporary = TemporaryFolder()
 
     @Test
+    fun pendingEditorLeaseKeepsItsStoppedSessionAcrossRestartAndReleasesOnlyThatSession() = runBlocking {
+        val time = AtomicLong(10_000)
+        val root = temporary.newFolder()
+        val recorder = SentenceRecorder(root, RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() }, { time.get() * 1_000_000L })
+        val first = FakeAudioSource()
+        var retained: SentenceRecorder.ContextLease? = null
+        try {
+            assertThat(recorder.start(first)).isTrue()
+            first.emitFrames(100)
+            withTimeout(3000) {
+                while (recorder.waveformSummary(AudioRange(0, 100)) == null) delay(1)
+            }
+            time.set(10_100)
+            val old = checkNotNull(recorder.acquireScan())
+            val lease = checkNotNull(recorder.retainContext(old))
+            retained = lease
+            assertThat(recorder.acquireScan()).isNull()
+            val range = checkNotNull(recorder.prepareEditor(old)?.source)
+            val oldDirectory = root.listFiles()!!.single()
+            recorder.stop()
+            recorder.releaseContext(old)
+            assertThat(recorder.retainContext(old)).isNull()
+            val next = FakeAudioSource()
+            assertThat(recorder.start(next)).isTrue()
+            next.emitFrames(200)
+            withTimeout(3000) {
+                while (recorder.waveformSummary(AudioRange(0, 200)) == null) delay(1)
+            }
+            val fresh = checkNotNull(recorder.acquireScan())
+            assertThat(recorder.openEditor(old)?.source).isEqualTo(range)
+            assertThat(recorder.isRecording(old)).isFalse()
+            assertThat(recorder.isRecording(fresh)).isTrue()
+            val snapshot = checkNotNull(recorder.snapshot(range, old))
+            snapshot.use { assertThat(it.openStream().use { stream -> stream.readBytes() })
+                .isEqualTo(first.expectedPcm(range.start, range.endExclusive)) }
+            lease.close()
+            lease.close()
+            assertThat(recorder.prepareEditor(old)).isNull()
+            assertThat(recorder.prepareEditor(fresh)).isNotNull()
+            withTimeout(3000) { while (oldDirectory.exists()) delay(1) }
+        } finally { retained?.close(); recorder.close() }
+    }
+
+    @Test
+    fun closingRecorderPreservesALiveContextUntilItsConsumerCloses() = runBlocking {
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()))
+        var lease: SentenceRecorder.ContextLease? = null
+        try {
+            assertThat(recorder.start(FakeAudioSource())).isTrue()
+            val id = checkNotNull(recorder.acquireScan())
+            lease = checkNotNull(recorder.retainContext(id))
+            recorder.close()
+            assertThat(recorder.retainContext(id)).isNull()
+            assertThat(recorder.prepareEditor(id)).isNotNull()
+            lease.close()
+            assertThat(recorder.prepareEditor(id)).isNull()
+        } finally { lease?.close(); recorder.close() }
+    }
+
+    @Test
     fun editorReadsCannotUseAnotherScanWithMatchingFramePositions() = runBlocking {
         val time = AtomicLong(10_000L)
         val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),

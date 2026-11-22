@@ -12,6 +12,7 @@ import java.io.IOException
 import java.util.UUID
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -59,6 +60,28 @@ class SentenceRecorder internal constructor(
     private val previewCommands = Mutex()
     private val previewRequest = AtomicLong()
     private val generation = AtomicLong()
+    private class ContextOwner(val session: PcmStorageCoordinator) {
+        var uiOwned = true
+        var readers = 0
+    }
+    private val contexts = mutableMapOf<AudioContextId, ContextOwner>()
+
+    /** Holds the original stopped source through an already started note operation. Close is idempotent. */
+    class ContextLease internal constructor(private val release: suspend () -> Unit) {
+        private val closed = AtomicBoolean()
+        suspend fun close() {
+            if (closed.compareAndSet(false, true)) withContext(NonCancellable) { release() }
+        }
+    }
+
+    /** Metadata-only acquisition, before an attachment chooser or another suspension can release the scan. */
+    fun retainContext(id: AudioContextId): ContextLease? = synchronized(contexts) {
+        val owner = contexts[id]?.takeIf { it.uiOwned } ?: return@synchronized null
+        owner.readers++
+        ContextLease { releaseReader(id) }
+    }
+
+    fun isRecording(id: AudioContextId): Boolean = contextSession(id)?.currentState == PcmCoordinatorState.RUNNING
     @Volatile private var coordinator: PcmStorageCoordinator? = null
     @Volatile private var currentSource: AudioSource? = null
     private var abandonedCleaned = false
@@ -101,8 +124,10 @@ class SentenceRecorder internal constructor(
                         sourceReleased = true
                         return@withLock false
                     }
-                    coordinator?.close()
-                    if (coordinator?.isReleased == false) {
+                    val previous = coordinator
+                    retireUiContexts(previous)
+                    if (!hasReaders(previous)) previous?.close()
+                    if (!hasReaders(previous) && previous?.isReleased == false) {
                         source.close()
                         sourceReleased = true
                         return@withLock false
@@ -206,13 +231,29 @@ class SentenceRecorder internal constructor(
             return withContext(Dispatchers.IO) {
                 lifecycle.withLock {
                     session = coordinator
-                    session?.acquireScan(scanMillis, settingsRepository.settings.first().limits).also { acquired = it }
+                    val limits = settingsRepository.settings.first().limits
+                    val replaced = synchronized(contexts) {
+                        if (contexts.values.any { it.session === session && it.readers > 0 }) null
+                        else contexts.values.filter { it.session === session && it.uiOwned }
+                            .also { owners -> owners.forEach { it.uiOwned = false } }
+                    } ?: return@withLock null
+                    try {
+                        session?.acquireScan(scanMillis, limits).also { id ->
+                            acquired = id
+                            if (id != null) synchronized(contexts) {
+                                contexts.entries.removeAll { it.value.session === session }
+                                contexts[id] = ContextOwner(checkNotNull(session))
+                            }
+                        }
+                    } finally {
+                        if (acquired == null) synchronized(contexts) { replaced.forEach { it.uiOwned = true } }
+                    }
                 }
             }
         } catch (cancelled: CancellationException) {
             withContext(NonCancellable + Dispatchers.IO) {
                 lifecycle.withLock {
-                    acquired?.let { if (session === coordinator) session?.releaseContext(it) }
+                    acquired?.let { releaseUiContext(it) }
                 }
             }
             throw cancelled
@@ -220,16 +261,16 @@ class SentenceRecorder internal constructor(
     }
 
     suspend fun prepareEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? =
-        withContext(Dispatchers.IO) { lifecycle.withLock { coordinator?.prepareEditor(id, openMillis) } }
+        withContext(Dispatchers.IO) { lifecycle.withLock { contextSession(id)?.prepareEditor(id, openMillis) } }
 
     suspend fun openEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? =
-        withContext(Dispatchers.IO) { lifecycle.withLock { coordinator?.openEditor(id, openMillis) } }
+        withContext(Dispatchers.IO) { lifecycle.withLock { contextSession(id)?.openEditor(id, openMillis) } }
 
     suspend fun refresh(id: AudioContextId, refreshMillis: Long = nowMillis()): AudioTimelineView? =
-        withContext(Dispatchers.IO) { lifecycle.withLock { coordinator?.refresh(id, refreshMillis) } }
+        withContext(Dispatchers.IO) { lifecycle.withLock { contextSession(id)?.refresh(id, refreshMillis) } }
 
     suspend fun releaseContext(id: AudioContextId) = withContext(NonCancellable + Dispatchers.IO) {
-        lifecycle.withLock { coordinator?.releaseContext(id) }
+        lifecycle.withLock { releaseUiContext(id) }
         Unit
     }
 
@@ -238,7 +279,7 @@ class SentenceRecorder internal constructor(
         try {
             return withContext(Dispatchers.IO) {
                 lifecycle.withLock {
-                    val session = coordinator
+                    val session = if (contextId == null) coordinator else contextSession(contextId)
                     if (contextId != null && session?.view(contextId) == null) return@withLock null
                     snapshotFrom(session, range).also { acquired = it }
                 }
@@ -324,7 +365,7 @@ class SentenceRecorder internal constructor(
                         }
                     }
                     installed = true
-                    val session = coordinator
+                    val session = if (contextId == null) coordinator else contextSession(contextId)
                     if (contextId != null && session?.view(contextId) == null) {
                         lease.close()
                         previewCallbackExecutor.execute {
@@ -425,13 +466,57 @@ class SentenceRecorder internal constructor(
     suspend fun close() = withContext(NonCancellable + Dispatchers.IO) {
         lifecycle.withLock {
             stopPreview()
-            coordinator?.close()
-            if (coordinator?.isReleased == false) return@withLock
+            coordinator?.stop()
+            if (coordinator?.hasActiveInput == true) return@withLock
+            retireUiContexts(null)
+            if (!hasReaders(coordinator)) coordinator?.close()
+            if (!hasReaders(coordinator) && coordinator?.isReleased == false) return@withLock
             coordinator = null
             currentSource = null
             generation.incrementAndGet()
             _recordingState.value = SentenceRecordingState.Idle
         }
+    }
+
+    private fun contextSession(id: AudioContextId): PcmStorageCoordinator? =
+        synchronized(contexts) { contexts[id]?.session }
+
+    private fun hasReaders(session: PcmStorageCoordinator?): Boolean = synchronized(contexts) {
+        session != null && contexts.values.any { it.session === session && it.readers > 0 }
+    }
+
+    /** Called under lifecycle; no native/worker call is made while the metadata monitor is held. */
+    private fun retireUiContexts(session: PcmStorageCoordinator?) {
+        val ids = synchronized(contexts) {
+            contexts.filterValues { session == null || it.session === session }.keys.toList()
+        }
+        ids.forEach(::releaseUiContext)
+    }
+
+    private fun releaseUiContext(id: AudioContextId) {
+        val released = synchronized(contexts) {
+            val owner = contexts[id] ?: return@synchronized null
+            owner.uiOwned = false
+            if (owner.readers == 0) contexts.remove(id) else null
+        }
+        released?.let { retireContext(id, it) }
+    }
+
+    private suspend fun releaseReader(id: AudioContextId) = withContext(NonCancellable + Dispatchers.IO) {
+        lifecycle.withLock {
+            val released = synchronized(contexts) {
+                val owner = checkNotNull(contexts[id])
+                check(owner.readers > 0)
+                owner.readers--
+                if (!owner.uiOwned && owner.readers == 0) contexts.remove(id) else null
+            }
+            released?.let { retireContext(id, it) }
+        }
+    }
+
+    private fun retireContext(id: AudioContextId, owner: ContextOwner) {
+        owner.session.releaseContext(id)
+        if (owner.session !== coordinator) owner.session.close()
     }
 
     private fun snapshotFrom(session: PcmStorageCoordinator?, range: AudioRange): PcmHistory.Snapshot? =

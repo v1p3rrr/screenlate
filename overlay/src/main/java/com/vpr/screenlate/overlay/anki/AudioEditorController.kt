@@ -204,7 +204,7 @@ class AudioEditorController(
                     put("selection", ranges(listOf(initial.selection)).first())
                     put("cuts", ranges(initial.exclusions))
                     put("mode", "result")
-                    put("recording", sentenceRecorder.isRecording)
+                    put("recording", sentenceRecorder.isRecording(audioContextId))
                     putRetention(timeline)
                     put("term", term)
                     put("reading", reading)
@@ -276,7 +276,7 @@ class AudioEditorController(
                         put("sourceStart", range.start)
                         put("sourceEnd", range.endExclusive)
                         putRetention(view)
-                        put("recording", sentenceRecorder.isRecording)
+                        put("recording", sentenceRecorder.isRecording(session.contextId))
                         put("overviewSummary", buildJsonArray {})
                     })
                 }
@@ -381,7 +381,7 @@ class AudioEditorController(
                             put("totalFrames", range.endExclusive)
                             put("sourceStart", range.start)
                             put("sourceEnd", range.endExclusive)
-                            put("recording", sentenceRecorder.isRecording)
+                            put("recording", sentenceRecorder.isRecording(session.contextId))
                             putRetention(view)
                             summary?.let { put("overviewSummary", buildJsonArray { it.peaks.forEach { add(JsonPrimitive(it)) } }) }
                         })
@@ -396,10 +396,10 @@ class AudioEditorController(
         if (!released && retainedContextId == result.contextId) lastConfirmed = result.contextId to result.edit
     }
 
-    fun releaseContext(id: AudioContextId) {
+    fun releaseContext(id: AudioContextId, cancelActive: Boolean = true) {
         if (retainedContextId == id) retainedContextId = null
         if (lastConfirmed?.first == id) lastConfirmed = null
-        active?.takeIf { it.contextId == id }?.let { if (it.isReady()) it.operation.cancel() }
+        if (cancelActive) active?.takeIf { it.contextId == id }?.let { if (it.isReady()) it.operation.cancel() }
     }
 
     val canFinish: Boolean get() = active?.let {

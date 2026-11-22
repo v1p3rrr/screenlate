@@ -31,6 +31,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.media.AudioContextId
 import com.vpr.screenlate.core.media.RecordingSettingsRepository
+import com.vpr.screenlate.core.media.SentenceRecorder
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.log.Log
@@ -62,6 +63,7 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.put
 import java.io.File
 import java.io.IOException
@@ -111,6 +113,8 @@ internal fun webpSize(width: Int, height: Int): Pair<Int, Int> {
 fun interface NoteSource {
     /** The provider keeps the captured source identity; [screenshot] lazily asks for its picture after choice. */
     suspend fun context(screenshot: Boolean): NoteContext
+    /** Reserve the original audio session synchronously with Prepare, before waiting for attachment choice. */
+    fun retainAudio(): SentenceRecorder.ContextLease? = null
 }
 
 /**
@@ -198,6 +202,7 @@ class PopupNotes(
 
     /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
+    private var lastNoteConfig: JsonObject? = null
 
     init {
         page.noteActions = this
@@ -226,12 +231,12 @@ class PopupNotes(
                 }
             })
             put("screenshotByDefault", JsonPrimitive(ankiSettings.screenshotByDefault))
-            val recordingEnabled = recordingSettings?.cachedSettings?.recordingEnabled ?: false
-            val hasAudio = currentAudioContext() != null || recordingEnabled
+            val hasAudio = Build.VERSION.SDK_INT >= 29 && currentAudioContext() != null
             put("editorByDefault", JsonPrimitive(recordingSettings?.cachedSettings?.defaultEditor ?: false))
             put("sentenceAudioEligible", JsonPrimitive(ankiReady && FieldTemplate.SENTENCE_AUDIO in notes.usedMarkers(language()) && hasAudio))
             put("sortFrequencyMode", JsonPrimitive(lookup.sortFrequencyMode(language()).orEmpty()))
         }
+        lastNoteConfig = config
         page.setNoteConfig(config)
     }
 
@@ -402,8 +407,14 @@ class PopupNotes(
         // The note keeps the language it was asked for, even if the scan closes before it is added.
         val noteLanguage = language()
         val targetAtPress = notes.cachedTarget(noteLanguage)
+        val audioLease = source.retainAudio()
         addingEntries += index
-        pendingNote.prepare(request, noteLanguage) {
+        pendingNote.prepare(request, noteLanguage, onRetired = {
+            try { audioLease?.close() } finally {
+                addingEntries -= index
+                if (page.noteActions === this@PopupNotes) page.cancelNotePreparation(request)
+            }
+        }) {
             var image: NoteImage? = null
             var picture: Bitmap? = null
             var configurationWatch: Job? = null
@@ -433,7 +444,10 @@ class PopupNotes(
                 val force = attachments.force
                 val context = if (attachments.screenshot && "screenshot" in used) source.context(true) else frozen
                 image = context.image
-                if (!effectiveWithAudio || FieldTemplate.SENTENCE_AUDIO !in used || context.audioContextId == null) attachmentsReady()
+                if (!effectiveWithAudio || FieldTemplate.SENTENCE_AUDIO !in used || context.audioContextId == null) {
+                    audioLease?.close()
+                    attachmentsReady()
+                }
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
@@ -507,17 +521,20 @@ class PopupNotes(
                         }
                         is AudioEditorResult.WithoutAudio -> {
                             sentenceAudio = SentenceAudioAttachment.Omitted
+                            audioLease?.close()
                             attachmentsReady()
                         }
                         is AudioEditorResult.WithAudio -> {
                             confirmedAudio = audioResult
                             sentenceAudio = SentenceAudioAttachment.Attached(audioResult.file)
+                            audioLease?.close()
                             attachmentsReady()
                         }
                     }
                 }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
                 // Once a mutation is attempted, keep its actual result rather than cancelling its acknowledgement.
+                audioLease?.close()
                 attachmentsReady()
                 val result = notes.add(target, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudio), force,
                     onWriteAttempt = { configurationWatch?.cancel(); beginWrite() })
@@ -544,7 +561,6 @@ class PopupNotes(
                 toast(context.getString(R.string.anki_error, e.message ?: e.javaClass.simpleName))
                 "error"
             } finally {
-                addingEntries -= index
                 configurationWatch?.cancel()
                 // A cancelled note does not wait for its translation.
                 translated?.cancel()
@@ -552,7 +568,6 @@ class PopupNotes(
                 image?.close()
                 picture?.recycle()
                 screenshot?.delete()
-                if (page.noteActions === this@PopupNotes) page.cancelNotePreparation(request)
             }
             val shown = showState(scan, index, term, state, opens)
             if (state == "added" && shown) afterCompletion { if (scan == scanNotes.scan) onNoteAdded() }
@@ -645,8 +660,13 @@ class PopupNotes(
         page.noteActions = null
     }
 
-    fun releaseAudioContext(id: AudioContextId) {
-        audioEditor?.releaseContext(id)
+    fun releaseAudioContext(id: AudioContextId, cancelActive: Boolean = true) {
+        audioEditor?.releaseContext(id, cancelActive)
+        lastNoteConfig?.let { previous ->
+            val config = JsonObject(previous + ("sentenceAudioEligible" to JsonPrimitive(false)))
+            lastNoteConfig = config
+            page.setNoteConfig(config)
+        }
     }
 
     /**

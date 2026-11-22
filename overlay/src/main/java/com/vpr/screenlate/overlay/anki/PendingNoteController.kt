@@ -50,9 +50,14 @@ internal class PendingNoteController(private val scope: CoroutineScope) {
     val retainsContext: Boolean get() = active?.requiresContext == true
     val token: Token? get() = active?.token
 
-    fun start(block: suspend Operation.() -> Unit): Boolean = launch(null, null, block)
+    fun start(block: suspend Operation.() -> Unit): Boolean = launch(null, null, {}, block)
 
-    fun prepare(request: String, language: Language? = null, block: suspend Operation.() -> Unit): Boolean = launch(request, language, block)
+    fun prepare(
+        request: String,
+        language: Language? = null,
+        onRetired: suspend () -> Unit = {},
+        block: suspend Operation.() -> Unit,
+    ): Boolean = launch(request, language, onRetired, block)
 
     fun finishThen(token: Token, action: () -> Unit): Boolean {
         val running = active?.takeIf { it.token === token } ?: return false
@@ -84,7 +89,7 @@ internal class PendingNoteController(private val scope: CoroutineScope) {
         active?.takeIf { it.request == request && !it.choice.isCompleted }?.job?.cancel()
     }
 
-    private fun launch(request: String?, language: Language?, block: suspend Operation.() -> Unit): Boolean {
+    private fun launch(request: String?, language: Language?, onRetired: suspend () -> Unit, block: suspend Operation.() -> Unit): Boolean {
         if (active != null) return false
         val running = Running()
         running.request = request
@@ -100,7 +105,8 @@ internal class PendingNoteController(private val scope: CoroutineScope) {
             // A last child may complete on an IO thread. Retire and run queued UI intent on the owner's dispatcher.
             CoroutineScope(scope.coroutineContext + NonCancellable).launch {
                 if (active !== running) return@launch
-                active = null
+                // Reserved resources exist even if cancellation prevented the body from starting.
+                try { onRetired() } finally { active = null }
                 if (!scope.isActive) return@launch
                 when {
                     cause == null && running.succeeded -> {

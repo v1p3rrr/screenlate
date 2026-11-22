@@ -102,9 +102,28 @@ class AudioEditorDeviceTest {
 
                 val stopping = async { controller.edit(scan, "", "") }
                 ready()
+                val lease = checkNotNull(recorder.retainContext(scan))
+                try {
+                    recorder.stop()
+                    controller.releaseContext(scan, cancelActive = false)
+                    recorder.releaseContext(scan)
+                    assertThat(recorder.start(SilentSource())).isTrue()
+                    assertThat(recorder.isRecording(scan)).isFalse()
+                    assertThat(stopping.isCompleted).isFalse()
+                    assertThat(controller.requestSave()).isTrue()
+                    val retained = withTimeout(10_000) { stopping.await() } as AudioEditorResult.WithAudio
+                    try {
+                        assertThat(retained.contextId).isEqualTo(scan)
+                        assertThat(retained.edit).isEqualTo(result!!.edit)
+                        assertThat(retained.file.length()).isGreaterThan(0)
+                    } finally { withContext(Dispatchers.IO) { retained.file.delete() } }
+                } finally { lease.close() }
+                val fresh = checkNotNull(recorder.acquireScan())
+                val releasing = async { controller.edit(fresh, "", "") }
+                ready()
                 controller.release()
                 page.destroy()
-                assertThat(withTimeout(5000) { stopping.await() }).isEqualTo(AudioEditorResult.Cancelled)
+                assertThat(withTimeout(5000) { releasing.await() }).isEqualTo(AudioEditorResult.Cancelled)
                 assertThat(page.container.childCount).isEqualTo(0)
             }
         } finally {
