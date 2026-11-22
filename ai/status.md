@@ -1,5 +1,22 @@
 # Status
 
+## Corrected compact development APK delivered (2026-11-23)
+
+- Owner requested the established minified ARM64 Dev package signed with the same local development key,
+  for in-place update, and a full repair summary. Ordinary debug delivery below is superseded.
+- No application source changed. Build checkpoint 3d2835b0 (source repair e32a3228). Recipe:
+  testdata/local-research/builds/dev-release-3d2835b0.gradle. assembleRelease and lintVitalRelease pass
+  (min-dev-delivery.log, 3m19s), with R8/resource shrinking and compressed native libraries/DEX.
+- APK: testdata/local-research/builds/screenlate-dev-3d2835b0-min.apk, 25367696 bytes (~24.2 MiB),
+  version 1.1.0-3d2835b0-min, com.vpr.screenlate.debug, Screenlate Dev, ARM64 only. Certificate matches
+  the prior screenlate-dev-ea86ccb3-min.apk exactly:
+  3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22.
+- APK SHA256: be2b791b9734599ab959db2c6081875634c322a27f48165abe82f50bc2065552.
+  Mapping: testdata/local-research/builds/screenlate-dev-3d2835b0-min.mapping.txt.
+- Owner authorized this build/report despite the prior weekly stop, then reported resetting the limit.
+  No reset was consumed by the agent. Finish delivery/report and stop; do not resume other repair blocks.
+  Remaining work and verified code/test results are recorded below and in the repair plan.
+
 ## Sentence audio: editor transfer checkpoint and dev APK delivered (2026-11-22)
 
 - Owner requests finishing this checkpoint and delivering the usual development APK before the usage

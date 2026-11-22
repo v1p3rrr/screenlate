@@ -1,5 +1,12 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Delivery correction (2026-11-23): ordinary debug APK superseded by the usual compact ARM64 Dev release:
+testdata/local-research/builds/screenlate-dev-3d2835b0-min.apk (25367696 bytes, 1.1.0-3d2835b0-min).
+assembleRelease plus lintVitalRelease passes in 3m19s. Same package/com.vpr.screenlate.debug and exact prior
+local dev certificate 3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22;
+R8 mapping alongside the APK. No application source changes. Owner requests only delivery and repair
+summary, then stop. The build recipe is documented in build-environment.md; use it for future deliveries.
+
 Latest transfer checkpoint (2026-11-22): e32a3228 is committed/pushed. Retained editor/source/encoding
 through media-copy retry, actual FileProvider staging and rejected-opening cleanup are implemented.
 226 core-Anki/353 overlay/291 app/237 page cases pass; final affected gate 4m37s. API30 passes 18 editor/

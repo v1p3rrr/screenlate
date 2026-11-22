@@ -202,6 +202,8 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   (1.4 s left 12 of 14 MB at full speed; the line comes before the first byte). A proxy on a closed port
   (`settings put global http_proxy 10.0.2.2:8898`) makes downloads break off at once with the network up; reset it
   with `settings put global http_proxy :0` and delete the `http_proxy` and `global_http_proxy_*` keys afterwards.
+- Owner-facing development deliveries use the compact minified ARM64 Dev recipe below, signed with the
+  same local development key; ordinary assembleDebug is not the requested installable delivery format.
 - A small build to send to the phone (2026-10-27; a chat attachment takes at most 30 MiB): the release type with the
   Dev package and label, debug-signed, one ABI, compressed native code and dex. An init script
   (`--init-script dev-release.gradle`) sets on `:app` in `afterEvaluate`, for the release build type:
