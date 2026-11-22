@@ -13,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import com.vpr.screenlate.core.media.AudioSource
+import com.vpr.screenlate.core.media.AudioRange
 import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import com.vpr.screenlate.core.media.SentenceRecorder
 import com.vpr.screenlate.overlay.popup.PopupController
@@ -20,19 +21,114 @@ import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.web.PageTheme
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.PI
+import kotlin.math.sin
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.json.JSONObject
 
 /** Production editor, bridge, PCM facade and codec in an isolated package; no Anki or system capture. */
 @RunWith(AndroidJUnit4::class)
 class AudioEditorDeviceTest {
+    @Test
+    fun firstSelectionUsesSpeechThatArrivesWhileThePageIsOpening() = openingSpeechScenario(false)
+
+    @Test
+    fun delayedInitialRefinementCannotReplaceAnInFlightEdit() = openingSpeechScenario(true)
+
+    private fun openingSpeechScenario(inFlightEdit: Boolean) = runBlocking {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val settings = RecordingSettingsRepository(Store())
+        val recorder = SentenceRecorder(context, settings, PlaybackCoordinator())
+        val source = QuietThenSpeechSource()
+        val callbacks = object : LookupPage.Callbacks {
+            override fun onClose() = Unit
+            override fun onLookup(query: String, primaryReading: String?) = Unit
+            override fun onOpenUrl(url: String) = Unit
+            override fun onKanji(character: String) = Unit
+            override fun onCopy(text: String, html: String?) = Unit
+            override fun media(dictionary: String, path: String): ByteArray? = null
+        }
+        val popup = withContext(Dispatchers.Main) {
+            PopupController(context, context.getSystemService(WindowManager::class.java), callbacks)
+        }
+        try {
+            assertThat(recorder.start(source)).isTrue()
+            delay(7200)
+            val scan = checkNotNull(recorder.acquireScan())
+            withContext(Dispatchers.Main) {
+                val page = popup.page
+                page.render(PageState.build(context, PageTheme.DARK, "", 0, emptyList(), "-", language = Language.JAPANESE))
+                val controller = AudioEditorController(context, page, popup, recorder, settings)
+                val ready = CompletableDeferred<String>()
+                val heldEdit = CompletableDeferred<String>()
+                page.audioEditorActions = object : LookupPage.AudioEditorActions {
+                    override fun onAudioEditorCommand(payload: String) {
+                        when (JSONObject(payload).optString("action")) {
+                            "ready" -> ready.complete(payload)
+                            "edit" -> if (inFlightEdit && !heldEdit.isCompleted) heldEdit.complete(payload)
+                                else controller.onAudioEditorCommand(payload)
+                            else -> controller.onAudioEditorCommand(payload)
+                        }
+                    }
+                }
+                suspend fun startFrame(): Long = page.evaluate("AudioEditor.state.a")!!.toLong()
+                try {
+                    val pending = async { controller.edit(scan, "", "") }
+                    val command = withTimeout(5000) { ready.await() }
+                    assertThat(startFrame()).isEqualTo(0)
+                    source.speech.countDown()
+                    withTimeout(5000) {
+                        while (recorder.waveformSummary(AudioRange(source.quietFrames, source.quietFrames + 48000), contextId = scan) == null) delay(1)
+                    }
+                    delay(1000)
+                    if (inFlightEdit) page.evaluate("""
+                        window.sawInitialRefinement=false;
+                        var originalReceive=AudioEditor.receive;
+                        AudioEditor.receive=function(data){
+                            if(data.initialSelection && !data.phase) window.sawInitialRefinement=true;
+                            originalReceive(data);
+                            if(data.phase==='editing' && !window.editedOnReady){
+                                window.editedOnReady=true;
+                                AudioEditor.state.a=96000;
+                                document.getElementById('sl-start').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
+                            }
+                        }; true
+                    """.trimIndent())
+                    controller.onAudioEditorCommand(command)
+                    if (inFlightEdit) {
+                        withTimeout(5000) { while (page.evaluate("window.sawInitialRefinement===true") != "true") delay(1) }
+                        assertThat(startFrame()).isEqualTo(100800)
+                        controller.onAudioEditorCommand(withTimeout(5000) { heldEdit.await() })
+                        controller.requestSave()
+                        val result = withTimeout(10000) { pending.await() } as AudioEditorResult.WithAudio
+                        try { assertThat(result.edit.selection.start).isEqualTo(100800) }
+                        finally { withContext(Dispatchers.IO) { result.file.delete() } }
+                    } else {
+                        withTimeoutOrNull(5000) { while (startFrame() < source.quietFrames - 12000) delay(1) }
+                        assertThat(startFrame()).isAtLeast(source.quietFrames - 12000)
+                        assertThat(startFrame()).isLessThan(source.quietFrames)
+                        controller.release()
+                        assertThat(withTimeout(5000) { pending.await() }).isEqualTo(AudioEditorResult.Cancelled)
+                    }
+                } finally { controller.release() }
+            }
+        } finally {
+            recorder.close()
+            withContext(Dispatchers.Main) { popup.release() }
+        }
+    }
+
     @Test
     fun exportOwnsItsEditAndOnlySuccessfulNoteConfirmationReusesIt() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -137,6 +233,36 @@ class AudioEditorDeviceTest {
         override val data = MutableStateFlow(emptyPreferences())
         override suspend fun updateData(transform: suspend (Preferences) -> Preferences): Preferences =
             transform(data.value).also { data.value = it }
+    }
+
+    private class QuietThenSpeechSource : AudioSource {
+        override val sampleRate = 48000
+        override val channelCount = 1
+        val quietFrames = sampleRate * 7L
+        val speech = CountDownLatch(1)
+        private val stopped = CountDownLatch(1)
+        private val stopping = AtomicBoolean()
+        private var frame = 0L
+        private var origin = 0L
+        override fun start(): Boolean { origin = SystemClock.elapsedRealtimeNanos(); return true }
+        override fun timestampNanos() = origin
+        override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+            if (frame == quietFrames) speech.await()
+            if (frame == quietFrames + sampleRate) stopped.await()
+            if (stopping.get()) return -1
+            Thread.sleep(5)
+            val end = if (frame < quietFrames) quietFrames else quietFrames + sampleRate
+            val frames = minOf(length / 2L, end - frame).toInt()
+            for (i in 0 until frames) {
+                val value = if (frame < quietFrames) 0 else (sin(2 * PI * 440 * frame / sampleRate) * 10000).toInt()
+                buffer[offset + i * 2] = value.toByte()
+                buffer[offset + i * 2 + 1] = (value shr 8).toByte()
+                frame++
+            }
+            return frames * 2
+        }
+        override fun stop() { stopping.set(true); speech.countDown(); stopped.countDown() }
+        override fun close() = stop()
     }
 
     private class SilentSource : AudioSource {

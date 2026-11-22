@@ -4391,12 +4391,25 @@ Observations, not changed:
 ## Streaming codec fidelity and lifetime (2026-11-22)
 
 - 113 core-media cases pass: exact short input, partial codec buffers, kept timestamps, long-progress
-  export beyond30s, expired stall rejection, overall bound, cancellation and truncated-source cleanup.
+  export beyond 30s, expired stall rejection, overall bound, cancellation and truncated-source cleanup.
 - Isolated API30 real encode/decode keeps head/tail pilots and distinct middle segments across two cuts.
-  Decoded192648 versus192000 kept frames (+13.5ms tail),21716 encoded bytes. A generated30min PCM
-  stream completes in303294ms,9810093 bytes, own-process PSS33625→57880KiB observed peak.
+  Decoded 192648 versus 192000 kept frames (+13.5ms tail), 21716 encoded bytes. A generated 30-minute PCM
+  stream completes in 303294ms, 9810093 bytes, own-process PSS 33625→57880KiB observed peak.
 - Short immediate FD growth is Codec2 shared-buffer retirement: identical success-only batches grow
-  [63,67,71,75], then with7s settling reach[63,59,59,59], no forced GC; native evictor logs confirm cleanup.
+  [63,67,71,75], then with 7s settling reach [63,59,59,59], no forced GC; native evictor logs confirm cleanup.
   These are partial measurements, not complete resources/remote codec-service/physical-device acceptance.
-- Affected unit/lint/app/test-APK/vital gate passes in4m46s; final4 media and15 editor/crop native checks
-  pass in3.76s/1.945s. Test packages removed; owned silent headless AVD off. Partial REC32/36/39/48/70/79.
+- Affected unit/lint/app/test-APK/vital gate passes in 4m46s; final 4 media and 15 editor/crop native checks
+  pass in 3.76s/1.945s. Test packages removed; owned silent headless AVD off. Partial REC32/36/39/48/70/79.
+
+## Initial selection across Ready and in-flight commands (2026-11-22)
+
+- Actual quiet-history→speech-during-opening fixture is red on the previous implementation. Guarded
+  refinement now uses the Ready snapshot without consuming allowance while loading or replacing edits.
+- A second actual bridge fixture holds a user edit; the late response previously changed its start from
+  100800 to 328800 frames. Separate initialSequence now preserves the edit through real file export.
+  Page cases cover grabbed handles, immediate redraw and presentation-only commands.
+- 350 overlay and 233 page cases pass. Final owner/sequence gate passes in 2m23s; final asset/lint/app/
+  test-APK/vital gate passes in 50s. API30 passes 17 native cases in 19.777s, including deliberate quiet/
+  speech waits in two new cases. This is not comparable to the earlier 15-case timing.
+- Package removed; owned silent headless AVD off. Partial REC19/41/50/55/79 evidence; broader source/
+  service/physical and waveform/resource acceptance remains pending.

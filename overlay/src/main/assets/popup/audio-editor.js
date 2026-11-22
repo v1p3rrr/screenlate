@@ -26,6 +26,7 @@ var AudioEditor = (() => {
         operation: null,
         sequence: 0,
         previewSequence: 0,
+        initialSequence: 0,
         sourceRevision: 0,
         phase: "editing",
         sampleRate: 48000,
@@ -97,6 +98,7 @@ var AudioEditor = (() => {
             return false;
         }
         if (['play', 'seek', 'pause', 'edit', 'save'].includes(action)) state.previewSequence = state.sequence;
+        if (['ready', 'edit', 'play', 'seek', 'pause', 'save', 'silence', 'refresh', 'silenceSettings'].includes(action)) state.initialSequence = state.sequence;
         ScreenlateBridge.onAudioEditorCommand(packet);
         return true;
     }
@@ -105,6 +107,7 @@ var AudioEditor = (() => {
         if (!state.isOpen || data.operation !== state.operation) return;
         if (data.closed) { close(); return; }
         if (data.sequence !== undefined && data.sequence < state.sequence) return;
+        if (data.initialSequence !== undefined && data.initialSequence !== state.initialSequence) return;
         if (data.phase !== undefined) state.phase = data.phase;
         if (data.initialSelection) {
             state.a = data.initialSelection[0]; state.b = data.initialSelection[1];
@@ -118,6 +121,7 @@ var AudioEditor = (() => {
             state.sourceRevision = data.timeline.sourceRevision;
             updateTimeline(data.timeline);
         }
+        if (data.initialSelection && !data.timeline) render();
         if (data.previewSequence === undefined || data.previewSequence === state.previewSequence) {
             if (data.cursor !== undefined) updateCursor(data.cursor);
             if (data.playing !== undefined) setPlaying(data.playing);
@@ -154,6 +158,7 @@ var AudioEditor = (() => {
     }
 
     function remember() {
+        state.initialSequence = -1;
         undo.push({ a: state.a, b: state.b, cuts: state.cuts.map(c => c.slice()) });
         if (undo.length > 30) undo.shift();
         checkDirty();
@@ -548,6 +553,7 @@ var AudioEditor = (() => {
         lastSentEdit = JSON.stringify([Math.round(data.selection ? data.selection[0] : 0), Math.round(data.selection ? data.selection[1] : 0), data.cuts || []]);
         state.sequence = 0;
         state.previewSequence = 0;
+        state.initialSequence = 0;
         state.sourceRevision = data.sourceRevision || 0;
         state.phase = data.phase || 'editing';
         silenceRequestCount = 0;

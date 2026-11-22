@@ -114,12 +114,25 @@ internal class AudioEditorOperation(
         return true
     }
 
-    fun ready(range: AudioRange, initial: AudioEdit): Boolean {
-        if (phase != Phase.OPENING || initial.selection.start < range.start || initial.selection.endExclusive > range.endExclusive ||
+    fun ready(range: AudioRange, initial: AudioEdit, commandSequence: Long = 0): Boolean {
+        if (phase != Phase.OPENING || commandSequence < sequence || initial.selection.start < range.start || initial.selection.endExclusive > range.endExclusive ||
             !append(range)
         ) return false
+        sequence = commandSequence
         edit = initial
         phase = Phase.EDITING
+        return true
+    }
+
+    /** Only an untouched first suggestion can accept analysis from its exact source and command revision. */
+    fun refineInitial(sequence: Long, sourceRevision: Long, initial: AudioEdit): Boolean {
+        if (phase != Phase.EDITING || this.sequence != sequence || this.sourceRevision != sourceRevision ||
+            editRevision != 0L || edit == initial || initial.outputFrames <= 0 || edit.exclusions.isNotEmpty() || initial.exclusions.isNotEmpty() ||
+            initial.selection.start < edit.selection.start || initial.selection.endExclusive != edit.selection.endExclusive ||
+            !contains(initial.selection)
+        ) return false
+        edit = initial
+        editRevision++
         return true
     }
 

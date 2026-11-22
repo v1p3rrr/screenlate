@@ -265,7 +265,9 @@ class AudioEditorController(
                     val bounds = sentenceRecorder.initialBounds(view) ?: range
                     AudioEdit(AudioRange(operation.edit.selection.start.coerceIn(bounds.start, bounds.endExclusive), bounds.endExclusive))
                 }
-                if (active !== session || !operation.ready(range, initial)) return@launch
+                if (active !== session || !operation.ready(range, initial, command.sequence)) return@launch
+                val revision = operation.sourceRevision
+                val sequence = operation.sequence
                 send(session) {
                     put("phase", "editing")
                     put("initialSelection", ranges(listOf(initial.selection)).first())
@@ -280,7 +282,15 @@ class AudioEditorController(
                         put("overviewSummary", buildJsonArray {})
                     })
                 }
-                val revision = operation.sourceRevision
+                if (previous == null) {
+                    val refined = sentenceRecorder.initialSelection(view)
+                    if (active === session && refined != null && operation.refineInitial(sequence, revision, refined)) send(session) {
+                        put("initialSequence", sequence)
+                        put("initialSelection", ranges(listOf(refined.selection)).first())
+                        put("initialCuts", ranges(refined.exclusions))
+                        put("editRevision", operation.editRevision)
+                    }
+                }
                 val summary = sentenceRecorder.waveformSummary(range, contextId = session.contextId)
                 if (active === session && operation.sourceRevision == revision && summary != null) send(session) {
                     put("timeline", buildJsonObject {

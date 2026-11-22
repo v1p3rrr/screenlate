@@ -1,5 +1,29 @@
 # Status
 
+## Sentence audio: first selection across Ready (2026-11-22)
+
+- Codec checkpoint 58e943e6 is committed/pushed. Continue remaining D/E/F/G autonomously.
+- New Android fixture records quiet history, holds page Ready, then commits speech before releasing
+  Ready. Production is red (ready-speech-native-red.log, 14.022s): initial leading-quiet refinement
+  is not recomputed for the Ready snapshot. Two owner tests cover guarded one-shot refinement.
+- Source-revision/command guards and Ready-snapshot refinement are implemented; 350 overlay owner
+  cases pass. Native two-case run confirms the quiet→speech path now works, but exposed in-flight edit
+  replacement (100800→328800 frames, initial-inflight-native-red.log, 17.312s).
+- Ready now admits its command sequence. A separate initialSequence on both sides rejects late initial
+  suggestions after editing/playback but preserves presentation-only actions. Grabbing a trim handle
+  protects it before the first move; accepted suggestions redraw immediately. 233 page cases pass.
+- 350 overlay and 233 page cases pass. Owner/sequence gate passes (initial-refinement-final-gates.log,
+  2m23s); final asset/lint/app/test-APK/vital gate passes (initial-refinement-assets-gates.log, 50s).
+  Actual source revision is captured before analysis awaits. API30 passes 17 native cases in 19.777s,
+  including late speech and in-flight edit preserved through real export. Extra time is deliberate quiet/
+  speech fixture waiting, not a comparable 15-case performance run. Package removed; owned AVD off.
+- Next D bounded waveform detail/status. Then E media-copy retry with retained draft/source, F complete
+  settings/resource policy, and G actual service/source/device acceptance. Commit this coherent checkpoint.
+- The last action of the previous turn was rejected before execution by approval-review usage limits.
+  Tools resumed after reset; latest weekly check was 87% used. The leftover owned emulator/test package has
+  now been removed/powered off. No extra credits. Weekly stop remains less than 2% remaining.
+- Pending documentation spacing corrections are harmless; preserve unrelated submodules/photos.
+
 ## Sentence audio: streaming encoder verification in progress (2026-11-22)
 
 - Byte-reader checkpoint 6f7bf752 is committed/pushed. Continue D/E/F/G without yielding.

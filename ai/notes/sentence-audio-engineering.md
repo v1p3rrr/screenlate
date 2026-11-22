@@ -7,6 +7,26 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Ready-snapshot initial refinement and in-flight edits — 2026-11-22
+
+An actual WebView/PCM fixture holds Ready while speech arrives after seven seconds of quiet. Production
+kept the old unrefined start (red, 14.022s). The owner now recomputes the first suggestion from the Ready
+snapshot after enabling editing, keeping the source revision captured before analysis. It accepts the
+result only once, for the same source/command revision, before edits/playback/Refresh and never empties
+the selection. Confirmed previous-note choices bypass this suggestion.
+
+A second native fixture holds an edit command in the bridge. It reproduced a client-side overwrite from
+100800 to 328800 frames despite the native command guard. Ready now admits its command sequence; the
+page separately tracks commands that invalidate initial suggestions. A late initialSequence cannot
+replace an in-flight edit or a grabbed handle. Layout-only commands preserve the suggestion; accepted
+refinement redraws the handles immediately without an extra edit command.
+
+350 overlay and 233 page cases pass. Owner/sequence gate passes in 2m23s; final asset/lint/app/test-APK/
+vital gate passes in 50s. Isolated API30 passes 17 cases in 19.777s, including both new scenarios and actual
+export of the preserved in-flight edit. The two new cases intentionally wait for quiet/speech and are
+not comparable to the old 15-case quick run. Package removed; owned silent headless AVD powered off.
+Remaining D is bounded waveform/detail/status work; E/F/G integration and physical acceptance remain.
+
 ## Streaming codec repair and descriptor investigation — 2026-11-22
 
 PcmAudioEncoder drives exact kept-frame input, continuous timestamps, one encoder/container pair and

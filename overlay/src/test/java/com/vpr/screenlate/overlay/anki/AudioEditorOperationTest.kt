@@ -19,6 +19,41 @@ class AudioEditorOperationTest {
     private val initial = AudioEdit(AudioRange(200, 400))
 
     @Test
+    fun `first refinement applies once to an untouched matching source`() = runTest {
+        val operation = AudioEditorOperation(this, source, initial, opening = true) { null }
+        try {
+            assertThat(operation.ready(AudioRange(100, 1500), initial, commandSequence = 1)).isTrue()
+            assertThat(operation.sequence).isEqualTo(1)
+            val refined = AudioEdit(AudioRange(300, 400))
+            assertThat(operation.refineInitial(1, 1, AudioEdit(AudioRange(400, 400)))).isFalse()
+            assertThat(operation.refineInitial(1, 1, refined)).isTrue()
+            assertThat(operation.edit).isEqualTo(refined)
+            assertThat(operation.refineInitial(1, 1, AudioEdit(AudioRange(350, 400)))).isFalse()
+        } finally { operation.cancel() }
+    }
+
+    @Test
+    fun `delayed refinement cannot replace playback choice manual edits or a refreshed source`() = runTest {
+        val played = AudioEditorOperation(this, source, initial, opening = true) { null }
+        val edited = AudioEditorOperation(this, source, initial, opening = true) { null }
+        val refreshed = AudioEditorOperation(this, source, initial, opening = true) { null }
+        try {
+            for (operation in listOf(played, edited, refreshed)) operation.ready(AudioRange(100, 1500), initial)
+            assertThat(played.accept(1, 1, initial)).isTrue()
+            played.play(PreviewMode.RESULT, 200, 1)
+            assertThat(played.refineInitial(0, 1, AudioEdit(AudioRange(300, 400)))).isFalse()
+            val manual = AudioEdit(AudioRange(250, 400))
+            assertThat(edited.accept(1, 1, manual)).isTrue()
+            assertThat(edited.refineInitial(1, 1, AudioEdit(AudioRange(300, 400)))).isFalse()
+            assertThat(refreshed.append(AudioRange(100, 2000))).isTrue()
+            assertThat(refreshed.refineInitial(0, 1, AudioEdit(AudioRange(300, 400)))).isFalse()
+            assertThat(played.edit).isEqualTo(initial)
+            assertThat(edited.edit).isEqualTo(manual)
+            assertThat(refreshed.edit).isEqualTo(initial)
+        } finally { played.cancel(); edited.cancel(); refreshed.cancel() }
+    }
+
+    @Test
     fun `seek during preparation keeps only the latest cursor mode and accepted edit`() = runTest {
         val release = CompletableDeferred<Unit>()
         val requests = mutableListOf<AudioEditorOperation.Preview>()

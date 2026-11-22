@@ -207,7 +207,10 @@ path in compact and expanded windows; focus remains non-modal for outside player
 Prepare/Commit/Dismiss messages freeze the original data and target before attachment choice, with
 separate identities for recreated pages.
 Source image acquisition is deferred until selected. Timeline loading uses waiting retention; a matching
-operable-page Ready admits the editor allowance once. Resizing keeps the same editor/crop host and source
+operable-page Ready admits the editor allowance once. Initial refinement uses that snapshot and gives
+precedence to edits and playback commands,
+including page commands still travelling to native code; presentation changes preserve the suggestion.
+Resizing keeps the same editor/crop host and source
 coordinates instead of closing the scan or renewing its allowance. `AudioEditorOperation` owns each
 editor result, immutable accepted edits, source revisions, child work and export output. A conflated
 preview mailbox retains one preparing request and the latest replacement. Playback intent survives

@@ -1,10 +1,21 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Latest Ready continuation (2026-11-22): first selection is refined from the operable Ready snapshot,
+once and only before accepted edits/playback/Refresh. A separate page/native initialSequence preserves
+in-flight edits and grabbed handles while layout commands remain eligible. Accepted suggestions redraw
+immediately; source revision is captured before analysis awaits. 350 overlay/233 page cases and affected
+gates pass (2m23s owner/sequence, 50s final assets). API30 passes 17 native cases in 19.777s, including
+speech during opening and a held bridge edit preserved through real export. Two new cases deliberately
+wait for quiet/speech, so the old 15-case timing is not comparable. Package removed, owned silent AVD off.
+Next D bounded waveform/detail/status, then E media-copy retry with retained source/draft, F resources/
+settings and G actual service/source/device acceptance. Continue without yielding. Codec predecessor
+58e943e6 is committed/pushed; product decisions stand. Stop below 2% weekly remaining, no credits.
+
 Latest codec continuation (2026-11-22): exact PCM driver/native adapter, continuous kept timestamps,
-cancellation, deterministic construction/finalization and separate10s progress/30s+2x duration overall
-limits are implemented. 113 core/348 overlay/230 page cases pass; final affected gate passes4m46s.
-Actual API30 decoded pilots/cuts and30min stream pass (303294ms,9810093 bytes, own PSS peak57880KiB).
-Final4 media+15 editor/crop tests pass3.76s/1.945s. Both packages removed; owned silent headless AVD off.
+cancellation, deterministic construction/finalization and separate 10s progress/30s+2x duration overall
+limits are implemented. 113 core/348 overlay/230 page cases pass; final affected gate passes 4m46s.
+Actual API30 decoded pilots/cuts and 30-minute stream pass (303294ms,9810093 bytes, own PSS peak57880KiB).
+Final 4 media + 15 editor/crop tests pass 3.76s/1.945s. Both packages removed; owned silent headless AVD off.
 FD investigation is resolved: transient ashmem from Codec2 caches, settled [63,59,59,59], native eviction
 logs; all temporary flags/GC hooks/category probes removed. It is not a whole-feature resource certificate.
 Next D waveform/detail/status and initial refinement when speech arrives during preparation/Ready; E

@@ -2,6 +2,71 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { popupPage } from '../../../../scripts/page-tests/harness.mjs';
 
+test('delayed initial refinement cannot replace an edit still travelling to native', { timeout: 5000 }, async () => {
+    const page = popupPage();
+    const editor = page.global('AudioEditor');
+    let ready;
+    const opened = new Promise(resolve => { ready = resolve; });
+    page.window.ScreenlateBridge = { onAudioEditorCommand: json => {
+        const command = JSON.parse(json);
+        if (command.action === 'ready') ready(command);
+    } };
+    editor.open({ operation: 'initial-edit', phase: 'opening', totalFrames: 480000, selection: [0, 300000] });
+    const opening = await opened;
+    editor.receive({ operation: 'initial-edit', phase: 'editing', initialSelection: [0, 300000], initialCuts: [] });
+    page.document.getElementById('sl-action-cut').click();
+    const cuts = JSON.stringify(editor.state.cuts);
+    editor.receive({ operation: 'initial-edit', initialSequence: opening.sequence,
+        initialSelection: [100000, 300000], initialCuts: [] });
+    assert.equal(editor.state.a, 0);
+    assert.equal(JSON.stringify(editor.state.cuts), cuts);
+});
+
+test('presentation changes preserve an untouched delayed initial suggestion', { timeout: 5000 }, async () => {
+    const page = popupPage();
+    const editor = page.global('AudioEditor');
+    let ready;
+    const opened = new Promise(resolve => { ready = resolve; });
+    page.window.ScreenlateBridge = { onAudioEditorCommand: json => {
+        const command = JSON.parse(json);
+        if (command.action === 'ready') ready(command);
+    } };
+    editor.open({ operation: 'initial-expand', phase: 'opening', totalFrames: 480000, selection: [0, 300000] });
+    const opening = await opened;
+    editor.receive({ operation: 'initial-expand', phase: 'editing', initialSelection: [0, 300000], initialCuts: [] });
+    page.document.getElementById('sl-action-expand').click();
+    editor.receive({ operation: 'initial-expand', initialSequence: opening.sequence,
+        initialSelection: [100000, 300000], initialCuts: [] });
+    assert.equal(editor.state.a, 100000);
+    const handleLeft = parseFloat(page.document.getElementById('sl-start').style.left);
+    assert.ok(handleLeft > 20 && handleLeft < 21);
+    assert.equal(editor.state.expanded, true);
+    assert.equal(editor.state.dirty, false);
+});
+
+test('grabbing a trim handle protects it before any movement command is sent', { timeout: 5000 }, async () => {
+    const page = popupPage();
+    const editor = page.global('AudioEditor');
+    let ready;
+    const opened = new Promise(resolve => { ready = resolve; });
+    page.window.ScreenlateBridge = { onAudioEditorCommand: json => {
+        const command = JSON.parse(json);
+        if (command.action === 'ready') ready(command);
+    } };
+    editor.open({ operation: 'initial-grab', phase: 'opening', totalFrames: 480000, selection: [0, 300000] });
+    const opening = await opened;
+    editor.receive({ operation: 'initial-grab', phase: 'editing', initialSelection: [0, 300000], initialCuts: [] });
+    const handle = page.document.getElementById('sl-start');
+    handle.setPointerCapture = () => {};
+    const grab = new page.window.Event('pointerdown', { bubbles: true });
+    grab.pointerId = 1;
+    handle.dispatchEvent(grab);
+    editor.receive({ operation: 'initial-grab', initialSequence: opening.sequence,
+        initialSelection: [100000, 300000], initialCuts: [] });
+    assert.equal(editor.state.a, 0);
+    assert.equal(editor.state.dirty, false);
+});
+
 test('queued preview callbacks cannot move the cursor or stop a newer seek', () => {
     const page = popupPage();
     const editor = page.global('AudioEditor');
