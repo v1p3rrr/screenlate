@@ -1,5 +1,28 @@
 # Status
 
+## Sentence audio: waveform detail and live status (2026-11-22)
+
+- Ready-refinement checkpoint a502846a is committed/pushed. Continue D/E/F/G without yielding.
+- A bounded source-frame amplitude pyramid now builds once per context, appends only newly shown PCM
+  and answers overview/detail queries without rereading the whole history for each pan. Base resolution
+  is 5ms at 48kHz; maximum 30-minute admitted source uses less than 2.88MB of float storage, excluding
+  object/allocation overhead. This is a cache bound, not whole-feature memory acceptance.
+- The page sends a small viewport request; native retains one active and only the latest waiting request.
+  Request/source identities reject obsolete detail. Opening no longer waits for a full-history waveform;
+  unknown amplitude is drawn as a placeholder, not invented signal. Source/edit/export bytes are unchanged.
+- Read-only retention/availability updates every second without refreshing shown bounds, rebuilding SVG,
+  moving edits or granting allowance. Every capped Refresh explains exhaustion, including the final tail;
+  manual Stop is distinguished from a duration/resource limit. Existing translated messages are reused.
+- 116 core-media, 350 overlay and 236 page cases pass. New regressions are red then green for
+  viewport/detail identity, metadata-only status and repeated cap feedback. Affected integration gate
+  passes (waveform-integration-gates.log, 4m47s), final assets/lint/app/vital gate passes (1m7s).
+- Isolated API30 passes 17 editor/crop native cases in 20.7s, including actual viewport/detail replies and
+  new-audio metadata without moving shown bounds. Package removed; owned silent headless AVD off.
+  These fixtures do not certify real source/system overlay gestures or aggregate resource acceptance.
+- Weekly limit last read: 91% used; stop immediately below 2% remaining, no reset credits.
+- Next: commit this coherent waveform/status block, then E retained draft/media-copy recovery,
+  F settings/silence/aggregate resources, G actual service/source/device and full checks.
+
 ## Sentence audio: first selection across Ready (2026-11-22)
 
 - Codec checkpoint 58e943e6 is committed/pushed. Continue remaining D/E/F/G autonomously.

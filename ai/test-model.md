@@ -4413,3 +4413,14 @@ Observations, not changed:
   speech waits in two new cases. This is not comparable to the earlier 15-case timing.
 - Package removed; owned silent headless AVD off. Partial REC19/41/50/55/79 evidence; broader source/
   service/physical and waveform/resource acceptance remains pending.
+
+## Bounded waveform detail and live status (2026-11-22)
+
+- 116 core-media cases pass; source-coordinate overview/detail and partial append/budget/gap cases
+  exercise bounded reusable summaries. 350 overlay and 236 page cases pass. New red/green page cases
+  reject stale viewport detail, update status without replacing SVG/edits/source, and repeat cap feedback.
+- Affected unit/lint/app/test-APK/vital checks pass (4m47s); final asset/lint/app/vital check passes (1m7s).
+  Isolated API30 passes 17 editor/crop native cases in 20.7s, including real viewport reply and metadata
+  availability while shown bounds remain fixed. Test package removed; owned silent headless AVD off.
+- Partial REC19/34/41/50/55/70/79 evidence. Actual service/source/gesture, waveform-failure/memory pressure
+  and whole-feature resources remain pending. No Anki collection accessed.

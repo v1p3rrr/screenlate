@@ -415,12 +415,12 @@ are investigated as findings, not converted into an invented new audio performan
 | A regression baseline | Partial | Permanent core regressions landed with fixes; 98 core-media tests, 8 AudioPlayer, 4 playback-owner, 12 popup playback and 8 new editor/pending-operation cases pass; identified editor DOM regressions and frozen-target fake-backend cases are permanent. Full lifecycle fixtures remain. |
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
 | C pending operation/protocol | Software implemented; E/G gate open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. 345 overlay/223 page and 4 isolated native checks pass. E still supplies recoverable media-copy UI; G supplies real service/source/gesture/device acceptance. |
-| D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 113 core-media/350 overlay/233 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status work remains. |
+| D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-Continue D with bounded waveform/status detail.
+D software/checkpoint gates pass; continue E.
 Continue E pre-note transfer recovery, F resource/settings policy
 and G acceptance autonomously after coherent checkpoints. C lifecycle software is implemented; its full
 integration gate remains dependent on E's recovery UI and actual service/device portions of G.
@@ -437,6 +437,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-22: Added bounded reusable amplitude levels, conflated viewport queries and read-only live
+  availability/allowance status. Waveform loading no longer blocks Ready; stale detail is ignored,
+  Refresh preserves edits and explains every exhausted request. 116 core/350 overlay/236 page cases,
+  affected gates and 17 isolated native editor/crop cases pass. Product decisions unchanged.
 - 2026-11-22: Reproduced/fixed initial refinement missing speech arriving during page opening and a
   late suggestion replacing an in-flight page edit. Ready source/command revisions, one-shot guards,
   page initialSequence and immediate handle redraw preserve user actions and presentation behavior.

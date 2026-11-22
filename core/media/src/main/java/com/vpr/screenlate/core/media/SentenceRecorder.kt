@@ -63,6 +63,8 @@ class SentenceRecorder internal constructor(
     private class ContextOwner(val session: PcmStorageCoordinator) {
         var uiOwned = true
         var readers = 0
+        val waveforms = Mutex()
+        var waveformIndex: WaveformIndex? = null
     }
     private val contexts = mutableMapOf<AudioContextId, ContextOwner>()
 
@@ -269,6 +271,10 @@ class SentenceRecorder internal constructor(
     suspend fun refresh(id: AudioContextId, refreshMillis: Long = nowMillis()): AudioTimelineView? =
         withContext(Dispatchers.IO) { lifecycle.withLock { contextSession(id)?.refresh(id, refreshMillis) } }
 
+    /** Current retention/availability without opening or refreshing the shown source. */
+    suspend fun view(id: AudioContextId): AudioTimelineView? =
+        withContext(Dispatchers.IO) { lifecycle.withLock { contextSession(id)?.view(id) } }
+
     suspend fun releaseContext(id: AudioContextId) = withContext(NonCancellable + Dispatchers.IO) {
         lifecycle.withLock { releaseUiContext(id) }
         Unit
@@ -291,12 +297,34 @@ class SentenceRecorder internal constructor(
     }
 
     suspend fun waveformSummary(range: AudioRange, buckets: Int = 200, contextId: AudioContextId? = null): WaveformSummary? = withContext(Dispatchers.IO) {
+        if (range.frames <= 0 || buckets !in 1..2048) return@withContext null
         val caller = currentCoroutineContext()
-        val snapshot = snapshot(range, contextId) ?: return@withContext null
-        snapshot.use { lease ->
-            try { lease.openStream().use { WaveformSummary.compute(it, range, buckets) { caller.ensureActive() } } }
-            catch (cancelled: CancellationException) { throw cancelled }
-            catch (e: Exception) { Log.w(TAG, "Waveform computation failed", e); null }
+        try {
+            val cached = if (contextId == null) null else lifecycle.withLock {
+                val owner = synchronized(contexts) { contexts[contextId] }
+                val shown = owner?.session?.view(contextId)?.source
+                if (owner != null && shown != null && shown.intersect(range) == range) owner to shown else null
+            }
+            if (cached != null) {
+                val (owner, shown) = cached
+                return@withContext owner.waveforms.withLock {
+                    val index = owner.waveformIndex?.takeIf { it.startFrame == shown.start }
+                        ?: WaveformIndex(shown.start).also { owner.waveformIndex = it }
+                    if (index.endFrame < shown.endExclusive) {
+                        val tail = AudioRange(index.endFrame, shown.endExclusive)
+                        val snapshot = snapshot(tail, contextId) ?: return@withLock null
+                        snapshot.use { lease -> lease.openStream().use { index.append(it, tail) { caller.ensureActive() } } }
+                    }
+                    index.summary(range, buckets)
+                }
+            }
+            val snapshot = snapshot(range, contextId) ?: return@withContext null
+            snapshot.use { lease -> lease.openStream().use { WaveformSummary.compute(it, range, buckets) { caller.ensureActive() } } }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (e: Exception) {
+            Log.w(TAG, "Waveform computation failed", e)
+            null
         }
     }
 

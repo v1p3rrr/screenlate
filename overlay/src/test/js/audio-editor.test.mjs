@@ -38,6 +38,63 @@ const tap = el => {
     el.dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
 };
 
+test('viewport waveform requests are small and stale detail cannot replace a newer view', async () => {
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: raw => commands.push(JSON.parse(raw)) };
+    AudioEditor.open({ operation: 'detail', sourceRevision: 2, totalFrames: 4800000,
+        selection: [200000, 400000] });
+    await new Promise(resolve => page.window.requestAnimationFrame(resolve));
+    const first = commands.find(c => c.action === 'waveform');
+    assert.ok(first);
+    assert.equal(first.selection, undefined);
+    assert.equal(first.exclusions, undefined);
+    assert.equal(first.sourceRevision, 2);
+    assert.ok(first.buckets > 0 && first.buckets <= 512);
+    tap(page.document.getElementById('sl-action-zoom-in'));
+    await new Promise(resolve => page.window.requestAnimationFrame(resolve));
+    const latest = commands.filter(c => c.action === 'waveform').at(-1);
+    assert.notEqual(latest.request, first.request);
+    AudioEditor.receive({ operation: 'detail', waveform: { request: first.request,
+        sourceRevision: 2, range: first.range, peaks: [1, 1] } });
+    assert.equal(AudioEditor.state.detailSummary, null);
+    AudioEditor.receive({ operation: 'detail', waveform: { request: latest.request,
+        sourceRevision: 2, range: latest.range, peaks: [0, 0.75] } });
+    assert.deepEqual(Array.from(AudioEditor.state.detailSummary.peaks), [0, 0.75]);
+});
+
+test('live status updates neither redraw the waveform nor move the shown source or edits', () => {
+    AudioEditor.open({ operation: 'status', sourceRevision: 4, totalFrames: 480000,
+        selection: [100000, 300000], cuts: [[150000, 180000]], recording: true });
+    const wave = page.document.getElementById('sl-wave');
+    const originalBar = wave.firstElementChild;
+    const viewport = [AudioEditor.state.view, AudioEditor.state.width];
+    AudioEditor.receive({ operation: 'status', status: { newFrames: 96000, remainingMillis: 65000,
+        limit: true, recording: false } });
+    assert.equal(page.document.getElementById('sl-new').textContent, 'New sound: 0:02');
+    assert.equal(page.document.getElementById('sl-remaining').textContent, 'Limit reached');
+    assert.equal(page.document.getElementById('sl-record-label').textContent, 'Recording stopped');
+    assert.equal(wave.firstElementChild, originalBar);
+    assert.deepEqual([AudioEditor.state.view, AudioEditor.state.width], viewport);
+    assert.equal(AudioEditor.state.sourceEnd, 480000);
+    assert.deepEqual(Array.from(AudioEditor.state.cuts[0]), [150000, 180000]);
+    AudioEditor.receive({ operation: 'status', timeline: { sourceRevision: 4, overviewSummary: [0, 0.5] } });
+    assert.equal(AudioEditor.state.limit, true);
+});
+
+test('each capped Refresh explains exhaustion and stopped capture is not labelled a limit', () => {
+    AudioEditor.open({ operation: 'cap', totalFrames: 480000, selection: [100000, 300000] });
+    for (let i = 0; i < 2; i++) {
+        const toast = page.document.querySelector('.sl-toast');
+        toast.hidden = true;
+        AudioEditor.receive({ operation: 'cap', refresh: { addedFrames: i === 0 ? 48000 : 0, sealed: true, limit: true } });
+        assert.equal(toast.hidden, false);
+        assert.match(toast.textContent, /No further audio can be added/);
+        if (i === 0) assert.match(toast.textContent, /Added 0:01/);
+    }
+    AudioEditor.receive({ operation: 'cap', status: { limit: false, reason: 'capture_stopped', recording: false } });
+    assert.equal(page.document.getElementById('sl-remaining').textContent, 'Recording stopped');
+});
+
 test('opening waits for matching Ready acknowledgement before enabling audio actions', async () => {
     const commands = [];
     page.window.ScreenlateBridge = { onAudioEditorCommand: raw => commands.push(JSON.parse(raw)) };

@@ -57,7 +57,7 @@ the caller before it is dismissed.
 
 `core:media` has pure JVM tests for deadline ordering, frame clocks, scan timelines/Refresh, source-frame edits,
 initial selection, PCM leases, rollover/quotas/failed writes, concurrent bounded capture buffers, silence detection,
-waveform downsampling, preview player playback and seek, and Opus export.
+bounded append-only waveform levels and viewport summaries, preview player playback and seek, and Opus export.
 Run `./gradlew :core:media:testDebugUnitTest :core:media:lintDebug`.
 
 `SentenceRecorderTest` and `PcmStorageCoordinatorTest` cover asynchronous failure publication, failed/cancelled

@@ -27,6 +27,31 @@ class SentenceRecorderTest {
     @get:Rule val temporary = TemporaryFolder()
 
     @Test
+    fun statusShowsUnseenFramesWithoutOpeningOrMovingTheShownSource() = runBlocking {
+        val time = AtomicLong(10_000)
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() }, { time.get() * 1_000_000L })
+        val source = FakeAudioSource()
+        try {
+            recorder.start(source)
+            source.emitFrames(100)
+            withTimeout(3000) { while (recorder.waveformSummary(AudioRange(0, 100)) == null) delay(1) }
+            time.set(10_100)
+            val id = checkNotNull(recorder.acquireScan())
+            val prepared = checkNotNull(recorder.prepareEditor(id))
+            source.emitFrames(100)
+            time.set(10_200)
+            withTimeout(3000) { while (recorder.waveformSummary(AudioRange(0, 200)) == null) delay(1) }
+            val status = checkNotNull(recorder.view(id))
+            assertThat(status.source).isEqualTo(prepared.source)
+            assertThat(status.revision).isEqualTo(prepared.revision)
+            assertThat(status.newFrames).isEqualTo(100)
+            assertThat(status.retention.stage).isEqualTo(RetentionStage.WAITING)
+            assertThat(status.retention.firstEditorMillis).isNull()
+        } finally { recorder.close() }
+    }
+
+    @Test
     fun pendingEditorLeaseKeepsItsStoppedSessionAcrossRestartAndReleasesOnlyThatSession() = runBlocking {
         val time = AtomicLong(10_000)
         val root = temporary.newFolder()

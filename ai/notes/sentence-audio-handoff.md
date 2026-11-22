@@ -1,5 +1,14 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Latest waveform continuation (2026-11-22): reusable source-frame amplitude levels, conflated viewport
+requests and read-only live status are implemented. 116 core/350 overlay/236 page cases and affected gates
+pass; API30 passes 17 editor/crop cases in20.7s, including waveform replies and new-sound status without
+moving shown source. Package removed; owned silent headless AVD off. Continue E retained media-copy
+recovery, F settings/resources and G actual service/source/device acceptance autonomously. New code still
+has a pre-existing unopened-editor child-job hazard when enterAudioEditor returns false on a sleeping
+display; add a native regression and close that operation before returning (C/G follow-up). Keep product
+decisions and weekly stop below2% remaining (latest91% used). No credits or owner Anki access.
+
 Latest Ready continuation (2026-11-22): first selection is refined from the operable Ready snapshot,
 once and only before accepted edits/playback/Refresh. A separate page/native initialSequence preserves
 in-flight edits and grabbed handles while layout commands remain eligible. Accepted suggestions redraw

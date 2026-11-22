@@ -167,6 +167,14 @@ class AudioEditorDeviceTest {
                 }
                 val pending = async { controller.edit(scan, "", "") }
                 ready()
+                withTimeout(5000) {
+                    while (evaluate("!!AudioEditor.state.detailSummary && AudioEditor.state.overviewSummary.length===200") != "true") delay(1)
+                }
+                val shownEnd = evaluate("AudioEditor.state.sourceEnd").toLong()
+                withTimeout(5000) {
+                    while (evaluate("AudioEditor.state.newFrames>0") != "true") delay(1)
+                }
+                assertThat(evaluate("AudioEditor.state.sourceEnd").toLong()).isEqualTo(shownEnd)
                 evaluate("document.getElementById('sl-action-play').click(); true")
                 withTimeout(5000) { while (!recorder.isPreviewPlaying) delay(1) }
                 evaluate("document.getElementById('sl-action-play').click(); true")

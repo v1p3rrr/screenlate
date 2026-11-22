@@ -46,9 +46,11 @@ var AudioEditor = (() => {
         expanded: false,
         collapsed: false,
         limit: false,
+        reason: null,
         remainingMillis: 0,
         newFrames: 0,
         overviewSummary: [],
+        detailSummary: null,
         dirty: false,
         activeCut: -1,
         labels: {},
@@ -60,6 +62,9 @@ var AudioEditor = (() => {
     let silenceRequestCount = 0;
     let lastSentEdit = null;
     let gestureRevision = 0;
+    let waveformRequest = 0;
+    let waveformKey = '';
+    let waveformFrame = null;
 
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
     const sourceSpan = () => Math.max(1, state.sourceEnd - state.sourceStart);
@@ -118,8 +123,39 @@ var AudioEditor = (() => {
         }
         if (data.timeline) {
             if (data.timeline.sourceRevision < state.sourceRevision) return;
+            if (data.timeline.sourceRevision !== state.sourceRevision) {
+                state.detailSummary = null;
+                state.overviewSummary = [];
+            }
             state.sourceRevision = data.timeline.sourceRevision;
             updateTimeline(data.timeline);
+        }
+        if (data.waveform && data.waveform.sourceRevision === state.sourceRevision &&
+            data.waveform.request === waveformRequest) {
+            state.detailSummary = data.waveform;
+            if (data.waveform.overview) state.overviewSummary = data.waveform.overview;
+            render();
+        }
+        if (data.status) {
+            const status = data.status;
+            if (status.newFrames !== undefined) state.newFrames = status.newFrames;
+            if (status.limit !== undefined) state.limit = Boolean(status.limit);
+            if (status.remainingMillis !== undefined) state.remainingMillis = status.remainingMillis;
+            if (status.recording !== undefined) state.recording = Boolean(status.recording);
+            if (status.reason !== undefined) state.reason = status.reason;
+            renderStatus();
+        }
+        if (data.refresh) {
+            const result = data.refresh;
+            const parts = [];
+            if (result.addedFrames > 0) parts.push(labelOf('audio_editor_refreshed_toast', 'Added %1$s. Selection and cuts preserved.')
+                .replace('%1$s', formatTime(result.addedFrames / state.sampleRate)));
+            if (result.sealed) parts.push(result.limit ?
+                labelOf('audio_editor_limit_toast', 'Fragment limit reached. No further audio can be added.') :
+                labelOf('audio_editor_recording_stopped', 'Recording stopped'));
+            else if (!result.addedFrames) parts.push(labelOf('audio_editor_no_new_toast', 'No new audio yet.'));
+            const toast = document.querySelector('.sl-toast');
+            if (toast) { toast.textContent = parts.join(' '); toast.hidden = false; }
         }
         if (data.initialSelection && !data.timeline) render();
         if (data.previewSequence === undefined || data.previewSequence === state.previewSequence) {
@@ -132,6 +168,7 @@ var AudioEditor = (() => {
             if (toast) { toast.textContent = data.error; toast.hidden = false; }
         }
         updateBusy();
+        requestWaveform();
     }
 
     function updateBusy() {
@@ -202,15 +239,39 @@ var AudioEditor = (() => {
         return Math.max(0, (totalSelected - cutsTotal) / state.sampleRate);
     }
 
-    function getAmplitude(frame) {
-        if (!state.overviewSummary || state.overviewSummary.length === 0) return 0.2;
+    function requestWaveform() {
+        if (!editable()) return;
+        const range = [Math.floor(state.view), Math.min(state.sourceEnd, Math.ceil(state.view + state.width))];
+        if (range[1] <= range[0]) return;
+        const buckets = 256;
+        const key = JSON.stringify([state.sourceRevision, range, buckets]);
+        if (key === waveformKey) return;
+        waveformKey = key;
+        const request = ++waveformRequest;
+        const operation = state.operation;
+        if (waveformFrame !== null) cancelAnimationFrame(waveformFrame);
+        waveformFrame = requestAnimationFrame(() => {
+            waveformFrame = null;
+            if (state.isOpen && operation === state.operation && request === waveformRequest) {
+                if (!send('waveform', { range, buckets, request })) waveformKey = '';
+            }
+        });
+    }
+
+    function getAmplitude(frame, overview) {
+        const detail = state.detailSummary;
+        if (!overview && detail && frame >= detail.range[0] && frame < detail.range[1] && detail.peaks.length) {
+            const index = Math.floor((frame - detail.range[0]) / (detail.range[1] - detail.range[0]) * detail.peaks.length);
+            return detail.peaks[clamp(index, 0, detail.peaks.length - 1)];
+        }
+        if (!state.overviewSummary || state.overviewSummary.length === 0) return null;
         const start = state.sourceStart !== undefined ? state.sourceStart : 0;
         const end = state.sourceEnd !== undefined ? state.sourceEnd : state.totalFrames;
         const span = Math.max(1, end - start);
         const rel = clamp(frame - start, 0, span);
         const index = Math.floor((rel / span) * state.overviewSummary.length);
         const clampedIndex = clamp(index, 0, state.overviewSummary.length - 1);
-        return state.overviewSummary[clampedIndex] || 0.05;
+        return state.overviewSummary[clampedIndex];
     }
 
     function drawWave(svg, overview) {
@@ -236,12 +297,18 @@ var AudioEditor = (() => {
         const step = 4;
         for (let i = 1; i < w; i += step) {
             const f = from + (i / w) * span;
-            const amp = getAmplitude(f) * (overview ? 11 : 33);
+            const amplitude = getAmplitude(f, overview);
+            if (amplitude === null) continue;
+            const amp = amplitude * (overview ? 11 : 33);
             const active = f >= state.a && f <= state.b;
             const fill = active ? 'var(--accent)' : 'var(--muted)';
             const opacity = active ? '0.9' : '0.35';
             const y = (overview ? 17 : 47) - amp;
             html += `<rect x="${i}" y="${y}" width="2" height="${Math.max(2, amp * 2)}" rx="1" fill="${fill}" opacity="${opacity}"/>`;
+        }
+        if (!state.overviewSummary.length && (overview || !state.detailSummary)) {
+            const y = overview ? 17 : 47;
+            html += `<line x1="0" x2="${w}" y1="${y}" y2="${y}" stroke="var(--muted)" stroke-dasharray="2 6" opacity="0.35"/>`;
         }
 
         if (overview) {
@@ -286,29 +353,7 @@ var AudioEditor = (() => {
         svg.innerHTML = html;
     }
 
-    function render() {
-        if (!editor || !state.isOpen) return;
-
-        checkDirty();
-        const editKey = JSON.stringify([Math.round(state.a), Math.round(state.b), normalizedCuts()]);
-        if (editKey !== lastSentEdit && editable()) {
-            lastSentEdit = editKey;
-            send('edit');
-        }
-        state.width = boundedWidth(state.width);
-        state.view = boundedView(state.view);
-
-        editor.classList.toggle('sl-expanded', state.expanded);
-        editor.hidden = state.collapsed;
-        if (pill) pill.hidden = !state.collapsed;
-
-        const expandBtn = document.getElementById('sl-action-expand');
-        if (expandBtn) {
-            expandBtn.setAttribute('aria-label', state.expanded ?
-                labelOf('audio_editor_compact', 'Collapse to popup width') :
-                labelOf('audio_editor_expand', 'Expand editor'));
-        }
-
+    function renderStatus() {
         const recLabel = document.getElementById('sl-record-label');
         if (recLabel) {
             recLabel.textContent = state.recording ?
@@ -321,10 +366,45 @@ var AudioEditor = (() => {
 
         const remainingEl = document.getElementById('sl-remaining');
         if (remainingEl) {
-            remainingEl.textContent = state.limit ?
+            remainingEl.textContent = state.reason === 'capture_stopped' ?
+                labelOf('audio_editor_recording_stopped', 'Recording stopped') : state.limit ?
                 labelOf('audio_editor_limit_reached', 'Limit reached') :
                 labelOf('audio_editor_remaining', 'Allowance: %1$s').replace('%1$s', formatTime(state.remainingMillis / 1000));
         }
+
+        const newEl = document.getElementById('sl-new');
+        if (newEl) {
+            newEl.textContent = labelOf('audio_editor_new_sound', 'New sound: %1$s')
+                .replace('%1$s', formatTime(state.newFrames / state.sampleRate));
+        }
+
+    }
+
+    function render() {
+        if (!editor || !state.isOpen) return;
+
+        checkDirty();
+        const editKey = JSON.stringify([Math.round(state.a), Math.round(state.b), normalizedCuts()]);
+        if (editKey !== lastSentEdit && editable()) {
+            lastSentEdit = editKey;
+            send('edit');
+        }
+        state.width = boundedWidth(state.width);
+        state.view = boundedView(state.view);
+        requestWaveform();
+
+        editor.classList.toggle('sl-expanded', state.expanded);
+        editor.hidden = state.collapsed;
+        if (pill) pill.hidden = !state.collapsed;
+
+        const expandBtn = document.getElementById('sl-action-expand');
+        if (expandBtn) {
+            expandBtn.setAttribute('aria-label', state.expanded ?
+                labelOf('audio_editor_compact', 'Collapse to popup width') :
+                labelOf('audio_editor_expand', 'Expand editor'));
+        }
+
+        renderStatus();
 
         const totalWrap = document.getElementById('sl-total-wrap');
         const retainedFrames = Math.max(0, (state.sourceEnd !== undefined ? state.sourceEnd : state.totalFrames) - (state.sourceStart || 0));
@@ -351,12 +431,6 @@ var AudioEditor = (() => {
 
         const rightTimeEl = document.getElementById('sl-right-time');
         if (rightTimeEl) rightTimeEl.textContent = relativeTime(state.view + state.width);
-
-        const newEl = document.getElementById('sl-new');
-        if (newEl) {
-            newEl.textContent = labelOf('audio_editor_new_sound', 'New sound: %1$s')
-                .replace('%1$s', formatTime(state.newFrames / state.sampleRate));
-        }
 
         const playLabel = document.getElementById('sl-play-label');
         if (playLabel) {
@@ -576,9 +650,13 @@ var AudioEditor = (() => {
         state.expanded = Boolean(data.expanded);
         state.collapsed = false;
         state.limit = Boolean(data.limit);
+        state.reason = data.reason || null;
         state.remainingMillis = data.remainingMillis || 0;
         state.newFrames = data.newFrames || 0;
         state.overviewSummary = data.overviewSummary || [];
+        state.detailSummary = null;
+        waveformKey = '';
+        waveformRequest++;
         state.labels = data.labels || {};
         state.activeCut = -1;
 
@@ -679,7 +757,8 @@ var AudioEditor = (() => {
         state.sourceStart = data.sourceStart !== undefined ? data.sourceStart : state.sourceStart;
         state.sourceEnd = data.sourceEnd !== undefined ? data.sourceEnd : state.sourceEnd;
         state.newFrames = data.newFrames !== undefined ? data.newFrames : state.newFrames;
-        state.limit = Boolean(data.limit);
+        if (data.limit !== undefined) state.limit = Boolean(data.limit);
+        if (data.reason !== undefined) state.reason = data.reason;
         state.remainingMillis = data.remainingMillis !== undefined ? data.remainingMillis : state.remainingMillis;
         state.recording = data.recording !== undefined ? Boolean(data.recording) : state.recording;
         if (data.overviewSummary) {
@@ -725,6 +804,10 @@ var AudioEditor = (() => {
     }
 
     function close() {
+        if (waveformFrame !== null) cancelAnimationFrame(waveformFrame);
+        waveformFrame = null;
+        waveformKey = '';
+        state.detailSummary = null;
         gestureRevision++;
         state.isOpen = false;
         if (editor) editor.hidden = true;

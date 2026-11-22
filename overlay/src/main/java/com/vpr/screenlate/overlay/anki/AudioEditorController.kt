@@ -11,6 +11,7 @@ import com.vpr.screenlate.core.media.AudioTimelineView
 import com.vpr.screenlate.core.media.PreviewMode
 import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import com.vpr.screenlate.core.media.RetentionStage
+import com.vpr.screenlate.core.media.RetentionEnd
 import com.vpr.screenlate.core.media.SentenceRecorder
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.popup.PopupController
@@ -22,6 +23,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -50,6 +54,8 @@ private data class AudioEditorCommand(
     val cursor: Long = 0,
     val mode: String = "result",
     val request: Int = 0,
+    val range: List<Long> = emptyList(),
+    val buckets: Int = 256,
     val minPauseSeconds: Float = 1.5f,
     val edgeMarginMillis: Int = 150,
     val expanded: Boolean = false,
@@ -80,6 +86,8 @@ class AudioEditorController(
         var refresh: Job? = null
         var analysis: Job? = null
         var ready: Job? = null
+        val waveforms = Channel<AudioEditorCommand>(Channel.CONFLATED)
+        var waveformRequest = 0
         fun isReady() = this::operation.isInitialized
     }
 
@@ -104,7 +112,6 @@ class AudioEditorController(
                 val previous = lastConfirmed?.takeIf { it.first == audioContextId }?.second
                 val initial = previous?.takeIf { source.intersect(it.selection) == it.selection }
                     ?: sentenceRecorder.initialSelection(timeline) ?: AudioEdit(source)
-                val summary = sentenceRecorder.waveformSummary(source, buckets = 200, contextId = audioContextId)
                 session.operation = AudioEditorOperation(this, source, initial, onChanged = {
                     if (active === session) send(session) {
                         put("phase", session.operation.phase.name.lowercase())
@@ -130,6 +137,26 @@ class AudioEditorController(
                         if (!transferred) withContext(NonCancellable + Dispatchers.IO) { file?.delete() }
                     }
                 }
+                session.operation.scope.launch {
+                    for (request in session.waveforms) {
+                        val operation = session.operation
+                        if (request.request != session.waveformRequest || request.sourceRevision != operation.sourceRevision) continue
+                        val range = AudioRange(request.range[0], request.range[1])
+                        val sourceRevision = operation.sourceRevision
+                        val summary = sentenceRecorder.waveformSummary(range, request.buckets, audioContextId)
+                        val overview = sentenceRecorder.waveformSummary(operation.source, 200, audioContextId)
+                        if (active === session && request.request == session.waveformRequest &&
+                            operation.sourceRevision == sourceRevision && summary != null) send(session) {
+                            put("waveform", buildJsonObject {
+                                put("request", request.request)
+                                put("sourceRevision", sourceRevision)
+                                put("range", ranges(listOf(range)).first())
+                                put("peaks", buildJsonArray { summary.peaks.forEach { add(JsonPrimitive(it)) } })
+                                overview?.let { put("overview", buildJsonArray { it.peaks.forEach { add(JsonPrimitive(it)) } }) }
+                            })
+                        }
+                    }
+                }
                 if (!popupController.enterAudioEditor()) return@coroutineScope AudioEditorResult.Cancelled
                 page.onEditorBack = { page.cancelAudioEditor(session.id) }
                 onVisibilityChanged(true)
@@ -138,6 +165,9 @@ class AudioEditorController(
                     put("audio_editor_recording_stopped", context.getString(R.string.audio_editor_recording_stopped))
                     put("audio_editor_limit_reached", context.getString(R.string.audio_editor_limit_reached))
                     put("audio_editor_remaining", context.getString(R.string.audio_editor_remaining))
+                    put("audio_editor_limit_toast", context.getString(R.string.audio_editor_limit_toast))
+                    put("audio_editor_refreshed_toast", context.getString(R.string.audio_editor_refreshed_toast))
+                    put("audio_editor_no_new_toast", context.getString(R.string.audio_editor_no_new_toast))
                     put("audio_editor_new_sound", context.getString(R.string.audio_editor_new_sound))
                     put("audio_editor_found_pauses", context.getString(R.string.audio_editor_found_pauses))
                     put("audio_editor_no_silence", context.getString(R.string.audio_editor_no_silence))
@@ -208,7 +238,6 @@ class AudioEditorController(
                     putRetention(timeline)
                     put("term", term)
                     put("reading", reading)
-                    summary?.let { put("overviewSummary", buildJsonArray { it.peaks.forEach { add(JsonPrimitive(it)) } }) }
                     put("labels", labels)
                 }
                 page.openAudioEditor(openPayload.toString())
@@ -291,17 +320,32 @@ class AudioEditorController(
                         put("editRevision", operation.editRevision)
                     }
                 }
-                val summary = sentenceRecorder.waveformSummary(range, contextId = session.contextId)
-                if (active === session && operation.sourceRevision == revision && summary != null) send(session) {
-                    put("timeline", buildJsonObject {
-                        put("sourceRevision", revision)
-                        put("overviewSummary", buildJsonArray { summary.peaks.forEach { add(JsonPrimitive(it)) } })
-                    })
+                while (isActive && active === session) {
+                    val status = sentenceRecorder.view(session.contextId) ?: break
+                    send(session) {
+                        put("status", buildJsonObject {
+                            putRetention(status)
+                            val availableEnd = (status.source?.endExclusive ?: operation.source.endExclusive) + status.newFrames
+                            put("newFrames", maxOf(0, availableEnd - operation.source.endExclusive))
+                            put("recording", sentenceRecorder.isRecording(session.contextId))
+                        })
+                    }
+                    delay(1000)
                 }
             }
             return
         }
         when (command.action) {
+            "waveform" -> {
+                if (operation.phase !in setOf(AudioEditorOperation.Phase.EDITING, AudioEditorOperation.Phase.FAILED) ||
+                    command.sourceRevision != operation.sourceRevision || command.request <= session.waveformRequest ||
+                    command.range.size != 2 || command.buckets !in 1..512) return
+                val range = runCatching { AudioRange(command.range[0], command.range[1]) }.getOrNull() ?: return
+                if (range.frames <= 0 || operation.source.intersect(range) != range) return
+                session.waveformRequest = command.request
+                session.waveforms.trySend(command)
+                return
+            }
             "expand" -> { popupController.setAudioEditorExpanded(command.expanded); return }
             "collapse" -> { popupController.setAudioEditorCollapsed(command.collapsed); return }
             "drag" -> {
@@ -383,9 +427,14 @@ class AudioEditorController(
                 session.refresh = operation.scope.launch {
                     val view = sentenceRecorder.refresh(session.contextId) ?: return@launch
                     val range = view.source ?: return@launch
-                    val summary = sentenceRecorder.waveformSummary(range, buckets = 200, contextId = session.contextId)
+                    val previousEnd = operation.source.endExclusive
                     if (active !== session || !operation.append(range)) return@launch
                     send(session) {
+                        put("refresh", buildJsonObject {
+                            put("addedFrames", range.endExclusive - previousEnd)
+                            put("sealed", view.retention.stage == RetentionStage.SEALED)
+                            put("limit", view.retention.reason != null && view.retention.reason != RetentionEnd.CAPTURE_STOPPED)
+                        })
                         put("timeline", buildJsonObject {
                             put("sourceRevision", operation.sourceRevision)
                             put("totalFrames", range.endExclusive)
@@ -393,7 +442,6 @@ class AudioEditorController(
                             put("sourceEnd", range.endExclusive)
                             put("recording", sentenceRecorder.isRecording(session.contextId))
                             putRetention(view)
-                            summary?.let { put("overviewSummary", buildJsonArray { it.peaks.forEach { add(JsonPrimitive(it)) } }) }
                         })
                     }
                 }
@@ -482,7 +530,8 @@ class AudioEditorController(
 
     private fun kotlinx.serialization.json.JsonObjectBuilder.putRetention(view: AudioTimelineView) {
         put("newFrames", view.newFrames)
-        put("limit", view.retention.stage == RetentionStage.SEALED || view.retention.reason != null)
+        put("limit", view.retention.reason != null && view.retention.reason != RetentionEnd.CAPTURE_STOPPED)
+        put("reason", view.retention.reason?.name?.lowercase() ?: "")
         put("remainingMillis", maxOf(0L, view.retention.cutoffMillis - SystemClock.elapsedRealtime()))
     }
 

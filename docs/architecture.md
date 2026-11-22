@@ -227,6 +227,10 @@ preparation starts and checks them again before mutation; preparation cancels on
 
 The overlay editor (`audio-editor.js`, `audio-editor.css`, coordinated by `AudioEditorController`) presents an
 interactive waveform with selection handles, manual cuts, leading-quiet detection and timeline refresh.
+A bounded amplitude pyramid keeps overview and zoomed detail in source coordinates, extending only for
+newly shown PCM. A conflated viewport mailbox and request/source identities discard obsolete detail;
+PCM stays outside the page bridge. Recording/allowance metadata updates independently of shown bounds
+and edits. Missing waveform data uses a placeholder while manual selection and playback remain usable.
 `AudioPreviewPlayer` gives each playback run its own cancellation and output lifetime. Seek retires old
 output before replacement; a stuck run prevents another output from opening. Cursor position follows played
 frames, and normal completion drains real source frames before releasing the sink. Progress is coalesced
