@@ -4379,3 +4379,11 @@ Observations, not changed:
   2.198s, including the actual editor remaining open across restart and exporting its old context/edit.
 - Package removed; owned silent headless AVD powered off. Partial REC19/28/77 evidence. Keep N until
   actual capture/service/resource and remaining clauses pass. No Anki collection accessed.
+
+## PCM byte-stream integrity (2026-11-22)
+
+- Red/green fixtures reproduce single-byte reads bypassing cuts and odd reads dropping waveform samples.
+  Kept-range output now matches literal expected bytes; truncated exclusions and waveform tails fail.
+  Waveform/preview use complete PCM16 filling with bounded scratch buffers and cancellation checks.
+- 107 core-media cases and core lint pass (52s). Partial REC32/79 evidence; native decoded export and
+  maximum admitted clip/cancellation checks remain pending. No new device claim for this primitive gate.

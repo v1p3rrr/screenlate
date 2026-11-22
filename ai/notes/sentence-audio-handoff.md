@@ -1,5 +1,13 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Latest PCM continuation (2026-11-22): kept-range streaming now counts bytes, preserving single-byte/
+odd reads across cuts; truncation fails instead of returning partial success. Shared readPcm16 fills
+complete expected frames for waveform/preview and permits cancellation. 107 core-media cases and core
+lint pass (52s). Next adopt this in the streaming encoder with deterministic resource ownership,
+cancellation and measured deadlines/native decoded fidelity; finish D waveform/status detail, then E/F/G.
+Source retention predecessor 3418a9ce is committed/pushed with the old-editor-after-restart native receipt.
+No emulator is running. Continue autonomously; do not interpret the primitive gate as new device acceptance.
+
 Latest source-lifetime continuation (2026-11-22): Prepare reserves the original source before suspension;
 UI revocation and consumer retention are independent. Capture restart/Close preserve live old-session
 readers; new scans use a separate session and cannot replace a reserved same-session source. Pending-note

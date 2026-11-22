@@ -3,8 +3,25 @@ package com.vpr.screenlate.core.media
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.ByteArrayInputStream
+import java.io.EOFException
 
 class AudioEditInputStreamTest {
+
+    @Test(expected = EOFException::class)
+    fun truncatedExclusionCannotProduceASuccessfulPartialResult() {
+        val edit = AudioEdit(AudioRange(0, 5), listOf(AudioRange(1, 4)))
+        AudioEditInputStream(ByteArrayInputStream(ByteArray(6)), edit).use { it.readBytes() }
+    }
+
+    @Test
+    fun singleByteReadsPreserveExactBytesAcrossSeveralCuts() {
+        val bytes = ByteArray(20) { it.toByte() }
+        val edit = AudioEdit(AudioRange(0, 10), listOf(AudioRange(2, 4), AudioRange(6, 8)))
+        AudioEditInputStream(ByteArrayInputStream(bytes), edit).use { input ->
+            val actual = generateSequence { input.read().takeIf { it >= 0 } }.toList()
+            assertThat(actual).containsExactly(0, 1, 2, 3, 8, 9, 10, 11, 16, 17, 18, 19).inOrder()
+        }
+    }
 
     @Test
     fun skipsExclusionsAndYieldsKeptFrames() {

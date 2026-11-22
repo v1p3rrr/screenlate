@@ -7,6 +7,20 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## PCM byte-stream integrity — 2026-11-22
+
+Single-byte reads exposed AudioEditInputStream advancing only whole frames and therefore bypassing
+cuts. It now counts relative source bytes, accepts arbitrary short/odd stream reads and keeps exact
+kept-range order. EOF in required kept/excluded data is an error, not successful partial output. A
+reused bounded skip buffer replaces per-skip allocation. readPcm16 fills exactly the expected complete
+frames, carries odd reads and rejects zero progress/truncation; waveform and preview use it. Waveform
+work checks coroutine cancellation while filling, and a missing tail cannot be drawn as fabricated silence.
+
+107 core-media cases pass, including red/green single-byte cuts and odd-read waveform tests plus
+truncated-cut and truncated-waveform checks. Core unit/lint gate passes (pcm-reader-gates.log, 52s).
+AudioExporter has not yet adopted the
+reader/streaming lifetime repair; native decoded fidelity and measured long-export/cancellation remain D.
+
 ## Pending source leases across capture restart — 2026-11-22
 
 SentenceRecorder binds a context to its original coordinator and exposes an idempotent suspending

@@ -415,7 +415,7 @@ are investigated as findings, not converted into an invented new audio performan
 | A regression baseline | Partial | Permanent core regressions landed with fixes; 98 core-media tests, 8 AudioPlayer, 4 playback-owner, 12 popup playback and 8 new editor/pending-operation cases pass; identified editor DOM regressions and frozen-target fake-backend cases are permanent. Full lifecycle fixtures remain. |
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
 | C pending operation/protocol | Software implemented; E/G gate open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. 345 overlay/223 page and 4 isolated native checks pass. E still supplies recoverable media-copy UI; G supplies real service/source/gesture/device acceptance. |
-| D editing/fidelity | Partial | Source-offset/short-source navigation, conflated preview intent and original-session source leases are implemented. 103 core-media/348 overlay/230 page and 15 isolated API30 tests pass, including old-editor export after restart; affected unit/lint/app/test-APK/vital checks pass. Waveform/status detail and codec fidelity/deadlines remain. |
+| D editing/fidelity | Partial | Navigation/preview intent/original-session leases and exact PCM byte reads are implemented. 107 core-media/348 overlay/230 page cases pass; 15 isolated API30 checks cover the prior source/preview checkpoint. Core unit/lint and prior affected integration gates pass. Waveform/status detail and codec fidelity/deadlines remain. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
@@ -437,6 +437,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-22: Reproduced/fixed byte-granularity kept-range reads and odd waveform reads. Added shared
+  exact PCM16 filling for waveform/preview, explicit truncated-source failure and cooperative waveform
+  cancellation. 107 core tests and core lint pass; encoder adoption/native fidelity remain next.
+  Product decisions unchanged.
 - 2026-11-22: Added metadata-only Prepare source reservation, context/session binding and deferred retirement
   for active consumers across capture restart/Close. New scans cannot replace reserved same-session data;
   UI revocation disables future old-scan actions while preserving an active editor. Pending-note cleanup

@@ -1,5 +1,18 @@
 # Status
 
+## Sentence audio: byte-exact PCM reads (2026-11-22)
+
+- Active-source checkpoint 3418a9ce is committed/pushed. Continue D/E/F/G without yielding.
+- Reproduced single-byte reads bypassing cuts and odd waveform reads losing half-samples. Kept-range
+  streaming now tracks exact source bytes; short/odd reads retain framing. Premature EOF in kept/cut
+  data fails instead of accepting a partial result. Waveform/preview fill complete PCM frames and can
+  reject cancellation during a fill; waveform failure cannot invent a quiet tail.
+- 107 core-media tests and core lint pass (pcm-reader-gates.log, 52s). The codec adapter
+  still needs the common reader, deterministic construction/cleanup, cooperative cancellation and a
+  measured replacement for the fixed 30-second timeout. Native decoded fidelity remains pending.
+- Then finish bounded waveform/detail/status scheduling, E transfer retry, F complete resources/settings
+  and G actual service/source/device acceptance. Preserve unrelated submodule dirt and photos.
+
 ## Sentence audio: active source leases across restart (2026-11-22)
 
 - Navigation/preview checkpoint ae7e4e8e is committed/pushed. Continue remaining D/E/F/G autonomously.

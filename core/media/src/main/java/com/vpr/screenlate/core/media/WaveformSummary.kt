@@ -19,7 +19,7 @@ data class WaveformSummary(
     override fun hashCode(): Int = 31 * (31 * range.hashCode() + buckets) + peaks.contentHashCode()
 
     companion object {
-        fun compute(stream: InputStream, range: AudioRange, targetBuckets: Int): WaveformSummary {
+        fun compute(stream: InputStream, range: AudioRange, targetBuckets: Int, checkActive: () -> Unit = {}): WaveformSummary {
             require(range.frames > 0 && targetBuckets > 0)
             val buckets = minOf(targetBuckets.toLong(), range.frames).toInt()
             val peaks = FloatArray(buckets)
@@ -32,9 +32,8 @@ data class WaveformSummary(
 
             while (frameIndex < range.frames) {
                 val toRead = minOf(buffer.size.toLong(), (range.frames - frameIndex) * 2).toInt()
-                val read = stream.read(buffer, 0, toRead)
-                if (read <= 0) break
-                val frames = read / 2
+                stream.readPcm16(buffer, toRead, checkActive)
+                val frames = toRead / 2
                 for (i in 0 until frames) {
                     val bucketForFrame = (frameIndex.toDouble() / framesPerBucket).toInt().coerceAtMost(buckets - 1)
                     if (bucketForFrame != currentBucket) {

@@ -3,8 +3,25 @@ package com.vpr.screenlate.core.media
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.ByteArrayInputStream
+import java.io.EOFException
 
 class WaveformSummaryTest {
+
+    @Test(expected = EOFException::class)
+    fun truncatedSourceIsNotRenderedAsInventedQuietTail() {
+        WaveformSummary.compute(ByteArrayInputStream(byteArrayOf(0, 64, 0)), AudioRange(0, 2), 2)
+    }
+
+    @Test
+    fun shortOddReadsKeepEverySampleAndItsPolarity() {
+        val bytes = byteArrayOf(0, 0, 0, 64, 0, -128, 0, 32)
+        val input = object : ByteArrayInputStream(bytes) {
+            override fun read(buffer: ByteArray, offset: Int, length: Int): Int =
+                super.read(buffer, offset, minOf(1, length))
+        }
+        val summary = WaveformSummary.compute(input, AudioRange(100, 104), 4)
+        assertThat(summary.peaks).usingTolerance(0.0001).containsExactly(0.0, 0.5, 1.0, 0.25).inOrder()
+    }
 
     @Test
     fun computeCreatesCorrectNumberOfBucketsWithPeaks() {

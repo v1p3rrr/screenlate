@@ -191,8 +191,10 @@ internal class AudioPreviewPlayer(
                     lease.openStream().use { stream ->
                         var remaining = range.frames * 2
                         while (remaining > 0 && run.isCurrent) {
-                            val count = stream.read(buffer, 0, minOf(buffer.size.toLong(), remaining).toInt())
-                            if (count <= 0 || count % 2 != 0) throw PlaybackException(PreviewFailure.SOURCE_UNAVAILABLE)
+                            val count = minOf(buffer.size.toLong(), remaining).toInt()
+                            stream.readPcm16(buffer, count) {
+                                if (!run.isCurrent) throw PlaybackException(PreviewFailure.SOURCE_UNAVAILABLE)
+                            }
                             var offset = 0
                             while (offset < count && run.isCurrent) {
                                 val accepted = sink.write(buffer, offset, count - offset)

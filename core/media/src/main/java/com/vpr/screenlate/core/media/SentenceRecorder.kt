@@ -291,9 +291,11 @@ class SentenceRecorder internal constructor(
     }
 
     suspend fun waveformSummary(range: AudioRange, buckets: Int = 200, contextId: AudioContextId? = null): WaveformSummary? = withContext(Dispatchers.IO) {
+        val caller = currentCoroutineContext()
         val snapshot = snapshot(range, contextId) ?: return@withContext null
         snapshot.use { lease ->
-            try { lease.openStream().use { WaveformSummary.compute(it, range, buckets) } }
+            try { lease.openStream().use { WaveformSummary.compute(it, range, buckets) { caller.ensureActive() } } }
+            catch (cancelled: CancellationException) { throw cancelled }
             catch (e: Exception) { Log.w(TAG, "Waveform computation failed", e); null }
         }
     }
