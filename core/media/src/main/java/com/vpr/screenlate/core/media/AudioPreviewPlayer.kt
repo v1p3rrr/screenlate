@@ -65,19 +65,22 @@ internal class AudioPreviewPlayer(
         onProgress: ((Long) -> Unit)? = null,
         onComplete: (() -> Unit)? = null,
         onError: ((PreviewFailure) -> Unit)? = null,
+        canStart: () -> Boolean = { true },
     ) = commands.withLock {
+        if (!canStart()) return@withLock
         val token = generation.incrementAndGet()
-        val request = Request(edit, mode, onProgress, onComplete, onError)
+        val request = Request(edit, mode, onProgress, onComplete, onError, canStart)
         lastRequest = request
         if (!retire()) {
-            deliver(token) { onError?.invoke(PreviewFailure.OUTPUT_BUSY) }
+            deliver(token) { if (canStart()) onError?.invoke(PreviewFailure.OUTPUT_BUSY) }
             return@withLock
         }
+        if (!canStart()) return@withLock
         val requested = startFrame ?: currentFrame.takeIf { it < edit.selection.endExclusive } ?: edit.selection.start
         val start = resolveStart(edit, mode, requested)
         position.set(start)
         if (start >= edit.selection.endExclusive || (mode == PreviewMode.RESULT && edit.outputFrames == 0L)) {
-            deliver(token) { onProgress?.invoke(start); onComplete?.invoke() }
+            deliver(token) { if (canStart()) { onProgress?.invoke(start); onComplete?.invoke() } }
             return@withLock
         }
         val run = Run(token, request, start)
@@ -99,7 +102,8 @@ internal class AudioPreviewPlayer(
         val effectiveMode = if (edit != null) mode else request?.mode ?: mode
         val target = effectiveEdit?.let { resolveStart(it, effectiveMode, frame) } ?: frame
         if (isPlaying && effectiveEdit != null) {
-            play(effectiveEdit, effectiveMode, target, request?.progress, request?.complete, request?.error)
+            play(effectiveEdit, effectiveMode, target, request?.progress, request?.complete, request?.error,
+                request?.canStart ?: { true })
         } else {
             generation.incrementAndGet()
             retire()
@@ -141,9 +145,9 @@ internal class AudioPreviewPlayer(
             val sink = sinkFactory()
             run.sinkLock.withLock {
                 run.sink = sink
-                if (!run.cancelled.get()) sink.play()
+                if (run.isCurrent) sink.play()
             }
-            if (run.cancelled.get()) return
+            if (!run.isCurrent) return
             val edit = run.request.edit
             val ranges = if (run.request.mode == PreviewMode.ORIGINAL) {
                 listOf(AudioRange(run.start, edit.selection.endExclusive))
@@ -161,11 +165,11 @@ internal class AudioPreviewPlayer(
                 val sourceFrame = if (run.request.mode == PreviewMode.ORIGINAL) run.start + head
                     else edit.sourceFrame(edit.resultOffset(run.start) + head)
                 synchronized(state) {
-                    if (active === run && !run.cancelled.get()) position.set(sourceFrame)
+                    if (active === run && run.isCurrent) position.set(sourceFrame)
                 }
                 if (now - lastReport >= 50_000_000L) {
                     lastReport = now
-                    deliverProgress(run.token) { run.request.progress?.invoke(sourceFrame) }
+                    deliverProgress(run.token) { if (run.isCurrent) run.request.progress?.invoke(sourceFrame) }
                 }
             }
 
@@ -179,18 +183,18 @@ internal class AudioPreviewPlayer(
             }
 
             for (range in ranges) {
-                if (run.cancelled.get()) return
+                if (!run.isCurrent) return
                 val snapshot = try { snapshotProvider(range) } catch (_: Exception) { null }
                     ?: throw PlaybackException(PreviewFailure.SOURCE_UNAVAILABLE)
                 snapshot.use { lease ->
-                    if (run.cancelled.get()) return
+                    if (!run.isCurrent) return
                     lease.openStream().use { stream ->
                         var remaining = range.frames * 2
-                        while (remaining > 0 && !run.cancelled.get()) {
+                        while (remaining > 0 && run.isCurrent) {
                             val count = stream.read(buffer, 0, minOf(buffer.size.toLong(), remaining).toInt())
                             if (count <= 0 || count % 2 != 0) throw PlaybackException(PreviewFailure.SOURCE_UNAVAILABLE)
                             var offset = 0
-                            while (offset < count && !run.cancelled.get()) {
+                            while (offset < count && run.isCurrent) {
                                 val accepted = sink.write(buffer, offset, count - offset)
                                 if (accepted < 0 || accepted > count - offset || accepted % 2 != 0) {
                                     throw PlaybackException(PreviewFailure.OUTPUT_FAILED)
@@ -209,11 +213,11 @@ internal class AudioPreviewPlayer(
                 }
             }
             var inputFinished = false
-            while (!run.cancelled.get() && lastHead < writtenFrames) {
+            while (run.isCurrent && lastHead < writtenFrames) {
                 if (!inputFinished) inputFinished = sink.finishInput()
                 waitForOutput(draining = true)
             }
-            if (!run.cancelled.get()) updatePosition()
+            if (run.isCurrent) updatePosition()
         } catch (error: PlaybackException) {
             failure = error.reason
         } catch (_: Exception) {
@@ -231,9 +235,10 @@ internal class AudioPreviewPlayer(
                 if (active === run) { active = null; playing.set(false) }
             }
             run.done.countDown()
-            if (!run.cancelled.get()) {
+            if (run.isCurrent) {
                 val result = failure
                 deliver(run.token) {
+                    if (!run.isCurrent) return@deliver
                     if (result == null) {
                         run.request.progress?.invoke(run.request.edit.selection.endExclusive)
                         run.request.complete?.invoke()
@@ -287,10 +292,12 @@ internal class AudioPreviewPlayer(
     private data class Request(
         val edit: AudioEdit, val mode: PreviewMode,
         val progress: ((Long) -> Unit)?, val complete: (() -> Unit)?, val error: ((PreviewFailure) -> Unit)?,
+        val canStart: () -> Boolean,
     )
 
     private class Run(val token: Long, val request: Request, val start: Long) {
         val cancelled = AtomicBoolean(false)
+        val isCurrent: Boolean get() = !cancelled.get() && request.canStart()
         val interruptSent = AtomicBoolean(false)
         val done = CountDownLatch(1)
         val sinkLock = ReentrantLock()

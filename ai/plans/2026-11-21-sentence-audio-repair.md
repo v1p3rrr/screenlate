@@ -415,13 +415,13 @@ are investigated as findings, not converted into an invented new audio performan
 | A regression baseline | Partial | Permanent core regressions landed with fixes; 98 core-media tests, 8 AudioPlayer, 4 playback-owner, 12 popup playback and 8 new editor/pending-operation cases pass; identified editor DOM regressions and frozen-target fake-backend cases are permanent. Full lifecycle fixtures remain. |
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
 | C pending operation/protocol | Software implemented; E/G gate open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. 345 overlay/223 page and 4 isolated native checks pass. E still supplies recoverable media-copy UI; G supplies real service/source/gesture/device acceptance. |
-| D editing/fidelity | Partial | Commands atomically submit accepted edits for playback/export and Refresh publishes appendable source bounds; remaining waveform/initial-selection/fidelity and scheduling work is pending. |
+| D editing/fidelity | Partial | Source-offset/short-source navigation and conflated preview intent are implemented. 101 core-media/347 overlay/230 page and 15 isolated API30 tests pass; affected unit/lint/app/test-APK/vital checks pass. Source leases across restart, waveform/status detail and codec fidelity/deadlines remain. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-Next D's source-coordinate navigation/handle bounds, bounded waveform detail and request scheduling,
-then streaming codec deadlines/fidelity. Continue E pre-note transfer recovery, F resource/settings policy
+Continue D by retaining active source leases across capture restart,
+bounded waveform/status detail and streaming codec deadlines/fidelity. Continue E pre-note transfer recovery, F resource/settings policy
 and G acceptance autonomously after coherent checkpoints. C lifecycle software is implemented; its full
 integration gate remains dependent on E's recovery UI and actual service/device portions of G.
 
@@ -437,6 +437,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-22: Repaired retained-source coordinate bounds, stale/zero-width gestures and live mode seeks.
+  Replaced competing preview jobs with an operation-owned conflated mailbox and desired playback intent;
+  native output and page progress reject superseded requests. Permanent regressions and affected
+  build/native gates pass, with 15 isolated API30 checks. Product decisions unchanged.
 - 2026-11-22: Implemented token-bound scan resolution after owned cleanup, active-profile invalidation,
   actual Anki collection-mutation boundary, native/predictive Back plumbing and shared dirty cancel,
   one-shot external crop/editor Finish, host/screen-off suppression and visible protocol rejection.

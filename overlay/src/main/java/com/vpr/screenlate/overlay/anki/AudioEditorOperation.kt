@@ -2,7 +2,9 @@ package com.vpr.screenlate.overlay.anki
 
 import com.vpr.screenlate.core.media.AudioEdit
 import com.vpr.screenlate.core.media.AudioRange
+import com.vpr.screenlate.core.media.PreviewMode
 import java.io.File
+import java.util.concurrent.atomic.AtomicLong
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,6 +25,7 @@ internal class AudioEditorOperation(
     initial: AudioEdit,
     private val onChanged: () -> Unit = {},
     opening: Boolean = false,
+    private val preview: suspend (Preview) -> Unit = {},
     private val export: suspend (AudioEdit) -> File?,
 ) {
     enum class Phase { OPENING, EDITING, EXPORTING, FAILED, FINISHED }
@@ -32,9 +36,23 @@ internal class AudioEditorOperation(
         data object Cancelled : Result
     }
 
+    /** A null edit requests Stop. The guard must be checked before starting native output and callbacks. */
+    class Preview internal constructor(
+        val edit: AudioEdit?,
+        val mode: PreviewMode,
+        val cursor: Long,
+        val sequence: Long,
+        private val current: () -> Boolean,
+    ) {
+        val isCurrent: Boolean get() = current()
+    }
+
     private val completion = CompletableDeferred<Result>()
     private val job = SupervisorJob(parent.coroutineContext[Job])
     val scope = CoroutineScope(parent.coroutineContext + job)
+    private val previews = Channel<Preview>(Channel.CONFLATED)
+    private val previewGeneration = AtomicLong()
+    private var wantsPlayback = false
     val result: Deferred<Result> get() = completion
     var phase = if (opening) Phase.OPENING else Phase.EDITING
         private set
@@ -51,6 +69,37 @@ internal class AudioEditorOperation(
 
     init {
         require(contains(initial.selection))
+        scope.launch { for (request in previews) if (request.isCurrent) preview(request) }
+    }
+
+    fun play(mode: PreviewMode, cursor: Long, sequence: Long) {
+        if (phase != Phase.EDITING && phase != Phase.FAILED) return
+        wantsPlayback = true
+        enqueuePreview(edit, mode, cursor, sequence)
+    }
+
+    fun seek(mode: PreviewMode, cursor: Long, sequence: Long) {
+        if (wantsPlayback) play(mode, cursor, sequence)
+    }
+
+    fun pause(sequence: Long) {
+        if (sequence < this.sequence || phase == Phase.FINISHED) return
+        this.sequence = sequence
+        wantsPlayback = false
+        enqueuePreview(null, PreviewMode.RESULT, 0, sequence)
+    }
+
+    fun previewFinished(request: Preview): Boolean {
+        if (!request.isCurrent) return false
+        wantsPlayback = false
+        return true
+    }
+
+    private fun enqueuePreview(edit: AudioEdit?, mode: PreviewMode, cursor: Long, sequence: Long) {
+        val generation = previewGeneration.incrementAndGet()
+        previews.trySend(Preview(edit, mode, cursor, sequence) {
+            job.isActive && previewGeneration.get() == generation
+        })
     }
 
     fun accept(sequence: Long, sourceRevision: Long, edit: AudioEdit): Boolean {
@@ -89,6 +138,7 @@ internal class AudioEditorOperation(
     fun save() {
         if (phase == Phase.OPENING || phase == Phase.EXPORTING || phase == Phase.FINISHED || edit.outputFrames <= 0) return
         val confirmed = edit
+        pause(sequence)
         phase = Phase.EXPORTING
         onChanged()
         scope.launch {
@@ -124,6 +174,9 @@ internal class AudioEditorOperation(
     private fun finish(value: Result): Boolean {
         if (phase == Phase.FINISHED) return false
         phase = Phase.FINISHED
+        wantsPlayback = false
+        previewGeneration.incrementAndGet()
+        previews.close()
         completion.complete(value)
         job.cancel()
         onChanged()

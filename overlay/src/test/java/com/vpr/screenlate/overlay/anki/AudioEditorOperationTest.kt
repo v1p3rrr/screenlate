@@ -3,6 +3,7 @@ package com.vpr.screenlate.overlay.anki
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.media.AudioEdit
 import com.vpr.screenlate.core.media.AudioRange
+import com.vpr.screenlate.core.media.PreviewMode
 import java.io.File
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,6 +17,52 @@ import org.junit.Test
 class AudioEditorOperationTest {
     private val source = AudioRange(100, 1_000)
     private val initial = AudioEdit(AudioRange(200, 400))
+
+    @Test
+    fun `seek during preparation keeps only the latest cursor mode and accepted edit`() = runTest {
+        val release = CompletableDeferred<Unit>()
+        val requests = mutableListOf<AudioEditorOperation.Preview>()
+        val operation = AudioEditorOperation(this, source, initial, preview = {
+            requests += it
+            if (requests.size == 1) release.await()
+        }) { null }
+        operation.play(PreviewMode.RESULT, 200, 1)
+        runCurrent()
+        val edited = AudioEdit(AudioRange(250, 900), listOf(AudioRange(300, 500)))
+        assertThat(operation.accept(2, 0, edited)).isTrue()
+        repeat(100) { operation.seek(PreviewMode.ORIGINAL, 600L + it, 3L + it) }
+        assertThat(requests.single().isCurrent).isFalse()
+        release.complete(Unit)
+        runCurrent()
+        assertThat(requests).hasSize(2)
+        assertThat(requests.last().edit).isEqualTo(edited)
+        assertThat(requests.last().mode).isEqualTo(PreviewMode.ORIGINAL)
+        assertThat(requests.last().cursor).isEqualTo(699)
+        assertThat(requests.last().sequence).isEqualTo(102)
+        assertThat(requests.last().isCurrent).isTrue()
+        operation.cancel()
+        assertThat(requests.last().isCurrent).isFalse()
+    }
+
+    @Test
+    fun `pause while preparing invalidates output and later seeks cannot restart it`() = runTest {
+        val release = CompletableDeferred<Unit>()
+        val requests = mutableListOf<AudioEditorOperation.Preview>()
+        val operation = AudioEditorOperation(this, source, initial, preview = {
+            requests += it
+            if (requests.size == 1) release.await()
+        }) { null }
+        operation.play(PreviewMode.RESULT, 200, 1)
+        runCurrent()
+        operation.pause(2)
+        operation.seek(PreviewMode.ORIGINAL, 300, 3)
+        assertThat(requests.single().isCurrent).isFalse()
+        release.complete(Unit)
+        runCurrent()
+        assertThat(requests).hasSize(2)
+        assertThat(requests.last().edit).isNull()
+        operation.cancel()
+    }
 
     @Test
     fun `opening cannot save or accept edits and duplicate Ready cannot replace user edits`() = runTest {

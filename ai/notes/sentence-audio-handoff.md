@@ -1,5 +1,13 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Latest continuation (2026-11-22): navigation uses retained source coordinates and stale gesture guards;
+preview preparation is conflated with desired playback intent and native/page request guards. 101
+core-media, 347 overlay and 230 page tests pass; affected unit/lint/app/test-APK/vital checks pass.
+Isolated API30 passes 15 tests in 2.484s, including actual bridge Play/Pause and nonzero-start navigation/
+resize. Package removed, owned headless/no-audio AVD powered off. Continue D's active source leases across
+capture restart, waveform/status detail and codec fidelity/deadlines, then E/F/G without yielding.
+Lifecycle predecessor 7d3be01f is already committed/pushed; do not reimplement it. Product decisions stand.
+
 Current resume override (2026-11-22): use the [repair execution plan](../plans/2026-11-21-sentence-audio-repair.md),
 [review](sentence-audio-review-2026-11-21.md) and latest status. The owner authorized selective redesign of
 session coordination and editor/pending-note ownership. Core A/B work now implements a serialized session

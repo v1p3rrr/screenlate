@@ -298,7 +298,9 @@ class SentenceRecorder internal constructor(
         onError: ((PreviewFailure) -> Unit)? = null,
         onStopped: (() -> Unit)? = null,
         contextId: AudioContextId? = null,
+        canStart: () -> Boolean = { true },
     ) {
+        if (!canStart()) return
         val request = previewRequest.incrementAndGet()
         var requestLease: PlaybackCoordinator.Lease? = null
         requestLease = playback.acquire { stopPreviewOwned(requestLease) }
@@ -314,7 +316,7 @@ class SentenceRecorder internal constructor(
                 val caller = currentCoroutineContext()
                 withContext(NonCancellable + Dispatchers.IO) {
                     caller.ensureActive()
-                    if (!lease.isCurrent) return@withContext
+                    if (!lease.isCurrent || !canStart()) return@withContext
                     previewLease = lease
                     previewStopped = {
                         previewCallbackExecutor.execute {
@@ -354,7 +356,7 @@ class SentenceRecorder internal constructor(
                                 if (it != PreviewFailure.OUTPUT_BUSY) lease.close()
                                 onError?.invoke(it)
                             }
-                        })
+                        }, canStart = { lease.isCurrent && canStart() })
                 }
             }
         } catch (cancelled: CancellationException) {

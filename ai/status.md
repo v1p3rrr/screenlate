@@ -1,5 +1,23 @@
 # Status
 
+## Sentence audio: source navigation and preview scheduling (2026-11-22)
+
+- Continue D/E/F/G autonomously on codex/sentence-audio-recording. Lifecycle checkpoint 7d3be01f is
+  committed/pushed. Preserve unrelated submodule dirt and untracked photos; stop below 2% weekly remaining.
+- D navigation now uses the retained source span/start, not the absolute end frame. Zoom/pan/overview and
+  trim/cut handles stay within short or nonzero-start sources. Old gestures and zero-width relayout cannot
+  mutate a new draft or corrupt coordinates. Overview drag preserves grab offset; mode changes submit seek.
+- AudioEditorOperation now owns one preparing preview plus one conflated replacement. Playback intent
+  survives preparation, Pause invalidates it, and stale requests cannot start native output or move/stop
+  newer page playback. Small Pause/terminal commands do not require a full edit packet.
+- Red/green evidence: 101 core-media, 347 overlay and 230 page tests pass. Affected lint/app/test-APK/vital
+  checks pass (navigation-preview-gates.log, 5m31s); final overlay unit/lint/native APK rebuild passes in
+  1m23s. Isolated API30: 15 tests pass in 2.484s, including production Play/Pause, export, nonzero-start
+  WebView navigation/resize and crop regressions. Test package removed; owned silent headless AVD shut down.
+- Still D: source leases for an already active note/editor across capture restart (old scans must not gain
+  new actions), bounded waveform detail/status requests, PCM/codec fidelity and measured deadlines. Then
+  E pre-note transfer recovery, F resource/settings policy, G full service/source/device acceptance.
+
 ## Sentence audio: lifecycle ownership implemented (2026-11-22)
 
 - Continue autonomously through D/E/F/G; do not yield between milestones. The weekly stop rule is less

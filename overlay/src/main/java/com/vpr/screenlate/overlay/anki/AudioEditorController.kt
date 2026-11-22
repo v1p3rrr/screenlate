@@ -18,6 +18,7 @@ import com.vpr.screenlate.overlay.web.LookupPage
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.coroutineScope
@@ -44,7 +45,7 @@ private data class AudioEditorCommand(
     val sequence: Long,
     val sourceRevision: Long,
     val action: String,
-    val selection: List<Long>,
+    val selection: List<Long> = emptyList(),
     val exclusions: List<List<Long>> = emptyList(),
     val cursor: Long = 0,
     val mode: String = "result",
@@ -78,10 +79,8 @@ class AudioEditorController(
         lateinit var operation: AudioEditorOperation
         var refresh: Job? = null
         var analysis: Job? = null
-        var playback: Job? = null
         var ready: Job? = null
         fun isReady() = this::operation.isInitialized
-        var playbackGeneration = 0L
     }
 
     init { page.audioEditorActions = this }
@@ -113,7 +112,7 @@ class AudioEditorController(
                             put("error", context.getString(R.string.audio_editor_export_failed))
                         }
                     }
-                }, opening = true) { edit ->
+                }, opening = true, preview = { preview(session, it) }) { edit ->
                     var file: File? = null
                     var transferred = false
                     try {
@@ -311,6 +310,10 @@ class AudioEditorController(
             }
             return
         }
+        if (command.action == "pause") {
+            operation.pause(command.sequence)
+            return
+        }
         if (command.selection.size != 2 || command.exclusions.any { it.size != 2 }) { rejectCommand(session); return }
         val edit = runCatching {
             AudioEdit(AudioRange(command.selection[0], command.selection[1]),
@@ -335,32 +338,15 @@ class AudioEditorController(
         when (command.action) {
             "edit" -> {
                 session.analysis?.cancel()
-                stopPlayback(session)
+                operation.pause(command.sequence)
             }
             "play", "seek" -> {
-                session.playback?.cancel()
-                val token = ++session.playbackGeneration
-                session.playback = operation.scope.launch {
-                    if (command.action == "seek" && !sentenceRecorder.isPreviewPlaying) return@launch
-                    sentenceRecorder.startPreview(edit, previewMode, command.cursor,
-                        onProgress = { frame -> if (active === session && session.playbackGeneration == token) send(session) { put("cursor", frame) } },
-                        onComplete = { playing(session, token, false) },
-                        onStopped = { playing(session, token, false) },
-                        onError = { failure ->
-                            playing(session, token, false)
-                            Log.w("AudioEditorController", "Audio preview failed: $failure")
-                            if (active === session && session.playbackGeneration == token) {
-                                Toast.makeText(context, R.string.audio_editor_preview_failed, Toast.LENGTH_SHORT).show()
-                            }
-                        }, contextId = session.contextId)
-                    playing(session, token, sentenceRecorder.isPreviewPlaying)
-                }
+                if (command.action == "play") operation.play(previewMode, command.cursor, command.sequence)
+                else operation.seek(previewMode, command.cursor, command.sequence)
             }
-            "pause" -> stopPlayback(session)
             "save" -> {
                 session.analysis?.cancel()
                 session.refresh?.cancel()
-                stopPlayback(session)
                 operation.save()
             }
             "silence" -> {
@@ -440,17 +426,38 @@ class AudioEditorController(
         lastConfirmed = null
     }
 
-    private fun stopPlayback(session: Session) {
-        session.playback?.cancel()
-        val token = ++session.playbackGeneration
-        session.playback = session.operation.scope.launch {
-            sentenceRecorder.stopPreview()
-            playing(session, token, false)
+    private suspend fun preview(session: Session, request: AudioEditorOperation.Preview) {
+        fun message(body: kotlinx.serialization.json.JsonObjectBuilder.() -> Unit) {
+            if (request.isCurrent) send(session) { put("previewSequence", request.sequence); body() }
         }
-    }
-
-    private fun playing(session: Session, token: Long, playing: Boolean) {
-        if (active === session && session.playbackGeneration == token) send(session) { put("playing", playing) }
+        fun finished() {
+            if (session.operation.previewFinished(request)) message { put("playing", false) }
+        }
+        fun failed() {
+            if (request.isCurrent) {
+                finished()
+                Toast.makeText(context, R.string.audio_editor_preview_failed, Toast.LENGTH_SHORT).show()
+            }
+        }
+        try {
+            val edit = request.edit
+            if (edit == null) {
+                sentenceRecorder.stopPreview()
+                message { put("playing", false) }
+            } else {
+                sentenceRecorder.startPreview(edit, request.mode, request.cursor,
+                    onProgress = { frame -> message { put("cursor", frame) } },
+                    onComplete = ::finished,
+                    onStopped = ::finished,
+                    onError = { failure ->
+                        Log.w("AudioEditorController", "Audio preview failed: $failure")
+                        failed()
+                    }, contextId = session.contextId, canStart = { request.isCurrent })
+                message { put("playing", sentenceRecorder.isPreviewPlaying) }
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Exception) { failed() }
     }
 
     private fun rejectCommand(session: Session) = send(session) {

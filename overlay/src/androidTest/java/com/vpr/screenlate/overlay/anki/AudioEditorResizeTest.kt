@@ -73,9 +73,14 @@ class AudioEditorResizeTest {
             popup.enterAudioEditor()
             assertThat(flags[page.container]!! and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE).isEqualTo(0)
             assertThat(flags[page.container]!! and WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL).isNotEqualTo(0)
-            page.openAudioEditor("""{"operation":"resize","totalFrames":480000,"selection":[100000,300000],"cuts":[[150000,180000]]}""")
+            page.openAudioEditor("""{"operation":"resize","totalFrames":5280000,"sourceStart":4800000,"sourceEnd":5280000,"selection":[4800000,5280000],"cuts":[[4950000,4980000]]}""")
             withTimeout(5000) { while (evaluate("AudioEditor.state.isOpen") != "true") delay(1) }
-            evaluate("AudioEditor.state.width=200000; AudioEditor.state.view=50000; AudioEditor.state.cursor=120000; AudioEditor.state.mode='original'; true")
+            evaluate("document.getElementById('sl-start').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true})); document.getElementById('sl-end').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true})); true")
+            assertThat(evaluate("AudioEditor.state.a")).isEqualTo("4800000")
+            assertThat(evaluate("AudioEditor.state.b")).isEqualTo("5280000")
+            evaluate("document.getElementById('sl-action-zoom-out').click(); true")
+            assertThat(evaluate("AudioEditor.state.width <= 480000 && AudioEditor.state.view >= 4800000")).isEqualTo("true")
+            evaluate("AudioEditor.state.width=200000; AudioEditor.state.view=4850000; AudioEditor.state.cursor=4920000; AudioEditor.state.mode='original'; true")
             val snapshot = "JSON.stringify([AudioEditor.state.operation,AudioEditor.state.a,AudioEditor.state.b,AudioEditor.state.cuts,AudioEditor.state.width,AudioEditor.state.view,AudioEditor.state.cursor,AudioEditor.state.mode])"
             val draft = evaluate(snapshot)
             for (size in listOf(landscape, portrait)) {

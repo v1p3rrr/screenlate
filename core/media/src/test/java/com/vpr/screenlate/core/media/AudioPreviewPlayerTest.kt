@@ -21,6 +21,36 @@ class AudioPreviewPlayerTest {
     @get:Rule
     val tempFolder = TemporaryFolder()
 
+    @Test
+    fun `superseded preparation never starts its sink or emits completion`() {
+        val preparing = CountDownLatch(1)
+        val release = CountDownLatch(1)
+        val closed = CountDownLatch(1)
+        val current = AtomicBoolean(true)
+        val callbacks = AtomicInteger()
+        val starts = AtomicInteger()
+        val sink = object : FakeAudioSink() {
+            override fun play() { starts.incrementAndGet(); super.play() }
+            override fun close() { super.close(); closed.countDown() }
+        }
+        val player = AudioPreviewPlayer(
+            snapshotProvider = { error("Obsolete requests must not read the source") },
+            sinkFactory = { preparing.countDown(); release.await(3, TimeUnit.SECONDS); sink },
+        )
+        try {
+            player.play(AudioEdit(AudioRange(0, 100)), canStart = current::get,
+                onComplete = { callbacks.incrementAndGet() }, onError = { callbacks.incrementAndGet() })
+            assertTrue(preparing.await(3, TimeUnit.SECONDS))
+            current.set(false)
+            release.countDown()
+            assertTrue(closed.await(3, TimeUnit.SECONDS))
+            player.stop()
+            assertEquals(0, starts.get())
+            assertEquals(0, sink.output.size())
+            assertEquals(0, callbacks.get())
+        } finally { release.countDown(); player.close() }
+    }
+
     private open class FakeAudioSink : AudioSink {
         val output = ByteArrayOutputStream()
         override val playedFrames: Long get() = output.size() / 2L

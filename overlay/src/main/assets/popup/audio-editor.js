@@ -25,6 +25,7 @@ var AudioEditor = (() => {
         isOpen: false,
         operation: null,
         sequence: 0,
+        previewSequence: 0,
         sourceRevision: 0,
         phase: "editing",
         sampleRate: 48000,
@@ -57,17 +58,35 @@ var AudioEditor = (() => {
     let restoreFocus = null;
     let silenceRequestCount = 0;
     let lastSentEdit = null;
+    let gestureRevision = 0;
 
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+    const sourceSpan = () => Math.max(1, state.sourceEnd - state.sourceStart);
+    const boundedWidth = width => clamp(width, Math.min(state.sampleRate, sourceSpan()), sourceSpan());
+    const boundedView = view => clamp(view, state.sourceStart, Math.max(state.sourceStart, state.sourceEnd - state.width));
+    const editable = () => state.isOpen && ['editing', 'failed'].includes(state.phase);
+    function pointerFraction(event, element) {
+        const rect = element.getBoundingClientRect();
+        return rect.width > 0 && Number.isFinite(event.clientX) ? clamp((event.clientX - rect.left) / rect.width, 0, 1) : null;
+    }
+    function moveBoundary(key, frame) {
+        if (key === 'a') state.a = clamp(frame, state.sourceStart, state.b - Math.min(1, state.b - state.sourceStart));
+        else state.b = clamp(frame, state.a + Math.min(1, state.sourceEnd - state.a), state.sourceEnd);
+    }
+
 
     function send(action, payload = {}) {
         if (!state.isOpen || (!window.ScreenlateBridge || !window.ScreenlateBridge.onAudioEditorCommand)) return false;
         if (['exporting', 'opening'].includes(state.phase) && !['ready', 'cancel', 'without', 'expand', 'collapse', 'drag'].includes(action)) return false;
+        const needsEdit = ['edit', 'play', 'seek', 'save', 'silence', 'refresh', 'silenceSettings'].includes(action);
+        const edit = needsEdit ? {
+            selection: [Math.round(state.a), Math.round(state.b)],
+            exclusions: normalizedCuts().map(c => c.map(Math.round)),
+            cursor: Math.round(state.cursor), mode: state.mode,
+        } : {};
         const packet = JSON.stringify({
             operation: state.operation, sequence: ++state.sequence, sourceRevision: state.sourceRevision,
-            action, selection: [Math.round(state.a), Math.round(state.b)],
-            exclusions: normalizedCuts().map(c => c.map(Math.round)),
-            cursor: Math.round(state.cursor), mode: state.mode, ...payload,
+            action, ...edit, ...payload,
         });
         if (packet.length > 65000) {
             const toast = document.querySelector('.sl-toast');
@@ -77,6 +96,7 @@ var AudioEditor = (() => {
             }
             return false;
         }
+        if (['play', 'seek', 'pause', 'edit', 'save'].includes(action)) state.previewSequence = state.sequence;
         ScreenlateBridge.onAudioEditorCommand(packet);
         return true;
     }
@@ -98,8 +118,10 @@ var AudioEditor = (() => {
             state.sourceRevision = data.timeline.sourceRevision;
             updateTimeline(data.timeline);
         }
-        if (data.cursor !== undefined) updateCursor(data.cursor);
-        if (data.playing !== undefined) setPlaying(data.playing);
+        if (data.previewSequence === undefined || data.previewSequence === state.previewSequence) {
+            if (data.cursor !== undefined) updateCursor(data.cursor);
+            if (data.playing !== undefined) setPlaying(data.playing);
+        }
         if (data.proposals !== undefined) setSilenceProposals(data.request, data.proposals);
         if (data.error) {
             const toast = document.querySelector('.sl-toast');
@@ -264,12 +286,12 @@ var AudioEditor = (() => {
 
         checkDirty();
         const editKey = JSON.stringify([Math.round(state.a), Math.round(state.b), normalizedCuts()]);
-        if (editKey !== lastSentEdit && state.phase !== 'exporting') {
+        if (editKey !== lastSentEdit && editable()) {
             lastSentEdit = editKey;
             send('edit');
         }
-        state.width = clamp(state.width, state.sampleRate * 1, Math.max(state.sampleRate * 1, state.totalFrames));
-        state.view = clamp(state.view, 0, Math.max(0, state.totalFrames - state.width));
+        state.width = boundedWidth(state.width);
+        state.view = boundedView(state.view);
 
         editor.classList.toggle('sl-expanded', state.expanded);
         editor.hidden = state.collapsed;
@@ -345,7 +367,7 @@ var AudioEditor = (() => {
         if (modeOriginal) modeOriginal.setAttribute('aria-pressed', String(state.mode === 'original'));
 
         const undoBtn = document.getElementById('sl-action-undo');
-        if (undoBtn) undoBtn.disabled = undo.length === 0;
+        if (undoBtn) undoBtn.disabled = !editable() || undo.length === 0;
 
         // Boundaries
         const startHandle = document.getElementById('sl-start');
@@ -372,7 +394,7 @@ var AudioEditor = (() => {
             const inView = state.cursor >= state.view && state.cursor <= state.view + state.width;
             playhead.hidden = !inView;
             playhead.min = state.view;
-            playhead.max = state.view + state.width;
+            playhead.max = Math.min(state.sourceEnd, state.view + state.width);
             playhead.value = state.cursor;
         }
 
@@ -434,9 +456,9 @@ var AudioEditor = (() => {
         state.activeCut = i;
         const c = state.cuts[i];
         if (!c) return;
-        state.width = Math.min(state.sampleRate * 16, state.totalFrames);
+        state.width = boundedWidth(state.sampleRate * 16);
         const center = (c[0] + c[1]) / 2;
-        state.view = clamp(center - state.width / 2, 0, Math.max(0, state.totalFrames - state.width));
+        state.view = boundedView(center - state.width / 2);
     }
 
     function showDialog(title, bodyHtml, buttons) {
@@ -514,15 +536,18 @@ var AudioEditor = (() => {
 
     function requestCancel(operation) {
         if (!state.isOpen || state.operation !== operation) return;
+        checkDirty();
         confirmDiscard(() => send('cancel'));
     }
 
     // Public API
     function open(data) {
+        gestureRevision++;
         state.isOpen = true;
         state.operation = data.operation || null;
         lastSentEdit = JSON.stringify([Math.round(data.selection ? data.selection[0] : 0), Math.round(data.selection ? data.selection[1] : 0), data.cuts || []]);
         state.sequence = 0;
+        state.previewSequence = 0;
         state.sourceRevision = data.sourceRevision || 0;
         state.phase = data.phase || 'editing';
         silenceRequestCount = 0;
@@ -530,7 +555,7 @@ var AudioEditor = (() => {
         state.scanFrame = data.scanFrame || 0;
         state.totalFrames = data.totalFrames || 0;
         state.sourceStart = data.sourceStart !== undefined ? data.sourceStart : 0;
-        state.sourceEnd = data.sourceEnd !== undefined ? data.sourceEnd : data.totalFrames;
+        state.sourceEnd = data.sourceEnd !== undefined ? data.sourceEnd : state.totalFrames;
         state.a = clamp(data.selection ? data.selection[0] : state.sourceStart, state.sourceStart, state.sourceEnd);
         state.b = clamp(data.selection ? data.selection[1] : state.sourceEnd, state.a, state.sourceEnd);
         state.cuts = (data.cuts || []).map(c => [c[0], c[1]]);
@@ -694,6 +719,7 @@ var AudioEditor = (() => {
     }
 
     function close() {
+        gestureRevision++;
         state.isOpen = false;
         if (editor) editor.hidden = true;
         if (pill) pill.hidden = true;
@@ -711,12 +737,14 @@ var AudioEditor = (() => {
         const editorHead = document.getElementById('sl-editor-head');
         if (editorHead) {
             let dragging = false;
+            let dragRevision = -1;
             let lastX = 0;
             let lastY = 0;
 
             editorHead.addEventListener('pointerdown', e => {
                 if (e.target.closest('button') || e.target.closest('.sl-toolbar')) return;
                 dragging = true;
+                dragRevision = gestureRevision;
                 lastX = typeof e.screenX === 'number' && e.screenX !== 0 ? e.screenX : (e.clientX || 0);
                 lastY = typeof e.screenY === 'number' && e.screenY !== 0 ? e.screenY : (e.clientY || 0);
                 if (typeof editorHead.setPointerCapture === 'function') {
@@ -725,7 +753,7 @@ var AudioEditor = (() => {
             });
 
             editorHead.addEventListener('pointermove', e => {
-                if (!dragging) return;
+                if (!dragging || dragRevision !== gestureRevision || !state.isOpen) return;
                 const currentX = typeof e.screenX === 'number' && e.screenX !== 0 ? e.screenX : (e.clientX || 0);
                 const currentY = typeof e.screenY === 'number' && e.screenY !== 0 ? e.screenY : (e.clientY || 0);
                 const dx = currentX - lastX;
@@ -736,7 +764,7 @@ var AudioEditor = (() => {
             });
 
             const stopDrag = e => {
-                if (!dragging) return;
+                if (!dragging || dragRevision !== gestureRevision || !state.isOpen) return;
                 dragging = false;
                 if (typeof editorHead.releasePointerCapture === 'function') {
                     try { editorHead.releasePointerCapture(e.pointerId); } catch (_) {}
@@ -752,40 +780,34 @@ var AudioEditor = (() => {
             const el = document.getElementById(id);
             if (!el) continue;
             let active = false;
+            let handleRevision = -1;
             el.addEventListener('pointerdown', e => {
-                if (state.phase === 'exporting') return;
+                if (!editable()) return;
                 e.stopPropagation();
                 remember();
                 active = true;
+                handleRevision = gestureRevision;
                 el.setPointerCapture(e.pointerId);
             });
             el.addEventListener('pointermove', e => {
-                if (!active || state.phase === 'exporting') return;
+                if (!active || handleRevision !== gestureRevision || !editable()) return;
                 const waveSvg = document.getElementById('sl-wave');
-                const r = waveSvg.getBoundingClientRect();
-                const frac = clamp((e.clientX - r.left) / r.width, 0, 1);
+                const frac = pointerFraction(e, waveSvg);
+                if (frac === null) return;
                 const frame = state.view + frac * state.width;
-                if (key === 'a') {
-                    state.a = clamp(frame, 0, state.b - state.sampleRate * 0.1);
-                } else {
-                    state.b = clamp(frame, state.a + state.sampleRate * 0.1, state.totalFrames);
-                }
+                moveBoundary(key, frame);
                 render();
             });
             const finish = () => { active = false; };
             el.addEventListener('pointerup', finish);
             el.addEventListener('pointercancel', finish);
             el.addEventListener('keydown', e => {
-                if (state.phase === 'exporting') return;
+                if (!editable()) return;
                 if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
                 e.preventDefault();
                 remember();
                 const delta = (e.key === 'ArrowLeft' ? -0.1 : 0.1) * state.sampleRate;
-                if (key === 'a') {
-                    state.a = clamp(state.a + delta, 0, state.b - state.sampleRate * 0.1);
-                } else {
-                    state.b = clamp(state.b + delta, state.a + state.sampleRate * 0.1, state.totalFrames);
-                }
+                moveBoundary(key, state[key] + delta);
                 render();
             });
         }
@@ -795,25 +817,25 @@ var AudioEditor = (() => {
         const cutHandles = document.getElementById('sl-cut-handles');
         if (cutHandles) {
             cutHandles.addEventListener('pointerdown', e => {
-                if (state.phase === 'exporting') return;
+                if (!editable()) return;
                 const edge = e.target.closest('[data-cut-edge]');
                 if (!edge || !state.cuts[state.activeCut]) return;
                 e.stopPropagation();
                 remember();
-                cutDrag = { index: state.activeCut, edge: parseInt(edge.dataset.cutEdge, 10) };
+                cutDrag = { index: state.activeCut, edge: parseInt(edge.dataset.cutEdge, 10), revision: gestureRevision };
                 edge.setPointerCapture(e.pointerId);
             });
             cutHandles.addEventListener('pointermove', e => {
-                if (!cutDrag || state.phase === 'exporting') return;
+                if (!cutDrag || cutDrag.revision !== gestureRevision || !editable() || !state.cuts[cutDrag.index]) return;
                 const c = state.cuts[cutDrag.index];
                 const waveSvg = document.getElementById('sl-wave');
-                const r = waveSvg.getBoundingClientRect();
-                const frac = clamp((e.clientX - r.left) / r.width, 0, 1);
+                const frac = pointerFraction(e, waveSvg);
+                if (frac === null) return;
                 const frame = state.view + frac * state.width;
                 if (cutDrag.edge === 0) {
-                    c[0] = clamp(frame, state.a, c[1] - state.sampleRate * 0.05);
+                    c[0] = clamp(frame, state.a, c[1] - Math.min(1, c[1] - state.a));
                 } else {
-                    c[1] = clamp(frame, c[0] + state.sampleRate * 0.05, state.b);
+                    c[1] = clamp(frame, c[0] + Math.min(1, state.b - c[0]), state.b);
                 }
                 render();
             });
@@ -829,42 +851,44 @@ var AudioEditor = (() => {
             let gesture = null;
 
             waveSvg.addEventListener('pointerdown', e => {
+                if (gesture && gesture.revision !== gestureRevision) { points.clear(); gesture = null; }
                 waveSvg.setPointerCapture(e.pointerId);
                 points.set(e.pointerId, { x: e.clientX, y: e.clientY });
                 if (points.size === 1) {
-                    gesture = { x: e.clientX, view: state.view, width: state.width, moved: false };
+                    gesture = { x: e.clientX, view: state.view, width: state.width, moved: false, revision: gestureRevision };
                 } else if (points.size === 2) {
                     const p = [...points.values()];
-                    gesture = { pinch: Math.abs(p[0].x - p[1].x), width: state.width, center: state.view + state.width / 2 };
+                    gesture = { pinch: Math.abs(p[0].x - p[1].x), width: state.width, center: state.view + state.width / 2, revision: gestureRevision };
                 }
             });
 
             waveSvg.addEventListener('pointermove', e => {
-                if (!points.has(e.pointerId) || !gesture) return;
+                if (!points.has(e.pointerId) || !gesture || gesture.revision !== gestureRevision || !state.isOpen) return;
                 points.set(e.pointerId, { x: e.clientX, y: e.clientY });
                 if (points.size === 2 && gesture.pinch) {
                     const p = [...points.values()];
                     const dist = Math.max(10, Math.abs(p[0].x - p[1].x));
-                    state.width = clamp(gesture.width * gesture.pinch / dist, state.sampleRate * 1, state.totalFrames);
-                    state.view = clamp(gesture.center - state.width / 2, 0, Math.max(0, state.totalFrames - state.width));
+                    state.width = boundedWidth(gesture.width * gesture.pinch / dist);
+                    state.view = boundedView(gesture.center - state.width / 2);
                     render();
                 } else if (points.size === 1 && !gesture.pinch) {
                     const dx = e.clientX - gesture.x;
                     if (Math.abs(dx) > 4) gesture.moved = true;
                     if (gesture.moved) {
-                        state.view = clamp(gesture.view - (dx / waveSvg.clientWidth) * gesture.width, 0, Math.max(0, state.totalFrames - state.width));
+                        state.view = boundedView(gesture.view - (dx / Math.max(1, waveSvg.clientWidth)) * gesture.width);
                         render();
                     }
                 }
             });
 
             const finishWaveGesture = e => {
-                if (gesture && !gesture.moved && !gesture.pinch) {
+                if (gesture && gesture.revision === gestureRevision && state.isOpen && !gesture.moved && !gesture.pinch) {
                     // Tap seeks
-                    const r = waveSvg.getBoundingClientRect();
-                    const frac = clamp((e.clientX - r.left) / r.width, 0, 1);
-                    state.cursor = state.view + frac * state.width;
-                    send('seek');
+                    const frac = pointerFraction(e, waveSvg);
+                    if (frac !== null) {
+                        state.cursor = clamp(state.view + frac * state.width, state.sourceStart, state.sourceEnd);
+                        send('seek');
+                    }
                 }
                 points.delete(e.pointerId);
                 if (!points.size) gesture = null;
@@ -880,23 +904,24 @@ var AudioEditor = (() => {
             let overviewDrag = null;
             overviewSvg.addEventListener('pointerdown', e => {
                 const r = overviewSvg.getBoundingClientRect();
+                if (r.width <= 0) return;
                 const x = e.clientX - r.left;
-                const viewLeftPx = (state.view / Math.max(1, state.totalFrames)) * r.width;
-                const viewRightPx = ((state.view + state.width) / Math.max(1, state.totalFrames)) * r.width;
+                const viewLeftPx = ((state.view - state.sourceStart) / sourceSpan()) * r.width;
+                const viewRightPx = ((state.view + state.width - state.sourceStart) / sourceSpan()) * r.width;
                 overviewSvg.setPointerCapture(e.pointerId);
 
                 if (x < viewLeftPx - 6 || x > viewRightPx + 6) {
                     // Tap outside viewport: center viewport at tap point
-                    state.view = clamp((x / r.width) * state.totalFrames - state.width / 2, 0, Math.max(0, state.totalFrames - state.width));
+                    state.view = boundedView(state.sourceStart + (x / r.width) * sourceSpan() - state.width / 2);
                 }
-                overviewDrag = { pointerId: e.pointerId, x: e.clientX, view: state.view, total: state.totalFrames, widthPx: r.width };
+                overviewDrag = { pointerId: e.pointerId, x: e.clientX, view: state.view, total: sourceSpan(), widthPx: r.width, revision: gestureRevision };
                 render();
             });
 
             overviewSvg.addEventListener('pointermove', e => {
-                if (!overviewDrag || e.pointerId !== overviewDrag.pointerId) return;
+                if (!overviewDrag || overviewDrag.revision !== gestureRevision || !state.isOpen || e.pointerId !== overviewDrag.pointerId) return;
                 const dx = e.clientX - overviewDrag.x;
-                state.view = clamp(overviewDrag.view + (dx / overviewDrag.widthPx) * overviewDrag.total, 0, Math.max(0, state.totalFrames - state.width));
+                state.view = boundedView(overviewDrag.view + (dx / overviewDrag.widthPx) * overviewDrag.total);
                 render();
             });
 
@@ -919,7 +944,7 @@ var AudioEditor = (() => {
             const el = typeof id === 'string' ? document.getElementById(id) : id;
             const edits = ['sl-action-cut', 'sl-cuts', 'sl-action-undo', 'sl-action-accept-silence'];
             if (el) el.addEventListener(event, e => {
-                if (state.phase === 'exporting' && edits.includes(id)) return;
+                if (!editable() && edits.includes(id)) return;
                 handler(e);
             });
         }
@@ -938,29 +963,31 @@ var AudioEditor = (() => {
 
         bind('sl-mode-result', 'click', () => {
             state.mode = 'result';
+            if (state.playing) send('seek');
             render();
         });
 
         bind('sl-mode-original', 'click', () => {
             state.mode = 'original';
+            if (state.playing) send('seek');
             render();
         });
 
         bind('sl-action-zoom-in', 'click', () => {
-            state.width = Math.max(state.sampleRate * 2, state.width / 1.6);
-            state.view = clamp(state.cursor - state.width / 2, 0, Math.max(0, state.totalFrames - state.width));
+            state.width = boundedWidth(state.width / 1.6);
+            state.view = boundedView(state.cursor - state.width / 2);
             render();
         });
 
         bind('sl-action-zoom-out', 'click', () => {
-            state.width = Math.min(state.totalFrames, state.width * 1.6);
-            state.view = clamp(state.cursor - state.width / 2, 0, Math.max(0, state.totalFrames - state.width));
+            state.width = boundedWidth(state.width * 1.6);
+            state.view = boundedView(state.cursor - state.width / 2);
             render();
         });
 
         bind('sl-action-cut', 'click', () => {
             remember();
-            const cutStart = clamp(state.cursor - state.sampleRate * 0.5, state.a, state.b - state.sampleRate * 0.2);
+            const cutStart = clamp(state.cursor - state.sampleRate * 0.5, state.a, state.b - Math.min(1, state.b - state.a));
             const cutEnd = Math.min(state.b, cutStart + state.sampleRate * 1.5);
             state.cuts.push([cutStart, cutEnd]);
             state.cursor = cutEnd;
@@ -1074,7 +1101,7 @@ var AudioEditor = (() => {
     }
 
     initListeners();
-    window.addEventListener('resize', () => { if (state.isOpen) render(); });
+    window.addEventListener('resize', () => { gestureRevision++; if (state.isOpen) render(); });
 
     return {
         open,

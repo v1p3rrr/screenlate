@@ -2,6 +2,29 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { popupPage } from '../../../../scripts/page-tests/harness.mjs';
 
+test('queued preview callbacks cannot move the cursor or stop a newer seek', () => {
+    const page = popupPage();
+    const editor = page.global('AudioEditor');
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: json => commands.push(JSON.parse(json)) };
+    editor.open({ operation: 'preview', totalFrames: 480000, selection: [100000, 300000] });
+    page.document.getElementById('sl-action-play').click();
+    const first = commands.at(-1).sequence;
+    editor.state.cursor = 200000;
+    page.document.getElementById('sl-mode-original').click();
+    const latest = commands.at(-1).sequence;
+    editor.receive({ operation: 'preview', previewSequence: first, cursor: 110000, playing: false });
+    assert.equal(editor.state.cursor, 200000);
+    assert.equal(editor.state.playing, true);
+    editor.receive({ operation: 'preview', previewSequence: latest, cursor: 210000, playing: true });
+    assert.equal(editor.state.cursor, 210000);
+    // Presentation commands do not invalidate playback progress.
+    page.document.getElementById('sl-action-expand').click();
+    editor.receive({ operation: 'preview', previewSequence: latest, cursor: 220000, playing: false });
+    assert.equal(editor.state.cursor, 220000);
+    assert.equal(editor.state.playing, false);
+});
+
 test('native Back ignores stale editors and confirms only actual edits in the current editor', () => {
     const page = popupPage();
     const editor = page.global('AudioEditor');
@@ -35,4 +58,7 @@ test('oversized edit metadata stays editable instead of waiting for a dropped na
     assert.equal(editor.state.phase, 'editing');
     assert.equal(commands.some(c => c.action === 'save'), false);
     assert.equal(page.document.querySelector('.sl-toast').hidden, false);
+    editor.requestCancel('large');
+    page.document.querySelectorAll('#sl-dialog-actions button')[1]?.click();
+    assert.equal(commands.at(-1).action, 'cancel');
 });

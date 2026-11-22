@@ -4358,3 +4358,14 @@ Observations, not changed:
   resize, crop frame resize and one-shot external Finish). Test package removed, owned AVD powered off.
 - Partial evidence REC53/54/55/59/64/65/66/67/80. Keep N where clauses include actual service rotation,
   API33+ system gestures, failed-copy recovery or source/device acceptance. No collection was mutated.
+
+## Sentence source navigation and preview scheduling (2026-11-22)
+
+- 101 core-media, 347 overlay and 230 page cases pass. Red/green regressions cover nonzero/short source
+  bounds, stale/zero-width gestures, continuous overview drag, current-edit mode changes, conflated seeks
+  during preparation, Pause invalidation and superseded native output/page progress.
+- Affected unit/lint/app/test-APK/release-vital checks pass (5m31s); final overlay unit/lint/test-APK pass
+  in 1m23s. Isolated API30 passes 15 tests in 2.484s, including production Play/Pause/PCM/Opus,
+  nonzero-start WebView navigation and resize in three presentations, and the crop suite.
+- Package removed and owned silent headless AVD powered off. Partial REC44/46/48/55/78/79 evidence;
+  keep N where real service/source/gesture/device behavior is still pending. No Anki data accessed.

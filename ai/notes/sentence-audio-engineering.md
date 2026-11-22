@@ -7,6 +7,33 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Source coordinates and preview request ownership — 2026-11-22
+
+Navigation uses the retained source start/span rather than the absolute cumulative frame count. Nonzero
+source starts and sources shorter than the old 100 ms handle minimum remain bounded. Zoom/pan/overview,
+keyboard and pointer trim/cut movement share those constraints. Gesture epochs prevent a drag begun in
+an old editor or before resize from editing the replacement; zero-width layout does not divide by zero.
+The overview supports continuous no-jump dragging, and a mode change while playing submits the current
+cursor/cuts. Cancellation remains available even if the edit snapshot exceeds bridge packet admission.
+
+AudioEditorOperation now owns a conflated preview mailbox: one request preparing, one latest replacement.
+The desired playback state is independent of the native player's current state, so a seek during startup
+is retained. Pause/edit/Save/cancel invalidate obsolete requests. A thread-safe request guard reaches the
+facade and AudioPreviewPlayer, including sink startup, reads/writes and callback delivery. A separate page
+preview sequence rejects already queued old progress/stop messages without invalidating playback on
+unrelated presentation commands. Pause uses a small identified packet and no longer requires edit fields.
+
+Current evidence: 101 core-media, 347 overlay and 230 page cases pass. New cases cover source-offset/short
+navigation, stale and zero-width gestures, continuous overview drag, live mode changes, conflated rapid
+seeks, Pause during preparation, suppressed obsolete sink startup and queued page callback rejection.
+Affected unit/lint/app/test-APK/release-vital checks pass (navigation-preview-gates.log, 5m31s). Final overlay
+unit/lint/native APK rebuild passes in 1m23s. Isolated API30 rerun passes 15 tests in 2.484s: production
+Play/Pause via the real bridge, editor/PCM/Opus export and confirmed selection, nonzero-start WebView
+navigation with compact/expanded/collapsed resize, and the crop suite. Test package removed; owned
+headless/no-audio AVD powered off. These are transport/host fixtures, not actual service/source/route or
+API33+ gesture acceptance. Remaining D includes live source leases across capture restart, waveform/
+detail/status scheduling and codec fidelity/deadlines.
+
 ## Back, profile invalidation and scan resolution — 2026-11-22
 
 PendingNoteController gives queued scan intent an opaque operation token. Finish runs it only after a
