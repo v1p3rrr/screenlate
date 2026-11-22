@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Зберегти картку й сканувати</string>
     <string name="audio_scan_discard">Скасувати картку й сканувати</string>
     <string name="audio_scan_write_in_progress">Збереження картки вже почалося.</string>
+    <string name="audio_editor_transfer_failed">Не вдалося передати аудіо до Anki. Повторіть спробу або виберіть «Без аудіо».</string>
+    <string name="audio_editor_retry">Повторити</string>
+    <string name="anki_sentence_fields_preserved">Поля з аудіозаписом репліки, включно з текстом у них, залишено без змін.</string>
 </resources>

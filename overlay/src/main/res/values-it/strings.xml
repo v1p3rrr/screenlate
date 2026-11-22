@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Salva la scheda e scansiona</string>
     <string name="audio_scan_discard">Annulla la scheda e scansiona</string>
     <string name="audio_scan_write_in_progress">Il salvataggio della scheda è già iniziato.</string>
+    <string name="audio_editor_transfer_failed">Impossibile trasferire l’audio ad Anki. Riprova o scegli «Senza audio».</string>
+    <string name="audio_editor_retry">Riprova</string>
+    <string name="anki_sentence_fields_preserved">I campi con l’audio della frase sono rimasti invariati, compreso il testo.</string>
 </resources>

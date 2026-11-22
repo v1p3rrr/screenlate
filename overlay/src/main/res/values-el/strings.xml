@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Αποθήκευση κάρτας και σάρωση</string>
     <string name="audio_scan_discard">Ακύρωση κάρτας και σάρωση</string>
     <string name="audio_scan_write_in_progress">Η αποθήκευση της κάρτας έχει ήδη ξεκινήσει.</string>
+    <string name="audio_editor_transfer_failed">Δεν ήταν δυνατή η μεταφορά του ήχου στο Anki. Δοκιμάστε ξανά ή επιλέξτε «Χωρίς ήχο».</string>
+    <string name="audio_editor_retry">Επανάληψη</string>
+    <string name="anki_sentence_fields_preserved">Τα πεδία με ήχο πρότασης διατηρήθηκαν αμετάβλητα, μαζί με το κείμενό τους.</string>
 </resources>

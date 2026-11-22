@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">कार्ड सहेजें और स्कैन करें</string>
     <string name="audio_scan_discard">कार्ड रद्द करें और स्कैन करें</string>
     <string name="audio_scan_write_in_progress">कार्ड सहेजना शुरू हो चुका है।</string>
+    <string name="audio_editor_transfer_failed">ऑडियो Anki में भेजा नहीं जा सका। फिर से कोशिश करें या «बिना ऑडियो» चुनें।</string>
+    <string name="audio_editor_retry">फिर से कोशिश करें</string>
+    <string name="anki_sentence_fields_preserved">वाक्य के ऑडियो वाले फ़ील्ड, उनके टेक्स्ट सहित, बिना बदलाव के रखे गए हैं।</string>
 </resources>

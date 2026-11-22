@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Salvează cardul și scanează</string>
     <string name="audio_scan_discard">Anulează cardul și scanează</string>
     <string name="audio_scan_write_in_progress">Salvarea cardului a început deja.</string>
+    <string name="audio_editor_transfer_failed">Nu s-a putut transfera sunetul în Anki. Reîncercați sau alegeți «Fără sunet».</string>
+    <string name="audio_editor_retry">Reîncercați</string>
+    <string name="anki_sentence_fields_preserved">Câmpurile cu înregistrări ale propozițiilor au rămas neschimbate, inclusiv textul lor.</string>
 </resources>

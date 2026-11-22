@@ -4422,7 +4422,7 @@ Observations, not changed:
 - Affected unit/lint/app/test-APK/vital checks pass (4m47s); final asset/lint/app/vital check passes (1m7s).
   Isolated API30 passes 17 editor/crop native cases in 20.7s, including real viewport reply and metadata
   availability while shown bounds remain fixed. Test package removed; owned silent headless AVD off.
-- Partial REC19/34/41/50/55/70/79 evidence. Actual service/source/gesture, waveform-failure/memory pressure
+- Partial REC19/42/43/44/46/55/70/79 evidence. Actual service/source/gesture, waveform-failure/memory pressure
   and whole-feature resources remain pending. No Anki collection accessed.
 
 ## Pre-note media preparation and submission (2026-11-22)
@@ -4431,5 +4431,20 @@ Observations, not changed:
   audio reuse after failed sentence transfer; obsolete/repeated/uncertain-write rejection; external schema/
   deck changes before transfer/submission. 225 core-Anki and 350 overlay cases plus core-Anki lint pass
   (anki-preparation-gates.log, 1m20s). Existing add uses the same prepare/submit implementation.
-- Partial REC22/23/25/35/68/79 evidence. Editor retention, staging failure/cancel and real local Anki
+- Partial REC60/62/63/65/66/67/68 evidence. Editor retention, staging failure/cancel and real local Anki
   acceptance remain pending; these fake-backend checks do not access a collection.
+
+## Retained editor, staging and actual provider access (2026-11-22)
+
+- Three operation/staging cases cover failed-copy retry without re-encoding, edit invalidation and a
+  non-cooperative copy that must retire before cancellation deletes input. A new backend case covers
+  mixed text/audio preservation and its notice flag; page cases cover Retry and stale message cleanup.
+- Actual URI regression is red for cache-root encoding outside FileProvider paths. The encoder now uses
+  the existing Anki media directory. Sleeping-display opening is red with a 3s join timeout; rejected
+  opening now cancels the owner before returning.
+- 226 core-Anki/353 overlay/291 app/237 page cases pass. Final affected unit/lint/app/test-APK/vital gate
+  passes 4m37s. Isolated API30 passes 18 editor/crop cases in 22.846s, including provider URI read, failed
+  copy/Retry/Without/Back, rejected opening, Ready, restart and resize. Package removed; owned silent
+  headless AVD off. Partial REC32/42/43/54/55/63/64/65/66/67/68/69/77/79 evidence.
+- No actual collection accessed. Real local-Anki, service/source/physical and complete resources/full
+  regression acceptance remain pending. Owner requests a development APK at this checkpoint.

@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Simpan kartu lalu pindai</string>
     <string name="audio_scan_discard">Batalkan kartu lalu pindai</string>
     <string name="audio_scan_write_in_progress">Penyimpanan kartu sudah dimulai.</string>
+    <string name="audio_editor_transfer_failed">Audio tidak dapat ditransfer ke Anki. Coba lagi atau pilih «Tanpa audio».</string>
+    <string name="audio_editor_retry">Coba lagi</string>
+    <string name="anki_sentence_fields_preserved">Kolom dengan audio kalimat dibiarkan tetap sama, termasuk teksnya.</string>
 </resources>

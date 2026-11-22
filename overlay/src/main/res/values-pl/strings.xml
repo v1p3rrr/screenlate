@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Zapisz kartę i skanuj</string>
     <string name="audio_scan_discard">Odrzuć kartę i skanuj</string>
     <string name="audio_scan_write_in_progress">Zapisywanie karty już się rozpoczęło.</string>
+    <string name="audio_editor_transfer_failed">Nie udało się przesłać dźwięku do Anki. Spróbuj ponownie lub wybierz „Bez dźwięku”.</string>
+    <string name="audio_editor_retry">Spróbuj ponownie</string>
+    <string name="anki_sentence_fields_preserved">Pola z nagraniem zdania zachowano bez zmian, łącznie z ich tekstem.</string>
 </resources>

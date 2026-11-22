@@ -125,7 +125,7 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
     }
 
     /** Directory for files handed to [addMedia]; shared with AnkiDroid through a FileProvider. */
-    fun mediaDirectory(): File = File(context.cacheDir, MEDIA_DIR).apply { mkdirs() }
+    fun mediaDirectory(): File = mediaDirectory(context)
 
     private fun scopeDecks(scope: DuplicateScope, deckId: Long): Set<Long> {
         if (scope == DuplicateScope.DECK) return setOf(deckId)
@@ -166,6 +166,9 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
         const val AUTHORITY_SUFFIX = ".anki.media"
         private const val MEDIA_DIR = "anki-media"
         private const val DECK_SEPARATOR = "::"
+
+        /** Private staging covered by FileProvider paths; call on an IO dispatcher. */
+        fun mediaDirectory(context: Context): File = File(context.cacheDir, MEDIA_DIR).apply { mkdirs() }
     }
 }
 

@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">儲存卡片並掃描</string>
     <string name="audio_scan_discard">捨棄卡片並掃描</string>
     <string name="audio_scan_write_in_progress">卡片已開始儲存。</string>
+    <string name="audio_editor_transfer_failed">無法將音訊傳送至 Anki。請重試或選擇「不含音訊」。</string>
+    <string name="audio_editor_retry">重試</string>
+    <string name="anki_sentence_fields_preserved">含有例句音訊的欄位保持不變，包括其中的文字。</string>
 </resources>

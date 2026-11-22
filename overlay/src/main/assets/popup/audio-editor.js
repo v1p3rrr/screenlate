@@ -65,6 +65,23 @@ var AudioEditor = (() => {
     let waveformRequest = 0;
     let waveformKey = '';
     let waveformFrame = null;
+    let toastTimeout = null;
+
+    function hideMessage() {
+        if (toastTimeout !== null) clearTimeout(toastTimeout);
+        toastTimeout = null;
+        const toast = document.querySelector('.sl-toast');
+        if (toast) toast.hidden = true;
+    }
+
+    function showMessage(message, transient = false) {
+        hideMessage();
+        const toast = document.querySelector('.sl-toast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.hidden = false;
+        if (transient) toastTimeout = setTimeout(hideMessage, 3000);
+    }
 
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
     const sourceSpan = () => Math.max(1, state.sourceEnd - state.sourceStart);
@@ -95,11 +112,7 @@ var AudioEditor = (() => {
             action, ...edit, ...payload,
         });
         if (packet.length > 65000) {
-            const toast = document.querySelector('.sl-toast');
-            if (toast) {
-                toast.textContent = labelOf('audio_editor_export_failed', 'Could not export the recording. Adjust the selection or cuts and try again.');
-                toast.hidden = false;
-            }
+            showMessage(labelOf('audio_editor_export_failed', 'Could not export the recording. Adjust the selection or cuts and try again.'));
             return false;
         }
         if (['play', 'seek', 'pause', 'edit', 'save'].includes(action)) state.previewSequence = state.sequence;
@@ -113,7 +126,12 @@ var AudioEditor = (() => {
         if (data.closed) { close(); return; }
         if (data.sequence !== undefined && data.sequence < state.sequence) return;
         if (data.initialSequence !== undefined && data.initialSequence !== state.initialSequence) return;
-        if (data.phase !== undefined) state.phase = data.phase;
+        if (data.phase !== undefined) {
+            if (data.phase === 'exporting' && state.phase !== 'exporting') {
+                hideMessage();
+            }
+            state.phase = data.phase;
+        }
         if (data.initialSelection) {
             state.a = data.initialSelection[0]; state.b = data.initialSelection[1];
             state.cursor = state.a;
@@ -154,8 +172,7 @@ var AudioEditor = (() => {
                 labelOf('audio_editor_limit_toast', 'Fragment limit reached. No further audio can be added.') :
                 labelOf('audio_editor_recording_stopped', 'Recording stopped'));
             else if (!result.addedFrames) parts.push(labelOf('audio_editor_no_new_toast', 'No new audio yet.'));
-            const toast = document.querySelector('.sl-toast');
-            if (toast) { toast.textContent = parts.join(' '); toast.hidden = false; }
+            showMessage(parts.join(' '));
         }
         if (data.initialSelection && !data.timeline) render();
         if (data.previewSequence === undefined || data.previewSequence === state.previewSequence) {
@@ -164,8 +181,7 @@ var AudioEditor = (() => {
         }
         if (data.proposals !== undefined) setSilenceProposals(data.request, data.proposals);
         if (data.error) {
-            const toast = document.querySelector('.sl-toast');
-            if (toast) { toast.textContent = data.error; toast.hidden = false; }
+            showMessage(data.error);
         }
         updateBusy();
         requestWaveform();
@@ -179,6 +195,9 @@ var AudioEditor = (() => {
             if (el) el.disabled = busy;
         }
         if (editor) editor.setAttribute('aria-busy', String(busy));
+        const save = document.getElementById('sl-action-add');
+        if (save) save.textContent = state.phase === 'failed' ?
+            labelOf('audio_editor_retry', 'Retry') : labelOf('audio_editor_add', 'Add');
     }
 
     function formatTime(seconds) {
@@ -621,6 +640,7 @@ var AudioEditor = (() => {
 
     // Public API
     function open(data) {
+        hideMessage();
         gestureRevision++;
         state.isOpen = true;
         state.operation = data.operation || null;
@@ -793,17 +813,13 @@ var AudioEditor = (() => {
         if (request !== silenceRequestCount) return;
         state.suggestions = (proposals || []).map(p => [p[0], p[1]]);
         if (state.suggestions.length === 0) {
-            const toast = document.querySelector('.sl-toast');
-            if (toast) {
-                toast.textContent = labelOf('audio_editor_no_silence', 'No confident pauses found in selection.');
-                toast.hidden = false;
-                setTimeout(() => { toast.hidden = true; }, 3000);
-            }
+            showMessage(labelOf('audio_editor_no_silence', 'No confident pauses found in selection.'), true);
         }
         render();
     }
 
     function close() {
+        hideMessage();
         if (waveformFrame !== null) cancelAnimationFrame(waveformFrame);
         waveformFrame = null;
         waveformKey = '';
@@ -1156,15 +1172,11 @@ var AudioEditor = (() => {
         bind('sl-action-add', 'click', () => {
             if (['exporting', 'opening'].includes(state.phase)) return;
             if (outputLengthSeconds() <= 0) {
-                const toast = document.querySelector('.sl-toast');
-                if (toast) {
-                    toast.textContent = labelOf('audio_editor_empty_output', 'Selected range is empty. Adjust selection or cuts.');
-                    toast.hidden = false;
-                    setTimeout(() => { toast.hidden = true; }, 3000);
-                }
+                showMessage(labelOf('audio_editor_empty_output', 'Selected range is empty. Adjust selection or cuts.'), true);
                 return;
             }
             if (send('save')) {
+                hideMessage();
                 state.phase = 'exporting';
                 updateBusy();
             }

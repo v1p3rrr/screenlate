@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Uložit kartu a skenovat</string>
     <string name="audio_scan_discard">Zrušit kartu a skenovat</string>
     <string name="audio_scan_write_in_progress">Ukládání karty již začalo.</string>
+    <string name="audio_editor_transfer_failed">Zvuk se nepodařilo přenést do Anki. Zkuste to znovu nebo zvolte „Bez zvuku“.</string>
+    <string name="audio_editor_retry">Zkusit znovu</string>
+    <string name="anki_sentence_fields_preserved">Pole se zvukem věty zůstala beze změny, včetně jejich textu.</string>
 </resources>

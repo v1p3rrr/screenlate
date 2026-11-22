@@ -13,6 +13,7 @@ import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.NoteRequest
+import com.vpr.screenlate.core.anki.NotePreparationResult
 import com.vpr.screenlate.core.anki.SentenceAudioAttachment
 import com.vpr.screenlate.core.anki.audio.AudioCandidate
 import com.vpr.screenlate.core.anki.audio.AudioClip
@@ -512,14 +513,27 @@ class PopupNotes(
                     ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used, noteLanguage)
                 screenshot = picture?.let { saveScreenshot(it) }
+                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
+                val preparation = notes.preparation(target, NoteRequest(values, screenshot, clip), force)
+                var prepared: NotePreparationResult? = null
                 if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
                     val isDuplicateKeep = notes.shouldSkipSentenceAudioForDuplicate(target, values)
-                    when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second, duplicateKeep = isDuplicateKeep)) {
+                    when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second,
+                        duplicateKeep = isDuplicateKeep, prepareAudio = { file ->
+                            // Track staging before any copy/return suspension can cancel delivery of the editor result.
+                            sentenceAudio = SentenceAudioAttachment.Attached(file)
+                            val result = preparation.prepare(SentenceAudioAttachment.Attached(file))
+                            if (result is NotePreparationResult.MediaFailed) false else {
+                                prepared = result
+                                true
+                            }
+                        })) {
                         is AudioEditorResult.Cancelled -> {
                             showState(scan, index, noteTerm, "", null)
                             return@prepare
                         }
                         is AudioEditorResult.WithoutAudio -> {
+                            prepared = null
                             sentenceAudio = SentenceAudioAttachment.Omitted
                             audioLease?.close()
                             attachmentsReady()
@@ -532,12 +546,21 @@ class PopupNotes(
                         }
                     }
                 }
-                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
                 // Once a mutation is attempted, keep its actual result rather than cancelling its acknowledgement.
                 audioLease?.close()
                 attachmentsReady()
-                val result = notes.add(target, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudio), force,
-                    onWriteAttempt = { configurationWatch?.cancel(); beginWrite() })
+                val result = when (val ready = prepared ?: preparation.prepare(sentenceAudio)) {
+                    is NotePreparationResult.Ready -> {
+                        val written = notes.write(ready.note,
+                            onWriteAttempt = { configurationWatch?.cancel(); beginWrite() })
+                        if (written is AddResult.Updated && ready.note.keepsSentenceAudioFields) {
+                            toast(this@PopupNotes.context.getString(R.string.anki_sentence_fields_preserved))
+                        }
+                        written
+                    }
+                    is NotePreparationResult.Stopped -> ready.result
+                    is NotePreparationResult.MediaFailed -> AddResult.Failed("Failed to transfer note media to Anki")
+                }
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(
                     TAG,

@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Lưu thẻ rồi quét</string>
     <string name="audio_scan_discard">Hủy thẻ rồi quét</string>
     <string name="audio_scan_write_in_progress">Quá trình lưu thẻ đã bắt đầu.</string>
+    <string name="audio_editor_transfer_failed">Không thể chuyển âm thanh sang Anki. Hãy thử lại hoặc chọn «Không có âm thanh».</string>
+    <string name="audio_editor_retry">Thử lại</string>
+    <string name="anki_sentence_fields_preserved">Các trường có âm thanh câu được giữ nguyên, kể cả phần văn bản.</string>
 </resources>

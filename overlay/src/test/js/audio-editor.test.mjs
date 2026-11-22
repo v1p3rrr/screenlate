@@ -38,6 +38,15 @@ const tap = el => {
     el.dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
 };
 
+test('a failed operation does not leave its error visible in the next editor', () => {
+    AudioEditor.open({ operation: 'failed-old', totalFrames: 480000, selection: [100000, 300000] });
+    AudioEditor.receive({ operation: 'failed-old', phase: 'failed', error: 'Old transfer error' });
+    assert.equal(page.document.querySelector('.sl-toast').hidden, false);
+    AudioEditor.receive({ operation: 'failed-old', closed: true });
+    AudioEditor.open({ operation: 'fresh', totalFrames: 480000, selection: [100000, 300000] });
+    assert.equal(page.document.querySelector('.sl-toast').hidden, true);
+});
+
 test('viewport waveform requests are small and stale detail cannot replace a newer view', async () => {
     const commands = [];
     page.window.ScreenlateBridge = { onAudioEditorCommand: raw => commands.push(JSON.parse(raw)) };
@@ -145,6 +154,7 @@ test('identified save keeps the editor open, prevents double submission and perm
     assert.equal(AudioEditor.state.cuts.length, cutsBefore);
     AudioEditor.receive({ operation: 'a', phase: 'failed', error: 'Export failed' });
     assert.equal(save.disabled, false);
+    assert.equal(save.textContent, 'Retry');
     assert.equal(page.document.querySelector('.sl-toast').textContent, 'Export failed');
     tap(save);
     assert.equal(commands.filter(c => c.action === 'save').length, 2);

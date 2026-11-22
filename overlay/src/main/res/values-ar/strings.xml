@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">حفظ البطاقة ثم المسح</string>
     <string name="audio_scan_discard">إلغاء البطاقة ثم المسح</string>
     <string name="audio_scan_write_in_progress">بدأ حفظ البطاقة بالفعل.</string>
+    <string name="audio_editor_transfer_failed">تعذّر نقل الصوت إلى Anki. أعد المحاولة أو اختر «بدون صوت».</string>
+    <string name="audio_editor_retry">إعادة المحاولة</string>
+    <string name="anki_sentence_fields_preserved">أُبقيت الحقول التي تحتوي على صوت الجملة دون تغيير، بما في ذلك نصوصها.</string>
 </resources>

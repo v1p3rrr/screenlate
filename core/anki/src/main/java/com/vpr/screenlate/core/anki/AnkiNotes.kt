@@ -337,11 +337,13 @@ class AnkiNotes @Inject constructor(
                 null
             }
 
+            var keptSentenceFields = false
             val output = if (targetNote != null) {
                 names.mapIndexed { index, name ->
                     val template = settings.fields[name].orEmpty()
                     // Without audio update: preserve existing sentence-audio field(s) rather than writing an empty Replace value.
                     if (request.sentenceAudio !is SentenceAudioAttachment.Attached && FieldTemplate.SENTENCE_AUDIO in FieldTemplate.markersIn(template)) {
+                        keptSentenceFields = true
                         targetNote.fields.getOrElse(index) { "" }
                     } else {
                         val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE
@@ -352,7 +354,7 @@ class AnkiNotes @Inject constructor(
                 fields
             }
             if (!isCurrent(target)) return NotePreparationResult.Stopped(AddResult.ConfigurationChanged)
-            NotePreparationResult.Ready(PreparedNote(preparation, names.toList(), output.toList(), tags.toSet(), targetNote?.id))
+            NotePreparationResult.Ready(PreparedNote(preparation, names.toList(), output.toList(), tags.toSet(), targetNote?.id, keptSentenceFields))
         }.getOrElse {
             if (it is CancellationException) throw it
             if (it is MediaTransferException) return NotePreparationResult.MediaFailed(it.role)

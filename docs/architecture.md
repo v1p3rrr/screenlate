@@ -216,7 +216,10 @@ editor result, immutable accepted edits, source revisions, child work and export
 preview mailbox retains one preparing request and the latest replacement. Playback intent survives
 preparation; Pause, edits and cancellation invalidate pending native output and queued page progress.
 The page sends identified commands containing the edit snapshot; Kotlin validates it before playback or export. Matching
-native acknowledgements control closure, and encoding failure leaves the editor available for retry.
+native acknowledgements control closure. One encoded edit remains owned through pre-note transfer
+failure; Retry reuses it, editing replaces it, and omission/cancellation await retiring work before cleanup.
+The pending note tracks staging before copy suspension and reuses successful media preparation. Encoded
+files use the existing FileProvider media directory. Rejected opening cancels child work before returning.
 Prepare reserves an audio context lease before attachment choice. Contexts stay bound to their original
 recording session, so restarting capture preserves an active editor without attaching new-session sound
 to it. UI ownership can end independently; the final consumer retires the stopped source. Pending-note

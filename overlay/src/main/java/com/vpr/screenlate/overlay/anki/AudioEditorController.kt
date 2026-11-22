@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.SystemClock
 import android.widget.Toast
 import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.media.AudioContextId
 import com.vpr.screenlate.core.media.AudioEdit
 import com.vpr.screenlate.core.media.AudioRange
@@ -88,6 +89,7 @@ class AudioEditorController(
         var ready: Job? = null
         val waveforms = Channel<AudioEditorCommand>(Channel.CONFLATED)
         var waveformRequest = 0
+        var transferFailed = false
         fun isReady() = this::operation.isInitialized
     }
 
@@ -98,12 +100,14 @@ class AudioEditorController(
         term: String,
         reading: String,
         duplicateKeep: Boolean = false,
+        prepareAudio: suspend (File) -> Boolean = { true },
     ): AudioEditorResult = withContext(Dispatchers.Main) {
         if (released || active != null) return@withContext AudioEditorResult.Cancelled
         val session = Session(audioContextId)
         retainedContextId = audioContextId
         active = session
-        var delivered = false
+        var delivered: File? = null
+        var exports: AudioExportPreparation? = null
         try {
             coroutineScope {
                 val timeline = sentenceRecorder.prepareEditor(audioContextId)
@@ -112,30 +116,20 @@ class AudioEditorController(
                 val previous = lastConfirmed?.takeIf { it.first == audioContextId }?.second
                 val initial = previous?.takeIf { source.intersect(it.selection) == it.selection }
                     ?: sentenceRecorder.initialSelection(timeline) ?: AudioEdit(source)
+                val exporter = AudioExportPreparation(encode = { encode(session, it) }, prepare = { file ->
+                    session.transferFailed = true
+                    prepareAudio(file).also { if (it) session.transferFailed = false }
+                })
+                exports = exporter
                 session.operation = AudioEditorOperation(this, source, initial, onChanged = {
                     if (active === session) send(session) {
                         put("phase", session.operation.phase.name.lowercase())
                         if (session.operation.phase == AudioEditorOperation.Phase.FAILED) {
-                            put("error", context.getString(R.string.audio_editor_export_failed))
+                            put("error", context.getString(if (session.transferFailed) R.string.audio_editor_transfer_failed else R.string.audio_editor_export_failed))
                         }
                     }
                 }, opening = true, preview = { preview(session, it) }) { edit ->
-                    var file: File? = null
-                    var transferred = false
-                    try {
-                        val output = withContext(Dispatchers.IO) {
-                            File.createTempFile("screenlate_sentence_", ".opus", context.cacheDir).also { file = it }
-                        }
-                        withContext(Dispatchers.IO) {
-                            val outcome = sentenceRecorder.export(edit, output, contextId = audioContextId)
-                            if (outcome?.isQuiet == true) withContext(Dispatchers.Main) {
-                                if (active === session) Toast.makeText(context, R.string.audio_editor_quiet_warning, Toast.LENGTH_SHORT).show()
-                            }
-                            if (outcome == null) null else output
-                        }.also { transferred = it != null }
-                    } finally {
-                        if (!transferred) withContext(NonCancellable + Dispatchers.IO) { file?.delete() }
-                    }
+                    exporter.export(edit)
                 }
                 session.operation.scope.launch {
                     for (request in session.waveforms) {
@@ -157,7 +151,10 @@ class AudioEditorController(
                         }
                     }
                 }
-                if (!popupController.enterAudioEditor()) return@coroutineScope AudioEditorResult.Cancelled
+                if (!popupController.enterAudioEditor()) {
+                    session.operation.cancel()
+                    return@coroutineScope AudioEditorResult.Cancelled
+                }
                 page.onEditorBack = { page.cancelAudioEditor(session.id) }
                 onVisibilityChanged(true)
                 val labels = buildJsonObject {
@@ -202,6 +199,7 @@ class AudioEditorController(
                     put("audio_editor_refresh", context.getString(R.string.audio_editor_refresh))
                     put("audio_editor_without", context.getString(R.string.audio_editor_without))
                     put("audio_editor_add", context.getString(R.string.audio_editor_add))
+                    put("audio_editor_retry", context.getString(R.string.audio_editor_retry))
                     put("audio_editor_apply", context.getString(R.string.audio_editor_apply))
                     put("audio_editor_dismiss", context.getString(R.string.audio_editor_dismiss))
                     put("audio_editor_collapse", context.getString(R.string.audio_editor_collapse))
@@ -243,7 +241,7 @@ class AudioEditorController(
                 page.openAudioEditor(openPayload.toString())
                 when (val result = session.operation.result.await()) {
                     is AudioEditorOperation.Result.Audio -> {
-                        delivered = true
+                        delivered = result.file
                         AudioEditorResult.WithAudio(result.file, audioContextId, result.edit)
                     }
                     AudioEditorOperation.Result.WithoutAudio -> AudioEditorResult.WithoutAudio
@@ -255,11 +253,8 @@ class AudioEditorController(
                 if (session.isReady()) {
                     session.operation.cancel()
                     session.operation.awaitClosed()
-                    if (!delivered) {
-                        val orphan = (session.operation.result.await() as? AudioEditorOperation.Result.Audio)?.file
-                        withContext(Dispatchers.IO) { orphan?.delete() }
-                    }
                 }
+                exports?.close(keep = delivered)
                 if (active === session) {
                     sentenceRecorder.stopPreview()
                     if (!released) {
@@ -482,6 +477,26 @@ class AudioEditorController(
         onVisibilityChanged(false)
         retainedContextId = null
         lastConfirmed = null
+    }
+
+    private suspend fun encode(session: Session, edit: AudioEdit): File? {
+        session.transferFailed = false
+        var file: File? = null
+        var transferred = false
+        return try {
+            val output = withContext(Dispatchers.IO) {
+                File.createTempFile("screenlate_sentence_", ".opus", AnkiDroid.mediaDirectory(context)).also { file = it }
+            }
+            withContext(Dispatchers.IO) {
+                val outcome = sentenceRecorder.export(edit, output, contextId = session.contextId)
+                if (outcome?.isQuiet == true) withContext(Dispatchers.Main) {
+                    if (active === session) Toast.makeText(context, R.string.audio_editor_quiet_warning, Toast.LENGTH_SHORT).show()
+                }
+                if (outcome == null) null else output
+            }.also { transferred = it != null }
+        } finally {
+            if (!transferred) withContext(NonCancellable + Dispatchers.IO) { file?.delete() }
+        }
     }
 
     private suspend fun preview(session: Session, request: AudioEditorOperation.Preview) {

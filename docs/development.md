@@ -93,6 +93,13 @@ in finally; never run that fixture on a personal device. `OwnPlaybackDeviceTest`
 test package switches real MediaPlayer/AudioTrack through both production facades with synthetic silence.
 These fixtures do not replace physical external-engine capture/route/voice-quality acceptance.
 
+`AudioExportPreparationTest` combines the operation owner with temporary staging and fake encoding/copy:
+failed-copy Retry reuses encoding, edited ranges replace it, and non-cooperative copy must retire before
+cancellation deletes input. `AnkiNotesTest` covers media preparation without mutation, cached-copy reuse,
+latest-revision/single submission, changed target/schema/deck, and mixed-field omission preservation.
+The isolated editor device fixture also opens the actual FileProvider URI before Retry/Without/Back and
+checks rejected opening while the display sleeps. No collection is needed for these fixtures.
+
 The overlay editor's JavaScript logic is tested via Node.js and jsdom:
 `npm --prefix scripts/page-tests test` runs all page test suites including `audio-editor.test.mjs`.
 

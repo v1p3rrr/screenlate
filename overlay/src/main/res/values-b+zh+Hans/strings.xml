@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">保存卡片并扫描</string>
     <string name="audio_scan_discard">放弃卡片并扫描</string>
     <string name="audio_scan_write_in_progress">卡片已开始保存。</string>
+    <string name="audio_editor_transfer_failed">无法将音频传输到 Anki。请重试或选择“无音频”。</string>
+    <string name="audio_editor_retry">重试</string>
+    <string name="anki_sentence_fields_preserved">含有例句音频的字段保持不变，包括其中的文本。</string>
 </resources>

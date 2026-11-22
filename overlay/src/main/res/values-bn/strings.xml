@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">কার্ড সংরক্ষণ করে স্ক্যান করুন</string>
     <string name="audio_scan_discard">কার্ড বাতিল করে স্ক্যান করুন</string>
     <string name="audio_scan_write_in_progress">কার্ড সংরক্ষণ শুরু হয়ে গেছে।</string>
+    <string name="audio_editor_transfer_failed">Anki-তে অডিও পাঠানো যায়নি। আবার চেষ্টা করুন অথবা «অডিও ছাড়া» বেছে নিন।</string>
+    <string name="audio_editor_retry">আবার চেষ্টা করুন</string>
+    <string name="anki_sentence_fields_preserved">বাক্যের অডিও থাকা ফিল্ডগুলো, সেগুলোর লেখাসহ, অপরিবর্তিত রাখা হয়েছে।</string>
 </resources>

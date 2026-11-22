@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">カードを保存してスキャン</string>
     <string name="audio_scan_discard">カードを破棄してスキャン</string>
     <string name="audio_scan_write_in_progress">カードの保存はすでに開始されています。</string>
+    <string name="audio_editor_transfer_failed">音声をAnkiに転送できませんでした。再試行するか、「音声なし」を選んでください。</string>
+    <string name="audio_editor_retry">再試行</string>
+    <string name="anki_sentence_fields_preserved">例文音声を含むフィールドは、テキストも含めて変更せずに残しました。</string>
 </resources>

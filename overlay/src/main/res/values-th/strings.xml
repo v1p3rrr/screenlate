@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">บันทึกบัตรแล้วสแกน</string>
     <string name="audio_scan_discard">ยกเลิกบัตรแล้วสแกน</string>
     <string name="audio_scan_write_in_progress">เริ่มบันทึกบัตรแล้ว</string>
+    <string name="audio_editor_transfer_failed">โอนไฟล์เสียงไปยัง Anki ไม่สำเร็จ ลองอีกครั้งหรือเลือก «ไม่ใส่เสียง»</string>
+    <string name="audio_editor_retry">ลองอีกครั้ง</string>
+    <string name="anki_sentence_fields_preserved">คงฟิลด์ที่มีเสียงประโยคไว้ตามเดิม รวมถึงข้อความในฟิลด์นั้น</string>
 </resources>

@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Kártya mentése és beolvasás</string>
     <string name="audio_scan_discard">Kártya elvetése és beolvasás</string>
     <string name="audio_scan_write_in_progress">A kártya mentése már elkezdődött.</string>
+    <string name="audio_editor_transfer_failed">Nem sikerült átvinni a hangot az Ankiba. Próbálja újra, vagy válassza a „Hang nélkül” lehetőséget.</string>
+    <string name="audio_editor_retry">Újrapróbálás</string>
+    <string name="anki_sentence_fields_preserved">A mondathangot tartalmazó mezők a szövegükkel együtt változatlanok maradtak.</string>
 </resources>

@@ -194,4 +194,7 @@
     <string name="audio_scan_finish">Сохранить карточку и сканировать</string>
     <string name="audio_scan_discard">Отменить карточку и сканировать</string>
     <string name="audio_scan_write_in_progress">Сохранение карточки уже началось.</string>
+    <string name="audio_editor_transfer_failed">Не удалось передать аудио в Anki. Повторите попытку или выберите «Без аудио».</string>
+    <string name="audio_editor_retry">Повторить</string>
+    <string name="anki_sentence_fields_preserved">Поля с аудиозаписью реплики, включая текст в них, оставлены без изменений.</string>
 </resources>

@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">ذخیرهٔ کارت و اسکن</string>
     <string name="audio_scan_discard">لغو کارت و اسکن</string>
     <string name="audio_scan_write_in_progress">ذخیرهٔ کارت قبلاً شروع شده است.</string>
+    <string name="audio_editor_transfer_failed">انتقال صدا به Anki ممکن نشد. دوباره تلاش کنید یا «بدون صدا» را انتخاب کنید.</string>
+    <string name="audio_editor_retry">تلاش دوباره</string>
+    <string name="anki_sentence_fields_preserved">فیلدهای دارای صدای جمله، همراه با متنشان، بدون تغییر باقی ماندند.</string>
 </resources>

@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">کارڈ محفوظ کر کے اسکین کریں</string>
     <string name="audio_scan_discard">کارڈ منسوخ کر کے اسکین کریں</string>
     <string name="audio_scan_write_in_progress">کارڈ محفوظ کرنا شروع ہو چکا ہے۔</string>
+    <string name="audio_editor_transfer_failed">آڈیو Anki میں منتقل نہیں ہو سکا۔ دوبارہ کوشش کریں یا «آڈیو کے بغیر» منتخب کریں۔</string>
+    <string name="audio_editor_retry">دوبارہ کوشش کریں</string>
+    <string name="anki_sentence_fields_preserved">جملے کی آڈیو والے خانے، ان کے متن سمیت، بغیر تبدیلی کے رکھے گئے ہیں۔</string>
 </resources>

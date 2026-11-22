@@ -201,4 +201,7 @@
     <string name="audio_scan_finish">Save card and scan</string>
     <string name="audio_scan_discard">Discard card and scan</string>
     <string name="audio_scan_write_in_progress">Card saving has already started.</string>
+    <string name="audio_editor_transfer_failed">Could not transfer audio to Anki. Retry or choose Without audio.</string>
+    <string name="audio_editor_retry">Retry</string>
+    <string name="anki_sentence_fields_preserved">Fields with sentence audio were kept unchanged, including their text.</string>
 </resources>

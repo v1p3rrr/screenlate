@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Enregistrer la carte et scanner</string>
     <string name="audio_scan_discard">Abandonner la carte et scanner</string>
     <string name="audio_scan_write_in_progress">L’enregistrement de la carte a déjà commencé.</string>
+    <string name="audio_editor_transfer_failed">Impossible de transférer le son vers Anki. Réessayez ou choisissez « Sans audio ».</string>
+    <string name="audio_editor_retry">Réessayer</string>
+    <string name="anki_sentence_fields_preserved">Les champs contenant un enregistrement de phrase sont restés inchangés, y compris leur texte.</string>
 </resources>

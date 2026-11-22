@@ -5,12 +5,14 @@ import android.os.SystemClock
 import android.view.WindowManager
 import android.view.KeyEvent
 import androidx.datastore.core.DataStore
+import androidx.core.content.FileProvider
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import com.vpr.screenlate.core.media.AudioSource
 import com.vpr.screenlate.core.media.AudioRange
@@ -40,6 +42,49 @@ import org.json.JSONObject
 /** Production editor, bridge, PCM facade and codec in an isolated package; no Anki or system capture. */
 @RunWith(AndroidJUnit4::class)
 class AudioEditorDeviceTest {
+    @Test
+    fun sleepingDisplayRejectsOpeningWithoutStrandingEditorJobs() = runBlocking {
+        val instrument = InstrumentationRegistry.getInstrumentation()
+        val context = instrument.targetContext
+        val settings = RecordingSettingsRepository(Store())
+        val recorder = SentenceRecorder(context, settings, PlaybackCoordinator())
+        val callbacks = object : LookupPage.Callbacks {
+            override fun onClose() = Unit
+            override fun onLookup(query: String, primaryReading: String?) = Unit
+            override fun onOpenUrl(url: String) = Unit
+            override fun onKanji(character: String) = Unit
+            override fun onCopy(text: String, html: String?) = Unit
+            override fun media(dictionary: String, path: String): ByteArray? = null
+        }
+        val popup = withContext(Dispatchers.Main) {
+            PopupController(context, context.getSystemService(WindowManager::class.java), callbacks)
+        }
+        var controller: AudioEditorController? = null
+        suspend fun screenKey(key: Int) = withContext(Dispatchers.IO) {
+            android.os.ParcelFileDescriptor.AutoCloseInputStream(
+                instrument.uiAutomation.executeShellCommand("input keyevent $key")
+            ).use { it.readBytes() }
+        }
+        try {
+            assertThat(recorder.start(SilentSource())).isTrue()
+            delay(150)
+            val scan = checkNotNull(recorder.acquireScan())
+            screenKey(223)
+            val power = context.getSystemService(android.os.PowerManager::class.java)
+            withTimeout(3000) { while (power.isInteractive) delay(1) }
+            withContext(Dispatchers.Main) {
+                val editor = AudioEditorController(context, popup.page, popup, recorder, settings)
+                controller = editor
+                assertThat(withTimeout(3000) { editor.edit(scan, "", "") }).isEqualTo(AudioEditorResult.Cancelled)
+                assertThat(popup.isAudioEditorActive).isFalse()
+            }
+        } finally {
+            withContext(Dispatchers.Main) { controller?.release(); popup.release() }
+            recorder.close()
+            screenKey(224)
+        }
+    }
+
     @Test
     fun firstSelectionUsesSpeechThatArrivesWhileThePageIsOpening() = openingSpeechScenario(false)
 
@@ -165,7 +210,22 @@ class AudioEditorDeviceTest {
                 suspend fun ready() = withTimeout(5000) {
                     while (evaluate("typeof AudioEditor !== 'undefined' && AudioEditor.state.isOpen && AudioEditor.state.phase === 'editing'") != "true") delay(1)
                 }
-                val pending = async { controller.edit(scan, "", "") }
+                var copies = 0
+                var preparedFile: java.io.File? = null
+                var providerFailure: Throwable? = null
+                val pending = async { controller.edit(scan, "", "", prepareAudio = { file ->
+                    copies++
+                    if (preparedFile == null) preparedFile = file else assertThat(file).isEqualTo(preparedFile)
+                    val uri = try {
+                        FileProvider.getUriForFile(context, context.packageName + AnkiDroid.AUTHORITY_SUFFIX, file)
+                    } catch (failure: Exception) { providerFailure = failure; throw failure }
+                    withContext(Dispatchers.IO) {
+                        context.contentResolver.openInputStream(uri).use { stream ->
+                            assertThat(checkNotNull(stream).read()).isAtLeast(0)
+                        }
+                    }
+                    copies > 1
+                }) }
                 ready()
                 withTimeout(5000) {
                     while (evaluate("!!AudioEditor.state.detailSummary && AudioEditor.state.overviewSummary.length===200") != "true") delay(1)
@@ -184,25 +244,40 @@ class AudioEditorDeviceTest {
                 assertThat(initialEnd).isGreaterThan(100L)
                 evaluate("AudioEditor.state.b = Math.floor(AudioEditor.state.b / 2); true")
                 assertThat(controller.requestSave()).isTrue()
+                withTimeout(5000) { while (evaluate("AudioEditor.state.phase") != "\"failed\"") delay(1) }
+                assertThat(pending.isCompleted).isFalse()
+                assertThat(providerFailure).isNull()
+                assertThat(checkNotNull(preparedFile).exists()).isTrue()
+                assertThat(evaluate("AudioEditor.state.b").toLong()).isEqualTo(initialEnd / 2)
+                assertThat(controller.requestSave()).isTrue()
                 result = withTimeout(10_000) { pending.await() } as AudioEditorResult.WithAudio
+                assertThat(copies).isEqualTo(2)
                 assertThat(result!!.edit.selection.endExclusive).isEqualTo(initialEnd / 2)
                 assertThat(result!!.file.length()).isGreaterThan(0L)
                 assertThat(evaluate("AudioEditor.state.isOpen")).isEqualTo("false")
 
                 // Export alone must not promote the remembered selection.
-                val abandoned = async { controller.edit(scan, "", "") }
+                var abandonedFile: java.io.File? = null
+                val abandoned = async { controller.edit(scan, "", "", prepareAudio = { abandonedFile = it; false }) }
                 ready()
                 assertThat(evaluate("AudioEditor.state.b").toLong()).isEqualTo(initialEnd)
+                controller.requestSave()
+                withTimeout(5000) { while (evaluate("AudioEditor.state.phase") != "\"failed\"") delay(1) }
                 evaluate("document.getElementById('sl-action-without').click(); true")
                 assertThat(withTimeout(5000) { abandoned.await() }).isEqualTo(AudioEditorResult.WithoutAudio)
+                assertThat(checkNotNull(abandonedFile).exists()).isFalse()
 
                 controller.confirm(result!!)
-                val confirmed = async { controller.edit(scan, "", "") }
+                var cancelledFile: java.io.File? = null
+                val confirmed = async { controller.edit(scan, "", "", prepareAudio = { cancelledFile = it; false }) }
                 ready()
                 assertThat(evaluate("AudioEditor.state.b").toLong()).isEqualTo(initialEnd / 2)
+                controller.requestSave()
+                withTimeout(5000) { while (evaluate("AudioEditor.state.phase") != "\"failed\"") delay(1) }
                 page.container.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK))
                 page.container.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK))
                 assertThat(withTimeout(5000) { confirmed.await() }).isEqualTo(AudioEditorResult.Cancelled)
+                assertThat(checkNotNull(cancelledFile).exists()).isFalse()
 
                 val stopping = async { controller.edit(scan, "", "") }
                 ready()

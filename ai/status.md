@@ -1,19 +1,35 @@
 # Status
 
-## Sentence audio: recoverable pre-note preparation in progress (2026-11-22)
+## Sentence audio: verified editor transfer checkpoint and dev delivery (2026-11-22)
 
-- Waveform/status checkpoint 0e450261 is committed/pushed; continue E/F/G autonomously.
-- AnkiNotes now separates media/render preparation from provider mutation. A frozen pending preparation
-  reuses known successful screenshot/pronunciation/sentence transfers (one cached reference per role).
-  Typed media failure is retryable before writing. Prepared fields have a revision, and only the latest
-  can claim the pending preparation's single submission; uncertain provider acknowledgement never renews it.
-- Preflight and submission query actual schema/deck availability, not just the cached lookup metadata.
-  Target/configuration/permission changes cannot cross the actual onWriteAttempt boundary unnoticed.
-- Four new backend regressions were red then green: no early write; successful-copy reuse; superseded/
-  uncertain submission rejection; external schema/deck changes. 225 core-Anki and 350 overlay cases plus core-Anki lint pass (anki-preparation-gates.log, 1m20s).
-- UI integration next: retain encoded staging and PCM through failed copy, reuse encoding on Retry,
-  invalidate it when edits change, explicit Without/Cancel cleanup, and preserve generic uncertain-write UI.
-- No actual Anki collection accessed. Latest weekly usage93%; stop below2% remaining, no credits.
+- Owner requests finishing this checkpoint and delivering the usual development APK before the usage
+  limit. Do not start another repair block before delivery. Preliminary manual development testing is
+  appropriate; remaining compatibility/endurance work does not mean the feature is only a prototype.
+- Predecessors: waveform/status 0e450261 and core-Anki preparation 0de82257 are committed/pushed.
+  Current code keeps one encoded edit and its source through failed pre-note media transfer. Retry
+  reuses encoding and known successful attachment copies; changed edits replace staging. Without/Cancel
+  retire copy work before cleanup, and pending-note staging is tracked before any copy/return suspension.
+- Anki preparation does not mutate notes. Only its latest prepared revision can submit once; uncertain
+  provider acknowledgement never renews that claim. Actual schema/deck/permission/effective target are
+  rechecked. Without audio preserves the whole affected field, including mixed text, with a translated
+  notice after update. Retry/error/notice additions are translated in all 27 locales.
+- Actual URI regression reproduced cache-root staging outside FileProvider paths. Encoding now uses the
+  existing Anki media directory via its shared helper; provider permissions/paths were not broadened.
+- Rejected opening while the screen sleeps reproduced a 3s owner-join timeout. The operation now cancels
+  child work before returning. Editor messages/timers reset between operations and on Retry.
+- Gate: 226 core-Anki, 353 overlay, 291 app and 237 page cases pass. Affected unit/lint/app/test-APK/release-
+  vital gate passes (transfer-and-sleep-final-gates.log, 4m37s). Isolated API30 passes all 18 editor/crop
+  cases in 22.846s, including actual FileProvider URI, copy failure/Retry/Without/Back, sleeping display,
+  initial refinement, source restart and resize. Test package removed; owned silent headless AVD off.
+- Finish: commit/push this coherent source and documentation, build ordinary assembleDebug again so the
+  package/version identifies the committed checkpoint, copy into ignored testdata/apk, verify signature/
+  manifest/hash and give the owner the file. Do not install on a connected phone or access owner Anki data.
+- Remaining: E real disposable local-Anki media playback/updates; F saved silence UI and conservative
+  detection, settings/menu/unsupported-device parity, aggregate PCM/cache/staging/queue/FD/workspace
+  resource policy and crash/pressure cleanup; G actual service/source/routes/TTS/current-platform/physical
+  and full regression/endurance acceptance. Several older locale recording strings are still English
+  placeholders outside EN/RU; the three new translated keys do not certify that older work.
+- Product decisions remain binding. Latest weekly usage 97%; stop below 2% remaining, no reset credits.
 
 ## Sentence audio: waveform detail and live status (2026-11-22)
 
@@ -413,7 +429,7 @@
     - Full project unit tests (`./gradlew testDebugUnitTest :build-logic:convention:test`) passed.
     - Page tests (`npm --prefix scripts/page-tests test`): all 212 tests passed.
   - **Dev APK build (`ea86ccb3`):**
-    - Minified ARM64 Dev APK: `testdata/local-research/builds/screenlate-dev-ea86ccb3-min.apk` (25,291,428 bytes, SHA-256 `D830D5C7703EEAE9A1E0A3252042342B3C7BA48A8A7BB06C3A723B426BD99CB2`), debug-signed with standard certificate (`3d48893b...`) for seamless in-place update.
+    - Minified ARM64 Dev APK: `testdata/local-research/builds/screenlate-dev-ea86ccb3-min.apk` (25, 291,428 bytes, SHA-256 `D830D5C7703EEAE9A1E0A3252042342B3C7BA48A8A7BB06C3A723B426BD99CB2`), debug-signed with standard certificate (`3d48893b...`) for seamless in-place update.
     - R8 Mapping: `testdata/local-research/builds/screenlate-dev-ea86ccb3-min.mapping.txt`.
 
 ## Sentence audio: Two-way settings recording control and Dev update build (2026-11-20)

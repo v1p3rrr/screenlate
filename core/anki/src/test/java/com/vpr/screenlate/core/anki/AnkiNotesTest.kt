@@ -115,6 +115,22 @@ class AnkiNotesTest {
     private val request = NoteRequest(mapOf("expression" to "猫", "glossary" to "cat"))
 
     @Test
+    fun `omitting sentence audio preserves a mixed field and reports its preservation`() = runBlocking {
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE,
+            fields = it.fields + ("Sentence" to "{sentence}<br>{sentence-audio}"),
+            overwriteModes = mapOf("Meaning" to OverwriteMode.OVERWRITE, "Sentence" to OverwriteMode.OVERWRITE)) }
+        val original = "old sentence<br>[sound:kept.opus]"
+        anki.existing += ExistingNote(42, MODEL, listOf("猫", "old meaning", original, ""), setOf(DECK))
+        val prepared = notes.prepare(notes.freezeTarget(Language.JAPANESE), request.copy(
+            values = request.values + ("sentence" to "new sentence"), sentenceAudio = SentenceAudioAttachment.Omitted))
+            as NotePreparationResult.Ready
+        assertThat(prepared.note.keepsSentenceAudioFields).isTrue()
+        assertThat(notes.write(prepared.note)).isEqualTo(AddResult.Updated(42))
+        assertThat(anki.updated.single().second[1]).isEqualTo("cat")
+        assertThat(anki.updated.single().second[2]).isEqualTo(original)
+    }
+
+    @Test
     fun `external field changes reject preparation before media and deck removal rejects submission`() = runBlocking {
         configure()
         notes.duplicateCheckMarkers(Language.JAPANESE)

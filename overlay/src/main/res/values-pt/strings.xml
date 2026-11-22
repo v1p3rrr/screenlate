@@ -193,4 +193,7 @@
     <string name="audio_scan_finish">Salvar cartão e digitalizar</string>
     <string name="audio_scan_discard">Descartar cartão e digitalizar</string>
     <string name="audio_scan_write_in_progress">O salvamento do cartão já começou.</string>
+    <string name="audio_editor_transfer_failed">Não foi possível transferir o áudio para o Anki. Tente novamente ou escolha «Sem áudio».</string>
+    <string name="audio_editor_retry">Tentar novamente</string>
+    <string name="anki_sentence_fields_preserved">Os campos com áudio de frases foram mantidos sem alterações, incluindo o texto.</string>
 </resources>

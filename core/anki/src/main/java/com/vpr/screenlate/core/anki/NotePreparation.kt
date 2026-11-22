@@ -49,6 +49,7 @@ class PreparedNote internal constructor(
     internal val fields: List<String>,
     internal val tags: Set<String>,
     internal val updateId: Long?,
+    val keepsSentenceAudioFields: Boolean,
 ) {
     internal val revision = preparation.revision
     internal val owner get() = preparation.owner

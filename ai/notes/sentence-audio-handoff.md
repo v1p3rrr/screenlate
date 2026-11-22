@@ -1,5 +1,17 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+Latest transfer checkpoint (2026-11-22): editor/staging failure recovery, actual FileProvider staging
+and rejected-opening cleanup are implemented and verified. 226 core-Anki/353 overlay/291 app/237 page
+cases pass; final affected gate passes 4m37s. API30 passes 18 editor/crop cases in 22.846s, including URI
+readability, failed copy/Retry/Without/Back, sleeping display, Ready refinement, restart and resize.
+Package removed; owned silent headless AVD off. Owner now requests delivering a development APK at this
+checkpoint, then stopping this work block. Commit/push, rebuild ordinary assembleDebug to identify that
+commit, copy/verify APK under ignored testdata/apk and deliver it. Do not start F before delivery.
+Remaining E real local-Anki/codec playback acceptance; F saved silence UI, detector abstention, menu/
+unsupported/settings parity, aggregate resources/cleanup and legacy English locale placeholders;
+G actual service/source/platform/routes/physical/endurance/full checks. No owner collection touched.
+Binding decisions remain. Last weekly usage 97%; stop below 2% remaining, no reset credits.
+
 Latest waveform continuation (2026-11-22): reusable source-frame amplitude levels, conflated viewport
 requests and read-only live status are implemented. 116 core/350 overlay/236 page cases and affected gates
 pass; API30 passes 17 editor/crop cases in20.7s, including waveform replies and new-sound status without
@@ -7,7 +19,7 @@ moving shown source. Package removed; owned silent headless AVD off. Continue E 
 recovery, F settings/resources and G actual service/source/device acceptance autonomously. New code still
 has a pre-existing unopened-editor child-job hazard when enterAudioEditor returns false on a sleeping
 display; add a native regression and close that operation before returning (C/G follow-up). Keep product
-decisions and weekly stop below2% remaining (latest91% used). No credits or owner Anki access.
+decisions and weekly stop below 2% remaining (latest91% used). No credits or owner Anki access.
 
 Latest Ready continuation (2026-11-22): first selection is refined from the operable Ready snapshot,
 once and only before accepted edits/playback/Refresh. A separate page/native initialSequence preserves
@@ -286,7 +298,7 @@ Important ignored logs under `testdata/local-research/sentence-audio/`:
    accessibility screenshots, and API24–28 availability-only recording UI.
 4. Preview/waveform/silence classification and single-encoder export with actual decoded fidelity; then approved
    compact/expanded overlay editor, pass-through/Back/rotation/dirty handling and no renewed allowance.
-5. DataStore settings/backup/reset, all27 locales, shared default-editor toggle, hold-menu attachments/duplicate
+5. DataStore settings/backup/reset, all 27 locales, shared default-editor toggle, hold-menu attachments/duplicate
    actions, separate `{sentence-audio}`, explicit media-error retry/Without audio and mixed-field preservation.
 6. Full REC/device/fault/endurance acceptance and docs. Phases1/2 are still partial; others have not started.
 
