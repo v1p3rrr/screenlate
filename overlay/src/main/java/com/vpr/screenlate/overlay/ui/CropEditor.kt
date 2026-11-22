@@ -201,7 +201,12 @@ class CropEditor(private val context: Context, private val windowManager: Window
                         }
                     }
                 }
-                session = Session(root, continuation) { toggleSync?.stop() }
+                session = Session(root, continuation, { toggleSync?.stop() }, { placement != null }) {
+                    if (placement == null) false else {
+                        buttonsRow.getChildAt(buttonsRow.childCount - 1).performClick()
+                        true
+                    }
+                }
                 if (!OverlayWindows.add(windowManager, root, OverlayWindows.editorParams())) {
                     // The service is being unbound: as if the user cancelled.
                     toggleSync?.stop()
@@ -210,7 +215,10 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 }
                 open = session
                 // Cancellation may come from any thread; the window is removed on the main one.
-                continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }
+                continuation.invokeOnCancellation {
+                    if (Looper.myLooper() === Looper.getMainLooper()) session.finish(null)
+                    else mainHandler.post { session.finish(null) }
+                }
             }
         } finally {
             toggleSync?.stop()
@@ -223,10 +231,15 @@ class CropEditor(private val context: Context, private val windowManager: Window
         open?.finish(null)
     }
 
+    val canConfirm: Boolean get() = open?.canConfirm?.invoke() == true
+    fun confirm(): Boolean = open?.confirm?.invoke() == true
+
     private inner class Session(
         private val root: View,
         private val continuation: CancellableContinuation<Selection?>,
         private val onClose: () -> Unit,
+        val canConfirm: () -> Boolean,
+        val confirm: () -> Boolean,
     ) {
         val isOpen: Boolean get() = open === this
 

@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Thay đổi cài đặt</string>
     <string name="audio_editor_preview_failed">Không thể phát bản ghi âm. Hãy thử lại.</string>
     <string name="anki_operation_settings_changed">Cài đặt Anki đã thay đổi. Đã hủy thêm thẻ.</string>
+    <string name="audio_scan_finish">Lưu thẻ rồi quét</string>
+    <string name="audio_scan_discard">Hủy thẻ rồi quét</string>
+    <string name="audio_scan_write_in_progress">Quá trình lưu thẻ đã bắt đầu.</string>
 </resources>

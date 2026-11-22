@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Ayarları değiştir</string>
     <string name="audio_editor_preview_failed">Kayıt oynatılamadı. Tekrar deneyin.</string>
     <string name="anki_operation_settings_changed">Anki ayarları değişti. Kart ekleme iptal edildi.</string>
+    <string name="audio_scan_finish">Kartı kaydet ve tara</string>
+    <string name="audio_scan_discard">Kartı iptal et ve tara</string>
+    <string name="audio_scan_write_in_progress">Kartın kaydedilmesi zaten başladı.</string>
 </resources>

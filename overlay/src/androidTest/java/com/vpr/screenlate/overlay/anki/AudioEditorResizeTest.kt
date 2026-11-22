@@ -29,6 +29,7 @@ class AudioEditorResizeTest {
         val windows = mutableListOf<View>()
         var additions = 0
         var removals = 0
+        val flags = mutableMapOf<View, Int>()
         val real = context.getSystemService(WindowManager::class.java)
         val manager = Proxy.newProxyInstance(WindowManager::class.java.classLoader, arrayOf(WindowManager::class.java)) { _, method, args ->
             when (method.name) {
@@ -37,6 +38,7 @@ class AudioEditorResizeTest {
                 "updateViewLayout" -> {
                     val view = args[0] as View
                     val params = args[1] as WindowManager.LayoutParams
+                    flags[view] = params.flags
                     view.measure(View.MeasureSpec.makeMeasureSpec(params.width.coerceAtLeast(1), View.MeasureSpec.EXACTLY),
                         View.MeasureSpec.makeMeasureSpec(params.height.coerceAtLeast(1), View.MeasureSpec.EXACTLY))
                     view.layout(0, 0, params.width.coerceAtLeast(1), params.height.coerceAtLeast(1))
@@ -69,6 +71,8 @@ class AudioEditorResizeTest {
             }
             withTimeout(5000) { while (evaluate("typeof AudioEditor") != "\"object\"") delay(1) }
             popup.enterAudioEditor()
+            assertThat(flags[page.container]!! and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE).isEqualTo(0)
+            assertThat(flags[page.container]!! and WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL).isNotEqualTo(0)
             page.openAudioEditor("""{"operation":"resize","totalFrames":480000,"selection":[100000,300000],"cuts":[[150000,180000]]}""")
             withTimeout(5000) { while (evaluate("AudioEditor.state.isOpen") != "true") delay(1) }
             evaluate("AudioEditor.state.width=200000; AudioEditor.state.view=50000; AudioEditor.state.cursor=120000; AudioEditor.state.mode='original'; true")
@@ -90,6 +94,8 @@ class AudioEditorResizeTest {
             assertThat(additions).isEqualTo(2)
             assertThat(removals).isEqualTo(0)
             assertThat(popup.isAudioEditorActive).isTrue()
+            popup.resetAudioEditorPresentation()
+            assertThat(flags[page.container]!! and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE).isNotEqualTo(0)
         } finally { popup.release() }
     }
 }

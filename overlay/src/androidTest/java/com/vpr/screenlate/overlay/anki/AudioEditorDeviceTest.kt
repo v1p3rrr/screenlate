@@ -3,6 +3,7 @@ package com.vpr.screenlate.overlay.anki
 import android.content.Context
 import android.os.SystemClock
 import android.view.WindowManager
+import android.view.KeyEvent
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
@@ -72,7 +73,8 @@ class AudioEditorDeviceTest {
                 ready()
                 val initialEnd = evaluate("AudioEditor.state.b").toLong()
                 assertThat(initialEnd).isGreaterThan(100L)
-                evaluate("AudioEditor.state.b = Math.floor(AudioEditor.state.b / 2); document.getElementById('sl-action-add').click(); true")
+                evaluate("AudioEditor.state.b = Math.floor(AudioEditor.state.b / 2); true")
+                assertThat(controller.requestSave()).isTrue()
                 result = withTimeout(10_000) { pending.await() } as AudioEditorResult.WithAudio
                 assertThat(result!!.edit.selection.endExclusive).isEqualTo(initialEnd / 2)
                 assertThat(result!!.file.length()).isGreaterThan(0L)
@@ -89,7 +91,8 @@ class AudioEditorDeviceTest {
                 val confirmed = async { controller.edit(scan, "", "") }
                 ready()
                 assertThat(evaluate("AudioEditor.state.b").toLong()).isEqualTo(initialEnd / 2)
-                evaluate("document.getElementById('sl-action-cancel').click(); true")
+                page.container.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK))
+                page.container.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK))
                 assertThat(withTimeout(5000) { confirmed.await() }).isEqualTo(AudioEditorResult.Cancelled)
 
                 val stopping = async { controller.edit(scan, "", "") }

@@ -61,14 +61,24 @@ var AudioEditor = (() => {
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
     function send(action, payload = {}) {
-        if (!state.isOpen || (!window.ScreenlateBridge || !window.ScreenlateBridge.onAudioEditorCommand)) return;
-        if (['exporting', 'opening'].includes(state.phase) && !['ready', 'cancel', 'without', 'expand', 'collapse', 'drag'].includes(action)) return;
-        ScreenlateBridge.onAudioEditorCommand(JSON.stringify({
+        if (!state.isOpen || (!window.ScreenlateBridge || !window.ScreenlateBridge.onAudioEditorCommand)) return false;
+        if (['exporting', 'opening'].includes(state.phase) && !['ready', 'cancel', 'without', 'expand', 'collapse', 'drag'].includes(action)) return false;
+        const packet = JSON.stringify({
             operation: state.operation, sequence: ++state.sequence, sourceRevision: state.sourceRevision,
             action, selection: [Math.round(state.a), Math.round(state.b)],
             exclusions: normalizedCuts().map(c => c.map(Math.round)),
             cursor: Math.round(state.cursor), mode: state.mode, ...payload,
-        }));
+        });
+        if (packet.length > 65000) {
+            const toast = document.querySelector('.sl-toast');
+            if (toast) {
+                toast.textContent = labelOf('audio_editor_export_failed', 'Could not export the recording. Adjust the selection or cuts and try again.');
+                toast.hidden = false;
+            }
+            return false;
+        }
+        ScreenlateBridge.onAudioEditorCommand(packet);
+        return true;
     }
 
     function receive(data) {
@@ -500,6 +510,11 @@ var AudioEditor = (() => {
                 { label: labelOf('audio_editor_discard', 'Cancel note'), primary: true, run: onConfirm }
             ]
         );
+    }
+
+    function requestCancel(operation) {
+        if (!state.isOpen || state.operation !== operation) return;
+        confirmDiscard(() => send('cancel'));
     }
 
     // Public API
@@ -1015,9 +1030,7 @@ var AudioEditor = (() => {
         bind('sl-action-info', 'click', showInfoDialog);
 
         bind('sl-action-cancel', 'click', () => {
-            confirmDiscard(() => {
-                send('cancel');
-            });
+            requestCancel(state.operation);
         });
 
         bind('sl-action-without', 'click', () => {
@@ -1035,9 +1048,10 @@ var AudioEditor = (() => {
                 }
                 return;
             }
-            send('save');
-            state.phase = 'exporting';
-            updateBusy();
+            if (send('save')) {
+                state.phase = 'exporting';
+                updateBusy();
+            }
         });
 
         // Delegate cut chip selection and removal
@@ -1071,6 +1085,7 @@ var AudioEditor = (() => {
         setSilenceProposals,
         close,
         confirmDiscard,
+        requestCancel,
         state,
     };
 })();

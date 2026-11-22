@@ -23,6 +23,7 @@ internal class SelectionHost(context: Context) : FrameLayout(context) {
 
     /** Called with true when a selection starts without a system toolbar, and with false when it ends. */
     var onSelecting: (Boolean) -> Unit = {}
+    var onEditorBack: (() -> Unit)? = null
 
     private var mode: SilentActionMode? = null
     private var focused = false
@@ -45,6 +46,10 @@ internal class SelectionHost(context: Context) : FrameLayout(context) {
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.keyCode == KeyEvent.KEYCODE_BACK && onEditorBack != null) {
+            if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) onEditorBack?.invoke()
+            return true
+        }
         val active = mode
         if (active != null && event.keyCode == KeyEvent.KEYCODE_BACK) {
             if (event.action == KeyEvent.ACTION_UP) active.finish()

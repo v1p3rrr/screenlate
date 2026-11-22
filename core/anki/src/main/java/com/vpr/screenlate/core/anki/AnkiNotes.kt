@@ -262,7 +262,8 @@ class AnkiNotes @Inject constructor(
     suspend fun add(language: Language, request: NoteRequest, force: Boolean = false): AddResult =
         add(freezeTarget(language), request, force)
 
-    suspend fun add(target: NoteTarget, request: NoteRequest, force: Boolean = false): AddResult {
+    /** [onWriteAttempt] runs on the caller's dispatcher immediately before a collection mutation attempt. */
+    suspend fun add(target: NoteTarget, request: NoteRequest, force: Boolean = false, onWriteAttempt: () -> Unit = {}): AddResult {
         currentCoroutineContext().ensureActive()
         if (!isCurrent(target)) return AddResult.ConfigurationChanged
         val availability = anki.availability()
@@ -314,8 +315,6 @@ class AnkiNotes @Inject constructor(
                 null
             }
 
-            if (!isCurrent(target)) return AddResult.ConfigurationChanged
-            currentCoroutineContext().ensureActive()
             if (targetNote != null) {
                 val merged = names.mapIndexed { index, name ->
                     val template = settings.fields[name].orEmpty()
@@ -327,14 +326,23 @@ class AnkiNotes @Inject constructor(
                         mode.apply(targetNote.fields.getOrElse(index) { "" }, fields[index])
                     }
                 }
+                if (!beginMutation(target, onWriteAttempt)) return AddResult.ConfigurationChanged
                 if (anki.updateNote(targetNote.id, merged, tags)) AddResult.Updated(targetNote.id) else AddResult.Rejected
             } else {
+                if (!beginMutation(target, onWriteAttempt)) return AddResult.ConfigurationChanged
                 anki.addNote(modelId, deckId, fields, tags)?.let { AddResult.Added(it) } ?: AddResult.Rejected
             }
         }.getOrElse {
             if (it is CancellationException) throw it
             AddResult.Failed(it.message ?: it.javaClass.simpleName)
         }
+    }
+
+    private suspend fun beginMutation(target: NoteTarget, onWriteAttempt: () -> Unit): Boolean {
+        if (!isCurrent(target)) return false
+        currentCoroutineContext().ensureActive()
+        onWriteAttempt()
+        return true
     }
 
     private suspend fun targetDeckIds(settings: AnkiSettings, deckId: Long): Set<Long> {

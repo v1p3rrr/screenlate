@@ -29,6 +29,8 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 sealed interface AudioEditorResult {
     data class WithAudio(val file: File, val contextId: AudioContextId, val edit: AudioEdit) : AudioEditorResult
@@ -129,7 +131,8 @@ class AudioEditorController(
                         if (!transferred) withContext(NonCancellable + Dispatchers.IO) { file?.delete() }
                     }
                 }
-                popupController.enterAudioEditor()
+                if (!popupController.enterAudioEditor()) return@coroutineScope AudioEditorResult.Cancelled
+                page.onEditorBack = { page.cancelAudioEditor(session.id) }
                 onVisibilityChanged(true)
                 val labels = buildJsonObject {
                     put("audio_editor_recording_active", context.getString(R.string.audio_editor_recording_active))
@@ -232,6 +235,7 @@ class AudioEditorController(
                 if (active === session) {
                     sentenceRecorder.stopPreview()
                     if (!released) {
+                        page.onEditorBack = null
                         send(session) { put("closed", true) }
                         popupController.resetAudioEditorPresentation()
                         onVisibilityChanged(false)
@@ -245,7 +249,11 @@ class AudioEditorController(
     override fun onAudioEditorCommand(payload: String) {
         val session = active ?: return
         if (!session.isReady() || payload.length > 65_536) return
-        val command = runCatching { json.decodeFromString<AudioEditorCommand>(payload) }.getOrNull() ?: return
+        val command = runCatching { json.decodeFromString<AudioEditorCommand>(payload) }.getOrNull() ?: run {
+            val identity = runCatching { json.parseToJsonElement(payload).jsonObject["operation"]?.jsonPrimitive?.content }.getOrNull()
+            if (identity == session.id) rejectCommand(session)
+            return
+        }
         if (command.operation != session.id) return
         val operation = session.operation
         if (command.action == "ready") {
@@ -303,11 +311,11 @@ class AudioEditorController(
             }
             return
         }
-        if (command.selection.size != 2 || command.exclusions.size > 256 || command.exclusions.any { it.size != 2 }) return
+        if (command.selection.size != 2 || command.exclusions.any { it.size != 2 }) { rejectCommand(session); return }
         val edit = runCatching {
             AudioEdit(AudioRange(command.selection[0], command.selection[1]),
                 command.exclusions.map { AudioRange(it[0], it[1]) })
-        }.getOrNull() ?: return
+        }.getOrNull() ?: run { rejectCommand(session); return }
         if (!operation.accept(command.sequence, command.sourceRevision, edit)) {
             // Refresh may have published a new source while this command was in flight.
             send(session) {
@@ -408,10 +416,22 @@ class AudioEditorController(
         active?.takeIf { it.contextId == id }?.let { if (it.isReady()) it.operation.cancel() }
     }
 
+    val canFinish: Boolean get() = active?.let {
+        it.isReady() && it.operation.phase in setOf(AudioEditorOperation.Phase.EDITING,
+            AudioEditorOperation.Phase.FAILED, AudioEditorOperation.Phase.EXPORTING)
+    } == true
+
+    fun requestSave(): Boolean {
+        val session = active?.takeIf { canFinish } ?: return false
+        page.saveAudioEditor(session.id)
+        return true
+    }
+
     /** Detach callbacks synchronously before the host destroys its WebView. Owned cleanup may finish later. */
     fun release() {
         if (released) return
         released = true
+        page.onEditorBack = null
         page.audioEditorActions = null
         active?.let { if (it.isReady()) it.operation.cancel() }
         popupController.resetAudioEditorPresentation()
@@ -431,6 +451,11 @@ class AudioEditorController(
 
     private fun playing(session: Session, token: Long, playing: Boolean) {
         if (active === session && session.playbackGeneration == token) send(session) { put("playing", playing) }
+    }
+
+    private fun rejectCommand(session: Session) = send(session) {
+        put("phase", session.operation.phase.name.lowercase())
+        put("error", context.getString(R.string.audio_editor_export_failed))
     }
 
     private fun send(session: Session, body: kotlinx.serialization.json.JsonObjectBuilder.() -> Unit) {

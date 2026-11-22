@@ -199,7 +199,12 @@ completion. MediaPlayer access stays on Main; bounded engine IPC and file work r
 utterance/preparation callbacks cannot restart sound or delete another operation's file. Downloaded
 pronunciation clips remain owned by their cache.
 
-The note attachment pipeline has one `PendingNoteController` owner. Prepare/Commit/Dismiss messages
+The note attachment pipeline has one `PendingNoteController` owner. Queued scan intent is bound to that
+operation, runs only after successful note completion or explicit discard and full cleanup, and is cleared
+by host/context/profile invalidation. Language changes cancel preparation; the Anki collection-mutation
+boundary protects acknowledgements once a write is attempted. Editor Back uses the same dirty-cancel
+path in compact and expanded windows; focus remains non-modal for outside player controls.
+ Prepare/Commit/Dismiss messages
 freeze the original data and target before attachment choice, with separate identities for recreated pages.
 Source image acquisition is deferred until selected. Timeline loading uses waiting retention; a matching
 operable-page Ready admits the editor allowance once. Resizing keeps the same editor/crop host and source

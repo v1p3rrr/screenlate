@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">שנה הגדרות</string>
     <string name="audio_editor_preview_failed">לא ניתן להפעיל את ההקלטה. נסו שוב.</string>
     <string name="anki_operation_settings_changed">הגדרות Anki השתנו. הוספת הכרטיס בוטלה.</string>
+    <string name="audio_scan_finish">שמירת הכרטיס וסריקה</string>
+    <string name="audio_scan_discard">ביטול הכרטיס וסריקה</string>
+    <string name="audio_scan_write_in_progress">שמירת הכרטיס כבר התחילה.</string>
 </resources>

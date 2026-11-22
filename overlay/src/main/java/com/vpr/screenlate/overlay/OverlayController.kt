@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.os.PowerManager
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -511,6 +512,7 @@ class OverlayController(
      * next scan or the dock.
      */
     private fun onActiveLanguage(new: Language) {
+        if (new != activeLanguage) popupNotes.onActiveLanguageChanged(new)
         activeLanguage = new
         showGlyph()
         if (state == State.DOCKED) takeActiveLanguage()
@@ -1226,9 +1228,19 @@ class OverlayController(
 
     /** Reads the lookup source of this moment: the screen, a photo's stored text, or nothing on the Camera page. */
     private fun startScan(flashLines: Boolean) {
-        if (popup.isAudioEditorActive) {
-            Log.d(TAG, "Ignoring scan request while audio editor is active")
-            Toast.makeText(service, R.string.audio_editor_active_scan_warning, Toast.LENGTH_SHORT).show()
+        if (!attached || service.getSystemService(PowerManager::class.java)?.isInteractive == false) return
+        if (popupNotes.retainsContext) {
+            val token = popupNotes.pendingToken ?: return
+            val intent = { startScan(flashLines) }
+            val items = mutableListOf<BubbleMenu.Item>()
+            if (popupNotes.canFinish) items += BubbleMenu.Item(service.getString(R.string.audio_scan_finish)) {
+                if (!popupNotes.finishForScan(token, intent)) intent()
+            }
+            items += BubbleMenu.Item(service.getString(R.string.audio_scan_discard)) {
+                if (!popupNotes.cancelForScan(token, intent)) intent()
+            }
+            items += BubbleMenu.Item(service.getString(R.string.audio_editor_keep_editing)) { popupNotes.keepEditing(token) }
+            bubbleMenu.show(items, popup.bounds ?: bubbleBox(), usableBounds(), dark = isDarkTheme(), eInk = eInk)
             return
         }
         stopDiagnostics.scanStarted(SystemClock.elapsedRealtime())

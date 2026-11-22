@@ -83,6 +83,16 @@ class CropEditorTest {
     }
 
     @Test
+    fun anExternalFinishConfirmsTheCurrentCropOnlyOnce() = runBlocking(Dispatchers.Main) {
+        val picture = async(start = CoroutineStart.UNDISPATCHED) { editor.edit(source, null) }
+        assertThat(editor.canConfirm).isTrue()
+        assertThat(editor.confirm()).isTrue()
+        assertThat(editor.confirm()).isFalse()
+        picture.await()!!.recycle()
+        assertThat(shown).isEmpty()
+    }
+
+    @Test
     fun aSecondEditorClosesTheFirstAsCancelled() = runBlocking(Dispatchers.Main) {
         val first = async(start = CoroutineStart.UNDISPATCHED) { editor.edit(source, null) }
         val second = async(start = CoroutineStart.UNDISPATCHED) { editor.edit(source, null) }

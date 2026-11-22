@@ -7,6 +7,13 @@ owner and suspending facade with permanent regressions; B's software lifetime wo
 verified. Continue C's operation/revision protocol; physical gates remain. The checkpoint below is historical. Branch, privacy, safe test
 environment and weekly-limit instructions remain applicable. No product decision was changed.
 
+Lifecycle continuation (2026-11-22): see the top ai/status.md section. C's Back/language/new-scan owner
+integration and affected gates/native rerun are implemented; the final 32/32 AnkiNotes boundary run
+also passes. Commit/push the lifecycle checkpoint, then proceed. Then continue D/E/F/G autonomously, without yielding. Base 5b027fcd is
+committed/pushed with full/221-page/3-native receipts. Latest lifecycle evidence: 345 overlay, 223 page,
+4 native cases (1.979s), affected unit/lint/APK/vital pass (3m3s). E's media-copy recovery and G's real
+service/physical/API33+ gesture portions remain; do not equate transport fixtures with full acceptance.
+
 Latest preparation/Ready/resize checkpoint (2026-11-22): Prepare/Commit/Dismiss now freeze note data and
 target before the attachment menu; page-recreation tokens cannot collide. Loading uses R; identified Ready
 admits E once. Owned crop/editor/preview/export resize keeps the host, source coordinates and draft.

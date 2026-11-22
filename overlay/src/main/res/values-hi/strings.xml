@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">सेटिंग्स बदलें</string>
     <string name="audio_editor_preview_failed">रिकॉर्डिंग नहीं चलाई जा सकी। फिर से कोशिश करें।</string>
     <string name="anki_operation_settings_changed">Anki की सेटिंग बदल गई हैं। कार्ड जोड़ना रद्द कर दिया गया।</string>
+    <string name="audio_scan_finish">कार्ड सहेजें और स्कैन करें</string>
+    <string name="audio_scan_discard">कार्ड रद्द करें और स्कैन करें</string>
+    <string name="audio_scan_write_in_progress">कार्ड सहेजना शुरू हो चुका है।</string>
 </resources>

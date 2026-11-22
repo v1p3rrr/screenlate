@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Einstellungen ändern</string>
     <string name="audio_editor_preview_failed">Die Aufnahme konnte nicht abgespielt werden. Versuchen Sie es erneut.</string>
     <string name="anki_operation_settings_changed">Die Anki-Einstellungen wurden geändert. Das Hinzufügen der Karte wurde abgebrochen.</string>
+    <string name="audio_scan_finish">Karte speichern und scannen</string>
+    <string name="audio_scan_discard">Karte verwerfen und scannen</string>
+    <string name="audio_scan_write_in_progress">Die Karte wird bereits gespeichert.</string>
 </resources>

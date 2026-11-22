@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Zmień ustawienia</string>
     <string name="audio_editor_preview_failed">Nie udało się odtworzyć nagrania. Spróbuj ponownie.</string>
     <string name="anki_operation_settings_changed">Ustawienia Anki zostały zmienione. Dodawanie karty zostało anulowane.</string>
+    <string name="audio_scan_finish">Zapisz kartę i skanuj</string>
+    <string name="audio_scan_discard">Odrzuć kartę i skanuj</string>
+    <string name="audio_scan_write_in_progress">Zapisywanie karty już się rozpoczęło.</string>
 </resources>

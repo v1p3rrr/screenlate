@@ -191,4 +191,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Изменить настройки</string>
     <string name="audio_editor_preview_failed">Не удалось воспроизвести запись. Попробуйте ещё раз.</string>
     <string name="anki_operation_settings_changed">Настройки Anki изменились. Добавление карточки отменено.</string>
+    <string name="audio_scan_finish">Сохранить карточку и сканировать</string>
+    <string name="audio_scan_discard">Отменить карточку и сканировать</string>
+    <string name="audio_scan_write_in_progress">Сохранение карточки уже началось.</string>
 </resources>

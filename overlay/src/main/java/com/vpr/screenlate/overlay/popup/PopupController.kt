@@ -6,6 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.PowerManager
+import android.os.Build
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -56,6 +59,8 @@ class PopupController(
     private var lastMaxWidth: Float = 0f
     private var isExpanded: Boolean = false
     private var isCollapsed: Boolean = false
+    private var unregisterEditorBack: (() -> Unit)? = null
+    private var editorBackGeneration = 0
 
     /**
      * Overlays stay above the lock screen, where an active full-screen backdrop would swallow the first touch of the
@@ -111,7 +116,7 @@ class PopupController(
     })
 
     init {
-        page.setOnSelecting(::setFocusable)
+        page.setOnSelecting { setFocusable(it || isAudioEditorActive) }
     }
 
     var bounds: Box? = null
@@ -141,6 +146,7 @@ class PopupController(
     }
 
     fun detach() {
+        clearEditorBack()
         if (!attached) return
         unregisterScreenOff()
         windowManager.removeView(page.container)
@@ -312,11 +318,23 @@ class PopupController(
         callbacks.onClose()
     }
 
-    fun enterAudioEditor() {
+    fun enterAudioEditor(): Boolean {
+        if (powerManager?.isInteractive == false) return false
         isAudioEditorActive = true
-        if (!visible) return
+        setFocusable(true)
+        val token = ++editorBackGeneration
+        page.container.post {
+            if (Build.VERSION.SDK_INT >= 33 && isAudioEditorActive && editorBackGeneration == token) {
+                page.container.findOnBackInvokedDispatcher()?.let { dispatcher ->
+                    val callback = OnBackInvokedCallback { page.onEditorBack?.invoke() }
+                    dispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback)
+                    unregisterEditorBack = { dispatcher.unregisterOnBackInvokedCallback(callback) }
+                }
+            }
+        }
+        if (!visible) return true
         if (normalBounds == null) normalBounds = bounds
-        val screen = lastScreen ?: return
+        val screen = lastScreen ?: return true
         val maxW = if (lastMaxWidth > 0f) lastMaxWidth else screen.width - edgeMargin * 2
         val size = PopupPlacement.audioEditorSize(screen, maxW, expanded = false)
         val x = screen.left + (screen.width - size.width) / 2f
@@ -327,6 +345,7 @@ class PopupController(
         if (attached) {
             windowManager.updateViewLayout(page.container, params)
         }
+        return true
     }
 
     fun dragBy(dx: Float, dy: Float) {
@@ -383,6 +402,8 @@ class PopupController(
     }
 
     fun resetAudioEditorPresentation() {
+        clearEditorBack()
+        setFocusable(false)
         isAudioEditorActive = false
         isExpanded = false
         isCollapsed = false
@@ -422,7 +443,7 @@ class PopupController(
     }
 
     private fun updateScreenOffReceiver() {
-        if (attached && visible && hideOnOutsideTap) registerScreenOff() else unregisterScreenOff()
+        if (attached && visible && (hideOnOutsideTap || isAudioEditorActive)) registerScreenOff() else unregisterScreenOff()
     }
 
     private fun registerScreenOff() {
@@ -448,6 +469,12 @@ class PopupController(
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         target.width = 1
         target.height = 1
+    }
+
+    private fun clearEditorBack() {
+        editorBackGeneration++
+        unregisterEditorBack?.invoke()
+        unregisterEditorBack = null
     }
 
     private companion object {

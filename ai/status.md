@@ -1,5 +1,35 @@
 # Status
 
+## Sentence audio: lifecycle ownership implemented (2026-11-22)
+
+- Continue autonomously through D/E/F/G; do not yield between milestones. The weekly stop rule is less
+  than 2% remaining, with no reset credits. Committed preparation/Ready/resize base is 5b027fcd; the
+  lifecycle checkpoint described here has completed all affected gates and the final 32-case Notes test run.
+- Token-bound finish/cancel-then-scan waits for all owned cleanup. Only successful note completion or
+  explicit discard runs the queued intent; failed finish, stale token, host shutdown, external context
+  closure and profile invalidation cannot launch it. Success auto-hide runs after retiring ownership and
+  before scan intent, with a fresh scan-identity check, so it cannot dismiss a later lookup.
+- Active-language changes cancel preparation. AnkiNotes announces the collection-mutation boundary only
+  after media preparation, so profile/settings cancellation remains effective through copying; an already
+  attempted write keeps its real acknowledgement. New and updated notes use the same boundary.
+- Native Back uses the existing dirty-cancel page dialog, editor-only focus and API33+ predictive-back
+  registration. Outside touches remain non-modal. A screen-off closes a focused editor; detached/non-
+  interactive hosts reject late scan intent. Existing BubbleMenu resolves Save card and scan / Discard
+  card and scan / Keep editing; unavailable/loading stages do not offer Finish. All strings cover 27 locales.
+- Bridge rejection cannot leave Save stuck: oversized edit metadata is refused visibly before sending,
+  malformed identified commands return an error/phase, and the old arbitrary 256-cut rejection is gone.
+- Receipts: 345 overlay unit tests; 223 page tests; focused AnkiNotes boundary cases. Affected unit/lint/
+  app/test-APK/release-vital gate passes (lifecycle-write-boundary.log, 3m3s). Final update-boundary test
+  receipt is lifecycle-update-boundary.log (32/32, 56s). API30 isolated native rerun passes 4 tests in 1.979s: external
+  editor Save + native Back, focus/non-modal flags/resize, crop rotation and one-shot external crop Finish.
+  Test package removed and owned no-window/no-audio AVD shut down.
+- C lifecycle software is implemented; acceptance still crosses E's pre-note transfer retry and G's real
+  service/source/API33+ gesture/physical checks. Do not claim the old media-copy failure UI is recoverable.
+- Next D: fix absolute source-start/end navigation/handles and short-source bounds, then bounded waveform
+  detail/refresh/preview scheduling and streaming codec deadlines/fidelity. Continue E transfer recovery,
+  F complete resources/settings and G actual acceptance afterwards. Preserve unrelated submodule dirt/photos.
+
+
 ## Sentence audio: preparation, Ready and resize (2026-11-22)
 
 - Current owner authorization: continue through all remaining repair milestones autonomously, committing
@@ -20,8 +50,9 @@
 - Evidence so far: 100 core-media and 341 overlay unit cases pass; 221 page cases pass, including recreated-page identity rejection. Three isolated API30 native tests pass
   in 1.473s: production Ready/editor/PCM/Opus path; compact/expanded/collapsed resize; pending crop frame
   preservation. Test package removed and owned headless/no-audio AVD powered off.
-- Full project gate is running in ready-prepare-full.log; update this checkpoint after final verification.
-  Then commit this block and continue C's Back/language/new-scan arbitration, followed by D/E/F/G.
+- Full project gate passed (ready-prepare-full.log, 12m38s, single worker with report/cache
+  output disabled after environment timeouts). Block committed/pushed as 5b027fcd. Continue C's
+  Back/language/new-scan arbitration, followed by D/E/F/G.
   C is not complete; Anki transfer recovery, whole-feature resource accounting and physical gates remain.
 
 

@@ -173,6 +173,28 @@ class PopupNotes(
     private val addingEntries = mutableSetOf<Int>()
     private val pendingNote = PendingNoteController(scope)
     val retainsContext: Boolean get() = pendingNote.retainsContext
+    internal val pendingToken: PendingNoteController.Token? get() = pendingNote.token
+    val canFinish: Boolean get() = audioEditor?.canFinish == true || cropEditor?.canConfirm == true
+
+    internal fun finishForScan(token: PendingNoteController.Token, scan: () -> Unit): Boolean {
+        if (!pendingNote.finishThen(token, scan)) return false
+        if (audioEditor?.requestSave() != true) cropEditor?.confirm()
+        return true
+    }
+
+    internal fun cancelForScan(token: PendingNoteController.Token, scan: () -> Unit): Boolean {
+        if (pendingNote.cancelThen(token, scan)) return true
+        if (pendingNote.token !== token) return false
+        pendingNote.finishThen(token, scan)
+        toast(context.getString(R.string.audio_scan_write_in_progress))
+        return true
+    }
+
+    internal fun keepEditing(token: PendingNoteController.Token) = pendingNote.keepEditing(token)
+
+    fun onActiveLanguageChanged(language: Language) {
+        if (pendingNote.cancelForLanguage(language)) toast(context.getString(R.string.anki_operation_settings_changed))
+    }
 
     /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
@@ -381,7 +403,7 @@ class PopupNotes(
         val noteLanguage = language()
         val targetAtPress = notes.cachedTarget(noteLanguage)
         addingEntries += index
-        pendingNote.prepare(request) {
+        pendingNote.prepare(request, noteLanguage) {
             var image: NoteImage? = null
             var picture: Bitmap? = null
             var configurationWatch: Job? = null
@@ -485,25 +507,30 @@ class PopupNotes(
                         }
                         is AudioEditorResult.WithoutAudio -> {
                             sentenceAudio = SentenceAudioAttachment.Omitted
+                            attachmentsReady()
                         }
                         is AudioEditorResult.WithAudio -> {
                             confirmedAudio = audioResult
                             sentenceAudio = SentenceAudioAttachment.Attached(audioResult.file)
+                            attachmentsReady()
                         }
                     }
                 }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
                 // Once a mutation is attempted, keep its actual result rather than cancelling its acknowledgement.
-                configurationWatch?.cancel()
                 attachmentsReady()
-                val result = notes.add(target, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudio), force)
+                val result = notes.add(target, NoteRequest(values, screenshot, clip, sentenceAudio = sentenceAudio), force,
+                    onWriteAttempt = { configurationWatch?.cancel(); beginWrite() })
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(
                     TAG,
                     "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, " +
                         "sentenceAudio ${sentenceAudio is SentenceAudioAttachment.Attached}, translation ${FieldTemplate.SENTENCE_TRANSLATION in values}, forced $force",
                 )
-                if (result is AddResult.Added || result is AddResult.Updated) confirmedAudio?.let { audioEditor?.confirm(it) }
+                if (result is AddResult.Added || result is AddResult.Updated) {
+                    succeeded()
+                    confirmedAudio?.let { audioEditor?.confirm(it) }
+                }
                 val (resultState, ids) = report(scan, noteTerm, result)
                 opens = ids
                 resultState
@@ -528,7 +555,7 @@ class PopupNotes(
                 if (page.noteActions === this@PopupNotes) page.cancelNotePreparation(request)
             }
             val shown = showState(scan, index, term, state, opens)
-            if (state == "added" && shown) onNoteAdded()
+            if (state == "added" && shown) afterCompletion { if (scan == scanNotes.scan) onNoteAdded() }
         }
     }
 

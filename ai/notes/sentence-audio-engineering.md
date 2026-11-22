@@ -7,6 +7,47 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Back, profile invalidation and scan resolution — 2026-11-22
+
+PendingNoteController gives queued scan intent an opaque operation token. Finish runs it only after a
+successful note and resource retirement; discard runs it only after cancellation cleanup. The completion
+callback returns to the owner dispatcher even when the final child completes on IO. Host shutdown/context
+closure/language invalidation suppress queued intent. Auto-hide occurs after releasing the slot, before
+the queued scan, and checks the original scan again; stale callbacks cannot hide a later dictionary view.
+
+Language invalidation cancels pre-write preparation. AnkiNotes now announces its collection-mutation
+boundary on the caller dispatcher immediately before addNote/updateNote, after all media preparation and
+fresh-target checks. Cancellation stays valid through copying; once the write is attempted the generic
+acknowledgement/book/uncertain-write behavior is retained. Pre-note transfer recovery remains E.
+
+Editor windows take keyboard focus for Back while keeping NOT_TOUCH_MODAL; SelectionHost routes only
+active editor Back into the same identified dirty-cancel dialog. API33+ registers/unregisters predictive
+back with generation checks. Focus, callbacks and screen-off receiver are retired with the host. A late
+scan intent cannot run in a detached/non-interactive host. New scan conflicts use the existing BubbleMenu;
+Finish dispatches the same identified Save or a one-shot current crop confirmation. No audio anchor is
+created until the queued scan actually runs.
+
+The identified bridge now rejects oversized edit metadata visibly before sending it, instead of leaving
+the page Exporting after a dropped packet. Malformed identified commands return their phase/error. Removed
+the earlier unrelated 256-cut limit; the existing bounded packet size still limits admission. Whole-feature
+metadata/workspace policy is still F and is not claimed by this protocol guard.
+
+Evidence:
+- Red owner/JS cases precede fixes. Nine PendingNoteController tests cover menu ownership, single note,
+  shutdown/drain, stale scan choices, success/failure, profile invalidation and acknowledgement boundaries.
+- 345 overlay unit and 223 page tests pass. Focused AnkiNotes tests cover media-before-write, failed required
+  media with no write, and both new/updated-note mutation announcements (last receipt in update-boundary log).
+- Affected unit/lint/app/test-APK/vital gate passes: lifecycle-write-boundary.log, 3m3s. Earlier final gate
+  passed in 2m18s; native-only rebuild passed in 16s.
+- Isolated API30: production external Save and native key Back; compact/expanded/collapsed host with focus
+  and non-modal flag checks; crop frame resize; external one-shot crop Finish: 4 tests pass in 1.979s.
+  No Anki collection/system capture. Package removed and owned silent headless AVD shut down.
+- Actual accessibility-service rotation, supported source apps, API33+ system gesture dispatch, calls/routes
+  and physical capture/voice/power remain G. Host proxy/key tests do not certify these portions.
+
+Next D repairs source-coordinate navigation, waveform detail and codec fidelity/deadlines. E integrates
+pre-note media-copy recovery; C's full integration gate remains dependent on that UI state and G evidence.
+
 ## Pre-chooser preparation, Ready and resize — 2026-11-22
 
 Prepare/Commit/Dismiss reserve a single note operation before the menu, with page-local random namespaces
@@ -35,7 +76,9 @@ Verification so far:
 - Isolated API30 native run: production Ready/editor/PCM/Opus/confirmed-selection path, host resize in
   all three presentations and pending crop frame preservation: 3 tests pass in 1.473s. Package uninstalled,
   owned no-window/no-audio AVD shut down. Actual service rotation/source-app acceptance remains G.
-- Full gate in ignored ready-prepare-full.log is pending final collection at this checkpoint.
+- Full gate in ignored ready-prepare-full.log passed in 12m38s (single worker, disabled configuration
+  cache/problems report). This is a cold rebuild/environment mode, not a comparable app performance
+  measurement. Checkpoint committed/pushed as 5b027fcd.
 - Earlier overlapping build attempts produced damaged Kotlin incremental cache, and the Gradle report
   writer later timed out despite 99 passing tests. A targeted core-media clean/rebuild and a sequential
   --no-configuration-cache --no-problems-report run passed. No production build setting was changed.

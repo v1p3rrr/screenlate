@@ -1,9 +1,12 @@
 package com.vpr.screenlate.overlay.anki
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -11,6 +14,90 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PendingNoteControllerTest {
+    @Test
+    fun `finish then scan runs only after a successful note has released its resources`() = runTest {
+        val pending = PendingNoteController(this)
+        val done = CompletableDeferred<Unit>()
+        var resources = true
+        var scanned = false
+        pending.start {
+            try { done.await(); succeeded(); afterCompletion { pending.contextEnded() } }
+            finally { resources = false }
+        }
+        runCurrent()
+        pending.finishThen(checkNotNull(pending.token)) { check(!resources); scanned = true }
+        assertThat(scanned).isFalse()
+        done.complete(Unit)
+        runCurrent()
+        assertThat(scanned).isTrue()
+        val failed = CompletableDeferred<Unit>()
+        pending.start { failed.await() }
+        pending.finishThen(checkNotNull(pending.token)) { error("Failed note must not scan") }
+        failed.complete(Unit)
+        runCurrent()
+        assertThat(pending.isActive).isFalse()
+    }
+
+    @Test
+    fun `discard then scan waits for noncancellable cleanup and cannot run after host shutdown`() = runTest {
+        val pending = PendingNoteController(this)
+        val cleanup = CompletableDeferred<Unit>()
+        var scanned = false
+        pending.start { try { CompletableDeferred<Unit>().await() } finally { withContext(NonCancellable) { cleanup.await() } } }
+        runCurrent()
+        pending.cancelThen(checkNotNull(pending.token)) { scanned = true }
+        runCurrent()
+        assertThat(scanned).isFalse()
+        assertThat(pending.isActive).isTrue()
+        cleanup.complete(Unit)
+        runCurrent()
+        assertThat(scanned).isTrue()
+        val hostJob = Job()
+        val host = PendingNoteController(CoroutineScope(coroutineContext + hostJob))
+        val release = CompletableDeferred<Unit>()
+        var lateScan = false
+        host.start { try { CompletableDeferred<Unit>().await() } finally { withContext(NonCancellable) { release.await() } } }
+        runCurrent()
+        host.cancelThen(checkNotNull(host.token)) { lateScan = true }
+        runCurrent()
+        hostJob.cancel()
+        release.complete(Unit)
+        runCurrent()
+        assertThat(lateScan).isFalse()
+    }
+
+    @Test
+    fun `a stale scan choice cannot cancel the next note`() = runTest {
+        val pending = PendingNoteController(this)
+        pending.start { }
+        val old = checkNotNull(pending.token)
+        runCurrent()
+        val done = CompletableDeferred<Unit>()
+        pending.start { done.await() }
+        runCurrent()
+        assertThat(pending.cancelThen(old) { error("Stale scan") }).isFalse()
+        assertThat(pending.finishThen(old) { error("Stale scan") }).isFalse()
+        assertThat(pending.isActive).isTrue()
+        done.complete(Unit)
+        runCurrent()
+    }
+
+    @Test
+    fun `active language changes cancel preparation but preserve an attempted write acknowledgement`() = runTest {
+        val pending = PendingNoteController(this)
+        pending.prepare("a", Language.JAPANESE) { attachments() }
+        runCurrent()
+        assertThat(pending.cancelForLanguage(Language.JAPANESE)).isFalse()
+        assertThat(pending.cancelForLanguage(Language.ENGLISH)).isTrue()
+        runCurrent()
+        assertThat(pending.isActive).isFalse()
+        val write = CompletableDeferred<Unit>()
+        pending.prepare("b", Language.JAPANESE) { beginWrite(); write.await() }
+        runCurrent()
+        assertThat(pending.cancelForLanguage(Language.ENGLISH)).isFalse()
+        write.complete(Unit)
+        runCurrent()
+    }
     @Test
     fun `dismissal ignores other menus and releases this menu without a note`() = runTest {
         val pending = PendingNoteController(this)

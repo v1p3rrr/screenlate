@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Modifica impostazioni</string>
     <string name="audio_editor_preview_failed">Impossibile riprodurre la registrazione. Riprova.</string>
     <string name="anki_operation_settings_changed">Le impostazioni di Anki sono cambiate. L’aggiunta della scheda è stata annullata.</string>
+    <string name="audio_scan_finish">Salva la scheda e scansiona</string>
+    <string name="audio_scan_discard">Annulla la scheda e scansiona</string>
+    <string name="audio_scan_write_in_progress">Il salvataggio della scheda è già iniziato.</string>
 </resources>

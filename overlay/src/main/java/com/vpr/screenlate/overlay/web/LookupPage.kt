@@ -155,6 +155,10 @@ class LookupPage(
     private val selectionHost = SelectionHost(context)
     val container: FrameLayout = selectionHost
 
+    var onEditorBack: (() -> Unit)?
+        get() = selectionHost.onEditorBack
+        set(value) { selectionHost.onEditorBack = value }
+
     /**
      * Called with true when a text selection starts in a window without the system's toolbar (an overlay), and with
      * false when it ends; the host makes its window focusable meanwhile, so the selection handles show.
@@ -239,6 +243,10 @@ class LookupPage(
     fun openAudioEditor(dataJson: String) = run("AudioEditor.open($dataJson)")
 
     fun audioEditorMessage(dataJson: String) = run("AudioEditor.receive($dataJson)")
+
+    fun cancelAudioEditor(operation: String) = run("AudioEditor.requestCancel(${JSONObject.quote(operation)})")
+
+    fun saveAudioEditor(operation: String) = run("if (AudioEditor.state.operation === ${JSONObject.quote(operation)}) document.getElementById('sl-action-add').click()")
 
     /**
      * Calls [callback] once what the scripts run so far show is ready to be drawn, or after [DRAW_TIMEOUT_MS] at the

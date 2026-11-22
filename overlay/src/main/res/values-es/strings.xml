@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Cambiar configuración</string>
     <string name="audio_editor_preview_failed">No se pudo reproducir la grabación. Inténtalo de nuevo.</string>
     <string name="anki_operation_settings_changed">Los ajustes de Anki han cambiado. Se canceló la creación de la tarjeta.</string>
+    <string name="audio_scan_finish">Guardar tarjeta y escanear</string>
+    <string name="audio_scan_discard">Descartar tarjeta y escanear</string>
+    <string name="audio_scan_write_in_progress">La tarjeta ya se está guardando.</string>
 </resources>

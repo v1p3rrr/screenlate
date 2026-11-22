@@ -110,6 +110,42 @@ class AnkiNotesTest {
     private val request = NoteRequest(mapOf("expression" to "猫", "glossary" to "cat"))
 
     @Test
+    fun `write boundary occurs after media preparation and is absent when media fails`() = runBlocking {
+        configure()
+        val target = notes.freezeTarget(Language.JAPANESE)
+        val events = mutableListOf<String>()
+        anki.afterMedia = { events += "media" }
+        val result = notes.add(target, request.copy(screenshot = folder.newFile("capture.webp")), onWriteAttempt = {
+            assertThat(anki.added).isEmpty()
+            events += "write"
+        })
+        assertThat(result).isInstanceOf(AddResult.Added::class.java)
+        assertThat(events).containsExactly("media", "write").inOrder()
+        anki.refuseMedia = true
+        // Sentence audio is required, unlike an optional screenshot.
+        settings.update(Language.JAPANESE) { it.copy(fields = it.fields + ("Sentence" to "{sentence-audio}")) }
+        val required = notes.freezeTarget(Language.JAPANESE)
+        val audio = folder.newFile("sentence.opus")
+        notes.add(required, request.copy(sentenceAudio = SentenceAudioAttachment.Attached(audio)),
+            onWriteAttempt = { error("No note mutation may follow failed required media") })
+        assertThat(anki.added).hasSize(1)
+    }
+
+    @Test
+    fun `overwrite also announces the write boundary before touching the existing note`() = runBlocking {
+        configure { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE) }
+        anki.existing += ExistingNote(7, MODEL, listOf("猫", "old", "", ""), setOf(DECK))
+        var announced = false
+        val result = notes.add(notes.freezeTarget(Language.JAPANESE), request, onWriteAttempt = {
+            assertThat(anki.updated).isEmpty()
+            announced = true
+        })
+        assertThat(result).isEqualTo(AddResult.Updated(7))
+        assertThat(announced).isTrue()
+        assertThat(anki.updated).hasSize(1)
+    }
+
+    @Test
     fun `frozen target rejects changed export settings before copying media`() = runBlocking {
         configure()
         val target = notes.freezeTarget(Language.JAPANESE)

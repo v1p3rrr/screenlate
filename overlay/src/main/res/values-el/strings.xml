@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Αλλαγή ρυθμίσεων</string>
     <string name="audio_editor_preview_failed">Δεν ήταν δυνατή η αναπαραγωγή της εγγραφής. Δοκιμάστε ξανά.</string>
     <string name="anki_operation_settings_changed">Οι ρυθμίσεις Anki άλλαξαν. Η προσθήκη της κάρτας ακυρώθηκε.</string>
+    <string name="audio_scan_finish">Αποθήκευση κάρτας και σάρωση</string>
+    <string name="audio_scan_discard">Ακύρωση κάρτας και σάρωση</string>
+    <string name="audio_scan_write_in_progress">Η αποθήκευση της κάρτας έχει ήδη ξεκινήσει.</string>
 </resources>

@@ -4346,3 +4346,15 @@ Observations, not changed:
   crop source-frame preservation: 3 tests pass in 1.473s. Package removed; owned AVD shut down.
 - Partial evidence for REC48/50/55/59/64/66/67. Keep N until actual service rotation, full lifecycle,
   Back/new-scan arbitration and the other clauses pass. Full gate receipt is in the engineering checkpoint.
+
+## Sentence lifecycle resolution (2026-11-22)
+
+- 345 overlay unit and 223 page cases pass. New owner regressions cover success-only deferred scan,
+  cleanup-before-scan, host cancellation, stale menu token, active-profile cancellation and write boundary.
+  Native Back uses dirty cancel; oversized command admission stays visibly editable.
+- Fake Anki verifies boundary notification after media and before new/update mutation, with no notification
+  after required media failure. The affected unit/lint/APK/vital gate passes in 3m3s.
+- Isolated API30 native rerun: 4 tests pass in 1.979s (production external Save/key Back, focus/non-modal
+  resize, crop frame resize and one-shot external Finish). Test package removed, owned AVD powered off.
+- Partial evidence REC53/54/55/59/64/65/66/67/80. Keep N where clauses include actual service rotation,
+  API33+ system gestures, failed-copy recovery or source/device acceptance. No collection was mutated.

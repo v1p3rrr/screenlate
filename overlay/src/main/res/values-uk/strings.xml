@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">Змінити налаштування</string>
     <string name="audio_editor_preview_failed">Не вдалося відтворити запис. Спробуйте ще раз.</string>
     <string name="anki_operation_settings_changed">Налаштування Anki змінилися. Додавання картки скасовано.</string>
+    <string name="audio_scan_finish">Зберегти картку й сканувати</string>
+    <string name="audio_scan_discard">Скасувати картку й сканувати</string>
+    <string name="audio_scan_write_in_progress">Збереження картки вже почалося.</string>
 </resources>

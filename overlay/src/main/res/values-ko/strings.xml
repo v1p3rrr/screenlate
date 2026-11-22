@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">설정 변경</string>
     <string name="audio_editor_preview_failed">녹음 파일을 재생할 수 없습니다. 다시 시도하세요.</string>
     <string name="anki_operation_settings_changed">Anki 설정이 변경되어 카드 추가가 취소되었습니다.</string>
+    <string name="audio_scan_finish">카드 저장 후 스캔</string>
+    <string name="audio_scan_discard">카드 취소 후 스캔</string>
+    <string name="audio_scan_write_in_progress">카드 저장이 이미 시작되었습니다.</string>
 </resources>

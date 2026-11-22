@@ -190,4 +190,7 @@
     <string name="audio_editor_duplicate_keep_change_settings">更改设置</string>
     <string name="audio_editor_preview_failed">无法播放录音，请重试。</string>
     <string name="anki_operation_settings_changed">Anki 设置已更改，已取消添加卡片。</string>
+    <string name="audio_scan_finish">保存卡片并扫描</string>
+    <string name="audio_scan_discard">放弃卡片并扫描</string>
+    <string name="audio_scan_write_in_progress">卡片已开始保存。</string>
 </resources>
