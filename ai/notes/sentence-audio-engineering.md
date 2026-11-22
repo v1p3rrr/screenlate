@@ -7,6 +7,40 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Streaming codec repair and descriptor investigation — 2026-11-22
+
+PcmAudioEncoder drives exact kept-frame input, continuous timestamps, one encoder/container pair and
+cancellation checkpoints before/after native calls. Its candidate policy is 10s without observable progress
+and 30s + twice selected duration overall; late progress cannot renew an already expired stall. The native
+adapter polls input without waiting so ready output can drain; output waits are bounded. Constructor and
+terminal cleanup attempt every owned codec/muxer release, including muxer/config/start failures.
+
+113 core-media cases pass; latest core unit/lint/test-APK gate is codec-fd-build.log (1m12s). Actual isolated
+API30 codec tests pass 3 cases in 306.08s (codec-fidelity-native.log, longAudioExport=true):
+- Six seconds with two internal cuts decode to 192648 frames for 192000 kept frames (+648 / 13.5ms).
+  Head/tail 2203Hz pilots and distinct kept-middle tones survive; encoded output is 21716 bytes.
+- A 30-minute generated PCM stream (86400000 frames) completes in 303294ms and produces 9810093 bytes.
+  Own-process PSS baseline/observed peak: 33625/57880KiB. This follows earlier construction stress,
+  excludes remote codec services and does not measure the complete capture/editor/TTS feature or phone power.
+- Valid encoding after 16 failed container constructions succeeds, but FDs rose from 78 to 92. A tighter
+  four-batch fixture is red: [63,67,71,75] (codec-fd-native.log, 1.476s). Do not claim cleanup is complete.
+
+Descriptor diagnosis: success-only yields the same [63,67,71,75] in 0.957s; failure construction is not
+load-bearing. Extra handles are ashmem, with no encoded-file/socket/event-loop growth. Changing only
+settling time from 100ms to 7s yields [63,59,59,59] (28.35s), without forced GC. Own-PID runtime logs show
+Codec2 BufferPoolAccessor eviction/destruction (codec-fd-pool-retirement.log). This supports delayed
+platform buffer-pool cleanup rather than leaked run-owned files/loops. Immediate total-FD equality was
+the wrong regression criterion; F still must measure transient caches in the complete resource ledger.
+Temporary flags/GC/category probes and strict total-FD assertion were removed; the permanent fixture
+retains valid export after 16 failed constructions. No production forced GC or speculative lifetime fix.
+Final affected unit/lint/app/core+overlay test-APK/vital gate passes (codec-final-gates.log, 4m46s).
+Cleaned API30 rerun: 4 media tests in 3.76s (decoded fidelity, failed construction, actual AudioTrack/
+Main/WebView and Main synthetic capture) plus 15 editor/crop tests in 1.945s (production Save, restart
+retention, resize, Back and crop suite). Both isolated packages removed; owned silent headless AVD off.
+Remaining D includes bounded waveform/detail/status scheduling and the first-selection refinement race
+when speech arrives during preparation. E still owns pre-note media-copy retry, F complete resource
+accounting/settings and G actual source/service/route/physical acceptance.
+
 ## PCM byte-stream integrity — 2026-11-22
 
 Single-byte reads exposed AudioEditInputStream advancing only whole frames and therefore bypassing

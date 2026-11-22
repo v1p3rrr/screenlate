@@ -449,14 +449,19 @@ class SentenceRecorder internal constructor(
     data class ExportOutcome(val isQuiet: Boolean)
 
     suspend fun export(edit: AudioEdit, outputFile: File, sampleRate: Int = 48000, contextId: AudioContextId? = null): ExportOutcome? = withContext(Dispatchers.IO) {
+        val caller = currentCoroutineContext()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@withContext null
         val snapshot = snapshot(edit.selection, contextId) ?: return@withContext null
         snapshot.use { lease ->
             try {
                 val result = lease.openStream().use {
-                    AudioExporter.exportOpus(AudioEditInputStream(it, edit), edit, sampleRate, outputFile)
+                    AudioExporter.exportOpus(AudioEditInputStream(it, edit), edit, sampleRate, outputFile,
+                        checkActive = { caller.ensureActive() })
                 }
                 ExportOutcome(result.isQuiet)
+            } catch (cancelled: CancellationException) {
+                outputFile.delete()
+                throw cancelled
             } catch (e: Exception) {
                 Log.w(TAG, "Export failed", e)
                 outputFile.delete()

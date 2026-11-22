@@ -229,6 +229,9 @@ output before replacement; a stuck run prevents another output from opening. Cur
 frames, and normal completion drains real source frames before releasing the sink. Progress is coalesced
 and callbacks are generation-checked on the Main executor. Once confirmed, `AudioExporter` streams retained
 PCM slices through one Opus encoder into Ogg, which `AnkiNotes` exports for `{sentence-audio}` templates.
+`PcmAudioEncoder` handles exact PCM filling, partial native input buffers, continuous kept-frame timestamps
+and cooperative cancellation. Progress and overall deadlines are independent; the overall bound scales
+with selected duration. Native construction and finalization attempt every codec/container release.
 
 ## Sentence translation
 

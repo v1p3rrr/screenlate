@@ -1,5 +1,39 @@
 # Status
 
+## Sentence audio: streaming encoder verification in progress (2026-11-22)
+
+- Byte-reader checkpoint 6f7bf752 is committed/pushed. Continue D/E/F/G without yielding.
+- PcmAudioEncoder now drives bounded exact PCM input, cumulative timestamps, one codec/container lifetime,
+  cancellation checkpoints and independent overall/stall limits. AudioExporter uses it and cleans codec
+  creation if muxer/config/start fails; every resource is attempted on final close. Input availability is
+  non-blocking so pending encoded packets drain without the old avoidable 10 ms input wait per packet.
+- 111 core-media cases and core unit/lint/test-APK gate pass (codec-fidelity-build.log, 38s). New deadline/
+  cancellation regressions were red, then green. Candidate limits are 10s without progress and
+  30s + 2x selected duration overall; actual long-clip measurement is pending, not a final measured policy.
+- Isolated API30 AudioExporterDeviceTest passes 3 cases (-e longAudioExport true, codec-fidelity-native.log,
+  306.08s total). Package removed; owned silent headless emulator-5556 powered off.
+  Decoded head/middle/tail/cuts pass (192648 vs 192000 frames, 13.5ms extra tail, 21716 bytes).
+  Sixteen failed container constructions followed by valid export pass, but FD count rose 78→92;
+  descriptor diagnosis is resolved below. Long export completes 86,400,000
+  frames in 303294ms, 9810093 output bytes; own-process baseline/peak PSS 33625/57880KiB. This follows
+  earlier construction stress, excludes remote codec services and is not whole-feature resource acceptance.
+- Two additional encoder unit cases (truncated-input cleanup and slow-progress overall deadline) were
+  added after the 111-case gate now pass (113 core cases, codec-fd-build.log, unit/lint/test-APK 1m12s).
+  Short FD loop is red: four identical batches yield [63,67,71,75] (codec-fd-native.log, 1.476s).
+  Success-only also reproduces [63,67,71,75] (0.957s): growth is four ashmem descriptors per valid export,
+  without new file/socket/looper handles. Waiting7s per batch gives [63,59,59,59] (28.35s), without forced
+  GC; own-PID logs show Codec2 BufferPoolAccessor eviction/destruction. Immediate total-FD equality was
+  a false signal for leaked run resources; F must account for bounded asynchronous platform caches.
+  Temporary flags/GC/category probes and strict FD assertion are removed. Owned AVD/test package off.
+  Rebuild the cleaned native test and run affected integration gates before committing this codec block.
+- Final affected unit/lint/app/core+overlay test-APK/vital gate passes (codec-final-gates.log, 4m46s).
+  Cleaned native rerun: 4 media tests in 3.76s and 15 editor/crop tests in 1.945s, including production
+  AudioTrack→Main→WebView, real editor/export, resize and restart retention. Both packages removed; AVD off.
+- Remaining D: waveform detail/status requests; audit first-selection refinement when new speech arrives
+  between preparation and Ready (never overwrite a user command/edit). E must retain draft/
+  PCM through retryable transfer UI; F includes full aggregate resource/settings policy; G actual sources/
+  services/routes/gestures/physical acceptance. Do not claim encoder helper tests certify those gates.
+
 ## Sentence audio: byte-exact PCM reads (2026-11-22)
 
 - Active-source checkpoint 3418a9ce is committed/pushed. Continue D/E/F/G without yielding.
