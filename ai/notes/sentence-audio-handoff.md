@@ -1,16 +1,19 @@
 # Sentence audio implementation handoff — 2026-11-19
 
-Latest transfer checkpoint (2026-11-22): editor/staging failure recovery, actual FileProvider staging
-and rejected-opening cleanup are implemented and verified. 226 core-Anki/353 overlay/291 app/237 page
-cases pass; final affected gate passes 4m37s. API30 passes 18 editor/crop cases in 22.846s, including URI
-readability, failed copy/Retry/Without/Back, sleeping display, Ready refinement, restart and resize.
-Package removed; owned silent headless AVD off. Owner now requests delivering a development APK at this
-checkpoint, then stopping this work block. Commit/push, rebuild ordinary assembleDebug to identify that
-commit, copy/verify APK under ignored testdata/apk and deliver it. Do not start F before delivery.
-Remaining E real local-Anki/codec playback acceptance; F saved silence UI, detector abstention, menu/
-unsupported/settings parity, aggregate resources/cleanup and legacy English locale placeholders;
-G actual service/source/platform/routes/physical/endurance/full checks. No owner collection touched.
-Binding decisions remain. Last weekly usage 97%; stop below 2% remaining, no reset credits.
+Latest transfer checkpoint (2026-11-22): e32a3228 is committed/pushed. Retained editor/source/encoding
+through media-copy retry, actual FileProvider staging and rejected-opening cleanup are implemented.
+226 core-Anki/353 overlay/291 app/237 page cases pass; final affected gate 4m37s. API30 passes 18 editor/
+crop cases in 22.846s, including actual URI, failed copy/Retry/Without/Back, sleeping display, Ready,
+restart and resize. Test package removed; owned silent headless AVD off. No Anki collection accessed.
+Owner requested delivering a development APK at this checkpoint and ending this work block. Ordinary
+assembleDebug passes in 1m. Artifact testdata/apk/Screenlate-Dev-1.1.0-e32a3228.apk is 106969038 bytes,
+version 1.1.0-e32a3228, com.vpr.screenlate.debug, v2 signature verified, ARM64/ARMv7/x86_64, min24/target37.
+SHA256: 1311f49a4eed1fa4916a6005e855a71b7bde19f3101f44d83d603f9be5e4be78.
+Remaining E actual disposable local-Anki media playback/update; F saved silence UI and conservative
+abstention, settings/menu/unsupported parity, aggregate resources/cleanup and older English locale
+placeholders; G actual service/source/routes/modern API/physical/endurance/full regression. Do not claim
+full acceptance from these checks. On the next authorized continuation follow the repair plan and product
+decisions. Last weekly 97% used; stop below 2% remaining, no reset credits. No phone installation.
 
 Latest waveform continuation (2026-11-22): reusable source-frame amplitude levels, conflated viewport
 requests and read-only live status are implemented. 116 core/350 overlay/236 page cases and affected gates

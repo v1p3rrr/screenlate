@@ -4448,3 +4448,11 @@ Observations, not changed:
   headless AVD off. Partial REC32/42/43/54/55/63/64/65/66/67/68/69/77/79 evidence.
 - No actual collection accessed. Real local-Anki, service/source/physical and complete resources/full
   regression acceptance remain pending. Owner requests a development APK at this checkpoint.
+
+## Development APK delivery (2026-11-22)
+
+- Source e32a3228; ordinary assembleDebug passes in 1m. Frozen ignored artifact
+  testdata/apk/Screenlate-Dev-1.1.0-e32a3228.apk: 106969038 bytes, version 1.1.0-e32a3228,
+  com.vpr.screenlate.debug. apksigner verifies v2; aapt confirms min24/target37 and ARM64/ARMv7/x86_64.
+- SHA256: 1311f49a4eed1fa4916a6005e855a71b7bde19f3101f44d83d603f9be5e4be78.
+  No phone install or collection access. Preliminary development testing; full acceptance remains pending.

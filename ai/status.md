@@ -1,6 +1,6 @@
 # Status
 
-## Sentence audio: verified editor transfer checkpoint and dev delivery (2026-11-22)
+## Sentence audio: editor transfer checkpoint and dev APK delivered (2026-11-22)
 
 - Owner requests finishing this checkpoint and delivering the usual development APK before the usage
   limit. Do not start another repair block before delivery. Preliminary manual development testing is
@@ -21,9 +21,13 @@
   vital gate passes (transfer-and-sleep-final-gates.log, 4m37s). Isolated API30 passes all 18 editor/crop
   cases in 22.846s, including actual FileProvider URI, copy failure/Retry/Without/Back, sleeping display,
   initial refinement, source restart and resize. Test package removed; owned silent headless AVD off.
-- Finish: commit/push this coherent source and documentation, build ordinary assembleDebug again so the
-  package/version identifies the committed checkpoint, copy into ignored testdata/apk, verify signature/
-  manifest/hash and give the owner the file. Do not install on a connected phone or access owner Anki data.
+- Source checkpoint e32a3228 is committed/pushed on codex/sentence-audio-recording. Ordinary
+  assembleDebug passes (dev-delivery-build.log, 1m). Frozen artifact:
+  testdata/apk/Screenlate-Dev-1.1.0-e32a3228.apk, 106969038 bytes, version 1.1.0-e32a3228,
+  package com.vpr.screenlate.debug, label Screenlate Dev. apksigner verifies v2; actual manifest has
+  minSdk 24/target 37 and arm64-v8a/armeabi-v7a/x86_64. SHA256:
+  1311f49a4eed1fa4916a6005e855a71b7bde19f3101f44d83d603f9be5e4be78.
+  No phone installation or owner Anki access. Stop this work block after delivering the artifact.
 - Remaining: E real disposable local-Anki media playback/updates; F saved silence UI and conservative
   detection, settings/menu/unsupported-device parity, aggregate PCM/cache/staging/queue/FD/workspace
   resource policy and crash/pressure cleanup; G actual service/source/routes/TTS/current-platform/physical
