@@ -221,6 +221,12 @@ Prepare reserves an audio context lease before attachment choice. Contexts stay 
 recording session, so restarting capture preserves an active editor without attaching new-session sound
 to it. UI ownership can end independently; the final consumer retires the stopped source. Pending-note
 retirement also releases resources reserved before its coroutine could start.
+`NotePreparation` separates media/render preparation from mutation. It retains at most one known
+successful transfer per attachment role across pre-note retries. Only its latest prepared revision can
+claim one submission, and submission rechecks actual fields, deck, permission and effective settings.
+An uncertain provider acknowledgement does not renew that claim. Input media stays immutable until
+the pending operation ends; Anki-owned media is never deleted as rollback.
+
 Refresh extends source bounds without moving existing edits. A scan remembers the selection only after
 successful note creation or update. `NoteTarget` snapshots effective export settings before the attachment menu opens, when note
 preparation starts and checks them again before mutation; preparation cancels on relevant settings changes.

@@ -264,40 +264,63 @@ class AnkiNotes @Inject constructor(
 
     /** [onWriteAttempt] runs on the caller's dispatcher immediately before a collection mutation attempt. */
     suspend fun add(target: NoteTarget, request: NoteRequest, force: Boolean = false, onWriteAttempt: () -> Unit = {}): AddResult {
+        return when (val prepared = prepare(target, request, force)) {
+            is NotePreparationResult.Ready -> write(prepared.note, onWriteAttempt)
+            is NotePreparationResult.Stopped -> prepared.result
+            is NotePreparationResult.MediaFailed -> AddResult.Failed("Failed to transfer note media to Anki")
+        }
+    }
+
+    /** Transfers media and renders a note without attempting a collection mutation. */
+    suspend fun prepare(target: NoteTarget, request: NoteRequest, force: Boolean = false): NotePreparationResult =
+        preparation(target, request, force).prepare()
+
+    /** Retains successful media copies across safe pre-note retries for these frozen inputs. */
+    fun preparation(target: NoteTarget, request: NoteRequest, force: Boolean = false): NotePreparation =
+        NotePreparation(this, target, request.copy(values = request.values.toMap()), force)
+
+    internal suspend fun prepare(preparation: NotePreparation, sentenceAudio: SentenceAudioAttachment): NotePreparationResult {
+        val target = preparation.target
+        val request = preparation.request.copy(sentenceAudio = sentenceAudio)
+        val force = preparation.force
         currentCoroutineContext().ensureActive()
-        if (!isCurrent(target)) return AddResult.ConfigurationChanged
+        if (!isCurrent(target)) return NotePreparationResult.Stopped(AddResult.ConfigurationChanged)
         val availability = anki.availability()
-        if (availability != AnkiAvailability.READY) return AddResult.Unavailable(availability)
+        if (availability != AnkiAvailability.READY) return NotePreparationResult.Stopped(AddResult.Unavailable(availability))
         val settings = target.settings
         val modelId = settings.modelId
         val deckId = settings.deckId
-        if (!settings.configured || modelId == null || deckId == null) return AddResult.NotConfigured
+        if (!settings.configured || modelId == null || deckId == null) return NotePreparationResult.Stopped(AddResult.NotConfigured)
 
-        if (fieldNames(modelId).isEmpty()) return AddResult.NotConfigured
         return runCatching {
+            val names = anki.fields(modelId)
+            synchronized(fieldCache) { if (names.isEmpty()) fieldCache.remove(modelId) else fieldCache[modelId] = names }
+            if (names.isEmpty() || settings.fields.keys != names.toSet() || anki.decks().none { it.id == deckId }) {
+                return NotePreparationResult.Stopped(AddResult.NotConfigured)
+            }
             val existing = if (settings.duplicateCheck && !force) duplicates(settings, request.values) else emptyList()
             if (existing.isNotEmpty() && settings.duplicateBehavior == DuplicateBehavior.PREVENT) {
-                return AddResult.Duplicate(existing.map { it.id })
+                return NotePreparationResult.Stopped(AddResult.Duplicate(existing.map { it.id }))
             }
 
             val values = request.values.toMutableMap()
             val used = target.markers
             if ("screenshot" in used && request.screenshot != null) {
-                anki.addMedia(request.screenshot, "screenlate_${System.currentTimeMillis()}", AnkiDroid.MediaKind.IMAGE)
+                copyMedia(preparation, NoteMediaRole.SCREENSHOT, request.screenshot, "screenlate_${System.currentTimeMillis()}", AnkiDroid.MediaKind.IMAGE)
                     ?.let { values["screenshot"] = it }
             }
             if ("audio" in used && request.audio != null) {
                 val name = "screenlate_${request.audio.file.nameWithoutExtension}"
-                anki.addMedia(request.audio.file, name, AnkiDroid.MediaKind.AUDIO)?.let { values["audio"] = it }
+                copyMedia(preparation, NoteMediaRole.PRONUNCIATION, request.audio.file, name, AnkiDroid.MediaKind.AUDIO)?.let { values["audio"] = it }
             }
             if (request.sentenceAudio is SentenceAudioAttachment.Failed) {
-                return AddResult.Failed("Failed to export sentence audio to Anki")
+                return NotePreparationResult.MediaFailed(NoteMediaRole.SENTENCE)
             }
             if (FieldTemplate.SENTENCE_AUDIO in used && request.sentenceAudio is SentenceAudioAttachment.Attached) {
                 val file = request.sentenceAudio.file
                 val name = "screenlate_${file.nameWithoutExtension}"
-                val mediaRef = anki.addMedia(file, name, AnkiDroid.MediaKind.AUDIO)
-                    ?: return AddResult.Failed("Failed to export sentence audio to Anki")
+                val mediaRef = copyMedia(preparation, NoteMediaRole.SENTENCE, file, name, AnkiDroid.MediaKind.AUDIO)
+                    ?: return NotePreparationResult.MediaFailed(NoteMediaRole.SENTENCE)
                 values[FieldTemplate.SENTENCE_AUDIO] = mediaRef
             }
             // Known markers without a value (no sentence, no audio, a dictionary without an entry for this term)
@@ -306,7 +329,6 @@ class AnkiNotes @Inject constructor(
                 if (FieldTemplate.isKnown(marker)) values.putIfAbsent(marker, "")
             }
 
-            val names = fieldNames(modelId)
             val fields = names.map { name -> FieldTemplate.render(settings.fields[name].orEmpty(), values) }
             val tags = settings.tags.split(' ', ',').filter { it.isNotBlank() }.toSet()
             val targetNote = if (settings.duplicateBehavior == DuplicateBehavior.OVERWRITE) {
@@ -315,8 +337,8 @@ class AnkiNotes @Inject constructor(
                 null
             }
 
-            if (targetNote != null) {
-                val merged = names.mapIndexed { index, name ->
+            val output = if (targetNote != null) {
+                names.mapIndexed { index, name ->
                     val template = settings.fields[name].orEmpty()
                     // Without audio update: preserve existing sentence-audio field(s) rather than writing an empty Replace value.
                     if (request.sentenceAudio !is SentenceAudioAttachment.Attached && FieldTemplate.SENTENCE_AUDIO in FieldTemplate.markersIn(template)) {
@@ -326,11 +348,48 @@ class AnkiNotes @Inject constructor(
                         mode.apply(targetNote.fields.getOrElse(index) { "" }, fields[index])
                     }
                 }
-                if (!beginMutation(target, onWriteAttempt)) return AddResult.ConfigurationChanged
-                if (anki.updateNote(targetNote.id, merged, tags)) AddResult.Updated(targetNote.id) else AddResult.Rejected
             } else {
-                if (!beginMutation(target, onWriteAttempt)) return AddResult.ConfigurationChanged
-                anki.addNote(modelId, deckId, fields, tags)?.let { AddResult.Added(it) } ?: AddResult.Rejected
+                fields
+            }
+            if (!isCurrent(target)) return NotePreparationResult.Stopped(AddResult.ConfigurationChanged)
+            NotePreparationResult.Ready(PreparedNote(preparation, names.toList(), output.toList(), tags.toSet(), targetNote?.id))
+        }.getOrElse {
+            if (it is CancellationException) throw it
+            if (it is MediaTransferException) return NotePreparationResult.MediaFailed(it.role)
+            NotePreparationResult.Stopped(AddResult.Failed(it.message ?: it.javaClass.simpleName))
+        }
+    }
+
+    private class MediaTransferException(val role: NoteMediaRole) : Exception("Anki media transfer failed")
+
+    private suspend fun copyMedia(preparation: NotePreparation, role: NoteMediaRole, file: File, name: String, kind: AnkiDroid.MediaKind): String? {
+        preparation.copied[role]?.takeIf { it.first == file }?.let { return it.second }
+        return try {
+            anki.addMedia(file, name, kind)?.also { preparation.copied[role] = file to it }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Exception) { throw MediaTransferException(role) }
+    }
+
+    /** Rechecks the destination, then submits this preparation once. Never retries a provider mutation. */
+    suspend fun write(note: PreparedNote, onWriteAttempt: () -> Unit = {}): AddResult {
+        currentCoroutineContext().ensureActive()
+        if (note.owner !== this || !note.claim()) return AddResult.Rejected
+        return runCatching {
+            if (!isCurrent(note.target)) return AddResult.ConfigurationChanged
+            val availability = anki.availability()
+            if (availability != AnkiAvailability.READY) return AddResult.Unavailable(availability)
+            val settings = note.target.settings
+            val model = checkNotNull(settings.modelId)
+            val deck = checkNotNull(settings.deckId)
+            if (anki.fields(model) != note.names) return AddResult.NotConfigured
+            val decks = anki.decks()
+            if (decks.none { it.id == deck }) return AddResult.NotConfigured
+            if (!beginMutation(note.target, onWriteAttempt)) return AddResult.ConfigurationChanged
+            if (note.updateId != null) {
+                if (anki.updateNote(note.updateId, note.fields, note.tags)) AddResult.Updated(note.updateId) else AddResult.Rejected
+            } else {
+                anki.addNote(model, deck, note.fields, note.tags)?.let { AddResult.Added(it) } ?: AddResult.Rejected
             }
         }.getOrElse {
             if (it is CancellationException) throw it

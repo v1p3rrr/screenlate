@@ -36,7 +36,10 @@ class AnkiNotesTest {
         var refuseNotes = false
         var cancelNotes = false
         var refuseMedia = false
+        var refuseMediaFile: String? = null
+        val mediaAttempts = mutableListOf<String>()
         var afterMedia: suspend () -> Unit = {}
+        var afterNote: suspend () -> Unit = {}
 
         override fun availability() = availability
 
@@ -53,6 +56,7 @@ class AnkiNotesTest {
             if (refuseNotes) return null
             if (cancelNotes) throw CancellationException("scan closed")
             added += fields to tags
+            afterNote()
             return 100L + added.size
         }
 
@@ -72,7 +76,8 @@ class AnkiNotesTest {
         }
 
         override suspend fun addMedia(file: File, preferredName: String, kind: AnkiDroid.MediaKind): String? {
-            if (refuseMedia) return null
+            mediaAttempts += file.name
+            if (refuseMedia || file.name == refuseMediaFile) return null
             media += preferredName to kind
             afterMedia()
             return if (kind == AnkiDroid.MediaKind.IMAGE) "<img src=\"${file.name}\">" else "[sound:${file.name}]"
@@ -108,6 +113,75 @@ class AnkiNotesTest {
     }
 
     private val request = NoteRequest(mapOf("expression" to "猫", "glossary" to "cat"))
+
+    @Test
+    fun `external field changes reject preparation before media and deck removal rejects submission`() = runBlocking {
+        configure()
+        notes.duplicateCheckMarkers(Language.JAPANESE)
+        val target = notes.freezeTarget(Language.JAPANESE)
+        val fields = anki.models.getValue(MODEL)
+        anki.models[MODEL] = fields - "Sentence"
+        assertThat(notes.prepare(target, request.copy(screenshot = folder.newFile("obsolete.webp"))))
+            .isEqualTo(NotePreparationResult.Stopped(AddResult.NotConfigured))
+        assertThat(anki.media).isEmpty()
+        anki.models[MODEL] = fields
+        val ready = notes.prepare(target, request) as NotePreparationResult.Ready
+        anki.decks.clear()
+        assertThat(notes.write(ready.note) { error("Missing target cannot be mutated") }).isEqualTo(AddResult.NotConfigured)
+        assertThat(anki.added).isEmpty()
+    }
+
+    @Test
+    fun `a pending preparation rejects superseded fields and cannot repeat an uncertain write`() = runBlocking {
+        configure()
+        val preparation = notes.preparation(notes.freezeTarget(Language.JAPANESE), request)
+        val old = preparation.prepare() as NotePreparationResult.Ready
+        val latest = preparation.prepare() as NotePreparationResult.Ready
+        assertThat(notes.write(old.note)).isEqualTo(AddResult.Rejected)
+        assertThat(anki.added).isEmpty()
+        anki.afterNote = { throw java.io.IOException("Provider acknowledgement lost") }
+        assertThat(notes.write(latest.note)).isInstanceOf(AddResult.Failed::class.java)
+        assertThat(anki.added).hasSize(1)
+        assertThat(notes.write(latest.note)).isEqualTo(AddResult.Rejected)
+        assertThat(preparation.prepare()).isEqualTo(NotePreparationResult.Stopped(AddResult.Rejected))
+        assertThat(anki.added).hasSize(1)
+    }
+
+    @Test
+    fun `retrying sentence transfer reuses successful screenshot and pronunciation without writing early`() = runBlocking {
+        configure { it.copy(fields = it.fields + ("Meaning" to "{audio}") + ("Sentence" to "{sentence-audio}")) }
+        val target = notes.freezeTarget(Language.JAPANESE)
+        val sentence = folder.newFile("retry.opus")
+        val preparation = notes.preparation(target, request.copy(screenshot = folder.newFile("kept.webp"),
+            audio = AudioClip(folder.newFile("word.mp3"), "", "mp3")))
+        anki.refuseMediaFile = sentence.name
+        assertThat(preparation.prepare(SentenceAudioAttachment.Attached(sentence)))
+            .isEqualTo(NotePreparationResult.MediaFailed(NoteMediaRole.SENTENCE))
+        assertThat(anki.added).isEmpty()
+        anki.refuseMediaFile = null
+        val ready = preparation.prepare(SentenceAudioAttachment.Attached(sentence)) as NotePreparationResult.Ready
+        assertThat(anki.mediaAttempts).containsExactly("kept.webp", "word.mp3", "retry.opus", "retry.opus").inOrder()
+        assertThat(anki.added).isEmpty()
+        assertThat(notes.write(ready.note)).isEqualTo(AddResult.Added(101))
+        assertThat(anki.added.single().first).containsExactly("猫", "[sound:word.mp3]", "[sound:retry.opus]", "<img src=\"kept.webp\">").inOrder()
+    }
+
+    @Test
+    fun `prepared media does not write a note and a prepared note can be submitted only once`() = runBlocking {
+        configure()
+        val target = notes.freezeTarget(Language.JAPANESE)
+        val result = notes.prepare(target, request.copy(screenshot = folder.newFile("prepared.webp")))
+            as NotePreparationResult.Ready
+        assertThat(anki.media).hasSize(1)
+        assertThat(anki.added).isEmpty()
+        assertThat(anki.updated).isEmpty()
+        var writes = 0
+        assertThat(notes.write(result.note) { writes++ }).isEqualTo(AddResult.Added(101))
+        assertThat(notes.write(result.note) { writes++ }).isEqualTo(AddResult.Rejected)
+        assertThat(writes).isEqualTo(1)
+        assertThat(anki.added).hasSize(1)
+        assertThat(anki.media).hasSize(1)
+    }
 
     @Test
     fun `write boundary occurs after media preparation and is absent when media fails`() = runBlocking {

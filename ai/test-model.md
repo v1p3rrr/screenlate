@@ -4424,3 +4424,12 @@ Observations, not changed:
   availability while shown bounds remain fixed. Test package removed; owned silent headless AVD off.
 - Partial REC19/34/41/50/55/70/79 evidence. Actual service/source/gesture, waveform-failure/memory pressure
   and whole-feature resources remain pending. No Anki collection accessed.
+
+## Pre-note media preparation and submission (2026-11-22)
+
+- Four red/green backend cases cover no note mutation during preparation; known successful image/word
+  audio reuse after failed sentence transfer; obsolete/repeated/uncertain-write rejection; external schema/
+  deck changes before transfer/submission. 225 core-Anki and 350 overlay cases plus core-Anki lint pass
+  (anki-preparation-gates.log, 1m20s). Existing add uses the same prepare/submit implementation.
+- Partial REC22/23/25/35/68/79 evidence. Editor retention, staging failure/cancel and real local Anki
+  acceptance remain pending; these fake-backend checks do not access a collection.

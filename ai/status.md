@@ -1,5 +1,20 @@
 # Status
 
+## Sentence audio: recoverable pre-note preparation in progress (2026-11-22)
+
+- Waveform/status checkpoint 0e450261 is committed/pushed; continue E/F/G autonomously.
+- AnkiNotes now separates media/render preparation from provider mutation. A frozen pending preparation
+  reuses known successful screenshot/pronunciation/sentence transfers (one cached reference per role).
+  Typed media failure is retryable before writing. Prepared fields have a revision, and only the latest
+  can claim the pending preparation's single submission; uncertain provider acknowledgement never renews it.
+- Preflight and submission query actual schema/deck availability, not just the cached lookup metadata.
+  Target/configuration/permission changes cannot cross the actual onWriteAttempt boundary unnoticed.
+- Four new backend regressions were red then green: no early write; successful-copy reuse; superseded/
+  uncertain submission rejection; external schema/deck changes. 225 core-Anki and 350 overlay cases plus core-Anki lint pass (anki-preparation-gates.log, 1m20s).
+- UI integration next: retain encoded staging and PCM through failed copy, reuse encoding on Retry,
+  invalidate it when edits change, explicit Without/Cancel cleanup, and preserve generic uncertain-write UI.
+- No actual Anki collection accessed. Latest weekly usage93%; stop below2% remaining, no credits.
+
 ## Sentence audio: waveform detail and live status (2026-11-22)
 
 - Ready-refinement checkpoint a502846a is committed/pushed. Continue D/E/F/G without yielding.

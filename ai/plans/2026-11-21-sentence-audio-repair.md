@@ -416,7 +416,7 @@ are investigated as findings, not converted into an invented new audio performan
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
 | C pending operation/protocol | Software implemented; E/G gate open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. 345 overlay/223 page and 4 isolated native checks pass. E still supplies recoverable media-copy UI; G supplies real service/source/gesture/device acceptance. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
-| E Anki recovery | Pending | No collection mutation during review/planning. |
+| E Anki recovery | In progress | Frozen retryable media preparation and latest-revision/single-submission capability implemented. 225 core-Anki and 350 overlay cases/core lint pass. Retained editor/staging integration and local Anki acceptance remain. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
@@ -437,6 +437,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-22: Split Anki media/render preparation from provider mutation, cache known successful media
+  per role, and reject obsolete/repeated submissions including uncertain acknowledgements. Actual schema/
+  deck/permission/target are checked before mutation. Four backend regressions red then green; 225 core-
+  Anki/350 overlay cases and core lint pass. Editor retention integration follows; product choices unchanged.
 - 2026-11-22: Added bounded reusable amplitude levels, conflated viewport queries and read-only live
   availability/allowance status. Waveform loading no longer blocks Ready; stale detail is ignored,
   Refresh preserves edits and explains every exhausted request. 116 core/350 overlay/236 page cases,
