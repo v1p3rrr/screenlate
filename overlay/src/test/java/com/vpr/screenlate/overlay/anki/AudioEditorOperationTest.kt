@@ -18,6 +18,22 @@ class AudioEditorOperationTest {
     private val initial = AudioEdit(AudioRange(200, 400))
 
     @Test
+    fun `opening cannot save or accept edits and duplicate Ready cannot replace user edits`() = runTest {
+        var exports = 0
+        val operation = AudioEditorOperation(this, source, initial, opening = true) { exports++; null }
+        operation.save()
+        runCurrent()
+        assertThat(exports).isEqualTo(0)
+        assertThat(operation.accept(1, 0, AudioEdit(AudioRange(300, 500)))).isFalse()
+        assertThat(operation.ready(AudioRange(100, 1_500), initial)).isTrue()
+        val edit = AudioEdit(AudioRange(300, 1_200))
+        assertThat(operation.accept(2, 1, edit)).isTrue()
+        assertThat(operation.ready(AudioRange(100, 2_000), initial)).isFalse()
+        assertThat(operation.edit).isEqualTo(edit)
+        operation.cancel()
+    }
+
+    @Test
     fun `double save exports once and keeps the operation open until export succeeds`() = runTest {
         val exported = CompletableDeferred<File?>()
         var calls = 0

@@ -62,7 +62,7 @@ var AudioEditor = (() => {
 
     function send(action, payload = {}) {
         if (!state.isOpen || (!window.ScreenlateBridge || !window.ScreenlateBridge.onAudioEditorCommand)) return;
-        if (state.phase === 'exporting' && !['cancel', 'without', 'expand', 'collapse', 'drag'].includes(action)) return;
+        if (['exporting', 'opening'].includes(state.phase) && !['ready', 'cancel', 'without', 'expand', 'collapse', 'drag'].includes(action)) return;
         ScreenlateBridge.onAudioEditorCommand(JSON.stringify({
             operation: state.operation, sequence: ++state.sequence, sourceRevision: state.sourceRevision,
             action, selection: [Math.round(state.a), Math.round(state.b)],
@@ -76,6 +76,13 @@ var AudioEditor = (() => {
         if (data.closed) { close(); return; }
         if (data.sequence !== undefined && data.sequence < state.sequence) return;
         if (data.phase !== undefined) state.phase = data.phase;
+        if (data.initialSelection) {
+            state.a = data.initialSelection[0]; state.b = data.initialSelection[1];
+            state.cursor = state.a;
+            state.cuts = data.initialCuts || [];
+            initialBaseline = { a: state.a, b: state.b, cuts: state.cuts.map(c => c.slice()) };
+            lastSentEdit = JSON.stringify([Math.round(state.a), Math.round(state.b), normalizedCuts()]);
+        }
         if (data.timeline) {
             if (data.timeline.sourceRevision < state.sourceRevision) return;
             state.sourceRevision = data.timeline.sourceRevision;
@@ -92,7 +99,7 @@ var AudioEditor = (() => {
     }
 
     function updateBusy() {
-        const busy = state.phase === 'exporting';
+        const busy = ['exporting', 'opening'].includes(state.phase);
         for (const id of ['sl-action-add', 'sl-action-play', 'sl-action-refresh', 'sl-action-cut',
             'sl-action-silence', 'sl-action-undo', 'sl-action-accept-silence']) {
             const el = document.getElementById(id);
@@ -502,7 +509,7 @@ var AudioEditor = (() => {
         lastSentEdit = JSON.stringify([Math.round(data.selection ? data.selection[0] : 0), Math.round(data.selection ? data.selection[1] : 0), data.cuts || []]);
         state.sequence = 0;
         state.sourceRevision = data.sourceRevision || 0;
-        state.phase = "editing";
+        state.phase = data.phase || 'editing';
         silenceRequestCount = 0;
         state.sampleRate = data.sampleRate || 48000;
         state.scanFrame = data.scanFrame || 0;
@@ -554,6 +561,12 @@ var AudioEditor = (() => {
         applyStaticLabels();
         updateBusy();
         render();
+        if (state.phase === 'opening' && !data.duplicateKeep) {
+            const operation = state.operation;
+            requestAnimationFrame(() => {
+                if (state.isOpen && state.operation === operation && state.phase === 'opening') send('ready');
+            });
+        }
 
         if (data.duplicateKeep) {
             showDialog(
@@ -623,7 +636,7 @@ var AudioEditor = (() => {
         state.limit = Boolean(data.limit);
         state.remainingMillis = data.remainingMillis !== undefined ? data.remainingMillis : state.remainingMillis;
         state.recording = data.recording !== undefined ? Boolean(data.recording) : state.recording;
-        if (data.overviewSummary && data.overviewSummary.length) {
+        if (data.overviewSummary) {
             state.overviewSummary = data.overviewSummary;
         }
         render();
@@ -1012,7 +1025,7 @@ var AudioEditor = (() => {
         });
 
         bind('sl-action-add', 'click', () => {
-            if (state.phase === 'exporting') return;
+            if (['exporting', 'opening'].includes(state.phase)) return;
             if (outputLengthSeconds() <= 0) {
                 const toast = document.querySelector('.sl-toast');
                 if (toast) {
@@ -1047,6 +1060,7 @@ var AudioEditor = (() => {
     }
 
     initListeners();
+    window.addEventListener('resize', () => { if (state.isOpen) render(); });
 
     return {
         open,

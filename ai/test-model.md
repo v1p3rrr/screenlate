@@ -4335,3 +4335,14 @@ Observations, not changed:
   Ready-clock admission, Back/scan arbitration, active-language changes and transfer recovery remain.
 - Required builds/checks, final native rerun and environment cleanup are recorded in the engineering
   checkpoint and ignored local editor logs. Do not infer physical-device acceptance from these fixtures.
+
+## Sentence preparation, Ready and resize (2026-11-22)
+
+- 100 core-media and 341 overlay unit tests pass. New cases cover loading without E, late Ready after R
+  expiry, duplicate Ready, edits blocked while Opening, menu ownership/choice identity and menu dismissal.
+- Page regressions cover preparation before attachment menu, frozen data after config changes, stale
+  dismissed choices, distinct identities after page recreation and waveform redraw without draft reset.
+- Isolated API30: production editor/Ready/PCM/Opus flow, compact/expanded/collapsed host resize and pending
+  crop source-frame preservation: 3 tests pass in 1.473s. Package removed; owned AVD shut down.
+- Partial evidence for REC48/50/55/59/64/66/67. Keep N until actual service rotation, full lifecycle,
+  Back/new-scan arbitration and the other clauses pass. Full gate receipt is in the engineering checkpoint.

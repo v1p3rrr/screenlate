@@ -7,6 +7,14 @@ owner and suspending facade with permanent regressions; B's software lifetime wo
 verified. Continue C's operation/revision protocol; physical gates remain. The checkpoint below is historical. Branch, privacy, safe test
 environment and weekly-limit instructions remain applicable. No product decision was changed.
 
+Latest preparation/Ready/resize checkpoint (2026-11-22): Prepare/Commit/Dismiss now freeze note data and
+target before the attachment menu; page-recreation tokens cannot collide. Loading uses R; identified Ready
+admits E once. Owned crop/editor/preview/export resize keeps the host, source coordinates and draft.
+See the newest engineering/status sections for the full gate receipt (running at checkpoint creation).
+The owner now requests autonomous continuation through all remaining repair milestones, without yielding
+between blocks. Continue C's Back/language/new-scan arbitration, then D/E/F/G. Do not interpret passing
+host-resize fixtures as full service/physical acceptance.
+
 Latest editor checkpoint (2026-11-22): old shared editor continuation and primitive bridge are removed.
 AudioEditorOperation and PendingNoteController are connected to the actual pipeline, with current-edit
 commands, source revisions, one export, visible encode retry, target snapshot at native Add and confirmed-

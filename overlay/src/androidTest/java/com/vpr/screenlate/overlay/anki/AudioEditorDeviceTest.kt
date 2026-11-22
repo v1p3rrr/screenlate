@@ -66,7 +66,7 @@ class AudioEditorDeviceTest {
                     @Suppress("UNREACHABLE_CODE") error("unreachable")
                 }
                 suspend fun ready() = withTimeout(5000) {
-                    while (evaluate("typeof AudioEditor !== 'undefined' && AudioEditor.state.isOpen") != "true") delay(1)
+                    while (evaluate("typeof AudioEditor !== 'undefined' && AudioEditor.state.isOpen && AudioEditor.state.phase === 'editing'") != "true") delay(1)
                 }
                 val pending = async { controller.edit(scan, "", "") }
                 ready()

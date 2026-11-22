@@ -55,14 +55,26 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
         return listOfNotNull(ring.takeIf { it.frames > 0 }, protected)
     }
 
+    fun prepareEditor(id: AudioContextId, committedEnd: Long, nowMillis: Long): AudioTimelineView? {
+        lastSeenMillis = maxOf(lastSeenMillis, nowMillis)
+        val ctx = current(id) ?: return null
+        if (!ctx.prepared) {
+            ctx.prepared = true
+            ctx.shownEnd = availableEnd(ctx, committedEnd, nowMillis)
+            ctx.revision = 1
+        }
+        return view(ctx, committedEnd, nowMillis).copy(source = AudioRange(ctx.startFrame, ctx.shownEnd))
+    }
+
     fun openEditor(id: AudioContextId, committedEnd: Long, nowMillis: Long, capacityAvailable: Boolean = true): AudioTimelineView? {
         lastSeenMillis = maxOf(lastSeenMillis, nowMillis)
         val ctx = current(id) ?: return null
         if (!ctx.opened) {
             ctx.retention.editorReady(nowMillis, capacityAvailable)
             ctx.opened = true
+            ctx.prepared = true
+            if (ctx.shownEnd != availableEnd(ctx, committedEnd, nowMillis) || ctx.revision == 0L) ctx.revision++
             ctx.shownEnd = availableEnd(ctx, committedEnd, nowMillis)
-            ctx.revision = 1
         }
         return view(ctx, committedEnd, nowMillis)
     }
@@ -119,6 +131,7 @@ internal class ScanAudioTimeline(private val clock: PcmClock, limits: RecordingL
         val startFrame: Long,
         val retention: ContextRetention,
         var opened: Boolean = false,
+        var prepared: Boolean = false,
         var shownEnd: Long = startFrame,
         var revision: Long = 0,
     )

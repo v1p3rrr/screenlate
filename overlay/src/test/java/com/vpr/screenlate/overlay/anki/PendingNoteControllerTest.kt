@@ -12,6 +12,35 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class PendingNoteControllerTest {
     @Test
+    fun `dismissal ignores other menus and releases this menu without a note`() = runTest {
+        val pending = PendingNoteController(this)
+        var written = false
+        pending.prepare("menu-a") { attachments(); written = true }
+        runCurrent()
+        pending.dismiss("old")
+        assertThat(pending.isActive).isTrue()
+        pending.dismiss("menu-a")
+        runCurrent()
+        assertThat(pending.isActive).isFalse()
+        assertThat(written).isFalse()
+        assertThat(pending.choose("menu-a", PendingNoteController.Attachments(true, false, true))).isFalse()
+    }
+    @Test
+    fun `attachment menu reserves its operation and accepts only its own first choice`() = runTest {
+        val pending = PendingNoteController(this)
+        val selections = mutableListOf<PendingNoteController.Attachments>()
+        pending.prepare("menu-a") { selections += attachments() }
+        runCurrent()
+        assertThat(pending.isActive).isTrue()
+        assertThat(pending.choose("menu-old", PendingNoteController.Attachments(true, false, true))).isFalse()
+        assertThat(selections).isEmpty()
+        assertThat(pending.choose("menu-a", PendingNoteController.Attachments(false, true, true))).isTrue()
+        assertThat(pending.choose("menu-a", PendingNoteController.Attachments(true, false, false))).isFalse()
+        runCurrent()
+        assertThat(selections).containsExactly(PendingNoteController.Attachments(false, true, true))
+        assertThat(pending.isActive).isFalse()
+    }
+    @Test
     fun `context closure cancels audio preparation but preserves ordinary note writes`() = runTest {
         val pending = PendingNoteController(this)
         val done = CompletableDeferred<Unit>()

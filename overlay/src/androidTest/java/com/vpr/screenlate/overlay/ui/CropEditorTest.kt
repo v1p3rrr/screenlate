@@ -142,6 +142,33 @@ class CropEditorTest {
     }
 
     @Test
+    fun resizingTheSameCropHostPreservesItsSourceFrame() = runBlocking(Dispatchers.Main) {
+        var selection: Box? = null
+        val image = object : NoteImage by source {
+            override val bounds = Box(0f, 0f, 8000f, 6000f)
+            override val fit = true
+            override suspend fun crop(box: Box): Bitmap {
+                selection = box
+                return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            }
+        }
+        val picture = async(start = CoroutineStart.UNDISPATCHED) {
+            editor.edit(image, Box(2000f, 1500f, 6000f, 4500f))
+        }
+        val root = shown.single()
+        root.measure(View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY))
+        root.layout(0, 0, 1920, 1080)
+        assertThat(shown).containsExactly(root)
+        button(root, R.string.crop_add).performClick()
+        picture.await()!!.recycle()
+        assertThat(selection!!.left).isWithin(0.1f).of(2000f)
+        assertThat(selection!!.top).isWithin(0.1f).of(1500f)
+        assertThat(selection!!.width).isWithin(0.1f).of(4000f)
+        assertThat(selection!!.height).isWithin(0.1f).of(3000f)
+    }
+
+    @Test
     fun wholePhotoSelectsAllOfItAndFrameReturnsToTheParagraph() = runBlocking(Dispatchers.Main) {
         val selections = mutableListOf<Box>()
         val photo = object : NoteImage by source {

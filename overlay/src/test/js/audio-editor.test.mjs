@@ -38,6 +38,42 @@ const tap = el => {
     el.dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
 };
 
+test('opening waits for matching Ready acknowledgement before enabling audio actions', async () => {
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: raw => commands.push(JSON.parse(raw)) };
+    AudioEditor.open({ operation: 'ready-a', phase: 'opening', sourceRevision: 0,
+        totalFrames: 480000, selection: [100000, 300000] });
+    const save = page.document.getElementById('sl-action-add');
+    assert.equal(save.disabled, true);
+    tap(save);
+    assert.equal(commands.some(c => c.action === 'save'), false);
+    await new Promise(resolve => page.window.requestAnimationFrame(resolve));
+    assert.equal(commands.filter(c => c.action === 'ready').length, 1);
+    AudioEditor.receive({ operation: 'old', phase: 'editing' });
+    assert.equal(save.disabled, true);
+    AudioEditor.receive({ operation: 'ready-a', phase: 'editing' });
+    assert.equal(save.disabled, false);
+});
+
+test('resize redraws the waveform without replacing the draft, viewport or Ready identity', () => {
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: raw => commands.push(JSON.parse(raw)) };
+    const wave = page.document.getElementById('sl-wave');
+    let pixels = 340;
+    Object.defineProperty(wave, 'clientWidth', { get: () => pixels });
+    AudioEditor.open({ operation: 'rotation', totalFrames: 480000, selection: [100000, 300000], cuts: [[180000, 200000]] });
+    AudioEditor.state.width = 200000;
+    AudioEditor.state.view = 50000;
+    AudioEditor.state.cursor = 120000;
+    const before = [AudioEditor.state.a, AudioEditor.state.b, AudioEditor.state.view, AudioEditor.state.width, AudioEditor.state.cursor];
+    pixels = 600;
+    page.window.dispatchEvent(new page.window.Event('resize'));
+    assert.equal(wave.getAttribute('viewBox'), '0 0 600 112');
+    assert.deepEqual([AudioEditor.state.a, AudioEditor.state.b, AudioEditor.state.view, AudioEditor.state.width, AudioEditor.state.cursor], before);
+    assert.equal(AudioEditor.state.operation, 'rotation');
+    assert.equal(commands.some(c => c.action === 'ready'), false);
+});
+
 test('identified save keeps the editor open, prevents double submission and permits retry after failure', () => {
     const commands = [];
     page.window.ScreenlateBridge = { onAudioEditorCommand: json => commands.push(JSON.parse(json)) };

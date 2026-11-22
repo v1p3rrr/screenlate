@@ -483,6 +483,13 @@ class OverlayController(
         val resized = screen != lastScreen
         lastScreen = screen
         if (!attached) return
+        if (resized && popupNotes.retainsContext) {
+            popup.relayout(usableBounds(), MAX_POPUP_DP * density)
+            val (cx, cy) = bubbleCenter()
+            moveBubbleTo(cx.coerceIn(screen.left + bubbleSize / 2f, screen.right - bubbleSize / 2f),
+                cy.coerceIn(screen.top + bubbleSize / 2f, screen.bottom - bubbleSize / 2f))
+            return
+        }
         if (resized && !touching) dock() else refreshPopup()
     }
 
@@ -643,6 +650,7 @@ class OverlayController(
             scope.launch(start = CoroutineStart.UNDISPATCHED) { anki.player.stop() }
         }
         setBubbleVisible(!active)
+        if (!active) refreshPopup()
     }
 
     fun stopSentenceRecording() {
@@ -1834,6 +1842,7 @@ class OverlayController(
         val (layout, position) = shownPosition()
         val sentence = shownSentence()
         val scan = scanId
+        val audioContextId = currentScanAudioContextId
         val photo = scanSource as? LookupSource.Photo
         // A photo's text comes from the camera, not from the app in front.
         val documentTitle = if (photo != null) {
@@ -1869,7 +1878,7 @@ class OverlayController(
                     image = image,
                     focus = image?.let { focusIn(it.bounds, FOCUS_PADDING_DP * density) },
                     documentTitle = documentTitle,
-                    audioContextId = currentScanAudioContextId,
+                    audioContextId = audioContextId,
                 )
             }
         }

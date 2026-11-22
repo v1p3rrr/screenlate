@@ -77,6 +77,7 @@ class AudioEditorController(
         var refresh: Job? = null
         var analysis: Job? = null
         var playback: Job? = null
+        var ready: Job? = null
         fun isReady() = this::operation.isInitialized
         var playbackGeneration = 0L
     }
@@ -96,7 +97,7 @@ class AudioEditorController(
         var delivered = false
         try {
             coroutineScope {
-                val timeline = sentenceRecorder.openEditor(audioContextId)
+                val timeline = sentenceRecorder.prepareEditor(audioContextId)
                     ?: return@coroutineScope AudioEditorResult.Cancelled
                 val source = timeline.source ?: return@coroutineScope AudioEditorResult.Cancelled
                 val previous = lastConfirmed?.takeIf { it.first == audioContextId }?.second
@@ -110,7 +111,7 @@ class AudioEditorController(
                             put("error", context.getString(R.string.audio_editor_export_failed))
                         }
                     }
-                }) { edit ->
+                }, opening = true) { edit ->
                     var file: File? = null
                     var transferred = false
                     try {
@@ -190,6 +191,7 @@ class AudioEditorController(
 
                 val openPayload = buildJsonObject {
                     put("operation", session.id)
+                    put("phase", "opening")
                     put("sourceRevision", session.operation.sourceRevision)
                     put("duplicateKeep", duplicateKeep)
                     put("sampleRate", 48000)
@@ -246,6 +248,42 @@ class AudioEditorController(
         val command = runCatching { json.decodeFromString<AudioEditorCommand>(payload) }.getOrNull() ?: return
         if (command.operation != session.id) return
         val operation = session.operation
+        if (command.action == "ready") {
+            if (operation.phase != AudioEditorOperation.Phase.OPENING || session.ready?.isActive == true) return
+            session.ready = operation.scope.launch {
+                val view = sentenceRecorder.openEditor(session.contextId) ?: return@launch
+                val range = view.source ?: operation.source
+                val previous = lastConfirmed?.takeIf { it.first == session.contextId }?.second
+                val initial = previous?.takeIf { range.intersect(it.selection) == it.selection } ?: run {
+                    val bounds = sentenceRecorder.initialBounds(view) ?: range
+                    AudioEdit(AudioRange(operation.edit.selection.start.coerceIn(bounds.start, bounds.endExclusive), bounds.endExclusive))
+                }
+                if (active !== session || !operation.ready(range, initial)) return@launch
+                send(session) {
+                    put("phase", "editing")
+                    put("initialSelection", ranges(listOf(initial.selection)).first())
+                    put("initialCuts", ranges(initial.exclusions))
+                    put("timeline", buildJsonObject {
+                        put("sourceRevision", operation.sourceRevision)
+                        put("totalFrames", range.endExclusive)
+                        put("sourceStart", range.start)
+                        put("sourceEnd", range.endExclusive)
+                        putRetention(view)
+                        put("recording", sentenceRecorder.isRecording)
+                        put("overviewSummary", buildJsonArray {})
+                    })
+                }
+                val revision = operation.sourceRevision
+                val summary = sentenceRecorder.waveformSummary(range, contextId = session.contextId)
+                if (active === session && operation.sourceRevision == revision && summary != null) send(session) {
+                    put("timeline", buildJsonObject {
+                        put("sourceRevision", revision)
+                        put("overviewSummary", buildJsonArray { summary.peaks.forEach { add(JsonPrimitive(it)) } })
+                    })
+                }
+            }
+            return
+        }
         when (command.action) {
             "expand" -> { popupController.setAudioEditorExpanded(command.expanded); return }
             "collapse" -> { popupController.setAudioEditorCollapsed(command.collapsed); return }

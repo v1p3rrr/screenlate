@@ -91,6 +91,9 @@ class AnkiNotes @Inject constructor(
 
     suspend fun freezeTarget(language: Language): NoteTarget = NoteTarget(language, settings(language).effective())
 
+    fun cachedTarget(language: Language): NoteTarget? = settingsRepository.cachedSettings(language)
+        ?.let { NoteTarget(language, it.effective()) }
+
     fun targetChanged(target: NoteTarget): Flow<Boolean> = settingsRepository.settings(target.language)
         .map { it.effective() != target.settings }
 

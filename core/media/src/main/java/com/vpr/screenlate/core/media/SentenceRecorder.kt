@@ -219,6 +219,9 @@ class SentenceRecorder internal constructor(
         }
     }
 
+    suspend fun prepareEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? =
+        withContext(Dispatchers.IO) { lifecycle.withLock { coordinator?.prepareEditor(id, openMillis) } }
+
     suspend fun openEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? =
         withContext(Dispatchers.IO) { lifecycle.withLock { coordinator?.openEditor(id, openMillis) } }
 
@@ -270,6 +273,9 @@ class SentenceRecorder internal constructor(
             } catch (e: Exception) { Log.w(TAG, "Silence search failed", e); emptyList() }
         }
     }
+
+    fun initialBounds(view: AudioTimelineView, sampleRate: Int = 48000): AudioRange? =
+        view.source?.let { InitialSelection.suggest(view.scanFrame, it, sampleRate) }
 
     suspend fun initialSelection(view: AudioTimelineView, sampleRate: Int = 48000): AudioEdit? = withContext(Dispatchers.IO) {
         val source = view.source ?: return@withContext null

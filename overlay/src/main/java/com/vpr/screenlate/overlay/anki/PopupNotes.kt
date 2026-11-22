@@ -109,7 +109,7 @@ internal fun webpSize(width: Int, height: Int): Pair<Int, Int> {
 
 /** Where a word came from, taken when its ➕ is pressed, so a view shown later does not change the note. */
 fun interface NoteSource {
-    /** Called once per note; [screenshot] asks for its source picture. */
+    /** The provider keeps the captured source identity; [screenshot] lazily asks for its picture after choice. */
     suspend fun context(screenshot: Boolean): NoteContext
 }
 
@@ -172,6 +172,7 @@ class PopupNotes(
     /** Entry indices currently being added/updated, so [markNotes] does not overwrite their `"busy"` button state. */
     private val addingEntries = mutableSetOf<Int>()
     private val pendingNote = PendingNoteController(scope)
+    val retainsContext: Boolean get() = pendingNote.retainsContext
 
     /** The clip chosen for each term; the choice goes into `{audio}`. */
     private val chosenClips = mutableMapOf<Pair<String, String>, AudioClip>()
@@ -354,14 +355,33 @@ class PopupNotes(
     }
 
     override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean?) {
-        if (pendingNote.isActive) { onNoteWaiting(); return }
-        val effectiveWithAudio = withAudio ?: (recordingSettings?.cachedSettings?.defaultEditor ?: true)
+        val request = java.util.UUID.randomUUID().toString()
+        onPrepareNote(request, index, noteData)
+        pendingNote.choose(request, PendingNoteController.Attachments(withScreenshot, force, withAudio))
+    }
+
+    override fun onCommitPreparedNote(request: String, withScreenshot: Boolean, force: Boolean, audio: Int) {
+        if (audio !in -1..1) return
+        pendingNote.choose(request, PendingNoteController.Attachments(withScreenshot, force, when (audio) {
+            0 -> false
+            1 -> true
+            else -> null
+        }))
+    }
+
+    override fun onDismissPreparedNote(request: String) { pendingNote.dismiss(request) }
+
+    override fun onPrepareNote(request: String, index: Int, noteData: String) {
+        if (request.length > 100) return
+        if (pendingNote.isActive) { page.cancelNotePreparation(request); onNoteWaiting(); return }
+        val defaultAudio = recordingSettings?.cachedSettings?.defaultEditor ?: true
         val source = noteSource()
         val scan = scanNotes.scan
         // The note keeps the language it was asked for, even if the scan closes before it is added.
         val noteLanguage = language()
+        val targetAtPress = notes.cachedTarget(noteLanguage)
         addingEntries += index
-        pendingNote.start {
+        pendingNote.prepare(request) {
             var image: NoteImage? = null
             var picture: Bitmap? = null
             var configurationWatch: Job? = null
@@ -375,7 +395,7 @@ class PopupNotes(
                 val data = json.decodeFromString<NoteDataDto>(noteData)
                 val noteTerm = data.term.expression to data.term.reading
                 term = noteTerm
-                val target = notes.freezeTarget(noteLanguage)
+                val target = targetAtPress ?: notes.freezeTarget(noteLanguage)
                 val operation = this
                 configurationWatch = launch {
                     notes.targetChanged(target).first { it }
@@ -383,24 +403,27 @@ class PopupNotes(
                     operation.cancel()
                 }
                 val used = target.markers
-                val context = source.context(withScreenshot && "screenshot" in used)
+                val frozen = source.context(false)
+                requireContext()
+                if (scan != scanNotes.scan) return@prepare
+                val attachments = attachments()
+                val effectiveWithAudio = attachments.audio ?: defaultAudio
+                val force = attachments.force
+                val context = if (attachments.screenshot && "screenshot" in used) source.context(true) else frozen
                 image = context.image
-                if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null) {
-                    requireContext()
-                    if (scan != scanNotes.scan) return@start
-                }
+                if (!effectiveWithAudio || FieldTemplate.SENTENCE_AUDIO !in used || context.audioContextId == null) attachmentsReady()
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
                     translated = async { translation.forNote(sentence, noteLanguage) }
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
-                if (context.image != null && cropEditor != null) {
+                if (attachments.screenshot && context.image != null && cropEditor != null) {
                     val rememberControl = if (context.image is ScreenNoteImage && cropAreaSettings != null) {
                         val imageBounds = context.image.bounds
                         val cropSettings = cropAreaSettings.current()
                         // The scan may have closed while reading preferences; do not open an editor afterwards.
-                        if (scan != scanNotes.scan) return@start
+                        if (scan != scanNotes.scan) return@prepare
                         CropEditor.RememberControl(
                             initial = cropSettings.rememberArea,
                             remembered = cropSettings.cropFor(imageBounds),
@@ -415,7 +438,7 @@ class PopupNotes(
                     picture = cropEditor.edit(context.image, context.focus, rememberControl)
                         ?: run {
                             showState(scan, index, noteTerm, "", null)
-                            return@start
+                            return@prepare
                         }
                 }
                 // The crop is a bitmap of its own.
@@ -458,7 +481,7 @@ class PopupNotes(
                     when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second, duplicateKeep = isDuplicateKeep)) {
                         is AudioEditorResult.Cancelled -> {
                             showState(scan, index, noteTerm, "", null)
-                            return@start
+                            return@prepare
                         }
                         is AudioEditorResult.WithoutAudio -> {
                             sentenceAudio = SentenceAudioAttachment.Omitted
@@ -502,6 +525,7 @@ class PopupNotes(
                 image?.close()
                 picture?.recycle()
                 screenshot?.delete()
+                if (page.noteActions === this@PopupNotes) page.cancelNotePreparation(request)
             }
             val shown = showState(scan, index, term, state, opens)
             if (state == "added" && shown) onNoteAdded()

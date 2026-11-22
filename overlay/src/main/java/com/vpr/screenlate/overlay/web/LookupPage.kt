@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import org.json.JSONObject
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.MimeTypeMap
@@ -86,6 +87,11 @@ class LookupPage(
          * @param withAudio include recorded sentence audio if eligible.
          */
         fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean? = null)
+
+        fun onPrepareNote(request: String, index: Int, noteData: String)
+        fun onCommitPreparedNote(request: String, withScreenshot: Boolean, force: Boolean, audio: Int)
+        fun onDismissPreparedNote(request: String)
+
 
         /** ➕ was tapped while it waits for the scan's final text. */
         fun onNoteWaiting()
@@ -227,6 +233,8 @@ class LookupPage(
         val json = states.entries.joinToString(",", "{", "}") { (index, state) -> "\"$index\":\"$state\"" }
         run("Popup.setNoteStates($json)")
     }
+
+    fun cancelNotePreparation(request: String) = run("Popup.cancelNotePreparation(${JSONObject.quote(request)})")
 
     fun openAudioEditor(dataJson: String) = run("AudioEditor.open($dataJson)")
 
@@ -409,6 +417,19 @@ class LookupPage(
         @JavascriptInterface
         fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean, withAudio: Boolean) =
             post { noteActions?.onAddNote(index, noteData, withScreenshot, force, withAudio) }
+
+        @JavascriptInterface
+        fun onPrepareNote(request: String, index: Int, noteData: String) = post {
+            noteActions?.onPrepareNote(request, index, noteData)
+        }
+
+        @JavascriptInterface
+        fun onCommitPreparedNote(request: String, withScreenshot: Boolean, force: Boolean, audio: Int) = post {
+            noteActions?.onCommitPreparedNote(request, withScreenshot, force, audio)
+        }
+
+        @JavascriptInterface
+        fun onDismissPreparedNote(request: String) = post { noteActions?.onDismissPreparedNote(request) }
 
         @JavascriptInterface
         fun onAudioEditorCommand(payload: String) = post {

@@ -159,6 +159,7 @@ class PopupController(
 
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
     fun show(state: String, word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
+        if (isAudioEditorActive) return
         lastScreen = screen
         lastMaxWidth = maxWidth
         resetAudioEditorPresentation()
@@ -203,6 +204,7 @@ class PopupController(
      * Only the window moves; nothing is laid out again unless its size changes.
      */
     fun move(word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
+        if (isAudioEditorActive) { relayout(screen, maxWidth); return }
         if (!visible) return
         lastScreen = screen
         lastMaxWidth = maxWidth
@@ -237,7 +239,20 @@ class PopupController(
 
     /** Re-renders the current view in place, if the popup is showing. */
     fun update(state: String) {
-        if (visible) page.update(state)
+        if (visible && !isAudioEditorActive) page.update(state)
+    }
+
+    /** Resize the same host without replacing its page, edit state or audio operation. */
+    fun relayout(screen: Box, maxWidth: Float) {
+        lastScreen = screen
+        lastMaxWidth = maxWidth
+        if (!visible) return
+        if (isAudioEditorActive) {
+            normalBounds = lastWord?.let { place(it, null, screen, maxWidth) }
+            if (isCollapsed) setAudioEditorCollapsed(true) else setAudioEditorExpanded(isExpanded)
+        } else {
+            lastWord?.let { move(it, null, screen, maxWidth) }
+        }
     }
 
     /** Shows [state] on top of the current view; the popup's back button returns to it. */

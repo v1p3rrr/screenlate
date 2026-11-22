@@ -109,6 +109,10 @@ internal class PcmStorageCoordinator(
         t.acquireScan(scanMillis, h.contiguousTailStart)
     }
 
+    fun prepareEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? = command {
+        timeline?.prepareEditor(id, committedEndFrame, processingTime(openMillis))
+    }
+
     fun openEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? = command {
         timeline?.openEditor(id, committedEndFrame, processingTime(openMillis), directory.usableSpace >= config.minFreeSpaceBytes)
     }

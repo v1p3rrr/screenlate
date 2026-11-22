@@ -329,3 +329,8 @@ targets with a fake backend. `AudioEditorDeviceTest` runs the production control
 storage and Opus export in the isolated overlay test package without a collection. The matching identified
 bridge/Main test is in `LookupPageTest`. These fixtures do not replace rotation, source-app and resource
 acceptance. Assemble the overlay test APK before running those classes explicitly on the selected device.
+
+`AudioEditorResizeTest` uses the real WebView and a recording WindowManager to verify compact, expanded
+and collapsed relayout without host replacement or draft resets. `CropEditorTest` verifies source-frame
+preservation through layout changes. Timeline and operation tests cover loading versus Ready admission;
+page tests cover the pre-chooser Prepare/Commit/Dismiss transport, stale choices and page recreation.

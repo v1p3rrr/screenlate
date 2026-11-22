@@ -95,7 +95,7 @@ test('an installation message opens the queue and its button disappears when res
     const button = content.querySelector('.message-link');
     assert.ok(button);
     button.click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'screenlate://installation']);
+    assert.deepEqual(lastBridgeCall(), ['onOpenUrl', 'screenlate://installation']);
     Popup.render(state({ results: [], message: 'Installing', installation: false }));
     assert.equal(content.querySelector('.message-link'), null);
     Popup.render(state());
@@ -107,7 +107,7 @@ test('a message about a missing on-device model opens the language models', () =
     const button = content.querySelector('.message-link');
     assert.equal(button.textContent, 'On-device model');
     button.click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'screenlate://ocr-models']);
+    assert.deepEqual(lastBridgeCall(), ['onOpenUrl', 'screenlate://ocr-models']);
 });
 
 test('renders the header and one card per result', () => {
@@ -160,7 +160,7 @@ test('without the header the first entry gets the close button', () => {
     assert.ok(entries[0].querySelector('.action-close'));
     assert.equal(entries[1].querySelector('.action-close'), null);
     entries[0].querySelector('.action-close').click();
-    assert.deepEqual(page.calls.at(-1), ['onClose']);
+    assert.deepEqual(lastBridgeCall(), ['onClose']);
 });
 
 test('a message keeps the header even when it is hidden', () => {
@@ -171,13 +171,27 @@ test('a message keeps the header even when it is hidden', () => {
     assert.equal(content.textContent, 'Nothing');
 });
 
+function noteCalls() {
+    const prepared = new Map();
+    return page.calls.map(c => {
+        if (c[0] === 'onPrepareNote') prepared.set(c[1], c);
+        if (c[0] !== 'onCommitPreparedNote') return c;
+        const p = prepared.get(c[1]);
+        assert.ok(p, 'a commit must reference an earlier preparation');
+        const call = ['onAddNote', p[2], p[3], c[2], c[3]];
+        if (c[4] !== -1) call.push(c[4] === 1);
+        return call;
+    }).filter(c => !['onPrepareNote', 'onDismissPreparedNote'].includes(c[0]));
+}
+const lastBridgeCall = () => noteCalls().at(-1);
+
 test('a tap on the note button sends the note data', () => {
     Popup.setActions({ anki: true, audio: true, ankiProblem: null });
     Popup.render(state());
     assert.equal(content.querySelectorAll('.action-play').length, 2);
     const add = content.querySelector('.action-add');
     tap(add);
-    const [name, index, data, withScreenshot, force] = page.calls.at(-1);
+    const [name, index, data, withScreenshot, force] = lastBridgeCall();
     assert.equal(name, 'onAddNote');
     assert.equal(index, 0);
     assert.equal(JSON.parse(data).values.expression, '猫');
@@ -186,18 +200,77 @@ test('a tap on the note button sends the note data', () => {
     assert.equal(add.dataset.state, 'busy');
 });
 
+test('attachment chooser prepares frozen note data before showing choices and commits its token', () => {
+    Popup.setActions({ anki: true, audio: false, ankiProblem: null });
+    Popup.setNoteConfig({ sentenceAudioEligible: true, markers: ['expression', 'glossary'] });
+    Popup.render(state());
+    hold(content.querySelector('.action-add'));
+    const prepared = page.calls.find(c => c[0] === 'onPrepareNote');
+    assert.ok(prepared);
+    assert.equal(JSON.parse(prepared[3]).values.expression, '猫');
+    assert.equal(page.calls.some(c => c[0] === 'onCommitPreparedNote'), false);
+    page.document.querySelector('.menu-item').click();
+    assert.equal(page.calls.at(-1)[0], 'onCommitPreparedNote');
+    assert.equal(page.calls.at(-1)[1], prepared[1]);
+});
+
+test('dismissed attachment menu releases its preparation and cannot commit a late choice', () => {
+    Popup.setActions({ anki: true });
+    Popup.setNoteConfig({ sentenceAudioEligible: true, markers: ['expression'] });
+    Popup.render(state());
+    hold(content.querySelector('.action-add'));
+    const request = page.calls.find(c => c[0] === 'onPrepareNote')[1];
+    const staleChoice = page.document.querySelector('.menu-item');
+    page.document.body.dispatchEvent(new page.window.Event('pointerdown', { bubbles: true }));
+    assert.deepEqual(page.calls.at(-1), ['onDismissPreparedNote', request]);
+    assert.equal(page.document.querySelector('.menu'), null);
+    assert.equal(page.calls.some(c => c[0] === 'onCommitPreparedNote'), false);
+    staleChoice.click();
+    assert.equal(page.calls.filter(c => c[0] === 'onPrepareNote').length, 1);
+    assert.equal(page.calls.some(c => c[0] === 'onCommitPreparedNote'), false);
+});
+
+test('attachment choice does not rebuild note data after settings change', () => {
+    Popup.setActions({ anki: true });
+    Popup.setNoteConfig({ sentenceAudioEligible: true, markers: ['expression', 'glossary'] });
+    Popup.render(state());
+    hold(content.querySelector('.action-add'));
+    const prepared = page.calls.find(c => c[0] === 'onPrepareNote');
+    Popup.setNoteConfig({ sentenceAudioEligible: false, markers: [] });
+    page.document.querySelector('.menu-item').click();
+    assert.equal(page.calls.filter(c => c[0] === 'onPrepareNote').length, 1);
+    assert.equal(page.calls.at(-1)[1], prepared[1]);
+    assert.equal(JSON.parse(prepared[3]).values.expression, '猫');
+});
+
+test('a recreated page never reuses an earlier preparation identity', () => {
+    Popup.setActions({ anki: true });
+    Popup.render(state());
+    tap(content.querySelector('.action-add'));
+    const first = page.calls.find(c => c[0] === 'onPrepareNote')[1];
+    const next = popupPage();
+    const popup = next.global('Popup');
+    popup.setActions({ anki: true });
+    popup.render(state());
+    const button = next.document.querySelector('.action-add');
+    button.dispatchEvent(new next.window.Event('pointerdown', { bubbles: true }));
+    button.dispatchEvent(new next.window.Event('pointerup', { bubbles: true }));
+    const second = next.calls.find(c => c[0] === 'onPrepareNote')[1];
+    assert.notEqual(first, second);
+});
+
 test('while the text is not final the note button is grey and asks for a hint', () => {
     Popup.setActions({ anki: true, audio: false, ankiProblem: null });
     Popup.render(state({ pending: true, noteWait: true }));
     assert.equal(page.document.documentElement.dataset.noteWait, 'true');
     const add = content.querySelector('.action-add');
     tap(add);
-    assert.deepEqual(page.calls.at(-1), ['onNoteWaiting']);
+    assert.deepEqual(lastBridgeCall(), ['onNoteWaiting']);
     assert.equal(add.dataset.state, undefined);
     Popup.update(state({ pending: false, noteWait: false }));
     assert.equal(page.document.documentElement.dataset.noteWait, 'false');
     tap(add);
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
 });
 
 test('a pushed view keeps waiting until the first one gets its final text', () => {
@@ -206,7 +279,7 @@ test('a pushed view keeps waiting until the first one gets its final text', () =
     Popup.push(state({ source: { text: '犬', matched: 1 }, results: [result('犬', 'いぬ')], noteWait: true }));
     Popup.update(state({ pending: false, noteWait: false }));
     tap(content.querySelector('.action-add'));
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
 });
 
 test('added notes show the open button', () => {
@@ -218,7 +291,7 @@ test('added notes show the open button', () => {
     assert.equal(first.getAttribute('aria-label'), 'Open note');
     assert.equal(second.dataset.icon, 'add');
     tap(first);
-    assert.deepEqual(page.calls.at(-1), ['onOpenNote', 0]);
+    assert.deepEqual(lastBridgeCall(), ['onOpenNote', 0]);
 });
 
 test('duplicate notes with NEW and OVERWRITE behavior show openAdd and openUpdate icons', () => {
@@ -232,8 +305,8 @@ test('duplicate notes with NEW and OVERWRITE behavior show openAdd and openUpdat
     assert.equal(first.getAttribute('aria-label'), 'Add');
     // Tap adds directly
     tap(first);
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[1], 0);
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[1], 0);
 
     // Reset state after tap to test hold
     Popup.setNoteStates({ 0: 'duplicate_new', 1: 'duplicate_overwrite' });
@@ -245,15 +318,15 @@ test('duplicate notes with NEW and OVERWRITE behavior show openAdd and openUpdat
     const items = Array.from(menu.querySelectorAll('.menu-label')).map(item => item.textContent);
     assert.deepEqual(items, ['Open in AnkiDroid', 'Add with picture']);
     menu.querySelectorAll('.menu-item')[0].click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenNote', 0]);
+    assert.deepEqual(lastBridgeCall(), ['onOpenNote', 0]);
 
     // duplicate_overwrite shows openUpdate icon
     assert.equal(second.dataset.icon, 'openUpdate');
     assert.equal(second.getAttribute('aria-label'), 'Update note');
     // Tap updates directly
     tap(second);
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[1], 1);
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[1], 1);
 
     // Reset state after tap to test hold
     Popup.setNoteStates({ 1: 'duplicate_overwrite' });
@@ -265,7 +338,7 @@ test('duplicate notes with NEW and OVERWRITE behavior show openAdd and openUpdat
     const updateItems = Array.from(updateMenu.querySelectorAll('.menu-label')).map(item => item.textContent);
     assert.deepEqual(updateItems, ['Open in AnkiDroid', 'Update with picture', 'Add anyway', 'Add anyway, with a picture']);
     updateMenu.querySelectorAll('.menu-item')[0].click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenNote', 1]);
+    assert.deepEqual(lastBridgeCall(), ['onOpenNote', 1]);
 });
 
 test('when screenshotByDefault is true, tap adds with picture and hold adds without picture', () => {
@@ -278,24 +351,24 @@ test('when screenshotByDefault is true, tap adds with picture and hold adds with
 
     // Fresh note: tap adds with picture
     tap(first);
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[1], 0);
-    assert.equal(page.calls.at(-1)[3], true); // withScreenshot = true
-    assert.equal(page.calls.at(-1)[4], false); // force = false
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[1], 0);
+    assert.equal(lastBridgeCall()[3], true); // withScreenshot = true
+    assert.equal(lastBridgeCall()[4], false); // force = false
 
     // Fresh note: hold adds without picture
     Popup.setNoteStates({ 0: null });
     hold(first);
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[1], 0);
-    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
-    assert.equal(page.calls.at(-1)[4], false); // force = false
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[1], 0);
+    assert.equal(lastBridgeCall()[3], false); // withScreenshot = false
+    assert.equal(lastBridgeCall()[4], false); // force = false
 
     // Duplicate NEW: tap adds with picture, hold opens menu with Add without picture
     Popup.setNoteStates({ 0: 'duplicate_new' });
     tap(first);
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[3], true); // withScreenshot = true
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[3], true); // withScreenshot = true
 
     Popup.setNoteStates({ 0: 'duplicate_new' });
     hold(first);
@@ -304,15 +377,15 @@ test('when screenshotByDefault is true, tap adds with picture and hold adds with
     const items = Array.from(menu.querySelectorAll('.menu-label')).map(item => item.textContent);
     assert.deepEqual(items, ['Open in AnkiDroid', 'Add without picture']);
     menu.querySelectorAll('.menu-item')[1].click(); // Add without picture
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[3], false); // withScreenshot = false
 
     // Duplicate OVERWRITE: tap updates with picture, hold opens 4-item menu
     Popup.setNoteStates({ 1: 'duplicate_overwrite' });
     tap(second);
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[1], 1);
-    assert.equal(page.calls.at(-1)[3], true); // withScreenshot = true
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[1], 1);
+    assert.equal(lastBridgeCall()[3], true); // withScreenshot = true
 
     Popup.setNoteStates({ 1: 'duplicate_overwrite' });
     hold(second);
@@ -321,10 +394,10 @@ test('when screenshotByDefault is true, tap adds with picture and hold adds with
     const updateItems = Array.from(updateMenu.querySelectorAll('.menu-label')).map(item => item.textContent);
     assert.deepEqual(updateItems, ['Open in AnkiDroid', 'Update without picture', 'Add anyway', 'Add anyway, with a picture']);
     updateMenu.querySelectorAll('.menu-item')[1].click(); // Update without picture
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[1], 1);
-    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
-    assert.equal(page.calls.at(-1)[4], false); // force = false
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[1], 1);
+    assert.equal(lastBridgeCall()[3], false); // withScreenshot = false
+    assert.equal(lastBridgeCall()[4], false); // force = false
 
     // Clean up config
     Popup.setNoteConfig({ screenshotByDefault: false });
@@ -343,11 +416,11 @@ test('when sentenceAudioEligible is true, hold menu offers audio options', () =>
     assert.deepEqual(items, ['Add with picture', 'Add with audio', 'Add without audio']);
 
     menu.querySelectorAll('.menu-item')[1].click(); // Add with audio
-    assert.equal(page.calls.at(-1)[0], 'onAddNote');
-    assert.equal(page.calls.at(-1)[1], 0);
-    assert.equal(page.calls.at(-1)[3], false); // withScreenshot = false
-    assert.equal(page.calls.at(-1)[4], false); // force = false
-    assert.equal(page.calls.at(-1)[5], true);  // withAudio = true
+    assert.equal(lastBridgeCall()[0], 'onAddNote');
+    assert.equal(lastBridgeCall()[1], 0);
+    assert.equal(lastBridgeCall()[3], false); // withScreenshot = false
+    assert.equal(lastBridgeCall()[4], false); // force = false
+    assert.equal(lastBridgeCall()[5], true);  // withAudio = true
 
     // Clean up config
     Popup.setNoteConfig({ screenshotByDefault: false, sentenceAudioEligible: false });
@@ -363,7 +436,7 @@ test('a broken Anki setup shows a grey button with the reason', () => {
     const box = content.querySelector('.note-problem');
     assert.match(box.textContent, /The note type is gone/);
     box.querySelector('button').click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenApp']);
+    assert.deepEqual(lastBridgeCall(), ['onOpenApp']);
     add.click();
     assert.equal(content.querySelector('.note-problem'), null);
 });
@@ -379,7 +452,7 @@ test('links push a view and back restores the previous one', () => {
     assert.equal(back.hidden, true);
     assert.equal(content.querySelectorAll('article.entry').length, 2);
     // The note buttons were drawn anew, so the app marks them again.
-    assert.deepEqual(page.calls.at(-1), ['onViewRestored']);
+    assert.deepEqual(lastBridgeCall(), ['onViewRestored']);
 });
 
 test('updates redraw only the header when the results are the same', () => {
@@ -465,7 +538,7 @@ test('chinese headwords get a syllable above each character, marked with its ton
     assert.deepEqual([...expression.querySelectorAll('ruby')].map(ruby => ruby.textContent), ['图tú', '书shū', '馆guǎn']);
     assert.deepEqual([...expression.querySelectorAll('rt .syllable')].map(span => span.dataset.tone), ['2', '1', '3']);
     expression.querySelectorAll('.kanji-char')[1].dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
-    assert.deepEqual(page.calls.at(-1), ['onKanji', '书']);
+    assert.deepEqual(lastBridgeCall(), ['onKanji', '书']);
 });
 
 test('cantonese headwords get a jyutping syllable above each character, marked with its tone', () => {
@@ -641,7 +714,7 @@ test('heavier text wraps runs of the script as they arrive', async () => {
     await settle();
     assert.deepEqual(runs(page.document.getElementById('source')), ['犬']);
     content.querySelector('.kanji-char .script-run').dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
-    assert.deepEqual(page.calls.at(-1), ['onKanji', '犬']);
+    assert.deepEqual(lastBridgeCall(), ['onKanji', '犬']);
 });
 
 test('heavier text leaves fields, graphs and bold text as they are', async () => {
@@ -702,10 +775,10 @@ test('the definition copy button shows when copying is on and copies its diction
     Popup.setAppearance({ definitionCopy: 'meanings' });
     assert.equal(page.document.documentElement.dataset.definitionCopy, 'meanings');
     buttons[1].click();
-    assert.deepEqual(page.calls.at(-1), ['onCopyDefinition', 'kitty', '']);
+    assert.deepEqual(lastBridgeCall(), ['onCopyDefinition', 'kitty', '']);
     Popup.setAppearance({ definitionCopy: 'all' });
     buttons[0].click();
-    assert.deepEqual(page.calls.at(-1), ['onCopyDefinition', 'cat', 'cat']);
+    assert.deepEqual(lastBridgeCall(), ['onCopyDefinition', 'cat', 'cat']);
 });
 
 test('the page language picks the markup rules of the copied meanings', () => {
@@ -715,10 +788,10 @@ test('the page language picks the markup rules of the copied meanings', () => {
     const button = content.querySelector('.copy-definition');
     Popup.setAppearance({ lang: 'ja', definitionCopy: 'meanings' });
     button.click();
-    assert.equal(page.calls.at(-1)[1], 'cat');
+    assert.equal(lastBridgeCall()[1], 'cat');
     Popup.setAppearance({ lang: '', definitionCopy: 'meanings' });
     button.click();
-    assert.equal(page.calls.at(-1)[1], 'ねこ【猫】; 〘n〙 cat');
+    assert.equal(lastBridgeCall()[1], 'ねこ【猫】; 〘n〙 cat');
 });
 
 test('dictionary styles are scoped to their dictionary', () => {
@@ -1272,7 +1345,7 @@ test('a selection in the entries offers Copy, which sends the text without furig
     assert.equal(copy.hidden, false);
 
     copy.click();
-    const [name, text] = page.calls.at(-1);
+    const [name, text] = lastBridgeCall();
     assert.equal(name, 'onCopy');
     assert.match(text, /is a cat/);
     assert.equal(copy.hidden, true);
@@ -1301,7 +1374,7 @@ function holdAudio(index = 0) {
     } finally {
         page.window.setTimeout = setTimeout;
     }
-    const [method, view, request] = page.calls.at(-1);
+    const [method, view, request] = lastBridgeCall();
     assert.equal(method, 'onAudioMenu');
     return { view, request };
 }
@@ -1350,7 +1423,7 @@ test('audio clips fill the menu waiting for them, and a new view closes it', () 
     const item = page.document.querySelector('.menu .menu-item');
     assert.equal(item.textContent, 'Clip');
     item.click();
-    assert.deepEqual(page.calls.at(-1), ['onPlayClip', request, 'a']);
+    assert.deepEqual(lastBridgeCall(), ['onPlayClip', request, 'a']);
     Popup.showAudioMenu(holdAudio(1).request, [], true);
     Popup.update(state({ results: [result('犬', 'いぬ')] }));
     assert.equal(page.document.querySelector('.menu'), null);
@@ -1369,7 +1442,7 @@ test('a cached audio list opens directly and only answers the latest hold', () =
     const item = page.document.querySelector('.menu .menu-item');
     assert.equal(item.textContent, 'Clip');
     item.click();
-    assert.deepEqual(page.calls.at(-1), ['onPlayClip', second.request, 'a']);
+    assert.deepEqual(lastBridgeCall(), ['onPlayClip', second.request, 'a']);
 });
 
 test('audio keeps the same word through a redraw and starts over after moving or reopening', () => {
@@ -1461,7 +1534,7 @@ test('a tap asks for the translation, the answer fills the block and a second ta
     assert.equal(box.hidden, true);
 
     button.click();
-    assert.deepEqual(page.calls.at(-1), ['onTranslate', 1]);
+    assert.deepEqual(lastBridgeCall(), ['onTranslate', 1]);
     assert.equal(box.hidden, false);
     assert.equal(box.dataset.state, 'loading');
     assert.match(box.textContent, /Translating…/);
@@ -1489,7 +1562,7 @@ test('the copy button copies the sentence and the translation on two lines', () 
     const copy = box.querySelector('.translation-tools .action-copy-translation');
     assert.equal(copy.getAttribute('aria-label'), 'Copy sentence and translation');
     copy.click();
-    assert.deepEqual(page.calls.at(-1), ['onCopy', '猫が好き\nI like cats']);
+    assert.deepEqual(lastBridgeCall(), ['onCopy', '猫が好き\nI like cats']);
 });
 
 test('without a sentence the copy button copies the translation alone', () => {
@@ -1498,7 +1571,7 @@ test('without a sentence the copy button copies the translation alone', () => {
     page.document.getElementById('translate').click();
     Popup.showTranslation(1, { text: 'I like cats', service: 'Bing' });
     page.document.querySelector('.action-copy-translation').click();
-    assert.deepEqual(page.calls.at(-1), ['onCopy', 'I like cats']);
+    assert.deepEqual(lastBridgeCall(), ['onCopy', 'I like cats']);
 });
 
 test('an error shows in the block; an answer to an older request is dropped', () => {
@@ -1509,7 +1582,7 @@ test('an error shows in the block; an answer to an older request is dropped', ()
     button.click();
     button.click();
     button.click();
-    assert.deepEqual(page.calls.at(-1), ['onTranslate', 2]);
+    assert.deepEqual(lastBridgeCall(), ['onTranslate', 2]);
     Popup.showTranslation(1, { text: 'old' });
     assert.equal(box.dataset.state, 'loading');
     Popup.showTranslation(2, { error: 'No connection.' });
@@ -1649,7 +1722,7 @@ test('without the header the translation button sits first in the first entry, b
     assert.equal(content.querySelectorAll('.action-translate').length, 1);
 
     actions.firstChild.click();
-    assert.deepEqual(page.calls.at(-1), ['onTranslate', 1]);
+    assert.deepEqual(lastBridgeCall(), ['onTranslate', 1]);
     assert.equal(page.document.getElementById('translation').hidden, false);
     assert.equal(actions.firstChild.getAttribute('aria-pressed'), 'true');
 
@@ -1744,7 +1817,7 @@ test('a single external link is placed on the left of entry-actions and opens br
     assert.equal(firstEntry.querySelector('.entry-external-links'), null);
 
     extBtn.click();
-    const lastCall = page.calls.at(-1);
+    const lastCall = lastBridgeCall();
     assert.equal(lastCall[0], 'onOpenUrl');
     assert.equal(lastCall[1], 'https://www.google.co.jp/search?q=%E7%8C%AB&tbm=isch');
 });
@@ -1777,15 +1850,15 @@ test('multiple external links are placed inside entry-info and trigger URLs', ()
 
     // Click JPDB
     buttons[1].click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://jpdb.io/search?q=%E7%8C%AB']);
+    assert.deepEqual(lastBridgeCall(), ['onOpenUrl', 'https://jpdb.io/search?q=%E7%8C%AB']);
 
     // Click Nadeshiko
     buttons[2].click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://nadeshiko.co/search/sentence?query=%E7%8C%AB']);
+    assert.deepEqual(lastBridgeCall(), ['onOpenUrl', 'https://nadeshiko.co/search/sentence?query=%E7%8C%AB']);
 
     // Click Immersion Kit
     buttons[3].click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://www.immersionkit.com/dictionary?keyword=%E7%8C%AB']);
+    assert.deepEqual(lastBridgeCall(), ['onOpenUrl', 'https://www.immersionkit.com/dictionary?keyword=%E7%8C%AB']);
 });
 
 test('non-japanese entries only show Google Images with regional domain', () => {
@@ -1813,7 +1886,7 @@ test('non-japanese entries only show Google Images with regional domain', () => 
     assert.equal(extBtn.dataset.external, 'google-images');
 
     extBtn.click();
-    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'https://www.google.ru/search?q=%D0%BA%D0%BE%D1%82&tbm=isch']);
+    assert.deepEqual(lastBridgeCall(), ['onOpenUrl', 'https://www.google.ru/search?q=%D0%BA%D0%BE%D1%82&tbm=isch']);
 });
 
 test('fallback language entry in japanese lookup excludes japanese-specific links', () => {
@@ -1854,14 +1927,14 @@ test('tapping a dictionary chip collapses and expands all sections of that dicti
     assert.equal(sections()[0].classList.contains('collapsed'), true);
     assert.equal(sections()[1].classList.contains('collapsed'), true);
     assert.equal(sections()[0].querySelector('.dictionary-name').parentElement, sections()[0]);
-    assert.deepEqual(page.calls.at(-1), ['onToggleDictionary', 'Dict [1]', true]);
+    assert.deepEqual(lastBridgeCall(), ['onToggleDictionary', 'Dict [1]', true]);
 
     // Tapping again expands and moves the dictionary name back into the first definition.
     sections()[0].querySelector('.dictionary-name').click();
     assert.equal(sections()[0].classList.contains('collapsed'), false);
     assert.equal(sections()[1].classList.contains('collapsed'), false);
     assert.equal(sections()[0].querySelector('.dictionary-name').parentElement.className, 'definition-body');
-    assert.deepEqual(page.calls.at(-1), ['onToggleDictionary', 'Dict [1]', false]);
+    assert.deepEqual(lastBridgeCall(), ['onToggleDictionary', 'Dict [1]', false]);
 
     // setAppearance syncs collapsed dictionaries from persisted settings.
     Popup.setAppearance({ collapsedDictionaries: ['Other'] });
@@ -1945,7 +2018,7 @@ test('popup-selection-text is captured on pointerdown before tapping Anki add', 
     selection.removeAllRanges();
     press(add, 'pointerup');
 
-    const call = page.calls.find(c => c[0] === 'onAddNote');
+    const call = noteCalls().find(c => c[0] === 'onAddNote');
     assert.ok(call);
     const payload = JSON.parse(call[2]);
     assert.match(payload.values['popup-selection-text'], /meaning/);

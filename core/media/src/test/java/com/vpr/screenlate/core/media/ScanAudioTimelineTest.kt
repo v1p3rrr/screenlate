@@ -6,6 +6,32 @@ import org.junit.Test
 class ScanAudioTimelineTest {
     private val clock = PcmClock(1000, 0)
 
+    @Test fun loadingDoesNotSpendEditorAllowanceAndReadyIncludesSoundThroughOpening() {
+        val timeline = ScanAudioTimeline(clock, RecordingLimits())
+        val scan = timeline.acquireScan(300_000, 0)!!
+        val loading = timeline.prepareEditor(scan, 400_000, 400_000)!!
+        assertThat(loading.source).isEqualTo(AudioRange(0, 400_000))
+        assertThat(loading.retention.firstEditorMillis).isNull()
+        assertThat(loading.retention.cutoffMillis).isEqualTo(600_000)
+        val ready = timeline.openEditor(scan, 450_000, 450_000)!!
+        assertThat(ready.source).isEqualTo(AudioRange(0, 450_000))
+        assertThat(ready.retention.firstEditorMillis).isEqualTo(450_000)
+        assertThat(ready.retention.cutoffMillis).isEqualTo(570_000)
+        val rotated = timeline.openEditor(scan, 470_000, 470_000)!!
+        assertThat(rotated.source).isEqualTo(ready.source)
+        assertThat(rotated.retention.cutoffMillis).isEqualTo(570_000)
+    }
+
+    @Test fun waitingExpiryDuringLoadingCannotGrantEditorAllowance() {
+        val timeline = ScanAudioTimeline(clock, RecordingLimits())
+        val scan = timeline.acquireScan(300_000, 0)!!
+        timeline.prepareEditor(scan, 590_000, 590_000)
+        val late = timeline.openEditor(scan, 650_000, 650_000)!!
+        assertThat(late.source).isEqualTo(AudioRange(0, 600_000))
+        assertThat(late.retention.firstEditorMillis).isNull()
+        assertThat(late.retention.reason).isEqualTo(RetentionEnd.WAITING_LIMIT)
+    }
+
     @Test fun protectsHistoryBeforeLongReadingAndDoesNotSlideShownRange() {
         val timeline = ScanAudioTimeline(clock, RecordingLimits())
         val scan = timeline.acquireScan(300_000, 0)!!

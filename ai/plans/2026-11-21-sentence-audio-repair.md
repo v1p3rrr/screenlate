@@ -414,19 +414,18 @@ are investigated as findings, not converted into an invented new audio performan
 |---|---|---|
 | A regression baseline | Partial | Permanent core regressions landed with fixes; 98 core-media tests, 8 AudioPlayer, 4 playback-owner, 12 popup playback and 8 new editor/pending-operation cases pass; identified editor DOM regressions and frozen-target fake-backend cases are permanent. Full lifecycle fixtures remain. |
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
-| C pending operation/protocol | Partial | Replaced shared editor continuation with per-operation result/scope/edit/source revisions; one pending note pipeline, identified Main bridge, one export, retryable encode failure, append bounds, confirmed-edit promotion and frozen native-Add target are implemented. Two new isolated API30 bridge/controller/codec tests pass; final 3-test rerun includes shared playback and safe host teardown. Pre-chooser snapshot, Ready admission, rotation/crop rehosting, active-language invalidation and scan/Back arbitration remain. |
+| C pending operation/protocol | Partial | Replaced shared editor continuation with per-operation result/scope/edit/source revisions; one pending note pipeline, identified Main bridge, one export, retryable encode failure, append bounds, confirmed-edit promotion and frozen native-Add target are implemented. Two new isolated API30 bridge/controller/codec tests pass; final 3-test rerun includes shared playback and safe host teardown. Pre-chooser snapshot, Ready admission and crop/editor host resize are implemented with regressions/native fixtures. Active-language invalidation, scan/Back arbitration and full service lifecycle gates remain. |
 | D editing/fidelity | Partial | Commands atomically submit accepted edits for playback/export and Refresh publishes appendable source bounds; remaining waveform/initial-selection/fidelity and scheduling work is pending. |
 | E Anki recovery | Pending | No collection mutation during review/planning. |
 | F settings/resources | Pending | Numeric production policy still requires measurement. |
 | G device/regression | Pending | Previous test passes do not certify repaired paths. |
 
-Next continue C's lifecycle work on the new owners: freeze note/context/target at the original Add or hold
-before the attachment chooser (currently the native Add request freezes the target); operable-Ready admission
-and revision handshakes; rotation/crop rehosting without renewed E; active-language invalidation; Back/dirty
-cancel and new-scan finish/cancel arbitration. Keep failed finish from executing the queued scan and acquire
-its marker only when it runs. Pre-note Anki media-copy retry remains E, not the now-retryable encoder failure.
-Incoming preview replacement and Refresh are bounded by owned jobs; detailed gesture coalescing and
-recording-tail availability updates remain D. Physical checks remain G.
+Next continue C's Back/dirty cancel, active-language invalidation and new-scan finish/cancel arbitration
+on the new owners. Queue only scan intent; acquire its audio marker when the scan actually runs. Keep
+failed finish from executing the queued scan. Verify service lifecycle/host restore paths and do not
+regress the now implemented pre-chooser preparation, Ready admission and owned crop/editor resize.
+Continue D/E/F/G autonomously after coherent checkpoints; physical checks remain G. Pre-note Anki media
+copy retry remains E, distinct from the already retryable encoder failure.
 
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
@@ -440,6 +439,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-22: Owner requested autonomous continuation through all remaining milestones without yielding
+  between blocks. Implemented pre-chooser note preparation, page-scoped request identities, separate
+  loading/Ready retention admission and owned crop/editor host resize. Added permanent regressions and
+  isolated API30 checks; current status/engineering hold the gate receipts. Product decisions unchanged.
 - 2026-11-22: Owner explicitly requested replacement rather than patches. Replaced the editor continuation
   and untagged bridge with AudioEditorOperation, operation IDs, source/edit revisions and frozen command
   snapshots; connected PendingNoteController to the real attachment pipeline. Added encode failure/retry,

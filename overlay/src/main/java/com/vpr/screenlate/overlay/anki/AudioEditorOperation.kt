@@ -21,9 +21,10 @@ internal class AudioEditorOperation(
     source: AudioRange,
     initial: AudioEdit,
     private val onChanged: () -> Unit = {},
+    opening: Boolean = false,
     private val export: suspend (AudioEdit) -> File?,
 ) {
-    enum class Phase { EDITING, EXPORTING, FAILED, FINISHED }
+    enum class Phase { OPENING, EDITING, EXPORTING, FAILED, FINISHED }
 
     sealed interface Result {
         data class Audio(val file: File, val edit: AudioEdit) : Result
@@ -35,7 +36,7 @@ internal class AudioEditorOperation(
     private val job = SupervisorJob(parent.coroutineContext[Job])
     val scope = CoroutineScope(parent.coroutineContext + job)
     val result: Deferred<Result> get() = completion
-    var phase = Phase.EDITING
+    var phase = if (opening) Phase.OPENING else Phase.EDITING
         private set
     var source = source
         private set
@@ -53,7 +54,7 @@ internal class AudioEditorOperation(
     }
 
     fun accept(sequence: Long, sourceRevision: Long, edit: AudioEdit): Boolean {
-        if (phase == Phase.FINISHED || phase == Phase.EXPORTING || sequence <= this.sequence ||
+        if (phase == Phase.FINISHED || phase == Phase.EXPORTING || phase == Phase.OPENING || sequence <= this.sequence ||
             sourceRevision != this.sourceRevision || !contains(edit.selection)
         ) return false
         this.sequence = sequence
@@ -61,6 +62,15 @@ internal class AudioEditorOperation(
             this.edit = edit
             editRevision++
         }
+        return true
+    }
+
+    fun ready(range: AudioRange, initial: AudioEdit): Boolean {
+        if (phase != Phase.OPENING || initial.selection.start < range.start || initial.selection.endExclusive > range.endExclusive ||
+            !append(range)
+        ) return false
+        edit = initial
+        phase = Phase.EDITING
         return true
     }
 
@@ -77,7 +87,7 @@ internal class AudioEditorOperation(
     }
 
     fun save() {
-        if (phase == Phase.EXPORTING || phase == Phase.FINISHED || edit.outputFrames <= 0) return
+        if (phase == Phase.OPENING || phase == Phase.EXPORTING || phase == Phase.FINISHED || edit.outputFrames <= 0) return
         val confirmed = edit
         phase = Phase.EXPORTING
         onChanged()

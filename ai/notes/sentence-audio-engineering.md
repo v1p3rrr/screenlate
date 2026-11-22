@@ -7,6 +7,42 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Pre-chooser preparation, Ready and resize — 2026-11-22
+
+Prepare/Commit/Dismiss reserve a single note operation before the menu, with page-local random namespaces
+and per-request sequence IDs. The original source provider captures the audio context ID immediately,
+not when a later attachment choice asks for an image. The effective Anki target is captured from the
+already displayed profile cache before the asynchronous pipeline; a fresh read is used only before a
+profile has ever loaded. Source image acquisition remains lazy so opening the menu cannot request
+projection permission. Closing the scan cancels unresolved preparation; ordinary completed attachment
+preparation keeps the existing non-audio note-write lifetime.
+
+Timeline preparation freezes a source revision under R. The page starts Opening and sends an identified
+Ready only after rendering. Native Ready admits E once, updates available source bounds and the initial
+selection, then enables audio actions. Waveform refresh after admission is optional owned work and cannot
+replace edits. Duplicate Ready is ignored; R expiry during loading seals the prefix without E.
+
+Resize keeps the existing page and operation. Owned sentence preparation prevents the normal resize→dock
+path, including pending crop/preview/export. PopupController relayout handles compact/expanded/collapsed
+geometry; the page redraws its waveform without resetting source coordinates, cursor/mode or viewport.
+CropEditor already maps its current frame through source coordinates on layout; keeping its host alive
+preserves the frame. Ordinary non-audio crop rotation still follows its prior cancellation path.
+
+Verification so far:
+- 100 core-media and 341 overlay tests pass; red JS fixtures reproduced premature operability, missing
+  resize redraw, stale menu clicks rebuilding a note and identity reuse after page recreation.
+- 221 page tests pass, including the final page-identity red→green regression.
+- Isolated API30 native run: production Ready/editor/PCM/Opus/confirmed-selection path, host resize in
+  all three presentations and pending crop frame preservation: 3 tests pass in 1.473s. Package uninstalled,
+  owned no-window/no-audio AVD shut down. Actual service rotation/source-app acceptance remains G.
+- Full gate in ignored ready-prepare-full.log is pending final collection at this checkpoint.
+- Earlier overlapping build attempts produced damaged Kotlin incremental cache, and the Gradle report
+  writer later timed out despite 99 passing tests. A targeted core-media clean/rebuild and a sequential
+  --no-configuration-cache --no-problems-report run passed. No production build setting was changed.
+
+Continue with Back/language/new-scan resolution on the same operation owner. Full transfer retry remains E,
+not the already recoverable encoder failure. Physical, resource and complete matrix gates remain open.
+
 ## Editor operation redesign checkpoint — 2026-11-22
 
 The shared continuation and untagged callbacks were replaced, not wrapped. AudioEditorOperation owns one

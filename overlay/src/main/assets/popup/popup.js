@@ -125,6 +125,9 @@ const Popup = (() => {
     let rightToLeft = false;
     let noteConfig = { markers: null, frequencyModes: {}, regions: [], screenshotByDefault: false, sortFrequencyMode: '', editorByDefault: false, sentenceAudioEligible: false };
     let menu = null;
+    let menuDismiss = null;
+    let noteRequest = 0;
+    const noteSession = Array.from(window.crypto.getRandomValues(new Uint32Array(4)), n => n.toString(16)).join('-');
     let audioView = 0;
     let audioRequests = 0;
     let pendingAudio = null;
@@ -736,20 +739,38 @@ const Popup = (() => {
             add.addEventListener('pointerdown', () => {
                 pressedSelection = selectedText(true);
             });
-            const addNote = (withScreenshot, force, withAudio) => {
-                if (current && current.noteWait) {
-                    ScreenlateBridge.onNoteWaiting();
-                    return;
-                }
-                setButtonState(add, 'busy');
+            let preparedRequest = null;
+            const prepareNote = () => {
+                const request = noteSession + ':' + (++noteRequest);
                 const selection = selectedText(true) || pressedSelection;
                 pressedSelection = '';
                 const data = NoteData.build(result, noteContext(selection), noteConfig.markers);
-                if (typeof withAudio === 'boolean') {
-                    ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force, withAudio);
-                } else {
-                    ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force);
-                }
+                add.dataset.noteRequest = request;
+                ScreenlateBridge.onPrepareNote(request, index, JSON.stringify(data));
+                return request;
+            };
+            const dismissPrepared = () => {
+                if (preparedRequest !== null) ScreenlateBridge.onDismissPreparedNote(preparedRequest);
+                preparedRequest = null;
+            };
+            const attachmentMenu = items => {
+                closeMenu();
+                preparedRequest = prepareNote();
+                const request = preparedRequest;
+                showMenu(add, items.map(item => ({ ...item, action: () => {
+                    if (preparedRequest !== request) return;
+                    item.action();
+                    dismissPrepared();
+                } })), dismissPrepared);
+                menu.dataset.noteRequest = preparedRequest;
+            };
+            const addNote = (withScreenshot, force, withAudio) => {
+                if (current && current.noteWait) { ScreenlateBridge.onNoteWaiting(); return; }
+                setButtonState(add, 'busy');
+                const request = preparedRequest !== null ? preparedRequest : prepareNote();
+                preparedRequest = null;
+                ScreenlateBridge.onCommitPreparedNote(request, withScreenshot, force,
+                    typeof withAudio === 'boolean' ? (withAudio ? 1 : 0) : -1);
             };
             onTapOrHold(add, held => {
                 const state = add.dataset.state;
@@ -770,7 +791,7 @@ const Popup = (() => {
                                 { label: labelOf('addAnywayWithPictureAndAudio'), action: () => addNote(true, true, true) },
                             );
                         }
-                        showMenu(add, items);
+                        attachmentMenu(items);
                     }
                     return;
                 }
@@ -790,7 +811,7 @@ const Popup = (() => {
                                 { label: labelOf('addWithoutAudio'), action: () => addNote(screenshotByDefault, false, false) },
                             );
                         }
-                        showMenu(add, items);
+                        attachmentMenu(items);
                     }
                     return;
                 }
@@ -820,7 +841,7 @@ const Popup = (() => {
                                 { label: labelOf('addAnywayWithPictureAndAudio'), action: () => addNote(true, true, true) },
                             );
                         }
-                        showMenu(add, items);
+                        attachmentMenu(items);
                     }
                     return;
                 }
@@ -838,7 +859,7 @@ const Popup = (() => {
                         { label: labelOf('addWithAudio'), action: () => addNote(screenshotByDefault, false, true) },
                         { label: labelOf('addWithoutAudio'), action: () => addNote(screenshotByDefault, false, false) },
                     ];
-                    showMenu(add, items);
+                    attachmentMenu(items);
                 }
             });
             container.append(add);
@@ -874,9 +895,10 @@ const Popup = (() => {
     // region Menu
 
     /** A small menu under (or above) [anchor]; items: [{ label, detail?, action?, disabled? }]. */
-    function showMenu(anchor, items) {
+    function showMenu(anchor, items, onDismiss = null) {
         closeMenu();
         menu = element('div', 'menu');
+        menuDismiss = onDismiss;
         for (const item of items) {
             const row = element('button', 'menu-item');
             row.append(element('span', 'menu-label', item.label));
@@ -886,7 +908,7 @@ const Popup = (() => {
             } else {
                 row.addEventListener('click', event => {
                     event.stopPropagation();
-                    closeMenu();
+                    closeMenu(true);
                     item.action();
                 });
             }
@@ -901,7 +923,10 @@ const Popup = (() => {
         menu.style.left = `${Math.max(4, Math.min(rect.right - width, window.innerWidth - width - 4))}px`;
     }
 
-    function closeMenu() {
+    function closeMenu(chosen = false) {
+        const dismiss = menuDismiss;
+        menuDismiss = null;
+        if (!chosen && dismiss) dismiss();
         if (menu) menu.remove();
         menu = null;
         pendingAudio = null;
@@ -910,6 +935,15 @@ const Popup = (() => {
     document.addEventListener('pointerdown', event => {
         if ((menu || pendingAudio) && (!menu || !menu.contains(event.target))) closeMenu();
     }, true);
+
+    function cancelNotePreparation(request) {
+        if (menu && menu.dataset.noteRequest === request) closeMenu();
+        for (const button of document.querySelectorAll('[data-note-request]')) {
+            if (button.dataset.noteRequest !== request) continue;
+            delete button.dataset.noteRequest;
+            if (button.dataset.state === 'busy') setButtonState(button, '');
+        }
+    }
 
     // region Selection
 
@@ -1977,6 +2011,7 @@ const Popup = (() => {
     // endregion
 
     return {
+        cancelNotePreparation,
         configure,
         render,
         update,

@@ -1,5 +1,30 @@
 # Status
 
+## Sentence audio: preparation, Ready and resize (2026-11-22)
+
+- Current owner authorization: continue through all remaining repair milestones autonomously, committing
+  coherent checkpoints and keeping this file current. Do not return control between milestones. The
+  account-wide weekly stop threshold remains less than 2% remaining; do not use reset credits.
+- Note preparation now starts before the attachment menu. Identified Prepare/Commit/Dismiss commands
+  reserve one PendingNoteController operation; the original word/values, sentence/source, language,
+  scan/audio context, defaults and effective Anki target are captured before choosing attachments.
+  A closed menu cannot commit later; recreated pages use independent random request namespaces.
+  Screenshot capture/permission is deferred until explicitly chosen and uses the frozen source identifier.
+- Split ScanAudioTimeline.prepareEditor from openEditor/Ready. Loading retains R and never spends E;
+  matching page Ready admits E once and includes committed sound through that point. Waiting expiry
+  during loading cannot grant E; duplicate Ready/reopening cannot replace edits or renew the allowance.
+- Owned sentence preparation, loading, pending crop, editing, preview and export survive resize without
+  docking or closing the scan. PopupController relayout changes only native geometry; JS redraw keeps
+  draft, source/edit identity, cursor/mode and viewport. Ordinary screenshot-only rotation behavior remains.
+  Dictionary/OCR updates cannot replace an active audio editor's page.
+- Evidence so far: 100 core-media and 341 overlay unit cases pass; 221 page cases pass, including recreated-page identity rejection. Three isolated API30 native tests pass
+  in 1.473s: production Ready/editor/PCM/Opus path; compact/expanded/collapsed resize; pending crop frame
+  preservation. Test package removed and owned headless/no-audio AVD powered off.
+- Full project gate is running in ready-prepare-full.log; update this checkpoint after final verification.
+  Then commit this block and continue C's Back/language/new-scan arbitration, followed by D/E/F/G.
+  C is not complete; Anki transfer recovery, whole-feature resource accounting and physical gates remain.
+
+
 ## Sentence audio: operation and editor ownership (2026-11-22)
 
 - Replaced AudioEditorController's shared context/edit/continuation with AudioEditorOperation: one result,
