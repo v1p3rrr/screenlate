@@ -32,7 +32,7 @@
 | Gate existing MNN intermediate-buffer trim by accepted safe idle | Actual allocation savings, next-scan timing | Models remain loaded; no loss of OCR quality; do not increase warm latency. |
 | Pause a hidden WebView instance without destroying it | Hidden-page CPU and paired resume timing | No global pauseTimers, no frozen Search, no lost DOM/history, no added opening delay. |
 | Control heavy result payload work | Candidate count, serialization/render timings and payload sizes | Same ordering, definitions and lookup results; no arbitrary candidate cap. |
-| Catcher A/B observation | c834fd65 still killed after 71 min with catcher absent; fresh PID 28278 starts OFF throughout | Continued window presence is not necessary. Earlier startup attachment remains a limitation; next ordinary-use interval already starts without it. Redesign is not a proven cleanup fix. |
+| Catcher A/B observation | c834fd65 fresh PIDs 28278 and 7878 never attach a catcher and still receive PowerGenie stops | Clean-start observation complete. Window presence/active handling is not necessary; redesign is not a demonstrated cleanup remedy. |
 
 ## Hypotheses and discriminating evidence
 
@@ -57,6 +57,8 @@
 - 2026-11-21 evening: Owner reports another kill on c834fd65. Confirmed catcher absent for 71 minutes before PowerGenie exit at 14:26:43; last screen-off was 11m30s earlier, so immediate adjacency is not universal. OEM suffix again aligns near activity pause; task-removal action is unknown (owner does not remember). Current 18:10 process starts with the feature OFF and no catcher from startup, so continue the existing observation. No new behavior decision, optimization or build. [Evidence](../notes/oem-background-limits.md#disabled-window-experiment-result-2026-11-21-evening).
 
 - 2026-11-22: Owner requested historical onset/retained Dev APKs and release comparison. Verified adjacent c129a5e7, 75h27m baseline ee0d57cd, closer Nov 15 control 486cf819, and published v1.1.0. Prepared verified local APK copies and bounded schema/signing checks. Lower versionCode on older baselines and separate release package are recorded. No rollback/install, reset, new build or binding experiment decision. [Inventory/evidence](../notes/oem-background-limits.md#historical-apk-baselines-and-release-comparison-2026-11-22).
+
+- 2026-11-24: Owner confirms archived c129a5e7 and audio 3d2835b0 trials. New journal proves two fresh-disabled c834 PowerGenie stops and two audio-build PowerGenie stops, with no new matching recording CRASH. c129 new starts are absent; its reported failure is not mapped to PowerGenie by this export, and a Nov 22 SIGNALED PID remains unassigned. Complete the existing clean-start observation without a new behavior decision; keep system/per-package policy as leading direction and all optimizations deferred. [Evidence](../notes/oem-background-limits.md#fresh-disabled-and-audio-branch-follow-up-2026-11-24).
 
 ## Audio crash handoff
 

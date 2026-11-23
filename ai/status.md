@@ -1,5 +1,20 @@
 # Status
 
+## Fresh-disabled/audio comparison and reported old baseline (2026-11-24)
+
+- Owner supplied Nov 23 21:13 journal and confirms trying archived c129a5e7 plus audio 3d2835b0, both reportedly
+  stopping. [Verified evidence and attribution limits](notes/oem-background-limits.md#fresh-disabled-and-audio-branch-follow-up-2026-11-24).
+- New explicit PowerGenie: c834 fresh-disabled processes at Nov 21 19:12 and Nov 23 03:55; audio 3d2835b0 at Nov 23
+  11:22 and 20:38. No new matching main CRASH/ANR or prior audio invariant exception. Other restarts lack exit records.
+- Fresh-disabled processes never attached a catcher from startup and still died with stable low resources/FGS and
+  exemption present. Clean-start control is now complete; outside-tap behavior is not a required trigger/remedy.
+- The old c129 trial is owner-confirmed, but its new start rows/Nov 22 journal are absent. PID 23070 has an unassigned
+  Nov 22 cached SIGNALED exit, not explicit PowerGenie. Preserve the distinction between report and verified reason.
+- Common log path/source are unchanged between c129 and audio; missing-interval cause unresolved. Audio branch lacks
+  the expanded monitor; no edits/merges to it. OEM/per-package policy is leading, without proof of global phone change.
+- No further builds, app resource changes, reinstall or system mutation. Separate release remains an optional control;
+  direct system-side read-only evidence needs the currently disconnected phone. Findings only, no runtime decision.
+
 ## Historical baseline APK identification (2026-11-22)
 
 - Owner requested onset, last pre-onset Dev, a longer-lived older control, retained APKs and release suitability.

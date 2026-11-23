@@ -967,3 +967,79 @@ package-state/settings explanation; it would not prove the entire phone changed 
 Survival of an older Dev through comparable idle/overnight use would strengthen a regression after that baseline.
 Match keep-alive and battery/start permissions; ordinary use/screen cycles, not elapsed time alone, affect comparison.
 These are suggested interpretations/options, not a newly accepted binding experiment plan. No owner-device operation.
+
+
+## Fresh-disabled and audio-branch follow-up (2026-11-24)
+
+Source: owner-supplied screenlate-log-20261123-211314.txt (2,798,310 bytes / 20,713 lines), exported November 23.
+Header is 1.1.0-3d2835b0-min, com.vpr.screenlate.debug. Owner reports installing the archived c129a5e7 APK, observing
+stops, then installing the sentence-audio branch. Asked to distinguish it from c834fd65, owner explicitly named
+screenlate-dev-3d2835b0-min.apk and screenlate-dev-c129a5e7-min.apk. Preserve that reported experiment while keeping
+its journal-verification limitation below.
+
+### Confirmed new main-process PowerGenie exits
+
+| Build | PID | Start | Exit | Process lifetime |
+|---|---:|---|---|---|
+| c834fd65-outside-tap-min | 28278 | Nov 21 18:10:07.014 | Nov 21 19:12:29.515 | 62m22.501s |
+| c834fd65-outside-tap-min | 7878 | Nov 23 02:48:05.614 | Nov 23 03:55:56.792 | 67m51.178s |
+| 3d2835b0-min (audio branch) | 20833 | Nov 23 08:45:04.869 | Nov 23 11:22:45.797 | 2h37m40.928s |
+| 3d2835b0-min (audio branch) | 9014 | Nov 23 20:38:24.511 | Nov 23 20:38:28.821 | 4.310s |
+
+All four explicitly name PowerGenie inactive clean. Importance is 125 for the first three and 200 for the last;
+the final one is system PID 2596, earlier ones PID 2520. A changed system PID is not proof of a firmware update.
+The 08:45 exit of diagnostic PID 16553 is PACKAGE_UPDATED, not another cleanup. Some other audio-build restarts
+have no retained matched exit record, so do not assign their cause from a new start alone. There are no new logged
+main CRASH/ANR records or the prior elapsed-time audio invariant exception in these new episodes. This does not
+certify every unrecorded interval as crash-free. Full-date journal now retains 25 explicit PowerGenie main exits:
+Nov 18=3, Nov 19=6, Nov 20=7, Nov 21=6, Nov 23=3.
+
+### The clean-start window test is now complete
+
+Every retained diagnostic state in PID 28278 and PID 7878 has hideOnOutsideTap=false, catcherAttached=false and
+catcherActive=false, with no scans/popups/recognition jobs. These are fresh processes without an earlier catcher
+attachment, not merely the previous on/off experiment in PID 19274. Both are still stopped. New-process window
+attachment, active outside-tap handling and persistent hidden catcher are therefore not required for this failure.
+Do not continue treating an outside-tap redesign as a demonstrated remedy for these stops.
+
+PID 28278 ends 1.969 s after screen-off. Its hidden renderer disappears at 18:48:00.658 and the main survives
+24m28.857s. Final 15-minute PSS 180-185 MB, native allocation 89 MB, available system memory 3834-4573 MB, CPU core
+permille median 5.5/max 32, 83 threads, 322-324 FDs. Last sample is 1.825 s before death; actual FGS/exemption and
+accessibility remain present, background restriction/low-memory/power-save/device-idle false.
+
+PID 7878 ends **60m2.667s after the last recorded screen-off**, again refuting immediate screen-off as a mandatory
+condition. Its OEM suffix 4016407 ms points to 02:49:00.385, about 33 ms after printed activity_stopped at
+02:49:00.352 and close to activity_paused at 02:48:59.870. Interpret as a background-transition correlation only.
+Final 15-minute PSS 160-161 MB, native allocation 90 MB, about 5 GB system RAM available, CPU median 1/max 2 permille,
+76 threads and 324 FDs. Last sample is 41.545 s before death. Actual FGS/exemption/accessibility remain true;
+background restriction/low-memory/power-save/device-idle false, charging true. No measured runaway before either exit.
+
+### Old-baseline report and missing interval
+
+The owner explicitly reports the c129a5e7 installation, but the supplied journal has no new c129a5e7 process-start
+records and no full-date application-written lines from November 22 at all. Do not deny the reported installation,
+and do not claim this export proves c129a5e7 received PowerGenie cleanup. A later historical record identifies main
+PID 23070 at November 22 21:20:40.497 as SIGNALED/status 9, importance 400 (cached), RSS 99 MB, but no retained start
+maps that PID to a build. It might be relevant to the reported missing interval; attribution and exact killer remain
+unknown. It is not an explicit PowerGenie record.
+
+Compared c129a5e7 to audio 3d2835b0: AppLogs, LogFile and common log storage implementations are unchanged. The old
+Application calls AppLogs.install before injection, with the same noBackupFilesDir/logs path. No source-level log
+path/format change explains the missing day. Do not invent a proven explanation (rotation, data reset, failed
+installation or R8 removal). The retained file includes older entries on both sides of the gap; absence is a limit
+of this artifact, not evidence that the owner is mistaken. No further reinstall requested to resolve it.
+
+### Interpretation and next evidence
+
+3d2835b0 is verified as the sentence-audio branch checkpoint, with no c834fd65 ancestry; its source still uses the
+older AppLogs and has no expanded minute monitor. Its two explicit PowerGenie force-stops are different from the
+previous real sentence-recording CRASH. Do not port memory/CPU conclusions from diagnostic processes onto this build.
+No audio-branch edit, merge, rebuild or inter-session message was made here.
+
+OEM policy or retained per-package eligibility is now the leading practical direction; there is still no proof
+that the entire phone changed, that any firmware update occurred, or that no common app behavior contributes.
+Owner-reported archived-Dev failure supports that direction, with lower verification strength than the explicit
+fresh-disabled and audio-build exits. Further source changes/resource sacrifices are not justified by these traces.
+A separate-package published release remains an optional secondary control (different permissions/OEM history);
+system-side read-only evidence on the affected phone would be more direct. ADB has no connected device. No global
+package disable, setting mutation, forced relaunch scheme or new build was performed/selected.
