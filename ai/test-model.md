@@ -4456,3 +4456,13 @@ Observations, not changed:
   com.vpr.screenlate.debug. apksigner verifies v2; aapt confirms min24/target37 and ARM64/ARMv7/x86_64.
 - SHA256: 1311f49a4eed1fa4916a6005e855a71b7bde19f3101f44d83d603f9be5e4be78.
   No phone install or collection access. Preliminary development testing; full acceptance remains pending.
+
+## Owner feedback: cut handles outside trimmed phrase (2026-11-24)
+
+- Owner preliminarily confirmed capture and card attachment; preview audibility remains uncertain.
+  Production-page reproduction: cut [3000,4000], phrase initially [2000,8000], trim start to 4100;
+  two active handles remain even though the effective edit excludes that cut completely.
+- Red/green regression now hides unavailable edges; a partial cut/undo case retains original coordinates
+  and restores handles with the phrase. 239 page tests pass. Partial REC42/47/79 evidence only.
+- Multiple cuts/nearby handles, actual finger hit targets, scroll arbitration, compact disclosure,
+  Android layout/rotation and audible preview still need real touch/visual acceptance. No new APK.

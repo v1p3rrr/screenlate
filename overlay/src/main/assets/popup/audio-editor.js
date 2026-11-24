@@ -500,7 +500,7 @@ var AudioEditor = (() => {
         const cutHandles = document.getElementById('sl-cut-handles');
         if (cutHandles) {
             const active = state.cuts[state.activeCut];
-            if (!active) {
+            if (!active || active[1] <= state.a || active[0] >= state.b) {
                 cutHandles.innerHTML = '';
             } else {
                 if (!cutHandles.childElementCount) {
@@ -510,8 +510,8 @@ var AudioEditor = (() => {
                 }
                 const leftBtn = cutHandles.children[0];
                 const rightBtn = cutHandles.children[1];
-                const leftInView = active[0] >= state.view && active[0] <= state.view + state.width;
-                const rightInView = active[1] >= state.view && active[1] <= state.view + state.width;
+                const leftInView = active[0] >= state.a && active[0] < state.b && active[0] >= state.view && active[0] <= state.view + state.width;
+                const rightInView = active[1] > state.a && active[1] <= state.b && active[1] >= state.view && active[1] <= state.view + state.width;
                 leftBtn.hidden = !leftInView;
                 rightBtn.hidden = !rightInView;
                 if (leftInView) leftBtn.style.left = clamp(((active[0] - state.view) / state.width) * 100, 0, 100) + '%';
@@ -933,14 +933,15 @@ var AudioEditor = (() => {
             cutHandles.addEventListener('pointermove', e => {
                 if (!cutDrag || cutDrag.revision !== gestureRevision || !editable() || !state.cuts[cutDrag.index]) return;
                 const c = state.cuts[cutDrag.index];
+                if (c[1] <= state.a || c[0] >= state.b) return;
                 const waveSvg = document.getElementById('sl-wave');
                 const frac = pointerFraction(e, waveSvg);
                 if (frac === null) return;
                 const frame = state.view + frac * state.width;
                 if (cutDrag.edge === 0) {
-                    c[0] = clamp(frame, state.a, c[1] - Math.min(1, c[1] - state.a));
+                    c[0] = clamp(frame, state.a, Math.min(c[1], state.b) - 1);
                 } else {
-                    c[1] = clamp(frame, c[0] + Math.min(1, state.b - c[0]), state.b);
+                    c[1] = clamp(frame, Math.max(c[0], state.a) + 1, state.b);
                 }
                 render();
             });

@@ -1,5 +1,24 @@
 # Status
 
+## Sentence audio: owner device feedback and UX investigation (2026-11-24)
+
+- Owner reports preliminary real-device capture and attachment to an Anki note succeeded on the compact
+  minified build. Preview playback is uncertain (not a confirmed failure or pass).
+- Investigate cut handles/intervals escaping or colliding after changing outer trim, all editor buttons,
+  and compact-panel touch/scroll usability. Owner requests usable scroll space without covering excessive
+  screen area or shrinking controls below convenient finger targets. Preserve compact/expanded interaction.
+- Owner answered: disclose secondary tools; combine directional waveform gestures with an expanded
+  free scroll area; optional music handling means cutting music-only gaps between speech.
+- Reproduced two active cut handles outside outer trim in production page without native bridge.
+  Corrected visibility/drag bounds while keeping original cut coordinates for undo; wholly/partially
+  trimmed cases and undo are covered. 239 page cases pass; native/touch verification is still pending.
+- Layout/scrolling, multiple-cut collision, button audit and audible preview remain work items. No claim
+  that this first geometry fix resolves all reported UX symptoms; no replacement APK built yet.
+- Optional music idea is low priority: evaluate lightweight conservative pause proposals, no heavy
+  source-separation models and no promise of reliable voice detection. No feature commitment yet.
+- Follow diagnosing-bugs: reproduce exact symptom with production page before attributing cause or fixing.
+
+
 ## Corrected compact development APK delivered (2026-11-23)
 
 - Owner requested the established minified ARM64 Dev package signed with the same local development key,

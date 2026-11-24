@@ -90,3 +90,30 @@ test('switching preview mode while playing submits the current cursor and cuts',
     assert.equal(seek.cursor, 140000);
     assert.deepEqual(seek.exclusions, [[150000, 180000]]);
 });
+
+
+test('cuts wholly outside the trimmed phrase have no draggable handles', () => {
+    editor.open({ operation: 'outside-cut', sampleRate: 1000, totalFrames: 10000,
+        selection: [2000, 8000], cuts: [[3000, 4000]] });
+    page.document.querySelector('[data-select-cut="0"]').click();
+    for (let i = 0; i < 21; i++) key('sl-start', 'ArrowRight');
+    assert.equal(editor.state.a, 4100);
+    const visible = Array.from(page.document.querySelectorAll('[data-cut-edge]')).filter(el => !el.hidden);
+    assert.equal(visible.length, 0, 'A cut before the kept phrase must not expose draggable edges');
+});
+
+
+test('partially trimmed cuts expose only edges inside the phrase and retain original coordinates for undo', () => {
+    editor.open({ operation: 'partial-cut', sampleRate: 1000, totalFrames: 10000,
+        selection: [2000, 8000], cuts: [[3000, 4000]] });
+    page.document.querySelector('[data-select-cut="0"]').click();
+    for (let i = 0; i < 15; i++) key('sl-start', 'ArrowRight');
+    const handles = page.document.querySelectorAll('[data-cut-edge]');
+    assert.equal(handles[0].hidden, true);
+    assert.equal(handles[1].hidden, false);
+    assert.deepEqual(Array.from(editor.state.cuts[0]), [3000, 4000]);
+    for (let i = 0; i < 15; i++) page.document.getElementById('sl-action-undo').click();
+    assert.deepEqual(Array.from(editor.state.cuts[0]), [3000, 4000]);
+    page.document.querySelector('[data-select-cut="0"]').click();
+    assert.equal(page.document.querySelector('[data-cut-edge="0"]').hidden, false);
+});

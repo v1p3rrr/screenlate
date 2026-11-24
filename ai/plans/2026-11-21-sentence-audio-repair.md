@@ -60,6 +60,25 @@ and does not abbreviate away, the original decision table and failure contract.
 | Errors and settings changes | Pre-note encode/copy failure offers Retry or explicit Without audio. Relevant effective Anki/profile/config changes cancel pending work; unrelated appearance/default/duration changes do not. No automatic retry after an uncertain note mutation. |
 | Quality and lifetime | Mono moderate speech quality, no separate clip-length cap inside retained history. Quiet output warns but can save; zero-frame output cannot. Bounded private temporary files/RAM/work, no draft/capture crash recovery; back up settings only. |
 
+### Owner device feedback and approved UX direction (2026-11-24)
+
+- Preliminary owner-device evidence: capture and attachment to an Anki card succeeded on the compact
+  minified development build. Preview audibility is uncertain; do not mark it passed or failed.
+- Compact editor keeps waveform, listening, Refresh and terminal actions readily available; secondary
+  cut/silence tools are disclosed separately. Avoid reducing finger targets to make the layout fit.
+- Owner explicitly wants both directional gestures (vertical scroll over waveform background versus
+  horizontal waveform navigation) and a visibly usable free scroll area. Thin residual gaps are insufficient.
+- Reproduce cut-edge collisions/escape after outer trimming, zoom and undo, including multiple cuts.
+  Keep source-frame semantics and reversible editing; screen geometry must match the effective edit.
+- Two page regressions cover wholly/partially out-of-phrase cuts and undo. Whole-cut case is red before
+  the fix (2 visible handles expected 0); handle visibility and drag limits now respect the phrase.
+  All 239 page cases pass. Further collision/real touch/Android checks remain; no new APK delivered.
+- Music request means proposing removal of whole music-only gaps between speech, not denoising the
+  voice. Optional low-priority investigation only, with conservative abstention and reversible proposals;
+  no heavy neural models, automatic destructive deletion or promised music/speech discrimination.
+- Next: visual compact/expanded layout and actual vertical/horizontal touch arbitration, button audit,
+  source-vs-result preview audibility and conservative silence analysis. Do not describe these as already fixed.
+
 ## 3. Repair architecture and ownership
 
 ### Recording-session module in `core:media`
@@ -437,6 +456,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-24: Recorded owner's successful capture/Anki attachment and unconfirmed preview result.
+  Owner approved secondary-tool disclosure plus directional scrolling and a useful free scroll zone;
+  clarified optional music-only gap detection. Reproduced out-of-phrase cut handles and corrected their
+  visibility/drag limits; 239 page cases pass. Native/touch/layout and broader collisions remain pending.
 - 2026-11-22: Retained editor/source/encoded staging through retryable copy failure; reused successful
   transfers and encoding, replaced changed edits, retired workers before omission/cancel cleanup. Fixed
   actual FileProvider path failure and sleeping-display opening deadlock, both reproduced natively.
