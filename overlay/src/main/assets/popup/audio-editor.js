@@ -53,6 +53,8 @@ var AudioEditor = (() => {
         detailSummary: null,
         dirty: false,
         activeCut: -1,
+        minPauseSeconds: 1.5,
+        edgeMarginMillis: 150,
         labels: {},
     };
 
@@ -235,9 +237,9 @@ var AudioEditor = (() => {
         state.dirty = aChanged || bChanged || cutsChanged;
     }
 
-    function normalizedCuts() {
+    function normalizedCuts(a = state.a, b = state.b) {
         const rows = state.cuts
-            .map(c => [Math.max(state.a, c[0]), Math.min(state.b, c[1])])
+            .map(c => [Math.max(a, c[0]), Math.min(b, c[1])])
             .filter(c => c[1] > c[0])
             .sort((x, y) => x[0] - y[0]);
         const out = [];
@@ -589,9 +591,9 @@ var AudioEditor = (() => {
         showDialog(
             labelOf('audio_editor_silence_title', 'Silence search'),
             `<label>${labelOf('audio_editor_min_pause', 'Minimum pause, s')}` +
-            `<input id="sl-silence-min" type="number" min="0.5" max="5.0" step="0.1" value="1.5"></label>` +
+            `<input id="sl-silence-min" type="number" min="0.5" max="5.0" step="0.1" value="${state.minPauseSeconds}"></label>` +
             `<label>${labelOf('audio_editor_edge_margin', 'Margin at each edge, ms')}` +
-            `<input id="sl-edge-margin" type="number" min="0" max="500" step="50" value="150"></label>`,
+            `<input id="sl-edge-margin" type="number" min="0" max="500" step="50" value="${state.edgeMarginMillis}"></label>`,
             [
                 { label: labelOf('audio_editor_cancel', 'Cancel') },
                 {
@@ -600,9 +602,14 @@ var AudioEditor = (() => {
                     run: () => {
                         const minEl = document.getElementById('sl-silence-min');
                         const edgeEl = document.getElementById('sl-edge-margin');
-                        const minS = (minEl && parseFloat(minEl.value)) || 1.5;
-                        const edgeMs = (edgeEl && parseInt(edgeEl.value, 10)) || 150;
-                        send('silenceSettings', { minPauseSeconds: minS, edgeMarginMillis: edgeMs });
+                        const minValue = minEl ? parseFloat(minEl.value) : NaN;
+                        const edgeValue = edgeEl ? parseInt(edgeEl.value, 10) : NaN;
+                        const minS = Number.isFinite(minValue) ? minValue : state.minPauseSeconds;
+                        const edgeMs = Number.isFinite(edgeValue) ? edgeValue : state.edgeMarginMillis;
+                        if (minS < 0.1 || minS > 30 || edgeMs < 0 || edgeMs > 2000) return;
+                        if (send('silenceSettings', { minPauseSeconds: minS, edgeMarginMillis: edgeMs })) {
+                            state.minPauseSeconds = minS; state.edgeMarginMillis = edgeMs;
+                        }
                     }
                 }
             ]
@@ -640,6 +647,8 @@ var AudioEditor = (() => {
 
     // Public API
     function open(data) {
+        const tools = document.getElementById('sl-tools');
+        if (tools) tools.open = false;
         hideMessage();
         gestureRevision++;
         state.isOpen = true;
@@ -678,6 +687,8 @@ var AudioEditor = (() => {
         waveformKey = '';
         waveformRequest++;
         state.labels = data.labels || {};
+        state.minPauseSeconds = Number.isFinite(data.minPauseSeconds) && data.minPauseSeconds > 0 ? data.minPauseSeconds : 1.5;
+        state.edgeMarginMillis = Number.isFinite(data.edgeMarginMillis) && data.edgeMarginMillis >= 0 ? data.edgeMarginMillis : 150;
         state.activeCut = -1;
 
         initialBaseline = {
@@ -758,6 +769,7 @@ var AudioEditor = (() => {
         setText('sl-mode-original', labelOf('audio_editor_original', 'Original'));
         setAttr('sl-action-zoom-out', 'aria-label', labelOf('audio_editor_zoom_out', 'Zoom out'));
         setAttr('sl-action-zoom-in', 'aria-label', labelOf('audio_editor_zoom_in', 'Zoom in'));
+        setText('sl-tools-summary', labelOf('audio_editor_cut', 'Cut') + ' · ' + labelOf('audio_editor_find_silence', 'Find silence'));
         setText('sl-cut-label', labelOf('audio_editor_cut', 'Cut'));
         setText('sl-silence-label', labelOf('audio_editor_find_silence', 'Find silence'));
         setAttr('sl-action-silence-settings', 'aria-label', labelOf('audio_editor_silence_title', 'Silence search'));
@@ -927,11 +939,11 @@ var AudioEditor = (() => {
                 if (!edge || !state.cuts[state.activeCut]) return;
                 e.stopPropagation();
                 remember();
-                cutDrag = { index: state.activeCut, edge: parseInt(edge.dataset.cutEdge, 10), revision: gestureRevision };
+                cutDrag = { index: state.activeCut, edge: parseInt(edge.dataset.cutEdge, 10), pointerId: e.pointerId, revision: gestureRevision };
                 edge.setPointerCapture(e.pointerId);
             });
             cutHandles.addEventListener('pointermove', e => {
-                if (!cutDrag || cutDrag.revision !== gestureRevision || !editable() || !state.cuts[cutDrag.index]) return;
+                if (!cutDrag || cutDrag.pointerId !== e.pointerId || cutDrag.revision !== gestureRevision || !editable() || !state.cuts[cutDrag.index]) return;
                 const c = state.cuts[cutDrag.index];
                 if (c[1] <= state.a || c[0] >= state.b) return;
                 const waveSvg = document.getElementById('sl-wave');
@@ -945,9 +957,19 @@ var AudioEditor = (() => {
                 }
                 render();
             });
-            const finishCutDrag = () => { cutDrag = null; };
+            const finishCutDrag = e => {
+                if (!cutDrag || cutDrag.pointerId !== e.pointerId) return;
+                if (cutDrag && cutDrag.revision === gestureRevision && state.cuts[cutDrag.index]) {
+                    const anchor = state.cuts[cutDrag.index][0];
+                    state.cuts = normalizedCuts(state.sourceStart, state.sourceEnd);
+                    state.activeCut = state.cuts.findIndex(c => c[0] <= anchor && anchor < c[1]);
+                    render();
+                }
+                cutDrag = null;
+            };
             cutHandles.addEventListener('pointerup', finishCutDrag);
             cutHandles.addEventListener('pointercancel', finishCutDrag);
+            cutHandles.addEventListener('lostpointercapture', finishCutDrag);
         }
 
         // Zoomed waveform gestures: pan, pinch, tap
@@ -961,7 +983,7 @@ var AudioEditor = (() => {
                 waveSvg.setPointerCapture(e.pointerId);
                 points.set(e.pointerId, { x: e.clientX, y: e.clientY });
                 if (points.size === 1) {
-                    gesture = { x: e.clientX, view: state.view, width: state.width, moved: false, revision: gestureRevision };
+                    gesture = { x: e.clientX, y: e.clientY, axis: null, view: state.view, width: state.width, moved: false, revision: gestureRevision };
                 } else if (points.size === 2) {
                     const p = [...points.values()];
                     gesture = { pinch: Math.abs(p[0].x - p[1].x), width: state.width, center: state.view + state.width / 2, revision: gestureRevision };
@@ -979,8 +1001,12 @@ var AudioEditor = (() => {
                     render();
                 } else if (points.size === 1 && !gesture.pinch) {
                     const dx = e.clientX - gesture.x;
-                    if (Math.abs(dx) > 4) gesture.moved = true;
-                    if (gesture.moved) {
+                    const dy = e.clientY - gesture.y;
+                    if (!gesture.axis && Math.max(Math.abs(dx), Math.abs(dy)) > 6) {
+                        gesture.axis = Math.abs(dy) > Math.abs(dx) ? 'vertical' : 'horizontal';
+                        gesture.moved = true;
+                    }
+                    if (gesture.axis === 'horizontal') {
                         state.view = boundedView(gesture.view - (dx / Math.max(1, waveSvg.clientWidth)) * gesture.width);
                         render();
                     }
@@ -988,6 +1014,7 @@ var AudioEditor = (() => {
             });
 
             const finishWaveGesture = e => {
+                if (!points.has(e.pointerId)) return;
                 if (gesture && gesture.revision === gestureRevision && state.isOpen && !gesture.moved && !gesture.pinch) {
                     // Tap seeks
                     const frac = pointerFraction(e, waveSvg);
@@ -1016,23 +1043,33 @@ var AudioEditor = (() => {
                 const viewRightPx = ((state.view + state.width - state.sourceStart) / sourceSpan()) * r.width;
                 overviewSvg.setPointerCapture(e.pointerId);
 
-                if (x < viewLeftPx - 6 || x > viewRightPx + 6) {
-                    // Tap outside viewport: center viewport at tap point
-                    state.view = boundedView(state.sourceStart + (x / r.width) * sourceSpan() - state.width / 2);
-                }
-                overviewDrag = { pointerId: e.pointerId, x: e.clientX, view: state.view, total: sourceSpan(), widthPx: r.width, revision: gestureRevision };
-                render();
+                const anchor = x < viewLeftPx - 6 || x > viewRightPx + 6 ?
+                    boundedView(state.sourceStart + (x / r.width) * sourceSpan() - state.width / 2) : state.view;
+                overviewDrag = { pointerId: e.pointerId, x: e.clientX, y: e.clientY, axis: null,
+                    view: anchor, total: sourceSpan(), widthPx: r.width, revision: gestureRevision };
             });
 
             overviewSvg.addEventListener('pointermove', e => {
                 if (!overviewDrag || overviewDrag.revision !== gestureRevision || !state.isOpen || e.pointerId !== overviewDrag.pointerId) return;
                 const dx = e.clientX - overviewDrag.x;
+                const dy = e.clientY - overviewDrag.y;
+                if (!overviewDrag.axis && Math.max(Math.abs(dx), Math.abs(dy)) > 6) {
+                    overviewDrag.axis = Math.abs(dy) > Math.abs(dx) ? 'vertical' : 'horizontal';
+                }
+                if (overviewDrag.axis !== 'horizontal') return;
                 state.view = boundedView(overviewDrag.view + (dx / overviewDrag.widthPx) * overviewDrag.total);
                 render();
             });
 
             const finishOverviewDrag = () => { overviewDrag = null; };
-            overviewSvg.addEventListener('pointerup', finishOverviewDrag);
+            overviewSvg.addEventListener('pointerup', e => {
+                if (overviewDrag && overviewDrag.revision === gestureRevision && state.isOpen &&
+                    overviewDrag.pointerId === e.pointerId && !overviewDrag.axis) {
+                    state.view = overviewDrag.view;
+                    render();
+                }
+                finishOverviewDrag();
+            });
             overviewSvg.addEventListener('pointercancel', finishOverviewDrag);
         }
 

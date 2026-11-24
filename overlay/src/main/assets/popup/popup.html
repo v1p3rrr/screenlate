@@ -87,14 +87,22 @@
                 <span><span id="sl-summary-end">End</span> <strong id="sl-end-label">+0:14</strong></span>
                 <span class="sl-push"><span id="sl-summary-to-card">To card</span> <strong id="sl-length-label">0:22</strong></span>
             </div>
-            <div class="sl-controls-row">
-                <button type="button" class="sl-button sl-tonal" id="sl-action-play">
-                    <svg id="sl-play-icon" viewBox="0 0 24 24" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
-                    <span id="sl-play-label">Listen</span>
-                </button>
-                <div class="sl-segments" aria-label="Listening mode">
-                    <button type="button" id="sl-mode-result" aria-pressed="true">Result</button>
-                    <button type="button" id="sl-mode-original" aria-pressed="false">Original</button>
+            <details id="sl-tools" class="sl-tools">
+                <summary id="sl-tools-summary">Cut · Find silence</summary>
+                <div class="sl-edit-tools">
+                    <button type="button" class="sl-button sl-outlined" id="sl-action-cut">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8.12" y1="8.12" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        <span id="sl-cut-label">Cut</span>
+                    </button>
+                    <button type="button" class="sl-button sl-outlined" id="sl-action-silence">
+                        <span id="sl-silence-label">Find silence</span>
+                    </button>
+                    <button type="button" class="sl-icon" id="sl-action-silence-settings" aria-label="Silence search parameters">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><line x1="4" y1="21" x2="4" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="4" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="21" x2="20" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="12" x2="20" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="14" x2="7" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="16" x2="23" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                    <button type="button" class="sl-icon sl-push" id="sl-action-undo" aria-label="Undo last edit" disabled>
+                        <svg viewBox="0 0 24 24" width="18" height="18"><polyline points="9 14 4 9 9 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 20v-7a4 4 0 0 0-4-4H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
                 </div>
                 <div class="sl-zoom-controls sl-push">
                     <button type="button" class="sl-icon" id="sl-action-zoom-out" aria-label="Zoom out">
@@ -104,27 +112,22 @@
                         <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     </button>
                 </div>
-            </div>
-            <div class="sl-edit-tools">
-                <button type="button" class="sl-button sl-outlined" id="sl-action-cut">
-                    <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8.12" y1="8.12" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                    <span id="sl-cut-label">Cut</span>
-                </button>
-                <button type="button" class="sl-button sl-outlined" id="sl-action-silence">
-                    <span id="sl-silence-label">Find silence</span>
-                </button>
-                <button type="button" class="sl-icon" id="sl-action-silence-settings" aria-label="Silence search parameters">
-                    <svg viewBox="0 0 24 24" width="18" height="18"><line x1="4" y1="21" x2="4" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="4" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="21" x2="20" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="12" x2="20" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="14" x2="7" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="16" x2="23" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </button>
-                <button type="button" class="sl-icon sl-push" id="sl-action-undo" aria-label="Undo last edit" disabled>
-                    <svg viewBox="0 0 24 24" width="18" height="18"><polyline points="9 14 4 9 9 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 20v-7a4 4 0 0 0-4-4H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </button>
-            </div>
-            <div id="sl-cuts" class="sl-cuts" aria-label="Excluded intervals"></div>
-            <div id="sl-suggestions" class="sl-suggestions" hidden>
-                <span id="sl-suggestion-label">Found 2 pauses</span>
-                <button type="button" class="sl-link" id="sl-action-accept-silence">Apply</button>
-                <button type="button" class="sl-link" id="sl-action-reject-silence">Dismiss</button>
+                <div id="sl-cuts" class="sl-cuts" aria-label="Excluded intervals"></div>
+                <div id="sl-suggestions" class="sl-suggestions" hidden>
+                    <span id="sl-suggestion-label">Found 2 pauses</span>
+                    <button type="button" class="sl-link" id="sl-action-accept-silence">Apply</button>
+                    <button type="button" class="sl-link" id="sl-action-reject-silence">Dismiss</button>
+                </div>
+            </details>
+        </div>
+        <div class="sl-controls-row">
+            <button type="button" class="sl-button sl-tonal" id="sl-action-play">
+                <svg id="sl-play-icon" viewBox="0 0 24 24" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+                <span id="sl-play-label">Listen</span>
+            </button>
+            <div class="sl-segments" aria-label="Listening mode">
+                <button type="button" id="sl-mode-result" aria-pressed="true">Result</button>
+                <button type="button" id="sl-mode-original" aria-pressed="false">Original</button>
             </div>
         </div>
         <div class="sl-refresh-row">

@@ -193,7 +193,9 @@ class AudioEditorDeviceTest {
         val page = popup.page
         var result: AudioEditorResult.WithAudio? = null
         try {
-            assertThat(recorder.start(SilentSource())).isTrue()
+            settings.setMinSilenceMillis(2500)
+            settings.setSilenceMarginMillis(0)
+            assertThat(recorder.start(SilentSource(tone = true))).isTrue()
             delay(150)
             val scan = checkNotNull(recorder.acquireScan())
             withContext(Dispatchers.Main) {
@@ -227,6 +229,8 @@ class AudioEditorDeviceTest {
                     copies > 1
                 }) }
                 ready()
+                assertThat(evaluate("AudioEditor.state.minPauseSeconds")).isEqualTo("2.5")
+                assertThat(evaluate("AudioEditor.state.edgeMarginMillis")).isEqualTo("0")
                 withTimeout(5000) {
                     while (evaluate("!!AudioEditor.state.detailSummary && AudioEditor.state.overviewSummary.length===200") != "true") delay(1)
                 }
@@ -235,8 +239,12 @@ class AudioEditorDeviceTest {
                     while (evaluate("AudioEditor.state.newFrames>0") != "true") delay(1)
                 }
                 assertThat(evaluate("AudioEditor.state.sourceEnd").toLong()).isEqualTo(shownEnd)
+                assertThat(evaluate("AudioEditor.state.overviewSummary.some(v=>v>0.1)")).isEqualTo("true")
                 evaluate("document.getElementById('sl-action-play').click(); true")
                 withTimeout(5000) { while (!recorder.isPreviewPlaying) delay(1) }
+                evaluate("document.getElementById('sl-mode-original').click(); true")
+                assertThat(evaluate("AudioEditor.state.mode")).isEqualTo("\"original\"")
+                evaluate("document.getElementById('sl-mode-result').click(); true")
                 evaluate("document.getElementById('sl-action-play').click(); true")
                 withTimeout(5000) { while (recorder.isPreviewPlaying) delay(1) }
                 assertThat(evaluate("AudioEditor.state.phase")).isEqualTo("\"editing\"")
@@ -348,7 +356,7 @@ class AudioEditorDeviceTest {
         override fun close() = stop()
     }
 
-    private class SilentSource : AudioSource {
+    private class SilentSource(private val tone: Boolean = false) : AudioSource {
         override val sampleRate = 48000
         override val channelCount = 1
         private var remaining = sampleRate * 2 * 2
@@ -359,7 +367,12 @@ class AudioEditorDeviceTest {
         override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
             if (remaining == 0) { stopped.await(); return -1 }
             val count = minOf(length, remaining)
-            buffer.fill(0, offset, offset + count)
+            val firstFrame = (sampleRate * 4 - remaining) / 2
+            for (i in 0 until count / 2) {
+                val value = if (tone) (sin(2 * PI * 440 * (firstFrame + i) / sampleRate) * 10000).toInt() else 0
+                buffer[offset + i * 2] = value.toByte()
+                buffer[offset + i * 2 + 1] = (value shr 8).toByte()
+            }
             remaining -= count
             return count
         }

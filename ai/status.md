@@ -1,5 +1,23 @@
 # Status
 
+## Sentence editor touch repair verified; compact Dev delivery pending (2026-11-24)
+
+- Implemented the approved compact secondary-tool disclosure, directional waveform/overview gestures,
+  26px free scroll gutters and persistent listening/mode, Refresh and completion actions. Compact portrait
+  host is 55% available height; short-window padding/wave height keep the whole main waveform visible.
+  Primary controls retain 44px minimum heights; playhead is a 22px dot with nonintercepting empty track.
+- Fixed actual CSS hidden/flex conflict for cut edges/proposals, pointer ownership, overlap merging on
+  release and reversible cuts outside trim. Saved silence parameter UI preserves zero margin, reads
+  actual preferences and waits for pending writes before searching. Music work deferred by owner.
+- 245 page cases pass. API30 isolated editor/crop/resize/touch: 19 cases pass; final short-layout touch
+  rerun passes in 5.951s. Native swipes/taps and inspected screenshots verify scrolling/pan/dot seeking,
+  disclosure/Cut/Undo. Nonzero PCM waveform and production AudioTrack preview/mode switch/pause,
+  export/copy failure/retry/omit are covered. Physical audibility/finger comfort remain owner-device checks.
+- Test package removed; owned silent headless AVD off. No owner app update or Anki collection access.
+  Affected overlay/app unit and debug lint plus app release vital lint pass in 4m25s (353/291 unit cases). Same-key minified ARM64 Dev build is next.
+- Full silence abstention/resources/source/service/physical/endurance/local-Anki acceptance remains
+  pending as recorded in the repair plan; this checkpoint does not claim all feature acceptance.
+
 ## Sentence audio: owner device feedback and UX investigation (2026-11-24)
 
 - Owner reports preliminary real-device capture and attachment to an Anki note succeeded on the compact

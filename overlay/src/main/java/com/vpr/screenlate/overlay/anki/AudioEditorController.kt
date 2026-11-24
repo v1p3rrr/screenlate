@@ -26,6 +26,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -86,6 +87,7 @@ class AudioEditorController(
         lateinit var operation: AudioEditorOperation
         var refresh: Job? = null
         var analysis: Job? = null
+        var silenceSettings: Job? = null
         var ready: Job? = null
         val waveforms = Channel<AudioEditorCommand>(Channel.CONFLATED)
         var waveformRequest = 0
@@ -219,12 +221,15 @@ class AudioEditorController(
                     put("audio_editor_duplicate_keep_change_settings", context.getString(R.string.audio_editor_duplicate_keep_change_settings))
                 }
 
+                val savedSettings = recordingSettings?.settings?.first()
                 val openPayload = buildJsonObject {
                     put("operation", session.id)
                     put("phase", "opening")
                     put("sourceRevision", session.operation.sourceRevision)
                     put("duplicateKeep", duplicateKeep)
                     put("sampleRate", 48000)
+                    put("minPauseSeconds", (savedSettings?.minSilenceMillis ?: 1500) / 1000.0)
+                    put("edgeMarginMillis", savedSettings?.silenceMarginMillis ?: 150)
                     put("totalFrames", source.endExclusive)
                     put("scanFrame", timeline.scanFrame)
                     put("sourceStart", source.start)
@@ -401,7 +406,8 @@ class AudioEditorController(
             "silence" -> {
                 session.analysis?.cancel()
                 session.analysis = operation.scope.launch {
-                    val settings = recordingSettings?.cachedSettings
+                    session.silenceSettings?.join()
+                    val settings = recordingSettings?.settings?.first()
                     val cuts = sentenceRecorder.findSilence(edit.selection,
                         minSilenceMillis = settings?.minSilenceMillis ?: 1500,
                         edgePaddingMillis = settings?.silenceMarginMillis ?: 150,
@@ -411,10 +417,13 @@ class AudioEditorController(
                     }
                 }
             }
-            "silenceSettings" -> operation.scope.launch {
+            "silenceSettings" -> {
                 if (command.minPauseSeconds.isFinite() && command.minPauseSeconds in 0.1f..30f && command.edgeMarginMillis in 0..2000) {
-                    recordingSettings?.setMinSilenceMillis((command.minPauseSeconds * 1000).toLong())
-                    recordingSettings?.setSilenceMarginMillis(command.edgeMarginMillis.toLong())
+                    session.silenceSettings?.cancel()
+                    session.silenceSettings = operation.scope.launch {
+                        recordingSettings?.setMinSilenceMillis((command.minPauseSeconds * 1000).toLong())
+                        recordingSettings?.setSilenceMarginMillis(command.edgeMarginMillis.toLong())
+                    }
                 }
             }
             "refresh" -> {

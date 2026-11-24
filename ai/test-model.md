@@ -4466,3 +4466,28 @@ Observations, not changed:
   and restores handles with the phrase. 239 page tests pass. Partial REC42/47/79 evidence only.
 - Multiple cuts/nearby handles, actual finger hit targets, scroll arbitration, compact disclosure,
   Android layout/rotation and audible preview still need real touch/visual acceptance. No new APK.
+
+
+## Touch repair checkpoint (2026-11-24)
+
+- Owner authorized compact disclosure/directional scrolling, handle/button/preview checks and the usual
+  minified Dev update. Music work is explicitly deferred; no VAD dependency was added.
+- Compact portrait host uses 55% of available height; expanded remains 88%. Short windows reduce wave
+  height/vertical padding while primary controls retain 44px minimum heights. Body has 26px side gutters.
+  Vertical background swipes scroll; horizontal gestures pan. Overview supports dragging. Listening/mode,
+  Refresh and completion actions stay outside the scroller; cut/silence/zoom/undo are disclosed together.
+- Playhead is a 22px dot aligned with the cursor; empty track space no longer intercepts scrolling.
+  Actual hidden CSS semantics override flex display for inactive cut edges/proposals. Pointer-owned
+  cut drags merge overlapping/adjacent exclusions on release; Undo restores original ranges. Raw cuts
+  outside the outer trim remain recoverable. Saved silence values, including zero margin, are read from
+  the actual preferences flow; search waits for pending parameter writes.
+- Evidence: 245 production-page cases pass. API30 isolated editor/crop/resize/touch: 19 cases pass in 26.245s.
+  Final shorter-layout touch rerun passes in 5.951s, requiring the whole initial waveform inside the body.
+  Actual injected swipes cover vertical wave/empty seek-track scroll, horizontal pan and dot seeking;
+  taps cover disclosure/Cut/Undo. Nonzero PCM reaches waveform and real AudioTrack preview, with mode
+  switching/pause, export/copy failure/retry and omission covered. Screenshots visually inspected.
+- Headless tests cannot certify phone audibility/finger comfort. Conservative silence abstention,
+  aggregate resources, actual source/service routes, local-Anki and endurance acceptance remain pending.
+  No owner collection accessed; test package removed and owned silent AVD powered off.
+
+Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. Logs: touch-final-pages.log, touch-final-native.log, touch-short-native.log under the ignored audio-repair-2026-11-22 evidence directory.

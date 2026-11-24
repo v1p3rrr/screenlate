@@ -530,3 +530,17 @@ test('dragging editor header dispatches onDragWindow to bridge', () => {
         { dx: -5, dy: 10 },
     ]);
 });
+
+
+test('silence settings show saved values and preserve a zero edge margin', () => {
+    const sent=[]; page.window.ScreenlateBridge={onAudioEditorCommand:raw=>sent.push(JSON.parse(raw))};
+    AudioEditor.open({operation:'saved-silence',totalFrames:480000,selection:[100000,300000],minPauseSeconds:2.5,edgeMarginMillis:0});
+    tap(page.document.getElementById('sl-action-silence-settings'));
+    assert.equal(page.document.getElementById('sl-silence-min').value,'2.5');
+    assert.equal(page.document.getElementById('sl-edge-margin').value,'0');
+    tap(page.document.querySelector('#sl-dialog-actions .sl-filled'));
+    const command=sent.find(c=>c.action==='silenceSettings');
+    assert.equal(command.edgeMarginMillis,0);
+    tap(page.document.getElementById('sl-action-silence-settings'));
+    assert.equal(page.document.getElementById('sl-edge-margin').value,'0');
+});

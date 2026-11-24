@@ -41,7 +41,7 @@ object PopupPlacement {
     }
 
     /**
-     * Size for the sentence audio editor overlay: taller than the dictionary popup (65% in portrait, 88% when
+     * Size for the sentence audio editor overlay: taller than the dictionary popup (55% in portrait, 88% when
      * expanded; 90% in landscape, 95% when expanded) so timeline and editor controls fit comfortably.
      */
     fun audioEditorSize(screen: Box, maxWidth: Float, expanded: Boolean = false): Size {
@@ -54,7 +54,7 @@ object PopupPlacement {
                 height = screen.height * heightFraction,
             )
         }
-        val heightFraction = if (expanded) 0.88f else 0.65f
+        val heightFraction = if (expanded) 0.88f else 0.55f
         return Size(
             width = minOf(screen.width * WIDTH_FRACTION, maxWidth),
             height = screen.height * heightFraction,

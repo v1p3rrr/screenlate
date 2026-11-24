@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { beforeEach, test } from 'node:test';
 import { popupPage } from '../../../../scripts/page-tests/harness.mjs';
@@ -116,4 +117,66 @@ test('partially trimmed cuts expose only edges inside the phrase and retain orig
     assert.deepEqual(Array.from(editor.state.cuts[0]), [3000, 4000]);
     page.document.querySelector('[data-select-cut="0"]').click();
     assert.equal(page.document.querySelector('[data-cut-edge="0"]').hidden, false);
+});
+
+
+test('vertical waveform swipe neither pans nor seeks even with horizontal finger drift', () => {
+    const sent = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: raw => sent.push(JSON.parse(raw)) };
+    editor.open({ operation: 'scroll', sampleRate: 1000, totalFrames: 60000, selection: [20000, 25000] });
+    const before = [editor.state.view, editor.state.cursor];
+    const event = (type, x, y) => {
+        const e = new page.window.Event(type, { bubbles: true });
+        Object.assign(e, { clientX: x, clientY: y, pointerId: 1 }); wave.dispatchEvent(e);
+    };
+    event('pointerdown', 150, 90); event('pointermove', 160, 20); event('pointerup', 160, 20);
+    assert.deepEqual([editor.state.view, editor.state.cursor], before);
+    assert.equal(sent.some(c => c.action === 'seek'), false);
+});
+
+test('vertical overview swipe does not jump to the touched location', () => {
+    editor.open({ operation: 'overview-scroll', sampleRate: 1000, totalFrames: 60000, selection: [20000, 25000] });
+    const bar = page.document.getElementById('sl-overview');
+    bar.setPointerCapture = () => {}; bar.getBoundingClientRect = () => ({ left: 0, width: 300 });
+    const before = editor.state.view;
+    for (const [type,x,y] of [['pointerdown',290,70],['pointermove',280,10],['pointerup',280,10]]) {
+        const e = new page.window.Event(type,{ bubbles:true }); Object.assign(e,{clientX:x,clientY:y,pointerId:1}); bar.dispatchEvent(e);
+    }
+    assert.equal(editor.state.view, before);
+});
+
+
+test('dragging one cut into another merges them on release and undo restores both', () => {
+    editor.open({ operation:'merge-cuts',sampleRate:1000,totalFrames:10000,selection:[2000,8000],cuts:[[3000,4000],[5000,6000]] });
+    page.document.querySelector('[data-select-cut="0"]').click();
+    const edge=page.document.querySelector('[data-cut-edge="1"]'); edge.setPointerCapture=()=>{};
+    pointer(edge,'pointerdown',120); pointer(edge,'pointermove',180); pointer(edge,'pointerup',180);
+    assert.equal(editor.state.cuts.length,1);
+    assert.deepEqual(Array.from(editor.state.cuts[0]),[3000,6000]);
+    page.document.getElementById('sl-action-undo').click();
+    assert.equal(editor.state.cuts.length,2);
+    assert.deepEqual(Array.from(editor.state.cuts[0]),[3000,4000]);
+});
+
+
+test('production CSS hides inactive proposals and cut edges despite flex display rules', () => {
+    const style=page.document.createElement('style');
+    style.textContent=readFileSync(new URL('../../main/assets/popup/audio-editor.css',import.meta.url),'utf8');
+    page.document.head.append(style);
+    editor.open({operation:'css-hidden',sampleRate:1000,totalFrames:10000,selection:[2000,8000],cuts:[[3000,4000]]});
+    assert.equal(page.window.getComputedStyle(page.document.getElementById('sl-suggestions')).display,'none');
+    page.document.querySelector('[data-select-cut="0"]').click();
+    for(let i=0;i<15;i++) key('sl-start','ArrowRight');
+    assert.equal(page.window.getComputedStyle(page.document.querySelector('[data-cut-edge="0"]')).display,'none');
+});
+
+
+test('a second pointer cannot move the first pointer cut edge', () => {
+    editor.open({operation:'cut-pointers',sampleRate:1000,totalFrames:10000,selection:[2000,8000],cuts:[[3000,4000]]});
+    page.document.querySelector('[data-select-cut="0"]').click();
+    const edge=page.document.querySelector('[data-cut-edge="1"]');edge.setPointerCapture=()=>{};
+    pointer(edge,'pointerdown',120,1);pointer(edge,'pointermove',180,2);
+    assert.deepEqual(Array.from(editor.state.cuts[0]),[3000,4000]);
+    pointer(edge,'pointerup',180,2);pointer(edge,'pointermove',150,1);pointer(edge,'pointerup',150,1);
+    assert.deepEqual(Array.from(editor.state.cuts[0]),[3000,5000]);
 });
