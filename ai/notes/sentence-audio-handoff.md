@@ -1,5 +1,22 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+
+## Compact Dev delivery after touch repair (2026-11-24)
+
+- Source c2eced4f, committed/pushed to codex/sentence-audio-recording. Affected overlay/app unit and debug
+  lint plus release vital lint pass in 4m25s (353 overlay/291 app unit cases). Final page suite 245/245.
+  Native 19 cases plus final touch-layout rerun pass; test package removed and owned silent AVD off.
+- assembleRelease plus lintVitalRelease using dev-release-c2eced4f.gradle pass in 2m2s. Frozen APK:
+  testdata/local-research/builds/screenlate-dev-c2eced4f-min.apk, 25370420 bytes (24.2 MiB),
+  com.vpr.screenlate.debug, Screenlate Dev, 1.1.0-c2eced4f-min, versionCode 10100, ARM64 only.
+  R8 mapping preserved alongside as screenlate-dev-c2eced4f-min.mapping.txt.
+- apksigner verifies; signer SHA256 matches previous Dev exactly:
+  3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22.
+  APK SHA256: dfe41a6470694b9f7984b40b3243c574b2284b5b1eac43042fde47102afffa88.
+- No phone installation or owner Anki access. Owner-device finger comfort/audibility and previously
+  documented full-feature acceptance remain pending; music work explicitly deferred.
+
+
 Delivery correction (2026-11-23): ordinary debug APK superseded by the usual compact ARM64 Dev release:
 testdata/local-research/builds/screenlate-dev-3d2835b0-min.apk (25367696 bytes, 1.1.0-3d2835b0-min).
 assembleRelease plus lintVitalRelease passes in 3m19s. Same package/com.vpr.screenlate.debug and exact prior

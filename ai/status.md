@@ -1,6 +1,22 @@
 # Status
 
-## Sentence editor touch repair verified; compact Dev delivery pending (2026-11-24)
+
+## Compact Dev delivery after touch repair (2026-11-24)
+
+- Source c2eced4f, committed/pushed to codex/sentence-audio-recording. Affected overlay/app unit and debug
+  lint plus release vital lint pass in 4m25s (353 overlay/291 app unit cases). Final page suite 245/245.
+  Native 19 cases plus final touch-layout rerun pass; test package removed and owned silent AVD off.
+- assembleRelease plus lintVitalRelease using dev-release-c2eced4f.gradle pass in 2m2s. Frozen APK:
+  testdata/local-research/builds/screenlate-dev-c2eced4f-min.apk, 25370420 bytes (24.2 MiB),
+  com.vpr.screenlate.debug, Screenlate Dev, 1.1.0-c2eced4f-min, versionCode 10100, ARM64 only.
+  R8 mapping preserved alongside as screenlate-dev-c2eced4f-min.mapping.txt.
+- apksigner verifies; signer SHA256 matches previous Dev exactly:
+  3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22.
+  APK SHA256: dfe41a6470694b9f7984b40b3243c574b2284b5b1eac43042fde47102afffa88.
+- No phone installation or owner Anki access. Owner-device finger comfort/audibility and previously
+  documented full-feature acceptance remain pending; music work explicitly deferred.
+
+## Sentence editor touch repair and compact Dev delivered (2026-11-24)
 
 - Implemented the approved compact secondary-tool disclosure, directional waveform/overview gestures,
   26px free scroll gutters and persistent listening/mode, Refresh and completion actions. Compact portrait
@@ -14,7 +30,7 @@
   disclosure/Cut/Undo. Nonzero PCM waveform and production AudioTrack preview/mode switch/pause,
   export/copy failure/retry/omit are covered. Physical audibility/finger comfort remain owner-device checks.
 - Test package removed; owned silent headless AVD off. No owner app update or Anki collection access.
-  Affected overlay/app unit and debug lint plus app release vital lint pass in 4m25s (353/291 unit cases). Same-key minified ARM64 Dev build is next.
+  Affected overlay/app unit and debug lint plus app release vital lint pass in 4m25s (353/291 unit cases). Same-key minified ARM64 Dev delivery is recorded below.
 - Full silence abstention/resources/source/service/physical/endurance/local-Anki acceptance remains
   pending as recorded in the repair plan; this checkpoint does not claim all feature acceptance.
 
