@@ -181,6 +181,44 @@ class AudioPlayerTest {
         capture.close()
     }
 
+    @Test
+    fun lowSpacePrivateSynthesisIsDeclinedBeforeCallingTheEngine() = runTest {
+        val playback = PlaybackCoordinator()
+        val capture = checkNotNull(playback.beginCapture())
+        val speech = FakeSpeech()
+        val directory = folder.newFolder()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val workspace = TtsWorkspace(directory, maxFileBytes = 4, minFreeSpaceBytes = 100, usableSpace = { 103 })
+        val player = AudioPlayer(directory, AudioSettingsRepository(MemoryDataStore()), playback, speech,
+            { FakeOutput() }, dispatcher, dispatcher, workspace)
+
+        assertThat(player.play(speechRequest)).isFalse()
+        assertThat(speech.synthesisCalls).isEqualTo(0)
+        assertThat(directory.listFiles()!!.toList()).isEmpty()
+        assertThat(speech.liveStarts).isEqualTo(0)
+        capture.close()
+    }
+
+    @Test
+    fun oversizedPrivateSynthesisIsDeletedWithoutStartingOutput() = runTest {
+        val playback = PlaybackCoordinator()
+        val capture = checkNotNull(playback.beginCapture())
+        val speech = FakeSpeech()
+        val directory = folder.newFolder()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val output = FakeOutput()
+        val workspace = TtsWorkspace(directory, maxFileBytes = 3, minFreeSpaceBytes = 0, usableSpace = { 1000 })
+        val player = AudioPlayer(directory, AudioSettingsRepository(MemoryDataStore()), playback, speech,
+            { output }, dispatcher, dispatcher, workspace)
+
+        assertThat(player.play(speechRequest)).isFalse()
+        assertThat(speech.synthesisCalls).isEqualTo(1)
+        assertThat(output.starts).isEqualTo(0)
+        assertThat(directory.listFiles()!!.toList()).isEmpty()
+        assertThat(speech.liveStarts).isEqualTo(0)
+        capture.close()
+    }
+
     private class FakeOutput : FileAudioOutput {
         var ready: () -> Unit = {}
         var finished: () -> Unit = {}
@@ -199,11 +237,13 @@ class AudioPlayerTest {
         var synthesis: CompletableDeferred<Boolean>? = null
         var empty = false
         var liveStarts = 0
+        var synthesisCalls = 0
         var canStop = true
         var completeImmediately = false
         override suspend fun prepare(language: Language, canStart: () -> Boolean) =
             (preparation?.await() ?: true) && canStart()
         override suspend fun synthesize(text: String, file: File, canStart: () -> Boolean): Boolean {
+            synthesisCalls++
             if (!empty) file.writeBytes(byteArrayOf(1, 2, 3, 4))
             return (synthesis?.await() ?: true) && canStart()
         }

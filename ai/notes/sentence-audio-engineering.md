@@ -7,6 +7,34 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## TTS synthesis admission and result limits — 2026-11-26
+
+`TtsWorkspace` is local to `core:anki`; no reverse dependency on capture was introduced. Before private synthesis it
+requires `usableSpace >= 67,108,864 + 52,428,800` bytes, then creates the operation's single `tts_*.wav`. After the
+engine callback it accepts only a regular nonempty file of at most 67,108,864 bytes with at least 52,428,800 bytes
+still usable. The existing `AudioPlayer` owner deletes a rejected, timed-out, cancelled or finished file and never
+falls back to live speech during capture. The 64 MiB ceiling and 50 MiB reserve are provisional resource constants,
+not measurements of a particular voice.
+
+A direct workspace regression covers refusal at one byte below the admission boundary, exact-boundary success,
+over-ceiling rejection and a final reserve failure. Player regressions prove that low space prevents both file
+creation and engine submission, and that a four-byte fake result under a three-byte ceiling is deleted without output.
+Existing cancellation, failed-stop/retry and completion cleanup cases still pass.
+
+The external engine writes the supplied path itself. These checks bound admission and the file accepted for playback,
+but cannot prove a hard transient byte ceiling between engine writes. The existing five-second synthesis timeout,
+native stop barrier and final deletion remain necessary. No polling writer or speculative engine replacement was added.
+
+Preview remains one owned run: a failed/timed-out retirement prevents a replacement from starting. Each run allocates
+one 4,096-byte PCM read buffer and closes its sink. `AndroidAudioTrackSink` separately owns one 4,096-byte padding
+array and a native buffer of at least 4,096 bytes (or the platform minimum). This inventory is not a native/PSS plateau
+measurement and required no code change.
+
+Final evidence: 229 core-Anki, 132 core-media, 354 overlay and 291 app unit cases, zero failures/errors. Affected
+unit/lint/app/test-APK/release-vital checks pass in 2m18s (`resource-tts-final-gates.log`, ignored November 25
+evidence folder). No new native/device/endurance run. External-engine write observation, codec native memory,
+unattended/physical plateaus and the remaining fault/settings matrix stay open.
+
 ## PCM queue pool released after capture stops — 2026-11-26
 
 A production `PcmBlockQueue` preallocates 30 blocks of 9,600 bytes, or 288,000 bytes per started coordinator. The

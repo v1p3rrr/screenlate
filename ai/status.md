@@ -1,5 +1,22 @@
 # Status
 
+## TTS synthesis admission and result limits (2026-11-26)
+
+- Private pronunciation synthesis now requires 64 MiB of prospective WAV space in addition to the existing 50 MiB
+  safety reserve before creating its file or submitting text to the engine. After synthesis, playback accepts only a
+  nonempty WAV no larger than 67,108,864 bytes and rechecks the 52,428,800-byte reserve. Existing operation ownership
+  deletes rejected/cancelled/finished files; live-speech exclusion during capture is unchanged.
+- The ceiling is a provisional resource bound, not an engine-quality or duration measurement. Android's external TTS
+  engine writes the path outside Screenlate's write loop, so preflight/final checks do not prove a hard transient cap
+  while it is writing. The existing five-second synthesis timeout and acknowledged stop remain the in-flight bounds.
+- Preview inventory found no new code defect: replacement waits for the prior run before starting another, each run
+  owns one 4,096-byte PCM read buffer and its sink, and the Android sink owns 4,096 padding bytes plus its platform
+  AudioTrack buffer. This does not measure the complete native playback plateau.
+- Final checks: 229 core-Anki, 132 core-media, 354 overlay and 291 app cases pass with zero failures/errors. Affected
+  unit/lint/app/test-APK/release-vital gates pass in 2m18s (`resource-tts-final-gates.log`, ignored November 25
+  evidence). No new native/device/endurance run. Codec native memory, external-engine write observation, broader
+  cleanup/fault coverage and settings/locale parity remain; REC50/51 remain N.
+
 ## PCM queue pool released after capture stops (2026-11-26)
 
 - `PcmStorageCoordinator.stop()` now closes the bounded block queue immediately after draining its accepted prefix.

@@ -436,14 +436,15 @@ are investigated as findings, not converted into an invented new audio performan
 | C pending operation/protocol | Software implemented; integration acceptance open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. E recovery UI is also implemented; actual service/device acceptance remains in G. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
 | E Anki recovery | Software implemented; local-Anki acceptance open | Editor/source/encoding retained across copy failure; cached transfers, Retry/Without/Cancel, actual FileProvider path, mixed-field notice and single submission implemented. 226 core-Anki/353 overlay/291 app/237 page and 18 native editor/crop cases pass with affected gates. Actual disposable collection playback/updates remain. |
-| F settings/resources | Partially implemented; substantive work remains | Saved silence UI, conservative detector/stale proposals, aggregate live/leased PCM admission and bounded export/retry workspace are implemented. One replaceable waveform pyramid and serialized 30-minute primitive-array analysis bound those allocations; stop now drains accepted PCM and releases the queue pool while preserving history. Preview/TTS RAM/workspace, codec native memory, broader cleanup and settings/locale parity remain. |
-| G device/regression | Partially verified; full acceptance open | November 26: 247 page/132 core-media/354 overlay/291 app cases and affected lint/vital/build gates pass after the queue checkpoint; no new native run. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s. Export API30 passed two active codec cases and skipped its long case. Actual sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
+| F settings/resources | Partially implemented; substantive work remains | Saved silence UI, conservative detector/stale proposals, aggregate live/leased PCM admission and bounded export/retry workspace are implemented. Waveform/analysis allocations and stopped queue pools are bounded/released; private TTS now has 64 MiB admission/result limits plus the 50 MiB reserve. Preview ownership is inventoried. External-engine transient writes, codec native memory, broader cleanup and settings/locale parity remain. |
+| G device/regression | Partially verified; full acceptance open | November 26: 247 page/229 core-Anki/132 core-media/354 overlay/291 app cases and affected lint/vital/build gates pass after the TTS checkpoint; no new native run. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s. Export API30 passed two active codec cases and skipped its long case. Actual sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
 
 Current continuation (updated 2026-11-26): E pre-note transfer recovery, compact touch repair, conservative silence,
-shared PCM admission, bounded export/retry workspace, bounded waveform/analysis memory and stopped-session queue-pool
-release are implemented. Do not redo them. Continue preview/TTS/codec resource accounting and settings parity, then
-actual platform/source and disposable local-Anki checks, and final physical/endurance/regression acceptance. Music is
-deferred. See the current resume section in `ai/notes/sentence-audio-handoff.md` for evidence, build recipe and constraints.
+shared PCM admission, bounded export/retry workspace, bounded waveform/analysis memory, stopped-session queue-pool
+release and private-TTS admission/result limits are implemented. Preview ownership is inventoried. Do not redo them.
+Continue external-engine/codec native resource evidence, cleanup and settings parity, then actual platform/source and
+disposable local-Anki checks, and final physical/endurance/regression acceptance. Music is deferred. See the current
+resume section in `ai/notes/sentence-audio-handoff.md` for evidence, build recipe and constraints.
 
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
@@ -457,6 +458,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-26: Added local private-TTS admission using a provisional 64 MiB WAV ceiling plus the 50 MiB reserve,
+  followed by nonempty/size/reserve result checks and existing owner cleanup. Added workspace/player regressions and
+  inventoried preview buffers without changing preview code. No product decision changed; external-engine transient
+  writes, codec native memory and physical/endurance acceptance remain open.
 - 2026-11-26: Closed the bounded PCM queue after stop's accepted-prefix drain, releasing the default 288,000-byte
   pool from stopped leased sessions without deleting history. Added retained-pool/borrowed-block and post-stop snapshot
   assertions; 132 core-media/354 overlay/291 app cases and affected gates pass. No product decision changed;

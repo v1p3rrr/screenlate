@@ -34,6 +34,7 @@ class AudioPlayer internal constructor(
     private val outputFactory: () -> FileAudioOutput,
     private val main: CoroutineDispatcher,
     private val io: CoroutineDispatcher = Dispatchers.IO,
+    private val workspace: TtsWorkspace = TtsWorkspace(directory),
 ) {
     @Inject
     constructor(@ApplicationContext context: Context, settings: AudioSettingsRepository, playback: PlaybackCoordinator) :
@@ -89,12 +90,12 @@ class AudioPlayer internal constructor(
         if (playback.requiresPrivateSpeech) {
             withContext(io) {
                 synchronized(op) {
-                    if (!op.retired) op.file = File.createTempFile("tts_", ".wav", directory)
+                    if (!op.retired) op.file = workspace.createFile()
                 }
             }
             val file = op.file ?: return false
             val complete = withTimeoutOrNull(5000) { speech.synthesize(pronunciation.text, file) { op.isCurrent() } } == true
-            if (!complete || !op.canPlay() || !withContext(io) { file.isFile && file.length() > 0 }) return false
+            if (!complete || !op.canPlay() || !withContext(io) { workspace.isValid(file) }) return false
             op.speechPending = false
             return playFile(op, file, volume)
         }

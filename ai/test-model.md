@@ -4561,3 +4561,16 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   ignored resource-queue-final-gates.log under the November 25 evidence directory. No new native/device run.
 - Partial REC41/50/51 evidence only; keep their rows N. Preview/TTS/codec-native accounting, unattended/physical
   plateaus and the full cleanup/fault/device matrix remain open.
+
+## TTS synthesis admission and result limits (2026-11-26)
+
+- Workspace coverage proves refusal one byte below the file-ceiling-plus-reserve boundary, exact admission, oversized
+  result rejection and final safety-reserve rejection. Player coverage proves low space prevents file creation/engine
+  submission and an oversized result is deleted without starting output or live-speech fallback.
+- Existing synthesis timeout/cancellation, failed-stop retry and completion cleanup cases pass. Preview ownership and
+  its bounded read/padding buffers were inventoried without a code change; this is not a native memory measurement.
+- Final 229 core-Anki, 132 core-media, 354 overlay and 291 app unit cases pass with zero failures/errors. Affected
+  unit/lint/app/test-APK/release-vital checks pass in 2m18s. Final log: ignored resource-tts-final-gates.log under the
+  November 25 evidence directory. No new native/device/endurance run.
+- Partial REC41/49/50/51 evidence only; keep their rows N. External-engine writes are not observed between admission
+  and completion, so a hard transient file cap and physical/unattended plateaus remain unverified.
