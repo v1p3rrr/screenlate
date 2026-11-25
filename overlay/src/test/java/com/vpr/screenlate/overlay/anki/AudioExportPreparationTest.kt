@@ -74,6 +74,37 @@ class AudioExportPreparationTest {
     }
 
     @Test
+    fun `failed encoding keeps the editor available and retry encodes again`() = runBlocking {
+        val initial = AudioEdit(AudioRange(100, 400))
+        var encodes = 0
+        val file = folder.newFile("retry-encoding.opus")
+        val preparation = AudioExportPreparation(encode = {
+            encodes++
+            if (encodes == 1) null else file
+        }, prepare = { true })
+        val operation = AudioEditorOperation(this, AudioRange(0, 1000), initial) { preparation.export(it) }
+        try {
+            operation.save()
+            withTimeout(3000) { while (operation.phase == AudioEditorOperation.Phase.EXPORTING) delay(1) }
+            assertThat(operation.phase).isEqualTo(AudioEditorOperation.Phase.FAILED)
+            assertThat(operation.result.isCompleted).isFalse()
+            assertThat(operation.edit).isEqualTo(initial)
+
+            operation.save()
+            val result = withTimeout(3000) { operation.result.await() } as AudioEditorOperation.Result.Audio
+            assertThat(result.file).isEqualTo(file)
+            assertThat(encodes).isEqualTo(2)
+            preparation.close(keep = result.file)
+            assertThat(file.exists()).isTrue()
+        } finally {
+            operation.cancel()
+            operation.awaitClosed()
+            preparation.close()
+            file.delete()
+        }
+    }
+
+    @Test
     fun `failed transfer keeps editor and encoded file and retry does not encode again`() = runBlocking {
         val initial = AudioEdit(AudioRange(100, 400), listOf(AudioRange(200, 250)))
         var encodes = 0

@@ -25,15 +25,25 @@ internal object AudioExporter {
         destination: File,
         bitRate: Int = DEFAULT_BITRATE,
         checkActive: () -> Unit = {},
+        minFreeSpaceBytes: Long = 52_428_800L,
+        usableSpace: (File) -> Long = { it.usableSpace },
     ): ExportResult {
+        val workspace = AudioExportWorkspace(destination, edit.outputFrames, minFreeSpaceBytes, usableSpace)
+        workspace.preflight()
         val quiet = PcmAudioEncoder.encode(stream, edit.outputFrames, sampleRate,
-            factory = { createEncoder(destination, sampleRate, bitRate) },
+            factory = { createEncoder(destination, sampleRate, bitRate, workspace) },
             nowMillis = SystemClock::elapsedRealtime, checkActive = checkActive)
+        workspace.finish()
         check(destination.length() > 0) { "Audio export produced an empty file" }
         return ExportResult(quiet)
     }
 
-    private fun createEncoder(destination: File, sampleRate: Int, bitRate: Int): PcmEncoder {
+    private fun createEncoder(
+        destination: File,
+        sampleRate: Int,
+        bitRate: Int,
+        workspace: AudioExportWorkspace,
+    ): PcmEncoder {
         var codec: MediaCodec? = null
         var muxer: MediaMuxer? = null
         try {
@@ -45,7 +55,7 @@ internal object AudioExporter {
             val container = MediaMuxer(destination.path, MediaMuxer.OutputFormat.MUXER_OUTPUT_OGG).also { muxer = it }
             encoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
             encoder.start()
-            return AndroidPcmEncoder(encoder, container)
+            return AndroidPcmEncoder(encoder, container, workspace)
         } catch (error: Throwable) {
             runCatching { codec?.stop() }
             runCatching { codec?.release() }
@@ -54,7 +64,11 @@ internal object AudioExporter {
         }
     }
 
-    private class AndroidPcmEncoder(private val codec: MediaCodec, private val muxer: MediaMuxer) : PcmEncoder {
+    private class AndroidPcmEncoder(
+        private val codec: MediaCodec,
+        private val muxer: MediaMuxer,
+        private val workspace: AudioExportWorkspace,
+    ) : PcmEncoder {
         private val info = MediaCodec.BufferInfo()
         private var muxerStarted = false
         private var track = -1
@@ -91,6 +105,7 @@ internal object AudioExporter {
                     val output = checkNotNull(codec.getOutputBuffer(index))
                     output.position(info.offset)
                     output.limit(info.offset + info.size)
+                    workspace.beforeWrite(info.size)
                     muxer.writeSampleData(track, output, info)
                 }
             } finally { codec.releaseOutputBuffer(index, false) }

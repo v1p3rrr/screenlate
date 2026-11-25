@@ -4522,3 +4522,17 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   25 audio-repair evidence directory. No new native, physical, endurance or local-Anki run.
 - Partial REC41/50/51 evidence only; keep their rows N. Queue/cache/codec/export/retry/TTS aggregate budgets and
   the remaining cleanup/fault/device scenarios are not certified by this checkpoint.
+
+## Bounded audio export workspace and retry (2026-11-26)
+
+- Four workspace cases cover refusal before codec creation, exact PCM-plus-slack admission, free space before the
+  actual next muxer write and final bytes/reserve after muxer flushing. Existing caller cleanup remains authoritative.
+- Overlay regression: the first encoding failure leaves the same edit available and Retry encodes again; a transfer
+  failure still reuses the existing encoded file without another encode.
+- 129 core-media, 354 overlay and 291 app unit cases pass with zero failures/errors. Affected unit/lint/app/test-APK/
+  release-vital checks pass in 3m34s. Final log: ignored resource-export-final-gates.log under the November 25 evidence.
+- Isolated API30 passed decoded multi-cut fidelity and export after 16 failed container constructions in 2.275s. The
+  runner's OK (3 tests) includes maximumDurationStreamingExport skipped by its longAudioExport assumption; no new
+  30-minute run is claimed. Test package removed and owned silent headless AVD powered off.
+- Partial REC41/50/51 evidence only; keep their rows N. Aggregate waveform/analysis/preview/queue/TTS and codec native
+  memory, unattended/physical plateaus and the full cleanup/fault/device matrix remain open.

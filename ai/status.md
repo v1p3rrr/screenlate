@@ -1,5 +1,25 @@
 # Status
 
+## Bounded audio export workspace and retry (2026-11-26)
+
+- `AudioExporter` now admits an export before codec creation using a conservative ceiling of two bytes per kept
+  frame plus 65,536 container bytes, in addition to the existing 50 MiB free-space reserve. This is raw-PCM-based
+  admission, not a compressed-bitrate estimate; the measured 30-minute Opus file remains 9,810,093 bytes.
+- Every actual muxer write rechecks the output ceiling and reserve. Finalization repeats both checks because
+  MediaMuxer can flush buffered bytes on close. The existing exporter caller still owns failed/cancelled output
+  deletion, so a refused workspace leaves the editor in its existing Failed/Retry/Without audio state.
+- Four workspace regressions cover pre-codec refusal, the exact PCM-plus-slack boundary, actual-write free-space
+  rechecks and final flushed bytes/reserve. An overlay regression confirms that failed encoding retains the edit,
+  Retry encodes again and failed transfer still reuses the existing encoded file.
+- Final checks: 129 core-media, 354 overlay and 291 app cases pass with zero failures/errors. Affected unit/lint/
+  app/test-APK/release-vital gates pass in 3m34s (`resource-export-final-gates.log`, ignored November 25 evidence).
+- Isolated API30 `AudioExporterDeviceTest`: decoded cut fidelity and valid export after 16 failed container
+  constructions pass in 2.275s. The runner reports `OK (3 tests)`, but the long maximum-duration case was skipped
+  by its `longAudioExport` assumption; this is not a new 30-minute run. Test package removed; owned AVD powered off.
+- Next F work is aggregate waveform/analysis/preview/queue/TTS memory and workspace accounting, broader cleanup/
+  fault/device coverage and settings/locale parity. Codec native memory and unattended/physical plateaus remain open;
+  this checkpoint is not REC50/51 or complete resource acceptance.
+
 ## Aggregate PCM admission and low-space writes (2026-11-26)
 
 - `SentenceRecorder` now shares one process-local PCM byte/file ledger across current, stopped and leased old

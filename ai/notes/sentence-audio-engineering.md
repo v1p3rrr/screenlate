@@ -7,6 +7,30 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Bounded export workspace and encoding retry — 2026-11-26
+
+`AudioExportWorkspace` admits one export with `maxOutputBytes = outputFrames * 2 + 65,536`. The raw kept PCM plus
+container slack is deliberately conservative: it does not infer output size from the nominal 32 kbit/s bitrate.
+Preflight requires `usableSpace >= minFreeSpaceBytes + maxOutputBytes` before MediaCodec construction; the default
+reserve remains 52,428,800 bytes. Immediately before each `MediaMuxer.writeSampleData`, admission requires room for
+the actual next write while retaining the reserve, and rejects output above the ceiling. After encoding and codec/
+muxer closure, `finish` checks the final file length and reserve again because the muxer can flush bytes on close.
+The existing `SentenceRecorder.export` caller retains destination ownership and removes output after failure/cancel.
+
+Four JVM regressions cover refusal before codec creation, the exact file boundary, free space immediately before an
+actual write and bytes/reserve first observed at finalization. An overlay owner regression proves that a failed first
+encoding leaves the same edit operable and Retry performs a second encoding; the existing failed-transfer path still
+reuses its encoded file rather than encoding again. This changes no editor failure UI or product decision.
+
+Final evidence: 129 core-media, 354 overlay and 291 app unit cases, zero failures/errors. Affected unit/lint/app/
+test-APK/release-vital checks pass in 3m34s (`resource-export-final-gates.log`, ignored November 25 evidence folder).
+Isolated API30 `AudioExporterDeviceTest` ran decoded multi-cut fidelity and valid export after 16 failed container
+constructions successfully in 2.275s. Instrumentation says `OK (3 tests)`, but `maximumDurationStreamingExport` was
+skipped by `assumeTrue(longAudioExport == "true")`; only two active tests ran and this is not another long export.
+The earlier real 30-minute measurement remains 172,800,000 PCM bytes to 9,810,093 Opus bytes in 303294ms. Test package
+removed and owned silent AVD powered off. Aggregate waveform/analysis/preview/queue/TTS memory, codec native memory,
+unattended/physical plateaus and the full fault/device matrix remain open; this is not REC50/51 or full resource acceptance.
+
 ## Aggregate PCM admission and low-space writes — 2026-11-26
 
 The previous 128 MiB / 1,500-file limits belonged to each `PcmHistory`, so a stopped session with a live lease and

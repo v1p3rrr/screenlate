@@ -436,14 +436,14 @@ are investigated as findings, not converted into an invented new audio performan
 | C pending operation/protocol | Software implemented; integration acceptance open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. E recovery UI is also implemented; actual service/device acceptance remains in G. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
 | E Anki recovery | Software implemented; local-Anki acceptance open | Editor/source/encoding retained across copy failure; cached transfers, Retry/Without/Cancel, actual FileProvider path, mixed-field notice and single submission implemented. 226 core-Anki/353 overlay/291 app/237 page and 18 native editor/crop cases pass with affected gates. Actual disposable collection playback/updates remain. |
-| F settings/resources | Partially implemented; substantive work remains | Saved silence UI and conservative detector/stale proposal handling are implemented. November 26 aggregate PCM byte/file admission now spans live/leased sessions, with rollback, deletion-based release and reserve-plus-block low-space checks. Queue/waveform/analysis/preview RAM, export/retry/TTS workspace, broader cleanup and settings/locale parity remain. |
-| G device/regression | Partially verified; full acceptance open | November 26: 247 page/125 core-media/353 overlay/291 app cases and affected lint/vital/build gates pass. November 24 native/touch and minified Dev evidence remains a baseline, not a new device run. Actual sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
+| F settings/resources | Partially implemented; substantive work remains | Saved silence UI, conservative detector/stale proposal handling and aggregate live/leased PCM admission are implemented. Export now has conservative raw-PCM-plus-slack preflight, per-write/final reserve checks and encoding-retry coverage. Queue/waveform/analysis/preview RAM, codec native memory, TTS workspace, broader cleanup and settings/locale parity remain. |
+| G device/regression | Partially verified; full acceptance open | November 26: 247 page/129 core-media/354 overlay/291 app cases and affected lint/vital/build gates pass. Export API30 passed two active codec cases in 2.275s and skipped the long case by assumption. November 24 native/touch and minified Dev evidence remains a baseline. Actual sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
 
 Current continuation (updated 2026-11-26): E pre-note transfer recovery, compact touch repair, conservative
-silence detection and shared PCM storage admission are implemented. Do not redo them. Continue remaining aggregate
-RAM/cache/export/retry/TTS resource policy and settings parity, then actual platform/source and disposable local-
-Anki checks, and final physical/endurance/regression acceptance. Music is deferred. See the current resume section
-in `ai/notes/sentence-audio-handoff.md` for the exact checkpoint, evidence, build recipe and constraints.
+silence detection, shared PCM storage admission and bounded export/retry workspace are implemented. Do not redo them.
+Continue aggregate waveform/analysis/preview/queue/TTS resource accounting and settings parity, then actual platform/
+source and disposable local-Anki checks, and final physical/endurance/regression acceptance. Music is deferred. See
+the current resume section in `ai/notes/sentence-audio-handoff.md` for evidence, build recipe and constraints.
 
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
@@ -457,6 +457,9 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-26: Bounded export workspace with raw-PCM-plus-slack preflight and per-write/final free-space checks.
+  Added workspace and encoding-retry regressions, affected gates and a short API30 codec rerun; its long case was
+  skipped by assumption. No product decision changed; aggregate RAM/TTS and physical/endurance acceptance remain open.
 - 2026-11-26: Shared the existing provisional PCM byte/file ceilings across all live/leased sessions, added
   reservation rollback and deletion-based release, and made low-space admission include the complete next block.
   Added red/green storage/restart/prefix regressions and affected gates. No numeric budget or product decision
