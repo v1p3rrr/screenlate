@@ -219,7 +219,9 @@ The page sends identified commands containing the edit snapshot; Kotlin validate
 native acknowledgements control closure. One encoded edit remains owned through pre-note transfer
 failure; Retry reuses it, editing replaces it, and omission/cancellation await retiring work before cleanup.
 The pending note tracks staging before copy suspension and reuses successful media preparation. Encoded
-files use the existing FileProvider media directory. Rejected opening cancels child work before returning.
+files use the existing FileProvider media directory; its process-scoped sentence staging owner removes orphaned
+Opus files before the first new export without sweeping files retained by the current process. Rejected opening
+cancels child work before returning.
 Prepare reserves an audio context lease before attachment choice. Contexts stay bound to their original
 recording session, so restarting capture preserves an active editor without attaching new-session sound
 to it. UI ownership can end independently; the final consumer retires the stopped source. Pending-note

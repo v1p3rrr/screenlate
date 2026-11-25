@@ -7,6 +7,31 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Sentence export orphan cleanup and no-backup audit — 2026-11-26
+
+The encoded `screenlate_sentence_*.opus` path had operation/retry cleanup but no owner after process death.
+`SentenceAudioStaging` is now a Hilt singleton in `core:anki`, shared by the overlay's editor controllers. Its first
+synchronized `create()` lists only the existing `cache/anki-media` directory, deletes regular files with the exact
+sentence prefix and `opus` extension, and marks cleanup complete only after every deletion succeeds. A failed deletion
+rejects the new file and a later owner can retry. Once cleaned, subsequent creations do not sweep earlier files, so an
+encoded edit retained for pre-note Retry remains live. Other media, extensions and directory entries are not deleted.
+
+Two real-temporary-file regressions cover selective orphan removal, preservation of the current file across a second
+creation, refusal on an injected deletion failure and successful cleanup by a fresh owner. Production dependency
+injection and overlay/app compilation pass. Existing export retry/cancel ownership is unchanged. This simulates a new
+process owner; it is not an actual crash/restart instrumented run.
+
+Backup audit: `app/src/main/AndroidManifest.xml` sets both `android:allowBackup="false"` and
+`android:fullBackupContent="false"`. `data_extraction_rules.xml` excludes root/file/database/shared-preference/external
+domains for cloud backup and device transfer. Recorded PCM is under `noBackupFilesDir/sentence_recording`; private TTS
+and encoded/retry media are under cache. No runtime audio or consent state enters Android backup, and no configuration
+change was needed. The separate user-invoked settings backup is outside this checkpoint's changes.
+
+Final evidence: 231 core-Anki, 132 core-media, 354 overlay and 291 app unit cases, zero failures/errors. Affected
+unit/lint/app/test-APK/release-vital checks pass in 1m55s (`resource-staging-final-gates.log`, ignored November 25
+evidence folder). No new native/device/endurance run. External-engine writes, codec native memory, unattended/physical
+plateaus and the remaining lifecycle/settings matrix stay open; REC31/32/33 are not promoted.
+
 ## TTS synthesis admission and result limits — 2026-11-26
 
 `TtsWorkspace` is local to `core:anki`; no reverse dependency on capture was introduced. Before private synthesis it

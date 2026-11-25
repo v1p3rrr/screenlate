@@ -1,5 +1,20 @@
 # Status
 
+## Sentence export orphan cleanup and no-backup audit (2026-11-26)
+
+- A process-scoped `SentenceAudioStaging` owner now removes only abandoned `screenlate_sentence_*.opus` files before
+  creating its first export in `cache/anki-media`. Subsequent exports and pre-note Retry preserve current-process
+  files. Failed orphan deletion rejects new creation and remains retryable; unrelated audio/extensions are untouched.
+  The existing operation/pending-note owners still handle ordinary failure, cancellation and successful transfer.
+- The no-backup audit found no configuration gap: the app manifest has `allowBackup=false` and
+  `fullBackupContent=false`; data-extraction rules exclude every cloud/device-transfer domain. PCM already uses
+  no-backup storage, while TTS/export/retry staging uses cache. No backup behavior changed.
+- Final checks: 231 core-Anki, 132 core-media, 354 overlay and 291 app cases pass with zero failures/errors. Affected
+  unit/lint/app/test-APK/release-vital gates pass in 1m55s (`resource-staging-final-gates.log`, ignored November 25
+  evidence). The new cleanup cases use real temporary files, not a real process-crash/native run.
+- Remaining F/G work includes external-engine transient writes, codec native and unattended/physical plateau
+  measurements, broader lifecycle/fault coverage and settings/locale parity. REC31/32/33/50/51 remain N.
+
 ## TTS synthesis admission and result limits (2026-11-26)
 
 - Private pronunciation synthesis now requires 64 MiB of prospective WAV space in addition to the existing 50 MiB

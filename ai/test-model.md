@@ -4574,3 +4574,16 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   November 25 evidence directory. No new native/device/endurance run.
 - Partial REC41/49/50/51 evidence only; keep their rows N. External-engine writes are not observed between admission
   and completion, so a hard transient file cap and physical/unattended plateaus remain unverified.
+
+## Sentence export orphan cleanup and no-backup audit (2026-11-26)
+
+- Real temporary files prove selective removal of old `screenlate_sentence_*.opus`, preservation of unrelated media,
+  preservation of the current file across a second creation, deletion-failure refusal and cleanup by a fresh owner.
+  Production uses one injected process-scoped owner; ordinary Retry/Without audio/cancel ownership is unchanged.
+- Manifest/rules inspection confirms Android cloud backup/device transfer are disabled for all domains. PCM is in
+  no-backup storage and TTS/export/retry files are in cache. No backup configuration changed.
+- Final 231 core-Anki, 132 core-media, 354 overlay and 291 app unit cases pass with zero failures/errors. Affected
+  unit/lint/app/test-APK/release-vital checks pass in 1m55s. Final log: ignored resource-staging-final-gates.log under
+  the November 25 evidence directory. No real process-crash, native/device or endurance run was performed.
+- Partial REC31/32/33/41/50/51 evidence only; keep their rows N. Actual crash/restart, external-engine transient
+  writes, codec native memory and physical/unattended plateaus remain open.

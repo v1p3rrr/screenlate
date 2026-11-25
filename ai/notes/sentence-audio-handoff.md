@@ -20,19 +20,21 @@ parts are implemented. Do not restart them or infer the current usage limit from
   rebuildable waveform pyramid is retained across contexts; silence analysis is serialized, primitive-array based and
   capped at 30 minutes. Stop drains accepted PCM then releases the 288,000-byte default queue pool without deleting
   history. Private TTS now has 64 MiB admission/result limits plus the 50 MiB reserve; its external engine's transient
-  writes are not a proven hard cap. Preview run/read/sink ownership is inventoried without a new defect. Do not
-  reimplement these or the saved silence UI. Follow this remaining order:
-  1. Finish codec workspace accounting and pending-note cleanup. Export/retry staging is bounded on its current path,
-     stopped queue pools are released and TTS admission/results are checked, but external-engine transient writes,
-     codec native memory and unattended plateau measurements remain. Cover broader low-space/cleanup/crash/no-backup/
-     repeated runs and audit remaining settings/status/unsupported-device/locale parity.
+  writes are not a proven hard cap. Preview run/read/sink ownership is inventoried without a new defect. A singleton
+  staging owner now removes orphaned sentence Opus files before its first creation without sweeping live Retry files.
+  Android backup remains fully disabled and runtime audio is in no-backup/cache storage. Do not reimplement these or
+  the saved silence UI. Follow this remaining order:
+  1. Finish codec workspace accounting and broader pending-note/fault cleanup. Export/retry staging is bounded and has
+     orphan cleanup, stopped queue pools are released and TTS admission/results are checked, but external-engine
+     transient writes, codec native memory and unattended plateau measurements remain. Cover actual crash/restart and
+     repeated runs, then audit remaining settings/status/unsupported-device/locale parity.
   2. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
      screenshot/audio, modern permission/FGS behavior, paused/ongoing speech and Refresh, retention limits,
      missing-middle refusal, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
   3. Disposable local AnkiDroid/desktop collection acceptance: audible exported clips, updates, preserving
      existing audio with Without audio, and errors/retries. Never access or sync the owner's collection.
   4. Final phone UX/audibility, settings/translations and affected/full regression on the minified build.
-     Current software evidence is 247 page, 229 core-Anki, 132 core-media, 354 overlay and 291 app cases with affected
+     Current software evidence is 247 page, 231 core-Anki, 132 core-media, 354 overlay and 291 app cases with affected
      lint/build gates. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s. The export codec
      run passed two active cases and skipped its long case. Neither certifies physical-device, complete-resource or endurance behavior.
 - Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite

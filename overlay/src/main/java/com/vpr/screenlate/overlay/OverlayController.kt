@@ -27,6 +27,7 @@ import com.vpr.screenlate.overlay.anki.AudioEditorController
 import com.vpr.screenlate.core.anki.audio.AudioFinder
 import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.anki.audio.SentenceAudioStaging
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.common.Language
@@ -184,6 +185,7 @@ class OverlayController(
         val audioSettings: AudioSettingsRepository,
         val player: AudioPlayer,
         val cropAreaSettings: CropAreaRepository,
+        val sentenceAudioStaging: SentenceAudioStaging,
     )
 
     private enum class State { DOCKED, DRAGGING, FLOATING }
@@ -263,6 +265,7 @@ class OverlayController(
             popupController = popup,
             sentenceRecorder = recorder,
             recordingSettings = recordingSettings,
+            sentenceAudioStaging = anki.sentenceAudioStaging,
             onVisibilityChanged = ::onAudioEditorVisibilityChanged,
             onOpenAnkiSettings = {
                 OverlayIntents.openAnkiSettings(service, language)

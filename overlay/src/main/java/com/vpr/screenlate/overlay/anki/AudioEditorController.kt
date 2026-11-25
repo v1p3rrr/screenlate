@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.SystemClock
 import android.widget.Toast
 import com.vpr.screenlate.core.common.log.Log
-import com.vpr.screenlate.core.anki.AnkiDroid
+import com.vpr.screenlate.core.anki.audio.SentenceAudioStaging
 import com.vpr.screenlate.core.media.AudioContextId
 import com.vpr.screenlate.core.media.AudioEdit
 import com.vpr.screenlate.core.media.AudioRange
@@ -75,6 +75,7 @@ class AudioEditorController(
     private val recordingSettings: RecordingSettingsRepository? = null,
     private val onVisibilityChanged: (Boolean) -> Unit = {},
     private val onOpenAnkiSettings: () -> Unit = {},
+    private val sentenceAudioStaging: SentenceAudioStaging = SentenceAudioStaging(context),
 ) : LookupPage.AudioEditorActions {
     private val json = Json { ignoreUnknownKeys = true }
     private var retainedContextId: AudioContextId? = null
@@ -498,7 +499,7 @@ class AudioEditorController(
         var transferred = false
         return try {
             val output = withContext(Dispatchers.IO) {
-                File.createTempFile("screenlate_sentence_", ".opus", AnkiDroid.mediaDirectory(context)).also { file = it }
+                sentenceAudioStaging.create().also { file = it }
             }
             withContext(Dispatchers.IO) {
                 val outcome = sentenceRecorder.export(edit, output, contextId = session.contextId)
