@@ -188,6 +188,32 @@ class SilenceDetectorTest {
         assertThat(cuts[0].endExclusive).isWithin(50L).of(3850L)
     }
 
+    @Test
+    fun analysisRejectsMoreThanThirtyMinutesBeforeReading() {
+        val unread = object : java.io.InputStream() {
+            override fun read(): Int = error("Rejected analysis must not read")
+        }
+
+        org.junit.Assert.assertThrows(java.io.IOException::class.java) {
+            SilenceDetector.findSilenceCuts(unread, AudioRange(0, 1_800_001), sampleRate)
+        }
+    }
+
+    @Test
+    fun analysisStopsAtItsCancellationCheckpoint() {
+        var checks = 0
+
+        org.junit.Assert.assertThrows(kotlinx.coroutines.CancellationException::class.java) {
+            SilenceDetector.findSilenceCuts(
+                ByteArrayInputStream(ByteArray(2000)), AudioRange(0, 1000), sampleRate,
+                checkActive = {
+                    checks++
+                    if (checks == 2) throw kotlinx.coroutines.CancellationException("Stop analysis")
+                },
+            )
+        }
+    }
+
     private fun createTonePcm(totalFrames: Int, soundStart: Int, soundEnd: Int): ByteArray {
         val pcm = ByteArray(totalFrames * 2)
         writeTone(pcm, soundStart, soundEnd)

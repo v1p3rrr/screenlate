@@ -4536,3 +4536,17 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   30-minute run is claimed. Test package removed and owned silent headless AVD powered off.
 - Partial REC41/50/51 evidence only; keep their rows N. Aggregate waveform/analysis/preview/queue/TTS and codec native
   memory, unattended/physical plateaus and the full cleanup/fault/device matrix remain open.
+
+## Single waveform cache and bounded streaming analysis (2026-11-26)
+
+- A leased old session and its replacement alternately build waveform summaries through one recorder-owned rebuildable
+  cache. Cache identity switches with context, close drops it, and exact old PCM remains readable throughout.
+- Analysis rejects more than 36,000 50ms windows before reading, propagates a cancellation checkpoint and retains all
+  prior threshold/padding/leading-quiet results. Primitive RMS/sorting arrays plus the bounded read buffer total at most
+  296,192 bytes for one active analysis, excluding returned cuts and small object overhead.
+- 132 core-media, 354 overlay and 291 app unit cases pass with zero failures/errors. Affected unit/lint/app/test-APK/
+  release-vital checks pass in 3m22s. Final log: ignored resource-analysis-final-gates.log under November 25 evidence.
+- Isolated API30 passes all 19 editor/crop/resize/touch cases in 28.723s after the test-only overlay appop is granted.
+  Test package removed and owned silent headless AVD powered off. No long endurance or physical-source run is claimed.
+- Partial REC41/50/51 evidence only; keep their rows N. Queue/preview/TTS/codec-native aggregate memory, unattended/
+  physical plateaus and the full cleanup/fault/device matrix remain open.

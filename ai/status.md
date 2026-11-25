@@ -1,5 +1,24 @@
 # Status
 
+## Single waveform cache and bounded streaming analysis (2026-11-26)
+
+- `SentenceRecorder` now retains one rebuildable waveform pyramid across current and leased contexts instead of one
+  permanent pyramid per context. Switching context/source replaces only the cache; protected PCM and old readers stay
+  intact. The existing 360,000-base-bucket pyramid remains below 2,880,000 float bytes, excluding object overhead.
+- Silence and leading-quiet analysis are serialized per recorder and capped at 36,000 50ms windows (30 minutes).
+  Window RMS now uses primitive arrays plus one primitive sorting copy and a read buffer of at most 8,192 bytes:
+  at most 296,192 array bytes per active analysis, excluding returned cuts and small object overhead. Per-window objects
+  and boxed sorting entries are gone; detector thresholds are unchanged.
+- Analysis fills exact PCM16 input, refuses over-budget work before reading and propagates cancellation through both
+  public analysis paths. A leased-session regression proves cache replacement preserves the old source bytes and close
+  drops the cache. Two detector regressions cover pre-read budget refusal and cancellation checkpoints.
+- Final checks: 132 core-media, 354 overlay and 291 app cases pass with zero failures/errors. Affected unit/lint/app/
+  test-APK/release-vital gates pass in 3m22s (`resource-analysis-final-gates.log`, ignored November 25 evidence).
+- Isolated API30 passes all 19 editor/crop/resize/touch cases in 28.723s after granting the test-only overlay appop.
+  Test package removed; owned AVD powered off. This is not physical-source, long-endurance or complete-resource acceptance.
+- Next F work is queue/preview/TTS workspace accounting and remaining codec native/aggregate plateau measurements,
+  broader cleanup/fault coverage and settings/locale parity. REC50/51 remain partial.
+
 ## Bounded audio export workspace and retry (2026-11-26)
 
 - `AudioExporter` now admits an export before codec creation using a conservative ceiling of two bytes per kept

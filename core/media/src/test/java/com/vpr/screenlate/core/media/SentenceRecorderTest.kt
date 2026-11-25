@@ -629,6 +629,55 @@ class SentenceRecorderTest {
     }
 
     @Test
+    fun oneWaveformCacheIsRebuiltAcrossLeasedSessionsWithoutTouchingPcm() = runBlocking {
+        val time = AtomicLong(10_000L)
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() }, { time.get() * 1_000_000L })
+        val first = FakeAudioSource()
+        var retained: SentenceRecorder.ContextLease? = null
+        try {
+            recorder.start(first)
+            first.emitFrames(240)
+            withTimeout(3000) {
+                while (recorder.snapshot(AudioRange(0, 240))?.also { it.close() } == null) delay(1)
+            }
+            time.set(10_240)
+            val old = checkNotNull(recorder.acquireScan())
+            retained = checkNotNull(recorder.retainContext(old))
+            val oldRange = checkNotNull(recorder.openEditor(old)?.source)
+            assertThat(recorder.waveformSummary(oldRange, contextId = old)).isNotNull()
+            assertThat(recorder.waveformCacheContext).isEqualTo(old)
+            assertThat(recorder.waveformCacheBytes).isGreaterThan(0)
+            recorder.stop()
+            recorder.releaseContext(old)
+
+            val next = FakeAudioSource()
+            assertThat(recorder.start(next)).isTrue()
+            next.emitFrames(480)
+            withTimeout(3000) {
+                while (recorder.snapshot(AudioRange(0, 480))?.also { it.close() } == null) delay(1)
+            }
+            time.set(10_480)
+            val fresh = checkNotNull(recorder.acquireScan())
+            val freshRange = checkNotNull(recorder.openEditor(fresh)?.source)
+            assertThat(recorder.waveformSummary(freshRange, contextId = fresh)).isNotNull()
+            assertThat(recorder.waveformCacheContext).isEqualTo(fresh)
+
+            assertThat(recorder.waveformSummary(oldRange, contextId = old)).isNotNull()
+            assertThat(recorder.waveformCacheContext).isEqualTo(old)
+            recorder.snapshot(oldRange, old).use { snapshot ->
+                assertThat(snapshot).isNotNull()
+                assertThat(snapshot!!.openStream().use { it.readBytes() })
+                    .isEqualTo(first.expectedPcm(oldRange.start, oldRange.endExclusive))
+            }
+        } finally {
+            retained?.close()
+            recorder.close()
+        }
+        assertThat(recorder.waveformCacheBytes).isEqualTo(0)
+    }
+
+    @Test
     fun firstStartClearsAbandonedPcmWithoutDeletingUnrelatedFiles() = runBlocking {
         val root = temporary.newFolder()
         val legacy = File(root, "legacy.pcm").apply { writeBytes(ByteArray(2)) }

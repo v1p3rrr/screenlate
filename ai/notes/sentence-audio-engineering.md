@@ -7,6 +7,33 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Single waveform cache and bounded streaming analysis — 2026-11-26
+
+The former `ContextOwner.waveformIndex` made the nominal per-index ceiling additive across every retained context.
+`SentenceRecorder` now owns one mutex-protected cache keyed by context and source start. A context/source switch drops
+only that rebuildable pyramid and builds the requested source again; it never releases or rewrites protected PCM. Close
+clears the cache after releasing `lifecycle`, avoiding the inverse lock order with waveform snapshot acquisition. The
+existing 360,000 base buckets and binary levels remain below `720,000 * 4 = 2,880,000` allocated float bytes, excluding
+object overhead and the at-most-2,048-float response.
+
+Silence/leading-quiet work is serialized by one analysis mutex per recorder. A request is limited to 36,000 50ms windows
+(30 minutes) before any read. The implementation stores RMS in one 144,000-byte FloatArray, sorts one equally sized
+primitive copy and uses a read buffer no larger than 8,192 bytes: at most 296,192 array bytes per active analysis,
+excluding returned `AudioRange` objects and ordinary small object overhead. This replaces one `WindowInfo` and boxed
+`Float` sorting entry per window. Exact `readPcm16` filling rejects truncated input, and caller cancellation is checked
+during IO and cut/refinement traversal rather than being converted into an empty/fallback result.
+
+Regressions prove that over-budget analysis fails before reading, cancellation escapes the detector, and alternating an
+old leased and fresh context rebuilds the single waveform cache without changing old PCM. Close leaves zero cached
+waveform bytes. Existing silence contrast/padding/leading-quiet fixtures all pass with unchanged thresholds.
+
+Final evidence: 132 core-media, 354 overlay and 291 app unit cases, zero failures/errors. Affected unit/lint/app/test-
+APK/release-vital checks pass in 3m22s (`resource-analysis-final-gates.log`, ignored November 25 evidence folder).
+Isolated API30 passes all 19 editor/crop/resize/touch cases in 28.723s. The first six-case attempt exposed only the
+fresh test package's missing `SYSTEM_ALERT_WINDOW` appop; after granting that test-only permission the complete final
+run passed. Package removed and owned silent AVD powered off. Queue/preview/TTS and codec-native aggregate memory,
+physical/unattended plateaus and the full fault matrix remain open; REC50/51 remain partial.
+
 ## Bounded export workspace and encoding retry — 2026-11-26
 
 `AudioExportWorkspace` admits one export with `maxOutputBytes = outputFrames * 2 + 65,536`. The raw kept PCM plus

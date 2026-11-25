@@ -14,24 +14,24 @@ parts are implemented. Do not restart them or infer the current usage limit from
   product decisions in `ai/plans/2026-11-19-sentence-audio-recording.md`. The review and engineering notes
   remain relevant. The approved November 24 compact disclosure/scrolling changes supplement the prototype.
   Prototype state such as 5/3/2 does not change the approved production defaults of 5/5/2 minutes.
-- Conservative silence detection, aggregate PCM storage admission and bounded export/retry workspace are implemented
-  in the November 26 checkpoints at the top of `ai/status.md`. Existing provisional 128 MiB / 1,500-file limits are
-  shared across live/leased sessions. Export uses raw PCM plus 65,536 bytes for preflight, rechecks actual writes and
-  final muxer flushing, and retains the existing editor retry/cleanup ownership. Do not reimplement these or the saved
-  silence UI. Follow this remaining order:
-  1. Finish aggregate RAM/cache/workspace accounting across queues, waveform/analysis/preview, codecs, TTS and pending
-     notes. Export/retry staging is bounded on its current path, but waveform/analysis/preview RAM, codec native memory,
-     TTS workspace and unattended plateau measurements remain. Cover broader low-space/cleanup/crash/no-backup/repeated
-     runs and audit remaining settings/status/unsupported-device/locale parity.
+- Conservative silence detection, aggregate PCM storage admission, bounded export/retry workspace and bounded waveform/
+  analysis memory are implemented in the November 26 checkpoints at the top of `ai/status.md`. Existing provisional
+  128 MiB / 1,500-file PCM limits are shared across live/leased sessions. One rebuildable waveform pyramid is retained
+  across contexts; silence analysis is serialized, primitive-array based and capped at 30 minutes. Do not reimplement
+  these or the saved silence UI. Follow this remaining order:
+  1. Finish aggregate queue/preview/TTS/codec workspace accounting and pending-note cleanup. Export/retry staging is
+     bounded on its current path, but preview/queue/TTS RAM, codec native memory and unattended plateau measurements
+     remain. Cover broader low-space/cleanup/crash/no-backup/repeated runs and audit remaining settings/status/
+     unsupported-device/locale parity.
   2. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
      screenshot/audio, modern permission/FGS behavior, paused/ongoing speech and Refresh, retention limits,
      missing-middle refusal, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
   3. Disposable local AnkiDroid/desktop collection acceptance: audible exported clips, updates, preserving
      existing audio with Without audio, and errors/retries. Never access or sync the owner's collection.
   4. Final phone UX/audibility, settings/translations and affected/full regression on the minified build.
-     Current software evidence is 247 page, 129 core-media, 354 overlay and 291 app cases with affected lint/build
-     gates. The export API30 run passed two active codec cases and skipped its long case by assumption; the previous
-     19 isolated native cases were not rerun. Neither certifies physical-device, complete-resource or endurance behavior.
+     Current software evidence is 247 page, 132 core-media, 354 overlay and 291 app cases with affected lint/build
+     gates. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s. The export codec
+     run passed two active cases and skipped its long case. Neither certifies physical-device, complete-resource or endurance behavior.
 - Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite
   is authorized by this handoff. Existing core session/editor/codec/Anki ownership repairs remain in place.
 - Latest APK, matching dev signer, mapping and build recipe are in the delivery receipt below. Use the

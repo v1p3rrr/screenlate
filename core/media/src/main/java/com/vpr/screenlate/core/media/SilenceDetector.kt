@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.media
 
+import java.io.IOException
 import java.io.InputStream
 import kotlin.math.sqrt
 
@@ -17,6 +18,8 @@ internal object SilenceDetector {
     const val DEFAULT_EDGE_PADDING_MILLIS = 150L
     const val LEADING_QUIET_THRESHOLD_MILLIS = 5000L
     private const val WINDOW_MILLIS = 50L
+    private const val MAX_WINDOWS = 36_000 // 30 minutes of 50 ms windows.
+    private const val MAX_READ_BYTES = 8192
     private const val MIN_SOUND_RMS = 0.015f
     private const val MIN_CONTRAST_RATIO = 3.0f
     private const val QUIET_THRESHOLD_RATIO = 2.0f
@@ -31,9 +34,11 @@ internal object SilenceDetector {
         sampleRate: Int,
         minSilenceMillis: Long = DEFAULT_MIN_SILENCE_MILLIS,
         edgePaddingMillis: Long = DEFAULT_EDGE_PADDING_MILLIS,
+        checkActive: () -> Unit = {},
     ): List<AudioRange> {
         require(range.frames > 0 && sampleRate > 0)
-        val windows = computeWindowRms(stream, range.frames, sampleRate)
+        val windowFrames = windowFrames(sampleRate)
+        val windows = computeWindowRms(stream, range.frames, windowFrames, checkActive)
         if (windows.isEmpty()) return emptyList()
 
         val threshold = separationThreshold(windows) ?: return emptyList()
@@ -54,23 +59,18 @@ internal object SilenceDetector {
             }
         }
 
-        for (w in windows) {
-            val isSilent = w.rms < threshold
-            if (isSilent) {
-                if (silenceStart == null) silenceStart = w.startFrame
+        for (index in windows.indices) {
+            checkActive()
+            val startFrame = index.toLong() * windowFrames
+            if (windows[index] < threshold) {
+                if (silenceStart == null) silenceStart = startFrame
             } else {
-                if (silenceStart != null) {
-                    tryAddCut(silenceStart, w.startFrame)
-                    silenceStart = null
-                }
+                silenceStart?.let { tryAddCut(it, startFrame) }
+                silenceStart = null
             }
         }
 
-        // Check trailing silence run through the end of the range
-        if (silenceStart != null) {
-            tryAddCut(silenceStart, range.frames)
-        }
-
+        silenceStart?.let { tryAddCut(it, range.frames) }
         return cuts
     }
 
@@ -83,38 +83,33 @@ internal object SilenceDetector {
         stream: InputStream,
         range: AudioRange,
         sampleRate: Int,
+        checkActive: () -> Unit = {},
     ): AudioRange? {
         require(range.frames > 0 && sampleRate > 0)
-        val windows = computeWindowRms(stream, range.frames, sampleRate)
+        val windowFrames = windowFrames(sampleRate)
+        val windows = computeWindowRms(stream, range.frames, windowFrames, checkActive)
         if (windows.isEmpty()) return null
 
-        // Must have distinguishable non-silent sound later in the selection.
         val threshold = separationThreshold(windows) ?: return null
         val minFrames = sampleRate * LEADING_QUIET_THRESHOLD_MILLIS / 1000L
+        if (windows[0] >= threshold) return null
 
-        // Selection must start with silence
-        if (windows.first().rms >= threshold) return null
-
-        for (w in windows) {
-            if (w.rms >= threshold) {
-                // First non-silent sound found at w.startFrame
-                return if (w.startFrame > minFrames) {
-                    AudioRange(range.start, range.start + w.startFrame)
-                } else {
-                    null
-                }
+        for (index in windows.indices) {
+            checkActive()
+            if (windows[index] >= threshold) {
+                val startFrame = index.toLong() * windowFrames
+                return if (startFrame > minFrames) AudioRange(range.start, range.start + startFrame) else null
             }
         }
-        // Entire audio was quiet - abstain per spec (don't trim everything)
         return null
     }
 
     /**
-     * Requires sound to clear the quiet threshold by a margin. A lower contrast gate can otherwise
-     * accept audio whose loudest windows are still below the threshold and cut the whole selection.
+     * Requires sound to clear the quiet threshold by a margin; otherwise the threshold could classify the whole
+     * selection as quiet. Primitive arrays avoid one object and one boxed sorting entry per 50 ms window.
      */
-    private fun separationThreshold(windows: List<WindowInfo>): Float? {
-        val sortedRms = windows.map { it.rms }.sorted()
+    private fun separationThreshold(windows: FloatArray): Float? {
+        val sortedRms = windows.copyOf().also { it.sort() }
         val noiseFloor = sortedRms[(sortedRms.size * 0.15).toInt().coerceIn(0, sortedRms.size - 1)]
         val soundLevel = sortedRms[(sortedRms.size * 0.90).toInt().coerceIn(0, sortedRms.size - 1)]
         if (soundLevel < MIN_SOUND_RMS) return null
@@ -122,30 +117,40 @@ internal object SilenceDetector {
         return maxOf(MIN_SOUND_RMS, noiseFloor * QUIET_THRESHOLD_RATIO)
     }
 
-    private data class WindowInfo(val startFrame: Long, val endFrame: Long, val rms: Float)
+    private fun windowFrames(sampleRate: Int) = maxOf(1, sampleRate * WINDOW_MILLIS / 1000L).toInt()
 
-    private fun computeWindowRms(stream: InputStream, totalFrames: Long, sampleRate: Int): List<WindowInfo> {
-        val windowFrames = maxOf(1, sampleRate * WINDOW_MILLIS / 1000L).toInt()
-        val buffer = ByteArray(windowFrames * 2)
-        val result = mutableListOf<WindowInfo>()
+    private fun computeWindowRms(
+        stream: InputStream,
+        totalFrames: Long,
+        windowFrames: Int,
+        checkActive: () -> Unit,
+    ): FloatArray {
+        val windowCount = 1 + (totalFrames - 1) / windowFrames
+        if (windowCount > MAX_WINDOWS) throw IOException("Audio analysis budget reached")
+        val result = FloatArray(windowCount.toInt())
+        val buffer = ByteArray(minOf(windowFrames * 2, MAX_READ_BYTES))
         var frameOffset = 0L
+        var windowIndex = 0
+        var framesInWindow = 0
+        var sumSquare = 0.0
 
         while (frameOffset < totalFrames) {
-            val toRead = minOf(buffer.size.toLong(), (totalFrames - frameOffset) * 2).toInt()
-            val read = stream.read(buffer, 0, toRead)
-            if (read <= 0) break
-            val frames = read / 2
-
-            var sumSquare = 0.0
-            for (i in 0 until frames) {
-                val sample = ((buffer[i * 2].toInt() and 0xFF) or (buffer[i * 2 + 1].toInt() shl 8)).toShort()
+            val count = (minOf((buffer.size / 2).toLong(), totalFrames - frameOffset) * 2).toInt()
+            stream.readPcm16(buffer, count, checkActive)
+            for (i in 0 until count step 2) {
+                val sample = ((buffer[i].toInt() and 0xFF) or (buffer[i + 1].toInt() shl 8)).toShort()
                 val norm = sample.toDouble() / 32768.0
                 sumSquare += norm * norm
+                framesInWindow++
+                if (framesInWindow == windowFrames) {
+                    result[windowIndex++] = sqrt(sumSquare / framesInWindow).toFloat()
+                    framesInWindow = 0
+                    sumSquare = 0.0
+                }
             }
-            val rms = sqrt(sumSquare / frames).toFloat()
-            result.add(WindowInfo(frameOffset, frameOffset + frames, rms))
-            frameOffset += frames
+            frameOffset += count / 2
         }
+        if (framesInWindow > 0) result[windowIndex] = sqrt(sumSquare / framesInWindow).toFloat()
         return result
     }
 }

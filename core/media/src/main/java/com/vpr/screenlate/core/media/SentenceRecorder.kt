@@ -59,13 +59,17 @@ class SentenceRecorder internal constructor(
 
     private val lifecycle = Mutex()
     private val previewCommands = Mutex()
+    private val waveforms = Mutex()
+    private val analysis = Mutex()
     private val previewRequest = AtomicLong()
     private val generation = AtomicLong()
+    private var waveformContext: AudioContextId? = null
+    private var waveformIndex: WaveformIndex? = null
+    internal val waveformCacheContext: AudioContextId? get() = waveformContext
+    internal val waveformCacheBytes: Long get() = waveformIndex?.allocatedBytes ?: 0L
     private class ContextOwner(val session: PcmStorageCoordinator) {
         var uiOwned = true
         var readers = 0
-        val waveforms = Mutex()
-        var waveformIndex: WaveformIndex? = null
     }
     private val contexts = mutableMapOf<AudioContextId, ContextOwner>()
 
@@ -304,15 +308,18 @@ class SentenceRecorder internal constructor(
             val cached = if (contextId == null) null else lifecycle.withLock {
                 val owner = synchronized(contexts) { contexts[contextId] }
                 val shown = owner?.session?.view(contextId)?.source
-                if (owner != null && shown != null && shown.intersect(range) == range) owner to shown else null
+                if (owner != null && shown != null && shown.intersect(range) == range) shown else null
             }
             if (cached != null) {
-                val (owner, shown) = cached
-                return@withContext owner.waveforms.withLock {
-                    val index = owner.waveformIndex?.takeIf { it.startFrame == shown.start }
-                        ?: WaveformIndex(shown.start).also { owner.waveformIndex = it }
-                    if (index.endFrame < shown.endExclusive) {
-                        val tail = AudioRange(index.endFrame, shown.endExclusive)
+                return@withContext waveforms.withLock {
+                    val current = waveformIndex
+                    val index = if (waveformContext == contextId && current?.startFrame == cached.start) current else {
+                        // Only one rebuildable cache is retained across current and leased contexts.
+                        waveformContext = contextId
+                        WaveformIndex(cached.start).also { waveformIndex = it }
+                    }
+                    if (index.endFrame < cached.endExclusive) {
+                        val tail = AudioRange(index.endFrame, cached.endExclusive)
                         val snapshot = snapshot(tail, contextId) ?: return@withLock null
                         snapshot.use { lease -> lease.openStream().use { index.append(it, tail) { caller.ensureActive() } } }
                     }
@@ -336,13 +343,23 @@ class SentenceRecorder internal constructor(
         edgePaddingMillis: Long = SilenceDetector.DEFAULT_EDGE_PADDING_MILLIS,
         contextId: AudioContextId? = null,
     ): List<AudioRange> = withContext(Dispatchers.IO) {
-        val snapshot = snapshot(range, contextId) ?: return@withContext emptyList()
-        snapshot.use { lease ->
-            try {
-                lease.openStream().use {
-                    SilenceDetector.findSilenceCuts(it, range, sampleRate, minSilenceMillis, edgePaddingMillis)
+        val caller = currentCoroutineContext()
+        analysis.withLock {
+            val snapshot = snapshot(range, contextId) ?: return@withLock emptyList()
+            snapshot.use { lease ->
+                try {
+                    lease.openStream().use {
+                        SilenceDetector.findSilenceCuts(it, range, sampleRate, minSilenceMillis, edgePaddingMillis) {
+                            caller.ensureActive()
+                        }
+                    }
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (e: Exception) {
+                    Log.w(TAG, "Silence search failed", e)
+                    emptyList()
                 }
-            } catch (e: Exception) { Log.w(TAG, "Silence search failed", e); emptyList() }
+            }
         }
     }
 
@@ -352,12 +369,21 @@ class SentenceRecorder internal constructor(
     suspend fun initialSelection(view: AudioTimelineView, sampleRate: Int = 48000): AudioEdit? = withContext(Dispatchers.IO) {
         val source = view.source ?: return@withContext null
         val initial = InitialSelection.suggest(view.scanFrame, source, sampleRate) ?: return@withContext null
-        val snapshot = snapshot(initial, view.contextId) ?: return@withContext AudioEdit(initial)
-        snapshot.use { lease ->
-            try {
-                val quiet = lease.openStream().use { SilenceDetector.detectLeadingQuiet(it, initial, sampleRate) }
-                AudioEdit(InitialSelection.refine(initial, quiet, sampleRate))
-            } catch (_: Exception) { AudioEdit(initial) }
+        val caller = currentCoroutineContext()
+        analysis.withLock {
+            val snapshot = snapshot(initial, view.contextId) ?: return@withLock AudioEdit(initial)
+            snapshot.use { lease ->
+                try {
+                    val quiet = lease.openStream().use {
+                        SilenceDetector.detectLeadingQuiet(it, initial, sampleRate) { caller.ensureActive() }
+                    }
+                    AudioEdit(InitialSelection.refine(initial, quiet, sampleRate))
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (_: Exception) {
+                    AudioEdit(initial)
+                }
+            }
         }
     }
 
@@ -511,6 +537,11 @@ class SentenceRecorder internal constructor(
             currentSource = null
             generation.incrementAndGet()
             _recordingState.value = SentenceRecordingState.Idle
+        }
+        // Never wait for this cache while holding lifecycle: waveform loading acquires lifecycle for snapshots.
+        waveforms.withLock {
+            waveformContext = null
+            waveformIndex = null
         }
     }
 
