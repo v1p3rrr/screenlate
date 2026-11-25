@@ -47,6 +47,7 @@ class SentenceRecorder internal constructor(
     private val previewCallbackExecutor: Executor = Executor { it.run() },
     private val playback: PlaybackCoordinator = PlaybackCoordinator(),
     private val previewSinkFactory: (() -> AudioSink)? = null,
+    private val storageLedger: PcmStorageLedger = PcmStorageLedger(),
 ) {
     @Inject
     constructor(
@@ -160,7 +161,7 @@ class SentenceRecorder internal constructor(
                     val session = PcmStorageCoordinator(
                         directory = File(storageDir, UUID.randomUUID().toString()),
                         limits = settingsRepository.settings.first().limits,
-                        config = PcmCoordinatorConfig(sampleRate = source.sampleRate),
+                        config = PcmCoordinatorConfig(sampleRate = source.sampleRate, storageLedger = storageLedger),
                         nowMillis = nowMillis,
                         nowNanos = nowNanos,
                         retireWhenUnused = true,

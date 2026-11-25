@@ -7,6 +7,31 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Aggregate PCM admission and low-space writes — 2026-11-26
+
+The previous 128 MiB / 1,500-file limits belonged to each `PcmHistory`, so a stopped session with a live lease and
+its replacement could exceed both in aggregate. `SentenceRecorder` now owns one process-local `PcmStorageLedger`
+shared by all of its session coordinators. The numerical ceilings remain provisional; only their scope changed.
+The ledger has synchronized current and high-water byte/file counters. It never chooses audio for eviction.
+
+`PcmHistory` reserves all bytes in an append before publishing any of them and returns the unwritten balance in
+`finally`, including partial-IO failure. A chunk file reservation is acquired before creation and released on
+creation failure or only after confirmed deletion. Pins and protected ranges still prevent deletion. Direct shared
+byte/file regressions were red before histories used the ledger. A facade regression holds an old context lease,
+restarts capture, reaches the shared 400-byte fixture ceiling, observes an explicit storage-quota failure on further
+input, reads the old bytes intact and returns both counters to zero after final cleanup.
+
+Write-side free-space admission now requires `usableSpace >= minFreeSpaceBytes + nextBlockBytes`; the old reserve-
+only comparison was red with 150 bytes available, a 100-byte reserve and a 100-byte block. Another test lowers free
+space after one valid block and verifies exact prefix bytes after the next block is refused. Filesystem values are
+injected only at the coordinator boundary; real external-full-disk races still rely on the existing IO failure path.
+
+Final evidence: 125 core-media, 353 overlay and 291 app unit cases, zero failures/errors. Affected unit/lint/app/
+test-APK/release-vital checks pass in 4m15s (`resource-storage-final-gates.log`, ignored November 25 evidence
+folder). No new native, physical, endurance or local-Anki run. Queue, waveform/analysis/preview RAM, codec native
+memory, export/retry/TTS workspace and the remaining cleanup/fault matrix still require their own accounting and
+measurements; this checkpoint does not accept a complete resource budget or REC50/51.
+
 ## Conservative silence separation and proposal identity — 2026-11-26
 
 The review fixture with RMS 0.10 background and a one-second RMS 0.22 region became a permanent expected-empty

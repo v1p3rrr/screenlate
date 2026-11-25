@@ -4505,3 +4505,20 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   testdata/local-research/audio-repair-2026-11-25/.
 - Partial REC41/50/51 evidence only; keep their rows N because the complete manual/device scenarios were not
   run. No new native, physical-source or local-Anki acceptance is claimed. Aggregate resources remain open.
+
+
+## Aggregate PCM admission and low-space writes (2026-11-26)
+
+- Shared-byte and shared-file tests were red before the histories used their common ledger. They now prove that
+  new writes abstain without evicting old protected PCM, file capacity returns only after actual deletion, and
+  final cleanup returns current counters to zero. Partial-IO rollback returns the unwritten byte reservation.
+- A facade fixture retains an old scan across restart, fills the shared 400-byte test budget, observes an explicit
+  quota failure on further input, reads the old source intact and cleans both sessions after the lease closes.
+- Reserve-only low-space admission was red with 150 free bytes, a 100-byte reserve and a 100-byte block. Admission
+  now includes the entire next block. A second case lowers free space after a valid block and verifies its exact
+  prefix remains readable after the next write is refused.
+- 125 core-media, 353 overlay and 291 app unit cases pass with zero failures/errors. Affected unit/lint/app/test-
+  APK/release-vital checks pass in 4m15s. Final log: ignored resource-storage-final-gates.log under the November
+  25 audio-repair evidence directory. No new native, physical, endurance or local-Anki run.
+- Partial REC41/50/51 evidence only; keep their rows N. Queue/cache/codec/export/retry/TTS aggregate budgets and
+  the remaining cleanup/fault/device scenarios are not certified by this checkpoint.

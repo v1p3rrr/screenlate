@@ -1,6 +1,6 @@
 # Sentence audio implementation handoff — 2026-11-19
 
-## Current resume instructions (2026-11-25)
+## Current resume instructions (2026-11-26)
 
 This section and the November 24 delivery receipt supersede older checkpoints below. Older instructions
 to implement transfer recovery, waveform loading or saved silence parameter UI are historical: these
@@ -14,22 +14,22 @@ parts are implemented. Do not restart them or infer the current usage limit from
   product decisions in `ai/plans/2026-11-19-sentence-audio-recording.md`. The review and engineering notes
   remain relevant. The approved November 24 compact disclosure/scrolling changes supplement the prototype.
   Prototype state such as 5/3/2 does not change the approved production defaults of 5/5/2 minutes.
-- Conservative silence detection is implemented in the November 26 checkpoint at the top of `ai/status.md`:
-  the RMS 0.1/0.22 regression abstains, uniform quiet/noise is covered, manual cuts survive and stale proposals
-  are rejected by source/edit identity. Saved parameter UI was already fixed and was not reimplemented.
-  Follow this remaining order:
-  1. Aggregate resource accounting and measured budgets across live/protected/leased PCM, queues,
-     waveform/preview caches, exports and retry staging. Low-space, cleanup, crash/no-backup and repeated
-     or unattended runs must be tested. Audit remaining settings/status/unsupported-device/locale parity.
+- Conservative silence detection and aggregate PCM storage admission are implemented in the November 26
+  checkpoints at the top of `ai/status.md`. Existing provisional 128 MiB / 1,500-file limits are now shared
+  across live/leased sessions; write rollback, actual-deletion release and reserve-plus-block low-space checks
+  are covered. Do not reimplement these or the saved silence UI. Follow this remaining order:
+  1. Finish aggregate RAM/cache and export/retry/TTS workspace accounting across queues, waveform/preview/
+     analysis, codecs and pending notes. Broader low-space/cleanup/crash/no-backup/repeated or unattended runs
+     and physical measurements remain. Audit remaining settings/status/unsupported-device/locale parity.
   2. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
      screenshot/audio, modern permission/FGS behavior, paused/ongoing speech and Refresh, retention limits,
      missing-middle refusal, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
   3. Disposable local AnkiDroid/desktop collection acceptance: audible exported clips, updates, preserving
      existing audio with Without audio, and errors/retries. Never access or sync the owner's collection.
   4. Final phone UX/audibility, settings/translations and affected/full regression on the minified build.
-     Current software evidence is 247 page, 120 core-media, 353 overlay and 291 app cases with affected
-     lint/build gates. The previous 19 isolated native cases were not rerun for this checkpoint and do not
-     certify all physical-device or endurance behavior.
+     Current software evidence is 247 page, 125 core-media, 353 overlay and 291 app cases with affected
+     lint/build gates. The previous 19 isolated native cases were not rerun for these checkpoints and do not
+     certify all physical-device, complete-resource or endurance behavior.
 - Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite
   is authorized by this handoff. Existing core session/editor/codec/Anki ownership repairs remain in place.
 - Latest APK, matching dev signer, mapping and build recipe are in the delivery receipt below. Use the

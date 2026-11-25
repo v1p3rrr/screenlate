@@ -580,6 +580,55 @@ class SentenceRecorderTest {
     }
 
     @Test
+    fun oldLeasedSessionCountsAgainstNewCaptureWithoutLosingItsSamples() = runBlocking {
+        val root = temporary.newFolder()
+        val time = AtomicLong(10_000L)
+        val ledger = PcmStorageLedger(maxBytes = 400, maxFiles = 8)
+        val recorder = SentenceRecorder(root, RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() }, { time.get() * 1_000_000L }, storageLedger = ledger)
+        val first = FakeAudioSource()
+        var retained: SentenceRecorder.ContextLease? = null
+        try {
+            recorder.start(first)
+            first.emitFrames(100)
+            withTimeout(3000) {
+                while (recorder.snapshot(AudioRange(0, 100))?.also { it.close() } == null) delay(1)
+            }
+            time.set(10_100)
+            val old = checkNotNull(recorder.acquireScan())
+            retained = checkNotNull(recorder.retainContext(old))
+            recorder.stop()
+            recorder.releaseContext(old)
+
+            val next = FakeAudioSource()
+            assertThat(recorder.start(next)).isTrue()
+            next.emitFrames(100)
+            withTimeout(3000) {
+                while (recorder.snapshot(AudioRange(0, 100))?.also { it.close() } == null) delay(1)
+            }
+            assertThat(ledger.usedBytes).isEqualTo(400)
+            assertThat(ledger.highWaterBytes).isEqualTo(400)
+
+            next.emitFrames(100)
+            val failed = withTimeout(3000) {
+                recorder.recordingState.first { it is SentenceRecordingState.Failed }
+            }
+            assertThat(failed).isEqualTo(
+                SentenceRecordingState.Failed(PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED))
+            recorder.snapshot(AudioRange(0, 100), old).use { snapshot ->
+                assertThat(snapshot).isNotNull()
+                assertThat(snapshot!!.openStream().use { it.readBytes() })
+                    .isEqualTo(first.expectedPcm(0, 100))
+            }
+        } finally {
+            retained?.close()
+            recorder.close()
+        }
+        assertThat(ledger.usedBytes).isEqualTo(0)
+        assertThat(ledger.usedFiles).isEqualTo(0)
+    }
+
+    @Test
     fun firstStartClearsAbandonedPcmWithoutDeletingUnrelatedFiles() = runBlocking {
         val root = temporary.newFolder()
         val legacy = File(root, "legacy.pcm").apply { writeBytes(ByteArray(2)) }

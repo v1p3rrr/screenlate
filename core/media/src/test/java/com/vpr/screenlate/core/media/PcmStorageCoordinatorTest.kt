@@ -284,6 +284,58 @@ class PcmStorageCoordinatorTest {
         assertThat(coordinator.currentState).isEqualTo(PcmCoordinatorState.CLOSED)
     }
 
+    @Test
+    fun lowSpaceRejectsABlockBeforeItCrossesTheSafetyReserve() {
+        val source = FakeAudioSource(sampleRate = 1000, blockFrames = 50)
+        val coordinator = PcmStorageCoordinator(
+            temporary.newFolder(), RecordingLimits(),
+            PcmCoordinatorConfig(sampleRate = 1000, chunkFrames = 100, blockFrames = 50,
+                minFreeSpaceBytes = 100, usableSpace = { 150 }),
+            nowMillis = { 10_000 }, nowNanos = { 10_000_000_000L },
+        )
+        try {
+            coordinator.start(source)
+            source.emitFrames(50)
+            waitForCondition {
+                coordinator.currentState == PcmCoordinatorState.FAILED || coordinator.committedEndFrame >= 50
+            }
+            assertThat(coordinator.failureReason).isEqualTo(PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED)
+            assertThat(coordinator.committedEndFrame).isEqualTo(0)
+            assertThat(coordinator.retainedBytes).isEqualTo(0)
+        } finally {
+            coordinator.close()
+        }
+    }
+
+    @Test
+    fun lowSpaceAfterAValidBlockPreservesItsExactPrefix() {
+        val freeBytes = AtomicLong(1000)
+        val source = FakeAudioSource(sampleRate = 1000, blockFrames = 50)
+        val coordinator = PcmStorageCoordinator(
+            temporary.newFolder(), RecordingLimits(),
+            PcmCoordinatorConfig(sampleRate = 1000, chunkFrames = 100, blockFrames = 50,
+                minFreeSpaceBytes = 100, usableSpace = { freeBytes.get() }),
+            nowMillis = { 10_000 }, nowNanos = { 10_000_000_000L },
+        )
+        try {
+            coordinator.start(source)
+            source.emitFrames(50)
+            waitForCondition { coordinator.committedEndFrame >= 50 }
+            freeBytes.set(150)
+            source.emitFrames(50)
+            waitForCondition { coordinator.currentState == PcmCoordinatorState.FAILED }
+
+            assertThat(coordinator.failureReason).isEqualTo(PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED)
+            assertThat(coordinator.committedEndFrame).isEqualTo(50)
+            coordinator.snapshot(AudioRange(0, 50)).use { snapshot ->
+                assertThat(snapshot.openStream().use { it.readBytes() })
+                    .isEqualTo(source.expectedPcm(0, 50))
+            }
+        } finally {
+            coordinator.close()
+        }
+    }
+
     private fun waitForCondition(timeoutMs: Long = 3000, condition: () -> Boolean) {
         val deadline = System.currentTimeMillis() + timeoutMs
         while (System.currentTimeMillis() < deadline) {

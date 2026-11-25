@@ -32,6 +32,7 @@ internal class PcmHistory(
     private val maxBytes: Long,
     private val maxFiles: Int,
     private val writer: PcmWriter = FilePcmWriter,
+    private val storageLedger: PcmStorageLedger? = null,
     private val onReleased: () -> Unit = {},
 ) : AutoCloseable {
     private val chunks = mutableListOf<Chunk>()
@@ -69,23 +70,31 @@ internal class PcmHistory(
         check(!closed && !failed)
         require(count in 0..pcm.size && count % FRAME_BYTES == 0)
         if (count.toLong() > maxBytes - storedBytes) throw HistoryQuotaException()
+        if (storageLedger?.reserve(count.toLong()) == false) throw HistoryQuotaException()
         var offset = 0
-        while (offset < count) {
-            val chunk = active ?: newChunk().also { active = it }
-            val length = minOf(count - offset, (chunkFrames - chunk.frames) * FRAME_BYTES)
-            try {
-                writer.write(chunk.file, chunk.frames.toLong() * FRAME_BYTES, pcm, offset, length)
-            } catch (error: IOException) {
-                failed = true
-                // A failed write must not publish or expose its possibly partial bytes.
-                runCatching { RandomAccessFile(chunk.file, "rw").use { it.setLength(chunk.frames.toLong() * FRAME_BYTES) } }
-                throw error
+        var writtenBytes = 0L
+        try {
+            while (offset < count) {
+                val chunk = active ?: newChunk().also { active = it }
+                val length = minOf(count - offset, (chunkFrames - chunk.frames) * FRAME_BYTES)
+                try {
+                    writer.write(chunk.file, chunk.frames.toLong() * FRAME_BYTES, pcm, offset, length)
+                } catch (error: IOException) {
+                    failed = true
+                    // A failed write must not publish or expose its possibly partial bytes.
+                    runCatching { RandomAccessFile(chunk.file, "rw").use { it.setLength(chunk.frames.toLong() * FRAME_BYTES) } }
+                    throw error
+                }
+                chunk.frames += length / FRAME_BYTES
+                end = Math.addExact(end, length / FRAME_BYTES.toLong())
+                storedBytes += length
+                writtenBytes += length
+                offset += length
+                if (chunk.frames == chunkFrames) active = null
             }
-            chunk.frames += length / FRAME_BYTES
-            end = Math.addExact(end, length / FRAME_BYTES.toLong())
-            storedBytes += length
-            offset += length
-            if (chunk.frames == chunkFrames) active = null
+        } finally {
+            val unwritten = count.toLong() - writtenBytes
+            if (unwritten > 0) storageLedger?.release(unwritten)
         }
     }
 
@@ -126,9 +135,15 @@ internal class PcmHistory(
     private fun newChunk(): Chunk {
         prune()
         if (chunks.size >= maxFiles) throw HistoryQuotaException()
-        val file = File(directory, "${UUID.randomUUID()}.pcm")
-        if (!file.createNewFile()) throw IOException("Cannot create PCM chunk")
-        return Chunk(file, end).also { chunks += it }
+        if (storageLedger?.reserve(0, 1) == false) throw HistoryQuotaException()
+        try {
+            val file = File(directory, "${UUID.randomUUID()}.pcm")
+            if (!file.createNewFile()) throw IOException("Cannot create PCM chunk")
+            return Chunk(file, end).also { chunks += it }
+        } catch (error: Throwable) {
+            storageLedger?.release(0, 1)
+            throw error
+        }
     }
 
     private fun prune() {
@@ -137,7 +152,9 @@ internal class PcmHistory(
             val chunk = iterator.next()
             if (chunk === active || chunk.pins > 0 || keep.any { it.intersect(chunk.range) != null }) continue
             if (!chunk.file.exists() || chunk.file.delete()) {
-                storedBytes -= chunk.frames.toLong() * FRAME_BYTES
+                val bytes = chunk.frames.toLong() * FRAME_BYTES
+                storedBytes -= bytes
+                storageLedger?.release(bytes, 1)
                 iterator.remove()
             }
         }

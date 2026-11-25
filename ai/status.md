@@ -1,5 +1,21 @@
 # Status
 
+## Aggregate PCM admission and low-space writes (2026-11-26)
+
+- `SentenceRecorder` now shares one process-local PCM byte/file ledger across current, stopped and leased old
+  sessions. The existing provisional 128 MiB / 1,500-file ceilings are unchanged numerically, but are now
+  aggregate limits instead of independent per-session allowances. New writes cannot evict protected old audio.
+- `PcmHistory` reserves each complete byte write, rolls back its unwritten reservation after failure, reserves
+  chunk creation and releases file/byte accounting only after actual deletion. Current/high-water counters make
+  the arithmetic testable. Shared byte/file tests were red before enforcement and now pass.
+- PCM write preflight requires free space for both the safety reserve and the entire next block. The old check
+  omitted the block and was reproduced red with an injected filesystem measurement. A second fixture confirms
+  that a later low-space failure preserves the exact already committed prefix.
+- Final checks: 125 core-media, 353 overlay and 291 app cases pass. Affected unit/lint/app/test-APK/release-vital
+  gates pass in 4m15s (`resource-storage-final-gates.log` under the ignored November 25 evidence directory).
+- Next F work is aggregate RAM/cache and export/retry/TTS workspace accounting, broader cleanup/fault coverage
+  and settings/locale parity. No new native/device/endurance run; this is not REC50/51 or whole-resource acceptance.
+
 ## Conservative silence proposals repaired (2026-11-26)
 
 - The review's RMS 0.10 background / 0.22 louder-region fixture is now a permanent regression. It was red

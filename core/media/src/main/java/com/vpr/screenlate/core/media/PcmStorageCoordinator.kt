@@ -20,10 +20,12 @@ internal class PcmCoordinatorConfig(
     val chunkFrames: Int = 48000,
     val blockFrames: Int = 4800,
     val queueCapacity: Int = 30,
-    val maxStorageBytes: Long = 134_217_728L,
-    val maxStorageFiles: Int = 1500,
+    val maxStorageBytes: Long = PcmStorageLedger.DEFAULT_MAX_BYTES,
+    val maxStorageFiles: Int = PcmStorageLedger.DEFAULT_MAX_FILES,
     val minFreeSpaceBytes: Long = 52_428_800L,
     val stopTimeoutMillis: Long = 2000L,
+    val storageLedger: PcmStorageLedger? = null,
+    val usableSpace: (File) -> Long = { it.usableSpace },
 ) {
     init {
         require(sampleRate > 0 && chunkFrames > 0 && blockFrames > 0 && queueCapacity > 0)
@@ -87,7 +89,7 @@ internal class PcmStorageCoordinator(
             }
             val clock = PcmClock(config.sampleRate, audioSource.timestampNanos() ?: nowNanos())
             history = PcmHistory(directory, config.chunkFrames, config.maxStorageBytes, config.maxStorageFiles,
-                onReleased = { directory.delete(); Unit })
+                storageLedger = config.storageLedger, onReleased = { directory.delete(); Unit })
             queue = PcmBlockQueue(config.blockBytes, config.queueCapacity, config.maxQueueBytes)
             timeline = ScanAudioTimeline(clock, limits)
             publish(PcmCoordinatorState.RUNNING)
@@ -114,7 +116,7 @@ internal class PcmStorageCoordinator(
     }
 
     fun openEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? = command {
-        timeline?.openEditor(id, committedEndFrame, processingTime(openMillis), directory.usableSpace >= config.minFreeSpaceBytes)
+        timeline?.openEditor(id, committedEndFrame, processingTime(openMillis), config.usableSpace(directory) >= config.minFreeSpaceBytes)
     }
 
     fun view(id: AudioContextId): AudioTimelineView? = command {
@@ -218,7 +220,8 @@ internal class PcmStorageCoordinator(
         block.use {
             val h = checkNotNull(history)
             try {
-                if (directory.usableSpace < config.minFreeSpaceBytes) throw HistoryQuotaException()
+                val requiredSpace = Math.addExact(config.minFreeSpaceBytes, block.count.toLong())
+                if (config.usableSpace(directory) < requiredSpace) throw HistoryQuotaException()
                 check(block.firstFrame == h.committedEnd) { "PCM publication is not contiguous" }
                 retain(Math.addExact(h.committedEnd, block.count / config.frameBytes.toLong()))
                 h.append(block.bytes, block.count)

@@ -102,6 +102,47 @@ class PcmHistoryTest {
         history.close()
     }
 
+    @Test fun sharedByteQuotaRejectsNewAudioWithoutEvictingTheOldSession() {
+        val ledger = PcmStorageLedger(maxBytes = 24, maxFiles = 4)
+        val old = PcmHistory(temporary.newFolder(), 4, 1024, 32, storageLedger = ledger)
+        val current = PcmHistory(temporary.newFolder(), 4, 1024, 32, storageLedger = ledger)
+        old.retain(listOf(AudioRange(0, 8)))
+        old.append(pcm(0, 8))
+        current.retain(listOf(AudioRange(0, 8)))
+
+        assertThrows(HistoryQuotaException::class.java) { current.append(pcm(0, 5)) }
+        assertThat(old.bytes).isEqualTo(16)
+        assertThat(ledger.usedBytes).isEqualTo(16)
+        assertThat(ledger.highWaterBytes).isEqualTo(16)
+        old.snapshot(AudioRange(0, 8)).use { assertThat(read(it)).isEqualTo(pcm(0, 8)) }
+
+        current.close()
+        old.close()
+        assertThat(ledger.usedBytes).isEqualTo(0)
+        assertThat(ledger.usedFiles).isEqualTo(0)
+    }
+
+    @Test fun sharedFileQuotaIsReleasedOnlyAfterAnOldChunkIsDeleted() {
+        val ledger = PcmStorageLedger(maxBytes = 1024, maxFiles = 2)
+        val old = PcmHistory(temporary.newFolder(), 4, 1024, 32, storageLedger = ledger)
+        val current = PcmHistory(temporary.newFolder(), 4, 1024, 32, storageLedger = ledger)
+        old.append(pcm(0, 4))
+        current.retain(listOf(AudioRange(0, 8)))
+        current.append(pcm(0, 4))
+
+        assertThrows(HistoryQuotaException::class.java) { current.append(pcm(4, 5)) }
+        assertThat(current.committedEnd).isEqualTo(4)
+        assertThat(ledger.usedFiles).isEqualTo(2)
+        assertThat(ledger.highWaterFiles).isEqualTo(2)
+
+        old.close()
+        assertThat(ledger.usedFiles).isEqualTo(1)
+        current.append(pcm(4, 5))
+        assertThat(current.committedEnd).isEqualTo(5)
+        current.close()
+        assertThat(ledger.usedFiles).isEqualTo(0)
+    }
+
     private fun history(maxBytes: Long = 1024, maxFiles: Int = 32) =
         PcmHistory(temporary.newFolder(), chunkFrames = 4, maxBytes = maxBytes, maxFiles = maxFiles)
 
@@ -116,15 +157,19 @@ class PcmHistoryTest {
                 }
             }
         }
-        val history = PcmHistory(temporary.newFolder(), 8, 1024, 32, writer)
+        val ledger = PcmStorageLedger(maxBytes = 1024, maxFiles = 32)
+        val history = PcmHistory(temporary.newFolder(), 8, 1024, 32, writer, storageLedger = ledger)
         history.retain(listOf(AudioRange(0, 100)))
         history.append(pcm(0, 3))
         assertThrows(IOException::class.java) { history.append(pcm(3, 7)) }
         assertThat(history.committedEnd).isEqualTo(3)
         assertThat(history.bytes).isEqualTo(6)
+        assertThat(ledger.usedBytes).isEqualTo(6)
+        assertThat(ledger.highWaterBytes).isEqualTo(14)
         history.snapshot(AudioRange(0, 3)).use { assertThat(read(it)).isEqualTo(pcm(0, 3)) }
         assertThrows(IllegalStateException::class.java) { history.append(pcm(7, 8)) }
         history.close()
+        assertThat(ledger.usedBytes).isEqualTo(0)
     }
 
     @Test fun rejectsUnaccountedFilesFromAnAbandonedSession() {
