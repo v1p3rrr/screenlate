@@ -304,6 +304,7 @@ test('silence proposals accept and reject', () => {
         sampleRate: 48000,
         totalFrames: 480000,
         selection: [100000, 200000],
+        cuts: [[100000, 105000]],
     });
 
     tap(page.document.getElementById('sl-action-silence'));
@@ -321,13 +322,45 @@ test('silence proposals accept and reject', () => {
     tap(page.document.getElementById('sl-action-reject-silence'));
     assert.equal(AudioEditor.state.suggestions.length, 0);
 
-    // Deliver again and accept
+    // Run a new search and accept its fresh proposals alongside the manual cut.
+    tap(page.document.getElementById('sl-action-silence'));
     AudioEditor.setSilenceProposals(silenceReq.req, [[120000, 150000]]);
     tap(page.document.getElementById('sl-action-accept-silence'));
     assert.equal(AudioEditor.state.suggestions.length, 0);
-    assert.equal(AudioEditor.state.cuts.length, 1);
-    assert.equal(AudioEditor.state.cuts[0][0], 120000);
-    assert.equal(AudioEditor.state.cuts[0][1], 150000);
+    assert.equal(AudioEditor.state.cuts.length, 2);
+    assert.equal(JSON.stringify(AudioEditor.state.cuts), JSON.stringify([[100000, 105000], [120000, 150000]]));
+});
+
+test('a manual edit rejects its pending silence response and preserves the cuts', () => {
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: raw => commands.push(JSON.parse(raw)) };
+    AudioEditor.open({ operation: 'stale-edit', sampleRate: 48000, totalFrames: 480000,
+        sourceRevision: 1, selection: [100000, 300000], cuts: [[100000, 105000]] });
+    tap(page.document.getElementById('sl-action-silence'));
+    const request = commands.find(c => c.action === 'silence').request;
+
+    tap(page.document.getElementById('sl-action-cut'));
+    const manualCuts = AudioEditor.state.cuts.map(c => c.slice());
+    AudioEditor.receive({ operation: 'stale-edit', request, proposals: [[150000, 200000]] });
+
+    assert.equal(AudioEditor.state.suggestions.length, 0);
+    assert.equal(JSON.stringify(AudioEditor.state.cuts), JSON.stringify(manualCuts));
+});
+
+test('Refresh rejects pending silence proposals from the previous source revision', () => {
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: raw => commands.push(JSON.parse(raw)) };
+    AudioEditor.open({ operation: 'stale-refresh', sampleRate: 48000, totalFrames: 480000,
+        sourceRevision: 1, selection: [100000, 300000], cuts: [[100000, 105000]] });
+    tap(page.document.getElementById('sl-action-silence'));
+    const request = commands.find(c => c.action === 'silence').request;
+
+    AudioEditor.receive({ operation: 'stale-refresh', timeline: { sourceRevision: 2,
+        totalFrames: 960000, sourceStart: 0, sourceEnd: 960000 } });
+    AudioEditor.receive({ operation: 'stale-refresh', request, proposals: [[150000, 200000]] });
+
+    assert.equal(AudioEditor.state.suggestions.length, 0);
+    assert.equal(JSON.stringify(AudioEditor.state.cuts), JSON.stringify([[100000, 105000]]));
 });
 
 test('clean cancel immediately cancels; dirty cancel prompts confirmation', () => {

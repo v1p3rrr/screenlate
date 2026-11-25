@@ -17,6 +17,9 @@ internal object SilenceDetector {
     const val DEFAULT_EDGE_PADDING_MILLIS = 150L
     const val LEADING_QUIET_THRESHOLD_MILLIS = 5000L
     private const val WINDOW_MILLIS = 50L
+    private const val MIN_SOUND_RMS = 0.015f
+    private const val MIN_CONTRAST_RATIO = 3.0f
+    private const val QUIET_THRESHOLD_RATIO = 2.0f
 
     /**
      * Finds proposed exclusion ranges (internal cuts) within [range] based on energy threshold.
@@ -33,16 +36,7 @@ internal object SilenceDetector {
         val windows = computeWindowRms(stream, range.frames, sampleRate)
         if (windows.isEmpty()) return emptyList()
 
-        val sortedRms = windows.map { it.rms }.sorted()
-        val noiseFloor = sortedRms[(sortedRms.size * 0.15).toInt().coerceIn(0, sortedRms.size - 1)]
-        val speechPeak = sortedRms[(sortedRms.size * 0.90).toInt().coerceIn(0, sortedRms.size - 1)]
-
-        // Abstention rule: entire selection is uniformly quiet, uniformly loud, or SNR is too low
-        if (speechPeak < 0.015f || (noiseFloor > 0.0001f && speechPeak / noiseFloor < 2.0f)) {
-            return emptyList()
-        }
-
-        val threshold = maxOf(0.015f, noiseFloor * 2.5f)
+        val threshold = separationThreshold(windows) ?: return emptyList()
         val minSilenceFrames = sampleRate * minSilenceMillis / 1000L
         val paddingFrames = sampleRate * edgePaddingMillis / 1000L
 
@@ -94,16 +88,8 @@ internal object SilenceDetector {
         val windows = computeWindowRms(stream, range.frames, sampleRate)
         if (windows.isEmpty()) return null
 
-        val sortedRms = windows.map { it.rms }.sorted()
-        val noiseFloor = sortedRms[(sortedRms.size * 0.15).toInt().coerceIn(0, sortedRms.size - 1)]
-        val speechPeak = sortedRms[(sortedRms.size * 0.90).toInt().coerceIn(0, sortedRms.size - 1)]
-
-        // Must have distinguishable non-silent sound later in the selection
-        if (speechPeak < 0.015f || (noiseFloor > 0.0001f && speechPeak / noiseFloor < 2.0f)) {
-            return null
-        }
-
-        val threshold = maxOf(0.015f, noiseFloor * 2.5f)
+        // Must have distinguishable non-silent sound later in the selection.
+        val threshold = separationThreshold(windows) ?: return null
         val minFrames = sampleRate * LEADING_QUIET_THRESHOLD_MILLIS / 1000L
 
         // Selection must start with silence
@@ -121,6 +107,19 @@ internal object SilenceDetector {
         }
         // Entire audio was quiet - abstain per spec (don't trim everything)
         return null
+    }
+
+    /**
+     * Requires sound to clear the quiet threshold by a margin. A lower contrast gate can otherwise
+     * accept audio whose loudest windows are still below the threshold and cut the whole selection.
+     */
+    private fun separationThreshold(windows: List<WindowInfo>): Float? {
+        val sortedRms = windows.map { it.rms }.sorted()
+        val noiseFloor = sortedRms[(sortedRms.size * 0.15).toInt().coerceIn(0, sortedRms.size - 1)]
+        val soundLevel = sortedRms[(sortedRms.size * 0.90).toInt().coerceIn(0, sortedRms.size - 1)]
+        if (soundLevel < MIN_SOUND_RMS) return null
+        if (noiseFloor > 0.0001f && soundLevel / noiseFloor < MIN_CONTRAST_RATIO) return null
+        return maxOf(MIN_SOUND_RMS, noiseFloor * QUIET_THRESHOLD_RATIO)
     }
 
     private data class WindowInfo(val startFrame: Long, val endFrame: Long, val rms: Float)

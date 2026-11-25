@@ -4491,3 +4491,17 @@ Observations, not changed:
   No owner collection accessed; test package removed and owned silent AVD powered off.
 
 Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. Logs: touch-final-pages.log, touch-final-native.log, touch-short-native.log under the ignored audio-repair-2026-11-22 evidence directory.
+
+## Conservative silence proposals (2026-11-26)
+
+- The RMS 0.10 background / 0.22 one-second louder-region review fixture was red before the repair and now
+  abstains. The shared threshold requires 3.0x contrast and sits at 2.0x the noise floor with the existing
+  absolute minimum. Uniform nonzero quiet audio, deterministic uniform noise and a valid 4:1 pause are covered.
+- New page regressions were red before the repair: a pending result after a manual cut and a pending result
+  across Refresh source revision are now rejected without changing manual cuts. Fresh accepted proposals append
+  to existing cuts. Native results also check both source/edit revisions and Refresh cancels old analysis.
+- 120 core-media, 353 overlay, 291 app and 247 page cases pass. Affected unit/lint/app/test-APK/release-vital
+  checks pass in 4m45s. Red/green and final logs are under ignored
+  testdata/local-research/audio-repair-2026-11-25/.
+- Partial REC41/50/51 evidence only; keep their rows N because the complete manual/device scenarios were not
+  run. No new native, physical-source or local-Anki acceptance is claimed. Aggregate resources remain open.

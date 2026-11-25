@@ -436,12 +436,12 @@ are investigated as findings, not converted into an invented new audio performan
 | C pending operation/protocol | Software implemented; integration acceptance open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. E recovery UI is also implemented; actual service/device acceptance remains in G. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
 | E Anki recovery | Software implemented; local-Anki acceptance open | Editor/source/encoding retained across copy failure; cached transfers, Retry/Without/Cancel, actual FileProvider path, mixed-field notice and single submission implemented. 226 core-Anki/353 overlay/291 app/237 page and 18 native editor/crop cases pass with affected gates. Actual disposable collection playback/updates remain. |
-| F settings/resources | Partially implemented; substantive work remains | Saved silence parameter UI, zero margin and ordered settings reads/writes fixed November 24. Conservative detector/abstention, measured aggregate resource policy, cleanup and remaining settings/locale parity still require work. |
-| G device/regression | Partially verified; full acceptance open | November 24: 245 page/353 overlay/291 app cases, affected lint/vital and minified Dev build pass. 19 isolated native cases plus final short-layout touch rerun pass. Actual sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
+| F settings/resources | Partially implemented; substantive work remains | Saved silence parameter UI, zero margin and ordered settings reads/writes fixed November 24. Conservative detector/abstention and stale/manual proposal handling are implemented November 26. Measured aggregate resource policy, cleanup and remaining settings/locale parity still require work. |
+| G device/regression | Partially verified; full acceptance open | November 26: 247 page/120 core-media/353 overlay/291 app cases and affected lint/vital/build gates pass. November 24 native/touch and minified Dev evidence remains a baseline, not a new device run. Actual sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
 
-Current continuation (updated 2026-11-25): E pre-note transfer recovery and the November 24 compact touch
-repair are implemented. Do not redo them. Next authorized implementation is conservative silence detection,
-then aggregate resource/settings policy, actual platform/source and disposable local-Anki checks, and final
+Current continuation (updated 2026-11-26): E pre-note transfer recovery, the November 24 compact touch
+repair and conservative silence detection are implemented. Do not redo them. Next authorized implementation
+is aggregate resource/settings policy, then actual platform/source and disposable local-Anki checks, and final
 physical/endurance/regression acceptance. Music is deferred. See the current resume section in
 `ai/notes/sentence-audio-handoff.md` for the exact checkpoint, evidence, build recipe and constraints.
 
@@ -457,6 +457,9 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-26: Made silence separation conservative, preserved manual cuts and rejected stale proposals by
+  source/edit identity. Added red/green detector and page regressions plus affected gates. Product decisions
+  and defaults are unchanged; aggregate resources and device/local-Anki acceptance remain open.
 - 2026-11-25: Consolidated the current handoff and corrected stale C/F/G statuses and the obsolete
   instruction to implement E recovery. No product decisions or application code changed.
 - 2026-11-24: Recorded owner's successful capture/Anki attachment and unconfirmed preview result.

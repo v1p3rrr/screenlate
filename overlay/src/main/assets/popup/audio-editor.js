@@ -144,6 +144,7 @@ var AudioEditor = (() => {
         if (data.timeline) {
             if (data.timeline.sourceRevision < state.sourceRevision) return;
             if (data.timeline.sourceRevision !== state.sourceRevision) {
+                invalidateSilence();
                 state.detailSummary = null;
                 state.overviewSummary = [];
             }
@@ -215,8 +216,14 @@ var AudioEditor = (() => {
         return sign + formatTime(Math.abs(diffSeconds));
     }
 
+    function invalidateSilence() {
+        silenceRequestCount++;
+        state.suggestions = [];
+    }
+
     function remember() {
         state.initialSequence = -1;
+        invalidateSilence();
         undo.push({ a: state.a, b: state.b, cuts: state.cuts.map(c => c.slice()) });
         if (undo.length > 30) undo.shift();
         checkDirty();
@@ -1139,7 +1146,7 @@ var AudioEditor = (() => {
         });
 
         bind('sl-action-silence', 'click', () => {
-            silenceRequestCount++;
+            invalidateSilence();
             send('silence', { request: silenceRequestCount });
         });
 
@@ -1148,10 +1155,10 @@ var AudioEditor = (() => {
         bind('sl-action-undo', 'click', () => {
             const old = undo.pop();
             if (old) {
+                invalidateSilence();
                 state.a = old.a;
                 state.b = old.b;
                 state.cuts = old.cuts;
-                state.suggestions = [];
                 state.activeCut = -1;
                 checkDirty();
                 render();
@@ -1160,17 +1167,17 @@ var AudioEditor = (() => {
 
         bind('sl-action-accept-silence', 'click', () => {
             if (state.suggestions.length) {
+                const accepted = state.suggestions.map(c => c.slice());
                 remember();
                 const first = state.cuts.length;
-                state.cuts.push(...state.suggestions);
-                state.suggestions = [];
+                state.cuts.push(...accepted);
                 focusCut(first);
                 render();
             }
         });
 
         bind('sl-action-reject-silence', 'click', () => {
-            state.suggestions = [];
+            invalidateSilence();
             render();
         });
 

@@ -387,6 +387,7 @@ class AudioEditorController(
             return
         }
         val revision = operation.editRevision
+        val sourceRevision = operation.sourceRevision
         send(session) { put("sequence", command.sequence); put("editRevision", revision) }
         val previewMode = if (command.mode == "original") PreviewMode.ORIGINAL else PreviewMode.RESULT
         when (command.action) {
@@ -412,7 +413,9 @@ class AudioEditorController(
                         minSilenceMillis = settings?.minSilenceMillis ?: 1500,
                         edgePaddingMillis = settings?.silenceMarginMillis ?: 150,
                         contextId = session.contextId)
-                    if (active === session && operation.editRevision == revision) send(session) {
+                    if (active === session && operation.editRevision == revision &&
+                        operation.sourceRevision == sourceRevision
+                    ) send(session) {
                         put("request", command.request); put("proposals", ranges(cuts))
                     }
                 }
@@ -427,6 +430,7 @@ class AudioEditorController(
                 }
             }
             "refresh" -> {
+                session.analysis?.cancel()
                 if (session.refresh?.isActive == true) return
                 session.refresh = operation.scope.launch {
                     val view = sentenceRecorder.refresh(session.contextId) ?: return@launch

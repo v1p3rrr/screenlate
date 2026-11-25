@@ -1,5 +1,22 @@
 # Status
 
+## Conservative silence proposals repaired (2026-11-26)
+
+- The review's RMS 0.10 background / 0.22 louder-region fixture is now a permanent regression. It was red
+  before the fix: the old 2.0 contrast gate admitted the signal while its 2.5x quiet threshold classified
+  even the louder region as silent. Shared cut/leading-quiet analysis now requires 3.0x contrast and uses
+  a 2.0x noise-floor threshold (with the existing absolute minimum). Uniform nonzero quiet audio and
+  deterministic uniform noise abstain; a normal pause over nonzero background is still found.
+- Manual cuts remain separate from suggestions and are preserved when fresh proposals are accepted. Manual
+  edits, Undo, Refresh source changes, a new search and Dismiss invalidate obsolete page proposals. Native
+  analysis checks both source and edit revisions, and Refresh cancels obsolete analysis work.
+- Red evidence is in ignored silence-low-contrast-red.log and silence-stale-page-red.log under
+  testdata/local-research/audio-repair-2026-11-25/. Final checks: 120 core-media, 353 overlay, 291 app and
+  247 page cases pass. Affected unit/lint/app/test-APK/release-vital gate passes in 4m45s
+  (silence-affected-gates.log). No new native/device or local-Anki run; those acceptance gaps remain.
+- Next F work is the measured aggregate resource policy, cleanup/fault coverage and remaining parity audit.
+  Do not interpret this detector checkpoint as full REC50/51 or whole-feature acceptance.
+
 ## Resume index consolidated (2026-11-25)
 
 - Current sentence-audio source: `c2eced4f`; compact Dev delivery receipt: `e1e361dd`. Application code

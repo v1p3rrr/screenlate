@@ -5,6 +5,7 @@ import org.junit.Test
 import java.io.ByteArrayInputStream
 import kotlin.math.PI
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 class SilenceDetectorTest {
 
@@ -115,15 +116,88 @@ class SilenceDetectorTest {
         assertThat(cuts).isEmpty()
     }
 
+    @Test
+    fun findSilenceCutsAbstainsWhenLouderRegionDoesNotClearQuietThreshold() {
+        // The review fixture: RMS 0.10 background with one louder second at RMS 0.22.
+        // Their 2.2x contrast used to pass, while the 2.5x threshold classified everything as quiet.
+        val totalFrames = 5000
+        val pcm = ByteArray(totalFrames * 2)
+        writeTone(pcm, 0, totalFrames, rms = 0.10)
+        writeTone(pcm, 2000, 3000, rms = 0.22)
+
+        val cuts = SilenceDetector.findSilenceCuts(
+            ByteArrayInputStream(pcm),
+            AudioRange(0, totalFrames.toLong()),
+            sampleRate,
+        )
+
+        assertThat(cuts).isEmpty()
+    }
+
+    @Test
+    fun findSilenceCutsAbstainsForUniformlyQuietNonZeroAudio() {
+        val totalFrames = 6000
+        val pcm = ByteArray(totalFrames * 2)
+        writeTone(pcm, 0, totalFrames, rms = 0.01)
+
+        val cuts = SilenceDetector.findSilenceCuts(
+            ByteArrayInputStream(pcm),
+            AudioRange(0, totalFrames.toLong()),
+            sampleRate,
+        )
+
+        assertThat(cuts).isEmpty()
+    }
+
+    @Test
+    fun findSilenceCutsAbstainsForUniformNoise() {
+        val totalFrames = 6000
+        val pcm = ByteArray(totalFrames * 2)
+        val random = java.util.Random(42)
+        for (i in 0 until totalFrames) {
+            val sample = ((random.nextDouble() * 2.0 - 1.0) * 3276.8).toInt()
+            pcm[i * 2] = (sample and 0xFF).toByte()
+            pcm[i * 2 + 1] = (sample shr 8).toByte()
+        }
+
+        val cuts = SilenceDetector.findSilenceCuts(
+            ByteArrayInputStream(pcm),
+            AudioRange(0, totalFrames.toLong()),
+            sampleRate,
+        )
+
+        assertThat(cuts).isEmpty()
+    }
+
+    @Test
+    fun findSilenceCutsFindsPauseAboveNonZeroBackground() {
+        val totalFrames = 6000
+        val pcm = ByteArray(totalFrames * 2)
+        writeTone(pcm, 0, totalFrames, rms = 0.05)
+        writeTone(pcm, 0, 2000, rms = 0.20)
+        writeTone(pcm, 4000, totalFrames, rms = 0.20)
+
+        val cuts = SilenceDetector.findSilenceCuts(
+            ByteArrayInputStream(pcm),
+            AudioRange(0, totalFrames.toLong()),
+            sampleRate,
+        )
+
+        assertThat(cuts.size).isEqualTo(1)
+        assertThat(cuts[0].start).isWithin(50L).of(2150L)
+        assertThat(cuts[0].endExclusive).isWithin(50L).of(3850L)
+    }
+
     private fun createTonePcm(totalFrames: Int, soundStart: Int, soundEnd: Int): ByteArray {
         val pcm = ByteArray(totalFrames * 2)
         writeTone(pcm, soundStart, soundEnd)
         return pcm
     }
 
-    private fun writeTone(pcm: ByteArray, start: Int, end: Int) {
+    private fun writeTone(pcm: ByteArray, start: Int, end: Int, rms: Double? = null) {
+        val amplitude = rms?.let { it * 32768 * sqrt(2.0) } ?: 16000.0
         for (i in start until end) {
-            val sample = (sin(2 * PI * 10 * i / sampleRate) * 16000).toInt()
+            val sample = (sin(2 * PI * 10 * i / sampleRate) * amplitude).toInt()
             pcm[i * 2] = (sample and 0xFF).toByte()
             pcm[i * 2 + 1] = (sample shr 8).toByte()
         }

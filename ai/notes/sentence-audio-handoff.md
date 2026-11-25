@@ -6,28 +6,30 @@ This section and the November 24 delivery receipt supersede older checkpoints be
 to implement transfer recovery, waveform loading or saved silence parameter UI are historical: these
 parts are implemented. Do not restart them or infer the current usage limit from historical percentages.
 
-- Work on `codex/sentence-audio-recording`. Latest application source is `c2eced4f`; delivery documentation
-  checkpoint is `e1e361dd`. Verify HEAD and dirty state before editing; preserve unrelated submodule dirt
-  and the two untracked `docs/images/photo_*2026-11-10*.jpg` files. Push only the feature branch.
+- Work on `codex/sentence-audio-recording`. Read the newest checkpoint at the top of `ai/status.md` for
+  current source. The latest compact Dev delivery remains source `c2eced4f`, documentation `e1e361dd`.
+  Verify HEAD and dirty state before editing; preserve unrelated submodule dirt and the two untracked
+  `docs/images/photo_*2026-11-10*.jpg` files. Push only the feature branch.
 - Read `ai/status.md`, the execution plan `ai/plans/2026-11-21-sentence-audio-repair.md` and the binding
   product decisions in `ai/plans/2026-11-19-sentence-audio-recording.md`. The review and engineering notes
   remain relevant. The approved November 24 compact disclosure/scrolling changes supplement the prototype.
   Prototype state such as 5/3/2 does not change the approved production defaults of 5/5/2 minutes.
-- Current user request is to ensure a complete handoff, not to begin another implementation block.
-  On authorized continuation, follow this remaining order:
-  1. Conservative silence detection: add the review's RMS 0.1/0.22 regression, abstain on uncertain or
-     uniform audio, preserve manual cuts and reject stale proposals. Saved parameter UI is already fixed.
-  2. Aggregate resource accounting and measured budgets across live/protected/leased PCM, queues,
+- Conservative silence detection is implemented in the November 26 checkpoint at the top of `ai/status.md`:
+  the RMS 0.1/0.22 regression abstains, uniform quiet/noise is covered, manual cuts survive and stale proposals
+  are rejected by source/edit identity. Saved parameter UI was already fixed and was not reimplemented.
+  Follow this remaining order:
+  1. Aggregate resource accounting and measured budgets across live/protected/leased PCM, queues,
      waveform/preview caches, exports and retry staging. Low-space, cleanup, crash/no-backup and repeated
      or unattended runs must be tested. Audit remaining settings/status/unsupported-device/locale parity.
-  3. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
+  2. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
      screenshot/audio, modern permission/FGS behavior, paused/ongoing speech and Refresh, retention limits,
      missing-middle refusal, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
-  4. Disposable local AnkiDroid/desktop collection acceptance: audible exported clips, updates, preserving
+  3. Disposable local AnkiDroid/desktop collection acceptance: audible exported clips, updates, preserving
      existing audio with Without audio, and errors/retries. Never access or sync the owner's collection.
-  5. Final phone UX/audibility, settings/translations and affected/full regression on the minified build.
-     Current evidence is 245 page, 353 overlay, 291 app cases and 19 isolated native cases plus a final
-     short-layout touch rerun. It does not certify all physical-device or endurance behavior.
+  4. Final phone UX/audibility, settings/translations and affected/full regression on the minified build.
+     Current software evidence is 247 page, 120 core-media, 353 overlay and 291 app cases with affected
+     lint/build gates. The previous 19 isolated native cases were not rerun for this checkpoint and do not
+     certify all physical-device or endurance behavior.
 - Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite
   is authorized by this handoff. Existing core session/editor/codec/Anki ownership repairs remain in place.
 - Latest APK, matching dev signer, mapping and build recipe are in the delivery receipt below. Use the

@@ -7,6 +7,29 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Conservative silence separation and proposal identity — 2026-11-26
+
+The review fixture with RMS 0.10 background and a one-second RMS 0.22 region became a permanent expected-empty
+regression. It failed before the repair: contrast 2.2 passed the old 2.0 gate, but the resulting 0.25 quiet
+threshold exceeded even the louder region. Both manual cuts and leading-quiet refinement now share a separation
+calculation that requires a 3.0 ratio between the 90th-percentile sound level and 15th-percentile noise floor.
+The quiet threshold is twice the noise floor, retaining the existing 0.015 absolute minimum. This leaves a margin
+between accepted sound and the threshold instead of admitting a signal that the threshold itself classifies as
+entirely quiet. Digital-zero noise retains the previous absolute-threshold path.
+
+Additional fixtures cover uniformly quiet nonzero audio, deterministic uniform noise and a valid 4:1 sound/background
+pause with normal edge padding. Existing zero-silence, minimum-duration and leading-quiet cases remain unchanged.
+
+Proposal identity is enforced at both ends. Native analysis captures source and edit revisions; Refresh cancels
+analysis and a result is sent only if both identities still match. The page invalidates pending/displayed proposals
+on manual edit, Undo, a changed Refresh source, a new search and Dismiss. Accept copies fresh proposals before
+invalidation and appends them to, rather than replacing, existing manual cuts.
+
+Evidence: focused detector and page regressions were red before their fixes. Final results are 120 core-media,
+353 overlay, 291 app and 247 page cases with no failures. Affected unit/lint/app/test-APK/release-vital checks pass
+in 4m45s. Logs are ignored under `testdata/local-research/audio-repair-2026-11-25/`. No new Android-native,
+physical-source or local-Anki acceptance was run; aggregate resources and those gates remain open.
+
 ## Ready-snapshot initial refinement and in-flight edits — 2026-11-22
 
 An actual WebView/PCM fixture holds Ready while speech arrives after seven seconds of quiet. Production
