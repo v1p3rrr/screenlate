@@ -60,8 +60,10 @@ class PcmBlockQueueTest {
         assertThat(queue.isDrained).isFalse()
         queue.close()
         assertThat(queue.poll()).isNull()
+        assertThat(queue.retainedBytes).isEqualTo(4)
         assertThat(borrowed.bytes).isEqualTo(byteArrayOf(1, 2, 3, 4))
         borrowed.close()
+        assertThat(queue.retainedBytes).isEqualTo(0)
         assertThat(queue.isDrained).isTrue()
     }
 

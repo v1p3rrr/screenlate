@@ -28,6 +28,8 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
     val failure: PcmQueueFailure? @Synchronized get() = fault
     val hasPending: Boolean @Synchronized get() = ready.isNotEmpty()
     val isDrained: Boolean @Synchronized get() = sealed && ready.isEmpty() && borrowed == 0
+    val retainedBytes: Long
+        @Synchronized get() = (free.size + ready.size + borrowed).toLong() * blockBytes
 
     @Synchronized
     fun offer(firstFrame: Long, pcm: ByteArray, count: Int = pcm.size): Boolean {

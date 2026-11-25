@@ -4550,3 +4550,14 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   Test package removed and owned silent headless AVD powered off. No long endurance or physical-source run is claimed.
 - Partial REC41/50/51 evidence only; keep their rows N. Queue/preview/TTS/codec-native aggregate memory, unattended/
   physical plateaus and the full cleanup/fault/device matrix remain open.
+
+## PCM queue pool released after capture stops (2026-11-26)
+
+- Coordinator coverage observes the configured queue pool at start, zero retained queue bytes after an ordinary
+  accepted-prefix drain/stop, and byte-exact protected snapshot reads afterward. Queue coverage proves that close
+  drops unborrowed storage but preserves and accounts for a borrowed block until that block is returned.
+- Focused PcmBlockQueue/PcmStorageCoordinator checks pass. Final 132 core-media, 354 overlay and 291 app unit cases
+  pass with zero failures/errors; affected unit/lint/app/test-APK/release-vital checks pass in 3m13s. Final log:
+  ignored resource-queue-final-gates.log under the November 25 evidence directory. No new native/device run.
+- Partial REC41/50/51 evidence only; keep their rows N. Preview/TTS/codec-native accounting, unattended/physical
+  plateaus and the full cleanup/fault/device matrix remain open.

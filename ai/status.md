@@ -1,5 +1,21 @@
 # Status
 
+## PCM queue pool released after capture stops (2026-11-26)
+
+- `PcmStorageCoordinator.stop()` now closes the bounded block queue immediately after draining its accepted prefix.
+  Sealing still prevents new offers, including from a capture worker that outlives the stop timeout; queued PCM is
+  drained before closure and retained history/snapshots are not deleted. The capture scratch array remains owned by
+  its worker until that worker exits.
+- The production queue pool is 30 * 9,600 = 288,000 bytes. `PcmBlockQueue.retainedBytes` accounts for free, ready
+  and borrowed arrays; after close, only an already borrowed block remains valid/accounted until its own close.
+  Coordinator regressions prove the 2,000-byte configured fixture pool at start, zero queue bytes after an ordinary
+  drained stop and byte-exact snapshot reads afterward. Queue coverage proves borrowed-buffer validity and release.
+- Focused queue/storage checks pass. Final checks: 132 core-media, 354 overlay and 291 app cases with zero
+  failures/errors. Affected unit/lint/app/test-APK/release-vital gates pass in 3m13s
+  (`resource-queue-final-gates.log`, ignored November 25 evidence). No new native/device/endurance run.
+- Next F work is preview/TTS workspace accounting and remaining codec native/aggregate plateau measurements, broader
+  cleanup/fault coverage and settings/locale parity. REC50/51 remain N; this is not complete resource acceptance.
+
 ## Single waveform cache and bounded streaming analysis (2026-11-26)
 
 - `SentenceRecorder` now retains one rebuildable waveform pyramid across current and leased contexts instead of one

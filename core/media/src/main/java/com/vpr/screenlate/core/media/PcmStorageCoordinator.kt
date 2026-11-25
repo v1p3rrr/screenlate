@@ -75,6 +75,7 @@ internal class PcmStorageCoordinator(
     val committedEndFrame: Long get() = history?.committedEnd ?: 0L
     val retainedBytes: Long get() = history?.bytes ?: 0L
     val retainedFiles: Int get() = history?.files ?: 0
+    val queueBufferBytes: Long get() = queue?.retainedBytes ?: 0L
     val isReleased: Boolean get() = terminated
     val hasActiveInput: Boolean get() = !captureFinished || !stopFinished
 
@@ -142,6 +143,7 @@ internal class PcmStorageCoordinator(
         if (currentState == PcmCoordinatorState.RUNNING) publish(PcmCoordinatorState.STOPPING)
         stopInput()
         drain()
+        queue?.close()
         timeline?.stop(processingTime(stopMillis), endReason())
         retain(committedEndFrame)
         if (failureReason == null) publish(PcmCoordinatorState.STOPPED)

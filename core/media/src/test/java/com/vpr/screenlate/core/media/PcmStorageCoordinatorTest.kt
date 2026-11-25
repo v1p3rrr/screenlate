@@ -45,6 +45,7 @@ class PcmStorageCoordinatorTest {
             val started = coordinator.start(source)
             assertThat(started).isTrue()
             assertThat(coordinator.currentState).isEqualTo(PcmCoordinatorState.RUNNING)
+            assertThat(coordinator.queueBufferBytes).isEqualTo(config.maxQueueBytes.toLong())
 
             // Let source emit some blocks (at least 200 frames = 4 blocks)
             source.emitFrames(200)
@@ -83,6 +84,7 @@ class PcmStorageCoordinatorTest {
             // Stopping capture preserves the current context
             coordinator.stop(10_500L)
             assertThat(coordinator.currentState).isEqualTo(PcmCoordinatorState.STOPPED)
+            assertThat(coordinator.queueBufferBytes).isEqualTo(0)
 
             // We can still read the snapshot after stop
             coordinator.snapshot(AudioRange(0, 100)).use { snapshot ->

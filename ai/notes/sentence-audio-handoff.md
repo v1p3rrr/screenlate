@@ -14,15 +14,16 @@ parts are implemented. Do not restart them or infer the current usage limit from
   product decisions in `ai/plans/2026-11-19-sentence-audio-recording.md`. The review and engineering notes
   remain relevant. The approved November 24 compact disclosure/scrolling changes supplement the prototype.
   Prototype state such as 5/3/2 does not change the approved production defaults of 5/5/2 minutes.
-- Conservative silence detection, aggregate PCM storage admission, bounded export/retry workspace and bounded waveform/
-  analysis memory are implemented in the November 26 checkpoints at the top of `ai/status.md`. Existing provisional
-  128 MiB / 1,500-file PCM limits are shared across live/leased sessions. One rebuildable waveform pyramid is retained
-  across contexts; silence analysis is serialized, primitive-array based and capped at 30 minutes. Do not reimplement
-  these or the saved silence UI. Follow this remaining order:
-  1. Finish aggregate queue/preview/TTS/codec workspace accounting and pending-note cleanup. Export/retry staging is
-     bounded on its current path, but preview/queue/TTS RAM, codec native memory and unattended plateau measurements
-     remain. Cover broader low-space/cleanup/crash/no-backup/repeated runs and audit remaining settings/status/
-     unsupported-device/locale parity.
+- Conservative silence detection, aggregate PCM storage admission, bounded export/retry workspace, bounded waveform/
+  analysis memory and stopped-session queue-pool release are implemented in the November 26 checkpoints at the top of
+  `ai/status.md`. Existing provisional 128 MiB / 1,500-file PCM limits are shared across live/leased sessions. One
+  rebuildable waveform pyramid is retained across contexts; silence analysis is serialized, primitive-array based and
+  capped at 30 minutes. Stop drains accepted PCM then releases the 288,000-byte default queue pool without deleting
+  history. Do not reimplement these or the saved silence UI. Follow this remaining order:
+  1. Finish aggregate preview/TTS/codec workspace accounting and pending-note cleanup. Export/retry staging is bounded
+     on its current path and stopped queue pools are released, but preview/TTS RAM/workspace, codec native memory and
+     unattended plateau measurements remain. Cover broader low-space/cleanup/crash/no-backup/repeated runs and audit
+     remaining settings/status/unsupported-device/locale parity.
   2. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
      screenshot/audio, modern permission/FGS behavior, paused/ongoing speech and Refresh, retention limits,
      missing-middle refusal, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.

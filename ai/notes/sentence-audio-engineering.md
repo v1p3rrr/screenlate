@@ -7,6 +7,26 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## PCM queue pool released after capture stops — 2026-11-26
+
+A production `PcmBlockQueue` preallocates 30 blocks of 9,600 bytes, or 288,000 bytes per started coordinator. The
+capture worker separately owns one 9,600-byte scratch array until it exits. Previously a stopped coordinator retained
+the entire queue pool while its protected PCM/context remained leased, even though no further capture was possible.
+
+`PcmStorageCoordinator.stop()` now performs the existing seal/stop-input and accepted-prefix drain, then closes the
+queue before timeline retention/publication. Queue close clears free and ready arrays. An already borrowed block stays
+readable and is counted until returned; a capture worker that survives the bounded stop timeout keeps its own queue
+reference and scratch array, but all later offers fail because the queue was sealed before the drain. No PCM history or
+snapshot is released by this queue cleanup.
+
+`PcmBlockQueue.retainedBytes` reports `(free + ready + borrowed) * blockBytes`; the coordinator exposes it internally
+as `queueBufferBytes`. Regressions cover configured-pool accounting after start, zero retained queue bytes after an
+ordinary drained stop with byte-exact snapshots, and a borrowed 4-byte block remaining valid/accounted after queue
+close until its own close. Focused queue/storage checks and final 132 core-media, 354 overlay and 291 app unit cases
+pass. Affected unit/lint/app/test-APK/release-vital checks pass in 3m13s (`resource-queue-final-gates.log`, ignored
+November 25 evidence folder). No new native/device/endurance run; preview/TTS/codec-native accounting and physical/
+unattended plateaus remain open.
+
 ## Single waveform cache and bounded streaming analysis — 2026-11-26
 
 The former `ContextOwner.waveformIndex` made the nominal per-index ceiling additive across every retained context.
