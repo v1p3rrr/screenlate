@@ -433,16 +433,17 @@ are investigated as findings, not converted into an invented new audio performan
 |---|---|---|
 | A regression baseline | Partial | Permanent core regressions landed with fixes; 98 core-media tests, 8 AudioPlayer, 4 playback-owner, 12 popup playback and 8 new editor/pending-operation cases pass; identified editor DOM regressions and frozen-target fake-backend cases are permanent. Full lifecycle fixtures remain. |
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
-| C pending operation/protocol | Software implemented; E/G gate open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. 345 overlay/223 page and 4 isolated native checks pass. E still supplies recoverable media-copy UI; G supplies real service/source/gesture/device acceptance. |
+| C pending operation/protocol | Software implemented; integration acceptance open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. E recovery UI is also implemented; actual service/device acceptance remains in G. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
 | E Anki recovery | Software implemented; local-Anki acceptance open | Editor/source/encoding retained across copy failure; cached transfers, Retry/Without/Cancel, actual FileProvider path, mixed-field notice and single submission implemented. 226 core-Anki/353 overlay/291 app/237 page and 18 native editor/crop cases pass with affected gates. Actual disposable collection playback/updates remain. |
-| F settings/resources | Pending | Numeric production policy still requires measurement. |
-| G device/regression | Pending | Previous test passes do not certify repaired paths. |
+| F settings/resources | Partially implemented; substantive work remains | Saved silence parameter UI, zero margin and ordered settings reads/writes fixed November 24. Conservative detector/abstention, measured aggregate resource policy, cleanup and remaining settings/locale parity still require work. |
+| G device/regression | Partially verified; full acceptance open | November 24: 245 page/353 overlay/291 app cases, affected lint/vital and minified Dev build pass. 19 isolated native cases plus final short-layout touch rerun pass. Actual sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
 
-D software/checkpoint gates pass; continue E.
-Continue E pre-note transfer recovery, F resource/settings policy
-and G acceptance autonomously after coherent checkpoints. C lifecycle software is implemented; its full
-integration gate remains dependent on E's recovery UI and actual service/device portions of G.
+Current continuation (updated 2026-11-25): E pre-note transfer recovery and the November 24 compact touch
+repair are implemented. Do not redo them. Next authorized implementation is conservative silence detection,
+then aggregate resource/settings policy, actual platform/source and disposable local-Anki checks, and final
+physical/endurance/regression acceptance. Music is deferred. See the current resume section in
+`ai/notes/sentence-audio-handoff.md` for the exact checkpoint, evidence, build recipe and constraints.
 
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
@@ -456,6 +457,8 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-25: Consolidated the current handoff and corrected stale C/F/G statuses and the obsolete
+  instruction to implement E recovery. No product decisions or application code changed.
 - 2026-11-24: Recorded owner's successful capture/Anki attachment and unconfirmed preview result.
   Owner approved secondary-tool disclosure plus directional scrolling and a useful free scroll zone;
   clarified optional music-only gap detection. Reproduced out-of-phrase cut handles and corrected their

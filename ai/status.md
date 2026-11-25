@@ -1,5 +1,15 @@
 # Status
 
+## Resume index consolidated (2026-11-25)
+
+- Current sentence-audio source: `c2eced4f`; compact Dev delivery receipt: `e1e361dd`. Application code
+  unchanged since the November 24 delivery. Start at the **Current resume instructions** section in
+  `ai/notes/sentence-audio-handoff.md`; older checkpoints there are explicitly historical.
+- Execution plan section 8 now distinguishes implemented transfer recovery/saved silence UI from the
+  remaining detector/resource work and actual device/local-Anki/full acceptance. Next order and safety,
+  build, branch and usage constraints are recorded. Music remains deferred.
+- Owner requested confirming handoff completeness only; no further implementation or tests started.
+
 
 ## Compact Dev delivery after touch repair (2026-11-24)
 

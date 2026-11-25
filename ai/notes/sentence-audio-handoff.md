@@ -1,5 +1,42 @@
 # Sentence audio implementation handoff — 2026-11-19
 
+## Current resume instructions (2026-11-25)
+
+This section and the November 24 delivery receipt supersede older checkpoints below. Older instructions
+to implement transfer recovery, waveform loading or saved silence parameter UI are historical: these
+parts are implemented. Do not restart them or infer the current usage limit from historical percentages.
+
+- Work on `codex/sentence-audio-recording`. Latest application source is `c2eced4f`; delivery documentation
+  checkpoint is `e1e361dd`. Verify HEAD and dirty state before editing; preserve unrelated submodule dirt
+  and the two untracked `docs/images/photo_*2026-11-10*.jpg` files. Push only the feature branch.
+- Read `ai/status.md`, the execution plan `ai/plans/2026-11-21-sentence-audio-repair.md` and the binding
+  product decisions in `ai/plans/2026-11-19-sentence-audio-recording.md`. The review and engineering notes
+  remain relevant. The approved November 24 compact disclosure/scrolling changes supplement the prototype.
+  Prototype state such as 5/3/2 does not change the approved production defaults of 5/5/2 minutes.
+- Current user request is to ensure a complete handoff, not to begin another implementation block.
+  On authorized continuation, follow this remaining order:
+  1. Conservative silence detection: add the review's RMS 0.1/0.22 regression, abstain on uncertain or
+     uniform audio, preserve manual cuts and reject stale proposals. Saved parameter UI is already fixed.
+  2. Aggregate resource accounting and measured budgets across live/protected/leased PCM, queues,
+     waveform/preview caches, exports and retry staging. Low-space, cleanup, crash/no-backup and repeated
+     or unattended runs must be tested. Audit remaining settings/status/unsupported-device/locale parity.
+  3. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
+     screenshot/audio, modern permission/FGS behavior, paused/ongoing speech and Refresh, retention limits,
+     missing-middle refusal, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
+  4. Disposable local AnkiDroid/desktop collection acceptance: audible exported clips, updates, preserving
+     existing audio with Without audio, and errors/retries. Never access or sync the owner's collection.
+  5. Final phone UX/audibility, settings/translations and affected/full regression on the minified build.
+     Current evidence is 245 page, 353 overlay, 291 app cases and 19 isolated native cases plus a final
+     short-layout touch rerun. It does not certify all physical-device or endurance behavior.
+- Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite
+  is authorized by this handoff. Existing core session/editor/codec/Anki ownership repairs remain in place.
+- Latest APK, matching dev signer, mapping and build recipe are in the delivery receipt below. Use the
+  compact ARM64 debug-signed release recipe for future Dev deliveries; ordinary debug APK is superseded.
+- Test packages were removed and the owned silent headless emulator powered off. Do not use force-stop
+  or run app instrumentation against the owner's package. Use isolated fixtures/collections.
+- For a long continuation, check current account usage; the thread's stop rule is less than 2% weekly
+  remaining, without consuming resets/credits. The older memory rule and usage snapshots are historical.
+
 
 ## Compact Dev delivery after touch repair (2026-11-24)
 
@@ -16,6 +53,8 @@
 - No phone installation or owner Anki access. Owner-device finger comfort/audibility and previously
   documented full-feature acceptance remain pending; music work explicitly deferred.
 
+
+## Historical checkpoints (superseded by current resume instructions)
 
 Delivery correction (2026-11-23): ordinary debug APK superseded by the usual compact ARM64 Dev release:
 testdata/local-research/builds/screenlate-dev-3d2835b0-min.apk (25367696 bytes, 1.1.0-3d2835b0-min).
