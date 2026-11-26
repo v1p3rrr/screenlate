@@ -4587,3 +4587,21 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   the November 25 evidence directory. No real process-crash, native/device or endurance run was performed.
 - Partial REC31/32/33/41/50/51 evidence only; keep their rows N. Actual crash/restart, external-engine transient
   writes, codec native memory and physical/unattended plateaus remain open.
+
+
+## Silence settings validation and 27-locale parity (2026-11-26)
+
+- Restored negative and overflowing silence preferences were red before validation: two of eight focused repository
+  cases failed because the invalid values were accepted. Restoration now substitutes the corresponding 1,500/150 ms
+  default independently; constructor/setter checks enforce minimum pause 100–30,000 ms and margin 0–2,000 ms.
+- Compose, native editor validation and page input attributes now expose the same ranges. The former Compose 10-second,
+  page 5-second and page 500-ms limits no longer disagree with the existing native 30-second/2,000-ms bounds.
+- Twenty-three locales received translations for 52 `audio_editor_*` placeholders and seven audio attachment-menu
+  commands; German, Russian and Japanese were already translated. The 27-locale audit has no remaining audio placeholders;
+  English-identical entries are limited to formats, units, proper names and shared words. Apostrophe escaping was checked.
+- Final 231 core-Anki, 135 core-media, 354 overlay, 291 app and 247 page cases pass with zero failures/errors.
+  `TranslationsTest` and affected unit/lint/app/test-APK/release-vital checks pass in 3m32s. Final log: ignored
+  settings-locales-final-gates.log under the November 25 evidence directory. No native/device/endurance run was performed.
+- Partial REC31/32/33/50/51 evidence only; keep their rows N. Complete reset/restore, crash/restart, real sources/routes,
+  disposable local Anki, physical audibility/UX and unattended/endurance acceptance were not run. Translation coverage
+  is not an independent native-speaker review.

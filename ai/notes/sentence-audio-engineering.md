@@ -7,6 +7,37 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Silence settings validation and locale parity — 2026-11-26
+
+`RecordingSettings` now validates `MIN_SILENCE_RANGE = 100L..30_000L` and
+`SILENCE_MARGIN_RANGE = 0L..2_000L`. Repository restoration validates each stored value independently and substitutes
+only that value's existing default (1,500 ms or 150 ms); both setters reject values outside the same ranges. This
+prevents malformed restored preferences from reaching the detector while preserving the other valid setting.
+
+The Compose dialog previously coerced minimum pause to 10 seconds although the native editor admitted 30 seconds. The
+page inputs separately advertised 0.5–5.0 seconds and a 500 ms maximum margin although the native guard admitted
+0.1–30 seconds and 2,000 ms. Compose, native guard and HTML attributes now use the shared/native ranges. The native
+guard converts to milliseconds before range validation, so non-finite and overflowing inputs cannot be admitted. No
+default or approved product decision changed.
+
+Three repository regressions cover restored negative/overflow values, a separate overflowing minimum pause and both
+ends of each valid range. The focused pre-fix run had eight tests with the two restored-invalid cases failing
+(`settings-invalid-red.log`); the focused post-fix run passes all eight (`settings-focused-green.log`).
+
+The locale audit found 52 English `audio_editor_*` placeholders in each of 23 locales; German, Russian and Japanese
+already had translations. Forty-three locale-specific translations plus nine unique existing-translation reuses
+replaced those placeholders. Seven audio attachment-menu commands were also translated in the same 23 locales. The
+expanded audit covers 99 related app keys and 84 overlay keys across 27 locale files. Remaining English-identical
+values are format strings, units, proper names or shared words such as Audio/Start/Pause/Original. Android apostrophes
+in touched keys have exactly one escaping backslash; a double-escaped Ukrainian value was reproduced and corrected.
+These checks establish resource consistency, not independent native-speaker translation quality.
+
+Final evidence: 231 core-Anki, 135 core-media, 354 overlay and 291 app unit cases, zero failures/errors; 247 page cases
+pass. `TranslationsTest` passes. The combined unit/lint/app/test-APK/release-vital gate passes in 3m32s
+(`settings-locales-final-gates.log`, ignored November 25 evidence). No new native/device/endurance run was performed.
+REC31/32/33/50/51 remain N. External-engine transient writes, codec native memory, actual crash/restart, real sources/
+routes, disposable local Anki, physical audibility/UX and unattended plateaus remain open.
+
 ## Sentence export orphan cleanup and no-backup audit — 2026-11-26
 
 The encoded `screenlate_sentence_*.opus` path had operation/retry cleanup but no owner after process death.

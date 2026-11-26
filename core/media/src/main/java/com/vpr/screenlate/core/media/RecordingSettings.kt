@@ -16,8 +16,15 @@ data class RecordingSettings(
     val minSilenceMillis: Long = DEFAULT_MIN_SILENCE_MILLIS,
     val silenceMarginMillis: Long = DEFAULT_SILENCE_MARGIN_MILLIS,
 ) {
+    init {
+        require(minSilenceMillis in MIN_SILENCE_RANGE)
+        require(silenceMarginMillis in SILENCE_MARGIN_RANGE)
+    }
+
     companion object {
         const val DEFAULT_MIN_SILENCE_MILLIS = 1500L
         const val DEFAULT_SILENCE_MARGIN_MILLIS = 150L
+        val MIN_SILENCE_RANGE = 100L..30_000L
+        val SILENCE_MARGIN_RANGE = 0L..2_000L
     }
 }

@@ -1,5 +1,22 @@
 # Status
 
+## Silence settings validation and 27-locale parity (2026-11-26)
+
+- Silence settings now share explicit ranges everywhere: minimum pause 100–30,000 ms and edge margin 0–2,000 ms.
+  Invalid restored negative/overflow values independently fall back to the existing 1,500/150 ms defaults; setters and
+  the data class reject out-of-range values. Compose, native editor guards and page input attributes use the same bounds,
+  removing the app's former 10-second ceiling and the page's former 5-second/500-ms attributes. Defaults are unchanged.
+- Replaced the 52 English `audio_editor_*` placeholders and seven English audio attachment-menu commands in each of the
+  23 affected overlay locales. German, Russian and Japanese were already translated, so all 27 locales now have resource
+  coverage. The remaining English-identical audit entries are formats, units, proper names or ordinary shared words.
+  Android apostrophe escaping is normalized in the touched keys. This is not an independent native-speaker review.
+- Two restored-invalid regressions were red before validation and now pass. Final checks: 231 core-Anki, 135 core-media,
+  354 overlay, 291 app and 247 page cases pass with zero failures/errors. `TranslationsTest`, affected unit/lint/app/
+  test-APK/release-vital gates pass in 3m32s (`settings-locales-final-gates.log`, ignored November 25 evidence).
+- REC31/32/33/50/51 remain N: this was not a complete reset/restore, crash/restart, device or acceptance run. External-TTS
+  transient writes, codec native memory, actual lifecycle/source/route checks, disposable local Anki, physical audibility/
+  UX and unattended/endurance plateaus remain open. Music/VAD/neural processing stays deferred.
+
 ## Sentence export orphan cleanup and no-backup audit (2026-11-26)
 
 - A process-scoped `SentenceAudioStaging` owner now removes only abandoned `screenlate_sentence_*.opus` files before

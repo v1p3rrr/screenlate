@@ -598,9 +598,9 @@ var AudioEditor = (() => {
         showDialog(
             labelOf('audio_editor_silence_title', 'Silence search'),
             `<label>${labelOf('audio_editor_min_pause', 'Minimum pause, s')}` +
-            `<input id="sl-silence-min" type="number" min="0.5" max="5.0" step="0.1" value="${state.minPauseSeconds}"></label>` +
+            `<input id="sl-silence-min" type="number" min="0.1" max="30" step="0.1" value="${state.minPauseSeconds}"></label>` +
             `<label>${labelOf('audio_editor_edge_margin', 'Margin at each edge, ms')}` +
-            `<input id="sl-edge-margin" type="number" min="0" max="500" step="50" value="${state.edgeMarginMillis}"></label>`,
+            `<input id="sl-edge-margin" type="number" min="0" max="2000" step="50" value="${state.edgeMarginMillis}"></label>`,
             [
                 { label: labelOf('audio_editor_cancel', 'Cancel') },
                 {

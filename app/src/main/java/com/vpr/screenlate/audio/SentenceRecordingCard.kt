@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.media.RecordingLimits
+import com.vpr.screenlate.core.media.RecordingSettings
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
@@ -222,7 +223,10 @@ private fun SilenceParamsDialog(
                 onClick = {
                     val minSec = minSecText.toFloatOrNull() ?: (minSilenceMillis / 1000f)
                     val edgeMs = edgeMsText.toLongOrNull() ?: edgeMarginMillis
-                    onSave((minSec * 1000).toLong().coerceIn(100L, 10_000L), edgeMs.coerceIn(0L, 2000L))
+                    onSave(
+                        (minSec * 1000).toLong().coerceIn(RecordingSettings.MIN_SILENCE_RANGE),
+                        edgeMs.coerceIn(RecordingSettings.SILENCE_MARGIN_RANGE),
+                    )
                 },
             ) {
                 Text(stringResource(R.string.action_save))

@@ -24,8 +24,12 @@ class RecordingSettingsRepository @Inject constructor(
         val validatedLimits = runCatching {
             RecordingLimits(historyMillis = h, waitingMillis = w, editorMillis = e)
         }.getOrDefault(RecordingLimits())
-        val minSilence = prefs[MIN_SILENCE_MILLIS] ?: RecordingSettings.DEFAULT_MIN_SILENCE_MILLIS
-        val silenceMargin = prefs[SILENCE_MARGIN_MILLIS] ?: RecordingSettings.DEFAULT_SILENCE_MARGIN_MILLIS
+        val minSilence = prefs[MIN_SILENCE_MILLIS]
+            ?.takeIf { it in RecordingSettings.MIN_SILENCE_RANGE }
+            ?: RecordingSettings.DEFAULT_MIN_SILENCE_MILLIS
+        val silenceMargin = prefs[SILENCE_MARGIN_MILLIS]
+            ?.takeIf { it in RecordingSettings.SILENCE_MARGIN_RANGE }
+            ?: RecordingSettings.DEFAULT_SILENCE_MARGIN_MILLIS
         RecordingSettings(
             recordingEnabled = enabled,
             defaultEditor = defaultEditor,
@@ -56,10 +60,12 @@ class RecordingSettingsRepository @Inject constructor(
     }
 
     suspend fun setMinSilenceMillis(millis: Long) {
+        require(millis in RecordingSettings.MIN_SILENCE_RANGE)
         dataStore.edit { it[MIN_SILENCE_MILLIS] = millis }
     }
 
     suspend fun setSilenceMarginMillis(millis: Long) {
+        require(millis in RecordingSettings.SILENCE_MARGIN_RANGE)
         dataStore.edit { it[SILENCE_MARGIN_MILLIS] = millis }
     }
 

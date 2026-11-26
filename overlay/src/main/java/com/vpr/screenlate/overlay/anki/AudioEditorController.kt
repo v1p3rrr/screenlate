@@ -10,6 +10,7 @@ import com.vpr.screenlate.core.media.AudioEdit
 import com.vpr.screenlate.core.media.AudioRange
 import com.vpr.screenlate.core.media.AudioTimelineView
 import com.vpr.screenlate.core.media.PreviewMode
+import com.vpr.screenlate.core.media.RecordingSettings
 import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import com.vpr.screenlate.core.media.RetentionStage
 import com.vpr.screenlate.core.media.RetentionEnd
@@ -422,7 +423,11 @@ class AudioEditorController(
                 }
             }
             "silenceSettings" -> {
-                if (command.minPauseSeconds.isFinite() && command.minPauseSeconds in 0.1f..30f && command.edgeMarginMillis in 0..2000) {
+                val minSilenceMillis = (command.minPauseSeconds * 1000).toLong()
+                if (command.minPauseSeconds.isFinite() &&
+                    minSilenceMillis in RecordingSettings.MIN_SILENCE_RANGE &&
+                    command.edgeMarginMillis.toLong() in RecordingSettings.SILENCE_MARGIN_RANGE
+                ) {
                     session.silenceSettings?.cancel()
                     session.silenceSettings = operation.scope.launch {
                         recordingSettings?.setMinSilenceMillis((command.minPauseSeconds * 1000).toLong())

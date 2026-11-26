@@ -436,14 +436,15 @@ are investigated as findings, not converted into an invented new audio performan
 | C pending operation/protocol | Software implemented; integration acceptance open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. E recovery UI is also implemented; actual service/device acceptance remains in G. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
 | E Anki recovery | Software implemented; local-Anki acceptance open | Editor/source/encoding retained across copy failure; cached transfers, Retry/Without/Cancel, actual FileProvider path, mixed-field notice and single submission implemented. 226 core-Anki/353 overlay/291 app/237 page and 18 native editor/crop cases pass with affected gates. Actual disposable collection playback/updates remain. |
-| F settings/resources | Partially implemented; substantive work remains | Saved silence UI, conservative detector/stale proposals, aggregate live/leased PCM admission and bounded export/retry workspace are implemented. Waveform/analysis allocations and stopped queue pools are bounded/released; private TTS has admission/result limits and sentence Opus orphans have process-first-use cleanup. Android no-backup storage/rules are audited. External-engine transient writes, codec native memory, actual crash/lifecycle coverage and settings/locale parity remain. |
-| G device/regression | Partially verified; full acceptance open | November 26: 247 page/231 core-Anki/132 core-media/354 overlay/291 app cases and affected lint/vital/build gates pass after the staging checkpoint; no new native run. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s. Export API30 passed two active codec cases and skipped its long case. Actual crash/sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
+| F settings/resources | Partially implemented; substantive work remains | Saved silence UI, conservative detector/stale proposals, aggregate live/leased PCM admission and bounded export/retry workspace are implemented. Waveform/analysis allocations and stopped queue pools are bounded/released; private TTS has admission/result limits and sentence Opus orphans have process-first-use cleanup. Android no-backup storage/rules are audited. Silence restoration/setters and all editor surfaces share 100–30,000 ms and 0–2,000 ms bounds; editor/menu resources cover 27 locales. External-engine transient writes, codec native memory, actual crash/lifecycle and complete reset/restore/device coverage remain. |
+| G device/regression | Partially verified; full acceptance open | November 26: 247 page/231 core-Anki/135 core-media/354 overlay/291 app cases and affected lint/vital/build gates pass in 3m32s after the settings/locale checkpoint; no new native run. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s. Export API30 passed two active codec cases and skipped its long case. Actual crash/sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
 
 Current continuation (updated 2026-11-26): E pre-note transfer recovery, compact touch repair, conservative silence,
 shared PCM admission, bounded export/retry workspace, bounded waveform/analysis memory, stopped-session queue-pool
 release, private-TTS admission/result limits and sentence-export orphan cleanup are implemented. Preview ownership and
-Android no-backup rules are audited. Do not redo them. Continue external-engine/codec native resource evidence, actual
-crash/lifecycle checks and settings parity, then actual source and disposable local-Anki checks, and final physical/
+Android no-backup rules are audited. Silence restoration/setters and all editor surfaces share validated ranges; editor/
+menu resources cover 27 locales. Do not redo them. Continue external-engine/codec native resource evidence, actual crash/
+lifecycle and complete reset/restore checks, then actual source and disposable local-Anki checks, and final physical/
 endurance/regression acceptance. Music is deferred. See `ai/notes/sentence-audio-handoff.md` for current constraints.
 
 Read this plan, original product decisions, review,
@@ -458,6 +459,11 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-26: Validated restored and newly saved silence settings against shared 100–30,000 ms minimum-pause and
+  0–2,000 ms margin ranges in the data class, repository, Compose and editor page/native guards. Replaced editor/menu
+  English placeholders in 23 locales, completing resource coverage across 27 locales. Added red/green restoration and
+  boundary regressions; defaults and product decisions are unchanged. Full device/reset/restore and independent
+  translation acceptance remain open.
 - 2026-11-26: Added one process-scoped sentence staging owner that removes orphaned Opus exports before its first
   creation, preserves live Retry files and rejects failed orphan deletion. Added real-file cleanup regressions and
   audited the fully disabled Android backup/no-backup storage configuration. No product decision changed; actual crash/

@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.media
 
+import androidx.datastore.preferences.core.edit
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -71,5 +72,55 @@ class RecordingSettingsRepositoryTest {
         val settings = repository.settings.first()
         assertThat(settings.minSilenceMillis).isEqualTo(2000L)
         assertThat(settings.silenceMarginMillis).isEqualTo(200L)
+    }
+
+    @Test
+    fun restoredInvalidSettingsUseDefaults() = runTest {
+        val dataStore = MemoryDataStore()
+        val repository = RecordingSettingsRepository(dataStore)
+        dataStore.edit {
+            it[RecordingSettingsRepository.HISTORY_MILLIS] = -1L
+            it[RecordingSettingsRepository.MIN_SILENCE_MILLIS] = -1L
+            it[RecordingSettingsRepository.SILENCE_MARGIN_MILLIS] = Long.MAX_VALUE
+        }
+
+        val settings = repository.settings.first()
+        assertThat(settings.limits).isEqualTo(RecordingLimits())
+        assertThat(settings.minSilenceMillis).isEqualTo(RecordingSettings.DEFAULT_MIN_SILENCE_MILLIS)
+        assertThat(settings.silenceMarginMillis).isEqualTo(RecordingSettings.DEFAULT_SILENCE_MARGIN_MILLIS)
+    }
+
+    @Test
+    fun restoredOverflowSilenceDurationUsesDefault() = runTest {
+        val dataStore = MemoryDataStore()
+        val repository = RecordingSettingsRepository(dataStore)
+        dataStore.edit {
+            it[RecordingSettingsRepository.MIN_SILENCE_MILLIS] = Long.MAX_VALUE
+            it[RecordingSettingsRepository.SILENCE_MARGIN_MILLIS] = -1L
+        }
+
+        val settings = repository.settings.first()
+        assertThat(settings.minSilenceMillis).isEqualTo(RecordingSettings.DEFAULT_MIN_SILENCE_MILLIS)
+        assertThat(settings.silenceMarginMillis).isEqualTo(RecordingSettings.DEFAULT_SILENCE_MARGIN_MILLIS)
+    }
+
+    @Test
+    fun silenceParameterBoundariesRemainValid() = runTest {
+        val dataStore = MemoryDataStore()
+        val repository = RecordingSettingsRepository(dataStore)
+
+        repository.setMinSilenceMillis(100L)
+        repository.setSilenceMarginMillis(0L)
+        repository.settings.first().let {
+            assertThat(it.minSilenceMillis).isEqualTo(100L)
+            assertThat(it.silenceMarginMillis).isEqualTo(0L)
+        }
+
+        repository.setMinSilenceMillis(30_000L)
+        repository.setSilenceMarginMillis(2_000L)
+        repository.settings.first().let {
+            assertThat(it.minSilenceMillis).isEqualTo(30_000L)
+            assertThat(it.silenceMarginMillis).isEqualTo(2_000L)
+        }
     }
 }
