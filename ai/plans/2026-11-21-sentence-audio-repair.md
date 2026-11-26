@@ -435,16 +435,14 @@ are investigated as findings, not converted into an invented new audio performan
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
 | C pending operation/protocol | Software implemented; integration acceptance open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. E recovery UI is also implemented; actual service/device acceptance remains in G. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
-| E Anki recovery | Software implemented; local-Anki acceptance open | Editor/source/encoding retained across copy failure; cached transfers, Retry/Without/Cancel, actual FileProvider path, mixed-field notice and single submission implemented. 226 core-Anki/353 overlay/291 app/237 page and 18 native editor/crop cases pass with affected gates. Actual disposable collection playback/updates remain. |
-| F settings/resources | Partially implemented; substantive work remains | Saved silence UI, conservative detector/stale proposals, aggregate live/leased PCM admission and bounded export/retry workspace are implemented. Waveform/analysis allocations and stopped queue pools are bounded/released; private TTS has admission/result limits and sentence Opus orphans have process-first-use cleanup. Android no-backup storage/rules are audited. Silence restoration/setters and all editor surfaces share 100–30,000 ms and 0–2,000 ms bounds; editor/menu resources cover 27 locales. External-engine transient writes, codec native memory, actual crash/lifecycle and complete reset/restore/device coverage remain. |
-| G device/regression | Partially verified; full acceptance open | November 26: 247 page/231 core-Anki/135 core-media/354 overlay/291 app cases and affected lint/vital/build gates pass in 3m32s after the settings/locale checkpoint; no new native run. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s. Export API30 passed two active codec cases and skipped its long case. Actual crash/sources/services/routes, physical audibility/UX, disposable Anki and endurance/full acceptance remain. |
+| E Anki recovery | Software implemented; local stored-media round-trip passed | Editor/source/encoding recovery and Retry/Without/Cancel remain implemented. Official AnkiDroid 2.25.3 in a fresh local API 29 collection passes text add/update and sentence Opus add, byte-identical transfer, decoding, two Without audio preservation variants and replacement; all five core-Anki device cases pass. Physical/desktop audibility and safe real provider Retry remain open. |
+| F settings/resources | Partially verified; native plateau and full matrix remain | Real process-death cleanup and file-backed API 29 reset/restore fixtures pass; 30-minute streaming export, PCM/FD cycles and external-TTS transient writes are measured. Codec descriptors remain flat, but native heap grows roughly 29–31 KB per export over 20 cycles even with forced test GC. No production GC/speculative codec change was added. Unattended plateau, remaining fault stages and physical resources stay open; REC31/32/33/50/51 remain N/partial. |
+| G device/regression | Partially verified; full acceptance open | API 29 shared screenshot/audio consent and API 24 unsupported UI/own-playback pass. Full build/unit/lint/androidTest-assembly/convention/release-vital gates pass in 2m2s; page suite is 247/247. Legacy system screenshots, API 30+/current-target FGS/source/routes, physical audibility/UX and endurance/full acceptance remain. |
 
-Current continuation (updated 2026-11-26): E pre-note transfer recovery, compact touch repair, conservative silence,
-shared PCM admission, bounded export/retry workspace, bounded waveform/analysis memory, stopped-session queue-pool
-release, private-TTS admission/result limits and sentence-export orphan cleanup are implemented. Preview ownership and
-Android no-backup rules are audited. Silence restoration/setters and all editor surfaces share validated ranges; editor/
-menu resources cover 27 locales. Do not redo them. Continue external-engine/codec native resource evidence, actual crash/
-lifecycle and complete reset/restore checks, then actual source and disposable local-Anki checks, and final physical/
+Current continuation (updated 2026-11-26): real process-death/reset-restore checks, API 29 consent, API 24 unsupported UI,
+local AnkiDroid stored-media round-trip and long/resource measurements are complete; production source did not change in
+this verification block. Do not redo them. Next diagnose the linear codec native-heap growth and cover remaining legacy
+screenshots/process stages, then modern FGS/source/lifecycle and audible local/desktop Anki checks, followed by physical/
 endurance/regression acceptance. Music is deferred. See `ai/notes/sentence-audio-handoff.md` for current constraints.
 
 Read this plan, original product decisions, review,
@@ -459,6 +457,11 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-26: Added isolated real process-death and file-backed reset/restore regressions, verified API 29 shared
+  screenshot/audio consent and API 24 unsupported UI/playback, and completed a fresh local AnkiDroid sentence-media
+  round-trip. Measured the 30-minute export, PCM/FD cycles, external-TTS transient writes and repeated codec native heap.
+  Recorded the unresolved roughly 29–31 KB/export native growth without changing production code or any product decision.
+  Full gates pass; modern FGS/source/physical/endurance acceptance remains open and REC31/32/33/50/51 stay N/partial.
 - 2026-11-26: Validated restored and newly saved silence settings against shared 100–30,000 ms minimum-pause and
   0–2,000 ms margin ranges in the data class, repository, Compose and editor page/native guards. Replaced editor/menu
   English placeholders in 23 locales, completing resource coverage across 27 locales. Added red/green restoration and

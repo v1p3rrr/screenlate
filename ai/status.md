@@ -1,5 +1,27 @@
 # Status
 
+## Device lifecycle, local Anki and resource measurements (2026-11-26)
+
+- Added test-only real process-death fixtures. A new PID removes abandoned PCM `.pcm`/`.tmp` and sentence Opus files,
+  preserves unrelated files and keeps subsequent same-process staging creations; production source did not change.
+- API 29 file-backed reset/restore passes two cases: AUDIO reset preserves capture, unrelated preferences and existing
+  scan limits; restored invalid silence values fall back independently and `recordingEnabled=true` never auto-starts.
+- A fresh API 29 package passes the real screenshot/audio consent and shared-projection test. API 24 shows only the
+  Android 10+ recording explanation while retaining playback controls; its real own-playback case also passes. Legacy
+  API 24–28 system screenshot behavior and modern API 30+/target FGS/source/route scenarios remain unverified.
+- Official AnkiDroid 2.25.3, hash/signer verified, was used only in a fresh local API 29 collection without an account
+  or sync. All five core-Anki device cases pass, including text add/update and real sentence Opus transfer, byte equality,
+  decoding, Without audio preservation and explicit replacement. Audibility and desktop Anki remain unchecked.
+- API 30 media suite passes nine cases. The separate 30-minute export completed 86,400,000 frames to 9,810,093 Opus
+  bytes in 282.176 s with 58,124 KiB peak PSS. PCM simulation retained at most 97,920,000 bytes/1,020 files and kept
+  descriptors at 71; 20 record/stop/close cycles left zero audio files and descriptors at 71. This is emulator cached IO.
+- Codec descriptors stayed flat, but native heap grew linearly over 20 encode-only cycles (3,419,472→3,972,064 bytes),
+  with forced GC/finalization (3,419,904→3,973,216) and encode/decode (3,424,640→4,015,328). This is an open API 30 x86
+  resource risk, not a proven production leak or plateau. No production GC or speculative codec change was added.
+- Full build/unit/lint/androidTest-assembly/convention/release-vital gates pass in 2m2s; all 247 page cases pass.
+  Evidence is under ignored `testdata/local-research/audio-lifecycle-2026-11-26/`. Test packages/local collection were
+  removed and owned AVDs powered off. REC31/32/33/50/51 remain N/partial; physical, unattended and full acceptance stay open.
+
 ## Silence settings validation and 27-locale parity (2026-11-26)
 
 - Silence settings now share explicit ranges everywhere: minimum pause 100–30,000 ms and edge margin 0–2,000 ms.

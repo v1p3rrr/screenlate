@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import java.util.Properties
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -86,6 +87,59 @@ class AudioExporterDeviceTest {
             val after = File("/proc/self/fd").list()?.size ?: 0
             Log.i("AudioExporterDeviceTest", "failed construction fdBefore=$before fdAfter=$after")
         } finally { output.delete() }
+    }
+
+    @Test
+    fun repeatedEncodeDecodeCyclesReleaseFilesAndRecordSettledNativeMemory() {
+        val frames = rate / 4L
+        val source = ByteArray(frames.toInt() * 2) { index ->
+            val frame = index / 2
+            val value = (sin(2 * PI * 440 * frame / rate) * 10000).toInt()
+            if (index % 2 == 0) value.toByte() else (value shr 8).toByte()
+        }
+        val edit = AudioEdit(AudioRange(0, frames))
+        val arguments = InstrumentationRegistry.getArguments()
+        val decodeInCycles = arguments.getString("decodeCycles") != "false"
+        val forceGc = arguments.getString("forceGc") == "true"
+        val pss = mutableListOf<Long>()
+        val nativeHeap = mutableListOf<Long>()
+        val descriptors = mutableListOf<Int>()
+        val started = SystemClock.elapsedRealtime()
+        repeat(20) { cycle ->
+            val output = File.createTempFile("codec-cycle-$cycle-", ".opus", context.cacheDir)
+            try {
+                ByteArrayInputStream(source).use { AudioExporter.exportOpus(it, edit, rate, output) }
+                if (decodeInCycles) assertThat(decode(output).size).isGreaterThan(0)
+                assertThat(output.length()).isGreaterThan(0)
+            } finally {
+                assertThat(output.delete()).isTrue()
+            }
+            // Test-only GC distinguishes Java finalization from retained native resources; production never forces it.
+            if (forceGc) {
+                System.gc()
+                System.runFinalization()
+            }
+            // Codec2 buffer-pool retirement is asynchronous; compare settled samples, not immediate totals.
+            SystemClock.sleep(7_000)
+            pss += Debug.getPss()
+            nativeHeap += Debug.getNativeHeapAllocatedSize()
+            descriptors += File("/proc/self/fd").list()?.size ?: -1
+        }
+        assertThat(descriptors.takeLast(3).max()).isAtMost(descriptors.first() + 4)
+        val metrics = Properties().apply {
+            setProperty("cycles", "20")
+            setProperty("settleMillisPerCycle", "7000")
+            setProperty("elapsedMillis", (SystemClock.elapsedRealtime() - started).toString())
+            setProperty("pssKiB", pss.joinToString(","))
+            setProperty("nativeHeapBytes", nativeHeap.joinToString(","))
+            setProperty("descriptors", descriptors.joinToString(","))
+            setProperty("decoded", decodeInCycles.toString())
+            setProperty("forcedGc", forceGc.toString())
+        }
+        val suffix = (if (decodeInCycles) "encode-decode" else "encode-only") + if (forceGc) "-gc" else ""
+        File(context.filesDir, "codec-cycle-metrics-$suffix.properties").outputStream().use {
+            metrics.store(it, "Repeated real Opus codec cycles")
+        }
     }
 
     @Test

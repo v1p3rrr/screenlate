@@ -4605,3 +4605,28 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
 - Partial REC31/32/33/50/51 evidence only; keep their rows N. Complete reset/restore, crash/restart, real sources/routes,
   disposable local Anki, physical audibility/UX and unattended/endurance acceptance were not run. Translation coverage
   is not an independent native-speaker review.
+
+
+## Real lifecycle, local Anki and resource measurements (2026-11-26)
+
+- Test-only real process-death fixtures pass on API 30/29: a different PID clears abandoned PCM/temp and sentence Opus
+  files, preserves unrelated files and retains later same-process exports. This is partial REC31/32 evidence, not every
+  write/export stage or memory-pressure acceptance.
+- API 29 reset/restore: `RecordingSettingsDeviceTest` passes two cases in 0.448 s. Active capture/unrelated settings/
+  existing scan limits survive reset, restored silence validates independently, and restored enabled state never starts
+  capture. Partial REC33; its row remains N pending the rest of the lifecycle matrix.
+- Fresh API 29 `CapturePermissionDeviceTest` passes in 4.036 s, covering denial/grant/revoke, both projection start orders
+  and concurrent screenshot/AudioRecord. API 24 unsupported recording UI was inspected in the real isolated app and
+  `OwnPlaybackDeviceTest` passes there and on API 29. Legacy system screenshot and API 30+/target scenarios remain open.
+- Official AnkiDroid 2.25.3 in a fresh local API 29 collection without login/sync: all five core-Anki device cases pass
+  in 2.143 s. Sentence Opus transfer is byte-identical and decodes; Without audio preserves it and Attached replaces it.
+  This is not speaker/desktop audibility or real provider Retry acceptance. The temporary collection was deleted.
+- API 30 media suite: nine cases in 47.352 s. Separate long export: 86,400,000 frames, 9,810,093 bytes, 282.176 s,
+  peak PSS 58,124 KiB. PCM benchmark: 1,800 simulated seconds, max 97,920,000 retained bytes/1,020 files, FD 71→71.
+  Twenty recorder cycles leave zero files and FD 71. These are emulator measurements, not phone power/flash/endurance.
+- Codec native heap does not reach a plateau: encode-only 3,419,472→3,972,064 bytes, forced-GC encode-only
+  3,419,904→3,973,216, encode/decode 3,424,640→4,015,328 over 20 cycles. Descriptors stay 59/59/65 respectively.
+  Keep REC50/51 N/partial and investigate the roughly 29–31 KB/export growth rather than hiding it with production GC.
+- Full build/unit/lint/androidTest-assembly/convention/release-vital gates pass in 2m2s; page suite 247/247. Evidence:
+  ignored `testdata/local-research/audio-lifecycle-2026-11-26/`. Test packages removed and owned AVDs powered off.
+  REC31/32/33/50/51 remain N; physical, modern-source/FGS, unattended and complete acceptance remain pending.

@@ -86,6 +86,7 @@ class AnkiDroidRoundTripTest {
 
         val forced = notes.add(Language.JAPANESE, NoteRequest(values), force = true) as AddResult.Added
         assertThat(forced.noteId).isNotEqualTo(added.noteId)
+        settings.update(Language.JAPANESE) { it.copy(duplicateBehavior = DuplicateBehavior.PREVENT) }
         assertThat(notes.duplicateIds(Language.JAPANESE, values)).containsExactly(added.noteId, forced.noteId)
     }
 

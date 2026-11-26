@@ -39,6 +39,7 @@ class SilentTtsService : TextToSpeechService() {
                 File(cacheDir, LIVE_READY).writeBytes(byteArrayOf(1))
                 liveMarked = true
             }
+            Thread.sleep(2)
         }
         callback.done()
     }

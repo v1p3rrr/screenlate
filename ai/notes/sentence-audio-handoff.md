@@ -14,39 +14,36 @@ parts are implemented. Do not restart them or infer the current usage limit from
   product decisions in `ai/plans/2026-11-19-sentence-audio-recording.md`. The review and engineering notes
   remain relevant. The approved November 24 compact disclosure/scrolling changes supplement the prototype.
   Prototype state such as 5/3/2 does not change the approved production defaults of 5/5/2 minutes.
-- Conservative silence detection, aggregate PCM storage admission, bounded export/retry workspace, bounded waveform/
-  analysis memory and stopped-session queue-pool release are implemented in the November 26 checkpoints at the top of
-  `ai/status.md`. Existing provisional 128 MiB / 1,500-file PCM limits are shared across live/leased sessions. One
-  rebuildable waveform pyramid is retained across contexts; silence analysis is serialized, primitive-array based and
-  capped at 30 minutes. Stop drains accepted PCM then releases the 288,000-byte default queue pool without deleting
-  history. Private TTS now has 64 MiB admission/result limits plus the 50 MiB reserve; its external engine's transient
-  writes are not a proven hard cap. Preview run/read/sink ownership is inventoried without a new defect. A singleton
-  staging owner now removes orphaned sentence Opus files before its first creation without sweeping live Retry files.
-  Android backup remains fully disabled and runtime audio is in no-backup/cache storage. Silence restoration/setters now
-  enforce shared 100–30,000 ms and 0–2,000 ms ranges, and all 27 locales cover the editor and audio attachment menus.
-  Do not reimplement these checkpoints. Follow this remaining order:
-  1. Finish codec workspace accounting and broader pending-note/fault cleanup. Export/retry staging is bounded and has
-     orphan cleanup, stopped queue pools are released and TTS admission/results are checked, but external-engine
-     transient writes, codec native memory and unattended plateau measurements remain. Cover actual crash/restart,
-     repeated runs and complete reset/restore/unsupported-device acceptance; keep REC31/32/33/50/51 N meanwhile.
-  2. Actual platform/source/lifecycle checks: API24–28 unavailable UI and existing features, API29 shared
-     screenshot/audio, modern permission/FGS behavior, paused/ongoing speech and Refresh, retention limits,
-     missing-middle refusal, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
-  3. Disposable local AnkiDroid/desktop collection acceptance: audible exported clips, updates, preserving
-     existing audio with Without audio, and errors/retries. Never access or sync the owner's collection.
-  4. Final phone UX/audibility, translation review and affected/full regression on the minified build.
-     Current software evidence is 247 page, 231 core-Anki, 135 core-media, 354 overlay and 291 app cases with affected
-     lint/build gates in 3m32s. The latest isolated API30 run passes all 19 editor/crop/resize/touch cases in 28.723s.
-     The export codec run passed two active cases and skipped its long case. Neither certifies physical-device,
-     complete-resource or endurance behavior. Locale coverage is not independent native-speaker review.
-- Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite
-  is authorized by this handoff. Existing core session/editor/codec/Anki ownership repairs remain in place.
-- Latest APK, matching dev signer, mapping and build recipe are in the delivery receipt below. Use the
-  compact ARM64 debug-signed release recipe for future Dev deliveries; ordinary debug APK is superseded.
-- Test packages were removed and the owned silent headless emulator powered off. Do not use force-stop
-  or run app instrumentation against the owner's package. Use isolated fixtures/collections.
-- For a long continuation, check current account usage; the thread's stop rule is less than 2% weekly
-  remaining, without consuming resets/credits. The older memory rule and usage snapshots are historical.
+- Conservative silence detection, aggregate PCM/storage/cache/workspace bounds, queue release, TTS admission/result
+  limits, selective orphan cleanup, validated silence settings and 27-locale resource coverage are implemented. Do not
+  reimplement those checkpoints. Test-only real process-death fixtures now prove PCM/temp and sentence Opus cleanup by
+  a new PID, and file-backed API 29 reset/restore tests pass. API 29 shared screenshot/audio consent passes; API 24
+  unsupported UI and existing own-playback were checked. Production source was not changed by this verification block.
+- Official AnkiDroid 2.25.3 was verified by APK hash/signer and used only in a fresh local API 29 collection without
+  login/sync. Real text add/update and sentence Opus add/transfer/decode/Without audio preservation/replacement pass.
+  This is stored-byte/decodability evidence, not physical audibility, desktop Anki or real provider Retry acceptance.
+- The 30-minute API 30 export now passes: 86,400,000 frames, 9,810,093 Opus bytes, 282.176 s, peak PSS 58,124 KiB.
+  PCM/FD cleanup and 20 recorder cycles are stable, and external-TTS transient WAV writes were observed. However, codec
+  native heap grows roughly 29–31 KB per export over 20 cycles even with test-only forced GC; descriptors stay flat.
+  Treat this as an open API 30 x86 resource risk, not a proven production leak or accepted plateau. Do not add production
+  GC or speculative codec reuse without diagnosis. Keep REC31/32/33/50/51 N/partial.
+- Follow this remaining order:
+  1. Diagnose the codec native-growth risk and measure unattended plateaus; cover remaining process stages/faults and
+     legacy API 24–28 system screenshots. Current reset/restore/process-death checks are substantive but not the whole matrix.
+  2. Actual modern platform/source/lifecycle checks: API 30+/current-target overlay/WebView/FGS/consent, paused/ongoing
+     speech and Refresh, retention/missing-middle, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
+  3. Finish disposable local AnkiDroid/desktop acceptance: audible quality, safe real Retry/fault injection and updates.
+     Never access or sync the owner's collection.
+  4. Final phone UX/audibility, translation review and affected/full regression on the minified build. Current software
+     evidence is 247 page cases and full build/unit/lint/androidTest-assembly/convention/release-vital gates in 2m2s.
+     Locale coverage is not independent native-speaker review; physical/endurance acceptance remains open.
+- Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite is authorized.
+- Latest APK, matching dev signer, mapping and build recipe are in the delivery receipt below. Use the compact ARM64
+  debug-signed release recipe for future Dev deliveries; ordinary debug APK is superseded.
+- All temporary test packages and the disposable local Anki collection were removed; owned AVDs are powered off. Do not
+  use force-stop or run app instrumentation against the owner's package. Use isolated fixtures/collections.
+- For a long continuation, check current account usage; the thread's stop rule is less than 2% weekly remaining, without
+  consuming resets/credits. The older memory rule and usage snapshots are historical.
 
 
 ## Compact Dev delivery after touch repair (2026-11-24)

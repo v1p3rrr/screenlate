@@ -7,6 +7,58 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Real process death, reset/restore, local Anki and resource measurements — 2026-11-26
+
+The new fixtures are all under `androidTest`; production source is unchanged. `RecordingProcessDeathDeviceTest` starts
+an isolated service in a separate process, writes real PCM and a temporary file, then kills its own PID without closing
+the recorder. A different PID starts the production recorder, removes the abandoned session/temp files and preserves an
+unrelated directory. `SentenceAudioProcessDeathDeviceTest` does the equivalent for two sentence Opus orphans, preserves
+unrelated WAV/Opus media and proves that two later creations by the same new staging owner both survive. These are real
+process deaths, not fresh-object simulations; they do not cover every export/write stage or memory-pressure callback.
+
+`RecordingSettingsDeviceTest` uses a file-backed DataStore with the production reset/backup code and recorder. API 29
+passes both cases (`reset-restore-api29.log`, 0.448 s): reset restores defaults without stopping active capture, preserves
+an unrelated preference and the old scan cutoff, and applies defaults to the next scan. Restore recovers custom limits/
+silence, independently repairs negative/overflow silence to 1,500/150 ms, and never starts capture merely because the
+restored enabled flag is true; explicit start succeeds.
+
+A newly installed API 29 overlay test package starts with RECORD_AUDIO denied and passes
+`CapturePermissionDeviceTest` in 4.036 s: screenshot-only consent, revoke during audio permission, denial with a retained
+screenshot projection, grant with the same projection, concurrent frame/AudioRecord and audio-first acquisition. This is
+not evidence for API 30+ FGS/consent or physical sources. On API 24 the real isolated app shows the recording section's
+Android 10+ explanation and no recording controls, while Autoplay/Volume/pronunciation sources remain. The real
+`OwnPlaybackDeviceTest` passes on both API 24 and API 29. Legacy system screenshots were not rerun.
+
+The local collection used official AnkiDroid 2.25.3 x86_64 (APK SHA-256
+`154101f06f4ba286248fa4a26863f759d3a1631bd4b1d6790503ec35a85edac7`; signer SHA-256
+`2071534f0f4b5e54ae952dd275d70da6e3459ee69909d2ab1b4843c4c5b21a45`). It was initialized without login/sync on the
+owned API 29 AVD. The original text round-trip exposed a test error: under OVERWRITE `duplicateIds` intentionally returns
+only the update target, so the final two-note assertion now switches back to PREVENT. `AnkiDroidSentenceAudioTest` uses
+locally generated 440/660 Hz Ogg Opus assets because the API 29 image lacks an Opus encoder. The provider has no media-read
+API; the API 29-only test uses legacy storage access to compare the actual `collection.media` bytes and decode them.
+Add, transfer, two Without audio update variants and replacement pass. The full core-Anki suite reports OK (5 tests) in
+2.143 s. This verifies stored bytes/decodability, not speaker audibility, desktop Anki or a real provider Retry fault.
+
+Resource evidence on API 30 x86:
+- Nine media device cases pass in 47.352 s; the optional long case was skipped there and run separately. Its real result
+  is 86,400,000 frames/172,800,000 logical PCM bytes to 9,810,093 Opus bytes in 282.176 s, baseline/peak PSS
+  33,366/58,124 KiB (`long-export-api30.log`, `long-export-logcat-api30.log`).
+- The accelerated storage run wrote 1,800 simulated seconds in 763 ms, retained at most 97,920,000 bytes in 1,020 files,
+  had maximum append 1,939 us, PSS 42,569→45,335 KiB and descriptors 71→71. This is cached emulator IO, not flash,
+  power or thermal evidence. Twenty record/stop/close cycles left zero audio files and descriptors fixed at 71.
+- The sampled external-TTS fixture observed a growing WAV (3,244 then 252,844 intermediate bytes, 256,044 final) and
+  deletion after Stop. It proves transient writes occur outside the write loop, not a universal hard engine cap.
+- Twenty encode-only cycles kept descriptors at 59 but native heap grew 3,419,472→3,972,064 bytes. Test-only forced
+  GC/finalization did not change the slope (3,419,904→3,973,216; descriptors 59). Twenty encode/decode cycles kept
+  descriptors at 65 and grew native heap 3,424,640→4,015,328 bytes. Thus FD/file stability is established, but a native
+  plateau is not. The approximately 29–31 KB/export linear growth remains an open emulator resource risk, not yet a
+  proven production leak; no production GC or speculative codec reuse was introduced.
+
+Final full build/unit/lint/androidTest-assembly/convention/release-vital gate passes in 2m2s and all 247 page tests pass
+(`full-gradle-gates.log`). All temporary packages and the disposable Anki collection were removed and every owned AVD
+was powered off. REC31/32/33/50/51 remain N/partial. API 30+/current-target behavior, physical sources/routes/audibility,
+unattended endurance and native-growth diagnosis remain required before complete acceptance.
+
 ## Silence settings validation and locale parity — 2026-11-26
 
 `RecordingSettings` now validates `MIN_SILENCE_RANGE = 100L..30_000L` and

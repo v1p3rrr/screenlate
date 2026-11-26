@@ -15,9 +15,12 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import java.io.File
+import java.util.Properties
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
@@ -51,12 +54,39 @@ class AudioPlayerDeviceTest {
         val capture = checkNotNull(playback.beginCapture())
         val directory = File(context.cacheDir, "tts_playback")
         val liveReady = File(context.cacheDir, SilentTtsService.LIVE_READY)
+        val observing = AtomicBoolean(true)
+        val observedSizes = mutableListOf<Long>()
+        val observer = launch(Dispatchers.IO) {
+            var previous = -1L
+            while (observing.get()) {
+                val size = directory.listFiles()?.maxOfOrNull { it.length() } ?: 0L
+                if (size > 0 && size != previous) {
+                    observedSizes += size
+                    previous = size
+                }
+                delay(1)
+            }
+        }
         try {
             withContext(Dispatchers.Main) {
                 assertThat(player.play(Pronunciation.Speech(
                     "Sample for the isolated playback test. ".repeat(5), Language.ENGLISH,
                 ))).isTrue()
-                assertThat(withContext(Dispatchers.IO) { directory.listFiles()?.any { it.length() > 44 } }).isTrue()
+                observing.set(false)
+                observer.join()
+                val finalBytes = withContext(Dispatchers.IO) {
+                    directory.listFiles()?.maxOfOrNull { it.length() } ?: 0L
+                }
+                val intermediateBytes = checkNotNull(observedSizes.lastOrNull { it > 44 && it < finalBytes })
+                Properties().apply {
+                    setProperty("intermediateBytes", intermediateBytes.toString())
+                    setProperty("finalBytes", finalBytes.toString())
+                    setProperty("observedSizes", observedSizes.joinToString(","))
+                }.let { metrics ->
+                    File(context.filesDir, "tts-transient-metrics.properties").outputStream().use {
+                        metrics.store(it, "Observed external-engine WAV writes")
+                    }
+                }
                 player.stop()
             }
             assertThat(withContext(Dispatchers.IO) { directory.listFiles()?.toList().orEmpty() }).isEmpty()
@@ -70,11 +100,17 @@ class AudioPlayerDeviceTest {
             assertThat(playback.requiresPrivateSpeech).isTrue()
             nextCapture.close()
         } finally {
+            observing.set(false)
+            observer.join()
             try { withContext(Dispatchers.Main) { player.stop() } }
             finally {
                 capture.close()
                 setEngine(previousEngine)
-                withContext(Dispatchers.IO) { directory.listFiles()?.forEach { it.delete() }; directory.delete(); liveReady.delete() }
+                withContext(Dispatchers.IO) {
+                    directory.listFiles()?.forEach { it.delete() }
+                    directory.delete()
+                    liveReady.delete()
+                }
             }
         }
     }

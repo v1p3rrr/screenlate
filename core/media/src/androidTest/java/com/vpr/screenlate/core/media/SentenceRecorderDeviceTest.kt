@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.media
 
 import android.content.Context
+import android.os.Debug
 import android.os.Looper
 import android.os.SystemClock
 import android.webkit.WebView
@@ -14,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.audio.PlaybackCoordinator
 import java.io.File
+import java.util.Properties
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicBoolean
@@ -130,6 +132,56 @@ class SentenceRecorderDeviceTest {
                 child.delete()
             }
             directory.delete()
+        }
+    }
+
+    @Test
+    fun repeatedRecordStopCloseCyclesLeaveNoPcmAndStableDescriptors() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val directory = File(context.cacheDir, "session-cycles-${UUID.randomUUID()}")
+        val descriptors = mutableListOf<Int>()
+        val pss = mutableListOf<Long>()
+        try {
+            repeat(20) {
+                val store = object : DataStore<Preferences> {
+                    override val data = MutableStateFlow(emptyPreferences())
+                    override suspend fun updateData(transform: suspend (Preferences) -> Preferences): Preferences =
+                        transform(data.value).also { data.value = it }
+                }
+                val recorder = SentenceRecorder(directory, RecordingSettingsRepository(store))
+                try {
+                    assertThat(recorder.start(SyntheticSource())).isTrue()
+                    withTimeout(5_000) {
+                        while (true) {
+                            val complete = recorder.snapshot(AudioRange(0, 100))?.use { snapshot ->
+                                snapshot.openStream().use { input -> input.readBytes().size == 200 }
+                            } == true
+                            if (complete) break
+                            delay(1)
+                        }
+                    }
+                } finally {
+                    recorder.stop()
+                    recorder.close()
+                }
+                withTimeout(5_000) {
+                    while (withContext(Dispatchers.IO) { directory.listFiles()?.isNotEmpty() == true }) delay(1)
+                }
+                descriptors += File("/proc/self/fd").list()?.size ?: -1
+                pss += Debug.getPss()
+            }
+            assertThat(descriptors.takeLast(5).max()).isAtMost(descriptors.first() + 4)
+            val metrics = Properties().apply {
+                setProperty("cycles", "20")
+                setProperty("descriptors", descriptors.joinToString(","))
+                setProperty("pssKiB", pss.joinToString(","))
+                setProperty("audioFilesLeft", directory.walkTopDown().count { it.isFile }.toString())
+            }
+            File(context.filesDir, "recorder-cycle-metrics.properties").outputStream().use {
+                metrics.store(it, "Repeated synthetic record/stop/close cycles")
+            }
+        } finally {
+            directory.deleteRecursively()
         }
     }
 
