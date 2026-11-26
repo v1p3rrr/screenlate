@@ -78,3 +78,4 @@ npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test   # p
 ```
 
 Devices: `D:\Android\Sdk\platform-tools\adb.exe`. Verify UI and overlay changes on an emulator or the phone, not only with unit tests.
+Optional skills (when available in the environment): `android-cli`, `android-device-hub`, `compose-preview` for Compose previews and quick UI/device inspection, and `code-review`, `diagnosing-bugs`, `tdd` for engineering workflows; `adb.exe` + `emulator.exe` (see `ai/notes/build-environment.md`) remain the primary device/overlay workflow.
