@@ -1,23 +1,76 @@
 # Status
 
+## Modern lifecycle, Anki retry and memory-pressure verification (2026-11-26)
+
+- `SentenceRecorder.releaseRebuildableCaches()` drops only the derived waveform pyramid under its cache mutex. The
+  application invokes it from `onTrimMemory`/`onLowMemory` on IO. A regression proves that leased PCM bytes survive,
+  the cache reaches zero and an identical waveform is rebuilt on demand; protected audio and source leases are not evicted.
+- Final API 37 system consent/FGS coverage passes two cases in 11.370 s, with the legacy case SDK-skipped. It exercises
+  real consent, revoke during audio permission, denial/retry, real `AudioRecord`, both acquisition orders, projection
+  stop/reacquisition and foreground-service transitions. `ModernAccessibilityCapturer` separately acquires two real
+  window frames without MediaProjection in 1.289 s. The modern WebView editor was not rerun because of the documented
+  API 37 emulator WebView deadlock.
+- Final legacy/API 29 receipt: API 24 runs one active real legacy-capture case and SDK-skips two in 2.470 s; API 29 runs
+  the consent/audio and legacy-capture cases and SDK-skips modern accessibility in 8.904 s. API 25–28 and the complete
+  manual overlay matrix remain uncovered. API 37 also passes focused real process-death, Main/off-Main recorder and
+  repeated record/stop/close cleanup fixtures.
+- In the fresh local API 29 AnkiDroid collection, a granted but absent Opus source returns sentence `MediaFailed` with
+  no note mutation. Retrying the same preparation after creating the source transfers byte-identical decodable media;
+  platform `MediaPlayer` reaches completion. Focused sentence tests pass 2/2 in 2.373 s and the whole core-Anki device
+  suite passes 6/6 in 4.139 s. Headless completion is not physical audibility, and desktop Anki remains unchecked.
+- API 37 settled production export reaches a short native-heap plateau over 20 seven-second cycles in 142.747 s:
+  6,621,600→6,620,768 bytes; descriptors are 104 for four samples then 103. A separate 40-cycle no-settle exporter profile
+  grows native 6,628,256→7,036,736 and FD 104→264, settling at 6,914,304/259: this is the known asynchronous Codec2-pool
+  profile, not a new leak finding. Twenty settled cycles are not phone endurance or the whole-feature resource matrix.
+- Final full build/unit/lint/androidTest-assembly/convention/release-vital gates pass in 1m50s (1,412 tasks), with
+  231 core-Anki, 136 core-media, 354 overlay and 291 app unit cases. All 247 page cases pass. Logs are under ignored
+  `testdata/local-research/audio-lifecycle-2026-11-26/`; final legacy logs are `capture-permission-final-api24.log` and
+  `capture-permission-final-api29.log`. Test packages were removed and owned AVDs powered off.
+- Remaining acceptance is physical audibility/source policy/routes/Bluetooth/headset, calls/lock/revocation with real
+  speech, external-TTS self-exclusion, modern WebView editor acceptance, desktop Anki, UX/accessibility, power/thermal/
+  unattended endurance, independent translation review and the minified device build. REC rows stay N/partial as
+  recorded in the test model. Music-only gap detection remains deferred.
+
+## API 30 Ogg muxer native-leak diagnosis (2026-11-26)
+
+- Added opt-in isolated codec/container allocation fixtures; production source did not change. After warm-up and 40 measured
+  cycles, Ogg `muxer-write` grows native heap by 1,133,616 bytes whether writing every packet or only one, while codec-only,
+  muxer-without-stream, and extractor lifecycle controls grow by only 13,008, 1,616, and 12,544 bytes respectively.
+- The full production exporter grows by 1,282,400 bytes and remux by 1,138,896 bytes over the same matrix. This confirms a
+  fixed approximately 28.3 KiB leak per started/written Ogg container on this API 30 x86 image, not growth per audio packet,
+  missing `MediaCodec.release()`, Java finalization, or a file/descriptor leak.
+- AOSP Android 11 and 12 destructors only `free(mOs)`; Android 13, 14, 15 and current main call `ogg_stream_clear(mOs)` first.
+  This exactly matches the isolated libogg internal-buffer leak. It does not establish which vendor/security backports exist or
+  guarantee a runtime plateau on every Android 13+ device.
+- A 100-cycle one-second-settle exporter run continues growing without a plateau. Its old immediate-FD assertion fails at 75;
+  the same short-settle FD effect was already identified as Codec2 asynchronous pool retirement. The API 30 20-cycle production
+  exporter check with seven seconds per cycle passes its FD/thread assertions but retains the diagnosed native growth:
+  3,420,480 to 3,972,624 bytes, descriptors exactly 59 and `Thread.activeCount` exactly 7. The thread count is only a
+  Java/active-thread sample, not a native-thread census. The newer API 37 settled comparison is recorded above.
+- No production GC, codec reuse, custom Ogg writer, format change or other workaround was introduced. REC70/71 remain open for
+  physical long-session plateaus and the full comparative matrix; REC31/32/33/50/51 retain their separate partial coverage.
+
 ## Device lifecycle, local Anki and resource measurements (2026-11-26)
 
 - Added test-only real process-death fixtures. A new PID removes abandoned PCM `.pcm`/`.tmp` and sentence Opus files,
   preserves unrelated files and keeps subsequent same-process staging creations; production source did not change.
 - API 29 file-backed reset/restore passes two cases: AUDIO reset preserves capture, unrelated preferences and existing
   scan limits; restored invalid silence values fall back independently and `recordingEnabled=true` never auto-starts.
-- A fresh API 29 package passes the real screenshot/audio consent and shared-projection test. API 24 shows only the
-  Android 10+ recording explanation while retaining playback controls; its real own-playback case also passes. Legacy
-  API 24–28 system screenshot behavior and modern API 30+/target FGS/source/route scenarios remain unverified.
+- At this earlier checkpoint a fresh API 29 package passed real screenshot/audio consent and shared projection; API 24
+  showed only the Android 10+ recording explanation and own-playback passed. The newest section supersedes its remaining
+  legacy-screenshot/modern-FGS gap with final API 24/29 capture and API 37 consent/FGS/accessibility receipts. API 25–28,
+  real source/routes and the complete manual overlay matrix remain unverified.
 - Official AnkiDroid 2.25.3, hash/signer verified, was used only in a fresh local API 29 collection without an account
-  or sync. All five core-Anki device cases pass, including text add/update and real sentence Opus transfer, byte equality,
-  decoding, Without audio preservation and explicit replacement. Audibility and desktop Anki remain unchecked.
+  or sync. At this checkpoint all five core-Anki device cases passed, including text add/update and real sentence Opus
+  transfer, byte equality, decoding, Without audio preservation and explicit replacement. The newer six-case suite adds
+  real provider fault/retry and platform playback completion. Physical audibility and desktop Anki remain unchecked.
 - API 30 media suite passes nine cases. The separate 30-minute export completed 86,400,000 frames to 9,810,093 Opus
   bytes in 282.176 s with 58,124 KiB peak PSS. PCM simulation retained at most 97,920,000 bytes/1,020 files and kept
   descriptors at 71; 20 record/stop/close cycles left zero audio files and descriptors at 71. This is emulator cached IO.
 - Codec descriptors stayed flat, but native heap grew linearly over 20 encode-only cycles (3,419,472→3,972,064 bytes),
-  with forced GC/finalization (3,419,904→3,973,216) and encode/decode (3,424,640→4,015,328). This is an open API 30 x86
-  resource risk, not a proven production leak or plateau. No production GC or speculative codec change was added.
+  with forced GC/finalization (3,419,904→3,973,216) and encode/decode (3,424,640→4,015,328). The following isolated
+  diagnosis proves the API 30 x86 platform Ogg-container leak; the API 37 short settled run does not reproduce its slope.
+  No production GC or speculative codec change was added.
 - Full build/unit/lint/androidTest-assembly/convention/release-vital gates pass in 2m2s; all 247 page cases pass.
   Evidence is under ignored `testdata/local-research/audio-lifecycle-2026-11-26/`. Test packages/local collection were
   removed and owned AVDs powered off. REC31/32/33/50/51 remain N/partial; physical, unattended and full acceptance stay open.

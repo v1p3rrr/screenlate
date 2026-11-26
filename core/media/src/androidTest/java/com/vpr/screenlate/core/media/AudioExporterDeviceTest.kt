@@ -101,11 +101,17 @@ class AudioExporterDeviceTest {
         val arguments = InstrumentationRegistry.getArguments()
         val decodeInCycles = arguments.getString("decodeCycles") != "false"
         val forceGc = arguments.getString("forceGc") == "true"
+        val cycles = arguments.getString("codecCycles")?.toIntOrNull()?.takeIf { it > 0 } ?: 20
+        val settleMillis = arguments.getString("codecSettleMillis")?.toLongOrNull()?.takeIf { it >= 0 } ?: 7_000L
         val pss = mutableListOf<Long>()
         val nativeHeap = mutableListOf<Long>()
+        val nativeHeapSize = mutableListOf<Long>()
+        val nativeHeapFree = mutableListOf<Long>()
+        val javaHeap = mutableListOf<Long>()
+        val threads = mutableListOf<Int>()
         val descriptors = mutableListOf<Int>()
         val started = SystemClock.elapsedRealtime()
-        repeat(20) { cycle ->
+        repeat(cycles) { cycle ->
             val output = File.createTempFile("codec-cycle-$cycle-", ".opus", context.cacheDir)
             try {
                 ByteArrayInputStream(source).use { AudioExporter.exportOpus(it, edit, rate, output) }
@@ -120,24 +126,39 @@ class AudioExporterDeviceTest {
                 System.runFinalization()
             }
             // Codec2 buffer-pool retirement is asynchronous; compare settled samples, not immediate totals.
-            SystemClock.sleep(7_000)
+            SystemClock.sleep(settleMillis)
             pss += Debug.getPss()
             nativeHeap += Debug.getNativeHeapAllocatedSize()
+            nativeHeapSize += Debug.getNativeHeapSize()
+            nativeHeapFree += Debug.getNativeHeapFreeSize()
+            javaHeap += Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+            threads += Thread.activeCount()
             descriptors += File("/proc/self/fd").list()?.size ?: -1
+            if (cycle == 0 || (cycle + 1) % 10 == 0) {
+                Log.i("AudioExporterDeviceTest", "cycle=${cycle + 1}/$cycles native=${nativeHeap.last()} " +
+                    "nativeSize=${nativeHeapSize.last()} pss=${pss.last()} fd=${descriptors.last()} threads=${threads.last()}")
+            }
         }
-        assertThat(descriptors.takeLast(3).max()).isAtMost(descriptors.first() + 4)
+        if (settleMillis >= 7_000) {
+            assertThat(descriptors.takeLast(3).max()).isAtMost(descriptors.first() + 4)
+        }
         val metrics = Properties().apply {
-            setProperty("cycles", "20")
-            setProperty("settleMillisPerCycle", "7000")
+            setProperty("cycles", cycles.toString())
+            setProperty("settleMillisPerCycle", settleMillis.toString())
             setProperty("elapsedMillis", (SystemClock.elapsedRealtime() - started).toString())
             setProperty("pssKiB", pss.joinToString(","))
             setProperty("nativeHeapBytes", nativeHeap.joinToString(","))
+            setProperty("nativeHeapSizeBytes", nativeHeapSize.joinToString(","))
+            setProperty("nativeHeapFreeBytes", nativeHeapFree.joinToString(","))
+            setProperty("javaHeapBytes", javaHeap.joinToString(","))
+            setProperty("threads", threads.joinToString(","))
             setProperty("descriptors", descriptors.joinToString(","))
             setProperty("decoded", decodeInCycles.toString())
             setProperty("forcedGc", forceGc.toString())
         }
         val suffix = (if (decodeInCycles) "encode-decode" else "encode-only") + if (forceGc) "-gc" else ""
-        File(context.filesDir, "codec-cycle-metrics-$suffix.properties").outputStream().use {
+        val tag = arguments.getString("codecMetricsTag")?.takeIf { it.matches(Regex("[A-Za-z0-9._-]+")) }
+        File(context.filesDir, "codec-cycle-metrics-$suffix${tag?.let { "-$it" }.orEmpty()}.properties").outputStream().use {
             metrics.store(it, "Repeated real Opus codec cycles")
         }
     }

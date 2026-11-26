@@ -41,8 +41,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class CapturePermissionDeviceTest {
     @Test
-    fun api29ScreenshotSurvivesAudioDenialAndReusesProjectionAfterGrant() = runBlocking {
-        assumeTrue(Build.VERSION.SDK_INT == 29)
+    fun screenshotSurvivesAudioDenialAndReusesProjectionAfterGrant() = runBlocking {
+        assumeTrue(Build.VERSION.SDK_INT >= 29)
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = instrumentation.targetContext
         assertThat(context.checkSelfPermission(Manifest.permission.RECORD_AUDIO)).isEqualTo(PackageManager.PERMISSION_DENIED)
@@ -62,7 +62,7 @@ class CapturePermissionDeviceTest {
             assertThat(withTimeout(10_000) { denied.await() }).isNull()
             assertThat(MediaProjectionHolder.hasActiveProjection).isTrue()
             assertThat(withContext(Dispatchers.Main) { MediaProjectionHolder.getOrCreate(context) }).isSameInstanceAs(projection)
-            captureFrame(projection)
+            captureAdditionalFrame(projection)
 
             val allowed = scope.async { MediaProjectionHolder.getOrCreate(context, isRecording = true) }
             respondToAudioPermission(automation, allow = true)
@@ -71,7 +71,7 @@ class CapturePermissionDeviceTest {
             captureWhileAudioActive(projection)
             withContext(Dispatchers.Main) { MediaProjectionService.updateRecordingState(context, isRecording = false) }
             assertThat(MediaProjectionHolder.hasActiveProjection).isTrue()
-            captureFrame(projection)
+            captureAdditionalFrame(projection)
 
             withContext(Dispatchers.Main) { MediaProjectionHolder.stop(context) }
             val audioFirst = scope.async { MediaProjectionHolder.getOrCreate(context, isRecording = true) }
@@ -80,7 +80,7 @@ class CapturePermissionDeviceTest {
             assertThat(withContext(Dispatchers.Main) { MediaProjectionHolder.getOrCreate(context) }).isSameInstanceAs(audioProjection)
             captureWhileAudioActive(audioProjection)
             withContext(Dispatchers.Main) { MediaProjectionService.updateRecordingState(context, isRecording = false) }
-            captureFrame(audioProjection)
+            captureAdditionalFrame(audioProjection)
         } finally {
             withContext(Dispatchers.Main) {
                 MediaProjectionHolder.stop(context)
@@ -90,14 +90,128 @@ class CapturePermissionDeviceTest {
         }
     }
 
+    @Test
+    fun modernCapturerAcquiresRealWindowFramesWithoutMediaProjection() = runBlocking {
+        assumeTrue(Build.VERSION.SDK_INT >= 30)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val context = instrumentation.targetContext
+        val automation = instrumentation.getUiAutomation(UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES)
+        val component = android.content.ComponentName(context, LegacyCaptureAccessibilityService::class.java)
+        val previousServices = secureSetting(automation, "enabled_accessibility_services")
+        val previousEnabled = secureSetting(automation, "accessibility_enabled")
+        try {
+            shell(automation, "settings put secure accessibility_enabled 1")
+            shell(automation, "settings put secure enabled_accessibility_services ${component.flattenToString()}")
+            val service = withTimeout(15_000) {
+                while (LegacyCaptureAccessibilityService.active == null) delay(50)
+                LegacyCaptureAccessibilityService.active!!
+            }
+            val capturer = ModernAccessibilityCapturer(service, java.util.concurrent.Executor { it.run() })
+            assertThat(MediaProjectionHolder.hasActiveProjection).isFalse()
+            repeat(2) {
+                val captured = withTimeout(10_000) { capturer.capture(0, 0) { it() } }
+                assertThat(captured.bitmap.width).isGreaterThan(0)
+                assertThat(captured.bitmap.height).isGreaterThan(0)
+                captured.bitmap.recycle()
+                delay(400)
+            }
+            assertThat(MediaProjectionHolder.hasActiveProjection).isFalse()
+        } finally {
+            secureSetting(automation, "enabled_accessibility_services", previousServices)
+            secureSetting(automation, "accessibility_enabled", previousEnabled)
+        }
+    }
+
+    @Test
+    fun legacyCapturerAcquiresRealFramesAndReusesConsent() = runBlocking {
+        assumeTrue(Build.VERSION.SDK_INT in 24..29)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val context = instrumentation.targetContext
+        val automation = instrumentation.getUiAutomation(UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES)
+        val component = android.content.ComponentName(context, LegacyCaptureAccessibilityService::class.java)
+        val previousServices = secureSetting(automation, "enabled_accessibility_services")
+        val previousEnabled = secureSetting(automation, "accessibility_enabled")
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        try {
+            shell(automation, "settings put secure accessibility_enabled 1")
+            shell(automation, "settings put secure enabled_accessibility_services ${component.flattenToString()}")
+            val service = withTimeout(15_000) {
+                while (LegacyCaptureAccessibilityService.active == null) delay(50)
+                LegacyCaptureAccessibilityService.active!!
+            }
+            val capturer = LegacyMediaProjectionCapturer(service)
+            val first = scope.async { capturer.capture(0, 0) { it() } }
+            if (Build.VERSION.SDK_INT == 24 || Build.VERSION.SDK_INT == 29) {
+                clickLegacyConsentByCoordinates(automation, context)
+            } else {
+                clickSystemButton(automation, setOf("android:id/button1", "com.android.systemui:id/start"))
+            }
+            val expectedWidth = realDisplayMetrics(context).widthPixels
+            val expectedHeight = realDisplayMetrics(context).heightPixels
+            withTimeout(10_000) { first.await() }.bitmap.let {
+                assertThat(it.width).isEqualTo(expectedWidth)
+                assertThat(it.height).isEqualTo(expectedHeight)
+            }
+            val second = withTimeout(5_000) { capturer.capture(0, 0) { it() } }
+            assertThat(second.bitmap.width).isEqualTo(expectedWidth)
+            assertThat(second.bitmap.height).isEqualTo(expectedHeight)
+            assertThat(MediaProjectionHolder.hasActiveProjection).isTrue()
+        } finally {
+            withContext(Dispatchers.Main) { MediaProjectionHolder.stop(context) }
+            secureSetting(automation, "enabled_accessibility_services", previousServices)
+            secureSetting(automation, "accessibility_enabled", previousEnabled)
+            scope.cancel()
+        }
+    }
+
+    private fun secureSetting(automation: UiAutomation, name: String): String =
+        shell(automation, "settings get secure $name").trim().takeUnless { it == "null" }.orEmpty()
+
+    private fun secureSetting(automation: UiAutomation, name: String, value: String) {
+        shell(automation, if (value.isEmpty()) "settings delete secure $name" else "settings put secure $name $value")
+    }
+
+    private fun shell(automation: UiAutomation, command: String): String =
+        ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(command))
+            .bufferedReader().use { it.readText() }
+
+    /** These two emulator images expose no usable accessibility nodes for their system consent dialog. */
+    private suspend fun clickLegacyConsentByCoordinates(automation: UiAutomation, context: Context) {
+        withTimeout(10_000) {
+            while (true) {
+                val activity = withContext(Dispatchers.IO) { shell(automation, "dumpsys activity activities") }
+                if (activity.lineSequence().any {
+                    it.contains("mResumedActivity:") && it.contains("MediaProjectionPermissionActivity")
+                }) break
+                delay(50)
+            }
+        }
+        delay(300)
+        val metrics = realDisplayMetrics(context)
+        val x = metrics.widthPixels * (if (Build.VERSION.SDK_INT == 24) 780 else 802) / 1000
+        val y = metrics.heightPixels * (if (Build.VERSION.SDK_INT == 24) 557 else 639) / 1000
+        withContext(Dispatchers.IO) { shell(automation, "input tap $x $y") }
+    }
+
+    private fun realDisplayMetrics(context: Context): android.util.DisplayMetrics =
+        android.util.DisplayMetrics().also { metrics ->
+            @Suppress("DEPRECATION")
+            (context.getSystemService(Context.WINDOW_SERVICE) as android.view.WindowManager).defaultDisplay.getRealMetrics(metrics)
+        }
+
     private suspend fun captureWhileAudioActive(projection: MediaProjection) {
         val source = withContext(Dispatchers.IO) { checkNotNull(AudioRecordSource.create(projection)) }
         try {
             assertThat(withContext(Dispatchers.IO) { source.start() }).isTrue()
-            captureFrame(projection)
+            captureAdditionalFrame(projection)
         } finally {
             withContext(Dispatchers.IO) { source.stop(); source.close() }
         }
+    }
+
+    /** Android 14+ allows one VirtualDisplay per projection; production stops modern projections after audio capture. */
+    private suspend fun captureAdditionalFrame(projection: MediaProjection) {
+        if (Build.VERSION.SDK_INT < 34) captureFrame(projection)
     }
 
     private suspend fun screenshotAfterRevokedConsent(
@@ -113,6 +227,8 @@ class CapturePermissionDeviceTest {
         awaitAudioPermission(automation)
         withContext(Dispatchers.Main) { projection.stop() }
         assertThat(withTimeout(5000) { pending.await() }).isNull()
+        // The platform callback that clears the holder is asynchronous on recent Android versions.
+        withTimeout(5000) { while (MediaProjectionHolder.hasActiveProjection) delay(50) }
         assertThat(MediaProjectionHolder.hasActiveProjection).isFalse()
         assertThat(context.checkSelfPermission(Manifest.permission.RECORD_AUDIO)).isEqualTo(PackageManager.PERMISSION_DENIED)
 
@@ -144,7 +260,7 @@ class CapturePermissionDeviceTest {
         }
     }
 
-    /** API29's permission window can be absent from UiAutomation's node tree; use keyboard navigation. */
+    /** Some permission windows are absent from UiAutomation's node tree; use their keyboard focus order. */
     private suspend fun respondToAudioPermission(automation: UiAutomation, allow: Boolean) {
         awaitAudioPermission(automation)
         fun press(key: Int) {
@@ -156,7 +272,8 @@ class CapturePermissionDeviceTest {
                 ), true)) { "System dialog key injection failed ($key/$action)" }
             }
         }
-        repeat(if (allow) 1 else 2) { press(KeyEvent.KEYCODE_TAB) }
+        val denyTabs = if (Build.VERSION.SDK_INT >= 34) 3 else 2
+        repeat(if (allow) 1 else denyTabs) { press(KeyEvent.KEYCODE_TAB) }
         press(KeyEvent.KEYCODE_ENTER)
     }
 
@@ -166,7 +283,7 @@ class CapturePermissionDeviceTest {
                 val ready = withContext(Dispatchers.IO) {
                     ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand("dumpsys activity activities"))
                         .bufferedReader().useLines { lines ->
-                            lines.any { it.contains("mResumedActivity:") && it.contains("GrantPermissionsActivity") }
+                            lines.any { it.contains("ResumedActivity") && it.contains("GrantPermissionsActivity") }
                         }
                 }
                 if (ready) break
@@ -186,6 +303,14 @@ class CapturePermissionDeviceTest {
                             try {
                                 for (id in ids) {
                                     val nodes = root.findAccessibilityNodeInfosByViewId(id)
+                                    try {
+                                        val button = nodes.firstOrNull { it.isEnabled && it.isClickable }
+                                        if (button?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true) return@withTimeout
+                                    } finally { nodes.forEach { @Suppress("DEPRECATION") it.recycle() } }
+                                }
+                                // Android 7's consent dialog does not expose the later framework button IDs.
+                                for (label in listOf("Start now", "START NOW")) {
+                                    val nodes = root.findAccessibilityNodeInfosByText(label)
                                     try {
                                         val button = nodes.firstOrNull { it.isEnabled && it.isClickable }
                                         if (button?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true) return@withTimeout

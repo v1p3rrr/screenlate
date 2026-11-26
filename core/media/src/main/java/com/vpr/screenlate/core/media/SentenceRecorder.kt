@@ -525,6 +525,15 @@ class SentenceRecorder internal constructor(
         }
     }
 
+    /** Drops only derived memory; retained PCM remains available and the next waveform request rebuilds the cache. */
+    suspend fun releaseRebuildableCaches() {
+        // Never wait for this cache while holding lifecycle: waveform loading acquires lifecycle for snapshots.
+        waveforms.withLock {
+            waveformContext = null
+            waveformIndex = null
+        }
+    }
+
     suspend fun close() = withContext(NonCancellable + Dispatchers.IO) {
         lifecycle.withLock {
             stopPreview()
@@ -538,11 +547,7 @@ class SentenceRecorder internal constructor(
             generation.incrementAndGet()
             _recordingState.value = SentenceRecordingState.Idle
         }
-        // Never wait for this cache while holding lifecycle: waveform loading acquires lifecycle for snapshots.
-        waveforms.withLock {
-            waveformContext = null
-            waveformIndex = null
-        }
+        releaseRebuildableCaches()
     }
 
     private fun contextSession(id: AudioContextId): PcmStorageCoordinator? =

@@ -459,10 +459,10 @@ E/F/O and record the result in the run log. Existing AUD pronunciation and ANK c
 | REC28 | Ring/context/preview/analysis/export leases share chunks; rollover/replacement/cancel cannot delete a live reader's file; last release cleans files and handles, including failure and stale callback paths | N | U, I | |
 | REC29 | Duration/byte/cache/workspace/queue/descriptor/metadata limits hold independently; new work is declined or capture/context is sealed honestly without deleting current edits; include chunk-boundary slack and disjoint ring + protected history | N | U, I, M | |
 | REC30 | Low disk at start, scan pin, R→E, writing, encoding, media transfer and retry: preserve validated prefix, report actual failure, offer applicable retry/Without audio; reserve race never becomes crash or silent note success | N | U, I, M | |
-| REC31 | Memory pressure drops rebuildable caches/optional work without full-history allocation; process death at each write/export stage loses transient session as agreed and startup clears every orphan class | N | U, I, M | |
-| REC32 | Missing/truncated private source chunk is detected; do not join later files through damage. Startup/reset/restore cleanup cannot remove leased PCM/waveform/TTS/export/retry artifacts behind active workers | N | U, I | |
-| REC33 | Private recordings, runtime flags and consent are excluded from backup; restored duration/default/silence settings validate safely; reset/restore does not revive a recorder or silently apply new limits to old context | N | U, I, M | |
-| REC34 | API29 screenshots and audio coordinate projection ownership in either start order and on revoke; API24–28 legacy screenshots and API30+ accessibility screenshots retain their original behavior | N | U, I, M | |
+| REC31 | Memory pressure drops rebuildable caches/optional work without full-history allocation; process death at each write/export stage loses transient session as agreed and startup clears every orphan class | N | U, I, M | 2026-11-26 (partial: cache pressure and real process death) |
+| REC32 | Missing/truncated private source chunk is detected; do not join later files through damage. Startup/reset/restore cleanup cannot remove leased PCM/waveform/TTS/export/retry artifacts behind active workers | N | U, I | 2026-11-26 (partial: leased PCM and orphan cleanup) |
+| REC33 | Private recordings, runtime flags and consent are excluded from backup; restored duration/default/silence settings validate safely; reset/restore does not revive a recorder or silently apply new limits to old context | N | U, I, M | 2026-11-26 (partial: API 29 file-backed reset/restore) |
+| REC34 | API29 screenshots and audio coordinate projection ownership in either start order and on revoke; API24–28 legacy screenshots and API30+ accessibility screenshots retain their original behavior | N | U, I, M | 2026-11-26 (partial: API 24/29/37 real capture) |
 | REC35 | Synthetic ramp/impulses across chunk, partial-tail publication and repeated Refresh have no lost/duplicated/reordered PCM frames; shown revision stays immutable while writer continues | N | U, I | |
 | REC36 | Negotiate real capture/preview/encoder rate and mono format; unsupported combinations fail cleanly; stereo downmix, anti-phase content, clipping, quiet syllables and any resampler retain verified speech fidelity | N | I, D | |
 | REC37 | Single encoder/muxer exports selected kept ranges with cumulative frame timestamps; decoded duration/order matches expected within documented encoder tolerance, EOS finalizes, no per-chunk codec seams | N | U, I | |
@@ -478,8 +478,8 @@ E/F/O and record the result in the run log. Existing AUD pronunciation and ANK c
 | REC47 | Outer handles and create/select/resize/delete multiple internal exclusions follow mockup; normalized overlapping/adjacent/clipped ranges and undo after Refresh preserve original coordinates | N | U, I, M | |
 | REC48 | Result preview skips cuts, Original plays selected original sound; time mapping/seek inside a cut and end-of-result behave deterministically; seek flushes stale queued audio, including rapid seek/toggle | N | U, I, M | |
 | REC49 | Preview has unity gain independent of pronunciation setting; phone media volume works; preview/word playback ownership and editor close cancel current output cleanly without controlling the source app | N | U, I, D | |
-| REC50 | Find silence uses current selection only, remembered 1.5 s minimum/150 ms edge padding; below/at/above thresholds, quiet syllables, several pauses in one sentence and partly existing manual cuts are handled reversibly | N | U, I, M | |
-| REC51 | Silence proposals require usable contrast, abstain for uniformly quiet/noisy/ambiguous sound and never force preview; stale proposals after edit/Refresh/context switch are rejected, manual cuts remain | N | U, I, M | |
+| REC50 | Find silence uses current selection only, remembered 1.5 s minimum/150 ms edge padding; below/at/above thresholds, quiet syllables, several pauses in one sentence and partly existing manual cuts are handled reversibly | N | U, I, M | 2026-11-26 (partial: saved ranges and deterministic detector cases) |
+| REC51 | Silence proposals require usable contrast, abstain for uniformly quiet/noisy/ambiguous sound and never force preview; stale proposals after edit/Refresh/context switch are rejected, manual cuts remain | N | U, I, M | 2026-11-26 (partial: contrast abstention and stale/manual-cut identity) |
 | REC52 | Apparently silent output warns but permits saving/Without audio; a genuinely empty kept result cannot export/add a zero-frame attachment and offers adjust/omit | N | U, I, M | |
 | REC53 | Compact popup editor hides definitions; expansion/move/collapse uses same operation. Outside taps reach player without dismissing editor; dictionary auto-hide/refined pushes do not replace it | N | U, I, M | |
 | REC54 | Back and Cancel cancel pending note in both sizes; boundary/cut changes require confirmation, preview/pan/zoom alone do not; cancelling restores valid dictionary context and creates no note | N | U, I, M | |
@@ -493,13 +493,13 @@ E/F/O and record the result in the run log. Existing AUD pronunciation and ANK c
 | REC62 | Duplicate Prevent/Update/New and per-field Keep/Replace/Append remain correct; Keep of existing sentence audio warns before editor and offers skip or field-setting change without overriding user policy | N | U, P, I, M | |
 | REC63 | Without audio update preserves old sentence field; mixed text+sentence-audio field remains entirely unchanged with notice while other fields update. New note Without audio renders other markers normally | N | U, P, I | |
 | REC64 | Screenshot cancelled, audio cancelled or Back creates no note; Without audio deliberately continues other requested attachments. Cancel after edits confirms; screenshot and last confirmed audio leases are released at proper ownership boundary | N | U, I, M | |
-| REC65 | Failed requested audio encode/copy before note mutation offers retry/Without audio, retains bounded draft and never reports a successful note missing requested media; repeated retry/Save cannot duplicate concurrent transfers or notes | N | U, I, M | |
+| REC65 | Failed requested audio encode/copy before note mutation offers retry/Without audio, retains bounded draft and never reports a successful note missing requested media; repeated retry/Save cannot duplicate concurrent transfers or notes | N | U, I, M | 2026-11-26 (partial: real provider failure and same-preparation Retry) |
 | REC66 | Save freezes shown edit revision, not unseen tail; late Refresh/silence/export completion cannot replace saved range or another operation; file/grant stays alive for actual media transfer then releases | N | U, I | |
 | REC67 | Effective deck/model/field/template/tags/update-policy change cancels pending note and explains; appearance/default/retention change alone does not. External model deletion/Anki permission loss is explicit; no stale-target save | N | U, I, M | |
 | REC68 | General Anki book/open/duplicate behavior is preserved; no broad automatic retry or rollback/exactly-once claim after a note mutation attempt. Successful media copy followed by note failure never deletes unrelated Anki media | N | U, P, I | |
 | REC69 | Cleanup/log/privacy audit covers every PCM/waveform/TTS/encoded/retry class; neutral IDs, private provider access/grants, no recognized terms/note/audio content/content-bearing paths or URLs in logs/backups | N | U, I, M | |
-| REC70 | Default5/5/2 and maximum10/10/10 under repeated scans, notes, Refresh/undo and long unattended recording: unique bytes/queues/cache/FD/temp counts reach a bounded plateau, including disjoint ring after context seal | N | U, I, M, D | |
-| REC71 | Compare feature Off, capture-only, protected history, preview, silence analysis and maximum export: CPU/PSS/native/WebView memory, disk bytes/write rate, seek/Refresh latency, OCR/lookup latency and bubble frames meet recorded measured limits/baselines | N | M, D | |
+| REC70 | Default5/5/2 and maximum10/10/10 under repeated scans, notes, Refresh/undo and long unattended recording: unique bytes/queues/cache/FD/temp counts reach a bounded plateau, including disjoint ring after context seal | N | U, I, M, D | 2026-11-26 (partial: API 30/37 codec and cleanup profiles) |
+| REC71 | Compare feature Off, capture-only, protected history, preview, silence analysis and maximum export: CPU/PSS/native/WebView memory, disk bytes/write rate, seek/Refresh latency, OCR/lookup latency and bubble frames meet recorded measured limits/baselines | N | M, D | 2026-11-26 (partial: native/PSS/FD samples only; no comparative baseline) |
 | REC72 | Long real-device sessions compare power/thermal behavior using repeatable source/build/route and supported tracing; observed restrictions/limits are recorded rather than inferred from emulator arithmetic or a foreground-service flag | N | D | |
 | REC73 | Real source scenarios: visual-novel/live video speech continues during definition reading; paused video resumes mid-word, Refresh appends and selected pause is removed without tearing speech; long reading preserves needed pre-scan minute | N | M, D | |
 | REC74 | Debug/release coexist with isolated session files/provider authorities/notifications; another installed build's sound is not incorrectly promised to share this package's own-UID exclusion | N | I, M | |
@@ -509,7 +509,7 @@ E/F/O and record the result in the run log. Existing AUD pronunciation and ANK c
 | REC78 | Real Android preview callbacks mutate WebView only on Main; stale play/view generations cannot update a rehosted editor, revive workers or leave two active sinks | N | U, I | |
 | REC79 | Current trim/cuts/seek/Save share an acknowledged edit revision; Refresh updates selectable source bounds without moving prior edits or duplicating samples | N | U, P, I, M | |
 | REC80 | Unresolved or failed export keeps coherent operation UI and bounded retry artifacts; export A completing after cancellation/new operation B cannot finish B or leak A | N | U, P, I | |
-| REC81 | Pre-note media-copy failure retains audio and other attachments for Retry/Without audio; repeated recovery is serialized and never automatically replays an already attempted note mutation | N | U, I, M | |
+| REC81 | Pre-note media-copy failure retains audio and other attachments for Retry/Without audio; repeated recovery is serialized and never automatically replays an already attempted note mutation | N | U, I, M | 2026-11-26 (partial: real pre-note provider Retry; no mutation replay) |
 | REC82 | API29 screenshot-only consent does not request/require RECORD_AUDIO; denied audio permission and recording disabled leave screenshots usable in both projection-consumer start orders | N | U, I, M | |
 
 ### ANK: Anki
@@ -4630,3 +4630,29 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
 - Full build/unit/lint/androidTest-assembly/convention/release-vital gates pass in 2m2s; page suite 247/247. Evidence:
   ignored `testdata/local-research/audio-lifecycle-2026-11-26/`. Test packages removed and owned AVDs powered off.
   REC31/32/33/50/51 remain N; physical, modern-source/FGS, unattended and complete acceptance remain pending.
+
+## Modern lifecycle, provider retry and memory-pressure verification (2026-11-26)
+
+- Production memory-pressure handling clears only the rebuildable waveform cache from application callbacks on IO.
+  The core-media regression proves exact leased PCM survives, cache bytes reach zero and the same waveform rebuilds.
+  This is partial REC31/32 evidence, not a physical low-memory/endurance run; the rows remain N.
+- Final capture receipts on the current test service/XML: API 24 executes one active legacy case and SDK-skips two in
+  2.470 s; API 29 executes consent/audio plus legacy capture and SDK-skips modern accessibility in 8.904 s. API 37 executes
+  real consent/revoke/retry, AudioRecord, both acquisition orders and FGS transitions in 11.370 s, plus two real modern
+  accessibility frames without MediaProjection in 1.289 s. Partial REC34; API 25–28 and manual overlay coverage remain.
+- Focused API 37 real process-death, Main/off-Main recorder and repeated record/stop/close cleanup fixtures pass. This
+  adds partial REC31/32/70 evidence but does not cover every write/export stage, real source speech or unattended lifetime.
+- Fresh local API 29 AnkiDroid: an absent granted Opus source produces sentence MediaFailed without note mutation; Retry
+  of the same preparation transfers byte-identical decodable audio and MediaPlayer reaches completion. Focused sentence
+  cases pass 2/2 in 2.373 s; the full core-Anki device suite passes 6/6 in 4.139 s. Partial REC65/81 and local playback
+  evidence only; physical audibility and desktop Anki remain open. The disposable collection was removed.
+- API 37 settled production export: 20 seven-second cycles in 142.747 s, native 6,621,600→6,620,768 bytes, descriptors
+  104 for four samples then 103. A separate 40-cycle no-settle profile grows native/FD transiently and settles at
+  6,914,304 bytes/259 descriptors. This is partial REC70/71 evidence, not a phone plateau, power baseline or new leak.
+- Earlier API 30 native growth is now confirmed as an approximately 28.3 KiB started/written Ogg-container platform leak;
+  one-packet/all-packet fixtures match and codec/extractor controls stay near flat. No production GC/container redesign.
+  REC50/51 retain their separate silence coverage; no new real-signal threshold/UX acceptance was performed in this block.
+- Final full gates pass in 1m50s; XML totals are 231 core-Anki, 136 core-media, 354 overlay and 291 app unit cases with
+  zero failures/errors, plus 247/247 page cases. Evidence: ignored `testdata/local-research/audio-lifecycle-2026-11-26/`.
+  Test packages were removed and owned AVDs powered off. REC31/32/33/34/50/51/65/70/71/81 remain N with partial receipts;
+  physical source/routes/audibility/UX, modern WebView editor, desktop Anki and unattended/endurance acceptance remain.

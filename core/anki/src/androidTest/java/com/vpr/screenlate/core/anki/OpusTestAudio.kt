@@ -44,6 +44,29 @@ internal object OpusTestAudio {
         assertThat(amplitude).isGreaterThan(0.15)
     }
 
+    /** Platform playback reaches completion on the headless/no-audio emulator; this is not physical audibility evidence. */
+    fun assertMediaPlayerCompletes(file: File) {
+        val completed = java.util.concurrent.CountDownLatch(1)
+        val failed = java.util.concurrent.atomic.AtomicBoolean(false)
+        val player = android.media.MediaPlayer()
+        try {
+            player.setOnCompletionListener { completed.countDown() }
+            player.setOnErrorListener { _, _, _ ->
+                failed.set(true)
+                completed.countDown()
+                true
+            }
+            player.setDataSource(file.path)
+            player.prepare()
+            assertThat(player.duration).isGreaterThan(0)
+            player.start()
+            assertThat(completed.await(10, java.util.concurrent.TimeUnit.SECONDS)).isTrue()
+            assertThat(failed.get()).isFalse()
+        } finally {
+            player.release()
+        }
+    }
+
     private fun decode(file: File): ShortArray {
         val extractor = MediaExtractor()
         var decoder: MediaCodec? = null

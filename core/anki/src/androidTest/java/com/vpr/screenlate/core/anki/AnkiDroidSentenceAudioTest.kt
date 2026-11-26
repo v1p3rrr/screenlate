@@ -135,6 +135,32 @@ class AnkiDroidSentenceAudioTest {
         }
     }
 
+    @Test
+    fun providerCopyFailureRetriesSamePreparationBeforeAnyNoteMutation() = runBlocking<Unit> {
+        val word = "再試行${UUID.randomUUID().toString().take(8)}".also { testWord = it }
+        val values = mapOf("expression" to word, "glossary" to "retry")
+        val source = File(AnkiDroid.mediaDirectory(context), "sentence-retry-${UUID.randomUUID()}.opus")
+        try {
+            // The real provider cannot open this granted but absent source; no collection mutation is allowed.
+            val target = notes.freezeTarget(Language.JAPANESE)
+            val preparation = notes.preparation(target,
+                NoteRequest(values, sentenceAudio = SentenceAudioAttachment.Attached(source)))
+            assertThat(preparation.prepare()).isEqualTo(NotePreparationResult.MediaFailed(NoteMediaRole.SENTENCE))
+            assertThat(notes.duplicateIds(Language.JAPANESE, values)).isEmpty()
+
+            OpusTestAudio.create(source, 440)
+            val ready = preparation.prepare() as NotePreparationResult.Ready
+            val added = notes.write(ready.note) as AddResult.Added
+            val transferred = mediaFile(audioReference(added.noteId))
+            assertThat(transferred.readBytes()).isEqualTo(source.readBytes())
+            OpusTestAudio.assertDecodes(transferred, 440)
+            OpusTestAudio.assertMediaPlayerCompletes(transferred)
+            assertThat(notes.duplicateIds(Language.JAPANESE, values)).containsExactly(added.noteId)
+        } finally {
+            source.delete()
+        }
+    }
+
     private suspend fun audioReference(noteId: Long): String =
         backend.findDuplicates(testWord, listOf(modelId), DuplicateScope.DECK, deckId)
             .single { it.id == noteId }

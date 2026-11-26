@@ -8,8 +8,8 @@ import androidx.work.Configuration
 import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.log.Log
-import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.media.SentenceRecorder
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
@@ -18,6 +18,7 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.logs.AppLogs
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
+import javax.inject.Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -42,6 +43,11 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var dictionaryRepository: DictionaryRepository
 
+    // Ordinary application startup must not initialize recording just to handle a future memory callback.
+    @Inject
+    lateinit var sentenceRecorder: Provider<SentenceRecorder>
+
+    private val applicationScope = MainScope()
     private var languageResources: AppLanguageResources? = null
 
     // Workers, notifications and injected contexts show text in the app's language, not the system's.
@@ -63,7 +69,7 @@ class ScreenlateApplication : Application(), Configuration.Provider {
         // Before injection, so that lines logged while the graph is built reach the file too.
         AppLogs.install(this)
         super.onCreate()
-        MainScope().launch(Dispatchers.IO) {
+        applicationScope.launch(Dispatchers.IO) {
             // Before anything writes the settings: an install without any is a first run.
             runCatching {
                 languageProfiles.settleFirstRun(onUpgrade = TranslationSettingsRepository::keepButtonOn) {
@@ -82,6 +88,20 @@ class ScreenlateApplication : Application(), Configuration.Provider {
                 runCatching { dictionaryRepair.repair() }.onFailure { Log.w(TAG, "Dictionary repair failed: ${it.javaClass.simpleName}") }
             }
         }
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        releaseRebuildableAudioCaches()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        releaseRebuildableAudioCaches()
+    }
+
+    private fun releaseRebuildableAudioCaches() {
+        applicationScope.launch(Dispatchers.IO) { sentenceRecorder.get().releaseRebuildableCaches() }
     }
 
     private companion object {

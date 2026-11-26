@@ -16,27 +16,31 @@ parts are implemented. Do not restart them or infer the current usage limit from
   Prototype state such as 5/3/2 does not change the approved production defaults of 5/5/2 minutes.
 - Conservative silence detection, aggregate PCM/storage/cache/workspace bounds, queue release, TTS admission/result
   limits, selective orphan cleanup, validated silence settings and 27-locale resource coverage are implemented. Do not
-  reimplement those checkpoints. Test-only real process-death fixtures now prove PCM/temp and sentence Opus cleanup by
-  a new PID, and file-backed API 29 reset/restore tests pass. API 29 shared screenshot/audio consent passes; API 24
-  unsupported UI and existing own-playback were checked. Production source was not changed by this verification block.
+  reimplement those checkpoints. Real process-death and file-backed reset/restore fixtures pass. Memory-pressure handling
+  now clears only the rebuildable waveform cache from application callbacks; leased PCM survives and rebuilds on demand.
+- Final capture receipts cover real legacy frames on API 24 and API 29, API 29 shared screenshot/audio consent, and API 37
+  system consent/revoke/retry, real AudioRecord, both acquisition orders, FGS transitions and modern accessibility frames.
+  API 25–28 and the full manual overlay matrix remain uncovered. The API 37 WebView editor was not rerun because of the
+  documented emulator WebView deadlock; do not convert that environment gap into either a pass or an app regression.
 - Official AnkiDroid 2.25.3 was verified by APK hash/signer and used only in a fresh local API 29 collection without
-  login/sync. Real text add/update and sentence Opus add/transfer/decode/Without audio preservation/replacement pass.
-  This is stored-byte/decodability evidence, not physical audibility, desktop Anki or real provider Retry acceptance.
-- The 30-minute API 30 export now passes: 86,400,000 frames, 9,810,093 Opus bytes, 282.176 s, peak PSS 58,124 KiB.
-  PCM/FD cleanup and 20 recorder cycles are stable, and external-TTS transient WAV writes were observed. However, codec
-  native heap grows roughly 29–31 KB per export over 20 cycles even with test-only forced GC; descriptors stay flat.
-  Treat this as an open API 30 x86 resource risk, not a proven production leak or accepted plateau. Do not add production
-  GC or speculative codec reuse without diagnosis. Keep REC31/32/33/50/51 N/partial.
-- Follow this remaining order:
-  1. Diagnose the codec native-growth risk and measure unattended plateaus; cover remaining process stages/faults and
-     legacy API 24–28 system screenshots. Current reset/restore/process-death checks are substantive but not the whole matrix.
-  2. Actual modern platform/source/lifecycle checks: API 30+/current-target overlay/WebView/FGS/consent, paused/ongoing
-     speech and Refresh, retention/missing-middle, calls/lock/revocation, TTS self-exclusion and headset/Bluetooth routes.
-  3. Finish disposable local AnkiDroid/desktop acceptance: audible quality, safe real Retry/fault injection and updates.
-     Never access or sync the owner's collection.
-  4. Final phone UX/audibility, translation review and affected/full regression on the minified build. Current software
-     evidence is 247 page cases and full build/unit/lint/androidTest-assembly/convention/release-vital gates in 2m2s.
-     Locale coverage is not independent native-speaker review; physical/endurance acceptance remains open.
+  login/sync. Text add/update, sentence Opus transfer/decode, Without audio preservation/replacement and a real missing-
+  source provider fault followed by Retry of the same preparation pass. Platform MediaPlayer reaches completion on the
+  headless AVD. This is not physical audibility or desktop Anki evidence. Never access or sync the owner's collection.
+- The 30-minute API 30 export passes: 86,400,000 frames, 9,810,093 Opus bytes, 282.176 s, peak PSS 58,124 KiB. Native
+  isolation confirms an approximately 28.3 KiB platform Ogg-writer leak per started/written container on API 30 x86.
+  API 37's settled production exporter instead stays at 6,621,600→6,620,768 native bytes over 20 seven-second cycles,
+  with descriptors 104 then 103. The no-settle 40-cycle FD/native growth is a short Codec2-pool transient, not a new leak.
+  Neither result is phone endurance. Do not add production GC, codec reuse, a custom writer or a format redesign.
+- Final gates: full build/unit/lint/androidTest-assembly/convention/release-vital checks pass in 1m50s; 231 core-Anki,
+  136 core-media, 354 overlay, 291 app and 247 page cases pass. Detailed metrics and exact logs are in the newest status/
+  engineering sections under ignored `testdata/local-research/audio-lifecycle-2026-11-26/`. Do not redo these receipts.
+- Remaining acceptance:
+  1. Phone audibility and actual source policy with ongoing/paused speech and Refresh; speaker/wired/Bluetooth/headset
+     routes, zero volume/source mute, calls, lock and revocation; no unintended source pause/duck/resume.
+  2. External-engine TTS self-exclusion and natural-voice behavior, modern WebView editor acceptance, phone UX/
+     accessibility and independent translation review on the minified build.
+  3. Disposable desktop Anki playback/quality, plus power/thermal/storage and unattended endurance plateaus with the
+     complete REC matrix. Emulator completion/heap samples do not certify these items.
 - Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite is authorized.
 - Latest APK, matching dev signer, mapping and build recipe are in the delivery receipt below. Use the compact ARM64
   debug-signed release recipe for future Dev deliveries; ordinary debug APK is superseded.

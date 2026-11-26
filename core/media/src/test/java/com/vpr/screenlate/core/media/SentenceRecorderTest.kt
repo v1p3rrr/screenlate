@@ -678,6 +678,43 @@ class SentenceRecorderTest {
     }
 
     @Test
+    fun memoryPressureDropsOnlyTheWaveformCacheAndRebuildsItFromLeasedPcm() = runBlocking {
+        val time = AtomicLong(10_000L)
+        val recorder = SentenceRecorder(temporary.newFolder(), RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() }, { time.get() * 1_000_000L })
+        val source = FakeAudioSource()
+        var retained: SentenceRecorder.ContextLease? = null
+        try {
+            recorder.start(source)
+            source.emitFrames(240)
+            withTimeout(3000) {
+                while (recorder.snapshot(AudioRange(0, 240))?.also { it.close() } == null) delay(1)
+            }
+            time.set(10_240)
+            val context = checkNotNull(recorder.acquireScan())
+            retained = checkNotNull(recorder.retainContext(context))
+            val range = checkNotNull(recorder.openEditor(context)?.source)
+            val original = checkNotNull(recorder.waveformSummary(range, contextId = context))
+            assertThat(recorder.waveformCacheBytes).isGreaterThan(0)
+
+            recorder.releaseRebuildableCaches()
+            assertThat(recorder.waveformCacheContext).isNull()
+            assertThat(recorder.waveformCacheBytes).isEqualTo(0)
+            recorder.snapshot(range, context).use { snapshot ->
+                assertThat(snapshot).isNotNull()
+                assertThat(snapshot!!.openStream().use { it.readBytes() })
+                    .isEqualTo(source.expectedPcm(range.start, range.endExclusive))
+            }
+            assertThat(recorder.waveformSummary(range, contextId = context)).isEqualTo(original)
+            assertThat(recorder.waveformCacheContext).isEqualTo(context)
+            assertThat(recorder.waveformCacheBytes).isGreaterThan(0)
+        } finally {
+            retained?.close()
+            recorder.close()
+        }
+    }
+
+    @Test
     fun firstStartClearsAbandonedPcmWithoutDeletingUnrelatedFiles() = runBlocking {
         val root = temporary.newFolder()
         val legacy = File(root, "legacy.pcm").apply { writeBytes(ByteArray(2)) }

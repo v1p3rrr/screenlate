@@ -7,6 +7,61 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Modern capture, memory pressure, provider retry and settled codec evidence — 2026-11-26
+
+`SentenceRecorder.releaseRebuildableCaches()` is the common close/memory-pressure path for the single waveform cache.
+It takes only the `waveforms` mutex and clears `waveformContext`/`waveformIndex`; it does not take `lifecycle`, release a
+context lease or delete PCM. `ScreenlateApplication.onTrimMemory` and `onLowMemory` dispatch this suspending operation on
+the retained application scope's IO dispatcher. Hilt supplies a `Provider<SentenceRecorder>`, so ordinary application
+startup does not construct the recorder merely to support a future memory callback. The regression holds a real leased
+context, checks exact snapshot bytes
+after cache release and requires the next summary to equal the original while the cache is rebuilt. This verifies the
+cache/PCM ownership contract, not a physical low-memory callback or whole-process PSS plateau.
+
+The final `CapturePermissionDeviceTest` uses a fresh isolated package so RECORD_AUDIO starts denied. On API 37, two cases
+pass in 11.370 s and legacy is SDK-skipped (`capture-permission-modern-api37-single-display.log`). Real system consent is
+revoked while audio permission is pending; denial preserves the projection, explicit retry grants it, and real AudioRecord
+runs through both acquisition orders and foreground-service transitions. The fixture waits for the asynchronous holder
+clearing callback. Android 14+ permits only one VirtualDisplay on a projection, so additional-frame probes run below API
+34; production API 30+ screenshots use accessibility and modern audio projections are stopped after capture. A separate
+production-path `ModernAccessibilityCapturer` run enables the test-only accessibility service, obtains two real frames
+without MediaProjection and passes in 1.289 s (`modern-accessibility-capture-api37-capability.log`). The API 37 WebView
+editor was not rerun because its known emulator deadlock remains an environment gap, not a pass.
+
+Final legacy receipts bind the shared test-service XML/capability changes to the old platforms too. API 24 executes one
+active real `LegacyMediaProjectionCapturer` case and SDK-skips the other two: OK (3 tests), 2.470 s. API 29 executes the
+consent/audio and legacy-capture cases and SDK-skips modern accessibility: OK (3 tests), 8.904 s. See
+`capture-permission-final-api24.log` and `capture-permission-final-api29.log`. API 25–28 were not executed. Focused API 37
+`RecordingProcessDeathDeviceTest`, Main/off-Main recorder and repeated record/stop/close fixtures also pass; these do not
+replace real paused/ongoing source speech, calls, lock, routes or unattended lifecycle acceptance.
+
+The local AnkiDroid fault case first supplies a granted but nonexistent Opus source. The real provider copy returns
+`NotePreparationResult.MediaFailed(NoteMediaRole.SENTENCE)`, duplicate lookup proves no note mutation, and the exact same
+`NotePreparation` is retried after source creation. `notes.write` then succeeds; collection bytes equal the source, Opus
+decoding passes and platform `MediaPlayer.prepare/start` reaches completion within ten seconds. Focused sentence tests
+pass 2/2 in 2.373 s; the full six-case core-Anki suite, including process death, passes in 4.139 s. Logs:
+`anki-provider-fault-playback-api29.log` and `anki-full-suite-api29.log`. `MediaPlayer` completion on a `-no-audio` AVD is
+transport/decode evidence only, not speaker audibility or desktop Anki acceptance.
+
+API 37 provides the modern runtime comparison missing from the API 30 Ogg diagnosis. The settled production exporter runs
+20 cycles with seven seconds per cycle in 142.747 s: native allocated bytes 6,621,600→6,620,768, intermediate values
+approximately 6.611–6.642 MB, descriptors 104 for the first four samples and 103 thereafter. Logs/properties:
+`codec-cycles-settled20-api37.log` and `codec-cycle-metrics-encode-only-api37.properties`. There is no API 30-style
+approximately 28 KiB/export slope in this short settled run. It is not an unattended endurance certificate and does not
+establish every vendor's Ogg backport behavior.
+
+The opt-in no-settle API 37 exporter profile deliberately shows the short asynchronous-pool transient: over 40 cycles,
+native allocated bytes 6,628,256→7,036,736 and descriptors 104→264, with final settled native/descriptors 6,914,304/259
+(`codec-isolation-exporter-api37.properties`). This is not evidence of a new production leak. Conversely, FD/native
+stability in the settled run does not measure physical flash, power, thermal behavior, renderer memory or every codec
+service. No production GC, codec reuse, custom Ogg writer or format change was introduced.
+
+Final gates pass in 1m50s: full assembleDebug, unit tests, lintDebug, androidTest assembly, convention tests and
+lintVitalRelease (`final-full-gradle-gates.log`). XML reports contain 231 core-Anki, 136 core-media, 354 overlay and 291 app
+unit cases with zero failures/errors; page tests are 247/247 (`final-page-tests.log`). Physical audibility/source/routes,
+real speech lifecycle, external-TTS exclusion, modern WebView editor, desktop Anki, UX, power/thermal/endurance and
+translation quality remain explicit acceptance work.
+
 ## Real process death, reset/restore, local Anki and resource measurements — 2026-11-26
 
 The new fixtures are all under `androidTest`; production source is unchanged. `RecordingProcessDeathDeviceTest` starts
@@ -48,16 +103,52 @@ Resource evidence on API 30 x86:
   power or thermal evidence. Twenty record/stop/close cycles left zero audio files and descriptors fixed at 71.
 - The sampled external-TTS fixture observed a growing WAV (3,244 then 252,844 intermediate bytes, 256,044 final) and
   deletion after Stop. It proves transient writes occur outside the write loop, not a universal hard engine cap.
-- Twenty encode-only cycles kept descriptors at 59 but native heap grew 3,419,472→3,972,064 bytes. Test-only forced
-  GC/finalization did not change the slope (3,419,904→3,973,216; descriptors 59). Twenty encode/decode cycles kept
-  descriptors at 65 and grew native heap 3,424,640→4,015,328 bytes. Thus FD/file stability is established, but a native
-  plateau is not. The approximately 29–31 KB/export linear growth remains an open emulator resource risk, not yet a
-  proven production leak; no production GC or speculative codec reuse was introduced.
+- At this earlier checkpoint, twenty encode-only cycles kept descriptors at 59 but native heap grew
+  3,419,472→3,972,064 bytes. Test-only forced GC/finalization did not change the slope (3,419,904→3,973,216;
+  descriptors 59). Twenty encode/decode cycles kept descriptors at 65 and grew native heap 3,424,640→4,015,328 bytes.
+  Thus FD/file stability was established, but a native plateau was not. The following isolated Ogg diagnosis resolves
+  the approximately 29–31 KB/export growth as an API 30 platform container leak; no production GC or speculative codec
+  reuse was introduced.
 
 Final full build/unit/lint/androidTest-assembly/convention/release-vital gate passes in 2m2s and all 247 page tests pass
 (`full-gradle-gates.log`). All temporary packages and the disposable Anki collection were removed and every owned AVD
 was powered off. REC31/32/33/50/51 remain N/partial. API 30+/current-target behavior, physical sources/routes/audibility,
 unattended endurance and native-growth diagnosis remain required before complete acceptance.
+
+## Isolated Ogg muxer native-leak diagnosis — 2026-11-26
+
+The opt-in `CodecNativeIsolationDeviceTest` performs five warm-up cycles, 40 measured cycles and a final seven-second settle.
+Its `muxer-write` mode extracts Opus packets once and reuses them, separating `MediaMuxer.writeSampleData` from extraction and
+encoding. All successful properties/logs are under `testdata/local-research/audio-lifecycle-2026-11-26/`; the matrix uses
+`nativeHeapBytes[39] - nativeHeapBytes[0]`, not the earlier initial-baseline arithmetic.
+
+| Mode | Native delta after 39 intervals | Settled native bytes | Settled FD |
+|---|---:|---:|---:|
+| `codec-lifecycle` | 13,008 | 3,385,216 | 53 |
+| `muxer-lifecycle` (no stream) | 1,616 | 3,367,424 | 53 |
+| `extract` | 12,544 | 3,437,408 | 61 |
+| `encode` without muxer | 159,824 | 3,546,240 | 215 |
+| Production `exporter` | 1,282,400 | 4,841,696 | 215 |
+| `remux` | 1,138,896 | 4,742,432 | 61 |
+| `muxer-write`, all packets | 1,133,616 | 4,725,952 | 61 |
+| `muxer-write`, one packet | 1,133,616 | 4,730,448 | 61 |
+
+The equal all-packet/one-packet result is the key boundary: the leak is fixed per started/written Ogg container, approximately
+28.3 KiB per instance, and does not scale with audio-packet count. The high FD values in the no-per-cycle-settle encode/export
+rows are the already observed asynchronous Codec2 pool effect, not evidence for leaked output files. Seven-second settled
+exporter runs keep FD constant. `Thread.activeCount` remained seven and is not represented as a complete native-thread census.
+
+AOSP confirms the mechanism. Android 11 `OggWriter::~OggWriter()` and the Android 12 release branch call only `free(mOs)`.
+Android 13, 14, 15 and current main call `ogg_stream_clear(mOs)`, free it and null the pointer. Libogg's clear function frees
+internal stream buffers; omitting it matches the fixed leak measured above. These branch observations do not identify every
+vendor/security backport and are not a substitute for a modern runtime measurement. No upstream-fix commit ID was established.
+
+The production-style 100-cycle exporter run with one-second settling has no native plateau (3,484,416 to 6,317,984 allocated
+bytes). It fails only the superseded immediate-FD ceiling (75 versus 63), while saving the native-growth samples to logcat.
+The final 20-cycle production exporter run with seven seconds per cycle passes in 141.351 s: native allocated bytes
+3,420,480 to 3,972,624, descriptors exactly 59 at every sample and active-thread count seven. No production forced GC, codec
+reuse, custom Ogg writer or format change was added. API 29 and Android 13+ runtime behavior, physical endurance and whole-app
+resource acceptance remain open; this diagnosis is not REC70/71 acceptance.
 
 ## Silence settings validation and locale parity — 2026-11-26
 

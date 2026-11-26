@@ -435,15 +435,15 @@ are investigated as findings, not converted into an invented new audio performan
 | B session/preview lifetime | Partial | Session/preview/consent/terminal retirement and TTS/shared own-playback repair implemented and tested. Required checks and 4 final native tests pass. Physical source/route/external-engine gates remain. |
 | C pending operation/protocol | Software implemented; integration acceptance open | Pre-chooser snapshot, Ready, crop/editor resize, dirty native Back, profile invalidation, safe host teardown and token-bound scan resolution implemented. E recovery UI is also implemented; actual service/device acceptance remains in G. |
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
-| E Anki recovery | Software implemented; local stored-media round-trip passed | Editor/source/encoding recovery and Retry/Without/Cancel remain implemented. Official AnkiDroid 2.25.3 in a fresh local API 29 collection passes text add/update and sentence Opus add, byte-identical transfer, decoding, two Without audio preservation variants and replacement; all five core-Anki device cases pass. Physical/desktop audibility and safe real provider Retry remain open. |
-| F settings/resources | Partially verified; native plateau and full matrix remain | Real process-death cleanup and file-backed API 29 reset/restore fixtures pass; 30-minute streaming export, PCM/FD cycles and external-TTS transient writes are measured. Codec descriptors remain flat, but native heap grows roughly 29–31 KB per export over 20 cycles even with forced test GC. No production GC/speculative codec change was added. Unattended plateau, remaining fault stages and physical resources stay open; REC31/32/33/50/51 remain N/partial. |
-| G device/regression | Partially verified; full acceptance open | API 29 shared screenshot/audio consent and API 24 unsupported UI/own-playback pass. Full build/unit/lint/androidTest-assembly/convention/release-vital gates pass in 2m2s; page suite is 247/247. Legacy system screenshots, API 30+/current-target FGS/source/routes, physical audibility/UX and endurance/full acceptance remain. |
+| E Anki recovery | Software implemented; local provider fault/retry and platform playback passed | Editor/source/encoding recovery and Retry/Without/Cancel remain implemented. Official AnkiDroid 2.25.3 in a fresh local API 29 collection passes text add/update, sentence Opus add, byte-identical transfer, decoding, Without audio preservation and replacement. A real missing-source copy failure performs no note mutation and Retry of the same preparation succeeds; MediaPlayer reaches completion. All six core-Anki device cases pass. Physical audibility and desktop Anki remain open. |
+| F settings/resources | Partially verified; full physical/unattended matrix remains | Real process-death cleanup, API 29 reset/restore and memory-pressure waveform-cache release pass. API 30's linear growth is isolated to its platform Ogg writer. API 37's 20 settled production exports stay at 6,621,600→6,620,768 native bytes with stable settled descriptors; the no-settle profile is an asynchronous Codec2-pool transient. No production GC/speculative codec change was added. Phone resources and long unattended acceptance stay open; REC rows remain N/partial. |
+| G device/regression | Partially verified; full acceptance open | Final API 24/29 legacy capture, API 29 shared consent and API 37 consent/AudioRecord/FGS/accessibility-capture fixtures pass. Focused API 37 recorder/process cleanup passes. Full gates pass in 1m50s with 231 core-Anki, 136 core-media, 354 overlay, 291 app and 247 page cases. Modern WebView editor, real sources/routes, physical audibility/UX, desktop Anki and power/endurance/full acceptance remain. |
 
-Current continuation (updated 2026-11-26): real process-death/reset-restore checks, API 29 consent, API 24 unsupported UI,
-local AnkiDroid stored-media round-trip and long/resource measurements are complete; production source did not change in
-this verification block. Do not redo them. Next diagnose the linear codec native-heap growth and cover remaining legacy
-screenshots/process stages, then modern FGS/source/lifecycle and audible local/desktop Anki checks, followed by physical/
-endurance/regression acceptance. Music is deferred. See `ai/notes/sentence-audio-handoff.md` for current constraints.
+Current continuation (updated 2026-11-26): the late local verification block is complete. It added memory-pressure cache
+release, final legacy and modern capture/FGS fixtures, real provider fault/retry plus platform playback, and the API 37
+settled codec comparison. Do not redo these receipts. Remaining work is physical source/route/audibility/lifecycle/UX and
+endurance acceptance, external-TTS self-exclusion, the blocked modern WebView editor check, disposable desktop Anki and
+independent translation review. Music is deferred. See `ai/notes/sentence-audio-handoff.md` for current constraints.
 
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
@@ -457,6 +457,12 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-26: Added application memory-pressure release of only the rebuildable waveform cache, with leased-PCM/rebuild
+  regression coverage. Completed final API 24/29 legacy capture and API 37 consent/AudioRecord/FGS/accessibility fixtures,
+  real local provider fault/retry with platform playback completion, and the API 37 settled codec comparison. Full gates
+  pass with 231 core-Anki, 136 core-media, 354 overlay, 291 app and 247 page cases. No product decision changed; physical
+  source/routes/audibility/UX/endurance, external-TTS exclusion, modern WebView editor, desktop Anki and translation review
+  remain open.
 - 2026-11-26: Added isolated real process-death and file-backed reset/restore regressions, verified API 29 shared
   screenshot/audio consent and API 24 unsupported UI/playback, and completed a fresh local AnkiDroid sentence-media
   round-trip. Measured the 30-minute export, PCM/FD cycles, external-TTS transient writes and repeated codec native heap.
@@ -574,6 +580,12 @@ Changelog:
   inherited all existing product decisions and approved prototype behavior, mapped every review finding
   to repair work/tests and retained measured compatibility/resource gates. No new product choices or
   production fixes were made in this planning milestone.
+
+
+- 2026-11-26: Isolated API 30 native growth to the platform Ogg writer: all-packet and one-packet muxer fixtures both grow
+  1,133,616 bytes over the same measured interval, while codec/extractor lifecycle controls remain near flat. AOSP 11/12 omit
+  `ogg_stream_clear`; 13/14/15/main include it. The settled production exporter still passes with flat FD/thread samples.
+  No product decision, production codec ownership, container or format changed; modern/physical plateau acceptance remains open.
 
 
 ## Touch repair checkpoint (2026-11-24)
