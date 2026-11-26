@@ -7,6 +7,53 @@ production integration defects have been repaired.
 Branch: `codex/sentence-audio-recording`, started at `main` commit `5c1e5cce`.
 These results are engineering evidence, not complete feature acceptance or a final codec/resource-budget choice.
 
+## Legacy/editor matrix and minified runtime — 2026-11-27
+
+The short-viewport touch fixture was red on API 29 before any layout change. At a 350×376 CSS-pixel viewport its recorded
+geometry was body top/bottom 54.5/214.5 and waveform top/bottom 138.786/226.786: the waveform extended 12.286 px below
+the initially visible content. This contradicted the existing short-window rule that the main waveform is reachable without
+a first scroll. At `max-height: 400px`, `sl-wave-wrap`/`sl-wave` now use 72/67 px instead of the <=520 px rule's 88/83 px.
+The same complete injected-touch scenario passes on API 25, 26, 28 and 29. Its assertion now includes actual geometry, and
+its isolated overlay proxy selects `TYPE_PHONE` below API 26 rather than using the then-unknown `TYPE_APPLICATION_OVERLAY`.
+
+API 25, 26 and 28 each have green coverage for all 25 selected overlay cases: three `CapturePermissionDeviceTest` entries
+(including SDK skips where appropriate), resize, touch, own playback, 13 crop cases and six `LookupPageTest` cases. Each
+also passes both file-backed `RecordingSettingsDeviceTest` cases. The old emulator consent windows exposed no actionable
+accessibility nodes; screenshots on API 26/28 placed Start now at the same normalized 78.0%/55.7% position used by API
+24/25. The legacy fixture now waits for the actual permission activity and taps those confirmed coordinates; API 29 keeps
+its separate 80.2%/63.9% position. Initial cold-WebView failures were rerun only after fixture diagnosis. Final split-run
+receipts are `api25-overlay-run.log` plus `api25-fixture-repair-run.log`, `api26-overlay-run.log` plus
+`api26-consent-fixture-run.log`, and `api28-overlay-run.log` plus `api28-final-fixtures-run.log`.
+
+API 27 cold-boots successfully and reports x86. The verification APK is x86_64 and installation fails with
+`INSTALL_FAILED_NO_MATCHING_ABIS` (`api27-overlay-install.log`). The available image has no x86_64 variant; an earlier x86
+build also reached the known MNN `GemmAVX2` ELF incompatibility. No production OCR/native change was made, and no API 27
+runtime pass is claimed.
+
+API 29's final nine-case resize/touch/playback/LookupPage set passes in 17.242 s and all 13 crop cases pass in 0.414 s.
+The initial `AudioEditorDeviceTest` run also passed opening-speech and sleeping-display behavior. Its two export cases are
+not green on this image: one hit the initial cold-WebView five-second timeout and the held-edit case reached its export wait
+before timing out. The image is already known to lack an Opus encoder; do not relabel either as a pass. API 30's previous
+real export/editor run remains the actual codec evidence. No codec or exporter production change was made.
+
+`MinifiedSentenceAudioDeviceTest` is under `app/src/androidTestMinified`. The ignored local init script selects x86_64,
+assigns isolated release application/test IDs, debug-signs the release, selects release androidTest and removes ordinary
+debug-only app test source directories for both Java and Kotlin. Local test keep rules retain only test-invoked entry points;
+they do not alter production Gradle or production ProGuard configuration. Earlier harness failures were missing tracing/
+Kotlin/Guava test-runtime classes; the final fixture uses `androidx.tracing` and JUnit assertions. On the final CSS state,
+the real R8 app passes FileProvider byte equality and WebView Cut/Save/Main/operation/failure-recovery/close in 1.152 s
+(`minified-api29-final-run.log`). This is bridge/provider evidence, not an encoder or physical-UI test.
+
+The final broad Gradle invocation initially exceeded the external 300 s limit twice while performing cold analysis/release
+work; no test failure caused those exits. The remaining release-vital task succeeded incrementally in 1m16s, after which the
+complete requested gate reran successfully in 36 s with 1,412 actionable tasks (`final-full-gates-complete.log`). Current XML
+totals are 231 core-Anki, 136 core-media, 354 overlay and 291 app unit cases with zero failures/errors. The page suite passes
+247/247 (`final-page-tests.log`). `git diff --check` reports no whitespace error.
+
+All test packages, including earlier audio probes, were removed and every owned AVD was powered off. The API 37 WebView
+emulator deadlock remains open as an environment gap. Physical source/route/audibility/UX/accessibility, external-engine
+TTS, desktop Anki, independent translations and unattended power/thermal/endurance acceptance remain outside these receipts.
+
 ## Modern capture, memory pressure, provider retry and settled codec evidence — 2026-11-26
 
 `SentenceRecorder.releaseRebuildableCaches()` is the common close/memory-pressure path for the single waveform cache.

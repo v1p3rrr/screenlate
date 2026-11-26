@@ -1,6 +1,6 @@
 # Sentence audio implementation handoff — 2026-11-19
 
-## Current resume instructions (2026-11-26)
+## Current resume instructions (2026-11-27)
 
 This section and the November 24 delivery receipt supersede older checkpoints below. Older instructions
 to implement transfer recovery, waveform loading or saved silence parameter UI are historical: these
@@ -18,10 +18,11 @@ parts are implemented. Do not restart them or infer the current usage limit from
   limits, selective orphan cleanup, validated silence settings and 27-locale resource coverage are implemented. Do not
   reimplement those checkpoints. Real process-death and file-backed reset/restore fixtures pass. Memory-pressure handling
   now clears only the rebuildable waveform cache from application callbacks; leased PCM survives and rebuilds on demand.
-- Final capture receipts cover real legacy frames on API 24 and API 29, API 29 shared screenshot/audio consent, and API 37
-  system consent/revoke/retry, real AudioRecord, both acquisition orders, FGS transitions and modern accessibility frames.
-  API 25–28 and the full manual overlay matrix remain uncovered. The API 37 WebView editor was not rerun because of the
-  documented emulator WebView deadlock; do not convert that environment gap into either a pass or an app regression.
+- Capture receipts cover real legacy frames on API 24, 25, 26, 28 and 29, API 29 shared screenshot/audio consent, and API
+  37 system consent/revoke/retry, real AudioRecord, both acquisition orders, FGS transitions and modern accessibility
+  frames. API 27 is not covered: its available image is x86-only and rejects the x86_64 verification APK; the known local
+  x86 MNN link incompatibility remains. The full manual overlay matrix remains uncovered. API 37 WebView is still blocked
+  by its documented emulator deadlock; do not convert that environment gap into either a pass or an app regression.
 - Official AnkiDroid 2.25.3 was verified by APK hash/signer and used only in a fresh local API 29 collection without
   login/sync. Text add/update, sentence Opus transfer/decode, Without audio preservation/replacement and a real missing-
   source provider fault followed by Retry of the same preparation pass. Platform MediaPlayer reaches completion on the
@@ -31,14 +32,19 @@ parts are implemented. Do not restart them or infer the current usage limit from
   API 37's settled production exporter instead stays at 6,621,600→6,620,768 native bytes over 20 seven-second cycles,
   with descriptors 104 then 103. The no-settle 40-cycle FD/native growth is a short Codec2-pool transient, not a new leak.
   Neither result is phone endurance. Do not add production GC, codec reuse, a custom writer or a format redesign.
-- Final gates: full build/unit/lint/androidTest-assembly/convention/release-vital checks pass in 1m50s; 231 core-Anki,
-  136 core-media, 354 overlay, 291 app and 247 page cases pass. Detailed metrics and exact logs are in the newest status/
-  engineering sections under ignored `testdata/local-research/audio-lifecycle-2026-11-26/`. Do not redo these receipts.
+- New local receipts: API 25/26/28 each pass 25 overlay and two recording-settings cases; API 29 passes its final nine
+  editor/bridge/playback cases plus 13 crop cases. A real 376-CSS-pixel viewport exposed a clipped waveform; the <=400 px
+  layout now passes the complete touch scenario on API 25/26/28/29. The actual R8-minified API 29 WebView/FileProvider test
+  also passes after that change. Two API 29 Opus-export cases are not passes on that encoder-less image; existing API 30
+  export evidence remains authoritative. Logs are under ignored `testdata/local-research/audio-final-local-2026-11-26/`.
+- Current final gates pass: the complete build/unit/lint/androidTest-assembly/convention/release-vital command finishes in
+  36 s with 1,412 actionable tasks after cold work; 231 core-Anki, 136 core-media, 354 overlay, 291 app and 247 page cases
+  pass with zero failures/errors. Exact receipts and the earlier tool-timeout handling are recorded in `ai/status.md`.
 - Remaining acceptance:
   1. Phone audibility and actual source policy with ongoing/paused speech and Refresh; speaker/wired/Bluetooth/headset
      routes, zero volume/source mute, calls, lock and revocation; no unintended source pause/duck/resume.
-  2. External-engine TTS self-exclusion and natural-voice behavior, modern WebView editor acceptance, phone UX/
-     accessibility and independent translation review on the minified build.
+  2. External-engine TTS self-exclusion and natural-voice behavior, phone UX/accessibility and independent translation
+     review. API 37 WebView editor acceptance remains environment-blocked by its documented emulator deadlock.
   3. Disposable desktop Anki playback/quality, plus power/thermal/storage and unattended endurance plateaus with the
      complete REC matrix. Emulator completion/heap samples do not certify these items.
 - Music-only gap detection is explicitly deferred. No heavy models, new music feature or extra rewrite is authorized.

@@ -530,6 +530,11 @@
     .sl-wave { height: 83px; }
 }
 
+@media (max-height: 400px) {
+    .sl-wave-wrap { height: 72px; }
+    .sl-wave { height: 67px; }
+}
+
 .sl-editor [hidden] {
     display: none !important;
 }

@@ -1,5 +1,36 @@
 # Status
 
+## Legacy matrix, minified runtime and short-editor verification (2026-11-27)
+
+- The real API 29 touch fixture exposed a short-viewport defect: at a 376 CSS-pixel WebView height, the main waveform
+  extended about 12 px below its initially visible content area. At heights up to 400 px the waveform is now 72 px high;
+  the complete vertical-scroll/horizontal-pan/playhead/Play/Cut/Undo scenario then passes on API 25, 26, 28 and 29.
+  The fixture now reports geometry on failure and uses the correct pre-API 26 overlay window type.
+- API 25, 26 and 28 each cover 25 overlay cases and two file-backed recording-settings cases. The overlay set includes
+  real legacy consent/frame acquisition and consent reuse, editor resize/touch, own MediaPlayer/AudioTrack playback,
+  13 crop cases and six LookupPage cases. Failures caused by old system-dialog/window-type fixture assumptions were
+  repaired and rerun green. API 27 boots its x86 image, but the x86_64 verification APK is rejected with
+  `INSTALL_FAILED_NO_MATCHING_ABIS`; the known local x86 MNN link incompatibility remains, so API 27 is not claimed.
+- API 29 final editor/bridge coverage passes nine cases in 17.242 s, plus all 13 crop cases in 0.414 s; the opening-speech
+  and sleeping-display cases also passed in the initial editor run. Two Opus-export cases on that image are not counted as
+  passes: it lacks an Opus encoder, and the first cold run also hit a WebView timeout. Existing API 30 real export evidence
+  remains the codec receipt; no production codec workaround was added.
+- `MinifiedSentenceAudioDeviceTest` passes against the actual R8-minified release app on API 29 in 1.152 s after the CSS
+  change. It verifies production FileProvider bytes and real WebView Cut/Save operation identity, Main-thread callbacks,
+  failed-state button recovery and close. The local release/test keep configuration is isolated and does not change
+  production R8 rules.
+- Final full build/unit/lint/androidTest-assembly/convention/release-vital gate completes successfully in 36 s with 1,412
+  actionable tasks after the initial cold/lint work. XML totals are 231 core-Anki, 136 core-media, 354 overlay and 291 app
+  cases with zero failures/errors; all 247 page cases pass. The first two broad invocations exceeded the 300 s tool limit,
+  so their remaining work was completed incrementally before this final successful run. Logs: `final-full-gates-complete.log`,
+  `final-release-vital.log` and `final-page-tests.log` in the same evidence directory.
+- All owned test packages were removed and owned AVDs powered off. API 37 WebView remains blocked by its documented
+  emulator deadlock. Physical sources/routes/audibility/UX/accessibility, external-engine TTS exclusion, desktop Anki,
+  independent translation review and power/thermal/unattended endurance remain open. Music-only gap detection is deferred.
+- Evidence is under ignored `testdata/local-research/audio-final-local-2026-11-26/`; final logs include
+  `minified-api29-final-run.log`, `api29-editor-bridge-final-run.log`, `api29-crop-editor-run.log`,
+  `api25-fixture-repair-run.log`, `api26-consent-fixture-run.log` and `api28-final-fixtures-run.log`.
+
 ## Modern lifecycle, Anki retry and memory-pressure verification (2026-11-26)
 
 - `SentenceRecorder.releaseRebuildableCaches()` drops only the derived waveform pyramid under its cache mutex. The

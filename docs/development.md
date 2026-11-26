@@ -110,6 +110,35 @@ storage workload, without opening the app or touching a collection. After buildi
 Its private `pcm-benchmark.properties` records sizes/timing and before/after descriptor/PSS samples;
 the accelerated test does not establish physical-device flash or power behavior.
 
+`RecordingProcessDeathDeviceTest` and `SentenceAudioProcessDeathDeviceTest` kill an isolated helper
+process with real abandoned PCM/temporary/Opus files, then verify selective cleanup from a new PID without
+removing unrelated files or subsequent same-process exports. `RecordingSettingsDeviceTest` uses file-backed
+DataStore with the production reset/restore code: existing contexts keep their limits, invalid silence values
+fall back independently, and restoring `recordingEnabled=true` does not start capture. Application memory-pressure
+handling is covered by a recorder regression proving that only the rebuildable waveform cache is dropped;
+leased PCM remains byte-identical and the waveform rebuilds on demand. These fixtures do not cover a real
+low-memory callback, every possible death stage or unattended endurance.
+
+The capture fixture has legacy and modern paths. API 24, 25, 26, 28 and 29 execute real
+`LegacyMediaProjectionCapturer` frames; API 29 additionally executes shared screenshot/audio consent and real
+`AudioRecord`; API 37 covers system consent/revoke/retry, both acquisition orders, foreground-service transitions
+and modern accessibility frames. The API 27 image is x86-only, while the local verification APK and its MNN
+native dependency require x86_64, so that API remains uncovered. The full manual overlay/system-gesture matrix
+remains separate acceptance work. The known API 37 image's WebView deadlock is an environment limitation, not an
+editor pass or failure.
+
+`AudioExporterDeviceTest` checks decoded head/middle/tail fidelity, failed-container recovery and an optional
+30-minute streaming export. `CodecNativeIsolationDeviceTest` provides opt-in codec/container lifecycle profiles;
+the settled production cycle run measures native heap and descriptors after asynchronous Codec2 pools retire.
+The API 30 image has a diagnosed platform Ogg-writer native leak; do not hide it with production forced GC or
+interpret a short modern-emulator plateau as phone endurance.
+
+`AnkiDroidSentenceAudioTest` uses only a fresh, unsynced emulator collection. It checks byte-identical sentence
+Opus transfer, decoding and platform `MediaPlayer` completion, Without audio field preservation/replacement,
+and a real missing-source provider failure followed by Retry of the same preparation without an earlier note
+mutation. This is not desktop-Anki or physical-speaker acceptance. Remove the disposable collection and test
+packages afterward; never use or synchronize the owner's collection.
+
 The optional [playback feasibility tool](../tools/audio-probe/README.md) builds isolated recorder/source packages
 with `./gradlew -Pscreenlate.audioProbe=true :tools:audio-probe:assembleDebug`. In PowerShell quote the
 `'-Pscreenlate.audioProbe=true'` argument. This tool is excluded from ordinary builds and not shipped in the app.
@@ -338,6 +367,13 @@ bridge/Main test is in `LookupPageTest`. These fixtures do not replace rotation,
 acceptance. Assemble the overlay test APK before running those classes explicitly on the selected device.
 
 `AudioEditorResizeTest` uses the real WebView and a recording WindowManager to verify compact, expanded
-and collapsed relayout without host replacement or draft resets. `CropEditorTest` verifies source-frame
+and collapsed relayout without host replacement or draft resets. `AudioEditorTouchTest` injects actual touch
+input and checks that the main waveform is initially reachable in a short viewport. Its overlay window uses
+`TYPE_PHONE` below API 26 and `TYPE_APPLICATION_OVERLAY` on later versions. `CropEditorTest` verifies source-frame
 preservation through layout changes. Timeline and operation tests cover loading versus Ready admission;
 page tests cover the pre-chooser Prepare/Commit/Dismiss transport, stale choices and page recreation.
+
+`MinifiedSentenceAudioDeviceTest` in `app/src/androidTestMinified` runs against an R8-minified release app with
+an isolated application ID. It checks the production FileProvider byte round-trip and real WebView Cut/Save bridge,
+including Main-thread delivery, operation identity, export-failure recovery and close. The fixture does not encode
+audio or access an Anki collection; its local test keep rules do not change production R8 configuration.

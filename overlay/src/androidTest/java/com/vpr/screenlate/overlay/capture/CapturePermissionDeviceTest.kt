@@ -141,11 +141,7 @@ class CapturePermissionDeviceTest {
             }
             val capturer = LegacyMediaProjectionCapturer(service)
             val first = scope.async { capturer.capture(0, 0) { it() } }
-            if (Build.VERSION.SDK_INT == 24 || Build.VERSION.SDK_INT == 29) {
-                clickLegacyConsentByCoordinates(automation, context)
-            } else {
-                clickSystemButton(automation, setOf("android:id/button1", "com.android.systemui:id/start"))
-            }
+            clickLegacyConsentByCoordinates(automation, context)
             val expectedWidth = realDisplayMetrics(context).widthPixels
             val expectedHeight = realDisplayMetrics(context).heightPixels
             withTimeout(10_000) { first.await() }.bitmap.let {
@@ -175,7 +171,7 @@ class CapturePermissionDeviceTest {
         ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(command))
             .bufferedReader().use { it.readText() }
 
-    /** These two emulator images expose no usable accessibility nodes for their system consent dialog. */
+    /** Older emulator images and API 29 expose no usable accessibility nodes for system consent. */
     private suspend fun clickLegacyConsentByCoordinates(automation: UiAutomation, context: Context) {
         withTimeout(10_000) {
             while (true) {
@@ -188,8 +184,8 @@ class CapturePermissionDeviceTest {
         }
         delay(300)
         val metrics = realDisplayMetrics(context)
-        val x = metrics.widthPixels * (if (Build.VERSION.SDK_INT == 24) 780 else 802) / 1000
-        val y = metrics.heightPixels * (if (Build.VERSION.SDK_INT == 24) 557 else 639) / 1000
+        val x = metrics.widthPixels * (if (Build.VERSION.SDK_INT <= 28) 780 else 802) / 1000
+        val y = metrics.heightPixels * (if (Build.VERSION.SDK_INT <= 28) 557 else 639) / 1000
         withContext(Dispatchers.IO) { shell(automation, "input tap $x $y") }
     }
 

@@ -437,13 +437,15 @@ are investigated as findings, not converted into an invented new audio performan
 | D editing/fidelity | Partial | Navigation/preview/source leases, PCM/codec and Ready-snapshot first refinement are implemented. 116 core-media/350 overlay/236 page cases pass. Decoded pilots/cuts, 30min encode, prior 4 media and latest 17 editor/crop native checks pass, with affected gates. Bounded waveform/detail/status and repeatable cap feedback are implemented; latest 17 native editor/crop cases pass (20.7s), including waveform replies/status. Real source/system gesture portions remain G. |
 | E Anki recovery | Software implemented; local provider fault/retry and platform playback passed | Editor/source/encoding recovery and Retry/Without/Cancel remain implemented. Official AnkiDroid 2.25.3 in a fresh local API 29 collection passes text add/update, sentence Opus add, byte-identical transfer, decoding, Without audio preservation and replacement. A real missing-source copy failure performs no note mutation and Retry of the same preparation succeeds; MediaPlayer reaches completion. All six core-Anki device cases pass. Physical audibility and desktop Anki remain open. |
 | F settings/resources | Partially verified; full physical/unattended matrix remains | Real process-death cleanup, API 29 reset/restore and memory-pressure waveform-cache release pass. API 30's linear growth is isolated to its platform Ogg writer. API 37's 20 settled production exports stay at 6,621,600→6,620,768 native bytes with stable settled descriptors; the no-settle profile is an asynchronous Codec2-pool transient. No production GC/speculative codec change was added. Phone resources and long unattended acceptance stay open; REC rows remain N/partial. |
-| G device/regression | Partially verified; full acceptance open | Final API 24/29 legacy capture, API 29 shared consent and API 37 consent/AudioRecord/FGS/accessibility-capture fixtures pass. Focused API 37 recorder/process cleanup passes. Full gates pass in 1m50s with 231 core-Anki, 136 core-media, 354 overlay, 291 app and 247 page cases. Modern WebView editor, real sources/routes, physical audibility/UX, desktop Anki and power/endurance/full acceptance remain. |
+| G device/regression | Partially verified; full acceptance open | Real legacy frames pass on API 24/25/26/28/29; API 27 remains x86/ABI-blocked. API 29 shared consent and API 37 consent/AudioRecord/FGS/accessibility-capture fixtures pass. API 25/26/28/29 real WebView editor/bridge/touch checks and the API 29 R8-minified bridge/provider check pass. API 37 WebView remains deadlock-blocked; real sources/routes, physical audibility/UX, desktop Anki and power/endurance/full acceptance remain. Current gate totals are recorded in `ai/status.md`. |
 
-Current continuation (updated 2026-11-26): the late local verification block is complete. It added memory-pressure cache
-release, final legacy and modern capture/FGS fixtures, real provider fault/retry plus platform playback, and the API 37
-settled codec comparison. Do not redo these receipts. Remaining work is physical source/route/audibility/lifecycle/UX and
-endurance acceptance, external-TTS self-exclusion, the blocked modern WebView editor check, disposable desktop Anki and
-independent translation review. Music is deferred. See `ai/notes/sentence-audio-handoff.md` for current constraints.
+Current continuation (updated 2026-11-27): the autonomous verification block is complete. It adds API 25/26/28
+legacy/editor/settings coverage, diagnoses the API 27 ABI limit, repairs a real short-window waveform clip and verifies the
+actual minified WebView/provider path. Do not redo earlier lifecycle/resource receipts. Remaining work is physical
+source/route/audibility/lifecycle/UX/accessibility and endurance acceptance, external-TTS self-exclusion, the API 37 WebView
+environment gap, disposable desktop Anki and independent translation review. Music is deferred. Final root gates and all 247
+page cases pass; the autonomous checkpoint is recorded in `ai/status.md` and the handoff notes. See
+`ai/notes/sentence-audio-handoff.md` for constraints.
 
 Read this plan, original product decisions, review,
 status and build notes. Verify HEAD/dirty state before editing. Preserve unrelated submodule content and
@@ -457,6 +459,10 @@ Completion requires all milestones with linked actual evidence and explicitly vi
 limitations; no invented percent complete. Any product change needs an owner answer and changelog entry.
 
 Changelog:
+- 2026-11-27: Completed available API 25/26/28 legacy/editor/settings fixtures, documented API 27's x86/ABI limitation,
+  repaired short-viewport waveform visibility, added the isolated R8-minified WebView/provider fixture and refreshed the
+  module/development documentation. No product decision changed; physical, desktop-Anki, independent-review, API 37 WebView
+  and endurance acceptance remain open.
 - 2026-11-26: Added application memory-pressure release of only the rebuildable waveform cache, with leased-PCM/rebuild
   regression coverage. Completed final API 24/29 legacy capture and API 37 consent/AudioRecord/FGS/accessibility fixtures,
   real local provider fault/retry with platform playback completion, and the API 37 settled codec comparison. Full gates

@@ -46,7 +46,12 @@ class AudioEditorTouchTest {
             val real = context.getSystemService(WindowManager::class.java)
             // Isolated package has no accessibility service token; preserve the real window and touch path.
             val windows = Proxy.newProxyInstance(WindowManager::class.java.classLoader, arrayOf(WindowManager::class.java)) { _, method, args ->
-                if (method.name == "addView") (args[1] as WindowManager.LayoutParams).type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                if (method.name == "addView") (args[1] as WindowManager.LayoutParams).type =
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                    } else {
+                        @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+                    }
                 method.invoke(real, *(args ?: emptyArray()))
             } as WindowManager
             PopupController(context, windows, callbacks)
@@ -111,7 +116,10 @@ class AudioEditorTouchTest {
             assertThat(js("getComputedStyle(document.getElementById('sl-suggestions')).display==='none'")).isEqualTo("true")
             withTimeout(5000) { while (!withContext(Dispatchers.Main) { popup.page.container.alpha > 0f }) delay(20) }
             delay(600)
-            assertThat(js("(()=>{const wave=document.querySelector('.sl-wave-wrap').getBoundingClientRect(),body=document.querySelector('.sl-editor-content').getBoundingClientRect();return wave.top>=body.top && wave.bottom<=body.bottom})()" )).isEqualTo("true")
+            val initialGeometry = js("JSON.stringify((()=>{const wave=document.querySelector('.sl-wave-wrap').getBoundingClientRect(),body=document.querySelector('.sl-editor-content').getBoundingClientRect();return {wave:{top:wave.top,bottom:wave.bottom,height:wave.height},body:{top:body.top,bottom:body.bottom,height:body.height},viewport:[innerWidth,innerHeight],scroll:document.querySelector('.sl-editor-content').scrollTop}})())")
+            com.google.common.truth.Truth.assertWithMessage("Initial editor geometry: %s", initialGeometry)
+                .that(js("(()=>{const wave=document.querySelector('.sl-wave-wrap').getBoundingClientRect(),body=document.querySelector('.sl-editor-content').getBoundingClientRect();return wave.top>=body.top && wave.bottom<=body.bottom})()" ))
+                .isEqualTo("true")
             val view = js("AudioEditor.state.view")
             val cursor = js("AudioEditor.state.cursor")
             swipe(point("sl-wave"), 8f, -100f)

@@ -7,11 +7,11 @@ The map below describes `languages/main` (2026-10-15), which holds all of `main`
 ## Gradle modules and dependencies
 
 ```
-app ──► overlay, core:common, core:ocr, core:photos, core:anki, core:translate, dictionary:api, dictionary:engine-hoshidicts, dictionary:render-yomitan
-overlay ──► core:common, core:ocr, core:photos, core:anki, core:translate, dictionary:api
+app ──► overlay, core:common, core:ocr, core:photos, core:anki, core:media, core:translate, dictionary:api, dictionary:engine-hoshidicts, dictionary:render-yomitan
+overlay ──► core:common, core:ocr, core:photos, core:anki, core:media, core:translate, dictionary:api
 core:ocr, core:anki, core:translate, dictionary:api ──api──► core:common
+core:media ──api──► core:common
 core:photos ──api──► core:common, core:ocr          (camera)
-core:media                                         (independent recording foundation; not yet wired to UI)
 dictionary:engine-hoshidicts ──► dictionary:api          (GPL-3.0, JNI; submodules hoshidicts and QuickJS-ng (languages))
 dictionary:render-yomitan (assets only: render.js, anki.js, render.css; GPL-3.0) — loaded by overlay's popup.html
 build-logic (convention plugins) — used by every module
@@ -75,15 +75,20 @@ Photo OCR adds `PhotoTiles`, `PhotoAssembly`, `BoxIndex`, `DeviceOcr.pin` and `C
 module 4. Per-word provenance crosses module 4's OcrWord/TextLayout, module 19's recognition codec and module 14's
 aimed-engine selection. Its tests live beside those modules; `ai/notes/camera-lookup.md` records the integration.
 
-20. **Sentence audio foundation** — `core/media`: frame ranges/edits, initial selection, absolute H/R/E deadline policy,
-bounded PCM history, fixed-prefix snapshots and reader leases. Currently independent of app/overlay/Anki; do not
-claim the recording feature is enabled. Optional development-only `tools/audio-probe` has separate source/recorder
-application IDs and codec fixtures; it is conditionally included and excluded from app dependencies.
-Tests: `ContextRetentionTest`, `AudioEditTest`, `InitialSelectionTest`, `PcmHistoryTest`, `PcmClockTest`,
-`ScanAudioTimelineTest`, `ScanAudioHistoryTest`, `PcmBlockQueueTest`, instrumented
-`PcmHistoryDeviceTest`. Plan: `ai/plans/2026-11-19-sentence-audio-recording.md`; evidence/gate:
-`ai/notes/sentence-audio-engineering.md`. Later integration must cover capture/session ownership, screen anchors,
-popup editor, settings/backup, pronunciation/TTS exclusion and the separate Anki attachment contract.
+20. **Sentence audio recording** — `core/media`: capture/session ownership, recording settings, frame ranges/edits,
+H/R/E retention, bounded PCM history and reader leases, waveform/silence analysis, preview and streaming Opus/Ogg export;
+`overlay/capture` recording consent and legacy/modern capture coordination; `overlay/SentenceRecordingControl`;
+`overlay/anki/{AudioEditorController,AudioEditorOperation,AudioExportPreparation,PopupAudioMenu,PopupAudioPlayback}`;
+`overlay/assets/popup/{audio-editor.js,audio-editor.css}`; app `audio/{SentenceRecordingCard,AudioSettingsViewModel}`;
+the separate `{sentence-audio}` preparation in `core:anki`. Integration: screen-scan anchors and popup ownership (modules
+10/14), note target, duplicate/Without audio behavior and FileProvider staging (module 11), pronunciation/TTS output
+ownership (module 12), settings/reset/backup and all locales (modules 16/17), application memory-pressure callbacks.
+Optional development-only `tools/audio-probe` has separate source/recorder application IDs and is excluded from app
+dependencies. Tests: core-media JVM/device suites, `CapturePermissionDeviceTest`, `AudioEditorDeviceTest`,
+`AudioEditorTouchTest`, `AudioEditorResizeTest`, `RecordingProcessDeathDeviceTest`, `RecordingSettingsDeviceTest`,
+`SentenceAudioProcessDeathDeviceTest`, `AnkiDroidSentenceAudioTest` and the audio-editor page suite. Plan:
+`ai/plans/2026-11-21-sentence-audio-repair.md`; evidence and remaining acceptance:
+`ai/notes/sentence-audio-engineering.md`, `ai/notes/sentence-audio-handoff.md`.
 
 Every tracked file outside `testdata/`, `ai/` and `docs/` belongs to one module above; `docs/` and `ai/notes/` are checked by the module whose behavior they describe.
 

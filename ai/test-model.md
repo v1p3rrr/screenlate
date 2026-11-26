@@ -461,8 +461,8 @@ E/F/O and record the result in the run log. Existing AUD pronunciation and ANK c
 | REC30 | Low disk at start, scan pin, R→E, writing, encoding, media transfer and retry: preserve validated prefix, report actual failure, offer applicable retry/Without audio; reserve race never becomes crash or silent note success | N | U, I, M | |
 | REC31 | Memory pressure drops rebuildable caches/optional work without full-history allocation; process death at each write/export stage loses transient session as agreed and startup clears every orphan class | N | U, I, M | 2026-11-26 (partial: cache pressure and real process death) |
 | REC32 | Missing/truncated private source chunk is detected; do not join later files through damage. Startup/reset/restore cleanup cannot remove leased PCM/waveform/TTS/export/retry artifacts behind active workers | N | U, I | 2026-11-26 (partial: leased PCM and orphan cleanup) |
-| REC33 | Private recordings, runtime flags and consent are excluded from backup; restored duration/default/silence settings validate safely; reset/restore does not revive a recorder or silently apply new limits to old context | N | U, I, M | 2026-11-26 (partial: API 29 file-backed reset/restore) |
-| REC34 | API29 screenshots and audio coordinate projection ownership in either start order and on revoke; API24–28 legacy screenshots and API30+ accessibility screenshots retain their original behavior | N | U, I, M | 2026-11-26 (partial: API 24/29/37 real capture) |
+| REC33 | Private recordings, runtime flags and consent are excluded from backup; restored duration/default/silence settings validate safely; reset/restore does not revive a recorder or silently apply new limits to old context | N | U, I, M | 2026-11-27 (partial: API 25/26/28/29 file-backed reset/restore) |
+| REC34 | API29 screenshots and audio coordinate projection ownership in either start order and on revoke; API24–28 legacy screenshots and API30+ accessibility screenshots retain their original behavior | N | U, I, M | 2026-11-27 (partial: API 24/25/26/28/29/37 real capture; API 27 ABI-blocked) |
 | REC35 | Synthetic ramp/impulses across chunk, partial-tail publication and repeated Refresh have no lost/duplicated/reordered PCM frames; shown revision stays immutable while writer continues | N | U, I | |
 | REC36 | Negotiate real capture/preview/encoder rate and mono format; unsupported combinations fail cleanly; stereo downmix, anti-phase content, clipping, quiet syllables and any resampler retain verified speech fidelity | N | I, D | |
 | REC37 | Single encoder/muxer exports selected kept ranges with cumulative frame timestamps; decoded duration/order matches expected within documented encoder tolerance, EOS finalizes, no per-chunk codec seams | N | U, I | |
@@ -4656,3 +4656,28 @@ Partial REC42/43/44/46/47/48/50/55/79 evidence; do not promote full acceptance. 
   zero failures/errors, plus 247/247 page cases. Evidence: ignored `testdata/local-research/audio-lifecycle-2026-11-26/`.
   Test packages were removed and owned AVDs powered off. REC31/32/33/34/50/51/65/70/71/81 remain N with partial receipts;
   physical source/routes/audibility/UX, modern WebView editor, desktop Anki and unattended/endurance acceptance remain.
+
+
+## Legacy editor matrix and minified runtime (2026-11-27)
+
+- API 25, 26 and 28 each cover 25 selected overlay cases and two file-backed recording-settings cases. The overlay set
+  combines CapturePermissionDeviceTest, AudioEditorResizeTest, AudioEditorTouchTest, OwnPlaybackDeviceTest, CropEditorTest
+  and LookupPageTest. Real legacy consent/frame acquisition passes on all three; unsupported modern/audio-only cases retain
+  their SDK skips. REC33/34 receive partial receipts only; REC1 and the manual UI matrix are not marked complete.
+- API 27 boots x86 but cannot install the x86_64 verification APK (`INSTALL_FAILED_NO_MATCHING_ABIS`). Its available image
+  has no x86_64 variant and the known x86 MNN link defect remains; no runtime pass is claimed and production OCR is unchanged.
+- API 29 passes the final nine resize/touch/playback/LookupPage cases in 17.242 s and 13 crop cases in 0.414 s. Its initial
+  opening-speech and sleeping-display editor cases also pass. Two Opus-export cases are not passes on this encoder-less
+  image; one also encountered a cold-WebView timeout. API 30 remains the real exporter/editor evidence.
+- The API 29 touch fixture initially found the waveform 12.286 px below the visible body at a 376 CSS-pixel viewport. The
+  <=400 px waveform rule fixes it; the full touch scenario then passes on API 25/26/28/29. Test-only fixes select TYPE_PHONE
+  below API 26 and use confirmed system-consent coordinates on old images. This adds local REC44/45 evidence, not physical
+  finger/accessibility acceptance.
+- The actual R8-minified API 29 app passes MinifiedSentenceAudioDeviceTest in 1.152 s after the final CSS change: production
+  FileProvider bytes, real WebView Cut/Save, Main-thread delivery, operation identity, failed-state recovery and close.
+  This is not an encoding test. Logs: ignored `testdata/local-research/audio-final-local-2026-11-26/`. Test packages and
+  audio probes were removed; owned AVDs were powered off. API 37 WebView remains blocked by the documented deadlock.
+- Final autonomous gates pass: the full root build/test/lint/release-vital command finishes in 36 s with 1,412 actionable
+  tasks (26 executed, 1,386 up-to-date). XML totals are 231 core-Anki, 136 core-media, 354 overlay and 291 app cases with no
+  failures or errors; page scripts pass 247/247. Receipts: `final-full-gates-complete.log` and `final-page-tests.log` under
+  ignored `testdata/local-research/audio-final-local-2026-11-26/`.
