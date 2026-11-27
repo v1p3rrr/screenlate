@@ -49,6 +49,7 @@ class RecordingProcessDeathDeviceTest {
             assertThat(after.getProperty("phase")).isEqualTo("complete")
             assertThat(after.getProperty("pid").toInt()).isNotEqualTo(crashedPid)
             assertThat(after.getProperty("started").toBoolean()).isTrue()
+            assertThat(after.getProperty("cleanedOnColdStartup").toBoolean()).isTrue()
             assertThat(after.getProperty("oldSessionExists").toBoolean()).isFalse()
             assertThat(after.getProperty("rootTemporaryExists").toBoolean()).isFalse()
             assertThat(after.getProperty("unrelatedPreserved").toBoolean()).isTrue()
@@ -126,6 +127,9 @@ class RecordingCrashService : Service() {
     private fun restartRecorder(root: File, report: File) {
         try {
             val before = readReport(File(report.parentFile, "crashed.properties"))
+            SentenceRecorder.cleanupOrphanedStorage(root)
+            val cleanedOnColdStartup = !File(before.getProperty("session")).exists() &&
+                !File(before.getProperty("temporary")).exists()
             val recorder = SentenceRecorder(root, settings())
             val started = runBlocking { recorder.start(BlockingSource()) }
             runBlocking {
@@ -138,6 +142,7 @@ class RecordingCrashService : Service() {
                 "phase" to "complete",
                 "pid" to Process.myPid(),
                 "started" to started,
+                "cleanedOnColdStartup" to cleanedOnColdStartup,
                 "oldSessionExists" to File(before.getProperty("session")).exists(),
                 "rootTemporaryExists" to File(before.getProperty("temporary")).exists(),
                 "unrelatedPreserved" to File(before.getProperty("unrelated")).isFile,

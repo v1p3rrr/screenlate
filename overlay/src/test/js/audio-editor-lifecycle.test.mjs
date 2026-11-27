@@ -112,6 +112,52 @@ test('native Back ignores stale editors and confirms only actual edits in the cu
     assert.equal(commands.at(-1).operation, 'edited');
 });
 
+test('Back dismisses modal dialogs without cancelling the note and only cancels duplicateKeep', () => {
+    const page = popupPage();
+    const editor = page.global('AudioEditor');
+    const commands = [];
+    page.window.ScreenlateBridge = { onAudioEditorCommand: json => commands.push(JSON.parse(json)) };
+    editor.open({ operation: 'modal-back', totalFrames: 480000, selection: [100000, 300000] });
+
+    page.document.getElementById('sl-action-info').click();
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, false);
+    editor.requestCancel('modal-back');
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, true);
+    assert.equal(commands.some(c => c.action === 'cancel'), false);
+
+    page.document.getElementById('sl-action-silence-settings').click();
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, false);
+    editor.requestCancel('modal-back');
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, true);
+    assert.equal(commands.some(c => c.action === 'cancel'), false);
+
+    page.document.getElementById('sl-action-cut').click();
+    editor.requestCancel('modal-back');
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, false);
+    editor.requestCancel('modal-back');
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, true);
+    assert.equal(commands.some(c => c.action === 'cancel'), false);
+
+    editor.open({ operation: 'dup-keep', totalFrames: 480000, selection: [100000, 300000], duplicateKeep: true });
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, false);
+    editor.requestCancel('dup-keep');
+    assert.equal(page.document.getElementById('sl-dialog-layer').hidden, true);
+    assert.equal(commands.at(-1).action, 'cancel');
+    assert.equal(commands.at(-1).operation, 'dup-keep');
+});
+
+test('editorCollapsed dataset flag tracks collapsed state and cleans up on close', () => {
+    const page = popupPage();
+    const editor = page.global('AudioEditor');
+    page.window.ScreenlateBridge = { onAudioEditorCommand: () => {} };
+    editor.open({ operation: 'pill-state', totalFrames: 480000, selection: [100000, 300000] });
+    assert.equal(page.document.documentElement.dataset.editorCollapsed, 'false');
+    page.document.getElementById('sl-action-collapse').click();
+    assert.equal(page.document.documentElement.dataset.editorCollapsed, 'true');
+    editor.close();
+    assert.equal(page.document.documentElement.dataset.editorCollapsed, undefined);
+});
+
 test('oversized edit metadata stays editable instead of waiting for a dropped native command', () => {
     const page = popupPage();
     const editor = page.global('AudioEditor');

@@ -829,6 +829,7 @@ class OverlayController(
     /** The user closed the popup: it stays closed until the bubble moves or scans again. */
     private fun dismissPopup() {
         closePopup()
+        popupNotes.onPopupForceClosed()
         popupDismissed = true
     }
 

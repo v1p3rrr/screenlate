@@ -22,7 +22,6 @@ class AudioRecordSource internal constructor(
     override val channelCount: Int get() = record.channelCount
 
     private val timestamp = AudioTimestamp()
-    private var calibratedOriginNanos: Long? = null
 
     @SuppressLint("MissingPermission")
     override fun start(): Boolean {
@@ -35,24 +34,15 @@ class AudioRecordSource internal constructor(
         }
     }
 
-    override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        val result = record.read(buffer, offset, length, AudioRecord.READ_BLOCKING)
-        if (result > 0 && calibratedOriginNanos == null) {
-            updateTimestamp()
-        }
-        return result
-    }
+    override fun read(buffer: ByteArray, offset: Int, length: Int): Int =
+        record.read(buffer, offset, length, AudioRecord.READ_BLOCKING)
 
     override fun timestampNanos(): Long? {
-        updateTimestamp()
-        return calibratedOriginNanos
-    }
-
-    private fun updateTimestamp() {
         if (record.getTimestamp(timestamp, AudioTimestamp.TIMEBASE_BOOTTIME) == AudioRecord.SUCCESS) {
             val frameNanos = timestamp.framePosition * 1_000_000_000L / sampleRate
-            calibratedOriginNanos = timestamp.nanoTime - frameNanos
+            return timestamp.nanoTime - frameNanos
         }
+        return null
     }
 
     override fun stop() {

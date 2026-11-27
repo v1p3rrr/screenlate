@@ -141,4 +141,53 @@ class ScanAudioTimelineTest {
         assertThat(prefix.source).isEqualTo(AudioRange(0, 10_000))
         assertThat(timeline.openEditor(scan, 40_000, 40_000)!!.retention.cutoffMillis).isEqualTo(10_000)
     }
+
+    @Test fun suspendGapCapsPriorContextAdvancesFloorAndRecalibratesClock() {
+        val timeline = ScanAudioTimeline(PcmClock(1000, 0), RecordingLimits())
+        val firstScan = timeline.acquireScan(300_000, 0, committedEnd = 300_000)!!
+        val opened = timeline.openEditor(firstScan, 305_000, 305_000)!!
+        assertThat(opened.source).isEqualTo(AudioRange(0, 305_000))
+
+        // Simulate 95s device sleep before resuming capture at frame 305_500.
+        timeline.onSuspendGap(gapFrame = 305_000, endFrame = 305_500, endNanos = 400_000_000_000L, nowMillis = 400_000)
+
+        val capped = timeline.refresh(firstScan, 320_000, 401_000)!!
+        assertThat(capped.source).isEqualTo(AudioRange(0, 305_000))
+        assertThat(capped.retention.reason).isEqualTo(RetentionEnd.CAPTURE_STOPPED)
+        assertThat(timeline.retainedRanges(320_000, 401_000))
+            .containsExactly(AudioRange(305_000, 320_000), AudioRange(0, 305_000))
+
+        val secondScan = timeline.acquireScan(410_000, availableStartFrame = 0, committedEnd = 315_500)!!
+        timeline.releaseContext(firstScan)
+        val afterSuspend = timeline.openEditor(secondScan, 315_500, 410_000)!!
+        assertThat(afterSuspend.source?.start).isAtLeast(305_000)
+        assertThat(timeline.retainedRanges(315_500, 410_000).all { it.start >= 305_000 }).isTrue()
+        timeline.releaseContext(secondScan)
+        assertThat(timeline.retainedRanges(315_500, 410_000)).containsExactly(AudioRange(305_000, 315_500))
+    }
+
+    @Test fun acquireScanDoesNotThrowWhenClockSkewPrecedesOrJumpsPastCommittedFrames() {
+        val timeline = ScanAudioTimeline(PcmClock(1000, 10_000_000_000L), RecordingLimits())
+        val ahead = timeline.acquireScan(nowMillis = 500_000, availableStartFrame = 100, committedEnd = 50)
+        assertThat(ahead).isNotNull()
+
+        val behind = timeline.acquireScan(nowMillis = 5_000, availableStartFrame = 5_000, committedEnd = 10_000)
+        assertThat(behind).isNotNull()
+        val view = timeline.openEditor(behind!!, 10_000, 20_000)!!
+        assertThat(view.source).isEqualTo(AudioRange(5_000, 10_000))
+    }
+
+    @Test fun suspendGapPreservesEarlierExpiredWaitingCutoffFrame() {
+        val timeline = ScanAudioTimeline(PcmClock(1000, 0), RecordingLimits())
+        val scan = timeline.acquireScan(nowMillis = 0, availableStartFrame = 0, committedEnd = 5_000)!!
+
+        // Waiting limit expired at t=300_000 (frame 300_000) before suspend gap at frame 350_000 -> t=500_000.
+        timeline.onSuspendGap(gapFrame = 350_000, endFrame = 350_500, endNanos = 500_000_000_000L, nowMillis = 500_000)
+
+        val view = timeline.openEditor(scan, committedEnd = 355_000, nowMillis = 501_000)!!
+        assertThat(view.source).isEqualTo(AudioRange(0, 300_000))
+        assertThat(view.retention.reason).isEqualTo(RetentionEnd.WAITING_LIMIT)
+        assertThat(timeline.retainedRanges(355_000, 501_000))
+            .containsExactly(AudioRange(350_000, 355_000), AudioRange(0, 300_000))
+    }
 }

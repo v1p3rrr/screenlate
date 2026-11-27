@@ -577,3 +577,41 @@ test('silence settings show saved values and preserve a zero edge margin', () =>
     tap(page.document.getElementById('sl-action-silence-settings'));
     assert.equal(page.document.getElementById('sl-edge-margin').value,'0');
 });
+
+test('localized cut aria-labels apply, labels escape HTML, and zoom buttons sit in controls row', () => {
+    const zoomOut = page.document.getElementById('sl-action-zoom-out');
+    assert.ok(zoomOut.closest('.sl-controls-row'));
+    assert.equal(zoomOut.closest('#sl-tools'), null);
+
+    AudioEditor.open({
+        operation: 'i18n-escape',
+        totalFrames: 480000,
+        selection: [100000, 300000],
+        cuts: [[120000, 150000]],
+        labels: {
+            audio_editor_retained: 'Сохранено: %1$s <img src=x onerror=alert(1)>',
+            audio_editor_cut_edge_start: 'Начало выреза',
+            audio_editor_cut_edge_end: 'Конец выреза',
+            audio_editor_select_cut: 'Править фрагмент %1$d',
+            audio_editor_remove_cut: 'Вернуть участок',
+            audio_editor_info_body: 'Тест <script>alert(1)</script>',
+        },
+    });
+
+    const totalWrap = page.document.getElementById('sl-total-wrap');
+    assert.equal(totalWrap.querySelector('img'), null);
+    assert.ok(totalWrap.textContent.includes('<img src=x onerror=alert(1)>'));
+
+    const selectCutBtn = page.document.querySelector('[data-select-cut="0"]');
+    const removeCutBtn = page.document.querySelector('[data-remove-cut="0"]');
+    assert.equal(selectCutBtn.getAttribute('aria-label'), 'Править фрагмент 1');
+    assert.equal(removeCutBtn.getAttribute('aria-label'), 'Вернуть участок');
+
+    tap(selectCutBtn);
+    assert.equal(page.document.querySelector('[data-cut-edge="0"]').getAttribute('aria-label'), 'Начало выреза');
+    assert.equal(page.document.querySelector('[data-cut-edge="1"]').getAttribute('aria-label'), 'Конец выреза');
+
+    tap(page.document.getElementById('sl-action-info'));
+    assert.equal(page.document.getElementById('sl-dialog-body').querySelector('script'), null);
+    assert.equal(page.document.getElementById('sl-dialog-body').textContent, 'Тест <script>alert(1)</script>');
+});

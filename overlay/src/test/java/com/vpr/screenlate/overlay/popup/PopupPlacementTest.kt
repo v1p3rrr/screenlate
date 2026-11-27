@@ -191,18 +191,28 @@ class PopupPlacementTest {
         assertThat(normal.height).isEqualTo(1900f * 0.55f)
 
         val expanded = PopupPlacement.audioEditorSize(screen, maxWidth = 900f, expanded = true)
-        assertThat(expanded.width).isEqualTo(850f)
+        assertThat(expanded.width).isEqualTo(920f)
         assertThat(expanded.height).isEqualTo(1900f * 0.88f)
     }
 
     @Test
-    fun `audio editor size in landscape expands to widescreen ratios`() {
-        val normal = PopupPlacement.audioEditorSize(landscape, maxWidth = 2000f, expanded = false)
-        assertThat(normal.width).isEqualTo(2340f * 0.75f)
-        assertThat(normal.height).isEqualTo(1000f * 0.90f)
+    fun `audio editor size in landscape scales width cap above dictionary maxWidth`() {
+        val phoneMaxWidth = 420f
+        val phoneLandscape = Box(0f, 0f, 800f, 360f)
+        val phoneCompact = PopupPlacement.audioEditorSize(phoneLandscape, maxWidth = phoneMaxWidth, expanded = false)
+        assertThat(phoneCompact.width).isEqualTo(800f * 0.75f)
+        assertThat(phoneCompact.height).isEqualTo(360f * 0.90f)
 
-        val expanded = PopupPlacement.audioEditorSize(landscape, maxWidth = 2000f, expanded = true)
-        assertThat(expanded.width).isEqualTo(2000f)
-        assertThat(expanded.height).isEqualTo(1000f * 0.95f)
+        val phoneExpanded = PopupPlacement.audioEditorSize(phoneLandscape, maxWidth = phoneMaxWidth, expanded = true)
+        assertThat(phoneExpanded.width).isEqualTo(800f * 0.90f)
+        assertThat(phoneExpanded.height).isEqualTo(360f * 0.95f)
+
+        val cappedCompact = PopupPlacement.audioEditorSize(landscape, maxWidth = 1000f, expanded = false)
+        assertThat(cappedCompact.width).isEqualTo(1450f)
+        assertThat(cappedCompact.height).isEqualTo(1000f * 0.90f)
+
+        val cappedExpanded = PopupPlacement.audioEditorSize(landscape, maxWidth = 1000f, expanded = true)
+        assertThat(cappedExpanded.width).isEqualTo(1800f)
+        assertThat(cappedExpanded.height).isEqualTo(1000f * 0.95f)
     }
 }

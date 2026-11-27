@@ -32,7 +32,7 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
         @Synchronized get() = (free.size + ready.size + borrowed).toLong() * blockBytes
 
     @Synchronized
-    fun offer(firstFrame: Long, pcm: ByteArray, count: Int = pcm.size): Boolean {
+    fun offer(firstFrame: Long, pcm: ByteArray, count: Int = pcm.size, gapEndNanos: Long? = null): Boolean {
         require(firstFrame >= 0 && count > 0 && count <= pcm.size && count <= blockBytes && count % 2 == 0)
         if (sealed || closed) return false
         if (nextFrame != null && firstFrame != nextFrame) {
@@ -47,7 +47,7 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
             return false
         }
         pcm.copyInto(bytes, endIndex = count)
-        ready.addLast(Pending(bytes, firstFrame, count))
+        ready.addLast(Pending(bytes, firstFrame, count, gapEndNanos))
         nextFrame = end
         (this as java.lang.Object).notifyAll()
         return true
@@ -93,6 +93,7 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
     inner class Block internal constructor(pending: Pending) : AutoCloseable {
         val firstFrame: Long = pending.firstFrame
         val count: Int = pending.count
+        val gapEndNanos: Long? = pending.gapEndNanos
         private var storage: ByteArray? = pending.bytes
 
         val bytes: ByteArray get() = synchronized(this@PcmBlockQueue) {
@@ -110,5 +111,5 @@ internal class PcmBlockQueue(blockBytes: Int, capacity: Int, maxBytes: Int) : Au
         }
     }
 
-    internal data class Pending(val bytes: ByteArray, val firstFrame: Long, val count: Int)
+    internal data class Pending(val bytes: ByteArray, val firstFrame: Long, val count: Int, val gapEndNanos: Long? = null)
 }

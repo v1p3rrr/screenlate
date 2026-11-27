@@ -25,14 +25,14 @@ class BackupFormatTest {
         assertThat(BackupPreferences.sectionOf("overlay_show_source_text")).isEqualTo(BackupSection.POPUP)
         assertThat(BackupPreferences.sectionOf("anki_settings")).isEqualTo(BackupSection.ANKI)
         assertThat(BackupPreferences.sectionOf("audio_settings")).isEqualTo(BackupSection.AUDIO)
-        assertThat(BackupPreferences.sectionOf("sentence_recording_enabled")).isEqualTo(BackupSection.AUDIO)
+        assertThat(BackupPreferences.sectionOf("sentence_audio_default_editor")).isEqualTo(BackupSection.AUDIO)
         assertThat(BackupPreferences.sectionOf("translation_services")).isEqualTo(BackupSection.TRANSLATION)
         assertThat(BackupPreferences.sectionOf("translation_favorites")).isEqualTo(BackupSection.TRANSLATION)
         listOf(
             "e_ink_hint_seen", "update_last_check", "update_announced_tag", "sort_dictionary_id", "index_texts_decoded",
             "bundled_dictionaries_installed", "background_tip_seen", "notification_permission_asked",
             "installed_languages_filled", "e_ink_bubble_before", "e_ink_font_after", "accessibility_agreed",
-            "backup_sections_off", "backup_fonts_flipped",
+            "backup_sections_off", "backup_fonts_flipped", "sentence_recording_enabled",
         ).forEach { assertThat(BackupPreferences.sectionOf(it)).isNull() }
     }
 

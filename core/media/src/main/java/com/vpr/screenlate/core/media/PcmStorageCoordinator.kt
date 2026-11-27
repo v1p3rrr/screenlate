@@ -66,10 +66,12 @@ internal class PcmStorageCoordinator(
     private val stopFailed = AtomicBoolean(false)
     private var closeRequested = false
     private var lastProcessingMillis = 0L
+    @Volatile private var captureStartNanos = 0L
     @Volatile private var terminated = false
     @Volatile private var status = Status(PcmCoordinatorState.IDLE)
     private val owner = Thread(::runOwner, "pcm-session-owner").apply { isDaemon = true; start() }
 
+    val sampleRate: Int get() = config.sampleRate
     val currentState: PcmCoordinatorState get() = status.state
     val failureReason: PcmCoordinatorFailure? get() = status.failure
     val committedEndFrame: Long get() = history?.committedEnd ?: 0L
@@ -94,6 +96,7 @@ internal class PcmStorageCoordinator(
             queue = PcmBlockQueue(config.blockBytes, config.queueCapacity, config.maxQueueBytes)
             timeline = ScanAudioTimeline(clock, limits)
             publish(PcmCoordinatorState.RUNNING)
+            captureStartNanos = nowNanos()
             captureFinished = false
             captureThread = Thread({ runCapture(audioSource, checkNotNull(queue)) }, "pcm-capture-worker")
                 .apply { isDaemon = true; start() }
@@ -109,7 +112,7 @@ internal class PcmStorageCoordinator(
         val h = checkNotNull(history)
         val t = checkNotNull(timeline)
         t.updateLimits(limits)
-        t.acquireScan(scanMillis, h.contiguousTailStart)
+        t.acquireScan(scanMillis, maxOf(h.contiguousTailStart, t.discontinuityFloor), h.committedEnd)
     }
 
     fun prepareEditor(id: AudioContextId, openMillis: Long = nowMillis()): AudioTimelineView? = command {
@@ -167,6 +170,7 @@ internal class PcmStorageCoordinator(
     private fun runCapture(audioSource: AudioSource, pcmQueue: PcmBlockQueue) {
         val buffer = ByteArray(config.blockBytes)
         var frame = 0L
+        var prevReadNanos = captureStartNanos
         try {
             while (currentState == PcmCoordinatorState.RUNNING && pendingFailure.get() == null) {
                 val count = audioSource.read(buffer, 0, buffer.size)
@@ -180,14 +184,20 @@ internal class PcmStorageCoordinator(
                     requestFailure(PcmCoordinatorFailure.QUEUE_DISCONTINUITY)
                     break
                 }
-                if (!pcmQueue.offer(frame, buffer, count)) {
+                val framesRead = count / config.frameBytes.toLong()
+                val readNanos = nowNanos()
+                val elapsedNanos = maxOf(0L, readNanos - prevReadNanos)
+                val expectedNanos = PcmClock.nanosForFrames(framesRead, config.sampleRate)
+                val gapEndNanos = if (elapsedNanos - expectedNanos > SUSPEND_GAP_NANOS) readNanos else null
+                prevReadNanos = maxOf(prevReadNanos, readNanos)
+                if (!pcmQueue.offer(frame, buffer, count, gapEndNanos)) {
                     if (currentState == PcmCoordinatorState.RUNNING) {
                         requestFailure(if (pcmQueue.failure == PcmQueueFailure.DISCONTINUITY)
                             PcmCoordinatorFailure.QUEUE_DISCONTINUITY else PcmCoordinatorFailure.QUEUE_OVERFLOW)
                     }
                     break
                 }
-                frame = Math.addExact(frame, count / config.frameBytes.toLong())
+                frame = Math.addExact(frame, framesRead)
                 signal()
             }
         } catch (_: Exception) {
@@ -225,7 +235,11 @@ internal class PcmStorageCoordinator(
                 val requiredSpace = Math.addExact(config.minFreeSpaceBytes, block.count.toLong())
                 if (config.usableSpace(directory) < requiredSpace) throw HistoryQuotaException()
                 check(block.firstFrame == h.committedEnd) { "PCM publication is not contiguous" }
-                retain(Math.addExact(h.committedEnd, block.count / config.frameBytes.toLong()))
+                val endFrame = Math.addExact(h.committedEnd, block.count / config.frameBytes.toLong())
+                block.gapEndNanos?.let { gapNanos ->
+                    timeline?.onSuspendGap(block.firstFrame, endFrame, gapNanos, processingTime())
+                }
+                retain(endFrame)
                 h.append(block.bytes, block.count)
             } catch (_: HistoryQuotaException) {
                 fail(PcmCoordinatorFailure.STORAGE_QUOTA_EXCEEDED)
@@ -355,6 +369,8 @@ internal class PcmStorageCoordinator(
     private data class Status(val state: PcmCoordinatorState, val failure: PcmCoordinatorFailure? = null)
 
     companion object {
+        private const val SUSPEND_GAP_NANOS = 5_000_000_000L
+
         fun cleanAbandonedFiles(directory: File): Int = directory.listFiles()?.count { file ->
             file.isFile && (file.name.endsWith(".pcm") || file.name.endsWith(".tmp")) && file.delete()
         } ?: 0

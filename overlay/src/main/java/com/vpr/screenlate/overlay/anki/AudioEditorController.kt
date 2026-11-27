@@ -87,6 +87,7 @@ class AudioEditorController(
     private class Session(val contextId: AudioContextId) {
         val id = UUID.randomUUID().toString()
         lateinit var operation: AudioEditorOperation
+        var sampleRate: Int = 48_000
         var refresh: Job? = null
         var analysis: Job? = null
         var silenceSettings: Job? = null
@@ -94,6 +95,7 @@ class AudioEditorController(
         val waveforms = Channel<AudioEditorCommand>(Channel.CONFLATED)
         var waveformRequest = 0
         var transferFailed = false
+        var cancelled = false
         fun isReady() = this::operation.isInitialized
     }
 
@@ -116,10 +118,13 @@ class AudioEditorController(
             coroutineScope {
                 val timeline = sentenceRecorder.prepareEditor(audioContextId)
                     ?: return@coroutineScope AudioEditorResult.Cancelled
+                if (released || session.cancelled || active !== session) return@coroutineScope AudioEditorResult.Cancelled
+                session.sampleRate = timeline.sampleRate
                 val source = timeline.source ?: return@coroutineScope AudioEditorResult.Cancelled
                 val previous = lastConfirmed?.takeIf { it.first == audioContextId }?.second
                 val initial = previous?.takeIf { source.intersect(it.selection) == it.selection }
-                    ?: sentenceRecorder.initialSelection(timeline) ?: AudioEdit(source)
+                    ?: sentenceRecorder.initialBounds(timeline, timeline.sampleRate)?.let(::AudioEdit)
+                    ?: AudioEdit(source)
                 val exporter = AudioExportPreparation(encode = { encode(session, it) }, prepare = { file ->
                     session.transferFailed = true
                     prepareAudio(file).also { if (it) session.transferFailed = false }
@@ -223,13 +228,13 @@ class AudioEditorController(
                     put("audio_editor_duplicate_keep_change_settings", context.getString(R.string.audio_editor_duplicate_keep_change_settings))
                 }
 
-                val savedSettings = recordingSettings?.settings?.first()
+                val savedSettings = recordingSettings?.cachedSettingsOrNull ?: recordingSettings?.settings?.first()
                 val openPayload = buildJsonObject {
                     put("operation", session.id)
                     put("phase", "opening")
                     put("sourceRevision", session.operation.sourceRevision)
                     put("duplicateKeep", duplicateKeep)
-                    put("sampleRate", 48000)
+                    put("sampleRate", session.sampleRate)
                     put("minPauseSeconds", (savedSettings?.minSilenceMillis ?: 1500) / 1000.0)
                     put("edgeMarginMillis", savedSettings?.silenceMarginMillis ?: 150)
                     put("totalFrames", source.endExclusive)
@@ -290,10 +295,11 @@ class AudioEditorController(
             if (operation.phase != AudioEditorOperation.Phase.OPENING || session.ready?.isActive == true) return
             session.ready = operation.scope.launch {
                 val view = sentenceRecorder.openEditor(session.contextId) ?: return@launch
+                session.sampleRate = view.sampleRate
                 val range = view.source ?: operation.source
                 val previous = lastConfirmed?.takeIf { it.first == session.contextId }?.second
                 val initial = previous?.takeIf { range.intersect(it.selection) == it.selection } ?: run {
-                    val bounds = sentenceRecorder.initialBounds(view) ?: range
+                    val bounds = sentenceRecorder.initialBounds(view, view.sampleRate) ?: range
                     AudioEdit(AudioRange(operation.edit.selection.start.coerceIn(bounds.start, bounds.endExclusive), bounds.endExclusive))
                 }
                 if (active !== session || !operation.ready(range, initial, command.sequence)) return@launch
@@ -310,11 +316,10 @@ class AudioEditorController(
                         put("sourceEnd", range.endExclusive)
                         putRetention(view)
                         put("recording", sentenceRecorder.isRecording(session.contextId))
-                        put("overviewSummary", buildJsonArray {})
                     })
                 }
                 if (previous == null) {
-                    val refined = sentenceRecorder.initialSelection(view)
+                    val refined = sentenceRecorder.initialSelection(view, view.sampleRate)
                     if (active === session && refined != null && operation.refineInitial(sequence, revision, refined)) send(session) {
                         put("initialSequence", sequence)
                         put("initialSelection", ranges(listOf(refined.selection)).first())
@@ -412,6 +417,7 @@ class AudioEditorController(
                     session.silenceSettings?.join()
                     val settings = recordingSettings?.settings?.first()
                     val cuts = sentenceRecorder.findSilence(edit.selection,
+                        sampleRate = session.sampleRate,
                         minSilenceMillis = settings?.minSilenceMillis ?: 1500,
                         edgePaddingMillis = settings?.silenceMarginMillis ?: 150,
                         contextId = session.contextId)
@@ -440,6 +446,7 @@ class AudioEditorController(
                 if (session.refresh?.isActive == true) return
                 session.refresh = operation.scope.launch {
                     val view = sentenceRecorder.refresh(session.contextId) ?: return@launch
+                    session.sampleRate = view.sampleRate
                     val range = view.source ?: return@launch
                     val previousEnd = operation.source.endExclusive
                     if (active !== session || !operation.append(range)) return@launch
@@ -471,7 +478,18 @@ class AudioEditorController(
     fun releaseContext(id: AudioContextId, cancelActive: Boolean = true) {
         if (retainedContextId == id) retainedContextId = null
         if (lastConfirmed?.first == id) lastConfirmed = null
-        if (cancelActive) active?.takeIf { it.contextId == id }?.let { if (it.isReady()) it.operation.cancel() }
+        if (cancelActive) active?.takeIf { it.contextId == id }?.let {
+            it.cancelled = true
+            if (it.isReady()) it.operation.cancel()
+        }
+    }
+
+    val isActive: Boolean get() = active != null
+
+    fun cancelActive() {
+        val session = active ?: return
+        session.cancelled = true
+        if (session.isReady()) session.operation.cancel()
     }
 
     val canFinish: Boolean get() = active?.let {
@@ -491,7 +509,10 @@ class AudioEditorController(
         released = true
         page.onEditorBack = null
         page.audioEditorActions = null
-        active?.let { if (it.isReady()) it.operation.cancel() }
+        active?.let {
+            it.cancelled = true
+            if (it.isReady()) it.operation.cancel()
+        }
         popupController.resetAudioEditorPresentation()
         onVisibilityChanged(false)
         retainedContextId = null
@@ -507,7 +528,7 @@ class AudioEditorController(
                 sentenceAudioStaging.create().also { file = it }
             }
             withContext(Dispatchers.IO) {
-                val outcome = sentenceRecorder.export(edit, output, contextId = session.contextId)
+                val outcome = sentenceRecorder.export(edit, output, sampleRate = session.sampleRate, contextId = session.contextId)
                 if (outcome?.isQuiet == true) withContext(Dispatchers.Main) {
                     if (active === session) Toast.makeText(context, R.string.audio_editor_quiet_warning, Toast.LENGTH_SHORT).show()
                 }

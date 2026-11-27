@@ -123,4 +123,20 @@ class RecordingSettingsRepositoryTest {
             assertThat(it.silenceMarginMillis).isEqualTo(2_000L)
         }
     }
+
+    @Test
+    fun corruptedLimitFallsBackIndependentlyWithoutResettingValidLimits() = runTest {
+        val dataStore = MemoryDataStore()
+        val repository = RecordingSettingsRepository(dataStore)
+        dataStore.edit {
+            it[RecordingSettingsRepository.HISTORY_MILLIS] = 45_000L
+            it[RecordingSettingsRepository.WAITING_MILLIS] = 180_000L
+            it[RecordingSettingsRepository.EDITOR_MILLIS] = 240_000L
+        }
+
+        val settings = repository.settings.first()
+        assertThat(settings.limits.historyMillis).isEqualTo(300_000L)
+        assertThat(settings.limits.waitingMillis).isEqualTo(180_000L)
+        assertThat(settings.limits.editorMillis).isEqualTo(240_000L)
+    }
 }

@@ -156,10 +156,30 @@ class AudioEditorTouchTest {
             until("AudioEditor.state.cuts.length===0")
             js("document.getElementById('sl-tools').open=false; document.querySelector('.sl-editor-content').scrollTop=0; true")
             delay(200)
+            val landscapeDensity = context.resources.displayMetrics.density
+            val compactInnerHeight = js("innerHeight").toInt()
             snapshot("touch-compact.png")
+            assertThat(js("!!document.getElementById('sl-action-zoom-in').closest('.sl-controls-row') && !document.getElementById('sl-action-zoom-in').closest('#sl-tools')")).isEqualTo("true")
+            assertThat(js("document.getElementById('sl-wave').getAttribute('preserveAspectRatio')")).isEqualTo("\"none\"")
             withContext(Dispatchers.Main) { popup.setAudioEditorExpanded(true) }
-            delay(150)
+            until("innerHeight > $compactInnerHeight")
+            delay(300)
             snapshot("touch-expanded.png")
+            withContext(Dispatchers.Main) {
+                popup.setAudioEditorExpanded(false)
+                popup.relayout(Box(0f, 0f, 800f * landscapeDensity, 360f * landscapeDensity), 420f * landscapeDensity)
+            }
+            until("innerWidth > 450")
+            js("document.querySelector('.sl-editor-content').scrollTop=0; true")
+            delay(200)
+            val landscapeGeometry = js("JSON.stringify((()=>{const wave=document.querySelector('.sl-wave-wrap').getBoundingClientRect(),range=document.querySelector('.sl-range-summary').getBoundingClientRect(),body=document.querySelector('.sl-editor-content').getBoundingClientRect();return {wave:{top:wave.top,bottom:wave.bottom,height:wave.height},range:{top:range.top,bottom:range.bottom},body:{top:body.top,bottom:body.bottom,height:body.height},viewport:[innerWidth,innerHeight],scroll:document.querySelector('.sl-editor-content').scrollTop}})())")
+            com.google.common.truth.Truth.assertWithMessage("Landscape compact geometry: %s", landscapeGeometry)
+                .that(js("(()=>{const wave=document.querySelector('.sl-wave-wrap').getBoundingClientRect(),range=document.querySelector('.sl-range-summary').getBoundingClientRect(),body=document.querySelector('.sl-editor-content').getBoundingClientRect();return wave.top>=body.top && wave.bottom<=body.bottom && range.bottom<=body.bottom})()"))
+                .isEqualTo("true")
+            val widthBeforeZoom = js("AudioEditor.state.width").toLong()
+            tap("sl-action-zoom-in")
+            until("AudioEditor.state.width<$widthBeforeZoom")
+            snapshot("touch-landscape-compact.png")
         } finally { withContext(Dispatchers.Main) { popup.release() } }
     }
 }

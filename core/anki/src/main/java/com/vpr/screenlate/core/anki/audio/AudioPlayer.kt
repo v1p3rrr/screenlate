@@ -73,10 +73,7 @@ class AudioPlayer internal constructor(
     private suspend fun prepareAndPlay(op: Operation, pronunciation: Pronunciation): Boolean {
         cleanup.withLock {
             if (!cleaned) withContext(io) {
-                if (!directory.isDirectory && !directory.mkdirs()) error("Cannot create pronunciation directory")
-                val files = checkNotNull(directory.listFiles()) { "Cannot read pronunciation directory" }
-                files.filter { it.isFile && it.name.startsWith("tts_") && it.extension == "wav" }
-                    .forEach { check(!it.exists() || it.delete()) { "Cannot clean abandoned pronunciation" } }
+                TtsWorkspace.prepareOwnedDirectory(directory)
                 cleaned = true
             }
         }

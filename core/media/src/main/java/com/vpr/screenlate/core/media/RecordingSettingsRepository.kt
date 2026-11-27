@@ -18,12 +18,10 @@ class RecordingSettingsRepository @Inject constructor(
     private val readSettings: (Preferences) -> RecordingSettings = { prefs ->
         val enabled = prefs[RECORDING_ENABLED] ?: false
         val defaultEditor = prefs[DEFAULT_EDITOR] ?: true
-        val h = prefs[HISTORY_MILLIS] ?: 300_000L
-        val w = prefs[WAITING_MILLIS] ?: 300_000L
-        val e = prefs[EDITOR_MILLIS] ?: 120_000L
-        val validatedLimits = runCatching {
-            RecordingLimits(historyMillis = h, waitingMillis = w, editorMillis = e)
-        }.getOrDefault(RecordingLimits())
+        val h = prefs[HISTORY_MILLIS]?.takeIf(::isValidLimit) ?: DEFAULT_HISTORY_MILLIS
+        val w = prefs[WAITING_MILLIS]?.takeIf(::isValidLimit) ?: DEFAULT_WAITING_MILLIS
+        val e = prefs[EDITOR_MILLIS]?.takeIf(::isValidLimit) ?: DEFAULT_EDITOR_MILLIS
+        val validatedLimits = RecordingLimits(historyMillis = h, waitingMillis = w, editorMillis = e)
         val minSilence = prefs[MIN_SILENCE_MILLIS]
             ?.takeIf { it in RecordingSettings.MIN_SILENCE_RANGE }
             ?: RecordingSettings.DEFAULT_MIN_SILENCE_MILLIS
@@ -41,7 +39,9 @@ class RecordingSettingsRepository @Inject constructor(
 
     val settings: Flow<RecordingSettings> = dataStore.data.map { readSettings(it) }
 
-    val cachedSettings: RecordingSettings get() = dataStore.cached(readSettings) ?: RecordingSettings()
+    val cachedSettings: RecordingSettings get() = cachedSettingsOrNull ?: RecordingSettings()
+
+    val cachedSettingsOrNull: RecordingSettings? get() = dataStore.cached(readSettings)
 
     suspend fun setRecordingEnabled(enabled: Boolean) {
         dataStore.edit { it[RECORDING_ENABLED] = enabled }
@@ -70,7 +70,13 @@ class RecordingSettingsRepository @Inject constructor(
     }
 
     companion object {
-        val RECORDING_ENABLED = booleanPreferencesKey("sentence_recording_enabled")
+        const val RECORDING_ENABLED_KEY = "sentence_recording_enabled"
+        private const val DEFAULT_HISTORY_MILLIS = 300_000L
+        private const val DEFAULT_WAITING_MILLIS = 300_000L
+        private const val DEFAULT_EDITOR_MILLIS = 120_000L
+        private fun isValidLimit(value: Long): Boolean = value in 30_000L..600_000L && value % 30_000L == 0L
+
+        val RECORDING_ENABLED = booleanPreferencesKey(RECORDING_ENABLED_KEY)
         val DEFAULT_EDITOR = booleanPreferencesKey("sentence_audio_default_editor")
         val HISTORY_MILLIS = longPreferencesKey("sentence_audio_history_millis")
         val WAITING_MILLIS = longPreferencesKey("sentence_audio_waiting_millis")

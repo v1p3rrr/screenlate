@@ -42,6 +42,7 @@ class SentenceAudioProcessDeathDeviceTest {
             val after = awaitReport(restarted)
             assertThat(after.getProperty("phase")).isEqualTo("complete")
             assertThat(after.getProperty("pid").toInt()).isNotEqualTo(crashedPid)
+            assertThat(after.getProperty("cleanedOnColdStartup").toBoolean()).isTrue()
             assertThat(after.getProperty("firstOrphanExists").toBoolean()).isFalse()
             assertThat(after.getProperty("secondOrphanExists").toBoolean()).isFalse()
             assertThat(after.getProperty("unrelatedPreserved").toBoolean()).isTrue()
@@ -111,6 +112,9 @@ class SentenceStagingCrashService : Service() {
     private fun restartStaging(report: File) {
         try {
             val before = readReport(File(report.parentFile, "crashed.properties"))
+            SentenceAudioStaging.cleanupOrphansOnStartup(this)
+            val cleanedOnColdStartup = !File(before.getProperty("firstOrphan")).exists() &&
+                !File(before.getProperty("secondOrphan")).exists()
             val staging = SentenceAudioStaging(this)
             val firstNew = staging.create()
             val secondNew = staging.create()
@@ -118,6 +122,7 @@ class SentenceStagingCrashService : Service() {
                 report,
                 "phase" to "complete",
                 "pid" to Process.myPid(),
+                "cleanedOnColdStartup" to cleanedOnColdStartup,
                 "firstOrphanExists" to File(before.getProperty("firstOrphan")).exists(),
                 "secondOrphanExists" to File(before.getProperty("secondOrphan")).exists(),
                 "unrelatedPreserved" to (File(before.getProperty("unrelatedAudio")).isFile &&

@@ -731,4 +731,117 @@ class SentenceRecorderTest {
             recorder.close()
         }
     }
+
+    @Test
+    fun sampleRate44100PropagatesThroughTimelineInitialBoundsAndSilenceDetection() = runBlocking {
+        val targetSampleRate = 44_100
+        val speechSeconds = 2
+        val silenceSeconds = 2
+        val totalFrames = (speechSeconds + silenceSeconds + 1) * targetSampleRate
+        val pauseStart = speechSeconds * targetSampleRate
+        val pauseEnd = (speechSeconds + silenceSeconds) * targetSampleRate
+        val source = object : AudioSource {
+            override val sampleRate: Int = targetSampleRate
+            override val channelCount: Int = 1
+            private val running = AtomicBoolean(false)
+            private var cursor = 0
+            private var reads = 0
+
+            override fun start(): Boolean { running.set(true); return true }
+            override fun timestampNanos(): Long = 10_000_000_000L
+            override fun stop() { running.set(false) }
+            override fun close() = stop()
+            override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+                if (!running.get()) return -1
+                if (cursor >= totalFrames) { Thread.sleep(10); return 0 }
+                if (reads++ > 0) Thread.sleep(15)
+                val frames = minOf(length / 2, totalFrames - cursor)
+                for (i in 0 until frames) {
+                    val f = cursor + i
+                    val amplitude = if (f in pauseStart until pauseEnd) 0 else if (f % 40 < 20) 12_000 else -12_000
+                    buffer[offset + i * 2] = amplitude.toByte()
+                    buffer[offset + i * 2 + 1] = (amplitude shr 8).toByte()
+                }
+                cursor += frames
+                return frames * 2
+            }
+        }
+        val time = AtomicLong(10_000L)
+        val recorder = SentenceRecorder(
+            temporary.newFolder(),
+            RecordingSettingsRepository(MemoryDataStore()),
+            { time.get() },
+            { time.get() * 1_000_000L },
+        )
+        try {
+            assertThat(recorder.start(source)).isTrue()
+            withTimeout(5000) {
+                while (recorder.snapshot(AudioRange(0, totalFrames.toLong()))?.also { it.close() } == null) {
+                    val state = recorder.recordingState.value
+                    check(state !is SentenceRecordingState.Failed) { "Recorder failed at 44.1kHz: $state" }
+                    delay(1)
+                }
+            }
+            time.set(10_000L + 2_500L)
+            val contextId = checkNotNull(recorder.acquireScan())
+            time.set(10_000L + 5_000L)
+            val view = checkNotNull(recorder.openEditor(contextId))
+            assertThat(view.sampleRate).isEqualTo(44_100)
+
+            val wideView = view.copy(scanFrame = 441_000L, source = AudioRange(0L, 882_000L))
+            val bounds441 = checkNotNull(recorder.initialBounds(wideView))
+            val bounds48 = checkNotNull(recorder.initialBounds(wideView, sampleRate = 48_000))
+            assertThat(bounds441).isNotEqualTo(bounds48)
+
+            // 88_200 silent frames = 2.0s at 44.1kHz (>= 1.9s), but < 1.9s if misread as 48kHz (91_200 frames).
+            val cuts = recorder.findSilence(
+                checkNotNull(view.source),
+                minSilenceMillis = 1900,
+                edgePaddingMillis = 0,
+                contextId = contextId,
+            )
+            assertThat(cuts).isNotEmpty()
+            assertThat(cuts.first().start).isAtLeast(pauseStart.toLong())
+            assertThat(cuts.first().endExclusive).isAtMost(pauseEnd.toLong())
+            assertThat(
+                recorder.findSilence(
+                    checkNotNull(view.source),
+                    sampleRate = 48_000,
+                    minSilenceMillis = 1900,
+                    edgePaddingMillis = 0,
+                    contextId = contextId,
+                ),
+            ).isEmpty()
+        } finally {
+            recorder.close()
+        }
+    }
+
+    @Test
+    fun cleanupOrphanedStorageRemovesAbandonedFilesWithoutAffectingActiveOrClosedRoots() = runBlocking {
+        val root = temporary.newFolder()
+        val abandoned = File(root, UUID.randomUUID().toString()).apply { mkdirs() }
+        val abandonedPcm = File(abandoned, "0001.pcm").apply { writeBytes(ByteArray(4)) }
+        val rootTmp = File(root, "stale.tmp").apply { writeBytes(ByteArray(2)) }
+        val keepTxt = File(root, "keep.txt").apply { writeText("keep") }
+
+        SentenceRecorder.cleanupOrphanedStorage(root)
+        assertThat(abandonedPcm.exists()).isFalse()
+        assertThat(abandoned.exists()).isFalse()
+        assertThat(rootTmp.exists()).isFalse()
+        assertThat(keepTxt.exists()).isTrue()
+
+        val recorder = SentenceRecorder(root, RecordingSettingsRepository(MemoryDataStore()))
+        val orphanWhileActive = File(root, "in-session.tmp")
+        try {
+            recorder.start(FakeAudioSource())
+            orphanWhileActive.writeBytes(ByteArray(2))
+            SentenceRecorder.cleanupOrphanedStorage(root)
+            assertThat(orphanWhileActive.exists()).isTrue()
+        } finally {
+            recorder.close()
+        }
+        SentenceRecorder.cleanupOrphanedStorage(root)
+        assertThat(orphanWhileActive.exists()).isFalse()
+    }
 }

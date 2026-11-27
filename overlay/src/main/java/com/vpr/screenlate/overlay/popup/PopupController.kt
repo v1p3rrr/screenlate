@@ -68,7 +68,7 @@ class PopupController(
      */
     private val screenOff = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (visible && hideOnOutsideTap) dismissFromOutside()
+            if (visible && hideOnOutsideTap && !isAudioEditorActive) dismissFromOutside()
         }
     }
 
@@ -388,7 +388,7 @@ class PopupController(
         val screen = lastScreen ?: return
         if (collapsed) {
             if (normalBounds == null) normalBounds = bounds
-            val pillWidth = 190f * density
+            val pillWidth = 216f * density
             val pillHeight = 48f * density
             val x = screen.right - pillWidth - edgeMargin * 2
             val y = screen.bottom - pillHeight - edgeMargin * 2
@@ -443,7 +443,7 @@ class PopupController(
     }
 
     private fun updateScreenOffReceiver() {
-        if (attached && visible && (hideOnOutsideTap || isAudioEditorActive)) registerScreenOff() else unregisterScreenOff()
+        if (attached && visible && hideOnOutsideTap && !isAudioEditorActive) registerScreenOff() else unregisterScreenOff()
     }
 
     private fun registerScreenOff() {

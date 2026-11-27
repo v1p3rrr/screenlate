@@ -5,6 +5,8 @@ import android.content.res.Configuration as ResourcesConfiguration
 import android.content.res.Resources
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.vpr.screenlate.core.anki.audio.SentenceAudioStaging
+import com.vpr.screenlate.core.anki.audio.TtsWorkspace
 import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.log.Log
@@ -87,6 +89,11 @@ class ScreenlateApplication : Application(), Configuration.Provider {
                 // A failed check must not stop the app from starting; the home screen checks again.
                 runCatching { dictionaryRepair.repair() }.onFailure { Log.w(TAG, "Dictionary repair failed: ${it.javaClass.simpleName}") }
             }
+            launch {
+                runCatching { SentenceRecorder.cleanupOrphanedStorage(this@ScreenlateApplication) }
+                runCatching { SentenceAudioStaging.cleanupOrphansOnStartup(this@ScreenlateApplication) }
+                runCatching { TtsWorkspace.cleanupOrphansOnStartup(this@ScreenlateApplication) }
+            }
         }
     }
 
@@ -101,6 +108,7 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     }
 
     private fun releaseRebuildableAudioCaches() {
+        if (!SentenceRecorder.hasInitializedInstance(this)) return
         applicationScope.launch(Dispatchers.IO) { sentenceRecorder.get().releaseRebuildableCaches() }
     }
 

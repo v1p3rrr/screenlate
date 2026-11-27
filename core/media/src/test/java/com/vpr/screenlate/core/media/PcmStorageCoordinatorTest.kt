@@ -338,6 +338,43 @@ class PcmStorageCoordinatorTest {
         }
     }
 
+    @Test
+    fun suspendGapInCaptureReadAdvancesFloorCapsOldScanAndKeepsNewScansWorking() {
+        val time = AtomicLong(10_000L)
+        val source = FakeAudioSource(sampleRate = 1000, blockFrames = 50)
+        val coordinator = PcmStorageCoordinator(
+            temporary.newFolder(),
+            RecordingLimits(historyMillis = 60_000, waitingMillis = 60_000, editorMillis = 60_000),
+            PcmCoordinatorConfig(sampleRate = 1000, chunkFrames = 200, blockFrames = 50),
+            nowMillis = { time.get() },
+            nowNanos = { time.get() * 1_000_000L },
+        )
+        try {
+            assertThat(coordinator.start(source)).isTrue()
+            source.emitFrames(50)
+            waitForCondition { coordinator.committedEndFrame >= 50 }
+            time.set(10_050L)
+            val beforeGap = checkNotNull(coordinator.acquireScan(10_050L))
+            val initialView = checkNotNull(coordinator.openEditor(beforeGap, 10_050L))
+            assertThat(initialView.source).isEqualTo(AudioRange(0, 50))
+
+            // Simulate >5s device suspend before next block arrives.
+            time.set(25_050L)
+            source.emitFrames(50)
+            waitForCondition { coordinator.committedEndFrame >= 100 }
+
+            val capped = checkNotNull(coordinator.refresh(beforeGap, 25_050L))
+            assertThat(capped.retention.reason).isEqualTo(RetentionEnd.CAPTURE_STOPPED)
+            assertThat(capped.source).isEqualTo(AudioRange(0, 50))
+
+            val afterGap = checkNotNull(coordinator.acquireScan(25_100L))
+            val afterView = checkNotNull(coordinator.openEditor(afterGap, 25_100L))
+            assertThat(afterView.source?.start).isAtLeast(50L)
+        } finally {
+            coordinator.close()
+        }
+    }
+
     private fun waitForCondition(timeoutMs: Long = 3000, condition: () -> Boolean) {
         val deadline = System.currentTimeMillis() + timeoutMs
         while (System.currentTimeMillis() < deadline) {

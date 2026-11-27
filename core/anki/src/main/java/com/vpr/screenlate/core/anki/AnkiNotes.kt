@@ -197,6 +197,17 @@ class AnkiNotes @Inject constructor(
         return FieldTemplate.markersIn(settings.fields[first].orEmpty())
     }
 
+    /** Markers of [target]'s first field when overwrite duplicate checks can run, or null if skipping is off. */
+    suspend fun overwriteDuplicateCheckMarkers(target: NoteTarget): Set<String>? {
+        val settings = target.settings
+        if (!settings.configured || !settings.duplicateCheck || settings.duplicateBehavior != DuplicateBehavior.OVERWRITE) {
+            return null
+        }
+        val modelId = settings.modelId ?: return emptySet()
+        val first = fieldNames(modelId).firstOrNull() ?: return emptySet()
+        return FieldTemplate.markersIn(settings.fields[first].orEmpty())
+    }
+
     /** Existing notes a note with these values would duplicate; empty when Anki is unavailable or unconfigured. */
     suspend fun duplicateIds(language: Language, values: Map<String, String>): List<Long> {
         val settings = settings(language)

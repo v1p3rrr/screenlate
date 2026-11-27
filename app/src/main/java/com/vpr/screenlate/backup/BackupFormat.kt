@@ -14,6 +14,7 @@ import com.vpr.screenlate.core.anki.audio.SharedAudioSettings
 import com.vpr.screenlate.core.anki.settings.CropAreaRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.media.RecordingSettingsRepository
 import com.vpr.screenlate.core.ocr.model.OcrModelChoices
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
@@ -166,6 +167,7 @@ object BackupPreferences {
         key.startsWith("lookup_") -> BackupSection.LOOKUP
         key.startsWith("popup_") -> BackupSection.POPUP
         key == CropAreaRepository.REMEMBER_AREA_KEY || (key.startsWith("anki_settings") && SettingsKeys.languageOf(key) != null) -> BackupSection.ANKI
+        key == RecordingSettingsRepository.RECORDING_ENABLED_KEY -> null
         key.startsWith("audio_") || key.startsWith("sentence_") -> BackupSection.AUDIO
         key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> BackupSection.TRANSLATION
         else -> null

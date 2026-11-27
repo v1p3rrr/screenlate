@@ -114,7 +114,7 @@ the accelerated test does not establish physical-device flash or power behavior.
 process with real abandoned PCM/temporary/Opus files, then verify selective cleanup from a new PID without
 removing unrelated files or subsequent same-process exports. `RecordingSettingsDeviceTest` uses file-backed
 DataStore with the production reset/restore code: existing contexts keep their limits, invalid silence values
-fall back independently, and restoring `recordingEnabled=true` does not start capture. Application memory-pressure
+fall back independently, and the runtime `recordingEnabled` flag is excluded from backup/restore so restoring does not start capture. Application memory-pressure
 handling is covered by a recorder regression proving that only the rebuildable waveform cache is dropped;
 leased PCM remains byte-identical and the waveform rebuilds on demand. These fixtures do not cover a real
 low-memory callback, every possible death stage or unattended endurance.

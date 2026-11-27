@@ -102,7 +102,7 @@ class RecordingSettingsDeviceTest {
             fixture.restore(validBackup)
 
             val restored = fixture.repository.settings.first()
-            assertThat(restored.recordingEnabled).isTrue()
+            assertThat(restored.recordingEnabled).isFalse()
             assertThat(restored.defaultEditor).isFalse()
             assertThat(restored.limits).isEqualTo(restoredLimits)
             assertThat(restored.minSilenceMillis).isEqualTo(2_500)
@@ -111,6 +111,9 @@ class RecordingSettingsDeviceTest {
             fixture.assertRestoreDoesNotStartThenAcceptsExplicitStart()
 
             fixture.preferences.edit {
+                it[RecordingSettingsRepository.HISTORY_MILLIS] = 45_000L
+                it[RecordingSettingsRepository.WAITING_MILLIS] = 90_000L
+                it[RecordingSettingsRepository.EDITOR_MILLIS] = 30_000L
                 it[RecordingSettingsRepository.MIN_SILENCE_MILLIS] = -1L
                 it[RecordingSettingsRepository.SILENCE_MARGIN_MILLIS] = Long.MAX_VALUE
             }
@@ -122,8 +125,8 @@ class RecordingSettingsDeviceTest {
                 .isEqualTo(RecordingSettings.DEFAULT_MIN_SILENCE_MILLIS)
             assertThat(recovered.silenceMarginMillis)
                 .isEqualTo(RecordingSettings.DEFAULT_SILENCE_MARGIN_MILLIS)
-            assertThat(recovered.limits).isEqualTo(restoredLimits)
-            assertThat(recovered.recordingEnabled).isTrue()
+            assertThat(recovered.limits).isEqualTo(RecordingLimits(300_000L, 90_000L, 30_000L))
+            assertThat(recovered.recordingEnabled).isFalse()
             fixture.assertRestoreDoesNotStartThenAcceptsExplicitStart()
         } finally {
             fixture.close()

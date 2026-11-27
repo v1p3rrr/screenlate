@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.IOException
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicBoolean
@@ -54,8 +55,10 @@ class SentenceRecorder internal constructor(
         @ApplicationContext context: Context,
         settingsRepository: RecordingSettingsRepository,
         playback: PlaybackCoordinator,
-    ) : this(File(context.noBackupFilesDir, "sentence_recording"), settingsRepository,
-        previewCallbackExecutor = ContextCompat.getMainExecutor(context), playback = playback)
+    ) : this(File(context.noBackupFilesDir, RECORDING_DIR_NAME), settingsRepository,
+        previewCallbackExecutor = ContextCompat.getMainExecutor(context), playback = playback) {
+        runCatching { initializedAppRoots.add(storageDir.canonicalPath) }
+    }
 
     private val lifecycle = Mutex()
     private val previewCommands = Mutex()
@@ -94,6 +97,7 @@ class SentenceRecorder internal constructor(
     private var abandonedCleaned = false
     @Volatile private var previewPlayer: AudioPreviewPlayer? = null
     private var previewSession: PcmStorageCoordinator? = null
+    private var previewSampleRate: Int = DEFAULT_SAMPLE_RATE
     private var previewLease: PlaybackCoordinator.Lease? = null
     private var previewStopped: (() -> Unit)? = null
     private val _recordingState = MutableStateFlow<SentenceRecordingState>(SentenceRecordingState.Idle)
@@ -338,18 +342,19 @@ class SentenceRecorder internal constructor(
 
     suspend fun findSilence(
         range: AudioRange,
-        sampleRate: Int = 48000,
+        sampleRate: Int? = null,
         minSilenceMillis: Long = SilenceDetector.DEFAULT_MIN_SILENCE_MILLIS,
         edgePaddingMillis: Long = SilenceDetector.DEFAULT_EDGE_PADDING_MILLIS,
         contextId: AudioContextId? = null,
     ): List<AudioRange> = withContext(Dispatchers.IO) {
         val caller = currentCoroutineContext()
+        val effectiveSampleRate = sampleRate ?: sessionSampleRate(contextId)
         analysis.withLock {
             val snapshot = snapshot(range, contextId) ?: return@withLock emptyList()
             snapshot.use { lease ->
                 try {
                     lease.openStream().use {
-                        SilenceDetector.findSilenceCuts(it, range, sampleRate, minSilenceMillis, edgePaddingMillis) {
+                        SilenceDetector.findSilenceCuts(it, range, effectiveSampleRate, minSilenceMillis, edgePaddingMillis) {
                             caller.ensureActive()
                         }
                     }
@@ -363,10 +368,10 @@ class SentenceRecorder internal constructor(
         }
     }
 
-    fun initialBounds(view: AudioTimelineView, sampleRate: Int = 48000): AudioRange? =
+    fun initialBounds(view: AudioTimelineView, sampleRate: Int = view.sampleRate): AudioRange? =
         view.source?.let { InitialSelection.suggest(view.scanFrame, it, sampleRate) }
 
-    suspend fun initialSelection(view: AudioTimelineView, sampleRate: Int = 48000): AudioEdit? = withContext(Dispatchers.IO) {
+    suspend fun initialSelection(view: AudioTimelineView, sampleRate: Int = view.sampleRate): AudioEdit? = withContext(Dispatchers.IO) {
         val source = view.source ?: return@withContext null
         val initial = InitialSelection.suggest(view.scanFrame, source, sampleRate) ?: return@withContext null
         val caller = currentCoroutineContext()
@@ -430,7 +435,8 @@ class SentenceRecorder internal constructor(
                         }
                         return@withContext
                     }
-                    if (previewPlayer != null && previewSession !== session) {
+                    val sampleRate = session?.sampleRate ?: DEFAULT_SAMPLE_RATE
+                    if (previewPlayer != null && (previewSession !== session || previewSampleRate != sampleRate)) {
                         previewPlayer?.close()
                         if (previewPlayer?.isReleased == false) {
                             previewCallbackExecutor.execute {
@@ -443,9 +449,11 @@ class SentenceRecorder internal constructor(
                         previewPlayer = null
                     }
                     val player = previewPlayer ?: AudioPreviewPlayer(
-                        snapshotProvider = { snapshotFrom(session, it) }, callbackExecutor = previewCallbackExecutor,
-                        sinkFactory = previewSinkFactory ?: { AndroidAudioTrackSink(48000) },
-                    ).also { previewPlayer = it; previewSession = session }
+                        snapshotProvider = { snapshotFrom(session, it) },
+                        sampleRate = sampleRate,
+                        callbackExecutor = previewCallbackExecutor,
+                        sinkFactory = previewSinkFactory ?: { AndroidAudioTrackSink(sampleRate) },
+                    ).also { previewPlayer = it; previewSession = session; previewSampleRate = sampleRate }
                     player.play(edit, mode, startFrame,
                         onProgress = { if (lease.isCurrent) onProgress?.invoke(it) },
                         onComplete = { if (lease.isCurrent) { lease.close(); onComplete?.invoke() } },
@@ -503,14 +511,15 @@ class SentenceRecorder internal constructor(
 
     data class ExportOutcome(val isQuiet: Boolean)
 
-    suspend fun export(edit: AudioEdit, outputFile: File, sampleRate: Int = 48000, contextId: AudioContextId? = null): ExportOutcome? = withContext(Dispatchers.IO) {
+    suspend fun export(edit: AudioEdit, outputFile: File, sampleRate: Int? = null, contextId: AudioContextId? = null): ExportOutcome? = withContext(Dispatchers.IO) {
         val caller = currentCoroutineContext()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@withContext null
+        val effectiveSampleRate = sampleRate ?: sessionSampleRate(contextId)
         val snapshot = snapshot(edit.selection, contextId) ?: return@withContext null
         snapshot.use { lease ->
             try {
                 val result = lease.openStream().use {
-                    AudioExporter.exportOpus(AudioEditInputStream(it, edit), edit, sampleRate, outputFile,
+                    AudioExporter.exportOpus(AudioEditInputStream(it, edit), edit, effectiveSampleRate, outputFile,
                         checkActive = { caller.ensureActive() })
                 }
                 ExportOutcome(result.isQuiet)
@@ -546,12 +555,19 @@ class SentenceRecorder internal constructor(
             currentSource = null
             generation.incrementAndGet()
             _recordingState.value = SentenceRecordingState.Idle
+            abandonedCleaned = false
+            runCatching { storageDir.canonicalPath }.getOrNull()?.let { rootPath ->
+                synchronized(storageCleanupLock) { activeRoots.remove(rootPath) }
+            }
         }
         releaseRebuildableCaches()
     }
 
     private fun contextSession(id: AudioContextId): PcmStorageCoordinator? =
         synchronized(contexts) { contexts[id]?.session }
+
+    private fun sessionSampleRate(contextId: AudioContextId? = null): Int =
+        (if (contextId == null) coordinator else contextSession(contextId))?.sampleRate ?: DEFAULT_SAMPLE_RATE
 
     private fun hasReaders(session: PcmStorageCoordinator?): Boolean = synchronized(contexts) {
         session != null && contexts.values.any { it.session === session && it.readers > 0 }
@@ -599,22 +615,53 @@ class SentenceRecorder internal constructor(
         if (abandonedCleaned) return
         if (!storageDir.isDirectory && !storageDir.mkdirs()) throw IOException("Cannot create recording directory")
         val root = storageDir.canonicalFile
-        fun clear(directory: File) {
-            PcmStorageCoordinator.cleanAbandonedFiles(directory)
-            val remaining = directory.listFiles() ?: throw IOException("Cannot read recording directory")
-            if (remaining.any { it.isFile && (it.name.endsWith(".pcm") || it.name.endsWith(".tmp")) }) {
-                throw IOException("Cannot clear abandoned recording files")
-            }
-        }
-        clear(root)
-        for (child in root.listFiles() ?: throw IOException("Cannot read recording directory")) {
-            if (!child.isDirectory || child.canonicalFile.parentFile != root) continue
-            if (runCatching { UUID.fromString(child.name) }.isFailure) continue
-            clear(child)
-            child.delete() // Only empty session directories are removed; unrelated contents stay intact.
+        synchronized(storageCleanupLock) {
+            activeRoots.add(root.path)
+            sweepAbandonedDirectories(root)
         }
         abandonedCleaned = true
     }
 
-    companion object { private const val TAG = "SentenceRecorder" }
+    companion object {
+        private const val TAG = "SentenceRecorder"
+        private const val RECORDING_DIR_NAME = "sentence_recording"
+        private const val DEFAULT_SAMPLE_RATE = 48_000
+        private val storageCleanupLock = Any()
+        private val activeRoots = ConcurrentHashMap.newKeySet<String>()
+        private val initializedAppRoots = ConcurrentHashMap.newKeySet<String>()
+
+        fun hasInitializedInstance(context: Context): Boolean =
+            runCatching { File(context.noBackupFilesDir, RECORDING_DIR_NAME).canonicalPath in initializedAppRoots }
+                .getOrDefault(false)
+
+        fun cleanupOrphanedStorage(context: Context) {
+            cleanupOrphanedStorage(File(context.noBackupFilesDir, RECORDING_DIR_NAME))
+        }
+
+        internal fun cleanupOrphanedStorage(directory: File) {
+            val root = runCatching { directory.canonicalFile }.getOrNull() ?: return
+            if (!root.isDirectory) return
+            synchronized(storageCleanupLock) {
+                if (root.path in activeRoots) return
+                runCatching { sweepAbandonedDirectories(root) }
+            }
+        }
+
+        private fun sweepAbandonedDirectories(root: File) {
+            fun clear(directory: File) {
+                PcmStorageCoordinator.cleanAbandonedFiles(directory)
+                val remaining = directory.listFiles() ?: throw IOException("Cannot read recording directory")
+                if (remaining.any { it.isFile && (it.name.endsWith(".pcm") || it.name.endsWith(".tmp")) }) {
+                    throw IOException("Cannot clear abandoned recording files")
+                }
+            }
+            clear(root)
+            for (child in root.listFiles() ?: throw IOException("Cannot read recording directory")) {
+                if (!child.isDirectory || child.canonicalFile.parentFile != root) continue
+                if (runCatching { UUID.fromString(child.name) }.isFailure) continue
+                clear(child)
+                child.delete() // Only empty session directories are removed; unrelated contents stay intact.
+            }
+        }
+    }
 }

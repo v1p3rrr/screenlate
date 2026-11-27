@@ -12,6 +12,7 @@ import com.vpr.screenlate.core.anki.AddResult
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
+import com.vpr.screenlate.core.anki.NotePreparation
 import com.vpr.screenlate.core.anki.NoteRequest
 import com.vpr.screenlate.core.anki.NotePreparationResult
 import com.vpr.screenlate.core.anki.SentenceAudioAttachment
@@ -56,6 +57,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.Serializable
@@ -196,6 +199,17 @@ class PopupNotes(
     }
 
     internal fun keepEditing(token: PendingNoteController.Token) = pendingNote.keepEditing(token)
+
+    /** Cancels an active attachment editor if the host popup closed unexpectedly (e.g. renderer crash). */
+    fun onPopupForceClosed() {
+        if (audioEditor?.isActive == true) {
+            audioEditor.cancelActive()
+            pendingNote.cancel()
+        } else if (pendingNote.retainsContext) {
+            cropEditor?.cancel()
+            pendingNote.contextEnded()
+        }
+    }
 
     fun onActiveLanguageChanged(language: Language) {
         if (pendingNote.cancelForLanguage(language)) toast(context.getString(R.string.anki_operation_settings_changed))
@@ -424,7 +438,12 @@ class PopupNotes(
             var term: Pair<String, String>? = null
             var opens: List<Long>? = null
             var screenshot: File? = null
+            var clip: AudioClip? = null
             var translated: Deferred<String?>? = null
+            var screenshotTask: BackgroundAttachment<File>? = null
+            val createdScreenshots = java.util.Collections.synchronizedList(mutableListOf<File>())
+            var clipTask: BackgroundAttachment<AudioClip?>? = null
+            var furiganaTask: BackgroundAttachment<Pair<String, String>?>? = null
             val state = try {
                 val data = json.decodeFromString<NoteDataDto>(noteData)
                 val noteTerm = data.term.expression to data.term.reading
@@ -482,46 +501,105 @@ class PopupNotes(
                 image?.close()
                 image = null
                 val values = data.values.toMutableMap()
-                context.sentence?.let { sentence ->
-                    values["sentence"] = escapeHtml(sentence.text)
-                    values["cloze-prefix"] = escapeHtml(sentence.prefix)
-                    values["cloze-body"] = escapeHtml(sentence.body)
-                    values["cloze-suffix"] = escapeHtml(sentence.suffix)
-                    if ("sentence-furigana" in used || "sentence-furigana-plain" in used) {
-                        sentenceFurigana(sentence.text, noteLanguage)?.let { (html, plain) ->
-                            values["sentence-furigana"] = html
-                            values["sentence-furigana-plain"] = plain
-                        }
-                    }
+                context.sentence?.let { s ->
+                    values["sentence"] = escapeHtml(s.text)
+                    values["cloze-prefix"] = escapeHtml(s.prefix)
+                    values["cloze-body"] = escapeHtml(s.body)
+                    values["cloze-suffix"] = escapeHtml(s.suffix)
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
-                if ("clipboard-text" in used || "clipboard-image" in used) {
-                    // ClipboardManager must be obtained on the main thread (Android 7-8 creates a Handler inside it).
-                    val clip = currentClip()
-                    if ("clipboard-text" in used) {
-                        readClipboardText(clip)?.let { values["clipboard-text"] = escapeHtml(it).replace("\n", "<br>") }
-                    }
-                    if ("clipboard-image" in used) {
-                        readClipboardImage(clip)?.let { values["clipboard-image"] = it }
-                    }
+                // ClipboardManager must be obtained on the main thread (Android 7-8 creates a Handler inside it).
+                val clipboardData = if ("clipboard-text" in used || "clipboard-image" in used) currentClip() else null
+                if ("clipboard-text" in used) {
+                    readClipboardText(clipboardData)?.let { values["clipboard-text"] = escapeHtml(it).replace("\n", "<br>") }
                 }
                 for ((marker, tag) in noteLanguage.support.scriptMarkers) {
                     if (marker !in used) continue
                     values[marker] = escapeHtml(lookup.inScript(data.term.expression, data.term.reading, tag, noteLanguage))
                 }
-                translated?.let { withTimeoutOrNull(SentenceTranslation.NOTE_WAIT_MS) { it.await() } }
-                    ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
-                resolveGlossaryMedia(data.media, values, used, noteLanguage)
-                screenshot = picture?.let { saveScreenshot(it) }
-                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
-                val preparation = notes.preparation(target, NoteRequest(values, screenshot, clip), force)
+                screenshotTask = picture?.let { bmp ->
+                    BackgroundAttachment(this, Dispatchers.Default) { saveScreenshot(bmp, createdScreenshots::add) }
+                }
+                clipTask = if ("audio" in used) {
+                    BackgroundAttachment(this) {
+                        chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage)
+                    }
+                } else {
+                    null
+                }
+                val furiganaSentence = context.sentence?.text?.takeIf {
+                    "sentence-furigana" in used || "sentence-furigana-plain" in used
+                }
+                furiganaTask = furiganaSentence?.let { s ->
+                    BackgroundAttachment(this) { sentenceFurigana(s, noteLanguage) }
+                }
+                val prepMutex = Mutex()
+                var ankiMediaImported = false
+                var cachedPreparation: NotePreparation? = null
+                suspend fun ensurePreparation(): NotePreparation {
+                    cachedPreparation?.let { return it }
+                    return prepMutex.withLock {
+                        cachedPreparation?.let { return@withLock it }
+                        furiganaTask?.await()?.let { (html, plain) ->
+                            values["sentence-furigana"] = html
+                            values["sentence-furigana-plain"] = plain
+                        }
+                        if (!ankiMediaImported) {
+                            if ("clipboard-image" in used) {
+                                readClipboardImage(clipboardData)?.let { values["clipboard-image"] = it }
+                            }
+                            if (data.media.isNotEmpty()) {
+                                resolveGlossaryMedia(data.media, values, used, noteLanguage)
+                            }
+                            ankiMediaImported = true
+                        }
+                        translated?.let { withTimeoutOrNull(SentenceTranslation.NOTE_WAIT_MS) { it.await() } }
+                            ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
+                        screenshot = screenshotTask?.await()
+                        clip = clipTask?.await()
+                        notes.preparation(target, NoteRequest(values, screenshot, clip), force).also {
+                            cachedPreparation = it
+                        }
+                    }
+                }
                 var prepared: NotePreparationResult? = null
                 if (effectiveWithAudio && FieldTemplate.SENTENCE_AUDIO in used && context.audioContextId != null && audioEditor != null) {
-                    val isDuplicateKeep = notes.shouldSkipSentenceAudioForDuplicate(target, values)
+                    val firstMarkers = if (!force) notes.overwriteDuplicateCheckMarkers(target) else null
+                    val isDuplicateKeep = if (firstMarkers != null) {
+                        val needsFurigana = "sentence-furigana" in firstMarkers || "sentence-furigana-plain" in firstMarkers
+                        val needsTranslation = FieldTemplate.SENTENCE_TRANSLATION in firstMarkers
+                        val checkValues = if (needsFurigana || needsTranslation) {
+                            values.toMutableMap().also { copy ->
+                                if (needsFurigana) {
+                                    runCatchingNonCancel { furiganaTask?.await() }.getOrNull()?.let { (html, plain) ->
+                                        copy["sentence-furigana"] = html
+                                        copy["sentence-furigana-plain"] = plain
+                                    }
+                                }
+                                if (needsTranslation) {
+                                    translated?.let { withTimeoutOrNull(SentenceTranslation.NOTE_WAIT_MS) { it.await() } }
+                                        ?.let { copy[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
+                                }
+                            }
+                        } else {
+                            values
+                        }
+                        notes.shouldSkipSentenceAudioForDuplicate(target, checkValues)
+                    } else {
+                        false
+                    }
                     when (val audioResult = audioEditor.edit(context.audioContextId, noteTerm.first, noteTerm.second,
                         duplicateKeep = isDuplicateKeep, prepareAudio = { file ->
                             // Track staging before any copy/return suspension can cancel delivery of the editor result.
                             sentenceAudio = SentenceAudioAttachment.Attached(file)
+                            val preparation = try {
+                                ensurePreparation()
+                            } catch (e: CancellationException) {
+                                throw e
+                            } catch (e: Exception) {
+                                Log.w(TAG, "Preparing note attachments failed", e.redacted())
+                                return@edit false
+                            }
                             val result = preparation.prepare(SentenceAudioAttachment.Attached(file))
                             if (result is NotePreparationResult.MediaFailed) false else {
                                 prepared = result
@@ -549,10 +627,11 @@ class PopupNotes(
                 // Once a mutation is attempted, keep its actual result rather than cancelling its acknowledgement.
                 audioLease?.close()
                 attachmentsReady()
-                val result = when (val ready = prepared ?: preparation.prepare(sentenceAudio)) {
+                val ready = prepared ?: ensurePreparation().prepare(sentenceAudio)
+                val result = when (ready) {
                     is NotePreparationResult.Ready -> {
                         val written = notes.write(ready.note,
-                            onWriteAttempt = { configurationWatch?.cancel(); beginWrite() })
+                            onWriteAttempt = { configurationWatch.cancel(); beginWrite() })
                         if (written is AddResult.Updated && ready.note.keepsSentenceAudioFields) {
                             toast(this@PopupNotes.context.getString(R.string.anki_sentence_fields_preserved))
                         }
@@ -585,11 +664,17 @@ class PopupNotes(
                 "error"
             } finally {
                 configurationWatch?.cancel()
-                // A cancelled note does not wait for its translation.
+                // A cancelled note does not wait for its translation or remaining attachment lookups.
                 translated?.cancel()
+                clipTask?.cancel()
+                furiganaTask?.cancel()
+                withContext(NonCancellable) {
+                    screenshotTask?.cancelAndJoin()
+                }
                 (sentenceAudio as? SentenceAudioAttachment.Attached)?.file?.delete()
                 image?.close()
                 picture?.recycle()
+                synchronized(createdScreenshots) { createdScreenshots.toList() }.forEach { it.delete() }
                 screenshot?.delete()
             }
             val shown = showState(scan, index, term, state, opens)
@@ -779,21 +864,27 @@ class PopupNotes(
     }
 
     /** Encodes the note's picture, scaled down if a side is too long for WebP (a long imported screenshot). */
-    private suspend fun saveScreenshot(bitmap: Bitmap): File = withContext(Dispatchers.IO) {
+    private suspend fun saveScreenshot(bitmap: Bitmap, onCreated: ((File) -> Unit)? = null): File = withContext(Dispatchers.IO) {
         val (width, height) = webpSize(bitmap.width, bitmap.height)
         val fitted = if (width == bitmap.width && height == bitmap.height) bitmap else bitmap.scale(width, height)
         try {
-            File(anki.mediaDirectory(), "screenshot_${System.currentTimeMillis()}.webp").also { file ->
-                val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    Bitmap.CompressFormat.WEBP_LOSSY
-                } else {
-                    @Suppress("DEPRECATION")
-                    Bitmap.CompressFormat.WEBP
-                }
-                val written = file.outputStream().use { fitted.compress(format, SCREENSHOT_QUALITY, it) }
-                if (!written) {
+            val mediaDir = anki.mediaDirectory().apply { mkdirs() }
+            File.createTempFile("screenshot_", ".webp", mediaDir).also { file ->
+                onCreated?.invoke(file)
+                try {
+                    val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        Bitmap.CompressFormat.WEBP_LOSSY
+                    } else {
+                        @Suppress("DEPRECATION")
+                        Bitmap.CompressFormat.WEBP
+                    }
+                    val written = file.outputStream().use { fitted.compress(format, SCREENSHOT_QUALITY, it) }
+                    if (!written) {
+                        throw IOException(context.getString(R.string.anki_picture_failed))
+                    }
+                } catch (t: Throwable) {
                     file.delete()
-                    throw IOException(context.getString(R.string.anki_picture_failed))
+                    throw t
                 }
             }
         } finally {

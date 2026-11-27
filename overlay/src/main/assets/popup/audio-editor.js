@@ -61,6 +61,7 @@ var AudioEditor = (() => {
     const undo = [];
     let initialBaseline = null;
     let restoreFocus = null;
+    let activeDialogKind = null;
     let silenceRequestCount = 0;
     let lastSentEdit = null;
     let gestureRevision = 0;
@@ -68,6 +69,14 @@ var AudioEditor = (() => {
     let waveformKey = '';
     let waveformFrame = null;
     let toastTimeout = null;
+
+    function escapeHtml(value) {
+        return String(value === null || value === undefined ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
 
     function hideMessage() {
         if (toastTimeout !== null) clearTimeout(toastTimeout);
@@ -312,6 +321,7 @@ var AudioEditor = (() => {
         const x = f => ((f - from) / span) * w;
 
         svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        svg.setAttribute('preserveAspectRatio', 'none');
         let html = '';
 
         if (!overview) {
@@ -424,6 +434,7 @@ var AudioEditor = (() => {
         editor.classList.toggle('sl-expanded', state.expanded);
         editor.hidden = state.collapsed;
         if (pill) pill.hidden = !state.collapsed;
+        document.documentElement.dataset.editorCollapsed = state.collapsed ? 'true' : 'false';
 
         const expandBtn = document.getElementById('sl-action-expand');
         if (expandBtn) {
@@ -438,8 +449,8 @@ var AudioEditor = (() => {
         const retainedFrames = Math.max(0, (state.sourceEnd !== undefined ? state.sourceEnd : state.totalFrames) - (state.sourceStart || 0));
         const formattedTotal = formatTime(retainedFrames / state.sampleRate);
         if (totalWrap) {
-            totalWrap.innerHTML = labelOf('audio_editor_retained', 'Retained: %1$s')
-                .replace('%1$s', `<span id="sl-total">${formattedTotal}</span>`);
+            totalWrap.innerHTML = escapeHtml(labelOf('audio_editor_retained', 'Retained: %1$s'))
+                .replace('%1$s', `<span id="sl-total">${escapeHtml(formattedTotal)}</span>`);
         } else {
             const totalEl = document.getElementById('sl-total');
             if (totalEl) totalEl.textContent = formattedTotal;
@@ -514,11 +525,13 @@ var AudioEditor = (() => {
             } else {
                 if (!cutHandles.childElementCount) {
                     cutHandles.innerHTML =
-                        '<button type="button" class="sl-cut-edge" data-cut-edge="0" aria-label="Start of cut">❮</button>' +
-                        '<button type="button" class="sl-cut-edge" data-cut-edge="1" aria-label="End of cut">❯</button>';
+                        '<button type="button" class="sl-cut-edge" data-cut-edge="0">❮</button>' +
+                        '<button type="button" class="sl-cut-edge" data-cut-edge="1">❯</button>';
                 }
                 const leftBtn = cutHandles.children[0];
                 const rightBtn = cutHandles.children[1];
+                leftBtn.setAttribute('aria-label', labelOf('audio_editor_cut_edge_start', 'Start of selected cut'));
+                rightBtn.setAttribute('aria-label', labelOf('audio_editor_cut_edge_end', 'End of selected cut'));
                 const leftInView = active[0] >= state.a && active[0] < state.b && active[0] >= state.view && active[0] <= state.view + state.width;
                 const rightInView = active[1] > state.a && active[1] <= state.b && active[1] >= state.view && active[1] <= state.view + state.width;
                 leftBtn.hidden = !leftInView;
@@ -531,12 +544,14 @@ var AudioEditor = (() => {
         // Cut chips
         const cutsContainer = document.getElementById('sl-cuts');
         if (cutsContainer) {
-            cutsContainer.innerHTML = state.cuts.map((c, i) =>
-                `<span class="sl-cut-chip">` +
-                `<button type="button" data-select-cut="${i}">${relativeTime(c[0])} — ${relativeTime(c[1])}</button>` +
-                `<button type="button" data-remove-cut="${i}" aria-label="Restore">×</button>` +
-                `</span>`
-            ).join('');
+            cutsContainer.innerHTML = state.cuts.map((c, i) => {
+                const selectLabel = escapeHtml(labelOf('audio_editor_select_cut', 'Edit cut %1$d').replace('%1$d', String(i + 1)));
+                const removeLabel = escapeHtml(labelOf('audio_editor_remove_cut', 'Restore excluded section'));
+                return `<span class="sl-cut-chip">` +
+                    `<button type="button" data-select-cut="${i}" aria-label="${selectLabel}">${relativeTime(c[0])} — ${relativeTime(c[1])}</button>` +
+                    `<button type="button" data-remove-cut="${i}" aria-label="${removeLabel}">×</button>` +
+                    `</span>`;
+            }).join('');
         }
 
         // Suggestions
@@ -568,8 +583,9 @@ var AudioEditor = (() => {
         state.view = boundedView(center - state.width / 2);
     }
 
-    function showDialog(title, bodyHtml, buttons) {
+    function showDialog(title, bodyHtml, buttons, kind = null) {
         restoreFocus = document.activeElement;
+        activeDialogKind = kind;
         dialogTitle.textContent = title;
         dialogBody.innerHTML = bodyHtml;
         dialogActions.innerHTML = '';
@@ -590,6 +606,7 @@ var AudioEditor = (() => {
     }
 
     function closeDialog() {
+        activeDialogKind = null;
         dialogLayer.hidden = true;
         if (restoreFocus && restoreFocus.isConnected) restoreFocus.focus();
     }
@@ -597,9 +614,9 @@ var AudioEditor = (() => {
     function showSilenceSettings() {
         showDialog(
             labelOf('audio_editor_silence_title', 'Silence search'),
-            `<label>${labelOf('audio_editor_min_pause', 'Minimum pause, s')}` +
+            `<label>${escapeHtml(labelOf('audio_editor_min_pause', 'Minimum pause, s'))}` +
             `<input id="sl-silence-min" type="number" min="0.1" max="30" step="0.1" value="${state.minPauseSeconds}"></label>` +
-            `<label>${labelOf('audio_editor_edge_margin', 'Margin at each edge, ms')}` +
+            `<label>${escapeHtml(labelOf('audio_editor_edge_margin', 'Margin at each edge, ms'))}` +
             `<input id="sl-edge-margin" type="number" min="0" max="2000" step="50" value="${state.edgeMarginMillis}"></label>`,
             [
                 { label: labelOf('audio_editor_cancel', 'Cancel') },
@@ -619,15 +636,17 @@ var AudioEditor = (() => {
                         }
                     }
                 }
-            ]
+            ],
+            'silence'
         );
     }
 
     function showInfoDialog() {
         showDialog(
             labelOf('audio_editor_info_title', 'Sentence recording'),
-            `<p>${labelOf('audio_editor_info_body', 'Audio history is protected when scanning. Refresh appends retained continuation without altering edits. Recording gaps are never joined.')}</p>`,
-            [{ label: labelOf('audio_editor_understood', 'Got it'), primary: true }]
+            `<p>${escapeHtml(labelOf('audio_editor_info_body', 'Audio history is protected when scanning. Refresh appends retained continuation without altering edits. Recording gaps are never joined.'))}</p>`,
+            [{ label: labelOf('audio_editor_understood', 'Got it'), primary: true }],
+            'info'
         );
     }
 
@@ -638,16 +657,23 @@ var AudioEditor = (() => {
         }
         showDialog(
             labelOf('audio_editor_discard_title', 'Cancel note?'),
-            `<p>${labelOf('audio_editor_discard_message', 'Audio clip changes will be lost.')}</p>`,
+            `<p>${escapeHtml(labelOf('audio_editor_discard_message', 'Audio clip changes will be lost.'))}</p>`,
             [
                 { label: labelOf('audio_editor_keep_editing', 'Keep editing') },
                 { label: labelOf('audio_editor_discard', 'Cancel note'), primary: true, run: onConfirm }
-            ]
+            ],
+            'discard'
         );
     }
 
     function requestCancel(operation) {
         if (!state.isOpen || state.operation !== operation) return;
+        if (dialogLayer && !dialogLayer.hidden) {
+            const kind = activeDialogKind;
+            closeDialog();
+            if (kind === 'duplicateKeep') send('cancel');
+            return;
+        }
         checkDirty();
         confirmDiscard(() => send('cancel'));
     }
@@ -717,6 +743,8 @@ var AudioEditor = (() => {
         if (content) content.hidden = true;
         if (header) header.hidden = true;
 
+        activeDialogKind = null;
+        if (dialogLayer) dialogLayer.hidden = true;
         if (editor) editor.hidden = false;
         if (pill) pill.hidden = true;
 
@@ -733,7 +761,7 @@ var AudioEditor = (() => {
         if (data.duplicateKeep) {
             showDialog(
                 labelOf('audio_editor_duplicate_keep_title', 'Existing audio kept'),
-                `<p>${labelOf('audio_editor_duplicate_keep_body', 'This note already has sentence audio, which will be kept according to your field update settings.')}</p>`,
+                `<p>${escapeHtml(labelOf('audio_editor_duplicate_keep_body', 'This note already has sentence audio, which will be kept according to your field update settings.'))}</p>`,
                 [
                     {
                         label: labelOf('audio_editor_duplicate_keep_change_settings', 'Change settings'),
@@ -748,7 +776,8 @@ var AudioEditor = (() => {
                             send('without');
                         }
                     }
-                ]
+                ],
+                'duplicateKeep'
             );
         }
     }
@@ -847,7 +876,9 @@ var AudioEditor = (() => {
         state.isOpen = false;
         if (editor) editor.hidden = true;
         if (pill) pill.hidden = true;
-        dialogLayer.hidden = true;
+        activeDialogKind = null;
+        if (dialogLayer) dialogLayer.hidden = true;
+        delete document.documentElement.dataset.editorCollapsed;
 
         const content = document.getElementById('content');
         const header = document.querySelector('.header');
