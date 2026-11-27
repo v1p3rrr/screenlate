@@ -63,6 +63,7 @@
     <string name="overlay_engine_app_text">App text</string>
     <string name="overlay_copy">Copy</string>
     <string name="overlay_copy_definition">Copy definition</string>
+    <string name="overlay_copy_sentence">Copy sentence</string>
     <string name="overlay_copy_translation">Copy sentence and translation</string>
     <string name="overlay_open_note">Open in AnkiDroid (hold to add anyway)</string>
     <string name="overlay_add_anyway">Add anyway</string>

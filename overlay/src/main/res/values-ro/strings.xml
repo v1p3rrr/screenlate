@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Text aplicație</string>
     <string name="overlay_copy">Copiază</string>
     <string name="overlay_copy_definition">Copiază definiția</string>
+    <string name="overlay_copy_sentence">Copiază propoziția</string>
     <string name="overlay_copy_translation">Copiază propoziția și traducerea</string>
     <string name="overlay_open_note">Deschide în AnkiDroid (ține apăsat pentru a adăuga oricum)</string>
     <string name="overlay_add_anyway">Adaugă oricum</string>

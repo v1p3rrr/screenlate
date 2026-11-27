@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">نص التطبيق</string>
     <string name="overlay_copy">نسخ</string>
     <string name="overlay_copy_definition">نسخ التعريف</string>
+    <string name="overlay_copy_sentence">نسخ الجملة</string>
     <string name="overlay_copy_translation">نسخ الجملة والترجمة</string>
     <string name="overlay_open_note">فتح في AnkiDroid (انقر مع الاستمرار للإضافة على أي حال)</string>
     <string name="overlay_add_anyway">إضافة على أي حال</string>

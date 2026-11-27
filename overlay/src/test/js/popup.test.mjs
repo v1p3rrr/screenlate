@@ -2071,3 +2071,53 @@ test('extractTapQuery extracts words for CJK and non-CJK text', () => {
     assert.equal(Popup.extractTapQuery(longJa, 0), 'あいうえおかきくけこさしすせそた');
     assert.equal(Popup.extractTapQuery(longJa, 0).length, 16);
 });
+
+test('header sentence copy button sits after translate, copies full sentence, and hides when unavailable', () => {
+    const translateBtn = page.document.getElementById('translate');
+    const copyBtn = page.document.getElementById('copy-sentence');
+    const engine = page.document.getElementById('engine');
+    assert.ok(copyBtn);
+    assert.equal(translateBtn.nextElementSibling, copyBtn);
+    assert.equal(copyBtn.nextElementSibling, engine);
+
+    // Visible with a non-empty sentence even when sentence translation is off.
+    Popup.setTranslation({ enabled: false });
+    Popup.render(state({
+        source: { text: '猫が好きだ', matched: 1 },
+        sentence: '実は昔から猫が好きだ。',
+        labels: { ...labels, copySentence: 'Copy sentence' },
+    }));
+    assert.equal(translateBtn.hidden, true);
+    assert.equal(copyBtn.hidden, false);
+    assert.equal(copyBtn.getAttribute('aria-label'), 'Copy sentence');
+    assert.equal(copyBtn.title, 'Copy sentence');
+
+    copyBtn.click();
+    assert.deepEqual(page.calls.at(-1), ['onCopy', '実は昔から猫が好きだ。']);
+
+    // Stays visible beside translate when enabled, and update() carries the refined sentence.
+    Popup.setTranslation({ enabled: true });
+    assert.equal(translateBtn.hidden, false);
+    assert.equal(copyBtn.hidden, false);
+    Popup.update(state({
+        source: { text: '猫が好きだ', matched: 1 },
+        sentence: '実は昔から白い猫が好きだ。',
+        labels: { ...labels, copySentence: 'Copy sentence' },
+    }));
+    copyBtn.click();
+    assert.deepEqual(page.calls.at(-1), ['onCopy', '実は昔から白い猫が好きだ。']);
+
+    // Hidden on pushed views and restored on Back.
+    Popup.push(state({ results: [result('好き', 'すき')], sentence: '別の文' }));
+    assert.equal(copyBtn.hidden, true);
+    page.document.getElementById('back').click();
+    assert.equal(copyBtn.hidden, false);
+
+    // Hidden in compact mode (header off), when sentence is blank, or on a message view.
+    Popup.render(state({ hideSource: true, sentence: '実は昔から猫が好きだ。' }));
+    assert.equal(copyBtn.hidden, true);
+    Popup.render(state({ sentence: '   ' }));
+    assert.equal(copyBtn.hidden, true);
+    Popup.render(state({ results: [], message: 'No text found', sentence: '実は昔から猫が好きだ。' }));
+    assert.equal(copyBtn.hidden, true);
+});

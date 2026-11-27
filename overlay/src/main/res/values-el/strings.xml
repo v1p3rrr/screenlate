@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Κείμενο εφαρμογών</string>
     <string name="overlay_copy">Αντιγραφή</string>
     <string name="overlay_copy_definition">Αντιγραφή ορισμού</string>
+    <string name="overlay_copy_sentence">Αντιγραφή πρότασης</string>
     <string name="overlay_copy_translation">Αντιγραφή πρότασης και μετάφρασης</string>
     <string name="overlay_open_note">Άνοιγμα στο AnkiDroid (παρατεταμένο πάτημα για προσθήκη ούτως ή άλλως)</string>
     <string name="overlay_add_anyway">Προσθήκη ούτως ή άλλως</string>

@@ -1,5 +1,11 @@
 # Status
 
+## Popup header sentence copy & pinned first-run bar (2026-11-27)
+
+- Added a sentence copy button directly to the right of the translate button in the popup header (`popup.html`, `popup.css`, `popup.js`, `PageState.kt`): shown whenever the top source header is visible and a full sentence exists (regardless of whether sentence translation is enabled), copies the full sentence (`state.sentence`) on tap, and hides in compact mode, on pushed views (returning on Back), on message views, and when the sentence is blank (`SearchScreen`). Added `overlay_copy_sentence` across all 27 locales and documented under `Popup elements` in [docs/usage.md](docs/usage.md).
+- Pinned the Continue button and hint at the bottom of `FirstRunScreen.kt` (`FirstRunConfirmBar` in `Scaffold.bottomBar` with `navigationBarsPadding()` matching `LanguageSetupScreen`) so users do not have to scroll past all languages on first launch; strengthened `FirstRunRequestTest.kt` (`onScreen = true` bounds/visibility check) and added cases `FR9` and `POP64` in [test-model.md](test-model.md).
+- Two-axis `/code-review` (2 passes: Standards + Spec) passed cleanly after fixing header CSS grouping, JS schema doc comment, `FirstRunRequestTest` on-screen bounds assertion, and `FR9` test-coverage wording. Verified via `npm --prefix scripts/page-tests test` (199/199 passed) and `./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest :build-logic:convention:test` (`BUILD SUCCESSFUL`).
+
 ## Fresh-disabled/audio comparison and reported old baseline (2026-11-24)
 
 - Owner supplied Nov 23 21:13 journal and confirms trying archived c129a5e7 plus audio 3d2835b0, both reportedly

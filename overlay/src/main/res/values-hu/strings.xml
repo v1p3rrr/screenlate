@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Alkalmazásszöveg</string>
     <string name="overlay_copy">Másolás</string>
     <string name="overlay_copy_definition">Jelentés másolása</string>
+    <string name="overlay_copy_sentence">Mondat másolása</string>
     <string name="overlay_copy_translation">Mondat és fordítás másolása</string>
     <string name="overlay_open_note">Megnyitás AnkiDroidban (hozzáadás mindenképp: nyomva tartás)</string>
     <string name="overlay_add_anyway">Hozzáadás mindenképp</string>

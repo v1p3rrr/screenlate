@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">טקסט אפליקציות</string>
     <string name="overlay_copy">העתקה</string>
     <string name="overlay_copy_definition">העתקת הפירוש</string>
+    <string name="overlay_copy_sentence">העתקת המשפט</string>
     <string name="overlay_copy_translation">העתקת המשפט והתרגום</string>
     <string name="overlay_open_note">פתיחה ב-AnkiDroid (לחיצה ארוכה להוספה בכל זאת)</string>
     <string name="overlay_add_anyway">הוספה בכל זאת</string>

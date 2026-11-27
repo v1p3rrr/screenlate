@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -15,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -104,7 +106,18 @@ fun FirstRunScreen(onSetup: (Language) -> Unit, onDone: () -> Unit, viewModel: F
             }
         }
     }
-    Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.app_title)) }) }) { padding ->
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_title)) }) },
+        bottomBar = {
+            FirstRunConfirmBar(
+                enabled = !busy,
+                onContinue = {
+                    busy = true
+                    viewModel.choose(chosen)
+                },
+            )
+        },
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -133,16 +146,28 @@ fun FirstRunScreen(onSetup: (Language) -> Unit, onDone: () -> Unit, viewModel: F
                     }
                 }
             }
-            Hint(stringResource(R.string.first_run_hint))
+        }
+    }
+}
+
+/** Pinned bottom bar with the confirmation button and hint so long language lists do not require scrolling down. */
+@Composable
+private fun FirstRunConfirmBar(enabled: Boolean, onContinue: () -> Unit) {
+    Surface(tonalElevation = 3.dp) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
             Button(
-                onClick = {
-                    busy = true
-                    viewModel.choose(chosen)
-                },
-                enabled = !busy,
+                onClick = onContinue,
+                enabled = enabled,
                 modifier = Modifier.fillMaxWidth(),
                 colors = AccentDefaults.buttonColors(),
             ) { Text(stringResource(R.string.first_run_continue), textAlign = TextAlign.Center) }
+            Hint(stringResource(R.string.first_run_hint))
         }
     }
 }

@@ -91,6 +91,7 @@ object PageState {
         "playAudio" to context.getString(R.string.overlay_play_audio),
         "copy" to context.getString(R.string.overlay_copy),
         "copyDefinition" to context.getString(R.string.overlay_copy_definition),
+        "copySentence" to context.getString(R.string.overlay_copy_sentence),
         "copyTranslation" to context.getString(R.string.overlay_copy_translation),
         "openNote" to context.getString(R.string.overlay_open_note),
         "openInAnki" to context.getString(R.string.overlay_open_in_anki),

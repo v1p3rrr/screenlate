@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Teks aplikasi</string>
     <string name="overlay_copy">Salin</string>
     <string name="overlay_copy_definition">Salin definisi</string>
+    <string name="overlay_copy_sentence">Salin kalimat</string>
     <string name="overlay_copy_translation">Salin kalimat dan terjemahan</string>
     <string name="overlay_open_note">Buka di AnkiDroid (tahan untuk tetap menambahkan)</string>
     <string name="overlay_add_anyway">Tetap tambah</string>

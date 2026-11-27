@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">متن برنامه</string>
     <string name="overlay_copy">کپی</string>
     <string name="overlay_copy_definition">کپی تعریف</string>
+    <string name="overlay_copy_sentence">کپی جمله</string>
     <string name="overlay_copy_translation">کپی جمله و ترجمه</string>
     <string name="overlay_open_note">باز کردن در AnkiDroid (برای افزودن در هر صورت، نگه دارید)</string>
     <string name="overlay_add_anyway">افزودن در هر صورت</string>

@@ -2,6 +2,7 @@ package com.vpr.screenlate
 
 import android.app.ActivityManager
 import android.content.Intent
+import android.graphics.Rect
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -50,6 +51,8 @@ class FirstRunRequestTest {
         context.startActivity(context.packageManager.getLaunchIntentForPackage(context.packageName)!!
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         awaitText(R.string.first_run_question)
+        assertThat(shows(R.string.first_run_continue, onScreen = true)).isTrue()
+        assertThat(shows(R.string.first_run_hint, onScreen = true)).isTrue()
 
         OverlayIntents.openScreen(context, OverlayIntents.OPEN_DICTIONARIES)
         awaitText(R.string.dictionaries_title)
@@ -67,11 +70,23 @@ class FirstRunRequestTest {
      * Reads the window as the bubble does: Espresso, under the Compose test rule, cannot start on the newest Android.
      * Compose does not answer a search by text, so the tree is walked.
      */
-    private fun shows(text: Int): Boolean {
+    private fun shows(text: Int, onScreen: Boolean = false): Boolean {
+        val root = instrumentation.uiAutomation.rootInActiveWindow ?: return false
         val string = context.getString(text)
-        fun AccessibilityNodeInfo.has(): Boolean = this.text?.toString() == string ||
-            contentDescription?.toString() == string || (0 until childCount).any { getChild(it)?.has() == true }
-        return instrumentation.uiAutomation.rootInActiveWindow?.has() == true
+        val rootBounds = if (onScreen) Rect().also(root::getBoundsInScreen) else null
+        val nodeBounds = Rect()
+        fun AccessibilityNodeInfo.has(): Boolean {
+            val matches = this.text?.toString() == string || contentDescription?.toString() == string
+            if (matches) {
+                if (!onScreen) return true
+                if (isVisibleToUser) {
+                    getBoundsInScreen(nodeBounds)
+                    if (!nodeBounds.isEmpty && Rect.intersects(rootBounds!!, nodeBounds)) return true
+                }
+            }
+            return (0 until childCount).any { getChild(it)?.has() == true }
+        }
+        return root.has()
     }
 
     private fun awaitText(text: Int) {

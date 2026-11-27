@@ -60,6 +60,7 @@
     <string name="overlay_engine_app_text">Текст приложения</string>
     <string name="overlay_copy">Копировать</string>
     <string name="overlay_copy_definition">Копировать определение</string>
+    <string name="overlay_copy_sentence">Копировать предложение</string>
     <string name="overlay_copy_translation">Копировать предложение и перевод</string>
     <string name="overlay_open_note">Открыть в AnkiDroid (удерживайте — добавить всё равно)</string>
     <string name="overlay_add_anyway">Добавить всё равно</string>

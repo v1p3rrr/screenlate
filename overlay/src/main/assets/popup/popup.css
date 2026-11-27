@@ -304,6 +304,11 @@ a {
     display: none;
 }
 
+.copy-sentence-button svg {
+    width: 17px;
+    height: 17px;
+}
+
 .chip {
     flex: none;
     padding: 1px 7px;

@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Tekst aplikacji</string>
     <string name="overlay_copy">Kopiuj</string>
     <string name="overlay_copy_definition">Kopiuj definicję</string>
+    <string name="overlay_copy_sentence">Kopiuj zdanie</string>
     <string name="overlay_copy_translation">Kopiuj zdanie i tłumaczenie</string>
     <string name="overlay_open_note">Otwórz w AnkiDroid (przytrzymaj, aby dodać mimo to)</string>
     <string name="overlay_add_anyway">Dodaj mimo to</string>

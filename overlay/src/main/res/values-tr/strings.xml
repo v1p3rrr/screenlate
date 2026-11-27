@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Uygulama metni</string>
     <string name="overlay_copy">Kopyala</string>
     <string name="overlay_copy_definition">Tanımı kopyala</string>
+    <string name="overlay_copy_sentence">Cümleyi kopyala</string>
     <string name="overlay_copy_translation">Cümleyi ve çeviriyi kopyala</string>
     <string name="overlay_open_note">AnkiDroid’de aç (yine de eklemek için basılı tutun)</string>
     <string name="overlay_add_anyway">Yine de ekle</string>

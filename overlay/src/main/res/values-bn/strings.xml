@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">অ্যাপের লেখা</string>
     <string name="overlay_copy">কপি</string>
     <string name="overlay_copy_definition">সংজ্ঞা কপি করুন</string>
+    <string name="overlay_copy_sentence">বাক্য কপি করুন</string>
     <string name="overlay_copy_translation">বাক্য ও অনুবাদ কপি করুন</string>
     <string name="overlay_open_note">AnkiDroid-এ খুলুন (তবুও যোগ করতে চেপে ধরুন)</string>
     <string name="overlay_add_anyway">তবুও যোগ করুন</string>

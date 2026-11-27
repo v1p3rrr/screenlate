@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">ایپ کا متن</string>
     <string name="overlay_copy">کاپی</string>
     <string name="overlay_copy_definition">تعریف کاپی کریں</string>
+    <string name="overlay_copy_sentence">جملہ کاپی کریں</string>
     <string name="overlay_copy_translation">جملہ اور ترجمہ کاپی کریں</string>
     <string name="overlay_open_note">AnkiDroid میں کھولیں (پھر بھی شامل کرنے کے لیے دبا کر رکھیں)</string>
     <string name="overlay_add_anyway">پھر بھی شامل کریں</string>

@@ -26,6 +26,7 @@ if (!Element.prototype.replaceChildren) {
  *   installation: boolean,         opens the installation queue from the message
  *   ocrModels: boolean,            opens the language's on-device models from the message
  *   hideSource: boolean,           no header on the first view: it starts with the first entry, whose buttons get ✕
+ *   sentence: string,              full sentence around the looked-up word, empty when unavailable
  *   compound: string,              a line above the entries of a word found only as its parts, empty otherwise
  *   rightToLeft: boolean,          the language is written right to left: the lookup text, headwords and readings run
  *                                  that way, the glossaries' blocks by their own first letters (an Arabic example
@@ -33,8 +34,10 @@ if (!Element.prototype.replaceChildren) {
  *   labels: { ... }                localized strings
  * }
  *
- * Sentence translation (setTranslation): the translation button sits in the header before the OCR chip, or without the header in the first
- * entry's buttons. A tap asks the app (onTranslate with a request number) and shows a block under the header, which
+ * Sentence translation (setTranslation): the translation button sits in the header before the sentence copy button and
+ * the OCR chip, or without the header in the first entry's buttons. The sentence copy button sits in the header right
+ * after the translation button while a full sentence is available, independently of whether translation is enabled. A tap
+ * on the translation button asks the app (onTranslate with a request number) and shows a block under the header, which
  * showTranslation fills; a second tap hides it. The block belongs to the first view: a new word drops it, a pushed
  * view hides it until back returns.
  *
@@ -66,6 +69,7 @@ const Popup = (() => {
     const engine = document.getElementById('engine');
     const ocrErrorButton = document.getElementById('ocr-error');
     const translateButton = document.getElementById('translate');
+    const copySentenceButton = document.getElementById('copy-sentence');
     const translationBox = document.getElementById('translation');
     const spinner = document.getElementById('spinner');
     const content = document.getElementById('content');
@@ -177,6 +181,11 @@ const Popup = (() => {
         if (held) requestTranslationMenu(translateButton);
         else toggleTranslation();
     });
+    copySentenceButton.innerHTML = ICONS.copy;
+    copySentenceButton.addEventListener('click', () => {
+        const sentence = current && current.sentence;
+        if (sentence && sentence.trim()) ScreenlateBridge.onCopy(sentence);
+    });
     backButton.addEventListener('click', back);
     content.addEventListener('click', onContentClick);
 
@@ -215,6 +224,7 @@ const Popup = (() => {
         ocrErrorButton.title = (state.labels && state.labels.ocrError) || '';
         placeInlineOcrWarning(state);
         drawTranslation(state);
+        drawCopySentence(state);
 
         source.replaceChildren();
         const sourceInfo = state.source || {};
@@ -460,6 +470,15 @@ const Popup = (() => {
     /** The translation button on the first view while it has something to translate. */
     function translatable(state) {
         return translationEnabled && history.length === 0 && Boolean(state) && !state.message;
+    }
+
+    function drawCopySentence(state) {
+        const canCopy = history.length === 0 && Boolean(state && state.sentence && state.sentence.trim()) &&
+            !state.message && !compact(state);
+        const label = (state && state.labels && state.labels.copySentence) || 'Copy sentence';
+        copySentenceButton.hidden = !canCopy;
+        copySentenceButton.setAttribute('aria-label', label);
+        copySentenceButton.title = label;
     }
 
     function drawTranslation(state) {

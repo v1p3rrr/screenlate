@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Text aplikací</string>
     <string name="overlay_copy">Kopírovat</string>
     <string name="overlay_copy_definition">Kopírovat definici</string>
+    <string name="overlay_copy_sentence">Kopírovat větu</string>
     <string name="overlay_copy_translation">Kopírovat větu a překlad</string>
     <string name="overlay_open_note">Otevřít v AnkiDroidu (podržením přesto přidat)</string>
     <string name="overlay_add_anyway">Přesto přidat</string>

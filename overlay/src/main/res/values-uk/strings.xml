@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">Текст застосунку</string>
     <string name="overlay_copy">Копіювати</string>
     <string name="overlay_copy_definition">Копіювати тлумачення</string>
+    <string name="overlay_copy_sentence">Копіювати речення</string>
     <string name="overlay_copy_translation">Копіювати речення й переклад</string>
     <string name="overlay_open_note">Відкрити в AnkiDroid (утримання — додати все одно)</string>
     <string name="overlay_add_anyway">Додати все одно</string>

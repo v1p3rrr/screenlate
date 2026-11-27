@@ -100,6 +100,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | FR6 | Upgrade from v0.2.3 → the accessibility disclosure is not asked again; deleted bundled dictionaries stay deleted | F | M | 2026-10-22 |
 | FR7 | A backup made by v0.2.3 (settings, and with dictionaries) restores into the current build: every part listed, settings applied to Japanese, the translation button kept on | E | U BackupFormatTest, M | 2026-10-18 |
 | FR8 | The accessibility disclosure: the first tap on a button that opens the accessibility settings shows it; Agree opens the settings, later taps open them at once; About shows the same text | O | U AccessibilityAgreedTest, M | |
+| FR9 | Fresh install → Continue and the hint are pinned at the bottom of the first-run language list without scrolling; scrolling the language list keeps the bottom bar visible over navigation insets and does not cover the last language | N | I FirstRunRequestTest (visible without scrolling), M | |
 
 ### BUB: the bubble
 
@@ -365,6 +366,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP61 | A large lookup (32 entries with structured definitions) renders without recalculating styles after each dictionary chip or resetting scroll after replacement; offscreen entries remain scrollable and focusable; a definition link and Back restore a nonzero scroll offset; copying a selection still includes its text across entries | F | P `dictionary chips in many definitions…`, `a new lookup resets scrolling…`, M | 2026-11-03 (phone: offset 1800 restored exactly, last entry focus and selection checked) |
 | POP62 | Vertical manga columns with narrower kana continue the preceding wider kanji column at the same character advance: 壊したくない spans both columns and shows the negative ending; unrelated text below stays separate | F | U ReadingOrderTest, I HoshidictsEngineTest.keepsTheNegativeEndingOfAnUndesiredAction, M | 2026-11-03 (phone scan and isolated engine test) |
 | POP63 | Popup settings → Auto-hide → "On tap outside" (off by default): off → taps outside pass through and keep the popup open; on → tapping anywhere outside closes the popup without clicking the app below, the bubble above stays draggable/tappable, edge Back/Home swipes do not falsely dismiss, and locking the screen closes the popup so the lock screen receives touches normally | N | U PopupOutsideTapTest, PopupAutoHideSettingsTest, M | |
+| POP64 | Popup header copy-sentence button (immediately after the translation button): visible whenever the top header is shown and a full sentence exists (even when the translation button is off), copies the full extracted sentence rather than only the truncated `#source` prefix, hides on pushed views (returning on Back), messages, empty sentences and compact mode ("Show the recognized text above the entries" off) | N | P popup.test, M | |
 
 ### AUD: audio
 

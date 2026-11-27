@@ -59,6 +59,7 @@
     <string name="overlay_engine_app_text">ข้อความของแอป</string>
     <string name="overlay_copy">คัดลอก</string>
     <string name="overlay_copy_definition">คัดลอกคำนิยาม</string>
+    <string name="overlay_copy_sentence">คัดลอกประโยค</string>
     <string name="overlay_copy_translation">คัดลอกประโยคและคำแปล</string>
     <string name="overlay_open_note">เปิดใน AnkiDroid (กดค้างเพื่อเพิ่มซ้ำ)</string>
     <string name="overlay_add_anyway">เพิ่มแม้ซ้ำ</string>
