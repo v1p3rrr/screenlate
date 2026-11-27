@@ -7,7 +7,7 @@ to implement transfer recovery, waveform loading or saved silence parameter UI a
 parts are implemented. Do not restart them or infer the current usage limit from historical percentages.
 
 - Work on `codex/sentence-audio-recording`. Read the newest checkpoint at the top of `ai/status.md` for
-  current source. The latest compact Dev delivery remains source `c2eced4f`, documentation `e1e361dd`.
+  current source. The latest compact Dev delivery is source `de67a6f0` (plus docs).
   Verify HEAD and dirty state before editing; preserve unrelated submodule dirt and the two untracked
   `docs/images/photo_*2026-11-10*.jpg` files. Push only the feature branch.
 - Read `ai/status.md`, the execution plan `ai/plans/2026-11-21-sentence-audio-repair.md` and the binding
@@ -37,9 +37,7 @@ parts are implemented. Do not restart them or infer the current usage limit from
   layout now passes the complete touch scenario on API 25/26/28/29. The actual R8-minified API 29 WebView/FileProvider test
   also passes after that change. Two API 29 Opus-export cases are not passes on that encoder-less image; existing API 30
   export evidence remains authoritative. Logs are under ignored `testdata/local-research/audio-final-local-2026-11-26/`.
-- Current final gates pass: the complete build/unit/lint/androidTest-assembly/convention/release-vital command finishes in
-  36 s with 1,412 actionable tasks after cold work; 231 core-Anki, 136 core-media, 354 overlay, 291 app and 247 page cases
-  pass with zero failures/errors. Exact receipts and the earlier tool-timeout handling are recorded in `ai/status.md`.
+- Current gates pass after source commit `de67a6f0`: `assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest :build-logic:convention:test` (`4m31s`), `npm --prefix scripts/page-tests test` (`250/250`), and `:app:lintVitalRelease` (`56s`); `291` app, `231` core-Anki, `143` core-media and `356` overlay unit cases pass with zero failures/errors, alongside API 29 debug & un-cheated R8 instrumentation receipts in `ai/status.md`.
 - Remaining acceptance:
   1. Phone audibility and actual source policy with ongoing/paused speech and Refresh; speaker/wired/Bluetooth/headset
      routes, zero volume/source mute, calls, lock and revocation; no unintended source pause/duck/resume.
@@ -54,6 +52,24 @@ parts are implemented. Do not restart them or infer the current usage limit from
   use force-stop or run app instrumentation against the owner's package. Use isolated fixtures/collections.
 - For a long continuation, check current account usage; the thread's stop rule is less than 2% weekly remaining, without
   consuming resets/credits. The older memory rule and usage snapshots are historical.
+
+
+## Compact Dev delivery after review, latency and UX fixes (2026-11-27)
+
+- Source `de67a6f0`, committed/pushed to `codex/sentence-audio-recording`. Final debug/unit/lint/androidTest/convention
+  gates pass in `4m31s` (`291` app, `231` core-Anki, `143` core-media, `356` overlay unit cases), `npm --prefix scripts/page-tests test`
+  passes `250/250`, `:app:lintVitalRelease` passes in `56s`, and API 29 emulator fixtures (`core:media` `4/4`, `core:anki` `1/1`,
+  `app` `2/2`, `overlay` `5/5`, and un-cheated R8 `MinifiedSentenceAudioDeviceTest` `2/2` with obfuscated `LookupPage$Bridge` and
+  `AudioEditorCommand`) pass before shutting down and deleting the temporary AVD.
+- `assembleRelease` plus `lintVitalRelease` using `testdata/local-research/builds/dev-release-de67a6f0.gradle` passes in `2m56s`.
+  Frozen APK: `testdata/local-research/builds/screenlate-dev-de67a6f0-min.apk`, `25427792` bytes (24.25 MiB),
+  `com.vpr.screenlate.debug`, `Screenlate Dev`, `1.1.0-de67a6f0-min`, `versionCode 10100`, `arm64-v8a` only.
+  R8 mapping preserved alongside as `screenlate-dev-de67a6f0-min.mapping.txt`.
+- `apksigner` verifies; signer SHA-256 matches previous Dev exactly:
+  `3d48893b7563cfa738335edcd9bcd0f148e4d76ef4086511b6eefb2d4e7c3d22`.
+  APK SHA-256: `195d2e0384bc5fbc08a001bf0db7341d0e76f2a195a14bdd93fe8ce255950994`.
+- No phone installation or owner Anki access. Live Honor device checks (audibility, Bluetooth/headset routing, calls/lock,
+  external-engine TTS exclusion, desktop Anki, endurance) remain pending.
 
 
 ## Compact Dev delivery after touch repair (2026-11-24)
